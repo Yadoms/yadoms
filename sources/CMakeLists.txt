@@ -23,6 +23,7 @@ INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 
 FIND_PACKAGE(Threads)
 
+#RT Library
 if(UNIX AND NOT APPLE)
     set(RT_LIBRARY rt)
 endif()
@@ -33,22 +34,42 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/builds/lib)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/builds)
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})
 
-#création de groupes 
-source_group(Server server/*.*)
-source_group(Tools tools/*.*)
-
-
-# Build the plugin experiment
-add_executable(yadoms 
-server/main.cpp
-server/Supervisor.cpp
-server/Supervisor.h
+# Create a shared library with common files shared by server and plugin
+set(SHARED_LIB_SRC
 tools/ThreadBase.cpp
 tools/ThreadBase.h
 )
+add_library(sharedLib STATIC  ${SHARED_LIB_SRC})
+target_link_libraries(sharedLib ${LIBS} ${CMAKE_DL_LIBS})
 
+# Create a base shared library for Hardware plugins
+set(HARDWARE_PLUGIN_BASE_LIB_SRC
+plugins/hardware/HardwarePluginBase.cpp
+plugins/hardware/HardwarePluginBase.h
+)
+add_library(hardwarePluginBaseLib STATIC  ${HARDWARE_PLUGIN_BASE_LIB_SRC})
+target_link_libraries(hardwarePluginBaseLib ${LIBS} ${CMAKE_DL_LIBS})
+
+#include Plugin CMake file
 add_subdirectory(plugins)
 
-target_link_libraries(yadoms ${LIBS} ${CMAKE_DL_LIBS})
-#add_library(awesomeplugin SHARED src/awesomeplugin.cpp)
-#add_library(awesomeplugin2 SHARED src/awesomeplugin2.cpp)
+#Create project directories
+source_group(Server server/*.*)
+source_group(Tools tools/*.*)
+
+# Create main executable
+set(YADOMS_SRC
+server/main.cpp
+server/Supervisor.cpp
+server/Supervisor.h
+)
+add_executable(yadoms ${YADOMS_SRC})
+target_link_libraries(yadoms sharedLib ${LIBS} ${CMAKE_DL_LIBS})
+
+#configure solution directories (MSVC only)
+if(MSVC)
+	SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
+	SET_PROPERTY(TARGET yadoms                	PROPERTY FOLDER "Server")
+	SET_PROPERTY(TARGET sharedLib        		PROPERTY FOLDER "Shared")
+	SET_PROPERTY(TARGET hardwarePluginBaseLib   PROPERTY FOLDER "Plugins")
+endif()

@@ -1,12 +1,12 @@
-#include "IHardwarePlugin.hpp"
+#include "HardwarePluginBase.h"
 
 namespace plugins
 {
-	class CFakePlugin : public IHardwarePlugin
+	class CFakePlugin : public CHardwarePluginBase
 	{  
 	public:
 		CFakePlugin()
-			:IHardwarePlugin("CFakePlugin")
+			:CHardwarePluginBase("CFakePlugin")
 		{
 		}
 
@@ -14,12 +14,6 @@ namespace plugins
 		{
 		}
 		
-		// A function to do something, so we can demonstrate the plugin
-		std::string toString()
-		{
-			return std::string("Coming from awesome plugin");
-		}
-
 		void doWork() 
 		{
 		}
