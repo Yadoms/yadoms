@@ -5,7 +5,7 @@ namespace plugins
 	class CFakePlugin : public IHardwarePlugin
 	{  
 	public:
-		FakePlugin()
+		CFakePlugin()
 			:IHardwarePlugin("CFakePlugin")
 		{
 		}
