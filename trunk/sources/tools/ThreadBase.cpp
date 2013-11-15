@@ -14,11 +14,13 @@ CThreadBase::~CThreadBase(void)
 
 void CThreadBase::start()
 {
+	//start the thread
 	m_thread = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&CThreadBase::doWorkInternal, this)));
 }
 
 void CThreadBase::stop()
 {
+	//request to stop and wait
 	requestToStop();
 	while(getStatus() != kStopped)
 	{
@@ -44,6 +46,7 @@ void CThreadBase::changeStatus(const EStatus & newStatus)
 
 void CThreadBase::doWorkInternal()
 {
+	//manage the doWork method. It aims is to manage the thread state around doWork
 	changeStatus(kRunning);
 	doWork();
 	changeStatus(kStopped);
