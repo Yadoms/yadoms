@@ -2,11 +2,11 @@
 
 namespace plugins
 {
-	class FakePlugin : public IHardwarePlugin
+	class CFakePlugin : public IHardwarePlugin
 	{  
 	public:
 		FakePlugin()
-			:IHardwarePlugin("FakePlugin")
+			:IHardwarePlugin("CFakePlugin")
 		{
 		}
 
@@ -26,16 +26,4 @@ namespace plugins
 	};
 }
 
-extern "C" 
-{
-	// Function to return an instance of a new AwesomePlugin object
-	EXPORT_MAIN_FUNCTIONS plugins::IHardwarePlugin* construct()
-	{
-		return new plugins::FakePlugin();
-	}
-
-	EXPORT_MAIN_FUNCTIONS void destruct(plugins::IHardwarePlugin* pluginToDelete)
-	{
-		delete pluginToDelete;
-	}  
-}
+EXPOSE_HARDWARE_PLUGIN(CFakePlugin)

@@ -2,7 +2,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (Yadoms)
 
-#incluse user specific configuration
+#include user specific configuration
 include("CMakeListsUserConfig.txt" OPTIONAL)
 
 # Default Options

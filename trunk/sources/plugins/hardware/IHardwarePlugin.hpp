@@ -10,6 +10,21 @@
 #define EXPORT_MAIN_FUNCTIONS 
 #endif
 
+#define EXPOSE_HARDWARE_PLUGIN(pluginClassName) \
+	extern "C"                                                                              \
+	{                                                                                       \
+		EXPORT_MAIN_FUNCTIONS plugins::IHardwarePlugin* construct()                         \
+		{                                                                                   \
+			return new plugins::pluginClassName();                                          \
+		}                                                                                   \
+                                                                                            \
+		EXPORT_MAIN_FUNCTIONS void destruct(plugins::IHardwarePlugin* pluginToDelete)       \
+		{                                                                                   \
+			delete pluginToDelete;                                                          \
+		}                                                                                   \
+	}                                                                                       \
+
+
 namespace plugins
 {
   class IHardwarePlugin : public CThreadBase
@@ -24,5 +39,8 @@ namespace plugins
 	
   };
 }
+
+
+
 
 #endif
