@@ -37,6 +37,7 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})
 source_group(Server server/*.*)
 source_group(Tools tools/*.*)
 
+
 # Build the plugin experiment
 add_executable(yadoms 
 server/main.cpp
@@ -45,6 +46,8 @@ server/Supervisor.h
 tools/ThreadBase.cpp
 tools/ThreadBase.h
 )
+
+add_subdirectory(plugins)
 
 target_link_libraries(yadoms ${LIBS} ${CMAKE_DL_LIBS})
 #add_library(awesomeplugin SHARED src/awesomeplugin.cpp)
