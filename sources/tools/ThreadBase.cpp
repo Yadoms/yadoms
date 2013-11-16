@@ -6,11 +6,9 @@ CThreadBase::CThreadBase(const std::string & threadName)
 {
 }
 
-
 CThreadBase::~CThreadBase(void)
 {
 }
-
 
 void CThreadBase::start()
 {
@@ -51,7 +49,6 @@ void CThreadBase::doWorkInternal()
 	doWork();
 	changeStatus(kStopped);
 }
-
 
 const std::string CThreadBase::getName()
 {

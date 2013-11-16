@@ -1,48 +1,28 @@
-#include "HardwarePluginBase.h"
+#pragma once
 
-IMPLEMENT_HARDWARE_PLUGIN(CFakePlugin)
+#include "IHardwarePlugin.h"
+#include <string>
 
 namespace plugins
 {
    class CFakePlugin : public IHardwarePlugin
    {  
    public:
-      CFakePlugin()
-      {
-      }
+      CFakePlugin();
 
-      virtual ~CFakePlugin()
-      {
-      }
+      virtual ~CFakePlugin();
 
       // IHardwarePlugin implementation
-      virtual void Start()
-      {
-         std::cout << "Start CFakePlugin" << std::endl;
-      }
+      /*virtual void start();
 
-      virtual void Stop()
-      {
-         std::cout << "Stop CFakePlugin" << std::endl;
-      }
+      virtual void stop();*/
 
-      virtual void DoWork()
-      {
-         while(1)
-         {
-            // Give a chance to exit plugin thread
-            boost::this_thread::sleep(boost::posix_time::seconds(1000)); 
-
-            std::cout << "CFakePlugin is running..." << std::endl;
-         };
-      }
+      virtual void doWork();
       // [END] IHardwarePlugin implementation
 
       // TODO : WhatTheFuck ? ? ? C'est quoi ces adresses ?
-      void init(const std::string & pluginAddress, const std::string & serverAddress)
-      {
-      }
+      void init(const std::string & pluginAddress, const std::string & serverAddress);
    };
 }
 
-
+IMPLEMENT_HARDWARE_PLUGIN(CFakePlugin)
