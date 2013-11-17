@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace plugins
 {
    class IHardwarePlugin
@@ -23,6 +25,9 @@ namespace plugins
       // Be careful to put some sleeps to prevent using too much system ressources.
       // Use boost::this_thread::sleep is a watch stop point (a point where thread is able to stop).
       virtual void doWork() = 0;
+
+	  //Return the information about the class under string format
+	  virtual std::string toString() = 0;
 
    protected:
 	  IHardwarePlugin()

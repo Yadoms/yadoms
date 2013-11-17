@@ -2,8 +2,9 @@
 
 #include "../plugins/hardware/IHardwarePlugin.h"
 #include <boost/thread.hpp>
+#include "../tools/ThreadBase.h"
 
-class CHardwarePluginInstance
+class CHardwarePluginInstance : CThreadBase
 {
 public:
    CHardwarePluginInstance(IHardwarePlugin * plugin);
@@ -12,9 +13,15 @@ public:
 
    void stop();
 
-   void doWork();
-
 private:
+	
+   void doWorkInternal();
    IHardwarePlugin * m_pPlugin;
-   boost::shared_ptr<boost::thread> m_thread;
+
+protected:
+	//--------------------------------------------------------------
+	/// \brief			The main plugin work
+	/// \return    	void
+	//--------------------------------------------------------------
+	virtual void doWork();
 };

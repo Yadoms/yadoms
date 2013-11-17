@@ -8,36 +8,14 @@
 
 CHardwarePluginInstance::CHardwarePluginInstance(IHardwarePlugin * plugin) : m_pPlugin(plugin)
 {
-}
-
-void CHardwarePluginInstance::start()
-{
-	m_thread = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&CHardwarePluginInstance::doWork, this)));
-}
-
-void CHardwarePluginInstance::stop()
-{
-    // Stop the thread
-    m_thread->interrupt();
-    m_thread->join();
-    //m_thread->start_thread
-    //m_thread->start_thread
-    //m_pThread = NULL;
-
-    // Call plugin stop method to free ressources
-    //m_pPlugin->stop();
+	if (m_pPlugin != NULL)
+	{
+		setName(m_pPlugin->tostring());
+	}
 }
 
 void CHardwarePluginInstance::doWork()
 {
     // TODO : we can set protections here (restart plugin if it crashes, force to stop it...)
-    try 
-    {
-        // Call plugin main loop
-        m_pPlugin->doWork();
-    } 
-    catch(boost::thread_interrupted&)
-    {
-        // Thread is stopped
-    }
+    m_pPlugin->doWork();
 }
