@@ -34,6 +34,12 @@ namespace plugins
             std::cout << "CFakePlugin is running..." << std::endl;
          };
       }
+
+	  //Return the information about the class under string format
+	  std::string toString()
+	  {
+		  return "Fake Plugin";
+	  }
       // [END] IHardwarePlugin implementation
 
       // TODO : WhatTheFuck ? ? ? C'est quoi ces adresses ?

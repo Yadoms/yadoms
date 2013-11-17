@@ -11,7 +11,13 @@ class CThreadBase
 {
 public:
 	//--------------------------------------------------------------
-	/// \brief			Constructor
+	/// \brief		Constructor
+	/// \return    	void
+	//--------------------------------------------------------------
+	CThreadBase();
+
+	//--------------------------------------------------------------
+	/// \brief		Constructor
 	/// \param [in]	threadName : the thread name
 	/// \return    	void
 	//--------------------------------------------------------------
@@ -59,7 +65,13 @@ public:
 	const EStatus getStatus();
 	
 	//--------------------------------------------------------------
-	/// \brief			Get the thread name
+	/// \brief		Set the thread name
+	/// \param [in]	threadName : the thread name
+	//--------------------------------------------------------------
+	void setName(const std::string & name);
+
+	//--------------------------------------------------------------
+	/// \brief		Get the thread name
 	/// \return    	The thread name
 	//--------------------------------------------------------------
 	const std::string getName();
