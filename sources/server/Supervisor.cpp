@@ -14,5 +14,21 @@ CSupervisor::~CSupervisor(void)
 
 void CSupervisor::doWork()
 {
-	BOOST_LOG_TRIVIAL(info) << "Message from Supervisor ";
+    try
+    {
+	    BOOST_LOG_TRIVIAL(info) << "Supervisor is starting";
+
+        m_hardwarePluginManager.buildPluginFactoryList("plugins"); //todo : gerer le chemin à partir de la conf
+
+        //récupérer la liste des plugins à instancier depuis la base
+        
+
+	    BOOST_LOG_TRIVIAL(info) << "Supervisor is stopped";
+    }
+    catch(...)
+    {
+        BOOST_LOG_TRIVIAL(error) << "Supervisor : unhandled exception.";
+    }
+
+    m_hardwarePluginManager.freePluginFactoryList();
 }

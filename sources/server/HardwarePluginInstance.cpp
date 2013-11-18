@@ -6,16 +6,20 @@
 #include "../plugins/hardware/IHardwarePlugin.h"
 
 
-CHardwarePluginInstance::CHardwarePluginInstance(IHardwarePlugin * plugin) : m_pPlugin(plugin)
+CHardwarePluginInstance::CHardwarePluginInstance(plugins::IHardwarePlugin * plugin) 
+    : m_pPlugin(plugin)
 {
 	if (m_pPlugin != NULL)
 	{
-		setName(m_pPlugin->tostring());
+		setName("nom du plugin"); //todo : à partir de la base de données
 	}
 }
 
 void CHardwarePluginInstance::doWork()
 {
-    // TODO : we can set protections here (restart plugin if it crashes, force to stop it...)
-    m_pPlugin->doWork();
+    if (m_pPlugin != NULL)
+	{
+        // TODO : we can set protections here (restart plugin if it crashes, force to stop it...)
+        m_pPlugin->doWork();
+    }
 }

@@ -4,19 +4,13 @@
 #include <boost/thread.hpp>
 #include "../tools/ThreadBase.h"
 
-class CHardwarePluginInstance : CThreadBase
+class CHardwarePluginInstance : public CThreadBase
 {
 public:
-   CHardwarePluginInstance(IHardwarePlugin * plugin);
-
-   void start();
-
-   void stop();
+   CHardwarePluginInstance(plugins::IHardwarePlugin * plugin);
 
 private:
-	
-   void doWorkInternal();
-   IHardwarePlugin * m_pPlugin;
+   plugins::IHardwarePlugin * m_pPlugin;
 
 protected:
 	//--------------------------------------------------------------

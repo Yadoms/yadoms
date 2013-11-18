@@ -1,82 +1,68 @@
 #pragma once
 
-#include "PluginLibrary.hpp"
-#include "PluginInstance.hpp"
+#include "HardwarePluginManager.h"
 
-class CPluginManager
+CHardwarePluginManager::CHardwarePluginManager()
 {
-public:
-   CPluginManager()
-   {
-   }
+}
 
-   virtual ~CPluginManager()
-   {
-      // m_PluginInstances should be emptied by call to StopPlugins
-      BOOST_ASSERT(m_PluginInstances.empty();)
+CHardwarePluginManager::~CHardwarePluginManager()
+{
+    // m_PluginInstances should be emptied by call to StopPlugins
+    BOOST_ASSERT(m_pluginFactories.empty());
+}
 
-      // PluginLibraries should be emptied (or some libraries are not freed)
-      BOOST_ASSERT(m_PluginInstances.empty();)
-   }
 
-   // Returns all plugin libraries installed
-   std::list<std::string> FindAvalaiblePluginLibraries()
-   {
-      // Parse the hardware plugin directory to find all plugin libraries
-      // TODO
-   }
+// Returns all plugin libraries installed
+std::list<std::string> CHardwarePluginManager::findAvalaiblePlugins(const std::string & initialDir)
+{
+    // Parse the hardware plugin directory to find all plugin libraries
+    // TODO
+    std::list<std::string> result;
+    return result;
+}
 
-   void StartAllPlugins()
-   {
-      std::list<std::string> avalaibleLibraryNames = FindAvalaiblePluginLibraries();
 
-      for (std::list<std::string>::const_iterator libNameIt = avalaibleLibraryNames.begin();
-           libNameIt != avalaibleLibraryNames.end() ; ++libNameIt)
-      {
-         // Load the library
-         CPluginLibrary* newLibrary = new CPluginLibrary(*libNameIt);
-         if (!newLibrary->Load())
-         {
-            delete newLibrary;
+void CHardwarePluginManager::buildPluginFactoryList(const std::string & initialDir)
+{
+    std::list<std::string> avalaiblePluginFileNames = findAvalaiblePlugins(initialDir);
+
+    for (std::list<std::string>::const_iterator libNameIt = avalaiblePluginFileNames.begin(); libNameIt != avalaiblePluginFileNames.end() ; ++libNameIt)
+    {
+        // Load the library
+        CPluginFactory<plugins::IHardwarePlugin, plugins::CHardwarePluginInformation> * newFactory = new CPluginFactory<plugins::IHardwarePlugin, plugins::CHardwarePluginInformation>();
+        if (!newFactory->load(*libNameIt))
+        {
+            delete newFactory;
             continue;
-         }
-         PluginLibraryList.add(newLibrary);
-         
-         // Plugin instanciation
-         PluginInstance* newPluginInstance(newLibrary->construct());
-         PluginInstances.add(newPluginInstance);
+        }
+        m_pluginFactories.push_back(newFactory);
+    }
+}
 
-         // Start plugin
-         newPluginInstance->Start();
-      }
-   }
+void CHardwarePluginManager::freePluginFactoryList()
+{
+    // Free the libraries
+    while (!m_pluginFactories.empty())
+    {
+        m_pluginFactories.front()->unload();
+        delete m_pluginFactories.front();
+        m_pluginFactories.pop_front();         
+    }
+}
 
-   void StopAllPlugins()
-   {
-      for (PluginList::const_iterator it = m_PluginInstances.begin();
-           it != m_PluginInstances.end() ; ++it)
-      {
-         // Stop the plugin
-         (*it)->Stop();
+CPluginFactory<plugins::IHardwarePlugin, plugins::CHardwarePluginInformation> * CHardwarePluginManager::getFactory(const std::string & pluginName)
+{
+    PluginFactoryList::iterator itFind;
+    
+    for(itFind = m_pluginFactories.begin(); itFind != m_pluginFactories.end(); itFind++)
+    {
+        if((*itFind)->getInfo()->getName() == pluginName)
+        {
+            return (*itFind);
+        }
+    }
+    return NULL;
+}
 
-         // Free plugin
-         m_PluginInstances.remove(it);
-         delete *it;
-      }
-      
-      // Free the libraries
-      while (!m_PluginLibraries.empty())
-      {
-         m_PluginLibraries.Unload();
-         delete m_PluginLibraries.front();
-         m_PluginLibraries.pop_front();         
-      }
-   }
 
-private:
-   typedef std::list<CPluginLibrary*> PluginLibraryList;
-   PluginLibraryList m_PluginLibraries;
-
-   typedef std::list<PluginInstance*> PluginList;
-   PluginList m_PluginInstances;
-};

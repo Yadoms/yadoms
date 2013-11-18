@@ -39,8 +39,8 @@ set(SHARED_LIB_SRC
 tools/ThreadBase.cpp
 tools/ThreadBase.h
 )
-add_library(sharedLib STATIC  ${SHARED_LIB_SRC})
-target_link_libraries(sharedLib ${LIBS} ${CMAKE_DL_LIBS})
+add_library(yadoms-shared STATIC  ${SHARED_LIB_SRC})
+target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 
 #No more necessary because it remains only a .h file in the lib
 # Create a base shared library for Hardware plugins
@@ -55,7 +55,6 @@ add_subdirectory(plugins)
 
 #Create project directories
 source_group(Server server/*.*)
-source_group(Tools tools/*.*)
 
 # Create main executable
 set(YADOMS_SRC
@@ -64,18 +63,18 @@ server/Supervisor.cpp
 server/Supervisor.h
 server/HardwarePluginManager.h
 server/HardwarePluginManager.cpp
-server/PluginGenerator.hpp
+server/PluginFactory.hpp
 server/HardwarePluginInstance.h
 server/HardwarePluginInstance.cpp
 plugins/hardware/IHardwarePlugin.h
 )
 add_executable(yadoms ${YADOMS_SRC})
-target_link_libraries(yadoms sharedLib ${LIBS} ${CMAKE_DL_LIBS})
+target_link_libraries(yadoms yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 
 #configure solution directories (MSVC only)
 if(MSVC)
 	SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
-	SET_PROPERTY(TARGET yadoms                	PROPERTY FOLDER "Server")
-	SET_PROPERTY(TARGET sharedLib        		PROPERTY FOLDER "Shared")
+#	SET_PROPERTY(TARGET yadoms                	PROPERTY FOLDER "yadoms")
+#	SET_PROPERTY(TARGET yadoms-shared        	PROPERTY FOLDER "yadoms-shared")
 #	SET_PROPERTY(TARGET hardwarePluginBaseLib   PROPERTY FOLDER "Plugins")
 endif()
