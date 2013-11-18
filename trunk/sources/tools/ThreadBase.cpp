@@ -33,8 +33,6 @@ void CThreadBase::stop()
 	// Stop the thread
     m_thread->interrupt();
     m_thread->join();
-    //m_thread->start_thread
-    //m_thread->start_thread
     //m_pThread = NULL;
 
     // Call plugin stop method to free ressources
