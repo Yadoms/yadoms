@@ -78,3 +78,13 @@ if(MSVC)
 #	SET_PROPERTY(TARGET yadoms-shared        	PROPERTY FOLDER "yadoms-shared")
 #	SET_PROPERTY(TARGET hardwarePluginBaseLib   PROPERTY FOLDER "Plugins")
 endif()
+
+#disable MSVC warnings
+if(MSVC)
+	#global disable (for all targets)
+	#disable warning C4996   Function call with parameters that may be unsafe 
+	add_definitions( "/wd4996" )
+	
+	#to disable a warning for a single target use this line:
+	#SET_PROPERTY(TARGET yadoms-shared                	PROPERTY COMPILE_FLAGS "/wd4996")
+endif()
