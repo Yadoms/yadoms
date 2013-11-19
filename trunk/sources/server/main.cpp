@@ -17,18 +17,18 @@
 //
 void configureLogger()
 {
-   boost::log::add_file_log
-      (
-         boost::log::keywords::file_name = "yadoms_%N.log",                                        
-         boost::log::keywords::rotation_size = 10 * 1024 * 1024,                                   
-         boost::log::keywords::time_based_rotation = boost::log::sinks::file::rotation_at_time_point(0, 0, 0), 
-         boost::log::keywords::format = "[%TimeStamp%]: %Message%"                                 
-      );
+    boost::log::add_file_log
+        (
+        boost::log::keywords::file_name = "yadoms_%N.log",                                        
+        boost::log::keywords::rotation_size = 10 * 1024 * 1024,                                   
+        boost::log::keywords::time_based_rotation = boost::log::sinks::file::rotation_at_time_point(0, 0, 0), 
+        boost::log::keywords::format = "[%TimeStamp%]: %Message%"                                 
+        );
 
-   boost::log::core::get()->set_filter
-      (
-         boost::log::trivial::severity >= boost::log::trivial::info
-      );
+    boost::log::core::get()->set_filter
+        (
+        boost::log::trivial::severity >= boost::log::trivial::info
+        );
 }
 
 /*
@@ -36,28 +36,29 @@ void configureLogger()
 */
 int main (int argc, char** argv)
 {
-   try
-   {
-      configureLogger();
+    try
+    {
+        //comment the configureLogger to use console output
+        //configureLogger();
 
-      BOOST_LOG_TRIVIAL(info) << "Yadoms is starting";
+        BOOST_LOG_TRIVIAL(info) << "Yadoms is starting";
 
-      CSupervisor supervisor;
-      supervisor.start();
+        CSupervisor supervisor;
+        supervisor.start();
 
-      while(supervisor.getStatus() != CThreadBase::kStopped)
-      {
-         boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-      }
+        while(1)
+        {
+            boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+        }
 
-      BOOST_LOG_TRIVIAL(info) << "Yadoms is stopped.";
-   }
-   catch(...)
-   {
-      //dual logging in case logger fails/throws
-      BOOST_LOG_TRIVIAL(error) << "An unhandled exception occurs. Yadoms is now stopped";
-      std::cout << "An unhandled exception occurs. Yadoms is now stopped" << std::endl;
-   }
-   
-   return 0;
+        BOOST_LOG_TRIVIAL(info) << "Yadoms is stopped.";
+    }
+    catch(...)
+    {
+        //dual logging in case logger fails/throws
+        BOOST_LOG_TRIVIAL(error) << "An unhandled exception occurs. Yadoms is now stopped";
+        std::cout << "An unhandled exception occurs. Yadoms is now stopped" << std::endl;
+    }
+
+    return 0;
 }

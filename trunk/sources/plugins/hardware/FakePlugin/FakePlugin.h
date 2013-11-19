@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../IHardwarePlugin.h"
+#include "../HardwarePluginInformation.h"
+
 #include <string>
 
 namespace plugins
@@ -22,3 +24,12 @@ namespace plugins
 }
 
 IMPLEMENT_HARDWARE_PLUGIN(CFakePlugin)
+
+extern "C"                                                         
+{                                                                      
+   EXPORT_MAIN_FUNCTIONS plugins::CHardwarePluginInformation* getInfo()           
+   {                                                                   
+      return new plugins::CHardwarePluginInformation("FakePlugin", "1.0",  plugins::CHardwarePluginInformation::kBeta, "", "");                  
+   }                                                                   
+                                                                       
+}   

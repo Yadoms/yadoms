@@ -1,6 +1,7 @@
 #include "FakePlugin.h"
 
 #include <boost\thread.hpp>
+#include <boost/log/trivial.hpp>
 
 namespace plugins
 {
@@ -18,10 +19,10 @@ namespace plugins
       {
          while(1)
          {
-            // Give a chance to exit plugin thread
-            boost::this_thread::sleep(boost::posix_time::seconds(1000)); 
+            BOOST_LOG_TRIVIAL(info) << "CFakePlugin is running...";
 
-            std::cout << "CFakePlugin is running..." << std::endl;
+            // Give a chance to exit plugin thread
+            boost::this_thread::sleep(boost::posix_time::milliseconds(1000)); 
          };
       }
 

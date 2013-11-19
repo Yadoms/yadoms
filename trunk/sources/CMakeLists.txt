@@ -53,30 +53,49 @@ target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 #include Plugin CMake file
 add_subdirectory(plugins)
 
-#Create project directories
-source_group(Server server/*.*)
-
 # Create main executable
 set(YADOMS_SRC
 server/main.cpp
 server/Supervisor.cpp
 server/Supervisor.h
-server/HardwarePluginManager.h
-server/HardwarePluginManager.cpp
-server/PluginFactory.hpp
-server/HardwarePluginInstance.h
-server/HardwarePluginInstance.cpp
+server/PluginSystem/HardwarePluginManager.h
+server/PluginSystem/HardwarePluginManager.cpp
+server/PluginSystem/HardwarePluginInstance.h
+server/PluginSystem/HardwarePluginInstance.cpp
+server/PluginSystem/HardwarePluginFactory.h
+server/PluginSystem/HardwarePluginFactory.cpp
 plugins/hardware/IHardwarePlugin.h
+
+#include both platform files to see them into IDE
+server/PluginSystem/windows/PluginFactory.hpp
+server/PluginSystem/linux/PluginFactory.hpp
 )
+
+#platform dependant
+IF(WIN32)
+	INCLUDE_DIRECTORIES(server/PluginSystem/windows)
+ELSE()
+	INCLUDE_DIRECTORIES(server/PluginSystem/linux)
+ENDIF()
+
 add_executable(yadoms ${YADOMS_SRC})
+
+
 target_link_libraries(yadoms yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 
 #configure solution directories (MSVC only)
 if(MSVC)
+	#Create solution directories
 	SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
-#	SET_PROPERTY(TARGET yadoms                	PROPERTY FOLDER "yadoms")
-#	SET_PROPERTY(TARGET yadoms-shared        	PROPERTY FOLDER "yadoms-shared")
-#	SET_PROPERTY(TARGET hardwarePluginBaseLib   PROPERTY FOLDER "Plugins")
+	#SET_PROPERTY(TARGET yadoms                	PROPERTY FOLDER "yadoms")
+	#SET_PROPERTY(TARGET yadoms-shared        	PROPERTY FOLDER "yadoms-shared")
+	#SET_PROPERTY(TARGET hardwarePluginBaseLib   PROPERTY FOLDER "Plugins")
+
+	#Create project directories
+	source_group(Server server/*.*)
+	source_group(Server\\PluginSystem server/PluginSystem/*.* )
+	source_group(Server\\PluginSystem\\windows server/PluginSystem/windows/*.*)
+	source_group(Server\\PluginSystem\\linux server/PluginSystem/linux/*.*)
 endif()
 
 #disable MSVC warnings
