@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../tools/ThreadBase.h"
-#include "HardwarePluginManager.h"
+#include "PluginSystem/HardwarePluginManager.h"
 
 class CSupervisor : public CThreadBase
 {

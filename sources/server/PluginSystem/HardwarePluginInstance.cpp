@@ -1,5 +1,3 @@
-#pragma once
-
 //TODO : voir pour utiliser la classe CThreadBase en incluant le concept de join dans cette derniere
 
 #include "HardwarePluginInstance.h"
