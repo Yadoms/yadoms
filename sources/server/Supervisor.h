@@ -2,15 +2,17 @@
 
 #include "../tools/ThreadBase.h"
 #include "PluginSystem/HardwarePluginManager.h"
+#include "StartupOptions.h"
 
 class CSupervisor : public CThreadBase
 {
 public:
-	CSupervisor(void);
-	virtual ~CSupervisor(void);
+   CSupervisor(const IStartupOptions& startupOptions);
+   virtual ~CSupervisor(void);
 
-	void doWork();
+   void doWork();
 private:
-    CHardwarePluginManager m_hardwarePluginManager;
+   const IStartupOptions& m_startupOptions;
+   CHardwarePluginManager m_hardwarePluginManager;
 };
 
