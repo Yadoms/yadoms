@@ -5,30 +5,32 @@
 
 */
 
-
 #include <iostream>
-#include "Supervisor.h"
 
 #include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup/file.hpp>
 
+#include "Supervisor.h"
+#include "StartupOptionsLoader.h"
+
+
 //
 // \brief Configure the logger
 //
-void configureLogger()
+void configureLogger(const IStartupOptions& startupOptions)
 {
-    boost::log::add_file_log
-        (
-        boost::log::keywords::file_name = "yadoms_%N.log",                                        
-        boost::log::keywords::rotation_size = 10 * 1024 * 1024,                                   
-        boost::log::keywords::time_based_rotation = boost::log::sinks::file::rotation_at_time_point(0, 0, 0), 
-        boost::log::keywords::format = "[%TimeStamp%]: %Message%"                                 
-        );
+   boost::log::add_file_log
+      (
+      boost::log::keywords::file_name = "yadoms_%N.log",                                        
+      boost::log::keywords::rotation_size = 10 * 1024 * 1024,                                   
+      boost::log::keywords::time_based_rotation = boost::log::sinks::file::rotation_at_time_point(0, 0, 0), 
+      boost::log::keywords::format = "[%TimeStamp%]: %Message%"                                 
+      );
 
-    boost::log::core::get()->set_filter
-        (
-        boost::log::trivial::severity >= boost::log::trivial::info
-        );
+   boost::log::core::get()->set_filter
+      (
+      boost::log::trivial::severity >= startupOptions.getLogLevel()
+      );
 }
 
 /*
@@ -36,29 +38,34 @@ void configureLogger()
 */
 int main (int argc, char** argv)
 {
-    try
-    {
-        //comment the configureLogger to use console output
-        //configureLogger();
+   try
+   {
+      CStartupOptionsLoader startupOptions(argc, argv);
 
-        BOOST_LOG_TRIVIAL(info) << "Yadoms is starting";
+      configureLogger(startupOptions);
 
-        CSupervisor supervisor;
-        supervisor.start();
+      BOOST_LOG_TRIVIAL(info) << "Yadoms is starting";
 
-        while(1)
-        {
-            boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-        }
+      CSupervisor supervisor(startupOptions);
+      supervisor.start();
 
-        BOOST_LOG_TRIVIAL(info) << "Yadoms is stopped.";
-    }
-    catch(...)
-    {
-        //dual logging in case logger fails/throws
-        BOOST_LOG_TRIVIAL(error) << "An unhandled exception occurs. Yadoms is now stopped";
-        std::cout << "An unhandled exception occurs. Yadoms is now stopped" << std::endl;
-    }
+      while(1)
+      {
+         boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+      }
 
-    return 0;
+      BOOST_LOG_TRIVIAL(info) << "Yadoms is stopped.";
+   }
+   catch(CStartupOptionsLoaderError&)
+   {
+      // Don't log here as it was already done by the exception, just stop execution
+   }
+   catch(...)
+   {
+      //dual logging in case logger fails/throws
+      BOOST_LOG_TRIVIAL(error) << "An unhandled exception occurs. Yadoms is now stopped";
+      std::cout << "An unhandled exception occurs. Yadoms is now stopped" << std::endl;
+   }
+
+   return 0;
 }
