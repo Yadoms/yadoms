@@ -3,9 +3,16 @@
 #include "PluginSystem/HardwarePluginInstance.h"
 
 
-CSupervisor::CSupervisor(void)
-	:CThreadBase("Supervisor")
+CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
+   :CThreadBase("Supervisor"),m_startupOptions(startupOptions)
 {
+   //TODO pour test, à virer
+   std::cout << "log level = " << m_startupOptions.getLogLevel() << std::endl;
+   std::cout << "port number = " << m_startupOptions.getPortNumber() << std::endl;
+   std::cout << "db path = " << m_startupOptions.getDatabaseFile() << std::endl;
+   std::cout << "hardware plugins = " << m_startupOptions.getHarwarePluginsPath() << std::endl;
+   std::cout << "device plugins = " << m_startupOptions.getDevicePluginsPath() << std::endl;
+   //\TODO pour test, à virer
 }
 
 
@@ -15,34 +22,34 @@ CSupervisor::~CSupervisor(void)
 
 void CSupervisor::doWork()
 {
-    try
-    {
-	    BOOST_LOG_TRIVIAL(info) << "Supervisor is starting";
+   try
+   {
+      BOOST_LOG_TRIVIAL(info) << "Supervisor is starting";
 
-        m_hardwarePluginManager.buildPluginFactoryList("plugins"); //todo : gerer le chemin à partir de la conf
+      m_hardwarePluginManager.buildPluginFactoryList(m_startupOptions.getHarwarePluginsPath());
 
-        //récupérer la liste des plugins à instancier depuis la base
-        CHardwarePluginFactory * pFactory = m_hardwarePluginManager.getFactory("FakePlugin");
-        CHardwarePluginInstance fakePlugin(pFactory->construct());
+      //récupérer la liste des plugins à instancier depuis la base
+      CHardwarePluginFactory * pFactory = m_hardwarePluginManager.getFactory("FakePlugin");
+      CHardwarePluginInstance fakePlugin(pFactory->construct());
 
-        fakePlugin.start();
-        
-
-        CHardwarePluginInstance fakePlugin2(pFactory->construct());
-        fakePlugin2.start();
+      fakePlugin.start();
 
 
-        while(1)
-        {
-            boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-        }
+      CHardwarePluginInstance fakePlugin2(pFactory->construct());
+      fakePlugin2.start();
 
-	    BOOST_LOG_TRIVIAL(info) << "Supervisor is stopped";
-    }
-    catch(...)
-    {
-        BOOST_LOG_TRIVIAL(error) << "Supervisor : unhandled exception.";
-    }
 
-    m_hardwarePluginManager.freePluginFactoryList();
+      while(1)
+      {
+         boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+      }
+
+      BOOST_LOG_TRIVIAL(info) << "Supervisor is stopped";
+   }
+   catch(...)
+   {
+      BOOST_LOG_TRIVIAL(error) << "Supervisor : unhandled exception.";
+   }
+
+   m_hardwarePluginManager.freePluginFactoryList();
 }
