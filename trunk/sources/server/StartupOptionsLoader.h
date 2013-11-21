@@ -1,7 +1,5 @@
 //
-// StartupOptions.h
-//
-// Yadoms-configuration management singleton
+// Yadoms startup options loader by command line and file
 //
 #pragma once
 
@@ -49,8 +47,8 @@ class CMustExistPathOption
 {
 public:
    //--------------------------------------------------------------
-   /// \brief	    Constructor
-   /// \par path   The path
+   /// \brief	         Constructor
+   /// \param[in] path  The path
    //--------------------------------------------------------------
    CMustExistPathOption(const std::string& path)
       :m_path(path)  {}

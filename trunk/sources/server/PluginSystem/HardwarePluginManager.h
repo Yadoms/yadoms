@@ -41,7 +41,7 @@ public:
     /// \param [in]		pluginName : the plugin name to search
     /// \return    		The plugin factory (NULL in case of error)
     //--------------------------------------------------------------
-    CHardwarePluginFactory * getFactory(const std::string & pluginName);
+    CHardwarePluginFactory * getFactory(const std::string & pluginName) const;
 
 private:
     //--------------------------------------------------------------

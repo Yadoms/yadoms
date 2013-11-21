@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../IHardwarePlugin.h"
-#include "../HardwarePluginInformation.h"
+#include "../IHardwarePluginImplementationHelper.h"
 
 #include <string>
 
@@ -23,13 +22,4 @@ namespace plugins
    };
 }
 
-IMPLEMENT_HARDWARE_PLUGIN(CFakePlugin)
-
-extern "C"                                                         
-{                                                                      
-   EXPORT_MAIN_FUNCTIONS plugins::CHardwarePluginInformation* getInfo()           
-   {                                                                   
-      return new plugins::CHardwarePluginInformation("FakePlugin", "1.0",  plugins::CHardwarePluginInformation::kBeta, "", "");                  
-   }                                                                   
-                                                                       
-}   
+IMPLEMENT_HARDWARE_PLUGIN(CFakePlugin,"FakePlugin","0.1",plugins::CHardwarePluginInformation::kBeta,"[yadoms-team](http://sourceforge.net/projects/yadoms/)","")

@@ -1,6 +1,6 @@
 #include "FakePlugin.h"
 
-#include <boost\thread.hpp>
+#include <boost/thread.hpp>
 #include <boost/log/trivial.hpp>
 
 namespace plugins
