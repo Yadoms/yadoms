@@ -1,7 +1,5 @@
 //
-// StartupOptions.h
-//
-// Yadoms startup optionns
+// Yadoms startup options interface
 //
 #pragma once
 
