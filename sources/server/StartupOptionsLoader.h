@@ -124,11 +124,6 @@ public:
 
 private:
    //--------------------------------------------------------------
-   /// \brief	            Build all enumation types used as options
-   //--------------------------------------------------------------
-   void buildEnumLists();
-
-   //--------------------------------------------------------------
    /// \brief	            Build the supported options list
    //--------------------------------------------------------------
    void buildOptionsDescription();
