@@ -10,17 +10,6 @@ namespace po = boost::program_options;
 const std::string CStartupOptionsLoader::OptionalConfigFile("yadoms.cfg");
 
 
-// This class contains the value of the parsed option
-// It also contains the map from string to enum used to know wich is wich
-template<typename Enum>
-class EnumOption//TODO à virer ?
-{
-public:
-    EnumOption() {}
-    std::map<std::string, Enum> m_paramMap;
-};
-
-
 
 CStartupOptionsLoaderError::CStartupOptionsLoaderError(const boost::program_options::options_description& optionsDecription,
                                                        const char* message)
@@ -52,8 +41,6 @@ CStartupOptionsLoaderError::~CStartupOptionsLoaderError() throw()
 CStartupOptionsLoader::CStartupOptionsLoader(int argc, char** argv)
    :m_optionsDescription("Allowed options")
 {
-   buildEnumLists();
-
    buildOptionsDescription();
 
    try
@@ -81,18 +68,6 @@ CStartupOptionsLoader::CStartupOptionsLoader(int argc, char** argv)
 
 CStartupOptionsLoader::~CStartupOptionsLoader()
 {
-}
-
-void CStartupOptionsLoader::buildEnumLists()
-{
-   // boost::log::trivial::severity_level enum
-   EnumOption<boost::log::trivial::severity_level> logLevelOption;
-   logLevelOption.m_paramMap["trace"]   = boost::log::trivial::trace;
-   logLevelOption.m_paramMap["debug"]   = boost::log::trivial::debug;
-   logLevelOption.m_paramMap["info"]    = boost::log::trivial::info;
-   logLevelOption.m_paramMap["warning"] = boost::log::trivial::warning;
-   logLevelOption.m_paramMap["error"]   = boost::log::trivial::error;
-   logLevelOption.m_paramMap["fatal"]   = boost::log::trivial::fatal;
 }
 
 
