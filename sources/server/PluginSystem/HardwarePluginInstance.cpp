@@ -2,6 +2,7 @@
 
 #include "HardwarePluginInstance.h"
 #include "../plugins/hardware/IHardwarePlugin.h"
+#include "../plugins/hardware/HardwarePluginInformation.h"
 
 
 CHardwarePluginInstance::CHardwarePluginInstance(plugins::IHardwarePlugin * plugin) 

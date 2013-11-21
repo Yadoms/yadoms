@@ -38,12 +38,12 @@ public:
     /// \brief	    Get information about this hardware plugin
     /// \return     information about this hardware plugin
     //-------------------------------------------------------------
-    plugins::CHardwarePluginInformation * getInfo();
+    const plugins::CHardwarePluginInformation& getInformation() const;
 
 private:
     //--------------------------------------------------------------
     /// \brief	    Pointer to the plugin getInfo method
     //--------------------------------------------------------------
-    boost::function< plugins::CHardwarePluginInformation* () > m_getInfo;
+    boost::function<const plugins::CHardwarePluginInformation& ()> m_getInformation;
 };
 
