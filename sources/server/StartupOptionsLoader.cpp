@@ -1,6 +1,3 @@
-//
-// StartupOptions.cpp
-//
 #pragma once
 
 #include <boost/filesystem.hpp>
@@ -16,7 +13,7 @@ const std::string CStartupOptionsLoader::OptionalConfigFile("yadoms.cfg");
 // This class contains the value of the parsed option
 // It also contains the map from string to enum used to know wich is wich
 template<typename Enum>
-class EnumOption
+class EnumOption//TODO à virer ?
 {
 public:
     EnumOption() {}
