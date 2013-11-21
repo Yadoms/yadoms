@@ -55,7 +55,7 @@ public:
     /// \param [in] libraryFile: the library file path
     /// \return     true if loaded with success, else false
     //-------------------------------------------------------------
-    virtual bool load(const std::string & libraryFile)
+    virtual bool load(const std::string & libraryFile)//TODO : passer en protected ?
     {
         bool result = FALSE;
 
@@ -91,7 +91,7 @@ public:
     //--------------------------------------------------------------
     /// \brief	    Free library file
     //-------------------------------------------------------------
-    void unload()
+    void unload()//TODO : passer en protected ?
     {
         if(m_libraryHandle != NULL)
         {
@@ -104,7 +104,7 @@ public:
     /// \brief	    Construct a plugin instance (call the contruct library method)
     /// \return     a new plugin instance
     //-------------------------------------------------------------
-    T * construct()
+    T * construct()//TODO : redescendre hors des classes platform-specific
     {
         if(m_construct != NULL)
             return m_construct();
@@ -115,7 +115,7 @@ public:
     /// \brief	    Destruct a plugin instance
     /// \param [in] item: the plugin to destruct
     //-------------------------------------------------------------
-    void destruct(T* item)
+    void destruct(T* item)//TODO : redescendre hors des classes platform-specific
     {
         if(m_destruct != NULL)
             m_destruct(item);

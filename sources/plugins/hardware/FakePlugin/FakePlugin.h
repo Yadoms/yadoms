@@ -22,4 +22,9 @@ namespace plugins
    };
 }
 
-IMPLEMENT_HARDWARE_PLUGIN(CFakePlugin,"FakePlugin","0.1",plugins::CHardwarePluginInformation::kBeta,"[yadoms-team](http://sourceforge.net/projects/yadoms/)","")
+IMPLEMENT_HARDWARE_PLUGIN(CFakePlugin,
+                          "FakePlugin",
+                          "0.1",
+                          plugins::CHardwarePluginInformation::kBeta,
+                          "yadoms-team",
+                          "http://sourceforge.net/projects/yadoms/")

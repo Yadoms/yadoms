@@ -14,7 +14,7 @@ const std::string CStartupOptionsLoader::OptionalConfigFile("yadoms.cfg");
 CStartupOptionsLoaderError::CStartupOptionsLoaderError(const boost::program_options::options_description& optionsDecription,
                                                        const char* message)
    :m_optionsDecription(optionsDecription)
-{
+{//TODO : déplacer le log dans le main (le main sait quel loader il a utilisé, il sait qu'il doit cracher sur stdout
    // Don't log to boost here, as this exception is raised if Yadoms was
    // called by command line, so only write to the console.
    // We register the message however.
