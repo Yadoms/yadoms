@@ -17,7 +17,7 @@ set(CMAKE_SUPPRESS_REGENERATION TRUE)
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 
-set(BOOST_LIBS thread date_time system chrono log filesystem log_setup)
+set(BOOST_LIBS thread date_time system chrono log filesystem log_setup program_options)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 
