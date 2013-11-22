@@ -12,6 +12,7 @@
 
 #include "Supervisor.h"
 #include "StartupOptionsLoader.h"
+//TODO #include "SignalHandler.h"
 
 
 //
@@ -56,14 +57,15 @@ int main (int argc, char** argv)
 
       BOOST_LOG_TRIVIAL(info) << "Yadoms is stopped.";
    }
-   catch(CStartupOptionsLoaderError&)
+   catch(CStartupOptionsLoaderError& e)
    {
-      // Don't log here as it was already done by the exception, just stop execution
+      // Just log to console here
+      BOOST_LOG_TRIVIAL(fatal) << e.what();
    }
    catch(...)
    {
       //dual logging in case logger fails/throws
-      BOOST_LOG_TRIVIAL(error) << "An unhandled exception occurs. Yadoms is now stopped";
+      BOOST_LOG_TRIVIAL(fatal) << "An unhandled exception occurs. Yadoms is now stopped";
       std::cout << "An unhandled exception occurs. Yadoms is now stopped" << std::endl;
    }
 
