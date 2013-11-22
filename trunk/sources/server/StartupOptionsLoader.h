@@ -33,7 +33,14 @@ public:
    //--------------------------------------------------------------
    virtual const char* what() const throw() { return m_message.c_str(); }
 
+   //--------------------------------------------------------------
+   /// \brief	    Get if exception cause is a command line usage error
+   /// \return     true is command line arguments are wrong, false is help was invoked
+   //--------------------------------------------------------------
+   virtual bool isError() const throw() { return m_error; }
+
 protected:
+   bool m_error;
    std::string m_message;
    const boost::program_options::options_description& m_optionsDecription;
 };
@@ -118,6 +125,8 @@ public:
       { return m_hardwarePluginsPath.get(); }
    virtual const std::string& getDevicePluginsPath() const
       { return m_devicePluginsPath.get(); }
+   virtual bool getStartXplHubFlag() const
+      { return m_startXplHub; }
    // [END] IStartupOptions implementation
    //--------------------------------------------------------------
 
@@ -140,6 +149,7 @@ private:
    std::string m_databaseFile;
    CMustExistPathOption m_hardwarePluginsPath;
    CMustExistPathOption m_devicePluginsPath;
+   bool m_startXplHub;
 };
 
 

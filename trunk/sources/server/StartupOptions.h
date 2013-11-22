@@ -45,6 +45,12 @@ public:
    /// \note       If explicitly provided, path must exist
    //--------------------------------------------------------------
    virtual const std::string& getDevicePluginsPath() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Get the startXplHub flag
+   /// \return     flag indicating if Xpl hub must be started or not
+   //--------------------------------------------------------------
+   virtual bool getStartXplHubFlag() const = 0;
 };
 
 
