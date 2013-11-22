@@ -12,6 +12,7 @@ CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
    std::cout << "db path = " << m_startupOptions.getDatabaseFile() << std::endl;
    std::cout << "hardware plugins = " << m_startupOptions.getHarwarePluginsPath() << std::endl;
    std::cout << "device plugins = " << m_startupOptions.getDevicePluginsPath() << std::endl;
+   std::cout << "start Xpl Hub = " << m_startupOptions.getStartXplHubFlag() << std::endl;
    //\TODO pour test, à virer
 }
 

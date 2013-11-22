@@ -59,8 +59,15 @@ int main (int argc, char** argv)
    }
    catch(CStartupOptionsLoaderError& e)
    {
-      // Just log to console here
-      BOOST_LOG_TRIVIAL(fatal) << e.what();
+      if (e.isError())
+      {
+         BOOST_LOG_TRIVIAL(fatal) << e.what();
+      }
+      else
+      {
+         // Help was invoked, just print to console
+         std::cout << e.what() << std::endl;
+      }
    }
    catch(...)
    {

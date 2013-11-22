@@ -15,6 +15,9 @@ CStartupOptionsLoaderError::CStartupOptionsLoaderError(const boost::program_opti
                                                        const char* message)
    :m_optionsDecription(optionsDecription)
 {
+   // If no error message was specified, it's not an error (help was invoked)
+   m_error = message ? true : false;
+
    std::ostringstream s;
 
    if (message)
@@ -49,6 +52,8 @@ CStartupOptionsLoader::CStartupOptionsLoader(int argc, char** argv)
 
       if (vm.count("help"))
          throw CStartupOptionsLoaderError(m_optionsDescription);
+
+      m_startXplHub = !vm.count("disableXplHubStart");
    }
    catch(po::unknown_option& e)
    {
@@ -107,16 +112,18 @@ void CStartupOptionsLoader::buildOptionsDescription()
 {
    m_optionsDescription.add_options()
       ("help", "produce help message")
-      ("port", po::value<unsigned int>(&m_portNumber)->default_value(8080),
+      ("port,p", po::value<unsigned int>(&m_portNumber)->default_value(8080),
          "set the web server port number")
-      ("logLevel", po::value<boost::log::trivial::severity_level>(&m_logLevel)->default_value(boost::log::trivial::info),
+      ("logLevel,l", po::value<boost::log::trivial::severity_level>(&m_logLevel)->default_value(boost::log::trivial::info),
          "set log level, accepted values are : trace, debug, info, warning, error, fatal")
-      ("databaseFile", po::value<std::string>(&m_databaseFile)->default_value("/db/db.sql"),
+      ("databaseFile,d", po::value<std::string>(&m_databaseFile)->default_value("/db/db.sql"),
          "use a specific dataBase file")
-      ("hardwarePluginsPath", po::value<CMustExistPathOption>(&m_hardwarePluginsPath)->default_value(CMustExistPathOption("/plugins/hardware")),
+      ("hardwarePluginsPath,h", po::value<CMustExistPathOption>(&m_hardwarePluginsPath)->default_value(CMustExistPathOption("/plugins/hardware")),
          "use a specific path to hardware plugins")
-      ("devicePluginsPath", po::value<CMustExistPathOption>(&m_devicePluginsPath)->default_value(CMustExistPathOption("/plugins/device")),
+      ("devicePluginsPath,d", po::value<CMustExistPathOption>(&m_devicePluginsPath)->default_value(CMustExistPathOption("/plugins/device")),
          "use a specific path to device plugins")
+      ("disableXplHubStart,x",
+         "don't start the Xpl hub, useful if another Xpl hub is already running on the same machine")
       ;
 }
 
