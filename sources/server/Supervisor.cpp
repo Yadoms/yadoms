@@ -19,6 +19,7 @@ CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
 
 CSupervisor::~CSupervisor(void)
 {
+   BOOST_ASSERT(getStatus()==kStopped);   // CSupervisor must be stopped before destroy
 }
 
 void CSupervisor::doWork()
