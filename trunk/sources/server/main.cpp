@@ -9,10 +9,11 @@
 
 #include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup/file.hpp>
+#include <boost/function.hpp>
 
 #include "Supervisor.h"
 #include "StartupOptionsLoader.h"
-//TODO #include "SignalHandler.h"
+#include "ApplicationStopHandler.h"
 
 
 //
@@ -34,11 +35,18 @@ void configureLogger(const IStartupOptions& startupOptions)
       );
 }
 
+void stopHandler()
+{
+   //TODO
+}
+
 /*
 \brief Main application entry point
 */
 int main (int argc, char** argv)
 {
+   CApplicationStopHandler::configure();
+
    try
    {
       CStartupOptionsLoader startupOptions(argc, argv);
@@ -50,10 +58,12 @@ int main (int argc, char** argv)
       CSupervisor supervisor(startupOptions);
       supervisor.start();
 
-      while(1)
+      while(!CApplicationStopHandler::stopRequested())
       {
          boost::this_thread::sleep(boost::posix_time::milliseconds(100));
       }
+
+      supervisor.stop();
 
       BOOST_LOG_TRIVIAL(info) << "Yadoms is stopped.";
    }

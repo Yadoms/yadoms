@@ -1,13 +1,14 @@
-#include "ThreadBase.h"
-#include "boost/bind.hpp"
+#include <boost/bind.hpp>
+#include <boost/log/trivial.hpp>
 
-CThreadBase::CThreadBase()
-	:m_threadName(""), m_threadStatus(kStopped)
-{
-}
+#include "ThreadBase.h"
+
+
+const int CThreadBase::DefaultStopTimeoutSeconds = 10;
+
 
 CThreadBase::CThreadBase(const std::string & threadName)
-	:m_threadName(threadName), m_threadStatus(kStopped)
+   :m_threadName(threadName), m_threadStatus(kStopped), m_stopTimeoutSeconds(DefaultStopTimeoutSeconds)
 {
 }
 
@@ -17,72 +18,87 @@ CThreadBase::~CThreadBase(void)
 
 void CThreadBase::start()
 {
-	//start the thread
-	m_thread = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&CThreadBase::doWorkInternal, this)));
+   BOOST_ASSERT(getStatus() == kStopped);
+
+   //start the thread
+   m_thread = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&CThreadBase::doWorkInternal, this)));
 }
 
-void CThreadBase::stop()
+bool CThreadBase::stop()
 {
-	//request to stop and wait
-	requestToStop();
-	while(getStatus() != kStopped)
-	{
-		boost::this_thread::sleep(boost::posix_time::millisec(10));
-	}
-	/*
-	// Stop the thread
-    m_thread->interrupt();
-    m_thread->join();
-    //m_pThread = NULL;
+   if (getStatus() == kStopped)
+      return true;   // Already stopped
 
-    // Call plugin stop method to free ressources
-    //m_pPlugin->stop();
-	*/
+   // Request to stop and wait
+   requestToStop();
+   if (!waitForStop(m_stopTimeoutSeconds))
+   {
+      BOOST_LOG_TRIVIAL(warning) << "Stopping thread " << getName() << " : timeout";
+      return false;
+   }
+
+   m_thread.reset();
+   return true;
 }
 
 void CThreadBase::requestToStop()
 {
-	changeStatus(kStopRequested);
+   changeStatus(kStopRequested);
+   m_thread->interrupt();
 }
 
-const CThreadBase::EStatus CThreadBase::getStatus()
+bool CThreadBase::waitForStop(int seconds)
 {
-	return m_threadStatus;
+   BOOST_ASSERT(m_thread);
+
+   bool stopped = false;
+
+   if (seconds)
+   {
+      // A timeout was specified
+      stopped = m_thread->timed_join(boost::posix_time::time_duration(0, 0, seconds, 0)); 
+   }
+   else
+   {
+      // no timeout specified
+      m_thread->join();
+      stopped = true;
+   }
+
+   if (stopped)
+      changeStatus(kStopped);
+
+   return stopped;
+}
+
+CThreadBase::EStatus CThreadBase::getStatus() const
+{
+   return m_threadStatus;
 }
 
 void CThreadBase::changeStatus(const EStatus & newStatus)
 {
-	m_threadStatus = newStatus;
-	m_statusChanged(newStatus);
+   m_threadStatus = newStatus;
+   m_statusChanged(newStatus);
 }
 
 void CThreadBase::doWorkInternal()
 {
-	//manage the doWork method. It aims is to manage the thread state around doWork
-	changeStatus(kRunning);
-	try 
-    {
-        doWork();
-    } 
-    catch(boost::thread_interrupted&)
-    {
-        // Thread is stopped
-    }
-	
-	changeStatus(kStopped);
-}
+   //manage the doWork method. It aims is to manage the thread state around doWork
+   changeStatus(kRunning);
+   try 
+   {
+      doWork();
+   } 
+   catch(boost::thread_interrupted&)
+   {
+      // Thread is stopped
+   }
 
-void CThreadBase::setName(const std::string & name)
-{
-	m_threadName = name;
-}
-
-const std::string CThreadBase::getName()
-{
-	return m_threadName;
+   changeStatus(kStopped);
 }
 
 void CThreadBase::registerStatusChanged(void *pFunc(const EStatus & newStatus), void * pInstance)
 {
-//	m_statusChanged.connect( boost::bind( pFunc, pInstance, _1 ) );
+   //	m_statusChanged.connect( boost::bind( pFunc, pInstance, _1 ) );
 }
