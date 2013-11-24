@@ -1,30 +1,28 @@
 #pragma once
 
-#include "../IHardwarePluginImplementationHelper.h"
+#include "plugins/hardware/IHardwarePluginImplementationHelper.h"
 
 #include <string>
 
-namespace plugins
-{
-   class CFakePlugin : public IHardwarePlugin
-   {  
-   public:
-      CFakePlugin();
+class CFakePlugin : public IHardwarePlugin
+{  
+public:
+   CFakePlugin();
 
-      virtual ~CFakePlugin();
+   virtual ~CFakePlugin();
 
-      // IHardwarePlugin implementation
-      virtual void doWork();
-	  // [END] IHardwarePlugin implementation
+   // IHardwarePlugin implementation
+   virtual void doWork();
+  // [END] IHardwarePlugin implementation
 
-      // TODO : WhatTheFuck ? ? ? C'est quoi ces adresses ?
-      void init(const std::string & pluginAddress, const std::string & serverAddress);
-   };
-}
+   // TODO : WhatTheFuck ? ? ? C'est quoi ces adresses ?
+   void init(const std::string & pluginAddress, const std::string & serverAddress);
+};
+
 
 IMPLEMENT_HARDWARE_PLUGIN(CFakePlugin,
                           "FakePlugin",
                           "0.1",
-                          plugins::CHardwarePluginInformation::kBeta,
+                          CHardwarePluginInformation::kBeta,
                           "yadoms-team",
                           "http://sourceforge.net/projects/yadoms/")

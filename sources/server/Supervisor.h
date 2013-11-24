@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../tools/ThreadBase.h"
+#include "tools/ThreadBase.h"
 #include "PluginSystem/HardwarePluginManager.h"
 #include "StartupOptions.h"
 

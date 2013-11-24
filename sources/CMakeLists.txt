@@ -2,6 +2,10 @@
 cmake_minimum_required (VERSION 2.6)
 project (Yadoms)
 
+##################################################################################################
+## Global properties
+##################################################################################################
+
 #include user specific configuration
 include("CMakeListsUserConfig.txt" OPTIONAL)
 
@@ -13,97 +17,166 @@ endif()
 #suppress VS solution ZERO_CHECK project
 set(CMAKE_SUPPRESS_REGENERATION TRUE)
 
-# Find Boost
+#define outputs
+include_directories(${PROJECT_SOURCE_DIR})
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../builds/lib)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../builds)
+
+
+##################################################################################################
+## Externals libraries
+##################################################################################################
+
+## Boost
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 
-set(BOOST_LIBS thread date_time system chrono log filesystem log_setup program_options)
+set(BOOST_LIBS 
+	thread 
+	date_time 
+	system 
+	chrono 
+	log 
+	filesystem 
+	log_setup 
+	program_options
+)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 
 FIND_PACKAGE(Threads)
 
-#RT Library
+## RT Library
 if(UNIX AND NOT APPLE)
     set(RT_LIBRARY rt)
 endif()
 
-# Pull in the project includes
-include_directories(${PROJECT_SOURCE_DIR}/include)
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/builds/lib)
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/builds)
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})
 
-# Create a shared library with common files shared by server and plugin
-set(SHARED_LIB_SRC
-tools/ThreadBase.cpp
-tools/ThreadBase.h
-)
-add_library(yadoms-shared STATIC  ${SHARED_LIB_SRC})
-target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
+#Sqlite,...
+set(USE_SQLITE_DATABASE TRUE)
+add_subdirectory(external-libs)
 
-#No more necessary because it remains only a .h file in the lib
-# Create a base shared library for Hardware plugins
-#set(HARDWARE_PLUGIN_BASE_LIB_SRC
-#plugins/hardware/IHardwarePlugin.h
-#)
-#add_library(hardwarePluginBaseLib STATIC  ${HARDWARE_PLUGIN_BASE_LIB_SRC})
-#target_link_libraries(hardwarePluginBaseLib ${LIBS} ${CMAKE_DL_LIBS})
+##################################################################################################
+## yadoms-tools
+##################################################################################################
+
+# Library Sources
+set(SHARED_LIB_SRC
+	tools/tools/ThreadBase.cpp
+	tools/tools/ThreadBase.h
+
+	tools/tools/Exceptions/Exception.h
+	tools/tools/Exceptions/Exception.cpp
+	tools/tools/Exceptions/NotImplementedException.h
+	tools/tools/Exceptions/NullReferenceException.h
+	tools/tools/Exceptions/NullReferenceException.cpp
+	
+	
+	#include both platform files to see them into IDE
+	tools/windows/tools/DynamicLibrary.hpp
+	tools/windows/tools/Export.h
+	tools/linux/tools/DynamicLibrary.hpp
+	tools/linux/tools/Export.h
+)
+
+# Define project folders
+IF(MSVC)
+	source_group(PlatformSpecific\\windows tools/windows/tools/*.*)
+	source_group(PlatformSpecific\\linux tools/linux/tools/*.*)
+	source_group(Exception tools/tools/Exceptions/*.* )	
+ENDIF()
+
+# Define library outputs
+add_library(yadoms-tools STATIC  ${SHARED_LIB_SRC})
+target_link_libraries(yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
+
+# Define include directories (allow easy includes)
+INCLUDE_DIRECTORIES(tools)
+IF(WIN32)
+	INCLUDE_DIRECTORIES(tools/windows)
+ELSE()
+	INCLUDE_DIRECTORIES(tools/linux)
+ENDIF()
+
+
+##################################################################################################
+## Plugins
+##################################################################################################
 
 #include Plugin CMake file
 add_subdirectory(plugins)
 
-# Create main executable
-set(YADOMS_SRC
-server/main.cpp
-server/Supervisor.cpp
-server/Supervisor.h
-server/PluginSystem/HardwarePluginManager.h
-server/PluginSystem/HardwarePluginManager.cpp
-server/PluginSystem/HardwarePluginInstance.h
-server/PluginSystem/HardwarePluginInstance.cpp
-server/PluginSystem/HardwarePluginFactory.h
-server/PluginSystem/HardwarePluginFactory.cpp
-plugins/hardware/IHardwarePlugin.h
 
-#include both platform files to see them into IDE
-server/PluginSystem/windows/PluginFactory.hpp
-server/PluginSystem/linux/PluginFactory.hpp
+##################################################################################################
+## Yadoms
+##################################################################################################
+
+# Executable sources
+set(YADOMS_SRC
+	server/main.cpp
+	server/Supervisor.cpp
+	server/Supervisor.h
+	server/pluginSystem/HardwarePluginManager.h
+	server/pluginSystem/HardwarePluginManager.cpp
+	server/pluginSystem/HardwarePluginInstance.h
+	server/pluginSystem/HardwarePluginInstance.cpp
+	server/pluginSystem/HardwarePluginFactory.h
+	server/pluginSystem/HardwarePluginFactory.cpp
+	plugins/hardware/IHardwarePlugin.h
+	server/StartupOptionsLoader.h
+	server/StartupOptionsLoader.cpp
+	server/StartupOptions.h
+	server/ApplicationStopHandler.h
+	server/ApplicationStopHandler.cpp
+	
+	server/database/IDatabaseProvider.h
+	server/database/IHardwareRequester.h
+	server/database/entities/Hardware.h
+
 )
 
-#platform dependant
-IF(WIN32)
-	INCLUDE_DIRECTORIES(server/PluginSystem/windows)
-ELSE()
-	INCLUDE_DIRECTORIES(server/PluginSystem/linux)
-ENDIF()
-
-add_executable(yadoms ${YADOMS_SRC})
-
-
-target_link_libraries(yadoms yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
-
-#configure solution directories (MSVC only)
+# Project folders
 if(MSVC)
-	#Create solution directories
-	SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
-	#SET_PROPERTY(TARGET yadoms                	PROPERTY FOLDER "yadoms")
-	#SET_PROPERTY(TARGET yadoms-shared        	PROPERTY FOLDER "yadoms-shared")
-	#SET_PROPERTY(TARGET hardwarePluginBaseLib   PROPERTY FOLDER "Plugins")
-
-	#Create project directories
 	source_group(Server server/*.*)
-	source_group(Server\\PluginSystem server/PluginSystem/*.* )
-	source_group(Server\\PluginSystem\\windows server/PluginSystem/windows/*.*)
-	source_group(Server\\PluginSystem\\linux server/PluginSystem/linux/*.*)
+	source_group(Server\\pluginSystem server/PluginSystem/*.* )
+	source_group(Server\\pluginSystem\\external plugins/hardware/IHardwarePlugin.h )
+	source_group(Server\\database  server/database/*.*)
+	source_group(Server\\database\\entities  server/database/entities/*.*)
 endif()
 
-#disable MSVC warnings
+#Database
+IF(USE_SQLITE_DATABASE)
+	set(YADOMS_SRC ${YADOMS_SRC}
+		server/database/sqlite/SQLiteHardwareRequester.h
+		server/database/sqlite/SQLiteHardwareRequester.cpp
+		server/database/sqlite/SQLiteDatabaseProvider.h
+		server/database/sqlite/SQLiteDatabaseProvider.cpp
+	)
+	
+	set(LIBS ${LIBS} sqlite)
+	
+	if(MSVC)
+		source_group(Server\\database\\sqlite  server/database/sqlite/*.*)
+	endif()
+	
+	INCLUDE_DIRECTORIES(${SQLITE_INCLUDE_DIRECTORY})
+ENDIF()
+
+# Define executables output
+add_executable(yadoms ${YADOMS_SRC})
+target_link_libraries(yadoms yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
+
+##################################################################################################
+## IDE configurations
+##################################################################################################
+
 if(MSVC)
+	#allow solution folders
+	SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
+
 	#global disable (for all targets)
 	#disable warning C4996   Function call with parameters that may be unsafe 
 	add_definitions( "/wd4996" )
-	
-	#to disable a warning for a single target use this line:
-	#SET_PROPERTY(TARGET yadoms-shared                	PROPERTY COMPILE_FLAGS "/wd4996")
 endif()
+

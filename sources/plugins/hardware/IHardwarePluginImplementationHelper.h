@@ -2,34 +2,24 @@
 
 #include "IHardwarePlugin.h"
 #include "HardwarePluginInformation.h"
-
-
-// TODO : move this block in a specific plateform header
-#ifdef WIN32
-#define EXPORT_MAIN_FUNCTIONS __declspec(dllexport)
-#else
-#define EXPORT_MAIN_FUNCTIONS 
-#endif
+#include "tools/Export.h" //platform specific export definitions
 
 
 // Plugin implementation helper
 // see CHardwarePluginInformation documentation to know what formats are accepted for each field
 #define IMPLEMENT_HARDWARE_PLUGIN(pluginClassName,pluginName,version,release,author,url)  \
-extern "C"                                                                                \
-{                                                                                         \
-   EXPORT_MAIN_FUNCTIONS plugins::IHardwarePlugin* construct()                            \
+   EXPORT_LIBRARY_FUNCTION IHardwarePlugin* construct()                                     \
    {                                                                                      \
-      return new plugins::pluginClassName();                                              \
+      return new pluginClassName();                                                       \
    }                                                                                      \
-   EXPORT_MAIN_FUNCTIONS void destruct(plugins::IHardwarePlugin* pluginToDelete)          \
+   EXPORT_LIBRARY_FUNCTION void destruct(IHardwarePlugin* pluginToDelete)                   \
    {                                                                                      \
       delete pluginToDelete;                                                              \
    }                                                                                      \
                                                                                           \
-   static const plugins::CHardwarePluginInformation                                       \
+   static const CHardwarePluginInformation                                                \
       PluginInformations(pluginName,version,release,author,url);                          \
-   EXPORT_MAIN_FUNCTIONS const plugins::CHardwarePluginInformation& getInformation()      \
+   EXPORT_LIBRARY_FUNCTION const CHardwarePluginInformation& getInformation()               \
    {                                                                                      \
       return PluginInformations;                                                          \
-   }                                                                                      \
-}   
+   }                                                                                      
