@@ -139,7 +139,7 @@ set(YADOMS_SRC
 # Project folders
 if(MSVC)
 	source_group(Server server/*.*)
-	source_group(Server\\pluginSystem server/PluginSystem/*.* )
+	source_group(Server\\pluginSystem server/pluginSystem/*.* )
 	source_group(Server\\pluginSystem\\external plugins/hardware/IHardwarePlugin.h )
 	source_group(Server\\database  server/database/*.*)
 	source_group(Server\\database\\entities  server/database/entities/*.*)
