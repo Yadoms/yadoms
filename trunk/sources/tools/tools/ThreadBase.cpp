@@ -73,6 +73,7 @@ bool CThreadBase::waitForStop(int seconds)
 
 CThreadBase::EStatus CThreadBase::getStatus() const
 {
+   // TODO : rendre m_threadStatus thread-safe
    return m_threadStatus;
 }
 
