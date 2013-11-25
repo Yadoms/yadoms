@@ -1,6 +1,7 @@
 @ECHO off
 
-cmake %~dp0/sources --build %~dp0/projects
+cd /D %~dp0/projects
+cmake %~dp0/sources
 
 if errorlevel 1 (
 	pause
