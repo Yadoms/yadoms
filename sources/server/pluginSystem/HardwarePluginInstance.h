@@ -5,9 +5,9 @@
 //
 #pragma once
 
-#include "plugins/hardware/IHardwarePlugin.h"
 #include <boost/thread.hpp>
 #include "tools/ThreadBase.h"
+#include "plugins/hardware/IHardwarePlugin.h"
 
 //--------------------------------------------------------------
 /// \brief	this class is used to manage a plugin instance. 

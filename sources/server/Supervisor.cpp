@@ -40,10 +40,18 @@ void CSupervisor::doWork()
       CHardwarePluginInstance fakePlugin2(pFactory->construct());
       fakePlugin2.start();
 
-
-      while(1)
+      try
       {
-         boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+         while(1)
+         {
+            boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+         }
+      }
+      catch (boost::thread_interrupted& e)
+      {
+         BOOST_LOG_TRIVIAL(info) << "Supervisor is stopping...";
+         fakePlugin.stop();
+         fakePlugin2.stop();
       }
 
       BOOST_LOG_TRIVIAL(info) << "Supervisor is stopped";
