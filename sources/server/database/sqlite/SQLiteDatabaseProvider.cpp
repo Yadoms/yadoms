@@ -7,9 +7,12 @@
 #include "tools/Exceptions/NotImplementedException.h"
 #include "boost/function.hpp"
 #include "boost/bind.hpp"
+#include <boost/optional.hpp>
 
-CSQLiteDatabaseProvider::CSQLiteDatabaseProvider(const IStartupOptions& startupOptions)
-   :m_startupOptions(startupOptions), m_pDatabaseHandler(NULL)
+#include <stdarg.h>     /* va_list, va_start, va_arg, va_end */
+
+CSQLiteDatabaseProvider::CSQLiteDatabaseProvider(const std::string & dbFile)
+   :m_dbFile(dbFile), m_pDatabaseHandler(NULL)
 {
 }
 
@@ -28,7 +31,7 @@ bool CSQLiteDatabaseProvider::load()
 
    try
    {
-      int rc = sqlite3_open(m_startupOptions.getDatabaseFile().c_str(), &m_pDatabaseHandler);
+      int rc = sqlite3_open(m_dbFile.c_str(), &m_pDatabaseHandler);
       if(rc)
       {
          BOOST_LOG_TRIVIAL(fatal) << "Fail to load database: " << sqlite3_errmsg(m_pDatabaseHandler);
@@ -75,63 +78,103 @@ int CSQLiteDatabaseProvider::queryStatement(const std::string & queryFormat, ...
    throw CNotImplementedException();
 }
 
-IDatabaseProvider::QueryRow CSQLiteDatabaseProvider::querySingleLine(const std::string & queryFormat, ...)
+CSQLiteDatabaseProvider::QueryRow CSQLiteDatabaseProvider::querySingleLine(const std::string & queryFormat, ...)
 {
    throw CNotImplementedException();
 }
 
-IDatabaseProvider::QueryResults CSQLiteDatabaseProvider::query(const std::string & queryFormat, ...)
+int handleIt(void* params ,int columnCount,char** columnValues,char** columnNames)
 {
-   throw CNotImplementedException();
-   //ASSERT(T is IRowHandler);
+   CSQLiteDatabaseProvider::QueryResults  * pResults = (CSQLiteDatabaseProvider::QueryResults*)params;
+   if(pResults != NULL)
+   {
+      CSQLiteDatabaseProvider::QueryRow row;
+      for(int i=0; i<columnCount; i++)
+      {
+         row.push_back(columnValues[i]);
+      } 
 
-   //CResultEntityController<T> results;
+      pResults->push_back(row);
+   }
+   return 0;
+}
+
+template<unsigned ID,typename Functor>
+boost::optional<Functor> &get_local()
+{
+    static boost::optional<Functor> local;
+    return local;
+}
+
+template<unsigned ID,typename Functor>
+typename Functor::result_type wrapper()
+{
+    return get_local<ID,Functor>().get()();
+}
+
+template<typename ReturnType>
+struct Func
+{
+    typedef ReturnType (*type)();
+};
+
+template<unsigned ID,typename Functor>
+typename Func<typename Functor::result_type>::type get_wrapper(Functor f)
+{
+    (get_local<ID,Functor>()) = f;
+    return wrapper<ID,Functor>;
+}
+
+
+CSQLiteDatabaseProvider::QueryResults CSQLiteDatabaseProvider::query(const std::string & queryFormat, ...)
+{
+   QueryResults results;
 
    //create query
-   /*
    char *zSql;
    va_list ap;
-   va_start(ap, queryFormat.c_str());
+   va_start(ap, queryFormat);
    zSql = sqlite3_vmprintf(queryFormat.c_str(), ap);
    va_end(ap);
 
    //exec a first time
    char *zErrMsg = NULL;
 
-   typedef int (CSQLiteDatabaseProvider::* Callback)( void*, int, char**, char** );
+   //not working with boost
+   //typedef boost::function<int (void*, int, char**, char** )> PFunctor;
+   //PFunctor f = boost::bind(&CSQLiteDatabaseProvider::handleOneRow, this, _1, _2, _3, _4);
+   //int rc = sqlite3_exec(m_pDatabaseHandler, zSql, f.target<int (void*, int, char**, char** )>() , &results, &zErrMsg);
 
-   Callback f = (Callback)boost::bind(&CSQLiteDatabaseProvider::handleOneRow, this, _1, _2, _3, _4);
-   //   f = std::bind1st( std::mem_fun(&CSQLiteDatabaseProvider::handleOneRow), this);
-
-   int rc = sqlite3_exec(m_pDatabaseHandler, zSql,  f, &results, zErrMsg);
+   int rc = sqlite3_exec(m_pDatabaseHandler, zSql,  &handleIt, &results, &zErrMsg);
 
    //if SQLITE_SCHEMA error, retry one time
    if( zErrMsg )
    {
-      fprintf(stdout,"%s: query failed: %s - %s\n", zFile, zSql, zErrMsg);
+      BOOST_LOG_TRIVIAL(error) << "Query failed : " << std::endl << "Query: " << zSql << std::endl << "Error : " << zErrMsg;
    }
 
    //free
-   sqlite3_free(zErrMsg);
-   sqlite3_free(zSql);
+   if(zErrMsg)
+      sqlite3_free(zErrMsg);
 
-   return results.getResults();*/
+   if(zSql)
+      sqlite3_free(zSql);
+
+   return results;
 }
 
 int CSQLiteDatabaseProvider::handleOneRow(void* params ,int columnCount,char** columnValues,char** columnNames)
 {
-   /*
-CResultEntityController<IRowHandler>  * pResults = (CResultEntityController<IRowHandler>  *)params;
-	
-//create map of <columnName, columnValue>
-std::map<std::string, std::string> columnsWithValues;
-for(int i=0; i<columnCount; i++)
-{
-	columnsWithValues.insert(std::make_pair(columnNames[i], sqlite3_mprintf("%s",columnValues[i] ? columnValues[i] : "")));
-}
-	
-//make entity parse result
-pResults->createNewEntity()->HandleRow(columnsWithValues);
-*/
-   throw CNotImplementedException();
+   QueryResults  * pResults = (QueryResults*)params;
+   if(pResults != NULL)
+   {
+      QueryRow row;
+      for(int i=0; i<columnCount; i++)
+      {
+         row.push_back(columnValues[i]);
+      } 
+
+      pResults->push_back(row);
+   }
+   return 0;
 }

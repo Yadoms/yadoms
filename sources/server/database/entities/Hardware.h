@@ -18,10 +18,10 @@ public:
    void setId(const int newId) { m_id = newId; }
 
    const std::string getName() { return m_name; }
-   void setName(const int newName) { m_name = newName; }
+   void setName(const std::string newName) { m_name = newName; }
 
    const std::string getPluginName() {return m_pluginName; }
-   void setPluginName(const int newPluginName) { m_pluginName = newPluginName; }
+   void setPluginName(const std::string newPluginName) { m_pluginName = newPluginName; }
 
 private:
    int m_id;
