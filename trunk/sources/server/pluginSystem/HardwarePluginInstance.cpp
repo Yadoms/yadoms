@@ -22,7 +22,7 @@ void CHardwarePluginInstance::doWork()
       // TODO : we can set protections here (restart plugin if it crashes, force to stop it...)
       try
       {
-         m_pPlugin->doWork();
+         m_pPlugin->doWork(m_pluginConfigurationProvider);
       }
       catch (boost::thread_interrupted&)
       {

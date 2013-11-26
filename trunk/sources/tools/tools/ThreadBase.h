@@ -28,6 +28,7 @@ public:
    //--------------------------------------------------------------
    enum EStatus
    {
+      kStarting,        /// \brief  Thread is starting
       kRunning,         /// \brief	Thread is running
       kStopRequested,   /// \brief	Thread is requested to stop
       kStopped          /// \brief	Thread is stopped

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "plugins/hardware/IHardwarePluginImplementationHelper.h"
+#include "../HardwarePluginImplementationHelper.h"
 
 #include <string>
 
@@ -12,7 +12,7 @@ public:
    virtual ~CFakePlugin();
 
    // IHardwarePlugin implementation
-   virtual void doWork();
+   virtual void doWork(const IHardwarePluginConfigurationProvider& config);
   // [END] IHardwarePlugin implementation
 
    // TODO : WhatTheFuck ? ? ? C'est quoi ces adresses ?
@@ -20,9 +20,4 @@ public:
 };
 
 
-IMPLEMENT_HARDWARE_PLUGIN(CFakePlugin,
-                          "FakePlugin",
-                          "0.1",
-                          CHardwarePluginInformation::kBeta,
-                          "yadoms-team",
-                          "http://sourceforge.net/projects/yadoms/")
+

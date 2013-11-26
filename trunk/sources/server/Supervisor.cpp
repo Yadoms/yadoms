@@ -34,6 +34,8 @@ void CSupervisor::doWork()
       CHardwarePluginFactory * pFactory = m_hardwarePluginManager.getFactory("FakePlugin");
       CHardwarePluginInstance fakePlugin(pFactory->construct());
       fakePlugin.start();
+               fakePlugin.stop();
+               return;//TODO
 
       CHardwarePluginInstance fakePlugin2(pFactory->construct());
       fakePlugin2.start();
@@ -61,7 +63,7 @@ void CSupervisor::doWork()
             boost::this_thread::sleep(boost::posix_time::milliseconds(100));
          }
       }
-      catch (boost::thread_interrupted& e)
+      catch (boost::thread_interrupted&)
       {
          BOOST_LOG_TRIVIAL(info) << "Supervisor is stopping...";
          fakePlugin.stop();

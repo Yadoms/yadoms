@@ -21,6 +21,7 @@ void CThreadBase::start()
    BOOST_ASSERT(getStatus() == kStopped);
 
    //start the thread
+   changeStatus(kStarting);
    m_thread = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&CThreadBase::doWorkInternal, this)));
 }
 

@@ -4,7 +4,7 @@
 
 //--------------------------------------------------------------
 /// \brief		Container class for information about Hardware plugins
-/// \note      This class is usualy implemented by IMPLEMENT_HARDWARE_PLUGIN macro
+/// \note      This class is usually implemented by IMPLEMENT_HARDWARE_PLUGIN macro
 //--------------------------------------------------------------
 class CHardwarePluginInformation 
 {
