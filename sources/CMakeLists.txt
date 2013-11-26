@@ -123,6 +123,8 @@ set(YADOMS_SRC
 	server/pluginSystem/HardwarePluginInstance.cpp
 	server/pluginSystem/HardwarePluginFactory.h
 	server/pluginSystem/HardwarePluginFactory.cpp
+	server/pluginSystem/HardwarePluginConfigurationProviderImplementation.h
+	server/pluginSystem/HardwarePluginConfigurationProviderImplementation.cpp
 	plugins/hardware/IHardwarePlugin.h
 	server/StartupOptionsLoader.h
 	server/StartupOptionsLoader.cpp

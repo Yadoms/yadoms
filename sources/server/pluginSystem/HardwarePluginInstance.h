@@ -8,6 +8,7 @@
 #include <boost/thread.hpp>
 #include "tools/ThreadBase.h"
 #include "plugins/hardware/IHardwarePlugin.h"
+#include "HardwarePluginConfigurationProviderImplementation.h"
 
 //--------------------------------------------------------------
 /// \brief	this class is used to manage a plugin instance. 
@@ -31,5 +32,10 @@ private:
     //--------------------------------------------------------------
     /// \brief			The plugin instance
     //--------------------------------------------------------------
-    IHardwarePlugin * m_pPlugin;
+    IHardwarePlugin * m_pPlugin;//TODO : rendre thread-safe
+
+    //--------------------------------------------------------------
+    /// \brief			The plugin configuration provider
+    //--------------------------------------------------------------
+    HardwarePluginConfigurationProviderImplementation m_pluginConfigurationProvider;
 };
