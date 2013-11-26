@@ -1,8 +1,11 @@
 #pragma once
 
 #include "server/database/IHardwareRequester.h"
-class CSQLiteDatabaseProvider;
+class CSQLiteDataProvider;
 
+#include <map>
+#include <vector>
+#include <string>
 //--------------------------------------------------------------
 /// \Brief		   Hardware requester for SQLite database
 //--------------------------------------------------------------
@@ -13,7 +16,7 @@ public:
 	/// \Brief		   Constructor
 	/// \param [in]	pDatabaseHandler: the database handler
 	//--------------------------------------------------------------
-	CSQLiteHardwareRequester(CSQLiteDatabaseProvider * pDatabaseHandler);
+	CSQLiteHardwareRequester(CSQLiteDataProvider * pDatabaseHandler);
 
 	//--------------------------------------------------------------
 	/// \Brief		   Destructor
@@ -28,9 +31,12 @@ public:
    bool removeHardware(CHardware & hardwareToRemove);
    // [END] IHardwareRequester implementation
 
+   //test
+   std::vector<std::map<std::string, std::string> > getHardwareNameList();
+
 private:
 	//--------------------------------------------------------------
 	/// \Brief		   Reference to SQLiteDatabseHandler
 	//--------------------------------------------------------------
-	CSQLiteDatabaseProvider * m_pDatabaseHandler;
+	CSQLiteDataProvider * m_pDatabaseHandler;
 };

@@ -51,7 +51,7 @@ int main (int argc, char** argv)
    {
       CStartupOptionsLoader startupOptions(argc, argv);
 
-      configureLogger(startupOptions);
+      //configureLogger(startupOptions);
 
       BOOST_LOG_TRIVIAL(info) << "Yadoms is starting";
 

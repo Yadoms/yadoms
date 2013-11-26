@@ -1,9 +1,9 @@
 #include "SQLiteHardwareRequester.h"
 #include "tools/Exceptions/NotImplementedException.h"
-#include "SQLiteDatabaseProvider.h"
+#include "SQLiteDataProvider.h"
 #include "boost/lexical_cast.hpp"
 
-CSQLiteHardwareRequester::CSQLiteHardwareRequester(CSQLiteDatabaseProvider * pDatabaseHandler)
+CSQLiteHardwareRequester::CSQLiteHardwareRequester(CSQLiteDataProvider * pDatabaseHandler)
    :m_pDatabaseHandler(pDatabaseHandler)
 {
 }
@@ -25,23 +25,18 @@ CHardware CSQLiteHardwareRequester::getHardware(const int hardwareId)
 
 std::vector<CHardware> CSQLiteHardwareRequester::getHardwares()
 {
-   std::vector<CHardware> result;
+   CSQLiteDataProvider::QueryResults a = getHardwareNameList();
 
-   CSQLiteDatabaseProvider::QueryResults::iterator i;
-   
-   CSQLiteDatabaseProvider::QueryResults res = m_pDatabaseHandler->query("SELECT * FROM Hardware");
+   CHardwareAdapter adapter;
+   m_pDatabaseHandler->queryEntities<CHardware>(&adapter, "SELECT * FROM Hardware");
 
-   //on parcours chaque ligne du résultat
-   for(i=res.begin(); i!=res.end(); i++)
-   {
-      CHardware newHardware;
-      newHardware.setId( boost::lexical_cast<int>((*i)[0]) );
-      newHardware.setName( (*i)[1] );
-      newHardware.setPluginName( (*i)[2] );
-      result.push_back(newHardware);
-   }
+   return adapter.getResults();
+}
 
-   return result;
+//test
+std::vector<std::map<std::string, std::string> > CSQLiteHardwareRequester::getHardwareNameList()
+{
+   return m_pDatabaseHandler->query("SELECT Name FROM Hardware WHERE id=%d ORDER BY Name", 2);
 }
 
 bool CSQLiteHardwareRequester::updateHardware(CHardware & hardwareToUpdate)
