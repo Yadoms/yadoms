@@ -1,7 +1,7 @@
 #include "Supervisor.h"
 #include <boost/log/trivial.hpp>
 #include "PluginSystem/HardwarePluginInstance.h"
-
+#include "database/sqlite/SQLiteDataProvider.h"
 
 CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
    :CThreadBase("Supervisor"),m_startupOptions(startupOptions)
@@ -33,12 +33,26 @@ void CSupervisor::doWork()
       //récupérer la liste des plugins à instancier depuis la base
       CHardwarePluginFactory * pFactory = m_hardwarePluginManager.getFactory("FakePlugin");
       CHardwarePluginInstance fakePlugin(pFactory->construct());
-
       fakePlugin.start();
-
 
       CHardwarePluginInstance fakePlugin2(pFactory->construct());
       fakePlugin2.start();
+
+
+      BOOST_LOG_TRIVIAL(info) << "Testing database" << std::endl;
+      IDataProvider * pDataProvider = new CSQLiteDataProvider(m_startupOptions.getDatabaseFile());
+      if(pDataProvider->load())
+      {
+
+         std::vector<CHardware> hardwares = pDataProvider->getHardwareRequester()->getHardwares();
+         std::vector<CHardware>::iterator i;
+         BOOST_LOG_TRIVIAL(info) << "List of all hardwares"<< std::endl;
+         for(i=hardwares.begin(); i!=hardwares.end(); i++)
+         {
+            BOOST_LOG_TRIVIAL(info) << "Hardware Id=" << i->getId() << " Name=" << i->getName() << " PluginName=" << i->getPluginName();
+         }
+         BOOST_LOG_TRIVIAL(info) << "[END] List of all hardwares"<< std::endl;
+      }
 
       try
       {
@@ -53,6 +67,9 @@ void CSupervisor::doWork()
          fakePlugin.stop();
          fakePlugin2.stop();
       }
+
+      pDataProvider->unload();
+      delete pDataProvider;
 
       BOOST_LOG_TRIVIAL(info) << "Supervisor is stopped";
    }

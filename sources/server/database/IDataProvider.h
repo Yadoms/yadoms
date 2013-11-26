@@ -3,10 +3,10 @@
 #include "IHardwareRequester.h"
 #include <vector>
 
-class IDatabaseProvider
+class IDataProvider
 {
 public:
-	virtual ~IDatabaseProvider()
+	virtual ~IDataProvider()
 	{
 	}
 
@@ -31,7 +31,7 @@ public:
 
 
 protected:
-	IDatabaseProvider()
+	IDataProvider()
 	{
 	}
 };

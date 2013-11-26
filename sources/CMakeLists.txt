@@ -130,11 +130,10 @@ set(YADOMS_SRC
 	server/ApplicationStopHandler.h
 	server/ApplicationStopHandler.cpp
 	
-	server/database/IDatabaseProvider.h
+	server/database/IDataProvider.h
 	server/database/IHardwareRequester.h
 	server/database/entities/Hardware.h
-
-)
+	)
 
 # Project folders
 if(MSVC)
@@ -150,14 +149,21 @@ IF(USE_SQLITE_DATABASE)
 	set(YADOMS_SRC ${YADOMS_SRC}
 		server/database/sqlite/SQLiteHardwareRequester.h
 		server/database/sqlite/SQLiteHardwareRequester.cpp
-		server/database/sqlite/SQLiteDatabaseProvider.h
-		server/database/sqlite/SQLiteDatabaseProvider.cpp
+		server/database/sqlite/SQLiteDataProvider.h
+		server/database/sqlite/SQLiteDataProvider.cpp
+		
+		server/database/sqlite/adapters/ISQLiteResultAdapter.h
+		server/database/sqlite/adapters/HardwareAdapter.h
+		server/database/sqlite/adapters/HardwareAdapter.cpp
+		server/database/sqlite/adapters/GenericAdapter.h
+		server/database/sqlite/adapters/GenericAdapter.cpp
 	)
 	
 	set(LIBS ${LIBS} sqlite)
 	
 	if(MSVC)
 		source_group(Server\\database\\sqlite  server/database/sqlite/*.*)
+		source_group(Server\\database\\sqlite\\adapters  server/database/sqlite/adapters/*.*)
 	endif()
 	
 	INCLUDE_DIRECTORIES(${SQLITE_INCLUDE_DIRECTORY})
