@@ -2,6 +2,7 @@
 #include "tools/Exceptions/NotImplementedException.h"
 #include "SQLiteDataProvider.h"
 #include "boost/lexical_cast.hpp"
+#include "adapters/SingleValueAdapter.hpp"
 
 CSQLiteHardwareRequester::CSQLiteHardwareRequester(CSQLiteDataProvider * pDatabaseHandler)
    :m_pDatabaseHandler(pDatabaseHandler)
@@ -25,11 +26,8 @@ CHardware CSQLiteHardwareRequester::getHardware(const int hardwareId)
 
 std::vector<CHardware> CSQLiteHardwareRequester::getHardwares()
 {
-   CSQLiteDataProvider::QueryResults a = getHardwareNameList();
-
    CHardwareAdapter adapter;
    m_pDatabaseHandler->queryEntities<CHardware>(&adapter, "SELECT * FROM Hardware");
-
    return adapter.getResults();
 }
 
