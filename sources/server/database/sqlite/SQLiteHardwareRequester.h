@@ -32,7 +32,7 @@ public:
    // [END] IHardwareRequester implementation
 
    //test
-   std::vector<std::map<std::string, std::string> > getHardwareNameList();
+   std::vector<std::string> getHardwareNameList();
 
 private:
 	//--------------------------------------------------------------
