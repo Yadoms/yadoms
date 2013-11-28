@@ -71,7 +71,7 @@ set(SHARED_LIB_SRC
 	tools/tools/Exceptions/NotImplementedException.h
 	tools/tools/Exceptions/NullReferenceException.h
 	tools/tools/Exceptions/NullReferenceException.cpp
-	tools/tools/Converters.hpp
+	tools/tools/StringExtension.hpp
 	
 	#include both platform files to see them into IDE
 	tools/windows/tools/DynamicLibrary.hpp
@@ -160,6 +160,7 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/adapters/GenericAdapter.h
 		server/database/sqlite/adapters/GenericAdapter.cpp
 		server/database/sqlite/adapters/SingleValueAdapter.hpp
+		server/database/sqlite/adapters/MultipleValueAdapter.hpp
 	)
 	
 	set(LIBS ${LIBS} sqlite)

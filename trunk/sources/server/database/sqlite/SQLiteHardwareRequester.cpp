@@ -32,9 +32,11 @@ std::vector<CHardware> CSQLiteHardwareRequester::getHardwares()
 }
 
 //test
-std::vector<std::map<std::string, std::string> > CSQLiteHardwareRequester::getHardwareNameList()
+std::vector<std::string > CSQLiteHardwareRequester::getHardwareNameList()
 {
-   return m_pDatabaseHandler->query("SELECT Name FROM Hardware WHERE id=%d ORDER BY Name", 2);
+   CSingleValueAdapter<std::string> adapter;
+   m_pDatabaseHandler->queryEntities<std::string>(&adapter, "SELECT Name FROM Hardware WHERE id=%d ORDER BY Name", 2);
+   return adapter.getResults();
 }
 
 bool CSQLiteHardwareRequester::updateHardware(CHardware & hardwareToUpdate)
