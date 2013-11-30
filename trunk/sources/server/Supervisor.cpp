@@ -2,6 +2,7 @@
 #include "Supervisor.h"
 #include "pluginSystem/HardwarePluginInstance.h"
 #include "database/sqlite/SQLiteDataProvider.h"
+#include "Log.h"
 
 CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
    :CThreadBase("Supervisor"),m_startupOptions(startupOptions)
@@ -26,7 +27,9 @@ void CSupervisor::doWork()
 {
    try
    {
-      BOOST_LOG_TRIVIAL(info) << "Supervisor is starting";
+      
+      BOOST_LOG_SCOPED_THREAD_TAG("ThreadName", "Supervisor");
+      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "Supervisor is starting";
 
       m_hardwarePluginManager.buildPluginFactoryList(m_startupOptions.getHarwarePluginsPath());
 
@@ -41,7 +44,7 @@ void CSupervisor::doWork()
       fakePlugin2.start();
 
 
-      BOOST_LOG_TRIVIAL(info) << "Testing database" << std::endl;
+      //BOOST_LOG_TRIVIAL(info) << "Testing database" << std::endl;
       IDataProvider * pDataProvider = new CSQLiteDataProvider(m_startupOptions.getDatabaseFile());
       if(pDataProvider->load())
       {
@@ -51,9 +54,9 @@ void CSupervisor::doWork()
          BOOST_LOG_TRIVIAL(info) << "List of all hardwares"<< std::endl;
          for(i=hardwares.begin(); i!=hardwares.end(); i++)
          {
-            BOOST_LOG_TRIVIAL(info) << "Hardware Id=" << i->getId() << " Name=" << i->getName() << " PluginName=" << i->getPluginName();
+            //BOOST_LOG_TRIVIAL(info) << "Hardware Id=" << i->getId() << " Name=" << i->getName() << " PluginName=" << i->getPluginName();
          }
-         BOOST_LOG_TRIVIAL(info) << "[END] List of all hardwares"<< std::endl;
+         //BOOST_LOG_TRIVIAL(info) << "[END] List of all hardwares"<< std::endl;
       }
 
       try
@@ -65,7 +68,7 @@ void CSupervisor::doWork()
       }
       catch (boost::thread_interrupted&)
       {
-         BOOST_LOG_TRIVIAL(info) << "Supervisor is stopping...";
+         //BOOST_LOG_TRIVIAL(info) << "Supervisor is stopping...";
          fakePlugin.stop();
          fakePlugin2.stop();
       }
@@ -73,11 +76,11 @@ void CSupervisor::doWork()
       pDataProvider->unload();
       delete pDataProvider;
 
-      BOOST_LOG_TRIVIAL(info) << "Supervisor is stopped";
+      //BOOST_LOG_TRIVIAL(info) << "Supervisor is stopped";
    }
    catch(...)
    {
-      BOOST_LOG_TRIVIAL(error) << "Supervisor : unhandled exception.";
+      //BOOST_LOG_TRIVIAL(error) << "Supervisor : unhandled exception.";
    }
 
    m_hardwarePluginManager.freePluginFactoryList();
