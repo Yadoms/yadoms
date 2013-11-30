@@ -1,7 +1,7 @@
+#include "stdafx.h"
 #include "SQLiteHardwareRequester.h"
 #include "tools/Exceptions/NotImplementedException.h"
 #include "SQLiteDataProvider.h"
-#include "boost/lexical_cast.hpp"
 #include "adapters/SingleValueAdapter.hpp"
 
 CSQLiteHardwareRequester::CSQLiteHardwareRequester(CSQLiteDataProvider * pDatabaseHandler)

@@ -1,6 +1,6 @@
+#include "stdafx.h"
 #include "HardwareAdapter.h"
 #include "boost/lexical_cast.hpp"
-#include "boost/log/trivial.hpp"
 
 CHardwareAdapter::CHardwareAdapter()
 {
@@ -21,14 +21,19 @@ bool CHardwareAdapter::adapt(int column, char** columValues, char** columnName)
    else
    {
       CHardware newHardware;
+	
+	std::string columnId("id");
+	std::string columnName("name");
+	std::string columnPluginName("pluginName");
 
       for(int i=0; i<column ; i++)
       {
-         if(_strnicmp("id", columnName[i], 2) == 0)
+
+         if(columnId.compare((const char*)columnName[i]) == 0)
             newHardware.setId( boost::lexical_cast<int>(columValues[i]) );
-         else if(_strnicmp("name", columnName[i], 4) == 0)
+         else if(columnName.compare((const char*)columnName[i]) == 0)
             newHardware.setName( columValues[i] );
-         else if(_strnicmp("pluginName", columnName[i], 10) == 0)
+         else if(columnPluginName.compare((const char*)columnName[i]) == 0)
             newHardware.setPluginName( columValues[i] );
          else
          {

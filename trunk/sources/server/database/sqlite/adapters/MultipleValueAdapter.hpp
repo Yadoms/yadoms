@@ -2,7 +2,6 @@
 #pragma once
 
 #include "tools/StringExtension.hpp"
-#include "boost/tuple/tuple.hpp"
 
 //--------------------------------------------------------------
 /// \Brief		Adapter for multiple values (up to 10 values in a boost::tuple

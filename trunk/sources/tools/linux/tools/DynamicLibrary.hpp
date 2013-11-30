@@ -51,18 +51,18 @@ protected:
     //-------------------------------------------------------------
     virtual bool load(const std::string & libraryFile)
     {
-        bool result = FALSE;
+        bool result = false;
 
         //load library
         m_libraryHandle = dlopen(libraryFile.c_str(), RTLD_LAZY);
 
         if (m_libraryHandle != NULL) 
         {
-            result = TRUE;
+            result = true;
         } 
         else
         {
-			   BOOST_LOG_TRIVIAL(error) << "Fail to load library : " << libraryFile << GetLastError();
+			   BOOST_LOG_TRIVIAL(error) << "Fail to load library : " << libraryFile << dlerror();
         }
 
         return result;

@@ -1,6 +1,4 @@
-#include <boost/bind.hpp>
-#include <boost/log/trivial.hpp>
-
+#include "stdafx.h"
 #include "ThreadBase.h"
 
 

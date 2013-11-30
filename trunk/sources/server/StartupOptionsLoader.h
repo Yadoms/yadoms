@@ -3,9 +3,6 @@
 //
 #pragma once
 
-#include <boost/program_options.hpp>
-#include <boost/log/trivial.hpp>
-
 #include "StartupOptions.h"
 
 //--------------------------------------------------------------

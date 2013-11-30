@@ -5,8 +5,6 @@
 //
 #pragma once
 
-#include <string>
-#include <boost/function.hpp>
 #include "tools/DynamicLibrary.hpp" //cmake choose the right platform class
 #include "plugins/hardware/IHardwarePlugin.h"
 #include "plugins/hardware/HardwarePluginInformation.h"

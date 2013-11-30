@@ -1,10 +1,10 @@
 #pragma once
+#include "Exceptions/Exception.h"
 #include "boost/lexical_cast.hpp"
-
 //
 /// \brief Static class that provide converters from const char * to data type 
 //
-class CStringExtension
+struct CStringExtension
 {
 public:
    /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,6 +82,7 @@ public:
    /////////////////////////////////////////////////////////////////////////////////////////////////////////
    /////////////////////////////////////////////////////////////////////////////////////////////////////////
    // Parsing methods
+   // Special case for gcc, template specialization need to be declared outside the class ;-(
    /////////////////////////////////////////////////////////////////////////////////////////////////////////
    /////////////////////////////////////////////////////////////////////////////////////////////////////////
    /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,89 +94,93 @@ public:
    /// \return       the string parsed into the templated type
    //
    template<class T>
-   static inline T parse(const char * value)
-   {
-      return boost::lexical_cast<T>(value);
-   }
-
-   //
-   /// \brief        parse a string into double (template specialisation)
-   /// \param [in]   value : the string to parse
-   /// \return       the string parsed into double
-   //   
-   template<>
-   static inline double parse(const char * value)
-   {
-      return atof(value);
-   }
-   
-   //
-   /// \brief        parse a string into float (template specialisation)
-   /// \param [in]   value : the string to parse
-   /// \return       the string parsed into float
-   //   
-   template<>
-   static inline float parse(const char * value)
-   {
-      return (float)atof(value);
-   }
-
-   //
-   /// \brief        parse a string into integer (template specialisation)
-   /// \param [in]   value : the string to parse
-   /// \return       the string parsed into integer
-   //   
-   template<>
-   static inline int parse(const char * value)
-   {
-      return atoi(value);
-   }
-
-   //
-   /// \brief        parse a string into long (template specialisation)
-   /// \param [in]   value : the string to parse
-   /// \return       the string parsed into long
-   //   
-   template<>
-   static inline long parse(const char * value)
-   {
-      return atol(value);
-   }
-
-   //
-   /// \brief        parse a string into string (template specialisation)
-   /// \param [in]   value : the string to parse
-   /// \return       the string
-   //   
-   template<>
-   static inline std::string parse(const char * value)
-   {
-      return value;
-   }
-   
-   //
-   /// \brief        parse a string into bool (template specialisation)
-   /// \param [in]   value : the string to parse
-   /// \return       the string parsed into bool
-   //   
-   template<>
-   static inline bool parse(const char * value)
-   {
-		std::istringstream iss(value);
-      bool result;
-		iss >> std::boolalpha >> result;      
-      return result;
-   }   
+   static inline T parse(const char * value);
+  
 
 
-private:
-   //
-   /// \brief        Constructor
-   //   
-   CStringExtension() {}
-
-   //
-   /// \brief        Destructor
-   //   
-   virtual ~CStringExtension() {}
 };
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Special case for gcc, template specialization need to be declared outside the class ;-(
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+template<class T>
+inline T CStringExtension::parse(const char * value)
+{
+   return boost::lexical_cast<T>(value);
+}
+
+//
+/// \brief        parse a string into double (template specialisation)
+/// \param [in]   value : the string to parse
+/// \return       the string parsed into double
+//   
+template<>
+inline double CStringExtension::parse(const char * value)
+{
+   return atof(value);
+}
+
+//
+/// \brief        parse a string into float (template specialisation)
+/// \param [in]   value : the string to parse
+/// \return       the string parsed into float
+//   
+template<>
+inline float CStringExtension::parse(const char * value)
+{
+   return (float)atof(value);
+}
+
+//
+/// \brief        parse a string into integer (template specialisation)
+/// \param [in]   value : the string to parse
+/// \return       the string parsed into integer
+//   
+template<>
+inline int CStringExtension::parse(const char * value)
+{
+   return atoi(value);
+}
+
+//
+/// \brief        parse a string into long (template specialisation)
+/// \param [in]   value : the string to parse
+/// \return       the string parsed into long
+//   
+template<>
+inline long CStringExtension::parse(const char * value)
+{
+   return atol(value);
+}
+
+//
+/// \brief        parse a string into string (template specialisation)
+/// \param [in]   value : the string to parse
+/// \return       the string
+//   
+template<>
+inline std::string CStringExtension::parse(const char * value)
+{
+   return value;
+}
+
+//
+/// \brief        parse a string into bool (template specialisation)
+/// \param [in]   value : the string to parse
+/// \return       the string parsed into bool
+//   
+template<>
+inline bool CStringExtension::parse(const char * value)
+{
+   std::istringstream iss(value);
+   bool result;
+   iss >> std::boolalpha >> result;      
+   return result;
+}   
+
+

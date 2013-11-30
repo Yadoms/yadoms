@@ -1,4 +1,4 @@
-
+#include "stdafx.h"
 #include "HardwarePluginConfigurationProviderImplementation.h"
 
 //TODO La gestion de la conf n'ait pas encore satisfaisante, à suivre donc...

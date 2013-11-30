@@ -1,12 +1,6 @@
-#include <boost/log/common.hpp>
-#include <boost/log/expressions.hpp>
-#include <boost/log/attributes.hpp>
-#include <boost/log/sources/logger.hpp>
-#include <boost/log/sinks/sync_frontend.hpp>
-#include <boost/log/sinks/text_multifile_backend.hpp>
-
+#include "stdafx.h"
 #include "Supervisor.h"
-#include "PluginSystem/HardwarePluginInstance.h"
+#include "pluginSystem/HardwarePluginInstance.h"
 #include "database/sqlite/SQLiteDataProvider.h"
 
 CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
@@ -32,7 +26,7 @@ void CSupervisor::doWork()
 {
    try
    {
-      //BOOST_LOG_TRIVIAL(info) << "Supervisor is starting";
+      BOOST_LOG_TRIVIAL(info) << "Supervisor is starting";
 
       m_hardwarePluginManager.buildPluginFactoryList(m_startupOptions.getHarwarePluginsPath());
 
@@ -40,8 +34,8 @@ void CSupervisor::doWork()
       CHardwarePluginFactory * pFactory = m_hardwarePluginManager.getFactory("FakePlugin");
       CHardwarePluginInstance fakePlugin(pFactory->construct());
       fakePlugin.start();
-      fakePlugin.stop();
-      return;//TODO
+               fakePlugin.stop();
+               return;//TODO
 
       CHardwarePluginInstance fakePlugin2(pFactory->construct());
       fakePlugin2.start();

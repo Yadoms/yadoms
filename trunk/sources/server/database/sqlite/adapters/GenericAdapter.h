@@ -1,9 +1,6 @@
 #pragma once
 
 #include "ISQLiteResultAdapter.h"
-#include <map>
-#include <string>
-
 
 //--------------------------------------------------------------
 /// \Brief		Adapter for generic table results

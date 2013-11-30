@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../plugins/hardware/IHardwarePluginConfigurationProvider.h"
+#include "plugins/hardware/IHardwarePluginConfigurationProvider.h"
 
 //--------------------------------------------------------------
 /// \class Hardware plugin configuration provider

@@ -5,7 +5,6 @@
 //
 #pragma once
 
-#include <boost/thread.hpp>
 #include "tools/ThreadBase.h"
 #include "plugins/hardware/IHardwarePlugin.h"
 #include "HardwarePluginConfigurationProviderImplementation.h"

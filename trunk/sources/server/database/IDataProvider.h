@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IHardwareRequester.h"
-#include <vector>
 
 class IDataProvider
 {

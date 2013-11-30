@@ -3,9 +3,6 @@
 #include "server/database/IHardwareRequester.h"
 class CSQLiteDataProvider;
 
-#include <map>
-#include <vector>
-#include <string>
 //--------------------------------------------------------------
 /// \Brief		   Hardware requester for SQLite database
 //--------------------------------------------------------------

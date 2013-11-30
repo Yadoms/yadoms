@@ -3,8 +3,18 @@ cmake_minimum_required (VERSION 2.6)
 project (Yadoms)
 
 ##################################################################################################
+## Debug makefile
+##################################################################################################
+if(CMAKE_COMPIER_IS_GNUCXX)
+	set(CMAKE_VERBOSE_MAKEFILE on)
+endif()
+
+##################################################################################################
 ## Global properties
 ##################################################################################################
+
+#include precompiled headers
+include("PrecompiledHeader.cmake")
 
 #include user specific configuration
 include("CMakeListsUserConfig.txt" OPTIONAL)
@@ -30,19 +40,23 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../builds)
 ## Boost
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
+if(UNIX AND NOT APPLE)
+	set(Boost_USE_STATIC_RUNTIME ON)
+endif()
 
 set(BOOST_LIBS 
+	system 
+	filesystem 
 	thread 
 	date_time 
-	system 
 	chrono 
 	log 
-	filesystem 
 	log_setup 
 	program_options
 )
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${BOOST_ROOT})
 
 FIND_PACKAGE(Threads)
 
@@ -63,6 +77,9 @@ add_subdirectory(external-libs)
 
 # Library Sources
 set(SHARED_LIB_SRC
+	tools/tools/stdafx.cpp
+	tools/tools/stdafx.h
+
 	tools/tools/ThreadBase.cpp
 	tools/tools/ThreadBase.h
 
@@ -71,13 +88,14 @@ set(SHARED_LIB_SRC
 	tools/tools/Exceptions/NotImplementedException.h
 	tools/tools/Exceptions/NullReferenceException.h
 	tools/tools/Exceptions/NullReferenceException.cpp
-	tools/tools/StringExtension.hpp
 	
 	#include both platform files to see them into IDE
 	tools/windows/tools/DynamicLibrary.hpp
 	tools/windows/tools/Export.h
+	tools/windows/tools/StringExtension.hpp
 	tools/linux/tools/DynamicLibrary.hpp
 	tools/linux/tools/Export.h
+	tools/linux/tools/StringExtension.hpp
 )
 
 # Define project folders
@@ -89,16 +107,18 @@ ENDIF()
 
 # Define library outputs
 add_library(yadoms-tools STATIC  ${SHARED_LIB_SRC})
+#add_precompiled_header(yadoms-tools tools/tools/stdafx.h)
 target_link_libraries(yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
 
 # Define include directories (allow easy includes)
-INCLUDE_DIRECTORIES(tools)
+
 IF(WIN32)
 	INCLUDE_DIRECTORIES(tools/windows)
 ELSE()
 	INCLUDE_DIRECTORIES(tools/linux)
+	INCLUDE_DIRECTORIES(tools/tools)
 ENDIF()
-
+INCLUDE_DIRECTORIES(tools)
 
 ##################################################################################################
 ## Plugins
@@ -112,8 +132,12 @@ add_subdirectory(plugins)
 ## Yadoms
 ##################################################################################################
 
+INCLUDE_DIRECTORIES(server)
+
 # Executable sources
 set(YADOMS_SRC
+	server/stdafx.cpp
+	server/stdafx.h
 	server/main.cpp
 	server/Supervisor.cpp
 	server/Supervisor.h
@@ -175,6 +199,7 @@ ENDIF()
 
 # Define executables output
 add_executable(yadoms ${YADOMS_SRC})
+add_precompiled_header(yadoms stdafx.h)
 target_link_libraries(yadoms yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
 
 ##################################################################################################
@@ -188,5 +213,10 @@ if(MSVC)
 	#global disable (for all targets)
 	#disable warning C4996   Function call with parameters that may be unsafe 
 	add_definitions( "/wd4996" )
+	
+	add_definitions("/Zm256")
 endif()
 
+if(CMAKE_COMPIER_IS_GNUCXX)
+	add_definitions("-fpermissive")
+endif()

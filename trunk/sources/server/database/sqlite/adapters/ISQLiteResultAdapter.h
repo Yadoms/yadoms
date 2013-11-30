@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 //--------------------------------------------------------------
 /// \Brief		Interface for result adapters
 ///				The aim is to provide method to adapt sqlite results
