@@ -1,7 +1,4 @@
-#pragma once
-
-#include <boost/filesystem.hpp>
-
+#include "stdafx.h"
 #include "StartupOptionsLoader.h"
 
 namespace po = boost::program_options;

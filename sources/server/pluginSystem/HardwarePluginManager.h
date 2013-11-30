@@ -6,7 +6,6 @@
 #pragma once
 
 #include "HardwarePluginFactory.h"
-#include <list>
 
 //--------------------------------------------------------------
 /// \brief	this class is used to manage plugin. 

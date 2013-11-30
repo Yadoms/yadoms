@@ -2,7 +2,6 @@
 
 #include "ISQLiteResultAdapter.h"
 #include "server/database/entities/Hardware.h"
-#include <vector>
 
 //--------------------------------------------------------------
 /// \Brief		Adapter for Hardware entities

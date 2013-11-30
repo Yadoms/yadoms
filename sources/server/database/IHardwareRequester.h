@@ -1,7 +1,6 @@
 #pragma once
 
 #include "entities/Hardware.h"
-#include <vector>
 
 class IHardwareRequester
 {

@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "GenericAdapter.h"
-#include "boost/log/trivial.hpp"
 
 CGenericAdapter::CGenericAdapter()
 {

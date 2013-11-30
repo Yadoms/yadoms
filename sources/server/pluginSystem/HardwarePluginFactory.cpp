@@ -1,7 +1,4 @@
-
-#include <sstream>
-#include <boost/log/trivial.hpp>
-
+#include "stdafx.h"
 #include "HardwarePluginFactory.h"
 
 CHardwarePluginFactory::CHardwarePluginFactory()
@@ -30,7 +27,7 @@ bool CHardwarePluginFactory::load(const std::string & libraryFile)
       //check if all methods are loaded
       if(m_construct !=NULL && m_destruct!=NULL && m_getInformation != NULL)
       {
-          result = TRUE;
+          result = true;
           
          //log laoded plugin
          std::ostringstream loadedPluginLog;
@@ -47,7 +44,7 @@ bool CHardwarePluginFactory::load(const std::string & libraryFile)
           //library is not compatible (do not have construct and destruct exporeted functions)
           //free memory
           unload();
-          result = FALSE;
+          result = false;
       }   
 
 

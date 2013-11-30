@@ -1,13 +1,9 @@
-#pragma once
+#include "stdafx.h"
 
-#include <boost/log/trivial.hpp>
 #include "SQLiteDataProvider.h"
 #include "SQLiteHardwareRequester.h"
 #include "sqlite3.h"
 #include "tools/Exceptions/NotImplementedException.h"
-#include "boost/function.hpp"
-#include "boost/bind.hpp"
-#include <boost/optional.hpp>
 #include "adapters/GenericAdapter.h"
 #include <boost/filesystem.hpp>
 

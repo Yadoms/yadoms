@@ -1,6 +1,6 @@
+#include "stdafx.h"
 //TODO : voir pour utiliser la classe CThreadBase en incluant le concept de join dans cette derniere
 
-#include <boost/log/trivial.hpp>
 #include "HardwarePluginInstance.h"
 #include "plugins/hardware/IHardwarePlugin.h"
 #include "plugins/hardware/HardwarePluginInformation.h"

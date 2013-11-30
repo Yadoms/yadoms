@@ -1,8 +1,5 @@
 #pragma once
 
-#include <string>
-#include <exception>
-
 //--------------------------------------------------------------
 /// \class Exception for accessing NULL objects
 //--------------------------------------------------------------

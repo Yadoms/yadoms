@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "HardwarePluginManager.h"
 
 CHardwarePluginManager::CHardwarePluginManager()

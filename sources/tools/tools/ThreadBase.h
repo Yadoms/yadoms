@@ -1,8 +1,5 @@
 #pragma once
 
-#include <string>
-#include <boost/thread.hpp>
-#include <boost/signals2.hpp>
 
 //--------------------------------------------------------------
 /// \brief	Base class for threads

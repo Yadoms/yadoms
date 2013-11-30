@@ -2,9 +2,6 @@
 
 #include "server/StartupOptions.h"
 #include "server/database/IDataProvider.h"
-#include "boost/scoped_ptr.hpp"
-#include "boost/lexical_cast.hpp"
-#include <map>
 #include "tools/Exceptions/NullReferenceException.h"
 
 

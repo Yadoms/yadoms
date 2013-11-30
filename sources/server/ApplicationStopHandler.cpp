@@ -1,7 +1,5 @@
+#include "stdafx.h"
 #include "ApplicationStopHandler.h"
-
-#include <iostream>
-
 
 volatile sig_atomic_t CApplicationStopHandler::StopRequested = false;
 
