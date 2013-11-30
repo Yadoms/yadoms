@@ -155,6 +155,7 @@ set(YADOMS_SRC
 	server/StartupOptions.h
 	server/ApplicationStopHandler.h
 	server/ApplicationStopHandler.cpp
+	server/Log.h
 	
 	server/database/IDataProvider.h
 	server/database/IHardwareRequester.h
