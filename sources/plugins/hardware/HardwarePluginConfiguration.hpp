@@ -8,7 +8,7 @@
 class CHardwarePluginConfiguration
 {
 public:
-   typedef std::map<std::string, CHardwarePluginConfigurationParameter*> CHardwarePluginConfigurationMap;
+   typedef std::map<std::string, boost::shared_ptr<CHardwarePluginConfigurationParameter>> CHardwarePluginConfigurationMap;
 
 public:
    //--------------------------------------------------------------
@@ -24,7 +24,7 @@ public:
       // Full copy of parameters
       for (CHardwarePluginConfigurationMap::const_iterator it=src.m_configurationMap.begin() ; it!=src.m_configurationMap.end() ; ++it)
       {
-         CHardwarePluginConfigurationParameter* copiedParameter = ((*it).second)->clone();
+         boost::shared_ptr<CHardwarePluginConfigurationParameter> copiedParameter = ((*it).second)->clone();
          AddParameter(copiedParameter);
       }
    }
@@ -38,7 +38,7 @@ public:
    /// \brief	    Add a parameter in the configuration
    /// \param [in] Pointeur on the new parameter
    //--------------------------------------------------------------
-   void AddParameter(CHardwarePluginConfigurationParameter* parameter)
+   void AddParameter(boost::shared_ptr<CHardwarePluginConfigurationParameter> parameter)
    {
       BOOST_ASSERT(m_configurationMap.find(parameter->getName()) == m_configurationMap.end());  // Item already exists
       m_configurationMap[parameter->getName()] = parameter;
@@ -54,7 +54,7 @@ public:
       std::istringstream is (json);
       read_json (is, pt);
       for (CHardwarePluginConfigurationMap::iterator it=m_configurationMap.begin() ; it!=m_configurationMap.end() ; ++it)
-         ((CHardwarePluginConfigurationParameter*)((*it).second))->load(pt);
+         ((boost::shared_ptr<CHardwarePluginConfigurationParameter>)((*it).second))->load(pt);
    }
 
    //--------------------------------------------------------------
@@ -65,7 +65,7 @@ public:
    {
       boost::property_tree::ptree pt;
       for (CHardwarePluginConfigurationMap::const_iterator it=m_configurationMap.begin() ; it!=m_configurationMap.end() ; ++it)
-         ((CHardwarePluginConfigurationParameter*)((*it).second))->save(pt);
+         ((boost::shared_ptr<CHardwarePluginConfigurationParameter>)((*it).second))->save(pt);
       std::ostringstream buf; 
       write_json (buf, pt, false);
       return buf.str();
@@ -143,4 +143,27 @@ private:
    CHardwarePluginConfigurationMap m_configurationMap;
 };
 
+#define ADD_CONFIGURATION_PARAMETER_BASE(type,name,defaultValue)                                      \
+   {                                                                                                  \
+      boost::shared_ptr<type> p(new type(name, defaultValue));                                        \
+      configuration.AddParameter(p);                                                                  \
+   }
 
+#define ADD_CONFIGURATION_PARAMETER_INT(name,defaultValue)                                            \
+   ADD_CONFIGURATION_PARAMETER_BASE(CHardwarePluginConfigurationIntParameter,name,defaultValue)
+
+#define ADD_CONFIGURATION_PARAMETER_DOUBLE(name,defaultValue)                                         \
+   ADD_CONFIGURATION_PARAMETER_BASE(CHardwarePluginConfigurationDoubleParameter,name,defaultValue)
+
+#define ADD_CONFIGURATION_PARAMETER_STRING(name,defaultValue)                                         \
+   ADD_CONFIGURATION_PARAMETER_BASE(CHardwarePluginConfigurationStringParameter,name,defaultValue)
+
+#define ADD_CONFIGURATION_PARAMETER_BOOL(name,defaultValue)                                           \
+   ADD_CONFIGURATION_PARAMETER_BASE(CHardwarePluginConfigurationBoolParameter,name,defaultValue)
+
+#define ADD_CONFIGURATION_PARAMETER_ENUM(enumType,name,defaultValue,valueNames)                       \
+   {                                                                                                  \
+      boost::shared_ptr<CHardwarePluginConfigurationEnumParameter<enumType>>                          \
+         p(new CHardwarePluginConfigurationEnumParameter<enumType>(name, defaultValue, valueNames));  \
+      configuration.AddParameter(p);                                                                  \
+   }

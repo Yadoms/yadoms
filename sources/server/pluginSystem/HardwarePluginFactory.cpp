@@ -30,7 +30,7 @@ bool CHardwarePluginFactory::load(const std::string & libraryFile)
       {
           result = true;
           
-         //log laoded plugin
+         //log loaded plugin
          std::ostringstream loadedPluginLog;
          loadedPluginLog << "Hardware plugin loaded : " << getInformation().getName();
          loadedPluginLog << " v" << getInformation().getVersion();
@@ -46,17 +46,17 @@ bool CHardwarePluginFactory::load(const std::string & libraryFile)
          for (CHardwarePluginConfiguration::CHardwarePluginConfigurationMap::const_iterator it = newConf.getMap().begin() ;
             it != newConf.getMap().end() ; ++it)
          {
-            CHardwarePluginConfigurationParameter* parameter = (*it).second;
+            boost::shared_ptr<CHardwarePluginConfigurationParameter> parameter = (*it).second;
 
             // Get parameter name and value (as string)
             std::cout << parameter->getName() << " = " << parameter->valueToString() << std::endl;
             
             // Process specific parameters types
-            if (dynamic_cast<CHardwarePluginConfigurationEnumGeneric*>(parameter))
+            if (dynamic_cast<CHardwarePluginConfigurationEnumGeneric*>(parameter.get()))
             {
                // Enum, get all available values
                std::cout << "Available values : ";
-               const CHardwarePluginConfigurationEnumGeneric::ValuesNames& values = dynamic_cast<CHardwarePluginConfigurationEnumGeneric*>(parameter)->getAvailableValues();
+               const CHardwarePluginConfigurationEnumGeneric::ValuesNames& values = dynamic_cast<CHardwarePluginConfigurationEnumGeneric*>(parameter.get())->getAvailableValues();
                for (CHardwarePluginConfigurationEnumGeneric::ValuesNames::const_iterator it = values.begin() ; it != values.end() ; ++it)
                   std::cout << (*it).second << "|";
                std::cout << std::endl;
