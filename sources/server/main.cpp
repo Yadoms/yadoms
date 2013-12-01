@@ -42,10 +42,21 @@ int main (int argc, char** argv)
    {
       CStartupOptionsLoader startupOptions(argc, argv);
 
-      CLog::configure();
+      CLog::configure(startupOptions);
       BOOST_LOG_SCOPED_THREAD_TAG("ThreadName", "Main");
-
+      
+      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "********************************************************************";
       BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "Yadoms is starting";
+      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "********************************************************************";
+      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "Startup options :";
+      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "\tlog level = " << startupOptions.getLogLevel();
+      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "\tport number = " << startupOptions.getPortNumber();
+      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "\tdb path = " << startupOptions.getDatabaseFile();
+      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "\thardware plugins = " << startupOptions.getHarwarePluginsPath();
+      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "\tdevice plugins = " << startupOptions.getDevicePluginsPath();
+      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "\tstart Xpl Hub = " << startupOptions.getStartXplHubFlag();
+
+
       BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::error) << "test";
 
       CSupervisor supervisor(startupOptions);

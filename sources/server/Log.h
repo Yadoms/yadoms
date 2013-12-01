@@ -10,8 +10,6 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 
-//TODO : finir la classe, commentaires, fichier c, ...
-
 typedef boost::log::sources::severity_channel_logger_mt<
     boost::log::trivial::severity_level,     // the type of the severity level
     std::string         // the type of the channel name
@@ -28,10 +26,12 @@ BOOST_LOG_INLINE_GLOBAL_LOGGER_INIT(my_logger, my_logger_mt)
 class CLog
 {
 public:
-   //
-   // \brief Configure the logger
-   //
-   static void configure()
+
+   //--------------------------------------------------------------
+   /// \brief	                        configure the logger
+   /// \param[in]  startupOptions      Startup option of the software
+   //--------------------------------------------------------------
+   static void configure(const IStartupOptions& startupOptions)
    {
       // Create a text file sink
       typedef boost::log::sinks::synchronous_sink< boost::log::sinks::text_multifile_backend > file_sink;
@@ -57,6 +57,9 @@ public:
       // Add some attributes too
       boost::log::core::get()->add_global_attribute("TimeStamp", boost::log::attributes::local_clock());
       boost::log::core::get()->add_global_attribute("RecordID", boost::log::attributes::counter< unsigned int >());
+
+      //we filter on severity
+      boost::log::core::get()->set_filter(boost::log::trivial::severity >= startupOptions.getLogLevel());
    }
 
 private:
