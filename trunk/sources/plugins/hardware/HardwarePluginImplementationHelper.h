@@ -2,8 +2,7 @@
 
 #include "IHardwarePlugin.h"
 #include "HardwarePluginInformation.h"
-#include "HardwarePluginConfigurationSchemaParameter.h"
-#include "IHardwarePluginConfigurationProvider.h"
+#include "HardwarePluginConfiguration.hpp"
 #include "tools/Export.h" //platform specific export definitions
 
 
@@ -26,16 +25,16 @@
       return PluginInformations;                                                          \
    }
 
-// Easy configuration helper
-//TODO
-#define IMPLEMENT_HARDWARE_PLUGIN_EASYCONF()                                              \
-   static const CHardwarePluginConfigurationSchema                                             \
-      PluginEasyConfSchema;                                                               \
-   EXPORT_LIBRARY_FUNCTION const CHardwarePluginConfigurationSchema& getEasyConfSchema()       \
+// Implement configuration
+#define IMPLEMENT_CONFIGURATION                                                           \
+   static boost::optional<CHardwarePluginConfiguration> Configuration;                    \
+   EXPORT_LIBRARY_FUNCTION const CHardwarePluginConfiguration& getDefaultConfiguration()  \
    {                                                                                      \
-      return PluginEasyConfSchema;                                                        \
+      if (Configuration)                                                                  \
+         return Configuration.get();   /* Already initialized */                          \
+      CHardwarePluginConfiguration conf;                                                  \
+      buidDefaultConfiguration(conf);                                                     \
+      Configuration = conf;                                                               \
+      return Configuration.get();                                                         \
    }
-
-// Easy configuration plugin parameter add
-//TODO#define IMPLEMENT_HARDWARE_PLUGIN_ADD_EASYCONF_PARAMETER(name,type,default,enumValuesList)
 

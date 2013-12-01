@@ -22,7 +22,7 @@ void CHardwarePluginInstance::doWork()
       // TODO : we can set protections here (restart plugin if it crashes, force to stop it...)
       try
       {
-         m_pPlugin->doWork(m_pluginConfigurationProvider);
+         m_pPlugin->doWork(getPluginConfiguration());
       }
       catch (boost::thread_interrupted&)
       {
@@ -41,4 +41,16 @@ void CHardwarePluginInstance::doWork()
          BOOST_LOG_TRIVIAL(error) << getName() << " crashed with unknown exception.";
       }
    }
+}
+
+void CHardwarePluginInstance::updateConfiguration() const
+{
+   m_pPlugin->updateConfiguration(getPluginConfiguration());
+}
+
+std::string CHardwarePluginInstance::getPluginConfiguration() const
+{
+   // TODO : récupérer la conf de la base à partir du nom du plugin et de l'instance
+   std::string fromDatabase = "{\"BoolParameter\":\"false\",\"EnumParameter\":\"12\",\"Serial port\":\"tty3\"}";
+   return fromDatabase;
 }

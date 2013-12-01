@@ -8,6 +8,7 @@
 #include "tools/DynamicLibrary.hpp" //cmake choose the right platform class
 #include "plugins/hardware/IHardwarePlugin.h"
 #include "plugins/hardware/HardwarePluginInformation.h"
+#include "plugins/hardware/HardwarePluginConfiguration.hpp"
 
 //--------------------------------------------------------------
 /// \brief	this class is used to load a plugin file library and construct instance
@@ -55,6 +56,9 @@ public:
     //-------------------------------------------------------------
     const CHardwarePluginInformation& getInformation() const;
 
+    //TODO commenter
+    const CHardwarePluginConfiguration& getDefaultConfiguration() const;
+
 private:
     //-------------------------------------------------------------
     /// \brief	    Function pointer to "construct" exported function
@@ -70,5 +74,9 @@ private:
     /// \brief	    Pointer to the plugin getInfo method
     //--------------------------------------------------------------
     boost::function<const CHardwarePluginInformation& ()> m_getInformation;
+
+    //TODO commenter
+    //TODO prévoir que m_getDefaultConfiguration puisse être facultatif
+    boost::function<const CHardwarePluginConfiguration& ()> m_getDefaultConfiguration;
 };
 

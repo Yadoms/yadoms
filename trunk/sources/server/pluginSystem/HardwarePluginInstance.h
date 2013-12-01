@@ -7,7 +7,6 @@
 
 #include "tools/ThreadBase.h"
 #include "plugins/hardware/IHardwarePlugin.h"
-#include "HardwarePluginConfigurationProviderImplementation.h"
 
 //--------------------------------------------------------------
 /// \brief	this class is used to manage a plugin instance. 
@@ -21,6 +20,11 @@ public:
     //--------------------------------------------------------------
     CHardwarePluginInstance(IHardwarePlugin * plugin);
 
+    //--------------------------------------------------------------
+    /// \brief			Notify the plugin about its configuration changed
+    //--------------------------------------------------------------
+    virtual void updateConfiguration() const;
+
 protected:
     //--------------------------------------------------------------
     /// \brief			The main plugin work
@@ -33,8 +37,6 @@ private:
     //--------------------------------------------------------------
     IHardwarePlugin * m_pPlugin;//TODO : rendre thread-safe
 
-    //--------------------------------------------------------------
-    /// \brief			The plugin configuration provider
-    //--------------------------------------------------------------
-    HardwarePluginConfigurationProviderImplementation m_pluginConfigurationProvider;
+    //TODO commenter
+    std::string getPluginConfiguration() const;
 };

@@ -147,9 +147,9 @@ set(YADOMS_SRC
 	server/pluginSystem/HardwarePluginInstance.cpp
 	server/pluginSystem/HardwarePluginFactory.h
 	server/pluginSystem/HardwarePluginFactory.cpp
-	server/pluginSystem/HardwarePluginConfigurationProviderImplementation.h
-	server/pluginSystem/HardwarePluginConfigurationProviderImplementation.cpp
 	plugins/hardware/IHardwarePlugin.h
+	plugins/hardware/HardwarePluginConfiguration.hpp
+	plugins/hardware/HardwarePluginConfigurationParameters.hpp
 	server/StartupOptionsLoader.h
 	server/StartupOptionsLoader.cpp
 	server/StartupOptions.h
