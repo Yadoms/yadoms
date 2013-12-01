@@ -12,7 +12,8 @@ public:
    virtual ~CFakePlugin();
 
    // IHardwarePlugin implementation
-   virtual void doWork(const IHardwarePluginConfigurationProvider& config);
+   virtual void doWork(const std::string& configurationValues);
+   virtual void updateConfiguration(const std::string& configurationValues);
   // [END] IHardwarePlugin implementation
 
    // TODO : WhatTheFuck ? ? ? C'est quoi ces adresses ?

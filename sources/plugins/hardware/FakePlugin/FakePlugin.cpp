@@ -1,6 +1,8 @@
 
 #include <boost/thread.hpp>
+#include <boost/optional.hpp>
 #include <boost/log/trivial.hpp>
+#include <boost/assign.hpp>
 #include "FakePlugin.h"
 
 
@@ -14,38 +16,28 @@ IMPLEMENT_HARDWARE_PLUGIN(
    "http://sourceforge.net/projects/yadoms/")   // Url of author web site (std::string)
 
 
-// Use this macro to implement easy configuration for the plugin
-// Next add parameters using the IMPLEMENT_HARDWARE_PLUGIN_ADD_EASYCONF_PARAMETER macro
-//IMPLEMENT_HARDWARE_PLUGIN_EASYCONF
-
-// Use this macro to add a parameter in the easy configuration
-//TODO IMPLEMENT_HARDWARE_PLUGIN_ADD_EASYCONF_PARAMETER(
-//   "Serial port",                               // Parameter name (std::string)
-//   kInt,                                        // Parameter type
-//   "tty0",                                      // (std::string value, convertible to the parameter type)
-//   "")                                          // Enum values as std::string comma-separated list (only if parameter type = kEnum)
-//
-//IMPLEMENT_HARDWARE_PLUGIN_ADD_EASYCONF_PARAMETER(
-//   "BoolParameter",
-//   kBool,
-//   "false",
-//   "")
-
-
-//--------------------------------------------------------------
-/// \brief		Configuration description
-/// \note      Use this syntax to define the plugin parameters, modifiable by user
-///            - Parameter name is std::string
-///            - Parameter type is CHardwarePluginConfigurationSchemaParameter::EParameterType
-///            - Parameter default value is std::string value, convertible to the parameter type
-///            - Enum values is std::string comma-separated list (only if parameter type = kEnum)
-//--------------------------------------------------------------
-static const CHardwarePluginConfigurationSchemaParameter EasyConfParameters[] = 
-{  // Name           ,                 Type                                , default value, enum values
-   { "Serial port"   , CHardwarePluginConfigurationSchemaParameter::kString, "tty0"       , ""                                   },
-   { "BoolParameter" , CHardwarePluginConfigurationSchemaParameter::kBool  , "false"      , ""                                   },
-   { "EnumParameter" , CHardwarePluginConfigurationSchemaParameter::kEnum  , "EnumValue1" , "EnumValue1;EnumValue2;EnumValue3"   }
+enum EEnumType
+{
+   kEnumValue1 = 7,
+   kEnumValue2 = 12,
+   kEnumValue3
 };
+
+// If parameters are needed for the plugin, just define the buidDefaultConfiguration
+// function to add parameters to the plugin configuration, and call IMPLEMENT_CONFIGURATION macro
+void buidDefaultConfiguration(CHardwarePluginConfiguration& configuration)
+{
+   static const CHardwarePluginConfigurationEnumParameter<EEnumType>::ValuesNames EEnumTypeNames = boost::assign::map_list_of
+      (kEnumValue1, "EnumValue1")
+      (kEnumValue2, "EnumValue2")
+      (kEnumValue3, "EnumValue3");
+
+   configuration.AddParameter(new CHardwarePluginConfigurationStringParameter("Serial port", "tty0"));//TODO : fuites mémoires
+   configuration.AddParameter(new CHardwarePluginConfigurationBoolParameter("BoolParameter", false));
+   configuration.AddParameter(new CHardwarePluginConfigurationEnumParameter<EEnumType>("EnumParameter", kEnumValue2, EEnumTypeNames));
+}
+IMPLEMENT_CONFIGURATION;
+
 
 CFakePlugin::CFakePlugin()
 {
@@ -57,18 +49,46 @@ CFakePlugin::~CFakePlugin()
 
 // IHardwarePlugin implementation
 
-void CFakePlugin::doWork(const IHardwarePluginConfigurationProvider& config)
+void CFakePlugin::doWork(const std::string& configurationValues)
 {
    try
    {
-      // Get configuration from database
-      std::map<std::string, CHardwarePluginConfigurationSchemaParameter> pluginParameters = config.get();
-      if (pluginParameters.find("Serial port") != pluginParameters.end())
-         BOOST_LOG_TRIVIAL(info) << "CFakePlugin parameter 'Serial port' is " << pluginParameters["Serial port"].m_defaultValue;//TODO : c'est pas top de manipuler m_defaultValue
-      if (pluginParameters.find("BoolParameter") != pluginParameters.end())
-         BOOST_LOG_TRIVIAL(info) << "CFakePlugin parameter 'BoolParameter' is " << pluginParameters["BoolParameter"].m_defaultValue;
-      if (pluginParameters.find("EnumParameter") != pluginParameters.end())
-         BOOST_LOG_TRIVIAL(info) << "CFakePlugin parameter 'EnumParameter' is " << pluginParameters["EnumParameter"].m_defaultValue;
+      // Build configuration and load values from database
+      CHardwarePluginConfiguration configuration=getDefaultConfiguration();
+      configuration.unserializeValues(configurationValues);
+      try
+      {
+         // Read parameter as string
+         std::cout << "CFakePlugin::doWork, parameter 'Serial port' is " << configuration["Serial port"].valueToString() << std::endl;//TODO : En attendant que le log marche
+         std::cout << "CFakePlugin::doWork, parameter 'BoolParameter' is " << configuration["BoolParameter"].valueToString() << std::endl;//TODO : En attendant que le log marche
+         std::cout << "CFakePlugin::doWork, parameter 'EnumParameter' is " << configuration["EnumParameter"].valueToString() << std::endl;//TODO : En attendant que le log marche
+
+         // More usable form : read parameter as its basic type
+         if (configuration.asBool("BoolParameter"))
+            std::cout << "CFakePlugin::doWork, parameter 'BoolParameter' is true" << std::endl;//TODO : En attendant que le log marche
+         else
+            std::cout << "CFakePlugin::doWork, parameter 'BoolParameter' is false" << std::endl;//TODO : En attendant que le log marche
+         std::cout << "CFakePlugin::doWork, parameter 'Serial port' is " << configuration.asString("Serial port") << std::endl;
+         std::cout << "CFakePlugin::doWork, parameter 'EnumParameter' is ";
+         switch (configuration.asEnum<EEnumType>("EnumParameter"))
+         {
+         case kEnumValue1: std::cout << "EnumValue1"; break;
+         case kEnumValue2: std::cout << "EnumValue2"; break;
+         case kEnumValue3: std::cout << "EnumValue3"; break;
+         default: std::cout << "Invalid value"; break;
+         }
+         std::cout << std::endl;
+      }
+      catch (const std::bad_cast& bc)
+      {
+         BOOST_ASSERT(false);  // Parameter is wrong type
+         std::cerr << "Bad cast error: " << bc.what() << '\n';//TODO : log
+      }
+      catch (const std::out_of_range& oor)
+      {
+         BOOST_ASSERT(false);  // Parameter doesn't exist
+         std::cerr << "Out of Range error: " << oor.what() << '\n';//TODO : log
+      }
 
 	   while(1)
 	   {
@@ -85,6 +105,13 @@ void CFakePlugin::doWork(const IHardwarePluginConfigurationProvider& config)
       BOOST_LOG_TRIVIAL(info) << "CFakePlugin is stopped...";
    }
 }
+
+void CFakePlugin::updateConfiguration(const std::string& configurationValues)
+{
+   //TODO : faire un exemple
+   //TODO : faire une API "event", voir http://stackoverflow.com/questions/5598890/boost-equivelent-for-windows-events
+}
+
 
 // [END] IHardwarePlugin implementation
 

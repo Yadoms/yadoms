@@ -33,7 +33,8 @@ void CSupervisor::doWork()
 
       m_hardwarePluginManager.buildPluginFactoryList(m_startupOptions.getHarwarePluginsPath());
 
-      //récupérer la liste des plugins à instancier depuis la base
+      // Récupérer la liste des plugins à instancier depuis la base
+      //TODO : vérifier que le plugin à instancier est dans la liste des plugins trouvé (cas de suppression d'un plugin)
       CHardwarePluginFactory * pFactory = m_hardwarePluginManager.getFactory("FakePlugin");
       CHardwarePluginInstance fakePlugin(pFactory->construct());
       fakePlugin.start();
@@ -42,6 +43,7 @@ void CSupervisor::doWork()
 
       CHardwarePluginInstance fakePlugin2(pFactory->construct());
       fakePlugin2.start();
+      fakePlugin2.updateConfiguration();
 
 
       //BOOST_LOG_TRIVIAL(info) << "Testing database" << std::endl;
@@ -77,6 +79,10 @@ void CSupervisor::doWork()
       delete pDataProvider;
 
       //BOOST_LOG_TRIVIAL(info) << "Supervisor is stopped";
+   }
+   catch(std::exception& e)
+   {
+      BOOST_LOG_TRIVIAL(error) << "Supervisor : unhandled exception " << e.what();
    }
    catch(...)
    {
