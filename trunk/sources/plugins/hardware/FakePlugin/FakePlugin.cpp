@@ -32,9 +32,9 @@ void buidDefaultConfiguration(CHardwarePluginConfiguration& configuration)
       (kEnumValue2, "EnumValue2")
       (kEnumValue3, "EnumValue3");
 
-   configuration.AddParameter(new CHardwarePluginConfigurationStringParameter("Serial port", "tty0"));//TODO : fuites mémoires
-   configuration.AddParameter(new CHardwarePluginConfigurationBoolParameter("BoolParameter", false));
-   configuration.AddParameter(new CHardwarePluginConfigurationEnumParameter<EEnumType>("EnumParameter", kEnumValue2, EEnumTypeNames));
+   ADD_CONFIGURATION_PARAMETER_STRING("Serial port", "tty0");
+   ADD_CONFIGURATION_PARAMETER_BOOL("BoolParameter", false);
+   ADD_CONFIGURATION_PARAMETER_ENUM(EEnumType, "EnumParameter", kEnumValue2, EEnumTypeNames);
 }
 IMPLEMENT_CONFIGURATION;
 

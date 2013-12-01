@@ -15,7 +15,7 @@ public:
    CHardwarePluginConfigurationParameter(const std::string& name)
       :m_name(name) {}
 
-   virtual CHardwarePluginConfigurationParameter* clone() const = 0;
+   virtual boost::shared_ptr<CHardwarePluginConfigurationParameter> clone() const = 0;
 
    const std::string& getName() const { return m_name; }
 
@@ -40,9 +40,10 @@ public:
    CHardwarePluginConfigurationParameterT(const std::string& name, const T value)
       :CHardwarePluginConfigurationParameter(name), m_value(value) {}
 
-   virtual CHardwarePluginConfigurationParameter* clone() const
+   virtual boost::shared_ptr<CHardwarePluginConfigurationParameter> clone() const
    {
-      return new CHardwarePluginConfigurationParameterT<T>(getName(), m_value);
+      boost::shared_ptr<CHardwarePluginConfigurationParameter> p(new CHardwarePluginConfigurationParameterT<T>(getName(), m_value));
+      return p;
    }
 
    T get() const { return m_value; }
@@ -82,9 +83,10 @@ public:
    CHardwarePluginConfigurationStringParameter(const std::string& name, const std::string& value)
       :CHardwarePluginConfigurationParameter(name), m_value(value) {}
 
-   virtual CHardwarePluginConfigurationParameter* clone() const
+   virtual boost::shared_ptr<CHardwarePluginConfigurationParameter> clone() const
    {
-      return new CHardwarePluginConfigurationStringParameter(getName(), m_value);
+      boost::shared_ptr<CHardwarePluginConfigurationParameter> p(new CHardwarePluginConfigurationStringParameter(getName(), m_value));
+      return p;
    }
 
    const std::string& get() const { return m_value; }
@@ -117,9 +119,10 @@ public:
    CHardwarePluginConfigurationBoolParameter(const std::string& name, bool value)
       :CHardwarePluginConfigurationParameterT<bool>(name, value) {}
 
-   virtual CHardwarePluginConfigurationParameter* clone() const
+   virtual boost::shared_ptr<CHardwarePluginConfigurationParameter> clone() const
    {
-      return new CHardwarePluginConfigurationBoolParameter(getName(), m_value);
+      boost::shared_ptr<CHardwarePluginConfigurationParameter> p(new CHardwarePluginConfigurationBoolParameter(getName(), m_value));
+      return p;
    }
 
    virtual const std::string valueToString() const
@@ -164,9 +167,10 @@ public:
    CHardwarePluginConfigurationEnumParameter(const std::string& name, Enum value, const ValuesNames& valueNames)
       :CHardwarePluginConfigurationEnumGeneric(name), m_value(value), m_valueNames(valueNames) {}
 
-   virtual CHardwarePluginConfigurationParameter* clone() const
+   virtual boost::shared_ptr<CHardwarePluginConfigurationParameter> clone() const
    {
-      return new CHardwarePluginConfigurationEnumParameter<Enum>(getName(), m_value, m_valueNames);
+      boost::shared_ptr<CHardwarePluginConfigurationParameter> p(new CHardwarePluginConfigurationEnumParameter<Enum>(getName(), m_value, m_valueNames));
+      return p;
    }
 
    Enum get() const { return m_value; }
