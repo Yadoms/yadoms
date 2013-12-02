@@ -35,6 +35,8 @@ void buidDefaultConfiguration(CHardwarePluginConfiguration& configuration)
    ADD_CONFIGURATION_PARAMETER_STRING("Serial port", "tty0");
    ADD_CONFIGURATION_PARAMETER_BOOL("BoolParameter", false);
    ADD_CONFIGURATION_PARAMETER_ENUM(EEnumType, "EnumParameter", kEnumValue2, EEnumTypeNames);
+   ADD_CONFIGURATION_PARAMETER_INT("IntParameter", 7);
+   ADD_CONFIGURATION_PARAMETER_DOUBLE("DoubleParameter", 25.3);
 }
 IMPLEMENT_CONFIGURATION;
 
