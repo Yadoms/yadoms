@@ -140,7 +140,7 @@ typedef CHardwarePluginConfigurationParameterT<int> CHardwarePluginConfiguration
 //--------------------------------------------------------------
 /// \type Hardware plugin configuration double parameter
 //--------------------------------------------------------------
-typedef CHardwarePluginConfigurationParameterT<double> CHardwarePluginConfigurationSchemaParameter;
+typedef CHardwarePluginConfigurationParameterT<double> CHardwarePluginConfigurationDoubleParameter;
 
 //--------------------------------------------------------------
 /// \class Enum parameter, generic class
