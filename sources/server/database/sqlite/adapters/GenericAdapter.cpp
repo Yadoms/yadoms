@@ -30,7 +30,7 @@ bool CGenericAdapter::adapt(int column, char** columValues, char** columnName)
    return returnValue;
 }
 
-std::vector<std::map<std::string, std::string>> CGenericAdapter::getResults()  
+std::vector<std::map<std::string, std::string> > CGenericAdapter::getResults()  
 { 
    return m_results; 
 }
