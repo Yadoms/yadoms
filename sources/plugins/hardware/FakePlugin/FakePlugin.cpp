@@ -32,11 +32,11 @@ void buidDefaultConfiguration(CHardwarePluginConfiguration& configuration)
       (kEnumValue2, "EnumValue2")
       (kEnumValue3, "EnumValue3");
 
-   ADD_CONFIGURATION_PARAMETER_STRING("Serial port", "tty0");
-   ADD_CONFIGURATION_PARAMETER_BOOL("BoolParameter", false);
-   ADD_CONFIGURATION_PARAMETER_ENUM(EEnumType, "EnumParameter", kEnumValue2, EEnumTypeNames);
-   ADD_CONFIGURATION_PARAMETER_INT("IntParameter", 7);
-   ADD_CONFIGURATION_PARAMETER_DOUBLE("DoubleParameter", 25.3);
+   ADD_CONFIGURATION_PARAMETER_STRING("Serial port", "The serial port where my plugin is connected", "tty0");
+   ADD_CONFIGURATION_PARAMETER_BOOL("BoolParameter", "Just a boolean example", false);
+   ADD_CONFIGURATION_PARAMETER_ENUM(EEnumType, "EnumParameter", "Example of an enum with 3 values", kEnumValue2, EEnumTypeNames);
+   ADD_CONFIGURATION_PARAMETER_INT("IntParameter", "This is my int parameter example", 7);
+   ADD_CONFIGURATION_PARAMETER_DOUBLE("DoubleParameter", "Now a double", 25.3);
 }
 IMPLEMENT_CONFIGURATION;
 
