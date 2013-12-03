@@ -1,14 +1,13 @@
 #include "stdafx.h"
 #include "HardwarePluginManager.h"
 
-CHardwarePluginManager::CHardwarePluginManager()
+CHardwarePluginManager::CHardwarePluginManager(const std::string & initialDir)
 {
+   buildPluginFactoryList(initialDir);
 }
 
 CHardwarePluginManager::~CHardwarePluginManager()
 {
-   // m_pluginFactories should be emptied by call to StopPlugins
-   BOOST_ASSERT(m_pluginFactories.empty());
 }
 
 
@@ -18,8 +17,8 @@ std::list<std::string> CHardwarePluginManager::findAvalaiblePlugins(const std::s
    // Parse the hardware plugin directory to find all plugin libraries
    // TODO
    std::list<std::string> result;
-
-   result.push_back("../lib/Debug/fakePlugin.dll");
+   // TODO : doit chercher dans initialDir, mais ne retourner que des noms.ext 
+   result.push_back("fakePlugin.dll");
 
    return result;
 }
@@ -27,46 +26,26 @@ std::list<std::string> CHardwarePluginManager::findAvalaiblePlugins(const std::s
 
 void CHardwarePluginManager::buildPluginFactoryList(const std::string & initialDir)
 {
-   //search for library files
+   // Search for library files
    std::list<std::string> avalaiblePluginFileNames = findAvalaiblePlugins(initialDir);
 
-   for (std::list<std::string>::const_iterator libNameIt = avalaiblePluginFileNames.begin(); libNameIt != avalaiblePluginFileNames.end() ; ++libNameIt)
+   for (std::list<std::string>::const_iterator libNameIt = avalaiblePluginFileNames.begin() ;
+      libNameIt != avalaiblePluginFileNames.end() ; ++libNameIt)
    {
-      // generate factory for current found plugin
-      CHardwarePluginFactory *pNewFactory = new CHardwarePluginFactory();
+      // Generate factory for current found plugin
+      boost::shared_ptr<CHardwarePluginFactory> pNewFactory (new CHardwarePluginFactory(initialDir));
       if (!pNewFactory->load(*libNameIt))
       {
-         delete pNewFactory;
+         std::cout << "Invalid plugin found " << *libNameIt << std::endl;  // TODO : log
          continue;
       }
-      m_pluginFactories.push_back(pNewFactory);
+      m_pluginFactories[*libNameIt] = pNewFactory;
    }
 }
 
-void CHardwarePluginManager::freePluginFactoryList()
+const boost::shared_ptr<CHardwarePluginFactory> CHardwarePluginManager::getFactory(const std::string & pluginName)//TODO const
 {
-   // Free the libraries
-   while (!m_pluginFactories.empty())
-   {
-      m_pluginFactories.front()->unload();
-      delete m_pluginFactories.front();
-      m_pluginFactories.pop_front();         
-   }
-}
-
-CHardwarePluginFactory * CHardwarePluginManager::getFactory(const std::string & pluginName) const
-{
-   std::list<CHardwarePluginFactory *>::const_iterator itFind;
-
-   for(itFind = m_pluginFactories.begin(); itFind != m_pluginFactories.end(); itFind++)
-   {
-      CHardwarePluginFactory* pluginLibrary = *itFind;
-      if(pluginLibrary->getInformation().getName() == pluginName)
-      {
-         return pluginLibrary;
-      }
-   }
-   return NULL;
+   return m_pluginFactories[pluginName];
 }
 
 

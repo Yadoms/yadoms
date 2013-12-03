@@ -10,11 +10,11 @@
 #include <iostream>
 #include <sstream>
 
-////////////////////////////////////////
 // Boost libraries
 //
 // ! please keep for full list alphabetic ordered !!
 ////////////////////////////////////////
+#include <boost/assert.hpp>
 #include <boost/bind.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/filesystem.hpp>
@@ -37,5 +37,5 @@
 #include <boost/signals2.hpp>
 #include <boost/thread.hpp>
 #include <boost/tuple/tuple.hpp>
-
-
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
