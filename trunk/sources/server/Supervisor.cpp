@@ -23,23 +23,22 @@ void CSupervisor::doWork()
       BOOST_LOG_SCOPED_THREAD_TAG("ThreadName", "Supervisor");
       BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "Supervisor is starting";
 
-      m_hardwarePluginManager.buildPluginFactoryList(m_startupOptions.getHarwarePluginsPath());
+      CHardwarePluginManager hardwarePluginManager("../lib/Debug"/* TODO m_startupOptions.getHarwarePluginsPath() */);
 
       // Récupérer la liste des plugins à instancier depuis la base
-      //TODO : vérifier que le plugin à instancier est dans la liste des plugins trouvé (cas de suppression d'un plugin)
-      CHardwarePluginFactory * pFactory = m_hardwarePluginManager.getFactory("FakePlugin");
+      //TODO : vérifier que le plugin à instancier est dans la liste des plugins trouvés (cas de suppression d'un plugin)
+      boost::shared_ptr<CHardwarePluginFactory> pFactory(hardwarePluginManager.getFactory("fakePlugin.dll"));
       CHardwarePluginInstance fakePlugin(pFactory->construct());
       fakePlugin.start();
-               fakePlugin.stop();
-               return;//TODO
 
       CHardwarePluginInstance fakePlugin2(pFactory->construct());
       fakePlugin2.start();
       fakePlugin2.updateConfiguration();
 
 
+
       //BOOST_LOG_TRIVIAL(info) << "Testing database" << std::endl;
-      IDataProvider * pDataProvider = new CSQLiteDataProvider(m_startupOptions.getDatabaseFile());
+      boost::shared_ptr<IDataProvider> pDataProvider (new CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
       if(pDataProvider->load())
       {
 
@@ -67,8 +66,7 @@ void CSupervisor::doWork()
          fakePlugin2.stop();
       }
 
-      pDataProvider->unload();
-      delete pDataProvider;
+      pDataProvider->unload();//TODO : mettre un appel à unload dans le destructeur de IDataProvider (si pas déjà unloaded évidemment).
 
       //BOOST_LOG_TRIVIAL(info) << "Supervisor is stopped";
    }
@@ -80,6 +78,4 @@ void CSupervisor::doWork()
    {
       //BOOST_LOG_TRIVIAL(error) << "Supervisor : unhandled exception.";
    }
-
-   m_hardwarePluginManager.freePluginFactoryList();
 }

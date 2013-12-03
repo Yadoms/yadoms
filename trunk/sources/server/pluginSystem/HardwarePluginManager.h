@@ -14,45 +14,42 @@
 class CHardwarePluginManager
 {
 public:
-    //--------------------------------------------------------------
-    /// \brief			Constructor
-    //--------------------------------------------------------------
-    CHardwarePluginManager();
+   //--------------------------------------------------------------
+   /// \brief			Constructor
+   /// \param [in]   initialDir: initial plugins search directory
+   //--------------------------------------------------------------
+   CHardwarePluginManager(const std::string & initialDir);
 
-    //--------------------------------------------------------------
-    /// \brief			Destructor
-    //--------------------------------------------------------------
-    virtual ~CHardwarePluginManager();
+   //--------------------------------------------------------------
+   /// \brief			Destructor
+   //--------------------------------------------------------------
+   virtual ~CHardwarePluginManager();
 
-    //--------------------------------------------------------------
-    /// \brief			Build the factories list
-    /// \param [in]		initialDir : the directory containing plugins
-    //--------------------------------------------------------------
-    void buildPluginFactoryList(const std::string & initialDir);
-
-    //--------------------------------------------------------------
-    /// \brief			Free the factories list (free memory)
-    //--------------------------------------------------------------
-    void freePluginFactoryList();
-
-    //--------------------------------------------------------------
-    /// \brief			Get a plugin factory
-    /// \param [in]		pluginName : the plugin name to search
-    /// \return    		The plugin factory (NULL in case of error)
-    //--------------------------------------------------------------
-    CHardwarePluginFactory * getFactory(const std::string & pluginName) const;
+   //--------------------------------------------------------------
+   /// \brief			Get a plugin factory
+   /// \param [in]   pluginName : the plugin name to search
+   /// \return       The plugin factory
+   /// \throw        std::out_of_range if plugin doesn't exist
+   //--------------------------------------------------------------
+   const boost::shared_ptr<CHardwarePluginFactory> getFactory(const std::string & pluginName);
 
 private:
-    //--------------------------------------------------------------
-    /// \brief			Returns all plugin libraries installed
-    /// \param [in]		initialDir: initial search directory
-    /// \return    		 a list of all found plugins (the plugin fullpath)
-    //--------------------------------------------------------------
-    std::list<std::string> findAvalaiblePlugins(const std::string & initialDir);
+   //--------------------------------------------------------------
+   /// \brief			Returns all plugin libraries installed
+   /// \param [in]		initialDir: initial search directory
+   /// \return    		 a list of all found plugins (the plugin fullpath)
+   //--------------------------------------------------------------
+   std::list<std::string> findAvalaiblePlugins(const std::string & initialDir);
+
+   //--------------------------------------------------------------
+   /// \brief			Build the factories list and load plugins
+   /// \param [in]		initialDir : the directory containing plugins
+   //--------------------------------------------------------------
+   void buildPluginFactoryList(const std::string & initialDir);
 
 private:
-    //--------------------------------------------------------------
-    /// \brief			List of all found factories
-    //--------------------------------------------------------------
-    std::list<CHardwarePluginFactory *> m_pluginFactories;
+   //--------------------------------------------------------------
+   /// \brief			Map of all found factories (key are plugin file names)
+   //--------------------------------------------------------------
+   std::map<std::string, boost::shared_ptr<CHardwarePluginFactory> > m_pluginFactories;
 };

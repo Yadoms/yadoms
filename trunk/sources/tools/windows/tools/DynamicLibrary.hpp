@@ -30,7 +30,7 @@ protected:
     //--------------------------------------------------------------
     virtual ~CDynamicLibrary()
     {
-        BOOST_ASSERT(m_libraryHandle == NULL);
+        BOOST_ASSERT(m_libraryHandle == NULL);  // Library was not unload
     }
     
     

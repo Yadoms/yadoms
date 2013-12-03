@@ -13,6 +13,5 @@ public:
    void doWork();
 private:
    const IStartupOptions& m_startupOptions;
-   CHardwarePluginManager m_hardwarePluginManager;
 };
 
