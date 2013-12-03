@@ -52,10 +52,20 @@ public:
    void unserializeValues(const std::string& json)
    {
       boost::property_tree::ptree pt;
-      std::istringstream is (json);
-      read_json (is, pt);
+      std::istringstream is(json);
+      boost::property_tree::json_parser::read_json(is, pt);
       for (CHardwarePluginConfigurationMap::iterator it=m_configurationMap.begin() ; it!=m_configurationMap.end() ; ++it)
-         ((boost::shared_ptr<CHardwarePluginConfigurationParameter>)((*it).second))->load(pt);
+      {
+         try
+         {
+            ((boost::shared_ptr<CHardwarePluginConfigurationParameter>)((*it).second))->load(pt);
+         }
+         catch (boost::property_tree::ptree_bad_path&)
+         {
+            // If parameter was added since last plugin version, it has no value in the database.
+            // So ignore it to let its default value.
+         }
+      }
    }
 
    //--------------------------------------------------------------
@@ -68,7 +78,7 @@ public:
       for (CHardwarePluginConfigurationMap::const_iterator it=m_configurationMap.begin() ; it!=m_configurationMap.end() ; ++it)
          ((boost::shared_ptr<CHardwarePluginConfigurationParameter>)((*it).second))->save(pt);
       std::ostringstream buf; 
-      write_json (buf, pt, false);
+      boost::property_tree::json_parser::write_json (buf, pt, false);
       return buf.str();
    }
 
