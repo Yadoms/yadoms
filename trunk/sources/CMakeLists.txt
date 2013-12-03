@@ -208,6 +208,80 @@ add_executable(yadoms ${YADOMS_SRC})
 add_precompiled_header(yadoms stdafx.h)
 target_link_libraries(yadoms yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
 
+
+##################################################################################################
+## Post build commands
+##################################################################################################
+
+#create lib lists, one for debug libs and another for optimized (release)
+# Boost_LIBRARIES is a list whchi contains something like this:
+#
+#	debug							(<- define that next list entry if for debug mode)
+#	path/to/debug/boost-...gd.lib)
+#	optimize                        (<- define that next list entry if for release mode)
+#	path/to/debug/boost-...lib)
+#	...
+#
+set(TYPEISKNOWN OFF)
+set(TYPEISDEBUG OFF)
+FOREACH (BOOSTLIBRARY ${Boost_LIBRARIES})
+	if(TYPEISKNOWN)
+		if(TYPEISDEBUG)
+			list(APPEND BOOST_LIBS_DEBUG ${BOOSTLIBRARY})
+		else()
+			list(APPEND BOOST_LIBS_OPTIMIZED ${BOOSTLIBRARY})
+		endif()
+		set(TYPEISKNOWN OFF)
+	else()
+		if(${BOOSTLIBRARY} MATCHES "debug") 
+			set(TYPEISKNOWN ON)
+			set(TYPEISDEBUG ON)
+		endif()
+
+		if(${BOOSTLIBRARY} MATCHES "optimized") 
+			set(TYPEISKNOWN ON)
+			set(TYPEISDEBUG OFF)
+		endif()
+	endif()
+ENDFOREACH(BOOSTLIBRARY)
+
+
+#Take each boost lib file, find its dll and add it to a post build command
+if(NOT Boost_USE_STATIC_LIBS)
+	MESSAGE(STATUS "Add boost libraries to be copied as postbuild")
+	#todo : choose debug/optimized mode
+	FOREACH (BOOSTLIBRARY ${BOOST_LIBS_DEBUG})
+
+		#construct the dll/so fil path
+		get_filename_component(UTF_BASE_NAME ${BOOSTLIBRARY} NAME_WE)
+		get_filename_component(UTF_PATH ${BOOSTLIBRARY} PATH)
+	
+		if(MSVC)
+			#windows
+			set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.dll)
+		elseif(APPLE)
+			#mac
+			set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.so)
+		else()
+			#linux
+			set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.so)
+		endif()
+		
+		#check existance
+		if(EXISTS ${LIBFILE})
+			MESSAGE(STATUS "    Library file : ${LIBFILE}")
+				
+			#create post build command
+			add_custom_command(TARGET yadoms POST_BUILD        	# Adds a post-build event to yadoms
+				COMMAND ${CMAKE_COMMAND} -E copy_if_different  	# which executes "cmake - E copy_if_different..."
+					"${LIBFILE}"     							# <--this is in-file
+					$<TARGET_FILE_DIR:yadoms>)   				# <--this is out-file path
+		else()
+			MESSAGE("    Library file not found : ${LIBFILE}")
+		endif()
+	ENDFOREACH(BOOSTLIBRARY)
+endif()		
+		
 ##################################################################################################
 ## IDE configurations
 ##################################################################################################
@@ -220,6 +294,7 @@ if(MSVC)
 	#disable warning C4996   Function call with parameters that may be unsafe 
 	add_definitions( "/wd4996" )
 	
+	#to allow BOOST in precompiled header (specify Precompiled Header Memory Allocation Limit) 
 	add_definitions("/Zm256")
 endif()
 
