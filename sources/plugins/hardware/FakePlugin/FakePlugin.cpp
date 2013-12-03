@@ -25,7 +25,7 @@ enum EEnumType
 
 // If parameters are needed for the plugin, just define the buidDefaultConfiguration
 // function to add parameters to the plugin configuration, and call IMPLEMENT_CONFIGURATION macro
-void buidDefaultConfiguration(CHardwarePluginConfiguration& configuration)
+IMPLEMENT_CONFIGURATION
 {
    static const CHardwarePluginConfigurationEnumParameter<EEnumType>::ValuesNames EEnumTypeNames = boost::assign::map_list_of
       (kEnumValue1, "EnumValue1")
@@ -38,7 +38,6 @@ void buidDefaultConfiguration(CHardwarePluginConfiguration& configuration)
    ADD_CONFIGURATION_PARAMETER_INT("IntParameter", "This is my int parameter example", 7);
    ADD_CONFIGURATION_PARAMETER_DOUBLE("DoubleParameter", "Now a double", 25.3);
 }
-IMPLEMENT_CONFIGURATION;
 
 
 CFakePlugin::CFakePlugin()
@@ -94,17 +93,18 @@ void CFakePlugin::doWork(const std::string& configurationValues)
 
 	   while(1)
 	   {
-	      BOOST_LOG_TRIVIAL(info) << "CFakePlugin is running...";
+	      std::cout << "CFakePlugin is running..." << std::endl;
 	
 	      // Give a chance to exit plugin thread
-         boost::this_thread::disable_interruption ri;
 	      boost::this_thread::sleep(boost::posix_time::milliseconds(1000)); 
 	   };
    }
-   // Plugin must catch this end-of-thread exception
+   // Plugin must catch this end-of-thread exception to make its cleanup.
+   // If no cleanup is necessary, still catch it, or Yadoms will consider
+   // as a plugin failure.
    catch (boost::thread_interrupted&)
    {
-      BOOST_LOG_TRIVIAL(info) << "CFakePlugin is stopped...";
+      std::cout << "CFakePlugin is stopped..." << std::endl;
    }
 }
 

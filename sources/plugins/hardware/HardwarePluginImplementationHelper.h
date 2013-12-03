@@ -28,6 +28,7 @@
 // Implement configuration
 #define IMPLEMENT_CONFIGURATION                                                           \
    static boost::optional<CHardwarePluginConfiguration> Configuration;                    \
+   void buidDefaultConfiguration(CHardwarePluginConfiguration& configuration);            \
    EXPORT_LIBRARY_FUNCTION const CHardwarePluginConfiguration& getDefaultConfiguration()  \
    {                                                                                      \
       if (Configuration)                                                                  \
@@ -36,5 +37,6 @@
       buidDefaultConfiguration(conf);                                                     \
       Configuration = conf;                                                               \
       return Configuration.get();                                                         \
-   }
-
+   }                                                                                      \
+   void buidDefaultConfiguration(CHardwarePluginConfiguration& configuration)
+//TODO : voir si on ne peut pas y ajouter l'implémentation de IHardwarePlugin::updateConfiguration

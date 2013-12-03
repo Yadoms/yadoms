@@ -19,7 +19,7 @@ public:
     //--------------------------------------------------------------
     /// \brief	Constructor
     //--------------------------------------------------------------
-    CHardwarePluginFactory();
+    CHardwarePluginFactory(const std::string & initialDir);
 
     //--------------------------------------------------------------
     /// \brief	Destructor
@@ -42,13 +42,7 @@ public:
     /// \brief	    Construct a plugin instance (call the contruct library method)
     /// \return     a new plugin instance
     //-------------------------------------------------------------
-    IHardwarePlugin * construct();
-
-    //--------------------------------------------------------------
-    /// \brief	    Destruct a plugin instance
-    /// \param [in] item: the plugin to destruct
-    //-------------------------------------------------------------
-    void destruct(IHardwarePlugin* item);
+    IHardwarePlugin* construct();
 	
     //--------------------------------------------------------------
     /// \brief	    Get information about this hardware plugin
@@ -56,27 +50,37 @@ public:
     //-------------------------------------------------------------
     const CHardwarePluginInformation& getInformation() const;
 
-    //TODO commenter
-    const CHardwarePluginConfiguration& getDefaultConfiguration() const;
+    //--------------------------------------------------------------
+    /// \brief	    Get plugin default configuration
+    /// \return     default configuration if configuration is available for this plugin
+    //-------------------------------------------------------------
+    const boost::optional<const CHardwarePluginConfiguration&> getDefaultConfiguration() const;
+
+    //--------------------------------------------------------------
+    /// \brief	    Format the plugin informations
+    /// \return     Formated string containing plugin informations
+    //-------------------------------------------------------------
+    std::string formatPluginInformations() const;
 
 private:
+   //-------------------------------------------------------------
+   /// \brief	    Plugin directory
+   //-------------------------------------------------------------
+   const std::string & m_initialDir;
+
     //-------------------------------------------------------------
     /// \brief	    Function pointer to "construct" exported function
     //-------------------------------------------------------------
     boost::function<IHardwarePlugin* ()> m_construct;
-	
-    //-------------------------------------------------------------
-    /// \brief	    Function pointer to "destruct" exported function
-    //-------------------------------------------------------------
-    boost::function<void (IHardwarePlugin*)> m_destruct;
 
     //--------------------------------------------------------------
-    /// \brief	    Pointer to the plugin getInfo method
+    /// \brief	    Pointer to the plugin getInformation method
     //--------------------------------------------------------------
     boost::function<const CHardwarePluginInformation& ()> m_getInformation;
 
-    //TODO commenter
-    //TODO prévoir que m_getDefaultConfiguration puisse être facultatif
+    //--------------------------------------------------------------
+    /// \brief	    Pointer to the plugin getConfiguration method (optional)
+    //--------------------------------------------------------------
     boost::function<const CHardwarePluginConfiguration& ()> m_getDefaultConfiguration;
 };
 

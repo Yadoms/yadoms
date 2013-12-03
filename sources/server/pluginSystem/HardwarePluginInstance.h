@@ -37,6 +37,8 @@ private:
     //--------------------------------------------------------------
     IHardwarePlugin * m_pPlugin;//TODO : rendre thread-safe
 
-    //TODO commenter
+    //--------------------------------------------------------------
+    /// \brief			get the plugin instance configuration (through database)
+    //--------------------------------------------------------------
     std::string getPluginConfiguration() const;
 };
