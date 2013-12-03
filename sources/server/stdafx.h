@@ -1,5 +1,8 @@
 #pragma once
 
+////////////////////////////////////////
+// Standard Template Library
+////////////////////////////////////////
 #include <string>
 #include <map>
 #include <vector>
@@ -7,9 +10,15 @@
 #include <iostream>
 #include <sstream>
 
+////////////////////////////////////////
+// Boost libraries
+//
+// ! please keep for full list alphabetic ordered !!
+////////////////////////////////////////
 #include <boost/bind.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/foreach.hpp>
 #include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/log/attributes.hpp>
