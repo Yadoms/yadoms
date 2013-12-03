@@ -8,7 +8,7 @@
 class CHardwarePluginConfiguration
 {
 public:
-   typedef std::map<std::string, boost::shared_ptr <CHardwarePluginConfigurationParameter> > CHardwarePluginConfigurationMap;
+   typedef std::map<std::string, boost::shared_ptr<CHardwarePluginConfigurationParameter> > CHardwarePluginConfigurationMap;
 
 public:
    //--------------------------------------------------------------
@@ -168,3 +168,5 @@ private:
          p(new CHardwarePluginConfigurationEnumParameter<enumType>(name,description,defaultValue,valueNames));    \
       configuration.AddParameter(p);                                                                              \
    }
+   
+   

@@ -7,7 +7,7 @@
 /// \Brief		Adapter for multiple values (up to 10 values in a boost::tuple
 //--------------------------------------------------------------
 template<class T0, class T1= boost::tuples::null_type, class T2= boost::tuples::null_type, class T3= boost::tuples::null_type, class T4= boost::tuples::null_type, class T5= boost::tuples::null_type, class T6= boost::tuples::null_type, class T7= boost::tuples::null_type, class T8= boost::tuples::null_type, class T9 = boost::tuples::null_type>
-class CMultipleValueAdapter : public ISQLiteResultAdapter<boost::tuple<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>>
+class CMultipleValueAdapter : public ISQLiteResultAdapter<boost::tuple<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9> >
 {
 public:
    //--------------------------------------------------------------
@@ -68,7 +68,7 @@ public:
       return returnValue;
    }
 
-   std::vector<boost::tuple<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>> getResults()
+   std::vector<boost::tuple<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9> > getResults()
    {
       return m_results;
    }
@@ -79,6 +79,6 @@ private:
    //--------------------------------------------------------------
    /// \Brief		Contains the list of results entities
    //--------------------------------------------------------------
-    std::vector<boost::tuple<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>> m_results;
+    std::vector<boost::tuple<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9> > m_results;
 };
 

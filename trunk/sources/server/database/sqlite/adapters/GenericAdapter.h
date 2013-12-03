@@ -5,7 +5,7 @@
 //--------------------------------------------------------------
 /// \Brief		Adapter for generic table results
 //--------------------------------------------------------------
-class CGenericAdapter : public ISQLiteResultAdapter<std::map<std::string, std::string>>
+class CGenericAdapter : public ISQLiteResultAdapter<std::map<std::string, std::string> >
 {
 public:
    //--------------------------------------------------------------
@@ -20,7 +20,7 @@ public:
    
    // ISQLiteResultAdapter implementation
    bool adapt(int column, char** columValues, char** columnName);
-   std::vector<std::map<std::string, std::string>> getResults(); 
+   std::vector<std::map<std::string, std::string> > getResults(); 
    // [END] ISQLiteResultAdapter implementation
 
 private:
