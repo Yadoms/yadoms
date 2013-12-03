@@ -49,7 +49,9 @@ bool CHardwarePluginFactory::load(const std::string & libraryFile)
             boost::shared_ptr<CHardwarePluginConfigurationParameter> parameter = (*it).second;
 
             // Get parameter name and value (as string)
-            std::cout << parameter->getName() << " = " << parameter->valueToString() << std::endl;
+            std::cout << parameter->getName();
+            std::cout << " (" << parameter->getDescription() << ")";
+            std::cout << " = " << parameter->valueToString() << std::endl;
             
             // Process specific parameters types
             if (dynamic_cast<CHardwarePluginConfigurationEnumGeneric*>(parameter.get()))
