@@ -7,22 +7,13 @@
 */
 
 #include <iostream>
-
-#include <boost/date_time/posix_time/posix_time.hpp>
-
-#include <boost/log/common.hpp>
-#include <boost/log/expressions.hpp>
-#include <boost/log/attributes.hpp>
-#include <boost/log/sources/logger.hpp>
-#include <boost/log/sinks/sync_frontend.hpp>
-#include <boost/log/sinks/text_multifile_backend.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/function.hpp>
-
 #include "Supervisor.h"
 #include "StartupOptionsLoader.h"
 #include "ApplicationStopHandler.h"
-#include "Log.h"
+#include "tools/Log.h"
+
+
+
 
 void stopHandler()
 {
@@ -42,22 +33,21 @@ int main (int argc, char** argv)
    {
       CStartupOptionsLoader startupOptions(argc, argv);
 
-      CLog::configure(startupOptions);
-      BOOST_LOG_SCOPED_THREAD_TAG("ThreadName", "Main");
+      CLog::configure(startupOptions.getLogLevel());
+      YADOMS_LOG_CONFIGURE("Main");
       
-      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "********************************************************************";
-      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "Yadoms is starting";
-      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "********************************************************************";
-      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "Startup options :";
-      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "\tlog level = " << startupOptions.getLogLevel();
-      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "\tport number = " << startupOptions.getPortNumber();
-      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "\tdb path = " << startupOptions.getDatabaseFile();
-      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "\thardware plugins = " << startupOptions.getHarwarePluginsPath();
-      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "\tdevice plugins = " << startupOptions.getDevicePluginsPath();
-      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "\tstart Xpl Hub = " << startupOptions.getStartXplHubFlag();
+      YADOMS_LOG(info) << "********************************************************************";
+      YADOMS_LOG(info) << "Yadoms is starting";
+      YADOMS_LOG(info) << "********************************************************************";
+      YADOMS_LOG(info) << "Startup options :";
+      YADOMS_LOG(info) << "\tlog level = " << startupOptions.getLogLevel();
+      YADOMS_LOG(info) << "\tport number = " << startupOptions.getPortNumber();
+      YADOMS_LOG(info) << "\tdb path = " << startupOptions.getDatabaseFile();
+      YADOMS_LOG(info) << "\thardware plugins = " << startupOptions.getHarwarePluginsPath();
+      YADOMS_LOG(info) << "\tdevice plugins = " << startupOptions.getDevicePluginsPath();
+      YADOMS_LOG(info) << "\tstart Xpl Hub = " << startupOptions.getStartXplHubFlag();
 
-
-      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::error) << "test";
+      YADOMS_LOG(error) << "test";
 
       CSupervisor supervisor(startupOptions);
       supervisor.start();
@@ -68,26 +58,26 @@ int main (int argc, char** argv)
       }
 
       supervisor.stop();
-      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::info) << "Yadoms is stopped ";
-      //BOOST_LOG_TRIVIAL(info) << "Yadoms is stopped.";
+      
+      YADOMS_LOG(info) << "Yadoms is stopped ";
    }
    catch(CStartupOptionsLoaderError& e)
    {
       if (e.isError())
       {
-         BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::fatal) << e.what();
+         YADOMS_LOG(fatal) << e.what();
       }
       else
       {
          // Help was invoked, just print to console
-         std::cout << e.what() << std::endl;
+         YADOMS_LOG(info) << e.what();
       }
    }
    catch(...)
    {
       //dual logging in case logger fails/throws
-      BOOST_LOG_SEV(my_logger::get(), boost::log::trivial::fatal) << "An unhandled exception occurs. Yadoms is now stopped";
       std::cout << "An unhandled exception occurs. Yadoms is now stopped" << std::endl;
+      YADOMS_LOG(fatal) << "An unhandled exception occurs. Yadoms is now stopped";
    }
 
    return 0;
