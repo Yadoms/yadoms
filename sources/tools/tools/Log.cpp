@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "log.h"
+#include "Log.h"
 
 CLog::CLog()
 {
