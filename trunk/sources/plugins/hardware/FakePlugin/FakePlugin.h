@@ -3,6 +3,7 @@
 #include "../HardwarePluginImplementationHelper.h"
 
 #include <string>
+#include <boost/thread/future.hpp>
 
 class CFakePlugin : public IHardwarePlugin
 {  
@@ -18,6 +19,13 @@ public:
 
    // TODO : WhatTheFuck ? ? ? C'est quoi ces adresses ?
    void init(const std::string & pluginAddress, const std::string & serverAddress);
+
+private:
+   boost::optional<boost::shared_ptr<const CHardwarePluginConfiguration> > getUpdatedConfiguration();   // TODO à mettre dans une macro DECLARE_CONFIGURATION
+   
+   // TODO à mettre dans une macro DECLARE_CONFIGURATION
+   std::queue<boost::shared_ptr<const CHardwarePluginConfiguration> > m_ConfigurationUpdateQueue;
+   boost::mutex m_configurationUpdateMutex;
 };
 
 

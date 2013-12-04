@@ -15,6 +15,7 @@ public:
    /// \brief	    Constructor
    //--------------------------------------------------------------
    CHardwarePluginConfiguration(){}
+   //TODO faire un ctor qui prend les valeurs JSON
 
    //--------------------------------------------------------------
    /// \brief	    Copy constructor

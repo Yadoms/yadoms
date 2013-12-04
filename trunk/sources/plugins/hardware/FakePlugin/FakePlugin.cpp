@@ -48,8 +48,6 @@ CFakePlugin::~CFakePlugin()
 {
 }
 
-// IHardwarePlugin implementation
-
 void CFakePlugin::doWork(const std::string& configurationValues)
 {
    try
@@ -94,9 +92,21 @@ void CFakePlugin::doWork(const std::string& configurationValues)
 	   while(1)
 	   {
 	      std::cout << "CFakePlugin is running..." << std::endl;
+
+         boost::optional<boost::shared_ptr<const CHardwarePluginConfiguration> > newConfiguration = getUpdatedConfiguration();
+         if (newConfiguration)
+         {
+            // Take here into account the new configuration
+            // - Restart the plugin if necessary,
+            // - Update some ressources,
+            // - etc...
+            std::cout << "CFakePlugin configuration was updated..." << std::endl;
+
+            // TODO ajouter méthodes de diff
+         }
 	
 	      // Give a chance to exit plugin thread
-	      boost::this_thread::sleep(boost::posix_time::milliseconds(1000)); 
+	      boost::this_thread::sleep(boost::posix_time::milliseconds(100)); 
 	   };
    }
    // Plugin must catch this end-of-thread exception to make its cleanup.
@@ -110,12 +120,27 @@ void CFakePlugin::doWork(const std::string& configurationValues)
 
 void CFakePlugin::updateConfiguration(const std::string& configurationValues)
 {
-   //TODO : faire un exemple
-   //TODO : faire une API "event", voir http://stackoverflow.com/questions/5598890/boost-equivelent-for-windows-events
+   boost::shared_ptr<CHardwarePluginConfiguration> newConfiguration(new CHardwarePluginConfiguration());
+   newConfiguration->unserializeValues(configurationValues);
+
+   boost::lock_guard<boost::mutex> lock(m_configurationUpdateMutex);
+   m_ConfigurationUpdateQueue.push(newConfiguration);
 }
 
+boost::optional<boost::shared_ptr<const CHardwarePluginConfiguration> > CFakePlugin::getUpdatedConfiguration() // TODO à mettre dans IMPLEMENT_CONFIGURATION (ou class CHardwarePluginConfigurationSupport)
+{
+   boost::optional<boost::shared_ptr<const CHardwarePluginConfiguration> > newConfiguration;
 
-// [END] IHardwarePlugin implementation
+   boost::lock_guard<boost::mutex> l(m_configurationUpdateMutex);
+
+   if (m_ConfigurationUpdateQueue.empty())
+      return newConfiguration;
+
+   newConfiguration = m_ConfigurationUpdateQueue.back();
+   m_ConfigurationUpdateQueue.pop();
+   return newConfiguration;
+}
+
 
 
 // TODO : WhatTheFuck ? ? ? C'est quoi ces adresses ?
