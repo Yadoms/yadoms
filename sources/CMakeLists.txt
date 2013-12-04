@@ -88,6 +88,9 @@ set(SHARED_LIB_SRC
 	tools/tools/ThreadBase.cpp
 	tools/tools/ThreadBase.h
 
+	tools/tools/Log.h
+	tools/tools/Log.cpp
+
 	tools/tools/Exceptions/Exception.h
 	tools/tools/Exceptions/Exception.cpp
 	tools/tools/Exceptions/NotImplementedException.h
@@ -112,7 +115,7 @@ ENDIF()
 
 # Define library outputs
 add_library(yadoms-tools STATIC  ${SHARED_LIB_SRC})
-#add_precompiled_header(yadoms-tools tools/tools/stdafx.h)
+add_precompiled_header(yadoms-tools stdafx.h)
 target_link_libraries(yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
 
 # Define include directories (allow easy includes)
@@ -160,7 +163,6 @@ set(YADOMS_SRC
 	server/StartupOptions.h
 	server/ApplicationStopHandler.h
 	server/ApplicationStopHandler.cpp
-	server/Log.h
 	
 	server/database/IDataProvider.h
 	server/database/IHardwareRequester.h
@@ -236,9 +238,7 @@ FOREACH (BOOSTLIBRARY ${Boost_LIBRARIES})
 		if(${BOOSTLIBRARY} MATCHES "debug") 
 			set(TYPEISKNOWN ON)
 			set(TYPEISDEBUG ON)
-		endif()
-
-		if(${BOOSTLIBRARY} MATCHES "optimized") 
+		elseif(${BOOSTLIBRARY} MATCHES "optimized") 
 			set(TYPEISKNOWN ON)
 			set(TYPEISDEBUG OFF)
 		endif()
@@ -261,7 +261,7 @@ if(NOT Boost_USE_STATIC_LIBS)
 			set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.dll)
 		elseif(APPLE)
 			#mac
-			set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.so)
+			set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.dylib)
 		else()
 			#linux
 			set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.so)
