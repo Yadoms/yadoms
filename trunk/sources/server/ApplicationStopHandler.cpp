@@ -24,7 +24,7 @@ void CApplicationStopHandler::handleInternal(int signal)
       StopRequested = true;
       break;
    default:
-      std::cout << "CApplicationStopHandler::handleInternal - no handler for #%d signal " << signal << std::endl;
+      YADOMS_LOG(warning) << "CApplicationStopHandler::handleInternal - no handler for #%d signal " << signal;
       break;
    }
 }

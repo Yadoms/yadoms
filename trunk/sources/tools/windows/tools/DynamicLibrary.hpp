@@ -6,9 +6,10 @@
 #pragma once
 
 #include <string>
-#include "Windows.h"
 #include <boost/function.hpp>
 #include <boost/log/trivial.hpp>
+#include "../../tools/Log.h"
+#include "Windows.h"
 
 //--------------------------------------------------------------
 /// \brief	This class is used to load a plugin file library and 
@@ -67,7 +68,7 @@ protected:
         } 
         else
         {
-			   BOOST_LOG_TRIVIAL(error) << "Fail to load library : " << libraryFile << GetLastError();
+			   YADOMS_LOG(error) << "Fail to load library : " << libraryFile << GetLastError();
         }
 
         return result;

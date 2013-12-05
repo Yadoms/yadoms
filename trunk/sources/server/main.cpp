@@ -46,8 +46,8 @@ int main (int argc, char** argv)
       YADOMS_LOG(info) << "\thardware plugins = " << startupOptions.getHarwarePluginsPath();
       YADOMS_LOG(info) << "\tdevice plugins = " << startupOptions.getDevicePluginsPath();
       YADOMS_LOG(info) << "\tstart Xpl Hub = " << startupOptions.getStartXplHubFlag();
+      YADOMS_LOG(info) << "********************************************************************";
 
-      YADOMS_LOG(error) << "test";
 
       CSupervisor supervisor(startupOptions);
       supervisor.start();
