@@ -1,11 +1,10 @@
 #include "stdafx.h"
 #include "Supervisor.h"
-#include "pluginSystem/HardwarePluginInstance.h"
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "tools/Log.h"
 
 CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
-   :CThreadBase("Supervisor"),m_startupOptions(startupOptions)
+   :CThreadBase("Supervisor"), m_startupOptions(startupOptions)
 {
 }
 
@@ -21,19 +20,6 @@ void CSupervisor::doWork()
    {
       YADOMS_LOG_CONFIGURE("Supervisor");
       YADOMS_LOG(info) << "Supervisor is starting";
-
-      CHardwarePluginManager hardwarePluginManager(m_startupOptions.getHarwarePluginsPath());
-
-      // Récupérer la liste des plugins à instancier depuis la base
-      //TODO : vérifier que le plugin à instancier est dans la liste des plugins trouvés (cas de suppression d'un plugin)
-      boost::shared_ptr<CHardwarePluginFactory> pFactory(hardwarePluginManager.getFactory("fakePlugin.dll"));
-      CHardwarePluginInstance fakePlugin(pFactory->construct());
-      fakePlugin.start();
-
-      CHardwarePluginInstance fakePlugin2(pFactory->construct());
-      fakePlugin2.start();
-      fakePlugin2.updateConfiguration();
-
 
 
       YADOMS_LOG(info) << "Testing database" << std::endl;
@@ -51,18 +37,27 @@ void CSupervisor::doWork()
          YADOMS_LOG(info) << "[END] List of all hardwares"<< std::endl;
       }
 
+      // Start the harware plugin manager
+      CHardwarePluginManager hardwarePluginManager(
+         "../builds/lib/Debug"/* TODO m_startupOptions.getHarwarePluginsPath() */,
+         boost::shared_ptr<IHardwareRequester> (pDataProvider->getHardwareRequester()));
+
       try
       {
          while(1)
          {
+            // Scan for new/deleted plugins
+            //TODO if (toutes les 10 secondes)
+            {
+               hardwarePluginManager.updatePluginList();
+            }
+
             boost::this_thread::sleep(boost::posix_time::milliseconds(100));
          }
       }
       catch (boost::thread_interrupted&)
       {
          YADOMS_LOG(info) << "Supervisor is stopping...";
-         fakePlugin.stop();
-         fakePlugin2.stop();
       }
 
       pDataProvider->unload();//TODO : mettre un appel à unload dans le destructeur de IDataProvider (si pas déjà unloaded évidemment).

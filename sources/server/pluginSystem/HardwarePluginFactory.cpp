@@ -1,23 +1,23 @@
 #include "stdafx.h"
 #include "HardwarePluginFactory.h"
 
-CHardwarePluginFactory::CHardwarePluginFactory(const std::string & initialDir)
-      :m_initialDir(initialDir), m_construct(NULL), m_getInformation(NULL), m_getDefaultConfiguration(NULL)
+CHardwarePluginFactory::CHardwarePluginFactory(const boost::filesystem::path& libraryPath)
+      :m_construct(NULL), m_getInformation(NULL), m_getDefaultConfiguration(NULL)
 {
+   load(libraryPath);
 }
 
 CHardwarePluginFactory::~CHardwarePluginFactory()
 {
-   CDynamicLibrary::unload();
+   unload();
 }
 
 
-bool CHardwarePluginFactory::load(const std::string & libraryFile)
+void CHardwarePluginFactory::load(const boost::filesystem::path& libraryPath)
 {
    // Load the plugin library (platform-specific)
-   boost::filesystem::path libraryPath = boost::filesystem::path(m_initialDir) / boost::filesystem::path(libraryFile);
    if (!CDynamicLibrary::load(libraryPath.string()))
-      return false;
+      throw CInvalidPluginException(libraryPath.string());
 
    // Load plugin static methods
    m_construct = (IHardwarePlugin* (*)(void))GetFunctionPointer("construct");
@@ -29,11 +29,11 @@ bool CHardwarePluginFactory::load(const std::string & libraryFile)
    {
       // This library is not a valid plugin
       CDynamicLibrary::unload();
-      return false;
+      throw CInvalidPluginException(libraryPath.string());
    }
 
    // Log loaded plugin
-   std::cout << formatPluginInformations() << std::endl;
+   YADOMS_LOG(info) << "Hardware plugin loaded : " << formatPluginInformations();
 
 
    { // TODO bloc à virer quand le code sera récupéré par l'IHM
@@ -51,19 +51,18 @@ bool CHardwarePluginFactory::load(const std::string & libraryFile)
          boost::shared_ptr<CHardwarePluginConfigurationParameter> parameter = (*it).second;
 
          // Get parameter name, description and value (as string)
-            std::cout << parameter->getName();
-            std::cout << " (" << parameter->getDescription() << ")";
-            std::cout << " = " << parameter->valueToString() << std::endl;
+            YADOMS_LOG(debug) << parameter->getName() << " (" << parameter->getDescription() << ")" << " = " << parameter->valueToString();
 
          // Process specific parameters types
          if (dynamic_cast<CHardwarePluginConfigurationEnumGeneric*>(parameter.get()))//TODO : voir si on ne peut pas mettre les dynamic_cast dans la conf
          {
             // Enum, get all available values
-            std::cout << "Available values : ";
+            std::ostringstream os;
+            os << "Available values : ";
             const CHardwarePluginConfigurationEnumGeneric::ValuesNames& values = dynamic_cast<CHardwarePluginConfigurationEnumGeneric*>(parameter.get())->getAvailableValues();
             for (CHardwarePluginConfigurationEnumGeneric::ValuesNames::const_iterator it = values.begin() ; it != values.end() ; ++it)
-               std::cout << (*it).second << "|";
-            std::cout << std::endl;
+               os << (*it).second << "|";
+            YADOMS_LOG(debug) << os;
          }
       }
       // 3 - L'utilisateur modifie 2 valeurs
@@ -81,8 +80,6 @@ bool CHardwarePluginFactory::load(const std::string & libraryFile)
       //... et pour l'affichage c'est pareil
       // A la fin, notifier l'instance du plugin de son changement de conf via la fonction updateConfiguration
    }
- 
-   return true;
 }
 
 //--------------------------------------------------------------
@@ -124,10 +121,10 @@ std::string CHardwarePluginFactory::formatPluginInformations() const
 {
    std::ostringstream formatedInformations;
 
-   formatedInformations << "Hardware plugin loaded : " << getInformation().getName();
+   formatedInformations << getInformation().getName();
    formatedInformations << " v" << getInformation().getVersion();
    formatedInformations << "[" << getInformation().getReleaseType() << "]";
-   formatedInformations << " from " << getInformation().getAuthor();
+   formatedInformations << " by " << getInformation().getAuthor();
    formatedInformations << " (" << getInformation().getUrl() << ")";
 
    return formatedInformations.str();

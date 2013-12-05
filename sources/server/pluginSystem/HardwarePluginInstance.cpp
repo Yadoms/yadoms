@@ -5,46 +5,49 @@
 #include "plugins/hardware/HardwarePluginInformation.h"
 
 
-CHardwarePluginInstance::CHardwarePluginInstance(IHardwarePlugin * plugin) 
-    : m_pPlugin(plugin)
+CHardwarePluginInstance::CHardwarePluginInstance(const std::string& pluginInstanceName, boost::shared_ptr<IHardwarePlugin> pluginInstance) 
+    : CThreadBase(pluginInstanceName), m_pPluginInstance(pluginInstance)
 {
-	if (m_pPlugin != NULL)
-	{
-		setName("nom du plugin"); //todo : à partir de la base de données
-	}
+	BOOST_ASSERT(m_pPluginInstance);
+}
+
+CHardwarePluginInstance::~CHardwarePluginInstance()
+{
+   stop();
 }
 
 void CHardwarePluginInstance::doWork()
 {
-   if (m_pPlugin != NULL)
-	{
-      // TODO : we can set protections here (restart plugin if it crashes, force to stop it...)
-      try
-      {
-         m_pPlugin->doWork(getPluginConfiguration());
-      }
-      catch (boost::thread_interrupted&)
-      {
-         // End-of-thread exception was not catch by plugin,
-         // it's a developer's error, we have to report it
-         BOOST_LOG_TRIVIAL(error) << getName() << " didn't catch boost::thread_interrupted.";
-      }
-      catch (std::exception& e)
-      {
-         // Plugin crashed
-         BOOST_LOG_TRIVIAL(error) << getName() << " crashed with exception : " << e.what();
-      }
-      catch (...)
-      {
-         // Plugin crashed
-         BOOST_LOG_TRIVIAL(error) << getName() << " crashed with unknown exception.";
-      }
+   BOOST_ASSERT(m_pPluginInstance);
+   YADOMS_LOG_CONFIGURE(getName());
+
+   // TODO : we can set protections here (restart plugin if it crashes, force to stop it...)
+   try
+   {
+      m_pPluginInstance->doWork(getPluginConfiguration());
+   }
+   catch (boost::thread_interrupted&)
+   {
+      // End-of-thread exception was not catch by plugin,
+      // it's a developer's error, we have to report it
+      YADOMS_LOG(error) << getName() << " didn't catch boost::thread_interrupted.";
+   }
+   catch (std::exception& e)
+   {
+      // Plugin crashed
+      YADOMS_LOG(error) << getName() << " crashed with exception : " << e.what();
+   }
+   catch (...)
+   {
+      // Plugin crashed
+      YADOMS_LOG(error) << getName() << " crashed with unknown exception.";
    }
 }
 
 void CHardwarePluginInstance::updateConfiguration() const
 {
-   m_pPlugin->updateConfiguration(getPluginConfiguration());
+   BOOST_ASSERT(m_pPluginInstance);
+   m_pPluginInstance->updateConfiguration(getPluginConfiguration());
 }
 
 std::string CHardwarePluginInstance::getPluginConfiguration() const
