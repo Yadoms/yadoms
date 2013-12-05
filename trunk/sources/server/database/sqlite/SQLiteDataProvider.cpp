@@ -3,27 +3,25 @@
 #include "SQLiteDataProvider.h"
 #include "SQLiteHardwareRequester.h"
 #include "sqlite3.h"
-#include "tools/Exceptions/NotImplementedException.h"
-#include "adapters/GenericAdapter.h"
 #include <boost/filesystem.hpp>
+#include "SQLiteRequester.h"
+#include "tools/Log.h"
 
-#include <stdarg.h>     /* va_list, va_start, va_arg, va_end */
 
 CSQLiteDataProvider::CSQLiteDataProvider(const std::string & dbFile)
-   :m_dbFile(dbFile), m_pDatabaseHandler(NULL)
+   :m_dbFile(dbFile)
 {
 }
 
 CSQLiteDataProvider::~CSQLiteDataProvider()
 {
-   BOOST_ASSERT(m_pDatabaseHandler == NULL);
 }
 
 
 // IDatabaseProvider implementation
 bool CSQLiteDataProvider::load()
 {
-   BOOST_LOG_TRIVIAL(info) << "Load database";
+   YADOMS_LOG(info) << "Load database";
 
    bool result = false;
 
@@ -32,25 +30,27 @@ bool CSQLiteDataProvider::load()
       if ( boost::filesystem::exists( m_dbFile.c_str() ) )
       {
          int rc = sqlite3_open(m_dbFile.c_str(), &m_pDatabaseHandler);
+
          if(rc)
          {
-            BOOST_LOG_TRIVIAL(fatal) << "Fail to load database: " << sqlite3_errmsg(m_pDatabaseHandler);
+            YADOMS_LOG(fatal) << "Fail to load database: " << sqlite3_errmsg(m_pDatabaseHandler);
             sqlite3_close(m_pDatabaseHandler);
             result = false;
          }
          else
          {
+            m_databaseRequester.reset(new CSQLiteRequester(m_pDatabaseHandler));
             //db loaded with succes, create requesters
             loadRequesters();
 
-            BOOST_LOG_TRIVIAL(info) << "Load database with success";
+            YADOMS_LOG(info) << "Load database with success";
             result = true;
 
          }
       }
       else
       {
-         BOOST_LOG_TRIVIAL(error) << "Database file is not found : " << m_dbFile << std::endl;
+         YADOMS_LOG(error) << "Database file is not found : " << m_dbFile << std::endl;
          result = false;
       }
 
@@ -58,7 +58,7 @@ bool CSQLiteDataProvider::load()
    }
    catch(...)
    {
-      BOOST_LOG_TRIVIAL(error) << "Unknow exception while loading database";
+      YADOMS_LOG(error) << "Unknow exception while loading database";
       sqlite3_close(m_pDatabaseHandler);
       result = false;
    }
@@ -77,38 +77,8 @@ void CSQLiteDataProvider::unload()
 
 void CSQLiteDataProvider::loadRequesters()
 {
-   m_hardwareRequester.reset(new CSQLiteHardwareRequester(this));
+   m_hardwareRequester.reset(new CSQLiteHardwareRequester(*this, m_databaseRequester));
 }
-
-
-int CSQLiteDataProvider::queryStatement(const std::string & queryFormat, ...)
-{
-   throw CNotImplementedException();
-}
-
-CSQLiteDataProvider::QueryRow CSQLiteDataProvider::querySingleLine(const std::string & queryFormat, ...)
-{
-   throw CNotImplementedException();
-}
-
-
-CSQLiteDataProvider::QueryResults CSQLiteDataProvider::query(const std::string & queryFormat, ...)
-{
-   char *zSql;
-   va_list ap;
-   va_start(ap, queryFormat);
-   zSql = sqlite3_vmprintf(queryFormat.c_str(), ap);
-   va_end(ap);
-
-   CGenericAdapter genericAdapter;
-   queryEntities<std::map<std::string, std::string> >(&genericAdapter, zSql);
-
-   if(zSql)
-      sqlite3_free(zSql);
-   return genericAdapter.getResults();
-}
-
-
 
 
 

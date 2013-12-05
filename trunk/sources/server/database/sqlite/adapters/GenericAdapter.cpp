@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GenericAdapter.h"
+#include "tools/Log.h"
 
 CGenericAdapter::CGenericAdapter()
 {
@@ -14,7 +15,7 @@ bool CGenericAdapter::adapt(int column, char** columValues, char** columnName)
    bool returnValue = false;
    if(column == 0 || columValues == NULL || columnName == NULL)
    {
-      BOOST_LOG_TRIVIAL(warning) << "Invalid arguments";
+      YADOMS_LOG(warning) << "Invalid arguments";
       returnValue = false;
    }
    else

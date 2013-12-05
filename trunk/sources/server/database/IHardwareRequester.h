@@ -23,6 +23,7 @@ protected:
 	{
 	}
 
+public:
 	virtual ~IHardwareRequester()
 	{
 	}

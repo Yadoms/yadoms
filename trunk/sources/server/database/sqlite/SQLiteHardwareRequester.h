@@ -2,6 +2,7 @@
 
 #include "server/database/IHardwareRequester.h"
 class CSQLiteDataProvider;
+class CSQLiteRequester;
 
 //--------------------------------------------------------------
 /// \Brief		   Hardware requester for SQLite database
@@ -13,7 +14,7 @@ public:
 	/// \Brief		   Constructor
 	/// \param [in]	pDatabaseHandler: the database handler
 	//--------------------------------------------------------------
-	CSQLiteHardwareRequester(CSQLiteDataProvider * pDatabaseHandler);
+	CSQLiteHardwareRequester(const CSQLiteDataProvider & databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester);
 
 	//--------------------------------------------------------------
 	/// \Brief		   Destructor
@@ -35,5 +36,10 @@ private:
 	//--------------------------------------------------------------
 	/// \Brief		   Reference to SQLiteDatabseHandler
 	//--------------------------------------------------------------
-	CSQLiteDataProvider * m_pDatabaseHandler;
+	const CSQLiteDataProvider & m_databaseHandler;
+
+	//--------------------------------------------------------------
+	/// \Brief		   Reference to SQLiteRequester
+	//--------------------------------------------------------------
+   boost::shared_ptr<CSQLiteRequester> m_databaseRequester;
 };
