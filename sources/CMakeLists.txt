@@ -120,9 +120,11 @@ set(SHARED_LIB_SRC
 	#include both platform files to see them into IDE
 	tools/windows/tools/DynamicLibrary.hpp
 	tools/windows/tools/Export.h
+	tools/windows/tools/FileSystem.hpp
 
 	tools/linux/tools/DynamicLibrary.hpp
 	tools/linux/tools/Export.h
+	tools/linux/tools/FileSystem.hpp
 )
 
 # Define project folders
