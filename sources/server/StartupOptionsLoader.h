@@ -101,7 +101,7 @@ public:
    /// \brief	            Constructor
    /// \param[in]  argc    Main argc parameter (from command line)
    /// \param[in]  argv    Main argv parameter (from command line)
-   /// \throw              CStartupOptionsAbortExecution
+   /// \throw              CStartupOptionsLoaderError
    //--------------------------------------------------------------
    CStartupOptionsLoader(int argc, char** argv);
 
