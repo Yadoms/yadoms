@@ -16,71 +16,95 @@
 class CHardwarePluginFactory : public CDynamicLibrary
 {
 public:
-    //--------------------------------------------------------------
-    /// \brief	Constructor
-    //--------------------------------------------------------------
-    CHardwarePluginFactory(const std::string & initialDir);
+   //--------------------------------------------------------------
+   /// \brief	Constructor
+   /// \param [in] libraryPath: the plugin path
+   /// \throw      CInvalidPluginException if plugin is not recognized
+   //--------------------------------------------------------------
+   CHardwarePluginFactory(const boost::filesystem::path& libraryPath);
 
-    //--------------------------------------------------------------
-    /// \brief	Destructor
-    //--------------------------------------------------------------
-    virtual ~CHardwarePluginFactory();
+   //--------------------------------------------------------------
+   /// \brief	Destructor
+   //--------------------------------------------------------------
+   virtual ~CHardwarePluginFactory();
 
-    //--------------------------------------------------------------
-    /// \brief	    Load a plugin file
-    /// \param [in] libraryFile: the plugin path
-    /// \return     true is the plugin is loaded with success, else false
-    //-------------------------------------------------------------
-    bool load(const std::string & libraryFile);
+   //--------------------------------------------------------------
+   /// \brief	    Load a plugin file
+   /// \param [in] libraryPath: the plugin path
+   /// \throw      CInvalidPluginException if plugin is not recognized
+   //-------------------------------------------------------------
+   void load(const boost::filesystem::path& libraryPath);
 
-    //--------------------------------------------------------------
-    /// \brief	    Free library file
-    //-------------------------------------------------------------
-    void unload();
+   //--------------------------------------------------------------
+   /// \brief	    Free library file
+   //-------------------------------------------------------------
+   void unload();
 
-	//--------------------------------------------------------------
-    /// \brief	    Construct a plugin instance (call the contruct library method)
-    /// \return     a new plugin instance
-    //-------------------------------------------------------------
-    IHardwarePlugin* construct();
-	
-    //--------------------------------------------------------------
-    /// \brief	    Get information about this hardware plugin
-    /// \return     information about this hardware plugin
-    //-------------------------------------------------------------
-    const CHardwarePluginInformation& getInformation() const;
+   //--------------------------------------------------------------
+   /// \brief	    Construct a plugin instance (call the contruct library method)
+   /// \return     a new plugin instance
+   //-------------------------------------------------------------
+   IHardwarePlugin* construct();
 
-    //--------------------------------------------------------------
-    /// \brief	    Get plugin default configuration
-    /// \return     default configuration if configuration is available for this plugin
-    //-------------------------------------------------------------
-    const boost::optional<const CHardwarePluginConfiguration&> getDefaultConfiguration() const;
+   //--------------------------------------------------------------
+   /// \brief	    Get information about this hardware plugin
+   /// \return     information about this hardware plugin
+   //-------------------------------------------------------------
+   const CHardwarePluginInformation& getInformation() const;
 
-    //--------------------------------------------------------------
-    /// \brief	    Format the plugin informations
-    /// \return     Formated string containing plugin informations
-    //-------------------------------------------------------------
-    std::string formatPluginInformations() const;
+   //--------------------------------------------------------------
+   /// \brief	    Get plugin default configuration
+   /// \return     default configuration if configuration is available for this plugin
+   //-------------------------------------------------------------
+   const boost::optional<const CHardwarePluginConfiguration&> getDefaultConfiguration() const;
+
+   //--------------------------------------------------------------
+   /// \brief	    Format the plugin informations
+   /// \return     Formated string containing plugin informations
+   //-------------------------------------------------------------
+   std::string formatPluginInformations() const;
 
 private:
    //-------------------------------------------------------------
-   /// \brief	    Plugin directory
+   /// \brief	    Function pointer to "construct" exported function
    //-------------------------------------------------------------
-   const std::string & m_initialDir;
+   boost::function<IHardwarePlugin* ()> m_construct;
 
-    //-------------------------------------------------------------
-    /// \brief	    Function pointer to "construct" exported function
-    //-------------------------------------------------------------
-    boost::function<IHardwarePlugin* ()> m_construct;
+   //--------------------------------------------------------------
+   /// \brief	    Pointer to the plugin getInformation method
+   //--------------------------------------------------------------
+   boost::function<const CHardwarePluginInformation& ()> m_getInformation;
 
-    //--------------------------------------------------------------
-    /// \brief	    Pointer to the plugin getInformation method
-    //--------------------------------------------------------------
-    boost::function<const CHardwarePluginInformation& ()> m_getInformation;
-
-    //--------------------------------------------------------------
-    /// \brief	    Pointer to the plugin getConfiguration method (optional)
-    //--------------------------------------------------------------
-    boost::function<const CHardwarePluginConfiguration& ()> m_getDefaultConfiguration;
+   //--------------------------------------------------------------
+   /// \brief	    Pointer to the plugin getConfiguration method (optional)
+   //--------------------------------------------------------------
+   boost::function<const CHardwarePluginConfiguration& ()> m_getDefaultConfiguration;
 };
 
+//--------------------------------------------------------------
+/// \class Configuration loading error exception
+//--------------------------------------------------------------
+class CInvalidPluginException : public std::exception
+{
+public:
+   //--------------------------------------------------------------
+   /// \brief	                        Constructor
+   /// \param[in]  optionsDecription   Full options description structure
+   /// \param[in]  message             Extended message (usefull if error in the command line)
+   //--------------------------------------------------------------
+   CInvalidPluginException(const std::string& plugin) : m_plugin(plugin) {}
+
+   //--------------------------------------------------------------
+   /// \brief      Destructor
+   //--------------------------------------------------------------
+   virtual ~CInvalidPluginException() throw() {}
+
+   //--------------------------------------------------------------
+   /// \brief	    Build full message explaining error reason and command line usage
+   /// \return     message explaining error reason and command line usage
+   //--------------------------------------------------------------
+   virtual const char* what() const throw() { return std::string("Invalid plugin found " + m_plugin).c_str(); }
+
+protected:
+   std::string m_plugin;
+};
