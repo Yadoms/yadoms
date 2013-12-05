@@ -3,6 +3,9 @@
 #include <boost/optional.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/assign.hpp>
+#include <boost/log/common.hpp>
+#include <boost/log/trivial.hpp>
+#include "tools/Log.h"
 #include "FakePlugin.h"
 
 
@@ -58,40 +61,41 @@ void CFakePlugin::doWork(const std::string& configurationValues)
       try
       {
          // Read parameter as string
-         std::cout << "CFakePlugin::doWork, parameter 'Serial port' is " << configuration["Serial port"].valueToString() << std::endl;//TODO : En attendant que le log marche
-         std::cout << "CFakePlugin::doWork, parameter 'BoolParameter' is " << configuration["BoolParameter"].valueToString() << std::endl;//TODO : En attendant que le log marche
-         std::cout << "CFakePlugin::doWork, parameter 'EnumParameter' is " << configuration["EnumParameter"].valueToString() << std::endl;//TODO : En attendant que le log marche
+         YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is " << configuration["Serial port"].valueToString();
+         YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is " << configuration["BoolParameter"].valueToString();
+         YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'EnumParameter' is " << configuration["EnumParameter"].valueToString();
 
          // More usable form : read parameter as its basic type
          if (configuration.asBool("BoolParameter"))
-            std::cout << "CFakePlugin::doWork, parameter 'BoolParameter' is true" << std::endl;//TODO : En attendant que le log marche
+            YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is true";
          else
-            std::cout << "CFakePlugin::doWork, parameter 'BoolParameter' is false" << std::endl;//TODO : En attendant que le log marche
-         std::cout << "CFakePlugin::doWork, parameter 'Serial port' is " << configuration.asString("Serial port") << std::endl;
-         std::cout << "CFakePlugin::doWork, parameter 'EnumParameter' is ";
+            YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is false";
+         YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is " << configuration.asString("Serial port");
+         std::ostringstream os;
+         os << "CFakePlugin::doWork, parameter 'EnumParameter' is ";
          switch (configuration.asEnum<EEnumType>("EnumParameter"))
          {
-         case kEnumValue1: std::cout << "EnumValue1"; break;
-         case kEnumValue2: std::cout << "EnumValue2"; break;
-         case kEnumValue3: std::cout << "EnumValue3"; break;
-         default: std::cout << "Invalid value"; break;
+         case kEnumValue1: os << "EnumValue1"; break;
+         case kEnumValue2: os << "EnumValue2"; break;
+         case kEnumValue3: os << "EnumValue3"; break;
+         default: os << "Invalid value"; break;
          }
-         std::cout << std::endl;
+         YADOMS_LOG(debug) << os;
       }
       catch (const std::bad_cast& bc)
       {
          BOOST_ASSERT(false);  // Parameter is wrong type
-         std::cerr << "Bad cast error: " << bc.what() << '\n';//TODO : log
+         YADOMS_LOG(error) << "Bad cast error: " << bc.what();
       }
       catch (const std::out_of_range& oor)
       {
          BOOST_ASSERT(false);  // Parameter doesn't exist
-         std::cerr << "Out of Range error: " << oor.what() << '\n';//TODO : log
+         YADOMS_LOG(error) << "Out of Range error: " << oor.what();
       }
 
 	   while(1)
 	   {
-	      std::cout << "CFakePlugin is running..." << std::endl;
+	      YADOMS_LOG(debug) << "CFakePlugin is running...";
 
          boost::optional<boost::shared_ptr<const CHardwarePluginConfiguration> > newConfiguration = getUpdatedConfiguration();
          if (newConfiguration)
@@ -100,7 +104,7 @@ void CFakePlugin::doWork(const std::string& configurationValues)
             // - Restart the plugin if necessary,
             // - Update some ressources,
             // - etc...
-            std::cout << "CFakePlugin configuration was updated..." << std::endl;
+            YADOMS_LOG(debug) << "CFakePlugin configuration was updated...";
 
             // TODO ajouter méthodes de diff
          }
@@ -114,7 +118,7 @@ void CFakePlugin::doWork(const std::string& configurationValues)
    // as a plugin failure.
    catch (boost::thread_interrupted&)
    {
-      std::cout << "CFakePlugin is stopped..." << std::endl;
+      YADOMS_LOG(debug) << "CFakePlugin is stopped...";
    }
 }
 
