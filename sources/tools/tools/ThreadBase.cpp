@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ThreadBase.h"
-
+#include "Log.h"
 
 const int CThreadBase::DefaultStopTimeoutSeconds = 10;
 
@@ -32,7 +32,7 @@ bool CThreadBase::stop()
    requestToStop();
    if (!waitForStop(m_stopTimeoutSeconds))
    {
-      BOOST_LOG_TRIVIAL(warning) << "Stopping thread " << getName() << " : timeout";
+      YADOMS_LOG(warning) << "Stopping thread " << getName() << " : timeout";
       return false;
    }
 
