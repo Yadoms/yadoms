@@ -10,6 +10,7 @@
 #include <iostream>
 #include <sstream>
 
+////////////////////////////////////////
 // Boost libraries
 //
 // ! please keep for full list alphabetic ordered !!
@@ -30,4 +31,12 @@
 #include <boost/signals2.hpp>
 #include <boost/thread.hpp>
 #include <boost/tuple/tuple.hpp>
+
+////////////////////////////////////////
+// Our tools
+////////////////////////////////////////
+#include "tools/DynamicLibrary.hpp"
+#include "tools/FileSystem.hpp"
+#include "tools/Log.h"
+#include "tools/StringExtension.hpp"
 
