@@ -22,7 +22,7 @@ void CSupervisor::doWork()
       YADOMS_LOG_CONFIGURE("Supervisor");
       YADOMS_LOG(info) << "Supervisor is starting";
 
-      CHardwarePluginManager hardwarePluginManager("../lib/Debug"/* TODO m_startupOptions.getHarwarePluginsPath() */);
+      CHardwarePluginManager hardwarePluginManager(m_startupOptions.getHarwarePluginsPath());
 
       // Récupérer la liste des plugins à instancier depuis la base
       //TODO : vérifier que le plugin à instancier est dans la liste des plugins trouvés (cas de suppression d'un plugin)

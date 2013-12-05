@@ -1,6 +1,8 @@
 #pragma once
-#include "Exceptions/Exception.h"
+#include "tools/Exceptions/Exception.h"
 #include "boost/lexical_cast.hpp"
+#include <stdarg.h> 
+
 //
 /// \brief Static class that provide converters from const char * to data type 
 //

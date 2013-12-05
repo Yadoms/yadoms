@@ -110,7 +110,7 @@ set(SHARED_LIB_SRC
 
 	tools/tools/Log.h
 	tools/tools/Log.cpp
-
+	tools/tools/StringExtension.hpp	
 	tools/tools/Exceptions/Exception.h
 	tools/tools/Exceptions/Exception.cpp
 	tools/tools/Exceptions/NotImplementedException.h
@@ -120,10 +120,9 @@ set(SHARED_LIB_SRC
 	#include both platform files to see them into IDE
 	tools/windows/tools/DynamicLibrary.hpp
 	tools/windows/tools/Export.h
-	tools/windows/tools/StringExtension.hpp
+
 	tools/linux/tools/DynamicLibrary.hpp
 	tools/linux/tools/Export.h
-	tools/linux/tools/StringExtension.hpp
 )
 
 # Define project folders
@@ -205,7 +204,9 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/SQLiteHardwareRequester.cpp
 		server/database/sqlite/SQLiteDataProvider.h
 		server/database/sqlite/SQLiteDataProvider.cpp
-		
+		server/database/sqlite/SQLiteRequester.h
+		server/database/sqlite/SQLiteRequester.cpp
+
 		server/database/sqlite/adapters/ISQLiteResultAdapter.h
 		server/database/sqlite/adapters/HardwareAdapter.h
 		server/database/sqlite/adapters/HardwareAdapter.cpp

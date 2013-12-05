@@ -1,7 +1,7 @@
 #pragma once
-#include "stdafx.h"
 
 #include "tools/StringExtension.hpp"
+#include "tools/Log.h"
 
 template<class TValue>
 class CSingleValueAdapter: public ISQLiteResultAdapter<TValue>
@@ -27,7 +27,7 @@ public:
       bool returnValue = false;
       if(column == 0 || columValues == NULL || columnName == NULL)
       {
-         BOOST_LOG_TRIVIAL(warning) << "Invalid arguments";
+         YADOMS_LOG(warning) << "Invalid arguments";
          returnValue = false;
       }
       else

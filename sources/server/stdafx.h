@@ -14,6 +14,7 @@
 //
 // ! please keep for full list alphabetic ordered !!
 ////////////////////////////////////////
+#include <boost/algorithm/string.hpp>
 #include <boost/assert.hpp>
 #include <boost/bind.hpp>
 #include <boost/filesystem.hpp>

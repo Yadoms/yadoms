@@ -2,6 +2,7 @@
 #pragma once
 
 #include "tools/StringExtension.hpp"
+#include "tools/Log.h"
 
 //--------------------------------------------------------------
 /// \Brief		Adapter for multiple values (up to 10 values in a boost::tuple
@@ -30,7 +31,7 @@ public:
       bool returnValue = false;
       if(column == 0 || columValues == NULL || columnName == NULL)
       {
-         BOOST_LOG_TRIVIAL(warning) << "Invalid arguments";
+         YADOMS_LOG(warning) << "Invalid arguments";
          returnValue = false;
       }
       else

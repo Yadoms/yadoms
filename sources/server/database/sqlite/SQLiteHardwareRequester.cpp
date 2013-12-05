@@ -3,9 +3,10 @@
 #include "tools/Exceptions/NotImplementedException.h"
 #include "SQLiteDataProvider.h"
 #include "adapters/SingleValueAdapter.hpp"
+#include "adapters/HardwareAdapter.h"
 
-CSQLiteHardwareRequester::CSQLiteHardwareRequester(CSQLiteDataProvider * pDatabaseHandler)
-   :m_pDatabaseHandler(pDatabaseHandler)
+CSQLiteHardwareRequester::CSQLiteHardwareRequester(const CSQLiteDataProvider & databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
+   :m_databaseHandler(databaseHandler), m_databaseRequester(databaseRequester)
 {
 }
 
@@ -27,7 +28,7 @@ CHardware CSQLiteHardwareRequester::getHardware(const int hardwareId)
 std::vector<CHardware> CSQLiteHardwareRequester::getHardwares()
 {
    CHardwareAdapter adapter;
-   m_pDatabaseHandler->queryEntities<CHardware>(&adapter, "SELECT * FROM Hardware");
+   m_databaseRequester->queryEntities<CHardware>(&adapter, "SELECT * FROM Hardware");
    return adapter.getResults();
 }
 
@@ -35,7 +36,7 @@ std::vector<CHardware> CSQLiteHardwareRequester::getHardwares()
 std::vector<std::string > CSQLiteHardwareRequester::getHardwareNameList()
 {
    CSingleValueAdapter<std::string> adapter;
-   m_pDatabaseHandler->queryEntities<std::string>(&adapter, "SELECT Name FROM Hardware WHERE id=%d ORDER BY Name", 2);
+   m_databaseRequester->queryEntities<std::string>(&adapter, "SELECT Name FROM Hardware WHERE id=%d ORDER BY Name", 2);
    return adapter.getResults();
 }
 
