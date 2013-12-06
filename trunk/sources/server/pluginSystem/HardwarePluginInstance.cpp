@@ -5,8 +5,10 @@
 #include "plugins/hardware/HardwarePluginInformation.h"
 
 
-CHardwarePluginInstance::CHardwarePluginInstance(boost::shared_ptr<const CHardwarePluginFactory> plugin, const CHardware& context) 
-    : CThreadBase(context.getName()), m_pPlugin(plugin), m_context(context)
+CHardwarePluginInstance::CHardwarePluginInstance(
+   boost::shared_ptr<const CHardwarePluginFactory> plugin,
+   const boost::shared_ptr<CHardware> context)
+    : CThreadBase(context->getName()), m_pPlugin(plugin), m_context(context)
 {
 	BOOST_ASSERT(m_pPlugin);
    m_pPluginInstance.reset(m_pPlugin->construct());
@@ -25,7 +27,7 @@ void CHardwarePluginInstance::doWork()
    // TODO : we can set protections here (restart plugin if it crashes, force to stop it...)
    try
    {
-      m_pPluginInstance->doWork(m_context.getConfiguration());
+      m_pPluginInstance->doWork(m_context->getConfiguration());
    }
    catch (boost::thread_interrupted&)
    {
@@ -45,8 +47,8 @@ void CHardwarePluginInstance::doWork()
    }
 }
 
-void CHardwarePluginInstance::updateConfiguration() const
+void CHardwarePluginInstance::updateConfiguration(const std::string& newConfiguration) const
 {
    BOOST_ASSERT(m_pPluginInstance);
-   m_pPluginInstance->updateConfiguration(m_context.getConfiguration());
+   m_pPluginInstance->updateConfiguration(newConfiguration);
 }

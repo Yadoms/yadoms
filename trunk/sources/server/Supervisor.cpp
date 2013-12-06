@@ -27,11 +27,11 @@ void CSupervisor::doWork()
       if(pDataProvider->load())
       {
 
-         std::vector<CHardware> hardwares = pDataProvider->getHardwareRequester()->getHardwares();
+         std::vector<boost::shared_ptr<CHardware> > hardwares = pDataProvider->getHardwareRequester()->getHardwares();
          YADOMS_LOG(info) << "List of all hardwares";
-         BOOST_FOREACH(CHardware hardware, hardwares)
+         BOOST_FOREACH(boost::shared_ptr<CHardware> hardware, hardwares)
          {
-            YADOMS_LOG(info) << "Name=" << hardware.getName() << " PluginName=" << hardware.getPluginName();
+            YADOMS_LOG(info) << "Name=" << hardware->getName() << " PluginName=" << hardware->getPluginName();
          }
          YADOMS_LOG(info) << "[END] List of all hardwares";
       }
@@ -39,7 +39,7 @@ void CSupervisor::doWork()
       // Start the harware plugin manager
       CHardwarePluginManager hardwarePluginManager(
          "../builds/lib/Debug"/* TODO m_startupOptions.getHarwarePluginsPath() */,
-         boost::shared_ptr<IHardwareRequester> (pDataProvider->getHardwareRequester()));
+         pDataProvider->getHardwareRequester());
 
       try
       {

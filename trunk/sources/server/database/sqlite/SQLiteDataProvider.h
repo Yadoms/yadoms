@@ -26,7 +26,7 @@ public:
    // IDatabaseProvider implementation
 	bool load();
 	void unload();
-   IHardwareRequester * getHardwareRequester() { return m_hardwareRequester.get(); }
+   boost::shared_ptr<IHardwareRequester> getHardwareRequester() { return m_hardwareRequester; }
    // [END] IHardwarePlugin implementation
 
 private:

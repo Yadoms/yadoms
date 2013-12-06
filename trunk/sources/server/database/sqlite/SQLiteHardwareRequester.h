@@ -22,12 +22,12 @@ public:
 	virtual ~CSQLiteHardwareRequester();
 
    // IHardwareRequester implementation
-   bool createHardware(CHardware & hardwareToCreate);
-	CHardware getHardware(const int hardwareId);
-   CHardware getHardware(const std::string& hardwareName);
-	std::vector<CHardware> getHardwares();
-	bool updateHardware(CHardware & hardwareToUpdate);
-   bool removeHardware(CHardware & hardwareToRemove);
+   bool createHardware(boost::shared_ptr<CHardware> hardwareToCreate);
+	boost::shared_ptr<CHardware> getHardware(const int hardwareId);
+   boost::shared_ptr<CHardware> getHardware(const std::string& hardwareName);
+	std::vector<boost::shared_ptr<CHardware> > getHardwares();
+	bool updateHardware(boost::shared_ptr<CHardware> hardwareToUpdate);
+   bool removeHardware(boost::shared_ptr<CHardware> hardwareToRemove);
    // [END] IHardwareRequester implementation
 
    //test

@@ -21,7 +21,7 @@ bool CHardwareAdapter::adapt(int column, char** columValues, char** columnNames)
    }
    else
    {
-      CHardware newHardware;
+      boost::shared_ptr<CHardware> newHardware(new CHardware());
 
       std::string columnId("id");
       std::string columnName("name");
@@ -33,13 +33,13 @@ bool CHardwareAdapter::adapt(int column, char** columValues, char** columnNames)
          std::string colName(columnNames[i]);
 
          if(boost::iequals(columnId, colName))
-            newHardware.setId( boost::lexical_cast<int>(columValues[i]) );
+            newHardware->setId( boost::lexical_cast<int>(columValues[i]) );
          else if(boost::iequals(columnName, colName))
-            newHardware.setName( columValues[i] );
+            newHardware->setName( columValues[i] );
          else if(boost::iequals(columnPluginName, colName))
-            newHardware.setPluginName( columValues[i] );
+            newHardware->setPluginName( columValues[i] );
          else if(boost::iequals(columnConfiguration, colName))
-            newHardware.setConfiguration( columValues[i] );
+            newHardware->setConfiguration( columValues[i] );
          else
          {
             //ignore it
@@ -52,7 +52,7 @@ bool CHardwareAdapter::adapt(int column, char** columValues, char** columnNames)
    return returnValue;
 }
 
-std::vector<CHardware> CHardwareAdapter::getResults()  
+std::vector<boost::shared_ptr<CHardware> > CHardwareAdapter::getResults()  
 { 
    return m_results; 
 }

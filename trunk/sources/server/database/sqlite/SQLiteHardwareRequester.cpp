@@ -15,47 +15,47 @@ CSQLiteHardwareRequester::~CSQLiteHardwareRequester()
 }
 
 // IHardwareRequester implementation
-bool CSQLiteHardwareRequester::createHardware(CHardware & hardwareToCreate)
+bool CSQLiteHardwareRequester::createHardware(boost::shared_ptr<CHardware> hardwareToCreate)
 {
    throw CNotImplementedException();
 }
 
-CHardware CSQLiteHardwareRequester::getHardware(const int hardwareId)
+boost::shared_ptr<CHardware> CSQLiteHardwareRequester::getHardware(const int hardwareId)
 {
    throw CNotImplementedException();
 }
 
-CHardware CSQLiteHardwareRequester::getHardware(const std::string& hardwareName)
+boost::shared_ptr<CHardware> CSQLiteHardwareRequester::getHardware(const std::string& hardwareName)
 {
    CHardwareAdapter adapter;
    std::ostringstream os;
    os << "SELECT * FROM Hardware WHERE name=\"" << hardwareName << "\"";
-   m_databaseRequester->queryEntities<CHardware>(&adapter, os.str());
+   m_databaseRequester->queryEntities<boost::shared_ptr<CHardware> >(&adapter, os.str());
    // TODO : gérer exception si non trouvé
    return adapter.getResults().at(0);
 }
 
-std::vector<CHardware> CSQLiteHardwareRequester::getHardwares()
+std::vector<boost::shared_ptr<CHardware> > CSQLiteHardwareRequester::getHardwares()
 {
    CHardwareAdapter adapter;
-   m_databaseRequester->queryEntities<CHardware>(&adapter, "SELECT * FROM Hardware");
+   m_databaseRequester->queryEntities<boost::shared_ptr<CHardware> >(&adapter, "SELECT * FROM Hardware");
    return adapter.getResults();
 }
 
 //test
-std::vector<std::string > CSQLiteHardwareRequester::getHardwareNameList()
+std::vector<std::string> CSQLiteHardwareRequester::getHardwareNameList()
 {
    CSingleValueAdapter<std::string> adapter;
    m_databaseRequester->queryEntities<std::string>(&adapter, "SELECT Name FROM Hardware WHERE id=%d ORDER BY Name", 2);
    return adapter.getResults();
 }
 
-bool CSQLiteHardwareRequester::updateHardware(CHardware & hardwareToUpdate)
+bool CSQLiteHardwareRequester::updateHardware(boost::shared_ptr<CHardware> hardwareToUpdate)
 {
    throw CNotImplementedException();
 }
 
-bool CSQLiteHardwareRequester::removeHardware(CHardware & hardwareToRemove)
+bool CSQLiteHardwareRequester::removeHardware(boost::shared_ptr<CHardware> hardwareToRemove)
 {
    throw CNotImplementedException();
 }
