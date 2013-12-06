@@ -156,7 +156,7 @@ public:
    CHardwarePluginConfigurationEnumGeneric(const std::string& name, const std::string& description)
       :CHardwarePluginConfigurationParameter(name, description){}
    virtual ~CHardwarePluginConfigurationEnumGeneric(){}
-   virtual const ValuesNames& getAvailableValues() const = 0;
+   virtual boost::shared_ptr<std::vector<std::string> > getAvailableValues() const = 0;
 };
 
 //--------------------------------------------------------------
@@ -209,9 +209,15 @@ public:
       }
    }
 
-   const ValuesNames& getAvailableValues() const
+   boost::shared_ptr<std::vector<std::string> > getAvailableValues() const
    {
-      return m_valueNames;
+      boost::shared_ptr<std::vector<std::string> > valueNames(new std::vector<std::string>);
+
+      // Copy map to string vector (IHM doesn't need keys)
+      for(ValuesNames::const_iterator it = m_valueNames.begin(); it != m_valueNames.end(); ++it)
+         valueNames->push_back(it->second);
+
+      return valueNames;
    }
 
    virtual void load(boost::property_tree::ptree& pt)
@@ -226,5 +232,58 @@ public:
 private:
    Enum m_value;
    const ValuesNames& m_valueNames;
+};
+
+//--------------------------------------------------------------
+/// \class Hardware plugin configuration serial port parameter
+//--------------------------------------------------------------
+class CHardwarePluginConfigurationSerialPortParameter : public CHardwarePluginConfigurationEnumGeneric
+{
+public:
+   CHardwarePluginConfigurationSerialPortParameter(const std::string& name, const std::string& description, const std::string& value)
+      :CHardwarePluginConfigurationEnumGeneric(name, description), m_value(value) {}
+
+   virtual boost::shared_ptr<CHardwarePluginConfigurationParameter> clone() const
+   {
+      boost::shared_ptr<CHardwarePluginConfigurationSerialPortParameter> p(new CHardwarePluginConfigurationSerialPortParameter(getName(), getDescription(), m_value));
+      return p;
+   }
+
+   const std::string& get() const { return m_value; }
+
+   virtual const std::string valueToString() const
+   { return m_value; }
+
+   virtual void valueFromString(const std::string& valueAsString)
+   { m_value = valueAsString; }
+
+   virtual boost::shared_ptr<std::vector<std::string> > getAvailableValues() const
+   {
+      return listSerialPorts();
+   }
+
+   virtual void load(boost::property_tree::ptree& pt)
+   {
+      m_value = pt.get<std::string>(getName());
+   }
+   virtual void save(boost::property_tree::ptree& pt) const
+   {
+      pt.put<std::string>(getName(), m_value);
+   }
+
+private:
+   static boost::shared_ptr<std::vector<std::string> > listSerialPorts()
+   {
+      //TODO, en attendant
+      boost::shared_ptr<std::vector<std::string> > serialPorts(new std::vector<std::string>);
+      serialPorts->push_back("COM1");
+      serialPorts->push_back("COM2");
+      serialPorts->push_back("COM5");
+      return serialPorts;
+   }
+
+private:
+   std::string m_value;
+   const std::vector<std::string> m_valueNames;
 };
 

@@ -59,10 +59,10 @@ void CHardwarePluginFactory::load(const boost::filesystem::path& libraryPath)
             // Enum, get all available values
             std::ostringstream os;
             os << "Available values : ";
-            const CHardwarePluginConfigurationEnumGeneric::ValuesNames& values = dynamic_cast<CHardwarePluginConfigurationEnumGeneric*>(parameter.get())->getAvailableValues();
-            for (CHardwarePluginConfigurationEnumGeneric::ValuesNames::const_iterator it = values.begin() ; it != values.end() ; ++it)
-               os << (*it).second << "|";
-            YADOMS_LOG(debug) << os;
+            boost::shared_ptr<std::vector<std::string> > values = dynamic_cast<CHardwarePluginConfigurationEnumGeneric*>(parameter.get())->getAvailableValues();
+            BOOST_FOREACH(std::string value, *values)
+               os << value << "|";
+            YADOMS_LOG(debug) << os.str();
          }
       }
       // 3 - L'utilisateur modifie 2 valeurs
@@ -74,7 +74,7 @@ void CHardwarePluginFactory::load(const boost::filesystem::path& libraryPath)
 
 
       // Dans le cas d'une mise à jour de conf d'une instance de plugin existante, il faudrait commencer par
-      std::string stringProvenantDeLaBase("{\"BoolParameter\":\"true\",\"EnumParameter\":\"7\",\"Serial port\":\"tty3\"}");
+      std::string stringProvenantDeLaBase("{\"BoolParameter\":\"true\",\"EnumParameter\":\"7\",\"Serial port\":\"COM5\"}");
       CHardwarePluginConfiguration newConf2 = defaultConfiguration.get();
       newConf2.unserializeValues(stringProvenantDeLaBase);
       //... et pour l'affichage c'est pareil

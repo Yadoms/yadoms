@@ -35,7 +35,8 @@ IMPLEMENT_CONFIGURATION
       (kEnumValue2, "EnumValue2")
       (kEnumValue3, "EnumValue3");
 
-   ADD_CONFIGURATION_PARAMETER_STRING("Serial port", "The serial port where my plugin is connected", "tty0");
+   ADD_CONFIGURATION_PARAMETER_STRING("StringParameter", "Just a string parameter", "Yadmos is so powerful !");
+   ADD_CONFIGURATION_PARAMETER_SERIAL_PORT("Serial port", "Specific serial port parameters. Yadoms will populate available values with system serial ports.", "tty0");
    ADD_CONFIGURATION_PARAMETER_BOOL("BoolParameter", "Just a boolean example", false);
    ADD_CONFIGURATION_PARAMETER_ENUM(EEnumType, "EnumParameter", "Example of an enum with 3 values", kEnumValue2, EEnumTypeNames);
    ADD_CONFIGURATION_PARAMETER_INT("IntParameter", "This is my int parameter example", 7);
@@ -62,6 +63,7 @@ void CFakePlugin::doWork(const std::string& configurationValues)
       {
          // Read parameter as string
          YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is " << configuration["Serial port"].valueToString();
+         YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'StringParameter' is " << configuration["StringParameter"].valueToString();
          YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is " << configuration["BoolParameter"].valueToString();
          YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'EnumParameter' is " << configuration["EnumParameter"].valueToString();
 
@@ -70,7 +72,8 @@ void CFakePlugin::doWork(const std::string& configurationValues)
             YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is true";
          else
             YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is false";
-         YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is " << configuration.asString("Serial port");
+         YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'StringParameter' is " << configuration.asString("StringParameter");
+         YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is " << configuration.asSerialPort("Serial port");
          std::ostringstream os;
          os << "CFakePlugin::doWork, parameter 'EnumParameter' is ";
          switch (configuration.asEnum<EEnumType>("EnumParameter"))
@@ -80,7 +83,7 @@ void CFakePlugin::doWork(const std::string& configurationValues)
          case kEnumValue3: os << "EnumValue3"; break;
          default: os << "Invalid value"; break;
          }
-         YADOMS_LOG(debug) << os;
+         YADOMS_LOG(debug) << os.str();
       }
       catch (const std::bad_cast& bc)
       {
