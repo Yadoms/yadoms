@@ -7,6 +7,7 @@
 
 #include "tools/ThreadBase.h"
 #include "HardwarePluginFactory.h"
+#include "database/entities/Hardware.h"
 
 //--------------------------------------------------------------
 /// \brief	this class is used to manage a plugin instance. 
@@ -16,10 +17,10 @@ class CHardwarePluginInstance : public CThreadBase
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
-   /// \param [in]	pluginInstanceName   the plugin instance name
-   /// \param [in]   pluginInstance       the plugin instance to manage
+   /// \param [in]	plugin         the plugin used for this instance
+   /// \param [in]   context        the database accessor
    //--------------------------------------------------------------
-   CHardwarePluginInstance(const std::string& pluginInstanceName, boost::shared_ptr<IHardwarePlugin> pluginInstance);
+   CHardwarePluginInstance(boost::shared_ptr<const CHardwarePluginFactory> plugin, const CHardware& context);
 
    //--------------------------------------------------------------
    /// \brief	Desstructor
@@ -39,12 +40,17 @@ protected:
 
 private:
    //--------------------------------------------------------------
+   /// \brief			The plugin used for this instance
+   //--------------------------------------------------------------
+   boost::shared_ptr<const CHardwarePluginFactory> m_pPlugin;
+
+   //--------------------------------------------------------------
    /// \brief			The plugin instance
    //--------------------------------------------------------------
    boost::shared_ptr<IHardwarePlugin> m_pPluginInstance;//TODO : rendre thread-safe
 
    //--------------------------------------------------------------
-   /// \brief			get the plugin instance configuration (through database)
+   /// \brief			The database accessor
    //--------------------------------------------------------------
-   std::string getPluginConfiguration() const;
+   const CHardware m_context;
 };

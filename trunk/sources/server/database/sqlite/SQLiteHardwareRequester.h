@@ -22,8 +22,9 @@ public:
 	virtual ~CSQLiteHardwareRequester();
 
    // IHardwareRequester implementation
-   bool createHardware(CHardware & hardwareToRemove);
+   bool createHardware(CHardware & hardwareToCreate);
 	CHardware getHardware(const int hardwareId);
+   CHardware getHardware(const std::string& hardwareName);
 	std::vector<CHardware> getHardwares();
 	bool updateHardware(CHardware & hardwareToUpdate);
    bool removeHardware(CHardware & hardwareToRemove);

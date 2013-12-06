@@ -26,6 +26,7 @@ bool CHardwareAdapter::adapt(int column, char** columValues, char** columnNames)
       std::string columnId("id");
       std::string columnName("name");
       std::string columnPluginName("pluginName");
+      std::string columnConfiguration("configuration");
 
       for(int i=0; i<column ; i++)
       {
@@ -37,6 +38,8 @@ bool CHardwareAdapter::adapt(int column, char** columValues, char** columnNames)
             newHardware.setName( columValues[i] );
          else if(boost::iequals(columnPluginName, colName))
             newHardware.setPluginName( columValues[i] );
+         else if(boost::iequals(columnConfiguration, colName))
+            newHardware.setConfiguration( columValues[i] );
          else
          {
             //ignore it

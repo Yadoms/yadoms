@@ -5,10 +5,11 @@
 #include "plugins/hardware/HardwarePluginInformation.h"
 
 
-CHardwarePluginInstance::CHardwarePluginInstance(const std::string& pluginInstanceName, boost::shared_ptr<IHardwarePlugin> pluginInstance) 
-    : CThreadBase(pluginInstanceName), m_pPluginInstance(pluginInstance)
+CHardwarePluginInstance::CHardwarePluginInstance(boost::shared_ptr<const CHardwarePluginFactory> plugin, const CHardware& context) 
+    : CThreadBase(context.getName()), m_pPlugin(plugin), m_context(context)
 {
-	BOOST_ASSERT(m_pPluginInstance);
+	BOOST_ASSERT(m_pPlugin);
+   m_pPluginInstance.reset(m_pPlugin->construct());
 }
 
 CHardwarePluginInstance::~CHardwarePluginInstance()
@@ -24,7 +25,7 @@ void CHardwarePluginInstance::doWork()
    // TODO : we can set protections here (restart plugin if it crashes, force to stop it...)
    try
    {
-      m_pPluginInstance->doWork(getPluginConfiguration());
+      m_pPluginInstance->doWork(m_context.getConfiguration());
    }
    catch (boost::thread_interrupted&)
    {
@@ -47,12 +48,5 @@ void CHardwarePluginInstance::doWork()
 void CHardwarePluginInstance::updateConfiguration() const
 {
    BOOST_ASSERT(m_pPluginInstance);
-   m_pPluginInstance->updateConfiguration(getPluginConfiguration());
-}
-
-std::string CHardwarePluginInstance::getPluginConfiguration() const
-{
-   // TODO : récupérer la conf de la base à partir du nom du plugin et de l'instance
-   std::string fromDatabase = "{\"BoolParameter\":\"false\",\"EnumParameter\":\"12\",\"Serial port\":\"tty3\"}";
-   return fromDatabase;
+   m_pPluginInstance->updateConfiguration(m_context.getConfiguration());
 }
