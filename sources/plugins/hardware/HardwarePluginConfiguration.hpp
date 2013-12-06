@@ -127,6 +127,18 @@ public:
    }
 
    //--------------------------------------------------------------
+   /// \brief	    Get parameter value as serial port
+   /// \param [in] parameterName    Name of the parameter
+   /// \return     Parameter value
+   /// \throw      std::bad_cast if parameter is not a serial port
+   //--------------------------------------------------------------
+   const std::string& asSerialPort(const std::string parameterName) const
+   {
+      return (dynamic_cast<const CHardwarePluginConfigurationSerialPortParameter&>
+         (*m_configurationMap.at(parameterName))).get();
+   }
+
+   //--------------------------------------------------------------
    /// \brief	    Get parameter value as enum
    /// \param [in] parameterName    Name of the parameter
    /// \return     Parameter value
@@ -180,4 +192,7 @@ private:
       configuration.AddParameter(p);                                                                              \
    }
    
+#define ADD_CONFIGURATION_PARAMETER_SERIAL_PORT(name,description,defaultValue)                                    \
+   ADD_CONFIGURATION_PARAMETER_BASE(CHardwarePluginConfigurationSerialPortParameter,name,description,defaultValue)
+
    
