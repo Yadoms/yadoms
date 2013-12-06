@@ -6,7 +6,7 @@
 //--------------------------------------------------------------
 /// \Brief		Adapter for Hardware entities
 //--------------------------------------------------------------
-class CHardwareAdapter : public ISQLiteResultAdapter<CHardware>
+class CHardwareAdapter : public ISQLiteResultAdapter<boost::shared_ptr<CHardware> >
 {
 public:
    //--------------------------------------------------------------
@@ -21,12 +21,12 @@ public:
    
    // ISQLiteResultAdapter implementation
    bool adapt(int column, char** columValues, char** columnName);
-   std::vector<CHardware> getResults(); 
+   std::vector<boost::shared_ptr<CHardware> > getResults(); 
    // [END] ISQLiteResultAdapter implementation
 
 private:
    //--------------------------------------------------------------
    /// \Brief		Contains the list of Hardware entities
    //--------------------------------------------------------------
-   std::vector<CHardware> m_results;
+   std::vector<boost::shared_ptr<CHardware> > m_results;
 };

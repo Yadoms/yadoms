@@ -26,7 +26,7 @@ public:
 	/// \return 	the hardware requester
 	/// \throws 		
 	//--------------------------------------------------------------  
-   virtual IHardwareRequester * getHardwareRequester() = 0;
+   virtual boost::shared_ptr<IHardwareRequester> getHardwareRequester() = 0;
 
 
 protected:

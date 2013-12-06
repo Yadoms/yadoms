@@ -20,7 +20,7 @@ public:
    /// \param [in]	plugin         the plugin used for this instance
    /// \param [in]   context        the database accessor
    //--------------------------------------------------------------
-   CHardwarePluginInstance(boost::shared_ptr<const CHardwarePluginFactory> plugin, const CHardware& context);
+   CHardwarePluginInstance(boost::shared_ptr<const CHardwarePluginFactory> plugin, const boost::shared_ptr<CHardware> context);
 
    //--------------------------------------------------------------
    /// \brief	Desstructor
@@ -28,9 +28,10 @@ public:
    virtual ~CHardwarePluginInstance();
 
    //--------------------------------------------------------------
-   /// \brief			Notify the plugin about its configuration changed
+   /// \brief			            Notify the plugin about its configuration changed
+   /// \param  newConfiguration  The new configuration to apply
    //--------------------------------------------------------------
-   virtual void updateConfiguration() const;
+   virtual void updateConfiguration(const std::string& newConfiguration) const;
 
 protected:
    //--------------------------------------------------------------
@@ -52,5 +53,5 @@ private:
    //--------------------------------------------------------------
    /// \brief			The database accessor
    //--------------------------------------------------------------
-   const CHardware m_context;
+   const boost::shared_ptr<CHardware> m_context;
 };

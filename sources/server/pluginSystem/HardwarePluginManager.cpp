@@ -19,22 +19,23 @@ void CHardwarePluginManager::Start()
    loadPlugins();
 
    // Get instances from database
-   std::vector<CHardware> databasePluginInstances = m_database->getHardwares();
-   BOOST_FOREACH(CHardware databasePluginInstance, databasePluginInstances)
+   std::vector<boost::shared_ptr<CHardware> > databasePluginInstances = m_database->getHardwares();
+   BOOST_FOREACH(boost::shared_ptr<CHardware> databasePluginInstance, databasePluginInstances)
    {
-      if (m_plugins.find(databasePluginInstance.getPluginName()) == m_plugins.end())
+      if (m_plugins.find(databasePluginInstance->getPluginName()) == m_plugins.end())
       {
          // The plugin in database doesn't exist anymore
-         YADOMS_LOG(error) << "Plugin " << databasePluginInstance.getPluginName() <<
-            " for instance " << databasePluginInstance.getName() << " in database was not found";
+         YADOMS_LOG(error) << "Plugin " << databasePluginInstance->getPluginName() <<
+            " for instance " << databasePluginInstance->getName() << " in database was not found";
 
          continue;      
       }
       
       // Create the instance
       boost::shared_ptr<CHardwarePluginInstance> pluginInstance(
-         new CHardwarePluginInstance(m_plugins[databasePluginInstance.getPluginName()], m_database->getHardware(databasePluginInstance.getName())));
-      m_pluginInstances[databasePluginInstance.getName()] = pluginInstance;
+         new CHardwarePluginInstance(m_plugins[databasePluginInstance->getPluginName()],
+            m_database->getHardware(databasePluginInstance->getName())));
+      m_pluginInstances[databasePluginInstance->getName()] = pluginInstance;
    }
 
    // Start all plugin instances
