@@ -22,14 +22,9 @@ bool CSQLiteHardwareRequester::createHardware(boost::shared_ptr<CHardware> hardw
 
 boost::shared_ptr<CHardware> CSQLiteHardwareRequester::getHardware(const int hardwareId)
 {
-   throw CNotImplementedException();
-}
-
-boost::shared_ptr<CHardware> CSQLiteHardwareRequester::getHardware(const std::string& hardwareName)
-{
    CHardwareAdapter adapter;
    std::ostringstream os;
-   os << "SELECT * FROM Hardware WHERE name=\"" << hardwareName << "\"";
+   os << "SELECT * FROM Hardware WHERE id=\"" << hardwareId << "\"";
    m_databaseRequester->queryEntities<boost::shared_ptr<CHardware> >(&adapter, os.str());
    // TODO : gérer exception si non trouvé
    return adapter.getResults().at(0);

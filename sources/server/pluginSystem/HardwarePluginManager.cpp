@@ -5,7 +5,7 @@
 CHardwarePluginManager::CHardwarePluginManager(const std::string& initialDir, boost::shared_ptr<IHardwareRequester> database)
    :m_database(database), m_pluginPath(initialDir)
 {
-   //TODO : remettre   BOOST_ASSERT(m_database);
+   BOOST_ASSERT(m_database);
    Start();
 }
 
@@ -25,8 +25,9 @@ void CHardwarePluginManager::Start()
       if (m_plugins.find(databasePluginInstance->getPluginName()) == m_plugins.end())
       {
          // The plugin in database doesn't exist anymore
-         YADOMS_LOG(error) << "Plugin " << databasePluginInstance->getPluginName() <<
-            " for instance " << databasePluginInstance->getName() << " in database was not found";
+         YADOMS_LOG(error) << "Plugin #" << databasePluginInstance->getId() <<
+            " (" << databasePluginInstance->getPluginName() <<
+            ") for instance " << databasePluginInstance->getName() << " in database was not found";
 
          continue;      
       }
@@ -34,8 +35,8 @@ void CHardwarePluginManager::Start()
       // Create the instance
       boost::shared_ptr<CHardwarePluginInstance> pluginInstance(
          new CHardwarePluginInstance(m_plugins[databasePluginInstance->getPluginName()],
-            m_database->getHardware(databasePluginInstance->getName())));
-      m_pluginInstances[databasePluginInstance->getName()] = pluginInstance;
+            m_database->getHardware(databasePluginInstance->getId())));
+      m_pluginInstances[databasePluginInstance->getId()] = pluginInstance;
    }
 
    // Start all plugin instances

@@ -92,10 +92,10 @@ void CHardwarePluginFactory::unload()
 
 
 //--------------------------------------------------------------
-/// \brief	    Construct a plugin instance (call the contruct library method)
+/// \brief	    Construct a plugin instance (call the construct library method)
 /// \return     a new plugin instance
 //-------------------------------------------------------------
-IHardwarePlugin * CHardwarePluginFactory::construct() const
+IHardwarePlugin * CHardwarePluginFactory::construct() const//TODO passer en shared_ptr
 {
 	BOOST_ASSERT(m_construct);  // construct can not be called if load was unsuccessfully
    if(m_construct != NULL)

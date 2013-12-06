@@ -65,9 +65,9 @@ private:
    PluginMap m_plugins;
 
    //--------------------------------------------------------------
-   /// \brief			Map of all plugin instances (key are plugin instance names)
+   /// \brief			Map of all plugin instances (key are plugin instance id)
    //--------------------------------------------------------------
-   typedef std::map<std::string, boost::shared_ptr<CHardwarePluginInstance> > PluginInstanceMap;
+   typedef std::map<int, boost::shared_ptr<CHardwarePluginInstance> > PluginInstanceMap;
    PluginInstanceMap m_pluginInstances;
 
    //--------------------------------------------------------------
