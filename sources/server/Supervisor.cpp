@@ -22,19 +22,18 @@ void CSupervisor::doWork()
       YADOMS_LOG(info) << "Supervisor is starting";
 
 
-      YADOMS_LOG(info) << "Testing database" << std::endl;
+      YADOMS_LOG(info) << "Testing database";
       boost::shared_ptr<IDataProvider> pDataProvider (new CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
       if(pDataProvider->load())
       {
 
          std::vector<CHardware> hardwares = pDataProvider->getHardwareRequester()->getHardwares();
-         std::vector<CHardware>::iterator i;
-         // YADOMS_LOG(info) << "List of all hardwares"<< std::endl;
-         for(i=hardwares.begin(); i!=hardwares.end(); i++)
+         YADOMS_LOG(info) << "List of all hardwares";
+         BOOST_FOREACH(CHardware hardware, hardwares)
          {
-            YADOMS_LOG(info) << "Hardware Id=" << i->getId() << " Name=" << i->getName() << " PluginName=" << i->getPluginName();
+            YADOMS_LOG(info) << "Name=" << hardware.getName() << " PluginName=" << hardware.getPluginName();
          }
-         YADOMS_LOG(info) << "[END] List of all hardwares"<< std::endl;
+         YADOMS_LOG(info) << "[END] List of all hardwares";
       }
 
       // Start the harware plugin manager

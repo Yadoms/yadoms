@@ -95,7 +95,7 @@ void CHardwarePluginFactory::unload()
 /// \brief	    Construct a plugin instance (call the contruct library method)
 /// \return     a new plugin instance
 //-------------------------------------------------------------
-IHardwarePlugin * CHardwarePluginFactory::construct()
+IHardwarePlugin * CHardwarePluginFactory::construct() const
 {
 	BOOST_ASSERT(m_construct);  // construct can not be called if load was unsuccessfully
    if(m_construct != NULL)

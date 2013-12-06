@@ -15,7 +15,7 @@ CSQLiteHardwareRequester::~CSQLiteHardwareRequester()
 }
 
 // IHardwareRequester implementation
-bool CSQLiteHardwareRequester::createHardware(CHardware & hardwareToRemove)
+bool CSQLiteHardwareRequester::createHardware(CHardware & hardwareToCreate)
 {
    throw CNotImplementedException();
 }
@@ -23,6 +23,16 @@ bool CSQLiteHardwareRequester::createHardware(CHardware & hardwareToRemove)
 CHardware CSQLiteHardwareRequester::getHardware(const int hardwareId)
 {
    throw CNotImplementedException();
+}
+
+CHardware CSQLiteHardwareRequester::getHardware(const std::string& hardwareName)
+{
+   CHardwareAdapter adapter;
+   std::ostringstream os;
+   os << "SELECT * FROM Hardware WHERE name=\"" << hardwareName << "\"";
+   m_databaseRequester->queryEntities<CHardware>(&adapter, os.str());
+   // TODO : gérer exception si non trouvé
+   return adapter.getResults().at(0);
 }
 
 std::vector<CHardware> CSQLiteHardwareRequester::getHardwares()

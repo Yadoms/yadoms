@@ -44,7 +44,7 @@ public:
    /// \brief	    Construct a plugin instance (call the contruct library method)
    /// \return     a new plugin instance
    //-------------------------------------------------------------
-   IHardwarePlugin* construct();
+   IHardwarePlugin* construct() const;
 
    //--------------------------------------------------------------
    /// \brief	    Get information about this hardware plugin

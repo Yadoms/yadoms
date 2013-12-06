@@ -10,6 +10,7 @@ public:
 
 	//Read
 	virtual CHardware getHardware(const int hardwareId) = 0;
+   virtual CHardware getHardware(const std::string& hardwareName) = 0;
 	virtual std::vector<CHardware> getHardwares() = 0;
 	
 	//Update

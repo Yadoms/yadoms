@@ -27,6 +27,7 @@ bool CSQLiteDataProvider::load()
 
    try
    {
+      std::string s = boost::filesystem::current_path().string();
       if ( boost::filesystem::exists( m_dbFile.c_str() ) )
       {
          int rc = sqlite3_open(m_dbFile.c_str(), &m_pDatabaseHandler);
@@ -50,7 +51,7 @@ bool CSQLiteDataProvider::load()
       }
       else
       {
-         YADOMS_LOG(error) << "Database file is not found : " << m_dbFile << std::endl;
+         YADOMS_LOG(error) << "Database file is not found : " << m_dbFile;
          result = false;
       }
 

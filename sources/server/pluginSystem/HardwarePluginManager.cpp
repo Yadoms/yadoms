@@ -18,7 +18,6 @@ void CHardwarePluginManager::Start()
 {
    loadPlugins();
 
-   /*TODO : ce code est prêt pour quand la base pourra nous donner à manger : pour l'instant, m_databaseest NULL
    // Get instances from database
    std::vector<CHardware> databasePluginInstances = m_database->getHardwares();
    BOOST_FOREACH(CHardware databasePluginInstance, databasePluginInstances)
@@ -33,9 +32,8 @@ void CHardwarePluginManager::Start()
       }
       
       // Create the instance
-      boost::shared_ptr<IHardwarePlugin> pluginObject(m_plugins[databasePluginInstance.getPluginName()]->construct());
-
-      boost::shared_ptr<CHardwarePluginInstance> pluginInstance(new CHardwarePluginInstance(databasePluginInstance.getName(), pluginObject));
+      boost::shared_ptr<CHardwarePluginInstance> pluginInstance(
+         new CHardwarePluginInstance(m_plugins[databasePluginInstance.getPluginName()], m_database->getHardware(databasePluginInstance.getName())));
       m_pluginInstances[databasePluginInstance.getName()] = pluginInstance;
    }
 
@@ -44,29 +42,15 @@ void CHardwarePluginManager::Start()
    {
       instanceIt.second->start();
    }
-   */
-
-   // TODO ne serait-il pas plus logique de créer un thread pour le plugin manager ? Ou de créer un thread
-   // qui surveille l'état du répertoire de plugin et averti si détection de nouveau plugin
-
-   // Récupérer la liste des plugins à instancier depuis la base
-   //TODO : vérifier que le plugin à instancier est dans la liste des plugins trouvés (cas de suppression d'un plugin)
-   boost::shared_ptr<IHardwarePlugin> pluginInstance (m_plugins["fakePlugin.dll"]->construct());
-   CHardwarePluginInstance fakePlugin("fakePlugin.dll", pluginInstance);
-   fakePlugin.start();
-
-   //CHardwarePluginInstance fakePlugin2(pFactory->construct());
-   //fakePlugin2.start();
-   //fakePlugin2.updateConfiguration();
 }
 
 void CHardwarePluginManager::Stop()
 {
-   //TODO stop all plugins instance
-   //fakePlugin.stop();
-   //fakePlugin2.stop();
-
-   //TODO unload plugins
+   // Stop all plugins instance
+   BOOST_FOREACH(PluginInstanceMap::value_type instanceIt, m_pluginInstances)
+   {
+      instanceIt.second->stop();
+   }
 }
 
 std::vector<boost::filesystem::path> CHardwarePluginManager::findPluginFilenames()
@@ -104,7 +88,8 @@ void CHardwarePluginManager::loadPlugins()
       try
       {
          boost::shared_ptr<CHardwarePluginFactory> pNewFactory (new CHardwarePluginFactory(*libPathIt));
-         m_plugins[(*libPathIt).filename().string()] = pNewFactory;
+         // m_plugins key is just the library name (without extension)
+         m_plugins[(*libPathIt).stem().string()] = pNewFactory;
       }
       catch (CInvalidPluginException& e)
       {
