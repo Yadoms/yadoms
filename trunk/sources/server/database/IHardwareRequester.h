@@ -10,7 +10,6 @@ public:
 
 	//Read
 	virtual boost::shared_ptr<CHardware> getHardware(const int hardwareId) = 0;
-   virtual boost::shared_ptr<CHardware> getHardware(const std::string& hardwareName) = 0;
 	virtual std::vector<boost::shared_ptr<CHardware> > getHardwares() = 0;
 	
 	//Update

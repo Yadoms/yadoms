@@ -24,7 +24,6 @@ public:
    // IHardwareRequester implementation
    bool createHardware(boost::shared_ptr<CHardware> hardwareToCreate);
 	boost::shared_ptr<CHardware> getHardware(const int hardwareId);
-   boost::shared_ptr<CHardware> getHardware(const std::string& hardwareName);
 	std::vector<boost::shared_ptr<CHardware> > getHardwares();
 	bool updateHardware(boost::shared_ptr<CHardware> hardwareToUpdate);
    bool removeHardware(boost::shared_ptr<CHardware> hardwareToRemove);
