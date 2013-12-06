@@ -13,10 +13,6 @@
    {                                                                                      \
       return new pluginClassName();                                                       \
    }                                                                                      \
-   EXPORT_LIBRARY_FUNCTION void destruct(IHardwarePlugin* pluginToDelete)                 \
-   {                                                                                      \
-      delete pluginToDelete;                                                              \
-   }                                                                                      \
                                                                                           \
    static const CHardwarePluginInformation                                                \
       PluginInformations(pluginName,version,release,author,url);                          \
