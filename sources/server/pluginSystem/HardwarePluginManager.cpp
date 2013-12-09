@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "HardwarePluginManager.h"
 #include "HardwarePluginInstance.h"
+#include "tools/FileSystem.hpp"
 
 CHardwarePluginManager::CHardwarePluginManager(const std::string& initialDir, boost::shared_ptr<IHardwareRequester> database)
    :m_database(database), m_pluginPath(initialDir)

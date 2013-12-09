@@ -21,7 +21,21 @@ int CSQLiteRequester::queryStatement(const std::string & queryFormat, ...)
 
 CSQLiteRequester::QueryRow CSQLiteRequester::querySingleLine(const std::string & queryFormat, ...)
 {
-   throw CNotImplementedException();
+   char *zSql;
+   va_list ap;
+   va_start(ap, queryFormat);
+   zSql = sqlite3_vmprintf(queryFormat.c_str(), ap);
+   va_end(ap);
+
+   CSQLiteRequester::QueryResults results = query(zSql);
+
+   if(zSql)
+      sqlite3_free(zSql);
+
+   if(results.size() >= 1)
+      return results[0];
+
+   return CSQLiteRequester::QueryRow(); //returns empty data
 }
 
 

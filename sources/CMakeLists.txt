@@ -216,6 +216,13 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/adapters/GenericAdapter.cpp
 		server/database/sqlite/adapters/SingleValueAdapter.hpp
 		server/database/sqlite/adapters/MultipleValueAdapter.hpp
+		
+		server/database/sqlite/versioning/ISQLiteVersionUpgrade.h
+		server/database/sqlite/versioning/SQLiteVersion1.h
+		server/database/sqlite/versioning/SQLiteVersion1.cpp
+		server/database/sqlite/versioning/SQLiteVersionUpgraderFactory.h
+		server/database/sqlite/versioning/SQLiteVersionUpgraderFactory.cpp
+		server/database/sqlite/versioning/SQLiteVersionException.h
 	)
 	
 	set(LIBS ${LIBS} sqlite)
@@ -223,6 +230,7 @@ IF(USE_SQLITE_DATABASE)
 	if(MSVC)
 		source_group(Server\\database\\sqlite  server/database/sqlite/*.*)
 		source_group(Server\\database\\sqlite\\adapters  server/database/sqlite/adapters/*.*)
+		source_group(Server\\database\\sqlite\\versioning  server/database/sqlite/versioning/*.*)
 	endif()
 	
 	INCLUDE_DIRECTORIES(${SQLITE_INCLUDE_DIRECTORY})
