@@ -20,5 +20,11 @@ public:
    //--------------------------------------------------------------
    /// \brief      Destructor
    //--------------------------------------------------------------
-   virtual ~CSQLiteVersionException() throw();
+   //TODO : pour Seb 
+   /*
+   
+   virtual ~CSQLiteVersionException()
+   {
+   }
+   */
 };
