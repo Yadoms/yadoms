@@ -1,11 +1,24 @@
-# Project Stuff
-cmake_minimum_required (VERSION 2.6)
+##################################################################################################
+## CMakeList.txt for YADOMS
+##
+## This file generates projects/makefiles for the compete Yadoms software
+##
+## This file actually works for
+##   Windows 7 x64, MSVC 12
+##   Ubuntu 12.04, g++ 4.7
+##   Raspberry Raspbian Wheezy, g++ 4.7
+##   MacOSx Snow Leopard 10.8, g++ 4.8
+##################################################################################################
 project (Yadoms)
 
+##################################################################################################
+## Check for minimum version
+##################################################################################################
 
-##################################################################################################
-## Check for minimum GCC version
-##################################################################################################
+# Check the minimum CMake version
+cmake_minimum_required (VERSION 2.8.12)
+
+# Check for minimum GCC version
 MESSAGE(STATUS "Compiler = ${CMAKE_CXX_COMPILER_ID}")
 MESSAGE(STATUS "Compiler Version = ${CMAKE_CXX_COMPILER_VERSION}")
 
@@ -30,7 +43,7 @@ if(CMAKE_COMPIER_IS_GNUCXX)
 endif()
 
 ##################################################################################################
-## Global properties
+## Include other cmake scripts
 ##################################################################################################
 
 #include precompiled headers
@@ -39,25 +52,61 @@ include("PrecompiledHeader.cmake")
 #include user specific configuration
 include("CMakeListsUserConfig.txt" OPTIONAL)
 
-# Default Options
-if(UNIX AND NOT APPLE)
+#include Windows specific macro
+if(MSVC)
+	include("windows.cmake")
+endif()
+
+##################################################################################################
+## Global CMake configuration
+##################################################################################################
+
+#suppress VS solution ZERO_CHECK project
+if(MSVC)
+	set(CMAKE_SUPPRESS_REGENERATION TRUE)
+endif()
+
+
+##################################################################################################
+## IDE configurations
+##################################################################################################
+
+if(MSVC)
+	#allow solution folders
+	SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
+
+	#global disable (for all targets)
+	#disable warning C4996   Function call with parameters that may be unsafe 
+	add_definitions( "/wd4996" )
+	
+	#to allow BOOST in precompiled header (specify Precompiled Header Memory Allocation Limit) 
+	add_definitions("/Zm256")
+
+	#add WIN32_WINNT preprocessor deifinition
+	get_WIN32_WINNT(CURRENT_WINNT_VERSION)
+	add_definitions(-D_WIN32_WINNT=${CURRENT_WINNT_VERSION})
+endif()
+
+if(CMAKE_COMPIER_IS_GNUCXX)
+	add_definitions("-fpermissive")
 	add_definitions("-std=c++0x")
 endif()
 
-#suppress VS solution ZERO_CHECK project
-set(CMAKE_SUPPRESS_REGENERATION TRUE)
+
+##################################################################################################
+## Project output configuration
+##################################################################################################
 
 #define outputs
-include_directories(${PROJECT_SOURCE_DIR})
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../builds/lib)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../builds)
 
 
 ##################################################################################################
-## Externals libraries
+## Externals libraries (Boost, Thread, RT) only linked with
 ##################################################################################################
 
-## Boost (dynamic linking)
+# Boost (dynamic linking)
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
@@ -65,10 +114,7 @@ add_definitions( -DBOOST_WHATEVER_DYN_LINK )
 add_definitions( -DBOOST_ALL_NO_LIB )
 add_definitions( -DBOOST_ALL_DYN_LINK )
 	
-if(UNIX AND NOT APPLE)
-	set(Boost_USE_STATIC_RUNTIME OFF)
-endif()
-
+# define all needed boost libraries
 set(BOOST_LIBS 
 	system 
 	filesystem 
@@ -79,9 +125,12 @@ set(BOOST_LIBS
 	log_setup 
 	program_options
 )
+
+# search boost libs
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 set(BOOST_INCL_DIR ${YADOMS_INCL_DIR} ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 
+## thread library (pthread)
 FIND_PACKAGE(Threads)
 
 ## RT Library
@@ -89,11 +138,19 @@ if(UNIX AND NOT APPLE)
     set(RT_LIBRARY rt)
 endif()
 
+# define libraries to link with
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})
 
-#Sqlite,...
+##################################################################################################
+## Internal libraries (SQlite, Webem) comletly build from sources
+##################################################################################################
+
+#Use Sqlite database system
 set(USE_SQLITE_DATABASE TRUE)
-#set(USE_WEBEM_WEBSERVER TRUE)
+#Use Webem web server
+set(USE_WEBEM_WEBSERVER TRUE)
+
+#include libs (have their own CMakeList.txt)
 add_subdirectory(external-libs)
 
 
@@ -343,22 +400,4 @@ if(NOT Boost_USE_STATIC_LIBS)
 	ENDFOREACH(BOOSTLIBRARY)
 endif()		
 		
-##################################################################################################
-## IDE configurations
-##################################################################################################
 
-if(MSVC)
-	#allow solution folders
-	SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
-
-	#global disable (for all targets)
-	#disable warning C4996   Function call with parameters that may be unsafe 
-	add_definitions( "/wd4996" )
-	
-	#to allow BOOST in precompiled header (specify Precompiled Header Memory Allocation Limit) 
-	add_definitions("/Zm256")
-endif()
-
-if(CMAKE_COMPIER_IS_GNUCXX)
-	add_definitions("-fpermissive")
-endif()

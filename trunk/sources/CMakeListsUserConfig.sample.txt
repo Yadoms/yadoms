@@ -2,5 +2,6 @@
 # It may contains some directory definitions
 
 #define Boost ROOT
+##### use only absolute path , and do not use anti slash : only '/' ######
 #set(BOOST_ROOT "../../boost_1_55_0")
 

@@ -1,16 +1,13 @@
-# define all plugins library
+# include common plugin definitions
+include("YadomsPlugins.cmake")
 
-set(HARDWARE_PLUGIN_BASE_HEADER_SRC
-hardware/IHardwarePlugin.h
-hardware/HardwarePluginInformation.h
-hardware/HardwarePluginImplementationHelper.h
-hardware/HardwarePluginConfiguration.hpp
-hardware/HardwarePluginConfigurationParameters.hpp
+########################
+## FakePlugin
+########################
+set(FAKE_PLUGING_SRC
+	hardware/FakePlugin/FakePlugin.cpp 
+	hardware/FakePlugin/FakePlugin.h
 )
+	
+ADD_PLUGIN(fakePlugin ${FAKE_PLUGING_SRC})
 
-add_library(fakePlugin MODULE ${HARDWARE_PLUGIN_BASE_HEADER_SRC} hardware/FakePlugin/FakePlugin.cpp hardware/FakePlugin/FakePlugin.h)
-set_property( TARGET fakePlugin PROPERTY INCLUDE_DIRECTORIES ${TOOLS_INCL_DIR} ${BOOST_INCL_DIR})
-target_link_libraries(fakePlugin ${LIBS} ${CMAKE_DL_LIBS})
-IF(MSVC)
-	SET_PROPERTY(TARGET fakePlugin PROPERTY FOLDER "Plugins")
-ENDIF()
