@@ -1,7 +1,8 @@
 #place here all libraries
 IF(USE_SQLITE_DATABASE)
 	add_subdirectory(SQLite)
-	
 	set(SQLITE_INCLUDE_DIRECTORY ${SQLITE_INCLUDE_DIRECTORY} PARENT_SCOPE)
 
+	add_subdirectory(Webem)
+	set(WEBEM_INCLUDE_DIRECTORY ${WEBEM_INCLUDE_DIR2} PARENT_SCOPE)
 ENDIF()
