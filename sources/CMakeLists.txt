@@ -93,7 +93,7 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})
 
 #Sqlite,...
 set(USE_SQLITE_DATABASE TRUE)
-set(USE_WEBEM_WEBSERVER TRUE)
+#set(USE_WEBEM_WEBSERVER TRUE)
 add_subdirectory(external-libs)
 
 
