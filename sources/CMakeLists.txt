@@ -80,8 +80,7 @@ set(BOOST_LIBS
 	program_options
 )
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-INCLUDE_DIRECTORIES(${BOOST_ROOT})
+set(BOOST_INCL_DIR ${YADOMS_INCL_DIR} ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 
 FIND_PACKAGE(Threads)
 
@@ -94,74 +93,14 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})
 
 #Sqlite,...
 set(USE_SQLITE_DATABASE TRUE)
+set(USE_WEBEM_WEBSERVER TRUE)
 add_subdirectory(external-libs)
-
-##################################################################################################
-## yadoms-tools
-##################################################################################################
-
-# Library Sources
-set(SHARED_LIB_SRC
-	tools/tools/stdafx.cpp
-	tools/tools/stdafx.h
-
-	tools/tools/ThreadBase.cpp
-	tools/tools/ThreadBase.h
-
-	tools/tools/Log.h
-	tools/tools/Log.cpp
-	tools/tools/StringExtension.hpp	
-	tools/tools/Exceptions/Exception.h
-	tools/tools/Exceptions/Exception.cpp
-	tools/tools/Exceptions/NotImplementedException.h
-	tools/tools/Exceptions/NullReferenceException.h
-	tools/tools/Exceptions/NullReferenceException.cpp
-	
-	#include both platform files to see them into IDE
-	tools/windows/tools/DynamicLibrary.hpp
-	tools/windows/tools/Export.h
-	tools/windows/tools/FileSystem.hpp
-
-	tools/linux/tools/DynamicLibrary.hpp
-	tools/linux/tools/Export.h
-	tools/linux/tools/FileSystem.hpp
-)
-
-# Define project folders
-IF(MSVC)
-	source_group(PlatformSpecific\\windows tools/windows/tools/*.*)
-	source_group(PlatformSpecific\\linux tools/linux/tools/*.*)
-	source_group(Exception tools/tools/Exceptions/*.* )	
-ENDIF()
-
-# Define library outputs
-add_library(yadoms-tools STATIC  ${SHARED_LIB_SRC})
-add_precompiled_header(yadoms-tools stdafx.h)
-target_link_libraries(yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
-
-# Define include directories (allow easy includes)
-
-IF(WIN32)
-	INCLUDE_DIRECTORIES(tools/windows)
-ELSE()
-	INCLUDE_DIRECTORIES(tools/linux)
-	INCLUDE_DIRECTORIES(tools/tools)
-ENDIF()
-INCLUDE_DIRECTORIES(tools)
-
-##################################################################################################
-## Plugins
-##################################################################################################
-
-#include Plugin CMake file
-add_subdirectory(plugins)
 
 
 ##################################################################################################
 ## Yadoms
 ##################################################################################################
 
-INCLUDE_DIRECTORIES(server)
 
 # Executable sources
 set(YADOMS_SRC
@@ -225,20 +164,106 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/versioning/SQLiteVersionException.h
 	)
 	
-	set(LIBS ${LIBS} sqlite)
-	
 	if(MSVC)
 		source_group(Server\\database\\sqlite  server/database/sqlite/*.*)
 		source_group(Server\\database\\sqlite\\adapters  server/database/sqlite/adapters/*.*)
 		source_group(Server\\database\\sqlite\\versioning  server/database/sqlite/versioning/*.*)
 	endif()
 	
-	INCLUDE_DIRECTORIES(${SQLITE_INCLUDE_DIRECTORY})
+	set(LIBS ${LIBS} sqlite)
+	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${SQLITE_INCLUDE_DIRECTORY})
 ENDIF()
 
-# Define executables output
+#Web server
+IF(USE_WEBEM_WEBSERVER)
+	set(LIBS ${LIBS} webem)
+	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${WEBEM_INCLUDE_DIRECTORY})
+ENDIF()
+
+#define YADOMS output
 add_executable(yadoms ${YADOMS_SRC})
 add_precompiled_header(yadoms stdafx.h)
+
+
+##################################################################################################
+## yadoms-tools
+##################################################################################################
+
+# Library Sources
+set(SHARED_LIB_SRC
+	tools/tools/stdafx.cpp
+	tools/tools/stdafx.h
+
+	tools/tools/ThreadBase.cpp
+	tools/tools/ThreadBase.h
+
+	tools/tools/Log.h
+	tools/tools/Log.cpp
+	tools/tools/StringExtension.hpp	
+	tools/tools/Exceptions/Exception.h
+	tools/tools/Exceptions/Exception.cpp
+	tools/tools/Exceptions/NotImplementedException.h
+	tools/tools/Exceptions/NullReferenceException.h
+	tools/tools/Exceptions/NullReferenceException.cpp
+	
+	#include both platform files to see them into IDE
+	tools/windows/tools/DynamicLibrary.hpp
+	tools/windows/tools/Export.h
+	tools/windows/tools/FileSystem.hpp
+
+	tools/linux/tools/DynamicLibrary.hpp
+	tools/linux/tools/Export.h
+	tools/linux/tools/FileSystem.hpp
+)
+
+# Define project folders
+IF(MSVC)
+	source_group(PlatformSpecific\\windows tools/windows/tools/*.*)
+	source_group(PlatformSpecific\\linux tools/linux/tools/*.*)
+	source_group(Exception tools/tools/Exceptions/*.* )	
+ENDIF()
+
+# Define library outputs
+add_library(yadoms-tools STATIC  ${SHARED_LIB_SRC})
+add_precompiled_header(yadoms-tools stdafx.h)
+target_link_libraries(yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
+
+# Define include directories (allow easy includes)
+set(TOOLS_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tools)
+IF(WIN32)
+	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tools/windows)
+ELSE()
+	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tools/linux)
+	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tools/tools)
+ENDIF()
+
+set_property( TARGET yadoms-tools PROPERTY INCLUDE_DIRECTORIES ${TOOLS_INCL_DIR} ${BOOST_INCL_DIR})
+
+
+
+
+##################################################################################################
+## Plugins
+##################################################################################################
+
+#include Plugin CMake file
+add_subdirectory(plugins)
+
+
+##################################################################################################
+## Include directories
+##################################################################################################
+set(YADOMS_INCL_DIR
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/server
+	${YADOMS_INCL_DIR}
+	${TOOLS_INCL_DIR}
+)
+set_property( TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${BOOST_INCL_DIR})
+
+##################################################################################################
+## Link
+##################################################################################################
 target_link_libraries(yadoms yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
 
 
