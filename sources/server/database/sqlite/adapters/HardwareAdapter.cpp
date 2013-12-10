@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "HardwareAdapter.h"
-#include "boost/lexical_cast.hpp"
 #include "tools/Log.h"
 
 CHardwareAdapter::CHardwareAdapter()

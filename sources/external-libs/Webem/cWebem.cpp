@@ -158,15 +158,16 @@ void cWebem::RegisterActionCode( const char* idname, webem_action_function fun )
 			myString16 = (wchar_t * ) malloc( wcslen( ws ) * 2 + 2 );
 			wcscpy( myString16, ws );
 			// How long will the UTF-8 string be
-			int len = WideCharToMultiByte(CP_UTF8, 0,
-				ws, wcslen( ws ),
-				NULL, NULL, NULL, NULL );
+
+			//int len = WideCharToMultiByte(CP_UTF8, 0, ws, wcslen( ws ), NULL, NULL, NULL, NULL );
+
 			// allocate a buffer
-			myString8 = (char * ) malloc( len + 1 );
+			myString8 = (char * ) malloc( wcslen( ws ) + 1 );
+
+			int len = wcstombs (myString8, ws, wcslen( ws ));  
+
 			// convert to UTF-8
-			WideCharToMultiByte(CP_UTF8, 0,
-				ws, wcslen( ws ),
-				myString8, len, NULL, NULL);
+			//WideCharToMultiByte(CP_UTF8, 0, ws, wcslen( ws ), myString8, len, NULL, NULL);
 			// null terminate
 			*(myString8+len) = '\0';
 		}
@@ -176,15 +177,12 @@ void cWebem::RegisterActionCode( const char* idname, webem_action_function fun )
 			myString8 = (char * ) malloc( strlen( s ) + 1 );
 			strcpy( myString8, s );
 			// How long will the UTF-16 string be
-			int len = MultiByteToWideChar(CP_UTF8, 0,
-				s, strlen( s ),
-				NULL, NULL );
+//			int len = MultiByteToWideChar(CP_UTF8, 0,s, strlen( s ), NULL, NULL );
 			// allocate a buffer
-			myString16 = (wchar_t * ) malloc( len * 2 + 2 );
+			myString16 = (wchar_t * ) malloc( strlen( s ) * 2 + 2 );
 			// convert to UTF-16
-			MultiByteToWideChar(CP_UTF8, 0,
-				s, strlen( s ),
-				myString16, len);
+//			MultiByteToWideChar(CP_UTF8, 0, s, strlen( s ), myString16, len);
+			int len = mbstowcs (myString16, s, strlen( s ));  
 			// null terminate
 			*(myString16+len) = '\0';
 		}
@@ -349,6 +347,7 @@ std::string& cWebem::FindValue( const char* name )
   Tell user where to find the cWebem GUI
 
 */
+/*
 std::string& cWebem::Splash()
 {
 	static std::string ret;
@@ -365,6 +364,7 @@ std::string& cWebem::Splash()
 	ret = buf2;
 	return ret;
 }
+*/
 
 
 void cWebemRequestHandler::handle_request( const request& req, reply& rep)

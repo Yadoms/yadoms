@@ -6,8 +6,6 @@
 set(WEBEM_SRC
 	cWebem.h
 	cWebem.cpp
-	cWebemTable.h
-	cWebemTable.cpp
 	server/connection.cpp
 	server/connection.hpp
 	server/connection_manager.cpp

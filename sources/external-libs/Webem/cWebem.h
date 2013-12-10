@@ -95,7 +95,7 @@ namespace http {
 				webem_action_function fun );
 			void CheckForAction( request& req );
 			std::string& FindValue( const char* name );
-			std::string& Splash();
+//			std::string& Splash();
 
 		private:
 			/// store map between include codes and application functions
