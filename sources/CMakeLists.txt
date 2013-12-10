@@ -16,7 +16,7 @@ project (Yadoms)
 ##################################################################################################
 
 # Check the minimum CMake version
-cmake_minimum_required (VERSION 2.8.12)
+cmake_minimum_required (VERSION 2.8.9)
 
 # Check for minimum GCC version
 MESSAGE(STATUS "Compiler = ${CMAKE_CXX_COMPILER_ID}")
