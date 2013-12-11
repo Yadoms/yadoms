@@ -50,7 +50,14 @@ void CSupervisor::doWork()
          YADOMS_LOG(debug) << "   - " << plugin.first << " : " << plugin.second->toString();
       }
       // 2) Stop registered plugin instance (to be able to remove/replace plugin for example)
-//TODO      hardwarePluginManager->stopInstance("fakePlugin1");
+      try
+      {
+         hardwarePluginManager->startInstance(1);
+      }
+      catch (std::invalid_argument& e)
+      {
+         YADOMS_LOG(error) << "Unable to start fakePlugin1 : " << e.what();
+      }
 
       //\TODO
 

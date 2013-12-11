@@ -12,6 +12,7 @@ CHardwarePluginInstance::CHardwarePluginInstance(
 {
 	BOOST_ASSERT(m_pPlugin);
    m_pPluginInstance.reset(m_pPlugin->construct());
+   start();
 }
 
 CHardwarePluginInstance::~CHardwarePluginInstance()
@@ -51,4 +52,9 @@ void CHardwarePluginInstance::updateConfiguration(const std::string& newConfigur
 {
    BOOST_ASSERT(m_pPluginInstance);
    m_pPluginInstance->updateConfiguration(newConfiguration);
+}
+
+boost::shared_ptr<const CHardwarePluginFactory> CHardwarePluginInstance::getPlugin() const
+{
+   return m_pPlugin;
 }

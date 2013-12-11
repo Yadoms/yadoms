@@ -15,18 +15,22 @@ CSQLiteHardwareRequester::~CSQLiteHardwareRequester()
 }
 
 // IHardwareRequester implementation
-bool CSQLiteHardwareRequester::createHardware(boost::shared_ptr<CHardware> hardwareToCreate)
+bool CSQLiteHardwareRequester::addHardware(boost::shared_ptr<CHardware> newHardware)
 {
    throw CNotImplementedException();
 }
 
-boost::shared_ptr<CHardware> CSQLiteHardwareRequester::getHardware(const int hardwareId)
+boost::shared_ptr<CHardware> CSQLiteHardwareRequester::getHardware(int hardwareId)
 {
    CHardwareAdapter adapter;
    std::ostringstream os;
    os << "SELECT * FROM Hardware WHERE id=\"" << hardwareId << "\"";
    m_databaseRequester->queryEntities<boost::shared_ptr<CHardware> >(&adapter, os.str());
-   // TODO : gérer exception si non trouvé
+   if (adapter.getResults().empty())
+   {
+      // Hardware not found
+      throw std::invalid_argument(CStringExtension::format("Hardware Id %d not found in database", hardwareId));
+   }
    return adapter.getResults().at(0);
 }
 
@@ -45,12 +49,12 @@ std::vector<std::string> CSQLiteHardwareRequester::getHardwareNameList()
    return adapter.getResults();
 }
 
-bool CSQLiteHardwareRequester::updateHardware(boost::shared_ptr<CHardware> hardwareToUpdate)
+bool CSQLiteHardwareRequester::updateHardware(boost::shared_ptr<CHardware> hardware)
 {
    throw CNotImplementedException();
 }
 
-bool CSQLiteHardwareRequester::removeHardware(boost::shared_ptr<CHardware> hardwareToRemove)
+bool CSQLiteHardwareRequester::removeHardware(int hardwareId)
 {
    throw CNotImplementedException();
 }
