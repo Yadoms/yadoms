@@ -13,15 +13,6 @@
 #include "tools/Log.h"
 
 
-
-
-void stopHandler()
-{
-   //TODO
-}
-
-
-
 /*
 \brief Main application entry point
 */
