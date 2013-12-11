@@ -13,7 +13,6 @@ class CApplicationStopHandler
 public:
    //-----------------------------------------------------------------------------
    /// \brief		         Configure application stop handler
-   /// \par stopHandler    handler called on user stop request
    //-----------------------------------------------------------------------------
    static void configure();
 
