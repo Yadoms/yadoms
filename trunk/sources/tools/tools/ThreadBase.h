@@ -27,7 +27,7 @@ public:
    {
       kStarting,        /// \brief  Thread is starting
       kRunning,         /// \brief	Thread is running
-      kStopRequested,   /// \brief	Thread is requested to stop
+      kStopping,        /// \brief	Thread is requested to stop
       kStopped          /// \brief	Thread is stopped
    };
 
@@ -36,25 +36,25 @@ public:
    /// \brief			Start the thread
    /// \return    	void
    //--------------------------------------------------------------
-   void start();
+   virtual void start();
    //--------------------------------------------------------------
    /// \brief			Ask the thread to stop and returns (non blocking)
    /// \return    	void
    //--------------------------------------------------------------
-   void requestToStop();
+   virtual void requestToStop();
 
    //--------------------------------------------------------------
    /// \brief			Stop the thread (blocking)
    /// \return    	true if thread was successfully stopped, false if timeout
    //--------------------------------------------------------------
-   bool stop();
+   virtual bool stop();
 
    //--------------------------------------------------------------
    /// \brief			Wait for end of the the thread (blocking)
    /// \par seconds  Timeout. If 0, wait indefinitely
    /// \return    	true if thread was stopped, false if timeout
    //--------------------------------------------------------------
-   bool waitForStop(int seconds);
+   virtual bool waitForStop(int seconds = 0);
 
    //--------------------------------------------------------------
    /// \brief			Get the thread status
@@ -101,10 +101,9 @@ public:
 
 protected:
    //--------------------------------------------------------------
-   /// \brief			The main plugin work
-   /// \return    	void
+   /// \brief			The main thread work
    //--------------------------------------------------------------
-   virtual void doWork() =0;
+   virtual void doWork() = 0;
 
 private:
    //--------------------------------------------------------------

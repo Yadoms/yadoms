@@ -42,7 +42,7 @@ bool CThreadBase::stop()
 
 void CThreadBase::requestToStop()
 {
-   changeStatus(kStopRequested);
+   changeStatus(kStopping);
    m_thread->interrupt();
 }
 
@@ -51,6 +51,10 @@ bool CThreadBase::waitForStop(int seconds)
    BOOST_ASSERT(m_thread);
 
    bool stopped = false;
+
+#ifndef _DEBUG // Disable timeout in debug mode
+   seconds = 0;
+#endif
 
    if (seconds)
    {
