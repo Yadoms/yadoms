@@ -37,20 +37,27 @@ void CSupervisor::doWork()
       }
 
       // Start the harware plugin manager
-      CHardwarePluginManager hardwarePluginManager(
+      boost::shared_ptr<CHardwarePluginManager> hardwarePluginManager = CHardwarePluginManager::newHardwarePluginManager(
          "../builds/lib/Debug"/* TODO m_startupOptions.getHarwarePluginsPath() */,
          pDataProvider->getHardwareRequester());
+
+      //TODO : test interface hardwarePluginManager
+      // 1) List all available plugins (even if not loaded) and associated informations
+      CHardwarePluginManager::AvalaiblePluginMap plugins = hardwarePluginManager->getPluginList();
+      YADOMS_LOG(debug) << "Available plugins :";
+      BOOST_FOREACH(CHardwarePluginManager::AvalaiblePluginMap::value_type plugin, plugins)
+      {
+         YADOMS_LOG(debug) << "   - " << plugin.first << " : " << plugin.second->toString();
+      }
+      // 2) Stop registered plugin instance (to be able to remove/replace plugin for example)
+//TODO      hardwarePluginManager->stopInstance("fakePlugin1");
+
+      //\TODO
 
       try
       {
          while(1)
          {
-            // Scan for new/deleted plugins
-            //TODO if (toutes les 10 secondes)
-            {
-               hardwarePluginManager.updatePluginList();
-            }
-
             boost::this_thread::sleep(boost::posix_time::milliseconds(100));
          }
       }
