@@ -2,6 +2,7 @@
 
 #include "SQLiteDataProvider.h"
 #include "SQLiteHardwareRequester.h"
+#include "SQLiteConfigurationRequester.h"
 #include "sqlite3.h"
 #include <boost/filesystem.hpp>
 #include "SQLiteRequester.h"
@@ -95,6 +96,7 @@ void CSQLiteDataProvider::unload()
 void CSQLiteDataProvider::loadRequesters()
 {
    m_hardwareRequester.reset(new CSQLiteHardwareRequester(*this, m_databaseRequester));
+   m_configurationRequester.reset(new CSQLiteConfigurationRequester(*this, m_databaseRequester));
 }
 
 

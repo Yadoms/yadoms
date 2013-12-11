@@ -6,7 +6,7 @@ class IHardwareRequester
 {
 public:
    // IDatabaseProvider implementation
-   virtual bool createHardware(boost::shared_ptr<CHardware> hardwareToRemove) = 0;
+   virtual bool createHardware(boost::shared_ptr<CHardware> hardwareToCreate) = 0;
 
 	//Read
 	virtual boost::shared_ptr<CHardware> getHardware(const int hardwareId) = 0;
@@ -17,11 +17,6 @@ public:
    
 	//Delete
    virtual bool removeHardware(boost::shared_ptr<CHardware> hardwareToRemove) = 0;
-
-protected:
-	IHardwareRequester()
-	{
-	}
 
 public:
 	virtual ~IHardwareRequester()

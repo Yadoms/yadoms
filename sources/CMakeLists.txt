@@ -185,7 +185,9 @@ set(YADOMS_SRC
 	
 	server/database/IDataProvider.h
 	server/database/IHardwareRequester.h
+	server/database/IConfigurationRequester.h
 	server/database/entities/Hardware.h
+	server/database/entities/Configuration.h
 	)
 
 # Project folders
@@ -202,6 +204,8 @@ IF(USE_SQLITE_DATABASE)
 	set(YADOMS_SRC ${YADOMS_SRC}
 		server/database/sqlite/SQLiteHardwareRequester.h
 		server/database/sqlite/SQLiteHardwareRequester.cpp
+		server/database/sqlite/SQLiteConfigurationRequester.h
+		server/database/sqlite/SQLiteConfigurationRequester.cpp
 		server/database/sqlite/SQLiteDataProvider.h
 		server/database/sqlite/SQLiteDataProvider.cpp
 		server/database/sqlite/SQLiteRequester.h
@@ -210,6 +214,8 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/adapters/ISQLiteResultAdapter.h
 		server/database/sqlite/adapters/HardwareAdapter.h
 		server/database/sqlite/adapters/HardwareAdapter.cpp
+		server/database/sqlite/adapters/ConfigurationAdapter.h
+		server/database/sqlite/adapters/ConfigurationAdapter.cpp
 		server/database/sqlite/adapters/GenericAdapter.h
 		server/database/sqlite/adapters/GenericAdapter.cpp
 		server/database/sqlite/adapters/SingleValueAdapter.hpp
