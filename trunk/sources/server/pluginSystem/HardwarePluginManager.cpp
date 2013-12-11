@@ -1,21 +1,34 @@
 #include "stdafx.h"
 #include "HardwarePluginManager.h"
 #include "HardwarePluginInstance.h"
-#include "tools/FileSystem.hpp"
+
+
+boost::shared_ptr<CHardwarePluginManager> CHardwarePluginManager::newHardwarePluginManager(const std::string & initialDir, boost::shared_ptr<IHardwareRequester> database)
+{
+   boost::shared_ptr<CHardwarePluginManager> manager (new CHardwarePluginManager(initialDir, database));
+   manager->init();
+   return manager;
+}
 
 CHardwarePluginManager::CHardwarePluginManager(const std::string& initialDir, boost::shared_ptr<IHardwareRequester> database)
-   :m_database(database), m_pluginPath(initialDir)
+   :m_database(database), m_pluginPath(initialDir),
+   m_pluginDirectoryChangesFlag(true)  // Initialized to true to force first plugin scan
 {
    BOOST_ASSERT(m_database);
-   Start();
 }
 
 CHardwarePluginManager::~CHardwarePluginManager()
 {
-   Stop();
+   stop();
 }
 
-void CHardwarePluginManager::Start()
+void CHardwarePluginManager::init()
+{
+   m_pluginsDirectoryMonitor.reset(new CDirectoryChangeListener(m_pluginPath, boost::bind(&CHardwarePluginManager::onPluginDirectoryChanges, this, _1)));
+   start();
+}
+
+void CHardwarePluginManager::start()
 {
    loadPlugins();
 
@@ -25,7 +38,7 @@ void CHardwarePluginManager::Start()
    {
       if (m_plugins.find(databasePluginInstance->getPluginName()) == m_plugins.end())
       {
-         // The plugin in database doesn't exist anymore
+         // The plugin doesn't exist anymore
          YADOMS_LOG(error) << "Plugin #" << databasePluginInstance->getId() <<
             " (" << databasePluginInstance->getPluginName() <<
             ") for instance " << databasePluginInstance->getName() << " in database was not found";
@@ -47,7 +60,7 @@ void CHardwarePluginManager::Start()
    }
 }
 
-void CHardwarePluginManager::Stop()
+void CHardwarePluginManager::stop()
 {
    // Stop all plugins instance
    BOOST_FOREACH(PluginInstanceMap::value_type instanceIt, m_pluginInstances)
@@ -64,7 +77,7 @@ std::vector<boost::filesystem::path> CHardwarePluginManager::findPluginFilenames
    {
       boost::filesystem::directory_iterator endFileIterator;
 
-      static const std::string pluginEndWithString = CFileSystem::DynamicLibraryDotExtension();
+      static const std::string pluginEndWithString = CDynamicLibrary::DotExtension();
 
       for(boost::filesystem::directory_iterator fileIterator(m_pluginPath) ; fileIterator != endFileIterator ; ++fileIterator)
       {
@@ -101,10 +114,53 @@ void CHardwarePluginManager::loadPlugins()
    }
 }
 
-void CHardwarePluginManager::updatePluginList()
+void CHardwarePluginManager::buildAvailablePluginList()
 {
-   //TODO
-//TODO   throw std::logic_error("The method or operation is not implemented.");
+   // Search for library files
+   std::vector<boost::filesystem::path> avalaiblePluginFileNames = findPluginFilenames();
+
+   for (std::vector<boost::filesystem::path>::const_iterator libPathIt = avalaiblePluginFileNames.begin() ;
+      libPathIt != avalaiblePluginFileNames.end() ; ++libPathIt)
+   {
+      try
+      {
+         // Get informations for current found plugin
+         // m_plugins key is just the library name (without extension)
+         boost::shared_ptr<CHardwarePluginInformation> pluginInformation (new CHardwarePluginInformation(CHardwarePluginFactory::getInformation(*libPathIt)));
+         m_availablePlugins[(*libPathIt).stem().string()] = pluginInformation;
+      }
+      catch (CInvalidPluginException& e)
+      {
+         // Invalid plugin
+         YADOMS_LOG(warning) << e.what() << " found in plugin path but is not a valid plugin";
+      }
+   }
 }
 
+CHardwarePluginManager::AvalaiblePluginMap CHardwarePluginManager::getPluginList()
+{
+   bool needToRebuildPluginList = false;
+
+   {
+      boost::lock_guard<boost::mutex> lock(m_pluginDirectoryChangesMutex);
+      needToRebuildPluginList = m_pluginDirectoryChangesFlag;
+      m_pluginDirectoryChangesFlag = false;
+   }
+
+   if (needToRebuildPluginList)
+   {
+      // Plugin directory have change, re-built plugin available list
+      buildAvailablePluginList();
+   }
+
+   return m_availablePlugins;
+}
+
+void CHardwarePluginManager::onPluginDirectoryChanges(const boost::asio::dir_monitor_event& ev)
+{
+   YADOMS_LOG(debug) << "CHardwarePluginManager::onPluginDirectoryChanges" << ev.type;
+
+   boost::lock_guard<boost::mutex> lock(m_pluginDirectoryChangesMutex);
+   m_pluginDirectoryChangesFlag = true;
+}
 
