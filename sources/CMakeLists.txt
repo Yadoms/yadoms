@@ -172,6 +172,8 @@ set(YADOMS_SRC
 	server/pluginSystem/HardwarePluginInstance.cpp
 	server/pluginSystem/HardwarePluginFactory.h
 	server/pluginSystem/HardwarePluginFactory.cpp
+	server/pluginSystem/DirectoryChangeListener.h
+	server/pluginSystem/DirectoryChangeListener.cpp
 	plugins/hardware/IHardwarePlugin.h
 	plugins/hardware/HardwarePluginConfiguration.hpp
 	plugins/hardware/HardwarePluginConfigurationParameters.hpp
@@ -262,15 +264,20 @@ set(SHARED_LIB_SRC
 	tools/tools/Exceptions/NotImplementedException.h
 	tools/tools/Exceptions/NullReferenceException.h
 	tools/tools/Exceptions/NullReferenceException.cpp
+
+	tools/tools/dir_monitor/dir_monitor.hpp
+	tools/tools/dir_monitor/basic_dir_monitor.hpp
 	
 	#include both platform files to see them into IDE
 	tools/windows/tools/DynamicLibrary.hpp
 	tools/windows/tools/Export.h
-	tools/windows/tools/FileSystem.hpp
+	tools/windows/tools/dir_monitor/basic_dir_monitor_service.hpp
+	tools/windows/tools/dir_monitor/dir_monitor_impl.hpp
 
 	tools/linux/tools/DynamicLibrary.hpp
 	tools/linux/tools/Export.h
-	tools/linux/tools/FileSystem.hpp
+	tools/linux/tools/dir_monitor/basic_dir_monitor_service.hpp
+	tools/linux/tools/dir_monitor/dir_monitor_impl.hpp
 )
 
 # Define project folders
