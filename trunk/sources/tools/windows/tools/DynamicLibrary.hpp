@@ -17,6 +17,13 @@
 //--------------------------------------------------------------
 class CDynamicLibrary
 {
+public:
+   //--------------------------------------------------------------
+   /// \brief	Returns platform standard dynamic library extension
+   //--------------------------------------------------------------
+   static const std::string Extension() { return "dll"; }
+   static const std::string DotExtension() { return ".dll"; }
+
 protected:
     //--------------------------------------------------------------
     /// \brief	Constructor
