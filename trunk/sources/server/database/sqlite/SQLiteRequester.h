@@ -30,6 +30,13 @@ public:
    int queryStatement(const std::string & queryFormat, ...);
 
 	//--------------------------------------------------------------
+	/// \brief		      execute a count statement
+	/// \param [in]	   the query (with vaargs)
+	/// \return 	      the count result
+	//--------------------------------------------------------------  
+   int queryCount(const std::string & queryFormat, ...);
+
+	//--------------------------------------------------------------
 	/// \brief		      query only one databse row
 	/// \param [in]	   the query (with vaargs)
 	/// \return 	      the row values

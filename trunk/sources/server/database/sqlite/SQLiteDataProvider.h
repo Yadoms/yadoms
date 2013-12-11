@@ -2,6 +2,7 @@
 
 #include "server/database/IDataProvider.h"
 #include "SQLiteHardwareRequester.h"
+#include "SQLiteConfigurationRequester.h"
 #include "SQLiteRequester.h"
 #include "sqlite3.h"
 
@@ -27,6 +28,7 @@ public:
 	bool load();
 	void unload();
    boost::shared_ptr<IHardwareRequester> getHardwareRequester() { return m_hardwareRequester; }
+   boost::shared_ptr<IConfigurationRequester> getConfigurationRequester() { return m_configurationRequester; }
    // [END] IHardwarePlugin implementation
 
 private:
@@ -42,6 +44,11 @@ private:
 	boost::shared_ptr<CSQLiteHardwareRequester>		m_hardwareRequester;
 	
 	//--------------------------------------------------------------
+	/// \Brief		Hardware requester
+	//--------------------------------------------------------------
+	boost::shared_ptr<CSQLiteConfigurationRequester>		m_configurationRequester;
+
+   //--------------------------------------------------------------
 	/// \Brief		Startup options
 	//--------------------------------------------------------------
 	const std::string m_dbFile;

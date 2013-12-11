@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IHardwareRequester.h"
+#include "IConfigurationRequester.h"
 
 class IDataProvider
 {
@@ -27,6 +28,13 @@ public:
 	/// \throws 		
 	//--------------------------------------------------------------  
    virtual boost::shared_ptr<IHardwareRequester> getHardwareRequester() = 0;
+
+   //--------------------------------------------------------------
+	/// \Brief		get the configuration requester
+	/// \return 	the configuration requester
+	/// \throws 		
+	//--------------------------------------------------------------  
+   virtual boost::shared_ptr<IConfigurationRequester> getConfigurationRequester() = 0;
 
 
 protected:

@@ -20,6 +20,7 @@
 #include <boost/asio.hpp>
 #include <boost/assert.hpp>
 #include <boost/bind.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 #include <boost/function.hpp>
