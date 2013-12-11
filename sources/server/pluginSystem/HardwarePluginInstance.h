@@ -12,7 +12,7 @@
 //--------------------------------------------------------------
 /// \brief	this class is used to manage a plugin instance. 
 //--------------------------------------------------------------
-class CHardwarePluginInstance : public CThreadBase
+class CHardwarePluginInstance : protected CThreadBase
 {
 public:
    //--------------------------------------------------------------
@@ -32,6 +32,11 @@ public:
    /// \param  newConfiguration  The new configuration to apply
    //--------------------------------------------------------------
    virtual void updateConfiguration(const std::string& newConfiguration) const;
+
+   //--------------------------------------------------------------
+   /// \brief			Get the plugin used for this instance
+   //--------------------------------------------------------------
+   boost::shared_ptr<const CHardwarePluginFactory> getPlugin() const;
 
 protected:
    //--------------------------------------------------------------

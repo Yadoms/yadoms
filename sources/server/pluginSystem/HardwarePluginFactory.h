@@ -38,22 +38,16 @@ public:
    virtual ~CHardwarePluginFactory();
 
    //--------------------------------------------------------------
-   /// \brief	    Load a plugin file
-   /// \param [in] libraryPath: the plugin path
-   /// \throw      CInvalidPluginException if plugin is not recognized
-   //-------------------------------------------------------------
-   void load(const boost::filesystem::path& libraryPath);
-
-   //--------------------------------------------------------------
-   /// \brief	    Free library file
-   //-------------------------------------------------------------
-   void unload();
-
-   //--------------------------------------------------------------
    /// \brief	    Construct a plugin instance (call the contruct library method)
    /// \return     a new plugin instance
    //-------------------------------------------------------------
    IHardwarePlugin* construct() const;
+
+   //--------------------------------------------------------------
+   /// \brief	    Get the plugin library path
+   /// \return     the plugin library path
+   //-------------------------------------------------------------
+   const boost::filesystem::path& getLibraryPath() const;
 
    //--------------------------------------------------------------
    /// \brief	    Get information about this hardware plugin
@@ -68,6 +62,22 @@ public:
    const boost::optional<const CHardwarePluginConfiguration&> getDefaultConfiguration() const;
 
 private:
+   //--------------------------------------------------------------
+   /// \brief	    Load a plugin file
+   /// \throw      CInvalidPluginException if plugin is not recognized
+   //-------------------------------------------------------------
+   void load();
+
+   //--------------------------------------------------------------
+   /// \brief	    Free library file
+   //-------------------------------------------------------------
+   void unload();
+
+   //-------------------------------------------------------------
+   /// \brief	    Plugin library path
+   //-------------------------------------------------------------
+   const boost::filesystem::path m_libraryPath;
+
    //-------------------------------------------------------------
    /// \brief	    Function pointer to "construct" exported function
    //-------------------------------------------------------------

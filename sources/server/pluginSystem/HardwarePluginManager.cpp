@@ -11,62 +11,73 @@ boost::shared_ptr<CHardwarePluginManager> CHardwarePluginManager::newHardwarePlu
 }
 
 CHardwarePluginManager::CHardwarePluginManager(const std::string& initialDir, boost::shared_ptr<IHardwareRequester> database)
-   :m_database(database), m_pluginPath(initialDir),
-   m_pluginDirectoryChangesFlag(true)  // Initialized to true to force first plugin scan
+   :m_database(database), m_pluginPath(initialDir)
 {
    BOOST_ASSERT(m_database);
 }
 
 CHardwarePluginManager::~CHardwarePluginManager()
 {
-   stop();
+   // Stop all instances and free plugins
+   while (!m_runningInstances.empty())
+   {
+      stopInstance(m_runningInstances.begin()->first);
+   }
 }
 
 void CHardwarePluginManager::init()
 {
+   // Initialize the plugin list (detect available plugins)
+   updatePluginList();
+
+   // Start the directory changes monitor
    m_pluginsDirectoryMonitor.reset(new CDirectoryChangeListener(m_pluginPath, boost::bind(&CHardwarePluginManager::onPluginDirectoryChanges, this, _1)));
-   start();
-}
 
-void CHardwarePluginManager::start()
-{
-   loadPlugins();
-
-   // Get instances from database
+   // Create and start plugin instances from database
    std::vector<boost::shared_ptr<CHardware> > databasePluginInstances = m_database->getHardwares();
    BOOST_FOREACH(boost::shared_ptr<CHardware> databasePluginInstance, databasePluginInstances)
    {
-      if (m_plugins.find(databasePluginInstance->getPluginName()) == m_plugins.end())
-      {
-         // The plugin doesn't exist anymore
-         YADOMS_LOG(error) << "Plugin #" << databasePluginInstance->getId() <<
-            " (" << databasePluginInstance->getPluginName() <<
-            ") for instance " << databasePluginInstance->getName() << " in database was not found";
-
-         continue;      
-      }
-      
-      // Create the instance
-      boost::shared_ptr<CHardwarePluginInstance> pluginInstance(
-         new CHardwarePluginInstance(m_plugins[databasePluginInstance->getPluginName()],
-            m_database->getHardware(databasePluginInstance->getId())));
-      m_pluginInstances[databasePluginInstance->getId()] = pluginInstance;
-   }
-
-   // Start all plugin instances
-   BOOST_FOREACH(PluginInstanceMap::value_type instanceIt, m_pluginInstances)
-   {
-      instanceIt.second->start();
+      startInstance(databasePluginInstance->getId());
    }
 }
 
-void CHardwarePluginManager::stop()
+void CHardwarePluginManager::startInstance(int id)
 {
-   // Stop all plugins instance
-   BOOST_FOREACH(PluginInstanceMap::value_type instanceIt, m_pluginInstances)
+   if (m_runningInstances.find(id) != m_runningInstances.end())
+      return;     // Already started ==> nothing more to do
+
+   // Get instance informations from database
+   boost::shared_ptr<CHardware> databasePluginInstance (m_database->getHardware(id));
+
+   // Load the plugin
+   try
    {
-      instanceIt.second->stop();
+      boost::shared_ptr<CHardwarePluginFactory> plugin(loadPlugin(databasePluginInstance->getPluginName()));
+
+      // Create instance
+      BOOST_ASSERT(plugin); // Plugin not loaded
+      boost::shared_ptr<CHardwarePluginInstance> pluginInstance(new CHardwarePluginInstance(plugin, databasePluginInstance));
+      m_runningInstances[databasePluginInstance->getId()] = pluginInstance;
    }
+   catch (CInvalidPluginException& e)
+   {
+      YADOMS_LOG(error) << "startInstance : " << e.what();   	
+   }
+}
+
+void CHardwarePluginManager::stopInstance(int id)
+{
+   if (m_runningInstances.find(id) == m_runningInstances.end())
+      return;     // Already stopped ==> nothing more to do
+
+   // Get the associated plugin name to unload it after instance being deleted
+   std::string pluginName = m_runningInstances[id]->getPlugin()->getLibraryPath().stem().string();
+
+   // Remove (=stop) instance
+   m_runningInstances.erase(id);
+
+   // Try to unload associated plugin (if no more used)
+   unloadPlugin(pluginName);
 }
 
 std::vector<boost::filesystem::path> CHardwarePluginManager::findPluginFilenames()
@@ -92,30 +103,44 @@ std::vector<boost::filesystem::path> CHardwarePluginManager::findPluginFilenames
    return pluginFilenames;
 }
 
-void CHardwarePluginManager::loadPlugins()
+boost::shared_ptr<CHardwarePluginFactory> CHardwarePluginManager::loadPlugin(const std::string& pluginName)
 {
-   // Search for library files
-   std::vector<boost::filesystem::path> avalaiblePluginFileNames = findPluginFilenames();
+   // Check if already loaded
+   if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
+      return m_loadedPlugins[pluginName];  // Plugin already loaded
 
-   for (std::vector<boost::filesystem::path>::const_iterator libPathIt = avalaiblePluginFileNames.begin() ;
-      libPathIt != avalaiblePluginFileNames.end() ; ++libPathIt)
+   // Check if plugin is available
+   if (m_availablePlugins.find(pluginName) == m_availablePlugins.end())
+      throw CInvalidPluginException(pluginName);   // Invalid plugin
+
+   // Load the plugin
+   boost::shared_ptr<CHardwarePluginFactory> pNewFactory (new CHardwarePluginFactory(toPath(pluginName)));
+   m_loadedPlugins[pluginName] = pNewFactory;
+
+   return pNewFactory;
+}
+
+bool CHardwarePluginManager::unloadPlugin(const std::string& pluginName)
+{
+   PluginInstanceMap::const_iterator instance;
+   for (instance = m_runningInstances.begin() ; instance != m_runningInstances.end() ; ++instance)
    {
-      // Generate factory for current found plugin
-      try
-      {
-         boost::shared_ptr<CHardwarePluginFactory> pNewFactory (new CHardwarePluginFactory(*libPathIt));
-         // m_plugins key is just the library name (without extension)
-         m_plugins[(*libPathIt).stem().string()] = pNewFactory;
-      }
-      catch (CInvalidPluginException& e)
-      {
-         YADOMS_LOG(warning) << e.what() << " will not be available in Yadoms";
-      }
+      if ((*instance).second->getPlugin()->getLibraryPath().stem().string() == pluginName)
+         break;
    }
+   if (instance != m_runningInstances.end())
+      return false;  // No unload : plugin is still used by another instance
+
+   // Effectively unload plugin
+   m_loadedPlugins.erase(pluginName);
+   return true;
 }
 
 void CHardwarePluginManager::buildAvailablePluginList()
 {
+   // Empty the list
+   m_availablePlugins.clear();
+
    // Search for library files
    std::vector<boost::filesystem::path> avalaiblePluginFileNames = findPluginFilenames();
 
@@ -125,9 +150,16 @@ void CHardwarePluginManager::buildAvailablePluginList()
       try
       {
          // Get informations for current found plugin
-         // m_plugins key is just the library name (without extension)
-         boost::shared_ptr<CHardwarePluginInformation> pluginInformation (new CHardwarePluginInformation(CHardwarePluginFactory::getInformation(*libPathIt)));
-         m_availablePlugins[(*libPathIt).stem().string()] = pluginInformation;
+         boost::shared_ptr<CHardwarePluginInformation> pluginInformation;
+         const std::string& pluginName = (*libPathIt).stem().string();
+
+         // If plugin is already loaded, use its information
+         if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
+            pluginInformation.reset(new CHardwarePluginInformation(m_loadedPlugins[pluginName]->getInformation()));
+         else
+            pluginInformation.reset(new CHardwarePluginInformation(CHardwarePluginFactory::getInformation(*libPathIt)));
+
+         m_availablePlugins[pluginName] = pluginInformation;
       }
       catch (CInvalidPluginException& e)
       {
@@ -137,30 +169,30 @@ void CHardwarePluginManager::buildAvailablePluginList()
    }
 }
 
+void CHardwarePluginManager::updatePluginList()
+{
+   // Plugin directory have change, so re-build plugin available list
+   boost::lock_guard<boost::mutex> lock(m_availablePluginsMutex);
+   buildAvailablePluginList();
+}
+
+
 CHardwarePluginManager::AvalaiblePluginMap CHardwarePluginManager::getPluginList()
 {
-   bool needToRebuildPluginList = false;
-
-   {
-      boost::lock_guard<boost::mutex> lock(m_pluginDirectoryChangesMutex);
-      needToRebuildPluginList = m_pluginDirectoryChangesFlag;
-      m_pluginDirectoryChangesFlag = false;
-   }
-
-   if (needToRebuildPluginList)
-   {
-      // Plugin directory have change, re-built plugin available list
-      buildAvailablePluginList();
-   }
-
-   return m_availablePlugins;
+   boost::lock_guard<boost::mutex> lock(m_availablePluginsMutex);
+   AvalaiblePluginMap mapCopy = m_availablePlugins;
+   return mapCopy;
 }
 
 void CHardwarePluginManager::onPluginDirectoryChanges(const boost::asio::dir_monitor_event& ev)
 {
    YADOMS_LOG(debug) << "CHardwarePluginManager::onPluginDirectoryChanges" << ev.type;
-
-   boost::lock_guard<boost::mutex> lock(m_pluginDirectoryChangesMutex);
-   m_pluginDirectoryChangesFlag = true;
+   updatePluginList();
 }
 
+boost::filesystem::path CHardwarePluginManager::toPath(const std::string& pluginName) const
+{
+   boost::filesystem::path path(m_pluginPath);
+   path /= (pluginName + CDynamicLibrary::DotExtension());
+   return path;
+}

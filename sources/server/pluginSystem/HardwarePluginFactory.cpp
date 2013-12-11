@@ -2,9 +2,9 @@
 #include "HardwarePluginFactory.h"
 
 CHardwarePluginFactory::CHardwarePluginFactory(const boost::filesystem::path& libraryPath)
-      :m_construct(NULL), m_getInformation(NULL), m_getDefaultConfiguration(NULL)
+      :m_libraryPath(libraryPath), m_construct(NULL), m_getInformation(NULL), m_getDefaultConfiguration(NULL)
 {
-   load(libraryPath);
+   load();
 }
 
 CHardwarePluginFactory::~CHardwarePluginFactory()
@@ -13,11 +13,11 @@ CHardwarePluginFactory::~CHardwarePluginFactory()
 }
 
 
-void CHardwarePluginFactory::load(const boost::filesystem::path& libraryPath)
+void CHardwarePluginFactory::load()
 {
    // Load the plugin library (platform-specific)
-   if (!CDynamicLibrary::load(libraryPath.string()))
-      throw CInvalidPluginException(libraryPath.string());
+   if (!CDynamicLibrary::load(m_libraryPath.string()))
+      throw CInvalidPluginException(m_libraryPath.string());
 
    // Load plugin static methods
    m_construct = (IHardwarePlugin* (*)(void))GetFunctionPointer("construct");
@@ -29,7 +29,7 @@ void CHardwarePluginFactory::load(const boost::filesystem::path& libraryPath)
    {
       // This library is not a valid plugin
       CDynamicLibrary::unload();
-      throw CInvalidPluginException(libraryPath.string());
+      throw CInvalidPluginException(m_libraryPath.string());
    }
 
    // Log loaded plugin
@@ -82,25 +82,23 @@ void CHardwarePluginFactory::load(const boost::filesystem::path& libraryPath)
    }
 }
 
-//--------------------------------------------------------------
-/// \brief	    Free library file
-//-------------------------------------------------------------
 void CHardwarePluginFactory::unload()
 {
    CDynamicLibrary::unload();
 }
 
 
-//--------------------------------------------------------------
-/// \brief	    Construct a plugin instance (call the construct library method)
-/// \return     a new plugin instance
-//-------------------------------------------------------------
 IHardwarePlugin * CHardwarePluginFactory::construct() const//TODO passer en shared_ptr
 {
 	BOOST_ASSERT(m_construct);  // construct can not be called if load was unsuccessfully
    if(m_construct != NULL)
 		return m_construct();
 	return NULL;
+}
+
+const boost::filesystem::path& CHardwarePluginFactory::getLibraryPath() const
+{
+   return m_libraryPath;
 }
 
 const CHardwarePluginInformation& CHardwarePluginFactory::getInformation() const
