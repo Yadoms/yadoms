@@ -41,6 +41,15 @@ public:
    }
 
    //--------------------------------------------------------------
+   /// \brief	    Copy constructor
+   /// \param      src : source
+   //--------------------------------------------------------------
+   CHardwarePluginInformation (const CHardwarePluginInformation& src)
+      :m_name(src.m_name), m_version(src.m_version), m_releaseType(src.m_releaseType), m_author(src.m_author), m_url(src.m_url)
+   {
+   }
+
+   //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CHardwarePluginInformation ()
@@ -91,6 +100,23 @@ public:
    const std::string& getUrl() const
    { 
       return  m_url; 
+   }
+
+   //--------------------------------------------------------------
+   /// \brief	    get all informations in printable format
+   /// \return     all plugin informations
+   //--------------------------------------------------------------
+   std::string toString() const
+   {
+      std::ostringstream formatedInformations;
+
+      formatedInformations << m_name;
+      formatedInformations << " v" << m_version;
+      formatedInformations << "[" << m_releaseType << "]";
+      formatedInformations << " by " << m_author;
+      formatedInformations << " (" << m_url << ")";
+
+      return formatedInformations.str();
    }
 
 private:

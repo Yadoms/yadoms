@@ -17,6 +17,15 @@ class CHardwarePluginFactory : public CDynamicLibrary
 {
 public:
    //--------------------------------------------------------------
+   /// \brief	      Get plugin informations (without to load it)
+   /// \param [in]   libraryPath: the plugin path
+   /// \return       Plugin associated informations
+   /// \throw        CInvalidPluginException if plugin is not valid
+   //--------------------------------------------------------------
+   static CHardwarePluginInformation getInformation(const boost::filesystem::path& libraryPath);
+
+public:
+   //--------------------------------------------------------------
    /// \brief	Constructor
    /// \param [in] libraryPath: the plugin path
    /// \throw      CInvalidPluginException if plugin is not recognized
@@ -57,12 +66,6 @@ public:
    /// \return     default configuration if configuration is available for this plugin
    //-------------------------------------------------------------
    const boost::optional<const CHardwarePluginConfiguration&> getDefaultConfiguration() const;
-
-   //--------------------------------------------------------------
-   /// \brief	    Format the plugin informations
-   /// \return     Formated string containing plugin informations
-   //-------------------------------------------------------------
-   std::string formatPluginInformations() const;
 
 private:
    //-------------------------------------------------------------
