@@ -33,7 +33,7 @@ void CHardwarePluginFactory::load(const boost::filesystem::path& libraryPath)
    }
 
    // Log loaded plugin
-   YADOMS_LOG(info) << "Hardware plugin loaded : " << formatPluginInformations();
+   YADOMS_LOG(info) << "Hardware plugin loaded : " << getInformation().toString();
 
 
    { // TODO bloc à virer quand le code sera récupéré par l'IHM
@@ -117,15 +117,8 @@ const boost::optional<const CHardwarePluginConfiguration&> CHardwarePluginFactor
    return defaultConfiguration;
 }
 
-std::string CHardwarePluginFactory::formatPluginInformations() const
+CHardwarePluginInformation CHardwarePluginFactory::getInformation(const boost::filesystem::path& libraryPath)
 {
-   std::ostringstream formatedInformations;
-
-   formatedInformations << getInformation().getName();
-   formatedInformations << " v" << getInformation().getVersion();
-   formatedInformations << "[" << getInformation().getReleaseType() << "]";
-   formatedInformations << " by " << getInformation().getAuthor();
-   formatedInformations << " (" << getInformation().getUrl() << ")";
-
-   return formatedInformations.str();
+   CHardwarePluginFactory plugin(libraryPath);
+   return plugin.getInformation();
 }
