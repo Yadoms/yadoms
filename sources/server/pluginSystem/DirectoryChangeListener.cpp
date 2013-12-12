@@ -3,8 +3,6 @@
 #include "tools/Log.h"
 #include "DirectoryChangeListener.h"
 
-boost::asio::io_service BoostIoService; //TODO ne pas laisser en global
-
 
 CDirectoryChangeListener::CDirectoryChangeListener(const boost::filesystem::path& path,
                                                    boost::function<void (const boost::asio::dir_monitor_event&)> callback)
@@ -16,20 +14,20 @@ CDirectoryChangeListener::CDirectoryChangeListener(const boost::filesystem::path
 CDirectoryChangeListener::~CDirectoryChangeListener()
 {
    requestToStop();
-   BoostIoService.stop();
+   m_boostIoService.stop();
    waitForStop();
 }
 
 void CDirectoryChangeListener::doWork() 
 {
-   boost::asio::dir_monitor m_directoryMonitor(BoostIoService);
+   boost::asio::dir_monitor m_directoryMonitor(m_boostIoService);
    m_directoryMonitor.add_directory(m_path.string());
 
    while(1)
    {
       m_directoryMonitor.async_monitor(boost::bind(&CDirectoryChangeListener::directoryEventHandler, this, _1, _2));
-      BoostIoService.run();
-      BoostIoService.reset();
+      m_boostIoService.run();
+      m_boostIoService.reset();
       boost::this_thread::interruption_point();
    }
 }
