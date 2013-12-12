@@ -113,6 +113,7 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 add_definitions( -DBOOST_WHATEVER_DYN_LINK )
 add_definitions( -DBOOST_ALL_NO_LIB )
 add_definitions( -DBOOST_ALL_DYN_LINK )
+add_definitions( -DBOOST_SPIRIT_THREADSAFE )
 	
 # define all needed boost libraries
 set(BOOST_LIBS 
