@@ -50,4 +50,9 @@ protected:
    /// \brief			The callback which will be called when event fires
    //--------------------------------------------------------------
    boost::function<void (const boost::asio::dir_monitor_event&)> m_callback;
+
+   //--------------------------------------------------------------
+   /// \brief			The boost io service used to async monitoring
+   //--------------------------------------------------------------
+   boost::asio::io_service m_boostIoService;
 };
