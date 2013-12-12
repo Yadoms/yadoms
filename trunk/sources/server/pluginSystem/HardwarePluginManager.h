@@ -34,7 +34,7 @@ protected:
    //--------------------------------------------------------------
    /// \brief			Initialisation, used for the 2-steps construction
    //--------------------------------------------------------------
-   void CHardwarePluginManager::init();
+   void init();
 
 public:
    //--------------------------------------------------------------
