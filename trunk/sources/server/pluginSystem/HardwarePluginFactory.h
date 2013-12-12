@@ -24,6 +24,14 @@ public:
    //--------------------------------------------------------------
    static CHardwarePluginInformation getInformation(const boost::filesystem::path& libraryPath);
 
+   //--------------------------------------------------------------
+   /// \brief	    Get plugin default configuration
+   /// \param [in]   libraryPath: the plugin path
+   /// \return     default configuration if configuration is available for this plugin
+   /// \throw        CInvalidPluginException if plugin is not valid
+   //-------------------------------------------------------------
+   static const boost::optional<const CHardwarePluginConfiguration&> getDefaultConfiguration(const boost::filesystem::path& libraryPath);
+
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor

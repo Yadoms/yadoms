@@ -47,7 +47,7 @@ bool CSQLiteDataProvider::load()
 
             //check for update
             YADOMS_LOG(info) << "Check for database update...";
-//            CSQLiteVersionUpgraderFactory::GetUpgrader()->checkForUpgrade(m_databaseRequester);
+            CSQLiteVersionUpgraderFactory::GetUpgrader()->checkForUpgrade(m_databaseRequester);
 
             //create entities requester (high level querier)
             loadRequesters();

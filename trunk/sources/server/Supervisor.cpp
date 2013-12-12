@@ -36,7 +36,7 @@ void CSupervisor::doWork()
          YADOMS_LOG(info) << "[END] List of all hardwares";
       }
 
-      // Start the harware plugin manager
+      // Start the hardware plugin manager
       boost::shared_ptr<CHardwarePluginManager> hardwarePluginManager = CHardwarePluginManager::newHardwarePluginManager(
          "../builds/lib/Debug"/* TODO m_startupOptions.getHarwarePluginsPath() */,
          pDataProvider->getHardwareRequester());
@@ -49,7 +49,44 @@ void CSupervisor::doWork()
       {
          YADOMS_LOG(debug) << "   - " << plugin.first << " : " << plugin.second->toString();
       }
-      // 2) Stop registered plugin instance (to be able to remove/replace plugin for example)
+      // 2) Get default configuration from a specific plugin (User want to create new plugin instance)
+      const std::string& pluginName="fakePlugin";
+      boost::optional<const CHardwarePluginConfiguration&> pluginDefaultConfiguration(hardwarePluginManager->getPluginDefaultConfiguration(pluginName));
+      if (pluginDefaultConfiguration)
+      {
+         YADOMS_LOG(debug) << pluginName << " configuration is :";
+         for (CHardwarePluginConfiguration::CHardwarePluginConfigurationMap::const_iterator it = pluginDefaultConfiguration->getMap().begin() ;
+            it != pluginDefaultConfiguration->getMap().end() ; ++it)
+         {
+            boost::shared_ptr<CHardwarePluginConfigurationParameter> parameter = (*it).second;
+
+            // Get parameter name, description and value (as string)
+            YADOMS_LOG(debug) << parameter->getName() << " (" << parameter->getDescription() << ")" << " = " << parameter->valueToString();
+
+            // Process specific parameters types
+            if (dynamic_cast<CHardwarePluginConfigurationEnumGeneric*>(parameter.get()))//TODO : voir si on ne peut pas mettre les dynamic_cast dans la conf
+            {
+               // Enum, get all available values
+               std::ostringstream os;
+               os << "Available values : ";
+               boost::shared_ptr<std::vector<std::string> > values = dynamic_cast<CHardwarePluginConfigurationEnumGeneric*>(parameter.get())->getAvailableValues();
+               BOOST_FOREACH(std::string value, *values)
+                  os << value << "|";
+               YADOMS_LOG(debug) << os.str();
+            }
+         }
+      }
+      else
+      {
+         YADOMS_LOG(debug) << pluginName << " has no configuration";
+      }
+      // 3) User can modify value (first, copy the configuration)
+      CHardwarePluginConfiguration newConf = pluginDefaultConfiguration.get();
+      newConf.set("BoolParameter","true");
+      newConf.set("EnumParameter","EnumValue3");
+      // 4) User press OK to valid configuration and create the new instance
+//TODO pas encore disponible (attente de CSQLiteHardwareRequester::addHardware)      hardwarePluginManager->createPluginInstance("theInstanceName", pluginName, newConf);
+      // 3) Stop registered plugin instance (to be able to remove/replace plugin for example)
       try
       {
          hardwarePluginManager->startInstance(1);

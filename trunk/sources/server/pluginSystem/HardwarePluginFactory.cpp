@@ -40,7 +40,7 @@ void CHardwarePluginFactory::load()
       // TODO : exemple de récupération du nécessaire pour création d'une nouvelle instance de plugin par l'IHM
       // 1 - L'IHM récupère la structure de la conf avec les valeurs par défaut
       const boost::optional<const CHardwarePluginConfiguration&> defaultConfiguration(getDefaultConfiguration());
-      // Ici, defaultConfiguration.is_initialized() indique si le plugin contient une configuration
+      // Ici, defaultConfiguration (opérateur bool) indique si le plugin contient une configuration
       // Dans notre exemple, on va se contenter de vérifier pas assertion qu'il en contient une
       BOOST_ASSERT(defaultConfiguration);
       // 2 - Copie de la configuration en local
@@ -115,8 +115,19 @@ const boost::optional<const CHardwarePluginConfiguration&> CHardwarePluginFactor
    return defaultConfiguration;
 }
 
+
+//--------------------------------------------------------------
+/// Static functions
+//-------------------------------------------------------------
+
 CHardwarePluginInformation CHardwarePluginFactory::getInformation(const boost::filesystem::path& libraryPath)
 {
    CHardwarePluginFactory plugin(libraryPath);
    return plugin.getInformation();
+}
+
+const boost::optional<const CHardwarePluginConfiguration&> CHardwarePluginFactory::getDefaultConfiguration(const boost::filesystem::path& libraryPath)
+{
+   CHardwarePluginFactory plugin(libraryPath);
+   return plugin.getDefaultConfiguration();
 }

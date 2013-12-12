@@ -22,7 +22,7 @@ public:
 	virtual ~CSQLiteHardwareRequester();
 
    // IHardwareRequester implementation
-   virtual bool addHardware(boost::shared_ptr<CHardware> newHardware);
+   virtual int addHardware(boost::shared_ptr<CHardware> newHardware);
 	virtual boost::shared_ptr<CHardware> getHardware(int hardwareId);
 	virtual std::vector<boost::shared_ptr<CHardware> > getHardwares();
 	virtual bool updateHardware(boost::shared_ptr<CHardware> hardware);
@@ -42,4 +42,9 @@ private:
 	/// \Brief		   Reference to SQLiteRequester
 	//--------------------------------------------------------------
    boost::shared_ptr<CSQLiteRequester> m_databaseRequester;
+
+   //--------------------------------------------------------------
+   /// \Brief		   The table name
+   //--------------------------------------------------------------
+   static const std::string m_tableName;
 };
