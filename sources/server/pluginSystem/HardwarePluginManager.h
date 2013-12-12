@@ -1,15 +1,15 @@
 //
 // HardwarePluginManager.h
 //
-// yadoms-plugin manager
+// Yadoms-plugin manager
 //
 #pragma once
+
+#include "tools/DirectoryChangeListener.h"
 
 #include "HardwarePluginFactory.h"
 #include "HardwarePluginInstance.h"
 #include "../database/IHardwareRequester.h"
-
-#include "DirectoryChangeListener.h"
 
 //--------------------------------------------------------------
 /// \brief	this class is used to manage plugin. 
