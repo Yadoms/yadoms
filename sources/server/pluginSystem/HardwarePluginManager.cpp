@@ -184,6 +184,27 @@ CHardwarePluginManager::AvalaiblePluginMap CHardwarePluginManager::getPluginList
    return mapCopy;
 }
 
+boost::optional<const CHardwarePluginConfiguration&> CHardwarePluginManager::getPluginDefaultConfiguration(const std::string& pluginName) const
+{
+   // If plugin is already loaded, use its information
+   if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
+      return m_loadedPlugins.at(pluginName)->getDefaultConfiguration();
+
+   return CHardwarePluginFactory::getDefaultConfiguration(pluginName);
+}
+
+void CHardwarePluginManager::createPluginInstance(const std::string& instanceName, const std::string& pluginName,
+   boost::optional<const CHardwarePluginConfiguration&> configuration)
+{
+   // First step, record instance in database, to get its ID
+   boost::shared_ptr<CHardware> dbRecord(new CHardware);
+   dbRecord->setName(instanceName).setPluginName(pluginName).setConfiguration(configuration?configuration->serializeValues():"").setEnabled(true).setDeleted(false);
+   int instanceId = m_database->addHardware(dbRecord);
+
+   // Next create instance
+   startInstance(instanceId);
+}
+
 void CHardwarePluginManager::onPluginDirectoryChanges(const boost::asio::dir_monitor_event& ev)
 {
    YADOMS_LOG(debug) << "CHardwarePluginManager::onPluginDirectoryChanges" << ev.type;

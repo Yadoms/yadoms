@@ -3,7 +3,7 @@
 #include "tools/Log.h"
 #include "DirectoryChangeListener.h"
 
-boost::asio::io_service BoostIoService;
+boost::asio::io_service BoostIoService; //TODO ne pas laisser en global
 
 
 CDirectoryChangeListener::CDirectoryChangeListener(const boost::filesystem::path& path,

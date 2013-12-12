@@ -32,7 +32,7 @@ protected:
    CHardwarePluginManager(const std::string & initialDir, boost::shared_ptr<IHardwareRequester> database);
 
    //--------------------------------------------------------------
-   /// \brief			Initialisation, used for the 2-steps construction
+   /// \brief			Initialization, used for the 2-steps construction
    //--------------------------------------------------------------
    void init();
 
@@ -67,10 +67,28 @@ public:
 
    //--------------------------------------------------------------
    /// \brief           Read the available plugin list
-   /// \return          The availabe plugin map (with informations)
+   /// \return          The available plugin map (with informations)
    //--------------------------------------------------------------
    AvalaiblePluginMap getPluginList();
-   
+
+   //--------------------------------------------------------------
+   /// \brief           Get the default configuration from a plugin
+   /// \param [in] pluginName Plugin name
+   /// \return          The default configuration of the plugin, if available
+   /// \throw           CInvalidPluginException if plugin is not available
+   //--------------------------------------------------------------
+   boost::optional<const CHardwarePluginConfiguration&> getPluginDefaultConfiguration(const std::string& pluginName) const;
+
+   //--------------------------------------------------------------
+   /// \brief           Create a new instance of a plugin
+   /// \param [in] instanceName the name of the new instance
+   /// \param [in] pluginName The plugin name for the instance
+   /// \param [in] configuration The configuration of the instance if needed
+   /// \throw           CInvalidPluginException if plugin is not available
+   //--------------------------------------------------------------
+   void createPluginInstance(const std::string& instanceName, const std::string& pluginName,
+      boost::optional<const CHardwarePluginConfiguration&> configuration = boost::none);
+
 private:
    //--------------------------------------------------------------
    /// \brief        Returns all plugin libraries installed
@@ -92,6 +110,7 @@ private:
 
    //--------------------------------------------------------------
    /// \brief			Load a plugin (do nothing if already loaded)
+   /// \param [in] pluginName Plugin name
    /// \return       Loaded plugin
    /// \throw        CInvalidPluginException if plugin is not available
    //--------------------------------------------------------------
@@ -99,6 +118,7 @@ private:
 
    //--------------------------------------------------------------
    /// \brief			Try to unload a plugin if no more used
+   /// \param [in] pluginName Plugin name
    /// \return       true if plugin was unloaded
    //--------------------------------------------------------------
    bool unloadPlugin(const std::string& pluginName);

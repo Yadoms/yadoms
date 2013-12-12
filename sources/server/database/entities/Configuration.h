@@ -2,6 +2,8 @@
 
 #include "EntityHelpers.hpp"
 
+#define DELCARE_FIELD_CCONFIGURATION(t,n)   DELCARE_FIELD(CConfiguration,t,n)
+
 class CConfiguration
 {
 public:
@@ -14,10 +16,10 @@ public:
    }
 
 public:
-   DELCARE_FIELD(std::string, Section);
-   DELCARE_FIELD(std::string, Name);
-   DELCARE_FIELD(std::string, Value);
-   DELCARE_FIELD(std::string, DefaultValue);
-   DELCARE_FIELD(std::string, Description);
-   DELCARE_FIELD(boost::gregorian::date, LastModificationDate);
+   DELCARE_FIELD_CCONFIGURATION(std::string, Section);
+   DELCARE_FIELD_CCONFIGURATION(std::string, Name);
+   DELCARE_FIELD_CCONFIGURATION(std::string, Value);
+   DELCARE_FIELD_CCONFIGURATION(std::string, DefaultValue);
+   DELCARE_FIELD_CCONFIGURATION(std::string, Description);
+   DELCARE_FIELD_CCONFIGURATION(boost::gregorian::date, LastModificationDate);
 };
