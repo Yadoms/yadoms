@@ -3,6 +3,7 @@
 #include "SQLiteRequester.h"
 #include "tools/Exceptions/NotImplementedException.h"
 #include "adapters/GenericAdapter.h"
+#include "adapters/SingleValueAdapter.hpp"
 #include "tools/StringExtension.hpp"
 
 CSQLiteRequester::CSQLiteRequester(sqlite3 * pDatabaseHandler)
@@ -29,13 +30,15 @@ int CSQLiteRequester::queryCount(const std::string & queryFormat, ...)
    zSql = sqlite3_vmprintf(queryFormat.c_str(), ap);
    va_end(ap);
 
-   CSQLiteRequester::QueryResults results = query(zSql);
+   CSingleValueAdapter<int> countAdapter;
+   queryEntities<int>(&countAdapter, zSql);
 
    if(zSql)
       sqlite3_free(zSql);
 
-   if(results.size() >= 1 && results[0].size() == 1)
-      return CStringExtension::parse<int>(results[0][0].c_str());
+   
+   if(countAdapter.getResults().size() >= 1)
+      return countAdapter.getResults()[0];
    return -1;
 }
 

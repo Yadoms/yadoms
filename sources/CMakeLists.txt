@@ -187,6 +187,7 @@ set(YADOMS_SRC
 	server/database/IDataProvider.h
 	server/database/IHardwareRequester.h
 	server/database/IConfigurationRequester.h
+	server/database/entities/EntityHelpers.hpp
 	server/database/entities/Hardware.h
 	server/database/entities/Configuration.h
 	)
@@ -212,6 +213,7 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/SQLiteRequester.h
 		server/database/sqlite/SQLiteRequester.cpp
 
+		server/database/sqlite/adapters/AdapterHelpers.hpp
 		server/database/sqlite/adapters/ISQLiteResultAdapter.h
 		server/database/sqlite/adapters/HardwareAdapter.h
 		server/database/sqlite/adapters/HardwareAdapter.cpp
