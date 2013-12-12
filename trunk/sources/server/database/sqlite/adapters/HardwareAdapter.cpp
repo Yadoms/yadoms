@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "HardwareAdapter.h"
 #include "tools/Log.h"
+#include "AdapterHelpers.hpp"
 
 CHardwareAdapter::CHardwareAdapter()
 {
@@ -29,16 +30,10 @@ bool CHardwareAdapter::adapt(int column, char** columValues, char** columnNames)
 
       for(int i=0; i<column ; i++)
       {
-         std::string colName(columnNames[i]);
-
-         if(boost::iequals(columnId, colName))
-            newHardware->setId( boost::lexical_cast<int>(columValues[i]) );
-         else if(boost::iequals(columnName, colName))
-            newHardware->setName( columValues[i] );
-         else if(boost::iequals(columnPluginName, colName))
-            newHardware->setPluginName( columValues[i] );
-         else if(boost::iequals(columnConfiguration, colName))
-            newHardware->setConfiguration( columValues[i] );
+         MAP_COLMUN_ADAPTER_IF(columnNames[i], "id", newHardware, Id, boost::lexical_cast<int>)
+         else MAP_COLMUN_IF(columnNames[i], "name", newHardware, Name)
+         else MAP_COLMUN_IF(columnNames[i], "pluginName", newHardware, PluginName)
+         else MAP_COLMUN_IF(columnNames[i], "configuration", newHardware, Configuration)
          else
          {
             //ignore it
