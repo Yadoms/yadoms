@@ -173,8 +173,6 @@ set(YADOMS_SRC
 	server/pluginSystem/HardwarePluginInstance.cpp
 	server/pluginSystem/HardwarePluginFactory.h
 	server/pluginSystem/HardwarePluginFactory.cpp
-	server/pluginSystem/DirectoryChangeListener.h
-	server/pluginSystem/DirectoryChangeListener.cpp
 	plugins/hardware/IHardwarePlugin.h
 	plugins/hardware/HardwarePluginConfiguration.hpp
 	plugins/hardware/HardwarePluginConfigurationParameters.hpp
@@ -276,6 +274,8 @@ set(SHARED_LIB_SRC
 
 	tools/tools/dir_monitor/dir_monitor.hpp
 	tools/tools/dir_monitor/basic_dir_monitor.hpp
+	tools/tools/DirectoryChangeListener.h
+	tools/tools/DirectoryChangeListener.cpp
 	
 	#include both platform files to see them into IDE
 	tools/windows/tools/DynamicLibrary.hpp
