@@ -51,7 +51,7 @@ std::vector<std::string> CSQLiteHardwareRequester::getHardwareNameList()
    return adapter.getResults();
 }
 
-bool CSQLiteHardwareRequester::updateHardware(boost::shared_ptr<CHardware> hardware)
+void CSQLiteHardwareRequester::updateHardwareConfiguration(int hardwareId, const std::string& newConfiguration)
 {
    throw CNotImplementedException();
 }
