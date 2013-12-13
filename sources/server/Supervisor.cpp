@@ -41,7 +41,7 @@ void CSupervisor::doWork()
          "../builds/lib/Debug"/* TODO m_startupOptions.getHarwarePluginsPath() */,
          pDataProvider->getHardwareRequester());
 
-      //TODO : test interface hardwarePluginManager
+      //TODO ######################### test interface hardwarePluginManager #########################
       // 1) List all available plugins (even if not loaded) and associated informations
       CHardwarePluginManager::AvalaiblePluginMap plugins = hardwarePluginManager->getPluginList();
       YADOMS_LOG(debug) << "Available plugins :";
@@ -49,7 +49,9 @@ void CSupervisor::doWork()
       {
          YADOMS_LOG(debug) << "   - " << plugin.first << " : " << plugin.second->toString();
       }
-      // 2) Get default configuration from a specific plugin (User want to create new plugin instance)
+
+      // 2) User want to create new plugin instance
+      // 2.1) Get default configuration from a specific plugin (User want to create new plugin instance)
       const std::string& pluginName="fakePlugin";
       boost::optional<const CHardwarePluginConfiguration&> pluginDefaultConfiguration(hardwarePluginManager->getPluginDefaultConfiguration(pluginName));
       if (pluginDefaultConfiguration)
@@ -80,12 +82,37 @@ void CSupervisor::doWork()
       {
          YADOMS_LOG(debug) << pluginName << " has no configuration";
       }
-      // 3) User can modify value (first, copy the configuration)
+      // 2.2) User can modify value (first, copy the configuration)
       CHardwarePluginConfiguration newConf = pluginDefaultConfiguration.get();
       newConf.set("BoolParameter","true");
       newConf.set("EnumParameter","EnumValue3");
-      // 4) User press OK to valid configuration and create the new instance
+      // 2.3) User press OK to valid configuration and create the new instance
 //TODO pas encore disponible (attente de CSQLiteHardwareRequester::addHardware)      hardwarePluginManager->createPluginInstance("theInstanceName", pluginName, newConf);
+
+      // 3) List of IDs of existing plugin instances (all known instances, EXCEPT deleted)
+      {
+         boost::shared_ptr<std::vector<int> > instances = hardwarePluginManager->getPluginInstanceList();
+         std::ostringstream os;
+         os << "Existing instances : ";
+         BOOST_FOREACH(int value, *instances)
+            os << value << " | ";
+         YADOMS_LOG(debug) << os.str();
+      }
+
+      // 4) List of all plugin instances, with details (all instances, EVEN deleted)
+      {
+         boost::shared_ptr<CHardwarePluginManager::PluginDetailedInstanceMap> instances = hardwarePluginManager->getPluginInstanceListDetails();
+         YADOMS_LOG(debug) << "Existing instances, with details : ";
+         BOOST_FOREACH(CHardwarePluginManager::PluginDetailedInstanceMap::value_type instance, *instances)
+            YADOMS_LOG(debug) << "Id#" << instance.second->getId() <<
+               ", name=" << instance.second->getName() <<
+               ", plugin=" << instance.second->getPluginName() <<
+               ", enabled=" << (instance.second->getEnabled() ? "true":"false") <<
+               ", deleted=" << (instance.second->getDeleted() ? "true":"false") <<
+               ", configuration=" << instance.second->getConfiguration();
+      }
+
+      // To be continued...
       // 3) Stop registered plugin instance (to be able to remove/replace plugin for example)
       try
       {
@@ -95,8 +122,7 @@ void CSupervisor::doWork()
       {
          YADOMS_LOG(error) << "Unable to start fakePlugin1 : " << e.what();
       }
-
-      //\TODO
+      //\TODO ######################### [FIN] test interface hardwarePluginManager #########################
 
       try
       {

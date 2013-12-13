@@ -27,6 +27,8 @@ bool CHardwareAdapter::adapt(int column, char** columValues, char** columnNames)
       std::string columnName("name");
       std::string columnPluginName("pluginName");
       std::string columnConfiguration("configuration");
+      std::string columnEnabled("enabled");
+      std::string columnDeleted("deleted");
 
       for(int i=0; i<column ; i++)
       {
@@ -34,10 +36,12 @@ bool CHardwareAdapter::adapt(int column, char** columValues, char** columnNames)
          else MAP_COLMUN_IF(columnNames[i], "name", newHardware, Name)
          else MAP_COLMUN_IF(columnNames[i], "pluginName", newHardware, PluginName)
          else MAP_COLMUN_IF(columnNames[i], "configuration", newHardware, Configuration)
+         else MAP_COLMUN_ADAPTER_IF(columnNames[i], "enabled", newHardware, Enabled, boost::lexical_cast<bool>)
+         else MAP_COLMUN_ADAPTER_IF(columnNames[i], "deleted", newHardware, Deleted, boost::lexical_cast<bool>)
          else
          {
             //ignore it
-            YADOMS_LOG(warning) << "Unknown column Name= " << columnName[i] << " Value=" << columValues[i];
+            YADOMS_LOG(warning) << "Unknown column Name= " << columnNames[i] << " Value=" << columValues[i];
          }
       }
       m_results.push_back(newHardware);
