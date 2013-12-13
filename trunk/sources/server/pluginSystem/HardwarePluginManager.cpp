@@ -37,7 +37,8 @@ void CHardwarePluginManager::init()
    std::vector<boost::shared_ptr<CHardware> > databasePluginInstances = m_database->getHardwares();
    BOOST_FOREACH(boost::shared_ptr<CHardware> databasePluginInstance, databasePluginInstances)
    {
-      startInstance(databasePluginInstance->getId());
+//TODO : test désactivé en attendant que CSQLiteHardwareRequester::enableInstance soit codé      if (databasePluginInstance->getEnabled())
+         doStartInstance(databasePluginInstance->getId());
    }
 }
 
@@ -216,6 +217,37 @@ boost::shared_ptr<CHardwarePluginManager::PluginDetailedInstanceMap> CHardwarePl
    }
 
    return instances;
+}
+
+boost::optional<const CHardwarePluginConfiguration> CHardwarePluginManager::getInstanceConfiguration(int id) const
+{
+   // First get database instance data
+   BOOST_ASSERT(m_database->getHardware(id));
+   boost::shared_ptr<CHardware> instanceData (m_database->getHardware(id));
+
+   // Get the plugin default configuration to get the configuration scheme
+   boost::optional<const CHardwarePluginConfiguration&> pluginDefaultConfiguration(getPluginDefaultConfiguration(instanceData->getPluginName()));
+   if (!pluginDefaultConfiguration)
+      return boost::optional<const CHardwarePluginConfiguration> (); // Plugin has no configuration
+   
+   // Override values with data from database
+   CHardwarePluginConfiguration instanceConfiguration = pluginDefaultConfiguration.get();
+   instanceConfiguration.unserializeValues(instanceData->getConfiguration());
+
+   return boost::optional<const CHardwarePluginConfiguration> (instanceConfiguration);
+}
+
+void CHardwarePluginManager::setInstanceConfiguration(int id, const CHardwarePluginConfiguration& newConfiguration)
+{
+   // First update configuration in database
+   const std::string newConfigurationStr = newConfiguration.serializeValues();
+   m_database->updateHardwareConfiguration(id, newConfigurationStr);
+
+   // Next notify the instance, if running
+   if (m_runningInstances.find(id) == m_runningInstances.end())
+      return;  // Instance is not running, nothing to do more
+
+   m_runningInstances[id]->updateConfiguration(newConfigurationStr);
 }
 
 void CHardwarePluginManager::onPluginDirectoryChanges(const boost::asio::dir_monitor_event& ev)

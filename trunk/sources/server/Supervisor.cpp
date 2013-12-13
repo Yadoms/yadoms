@@ -83,7 +83,7 @@ void CSupervisor::doWork()
          YADOMS_LOG(debug) << pluginName << " has no configuration";
       }
       // 2.2) User can modify value (first, copy the configuration)
-      CHardwarePluginConfiguration newConf = pluginDefaultConfiguration.get();
+      CHardwarePluginConfiguration newConf = *pluginDefaultConfiguration;
       newConf.set("BoolParameter","true");
       newConf.set("EnumParameter","EnumValue3");
       // 2.3) User press OK to valid configuration and create the new instance
@@ -112,21 +112,35 @@ void CSupervisor::doWork()
                ", configuration=" << instance.second->getConfiguration();
       }
 
-      // 5) Remove an instance
+      // 5) Update instance configuration
       {
-         hardwarePluginManager->deleteInstance(1);
+         // 5.1) First, get actual configuration
+         boost::optional<CHardwarePluginConfiguration> instanceConfiguration(hardwarePluginManager->getInstanceConfiguration(1));
+         if (instanceConfiguration)
+         {
+            YADOMS_LOG(debug) << "Instance 1 has no configuration";
+         }
+         else
+         {
+            // 5.2) Next, change some values
+            instanceConfiguration.get().set("EnumParameter","EnumValue1");
+            instanceConfiguration.get().set("DoubleParameter","56.78");
+
+            // 5.3) Valid the new configuration
+//TODO pas encore disponible (attente de CSQLiteHardwareRequester::addHardware)            hardwarePluginManager->setInstanceConfiguration(1, instanceConfiguration.get());
+         }
       }
 
-      // To be continued...
-      // 3) Stop registered plugin instance (to be able to remove/replace plugin for example)
-      try
+      // 6) Remove an instance
       {
-         hardwarePluginManager->startInstance(1);
+//TODO pas encore disponible (attente de CSQLiteHardwareRequester::addHardware)         hardwarePluginManager->deleteInstance(1);
       }
-      catch (std::invalid_argument& e)
-      {
-         YADOMS_LOG(error) << "Unable to start fakePlugin1 : " << e.what();
-      }
+
+      // 7) Stop registered plugin instance (to be able to remove/replace plugin for example)
+//TODO pas encore disponible      hardwarePluginManager->stopInstance(1);
+
+      // 8) Start registered plugin instance
+//TODO pas encore disponible      hardwarePluginManager->startInstance(1);
       //\TODO ######################### [FIN] test interface hardwarePluginManager #########################
 
       try

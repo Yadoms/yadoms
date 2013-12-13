@@ -27,9 +27,10 @@ public:
 
    //--------------------------------------------------------------
    /// \brief           Update hardware informations
-   /// \param [in] hardware   Hardware to update
+   /// \param [in] hardwareId   Hardware plugin instance Id
+   /// \param [in] newConfiguration   New configuration
    //--------------------------------------------------------------
-   virtual bool updateHardware(boost::shared_ptr<CHardware> hardware) = 0;
+   virtual void updateHardwareConfiguration(int hardwareId, const std::string& newConfiguration) = 0;
 
    //--------------------------------------------------------------
    /// \brief           Remove hardware plugin instance

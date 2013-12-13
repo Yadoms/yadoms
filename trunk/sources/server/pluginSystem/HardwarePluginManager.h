@@ -111,6 +111,21 @@ public:
    typedef std::map<int, boost::shared_ptr <const CHardware> > PluginDetailedInstanceMap;
    boost::shared_ptr<PluginDetailedInstanceMap> getInstanceListDetails () const;
 
+   //--------------------------------------------------------------
+   /// \brief           Get the instance configuration
+   /// \param [in] id   Instance Id
+   /// \return          The instance configuration, if available
+   //--------------------------------------------------------------
+   boost::optional<const CHardwarePluginConfiguration> getInstanceConfiguration(int id) const;
+
+   //--------------------------------------------------------------
+   /// \brief           Get the instance configuration
+   /// \param [in] id   Instance Id
+   /// \param [in] newConfiguration   The instance new configuration
+   /// \throw           std::invalid_argument if id is unknown or plugin has no configuration
+   //--------------------------------------------------------------
+   void setInstanceConfiguration(int id, const CHardwarePluginConfiguration& newConfiguration);   
+
 private:
    //--------------------------------------------------------------
    /// \brief        Returns all plugin libraries installed
