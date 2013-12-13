@@ -27,6 +27,7 @@ public:
 	virtual std::vector<boost::shared_ptr<CHardware> > getHardwares();
 	virtual bool updateHardware(boost::shared_ptr<CHardware> hardware);
    virtual bool removeHardware(int hardwareId);
+   virtual void enableInstance(int hardwareId, bool enable);
    // [END] IHardwareRequester implementation
 
    //test

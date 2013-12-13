@@ -60,6 +60,11 @@ bool CSQLiteHardwareRequester::removeHardware(int hardwareId)
 {
    throw CNotImplementedException();
 }
+
+void CSQLiteHardwareRequester::enableInstance(int hardwareId, bool enable)
+{
+   throw CNotImplementedException();
+}
 // [END] IHardwareRequester implementation
 
 
