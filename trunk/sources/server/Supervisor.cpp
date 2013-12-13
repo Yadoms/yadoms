@@ -87,11 +87,11 @@ void CSupervisor::doWork()
       newConf.set("BoolParameter","true");
       newConf.set("EnumParameter","EnumValue3");
       // 2.3) User press OK to valid configuration and create the new instance
-//TODO pas encore disponible (attente de CSQLiteHardwareRequester::addHardware)      hardwarePluginManager->createPluginInstance("theInstanceName", pluginName, newConf);
+//TODO pas encore disponible (attente de CSQLiteHardwareRequester::addHardware)      hardwarePluginManager->createInstance("theInstanceName", pluginName, newConf);
 
       // 3) List of IDs of existing plugin instances (all known instances, EXCEPT deleted)
       {
-         boost::shared_ptr<std::vector<int> > instances = hardwarePluginManager->getPluginInstanceList();
+         boost::shared_ptr<std::vector<int> > instances = hardwarePluginManager->getInstanceList();
          std::ostringstream os;
          os << "Existing instances : ";
          BOOST_FOREACH(int value, *instances)
@@ -101,7 +101,7 @@ void CSupervisor::doWork()
 
       // 4) List of all plugin instances, with details (all instances, EVEN deleted)
       {
-         boost::shared_ptr<CHardwarePluginManager::PluginDetailedInstanceMap> instances = hardwarePluginManager->getPluginInstanceListDetails();
+         boost::shared_ptr<CHardwarePluginManager::PluginDetailedInstanceMap> instances = hardwarePluginManager->getInstanceListDetails();
          YADOMS_LOG(debug) << "Existing instances, with details : ";
          BOOST_FOREACH(CHardwarePluginManager::PluginDetailedInstanceMap::value_type instance, *instances)
             YADOMS_LOG(debug) << "Id#" << instance.second->getId() <<
@@ -110,6 +110,11 @@ void CSupervisor::doWork()
                ", enabled=" << (instance.second->getEnabled() ? "true":"false") <<
                ", deleted=" << (instance.second->getDeleted() ? "true":"false") <<
                ", configuration=" << instance.second->getConfiguration();
+      }
+
+      // 5) Remove an instance
+      {
+         hardwarePluginManager->deleteInstance(1);
       }
 
       // To be continued...

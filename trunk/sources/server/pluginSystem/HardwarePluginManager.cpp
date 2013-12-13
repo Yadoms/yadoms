@@ -193,7 +193,7 @@ boost::optional<const CHardwarePluginConfiguration&> CHardwarePluginManager::get
    return CHardwarePluginFactory::getDefaultConfiguration(pluginName);
 }
 
-void CHardwarePluginManager::createPluginInstance(const std::string& instanceName, const std::string& pluginName,
+void CHardwarePluginManager::createInstance(const std::string& instanceName, const std::string& pluginName,
    boost::optional<const CHardwarePluginConfiguration&> configuration)
 {
    // First step, record instance in database, to get its ID
@@ -205,7 +205,16 @@ void CHardwarePluginManager::createPluginInstance(const std::string& instanceNam
    startInstance(instanceId);
 }
 
-boost::shared_ptr<std::vector<int> > CHardwarePluginManager::getPluginInstanceList () const
+void CHardwarePluginManager::deleteInstance(int id)
+{
+   // First step, stop instance
+   stopInstance(id);
+
+   // Next, delete in database (or flag as deleted)
+   m_database->removeHardware(id);
+}
+
+boost::shared_ptr<std::vector<int> > CHardwarePluginManager::getInstanceList () const
 {
    boost::shared_ptr<std::vector<int> > instances(new std::vector<int>);
    std::vector<boost::shared_ptr<CHardware> > databasePluginInstances = m_database->getHardwares();
@@ -218,7 +227,7 @@ boost::shared_ptr<std::vector<int> > CHardwarePluginManager::getPluginInstanceLi
    return instances;
 }
 
-boost::shared_ptr<CHardwarePluginManager::PluginDetailedInstanceMap> CHardwarePluginManager::getPluginInstanceListDetails () const
+boost::shared_ptr<CHardwarePluginManager::PluginDetailedInstanceMap> CHardwarePluginManager::getInstanceListDetails () const
 {
    boost::shared_ptr<PluginDetailedInstanceMap> instances(new std::map<int, boost::shared_ptr <const CHardware> >);
    std::vector<boost::shared_ptr<CHardware> > databasePluginInstances = m_database->getHardwares();
