@@ -89,6 +89,20 @@ public:
    void createPluginInstance(const std::string& instanceName, const std::string& pluginName,
       boost::optional<const CHardwarePluginConfiguration&> configuration = boost::none);
 
+   //--------------------------------------------------------------
+   /// \brief           Get the plugin instances list
+   /// \return          List of instances ID of all known instances, started or not, except deleted
+   //--------------------------------------------------------------
+   boost::shared_ptr<std::vector<int> > getPluginInstanceList () const;
+
+   //--------------------------------------------------------------
+   /// \brief           Get the plugin instances list with details
+   /// \return          Map of instances ID of all known instances, started or not, even deleted.
+   ///                  Keys are instance ID, values are instances details
+   //--------------------------------------------------------------
+   typedef std::map<int, boost::shared_ptr <const CHardware> > PluginDetailedInstanceMap;
+   boost::shared_ptr<PluginDetailedInstanceMap> getPluginInstanceListDetails () const;
+
 private:
    //--------------------------------------------------------------
    /// \brief        Returns all plugin libraries installed

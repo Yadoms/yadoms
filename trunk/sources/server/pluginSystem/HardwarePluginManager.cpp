@@ -205,6 +205,31 @@ void CHardwarePluginManager::createPluginInstance(const std::string& instanceNam
    startInstance(instanceId);
 }
 
+boost::shared_ptr<std::vector<int> > CHardwarePluginManager::getPluginInstanceList () const
+{
+   boost::shared_ptr<std::vector<int> > instances(new std::vector<int>);
+   std::vector<boost::shared_ptr<CHardware> > databasePluginInstances = m_database->getHardwares();
+   BOOST_FOREACH(boost::shared_ptr<CHardware> databasePluginInstance, databasePluginInstances)
+   {
+      if (!databasePluginInstance->getDeleted())
+         instances->push_back(databasePluginInstance->getId());
+   }
+
+   return instances;
+}
+
+boost::shared_ptr<CHardwarePluginManager::PluginDetailedInstanceMap> CHardwarePluginManager::getPluginInstanceListDetails () const
+{
+   boost::shared_ptr<PluginDetailedInstanceMap> instances(new std::map<int, boost::shared_ptr <const CHardware> >);
+   std::vector<boost::shared_ptr<CHardware> > databasePluginInstances = m_database->getHardwares();
+   BOOST_FOREACH(boost::shared_ptr<CHardware> databasePluginInstance, databasePluginInstances)
+   {
+      (*instances)[databasePluginInstance->getId()] = databasePluginInstance;
+   }
+
+   return instances;
+}
+
 void CHardwarePluginManager::onPluginDirectoryChanges(const boost::asio::dir_monitor_event& ev)
 {
    YADOMS_LOG(debug) << "CHardwarePluginManager::onPluginDirectoryChanges" << ev.type;
