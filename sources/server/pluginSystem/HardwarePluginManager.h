@@ -86,14 +86,22 @@ public:
    /// \param [in] configuration The configuration of the instance if needed
    /// \throw           CInvalidPluginException if plugin is not available
    //--------------------------------------------------------------
-   void createPluginInstance(const std::string& instanceName, const std::string& pluginName,
+   void createInstance(const std::string& instanceName, const std::string& pluginName,
       boost::optional<const CHardwarePluginConfiguration&> configuration = boost::none);
+
+   //--------------------------------------------------------------
+   /// \brief           Delete a plugin instance
+   /// \param [in] id   Instance Id
+   /// \throw           std::invalid_argument if id is unknown
+   /// \note            Do nothing if already deleted
+   //--------------------------------------------------------------
+   void deleteInstance(int id);
 
    //--------------------------------------------------------------
    /// \brief           Get the plugin instances list
    /// \return          List of instances ID of all known instances, started or not, except deleted
    //--------------------------------------------------------------
-   boost::shared_ptr<std::vector<int> > getPluginInstanceList () const;
+   boost::shared_ptr<std::vector<int> > getInstanceList () const;
 
    //--------------------------------------------------------------
    /// \brief           Get the plugin instances list with details
@@ -101,7 +109,7 @@ public:
    ///                  Keys are instance ID, values are instances details
    //--------------------------------------------------------------
    typedef std::map<int, boost::shared_ptr <const CHardware> > PluginDetailedInstanceMap;
-   boost::shared_ptr<PluginDetailedInstanceMap> getPluginInstanceListDetails () const;
+   boost::shared_ptr<PluginDetailedInstanceMap> getInstanceListDetails () const;
 
 private:
    //--------------------------------------------------------------
