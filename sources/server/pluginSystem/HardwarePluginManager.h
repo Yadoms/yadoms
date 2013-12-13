@@ -158,6 +158,22 @@ private:
    //--------------------------------------------------------------
    boost::filesystem::path toPath(const std::string& pluginName) const;
 
+   //--------------------------------------------------------------
+   /// \brief           Start a registered instance of plugin
+   /// \param [in] id   Instance Id
+   /// \throw           std::invalid_argument if id is unknown
+   /// \note            Just start instance, doesn't modify data in base
+   //--------------------------------------------------------------
+   void doStartInstance(int id);
+
+   //--------------------------------------------------------------
+   /// \brief           Stop a running instance of plugin
+   /// \param [in] id   Instance Id
+   /// \throw           std::invalid_argument if id is unknown
+   /// \note            Just start instance, doesn't modify data in base
+   //--------------------------------------------------------------
+   void doStopInstance(int id);
+
 private:
    //--------------------------------------------------------------
    /// \brief			The available plugin map and its mutex

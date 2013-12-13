@@ -43,41 +43,20 @@ void CHardwarePluginManager::init()
 
 void CHardwarePluginManager::startInstance(int id)
 {
-   if (m_runningInstances.find(id) != m_runningInstances.end())
-      return;     // Already started ==> nothing more to do
+   // Start instance (throw if fails)
+   doStartInstance(id);
 
-   // Get instance informations from database
-   boost::shared_ptr<CHardware> databasePluginInstance (m_database->getHardware(id));
-
-   // Load the plugin
-   try
-   {
-      boost::shared_ptr<CHardwarePluginFactory> plugin(loadPlugin(databasePluginInstance->getPluginName()));
-
-      // Create instance
-      BOOST_ASSERT(plugin); // Plugin not loaded
-      boost::shared_ptr<CHardwarePluginInstance> pluginInstance(new CHardwarePluginInstance(plugin, databasePluginInstance));
-      m_runningInstances[databasePluginInstance->getId()] = pluginInstance;
-   }
-   catch (CInvalidPluginException& e)
-   {
-      YADOMS_LOG(error) << "startInstance : " << e.what();   	
-   }
+   // Update instance state in database
+   m_database->enableInstance(id, true);
 }
 
 void CHardwarePluginManager::stopInstance(int id)
 {
-   if (m_runningInstances.find(id) == m_runningInstances.end())
-      return;     // Already stopped ==> nothing more to do
+   // Start instance (throw if fails)
+   doStopInstance(id);
 
-   // Get the associated plugin name to unload it after instance being deleted
-   std::string pluginName = m_runningInstances[id]->getPlugin()->getLibraryPath().stem().string();
-
-   // Remove (=stop) instance
-   m_runningInstances.erase(id);
-
-   // Try to unload associated plugin (if no more used)
-   unloadPlugin(pluginName);
+   // Update instance state in database
+   m_database->enableInstance(id, false);
 }
 
 std::vector<boost::filesystem::path> CHardwarePluginManager::findPluginFilenames()
@@ -250,4 +229,43 @@ boost::filesystem::path CHardwarePluginManager::toPath(const std::string& plugin
    boost::filesystem::path path(m_pluginPath);
    path /= (pluginName + CDynamicLibrary::DotExtension());
    return path;
+}
+
+void CHardwarePluginManager::doStartInstance(int id)
+{
+   if (m_runningInstances.find(id) != m_runningInstances.end())
+      return;     // Already started ==> nothing more to do
+
+   // Get instance informations from database
+   boost::shared_ptr<CHardware> databasePluginInstance (m_database->getHardware(id));
+
+   // Load the plugin
+   try
+   {
+      boost::shared_ptr<CHardwarePluginFactory> plugin(loadPlugin(databasePluginInstance->getPluginName()));
+
+      // Create instance
+      BOOST_ASSERT(plugin); // Plugin not loaded
+      boost::shared_ptr<CHardwarePluginInstance> pluginInstance(new CHardwarePluginInstance(plugin, databasePluginInstance));
+      m_runningInstances[databasePluginInstance->getId()] = pluginInstance;
+   }
+   catch (CInvalidPluginException& e)
+   {
+      YADOMS_LOG(error) << "doStartInstance : " << e.what();   	
+   }
+}
+
+void CHardwarePluginManager::doStopInstance(int id)
+{
+   if (m_runningInstances.find(id) == m_runningInstances.end())
+      return;     // Already stopped ==> nothing more to do
+
+   // Get the associated plugin name to unload it after instance being deleted
+   std::string pluginName = m_runningInstances[id]->getPlugin()->getLibraryPath().stem().string();
+
+   // Remove (=stop) instance
+   m_runningInstances.erase(id);
+
+   // Try to unload associated plugin (if no more used)
+   unloadPlugin(pluginName);
 }

@@ -37,6 +37,13 @@ public:
    //--------------------------------------------------------------
    virtual bool removeHardware(int hardwareId) = 0;
 
+   //--------------------------------------------------------------
+   /// \brief           Enable/disable hardware plugin instance
+   /// \param [in] hardwareId   Hardware plugin instance Id
+   /// \param [in] enable       true to flag as enable, false to flag as disable
+   //--------------------------------------------------------------
+   virtual void enableInstance(int hardwareId, bool enable) = 0;
+
 public:
    virtual ~IHardwareRequester()
    {
