@@ -4,6 +4,8 @@
 #include "SQLiteDataProvider.h"
 #include "adapters/SingleValueAdapter.hpp"
 #include "adapters/HardwareAdapter.h"
+#include "tools/Exceptions/EmptyResultException.h"
+
 
 const std::string CSQLiteHardwareRequester::m_tableName("Hardware");
 
@@ -19,14 +21,32 @@ CSQLiteHardwareRequester::~CSQLiteHardwareRequester()
 // IHardwareRequester implementation
 int CSQLiteHardwareRequester::addHardware(boost::shared_ptr<CHardware> newHardware)
 {
-   throw CNotImplementedException();
+   std::ostringstream os;
+   os << "INSERT INTO " << m_tableName << " (name, pluginName, configuration, enabled) " <<
+      " VALUES('" <<  newHardware->getName() << "','" << 
+                     newHardware->getPluginName() << "','" << 
+                     newHardware->getConfiguration() << "'," << 
+                     newHardware->getEnabled() << ")";
+
+   if(m_databaseRequester->queryStatement(os.str()) <= 0)
+      throw new CEmptyResultException("No lines affected");
+
+   std::ostringstream os2;
+   os2 <<  "SELECT id FROM " << m_tableName << " WHERE name='" <<  newHardware->getName() << "' AND pluginName='" << newHardware->getPluginName() << "' ORDER BY id DESC";
+
+   CSingleValueAdapter<int> adapter;
+   m_databaseRequester->queryEntities<int>(&adapter, os2.str());
+   if(adapter.getResults().size() >= 1)
+      return adapter.getResults()[0];
+   else
+      throw new CEmptyResultException("Cannot retreive inserted Hardware");
 }
 
 boost::shared_ptr<CHardware> CSQLiteHardwareRequester::getHardware(int hardwareId)
 {
    CHardwareAdapter adapter;
    std::ostringstream os;
-   os << "SELECT * FROM " << m_tableName << " WHERE id=\"" << hardwareId << "\"";
+   os << "SELECT * FROM " << m_tableName << " WHERE id=\"" << hardwareId << "\" AND deleted=0";
    m_databaseRequester->queryEntities<boost::shared_ptr<CHardware> >(&adapter, os.str());
    if (adapter.getResults().empty())
    {
@@ -39,7 +59,7 @@ boost::shared_ptr<CHardware> CSQLiteHardwareRequester::getHardware(int hardwareI
 std::vector<boost::shared_ptr<CHardware> > CSQLiteHardwareRequester::getHardwares()
 {
    CHardwareAdapter adapter;
-   m_databaseRequester->queryEntities<boost::shared_ptr<CHardware> >(&adapter, "SELECT * FROM Hardware");
+   m_databaseRequester->queryEntities<boost::shared_ptr<CHardware> >(&adapter, "SELECT * FROM Hardware WHERE deleted=0");
    return adapter.getResults();
 }
 
@@ -47,23 +67,35 @@ std::vector<boost::shared_ptr<CHardware> > CSQLiteHardwareRequester::getHardware
 std::vector<std::string> CSQLiteHardwareRequester::getHardwareNameList()
 {
    CSingleValueAdapter<std::string> adapter;
-   m_databaseRequester->queryEntities<std::string>(&adapter, "SELECT Name FROM " + m_tableName + " WHERE id=%d ORDER BY Name", 2);
+   m_databaseRequester->queryEntities<std::string>(&adapter, "SELECT Name FROM " + m_tableName + " WHERE id=%d AND deleted=0 ORDER BY Name", 2);
    return adapter.getResults();
 }
 
 void CSQLiteHardwareRequester::updateHardwareConfiguration(int hardwareId, const std::string& newConfiguration)
 {
-   throw CNotImplementedException();
+   std::ostringstream os;
+   os << "UPDATE " << m_tableName << " SET configuration = \"" << newConfiguration << "\" WHERE id=" << hardwareId;
+
+   if(m_databaseRequester->queryStatement(os.str()) <= 0)
+      throw new CEmptyResultException("No lines affected");
 }
 
-bool CSQLiteHardwareRequester::removeHardware(int hardwareId)
+void CSQLiteHardwareRequester::removeHardware(int hardwareId)
 {
-   throw CNotImplementedException();
+   std::ostringstream os;
+   os << "UPDATE " << m_tableName << " SET deleted = 1 WHERE id=" << hardwareId;
+
+   if(m_databaseRequester->queryStatement(os.str()) <= 0)
+      throw new CEmptyResultException("No lines affected");
 }
 
 void CSQLiteHardwareRequester::enableInstance(int hardwareId, bool enable)
 {
-   throw CNotImplementedException();
+   std::ostringstream os;
+   os << "UPDATE " << m_tableName << " SET enabled = " << (enable?1:0) << " WHERE id=" << hardwareId;
+
+   if(m_databaseRequester->queryStatement(os.str()) <= 0)
+      throw new CEmptyResultException("No lines affected");
 }
 // [END] IHardwareRequester implementation
 

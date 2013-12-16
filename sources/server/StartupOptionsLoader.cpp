@@ -113,7 +113,7 @@ void CStartupOptionsLoader::buildOptionsDescription()
          "set the web server port number")
       ("logLevel,l", po::value<boost::log::trivial::severity_level>(&m_logLevel)->default_value(boost::log::trivial::info),
          "set log level, accepted values are : trace, debug, info, warning, error, fatal")
-      ("databaseFile,d", po::value<std::string>(&m_databaseFile)->default_value("db/db.sql"),
+      ("databaseFile,d", po::value<std::string>(&m_databaseFile)->default_value("yadoms.db3"),
          "use a specific dataBase file")
       ("hardwarePluginsPath,h", po::value<CMustExistPathOption>(&m_hardwarePluginsPath)->default_value(CMustExistPathOption("plugins/hardware")),
          "use a specific path to hardware plugins")

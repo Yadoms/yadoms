@@ -34,7 +34,35 @@ void CSupervisor::doWork()
             YADOMS_LOG(info) << "Name=" << hardware->getName() << " PluginName=" << hardware->getPluginName();
          }
          YADOMS_LOG(info) << "[END] List of all hardwares";
+
+
+         YADOMS_LOG(info) << "Insert HW";
+         boost::shared_ptr<CHardware> toAdd(new CHardware);
+         toAdd->setName("AddHw1").setPluginName("FakePluginHw").setConfiguration("configuration pour le plugin AddHw1").setEnabled(true);
+         int addedId = pDataProvider->getHardwareRequester()->addHardware(toAdd);
+
+         YADOMS_LOG(info) << "Retreive HW";
+         boost::shared_ptr<CHardware> addedHw = pDataProvider->getHardwareRequester()->getHardware(addedId);
+         YADOMS_LOG(info) << "Name=" << addedHw->getName() << " PluginName=" << addedHw->getPluginName() << " Config = " << addedHw->getConfiguration();
+
+         YADOMS_LOG(info) << "Update config HW";
+         pDataProvider->getHardwareRequester()->updateHardwareConfiguration(addedHw->getId(), "new config");
+
+         YADOMS_LOG(info) << "Retreive updated HW";
+         boost::shared_ptr<CHardware> addedHw2 = pDataProvider->getHardwareRequester()->getHardware(addedId);
+         YADOMS_LOG(info) << "Name=" << addedHw2->getName() << " PluginName=" << addedHw2->getPluginName() << " Config = " << addedHw2->getConfiguration();
+
+         pDataProvider->getHardwareRequester()->removeHardware(addedHw2->getId());
+
+         YADOMS_LOG(info) << "List of all hardwares";
+         BOOST_FOREACH(boost::shared_ptr<CHardware> hardware, hardwares)
+         {
+            YADOMS_LOG(info) << "Name=" << hardware->getName() << " PluginName=" << hardware->getPluginName();
+         }
+         YADOMS_LOG(info) << "[END] List of all hardwares";
       }
+      YADOMS_LOG(info) << "[END] Testing database";
+
 
       // Start the hardware plugin manager
       boost::shared_ptr<CHardwarePluginManager> hardwarePluginManager = CHardwarePluginManager::newHardwarePluginManager(

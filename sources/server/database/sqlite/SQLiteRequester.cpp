@@ -18,7 +18,20 @@ CSQLiteRequester::~CSQLiteRequester()
 
 int CSQLiteRequester::queryStatement(const std::string & queryFormat, ...)
 {
-   throw CNotImplementedException();
+   char *zSql;
+   va_list ap;
+   va_start(ap, queryFormat);
+   zSql = sqlite3_vmprintf(queryFormat.c_str(), ap);
+   va_end(ap);
+
+   query(zSql);
+
+   int nbRowsAffected = sqlite3_changes(m_pDatabaseHandler);
+
+    if(zSql)
+      sqlite3_free(zSql);
+
+    return nbRowsAffected;
 }
 
 
