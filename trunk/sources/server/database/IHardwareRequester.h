@@ -36,7 +36,7 @@ public:
    /// \brief           Remove hardware plugin instance
    /// \param [in] hardwareId   Hardware plugin instance Id
    //--------------------------------------------------------------
-   virtual bool removeHardware(int hardwareId) = 0;
+   virtual void removeHardware(int hardwareId) = 0;
 
    //--------------------------------------------------------------
    /// \brief           Enable/disable hardware plugin instance

@@ -98,8 +98,19 @@ endif()
 ##################################################################################################
 
 #define outputs
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../builds/lib)
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../builds)
+set(youroutputdirectory ${PROJECT_SOURCE_DIR}/../builds)
+
+# First for the generic no-config case (e.g. with gcc)
+set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${youroutputdirectory} )
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${youroutputdirectory}/plugins/hardware )
+set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${youroutputdirectory} )
+# Second, for multi-config builds (e.g. msvc)
+foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
+    string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
+    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG} )
+    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG}/plugins/hardware )
+    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG} )
+endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
 
 ##################################################################################################
@@ -271,6 +282,7 @@ set(SHARED_LIB_SRC
 	tools/tools/Exceptions/NotImplementedException.h
 	tools/tools/Exceptions/NullReferenceException.h
 	tools/tools/Exceptions/NullReferenceException.cpp
+	tools/tools/Exceptions/EmptyResultException.h
 
 	tools/tools/dir_monitor/dir_monitor.hpp
 	tools/tools/dir_monitor/basic_dir_monitor.hpp
