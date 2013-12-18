@@ -6,6 +6,7 @@
 #include "adapters/HardwareAdapter.h"
 #include "tools/Exceptions/EmptyResultException.h"
 
+#include "database/sqlite/SQLiteDatabaseTables.h"
 
 const std::string CSQLiteHardwareRequester::m_tableName("Hardware");
 
@@ -46,7 +47,7 @@ boost::shared_ptr<CHardware> CSQLiteHardwareRequester::getHardware(int hardwareI
 {
    CHardwareAdapter adapter;
    std::ostringstream os;
-   os << "SELECT * FROM " << m_tableName << " WHERE id=\"" << hardwareId << "\" AND deleted=0";
+   os << "SELECT * FROM " << m_tableName << " WHERE id=" << hardwareId << " AND deleted=0";
    m_databaseRequester->queryEntities<boost::shared_ptr<CHardware> >(&adapter, os.str());
    if (adapter.getResults().empty())
    {
@@ -74,7 +75,7 @@ std::vector<std::string> CSQLiteHardwareRequester::getHardwareNameList()
 void CSQLiteHardwareRequester::updateHardwareConfiguration(int hardwareId, const std::string& newConfiguration)
 {
    std::ostringstream os;
-   os << "UPDATE " << m_tableName << " SET configuration = \"" << newConfiguration << "\" WHERE id=" << hardwareId;
+   os << "UPDATE " << m_tableName << " SET configuration = '" << newConfiguration << "' WHERE id=" << hardwareId;
 
    if(m_databaseRequester->queryStatement(os.str()) <= 0)
       throw new CEmptyResultException("No lines affected");

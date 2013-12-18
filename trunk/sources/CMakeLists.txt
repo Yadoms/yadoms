@@ -213,6 +213,9 @@ endif()
 #Database
 IF(USE_SQLITE_DATABASE)
 	set(YADOMS_SRC ${YADOMS_SRC}
+		server/database/sqlite/SQLiteDatabaseTables.h
+		server/database/sqlite/SQLiteDatabaseTables.cpp
+		server/database/sqlite/SQLiteDatabaseTablesHelpers.hpp
 		server/database/sqlite/SQLiteHardwareRequester.h
 		server/database/sqlite/SQLiteHardwareRequester.cpp
 		server/database/sqlite/SQLiteConfigurationRequester.h
