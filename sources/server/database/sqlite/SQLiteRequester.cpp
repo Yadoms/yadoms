@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "SQLiteRequester.h"
-#include "tools/Exceptions/NotImplementedException.h"
+#include "tools/Exceptions/NotImplementedException.hpp"
 #include "adapters/GenericAdapter.h"
 #include "adapters/SingleValueAdapter.hpp"
 #include "tools/StringExtension.hpp"

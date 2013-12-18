@@ -9,6 +9,7 @@
 #include "plugins/hardware/IHardwarePlugin.h"
 #include "plugins/hardware/HardwarePluginInformation.h"
 #include "plugins/hardware/HardwarePluginConfiguration.hpp"
+#include "InvalidPluginException.hpp"
 
 //--------------------------------------------------------------
 /// \brief	this class is used to load a plugin file library and construct instance
@@ -100,32 +101,4 @@ private:
    /// \brief	    Pointer to the plugin getConfiguration method (optional)
    //--------------------------------------------------------------
    boost::function<const CHardwarePluginConfiguration& ()> m_getDefaultConfiguration;
-};
-
-//--------------------------------------------------------------
-/// \class Configuration loading error exception
-//--------------------------------------------------------------
-class CInvalidPluginException : public std::exception
-{
-public:
-   //--------------------------------------------------------------
-   /// \brief	                        Constructor
-   /// \param[in]  optionsDecription   Full options description structure
-   /// \param[in]  message             Extended message (usefull if error in the command line)
-   //--------------------------------------------------------------
-   CInvalidPluginException(const std::string& plugin) : m_plugin(plugin) {}
-
-   //--------------------------------------------------------------
-   /// \brief      Destructor
-   //--------------------------------------------------------------
-   virtual ~CInvalidPluginException() throw() {}
-
-   //--------------------------------------------------------------
-   /// \brief	    Build full message explaining error reason and command line usage
-   /// \return     message explaining error reason and command line usage
-   //--------------------------------------------------------------
-   virtual const char* what() const throw() { return std::string("Invalid plugin found " + m_plugin).c_str(); }
-
-protected:
-   std::string m_plugin;
 };

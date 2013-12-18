@@ -25,7 +25,7 @@ public:
    virtual int addHardware(boost::shared_ptr<CHardware> newHardware);
    virtual void removeHardware(int hardwareId);
 	virtual boost::shared_ptr<CHardware> getHardware(int hardwareId);
-	virtual std::vector<boost::shared_ptr<CHardware> > getHardwares();
+	virtual std::vector<boost::shared_ptr<CHardware> > getHardwares(bool evenDeleted);
    virtual void updateHardwareConfiguration(int hardwareId, const std::string& newConfiguration);
    virtual void enableInstance(int hardwareId, bool enable);
    // [END] IHardwareRequester implementation

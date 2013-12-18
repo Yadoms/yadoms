@@ -1,26 +1,28 @@
 #pragma once
-#include "tools/Exceptions/Exception.hpp"
-
+#include "Exception.hpp"
 
 //--------------------------------------------------------------
-/// \class Standard excption with some text
+/// \class Exception for accessing NULL objects
 //--------------------------------------------------------------
-class CSQLiteVersionException : public CException
+class CNullReferenceException : public CException
 {
 public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
-   /// \param[in]  message             Exception message
    //--------------------------------------------------------------
-   CSQLiteVersionException(const char * message)
-      :CException(message)
+   CNullReferenceException(const char * reference = NULL)
    {
+      std::ostringstream s;
+      s << "Null reference exception" << std::endl;
+      if (reference)
+         s << "Exception details : " << reference << std::endl << std::endl;
+      m_message = s.str();
    }
 
    //--------------------------------------------------------------
    /// \brief      Destructor
    //--------------------------------------------------------------
-   virtual ~CSQLiteVersionException()
+   virtual ~CNullReferenceException() throw()
    {
    }
 };

@@ -42,7 +42,7 @@ void CHardwarePluginFactory::unload()
 }
 
 
-IHardwarePlugin * CHardwarePluginFactory::construct() const//TODO passer en shared_ptr
+IHardwarePlugin* CHardwarePluginFactory::construct() const
 {
 	BOOST_ASSERT(m_construct);  // construct can not be called if load was unsuccessfully
    if(m_construct != NULL)

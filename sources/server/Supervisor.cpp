@@ -22,10 +22,12 @@ void CSupervisor::doWork()
       YADOMS_LOG(info) << "Supervisor is starting";
 
 
-      YADOMS_LOG(info) << "Testing database";
       boost::shared_ptr<IDataProvider> pDataProvider (new CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
       if(pDataProvider->load())
       {
+         //TODO ######################### test database #########################
+#if 0
+         YADOMS_LOG(info) << "Testing database";
 
          std::vector<boost::shared_ptr<CHardware> > hardwares = pDataProvider->getHardwareRequester()->getHardwares();
          YADOMS_LOG(info) << "List of all hardwares";
@@ -41,14 +43,14 @@ void CSupervisor::doWork()
          toAdd->setName("AddHw1").setPluginName("FakePluginHw").setConfiguration("configuration pour le plugin AddHw1").setEnabled(true);
          int addedId = pDataProvider->getHardwareRequester()->addHardware(toAdd);
 
-         YADOMS_LOG(info) << "Retreive HW";
+         YADOMS_LOG(info) << "Retrieve HW";
          boost::shared_ptr<CHardware> addedHw = pDataProvider->getHardwareRequester()->getHardware(addedId);
          YADOMS_LOG(info) << "Name=" << addedHw->getName() << " PluginName=" << addedHw->getPluginName() << " Config = " << addedHw->getConfiguration();
 
          YADOMS_LOG(info) << "Update config HW";
-         pDataProvider->getHardwareRequester()->updateHardwareConfiguration(addedHw->getId(), "new config");
+         pDataProvider->getHardwareRequester()->updateHardwareConfiguration(addedHw->getId(), "{\"BoolParameter\":\"true\",\"DoubleParameter\":\"56.78\",\"EnumParameter\":\"7\",\"IntParameter\":\"7\",\"Serial port\":\"tty0\",\"StringParameter\":\"Yadoms is so powerful !\"}");
 
-         YADOMS_LOG(info) << "Retreive updated HW";
+         YADOMS_LOG(info) << "Retrieve updated HW";
          boost::shared_ptr<CHardware> addedHw2 = pDataProvider->getHardwareRequester()->getHardware(addedId);
          YADOMS_LOG(info) << "Name=" << addedHw2->getName() << " PluginName=" << addedHw2->getPluginName() << " Config = " << addedHw2->getConfiguration();
 
@@ -60,8 +62,10 @@ void CSupervisor::doWork()
             YADOMS_LOG(info) << "Name=" << hardware->getName() << " PluginName=" << hardware->getPluginName();
          }
          YADOMS_LOG(info) << "[END] List of all hardwares";
+         YADOMS_LOG(info) << "[END] Testing database";
+         //\TODO ######################### [END] test database #########################
+#endif
       }
-      YADOMS_LOG(info) << "[END] Testing database";
 
 
       // Start the hardware plugin manager
@@ -70,6 +74,7 @@ void CSupervisor::doWork()
          pDataProvider->getHardwareRequester());
 
       //TODO ######################### test interface hardwarePluginManager #########################
+#if 0
       // 1) List all available plugins (even if not loaded) and associated informations
       CHardwarePluginManager::AvalaiblePluginMap plugins = hardwarePluginManager->getPluginList();
       YADOMS_LOG(debug) << "Available plugins :";
@@ -79,7 +84,7 @@ void CSupervisor::doWork()
       }
 
       // 2) User want to create new plugin instance
-      // 2.1) Get default configuration from a specific plugin (User want to create new plugin instance)
+      // 2.1) Get default configuration from a specific plugin
       const std::string& pluginName="fakePlugin";
       boost::optional<const CHardwarePluginConfiguration&> pluginDefaultConfiguration(hardwarePluginManager->getPluginDefaultConfiguration(pluginName));
       if (pluginDefaultConfiguration)
@@ -110,12 +115,12 @@ void CSupervisor::doWork()
       {
          YADOMS_LOG(debug) << pluginName << " has no configuration";
       }
-      // 2.2) User can modify value (first, copy the configuration)
+      // 2.2) User can modify values (first, copy the configuration)
       CHardwarePluginConfiguration newConf = *pluginDefaultConfiguration;
       newConf.set("BoolParameter","true");
       newConf.set("EnumParameter","EnumValue3");
       // 2.3) User press OK to valid configuration and create the new instance
-//TODO pas encore disponible (attente de CSQLiteHardwareRequester::addHardware)      hardwarePluginManager->createInstance("theInstanceName", pluginName, newConf);
+      int createdInstanceId = hardwarePluginManager->createInstance("theInstanceName", pluginName, newConf);
 
       // 3) List of IDs of existing plugin instances (all known instances, EXCEPT deleted)
       {
@@ -143,10 +148,10 @@ void CSupervisor::doWork()
       // 5) Update instance configuration
       {
          // 5.1) First, get actual configuration
-         boost::optional<CHardwarePluginConfiguration> instanceConfiguration(hardwarePluginManager->getInstanceConfiguration(1));
-         if (instanceConfiguration)
+         boost::optional<CHardwarePluginConfiguration> instanceConfiguration(hardwarePluginManager->getInstanceConfiguration(createdInstanceId));
+         if (!instanceConfiguration)
          {
-            YADOMS_LOG(debug) << "Instance 1 has no configuration";
+            YADOMS_LOG(debug) << "Instance created at step #2 has no configuration";
          }
          else
          {
@@ -155,21 +160,20 @@ void CSupervisor::doWork()
             instanceConfiguration.get().set("DoubleParameter","56.78");
 
             // 5.3) Valid the new configuration
-//TODO pas encore disponible (attente de CSQLiteHardwareRequester::addHardware)            hardwarePluginManager->setInstanceConfiguration(1, instanceConfiguration.get());
+            hardwarePluginManager->setInstanceConfiguration(createdInstanceId, instanceConfiguration.get());
          }
       }
 
-      // 6) Remove an instance
-      {
-//TODO pas encore disponible (attente de CSQLiteHardwareRequester::addHardware)         hardwarePluginManager->deleteInstance(1);
-      }
+      // 6) Stop registered plugin instance (to be able to remove/replace plugin for example)
+      hardwarePluginManager->stopInstance(createdInstanceId);
 
-      // 7) Stop registered plugin instance (to be able to remove/replace plugin for example)
-//TODO pas encore disponible      hardwarePluginManager->stopInstance(1);
+      // 7) Start registered plugin instance
+      hardwarePluginManager->startInstance(createdInstanceId);
 
-      // 8) Start registered plugin instance
-//TODO pas encore disponible      hardwarePluginManager->startInstance(1);
-      //\TODO ######################### [FIN] test interface hardwarePluginManager #########################
+      // 8) Remove an instance
+      hardwarePluginManager->deleteInstance(createdInstanceId);
+#endif
+      //\TODO ######################### [END] test interface hardwarePluginManager #########################
 
       try
       {

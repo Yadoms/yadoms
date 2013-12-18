@@ -29,7 +29,6 @@ bool CSQLiteDataProvider::load()
 
    try
    {
-      std::string s = boost::filesystem::current_path().string();
       if ( boost::filesystem::exists( m_dbFile.c_str() ) )
       {
          int rc = sqlite3_open(m_dbFile.c_str(), &m_pDatabaseHandler);
@@ -74,7 +73,7 @@ bool CSQLiteDataProvider::load()
    }
    catch(...)
    {
-      YADOMS_LOG(error) << "Unknow exception while loading database";
+      YADOMS_LOG(error) << "Unknown exception while loading database";
       if(m_pDatabaseHandler != NULL)
          sqlite3_close(m_pDatabaseHandler);
       result = false;

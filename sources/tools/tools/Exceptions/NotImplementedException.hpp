@@ -1,26 +1,24 @@
 #pragma once
-#include "tools/Exceptions/Exception.hpp"
-
+#include "Exception.hpp"
 
 //--------------------------------------------------------------
-/// \class Standard excption with some text
+/// \class Exception for non implemented part of code
 //--------------------------------------------------------------
-class CSQLiteVersionException : public CException
+class CNotImplementedException : public CException
 {
 public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
-   /// \param[in]  message             Exception message
    //--------------------------------------------------------------
-   CSQLiteVersionException(const char * message)
-      :CException(message)
+   CNotImplementedException()
+      :CException("Not yet implemented")
    {
    }
 
    //--------------------------------------------------------------
    /// \brief      Destructor
    //--------------------------------------------------------------
-   virtual ~CSQLiteVersionException()
+   virtual ~CNotImplementedException() throw()
    {
    }
 };

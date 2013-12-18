@@ -52,7 +52,7 @@ int main (int argc, char** argv)
       
       YADOMS_LOG(info) << "Yadoms is stopped ";
    }
-   catch(CStartupOptionsLoaderError& e)
+   catch(CStartupOptionsLoaderException& e)
    {
       if (e.isError())
       {

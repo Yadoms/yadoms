@@ -4,43 +4,7 @@
 #pragma once
 
 #include "StartupOptions.h"
-
-//--------------------------------------------------------------
-/// \class Configuration loading error exception
-//--------------------------------------------------------------
-class CStartupOptionsLoaderError : public std::exception
-{
-public:
-   //--------------------------------------------------------------
-   /// \brief	                        Constructor
-   /// \param[in]  optionsDecription   Full options description structure
-   /// \param[in]  message             Extended message (usefull if error in the command line)
-   //--------------------------------------------------------------
-   CStartupOptionsLoaderError(const boost::program_options::options_description& optionsDecription,
-      const char* message = NULL);
-
-   //--------------------------------------------------------------
-   /// \brief      Destructor
-   //--------------------------------------------------------------
-   virtual ~CStartupOptionsLoaderError() throw();
-
-   //--------------------------------------------------------------
-   /// \brief	    Build full message explaining error reason and command line usage
-   /// \return     message explaining error reason and command line usage
-   //--------------------------------------------------------------
-   virtual const char* what() const throw() { return m_message.c_str(); }
-
-   //--------------------------------------------------------------
-   /// \brief	    Get if exception cause is a command line usage error
-   /// \return     true is command line arguments are wrong, false is help was invoked
-   //--------------------------------------------------------------
-   virtual bool isError() const throw() { return m_error; }
-
-protected:
-   bool m_error;
-   std::string m_message;
-   const boost::program_options::options_description& m_optionsDecription;
-};
+#include "StartupOptionsLoaderException.hpp"
 
 
 //--------------------------------------------------------------
@@ -101,7 +65,7 @@ public:
    /// \brief	            Constructor
    /// \param[in]  argc    Main argc parameter (from command line)
    /// \param[in]  argv    Main argv parameter (from command line)
-   /// \throw              CStartupOptionsLoaderError
+   /// \throw              CStartupOptionsLoaderException
    //--------------------------------------------------------------
    CStartupOptionsLoader(int argc, char** argv);
 

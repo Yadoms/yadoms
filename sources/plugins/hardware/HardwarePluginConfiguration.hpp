@@ -1,6 +1,8 @@
 #pragma once
 
 #include "HardwarePluginConfigurationParameters.hpp"
+#include "tools/Exceptions/BadConversionException.hpp"
+#include "tools/Exceptions/OutOfRangeException.hpp"
 
 //--------------------------------------------------------------
 /// \class Hardware plugin configuration
@@ -15,7 +17,6 @@ public:
    /// \brief	    Constructor
    //--------------------------------------------------------------
    CHardwarePluginConfiguration(){}
-   //TODO faire un ctor qui prend les valeurs JSON
 
    //--------------------------------------------------------------
    /// \brief	    Copy constructor
@@ -38,7 +39,7 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    Add a parameter in the configuration
-   /// \param [in] Pointeur on the new parameter
+   /// \param [in] Pointer on the new parameter
    //--------------------------------------------------------------
    void AddParameter(boost::shared_ptr<CHardwarePluginConfigurationParameter> parameter)
    {
@@ -48,7 +49,7 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    Unserialize values from Json string
-   /// \param [in] json string (from yadoms database)
+   /// \param [in] json string (from Yadoms database)
    //--------------------------------------------------------------
    void unserializeValues(const std::string& json)
    {
@@ -106,49 +107,77 @@ public:
    /// \brief	    Get parameter value as bool
    /// \param [in] parameterName    Name of the parameter
    /// \return     Parameter value
-   /// \throw      std::bad_cast if parameter is not bool
+   /// \throw      CBadConversionException if parameter is not bool
    //--------------------------------------------------------------
    bool asBool(const std::string parameterName) const
    {
-      return (dynamic_cast<const CHardwarePluginConfigurationBoolParameter&>
-         (*m_configurationMap.at(parameterName))).get();
+      try
+      {
+         return (dynamic_cast<const CHardwarePluginConfigurationBoolParameter&>
+            (*m_configurationMap.at(parameterName))).get();
+      }
+      catch (std::bad_cast&)
+      {
+      	throw CBadConversionException(parameterName, "bool");
+      }
    }
 
    //--------------------------------------------------------------
    /// \brief	    Get parameter value as string
    /// \param [in] parameterName    Name of the parameter
    /// \return     Parameter value
-   /// \throw      std::bad_cast if parameter is not string
+   /// \throw      CBadConversionException if parameter is not string
    //--------------------------------------------------------------
    const std::string& asString(const std::string parameterName) const
    {
-      return (dynamic_cast<const CHardwarePluginConfigurationStringParameter&>
-         (*m_configurationMap.at(parameterName))).get();
+      try
+      {
+         return (dynamic_cast<const CHardwarePluginConfigurationStringParameter&>
+            (*m_configurationMap.at(parameterName))).get();
+      }
+      catch (std::bad_cast&)
+      {
+         throw CBadConversionException(parameterName, "bool");
+      }
    }
 
    //--------------------------------------------------------------
    /// \brief	    Get parameter value as serial port
    /// \param [in] parameterName    Name of the parameter
    /// \return     Parameter value
-   /// \throw      std::bad_cast if parameter is not a serial port
+   /// \throw      CBadConversionException if parameter is not a serial port
    //--------------------------------------------------------------
    const std::string& asSerialPort(const std::string parameterName) const
    {
-      return (dynamic_cast<const CHardwarePluginConfigurationSerialPortParameter&>
-         (*m_configurationMap.at(parameterName))).get();
+      try
+      {
+         return (dynamic_cast<const CHardwarePluginConfigurationSerialPortParameter&>
+            (*m_configurationMap.at(parameterName))).get();
+      }
+      catch (std::bad_cast&)
+      {
+         throw CBadConversionException(parameterName, "bool");
+      }
    }
 
    //--------------------------------------------------------------
    /// \brief	    Get parameter value as enum
    /// \param [in] parameterName    Name of the parameter
    /// \return     Parameter value
-   /// \throw      std::bad_cast if parameter is not the expected enum type
+   /// \throw      CBadConversionException if parameter is not the expected enum type
    //--------------------------------------------------------------
    template<typename Enum>
    Enum asEnum(const std::string parameterName) const
    {
-      return (dynamic_cast<const CHardwarePluginConfigurationEnumParameter<Enum>&>
-         (*m_configurationMap.at(parameterName))).get();
+      try
+      {
+         return (dynamic_cast<const CHardwarePluginConfigurationEnumParameter<Enum>&>
+            (*m_configurationMap.at(parameterName))).get();
+      }
+      catch (std::bad_cast&)
+      {
+         throw CBadConversionException(parameterName, "bool");
+      }
    }
 
    //--------------------------------------------------------------
@@ -159,7 +188,14 @@ public:
    //--------------------------------------------------------------
    void set(const std::string parameterName, const std::string& valueAsString)
    {
-      m_configurationMap[parameterName]->valueFromString(valueAsString);
+      try
+      {
+	      m_configurationMap[parameterName]->valueFromString(valueAsString);
+      }
+      catch (std::out_of_range& e)
+      {
+         throw COutOfRangeException(e.what());      	
+      }
    }
 
 

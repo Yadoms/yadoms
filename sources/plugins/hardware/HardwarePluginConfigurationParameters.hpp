@@ -186,7 +186,7 @@ public:
       catch (const std::out_of_range& oor)
       {
          BOOST_ASSERT(false);  // Name of the value doesn't exist
-         std::cerr << "Out of Range error: " << oor.what() << '\n';//TODO : log
+         YADOMS_LOG(error) << "Out of Range error: " << oor.what();
          return std::string(getName() + " : Invalid value ");
       }
    }

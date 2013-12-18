@@ -184,11 +184,13 @@ set(YADOMS_SRC
 	server/pluginSystem/HardwarePluginInstance.cpp
 	server/pluginSystem/HardwarePluginFactory.h
 	server/pluginSystem/HardwarePluginFactory.cpp
+	server/pluginSystem/InvalidPluginException.hpp
 	plugins/hardware/IHardwarePlugin.h
 	plugins/hardware/HardwarePluginConfiguration.hpp
 	plugins/hardware/HardwarePluginConfigurationParameters.hpp
 	server/StartupOptionsLoader.h
 	server/StartupOptionsLoader.cpp
+	server/StartupOptionsLoaderException.hpp
 	server/StartupOptions.h
 	server/ApplicationStopHandler.h
 	server/ApplicationStopHandler.cpp
@@ -280,13 +282,14 @@ set(SHARED_LIB_SRC
 	tools/tools/Log.h
 	tools/tools/Log.cpp
 	tools/tools/StringExtension.hpp	
-	tools/tools/Exceptions/Exception.h
-	tools/tools/Exceptions/Exception.cpp
-	tools/tools/Exceptions/NotImplementedException.h
-	tools/tools/Exceptions/NullReferenceException.h
-	tools/tools/Exceptions/NullReferenceException.cpp
-	tools/tools/Exceptions/EmptyResultException.h
-
+	tools/tools/Exceptions/Exception.hpp
+	tools/tools/Exceptions/NotImplementedException.hpp
+	tools/tools/Exceptions/NullReferenceException.hpp
+	tools/tools/Exceptions/EmptyResultException.hpp
+	tools/tools/Exceptions/BadConversionException.hpp
+	tools/tools/Exceptions/InvalidParameterException.hpp
+	tools/tools/Exceptions/OutOfRangeException.hpp
+	
 	tools/tools/dir_monitor/dir_monitor.hpp
 	tools/tools/dir_monitor/basic_dir_monitor.hpp
 	tools/tools/DirectoryChangeListener.h

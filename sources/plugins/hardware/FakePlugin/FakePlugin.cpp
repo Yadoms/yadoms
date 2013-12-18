@@ -35,7 +35,7 @@ IMPLEMENT_CONFIGURATION
       (kEnumValue2, "EnumValue2")
       (kEnumValue3, "EnumValue3");
 
-   ADD_CONFIGURATION_PARAMETER_STRING("StringParameter", "Just a string parameter", "Yadmos is so powerful !");
+   ADD_CONFIGURATION_PARAMETER_STRING("StringParameter", "Just a string parameter", "Yadoms is so powerful !");
    ADD_CONFIGURATION_PARAMETER_SERIAL_PORT("Serial port", "Specific serial port parameters. Yadoms will populate available values with system serial ports.", "tty0");
    ADD_CONFIGURATION_PARAMETER_BOOL("BoolParameter", "Just a boolean example", false);
    ADD_CONFIGURATION_PARAMETER_ENUM(EEnumType, "EnumParameter", "Example of an enum with 3 values", kEnumValue2, EEnumTypeNames);
@@ -85,7 +85,7 @@ void CFakePlugin::doWork(const std::string& configurationValues)
          }
          YADOMS_LOG(debug) << os.str();
       }
-      catch (const std::bad_cast& bc)
+      catch (const CBadConversionException& bc)
       {
          BOOST_ASSERT(false);  // Parameter is wrong type
          YADOMS_LOG(error) << "Bad cast error: " << bc.what();

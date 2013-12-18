@@ -52,7 +52,7 @@ public:
    //--------------------------------------------------------------
    /// \brief           Start a registered instance of plugin
    /// \param [in] id   Instance Id
-   /// \throw           std::invalid_argument if id is unknown
+   /// \throw           CInvalidParameterException if id is unknown
    /// \note            Do nothing if instance already running
    //--------------------------------------------------------------
    void startInstance(int id);
@@ -60,7 +60,7 @@ public:
    //--------------------------------------------------------------
    /// \brief           Stop a running instance of plugin
    /// \param [in] id   Instance Id
-   /// \throw           std::invalid_argument if id is unknown
+   /// \throw           CInvalidParameterException if id is unknown
    /// \note            Do nothing if instance already stopped
    //--------------------------------------------------------------
    void stopInstance(int id);
@@ -84,15 +84,16 @@ public:
    /// \param [in] instanceName the name of the new instance
    /// \param [in] pluginName The plugin name for the instance
    /// \param [in] configuration The configuration of the instance if needed
-   /// \throw           CInvalidPluginException if plugin is not available
+   /// \return          Id of the created instance
+   /// \throw           CException if fails
    //--------------------------------------------------------------
-   void createInstance(const std::string& instanceName, const std::string& pluginName,
+   int createInstance(const std::string& instanceName, const std::string& pluginName,
       boost::optional<const CHardwarePluginConfiguration&> configuration = boost::none);
 
    //--------------------------------------------------------------
    /// \brief           Delete a plugin instance
    /// \param [in] id   Instance Id
-   /// \throw           std::invalid_argument if id is unknown
+   /// \throw           CException if fails
    /// \note            Do nothing if already deleted
    //--------------------------------------------------------------
    void deleteInstance(int id);
@@ -115,6 +116,7 @@ public:
    /// \brief           Get the instance configuration
    /// \param [in] id   Instance Id
    /// \return          The instance configuration, if available
+   /// \throw           CException if fails
    //--------------------------------------------------------------
    boost::optional<const CHardwarePluginConfiguration> getInstanceConfiguration(int id) const;
 
@@ -122,7 +124,7 @@ public:
    /// \brief           Get the instance configuration
    /// \param [in] id   Instance Id
    /// \param [in] newConfiguration   The instance new configuration
-   /// \throw           std::invalid_argument if id is unknown or plugin has no configuration
+   /// \throw           CException if fails
    //--------------------------------------------------------------
    void setInstanceConfiguration(int id, const CHardwarePluginConfiguration& newConfiguration);   
 
@@ -176,7 +178,7 @@ private:
    //--------------------------------------------------------------
    /// \brief           Start a registered instance of plugin
    /// \param [in] id   Instance Id
-   /// \throw           std::invalid_argument if id is unknown
+   /// \throw           CInvalidParameterException if id is unknown
    /// \note            Just start instance, doesn't modify data in base
    //--------------------------------------------------------------
    void doStartInstance(int id);
@@ -184,7 +186,7 @@ private:
    //--------------------------------------------------------------
    /// \brief           Stop a running instance of plugin
    /// \param [in] id   Instance Id
-   /// \throw           std::invalid_argument if id is unknown
+   /// \throw           CInvalidParameterException if id is unknown
    /// \note            Just start instance, doesn't modify data in base
    //--------------------------------------------------------------
    void doStopInstance(int id);
