@@ -28,6 +28,7 @@
 #include <boost/log/common.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/optional.hpp>
+#include <boost/preprocessor.hpp>
 #include <boost/program_options.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
