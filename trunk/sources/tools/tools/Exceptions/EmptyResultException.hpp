@@ -1,18 +1,17 @@
 #pragma once
-#include "tools/Exceptions/Exception.hpp"
 
+#include "Exception.hpp"
 
 //--------------------------------------------------------------
-/// \class Standard excption with some text
+/// \class Exception for non implemented part of code
 //--------------------------------------------------------------
-class CSQLiteVersionException : public CException
+class CEmptyResultException : public CException
 {
 public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
-   /// \param[in]  message             Exception message
    //--------------------------------------------------------------
-   CSQLiteVersionException(const char * message)
+   CEmptyResultException(const std::string & message)
       :CException(message)
    {
    }
@@ -20,7 +19,7 @@ public:
    //--------------------------------------------------------------
    /// \brief      Destructor
    //--------------------------------------------------------------
-   virtual ~CSQLiteVersionException()
+   virtual ~CEmptyResultException() throw()
    {
    }
 };

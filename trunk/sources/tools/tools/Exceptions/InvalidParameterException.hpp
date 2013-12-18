@@ -1,25 +1,25 @@
 #pragma once
 
-#include "Exception.h"
+#include "Exception.hpp"
 
 //--------------------------------------------------------------
-/// \class Exception for non implemented part of code
+/// \class Exception for accessing NULL objects
 //--------------------------------------------------------------
-class CEmptyResultException : public CException
+class CInvalidParameterException : public CException
 {
 public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
    //--------------------------------------------------------------
-   CEmptyResultException(const std::string & message)
-      :CException(message.c_str())
+   CInvalidParameterException(const std::string& parameter)
+      :CException(std::string("Invalid parameter " + parameter))
    {
    }
 
    //--------------------------------------------------------------
    /// \brief      Destructor
    //--------------------------------------------------------------
-   virtual ~CEmptyResultException() throw()
+   virtual ~CInvalidParameterException() throw()
    {
    }
 };

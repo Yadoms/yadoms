@@ -1,28 +1,25 @@
 #pragma once
 
+#include "Exception.hpp"
+
 //--------------------------------------------------------------
-/// \class Exception for non implemented part of code
+/// \class Exception for value out of range
 //--------------------------------------------------------------
-class CNotImplementedException : public std::exception
+class COutOfRangeException : public CException
 {
 public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
    //--------------------------------------------------------------
-   CNotImplementedException()
+   COutOfRangeException(const std::string& message)
+      :CException(std::string("Out of range " + message))
    {
    }
 
    //--------------------------------------------------------------
    /// \brief      Destructor
    //--------------------------------------------------------------
-   virtual ~CNotImplementedException() throw()
+   virtual ~COutOfRangeException() throw()
    {
    }
-
-   //--------------------------------------------------------------
-   /// \brief	    Build full message explaining exception reason
-   /// \return     message explaining exception reason
-   //--------------------------------------------------------------
-   virtual const char* what() const throw() { return "Not yet implemented"; }
 };

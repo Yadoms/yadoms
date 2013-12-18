@@ -7,32 +7,6 @@ namespace po = boost::program_options;
 const std::string CStartupOptionsLoader::OptionalConfigFile("yadoms.cfg");
 
 
-
-CStartupOptionsLoaderError::CStartupOptionsLoaderError(const boost::program_options::options_description& optionsDecription,
-                                                       const char* message)
-   :m_optionsDecription(optionsDecription)
-{
-   // If no error message was specified, it's not an error (help was invoked)
-   m_error = message ? true : false;
-
-   std::ostringstream s;
-
-   if (message)
-      s << message << std::endl << std::endl;
-
-   s << "Command line usage :" << std::endl;
-   s << "   Yadoms [options]"  << std::endl << std::endl;
-   s << m_optionsDecription << std::endl;
-
-   m_message = s.str();
-}
-
-CStartupOptionsLoaderError::~CStartupOptionsLoaderError() throw()
-{
-}
-
- 
-
 CStartupOptionsLoader::CStartupOptionsLoader(int argc, char** argv)
    :m_optionsDescription("Allowed options")
 {
@@ -48,17 +22,17 @@ CStartupOptionsLoader::CStartupOptionsLoader(int argc, char** argv)
       po::notify(vm);
 
       if (vm.count("help"))
-         throw CStartupOptionsLoaderError(m_optionsDescription);
+         throw CStartupOptionsLoaderException(m_optionsDescription);
 
       m_startXplHub = !vm.count("disableXplHubStart");
    }
    catch(po::unknown_option& e)
    {
-      throw CStartupOptionsLoaderError(m_optionsDescription, e.what());
+      throw CStartupOptionsLoaderException(m_optionsDescription, e.what());
    }
    catch(po::validation_error& e)
    {
-      throw CStartupOptionsLoaderError(m_optionsDescription, e.what());
+      throw CStartupOptionsLoaderException(m_optionsDescription, e.what());
    }
 }
 

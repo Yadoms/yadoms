@@ -1,26 +1,32 @@
+//
+// InvalidPluginException.h
+//
+// Invalid plugin exception
+//
 #pragma once
+
 #include "tools/Exceptions/Exception.hpp"
 
 
 //--------------------------------------------------------------
-/// \class Standard excption with some text
+/// \class Configuration loading error exception
 //--------------------------------------------------------------
-class CSQLiteVersionException : public CException
+class CInvalidPluginException : public CException
 {
 public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
-   /// \param[in]  message             Exception message
+   /// \param[in]  plugin              Plugin name
    //--------------------------------------------------------------
-   CSQLiteVersionException(const char * message)
-      :CException(message)
+   CInvalidPluginException(const std::string& plugin)
+      :CException(std::string("Invalid plugin found " + plugin).c_str())
    {
    }
 
    //--------------------------------------------------------------
    /// \brief      Destructor
    //--------------------------------------------------------------
-   virtual ~CSQLiteVersionException()
+   virtual ~CInvalidPluginException() throw()
    {
    }
 };

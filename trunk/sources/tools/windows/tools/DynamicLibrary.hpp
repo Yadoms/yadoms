@@ -62,7 +62,7 @@ protected:
     /// \param [in] libraryFile: the library file path
     /// \return     true if loaded with success, else false
     //-------------------------------------------------------------
-    virtual bool load(const std::string & libraryFile)//TODO : passer en protected ?
+    virtual bool load(const std::string & libraryFile)
     {
         bool result = FALSE;
 

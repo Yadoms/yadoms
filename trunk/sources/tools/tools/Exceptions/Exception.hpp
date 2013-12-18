@@ -1,20 +1,40 @@
 #pragma once
 
+#include <string>
+#include <exception>
+
 //--------------------------------------------------------------
-/// \class Exception for accessing NULL objects
+/// \class Standard exception with some text
 //--------------------------------------------------------------
-class CNullReferenceException : public std::exception
+class CException : public std::exception
 {
+protected:
+   //--------------------------------------------------------------
+   /// \brief	                        Default constructor (only internal usage)
+   //--------------------------------------------------------------
+   CException() {}
+
 public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
+   /// \param[in]  message             Exception message
    //--------------------------------------------------------------
-   CNullReferenceException(const char * reference = NULL);
+   CException(const char * message)
+   {
+      if(message != NULL)
+         m_message=std::string(message);
+   }
+   CException(const std::string& message)
+      :m_message(message)
+   {
+   }
 
    //--------------------------------------------------------------
    /// \brief      Destructor
    //--------------------------------------------------------------
-   virtual ~CNullReferenceException() throw();
+   virtual ~CException() throw()
+   {
+   }
 
    //--------------------------------------------------------------
    /// \brief	    Build full message explaining exception reason

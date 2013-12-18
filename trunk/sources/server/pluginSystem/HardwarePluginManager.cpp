@@ -37,7 +37,7 @@ void CHardwarePluginManager::init()
    std::vector<boost::shared_ptr<CHardware> > databasePluginInstances = m_database->getHardwares();
    BOOST_FOREACH(boost::shared_ptr<CHardware> databasePluginInstance, databasePluginInstances)
    {
-//TODO : test désactivé en attendant que CSQLiteHardwareRequester::enableInstance soit codé      if (databasePluginInstance->getEnabled())
+      if (databasePluginInstance->getEnabled())
          doStartInstance(databasePluginInstance->getId());
    }
 }
@@ -173,16 +173,18 @@ boost::optional<const CHardwarePluginConfiguration&> CHardwarePluginManager::get
    return CHardwarePluginFactory::getDefaultConfiguration(pluginName);
 }
 
-void CHardwarePluginManager::createInstance(const std::string& instanceName, const std::string& pluginName,
+int CHardwarePluginManager::createInstance(const std::string& instanceName, const std::string& pluginName,
    boost::optional<const CHardwarePluginConfiguration&> configuration)
 {
-   // First step, record instance in database, to get its ID
-   boost::shared_ptr<CHardware> dbRecord(new CHardware);
-   dbRecord->setName(instanceName).setPluginName(pluginName).setConfiguration(configuration?configuration->serializeValues():"").setEnabled(true).setDeleted(false);
-   int instanceId = m_database->addHardware(dbRecord);
+	// First step, record instance in database, to get its ID
+	boost::shared_ptr<CHardware> dbRecord(new CHardware);
+	dbRecord->setName(instanceName).setPluginName(pluginName).setConfiguration(configuration?configuration->serializeValues():"").setEnabled(true).setDeleted(false);
+	int instanceId = m_database->addHardware(dbRecord);
+	
+	// Next create instance
+	startInstance(instanceId);
 
-   // Next create instance
-   startInstance(instanceId);
+   return instanceId;
 }
 
 void CHardwarePluginManager::deleteInstance(int id)
@@ -210,7 +212,7 @@ boost::shared_ptr<std::vector<int> > CHardwarePluginManager::getInstanceList () 
 boost::shared_ptr<CHardwarePluginManager::PluginDetailedInstanceMap> CHardwarePluginManager::getInstanceListDetails () const
 {
    boost::shared_ptr<PluginDetailedInstanceMap> instances(new std::map<int, boost::shared_ptr <const CHardware> >);
-   std::vector<boost::shared_ptr<CHardware> > databasePluginInstances = m_database->getHardwares();
+   std::vector<boost::shared_ptr<CHardware> > databasePluginInstances = m_database->getHardwares(true);
    BOOST_FOREACH(boost::shared_ptr<CHardware> databasePluginInstance, databasePluginInstances)
    {
       (*instances)[databasePluginInstance->getId()] = databasePluginInstance;

@@ -2,7 +2,7 @@
 
 #include "sqlite3.h"
 #include "adapters/ISQLiteResultAdapter.h"
-#include "tools/Exceptions/NullReferenceException.h"
+#include "tools/Exceptions/NullReferenceException.hpp"
 #include "tools/Log.h"
 
 

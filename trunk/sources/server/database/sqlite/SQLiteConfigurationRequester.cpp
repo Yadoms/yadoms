@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SQLiteConfigurationRequester.h"
-#include "tools/Exceptions/NotImplementedException.h"
+#include "tools/Exceptions/NotImplementedException.hpp"
 #include "SQLiteDataProvider.h"
 #include "adapters/SingleValueAdapter.hpp"
 #include "adapters/ConfigurationAdapter.h"

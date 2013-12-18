@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "SQLiteHardwareRequester.h"
-#include "tools/Exceptions/NotImplementedException.h"
+#include "tools/Exceptions/NotImplementedException.hpp"
 #include "SQLiteDataProvider.h"
 #include "adapters/SingleValueAdapter.hpp"
 #include "adapters/HardwareAdapter.h"
-#include "tools/Exceptions/EmptyResultException.h"
+#include "tools/Exceptions/EmptyResultException.hpp"
+#include "tools/Exceptions/InvalidParameterException.hpp"
 
 #include "database/sqlite/SQLiteDatabaseTables.h"
 
@@ -40,7 +41,7 @@ int CSQLiteHardwareRequester::addHardware(boost::shared_ptr<CHardware> newHardwa
    if(adapter.getResults().size() >= 1)
       return adapter.getResults()[0];
    else
-      throw new CEmptyResultException("Cannot retreive inserted Hardware");
+      throw new CEmptyResultException("Cannot retrieve inserted Hardware");
 }
 
 boost::shared_ptr<CHardware> CSQLiteHardwareRequester::getHardware(int hardwareId)
@@ -52,15 +53,18 @@ boost::shared_ptr<CHardware> CSQLiteHardwareRequester::getHardware(int hardwareI
    if (adapter.getResults().empty())
    {
       // Hardware not found
-      throw std::invalid_argument(CStringExtension::format("Hardware Id %d not found in database", hardwareId));
+      throw CInvalidParameterException(CStringExtension::format("Hardware Id %d not found in database", hardwareId));
    }
    return adapter.getResults().at(0);
 }
 
-std::vector<boost::shared_ptr<CHardware> > CSQLiteHardwareRequester::getHardwares()
+std::vector<boost::shared_ptr<CHardware> > CSQLiteHardwareRequester::getHardwares(bool evenDeleted)
 {
    CHardwareAdapter adapter;
-   m_databaseRequester->queryEntities<boost::shared_ptr<CHardware> >(&adapter, "SELECT * FROM Hardware WHERE deleted=0");
+   std::string request = "SELECT * FROM Hardware";
+   if (!evenDeleted)
+      request += " WHERE deleted=0";
+   m_databaseRequester->queryEntities<boost::shared_ptr<CHardware> >(&adapter, request);
    return adapter.getResults();
 }
 

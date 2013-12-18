@@ -1,26 +1,26 @@
 #pragma once
-#include "tools/Exceptions/Exception.hpp"
 
+#include "Exception.hpp"
 
 //--------------------------------------------------------------
-/// \class Standard excption with some text
+/// \class Exception for fail to cast object
 //--------------------------------------------------------------
-class CSQLiteVersionException : public CException
+class CBadConversionException : public CException
 {
 public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
-   /// \param[in]  message             Exception message
    //--------------------------------------------------------------
-   CSQLiteVersionException(const char * message)
-      :CException(message)
+   CBadConversionException(const std::string& variableName, const std::string& variableType)
+      :CException(std::string("Bad conversion of " + variableName + " to " + variableType))
    {
    }
+
 
    //--------------------------------------------------------------
    /// \brief      Destructor
    //--------------------------------------------------------------
-   virtual ~CSQLiteVersionException()
+   virtual ~CBadConversionException() throw()
    {
    }
 };
