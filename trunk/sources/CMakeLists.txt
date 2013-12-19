@@ -57,15 +57,6 @@ if(MSVC)
 	include("windows.cmake")
 endif()
 
-##################################################################################################
-## Global CMake configuration
-##################################################################################################
-
-#suppress VS solution ZERO_CHECK project
-if(MSVC)
-	set(CMAKE_SUPPRESS_REGENERATION TRUE)
-endif()
-
 
 ##################################################################################################
 ## IDE configurations
@@ -305,12 +296,18 @@ set(SHARED_LIB_SRC
 	tools/linux/tools/Export.h
 	tools/linux/tools/dir_monitor/basic_dir_monitor_service.hpp
 	tools/linux/tools/dir_monitor/dir_monitor_impl.hpp
+
+	tools/mac/tools/DynamicLibrary.hpp
+	tools/mac/tools/Export.h
+	tools/mac/tools/dir_monitor/basic_dir_monitor_service.hpp
+	tools/mac/tools/dir_monitor/dir_monitor_impl.hpp
 )
 
 # Define project folders
 IF(MSVC)
 	source_group(PlatformSpecific\\windows tools/windows/tools/*.*)
 	source_group(PlatformSpecific\\linux tools/linux/tools/*.*)
+	source_group(PlatformSpecific\\mac tools/mac/tools/*.*)
 	source_group(Exception tools/tools/Exceptions/*.* )	
 ENDIF()
 
@@ -323,8 +320,11 @@ target_link_libraries(yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
 set(TOOLS_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tools)
 IF(WIN32)
 	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tools/windows)
-ELSE()
+ELSEIF(APPLE)
 	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tools/linux)
+	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tools/tools)
+ELSE()
+	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tools/mac)
 	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tools/tools)
 ENDIF()
 
