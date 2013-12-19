@@ -70,11 +70,10 @@ void CSupervisor::doWork()
 
       // Start the hardware plugin manager
       boost::shared_ptr<CHardwarePluginManager> hardwarePluginManager = CHardwarePluginManager::newHardwarePluginManager(
-         "../builds/lib/Debug"/* TODO m_startupOptions.getHarwarePluginsPath() */,
-         pDataProvider->getHardwareRequester());
+         m_startupOptions.getHarwarePluginsPath(), pDataProvider->getHardwareRequester());
 
       //TODO ######################### test interface hardwarePluginManager #########################
-#if 0
+#if 1
       // 1) List all available plugins (even if not loaded) and associated informations
       CHardwarePluginManager::AvalaiblePluginMap plugins = hardwarePluginManager->getPluginList();
       YADOMS_LOG(debug) << "Available plugins :";
@@ -89,7 +88,7 @@ void CSupervisor::doWork()
       boost::optional<const CHardwarePluginConfiguration&> pluginDefaultConfiguration(hardwarePluginManager->getPluginDefaultConfiguration(pluginName));
       if (pluginDefaultConfiguration)
       {
-         YADOMS_LOG(debug) << pluginName << " configuration is :";
+         YADOMS_LOG(debug) << pluginName << " default configuration is :";
          for (CHardwarePluginConfiguration::CHardwarePluginConfigurationMap::const_iterator it = pluginDefaultConfiguration->getMap().begin() ;
             it != pluginDefaultConfiguration->getMap().end() ; ++it)
          {

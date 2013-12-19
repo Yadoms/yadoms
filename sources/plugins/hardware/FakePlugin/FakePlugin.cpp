@@ -57,7 +57,7 @@ void CFakePlugin::doWork(const std::string& configurationValues)
    try
    {
       // Build configuration and load values from database
-      CHardwarePluginConfiguration configuration=getDefaultConfiguration();
+      CHardwarePluginConfiguration configuration(getDefaultConfiguration());
       configuration.unserializeValues(configurationValues);
       try
       {
@@ -113,7 +113,7 @@ void CFakePlugin::doWork(const std::string& configurationValues)
          }
 	
 	      // Give a chance to exit plugin thread
-	      boost::this_thread::sleep(boost::posix_time::milliseconds(100)); 
+	      boost::this_thread::sleep(boost::posix_time::milliseconds(1000)); 
 	   };
    }
    // Plugin must catch this end-of-thread exception to make its cleanup.
@@ -121,7 +121,7 @@ void CFakePlugin::doWork(const std::string& configurationValues)
    // as a plugin failure.
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(debug) << "CFakePlugin is stopped...";
+      YADOMS_LOG(debug) << "CFakePlugin is stopping...";
    }
 }
 
