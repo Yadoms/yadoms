@@ -317,15 +317,14 @@ add_precompiled_header(yadoms-tools stdafx.h)
 target_link_libraries(yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
 
 # Define include directories (allow easy includes)
-set(TOOLS_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tools)
+set(TOOLS_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tools ${CMAKE_CURRENT_SOURCE_DIR}/tools/tools)
+
 IF(WIN32)
 	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tools/windows)
 ELSEIF(APPLE)
 	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tools/mac)
-	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tools/tools)
 ELSE()
 	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tools/linux)
-	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tools/tools)
 ENDIF()
 
 set_property( TARGET yadoms-tools PROPERTY INCLUDE_DIRECTORIES ${TOOLS_INCL_DIR} ${BOOST_INCL_DIR})
