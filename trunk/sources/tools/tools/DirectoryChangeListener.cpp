@@ -21,7 +21,16 @@ CDirectoryChangeListener::~CDirectoryChangeListener()
 void CDirectoryChangeListener::doWork() 
 {
    boost::asio::dir_monitor m_directoryMonitor(m_boostIoService);
-   m_directoryMonitor.add_directory(m_path.string());
+   try
+   {
+      m_directoryMonitor.add_directory(m_path.string());
+   }
+   catch (std::invalid_argument& e)
+   {
+      YADOMS_LOG(fatal) << "CDirectoryChangeListener : invalid directory, " << e.what();
+      BOOST_ASSERT(0);
+      return;
+   }
 
    while(1)
    {

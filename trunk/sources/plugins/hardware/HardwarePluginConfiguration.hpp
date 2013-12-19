@@ -53,6 +53,9 @@ public:
    //--------------------------------------------------------------
    void unserializeValues(const std::string& json)
    {
+      if (json.empty())
+         return;
+
       boost::property_tree::ptree pt;
       std::istringstream is(json);
       boost::property_tree::json_parser::read_json(is, pt);
