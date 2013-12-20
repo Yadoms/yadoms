@@ -10,8 +10,8 @@ public:
    //--------------------------------------------------------------
    /// \brief	                        Constructor
    //--------------------------------------------------------------
-   CNotImplementedException()
-      :CException("Not yet implemented")
+   CNotImplementedException(const std::string& function)
+      :CException(function + " is not yet implemented")
    {
    }
 
@@ -22,3 +22,6 @@ public:
    {
    }
 };
+
+// Helper macro
+#define NOT_IMPLEMENTED    throw CNotImplementedException(__FUNCTION__)

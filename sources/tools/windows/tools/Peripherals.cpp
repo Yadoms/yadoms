@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
 
 #include "DynamicLibrary.hpp"
 #include "tools/Exceptions/Exception.hpp"
@@ -193,5 +192,3 @@ const boost::shared_ptr<std::vector<std::string> > CPeripherals::getUsedSerialPo
 
    return usedSerialPorts;
 }
-
-#endif

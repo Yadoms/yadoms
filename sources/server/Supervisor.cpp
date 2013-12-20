@@ -2,6 +2,7 @@
 #include "Supervisor.h"
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "tools/Log.h"
+#include "tools/Exceptions/NotSupportedException.hpp"
 
 CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
    :CThreadBase("Supervisor"), m_startupOptions(startupOptions)
@@ -175,26 +176,33 @@ void CSupervisor::doWork()
       //\TODO ######################### [END] test interface hardwarePluginManager #########################
 
       //TODO ######################### test serial ports getter #########################
-#if 1
-      boost::shared_ptr<std::vector<std::string> > serialPorts(CPeripherals::getSerialPorts());
-      YADOMS_LOG(debug) << "System serial ports";
-      BOOST_FOREACH(std::string serialPort, *serialPorts)
+#if 0
+      try
       {
-         YADOMS_LOG(debug) << serialPort;
-      }
+         boost::shared_ptr<std::vector<std::string> > serialPorts(CPeripherals::getSerialPorts());
+         YADOMS_LOG(debug) << "System serial ports";
+         BOOST_FOREACH(std::string serialPort, *serialPorts)
+         {
+            YADOMS_LOG(debug) << serialPort;
+         }
 
-      serialPorts = CPeripherals::getUsedSerialPorts();
-      YADOMS_LOG(debug) << "System used serial ports";
-      BOOST_FOREACH(std::string serialPort, *serialPorts)
-      {
-         YADOMS_LOG(debug) << serialPort;
-      }
+         serialPorts = CPeripherals::getUsedSerialPorts();
+         YADOMS_LOG(debug) << "System used serial ports";
+         BOOST_FOREACH(std::string serialPort, *serialPorts)
+         {
+            YADOMS_LOG(debug) << serialPort;
+         }
 
-      serialPorts = CPeripherals::getUnusedSerialPorts();
-      YADOMS_LOG(debug) << "System unused serial ports";
-      BOOST_FOREACH(std::string serialPort, *serialPorts)
+         serialPorts = CPeripherals::getUnusedSerialPorts();
+         YADOMS_LOG(debug) << "System unused serial ports";
+         BOOST_FOREACH(std::string serialPort, *serialPorts)
+         {
+            YADOMS_LOG(debug) << serialPort;
+         }
+      }
+      catch (CNotSupportedException& e)
       {
-         YADOMS_LOG(debug) << serialPort;
+         YADOMS_LOG(debug) << "Not supported function : " << e.what();
       }
 #endif
       //\TODO ######################### [END] test interface hardwarePluginManager #########################
@@ -211,7 +219,7 @@ void CSupervisor::doWork()
          YADOMS_LOG(info) << "Supervisor is stopping...";
       }
 
-      pDataProvider->unload();//TODO : mettre un appel à unload dans le destructeur de IDataProvider (si pas déjà unloaded évidemment).
+      pDataProvider->unload();//TODO : mettre un appel ï¿½ unload dans le destructeur de IDataProvider (si pas dï¿½jï¿½ unloaded ï¿½videmment).
 
       YADOMS_LOG(info) << "Supervisor is stopped";
    }
