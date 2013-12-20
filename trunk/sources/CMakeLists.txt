@@ -286,29 +286,41 @@ set(SHARED_LIB_SRC
 	tools/tools/DirectoryChangeListener.h
 	tools/tools/DirectoryChangeListener.cpp
 	tools/tools/Peripherals.h
-	
-	#include both platform files to see them into IDE
+)
+
+#Append platform specific files
+IF(MSVC)
+set(SHARED_LIB_SRC	
+	${SHARED_LIB_SRC}
 	tools/windows/tools/DynamicLibrary.hpp
 	tools/windows/tools/Export.h
 	tools/windows/tools/dir_monitor/basic_dir_monitor_service.hpp
 	tools/windows/tools/dir_monitor/dir_monitor_impl.hpp
 	tools/windows/tools/Peripherals.h
 	tools/windows/tools/Peripherals.cpp
+)	
 
-	tools/linux/tools/DynamicLibrary.hpp
-	tools/linux/tools/Export.h
-	tools/linux/tools/dir_monitor/basic_dir_monitor_service.hpp
-	tools/linux/tools/dir_monitor/dir_monitor_impl.hpp
-	tools/linux/tools/Peripherals.h
-	tools/linux/tools/Peripherals.cpp
-
+ELSEIF(APPLE)
+set(SHARED_LIB_SRC	
+	${SHARED_LIB_SRC}
 	tools/mac/tools/DynamicLibrary.hpp
 	tools/mac/tools/Export.h
 	tools/mac/tools/dir_monitor/basic_dir_monitor_service.hpp
 	tools/mac/tools/dir_monitor/dir_monitor_impl.hpp
 	tools/mac/tools/Peripherals.h
 	tools/mac/tools/Peripherals.cpp
-)
+)	
+ELSE()
+set(SHARED_LIB_SRC	
+	${SHARED_LIB_SRC}
+	tools/linux/tools/DynamicLibrary.hpp
+	tools/linux/tools/Export.h
+	tools/linux/tools/dir_monitor/basic_dir_monitor_service.hpp
+	tools/linux/tools/dir_monitor/dir_monitor_impl.hpp
+	tools/linux/tools/Peripherals.h
+	tools/linux/tools/Peripherals.cpp
+)	
+ENDIF()
 
 # Define project folders
 IF(MSVC)
