@@ -21,3 +21,12 @@ DECLARE_TABLE(Configuration,
 )
 
 
+DECLARE_TABLE(Acquisitions, 
+   (Id)
+   (Source)
+   (Keyword)
+   (Value)
+   (Date)
+)
+
+

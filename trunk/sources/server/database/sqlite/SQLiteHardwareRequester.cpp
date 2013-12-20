@@ -3,7 +3,7 @@
 #include "tools/Exceptions/NotImplementedException.hpp"
 #include "SQLiteDataProvider.h"
 #include "adapters/SingleValueAdapter.hpp"
-#include "adapters/HardwareAdapter.h"
+#include "adapters/SQLiteDatabaseAdapters.h"
 #include "tools/Exceptions/EmptyResultException.hpp"
 #include "tools/Exceptions/InvalidParameterException.hpp"
 
