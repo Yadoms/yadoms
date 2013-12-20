@@ -3,7 +3,7 @@
 #include "tools/Exceptions/NotImplementedException.hpp"
 #include "SQLiteDataProvider.h"
 #include "adapters/SingleValueAdapter.hpp"
-#include "adapters/ConfigurationAdapter.h"
+#include "adapters/SQLiteDatabaseAdapters.h"
 
 CSQLiteConfigurationRequester::CSQLiteConfigurationRequester(const CSQLiteDataProvider & databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
    :m_databaseHandler(databaseHandler), m_databaseRequester(databaseRequester)

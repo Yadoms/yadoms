@@ -192,6 +192,7 @@ set(YADOMS_SRC
 	server/database/entities/EntityHelpers.hpp
 	server/database/entities/Hardware.h
 	server/database/entities/Configuration.h
+	server/database/entities/Acquisitions.h
 	)
 
 # Project folders
@@ -218,12 +219,9 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/SQLiteRequester.h
 		server/database/sqlite/SQLiteRequester.cpp
 
+		server/database/sqlite/adapters/SQLiteDatabaseAdapters.h
 		server/database/sqlite/adapters/AdapterHelpers.hpp
 		server/database/sqlite/adapters/ISQLiteResultAdapter.h
-		server/database/sqlite/adapters/HardwareAdapter.h
-		server/database/sqlite/adapters/HardwareAdapter.cpp
-		server/database/sqlite/adapters/ConfigurationAdapter.h
-		server/database/sqlite/adapters/ConfigurationAdapter.cpp
 		server/database/sqlite/adapters/GenericAdapter.h
 		server/database/sqlite/adapters/GenericAdapter.cpp
 		server/database/sqlite/adapters/SingleValueAdapter.hpp

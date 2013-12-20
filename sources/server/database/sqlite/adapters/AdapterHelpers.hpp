@@ -1,5 +1,7 @@
 #pragma once
 
+
+
 //
 /// \brief  Empty adapter (used when no need to convert from string)
 //
@@ -20,7 +22,12 @@
 #define ADAPT_COLUMN(r, data, idx, elem) \
    BOOST_PP_IF(BOOST_PP_EQUAL(idx,0), BOOST_PP_EMPTY(), else) \
    if(boost::iequals(BOOST_PP_CAT(C##data##Table::get,BOOST_PP_CAT(BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem), ColumnName())), columnNames[i])) \
-	{ \      if(columValues[i] == NULL) \   		BOOST_PP_CAT(newEntity->set, BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem)) (BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_DEFAULT, elem) ); \      else \         BOOST_PP_CAT(newEntity->set, BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem)) (BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ADAPTER, elem)(columValues[i]) ); \   }
+	{ \
+      if(columValues[i] == NULL) \
+   		BOOST_PP_CAT(newEntity->set, BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem)) (BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_DEFAULT, elem) ); \
+      else \
+         BOOST_PP_CAT(newEntity->set, BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem)) (BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ADAPTER, elem)(columValues[i]) ); \
+   }
 
 
 //
@@ -36,6 +43,10 @@
 #define ENTITY_CLASS(_tablename) BOOST_PP_CAT(C,_tablename)
 
 
+//
+/// \brief  Retreive the entity class name
+//
+#define ADAPTER_CLASS(_tablename) C##_tablename##Adapter
 
 
 //
@@ -66,6 +77,20 @@
    return returnValue;
 
 
+//
+/// \brief  Declare the full adapter class
+//
+#define DECLARE_ADAPTER(_tablename, _seq) \
+   class ADAPTER_CLASS(_tablename) : public ISQLiteResultAdapter<boost::shared_ptr<ENTITY_CLASS(_tablename)> > \
+   { \
+   public: \
+      ADAPTER_CLASS(_tablename) () { } \
+      BOOST_PP_CAT(virtual ~, ADAPTER_CLASS(_tablename))() { } \
+      bool adapt(int column, char** columValues, char** columnNames) { ADAPT(_tablename, _seq) } \
+      std::vector<boost::shared_ptr<ENTITY_CLASS(_tablename)> > getResults() { return m_results; } \
+   private: \
+      std::vector<boost::shared_ptr<ENTITY_CLASS(_tablename)> > m_results;\
+   };
 
 
 

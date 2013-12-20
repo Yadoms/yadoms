@@ -19,3 +19,12 @@ DECLARE_TABLE_COLUMN_NAMES(Configuration,
    ((Description)("description"))
    ((LastModificationDate)("last_modification_date"))
 )
+
+
+DECLARE_TABLE_COLUMN_NAMES(Acquisitions, 
+   ((Id)("id"))
+   ((Source)("source"))
+   ((Keyword)("keyword"))
+   ((Value)("value"))
+   ((Date)("date"))
+)
