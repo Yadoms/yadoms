@@ -4,6 +4,7 @@
 #include <boost/assert.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#include "tools/Peripherals.h"
 
 
 //--------------------------------------------------------------
@@ -259,7 +260,17 @@ public:
 
    virtual boost::shared_ptr<std::vector<std::string> > getAvailableValues() const
    {
-      return listSerialPorts();
+//TODO faire PluginApi d'abord
+      //try
+      //{
+      //   return CPeripherals::getUnusedSerialPorts();
+      //}
+      //catch (CNotSupportedException&)
+      //{
+      //     // If getUnusedSerialPorts is not supported by system, return getSerialPorts
+      //   return CPeripherals::getSerialPorts();
+      //}
+      return boost::shared_ptr<std::vector<std::string> >();
    }
 
    virtual void load(boost::property_tree::ptree& pt)
@@ -269,17 +280,6 @@ public:
    virtual void save(boost::property_tree::ptree& pt) const
    {
       pt.put<std::string>(getName(), m_value);
-   }
-
-private:
-   static boost::shared_ptr<std::vector<std::string> > listSerialPorts()
-   {
-      //TODO, en attendant
-      boost::shared_ptr<std::vector<std::string> > serialPorts(new std::vector<std::string>);
-      serialPorts->push_back("COM1");
-      serialPorts->push_back("COM2");
-      serialPorts->push_back("COM5");
-      return serialPorts;
    }
 
 private:
