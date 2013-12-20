@@ -73,7 +73,7 @@ void CSupervisor::doWork()
          m_startupOptions.getHarwarePluginsPath(), pDataProvider->getHardwareRequester());
 
       //TODO ######################### test interface hardwarePluginManager #########################
-#if 1
+#if 0
       // 1) List all available plugins (even if not loaded) and associated informations
       CHardwarePluginManager::AvalaiblePluginMap plugins = hardwarePluginManager->getPluginList();
       YADOMS_LOG(debug) << "Available plugins :";
@@ -171,6 +171,31 @@ void CSupervisor::doWork()
 
       // 8) Remove an instance
       hardwarePluginManager->deleteInstance(createdInstanceId);
+#endif
+      //\TODO ######################### [END] test interface hardwarePluginManager #########################
+
+      //TODO ######################### test serial ports getter #########################
+#if 1
+      boost::shared_ptr<std::vector<std::string> > serialPorts(CPeripherals::getSerialPorts());
+      YADOMS_LOG(debug) << "System serial ports";
+      BOOST_FOREACH(std::string serialPort, *serialPorts)
+      {
+         YADOMS_LOG(debug) << serialPort;
+      }
+
+      serialPorts = CPeripherals::getUsedSerialPorts();
+      YADOMS_LOG(debug) << "System used serial ports";
+      BOOST_FOREACH(std::string serialPort, *serialPorts)
+      {
+         YADOMS_LOG(debug) << serialPort;
+      }
+
+      serialPorts = CPeripherals::getUnusedSerialPorts();
+      YADOMS_LOG(debug) << "System unused serial ports";
+      BOOST_FOREACH(std::string serialPort, *serialPorts)
+      {
+         YADOMS_LOG(debug) << serialPort;
+      }
 #endif
       //\TODO ######################### [END] test interface hardwarePluginManager #########################
 
