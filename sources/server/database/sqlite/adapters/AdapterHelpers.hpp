@@ -85,7 +85,7 @@
    { \
    public: \
       ADAPTER_CLASS(_tablename) () { } \
-      BOOST_PP_CAT(virtual ~, ADAPTER_CLASS(_tablename))() { } \
+      virtual~ ADAPTER_CLASS(_tablename)() { } \
       bool adapt(int column, char** columValues, char** columnNames) { ADAPT(_tablename, _seq) } \
       std::vector<boost::shared_ptr<ENTITY_CLASS(_tablename)> > getResults() { return m_results; } \
    private: \

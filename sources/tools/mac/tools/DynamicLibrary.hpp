@@ -1,4 +1,4 @@
-//TODO : !!! à coder voir windows
+//TODO : !!! ï¿½ coder voir windows
 #pragma once
 #include <string>
 #include <dlfcn.h>
@@ -18,6 +18,20 @@ public:
    //--------------------------------------------------------------
    static const std::string Extension() { return "dylib"; }
    static const std::string DotExtension() { return ".dylib"; }
+
+   //--------------------------------------------------------------
+   /// \brief	Conversion fileName (platform-dependent) <=> libName (non-platform-dependent)
+   //--------------------------------------------------------------
+   static const std::string ToFileName(const std::string& libName)
+   {
+	   return libName + DotExtension();
+   }
+
+   static const std::string ToLibName(const std::string& libName)
+   {
+	   boost::filesystem::path libFile(libName);
+	   return libFile.stem().string();
+   }
 
 protected:
     //--------------------------------------------------------------

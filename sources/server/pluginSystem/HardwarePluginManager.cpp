@@ -131,7 +131,7 @@ void CHardwarePluginManager::buildAvailablePluginList()
       {
          // Get informations for current found plugin
          boost::shared_ptr<CHardwarePluginInformation> pluginInformation;
-         const std::string& pluginName = (*libPathIt).stem().string();
+         const std::string& pluginName = CDynamicLibrary::ToLibName((*libPathIt).string());
 
          // If plugin is already loaded, use its information
          if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
@@ -261,7 +261,7 @@ void CHardwarePluginManager::onPluginDirectoryChanges(const boost::asio::dir_mon
 boost::filesystem::path CHardwarePluginManager::toPath(const std::string& pluginName) const
 {
    boost::filesystem::path path(m_pluginPath);
-   path /= (pluginName + CDynamicLibrary::DotExtension());
+   path /= CDynamicLibrary::ToFileName(pluginName);
    return path;
 }
 
