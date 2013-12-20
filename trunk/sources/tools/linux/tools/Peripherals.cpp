@@ -1,7 +1,6 @@
 #include "stdafx.h"
-#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__GNU__) || defined(__GLIBC__) 
 
-#include "tools/Exceptions/NotImplementedException.hpp"
+#include "tools/Exceptions/NotSupportedException.hpp"
 #include "tools/Log.h"
 #include "Peripherals.h"
 
@@ -16,38 +15,33 @@ CPeripherals::~CPeripherals()
 
 const boost::shared_ptr<std::vector<std::string> > CPeripherals::getSerialPorts()
 {
-   // Voir http://stackoverflow.com/questions/15342804/c-linux-detect-all-serial-ports
-   throw CNotImplementedException();
+   boost::filesystem::path ttyDir("/sys/class/tty");
 
+   boost::shared_ptr<std::vector<std::string> > serialPorts(new std::vector<std::string>);
 
-   // TODO : rien de testé, ni compilé, mais ça doit ressembler à ça :
-   //boost::filesystem::path ttyDir("/sys/class/tty");
-   //boost::filesystem::directory_iterator endIter;
+   if (boost::filesystem::exists(ttyDir) && boost::filesystem::is_directory(ttyDir))
+   {
+      boost::filesystem::directory_iterator endIter;
+      for (boost::filesystem::directory_iterator dirIter(ttyDir) ; dirIter != endIter ; ++dirIter)
+      {
+         if (boost::filesystem::is_directory(*dirIter) && boost::filesystem::exists(*dirIter / "device"))
+         {
+            serialPorts->push_back((*dirIter).path().leaf().string());
+         }
+      }
+   }
 
-   //boost::shared_ptr<std::vector<std::string> > serialPorts(new std::vector<std::string>);
-
-   //if (boost::filesystem::exists(ttyDir) && boost::filesystem::is_directory(ttyDir))
-   //{
-   //   for (boost::filesystem::directory_iterator dirIter(ttyDir) ; dirIter != endIter ; ++dirIter)
-   //   {
-   //      if (boost::filesystem::is_directory(*dirIter) && boost::filesystem::exists(*dirIter / "device"))
-   //      {
-   //         serialPorts->push_back(*dirIter);
-   //      }
-   //   }
-   //}
+   return serialPorts;
 }
 
 const boost::shared_ptr<std::vector<std::string> > CPeripherals::getUnusedSerialPorts()
 {
-   //TODO Voir http://stackoverflow.com/questions/15342804/c-linux-detect-all-serial-ports
-   throw CNotImplementedException();
+   // On Linux, no easy mean to know if a serial port is already in use
+   NOT_SUPPORTED;
 }
 
 const boost::shared_ptr<std::vector<std::string> > CPeripherals::getUsedSerialPorts()
 {
-   //TODO Voir http://stackoverflow.com/questions/15342804/c-linux-detect-all-serial-ports
-   throw CNotImplementedException();
+   // On Linux, no easy mean to know if a serial port is already in use
+   NOT_SUPPORTED;
 }
-
-#endif

@@ -11,7 +11,7 @@ public:
    /// \brief	                        Constructor
    //--------------------------------------------------------------
    CNotSupportedException(const std::string& function)
-      :CException(std::string(function + "is not supported"))
+      :CException(function + " is not supported")
    {
    }
 
@@ -22,3 +22,6 @@ public:
    {
    }
 };
+
+// Helper macro
+#define NOT_SUPPORTED    throw CNotSupportedException(__FUNCTION__)

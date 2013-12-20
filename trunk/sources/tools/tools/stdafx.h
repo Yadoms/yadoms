@@ -8,6 +8,7 @@
 #include <iostream>
 #include <sstream>
 
+#include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/signals2.hpp>

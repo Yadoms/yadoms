@@ -18,7 +18,7 @@ CSQLiteConfigurationRequester::~CSQLiteConfigurationRequester()
 // IConfigurationRequester implementation
 bool CSQLiteConfigurationRequester::create(boost::shared_ptr<CConfiguration> configurationToCreate)
 {
-   throw CNotImplementedException();
+   NOT_IMPLEMENTED;
 }
 
 boost::shared_ptr<CConfiguration> CSQLiteConfigurationRequester::getConfiguration(const std::string & section, const std::string & name)
@@ -27,19 +27,19 @@ boost::shared_ptr<CConfiguration> CSQLiteConfigurationRequester::getConfiguratio
    std::ostringstream os;
    os << "SELECT * FROM Configuration WHERE section=\"" << section << "\" AND name=\"" << name << "\"";
    m_databaseRequester->queryEntities<boost::shared_ptr<CConfiguration> >(&adapter, os.str());
-   // TODO : gérer exception si non trouvé
+   // TODO : gï¿½rer exception si non trouvï¿½
    return adapter.getResults().at(0);
 }
 
 
 bool CSQLiteConfigurationRequester::updateConfiguration(boost::shared_ptr<CConfiguration> configurationToUpdate)
 {
-   throw CNotImplementedException();
+   NOT_IMPLEMENTED;
 }
 
 bool CSQLiteConfigurationRequester::removeConfiguration(boost::shared_ptr<CConfiguration> configurationToRemove)
 {
-   throw CNotImplementedException();
+   NOT_IMPLEMENTED;
 }
 // [END] IConfigurationRequester implementation
 
