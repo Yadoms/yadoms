@@ -24,6 +24,20 @@ public:
    static const std::string Extension() { return "dll"; }
    static const std::string DotExtension() { return ".dll"; }
 
+   //--------------------------------------------------------------
+   /// \brief	Conversion fileName (platform-dependent) <=> libName (non-platform-dependent)
+   //--------------------------------------------------------------
+   static const std::string ToFileName(const std::string& libName)
+   {
+	   return libName + DotExtension();
+   }
+
+   static const std::string ToLibName(const std::string& libName)
+   {
+	   boost::filesystem::path libFile(libName);
+	   return libFile.stem().string();
+   }
+
 protected:
    //--------------------------------------------------------------
    /// \brief	Constructor

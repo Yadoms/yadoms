@@ -20,7 +20,7 @@ public:
    //--------------------------------------------------------------
    /// \brief      Destructor
    //--------------------------------------------------------------
-   virtual ~CSQLiteVersionException()
+   virtual ~CSQLiteVersionException() throw()
    {
    }
 };
