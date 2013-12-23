@@ -22,10 +22,10 @@ public:
 	virtual ~CSQLiteConfigurationRequester();
 
    // IConfigurationRequester implementation
-   virtual bool create(boost::shared_ptr<CConfiguration> configurationToCreate);
+   virtual void create(boost::shared_ptr<CConfiguration> configurationToCreate);
 	virtual boost::shared_ptr<CConfiguration> getConfiguration(const std::string & section, const std::string & name);
-	virtual bool updateConfiguration(boost::shared_ptr<CConfiguration> configurationToUpdate);
-   virtual bool removeConfiguration(boost::shared_ptr<CConfiguration> configurationToRemove);
+	virtual void updateConfiguration(boost::shared_ptr<CConfiguration> configurationToUpdate);
+   virtual void removeConfiguration(boost::shared_ptr<CConfiguration> configurationToRemove);
    // [END] IConfigurationRequester implementation
 
 private:
