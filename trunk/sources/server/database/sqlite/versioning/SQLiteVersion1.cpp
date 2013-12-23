@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SQLiteVersion1.h"
+#include "database/sqlite/Query.h"
 
 CSQLiteVersion1::CSQLiteVersion1()
 {
@@ -13,7 +14,12 @@ CSQLiteVersion1::~CSQLiteVersion1()
 void CSQLiteVersion1::checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester)
 {
    //check that table Configuration exists
-   const std::string sCheckForConfigurationTableExists = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='configuration'";
+   CQuery sCheckForConfigurationTableExists;
+
+   sCheckForConfigurationTableExists.  SelectCount().
+                                       From("sqlite_master").
+                                       Where("type", CQUERY_OP_EQUAL, "table").
+                                       And("name", CQUERY_OP_EQUAL, "configuration");
    int count = pRequester->queryCount(sCheckForConfigurationTableExists);
 
    

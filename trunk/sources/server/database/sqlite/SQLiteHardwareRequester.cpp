@@ -7,9 +7,9 @@
 #include "tools/Exceptions/EmptyResultException.hpp"
 #include "tools/Exceptions/InvalidParameterException.hpp"
 
-#include "database/sqlite/SQLiteDatabaseTables.h"
+#include "SQLiteDatabaseTables.h"
+#include "Query.h"
 
-const std::string CSQLiteHardwareRequester::m_tableName("Hardware");
 
 CSQLiteHardwareRequester::CSQLiteHardwareRequester(const CSQLiteDataProvider & databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
    :m_databaseHandler(databaseHandler), m_databaseRequester(databaseRequester)
@@ -23,21 +23,27 @@ CSQLiteHardwareRequester::~CSQLiteHardwareRequester()
 // IHardwareRequester implementation
 int CSQLiteHardwareRequester::addHardware(boost::shared_ptr<CHardware> newHardware)
 {
-   std::ostringstream os;
-   os << "INSERT INTO " << m_tableName << " (name, pluginName, configuration, enabled) " <<
-      " VALUES('" <<  newHardware->getName() << "','" << 
-                     newHardware->getPluginName() << "','" << 
-                     newHardware->getConfiguration() << "'," << 
-                     newHardware->getEnabled() << ")";
+   CQuery qInsert;
+   
+   qInsert.InsertInto(CHardwareTable::getTableName(), CHardwareTable::getNameColumnName(), CHardwareTable::getPluginNameColumnName(), CHardwareTable::getConfigurationColumnName(), CHardwareTable::getEnabledColumnName() ).
+           Values(newHardware->getName(), 
+                  newHardware->getPluginName(),
+                  newHardware->getConfiguration(), 
+                  newHardware->getEnabled());
 
-   if(m_databaseRequester->queryStatement(os.str()) <= 0)
+   if(m_databaseRequester->queryStatement(qInsert) <= 0)
       throw new CEmptyResultException("No lines affected");
 
-   std::ostringstream os2;
-   os2 <<  "SELECT id FROM " << m_tableName << " WHERE name='" <<  newHardware->getName() << "' AND pluginName='" << newHardware->getPluginName() << "' ORDER BY id DESC";
+
+   CQuery qSelect;
+   qSelect. Select(CHardwareTable::getIdColumnName()).
+            From(CHardwareTable::getTableName()).
+            Where(CHardwareTable::getNameColumnName(), CQUERY_OP_EQUAL, newHardware->getName()).
+            And(CHardwareTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, newHardware->getPluginName()).
+            OrderBy(CHardwareTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
    CSingleValueAdapter<int> adapter;
-   m_databaseRequester->queryEntities<int>(&adapter, os2.str());
+   m_databaseRequester->queryEntities<int>(&adapter, qSelect);
    if(adapter.getResults().size() >= 1)
       return adapter.getResults()[0];
    else
@@ -47,9 +53,15 @@ int CSQLiteHardwareRequester::addHardware(boost::shared_ptr<CHardware> newHardwa
 boost::shared_ptr<CHardware> CSQLiteHardwareRequester::getHardware(int hardwareId)
 {
    CHardwareAdapter adapter;
-   std::ostringstream os;
-   os << "SELECT * FROM " << m_tableName << " WHERE id=" << hardwareId << " AND deleted=0";
-   m_databaseRequester->queryEntities<boost::shared_ptr<CHardware> >(&adapter, os.str());
+
+   CQuery qSelect;
+
+   qSelect. Select().
+            From(CHardwareTable::getTableName()).
+            Where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId).
+            And(CHardwareTable::getDeletedColumnName(), CQUERY_OP_EQUAL, false);
+
+   m_databaseRequester->queryEntities<boost::shared_ptr<CHardware> >(&adapter, qSelect);
    if (adapter.getResults().empty())
    {
       // Hardware not found
@@ -61,10 +73,14 @@ boost::shared_ptr<CHardware> CSQLiteHardwareRequester::getHardware(int hardwareI
 std::vector<boost::shared_ptr<CHardware> > CSQLiteHardwareRequester::getHardwares(bool evenDeleted)
 {
    CHardwareAdapter adapter;
-   std::string request = "SELECT * FROM Hardware";
+
+   CQuery qSelect;
+   qSelect.Select().From(CHardwareTable::getTableName());
+
    if (!evenDeleted)
-      request += " WHERE deleted=0";
-   m_databaseRequester->queryEntities<boost::shared_ptr<CHardware> >(&adapter, request);
+      qSelect.Where(CHardwareTable::getDeletedColumnName(), CQUERY_OP_EQUAL, false);
+
+   m_databaseRequester->queryEntities<boost::shared_ptr<CHardware> >(&adapter, qSelect);
    return adapter.getResults();
 }
 
@@ -72,34 +88,47 @@ std::vector<boost::shared_ptr<CHardware> > CSQLiteHardwareRequester::getHardware
 std::vector<std::string> CSQLiteHardwareRequester::getHardwareNameList()
 {
    CSingleValueAdapter<std::string> adapter;
-   m_databaseRequester->queryEntities<std::string>(&adapter, "SELECT Name FROM " + m_tableName + " WHERE id=%d AND deleted=0 ORDER BY Name", 2);
+
+   CQuery qSelect;
+   qSelect. Select(CHardwareTable::getNameColumnName()).
+            From(CHardwareTable::getTableName()).
+            Where(CHardwareTable::getDeletedColumnName(), CQUERY_OP_EQUAL, false).
+            OrderBy(CHardwareTable::getNameColumnName());
+
+   m_databaseRequester->queryEntities<std::string>(&adapter, qSelect);
    return adapter.getResults();
 }
 
 void CSQLiteHardwareRequester::updateHardwareConfiguration(int hardwareId, const std::string& newConfiguration)
 {
-   std::ostringstream os;
-   os << "UPDATE " << m_tableName << " SET configuration = '" << newConfiguration << "' WHERE id=" << hardwareId;
+   CQuery qUpdate;
+   qUpdate. Update(CHardwareTable::getTableName()).
+            Set(CHardwareTable::getConfigurationColumnName(), newConfiguration).
+            Where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId);
 
-   if(m_databaseRequester->queryStatement(os.str()) <= 0)
+   if(m_databaseRequester->queryStatement(qUpdate) <= 0)
       throw new CEmptyResultException("No lines affected");
 }
 
 void CSQLiteHardwareRequester::removeHardware(int hardwareId)
 {
-   std::ostringstream os;
-   os << "UPDATE " << m_tableName << " SET deleted = 1 WHERE id=" << hardwareId;
+   CQuery qUpdate;
+   qUpdate. Update(CHardwareTable::getTableName()).
+            Set(CHardwareTable::getDeletedColumnName(), true).
+            Where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId);
 
-   if(m_databaseRequester->queryStatement(os.str()) <= 0)
+   if(m_databaseRequester->queryStatement(qUpdate) <= 0)
       throw new CEmptyResultException("No lines affected");
 }
 
 void CSQLiteHardwareRequester::enableInstance(int hardwareId, bool enable)
 {
-   std::ostringstream os;
-   os << "UPDATE " << m_tableName << " SET enabled = " << (enable?1:0) << " WHERE id=" << hardwareId;
+   CQuery qUpdate;
+   qUpdate. Update(CHardwareTable::getTableName()).
+            Set(CHardwareTable::getEnabledColumnName(), enable).
+            Where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId);
 
-   if(m_databaseRequester->queryStatement(os.str()) <= 0)
+   if(m_databaseRequester->queryStatement(qUpdate) <= 0)
       throw new CEmptyResultException("No lines affected");
 }
 // [END] IHardwareRequester implementation

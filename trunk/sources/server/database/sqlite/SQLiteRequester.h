@@ -4,7 +4,7 @@
 #include "adapters/ISQLiteResultAdapter.h"
 #include "tools/Exceptions/NullReferenceException.hpp"
 #include "tools/Log.h"
-
+#include "Query.h"
 
 class CSQLiteRequester
 {
@@ -27,28 +27,28 @@ public:
 	/// \param [in]	   the query (with vaargs)
 	/// \return 	      the number of affected lines
 	//--------------------------------------------------------------  
-   int queryStatement(const std::string & queryFormat, ...);
+   int queryStatement(const CQuery & querytoExecute);
 
 	//--------------------------------------------------------------
 	/// \brief		      execute a count statement
 	/// \param [in]	   the query (with vaargs)
 	/// \return 	      the count result
 	//--------------------------------------------------------------  
-   int queryCount(const std::string & queryFormat, ...);
+   int queryCount(const CQuery & querytoExecute);
 
 	//--------------------------------------------------------------
 	/// \brief		      query only one databse row
 	/// \param [in]	   the query (with vaargs)
 	/// \return 	      the row values
 	//--------------------------------------------------------------  
-   QueryRow querySingleLine(const std::string & queryFormat, ...);
+   QueryRow querySingleLine(const CQuery & querytoExecute);
 
 	//--------------------------------------------------------------
 	/// \brief		      query databse
 	/// \param [in]	   the query (with vaargs)
 	/// \return 	      a list of rows
 	//--------------------------------------------------------------  
-   QueryResults query(const std::string & queryFormat, ...);
+   QueryResults query(const CQuery & querytoExecute);
 
 
    //--------------------------------------------------------------
@@ -59,33 +59,23 @@ public:
 	/// \return	       the vector of entities
 	//--------------------------------------------------------------
    template<class TEntity>
-   void queryEntities(ISQLiteResultAdapter<TEntity> * pAdapter, const std::string & queryFormat, ...)
+   void queryEntities(ISQLiteResultAdapter<TEntity> * pAdapter, const CQuery & querytoExecute)
    {
       BOOST_ASSERT(pAdapter != NULL);
 
       if(pAdapter != NULL)
       {
-         //create query
-         char *zSql;
-         va_list ap;
-         va_start(ap, queryFormat);
-         zSql = sqlite3_vmprintf(queryFormat.c_str(), ap);
-         va_end(ap);
-
          //execute the query
          char *zErrMsg = NULL;
-         sqlite3_exec(m_pDatabaseHandler, zSql,  &CSQLiteRequester::handleRowEntityAdapter<TEntity>, pAdapter, &zErrMsg);
+         sqlite3_exec(m_pDatabaseHandler, querytoExecute.c_str(),  &CSQLiteRequester::handleRowEntityAdapter<TEntity>, pAdapter, &zErrMsg);
          if( zErrMsg )
          {
-            YADOMS_LOG(error) << "Query failed : " << std::endl << "Query: " << zSql << std::endl << "Error : " << zErrMsg;
+            YADOMS_LOG(error) << "Query failed : " << std::endl << "Query: " << querytoExecute.str() << std::endl << "Error : " << zErrMsg;
          }
 
          //free allocated memory by sqlite
          if(zErrMsg)
             sqlite3_free(zErrMsg);
-
-         if(zSql)
-            sqlite3_free(zSql);
       }
       else
       {

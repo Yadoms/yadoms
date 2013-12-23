@@ -27,7 +27,7 @@ void CSupervisor::doWork()
       if(pDataProvider->load())
       {
          //TODO ######################### test database #########################
-#if 0
+#if DEV_ACTIVATE_DATABASE_TESTS
          YADOMS_LOG(info) << "Testing database";
 
          std::vector<boost::shared_ptr<CHardware> > hardwares = pDataProvider->getHardwareRequester()->getHardwares();
@@ -74,7 +74,7 @@ void CSupervisor::doWork()
          m_startupOptions.getHarwarePluginsPath(), pDataProvider->getHardwareRequester());
 
       //TODO ######################### test interface hardwarePluginManager #########################
-#if 0
+#if DEV_ACTIVATE_HARDWARE_PLUGIN_MANAGER_TESTS
       // 1) List all available plugins (even if not loaded) and associated informations
       CHardwarePluginManager::AvalaiblePluginMap plugins = hardwarePluginManager->getPluginList();
       YADOMS_LOG(debug) << "Available plugins :";
@@ -176,7 +176,7 @@ void CSupervisor::doWork()
       //\TODO ######################### [END] test interface hardwarePluginManager #########################
 
       //TODO ######################### test serial ports getter #########################
-#if 0
+#if DEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS
       try
       {
          boost::shared_ptr<std::vector<std::string> > serialPorts(CPeripherals::getSerialPorts());

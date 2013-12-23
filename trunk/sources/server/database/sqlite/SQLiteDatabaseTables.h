@@ -30,3 +30,14 @@ DECLARE_TABLE(Acquisitions,
 )
 
 
+DECLARE_TABLE(Device, 
+   (Id)
+   (DataSource)
+   (Name)
+   (Configuration)
+)
+
+DECLARE_TABLE(Keywords, 
+   (Name)
+)
+

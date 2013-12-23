@@ -43,9 +43,4 @@ private:
 	/// \Brief		   Reference to SQLiteRequester
 	//--------------------------------------------------------------
    boost::shared_ptr<CSQLiteRequester> m_databaseRequester;
-
-   //--------------------------------------------------------------
-   /// \Brief		   The table name
-   //--------------------------------------------------------------
-   static const std::string m_tableName;
 };

@@ -83,6 +83,26 @@ if(CMAKE_COMPIER_IS_GNUCXX)
 	add_definitions("-std=c++0x")
 endif()
 
+#check eclispe debug options
+if(DEBUG_WITH_ECLIPSE)
+	add_definitions(-DDEBUG)
+	add_definitions("-g")
+endif()
+
+##################################################################################################
+## User specific Defines
+##################################################################################################
+if(DEV_ACTIVATE_DATABASE_TESTS)
+	add_definitions(-DDEV_ACTIVATE_DATABASE_TESTS)
+endif()
+
+if(DEV_ACTIVATE_HARDWARE_PLUGIN_MANAGER_TESTS)
+	add_definitions(-DDEV_ACTIVATE_HARDWARE_PLUGIN_MANAGER_TESTS)
+endif()
+
+if(DEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS)
+	add_definitions(-DDEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS)
+endif()
 
 ##################################################################################################
 ## Project output configuration
@@ -193,6 +213,8 @@ set(YADOMS_SRC
 	server/database/entities/Hardware.h
 	server/database/entities/Configuration.h
 	server/database/entities/Acquisitions.h
+	server/database/entities/Device.h
+	server/database/entities/Keywords.h
 	)
 
 # Project folders
@@ -207,6 +229,10 @@ endif()
 #Database
 IF(USE_SQLITE_DATABASE)
 	set(YADOMS_SRC ${YADOMS_SRC}
+		server/database/sqlite/Query.h
+		server/database/sqlite/Query.cpp
+		server/database/sqlite/QueryValue.h
+		server/database/sqlite/QueryValue.cpp
 		server/database/sqlite/SQLiteDatabaseTables.h
 		server/database/sqlite/SQLiteDatabaseTables.cpp
 		server/database/sqlite/SQLiteDatabaseTablesHelpers.hpp

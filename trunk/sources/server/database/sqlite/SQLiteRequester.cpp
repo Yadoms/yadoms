@@ -16,58 +16,26 @@ CSQLiteRequester::~CSQLiteRequester()
 }
 
 
-int CSQLiteRequester::queryStatement(const std::string & queryFormat, ...)
+int CSQLiteRequester::queryStatement(const CQuery & querytoExecute)
 {
-   char *zSql;
-   va_list ap;
-   va_start(ap, queryFormat);
-   zSql = sqlite3_vmprintf(queryFormat.c_str(), ap);
-   va_end(ap);
-
-   query(zSql);
-
-   int nbRowsAffected = sqlite3_changes(m_pDatabaseHandler);
-
-    if(zSql)
-      sqlite3_free(zSql);
-
-    return nbRowsAffected;
+   query(querytoExecute);
+   return sqlite3_changes(m_pDatabaseHandler);
 }
 
 
-int CSQLiteRequester::queryCount(const std::string & queryFormat, ...)
+int CSQLiteRequester::queryCount(const CQuery & querytoExecute)
 {
-   char *zSql;
-   va_list ap;
-   va_start(ap, queryFormat);
-   zSql = sqlite3_vmprintf(queryFormat.c_str(), ap);
-   va_end(ap);
-
    CSingleValueAdapter<int> countAdapter;
-   queryEntities<int>(&countAdapter, zSql);
+   queryEntities<int>(&countAdapter, querytoExecute);
 
-   if(zSql)
-      sqlite3_free(zSql);
-
-   
    if(countAdapter.getResults().size() >= 1)
       return countAdapter.getResults()[0];
    return -1;
 }
 
-CSQLiteRequester::QueryRow CSQLiteRequester::querySingleLine(const std::string & queryFormat, ...)
+CSQLiteRequester::QueryRow CSQLiteRequester::querySingleLine(const CQuery & querytoExecute)
 {
-   char *zSql;
-   va_list ap;
-   va_start(ap, queryFormat);
-   zSql = sqlite3_vmprintf(queryFormat.c_str(), ap);
-   va_end(ap);
-
-   CSQLiteRequester::QueryResults results = query(zSql);
-
-   if(zSql)
-      sqlite3_free(zSql);
-
+   CSQLiteRequester::QueryResults results = query(querytoExecute);
    if(results.size() >= 1)
       return results[0];
 
@@ -75,19 +43,10 @@ CSQLiteRequester::QueryRow CSQLiteRequester::querySingleLine(const std::string &
 }
 
 
-CSQLiteRequester::QueryResults CSQLiteRequester::query(const std::string & queryFormat, ...)
+CSQLiteRequester::QueryResults CSQLiteRequester::query(const CQuery & querytoExecute)
 {
-   char *zSql;
-   va_list ap;
-   va_start(ap, queryFormat);
-   zSql = sqlite3_vmprintf(queryFormat.c_str(), ap);
-   va_end(ap);
-
    CGenericAdapter genericAdapter;
-   queryEntities<std::map<std::string, std::string> >(&genericAdapter, zSql);
-
-   if(zSql)
-      sqlite3_free(zSql);
+   queryEntities<std::map<std::string, std::string> >(&genericAdapter, querytoExecute);
    return genericAdapter.getResults();
 }
 
