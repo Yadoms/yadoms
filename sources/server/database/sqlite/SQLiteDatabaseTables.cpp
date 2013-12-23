@@ -28,3 +28,15 @@ DECLARE_TABLE_COLUMN_NAMES(Acquisitions,
    ((Value)("value"))
    ((Date)("date"))
 )
+
+
+DECLARE_TABLE_COLUMN_NAMES(Device, 
+   ((Id)("id"))
+   ((DataSource)("data_source"))
+   ((Name)("name"))
+   ((Configuration)("configuration"))
+)
+
+DECLARE_TABLE_COLUMN_NAMES(Keywords, 
+   ((Name)("name"))
+)

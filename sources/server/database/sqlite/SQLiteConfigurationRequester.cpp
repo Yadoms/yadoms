@@ -1,9 +1,12 @@
 #include "stdafx.h"
 #include "SQLiteConfigurationRequester.h"
 #include "tools/Exceptions/NotImplementedException.hpp"
+#include "tools/Exceptions/EmptyResultException.hpp"
 #include "SQLiteDataProvider.h"
 #include "adapters/SingleValueAdapter.hpp"
 #include "adapters/SQLiteDatabaseAdapters.h"
+#include "SQLiteDatabaseTables.h"
+#include "Query.h"
 
 CSQLiteConfigurationRequester::CSQLiteConfigurationRequester(const CSQLiteDataProvider & databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
    :m_databaseHandler(databaseHandler), m_databaseRequester(databaseRequester)
@@ -23,12 +26,18 @@ bool CSQLiteConfigurationRequester::create(boost::shared_ptr<CConfiguration> con
 
 boost::shared_ptr<CConfiguration> CSQLiteConfigurationRequester::getConfiguration(const std::string & section, const std::string & name)
 {
+   CQuery qSelect;
+   qSelect. Select().
+      From(CConfigurationTable::getTableName()).
+      Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, section).
+      And(CConfigurationTable::getNameColumnName(), CQUERY_OP_EQUAL, name);
+
    CConfigurationAdapter adapter;
-   std::ostringstream os;
-   os << "SELECT * FROM Configuration WHERE section=\"" << section << "\" AND name=\"" << name << "\"";
-   m_databaseRequester->queryEntities<boost::shared_ptr<CConfiguration> >(&adapter, os.str());
-   // TODO : g�rer exception si non trouv�
-   return adapter.getResults().at(0);
+   m_databaseRequester->queryEntities<boost::shared_ptr<CConfiguration> >(&adapter, qSelect);
+   if(adapter.getResults().size() >= 1)
+      return adapter.getResults()[0];
+   else
+      throw new CEmptyResultException("Cannot retrieve inserted Hardware");
 }
 
 

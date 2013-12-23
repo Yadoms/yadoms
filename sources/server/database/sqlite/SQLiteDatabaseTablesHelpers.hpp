@@ -109,7 +109,11 @@
 #define DELCARE_STATIC_VALUES(_classname, _seq) \
    BOOST_PP_SEQ_FOR_EACH_I(DECLARE_STATIC_VALUE, _classname, _seq)
 
-
+//
+/// \brief  Declare one static value (used by BOOST_PP_SEQ_FOR_EACH_I)
+//
+#define DECLARE_STATIC_TABLENAME_VALUE(classname) \
+   std::string C##classname##Table::m_tableName = BOOST_PP_STRINGIZE(classname);
 
 
 //
@@ -135,6 +139,7 @@ private:\
 /// \param  _seq  the sequence of columns
 //
 #define DECLARE_TABLE_COLUMN_NAMES(name, _seq) \
+   DECLARE_STATIC_TABLENAME_VALUE(name)\
    DELCARE_STATIC_VALUES(name, _seq)
 
 
