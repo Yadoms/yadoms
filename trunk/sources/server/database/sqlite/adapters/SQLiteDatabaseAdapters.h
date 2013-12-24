@@ -3,7 +3,7 @@
 #include "AdapterHelpers.hpp"
 #include "ISQLiteResultAdapter.h"
 #include "database/sqlite/SQLiteDatabaseTables.h"
-#include "database/entities/Acquisitions.h"
+
 
 DECLARE_ADAPTER(Hardware,
       ((Id)(INT_ADAPTER)(0))
@@ -23,7 +23,7 @@ DECLARE_ADAPTER(Configuration,
    ((LastModificationDate)(DATE_ADAPTER)(boost::gregorian::day_clock::local_day()))
 )
 
-DECLARE_ADAPTER(Acquisitions,
+DECLARE_ADAPTER(Acquisition,
    ((Id)(INT_ADAPTER)(0))
    ((Source)(STRING_ADAPTER)(""))
    ((Keyword)(STRING_ADAPTER)(""))
@@ -31,3 +31,13 @@ DECLARE_ADAPTER(Acquisitions,
    ((Date)(DATE_ADAPTER)(boost::gregorian::day_clock::local_day()))
 )
 
+DECLARE_ADAPTER(Device,
+   ((Id)(INT_ADAPTER)(0))
+   ((DataSource)(STRING_ADAPTER)(""))
+   ((Name)(STRING_ADAPTER)(""))
+   ((Configuration)(STRING_ADAPTER)(""))
+)
+
+DECLARE_ADAPTER(Keyword,
+   ((Name)(STRING_ADAPTER)(""))
+)

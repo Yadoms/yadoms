@@ -209,12 +209,16 @@ set(YADOMS_SRC
 	server/database/IDataProvider.h
 	server/database/IHardwareRequester.h
 	server/database/IConfigurationRequester.h
+	server/database/IDeviceRequester.h
+	server/database/IAcquisitionRequester.h
+	server/database/IKeywordRequester.h
+
 	server/database/entities/EntityHelpers.hpp
 	server/database/entities/Hardware.h
 	server/database/entities/Configuration.h
-	server/database/entities/Acquisitions.h
+	server/database/entities/Acquisition.h
 	server/database/entities/Device.h
-	server/database/entities/Keywords.h
+	server/database/entities/Keyword.h
 	)
 
 # Project folders
@@ -240,11 +244,18 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/SQLiteHardwareRequester.cpp
 		server/database/sqlite/SQLiteConfigurationRequester.h
 		server/database/sqlite/SQLiteConfigurationRequester.cpp
+		server/database/sqlite/SQLiteKeywordRequester.h
+		server/database/sqlite/SQLiteKeywordRequester.cpp
+		server/database/sqlite/SQLiteAcquisitionRequester.h
+		server/database/sqlite/SQLiteAcquisitionRequester.cpp		
+		server/database/sqlite/SQLiteDeviceRequester.h
+		server/database/sqlite/SQLiteDeviceRequester.cpp		
 		server/database/sqlite/SQLiteDataProvider.h
 		server/database/sqlite/SQLiteDataProvider.cpp
 		server/database/sqlite/SQLiteRequester.h
 		server/database/sqlite/SQLiteRequester.cpp
-
+		
+		
 		server/database/sqlite/adapters/SQLiteDatabaseAdapters.h
 		server/database/sqlite/adapters/AdapterHelpers.hpp
 		server/database/sqlite/adapters/ISQLiteResultAdapter.h

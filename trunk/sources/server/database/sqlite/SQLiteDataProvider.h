@@ -3,6 +3,9 @@
 #include "server/database/IDataProvider.h"
 #include "SQLiteHardwareRequester.h"
 #include "SQLiteConfigurationRequester.h"
+#include "SQLiteAcquisitionRequester.h"
+#include "SQLiteDeviceRequester.h"
+#include "SQLiteKeywordRequester.h"
 #include "SQLiteRequester.h"
 #include "sqlite3.h"
 
@@ -29,6 +32,9 @@ public:
 	void unload();
    boost::shared_ptr<IHardwareRequester> getHardwareRequester() { return m_hardwareRequester; }
    boost::shared_ptr<IConfigurationRequester> getConfigurationRequester() { return m_configurationRequester; }
+   boost::shared_ptr<IDeviceRequester> getDeviceRequester() { return m_deviceRequester; }
+   boost::shared_ptr<IAcquisitionRequester> getAcquisitionRequester() { return m_acquisitionRequester; }
+   boost::shared_ptr<IKeywordRequester> getKeywordRequester() { return m_keywordRequester; }
    // [END] IHardwarePlugin implementation
 
 private:
@@ -47,6 +53,21 @@ private:
 	/// \Brief		Hardware requester
 	//--------------------------------------------------------------
 	boost::shared_ptr<CSQLiteConfigurationRequester>		m_configurationRequester;
+
+	//--------------------------------------------------------------
+	/// \Brief		Device requester
+	//--------------------------------------------------------------
+	boost::shared_ptr<CSQLiteDeviceRequester>		m_deviceRequester;
+
+	//--------------------------------------------------------------
+	/// \Brief		Acquisition requester
+	//--------------------------------------------------------------
+	boost::shared_ptr<CSQLiteAcquisitionRequester>		m_acquisitionRequester;
+
+	//--------------------------------------------------------------
+	/// \Brief		Keyword requester
+	//--------------------------------------------------------------
+	boost::shared_ptr<CSQLiteKeywordRequester>		m_keywordRequester;
 
    //--------------------------------------------------------------
 	/// \Brief		Startup options
