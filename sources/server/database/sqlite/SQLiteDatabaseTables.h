@@ -1,6 +1,11 @@
 #pragma once
 
 #include "SQLiteDatabaseTablesHelpers.hpp"
+#include "database/entities/Acquisition.h"
+#include "database/entities/Configuration.h"
+#include "database/entities/Device.h"
+#include "database/entities/Hardware.h"
+#include "database/entities/Keyword.h"
 
 DECLARE_TABLE(Hardware, 
    (Id)
@@ -21,7 +26,7 @@ DECLARE_TABLE(Configuration,
 )
 
 
-DECLARE_TABLE(Acquisitions, 
+DECLARE_TABLE(Acquisition, 
    (Id)
    (Source)
    (Keyword)
@@ -37,7 +42,7 @@ DECLARE_TABLE(Device,
    (Configuration)
 )
 
-DECLARE_TABLE(Keywords, 
+DECLARE_TABLE(Keyword, 
    (Name)
 )
 

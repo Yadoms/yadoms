@@ -21,7 +21,7 @@ DECLARE_TABLE_COLUMN_NAMES(Configuration,
 )
 
 
-DECLARE_TABLE_COLUMN_NAMES(Acquisitions, 
+DECLARE_TABLE_COLUMN_NAMES(Acquisition, 
    ((Id)("id"))
    ((Source)("source"))
    ((Keyword)("keyword"))
@@ -37,6 +37,6 @@ DECLARE_TABLE_COLUMN_NAMES(Device,
    ((Configuration)("configuration"))
 )
 
-DECLARE_TABLE_COLUMN_NAMES(Keywords, 
+DECLARE_TABLE_COLUMN_NAMES(Keyword, 
    ((Name)("name"))
 )
