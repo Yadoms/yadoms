@@ -17,6 +17,7 @@ CSQLiteDataProvider::CSQLiteDataProvider(const std::string & dbFile)
 
 CSQLiteDataProvider::~CSQLiteDataProvider()
 {
+   unload();
 }
 
 

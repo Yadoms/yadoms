@@ -24,6 +24,18 @@ public:
    virtual unsigned int getPortNumber() const = 0;
 
    //--------------------------------------------------------------
+   /// \brief	    Get the web server ip address
+   /// \return     Configured web server ip address
+   //--------------------------------------------------------------
+   virtual const std::string& getWebServerIPAddress() const = 0;
+      
+   //--------------------------------------------------------------
+   /// \brief	    Get the web server initial path
+   /// \return     Configured web server initial path
+   //--------------------------------------------------------------
+   virtual const std::string& getWebServerInitialPath() const = 0;
+
+   //--------------------------------------------------------------
    /// \brief	    Get the path of the database file
    /// \return     Database file path
    /// \note       If not exist, Yadoms will create the file
