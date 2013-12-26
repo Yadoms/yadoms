@@ -22,8 +22,8 @@ CSQLiteAcquisitionRequester::~CSQLiteAcquisitionRequester()
 void CSQLiteAcquisitionRequester::addAcquisition(boost::shared_ptr<CAcquisition> newAcquisition)
 {
    CQuery qInsert;
-   qInsert. InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getSourceColumnName(), CAcquisitionTable::getKeywordColumnName(), CAcquisitionTable::getValueColumnName(), CAcquisitionTable::getDateColumnName()).
-      Values(newAcquisition->getSource(), newAcquisition->getKeyword(), newAcquisition->getValue(), newAcquisition->getDate());
+   qInsert. insertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getSourceColumnName(), CAcquisitionTable::getKeywordColumnName(), CAcquisitionTable::getValueColumnName(), CAcquisitionTable::getDateColumnName()).
+      values(newAcquisition->getSource(), newAcquisition->getKeyword(), newAcquisition->getValue(), newAcquisition->getDate());
    if(m_databaseRequester->queryStatement(qInsert) <= 0)
       throw new CEmptyResultException("No lines affected");
 }
@@ -31,9 +31,9 @@ void CSQLiteAcquisitionRequester::addAcquisition(boost::shared_ptr<CAcquisition>
 boost::shared_ptr<CAcquisition> CSQLiteAcquisitionRequester::getAcquisition(int acquisitionId)
 {
    CQuery qSelect;
-   qSelect. Select().
-      From(CAcquisitionTable::getTableName()).
-      Where(CAcquisitionTable::getIdColumnName(), CQUERY_OP_EQUAL, acquisitionId);
+   qSelect. select().
+      from(CAcquisitionTable::getTableName()).
+      where(CAcquisitionTable::getIdColumnName(), CQUERY_OP_EQUAL, acquisitionId);
 
    CAcquisitionAdapter adapter;
    m_databaseRequester->queryEntities<boost::shared_ptr<CAcquisition> >(&adapter, qSelect);
@@ -46,10 +46,10 @@ boost::shared_ptr<CAcquisition> CSQLiteAcquisitionRequester::getAcquisition(int 
 std::vector<boost::shared_ptr<CAcquisition> > CSQLiteAcquisitionRequester::getAcquisitions(const std::string & source, const std::string & keyword)
 {
    CQuery qSelect;
-   qSelect. Select().
-      From(CAcquisitionTable::getTableName()).
-      Where(CAcquisitionTable::getSourceColumnName(), CQUERY_OP_EQUAL, source).
-      And(CAcquisitionTable::getKeywordColumnName(), CQUERY_OP_EQUAL, keyword);
+   qSelect. select().
+      from(CAcquisitionTable::getTableName()).
+      where(CAcquisitionTable::getSourceColumnName(), CQUERY_OP_EQUAL, source).
+      and(CAcquisitionTable::getKeywordColumnName(), CQUERY_OP_EQUAL, keyword);
 
    CAcquisitionAdapter adapter;
    m_databaseRequester->queryEntities<boost::shared_ptr<CAcquisition> >(&adapter, qSelect);
@@ -59,8 +59,8 @@ std::vector<boost::shared_ptr<CAcquisition> > CSQLiteAcquisitionRequester::getAc
 void CSQLiteAcquisitionRequester::removeAcquisition(int acquisitionId)
 {
    CQuery qDelete;
-   qDelete. DeleteFrom(CAcquisitionTable::getTableName()).
-            Where(CAcquisitionTable::getIdColumnName(), CQUERY_OP_EQUAL, acquisitionId);
+   qDelete. deleteFrom(CAcquisitionTable::getTableName()).
+            where(CAcquisitionTable::getIdColumnName(), CQUERY_OP_EQUAL, acquisitionId);
    if(m_databaseRequester->queryStatement(qDelete) <= 0)
       throw new CEmptyResultException("No lines affected");
 }

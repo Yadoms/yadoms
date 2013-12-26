@@ -24,8 +24,8 @@ CSQLiteKeywordRequester::~CSQLiteKeywordRequester()
 void CSQLiteKeywordRequester::addKeyword(boost::shared_ptr<CKeyword> newKeyword)
 {
    CQuery qInsert;
-   qInsert.InsertInto(CKeywordTable::getTableName(), CKeywordTable::getNameColumnName()).
-           Values(newKeyword->getName());
+   qInsert.insertInto(CKeywordTable::getTableName(), CKeywordTable::getNameColumnName()).
+           values(newKeyword->getName());
 
    if(m_databaseRequester->queryStatement(qInsert) <= 0)
       throw new CEmptyResultException("No lines affected");
@@ -37,9 +37,9 @@ boost::shared_ptr<CKeyword> CSQLiteKeywordRequester::getKeyword(const std::strin
 
    CQuery qSelect;
 
-   qSelect. Select().
-            From(CKeywordTable::getTableName()).
-            Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
+   qSelect. select().
+            from(CKeywordTable::getTableName()).
+            where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
 
    m_databaseRequester->queryEntities<boost::shared_ptr<CKeyword> >(&adapter, qSelect);
    if (adapter.getResults().empty())
@@ -54,7 +54,7 @@ std::vector<boost::shared_ptr<CKeyword> > CSQLiteKeywordRequester::getKeywords()
 {
    CKeywordAdapter adapter;
    CQuery qSelect;
-   qSelect.Select().From(CKeywordTable::getTableName());
+   qSelect.select().from(CKeywordTable::getTableName());
    m_databaseRequester->queryEntities<boost::shared_ptr<CKeyword> >(&adapter, qSelect);
    return adapter.getResults();
 }
@@ -62,8 +62,8 @@ std::vector<boost::shared_ptr<CKeyword> > CSQLiteKeywordRequester::getKeywords()
 void CSQLiteKeywordRequester::removeKeyword(const std::string & keyword)
 {
    CQuery qDelete;
-   qDelete. DeleteFrom(CKeywordTable::getTableName()).
-            Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
+   qDelete. deleteFrom(CKeywordTable::getTableName()).
+            where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
    if(m_databaseRequester->queryStatement(qDelete) <= 0)
       throw new CEmptyResultException("No lines affected");
 }

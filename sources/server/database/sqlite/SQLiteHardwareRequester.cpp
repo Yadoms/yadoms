@@ -25,8 +25,8 @@ int CSQLiteHardwareRequester::addHardware(boost::shared_ptr<CHardware> newHardwa
 {
    CQuery qInsert;
    
-   qInsert.InsertInto(CHardwareTable::getTableName(), CHardwareTable::getNameColumnName(), CHardwareTable::getPluginNameColumnName(), CHardwareTable::getConfigurationColumnName(), CHardwareTable::getEnabledColumnName() ).
-           Values(newHardware->getName(), 
+   qInsert.insertInto(CHardwareTable::getTableName(), CHardwareTable::getNameColumnName(), CHardwareTable::getPluginNameColumnName(), CHardwareTable::getConfigurationColumnName(), CHardwareTable::getEnabledColumnName() ).
+           values(newHardware->getName(), 
                   newHardware->getPluginName(),
                   newHardware->getConfiguration(), 
                   newHardware->getEnabled());
@@ -36,11 +36,11 @@ int CSQLiteHardwareRequester::addHardware(boost::shared_ptr<CHardware> newHardwa
 
 
    CQuery qSelect;
-   qSelect. Select(CHardwareTable::getIdColumnName()).
-            From(CHardwareTable::getTableName()).
-            Where(CHardwareTable::getNameColumnName(), CQUERY_OP_EQUAL, newHardware->getName()).
-            And(CHardwareTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, newHardware->getPluginName()).
-            OrderBy(CHardwareTable::getIdColumnName(), CQUERY_ORDER_DESC);
+   qSelect. select(CHardwareTable::getIdColumnName()).
+            from(CHardwareTable::getTableName()).
+            where(CHardwareTable::getNameColumnName(), CQUERY_OP_EQUAL, newHardware->getName()).
+            and(CHardwareTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, newHardware->getPluginName()).
+            orderBy(CHardwareTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
    CSingleValueAdapter<int> adapter;
    m_databaseRequester->queryEntities<int>(&adapter, qSelect);
@@ -56,10 +56,10 @@ boost::shared_ptr<CHardware> CSQLiteHardwareRequester::getHardware(int hardwareI
 
    CQuery qSelect;
 
-   qSelect. Select().
-            From(CHardwareTable::getTableName()).
-            Where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId).
-            And(CHardwareTable::getDeletedColumnName(), CQUERY_OP_EQUAL, false);
+   qSelect. select().
+            from(CHardwareTable::getTableName()).
+            where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId).
+            and(CHardwareTable::getDeletedColumnName(), CQUERY_OP_EQUAL, false);
 
    m_databaseRequester->queryEntities<boost::shared_ptr<CHardware> >(&adapter, qSelect);
    if (adapter.getResults().empty())
@@ -75,10 +75,10 @@ std::vector<boost::shared_ptr<CHardware> > CSQLiteHardwareRequester::getHardware
    CHardwareAdapter adapter;
 
    CQuery qSelect;
-   qSelect.Select().From(CHardwareTable::getTableName());
+   qSelect.select().from(CHardwareTable::getTableName());
 
    if (!evenDeleted)
-      qSelect.Where(CHardwareTable::getDeletedColumnName(), CQUERY_OP_EQUAL, false);
+      qSelect.where(CHardwareTable::getDeletedColumnName(), CQUERY_OP_EQUAL, false);
 
    m_databaseRequester->queryEntities<boost::shared_ptr<CHardware> >(&adapter, qSelect);
    return adapter.getResults();
@@ -90,10 +90,10 @@ std::vector<std::string> CSQLiteHardwareRequester::getHardwareNameList()
    CSingleValueAdapter<std::string> adapter;
 
    CQuery qSelect;
-   qSelect. Select(CHardwareTable::getNameColumnName()).
-            From(CHardwareTable::getTableName()).
-            Where(CHardwareTable::getDeletedColumnName(), CQUERY_OP_EQUAL, false).
-            OrderBy(CHardwareTable::getNameColumnName());
+   qSelect. select(CHardwareTable::getNameColumnName()).
+            from(CHardwareTable::getTableName()).
+            where(CHardwareTable::getDeletedColumnName(), CQUERY_OP_EQUAL, false).
+            orderBy(CHardwareTable::getNameColumnName());
 
    m_databaseRequester->queryEntities<std::string>(&adapter, qSelect);
    return adapter.getResults();
@@ -102,9 +102,9 @@ std::vector<std::string> CSQLiteHardwareRequester::getHardwareNameList()
 void CSQLiteHardwareRequester::updateHardwareConfiguration(int hardwareId, const std::string& newConfiguration)
 {
    CQuery qUpdate;
-   qUpdate. Update(CHardwareTable::getTableName()).
-            Set(CHardwareTable::getConfigurationColumnName(), newConfiguration).
-            Where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId);
+   qUpdate. update(CHardwareTable::getTableName()).
+            set(CHardwareTable::getConfigurationColumnName(), newConfiguration).
+            where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId);
 
    if(m_databaseRequester->queryStatement(qUpdate) <= 0)
       throw new CEmptyResultException("No lines affected");
@@ -113,9 +113,9 @@ void CSQLiteHardwareRequester::updateHardwareConfiguration(int hardwareId, const
 void CSQLiteHardwareRequester::removeHardware(int hardwareId)
 {
    CQuery qUpdate;
-   qUpdate. Update(CHardwareTable::getTableName()).
-            Set(CHardwareTable::getDeletedColumnName(), true).
-            Where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId);
+   qUpdate. update(CHardwareTable::getTableName()).
+            set(CHardwareTable::getDeletedColumnName(), true).
+            where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId);
 
    if(m_databaseRequester->queryStatement(qUpdate) <= 0)
       throw new CEmptyResultException("No lines affected");
@@ -124,9 +124,9 @@ void CSQLiteHardwareRequester::removeHardware(int hardwareId)
 void CSQLiteHardwareRequester::enableInstance(int hardwareId, bool enable)
 {
    CQuery qUpdate;
-   qUpdate. Update(CHardwareTable::getTableName()).
-            Set(CHardwareTable::getEnabledColumnName(), enable).
-            Where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId);
+   qUpdate. update(CHardwareTable::getTableName()).
+            set(CHardwareTable::getEnabledColumnName(), enable).
+            where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId);
 
    if(m_databaseRequester->queryStatement(qUpdate) <= 0)
       throw new CEmptyResultException("No lines affected");
