@@ -31,7 +31,7 @@ public:
    template<class T>
    CQueryValue(const T & anyValue)
    {
-      Initialize("'" + boost::lexical_cast<std::string>(anyValue) + "'");
+      initialize("'" + boost::lexical_cast<std::string>(anyValue) + "'");
    }
 
    //
@@ -55,7 +55,7 @@ public:
    template<class T>
    CQueryValue& CQueryValue::operator=(const T & anyValue)
    {
-      Initialize("'" +boost::lexical_cast<std::string>(anyValue) + "'");
+      initialize("'" +boost::lexical_cast<std::string>(anyValue) + "'");
       return *this;
    }
 
@@ -69,14 +69,14 @@ public:
    /// \brief           Determine if a value is defined
    /// \return          true if the value is defined, false in other cases
    //
-   const bool IsDefined() const;
+   const bool isDefined() const;
 
 private:
    //
    /// \brief           Initialize the instance with a value
    /// \param value     The value
    //
-   void Initialize(const std::string & value);
+   void initialize(const std::string & value);
 
    //
    /// \brief           The value
