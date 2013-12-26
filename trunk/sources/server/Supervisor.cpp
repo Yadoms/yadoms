@@ -3,6 +3,9 @@
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "tools/Log.h"
 #include "tools/Exceptions/NotSupportedException.hpp"
+#include "web/webem/WebServer.h"
+#include "web/WebServerManager.h"
+
 
 CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
    :CThreadBase("Supervisor"), m_startupOptions(startupOptions)
@@ -26,8 +29,8 @@ void CSupervisor::doWork()
       boost::shared_ptr<IDataProvider> pDataProvider (new CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
       if(pDataProvider->load())
       {
-         //TODO ######################### test database #########################
 #if DEV_ACTIVATE_DATABASE_TESTS
+         //TODO ######################### test database #########################
          YADOMS_LOG(info) << "Testing database";
 
          std::vector<boost::shared_ptr<CHardware> > hardwares = pDataProvider->getHardwareRequester()->getHardwares();
@@ -207,20 +210,34 @@ void CSupervisor::doWork()
 #endif
       //\TODO ######################### [END] test interface hardwarePluginManager #########################
 
+
+      // ######################### Web server #########################
+      const std::string webServerIp = m_startupOptions.getWebServerIPAddress();
+      const std::string webServerPort = boost::lexical_cast<std::string>(m_startupOptions.getPortNumber());
+      const std::string webServerPath = m_startupOptions.getWebServerInitialPath();
+
+      boost::shared_ptr<IWebServer> webServer(new CWebServer(webServerIp, webServerPort, webServerPath));
+      boost::shared_ptr<CWebServerManager> webServerManager(new CWebServerManager(webServer));
+      webServerManager->start();
+      // ######################### [END] Web server #########################
+
       try
       {
+         YADOMS_LOG(info) << "Supervisor is running...";
          while(1)
          {
+
             boost::this_thread::sleep(boost::posix_time::milliseconds(100));
          }
       }
       catch (boost::thread_interrupted&)
       {
-         YADOMS_LOG(info) << "Supervisor is stopping...";
+         YADOMS_LOG(info) << "Supervisor is interrupted...";
       }
 
       pDataProvider->unload();//TODO : mettre un appel � unload dans le destructeur de IDataProvider (si pas d�j� unloaded �videmment).
-
+      
+      webServerManager->stop();
       YADOMS_LOG(info) << "Supervisor is stopped";
    }
    catch(std::exception& e)

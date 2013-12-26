@@ -136,7 +136,7 @@ add_definitions( -DBOOST_WHATEVER_DYN_LINK )
 add_definitions( -DBOOST_ALL_NO_LIB )
 add_definitions( -DBOOST_ALL_DYN_LINK )
 add_definitions( -DBOOST_SPIRIT_THREADSAFE )
-	
+
 # define all needed boost libraries
 set(BOOST_LIBS 
 	system 
@@ -219,6 +219,10 @@ set(YADOMS_SRC
 	server/database/entities/Acquisition.h
 	server/database/entities/Device.h
 	server/database/entities/Keyword.h
+	
+	server/web/IWebServer.h
+	server/web/WebServerManager.h
+	server/web/WebServerManager.cpp
 	)
 
 # Project folders
@@ -228,6 +232,7 @@ if(MSVC)
 	source_group(Server\\pluginSystem\\external plugins/hardware/IHardwarePlugin.h )
 	source_group(Server\\database  server/database/*.*)
 	source_group(Server\\database\\entities  server/database/entities/*.*)
+	source_group(Server\\web  server/web/*.*)
 endif()
 
 #Database
@@ -284,6 +289,17 @@ ENDIF()
 
 #Web server
 IF(USE_WEBEM_WEBSERVER)
+	set(YADOMS_SRC ${YADOMS_SRC}
+		server/web/webem/WebServer.h
+		server/web/webem/WebServer.cpp
+	)
+	
+	if(MSVC)
+		source_group(Server\\web\\webem  server/web/webem/*.*)
+	endif()	
+
+	add_definitions( -DWEBSERVER_DONT_USE_ZIP )
+	
 	set(LIBS ${LIBS} webem)
 	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${WEBEM_INCLUDE_DIRECTORY})
 ENDIF()
@@ -488,5 +504,10 @@ if(NOT Boost_USE_STATIC_LIBS)
 		endif()
 	ENDFOREACH(BOOSTLIBRARY)
 endif()		
+
+#copy www directory into build directory
+add_custom_command(TARGET yadoms POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                       ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
 		
 
