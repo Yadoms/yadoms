@@ -18,9 +18,10 @@
 #include "Helper.h"
 #include "localtime_r.h"
 
-#ifndef WIN32
-	#include <unistd.h> //gethostbyname
-#endif
+//\TODO: make it cross platform
+//#ifndef WIN32
+//	#include <unistd.h> //gethostbyname
+//#endif
 
 int m_failcounter=0;
 
@@ -474,6 +475,8 @@ void cWebem::ClearUserPasswords()
 
 void cWebem::AddLocalNetworks(std::string network)
 {
+//\TODO : make it cross platform
+/*
 	_tIPNetwork ipnetwork;
 
 	if (network=="")
@@ -553,6 +556,7 @@ void cWebem::AddLocalNetworks(std::string network)
 	}
 
 	m_localnetworks.push_back(ipnetwork);
+*/
 }
 
 void cWebem::ClearLocalNetworks()
