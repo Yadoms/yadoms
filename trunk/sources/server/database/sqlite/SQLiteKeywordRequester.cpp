@@ -24,8 +24,8 @@ CSQLiteKeywordRequester::~CSQLiteKeywordRequester()
 void CSQLiteKeywordRequester::addKeyword(boost::shared_ptr<CKeyword> newKeyword)
 {
    CQuery qInsert;
-   qInsert.insertInto(CKeywordTable::getTableName(), CKeywordTable::getNameColumnName()).
-           values(newKeyword->getName());
+   qInsert.InsertInto(CKeywordTable::getTableName(), CKeywordTable::getNameColumnName()).
+           Values(newKeyword->getName());
 
    if(m_databaseRequester->queryStatement(qInsert) <= 0)
       throw new CEmptyResultException("No lines affected");
@@ -37,15 +37,15 @@ boost::shared_ptr<CKeyword> CSQLiteKeywordRequester::getKeyword(const std::strin
 
    CQuery qSelect;
 
-   qSelect. select().
-            from(CKeywordTable::getTableName()).
-            where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
+   qSelect. Select().
+            From(CKeywordTable::getTableName()).
+            Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
 
    m_databaseRequester->queryEntities<boost::shared_ptr<CKeyword> >(&adapter, qSelect);
    if (adapter.getResults().empty())
    {
       // Keyword not found
-      throw CInvalidParameterException(CStringExtension::format("Keyword name : %s not found in database", keyword));
+      throw CInvalidParameterException(CStringExtension::format("Keyword name : %s not found in database", keyword.c_str()));
    }
    return adapter.getResults().at(0);
 }
@@ -54,7 +54,8 @@ std::vector<boost::shared_ptr<CKeyword> > CSQLiteKeywordRequester::getKeywords()
 {
    CKeywordAdapter adapter;
    CQuery qSelect;
-   qSelect.select().from(CKeywordTable::getTableName());
+   qSelect. Select().
+            From(CKeywordTable::getTableName());
    m_databaseRequester->queryEntities<boost::shared_ptr<CKeyword> >(&adapter, qSelect);
    return adapter.getResults();
 }
@@ -62,8 +63,8 @@ std::vector<boost::shared_ptr<CKeyword> > CSQLiteKeywordRequester::getKeywords()
 void CSQLiteKeywordRequester::removeKeyword(const std::string & keyword)
 {
    CQuery qDelete;
-   qDelete. deleteFrom(CKeywordTable::getTableName()).
-            where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
+   qDelete. DeleteFrom(CKeywordTable::getTableName()).
+            Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
    if(m_databaseRequester->queryStatement(qDelete) <= 0)
       throw new CEmptyResultException("No lines affected");
 }
