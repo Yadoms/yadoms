@@ -2,7 +2,7 @@
 
 //
 /// \brief  Class used to handle query values (manage types for database).
-///         The real aim is to use any inout value in queroes without specifing the type
+///         The real aim is to use any input value in queries without specifying the type
 //
 class CQueryValue
 {
@@ -44,7 +44,7 @@ public:
    /// \param anyValue  A CQueryValue to copy
    /// \return          A reference to the copy
    //
-   CQueryValue& CQueryValue::operator=(const CQueryValue & anyValue);
+   CQueryValue& operator=(const CQueryValue & anyValue);
 
 
    //
@@ -53,7 +53,7 @@ public:
    /// \return          A reference to the copy
    //
    template<class T>
-   CQueryValue& CQueryValue::operator=(const T & anyValue)
+   CQueryValue& operator=(const T & anyValue)
    {
       initialize("'" +boost::lexical_cast<std::string>(anyValue) + "'");
       return *this;

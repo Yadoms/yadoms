@@ -16,10 +16,10 @@ void CSQLiteVersion1::checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> 
    //check that table Configuration exists
    CQuery sCheckForConfigurationTableExists;
 
-   sCheckForConfigurationTableExists.  selectCount().
-                                       from("sqlite_master").
-                                       where("type", CQUERY_OP_EQUAL, "table").
-                                       and("name", CQUERY_OP_EQUAL, "configuration");
+   sCheckForConfigurationTableExists.  SelectCount().
+                                       From("sqlite_master").
+                                       Where("type", CQUERY_OP_EQUAL, "table").
+                                       And("name", CQUERY_OP_EQUAL, "configuration");
    int count = pRequester->queryCount(sCheckForConfigurationTableExists);
 
    

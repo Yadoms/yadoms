@@ -47,7 +47,7 @@ public:
    /// \brief           Start a query with 'SELECT *'
    /// \return          A reference to itself to allow method chaining
    //
-   CQuery & select();
+   CQuery & Select();
 
    //
    /// \brief           Start a query with 'SELECT field1 [,field2[, field3...]]'
@@ -63,14 +63,14 @@ public:
    /// \param  field10  a field to append to the select fields
    /// \return          A reference to itself to allow method chaining
    //
-   CQuery & select(const std::string & field1, const std::string & field2 = EMPTY_STR, const std::string & field3 = EMPTY_STR, const std::string & field4 = EMPTY_STR, const std::string & field5 = EMPTY_STR, const std::string & field6 = EMPTY_STR, const std::string & field7 = EMPTY_STR, const std::string & field8 = EMPTY_STR, const std::string & field9 = EMPTY_STR, const std::string & field10 = EMPTY_STR);
+   CQuery & Select(const std::string & field1, const std::string & field2 = EMPTY_STR, const std::string & field3 = EMPTY_STR, const std::string & field4 = EMPTY_STR, const std::string & field5 = EMPTY_STR, const std::string & field6 = EMPTY_STR, const std::string & field7 = EMPTY_STR, const std::string & field8 = EMPTY_STR, const std::string & field9 = EMPTY_STR, const std::string & field10 = EMPTY_STR);
 
 
    //
    /// \brief           Start a query with 'SELECT COUNT(*)'
    /// \return          A reference to itself to allow method chaining
    //
-   CQuery & selectCount();
+   CQuery & SelectCount();
 
    //
    /// \brief           Start a query with 'SELECT COUNT(field1 [,field2[, field3...]])'
@@ -86,7 +86,7 @@ public:
    /// \param  field10  a field to append to the select fields
    /// \return          A reference to itself to allow method chaining
    //
-   CQuery & selectCount(const std::string & field1, const std::string & field2 = EMPTY_STR, const std::string & field3 = EMPTY_STR, const std::string & field4 = EMPTY_STR, const std::string & field5 = EMPTY_STR, const std::string & field6 = EMPTY_STR, const std::string & field7 = EMPTY_STR, const std::string & field8 = EMPTY_STR, const std::string & field9 = EMPTY_STR, const std::string & field10 = EMPTY_STR);
+   CQuery & SelectCount(const std::string & field1, const std::string & field2 = EMPTY_STR, const std::string & field3 = EMPTY_STR, const std::string & field4 = EMPTY_STR, const std::string & field5 = EMPTY_STR, const std::string & field6 = EMPTY_STR, const std::string & field7 = EMPTY_STR, const std::string & field8 = EMPTY_STR, const std::string & field9 = EMPTY_STR, const std::string & field10 = EMPTY_STR);
 
    //
    /// \brief           Append 'From table1 [,table2 [,table3.. ]]'
@@ -102,14 +102,14 @@ public:
    /// \param  field10  a table name to append to the from clause
    /// \return          A reference to itself to allow method chaining
    //   
-   CQuery & from(const std::string & table1, const std::string & table2 = EMPTY_STR, const std::string & table3 = EMPTY_STR, const std::string & table4 = EMPTY_STR, const std::string & table5 = EMPTY_STR, const std::string & table6 = EMPTY_STR, const std::string & table7 = EMPTY_STR, const std::string & table8 = EMPTY_STR, const std::string & table9 = EMPTY_STR, const std::string & table10 = EMPTY_STR) ;
+   CQuery & From(const std::string & table1, const std::string & table2 = EMPTY_STR, const std::string & table3 = EMPTY_STR, const std::string & table4 = EMPTY_STR, const std::string & table5 = EMPTY_STR, const std::string & table6 = EMPTY_STR, const std::string & table7 = EMPTY_STR, const std::string & table8 = EMPTY_STR, const std::string & table9 = EMPTY_STR, const std::string & table10 = EMPTY_STR) ;
    
    //
    /// \brief           Append the where clause
    /// \param  condition the where condition
    /// \return          A reference to itself to allow method chaining
    //     
-   CQuery & where(const std::string & condition);
+   CQuery & Where(const std::string & condition);
    
    //
    /// \brief           Append the where clause
@@ -119,7 +119,7 @@ public:
    /// \param  value    the value
    /// \return          A reference to itself to allow method chaining
    //     
-   CQuery & where(const std::string & field, const std::string & op, const CQueryValue & value);
+   CQuery & Where(const std::string & field, const std::string & op, const CQueryValue & value);
    
    //
    /// \brief           Append the where clause with a subquery
@@ -130,14 +130,14 @@ public:
    /// \param  value    the subquery
    /// \return          A reference to itself to allow method chaining
    //    
-   CQuery & where(const std::string & field, const std::string & op, CQuery & subQuery);
+   CQuery & Where(const std::string & field, const std::string & op, CQuery & subQuery);
    
    //
    /// \brief           Append the AND clause
    /// \param  condition the condition
    /// \return          A reference to itself to allow method chaining
    //        
-   CQuery & and(const std::string & condition) ;
+   CQuery & And(const std::string & condition) ;
    
    //
    /// \brief           Append the And clause
@@ -147,7 +147,7 @@ public:
    /// \param  value    the value
    /// \return          A reference to itself to allow method chaining
    //     
-   CQuery & and(const std::string & field, const std::string & op, const CQueryValue & value);
+   CQuery & And(const std::string & field, const std::string & op, const CQueryValue & value);
    
    //
    /// \brief           Append the AND clause with a subquery
@@ -158,14 +158,14 @@ public:
    /// \param  value    the subquery
    /// \return          A reference to itself to allow method chaining
    //    
-   CQuery & and(const std::string & field, const std::string & op, CQuery & subQuery);
+   CQuery & And(const std::string & field, const std::string & op, CQuery & subQuery);
       
    //
    /// \brief           Append the OR clause
    /// \param  condition the condition
    /// \return          A reference to itself to allow method chaining
    //          
-   CQuery & or(const std::string & condition) ;
+   CQuery & Or(const std::string & condition) ;
    
    //
    /// \brief           Append the Or clause
@@ -175,7 +175,7 @@ public:
    /// \param  value    the value
    /// \return          A reference to itself to allow method chaining
    //        
-   CQuery & or(const std::string & field, const std::string & op, const CQueryValue & value);
+   CQuery & Or(const std::string & field, const std::string & op, const CQueryValue & value);
    
    //
    /// \brief           Append the OR clause with a subquery
@@ -186,7 +186,7 @@ public:
    /// \param  value    the subquery
    /// \return          A reference to itself to allow method chaining
    //       
-   CQuery & or(const std::string & field, const std::string & op, CQuery & subQuery);
+   CQuery & Or(const std::string & field, const std::string & op, CQuery & subQuery);
    
    //
    /// \brief           Append 'ORDER BY field1 [way1][,field2 [way2]]'
@@ -212,7 +212,7 @@ public:
    /// \param  way10    the way of field10 (values can be ASC or DESC, empty do not append the way)   
    /// \return          A reference to itself to allow method chaining
    //     
-   CQuery & orderBy( const std::string & field1, const std::string & way1 = EMPTY_STR, 
+   CQuery & OrderBy( const std::string & field1, const std::string & way1 = EMPTY_STR, 
                      const std::string & field2  = EMPTY_STR, const std::string &  way2  =EMPTY_STR,
                      const std::string & field3  = EMPTY_STR, const std::string &  way3  =EMPTY_STR,
                      const std::string & field4  = EMPTY_STR, const std::string &  way4  =EMPTY_STR,
@@ -237,7 +237,7 @@ public:
    /// \param  field10  a field name to append to the group by clause
    /// \return          A reference to itself to allow method chaining
    //      
-   CQuery & groupBy(const std::string & field1, const std::string & field2 = EMPTY_STR, const std::string & field3 = EMPTY_STR, const std::string & field4 = EMPTY_STR, const std::string & field5 = EMPTY_STR, const std::string & field6 = EMPTY_STR, const std::string & field7 = EMPTY_STR, const std::string & field8 = EMPTY_STR, const std::string & field9 = EMPTY_STR, const std::string & field10 = EMPTY_STR);
+   CQuery & GroupBy(const std::string & field1, const std::string & field2 = EMPTY_STR, const std::string & field3 = EMPTY_STR, const std::string & field4 = EMPTY_STR, const std::string & field5 = EMPTY_STR, const std::string & field6 = EMPTY_STR, const std::string & field7 = EMPTY_STR, const std::string & field8 = EMPTY_STR, const std::string & field9 = EMPTY_STR, const std::string & field10 = EMPTY_STR);
    
    //
    /// \brief           Append 'INSERT INTO table (field1 [,field2 [,field3...]])'
@@ -254,7 +254,7 @@ public:
    /// \param  field10  a field name to append to the insert into clause
    /// \return          A reference to itself to allow method chaining
    //         
-   CQuery & insertInto(const std::string & table, const std::string & field1, const std::string & field2 = EMPTY_STR, const std::string & field3 = EMPTY_STR, const std::string & field4 = EMPTY_STR, const std::string & field5 = EMPTY_STR, const std::string & field6 = EMPTY_STR, const std::string & field7 = EMPTY_STR, const std::string & field8 = EMPTY_STR, const std::string & field9 = EMPTY_STR, const std::string & field10 = EMPTY_STR);
+   CQuery & InsertInto(const std::string & table, const std::string & field1, const std::string & field2 = EMPTY_STR, const std::string & field3 = EMPTY_STR, const std::string & field4 = EMPTY_STR, const std::string & field5 = EMPTY_STR, const std::string & field6 = EMPTY_STR, const std::string & field7 = EMPTY_STR, const std::string & field8 = EMPTY_STR, const std::string & field9 = EMPTY_STR, const std::string & field10 = EMPTY_STR);
 
   
    //
@@ -271,7 +271,7 @@ public:
    /// \param  value10  a value of the field
    /// \return          A reference to itself to allow method chaining
    //      
-   CQuery & values(const CQueryValue & value1, const CQueryValue & value2 = CQueryValue(), const CQueryValue & value3 = CQueryValue(), const CQueryValue & value4 = CQueryValue(), const CQueryValue & value5 = CQueryValue(), const CQueryValue & value6 = CQueryValue(), const CQueryValue & value7 = CQueryValue(), const CQueryValue & value8 = CQueryValue(), const CQueryValue & value9 = CQueryValue(), const CQueryValue & value10 = CQueryValue()) ;
+   CQuery & Values(const CQueryValue & value1, const CQueryValue & value2 = CQueryValue(), const CQueryValue & value3 = CQueryValue(), const CQueryValue & value4 = CQueryValue(), const CQueryValue & value5 = CQueryValue(), const CQueryValue & value6 = CQueryValue(), const CQueryValue & value7 = CQueryValue(), const CQueryValue & value8 = CQueryValue(), const CQueryValue & value9 = CQueryValue(), const CQueryValue & value10 = CQueryValue()) ;
 
 
  
@@ -281,7 +281,7 @@ public:
    /// \param  table    the table name
    /// \return          A reference to itself to allow method chaining
    //        
-   CQuery & update(const std::string & table);
+   CQuery & Update(const std::string & table);
 
    //
    /// \brief           Append 'SET field1=value1 [,field2=value2...]]'
@@ -307,7 +307,7 @@ public:
    /// \param  value10  the value of field10   
    /// \return          A reference to itself to allow method chaining
    //     
-   CQuery & set(const std::string & field1, const CQueryValue & value1, 
+   CQuery & Set(const std::string & field1, const CQueryValue & value1, 
                const std::string & field2  = EMPTY_STR, const CQueryValue &  value2  =CQueryValue(),
                const std::string & field3  = EMPTY_STR, const CQueryValue &  value3  =CQueryValue(),
                const std::string & field4  = EMPTY_STR, const CQueryValue &  value4  =CQueryValue(),
@@ -323,28 +323,28 @@ public:
    /// \param  table    the table name
    /// \return          A reference to itself to allow method chaining
    //     
-   CQuery & deleteFrom(const std::string & table);
+   CQuery & DeleteFrom(const std::string & table);
   
    //
    /// \brief              append text to query
    /// \param  queryPart   the query part to append
    /// \return             A reference to itself to allow method chaining
    //   
-   CQuery & append(const std::ostringstream & queryPart);
+   CQuery & Append(const std::ostringstream & queryPart);
 
    //
    /// \brief              append text to query
    /// \param  queryPart   the query part to append
    /// \return             A reference to itself to allow method chaining
    //   
-   CQuery & append(const std::string & queryPart);
+   CQuery & Append(const std::string & queryPart);
    
    //
    /// \brief              append text to query
    /// \param  queryPart   another query
    /// \return             A reference to itself to allow method chaining
    //   
-   CQuery & append(CQuery & queryPart);
+   CQuery & Append(CQuery & queryPart);
    
    //
    /// \brief    get the full query
@@ -364,7 +364,7 @@ private:
    /// \param  condition   the  condition
    /// \return             A reference to itself to allow method chaining
    //    
-   CQuery & whereInternal(const std::string & predicate, const std::string & condition);
+   CQuery & WhereInternal(const std::string & predicate, const std::string & condition);
 
    //
    /// \brief              Append the where clause
@@ -374,7 +374,7 @@ private:
    /// \param  value       the value
    /// \return             A reference to itself to allow method chaining
    //   
-   CQuery & whereInternal(const std::string & predicate, const std::string & field, const std::string & op, const CQueryValue & value);
+   CQuery & WhereInternal(const std::string & predicate, const std::string & field, const std::string & op, const CQueryValue & value);
 
    //
    /// \brief              Append the where clause with a subquery
@@ -384,7 +384,7 @@ private:
    /// \param  value       the subquery
    /// \return             A reference to itself to allow method chaining
    //     
-   CQuery & whereInternal(const std::string & predicate, const std::string & field, const std::string & op, CQuery & subQuery);
+   CQuery & WhereInternal(const std::string & predicate, const std::string & field, const std::string & op, CQuery & subQuery);
 
 
    //
@@ -392,7 +392,7 @@ private:
    /// \param  ss          the stream containing current query
    /// \param  field       the field name
    //
-   void appendField(std::ostringstream & ss, const std::string & field);
+   void AppendField(std::ostringstream & ss, const std::string & field);
 
    //
    /// \brief              Append a order field to the current query stream
@@ -400,7 +400,7 @@ private:
    /// \param  field       the field name
    /// \param  value       the way for order by (ASC or DESC)
    //
-   void appendOrderField(std::ostringstream & ss, const std::string & field, const std::string & way);
+   void AppendOrderField(std::ostringstream & ss, const std::string & field, const std::string & way);
 
    //
    /// \brief              Append a set(field=value) to the current query stream
@@ -408,14 +408,14 @@ private:
    /// \param  field       the field name
    /// \param  value       the value
    //
-   void appendSet(std::ostringstream & ss, const std::string & field, const CQueryValue & value);
+   void AppendSet(std::ostringstream & ss, const std::string & field, const CQueryValue & value);
 
    //
    /// \brief              Append a value to the current query stream
    /// \param  ss          the stream containing current query
    /// \param  value       the value
    //
-   void appendValue(std::ostringstream & ss, const CQueryValue & value);
+   void AppendValue(std::ostringstream & ss, const CQueryValue & value);
 
 private:
    //
