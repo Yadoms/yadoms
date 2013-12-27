@@ -14,7 +14,7 @@
 #elif defined(linux) || defined(__linux) || defined(__linux__) || defined(__GNU__) || defined(__GLIBC__) 
 #  include "../../linux/tools/dir_monitor/basic_dir_monitor_service.hpp" 
 #else 
-#  error "Platform not supported." 
+#  include "../../mac/tools/dir_monitor/basic_dir_monitor_service.hpp" 
 #endif 
 
 namespace boost { 
