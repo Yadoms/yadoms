@@ -9,13 +9,7 @@
 #define BOOST_ASIO_DIR_MONITOR_HPP 
 
 #include "basic_dir_monitor.hpp" 
-#if defined(_WIN32) || defined(__WIN32__) || defined(WIN32) 
-#  include "../../windows/tools/dir_monitor/basic_dir_monitor_service.hpp" 
-#elif defined(linux) || defined(__linux) || defined(__linux__) || defined(__GNU__) || defined(__GLIBC__) 
-#  include "../../linux/tools/dir_monitor/basic_dir_monitor_service.hpp" 
-#else 
-#  include "../../mac/tools/dir_monitor/basic_dir_monitor_service.hpp" 
-#endif 
+#include "tools/dir_monitor/basic_dir_monitor_service.hpp" 
 
 namespace boost { 
 namespace asio { 
