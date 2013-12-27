@@ -338,7 +338,6 @@ set(SHARED_LIB_SRC
 	tools/tools/dir_monitor/basic_dir_monitor.hpp
 	tools/tools/DirectoryChangeListener.h
 	tools/tools/DirectoryChangeListener.cpp
-	tools/tools/Peripherals.h
 )
 
 #Append platform specific files
