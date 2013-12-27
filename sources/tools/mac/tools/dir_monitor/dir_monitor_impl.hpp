@@ -28,7 +28,7 @@ class dir_monitor_impl :
 { 
 public: 
     dir_monitor_impl() 
-        : /*fd_(init_fd()), 
+        /*: fd_(init_fd()), 
         stream_descriptor_(inotify_io_service_, fd_), 
         inotify_work_(new boost::asio::io_service::work(inotify_io_service_)), 
         inotify_work_thread_(boost::bind(&boost::asio::io_service::run, &inotify_io_service_)), 
