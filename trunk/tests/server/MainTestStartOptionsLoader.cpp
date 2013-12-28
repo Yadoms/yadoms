@@ -12,7 +12,28 @@
 #include "../../sources/server/StartupOptionsLoader.h"
 #include "../../sources/server/ApplicationStopHandler.h"
 //#include "../../sources/tools/tools/Log.h"
+/*
+#include <fstream>
+#include <boost/test/results_reporter.hpp>
 
+//--------------------------------------------------------------
+/// \brief	    Redirect in an xml file the result
+//--------------------------------------------------------------
+
+std::ofstream out;
+
+struct ReportRedirector
+{
+    ReportRedirector()
+    {
+        out.open("test_results.xml");
+        assert( out.is_open() );
+        boost::unit_test::results_reporter::set_stream(out);
+    }
+};
+
+BOOST_GLOBAL_FIXTURE(ReportRedirector)
+*/
 //--------------------------------------------------------------
 /// \brief	    This function is needed to check the correct exception
 //--------------------------------------------------------------
@@ -46,7 +67,7 @@ BOOST_AUTO_TEST_CASE(Initialisation_Test)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -67,7 +88,7 @@ BOOST_AUTO_TEST_CASE(Different_Port_p_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -88,7 +109,7 @@ BOOST_AUTO_TEST_CASE(Different_Port_port_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -146,7 +167,7 @@ BOOST_AUTO_TEST_CASE(Different_Database_databaseFile_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -190,7 +211,7 @@ BOOST_AUTO_TEST_CASE(Different_Database_d_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -211,7 +232,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_trace_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -232,7 +253,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_debug_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -253,7 +274,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_info_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -274,7 +295,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_warning_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -295,7 +316,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_error_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -316,7 +337,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_fatal_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -361,7 +382,7 @@ BOOST_AUTO_TEST_CASE(Different_IP_i_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.1");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -382,7 +403,7 @@ BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.1");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -414,27 +435,13 @@ BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Error2)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with a wrong IP address (192.168.1.255)
-/// \result         Raise a Exception
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Error3)
-{
-  char *argv[] = {"./MainTestStartOptionsLoader","-i","192.168.1.255"};
-
-  CStartupOptionsLoader StartupOptions (3, argv);
-
-  BOOST_REQUIRE_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderException, validate );
-}
-
-//--------------------------------------------------------------
 /// \brief	    Test CStartupOptionsLoader with the argument -w
 /// \result         No Error - the website address is changed
 //--------------------------------------------------------------
-
+// TODO : Create a directory compatible for every platform
 BOOST_AUTO_TEST_CASE(Different_WebServer_w_Initialisation)
 {
-  char *argv[] = {"./MainTestStartOptionsLoader","-w","/home/www/"};
+  char *argv[] = {"./MainTestStartOptionsLoader","-w","/home"};
 
   CStartupOptionsLoader StartupOptions (3, argv);
 
@@ -445,13 +452,12 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_w_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "/home/www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "/home");
 }
 
 //--------------------------------------------------------------
 /// \brief	    Test CStartupOptionsLoader with the argument -w
 /// \result         No Error - the website address is changed
-// TODO : Create a directory compatible for every platform
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_Initialisation)
@@ -479,8 +485,10 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_WrongPath)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","--webServerPath","/home/ww"};
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+//  CStartupOptionsLoader StartupOptions (3, argv);
 
+  BOOST_REQUIRE_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderException, validate );
+/*
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
   BOOST_CHECK_EQUAL(StartupOptions.getPortNumber(), 8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
@@ -489,6 +497,7 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_WrongPath)
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "/home/ww");
+*/
 }
 
 //--------------------------------------------------------------
@@ -509,7 +518,7 @@ BOOST_AUTO_TEST_CASE(Different_HardwarePluginsPath_h_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -530,7 +539,7 @@ BOOST_AUTO_TEST_CASE(Different_HardwarePluginsPath_hardwarePluginsPath_Initialis
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -551,7 +560,7 @@ BOOST_AUTO_TEST_CASE(Different_DevicePluginsPath_d_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"/home/");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -572,7 +581,7 @@ BOOST_AUTO_TEST_CASE(Different_DevicePluginsPath_devicePluginsPath_Initialisatio
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"/home/");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -593,7 +602,7 @@ BOOST_AUTO_TEST_CASE(Disable_XPL_x_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),false);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------
@@ -614,7 +623,7 @@ BOOST_AUTO_TEST_CASE(Disable_XPL_disableXplHubStart_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),false);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
