@@ -16,7 +16,7 @@ CStartupOptionsLoader::CStartupOptionsLoader(int argc, char** argv)
    {
       // Load configuration from command line and complete with config file (second data read don't overwrite first)
       po::variables_map vm;
-      po::store(po::parse_command_line(argc, argv, m_optionsDescription), vm);
+      po::store(po::parse_command_line(argc, argv, m_optionsDescription, po::command_line_style::default_style ^ po::command_line_style::allow_guessing), vm);
       if (boost::filesystem::exists(OptionalConfigFile))
          po::store(po::parse_config_file<char>(OptionalConfigFile.c_str(), m_optionsDescription, true), vm);
       po::notify(vm);
@@ -91,7 +91,7 @@ void CStartupOptionsLoader::buildOptionsDescription()
          "use a specific web server initial folder")
       ("logLevel,l", po::value<boost::log::trivial::severity_level>(&m_logLevel)->default_value(boost::log::trivial::info),
          "set log level, accepted values are : trace, debug, info, warning, error, fatal")
-      ("databaseFile,d", po::value<std::string>(&m_databaseFile)->default_value("yadoms.db3"),
+      ("databaseFile,D", po::value<std::string>(&m_databaseFile)->default_value("yadoms.db3"),
          "use a specific dataBase file")
       ("hardwarePluginsPath,h", po::value<CMustExistPathOption>(&m_hardwarePluginsPath)->default_value(CMustExistPathOption("plugins/hardware")),
          "use a specific path to hardware plugins")
