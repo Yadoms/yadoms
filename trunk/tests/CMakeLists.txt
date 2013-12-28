@@ -58,16 +58,6 @@ if(MSVC)
 endif()
 
 ##################################################################################################
-## Global CMake configuration
-##################################################################################################
-
-#suppress VS solution ZERO_CHECK project
-if(MSVC)
-	set(CMAKE_SUPPRESS_REGENERATION TRUE)
-endif()
-
-
-##################################################################################################
 ## IDE configurations
 ##################################################################################################
 
@@ -90,6 +80,27 @@ endif()
 if(CMAKE_COMPIER_IS_GNUCXX)
 	add_definitions("-fpermissive")
 	add_definitions("-std=c++0x")
+endif()
+
+#check eclispe debug options
+if(DEBUG_WITH_ECLIPSE)
+	add_definitions(-DDEBUG)
+	add_definitions("-g")
+endif()
+
+##################################################################################################
+## User specific Defines
+##################################################################################################
+if(DEV_ACTIVATE_DATABASE_TESTS)
+	add_definitions(-DDEV_ACTIVATE_DATABASE_TESTS)
+endif()
+
+if(DEV_ACTIVATE_HARDWARE_PLUGIN_MANAGER_TESTS)
+	add_definitions(-DDEV_ACTIVATE_HARDWARE_PLUGIN_MANAGER_TESTS)
+endif()
+
+if(DEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS)
+	add_definitions(-DDEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS)
 endif()
 
 
@@ -175,33 +186,33 @@ include_directories(../sources/external-libs)
 
 
 # Executable sources
-#set(YADOMS_SRC
-#	../sources/server/stdafx.cpp
-#	../sources/server/stdafx.h
-#	../sources/server/Supervisor.cpp
-#	../sources/server/Supervisor.h
-#	../sources/server/pluginSystem/HardwarePluginManager.h
-#	../sources/server/pluginSystem/HardwarePluginManager.cpp
-#	../sources/server/pluginSystem/HardwarePluginInstance.h
-#	../sources/server/pluginSystem/HardwarePluginInstance.cpp
-#	../sources/server/pluginSystem/HardwarePluginFactory.h
-#	../sources/server/pluginSystem/HardwarePluginFactory.cpp
-#	../sources/plugins/hardware/IHardwarePlugin.h
-#	../sources/plugins/hardware/HardwarePluginConfiguration.hpp
-#	../sources/plugins/hardware/HardwarePluginConfigurationParameters.hpp
-#	../sources/server/StartupOptionsLoader.h
-#	../sources/server/StartupOptionsLoader.cpp
-#	../sources/server/StartupOptions.h
-#	../sources/server/ApplicationStopHandler.h
-#	../sources/server/ApplicationStopHandler.cpp
+set(YADOMS_SRC
+	../sources/server/stdafx.cpp
+	../sources/server/stdafx.h
+	../sources/server/Supervisor.cpp
+	../sources/server/Supervisor.h
+	../sources/server/pluginSystem/HardwarePluginManager.h
+	../sources/server/pluginSystem/HardwarePluginManager.cpp
+	../sources/server/pluginSystem/HardwarePluginInstance.h
+	../sources/server/pluginSystem/HardwarePluginInstance.cpp
+	../sources/server/pluginSystem/HardwarePluginFactory.h
+	../sources/server/pluginSystem/HardwarePluginFactory.cpp
+	../sources/plugins/hardware/IHardwarePlugin.h
+	../sources/plugins/hardware/HardwarePluginConfiguration.hpp
+	../sources/plugins/hardware/HardwarePluginConfigurationParameters.hpp
+	../sources/server/StartupOptionsLoader.h
+	../sources/server/StartupOptionsLoader.cpp
+	../sources/server/StartupOptions.h
+	../sources/server/ApplicationStopHandler.h
+	../sources/server/ApplicationStopHandler.cpp
 	
-#	../sources/server/database/IDataProvider.h
-#	../sources/server/database/IHardwareRequester.h
-#	../sources/server/database/IConfigurationRequester.h
-#	../sources/server/database/entities/EntityHelpers.hpp
-#	../sources/server/database/entities/Hardware.h
-#	../sources/server/database/entities/Configuration.h
-#	)
+	../sources/server/database/IDataProvider.h
+	../sources/server/database/IHardwareRequester.h
+	../sources/server/database/IConfigurationRequester.h
+	../sources/server/database/entities/EntityHelpers.hpp
+	../sources/server/database/entities/Hardware.h
+	../sources/server/database/entities/Configuration.h
+	)
 
 # Project folders
 #if(MSVC)
@@ -295,12 +306,12 @@ set(SHARED_LIB_SRC
 	../sources/tools/tools/Log.h
 	../sources/tools/tools/Log.cpp
 	../sources/tools/tools/StringExtension.hpp	
-	../sources/tools/tools/Exceptions/Exception.h
-	../sources/tools/tools/Exceptions/Exception.cpp
-	../sources/tools/tools/Exceptions/NotImplementedException.h
-	../sources/tools/tools/Exceptions/NullReferenceException.h
-	../sources/tools/tools/Exceptions/NullReferenceException.cpp
-	../sources/tools/tools/Exceptions/EmptyResultException.h
+	../sources/tools/tools/Exceptions/Exception.hpp
+#	../sources/tools/tools/Exceptions/Exception.cpp
+	../sources/tools/tools/Exceptions/NotImplementedException.hpp
+	../sources/tools/tools/Exceptions/NullReferenceException.hpp
+#	../sources/tools/tools/Exceptions/NullReferenceException.cpp
+	../sources/tools/tools/Exceptions/EmptyResultException.hpp
 
 	../sources/tools/tools/dir_monitor/dir_monitor.hpp
 	../sources/tools/tools/dir_monitor/basic_dir_monitor.hpp
@@ -319,7 +330,7 @@ set(SHARED_LIB_SRC
 	../sources/tools/linux/tools/dir_monitor/dir_monitor_impl.hpp
 )
 
-# Define project folders
+ #Define project folders
 IF(MSVC)
 	source_group(PlatformSpecific\\windows tools/windows/tools/*.*)
 	source_group(PlatformSpecific\\linux tools/linux/tools/*.*)
@@ -448,4 +459,8 @@ if(NOT Boost_USE_STATIC_LIBS)
 	ENDFOREACH(BOOSTLIBRARY)
 endif()		
 		
+#copy www directory into build directory
+add_custom_command(TARGET yadoms POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                       ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
 
