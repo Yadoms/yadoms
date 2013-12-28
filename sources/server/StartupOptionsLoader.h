@@ -83,7 +83,7 @@ public:
    virtual const std::string& getWebServerIPAddress() const
       { return m_webServerIPAddress; }
    virtual const std::string& getWebServerInitialPath() const
-      { return m_webServerInitialPath; }
+      { return m_webServerInitialPath.get(); }
    virtual const std::string& getDatabaseFile() const
       { return m_databaseFile; }
    virtual const std::string& getHarwarePluginsPath() const
@@ -112,7 +112,7 @@ private:
    boost::log::trivial::severity_level m_logLevel;
    unsigned int m_portNumber;
    std::string m_webServerIPAddress;
-   std::string m_webServerInitialPath;
+   CMustExistPathOption m_webServerInitialPath;
    std::string m_databaseFile;
    CMustExistPathOption m_hardwarePluginsPath;
    CMustExistPathOption m_devicePluginsPath;
