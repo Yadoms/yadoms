@@ -13,7 +13,7 @@
 #include "../../sources/server/ApplicationStopHandler.h"
 //#include "../../sources/tools/tools/Log.h"
 
-bool validate(CStartupOptionsLoaderError str)
+bool validate(CStartupOptionsLoaderException str)
 {
  return str.isError();
 }
@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE(Port_Initialisation_Error2)
   char *argv[] = {"./MainTestStartOptionsLoader","-port","2000"};
   
   //Test the exception, and if this one is the correct one !
-  BOOST_CHECK_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderError, validate );
+  BOOST_CHECK_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderException, validate );
 
   //BOOST_REQUIRE_THROW(CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderError);
 }
@@ -221,14 +221,14 @@ BOOST_AUTO_TEST_CASE(Unknow_Log_l_Error1)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","-l","toto"};
 
-  BOOST_CHECK_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderError, validate );
+  BOOST_CHECK_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderException, validate );
 }
 
 BOOST_AUTO_TEST_CASE(Unknow_option_Error2)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","-a","toto"};
 
-  BOOST_CHECK_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderError, validate );
+  BOOST_CHECK_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderException, validate );
 }
 
 BOOST_AUTO_TEST_SUITE_END()
