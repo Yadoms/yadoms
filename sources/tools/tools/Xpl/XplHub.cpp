@@ -4,7 +4,7 @@
 #include "Log.h"
 #include "XplHelper.h"
 #include "XplMessage.h"
-#include "XplHubConnectedPeripheral.cpp"
+#include "XplHubConnectedPeripheral.h"
 #include "StringExtension.hpp"
 #include "XplException.h"
 
