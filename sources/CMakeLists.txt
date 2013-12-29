@@ -260,7 +260,6 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/SQLiteRequester.h
 		server/database/sqlite/SQLiteRequester.cpp
 		
-		
 		server/database/sqlite/adapters/SQLiteDatabaseAdapters.h
 		server/database/sqlite/adapters/AdapterHelpers.hpp
 		server/database/sqlite/adapters/ISQLiteResultAdapter.h
@@ -338,6 +337,24 @@ set(SHARED_LIB_SRC
 	tools/tools/dir_monitor/basic_dir_monitor.hpp
 	tools/tools/DirectoryChangeListener.h
 	tools/tools/DirectoryChangeListener.cpp
+	
+	tools/tools/Xpl/XplActor.cpp
+	tools/tools/Xpl/XplActor.h
+	tools/tools/Xpl/XplException.h
+	tools/tools/Xpl/XplHelper.cpp
+	tools/tools/Xpl/XplHelper.h
+	tools/tools/Xpl/xplHub.cpp
+	tools/tools/Xpl/xplHub.h
+	tools/tools/Xpl/XplMessage.cpp
+	tools/tools/Xpl/XplMessage.h
+	tools/tools/Xpl/XplMessageFactory.cpp
+	tools/tools/Xpl/XplMessageFactory.h
+	tools/tools/Xpl/XplMessageSchemaIdentifier.cpp
+	tools/tools/Xpl/XplMessageSchemaIdentifier.h
+	tools/tools/Xpl/XplService.cpp
+	tools/tools/Xpl/XplService.h
+	tools/tools/Xpl/XplHubConnectedPeripheral.cpp
+	tools/tools/Xpl/XplHubConnectedPeripheral.h
 )
 
 #Append platform specific files
@@ -380,6 +397,7 @@ IF(MSVC)
 	source_group(PlatformSpecific\\linux tools/linux/tools/*.*)
 	source_group(PlatformSpecific\\mac tools/mac/tools/*.*)
 	source_group(Exception tools/tools/Exceptions/*.* )	
+	source_group(Xpl tools/tools/Xpl/*.* )	
 ENDIF()
 
 # Define library outputs
