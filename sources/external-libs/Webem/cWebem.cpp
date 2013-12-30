@@ -117,6 +117,11 @@ void cWebem::RegisterPageCodeW( const char* pageurl, webem_page_function_w fun )
 	myPages_w.insert( std::pair<std::string, webem_page_function_w >( std::string(pageurl), fun  ) );
 }
 
+void cWebem::RegisterCustomCode( const char* pageurl, webem_custom_function fun )
+{
+	myCustoms.insert( std::pair<std::string, webem_custom_function >( std::string(pageurl), fun  ) );
+}
+
 
 /**
 
@@ -315,6 +320,75 @@ void cWebem::CheckForAction( request& req )
 
 	return;
 }
+
+bool cWebem::CheckForCustomOverride( const request& req, reply& rep)
+{
+   // Decode url to path.
+	std::string request_path;
+	if (!request_handler::url_decode(req.uri, request_path))
+	{
+		rep = reply::stock_reply(reply::bad_request);
+		return false;
+	}
+	// Request path must be absolute and not contain "..".
+	if (request_path.empty() || request_path[0] != '/'
+		|| request_path.find("..") != std::string::npos)
+	{
+		rep = reply::stock_reply(reply::bad_request);
+		return false;
+	}
+
+
+   std::map < std::string, webem_custom_function >::iterator pfun;
+   for(pfun = myCustoms.begin(); pfun != myCustoms.end(); pfun++)
+   {
+      if(boost::algorithm::starts_with(request_path, pfun->first ))
+         break;
+   }
+
+	if (pfun!=myCustoms.end())
+	{
+		m_outputfilename="";
+		rep.status = reply::ok;
+		std::string retstr=pfun->second( req );
+
+		rep.content.append(retstr.c_str(), retstr.size());
+
+		std::string strMimeType=mime_types::extension_to_type("html");
+		int extraheaders=0;
+		if (m_outputfilename!="")
+		{
+			std::size_t last_dot_pos = m_outputfilename.find_last_of(".");
+			if (last_dot_pos != std::string::npos)
+			{
+				strMimeType=mime_types::extension_to_type("html");
+			}
+			extraheaders=1;
+		}
+
+		rep.headers.resize(4+extraheaders);
+		rep.headers[0].name = "Content-Length";
+		rep.headers[0].value = boost::lexical_cast<std::string>(rep.content.size());
+		rep.headers[1].name = "Content-Type";
+		rep.headers[1].value = strMimeType;
+		rep.headers[1].value += ";charset=UTF-8"; //ISO-8859-1
+		rep.headers[2].name = "Cache-Control";
+		rep.headers[2].value = "no-cache";
+		rep.headers[3].name = "Pragma";
+		rep.headers[3].value = "no-cache";
+
+		if (m_outputfilename!="")
+		{
+			rep.headers[4].name = "Content-Disposition";
+			rep.headers[4].value = "attachment; filename=" + m_outputfilename;
+		}
+		return true;
+	}
+   return false;
+}
+
+
+
 
 bool cWebem::CheckForPageOverride(const request& req, reply& rep)
 {
@@ -1366,37 +1440,39 @@ void cWebemRequestHandler::handle_request( const request& req, reply& rep)
 
 	myWebem->CheckForAction( req_modified );
 
-	if (!myWebem->CheckForPageOverride(req, rep))
-	{
-		// do normal handling
-		request_handler::handle_request( req_modified, rep);
+   if(!myWebem->CheckForCustomOverride(req, rep))
+   {
+	   if (!myWebem->CheckForPageOverride(req, rep))
+	   {
+		   // do normal handling
+		   request_handler::handle_request( req_modified, rep);
 
-		if (rep.headers[1].value == "text/html" 
-			|| rep.headers[1].value == "text/plain" 
-			|| rep.headers[1].value == "text/css"
-			|| rep.headers[1].value == "text/javascript"
-			)
-		{
-			// Find and include any special cWebem strings
-			myWebem->Include( rep.content );
+		   if (rep.headers[1].value == "text/html" 
+			   || rep.headers[1].value == "text/plain" 
+			   || rep.headers[1].value == "text/css"
+			   || rep.headers[1].value == "text/javascript"
+			   )
+		   {
+			   // Find and include any special cWebem strings
+			   myWebem->Include( rep.content );
 
-			// adjust content length header
-			// ( Firefox ignores this, but apparently some browsers truncate display without it.
-			// fix provided by http://www.codeproject.com/Members/jaeheung72 )
+			   // adjust content length header
+			   // ( Firefox ignores this, but apparently some browsers truncate display without it.
+			   // fix provided by http://www.codeproject.com/Members/jaeheung72 )
 
-			rep.headers[0].value = boost::lexical_cast<std::string>(rep.content.size());
+			   rep.headers[0].value = boost::lexical_cast<std::string>(rep.content.size());
 
-			// tell browser that we are using UTF-8 encoding
-			rep.headers[1].value += ";charset=UTF-8";
-		}
-	}
+			   // tell browser that we are using UTF-8 encoding
+			   rep.headers[1].value += ";charset=UTF-8";
+		   }
+	   }
+   }
 	check_cookie(req,rep);
 
 	if (myWebem->m_actsessionid!=0)
 	{
 		myWebem->m_sessionids[myWebem->m_actsessionid].lasttouch=mytime(NULL);
 	}
-	
 }
 
 } //namespace server {

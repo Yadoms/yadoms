@@ -224,6 +224,15 @@ set(YADOMS_SRC
 	server/web/IWebServer.h
 	server/web/WebServerManager.h
 	server/web/WebServerManager.cpp
+	
+	server/web/rest/IRestService.h
+	server/web/rest/HardwareRestService.h
+	server/web/rest/HardwareRestService.cpp
+	server/web/rest/json/json.h
+	server/web/rest/json/IEntitySerializer.h
+	server/web/rest/json/IEntityDeserializer.h
+	server/web/rest/json/HardwareEntitySerializer.h
+	server/web/rest/json/HardwareEntitySerializer.cpp
 	)
 
 # Project folders
@@ -234,6 +243,8 @@ if(MSVC)
 	source_group(Server\\database  server/database/*.*)
 	source_group(Server\\database\\entities  server/database/entities/*.*)
 	source_group(Server\\web  server/web/*.*)
+	source_group(Server\\web\\REST  server/web/rest/*.*)
+	source_group(Server\\web\\REST\\Json  server/web/rest/json/*.*)
 endif()
 
 #Database

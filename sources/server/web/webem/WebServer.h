@@ -2,6 +2,7 @@
 
 #include "web/IWebServer.h"
 #include "cWebem.h"
+#include "web/rest/IRestService.h"
 
 class CWebServer : public IWebServer
 {
@@ -22,7 +23,15 @@ public:
    // IWebServer implementation
    virtual void start();
    virtual void stop();
+   virtual void configureRestService(boost::shared_ptr<IRestService> restService);
    // [END] IWebServer implementation
+
+
+private:
+   //--------------------------------------   
+   ///\brief  Method which handle rest requests
+   //--------------------------------------   
+   std::string manageRestRequests(const http::server::request & request);
 
 private:
    boost::shared_ptr<http::server::cWebem> m_embeddedWebServer;
@@ -30,5 +39,8 @@ private:
    std::string m_configAddress;
    std::string m_configPort;
    std::string m_configDocRoot;
+
+   std::string m_restBaseKeyword;
+   std::map<std::string , boost::shared_ptr<IRestService> > m_restServices;
 
 };

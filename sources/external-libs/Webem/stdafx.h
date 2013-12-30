@@ -20,3 +20,4 @@
 using boost::uint32_t;
 using boost::uint8_t;
 
+#include <boost/algorithm/string.hpp>
