@@ -65,12 +65,14 @@ int main (int argc, char** argv)
          // Help was invoked, just print to console
          YADOMS_LOG(info) << e.what();
       }
+      BOOST_ASSERT_MSG(false, "Yadoms exited with error, see console for details");
    }
    catch(...)
    {
       //dual logging in case logger fails/throws
       std::cout << "An unhandled exception occurs. Yadoms is now stopped" << std::endl;
       YADOMS_LOG(fatal) << "An unhandled exception occurs. Yadoms is now stopped";
+      BOOST_ASSERT_MSG(false, "Yadoms exited with error, see console for details");
    }
 
    return 0;
