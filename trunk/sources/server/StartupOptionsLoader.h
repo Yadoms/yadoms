@@ -5,50 +5,7 @@
 
 #include "StartupOptions.h"
 #include "StartupOptionsLoaderException.hpp"
-
-
-//--------------------------------------------------------------
-/// \class Special path option
-/// This class check if the path given as option exists
-//--------------------------------------------------------------
-class CMustExistPathOption
-{
-public:
-   //--------------------------------------------------------------
-   /// \brief	         Constructor
-   /// \param[in] path  The path
-   //--------------------------------------------------------------
-   CMustExistPathOption(const std::string& path)
-      :m_path(path)  {}
-
-   //--------------------------------------------------------------
-   /// \brief	    Default constructor
-   //--------------------------------------------------------------
-   CMustExistPathOption() {}
-
-   //--------------------------------------------------------------
-   /// \brief	    Destructor
-   //--------------------------------------------------------------
-   virtual ~CMustExistPathOption() {}
-
-   //--------------------------------------------------------------
-   /// \brief	    Affectation operator
-   /// \note       Needed for implementation of po::value::default_value()
-   //--------------------------------------------------------------
-   void operator=(const CMustExistPathOption& src)
-   { m_path = src.m_path; }
-
-public:
-   //--------------------------------------------------------------
-   /// \brief	    Path getter
-   /// \return     Path
-   //--------------------------------------------------------------
-   const std::string& get() const
-      { return m_path; }
-
-protected:
-   std::string m_path;
-};
+#include "StartupOptionsLoaderCustomValidators.hpp"
 
 
 //--------------------------------------------------------------
@@ -81,7 +38,7 @@ public:
    virtual unsigned int getWebServerPortNumber() const
       { return m_webServerPortNumber; }
    virtual const std::string& getWebServerIPAddress() const
-      { return m_webServerIPAddress; }
+      { return m_webServerIPAddress.get(); }
    virtual const std::string& getWebServerInitialPath() const
       { return m_webServerInitialPath.get(); }
    virtual const std::string& getDatabaseFile() const
@@ -111,7 +68,7 @@ private:
    // Options data
    boost::log::trivial::severity_level m_logLevel;
    unsigned int m_webServerPortNumber;
-   std::string m_webServerIPAddress;
+   CValidIpAddressOption m_webServerIPAddress;
    CMustExistPathOption m_webServerInitialPath;
    std::string m_databaseFile;
    CMustExistPathOption m_hardwarePluginsPath;

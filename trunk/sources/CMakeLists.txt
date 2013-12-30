@@ -199,6 +199,7 @@ set(YADOMS_SRC
 	plugins/hardware/IHardwarePlugin.h
 	plugins/hardware/HardwarePluginConfiguration.hpp
 	plugins/hardware/HardwarePluginConfigurationParameters.hpp
+	server/StartupOptionsLoaderCustomValidators.hpp
 	server/StartupOptionsLoader.h
 	server/StartupOptionsLoader.cpp
 	server/StartupOptionsLoaderException.hpp
