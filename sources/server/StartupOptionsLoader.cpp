@@ -85,8 +85,8 @@ void CStartupOptionsLoader::buildOptionsDescription()
       ("help", "produce help message")
       ("port,p", po::value<unsigned int>(&m_portNumber)->default_value(8080),
          "set the web server port number")
-      ("webServerIp,i", po::value<std::string>(&m_webServerIPAddress)->default_value("127.0.0.1"),
-         "use a specific web server ip address")
+      ("webServerIp,i", po::value<std::string>(&m_webServerIPAddress)->default_value("0.0.0.0"),
+         "use a specific web server ip address. Use 0.0.0.0 to accepts connections via all interfaces. ")
       ("webServerPath,w", po::value<CMustExistPathOption>(&m_webServerInitialPath)->default_value(CMustExistPathOption("www")),
          "use a specific web server initial folder")
       ("logLevel,l", po::value<boost::log::trivial::severity_level>(&m_logLevel)->default_value(boost::log::trivial::info),
