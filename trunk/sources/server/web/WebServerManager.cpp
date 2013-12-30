@@ -3,9 +3,10 @@
 #include "WebServerManager.h"
 #include "IWebServer.h"
 #include "tools/Log.h"
+#include "rest/HardwareRestService.h"
 
-CWebServerManager::CWebServerManager(boost::shared_ptr<IWebServer> webServerInstance)
-   : CThreadBase("WebServerManager"), m_webServerInstance(webServerInstance)
+CWebServerManager::CWebServerManager(boost::shared_ptr<IDataProvider> dataProvider, boost::shared_ptr<IWebServer> webServerInstance)
+   : CThreadBase("WebServerManager"), m_webServerInstance(webServerInstance), m_dataProvider(dataProvider)
 {
 }
 
@@ -19,6 +20,7 @@ void CWebServerManager::doWork()
 
    try
    {
+      m_webServerInstance->configureRestService(boost::shared_ptr<IRestService>(new CHardwareRestService(m_dataProvider)));
       YADOMS_LOG(info) << "WebServer is running...";
       while(1)
       {

@@ -62,26 +62,8 @@
       </div>
     </div>
 
-    <div class="container">
+    <div class="container" id="hardwares">
       <!-- Example row of columns -->
-      <div class="row">
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-        </div>
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-       </div>
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-        </div>
-      </div>
-
       <hr>
 
       <footer>
@@ -95,5 +77,35 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+	
+	<script type="javascipt">
+	
+		$.ajax({
+			cache: false,
+			type: "GET",
+			async: false,
+			data: {},
+			url: "/rest/hardware"
+			contentType: "application/json; charset=utf-8",
+			crossDomain: true,
+			success: function(data)
+			{
+				// Parsing the txt JSON string
+				obj = JSON.parse(data);
+				hardwares = obj.hardware;
+				 
+				// Looping through object employees
+				for(i = 0; i < hardwares.length; i++ )
+				{
+				    var p = document.createElement('p');
+				
+				    p.innerHTML = '<div class="row"><div class="col-md-4"><h2>Hardware name:'+hardwares[i].name+'</h2>, <p><b>PluginName name: </b>'+ hardwares[i].plginName + '</p></div></div>';
+					$('#hardwares').appendChild(p);
+				}
+			},
+			error: function(){}
+		  }); 
+	
+	</script>
   </body>
 </html>

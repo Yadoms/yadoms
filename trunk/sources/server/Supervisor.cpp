@@ -217,7 +217,7 @@ void CSupervisor::doWork()
       const std::string webServerPath = m_startupOptions.getWebServerInitialPath();
 
       boost::shared_ptr<IWebServer> webServer(new CWebServer(webServerIp, webServerPort, webServerPath));
-      boost::shared_ptr<CWebServerManager> webServerManager(new CWebServerManager(webServer));
+      boost::shared_ptr<CWebServerManager> webServerManager(new CWebServerManager(pDataProvider, webServer));
       webServerManager->start();
       // ######################### [END] Web server #########################
 

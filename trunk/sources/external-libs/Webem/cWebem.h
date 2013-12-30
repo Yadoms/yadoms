@@ -76,6 +76,7 @@ namespace http {
 		typedef boost::function< char*( cWebem* ) > webem_action_function;
 		typedef boost::function< std::string() > webem_page_function;
 		typedef boost::function< wchar_t*() > webem_page_function_w;
+		typedef boost::function< std::string(const request &) > webem_custom_function;
 
 
 		/**
@@ -128,6 +129,10 @@ namespace http {
 			void Run();
 			void Stop();
 
+         void RegisterCustomCode( 
+            const char* pageurl, 
+            webem_custom_function fun );
+
 			void RegisterIncludeCode(
 				const char* idname,
 				webem_include_function fun );
@@ -155,6 +160,7 @@ namespace http {
 			bool HasParams() { return (myNameValues.size()>0); };
 
 			bool CheckForPageOverride( const request& req, reply& rep);
+         bool CheckForCustomOverride( const request& req, reply& rep);
 			
 			void SetAuthenticationMethod(const _eAuthenticationMethod amethod);
 
@@ -177,6 +183,8 @@ namespace http {
 			_eAuthenticationMethod m_authmethod;
 			bool m_bForceRelogin;
 		private:
+			/// store map between include codes and application functions
+         std::map < std::string, webem_custom_function > myCustoms;
 			/// store map between include codes and application functions
 			std::map < std::string, webem_include_function > myIncludes;
 			/// store map between include codes and application functions returning UTF-16 strings
