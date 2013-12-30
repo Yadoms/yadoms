@@ -78,8 +78,8 @@ public:
    // IStartupOptions implementation (see IStartupOptions declaration for details)
    virtual boost::log::trivial::severity_level getLogLevel() const
       { return m_logLevel; }
-   virtual unsigned int getPortNumber() const
-      { return m_portNumber; }
+   virtual unsigned int getWebServerPortNumber() const
+      { return m_webServerPortNumber; }
    virtual const std::string& getWebServerIPAddress() const
       { return m_webServerIPAddress; }
    virtual const std::string& getWebServerInitialPath() const
@@ -110,7 +110,7 @@ private:
 
    // Options data
    boost::log::trivial::severity_level m_logLevel;
-   unsigned int m_portNumber;
+   unsigned int m_webServerPortNumber;
    std::string m_webServerIPAddress;
    CMustExistPathOption m_webServerInitialPath;
    std::string m_databaseFile;

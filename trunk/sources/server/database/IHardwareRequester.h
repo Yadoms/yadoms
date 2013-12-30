@@ -50,7 +50,9 @@ public:
    //--------------------------------------------------------------
    virtual void enableInstance(int hardwareId, bool enable) = 0;
 
-public:
+   //--------------------------------------------------------------
+   /// \brief       Destructor
+   //--------------------------------------------------------------
    virtual ~IHardwareRequester()
    {
    }

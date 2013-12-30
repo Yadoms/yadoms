@@ -9,10 +9,14 @@
 #include "tools/Log.h"
 #include "versioning/SQLiteVersionUpgraderFactory.h"
 #include "versioning/SQLiteVersionException.h"
+#include "Exceptions\NotSupportedException.hpp"
 
 CSQLiteDataProvider::CSQLiteDataProvider(const std::string & dbFile)
    :m_dbFile(dbFile), m_pDatabaseHandler(NULL)
 {
+   //check that library is comiled with THREAD_SAFE= 1 (ensure that it is full mutex access)
+   if(sqlite3_threadsafe() != 1)
+      throw CNotSupportedException("SQLite3 non threadsafe");
 }
 
 CSQLiteDataProvider::~CSQLiteDataProvider()

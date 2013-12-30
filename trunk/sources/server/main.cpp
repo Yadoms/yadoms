@@ -32,7 +32,9 @@ int main (int argc, char** argv)
       YADOMS_LOG(info) << "********************************************************************";
       YADOMS_LOG(info) << "Startup options :";
       YADOMS_LOG(info) << "\tlog level = " << startupOptions.getLogLevel();
-      YADOMS_LOG(info) << "\tport number = " << startupOptions.getPortNumber();
+      YADOMS_LOG(info) << "\tWeb server port number = " << startupOptions.getWebServerPortNumber();
+      YADOMS_LOG(info) << "\tWeb server ip = " << startupOptions.getWebServerIPAddress();
+      YADOMS_LOG(info) << "\tWeb server path = " << startupOptions.getWebServerInitialPath();
       YADOMS_LOG(info) << "\tdb path = " << startupOptions.getDatabaseFile();
       YADOMS_LOG(info) << "\thardware plugins = " << startupOptions.getHarwarePluginsPath();
       YADOMS_LOG(info) << "\tdevice plugins = " << startupOptions.getDevicePluginsPath();

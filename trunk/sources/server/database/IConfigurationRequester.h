@@ -5,19 +5,39 @@
 class IConfigurationRequester
 {
 public:
-   // IDatabaseProvider implementation
+   //--------------------------------------------------------------
+   /// \brief      Create a new configuration entry
+   /// \param [in] configurationToCreate  New configuration informations
+   /// \throw      CEmptyResultException if fails
+   //--------------------------------------------------------------
    virtual void create(boost::shared_ptr<CConfiguration> configurationToCreate) = 0;
 
-	//Read
+   //--------------------------------------------------------------
+   /// \brief      Read a configuration entry
+   /// \param [in] section    the configuration SECTION
+   /// \param [in] name       the configuration NAME
+   /// \return     The configuration entry found
+   /// \throw      CEmptyResultException if fails
+   //--------------------------------------------------------------
 	virtual boost::shared_ptr<CConfiguration> getConfiguration(const std::string & section, const std::string & name) = 0;
 	
-	//Update
+   //--------------------------------------------------------------
+   /// \brief      Update a configuration entry
+   /// \param [in] configurationToUpdate  Configuration informations
+   /// \throw      CEmptyResultException if fails
+   //--------------------------------------------------------------
 	virtual void updateConfiguration(boost::shared_ptr<CConfiguration> configurationToUpdate) = 0;
    
-	//Delete
+   //--------------------------------------------------------------
+   /// \brief      Remove a configuration entry
+   /// \param [in] configurationToRemove  The configuration to delete
+   /// \throw      CEmptyResultException if fails
+   //--------------------------------------------------------------
    virtual void removeConfiguration(boost::shared_ptr<CConfiguration> configurationToRemove) = 0;
 
-
+   //--------------------------------------------------------------
+   /// \brief       Destructor
+   //--------------------------------------------------------------
 	virtual ~IConfigurationRequester()
 	{
 	}
