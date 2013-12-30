@@ -19,6 +19,7 @@ public:
 	//--------------------------------------------------------------
 	/// \Brief		   Constructor
 	/// \param [in]	pConfig: startup configuration
+   /// \throw        CNotSupportedException if the linked SQLIte library is compiled without ThreadSafe options
 	//--------------------------------------------------------------
 	CSQLiteDataProvider(const std::string & dbFile);
 	

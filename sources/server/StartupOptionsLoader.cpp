@@ -83,7 +83,7 @@ void CStartupOptionsLoader::buildOptionsDescription()
 {
    m_optionsDescription.add_options()
       ("help", "produce help message")
-      ("port,p", po::value<unsigned int>(&m_portNumber)->default_value(8080),
+      ("port,p", po::value<unsigned int>(&m_webServerPortNumber)->default_value(8080),
          "set the web server port number")
       ("webServerIp,i", po::value<std::string>(&m_webServerIPAddress)->default_value("0.0.0.0"),
          "use a specific web server ip address. Use 0.0.0.0 to accepts connections via all interfaces. ")

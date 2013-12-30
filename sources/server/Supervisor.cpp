@@ -213,7 +213,7 @@ void CSupervisor::doWork()
 
       // ######################### Web server #########################
       const std::string webServerIp = m_startupOptions.getWebServerIPAddress();
-      const std::string webServerPort = boost::lexical_cast<std::string>(m_startupOptions.getPortNumber());
+      const std::string webServerPort = boost::lexical_cast<std::string>(m_startupOptions.getWebServerPortNumber());
       const std::string webServerPath = m_startupOptions.getWebServerInitialPath();
 
       boost::shared_ptr<IWebServer> webServer(new CWebServer(webServerIp, webServerPort, webServerPath));

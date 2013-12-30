@@ -21,7 +21,7 @@ public:
    /// \brief	    Get the port number
    /// \return     Configured port number
    //--------------------------------------------------------------
-   virtual unsigned int getPortNumber() const = 0;
+   virtual unsigned int getWebServerPortNumber() const = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Get the web server ip address

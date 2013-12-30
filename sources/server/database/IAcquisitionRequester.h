@@ -34,7 +34,9 @@ public:
    //--------------------------------------------------------------
    virtual void removeAcquisition(int acquisitionId) = 0;
 
-public:
+   //--------------------------------------------------------------
+   /// \brief       Destructor
+   //--------------------------------------------------------------
    virtual ~IAcquisitionRequester()
    {
    }
