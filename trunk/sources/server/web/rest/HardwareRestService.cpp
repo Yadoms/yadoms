@@ -29,13 +29,15 @@ CJson CHardwareRestService::readObject(const std::string & objectId)
 CJson CHardwareRestService::readObjects()
 {
    CJson result;
+   CJson objectList;
    CHardwareEntitySerializer hes;
    std::vector<boost::shared_ptr<CHardware> > hardwares =  m_dataProvider->getHardwareRequester()->getHardwares();
    std::vector<boost::shared_ptr<CHardware> >::iterator i;
    for(i=hardwares.begin(); i!=hardwares.end(); i++)
    {
       CHardware * p = i->get();
-      result.add_child(getRestKeyword(), hes.serialize(*p));
+      objectList.push_back(std::make_pair("", hes.serialize(*p)));
    }
+   result.push_back(std::make_pair(getRestKeyword(), objectList));
    return result;
 }
