@@ -1,6 +1,6 @@
 #pragma once
 
-#include "rest/IRestService.h"
+#include "IRestHandler.h"
 
 //
 //\brief Interface for web server
@@ -22,12 +22,11 @@ public:
    //
    virtual void stop() = 0;
 
-   //-----------------------------------------
-   ///\brief   Configure a REST service handler
-   ///\param [in] restKeyName   the rest key name
-   ///\param [in] restService   the rest handler
-   //-----------------------------------------
-   virtual void configureRestService(boost::shared_ptr<IRestService> restService) = 0;
-};
 
+   //--------------------------------------
+   ///\brief   Get the REST handler
+   ///\return  A shared ptr to a rest handler. It could be boost::shared_ptr<IRestHandler>(NULL) if the insace do not support REST
+   //--------------------------------------
+   virtual boost::shared_ptr<IRestHandler> getRestHandler() = 0;
+};
 
