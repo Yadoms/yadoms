@@ -222,6 +222,7 @@ set(YADOMS_SRC
 	server/database/entities/Keyword.h
 	
 	server/web/IWebServer.h
+	server/web/IRestHandler.h
 	server/web/WebServerManager.h
 	server/web/WebServerManager.cpp
 	
@@ -303,6 +304,8 @@ IF(USE_WEBEM_WEBSERVER)
 	set(YADOMS_SRC ${YADOMS_SRC}
 		server/web/webem/WebServer.h
 		server/web/webem/WebServer.cpp
+		server/web/webem/RestHandler.h
+		server/web/webem/RestHandler.cpp
 	)
 	
 	if(MSVC)

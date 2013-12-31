@@ -20,7 +20,13 @@ void CWebServerManager::doWork()
 
    try
    {
-      m_webServerInstance->configureRestService(boost::shared_ptr<IRestService>(new CHardwareRestService(m_dataProvider)));
+      boost::shared_ptr<IRestHandler> restHanlder = m_webServerInstance->getRestHandler();
+      if(restHanlder.get() != NULL)
+      {
+         YADOMS_LOG(info) << "WebServer supports REST api";
+         restHanlder->configureRestService(boost::shared_ptr<IRestService>(new CHardwareRestService(m_dataProvider)));
+      }
+
       YADOMS_LOG(info) << "WebServer is running...";
       while(1)
       {
