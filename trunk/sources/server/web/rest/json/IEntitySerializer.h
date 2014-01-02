@@ -12,8 +12,7 @@ public:
    ///\return     the object serialized as JSON data
    //------------------------------------------
    virtual CJson serialize(const TEntity & object) = 0;
-
-  
+   
 public:
    virtual ~IEntitySerializer() {}
 };

@@ -227,13 +227,24 @@ set(YADOMS_SRC
 	server/web/WebServerManager.cpp
 	
 	server/web/rest/IRestService.h
-	server/web/rest/HardwareRestService.h
-	server/web/rest/HardwareRestService.cpp
 	server/web/rest/json/json.h
+	server/web/rest/json/JsonCollectionSerializer.h
 	server/web/rest/json/IEntitySerializer.h
 	server/web/rest/json/IEntityDeserializer.h
+
+	server/web/rest/HardwareRestService.h
+	server/web/rest/HardwareRestService.cpp
 	server/web/rest/json/HardwareEntitySerializer.h
 	server/web/rest/json/HardwareEntitySerializer.cpp
+	server/web/rest/json/HardwareEntityJsonDefinition.h
+	server/web/rest/json/HardwareEntityJsonDefinition.cpp
+
+	server/web/rest/DeviceRestService.h
+	server/web/rest/DeviceRestService.cpp
+	server/web/rest/json/DeviceEntitySerializer.h
+	server/web/rest/json/DeviceEntitySerializer.cpp
+	server/web/rest/json/DeviceEntityJsonDefinition.h
+	server/web/rest/json/DeviceEntityJsonDefinition.cpp
 	)
 
 # Project folders
