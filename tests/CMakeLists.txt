@@ -187,44 +187,41 @@ include_directories(../sources/external-libs)
 
 # Executable sources
 set(YADOMS_SRC
-	../sources/server/stdafx.cpp
-	../sources/server/stdafx.h
-	../sources/server/Supervisor.cpp
-	../sources/server/Supervisor.h
-	../sources/server/pluginSystem/HardwarePluginManager.h
-	../sources/server/pluginSystem/HardwarePluginManager.cpp
-	../sources/server/pluginSystem/HardwarePluginInstance.h
-	../sources/server/pluginSystem/HardwarePluginInstance.cpp
-	../sources/server/pluginSystem/HardwarePluginFactory.h
-	../sources/server/pluginSystem/HardwarePluginFactory.cpp
-	../sources/plugins/hardware/IHardwarePlugin.h
-	../sources/plugins/hardware/HardwarePluginConfiguration.hpp
-	../sources/plugins/hardware/HardwarePluginConfigurationParameters.hpp
-	../sources/server/StartupOptionsLoader.h
-	../sources/server/StartupOptionsLoader.cpp
-	../sources/server/StartupOptions.h
-	../sources/server/ApplicationStopHandler.h
-	../sources/server/ApplicationStopHandler.cpp
+#	../sources/server/stdafx.cpp
+#	../sources/server/stdafx.h
+#	../sources/server/Supervisor.cpp
+#	../sources/server/Supervisor.h
+#	../sources/server/pluginSystem/HardwarePluginManager.h
+#	../sources/server/pluginSystem/HardwarePluginManager.cpp
+#	../sources/server/pluginSyst#em/HardwarePluginInstance.h
+#	../sources/server/pluginSystem/HardwarePluginInstance.cpp
+#	../sources/server/pluginSystem/HardwarePluginFactory.h
+#	../sources/server/pluginSystem/HardwarePluginFactory.cpp
+#	../sources/plugins/hardware/IHardwarePlugin.h
+#	../sources/plugins/hardware/HardwarePluginConfiguration.hpp
+#	../sources/plugins/hardware/HardwarePluginConfigurationParameters.hpp
+#	../sources/server/StartupOptionsLoader.h
+#	../sources/server/StartupOptionsLoader.cpp
+#	../sources/server/StartupOptions.h
+#	../sources/server/ApplicationStopHandler.h
+#	../sources/server/ApplicationStopHandler.cpp
 	
-	../sources/server/database/IDataProvider.h
-	../sources/server/database/IHardwareRequester.h
-	../sources/server/database/IConfigurationRequester.h
-	../sources/server/database/entities/EntityHelpers.hpp
-	../sources/server/database/entities/Hardware.h
-	../sources/server/database/entities/Configuration.h
+#	../sources/server/database/IDataProvider.h
+#	../sources/server/database/IHardwareRequester.h
+#	../sources/server/database/IConfigurationRequester.h
+#	../sources/server/database/entities/EntityHelpers.hpp
+#	../sources/server/database/entities/Hardware.h
+#	../sources/server/database/entities/Configuration.h
 	)
 
 # Project folders
-#if(MSVC)
-#	source_group(Server server/*.*)
-#	source_group(Server\\pluginSystem server/pluginSystem/*.* )
-#	source_group(Server\\pluginSystem\\external plugins/hardware/IHardwarePlugin.h )
-#	source_group(Server\\database  server/database/*.*)
-#	source_group(Server\\database\\entities  server/database/entities/*.*)
-
-        #Tests definition for server
-#        source_group(Tests server/*.*)
-#endif()
+if(MSVC)
+	source_group(Server server/*.*)
+	source_group(Server\\pluginSystem server/pluginSystem/*.* )
+	source_group(Server\\pluginSystem\\external plugins/hardware/IHardwarePlugin.h )
+	source_group(Server\\database  server/database/*.*)
+	source_group(Server\\database\\entities  server/database/entities/*.*)
+endif()
 
 #Database
 #IF(USE_SQLITE_DATABASE)
@@ -275,7 +272,20 @@ IF (USE_TESTS_START_OPTIONS_LOADER)
 	../sources/server/StartupOptionsLoader.cpp
 
         ../tests/server/MainTestStartOptionsLoader.cpp
+
         )
+
+# Project folders
+	IF(MSVC)
+		#Tests definition for server
+	        source_group(Tests server/MainTestStartOptionsLoader.cpp)
+                source_group(Server\\pluginSystem server/pluginSystem/*.* )
+		#source_group(Server\\pluginSystem server/pluginSystem/*.* )
+		#source_group(Server\\pluginSystem\\external plugins/hardware/IHardwarePlugin.h )
+		#source_group(Server\\database  server/database/*.*)
+		#source_group(Server\\database\\entities  server/database/entities/*.*)
+	endif()
+
 ENDIF()
 
 #Web server
@@ -358,7 +368,6 @@ set_property( TARGET yadoms-tools PROPERTY INCLUDE_DIRECTORIES ${TOOLS_INCL_DIR}
 ##################################################################################################
 
 #include Plugin CMake file
-#add_subdirectory(plugins)
 include_directories(../sources/plugins)
 
 ##################################################################################################
