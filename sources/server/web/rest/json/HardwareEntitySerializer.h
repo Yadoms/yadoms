@@ -25,5 +25,29 @@ public:
    CHardware deserialize(const CJson & object);
    // [END] IEntityDeserializer implementation
    
-   
+private:
+      //------------------------------------------
+   ///\brief      string identifier fr entity member Id 
+   //------------------------------------------
+   static std::string m_hardwareIdIdentifier;
+   //------------------------------------------
+   ///\brief      string identifier fr entity member Name 
+   //------------------------------------------
+   static std::string m_hardwareNameIdentifier;
+   //------------------------------------------
+   ///\brief      string identifier fr entity member Name 
+   //------------------------------------------
+   static std::string m_hardwarePluginNameIdentifier;   
+   //------------------------------------------
+   ///\brief      string identifier fr entity member Configuration 
+   //------------------------------------------
+   static std::string m_hardwareConfigurationIdentifier;
+   //------------------------------------------
+   ///\brief      string identifier fr entity member Enabled 
+   //------------------------------------------
+   static std::string m_hardwareEnabledIdentifier;
+   //------------------------------------------
+   ///\brief      string identifier fr entity member Deleted 
+   //------------------------------------------
+   static std::string m_hardwareDeletedIdentifier;
 };

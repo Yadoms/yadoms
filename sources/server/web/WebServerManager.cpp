@@ -4,6 +4,8 @@
 #include "IWebServer.h"
 #include "tools/Log.h"
 #include "rest/HardwareRestService.h"
+#include "rest/DeviceRestService.h"
+
 
 CWebServerManager::CWebServerManager(boost::shared_ptr<IDataProvider> dataProvider, boost::shared_ptr<IWebServer> webServerInstance)
    : CThreadBase("WebServerManager"), m_webServerInstance(webServerInstance), m_dataProvider(dataProvider)
@@ -25,6 +27,7 @@ void CWebServerManager::doWork()
       {
          YADOMS_LOG(info) << "WebServer supports REST api";
          restHanlder->configureRestService(boost::shared_ptr<IRestService>(new CHardwareRestService(m_dataProvider)));
+         restHanlder->configureRestService(boost::shared_ptr<IRestService>(new CDeviceRestService(m_dataProvider)));
       }
 
       YADOMS_LOG(info) << "WebServer is running...";

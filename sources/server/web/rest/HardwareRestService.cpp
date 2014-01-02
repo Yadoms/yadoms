@@ -2,6 +2,7 @@
 #include "HardwareRestService.h"
 #include "tools/Exceptions/NotImplementedException.hpp"
 #include "json/HardwareEntitySerializer.h"
+#include "json/JsonCollectionSerializer.h"
 
 CHardwareRestService::CHardwareRestService(boost::shared_ptr<IDataProvider> dataProvider)
    :m_dataProvider(dataProvider), m_restKeyword("hardware")
@@ -28,16 +29,6 @@ CJson CHardwareRestService::readObject(const std::string & objectId)
 
 CJson CHardwareRestService::readObjects()
 {
-   CJson result;
-   CJson objectList;
    CHardwareEntitySerializer hes;
-   std::vector<boost::shared_ptr<CHardware> > hardwares =  m_dataProvider->getHardwareRequester()->getHardwares();
-   std::vector<boost::shared_ptr<CHardware> >::iterator i;
-   for(i=hardwares.begin(); i!=hardwares.end(); i++)
-   {
-      CHardware * p = i->get();
-      objectList.push_back(std::make_pair("", hes.serialize(*p)));
-   }
-   result.push_back(std::make_pair(getRestKeyword(), objectList));
-   return result;
+   return CJonCollectionSerializer<CHardware>::SerializeCollection(m_dataProvider->getHardwareRequester()->getHardwares(), hes, getRestKeyword());
 }
