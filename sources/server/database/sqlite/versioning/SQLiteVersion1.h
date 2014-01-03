@@ -22,4 +22,17 @@ public:
    // ISQLiteVersionUpgrade implementation
    virtual void checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester);
    // [END] ISQLiteVersionUpgrade implementation
+
+private:
+   //-----------------------------------
+   /// \brief     Create the database (when tables are not found)
+   ///\param [in] pRequester : database requester object
+   //-----------------------------------
+   void CreateDatabase(const boost::shared_ptr<CSQLiteRequester> & pRequester);
+
+   //-----------------------------------
+   /// \brief     Upgrade the database (missing or bad database version)
+   ///\param [in] pRequester : database requester object
+   //-----------------------------------
+   void UpgradeDatabase(const boost::shared_ptr<CSQLiteRequester> & pRequester);
 };

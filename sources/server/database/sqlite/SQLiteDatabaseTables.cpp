@@ -2,7 +2,7 @@
 #include "SQLiteDatabaseTables.h"
 #include "SQLiteDatabaseTablesHelpers.hpp"
 
-DECLARE_TABLE_COLUMN_NAMES(Hardware, 
+DECLARE_TABLE_COLUMN_NAMES(Hardware, "Hardware",
    ((Id)("id"))
    ((Name)("name"))
    ((PluginName)("pluginName"))
@@ -11,7 +11,7 @@ DECLARE_TABLE_COLUMN_NAMES(Hardware,
    ((Deleted)("deleted"))
 )
 
-DECLARE_TABLE_COLUMN_NAMES(Configuration, 
+DECLARE_TABLE_COLUMN_NAMES(Configuration,  "Configuration",
    ((Section)("section"))
    ((Name)("name"))
    ((Value)("value"))
@@ -21,7 +21,7 @@ DECLARE_TABLE_COLUMN_NAMES(Configuration,
 )
 
 
-DECLARE_TABLE_COLUMN_NAMES(Acquisition, 
+DECLARE_TABLE_COLUMN_NAMES(Acquisition,  "Acquisition",
    ((Id)("id"))
    ((Source)("source"))
    ((Keyword)("keyword"))
@@ -30,13 +30,13 @@ DECLARE_TABLE_COLUMN_NAMES(Acquisition,
 )
 
 
-DECLARE_TABLE_COLUMN_NAMES(Device, 
+DECLARE_TABLE_COLUMN_NAMES(Device,  "Device",
    ((Id)("id"))
    ((DataSource)("data_source"))
    ((Name)("name"))
    ((Configuration)("configuration"))
 )
 
-DECLARE_TABLE_COLUMN_NAMES(Keyword, 
+DECLARE_TABLE_COLUMN_NAMES(Keyword,  "Keyword",
    ((Name)("name"))
 )
