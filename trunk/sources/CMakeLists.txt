@@ -298,6 +298,8 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/versioning/SQLiteVersionUpgraderFactory.h
 		server/database/sqlite/versioning/SQLiteVersionUpgraderFactory.cpp
 		server/database/sqlite/versioning/SQLiteVersionException.h
+		server/database/sqlite/versioning/SQLiteSystemTables.h
+		server/database/sqlite/versioning/SQLiteSystemTables.cpp
 	)
 	
 	if(MSVC)
@@ -381,6 +383,9 @@ set(SHARED_LIB_SRC
 	tools/tools/Xpl/XplService.h
 	tools/tools/Xpl/XplHubConnectedPeripheral.cpp
 	tools/tools/Xpl/XplHubConnectedPeripheral.h
+	
+	tools/tools/Version.h
+	tools/tools/Version.cpp
 )
 
 #Append platform specific files
