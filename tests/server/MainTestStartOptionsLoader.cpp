@@ -13,8 +13,8 @@
 #include "../../sources/server/StartupOptionsLoader.h"
 #include "../../sources/server/ApplicationStopHandler.h"
 //#include "../../sources/tools/tools/Log.h"
+
 /*
-#include <fstream>
 #include <boost/test/results_reporter.hpp>
 
 //--------------------------------------------------------------
@@ -58,13 +58,36 @@ bool validate(CStartupOptionsLoaderException str)
 }
 */
 
-void write_settings ( void )
+void write_settings ( std::string name, std::string value )
 {
-  std::ofstream settings_file ("yadoms.cfg");
+	std::ofstream settings_file;
 
-  //settings_file << "port = " << value.c_str();
-  settings_file << "port = 8085";
-  settings_file.close();
+	settings_file.open( "yadoms.cfg", std::fstream::out | std::fstream::app );
+
+	settings_file << name.c_str() << " = " << value.c_str() << "\n";
+	//settings_file << "port = 8085";
+	settings_file.close();
+}
+
+void CreateDirectory ( std::string name )
+{
+	//const char dir_path[] = "c:\\temp\\cplusplus";
+
+	boost::filesystem::path dir(name.c_str());
+	if(boost::filesystem::create_directory(dir)) {
+	//	std::cout << "Success" << "\n";
+	}
+}
+
+void RemoveDirectory (std::string name )
+{
+	boost::filesystem::remove_all(name.c_str());
+}
+
+void RemoveFile ( std::string name)
+{
+	if(boost::filesystem::exists(name.c_str()))
+	                boost::filesystem::remove(name.c_str());
 }
 
 #define BOOST_TEST_MODULE TestStartupOptionsLoader
@@ -78,6 +101,9 @@ BOOST_AUTO_TEST_SUITE(Initialisation)
 
 BOOST_AUTO_TEST_CASE(Initialisation_Test)
 {
+	//remove the configuration before tests
+	RemoveFile ("yadoms.cfg");
+
   CStartupOptionsLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
@@ -642,10 +668,15 @@ BOOST_AUTO_TEST_CASE(Disable_XPL_disableXplHubStart_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
-BOOST_AUTO_TEST_CASE(Toto3)
+//--------------------------------------------------------------
+/// \brief	    Test CStartupOptionsLoader with the argument port in configuration file
+/// \result         No Error - the port number is changed
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Config_File_Port_Number)
 {
   //Creation of the config file
-  write_settings();
+  write_settings( "port", "8085" );
 
   CStartupOptionsLoader StartupOptions (0, NULL);
 
@@ -657,6 +688,316 @@ BOOST_AUTO_TEST_CASE(Toto3)
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+
+  //remove the configuration before tests
+  RemoveFile ("yadoms.cfg");
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test CStartupOptionsLoader with the argument port in configuration file
+/// \result         No Error - the port number is not changed - No Exception
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Config_File_Port_Number_Error1)
+{
+  //Creation of the config file
+  write_settings( "portable", "8085" );
+
+  CStartupOptionsLoader StartupOptions (0, NULL);
+
+  BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
+  BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
+  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
+  BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+
+  // There should no have exception !
+  BOOST_REQUIRE_NO_THROW( CStartupOptionsLoader StartupOptions (0, NULL) );
+
+  //remove the configuration before tests
+  RemoveFile ("yadoms.cfg");
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test CStartupOptionsLoader with the argument databaseFile in configuration file
+/// \result         No Error - the database file name is changed
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Config_File_database_file)
+{
+  //Creation of the config file
+  write_settings( "databaseFile", "AnOtherFile.db3" );
+
+  CStartupOptionsLoader StartupOptions (0, NULL);
+
+  BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "AnOtherFile.db3");
+  BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
+  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
+  BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+
+  //remove the configuration before tests
+  RemoveFile ("yadoms.cfg");
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test CStartupOptionsLoader with the argument hardwarePluginsPath in configuration file
+/// \result         No Error - the hardware plugins path is changed
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Config_File_Hardware_Plugins)
+{
+  //Creation of the config file
+  write_settings( "hardwarePluginsPath", "try" );
+  CreateDirectory ("try");
+
+  CStartupOptionsLoader StartupOptions (0, NULL);
+
+  BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
+  BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"try");
+  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
+  BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+
+  //remove the configuration before tests
+  RemoveFile ("yadoms.cfg");
+  RemoveDirectory("try");
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test CStartupOptionsLoader with the argument devicePluginsPath in configuration file
+/// \result         No Error - the device plugins path is changed
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Config_File_Device_Plugins)
+{
+  //Creation of the config file
+  write_settings( "devicePluginsPath", "try" );
+  CreateDirectory ("try");
+
+  CStartupOptionsLoader StartupOptions (0, NULL);
+
+  BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
+  BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
+  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"try");
+  BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+
+  //remove the configuration before tests
+  RemoveFile ("yadoms.cfg");
+  RemoveDirectory("try");
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test CStartupOptionsLoader with the argument disableXplHubStart in configuration file
+/// \result         No Error - the Xpl is off
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Config_File_XPL_Option)
+{
+  //Creation of the config file
+  write_settings( "disableXplHubStart", "false" );
+
+  CStartupOptionsLoader StartupOptions (0, NULL);
+
+  BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
+  BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
+  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
+  BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),false);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+
+  //remove the configuration before tests
+  RemoveFile ("yadoms.cfg");
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test CStartupOptionsLoader with the argument webServerIp in configuration file
+/// \result         No Error - the web Server IP address is changed
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Config_File_getWebServerIPAddress)
+{
+  //Creation of the config file
+  write_settings( "webServerIp", "192.168.1.1" );
+
+  CStartupOptionsLoader StartupOptions (0, NULL);
+
+  BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
+  BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
+  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
+  BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.1");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+
+  //remove the configuration before tests
+  RemoveFile ("yadoms.cfg");
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test CStartupOptionsLoader with the argument webServerIp in configuration file
+/// \result         No Error - the web Server path is changed
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Config_File_webServerPath)
+{
+  //Creation of the config file
+  write_settings( "webServerPath", "home" );
+  CreateDirectory ("home");
+
+  CStartupOptionsLoader StartupOptions (0, NULL);
+
+  BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
+  BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
+  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
+  BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "home");
+
+  //remove the configuration before tests
+  RemoveFile ("yadoms.cfg");
+  RemoveDirectory ("home");
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test CStartupOptionsLoader with the argument webServerIp in configuration file
+/// \result         No Error - the log level is changed
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Config_File_Log)
+{
+  //Creation of the config file
+  write_settings( "logLevel", "warning" );
+
+  CStartupOptionsLoader StartupOptions (0, NULL);
+
+  BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::warning);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
+  BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
+  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
+  BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+
+  //remove the configuration before tests
+  RemoveFile ("yadoms.cfg");
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test CStartupOptionsLoader with the all arguments
+/// \result         No Error - all options are changed
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Config_File_All_Options1)
+{
+  //Creation of the config file
+  write_settings( "logLevel"            , "warning" );
+  write_settings( "port"                , "8085" );
+  write_settings( "databaseFile"        , "test.db3" );
+  write_settings( "hardwarePluginsPath" , "try1" );
+  write_settings( "devicePluginsPath"   , "try2" );
+  write_settings( "disableXplHubStart"  , "false" );
+  write_settings( "webServerIp"         , "192.168.1.2" );
+  write_settings( "webServerPath"       , "try3" );
+
+  CreateDirectory ("try1");
+  CreateDirectory ("try2");
+  CreateDirectory ("try3");
+
+  CStartupOptionsLoader StartupOptions (0, NULL);
+
+  BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::warning);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8085);
+  BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
+  BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"try1");
+  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"try2");
+  BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),false);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.2");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "try3");
+
+  //remove the configuration before tests
+  RemoveFile ("yadoms.cfg");
+
+  RemoveDirectory ("try1");
+  RemoveDirectory ("try2");
+  RemoveDirectory ("try3");
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test CStartupOptionsLoader with the all arguments with argc/argv
+/// \result         No Error - all options are changed
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Config_File_All_Options2)
+{
+  char *argv[] = {"./MainTestStartOptionsLoader","--devicePluginsPath","try2","--port","8085","--databaseFile","test.db3","--hardwarePluginsPath","try1", "--disableXplHubStart","false","--webServerIp","192.168.1.3","--webServerPath","try3","--logLevel","warning"};
+
+  CreateDirectory ("try1");
+  CreateDirectory ("try2");
+  CreateDirectory ("try3");
+
+  CStartupOptionsLoader StartupOptions (17, argv);
+
+  BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::warning);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8085);
+  BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
+  BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"try1");
+  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"try2");
+  BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),false);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.3");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "try3");
+
+  RemoveDirectory ("try1");
+  RemoveDirectory ("try2");
+  RemoveDirectory ("try3");
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test CStartupOptionsLoader with the all arguments (low profile) by argc/argv
+/// \result         No Error - all options are changed
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Config_File_All_Options3)
+{
+  char *argv[] = {"./MainTestStartOptionsLoader","-d","try2","-p","8085","-D","test.db3","-h","try1", "-x","false","-i","192.168.1.3","-w","try3","-l","warning"};
+
+  CreateDirectory ("try1");
+  CreateDirectory ("try2");
+  CreateDirectory ("try3");
+
+  CStartupOptionsLoader StartupOptions (17, argv);
+
+  BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::warning);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8085);
+  BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
+  BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"try1");
+  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"try2");
+  BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),false);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.3");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "try3");
+
+  RemoveDirectory ("try1");
+  RemoveDirectory ("try2");
+  RemoveDirectory ("try3");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
