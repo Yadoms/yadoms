@@ -268,6 +268,9 @@ endif()
 IF (USE_TESTS_START_OPTIONS_LOADER)
         set(YADOMS_TESTS_STARTUP_OPTIONS_LOADER_SRC
 
+        ../sources/server/stdafx.cpp
+        ../sources/server/stdafx.h
+  
 	../sources/server/StartupOptionsLoader.h
 	../sources/server/StartupOptionsLoader.cpp
 
