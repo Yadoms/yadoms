@@ -29,7 +29,7 @@ exit /B
 setlocal & pushd .
 
 ::cd /D %~dp0/projects
-cmake %~dp0/tests
+cmake %~dp0/
 
 if errorlevel 1 (
 	pause
