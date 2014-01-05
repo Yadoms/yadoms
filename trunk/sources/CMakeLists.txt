@@ -371,8 +371,8 @@ set(SHARED_LIB_SRC
 	tools/tools/Xpl/XplException.h
 	tools/tools/Xpl/XplHelper.cpp
 	tools/tools/Xpl/XplHelper.h
-	tools/tools/Xpl/xplHub.cpp
-	tools/tools/Xpl/xplHub.h
+	tools/tools/Xpl/XplHub.cpp
+	tools/tools/Xpl/XplHub.h
 	tools/tools/Xpl/XplMessage.cpp
 	tools/tools/Xpl/XplMessage.h
 	tools/tools/Xpl/XplMessageFactory.cpp
