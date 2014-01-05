@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "xPLHub.h"
+#include "XplHub.h"
 
 #include "Log.h"
 #include "XplHelper.h"
