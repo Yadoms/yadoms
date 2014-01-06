@@ -1,5 +1,6 @@
 #define BOOST_AUTO_TEST_MAIN
 #include "stdafx.h"
+
 /*
 \file main.cpp
 
@@ -9,12 +10,11 @@
 
 #include <iostream>
 #include <fstream>
-//#include "../../sources/server/Supervisor.h"
 #include "../../sources/server/StartupOptionsLoader.h"
 #include "../../sources/server/ApplicationStopHandler.h"
-//#include "../../sources/tools/tools/Log.h"
+#include <boost/test/unit_test.hpp>
 
-/*
+/* TODO : A voir pour sortie directe en xml
 #include <boost/test/results_reporter.hpp>
 
 //--------------------------------------------------------------
@@ -35,6 +35,7 @@ struct ReportRedirector
 
 BOOST_GLOBAL_FIXTURE(ReportRedirector)
 */
+
 //--------------------------------------------------------------
 /// \brief	    This function is needed to check the correct exception
 //--------------------------------------------------------------
@@ -65,7 +66,6 @@ void write_settings ( std::string name, std::string value )
 	settings_file.open( "yadoms.cfg", std::fstream::out | std::fstream::app );
 
 	settings_file << name.c_str() << " = " << value.c_str() << "\n";
-	//settings_file << "port = 8085";
 	settings_file.close();
 }
 
@@ -92,7 +92,7 @@ void RemoveFile ( std::string name)
 
 #define BOOST_TEST_MODULE TestStartupOptionsLoader
 
-BOOST_AUTO_TEST_SUITE(Initialisation)
+//BOOST_AUTO_TEST_SUITE(Initialisation)
 
 //--------------------------------------------------------------
 /// \brief	    Test CStartupOptionsLoader with no argument
@@ -167,17 +167,7 @@ BOOST_AUTO_TEST_CASE(Port_Initialisation_Error1)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","--por","2000"};
 
-  //CStartupOptionsLoader StartupOptions (3, argv);
-
   BOOST_REQUIRE_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderException, validate );
-/*
-  BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
-  BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-  BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
-  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
-  BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
-*/
 }
 
 //--------------------------------------------------------------
@@ -191,8 +181,6 @@ BOOST_AUTO_TEST_CASE(Port_Initialisation_Error2)
   
   //Test the exception, and if this one is the correct one !
   BOOST_REQUIRE_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderException, validate );
-
-  //BOOST_REQUIRE_THROW(CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderError);
 }
 
 //--------------------------------------------------------------
@@ -225,18 +213,7 @@ BOOST_AUTO_TEST_CASE(Different_Database_databaseFile_Error1)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","--database","toto.db3"};
 
-//  CStartupOptionsLoader StartupOptions (3, argv);
-
   BOOST_REQUIRE_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderException, validate );
-
-/*
-  BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
-  BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-  BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
-  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
-  BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
-*/
 }
 
 //--------------------------------------------------------------
@@ -480,10 +457,12 @@ BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Error2)
 /// \brief	    Test CStartupOptionsLoader with the argument -w
 /// \result         No Error - the website address is changed
 //--------------------------------------------------------------
-// TODO : Create a directory compatible for every platform
+
 BOOST_AUTO_TEST_CASE(Different_WebServer_w_Initialisation)
 {
-  char *argv[] = {"./MainTestStartOptionsLoader","-w","/home"};
+  CreateDirectory ("www");
+
+  char *argv[] = {"./MainTestStartOptionsLoader","-w","www"};
 
   CStartupOptionsLoader StartupOptions (3, argv);
 
@@ -494,7 +473,9 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_w_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "/home");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+
+  RemoveDirectory ("www");
 }
 
 //--------------------------------------------------------------
@@ -504,7 +485,9 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_w_Initialisation)
 
 BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_Initialisation)
 {
-  char *argv[] = {"./MainTestStartOptionsLoader","--webServerPath","/home/"};
+  CreateDirectory ("home");
+
+  char *argv[] = {"./MainTestStartOptionsLoader","--webServerPath","home"};
 
   CStartupOptionsLoader StartupOptions (3, argv);
 
@@ -515,7 +498,9 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "/home/");
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "home");
+
+  RemoveDirectory ("home");
 }
 
 //--------------------------------------------------------------
@@ -527,19 +512,7 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_WrongPath)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","--webServerPath","/home/ww"};
 
-//  CStartupOptionsLoader StartupOptions (3, argv);
-
   BOOST_REQUIRE_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderException, validate );
-/*
-  BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
-  BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-  BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
-  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
-  BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "/home/ww");
-*/
 }
 
 //--------------------------------------------------------------
@@ -570,18 +543,22 @@ BOOST_AUTO_TEST_CASE(Different_HardwarePluginsPath_h_Initialisation)
 
 BOOST_AUTO_TEST_CASE(Different_HardwarePluginsPath_hardwarePluginsPath_Initialisation)
 {
-  char *argv[] = {"./MainTestStartOptionsLoader","--hardwarePluginsPath","/home/"};
+  CreateDirectory ("home");
+
+  char *argv[] = {"./MainTestStartOptionsLoader","--hardwarePluginsPath","home"};
 
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-  BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"/home/");
+  BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"home");
   BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"plugins/device");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+
+  RemoveDirectory ("home");
 }
 
 //--------------------------------------------------------------
@@ -591,7 +568,9 @@ BOOST_AUTO_TEST_CASE(Different_HardwarePluginsPath_hardwarePluginsPath_Initialis
 
 BOOST_AUTO_TEST_CASE(Different_DevicePluginsPath_d_Initialisation)
 {
-  char *argv[] = {"./MainTestStartOptionsLoader","-d","/home/"};
+  CreateDirectory ("home");
+
+  char *argv[] = {"./MainTestStartOptionsLoader","-d","home"};
 
   CStartupOptionsLoader StartupOptions (3, argv);
 
@@ -599,10 +578,12 @@ BOOST_AUTO_TEST_CASE(Different_DevicePluginsPath_d_Initialisation)
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
-  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"/home/");
+  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"home");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+
+  RemoveDirectory ("home");
 }
 
 //--------------------------------------------------------------
@@ -612,7 +593,9 @@ BOOST_AUTO_TEST_CASE(Different_DevicePluginsPath_d_Initialisation)
 
 BOOST_AUTO_TEST_CASE(Different_DevicePluginsPath_devicePluginsPath_Initialisation)
 {
-  char *argv[] = {"./MainTestStartOptionsLoader","--devicePluginsPath","/home/"};
+  char *argv[] = {"./MainTestStartOptionsLoader","--devicePluginsPath","home"};
+
+  CreateDirectory ("home");
 
   CStartupOptionsLoader StartupOptions (3, argv);
 
@@ -624,7 +607,11 @@ BOOST_AUTO_TEST_CASE(Different_DevicePluginsPath_devicePluginsPath_Initialisatio
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+
+  RemoveDirectory ("home");
 }
+
+//TODO : Tester HardwarePluginsPath et DevicePluginsPath avec un faux chemin
 
 //--------------------------------------------------------------
 /// \brief	    Test CStartupOptionsLoader with the argument -x
@@ -1001,5 +988,3 @@ BOOST_AUTO_TEST_CASE(Config_File_All_Options3)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
-
-
