@@ -30,13 +30,14 @@ CXplMessage::CXplMessage(const CXplMessage::ETypeIdentifier & typeId, const CXpl
    setMessageSchemaIdentifier(messageSchemaIdentifier);
 }
 
-CXplMessage::CXplMessage(CXplMessage & message) : m_body(message.getBody())
+CXplMessage::CXplMessage(const CXplMessage & message) 
 {
+   m_body.insert(message.m_body.begin(), message.m_body.end()); //make the copy
    m_hop = message.getHop();
    setTypeIdentifier(message.getTypeIdentifier());
    setSource(message.getSource());
    setTarget(message.getTarget());
-   setMessageSchemaIdentifier(message.getMessageSchemaIdentifier());
+   setMessageSchemaIdentifier(message.m_messageSchemaIdentifier);
 }
 
 
@@ -107,12 +108,12 @@ void CXplMessage::setHop(int hop)
    m_hop = hop;
 }
 
-void CXplMessage::setMessageSchemaIdentifier(CXplMessageSchemaIdentifier & messageSchemaIdentifier)
+void CXplMessage::setMessageSchemaIdentifier(const CXplMessageSchemaIdentifier & messageSchemaIdentifier)
 {
    m_messageSchemaIdentifier = CXplMessageSchemaIdentifier(messageSchemaIdentifier);
 }
 
-CXplMessageSchemaIdentifier & CXplMessage::getMessageSchemaIdentifier()
+const CXplMessageSchemaIdentifier & CXplMessage::getMessageSchemaIdentifier()
 {
    return m_messageSchemaIdentifier;
 }
@@ -133,9 +134,14 @@ void CXplMessage::addToBody(const std::string & name, const std::string & value)
    }
 }
 
-std::map<std::string, std::string> & CXplMessage::getBody()
+const std::map<std::string, std::string> & CXplMessage::getBody()
 {
    return m_body;
+}
+
+const std::string & CXplMessage::getBodyValue(const std::string & key)
+{
+   return m_body[key];
 }
 
 std::string CXplMessage::toString() const
@@ -178,7 +184,8 @@ CXplMessage CXplMessage::parse(const std::string & rawMessage)
    {
       //we explode the string onto the { char
       std::vector<std::string> result;
-      boost::split(result, boost::trim_copy(rawMessage), boost::is_any_of("{}"), boost::token_compress_on);
+      std::string trimRawMessage = boost::trim_copy(rawMessage);
+      boost::split(result, trimRawMessage, boost::is_any_of("{}"), boost::token_compress_on);
 
       //we trim each '\n' '\r' at the beggining or the end of each line
       //and we suppress empty lines due to previous trim
@@ -229,7 +236,8 @@ CXplMessage CXplMessage::parse(const std::string & rawMessage)
 
       //we explode onto line feed char and also '\r' to be more peaceful
       std::vector<std::string> header;
-      boost::split(header, boost::trim_copy(result[headerBlockIndex]), boost::is_any_of("\n\r"), boost::token_compress_on);
+      std::string trimHeaderBlockIndex = boost::trim_copy(result[headerBlockIndex]);
+      boost::split(header, trimHeaderBlockIndex, boost::is_any_of("\n\r"), boost::token_compress_on);
 
       //We must have 3 results : hop, source and dest
       if (header.size() != 3)
@@ -242,7 +250,8 @@ CXplMessage CXplMessage::parse(const std::string & rawMessage)
       BOOST_FOREACH(std::string headerLine, header)
       {
          std::vector<std::string> headerLineDecomposed;
-         boost::split(headerLineDecomposed, boost::trim_copy(headerLine), boost::is_any_of("="), boost::token_compress_on);
+         std::string trimHeaderLine = boost::trim_copy(headerLine);
+         boost::split(headerLineDecomposed, trimHeaderLine, boost::is_any_of("="), boost::token_compress_on);
       
          const int nameIndex = 0;
          const int valueIndex = 1;
@@ -286,11 +295,13 @@ CXplMessage CXplMessage::parse(const std::string & rawMessage)
 
       //Body parsing
       std::vector<std::string> body;
-      boost::split(body, boost::trim_copy(result[bodyIndex]), boost::is_any_of("\n\r"), boost::token_compress_on);
+      std::string trimBodyIndex = boost::trim_copy(result[bodyIndex]);
+      boost::split(body, trimBodyIndex, boost::is_any_of("\n\r"), boost::token_compress_on);
       BOOST_FOREACH(std::string bodyLine, body)
       {
          std::vector<std::string> bodyLineDecomposed;
-         boost::split(bodyLineDecomposed, boost::trim_copy(bodyLine), boost::is_any_of("="), boost::token_compress_on);
+	 std::string trimBodyLine = boost::trim_copy(bodyLine);
+         boost::split(bodyLineDecomposed, trimBodyLine, boost::is_any_of("="), boost::token_compress_on);
 
          //we must have a couple of name=value -> 2 elements
          if (bodyLineDecomposed.size() != 2)

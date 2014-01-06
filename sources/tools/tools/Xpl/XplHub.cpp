@@ -77,16 +77,16 @@ void CXplHub::handleReceive(const boost::system::error_code& error,
          if (CXplMessageSchemaIdentifier::isHeartbeatMessageSchemaIdentifier(msg.getMessageSchemaIdentifier()))
          {
             //we've got an heartbeat we must manage the list
-            if (m_localEndPoint.address().to_string() == msg.getBody()["remote-ip"])
+            if (m_localEndPoint.address().to_string() == msg.getBodyValue("remote-ip"))
             {
                YADOMS_LOG(debug) << "Hbeat message";
                //we check if we already known this periph
                int port;
-               if (!CStringExtension::tryParse<int>(msg.getBody()["port"], port))
+               if (!CStringExtension::tryParse<int>(msg.getBodyValue("port"), port))
                   throw CXplException("port in Heartbeat message is incorrect : " + msg.toString());
 
                int interval;
-               if (!CStringExtension::tryParse<int>(msg.getBody()["interval"], interval))
+               if (!CStringExtension::tryParse<int>(msg.getBodyValue("interval"), interval))
                   throw CXplException("interval in Heartbeat message is incorrect : " + msg.toString());
 
                size_t i = 0;

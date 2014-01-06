@@ -36,7 +36,7 @@ public:
    /// \brief	    Constructor
    /// \param [in] message : message to copy
    //--------------------------------------------------------------
-   CXplMessage(CXplMessage & message);
+   CXplMessage(const CXplMessage & message);
 
    //--------------------------------------------------------------
    /// \brief      Destructor
@@ -106,13 +106,13 @@ public:
    /// \brief	    Set the message Schema Identifier
    /// \param [in] messageSchemaIdentifier : message schema identifier of the message
    //--------------------------------------------------------------
-   void setMessageSchemaIdentifier(CXplMessageSchemaIdentifier & messageSchemaIdentifier);
+   void setMessageSchemaIdentifier(const CXplMessageSchemaIdentifier & messageSchemaIdentifier);
 
    //--------------------------------------------------------------
    /// \brief	    Get the Message Schema Identifier
    /// \return     The message schema identifier
    //--------------------------------------------------------------
-   CXplMessageSchemaIdentifier & getMessageSchemaIdentifier();
+   const CXplMessageSchemaIdentifier & getMessageSchemaIdentifier();
 
    //--------------------------------------------------------------
    /// \brief	    Permit to add a key/value element to the body
@@ -125,7 +125,14 @@ public:
    /// \brief	    Get the Map of the body
    /// \return     The Map containning all the body
    //--------------------------------------------------------------
-   std::map<std::string, std::string> & getBody();
+   const std::map<std::string, std::string> & getBody();
+
+   //--------------------------------------------------------------
+   /// \brief	    Get the Map of the body
+   /// \param [in]  key : key of the key/value element
+   /// \return      A value contained in the Mbody
+   //--------------------------------------------------------------
+   const std::string & getBodyValue(const std::string & key);
 
    //--------------------------------------------------------------
    /// \brief	    Get the message as it has to be sent

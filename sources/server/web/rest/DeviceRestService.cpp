@@ -30,5 +30,6 @@ CJson CDeviceRestService::readObject(const std::string & objectId)
 CJson CDeviceRestService::readObjects()
 {
    CDeviceEntitySerializer hes;
-   return CJonCollectionSerializer<CDevice>::SerializeCollection(m_dataProvider->getDeviceRequester()->getDevices(), hes, getRestKeyword());
+   std::vector< boost::shared_ptr<CDevice> > dvList = m_dataProvider->getDeviceRequester()->getDevices();
+   return CJonCollectionSerializer<CDevice>::SerializeCollection(dvList, hes, getRestKeyword());
 }
