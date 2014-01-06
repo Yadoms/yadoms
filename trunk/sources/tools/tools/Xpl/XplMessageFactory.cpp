@@ -8,7 +8,10 @@
 
 CXplMessage CXplMessageFactory::createHeartbeatMessage(const CXplActor & source, const int heartbeatInterval, const std::string & remoteIpAddress, const int listeningPort)
 {
-   CXplMessage msg(CXplMessage::kXplStat, source, CXplActor::createBroadcastActor(), CXplMessageSchemaIdentifier::createHeartbeatMessageSchemaIdentifer());
+   CXplActor actSource = CXplActor::createBroadcastActor();
+   CXplMessageSchemaIdentifier hbeatMsgId = CXplMessageSchemaIdentifier::createHeartbeatMessageSchemaIdentifer();
+
+   CXplMessage msg(CXplMessage::kXplStat, source, actSource, hbeatMsgId);
    msg.addToBody("interval", boost::lexical_cast<std::string>(heartbeatInterval));
    msg.addToBody("port", toString(listeningPort));
    msg.addToBody("remote-ip", remoteIpAddress);

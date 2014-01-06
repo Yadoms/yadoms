@@ -41,7 +41,7 @@ boost::shared_ptr<TSpecificRestService> CRestHandler::findMatchingRestService(co
          }
       }
    }
-   return boost::shared_ptr<TSpecificRestService>(NULL);
+   return boost::shared_ptr<TSpecificRestService>();
 }
 
 //declare all template specializations

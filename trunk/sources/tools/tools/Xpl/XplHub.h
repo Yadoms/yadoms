@@ -29,7 +29,7 @@ private:
    boost::array<char, 1024> m_receiveBuffer;
 
    //map of discovered periph (port number, last time seen)
-   std::vector<boost::shared_ptr<CXplHubConnectedPeripheral>> m_discoveredPeripherals;
+   std::vector<boost::shared_ptr<CXplHubConnectedPeripheral> > m_discoveredPeripherals;
 
    boost::asio::deadline_timer m_timer;
 

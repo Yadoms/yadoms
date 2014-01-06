@@ -30,5 +30,6 @@ CJson CHardwareRestService::readObject(const std::string & objectId)
 CJson CHardwareRestService::readObjects()
 {
    CHardwareEntitySerializer hes;
-   return CJonCollectionSerializer<CHardware>::SerializeCollection(m_dataProvider->getHardwareRequester()->getHardwares(), hes, getRestKeyword());
+   std::vector< boost::shared_ptr<CHardware> > hwList = m_dataProvider->getHardwareRequester()->getHardwares();
+   return CJonCollectionSerializer<CHardware>::SerializeCollection(hwList, hes, getRestKeyword());
 }

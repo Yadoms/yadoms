@@ -60,7 +60,7 @@ public:
 
 private:
 
-   typedef struct SFilter
+   struct SFilter
    {
       boost::shared_ptr<std::string> msgtype;
       boost::shared_ptr<std::string> vendor;

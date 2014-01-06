@@ -9,7 +9,7 @@
 #include "tools/Log.h"
 #include "versioning/SQLiteVersionUpgraderFactory.h"
 #include "versioning/SQLiteVersionException.h"
-#include "Exceptions\NotSupportedException.hpp"
+#include "Exceptions/NotSupportedException.hpp"
 
 CSQLiteDataProvider::CSQLiteDataProvider(const std::string & dbFile)
    :m_dbFile(dbFile), m_pDatabaseHandler(NULL)
