@@ -987,4 +987,4 @@ BOOST_AUTO_TEST_CASE(Config_File_All_Options3)
   RemoveDirectory ("try3");
 }
 
-BOOST_AUTO_TEST_SUITE_END()
+//BOOST_AUTO_TEST_SUITE_END()
