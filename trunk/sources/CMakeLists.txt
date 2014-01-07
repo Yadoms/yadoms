@@ -268,6 +268,8 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/QueryValue.cpp
 		server/database/sqlite/SQLiteDatabaseTables.h
 		server/database/sqlite/SQLiteDatabaseTables.cpp
+		server/database/sqlite/SQLiteSystemTables.h
+		server/database/sqlite/SQLiteSystemTables.cpp
 		server/database/sqlite/SQLiteDatabaseTablesHelpers.hpp
 		server/database/sqlite/SQLiteHardwareRequester.h
 		server/database/sqlite/SQLiteHardwareRequester.cpp
@@ -298,8 +300,7 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/versioning/SQLiteVersionUpgraderFactory.h
 		server/database/sqlite/versioning/SQLiteVersionUpgraderFactory.cpp
 		server/database/sqlite/versioning/SQLiteVersionException.h
-		server/database/sqlite/versioning/SQLiteSystemTables.h
-		server/database/sqlite/versioning/SQLiteSystemTables.cpp
+		server/database/sqlite/versioning/SQLiteTablesScripts.cpp
 	)
 	
 	if(MSVC)

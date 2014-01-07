@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "SQLiteVersion1.h"
 #include "database/sqlite/Query.h"
-#include "SQLiteSystemTables.h"
-#include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
+#include "database/sqlite/SQLiteDatabaseTables.h"
 #include "tools/Version.h"
+#include "SQLiteVersionException.h"
 
 
 
@@ -19,25 +19,23 @@ CSQLiteVersion1::~CSQLiteVersion1()
 // ISQLiteVersionUpgrade implementation
 void CSQLiteVersion1::checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester)
 {
-   //check that table Configuration exists
-   CQuery sCheckForConfigurationTableExists;
+    bool bNeedToCreateOrUpgrade = false;
 
-   sCheckForConfigurationTableExists.  SelectCount().
-                                       From(CSqliteMasterTable::getTableName()).
-                                       Where(CSqliteMasterTable::getTypeColumnName(), CQUERY_OP_EQUAL, SQLITEMASTER_TABLE).
-                                       And(CSqliteMasterTable::getNameColumnName(), CQUERY_OP_EQUAL, CConfigurationTable::getTableName());
-   int count = pRequester->queryCount(sCheckForConfigurationTableExists);
-
-   if(count != 1)
+   //check that table all tables exists
+   if(!pRequester->checkTableExists(CAcquisitionTable::getTableName()) ||
+      !pRequester->checkTableExists(CConfigurationTable::getTableName()) ||
+      !pRequester->checkTableExists(CDeviceTable::getTableName()) ||
+      !pRequester->checkTableExists(CHardwareTable::getTableName()) ||
+      !pRequester->checkTableExists(CKeywordTable::getTableName()))
    {
       //configuration table is missing,
       //create the full database structure
       YADOMS_LOG(info) << "-> need to create database";
-      CreateDatabase(pRequester);
+      bNeedToCreateOrUpgrade = true;
    }
    else
    {
-      bool bNeedToUpgrade = false;
+     
       CQuery qVersion;
       qVersion.Select(CConfigurationTable::getValueColumnName()).
          From(CConfigurationTable::getTableName()).
@@ -55,27 +53,27 @@ void CSQLiteVersion1::checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> 
          if(versionFromdatabase >= CVersion(1,0,0,0))
          {
             //not for me, version is correct
-            bNeedToUpgrade = false;
+            bNeedToCreateOrUpgrade = false;
          }
          else
          {
-            //version is lower to 1.0.0.0, then upgrade database
-            bNeedToUpgrade = true;
+            //version is lower to 1.0.0.0, then create database
+            bNeedToCreateOrUpgrade = true;
          }
       }
       else
       {
          //la version n'a jamais été configurée
          YADOMS_LOG(info) << "version has never been configured";
-         bNeedToUpgrade = true;
-      }
-
-      if(bNeedToUpgrade)
-      {
-            YADOMS_LOG(info) << "-> need to upgrade database";
-            UpgradeDatabase(pRequester);
+         bNeedToCreateOrUpgrade = true;
       }
    }
+
+   if(bNeedToCreateOrUpgrade)
+   {
+      CreateDatabase(pRequester);
+   }
+
 }
 // [END] ISQLiteVersionUpgrade implementation
 
@@ -83,15 +81,48 @@ void CSQLiteVersion1::checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> 
 //-----------------------------------
 /// \brief     Create the database (when tables are not found)
 ///\param [in] pRequester : database requester object
+///\throw      CSQLiteVersionException if create database failed
 //-----------------------------------
 void CSQLiteVersion1::CreateDatabase(const boost::shared_ptr<CSQLiteRequester> & pRequester)
 {
-}
+   try
+   {
+      //create transaction
+      pRequester->transactionBegin();
 
-//-----------------------------------
-/// \brief     Upgrade the database (missing or bad database version)
-///\param [in] pRequester : database requester object
-//-----------------------------------
-void CSQLiteVersion1::UpgradeDatabase(const boost::shared_ptr<CSQLiteRequester> & pRequester)
-{
+      //delete tables
+      if(!pRequester->dropTableIfExists(CAcquisitionTable::getTableName()))
+         throw CSQLiteVersionException("Failed to delete Acquisition table");
+      if(!pRequester->dropTableIfExists(CConfigurationTable::getTableName()))
+         throw CSQLiteVersionException("Failed to delete Configuration table");
+      if(!pRequester->dropTableIfExists(CDeviceTable::getTableName()))
+         throw CSQLiteVersionException("Failed to delete Device table");
+      if(!pRequester->dropTableIfExists(CHardwareTable::getTableName()))
+         throw CSQLiteVersionException("Failed to delete Hardware table");
+      if(!pRequester->dropTableIfExists(CKeywordTable::getTableName()))
+         throw CSQLiteVersionException("Failed to delete Keyword table");
+
+      //create tables
+      if(!pRequester->createTableIfNotExists(CAcquisitionTable::getTableName(), CAcquisitionTable::getTableCreationScript()))
+         throw CSQLiteVersionException("Failed to create Acquisition table");
+      if(!pRequester->createTableIfNotExists(CConfigurationTable::getTableName(), CConfigurationTable::getTableCreationScript()))
+         throw CSQLiteVersionException("Failed to create Configuration table");
+      if(!pRequester->createTableIfNotExists(CDeviceTable::getTableName(), CDeviceTable::getTableCreationScript()))
+         throw CSQLiteVersionException("Failed to create Device table");
+      if(!pRequester->createTableIfNotExists(CHardwareTable::getTableName(), CHardwareTable::getTableCreationScript()))
+         throw CSQLiteVersionException("Failed to create Hardware table");
+      if(!pRequester->createTableIfNotExists(CKeywordTable::getTableName(), CKeywordTable::getTableCreationScript()))
+         throw CSQLiteVersionException("Failed to create Keyword table");
+
+      //commit transaction
+      pRequester->transactionCommit();
+   }
+   catch(CSQLiteVersionException & ex)
+   {
+      YADOMS_LOG(fatal) << "Failed to upgrade database : " << ex.what();
+      YADOMS_LOG(fatal) << "Rollback transaction";
+      pRequester->transactionRollback();
+      throw CSQLiteVersionException("Failed to create database");
+   }
+
 }

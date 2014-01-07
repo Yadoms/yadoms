@@ -29,10 +29,4 @@ private:
    ///\param [in] pRequester : database requester object
    //-----------------------------------
    void CreateDatabase(const boost::shared_ptr<CSQLiteRequester> & pRequester);
-
-   //-----------------------------------
-   /// \brief     Upgrade the database (missing or bad database version)
-   ///\param [in] pRequester : database requester object
-   //-----------------------------------
-   void UpgradeDatabase(const boost::shared_ptr<CSQLiteRequester> & pRequester);
 };

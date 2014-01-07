@@ -357,6 +357,23 @@ public:
    /// \return   the full query (C string)
    //     
    const char * c_str() const;
+
+
+   //
+   /// \brief    create a full custom query
+   /// \param [in] customQuery the custom query
+   /// \return   the query object
+   //     
+   static CQuery CustomQuery(const std::string & customQuery);
+
+
+   //
+   /// \brief              create a drop table query
+   /// \param  tableName   the table name to delete
+   /// \return             A reference to itself to allow method chaining
+   //   
+   CQuery & DropTable(const std::string & tableName);
+
 private:
    //
    /// \brief              Append the where clause

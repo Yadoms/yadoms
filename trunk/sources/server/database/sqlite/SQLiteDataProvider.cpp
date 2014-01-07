@@ -34,40 +34,36 @@ bool CSQLiteDataProvider::load()
 
    try
    {
-      if ( boost::filesystem::exists( m_dbFile.c_str() ) )
+      if ( !boost::filesystem::exists( m_dbFile.c_str() ) )
       {
-         int rc = sqlite3_open(m_dbFile.c_str(), &m_pDatabaseHandler);
+         YADOMS_LOG(info) << "Database file is not found : " << m_dbFile;
+         YADOMS_LOG(info) << "Yadoms will create a blank one";
+      }
 
-         if(rc)
-         {
-            YADOMS_LOG(fatal) << "Fail to load database: " << sqlite3_errmsg(m_pDatabaseHandler);
-            sqlite3_close(m_pDatabaseHandler);
-            result = false;
-         }
-         else
-         {
-            //db loaded with succes, create the SQLiteRequester (can execute sql queries) 
-            m_databaseRequester.reset(new CSQLiteRequester(m_pDatabaseHandler));
+      int rc = sqlite3_open(m_dbFile.c_str(), &m_pDatabaseHandler);
 
-            //check for update
-            YADOMS_LOG(info) << "Check for database update...";
-            CSQLiteVersionUpgraderFactory::GetUpgrader()->checkForUpgrade(m_databaseRequester);
-
-            //create entities requester (high level querier)
-            loadRequesters();
-
-            YADOMS_LOG(info) << "Load database with success";
-            result = true;
-
-         }
+      if(rc)
+      {
+         YADOMS_LOG(fatal) << "Fail to load database: " << sqlite3_errmsg(m_pDatabaseHandler);
+         sqlite3_close(m_pDatabaseHandler);
+         result = false;
       }
       else
       {
-         YADOMS_LOG(error) << "Database file is not found : " << m_dbFile;
-         result = false;
+         //db loaded with succes, create the SQLiteRequester (can execute sql queries) 
+         m_databaseRequester.reset(new CSQLiteRequester(m_pDatabaseHandler));
+
+         //check for update
+         YADOMS_LOG(info) << "Check for database update...";
+         CSQLiteVersionUpgraderFactory::GetUpgrader()->checkForUpgrade(m_databaseRequester);
+
+         //create entities requester (high level querier)
+         loadRequesters();
+
+         YADOMS_LOG(info) << "Load database with success";
+         result = true;
+
       }
-
-
    }
    catch(CSQLiteVersionException & exc)
    {

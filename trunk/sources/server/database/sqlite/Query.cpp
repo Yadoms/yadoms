@@ -286,6 +286,19 @@ const char * CQuery::c_str() const
    return m_currentQuery.c_str();
 }
 
+CQuery CQuery::CustomQuery(const std::string & customQuery)
+{
+   return CQuery().Append(customQuery);
+}
+
+CQuery & CQuery::DropTable(const std::string & tableName)
+{
+   std::ostringstream ss;
+   ss << "DROP TABLE " << tableName;
+   return Append(ss);
+}
+
+
 CQuery & CQuery::WhereInternal(const std::string & predicate, const std::string & condition) 
 {
    std::ostringstream ss;
