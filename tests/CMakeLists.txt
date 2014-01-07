@@ -103,7 +103,6 @@ if(DEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS)
 	add_definitions(-DDEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS)
 endif()
 
-
 ##################################################################################################
 ## Project output configuration
 ##################################################################################################
@@ -123,7 +122,6 @@ foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG} )
 endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
-
 ##################################################################################################
 ## Externals libraries (Boost, Thread, RT) only linked with
 ##################################################################################################
@@ -136,7 +134,10 @@ add_definitions( -DBOOST_WHATEVER_DYN_LINK )
 add_definitions( -DBOOST_ALL_NO_LIB )
 add_definitions( -DBOOST_ALL_DYN_LINK )
 add_definitions( -DBOOST_SPIRIT_THREADSAFE )
-	
+
+# Boost tests units definitions
+add_definitions( -DBOOST_AUTO_TEST_MAIN )
+
 # define all needed boost libraries
 set(BOOST_LIBS 
 	system 
