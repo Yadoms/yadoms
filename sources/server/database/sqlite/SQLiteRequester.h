@@ -84,6 +84,43 @@ public:
       }
    }
 
+   //--------------------------------------------------------------
+	/// \Brief	Start a transaction
+	//--------------------------------------------------------------
+   void transactionBegin();
+
+   //--------------------------------------------------------------
+	/// \Brief	Commit a transaction
+	//--------------------------------------------------------------
+   void transactionCommit();
+
+   //--------------------------------------------------------------
+	/// \Brief	Rollback a transaction
+	//--------------------------------------------------------------
+   void transactionRollback();
+
+   //--------------------------------------------------------------
+	/// \Brief	Check if a table already exists in database
+	/// \param [in]	 tableName:  the table name to check
+	/// \return	       true if table exists
+	//--------------------------------------------------------------
+   bool checkTableExists(const std::string & tableName);
+
+   //--------------------------------------------------------------
+	/// \Brief	      Drop a table if exists
+	/// \param [in]   tableName:  the table name to delete
+	/// \return	      true if table no more exists
+	//--------------------------------------------------------------
+   bool dropTableIfExists(const std::string & tableName);
+
+   //--------------------------------------------------------------
+	/// \Brief	      Create a table if not exists
+	/// \param [in]   tableName:  the table name to create
+	/// \param [in]   tableScript:  the sql script to create the table
+	/// \return	      true if table exists
+	//--------------------------------------------------------------
+   bool createTableIfNotExists(const std::string & tableName, const std::string & tableScript);
+
 private:
    //--------------------------------------------------------------
 	/// \Brief		    wrapper for adapting a result row to an entity

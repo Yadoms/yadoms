@@ -10,3 +10,4 @@ DECLARE_TABLE_COLUMN_NAMES(SqliteMaster, "sqlite_master",
    ((Sql)("sql"))
 )
 
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(SqliteMaster, "cannot create system tables")

@@ -20,7 +20,6 @@ DECLARE_TABLE_COLUMN_NAMES(Configuration,  "Configuration",
    ((LastModificationDate)("last_modification_date"))
 )
 
-
 DECLARE_TABLE_COLUMN_NAMES(Acquisition,  "Acquisition",
    ((Id)("id"))
    ((Source)("source"))
@@ -37,6 +36,11 @@ DECLARE_TABLE_COLUMN_NAMES(Device,  "Device",
    ((Configuration)("configuration"))
 )
 
+
+                                                   
+
+
 DECLARE_TABLE_COLUMN_NAMES(Keyword,  "Keyword",
    ((Name)("name"))
 )
+

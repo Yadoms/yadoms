@@ -110,10 +110,16 @@
    BOOST_PP_SEQ_FOR_EACH_I(DECLARE_STATIC_VALUE, _classname, _seq)
 
 //
-/// \brief  Declare one static value (used by BOOST_PP_SEQ_FOR_EACH_I)
+/// \brief  Declare table name static value
 //
 #define DECLARE_STATIC_TABLENAME_VALUE(_classname, _tablename) \
    std::string C##_classname##Table::m_tableName = _tablename;
+
+//
+/// \brief  Declare table creation script static value
+//
+#define DECLARE_STATIC_TABLE_CREATION_SCRIPT(_classname, _tableScript) \
+   std::string C##_classname##Table::m_tableCreationScript = _tableScript;
 
 
 //
@@ -126,10 +132,12 @@ class BOOST_PP_CAT(C, BOOST_PP_CAT(name, Table)) \
 { \
 public:\
    static const std::string & getTableName() { return m_tableName; } \
+   static const std::string & getTableCreationScript() { return m_tableCreationScript; } \
    DECLARE_GETTERS(_seq) \
    \
 private:\
    static std::string m_tableName; \
+   static std::string m_tableCreationScript; \
    DECLARE_MEMBERS(_seq) \
 };
 
