@@ -1,4 +1,4 @@
-#define BOOST_AUTO_TEST_MAIN
+// \brief #define BOOST_AUTO_TEST_MAIN This definition is now configured into the CmakeFile
 #include "stdafx.h"
 
 /*
@@ -12,6 +12,9 @@
 #include <fstream>
 #include "../../sources/server/StartupOptionsLoader.h"
 #include "../../sources/server/ApplicationStopHandler.h"
+
+#define BOOST_TEST_MODULE TestStartupOptionsLoader
+
 #include <boost/test/unit_test.hpp>
 
 /* TODO : A voir pour sortie directe en xml
@@ -89,8 +92,6 @@ void RemoveFile ( std::string name)
 	if(boost::filesystem::exists(name.c_str()))
 	                boost::filesystem::remove(name.c_str());
 }
-
-#define BOOST_TEST_MODULE TestStartupOptionsLoader
 
 //BOOST_AUTO_TEST_SUITE(Initialisation)
 
@@ -603,7 +604,7 @@ BOOST_AUTO_TEST_CASE(Different_DevicePluginsPath_devicePluginsPath_Initialisatio
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
-  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"/home/");
+  BOOST_CHECK_EQUAL(StartupOptions.getDevicePluginsPath(),"home");
   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
