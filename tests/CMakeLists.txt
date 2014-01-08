@@ -171,11 +171,12 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})
 ##################################################################################################
 
 #Use Sqlite database system
-set(USE_SQLITE_DATABASE TRUE)
+set(USE_SQLITE_DATABASE FALSE)
 #Use Webem web server
 set(USE_WEBEM_WEBSERVER FALSE)
 #Use Tests
 set(USE_TESTS_START_OPTIONS_LOADER TRUE)
+set(USE_TESTS_HARDWARE_PLUGIN_MANAGER FALSE)
 
 #include libs (have their own CMakeList.txt)
 include_directories(../sources/external-libs)
@@ -224,46 +225,57 @@ if(MSVC)
 	source_group(Server\\database\\entities  server/database/entities/*.*)
 endif()
 
-#Database
-#IF(USE_SQLITE_DATABASE)
-#	set(YADOMS_SRC ${YADOMS_SRC}
-#		../sources/server/database/sqlite/SQLiteHardwareRequester.h
-#		../sources/server/database/sqlite/SQLiteHardwareRequester.cpp
-#		../sources/server/database/sqlite/SQLiteConfigurationRequester.h
-#		../sources/server/database/sqlite/SQLiteConfigurationRequester.cpp
-#		../sources/server/database/sqlite/SQLiteDataProvider.h
-#		../sources/server/database/sqlite/SQLiteDataProvider.cpp
-#		../sources/server/database/sqlite/SQLiteRequester.h
-#		../sources/server/database/sqlite/SQLiteRequester.cpp
-
-#		../sources/server/database/sqlite/adapters/AdapterHelpers.hpp
-#		../sources/server/database/sqlite/adapters/ISQLiteResultAdapter.h
-#		../sources/server/database/sqlite/adapters/HardwareAdapter.h
-#		../sources/server/database/sqlite/adapters/HardwareAdapter.cpp
-#		../sources/server/database/sqlite/adapters/ConfigurationAdapter.h
-#		../sources/server/database/sqlite/adapters/ConfigurationAdapter.cpp
-#		../sources/server/database/sqlite/adapters/GenericAdapter.h
-#		../sources/server/database/sqlite/adapters/GenericAdapter.cpp
-#		../sources/server/database/sqlite/adapters/SingleValueAdapter.hpp
-#		../sources/server/database/sqlite/adapters/MultipleValueAdapter.hpp
+IF(USE_SQLITE_DATABASE)
+	set(YADOMS_SRC ${YADOMS_SRC}
+		../sources/server/database/sqlite/Query.h
+		../sources/server/database/sqlite/Query.cpp
+		../sources/server/database/sqlite/QueryValue.h
+		../sources/server/database/sqlite/QueryValue.cpp
+		../sources/server/database/sqlite/SQLiteDatabaseTables.h
+		../sources/server/database/sqlite/SQLiteDatabaseTables.cpp
+		../sources/server/database/sqlite/SQLiteDatabaseTablesHelpers.hpp
+		../sources/server/database/sqlite/SQLiteHardwareRequester.h
+		../sources/server/database/sqlite/SQLiteHardwareRequester.cpp
+		../sources/server/database/sqlite/SQLiteConfigurationRequester.h
+		../sources/server/database/sqlite/SQLiteConfigurationRequester.cpp
+		../sources/server/database/sqlite/SQLiteKeywordRequester.h
+		../sources/server/database/sqlite/SQLiteKeywordRequester.cpp
+		../sources/server/database/sqlite/SQLiteAcquisitionRequester.h
+		../sources/server/database/sqlite/SQLiteAcquisitionRequester.cpp		
+		../sources/server/database/sqlite/SQLiteDeviceRequester.h
+		../sources/server/database/sqlite/SQLiteDeviceRequester.cpp		
+		../sources/server/database/sqlite/SQLiteDataProvider.h
+		../sources/server/database/sqlite/SQLiteDataProvider.cpp
+		../sources/server/database/sqlite/SQLiteRequester.h
+		../sources/server/database/sqlite/SQLiteRequester.cpp
 		
-#		../sources/server/database/sqlite/versioning/ISQLiteVersionUpgrade.h
-#		../sources/server/database/sqlite/versioning/SQLiteVersion1.h
-#		../sources/server/database/sqlite/versioning/SQLiteVersion1.cpp
-#		../sources/server/database/sqlite/versioning/SQLiteVersionUpgraderFactory.h
-#		../sources/server/database/sqlite/versioning/SQLiteVersionUpgraderFactory.cpp
-#		../sources/server/database/sqlite/versioning/SQLiteVersionException.h
-#	)
+		../sources/server/database/sqlite/adapters/SQLiteDatabaseAdapters.h
+		../sources/server/database/sqlite/adapters/AdapterHelpers.hpp
+		../sources/server/database/sqlite/adapters/ISQLiteResultAdapter.h
+		../sources/server/database/sqlite/adapters/GenericAdapter.h
+		../sources/server/database/sqlite/adapters/GenericAdapter.cpp
+		../sources/server/database/sqlite/adapters/SingleValueAdapter.hpp
+		../sources/server/database/sqlite/adapters/MultipleValueAdapter.hpp
+		
+		../sources/server/database/sqlite/versioning/ISQLiteVersionUpgrade.h
+		../sources/server/database/sqlite/versioning/SQLiteVersion1.h
+		../sources/server/database/sqlite/versioning/SQLiteVersion1.cpp
+		../sources/server/database/sqlite/versioning/SQLiteVersionUpgraderFactory.h
+		../sources/server/database/sqlite/versioning/SQLiteVersionUpgraderFactory.cpp
+		../sources/server/database/sqlite/versioning/SQLiteVersionException.h
+		../sources/server/database/sqlite/versioning/SQLiteSystemTables.h
+		../sources/server/database/sqlite/versioning/SQLiteSystemTables.cpp
+	)
 	
-#	if(MSVC)
-#		source_group(Server\\database\\sqlite  server/database/sqlite/*.*)
-#		source_group(Server\\database\\sqlite\\adapters  server/database/sqlite/adapters/*.*)
-#		source_group(Server\\database\\sqlite\\versioning  server/database/sqlite/versioning/*.*)
-#	endif()
+	if(MSVC)
+		source_group(Server\\database\\sqlite  server/database/sqlite/*.*)
+		source_group(Server\\database\\sqlite\\adapters  server/database/sqlite/adapters/*.*)
+		source_group(Server\\database\\sqlite\\versioning  server/database/sqlite/versioning/*.*)
+	endif()
 	
-#	set(LIBS ${LIBS} sqlite)
-#	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${SQLITE_INCLUDE_DIRECTORY})
-#ENDIF()
+	set(LIBS ${LIBS} sqlite)
+	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${SQLITE_INCLUDE_DIRECTORY})
+ENDIF()
 
 #If use tests
 IF (USE_TESTS_START_OPTIONS_LOADER)
@@ -283,26 +295,49 @@ IF (USE_TESTS_START_OPTIONS_LOADER)
 	IF(MSVC)
 		#Tests definition for server
 	        source_group(Tests server/MainTestStartOptionsLoader.cpp)
-                source_group(Server\\pluginSystem server/pluginSystem/*.* )
-		#source_group(Server\\pluginSystem server/pluginSystem/*.* )
-		#source_group(Server\\pluginSystem\\external plugins/hardware/IHardwarePlugin.h )
-		#source_group(Server\\database  server/database/*.*)
-		#source_group(Server\\database\\entities  server/database/entities/*.*)
+                #source_group(Server\\pluginSystem server/pluginSystem/*.* )
 	endif()
 
 ENDIF()
 
-#Web server
-IF(USE_WEBEM_WEBSERVER)
-	set(LIBS ${LIBS} webem)
-	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${WEBEM_INCLUDE_DIRECTORY})
+
+IF (USE_TESTS_HARDWARE_PLUGIN_MANAGER)
+set(YADOMS_TESTS_HARDWARE_PLUGIN_MANAGER
+
+        ../sources/server/stdafx.cpp
+        ../sources/server/stdafx.h
+  
+	../sources/server/pluginSystem/HardwarePluginManager.h
+	../sources/server/pluginSystem/HardwarePluginManager.cpp
+        ../sources/server/pluginSystem/HardwarePluginFactory.h
+        ../sources/server/pluginSystem/HardwarePluginFactory.cpp
+        ../sources/plugins/hardware/IHardwarePlugin.h
+        ../sources/server/database/entities/Hardware.h
+
+	../sources/server/StartupOptionsLoader.h
+	../sources/server/StartupOptionsLoader.cpp
+
+        ../tests/server/pluginSystem/MainTestHardwarePluginManager.cpp
+
+        )
 ENDIF()
+
+#Web server
+#IF(USE_WEBEM_WEBSERVER)
+#	set(LIBS ${LIBS} webem)
+#	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${WEBEM_INCLUDE_DIRECTORY})
+#ENDIF()
 
 #define YADOMS tests executable outputs
 
 IF (USE_TESTS_START_OPTIONS_LOADER)
    add_executable(MainTestStartOptionsLoader ${YADOMS_TESTS_STARTUP_OPTIONS_LOADER_SRC})
    add_precompiled_header(MainTestStartOptionsLoader stdafx.h)
+ENDIF()
+
+if (USE_TESTS_HARDWARE_PLUGIN_MANAGER)
+   add_executable(MainTestHardwarePluginManager ${YADOMS_TESTS_HARDWARE_PLUGIN_MANAGER} ${YADOMS_SRC})
+   add_precompiled_header(MainTestHardwarePluginManager stdafx.h)
 ENDIF()
 
 ##################################################################################################
@@ -380,6 +415,7 @@ include_directories(../sources/plugins)
 set(YADOMS_INCL_DIR
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/../sources/server
+        ${CMAKE_CURRENT_SOURCE_DIR}/../sources
 	${YADOMS_INCL_DIR}
 	${TOOLS_INCL_DIR}
 )
@@ -388,12 +424,20 @@ IF (USE_TESTS_START_OPTIONS_LOADER)
         set_property( TARGET MainTestStartOptionsLoader PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${BOOST_INCL_DIR})
 ENDIF()
 
+IF (USE_TESTS_HARDWARE_PLUGIN_MANAGER)
+        set_property( TARGET MainTestHardwarePluginManager PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${BOOST_INCL_DIR})
+ENDIF()
+
 ##################################################################################################
 ## Link
 ##################################################################################################
 
 IF (USE_TESTS_START_OPTIONS_LOADER)
         target_link_libraries(MainTestStartOptionsLoader yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
+ENDIF()
+
+IF (USE_TESTS_HARDWARE_PLUGIN_MANAGER)
+        target_link_libraries(MainTestHardwarePluginManager yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
 ENDIF()
 
 ##################################################################################################
@@ -462,10 +506,14 @@ if(NOT Boost_USE_STATIC_LIBS)
 			MESSAGE(STATUS "    Library file : ${LIBFILE}")
 				
 			#create post build command
-			add_custom_command(TARGET yadoms POST_BUILD        	# Adds a post-build event to yadoms
+			add_custom_command(TARGET MainTestStartOptionsLoader POST_BUILD        	# Adds a post-build event to yadoms
 				COMMAND ${CMAKE_COMMAND} -E copy_if_different  	# which executes "cmake - E copy_if_different..."
 					"${LIBFILE}"     							# <--this is in-file
-					$<TARGET_FILE_DIR:yadoms>)   				# <--this is out-file path
+					$<TARGET_FILE_DIR:MainTestStartOptionsLoader>)   				# <--this is out-file path
+			add_custom_command(TARGET MainTestHardwarePluginManager POST_BUILD        	# Adds a post-build event to yadoms
+				COMMAND ${CMAKE_COMMAND} -E copy_if_different  	# which executes "cmake - E copy_if_different..."
+					"${LIBFILE}"     							# <--this is in-file
+					$<TARGET_FILE_DIR:MainTestHardwarePluginManager>)   
 		else()
 			MESSAGE("    Library file not found : ${LIBFILE}")
 		endif()
@@ -473,7 +521,7 @@ if(NOT Boost_USE_STATIC_LIBS)
 endif()		
 		
 #copy www directory into build directory
-add_custom_command(TARGET yadoms POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-                       ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
+#add_custom_command(TARGET yadoms POST_BUILD
+#                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+#                       ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
 
