@@ -57,7 +57,6 @@ if(MSVC)
 	include("windows.cmake")
 endif()
 
-
 ##################################################################################################
 ## IDE configurations
 ##################################################################################################
@@ -87,21 +86,6 @@ endif()
 if(DEBUG_WITH_ECLIPSE)
 	add_definitions(-DDEBUG)
 	add_definitions("-g")
-endif()
-
-##################################################################################################
-## User specific Defines
-##################################################################################################
-if(DEV_ACTIVATE_DATABASE_TESTS)
-	add_definitions(-DDEV_ACTIVATE_DATABASE_TESTS)
-endif()
-
-if(DEV_ACTIVATE_HARDWARE_PLUGIN_MANAGER_TESTS)
-	add_definitions(-DDEV_ACTIVATE_HARDWARE_PLUGIN_MANAGER_TESTS)
-endif()
-
-if(DEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS)
-	add_definitions(-DDEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS)
 endif()
 
 ##################################################################################################
