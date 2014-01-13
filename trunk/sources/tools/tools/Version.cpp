@@ -17,18 +17,20 @@ CVersion::CVersion(const std::string & stringVersion)
 
    BOOST_FOREACH(std::string versionDigit, allDigits)
    {
-         try
-         {
-            m_versionInfo.push_back(boost::lexical_cast<int>(versionDigit));
-         }
-         catch(boost::bad_lexical_cast &)
-         {
-            // if it throws, it's not a number.
-            YADOMS_LOG(warning) << "Cannot parse version string : " << stringVersion;
-            m_versionInfo.push_back(0);
-         }
+      try
+      {
+         m_versionInfo.push_back(boost::lexical_cast<int>(versionDigit));
+      }
+      catch(boost::bad_lexical_cast &)
+      {
+         // if it throws, it's not a number.
+         YADOMS_LOG(warning) << "Cannot parse version string : " << stringVersion;
+         m_versionInfo.push_back(0);
+      }
    }
 
+   //while(m_versionInfo.size() < 4)
+   //  m_versionInfo.push_back(0);
 }
 
 CVersion::CVersion(int major, int minor, int buildNumber /*= 0*/, int revision /*= 0*/)
@@ -50,29 +52,87 @@ CVersion::~CVersion()
 
 bool CVersion::operator<(CVersion const& rhs) const
 {
-   return std::lexicographical_compare(m_versionInfo.begin(), m_versionInfo.end(), rhs.m_versionInfo.begin(), rhs.m_versionInfo.end());
+   return (compare(rhs) < 0);
 }
 
 bool CVersion::operator<=(CVersion const& rhs) const
 {
-   return std::lexicographical_compare(m_versionInfo.begin(), m_versionInfo.end(), rhs.m_versionInfo.begin(), rhs.m_versionInfo.end()) ||
-            std::equal(m_versionInfo.begin(), m_versionInfo.end(), rhs.m_versionInfo.begin());
+   return (compare(rhs) <= 0);
 }
 
 bool CVersion::operator>=(CVersion const& rhs) const
 {
-   return !std::lexicographical_compare(m_versionInfo.begin(), m_versionInfo.end(), rhs.m_versionInfo.begin(), rhs.m_versionInfo.end());
+   return (compare(rhs) >= 0);
 }
 
 bool CVersion::operator>(CVersion const& rhs) const
 {
-   return !std::lexicographical_compare(m_versionInfo.begin(), m_versionInfo.end(), rhs.m_versionInfo.begin(), rhs.m_versionInfo.end()) &&
-         !std::equal(m_versionInfo.begin(), m_versionInfo.end(), rhs.m_versionInfo.begin());
+   return (compare(rhs) > 0);
 }
 
 bool CVersion::operator==(CVersion const& rhs) const
 {
-   return std::equal(m_versionInfo.begin(), m_versionInfo.end(), rhs.m_versionInfo.begin());
+   return (compare(rhs) ==0);
+}
+
+
+int CVersion::compare(CVersion const& rhs) const
+{
+   int result = 0;
+   for(unsigned int i=0; i<m_versionInfo.size(); i++)
+   {
+      if(rhs.m_versionInfo.size() >= i)
+      {
+         if(m_versionInfo[i] == rhs.m_versionInfo[i])
+            result = 0;
+         else if(m_versionInfo[i] > rhs.m_versionInfo[i])
+         {
+            result = 1;
+            break;
+         }
+         else
+         {
+            result = -1;
+            break;
+         }
+      }
+   }
+
+   //check if a version is more precise than another
+   if(m_versionInfo.size() != rhs.m_versionInfo.size() && result == 0)
+   {
+      if(m_versionInfo.size() > rhs.m_versionInfo.size())
+      {
+         //check if more precises values are only 0
+         //ex : check between 1.0 and 1.0.0.0 (versions are same)
+         for(unsigned int j= rhs.m_versionInfo.size(); j<m_versionInfo.size(); j++)
+         {
+            if(m_versionInfo[j] == 0)
+               result=0;
+            else 
+            {
+               result = 1;
+               break;
+            }
+         }
+      }
+      else
+      {
+         //check if more precises values are only 0
+         //ex : check between 1.0 and 1.0.0.0 (versions are same)
+         for(unsigned int j= m_versionInfo.size(); j<rhs.m_versionInfo.size(); j++)
+         {
+            if(rhs.m_versionInfo[j] == 0)
+               result=0;
+            else 
+            {
+               result = -1;
+               break;
+            }
+         }
+      }
+   }
+   return result;
 }
 
 void CVersion::setValues(int major, int minor, int buildNumber, int revision)

@@ -74,7 +74,17 @@ public:
    //---------------------------------------------
    bool operator==(CVersion const& rhs) const;
 
+protected:
+   //---------------------------------------------
+   ///\brief Compare the current object to another CVersion
+   ///\param [in] rhs the version object to compare
+   ///\return  0 if equals, -1 if this<rhs, +1 if this>rhs
+   //---------------------------------------------
+   int compare(CVersion const& rhs) const;
+
 private:
+   
+
    //---------------------------------------------
    ///\brief Set the version values
    ///\param [in] major       the major version number
