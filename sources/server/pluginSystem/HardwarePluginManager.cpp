@@ -130,16 +130,13 @@ void CHardwarePluginManager::buildAvailablePluginList()
       try
       {
          // Get informations for current found plugin
-         boost::shared_ptr<CHardwarePluginInformation> pluginInformation;
          const std::string& pluginName = CDynamicLibrary::ToLibName((*libPathIt).string());
 
          // If plugin is already loaded, use its information
          if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
-            pluginInformation.reset(new CHardwarePluginInformation(m_loadedPlugins[pluginName]->getInformation()));
+            m_availablePlugins[pluginName] = m_loadedPlugins[pluginName]->getInformation();
          else
-            pluginInformation.reset(new CHardwarePluginInformation(CHardwarePluginFactory::getInformation(*libPathIt)));
-
-         m_availablePlugins[pluginName] = pluginInformation;
+            m_availablePlugins[pluginName] = CHardwarePluginFactory::getInformation(*libPathIt);
       }
       catch (CInvalidPluginException& e)
       {

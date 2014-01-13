@@ -7,7 +7,7 @@
 
 #include "tools/DynamicLibrary.hpp" //cmake choose the right platform class
 #include "plugins/hardware/IHardwarePlugin.h"
-#include "plugins/hardware/HardwarePluginInformation.h"
+#include "plugins/hardware/HardwarePluginInformation.hpp"
 #include "plugins/hardware/HardwarePluginConfiguration.hpp"
 #include "InvalidPluginException.hpp"
 
@@ -23,7 +23,7 @@ public:
    /// \return       Plugin associated informations
    /// \throw        CInvalidPluginException if plugin is not valid
    //--------------------------------------------------------------
-   static CHardwarePluginInformation getInformation(const boost::filesystem::path& libraryPath);
+   static boost::shared_ptr<const IHardwarePluginInformation> getInformation(const boost::filesystem::path& libraryPath);
 
    //--------------------------------------------------------------
    /// \brief	    Get plugin default configuration
@@ -62,7 +62,7 @@ public:
    /// \brief	    Get information about this hardware plugin
    /// \return     information about this hardware plugin
    //-------------------------------------------------------------
-   const CHardwarePluginInformation& getInformation() const;
+   boost::shared_ptr<const IHardwarePluginInformation> getInformation() const;
 
    //--------------------------------------------------------------
    /// \brief	    Get plugin default configuration
@@ -95,7 +95,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Pointer to the plugin getInformation method
    //--------------------------------------------------------------
-   boost::function<const CHardwarePluginInformation& ()> m_getInformation;
+   boost::function<const IHardwarePluginInformation& ()> m_getInformation;
 
    //--------------------------------------------------------------
    /// \brief	    Pointer to the plugin getConfiguration method (optional)
