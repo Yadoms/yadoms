@@ -9,10 +9,11 @@
 set(DEBUG_WITH_ECLIPSE OFF)
 
 #activate this option to enable database tests 
-set(DEV_ACTIVATE_DATABASE_TESTS OFF)
+#add_definitions(-DDEV_ACTIVATE_DATABASE_TESTS)
 
 #activate this option to enable database tests
-set(DEV_ACTIVATE_HARDWARE_PLUGIN_MANAGER_TESTS OFF)
+#add_definitions(-DDEV_ACTIVATE_HARDWARE_PLUGIN_MANAGER_TESTS)
 
 #activate this option to enable database tests
-set(DEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS OFF)
+#add_definitions(-DDEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS)
+
