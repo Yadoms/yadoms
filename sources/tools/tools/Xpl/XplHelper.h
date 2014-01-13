@@ -1,5 +1,4 @@
 #pragma once
-#include "stdafx.h"
 
 //--------------------------------------------------------------
 /// \class static helper class for xpl management

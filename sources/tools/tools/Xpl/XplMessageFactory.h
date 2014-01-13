@@ -1,7 +1,5 @@
 #pragma once
 
-#include "stdafx.h"
-
 #include "XplActor.h"
 #include "XplMessageSchemaIdentifier.h"
 #include "XplMessage.h"

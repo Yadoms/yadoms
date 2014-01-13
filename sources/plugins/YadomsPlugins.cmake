@@ -18,7 +18,7 @@ hardware/HardwarePluginConfigurationParameters.hpp
 MACRO(ADD_PLUGIN _targetName)
 	add_library(${_targetName} MODULE ${HARDWARE_PLUGIN_BASE_HEADER_SRC} ${ARGN})
 	set_property( TARGET ${_targetName} PROPERTY INCLUDE_DIRECTORIES ${TOOLS_INCL_DIR} ${BOOST_INCL_DIR})
-	target_link_libraries(${_targetName} ${LIBS} ${CMAKE_DL_LIBS})
+	target_link_libraries(${_targetName} yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
 	IF(MSVC)
 		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "Plugins")
 	ENDIF()

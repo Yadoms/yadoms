@@ -7,7 +7,8 @@
 #include <boost/log/trivial.hpp>
 #include "tools/Log.h"
 #include "FakePlugin.h"
-
+#include "tools/Xpl/XplService.h"
+#include "tools/Xpl/XplMessage.h"
 
 // Use this macro to define some basic informations about the plugin
 IMPLEMENT_HARDWARE_PLUGIN(
@@ -44,12 +45,19 @@ IMPLEMENT_CONFIGURATION
 }
 
 
-CFakePlugin::CFakePlugin()
+CFakePlugin::CFakePlugin() 
+: m_xplService("yadoms", "fake", "1")
 {
+   m_xplService.messageReceived(boost::bind(&CFakePlugin::onMessageReceived, this, _1));
 }
 
 CFakePlugin::~CFakePlugin()
 {
+}
+
+void CFakePlugin::onMessageReceived(CXplMessage & message)
+{
+	YADOMS_LOG(info) << "Message received : " << message.toString();
 }
 
 void CFakePlugin::doWork(const std::string& configurationValues)
@@ -96,6 +104,8 @@ void CFakePlugin::doWork(const std::string& configurationValues)
          YADOMS_LOG(error) << "Out of Range error: " << oor.what();
       }
 
+      int value = 0;
+
 	   while(1)
 	   {
 	      YADOMS_LOG(debug) << "CFakePlugin is running...";
@@ -111,6 +121,10 @@ void CFakePlugin::doWork(const std::string& configurationValues)
 
             // TODO ajouter méthodes de diff
          }
+
+		    CXplMessage msg(CXplMessage::kXplStat, m_xplService.getActor(), CXplActor::createBroadcastActor(), CXplMessageSchemaIdentifier("clock", "basic"));
+          msg.addToBody("value", boost::lexical_cast<std::string>(value++));
+          m_xplService.sendMessage(msg);
 	
 	      // Give a chance to exit plugin thread
 	      boost::this_thread::sleep(boost::posix_time::milliseconds(1000)); 

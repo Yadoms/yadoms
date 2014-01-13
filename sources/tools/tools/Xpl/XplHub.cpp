@@ -7,10 +7,12 @@
 #include "XplHubConnectedPeripheral.h"
 #include "StringExtension.hpp"
 #include "XplException.h"
+#include "ThreadBase.h"
 
 CXplHub::CXplHub(const std::string & localIPOfTheInterfaceToUse)
-   : m_ioService(), m_socket(m_ioService), m_timer(m_ioService)
+   : CThreadBase("XplHub"), m_ioService(), m_socket(m_ioService), m_timer(m_ioService)
 {
+   
    if (!CXplHelper::getEndPointFromInterfaceIp(localIPOfTheInterfaceToUse, m_localEndPoint))
    {
       //If we havn't found the given ip, we take the first address IPV4
@@ -30,24 +32,23 @@ CXplHub::CXplHub(const std::string & localIPOfTheInterfaceToUse)
    m_remoteEndPoint = boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::broadcast(), CXplHelper::XplProtocolPort);
 
    runCheckApplicationLifeCycleTimeout();
+   m_stopRequested = false;
    startReceive();
 }
 
 void CXplHub::startReceive()
 {
-   boost::thread t(boost::bind(&CXplHub::ioServiceRunner, this));
-}
-
-void CXplHub::ioServiceRunner()
-{
-   while(1)
-   {
-      m_socket.async_receive(
+   m_socket.async_receive(
          boost::asio::buffer(m_receiveBuffer),
          boost::bind(&CXplHub::handleReceive, this,
          boost::asio::placeholders::error,
          boost::asio::placeholders::bytes_transferred));
-         
+}
+
+void CXplHub::doWork()
+{
+   while(!m_stopRequested)
+   { 
       m_ioService.run();
       m_ioService.reset();
       boost::this_thread::interruption_point();
@@ -128,14 +129,10 @@ void CXplHub::handleReceive(const boost::system::error_code& error,
       }
       catch (std::exception const& e)
       {
-         std::cerr << e.what() << std::endl;
+         YADOMS_LOG(error) << e.what() << std::endl;
       }      
    }
-   m_socket.async_receive(
-      boost::asio::buffer(m_receiveBuffer),
-      boost::bind(&CXplHub::handleReceive, this,
-      boost::asio::placeholders::error,
-      boost::asio::placeholders::bytes_transferred));
+   startReceive();
 }
 
 void CXplHub::runCheckApplicationLifeCycleTimeout()
@@ -148,7 +145,7 @@ void CXplHub::checkApplicationLifeCycle()
 {
    try
    {
-      int i = m_discoveredPeripherals.size() - 1;
+      int i = (int)m_discoveredPeripherals.size() - 1;
       while (i >= 0)
       {
          //we check inactivity using the rule : last seen time + (interval * 2) + 1 minutes < now then periph has died

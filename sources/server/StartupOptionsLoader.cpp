@@ -27,6 +27,8 @@ void CStartupOptionsLoader::buildOptionsDescription()
       "use a specific path to device plugins")
       ("disableXplHubStart,x",
       "don't start the Xpl hub, useful if another Xpl hub is already running on the same machine")
+      ("XplNetworkIp,I", po::value<CValidIpAddressOption>(&m_xplNetworkIPAddress)->default_value(CValidIpAddressOption("0.0.0.0")),
+      "define on which network Xpl will be listened and send. If not specified, first interface will be taken")
       ;
 }
 

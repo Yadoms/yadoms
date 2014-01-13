@@ -1,5 +1,4 @@
 #pragma once
-#include "stdafx.h"
 
 //--------------------------------------------------------------
 /// \class Actor for Xpl management used for source and target fields

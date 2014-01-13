@@ -49,6 +49,8 @@ public:
       { return m_devicePluginsPath.get(); }
    virtual bool getStartXplHubFlag() const
       { return m_startXplHub; }
+   virtual const std::string& getXplNetworkIpAddress() const
+      { return m_xplNetworkIPAddress.get(); }
    // [END] IStartupOptions implementation
    //--------------------------------------------------------------
 
@@ -74,6 +76,7 @@ private:
    CMustExistPathOption m_hardwarePluginsPath;
    CMustExistPathOption m_devicePluginsPath;
    bool m_startXplHub;
+   CValidIpAddressOption m_xplNetworkIPAddress;
 };
 
 
