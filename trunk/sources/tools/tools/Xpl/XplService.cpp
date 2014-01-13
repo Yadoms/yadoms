@@ -73,7 +73,7 @@ void CXplService::runHeartbeatSequenceIn(const int seconds)
 
 void CXplService::heartbeatSequence()
 {
-   std::cout << "hbeat" << std::endl;
+   YADOMS_LOG(debug) << "hbeat";
 
    int heartbeatInterval;
    //depending on the mode we currently are we select the time to send another hbeat
@@ -266,4 +266,9 @@ void CXplService::setFilter(const std::string & msgtype, const std::string & ven
       m_filter.typeId.reset();
    else
       m_filter.typeId = boost::shared_ptr<std::string>(new std::string(boost::trim_copy(typeId)));
+}
+
+CXplActor CXplService::getActor() const
+{
+   return m_source;
 }

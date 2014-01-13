@@ -61,6 +61,13 @@ public:
    /// \return     flag indicating if Xpl hub must be started or not
    //--------------------------------------------------------------
    virtual bool getStartXplHubFlag() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Get the network where the xpl will send / receive frames
+   /// \return     Ip address of the interface to use
+   //--------------------------------------------------------------
+   virtual const std::string& getXplNetworkIpAddress() const = 0;
+
 };
 
 

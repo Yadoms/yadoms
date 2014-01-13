@@ -1,5 +1,4 @@
 #pragma once
-#include "stdafx.h"
 
 #include "XplActor.h"
 #include "XplMessage.h"
@@ -40,7 +39,7 @@ public:
 
    //--------------------------------------------------------------
    /// \brief			Record the given method to the event Message received
-   /// \param [in]   dlg : the method to call when a message is received (ex : boost::bind(&CClass::onMessageReceived, this, _1, _2)
+   /// \param [in]   dlg : the method to call when a message is received (ex : boost::bind(&CClass::onMessageReceived, this, _1)
    //--------------------------------------------------------------
    void messageReceived(const SigMessageReceivedDelegate &dlg);
 
@@ -57,6 +56,12 @@ public:
    //--------------------------------------------------------------
    void setFilter(const std::string & msgtype, const std::string & vendor, const std::string & device, const std::string & instance, 
                   const std::string & classId, const std::string & typeId);
+
+   //--------------------------------------------------------------
+   /// \brief		 Get the actor defined in the service
+   /// \return		The current actor
+   //--------------------------------------------------------------
+   CXplActor getActor() const;
 
 private:
 

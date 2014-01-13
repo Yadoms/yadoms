@@ -147,6 +147,7 @@ set(BOOST_LIBS
 	log 
 	log_setup 
 	program_options
+	regex
 )
 
 # search boost libs

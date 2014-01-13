@@ -1,16 +1,16 @@
 #pragma once
 
-#include "stdafx.h"
 #include "XplHubConnectedPeripheral.h"
-
+#include "ThreadBase.h"
 //TODO : COMMENTER
 
-class CXplHub
+class CXplHub : public CThreadBase
 {
 public:
    CXplHub(const std::string & localIPOfTheInterfaceToUse);
 
 private:
+   void doWork();
    void startReceive();
    void handleReceive(const boost::system::error_code& error, std::size_t bytes_transferred);
   
@@ -32,6 +32,8 @@ private:
    std::vector<boost::shared_ptr<CXplHubConnectedPeripheral> > m_discoveredPeripherals;
 
    boost::asio::deadline_timer m_timer;
+
+   bool m_stopRequested;
 
    static const int ApplicationLifeCycleTimeout = 60; //seconds
 };

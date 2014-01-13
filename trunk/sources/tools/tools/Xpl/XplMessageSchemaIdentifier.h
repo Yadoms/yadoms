@@ -1,5 +1,4 @@
 #pragma once
-#include "stdafx.h"
 
 //--------------------------------------------------------------
 /// \class Message Schema Identifier for Xpl message (x10.basic)

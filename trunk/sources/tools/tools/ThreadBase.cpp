@@ -8,6 +8,7 @@ const int CThreadBase::DefaultStopTimeoutSeconds = 10;
 CThreadBase::CThreadBase(const std::string & threadName)
    :m_threadName(threadName), m_threadStatus(kStopped), m_stopTimeoutSeconds(DefaultStopTimeoutSeconds)
 {
+	BOOST_ASSERT(threadName != "");
 }
 
 CThreadBase::~CThreadBase(void)
@@ -83,7 +84,8 @@ CThreadBase::EStatus CThreadBase::getStatus() const
 void CThreadBase::changeStatus(const EStatus & newStatus)
 {
    m_threadStatus = newStatus;
-   m_statusChanged(newStatus);
+   if (!m_statusChanged.empty())
+	   m_statusChanged(newStatus);
 }
 
 void CThreadBase::doWorkInternal()
