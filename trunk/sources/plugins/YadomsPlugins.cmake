@@ -7,7 +7,8 @@
 # define all plugins library
 set(HARDWARE_PLUGIN_BASE_HEADER_SRC
 hardware/IHardwarePlugin.h
-hardware/HardwarePluginInformation.h
+hardware/IHardwarePluginInformation.h
+hardware/HardwarePluginInformation.hpp
 hardware/HardwarePluginImplementationHelper.h
 hardware/HardwarePluginConfiguration.hpp
 hardware/HardwarePluginConfigurationParameters.hpp

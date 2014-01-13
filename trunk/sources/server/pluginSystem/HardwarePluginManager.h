@@ -21,7 +21,7 @@ public:
    //--------------------------------------------------------------
    /// \brief			Map of all valid plugins (key are plugin file names, values are plugin information)
    //--------------------------------------------------------------
-   typedef std::map<std::string, boost::shared_ptr<CHardwarePluginInformation> > AvalaiblePluginMap;
+   typedef std::map<std::string, boost::shared_ptr<const IHardwarePluginInformation> > AvalaiblePluginMap;
 
 protected:
    //--------------------------------------------------------------

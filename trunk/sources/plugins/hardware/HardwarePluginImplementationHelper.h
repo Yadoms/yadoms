@@ -1,13 +1,13 @@
 #pragma once
 
 #include "IHardwarePlugin.h"
-#include "HardwarePluginInformation.h"
+#include "HardwarePluginInformation.hpp"
 #include "HardwarePluginConfiguration.hpp"
 #include "tools/Export.h" //platform specific export definitions
 
 
 // Plugin implementation helper
-// see CHardwarePluginInformation documentation to know what formats are accepted for each field
+// see IHardwarePluginInformation documentation to know what formats are accepted for each field
 #define IMPLEMENT_HARDWARE_PLUGIN(pluginClassName,pluginName,version,release,author,url)  \
    EXPORT_LIBRARY_FUNCTION IHardwarePlugin* construct()                                   \
    {                                                                                      \
@@ -16,7 +16,7 @@
                                                                                           \
    static const CHardwarePluginInformation                                                \
       PluginInformations(pluginName,version,release,author,url);                          \
-   EXPORT_LIBRARY_FUNCTION const CHardwarePluginInformation& getInformation()             \
+   EXPORT_LIBRARY_FUNCTION const IHardwarePluginInformation& getInformation()             \
    {                                                                                      \
       return PluginInformations;                                                          \
    }
@@ -35,4 +35,3 @@
       return Configuration.get();                                                         \
    }                                                                                      \
    void buidDefaultConfiguration(CHardwarePluginConfiguration& configuration)
-//TODO : voir si on ne peut pas y ajouter l'implémentation de IHardwarePlugin::updateConfiguration

@@ -14,7 +14,7 @@ IMPLEMENT_HARDWARE_PLUGIN(
    CFakePlugin,                                 // IHardwarePlugin implementation class
    "FakePlugin",                                // Plugin name (std::string)
    "0.1",                                       // Current plugin version (std::string)
-   CHardwarePluginInformation::kBeta,           // Current release state (CHardwarePluginInformation::EReleaseType)
+   IHardwarePluginInformation::kBeta,           // Current release state (IHardwarePluginInformation::EReleaseType)
    "yadoms-team",                               // Author name (std::string)
    "http://sourceforge.net/projects/yadoms/")   // Url of author web site (std::string)
 
