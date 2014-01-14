@@ -88,6 +88,7 @@ void CThreadBase::changeStatus(const EStatus & newStatus)
 	   m_statusChanged(newStatus);
 }
 
+
 void CThreadBase::doWorkInternal()
 {
    //manage the doWork method. It aims is to manage the thread state around doWork
@@ -99,6 +100,14 @@ void CThreadBase::doWorkInternal()
    catch(boost::thread_interrupted&)
    {
       // Thread is stopped
+   }
+   catch(std::exception & ex)
+   {
+      YADOMS_LOG(fatal) << "Unhandled exception in " ;
+   }
+   catch(...)
+   {
+      YADOMS_LOG(fatal) << "Unhandled exception in " << getName();
    }
 
    changeStatus(kStopped);

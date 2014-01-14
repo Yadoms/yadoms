@@ -19,11 +19,11 @@ CSQLiteAcquisitionRequester::~CSQLiteAcquisitionRequester()
 
 
 // IAcquisitionRequester implementation
-void CSQLiteAcquisitionRequester::addAcquisition(boost::shared_ptr<CAcquisition> newAcquisition)
+void CSQLiteAcquisitionRequester::addAcquisition(const CAcquisition & newAcquisition)
 {
    CQuery qInsert;
    qInsert. InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getSourceColumnName(), CAcquisitionTable::getKeywordColumnName(), CAcquisitionTable::getValueColumnName(), CAcquisitionTable::getDateColumnName()).
-            Values(newAcquisition->getSource(), newAcquisition->getKeyword(), newAcquisition->getValue(), newAcquisition->getDate());
+            Values(newAcquisition.getSource(), newAcquisition.getKeyword(), newAcquisition.getValue(), newAcquisition.getDate());
    if(m_databaseRequester->queryStatement(qInsert) <= 0)
       throw new CEmptyResultException("No lines affected");
 }

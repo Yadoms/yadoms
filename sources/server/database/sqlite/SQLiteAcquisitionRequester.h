@@ -22,7 +22,7 @@ public:
 	virtual ~CSQLiteAcquisitionRequester();
 
    // IAcquisitionRequester implementation
-   virtual void addAcquisition(boost::shared_ptr<CAcquisition> newAcquisition);
+   virtual void addAcquisition(const CAcquisition & newAcquisition);
    virtual boost::shared_ptr<CAcquisition> getAcquisition(int acquisitionId);
    virtual std::vector<boost::shared_ptr<CAcquisition> > getAcquisitions(const std::string & source, const std::string & keyword);
    virtual void removeAcquisition(int acquisitionId);   

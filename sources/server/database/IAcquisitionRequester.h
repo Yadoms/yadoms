@@ -10,7 +10,7 @@ public:
    /// \param [in] newAcquisition   New acquisition informations
    /// \throw           CEmptyResultException if fails
    //--------------------------------------------------------------
-   virtual void addAcquisition(boost::shared_ptr<CAcquisition> newAcquisition) = 0;
+   virtual void addAcquisition(const CAcquisition & newAcquisition) = 0;
 
    //--------------------------------------------------------------
    /// \brief           Get acquisition informations
