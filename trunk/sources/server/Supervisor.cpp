@@ -6,6 +6,8 @@
 #include "web/webem/WebServer.h"
 #include "web/WebServerManager.h"
 #include "tools/Xpl/XplHub.h"
+#include "XplLogger.h"
+
 
 CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
 :CThreadBase("Supervisor"), m_startupOptions(startupOptions)
@@ -24,7 +26,6 @@ void CSupervisor::doWork()
    {
       YADOMS_LOG_CONFIGURE("Supervisor");
       YADOMS_LOG(info) << "Supervisor is starting";
-
 
       boost::shared_ptr<IDataProvider> pDataProvider(new CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
       if (pDataProvider->load())
@@ -70,7 +71,6 @@ void CSupervisor::doWork()
          //\TODO ######################### [END] test database #########################
 #endif
       }
-
 
       // Start the hardware plugin manager
       boost::shared_ptr<CHardwarePluginManager> hardwarePluginManager = CHardwarePluginManager::newHardwarePluginManager(
@@ -211,6 +211,7 @@ void CSupervisor::doWork()
       //\TODO ######################### [END] test interface hardwarePluginManager #########################
 
 
+
       // ######################### Web server #########################
       const std::string webServerIp = m_startupOptions.getWebServerIPAddress();
       const std::string webServerPort = boost::lexical_cast<std::string>(m_startupOptions.getWebServerPortNumber());
@@ -233,6 +234,14 @@ void CSupervisor::doWork()
       int createdInstanceId = hardwarePluginManager->createInstance("testOfXpl", "fakePlugin");
 #endif
       // ######################### [END] Xpl Hub #########################
+
+
+      // ######################### Xpl Logger #########################
+      CXplLogger xplLogger(pDataProvider);
+
+
+      // ######################### [END] Xpl Logger #########################
+
       try
       {
          YADOMS_LOG(info) << "Supervisor is running...";

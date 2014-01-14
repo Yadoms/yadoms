@@ -10,7 +10,10 @@ public:
    CSupervisor(const IStartupOptions& startupOptions);
    virtual ~CSupervisor(void);
 
+   // CThreadBase Implementation
    void doWork();
+   // [END] CThreadBase Implementation
+
 private:
    const IStartupOptions& m_startupOptions;
 };

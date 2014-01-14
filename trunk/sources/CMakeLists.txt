@@ -191,6 +191,8 @@ set(YADOMS_SRC
 	server/StartupOptions.h
 	server/ApplicationStopHandler.h
 	server/ApplicationStopHandler.cpp
+	server/XplLogger.h
+	server/XplLogger.cpp
 	
 	server/database/IDataProvider.h
 	server/database/IHardwareRequester.h
@@ -327,7 +329,7 @@ add_precompiled_header(yadoms stdafx.h)
 ##################################################################################################
 
 # Library Sources
-set(SHARED_LIB_SRC
+set(TOOLS_LIB_SRC
 	tools/tools/stdafx.cpp
 	tools/tools/stdafx.h
 
@@ -376,8 +378,8 @@ set(SHARED_LIB_SRC
 
 #Append platform specific files
 IF(MSVC)
-set(SHARED_LIB_SRC	
-	${SHARED_LIB_SRC}
+set(TOOLS_LIB_SRC	
+	${TOOLS_LIB_SRC}
 	tools/windows/tools/DynamicLibrary.hpp
 	tools/windows/tools/Export.h
 	tools/windows/tools/dir_monitor/basic_dir_monitor_service.hpp
@@ -387,8 +389,8 @@ set(SHARED_LIB_SRC
 )	
 
 ELSEIF(APPLE)
-set(SHARED_LIB_SRC	
-	${SHARED_LIB_SRC}
+set(TOOLS_LIB_SRC	
+	${TOOLS_LIB_SRC}
 	tools/mac/tools/DynamicLibrary.hpp
 	tools/mac/tools/Export.h
 	tools/mac/tools/dir_monitor/basic_dir_monitor_service.hpp
@@ -397,8 +399,8 @@ set(SHARED_LIB_SRC
 	tools/mac/tools/Peripherals.cpp
 )	
 ELSE()
-set(SHARED_LIB_SRC	
-	${SHARED_LIB_SRC}
+set(TOOLS_LIB_SRC	
+	${TOOLS_LIB_SRC}
 	tools/linux/tools/DynamicLibrary.hpp
 	tools/linux/tools/Export.h
 	tools/linux/tools/dir_monitor/basic_dir_monitor_service.hpp
@@ -418,7 +420,7 @@ IF(MSVC)
 ENDIF()
 
 # Define library outputs
-add_library(yadoms-tools STATIC  ${SHARED_LIB_SRC})
+add_library(yadoms-tools STATIC  ${TOOLS_LIB_SRC})
 add_precompiled_header(yadoms-tools stdafx.h)
 target_link_libraries(yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
 
@@ -435,6 +437,30 @@ ENDIF()
 
 set_property( TARGET yadoms-tools PROPERTY INCLUDE_DIRECTORIES ${TOOLS_INCL_DIR} ${BOOST_INCL_DIR})
 
+
+
+##################################################################################################
+## yadoms-shared
+##################################################################################################
+
+# Library Sources
+set(SHARED_LIB_SRC
+	shared/stdafx.cpp
+	shared/stdafx.h
+	shared/XplConstants.h
+	shared/XplConstants.cpp
+)
+
+
+# Define library outputs
+add_library(yadoms-shared STATIC  ${SHARED_LIB_SRC})
+add_precompiled_header(yadoms-shared stdafx.h)
+target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
+
+# Define include directories (allow easy includes)
+set(SHARED_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shared)
+
+set_property( TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
 
 
 
@@ -454,13 +480,14 @@ set(YADOMS_INCL_DIR
 	${CMAKE_CURRENT_SOURCE_DIR}/server
 	${YADOMS_INCL_DIR}
 	${TOOLS_INCL_DIR}
+	${SHARED_INCL_DIR}
 )
 set_property( TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${BOOST_INCL_DIR})
 
 ##################################################################################################
 ## Link
 ##################################################################################################
-target_link_libraries(yadoms yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
+target_link_libraries(yadoms yadoms-tools yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 
 
 ##################################################################################################
