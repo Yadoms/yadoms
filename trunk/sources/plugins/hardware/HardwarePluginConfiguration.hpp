@@ -4,6 +4,44 @@
 #include "tools/Exceptions/BadConversionException.hpp"
 #include "tools/Exceptions/OutOfRangeException.hpp"
 
+// TODO : un fichier par classe
+
+//--------------------------------------------------------------
+/// \class Hardware plugin configuration serializer interface
+//--------------------------------------------------------------
+class IHardwarePluginConfigurationSerializer
+{
+public:
+   virtual ~IHardwarePluginConfigurationSerializer() {}
+   virtual const std::string serialize(const boost::property_tree::ptree& pt) const = 0;
+   virtual void unserialize(const std::string& str, boost::property_tree::ptree& pt) = 0;
+};
+
+//--------------------------------------------------------------
+/// \class Hardware plugin configuration JSON serializer
+//--------------------------------------------------------------
+class CJsonSerializer : public IHardwarePluginConfigurationSerializer
+{
+public:
+   virtual ~CJsonSerializer() {}
+
+   virtual const std::string serialize(const boost::property_tree::ptree& pt) const
+   {
+      std::ostringstream buf; 
+      boost::property_tree::json_parser::write_json (buf, pt, false);
+      return buf.str();
+   }
+
+   virtual void unserialize(const std::string& str, boost::property_tree::ptree& pt)
+   {
+      if (str.empty())
+         return;
+
+      std::istringstream is(str);
+      boost::property_tree::json_parser::read_json(is, pt);
+   }
+};
+
 //--------------------------------------------------------------
 /// \class Hardware plugin configuration
 //--------------------------------------------------------------
@@ -16,13 +54,18 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    //--------------------------------------------------------------
-   CHardwarePluginConfiguration(){}
+   CHardwarePluginConfiguration()
+      :m_configurationSerializer(new CJsonSerializer)
+   {
+
+   }
 
    //--------------------------------------------------------------
    /// \brief	    Copy constructor
    /// \note       All parameters are also copied
    //--------------------------------------------------------------
    CHardwarePluginConfiguration(const CHardwarePluginConfiguration& src)
+      :m_configurationSerializer(src.m_configurationSerializer)
    {
       // Full copy of parameters
       for (CHardwarePluginConfigurationMap::const_iterator it=src.m_configurationMap.begin() ; it!=src.m_configurationMap.end() ; ++it)
@@ -53,12 +96,8 @@ public:
    //--------------------------------------------------------------
    void unserializeValues(const std::string& json)
    {
-      if (json.empty())
-         return;
-
       boost::property_tree::ptree pt;
-      std::istringstream is(json);
-      boost::property_tree::json_parser::read_json(is, pt);
+      m_configurationSerializer->unserialize(json, pt);
       for (CHardwarePluginConfigurationMap::iterator it=m_configurationMap.begin() ; it!=m_configurationMap.end() ; ++it)
       {
          try
@@ -82,9 +121,7 @@ public:
       boost::property_tree::ptree pt;
       for (CHardwarePluginConfigurationMap::const_iterator it=m_configurationMap.begin() ; it!=m_configurationMap.end() ; ++it)
          ((boost::shared_ptr<CHardwarePluginConfigurationParameter>)((*it).second))->save(pt);
-      std::ostringstream buf; 
-      boost::property_tree::json_parser::write_json (buf, pt, false);
-      return buf.str();
+      return m_configurationSerializer->serialize(pt);
    }
 
    //--------------------------------------------------------------
@@ -204,6 +241,7 @@ public:
 
 private:
    CHardwarePluginConfigurationMap m_configurationMap;
+   boost::shared_ptr<IHardwarePluginConfigurationSerializer> m_configurationSerializer;
 };
 
 #define ADD_CONFIGURATION_PARAMETER_BASE(type,name,description,defaultValue)                                      \
