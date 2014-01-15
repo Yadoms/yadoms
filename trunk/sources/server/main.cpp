@@ -45,7 +45,7 @@ int main (int argc, char** argv)
       CSupervisor supervisor(startupOptions);
       supervisor.start();
 
-      while(!CApplicationStopHandler::stopRequested())
+      while(!CApplicationStopHandler::stopRequested() && supervisor.getStatus() != CThreadBase::EStatus::kStopped)
       {
          boost::this_thread::sleep(boost::posix_time::milliseconds(100));
       }

@@ -10,7 +10,7 @@
 
 
 CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
-:CThreadBase("Supervisor"), m_startupOptions(startupOptions)
+   :CThreadBase("Supervisor"), m_startupOptions(startupOptions)
 {
 }
 
@@ -22,11 +22,11 @@ CSupervisor::~CSupervisor(void)
 
 void CSupervisor::doWork()
 {
+   YADOMS_LOG_CONFIGURE("Supervisor");
+   YADOMS_LOG(info) << "Supervisor is starting";   
+
    try
    {
-      YADOMS_LOG_CONFIGURE("Supervisor");
-      YADOMS_LOG(info) << "Supervisor is starting";
-
       boost::shared_ptr<IDataProvider> pDataProvider(new CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
       if (pDataProvider->load())
       {
@@ -211,7 +211,6 @@ void CSupervisor::doWork()
       //\TODO ######################### [END] test interface hardwarePluginManager #########################
 
 
-
       // ######################### Web server #########################
       const std::string webServerIp = m_startupOptions.getWebServerIPAddress();
       const std::string webServerPort = boost::lexical_cast<std::string>(m_startupOptions.getWebServerPortNumber());
@@ -222,6 +221,7 @@ void CSupervisor::doWork()
       webServerManager->start();
       // ######################### [END] Web server #########################
 
+
       // ######################### Xpl Hub #########################
       //we start xpl hub only if it's necessary
       boost::shared_ptr<CXplHub> hub;
@@ -230,15 +230,16 @@ void CSupervisor::doWork()
          hub.reset(new CXplHub(m_startupOptions.getXplNetworkIpAddress()));
          hub->start();
       }
+
 #if DEV_ACTIVATE_XPL_TESTS
-      int createdInstanceId = hardwarePluginManager->createInstance("testOfXpl", "fakePlugin");
+      if(hardwarePluginManager.get() != NULL)
+         int createdInstanceId = hardwarePluginManager->createInstance("testOfXpl", "fakePlugin");
 #endif
       // ######################### [END] Xpl Hub #########################
 
-
       // ######################### Xpl Logger #########################
       CXplLogger xplLogger(pDataProvider);
-
+      xplLogger.start();
 
       // ######################### [END] Xpl Logger #########################
 
@@ -257,8 +258,7 @@ void CSupervisor::doWork()
 
       pDataProvider->unload();//TODO : mettre un appel � unload dans le destructeur de IDataProvider (si pas d�j� unloaded �videmment).
 
-      webServerManager->stop();
-      hub->stop();
+
       YADOMS_LOG(info) << "Supervisor is stopped";
    }
    catch (std::exception& e)

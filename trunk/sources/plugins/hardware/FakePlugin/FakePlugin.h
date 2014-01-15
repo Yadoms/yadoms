@@ -70,8 +70,6 @@ private:
    std::queue<boost::shared_ptr<const CHardwarePluginConfiguration> > m_ConfigurationUpdateQueue;
    boost::mutex m_configurationUpdateMutex;
 
-   CXplService m_xplService;
-
    void onMessageReceived(CXplMessage & message);
 };
 

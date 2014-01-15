@@ -14,6 +14,7 @@ CWebServerManager::CWebServerManager(boost::shared_ptr<IDataProvider> dataProvid
 
 CWebServerManager::~CWebServerManager(void)
 {
+   stop();
 }
 
 void CWebServerManager::doWork()
@@ -40,6 +41,10 @@ void CWebServerManager::doWork()
    catch (boost::thread_interrupted&)
    {
       YADOMS_LOG(debug) << "WebServer is interrupted...";
+   }
+   catch(...)
+   {
+      YADOMS_LOG(debug) << "WebServer is interrupted from un unusual way...";
    }
    YADOMS_LOG(info) << "WebServer is stopped.";
 
