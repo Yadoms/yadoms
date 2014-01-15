@@ -32,6 +32,11 @@ public:
    virtual ~CXplService();
 
    //--------------------------------------------------------------
+   /// \brief			Stop the service
+   //--------------------------------------------------------------
+   void stop();
+
+   //--------------------------------------------------------------
    /// \brief			Send the message to the remoteEndpoint
    /// \param [in]   message : The message to send
    //--------------------------------------------------------------
@@ -43,6 +48,10 @@ public:
    //--------------------------------------------------------------
    void messageReceived(const SigMessageReceivedDelegate &dlg);
 
+   //--------------------------------------------------------------
+   /// \brief			Remove all methods which handles the event Message received
+   //--------------------------------------------------------------
+   void removeAllHandlers();
     
    //--------------------------------------------------------------
    /// \brief			Configure the filter to apply to the received messages

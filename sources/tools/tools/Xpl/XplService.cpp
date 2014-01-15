@@ -39,6 +39,8 @@ CXplService::CXplService(const std::string & vendorId, const std::string & devic
 
 CXplService::~CXplService()
 {
+   m_socket.close();
+   m_ioService.stop();
 }
 
 void CXplService::initializeConnector()
@@ -201,6 +203,16 @@ void CXplService::sendMessage(const CXplMessage & message)
 void CXplService::messageReceived(const SigMessageReceivedDelegate &dlg)
 {
    m_sigMessageReceived.connect(dlg);
+}
+
+void CXplService::removeAllHandlers()
+{
+   m_sigMessageReceived.disconnect_all_slots();
+}
+
+void CXplService::stop()
+{
+   m_ioService.stop();
 }
 
 void CXplService::fireMessageReceivedEvent(CXplMessage & msg)

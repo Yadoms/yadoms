@@ -72,6 +72,7 @@ void server::handle_stop()
   // will exit.
   acceptor_.close();
   connection_manager_.stop_all();
+  io_service_.stop();
 }
 
 } // namespace server

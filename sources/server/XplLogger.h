@@ -9,6 +9,8 @@ public:
    CXplLogger(boost::shared_ptr<IDataProvider> dataProvider);
    virtual ~CXplLogger();
 
+   void start();
+   void stop();
 private:
    void onMessageReceived(CXplMessage & message);
 

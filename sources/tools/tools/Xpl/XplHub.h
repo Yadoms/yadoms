@@ -9,6 +9,12 @@ class CXplHub : public CThreadBase
 public:
    CXplHub(const std::string & localIPOfTheInterfaceToUse);
 
+   virtual ~CXplHub();
+
+   // CThreadBase override
+   virtual bool stop();
+   // {END] CThreadBase override
+
 private:
    void doWork();
    void startReceive();

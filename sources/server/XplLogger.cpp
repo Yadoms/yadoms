@@ -6,13 +6,11 @@
 CXplLogger::CXplLogger(boost::shared_ptr<IDataProvider> dataProvider)
    :m_dataProvider(dataProvider)
 {
-   m_xplService.reset(new CXplService(CXplConstants::YadomsVendorId, "logger", "1"));
-   m_xplService->messageReceived(boost::bind(&CXplLogger::onMessageReceived, this, _1));
-	YADOMS_LOG(info) << "XplLogger started";
 }
 
 CXplLogger::~CXplLogger()
 {
+   stop();
 	YADOMS_LOG(info) << "XplLogger stopped";
 }
 
@@ -32,3 +30,20 @@ void CXplLogger::onMessageReceived(CXplMessage & message)
    }
 }
 
+void CXplLogger::start()
+{
+   m_xplService.reset(new CXplService(CXplConstants::YadomsVendorId, "logger", "1"));
+   m_xplService->messageReceived(boost::bind(&CXplLogger::onMessageReceived, this, _1));
+	YADOMS_LOG(info) << "XplLogger started";
+}
+
+void CXplLogger::stop()
+{
+   if(m_xplService.get() != NULL)
+   {
+      m_xplService->removeAllHandlers();
+      m_xplService->stop();
+   }
+
+   
+}

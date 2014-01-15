@@ -20,7 +20,7 @@ IMPLEMENT_HARDWARE_PLUGIN(
    "http://sourceforge.net/projects/yadoms/")   // Url of author web site (std::string)
 
 
-enum EEnumType
+   enum EEnumType
 {
    kEnumValue1 = 7,
    kEnumValue2 = 12,
@@ -46,9 +46,7 @@ IMPLEMENT_CONFIGURATION
 
 
 CFakePlugin::CFakePlugin() 
-: m_xplService("yadoms", "fake", "1")
 {
-   m_xplService.messageReceived(boost::bind(&CFakePlugin::onMessageReceived, this, _1));
 }
 
 CFakePlugin::~CFakePlugin()
@@ -57,14 +55,18 @@ CFakePlugin::~CFakePlugin()
 
 void CFakePlugin::onMessageReceived(CXplMessage & message)
 {
-   // Be carefull, this function is called in the Xpl service thread context
-	YADOMS_LOG(info) << "Message received : " << message.toString();
+    // Be carefull, this function is called in the Xpl service thread context
+   YADOMS_LOG(info) << "Message received : " << message.toString();
 }
 
 void CFakePlugin::doWork(const std::string& configurationValues)
 {
+   boost::shared_ptr<CXplService> xplService;
    try
    {
+      xplService.reset(new CXplService("yadoms", "fake", "1"));
+      xplService->messageReceived(boost::bind(&CFakePlugin::onMessageReceived, this, _1));
+
       // Build configuration and load values from database
       CHardwarePluginConfiguration configuration(getDefaultConfiguration());
       configuration.unserializeValues(configurationValues);
@@ -107,9 +109,9 @@ void CFakePlugin::doWork(const std::string& configurationValues)
 
       int value = 0;
 
-	   while(1)
-	   {
-	      YADOMS_LOG(debug) << "CFakePlugin is running...";
+      while(1)
+      {
+         YADOMS_LOG(debug) << "CFakePlugin is running...";
 
          boost::optional<boost::shared_ptr<const CHardwarePluginConfiguration> > newConfiguration = getUpdatedConfiguration();
          if (newConfiguration)
@@ -123,13 +125,13 @@ void CFakePlugin::doWork(const std::string& configurationValues)
             // TODO ajouter méthodes de diff
          }
 
-		    CXplMessage msg(CXplMessage::kXplStat, m_xplService.getActor(), CXplActor::createBroadcastActor(), CXplMessageSchemaIdentifier("clock", "basic"));
-          msg.addToBody("value", boost::lexical_cast<std::string>(value++));
-          m_xplService.sendMessage(msg);
-	
-	      // Give a chance to exit plugin thread
-	      boost::this_thread::sleep(boost::posix_time::milliseconds(1000)); 
-	   };
+         CXplMessage msg(CXplMessage::kXplStat, xplService->getActor(), CXplActor::createBroadcastActor(), CXplMessageSchemaIdentifier("clock", "basic"));
+         msg.addToBody("value", boost::lexical_cast<std::string>(value++));
+         xplService->sendMessage(msg);
+
+         // Give a chance to exit plugin thread
+         boost::this_thread::sleep(boost::posix_time::milliseconds(1000)); 
+      };
    }
    // Plugin must catch this end-of-thread exception to make its cleanup.
    // If no cleanup is necessary, still catch it, or Yadoms will consider
@@ -137,6 +139,18 @@ void CFakePlugin::doWork(const std::string& configurationValues)
    catch (boost::thread_interrupted&)
    {
       YADOMS_LOG(debug) << "CFakePlugin is stopping...";
+   }
+   catch(...)
+   {
+   }
+
+   try
+   {
+      if(xplService.get() != NULL)
+         xplService->stop();
+   }
+   catch(...)
+   {
    }
 }
 

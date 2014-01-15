@@ -13,6 +13,7 @@ CThreadBase::CThreadBase(const std::string & threadName)
 
 CThreadBase::~CThreadBase(void)
 {
+   stop();
 }
 
 void CThreadBase::start()
@@ -84,8 +85,6 @@ CThreadBase::EStatus CThreadBase::getStatus() const
 void CThreadBase::changeStatus(const EStatus & newStatus)
 {
    m_threadStatus = newStatus;
-   if (!m_statusChanged.empty())
-	   m_statusChanged(newStatus);
 }
 
 
@@ -100,20 +99,15 @@ void CThreadBase::doWorkInternal()
    catch(boost::thread_interrupted&)
    {
       // Thread is stopped
-   }
-   catch(std::exception & ex)
-   {
-      YADOMS_LOG(fatal) << "Unhandled exception in " ;
+      
    }
    catch(...)
    {
-      YADOMS_LOG(fatal) << "Unhandled exception in " << getName();
+      //this exception may occur when bad states are reached
+      //do not do anything here
+      //do not catch std::exception& because most of time it is not valid
+      
    }
 
    changeStatus(kStopped);
-}
-
-void CThreadBase::registerStatusChanged(void *pFunc(const EStatus & newStatus), void * pInstance)
-{
-   //	m_statusChanged.connect( boost::bind( pFunc, pInstance, _1 ) );
 }

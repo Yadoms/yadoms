@@ -10,7 +10,7 @@ CWebServer::CWebServer(	   const std::string & address, const std::string & port
 
 CWebServer::~CWebServer()
 {
-
+   stop();
 }
 
 
@@ -27,7 +27,8 @@ void CWebServer::start()
 
 void CWebServer::stop()
 {
-   m_embeddedWebServer->Stop();
+   if(m_embeddedWebServer.get())
+      m_embeddedWebServer->Stop();
 }
 
 boost::shared_ptr<IRestHandler> CWebServer::getRestHandler()

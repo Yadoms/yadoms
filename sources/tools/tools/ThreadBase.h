@@ -91,14 +91,6 @@ public:
    int getStopTimeoutSeconds() const
    { return m_stopTimeoutSeconds;}   
 
-   //--------------------------------------------------------------
-   /// \brief			Register a callback function for status change event
-   /// \param [in]	pFunc : function pointer for callback
-   /// \param [in]	pInstance : instance which own function as member
-   /// \return    	void
-   //--------------------------------------------------------------
-   void registerStatusChanged(void *pFunc(const EStatus & newStatus), void * pInstance);
-
 protected:
    //--------------------------------------------------------------
    /// \brief			The main thread work

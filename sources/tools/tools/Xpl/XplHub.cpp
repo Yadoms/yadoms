@@ -36,6 +36,12 @@ CXplHub::CXplHub(const std::string & localIPOfTheInterfaceToUse)
    startReceive();
 }
 
+CXplHub::~CXplHub()
+{
+   stop();
+}
+
+
 void CXplHub::startReceive()
 {
    m_socket.async_receive(
@@ -55,6 +61,12 @@ void CXplHub::doWork()
    }
 }
 
+bool CXplHub::stop()
+{
+    m_ioService.stop();
+    return CThreadBase::stop();
+}
+ 
 void CXplHub::handleReceive(const boost::system::error_code& error,
                              std::size_t bytes_transferred)
 {
