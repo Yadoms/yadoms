@@ -57,6 +57,7 @@ CFakePlugin::~CFakePlugin()
 
 void CFakePlugin::onMessageReceived(CXplMessage & message)
 {
+   // Be carefull, this function is called in the Xpl service thread context
 	YADOMS_LOG(info) << "Message received : " << message.toString();
 }
 
