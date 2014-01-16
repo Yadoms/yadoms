@@ -2,11 +2,11 @@
 #include "ThreadBase.h"
 #include "Log.h"
 
-const int CThreadBase::DefaultStopTimeoutSeconds = 10;
+const int CThreadBase::DefaultStopTimeoutSeconds = 100;
 
 
-CThreadBase::CThreadBase(const std::string & threadName)
-   :m_threadName(threadName), m_threadStatus(kStopped), m_stopTimeoutSeconds(DefaultStopTimeoutSeconds)
+CThreadBase::CThreadBase(const std::string & threadName, const bool bRethrowDoWorkExceptions)
+   :m_threadName(threadName), m_threadStatus(kStopped), m_stopTimeoutSeconds(DefaultStopTimeoutSeconds), m_bRethrowDoWorkExceptions(bRethrowDoWorkExceptions)
 {
 	BOOST_ASSERT(threadName != "");
 }
@@ -29,6 +29,8 @@ bool CThreadBase::stop()
 {
    if (getStatus() == kStopped)
       return true;   // Already stopped
+
+   YADOMS_LOG(warning) << "Stopping thread " << getName();
 
    // Request to stop and wait
    requestToStop();
@@ -101,12 +103,18 @@ void CThreadBase::doWorkInternal()
       // Thread is stopped
       
    }
+   catch(std::exception &ex)
+   {
+      if(m_bRethrowDoWorkExceptions)
+         throw ex;
+   }
    catch(...)
    {
       //this exception may occur when bad states are reached
       //do not do anything here
       //do not catch std::exception& because most of time it is not valid
-      
+      if(m_bRethrowDoWorkExceptions)
+         throw;
    }
 
    changeStatus(kStopped);

@@ -39,8 +39,7 @@ CXplService::CXplService(const std::string & vendorId, const std::string & devic
 
 CXplService::~CXplService()
 {
-   m_socket.close();
-   m_ioService.stop();
+   stop();
 }
 
 void CXplService::initializeConnector()
@@ -58,141 +57,180 @@ void CXplService::initializeConnector()
 
    m_remoteEndPoint = boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::broadcast(), CXplHelper::XplProtocolPort);
 
-   boost::thread t(boost::bind(&boost::asio::io_service::run, &m_ioService));
+   boost::thread t(boost::bind(&CXplService::startService, this));
 
-   m_socket.async_receive(
-         boost::asio::buffer(m_receiveBuffer),
-         boost::bind(&CXplService::handleReceive, this,
-         boost::asio::placeholders::error,
-         boost::asio::placeholders::bytes_transferred));
-}
-
-void CXplService::runHeartbeatSequenceIn(const int seconds)
-{
-   m_timer.expires_from_now(boost::posix_time::seconds(seconds));
-   m_timer.async_wait(boost::bind(&CXplService::heartbeatSequence, this));
-}
-
-void CXplService::heartbeatSequence()
-{
-   YADOMS_LOG(debug) << "hbeat";
-
-   int heartbeatInterval;
-   //depending on the mode we currently are we select the time to send another hbeat
-   if (m_hubHasBeenFound)
-   {
-      //the hub have been found so we send a hbeat every 5 minutes to 30 minutes
-      heartbeatInterval = HeartbeatFrequencyDuringNormalRun;
-   }
-   else
-   {
-      //the hub havn't been found for the moment
-      boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
-      boost::posix_time::time_duration diff = now - m_startDate;
-      if (diff.total_seconds() > HubDiscoveryTimeOut)
-      {
-         //the hub haven't been found in 2 minutes so we send a hbeat every 30 seconds
-         heartbeatInterval = HeartbeatFrequencyDuringSecondDiscoveryPhase;
-      }
-      else
-      {
-         //the hub havn't been found for the moment
-         heartbeatInterval = HeartbeatFrequencyDuringInitialDiscoveryPhase;
-      }
-   }
-
-   //We send the hbeat
-   //we set always the interval of HeartbeatInterval in the message
-   CXplMessage msg = CXplMessageFactory::createHeartbeatMessage(m_source, HeartbeatInterval, m_socket.local_endpoint().address().to_string(), m_socket.local_endpoint().port());
-   std::cout << msg.toString() << std::endl;
-
-   m_socket.send_to(boost::asio::buffer(msg.toString()), m_remoteEndPoint);
-
-   //We relaunch the hbeat
-   runHeartbeatSequenceIn(heartbeatInterval);
-}
-
-void CXplService::handleReceive(const boost::system::error_code& error,
-                             std::size_t bytes_transferred)
-{
-   if (!error || error == boost::asio::error::message_size)
-   {
-      try
-      {
-         //we copy buffer to a string
-         std::string data;
-         std::copy(m_receiveBuffer.begin(), m_receiveBuffer.begin()+bytes_transferred, std::back_inserter(data));
-
-         CXplMessage msg = CXplMessage::parse(data);
-
-         //the message is successfully parsed
-         YADOMS_LOG(debug) << "Message received : " << msg.toString();
-         //When the hub receives a hbeat.app or config.app message, the hub should extract the "remote-ip" value 
-         //from the message body and compare the IP address with the list of addresses the hub is currently bound 
-         //to for the local computer. If the address does not match any local addresses, 
-         //the packet moves on to the delivery/rebroadcast step.
-         if (CXplMessageSchemaIdentifier::isHeartbeatMessageSchemaIdentifier(msg.getMessageSchemaIdentifier()))
-         {
-            //we've got an heartbeat if it's our hbeat and we are m_hubHasBeenFound = false we have found a hub
-            int port;
-            if (!CStringExtension::tryParse<int>(msg.getBodyValue("port"), port))
-               throw CXplException("port in Heartbeat message is incorrect : " + msg.toString());
-
-            if ((!m_hubHasBeenFound) && (m_localEndPoint.address().to_string() == msg.getBodyValue("remote-ip")) && (m_socket.local_endpoint().port() == port))
-            {
-               YADOMS_LOG(info) << "Hub found";
-               m_hubHasBeenFound = true;
-            }
-            else
-            {
-               //From another ip, nothing to do
-            }
-         }
-         else
-         {
-            //it's not an heartbeat we signal to the app if it's not filtered
-            bool msgCanBeFired = true;
-            //if the filter is set and it is different than the value received, we won't fire the event
-            if ((m_filter.msgtype) && (msg.getTypeIdentifierAsString() != *m_filter.msgtype.get()))
-               msgCanBeFired = false;
-
-            if ((m_filter.vendor) && (msg.getSource().getVendorId() != *m_filter.vendor.get()))
-               msgCanBeFired = false;
-
-            if ((m_filter.device) && (msg.getSource().getDeviceId() != *m_filter.device.get()))
-               msgCanBeFired = false;
-
-            if ((m_filter.instance) && (msg.getSource().getInstanceId() != *m_filter.instance.get()))
-               msgCanBeFired = false;
-
-            if ((m_filter.classId) && (msg.getMessageSchemaIdentifier().getClassId() != *m_filter.classId.get()))
-               msgCanBeFired = false;
-
-            if ((m_filter.typeId) && (msg.getMessageSchemaIdentifier().getTypeId() != *m_filter.typeId.get()))
-               msgCanBeFired = false;
-
-            //We fire the message only if it is not filtered
-            if (msgCanBeFired)
-            {
-               YADOMS_LOG(debug) << "Message not filtered";
-               fireMessageReceivedEvent(msg);
-            }
-            else
-            {
-               YADOMS_LOG(debug) << "Message filtered";
-            }
-         }
-      }
-      catch (std::exception const& e)
-      {
-         std::cerr << e.what() << std::endl;
-      }      
-   }
    m_socket.async_receive(
       boost::asio::buffer(m_receiveBuffer),
       boost::bind(&CXplService::handleReceive, this,
       boost::asio::placeholders::error,
       boost::asio::placeholders::bytes_transferred));
+}
+
+void CXplService::startService()
+{
+   try
+   {
+      m_ioService.run();
+   }
+   catch (std::exception& e)
+   {
+      // Deal with exception as appropriate.
+      YADOMS_LOG(warning) << "CXplService io_service exception : " << e.what();
+   }
+}
+
+void CXplService::runHeartbeatSequenceIn(const int seconds)
+{
+   if(!m_ioService.stopped())
+   {
+      m_timer.expires_from_now(boost::posix_time::seconds(seconds));
+      m_timer.async_wait(boost::bind(&CXplService::heartbeatSequence, this));
+   }
+}
+
+void CXplService::heartbeatSequence()
+{
+   if(!m_ioService.stopped())
+   {
+      YADOMS_LOG(debug) << "hbeat";
+
+      int heartbeatInterval;
+      //depending on the mode we currently are we select the time to send another hbeat
+      if (m_hubHasBeenFound)
+      {
+         //the hub have been found so we send a hbeat every 5 minutes to 30 minutes
+         heartbeatInterval = HeartbeatFrequencyDuringNormalRun;
+      }
+      else
+      {
+         //the hub havn't been found for the moment
+         boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
+         boost::posix_time::time_duration diff = now - m_startDate;
+         if (diff.total_seconds() > HubDiscoveryTimeOut)
+         {
+            //the hub haven't been found in 2 minutes so we send a hbeat every 30 seconds
+            heartbeatInterval = HeartbeatFrequencyDuringSecondDiscoveryPhase;
+         }
+         else
+         {
+            //the hub havn't been found for the moment
+            heartbeatInterval = HeartbeatFrequencyDuringInitialDiscoveryPhase;
+         }
+      }
+
+
+      if(m_socket.is_open())
+      {
+         //We send the hbeat
+         //we set always the interval of HeartbeatInterval in the message
+         CXplMessage msg = CXplMessageFactory::createHeartbeatMessage(m_source, HeartbeatInterval, m_socket.local_endpoint().address().to_string(), m_socket.local_endpoint().port());
+         try
+         {
+            m_socket.send_to(boost::asio::buffer(msg.toString()), m_remoteEndPoint);
+         }
+         catch(...)
+         {
+         }
+
+         //We relaunch the hbeat
+         runHeartbeatSequenceIn(heartbeatInterval);
+      }
+   }
+}
+
+void CXplService::handleReceive(const boost::system::error_code& error,
+                                std::size_t bytes_transferred)
+{
+   if(!m_ioService.stopped())
+   {
+      if (!error || error == boost::asio::error::message_size)
+      {
+         try
+         {
+            //we copy buffer to a string
+            std::string data;
+            std::copy(m_receiveBuffer.begin(), m_receiveBuffer.begin()+bytes_transferred, std::back_inserter(data));
+
+            CXplMessage msg = CXplMessage::parse(data);
+
+            //the message is successfully parsed
+            YADOMS_LOG(debug) << "Message received : " << msg.toString();
+            //When the hub receives a hbeat.app or config.app message, the hub should extract the "remote-ip" value 
+            //from the message body and compare the IP address with the list of addresses the hub is currently bound 
+            //to for the local computer. If the address does not match any local addresses, 
+            //the packet moves on to the delivery/rebroadcast step.
+            if (CXplMessageSchemaIdentifier::isHeartbeatMessageSchemaIdentifier(msg.getMessageSchemaIdentifier()))
+            {
+               //we've got an heartbeat if it's our hbeat and we are m_hubHasBeenFound = false we have found a hub
+               int port;
+               if (!CStringExtension::tryParse<int>(msg.getBodyValue("port"), port))
+                  throw CXplException("port in Heartbeat message is incorrect : " + msg.toString());
+
+               if ((!m_hubHasBeenFound) && (m_localEndPoint.address().to_string() == msg.getBodyValue("remote-ip")) && (m_socket.local_endpoint().port() == port))
+               {
+                  YADOMS_LOG(info) << "Hub found";
+                  m_hubHasBeenFound = true;
+               }
+               else
+               {
+                  //From another ip, nothing to do
+               }
+            }
+            else
+            {
+               //it's not an heartbeat we signal to the app if it's not filtered
+               bool msgCanBeFired = true;
+               //if the filter is set and it is different than the value received, we won't fire the event
+               if ((m_filter.msgtype) && (msg.getTypeIdentifierAsString() != *m_filter.msgtype.get()))
+                  msgCanBeFired = false;
+
+               if ((m_filter.vendor) && (msg.getSource().getVendorId() != *m_filter.vendor.get()))
+                  msgCanBeFired = false;
+
+               if ((m_filter.device) && (msg.getSource().getDeviceId() != *m_filter.device.get()))
+                  msgCanBeFired = false;
+
+               if ((m_filter.instance) && (msg.getSource().getInstanceId() != *m_filter.instance.get()))
+                  msgCanBeFired = false;
+
+               if ((m_filter.classId) && (msg.getMessageSchemaIdentifier().getClassId() != *m_filter.classId.get()))
+                  msgCanBeFired = false;
+
+               if ((m_filter.typeId) && (msg.getMessageSchemaIdentifier().getTypeId() != *m_filter.typeId.get()))
+                  msgCanBeFired = false;
+
+               //We fire the message only if it is not filtered
+               if (msgCanBeFired)
+               {
+                  YADOMS_LOG(debug) << "Message not filtered";
+                  fireMessageReceivedEvent(msg);
+               }
+               else
+               {
+                  YADOMS_LOG(debug) << "Message filtered";
+               }
+            }
+         }
+         catch (std::exception & e)
+         {
+            std::cerr << e.what() << std::endl;
+         }      
+      }
+
+      if(m_socket.is_open())
+      {
+         m_socket.async_receive(
+            boost::asio::buffer(m_receiveBuffer),
+            boost::bind(&CXplService::handleReceive, this,
+            boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+      }
+   }
+   else
+   {
+      //asio service is stopped, do nothing
+      YADOMS_LOG(info) << "CXplService::handleReceive : asio io_service is stopped";
+   }
 }
 
 void CXplService::sendMessage(const CXplMessage & message)
@@ -212,13 +250,19 @@ void CXplService::removeAllHandlers()
 
 void CXplService::stop()
 {
+   removeAllHandlers();
    m_ioService.stop();
+   m_timer.cancel();
+   m_socket.close();
 }
 
 void CXplService::fireMessageReceivedEvent(CXplMessage & msg)
 {
-    if (!m_sigMessageReceived.empty()) 
-      m_sigMessageReceived(boost::ref(msg));
+   if(!m_ioService.stopped())
+   {
+      if (!m_sigMessageReceived.empty()) 
+         m_sigMessageReceived(boost::ref(msg));
+   }
 }
 
 void CXplService::setFilter(const std::string & filter)
@@ -236,7 +280,7 @@ void CXplService::setFilter(const std::string & filter)
       m_filter.classId.reset();
       m_filter.typeId.reset();
    }
-   
+
    std::vector<std::string> line;
    boost::split(line, lineString, boost::is_any_of("."), boost::token_compress_on);
    if (line.size() != 6)
@@ -246,7 +290,7 @@ void CXplService::setFilter(const std::string & filter)
 }
 
 void CXplService::setFilter(const std::string & msgtype, const std::string & vendor, const std::string & device, const std::string & instance, 
-               const std::string & classId, const std::string & typeId)
+                            const std::string & classId, const std::string & typeId)
 {
    //We affect the filter value if it's not the wildchar and if it is we set to null the shared_ptr
    if (boost::trim_copy(msgtype) == CXplHelper::WildcardString)

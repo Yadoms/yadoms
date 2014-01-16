@@ -3,7 +3,7 @@
 #include "XplActor.h"
 #include "XplMessage.h"
 
-class CXplService
+class CXplService 
 {
 public:
    typedef boost::signals2::signal<void (CXplMessage&)> SigMessageReceived;
@@ -89,6 +89,7 @@ private:
    void runHeartbeatSequenceIn(const int seconds);
    void handleReceive(const boost::system::error_code& error, std::size_t bytes_transferred);
 
+   void startService();
    //--------------------------------------------------------------
    /// \brief			Fire the event MessageReceived
    /// \param [in]   message : The message which just has been received

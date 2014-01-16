@@ -43,6 +43,11 @@ public:
    virtual ~CHardwarePluginManager();
 
    //--------------------------------------------------------------
+   /// \brief			Stop all plugin instance
+   //--------------------------------------------------------------
+   void stop();
+
+   //--------------------------------------------------------------
    /// \brief			Create new CHardwarePluginManager instance
    /// \param [in]   initialDir: initial plugins search directory
    /// \param [in]   database: database link
