@@ -18,12 +18,39 @@ CHardwarePluginManager::CHardwarePluginManager(const std::string& initialDir, bo
 
 CHardwarePluginManager::~CHardwarePluginManager()
 {
-   // Stop all instances and free plugins
+   stop();
+}
+
+void CHardwarePluginManager::stop()
+{
+   YADOMS_LOG(info) << "CHardwarePluginManager stop plugins...";
+
+   //plugins request to stop
+   std::pair<int, boost::shared_ptr<CHardwarePluginInstance> > instance;
+   BOOST_FOREACH(instance, m_runningInstances)
+   {
+      if(instance.second.get() != NULL)
+         instance.second->requestToStop();
+   }
+
+   // wait for all plugins to stop
    while (!m_runningInstances.empty())
    {
-      stopInstance(m_runningInstances.begin()->first);
+      //stopInstance(m_runningInstances.begin()->first);
+      std::pair<int, boost::shared_ptr<CHardwarePluginInstance> > instance2;
+      BOOST_FOREACH(instance2, m_runningInstances)
+      {
+         if(instance2.second.get() != NULL && instance2.second->getStatus() == CThreadBase::EStatus::kStopped)
+         {
+            doStopInstance(instance2.first);
+            break; //break to restart the foreach
+         }
+      }
    }
+
+   YADOMS_LOG(info) << "CHardwarePluginManager all plugins are stopped";
 }
+
 
 void CHardwarePluginManager::init()
 {
@@ -63,7 +90,7 @@ void CHardwarePluginManager::stopInstance(int id)
 std::vector<boost::filesystem::path> CHardwarePluginManager::findPluginFilenames()
 {
    std::vector<boost::filesystem::path> pluginFilenames;
-      
+
    if (boost::filesystem::exists(m_pluginPath) && boost::filesystem::is_directory(m_pluginPath))
    {
       boost::filesystem::directory_iterator endFileIterator;
@@ -171,15 +198,15 @@ boost::optional<const CHardwarePluginConfiguration&> CHardwarePluginManager::get
 }
 
 int CHardwarePluginManager::createInstance(const std::string& instanceName, const std::string& pluginName,
-   boost::optional<const CHardwarePluginConfiguration&> configuration)
+                                           boost::optional<const CHardwarePluginConfiguration&> configuration)
 {
-	// First step, record instance in database, to get its ID
-	boost::shared_ptr<CHardware> dbRecord(new CHardware);
-	dbRecord->setName(instanceName).setPluginName(pluginName).setConfiguration(configuration?configuration->serializeValues():"").setEnabled(true).setDeleted(false);
-	int instanceId = m_database->addHardware(dbRecord);
-	
-	// Next create instance
-	startInstance(instanceId);
+   // First step, record instance in database, to get its ID
+   boost::shared_ptr<CHardware> dbRecord(new CHardware);
+   dbRecord->setName(instanceName).setPluginName(pluginName).setConfiguration(configuration?configuration->serializeValues():"").setEnabled(true).setDeleted(false);
+   int instanceId = m_database->addHardware(dbRecord);
+
+   // Next create instance
+   startInstance(instanceId);
 
    return instanceId;
 }
@@ -228,7 +255,7 @@ boost::optional<const CHardwarePluginConfiguration> CHardwarePluginManager::getI
    boost::optional<const CHardwarePluginConfiguration&> pluginDefaultConfiguration(getPluginDefaultConfiguration(instanceData->getPluginName()));
    if (!pluginDefaultConfiguration)
       return boost::optional<const CHardwarePluginConfiguration> (); // Plugin has no configuration
-   
+
    // Override values with data from database
    CHardwarePluginConfiguration instanceConfiguration = pluginDefaultConfiguration.get();
    instanceConfiguration.unserializeValues(instanceData->getConfiguration());

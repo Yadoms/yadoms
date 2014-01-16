@@ -50,6 +50,7 @@ void server::stop()
   // Post a call to the stop function so that server::stop() is safe to call
   // from any thread.
   io_service_.post(boost::bind(&server::handle_stop, this));
+  io_service_.stop();
 }
 
 void server::handle_accept(const boost::system::error_code& e)

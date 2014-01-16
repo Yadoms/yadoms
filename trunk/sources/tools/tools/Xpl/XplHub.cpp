@@ -12,7 +12,7 @@
 CXplHub::CXplHub(const std::string & localIPOfTheInterfaceToUse)
    : CThreadBase("XplHub"), m_ioService(), m_socket(m_ioService), m_timer(m_ioService)
 {
-   
+
    if (!CXplHelper::getEndPointFromInterfaceIp(localIPOfTheInterfaceToUse, m_localEndPoint))
    {
       //If we havn't found the given ip, we take the first address IPV4
@@ -26,7 +26,7 @@ CXplHub::CXplHub(const std::string & localIPOfTheInterfaceToUse)
    m_socket.set_option(boost::asio::ip::udp::socket::reuse_address(true));
    m_socket.set_option(boost::asio::socket_base::broadcast(true));
    m_socket.bind(m_localEndPoint);
-   
+
    YADOMS_LOG(info) << "Xpl Hub is starting";
    YADOMS_LOG(info) << "Listening on ip : " << m_localEndPoint.address().to_string() << " on port : " << m_localEndPoint.port();
    m_remoteEndPoint = boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::broadcast(), CXplHelper::XplProtocolPort);
@@ -45,30 +45,26 @@ CXplHub::~CXplHub()
 void CXplHub::startReceive()
 {
    m_socket.async_receive(
-         boost::asio::buffer(m_receiveBuffer),
-         boost::bind(&CXplHub::handleReceive, this,
-         boost::asio::placeholders::error,
-         boost::asio::placeholders::bytes_transferred));
+      boost::asio::buffer(m_receiveBuffer),
+      boost::bind(&CXplHub::handleReceive, this,
+      boost::asio::placeholders::error,
+      boost::asio::placeholders::bytes_transferred));
 }
 
 void CXplHub::doWork()
 {
-   while(!m_stopRequested)
-   { 
-      m_ioService.run();
-      m_ioService.reset();
-      boost::this_thread::interruption_point();
-   }
+   m_ioService.run();
 }
 
 bool CXplHub::stop()
 {
-    m_ioService.stop();
-    return CThreadBase::stop();
+   if(!m_ioService.stopped())
+      m_ioService.stop();
+   return true;
 }
- 
+
 void CXplHub::handleReceive(const boost::system::error_code& error,
-                             std::size_t bytes_transferred)
+                            std::size_t bytes_transferred)
 {
    if (!error || error == boost::asio::error::message_size)
    {
@@ -163,7 +159,7 @@ void CXplHub::checkApplicationLifeCycle()
          //we check inactivity using the rule : last seen time + (interval * 2) + 1 minutes < now then periph has died
          boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
          boost::posix_time::ptime timeoutAt = m_discoveredPeripherals[i]->getLastTimeSeen() + boost::posix_time::minutes(m_discoveredPeripherals[i]->getInterval() * 2 + 1);
-         
+
          if (timeoutAt < now)
          {
             //we must delete the peripheral

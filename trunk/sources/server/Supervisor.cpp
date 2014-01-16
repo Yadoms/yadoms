@@ -8,7 +8,6 @@
 #include "tools/Xpl/XplHub.h"
 #include "XplLogger.h"
 
-
 CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
    :CThreadBase("Supervisor"), m_startupOptions(startupOptions)
 {
@@ -246,7 +245,7 @@ void CSupervisor::doWork()
       try
       {
          YADOMS_LOG(info) << "Supervisor is running...";
-         while (1)
+         while (getStatus() != EStatus::kStopping)
          {
             boost::this_thread::sleep(boost::posix_time::milliseconds(100));
          }
@@ -256,6 +255,21 @@ void CSupervisor::doWork()
          YADOMS_LOG(info) << "Supervisor is interrupted...";
       }
 
+      //stop all plugins
+      if(hardwarePluginManager.get() != NULL)
+         hardwarePluginManager->stop();
+
+      //stop xpl logger
+      xplLogger.stop();
+
+      //stop xpl hub
+      if(hub.get() != NULL)
+         hub->stop();
+
+      //stop web server
+      if(webServerManager.get() != NULL)
+         webServerManager->stop();
+      
       pDataProvider->unload();//TODO : mettre un appel � unload dans le destructeur de IDataProvider (si pas d�j� unloaded �videmment).
 
 

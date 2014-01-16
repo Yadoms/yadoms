@@ -12,7 +12,7 @@
 //--------------------------------------------------------------
 /// \brief	this class is used to manage a plugin instance. 
 //--------------------------------------------------------------
-class CHardwarePluginInstance : protected CThreadBase
+class CHardwarePluginInstance : public CThreadBase
 {
 public:
    //--------------------------------------------------------------

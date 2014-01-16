@@ -10,9 +10,10 @@ public:
    //--------------------------------------------------------------
    /// \brief		Constructor
    /// \param [in]	threadName : the thread name
+   /// \param [in]	bRethrowDoWorkExceptions : if true, all exception catch by thsi class are rethrown, if false nothing else is done with exception
    /// \return    	void
    //--------------------------------------------------------------
-   CThreadBase(const std::string & threadName = "");
+   CThreadBase(const std::string & threadName = "", const bool bRethrowDoWorkExceptions = false);
 
    //--------------------------------------------------------------
    /// \brief			Destructor
@@ -97,7 +98,6 @@ protected:
    //--------------------------------------------------------------
    virtual void doWork() = 0;
 
-private:
    //--------------------------------------------------------------
    /// \brief			Change the thread status
    /// \param [in]	newStatus : the new thread status
@@ -105,6 +105,7 @@ private:
    //--------------------------------------------------------------
    void changeStatus(const EStatus & newStatus);
 
+private:  
    //--------------------------------------------------------------
    /// \brief			Method which manage the virtual doWork method
    /// \return    	void
@@ -143,5 +144,10 @@ private:
    ///               If thread is not stopped at timeout, thread is killed.
    //--------------------------------------------------------------
    static const int DefaultStopTimeoutSeconds;
+
+   //--------------------------------------------------------------
+   /// \brief			Indicate if exception of DoWork are rethrown or not
+   //--------------------------------------------------------------
+   bool m_bRethrowDoWorkExceptions;
 };
 

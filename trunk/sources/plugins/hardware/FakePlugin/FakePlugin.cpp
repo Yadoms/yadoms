@@ -55,15 +55,17 @@ CFakePlugin::~CFakePlugin()
 
 void CFakePlugin::onMessageReceived(CXplMessage & message)
 {
-    // Be carefull, this function is called in the Xpl service thread context
-   YADOMS_LOG(info) << "Message received : " << message.toString();
+   // Be carefull, this function is called in the Xpl service thread context
+   //YADOMS_LOG(info) << "Message received : " << message.toString();
 }
 
 void CFakePlugin::doWork(const std::string& configurationValues)
 {
+   //TODO : understand why it throws when this step is done in xplService dtor, which is called when catching boost::thread_interrupted
    boost::shared_ptr<CXplService> xplService;
    try
    {
+
       xplService.reset(new CXplService("yadoms", "fake", "1"));
       xplService->messageReceived(boost::bind(&CFakePlugin::onMessageReceived, this, _1));
 
@@ -138,12 +140,13 @@ void CFakePlugin::doWork(const std::string& configurationValues)
    // as a plugin failure.
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(debug) << "CFakePlugin is stopping...";
+      YADOMS_LOG(debug) << "CFakePlugin is stopping..."  << std::endl;
    }
    catch(...)
    {
    }
 
+   //TODO : understand why it throws when this step is done in xplService dtor, which is called when catching boost::thread_interrupted
    try
    {
       if(xplService.get() != NULL)

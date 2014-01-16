@@ -18,15 +18,25 @@ void CXplLogger::onMessageReceived(CXplMessage & message)
 {
 	YADOMS_LOG(debug) << "Message received : " << message.toString();
 
-   std::pair<std::string, std::string> bodyLine;
-   BOOST_FOREACH(bodyLine, message.getBody())
+   try
    {
-      CAcquisition acq;
-      acq.setSource(message.getSource().toString());
-      acq.setKeyword(bodyLine.first);
-      acq.setValue(bodyLine.second);
-      acq.setDate(boost::gregorian::day_clock::local_day());
-      m_dataProvider->getAcquisitionRequester()->addAcquisition(acq);
+      std::pair<std::string, std::string> bodyLine;
+      BOOST_FOREACH(bodyLine, message.getBody())
+      {
+         CAcquisition acq;
+         acq.setSource(message.getSource().toString());
+         acq.setKeyword(bodyLine.first);
+         acq.setValue(bodyLine.second);
+         acq.setDate(boost::gregorian::day_clock::local_day());
+         m_dataProvider->getAcquisitionRequester()->addAcquisition(acq);
+      }
+   }
+   catch(std::exception &ex)
+   {
+      YADOMS_LOG(error) << "XplLogger fails to store message. " << ex.what();
+   }
+   catch(...)
+   {
    }
 }
 
