@@ -182,8 +182,6 @@ set(YADOMS_SRC
 	server/pluginSystem/HardwarePluginFactory.cpp
 	server/pluginSystem/InvalidPluginException.hpp
 	plugins/hardware/IHardwarePlugin.h
-	plugins/hardware/HardwarePluginConfiguration.hpp
-	plugins/hardware/HardwarePluginConfigurationParameters.hpp
 	server/StartupOptionsLoaderCustomValidators.hpp
 	server/StartupOptionsLoader.h
 	server/StartupOptionsLoader.cpp
@@ -449,6 +447,9 @@ set(SHARED_LIB_SRC
 	shared/stdafx.h
 	shared/XplConstants.h
 	shared/XplConstants.cpp
+  
+	shared/shared/HardwarePluginConfiguration/HardwarePluginConfiguration.hpp
+	shared/shared/HardwarePluginConfiguration/HardwarePluginConfigurationParameters.hpp
 )
 
 
