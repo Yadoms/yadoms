@@ -8,7 +8,7 @@
 #include "tools/DynamicLibrary.hpp" //cmake choose the right platform class
 #include "plugins/hardware/IHardwarePlugin.h"
 #include "plugins/hardware/HardwarePluginInformation.hpp"
-#include "plugins/hardware/HardwarePluginConfiguration.hpp"
+#include "shared/HardwarePluginConfiguration/HardwarePluginConfiguration.hpp"
 #include "InvalidPluginException.hpp"
 
 //--------------------------------------------------------------

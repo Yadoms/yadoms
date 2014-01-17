@@ -2,7 +2,7 @@
 
 #include "IHardwarePlugin.h"
 #include "HardwarePluginInformation.hpp"
-#include "HardwarePluginConfiguration.hpp"
+#include "../../shared/shared/HardwarePluginConfiguration/HardwarePluginConfiguration.hpp"//TODO : chemin pas bô !
 #include "tools/Export.h" //platform specific export definitions
 
 

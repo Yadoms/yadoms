@@ -10,8 +10,6 @@ hardware/IHardwarePlugin.h
 hardware/IHardwarePluginInformation.h
 hardware/HardwarePluginInformation.hpp
 hardware/HardwarePluginImplementationHelper.h
-hardware/HardwarePluginConfiguration.hpp
-hardware/HardwarePluginConfigurationParameters.hpp
 )
 
 
