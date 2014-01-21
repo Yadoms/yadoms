@@ -132,6 +132,10 @@ namespace http {
          void RegisterCustomCode( 
             const char* pageurl, 
             webem_custom_function fun );
+         
+         void RegisterOtherDocRoot( 
+            const std::string & pageurl, 
+            const std::string & otherDocRoot );
 
 			void RegisterIncludeCode(
 				const char* idname,
@@ -161,6 +165,7 @@ namespace http {
 
 			bool CheckForPageOverride( const request& req, reply& rep);
          bool CheckForCustomOverride( const request& req, reply& rep);
+         bool CheckForSecondaryDocRoot( const request& req, reply& rep, std::string & keyword, std::string & docRoot);
 			
 			void SetAuthenticationMethod(const _eAuthenticationMethod amethod);
 
@@ -185,6 +190,8 @@ namespace http {
 		private:
 			/// store map between include codes and application functions
          std::map < std::string, webem_custom_function > myCustoms;
+         /// store map between directory and other doc root
+         std::map < std::string, std::string > myOtherDocRoot;
 			/// store map between include codes and application functions
 			std::map < std::string, webem_include_function > myIncludes;
 			/// store map between include codes and application functions returning UTF-16 strings

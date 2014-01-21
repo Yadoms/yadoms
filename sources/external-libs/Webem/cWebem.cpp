@@ -136,6 +136,12 @@ void cWebem::RegisterActionCode( const char* idname, webem_action_function fun )
 	myActions.insert( std::pair<std::string, webem_action_function >( std::string(idname), fun  ) );
 }
 
+
+void cWebem::RegisterOtherDocRoot(const std::string & pageurl, const std::string & otherDocRoot )
+{
+	myOtherDocRoot.insert( std::pair<std::string, std::string >( pageurl, otherDocRoot  ) );
+}
+
 		/**
 
 		Conversion between UTF-8 and UTF-16 strings.
@@ -319,6 +325,40 @@ void cWebem::CheckForAction( request& req )
 	req.uri = pfun->second( this );
 
 	return;
+}
+
+bool cWebem::CheckForSecondaryDocRoot( const request& req, reply& rep, std::string & keyword, std::string & docRoot)
+{
+   // Decode url to path.
+	std::string request_path;
+	if (!request_handler::url_decode(req.uri, request_path))
+	{
+		rep = reply::stock_reply(reply::bad_request);
+		return false;
+	}
+	// Request path must be absolute and not contain "..".
+	if (request_path.empty() || request_path[0] != '/'
+		|| request_path.find("..") != std::string::npos)
+	{
+		rep = reply::stock_reply(reply::bad_request);
+		return false;
+	}
+
+
+   std::map < std::string, std::string >::iterator pfun;
+   for(pfun = myOtherDocRoot.begin(); pfun != myOtherDocRoot.end(); pfun++)
+   {
+      if(boost::algorithm::starts_with(request_path, pfun->first ))
+         break;
+   }
+
+	if (pfun!=myOtherDocRoot.end())
+	{
+      keyword = pfun->first;
+      docRoot = pfun->second;
+		return true;
+	}
+   return false;
 }
 
 bool cWebem::CheckForCustomOverride( const request& req, reply& rep)
@@ -1444,9 +1484,21 @@ void cWebemRequestHandler::handle_request( const request& req, reply& rep)
    {
 	   if (!myWebem->CheckForPageOverride(req, rep))
 	   {
-		   // do normal handling
-		   request_handler::handle_request( req_modified, rep);
+         std::string specificKeyword;
+         std::string specificDocRoot;
+         if(myWebem->CheckForSecondaryDocRoot(req_modified, rep, specificKeyword, specificDocRoot))
+         {
+            //do specific handling
+            handle_request_path(req_modified, rep, specificKeyword, specificDocRoot);
+         }
+         else
+         {
+		      // do normal handling
+		      request_handler::handle_request( req_modified, rep);
+         }
+         
 
+         //finalize answer
 		   if (rep.headers[1].value == "text/html" 
 			   || rep.headers[1].value == "text/plain" 
 			   || rep.headers[1].value == "text/css"

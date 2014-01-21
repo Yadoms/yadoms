@@ -39,12 +39,16 @@ public:
   /// Handle a request and produce a reply.
   virtual void handle_request(const request& req, reply& rep);
 
+  /// Handle a request and produce a reply for a specific doc root.
+  bool handle_request_path(const request& req, reply& rep, const std::string & root_keyword, const std::string & docRoot);
+
   /// Perform URL-decoding on a string. Returns false if the encoding was
   /// invalid.
   static bool url_decode(const std::string& in, std::string& out);
   
   /// The directory containing the files to be served.
   std::string doc_root_;
+
 private:
 	// Webem link to application code
 	cWebem* myWebem;
