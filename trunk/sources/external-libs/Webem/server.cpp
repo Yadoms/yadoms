@@ -15,7 +15,7 @@ namespace http {
 namespace server {
 
 server::server(const std::string& address, const std::string& port,
-    request_handler& user_request_handler )
+    boost::shared_ptr<request_handler> user_request_handler )
   : io_service_(),
     acceptor_(io_service_),
     connection_manager_(),

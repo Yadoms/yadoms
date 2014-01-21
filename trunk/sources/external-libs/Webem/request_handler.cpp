@@ -85,11 +85,12 @@ int request_handler::do_extract_currentfile(unzFile uf, const char* password, st
 
 void request_handler::handle_request(const request& req, reply& rep)
 {
-   handle_request_path(req, rep, "", doc_root_);
+   //the main document root, is handled as an empty alias
+   handle_request_alias(req, rep, "", doc_root_);
 }
 
 /// Handle a request and produce a reply for a specific doc root.
-bool request_handler::handle_request_path(const request& req, reply& rep, const std::string & root_keyword, const std::string & document_root)
+bool request_handler::handle_request_alias(const request& req, reply& rep, const std::string & alias, const std::string & aliasFilesPath)
 {
    bool isHandled = false;
 
@@ -122,9 +123,13 @@ bool request_handler::handle_request_path(const request& req, reply& rep, const 
     request_path += "index.html";
   }
 
-  if(root_keyword.size() >0)
+  //if alias, then remove it from request_path
+  if(alias.size() >0)
   {
-     request_path = request_path.substr(root_keyword.size());
+     //remove alias
+     request_path = request_path.substr(alias.size());
+
+     //ensure it starts by "/"
      if(request_path.size()>0 && request_path[0] != '/')
         request_path = "/" + request_path;
   }
@@ -172,7 +177,7 @@ bool request_handler::handle_request_path(const request& req, reply& rep, const 
 	  if (bHaveGZipSupport)
 	  {
 		  // Open the file to send back.
-		  std::string full_path = document_root + request_path + ".gz";
+		  std::string full_path = aliasFilesPath + request_path + ".gz";
 		  std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
 		  if (is)
 		  {
@@ -188,7 +193,7 @@ bool request_handler::handle_request_path(const request& req, reply& rep, const 
 	  if (!bHaveLoadedgzip)
 	  {
 		  // Open the file to send back.
-		  std::string full_path = document_root + request_path;
+		  std::string full_path = aliasFilesPath + request_path;
 		  std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
 		  if (!is)
 		  {

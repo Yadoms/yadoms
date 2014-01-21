@@ -29,7 +29,7 @@ public:
   /// Construct the server to listen on the specified TCP address and port, and
   /// serve up files from the given directory.
   explicit server(const std::string& address, const std::string& port,
-      request_handler& user_request_handler );
+      boost::shared_ptr<request_handler> user_request_handler );
 
   /// Run the server's io_service loop.
   void run();
@@ -54,7 +54,7 @@ private:
   connection_manager connection_manager_;
 
   /// The handler for all incoming requests.
-  request_handler& request_handler_;
+  boost::shared_ptr<request_handler> request_handler_;
 
   /// The next connection to be accepted.
   connection_ptr new_connection_;

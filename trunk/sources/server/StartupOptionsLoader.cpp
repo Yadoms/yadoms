@@ -23,8 +23,8 @@ void CStartupOptionsLoader::buildOptionsDescription()
       "use a specific dataBase file")
       ("hardwarePluginsPath,h", po::value<CMustExistPathOption>(&m_hardwarePluginsPath)->default_value(CMustExistPathOption("plugins/hardware")),
       "use a specific path to hardware plugins")
-      ("devicePluginsPath,d", po::value<CMustExistPathOption>(&m_devicePluginsPath)->default_value(CMustExistPathOption("plugins/device")),
-      "use a specific path to device plugins")
+      ("widgetsPath", po::value<CMustExistPathOption>(&m_widgetsPath)->default_value(CMustExistPathOption("widgets")),
+      "use a specific path to widgets path")
       ("disableXplHubStart,x",
       "don't start the Xpl hub, useful if another Xpl hub is already running on the same machine")
       ("XplNetworkIp,I", po::value<CValidIpAddressOption>(&m_xplNetworkIPAddress)->default_value(CValidIpAddressOption("0.0.0.0")),
