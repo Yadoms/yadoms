@@ -40,18 +40,27 @@ Webem constructor
 @param[in] doc_root path to folder containing html e.g. "./"
 
 */
-cWebem::cWebem(
-	   const std::string& address,
-	   const std::string& port,
-	   const std::string& doc_root ) :
-myRequestHandler( doc_root,this ), myPort( port ),
-myServer( address, port, myRequestHandler )
+cWebem::cWebem()
 {
 	m_DigistRealm = "yadoms.com";
 	m_zippassword = "";
 	m_actsessionid=0;
 	m_authmethod=AUTH_LOGIN;
 	m_bForceRelogin=false;
+}
+
+
+cWebem::~cWebem()
+{
+}
+         
+void cWebem::Configure(const std::string& address,
+	const std::string& port,
+	const std::string& doc_root )
+{
+   myRequestHandler.reset(new cWebemRequestHandler( doc_root,this ));
+   myPort = port;
+   myServer.reset(new server( address, port, myRequestHandler ));
 }
 
 /**
@@ -64,9 +73,9 @@ If application needs to continue, start new thread with call to this method.
 
 */
 
-void cWebem::Run() { myServer.run(); }
+void cWebem::Run() { myServer->run(); }
 
-void cWebem::Stop() { myServer.stop(); }
+void cWebem::Stop() { myServer->stop(); }
 
 
 void cWebem::SetAuthenticationMethod(const _eAuthenticationMethod amethod)
@@ -137,9 +146,20 @@ void cWebem::RegisterActionCode( const char* idname, webem_action_function fun )
 }
 
 
-void cWebem::RegisterOtherDocRoot(const std::string & pageurl, const std::string & otherDocRoot )
+void cWebem::RegisterAlias(const std::string & alias, const std::string & filesPath )
 {
-	myOtherDocRoot.insert( std::pair<std::string, std::string >( pageurl, otherDocRoot  ) );
+   //ensure alias is not empty
+   //ensure alias start and ends with /
+   if(alias.size()>0)
+   {
+      std::string realAlias = alias;
+      if(realAlias[0] != '/')
+         realAlias = '/' + realAlias;
+      if(realAlias[realAlias.size()-1] != '/')
+         realAlias = realAlias + '/';
+
+      myAliases.insert( std::pair<std::string, std::string >( realAlias, filesPath  ) );
+   }
 }
 
 		/**
@@ -327,7 +347,7 @@ void cWebem::CheckForAction( request& req )
 	return;
 }
 
-bool cWebem::CheckForSecondaryDocRoot( const request& req, reply& rep, std::string & keyword, std::string & docRoot)
+bool cWebem::CheckForAlias( const request& req, reply& rep, std::string & aliasfound, std::string & filesPath)
 {
    // Decode url to path.
 	std::string request_path;
@@ -345,17 +365,17 @@ bool cWebem::CheckForSecondaryDocRoot( const request& req, reply& rep, std::stri
 	}
 
 
-   std::map < std::string, std::string >::iterator pfun;
-   for(pfun = myOtherDocRoot.begin(); pfun != myOtherDocRoot.end(); pfun++)
+   std::map < std::string, std::string >::iterator iFoundAlias;
+   for(iFoundAlias = myAliases.begin(); iFoundAlias != myAliases.end(); iFoundAlias++)
    {
-      if(boost::algorithm::starts_with(request_path, pfun->first ))
+      if(boost::algorithm::starts_with(request_path, iFoundAlias->first ))
          break;
    }
 
-	if (pfun!=myOtherDocRoot.end())
+	if (iFoundAlias!=myAliases.end())
 	{
-      keyword = pfun->first;
-      docRoot = pfun->second;
+      aliasfound = iFoundAlias->first;
+      filesPath = iFoundAlias->second;
 		return true;
 	}
    return false;
@@ -1484,12 +1504,12 @@ void cWebemRequestHandler::handle_request( const request& req, reply& rep)
    {
 	   if (!myWebem->CheckForPageOverride(req, rep))
 	   {
-         std::string specificKeyword;
-         std::string specificDocRoot;
-         if(myWebem->CheckForSecondaryDocRoot(req_modified, rep, specificKeyword, specificDocRoot))
+         std::string aliasFound;
+         std::string aliasFilesPath;
+         if(myWebem->CheckForAlias(req_modified, rep, aliasFound, aliasFilesPath))
          {
-            //do specific handling
-            handle_request_path(req_modified, rep, specificKeyword, specificDocRoot);
+            //do alias handling
+            handle_request_alias(req_modified, rep, aliasFound, aliasFilesPath);
          }
          else
          {

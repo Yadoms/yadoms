@@ -2,6 +2,7 @@
 
 #include <map>
 #include <boost/function.hpp>
+#include <boost/shared_ptr.hpp>
 #include "server.hpp"
 
 namespace http {
@@ -121,8 +122,10 @@ namespace http {
 		class cWebem
 		{
 		public:
-			cWebem(
-				const std::string& address,
+			cWebem();
+         virtual ~cWebem();
+         
+         void Configure(const std::string& address,
 				const std::string& port,
 				const std::string& doc_root );
 
@@ -133,9 +136,9 @@ namespace http {
             const char* pageurl, 
             webem_custom_function fun );
          
-         void RegisterOtherDocRoot( 
-            const std::string & pageurl, 
-            const std::string & otherDocRoot );
+         void RegisterAlias( 
+            const std::string & alias, 
+            const std::string & filesPath );
 
 			void RegisterIncludeCode(
 				const char* idname,
@@ -165,7 +168,7 @@ namespace http {
 
 			bool CheckForPageOverride( const request& req, reply& rep);
          bool CheckForCustomOverride( const request& req, reply& rep);
-         bool CheckForSecondaryDocRoot( const request& req, reply& rep, std::string & keyword, std::string & docRoot);
+         bool CheckForAlias( const request& req, reply& rep, std::string & alias, std::string & filesForAlias);
 			
 			void SetAuthenticationMethod(const _eAuthenticationMethod amethod);
 
@@ -191,7 +194,7 @@ namespace http {
 			/// store map between include codes and application functions
          std::map < std::string, webem_custom_function > myCustoms;
          /// store map between directory and other doc root
-         std::map < std::string, std::string > myOtherDocRoot;
+         std::map < std::string, std::string > myAliases;
 			/// store map between include codes and application functions
 			std::map < std::string, webem_include_function > myIncludes;
 			/// store map between include codes and application functions returning UTF-16 strings
@@ -205,9 +208,9 @@ namespace http {
 			/// store map between pages and application functions (wide char)
 			std::multimap  < std::string, std::string> myNameValues;
 			/// request handler specialized to handle webem requests
-			cWebemRequestHandler myRequestHandler;
+			boost::shared_ptr<cWebemRequestHandler> myRequestHandler;
 			/// boost::asio web server
-			server myServer;
+         boost::shared_ptr<server> myServer;
 			/// port server is listening on
 			std::string myPort;
 		};

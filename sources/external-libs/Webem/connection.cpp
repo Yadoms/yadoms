@@ -19,7 +19,7 @@ namespace http {
 namespace server {
 
 connection::connection(boost::asio::io_service& io_service,
-    connection_manager& manager, request_handler& handler)
+    connection_manager& manager, boost::shared_ptr<request_handler> handler)
   : socket_(io_service),
     connection_manager_(manager),
     request_handler_(handler)
@@ -63,7 +63,7 @@ void connection::handle_read(const boost::system::error_code& e,
 
     if (result)
     {
-      request_handler_.handle_request(request_, reply_);
+      request_handler_->handle_request(request_, reply_);
       boost::asio::async_write(socket_, reply_.to_buffers(),
           boost::bind(&connection::handle_write, shared_from_this(),
             boost::asio::placeholders::error));

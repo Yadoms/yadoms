@@ -50,11 +50,11 @@ public:
    virtual const std::string& getHarwarePluginsPath() const = 0;
 
    //--------------------------------------------------------------
-   /// \brief	    Get the path of the device plugins
-   /// \return     Device plugins directory (absolute)
+   /// \brief	    Get the path of the widgets
+   /// \return     Widgets directory (absolute)
    /// \note       If explicitly provided, path must exist
    //--------------------------------------------------------------
-   virtual const std::string& getDevicePluginsPath() const = 0;
+   virtual const std::string& getWidgetsPath() const = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Get the startXplHub flag

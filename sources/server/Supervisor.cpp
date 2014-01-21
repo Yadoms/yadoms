@@ -7,6 +7,9 @@
 #include "web/WebServerManager.h"
 #include "tools/Xpl/XplHub.h"
 #include "XplLogger.h"
+#include "web/rest/HardwareRestService.h"
+#include "web/rest/DeviceRestService.h"
+
 
 CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
    :CThreadBase("Supervisor"), m_startupOptions(startupOptions)
@@ -214,9 +217,18 @@ void CSupervisor::doWork()
       const std::string webServerIp = m_startupOptions.getWebServerIPAddress();
       const std::string webServerPort = boost::lexical_cast<std::string>(m_startupOptions.getWebServerPortNumber());
       const std::string webServerPath = m_startupOptions.getWebServerInitialPath();
+      const std::string webServerWidgetPath = m_startupOptions.getWidgetsPath();
 
-      boost::shared_ptr<IWebServer> webServer(new CWebServer(webServerIp, webServerPort, webServerPath));
-      boost::shared_ptr<CWebServerManager> webServerManager(new CWebServerManager(pDataProvider, webServer));
+      boost::shared_ptr<IWebServer> webServer(new CWebServer(webServerIp, webServerPort, webServerPath, "/rest/"));
+      webServer->configureAlias("widget", webServerWidgetPath);
+      boost::shared_ptr<IRestHandler> restHanlder = webServer->getRestHandler();
+      if(restHanlder.get() != NULL)
+      {
+         restHanlder->configureRestService(boost::shared_ptr<IRestService>(new CHardwareRestService(pDataProvider)));
+         restHanlder->configureRestService(boost::shared_ptr<IRestService>(new CDeviceRestService(pDataProvider)));
+      }
+
+      boost::shared_ptr<CWebServerManager> webServerManager(new CWebServerManager(webServer));
       webServerManager->start();
       // ######################### [END] Web server #########################
 

@@ -45,8 +45,8 @@ public:
       { return m_databaseFile; }
    virtual const std::string& getHarwarePluginsPath() const
       { return m_hardwarePluginsPath.get(); }
-   virtual const std::string& getDevicePluginsPath() const
-      { return m_devicePluginsPath.get(); }
+   virtual const std::string& getWidgetsPath() const
+      { return m_widgetsPath.get(); }
    virtual bool getStartXplHubFlag() const
       { return m_startXplHub; }
    virtual const std::string& getXplNetworkIpAddress() const
@@ -74,7 +74,7 @@ private:
    CMustExistPathOption m_webServerInitialPath;
    std::string m_databaseFile;
    CMustExistPathOption m_hardwarePluginsPath;
-   CMustExistPathOption m_devicePluginsPath;
+   CMustExistPathOption m_widgetsPath;
    bool m_startXplHub;
    CValidIpAddressOption m_xplNetworkIPAddress;
 };
