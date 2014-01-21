@@ -82,19 +82,28 @@ int request_handler::do_extract_currentfile(unzFile uf, const char* password, st
 }
 #endif
 
+
 void request_handler::handle_request(const request& req, reply& rep)
 {
+   handle_request_path(req, rep, "", doc_root_);
+}
+
+/// Handle a request and produce a reply for a specific doc root.
+bool request_handler::handle_request_path(const request& req, reply& rep, const std::string & root_keyword, const std::string & document_root)
+{
+   bool isHandled = false;
+
   // Decode url to path.
   std::string request_path;
   if (!url_decode(req.uri, request_path))
   {
     rep = reply::stock_reply(reply::bad_request);
-    return;
+    return isHandled;
   }
   if (request_path.find(".htpasswd")!=std::string::npos)
   {
 	  rep = reply::stock_reply(reply::bad_request);
-	  return;
+	  return isHandled;
   }
 
   // Request path must be absolute and not contain "..".
@@ -102,7 +111,7 @@ void request_handler::handle_request(const request& req, reply& rep)
       || request_path.find("..") != std::string::npos)
   {
     rep = reply::stock_reply(reply::bad_request);
-    return;
+    return isHandled;
   }
 
   if (request_path.find("/@login")==0)
@@ -111,6 +120,13 @@ void request_handler::handle_request(const request& req, reply& rep)
   if (request_path[request_path.size() - 1] == '/')
   {
     request_path += "index.html";
+  }
+
+  if(root_keyword.size() >0)
+  {
+     request_path = request_path.substr(root_keyword.size());
+     if(request_path.size()>0 && request_path[0] != '/')
+        request_path = "/" + request_path;
   }
 
   std::string params="";
@@ -156,10 +172,11 @@ void request_handler::handle_request(const request& req, reply& rep)
 	  if (bHaveGZipSupport)
 	  {
 		  // Open the file to send back.
-		  std::string full_path = doc_root_ + request_path + ".gz";
+		  std::string full_path = document_root + request_path + ".gz";
 		  std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
 		  if (is)
 		  {
+           isHandled = true;
 			  bHaveLoadedgzip=true;
 			  // Fill out the reply to be sent to the client.
 			  rep.status = reply::ok;
@@ -171,14 +188,15 @@ void request_handler::handle_request(const request& req, reply& rep)
 	  if (!bHaveLoadedgzip)
 	  {
 		  // Open the file to send back.
-		  std::string full_path = doc_root_ + request_path;
+		  std::string full_path = document_root + request_path;
 		  std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
 		  if (!is)
 		  {
 			  rep = reply::stock_reply(reply::not_found);
-			  return;
+			  return isHandled;
 		  }
 
+        isHandled = true;
 		  // Fill out the reply to be sent to the client.
 		  rep.status = reply::ok;
 		  char buf[512];
@@ -192,7 +210,7 @@ void request_handler::handle_request(const request& req, reply& rep)
 	  if (m_uf==NULL)
 	  {
 		  rep = reply::stock_reply(reply::not_found);
-		  return;
+		  return isHandled;
 	  }
 
 	  //remove first /
@@ -205,9 +223,10 @@ void request_handler::handle_request(const request& req, reply& rep)
 			  if (do_extract_currentfile(m_uf,myWebem->m_zippassword.c_str(),rep.content)!=UNZ_OK)
 			  {
 				  rep = reply::stock_reply(reply::not_found);
-				  return;
+				  return isHandled;
 			  }
 			  bHaveLoadedgzip=true;
+           isHandled = true;
 		  }
 	  }
 	  if (!bHaveLoadedgzip)
@@ -220,9 +239,10 @@ void request_handler::handle_request(const request& req, reply& rep)
 		  if (do_extract_currentfile(m_uf,myWebem->m_zippassword.c_str(),rep.content)!=UNZ_OK)
 		  {
 			  rep = reply::stock_reply(reply::not_found);
-			  return;
+			  return isHandled;
 		  }
 	  }
+     isHandled = true;
 	  rep.status = reply::ok;
 
   }
@@ -240,6 +260,7 @@ void request_handler::handle_request(const request& req, reply& rep)
 	  rep.headers[2].name = "Content-Encoding";
 	  rep.headers[2].value = "gzip";
   }
+  return isHandled;
 }
 
 bool request_handler::url_decode(const std::string& in, std::string& out)
