@@ -163,7 +163,7 @@ void CXplHub::checkApplicationLifeCycle()
          if (timeoutAt < now)
          {
             //we must delete the peripheral
-            YADOMS_LOG(debug) << "Delete peripheral with port " + m_discoveredPeripherals[i]->getPortNumber() << std::endl;
+            YADOMS_LOG(debug) << "Delete peripheral with port " <<  m_discoveredPeripherals[i]->getPortNumber() << std::endl;
             //TODO : For the moment we don't delete item from the peripheral list due to an unknown bug. (cf NHI)
             //m_discoveredPeripherals.erase(m_discoveredPeripherals.begin()+i);
          }

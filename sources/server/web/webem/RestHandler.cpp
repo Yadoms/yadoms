@@ -21,6 +21,29 @@ void CRestHandler::configureRestService(boost::shared_ptr<IRestService> restServ
    m_restServices.insert(std::make_pair(restService->getRestKeyword(), restService));
 }
 
+std::vector<std::string> CRestHandler::parseUrl(const std::string & url)
+{
+    std::vector<std::string> strs;
+    //split on slash or anti slash
+    boost::split(strs, url, boost::is_any_of("/\\"), boost::algorithm::token_compress_on);
+    //remove empty strings
+    //do not use std::empty in std::remove_if because MacOs Clang do not support it
+    std::vector<std::string>::iterator i = strs.begin();
+    while(i != strs.end())
+    {
+        if(i->empty())
+        {
+            i = strs.erase(i);
+        }
+        else
+        {
+            ++i;
+        }
+    }
+    
+    return strs;
+}
+
 template<class TSpecificRestService>
 boost::shared_ptr<TSpecificRestService> CRestHandler::findMatchingRestService(const std::string & request_path, std::vector<std::string> & parameters)
 {
@@ -36,7 +59,7 @@ boost::shared_ptr<TSpecificRestService> CRestHandler::findMatchingRestService(co
          {
             //parse remaining parameters (maybe empty)
             std::string parametersFromRequest  = request_path.substr(pRestService->first.size());
-            parameters = CSJonParser::ParseUrl(parametersFromRequest);
+            parameters = parseUrl(parametersFromRequest);
             return castWebService;
          }
       }

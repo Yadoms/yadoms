@@ -40,7 +40,7 @@ void CHardwarePluginManager::stop()
       std::pair<int, boost::shared_ptr<CHardwarePluginInstance> > instance2;
       BOOST_FOREACH(instance2, m_runningInstances)
       {
-         if(instance2.second.get() != NULL && instance2.second->getStatus() == CThreadBase::EStatus::kStopped)
+         if(instance2.second.get() != NULL && instance2.second->getStatus() == CThreadBase::kStopped)
          {
             doStopInstance(instance2.first);
             break; //break to restart the foreach

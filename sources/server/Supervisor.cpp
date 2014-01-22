@@ -9,7 +9,7 @@
 #include "XplLogger.h"
 #include "web/rest/HardwareRestService.h"
 #include "web/rest/DeviceRestService.h"
-
+#include "tools/ThreadBase.h"
 
 CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
    :CThreadBase("Supervisor"), m_startupOptions(startupOptions)
@@ -230,6 +230,7 @@ void CSupervisor::doWork()
 
       boost::shared_ptr<CWebServerManager> webServerManager(new CWebServerManager(webServer));
       webServerManager->start();
+      
       // ######################### [END] Web server #########################
 
 
@@ -257,7 +258,7 @@ void CSupervisor::doWork()
       try
       {
          YADOMS_LOG(info) << "Supervisor is running...";
-         while (getStatus() != EStatus::kStopping)
+          while (getStatus() != CThreadBase::kStopping)
          {
             boost::this_thread::sleep(boost::posix_time::milliseconds(100));
          }

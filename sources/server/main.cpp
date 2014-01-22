@@ -24,7 +24,11 @@ int main (int argc, char** argv)
    {
       CStartupOptionsLoader startupOptions(argc, argv);
 
-      CLog::configure(startupOptions.getLogLevel());
+      if(startupOptions.getDebugFlag())
+         CLog::configure_file_per_thread(startupOptions.getLogLevel());
+      else
+         CLog::configure_one_rolling_file(startupOptions.getLogLevel());
+
       YADOMS_LOG_CONFIGURE("Main");
       
       YADOMS_LOG(info) << "********************************************************************";
@@ -45,7 +49,7 @@ int main (int argc, char** argv)
       CSupervisor supervisor(startupOptions);
       supervisor.start();
 
-      while(!CApplicationStopHandler::stopRequested() && supervisor.getStatus() != CThreadBase::EStatus::kStopped)
+      while(!CApplicationStopHandler::stopRequested() && supervisor.getStatus() != CThreadBase::kStopped)
       {
          boost::this_thread::sleep(boost::posix_time::milliseconds(100));
       }

@@ -82,6 +82,11 @@ if(CMAKE_COMPIER_IS_GNUCXX)
 	add_definitions("-std=c++0x")
 endif()
 
+
+if (CMAKE_COMPIER_IS_CLANG)
+	add_definitions("-std=c++0x")
+endif()
+
 #check eclispe debug options
 if(DEBUG_WITH_ECLIPSE)
 	add_definitions(-DDEBUG)

@@ -29,7 +29,7 @@ public:
    /// \param [in] target : target actor
    /// \param [in] messageSchemaIdentifier : message Identifier
    //--------------------------------------------------------------
-   CXplMessage(const ETypeIdentifier & typeId, const CXplActor & source, const CXplActor & target, CXplMessageSchemaIdentifier & messageSchemaIdentifier);
+   CXplMessage(const ETypeIdentifier & typeId, const CXplActor & source, const CXplActor & target, CXplMessageSchemaIdentifier messageSchemaIdentifier);
    
    //--------------------------------------------------------------
    /// \brief	    Constructor

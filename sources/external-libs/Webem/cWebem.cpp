@@ -1153,6 +1153,10 @@ int cWebemRequestHandler::parse_auth_header(const request& req, char *buf,	size_
 	return 1;
 }
 
+cWebemRequestHandler::~cWebemRequestHandler()
+{
+    
+}
 
 // Authorize against the opened passwords file. Return 1 if authorized.
 int cWebemRequestHandler::authorize(const request& req)

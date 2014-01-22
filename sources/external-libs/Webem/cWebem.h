@@ -99,6 +99,8 @@ namespace http {
 			  myWebem(webem)
 			  {}
 
+            virtual ~cWebemRequestHandler();
+            
 			  /// Handle a request and produce a reply.
 			  virtual void handle_request( const request& req, reply& rep);
 		private:

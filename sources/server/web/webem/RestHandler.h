@@ -34,6 +34,13 @@ public:
    const std::string & getRestKeyword();
 private:
    //--------------------------------------   
+    ///\brief         Parse a rest URL and extract each parameters
+    ///\param [in]    url   the url to parse
+    ///\return        the list of parameters
+    //--------------------------------------
+    std::vector<std::string> parseUrl(const std::string & url);
+    
+    //--------------------------------------
    ///\brief         Method which handle rest GET requests
    ///\param [in]    readRestService   the rest service instance which should handle the GET request
    ///\param [in]    parameters        the request parameters
