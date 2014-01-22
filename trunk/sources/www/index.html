@@ -57,7 +57,7 @@
                           </li>
                       </ul>
                       <ul class="nav navbar-nav navbar-right">
-                          <li><a href="#"class="btn btn-primary"><i class="fa fa-wrench"></i></a></li>
+                          <li><a href="#" class="btn btn-primary" id="customizeButton"><i class="fa fa-wrench"></i></a></li>
                       </ul>
                       </div>
                   </div>
@@ -131,6 +131,11 @@
     <script src="js/jquery.gridster.js"></script>
 
 	<script type="text/javascript">
+	
+	//var declaration
+	var customization = false;
+	var gridsterTab0;
+	
 	$( document ).ready(function() {
 
         var numberOfColumns = 9;
@@ -145,16 +150,16 @@
             max_cols: numberOfColumns
         });
 
-        $(".widgetPage .gridster").width(numberOfColumns * gridWidth + (numberOfColumns + 1) * gridMargin);
+        $(".widgetPage .gridster").width(numberOfColumns * (gridWidth + gridMargin * 2));
 
         $("#tab1").removeClass("active");
         $("#tab2").removeClass("active");
 
-        var gridsterTab0 = $("#tab0 ul").gridster().data('gridster');
+        gridsterTab0 = $("#tab0 ul").gridster().data('gridster');
 
         gridsterTab0.add_widget("<li/>", 1, 1, 1, 1);
         gridsterTab0.add_widget("<li/>", 1, 1, 2, 1);
-
+		gridsterTab0.disable();
         //<li data-row="1" data-col="1" data-sizex="1" data-sizey="1"></li>
         //<li data-row="2" data-col="1" data-sizex="1" data-sizey="1"></li>
         //<li data-row="3" data-col="1" data-sizex="1" data-sizey="1"></li>
@@ -178,7 +183,23 @@
 		});
 
 	});
+	
+	$("#customizeButton").click(function() {
+		customization = !customization;
 		
+		if (customization)
+		{
+			gridsterTab0.enable();
+			$(".gridster li").addClass("widgetCustomizing");
+		}
+		else
+		{
+			gridsterTab0.disable();
+			$(".gridster li").removeClass("widgetCustomizing");
+		}
+		
+	});
+	
 	</script>
   </body>
 </html>

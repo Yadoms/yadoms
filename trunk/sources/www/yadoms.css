@@ -133,3 +133,12 @@ body {
     margin-left: 20px;
     margin-right: 20px;
 }
+
+.widgetCustomizing {
+	/* div Rotation  */
+	transform:rotate(5deg); 
+	-ms-transform:rotate(5deg); /* Internet Explorer */
+	-moz-transform:rotate(5deg); /* Firefox */
+	-webkit-transform:rotate(5deg); /* Safari et Chrome */ 
+	-o-transform:rotate(5deg); /* Opera */
+}
