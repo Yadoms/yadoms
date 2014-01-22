@@ -15,6 +15,7 @@
 
     <!-- Custom styles for this template -->
     <link href="yadoms.css" rel="stylesheet">
+	<link href="css/font-awesome.min.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -33,68 +34,61 @@
   <body>
 
   <!-- Fixed navbar -->
-  <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="navbar navbar-default navbar-static-top" role="navigation">
       <div class="container">
-          <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                  <span class="sr-only">Toggle navigation</span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-              </button>
-              <a class="navbar-brand" href="#">Yadoms</a>
-          </div>
-          <div class="navbar-collapse collapse">
-              <ul class="nav navbar-nav">
-                  <li class="dropdown">
-                      <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><b class="caret"></b></a>
-                      <ul class="dropdown-menu">
-                          <li><a href="#">Configuration</a></li>
-                          <li><a href="#">Check For Update</a></li>
-                          <li><a href="#">...</a></li>
-                          <li class="divider"></li>
-                          <li class="dropdown-header">Shutdown/Restart</li>
-                          <li><a href="#">Shutdown</a></li>
-                          <li><a href="#">Restart</a></li>
+          <div class="row" id="mainNavBar">
+              <div class="col-md-12">
+                  <div class="navbar-header">
+                      <a class="navbar-brand" href="#">Yadoms</a>
+                  </div>
+                  <div class="navbar-collapse collapse">
+                      <ul class="nav navbar-nav">
+                          <li class="dropdown">
+                              <a href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown"><i class="caret"></i></a>
+                              <ul class="dropdown-menu">
+                                  <li><a href="#">Configuration</a></li>
+                                  <li><a href="#">Check For Update</a></li>
+                                  <li><a href="#">...</a></li>
+                                  <li class="divider"></li>
+                                  <li class="dropdown-header">Shutdown/Restart</li>
+                                  <li><a href="#">Shutdown</a></li>
+                                  <li><a href="#">Restart</a></li>
+                              </ul>
+                          </li>
                       </ul>
-                  </li>
-              </ul>
-              <ul class="nav navbar-nav navbar-right">
-                  <li><a href="#"class="btn btn-primary btn-large"><i class="icon-white icon-wrench"></i>Customize</a></li>
-              </ul>
+                      <ul class="nav navbar-nav navbar-right">
+                          <li><a href="#"class="btn btn-primary"><i class="fa fa-wrench"></i></a></li>
+                      </ul>
+                      </div>
+                  </div>
+              </div>
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="nav navbar-nav" id = "pageMenu">
+                      <ul class="nav nav-pills nav-justified">
+                          <li class="active"><a href="#tab0" data-toggle="tab">Partie Jour</a></li>
+                          <li><a href="#tab1" data-toggle="tab">Partie Nuit</a></li>
+                          <li><a href="#tab2" data-toggle="tab">Cameras</a></li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
           </div><!--/.nav-collapse -->
       </div>
   </div>
 
-  <div class="container">
-      <div class="tabbable">
-          <ul class="nav nav-pills nav-justified">
-              <li class="active"><a href="#tab0" data-toggle="tab">Partie Jour</a></li>
-              <li><a href="#tab1" data-toggle="tab">Partie Nuit</a></li>
-              <li><a href="#tab2" data-toggle="tab">Cameras</a></li>
-          </ul>
-      </div>
-
+  <div id="tabContainer">
       <div class="tab-content">
-          <div class="tab-pane active" id="tab0">
+          <div class="widgetPage tab-pane active" id="tab0">
               <div class="gridster">
                   <ul>
-                      <li data-row="1" data-col="1" data-sizex="1" data-sizey="1"></li>
-                      <li data-row="2" data-col="1" data-sizex="1" data-sizey="1"></li>
-                      <li data-row="3" data-col="1" data-sizex="1" data-sizey="1"></li>
 
-                      <li data-row="1" data-col="2" data-sizex="2" data-sizey="2"></li>
-                      <li data-row="2" data-col="2" data-sizex="2" data-sizey="2"></li>
-                      <li data-row="3" data-col="2" data-sizex="1" data-sizey="1"></li>
-                      <li data-row="3" data-col="3" data-sizex="1" data-sizey="1"></li>
-
-                      <li data-row="1" data-col="4" data-sizex="3" data-sizey="2"></li>
 
                   </ul>
               </div>
           </div>
 
-          <div class="tab-pane active" id="tab1">
+          <div class="widgetPage tab-pane active" id="tab1">
               <div class="gridster">
                   <ul>
                       <li data-row="1" data-col="1" data-sizex="1" data-sizey="1"></li>
@@ -107,7 +101,7 @@
               </div>
           </div>
 
-          <div class="tab-pane active" id="tab2">
+          <div class="widgetPage tab-pane active" id="tab2">
               <div class="gridster">
                   <ul>
                       <li data-row="1" data-col="1" data-sizex="3" data-sizey="3" id="0"></li>
@@ -129,7 +123,7 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="js/jquery-1.10.2.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
 
     <!-- Gridster includes -->
@@ -139,15 +133,38 @@
 	<script type="text/javascript">
 	$( document ).ready(function() {
 
+        var numberOfColumns = 9;
+        var gridWidth = 100;
+        var gridMargin = 5;
+
         //gridster implemntation
         $(".gridster ul").gridster({
-            widget_margins: [5, 5],
-            widget_base_dimensions: [100, 100],
-            max_cols: 15,
+            widget_margins: [gridMargin, gridMargin],
+            widget_base_dimensions: [gridWidth, gridWidth],
+            min_cols: numberOfColumns,
+            max_cols: numberOfColumns
         });
+
+        $(".widgetPage .gridster").width(numberOfColumns * gridWidth + (numberOfColumns + 1) * gridMargin);
 
         $("#tab1").removeClass("active");
         $("#tab2").removeClass("active");
+
+        var gridsterTab0 = $("#tab0 ul").gridster().data('gridster');
+
+        gridsterTab0.add_widget("<li/>", 1, 1, 1, 1);
+        gridsterTab0.add_widget("<li/>", 1, 1, 2, 1);
+
+        //<li data-row="1" data-col="1" data-sizex="1" data-sizey="1"></li>
+        //<li data-row="2" data-col="1" data-sizex="1" data-sizey="1"></li>
+        //<li data-row="3" data-col="1" data-sizex="1" data-sizey="1"></li>
+
+        //<li data-row="1" data-col="2" data-sizex="2" data-sizey="2"></li>
+        //<li data-row="2" data-col="2" data-sizex="2" data-sizey="2"></li>
+        //<li data-row="3" data-col="2" data-sizex="1" data-sizey="1"></li>
+        //<li data-row="3" data-col="3" data-sizex="1" data-sizey="1"></li>
+
+        //<li data-row="1" data-col="4" data-sizex="3" data-sizey="2"></li>
 
 		// get JSON-formatted data from the server
 		$.getJSON( "/rest/hardware", function( resp ) {
