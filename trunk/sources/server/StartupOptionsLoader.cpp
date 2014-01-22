@@ -29,6 +29,7 @@ void CStartupOptionsLoader::buildOptionsDescription()
       "don't start the Xpl hub, useful if another Xpl hub is already running on the same machine")
       ("XplNetworkIp,I", po::value<CValidIpAddressOption>(&m_xplNetworkIPAddress)->default_value(CValidIpAddressOption("0.0.0.0")),
       "define on which network Xpl will be listened and send. If not specified, first interface will be taken")
+      ("debug", po::bool_switch(&m_debugFlag)->default_value(false), "activate the debug mode (log files are separated by thread)")
       ;
 }
 
@@ -50,6 +51,7 @@ CStartupOptionsLoader::CStartupOptionsLoader(int argc, char** argv)
          throw CStartupOptionsLoaderException(m_optionsDescription);
 
       m_startXplHub = !vm.count("disableXplHubStart");
+      //m_debugFlag = vm.count("debug");
    }
    catch(po::unknown_option& e)
    {

@@ -33,11 +33,16 @@ class CLog
 public:
 
    //--------------------------------------------------------------
-   /// \brief	                        configure the logger
-   /// \param[in]  startupOptions      Startup option of the software
+   /// \brief	                  configure the logger with one file per thread without rolling on size
+   /// \param[in]  logLevel      The log level
    //--------------------------------------------------------------
-   static void configure(const boost::log::trivial::severity_level  & logLevel);
+   static void configure_file_per_thread(const boost::log::trivial::severity_level  & logLevel);
 
+   //--------------------------------------------------------------
+   /// \brief	                  configure the logger with only one file with a rolling file size
+   /// \param[in]  logLevel      The log level
+   //--------------------------------------------------------------
+   static void configure_one_rolling_file(const boost::log::trivial::severity_level  & logLevel);
 private:
 
    //--------------------------------------------------------------
@@ -49,6 +54,12 @@ private:
    /// \brief     configure the logger for console logging
    //--------------------------------------------------------------
    static void CreateConsoleSink();
+
+   //--------------------------------------------------------------
+   /// \brief     configure the logger for logging into rolling file
+   //--------------------------------------------------------------
+   static void CreateRollingFileSink();
+
 
    //--------------------------------------------------------------
    /// \brief     private constructor, this class is static !

@@ -21,7 +21,7 @@ CXplMessage::CXplMessage()
    setMessageSchemaIdentifier(CXplMessageSchemaIdentifier("hbeat", "app"));
 }
 
-CXplMessage::CXplMessage(const CXplMessage::ETypeIdentifier & typeId, const CXplActor & source, const CXplActor & target, CXplMessageSchemaIdentifier & messageSchemaIdentifier)
+CXplMessage::CXplMessage(const CXplMessage::ETypeIdentifier & typeId, const CXplActor & source, const CXplActor & target, CXplMessageSchemaIdentifier  messageSchemaIdentifier)
 {
    m_hop = 1;
    setTypeIdentifier(typeId);

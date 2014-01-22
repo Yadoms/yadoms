@@ -9,7 +9,7 @@ CLog::~CLog()
 {
 }
 
-void CLog::configure(const boost::log::trivial::severity_level  & logLevel)
+void CLog::configure_file_per_thread(const boost::log::trivial::severity_level  & logLevel)
 {
    //add console output (one for all)
    CreateConsoleSink();
@@ -26,6 +26,22 @@ void CLog::configure(const boost::log::trivial::severity_level  & logLevel)
 
 }
 
+
+void CLog::configure_one_rolling_file(const boost::log::trivial::severity_level  & logLevel)
+{
+   //add console output (one for all)
+   CreateConsoleSink();
+
+   //add rolling file
+   CreateRollingFileSink();
+
+   // Add some attributes too
+   boost::log::core::get()->add_global_attribute("TimeStamp", boost::log::attributes::local_clock());
+   boost::log::core::get()->add_global_attribute("RecordID", boost::log::attributes::counter< unsigned int >());
+
+   //we filter on severity
+   boost::log::core::get()->set_filter(boost::log::trivial::severity >= logLevel);
+}
 
 void CLog::CreateFilePerThreadSink()
 {
@@ -78,4 +94,20 @@ void CLog::CreateConsoleSink()
       );
 
    boost::log::core::get()->add_sink(sinklog);
+}
+
+
+void CLog::CreateRollingFileSink()
+{
+    boost::log::add_file_log
+    (
+        boost::log::keywords::file_name = "yadoms.log",                                        
+        boost::log::keywords::rotation_size = 10 * 1024 * 1024,                                   
+        boost::log::keywords::time_based_rotation = boost::log::sinks::file::rotation_at_time_point(0, 0, 0), 
+        boost::log::keywords::format = boost::log::expressions::format("%1% [%2%] %3% - %4%")
+                                       % boost::log::expressions::attr< boost::posix_time::ptime >("TimeStamp")
+                                       % boost::log::expressions::attr< std::string >("ThreadName")
+                                       % boost::log::expressions::attr< boost::log::trivial::severity_level >("Severity")
+                                       % boost::log::expressions::smessage                               
+    );
 }

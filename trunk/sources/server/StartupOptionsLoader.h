@@ -51,6 +51,8 @@ public:
       { return m_startXplHub; }
    virtual const std::string& getXplNetworkIpAddress() const
       { return m_xplNetworkIPAddress.get(); }
+   virtual bool getDebugFlag() const
+      { return m_debugFlag; }
    // [END] IStartupOptions implementation
    //--------------------------------------------------------------
 
@@ -77,6 +79,7 @@ private:
    CMustExistPathOption m_widgetsPath;
    bool m_startXplHub;
    CValidIpAddressOption m_xplNetworkIPAddress;
+   bool m_debugFlag;
 };
 
 
