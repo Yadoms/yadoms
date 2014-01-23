@@ -333,7 +333,6 @@ add_precompiled_header(yadoms stdafx.h)
 add_subdirectory(shared)
 
 set(SHARED_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shared)
-#TODO : ne serait-il pas mieux de prévoir un .h général qui fait un include de tel ou tel .h suivant la plateforme (permettrait de supprimer le bloc de lignes suivantes). Ex : shared/Peripherals.h qui incluerait /windows/Peripherals.h + linux/Peripherals.h + mac/Peripherals.h avec des clés de compil.
 IF(WIN32)
 	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/shared/windows)
 ELSEIF(APPLE)

@@ -4,7 +4,7 @@
 #include <dlfcn.h>
 #include <boost/function.hpp>
 #include <boost/log/trivial.hpp>
-#include "../../tools/Log.h"
+#include "../../shared/Log.h"
 
 //--------------------------------------------------------------
 /// \brief	This class is used to load a plugin file library and 
