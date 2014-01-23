@@ -46,3 +46,20 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Keyword, " CREATE TABLE Keyword\
                                                          name TEXT NOT NULL,\
                                                          PRIMARY KEY(name)\
                                                 )")
+                                                
+                                                
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(Page, " CREATE TABLE Page\
+                                                (\
+                                                   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\
+                                                   name TEXT NOT NULL\
+                                                )")                                                
+                                                
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(Widget, "CREATE TABLE Widget\
+                                                (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\
+                                                   idPage  INTEGER NOT NULL,\
+                                                   path TEXT NOT NULL,\
+                                                   sizeX  INTEGER DEFAULT 0, \
+                                                   sizeY  INTEGER DEFAULT 0,\
+                                                   configuration  TEXT \
+                                                )")                                                
+                                                

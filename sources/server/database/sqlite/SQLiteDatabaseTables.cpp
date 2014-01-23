@@ -37,10 +37,21 @@ DECLARE_TABLE_COLUMN_NAMES(Device,  "Device",
 )
 
 
-                                                   
-
-
 DECLARE_TABLE_COLUMN_NAMES(Keyword,  "Keyword",
    ((Name)("name"))
+)
+
+DECLARE_TABLE_COLUMN_NAMES(Page,  "Page",
+   ((Id)("id"))
+   ((Name)("name"))
+)
+
+DECLARE_TABLE_COLUMN_NAMES(Widget,  "Widget",
+   ((Id)("id"))
+   ((IdPage)("idPage"))
+   ((Path)("path"))
+   ((SizeX)("sizeX"))
+   ((SizeY)("sizeY"))
+   ((Configuration)("configuration"))
 )
 

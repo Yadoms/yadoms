@@ -46,3 +46,20 @@ DECLARE_TABLE(Keyword,
    (Name)
 )
 
+
+DECLARE_TABLE(Page,
+   (Id)
+   (Name)
+)
+
+DECLARE_TABLE(Widget,
+   (Id)
+   (IdPage)
+   (Path)
+   (SizeX)
+   (SizeY)
+   (Configuration)
+)
+
+
+

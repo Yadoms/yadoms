@@ -39,7 +39,24 @@ void CSQLiteVersion1::checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> 
       if(versionFromdatabase >= CVersion(1,0,0,0))
       {
          //not for me, version is correct
-         bNeedToCreateOrUpgrade = false;
+
+         //check that table all tables exists
+         if(!pRequester->checkTableExists(CAcquisitionTable::getTableName()) ||
+            !pRequester->checkTableExists(CConfigurationTable::getTableName()) ||
+            !pRequester->checkTableExists(CDeviceTable::getTableName()) ||
+            !pRequester->checkTableExists(CHardwareTable::getTableName()) ||
+            !pRequester->checkTableExists(CKeywordTable::getTableName()) ||
+            !pRequester->checkTableExists(CPageTable::getTableName()) ||
+            !pRequester->checkTableExists(CWidgetTable::getTableName()))
+         {
+            //at least one table is missing
+            bNeedToCreateOrUpgrade = true;
+         }
+         else
+         {
+            //good version, but missing table (developpement mode only)
+            bNeedToCreateOrUpgrade = false;
+         }
       }
       else
       {
@@ -54,24 +71,7 @@ void CSQLiteVersion1::checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> 
       bNeedToCreateOrUpgrade = true;
    }
 
-   /*
-   //check that table all tables exists
-   if(!pRequester->checkTableExists(CAcquisitionTable::getTableName()) ||
-   !pRequester->checkTableExists(CConfigurationTable::getTableName()) ||
-   !pRequester->checkTableExists(CDeviceTable::getTableName()) ||
-   !pRequester->checkTableExists(CHardwareTable::getTableName()) ||
-   !pRequester->checkTableExists(CKeywordTable::getTableName()))
-   {
-   //configuration table is missing,
-   //create the full database structure
-   YADOMS_LOG(info) << "-> need to create database";
-   bNeedToCreateOrUpgrade = true;
-   }
-   else
-   {
-
-
-   }*/
+   
 
    if(bNeedToCreateOrUpgrade)
    {
@@ -105,6 +105,10 @@ void CSQLiteVersion1::CreateDatabase(const boost::shared_ptr<CSQLiteRequester> &
          throw CSQLiteVersionException("Failed to delete Hardware table");
       if(!pRequester->dropTableIfExists(CKeywordTable::getTableName()))
          throw CSQLiteVersionException("Failed to delete Keyword table");
+      if(!pRequester->dropTableIfExists(CPageTable::getTableName()))
+         throw CSQLiteVersionException("Failed to delete Page table");
+      if(!pRequester->dropTableIfExists(CWidgetTable::getTableName()))
+         throw CSQLiteVersionException("Failed to delete Widget table");
 
       //create tables
       if(!pRequester->createTableIfNotExists(CAcquisitionTable::getTableName(), CAcquisitionTable::getTableCreationScript()))
@@ -117,6 +121,10 @@ void CSQLiteVersion1::CreateDatabase(const boost::shared_ptr<CSQLiteRequester> &
          throw CSQLiteVersionException("Failed to create Hardware table");
       if(!pRequester->createTableIfNotExists(CKeywordTable::getTableName(), CKeywordTable::getTableCreationScript()))
          throw CSQLiteVersionException("Failed to create Keyword table");
+      if(!pRequester->createTableIfNotExists(CPageTable::getTableName(), CPageTable::getTableCreationScript()))
+         throw CSQLiteVersionException("Failed to create Page table");
+      if(!pRequester->createTableIfNotExists(CWidgetTable::getTableName(), CWidgetTable::getTableCreationScript()))
+         throw CSQLiteVersionException("Failed to create Widget table");
 
       //set the database version
       CQuery qInsert;
