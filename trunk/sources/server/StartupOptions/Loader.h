@@ -4,8 +4,8 @@
 #pragma once
 
 #include "StartupOptions.h"
-#include "StartupOptionsLoaderException.hpp"
-#include "StartupOptionsLoaderCustomValidators.hpp"
+#include "LoaderException.hpp"
+#include "LoaderCustomValidators.hpp"
 
 
 //--------------------------------------------------------------

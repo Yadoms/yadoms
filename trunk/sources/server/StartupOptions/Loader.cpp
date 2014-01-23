@@ -1,5 +1,6 @@
 #include "stdafx.h"
-#include "StartupOptionsLoader.h"
+#include "Loader.h"
+#include "InvalidOptionException.hpp"
 
 namespace po = boost::program_options;
 
