@@ -186,11 +186,11 @@ void CSupervisor::doWork()
 #if DEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS
       try
       {
-         boost::shared_ptr<std::vector<std::string> > serialPorts(CPeripherals::getSerialPorts());
+         boost::shared_ptr<CPeripherals::SerialPortsMap> serialPorts(CPeripherals::getSerialPorts());
          YADOMS_LOG(debug) << "System serial ports";
-         BOOST_FOREACH(std::string serialPort, *serialPorts)
+         BOOST_FOREACH(CPeripherals::SerialPortsMap::value_type serialPort, *serialPorts)
          {
-            YADOMS_LOG(debug) << serialPort;
+            YADOMS_LOG(debug) << "Found serial port : " << serialPort.first << " (" << serialPort.second << ")";
          }
       }
       catch (CNotSupportedException& e)

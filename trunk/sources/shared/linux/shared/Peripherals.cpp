@@ -13,11 +13,11 @@ CPeripherals::~CPeripherals()
 {
 }
 
-const boost::shared_ptr<std::vector<std::string> > CPeripherals::getSerialPorts()
+const boost::shared_ptr<CPeripherals::SerialPortsMap> CPeripherals::getSerialPorts()
 {
    boost::filesystem::path ttyDir("/sys/class/tty");
 
-   boost::shared_ptr<std::vector<std::string> > serialPorts(new std::vector<std::string>);
+   boost::shared_ptr<SerialPortsMap> serialPorts(new SerialPortsMap);
 
    if (boost::filesystem::exists(ttyDir) && boost::filesystem::is_directory(ttyDir))
    {
@@ -26,7 +26,8 @@ const boost::shared_ptr<std::vector<std::string> > CPeripherals::getSerialPorts(
       {
          if (boost::filesystem::is_directory(*dirIter) && boost::filesystem::exists(*dirIter / "device"))
          {
-            serialPorts->push_back((*dirIter).path().leaf().string());
+            std::string portName((*dirIter).path().leaf().string());
+            (*serialPorts)[portName]=portName;
          }
       }
    }

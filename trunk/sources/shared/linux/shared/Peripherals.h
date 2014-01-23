@@ -23,7 +23,8 @@ public:
 
    //--------------------------------------------------------------
    /// \brief			List machine serial ports (all)
-   /// \return       The serial ports names
+   /// \return       The serial ports names (keys are real name, values are common name or comment ("used by..."))
    //--------------------------------------------------------------
-   static const boost::shared_ptr<std::vector<std::string> > getSerialPorts();
+   typedef std::map<std::string, std::string> SerialPortsMap;
+   static const boost::shared_ptr<SerialPortsMap> getSerialPorts();
 };
