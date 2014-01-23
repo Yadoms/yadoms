@@ -93,9 +93,9 @@ CPeripherals::~CPeripherals()
 {
 }
 
-const boost::shared_ptr<std::vector<std::string> > CPeripherals::getSerialPorts()
+const boost::shared_ptr<CPeripherals::SerialPortsMap> CPeripherals::getSerialPorts()
 {
-   boost::shared_ptr<std::vector<std::string> > serialPorts(new std::vector<std::string>);
+   boost::shared_ptr<SerialPortsMap> serialPorts(new SerialPortsMap);
 
    HKEY serialcommKey;
    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, "HARDWARE\\DEVICEMAP\\SERIALCOMM", 0, KEY_QUERY_VALUE, &serialcommKey) != ERROR_SUCCESS)
@@ -115,7 +115,10 @@ const boost::shared_ptr<std::vector<std::string> > CPeripherals::getSerialPorts(
    while (RegEnumValue(serialcommKey, valueIndex, serialPortName, &serialPortNameLength, NULL, &dataType, mountPoint, &mountPointLength) == ERROR_SUCCESS)
    {
       if (dataType == REG_SZ)
-         serialPorts->push_back(std::string((char*)mountPoint));
+      {
+         std::string portName((char*)mountPoint);
+         (*serialPorts)[portName]=portName;  // TODO : essayer d'ajouter plus d'infos (port utilisé ou non, si oui par qui, etc...)
+      }
 
       valueIndex++;
    }
