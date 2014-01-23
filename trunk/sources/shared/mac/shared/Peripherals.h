@@ -21,21 +21,10 @@ public:
    //--------------------------------------------------------------
    virtual ~CPeripherals();
 
-   //--------------------------------------------------------------
-   /// \brief			List machine serial ports (all)
-   /// \return       The serial ports names
-   //--------------------------------------------------------------
-   static const boost::shared_ptr<std::vector<std::string> > getSerialPorts();
-
-   //--------------------------------------------------------------
-   /// \brief			List unused serial ports
-   /// \return       The serial ports names
-   //--------------------------------------------------------------
-   static const boost::shared_ptr<std::vector<std::string> > getUnusedSerialPorts();
-
-   //--------------------------------------------------------------
-   /// \brief			List used serial ports
-   /// \return       The serial ports names
-   //--------------------------------------------------------------
-   static const boost::shared_ptr<std::vector<std::string> > getUsedSerialPorts();
+    //--------------------------------------------------------------
+    /// \brief			List machine serial ports (all)
+    /// \return       The serial ports names (keys are real name, values are common name or comment ("used by..."))
+    //--------------------------------------------------------------
+    typedef std::map<std::string, std::string> SerialPortsMap;
+    static const boost::shared_ptr<SerialPortsMap> getSerialPorts();
 };
