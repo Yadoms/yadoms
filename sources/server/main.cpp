@@ -10,7 +10,7 @@
 #include "Supervisor.h"
 #include "StartupOptionsLoader.h"
 #include "ApplicationStopHandler.h"
-#include "tools/Log.h"
+#include <shared/Log.h>
 
 
 /*

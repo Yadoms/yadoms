@@ -186,7 +186,6 @@ set(YADOMS_SRC
 	server/pluginSystem/HardwarePluginFactory.h
 	server/pluginSystem/HardwarePluginFactory.cpp
 	server/pluginSystem/InvalidPluginException.hpp
-	plugins/hardware/IHardwarePlugin.h
 	server/StartupOptionsLoaderCustomValidators.hpp
 	server/StartupOptionsLoader.h
 	server/StartupOptionsLoader.cpp
@@ -328,6 +327,23 @@ add_precompiled_header(yadoms stdafx.h)
 
 
 ##################################################################################################
+## yadoms-shared
+##################################################################################################
+
+add_subdirectory(shared)
+
+set(SHARED_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shared)
+#TODO : ne serait-il pas mieux de prévoir un .h général qui fait un include de tel ou tel .h suivant la plateforme (permettrait de supprimer le bloc de lignes suivantes). Ex : shared/Peripherals.h qui incluerait /windows/Peripherals.h + linux/Peripherals.h + mac/Peripherals.h avec des clés de compil.
+IF(WIN32)
+	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/shared/windows)
+ELSEIF(APPLE)
+	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/shared/mac)
+ELSE()
+	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/shared/linux)
+ENDIF()
+
+
+##################################################################################################
 ## yadoms-tools
 ##################################################################################################
 
@@ -336,45 +352,12 @@ set(TOOLS_LIB_SRC
 	tools/tools/stdafx.cpp
 	tools/tools/stdafx.h
 
-	tools/tools/ThreadBase.cpp
-	tools/tools/ThreadBase.h
-
-	tools/tools/Log.h
-	tools/tools/Log.cpp
-	tools/tools/StringExtension.hpp	
-  
-	tools/tools/Exceptions/BadConversionException.hpp
-	tools/tools/Exceptions/EmptyResultException.hpp
-	tools/tools/Exceptions/Exception.hpp
-	tools/tools/Exceptions/InvalidParameterException.hpp
-	tools/tools/Exceptions/OutOfRangeException.hpp
-	tools/tools/Exceptions/NotImplementedException.hpp
-	tools/tools/Exceptions/NotSupportedException.hpp
-	tools/tools/Exceptions/NullReferenceException.hpp
-
 	tools/tools/dir_monitor/dir_monitor.hpp
 	tools/tools/dir_monitor/basic_dir_monitor.hpp
 	tools/tools/DirectoryChangeListener.h
 	tools/tools/DirectoryChangeListener.cpp
 	
-	tools/tools/Xpl/XplActor.cpp
-	tools/tools/Xpl/XplActor.h
-	tools/tools/Xpl/XplException.h
-	tools/tools/Xpl/XplHelper.cpp
-	tools/tools/Xpl/XplHelper.h
-	tools/tools/Xpl/XplHub.cpp
-	tools/tools/Xpl/XplHub.h
-	tools/tools/Xpl/XplMessage.cpp
-	tools/tools/Xpl/XplMessage.h
-	tools/tools/Xpl/XplMessageFactory.cpp
-	tools/tools/Xpl/XplMessageFactory.h
-	tools/tools/Xpl/XplMessageSchemaIdentifier.cpp
-	tools/tools/Xpl/XplMessageSchemaIdentifier.h
-	tools/tools/Xpl/XplService.cpp
-	tools/tools/Xpl/XplService.h
-	tools/tools/Xpl/XplHubConnectedPeripheral.cpp
-	tools/tools/Xpl/XplHubConnectedPeripheral.h
-	
+
 	tools/tools/Version.h
 	tools/tools/Version.cpp
 )
@@ -383,33 +366,21 @@ set(TOOLS_LIB_SRC
 IF(MSVC)
 set(TOOLS_LIB_SRC	
 	${TOOLS_LIB_SRC}
-	tools/windows/tools/DynamicLibrary.hpp
-	tools/windows/tools/Export.h
 	tools/windows/tools/dir_monitor/basic_dir_monitor_service.hpp
 	tools/windows/tools/dir_monitor/dir_monitor_impl.hpp
-	tools/windows/tools/Peripherals.h
-	tools/windows/tools/Peripherals.cpp
 )	
 
 ELSEIF(APPLE)
 set(TOOLS_LIB_SRC	
 	${TOOLS_LIB_SRC}
-	tools/mac/tools/DynamicLibrary.hpp
-	tools/mac/tools/Export.h
 	tools/mac/tools/dir_monitor/basic_dir_monitor_service.hpp
 	tools/mac/tools/dir_monitor/dir_monitor_impl.hpp
-	tools/mac/tools/Peripherals.h
-	tools/mac/tools/Peripherals.cpp
 )	
 ELSE()
 set(TOOLS_LIB_SRC	
 	${TOOLS_LIB_SRC}
-	tools/linux/tools/DynamicLibrary.hpp
-	tools/linux/tools/Export.h
 	tools/linux/tools/dir_monitor/basic_dir_monitor_service.hpp
 	tools/linux/tools/dir_monitor/dir_monitor_impl.hpp
-	tools/linux/tools/Peripherals.h
-	tools/linux/tools/Peripherals.cpp
 )	
 ENDIF()
 
@@ -438,35 +409,7 @@ ELSE()
 	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tools/linux)
 ENDIF()
 
-set_property( TARGET yadoms-tools PROPERTY INCLUDE_DIRECTORIES ${TOOLS_INCL_DIR} ${BOOST_INCL_DIR})
-
-
-
-##################################################################################################
-## yadoms-shared
-##################################################################################################
-
-# Library Sources
-set(SHARED_LIB_SRC
-	shared/stdafx.cpp
-	shared/stdafx.h
-	shared/XplConstants.h
-	shared/XplConstants.cpp
-  
-	shared/shared/HardwarePluginConfiguration/HardwarePluginConfiguration.hpp
-	shared/shared/HardwarePluginConfiguration/HardwarePluginConfigurationParameters.hpp
-)
-
-
-# Define library outputs
-add_library(yadoms-shared STATIC  ${SHARED_LIB_SRC})
-add_precompiled_header(yadoms-shared stdafx.h)
-target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
-
-# Define include directories (allow easy includes)
-set(SHARED_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shared)
-
-set_property( TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
+set_property( TARGET yadoms-tools PROPERTY INCLUDE_DIRECTORIES ${TOOLS_INCL_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
 
 
 
@@ -474,8 +417,8 @@ set_property( TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES ${SHARED_INCL_DI
 ## Plugins
 ##################################################################################################
 
-#include Plugin CMake file
-add_subdirectory(plugins)
+#include Plugins CMake file
+add_subdirectory(plugins/hardware)
 
 
 ##################################################################################################

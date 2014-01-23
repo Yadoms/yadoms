@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "GenericAdapter.h"
-#include "tools/Log.h"
+#include <shared/Log.h>
 
 CGenericAdapter::CGenericAdapter()
 {

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "WebServer.h"
-#include "tools/Log.h"
+#include <shared/Log.h>
 
 CWebServer::CWebServer(	   const std::string & address, const std::string & port, const std::string & doc_root, const std::string & restKeywordBase )
    :m_configAddress(address), m_configPort(port), m_configDocRoot(doc_root)

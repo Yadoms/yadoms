@@ -1,8 +1,8 @@
 #pragma once
 
 #include "HardwarePluginConfigurationParameters.hpp"
-#include "tools/Exceptions/BadConversionException.hpp"
-#include "tools/Exceptions/OutOfRangeException.hpp"
+#include <shared/Exceptions/BadConversionException.hpp>
+#include <shared/Exceptions/OutOfRangeException.hpp>
 
 // TODO : un fichier par classe
 

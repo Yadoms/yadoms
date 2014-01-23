@@ -1,7 +1,7 @@
 #pragma once
 #include "database/IDataProvider.h"
-#include "tools/Xpl/XplService.h"
-#include "tools/Xpl/XplMessage.h"
+#include <shared/Xpl/XplMessage.h>
+#include <shared/Xpl/XplService.h>
 
 class CXplLogger
 {

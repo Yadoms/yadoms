@@ -1,10 +1,10 @@
 #include "stdafx.h"
 
 #include "SQLiteRequester.h"
-#include "tools/Exceptions/NotImplementedException.hpp"
+#include <shared/Exceptions/NotImplementedException.hpp>
 #include "adapters/GenericAdapter.h"
 #include "adapters/SingleValueAdapter.hpp"
-#include "tools/StringExtension.hpp"
+#include <shared/StringExtension.hpp>
 #include "SQLiteSystemTables.h"
 
 

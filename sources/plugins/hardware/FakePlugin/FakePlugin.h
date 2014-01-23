@@ -41,12 +41,12 @@
 #include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup/file.hpp>
 
-#include "../HardwarePluginImplementationHelper.h"
+#include <shared/HardwarePlugin/HardwarePluginImplementationHelper.h>
 
 #include <string>
 #include <boost/thread/future.hpp>
-#include "tools/Xpl/XplMessage.h"
-#include "tools/Xpl/XplService.h"
+#include <shared/Xpl/XplMessage.h>
+#include <shared/Xpl/XplService.h>
 
 class CFakePlugin : public IHardwarePlugin
 {  

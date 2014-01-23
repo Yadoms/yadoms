@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "HardwareRestService.h"
-#include "tools/Exceptions/NotImplementedException.hpp"
+#include <shared/Exceptions/NotImplementedException.hpp>
 #include "json/HardwareEntitySerializer.h"
 #include "json/JsonCollectionSerializer.h"
 

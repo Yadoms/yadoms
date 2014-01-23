@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "tools/Log.h"
+#include <shared/Log.h>
 #include "DirectoryChangeListener.h"
 
 

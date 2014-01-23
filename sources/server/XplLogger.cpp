@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "XplLogger.h"
-#include "tools/Log.h"
-#include "shared/XplConstants.h"
+#include <shared/Log.h>
+#include <shared/Xpl/XplConstants.h>
 
 CXplLogger::CXplLogger(boost::shared_ptr<IDataProvider> dataProvider)
    :m_dataProvider(dataProvider)
