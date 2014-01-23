@@ -1,0 +1,10 @@
+#widgetTemperature {
+      background-color: darkSalmon;
+      min-height: 100px;
+   }
+   
+.widgetTemperatureName {
+   font-size:1.5em;
+   top: 20px;
+   padding-top:   5px;
+}
