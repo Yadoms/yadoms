@@ -10,6 +10,10 @@
 // Defines From MsPorts.h original file
 DECLARE_HANDLE(HCOMDB);
 typedef HCOMDB *PHCOMDB;
+
+/* ReportType flags for ComDBGetCurrentPortUsage */
+#define CDB_REPORT_BITS  0x0
+#define CDB_REPORT_BYTES 0x1
 // [END] Defines From MsPorts.h original file
 
 
@@ -104,6 +108,8 @@ const boost::shared_ptr<CPeripherals::SerialPortsMap> CPeripherals::getSerialPor
       return serialPorts;
    }
 
+   boost::shared_ptr<std::set<std::string> > usedSerialPorts = getUsedSerialPorts();
+
    DWORD valueIndex = 0;
    static const DWORD serialPortNameMaxLength = 1000;    // Should be enough
    TCHAR serialPortName[serialPortNameMaxLength];
@@ -117,7 +123,12 @@ const boost::shared_ptr<CPeripherals::SerialPortsMap> CPeripherals::getSerialPor
       if (dataType == REG_SZ)
       {
          std::string portName((char*)mountPoint);
-         (*serialPorts)[portName]=portName;  // TODO : essayer d'ajouter plus d'infos (port utilisé ou non, si oui par qui, etc...)
+         (*serialPorts)[portName] = portName;
+         if (usedSerialPorts->find(portName) != usedSerialPorts->end())
+         {
+            // Port is in use
+            (*serialPorts)[portName] += " (in use)";
+         }
       }
 
       valueIndex++;
@@ -125,5 +136,51 @@ const boost::shared_ptr<CPeripherals::SerialPortsMap> CPeripherals::getSerialPor
 
    RegCloseKey(serialcommKey);
    return serialPorts;
+}
+
+const boost::shared_ptr<std::set<std::string> > CPeripherals::getUsedSerialPorts()
+{
+   boost::shared_ptr<std::set<std::string> > usedSerialPorts(new std::set<std::string>);
+
+   try
+   {
+      CMsPortsLibrary msPortLibrary;
+
+      HCOMDB hComDB;
+      if (msPortLibrary.ComDBOpen(&hComDB) != ERROR_SUCCESS)
+         throw CException("Unable to open COM database");
+
+      // First get the ports number
+      DWORD maxPortsReported = 0;
+      if (msPortLibrary.ComDBGetCurrentPortUsage(hComDB, NULL, 0, 0, &maxPortsReported) != ERROR_SUCCESS)
+         throw CException("Unable to get serial ports number");
+
+      // Now get the serial port usage
+      unsigned char* portsInUse = new unsigned char[maxPortsReported]();
+      if (msPortLibrary.ComDBGetCurrentPortUsage(hComDB, portsInUse, maxPortsReported, CDB_REPORT_BYTES, NULL) != ERROR_SUCCESS)
+         throw CException("Unable to get serial ports usage");
+
+      for (DWORD idxPort = 0 ; idxPort < maxPortsReported ; idxPort ++)
+      {
+         if (portsInUse[idxPort])
+         {
+            std::ostringstream os;
+            os << "COM" << (idxPort + 1);
+            usedSerialPorts->insert(os.str());
+         }
+      }
+
+      delete[] portsInUse;
+      msPortLibrary.ComDBClose(hComDB);
+
+      return usedSerialPorts;
+   }
+   catch (CException& e)
+   {
+      YADOMS_LOG(error) << "unable to load MsPorts.dll : " << e.what();
+      return usedSerialPorts;
+   }
+
+   return usedSerialPorts;
 }
 
