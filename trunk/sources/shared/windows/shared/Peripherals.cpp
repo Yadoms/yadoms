@@ -10,15 +10,6 @@
 // Defines From MsPorts.h original file
 DECLARE_HANDLE(HCOMDB);
 typedef HCOMDB *PHCOMDB;
-#define HCOMDB_INVALID_HANDLE_VALUE ((HCOMDB)INVALID_HANDLE_VALUE)
-
-/* Limits for ComDBResizeDatabase NewSize */
-#define COMDB_MIN_PORTS_ARBITRATED 256
-#define COMDB_MAX_PORTS_ARBITRATED 4096
-
-/* ReportType flags for ComDBGetCurrentPortUsage */
-#define CDB_REPORT_BITS  0x0
-#define CDB_REPORT_BYTES 0x1
 // [END] Defines From MsPorts.h original file
 
 
@@ -108,7 +99,10 @@ const boost::shared_ptr<std::vector<std::string> > CPeripherals::getSerialPorts(
 
    HKEY serialcommKey;
    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, "HARDWARE\\DEVICEMAP\\SERIALCOMM", 0, KEY_QUERY_VALUE, &serialcommKey) != ERROR_SUCCESS)
-      throw CException("Unable to access registry");
+   {
+      // Unable to access registry ==> HARDWARE\\DEVICEMAP\\SERIALCOMM key does not exist ==> no serial port on this machine
+      return serialPorts;
+   }
 
    DWORD valueIndex = 0;
    static const DWORD serialPortNameMaxLength = 1000;    // Should be enough
@@ -130,65 +124,3 @@ const boost::shared_ptr<std::vector<std::string> > CPeripherals::getSerialPorts(
    return serialPorts;
 }
 
-const boost::shared_ptr<std::vector<std::string> > CPeripherals::getUnusedSerialPorts()
-{
-   boost::shared_ptr<std::vector<std::string> > unusedSerialPort(new std::vector<std::string>);
-   boost::shared_ptr<std::vector<std::string> > serialPorts(getSerialPorts());
-   boost::shared_ptr<std::vector<std::string> > usedSerialPortsVector(getUsedSerialPorts());
-   std::set<std::string> usedSerialPorts;
-   std::copy(usedSerialPortsVector->begin(), usedSerialPortsVector->end(), std::inserter(usedSerialPorts, usedSerialPorts.begin()));
-
-   BOOST_FOREACH(std::string portName, *serialPorts)
-   {
-      if (usedSerialPorts.find(portName) == usedSerialPorts.end())
-         unusedSerialPort->push_back(portName);
-   }
-
-   return unusedSerialPort;
-}
-
-const boost::shared_ptr<std::vector<std::string> > CPeripherals::getUsedSerialPorts()
-{
-   boost::shared_ptr<std::vector<std::string> > usedSerialPorts(new std::vector<std::string>);
-
-   try
-   {
-      CMsPortsLibrary msPortLibrary;
-
-      HCOMDB hComDB;
-      if (msPortLibrary.ComDBOpen(&hComDB) != ERROR_SUCCESS)
-         throw CException("Unable to open COM database");
-
-      // First get the ports number
-      DWORD maxPortsReported = 0;
-      if (msPortLibrary.ComDBGetCurrentPortUsage(hComDB, NULL, 0, 0, &maxPortsReported) != ERROR_SUCCESS)
-         throw CException("Unable to get serial ports number");
-
-      // Now get the serial port usage
-      unsigned char* portsInUse = new unsigned char[maxPortsReported]();
-      if (msPortLibrary.ComDBGetCurrentPortUsage(hComDB, portsInUse, maxPortsReported, CDB_REPORT_BYTES, NULL) != ERROR_SUCCESS)
-         throw CException("Unable to get serial ports usage");
-
-      for (DWORD idxPort = 0 ; idxPort < maxPortsReported ; idxPort ++)
-      {
-         if (portsInUse[idxPort])
-         {
-            std::ostringstream os;
-            os << "COM" << (idxPort + 1);
-            usedSerialPorts->push_back(os.str());
-         }
-      }
-
-      delete[] portsInUse;
-      msPortLibrary.ComDBClose(hComDB);
-
-      return usedSerialPorts;
-   }
-   catch (CException& e)
-   {
-      YADOMS_LOG(error) << "unable to load MsPorts.dll : " << e.what();
-      return usedSerialPorts;
-   }
-
-   return usedSerialPorts;
-}
