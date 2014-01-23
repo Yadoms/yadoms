@@ -2,7 +2,7 @@
 
 #include "WebServerManager.h"
 #include "IWebServer.h"
-#include "tools/Log.h"
+#include <shared/Log.h>
 
 
 CWebServerManager::CWebServerManager(boost::shared_ptr<IWebServer> webServerInstance)

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "tools/StringExtension.hpp"
-#include "tools/Log.h"
+#include <shared/StringExtension.hpp>
+#include <shared/Log.h>
 
 template<class TValue>
 class CSingleValueAdapter: public ISQLiteResultAdapter<TValue>

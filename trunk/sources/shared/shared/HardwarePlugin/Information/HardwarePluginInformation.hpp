@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "IHardwarePluginInformation.h"
+#include "../Interfaces/IHardwarePluginInformation.h"
 
 
 //TODO : faire un CPP ?

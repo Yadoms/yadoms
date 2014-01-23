@@ -4,7 +4,7 @@
 #pragma once
 
 #include "StartupOptions.h"
-#include "tools/Exceptions/Exception.hpp"
+#include <shared/Exceptions/Exception.hpp>
 
 //--------------------------------------------------------------
 /// \class Configuration loading error exception

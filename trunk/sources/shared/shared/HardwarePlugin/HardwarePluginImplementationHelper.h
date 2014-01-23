@@ -1,9 +1,9 @@
 #pragma once
 
-#include "IHardwarePlugin.h"
-#include "HardwarePluginInformation.hpp"
-#include "../../shared/shared/HardwarePluginConfiguration/HardwarePluginConfiguration.hpp"//TODO : chemin pas bô !
-#include "tools/Export.h" //platform specific export definitions
+#include "Interfaces/IHardwarePlugin.h"
+#include "Information/HardwarePluginInformation.hpp"
+#include "Configuration/HardwarePluginConfiguration.hpp"
+#include <shared/Export.h>
 
 
 // Plugin implementation helper

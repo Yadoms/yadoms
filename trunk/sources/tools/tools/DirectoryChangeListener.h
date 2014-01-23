@@ -5,8 +5,8 @@
 //
 #pragma once
 
-#include "tools/ThreadBase.h"
-#include "tools/dir_monitor/dir_monitor.hpp"
+#include <shared/ThreadBase.h>
+#include "dir_monitor/dir_monitor.hpp"
 
 //--------------------------------------------------------------
 /// \brief	this class is used to monitor a directory for changes 

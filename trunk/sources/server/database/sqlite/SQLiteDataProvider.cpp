@@ -6,10 +6,10 @@
 #include "sqlite3.h"
 #include <boost/filesystem.hpp>
 #include "SQLiteRequester.h"
-#include "tools/Log.h"
+#include <shared/Log.h>
 #include "versioning/SQLiteVersionUpgraderFactory.h"
 #include "versioning/SQLiteVersionException.h"
-#include "Exceptions/NotSupportedException.hpp"
+#include <shared/Exceptions/NotSupportedException.hpp>
 
 CSQLiteDataProvider::CSQLiteDataProvider(const std::string & dbFile)
    :m_dbFile(dbFile), m_pDatabaseHandler(NULL)

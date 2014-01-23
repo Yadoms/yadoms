@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IWebServer.h"
-#include "tools/ThreadBase.h"
+#include <shared/ThreadBase.h>
 
 class CWebServerManager : public CThreadBase
 {

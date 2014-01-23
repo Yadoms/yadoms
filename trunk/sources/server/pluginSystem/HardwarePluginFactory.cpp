@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "HardwarePluginFactory.h"
+#include <shared/HardwarePlugin/Information/HardwarePluginInformation.hpp>
 
 CHardwarePluginFactory::CHardwarePluginFactory(const boost::filesystem::path& libraryPath)
       :m_libraryPath(libraryPath), m_construct(NULL), m_getInformation(NULL), m_getDefaultConfiguration(NULL)

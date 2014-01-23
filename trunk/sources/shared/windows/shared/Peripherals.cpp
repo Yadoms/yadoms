@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
 #include "DynamicLibrary.hpp"
-#include "tools/Exceptions/Exception.hpp"
-#include "tools/Log.h"
+#include "../../shared/Exceptions/Exception.hpp"
+#include "../../shared/Log.h"
 #include "Peripherals.h"
 #include <windows.h>
 

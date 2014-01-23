@@ -5,10 +5,10 @@
 //
 #pragma once
 
-#include "tools/DynamicLibrary.hpp" //cmake choose the right platform class
-#include "plugins/hardware/IHardwarePlugin.h"
-#include "plugins/hardware/HardwarePluginInformation.hpp"
-#include "shared/HardwarePluginConfiguration/HardwarePluginConfiguration.hpp"
+#include <shared/DynamicLibrary.hpp>
+#include <shared/HardwarePlugin/Interfaces/IHardwarePlugin.h>
+#include <shared/HardwarePlugin/Interfaces/IHardwarePluginInformation.h>
+#include <shared/HardwarePlugin/Configuration/HardwarePluginConfiguration.hpp>
 #include "InvalidPluginException.hpp"
 
 //--------------------------------------------------------------

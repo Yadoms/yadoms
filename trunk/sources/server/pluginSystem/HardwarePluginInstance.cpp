@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
 #include "HardwarePluginInstance.h"
-#include "plugins/hardware/IHardwarePlugin.h"
-#include "plugins/hardware/IHardwarePluginInformation.h"
+#include <shared/HardwarePlugin/Interfaces/IHardwarePlugin.h>
+#include <shared/HardwarePlugin/Interfaces/IHardwarePluginInformation.h>
 
 
 CHardwarePluginInstance::CHardwarePluginInstance(

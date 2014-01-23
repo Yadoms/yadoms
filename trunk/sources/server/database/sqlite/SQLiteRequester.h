@@ -2,8 +2,8 @@
 
 #include "sqlite3.h"
 #include "adapters/ISQLiteResultAdapter.h"
-#include "tools/Exceptions/NullReferenceException.hpp"
-#include "tools/Log.h"
+#include <shared/Exceptions/NullReferenceException.hpp>
+#include <shared/Log.h>
 #include "Query.h"
 
 class CSQLiteRequester

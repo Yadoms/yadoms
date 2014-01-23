@@ -5,7 +5,7 @@
 //
 #pragma once
 
-#include "tools/ThreadBase.h"
+#include <shared/ThreadBase.h>
 #include "HardwarePluginFactory.h"
 #include "database/entities/Hardware.h"
 

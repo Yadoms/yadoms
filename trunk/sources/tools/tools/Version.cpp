@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Version.h"
-#include "Log.h"
+#include <shared/Log.h>
 
 
 CVersion::CVersion()

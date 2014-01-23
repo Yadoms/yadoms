@@ -1,15 +1,16 @@
 #include "stdafx.h"
 #include "Supervisor.h"
+#include "pluginSystem/HardwarePluginManager.h"
 #include "database/sqlite/SQLiteDataProvider.h"
-#include "tools/Log.h"
-#include "tools/Exceptions/NotSupportedException.hpp"
+#include <shared/Log.h>
+#include <shared/Exceptions/NotSupportedException.hpp>
 #include "web/webem/WebServer.h"
 #include "web/WebServerManager.h"
-#include "tools/Xpl/XplHub.h"
+#include <shared/Xpl/XplHub.h>
 #include "XplLogger.h"
 #include "web/rest/HardwareRestService.h"
 #include "web/rest/DeviceRestService.h"
-#include "tools/ThreadBase.h"
+#include <shared/ThreadBase.h>
 
 CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
    :CThreadBase("Supervisor"), m_startupOptions(startupOptions)
@@ -258,7 +259,7 @@ void CSupervisor::doWork()
       try
       {
          YADOMS_LOG(info) << "Supervisor is running...";
-          while (getStatus() != CThreadBase::kStopping)
+         while (getStatus() != CThreadBase::kStopping)
          {
             boost::this_thread::sleep(boost::posix_time::milliseconds(100));
          }

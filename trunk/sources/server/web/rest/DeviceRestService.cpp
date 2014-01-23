@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DeviceRestService.h"
-#include "tools/Exceptions/NotImplementedException.hpp"
+#include <shared/Exceptions/NotImplementedException.hpp>
 #include "json/DeviceEntitySerializer.h"
 #include "json/JsonCollectionSerializer.h"
 

@@ -5,10 +5,10 @@
 #include <boost/assign.hpp>
 #include <boost/log/common.hpp>
 #include <boost/log/trivial.hpp>
-#include "tools/Log.h"
+#include <shared/Log.h>
 #include "FakePlugin.h"
-#include "tools/Xpl/XplService.h"
-#include "tools/Xpl/XplMessage.h"
+#include <shared/Xpl/XplService.h>
+#include <shared/Xpl/XplMessage.h>
 
 // Use this macro to define some basic informations about the plugin
 IMPLEMENT_HARDWARE_PLUGIN(

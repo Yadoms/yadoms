@@ -8,7 +8,7 @@
 #include <string>
 #include <boost/function.hpp>
 #include <boost/log/trivial.hpp>
-#include "../../tools/Log.h"
+#include "../../shared/Log.h"
 #include "Windows.h"
 
 //--------------------------------------------------------------
