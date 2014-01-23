@@ -136,9 +136,9 @@ body {
 
 .widgetCustomizing {
 	/* div Rotation  */
-	transform:rotate(5deg); 
-	-ms-transform:rotate(5deg); /* Internet Explorer */
-	-moz-transform:rotate(5deg); /* Firefox */
-	-webkit-transform:rotate(5deg); /* Safari et Chrome */ 
-	-o-transform:rotate(5deg); /* Opera */
+	/*transform:rotate(5deg); */
+	/*-ms-transform:rotate(5deg);*/ /* Internet Explorer */
+	/*-moz-transform:rotate(5deg); *//* Firefox */
+	/*-webkit-transform:rotate(5deg);*/ /* Safari et Chrome */ 
+	/*-o-transform:rotate(5deg); *//* Opera */
 }
