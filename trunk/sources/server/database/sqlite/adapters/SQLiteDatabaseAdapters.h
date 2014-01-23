@@ -41,3 +41,18 @@ DECLARE_ADAPTER(Device,
 DECLARE_ADAPTER(Keyword,
    ((Name)(STRING_ADAPTER)(""))
 )
+
+
+DECLARE_ADAPTER(Page,
+   ((Id)(INT_ADAPTER)(0))
+   ((Name)(STRING_ADAPTER)(""))
+)
+
+DECLARE_ADAPTER(Widget,
+   ((Id)(INT_ADAPTER)(0))
+   ((IdPage)(INT_ADAPTER)(0))
+   ((Path)(STRING_ADAPTER)(""))
+   ((SizeX)(INT_ADAPTER)(0))
+   ((SizeY)(INT_ADAPTER)(0))
+   ((Configuration)(STRING_ADAPTER)(""))
+)

@@ -5,6 +5,8 @@
 #include "IDeviceRequester.h"
 #include "IAcquisitionRequester.h"
 #include "IKeywordRequester.h"
+#include "IPageRequester.h"
+#include "IWidgetRequester.h"
 
 class IDataProvider
 {
@@ -60,6 +62,19 @@ public:
 	//--------------------------------------------------------------  
    virtual boost::shared_ptr<IKeywordRequester> getKeywordRequester() = 0;
 
+   //--------------------------------------------------------------
+	/// \Brief		get the page requester
+	/// \return 	the page requester
+	/// \throws 		
+	//--------------------------------------------------------------  
+   virtual boost::shared_ptr<IPageRequester> getPageRequester() = 0;
+
+   //--------------------------------------------------------------
+	/// \Brief		get the widget requester
+	/// \return 	the widget requester
+	/// \throws 		
+	//--------------------------------------------------------------  
+   virtual boost::shared_ptr<IWidgetRequester> getWidgetRequester() = 0;
 
 protected:
 	IDataProvider()

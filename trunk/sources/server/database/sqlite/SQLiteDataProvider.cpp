@@ -100,6 +100,8 @@ void CSQLiteDataProvider::loadRequesters()
    m_deviceRequester.reset(new CSQLiteDeviceRequester(*this, m_databaseRequester));
    m_acquisitionRequester.reset(new CSQLiteAcquisitionRequester(*this, m_databaseRequester));
    m_keywordRequester.reset(new CSQLiteKeywordRequester(*this, m_databaseRequester));
+   m_pageRequester.reset(new CSQLitePageRequester(*this, m_databaseRequester));
+   m_widgetRequester.reset(new CSQLiteWidgetRequester(*this, m_databaseRequester));
 }
 
 

@@ -10,6 +10,8 @@
 #include "XplLogger.h"
 #include "web/rest/HardwareRestService.h"
 #include "web/rest/DeviceRestService.h"
+#include "web/rest/PageRestService.h"
+#include "web/rest/WidgetRestService.h"
 #include <shared/ThreadBase.h>
 #include <shared/Peripherals.h>
 
@@ -214,6 +216,8 @@ void CSupervisor::doWork()
       {
          restHanlder->configureRestService(boost::shared_ptr<IRestService>(new CHardwareRestService(pDataProvider)));
          restHanlder->configureRestService(boost::shared_ptr<IRestService>(new CDeviceRestService(pDataProvider)));
+         restHanlder->configureRestService(boost::shared_ptr<IRestService>(new CPageRestService(pDataProvider)));
+         restHanlder->configureRestService(boost::shared_ptr<IRestService>(new CWidgetRestService(pDataProvider)));
       }
 
       boost::shared_ptr<CWebServerManager> webServerManager(new CWebServerManager(webServer));

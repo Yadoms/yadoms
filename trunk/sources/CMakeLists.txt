@@ -204,7 +204,7 @@ set(YADOMS_SRC
 	server/StartupOptions/Loader.cpp
 	server/StartupOptions/LoaderException.hpp
 	server/StartupOptions/StartupOptions.h
-  server/StartupOptions/InvalidOptionException.hpp
+	server/StartupOptions/InvalidOptionException.hpp
   
 	server/ApplicationStopHandler.h
 	server/ApplicationStopHandler.cpp
@@ -217,6 +217,8 @@ set(YADOMS_SRC
 	server/database/IDeviceRequester.h
 	server/database/IAcquisitionRequester.h
 	server/database/IKeywordRequester.h
+	server/database/IPageRequester.h
+	server/database/IWidgetRequester.h
 
 	server/database/entities/EntityHelpers.hpp
 	server/database/entities/Hardware.h
@@ -224,6 +226,8 @@ set(YADOMS_SRC
 	server/database/entities/Acquisition.h
 	server/database/entities/Device.h
 	server/database/entities/Keyword.h
+	server/database/entities/Page.h
+	server/database/entities/Widget.h
 	
 	server/web/IWebServer.h
 	server/web/IRestHandler.h
@@ -249,6 +253,20 @@ set(YADOMS_SRC
 	server/web/rest/json/DeviceEntitySerializer.cpp
 	server/web/rest/json/DeviceEntityJsonDefinition.h
 	server/web/rest/json/DeviceEntityJsonDefinition.cpp
+	
+	server/web/rest/PageRestService.h
+	server/web/rest/PageRestService.cpp
+	server/web/rest/json/PageEntitySerializer.h
+	server/web/rest/json/PageEntitySerializer.cpp
+	server/web/rest/json/PageEntityJsonDefinition.h
+	server/web/rest/json/PageEntityJsonDefinition.cpp
+
+	server/web/rest/WidgetRestService.h
+	server/web/rest/WidgetRestService.cpp
+	server/web/rest/json/WidgetEntitySerializer.h
+	server/web/rest/json/WidgetEntitySerializer.cpp
+	server/web/rest/json/WidgetEntityJsonDefinition.h
+	server/web/rest/json/WidgetEntityJsonDefinition.cpp
 	)
 
 # Project folders
@@ -290,6 +308,10 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/SQLiteDataProvider.cpp
 		server/database/sqlite/SQLiteRequester.h
 		server/database/sqlite/SQLiteRequester.cpp
+		server/database/sqlite/SQLitePageRequester.h
+		server/database/sqlite/SQLitePageRequester.cpp		
+		server/database/sqlite/SQLiteWidgetRequester.h
+		server/database/sqlite/SQLiteWidgetRequester.cpp		
 		
 		server/database/sqlite/adapters/SQLiteDatabaseAdapters.h
 		server/database/sqlite/adapters/AdapterHelpers.hpp

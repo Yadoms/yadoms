@@ -6,6 +6,8 @@
 #include "SQLiteAcquisitionRequester.h"
 #include "SQLiteDeviceRequester.h"
 #include "SQLiteKeywordRequester.h"
+#include "SQLitePageRequester.h"
+#include "SQLiteWidgetRequester.h"
 #include "SQLiteRequester.h"
 #include "sqlite3.h"
 
@@ -36,6 +38,10 @@ public:
    boost::shared_ptr<IDeviceRequester> getDeviceRequester() { return m_deviceRequester; }
    boost::shared_ptr<IAcquisitionRequester> getAcquisitionRequester() { return m_acquisitionRequester; }
    boost::shared_ptr<IKeywordRequester> getKeywordRequester() { return m_keywordRequester; }
+   boost::shared_ptr<IPageRequester> getPageRequester() { return m_pageRequester; }
+   boost::shared_ptr<IWidgetRequester> getWidgetRequester() { return m_widgetRequester; }
+
+
    // [END] IHardwarePlugin implementation
 
 private:
@@ -69,6 +75,16 @@ private:
 	/// \Brief		Keyword requester
 	//--------------------------------------------------------------
 	boost::shared_ptr<CSQLiteKeywordRequester>		m_keywordRequester;
+
+	//--------------------------------------------------------------
+	/// \Brief		Page requester
+	//--------------------------------------------------------------
+	boost::shared_ptr<CSQLitePageRequester>		m_pageRequester;
+
+	//--------------------------------------------------------------
+	/// \Brief		Widget requester
+	//--------------------------------------------------------------
+	boost::shared_ptr<CSQLiteWidgetRequester>		m_widgetRequester;
 
    //--------------------------------------------------------------
 	/// \Brief		Startup options
