@@ -179,6 +179,7 @@ set(YADOMS_SRC
 	server/main.cpp
 	server/Supervisor.cpp
 	server/Supervisor.h
+  
 	server/pluginSystem/HardwarePluginManager.h
 	server/pluginSystem/HardwarePluginManager.cpp
 	server/pluginSystem/HardwarePluginInstance.h
@@ -186,11 +187,16 @@ set(YADOMS_SRC
 	server/pluginSystem/HardwarePluginFactory.h
 	server/pluginSystem/HardwarePluginFactory.cpp
 	server/pluginSystem/InvalidPluginException.hpp
-	server/StartupOptionsLoaderCustomValidators.hpp
-	server/StartupOptionsLoader.h
-	server/StartupOptionsLoader.cpp
-	server/StartupOptionsLoaderException.hpp
-	server/StartupOptions.h
+  
+	server/StartupOptions/MustExistPathOption.hpp
+	server/StartupOptions/ValidIpAddressOption.hpp
+	server/StartupOptions/LoaderCustomValidators.hpp
+	server/StartupOptions/Loader.h
+	server/StartupOptions/Loader.cpp
+	server/StartupOptions/LoaderException.hpp
+	server/StartupOptions/StartupOptions.h
+  server/StartupOptions/InvalidOptionException.hpp
+  
 	server/ApplicationStopHandler.h
 	server/ApplicationStopHandler.cpp
 	server/XplLogger.h
@@ -242,6 +248,7 @@ if(MSVC)
 	source_group(Server\\pluginSystem server/pluginSystem/*.* )
 	source_group(Server\\pluginSystem\\external plugins/hardware/IHardwarePlugin.h )
 	source_group(Server\\database  server/database/*.*)
+	source_group(Server\\StartupOptions  server/StartupOptions/*.*)
 	source_group(Server\\database\\entities  server/database/entities/*.*)
 	source_group(Server\\web  server/web/*.*)
 	source_group(Server\\web\\REST  server/web/rest/*.*)

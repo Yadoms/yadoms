@@ -1,7 +1,7 @@
 #pragma once
 
 #include <shared/ThreadBase.h>
-#include "StartupOptions.h"
+#include "StartupOptions/StartupOptions.h"
 
 class CSupervisor : public CThreadBase
 {
