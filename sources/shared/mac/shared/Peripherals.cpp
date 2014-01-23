@@ -1,13 +1,27 @@
 #include "stdafx.h"
 
-#include "../../shared/Exceptions/NotImplementedException.hpp"
-#include "../../shared/Log.h"
+#include "shared/Exceptions/NotImplementedException.hpp"
+#include "shared/Log.h"
 #include "Peripherals.h"
 
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include <sys/ioctl.h>
+#include <errno.h>
+#include <paths.h>
 #include <termios.h>
+#include <sysexits.h>
+#include <sys/param.h>
+#include <sys/select.h>
+#include <sys/time.h>
+#include <time.h>
+#include <CoreFoundation/CoreFoundation.h>
+#include <IOKit/IOKitLib.h>
 #include <IOKit/serial/IOSerialKeys.h>
+#include <IOKit/serial/ioss.h>
+#include <IOKit/IOBSD.h>
 
 CPeripherals::CPeripherals()
 {
@@ -17,10 +31,10 @@ CPeripherals::~CPeripherals()
 {
 }
 
-const boost::shared_ptr<std::vector<std::string> > CPeripherals::getSerialPorts()
+const boost::shared_ptr<CPeripherals::SerialPortsMap> CPeripherals::getSerialPorts()
 {
-    /*
-	std::vector<std::string> SerialPortPaths;
+   boost::shared_ptr<CPeripherals::SerialPortsMap> serialPorts(new CPeripherals::SerialPortsMap);
+   
 	io_iterator_t matchingServices;
 	mach_port_t         masterPort;
     CFMutableDictionaryRef  classesToMatch;
@@ -29,20 +43,20 @@ const boost::shared_ptr<std::vector<std::string> > CPeripherals::getSerialPorts(
 	char deviceFriendly[1024];
     if (KERN_SUCCESS != IOMasterPort(MACH_PORT_NULL, &masterPort))
     {
-        DBG("SerialPort::getSerialPortPaths : IOMasterPort failed");
-		return SerialPortPaths;
+        YADOMS_LOG(error) << "SerialPort::getSerialPortPaths : IOMasterPort failed";
+		return serialPorts;
     }
     classesToMatch = IOServiceMatching(kIOSerialBSDServiceValue);
     if (classesToMatch == NULL)
 	{
-		DBG("SerialPort::getSerialPortPaths : IOServiceMatching failed");
-		return SerialPortPaths;
+		YADOMS_LOG(error) << "SerialPort::getSerialPortPaths : IOServiceMatching failed";
+		return serialPorts;
 	}
 	CFDictionarySetValue(classesToMatch, CFSTR(kIOSerialBSDTypeKey), CFSTR(kIOSerialBSDRS232Type));    
 	if (KERN_SUCCESS != IOServiceGetMatchingServices(masterPort, classesToMatch, &matchingServices))
 	{
-		DBG("SerialPort::getSerialPortPaths : IOServiceGetMatchingServices failed");
-		return SerialPortPaths;
+		YADOMS_LOG(error) << "SerialPort::getSerialPortPaths : IOServiceGetMatchingServices failed";
+		return serialPorts;
 	}
 	while ((modemService = IOIteratorNext(matchingServices)))
 	{
@@ -52,30 +66,17 @@ const boost::shared_ptr<std::vector<std::string> > CPeripherals::getSerialPorts(
 		deviceFriendlyAsCFString = IORegistryEntryCreateCFProperty(modemService,CFSTR(kIOTTYDeviceKey), kCFAllocatorDefault, 0);
 		if(deviceFilePathAsCFString)
 		{
+            //TODO: si type retour passe en map
 			if(CFStringGetCString((const __CFString*)deviceFilePathAsCFString, deviceFilePath, 512, kCFStringEncodingASCII)
 			&& CFStringGetCString((const __CFString*)deviceFriendlyAsCFString, deviceFriendly, 1024, kCFStringEncodingASCII) )
-         SerialPortPaths.push_back(std::string(deviceFriendly));
+                serialPorts->insert(std::make_pair(std::string(deviceFilePath), std::string(deviceFriendly)));
 				//SerialPortPaths.set(deviceFriendly, deviceFilePath);
 			CFRelease(deviceFilePathAsCFString);
 			CFRelease(deviceFriendlyAsCFString);
 		}
 	}
 	IOObjectRelease(modemService);
-	return SerialPortPaths;
-     */
-    NOT_IMPLEMENTED;
+	return serialPorts;
 }
 
-const boost::shared_ptr<std::vector<std::string> > CPeripherals::getUnusedSerialPorts()
-{
-   //TODO Voir http://stackoverflow.com/questions/8632558/macos-programmatically-finding-serial-ports
-   // Utiliser "throw CNotSupportedException();" si une de ces fonctions ne peut �tre support�e par la plateforme
-   NOT_IMPLEMENTED;
-}
 
-const boost::shared_ptr<std::vector<std::string> > CPeripherals::getUsedSerialPorts()
-{
-   //TODO Voir http://stackoverflow.com/questions/8632558/macos-programmatically-finding-serial-ports
-   // Utiliser "throw CNotSupportedException();" si une de ces fonctions ne peut �tre support�e par la plateforme
-   NOT_IMPLEMENTED;
-}
