@@ -19,6 +19,7 @@ CPeripherals::~CPeripherals()
 
 const boost::shared_ptr<std::vector<std::string> > CPeripherals::getSerialPorts()
 {
+    /*
 	std::vector<std::string> SerialPortPaths;
 	io_iterator_t matchingServices;
 	mach_port_t         masterPort;
@@ -61,7 +62,8 @@ const boost::shared_ptr<std::vector<std::string> > CPeripherals::getSerialPorts(
 	}
 	IOObjectRelease(modemService);
 	return SerialPortPaths;
-
+     */
+    NOT_IMPLEMENTED;
 }
 
 const boost::shared_ptr<std::vector<std::string> > CPeripherals::getUnusedSerialPorts()
