@@ -1,11 +1,7 @@
 #pragma once
 
-#include <string>
-
 #include "../Interfaces/IHardwarePluginInformation.h"
 
-
-//TODO : faire un CPP ?
 
 //--------------------------------------------------------------
 /// \brief		Container class for information about Hardware plugins
@@ -27,41 +23,24 @@ public:
    ///            Mainly, don't change the version format in the plugin life.
    ///            Recommended format is "xx.yy"
    //--------------------------------------------------------------
-   CHardwarePluginInformation (const std::string & name , const std::string & version,
+   CHardwarePluginInformation (const std::string & name, const std::string & version,
       const EReleaseType & releaseType, const std::string & author,
-      const std::string & url)
-      :m_name(name), m_version(version), m_releaseType(releaseType), m_author(author), m_url(url)
-   {
-   }
+      const std::string & url);
 
    //--------------------------------------------------------------
    /// \brief	    Copy constructor
    /// \param      src : source
    //--------------------------------------------------------------
-   CHardwarePluginInformation (const IHardwarePluginInformation& src)
-      :m_name(src.getName()), m_version(src.getVersion()), m_releaseType(src.getReleaseType()), m_author(src.getAuthor()), m_url(src.getUrl())
-   {
-   }
+   CHardwarePluginInformation (const IHardwarePluginInformation& src);
 
    // IHardwarePluginInformation implementation
-   virtual ~CHardwarePluginInformation () { }
-   virtual const std::string& getName() const { return  m_name; }
-   virtual const std::string& getVersion() const { return  m_version; }
-   virtual const EReleaseType getReleaseType() const { return m_releaseType; }
-   virtual const std::string& getAuthor() const { return  m_author; }
-   virtual const std::string& getUrl() const { return  m_url; }
-   virtual std::string toString() const
-   {
-      std::ostringstream formatedInformations;
-
-      formatedInformations << m_name;
-      formatedInformations << " v" << m_version;
-      formatedInformations << "[" << m_releaseType << "]";
-      formatedInformations << " by " << m_author;
-      formatedInformations << " (" << m_url << ")";
-
-      return formatedInformations.str();
-   }
+   virtual ~CHardwarePluginInformation ();
+   virtual const std::string& getName() const;
+   virtual const std::string& getVersion() const;
+   virtual const EReleaseType getReleaseType() const;
+   virtual const std::string& getAuthor() const;
+   virtual const std::string& getUrl() const;
+   virtual std::string toString() const;
    // [END] IHardwarePluginInformation implementation
 
 private:

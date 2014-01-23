@@ -47,7 +47,8 @@ set(SHARED_LIB_SRC
   shared/HardwarePlugin/HardwarePluginImplementationHelper.h
   shared/HardwarePlugin/Configuration/HardwarePluginConfiguration.hpp
   shared/HardwarePlugin/Configuration/HardwarePluginConfigurationParameters.hpp
-  shared/HardwarePlugin/Information/HardwarePluginInformation.hpp
+  shared/HardwarePlugin/Information/HardwarePluginInformation.cpp
+  shared/HardwarePlugin/Information/HardwarePluginInformation.h
   shared/HardwarePlugin/Interfaces/IHardwarePlugin.h
   shared/HardwarePlugin/Interfaces/IHardwarePluginInformation.h
 )
