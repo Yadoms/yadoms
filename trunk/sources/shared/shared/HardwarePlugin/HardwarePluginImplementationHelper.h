@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interfaces/IHardwarePlugin.h"
-#include "Information/HardwarePluginInformation.hpp"
+#include "Information/HardwarePluginInformation.h"
 #include "Configuration/HardwarePluginConfiguration.hpp"
 #include <shared/Export.h>
 
