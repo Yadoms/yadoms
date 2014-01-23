@@ -27,4 +27,11 @@ public:
    //--------------------------------------------------------------
    typedef std::map<std::string, std::string> SerialPortsMap;
    static const boost::shared_ptr<SerialPortsMap> getSerialPorts();
+
+private:
+   //--------------------------------------------------------------
+   /// \brief			List used serial ports
+   /// \return       The used serial ports names, Windows-standard named ("COM1", "COM3"...)
+   //--------------------------------------------------------------
+   static const boost::shared_ptr<std::set<std::string> > getUsedSerialPorts();
 };
