@@ -11,6 +11,7 @@
 #include "web/rest/HardwareRestService.h"
 #include "web/rest/DeviceRestService.h"
 #include <shared/ThreadBase.h>
+#include <shared/Peripherals.h>
 
 CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
    :CThreadBase("Supervisor"), m_startupOptions(startupOptions)
@@ -187,20 +188,6 @@ void CSupervisor::doWork()
       {
          boost::shared_ptr<std::vector<std::string> > serialPorts(CPeripherals::getSerialPorts());
          YADOMS_LOG(debug) << "System serial ports";
-         BOOST_FOREACH(std::string serialPort, *serialPorts)
-         {
-            YADOMS_LOG(debug) << serialPort;
-         }
-
-         serialPorts = CPeripherals::getUsedSerialPorts();
-         YADOMS_LOG(debug) << "System used serial ports";
-         BOOST_FOREACH(std::string serialPort, *serialPorts)
-         {
-            YADOMS_LOG(debug) << serialPort;
-         }
-
-         serialPorts = CPeripherals::getUnusedSerialPorts();
-         YADOMS_LOG(debug) << "System unused serial ports";
          BOOST_FOREACH(std::string serialPort, *serialPorts)
          {
             YADOMS_LOG(debug) << serialPort;

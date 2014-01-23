@@ -262,11 +262,11 @@ public:
 //TODO faire PluginApi d'abord
       //try
       //{
-      //   return CPeripherals::getUnusedSerialPorts();
+      //   return CPeripherals::getSerialPorts();
       //}
       //catch (CNotSupportedException&)
       //{
-      //     // If getUnusedSerialPorts is not supported by system, return getSerialPorts
+      //     // If getSerialPorts is not supported by system, return getSerialPorts
       //   return CPeripherals::getSerialPorts();
       //}
       return boost::shared_ptr<std::vector<std::string> >();

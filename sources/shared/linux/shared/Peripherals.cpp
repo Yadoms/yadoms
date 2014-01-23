@@ -33,15 +33,3 @@ const boost::shared_ptr<std::vector<std::string> > CPeripherals::getSerialPorts(
 
    return serialPorts;
 }
-
-const boost::shared_ptr<std::vector<std::string> > CPeripherals::getUnusedSerialPorts()
-{
-   // On Linux, no easy mean to know if a serial port is already in use
-   NOT_SUPPORTED;
-}
-
-const boost::shared_ptr<std::vector<std::string> > CPeripherals::getUsedSerialPorts()
-{
-   // On Linux, no easy mean to know if a serial port is already in use
-   NOT_SUPPORTED;
-}
