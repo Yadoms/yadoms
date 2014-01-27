@@ -121,6 +121,8 @@
 
   </div>
 
+  <div data-bind="template: { name: 'temperature-template', data: widget9 }"></div>
+
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -135,11 +137,16 @@
     <script src="js/jquery.gridster.js"></script>
     
 	<script src="js/jquery.transit.min.js"></script>
+	<script src="js/knockout-3.0.0.js"></script>
+
+    <script type="text/html" id="templates"></script>
+
 	<script type="text/javascript">
 	
 	//var declaration
 	var customization = false;
 	var gridsterTab0;
+    var v;
 	
 	$( document ).ready(function() {
 
@@ -169,21 +176,47 @@
 
         gridsterTab0 = $("#tab0 ul").gridster().data('gridster');
 
-        gridsterTab0.add_widget("<li id=\"widget0\"/>", 1, 1, 1, 1);
+        //gridsterTab0.add_widget("<li id=\"widget0\"/>", 1, 1, 1, 1);
         gridsterTab0.add_widget("<li id=\"widget1\"/>", 1, 1, 2, 1);
         gridsterTab0.add_widget("<li id=\"widget2\"/>", 2, 2, 3, 1);
         
         gridsterTab0.disable();
         gridsterTab0.disable_resize();
-        
-        $.get( "widget.html", function( data ) {
+
+
+        $.get( "widgets/temperature/view.html", function( data ) {
+            $("#templates").append(data);
+            $("#templates").append(data);
+            $("#templates").append(data);
+            ko.applyBindings(v);
+        });
+
+        var ViewModel = function() {
+            this.widget8 = ko.observable({ temperature: 24, rssi: 80 });
+            this.widget9 = ko.observable({ temperature: '28', rssi: 30 });
+        };
+
+        gridsterTab0.add_widget("<li id=\"widget8\" data-bind=\"template: { name: 'temperature-template', data: widget8 }\"/>", 1, 1, 1, 1);
+
+/*
+        function MyViewModel() {
+            this.widget8 = { temperature: '24', rssi: 80 };
+            this.widget9 = { temperature: '28', rssi: 30 };
+        }
+*/
+        v = new ViewModel();
+
+
+
+
+        /*$.get( "widget.html", function( data ) {
            $("#widget0").append(data);
          });
         
         $.get( "widgets/simpleClock/widget.html", function( data ) {
            $("#widget1").append(data);
          });
-        
+        */
         //<li data-row="1" data-col="1" data-sizex="1" data-sizey="1"></li>
         //<li data-row="2" data-col="1" data-sizex="1" data-sizey="1"></li>
         //<li data-row="3" data-col="1" data-sizex="1" data-sizey="1"></li>
@@ -211,22 +244,7 @@
    var cols = "rotate(-2deg),rotate(2deg)".split(",")
    var cPos = 0
 
-   function animateWidgetCustomizing() {
-       if (customization)
-       {
-          $('.gridster li').animate({ transform:cols[cPos]}, 500)
-          cPos++
-          if (cPos == cols.length) {
-              cPos = 0
-          }
-          window.setTimeout(function() { animateWidgetCustomizing() }, 500)
-        }
-        else
-        {
-            $('.gridster li').animate({ transform:"rotate(0deg)"}, 200)
-        }
-   }
-   
+
    function animateCustomizeButton() {
 		$("#customizeButton i").transition({
 		  rotate: '+=30deg',
@@ -254,14 +272,17 @@
 			gridsterTab0.enable_resize();
 			//$(".gridster li").addClass("widgetCustomizing");
 			//animateWidgetCustomizing();
-			animateCustomizeButton();
-		}
+            v.widget8({ temperature: 32, rssi: 72 });
+            animateCustomizeButton();
+
+        }
 		else
 		{
 			$("#customizeButton").removeClass('btn-primary').addClass('btn-inverse');
 			gridsterTab0.disable();
 			gridsterTab0.disable_resize();
 			//$(".gridster li").removeClass("widgetCustomizing");
+            v.widget8({ temperature: 78, rssi: 22 });
 			
 		}
 		
