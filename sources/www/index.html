@@ -30,7 +30,6 @@
 
       <!-- Gridster includes -->
       <link href="css/jquery.gridster.css" rel="stylesheet">
-
   </head>
 
   <body>
@@ -147,7 +146,8 @@
 	var customization = false;
 	var gridsterTab0;
     var v;
-	
+    var widgetArray = {};
+
 	$( document ).ready(function() {
 
         var numberOfColumns = 9;
@@ -183,13 +183,39 @@
         gridsterTab0.disable();
         gridsterTab0.disable_resize();
 
+        //on recupere les widgets depuis le REST
 
+        $.getJSON( "/rest/widget", function( data ) {
+            //we parse the json answer
+            $.each(data.widget, function(index, value) {
+                widgetArray[value.id] = value;
+            });
+
+            //we parse widgetArray
+            $.each(widgetArray, function (index, value) {
+                //for each widget we add viewModelData of the widget into the template section
+
+                $.get( "widgets/" + value.path + "/view.html", function( data ) {
+                    $("#templates").append(data);
+                });
+
+                $.getScript( "widgets/" + value.path + "/viewModel.js", function(data, textStatus, jqxhr) {
+                    value.viewModel = temperatureViewModel;
+                    gridsterTab0.add_widget("<li id=\"widget" + value.id + "\" data-bind=\"template: { name: '" + value.path + "-template', data: " + value.viewModel.data + " }\"/>", 1, 1, 1, 1);
+                });
+
+
+
+                //ko.applyBindings(v);
+            })
+        });
+/*
         $.get( "widgets/temperature/view.html", function( data ) {
             $("#templates").append(data);
             $("#templates").append(data);
             $("#templates").append(data);
             ko.applyBindings(v);
-        });
+        });*/
 
         var ViewModel = function() {
             this.widget8 = ko.observable({ temperature: 24, rssi: 80 });
@@ -205,9 +231,6 @@
         }
 */
         v = new ViewModel();
-
-
-
 
         /*$.get( "widget.html", function( data ) {
            $("#widget0").append(data);
