@@ -1,5 +1,7 @@
 #pragma once
 
+#include <shared/Export.h>
+
 typedef boost::log::sources::severity_channel_logger_mt<
     boost::log::trivial::severity_level,     // the type of the severity level
     std::string         // the type of the channel name
@@ -28,7 +30,7 @@ BOOST_LOG_INLINE_GLOBAL_LOGGER_INIT(my_logger, my_logger_mt)
 //--------------------------------------------------------------
 /// \brief     Class used to configure the logger
 //--------------------------------------------------------------
-class CLog
+class YADOMS_SHARED_EXPORT CLog
 {
 public:
 

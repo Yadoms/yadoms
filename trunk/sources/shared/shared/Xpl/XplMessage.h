@@ -1,5 +1,6 @@
 #pragma once
 
+#include <shared/Export.h>
 #include "XplMessageSchemaIdentifier.h"
 #include "XplActor.h"
 
@@ -7,7 +8,7 @@
 //--------------------------------------------------------------
 /// \class It represent a xpl message
 //--------------------------------------------------------------
-class CXplMessage
+class YADOMS_SHARED_EXPORT CXplMessage
 {
 public:
    enum ETypeIdentifier

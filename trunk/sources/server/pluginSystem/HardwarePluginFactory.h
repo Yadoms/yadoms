@@ -8,7 +8,7 @@
 #include <shared/DynamicLibrary.hpp>
 #include <shared/HardwarePlugin/Interfaces/IHardwarePlugin.h>
 #include <shared/HardwarePlugin/Interfaces/IHardwarePluginInformation.h>
-#include <shared/HardwarePlugin/Configuration/HardwarePluginConfiguration.hpp>
+#include <shared/HardwarePlugin/Interfaces/IHardwarePluginConfigurationSchema.h>
 #include "InvalidPluginException.hpp"
 
 //--------------------------------------------------------------
@@ -26,12 +26,12 @@ public:
    static boost::shared_ptr<const IHardwarePluginInformation> getInformation(const boost::filesystem::path& libraryPath);
 
    //--------------------------------------------------------------
-   /// \brief	    Get plugin default configuration
+   /// \brief	      Get plugin configuration schema
    /// \param [in]   libraryPath: the plugin path
-   /// \return     default configuration if configuration is available for this plugin
+   /// \return       Configuration schema if available for this plugin (empty string if not)
    /// \throw        CInvalidPluginException if plugin is not valid
    //-------------------------------------------------------------
-   static const boost::optional<const CHardwarePluginConfiguration&> getDefaultConfiguration(const boost::filesystem::path& libraryPath);
+   static std::string getConfigurationSchema(const boost::filesystem::path& libraryPath);
 
 public:
    //--------------------------------------------------------------
@@ -65,10 +65,10 @@ public:
    boost::shared_ptr<const IHardwarePluginInformation> getInformation() const;
 
    //--------------------------------------------------------------
-   /// \brief	    Get plugin default configuration
-   /// \return     default configuration if configuration is available for this plugin
+   /// \brief	    Get plugin configuration schema
+   /// \return     Configuration schema if available for this plugin (empty string if not)
    //-------------------------------------------------------------
-   const boost::optional<const CHardwarePluginConfiguration&> getDefaultConfiguration() const;
+   std::string getConfigurationSchema() const;
 
 private:
    //--------------------------------------------------------------
@@ -98,7 +98,7 @@ private:
    boost::function<const IHardwarePluginInformation& ()> m_getInformation;
 
    //--------------------------------------------------------------
-   /// \brief	    Pointer to the plugin getConfiguration method (optional)
+   /// \brief	    Pointer to the plugin getConfigurationSchemaInterface method (optional)
    //--------------------------------------------------------------
-   boost::function<const CHardwarePluginConfiguration& ()> m_getDefaultConfiguration;
+   boost::function<const IHardwarePluginConfigurationSchema& ()> m_getConfigurationSchema;
 };

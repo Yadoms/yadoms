@@ -17,6 +17,7 @@
 
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
+#include <boost/assert.hpp>
 
 #include <boost/bind.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -40,3 +41,6 @@
 #include <boost/log/sources/logger.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup/file.hpp>
+
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>

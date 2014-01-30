@@ -41,7 +41,7 @@
 #include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup/file.hpp>
 
-#include <shared/HardwarePlugin/HardwarePluginImplementationHelper.h>
+#include <shared/HardwarePlugin/ImplementationHelper.h>
 
 #include <string>
 #include <boost/thread/future.hpp>
@@ -64,13 +64,16 @@ public:
    void init(const std::string & pluginAddress, const std::string & serverAddress);
 
 private:
-   boost::optional<boost::shared_ptr<const CHardwarePluginConfiguration> > getUpdatedConfiguration();   // TODO à mettre dans une macro DECLARE_CONFIGURATION
+   std::string getUpdatedConfiguration();   // TODO à mettre dans une macro DECLARE_CONFIGURATION
    
    // TODO à mettre dans une macro DECLARE_CONFIGURATION
-   std::queue<boost::shared_ptr<const CHardwarePluginConfiguration> > m_ConfigurationUpdateQueue;
+   std::queue<const std::string> m_ConfigurationUpdateQueue;
    boost::mutex m_configurationUpdateMutex;
 
    void onMessageReceived(CXplMessage & message);
+
+   // Trace the configuration
+   void traceConfiguration(const CHardwarePluginConfiguration& configuration);
 };
 
 

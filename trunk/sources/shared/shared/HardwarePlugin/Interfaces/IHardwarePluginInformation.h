@@ -1,11 +1,12 @@
 #pragma once
 
+#include <shared/Export.h>
 #include <string>
 
 //--------------------------------------------------------------
 /// \brief		Interface for information about Hardware plugins
 //--------------------------------------------------------------
-class IHardwarePluginInformation 
+class YADOMS_SHARED_EXPORT IHardwarePluginInformation 
 {
 public:
    //--------------------------------------------------------------

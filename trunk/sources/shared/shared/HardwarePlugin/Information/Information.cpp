@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "HardwarePluginInformation.h"
+#include "Information.h"
 
 
 

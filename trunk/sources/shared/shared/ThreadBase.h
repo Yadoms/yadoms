@@ -1,10 +1,11 @@
 #pragma once
 
+#include <shared/Export.h>
 
 //--------------------------------------------------------------
 /// \brief	Base class for threads
 //--------------------------------------------------------------
-class CThreadBase
+class YADOMS_SHARED_EXPORT CThreadBase
 {
 public:
    //--------------------------------------------------------------

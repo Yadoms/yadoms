@@ -1,9 +1,10 @@
 #pragma once
 
+#include <shared/Export.h>
 #include "XplActor.h"
 #include "XplMessage.h"
 
-class CXplService 
+class YADOMS_SHARED_EXPORT CXplService 
 {
 public:
    typedef boost::signals2::signal<void (CXplMessage&)> SigMessageReceived;

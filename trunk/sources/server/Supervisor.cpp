@@ -93,41 +93,23 @@ void CSupervisor::doWork()
       }
 
       // 2) User want to create new plugin instance
-      // 2.1) Get default configuration from a specific plugin
+      // 2.1) Get configuration schema (= default configuration) from a specific plugin
       const std::string& pluginName="fakePlugin";
-      boost::optional<const CHardwarePluginConfiguration&> pluginDefaultConfiguration(hardwarePluginManager->getPluginDefaultConfiguration(pluginName));
-      if (pluginDefaultConfiguration)
+      std::string pluginConfigurationSchema(hardwarePluginManager->getPluginConfigurationSchema(pluginName));
+      if (!pluginConfigurationSchema.empty())
       {
-         YADOMS_LOG(debug) << pluginName << " default configuration is :";
-         for (CHardwarePluginConfiguration::CHardwarePluginConfigurationMap::const_iterator it = pluginDefaultConfiguration->getMap().begin() ;
-            it != pluginDefaultConfiguration->getMap().end() ; ++it)
-         {
-            boost::shared_ptr<CHardwarePluginConfigurationParameter> parameter = (*it).second;
-
-            // Get parameter name, description and value (as string)
-            YADOMS_LOG(debug) << parameter->getName() << " (" << parameter->getDescription() << ")" << " = " << parameter->valueToString();
-
-            // Process specific parameters types
-            if (dynamic_cast<CHardwarePluginConfigurationEnumGeneric*>(parameter.get()))//TODO : voir si on ne peut pas mettre les dynamic_cast dans la conf
-            {
-               // Enum, get all available values
-               std::ostringstream os;
-               os << "Available values : ";
-               boost::shared_ptr<std::vector<std::string> > values = dynamic_cast<CHardwarePluginConfigurationEnumGeneric*>(parameter.get())->getAvailableValues();
-               BOOST_FOREACH(std::string value, *values)
-                  os << value << "|";
-               YADOMS_LOG(debug) << os.str();
-            }
-         }
+         YADOMS_LOG(debug) << pluginName << " configuration schema is : \"" << pluginConfigurationSchema << "\"";
       }
       else
       {
          YADOMS_LOG(debug) << pluginName << " has no configuration";
       }
-      // 2.2) User can modify values (first, copy the configuration)
-      CHardwarePluginConfiguration newConf = *pluginDefaultConfiguration;
-      newConf.set("BoolParameter","true");
-      newConf.set("EnumParameter","EnumValue3");
+      // 2.2) User can update default values, GUI returns configuration values
+      // Here, were modified :
+      // - EnumParameter from "EnumValue2" to "EnumValue1"
+      // - DoubleParameter from "25.3" to "18.4"
+      // - BitsFieldParameter : value "second one" from true to false
+      std::string newConf("{ \"BitsFieldParameter\": { \"value\": { \"and a third\": \"true\", \"first checkbox\": \"false\", \"second one\": \"false\" } }, \"BoolParameter\": { \"value\": \"false\" }, \"DoubleParameter\": { \"value\": \"18.4\" }, \"EnumParameter\": { \"value\": \"EnumValue1\" }, \"IntParameter\": { \"value\": \"7\" }, \"Serial port\": { \"value\": \"tty0\" }, \"StringParameter\": { \"value\": \"Yadoms is so powerful !\" } }");
       // 2.3) User press OK to valid configuration and create the new instance
       int createdInstanceId = hardwarePluginManager->createInstance("theInstanceName", pluginName, newConf);
 
@@ -156,20 +138,25 @@ void CSupervisor::doWork()
 
       // 5) Update instance configuration
       {
-         // 5.1) First, get actual configuration
-         boost::optional<CHardwarePluginConfiguration> instanceConfiguration(hardwarePluginManager->getInstanceConfiguration(createdInstanceId));
-         if (!instanceConfiguration)
+         // 5.1) First, get the configuration schema
+         std::string pluginConfigurationSchema(hardwarePluginManager->getPluginConfigurationSchema(pluginName));
+         if (!pluginConfigurationSchema.empty())
          {
-            YADOMS_LOG(debug) << "Instance created at step #2 has no configuration";
-         }
-         else
-         {
-            // 5.2) Next, change some values
-            instanceConfiguration.get().set("EnumParameter","EnumValue1");
-            instanceConfiguration.get().set("DoubleParameter","56.78");
+            // 5.2) Next, get the actual configuration
+            std::string instanceConfiguration(hardwarePluginManager->getInstanceConfiguration(createdInstanceId));
+            if (instanceConfiguration.empty())
+            {
+               YADOMS_LOG(debug) << "Instance created at step #2 has no configuration";
+            }
+            else
+            {
+               // 5.3) Now, change some values (Serial port from tty0 to tty1, and BoolParameter from false to true)
+               instanceConfiguration.replace(instanceConfiguration.find("\"Serial port\": { \"value\": \"tty0\" }"), 34, "\"Serial port\": { \"value\": \"tty1\" }");
+               instanceConfiguration.replace(instanceConfiguration.find("\"BoolParameter\": { \"value\": \"false\" }"), 37, "\"BoolParameter\": { \"value\": \"true\" }");
 
-            // 5.3) Valid the new configuration
-            hardwarePluginManager->setInstanceConfiguration(createdInstanceId, instanceConfiguration.get());
+               // 5.3) Valid the new configuration
+               hardwarePluginManager->setInstanceConfiguration(createdInstanceId, instanceConfiguration);
+            }
          }
       }
 

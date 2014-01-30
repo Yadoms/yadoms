@@ -77,12 +77,12 @@ public:
    AvalaiblePluginMap getPluginList();
 
    //--------------------------------------------------------------
-   /// \brief           Get the default configuration from a plugin
-   /// \param [in] pluginName Plugin name
-   /// \return          The default configuration of the plugin, if available
+   /// \brief           Get the configuration schema from a plugin
+   /// \param [in]      pluginName Plugin name
+   /// \return          The configuration schema of the plugin, if available (empty string if not)
    /// \throw           CInvalidPluginException if plugin is not available
    //--------------------------------------------------------------
-   boost::optional<const CHardwarePluginConfiguration&> getPluginDefaultConfiguration(const std::string& pluginName) const;
+   std::string getPluginConfigurationSchema(const std::string& pluginName) const;
 
    //--------------------------------------------------------------
    /// \brief           Create a new instance of a plugin
@@ -93,7 +93,7 @@ public:
    /// \throw           CException if fails
    //--------------------------------------------------------------
    int createInstance(const std::string& instanceName, const std::string& pluginName,
-      boost::optional<const CHardwarePluginConfiguration&> configuration = boost::none);
+      std::string& configuration = std::string());
 
    //--------------------------------------------------------------
    /// \brief           Delete a plugin instance
@@ -120,10 +120,10 @@ public:
    //--------------------------------------------------------------
    /// \brief           Get the instance configuration
    /// \param [in] id   Instance Id
-   /// \return          The instance configuration, if available
+   /// \return          The instance configuration, if available (empty string if not)
    /// \throw           CException if fails
    //--------------------------------------------------------------
-   boost::optional<const CHardwarePluginConfiguration> getInstanceConfiguration(int id) const;
+   std::string getInstanceConfiguration(int id) const;
 
    //--------------------------------------------------------------
    /// \brief           Get the instance configuration
@@ -131,7 +131,7 @@ public:
    /// \param [in] newConfiguration   The instance new configuration
    /// \throw           CException if fails
    //--------------------------------------------------------------
-   void setInstanceConfiguration(int id, const CHardwarePluginConfiguration& newConfiguration);   
+   void setInstanceConfiguration(int id, const std::string& newConfiguration);   
 
 private:
    //--------------------------------------------------------------

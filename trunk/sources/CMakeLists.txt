@@ -67,7 +67,7 @@ if(MSVC)
 
 	#global disable (for all targets)
 	#disable warning C4996   Function call with parameters that may be unsafe 
-	add_definitions( "/wd4996" )
+	add_definitions( "/wd4996 /wd4251" )
 	
 	#to allow BOOST in precompiled header (specify Precompiled Header Memory Allocation Limit) 
 	add_definitions("/Zm256")

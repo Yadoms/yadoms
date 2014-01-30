@@ -44,13 +44,40 @@ set(SHARED_LIB_SRC
 	shared/Xpl/XplHubConnectedPeripheral.cpp
 	shared/Xpl/XplHubConnectedPeripheral.h
 
-  shared/HardwarePlugin/HardwarePluginImplementationHelper.h
-  shared/HardwarePlugin/Configuration/HardwarePluginConfiguration.hpp
-  shared/HardwarePlugin/Configuration/HardwarePluginConfigurationParameters.hpp
-  shared/HardwarePlugin/Information/HardwarePluginInformation.cpp
-  shared/HardwarePlugin/Information/HardwarePluginInformation.h
+  shared/HardwarePlugin/ImplementationHelper.h
+	
+  shared/HardwarePlugin/Configuration/Configuration.h
+  shared/HardwarePlugin/Configuration/Configuration.cpp
+  shared/HardwarePlugin/Configuration/ConfigurationFactory.h
+  shared/HardwarePlugin/Configuration/ConfigurationFactory.cpp
+  shared/HardwarePlugin/Configuration/IConfigurationSerializer.h
+  shared/HardwarePlugin/Configuration/JsonSerializer.h
+  shared/HardwarePlugin/Configuration/JsonSerializer.cpp
+  shared/HardwarePlugin/Configuration/BitsFieldListParameter.h
+  shared/HardwarePlugin/Configuration/BitsFieldListParameter.cpp
+  shared/HardwarePlugin/Configuration/BoolParameter.h
+  shared/HardwarePlugin/Configuration/BoolParameter.cpp
+	shared/HardwarePlugin/Configuration/EnumGenericParameter.h
+	shared/HardwarePlugin/Configuration/EnumGenericParameter.cpp
+	shared/HardwarePlugin/Configuration/DoubleParameter.h
+	shared/HardwarePlugin/Configuration/DoubleParameter.cpp
+	shared/HardwarePlugin/Configuration/EnumParameter.hpp
+	shared/HardwarePlugin/Configuration/IntParameter.h
+	shared/HardwarePlugin/Configuration/IntParameter.cpp
+  shared/HardwarePlugin/Configuration/Parameter.h
+  shared/HardwarePlugin/Configuration/Parameter.cpp
+  shared/HardwarePlugin/Configuration/Parameters.h
+  shared/HardwarePlugin/Configuration/SimpleParameter.hpp
+	shared/HardwarePlugin/Configuration/SerialPortParameter.h
+	shared/HardwarePlugin/Configuration/SerialPortParameter.cpp
+	shared/HardwarePlugin/Configuration/StringParameter.h
+	shared/HardwarePlugin/Configuration/StringParameter.cpp	
+  shared/HardwarePlugin/Information/Information.cpp
+  shared/HardwarePlugin/Information/Information.h
+	
   shared/HardwarePlugin/Interfaces/IHardwarePlugin.h
   shared/HardwarePlugin/Interfaces/IHardwarePluginInformation.h
+  shared/HardwarePlugin/Interfaces/IHardwarePluginConfigurationSchema.h
 )
 
 #Append platform specific files
@@ -62,6 +89,7 @@ set(SHARED_LIB_SRC
 	windows/shared/Peripherals.h
 	windows/shared/Peripherals.cpp
 )	
+set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/windows)
 
 ELSEIF(APPLE)
 set(SHARED_LIB_SRC	
@@ -71,6 +99,8 @@ set(SHARED_LIB_SRC
 	mac/shared/Peripherals.h
 	mac/shared/Peripherals.cpp
 )	
+set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mac)
+
 ELSE()
 set(SHARED_LIB_SRC	
 	${SHARED_LIB_SRC}
@@ -79,6 +109,8 @@ set(SHARED_LIB_SRC
 	linux/shared/Peripherals.h
 	linux/shared/Peripherals.cpp
 )	
+set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/linux)
+
 ENDIF()
 
 # Define project folders
@@ -101,7 +133,7 @@ ENDIF()
 ########################
 ## Output
 ########################
-add_library(yadoms-shared STATIC  ${SHARED_LIB_SRC})
+add_library(yadoms-shared SHARED  ${SHARED_LIB_SRC})
 add_precompiled_header(yadoms-shared stdafx.h)
 target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 
@@ -109,6 +141,6 @@ target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 ########################
 ## Dependencies
 ########################
-set_property( TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+set_property( TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${PLATFORM_SPECIFIC_INCL_DIR})
 
 
