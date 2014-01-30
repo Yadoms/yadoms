@@ -105,6 +105,8 @@ private:
    
    boost::asio::ip::udp::socket m_socket;
 
+   boost::shared_ptr<boost::thread> m_serviceThread;
+
    bool m_hubHasBeenFound;
    boost::posix_time::ptime m_startDate;
    CXplActor m_source;

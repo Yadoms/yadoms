@@ -22,8 +22,8 @@ CSQLiteWidgetRequester::~CSQLiteWidgetRequester()
 int CSQLiteWidgetRequester::addWidget(boost::shared_ptr<CWidget> newWidget)
 {
    CQuery qInsert;
-   qInsert. InsertInto(CWidgetTable::getTableName(), CWidgetTable::getIdPageColumnName(), CWidgetTable::getPathColumnName(), CWidgetTable::getSizeXColumnName(), CWidgetTable::getSizeYColumnName(), CWidgetTable::getConfigurationColumnName()).
-            Values(newWidget->getIdPage(), newWidget->getPath(), newWidget->getSizeX(), newWidget->getSizeY(), newWidget->getConfiguration());
+   qInsert. InsertInto(CWidgetTable::getTableName(), CWidgetTable::getIdPageColumnName(), CWidgetTable::getNameColumnName(), CWidgetTable::getSizeXColumnName(), CWidgetTable::getSizeYColumnName(), CWidgetTable::getConfigurationColumnName()).
+            Values(newWidget->getIdPage(), newWidget->getName(), newWidget->getSizeX(), newWidget->getSizeY(), newWidget->getConfiguration());
    if(m_databaseRequester->queryStatement(qInsert) <= 0)
       throw new CEmptyResultException("No lines affected");
       
@@ -31,7 +31,7 @@ int CSQLiteWidgetRequester::addWidget(boost::shared_ptr<CWidget> newWidget)
    qSelect. Select(CWidgetTable::getIdColumnName()).
             From(CWidgetTable::getTableName()).
             Where(CWidgetTable::getIdPageColumnName(), CQUERY_OP_EQUAL, newWidget->getIdPage()).
-            And(CWidgetTable::getPathColumnName(), CQUERY_OP_EQUAL, newWidget->getPath()).
+            And(CWidgetTable::getNameColumnName(), CQUERY_OP_EQUAL, newWidget->getName()).
             And(CWidgetTable::getSizeXColumnName(), CQUERY_OP_EQUAL, newWidget->getSizeX()).
             And(CWidgetTable::getSizeYColumnName(), CQUERY_OP_EQUAL, newWidget->getSizeY()).
             And(CWidgetTable::getConfigurationColumnName(), CQUERY_OP_EQUAL, newWidget->getConfiguration()).

@@ -49,7 +49,7 @@ DECLARE_TABLE_COLUMN_NAMES(Page,  "Page",
 DECLARE_TABLE_COLUMN_NAMES(Widget,  "Widget",
    ((Id)("id"))
    ((IdPage)("idPage"))
-   ((Path)("path"))
+   ((Name)("name"))
    ((SizeX)("sizeX"))
    ((SizeY)("sizeY"))
    ((Configuration)("configuration"))

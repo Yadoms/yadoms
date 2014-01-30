@@ -12,6 +12,7 @@
 #include "web/rest/DeviceRestService.h"
 #include "web/rest/PageRestService.h"
 #include "web/rest/WidgetRestService.h"
+#include "web/rest/AcquisitionRestService.h"
 #include <shared/ThreadBase.h>
 #include <shared/Peripherals.h>
 
@@ -201,10 +202,11 @@ void CSupervisor::doWork()
       boost::shared_ptr<IRestHandler> restHanlder = webServer->getRestHandler();
       if(restHanlder.get() != NULL)
       {
-         restHanlder->configureRestService(boost::shared_ptr<IRestService>(new CHardwareRestService(pDataProvider)));
-         restHanlder->configureRestService(boost::shared_ptr<IRestService>(new CDeviceRestService(pDataProvider)));
-         restHanlder->configureRestService(boost::shared_ptr<IRestService>(new CPageRestService(pDataProvider)));
-         restHanlder->configureRestService(boost::shared_ptr<IRestService>(new CWidgetRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CHardwareRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CDeviceRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CPageRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CWidgetRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CAcquisitionRestService(pDataProvider)));
       }
 
       boost::shared_ptr<CWebServerManager> webServerManager(new CWebServerManager(webServer));
@@ -223,8 +225,8 @@ void CSupervisor::doWork()
       }
 
 #if DEV_ACTIVATE_XPL_TESTS
-      if(hardwarePluginManager.get() != NULL)
-         int createdInstanceId = hardwarePluginManager->createInstance("testOfXpl", "fakePlugin");
+//      if(hardwarePluginManager.get() != NULL)
+//         int createdInstanceId = hardwarePluginManager->createInstance("testOfXpl", "fakePlugin");
 #endif
       // ######################### [END] Xpl Hub #########################
 

@@ -13,9 +13,13 @@ public:
 	}
 
    //-----------------------------------------
-   ///\brief   Configure a REST service handler
-   ///\param [in] restKeyName   the rest key name
-   ///\param [in] restService   the rest handler
+   ///\brief   Initialize the REST services
    //-----------------------------------------
-   virtual void configureRestService(boost::shared_ptr<IRestService> restService) = 0;
+   virtual void initialize() = 0;
+
+   //-----------------------------------------
+   ///\brief      Register a REST service
+   ///\param [in] restService the REST service to register
+   //-----------------------------------------
+   virtual void registerRestService(boost::shared_ptr<IRestService> restService) =0;
 };

@@ -56,6 +56,21 @@ std::vector<boost::shared_ptr<CAcquisition> > CSQLiteAcquisitionRequester::getAc
    return adapter.getResults();
 }
 
+
+std::vector<boost::shared_ptr<CAcquisition> > CSQLiteAcquisitionRequester::getLastAcquisitions(const std::string & source)
+{
+   CQuery qSelect;
+   qSelect. Select().
+            From(CAcquisitionTable::getTableName()).
+            Where(CAcquisitionTable::getSourceColumnName(), CQUERY_OP_EQUAL, source).
+            GroupBy(CAcquisitionTable::getKeywordColumnName()).
+            OrderBy(CAcquisitionTable::getDateColumnName(), CQUERY_ORDER_DESC);
+
+   CAcquisitionAdapter adapter;
+   m_databaseRequester->queryEntities<boost::shared_ptr<CAcquisition> >(&adapter, qSelect);
+   return adapter.getResults();
+}
+
 void CSQLiteAcquisitionRequester::removeAcquisition(int acquisitionId)
 {
    CQuery qDelete;

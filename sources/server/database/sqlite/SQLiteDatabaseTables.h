@@ -55,7 +55,7 @@ DECLARE_TABLE(Page,
 DECLARE_TABLE(Widget,
    (Id)
    (IdPage)
-   (Path)
+   (Name)
    (SizeX)
    (SizeY)
    (Configuration)

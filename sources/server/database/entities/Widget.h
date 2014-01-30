@@ -17,7 +17,7 @@ public:
 
    DELCARE_FIELD_CWIDGET(int, Id);
    DELCARE_FIELD_CWIDGET(int, IdPage);
-   DELCARE_FIELD_CWIDGET(std::string, Path);
+   DELCARE_FIELD_CWIDGET(std::string, Name);
    DELCARE_FIELD_CWIDGET(int, SizeX);
    DELCARE_FIELD_CWIDGET(int, SizeY);
    DELCARE_FIELD_CWIDGET(std::string, Configuration);

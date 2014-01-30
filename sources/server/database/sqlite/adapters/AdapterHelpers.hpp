@@ -10,7 +10,7 @@
 #define BOOL_ADAPTER(x) boost::lexical_cast<bool>(x)
 #define DOUBLE_ADAPTER(x) boost::lexical_cast<double>(x)
 #define FLOAT_ADAPTER(x) boost::lexical_cast<float>(x)
-#define DATE_ADAPTER(x) boost::gregorian::from_string(x)
+#define DATE_ADAPTER(x) boost::posix_time::time_from_string(x)
 
 
 #define ADAPTER_COLUMN_ID 0

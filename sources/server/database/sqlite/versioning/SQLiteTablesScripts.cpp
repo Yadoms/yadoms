@@ -57,7 +57,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Page, " CREATE TABLE Page\
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Widget, "CREATE TABLE Widget\
                                                 (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\
                                                    idPage  INTEGER NOT NULL,\
-                                                   path TEXT NOT NULL,\
+                                                   name TEXT NOT NULL,\
                                                    sizeX  INTEGER DEFAULT 0, \
                                                    sizeY  INTEGER DEFAULT 0,\
                                                    configuration  TEXT \

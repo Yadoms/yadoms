@@ -23,7 +23,7 @@ public:
    //------------------------------------------
    ///\brief      get the identifier for entity Path member 
    //------------------------------------------
-   static const std::string & getPathIdentifier() { return m_widgetPathIdentifier; }
+   static const std::string & getNameIdentifier() { return m_widgetNameIdentifier; }
 
    //------------------------------------------
    ///\brief      get the identifier for entity Size X
@@ -51,9 +51,9 @@ private:
    //------------------------------------------
    static std::string m_widgetIdPageIdentifier;
    //------------------------------------------
-   ///\brief      string identifier fr entity member Path 
+   ///\brief      string identifier fr entity member Name 
    //------------------------------------------
-   static std::string m_widgetPathIdentifier;
+   static std::string m_widgetNameIdentifier;
    //------------------------------------------
    ///\brief      string identifier fr entity member SizeX 
    //------------------------------------------

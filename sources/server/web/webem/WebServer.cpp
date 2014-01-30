@@ -19,7 +19,7 @@ void CWebServer::start()
 {
    m_embeddedWebServer.reset(new http::server::cWebem());
    m_embeddedWebServer->Configure(m_configAddress, m_configPort, m_configDocRoot);
-
+   m_restHandler->initialize();
    YADOMS_LOG(info) << "WebServer configure to " << m_configAddress << ":" << m_configPort;
    YADOMS_LOG(debug) << "WebServer root directory " << m_configDocRoot;
 
