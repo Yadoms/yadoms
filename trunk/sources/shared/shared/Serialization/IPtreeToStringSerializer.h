@@ -2,15 +2,15 @@
 
 
 //--------------------------------------------------------------
-/// \class Hardware plugin configuration serializer interface
+/// \class Property tree to string serializer interface
 //--------------------------------------------------------------
-class IConfigurationSerializer
+class IPtreeToStringSerializer
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~IConfigurationSerializer() {}
+   virtual ~IPtreeToStringSerializer() {}
 
    //--------------------------------------------------------------
    /// \brief              Serialize the provided property tree

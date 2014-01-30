@@ -3,6 +3,7 @@
 #include <shared/Export.h>
 #include "Parameters.h"
 #include "../Interfaces/IHardwarePluginConfigurationSchema.h"
+#include "../../Serialization/IPtreeToStringSerializer.h"
 
 class IConfigurationSerializer;
 
@@ -108,6 +109,6 @@ public:
 
 private:
    CHardwarePluginConfigurationMap m_configurationMap;
-   boost::shared_ptr<IConfigurationSerializer> m_configurationSerializer;
+   boost::shared_ptr<IPtreeToStringSerializer> m_configurationSerializer;
 };
 

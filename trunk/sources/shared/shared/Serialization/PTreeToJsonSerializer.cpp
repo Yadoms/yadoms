@@ -1,19 +1,19 @@
 #include "stdafx.h"
-#include "JsonSerializer.h"
-#include "../../Exceptions/InvalidParameterException.hpp"
+#include "PTreeToJsonSerializer.h"
+#include "../Exceptions/InvalidParameterException.hpp"
 
-CJsonSerializer::~CJsonSerializer()
+PtreeToJsonSerializer::~PtreeToJsonSerializer()
 {
 }
 
-const std::string CJsonSerializer::serialize(const boost::property_tree::ptree& pt) const
+const std::string PtreeToJsonSerializer::serialize(const boost::property_tree::ptree& pt) const
 {
    std::ostringstream buf; 
    boost::property_tree::json_parser::write_json (buf, pt, false);
    return buf.str();
 }
 
-void CJsonSerializer::unserialize(const std::string& str, boost::property_tree::ptree& pt)
+void PtreeToJsonSerializer::unserialize(const std::string& str, boost::property_tree::ptree& pt)
 {
    if (str.empty())
       return;
