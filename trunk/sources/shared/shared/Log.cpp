@@ -7,6 +7,7 @@ CLog::CLog()
 
 CLog::~CLog()
 {
+
 }
 
 void CLog::configure_file_per_thread(const boost::log::trivial::severity_level  & logLevel)
@@ -16,7 +17,7 @@ void CLog::configure_file_per_thread(const boost::log::trivial::severity_level  
 
    //add log per thread
    CreateFilePerThreadSink();
-   
+
    // Add some attributes too
    boost::log::core::get()->add_global_attribute("TimeStamp", boost::log::attributes::local_clock());
    boost::log::core::get()->add_global_attribute("RecordID", boost::log::attributes::counter< unsigned int >());
@@ -71,6 +72,44 @@ void CLog::CreateFilePerThreadSink()
    boost::log::core::get()->add_sink(sink);
 }
 
+
+
+void CLog::CreateRollingFileSink()
+{
+
+   // Create a text file sink
+   typedef boost::log::sinks::synchronous_sink< boost::log::sinks::text_file_backend > file_sink;
+   boost::shared_ptr< file_sink > sink(new file_sink);
+   sink->locked_backend()->set_file_name_pattern("logs/yadoms_%Y-%m-%d_%H-%M-%S.%N.log");
+   sink->locked_backend()->set_rotation_size(5 * 1024 * 1024);
+   sink->locked_backend()->set_time_based_rotation(boost::log::sinks::file::rotation_at_time_point(0, 0, 0));
+
+   // Set up where the rotated files will be stored
+    sink->locked_backend()->set_file_collector(boost::log::sinks::file::make_collector(
+        boost::log::keywords::target = "logs",                      
+        boost::log::keywords::max_size = 16 * 1024 * 1024,          
+        boost::log::keywords::min_free_space = 20 * 1024 * 1024    
+    ));
+
+   // Upon restart, scan the directory for files matching the file_name pattern
+   sink->locked_backend()->scan_for_files();
+
+   // Set up the log record formatter
+   //TimeStamp [ThreadName] Severity : message
+   sink->set_formatter
+      (
+      boost::log::expressions::format("%1% [%2%] %3% - %4%")
+      % boost::log::expressions::attr< boost::posix_time::ptime >("TimeStamp")
+      % boost::log::expressions::attr< std::string >("ThreadName")
+      % boost::log::expressions::attr< boost::log::trivial::severity_level >("Severity")
+      % boost::log::expressions::smessage
+      );
+
+   // Add it to the core
+   boost::log::core::get()->add_sink(sink);
+}
+
+
 void CLog::CreateConsoleSink()
 {
    // Create a backend and attach console log stream
@@ -83,7 +122,7 @@ void CLog::CreateConsoleSink()
    // The backend requires synchronization in the frontend.
    typedef boost::log::sinks::synchronous_sink< boost::log::sinks::text_ostream_backend > sink_t;
    boost::shared_ptr< sink_t > sinklog(new sink_t(backend));
-   
+
    sinklog->set_formatter
       (
       boost::log::expressions::format("%1% [%2%] %3% - %4%")
@@ -96,18 +135,3 @@ void CLog::CreateConsoleSink()
    boost::log::core::get()->add_sink(sinklog);
 }
 
-
-void CLog::CreateRollingFileSink()
-{
-    boost::log::add_file_log
-    (
-        boost::log::keywords::file_name = "yadoms.log",                                        
-        boost::log::keywords::rotation_size = 10 * 1024 * 1024,                                   
-        boost::log::keywords::time_based_rotation = boost::log::sinks::file::rotation_at_time_point(0, 0, 0), 
-        boost::log::keywords::format = boost::log::expressions::format("%1% [%2%] %3% - %4%")
-                                       % boost::log::expressions::attr< boost::posix_time::ptime >("TimeStamp")
-                                       % boost::log::expressions::attr< std::string >("ThreadName")
-                                       % boost::log::expressions::attr< boost::log::trivial::severity_level >("Severity")
-                                       % boost::log::expressions::smessage                               
-    );
-}

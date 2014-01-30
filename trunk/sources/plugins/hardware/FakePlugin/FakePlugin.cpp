@@ -82,7 +82,7 @@ void CFakePlugin::doWork(const std::string& configurationValues)
    boost::shared_ptr<CXplService> xplService;
    try
    {
-
+      YADOMS_LOG_CONFIGURE("FakePlugin");
       xplService.reset(new CXplService("yadoms", "fake", "1"));
       xplService->messageReceived(boost::bind(&CFakePlugin::onMessageReceived, this, _1));
 
@@ -121,7 +121,7 @@ void CFakePlugin::doWork(const std::string& configurationValues)
    // as a plugin failure.
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(debug) << "CFakePlugin is stopping..."  << std::endl;
+      YADOMS_LOG(info) << "CFakePlugin is stopping..."  << std::endl;
    }
    catch(...)
    {

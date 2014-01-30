@@ -25,6 +25,7 @@ public:
    virtual void addAcquisition(const CAcquisition & newAcquisition);
    virtual boost::shared_ptr<CAcquisition> getAcquisition(int acquisitionId);
    virtual std::vector<boost::shared_ptr<CAcquisition> > getAcquisitions(const std::string & source, const std::string & keyword);
+   virtual std::vector<boost::shared_ptr<CAcquisition> > getLastAcquisitions(const std::string & source);
    virtual void removeAcquisition(int acquisitionId);   
    // [END] IAcquisitionRequester implementation
 

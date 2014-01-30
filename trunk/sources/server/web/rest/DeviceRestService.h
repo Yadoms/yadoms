@@ -3,18 +3,21 @@
 #include "IRestService.h"
 #include "database/IDataProvider.h"
 
-class CDeviceRestService : public IReadRestService
+class CDeviceRestService : public IRestService
 {
 public:
    CDeviceRestService(boost::shared_ptr<IDataProvider> dataProvider);
    virtual ~CDeviceRestService();
 
 public:
-   // IReadRestService implementation
+    // IRestService implementation
+   virtual void configureDispatcher(CRestDispatcher & dispatcher);
+   // [END] IRestService implementation
+
    const std::string & getRestKeyword();
-   CJson readObject(const std::string & objectId);   
-   CJson readObjects();  
-   // [END] IReadRestService implementation
+   CJson getOneDevice(const std::vector<std::string> & parameters);   
+   CJson getAllDevices(const std::vector<std::string> & parameters);  
+   CJson getDeviceLastAcquisition(const std::vector<std::string> & parameters);  
    
 private:
    boost::shared_ptr<IDataProvider> m_dataProvider;

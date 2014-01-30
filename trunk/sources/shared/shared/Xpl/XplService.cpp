@@ -57,7 +57,7 @@ void CXplService::initializeConnector()
 
    m_remoteEndPoint = boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::broadcast(), CXplHelper::XplProtocolPort);
 
-   boost::thread t(boost::bind(&CXplService::startService, this));
+   m_serviceThread.reset(new boost::thread(boost::bind(&CXplService::startService, this)));
 
    m_socket.async_receive(
       boost::asio::buffer(m_receiveBuffer),
@@ -70,6 +70,7 @@ void CXplService::startService()
 {
    try
    {
+      YADOMS_LOG_CONFIGURE(m_source.toString());
       m_ioService.run();
    }
    catch (std::exception& e)
@@ -254,6 +255,11 @@ void CXplService::stop()
    m_ioService.stop();
    m_timer.cancel();
    m_socket.close();
+
+   if(m_serviceThread.get())
+      m_serviceThread->join();
+
+   YADOMS_LOG(debug) << "CXplService stopped.";
 }
 
 void CXplService::fireMessageReceivedEvent(CXplMessage & msg)

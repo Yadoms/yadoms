@@ -45,7 +45,8 @@ boost::shared_ptr<CKeyword> CSQLiteKeywordRequester::getKeyword(const std::strin
    if (adapter.getResults().empty())
    {
       // Keyword not found
-      throw CInvalidParameterException(CStringExtension::format("Keyword name : %s not found in database", keyword.c_str()));
+      std::string sEx = (boost::format("Keyword name %1% not found in database") % keyword).str(); 
+      throw CException(sEx);
    }
    return adapter.getResults().at(0);
 }

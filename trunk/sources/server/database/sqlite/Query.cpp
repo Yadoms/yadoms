@@ -148,7 +148,7 @@ CQuery & CQuery::OrderBy( const std::string & field1, const std::string & way1,
                          const std::string & field10/* = EMPTY_STR*/, const std::string & way10/* = EMPTY_STR*/)
 {
    std::ostringstream ss;
-   ss << "ORDER BY " << field1;
+   ss << " ORDER BY " << field1;
    if(way1.size()>=0) 
       ss << " " << way1;
    AppendOrderField(ss, field2 , way2 );
@@ -166,7 +166,7 @@ CQuery & CQuery::OrderBy( const std::string & field1, const std::string & way1,
 CQuery & CQuery::GroupBy(const std::string & field1, const std::string & field2/* = EMPTY_STR*/, const std::string & field3/* = EMPTY_STR*/, const std::string & field4/* = EMPTY_STR*/, const std::string & field5/* = EMPTY_STR*/, const std::string & field6/* = EMPTY_STR*/, const std::string & field7/* = EMPTY_STR*/, const std::string & field8/* = EMPTY_STR*/, const std::string & field9/* = EMPTY_STR*/, const std::string & field10/* = EMPTY_STR*/) 
 {
    std::ostringstream ss;
-   ss << "GROUP BY " << field1;
+   ss << " GROUP BY " << field1;
    AppendField(ss, field2);
    AppendField(ss, field3);
    AppendField(ss, field4);

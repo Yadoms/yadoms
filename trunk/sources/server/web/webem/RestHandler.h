@@ -3,7 +3,11 @@
 #include "cWebem.h"
 #include "web/rest/IRestService.h"
 #include "web/IRestHandler.h"
+#include "web/rest/RestDispatcher.h"
 
+//--------------------------------------   
+///\brief  Rest Handler which configure and dispatch request to Rest service
+//-------------------------------------- 
 class CRestHandler : public IRestHandler
 {
 public:
@@ -19,7 +23,8 @@ public:
    virtual ~CRestHandler();
 
    // IRestHandler implementation
-   void configureRestService(boost::shared_ptr<IRestService> restService);
+   void registerRestService(boost::shared_ptr<IRestService> restService);
+   void initialize();
    // [END] IRestHandler implementation
 
    //--------------------------------------   
@@ -32,6 +37,12 @@ public:
    ///\return the keyword to identify the REST request in url
    //--------------------------------------   
    const std::string & getRestKeyword();
+
+   //--------------------------------------   
+   ///\brief  Method which initialize all rest services
+   //--------------------------------------   
+   void initializeAllRestServices();
+
 private:
    //--------------------------------------   
     ///\brief         Parse a rest URL and extract each parameters
@@ -39,44 +50,20 @@ private:
     ///\return        the list of parameters
     //--------------------------------------
     std::vector<std::string> parseUrl(const std::string & url);
-    
-    //--------------------------------------
-   ///\brief         Method which handle rest GET requests
-   ///\param [in]    readRestService   the rest service instance which should handle the GET request
-   ///\param [in]    parameters        the request parameters
-   ///\return        the result
-   //--------------------------------------   
-   std::string handleRestGetRequest(boost::shared_ptr<IReadRestService> readRestService, const std::vector<std::string> & parameters);
-
-   //--------------------------------------   
-   ///\brief         Method which handle rest PUT requests
-   ///\param [in]    putRestService   the rest service instance which should handle the PUT request
-   ///\param [in]    parameters        the request parameters
-   ///\return        the result
-   //--------------------------------------   
-   std::string handleRestPutRequest(boost::shared_ptr<IWriteRestService> putRestService, const std::vector<std::string> & parameters);
-
-   //--------------------------------------   
-   ///\brief         Method which handle rest POST requests
-   ///\param [in]    postRestService   the rest service instance which should handle the POST request
-   ///\param [in]    parameters        the request parameters
-   ///\return        the result
-   //--------------------------------------   
-   std::string handleRestPostRequest(boost::shared_ptr<IWriteRestService> postRestService, const std::vector<std::string> & parameters);
-
-   //--------------------------------------   
-   ///\brief         Method which handle rest DELETE requests
-   ///\param [in]    deleteRestService   the rest service instance which should handle the DELETE request
-   ///\param [in]    parameters           the request parameters
-   ///\return        the result
-   //--------------------------------------   
-   std::string handleRestDeleteRequest(boost::shared_ptr<IWriteRestService> deleteRestService, const std::vector<std::string> & parameters);
-
-
-   template<class TSpecificRestService>
-   boost::shared_ptr<TSpecificRestService> findMatchingRestService(const std::string & request_path, std::vector<std::string> & parameters);
-
+ 
 private:
+   //--------------------------------------   
+   ///\brief  The keyword which identifies a rest URL
+   //-------------------------------------- 
    std::string m_restBaseKeyword;
-   std::map<std::string , boost::shared_ptr<IRestService> > m_restServices;
+
+   //--------------------------------------   
+   ///\brief  List of all registered rest services
+   //-------------------------------------- 
+   std::vector<boost::shared_ptr<IRestService> > m_restService;
+
+   //--------------------------------------   
+   ///\brief  The rest dispatcher
+   //-------------------------------------- 
+   CRestDispatcher m_restDispatcher;
 };

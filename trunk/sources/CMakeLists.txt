@@ -240,6 +240,11 @@ set(YADOMS_SRC
 	server/web/rest/json/IEntitySerializer.h
 	server/web/rest/json/IEntityDeserializer.h
 
+	server/web/rest/RestDispatcher.h
+	server/web/rest/RestDispatcher.cpp
+	server/web/rest/RestDispatcherHelpers.hpp
+	
+	
 	server/web/rest/HardwareRestService.h
 	server/web/rest/HardwareRestService.cpp
 	server/web/rest/json/HardwareEntitySerializer.h
@@ -267,6 +272,13 @@ set(YADOMS_SRC
 	server/web/rest/json/WidgetEntitySerializer.cpp
 	server/web/rest/json/WidgetEntityJsonDefinition.h
 	server/web/rest/json/WidgetEntityJsonDefinition.cpp
+	
+	server/web/rest/AcquisitionRestService.h
+	server/web/rest/AcquisitionRestService.cpp
+	server/web/rest/json/AcquisitionEntitySerializer.h
+	server/web/rest/json/AcquisitionEntitySerializer.cpp
+	server/web/rest/json/AcquisitionEntityJsonDefinition.h
+	server/web/rest/json/AcquisitionEntityJsonDefinition.cpp	
 	)
 
 # Project folders

@@ -19,5 +19,5 @@ public:
    DELCARE_FIELD_CACQUISITION(std::string, Source);
    DELCARE_FIELD_CACQUISITION(std::string, Keyword);
    DELCARE_FIELD_CACQUISITION(std::string, Value);
-   DELCARE_FIELD_CACQUISITION(boost::gregorian::date, Date);
+   DELCARE_FIELD_CACQUISITION(boost::posix_time::ptime, Date);
 };

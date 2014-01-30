@@ -18,7 +18,7 @@ CJson CWidgetEntitySerializer::serialize(const CWidget & object)
    CJson result;
    result.put(CWidgetEntityJsonDefinition::getIdIdentifier(), object.getId());
    result.put(CWidgetEntityJsonDefinition::getIdPageIdentifier(), object.getIdPage());
-   result.put(CWidgetEntityJsonDefinition::getPathIdentifier(), object.getPath());
+   result.put(CWidgetEntityJsonDefinition::getNameIdentifier(), object.getName());
    result.put(CWidgetEntityJsonDefinition::getSizeXIdentifier(), object.getSizeX());
    result.put(CWidgetEntityJsonDefinition::getSizeYIdentifier(), object.getSizeY());
    result.put(CWidgetEntityJsonDefinition::getConfigurationIdentifier(), object.getConfiguration());
@@ -38,8 +38,8 @@ CWidget CWidgetEntitySerializer::deserialize(const CJson & object)
    if(object.find(CWidgetEntityJsonDefinition::getIdPageIdentifier()) != object.not_found())
       entity.setIdPage(object.get<int>(CWidgetEntityJsonDefinition::getIdPageIdentifier()));
 
-   if(object.find(CWidgetEntityJsonDefinition::getPathIdentifier()) != object.not_found())
-      entity.setPath(object.get<std::string>(CWidgetEntityJsonDefinition::getPathIdentifier()));
+   if(object.find(CWidgetEntityJsonDefinition::getNameIdentifier()) != object.not_found())
+      entity.setName(object.get<std::string>(CWidgetEntityJsonDefinition::getNameIdentifier()));
 
    if(object.find(CWidgetEntityJsonDefinition::getSizeXIdentifier()) != object.not_found())
       entity.setSizeX(object.get<int>(CWidgetEntityJsonDefinition::getSizeXIdentifier()));

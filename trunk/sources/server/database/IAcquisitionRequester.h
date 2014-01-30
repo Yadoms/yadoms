@@ -28,6 +28,13 @@ public:
    virtual std::vector<boost::shared_ptr<CAcquisition> > getAcquisitions(const std::string & source, const std::string & keyword) = 0;
 
    //--------------------------------------------------------------
+   /// \brief        List the last acquisitions for a source (the last acquisition for each keyword)
+   /// \param [in]   source   the source to filter
+   /// \return       List of all acquisitions for a source
+   //--------------------------------------------------------------
+   virtual std::vector<boost::shared_ptr<CAcquisition> > getLastAcquisitions(const std::string & source) = 0;
+
+   //--------------------------------------------------------------
    /// \brief           Remove acquisition 
    /// \param [in]      acquisitionId   Acquisition  Id
    /// \throw           CEmptyResultException if fails

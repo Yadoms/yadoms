@@ -139,6 +139,10 @@ private:
          if(pAdatper->adapt(columnCount, columnValues, columnNames))
             return SQLITE_OK;
       }
+      catch(std::exception &ex)
+      {
+         YADOMS_LOG(error) << "Fail to adapt row values. Query aborted : " << ex.what();
+      }
       catch(...)
       {
          YADOMS_LOG(error) << "Fail to adapt row values. Query aborted.";

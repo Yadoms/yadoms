@@ -21,5 +21,5 @@ public:
    DELCARE_FIELD_CCONFIGURATION(std::string, Value);
    DELCARE_FIELD_CCONFIGURATION(std::string, DefaultValue);
    DELCARE_FIELD_CCONFIGURATION(std::string, Description);
-   DELCARE_FIELD_CCONFIGURATION(boost::gregorian::date, LastModificationDate);
+   DELCARE_FIELD_CCONFIGURATION(boost::posix_time::ptime, LastModificationDate);
 };

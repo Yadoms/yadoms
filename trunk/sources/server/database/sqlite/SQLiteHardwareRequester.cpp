@@ -5,8 +5,6 @@
 #include "adapters/SingleValueAdapter.hpp"
 #include "adapters/SQLiteDatabaseAdapters.h"
 #include <shared/Exceptions/EmptyResultException.hpp>
-#include <shared/Exceptions/InvalidParameterException.hpp>
-
 #include "SQLiteDatabaseTables.h"
 #include "Query.h"
 
@@ -65,7 +63,8 @@ boost::shared_ptr<CHardware> CSQLiteHardwareRequester::getHardware(int hardwareI
    if (adapter.getResults().empty())
    {
       // Hardware not found
-      throw CInvalidParameterException(CStringExtension::format("Hardware Id %d not found in database", hardwareId));
+      std::string sEx = (boost::format("Hardware Id %1% not found in database") % hardwareId).str(); 
+      throw CException(sEx);
    }
    return adapter.getResults().at(0);
 }

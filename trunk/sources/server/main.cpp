@@ -79,5 +79,8 @@ int main (int argc, char** argv)
       BOOST_ASSERT_MSG(false, "Yadoms exited with error, see console for details");
    }
 
+   //flush the log before exit
+   boost::log::core::get()->flush();
+
    return 0;
 }
