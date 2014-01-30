@@ -5,14 +5,14 @@
 //--------------------------------------------------------------
 /// \class Property tree to JSON serializer
 //--------------------------------------------------------------
-class PtreeToJsonSerializer : public IPtreeToStringSerializer
+class CPtreeToJsonSerializer : public IPtreeToStringSerializer
 {
 public:
-   virtual ~PtreeToJsonSerializer();
+   virtual ~CPtreeToJsonSerializer();
 
    // IPtreeToStringSerializer implementation
    virtual const std::string serialize(const boost::property_tree::ptree& pt) const;
-   virtual void unserialize(const std::string& str, boost::property_tree::ptree& pt);
+   virtual void deserialize(const std::string& str, boost::property_tree::ptree& pt);
    // [END] IPtreeToStringSerializer implementation
 };
 
