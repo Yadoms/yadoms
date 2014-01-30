@@ -24,35 +24,12 @@ set(SHARED_LIB_SRC
 	shared/Exceptions/NotSupportedException.hpp
 	shared/Exceptions/NullReferenceException.hpp
 
- 	shared/Xpl/XplConstants.h
-	shared/Xpl/XplConstants.cpp
-  shared/Xpl/XplActor.cpp
-	shared/Xpl/XplActor.h
-	shared/Xpl/XplException.h
-	shared/Xpl/XplHelper.cpp
-	shared/Xpl/XplHelper.h
-	shared/Xpl/XplHub.cpp
-	shared/Xpl/XplHub.h
-	shared/Xpl/XplMessage.cpp
-	shared/Xpl/XplMessage.h
-	shared/Xpl/XplMessageFactory.cpp
-	shared/Xpl/XplMessageFactory.h
-	shared/Xpl/XplMessageSchemaIdentifier.cpp
-	shared/Xpl/XplMessageSchemaIdentifier.h
-	shared/Xpl/XplService.cpp
-	shared/Xpl/XplService.h
-	shared/Xpl/XplHubConnectedPeripheral.cpp
-	shared/Xpl/XplHubConnectedPeripheral.h
-
   shared/HardwarePlugin/ImplementationHelper.h
 	
   shared/HardwarePlugin/Configuration/Configuration.h
   shared/HardwarePlugin/Configuration/Configuration.cpp
   shared/HardwarePlugin/Configuration/ConfigurationFactory.h
   shared/HardwarePlugin/Configuration/ConfigurationFactory.cpp
-  shared/HardwarePlugin/Configuration/IConfigurationSerializer.h
-  shared/HardwarePlugin/Configuration/JsonSerializer.h
-  shared/HardwarePlugin/Configuration/JsonSerializer.cpp
   shared/HardwarePlugin/Configuration/BitsFieldListParameter.h
   shared/HardwarePlugin/Configuration/BitsFieldListParameter.cpp
   shared/HardwarePlugin/Configuration/BoolParameter.h
@@ -78,6 +55,30 @@ set(SHARED_LIB_SRC
   shared/HardwarePlugin/Interfaces/IHardwarePlugin.h
   shared/HardwarePlugin/Interfaces/IHardwarePluginInformation.h
   shared/HardwarePlugin/Interfaces/IHardwarePluginConfigurationSchema.h
+
+  shared/Serialization/IPtreeToStringSerializer.h
+  shared/Serialization/PTreeToJsonSerializer.h
+  shared/Serialization/PTreeToJsonSerializer.cpp
+  
+ 	shared/Xpl/XplConstants.h
+	shared/Xpl/XplConstants.cpp
+  shared/Xpl/XplActor.cpp
+	shared/Xpl/XplActor.h
+	shared/Xpl/XplException.h
+	shared/Xpl/XplHelper.cpp
+	shared/Xpl/XplHelper.h
+	shared/Xpl/XplHub.cpp
+	shared/Xpl/XplHub.h
+	shared/Xpl/XplMessage.cpp
+	shared/Xpl/XplMessage.h
+	shared/Xpl/XplMessageFactory.cpp
+	shared/Xpl/XplMessageFactory.h
+	shared/Xpl/XplMessageSchemaIdentifier.cpp
+	shared/Xpl/XplMessageSchemaIdentifier.h
+	shared/Xpl/XplService.cpp
+	shared/Xpl/XplService.h
+	shared/Xpl/XplHubConnectedPeripheral.cpp
+	shared/Xpl/XplHubConnectedPeripheral.h 
 )
 
 #Append platform specific files

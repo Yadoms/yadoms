@@ -1,11 +1,11 @@
 #include "stdafx.h"
 
 #include "ConfigurationFactory.h"
-#include "JsonSerializer.h"
+#include "../../Serialization/PTreeToJsonSerializer.h"
 
 
-boost::shared_ptr<IConfigurationSerializer> CConfigurationFactory::createSerializer()
+boost::shared_ptr<IPtreeToStringSerializer> CConfigurationFactory::createSerializer()
 {
-   boost::shared_ptr<IConfigurationSerializer> serializer(new CJsonSerializer);
+   boost::shared_ptr<IPtreeToStringSerializer> serializer(new PtreeToJsonSerializer);
    return serializer;
 }

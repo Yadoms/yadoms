@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IConfigurationSerializer.h"
+#include "../../Serialization/IPtreeToStringSerializer.h"
 
 
 //--------------------------------------------------------------
@@ -16,5 +16,5 @@ private:
    /// \brief	   Serializer creation
    /// \return    A new serializer instance
    //--------------------------------------------------------------
-   static boost::shared_ptr<IConfigurationSerializer> createSerializer();
+   static boost::shared_ptr<IPtreeToStringSerializer> createSerializer();
 };
