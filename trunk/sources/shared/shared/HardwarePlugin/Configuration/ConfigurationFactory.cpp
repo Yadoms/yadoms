@@ -6,6 +6,6 @@
 
 boost::shared_ptr<IPtreeToStringSerializer> CConfigurationFactory::createSerializer()
 {
-   boost::shared_ptr<IPtreeToStringSerializer> serializer(new PtreeToJsonSerializer);
+   boost::shared_ptr<IPtreeToStringSerializer> serializer(new CPtreeToJsonSerializer);
    return serializer;
 }

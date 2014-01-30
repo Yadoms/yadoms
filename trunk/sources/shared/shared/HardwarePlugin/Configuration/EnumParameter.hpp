@@ -7,7 +7,7 @@
 /// \class Hardware plugin configuration enum parameter
 //--------------------------------------------------------------
 template<typename Enum>
-class YADOMS_SHARED_EXPORT CHardwarePluginConfigurationEnumParameter : public CHardwarePluginConfigurationEnumGeneric
+class CHardwarePluginConfigurationEnumParameter : public CHardwarePluginConfigurationEnumGeneric
 {
 public:
    //--------------------------------------------------------------

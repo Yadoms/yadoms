@@ -7,5 +7,5 @@
 #ifdef yadoms_shared_EXPORTS
 #define YADOMS_SHARED_EXPORT __declspec(dllexport)
 #else
-#define YADOMS_SHARED_EXPORT __declspec(dllexport)
+#define YADOMS_SHARED_EXPORT __declspec(dllimport)
 #endif
