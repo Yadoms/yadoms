@@ -93,7 +93,16 @@ public:
    /// \throw           CException if fails
    //--------------------------------------------------------------
    int createInstance(const std::string& instanceName, const std::string& pluginName,
-      std::string& configuration = std::string());
+      std::string& configuration);
+    
+    //--------------------------------------------------------------
+    /// \brief           Create a new instance of a plugin
+    /// \param [in] instanceName the name of the new instance
+    /// \param [in] pluginName The plugin name for the instance
+    /// \return          Id of the created instance
+    /// \throw           CException if fails
+    //--------------------------------------------------------------
+    int createInstance(const std::string& instanceName, const std::string& pluginName);
 
    //--------------------------------------------------------------
    /// \brief           Delete a plugin instance

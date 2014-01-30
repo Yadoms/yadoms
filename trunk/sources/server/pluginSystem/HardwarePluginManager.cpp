@@ -211,6 +211,12 @@ int CHardwarePluginManager::createInstance(const std::string& instanceName, cons
    return instanceId;
 }
 
+int CHardwarePluginManager::createInstance(const std::string& instanceName, const std::string& pluginName)
+{
+    std::string configuration;
+    return createInstance(instanceName, pluginName, configuration);
+}
+
 void CHardwarePluginManager::deleteInstance(int id)
 {
    // First step, stop instance

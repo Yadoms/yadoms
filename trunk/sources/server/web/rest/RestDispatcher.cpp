@@ -39,7 +39,7 @@ const bool CRestDispatcher::match(const std::vector<std::string> & url, const CU
    {
       for(unsigned int i=0; i<urlPattern.size(); i++)
       {
-         if(urlPattern[i] != "*" && strnicmp(urlPattern[i].c_str(), url[i].c_str(), urlPattern[i].size())!=0)
+         if(urlPattern[i] != "*" && !boost::iequals(urlPattern[i], url[i]))
          {
             return false;
          }

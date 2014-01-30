@@ -4,6 +4,7 @@
 #include "Parameters.h"
 #include "../Interfaces/IHardwarePluginConfigurationSchema.h"
 #include "../../Serialization/IPtreeToStringSerializer.h"
+#include <shared/Exceptions/BadConversionException.hpp>
 
 class IConfigurationSerializer;
 
