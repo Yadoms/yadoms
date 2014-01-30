@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "HardwarePluginFactory.h"
-#include <shared/HardwarePlugin/Information/HardwarePluginInformation.h>
+#include <shared/HardwarePlugin/Information/Information.h>
 
 CHardwarePluginFactory::CHardwarePluginFactory(const boost::filesystem::path& libraryPath)
-      :m_libraryPath(libraryPath), m_construct(NULL), m_getInformation(NULL), m_getDefaultConfiguration(NULL)
+      :m_libraryPath(libraryPath), m_construct(NULL), m_getInformation(NULL), m_getConfigurationSchema(NULL)
 {
    load();
 }
@@ -23,7 +23,7 @@ void CHardwarePluginFactory::load()
    // Load plugin static methods
    m_construct = (IHardwarePlugin* (*)(void))GetFunctionPointer("construct");
    m_getInformation = (const IHardwarePluginInformation& (*)())GetFunctionPointer("getInformation");
-   m_getDefaultConfiguration = (const CHardwarePluginConfiguration& (*)())GetFunctionPointer("getDefaultConfiguration");
+   m_getConfigurationSchema = (const IHardwarePluginConfigurationSchema& (*)())GetFunctionPointer("getConfigurationSchemaInterface");
 
    // Check if all non-optional methods are loaded
    if(m_construct == NULL || m_getInformation == NULL)
@@ -65,13 +65,13 @@ boost::shared_ptr<const IHardwarePluginInformation> CHardwarePluginFactory::getI
    return information;
 }
 
-const boost::optional<const CHardwarePluginConfiguration&> CHardwarePluginFactory::getDefaultConfiguration() const
+std::string CHardwarePluginFactory::getConfigurationSchema() const
 {
-   boost::optional<const CHardwarePluginConfiguration&> defaultConfiguration;
-   if (!m_getDefaultConfiguration)
-      return boost::optional<const CHardwarePluginConfiguration&>(); // Plugin has no configuration
+   if (!m_getConfigurationSchema)
+      return std::string(); // Plugin has no configuration
 
-   return boost::optional<const CHardwarePluginConfiguration&> (m_getDefaultConfiguration());
+   // Because library can be unloaded at any time (so memory will be freed), return a copy of configuration
+   return m_getConfigurationSchema().getSchema();
 }
 
 
@@ -85,8 +85,8 @@ boost::shared_ptr<const IHardwarePluginInformation> CHardwarePluginFactory::getI
    return plugin.getInformation();
 }
 
-const boost::optional<const CHardwarePluginConfiguration&> CHardwarePluginFactory::getDefaultConfiguration(const boost::filesystem::path& libraryPath)
+std::string CHardwarePluginFactory::getConfigurationSchema(const boost::filesystem::path& libraryPath)
 {
    CHardwarePluginFactory plugin(libraryPath);
-   return plugin.getDefaultConfiguration();
+   return plugin.getConfigurationSchema();
 }

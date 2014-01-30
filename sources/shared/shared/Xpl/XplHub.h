@@ -1,10 +1,11 @@
 #pragma once
 
+#include <shared/Export.h>
 #include "XplHubConnectedPeripheral.h"
 #include "../ThreadBase.h"
 //TODO : COMMENTER
 
-class CXplHub : public CThreadBase
+class YADOMS_SHARED_EXPORT CXplHub : public CThreadBase
 {
 public:
    CXplHub(const std::string & localIPOfTheInterfaceToUse);

@@ -1,9 +1,11 @@
 #pragma once
 
+#include <shared/Export.h>
+
 //--------------------------------------------------------------
 /// \class Message Schema Identifier for Xpl message (x10.basic)
 //--------------------------------------------------------------
-class CXplMessageSchemaIdentifier
+class YADOMS_SHARED_EXPORT CXplMessageSchemaIdentifier
 {
 public:
 

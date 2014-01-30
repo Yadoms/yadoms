@@ -1,5 +1,6 @@
 #pragma once
 
+#include <shared/Export.h>
 #include "../Interfaces/IHardwarePluginInformation.h"
 
 
@@ -7,7 +8,7 @@
 /// \brief		Container class for information about Hardware plugins
 /// \note      This class is usually implemented by IMPLEMENT_HARDWARE_PLUGIN macro
 //--------------------------------------------------------------
-class CHardwarePluginInformation : public IHardwarePluginInformation
+class YADOMS_SHARED_EXPORT CHardwarePluginInformation : public IHardwarePluginInformation
 {
 public:
    //--------------------------------------------------------------

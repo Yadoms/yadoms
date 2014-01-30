@@ -102,7 +102,7 @@ std::vector<boost::filesystem::path> CHardwarePluginManager::findPluginFilenames
          if (boost::filesystem::is_regular_file(fileIterator->status()) &&
             fileIterator->path().extension() == pluginEndWithString)
          {
-            pluginFilenames.push_back(fileIterator->path());
+            pluginFilenames.push_back(fileIterator->path().filename());
          }
       }
    }
@@ -163,7 +163,7 @@ void CHardwarePluginManager::buildAvailablePluginList()
          if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
             m_availablePlugins[pluginName] = m_loadedPlugins[pluginName]->getInformation();
          else
-            m_availablePlugins[pluginName] = CHardwarePluginFactory::getInformation(*libPathIt);
+            m_availablePlugins[pluginName] = CHardwarePluginFactory::getInformation(toPath(pluginName));
       }
       catch (CInvalidPluginException& e)
       {
@@ -188,21 +188,21 @@ CHardwarePluginManager::AvalaiblePluginMap CHardwarePluginManager::getPluginList
    return mapCopy;
 }
 
-boost::optional<const CHardwarePluginConfiguration&> CHardwarePluginManager::getPluginDefaultConfiguration(const std::string& pluginName) const
+std::string CHardwarePluginManager::getPluginConfigurationSchema(const std::string& pluginName) const
 {
    // If plugin is already loaded, use its information
    if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
-      return m_loadedPlugins.at(pluginName)->getDefaultConfiguration();
+      return m_loadedPlugins.at(pluginName)->getConfigurationSchema();
 
-   return CHardwarePluginFactory::getDefaultConfiguration(pluginName);
+   return CHardwarePluginFactory::getConfigurationSchema(toPath(pluginName));
 }
 
 int CHardwarePluginManager::createInstance(const std::string& instanceName, const std::string& pluginName,
-                                           boost::optional<const CHardwarePluginConfiguration&> configuration)
+                                           std::string& configuration)
 {
    // First step, record instance in database, to get its ID
    boost::shared_ptr<CHardware> dbRecord(new CHardware);
-   dbRecord->setName(instanceName).setPluginName(pluginName).setConfiguration(configuration?configuration->serializeValues():"").setEnabled(true).setDeleted(false);
+   dbRecord->setName(instanceName).setPluginName(pluginName).setConfiguration(configuration).setEnabled(true).setDeleted(false);
    int instanceId = m_database->addHardware(dbRecord);
 
    // Next create instance
@@ -245,35 +245,31 @@ boost::shared_ptr<CHardwarePluginManager::PluginDetailedInstanceMap> CHardwarePl
    return instances;
 }
 
-boost::optional<const CHardwarePluginConfiguration> CHardwarePluginManager::getInstanceConfiguration(int id) const
+std::string CHardwarePluginManager::getInstanceConfiguration(int id) const
 {
    // First get database instance data
    BOOST_ASSERT(m_database->getHardware(id));
    boost::shared_ptr<CHardware> instanceData (m_database->getHardware(id));
 
-   // Get the plugin default configuration to get the configuration scheme
-   boost::optional<const CHardwarePluginConfiguration&> pluginDefaultConfiguration(getPluginDefaultConfiguration(instanceData->getPluginName()));
-   if (!pluginDefaultConfiguration)
-      return boost::optional<const CHardwarePluginConfiguration> (); // Plugin has no configuration
+   // Check if a schema is avalaible
+   std::string pluginConfigurationSchema(getPluginConfigurationSchema(instanceData->getPluginName()));
+   if (pluginConfigurationSchema.empty())
+      return std::string(); // Plugin has no configuration
 
-   // Override values with data from database
-   CHardwarePluginConfiguration instanceConfiguration = pluginDefaultConfiguration.get();
-   instanceConfiguration.unserializeValues(instanceData->getConfiguration());
-
-   return boost::optional<const CHardwarePluginConfiguration> (instanceConfiguration);
+   // Returns configuration from database
+   return instanceData->getConfiguration();
 }
 
-void CHardwarePluginManager::setInstanceConfiguration(int id, const CHardwarePluginConfiguration& newConfiguration)
+void CHardwarePluginManager::setInstanceConfiguration(int id, const std::string& newConfiguration)
 {
    // First update configuration in database
-   const std::string newConfigurationStr = newConfiguration.serializeValues();
-   m_database->updateHardwareConfiguration(id, newConfigurationStr);
+   m_database->updateHardwareConfiguration(id, newConfiguration);
 
    // Next notify the instance, if running
    if (m_runningInstances.find(id) == m_runningInstances.end())
       return;  // Instance is not running, nothing to do more
 
-   m_runningInstances[id]->updateConfiguration(newConfigurationStr);
+   m_runningInstances[id]->updateConfiguration(newConfiguration);
 }
 
 void CHardwarePluginManager::onPluginDirectoryChanges(const boost::asio::dir_monitor_event& ev)

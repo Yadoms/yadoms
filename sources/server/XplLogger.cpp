@@ -42,7 +42,7 @@ void CXplLogger::onMessageReceived(CXplMessage & message)
 
 void CXplLogger::start()
 {
-   m_xplService.reset(new CXplService(CXplConstants::YadomsVendorId, "logger", "1"));
+   m_xplService.reset(new CXplService(CXplConstants::getYadomsVendorId(), "logger", "1"));
    m_xplService->messageReceived(boost::bind(&CXplLogger::onMessageReceived, this, _1));
 	YADOMS_LOG(info) << "XplLogger started";
 }

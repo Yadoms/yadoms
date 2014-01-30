@@ -1,9 +1,11 @@
 #pragma once
 
+#include <shared/Export.h>
+
 //--------------------------------------------------------------
 /// \class Actor for Xpl management used for source and target fields
 //--------------------------------------------------------------
-class CXplActor
+class YADOMS_SHARED_EXPORT CXplActor
 {
 public:
    //--------------------------------------------------------------
