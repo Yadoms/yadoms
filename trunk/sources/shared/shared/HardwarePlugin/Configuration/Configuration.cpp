@@ -15,11 +15,13 @@ CHardwarePluginConfiguration::CHardwarePluginConfiguration()
 CHardwarePluginConfiguration::CHardwarePluginConfiguration(const CHardwarePluginConfiguration& src, const std::string& configurationValues)
    :m_configurationSerializer(src.m_configurationSerializer)
 {
+   boost::lock_guard<boost::mutex> lock(m_configurationMapMutex);
+   boost::lock_guard<boost::mutex> srcLock(const_cast<boost::mutex&> (src.m_configurationMapMutex));
+
    // Full copy of configuration schema
    for(CHardwarePluginConfigurationMap::const_iterator itParameter = src.m_configurationMap.begin() ; itParameter != src.m_configurationMap.end() ; itParameter++)
    {
-      boost::shared_ptr<CHardwarePluginConfigurationParameter> copiedParameter = itParameter->second->clone();
-      AddParameter(copiedParameter);
+      AddParameter(itParameter->second->clone());
    }
 
    // Overwrite parameters with provided values
@@ -30,8 +32,16 @@ CHardwarePluginConfiguration::~CHardwarePluginConfiguration()
 {
 }
 
+void CHardwarePluginConfiguration::buildSchema()
+{
+   boost::lock_guard<boost::mutex> lock(m_configurationMapMutex);
+   doBuildSchema();
+}
+
 std::string CHardwarePluginConfiguration::getSchema() const
 {
+   boost::lock_guard<boost::mutex> lock(const_cast<boost::mutex&> (m_configurationMapMutex));
+
    boost::property_tree::ptree pt;
    for(CHardwarePluginConfigurationMap::const_iterator itParameter = m_configurationMap.begin() ; itParameter != m_configurationMap.end() ; itParameter++)
       itParameter->second->getSchema(pt);
@@ -42,6 +52,9 @@ void CHardwarePluginConfiguration::setValues(const std::string& serializedConfig
 {
    boost::property_tree::ptree pt;
    m_configurationSerializer->deserialize(serializedConfiguration, pt);
+
+   boost::lock_guard<boost::mutex> lock(m_configurationMapMutex);
+
    for(CHardwarePluginConfigurationMap::iterator itParameter = m_configurationMap.begin() ; itParameter != m_configurationMap.end() ; itParameter++)
    {
       try
@@ -60,6 +73,12 @@ void CHardwarePluginConfiguration::AddParameter(boost::shared_ptr<CHardwarePlugi
 {
    BOOST_ASSERT(m_configurationMap.find(parameter->getName()) == m_configurationMap.end());  // Item already exists
    m_configurationMap[parameter->getName()] = parameter;
+}
+
+void CHardwarePluginConfiguration::AddParameter(CHardwarePluginConfigurationParameter* parameter)
+{
+   boost::shared_ptr<CHardwarePluginConfigurationParameter> parameterPtr(parameter);
+   AddParameter(parameterPtr);
 }
 
 const CHardwarePluginConfigurationParameter& CHardwarePluginConfiguration::operator[](const std::string& parameterName) const

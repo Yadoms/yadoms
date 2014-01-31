@@ -32,6 +32,11 @@ public:
    //--------------------------------------------------------------
    virtual ~CHardwarePluginConfiguration();
 
+   //--------------------------------------------------------------
+   /// \brief	    Build the configuration schema
+   //--------------------------------------------------------------
+   void buildSchema();
+
    // IHardwarePluginConfigurationSchema implementation
    virtual std::string getSchema() const;
    // [END] IHardwarePluginConfigurationSchema implementation
@@ -47,6 +52,7 @@ public:
    /// \param [in] Pointer on the new parameter
    //--------------------------------------------------------------
    void AddParameter(boost::shared_ptr<CHardwarePluginConfigurationParameter> parameter);
+   void AddParameter(CHardwarePluginConfigurationParameter* parameter);
 
    //--------------------------------------------------------------
    /// \brief	    Direct const access to parameter
@@ -107,9 +113,20 @@ public:
    //--------------------------------------------------------------
    CHardwarePluginConfigurationBitsFieldParameter::Items asBitsField(const std::string& parameterName) const;
 
+   // TODO voir si on peut faire des accesseurs template. L'appel donnerait qqc du genre :
+   //m_Configuration.get<bool>("BoolParameter");
+
+protected:
+   //--------------------------------------------------------------
+   /// \brief	    Build the configuration schema
+   /// \note       Plugin must override this function to describe its configuration
+   //--------------------------------------------------------------
+   virtual void doBuildSchema() = 0;
+
 
 private:
    CHardwarePluginConfigurationMap m_configurationMap;
+   boost::mutex m_configurationMapMutex;
    boost::shared_ptr<IPtreeToStringSerializer> m_configurationSerializer;
 };
 

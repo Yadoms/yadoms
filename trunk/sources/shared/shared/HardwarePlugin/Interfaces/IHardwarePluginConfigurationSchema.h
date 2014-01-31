@@ -8,7 +8,7 @@
 class YADOMS_SHARED_EXPORT IHardwarePluginConfigurationSchema
 {
 public:
-   ~IHardwarePluginConfigurationSchema() {}
+   virtual ~IHardwarePluginConfigurationSchema() {}
 
    //--------------------------------------------------------------
    /// \brief	    Get the full configuration description as string

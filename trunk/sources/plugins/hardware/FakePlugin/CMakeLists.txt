@@ -7,6 +7,8 @@ include("../YadomsHPluginsCommon.cmake")
 set(FAKE_PLUGING_SRC
 	FakePlugin.cpp 
 	FakePlugin.h
+	FakePluginConfiguration.cpp 
+	FakePluginConfiguration.h
 )
 
 

@@ -23,7 +23,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   ~CHardwarePluginConfigurationSimpleParameter() {}
+   virtual ~CHardwarePluginConfigurationSimpleParameter() {}
 
    // Allocation must be done in the shared library memory space. So we can not do it here, or
    // allocation will occur in the caller memory space (which can be freed in the case of unload plugin)

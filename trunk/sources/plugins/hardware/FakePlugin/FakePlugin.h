@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/HardwarePlugin/ImplementationHelper.h>
 #include <shared/Xpl/XplMessage.h>
+#include "FakePluginConfiguration.h"
 
 class CFakePlugin : public IHardwarePlugin
 {  
@@ -27,7 +28,9 @@ private:
    void onMessageReceived(CXplMessage & message);
 
    // Trace the configuration
-   void traceConfiguration(const CHardwarePluginConfiguration& configuration);
+   void traceConfiguration();
+
+   CFakePluginConfiguration m_Configuration;
 };
 
 
