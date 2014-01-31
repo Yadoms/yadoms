@@ -4,7 +4,7 @@
 #include <shared/Exceptions/NotImplementedException.hpp>
 #include "adapters/GenericAdapter.h"
 #include "adapters/SingleValueAdapter.hpp"
-#include <shared/StringExtension.hpp>
+#include <shared/StringExtension.h>
 #include "SQLiteSystemTables.h"
 
 

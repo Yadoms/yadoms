@@ -198,7 +198,7 @@ std::string CHardwarePluginManager::getPluginConfigurationSchema(const std::stri
 }
 
 int CHardwarePluginManager::createInstance(const std::string& instanceName, const std::string& pluginName,
-                                           std::string& configuration)
+                                           const std::string& configuration)
 {
    // First step, record instance in database, to get its ID
    boost::shared_ptr<CHardware> dbRecord(new CHardware);
@@ -209,12 +209,6 @@ int CHardwarePluginManager::createInstance(const std::string& instanceName, cons
    startInstance(instanceId);
 
    return instanceId;
-}
-
-int CHardwarePluginManager::createInstance(const std::string& instanceName, const std::string& pluginName)
-{
-    std::string configuration;
-    return createInstance(instanceName, pluginName, configuration);
 }
 
 void CHardwarePluginManager::deleteInstance(int id)
@@ -260,7 +254,7 @@ std::string CHardwarePluginManager::getInstanceConfiguration(int id) const
    // Check if a schema is avalaible
    std::string pluginConfigurationSchema(getPluginConfigurationSchema(instanceData->getPluginName()));
    if (pluginConfigurationSchema.empty())
-      return std::string(); // Plugin has no configuration
+      return CStringExtension::EmptyString; // Plugin has no configuration
 
    // Returns configuration from database
    return instanceData->getConfiguration();

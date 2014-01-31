@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "BitsFieldListParameter.h"
+#include "../../StringExtension.h"
 
 CHardwarePluginConfigurationBitsFieldParameter::CHardwarePluginConfigurationBitsFieldParameter(const std::string& name, const std::string& description, const Items& items)
    :CHardwarePluginConfigurationParameter("bitsField", name, description), m_defaultValue(items), m_value(items)
@@ -16,7 +17,7 @@ boost::shared_ptr<CHardwarePluginConfigurationParameter> CHardwarePluginConfigur
 const std::string CHardwarePluginConfigurationBitsFieldParameter::valueToString(bool current) const
 {
    //Function is not needed as getSchema was overridden, and "default" value overwritten
-   return std::string();
+   return CStringExtension::EmptyString;
 }
 
 void CHardwarePluginConfigurationBitsFieldParameter::valueFromString(const std::string& valueAsString)

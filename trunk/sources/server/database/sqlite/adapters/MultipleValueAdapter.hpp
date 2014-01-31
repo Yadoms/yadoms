@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "tools/StringExtension.hpp"
+#include "tools/StringExtension.h"
 #include "tools/Log.h"
 
 //--------------------------------------------------------------

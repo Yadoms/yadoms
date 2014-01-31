@@ -10,6 +10,7 @@
 #include "HardwarePluginFactory.h"
 #include "HardwarePluginInstance.h"
 #include "../database/IHardwareRequester.h"
+#include <shared/StringExtension.h>
 
 //--------------------------------------------------------------
 /// \brief	this class is used to manage plugin. 
@@ -93,17 +94,8 @@ public:
    /// \throw           CException if fails
    //--------------------------------------------------------------
    int createInstance(const std::string& instanceName, const std::string& pluginName,
-      std::string& configuration);
+      const std::string& configuration = CStringExtension::EmptyString);
     
-    //--------------------------------------------------------------
-    /// \brief           Create a new instance of a plugin
-    /// \param [in] instanceName the name of the new instance
-    /// \param [in] pluginName The plugin name for the instance
-    /// \return          Id of the created instance
-    /// \throw           CException if fails
-    //--------------------------------------------------------------
-    int createInstance(const std::string& instanceName, const std::string& pluginName);
-
    //--------------------------------------------------------------
    /// \brief           Delete a plugin instance
    /// \param [in] id   Instance Id

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "HardwarePluginFactory.h"
 #include <shared/HardwarePlugin/Information/Information.h>
+#include <shared/StringExtension.h>
 
 CHardwarePluginFactory::CHardwarePluginFactory(const boost::filesystem::path& libraryPath)
       :m_libraryPath(libraryPath), m_construct(NULL), m_getInformation(NULL), m_getConfigurationSchema(NULL)
@@ -12,7 +13,6 @@ CHardwarePluginFactory::~CHardwarePluginFactory()
 {
    unload();
 }
-
 
 void CHardwarePluginFactory::load()
 {
@@ -42,7 +42,6 @@ void CHardwarePluginFactory::unload()
    CDynamicLibrary::unload();
 }
 
-
 IHardwarePlugin* CHardwarePluginFactory::construct() const
 {
 	BOOST_ASSERT(m_construct);  // construct can not be called if load was unsuccessfully
@@ -68,7 +67,7 @@ boost::shared_ptr<const IHardwarePluginInformation> CHardwarePluginFactory::getI
 std::string CHardwarePluginFactory::getConfigurationSchema() const
 {
    if (!m_getConfigurationSchema)
-      return std::string(); // Plugin has no configuration
+      return CStringExtension::EmptyString; // Plugin has no configuration
 
    // Because library can be unloaded at any time (so memory will be freed), return a copy of configuration
    return m_getConfigurationSchema().getSchema();

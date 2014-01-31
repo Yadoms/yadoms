@@ -1,6 +1,6 @@
 #pragma once
 
-#include <shared/StringExtension.hpp>
+#include <shared/StringExtension.h>
 #include <shared/Log.h>
 
 template<class TValue>
