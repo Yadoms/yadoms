@@ -7,7 +7,7 @@
 #include "XplMessageFactory.h"
 #include "XplActor.h"
 #include "XplHelper.h"
-#include "../StringExtension.hpp"
+#include "../StringExtension.h"
 
 //un client broadcast sa donnée sur le port XPL
 //et passe en ecoute de données sur n'importe quel port de n'importe qui qu'il donne dans sa trame xpl

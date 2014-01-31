@@ -13,7 +13,8 @@ set(SHARED_LIB_SRC
 	shared/ThreadBase.cpp
 	shared/ThreadBase.h
 
-	shared/StringExtension.hpp	
+	shared/StringExtension.h
+	shared/StringExtension.cpp
   
   	shared/Exceptions/BadConversionException.hpp
 	shared/Exceptions/EmptyResultException.hpp

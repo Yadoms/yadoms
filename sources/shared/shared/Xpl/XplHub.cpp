@@ -5,7 +5,7 @@
 #include "XplHelper.h"
 #include "XplMessage.h"
 #include "XplHubConnectedPeripheral.h"
-#include "../StringExtension.hpp"
+#include "../StringExtension.h"
 #include "XplException.h"
 #include "../ThreadBase.h"
 
