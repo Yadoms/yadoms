@@ -15,7 +15,7 @@ set(SHARED_LIB_SRC
 
 	shared/StringExtension.hpp	
   
-  shared/Exceptions/BadConversionException.hpp
+  	shared/Exceptions/BadConversionException.hpp
 	shared/Exceptions/EmptyResultException.hpp
 	shared/Exceptions/Exception.hpp
 	shared/Exceptions/InvalidParameterException.hpp
@@ -24,16 +24,16 @@ set(SHARED_LIB_SRC
 	shared/Exceptions/NotSupportedException.hpp
 	shared/Exceptions/NullReferenceException.hpp
 
-  shared/HardwarePlugin/ImplementationHelper.h
+  	shared/HardwarePlugin/ImplementationHelper.h
 	
-  shared/HardwarePlugin/Configuration/Configuration.h
-  shared/HardwarePlugin/Configuration/Configuration.cpp
-  shared/HardwarePlugin/Configuration/ConfigurationFactory.h
-  shared/HardwarePlugin/Configuration/ConfigurationFactory.cpp
-  shared/HardwarePlugin/Configuration/BitsFieldListParameter.h
-  shared/HardwarePlugin/Configuration/BitsFieldListParameter.cpp
-  shared/HardwarePlugin/Configuration/BoolParameter.h
-  shared/HardwarePlugin/Configuration/BoolParameter.cpp
+	shared/HardwarePlugin/Configuration/Configuration.h
+	shared/HardwarePlugin/Configuration/Configuration.cpp
+	shared/HardwarePlugin/Configuration/ConfigurationFactory.h
+	shared/HardwarePlugin/Configuration/ConfigurationFactory.cpp
+	shared/HardwarePlugin/Configuration/BitsFieldListParameter.h
+	shared/HardwarePlugin/Configuration/BitsFieldListParameter.cpp
+	shared/HardwarePlugin/Configuration/BoolParameter.h
+	shared/HardwarePlugin/Configuration/BoolParameter.cpp
 	shared/HardwarePlugin/Configuration/EnumGenericParameter.h
 	shared/HardwarePlugin/Configuration/EnumGenericParameter.cpp
 	shared/HardwarePlugin/Configuration/DoubleParameter.h
@@ -41,28 +41,28 @@ set(SHARED_LIB_SRC
 	shared/HardwarePlugin/Configuration/EnumParameter.hpp
 	shared/HardwarePlugin/Configuration/IntParameter.h
 	shared/HardwarePlugin/Configuration/IntParameter.cpp
-  shared/HardwarePlugin/Configuration/Parameter.h
-  shared/HardwarePlugin/Configuration/Parameter.cpp
-  shared/HardwarePlugin/Configuration/Parameters.h
-  shared/HardwarePlugin/Configuration/SimpleParameter.hpp
+	shared/HardwarePlugin/Configuration/Parameter.h
+	shared/HardwarePlugin/Configuration/Parameter.cpp
+	shared/HardwarePlugin/Configuration/Parameters.h
+	shared/HardwarePlugin/Configuration/SimpleParameter.hpp
 	shared/HardwarePlugin/Configuration/SerialPortParameter.h
 	shared/HardwarePlugin/Configuration/SerialPortParameter.cpp
 	shared/HardwarePlugin/Configuration/StringParameter.h
 	shared/HardwarePlugin/Configuration/StringParameter.cpp	
-  shared/HardwarePlugin/Information/Information.cpp
-  shared/HardwarePlugin/Information/Information.h
-	
-  shared/HardwarePlugin/Interfaces/IHardwarePlugin.h
-  shared/HardwarePlugin/Interfaces/IHardwarePluginInformation.h
-  shared/HardwarePlugin/Interfaces/IHardwarePluginConfigurationSchema.h
+	shared/HardwarePlugin/Information/Information.cpp
+	shared/HardwarePlugin/Information/Information.h
 
-  shared/Serialization/IPtreeToStringSerializer.h
-  shared/Serialization/PTreeToJsonSerializer.h
-  shared/Serialization/PTreeToJsonSerializer.cpp
-  
- 	shared/Xpl/XplConstants.h
+	shared/HardwarePlugin/Interfaces/IHardwarePlugin.h
+	shared/HardwarePlugin/Interfaces/IHardwarePluginInformation.h
+	shared/HardwarePlugin/Interfaces/IHardwarePluginConfigurationSchema.h
+
+	shared/Serialization/IPtreeToStringSerializer.h
+	shared/Serialization/PTreeToJsonSerializer.h
+	shared/Serialization/PTreeToJsonSerializer.cpp
+
+	shared/Xpl/XplConstants.h
 	shared/Xpl/XplConstants.cpp
-  shared/Xpl/XplActor.cpp
+	shared/Xpl/XplActor.cpp
 	shared/Xpl/XplActor.h
 	shared/Xpl/XplException.h
 	shared/Xpl/XplHelper.cpp
@@ -115,20 +115,18 @@ set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/linux)
 ENDIF()
 
 # Define project folders
-IF(MSVC)
-	source_group(HardwarePlugin shared/shared/HardwarePlugin/*.* )	
-	source_group(HardwarePlugin\\Configuration shared/shared/HardwarePlugin/Configuration/*.* )	
-	source_group(HardwarePlugin\\Information shared/shared/HardwarePlugin/Information/*.* )	
-	source_group(HardwarePlugin\\Interfaces shared/shared/HardwarePlugin/Interfaces/*.* )	
+source_group(HardwarePlugin shared/shared/HardwarePlugin/*.* )	
+source_group(HardwarePlugin\\Configuration shared/shared/HardwarePlugin/Configuration/*.* )	
+source_group(HardwarePlugin\\Information shared/shared/HardwarePlugin/Information/*.* )	
+source_group(HardwarePlugin\\Interfaces shared/shared/HardwarePlugin/Interfaces/*.* )	
 
- 	source_group(Exceptions shared/Exceptions/*.*)
+source_group(Exceptions shared/Exceptions/*.*)
 
- 	source_group(Xpl shared/Xpl/*.*)
+source_group(Xpl shared/Xpl/*.*)
 
-	source_group(PlatformSpecific\\windows shared/windows/shared/*.*)
-	source_group(PlatformSpecific\\linux shared/linux/shared/*.*)
-	source_group(PlatformSpecific\\mac shared/mac/shared/*.*)
-ENDIF()
+source_group(PlatformSpecific\\windows shared/windows/shared/*.*)
+source_group(PlatformSpecific\\linux shared/linux/shared/*.*)
+source_group(PlatformSpecific\\mac shared/mac/shared/*.*)
 
 
 ########################

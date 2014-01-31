@@ -1,12 +1,6 @@
-
-#include <boost/thread.hpp>
-#include <boost/optional.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/assign.hpp>
-#include <boost/log/common.hpp>
-#include <boost/log/trivial.hpp>
-#include <shared/Log.h>
+#include "stdafx.h"
 #include "FakePlugin.h"
+#include <shared/Log.h>
 #include <shared/Xpl/XplService.h>
 #include <shared/Xpl/XplMessage.h>
 #include <shared/Exceptions/BadConversionException.hpp>
