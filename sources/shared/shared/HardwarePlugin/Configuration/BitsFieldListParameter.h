@@ -26,7 +26,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   ~CHardwarePluginConfigurationBitsFieldParameter() {}
+   virtual ~CHardwarePluginConfigurationBitsFieldParameter() {}
 
    // CHardwarePluginConfigurationParameter implementation
    virtual boost::shared_ptr<CHardwarePluginConfigurationParameter> clone() const;

@@ -3,7 +3,7 @@
 #include "BitsFieldListParameter.h"
 
 CHardwarePluginConfigurationBitsFieldParameter::CHardwarePluginConfigurationBitsFieldParameter(const std::string& name, const std::string& description, const Items& items)
-   :CHardwarePluginConfigurationParameter("bitsField", name, description), m_value(items), m_defaultValue(items)
+   :CHardwarePluginConfigurationParameter("bitsField", name, description), m_defaultValue(items), m_value(items)
 {
 }
 

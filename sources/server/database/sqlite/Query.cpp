@@ -149,7 +149,7 @@ CQuery & CQuery::OrderBy( const std::string & field1, const std::string & way1,
 {
    std::ostringstream ss;
    ss << " ORDER BY " << field1;
-   if(way1.size()>=0) 
+   if(way1.size()>0) 
       ss << " " << way1;
    AppendOrderField(ss, field2 , way2 );
    AppendOrderField(ss, field3 , way3 );
@@ -331,7 +331,7 @@ void CQuery::AppendOrderField(std::ostringstream & ss, const std::string & field
    if(field.size()>0) 
    { 
       ss << "," << field; 
-      if(way.size()>=0) 
+      if(way.size()>0)
          ss << " " << way; 
    }
 }

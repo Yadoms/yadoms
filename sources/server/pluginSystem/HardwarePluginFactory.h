@@ -69,14 +69,14 @@ public:
    /// \return     Configuration schema if available for this plugin (empty string if not)
    //-------------------------------------------------------------
    std::string getConfigurationSchema() const;
-
+    
 private:
    //--------------------------------------------------------------
    /// \brief	    Load a plugin file
    /// \throw      CInvalidPluginException if plugin is not recognized
    //-------------------------------------------------------------
    void load();
-
+    
    //--------------------------------------------------------------
    /// \brief	    Free library file
    //-------------------------------------------------------------

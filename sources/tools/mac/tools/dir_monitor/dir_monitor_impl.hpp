@@ -101,7 +101,8 @@ public:
             ec = boost::asio::error::operation_aborted; 
         return ev; 
         */
-        throw std::exception();
+        dir_monitor_event ev;
+        return ev;
     } 
 
     void pushback_event(dir_monitor_event ev) 
@@ -130,6 +131,7 @@ private:
         } 
         return fd; 
         */
+        return -1;
     } 
 
 public: 

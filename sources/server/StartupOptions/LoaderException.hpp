@@ -19,7 +19,7 @@ public:
    //--------------------------------------------------------------
    CStartupOptionsLoaderException(const boost::program_options::options_description& optionsDecription,
       const char* message = NULL)
-      :m_optionsDecription(optionsDecription), CException("")
+      :CException(""), m_optionsDecription(optionsDecription)
    {
       // If no error message was specified, it's not an error (help was invoked)
       m_error = message ? true : false;
