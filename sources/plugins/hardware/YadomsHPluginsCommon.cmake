@@ -5,10 +5,14 @@
 # It configure the plugin to link as a module, with boost
 
 MACRO(ADD_HARDWARE_PLUGIN _targetName)
-	add_library(${_targetName} MODULE ${HARDWARE_PLUGIN_BASE_HEADER_SRC} ${ARGN})
-	set_property( TARGET ${_targetName} PROPERTY INCLUDE_DIRECTORIES ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
+	MESSAGE(STATUS "Hardware plugin precompiled header dir = ${HPLUGIN_PRECOMPILED_HEADER_DIR}")
+
+	add_library(${_targetName} MODULE ${HARDWARE_PLUGIN_BASE_HEADER_SRC} ${HPLUGIN_PRECOMPILED_HEADER_DIR}/stdafx.h ${HPLUGIN_PRECOMPILED_HEADER_DIR}/stdafx.cpp ${ARGN})
+	set_property( TARGET ${_targetName} PROPERTY INCLUDE_DIRECTORIES ${HPLUGIN_PRECOMPILED_HEADER_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR} )
+	add_precompiled_header(${_targetName} ${HPLUGIN_PRECOMPILED_HEADER_DIR}/stdafx.h)
 	target_link_libraries(${_targetName} yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
-	IF(MSVC)
+
+	IF(MSVC OR XCODE)
 		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "Plugins")
 	ENDIF()
 ENDMACRO()

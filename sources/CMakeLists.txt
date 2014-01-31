@@ -282,17 +282,15 @@ set(YADOMS_SRC
 	)
 
 # Project folders
-if(MSVC)
-	source_group(Server server/*.*)
-	source_group(Server\\pluginSystem server/pluginSystem/*.* )
-	source_group(Server\\pluginSystem\\external plugins/hardware/IHardwarePlugin.h )
-	source_group(Server\\database  server/database/*.*)
-	source_group(Server\\StartupOptions  server/StartupOptions/*.*)
-	source_group(Server\\database\\entities  server/database/entities/*.*)
-	source_group(Server\\web  server/web/*.*)
-	source_group(Server\\web\\REST  server/web/rest/*.*)
-	source_group(Server\\web\\REST\\Json  server/web/rest/json/*.*)
-endif()
+source_group(Server server/*.*)
+source_group(Server\\pluginSystem server/pluginSystem/*.* )
+source_group(Server\\pluginSystem\\external plugins/hardware/IHardwarePlugin.h )
+source_group(Server\\database  server/database/*.*)
+source_group(Server\\StartupOptions  server/StartupOptions/*.*)
+source_group(Server\\database\\entities  server/database/entities/*.*)
+source_group(Server\\web  server/web/*.*)
+source_group(Server\\web\\REST  server/web/rest/*.*)
+source_group(Server\\web\\REST\\Json  server/web/rest/json/*.*)
 
 #Database
 IF(USE_SQLITE_DATABASE)
@@ -342,11 +340,9 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/versioning/SQLiteTablesScripts.cpp
 	)
 	
-	if(MSVC)
-		source_group(Server\\database\\sqlite  server/database/sqlite/*.*)
-		source_group(Server\\database\\sqlite\\adapters  server/database/sqlite/adapters/*.*)
-		source_group(Server\\database\\sqlite\\versioning  server/database/sqlite/versioning/*.*)
-	endif()
+	source_group(Server\\database\\sqlite  server/database/sqlite/*.*)
+	source_group(Server\\database\\sqlite\\adapters  server/database/sqlite/adapters/*.*)
+	source_group(Server\\database\\sqlite\\versioning  server/database/sqlite/versioning/*.*)
 	
 	set(LIBS ${LIBS} sqlite)
 	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${SQLITE_INCLUDE_DIRECTORY})
@@ -361,9 +357,7 @@ IF(USE_WEBEM_WEBSERVER)
 		server/web/webem/RestHandler.cpp
 	)
 	
-	if(MSVC)
-		source_group(Server\\web\\webem  server/web/webem/*.*)
-	endif()	
+	source_group(Server\\web\\webem  server/web/webem/*.*)
 
 	add_definitions( -DWEBSERVER_DONT_USE_ZIP )
 	
@@ -434,13 +428,11 @@ set(TOOLS_LIB_SRC
 ENDIF()
 
 # Define project folders
-IF(MSVC)
-	source_group(PlatformSpecific\\windows tools/windows/tools/*.*)
-	source_group(PlatformSpecific\\linux tools/linux/tools/*.*)
-	source_group(PlatformSpecific\\mac tools/mac/tools/*.*)
-	source_group(Exception tools/tools/Exceptions/*.* )	
-	source_group(Xpl tools/tools/Xpl/*.* )	
-ENDIF()
+source_group(PlatformSpecific\\windows tools/windows/tools/*.*)
+source_group(PlatformSpecific\\linux tools/linux/tools/*.*)
+source_group(PlatformSpecific\\mac tools/mac/tools/*.*)
+source_group(Exception tools/tools/Exceptions/*.* )	
+source_group(Xpl tools/tools/Xpl/*.* )	
 
 # Define library outputs
 add_library(yadoms-tools STATIC  ${TOOLS_LIB_SRC})
