@@ -2,6 +2,7 @@
 
 #include <shared/Export.h>
 #include "EnumGenericParameter.h"
+#include <shared/Log.h>
 
 //--------------------------------------------------------------
 /// \class Hardware plugin configuration enum parameter
