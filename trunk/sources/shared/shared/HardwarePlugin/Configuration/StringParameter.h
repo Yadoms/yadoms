@@ -20,7 +20,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   ~CHardwarePluginConfigurationStringParameter() {}
+   virtual ~CHardwarePluginConfigurationStringParameter() {}
 
    // CHardwarePluginConfigurationParameter implementation
    virtual boost::shared_ptr<CHardwarePluginConfigurationParameter> clone() const;

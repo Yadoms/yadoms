@@ -8,6 +8,11 @@ CHardwarePluginConfigurationParameter::CHardwarePluginConfigurationParameter(con
 {
 }
 
+CHardwarePluginConfigurationParameter::~CHardwarePluginConfigurationParameter()
+{
+    
+}
+
 void CHardwarePluginConfigurationParameter::setValue(const boost::property_tree::ptree& pt)
 {
    valueFromString(pt.get<std::string>(getName() + ".value"));

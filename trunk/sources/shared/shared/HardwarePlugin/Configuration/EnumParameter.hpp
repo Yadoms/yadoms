@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <shared/Export.h>
 #include "EnumGenericParameter.h"
 #include <shared/Log.h>

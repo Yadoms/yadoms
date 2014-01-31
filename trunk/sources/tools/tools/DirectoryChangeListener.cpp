@@ -6,7 +6,7 @@
 
 CDirectoryChangeListener::CDirectoryChangeListener(const boost::filesystem::path& path,
                                                    boost::function<void (const boost::asio::dir_monitor_event&)> callback)
-												   :m_path(path), m_callback(callback), CThreadBase("DirectoryChangeListener_" + path.generic_string())
+												   :CThreadBase("DirectoryChangeListener_" + path.generic_string()), m_path(path), m_callback(callback)
 {
    start();
 }

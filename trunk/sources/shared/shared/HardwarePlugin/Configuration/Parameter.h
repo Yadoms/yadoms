@@ -19,6 +19,11 @@ public:
    CHardwarePluginConfigurationParameter(const std::string& type, const std::string& name, const std::string& description);
 
    //--------------------------------------------------------------
+   /// \brief	    Destructor
+   //--------------------------------------------------------------
+    virtual ~CHardwarePluginConfigurationParameter();
+    
+   //--------------------------------------------------------------
    /// \brief	    Clone method
    //--------------------------------------------------------------
    virtual boost::shared_ptr<CHardwarePluginConfigurationParameter> clone() const = 0;

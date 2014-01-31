@@ -85,6 +85,8 @@ endif()
 
 if (CMAKE_COMPIER_IS_CLANG)
 	add_definitions("-std=c++0x")
+    add_definitions("-Woverloaded-virtual")
+    add_definitions("-Wunused-variable")
 endif()
 
 #check eclispe debug options
