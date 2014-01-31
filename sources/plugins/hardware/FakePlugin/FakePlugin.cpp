@@ -4,6 +4,7 @@
 #include <shared/Xpl/XplService.h>
 #include <shared/Xpl/XplMessage.h>
 #include <shared/Exceptions/BadConversionException.hpp>
+#include <shared/StringExtension.h>
 
 // This include is only needed if plugin needs configuration support
 #include <shared/HardwarePlugin/Configuration/Configuration.h>
@@ -19,45 +20,29 @@ IMPLEMENT_HARDWARE_PLUGIN(
    "http://sourceforge.net/projects/yadoms/")   // Url of author web site (std::string)
 
 
-enum EEnumType
-{
-   kEnumValue1 = 7,
-   kEnumValue2 = 12,
-   kEnumValue3
-};
-
 // If parameters are needed for the plugin, just use the IMPLEMENT_CONFIGURATION macro
 // to create the configuration schema and add parameters
-IMPLEMENT_CONFIGURATION
+//TODO remettre la macro IMPLEMENT_CONFIGURATION
+const CFakePluginConfiguration& getConfigurationSchema()
 {
-   // Simple types
-   ADD_CONFIGURATION_PARAMETER_STRING("StringParameter", "Just a string parameter", "Yadoms is so powerful !");
-   ADD_CONFIGURATION_PARAMETER_BOOL("BoolParameter", "Just a boolean example", false);
-   ADD_CONFIGURATION_PARAMETER_INT("IntParameter", "This is my int parameter example", 7);
-   ADD_CONFIGURATION_PARAMETER_DOUBLE("DoubleParameter", "Now a double", 25.3);
+   static boost::shared_ptr<CFakePluginConfiguration> Configuration;
 
-   // Enum type, first declare keys labels
-   static const CHardwarePluginConfigurationEnumParameter<EEnumType>::ValuesNames EEnumTypeNames = boost::assign::map_list_of
-      (kEnumValue1, "EnumValue1")
-      (kEnumValue2, "EnumValue2")
-      (kEnumValue3, "EnumValue3");
-   ADD_CONFIGURATION_PARAMETER_ENUM(EEnumType, "EnumParameter", "Example of an enum with 3 values", kEnumValue2, EEnumTypeNames);
+   if (Configuration)
+      return *Configuration;   /* Already initialized */
+   Configuration.reset(new CFakePluginConfiguration);
+   Configuration->buildSchema();
+   return *Configuration;
+}
 
-   // Special types
-   // - Serial port : like enum but the available values are populated when user asks for configuration diplay
-   ADD_CONFIGURATION_PARAMETER_SERIAL_PORT("Serial port", "Specific serial port parameters. Yadoms will populate available values with system serial ports.", "tty0");
-
-   // Bits field type (= displayed as a list of checkboxes)
-   static const CHardwarePluginConfigurationBitsFieldParameter::Items BitsFieldItems = boost::assign::map_list_of
-      ("first checkbox", false)
-      ("second one"    , true )
-      ("and a third"   , true );
-   ADD_CONFIGURATION_PARAMETER_BITS_FIELD("BitsFieldParameter", "Example of a bits field", BitsFieldItems);
+EXPORT_LIBRARY_FUNCTION const IHardwarePluginConfigurationSchema& getConfigurationSchemaInterface()
+{
+   return getConfigurationSchema();
 }
 
 
-CFakePlugin::CFakePlugin() 
+CFakePlugin::CFakePlugin()
 {
+   m_Configuration.buildSchema();
 }
 
 CFakePlugin::~CFakePlugin()
@@ -81,8 +66,9 @@ void CFakePlugin::doWork(const std::string& configurationValues)
       xplService->messageReceived(boost::bind(&CFakePlugin::onMessageReceived, this, _1));
 
       // Build configuration and load values from database
-      CHardwarePluginConfiguration configuration(getConfigurationSchema(), configurationValues);
-      traceConfiguration(configuration);
+      m_Configuration.setValues(configurationValues);
+      // Trace the configuration (just for test)
+      traceConfiguration();
 
       int value = 0;
 
@@ -93,13 +79,14 @@ void CFakePlugin::doWork(const std::string& configurationValues)
          std::string newConfigurationValues = getUpdatedConfiguration();
          if (!newConfigurationValues.empty())
          {
-            // Take here into account the new configuration
+            // Take into account the new configuration
             // - Restart the plugin if necessary,
-            // - Update some ressources,
+            // - Update some resources,
             // - etc...
-            configuration.setValues(newConfigurationValues);
+            m_Configuration.setValues(newConfigurationValues);
             YADOMS_LOG(debug) << "CFakePlugin configuration was updated...";
-            traceConfiguration(configuration);
+            // Trace the configuration (just for test)
+            traceConfiguration();
          }
 
          CXplMessage msg(CXplMessage::kXplStat, xplService->getActor(), CXplActor::createBroadcastActor(), CXplMessageSchemaIdentifier("clock", "basic"));
@@ -143,33 +130,33 @@ std::string CFakePlugin::getUpdatedConfiguration() // TODO à mettre dans IMPLEME
    boost::lock_guard<boost::mutex> l(m_configurationUpdateMutex);
 
    if (m_ConfigurationUpdateQueue.empty())
-      return std::string();
+      return CStringExtension::EmptyString;
 
    std::string newConfiguration = m_ConfigurationUpdateQueue.back();
    m_ConfigurationUpdateQueue.pop();
    return newConfiguration;
 }
 
-void CFakePlugin::traceConfiguration(const CHardwarePluginConfiguration& configuration)
+void CFakePlugin::traceConfiguration()
 {
    try
    {
       // Read parameter as string
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is " << configuration["Serial port"].valueToString();
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'StringParameter' is " << configuration["StringParameter"].valueToString();
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is " << configuration["BoolParameter"].valueToString();
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'EnumParameter' is " << configuration["EnumParameter"].valueToString();
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is " << m_Configuration["Serial port"].valueToString();
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'StringParameter' is " << m_Configuration["StringParameter"].valueToString();
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is " << m_Configuration["BoolParameter"].valueToString();
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'EnumParameter' is " << m_Configuration["EnumParameter"].valueToString();
 
       // More usable form : read parameter as its basic type
-      if (configuration.asBool("BoolParameter"))
+      if (m_Configuration.asBool("BoolParameter"))
          YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is true";
       else
          YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is false";
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'StringParameter' is " << configuration.asString("StringParameter");
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is " << configuration.asSerialPort("Serial port");
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'StringParameter' is " << m_Configuration.asString("StringParameter");
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is " << m_Configuration.asSerialPort("Serial port");
       std::ostringstream os;
       os << "CFakePlugin::doWork, parameter 'EnumParameter' is ";
-      switch (configuration.asEnum<EEnumType>("EnumParameter"))
+      switch (m_Configuration.asEnum<EEnumType>("EnumParameter"))
       {
       case kEnumValue1: os << "EnumValue1"; break;
       case kEnumValue2: os << "EnumValue2"; break;
@@ -178,9 +165,9 @@ void CFakePlugin::traceConfiguration(const CHardwarePluginConfiguration& configu
       }
       YADOMS_LOG(debug) << os.str();
 
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[first checkbox]' is " << (configuration.asBitsField("BitsFieldParameter")["first checkbox"] ? "true" : "false");
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[second one]' is " << (configuration.asBitsField("BitsFieldParameter")["second one"] ? "true" : "false");
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[and a third]' is " << (configuration.asBitsField("BitsFieldParameter")["and a third"] ? "true" : "false");
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[first checkbox]' is " << (m_Configuration.asBitsField("BitsFieldParameter")["first checkbox"] ? "true" : "false");
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[second one]' is " << (m_Configuration.asBitsField("BitsFieldParameter")["second one"] ? "true" : "false");
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[and a third]' is " << (m_Configuration.asBitsField("BitsFieldParameter")["and a third"] ? "true" : "false");
    }
    catch (const CBadConversionException& bc)
    {
