@@ -1,10 +1,11 @@
 #pragma once
 
+#include <shared/Export.h>
 
 //--------------------------------------------------------------
 /// \class Property tree to string serializer interface
 //--------------------------------------------------------------
-class IPtreeToStringSerializer
+class YADOMS_SHARED_EXPORT IPtreeToStringSerializer
 {
 public:
    //--------------------------------------------------------------

@@ -9,7 +9,6 @@ MACRO(ADD_HARDWARE_PLUGIN _targetName)
 
 	add_library(${_targetName} MODULE ${HARDWARE_PLUGIN_BASE_HEADER_SRC} ${HPLUGIN_PRECOMPILED_HEADER_DIR}/stdafx.h ${HPLUGIN_PRECOMPILED_HEADER_DIR}/stdafx.cpp ${ARGN})
 	set_property( TARGET ${_targetName} PROPERTY INCLUDE_DIRECTORIES ${HPLUGIN_PRECOMPILED_HEADER_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR} )
-	add_precompiled_header(${_targetName} ${HPLUGIN_PRECOMPILED_HEADER_DIR}/stdafx.h)
 	target_link_libraries(${_targetName} yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 
 	IF(MSVC OR XCODE)
