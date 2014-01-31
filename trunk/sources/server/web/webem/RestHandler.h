@@ -66,4 +66,9 @@ private:
    ///\brief  The rest dispatcher
    //-------------------------------------- 
    CRestDispatcher m_restDispatcher;
+
+   //--------------------------------------   
+   ///\brief  The Json serializer
+   //-------------------------------------- 
+   CJsonSerializer   m_jsonSerializer;
 };

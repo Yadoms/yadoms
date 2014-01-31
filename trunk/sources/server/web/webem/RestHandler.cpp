@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "RestHandler.h"
 
-
 CRestHandler::CRestHandler(const std::string & restBaseKeyword)
    :m_restBaseKeyword(restBaseKeyword)
 {
@@ -70,10 +69,8 @@ std::string CRestHandler::manageRestRequests(const http::server::request & reque
       parameters = parseUrl(request_path);
 
       //dispatch url to rest dispatcher
-      std::ostringstream buf; 
       CJson js = m_restDispatcher.dispath(request.method, parameters);
-      boost::property_tree::json_parser::write_json(buf, js, false);
-      return buf.str();
+      return m_jsonSerializer.serialize(js);
    }
    return "";
 }

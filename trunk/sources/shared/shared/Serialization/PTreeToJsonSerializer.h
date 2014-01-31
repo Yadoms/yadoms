@@ -1,11 +1,13 @@
 #pragma once
 
+#include <shared/Export.h>
+
 #include "IPtreeToStringSerializer.h"
 
 //--------------------------------------------------------------
 /// \class Property tree to JSON serializer
 //--------------------------------------------------------------
-class CPtreeToJsonSerializer : public IPtreeToStringSerializer
+class YADOMS_SHARED_EXPORT CPtreeToJsonSerializer : public IPtreeToStringSerializer
 {
 public:
    virtual ~CPtreeToJsonSerializer();
