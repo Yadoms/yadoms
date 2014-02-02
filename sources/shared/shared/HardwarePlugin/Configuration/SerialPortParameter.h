@@ -13,9 +13,8 @@ public:
    /// \brief	    Constructor
    /// \param[in] name  Parameter name
    /// \param[in] description  Parameter description
-   /// \param[in] defaultValue  Parameter default value
    //--------------------------------------------------------------
-   CHardwarePluginConfigurationSerialPortParameter(const std::string& name, const std::string& description, const std::string& defaultValue);
+   CHardwarePluginConfigurationSerialPortParameter(const std::string& name, const std::string& description);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -39,11 +38,6 @@ public:
    const std::string& get() const;
 
 private:
-   //--------------------------------------------------------------
-   /// \brief	    The default parameter value
-   //--------------------------------------------------------------
-   const std::string m_defaultValue;
-
    //--------------------------------------------------------------
    /// \brief	    The current parameter value
    //--------------------------------------------------------------

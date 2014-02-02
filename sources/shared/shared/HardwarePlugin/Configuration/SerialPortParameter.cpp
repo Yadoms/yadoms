@@ -1,17 +1,19 @@
 #include "stdafx.h"
 
 #include "SerialPortParameter.h"
+#include "../../StringExtension.h"
 #include <shared/Peripherals.h>
 
 CHardwarePluginConfigurationSerialPortParameter::CHardwarePluginConfigurationSerialPortParameter(const std::string& name,
-   const std::string& description, const std::string& defaultValue)
-   :CHardwarePluginConfigurationEnumGeneric(name, description, ValuesNames()), m_defaultValue(defaultValue), m_value(defaultValue)
+   const std::string& description)
+   :CHardwarePluginConfigurationEnumGeneric(name, description, ValuesNames())
 {
 }
 
 boost::shared_ptr<CHardwarePluginConfigurationParameter> CHardwarePluginConfigurationSerialPortParameter::clone() const
 {
-   boost::shared_ptr<CHardwarePluginConfigurationParameter> p(new CHardwarePluginConfigurationSerialPortParameter(getName(), getDescription(), m_value));
+   boost::shared_ptr<CHardwarePluginConfigurationParameter> p(new CHardwarePluginConfigurationSerialPortParameter(getName(), getDescription()));
+   p->valueFromString(m_value);
    return p;
 }
 
@@ -22,7 +24,8 @@ const std::string& CHardwarePluginConfigurationSerialPortParameter::get() const
 
 const std::string CHardwarePluginConfigurationSerialPortParameter::valueToString(bool current) const
 {
-   return current ? m_value : m_defaultValue;
+   // Default value doesn't make sense here, so return empty string
+   return current ? m_value : CStringExtension::EmptyString;
 }
 
 void CHardwarePluginConfigurationSerialPortParameter::valueFromString(const std::string& valueAsString)

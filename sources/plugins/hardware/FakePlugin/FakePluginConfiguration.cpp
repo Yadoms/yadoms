@@ -24,7 +24,7 @@ void CFakePluginConfiguration::doBuildSchema()
 
    // Special types
    // - Serial port : like enum but the available values are populated when user asks for configuration display
-   AddParameter(new CHardwarePluginConfigurationSerialPortParameter("Serial port", "Specific serial port parameters. Yadoms will populate available values with system serial ports.", "tty0"));
+   AddParameter(new CHardwarePluginConfigurationSerialPortParameter("Serial port", "Specific serial port parameters. Yadoms will populate available values with system serial ports."));
 
    // Bits field type (= displayed as a list of checkboxes)
    static const CHardwarePluginConfigurationBitsFieldParameter::Items BitsFieldItems = boost::assign::map_list_of
