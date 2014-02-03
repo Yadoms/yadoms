@@ -6,9 +6,6 @@
 #include <shared/Exceptions/BadConversionException.hpp>
 #include <shared/StringExtension.h>
 
-// This include is only needed if plugin needs configuration support
-#include <shared/HardwarePlugin/Configuration/Configuration.h>
-
 
 // Use this macro to define some basic informations about the plugin
 IMPLEMENT_HARDWARE_PLUGIN(

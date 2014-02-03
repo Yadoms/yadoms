@@ -11,4 +11,4 @@
 #include "IntParameter.h"
 #include "SerialPortParameter.h"
 #include "StringParameter.h"
-#include "BitsFieldListParameter.h"
+#include "BitsFieldParameter.h"

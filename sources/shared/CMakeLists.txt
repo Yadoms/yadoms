@@ -31,8 +31,8 @@ set(SHARED_LIB_SRC
 	shared/HardwarePlugin/Configuration/Configuration.cpp
 	shared/HardwarePlugin/Configuration/ConfigurationFactory.h
 	shared/HardwarePlugin/Configuration/ConfigurationFactory.cpp
-	shared/HardwarePlugin/Configuration/BitsFieldListParameter.h
-	shared/HardwarePlugin/Configuration/BitsFieldListParameter.cpp
+	shared/HardwarePlugin/Configuration/BitsFieldParameter.h
+	shared/HardwarePlugin/Configuration/BitsFieldParameter.cpp
 	shared/HardwarePlugin/Configuration/BoolParameter.h
 	shared/HardwarePlugin/Configuration/BoolParameter.cpp
 	shared/HardwarePlugin/Configuration/EnumGenericParameter.h

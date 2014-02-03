@@ -51,10 +51,10 @@ void CHardwarePluginInstance::doWork()
 void CHardwarePluginInstance::updateConfiguration(const std::string& newConfiguration) const
 {
    BOOST_ASSERT(m_pPluginInstance);
-   m_pPluginInstance->updateConfiguration(newConfiguration);
+   m_pPluginInstance->updateConfiguration(newConfiguration);//TODO : protéger (try...catch) tous les appels aux plugins
 }
 
-boost::shared_ptr<const CHardwarePluginFactory> CHardwarePluginInstance::getPlugin() const
+const std::string& CHardwarePluginInstance::getPluginName() const
 {
-   return m_pPlugin;
+   return m_pPlugin->getLibraryPath().stem().string();
 }

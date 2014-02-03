@@ -45,13 +45,13 @@ public:
    /// \param[in] current     Get the current value if true, or the default value if false
    /// \return     The parameter value
    //--------------------------------------------------------------
-   virtual const std::string valueToString(bool current = true) const = 0;
+   virtual const std::string valueToString(bool current = true) const = 0;//TODO : supprimer ?
 
    //--------------------------------------------------------------
    /// \brief	    Set the parameter value
    /// \param[in] valueAsString     New parameter value, as string
    //--------------------------------------------------------------
-   virtual void valueFromString(const std::string& valueAsString) = 0;
+   virtual void valueFromString(const std::string& valueAsString) = 0;//TODO : supprimer ?
 
    //--------------------------------------------------------------
    /// \brief	    Set the parameter value
