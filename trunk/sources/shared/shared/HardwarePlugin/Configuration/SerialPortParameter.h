@@ -47,3 +47,9 @@ private:
    //--------------------------------------------------------------
    const std::vector<std::string> m_valueNames;
 };
+
+//--------------------------------------------------------------
+/// \brief	    Macro helper to get the parameter value
+/// \param paramName    Parameter name
+//--------------------------------------------------------------
+#define CFG_GET_SERIAL_PORT(paramName) getParam<CHardwarePluginConfigurationSerialPortParameter>(paramName).get()

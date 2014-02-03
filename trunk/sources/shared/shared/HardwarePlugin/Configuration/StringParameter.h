@@ -45,3 +45,9 @@ private:
    //--------------------------------------------------------------
    std::string m_value;
 };
+
+//--------------------------------------------------------------
+/// \brief	    Macro helper to get the parameter value
+/// \param paramName    Parameter name
+//--------------------------------------------------------------
+#define CFG_GET_STRING(paramName) getParam<CHardwarePluginConfigurationStringParameter>(paramName).get()

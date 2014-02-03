@@ -62,60 +62,11 @@ public:
    const CHardwarePluginConfigurationParameter& operator[](const std::string& parameterName) const;
 
    //--------------------------------------------------------------
-   /// \brief	    Get parameter value as bool
+   /// \brief	    Get parameter
    /// \param [in] parameterName    Name of the parameter
-   /// \return     Parameter value
-   /// \throw      CBadConversionException if parameter is not bool
+   /// \return     The parameter
+   /// \throw      CBadConversionException if parameter is not the expected type
    //--------------------------------------------------------------
-   bool asBool(const std::string& parameterName) const;
-
-   //--------------------------------------------------------------
-   /// \brief	    Get parameter value as string
-   /// \param [in] parameterName    Name of the parameter
-   /// \return     Parameter value
-   /// \throw      CBadConversionException if parameter is not string
-   //--------------------------------------------------------------
-   const std::string& asString(const std::string& parameterName) const;
-
-   //--------------------------------------------------------------
-   /// \brief	    Get parameter value as serial port
-   /// \param [in] parameterName    Name of the parameter
-   /// \return     Parameter value
-   /// \throw      CBadConversionException if parameter is not a serial port
-   //--------------------------------------------------------------
-   const std::string& asSerialPort(const std::string& parameterName) const;
-
-   //--------------------------------------------------------------
-   /// \brief	    Get parameter value as enum
-   /// \param [in] parameterName    Name of the parameter
-   /// \return     Parameter value
-   /// \throw      CBadConversionException if parameter is not the expected enum type
-   //--------------------------------------------------------------
-   template<typename Enum>
-   Enum asEnum(const std::string& parameterName) const
-   {
-      try
-      {
-         return (dynamic_cast<const CHardwarePluginConfigurationEnumParameter<Enum>&>
-            (*m_configurationMap.at(parameterName))).get();
-      }
-      catch (std::bad_cast&)
-      {
-         throw CBadConversionException(parameterName, "bool");
-      }
-   }
-
-   //--------------------------------------------------------------
-   /// \brief	    Get parameter value as bool, from a bits field
-   /// \param [in] parameterName    Name of the parameter
-   /// \return     Bits field map
-   /// \throw      CBadConversionException if parameter is not bool
-   //--------------------------------------------------------------
-   CHardwarePluginConfigurationBitsFieldParameter::Items asBitsField(const std::string& parameterName) const;
-
-   // TODO voir si on peut faire des accesseurs template. L'appel donnerait qqc du genre :
-   //m_Configuration.get<bool>("BoolParameter");
-   //TODO commenter (sans oublier le throw)
    template<typename T>
    const T& getParam(const std::string& parameterName) const
    {

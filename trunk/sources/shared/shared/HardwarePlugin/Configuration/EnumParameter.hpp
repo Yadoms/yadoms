@@ -93,3 +93,10 @@ private:
    //--------------------------------------------------------------
    Enum m_value;
 };
+
+//--------------------------------------------------------------
+/// \brief	    Macro helper to get the parameter value
+/// \param enumType     The native enum type
+/// \param paramName    Parameter name
+//--------------------------------------------------------------
+#define CFG_GET_ENUM(enumType,paramName) getParam<CHardwarePluginConfigurationEnumParameter<enumType> >(paramName).get()
