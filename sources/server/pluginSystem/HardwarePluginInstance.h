@@ -36,7 +36,7 @@ public:
    //--------------------------------------------------------------
    /// \brief			Get the plugin name of this instance
    //--------------------------------------------------------------
-   const std::string& getPluginName() const;
+   const std::string getPluginName() const;
 
 protected:
    //--------------------------------------------------------------
