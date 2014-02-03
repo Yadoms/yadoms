@@ -54,7 +54,7 @@ void CHardwarePluginInstance::updateConfiguration(const std::string& newConfigur
    m_pPluginInstance->updateConfiguration(newConfiguration);//TODO : protéger (try...catch) tous les appels aux plugins
 }
 
-const std::string& CHardwarePluginInstance::getPluginName() const
+const std::string CHardwarePluginInstance::getPluginName() const
 {
    return m_pPlugin->getLibraryPath().stem().string();
 }
