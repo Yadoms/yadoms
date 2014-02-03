@@ -12,8 +12,9 @@ CHardwarePluginConfigurationSerialPortParameter::CHardwarePluginConfigurationSer
 
 boost::shared_ptr<CHardwarePluginConfigurationParameter> CHardwarePluginConfigurationSerialPortParameter::clone() const
 {
-   boost::shared_ptr<CHardwarePluginConfigurationParameter> p(new CHardwarePluginConfigurationSerialPortParameter(getName(), getDescription()));
-   p->valueFromString(m_value);
+   CHardwarePluginConfigurationSerialPortParameter* parameter = new CHardwarePluginConfigurationSerialPortParameter(getName(), getDescription());
+   parameter->m_value = get();
+   boost::shared_ptr<CHardwarePluginConfigurationParameter> p(parameter);
    return p;
 }
 

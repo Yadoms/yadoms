@@ -132,7 +132,7 @@ bool CHardwarePluginManager::unloadPlugin(const std::string& pluginName)
    PluginInstanceMap::const_iterator instance;
    for (instance = m_runningInstances.begin() ; instance != m_runningInstances.end() ; ++instance)
    {
-      if ((*instance).second->getPlugin()->getLibraryPath().stem().string() == pluginName)
+      if ((*instance).second->getPluginName() == pluginName)
          break;
    }
    if (instance != m_runningInstances.end())
@@ -315,7 +315,7 @@ void CHardwarePluginManager::doStopInstance(int id)
       return;     // Already stopped ==> nothing more to do
 
    // Get the associated plugin name to unload it after instance being deleted
-   std::string pluginName = m_runningInstances[id]->getPlugin()->getLibraryPath().stem().string();
+   std::string pluginName = m_runningInstances[id]->getPluginName();
 
    // Remove (=stop) instance
    m_runningInstances.erase(id);

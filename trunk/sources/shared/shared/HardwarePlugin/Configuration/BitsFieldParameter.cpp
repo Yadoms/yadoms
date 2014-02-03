@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "BitsFieldListParameter.h"
+#include "BitsFieldParameter.h"
 #include "../../StringExtension.h"
 
 CHardwarePluginConfigurationBitsFieldParameter::CHardwarePluginConfigurationBitsFieldParameter(const std::string& name, const std::string& description, const Items& items)

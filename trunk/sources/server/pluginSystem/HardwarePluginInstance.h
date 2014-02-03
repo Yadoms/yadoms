@@ -34,9 +34,9 @@ public:
    virtual void updateConfiguration(const std::string& newConfiguration) const;
 
    //--------------------------------------------------------------
-   /// \brief			Get the plugin used for this instance
+   /// \brief			Get the plugin name of this instance
    //--------------------------------------------------------------
-   boost::shared_ptr<const CHardwarePluginFactory> getPlugin() const;
+   const std::string& getPluginName() const;
 
 protected:
    //--------------------------------------------------------------
