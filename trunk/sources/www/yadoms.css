@@ -27,11 +27,12 @@ body {
 }*/
 
 #mainNavBar {
-    height: 100px;
+    /*background: rgba(210, 210, 210, 0.3);*/
 }
 
 #pageMenu {
     float:  none;
+    margin-top: 10px;
 }
 
 #tabContainer {
@@ -49,3 +50,6 @@ body {
     /*background: rgba(210, 210, 210, 0.5);*/
 }
 
+.btn-inverse {
+    background: rgba(80, 80, 80, 0.3);
+}
