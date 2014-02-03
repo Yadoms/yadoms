@@ -115,6 +115,19 @@ public:
 
    // TODO voir si on peut faire des accesseurs template. L'appel donnerait qqc du genre :
    //m_Configuration.get<bool>("BoolParameter");
+   //TODO commenter (sans oublier le throw)
+   template<typename T>
+   const T& getParam(const std::string& parameterName) const
+   {
+      try
+      {
+         return dynamic_cast<const T&> (*m_configurationMap.at(parameterName));
+      }
+      catch (std::bad_cast&)
+      {
+         throw CBadConversionException(parameterName, "getParam");
+      }
+   }
 
 protected:
    //--------------------------------------------------------------

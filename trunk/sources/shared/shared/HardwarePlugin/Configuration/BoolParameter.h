@@ -24,7 +24,5 @@ public:
 
    // CHardwarePluginConfigurationParameter implementation
    virtual boost::shared_ptr<CHardwarePluginConfigurationParameter> clone() const;
-   virtual const std::string valueToString(bool current) const;
-   virtual void valueFromString(const std::string& valueAsString);
    // [END] CHardwarePluginConfigurationParameter implementation
 };

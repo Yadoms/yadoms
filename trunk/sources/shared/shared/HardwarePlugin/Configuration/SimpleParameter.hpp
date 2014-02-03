@@ -29,17 +29,14 @@ public:
    // allocation will occur in the caller memory space (which can be freed in the case of unload plugin)
 
    // CHardwarePluginConfigurationParameter implementation
-   virtual const std::string valueToString(bool current) const
+   void build(boost::property_tree::ptree& pt) const
    {
-      std::ostringstream os;
-      os << (current ? m_value : m_defaultValue);
-      return os.str();
+      CHardwarePluginConfigurationParameter::build(pt);
+      pt.put(getName() + ".default", m_defaultValue);
    }
-
-   virtual void valueFromString(const std::string& valueAsString)
+   void setValue(const boost::property_tree::ptree& pt)
    {
-      std::istringstream is(valueAsString);
-      is >> m_value;
+      m_value = pt.get<T>(getName() + ".value");
    }
    // [END] CHardwarePluginConfigurationParameter implementation
 

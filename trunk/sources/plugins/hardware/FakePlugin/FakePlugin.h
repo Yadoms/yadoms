@@ -28,6 +28,7 @@ private:
    void onMessageReceived(CXplMessage & message);
 
    // Trace the configuration
+   // This function shows how to get configuration values
    void traceConfiguration();
 
    CFakePluginConfiguration m_Configuration;

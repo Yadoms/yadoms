@@ -14,17 +14,6 @@ boost::shared_ptr<CHardwarePluginConfigurationParameter> CHardwarePluginConfigur
    return p;
 }
 
-const std::string CHardwarePluginConfigurationBitsFieldParameter::valueToString(bool current) const
-{
-   //Function is not needed as getSchema was overridden, and "default" value overwritten
-   return CStringExtension::EmptyString;
-}
-
-void CHardwarePluginConfigurationBitsFieldParameter::valueFromString(const std::string& valueAsString)
-{
-   //Function is not needed as setValue was overridden
-}
-
 void CHardwarePluginConfigurationBitsFieldParameter::setValue(const boost::property_tree::ptree& pt)
 {
    boost::property_tree::ptree itemsTree = pt.get_child(getName() + ".value");
@@ -32,9 +21,9 @@ void CHardwarePluginConfigurationBitsFieldParameter::setValue(const boost::prope
       m_value[itValue->first.data()] = itValue->second.data()=="true";
 }
 
-void CHardwarePluginConfigurationBitsFieldParameter::getSchema(boost::property_tree::ptree& pt) const
+void CHardwarePluginConfigurationBitsFieldParameter::build(boost::property_tree::ptree& pt) const
 {
-   CHardwarePluginConfigurationParameter::getSchema(pt);
+   CHardwarePluginConfigurationParameter::build(pt);
    BOOST_FOREACH(Items::value_type item, m_defaultValue)
    {
       pt.put(getName() + ".default." + item.first, item.second);

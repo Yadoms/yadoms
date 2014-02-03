@@ -28,11 +28,9 @@ public:
    //--------------------------------------------------------------
    virtual ~CHardwarePluginConfigurationEnumGeneric();
 
-   //--------------------------------------------------------------
-   /// \brief	    Get the parameter schema
-   /// \param[out] pt   Property-tree containing the schema
-   //--------------------------------------------------------------
-   virtual void getSchema(boost::property_tree::ptree& pt) const;
+   // CHardwarePluginConfigurationParameter implementation
+   virtual void build(boost::property_tree::ptree& pt) const;
+   // [END] CHardwarePluginConfigurationParameter implementation
 
 protected:
    //--------------------------------------------------------------

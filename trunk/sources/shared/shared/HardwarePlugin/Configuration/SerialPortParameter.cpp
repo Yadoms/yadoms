@@ -23,18 +23,12 @@ const std::string& CHardwarePluginConfigurationSerialPortParameter::get() const
    return m_value;
 }
 
-const std::string CHardwarePluginConfigurationSerialPortParameter::valueToString(bool current) const
+void CHardwarePluginConfigurationSerialPortParameter::setValue(const boost::property_tree::ptree& pt)
 {
-   // Default value doesn't make sense here, so return empty string
-   return current ? m_value : CStringExtension::EmptyString;
+   m_value = pt.get<std::string>(getName() + ".value");
 }
 
-void CHardwarePluginConfigurationSerialPortParameter::valueFromString(const std::string& valueAsString)
-{
-   m_value = valueAsString;
-}
-
-void CHardwarePluginConfigurationSerialPortParameter::getSchema(boost::property_tree::ptree& pt) const
+void CHardwarePluginConfigurationSerialPortParameter::build(boost::property_tree::ptree& pt) const
 {
    // Update m_valuesNames before building schema
    // The normaly read-only m_valuesNames is here dynamic. So we need a write-access.
@@ -48,5 +42,8 @@ void CHardwarePluginConfigurationSerialPortParameter::getSchema(boost::property_
    }
 
    // Normally build schema
-   CHardwarePluginConfigurationEnumGeneric::getSchema(pt);
+   CHardwarePluginConfigurationEnumGeneric::build(pt);
+
+   // Default value doesn't make sense here
+   pt.put(getName() + ".default", CStringExtension::EmptyString);
 }

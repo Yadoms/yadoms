@@ -30,17 +30,15 @@ public:
 
    // CHardwarePluginConfigurationParameter implementation
    virtual boost::shared_ptr<CHardwarePluginConfigurationParameter> clone() const;
-   virtual const std::string valueToString(bool current) const;
-   virtual void valueFromString(const std::string& valueAsString);
    virtual void setValue(const boost::property_tree::ptree& pt);
-   virtual void getSchema(boost::property_tree::ptree& pt) const;
+   virtual void build(boost::property_tree::ptree& pt) const;
    // [END] CHardwarePluginConfigurationParameter implementation
 
    //--------------------------------------------------------------
    /// \brief	    Native getter
    /// \return    The current bits field values
    //--------------------------------------------------------------
-   Items get() const { return m_value; }
+   const Items get() const { return m_value; }
 
 
 private:
