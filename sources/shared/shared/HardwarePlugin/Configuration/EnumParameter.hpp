@@ -33,26 +33,19 @@ public:
       return p;
    }
 
-   virtual const std::string valueToString(bool current) const
+   void build(boost::property_tree::ptree& pt) const
    {
-      try
-      {
-         return m_valuesNames.at(current ? m_value : m_defaultValue);
-      }
-      catch (const std::out_of_range& oor)
-      {
-         BOOST_ASSERT(false);  // Name of the value doesn't exist
-         YADOMS_LOG(error) << "Out of Range error: " << oor.what();
-         return std::string(getName() + " : Invalid value ");
-      }
+      CHardwarePluginConfigurationEnumGeneric::build(pt);
+      pt.put(getName() + ".default", defaultValueToString());
    }
 
-   virtual void valueFromString(const std::string& valueAsString)
+   virtual void setValue(const boost::property_tree::ptree& pt)
    {
+      std::string stringValue = pt.get<std::string>(getName() + ".value");
       ValuesNames::const_iterator it;
       for (it = m_valuesNames.begin() ; it != m_valuesNames.end() ; ++it)
       {
-         if ((*it).second == valueAsString)
+         if ((*it).second == stringValue)
          {
             m_value = (Enum)((*it).first);
             break;
@@ -63,7 +56,7 @@ public:
          // It can occur if the plugin was updated and value doesn't exist anymore in the new version.
          // In this case, use default value, and log.
          m_value = m_defaultValue;
-         YADOMS_LOG(info) << "Value \"" << valueAsString << "\" was not found for \"" << getName() << "\" parameter, use default";
+         YADOMS_LOG(info) << "Value \"" << stringValue << "\" was not found for \"" << getName() << "\" parameter, use default";
       }
    }
    // [END] CHardwarePluginConfigurationParameter implementation
@@ -73,6 +66,21 @@ public:
    /// \return    The current parameter value
    //--------------------------------------------------------------
    Enum get() const { return m_value; }
+
+protected:
+   const std::string defaultValueToString() const
+   {
+      try
+      {
+         return m_valuesNames.at(m_defaultValue);
+      }
+      catch (const std::out_of_range& oor)
+      {
+         BOOST_ASSERT(false);  // Name of the value doesn't exist
+         YADOMS_LOG(error) << "Out of Range error: " << oor.what();
+         return std::string(getName() + " : Invalid value ");
+      }
+   }
 
 private:
    //--------------------------------------------------------------

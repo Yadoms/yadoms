@@ -44,7 +44,7 @@ std::string CHardwarePluginConfiguration::getSchema() const
 
    boost::property_tree::ptree pt;
    for(CHardwarePluginConfigurationMap::const_iterator itParameter = m_configurationMap.begin() ; itParameter != m_configurationMap.end() ; itParameter++)
-      itParameter->second->getSchema(pt);
+      itParameter->second->build(pt);
    return m_configurationSerializer->serialize(pt);
 }
 

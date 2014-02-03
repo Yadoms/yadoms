@@ -12,9 +12,9 @@ CHardwarePluginConfigurationEnumGeneric::~CHardwarePluginConfigurationEnumGeneri
 {
 }
 
-void CHardwarePluginConfigurationEnumGeneric::getSchema(boost::property_tree::ptree& pt) const
+void CHardwarePluginConfigurationEnumGeneric::build(boost::property_tree::ptree& pt) const
 {
-   CHardwarePluginConfigurationParameter::getSchema(pt);
+   CHardwarePluginConfigurationParameter::build(pt);
    BOOST_FOREACH(ValuesNames::value_type valueName, m_valuesNames)
    {
       pt.put(getName() + ".availableValues." + valueName.second, valueName.first);

@@ -139,10 +139,11 @@ void CFakePlugin::traceConfiguration()
    try
    {
       // Read parameter as string
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is " << m_Configuration["Serial port"].valueToString();
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'StringParameter' is " << m_Configuration["StringParameter"].valueToString();
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is " << m_Configuration["BoolParameter"].valueToString();
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'EnumParameter' is " << m_Configuration["EnumParameter"].valueToString();
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is " << m_Configuration.getParam<CHardwarePluginConfigurationSerialPortParameter>("Serial port").get();
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'StringParameter' is " << m_Configuration.getParam<CHardwarePluginConfigurationSerialPortParameter>("Serial port").get();
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is " << m_Configuration.getParam<CHardwarePluginConfigurationBoolParameter>("BoolParameter").get();
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'EnumParameter' is " << m_Configuration.getParam<CHardwarePluginConfigurationEnumParameter<EEnumType> >("EnumParameter").get();
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'DoubleParameter' is " << m_Configuration.getParam<CHardwarePluginConfigurationDoubleParameter>("DoubleParameter").get();
 
       // More usable form : read parameter as its basic type
       if (m_Configuration.asBool("BoolParameter"))

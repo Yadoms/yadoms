@@ -13,3 +13,4 @@ boost::shared_ptr<CHardwarePluginConfigurationParameter> CHardwarePluginConfigur
    return p;
 }
 
+

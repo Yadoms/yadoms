@@ -19,12 +19,13 @@ const std::string& CHardwarePluginConfigurationStringParameter::get() const
    return m_value;
 }
 
-const std::string CHardwarePluginConfigurationStringParameter::valueToString(bool current) const
+void CHardwarePluginConfigurationStringParameter::build(boost::property_tree::ptree& pt) const
 {
-   return current ? m_value : m_defaultValue;
+   CHardwarePluginConfigurationParameter::build(pt);
+   pt.put(getName() + ".default", m_defaultValue);
 }
 
-void CHardwarePluginConfigurationStringParameter::valueFromString(const std::string& valueAsString)
+void CHardwarePluginConfigurationStringParameter::setValue(const boost::property_tree::ptree& pt)
 {
-   m_value = valueAsString;
+   m_value = pt.get<std::string>(getName() + ".value");
 }

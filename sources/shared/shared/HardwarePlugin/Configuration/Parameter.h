@@ -39,31 +39,18 @@ public:
    /// \return     The parameter description
    //--------------------------------------------------------------
    virtual const std::string& getDescription() const { return m_description; }
-
-   //--------------------------------------------------------------
-   /// \brief	    Get the parameter value as string
-   /// \param[in] current     Get the current value if true, or the default value if false
-   /// \return     The parameter value
-   //--------------------------------------------------------------
-   virtual const std::string valueToString(bool current = true) const = 0;//TODO : supprimer ?
-
-   //--------------------------------------------------------------
-   /// \brief	    Set the parameter value
-   /// \param[in] valueAsString     New parameter value, as string
-   //--------------------------------------------------------------
-   virtual void valueFromString(const std::string& valueAsString) = 0;//TODO : supprimer ?
-
+   
    //--------------------------------------------------------------
    /// \brief	    Set the parameter value
    /// \param[in] pt     Property-tree containing the new value
    //--------------------------------------------------------------
-   virtual void setValue(const boost::property_tree::ptree& pt);
+   virtual void setValue(const boost::property_tree::ptree& pt) = 0;
 
    //--------------------------------------------------------------
-   /// \brief	    Get the parameter schema
-   /// \param[out] pt   Property-tree containing the schema
+   /// \brief	    Build the parameter
+   /// \param[out] pt   Property-tree containing the parameter instance schema
    //--------------------------------------------------------------
-   virtual void getSchema(boost::property_tree::ptree& pt) const;
+   virtual void build(boost::property_tree::ptree& pt) const;
 
 private:
    //--------------------------------------------------------------
