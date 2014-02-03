@@ -26,3 +26,9 @@ public:
    virtual boost::shared_ptr<CHardwarePluginConfigurationParameter> clone() const;
    // [END] CHardwarePluginConfigurationParameter implementation
 };
+
+//--------------------------------------------------------------
+/// \brief	    Macro helper to get the parameter value
+/// \param paramName    Parameter name
+//--------------------------------------------------------------
+#define CFG_GET_BOOL(paramName) getParam<CHardwarePluginConfigurationBoolParameter>(paramName).get()

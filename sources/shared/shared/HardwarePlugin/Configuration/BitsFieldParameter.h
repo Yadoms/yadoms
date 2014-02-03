@@ -38,7 +38,7 @@ public:
    /// \brief	    Native getter
    /// \return    The current bits field values
    //--------------------------------------------------------------
-   const Items get() const { return m_value; }
+   Items get() const { return m_value; }
 
 
 private:
@@ -52,3 +52,9 @@ private:
    //--------------------------------------------------------------
    Items m_value;
 };
+
+//--------------------------------------------------------------
+/// \brief	    Macro helper to get the parameter value
+/// \param paramName    Parameter name
+//--------------------------------------------------------------
+#define CFG_GET_BITS_FIELD(paramName) getParam<CHardwarePluginConfigurationBitsFieldParameter>(paramName).get()

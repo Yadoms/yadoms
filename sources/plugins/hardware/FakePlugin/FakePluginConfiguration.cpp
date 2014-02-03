@@ -12,7 +12,7 @@ void CFakePluginConfiguration::doBuildSchema()
 {
    AddParameter(new CHardwarePluginConfigurationStringParameter("StringParameter", "Just a string parameter", "Yadoms is so powerful !"));
    AddParameter(new CHardwarePluginConfigurationBoolParameter("BoolParameter", "Just a boolean example", false));
-   AddParameter(new CHardwarePluginConfigurationIntParameter("IntParameter", "This is my int parameter example", 7));
+   AddParameter(new CHardwarePluginConfigurationIntParameter("IntParameter", "This is my int parameter example", 258));
    AddParameter(new CHardwarePluginConfigurationDoubleParameter("DoubleParameter", "Now a double", 25.3));
    
    // Enum type, first declare keys labels

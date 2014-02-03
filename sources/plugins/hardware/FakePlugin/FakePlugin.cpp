@@ -138,23 +138,21 @@ void CFakePlugin::traceConfiguration()
 {
    try
    {
-      // Read parameter as string
+      // Get simple parameters
       YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is " << m_Configuration.getParam<CHardwarePluginConfigurationSerialPortParameter>("Serial port").get();
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'StringParameter' is " << m_Configuration.getParam<CHardwarePluginConfigurationSerialPortParameter>("Serial port").get();
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is " << m_Configuration.getParam<CHardwarePluginConfigurationBoolParameter>("BoolParameter").get();
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'EnumParameter' is " << m_Configuration.getParam<CHardwarePluginConfigurationEnumParameter<EEnumType> >("EnumParameter").get();
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'DoubleParameter' is " << m_Configuration.getParam<CHardwarePluginConfigurationDoubleParameter>("DoubleParameter").get();
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is (with macro helper) " << m_Configuration.CFG_GET_SERIAL_PORT("Serial port");
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'StringParameter' is " << m_Configuration.CFG_GET_STRING("StringParameter");
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is " << m_Configuration.CFG_GET_BOOL("BoolParameter");
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'DoubleParameter' is " << m_Configuration.CFG_GET_DOUBLE("DoubleParameter");
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'IntParameter' is " << m_Configuration.CFG_GET_INT("IntParameter");
 
-      // More usable form : read parameter as its basic type
-      if (m_Configuration.asBool("BoolParameter"))
-         YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is true";
-      else
-         YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is false";
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'StringParameter' is " << m_Configuration.asString("StringParameter");
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is " << m_Configuration.asSerialPort("Serial port");
+      // Enum
+      // - Nominal form
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'EnumParameter' is " << m_Configuration.getParam<CHardwarePluginConfigurationEnumParameter<EEnumType> >("EnumParameter").get();
+      // - With macro helper
       std::ostringstream os;
       os << "CFakePlugin::doWork, parameter 'EnumParameter' is ";
-      switch (m_Configuration.asEnum<EEnumType>("EnumParameter"))
+      switch (m_Configuration.CFG_GET_ENUM(EEnumType,"EnumParameter"))
       {
       case kEnumValue1: os << "EnumValue1"; break;
       case kEnumValue2: os << "EnumValue2"; break;
@@ -163,9 +161,12 @@ void CFakePlugin::traceConfiguration()
       }
       YADOMS_LOG(debug) << os.str();
 
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[first checkbox]' is " << (m_Configuration.asBitsField("BitsFieldParameter")["first checkbox"] ? "true" : "false");
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[second one]' is " << (m_Configuration.asBitsField("BitsFieldParameter")["second one"] ? "true" : "false");
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[and a third]' is " << (m_Configuration.asBitsField("BitsFieldParameter")["and a third"] ? "true" : "false");
+      // Bits field
+      // - Nominal form
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[first checkbox]' is " << m_Configuration.getParam<CHardwarePluginConfigurationBitsFieldParameter>("BitsFieldParameter").get()["first checkbox"];
+      // - With macro helper
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[second one]' is " << m_Configuration.CFG_GET_BITS_FIELD("BitsFieldParameter")["second one"];
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[and a third]' is " << m_Configuration.CFG_GET_BITS_FIELD("BitsFieldParameter")["and a third"];
    }
    catch (const CBadConversionException& bc)
    {

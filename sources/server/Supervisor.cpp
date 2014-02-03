@@ -110,7 +110,7 @@ void CSupervisor::doWork()
       // - EnumParameter from "EnumValue2" to "EnumValue1"
       // - DoubleParameter from "25.3" to "18.4"
       // - BitsFieldParameter : value "second one" from true to false
-      std::string newConf("{ \"BitsFieldParameter\": { \"value\": { \"and a third\": \"true\", \"first checkbox\": \"false\", \"second one\": \"false\" } }, \"BoolParameter\": { \"value\": \"false\" }, \"DoubleParameter\": { \"value\": \"18.4\" }, \"EnumParameter\": { \"value\": \"EnumValue1\" }, \"IntParameter\": { \"value\": \"7\" }, \"Serial port\": { \"value\": \"tty0\" }, \"StringParameter\": { \"value\": \"Yadoms is so powerful !\" } }");
+      std::string newConf("{ \"BitsFieldParameter\": { \"value\": { \"and a third\": \"true\", \"first checkbox\": \"false\", \"second one\": \"false\" } }, \"BoolParameter\": { \"value\": \"false\" }, \"DoubleParameter\": { \"value\": \"18.4\" }, \"EnumParameter\": { \"value\": \"EnumValue1\" }, \"IntParameter\": { \"value\": \"42\" }, \"Serial port\": { \"value\": \"tty0\" }, \"StringParameter\": { \"value\": \"Yadoms is so powerful !\" } }");
       // 2.3) User press OK to valid configuration and create the new instance
       int createdInstanceId = hardwarePluginManager->createInstance("theInstanceName", pluginName, newConf);
 
