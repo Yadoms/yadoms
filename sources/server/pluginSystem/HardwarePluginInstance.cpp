@@ -39,19 +39,34 @@ void CHardwarePluginInstance::doWork()
    catch (std::exception& e)
    {
       // Plugin crashed
-      YADOMS_LOG(error) << getName() << " crashed with exception : " << e.what();
+      YADOMS_LOG(error) << getName() << " crashed in doWork with exception : " << e.what();
    }
    catch (...)
    {
       // Plugin crashed
-      YADOMS_LOG(error) << getName() << " crashed with unknown exception.";
+      YADOMS_LOG(error) << getName() << " crashed in doWork with unknown exception.";
    }
 }
 
 void CHardwarePluginInstance::updateConfiguration(const std::string& newConfiguration) const
 {
    BOOST_ASSERT(m_pPluginInstance);
-   m_pPluginInstance->updateConfiguration(newConfiguration);//TODO : protéger (try...catch) tous les appels aux plugins
+
+   // TODO : we can set protections here (restart plugin if it crashes, force to stop it...)
+   try
+   {
+      m_pPluginInstance->updateConfiguration(newConfiguration);
+   }
+   catch (std::exception& e)
+   {
+      // Plugin crashed
+      YADOMS_LOG(error) << getName() << " crashed in updateConfiguration with exception : " << e.what();
+   }
+   catch (...)
+   {
+      // Plugin crashed
+      YADOMS_LOG(error) << getName() << " crashed in updateConfiguration with unknown exception.";
+   }
 }
 
 const std::string CHardwarePluginInstance::getPluginName() const
