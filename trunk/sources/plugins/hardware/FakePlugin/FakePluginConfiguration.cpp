@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "FakePluginConfiguration.h"
 
-#include <shared/HardwarePlugin/Configuration/Configuration.h>
 
+// Call this macro to implement the plugin configuration
+IMPLEMENT_CONFIGURATION(CFakePluginConfiguration)
 
 CFakePluginConfiguration::~CFakePluginConfiguration()
 {
@@ -34,8 +35,3 @@ void CFakePluginConfiguration::doBuildSchema()
    AddParameter(new CHardwarePluginConfigurationBitsFieldParameter("BitsFieldParameter", "Example of a bits field", BitsFieldItems));
 }
 
-// TODO à mettre dans IMPLEMENT_CONFIGURATION
-EXPORT_LIBRARY_FUNCTION const IHardwarePluginConfigurationSchema& getConfigurationSchemaInterface()
-{
-   return CFakePluginConfiguration::getSchema();
-}
