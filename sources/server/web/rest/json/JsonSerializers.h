@@ -62,5 +62,7 @@ DECLARE_JSON_ENTITY_HEADER(Widget,
    (Name)
    (SizeX)
    (SizeY)
+   (PositionX)
+   (PositionY)
    (Configuration)
 )

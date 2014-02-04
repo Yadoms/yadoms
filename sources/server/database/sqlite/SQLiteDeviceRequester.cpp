@@ -25,7 +25,7 @@ int CSQLiteDeviceRequester::addDevice(boost::shared_ptr<CDevice> newDevice)
    qInsert. InsertInto(CDeviceTable::getTableName(), CDeviceTable::getDataSourceColumnName(), CDeviceTable::getNameColumnName(), CDeviceTable::getConfigurationColumnName()).
             Values(newDevice->getDataSource(), newDevice->getName(), newDevice->getConfiguration());
    if(m_databaseRequester->queryStatement(qInsert) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw CEmptyResultException("No lines affected");
       
  CQuery qSelect;
    qSelect. Select(CDeviceTable::getIdColumnName()).
@@ -40,7 +40,7 @@ int CSQLiteDeviceRequester::addDevice(boost::shared_ptr<CDevice> newDevice)
    if(adapter.getResults().size() >= 1)
       return adapter.getResults()[0];
    else
-      throw new CEmptyResultException("Cannot retrieve inserted Hardware");      
+      throw CEmptyResultException("Cannot retrieve inserted Hardware");      
 }
 
 boost::shared_ptr<CDevice> CSQLiteDeviceRequester::getDevice(int deviceId)
@@ -55,7 +55,10 @@ boost::shared_ptr<CDevice> CSQLiteDeviceRequester::getDevice(int deviceId)
    if(adapter.getResults().size() >= 1)
       return adapter.getResults()[0];
    else
-      throw new CEmptyResultException("Cannot retrieve Device");
+   {
+      std::string sEx = (boost::format("Cannot retrieve Device Id=%1% in database") % deviceId).str(); 
+      throw CEmptyResultException(sEx);
+   }
 }
 
 std::vector<boost::shared_ptr<CDevice> > CSQLiteDeviceRequester::getDevices()
@@ -77,7 +80,7 @@ void CSQLiteDeviceRequester::updateDeviceConfiguration(int deviceId, const std::
             Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
 
    if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw CEmptyResultException("No lines affected");
 }
 
 void CSQLiteDeviceRequester::removeDevice(int deviceId)
@@ -86,7 +89,7 @@ void CSQLiteDeviceRequester::removeDevice(int deviceId)
    qDelete. DeleteFrom(CDeviceTable::getTableName()).
             Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
    if(m_databaseRequester->queryStatement(qDelete) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw  CEmptyResultException("No lines affected");
 }
 
 

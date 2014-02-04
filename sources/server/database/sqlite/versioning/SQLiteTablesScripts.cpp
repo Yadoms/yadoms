@@ -60,6 +60,8 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Widget, "CREATE TABLE Widget\
                                                    name TEXT NOT NULL,\
                                                    sizeX  INTEGER DEFAULT 0, \
                                                    sizeY  INTEGER DEFAULT 0,\
+                                                   positionX  INTEGER DEFAULT 0, \
+                                                   positionY  INTEGER DEFAULT 0,\
                                                    configuration  TEXT \
                                                 )")                                                
                                                 

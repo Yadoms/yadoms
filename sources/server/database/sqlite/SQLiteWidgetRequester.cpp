@@ -25,7 +25,7 @@ int CSQLiteWidgetRequester::addWidget(boost::shared_ptr<CWidget> newWidget)
    qInsert. InsertInto(CWidgetTable::getTableName(), CWidgetTable::getIdPageColumnName(), CWidgetTable::getNameColumnName(), CWidgetTable::getSizeXColumnName(), CWidgetTable::getSizeYColumnName(), CWidgetTable::getConfigurationColumnName()).
             Values(newWidget->getIdPage(), newWidget->getName(), newWidget->getSizeX(), newWidget->getSizeY(), newWidget->getConfiguration());
    if(m_databaseRequester->queryStatement(qInsert) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw CEmptyResultException("No lines affected");
       
  CQuery qSelect;
    qSelect. Select(CWidgetTable::getIdColumnName()).
@@ -42,7 +42,7 @@ int CSQLiteWidgetRequester::addWidget(boost::shared_ptr<CWidget> newWidget)
    if(adapter.getResults().size() >= 1)
       return adapter.getResults()[0];
    else
-      throw new CEmptyResultException("Cannot retrieve inserted Widget");      
+      throw CEmptyResultException("Cannot retrieve inserted Widget");      
 }
 
 boost::shared_ptr<CWidget> CSQLiteWidgetRequester::getWidget(int widgetId)
@@ -57,7 +57,10 @@ boost::shared_ptr<CWidget> CSQLiteWidgetRequester::getWidget(int widgetId)
    if(adapter.getResults().size() >= 1)
       return adapter.getResults()[0];
    else
-      throw new CEmptyResultException("Cannot retrieve Widget");
+   {
+      std::string sEx = (boost::format("Cannot retrieve Widget Id=%1% in database") % widgetId).str(); 
+      throw CEmptyResultException(sEx);
+   }
 }
 
 std::vector<boost::shared_ptr<CWidget> > CSQLiteWidgetRequester::getWidgets()
@@ -91,7 +94,7 @@ void CSQLiteWidgetRequester::updateWidgetConfiguration(int widgetId, const std::
             Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetId);
 
    if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw CEmptyResultException("No lines affected");
 }
 
 void CSQLiteWidgetRequester::updateWidgetSize(int widgetId, int sizeX, int sizeY)
@@ -102,7 +105,7 @@ void CSQLiteWidgetRequester::updateWidgetSize(int widgetId, int sizeX, int sizeY
             Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetId);
 
    if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw CEmptyResultException("No lines affected");
 }
 
 
@@ -112,7 +115,7 @@ void CSQLiteWidgetRequester::removeWidget(int widgetId)
    qDelete. DeleteFrom(CWidgetTable::getTableName()).
             Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetId);
    if(m_databaseRequester->queryStatement(qDelete) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw CEmptyResultException("No lines affected");
 }
 
 

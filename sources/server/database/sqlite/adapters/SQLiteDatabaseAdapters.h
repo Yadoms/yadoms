@@ -54,5 +54,7 @@ DECLARE_ADAPTER(Widget,
    ((Name)(STRING_ADAPTER)(""))
    ((SizeX)(INT_ADAPTER)(0))
    ((SizeY)(INT_ADAPTER)(0))
+   ((PositionX)(INT_ADAPTER)(0))
+   ((PositionY)(INT_ADAPTER)(0))
    ((Configuration)(STRING_ADAPTER)(""))
    )

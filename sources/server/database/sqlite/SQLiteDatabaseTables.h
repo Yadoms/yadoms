@@ -58,6 +58,8 @@ DECLARE_TABLE(Widget,
    (Name)
    (SizeX)
    (SizeY)
+   (PositionX)
+   (PositionY)
    (Configuration)
 )
 

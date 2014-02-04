@@ -52,6 +52,8 @@ DECLARE_TABLE_COLUMN_NAMES(Widget,  "Widget",
    ((Name)("name"))
    ((SizeX)("sizeX"))
    ((SizeY)("sizeY"))
+   ((PositionX)("positionX"))
+   ((PositionY)("positionY"))
    ((Configuration)("configuration"))
 )
 
