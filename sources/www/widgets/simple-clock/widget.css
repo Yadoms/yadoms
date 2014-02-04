@@ -1,0 +1,7 @@
+.simpleClockWidget {
+    font-size : 1.0em;
+    background-color: #d9534f;
+    display:table-cell;
+    vertical-align:middle;
+    line-height:100px;
+}

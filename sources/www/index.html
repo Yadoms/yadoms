@@ -101,7 +101,7 @@
 	<script src="libs/transit/js/jquery.transit.min.js"></script>
 	<script src="libs/knockout/js/knockout-3.0.0.js"></script>
 
-    <script type="text/html" id="templates"></script>
+    <div id="templates" class="hidden"></div>
 
 	<script type="text/javascript">
 
@@ -143,7 +143,12 @@
                     max_cols: numberOfColumns,
                     resize: {
                         enabled: true,
-                        stop: function(e, ui, $widget) {
+
+                        resize: function(e, ui, $widget) {
+                            str = $widget[0].id;
+                            res = str.split("-");
+                            id = res[1];
+                            widgetArray[id].viewModel.resized($($("#widget" + value.id)[0]))
                         }
                     }
                 }).data('gridster');
@@ -171,23 +176,23 @@
 
                 $.get( "widgets/" + value.name + "/view.html", function( data ) {
                     $("#templates").append(data);
-                });
-
-                $.getScript( "widgets/" + value.name + "/viewModel.js", function(data, textStatus, jqxhr) {
-                    value.viewModel = widgetViewModel;
-                    widgetViewModel = null;
-                    pageArray[value.idPage].gridster.add_widget(
-                            "<li class=\"widget\" >" +
-                                "<div class=\"widgetCustomizationToolbar hidden\">" +
-                                    "<div class=\"btn-group btn-group-sm\">" +
+                    //we get script to execute for this widget
+                    $.getScript( "widgets/" + value.name + "/viewModel.js", function(data, textStatus, jqxhr) {
+                        value.viewModel = widgetViewModel;
+                        widgetViewModel = null;
+                        pageArray[value.idPage].gridster.add_widget(
+                                "<li class=\"widget\" id=\"liWidget-" + value.id +"\">" +
+                                        "<div class=\"widgetCustomizationToolbar hidden\">" +
+                                        "<div class=\"btn-group btn-group-sm\">" +
                                         "<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-share\"></i></button>" +
                                         "<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-cog\"></i></button>" +
                                         "<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-times\"></i></button>" +
-                                    "</div>" +
-                                "</div>" +
-                                "<div id=\"widget" + value.id + "\" data-bind=\"template: { name: '" + value.name + "-template', data: data }\"/>" +
-                            "</li>", 1, 1, 1, 1);
-                    ko.applyBindings(value.viewModel, $("#widget" + value.id)[0]);
+                                        "</div>" +
+                                        "</div>" +
+                                        "<div id=\"widget" + value.id + "\" data-bind=\"template: { name: '" + value.name + "-template', data: data }\"/>" +
+                                        "</li>", 1, 1, 1, 1);
+                        ko.applyBindings(value.viewModel, $("#widget" + value.id)[0]);
+                    });
                 });
             })
         });
