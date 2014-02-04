@@ -53,7 +53,7 @@ private:
    //--------------------------------------------------------------
    /// \brief			The plugin instance
    //--------------------------------------------------------------
-   boost::shared_ptr<IHardwarePlugin> m_pPluginInstance;//TODO : rendre thread-safe
+   boost::shared_ptr<IHardwarePlugin> m_pPluginInstance;
 
    //--------------------------------------------------------------
    /// \brief			The database accessor

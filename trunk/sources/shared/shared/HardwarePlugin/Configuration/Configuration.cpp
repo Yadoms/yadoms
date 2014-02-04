@@ -93,7 +93,7 @@ void CHardwarePluginConfiguration::update(const std::string& configurationValues
    m_ConfigurationUpdateQueue.push(configurationValues);
 }
 
-std::string CHardwarePluginConfiguration::getUpdated() // TODO à mettre dans IMPLEMENT_CONFIGURATION (ou class CHardwarePluginConfigurationSupport)
+std::string CHardwarePluginConfiguration::getUpdated()
 {
    boost::lock_guard<boost::mutex> l(m_configurationUpdateMutex);
 
