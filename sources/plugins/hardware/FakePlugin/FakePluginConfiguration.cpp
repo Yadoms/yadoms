@@ -33,3 +33,9 @@ void CFakePluginConfiguration::doBuildSchema()
       ("and a third"   , true );
    AddParameter(new CHardwarePluginConfigurationBitsFieldParameter("BitsFieldParameter", "Example of a bits field", BitsFieldItems));
 }
+
+// TODO à mettre dans IMPLEMENT_CONFIGURATION
+EXPORT_LIBRARY_FUNCTION const IHardwarePluginConfigurationSchema& getConfigurationSchemaInterface()
+{
+   return CFakePluginConfiguration::getSchema();
+}

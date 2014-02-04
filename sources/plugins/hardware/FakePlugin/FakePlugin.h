@@ -19,12 +19,6 @@ public:
    void init(const std::string & pluginAddress, const std::string & serverAddress);
 
 private:
-   std::string getUpdatedConfiguration();   // TODO à mettre dans une macro DECLARE_CONFIGURATION
-   
-   // TODO à mettre dans une macro DECLARE_CONFIGURATION
-   std::queue<std::string> m_ConfigurationUpdateQueue;
-   boost::mutex m_configurationUpdateMutex;
-
    void onMessageReceived(CXplMessage & message);
 
    // Trace the configuration

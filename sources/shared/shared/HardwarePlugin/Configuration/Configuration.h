@@ -80,6 +80,18 @@ public:
       }
    }
 
+   //--------------------------------------------------------------
+   /// \brief	    Update the configuration
+   /// \param [in] configurationValues    New configuration values
+   //--------------------------------------------------------------
+   void update(const std::string& configurationValues);
+
+   //--------------------------------------------------------------
+   /// \brief	   Check if configuration was updated
+   /// \return    Returns the new configuration, of empty string if configuration was not updated
+   //--------------------------------------------------------------
+   std::string getUpdated();
+
 protected:
    //--------------------------------------------------------------
    /// \brief	    Build the configuration schema
@@ -89,8 +101,29 @@ protected:
 
 
 private:
+   //--------------------------------------------------------------
+   /// \brief	   The map containing the configuration parameters
+   //--------------------------------------------------------------
    CHardwarePluginConfigurationMap m_configurationMap;
+
+   //--------------------------------------------------------------
+   /// \brief	   Mutex protecting the configuration map
+   //--------------------------------------------------------------
    boost::mutex m_configurationMapMutex;
+
+   //--------------------------------------------------------------
+   /// \brief	   The serializer used for schema and values serialization
+   //--------------------------------------------------------------
    boost::shared_ptr<IPtreeToStringSerializer> m_configurationSerializer;
+
+   //--------------------------------------------------------------
+   /// \brief	   The updated configurations queue
+   //--------------------------------------------------------------
+   std::queue<std::string> m_ConfigurationUpdateQueue;
+
+   //--------------------------------------------------------------
+   /// \brief	   Mutex protecting the updated configurations queue
+   //--------------------------------------------------------------
+   boost::mutex m_configurationUpdateMutex;
 };
 
