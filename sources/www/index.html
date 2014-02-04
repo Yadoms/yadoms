@@ -11,13 +11,13 @@
     <title>Yadoms</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="libs/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="css/bootstrap-non-responsive.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="yadoms.css" rel="stylesheet">
-	<link href="css/font-awesome.min.css" rel="stylesheet">
-      <link href="css/gridster.css" rel="stylesheet">
+    <link href="css/yadoms.css" rel="stylesheet">
+	<link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/gridster.css" rel="stylesheet">
 
    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=FontName">
    
@@ -31,7 +31,7 @@
     <![endif]-->
 
       <!-- Gridster includes -->
-      <link href="css/jquery.gridster.css" rel="stylesheet">
+      <link href="libs/gridster/css/jquery.gridster.css" rel="stylesheet">
   </head>
 
   <body>
@@ -91,17 +91,15 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="js/jquery-1.10.2.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script src="libs/jquery/js/jquery-1.10.2.min.js"></script>
+    <script src="libs/bootstrap/js/bootstrap.min.js"></script>
 
-    <script src="js/jquery.getCSS.js"></script>
-    
     <!-- Gridster includes -->
     <!--TODO: reprendre la version min-->
-    <script src="js/jquery.gridster.min.js"></script>
+    <script src="libs/gridster/js/jquery.gridster.min.js"></script>
     
-	<script src="js/jquery.transit.min.js"></script>
-	<script src="js/knockout-3.0.0.js"></script>
+	<script src="libs/transit/js/jquery.transit.min.js"></script>
+	<script src="libs/knockout/js/knockout-3.0.0.js"></script>
 
     <script type="text/html" id="templates"></script>
 
@@ -178,7 +176,17 @@
                 $.getScript( "widgets/" + value.name + "/viewModel.js", function(data, textStatus, jqxhr) {
                     value.viewModel = widgetViewModel;
                     widgetViewModel = null;
-                    pageArray[value.idPage].gridster.add_widget("<li class=\"widget\" ><div id=\"widget" + value.id + "\" data-bind=\"template: { name: '" + value.name + "-template', data: data }\"/></li>", 1, 1, 1, 1);
+                    pageArray[value.idPage].gridster.add_widget(
+                            "<li class=\"widget\" >" +
+                                "<div class=\"widgetCustomizationToolbar hidden\">" +
+                                    "<div class=\"btn-group btn-group-sm\">" +
+                                        "<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-share\"></i></button>" +
+                                        "<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-cog\"></i></button>" +
+                                        "<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-times\"></i></button>" +
+                                    "</div>" +
+                                "</div>" +
+                                "<div id=\"widget" + value.id + "\" data-bind=\"template: { name: '" + value.name + "-template', data: data }\"/>" +
+                            "</li>", 1, 1, 1, 1);
                     ko.applyBindings(value.viewModel, $("#widget" + value.id)[0]);
                 });
             })
@@ -225,12 +233,13 @@
 			$("#customizeButton").removeClass('btn-inverse').addClass('btn-primary');
             enableGridsterCustomization(true);
             animateCustomizeButton();
-
+            $(".widgetCustomizationToolbar").removeClass("hidden");
         }
 		else
 		{
 			$("#customizeButton").removeClass('btn-primary').addClass('btn-inverse');
             enableGridsterCustomization(false);
+            $(".widgetCustomizationToolbar").addClass("hidden");
 		}
 	});
 	

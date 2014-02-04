@@ -63,7 +63,7 @@
 
 .gs-resize-handle {
     position: absolute;
-    z-index: 1;
+    z-index: 19;
 }
 
 .gs-resize-handle-both {
