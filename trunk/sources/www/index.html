@@ -190,7 +190,7 @@
                                         "</div>" +
                                         "</div>" +
                                         "<div id=\"widget" + value.id + "\" data-bind=\"template: { name: '" + value.name + "-template', data: data }\"/>" +
-                                        "</li>", 1, 1, 1, 1);
+                                        "</li>", value.sizeX, value.sizeY, value.positionX, value.positionY);
                         ko.applyBindings(value.viewModel, $("#widget" + value.id)[0]);
                     });
                 });
