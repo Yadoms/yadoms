@@ -148,7 +148,15 @@
                             str = $widget[0].id;
                             res = str.split("-");
                             id = res[1];
-                            widgetArray[id].viewModel.resized($($("#widget" + id)[0]))
+                            if (widgetArray[id].viewModel.resized !== undefined)
+                                widgetArray[id].viewModel.resized($($("#widget" + id)[0]))
+                        },
+                        stop: function(e, ui, $widget) {
+                            str = $widget[0].id;
+                            res = str.split("-");
+                            id = res[1];
+                            if (widgetArray[id].viewModel.resized !== undefined)
+                                widgetArray[id].viewModel.resized($($("#widget" + id)[0]))
                         }
                     }
                 }).data('gridster');
@@ -184,16 +192,22 @@
                                 "<li class=\"widget\" id=\"liWidget-" + value.id +"\">" +
                                         "<div class=\"widgetCustomizationToolbar hidden\">" +
                                         "<div class=\"btn-group btn-group-sm\">" +
-                                        "<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-share\"></i></button>" +
-                                        "<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-cog\"></i></button>" +
-                                        "<button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-times\"></i></button>" +
+                                        "<button type=\"button\" class=\"btn btn-default\" title=\"Move to another page\"><i class=\"fa fa-share\"></i></button>" +
+                                        "<button type=\"button\" class=\"btn btn-default\" title=\"Configuration\"><i class=\"fa fa-cog\"></i></button>" +
+                                        "<button type=\"button\" class=\"btn btn-default\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
                                         "</div>" +
                                         "</div>" +
                                         "<div id=\"widget" + value.id + "\" data-bind=\"template: { name: '" + value.name + "-template', data: data }\"/>" +
-                                        "</li>", value.sizeX, value.sizeY, value.positionX, value.positionY);
+                                "</li>", value.sizeX, value.sizeY, value.positionX, value.positionY);
                         createdObject = $("#widget" + value.id);
                         ko.applyBindings(value.viewModel, createdObject[0]);
-                        value.viewModel.resized(createdObject);
+                        if (value.viewModel.resized !== undefined)
+                            value.viewModel.resized(createdObject);
+
+                        $(".widget button").tooltip({
+                            animated: 'fade',
+                            placement: 'bottom'
+                        });
                     });
                 });
             })
