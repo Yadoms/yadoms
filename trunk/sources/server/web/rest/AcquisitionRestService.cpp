@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "AcquisitionRestService.h"
 #include <shared/Exceptions/NotImplementedException.hpp>
-#include "json/AcquisitionEntitySerializer.h"
+#include "json/JsonSerializers.h"
 #include "json/JsonCollectionSerializer.h"
 #include "RestDispatcherHelpers.hpp"
 

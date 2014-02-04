@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "DeviceRestService.h"
 #include <shared/Exceptions/NotImplementedException.hpp>
-#include "json/DeviceEntitySerializer.h"
-#include "json/AcquisitionEntitySerializer.h"
+#include "json/JsonSerializers.h"
 #include "json/JsonCollectionSerializer.h"
 #include "RestDispatcherHelpers.hpp"
 
