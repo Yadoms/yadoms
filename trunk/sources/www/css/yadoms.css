@@ -2,7 +2,7 @@
   
 body {
     padding-bottom: 20px;
-    background: url('img/background.jpg');
+    background: url('../img/background.jpg');
     background-attachment: fixed;
     min-width: 265px;
 }
@@ -43,7 +43,24 @@ body {
 .gridster ul {
 }
 
-.widget {
+.widget div{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+}
+
+.widgetCustomizationToolbar {
+    z-index: 18;
+    background: rgba(230, 170, 60, 0.3);
+    border-color: darkslategray;
+    border-style: dashed;
+    border-width: 1px;
+}
+
+.widgetCustomizationToolbar .btn-group {
+    left: auto;
 }
 
 .tab-content {
