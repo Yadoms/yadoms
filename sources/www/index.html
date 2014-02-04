@@ -12,10 +12,12 @@
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-non-responsive.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="yadoms.css" rel="stylesheet">
 	<link href="css/font-awesome.min.css" rel="stylesheet">
+      <link href="css/gridster.css" rel="stylesheet">
 
    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=FontName">
    
@@ -58,6 +60,7 @@
                           </li>
                       </ul>
                       <ul class="nav navbar-nav navbar-right">
+                          <li><a href="#" class="btn btn-inverse" id="chartButton"><i class="fa fa-bar-chart-o"></i></a></li>
                           <li><a href="#" class="btn btn-inverse" id="customizeButton"><i class="fa fa-wrench"></i></a></li>
                       </ul>
                       </div>
@@ -67,9 +70,7 @@
               <div class="col-md-12">
                   <div class="nav navbar-nav" id = "pageMenu">
                       <ul class="nav nav-pills nav-justified">
-                          <!--<li class="active"><a href="#tab0" data-toggle="tab">Partie Jour</a></li>
-                          <li><a href="#tab1" data-toggle="tab">Partie Nuit</a></li>
-                          <li><a href="#tab2" data-toggle="tab">Cameras</a></li>-->
+                          <!-- Nav pills of pages will be inserted here -->
                       </ul>
                   </div>
               </div>
@@ -80,40 +81,7 @@
 
   <div id="tabContainer">
       <div class="tab-content">
-          <!--<div class="widgetPage tab-pane active" id="tab0">
-              <div class="gridster">
-                  <ul>
-
-
-                  </ul>
-              </div>
-          </div>
-
-          <div class="widgetPage tab-pane active" id="tab1">
-              <div class="gridster">
-                  <ul>
-                      <li data-row="1" data-col="1" data-sizex="1" data-sizey="1"></li>
-                      <li data-row="2" data-col="1" data-sizex="1" data-sizey="1"></li>
-                      <li data-row="3" data-col="1" data-sizex="1" data-sizey="1"></li>
-
-                      <li data-row="1" data-col="4" data-sizex="3" data-sizey="2"></li>
-
-                  </ul>
-              </div>
-          </div>
-
-          <div class="widgetPage tab-pane active" id="tab2">
-              <div class="gridster">
-                  <ul>
-                      <li data-row="1" data-col="1" data-sizex="3" data-sizey="3" id="0"></li>
-                      <li data-row="4" data-col="1" data-sizex="3" data-sizey="3" id="1"></li>
-                      <li data-row="1" data-col="4" data-sizex="3" data-sizey="3" id="2"></li>
-                      <li data-row="4" data-col="4" data-sizex="3" data-sizey="3" id="3"></li>
-                      <li data-row="1" data-col="7" data-sizex="3" data-sizey="3" id="4"></li>
-                      <li data-row="4" data-col="7" data-sizex="3" data-sizey="3" id="5"></li>
-                  </ul>
-              </div>
-          </div>-->
+          <!-- Gridster tabs will be inserted here -->
       </div>
 
       <footer class="footer"><p>&copy; Yadoms 2014</p></footer>
@@ -130,7 +98,7 @@
     
     <!-- Gridster includes -->
     <!--TODO: reprendre la version min-->
-    <script src="js/jquery.gridster.js"></script>
+    <script src="js/jquery.gridster.min.js"></script>
     
 	<script src="js/jquery.transit.min.js"></script>
 	<script src="js/knockout-3.0.0.js"></script>
@@ -158,21 +126,6 @@
         var gridWidth = 100;
         var gridMargin = 5;
 
-        //gridster implementation
-        $(".gridster ul").gridster({
-            widget_margins: [gridMargin, gridMargin],
-            widget_base_dimensions: [gridWidth, gridWidth],
-            min_cols: numberOfColumns,
-            max_cols: numberOfColumns,
-            resize: {
-               enabled: true,
-               stop: function(e, ui, $widget) {
-                  
-               }
-            }
-            
-        });
-
         $(".widgetPage .gridster").width(numberOfColumns * (gridWidth + gridMargin * 2));
 
         //we get pages
@@ -182,17 +135,28 @@
                 pageArray[value.id] = new Page();
                 pageArray[value.id].pageData = value;
                 var tabIdAsText = "tab" + value.id;
+
                 $("#tabContainer .tab-content").append("<div class=\"widgetPage tab-pane active\" id=\"" + tabIdAsText + "\"><div class=\"gridster\"><ul></ul></div></div>")
                 $("#pageMenu ul").append("<li><a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" + value.name + "</a></li>");
-                pageArray[value.id].gridster = $("#" + tabIdAsText + " ul").gridster().data('gridster');
-                //pageArray[value.id].gridster.disable();
-                //pageArray[value.id].gridster.disable_resize();
+                pageArray[value.id].gridster = $("#" + tabIdAsText + " ul").gridster({
+                    widget_margins: [gridMargin, gridMargin],
+                    widget_base_dimensions: [gridWidth, gridWidth],
+                    min_cols: numberOfColumns,
+                    max_cols: numberOfColumns,
+                    resize: {
+                        enabled: true,
+                        stop: function(e, ui, $widget) {
+                        }
+                    }
+                }).data('gridster');
             });
-            //we activate first page
+            //we activate first page on the pills
             $("#pageMenu ul li").first().addClass("active");
 
             //we remove the active class of all hidden gridster
-            $("#tabContainer ul li").not($("#tabContainer ul li").first()).removeClass("active");
+            $(".tab-content div").not($(".tab-content div").first()).removeClass("active");
+
+            enableGridsterCustomization(false);
         });
 
         //we get widgets from REST
@@ -207,20 +171,35 @@
             $.each(widgetArray, function (index, value) {
                 //for each widget we add viewModelData of the widget into the template section
 
-                $.get( "widgets/" + value.path + "/view.html", function( data ) {
+                $.get( "widgets/" + value.name + "/view.html", function( data ) {
                     $("#templates").append(data);
                 });
 
-                $.getScript( "widgets/" + value.path + "/viewModel.js", function(data, textStatus, jqxhr) {
+                $.getScript( "widgets/" + value.name + "/viewModel.js", function(data, textStatus, jqxhr) {
                     value.viewModel = widgetViewModel;
                     widgetViewModel = null;
-                    pageArray[value.idPage].gridster.add_widget("<li id=\"widget" + value.id + "\" data-bind=\"template: { name: '" + value.path + "-template', data: data }\"/>", 1, 1, 1, 1);
+                    pageArray[value.idPage].gridster.add_widget("<li class=\"widget\" ><div id=\"widget" + value.id + "\" data-bind=\"template: { name: '" + value.name + "-template', data: data }\"/></li>", 1, 1, 1, 1);
                     ko.applyBindings(value.viewModel, $("#widget" + value.id)[0]);
                 });
             })
         });
 	});
-	
+
+    function enableGridsterCustomization(enable) {
+        $.each(pageArray, function (index, value) {
+            if (enable)
+            {
+                value.gridster.enable();
+                value.gridster.enable_resize();
+            }
+            else
+            {
+                value.gridster.disable();
+                value.gridster.disable_resize();
+            }
+        });
+    }
+
     function animateCustomizeButton() {
         $("#customizeButton i").transition({
           rotate: '+=30deg',
@@ -244,18 +223,15 @@
 		if (customization)
 		{
 			$("#customizeButton").removeClass('btn-inverse').addClass('btn-primary');
-			gridsterTab0.enable();
-			gridsterTab0.enable_resize();
+            enableGridsterCustomization(true);
             animateCustomizeButton();
 
         }
 		else
 		{
 			$("#customizeButton").removeClass('btn-primary').addClass('btn-inverse');
-			gridsterTab0.disable();
-			gridsterTab0.disable_resize();
+            enableGridsterCustomization(false);
 		}
-		
 	});
 	
 	</script>
