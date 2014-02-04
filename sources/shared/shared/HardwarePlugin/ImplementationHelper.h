@@ -27,26 +27,22 @@
 //////////////////////////////////////////////////////////////////////////
 // Implement configuration
 //////////////////////////////////////////////////////////////////////////
-// TODO : rendre Configuration thread-safe
-// TODO : revoir cette macro si nécessaire
-#define IMPLEMENT_CONFIGURATION                                                           \
-   void buidConfigurationSchema(CHardwarePluginConfiguration& configuration);             \
-   const CHardwarePluginConfiguration& getConfigurationSchema()                           \
+// Call this macro in the plugin configuration class declaration
+#define DECLARE_CONFIGURATION(PluginConfigurationClassName)                               \
+   public: static const PluginConfigurationClassName& getPluginSchema();
+
+// Call this macro in the plugin configuration class definition file (usualy .cpp file)
+#define IMPLEMENT_CONFIGURATION(PluginConfigurationClassName)                             \
+   const PluginConfigurationClassName& PluginConfigurationClassName::getPluginSchema()    \
    {                                                                                      \
-      static boost::optional<CHardwarePluginConfiguration> Configuration;                 \
-                                                                                          \
+      static boost::shared_ptr<PluginConfigurationClassName> Configuration;               \
       if (Configuration)                                                                  \
-         return Configuration.get();   /* Already initialized */                          \
-      CHardwarePluginConfiguration conf;                                                  \
-      buidConfigurationSchema(conf);                                                      \
-      Configuration = conf;                                                               \
-      return Configuration.get();                                                         \
+         return *Configuration;   /* Already initialized */                               \
+      Configuration.reset(new PluginConfigurationClassName);                              \
+      Configuration->buildSchema();                                                       \
+      return *Configuration;                                                              \
    }                                                                                      \
    EXPORT_LIBRARY_FUNCTION const IHardwarePluginConfigurationSchema& getConfigurationSchemaInterface() \
    {                                                                                      \
-      return getConfigurationSchema();                                                    \
-   }                                                                                      \
-   void buidConfigurationSchema(CHardwarePluginConfiguration& configuration)
-
-
-
+      return PluginConfigurationClassName::getPluginSchema();                             \
+   }

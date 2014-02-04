@@ -1,6 +1,7 @@
 #pragma once
 
 #include <shared/HardwarePlugin/Configuration/Configuration.h>
+#include <shared/HardwarePlugin/ImplementationHelper.h>
 
 
 // An example of an enum type of parameter
@@ -13,6 +14,9 @@ enum EEnumType
 
 class CFakePluginConfiguration : public CHardwarePluginConfiguration
 {
+   // Call this macro to declare that plugin has a configuration
+   DECLARE_CONFIGURATION(CFakePluginConfiguration)
+
 public:
    virtual ~CFakePluginConfiguration();
 
@@ -21,21 +25,5 @@ public:
    /// \note       CHardwarePluginConfiguration implementation
    //--------------------------------------------------------------
    virtual void doBuildSchema();
-
-
-   // If parameters are needed for the plugin, just use the IMPLEMENT_CONFIGURATION macro
-   // to create the configuration schema and add parameters
-   //TODO remettre la macro IMPLEMENT_CONFIGURATION
-public:
-   static const CFakePluginConfiguration& getSchema()
-   {
-      static boost::shared_ptr<CFakePluginConfiguration> Configuration;
-
-      if (Configuration)
-         return *Configuration;   /* Already initialized */
-      Configuration.reset(new CFakePluginConfiguration);
-      Configuration->buildSchema();
-      return *Configuration;
-   }
 };
 

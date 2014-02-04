@@ -96,9 +96,9 @@ void CFakePlugin::doWork(const std::string& configurationValues)
    }
 }
 
-//TODO : à mettre dans IMPLEMENT_CONFIGURATION
 void CFakePlugin::updateConfiguration(const std::string& configurationValues)
 {
+   // Post new values to plugin configuration
    m_Configuration.update(configurationValues);
 }
 
