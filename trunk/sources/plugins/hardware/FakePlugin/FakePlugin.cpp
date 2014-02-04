@@ -4,7 +4,6 @@
 #include <shared/Xpl/XplService.h>
 #include <shared/Xpl/XplMessage.h>
 #include <shared/Exceptions/BadConversionException.hpp>
-#include <shared/StringExtension.h>
 
 
 // Use this macro to define some basic informations about the plugin
@@ -17,28 +16,9 @@ IMPLEMENT_HARDWARE_PLUGIN(
    "http://sourceforge.net/projects/yadoms/")   // Url of author web site (std::string)
 
 
-// If parameters are needed for the plugin, just use the IMPLEMENT_CONFIGURATION macro
-// to create the configuration schema and add parameters
-//TODO remettre la macro IMPLEMENT_CONFIGURATION
-const CFakePluginConfiguration& getConfigurationSchema()
-{
-   static boost::shared_ptr<CFakePluginConfiguration> Configuration;
-
-   if (Configuration)
-      return *Configuration;   /* Already initialized */
-   Configuration.reset(new CFakePluginConfiguration);
-   Configuration->buildSchema();
-   return *Configuration;
-}
-
-EXPORT_LIBRARY_FUNCTION const IHardwarePluginConfigurationSchema& getConfigurationSchemaInterface()
-{
-   return getConfigurationSchema();
-}
-
-
 CFakePlugin::CFakePlugin()
 {
+   // Build the schema
    m_Configuration.buildSchema();
 }
 
@@ -62,7 +42,7 @@ void CFakePlugin::doWork(const std::string& configurationValues)
       xplService.reset(new CXplService("yadoms", "fake", "1"));
       xplService->messageReceived(boost::bind(&CFakePlugin::onMessageReceived, this, _1));
 
-      // Build configuration and load values from database
+      // Load configuration values (provided by database)
       m_Configuration.setValues(configurationValues);
       // Trace the configuration (just for test)
       traceConfiguration();
@@ -73,7 +53,7 @@ void CFakePlugin::doWork(const std::string& configurationValues)
       {
          YADOMS_LOG(debug) << "CFakePlugin is running...";
 
-         std::string newConfigurationValues = getUpdatedConfiguration();
+         std::string newConfigurationValues = m_Configuration.getUpdated();
          if (!newConfigurationValues.empty())
          {
             // Take into account the new configuration
@@ -116,22 +96,10 @@ void CFakePlugin::doWork(const std::string& configurationValues)
    }
 }
 
+//TODO : à mettre dans IMPLEMENT_CONFIGURATION
 void CFakePlugin::updateConfiguration(const std::string& configurationValues)
 {
-   boost::lock_guard<boost::mutex> lock(m_configurationUpdateMutex);
-   m_ConfigurationUpdateQueue.push(configurationValues);
-}
-
-std::string CFakePlugin::getUpdatedConfiguration() // TODO à mettre dans IMPLEMENT_CONFIGURATION (ou class CHardwarePluginConfigurationSupport)
-{
-   boost::lock_guard<boost::mutex> l(m_configurationUpdateMutex);
-
-   if (m_ConfigurationUpdateQueue.empty())
-      return CStringExtension::EmptyString;
-
-   std::string newConfiguration = m_ConfigurationUpdateQueue.back();
-   m_ConfigurationUpdateQueue.pop();
-   return newConfiguration;
+   m_Configuration.update(configurationValues);
 }
 
 void CFakePlugin::traceConfiguration()

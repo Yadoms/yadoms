@@ -2,6 +2,7 @@
 
 #include "../../Exceptions/BadConversionException.hpp"
 #include "../../Exceptions/OutOfRangeException.hpp"
+#include "../../StringExtension.h"
 #include "Configuration.h"
 #include "ConfigurationFactory.h"
 
@@ -84,4 +85,22 @@ void CHardwarePluginConfiguration::AddParameter(CHardwarePluginConfigurationPara
 const CHardwarePluginConfigurationParameter& CHardwarePluginConfiguration::operator[](const std::string& parameterName) const
 {
    return *m_configurationMap.at(parameterName);
+}
+
+void CHardwarePluginConfiguration::update(const std::string& configurationValues)
+{
+   boost::lock_guard<boost::mutex> lock(m_configurationUpdateMutex);
+   m_ConfigurationUpdateQueue.push(configurationValues);
+}
+
+std::string CHardwarePluginConfiguration::getUpdated() // TODO à mettre dans IMPLEMENT_CONFIGURATION (ou class CHardwarePluginConfigurationSupport)
+{
+   boost::lock_guard<boost::mutex> l(m_configurationUpdateMutex);
+
+   if (m_ConfigurationUpdateQueue.empty())
+      return CStringExtension::EmptyString;
+
+   std::string newConfiguration = m_ConfigurationUpdateQueue.back();
+   m_ConfigurationUpdateQueue.pop();
+   return newConfiguration;
 }
