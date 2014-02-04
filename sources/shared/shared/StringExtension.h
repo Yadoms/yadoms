@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/export.h>
+#include <shared/Export.h>
 #include "Exceptions/Exception.hpp"
 #include <stdarg.h>
 
