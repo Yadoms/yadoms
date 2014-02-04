@@ -1,5 +1,6 @@
 function TemperatureViewModel() {
     this.data;
+    this.resized = function($widget) {}
 }
 
 TemperatureViewModel.prototype.dispatch = function(data) { alert("dispatch temperature " + data);};

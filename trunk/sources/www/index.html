@@ -148,7 +148,7 @@
                             str = $widget[0].id;
                             res = str.split("-");
                             id = res[1];
-                            widgetArray[id].viewModel.resized($($("#widget" + value.id)[0]))
+                            widgetArray[id].viewModel.resized($($("#widget" + id)[0]))
                         }
                     }
                 }).data('gridster');
@@ -191,7 +191,9 @@
                                         "</div>" +
                                         "<div id=\"widget" + value.id + "\" data-bind=\"template: { name: '" + value.name + "-template', data: data }\"/>" +
                                         "</li>", value.sizeX, value.sizeY, value.positionX, value.positionY);
-                        ko.applyBindings(value.viewModel, $("#widget" + value.id)[0]);
+                        createdObject = $("#widget" + value.id);
+                        ko.applyBindings(value.viewModel, createdObject[0]);
+                        value.viewModel.resized(createdObject);
                     });
                 });
             })
