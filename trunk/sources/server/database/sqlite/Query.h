@@ -5,6 +5,7 @@
 #define EMPTY_STR ""
 
 #define CQUERY_OP_EQUAL "="
+#define CQUERY_OP_LIKE " LIKE "
 #define CQUERY_OP_SUP ">"
 #define CQUERY_OP_INF "<"
 #define CQUERY_OP_NOT_EQUAL "<>"

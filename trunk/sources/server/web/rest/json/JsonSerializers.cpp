@@ -56,5 +56,7 @@ DECLARE_JSON_ENTITY_IMPLEMENTATION(Widget,  "Widget",
    ((Name)("name")JSON_STRING)
    ((SizeX)("sizeX")JSON_INT)
    ((SizeY)("sizeY")JSON_INT)
+   ((PositionX)("positionX")JSON_INT)
+   ((PositionY)("positionY")JSON_INT)
    ((Configuration)("configuration")JSON_STRING)
 )

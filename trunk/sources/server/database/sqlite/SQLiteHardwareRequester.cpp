@@ -30,7 +30,7 @@ int CSQLiteHardwareRequester::addHardware(boost::shared_ptr<CHardware> newHardwa
                   newHardware->getEnabled());
 
    if(m_databaseRequester->queryStatement(qInsert) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw CEmptyResultException("No lines affected");
 
 
    CQuery qSelect;
@@ -45,7 +45,7 @@ int CSQLiteHardwareRequester::addHardware(boost::shared_ptr<CHardware> newHardwa
    if(adapter.getResults().size() >= 1)
       return adapter.getResults()[0];
    else
-      throw new CEmptyResultException("Cannot retrieve inserted Hardware");
+      throw CEmptyResultException("Cannot retrieve inserted Hardware");
 }
 
 boost::shared_ptr<CHardware> CSQLiteHardwareRequester::getHardware(int hardwareId)
@@ -106,7 +106,7 @@ void CSQLiteHardwareRequester::updateHardwareConfiguration(int hardwareId, const
             Where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId);
 
    if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw CEmptyResultException("No lines affected");
 }
 
 void CSQLiteHardwareRequester::removeHardware(int hardwareId)
@@ -117,7 +117,7 @@ void CSQLiteHardwareRequester::removeHardware(int hardwareId)
             Where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId);
 
    if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw CEmptyResultException("No lines affected");
 }
 
 void CSQLiteHardwareRequester::enableInstance(int hardwareId, bool enable)
@@ -128,7 +128,7 @@ void CSQLiteHardwareRequester::enableInstance(int hardwareId, bool enable)
             Where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId);
 
    if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw CEmptyResultException("No lines affected");
 }
 // [END] IHardwareRequester implementation
 

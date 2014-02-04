@@ -28,7 +28,7 @@ void CSQLiteKeywordRequester::addKeyword(boost::shared_ptr<CKeyword> newKeyword)
            Values(newKeyword->getName());
 
    if(m_databaseRequester->queryStatement(qInsert) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw CEmptyResultException("No lines affected");
 }
 
 boost::shared_ptr<CKeyword> CSQLiteKeywordRequester::getKeyword(const std::string & keyword)
@@ -67,6 +67,6 @@ void CSQLiteKeywordRequester::removeKeyword(const std::string & keyword)
    qDelete. DeleteFrom(CKeywordTable::getTableName()).
             Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
    if(m_databaseRequester->queryStatement(qDelete) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw CEmptyResultException("No lines affected");
 }
 // [END] IKeywordRequester implementation

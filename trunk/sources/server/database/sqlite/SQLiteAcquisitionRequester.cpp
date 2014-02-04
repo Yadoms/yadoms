@@ -25,7 +25,7 @@ void CSQLiteAcquisitionRequester::addAcquisition(const CAcquisition & newAcquisi
    qInsert. InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getSourceColumnName(), CAcquisitionTable::getKeywordColumnName(), CAcquisitionTable::getValueColumnName(), CAcquisitionTable::getDateColumnName()).
             Values(newAcquisition.getSource(), newAcquisition.getKeyword(), newAcquisition.getValue(), newAcquisition.getDate());
    if(m_databaseRequester->queryStatement(qInsert) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw CEmptyResultException("No lines affected");
 }
 
 boost::shared_ptr<CAcquisition> CSQLiteAcquisitionRequester::getAcquisition(int acquisitionId)
@@ -40,7 +40,11 @@ boost::shared_ptr<CAcquisition> CSQLiteAcquisitionRequester::getAcquisition(int 
    if(adapter.getResults().size() >= 1)
       return adapter.getResults()[0];
    else
-      throw new CEmptyResultException("Cannot retrieve inserted Hardware");
+   {
+      std::string sEx = (boost::format("Cannot retrieve Acquisition Id=%1% in database") % acquisitionId).str(); 
+      throw CEmptyResultException(sEx);
+   }
+
 }
 
 std::vector<boost::shared_ptr<CAcquisition> > CSQLiteAcquisitionRequester::getAcquisitions(const std::string & source, const std::string & keyword)
@@ -77,7 +81,7 @@ void CSQLiteAcquisitionRequester::removeAcquisition(int acquisitionId)
    qDelete. DeleteFrom(CAcquisitionTable::getTableName()).
             Where(CAcquisitionTable::getIdColumnName(), CQUERY_OP_EQUAL, acquisitionId);
    if(m_databaseRequester->queryStatement(qDelete) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw CEmptyResultException("No lines affected");
 }
 
 

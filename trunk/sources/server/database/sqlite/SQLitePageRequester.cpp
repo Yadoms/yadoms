@@ -25,7 +25,7 @@ int CSQLitePageRequester::addPage(const std::string& name)
    qInsert. InsertInto(CPageTable::getTableName(), CPageTable::getNameColumnName()).
             Values(name);
    if(m_databaseRequester->queryStatement(qInsert) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw CEmptyResultException("No lines affected");
       
  CQuery qSelect;
    qSelect. Select(CPageTable::getIdColumnName()).
@@ -38,7 +38,7 @@ int CSQLitePageRequester::addPage(const std::string& name)
    if(adapter.getResults().size() >= 1)
       return adapter.getResults()[0];
    else
-      throw new CEmptyResultException("Cannot retrieve inserted Page");      
+      throw CEmptyResultException("Cannot retrieve inserted Page");      
 }
 
 boost::shared_ptr<CPage> CSQLitePageRequester::getPage(int pageId)
@@ -53,7 +53,10 @@ boost::shared_ptr<CPage> CSQLitePageRequester::getPage(int pageId)
    if(adapter.getResults().size() >= 1)
       return adapter.getResults()[0];
    else
-      throw new CEmptyResultException("Cannot retrieve Page");
+   {
+      std::string sEx = (boost::format("Cannot retrieve Page Id=%1% in database") % pageId).str(); 
+      throw CEmptyResultException(sEx);
+   }
 }
 
 std::vector<boost::shared_ptr<CPage> > CSQLitePageRequester::getPages()
@@ -75,7 +78,7 @@ void CSQLitePageRequester::updatePage(int pageId, const std::string& name)
             Where(CPageTable::getIdColumnName(), CQUERY_OP_EQUAL, pageId);
 
    if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw CEmptyResultException("No lines affected");
 }
 
 void CSQLitePageRequester::removePage(int pageId)
@@ -84,7 +87,7 @@ void CSQLitePageRequester::removePage(int pageId)
    qDelete. DeleteFrom(CPageTable::getTableName()).
             Where(CPageTable::getIdColumnName(), CQUERY_OP_EQUAL, pageId);
    if(m_databaseRequester->queryStatement(qDelete) <= 0)
-      throw new CEmptyResultException("No lines affected");
+      throw CEmptyResultException("No lines affected");
 }
 
 

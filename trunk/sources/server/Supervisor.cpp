@@ -13,6 +13,7 @@
 #include "web/rest/PageRestService.h"
 #include "web/rest/WidgetRestService.h"
 #include "web/rest/AcquisitionRestService.h"
+#include "web/rest/ConfigurationRestService.h"
 #include <shared/ThreadBase.h>
 #include <shared/Peripherals.h>
 
@@ -207,6 +208,7 @@ void CSupervisor::doWork()
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CPageRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CWidgetRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CAcquisitionRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CConfigurationRestService(pDataProvider)));
       }
 
       boost::shared_ptr<CWebServerManager> webServerManager(new CWebServerManager(webServer));

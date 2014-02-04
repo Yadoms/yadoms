@@ -264,6 +264,8 @@ set(YADOMS_SRC
 
 	server/web/rest/AcquisitionRestService.h
 	server/web/rest/AcquisitionRestService.cpp
+	server/web/rest/ConfigurationRestService.h
+	server/web/rest/ConfigurationRestService.cpp
 	)
 
 # Project folders
