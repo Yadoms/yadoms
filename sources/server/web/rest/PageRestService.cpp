@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "PageRestService.h"
 #include <shared/Exceptions/NotImplementedException.hpp>
-#include "json/PageEntitySerializer.h"
-#include "json/WidgetEntitySerializer.h"
+#include "json/JsonSerializers.h"
 #include "json/JsonCollectionSerializer.h"
 #include "RestDispatcherHelpers.hpp"
 

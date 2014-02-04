@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "WidgetRestService.h"
 #include <shared/Exceptions/NotImplementedException.hpp>
-#include "json/WidgetEntitySerializer.h"
+#include "json/JsonSerializers.h"
 #include "json/JsonCollectionSerializer.h"
 #include "RestDispatcherHelpers.hpp"
 #include "RestDispatcher.h"

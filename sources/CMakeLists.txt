@@ -246,41 +246,24 @@ set(YADOMS_SRC
 	server/web/rest/RestDispatcher.cpp
 	server/web/rest/RestDispatcherHelpers.hpp
 	
+	server/web/rest/json/JsonSerializers.h
+	server/web/rest/json/JsonSerializers.cpp
+	server/web/rest/json/JsonSerializersHelpers.hpp
 	
 	server/web/rest/HardwareRestService.h
 	server/web/rest/HardwareRestService.cpp
-	server/web/rest/json/HardwareEntitySerializer.h
-	server/web/rest/json/HardwareEntitySerializer.cpp
-	server/web/rest/json/HardwareEntityJsonDefinition.h
-	server/web/rest/json/HardwareEntityJsonDefinition.cpp
 
 	server/web/rest/DeviceRestService.h
 	server/web/rest/DeviceRestService.cpp
-	server/web/rest/json/DeviceEntitySerializer.h
-	server/web/rest/json/DeviceEntitySerializer.cpp
-	server/web/rest/json/DeviceEntityJsonDefinition.h
-	server/web/rest/json/DeviceEntityJsonDefinition.cpp
 	
 	server/web/rest/PageRestService.h
 	server/web/rest/PageRestService.cpp
-	server/web/rest/json/PageEntitySerializer.h
-	server/web/rest/json/PageEntitySerializer.cpp
-	server/web/rest/json/PageEntityJsonDefinition.h
-	server/web/rest/json/PageEntityJsonDefinition.cpp
 
 	server/web/rest/WidgetRestService.h
 	server/web/rest/WidgetRestService.cpp
-	server/web/rest/json/WidgetEntitySerializer.h
-	server/web/rest/json/WidgetEntitySerializer.cpp
-	server/web/rest/json/WidgetEntityJsonDefinition.h
-	server/web/rest/json/WidgetEntityJsonDefinition.cpp
-	
+
 	server/web/rest/AcquisitionRestService.h
 	server/web/rest/AcquisitionRestService.cpp
-	server/web/rest/json/AcquisitionEntitySerializer.h
-	server/web/rest/json/AcquisitionEntitySerializer.cpp
-	server/web/rest/json/AcquisitionEntityJsonDefinition.h
-	server/web/rest/json/AcquisitionEntityJsonDefinition.cpp	
 	)
 
 # Project folders
