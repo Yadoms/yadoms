@@ -110,9 +110,15 @@
         this.gridster;
     }
 
+    function getDatabaseIdFromElement($element)
+    {
+        str = $element[0].id;
+        res = str.split("-");
+        return res[res.length - 1];
+    }
+
     //var declaration
 	var customization = false;
-	var gridsterTab0;
 
     var pageArray = {};
     var widgetArray = {};
@@ -132,7 +138,7 @@
             $.each(data.page, function(index, value) {
                 pageArray[value.id] = new Page();
                 pageArray[value.id].pageData = value;
-                var tabIdAsText = "tab" + value.id;
+                var tabIdAsText = "tab-" + value.id;
 
                 $("#tabContainer .tab-content").append("<div class=\"widgetPage tab-pane active\" id=\"" + tabIdAsText + "\"><div class=\"gridster\"><ul></ul></div></div>")
                 $("#pageMenu ul").append("<li><a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" + value.name + "</a></li>");
@@ -145,18 +151,14 @@
                         enabled: true,
 
                         resize: function(e, ui, $widget) {
-                            str = $widget[0].id;
-                            res = str.split("-");
-                            id = res[1];
+                            id = getDatabaseIdFromElement($widget);
                             if (widgetArray[id].viewModel.resized !== undefined)
-                                widgetArray[id].viewModel.resized($($("#widget" + id)[0]))
+                                widgetArray[id].viewModel.resized()
                         },
                         stop: function(e, ui, $widget) {
-                            str = $widget[0].id;
-                            res = str.split("-");
-                            id = res[1];
+                            id = getDatabaseIdFromElement($widget);
                             if (widgetArray[id].viewModel.resized !== undefined)
-                                widgetArray[id].viewModel.resized($($("#widget" + id)[0]))
+                                widgetArray[id].viewModel.resized()
                         }
                     }
                 }).data('gridster');
@@ -197,20 +199,24 @@
                                         "<button type=\"button\" class=\"btn btn-default\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
                                         "</div>" +
                                         "</div>" +
-                                        "<div id=\"widget" + value.id + "\" data-bind=\"template: { name: '" + value.name + "-template', data: data }\"/>" +
+                                        "<div id=\"widget-" + value.id + "\" data-bind=\"template: { name: '" + value.name + "-template', data: data }\"/>" +
                                 "</li>", value.sizeX, value.sizeY, value.positionX, value.positionY);
-                        createdObject = $("#widget" + value.id);
+                        createdObject = $("#widget-" + value.id);
 
                         //we apply binding
                         ko.applyBindings(value.viewModel, createdObject[0]);
 
-                        //we initiliazed the widget
-                        if (value.viewModel.initialized !== undefined)
-                           value.viewModel.initialized(createdObject);
+                        $.getJSON( "widgets/" + value.name + "/configuration.json", function( data ) {
+                            //we initiliazed the widget
+                            debugger;
+                            //todo : PB le champs value a changé avant que la méthode ne soit appelé
+                            if (value.viewModel.initialized !== undefined)
+                                value.viewModel.initialized(createdObject, data);
 
-                        if (value.viewModel.resized !== undefined)
-                            value.viewModel.resized();
-                        
+                            if (value.viewModel.resized !== undefined)
+                                value.viewModel.resized();
+                        });
+
                         $(".widget button").tooltip({
                             animated: 'fade',
                             placement: 'bottom'
