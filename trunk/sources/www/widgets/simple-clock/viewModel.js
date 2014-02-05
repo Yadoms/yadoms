@@ -1,9 +1,9 @@
 function SimpleClockViewModel() {
     this.data;
     this.$widget;
-    
+    this.informations;
+
     this.resized = function() {
-   //debugger;
     if (this.$widget.width() <= 150) {
             this.$widget.find(".simpleClockWidget").css("font-size", "1.0em");
         }
@@ -13,42 +13,42 @@ function SimpleClockViewModel() {
             this.$widget.find(".simpleClockWidget").css("font-size", "4.0em");
     }
     
-    this.initialized = function($widget) {
-      this.$widget = $widget;
-      
-      var target = this;
-      /*
-      setInterval( function() {
+    this.initialized = function($widget, informations) {
+        this.$widget = $widget;
+        this.informations = informations;
+
+        var target = this;
+        /*
+        setInterval( function() {
         var seconds = new Date().getSeconds();
         var sdegree = seconds * 6;
         var srotate = "rotate(" + sdegree + "deg)";
         target.$widget.find(".sec").css({"-moz-transform" : srotate, "-webkit-transform" : srotate});
-            
+
         }, 1000 );
-   
-     setInterval( function() {
+
+        setInterval( function() {
         var hours = new Date().getHours();
         var mins = new Date().getMinutes();
         var hdegree = hours * 30 + (mins / 2);
         var hrotate = "rotate(" + hdegree + "deg)";
-        
+
         target.$widget.find(".hour").css({"-moz-transform" : hrotate, "-webkit-transform" : hrotate});
-            
+
         }, 1000 );
 
-     setInterval( function() {
+        setInterval( function() {
         var mins = new Date().getMinutes();
         var mdegree = mins * 6;
         var mrotate = "rotate(" + mdegree + "deg)";
-        
-        target.$widget.find(".min").css({"-moz-transform" : mrotate, "-webkit-transform" : mrotate});
-            
-        }, 1000 ); 
-        */
-        
-      setInterval(function () {
-           var currentTime = new Date ( );
 
+        target.$widget.find(".min").css({"-moz-transform" : mrotate, "-webkit-transform" : mrotate});
+
+        }, 1000 );
+        */
+
+        setInterval(function () {
+           var currentTime = new Date ( );
            var currentHours = currentTime.getHours ( );
            var currentMinutes = currentTime.getMinutes ( );
            var currentSeconds = currentTime.getSeconds ( );
@@ -70,8 +70,8 @@ function SimpleClockViewModel() {
            var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
 
            // Update the time display
-           target.$widget.find(".simpleClockWidget").text(currentTimeString);
-         }, 1000 );
+            target.$widget.find(".simpleClockWidget").text(currentTimeString);
+         }, 2000 );
     }
 }
 
