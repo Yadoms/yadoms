@@ -310,7 +310,9 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/SQLiteWidgetRequester.h
 		server/database/sqlite/SQLiteWidgetRequester.cpp		
 		
+		server/database/sqlite/adapters/SQLite3Extension.hpp
 		server/database/sqlite/adapters/SQLiteDatabaseAdapters.h
+		server/database/sqlite/adapters/SQLiteDatabaseAdapters.cpp
 		server/database/sqlite/adapters/AdapterHelpers.hpp
 		server/database/sqlite/adapters/ISQLiteResultAdapter.h
 		server/database/sqlite/adapters/GenericAdapter.h
@@ -465,7 +467,6 @@ set_property( TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${BO
 ## Link
 ##################################################################################################
 target_link_libraries(yadoms yadoms-tools yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
-
 
 ##################################################################################################
 ## Post build commands

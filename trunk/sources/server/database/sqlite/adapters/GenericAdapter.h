@@ -19,7 +19,7 @@ public:
    virtual ~CGenericAdapter();
    
    // ISQLiteResultAdapter implementation
-   bool adapt(int column, char** columValues, char** columnName);
+   bool adapt(sqlite3_stmt * pStatement);
    std::vector<std::map<std::string, std::string> > getResults(); 
    // [END] ISQLiteResultAdapter implementation
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <sqlite3.h>
+
 //--------------------------------------------------------------
 /// \Brief		Interface for result adapters
 ///				The aim is to provide method to adapt sqlite results
@@ -16,7 +18,7 @@ public:
    /// \param [in]	columnName     The column names
    /// \return       true if adapt is realized with success, else false
    //--------------------------------------------------------------
-   virtual bool adapt(int column, char** columValues, char** columnName) =0;
+   virtual bool adapt(sqlite3_stmt * pStatement) =0;
    
    //--------------------------------------------------------------
    /// \Brief		   Get the full results (vector of entities)

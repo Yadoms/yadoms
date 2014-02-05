@@ -1,8 +1,12 @@
 #pragma once
 
-#include <shared/StringExtension.h>
-#include <shared/Log.h>
+#include "SQLite3Extension.hpp"
 
+//--------------------------------------------------------------
+///\Brief		Class which adapt in single column resultset
+///\template   TValue : the type of value
+///\example    CSingleValueAdapter<int> will provide std::vector<int>
+//--------------------------------------------------------------
 template<class TValue>
 class CSingleValueAdapter: public ISQLiteResultAdapter<TValue>
 {
@@ -22,25 +26,19 @@ public:
    }
    
    // ISQLiteResultAdapter implementation
-   bool adapt(int column, char** columValues, char** columnName)
+   bool adapt(sqlite3_stmt * pStatement)
    {
-      bool returnValue = false;
-      if(column == 0 || columValues == NULL || columnName == NULL)
+      int nCols = sqlite3_column_count(pStatement);
+      if (nCols == 1) 
       {
-         YADOMS_LOG(warning) << "Invalid arguments";
-         returnValue = false;
+         int rc;
+         while ((rc = sqlite3_step(pStatement)) == SQLITE_ROW) 
+         {
+            m_results.push_back(CSQLite3Extension::extractData<TValue>(pStatement, 0));
+         }
+         return true;
       }
-      else
-      {
-         //check only one column is returned by query
-         BOOST_ASSERT(column == 1);
-
-         for(int i=0; i<column ; i++)
-            m_results.push_back(CStringExtension::parse<TValue>(columValues[i]));
-
-         returnValue = true;
-      }
-      return returnValue;
+      return false;
    }
 
    std::vector<TValue> getResults()
@@ -55,3 +53,5 @@ private:
    //--------------------------------------------------------------
     std::vector<TValue> m_results;
 };
+
+
