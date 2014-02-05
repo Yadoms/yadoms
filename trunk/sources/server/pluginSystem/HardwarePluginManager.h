@@ -86,6 +86,14 @@ public:
    std::string getPluginConfigurationSchema(const std::string& pluginName) const;
 
    //--------------------------------------------------------------
+   /// \brief           Get the configuration schema from a plugin, by an instance
+   /// \param [in]      id Plugin instance id
+   /// \return          The configuration schema of the plugin, if available (empty string if not)
+   /// \throw           CInvalidPluginException if plugin is not available
+   //--------------------------------------------------------------
+   std::string getPluginConfigurationSchema(int id) const;
+
+   //--------------------------------------------------------------
    /// \brief           Create a new instance of a plugin
    /// \param [in] instanceName the name of the new instance
    /// \param [in] pluginName The plugin name for the instance
