@@ -1,60 +1,17 @@
 #pragma once
 
+#include "SQLite3Extension.hpp"
 #include "AdapterHelpers.hpp"
 #include "ISQLiteResultAdapter.h"
 #include "database/sqlite/SQLiteDatabaseTables.h"
 
-
-DECLARE_ADAPTER(Hardware,
-((Id)(INT_ADAPTER)(0))
-   ((Name)(STRING_ADAPTER)(""))
-   ((PluginName)(STRING_ADAPTER)(""))
-   ((Configuration)(STRING_ADAPTER)(""))
-   ((Enabled)(BOOL_ADAPTER)(true))
-   ((Deleted)(BOOL_ADAPTER)(false))
-   )
-
-DECLARE_ADAPTER(Configuration,
-   ((Section)(STRING_ADAPTER)(""))
-   ((Name)(STRING_ADAPTER)(""))
-   ((Value)(STRING_ADAPTER)(""))
-   ((DefaultValue)(STRING_ADAPTER)(""))
-   ((Description)(STRING_ADAPTER)(""))
-   ((LastModificationDate)(DATE_ADAPTER)(boost::posix_time::second_clock::local_time()))
-   )
-
-DECLARE_ADAPTER(Acquisition,
-   ((Id)(INT_ADAPTER)(0))
-   ((Source)(STRING_ADAPTER)(""))
-   ((Keyword)(STRING_ADAPTER)(""))
-   ((Value)(STRING_ADAPTER)(""))
-   ((Date)(DATE_ADAPTER)(boost::posix_time::second_clock::local_time()))
-   )
-
-DECLARE_ADAPTER(Device,
-   ((Id)(INT_ADAPTER)(0))
-   ((DataSource)(STRING_ADAPTER)(""))
-   ((Name)(STRING_ADAPTER)(""))
-   ((Configuration)(STRING_ADAPTER)(""))
-   )
-
-DECLARE_ADAPTER(Keyword,
-   ((Name)(STRING_ADAPTER)(""))
-   )
-
-
-DECLARE_ADAPTER(Page,
-   ((Id)(INT_ADAPTER)(0))
-   ((Name)(STRING_ADAPTER)(""))
-   )
-
-DECLARE_ADAPTER(Widget,
-   ((Id)(INT_ADAPTER)(0))
-   ((IdPage)(INT_ADAPTER)(0))
-   ((Name)(STRING_ADAPTER)(""))
-   ((SizeX)(INT_ADAPTER)(0))
-   ((SizeY)(INT_ADAPTER)(0))
-   ((PositionX)(INT_ADAPTER)(0))
-   ((PositionY)(INT_ADAPTER)(0))
-   ((Configuration)(STRING_ADAPTER)(""))
-   )
+//---------------------------------
+///\brief Declare all adapter classes
+//---------------------------------
+DECLARE_ADAPTER_HEADER(Hardware)
+DECLARE_ADAPTER_HEADER(Configuration)
+DECLARE_ADAPTER_HEADER(Acquisition)
+DECLARE_ADAPTER_HEADER(Device)
+DECLARE_ADAPTER_HEADER(Keyword)
+DECLARE_ADAPTER_HEADER(Page)
+DECLARE_ADAPTER_HEADER(Widget)

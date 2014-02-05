@@ -6,6 +6,8 @@
 #include "database/entities/Device.h"
 #include "database/entities/Hardware.h"
 #include "database/entities/Keyword.h"
+#include "database/entities/Page.h"
+#include "database/entities/Widget.h"
 
 DECLARE_TABLE(Hardware, 
    (Id)

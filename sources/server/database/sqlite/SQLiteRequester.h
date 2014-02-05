@@ -13,51 +13,51 @@ public:
    ~CSQLiteRequester();
 
    //--------------------------------------------------------------
-	/// \brief	Use do define one row from database (column name, column value)
-	//--------------------------------------------------------------
+   /// \brief	Use do define one row from database (column name, column value)
+   //--------------------------------------------------------------
    typedef std::map<std::string, std::string>  QueryRow;
 
    //--------------------------------------------------------------
-	/// \brief	Use do define a list of rows from database
-	//--------------------------------------------------------------
+   /// \brief	Use do define a list of rows from database
+   //--------------------------------------------------------------
    typedef std::vector<QueryRow>  QueryResults;
 
-	//--------------------------------------------------------------
-	/// \brief		      execute a single statement (create, update, delete) which returns the number of affected lines
-	/// \param [in]	   the query (with vaargs)
-	/// \return 	      the number of affected lines
-	//--------------------------------------------------------------  
+   //--------------------------------------------------------------
+   /// \brief		      execute a single statement (create, update, delete) which returns the number of affected lines
+   /// \param [in]	   the query (with vaargs)
+   /// \return 	      the number of affected lines
+   //--------------------------------------------------------------  
    int queryStatement(const CQuery & querytoExecute);
 
-	//--------------------------------------------------------------
-	/// \brief		      execute a count statement
-	/// \param [in]	   the query (with vaargs)
-	/// \return 	      the count result
-	//--------------------------------------------------------------  
+   //--------------------------------------------------------------
+   /// \brief		      execute a count statement
+   /// \param [in]	   the query (with vaargs)
+   /// \return 	      the count result
+   //--------------------------------------------------------------  
    int queryCount(const CQuery & querytoExecute);
 
-	//--------------------------------------------------------------
-	/// \brief		      query only one databse row
-	/// \param [in]	   the query (with vaargs)
-	/// \return 	      the row values
-	//--------------------------------------------------------------  
+   //--------------------------------------------------------------
+   /// \brief		      query only one databse row
+   /// \param [in]	   the query (with vaargs)
+   /// \return 	      the row values
+   //--------------------------------------------------------------  
    QueryRow querySingleLine(const CQuery & querytoExecute);
 
-	//--------------------------------------------------------------
-	/// \brief		      query databse
-	/// \param [in]	   the query (with vaargs)
-	/// \return 	      a list of rows
-	//--------------------------------------------------------------  
+   //--------------------------------------------------------------
+   /// \brief		      query databse
+   /// \param [in]	   the query (with vaargs)
+   /// \return 	      a list of rows
+   //--------------------------------------------------------------  
    QueryResults query(const CQuery & querytoExecute);
 
 
    //--------------------------------------------------------------
-	/// \Brief		    query for entities (the result is a vector of typed objects)
-	/// \param [in]	 adapter:  pointer to the adapter to use to map raw values to a new entity
-	/// \param [in]	 queryFormat: the sql query
-	/// \param [in]	 ...: args of printf like format string for query
-	/// \return	       the vector of entities
-	//--------------------------------------------------------------
+   /// \Brief		    query for entities (the result is a vector of typed objects)
+   /// \param [in]	 adapter:  pointer to the adapter to use to map raw values to a new entity
+   /// \param [in]	 queryFormat: the sql query
+   /// \param [in]	 ...: args of printf like format string for query
+   /// \return	       the vector of entities
+   //--------------------------------------------------------------
    template<class TEntity>
    void queryEntities(ISQLiteResultAdapter<TEntity> * pAdapter, const CQuery & querytoExecute)
    {
@@ -65,98 +65,83 @@ public:
 
       if(pAdapter != NULL)
       {
-         //execute the query
-         char *zErrMsg = NULL;
-         sqlite3_exec(m_pDatabaseHandler, querytoExecute.c_str(),  &CSQLiteRequester::handleRowEntityAdapter<TEntity>, pAdapter, &zErrMsg);
-         if( zErrMsg )
-         {
-            YADOMS_LOG(error) << "Query failed : " << std::endl << "Query: " << querytoExecute.str() << std::endl << "Error : " << zErrMsg;
-         }
 
-         //free allocated memory by sqlite
-         if(zErrMsg)
-            sqlite3_free(zErrMsg);
+         try
+         {
+            sqlite3_stmt *stmt;
+            int rc = sqlite3_prepare_v2(m_pDatabaseHandler, querytoExecute.c_str(), -1, &stmt, 0);
+            if (rc == SQLITE_OK)
+            {
+               if(!pAdapter->adapt(stmt))
+               {
+                  YADOMS_LOG(error) << "Fail to adapt values";
+               }
+               sqlite3_finalize(stmt);
+            }
+            else
+            {
+               YADOMS_LOG(error) << "Fail to execute query : " << sqlite3_errmsg(m_pDatabaseHandler);
+            }
+         }
+         catch(std::exception &ex)
+         {
+            YADOMS_LOG(error) << "Exception: Fail to execute query : " << ex.what();
+         }
+         catch(...)
+         {
+            YADOMS_LOG(error) << "Unknown exception: Fail to execute query";
+         }
       }
       else
       {
          //throw exception
-         throw new CNullReferenceException("pAdapter");
+         throw CNullReferenceException("pAdapter");
       }
    }
 
+
+
    //--------------------------------------------------------------
-	/// \Brief	Start a transaction
-	//--------------------------------------------------------------
+   /// \Brief	Start a transaction
+   //--------------------------------------------------------------
    void transactionBegin();
 
    //--------------------------------------------------------------
-	/// \Brief	Commit a transaction
-	//--------------------------------------------------------------
+   /// \Brief	Commit a transaction
+   //--------------------------------------------------------------
    void transactionCommit();
 
    //--------------------------------------------------------------
-	/// \Brief	Rollback a transaction
-	//--------------------------------------------------------------
+   /// \Brief	Rollback a transaction
+   //--------------------------------------------------------------
    void transactionRollback();
 
    //--------------------------------------------------------------
-	/// \Brief	Check if a table already exists in database
-	/// \param [in]	 tableName:  the table name to check
-	/// \return	       true if table exists
-	//--------------------------------------------------------------
+   /// \Brief	Check if a table already exists in database
+   /// \param [in]	 tableName:  the table name to check
+   /// \return	       true if table exists
+   //--------------------------------------------------------------
    bool checkTableExists(const std::string & tableName);
 
    //--------------------------------------------------------------
-	/// \Brief	      Drop a table if exists
-	/// \param [in]   tableName:  the table name to delete
-	/// \return	      true if table no more exists
-	//--------------------------------------------------------------
+   /// \Brief	      Drop a table if exists
+   /// \param [in]   tableName:  the table name to delete
+   /// \return	      true if table no more exists
+   //--------------------------------------------------------------
    bool dropTableIfExists(const std::string & tableName);
 
    //--------------------------------------------------------------
-	/// \Brief	      Create a table if not exists
-	/// \param [in]   tableName:  the table name to create
-	/// \param [in]   tableScript:  the sql script to create the table
-	/// \return	      true if table exists
-	//--------------------------------------------------------------
+   /// \Brief	      Create a table if not exists
+   /// \param [in]   tableName:  the table name to create
+   /// \param [in]   tableScript:  the sql script to create the table
+   /// \return	      true if table exists
+   //--------------------------------------------------------------
    bool createTableIfNotExists(const std::string & tableName, const std::string & tableScript);
 
 private:
    //--------------------------------------------------------------
-	/// \Brief		    wrapper for adapting a result row to an entity
-	/// \param [in]	 params:  pointer to adapter
-	/// \param [in]	 columnCount: number of columns in result set
-	/// \param [in]	 columnValues: list of column values
-	/// \param [in]	 columnNames: list of column names
-	/// \return	       SQLITE_OK for success, else SQLITE_ABORT (abort, cancel and abort the full query)
-	//--------------------------------------------------------------
-   template<class TEntity>
-   static int handleRowEntityAdapter(void* params ,int columnCount,char** columnValues,char** columnNames)
-   {
-      try
-      {
-         ISQLiteResultAdapter<TEntity> * pAdatper = (ISQLiteResultAdapter<TEntity> *)params;
-         if(pAdatper->adapt(columnCount, columnValues, columnNames))
-            return SQLITE_OK;
-      }
-      catch(std::exception &ex)
-      {
-         YADOMS_LOG(error) << "Fail to adapt row values. Query aborted : " << ex.what();
-      }
-      catch(...)
-      {
-         YADOMS_LOG(error) << "Fail to adapt row values. Query aborted.";
-      }
-      return SQLITE_ABORT;
-   }
-
-   
-   int handleOneRow(void* params ,int columnCount,char** columnValues,char** columnNames);
-
-private:
-	//--------------------------------------------------------------
-	/// \Brief		database handler
-	//--------------------------------------------------------------
+   /// \Brief		database handler
+   //--------------------------------------------------------------
    sqlite3 * m_pDatabaseHandler;
 
 };
