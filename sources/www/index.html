@@ -200,10 +200,17 @@
                                         "<div id=\"widget" + value.id + "\" data-bind=\"template: { name: '" + value.name + "-template', data: data }\"/>" +
                                 "</li>", value.sizeX, value.sizeY, value.positionX, value.positionY);
                         createdObject = $("#widget" + value.id);
-                        ko.applyBindings(value.viewModel, createdObject[0]);
-                        if (value.viewModel.resized !== undefined)
-                            value.viewModel.resized(createdObject);
 
+                        //we apply binding
+                        ko.applyBindings(value.viewModel, createdObject[0]);
+
+                        //we initiliazed the widget
+                        if (value.viewModel.initialized !== undefined)
+                           value.viewModel.initialized(createdObject);
+
+                        if (value.viewModel.resized !== undefined)
+                            value.viewModel.resized();
+                        
                         $(".widget button").tooltip({
                             animated: 'fade',
                             placement: 'bottom'
