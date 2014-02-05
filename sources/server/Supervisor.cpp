@@ -141,7 +141,7 @@ void CSupervisor::doWork()
       // 5) Update instance configuration
       {
          // 5.1) First, get the configuration schema
-         std::string pluginConfigurationSchema(hardwarePluginManager->getPluginConfigurationSchema(pluginName));
+         std::string pluginConfigurationSchema(hardwarePluginManager->getPluginConfigurationSchema(createdInstanceId));
          if (!pluginConfigurationSchema.empty())
          {
             // 5.2) Next, get the actual configuration

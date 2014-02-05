@@ -197,6 +197,15 @@ std::string CHardwarePluginManager::getPluginConfigurationSchema(const std::stri
    return CHardwarePluginFactory::getConfigurationSchema(toPath(pluginName));
 }
 
+std::string CHardwarePluginManager::getPluginConfigurationSchema(int id) const
+{
+   // Get database instance data
+   BOOST_ASSERT(m_database->getHardware(id));
+   boost::shared_ptr<CHardware> instanceData(m_database->getHardware(id));
+
+   return getPluginConfigurationSchema(instanceData->getPluginName());
+}
+
 int CHardwarePluginManager::createInstance(const std::string& instanceName, const std::string& pluginName,
                                            const std::string& configuration)
 {
@@ -247,14 +256,14 @@ boost::shared_ptr<CHardwarePluginManager::PluginDetailedInstanceMap> CHardwarePl
 
 std::string CHardwarePluginManager::getInstanceConfiguration(int id) const
 {
-   // First get database instance data
-   BOOST_ASSERT(m_database->getHardware(id));
-   boost::shared_ptr<CHardware> instanceData (m_database->getHardware(id));
-
-   // Check if a schema is avalaible
-   std::string pluginConfigurationSchema(getPluginConfigurationSchema(instanceData->getPluginName()));
+   // First check if a schema is avalaible
+   std::string pluginConfigurationSchema(getPluginConfigurationSchema(id));
    if (pluginConfigurationSchema.empty())
       return CStringExtension::EmptyString; // Plugin has no configuration
+
+   // Next get database instance data
+   BOOST_ASSERT(m_database->getHardware(id));
+   boost::shared_ptr<CHardware> instanceData(m_database->getHardware(id));
 
    // Returns configuration from database
    return instanceData->getConfiguration();
