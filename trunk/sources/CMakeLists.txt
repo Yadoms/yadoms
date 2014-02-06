@@ -293,15 +293,16 @@ set(YADOMS_SRC
 	server/web/rest/json/JsonCollectionSerializer.h
 	server/web/rest/json/IEntitySerializer.h
 	server/web/rest/json/IEntityDeserializer.h
-
-	server/web/rest/RestDispatcher.h
-	server/web/rest/RestDispatcher.cpp
-	server/web/rest/RestDispatcherHelpers.hpp
-	
+	server/web/rest/json/JsonError.h
+	server/web/rest/json/JsonError.cpp
+	server/web/rest/json/JsonSerializers.h
 	server/web/rest/json/JsonSerializers.h
 	server/web/rest/json/JsonSerializers.cpp
 	server/web/rest/json/JsonSerializersHelpers.hpp
-	
+
+	server/web/rest/RestDispatcher.cpp
+	server/web/rest/RestDispatcherHelpers.hpp
+
 	server/web/rest/HardwareRestService.h
 	server/web/rest/HardwareRestService.cpp
 

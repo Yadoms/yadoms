@@ -15,9 +15,9 @@ public:
    // [END] IRestService implementation
 
    const std::string & getRestKeyword();
-   CJson getOnePage(const std::vector<std::string> & parameters);   
-   CJson getAllPages(const std::vector<std::string> & parameters);  
-   CJson getPageWidget(const std::vector<std::string> & parameters);   
+   CJson getOnePage(const std::vector<std::string> & parameters, const CJson & requestContent);   
+   CJson getAllPages(const std::vector<std::string> & parameters, const CJson & requestContent);  
+   CJson getPageWidget(const std::vector<std::string> & parameters, const CJson & requestContent);   
    
 private:
    boost::shared_ptr<IDataProvider> m_dataProvider;

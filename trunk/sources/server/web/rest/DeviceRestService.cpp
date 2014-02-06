@@ -28,7 +28,7 @@ void CDeviceRestService::configureDispatcher(CRestDispatcher & dispatcher)
 }
 
 
-CJson CDeviceRestService::getOneDevice(const std::vector<std::string> & parameters)
+CJson CDeviceRestService::getOneDevice(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    std::string objectId = "";
    if(parameters.size()>1)
@@ -39,14 +39,14 @@ CJson CDeviceRestService::getOneDevice(const std::vector<std::string> & paramete
    return hes.serialize(*deviceFound.get());
 }
 
-CJson CDeviceRestService::getAllDevices(const std::vector<std::string> & parameters)
+CJson CDeviceRestService::getAllDevices(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    CDeviceEntitySerializer hes;
    std::vector< boost::shared_ptr<CDevice> > dvList = m_dataProvider->getDeviceRequester()->getDevices();
    return CJonCollectionSerializer<CDevice>::SerializeCollection(dvList, hes, getRestKeyword());
 }
 
-CJson CDeviceRestService::getDeviceLastAcquisition(const std::vector<std::string> & parameters)
+CJson CDeviceRestService::getDeviceLastAcquisition(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    std::string objectId = "";
    if(parameters.size()>1)

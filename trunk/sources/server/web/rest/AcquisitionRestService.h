@@ -15,8 +15,8 @@ public:
    // [END] IRestService implementation
 
    const std::string & getRestKeyword();
-   CJson getOneAcquisition(const std::vector<std::string> & parameters);   
-   CJson getAllAcquisitions(const std::vector<std::string> & parameters);  
+   CJson getOneAcquisition(const std::vector<std::string> & parameters, const CJson & requestContent);   
+   CJson getAllAcquisitions(const std::vector<std::string> & parameters, const CJson & requestContent);  
    
 private:
    boost::shared_ptr<IDataProvider> m_dataProvider;

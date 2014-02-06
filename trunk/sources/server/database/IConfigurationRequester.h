@@ -10,7 +10,7 @@ public:
    /// \param [in] configurationToCreate  New configuration informations
    /// \throw      CEmptyResultException if fails
    //--------------------------------------------------------------
-   virtual void create(boost::shared_ptr<CConfiguration> configurationToCreate) = 0;
+   virtual void create(CConfiguration& configurationToCreate) = 0;
 
    //--------------------------------------------------------------
    /// \brief      Read a configuration entry
@@ -41,14 +41,14 @@ public:
    /// \param [in] configurationToUpdate  Configuration informations
    /// \throw      CEmptyResultException if fails
    //--------------------------------------------------------------
-	virtual void updateConfiguration(boost::shared_ptr<CConfiguration> configurationToUpdate) = 0;
+	virtual void updateConfiguration(CConfiguration& configurationToUpdate) = 0;
    
    //--------------------------------------------------------------
    /// \brief      Remove a configuration entry
    /// \param [in] configurationToRemove  The configuration to delete
    /// \throw      CEmptyResultException if fails
    //--------------------------------------------------------------
-   virtual void removeConfiguration(boost::shared_ptr<CConfiguration> configurationToRemove) = 0;
+   virtual void removeConfiguration(CConfiguration& configurationToRemove) = 0;
 
    //--------------------------------------------------------------
    /// \brief       Destructor

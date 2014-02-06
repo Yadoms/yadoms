@@ -15,9 +15,8 @@ public:
    // [END] IRestService implementation
 
    const std::string & getRestKeyword();
-   CJson getOneHardware(const std::vector<std::string> & parameters);   
-   CJson getAllHardwares(const std::vector<std::string> & parameters);  
-   // [END] IReadRestService implementation
+   CJson getOneHardware(const std::vector<std::string> & parameters, const CJson & requestContent);   
+   CJson getAllHardwares(const std::vector<std::string> & parameters, const CJson & requestContent);  
    
 private:
    boost::shared_ptr<IDataProvider> m_dataProvider;

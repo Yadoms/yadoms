@@ -19,9 +19,12 @@ public:
    const std::string & getRestKeyword();
 
 public:
-   CJson getConfiguration(const std::vector<std::string> & parameters);
-   CJson getSectionConfigurations(const std::vector<std::string> & parameters);
-   CJson getAllConfigurations(const std::vector<std::string> & parameters);
+   CJson getConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent);
+   CJson getSectionConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent);
+   CJson getAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent);
+
+   CJson updateOneConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent);
+   CJson deleteOneConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent);
 
 private:
    boost::shared_ptr<IDataProvider> m_dataProvider;

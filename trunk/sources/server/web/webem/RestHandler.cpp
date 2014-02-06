@@ -69,10 +69,16 @@ std::string CRestHandler::manageRestRequests(const http::server::request & reque
          //remove the fist /rest/ string
          request_path = request_path.substr(m_restBaseKeyword.size());
 
+         //parse url to parameters
          parameters = parseUrl(request_path);
 
+         //parse content to json format
+         CJson requestContent;
+         CJsonSerializer ser;
+         ser.deserialize(request.content, requestContent);
+
          //dispatch url to rest dispatcher
-         CJson js = m_restDispatcher.dispath(request.method, parameters);
+         CJson js = m_restDispatcher.dispath(request.method, parameters, requestContent);
          return m_jsonSerializer.serialize(js);
       }
    }
