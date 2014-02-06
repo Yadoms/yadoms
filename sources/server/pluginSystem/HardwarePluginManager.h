@@ -238,4 +238,9 @@ private:
    /// \brief			Plugin directory listener
    //--------------------------------------------------------------
    boost::shared_ptr<CDirectoryChangeListener> m_pluginsDirectoryMonitor;
+
+   //--------------------------------------------------------------
+   /// \brief			Plugin qualifier
+   //--------------------------------------------------------------
+   const boost::shared_ptr<IHardwarePluginQualifier> m_qualifier;
 };

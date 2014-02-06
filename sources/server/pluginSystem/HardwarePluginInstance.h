@@ -8,6 +8,7 @@
 #include <shared/ThreadBase.h>
 #include "HardwarePluginFactory.h"
 #include "database/entities/Hardware.h"
+#include "IHardwarePluginQualifier.h"
 
 //--------------------------------------------------------------
 /// \brief	this class is used to manage a plugin instance. 
@@ -19,11 +20,13 @@ public:
    /// \brief	Constructor
    /// \param [in]	plugin         the plugin used for this instance
    /// \param [in]   context        the database accessor
+   /// \param [in]   qualifier      the plugin qualifier
    //--------------------------------------------------------------
-   CHardwarePluginInstance(boost::shared_ptr<const CHardwarePluginFactory> plugin, const boost::shared_ptr<CHardware> context);
+   CHardwarePluginInstance(const boost::shared_ptr<const CHardwarePluginFactory> plugin, const boost::shared_ptr<CHardware> context,
+      const boost::shared_ptr<IHardwarePluginQualifier> qualifier);
 
    //--------------------------------------------------------------
-   /// \brief	Desstructor
+   /// \brief	Destructor
    //--------------------------------------------------------------
    virtual ~CHardwarePluginInstance();
 
@@ -48,7 +51,7 @@ private:
    //--------------------------------------------------------------
    /// \brief			The plugin used for this instance
    //--------------------------------------------------------------
-   boost::shared_ptr<const CHardwarePluginFactory> m_pPlugin;
+   const boost::shared_ptr<const CHardwarePluginFactory> m_pPlugin;
 
    //--------------------------------------------------------------
    /// \brief			The plugin instance
@@ -59,4 +62,9 @@ private:
    /// \brief			The database accessor
    //--------------------------------------------------------------
    const boost::shared_ptr<CHardware> m_context;
+
+   //--------------------------------------------------------------
+   /// \brief			The plugin qualifier
+   //--------------------------------------------------------------
+   const boost::shared_ptr<IHardwarePluginQualifier> m_qualifier;
 };

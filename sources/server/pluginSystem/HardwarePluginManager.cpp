@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "HardwarePluginManager.h"
 #include "HardwarePluginInstance.h"
+#include "HardwarePluginQualifier.h"
 
 
 boost::shared_ptr<CHardwarePluginManager> CHardwarePluginManager::newHardwarePluginManager(const std::string & initialDir, boost::shared_ptr<IHardwareRequester> database)
@@ -11,7 +12,7 @@ boost::shared_ptr<CHardwarePluginManager> CHardwarePluginManager::newHardwarePlu
 }
 
 CHardwarePluginManager::CHardwarePluginManager(const std::string& initialDir, boost::shared_ptr<IHardwareRequester> database)
-   :m_database(database), m_pluginPath(initialDir)
+   :m_database(database), m_pluginPath(initialDir), m_qualifier(new CHardwarePluginQualifier)
 {
    BOOST_ASSERT(m_database);
 }
@@ -36,7 +37,6 @@ void CHardwarePluginManager::stop()
    // wait for all plugins to stop
    while (!m_runningInstances.empty())
    {
-      //stopInstance(m_runningInstances.begin()->first);
       std::pair<int, boost::shared_ptr<CHardwarePluginInstance> > instance2;
       BOOST_FOREACH(instance2, m_runningInstances)
       {
@@ -124,6 +124,9 @@ boost::shared_ptr<CHardwarePluginFactory> CHardwarePluginManager::loadPlugin(con
    boost::shared_ptr<CHardwarePluginFactory> pNewFactory (new CHardwarePluginFactory(toPath(pluginName)));
    m_loadedPlugins[pluginName] = pNewFactory;
 
+   // Signal qualifier that a plugin was loaded
+   m_qualifier->signalLoad(pNewFactory);
+
    return pNewFactory;
 }
 
@@ -138,8 +141,12 @@ bool CHardwarePluginManager::unloadPlugin(const std::string& pluginName)
    if (instance != m_runningInstances.end())
       return false;  // No unload : plugin is still used by another instance
 
+   // Signal qualifier that a plugin is about to be unloaded
+   m_qualifier->signalLoad(m_loadedPlugins[pluginName]);
+
    // Effectively unload plugin
    m_loadedPlugins.erase(pluginName);
+
    return true;
 }
 
@@ -256,7 +263,7 @@ boost::shared_ptr<CHardwarePluginManager::PluginDetailedInstanceMap> CHardwarePl
 
 std::string CHardwarePluginManager::getInstanceConfiguration(int id) const
 {
-   // First check if a schema is avalaible
+   // First check if a schema is available
    std::string pluginConfigurationSchema(getPluginConfigurationSchema(id));
    if (pluginConfigurationSchema.empty())
       return CStringExtension::EmptyString; // Plugin has no configuration
@@ -309,7 +316,7 @@ void CHardwarePluginManager::doStartInstance(int id)
 
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
-      boost::shared_ptr<CHardwarePluginInstance> pluginInstance(new CHardwarePluginInstance(plugin, databasePluginInstance));
+      boost::shared_ptr<CHardwarePluginInstance> pluginInstance(new CHardwarePluginInstance(plugin, databasePluginInstance, m_qualifier));
       m_runningInstances[databasePluginInstance->getId()] = pluginInstance;
    }
    catch (CInvalidPluginException& e)
