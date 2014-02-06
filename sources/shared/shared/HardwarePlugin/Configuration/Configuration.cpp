@@ -17,7 +17,7 @@ CHardwarePluginConfiguration::CHardwarePluginConfiguration(const CHardwarePlugin
    :m_configurationSerializer(src.m_configurationSerializer)
 {
    boost::lock_guard<boost::mutex> lock(m_configurationMapMutex);
-   boost::lock_guard<boost::mutex> srcLock(const_cast<boost::mutex&> (src.m_configurationMapMutex));
+   boost::lock_guard<boost::mutex> srcLock(src.m_configurationMapMutex);
 
    // Full copy of configuration schema
    for(CHardwarePluginConfigurationMap::const_iterator itParameter = src.m_configurationMap.begin() ; itParameter != src.m_configurationMap.end() ; itParameter++)
@@ -41,7 +41,7 @@ void CHardwarePluginConfiguration::buildSchema()
 
 std::string CHardwarePluginConfiguration::getSchema() const
 {
-   boost::lock_guard<boost::mutex> lock(const_cast<boost::mutex&> (m_configurationMapMutex));
+   boost::lock_guard<boost::mutex> lock(m_configurationMapMutex);
 
    boost::property_tree::ptree pt;
    for(CHardwarePluginConfigurationMap::const_iterator itParameter = m_configurationMap.begin() ; itParameter != m_configurationMap.end() ; itParameter++)
@@ -87,20 +87,3 @@ const CHardwarePluginConfigurationParameter& CHardwarePluginConfiguration::opera
    return *m_configurationMap.at(parameterName);
 }
 
-void CHardwarePluginConfiguration::update(const std::string& configurationValues)
-{
-   boost::lock_guard<boost::mutex> lock(m_configurationUpdateMutex);
-   m_ConfigurationUpdateQueue.push(configurationValues);
-}
-
-std::string CHardwarePluginConfiguration::getUpdated()
-{
-   boost::lock_guard<boost::mutex> l(m_configurationUpdateMutex);
-
-   if (m_ConfigurationUpdateQueue.empty())
-      return CStringExtension::EmptyString;
-
-   std::string newConfiguration = m_ConfigurationUpdateQueue.back();
-   m_ConfigurationUpdateQueue.pop();
-   return newConfiguration;
-}

@@ -1,9 +1,10 @@
 #pragma once
 #include <shared/HardwarePlugin/ImplementationHelper.h>
 #include <shared/Xpl/XplMessage.h>
+#include <shared/Event/EventHandler.hpp>
 #include "FakePluginConfiguration.h"
 
-class CFakePlugin : public IHardwarePlugin
+class CFakePlugin : public CEventHandler, public IHardwarePlugin
 {  
 public:
    CFakePlugin();

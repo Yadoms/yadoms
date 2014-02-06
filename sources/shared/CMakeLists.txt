@@ -16,7 +16,11 @@ set(SHARED_LIB_SRC
 	shared/StringExtension.h
 	shared/StringExtension.cpp
   
-  	shared/Exceptions/BadConversionException.hpp
+	shared/Event/Event.hpp
+	shared/Event/EventBase.hpp
+	shared/Event/EventHandler.hpp
+
+ 	shared/Exceptions/BadConversionException.hpp
 	shared/Exceptions/EmptyResultException.hpp
 	shared/Exceptions/Exception.hpp
 	shared/Exceptions/InvalidParameterException.hpp
@@ -116,18 +120,21 @@ set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/linux)
 ENDIF()
 
 # Define project folders
+source_group(Event shared/Event/*.*)
+
+source_group(Exceptions shared/Exceptions/*.*)
+
 source_group(HardwarePlugin shared/shared/HardwarePlugin/*.* )	
 source_group(HardwarePlugin\\Configuration shared/shared/HardwarePlugin/Configuration/*.* )	
 source_group(HardwarePlugin\\Information shared/shared/HardwarePlugin/Information/*.* )	
 source_group(HardwarePlugin\\Interfaces shared/shared/HardwarePlugin/Interfaces/*.* )	
 
-source_group(Exceptions shared/Exceptions/*.*)
-
-source_group(Xpl shared/Xpl/*.*)
-
 source_group(PlatformSpecific\\windows shared/windows/shared/*.*)
 source_group(PlatformSpecific\\linux shared/linux/shared/*.*)
 source_group(PlatformSpecific\\mac shared/mac/shared/*.*)
+
+source_group(Xpl shared/Xpl/*.*)
+
 
 
 ########################
