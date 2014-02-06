@@ -1399,6 +1399,10 @@
             'size_y': parseInt($el.attr('data-sizey'), 10),
             'max_size_x': parseInt($el.attr('data-max-sizex'), 10) || false,
             'max_size_y': parseInt($el.attr('data-max-sizey'), 10) || false,
+            //Modified by lgm42
+            'min_size_x': false,
+            'min_size_y': false,
+            //End of modification
             'el': $el
         };
 
@@ -1746,6 +1750,11 @@
         this.resize_max_size_y = this.resize_wgd.max_size_y ||
             this.options.resize.max_size[1];
 
+        //Modified by lgm42
+        this.resize_min_size_x = Math.max(this.resize_wgd.min_size_x, 1);
+        this.resize_min_size_y = Math.max(this.resize_wgd.min_size_y, 1);
+        //End of modification
+
         this.resize_dir = {
             right: ui.$player.is('.' + this.resize_handle_class + '-x'),
             bottom: ui.$player.is('.' + this.resize_handle_class + '-y')
@@ -1829,6 +1838,11 @@
 
         var size_x = Math.max(1, this.resize_initial_sizex + inc_units_x);
         var size_y = Math.max(1, this.resize_initial_sizey + inc_units_y);
+
+        //Modified by lgm42
+        size_x = Math.max(size_x, this.resize_min_size_x);
+        size_y = Math.max(size_y, this.resize_min_size_y);
+        //End of modification
 
         size_x = Math.min(size_x, this.resize_max_size_x);
         max_width = (this.resize_max_size_x * wbd_x) +

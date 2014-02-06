@@ -49,13 +49,6 @@ function requestPageDone()
                      widgetArray[id].viewModel.resized()
                },
                stop: function(e, ui, $widget) {
-                  if ($widget.width() <= $widget.data('coords').grid.min_size_x * gridWidth) {
-                     $widget.width($widget.data('coords').grid.min_size_x * gridWidth);
-                  }
-                  if ($widget.height() <= $widget.data('coords').grid.min_size_y * gridWidth) {
-                     $widget.height($widget.data('coords').grid.min_size_y * gridWidth);
-                  }
-
                   id = getDatabaseIdFromElement($widget);
                   if (widgetArray[id].viewModel.resized !== undefined)
                      widgetArray[id].viewModel.resized()
@@ -113,8 +106,7 @@ function getWidgetViewModelDone(widget)
          "<li class=\"widget\" id=\"gridsterWidget-" + widget.id +"\">" +
             "<div class=\"widgetCustomizationToolbar hidden\">" +
             "<div class=\"btn-group btn-group-sm\">" +
-            "<button type=\"button\" class=\"btn btn-default\" title=\"Move to another page\"><i class=\"fa fa-share\"></i></button>" +
-            "<button type=\"button\" class=\"btn btn-default\" title=\"Configuration\"><i class=\"fa fa-cog\"></i></button>" +
+            "<button type=\"button\" class=\"btn btn-default\" title=\"Configure\"><i class=\"fa fa-cog\"></i></button>" +
             "<button type=\"button\" class=\"btn btn-default\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
             "</div>" +
             "</div>" +
