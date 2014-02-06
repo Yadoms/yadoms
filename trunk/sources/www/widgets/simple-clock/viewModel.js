@@ -1,21 +1,30 @@
 function SimpleClockViewModel() {
+    //observable data
     this.data;
-    this.$widget;
-    this.informations;
+    
+    //widget DOM object (div)
+    this.$widgetNode;
+
+    //gridster widget node object (li)
+    this.$grisdterWidgetNode;
+
+    //configuration
+    this.configuration;
 
     this.resized = function() {
-    if (this.$widget.width() <= 150) {
-            this.$widget.find(".simpleClockWidget").css("font-size", "1.0em");
+    if (this.$widgetNode.width() <= 150) {
+            this.$widgetNode.find(".simpleClockWidget").css("font-size", "1.0em");
         }
-        else if (this.$widget.width() <= 300)
-            this.$widget.find(".simpleClockWidget").css("font-size", "2.0em");
+        else if (this.$widgetNode.width() <= 400)
+            this.$widgetNode.find(".simpleClockWidget").css("font-size", "2.0em");
         else
-            this.$widget.find(".simpleClockWidget").css("font-size", "4.0em");
+            this.$widgetNode.find(".simpleClockWidget").css("font-size", "4.0em");
     }
     
-    this.initialized = function($widget, informations) {
-        this.$widget = $widget;
-        this.informations = informations;
+    this.initialize = function($widgetNode, $gridsterWidgetNode, configuration) {
+        this.$widgetNode = $widgetNode
+        this.$grisdterWidgetNode = $gridsterWidgetNode;
+        this.configuration = configuration;
 
         var target = this;
         /*
@@ -47,32 +56,35 @@ function SimpleClockViewModel() {
         }, 1000 );
         */
 
-        setInterval(function () {
-           var currentTime = new Date ( );
-           var currentHours = currentTime.getHours ( );
-           var currentMinutes = currentTime.getMinutes ( );
-           var currentSeconds = currentTime.getSeconds ( );
-
-           // Pad the minutes and seconds with leading zeros, if required
-           currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
-           currentSeconds = ( currentSeconds < 10 ? "0" : "" ) + currentSeconds;
-
-           // Choose either "AM" or "PM" as appropriate
-           var timeOfDay = ( currentHours < 12 ) ? "AM" : "PM";
-
-           // Convert the hours component to 12-hour format if needed
-           currentHours = ( currentHours > 12 ) ? currentHours - 12 : currentHours;
-
-           // Convert an hours component of "0" to "12"
-           currentHours = ( currentHours == 0 ) ? 12 : currentHours;
-
-           // Compose the string for display
-           var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
-
-           // Update the time display
-            target.$widget.find(".simpleClockWidget").text(currentTimeString);
-         }, 2000 );
+        setInterval( function() {updateTime(target)}, 1000);
+        updateTime(target);
     }
+    
+   function updateTime(viewModel) {
+     var currentTime = new Date ( );
+     var currentHours = currentTime.getHours ( );
+     var currentMinutes = currentTime.getMinutes ( );
+     var currentSeconds = currentTime.getSeconds ( );
+
+     // Pad the minutes and seconds with leading zeros, if required
+     currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
+     currentSeconds = ( currentSeconds < 10 ? "0" : "" ) + currentSeconds;
+
+     // Choose either "AM" or "PM" as appropriate
+     var timeOfDay = ( currentHours < 12 ) ? "AM" : "PM";
+
+     // Convert the hours component to 12-hour format if needed
+     currentHours = ( currentHours > 12 ) ? currentHours - 12 : currentHours;
+
+     // Convert an hours component of "0" to "12"
+     currentHours = ( currentHours == 0 ) ? 12 : currentHours;
+
+     // Compose the string for display
+     var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
+
+     // Update the time display
+      viewModel.$widgetNode.find(".simpleClockWidget").text(currentTimeString);
+   }
 }
 
 widgetViewModel = new SimpleClockViewModel();
