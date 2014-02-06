@@ -3,6 +3,7 @@
 
 
 CQuery::CQuery()
+   :m_queryType(kNotYetDefined)
 {
 }
 
@@ -12,11 +13,13 @@ CQuery::~CQuery()
 
 CQuery & CQuery::Select()
 { 
+   ChangeQueryType(kSelect);
    return Append("SELECT * "); 
 }
 
 CQuery & CQuery::Select(const std::string & field1, const std::string & field2/* = EMPTY_STR*/, const std::string & field3/* = EMPTY_STR*/, const std::string & field4/* = EMPTY_STR*/, const std::string & field5/* = EMPTY_STR*/, const std::string & field6/* = EMPTY_STR*/, const std::string & field7/* = EMPTY_STR*/, const std::string & field8/* = EMPTY_STR*/, const std::string & field9/* = EMPTY_STR*/, const std::string & field10/* = EMPTY_STR*/) 
 { 
+   ChangeQueryType(kSelect);
    std::ostringstream ss;
    ss << "SELECT " << field1;
    AppendField(ss, field2);
@@ -38,6 +41,7 @@ CQuery & CQuery::Select(const std::string & field1, const std::string & field2/*
 //
 CQuery & CQuery::SelectCount()
 {
+   ChangeQueryType(kSelect);
    return Append("SELECT COUNT(*) "); 
 }
 
@@ -57,6 +61,7 @@ CQuery & CQuery::SelectCount()
 //
 CQuery & CQuery::SelectCount(const std::string & field1, const std::string & field2 /*= EMPTY_STR*/, const std::string & field3 /*= EMPTY_STR*/, const std::string & field4 /*= EMPTY_STR*/, const std::string & field5 /*= EMPTY_STR*/, const std::string & field6 /*= EMPTY_STR*/, const std::string & field7 /*= EMPTY_STR*/, const std::string & field8 /*= EMPTY_STR*/, const std::string & field9 /*= EMPTY_STR*/, const std::string & field10 /*= EMPTY_STR*/)
 {
+   ChangeQueryType(kSelect);
    std::ostringstream ss;
    ss << "SELECT COUNT(" << field1;
    AppendField(ss, field2);
@@ -181,6 +186,7 @@ CQuery & CQuery::GroupBy(const std::string & field1, const std::string & field2/
 
 CQuery & CQuery::InsertInto(const std::string & table, const std::string & field1, const std::string & field2/* = EMPTY_STR*/, const std::string & field3/* = EMPTY_STR*/, const std::string & field4/* = EMPTY_STR*/, const std::string & field5/* = EMPTY_STR*/, const std::string & field6/* = EMPTY_STR*/, const std::string & field7/* = EMPTY_STR*/, const std::string & field8/* = EMPTY_STR*/, const std::string & field9/* = EMPTY_STR*/, const std::string & field10/* = EMPTY_STR*/) 
 {
+   ChangeQueryType(kInsert);
    std::ostringstream ss;
    ss << " INSERT INTO " << table << " (" << field1;
    AppendField(ss, field2);
@@ -216,6 +222,7 @@ CQuery & CQuery::Values(const CQueryValue & value1, const CQueryValue & value2, 
 
 CQuery & CQuery::Update(const std::string & table) 
 {
+   ChangeQueryType(kUpdate);
    std::ostringstream ss;
    ss << " UPDATE  " << table << " ";
    return Append(ss); 
@@ -249,6 +256,7 @@ CQuery & CQuery::Set(const std::string & field1, const CQueryValue & value1,
 
 CQuery & CQuery::DeleteFrom(const std::string & table) 
 {
+   ChangeQueryType(kDelete);
    std::ostringstream ss;
    ss << " DELETE FROM  " << table << " ";
    return Append(ss); 
@@ -286,13 +294,15 @@ const char * CQuery::c_str() const
    return m_currentQuery.c_str();
 }
 
-CQuery CQuery::CustomQuery(const std::string & customQuery)
+CQuery CQuery::CustomQuery(const std::string & customQuery, const EQueryType & typeOfQuery)
 {
-   return CQuery().Append(customQuery);
+   BOOST_ASSERT(typeOfQuery != kNotYetDefined);
+   return CQuery().Append(customQuery).ChangeQueryType(typeOfQuery);
 }
 
 CQuery & CQuery::DropTable(const std::string & tableName)
 {
+   ChangeQueryType(kDrop);
    std::ostringstream ss;
    ss << "DROP TABLE " << tableName;
    return Append(ss);
@@ -346,4 +356,15 @@ void CQuery::AppendValue(std::ostringstream & ss, const CQueryValue & value)
 {
    if(value.isDefined()) 
       ss << "," << value.str();
+}
+
+
+CQuery & CQuery::ChangeQueryType(const EQueryType newType, bool changeOnlyIfNeverSet /*= true*/)
+{
+   if(newType != kNotYetDefined)
+   {
+      if( (changeOnlyIfNeverSet && m_queryType == kNotYetDefined) || !changeOnlyIfNeverSet)
+         m_queryType = newType;
+   }
+   return *this;
 }

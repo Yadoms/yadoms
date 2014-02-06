@@ -34,6 +34,17 @@
 class CQuery
 {
 public:
+   enum EQueryType
+   {
+      kNotYetDefined,
+      kSelect,
+      kInsert,
+      kUpdate,
+      kDelete,
+      kDrop,
+      kCreate
+   };
+public:
    //
    /// \brief           Constructor
    //
@@ -363,9 +374,10 @@ public:
    //
    /// \brief    create a full custom query
    /// \param [in] customQuery the custom query
+   /// \param [in] typeOfQuery the type of the query
    /// \return   the query object
    //     
-   static CQuery CustomQuery(const std::string & customQuery);
+   static CQuery CustomQuery(const std::string & customQuery, const EQueryType & typeOfQuery);
 
 
    //
@@ -375,6 +387,11 @@ public:
    //   
    CQuery & DropTable(const std::string & tableName);
 
+   //
+   /// \brief              get the query type
+   /// \return             the type if this query
+   //  
+   const EQueryType & GetQueryType() const { return m_queryType; }
 private:
    //
    /// \brief              Append the where clause
@@ -435,10 +452,24 @@ private:
    //
    void AppendValue(std::ostringstream & ss, const CQueryValue & value);
 
+
+   //
+   /// \brief              Change the type of the query
+   /// \param [in]         newType : the new type
+   /// \param [in]         changeOnlyIfNeverSet : update the value only if it as never been set
+   /// \return             A reference to itself to allow method chaining
+   //
+   CQuery & ChangeQueryType(const EQueryType newType, bool changeOnlyIfNeverSet = true);
 private:
    //
    /// \brief  The query
    //
    std::string m_currentQuery;
+
+
+   //
+   /// \brief  The type of query
+   //
+   EQueryType m_queryType;
 };
 

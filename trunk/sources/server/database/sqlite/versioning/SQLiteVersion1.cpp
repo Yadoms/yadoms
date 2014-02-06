@@ -130,7 +130,7 @@ void CSQLiteVersion1::CreateDatabase(const boost::shared_ptr<CSQLiteRequester> &
       CQuery qInsert;
       qInsert.InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName()).
          Values( "Database", "Version", 1.0, "Database version");
-      pRequester->query(qInsert);
+      pRequester->queryStatement(qInsert);
 
       //commit transaction
       pRequester->transactionCommit();
