@@ -178,7 +178,6 @@ const boost::shared_ptr<std::set<std::string> > CPeripherals::getUsedSerialPorts
    catch (CException& e)
    {
       YADOMS_LOG(error) << "unable to load MsPorts.dll : " << e.what();
-      return usedSerialPorts;
    }
 
    return usedSerialPorts;
