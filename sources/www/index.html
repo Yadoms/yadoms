@@ -88,195 +88,44 @@
 
   </div>
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="libs/jquery/js/jquery-1.10.2.min.js"></script>
-    <script src="libs/bootstrap/js/bootstrap.min.js"></script>
+   <!-- Bootstrap core JavaScript
+   ================================================== -->
+   <!-- Placed at the end of the document so the pages load faster -->
+   <script src="libs/jquery/js/jquery-1.11.0.min.js"></script>
+   <script src="libs/bootstrap/js/bootstrap.min.js"></script>
 
-    <!-- Gridster includes -->
-    <!--TODO: reprendre la version min-->
-    <script src="libs/gridster/js/jquery.gridster.min.js"></script>
-    
-	<script src="libs/transit/js/jquery.transit.min.js"></script>
-	<script src="libs/knockout/js/knockout-3.0.0.js"></script>
+   <!-- Gridster includes -->
+   <!--TODO: reprendre la version min-->
+   <script src="libs/gridster/js/jquery.gridster.js"></script>
 
-    <div id="templates" class="hidden"></div>
+   <script src="libs/transit/js/jquery.transit.min.js"></script>
+   <script src="libs/knockout/js/knockout-3.0.0.js"></script>
+
+  <script src="js/utility.js"></script>
+
+  <script src="js/widget-engine.js"></script>
+   <script src="js/widget-customization.js"></script>
+
+   <div id="templates" class="hidden"></div>
 
 	<script type="text/javascript">
 
-    function Page() {
-        this.pageData;
-        this.gridster;
-    }
+   //var declaration
+   var customization = false;
 
-    function getDatabaseIdFromElement($element)
-    {
-        str = $element[0].id;
-        res = str.split("-");
-        return res[res.length - 1];
-    }
+   var pageArray = {};
+   var widgetArray = {};
+   var widgetViewModel;
 
-    //var declaration
-	var customization = false;
+   var numberOfColumns = 9;
+   var gridWidth = 100;
+   var gridMargin = 5;
 
-    var pageArray = {};
-    var widgetArray = {};
-    var widgetViewModel;
+   $( document ).ready(function() {
+      //we get pages
+      $.getJSON( "/rest/page", requestPageDone());
+   });
 
-	$( document ).ready(function() {
-
-        var numberOfColumns = 9;
-        var gridWidth = 100;
-        var gridMargin = 5;
-
-        $(".widgetPage .gridster").width(numberOfColumns * (gridWidth + gridMargin * 2));
-
-        //we get pages
-        $.getJSON( "/rest/page", function( data ) {
-            //we parse the json answer
-            $.each(data.page, function(index, value) {
-                pageArray[value.id] = new Page();
-                pageArray[value.id].pageData = value;
-                var tabIdAsText = "tab-" + value.id;
-
-                $("#tabContainer .tab-content").append("<div class=\"widgetPage tab-pane active\" id=\"" + tabIdAsText + "\"><div class=\"gridster\"><ul></ul></div></div>")
-                $("#pageMenu ul").append("<li><a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" + value.name + "</a></li>");
-                pageArray[value.id].gridster = $("#" + tabIdAsText + " ul").gridster({
-                    widget_margins: [gridMargin, gridMargin],
-                    widget_base_dimensions: [gridWidth, gridWidth],
-                    min_cols: numberOfColumns,
-                    max_cols: numberOfColumns,
-                    resize: {
-                        enabled: true,
-
-                        resize: function(e, ui, $widget) {
-                            id = getDatabaseIdFromElement($widget);
-                            if (widgetArray[id].viewModel.resized !== undefined)
-                                widgetArray[id].viewModel.resized()
-                        },
-                        stop: function(e, ui, $widget) {
-                            id = getDatabaseIdFromElement($widget);
-                            if (widgetArray[id].viewModel.resized !== undefined)
-                                widgetArray[id].viewModel.resized()
-                        }
-                    }
-                }).data('gridster');
-            });
-            //we activate first page on the pills
-            $("#pageMenu ul li").first().addClass("active");
-
-            //we remove the active class of all hidden gridster
-            $(".tab-content div").not($(".tab-content div").first()).removeClass("active");
-
-            enableGridsterCustomization(false);
-        });
-
-        //we get widgets from REST
-
-        $.getJSON( "/rest/widget", function( data ) {
-            //we parse the json answer
-            $.each(data.widget, function(index, value) {
-                widgetArray[value.id] = value;
-            });
-
-            //we parse widgetArray
-            $.each(widgetArray, function (index, value) {
-                //for each widget we add viewModelData of the widget into the template section
-
-                $.get( "widgets/" + value.name + "/view.html", function( data ) {
-                    $("#templates").append(data);
-                    //we get script to execute for this widget
-                    $.getScript( "widgets/" + value.name + "/viewModel.js", function(data, textStatus, jqxhr) {
-                        value.viewModel = widgetViewModel;
-                        widgetViewModel = null;
-                        pageArray[value.idPage].gridster.add_widget(
-                                "<li class=\"widget\" id=\"liWidget-" + value.id +"\">" +
-                                        "<div class=\"widgetCustomizationToolbar hidden\">" +
-                                        "<div class=\"btn-group btn-group-sm\">" +
-                                        "<button type=\"button\" class=\"btn btn-default\" title=\"Move to another page\"><i class=\"fa fa-share\"></i></button>" +
-                                        "<button type=\"button\" class=\"btn btn-default\" title=\"Configuration\"><i class=\"fa fa-cog\"></i></button>" +
-                                        "<button type=\"button\" class=\"btn btn-default\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
-                                        "</div>" +
-                                        "</div>" +
-                                        "<div id=\"widget-" + value.id + "\" data-bind=\"template: { name: '" + value.name + "-template', data: data }\"/>" +
-                                "</li>", value.sizeX, value.sizeY, value.positionX, value.positionY);
-                        createdObject = $("#widget-" + value.id);
-
-                        //we apply binding
-                        ko.applyBindings(value.viewModel, createdObject[0]);
-
-                        $.getJSON( "widgets/" + value.name + "/configuration.json", function( data ) {
-                            //we initiliazed the widget
-                            debugger;
-                            //todo : PB le champs value a changé avant que la méthode ne soit appelé
-                            if (value.viewModel.initialized !== undefined)
-                                value.viewModel.initialized(createdObject, data);
-
-                            if (value.viewModel.resized !== undefined)
-                                value.viewModel.resized();
-                        });
-
-                        $(".widget button").tooltip({
-                            animated: 'fade',
-                            placement: 'bottom'
-                        });
-                    });
-                });
-            })
-        });
-	});
-
-    function enableGridsterCustomization(enable) {
-        $.each(pageArray, function (index, value) {
-            if (enable)
-            {
-                value.gridster.enable();
-                value.gridster.enable_resize();
-            }
-            else
-            {
-                value.gridster.disable();
-                value.gridster.disable_resize();
-            }
-        });
-    }
-
-    function animateCustomizeButton() {
-        $("#customizeButton i").transition({
-          rotate: '+=30deg',
-          duration: 500,
-          easing: 'linear',
-          complete: function() {
-                if (customization)
-                    animateCustomizeButton();
-                else
-                    $("#customizeButton i").transition({
-                        rotate: '0deg',
-                        duration: 100
-                    });
-            }
-        });
-    }
-   
-	$("#customizeButton").click(function() {
-		customization = !customization;
-		
-		if (customization)
-		{
-			$("#customizeButton").removeClass('btn-inverse').addClass('btn-primary');
-            enableGridsterCustomization(true);
-            animateCustomizeButton();
-            $(".widgetCustomizationToolbar").removeClass("hidden");
-        }
-		else
-		{
-			$("#customizeButton").removeClass('btn-primary').addClass('btn-inverse');
-            enableGridsterCustomization(false);
-            $(".widgetCustomizationToolbar").addClass("hidden");
-		}
-	});
-	
 	</script>
   </body>
 </html>
