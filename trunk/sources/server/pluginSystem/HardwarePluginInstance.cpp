@@ -25,26 +25,31 @@ void CHardwarePluginInstance::doWork()
    BOOST_ASSERT(m_pPluginInstance);
    YADOMS_LOG_CONFIGURE(getName());
 
-   // TODO : we can set protections here (restart plugin if it crashes, force to stop it...)
-   try
+   // Loop to restart plugin when crashed
+   bool gracefullyExit = false;
+   while (!gracefullyExit)
    {
-      m_pPluginInstance->doWork(m_context->getConfiguration());
-   }
-   catch (boost::thread_interrupted&)
-   {
-      // End-of-thread exception was not catch by plugin,
-      // it's a developer's error, we have to report it
-      YADOMS_LOG(error) << getName() << " didn't catch boost::thread_interrupted.";
-   }
-   catch (std::exception& e)
-   {
-      // Plugin crashed
-      YADOMS_LOG(error) << getName() << " crashed in doWork with exception : " << e.what();
-   }
-   catch (...)
-   {
-      // Plugin crashed
-      YADOMS_LOG(error) << getName() << " crashed in doWork with unknown exception.";
+      try
+      {
+         m_pPluginInstance->doWork(m_context->getConfiguration());
+         gracefullyExit = true;
+      }
+      catch (boost::thread_interrupted&)
+      {
+         // End-of-thread exception was not catch by plugin,
+         // it's a developer's error, we have to report it
+         YADOMS_LOG(error) << getName() << " didn't catch boost::thread_interrupted.";
+      }
+      catch (std::exception& e)
+      {
+         // Plugin crashed
+         YADOMS_LOG(error) << getName() << " crashed in doWork with exception : " << e.what();
+      }
+      catch (...)
+      {
+         // Plugin crashed
+         YADOMS_LOG(error) << getName() << " crashed in doWork with unknown exception.";
+      }
    }
 }
 
