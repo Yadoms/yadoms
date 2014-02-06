@@ -8,15 +8,15 @@
             "y": 1
         },
         "max": {
-            "x": 3,
-            "y": 2
+            "x": 5,
+            "y": 5
         },
         "default": {
             "x": 1,
             "y": 1
-        },
-        "configuration-schema": {
-
         }
+    },
+    "configuration-schema": {
+
     }
 }
