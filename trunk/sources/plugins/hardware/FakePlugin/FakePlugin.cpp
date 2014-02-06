@@ -26,10 +26,17 @@ CFakePlugin::~CFakePlugin()
 {
 }
 
+// Event IDs
+enum
+{
+   kEvtXplMessage = CEventHandler::kUserFirstId,   // Always start from CEventHandler::kUserFirstId
+   kEvtUpdateConfiguration
+};
+
 void CFakePlugin::onMessageReceived(CXplMessage & message)
 {
-   // Be carefull, this function is called in the Xpl service thread context
-   //YADOMS_LOG(info) << "Message received : " << message.toString();
+   // This function is called in the Xpl service thread context, so send a event to CFakePlugin thread
+   sendEvent<CXplMessage>(kEvtXplMessage, message);
 }
 
 void CFakePlugin::doWork(const std::string& configurationValues)
@@ -39,6 +46,8 @@ void CFakePlugin::doWork(const std::string& configurationValues)
    try
    {
       YADOMS_LOG_CONFIGURE("FakePlugin");
+      YADOMS_LOG(debug) << "CFakePlugin is starting...";
+
       xplService.reset(new CXplService("yadoms", "fake", "1"));
       xplService->messageReceived(boost::bind(&CFakePlugin::onMessageReceived, this, _1));
 
@@ -53,25 +62,48 @@ void CFakePlugin::doWork(const std::string& configurationValues)
       {
          YADOMS_LOG(debug) << "CFakePlugin is running...";
 
-         std::string newConfigurationValues = m_Configuration.getUpdated();
-         if (!newConfigurationValues.empty())
+         // Wait for an event, with timeout
+         switch(waitForEvents(boost::posix_time::milliseconds(1000)))
          {
-            // Take into account the new configuration
-            // - Restart the plugin if necessary,
-            // - Update some resources,
-            // - etc...
-            m_Configuration.setValues(newConfigurationValues);
-            YADOMS_LOG(debug) << "CFakePlugin configuration was updated...";
-            // Trace the configuration (just for test)
-            traceConfiguration();
+         case kEvtXplMessage:
+            {
+               // Xpl message was received
+               CXplMessage xplMessage = popEvent<CXplMessage>();
+               YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
+               break;
+            }
+         case kEvtUpdateConfiguration:
+            {
+               // Configuration was updated
+               std::string newConfigurationValues = popEvent<std::string>();
+               YADOMS_LOG(debug) << "configuration was updated...";
+               BOOST_ASSERT(!newConfigurationValues.empty());  // newConfigurationValues shouldn't be empty, or kEvtUpdateConfiguration shouldn't be generated
+
+               // Take into account the new configuration
+               // - Restart the plugin if necessary,
+               // - Update some resources,
+               // - etc...
+               m_Configuration.setValues(newConfigurationValues);
+
+               // Trace the configuration
+               traceConfiguration();
+
+               break;
+            }
+         case kTimeout:
+            {
+               // Timeout, used here to send a XPL message periodicaly
+               CXplMessage msg(CXplMessage::kXplStat, xplService->getActor(), CXplActor::createBroadcastActor(), CXplMessageSchemaIdentifier("clock", "basic"));
+               msg.addToBody("value", boost::lexical_cast<std::string>(value++));
+               xplService->sendMessage(msg);
+               break;
+            }
+         default:
+            {
+               YADOMS_LOG(error) << "Unknown message id";
+               break;
+            }
          }
-
-         CXplMessage msg(CXplMessage::kXplStat, xplService->getActor(), CXplActor::createBroadcastActor(), CXplMessageSchemaIdentifier("clock", "basic"));
-         msg.addToBody("value", boost::lexical_cast<std::string>(value++));
-         xplService->sendMessage(msg);
-
-         // Give a chance to exit plugin thread
-         boost::this_thread::sleep(boost::posix_time::milliseconds(1000)); 
       };
    }
    // Plugin must catch this end-of-thread exception to make its cleanup.
@@ -98,8 +130,8 @@ void CFakePlugin::doWork(const std::string& configurationValues)
 
 void CFakePlugin::updateConfiguration(const std::string& configurationValues)
 {
-   // Post new values to plugin configuration
-   m_Configuration.update(configurationValues);
+   // This function is called in a Yadoms thread context, so send a event to CFakePlugin thread
+   sendEvent<std::string>(kEvtUpdateConfiguration, configurationValues);
 }
 
 void CFakePlugin::traceConfiguration()
