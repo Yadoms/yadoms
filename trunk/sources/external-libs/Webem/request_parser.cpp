@@ -315,7 +315,7 @@ boost::tribool request_parser::consume(request& req, char input)
 	  }
   case reading_content:
 	  req.content += input;
-	  if( req.content.length() == req.content_length )
+	  if( ((int)req.content.length()) == req.content_length )
 	  {
 		  return true;
 	  } 

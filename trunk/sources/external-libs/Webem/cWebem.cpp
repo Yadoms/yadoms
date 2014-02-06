@@ -476,7 +476,7 @@ bool cWebem::CheckForPageOverride(const request& req, reply& rep)
 	myNameValues.clear();
 	m_lastRequestPath=request_path;
 
-	int paramPos=request_path.find_first_of('?');
+	std::string::size_type paramPos=request_path.find_first_of('?');
 	if (paramPos!=std::string::npos)
 	{
 		std::string params=request_path.substr(paramPos+1);
@@ -1079,7 +1079,7 @@ int cWebemRequestHandler::parse_auth_header(const request& req, char *buf,	size_
 		s = buf;
 
 		std::string decoded = base64_decode(s);
-		int npos=decoded.find(':');
+		std::string::size_type npos=decoded.find(':');
 		if (npos==std::string::npos)
 			return 0;
 		strcpy(buf,decoded.c_str());
@@ -1169,8 +1169,8 @@ int cWebemRequestHandler::authorize(const request& req)
 
 	if (!parse_auth_header(req, buf, sizeof(buf), &_ah))
 	{
-		int uPos=req.uri.find("username=");
-		int pPos=req.uri.find("password=");
+		std::string::size_type uPos=req.uri.find("username=");
+		std::string::size_type pPos=req.uri.find("password=");
 		if (
 			(uPos==std::string::npos)||
 			(pPos==std::string::npos)
@@ -1278,7 +1278,7 @@ bool cWebemRequestHandler::AreWeInLocalNetwork(const request& req)
 	if ((host_header = request::get_req_header(&req, "Host")) != NULL)
 	{
 		std::string host=host_header;
-		int pos=host.find_first_of(":");
+		std::string::size_type pos=host.find_first_of(":");
 		if (pos!=std::string::npos)
 			host=host.substr(0,pos);
 
@@ -1309,12 +1309,12 @@ int cWebemRequestHandler::check_authorization(const request& req)
 	if (cookie_header!=NULL)
 	{
 		std::string scookie=cookie_header;
-		int fpos=scookie.find("SID=");
+		std::string::size_type fpos=scookie.find("SID=");
 		if (fpos!=std::string::npos)
 		{
 			std::stringstream sstr;
 
-			int dpos=scookie.find(";");
+			std::string::size_type dpos=scookie.find(";");
 			std::string sidstr;
 			if (dpos==std::string::npos)
 				sstr << scookie.substr(fpos+4).c_str();
@@ -1417,7 +1417,7 @@ void cWebemRequestHandler::check_cookie(const request& req, reply& rep)
 			cookie = request::get_req_header(&req, "Cookie");
 			bool bHaveSID=false;
 			std::string scookie="";
-			int fpos=0;
+			std::string::size_type fpos=0;
 			if (cookie!=NULL)
 			{
 				scookie=cookie;
@@ -1441,13 +1441,13 @@ void cWebemRequestHandler::check_cookie(const request& req, reply& rep)
 			else
 			{
 				//check if we need to re-use this SID
-				int dpos=scookie.find(";");
+				std::string::size_type dpos=scookie.find(";");
 				std::string sidstr;
 				if (dpos==std::string::npos)
 					sidstr=scookie.substr(fpos+4);
 				else
 					sidstr=scookie.substr(fpos+4,dpos-fpos-4);
-				int fpos=scookie.find("SID=");
+				std::string::size_type fpos=scookie.find("SID=");
 				if (fpos!=std::string::npos)
 				{
 					std::stringstream sstr;

@@ -11,7 +11,7 @@ public:
    /// \param [in]   portNumber : The port number of the peripheral
    /// \param [in]   interval : The interval in minutes of hbeat is sent
    //--------------------------------------------------------------
-   CXplHubConnectedPeripheral(boost::asio::io_service & io_service,  std::string ip, int portNumber, int interval);
+   CXplHubConnectedPeripheral(boost::asio::io_service & io_service,  std::string ip, unsigned short portNumber, int interval);
 
    //--------------------------------------------------------------
    /// \brief			Dtor 
@@ -60,7 +60,7 @@ public:
    void sendMessage(const CXplMessage & message);
 
 private:
-   int m_portNumber;
+   unsigned short m_portNumber;
    int m_interval;
    std::string m_ip;
    boost::asio::ip::udp::socket m_socket;

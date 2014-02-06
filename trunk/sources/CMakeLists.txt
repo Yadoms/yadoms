@@ -57,17 +57,48 @@ if(MSVC)
 	include("windows.cmake")
 endif()
 
+
 ##################################################################################################
 ## IDE configurations
 ##################################################################################################
-
 if(MSVC)
+
 	#allow solution folders
 	SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
 	#global disable (for all targets)
 	#disable warning C4996   Function call with parameters that may be unsafe 
 	add_definitions( "/wd4996 /wd4251" )
+
+	#######################################################
+	## Activate warning level4, and disable useless ones ##
+	#######################################################
+	add_definitions("/W4")
+	
+	# A lot of level 4 warnings are involved by boost.
+	# Use the next link to see how to remove warning 
+	#https://svn.boost.org/trac/boost/wiki/Guidelines/WarningsGuidelines
+	
+	#disable warning C4512: l'opérateur d'assignation n'a pas pu être généré
+	add_definitions( "/wd4512" )
+	
+	#disable warning C4610: struct '' ne peut jamais être instancié(e) : résolution : la même que pour C4512
+	add_definitions( "/wd4610" )
+	
+	#disable warning C4127: l'expression conditionnelle est une constante
+	add_definitions( "/wd4127" )
+
+	#disable warning C4100: unreferenced formal parameter
+	add_definitions( "/wd4100" )
+	
+	#disable warning C4714: fonction '' marquée comme __forceinline non inline
+	add_definitions( "/wd4714" )
+	
+	#disable warning C4510: le constructeur par défaut n'a pas pu être généré
+	add_definitions( "/wd4510" )
+
+	#disable warning C4505: la fonction locale non référencée a été supprimée : résolution : supprimer le code mort
+	add_definitions( "/wd4505" )
 	
 	#to allow BOOST in precompiled header (specify Precompiled Header Memory Allocation Limit) 
 	add_definitions("/Zm256")
@@ -78,15 +109,29 @@ if(MSVC)
 endif()
 
 if(CMAKE_COMPIER_IS_GNUCXX)
+	add_definitions("-Wall -Wextra -pedantic")
 	add_definitions("-fpermissive")
 	add_definitions("-std=c++0x")
+	
+	# In case unix is 64bits, append -fPIC to gcc
+	IF(UNIX AND NOT WIN32)
+	   FIND_PROGRAM(CMAKE_UNAME uname /bin /usr/bin /usr/local/bin )
+	   IF(CMAKE_UNAME)
+		 EXEC_PROGRAM(uname ARGS -m OUTPUT_VARIABLE CMAKE_SYSTEM_PROCESSOR)
+		 SET(CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR} CACHE INTERNAL "processor type (i386 and x86_64)")
+		 IF(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
+		   add_definitions(-fPIC)
+		 ENDIF(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
+	   ENDIF(CMAKE_UNAME)
+	ENDIF(UNIX AND NOT WIN32)
 endif()
 
 
 if (CMAKE_COMPIER_IS_CLANG)
+	add_definitions("-Wall -Wextra -pedantic")
 	add_definitions("-std=c++0x")
-    add_definitions("-Woverloaded-virtual")
-    add_definitions("-Wunused-variable")
+   add_definitions("-Woverloaded-virtual")
+   add_definitions("-Wunused-variable")
 endif()
 
 #check eclispe debug options
@@ -94,6 +139,10 @@ if(DEBUG_WITH_ECLIPSE)
 	add_definitions(-DDEBUG)
 	add_definitions("-g")
 endif()
+
+
+
+
 
 ##################################################################################################
 ## Project output configuration
@@ -153,6 +202,7 @@ if(UNIX AND NOT APPLE)
     set(RT_LIBRARY rt)
 endif()
 
+## IOKIT (needed for Mac)
 if(APPLE)
 	include("mac.cmake")
 	
@@ -176,6 +226,7 @@ set(USE_WEBEM_WEBSERVER TRUE)
 
 #include libs (have their own CMakeList.txt)
 add_subdirectory(external-libs)
+
 
 
 ##################################################################################################
@@ -358,7 +409,6 @@ ENDIF()
 add_executable(yadoms ${YADOMS_SRC})
 add_precompiled_header(yadoms stdafx.h)
 
-
 ##################################################################################################
 ## yadoms-shared
 ##################################################################################################
@@ -440,8 +490,6 @@ ELSE()
 ENDIF()
 
 set_property( TARGET yadoms-tools PROPERTY INCLUDE_DIRECTORIES ${TOOLS_INCL_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
-
-
 
 ##################################################################################################
 ## Plugins

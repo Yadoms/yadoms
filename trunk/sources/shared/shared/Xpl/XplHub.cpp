@@ -90,8 +90,8 @@ void CXplHub::handleReceive(const boost::system::error_code& error,
             {
                YADOMS_LOG(debug) << "Hbeat message";
                //we check if we already known this periph
-               int port;
-               if (!CStringExtension::tryParse<int>(msg.getBodyValue("port"), port))
+               unsigned short port;
+               if (!CStringExtension::tryParse<unsigned short>(msg.getBodyValue("port"), port))
                   throw CXplException("port in Heartbeat message is incorrect : " + msg.toString());
 
                int interval;

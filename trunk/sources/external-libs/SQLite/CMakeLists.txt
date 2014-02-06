@@ -53,6 +53,9 @@ endif()
 
 IF(MSVC)
 	SET_PROPERTY(TARGET sqlite PROPERTY FOLDER "External Libs")
+	
+	#set warning level3 only for this project
+	add_definitions("/W3")
 ENDIF()
 
 
