@@ -272,6 +272,7 @@ set(YADOMS_SRC
 	server/database/IKeywordRequester.h
 	server/database/IPageRequester.h
 	server/database/IWidgetRequester.h
+	server/database/DatabaseException.hpp
 
 	server/database/entities/EntityHelpers.hpp
 	server/database/entities/Hardware.h
