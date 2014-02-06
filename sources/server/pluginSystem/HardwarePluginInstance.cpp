@@ -32,7 +32,16 @@ void CHardwarePluginInstance::doWork()
       try
       {
          m_pPluginInstance->doWork(m_context->getConfiguration());
-         gracefullyExit = true;
+         if (getStatus() == kStopping)
+         {
+            // Normal stop
+            gracefullyExit = true;
+         }
+         else
+         {
+            // Plugin has stopped without stop requested
+            YADOMS_LOG(error) << getName() << " has stopped without stop requested.";
+         }
       }
       catch (boost::thread_interrupted&)
       {
