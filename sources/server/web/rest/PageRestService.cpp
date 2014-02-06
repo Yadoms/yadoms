@@ -28,7 +28,7 @@ void CPageRestService::configureDispatcher(CRestDispatcher & dispatcher)
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("widget"), CPageRestService::getPageWidget);
 }
 
-CJson CPageRestService::getOnePage(const std::vector<std::string> & parameters)
+CJson CPageRestService::getOnePage(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    std::string objectId = "";
    if(parameters.size()>1)
@@ -39,14 +39,14 @@ CJson CPageRestService::getOnePage(const std::vector<std::string> & parameters)
    return hes.serialize(*pageFound.get());
 }
 
-CJson CPageRestService::getAllPages(const std::vector<std::string> & parameters)
+CJson CPageRestService::getAllPages(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    CPageEntitySerializer hes;
    std::vector< boost::shared_ptr<CPage> > hwList = m_dataProvider->getPageRequester()->getPages();
    return CJonCollectionSerializer<CPage>::SerializeCollection(hwList, hes, getRestKeyword());
 }
 
-CJson CPageRestService::getPageWidget(const std::vector<std::string> & parameters)
+CJson CPageRestService::getPageWidget(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    std::string pageId = "";
    if(parameters.size()>1)

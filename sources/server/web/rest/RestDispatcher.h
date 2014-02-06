@@ -17,11 +17,12 @@ public:
 
    //--------------------------------------   
    ///\brief         dispatch url 
-   ///\param [in]    requestType        the type of request, usually GET, PUT, POST or DELETE
+   ///\param [in]    requestType       the type of request, usually GET, PUT, POST or DELETE
    ///\param [in]    url               the utrl keywords (each entry is url split with /)
+   ///\param [in]    requestContent    request content (put, post or delete request)
    ///\return        the data in Json format
    //-------------------------------------- 
-   CJson dispath(const std::string & requestType, const std::vector<std::string> & url);
+   CJson dispath(const std::string & requestType, const std::vector<std::string> & url, const CJson & requestContent);
 
    //--------------------------------------   
    ///\brief   Define an Url pattern /widget/*/acquisitions (=> widget, *, acquisitions)
@@ -31,7 +32,7 @@ public:
    //--------------------------------------   
    ///\brief   Define a function pointer on a method like CJson readData(const std::vector<std::string> & )
    //--------------------------------------  
-   typedef boost::function1<CJson, const std::vector<std::string> & > CRestMethodHandler;
+   typedef boost::function2<CJson, const std::vector<std::string> &, const CJson & > CRestMethodHandler;
 
    //--------------------------------------   
    ///\brief         register a rest handler

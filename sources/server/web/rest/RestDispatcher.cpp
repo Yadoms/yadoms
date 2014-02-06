@@ -17,7 +17,7 @@ void CRestDispatcher::registerRestMethodHandler(const std::string & requestType,
 
 
 
-CJson CRestDispatcher::dispath(const std::string & requestType, const std::vector<std::string> & url)
+CJson CRestDispatcher::dispath(const std::string & requestType, const std::vector<std::string> & url, const CJson & requestContent)
 {
    //check the te requestType has some functions
    if(m_handledFunctions.find(requestType) != m_handledFunctions.end())
@@ -27,7 +27,7 @@ CJson CRestDispatcher::dispath(const std::string & requestType, const std::vecto
       for(iPatterns = m_handledFunctions[requestType].begin(); iPatterns != m_handledFunctions[requestType].end(); iPatterns++)
       {
          if(match(url, iPatterns->first))
-            return iPatterns->second(url);
+            return iPatterns->second(url, requestContent);
       }
    }
    return CJson();

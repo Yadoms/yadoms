@@ -19,11 +19,11 @@ CSQLiteConfigurationRequester::~CSQLiteConfigurationRequester()
 
 
 // IConfigurationRequester implementation
-void CSQLiteConfigurationRequester::create(boost::shared_ptr<CConfiguration> configurationToCreate)
+void CSQLiteConfigurationRequester::create(CConfiguration& configurationToCreate)
 {
    CQuery qInsert;
    qInsert. InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName(), CConfigurationTable::getDefaultValueColumnName(), CConfigurationTable::getLastModificationDateColumnName()).
-            Values(configurationToCreate->getSection(), configurationToCreate->getName(), configurationToCreate->getValue(), configurationToCreate->getDescription(), configurationToCreate->getDefaultValue(), boost::gregorian::day_clock::local_day());
+            Values(configurationToCreate.getSection(), configurationToCreate.getName(), configurationToCreate.getValue(), configurationToCreate.getDescription(), configurationToCreate.getDefaultValue(), boost::gregorian::day_clock::local_day());
    if(m_databaseRequester->queryStatement(qInsert) <= 0)
       throw CEmptyResultException("No lines affected");
 }
@@ -73,25 +73,25 @@ std::vector<boost::shared_ptr<CConfiguration> > CSQLiteConfigurationRequester::g
 }
 
 
-void CSQLiteConfigurationRequester::updateConfiguration(boost::shared_ptr<CConfiguration> configurationToUpdate)
+void CSQLiteConfigurationRequester::updateConfiguration(CConfiguration& configurationToUpdate)
 {
    CQuery qUpdate;
    qUpdate. Update(CConfigurationTable::getTableName()).
-            Set(CConfigurationTable::getValueColumnName(), configurationToUpdate->getName(),
-                CConfigurationTable::getLastModificationDateColumnName(), boost::gregorian::day_clock::local_day()).
-            Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, configurationToUpdate->getSection()).
-            And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, configurationToUpdate->getName());
+            Set(CConfigurationTable::getValueColumnName(), configurationToUpdate.getValue(),
+                CConfigurationTable::getLastModificationDateColumnName(), configurationToUpdate.getLastModificationDate()).
+            Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, configurationToUpdate.getSection()).
+            And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, configurationToUpdate.getName());
 
    if(m_databaseRequester->queryStatement(qUpdate) <= 0)
       throw CEmptyResultException("No lines affected");
 }
 
-void CSQLiteConfigurationRequester::removeConfiguration(boost::shared_ptr<CConfiguration> configurationToRemove)
+void CSQLiteConfigurationRequester::removeConfiguration(CConfiguration& configurationToRemove)
 {
    CQuery qDelete;
    qDelete. DeleteFrom(CConfigurationTable::getTableName()).
-            Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, configurationToRemove->getSection()).
-            And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, configurationToRemove->getName());
+            Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, configurationToRemove.getSection()).
+            And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, configurationToRemove.getName());
    if(m_databaseRequester->queryStatement(qDelete) <= 0)
       throw new CEmptyResultException("No lines affected");
 }

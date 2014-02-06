@@ -31,7 +31,7 @@ const std::string & CWidgetRestService::getRestKeyword()
 }
 
 
-CJson CWidgetRestService::getOneWidget(const std::vector<std::string> & parameters)
+CJson CWidgetRestService::getOneWidget(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    CWidgetEntitySerializer hes;
 
@@ -43,14 +43,14 @@ CJson CWidgetRestService::getOneWidget(const std::vector<std::string> & paramete
    return hes.serialize(*widgetFound.get());
 }
 
-CJson CWidgetRestService::getAllWidgets(const std::vector<std::string> & parameters)
+CJson CWidgetRestService::getAllWidgets(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    CWidgetEntitySerializer hes;
    std::vector< boost::shared_ptr<CWidget> > hwList = m_dataProvider->getWidgetRequester()->getWidgets();
    return CJonCollectionSerializer<CWidget>::SerializeCollection(hwList, hes, getRestKeyword());
 }
 
-CJson CWidgetRestService::getWidgetAcquisitions(const std::vector<std::string> & parameters)
+CJson CWidgetRestService::getWidgetAcquisitions(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    CWidgetEntitySerializer hes;
    std::vector< boost::shared_ptr<CWidget> > hwList = m_dataProvider->getWidgetRequester()->getWidgets();

@@ -28,7 +28,7 @@ void CHardwareRestService::configureDispatcher(CRestDispatcher & dispatcher)
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CHardwareRestService::getOneHardware);
 }
 
- CJson CHardwareRestService::getOneHardware(const std::vector<std::string> & parameters)
+ CJson CHardwareRestService::getOneHardware(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    std::string objectId = "";
    if(parameters.size()>1)
@@ -39,7 +39,7 @@ void CHardwareRestService::configureDispatcher(CRestDispatcher & dispatcher)
    return hes.serialize(*hardwareFound.get());
 }
 
-CJson CHardwareRestService::getAllHardwares(const std::vector<std::string> & parameters)
+CJson CHardwareRestService::getAllHardwares(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    CHardwareEntitySerializer hes;
    std::vector< boost::shared_ptr<CHardware> > hwList = m_dataProvider->getHardwareRequester()->getHardwares();

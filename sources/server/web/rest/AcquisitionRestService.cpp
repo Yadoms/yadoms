@@ -29,14 +29,14 @@ void CAcquisitionRestService::configureDispatcher(CRestDispatcher & dispatcher)
 
 
 
-CJson CAcquisitionRestService::getOneAcquisition(const std::vector<std::string> & parameters)
+CJson CAcquisitionRestService::getOneAcquisition(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    CAcquisitionEntitySerializer hes;
    boost::shared_ptr<CAcquisition> acquisitionFound =  m_dataProvider->getAcquisitionRequester()->getAcquisition(boost::lexical_cast<int>(parameters[0]));
    return hes.serialize(*acquisitionFound.get());
 }
 
-CJson CAcquisitionRestService::getAllAcquisitions(const std::vector<std::string> & parameters)
+CJson CAcquisitionRestService::getAllAcquisitions(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    CAcquisitionEntitySerializer hes;
    //TODO : voir les parametres

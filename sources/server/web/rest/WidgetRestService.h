@@ -19,9 +19,9 @@ public:
    const std::string & getRestKeyword();
 
 public:
-   CJson getOneWidget(const std::vector<std::string> & parameters);
-   CJson getAllWidgets(const std::vector<std::string> & parameters);
-   CJson getWidgetAcquisitions(const std::vector<std::string> & parameters);
+   CJson getOneWidget(const std::vector<std::string> & parameters, const CJson & requestContent);
+   CJson getAllWidgets(const std::vector<std::string> & parameters, const CJson & requestContent);
+   CJson getWidgetAcquisitions(const std::vector<std::string> & parameters, const CJson & requestContent);
 
 private:
    boost::shared_ptr<IDataProvider> m_dataProvider;
