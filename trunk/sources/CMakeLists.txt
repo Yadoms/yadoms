@@ -296,8 +296,8 @@ set(YADOMS_SRC
 	server/web/rest/json/JsonCollectionSerializer.h
 	server/web/rest/json/IEntitySerializer.h
 	server/web/rest/json/IEntityDeserializer.h
-	server/web/rest/json/JsonError.h
-	server/web/rest/json/JsonError.cpp
+	server/web/rest/json/JsonResult.h
+	server/web/rest/json/JsonResult.cpp
 	server/web/rest/json/JsonSerializers.h
 	server/web/rest/json/JsonSerializers.h
 	server/web/rest/json/JsonSerializers.cpp
