@@ -1,11 +1,19 @@
-
-.simpleClockWidget {
-    font-size : 1.0em;
-    background-color: #d9534f;
-    display:table-cell;
+.strut, .simpleClockWidget {
+    /*We allow to these elements to be vertical aligned*/
+    display:inline-block;
     vertical-align:middle;
-    line-height:100px;
 }
+/*Empty element to manage vertical alignment*/
+.strut {
+    height:100%;
+    width: 0px;
+}
+.simpleClockWidget {
+    width:90%;
+    text-align: center;
+    margin: auto;
+}
+
 /*
  
   #simpleClockWidget {

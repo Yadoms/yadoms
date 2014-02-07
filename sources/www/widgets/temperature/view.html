@@ -1,4 +1,11 @@
 <script type="text/html" id="temperature-template">
-    <h3><span data-bind="text: temperature"></span>°C</h3>
-    <p>Signal strength: <span data-bind="text: rssi"></span></p>
+    <link href="widgets/temperature/widget.css" rel="stylesheet">
+    <div class="temperatureWidget">
+        <div class="temperature" data-bind="text: temperature">
+        </div>
+        <div class="unit">°C</div>
+        <div class="rssi">
+            Signal strength: <span data-bind="text: rssi"></span>
+        </div>
+    </div>
 </script>

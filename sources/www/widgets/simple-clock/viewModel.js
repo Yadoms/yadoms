@@ -12,13 +12,15 @@ function SimpleClockViewModel() {
     this.configuration;
 
     this.resized = function() {
-    if (this.$widgetNode.width() <= 150) {
-            this.$widgetNode.find(".simpleClockWidget").css("font-size", "1.0em");
+    if (this.$widgetNode.width() <= 200) {
+            this.$widgetNode.find(".simpleClockWidget").css("font-size", "1.5em");
         }
+        else if (this.$widgetNode.width() <= 300)
+            this.$widgetNode.find(".simpleClockWidget").css("font-size", "3.0em");
         else if (this.$widgetNode.width() <= 400)
-            this.$widgetNode.find(".simpleClockWidget").css("font-size", "2.0em");
+            this.$widgetNode.find(".simpleClockWidget").css("font-size", "5.0em");
         else
-            this.$widgetNode.find(".simpleClockWidget").css("font-size", "4.0em");
+        this.$widgetNode.find(".simpleClockWidget").css("font-size", "7.0em");
     }
     
     this.initialize = function($widgetNode, $gridsterWidgetNode, configuration) {
@@ -71,16 +73,16 @@ function SimpleClockViewModel() {
      currentSeconds = ( currentSeconds < 10 ? "0" : "" ) + currentSeconds;
 
      // Choose either "AM" or "PM" as appropriate
-     var timeOfDay = ( currentHours < 12 ) ? "AM" : "PM";
+     //var timeOfDay = ( currentHours < 12 ) ? "AM" : "PM";
 
      // Convert the hours component to 12-hour format if needed
-     currentHours = ( currentHours > 12 ) ? currentHours - 12 : currentHours;
+     //currentHours = ( currentHours > 12 ) ? currentHours - 12 : currentHours;
 
      // Convert an hours component of "0" to "12"
-     currentHours = ( currentHours == 0 ) ? 12 : currentHours;
+     //currentHours = ( currentHours == 0 ) ? 12 : currentHours;
 
      // Compose the string for display
-     var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
+     var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds ;
 
      // Update the time display
       viewModel.$widgetNode.find(".simpleClockWidget").text(currentTimeString);

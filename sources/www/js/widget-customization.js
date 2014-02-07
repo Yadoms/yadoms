@@ -43,11 +43,13 @@ $("#customizeButton").click(function() {
       enableGridsterCustomization(true);
       animateCustomizeButton();
       $(".widgetCustomizationToolbar").removeClass("hidden");
+      $(".widget").addClass("liWidgetCustomization");
    }
    else
    {
       $("#customizeButton").removeClass('btn-primary').addClass('btn-inverse');
       enableGridsterCustomization(false);
       $(".widgetCustomizationToolbar").addClass("hidden");
+       $(".widget").removeClass("liWidgetCustomization");
    }
 });

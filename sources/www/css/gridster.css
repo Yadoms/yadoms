@@ -10,7 +10,6 @@
 .gridster li {
     font-size: 1em;
     font-weight: bold;
-    text-align: center;
     line-height: 100%;
 }
 
@@ -27,7 +26,7 @@
 }
 
 .gridster .gs-w {
-    background: #DDD;
+    background-color: white;
     cursor: pointer;
 }
 

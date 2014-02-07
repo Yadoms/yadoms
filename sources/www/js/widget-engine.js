@@ -110,7 +110,7 @@ function getWidgetViewModelDone(widget)
             "<button type=\"button\" class=\"btn btn-default\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
             "</div>" +
             "</div>" +
-            "<div id=\"" + widgetDivId + "\" data-bind=\"template: { name: '" + widget.name + "-template', data: data }\"/>" +
+            "<div id=\"" + widgetDivId + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + widget.name + "-template', data: data }\"/>" +
             "</li>", widget.sizeX, widget.sizeY, widget.positionX, widget.positionY);
 
       $createdObject = $("#" + widgetDivId);
