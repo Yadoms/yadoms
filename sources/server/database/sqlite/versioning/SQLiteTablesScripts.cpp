@@ -65,3 +65,18 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Widget, "CREATE TABLE Widget\
                                                    configuration  TEXT \
                                                 )")                                                
                                                 
+                                                
+                                                
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(HardwareEventLogger, "CREATE TABLE HardwareEventLogger\
+                                                            (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\
+                                                               eventDate  DATETIME NOT NULL,\
+                                                               pluginName TEXT NOT NULL,\
+                                                               pluginVersion TEXT NOT NULL,\
+                                                               pluginRelease INTEGER,\
+                                                               eventType  INTEGER DEFAULT 0, \
+                                                               message  TEXT \
+                                                            )")                                                
+                                                
+
+                            
+                                                

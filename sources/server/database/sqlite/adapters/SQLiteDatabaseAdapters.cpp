@@ -58,3 +58,14 @@ DECLARE_ADAPTER_IMPLEMENTATION(Widget,
    ((PositionY)(int)(0))
    ((Configuration)(std::string)(""))
    )
+
+DECLARE_ADAPTER_IMPLEMENTATION(HardwareEventLogger,
+   ((Id)(int)(0))
+   ((EventDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::local_time()))
+   ((PluginName)(std::string)(""))
+   ((PluginVersion)(std::string)(""))
+   ((PluginRelease)(IHardwarePluginInformation::EReleaseType)(IHardwarePluginInformation::EReleaseType::kStable))
+   ((EventType)(CHardwareEventLogger::EEventType)(CHardwareEventLogger::EEventType::kUnload))
+   ((Message)(std::string)(""))
+)   
+   

@@ -170,6 +170,7 @@
 #define JSON_BOOL (bool)(JSON_NO_CONV)(JSON_NO_CONV)
 #define JSON_DATE (std::string)(JSON_FROM_DATE)(JSON_TO_DATE)
 #define JSON_STRING (std::string)(JSON_NO_CONV)(JSON_NO_CONV)
+#define JSON_ENUM(_e) (int)((_e))((int))
 
 //-------------------------------------------------------
 ///\brief Macro which provide the entity class:
