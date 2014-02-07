@@ -40,10 +40,14 @@ body {
     margin-right: 20px;
 }
 
-.gridster ul {
+.gridster > ul {
 }
 
-.widget div{
+.widget {
+    background-color: white;
+}
+
+.widget > div{
     position: absolute;
     left: 0px;
     right: 0px;
@@ -51,15 +55,65 @@ body {
     bottom: 0px;
 }
 
-.widgetCustomizationToolbar {
+.widgetDiv {
+    background-color: white;
+}
+
+/*Widget during customization*/
+.liWidgetCustomization:before{
+    content: " ";
+    position: absolute;
+    width: 90%;
+    height: 50px;
+    left: 5%;
+    bottom: 25px;
+    background: #000;
+    -moz-box-shadow: 0 25px 15px rgb(0,0,0);
+    -webkit-box-shadow: 0 25px 15px rgb(0,0,0);
+    -o-box-shadow: 0 25px 15px rgb(0,0,0);
+    -ms-box-shadow: 0 25px 15px rgb(0,0,0);
+    -khtml-box-shadow: 0 15px 15px rgb(0,0,0);
+    box-shadow: 0 25px 15px rgb(0,0,0);
+    -moz-transform: rotate(-5deg);
+    -webkit-transform: rotate(-5deg);
+    -o-transform: rotate(-5deg);
+    -ms-transform: rotate(-5deg);
+    -khtml-transform: rotate(-5deg);
+    transform: rotate(-5deg);
+    z-index: -1;
+}
+.widgetCustomizationToolbar{
     z-index: 18;
-    background: rgba(230, 170, 60, 0.3);
     border-color: darkslategray;
     border-style: dashed;
     border-width: 1px;
+    text-align: center;
+}
+.liWidgetCustomization:after{
+    content: " ";
+    position: absolute;
+    bottom: 0;
+    width: 90%;
+    height: 50px;
+    left: 5%;
+    bottom: 25px;
+    background: #000;
+    -moz-box-shadow: 0 25px 15px rgb(0,0,0);
+    -webkit-box-shadow: 0 25px 15px rgb(0,0,0);
+    -o-box-shadow: 0 25px 15px rgb(0,0,0);
+    -ms-box-shadow: 0 25px 15px rgb(0,0,0);
+    -khtml-box-shadow: 0 15px 15px rgb(0,0,0);
+    box-shadow: 0 25px 15px rgb(0,0,0);
+    -moz-transform: rotate(5deg);
+    -webkit-transform: rotate(5deg);
+    -o-transform: rotate(5deg);
+    -ms-transform: rotate(5deg);
+    -khtml-transform: rotate(5deg);
+    transform: rotate(5deg);
+    z-index: -1;
 }
 
-.widgetCustomizationToolbar .btn-group {
+.widgetCustomizationToolbar > .btn-group {
     left: auto;
 }
 
