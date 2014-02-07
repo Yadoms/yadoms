@@ -7,6 +7,7 @@
 #include "IKeywordRequester.h"
 #include "IPageRequester.h"
 #include "IWidgetRequester.h"
+#include "IHardwareEventLoggerRequester.h"
 
 class IDataProvider
 {
@@ -76,6 +77,13 @@ public:
 	//--------------------------------------------------------------  
    virtual boost::shared_ptr<IWidgetRequester> getWidgetRequester() = 0;
 
+   //--------------------------------------------------------------
+	/// \Brief		get the hardware event logger requester
+	/// \return 	the hardware event logger requester
+	/// \throws 		
+	//--------------------------------------------------------------  
+   virtual boost::shared_ptr<IHardwareEventLoggerRequester> getHardwareEventLoggerRequester() = 0;
+   
 protected:
 	IDataProvider()
 	{

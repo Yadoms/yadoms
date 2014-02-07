@@ -10,6 +10,7 @@
 #include "database/entities/Keyword.h"
 #include "database/entities/Page.h"
 #include "database/entities/Widget.h"
+#include "database/entities/HardwareEventLogger.h"
 
 DECLARE_JSON_ENTITY_HEADER(Hardware, 
    (Id)
@@ -66,3 +67,14 @@ DECLARE_JSON_ENTITY_HEADER(Widget,
    (PositionY)
    (Configuration)
 )
+
+
+DECLARE_JSON_ENTITY_HEADER(HardwareEventLogger,
+   (Id)
+   (EventDate)
+   (PluginName)
+   (PluginVersion)
+   (PluginRelease)
+   (EventType)
+   (Message)
+)   

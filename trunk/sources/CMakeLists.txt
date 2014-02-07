@@ -275,6 +275,7 @@ set(YADOMS_SRC
 	server/database/IKeywordRequester.h
 	server/database/IPageRequester.h
 	server/database/IWidgetRequester.h
+	server/database/IHardwareEventLoggerRequester.h
 	server/database/DatabaseException.hpp
 
 	server/database/entities/EntityHelpers.hpp
@@ -285,6 +286,7 @@ set(YADOMS_SRC
 	server/database/entities/Keyword.h
 	server/database/entities/Page.h
 	server/database/entities/Widget.h
+	server/database/entities/HardwareEventLogger.h
 	
 	server/web/IWebServer.h
 	server/web/IRestHandler.h
@@ -308,20 +310,18 @@ set(YADOMS_SRC
 
 	server/web/rest/HardwareRestService.h
 	server/web/rest/HardwareRestService.cpp
-
 	server/web/rest/DeviceRestService.h
 	server/web/rest/DeviceRestService.cpp
-	
 	server/web/rest/PageRestService.h
 	server/web/rest/PageRestService.cpp
-
 	server/web/rest/WidgetRestService.h
 	server/web/rest/WidgetRestService.cpp
-
 	server/web/rest/AcquisitionRestService.h
 	server/web/rest/AcquisitionRestService.cpp
 	server/web/rest/ConfigurationRestService.h
 	server/web/rest/ConfigurationRestService.cpp
+	server/web/rest/HardwareEventLoggerRestService.h
+	server/web/rest/HardwareEventLoggerRestService.cpp
 	)
 
 # Project folders
@@ -365,6 +365,8 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/SQLitePageRequester.cpp		
 		server/database/sqlite/SQLiteWidgetRequester.h
 		server/database/sqlite/SQLiteWidgetRequester.cpp		
+		server/database/sqlite/SQLiteHardwareEventLoggerRequester.h
+		server/database/sqlite/SQLiteHardwareEventLoggerRequester.cpp
 		
 		server/database/sqlite/adapters/SQLite3Extension.hpp
 		server/database/sqlite/adapters/SQLiteDatabaseAdapters.h

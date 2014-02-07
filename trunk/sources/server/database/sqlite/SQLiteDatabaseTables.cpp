@@ -57,3 +57,12 @@ DECLARE_TABLE_COLUMN_NAMES(Widget,  "Widget",
    ((Configuration)("configuration"))
 )
 
+DECLARE_TABLE_COLUMN_NAMES(HardwareEventLogger, "HardwareEventLogger",
+   ((Id)("id"))
+   ((EventDate)("eventDate"))
+   ((PluginName)("pluginName"))
+   ((PluginVersion)("pluginVersion"))
+   ((PluginRelease)("pluginRelease"))
+   ((EventType)("eventType"))
+   ((Message)("message"))
+)
