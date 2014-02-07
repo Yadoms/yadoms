@@ -125,7 +125,7 @@ boost::shared_ptr<CHardwarePluginFactory> CHardwarePluginManager::loadPlugin(con
    m_loadedPlugins[pluginName] = pNewFactory;
 
    // Signal qualifier that a plugin was loaded
-   m_qualifier->signalLoad(pNewFactory);
+   m_qualifier->signalLoad(pNewFactory->getInformation());
 
    return pNewFactory;
 }
@@ -142,7 +142,7 @@ bool CHardwarePluginManager::unloadPlugin(const std::string& pluginName)
       return false;  // No unload : plugin is still used by another instance
 
    // Signal qualifier that a plugin is about to be unloaded
-   m_qualifier->signalLoad(m_loadedPlugins[pluginName]);
+   m_qualifier->signalLoad(m_loadedPlugins[pluginName]->getInformation());
 
    // Effectively unload plugin
    m_loadedPlugins.erase(pluginName);

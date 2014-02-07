@@ -28,7 +28,7 @@ void CHardwarePluginInstance::doWork()
 
    // Loop to restart plugin when crashed
    bool gracefullyExit = false;
-   while (!gracefullyExit && m_qualifier->isSafe(m_pPlugin))
+   while (!gracefullyExit && m_qualifier->isSafe(m_pPlugin->getInformation()))
    {
       try
       {
@@ -42,7 +42,7 @@ void CHardwarePluginInstance::doWork()
          {
             // Plugin has stopped without stop requested
             YADOMS_LOG(error) << getName() << " has stopped without stop requested.";
-            m_qualifier->signalCrash(m_pPlugin, "Plugin stopped itself");
+            m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin stopped itself");
          }
       }
       catch (boost::thread_interrupted&)
@@ -50,23 +50,23 @@ void CHardwarePluginInstance::doWork()
          // End-of-thread exception was not catch by plugin,
          // it's a developer's error, we have to report it
          YADOMS_LOG(error) << getName() << " didn't catch boost::thread_interrupted.";
-         m_qualifier->signalCrash(m_pPlugin, "Plugin didn't catch boost::thread_interrupted");
+         m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin didn't catch boost::thread_interrupted");
       }
       catch (std::exception& e)
       {
          // Plugin crashed
          YADOMS_LOG(error) << getName() << " crashed in doWork with exception : " << e.what();
-         m_qualifier->signalCrash(m_pPlugin, std::string("Plugin crashed in doWork with exception : ") + e.what());
+         m_qualifier->signalCrash(m_pPlugin->getInformation(), std::string("Plugin crashed in doWork with exception : ") + e.what());
       }
       catch (...)
       {
          // Plugin crashed
          YADOMS_LOG(error) << getName() << " crashed in doWork with unknown exception.";
-         m_qualifier->signalCrash(m_pPlugin, "Plugin crashed in doWork with unknown exception");
+         m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin crashed in doWork with unknown exception");
       }
    }
 
-   if (!gracefullyExit && !m_qualifier->isSafe(m_pPlugin))
+   if (!gracefullyExit && !m_qualifier->isSafe(m_pPlugin->getInformation()))
    {
       YADOMS_LOG(error) << getName() << " plugin(" << m_pPlugin->getInformation()->getName() << ") was evaluated as not safe and disabled.";
       //TODO : c'est pas le tout de l'dire, mais faut l'faire !
@@ -85,13 +85,13 @@ void CHardwarePluginInstance::updateConfiguration(const std::string& newConfigur
    {
       // Plugin crashed
       YADOMS_LOG(error) << getName() << " crashed in updateConfiguration with exception : " << e.what();
-      m_qualifier->signalCrash(m_pPlugin, std::string("Plugin crashed in doWork with exception : ") + e.what());
+      m_qualifier->signalCrash(m_pPlugin->getInformation(), std::string("Plugin crashed in doWork with exception : ") + e.what());
    }
    catch (...)
    {
       // Plugin crashed
       YADOMS_LOG(error) << getName() << " crashed in updateConfiguration with unknown exception.";
-      m_qualifier->signalCrash(m_pPlugin, "Plugin crashed in doWork with unknown exception");
+      m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin crashed in doWork with unknown exception");
    }
 }
 
