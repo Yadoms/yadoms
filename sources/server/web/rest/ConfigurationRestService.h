@@ -23,8 +23,12 @@ public:
    CJson getSectionConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent);
    CJson getAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent);
 
+   CJson createOneConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent);
+   CJson createAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent);
    CJson updateOneConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent);
+   CJson updateAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent);
    CJson deleteOneConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent);
+   CJson deleteAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent);
 
 private:
    boost::shared_ptr<IDataProvider> m_dataProvider;

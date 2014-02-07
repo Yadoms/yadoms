@@ -2,7 +2,7 @@
 #include "ConfigurationRestService.h"
 #include <shared/Exceptions/NotImplementedException.hpp>
 #include "json/JsonSerializers.h"
-#include "json/JsonError.h"
+#include "json/JsonResult.h"
 #include "json/JsonCollectionSerializer.h"
 #include "RestDispatcherHelpers.hpp"
 #include "RestDispatcher.h"
@@ -25,7 +25,7 @@ void CConfigurationRestService::configureDispatcher(CRestDispatcher & dispatcher
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CConfigurationRestService::getAllConfigurations);
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CConfigurationRestService::getSectionConfigurations);
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*"), CConfigurationRestService::getConfiguration);
-   REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("*")("*"), CConfigurationRestService::updateOneConfiguration);
+   REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("*"), CConfigurationRestService::updateOneConfiguration);
    REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("*")("*"), CConfigurationRestService::deleteOneConfiguration);
 }
 
@@ -70,12 +70,68 @@ CJson CConfigurationRestService::getAllConfigurations(const std::vector<std::str
    return CJonCollectionSerializer<CConfiguration>::SerializeCollection(hwList, hes, getRestKeyword());
 }
 
+CJson CConfigurationRestService::createOneConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent)
+{
+   return CJson();
+}
+
+CJson CConfigurationRestService::createAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent)
+{
+   return CJson();
+}
+
 
 CJson CConfigurationRestService::updateOneConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
-   CConfigurationEntitySerializer hes;
-   CConfiguration configToUpdate = hes.deserialize(requestContent);
+   try
+   {
+      CConfigurationEntitySerializer hes;
+      CConfiguration configToUpdate = hes.deserialize(requestContent);
 
+      std::string section = "";
+      std::string keyname = "";
+      if(parameters.size()>1)
+         section = parameters[1];
+      if(parameters.size()>2)
+         keyname = parameters[2];
+
+
+      if((configToUpdate.getSection().empty() && configToUpdate.getName().empty()) ||
+         (boost::iequals(configToUpdate.getSection(), section) &&  boost::iequals(configToUpdate.getName(), keyname)))
+      {
+         //ensure section and name are corretly filled
+         configToUpdate.setSection(section);
+         configToUpdate.setName(keyname);
+         //update modification date
+         configToUpdate.setLastModificationDate(boost::posix_time::second_clock::local_time());
+         //commit changes to database
+         m_dataProvider->getConfigurationRequester()->updateConfiguration(configToUpdate);
+         return CJsonResult::GenerateSuccess(getConfiguration(parameters, requestContent));
+      }
+      else
+      {
+         return CJsonResult::GenerateError("section and name in query content do not match to rest url");
+      }
+   }
+   catch(std::exception &ex)
+   {
+      return CJsonResult::GenerateError(ex);
+   }
+   catch(...)
+   {
+      return CJsonResult::GenerateError("unknown exception in updating a configuration value");
+   }
+}
+
+CJson CConfigurationRestService::updateAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent)
+{
+   return CJson();
+}
+
+
+
+CJson CConfigurationRestService::deleteOneConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent)
+{
    std::string section = "";
    std::string keyname = "";
    if(parameters.size()>1)
@@ -83,26 +139,26 @@ CJson CConfigurationRestService::updateOneConfiguration(const std::vector<std::s
    if(parameters.size()>2)
       keyname = parameters[2];
 
-   
-   if((configToUpdate.getSection().empty() && configToUpdate.getName().empty()) ||
-      (boost::iequals(configToUpdate.getSection(), section) &&  boost::iequals(configToUpdate.getName(), keyname)))
+   if(!section.empty() && !keyname.empty())
    {
-      //ensure section and name are corretly filled
-      configToUpdate.setSection(section);
-      configToUpdate.setName(keyname);
-      //update modification date
-      configToUpdate.setLastModificationDate(boost::posix_time::second_clock::local_time());
-      //commit changes to database
-      m_dataProvider->getConfigurationRequester()->updateConfiguration(configToUpdate);
-      return getConfiguration(parameters, requestContent);
+      CConfiguration configToRemove;
+      configToRemove.setSection(section);
+      configToRemove.setName(keyname);
+      m_dataProvider->getConfigurationRequester()->removeConfiguration(configToRemove);
    }
-   else
-   {
-      return CJsonError::GenerateError("section and name in query content do not match to rest url");
-   }
+
+   return CJson();
 }
 
-CJson CConfigurationRestService::deleteOneConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent)
+CJson CConfigurationRestService::deleteAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
-   return CJson();
+   std::string section = "";
+   std::string keyname = "";
+   if(parameters.size()>1)
+      section = parameters[1];
+   if(parameters.size()>2)
+      keyname = parameters[2];
+
+   //m_dataProvider->getConfigurationRequester()->removeConfiguration();
+   return CJsonResult::GenerateError();
 }
