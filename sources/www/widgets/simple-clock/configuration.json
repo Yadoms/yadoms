@@ -2,6 +2,7 @@
     "name": "simple-clock",
     "version": "0.1",
     "author": "Nicolas HILAIRE",
+    "description": "A widget that display a resizable clock",
     "dimensions": {
         "min": {
             "x": 1,

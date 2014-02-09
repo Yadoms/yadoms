@@ -47,7 +47,7 @@
                   <div class="navbar-collapse collapse">
                       <ul class="nav navbar-nav">
                           <li class="dropdown">
-                              <a href="#" class="dropdown-toggle btn btn-inverse" data-toggle="dropdown"><i class="caret"></i></a>
+                              <a href="" class="dropdown-toggle btn btn-inverse" data-toggle="dropdown"><i class="caret"></i></a>
                               <ul class="dropdown-menu">
                                   <li><a href="#">Configuration</a></li>
                                   <li><a href="#">Check For Update</a></li>
@@ -58,6 +58,8 @@
                                   <li><a href="#">Restart</a></li>
                               </ul>
                           </li>
+                          <li><a href="#" class="btn btn-inverse customization-item" id="btn-add-widget"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Add a new widget</a></li>
+                          <li><a href="#" class="btn btn-inverse customization-item hidden" id="btn-exit-customization"><i class="fa fa-times"></i>&nbsp;&nbsp;Exit customization</a></li>
                       </ul>
                       <ul class="nav navbar-nav navbar-right">
                           <li><a href="#" class="btn btn-inverse" id="chartButton"><i class="fa fa-bar-chart-o"></i></a></li>
@@ -106,6 +108,8 @@
   <script src="js/widget-engine.js"></script>
    <script src="js/widget-customization.js"></script>
 
+  <script type="text/javascript" src="libs/noty/js/packaged/jquery.noty.packaged.min.js"></script>
+
    <div id="templates" class="hidden"></div>
 
 	<script type="text/javascript">
@@ -124,8 +128,55 @@
    $( document ).ready(function() {
       //we get pages
       $.getJSON( "/rest/page", requestPageDone());
+
+       $("#btn-confirm-add-widget").click(function () {
+            //we close the new widget modal
+           ("#new-widget-modal").hide();
+           //we add the widget
+           //TODO
+           //we open the configuration like if the user has clicked on the configuration button
+           //TODO
+
+       });
+
    });
 
+
 	</script>
+
+  <!--New widget Modal -->
+  <div class="modal fade" id="new-widget-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                  <h4 class="modal-title" id="myModalLabel">Add a new Widget</h4>
+              </div>
+              <div class="modal-body">
+                  <div id="new-widget-carousel" class="carousel slide">
+
+                      <!-- Wrapper for slides -->
+                      <div class="carousel-inner">
+                          <!-- widgets types will be inserted here -->
+                      </div>
+
+                      <!-- Controls -->
+                      <a class="left carousel-control" href="#new-widget-carousel" data-slide="prev">
+                          <span class="icon-prev"></span>
+                      </a>
+                      <a class="right carousel-control" href="#new-widget-carousel" data-slide="next">
+                          <span class="icon-next"></span>
+                      </a>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button id="btn-get-more-widget" type="button" class="btn btn-primary pull-left">Get more widget</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button id="btn-confirm-add-widget" type="button" class="btn btn-primary">Add new</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
   </body>
 </html>
