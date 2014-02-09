@@ -16,61 +16,70 @@ function getDatabaseIdFromElement($element)
 
 function requestPageDone()
 {
-   return function( data ) {
-      //we parse the json answer
-      $.each(data.page, function(index, value) {
-         //foreach page
-         pageArray[value.id] = new Page();
-         pageArray[value.id].pageData = value;
-         var tabIdAsText = "tab-" + value.id;
-         //pill creation
-         $("#tabContainer .tab-content").append("<div class=\"widgetPage tab-pane active\" id=\"" + tabIdAsText + "\"><div class=\"gridster\"><ul></ul></div></div>")
-         //page creation
-         $("#pageMenu ul").append("<li><a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" + value.name + "</a></li>");
-         //gridster creation
-         pageArray[value.id].gridster = $("#" + tabIdAsText + " ul").gridster({
-            widget_margins: [gridMargin, gridMargin],
-            widget_base_dimensions: [gridWidth, gridWidth],
-            min_cols: numberOfColumns,
-            max_cols: numberOfColumns,
-            resize: {
-               enabled: true,
-               resize: function(e, ui, $widget) {
+    return function( data ) {
+        //we parse the json answer
+        $.each(data.page, function(index, value) {
+            //foreach page
+            pageArray[value.id] = new Page();
+            pageArray[value.id].pageData = value;
+            var tabIdAsText = "tab-" + value.id;
+            //pill creation
+            $("#tabContainer .tab-content").append(
+                "<div class=\"widgetPage tab-pane active\" id=\"" + tabIdAsText + "\">" +
+                    "<div class=\"gridster\">" +
+                    "<ul></ul>" +
+                    "</div>" +
+                    "</div>");
+            //page creation
+            $("#pageMenu ul").append(
+                "<li>" +
+                    "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" + value.name + "</a>" +
+                "</li>");
 
-                     if ($widget.width() <= $widget.data('coords').grid.min_size_x * gridWidth) {
-                        $widget.width($widget.data('coords').grid.min_size_x * gridWidth);
-                     }
-                     if ($widget.height() <= $widget.data('coords').grid.min_size_y * gridWidth) {
-                        $widget.height($widget.data('coords').grid.min_size_y * gridWidth);
-                     }
+            //gridster creation
+            pageArray[value.id].gridster = $("#" + tabIdAsText + " ul").gridster({
+                widget_margins: [gridMargin, gridMargin],
+                widget_base_dimensions: [gridWidth, gridWidth],
+                min_cols: numberOfColumns,
+                max_cols: numberOfColumns,
+                resize: {
+                    enabled: true,
+                    resize: function(e, ui, $widget) {
 
-                  id = getDatabaseIdFromElement($widget);
-                  if (widgetArray[id].viewModel.resized !== undefined)
-                     widgetArray[id].viewModel.resized()
-               },
-               stop: function(e, ui, $widget) {
-                  id = getDatabaseIdFromElement($widget);
-                  if (widgetArray[id].viewModel.resized !== undefined)
-                     widgetArray[id].viewModel.resized()
-               }
-            }
-         }).data('gridster');
-      });
+                        if ($widget.width() <= $widget.data('coords').grid.min_size_x * gridWidth) {
+                            $widget.width($widget.data('coords').grid.min_size_x * gridWidth);
+                        }
+                        if ($widget.height() <= $widget.data('coords').grid.min_size_y * gridWidth) {
+                            $widget.height($widget.data('coords').grid.min_size_y * gridWidth);
+                        }
 
-      //we activate first page on the pills
-      $("#pageMenu ul li").first().addClass("active");
+                        id = getDatabaseIdFromElement($widget);
+                        if (widgetArray[id].viewModel.resized !== undefined)
+                            widgetArray[id].viewModel.resized()
+                    },
+                    stop: function(e, ui, $widget) {
+                        id = getDatabaseIdFromElement($widget);
+                        if (widgetArray[id].viewModel.resized !== undefined)
+                            widgetArray[id].viewModel.resized()
+                    }
+                }
+            }).data('gridster');
+        });
 
-      //we remove the active class of all hidden gridster
-      $(".tab-content div").not($(".tab-content div").first()).removeClass("active");
+        //we activate first page on the pills
+        $("#pageMenu ul li").first().addClass("active");
 
-      $(".widgetPage .gridster").width(numberOfColumns * (gridWidth + gridMargin * 2));
+        //we remove the active class of all hidden gridster
+        $(".tab-content div").not($(".tab-content div").first()).removeClass("active");
 
-      //we deactivate the customization
-      enableGridsterCustomization(false);
+        $(".widgetPage .gridster").width(numberOfColumns * (gridWidth + gridMargin * 2));
 
-      //we get widgets from REST
-      $.getJSON( "/rest/widget", requestWidgetsDone());
-   };
+        //we deactivate the customization
+        enableGridsterCustomization(false);
+
+        //we get widgets from REST
+        $.getJSON( "/rest/widget", requestWidgetsDone());
+    };
 }
 
 function requestWidgetsDone()
@@ -94,6 +103,23 @@ function getWidgetViewDone(widget)
    };
 }
 
+//Create a new widget and add it to the page
+function createWidget(page, widget) {
+    assert(page !== undefined, "createWidget function invalid page argument");
+    assert(widget !== undefined, "createWidget function widget must be defined");
+
+    return page.gridster.add_widget(
+        "<li class=\"widget\" id=\"gridsterWidget-" + widget.id +"\">" +
+            "<div class=\"widgetCustomizationToolbar customization-item hidden\">" +
+            "<div class=\"btn-group btn-group-sm\">" +
+            "<button type=\"button\" class=\"btn btn-default\" title=\"Configure\"><i class=\"fa fa-cog\"></i></button>" +
+            "<button type=\"button\" class=\"btn btn-default\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
+            "</div>" +
+            "</div>" +
+            "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + widget.name + "-template', data: data }\"/>" +
+            "</li>", widget.sizeX, widget.sizeY, widget.positionX, widget.positionY);
+}
+
 function getWidgetViewModelDone(widget)
 {
    //viewModel.js has been executed
@@ -102,16 +128,8 @@ function getWidgetViewModelDone(widget)
       widgetViewModel = null;
       widgetDivId = "widget-" + widget.id;
       gridsterWidgetId = "gridsterWidget-" + widget.id;
-      $gridsterWidget = pageArray[widget.idPage].gridster.add_widget(
-         "<li class=\"widget\" id=\"gridsterWidget-" + widget.id +"\">" +
-            "<div class=\"widgetCustomizationToolbar hidden\">" +
-            "<div class=\"btn-group btn-group-sm\">" +
-            "<button type=\"button\" class=\"btn btn-default\" title=\"Configure\"><i class=\"fa fa-cog\"></i></button>" +
-            "<button type=\"button\" class=\"btn btn-default\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
-            "</div>" +
-            "</div>" +
-            "<div id=\"" + widgetDivId + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + widget.name + "-template', data: data }\"/>" +
-            "</li>", widget.sizeX, widget.sizeY, widget.positionX, widget.positionY);
+
+      $gridsterWidget = createWidget(pageArray[widget.idPage], widget);
 
       $createdObject = $("#" + widgetDivId);
 

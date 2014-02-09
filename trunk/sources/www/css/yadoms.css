@@ -113,7 +113,7 @@ body {
     z-index: -1;
 }
 
-.widgetCustomizationToolbar > .btn-group {
+.customization-item > .btn-group {
     left: auto;
 }
 
@@ -123,4 +123,33 @@ body {
 
 .btn-inverse {
     background: rgba(80, 80, 80, 0.3);
+}
+
+.navbar-nav .btn {
+    margin-left: 10px;
+}
+
+.customization-item {
+
+}
+
+#new-widget-carousel .carousel-inner {
+    height: 250px;
+    background: slategray;
+}
+
+#new-widget-carousel .carousel-caption {
+    clear: both;
+    left: auto;
+    bottom: auto;
+    text-align: center;
+    width: 60%;
+}
+
+.carousel-widget-preview {
+    clear: both;
+    left: auto;
+    bottom: auto;
+    text-align: center;
+    margin: 20px auto;
 }

@@ -2,6 +2,7 @@
     "name": "temperature",
     "version": "0.1",
     "author": "Nicolas HILAIRE",
+    "description": "A simple widget that display temperature",
     "dimensions": {
         "min": {
             "x": 1,
