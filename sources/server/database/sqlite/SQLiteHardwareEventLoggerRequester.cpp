@@ -22,7 +22,7 @@ CSQLiteHardwareEventLoggerRequester::~CSQLiteHardwareEventLoggerRequester()
 
 int CSQLiteHardwareEventLoggerRequester::addEvent(const std::string & pluginName, const std::string & pluginVersion, const IHardwarePluginInformation::EReleaseType pluginReleaseType, const CHardwareEventLogger::EEventType eventType, const std::string & message /*= CStringExtension::EmptyString*/)
 {
-   boost::posix_time::ptime insertDate = boost::posix_time::second_clock::local_time();
+   boost::posix_time::ptime insertDate = boost::posix_time::second_clock::universal_time();
 
    CQuery qInsert;
    qInsert. InsertInto(CHardwareEventLoggerTable::getTableName(), CHardwareEventLoggerTable::getPluginNameColumnName(), CHardwareEventLoggerTable::getPluginVersionColumnName(), CHardwareEventLoggerTable::getPluginReleaseColumnName(), CHardwareEventLoggerTable::getEventTypeColumnName(), CHardwareEventLoggerTable::getMessageColumnName(), CHardwareEventLoggerTable::getEventDateColumnName()).

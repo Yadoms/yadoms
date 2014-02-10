@@ -57,7 +57,7 @@
 //                ((Value)(std::string)(""))
 //                ((DefaultValue)(std::string)(""))
 //                ((Description)(std::string)(""))
-//                ((LastModificationDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::local_time()))
+//                ((LastModificationDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
 //                )
 //
 //    Ouptut :
@@ -122,7 +122,7 @@
 //                				else if(boost::iequals(CConfigurationTable::getLastModificationDateColumnName(), cols[nCol])) 
 //                				{ 
 //                					if(sqlite3_column_type(pStatement, nCol) == SQLITE_NULL) 
-//                						newEntity->setLastModificationDate (boost::posix_time::second_clock::local_time()  ); 
+//                						newEntity->setLastModificationDate (boost::posix_time::second_clock::universal_time()  ); 
 //                					else 
 //                						newEntity->setLastModificationDate ( CSQLite3Extension::extractData< boost::posix_time::ptime  >(pStatement, nCol) ); 
 //                					}   

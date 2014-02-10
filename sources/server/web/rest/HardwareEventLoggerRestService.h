@@ -14,12 +14,12 @@ public:
    virtual void configureDispatcher(CRestDispatcher & dispatcher);
    // [END] IRestService implementation
 
-   static const std::string & getRestKeyword();
+   const std::string & getRestKeyword();
    
    CJson getLogsForPluginName(const std::vector<std::string> & parameters, const CJson & requestContent);  
    CJson getLogsForPluginNameFromDate(const std::vector<std::string> & parameters, const CJson & requestContent);  
 
 private:
    boost::shared_ptr<IDataProvider> m_dataProvider;
-   static std::string m_restKeyword;
+   std::string m_restKeyword;
 };

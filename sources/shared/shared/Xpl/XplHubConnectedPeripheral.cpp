@@ -6,7 +6,7 @@
 
 //m_socket(m_ioService), 
 CXplHubConnectedPeripheral::CXplHubConnectedPeripheral(boost::asio::io_service & io_service, std::string ip, unsigned short portNumber, int interval) 
-   :  m_portNumber(portNumber), m_interval(interval), m_ip(ip), m_socket(io_service), m_lastTimeSeen(boost::posix_time::second_clock::local_time())
+   :  m_portNumber(portNumber), m_interval(interval), m_ip(ip), m_socket(io_service), m_lastTimeSeen(boost::posix_time::second_clock::universal_time())
 {
    m_socket.open(boost::asio::ip::udp::v4());
    m_socket.set_option(boost::asio::ip::udp::socket::reuse_address(true));
@@ -49,7 +49,7 @@ boost::posix_time::ptime CXplHubConnectedPeripheral::getLastTimeSeen() const
 
 void CXplHubConnectedPeripheral::updateLastTimeSeenFromNow()
 {
-   m_lastTimeSeen = boost::posix_time::second_clock::local_time();
+   m_lastTimeSeen = boost::posix_time::second_clock::universal_time();
 }
 
 void CXplHubConnectedPeripheral::updateLastTimeSeen(boost::posix_time::ptime time)

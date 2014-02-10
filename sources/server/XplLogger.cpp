@@ -27,7 +27,7 @@ void CXplLogger::onMessageReceived(CXplMessage & message)
          acq.setSource(message.getSource().toString());
          acq.setKeyword(bodyLine.first);
          acq.setValue(bodyLine.second);
-         acq.setDate(boost::posix_time::second_clock::local_time());
+         acq.setDate(boost::posix_time::second_clock::universal_time());
          m_dataProvider->getAcquisitionRequester()->addAcquisition(acq);
       }
    }
