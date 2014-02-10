@@ -240,13 +240,10 @@ void CSupervisor::doWork()
 
       // ######################### [END] Xpl Logger #########################
 
+      YADOMS_LOG(info) << "Supervisor is running...";
       try
       {
-         YADOMS_LOG(info) << "Supervisor is running...";
-         while (getStatus() != CThreadBase::kStopping)
-         {
-            boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-         }
+         waitForEvents();
       }
       catch (boost::thread_interrupted&)
       {

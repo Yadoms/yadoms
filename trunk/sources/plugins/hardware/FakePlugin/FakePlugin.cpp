@@ -101,6 +101,10 @@ void CFakePlugin::doWork(const std::string& configurationValues)
          default:
             {
                YADOMS_LOG(error) << "Unknown message id";
+
+               // We need to consume this unknown event
+               popEvent();
+
                break;
             }
          }
