@@ -8,10 +8,11 @@
 #include "json/JsonResult.h"
 #include "AcquisitionRestService.h"
 
+
 std::string CWidgetRestService::m_restKeyword= std::string("widget");
 
-CWidgetRestService::CWidgetRestService(boost::shared_ptr<IDataProvider> dataProvider)
-   :m_dataProvider(dataProvider)
+CWidgetRestService::CWidgetRestService(boost::shared_ptr<IDataProvider> dataProvider, const std::string & webServerPath)
+   :m_dataProvider(dataProvider), m_webServerPath(webServerPath)
 {
 
 }
@@ -27,6 +28,7 @@ void CWidgetRestService::configureDispatcher(CRestDispatcher & dispatcher)
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CWidgetRestService::getAllWidgets);
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CWidgetRestService::getOneWidget);
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")(CAcquisitionRestService::getRestKeyword()), CWidgetRestService::getWidgetAcquisitions);
+   REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("packages"), CWidgetRestService::findWidgetPackages);
    REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword), CWidgetRestService::addWidget);
    REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword), CWidgetRestService::replaceAllWidgets);
    REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword), CWidgetRestService::deleteAllWidgets);
@@ -104,12 +106,12 @@ CJson CWidgetRestService::replaceAllWidgets(const std::vector<std::string> & par
 
    CWidgetEntitySerializer hes;
    std::vector<boost::shared_ptr<CWidget> > widgetsToAdd = CJsonCollectionSerializer<CWidget>::DeserializeCollection(requestContent, hes, getRestKeyword());
-  
+
    BOOST_FOREACH(boost::shared_ptr<CWidget> pw, widgetsToAdd)
    {
       m_dataProvider->getWidgetRequester()->addWidget(*pw);
    }
-   
+
    return CJsonResult::GenerateSuccess();
 }
 
@@ -117,4 +119,57 @@ CJson CWidgetRestService::deleteAllWidgets(const std::vector<std::string> & para
 {
    m_dataProvider->getWidgetRequester()->removeAllWidgets();
    return CJsonResult::GenerateSuccess();
+}
+
+
+CJson CWidgetRestService::findWidgetPackages(const std::vector<std::string> & parameters, const CJson & requestContent)
+{
+   CJson result;
+
+   //construct widget path
+   std::string widgetPath = m_webServerPath;
+   if(!boost::algorithm::ends_with(widgetPath, "/"))
+      widgetPath += "/";
+   widgetPath += "widgets";
+
+   boost::filesystem::path someDir(widgetPath);
+   boost::filesystem::directory_iterator end_itr; // default construction yields past-the-end
+   CJsonSerializer ser;
+
+   if ( boost::filesystem::exists(someDir) && boost::filesystem::is_directory(someDir))
+   {
+      CJson allData;
+      for( boost::filesystem::directory_iterator dir_iter(someDir) ; dir_iter != end_itr ; ++dir_iter)
+      {
+         if(boost::filesystem::is_directory(*dir_iter))
+         {
+            //dir_iter->m_path
+            std::string packageFile = dir_iter->path().string();
+            if(!boost::algorithm::ends_with(packageFile, "/"))
+               packageFile += "/";
+            packageFile += "package.json";
+
+            boost::filesystem::path packageFileP(packageFile);
+
+            if ( boost::filesystem::exists(packageFileP) && boost::filesystem::is_regular_file(packageFileP))
+            {
+               std::ifstream ifs;
+               ifs.open(packageFile.c_str(),std::ios::in);
+
+               
+               std::stringstream ss;
+               ss << ifs.rdbuf();
+               CJson jsonFromPackageFile;
+               ser.deserialize(ss.str(), jsonFromPackageFile);
+               allData.push_back(std::make_pair("", jsonFromPackageFile));
+            }
+         }
+      }
+      result.add_child("packages", allData);
+
+
+      return CJsonResult::GenerateSuccess(result);
+   }
+   else
+      return CJsonResult::GenerateError(widgetPath + " is not a valid directory.");
 }

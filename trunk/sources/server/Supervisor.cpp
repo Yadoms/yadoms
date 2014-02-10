@@ -207,7 +207,7 @@ void CSupervisor::doWork()
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CHardwareRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CDeviceRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CPageRestService(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CWidgetRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CWidgetRestService(pDataProvider, webServerPath)));
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CAcquisitionRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CConfigurationRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CHardwareEventLoggerRestService(pDataProvider)));
