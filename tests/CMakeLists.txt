@@ -149,6 +149,7 @@ set(BOOST_LIBS
 	log_setup 
 	program_options
         unit_test_framework system
+	regex
 )
 
 # search boost libs
@@ -177,6 +178,7 @@ set(USE_WEBEM_WEBSERVER FALSE)
 #Use Tests
 set(USE_TESTS_START_OPTIONS_LOADER TRUE)
 set(USE_TESTS_HARDWARE_PLUGIN_MANAGER FALSE)
+set(USE_TESTS_SHARED_EVENT TRUE)
 
 #include libs (have their own CMakeList.txt)
 include_directories(../sources/external-libs)
@@ -284,8 +286,14 @@ IF (USE_TESTS_START_OPTIONS_LOADER)
         ../sources/server/stdafx.cpp
         ../sources/server/stdafx.h
   
-	../sources/server/StartupOptionsLoader.h
-	../sources/server/StartupOptionsLoader.cpp
+	../sources/server/StartupOptions/Loader.h
+	../sources/server/StartupOptions/Loader.cpp
+	../sources/server/StartupOptions/InvalidOptionException.hpp
+	../sources/server/StartupOptions/LoaderCustomValidators.hpp
+	../sources/server/StartupOptions/LoaderException.hpp
+	../sources/server/StartupOptions/MustExistPathOption.hpp
+	../sources/server/StartupOptions/StartupOptions.h
+	../sources/server/StartupOptions/ValidIpAddressOption.hpp
 
         ../tests/server/MainTestStartOptionsLoader.cpp
 
@@ -307,19 +315,52 @@ set(YADOMS_TESTS_HARDWARE_PLUGIN_MANAGER
         ../sources/server/stdafx.cpp
         ../sources/server/stdafx.h
   
-	../sources/server/pluginSystem/HardwarePluginManager.h
-	../sources/server/pluginSystem/HardwarePluginManager.cpp
-        ../sources/server/pluginSystem/HardwarePluginFactory.h
-        ../sources/server/pluginSystem/HardwarePluginFactory.cpp
-        ../sources/plugins/hardware/IHardwarePlugin.h
-        ../sources/server/database/entities/Hardware.h
+#	../sources/server/pluginSystem/HardwarePluginManager.h
+#	../sources/server/pluginSystem/HardwarePluginManager.cpp
+#       ../sources/server/pluginSystem/HardwarePluginFactory.h
+#        ../sources/server/pluginSystem/HardwarePluginFactory.cpp
+#        ../sources/plugins/hardware/IHardwarePlugin.h
+#        ../sources/server/database/entities/Hardware.h
 
-	../sources/server/StartupOptionsLoader.h
-	../sources/server/StartupOptionsLoader.cpp
+#	../sources/server/StartupOptions/Loader.h
+#	../sources/server/StartupOptions/Loader.cpp
+#	../sources/server/StartupOptions/InvalidOptionException.hpp
+#	../sources/server/StartupOptions/LoaderCustomValidators.hpp
+#	../sources/server/StartupOptions/LoaderException.hpp
+#	../sources/server/StartupOptions/MustExistPathOption.hpp
+#	../sources/server/StartupOptions/StartupOptions.h
+#	../sources/server/StartupOptions/ValidIpAddressOption.hpp
 
-        ../tests/server/pluginSystem/MainTestHardwarePluginManager.cpp
+#        ../tests/server/pluginSystem/MainTestHardwarePluginManager.cpp
 
         )
+ENDIF()
+
+IF (USE_TESTS_SHARED_EVENT)
+
+set(YADOMS_TESTS_SHARED_EVENT
+
+        ../sources/server/stdafx.cpp
+        ../sources/server/stdafx.h
+
+ 	../sources/shared/shared/StringExtension.h
+ 	../sources/shared/shared/StringExtension.cpp
+   
+  	../sources//shared/shared/Exceptions/BadConversionException.hpp
+
+        ../sources/shared/shared/Event/Event.hpp
+        ../sources/shared/shared/Event/EventBase.hpp
+        ../sources/shared/shared/Event/EventHandler.hpp
+
+ 	../sources/shared/shared/Exceptions/BadConversionException.hpp
+ 	../sources/shared/shared/Exceptions/EmptyResultException.hpp
+ 	../sources/shared/shared/Exceptions/Exception.hpp
+ 	../sources/shared/shared/Exceptions/InvalidParameterException.hpp
+
+	../tests/shared/shared/Event/MainTestEvent.cpp
+
+	)
+
 ENDIF()
 
 #Web server
@@ -340,6 +381,26 @@ if (USE_TESTS_HARDWARE_PLUGIN_MANAGER)
    add_precompiled_header(MainTestHardwarePluginManager stdafx.h)
 ENDIF()
 
+if (USE_TESTS_SHARED_EVENT)
+   add_executable(MainTestEvent ${YADOMS_TESTS_SHARED_EVENT} ${YADOMS_SRC})
+   add_precompiled_header(MainTestEvent stdafx.h)
+ENDIF()
+
+##################################################################################################
+## yadoms-shared
+##################################################################################################
+
+include_directories(../sources/shared)
+
+set(SHARED_INCL_DIR ../sources/shared)
+IF(WIN32)
+	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/shared/windows)
+ELSEIF(APPLE)
+	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/shared/mac)
+ELSE()
+	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/shared/linux)
+ENDIF()
+
 ##################################################################################################
 ## yadoms-tools
 ##################################################################################################
@@ -349,35 +410,70 @@ set(SHARED_LIB_SRC
 	../sources/tools/tools/stdafx.cpp
 	../sources/tools/tools/stdafx.h
 
-	../sources/tools/tools/ThreadBase.cpp
-	../sources/tools/tools/ThreadBase.h
+	../sources/shared/shared/ThreadBase.cpp
+	../sources/shared/shared/ThreadBase.h
 
-	../sources/tools/tools/Log.h
-	../sources/tools/tools/Log.cpp
-	../sources/tools/tools/StringExtension.hpp	
-	../sources/tools/tools/Exceptions/Exception.hpp
-#	../sources/tools/tools/Exceptions/Exception.cpp
-	../sources/tools/tools/Exceptions/NotImplementedException.hpp
-	../sources/tools/tools/Exceptions/NullReferenceException.hpp
-#	../sources/tools/tools/Exceptions/NullReferenceException.cpp
-	../sources/tools/tools/Exceptions/EmptyResultException.hpp
+	../sources/shared/shared/Log.h
+	../sources/shared/shared/Log.cpp
+	../sources/shared/shared/StringExtension.h
+	../sources/shared/shared/StringExtension.cpp
+	../sources/shared/shared/Exceptions/Exception.hpp
+	../sources/shared/shared/Exceptions/NotImplementedException.hpp
+	../sources/shared/shared/Exceptions/NullReferenceException.hpp
+	../sources/shared/shared/Exceptions/EmptyResultException.hpp
 
-	../sources/tools/tools/dir_monitor/dir_monitor.hpp
-	../sources/tools/tools/dir_monitor/basic_dir_monitor.hpp
+	../sources/shared/shared/Event/Event.hpp
+	../sources/shared/shared/Event/EventHandler.hpp
+	../sources/shared/shared/Event/EventBase.hpp
+
+	../sources/shared/shared/Xpl/XplMessage.h
+	../sources/shared/shared/Xpl/XplMessage.cpp
+	../sources/shared/shared/Xpl/XplService.h
+	../sources/shared/shared/Xpl/XplService.cpp
+	../sources/shared/shared/Xpl/XplActor.h
+	../sources/shared/shared/Xpl/XplActor.cpp
+	../sources/shared/shared/Xpl/XplMessageSchemaIdentifier.h
+	../sources/shared/shared/Xpl/XplMessageSchemaIdentifier.cpp
+	../sources/shared/shared/Xpl/XplHelper.h
+	../sources/shared/shared/Xpl/XplHelper.cpp
+
 	../sources/tools/tools/DirectoryChangeListener.h
 	../sources/tools/tools/DirectoryChangeListener.cpp
 	
 	#include both platform files to see them into IDE
-	../sources/tools/windows/tools/DynamicLibrary.hpp
-	../sources/tools/windows/tools/Export.h
+	../sources/shared/windows/shared/DynamicLibrary.hpp
+	../sources/shared/windows/shared/Export.h
 	../sources/tools/windows/tools/dir_monitor/basic_dir_monitor_service.hpp
 	../sources/tools/windows/tools/dir_monitor/dir_monitor_impl.hpp
 
-	../sources/tools/linux/tools/DynamicLibrary.hpp
-	../sources/tools/linux/tools/Export.h
+	../sources/shared/linux/shared/DynamicLibrary.hpp
+	../sources/shared/linux/shared/Export.h
 	../sources/tools/linux/tools/dir_monitor/basic_dir_monitor_service.hpp
 	../sources/tools/linux/tools/dir_monitor/dir_monitor_impl.hpp
 )
+
+#Append platform specific files
+
+IF(MSVC)
+set(TOOLS_LIB_SRC	
+	${TOOLS_LIB_SRC}
+	tools/windows/tools/dir_monitor/basic_dir_monitor_service.hpp
+	tools/windows/tools/dir_monitor/dir_monitor_impl.hpp
+)	
+
+ELSEIF(APPLE)
+set(TOOLS_LIB_SRC	
+	${TOOLS_LIB_SRC}
+	tools/mac/tools/dir_monitor/basic_dir_monitor_service.hpp
+	tools/mac/tools/dir_monitor/dir_monitor_impl.hpp
+)	
+ELSE()
+set(TOOLS_LIB_SRC	
+	${TOOLS_LIB_SRC}
+	tools/linux/tools/dir_monitor/basic_dir_monitor_service.hpp
+	tools/linux/tools/dir_monitor/dir_monitor_impl.hpp
+)	
+ENDIF()
 
  #Define project folders
 IF(MSVC)
@@ -400,7 +496,7 @@ ELSE()
 	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/tools/tools)
 ENDIF()
 
-set_property( TARGET yadoms-tools PROPERTY INCLUDE_DIRECTORIES ${TOOLS_INCL_DIR} ${BOOST_INCL_DIR})
+set_property( TARGET yadoms-tools PROPERTY INCLUDE_DIRECTORIES ${TOOLS_INCL_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
 
 ##################################################################################################
 ## Plugins
@@ -421,11 +517,15 @@ set(YADOMS_INCL_DIR
 )
 
 IF (USE_TESTS_START_OPTIONS_LOADER)
-        set_property( TARGET MainTestStartOptionsLoader PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${BOOST_INCL_DIR})
+        set_property( TARGET MainTestStartOptionsLoader PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
 ENDIF()
 
 IF (USE_TESTS_HARDWARE_PLUGIN_MANAGER)
-        set_property( TARGET MainTestHardwarePluginManager PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${BOOST_INCL_DIR})
+        set_property( TARGET MainTestHardwarePluginManager PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
+ENDIF()
+
+IF (USE_TESTS_SHARED_EVENT)
+        set_property( TARGET MainTestEvent PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
 ENDIF()
 
 ##################################################################################################
@@ -438,6 +538,10 @@ ENDIF()
 
 IF (USE_TESTS_HARDWARE_PLUGIN_MANAGER)
         target_link_libraries(MainTestHardwarePluginManager yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
+ENDIF()
+
+IF (USE_TESTS_SHARED_EVENT)
+	target_link_libraries(MainTestEvent yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
 ENDIF()
 
 ##################################################################################################
@@ -514,6 +618,11 @@ if(NOT Boost_USE_STATIC_LIBS)
 				COMMAND ${CMAKE_COMMAND} -E copy_if_different  	# which executes "cmake - E copy_if_different..."
 					"${LIBFILE}"     							# <--this is in-file
 					$<TARGET_FILE_DIR:MainTestHardwarePluginManager>)   
+
+			add_custom_command(TARGET MainTestEvent POST_BUILD        	# Adds a post-build event to yadoms
+				COMMAND ${CMAKE_COMMAND} -E copy_if_different  	# which executes "cmake - E copy_if_different..."
+					"${LIBFILE}"     							# <--this is in-file
+					$<TARGET_FILE_DIR:MainTestEvent>)   
 		else()
 			MESSAGE("    Library file not found : ${LIBFILE}")
 		endif()
