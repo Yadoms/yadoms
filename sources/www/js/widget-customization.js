@@ -55,6 +55,11 @@ $("#btn-exit-customization").click(function() {
     exitCustomization();
 });
 
+$("#tabContainer").click(function() {
+   //TODO : ne fonctionne pas pour l'instant il faut pouvoir quitter la customization en cliquant sur le fond et non un item
+   //exitCustomization();
+});
+
 function exitCustomization() {
     $("#customizeButton").removeClass('btn-primary').addClass('btn-inverse');
     enableGridsterCustomization(false);
@@ -69,7 +74,7 @@ $("#btn-add-widget").click(function() {
     //pour l'instant on le prend dansun fichier json
     $.getJSON( "/widgets/widgets.json", requestWidgetsTypeDone());
 
-    //TODO afficher une popup d'infomation
+    //TODO afficher une popup d'infomation en cas d'erreur
 
 });
 
@@ -102,21 +107,23 @@ function requestWidgetsTypeDone()
 $( document ).ready(function() {
     $("#btn-confirm-add-widget").click(function () {
 
-        var creatingWidgetNoty = noty({text: 'Creating widget ...', timeout:2000,  layout:'topLeft'});
-        //ask for widget creation to the server
-        $.ajax({
-            url: '/rest/widget',
-            type: 'PUT'
-            })
-            .done(function() {
-                //TODO : check the answer
-                creatingWidgetNoty.close();
-                noty({text: 'Widget sucesfully created', timeout:2000,  layout:'topLeft', type: 'success'});
-            })
-            .fail(function() {
-                noty({text: 'Unable to create widget', timeout:2000,  layout:'topLeft', type: 'alert'});
-            })
-            .always(function() {
-            });
-    });
+      //we close the new widget modal
+      ("#new-widget-modal").hide();
+      var creatingWidgetNoty = noty({text: 'Creating widget ...', timeout:2000,  layout:'topLeft'});
+      //ask for widget creation to the server
+      $.ajax({
+         url: '/rest/widget',
+         type: 'PUT'
+         })
+         .done(function() {
+             //TODO : check the answer
+             creatingWidgetNoty.close();
+             noty({text: 'Widget sucesfully created', timeout:2000,  layout:'topLeft', type: 'success'});
+         })
+         .fail(function() {
+             noty({text: 'Unable to create widget', timeout:2000,  layout:'topLeft', type: 'error'});
+         })
+         .always(function() {
+         });
+      });
 });

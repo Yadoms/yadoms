@@ -1,13 +1,16 @@
 function TemperatureViewModel() {
-    this.data;
-    this.$widgetNode;
-    this.$grisdterWidgetNode;
-    this.configuration;
+   //observable data
+   this.data;
 
-    this.initialize = function($widgetNode, $gridsterWidgetNode, configuration) {
-        this.$widgetNode = $widgetNode;
-        this.$grisdterWidgetNode = $gridsterWidgetNode;
-        this.configuration = configuration;
+   //page identifier
+   this.parentPage;
+
+   //widget identifier
+   this.widget;
+
+    this.initialize = function(page, widget) {
+       this.parentPage = page;
+       this.widget = widget;
     }
 }
 
