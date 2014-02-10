@@ -2,8 +2,12 @@
 
 typedef boost::property_tree::ptree CJson;
 
+#include <shared/Log.h>
+#include "IEntitySerializer.h"
+#include "IEntityDeserializer.h"
+
 template<class TObjectBase>
-class CJonCollectionSerializer
+class CJsonCollectionSerializer
 {
 public:
    static CJson SerializeCollection(typename std::vector< boost::shared_ptr<TObjectBase> > & collectionToSerialize, IEntitySerializer<TObjectBase> & entitySerilizer, const std::string & itemKeyword)
@@ -19,5 +23,17 @@ public:
       result.push_back(std::make_pair(itemKeyword, objectList));
       return result;
 
+   }
+
+
+   static typename std::vector< boost::shared_ptr<TObjectBase> > DeserializeCollection(CJson data, IEntityDeserializer<TObjectBase> & entitySerilizer, const std::string & itemKeyword)
+   {
+      std::vector< boost::shared_ptr<TObjectBase> > result;
+      CJson objectList = data.get_child(itemKeyword);
+      for (CJson::const_iterator it = objectList.begin(); it != objectList.end(); ++it)
+      {
+         result.push_back(entitySerilizer.deserialize(it->second));
+      }
+      return result;
    }
 };

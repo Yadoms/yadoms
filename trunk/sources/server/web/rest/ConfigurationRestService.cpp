@@ -8,8 +8,11 @@
 #include "RestDispatcher.h"
 #include <shared/Log.h>
 
+std::string CConfigurationRestService::m_restKeyword= std::string("configuration");
+
+
 CConfigurationRestService::CConfigurationRestService(boost::shared_ptr<IDataProvider> dataProvider)
-   :m_dataProvider(dataProvider), m_restKeyword("configuration")
+   :m_dataProvider(dataProvider)
 {
 
 }
@@ -47,7 +50,7 @@ CJson CConfigurationRestService::getConfiguration(const std::vector<std::string>
       keyname = parameters[2];
 
    boost::shared_ptr<CConfiguration> widgetFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(section, keyname);
-   return hes.serialize(*widgetFound.get());
+   return CJsonResult::GenerateSuccess(hes.serialize(*widgetFound.get()));
 }
 
 CJson CConfigurationRestService::getSectionConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent)
@@ -60,24 +63,28 @@ CJson CConfigurationRestService::getSectionConfigurations(const std::vector<std:
 
 
    std::vector< boost::shared_ptr<CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations(section);
-   return CJonCollectionSerializer<CConfiguration>::SerializeCollection(hwList, hes, getRestKeyword());
+   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<CConfiguration>::SerializeCollection(hwList, hes, getRestKeyword()));
 }
 
 CJson CConfigurationRestService::getAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    CConfigurationEntitySerializer hes;
    std::vector< boost::shared_ptr<CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations();
-   return CJonCollectionSerializer<CConfiguration>::SerializeCollection(hwList, hes, getRestKeyword());
+   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<CConfiguration>::SerializeCollection(hwList, hes, getRestKeyword()));
 }
 
 CJson CConfigurationRestService::createOneConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
-   return CJson();
+   //TODO : à faire
+    return CJsonResult::GenerateError("not yet implemented");
+
 }
 
 CJson CConfigurationRestService::createAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
-   return CJson();
+   //TODO : à faire
+    return CJsonResult::GenerateError("not yet implemented");
+
 }
 
 
@@ -86,7 +93,7 @@ CJson CConfigurationRestService::updateOneConfiguration(const std::vector<std::s
    try
    {
       CConfigurationEntitySerializer hes;
-      CConfiguration configToUpdate = hes.deserialize(requestContent);
+      boost::shared_ptr<CConfiguration> configToUpdate = hes.deserialize(requestContent);
 
       std::string section = "";
       std::string keyname = "";
@@ -96,16 +103,16 @@ CJson CConfigurationRestService::updateOneConfiguration(const std::vector<std::s
          keyname = parameters[2];
 
 
-      if((configToUpdate.getSection().empty() && configToUpdate.getName().empty()) ||
-         (boost::iequals(configToUpdate.getSection(), section) &&  boost::iequals(configToUpdate.getName(), keyname)))
+      if((configToUpdate->getSection().empty() && configToUpdate->getName().empty()) ||
+         (boost::iequals(configToUpdate->getSection(), section) &&  boost::iequals(configToUpdate->getName(), keyname)))
       {
          //ensure section and name are corretly filled
-         configToUpdate.setSection(section);
-         configToUpdate.setName(keyname);
+         configToUpdate->setSection(section);
+         configToUpdate->setName(keyname);
          //update modification date
-         configToUpdate.setLastModificationDate(boost::posix_time::second_clock::local_time());
+         configToUpdate->setLastModificationDate(boost::posix_time::second_clock::local_time());
          //commit changes to database
-         m_dataProvider->getConfigurationRequester()->updateConfiguration(configToUpdate);
+         m_dataProvider->getConfigurationRequester()->updateConfiguration(*configToUpdate);
          return CJsonResult::GenerateSuccess(getConfiguration(parameters, requestContent));
       }
       else
@@ -125,7 +132,8 @@ CJson CConfigurationRestService::updateOneConfiguration(const std::vector<std::s
 
 CJson CConfigurationRestService::updateAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
-   return CJson();
+   //TODO : à faire
+    return CJsonResult::GenerateError("not yet implemented");
 }
 
 

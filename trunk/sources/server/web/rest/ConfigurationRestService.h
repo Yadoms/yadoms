@@ -16,7 +16,7 @@ public:
    // [END] IRestService implementation
    
    
-   const std::string & getRestKeyword();
+   static const std::string & getRestKeyword();
 
 public:
    CJson getConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent);
@@ -32,5 +32,5 @@ public:
 
 private:
    boost::shared_ptr<IDataProvider> m_dataProvider;
-   std::string m_restKeyword;
+   static std::string m_restKeyword;
 };

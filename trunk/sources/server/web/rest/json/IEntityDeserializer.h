@@ -11,7 +11,7 @@ public:
    ///\param [in] object  json data
    ///\return     the entity
    //------------------------------------------
-   virtual TEntity deserialize(const CJson & object) = 0;
+   virtual boost::shared_ptr<TEntity> deserialize(const CJson & object) = 0;
 
 public:
    virtual ~IEntityDeserializer() {}

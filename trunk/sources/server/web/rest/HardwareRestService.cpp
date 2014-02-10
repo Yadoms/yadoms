@@ -5,10 +5,12 @@
 #include "json/JsonCollectionSerializer.h"
 #include "RestDispatcherHelpers.hpp"
 #include "shared/Log.h"
+#include "json/JsonResult.h"
 
+std::string CHardwareRestService::m_restKeyword= std::string("hardware");
 
 CHardwareRestService::CHardwareRestService(boost::shared_ptr<IDataProvider> dataProvider)
-   :m_dataProvider(dataProvider), m_restKeyword("hardware")
+   :m_dataProvider(dataProvider)
 {
 }
 
@@ -36,12 +38,12 @@ void CHardwareRestService::configureDispatcher(CRestDispatcher & dispatcher)
 
    CHardwareEntitySerializer hes;
    boost::shared_ptr<CHardware> hardwareFound =  m_dataProvider->getHardwareRequester()->getHardware(boost::lexical_cast<int>(objectId));
-   return hes.serialize(*hardwareFound.get());
+   return CJsonResult::GenerateSuccess(hes.serialize(*hardwareFound.get()));
 }
 
 CJson CHardwareRestService::getAllHardwares(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    CHardwareEntitySerializer hes;
    std::vector< boost::shared_ptr<CHardware> > hwList = m_dataProvider->getHardwareRequester()->getHardwares();
-   return CJonCollectionSerializer<CHardware>::SerializeCollection(hwList, hes, getRestKeyword());
+   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<CHardware>::SerializeCollection(hwList, hes, getRestKeyword()));
 }

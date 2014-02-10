@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "RestHandler.h"
 #include <shared/Log.h>
+#include "web/rest/json/JsonResult.h"
+#include "web/rest/json/JsonCollectionSerializer.h"
 
 CRestHandler::CRestHandler(const std::string & restBaseKeyword)
    :m_restBaseKeyword(restBaseKeyword)
@@ -34,25 +36,25 @@ void CRestHandler::initialize()
 
 std::vector<std::string> CRestHandler::parseUrl(const std::string & url)
 {
-    std::vector<std::string> strs;
-    //split on slash or anti slash
-    boost::split(strs, url, boost::is_any_of("/\\"), boost::algorithm::token_compress_on);
-    //remove empty strings
-    //do not use std::empty in std::remove_if because MacOs Clang do not support it
-    std::vector<std::string>::iterator i = strs.begin();
-    while(i != strs.end())
-    {
-        if(i->empty())
-        {
-            i = strs.erase(i);
-        }
-        else
-        {
-            ++i;
-        }
-    }
-    
-    return strs;
+   std::vector<std::string> strs;
+   //split on slash or anti slash
+   boost::split(strs, url, boost::is_any_of("/\\"), boost::algorithm::token_compress_on);
+   //remove empty strings
+   //do not use std::empty in std::remove_if because MacOs Clang do not support it
+   std::vector<std::string>::iterator i = strs.begin();
+   while(i != strs.end())
+   {
+      if(i->empty())
+      {
+         i = strs.erase(i);
+      }
+      else
+      {
+         ++i;
+      }
+   }
+
+   return strs;
 }
 
 
@@ -81,16 +83,21 @@ std::string CRestHandler::manageRestRequests(const http::server::request & reque
          CJson js = m_restDispatcher.dispath(request.method, parameters, requestContent);
          return m_jsonSerializer.serialize(js);
       }
+      else
+      {
+         return m_jsonSerializer.serialize(CJsonResult::GenerateError("Rest handler : cannot decode url"));
+      }
    }
    catch(std::exception &ex)
    {
       YADOMS_LOG(error) << "An exception occured in treating REST url : " << request_path << std::endl << "Exception : " << ex.what();
+      return m_jsonSerializer.serialize(CJsonResult::GenerateError(ex));
    }
    catch(...)
    {
       YADOMS_LOG(error) << "An unknown exception occured in treating REST url : " << request_path;
+      return m_jsonSerializer.serialize(CJsonResult::GenerateError("An unknown exception occured in treating REST url : " + request_path));
    }
-   return "";
 }
 
 

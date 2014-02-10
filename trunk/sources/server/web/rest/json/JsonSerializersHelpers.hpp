@@ -259,7 +259,7 @@ public:\
    virtual BOOST_PP_CAT(~C, BOOST_PP_CAT(_classname, EntitySerializer))(); \
    \
    CJson serialize(const BOOST_PP_CAT(C,_classname) & object); \
-   BOOST_PP_CAT(C,_classname) deserialize(const CJson & object); \
+   boost::shared_ptr< BOOST_PP_CAT(C,_classname) > deserialize(const CJson & object); \
  };   
 
  
@@ -292,16 +292,16 @@ CJson DECLARE_JSON_ENTITY_SERIALIZER_CLASS(_classname)::serialize(const DECLARE_
 //-------------------------------------------------------
 #define DECLARE_JSON_DESERIALIZER_FIELD_CONTENT(r, _classname, elem) \
     if(object.find(DECLARE_JSON_ENTITY_DEFINITION_CLASS(_classname)::BOOST_PP_CAT(BOOST_PP_CAT(get, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem)), Identifier())) != object.not_found())\
-      entity.BOOST_PP_CAT(set, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem))(BOOST_PP_SEQ_ELEM(JSON_COLUMN_CONVERT_FROM, elem)(object.get<BOOST_PP_SEQ_ELEM(JSON_COLUMN_TYPE, elem)>(DECLARE_JSON_ENTITY_DEFINITION_CLASS(_classname)::BOOST_PP_CAT(BOOST_PP_CAT(get, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem)), Identifier()))));\
+      entity->BOOST_PP_CAT(set, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem))(BOOST_PP_SEQ_ELEM(JSON_COLUMN_CONVERT_FROM, elem)(object.get<BOOST_PP_SEQ_ELEM(JSON_COLUMN_TYPE, elem)>(DECLARE_JSON_ENTITY_DEFINITION_CLASS(_classname)::BOOST_PP_CAT(BOOST_PP_CAT(get, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem)), Identifier()))));\
   
 //-------------------------------------------------------
 ///\brief   Declare the JSON deserializer IMPLEMENTATION
 ///       write the deserialize() method
 //-------------------------------------------------------
 #define DECLARE_JSON_DESERIALIZER_CONTENT(_classname, _seq) \
-DECLARE_JSON_ENTITY_CLASS(_classname) DECLARE_JSON_ENTITY_SERIALIZER_CLASS(_classname)::deserialize(const CJson & object)\
+boost::shared_ptr< DECLARE_JSON_ENTITY_CLASS(_classname) > DECLARE_JSON_ENTITY_SERIALIZER_CLASS(_classname)::deserialize(const CJson & object)\
 {\
-   DECLARE_JSON_ENTITY_CLASS(_classname) entity;\
+   boost::shared_ptr< DECLARE_JSON_ENTITY_CLASS(_classname) > entity(new DECLARE_JSON_ENTITY_CLASS(_classname)() );\
    BOOST_PP_SEQ_FOR_EACH(DECLARE_JSON_DESERIALIZER_FIELD_CONTENT, _classname, _seq) \
    return entity;\
 }
@@ -348,7 +348,7 @@ DECLARE_JSON_ENTITY_CLASS(_classname) DECLARE_JSON_ENTITY_SERIALIZER_CLASS(_clas
 ///               	virtual ~CHardwareEntitySerializer(); 
 ///               	
 ///               	CJson serialize(const CHardware & object); 
-///               	CHardware deserialize(const CJson & object); 
+///               	boost::shared_ptr<CHardware> deserialize(const CJson & object); 
 ///               };
 //-------------------------------------------------------
 #define DECLARE_JSON_ENTITY_HEADER(_classname, _seq)\
@@ -390,7 +390,7 @@ DECLARE_JSON_ENTITY_CLASS(_classname) DECLARE_JSON_ENTITY_SERIALIZER_CLASS(_clas
 ///                     return result;
 ///                  }
 ///                  
-///                  CHardware CHardwareEntitySerializer::deserialize(const CJson & object)
+///                  boost::shared_ptr<CHardware> CHardwareEntitySerializer::deserialize(const CJson & object)
 ///                  {
 ///                     CHardware entity;
 ///                  

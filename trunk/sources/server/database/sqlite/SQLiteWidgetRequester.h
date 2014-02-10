@@ -29,6 +29,8 @@ public:
    virtual void updateWidgetConfiguration(int widgetId, const std::string& newConfiguration);
    virtual void updateWidgetSize(int widgetId, int sizeX, int sizeY);
    virtual void removeWidget(int widgetId);
+   virtual void removeWidgetsInPage(int pageId);
+   virtual void removeAllWidgets();
    // [END] IWidgetRequester implementation
 
 private:

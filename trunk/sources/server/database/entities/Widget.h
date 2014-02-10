@@ -9,6 +9,7 @@ class CWidget
 public:
    CWidget()
    {
+      m_Id = 0;
    }
 
    virtual ~CWidget()

@@ -5,9 +5,10 @@
 #include "RestDispatcherHelpers.hpp"
 #include "shared/Log.h"
 
+std::string CHardwareEventLoggerRestService::m_restKeyword= std::string("hardwareEventLogger");
 
 CHardwareEventLoggerRestService::CHardwareEventLoggerRestService(boost::shared_ptr<IDataProvider> dataProvider)
-   :m_dataProvider(dataProvider), m_restKeyword("hardwareEventLogger")
+   :m_dataProvider(dataProvider)
 {
 }
 
@@ -31,7 +32,7 @@ CJson CHardwareEventLoggerRestService::getLogsForPluginName(const std::vector<st
 {
    std::string pluginName = "";
    std::string pluginVersion = "";
-   IHardwarePluginInformation::EReleaseType rType;
+   IHardwarePluginInformation::EReleaseType rType = IHardwarePluginInformation::kStable;
 
    if(parameters.size()>1)
       pluginName = parameters[1];
@@ -42,7 +43,7 @@ CJson CHardwareEventLoggerRestService::getLogsForPluginName(const std::vector<st
 
    CHardwareEventLoggerEntitySerializer hes;
    std::vector< boost::shared_ptr<CHardwareEventLogger> > dvList = m_dataProvider->getHardwareEventLoggerRequester()->getHardwareEvents(pluginName, pluginVersion, rType);
-   return CJonCollectionSerializer<CHardwareEventLogger>::SerializeCollection(dvList, hes, getRestKeyword());
+   return CJsonCollectionSerializer<CHardwareEventLogger>::SerializeCollection(dvList, hes, getRestKeyword());
 }
 
 CJson CHardwareEventLoggerRestService::getLogsForPluginNameFromDate(const std::vector<std::string> & parameters, const CJson & requestContent)
@@ -50,7 +51,7 @@ CJson CHardwareEventLoggerRestService::getLogsForPluginNameFromDate(const std::v
    std::string pluginName = "";
    std::string pluginVersion = "";
    boost::posix_time::ptime fromDate;
-   IHardwarePluginInformation::EReleaseType rType;
+   IHardwarePluginInformation::EReleaseType rType = IHardwarePluginInformation::kStable;
 
    if(parameters.size()>1)
       pluginName = parameters[1];
@@ -63,6 +64,6 @@ CJson CHardwareEventLoggerRestService::getLogsForPluginNameFromDate(const std::v
 
    CHardwareEventLoggerEntitySerializer hes;
    std::vector< boost::shared_ptr<CHardwareEventLogger> > dvList = m_dataProvider->getHardwareEventLoggerRequester()->getHardwareEvents(pluginName, pluginVersion, rType, fromDate);
-   return CJonCollectionSerializer<CHardwareEventLogger>::SerializeCollection(dvList, hes, getRestKeyword());
+   return CJsonCollectionSerializer<CHardwareEventLogger>::SerializeCollection(dvList, hes, getRestKeyword());
 }
  
