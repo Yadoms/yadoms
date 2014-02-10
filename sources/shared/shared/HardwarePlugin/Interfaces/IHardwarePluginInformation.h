@@ -14,9 +14,9 @@ public:
    //--------------------------------------------------------------
    enum EReleaseType
    {
-      kStable,    /// \brief		plugin is stable
-      kTesting,   /// \brief		plugin is in testing phase
-      kBeta       /// \brief		plugin is in beta state
+      kStable = 0,   /// \brief		plugin is stable
+      kTesting,      /// \brief		plugin is in testing phase
+      kBeta          /// \brief		plugin is in beta state
    };
 
 public:

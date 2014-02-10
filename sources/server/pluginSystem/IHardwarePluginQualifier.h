@@ -36,7 +36,7 @@ public:
    /// \param[in]  pluginInformation     Plugin information (name, version...)
    /// \param[in]  reason     Crash cause (exception...)
    //--------------------------------------------------------------
-   virtual void signalCrash(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation, const std::string& exceptionName) = 0;
+   virtual void signalCrash(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation, const std::string& reason) = 0;
 
    //--------------------------------------------------------------
    /// \brief			         Check if plugin is safe
@@ -48,7 +48,9 @@ public:
    //--------------------------------------------------------------
    /// \brief			         Get The quality level
    /// \param[in]  pluginInformation     Plugin information (name, version...)
-   /// \return                Plugin quality level, value from 0 (very bad) to 100 (perfect, never crashed)
+   /// \return                Plugin quality level, value from 0 (very bad) to 100 (perfect, never crashed).
+   //                         Can be kNoEnoughData if evaluation is not significative (plugin doesn't run for enough time)
    //--------------------------------------------------------------
+   enum { kNoEnoughData = -1 };
    virtual int getQualityLevel(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation) = 0;//TODO pas encore appelé
 };

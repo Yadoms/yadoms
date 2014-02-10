@@ -4,15 +4,15 @@
 #include "HardwarePluginQualifier.h"
 
 
-boost::shared_ptr<CHardwarePluginManager> CHardwarePluginManager::newHardwarePluginManager(const std::string & initialDir, boost::shared_ptr<IHardwareRequester> database)
+boost::shared_ptr<CHardwarePluginManager> CHardwarePluginManager::newHardwarePluginManager(const std::string & initialDir, boost::shared_ptr<IHardwareRequester> database, boost::shared_ptr<IHardwareEventLoggerRequester> eventLoggerDatabase)
 {
-   boost::shared_ptr<CHardwarePluginManager> manager (new CHardwarePluginManager(initialDir, database));
+   boost::shared_ptr<CHardwarePluginManager> manager (new CHardwarePluginManager(initialDir, database, eventLoggerDatabase));
    manager->init();
    return manager;
 }
 
-CHardwarePluginManager::CHardwarePluginManager(const std::string& initialDir, boost::shared_ptr<IHardwareRequester> database)
-   :m_database(database), m_pluginPath(initialDir), m_qualifier(new CHardwarePluginQualifier)
+CHardwarePluginManager::CHardwarePluginManager(const std::string& initialDir, boost::shared_ptr<IHardwareRequester> database, boost::shared_ptr<IHardwareEventLoggerRequester> eventLoggerDatabase)
+   :m_database(database), m_pluginPath(initialDir), m_qualifier(new CHardwarePluginQualifier(eventLoggerDatabase))
 {
    BOOST_ASSERT(m_database);
 }
@@ -26,27 +26,8 @@ void CHardwarePluginManager::stop()
 {
    YADOMS_LOG(info) << "CHardwarePluginManager stop plugins...";
 
-   //plugins request to stop
-   std::pair<int, boost::shared_ptr<CHardwarePluginInstance> > instance;
-   BOOST_FOREACH(instance, m_runningInstances)
-   {
-      if(instance.second.get() != NULL)
-         instance.second->requestToStop();
-   }
-
-   // wait for all plugins to stop
    while (!m_runningInstances.empty())
-   {
-      std::pair<int, boost::shared_ptr<CHardwarePluginInstance> > instance2;
-      BOOST_FOREACH(instance2, m_runningInstances)
-      {
-         if(instance2.second.get() != NULL && instance2.second->getStatus() == CThreadBase::kStopped)
-         {
-            doStopInstance(instance2.first);
-            break; //break to restart the foreach
-         }
-      }
-   }
+      doStopInstance(m_runningInstances.begin()->first);
 
    YADOMS_LOG(info) << "CHardwarePluginManager all plugins are stopped";
 }
@@ -142,7 +123,7 @@ bool CHardwarePluginManager::unloadPlugin(const std::string& pluginName)
       return false;  // No unload : plugin is still used by another instance
 
    // Signal qualifier that a plugin is about to be unloaded
-   m_qualifier->signalLoad(m_loadedPlugins[pluginName]->getInformation());
+   m_qualifier->signalUnload(m_loadedPlugins[pluginName]->getInformation());
 
    // Effectively unload plugin
    m_loadedPlugins.erase(pluginName);
