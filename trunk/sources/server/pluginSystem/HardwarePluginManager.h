@@ -10,6 +10,7 @@
 #include "HardwarePluginFactory.h"
 #include "HardwarePluginInstance.h"
 #include "../database/IHardwareRequester.h"
+#include "../database/IHardwareEventLoggerRequester.h"
 #include <shared/StringExtension.h>
 
 //--------------------------------------------------------------
@@ -29,8 +30,9 @@ protected:
    /// \brief			Constructor (protected, use newHardwarePluginManager to create instance)
    /// \param [in]   initialDir initial plugins search directory
    /// \param [in]   database database link
+   /// \param [in]   eventLoggerDatabase: database link for events on plugins
    //--------------------------------------------------------------
-   CHardwarePluginManager(const std::string & initialDir, boost::shared_ptr<IHardwareRequester> database);
+   CHardwarePluginManager(const std::string & initialDir, boost::shared_ptr<IHardwareRequester> database, boost::shared_ptr<IHardwareEventLoggerRequester> eventLoggerDatabase);
 
    //--------------------------------------------------------------
    /// \brief			Initialization, used for the 2-steps construction
@@ -52,11 +54,12 @@ public:
    /// \brief			Create new CHardwarePluginManager instance
    /// \param [in]   initialDir: initial plugins search directory
    /// \param [in]   database: database link
+   /// \param [in]   eventLoggerDatabase: database link for events on plugins
    //--------------------------------------------------------------
-   static boost::shared_ptr<CHardwarePluginManager> newHardwarePluginManager(const std::string & initialDir, boost::shared_ptr<IHardwareRequester> database);
+   static boost::shared_ptr<CHardwarePluginManager> newHardwarePluginManager(const std::string & initialDir, boost::shared_ptr<IHardwareRequester> database, boost::shared_ptr<IHardwareEventLoggerRequester> eventLoggerDatabase);
 
    //--------------------------------------------------------------
-   /// \brief           Start a registered instance of plugin
+   /// \brief           Start a registered instance of plugin (and enable it)
    /// \param [in] id   Instance Id
    /// \throw           CInvalidParameterException if id is unknown
    /// \note            Do nothing if instance already running
@@ -64,7 +67,7 @@ public:
    void startInstance(int id);
 
    //--------------------------------------------------------------
-   /// \brief           Stop a running instance of plugin
+   /// \brief           Stop a running instance of plugin (and disable it)
    /// \param [in] id   Instance Id
    /// \throw           CInvalidParameterException if id is unknown
    /// \note            Do nothing if instance already stopped

@@ -6,6 +6,7 @@
 #pragma once
 
 #include "IHardwarePluginQualifier.h"
+#include "database/IHardwareEventLoggerRequester.h"
 
 //--------------------------------------------------------------
 /// \brief	this class is used to qualify a plugin
@@ -43,12 +44,37 @@ private:
       {
       }
 
+      //--------------------------------------------------------------
+      /// \brief	   Name getter
+      /// \return    Plugin name
+      //--------------------------------------------------------------
+      const std::string& getName() const
+      {
+         return m_name;
+      }
+
+      //--------------------------------------------------------------
+      /// \brief	   Version getter
+      /// \return    Plugin version
+      //--------------------------------------------------------------
+      const std::string& getVersion() const
+      {
+         return m_version;
+      }
+
+      //--------------------------------------------------------------
+      /// \brief	   Release type getter
+      /// \return    Plugin release type
+      //--------------------------------------------------------------
+      const IHardwarePluginInformation::EReleaseType getReleaseType() const
+      {
+         return m_releaseType;
+      }
+
    private:
       const std::string m_name;
       const std::string m_version;
       const IHardwarePluginInformation::EReleaseType m_releaseType;
-
-      friend CPluginIdentityCompare;
    };
 
    //--------------------------------------------------------------
@@ -59,19 +85,20 @@ private:
    public:
       bool operator() (const CPluginIdentity& lhs, const CPluginIdentity& rhs)
       {
-         if (lhs.m_name != rhs.m_name)
-            return lhs.m_name < rhs.m_name;
-         if (lhs.m_version != rhs.m_version)
-            return lhs.m_version < rhs.m_version;
-         return lhs.m_releaseType < rhs.m_releaseType;
+         if (lhs.getName() != rhs.getName())
+            return lhs.getName() < rhs.getName();
+         if (lhs.getVersion() != rhs.getVersion())
+            return lhs.getVersion() < rhs.getVersion();
+         return lhs.getReleaseType() < rhs.getReleaseType();
       }
    };
 
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
+   /// \param[in] eventLoggerDatabase    Event logger database
    //--------------------------------------------------------------
-   CHardwarePluginQualifier();
+   CHardwarePluginQualifier(boost::shared_ptr<IHardwareEventLoggerRequester> eventLoggerDatabase);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -81,12 +108,21 @@ public:
    // IHardwarePluginQualifier implementation
    virtual void signalLoad(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation);
    virtual void signalUnload(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation);
-   virtual void signalCrash(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation, const std::string& exceptionName);
+   virtual void signalCrash(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation, const std::string& reason);
    virtual bool isSafe(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation);
    virtual int getQualityLevel(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation);
    // [END] IHardwarePluginQualifier implementation
 
 private:
+   //--------------------------------------------------------------
+   /// \brief	               Add an event to database
+   /// \param[in]  pluginInformation     Plugin information (name, version...)
+   /// \param[in]  eventType  Event type (load, unload, crash...)
+   /// \param[in]  reason     Crash cause (exception...)
+   //--------------------------------------------------------------
+   void AddEventToDatabase(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation,
+      CHardwareEventLogger::EEventType eventType, const std::string& reason = CStringExtension::EmptyString);
+
    //--------------------------------------------------------------
    /// \brief	               Make corresponding quality indicator obsolete in cache
    /// \param[in] identity    Plugin identity
@@ -114,5 +150,15 @@ private:
    ///         Need specific comparator
    //--------------------------------------------------------------
    typedef std::map<CPluginIdentity, int, CPluginIdentityCompare> QualityIndicatorsCache;
-   QualityIndicatorsCache m_qualityIndicatorsCache;//TODO : protect by mutex
+   QualityIndicatorsCache m_qualityIndicatorsCache;
+
+   //--------------------------------------------------------------
+   /// \brief	Quality indicators Cache mutex
+   //--------------------------------------------------------------
+   boost::mutex m_qualityIndicatorsCacheMutex;
+
+   //--------------------------------------------------------------
+   /// \brief	database access
+   //--------------------------------------------------------------
+   boost::shared_ptr<IHardwareEventLoggerRequester> m_eventLoggerDatabase;
 };

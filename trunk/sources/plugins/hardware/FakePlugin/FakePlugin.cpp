@@ -58,10 +58,9 @@ void CFakePlugin::doWork(const std::string& configurationValues)
 
       int value = 0;
 
+      YADOMS_LOG(debug) << "CFakePlugin is running...";
       while(1)
       {
-         YADOMS_LOG(debug) << "CFakePlugin is running...";
-
          // Wait for an event, with timeout
          switch(waitForEvents(boost::posix_time::milliseconds(1000)))
          {

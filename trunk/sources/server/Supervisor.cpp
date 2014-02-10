@@ -83,7 +83,7 @@ void CSupervisor::doWork()
 
       // Start the hardware plugin manager
       boost::shared_ptr<CHardwarePluginManager> hardwarePluginManager = CHardwarePluginManager::newHardwarePluginManager(
-         m_startupOptions.getHarwarePluginsPath(), pDataProvider->getHardwareRequester());
+         m_startupOptions.getHarwarePluginsPath(), pDataProvider->getHardwareRequester(), pDataProvider->getHardwareEventLoggerRequester());
 
       //TODO ######################### test interface hardwarePluginManager #########################
 #if DEV_ACTIVATE_HARDWARE_PLUGIN_MANAGER_TESTS

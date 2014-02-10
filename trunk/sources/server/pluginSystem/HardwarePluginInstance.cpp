@@ -27,16 +27,17 @@ void CHardwarePluginInstance::doWork()
    YADOMS_LOG_CONFIGURE(getName());
 
    // Loop to restart plugin when crashed
-   bool gracefullyExit = false;
-   while (!gracefullyExit && m_qualifier->isSafe(m_pPlugin->getInformation()))
+   do
    {
       try
       {
+         // Execute plugin code
          m_pPluginInstance->doWork(m_context->getConfiguration());
+
          if (getStatus() == kStopping)
          {
             // Normal stop
-            gracefullyExit = true;
+            return;
          }
          else
          {
@@ -65,12 +66,10 @@ void CHardwarePluginInstance::doWork()
          m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin crashed in doWork with unknown exception");
       }
    }
+   while (m_qualifier->isSafe(m_pPlugin->getInformation())); // Loop if plugin still considered as safe
 
-   if (!gracefullyExit && !m_qualifier->isSafe(m_pPlugin->getInformation()))
-   {
-      YADOMS_LOG(error) << getName() << " plugin(" << m_pPlugin->getInformation()->getName() << ") was evaluated as not safe and disabled.";
-      //TODO : c'est pas le tout de l'dire, mais faut l'faire !
-   }
+   YADOMS_LOG(error) << getName() << " plugin(" << m_pPlugin->getInformation()->getName() << ") was evaluated as not safe and disabled.";
+   //TODO : c'est pas le tout de l'dire, mais faut l'faire !
 }
 
 void CHardwarePluginInstance::updateConfiguration(const std::string& newConfiguration) const
