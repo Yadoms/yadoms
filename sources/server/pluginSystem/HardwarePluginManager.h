@@ -81,6 +81,15 @@ public:
    AvalaiblePluginMap getPluginList();
 
    //--------------------------------------------------------------
+   /// \brief           Read the plugin quality indicator
+   /// \param [in] pluginName  Plugin name
+   /// \return          The plugin quality indicator, from 0 (worst) to 100 (best),
+   ///                  or IHardwarePluginQualifier::kNoEnoughData if no measure available.
+   /// \throw           CInvalidPluginException if plugin is not available
+   //--------------------------------------------------------------
+   int getPluginQualityIndicator(const std::string& pluginName) const;
+
+   //--------------------------------------------------------------
    /// \brief           Get the configuration schema from a plugin
    /// \param [in]      pluginName Plugin name
    /// \return          The configuration schema of the plugin, if available (empty string if not)

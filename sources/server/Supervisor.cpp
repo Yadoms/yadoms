@@ -92,7 +92,8 @@ void CSupervisor::doWork()
       YADOMS_LOG(debug) << "Available plugins :";
       BOOST_FOREACH(CHardwarePluginManager::AvalaiblePluginMap::value_type plugin, plugins)
       {
-         YADOMS_LOG(debug) << "   - " << plugin.first << " : " << plugin.second->toString();
+         YADOMS_LOG(debug) << "   - " << plugin.first << " : " << plugin.second->toString() <<
+            ", Quality indicator = " << hardwarePluginManager->getPluginQualityIndicator(plugin.first);
       }
 
       // 2) User want to create new plugin instance

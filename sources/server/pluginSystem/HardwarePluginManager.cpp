@@ -185,6 +185,14 @@ std::string CHardwarePluginManager::getPluginConfigurationSchema(const std::stri
    return CHardwarePluginFactory::getConfigurationSchema(toPath(pluginName));
 }
 
+int CHardwarePluginManager::getPluginQualityIndicator(const std::string& pluginName) const
+{
+   if (m_availablePlugins.find(pluginName) == m_availablePlugins.end())
+      throw CInvalidPluginException(pluginName);   // Invalid plugin
+
+   return m_qualifier->getQualityLevel(m_availablePlugins.at(pluginName));
+}
+
 std::string CHardwarePluginManager::getPluginConfigurationSchema(int id) const
 {
    // Get database instance data
