@@ -1,0 +1,82 @@
+<link href="css/add_widget.css" rel="stylesheet">
+
+<!--New widget Modal -->
+<div class="modal fade" id="new-widget-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Add a new Widget</h4>
+            </div>
+            <div class="modal-body">
+                <div id="new-widget-carousel" class="carousel slide">
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner">
+                        <!-- widgets types will be inserted here -->
+                    </div>
+
+                    <!-- Controls -->
+                    <a class="left carousel-control" href="#new-widget-carousel" data-slide="prev">
+                        <span class="icon-prev"></span>
+                    </a>
+                    <a class="right carousel-control" href="#new-widget-carousel" data-slide="next">
+                        <span class="icon-next"></span>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-get-more-widget" type="button" class="btn btn-primary pull-left">Get more widget</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="btn-confirm-add-widget" type="button" class="btn btn-primary">Add new</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //we indicate that add_widget.html has been loaded
+    addWidgetHasBeenLoaded = true;
+
+    $("#btn-confirm-add-widget").click(function () {
+
+        //we close the new widget modal
+        $("#new-widget-modal").modal("hide");
+
+        $.ajax({
+            type: "POST",
+            url: "/rest/widget",
+            data: { idPage: "1", name: "temperature", sizeX: "1", sizeY:"1", positionX:"1", positionY:"1" },
+            dataType: "json"
+        })
+        .done(function(data) {
+                    //we parse the json answer
+                    debugger;
+                    if (data.result != "true")
+                    {
+                        notifyError("Error during creating widget");
+                        return;
+                    }
+                    notifySuccess("Widget successfully created");
+
+        })
+        .fail(function(widgetName) { return function() {notifyError("Unable to create widget of type " + widgetName)}}("temperature"));
+
+        //var creatingWidgetNoty = noty({text: 'Creating widget ...', timeout:2000,  layout:'topLeft'});
+        //ask for widget creation to the server
+        $.ajax({
+            url: '/rest/widget',
+            type: 'PUT'
+        })
+                .done(function() {
+                    //TODO : check the answer
+                    creatingWidgetNoty.close();
+                    noty({text: 'Widget sucesfully created', timeout:2000,  layout:'topLeft', type: 'success'});
+                })
+                .fail(function() {
+                    noty({text: 'Unable to create widget', timeout:2000,  layout:'topLeft', type: 'error'});
+                })
+                .always(function() {
+                });
+    });
+</script>

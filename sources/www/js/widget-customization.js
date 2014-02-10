@@ -68,22 +68,44 @@ function exitCustomization() {
 }
 
 $("#btn-add-widget").click(function() {
-    //we list all widgets in the modal
-
-    //TODO interrogation en REST pour recuperer la liste des widgets disponibles
-    //pour l'instant on le prend dansun fichier json
-    $.getJSON( "/widgets/widgets.json", requestWidgetsTypeDone());
-
-    //TODO afficher une popup d'infomation en cas d'erreur
-
+    if (addWidgetHasBeenLoaded)
+    {
+        //we ask the package to display the modal
+        askWidgetPackages();
+    }
+    else
+    {
+        $.ajax( "add_widget.html" )
+            .done(function(data) {
+                //we append it to the index
+                $('body').append(data);
+                //we ask the package to display the modal
+                askWidgetPackages();
+            })
+            .fail(function() {
+                notifyError("Unable to add a widget");
+            });
+    }
 });
+
+function askWidgetPackages()
+{
+    $.getJSON("rest/widget/packages")
+        .done(requestWidgetsTypeDone())
+        .fail(function() {notifyError("Unable to get widget packages")});
+}
 
 function requestWidgetsTypeDone()
 {
     return function( data ) {
         //we parse the json answer
+        if (data.result != "true")
+        {
+            notifyError("Error during requesting widget packages");
+            return;
+        }
         $("#new-widget-carousel .carousel-inner > div").remove();
-        $.each(data.widgetType, function(index, value) {
+        $.each(data.data.packages, function(index, value) {
             //foreach widget-type
             //carousel item creation
             $("#new-widget-carousel .carousel-inner").append(
@@ -104,26 +126,4 @@ function requestWidgetsTypeDone()
     };
 }
 
-$( document ).ready(function() {
-    $("#btn-confirm-add-widget").click(function () {
 
-      //we close the new widget modal
-      ("#new-widget-modal").hide();
-      var creatingWidgetNoty = noty({text: 'Creating widget ...', timeout:2000,  layout:'topLeft'});
-      //ask for widget creation to the server
-      $.ajax({
-         url: '/rest/widget',
-         type: 'PUT'
-         })
-         .done(function() {
-             //TODO : check the answer
-             creatingWidgetNoty.close();
-             noty({text: 'Widget sucesfully created', timeout:2000,  layout:'topLeft', type: 'success'});
-         })
-         .fail(function() {
-             noty({text: 'Unable to create widget', timeout:2000,  layout:'topLeft', type: 'error'});
-         })
-         .always(function() {
-         });
-      });
-});
