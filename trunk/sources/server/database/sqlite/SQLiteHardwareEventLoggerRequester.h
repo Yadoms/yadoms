@@ -24,6 +24,7 @@ public:
    // IHardwareEventLoggerRequester implementation
    virtual int addEvent(const std::string & pluginName, const std::string & pluginVersion, const IHardwarePluginInformation::EReleaseType pluginReleaseType, const CHardwareEventLogger::EEventType eventType, const std::string & message = CStringExtension::EmptyString);
    virtual int addEvent(const CHardwareEventLogger & hardwareLogEntry);
+   virtual std::vector<boost::shared_ptr<CHardwareEventLogger> > getHardwareEvents(const std::string & pluginName, const std::string & pluginVersion, const IHardwarePluginInformation::EReleaseType pluginReleaseType);
    virtual std::vector<boost::shared_ptr<CHardwareEventLogger> > getHardwareEvents(const std::string & pluginName, const std::string & pluginVersion, const IHardwarePluginInformation::EReleaseType pluginReleaseType, const boost::posix_time::ptime & fromDate);
    // [END] IHardwareEventLoggerRequester implementation
 

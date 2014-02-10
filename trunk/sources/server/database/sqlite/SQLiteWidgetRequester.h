@@ -22,7 +22,7 @@ public:
 	virtual ~CSQLiteWidgetRequester();
 
    // IWidgetRequester implementation
-   virtual int addWidget(boost::shared_ptr<CWidget> newWidget);
+   virtual int addWidget(const CWidget & newWidget);
    virtual boost::shared_ptr<CWidget> getWidget(int widgetId);
    virtual std::vector<boost::shared_ptr<CWidget> > getWidgets();
    virtual std::vector<boost::shared_ptr<CWidget> > getWidgetsForPage(int pageId);
