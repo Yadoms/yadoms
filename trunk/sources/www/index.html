@@ -136,6 +136,7 @@
    
    //we havn't yet loaded the modal qrCode
    var qrcodeHasBeenLoaded = false;
+   var addWidgetHasBeenLoaded = false;
 
    $( document ).ready(function() {
       requestPages();
@@ -164,39 +165,7 @@
    
 	</script>
 
-  <!--New widget Modal -->
-  <div class="modal fade" id="new-widget-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                  <h4 class="modal-title" id="myModalLabel">Add a new Widget</h4>
-              </div>
-              <div class="modal-body">
-                  <div id="new-widget-carousel" class="carousel slide">
 
-                      <!-- Wrapper for slides -->
-                      <div class="carousel-inner">
-                          <!-- widgets types will be inserted here -->
-                      </div>
-
-                      <!-- Controls -->
-                      <a class="left carousel-control" href="#new-widget-carousel" data-slide="prev">
-                          <span class="icon-prev"></span>
-                      </a>
-                      <a class="right carousel-control" href="#new-widget-carousel" data-slide="next">
-                          <span class="icon-next"></span>
-                      </a>
-                  </div>
-              </div>
-              <div class="modal-footer">
-                  <button id="btn-get-more-widget" type="button" class="btn btn-primary pull-left">Get more widget</button>
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                  <button id="btn-confirm-add-widget" type="button" class="btn btn-primary">Add new</button>
-              </div>
-          </div>
-      </div>
-  </div>
 
   </body>
 </html>
