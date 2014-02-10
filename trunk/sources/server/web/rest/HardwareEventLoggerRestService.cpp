@@ -5,10 +5,9 @@
 #include "RestDispatcherHelpers.hpp"
 #include "shared/Log.h"
 
-std::string CHardwareEventLoggerRestService::m_restKeyword= std::string("hardwareEventLogger");
 
 CHardwareEventLoggerRestService::CHardwareEventLoggerRestService(boost::shared_ptr<IDataProvider> dataProvider)
-   :m_dataProvider(dataProvider)
+   :m_dataProvider(dataProvider), m_restKeyword("hardwareEventLogger")
 {
 }
 

@@ -45,7 +45,7 @@ CXplService::~CXplService()
 void CXplService::initializeConnector()
 {
    m_hubHasBeenFound = false;
-   m_startDate = boost::posix_time::second_clock::local_time();
+   m_startDate = boost::posix_time::second_clock::universal_time();
 
    runHeartbeatSequenceIn(HeartbeatFrequencyDuringInitialDiscoveryPhase);
 
@@ -105,7 +105,7 @@ void CXplService::heartbeatSequence()
       else
       {
          //the hub havn't been found for the moment
-         boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
+         boost::posix_time::ptime now = boost::posix_time::second_clock::universal_time();
          boost::posix_time::time_duration diff = now - m_startDate;
          if (diff.total_seconds() > HubDiscoveryTimeOut)
          {

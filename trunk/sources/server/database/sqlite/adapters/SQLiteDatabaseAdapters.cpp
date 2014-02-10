@@ -20,7 +20,7 @@ DECLARE_ADAPTER_IMPLEMENTATION(Configuration,
    ((Value)(std::string)(""))
    ((DefaultValue)(std::string)(""))
    ((Description)(std::string)(""))
-   ((LastModificationDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::local_time()))
+   ((LastModificationDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
    )
 
 DECLARE_ADAPTER_IMPLEMENTATION(Acquisition,
@@ -28,7 +28,7 @@ DECLARE_ADAPTER_IMPLEMENTATION(Acquisition,
    ((Source)(std::string)(""))
    ((Keyword)(std::string)(""))
    ((Value)(std::string)(""))
-   ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::local_time()))
+   ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
    )
 
 DECLARE_ADAPTER_IMPLEMENTATION(Device,
@@ -61,7 +61,7 @@ DECLARE_ADAPTER_IMPLEMENTATION(Widget,
 
 DECLARE_ADAPTER_IMPLEMENTATION(HardwareEventLogger,
    ((Id)(int)(0))
-   ((EventDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::local_time()))
+   ((EventDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
    ((PluginName)(std::string)(""))
    ((PluginVersion)(std::string)(""))
    ((PluginRelease)(IHardwarePluginInformation::EReleaseType)(IHardwarePluginInformation::EReleaseType::kStable))

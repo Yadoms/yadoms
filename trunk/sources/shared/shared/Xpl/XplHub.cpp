@@ -157,7 +157,7 @@ void CXplHub::checkApplicationLifeCycle()
       while (i >= 0)
       {
          //we check inactivity using the rule : last seen time + (interval * 2) + 1 minutes < now then periph has died
-         boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
+         boost::posix_time::ptime now = boost::posix_time::second_clock::universal_time();
          boost::posix_time::ptime timeoutAt = m_discoveredPeripherals[i]->getLastTimeSeen() + boost::posix_time::minutes(m_discoveredPeripherals[i]->getInterval() * 2 + 1);
 
          if (timeoutAt < now)

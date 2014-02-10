@@ -110,7 +110,7 @@ CJson CConfigurationRestService::updateOneConfiguration(const std::vector<std::s
          configToUpdate->setSection(section);
          configToUpdate->setName(keyname);
          //update modification date
-         configToUpdate->setLastModificationDate(boost::posix_time::second_clock::local_time());
+         configToUpdate->setLastModificationDate(boost::posix_time::second_clock::universal_time());
          //commit changes to database
          m_dataProvider->getConfigurationRequester()->updateConfiguration(*configToUpdate);
          return CJsonResult::GenerateSuccess(getConfiguration(parameters, requestContent));
