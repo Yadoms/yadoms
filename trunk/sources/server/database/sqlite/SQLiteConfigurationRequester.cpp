@@ -23,7 +23,7 @@ void CSQLiteConfigurationRequester::create(CConfiguration& configurationToCreate
 {
    CQuery qInsert;
    qInsert. InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName(), CConfigurationTable::getDefaultValueColumnName(), CConfigurationTable::getLastModificationDateColumnName()).
-            Values(configurationToCreate.getSection(), configurationToCreate.getName(), configurationToCreate.getValue(), configurationToCreate.getDescription(), configurationToCreate.getDefaultValue(), boost::gregorian::day_clock::local_day());
+            Values(configurationToCreate.getSection(), configurationToCreate.getName(), configurationToCreate.getValue(), configurationToCreate.getDescription(), configurationToCreate.getDefaultValue(), boost::gregorian::day_clock::universal_day());
    if(m_databaseRequester->queryStatement(qInsert) <= 0)
       throw CEmptyResultException("No lines affected");
 }

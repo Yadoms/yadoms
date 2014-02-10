@@ -3,7 +3,8 @@
 #include <shared/Exceptions/EmptyResultException.hpp>
 
 
-const int CHardwarePluginQualifier::m_SafetyThreshold = 2;//TODO
+// 7 ==> Tolerance of 1 crash per week
+const int CHardwarePluginQualifier::m_SafetyThreshold = 7;
 
 
 CHardwarePluginQualifier::CHardwarePluginQualifier(boost::shared_ptr<IHardwareEventLoggerRequester> eventLoggerDatabase)
@@ -97,12 +98,12 @@ void CHardwarePluginQualifier::obsoleteQualityIndicatorCache(const CPluginIdenti
 
 int CHardwarePluginQualifier::computeQuality(const CPluginIdentity& identity) const
 {
-   // First, compute total running time and crashs number, on a one year period
+   // First, compute total running time and crashes number, on a 90-days period
    int crashsNb = 0;
    boost::posix_time::time_duration runningDuration;
    boost::posix_time::ptime lastLoadTime(boost::posix_time::not_a_date_time);
 
-   boost::gregorian::date fromDate = boost::gregorian::day_clock::local_day() - boost::gregorian::years(1);
+   boost::gregorian::date fromDate = boost::gregorian::day_clock::universal_day() - boost::gregorian::days(90);
    std::vector<boost::shared_ptr<CHardwareEventLogger> > pluginEvents = m_eventLoggerDatabase->getHardwareEvents(identity.getName(), identity.getVersion(), identity.getReleaseType(), boost::posix_time::ptime(fromDate));
    for (std::vector<boost::shared_ptr<CHardwareEventLogger> >::const_iterator it = pluginEvents.begin() ; it != pluginEvents.end() ; it++)
    {
@@ -134,19 +135,19 @@ int CHardwarePluginQualifier::computeQuality(const CPluginIdentity& identity) co
       }
    }
 
-   // If running time is less than 1 hour, data are not significative
+   // If running time is less than 1 hour, data are not significant
    if (runningDuration < boost::posix_time::hours(1))
       return kNoEnoughData;
 
-   // If no crash during 96h running time, data are considered as not significative
+   // If no crash during the first 96 hours, data are considered as not significant
    if (crashsNb == 0 && runningDuration < boost::posix_time::hours(96))
       return kNoEnoughData;
 
    // Now, compute the indicator
    // 100 is the best quality (plugin never crashed on the full period)
-   // 0 is the worst qulity
-   // If only one crash occured, 99 can be obtained when running for 90 days.
-   // The indicator reprensents the mean duration between two crashs.
+   // 0 is the worst quality
+   // If only one crash occurred, 99 can be obtained when running for 90 days.
+   // The indicator represents the mean duration between two crashes.
 
    if (crashsNb == 0)
       return 100;       // Nice plugin !
@@ -157,7 +158,4 @@ int CHardwarePluginQualifier::computeQuality(const CPluginIdentity& identity) co
       return 99;        // Never returns 100 if there is at least one crash
 
    return quality;
-
-   //TODO : pas terrible : voir si on ne fait pas un calcul différent pour une runningDuration < 3 mois.
-   //on pourrait ne se servir que du nombre de crashs
 }
