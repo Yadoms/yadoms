@@ -86,8 +86,18 @@
           <!-- Gridster tabs will be inserted here -->
       </div>
 
-      <footer class="footer"><p>&copy; Yadoms 2014</p></footer>
-
+      <footer class="footer">
+         <div class="navbar navbar-default">
+            <ul class="nav navbar-nav">
+               <li>
+                  <a class="btn btn-inverse" id="btn-show-qrcode"><i class="fa fa-qrcode"></i></a>
+               </li>
+               <li>
+                  <p class="navbar-text navbar-left"> &copy; Yadoms 2014</p>
+               </li>
+            </ul>
+         </div>
+      </footer>
   </div>
 
    <!-- Bootstrap core JavaScript
@@ -118,30 +128,40 @@
    var customization = false;
 
    var pageArray = {};
-   var widgetArray = {};
    var widgetViewModel;
 
    var numberOfColumns = 9;
    var gridWidth = 100;
    var gridMargin = 5;
+   
+   //we havn't yet loaded the modal qrCode
+   var qrcodeHasBeenLoaded = false;
 
    $( document ).ready(function() {
-      //we get pages
-      $.getJSON( "/rest/page", requestPageDone());
-
-       $("#btn-confirm-add-widget").click(function () {
-            //we close the new widget modal
-           ("#new-widget-modal").hide();
-           //we add the widget
-           //TODO
-           //we open the configuration like if the user has clicked on the configuration button
-           //TODO
-
-       });
-
+      requestPages();
+      
+      $("#btn-show-qrcode").click(function() {
+         if (qrcodeHasBeenLoaded)
+         {
+            //we display the modal
+            $('#qrcode-modal').modal(); 
+         }
+         else
+         {
+            $.ajax( "qrcode.html" )
+                    .done(function(data) {
+                       //we append it to the index
+                       $('body').append(data);
+                       //we display the modal
+                       $('#qrcode-modal').modal();
+                    })
+                    .fail(function() {
+                       notifyError("Unable to display QRCode");
+                    });
+         }
+      });
    });
-
-
+   
 	</script>
 
   <!--New widget Modal -->

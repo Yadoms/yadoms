@@ -1,68 +1,35 @@
 function SimpleClockViewModel() {
-    //observable data
-    this.data;
-    
-    //widget DOM object (div)
-    this.$widgetNode;
+   //observable data
+   this.data;
 
-    //gridster widget node object (li)
-    this.$grisdterWidgetNode;
+   //page identifier
+   this.parentPage;
 
-    //configuration
-    this.configuration;
+   //widget identifier
+   this.widget;
 
-    this.resized = function() {
-    if (this.$widgetNode.width() <= 200) {
-            this.$widgetNode.find(".simpleClockWidget").css("font-size", "1.5em");
-        }
-        else if (this.$widgetNode.width() <= 300)
-            this.$widgetNode.find(".simpleClockWidget").css("font-size", "3.0em");
-        else if (this.$widgetNode.width() <= 400)
-            this.$widgetNode.find(".simpleClockWidget").css("font-size", "5.0em");
-        else
-        this.$widgetNode.find(".simpleClockWidget").css("font-size", "7.0em");
-    }
-    
-    this.initialize = function($widgetNode, $gridsterWidgetNode, configuration) {
-        this.$widgetNode = $widgetNode
-        this.$grisdterWidgetNode = $gridsterWidgetNode;
-        this.configuration = configuration;
+   this.resized = function() {
+      if (this.widget.$gridsterWidget.width() <= 200) {
+         this.widget.$gridsterWidget.find(".simpleClockWidget").css("font-size", "1.5em");
+      }
+      else if (this.widget.$gridsterWidget.width() <= 300)
+         this.widget.$gridsterWidget.find(".simpleClockWidget").css("font-size", "3.0em");
+      else if (this.widget.$gridsterWidget.width() <= 400)
+         this.widget.$gridsterWidget.find(".simpleClockWidget").css("font-size", "5.0em");
+      else
+         this.widget.$gridsterWidget.find(".simpleClockWidget").css("font-size", "7.0em");
+   }
 
-        var target = this;
-        /*
-        setInterval( function() {
-        var seconds = new Date().getSeconds();
-        var sdegree = seconds * 6;
-        var srotate = "rotate(" + sdegree + "deg)";
-        target.$widget.find(".sec").css({"-moz-transform" : srotate, "-webkit-transform" : srotate});
+   this.initialize = function(page, widget) {
+      this.parentPage = page;
+      this.widget = widget;
 
-        }, 1000 );
+      var target = this;
+      setInterval( function() {updateTime(target)}, 1000);
+      updateTime(target);
+   }
 
-        setInterval( function() {
-        var hours = new Date().getHours();
-        var mins = new Date().getMinutes();
-        var hdegree = hours * 30 + (mins / 2);
-        var hrotate = "rotate(" + hdegree + "deg)";
-
-        target.$widget.find(".hour").css({"-moz-transform" : hrotate, "-webkit-transform" : hrotate});
-
-        }, 1000 );
-
-        setInterval( function() {
-        var mins = new Date().getMinutes();
-        var mdegree = mins * 6;
-        var mrotate = "rotate(" + mdegree + "deg)";
-
-        target.$widget.find(".min").css({"-moz-transform" : mrotate, "-webkit-transform" : mrotate});
-
-        }, 1000 );
-        */
-
-        setInterval( function() {updateTime(target)}, 1000);
-        updateTime(target);
-    }
-    
-   function updateTime(viewModel) {
+   function updateTime(target) {
      var currentTime = new Date ( );
      var currentHours = currentTime.getHours ( );
      var currentMinutes = currentTime.getMinutes ( );
@@ -72,20 +39,11 @@ function SimpleClockViewModel() {
      currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
      currentSeconds = ( currentSeconds < 10 ? "0" : "" ) + currentSeconds;
 
-     // Choose either "AM" or "PM" as appropriate
-     //var timeOfDay = ( currentHours < 12 ) ? "AM" : "PM";
-
-     // Convert the hours component to 12-hour format if needed
-     //currentHours = ( currentHours > 12 ) ? currentHours - 12 : currentHours;
-
-     // Convert an hours component of "0" to "12"
-     //currentHours = ( currentHours == 0 ) ? 12 : currentHours;
-
      // Compose the string for display
      var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds ;
 
      // Update the time display
-      viewModel.$widgetNode.find(".simpleClockWidget").text(currentTimeString);
+      target.widget.$div.find(".simpleClockWidget").text(currentTimeString);
    }
 }
 
