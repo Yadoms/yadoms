@@ -58,6 +58,19 @@ public:
    virtual void removeWidget(int widgetId) = 0;
 
    //--------------------------------------------------------------
+   /// \brief           Remove all widgets conained in a page
+   /// \param [in] widgetId   the page id
+   /// \throw           CEmptyResultException if fails
+   //--------------------------------------------------------------
+   virtual void removeWidgetsInPage(int pageId) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief           Remove all widgets
+   /// \throw           CEmptyResultException if fails
+   //--------------------------------------------------------------
+   virtual void removeAllWidgets() = 0;
+
+   //--------------------------------------------------------------
    /// \brief       Destructor
    //--------------------------------------------------------------
    virtual ~IWidgetRequester()

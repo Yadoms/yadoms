@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RestDispatcher.h"
-
+#include "json/JsonResult.h"
 
 CRestDispatcher::CRestDispatcher()
 {
@@ -29,8 +29,10 @@ CJson CRestDispatcher::dispath(const std::string & requestType, const std::vecto
          if(match(url, iPatterns->first))
             return iPatterns->second(url, requestContent);
       }
+      return CJsonResult::GenerateError("This REST url is not handled");
    }
-   return CJson();
+   else
+      return CJsonResult::GenerateError("The type of request : " + requestType + " is not handled");
 }
 
 const bool CRestDispatcher::match(const std::vector<std::string> & url, const CUrlPattern & urlPattern)

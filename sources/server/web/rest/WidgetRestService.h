@@ -16,7 +16,7 @@ public:
    // [END] IRestService implementation
    
    
-   const std::string & getRestKeyword();
+   static const std::string & getRestKeyword();
 
 public:
    CJson getOneWidget(const std::vector<std::string> & parameters, const CJson & requestContent);
@@ -24,8 +24,10 @@ public:
    CJson getWidgetAcquisitions(const std::vector<std::string> & parameters, const CJson & requestContent);
    CJson addWidget(const std::vector<std::string> & parameters, const CJson & requestContent);
    CJson deleteOneWidget(const std::vector<std::string> & parameters, const CJson & requestContent);
+   CJson deleteAllWidgets(const std::vector<std::string> & parameters, const CJson & requestContent);
+   CJson replaceAllWidgets(const std::vector<std::string> & parameters, const CJson & requestContent);
    
 private:
    boost::shared_ptr<IDataProvider> m_dataProvider;
-   std::string m_restKeyword;
+   static std::string m_restKeyword;
 };

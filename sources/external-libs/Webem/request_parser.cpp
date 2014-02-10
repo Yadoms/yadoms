@@ -289,13 +289,13 @@ boost::tribool request_parser::consume(request& req, char input)
   case expecting_newline_3:
 	  if (input == '\n')
 	  {
-		  if( req.method != "POST" ) 
+		  if( req.method == "GET" ) 
 		  {
 			  // finished
 			  return true;
 		  } else
 		  {
-			  // this is a post request, so we need to read the content
+			  // this is a post, put or delete request, so we need to read the content
 			  req.content_length = 0;
 			  for( std::vector<header>::iterator ph = req.headers.begin();
 				  ph != req.headers.end(); ph++ )
