@@ -27,7 +27,17 @@ public:
    virtual int addEvent(const CHardwareEventLogger & hardwareLogEntry) = 0;
    
    //--------------------------------------------------------------
-   /// \brief           Get the events hisotry for a plugin
+   /// \brief           Get the events history for a plugin
+   /// \param [in]      pluginName   the plugin name
+   /// \param [in]      pluginVersion   the plugin version
+   /// \param [in]      pluginReleaseType   the plugin release type
+   /// \return          list of events
+   /// \throw           CEmptyResultException if fails
+   //--------------------------------------------------------------
+   virtual std::vector<boost::shared_ptr<CHardwareEventLogger> > getHardwareEvents(const std::string & pluginName, const std::string & pluginVersion, const IHardwarePluginInformation::EReleaseType pluginReleaseType) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief           Get the events history for a plugin
    /// \param [in]      pluginName   the plugin name
    /// \param [in]      pluginVersion   the plugin version
    /// \param [in]      pluginReleaseType   the plugin release type

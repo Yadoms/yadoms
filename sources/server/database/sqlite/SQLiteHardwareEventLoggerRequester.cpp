@@ -54,6 +54,22 @@ int CSQLiteHardwareEventLoggerRequester::addEvent(const CHardwareEventLogger & h
    return addEvent(hardwareLogEntry.getPluginName(), hardwareLogEntry.getPluginVersion(), hardwareLogEntry.getPluginRelease(), hardwareLogEntry.getEventType(), hardwareLogEntry.getMessage());
 }
 
+std::vector<boost::shared_ptr<CHardwareEventLogger> > CSQLiteHardwareEventLoggerRequester::getHardwareEvents(const std::string & pluginName, const std::string & pluginVersion, const IHardwarePluginInformation::EReleaseType pluginReleaseType)
+{
+   CQuery qSelect;
+   qSelect. Select(CHardwareEventLoggerTable::getIdColumnName()).
+      From(CHardwareEventLoggerTable::getTableName()).
+      Where(CHardwareEventLoggerTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, pluginName).
+      And(CHardwareEventLoggerTable::getPluginVersionColumnName(), CQUERY_OP_EQUAL, pluginVersion).
+      And(CHardwareEventLoggerTable::getPluginReleaseColumnName(), CQUERY_OP_EQUAL, pluginReleaseType).
+      OrderBy(CHardwareEventLoggerTable::getEventDateColumnName(), CQUERY_ORDER_DESC);
+
+   CHardwareEventLoggerAdapter adapter;
+   m_databaseRequester->queryEntities<boost::shared_ptr<CHardwareEventLogger> >(&adapter, qSelect);
+   return adapter.getResults();
+}
+
+
 std::vector<boost::shared_ptr<CHardwareEventLogger> > CSQLiteHardwareEventLoggerRequester::getHardwareEvents(const std::string & pluginName, const std::string & pluginVersion, const IHardwarePluginInformation::EReleaseType pluginReleaseType, const boost::posix_time::ptime & fromDate)
 {
    CQuery qSelect;
