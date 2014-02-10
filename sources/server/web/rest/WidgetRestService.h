@@ -7,7 +7,7 @@
 class CWidgetRestService : public IRestService
 {
 public:
-   CWidgetRestService(boost::shared_ptr<IDataProvider> dataProvider);
+   CWidgetRestService(boost::shared_ptr<IDataProvider> dataProvider, const std::string & webServerPath);
    virtual ~CWidgetRestService();
 
 public:
@@ -26,8 +26,10 @@ public:
    CJson deleteOneWidget(const std::vector<std::string> & parameters, const CJson & requestContent);
    CJson deleteAllWidgets(const std::vector<std::string> & parameters, const CJson & requestContent);
    CJson replaceAllWidgets(const std::vector<std::string> & parameters, const CJson & requestContent);
+   CJson findWidgetPackages(const std::vector<std::string> & parameters, const CJson & requestContent);
    
 private:
    boost::shared_ptr<IDataProvider> m_dataProvider;
    static std::string m_restKeyword;
+   std::string m_webServerPath;
 };

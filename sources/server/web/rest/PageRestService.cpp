@@ -39,13 +39,12 @@ void CPageRestService::configureDispatcher(CRestDispatcher & dispatcher)
 
 CJson CPageRestService::getOnePage(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
-   std::string objectId = "";
+   int pageId = 0;
    if(parameters.size()>1)
    {
-      objectId = parameters[1];
-
+      pageId = boost::lexical_cast<int>(parameters[1]);
       CPageEntitySerializer hes;
-      boost::shared_ptr<CPage> pageFound =  m_dataProvider->getPageRequester()->getPage(boost::lexical_cast<int>(objectId));
+      boost::shared_ptr<CPage> pageFound =  m_dataProvider->getPageRequester()->getPage(pageId);
       return CJsonResult::GenerateSuccess(hes.serialize(*pageFound.get()));
    }
    else

@@ -47,9 +47,10 @@ private:
    ///\brief         check if an url match a pattern
    ///\param [in]    url               the url to check
    ///\param [in]    urlPattern        the pattern
+   ///\param [in]    allowWildcard     if true wildcard are allowed (if not, pattern with wilcard are excluded)
    ///\return        true if the url match the pattern
    //-------------------------------------- 
-   const bool match(const std::vector<std::string> & url, const CUrlPattern & urlPattern);
+   const bool match(const std::vector<std::string> & url, const CUrlPattern & urlPattern, const bool allowWildcard);
 
    //--------------------------------------   
    ///\brief         Contains all the rest method pointers with their url pattern
