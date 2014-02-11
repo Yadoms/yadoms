@@ -152,6 +152,8 @@ void CHardwarePluginManager::buildAvailablePluginList()
             m_availablePlugins[pluginName] = m_loadedPlugins[pluginName]->getInformation();
          else
             m_availablePlugins[pluginName] = CHardwarePluginFactory::getInformation(toPath(pluginName));
+
+         YADOMS_LOG(info) << "Plugin " << pluginName << " successfully loaded";
       }
       catch (CInvalidPluginException& e)
       {
