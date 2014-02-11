@@ -62,6 +62,10 @@ CStartupOptionsLoader::CStartupOptionsLoader(int argc, char** argv)
    {
       throw CStartupOptionsLoaderException(m_optionsDescription, e.what());
    }
+   catch(po::invalid_command_line_syntax& e)
+   {
+      throw CStartupOptionsLoaderException(m_optionsDescription, e.what());
+   }
 }
 
 CStartupOptionsLoader::~CStartupOptionsLoader()
