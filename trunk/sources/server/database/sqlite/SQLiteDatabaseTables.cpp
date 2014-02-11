@@ -17,6 +17,7 @@ DECLARE_TABLE_COLUMN_NAMES(Configuration,  "Configuration",
    ((Value)("value"))
    ((DefaultValue)("default_value"))
    ((Description)("description"))
+   ((SecurityAccess)("securityAccess"))
    ((LastModificationDate)("last_modification_date"))
 )
 

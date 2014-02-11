@@ -26,6 +26,7 @@ public:
    CJson deleteOneWidget(const std::vector<std::string> & parameters, const CJson & requestContent);
    CJson deleteAllWidgets(const std::vector<std::string> & parameters, const CJson & requestContent);
    CJson replaceAllWidgets(const std::vector<std::string> & parameters, const CJson & requestContent);
+   CJson updateOneWidget(const std::vector<std::string> & parameters, const CJson & requestContent);
    CJson findWidgetPackages(const std::vector<std::string> & parameters, const CJson & requestContent);
    
 private:

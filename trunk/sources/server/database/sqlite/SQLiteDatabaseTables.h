@@ -25,6 +25,7 @@ DECLARE_TABLE(Configuration,
    (Value)
    (DefaultValue)
    (Description)
+   (SecurityAccess)
    (LastModificationDate)
 )
 

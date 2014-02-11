@@ -27,6 +27,7 @@ DECLARE_JSON_ENTITY_HEADER(Configuration,
    (Value)
    (DefaultValue)
    (Description)
+   (SecurityAccess)
    (LastModificationDate)
 )
 

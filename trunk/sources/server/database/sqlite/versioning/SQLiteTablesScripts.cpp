@@ -19,6 +19,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Configuration, " CREATE TABLE Configuration
                                                          value TEXT NOT NULL,\
                                                          default_value TEXT,\
                                                          description TEXT,\
+                                                         securityAccess  INTEGER DEFAULT 0,\
                                                          last_modification_date DATETIME,\
                                                          PRIMARY KEY(section,name)\
                                                       )")
