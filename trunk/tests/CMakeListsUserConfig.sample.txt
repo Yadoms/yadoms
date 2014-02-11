@@ -5,3 +5,15 @@
 ##### use only absolute path , and do not use anti slash : only '/' ######
 #set(BOOST_ROOT "/path/to/boost/boost_1_55_0")
 
+#activate this option to enable eclipse debugging
+set(DEBUG_WITH_ECLIPSE OFF)
+
+#activate this option to enable database tests 
+#add_definitions(-DDEV_ACTIVATE_DATABASE_TESTS)
+
+#activate this option to enable hardware plugin manager tests
+#add_definitions(-DDEV_ACTIVATE_HARDWARE_PLUGIN_MANAGER_TESTS)
+
+#activate this option to enable serial ports getter tests
+#add_definitions(-DDEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS)
+
