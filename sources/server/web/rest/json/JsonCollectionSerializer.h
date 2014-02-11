@@ -12,7 +12,6 @@ class CJsonCollectionSerializer
 public:
    static CJson SerializeCollection(typename std::vector< boost::shared_ptr<TObjectBase> > & collectionToSerialize, IEntitySerializer<TObjectBase> & entitySerilizer, const std::string & itemKeyword)
    {
-      CJson result;
       CJson objectList;
    
       typename std::vector< boost::shared_ptr<TObjectBase> >::iterator i;
@@ -20,9 +19,17 @@ public:
       {
          objectList.push_back(std::make_pair("", entitySerilizer.serialize(*i->get())));
       }
-      result.push_back(std::make_pair(itemKeyword, objectList));
-      return result;
 
+      if(itemKeyword.empty())
+      {
+         return objectList;
+      }
+      else
+      {
+         CJson result;
+         result.push_back(std::make_pair(itemKeyword, objectList));
+         return result;
+      }
    }
 
 
@@ -30,6 +37,8 @@ public:
    {
       std::vector< boost::shared_ptr<TObjectBase> > result;
       CJson objectList = data.get_child(itemKeyword);
+      if(objectList.empty())
+         objectList = data;
       for (CJson::const_iterator it = objectList.begin(); it != objectList.end(); ++it)
       {
          result.push_back(entitySerilizer.deserialize(it->second));
