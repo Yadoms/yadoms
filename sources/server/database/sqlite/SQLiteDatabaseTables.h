@@ -54,6 +54,7 @@ DECLARE_TABLE(Keyword,
 DECLARE_TABLE(Page,
    (Id)
    (Name)
+   (Order)
 )
 
 DECLARE_TABLE(Widget,

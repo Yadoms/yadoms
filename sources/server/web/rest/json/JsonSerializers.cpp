@@ -50,6 +50,7 @@ DECLARE_JSON_ENTITY_IMPLEMENTATION(Keyword,  "Keyword",
 DECLARE_JSON_ENTITY_IMPLEMENTATION(Page,  "Page",
    ((Id)("id")JSON_INT)
    ((Name)("name")JSON_STRING)
+   ((Order)("order")JSON_INT)
 )
 
 DECLARE_JSON_ENTITY_IMPLEMENTATION(Widget,  "Widget",

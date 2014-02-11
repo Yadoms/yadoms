@@ -46,6 +46,7 @@ DECLARE_ADAPTER_IMPLEMENTATION(Keyword,
 DECLARE_ADAPTER_IMPLEMENTATION(Page,
    ((Id)(int)(0))
    ((Name)(std::string)(""))
+   ((Order)(int)(0))
    )
 
 

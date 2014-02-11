@@ -52,7 +52,8 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Keyword, " CREATE TABLE Keyword\
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Page, " CREATE TABLE Page\
                                                 (\
                                                    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\
-                                                   name TEXT NOT NULL\
+                                                   name TEXT NOT NULL,\
+                                                   order  INTEGER DEFAULT 0\
                                                 )")                                                
                                                 
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Widget, "CREATE TABLE Widget\
