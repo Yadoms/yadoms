@@ -7,6 +7,14 @@
 class CConfiguration
 {
 public:
+   enum ESecurityAccess
+   {
+      kNone = 0, 
+      kAdmin = 1, 
+      kUser = 2  
+   };
+
+public:
    CConfiguration()
    {
    }
@@ -21,5 +29,6 @@ public:
    DELCARE_FIELD_CCONFIGURATION(std::string, Value);
    DELCARE_FIELD_CCONFIGURATION(std::string, DefaultValue);
    DELCARE_FIELD_CCONFIGURATION(std::string, Description);
+   DELCARE_FIELD_CCONFIGURATION(ESecurityAccess, SecurityAccess);
    DELCARE_FIELD_CCONFIGURATION(boost::posix_time::ptime, LastModificationDate);
 };

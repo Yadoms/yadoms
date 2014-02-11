@@ -89,7 +89,7 @@ void CHardwarePluginQualifier::obsoleteQualityIndicatorCache(const CPluginIdenti
 {
    boost::lock_guard<boost::mutex> lock(m_qualityIndicatorsCacheMutex);
 
-   QualityIndicatorsCache::const_iterator cacheIterator = m_qualityIndicatorsCache.find(identity);
+   QualityIndicatorsCache::iterator cacheIterator = m_qualityIndicatorsCache.find(identity);
    if (cacheIterator == m_qualityIndicatorsCache.end())
       return;  // Not found in cache, nothing to do
 

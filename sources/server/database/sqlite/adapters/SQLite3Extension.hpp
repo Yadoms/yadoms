@@ -4,6 +4,7 @@
 #include <shared/StringExtension.h>
 #include <shared/HardwarePlugin/Interfaces/IHardwarePluginInformation.h>
 #include "database/entities/HardwareEventLogger.h"
+#include "database/entities/Configuration.h"
 
 //--------------------------------------------------------------
 ///\brief   Class (static) used to extend sqlite3 functions.
@@ -113,23 +114,7 @@ inline boost::posix_time::ptime CSQLite3Extension::extractData(sqlite3_stmt * pS
    return boost::posix_time::time_from_string(CSQLite3Extension::sqlite3_column_text_utf8(pStatement, nCol));
 }
 
-//--------------------------------------------------------------
-///\brief  Override method for type = int (use specific sqlite3 function)
-//--------------------------------------------------------------
-template<>
-inline IHardwarePluginInformation::EReleaseType CSQLite3Extension::extractData(sqlite3_stmt * pStatement, int nCol)
-{
-   return (IHardwarePluginInformation::EReleaseType)sqlite3_column_int(pStatement, nCol);
-}
 
-//--------------------------------------------------------------
-///\brief  Override method for type = int (use specific sqlite3 function)
-//--------------------------------------------------------------
-template<>
-inline CHardwareEventLogger::EEventType CSQLite3Extension::extractData(sqlite3_stmt * pStatement, int nCol)
-{
-   return (CHardwareEventLogger::EEventType)sqlite3_column_int(pStatement, nCol);
-}
 
 
    

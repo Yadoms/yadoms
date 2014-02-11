@@ -11,8 +11,8 @@
 //
 //
 //          DECLARE_ADAPTER_IMPLEMENTATION(entityName,
-//             ((entityField1)(entityField1Type)(entityField1DefaultValue)),
-//             ((entityField2)(entityField1Type)(entityField1DefaultValue)),
+//             ((entityField1)(entityField1Type)(entityField1DefaultValue)(optional_internal_data_type)),
+//             ((entityField2)(entityField1Type)(entityField1DefaultValue)(optional_internal_data_type)),
 //             ...
 //             )
 //
@@ -57,6 +57,7 @@
 //                ((Value)(std::string)(""))
 //                ((DefaultValue)(std::string)(""))
 //                ((Description)(std::string)(""))
+//                ((SecurityAccess)(CConfiguration::ESecurityAccess)(CConfiguration::kNone)(int))
 //                ((LastModificationDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
 //                )
 //
@@ -119,6 +120,13 @@
 //                					else 
 //                						newEntity->setDescription ( CSQLite3Extension::extractData< std::string  >(pStatement, nCol) ); 
 //                				} 
+//                				else if(boost::iequals(CConfigurationTable::getSecurityAccessColumnName(), cols[nCol])) 
+//                				{ 
+//                					if(sqlite3_column_type(pStatement, nCol) == SQLITE_NULL) 
+//                						newEntity->setSecurityAccess (CConfiguration::kNone ); 
+//                					else 
+//                						newEntity->setSecurityAccess ( (CConfiguration::ESecurityAccess)CSQLite3Extension::extractData< int  >(pStatement, nCol) ); 
+//                				} 
 //                				else if(boost::iequals(CConfigurationTable::getLastModificationDateColumnName(), cols[nCol])) 
 //                				{ 
 //                					if(sqlite3_column_type(pStatement, nCol) == SQLITE_NULL) 
@@ -144,6 +152,24 @@
 #define ADAPTER_COLUMN_ID 0
 #define ADAPTER_COLUMN_TYPE 1
 #define ADAPTER_COLUMN_DEFAULT 2
+#define ADAPTER_COLUMN_INTERNAL_TYPE 3
+
+
+//-------------------------------------------------------------------
+/// \brief  Macro which extract the internal data type
+///     -> in common case it returns the type of the field (int, double,...)
+///     -> in case of enum, it returns the internal type (int)
+//-------------------------------------------------------------------
+#define ADAPT_COLUMN_GET_INTERNAL_TYPE(elem) \
+   BOOST_PP_IF(BOOST_PP_EQUAL(BOOST_PP_SEQ_SIZE(elem), 4 ), BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_INTERNAL_TYPE, elem), BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_TYPE, elem))
+
+//-------------------------------------------------------------------
+/// \brief  Macro which extract the real data type
+///     -> in common case it returns nothing (empty) 
+///     -> in case of enum, it returns the enum type
+//-------------------------------------------------------------------
+#define ADAPT_COLUMN_GET_REAL_TYPE(elem) \
+   BOOST_PP_IF(BOOST_PP_EQUAL(BOOST_PP_SEQ_SIZE(elem), 4 ), (BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_TYPE, elem)), BOOST_PP_EMPTY())
 
 //-------------------------------------------------------------------
 /// \brief  Macro which is called for each entity member and provide setter implementation
@@ -155,7 +181,7 @@
       if(sqlite3_column_type(pStatement, nCol) == SQLITE_NULL) \
    		BOOST_PP_CAT(newEntity->set, BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem)) (BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_DEFAULT, elem) ); \
       else \
-         BOOST_PP_CAT(newEntity->set, BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem)) ( CSQLite3Extension::extractData< BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_TYPE, elem) >(pStatement, nCol) ); \
+         BOOST_PP_CAT(newEntity->set, BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem)) ( ADAPT_COLUMN_GET_REAL_TYPE(elem)CSQLite3Extension::extractData< ADAPT_COLUMN_GET_INTERNAL_TYPE(elem) >(pStatement, nCol) ); \
    }
 
 //-------------------------------------------------------------------

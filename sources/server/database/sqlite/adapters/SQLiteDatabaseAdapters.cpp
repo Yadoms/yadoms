@@ -20,6 +20,7 @@ DECLARE_ADAPTER_IMPLEMENTATION(Configuration,
    ((Value)(std::string)(""))
    ((DefaultValue)(std::string)(""))
    ((Description)(std::string)(""))
+   ((SecurityAccess)(CConfiguration::ESecurityAccess)(CConfiguration::kNone)(int))
    ((LastModificationDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
    )
 
@@ -64,8 +65,8 @@ DECLARE_ADAPTER_IMPLEMENTATION(HardwareEventLogger,
    ((EventDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
    ((PluginName)(std::string)(""))
    ((PluginVersion)(std::string)(""))
-   ((PluginRelease)(IHardwarePluginInformation::EReleaseType)(IHardwarePluginInformation::EReleaseType::kStable))
-   ((EventType)(CHardwareEventLogger::EEventType)(CHardwareEventLogger::EEventType::kUnload))
+   ((PluginRelease)(IHardwarePluginInformation::EReleaseType)(IHardwarePluginInformation::kStable)(int))
+   ((EventType)(CHardwareEventLogger::EEventType)(CHardwareEventLogger::kUnload)(int))
    ((Message)(std::string)(""))
 )   
    

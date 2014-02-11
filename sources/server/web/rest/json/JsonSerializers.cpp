@@ -21,6 +21,7 @@ DECLARE_JSON_ENTITY_IMPLEMENTATION(Configuration,  "Configuration",
    ((Value)("value")JSON_STRING)
    ((DefaultValue)("default_value")JSON_STRING)
    ((Description)("description")JSON_STRING)
+   ((SecurityAccess)("securityAccess")JSON_ENUM(CConfiguration::ESecurityAccess))
    ((LastModificationDate)("last_modification_date")JSON_DATE)
 )
 
