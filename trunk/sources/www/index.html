@@ -19,7 +19,7 @@
 	<link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="css/gridster.css" rel="stylesheet">
 
-   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=FontName">
+   <!--<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=FontName">-->
    
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -71,7 +71,7 @@
           <div class="row">
               <div class="col-md-12">
                   <div class="nav navbar-nav" id = "pageMenu">
-                      <ul class="nav nav-pills nav-justified">
+                      <ul class="nav nav-pills nav-justified page-tabs">
                           <!-- Nav pills of pages will be inserted here -->
                       </ul>
                   </div>
@@ -113,12 +113,12 @@
    <script src="libs/transit/js/jquery.transit.min.js"></script>
    <script src="libs/knockout/js/knockout-3.0.0.js"></script>
 
-  <script src="js/utility.js"></script>
+   <script src="js/utility.js"></script>
 
-  <script src="js/widget-engine.js"></script>
+   <script src="js/widget-engine.js"></script>
    <script src="js/widget-customization.js"></script>
 
-  <script type="text/javascript" src="libs/noty/js/packaged/jquery.noty.packaged.min.js"></script>
+   <script type="text/javascript" src="libs/noty/js/packaged/jquery.noty.packaged.min.js"></script>
 
    <div id="templates" class="hidden"></div>
 
@@ -128,6 +128,8 @@
    var customization = false;
 
    var pageArray = {};
+
+   //the id of the page displayed
    var widgetViewModel;
 
    var numberOfColumns = 9;
@@ -149,7 +151,7 @@
          }
          else
          {
-            $.ajax( "qrcode.html" )
+            $.ajax("qrcode.html")
                     .done(function(data) {
                        //we append it to the index
                        $('body').append(data);

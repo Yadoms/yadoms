@@ -10,6 +10,14 @@ function Page(id, name) {
    this.name = name;
    this.gridster;
    this.widgets = new Array();
+
+   this.widgetsToJson = function() {
+      data = new Array();
+      for(widgetId in this.widgets) {
+         data.push(this.widgets[widgetId]);
+      }
+      return JSON.stringify(data);
+   }
 }
 
 function Widget(id, idPage, name, sizeX, sizeY, positionX, positionY, configuration) {
@@ -41,6 +49,38 @@ function Widget(id, idPage, name, sizeX, sizeY, positionX, positionY, configurat
 
    //package information of the current widget type (package.json file)
    this.package;
+
+   /*
+    {
+    id: "1",
+    idPage: "1",
+    name: "temperature",
+    sizeX: "2",
+    sizeY: "2",
+    positionX: "1",
+    positionY: "1",
+    configuration: ""
+    },
+    */
+   this.toJSON = function () {
+      return "{" +
+                  "id:'" + this.id + "'," +
+                  "idPage:'" + this.idPage + "'," +
+                  "name:'" + this.name + "'," +
+                  "sizeX:'" + this.sizeX + "'," +
+                  "sizeY:'" + this.sizeY + "'," +
+                  "positionX:'" + this.positionX + "'," +
+                  "positionY:'" + this.positionY + "'," +
+                  "configuration:'" + this.configuration + "'," +
+               "}";
+   };
+
+   this.updateDataFromGridster = function() {
+      this.sizeX = this.$gridsterWidget.data('coords').grid.size_x;
+      this.sizeY = this.$gridsterWidget.data('coords').grid.size_y;
+      this.positionX = this.$gridsterWidget.data('col');
+      this.positionY = this.$gridsterWidget.data('row');
+   }
 }
 
 function getWidgetFromGridsterElement($element)
@@ -83,7 +123,7 @@ function requestPageDone()
                  "</div>");
          //page creation
          $("#pageMenu ul").append(
-             "<li>" +
+             "<li class=\"tabPagePills\" page-id=\"" + value.id + "\">" +
                  "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" + value.name + "</a>" +
              "</li>");
 
@@ -98,12 +138,12 @@ function requestPageDone()
                  enabled: true,
                  resize: function(e, ui, $widget) {
 
-                     if ($widget.width() <= $widget.data('coords').grid.min_size_x * gridWidth) {
+                     /*if ($widget.width() <= $widget.data('coords').grid.min_size_x * gridWidth) {
                          $widget.width($widget.data('coords').grid.min_size_x * gridWidth);
                      }
                      if ($widget.height() <= $widget.data('coords').grid.min_size_y * gridWidth) {
                          $widget.height($widget.data('coords').grid.min_size_y * gridWidth);
-                     }
+                     }*/
 
                      widgetObject = getWidgetFromGridsterElement($widget);
 
@@ -155,14 +195,18 @@ function requestWidgetsDone(page)
       }
       $.each(data.data.widget, function(index, value) {
          var w = new Widget(value.id, value.idPage, value.name, value.sizeX, value.sizeY, value.positionX, value.positionY, value.configuration);
-         page.widgets[value.id] = w;
-         //for each widget we add view, viewModel and configuration of the widget
-         //$.get( "widgets/" + value.name + "/view.html", getWidgetViewDone(page, value));
-         $.get("widgets/" + value.name + "/view.html")
-            .done(getWidgetViewDone(page, w))
-            .fail(function(widget) { return function() {notifyError("Unable to get view of the widget " + widget.name) }}(w));
+         addWidgetToIHM(w);
       });
    };
+}
+
+function addWidgetToIHM(widget)
+{
+   pageArray[widget.idPage].widgets[widget.id] = widget;
+   //for each widget we add view, viewModel and configuration of the widget
+   $.get("widgets/" + widget.name + "/view.html")
+      .done(getWidgetViewDone(pageArray[widget.idPage], widget))
+      .fail(function(widget) { return function() {notifyError("Unable to get view of the widget " + widget.name) }}(widget));
 }
 
 function getWidgetViewDone(page, widget)
@@ -249,6 +293,18 @@ function getWidgetConfigurationDone(page, widget)
          animated: 'fade',
          placement: 'bottom'
       });
+
+      //we check if we are in customization we must apply customization on the new item
+      if (customization)
+      {
+         $(".customization-item").removeClass("hidden");
+         $(".widget").addClass("liWidgetCustomization");
+      }
    };
 }
 
+//Return the Page object which is currently displayed
+function getCurrentPage()
+{
+   return pageArray[$(".page-tabs .active").attr("page-id")];
+}
