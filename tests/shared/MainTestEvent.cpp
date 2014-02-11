@@ -64,55 +64,55 @@ CEventHandler EvtHandler;
 
 void ThreadReceiver(long l_nb_messages)
 {
-	while ((Receiver_FirstMessageCounter + Receiver_TimeoutCounter + Receiver_DefaultCounter ) != l_nb_messages)
-	{
+   while ((Receiver_FirstMessageCounter + Receiver_Message1Counter + Receiver_TimeoutCounter + Receiver_DefaultCounter ) != l_nb_messages)
+   {
 
-		//boost::posix_time::seconds workTime(1);
+      //boost::posix_time::seconds workTime(1);
 
 #ifdef _DEBUG
-		std::cout << "Thread Receiver: WaitForEvents()" << std::endl;
+      std::cout << "Thread Receiver: WaitForEvents()" << std::endl;
 #endif
-	//Pretend to do something useful...
- 	        switch(EvtHandler.waitForEvents(boost::posix_time::milliseconds(10000)))
-          	{
-		  case FirstMessage:
-		    {
-		        EvtHandler.popEvent();
-			Receiver_FirstMessageCounter++;
+      //Pretend to do something useful...
+      switch(EvtHandler.waitForEvents(boost::posix_time::milliseconds(10000)))
+      {
+      case FirstMessage:
+         {
+            EvtHandler.popEvent();
+            Receiver_FirstMessageCounter++;
 #ifdef _DEBUG
-	               std::cout << "Thread Receiver: First message received..." << std::endl;
+            std::cout << "Thread Receiver: First message received (#" << Receiver_FirstMessageCounter  << ")" << std::endl;
 #endif
-		       break;
-		    }
-		 case Message1:
-		    {
-		        EvtHandler.popEvent();
-			Receiver_Message1Counter++;
+            break;
+         }
+      case Message1:
+         {
+            EvtHandler.popEvent();
+            Receiver_Message1Counter++;
 #ifdef _DEBUG
-	               std::cout << "Thread Receiver: Message 1 Received..." << std::endl;
+            std::cout << "Thread Receiver: Message 1 Received (#" << Receiver_Message1Counter << ")" << std::endl;
 #endif
-		       break;
-		    }
-		 case CEventHandler::kTimeout:
-		    {
-		       Receiver_TimeoutCounter++;
+            break;
+         }
+      case CEventHandler::kTimeout:
+         {
+            Receiver_TimeoutCounter++;
 #ifdef _DEBUG
-	               std::cout << "Thread Receiver: TimeOut..." << std::endl;
+            std::cout << "Thread Receiver: TimeOut (#" << Receiver_TimeoutCounter << ")" << std::endl;
 #endif
-		       break;
-		    }
-		 default:
-		    {
-			Receiver_DefaultCounter++;
+            break;
+         }
+      default:
+         {
+            Receiver_DefaultCounter++;
 #ifdef _DEBUG
-			std::cout << "Thread Receiver: Unknown message id..." << std::endl;
+            std::cout << "Thread Receiver: Unknown message id (#" << Receiver_DefaultCounter << ")" << std::endl;
 #endif
-		       break;
-		    }
-		}
+            break;
+         }
+      }
    }
 #ifdef _DEBUG
-	std::cout << "Thread Receiver: finished" << std::endl;
+   std::cout << "Thread Receiver: finished" << std::endl;
 #endif
 }
 
@@ -161,7 +161,7 @@ BOOST_AUTO_TEST_CASE(Event_1_Message)
 	Receiver_TimeoutCounter      = 0;
 	Receiver_DefaultCounter      = 0;
 
-	boost::thread ConsoThread(ThreadReceiver , l_nbmessages);
+	boost::thread ConsoThread(ThreadReceiver , l_nbmessages);//TODO pas de français !
 	boost::thread ProdThread(ThreadSender    , l_nbmessages);
 
 	ConsoThread.join();

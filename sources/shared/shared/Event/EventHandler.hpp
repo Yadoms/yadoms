@@ -70,11 +70,16 @@ public:
    int waitForEvents(const boost::posix_time::time_duration& timeout = boost::date_time::pos_infin)
    {
       boost::mutex::scoped_lock lock(m_EventsQueueMutex);
+
+      // Don't wait if event is already present
+      if (!m_EventsQueue.empty())
+         return m_EventsQueue.back()->getId();
+
+      // No event is present
       if (timeout == boost::date_time::min_date_time)
       {
-         // No wait, just check if an event is present
-         if (m_EventsQueue.empty())
-            return kNoEvent;
+         // No wait
+         return kNoEvent;
       }
       else if (timeout == boost::date_time::pos_infin)
       {
