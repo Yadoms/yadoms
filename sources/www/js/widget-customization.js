@@ -84,7 +84,6 @@ function exitCustomization() {
          //we synchronize gridster information into the widget class
          widget.updateDataFromGridster();
       }
-      data = pageArray[pageId].widgetsToJson();
 
       $.ajax({
           type: "PUT",
