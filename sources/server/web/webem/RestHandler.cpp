@@ -76,8 +76,31 @@ std::string CRestHandler::manageRestRequests(const http::server::request & reque
 
          //parse content to json format
          CJson requestContent;
-         CJsonSerializer ser;
-         ser.deserialize(request.content, requestContent);
+         try
+         {
+            BOOST_FOREACH(http::server::header headerData, request.headers)
+            {
+               if(boost::iequals(headerData.name, "contentType") || boost::iequals(headerData.name, "Content-Type") )
+               {
+                  if(boost::ifind_first(headerData.value, "application/json"))
+                  {
+                     CJsonSerializer ser;
+                     ser.deserialize(request.content, requestContent);                  
+                  }
+                  else
+                  {
+                     YADOMS_LOG(warning) << "Ignore content because its format is not supported";
+                  }
+               }
+               
+            }
+
+         }
+         catch(std::exception &ex)
+         {
+            YADOMS_LOG(error) << "Fail to read request content as Json format. Exception : " << ex.what();
+            return m_jsonSerializer.serialize(CJsonResult::GenerateError("Fail to read request content as Json format"));
+         }
 
          //dispatch url to rest dispatcher
          CJson js = m_restDispatcher.dispath(request.method, parameters, requestContent);

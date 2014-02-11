@@ -1,5 +1,6 @@
 #pragma once
 #include "Event.hpp"
+#include <shared/Exceptions/BadConversionException.hpp>
 
 //--------------------------------------------------------------
 /// \brief	    An handler for events
