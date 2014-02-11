@@ -17,5 +17,5 @@ public:
 
    DELCARE_FIELD_CPAGE(int, Id);
    DELCARE_FIELD_CPAGE(std::string, Name);
-   DELCARE_FIELD_CPAGE(int, Order);
+   DELCARE_FIELD_CPAGE(int, PageOrder);
 };

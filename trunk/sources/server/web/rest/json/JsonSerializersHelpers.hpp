@@ -417,3 +417,5 @@ boost::shared_ptr< DECLARE_JSON_ENTITY_CLASS(_classname) > DECLARE_JSON_ENTITY_S
 #define DECLARE_JSON_ENTITY_IMPLEMENTATION(_classname, _usualname, _seq)\
    DECLARE_JSON_IDENTIFIER(_classname, _usualname, _seq)\
    DECLARE_JSON_SERIALIZER_IMPLEMENTATION(_classname, _seq)
+
+
