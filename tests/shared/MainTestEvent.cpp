@@ -75,9 +75,6 @@ void ThreadReceiver(long l_nb_messages)
 	//Pretend to do something useful...
  	        switch(EvtHandler.waitForEvents(boost::posix_time::milliseconds(10000)))
           	{
-#ifdef _DEBUG
-	            std::cout << "Thread Receiver: WaitForEvents() passed..." << std::endl;
-#endif
 		  case FirstMessage:
 		    {
 		        EvtHandler.popEvent();

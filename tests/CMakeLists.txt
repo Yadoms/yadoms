@@ -67,7 +67,37 @@ if(MSVC)
 
 	#global disable (for all targets)
 	#disable warning C4996   Function call with parameters that may be unsafe 
-	add_definitions( "/wd4996" )
+	add_definitions( "/wd4996 /wd4251" )
+
+	#######################################################
+	## Activate warning level4, and disable useless ones ##
+	#######################################################
+	add_definitions("/W4")
+	
+	# A lot of level 4 warnings are involved by boost.
+	# Use the next link to see how to remove warning 
+	#https://svn.boost.org/trac/boost/wiki/Guidelines/WarningsGuidelines
+	
+	#disable warning C4512: l'opérateur d'assignation n'a pas pu être généré
+	add_definitions( "/wd4512" )
+	
+	#disable warning C4610: struct '' ne peut jamais être instancié(e) : résolution : la même que pour C4512
+	add_definitions( "/wd4610" )
+	
+	#disable warning C4127: l'expression conditionnelle est une constante
+	add_definitions( "/wd4127" )
+
+	#disable warning C4100: unreferenced formal parameter
+	add_definitions( "/wd4100" )
+	
+	#disable warning C4714: fonction '' marquée comme __forceinline non inline
+	add_definitions( "/wd4714" )
+	
+	#disable warning C4510: le constructeur par défaut n'a pas pu être généré
+	add_definitions( "/wd4510" )
+
+	#disable warning C4505: la fonction locale non référencée a été supprimée : résolution : supprimer le code mort
+	add_definitions( "/wd4505" )
 	
 	#to allow BOOST in precompiled header (specify Precompiled Header Memory Allocation Limit) 
 	add_definitions("/Zm256")
@@ -78,8 +108,29 @@ if(MSVC)
 endif()
 
 if(CMAKE_COMPIER_IS_GNUCXX)
+	add_definitions("-Wall -Wextra -pedantic")
 	add_definitions("-fpermissive")
 	add_definitions("-std=c++0x")
+	
+	# In case unix is 64bits, append -fPIC to gcc
+	IF(UNIX AND NOT WIN32)
+	   FIND_PROGRAM(CMAKE_UNAME uname /bin /usr/bin /usr/local/bin )
+	   IF(CMAKE_UNAME)
+		 EXEC_PROGRAM(uname ARGS -m OUTPUT_VARIABLE CMAKE_SYSTEM_PROCESSOR)
+		 SET(CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR} CACHE INTERNAL "processor type (i386 and x86_64)")
+		 IF(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
+		   add_definitions(-fPIC)
+		 ENDIF(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
+	   ENDIF(CMAKE_UNAME)
+	ENDIF(UNIX AND NOT WIN32)
+endif()
+
+
+if (CMAKE_COMPIER_IS_CLANG)
+	add_definitions("-Wall -Wextra -pedantic")
+	add_definitions("-std=c++0x")
+   add_definitions("-Woverloaded-virtual")
+   add_definitions("-Wunused-variable")
 endif()
 
 #check eclispe debug options
@@ -88,20 +139,9 @@ if(DEBUG_WITH_ECLIPSE)
 	add_definitions("-g")
 endif()
 
-##################################################################################################
-## User specific Defines
-##################################################################################################
-if(DEV_ACTIVATE_DATABASE_TESTS)
-	add_definitions(-DDEV_ACTIVATE_DATABASE_TESTS)
-endif()
 
-if(DEV_ACTIVATE_HARDWARE_PLUGIN_MANAGER_TESTS)
-	add_definitions(-DDEV_ACTIVATE_HARDWARE_PLUGIN_MANAGER_TESTS)
-endif()
 
-if(DEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS)
-	add_definitions(-DDEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS)
-endif()
+
 
 ##################################################################################################
 ## Project output configuration
@@ -168,123 +208,50 @@ endif()
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})
 
 ##################################################################################################
-## Internal libraries (SQlite, Webem) comletly build from sources
+## Tests selection to build
 ##################################################################################################
 
-#Use Sqlite database system
-set(USE_SQLITE_DATABASE FALSE)
-#Use Webem web server
-set(USE_WEBEM_WEBSERVER FALSE)
-#Use Tests
+# TODO déplacer dans le CMakeListsUserConfig.txt (ou plutôt permettre la désactivation à partir de ce fichier)
 set(USE_TESTS_START_OPTIONS_LOADER TRUE)
 set(USE_TESTS_HARDWARE_PLUGIN_MANAGER FALSE)
 set(USE_TESTS_SHARED_EVENT TRUE)
 
-#include libs (have their own CMakeList.txt)
-include_directories(../sources/external-libs)
-
 
 ##################################################################################################
-## Yadoms
+## Include directories
 ##################################################################################################
 
-
-# Executable sources
-set(YADOMS_SRC
-#	../sources/server/stdafx.cpp
-#	../sources/server/stdafx.h
-#	../sources/server/Supervisor.cpp
-#	../sources/server/Supervisor.h
-#	../sources/server/pluginSystem/HardwarePluginManager.h
-#	../sources/server/pluginSystem/HardwarePluginManager.cpp
-#	../sources/server/pluginSyst#em/HardwarePluginInstance.h
-#	../sources/server/pluginSystem/HardwarePluginInstance.cpp
-#	../sources/server/pluginSystem/HardwarePluginFactory.h
-#	../sources/server/pluginSystem/HardwarePluginFactory.cpp
-#	../sources/plugins/hardware/IHardwarePlugin.h
-#	../sources/plugins/hardware/HardwarePluginConfiguration.hpp
-#	../sources/plugins/hardware/HardwarePluginConfigurationParameters.hpp
-#	../sources/server/StartupOptionsLoader.h
-#	../sources/server/StartupOptionsLoader.cpp
-#	../sources/server/StartupOptions.h
-#	../sources/server/ApplicationStopHandler.h
-#	../sources/server/ApplicationStopHandler.cpp
-	
-#	../sources/server/database/IDataProvider.h
-#	../sources/server/database/IHardwareRequester.h
-#	../sources/server/database/IConfigurationRequester.h
-#	../sources/server/database/entities/EntityHelpers.hpp
-#	../sources/server/database/entities/Hardware.h
-#	../sources/server/database/entities/Configuration.h
-	)
-
-# Project folders
-if(MSVC)
-	source_group(Server server/*.*)
-	source_group(Server\\pluginSystem server/pluginSystem/*.* )
-	source_group(Server\\pluginSystem\\external plugins/hardware/IHardwarePlugin.h )
-	source_group(Server\\database  server/database/*.*)
-	source_group(Server\\database\\entities  server/database/entities/*.*)
-endif()
-
-IF(USE_SQLITE_DATABASE)
-	set(YADOMS_SRC ${YADOMS_SRC}
-		../sources/server/database/sqlite/Query.h
-		../sources/server/database/sqlite/Query.cpp
-		../sources/server/database/sqlite/QueryValue.h
-		../sources/server/database/sqlite/QueryValue.cpp
-		../sources/server/database/sqlite/SQLiteDatabaseTables.h
-		../sources/server/database/sqlite/SQLiteDatabaseTables.cpp
-		../sources/server/database/sqlite/SQLiteDatabaseTablesHelpers.hpp
-		../sources/server/database/sqlite/SQLiteHardwareRequester.h
-		../sources/server/database/sqlite/SQLiteHardwareRequester.cpp
-		../sources/server/database/sqlite/SQLiteConfigurationRequester.h
-		../sources/server/database/sqlite/SQLiteConfigurationRequester.cpp
-		../sources/server/database/sqlite/SQLiteKeywordRequester.h
-		../sources/server/database/sqlite/SQLiteKeywordRequester.cpp
-		../sources/server/database/sqlite/SQLiteAcquisitionRequester.h
-		../sources/server/database/sqlite/SQLiteAcquisitionRequester.cpp		
-		../sources/server/database/sqlite/SQLiteDeviceRequester.h
-		../sources/server/database/sqlite/SQLiteDeviceRequester.cpp		
-		../sources/server/database/sqlite/SQLiteDataProvider.h
-		../sources/server/database/sqlite/SQLiteDataProvider.cpp
-		../sources/server/database/sqlite/SQLiteRequester.h
-		../sources/server/database/sqlite/SQLiteRequester.cpp
-		
-		../sources/server/database/sqlite/adapters/SQLiteDatabaseAdapters.h
-		../sources/server/database/sqlite/adapters/AdapterHelpers.hpp
-		../sources/server/database/sqlite/adapters/ISQLiteResultAdapter.h
-		../sources/server/database/sqlite/adapters/GenericAdapter.h
-		../sources/server/database/sqlite/adapters/GenericAdapter.cpp
-		../sources/server/database/sqlite/adapters/SingleValueAdapter.hpp
-		../sources/server/database/sqlite/adapters/MultipleValueAdapter.hpp
-		
-		../sources/server/database/sqlite/versioning/ISQLiteVersionUpgrade.h
-		../sources/server/database/sqlite/versioning/SQLiteVersion1.h
-		../sources/server/database/sqlite/versioning/SQLiteVersion1.cpp
-		../sources/server/database/sqlite/versioning/SQLiteVersionUpgraderFactory.h
-		../sources/server/database/sqlite/versioning/SQLiteVersionUpgraderFactory.cpp
-		../sources/server/database/sqlite/versioning/SQLiteVersionException.h
-		../sources/server/database/sqlite/versioning/SQLiteSystemTables.h
-		../sources/server/database/sqlite/versioning/SQLiteSystemTables.cpp
-	)
-	
-	if(MSVC)
-		source_group(Server\\database\\sqlite  server/database/sqlite/*.*)
-		source_group(Server\\database\\sqlite\\adapters  server/database/sqlite/adapters/*.*)
-		source_group(Server\\database\\sqlite\\versioning  server/database/sqlite/versioning/*.*)
-	endif()
-	
-	set(LIBS ${LIBS} sqlite)
-	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${SQLITE_INCLUDE_DIRECTORY})
+set(SHARED_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../sources/shared)
+IF(WIN32)
+	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/shared/windows)
+ELSEIF(APPLE)
+	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/shared/mac)
+ELSE()
+	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/shared/linux)
 ENDIF()
 
-#If use tests
-IF (USE_TESTS_START_OPTIONS_LOADER)
-        set(YADOMS_TESTS_STARTUP_OPTIONS_LOADER_SRC
 
-        ../sources/server/stdafx.cpp
-        ../sources/server/stdafx.h
+set(YADOMS_INCL_DIR
+	${CMAKE_CURRENT_SOURCE_DIR}/../sources/server
+	${CMAKE_CURRENT_SOURCE_DIR}/../sources/tools
+	${SHARED_INCL_DIR}
+)
+
+
+##################################################################################################
+## Tests on Yadoms classes
+##################################################################################################
+
+#TODO : mettre en commun des trucs par macro/fonction
+
+source_group(Yadoms server/*.*)
+
+
+IF (USE_TESTS_START_OPTIONS_LOADER)
+   set(YADOMS_TESTS_STARTUP_OPTIONS_LOADER_SRC
+   
+   ../sources/server/stdafx.cpp
+   ../sources/server/stdafx.h
   
 	../sources/server/StartupOptions/Loader.h
 	../sources/server/StartupOptions/Loader.cpp
@@ -295,25 +262,20 @@ IF (USE_TESTS_START_OPTIONS_LOADER)
 	../sources/server/StartupOptions/StartupOptions.h
 	../sources/server/StartupOptions/ValidIpAddressOption.hpp
 
-        ../tests/server/MainTestStartOptionsLoader.cpp
-
-        )
-
-# Project folders
-	IF(MSVC)
-		#Tests definition for server
-	        source_group(Tests server/MainTestStartOptionsLoader.cpp)
-                #source_group(Server\\pluginSystem server/pluginSystem/*.* )
-	endif()
-
+   ../tests/server/MainTestStartOptionsLoader.cpp
+   
+   )
+   add_executable(MainTestStartOptionsLoader ${YADOMS_TESTS_STARTUP_OPTIONS_LOADER_SRC})
+   add_precompiled_header(MainTestStartOptionsLoader stdafx.h)
+   set_property( TARGET MainTestStartOptionsLoader PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
+   target_link_libraries(MainTestStartOptionsLoader ${LIBS} ${CMAKE_DL_LIBS})
 ENDIF()
 
-
 IF (USE_TESTS_HARDWARE_PLUGIN_MANAGER)
-set(YADOMS_TESTS_HARDWARE_PLUGIN_MANAGER
+   set(YADOMS_TESTS_HARDWARE_PLUGIN_MANAGER
 
-        ../sources/server/stdafx.cpp
-        ../sources/server/stdafx.h
+   ../sources/server/stdafx.cpp
+   ../sources/server/stdafx.h
   
 #	../sources/server/pluginSystem/HardwarePluginManager.h
 #	../sources/server/pluginSystem/HardwarePluginManager.cpp
@@ -333,184 +295,63 @@ set(YADOMS_TESTS_HARDWARE_PLUGIN_MANAGER
 
 #        ../tests/server/pluginSystem/MainTestHardwarePluginManager.cpp
 
-        )
-ENDIF()
-
-IF (USE_TESTS_SHARED_EVENT)
-
-set(YADOMS_TESTS_SHARED_EVENT
-
-        ../sources/shared/stdafx.cpp
-        ../sources/shared/stdafx.h
-
- 	../sources/shared/shared/StringExtension.h
- 	../sources/shared/shared/StringExtension.cpp
-   
-  	../sources//shared/shared/Exceptions/BadConversionException.hpp
-
-        ../sources/shared/shared/Event/Event.hpp
-        ../sources/shared/shared/Event/EventBase.hpp
-        ../sources/shared/shared/Event/EventHandler.hpp
-
- 	../sources/shared/shared/Exceptions/BadConversionException.hpp
- 	../sources/shared/shared/Exceptions/EmptyResultException.hpp
- 	../sources/shared/shared/Exceptions/Exception.hpp
- 	../sources/shared/shared/Exceptions/InvalidParameterException.hpp
-
-	../tests/shared/shared/Event/MainTestEvent.cpp
-
-	)
-
-ENDIF()
-
-#Web server
-#IF(USE_WEBEM_WEBSERVER)
-#	set(LIBS ${LIBS} webem)
-#	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${WEBEM_INCLUDE_DIRECTORY})
-#ENDIF()
-
-#define YADOMS tests executable outputs
-
-IF (USE_TESTS_START_OPTIONS_LOADER)
-   add_executable(MainTestStartOptionsLoader ${YADOMS_TESTS_STARTUP_OPTIONS_LOADER_SRC})
-   add_precompiled_header(MainTestStartOptionsLoader stdafx.h)
-ENDIF()
-
-if (USE_TESTS_HARDWARE_PLUGIN_MANAGER)
+   )
    add_executable(MainTestHardwarePluginManager ${YADOMS_TESTS_HARDWARE_PLUGIN_MANAGER} ${YADOMS_SRC})
    add_precompiled_header(MainTestHardwarePluginManager stdafx.h)
+   set_property( TARGET MainTestHardwarePluginManager PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
+   target_link_libraries(MainTestHardwarePluginManager ${LIBS} ${CMAKE_DL_LIBS})
 ENDIF()
 
-if (USE_TESTS_SHARED_EVENT)
+
+
+##################################################################################################
+## Tests on yadoms-shared classes
+##################################################################################################
+
+if(MSVC)
+  # Define yadoms_shared_EXPORTS variable to simulate shared library building
+  add_definitions(-Dyadoms_shared_EXPORTS)
+endif()
+
+source_group(yadoms-shared shared/*.*)
+
+IF (USE_TESTS_SHARED_EVENT)
+   set(YADOMS_TESTS_SHARED_EVENT
+
+   ../sources/shared/stdafx.cpp
+   ../sources/shared/stdafx.h
+   
+   
+   ../sources/shared/shared/StringExtension.h
+   ../sources/shared/shared/StringExtension.cpp
+   
+   ../sources/shared/shared/Exceptions/BadConversionException.hpp
+   
+   ../sources/shared/shared/Event/Event.hpp
+   ../sources/shared/shared/Event/EventBase.hpp
+   ../sources/shared/shared/Event/EventHandler.hpp
+   
+   ../sources/shared/shared/Exceptions/BadConversionException.hpp
+   ../sources/shared/shared/Exceptions/EmptyResultException.hpp
+   ../sources/shared/shared/Exceptions/Exception.hpp
+   ../sources/shared/shared/Exceptions/InvalidParameterException.hpp
+
+	shared/MainTestEvent.cpp
+
+	)
    add_executable(MainTestEvent ${YADOMS_TESTS_SHARED_EVENT} ${YADOMS_SRC})
    add_precompiled_header(MainTestEvent stdafx.h)
+   set_property( TARGET MainTestEvent PROPERTY INCLUDE_DIRECTORIES ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
+	target_link_libraries(MainTestEvent ${LIBS} ${CMAKE_DL_LIBS})
 ENDIF()
 
-##################################################################################################
-## yadoms-shared
-##################################################################################################
-
-include_directories(../sources/shared)
-
-set(SHARED_INCL_DIR ../sources/shared)
-IF(WIN32)
-	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/shared/windows)
-ELSEIF(APPLE)
-	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/shared/mac)
-ELSE()
-	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/shared/linux)
-ENDIF()
-
-##################################################################################################
-## yadoms-tools
-##################################################################################################
-
-# Library Sources
-set(SHARED_LIB_SRC
-	../sources/tools/tools/stdafx.cpp
-	../sources/tools/tools/stdafx.h
-
-	../sources/tools/tools/dir_monitor/dir_monitor.hpp
-	../sources/tools/tools/dir_monitor/basic_dir_monitor.hpp
-	../sources/tools/tools/DirectoryChangeListener.h
-	../sources/tools/tools/DirectoryChangeListener.cpp
 	
-
-	../sources/tools/tools/Version.h
-	../sources/tools/tools/Version.cpp
-)
-
-#Append platform specific files
-
-IF(MSVC)
-set(TOOLS_LIB_SRC	
-	${TOOLS_LIB_SRC}
-	tools/windows/tools/dir_monitor/basic_dir_monitor_service.hpp
-	tools/windows/tools/dir_monitor/dir_monitor_impl.hpp
-)	
-
-ELSEIF(APPLE)
-set(TOOLS_LIB_SRC	
-	${TOOLS_LIB_SRC}
-	tools/mac/tools/dir_monitor/basic_dir_monitor_service.hpp
-	tools/mac/tools/dir_monitor/dir_monitor_impl.hpp
-)	
-ELSE()
-set(TOOLS_LIB_SRC	
-	${TOOLS_LIB_SRC}
-	tools/linux/tools/dir_monitor/basic_dir_monitor_service.hpp
-	tools/linux/tools/dir_monitor/dir_monitor_impl.hpp
-)	
-ENDIF()
-
- #Define project folders
-IF(MSVC)
-	source_group(PlatformSpecific\\windows tools/windows/tools/*.*)
-	source_group(PlatformSpecific\\linux tools/linux/tools/*.*)
-	source_group(Exception tools/tools/Exceptions/*.* )	
-ENDIF()
-
-# Define library outputs
-add_library(yadoms-tools STATIC  ${SHARED_LIB_SRC})
-add_precompiled_header(yadoms-tools stdafx.h)
-target_link_libraries(yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
-
-# Define include directories (allow easy includes)
-set(TOOLS_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../sources/tools)
-IF(WIN32)
-	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/tools/windows)
-ELSE()
-	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/tools/linux)
-	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/tools/tools)
-ENDIF()
-
-set_property( TARGET yadoms-tools PROPERTY INCLUDE_DIRECTORIES ${TOOLS_INCL_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
-
 ##################################################################################################
-## Plugins
+## Tests on plugins classes
 ##################################################################################################
 
-#include Plugin CMake file
-include_directories(../sources/plugins)
+# Not test on plugins for the moment
 
-##################################################################################################
-## Include directories
-##################################################################################################
-set(YADOMS_INCL_DIR
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/../sources/server
-        ${CMAKE_CURRENT_SOURCE_DIR}/../sources
-	${YADOMS_INCL_DIR}
-	${TOOLS_INCL_DIR}
-)
-
-IF (USE_TESTS_START_OPTIONS_LOADER)
-        set_property( TARGET MainTestStartOptionsLoader PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
-ENDIF()
-
-IF (USE_TESTS_HARDWARE_PLUGIN_MANAGER)
-        set_property( TARGET MainTestHardwarePluginManager PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
-ENDIF()
-
-IF (USE_TESTS_SHARED_EVENT)
-        set_property( TARGET MainTestEvent PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
-ENDIF()
-
-##################################################################################################
-## Link
-##################################################################################################
-
-IF (USE_TESTS_START_OPTIONS_LOADER)
-        target_link_libraries(MainTestStartOptionsLoader yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
-ENDIF()
-
-IF (USE_TESTS_HARDWARE_PLUGIN_MANAGER)
-        target_link_libraries(MainTestHardwarePluginManager yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
-ENDIF()
-
-IF (USE_TESTS_SHARED_EVENT)
-	target_link_libraries(MainTestEvent yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
-ENDIF()
 
 ##################################################################################################
 ## Post build commands
@@ -596,9 +437,5 @@ if(NOT Boost_USE_STATIC_LIBS)
 		endif()
 	ENDFOREACH(BOOSTLIBRARY)
 endif()		
-		
-#copy www directory into build directory
-#add_custom_command(TARGET yadoms POST_BUILD
-#                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-#                       ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
+
 
