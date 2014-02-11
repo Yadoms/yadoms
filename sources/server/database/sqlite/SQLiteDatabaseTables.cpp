@@ -45,7 +45,7 @@ DECLARE_TABLE_COLUMN_NAMES(Keyword,  "Keyword",
 DECLARE_TABLE_COLUMN_NAMES(Page,  "Page",
    ((Id)("id"))
    ((Name)("name"))
-   ((Order)("order"))
+   ((PageOrder)("pageOrder"))
 )
 
 DECLARE_TABLE_COLUMN_NAMES(Widget,  "Widget",

@@ -46,7 +46,7 @@ DECLARE_ADAPTER_IMPLEMENTATION(Keyword,
 DECLARE_ADAPTER_IMPLEMENTATION(Page,
    ((Id)(int)(0))
    ((Name)(std::string)(""))
-   ((Order)(int)(0))
+   ((PageOrder)(int)(0))
    )
 
 
@@ -69,5 +69,4 @@ DECLARE_ADAPTER_IMPLEMENTATION(HardwareEventLogger,
    ((PluginRelease)(IHardwarePluginInformation::EReleaseType)(IHardwarePluginInformation::kStable)(int))
    ((EventType)(CHardwareEventLogger::EEventType)(CHardwareEventLogger::kUnload)(int))
    ((Message)(std::string)(""))
-)   
-   
+)

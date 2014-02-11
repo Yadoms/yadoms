@@ -12,7 +12,7 @@
 #include "database/entities/Widget.h"
 #include "database/entities/HardwareEventLogger.h"
 
-DECLARE_JSON_ENTITY_HEADER(Hardware, 
+DECLARE_JSON_ENTITY_HEADER(Hardware,
    (Id)
    (Name)
    (PluginName)
@@ -21,7 +21,7 @@ DECLARE_JSON_ENTITY_HEADER(Hardware,
    (Deleted)
 )
 
-DECLARE_JSON_ENTITY_HEADER(Configuration, 
+DECLARE_JSON_ENTITY_HEADER(Configuration,
    (Section)
    (Name)
    (Value)
@@ -31,7 +31,7 @@ DECLARE_JSON_ENTITY_HEADER(Configuration,
    (LastModificationDate)
 )
 
-DECLARE_JSON_ENTITY_HEADER(Acquisition, 
+DECLARE_JSON_ENTITY_HEADER(Acquisition,
    (Id)
    (Source)
    (Keyword)
@@ -40,7 +40,7 @@ DECLARE_JSON_ENTITY_HEADER(Acquisition,
 )
 
 
-DECLARE_JSON_ENTITY_HEADER(Device, 
+DECLARE_JSON_ENTITY_HEADER(Device,
    (Id)
    (DataSource)
    (Name)
@@ -48,7 +48,7 @@ DECLARE_JSON_ENTITY_HEADER(Device,
 )
 
 
-DECLARE_JSON_ENTITY_HEADER(Keyword, 
+DECLARE_JSON_ENTITY_HEADER(Keyword,
    (Name)
 )
 
@@ -56,7 +56,7 @@ DECLARE_JSON_ENTITY_HEADER(Keyword,
 DECLARE_JSON_ENTITY_HEADER(Page,
    (Id)
    (Name)
-   (Order)
+   (PageOrder)
 )
 
 DECLARE_JSON_ENTITY_HEADER(Widget,
@@ -79,4 +79,4 @@ DECLARE_JSON_ENTITY_HEADER(HardwareEventLogger,
    (PluginRelease)
    (EventType)
    (Message)
-)   
+)

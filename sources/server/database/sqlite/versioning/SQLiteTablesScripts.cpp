@@ -47,15 +47,15 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Keyword, " CREATE TABLE Keyword\
                                                          name TEXT NOT NULL,\
                                                          PRIMARY KEY(name)\
                                                 )")
-                                                
-                                                
+
+
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Page, " CREATE TABLE Page\
                                                 (\
                                                    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\
                                                    name TEXT NOT NULL,\
-                                                   order  INTEGER DEFAULT 0\
-                                                )")                                                
-                                                
+                                                   pageOrder  INTEGER DEFAULT 0\
+                                                )")
+
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Widget, "CREATE TABLE Widget\
                                                 (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\
                                                    idPage  INTEGER NOT NULL,\
@@ -65,10 +65,10 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Widget, "CREATE TABLE Widget\
                                                    positionX  INTEGER DEFAULT 1, \
                                                    positionY  INTEGER DEFAULT 1,\
                                                    configuration  TEXT \
-                                                )")                                                
-                                                
-                                                
-                                                
+                                                )")
+
+
+
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(HardwareEventLogger, "CREATE TABLE HardwareEventLogger\
                                                             (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\
                                                                eventDate  DATETIME NOT NULL,\
@@ -77,8 +77,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(HardwareEventLogger, "CREATE TABLE Hardware
                                                                pluginRelease INTEGER,\
                                                                eventType  INTEGER DEFAULT 0, \
                                                                message  TEXT \
-                                                            )")                                                
-                                                
+                                                            )")
 
-                            
-                                                
+
+

@@ -10,7 +10,7 @@
 #include "database/entities/Widget.h"
 #include "database/entities/HardwareEventLogger.h"
 
-DECLARE_TABLE(Hardware, 
+DECLARE_TABLE(Hardware,
    (Id)
    (Name)
    (PluginName)
@@ -19,7 +19,7 @@ DECLARE_TABLE(Hardware,
    (Deleted)
 )
 
-DECLARE_TABLE(Configuration, 
+DECLARE_TABLE(Configuration,
    (Section)
    (Name)
    (Value)
@@ -30,7 +30,7 @@ DECLARE_TABLE(Configuration,
 )
 
 
-DECLARE_TABLE(Acquisition, 
+DECLARE_TABLE(Acquisition,
    (Id)
    (Source)
    (Keyword)
@@ -39,14 +39,14 @@ DECLARE_TABLE(Acquisition,
 )
 
 
-DECLARE_TABLE(Device, 
+DECLARE_TABLE(Device,
    (Id)
    (DataSource)
    (Name)
    (Configuration)
 )
 
-DECLARE_TABLE(Keyword, 
+DECLARE_TABLE(Keyword,
    (Name)
 )
 
@@ -54,7 +54,7 @@ DECLARE_TABLE(Keyword,
 DECLARE_TABLE(Page,
    (Id)
    (Name)
-   (Order)
+   (PageOrder)
 )
 
 DECLARE_TABLE(Widget,
