@@ -27,7 +27,7 @@ void CHardwarePluginManager::stop()
    YADOMS_LOG(info) << "CHardwarePluginManager stop plugins...";
 
    while (!m_runningInstances.empty())
-      doStopInstance(m_runningInstances.begin()->first);
+      stopInstance(m_runningInstances.begin()->first);
 
    YADOMS_LOG(info) << "CHardwarePluginManager all plugins are stopped";
 }
@@ -46,23 +46,23 @@ void CHardwarePluginManager::init()
    BOOST_FOREACH(boost::shared_ptr<CHardware> databasePluginInstance, databasePluginInstances)
    {
       if (databasePluginInstance->getEnabled())
-         doStartInstance(databasePluginInstance->getId());
+         startInstance(databasePluginInstance->getId());
    }
 }
 
-void CHardwarePluginManager::startInstance(int id)
+void CHardwarePluginManager::enableInstance(int id)
 {
    // Start instance (throw if fails)
-   doStartInstance(id);
+   startInstance(id);
 
    // Update instance state in database
    m_database->enableInstance(id, true);
 }
 
-void CHardwarePluginManager::stopInstance(int id)
+void CHardwarePluginManager::disableInstance(int id)
 {
    // Start instance (throw if fails)
-   doStopInstance(id);
+   stopInstance(id);
 
    // Update instance state in database
    m_database->enableInstance(id, false);
@@ -218,8 +218,8 @@ int CHardwarePluginManager::createInstance(const std::string& instanceName, cons
 
 void CHardwarePluginManager::deleteInstance(int id)
 {
-   // First step, stop instance
-   stopInstance(id);
+   // First step, disable and stop instance
+   disableInstance(id);
 
    // Next, delete in database (or flag as deleted)
    m_database->removeHardware(id);
@@ -290,7 +290,7 @@ boost::filesystem::path CHardwarePluginManager::toPath(const std::string& plugin
    return path;
 }
 
-void CHardwarePluginManager::doStartInstance(int id)
+void CHardwarePluginManager::startInstance(int id)
 {
    if (m_runningInstances.find(id) != m_runningInstances.end())
       return;     // Already started ==> nothing more to do
@@ -310,11 +310,11 @@ void CHardwarePluginManager::doStartInstance(int id)
    }
    catch (CInvalidPluginException& e)
    {
-      YADOMS_LOG(error) << "doStartInstance : " << e.what();   	
+      YADOMS_LOG(error) << "startInstance : " << e.what();   	
    }
 }
 
-void CHardwarePluginManager::doStopInstance(int id)
+void CHardwarePluginManager::stopInstance(int id)
 {
    if (m_runningInstances.find(id) == m_runningInstances.end())
       return;     // Already stopped ==> nothing more to do

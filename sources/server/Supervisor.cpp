@@ -164,11 +164,11 @@ void CSupervisor::doWork()
          }
       }
 
-      // 6) Stop registered plugin instance (to be able to remove/replace plugin for example)
-      hardwarePluginManager->stopInstance(createdInstanceId);
+      // 6) Disable (and stop) registered plugin instance (to be able to remove/replace plugin for example)
+      hardwarePluginManager->disableInstance(createdInstanceId);
 
-      // 7) Start registered plugin instance
-      hardwarePluginManager->startInstance(createdInstanceId);
+      // 7) Enable registered plugin instance (and start it)
+      hardwarePluginManager->enableInstance(createdInstanceId);
 
       // 8) Remove an instance
       hardwarePluginManager->deleteInstance(createdInstanceId);
