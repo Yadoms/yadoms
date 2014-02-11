@@ -137,26 +137,14 @@ function requestPageDone()
              resize: {
                  enabled: true,
                  resize: function(e, ui, $widget) {
-
-                     /*if ($widget.width() <= $widget.data('coords').grid.min_size_x * gridWidth) {
-                         $widget.width($widget.data('coords').grid.min_size_x * gridWidth);
-                     }
-                     if ($widget.height() <= $widget.data('coords').grid.min_size_y * gridWidth) {
-                         $widget.height($widget.data('coords').grid.min_size_y * gridWidth);
-                     }*/
-
                      widgetObject = getWidgetFromGridsterElement($widget);
 
-                     /*if (widgetArray[id].viewModel.resized !== undefined)
-                         widgetArray[id].viewModel.resized()*/
                      if (widgetObject.viewModel.resized !== undefined)
                         widgetObject.viewModel.resized();
                  },
                  stop: function(e, ui, $widget) {
                      widgetObject = getWidgetFromGridsterElement($widget);
 
-                     /*if (widgetArray[id].viewModel.resized !== undefined)
-                         widgetArray[id].viewModel.resized()*/
                      if (widgetObject.viewModel.resized !== undefined)
                         widgetObject.viewModel.resized();
                  }
