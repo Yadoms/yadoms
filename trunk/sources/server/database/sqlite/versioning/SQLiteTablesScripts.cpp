@@ -58,10 +58,10 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Widget, "CREATE TABLE Widget\
                                                 (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\
                                                    idPage  INTEGER NOT NULL,\
                                                    name TEXT NOT NULL,\
-                                                   sizeX  INTEGER DEFAULT 0, \
-                                                   sizeY  INTEGER DEFAULT 0,\
-                                                   positionX  INTEGER DEFAULT 0, \
-                                                   positionY  INTEGER DEFAULT 0,\
+                                                   sizeX  INTEGER DEFAULT 1, \
+                                                   sizeY  INTEGER DEFAULT 1,\
+                                                   positionX  INTEGER DEFAULT 1, \
+                                                   positionY  INTEGER DEFAULT 1,\
                                                    configuration  TEXT \
                                                 )")                                                
                                                 

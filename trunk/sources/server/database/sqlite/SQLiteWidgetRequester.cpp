@@ -24,13 +24,13 @@ int CSQLiteWidgetRequester::addWidget(const CWidget & newWidget)
    CQuery qInsert;
    if(newWidget.getId() != 0)
    {
-      qInsert. InsertInto(CWidgetTable::getTableName(), CWidgetTable::getIdColumnName(),CWidgetTable::getIdPageColumnName(), CWidgetTable::getNameColumnName(), CWidgetTable::getSizeXColumnName(), CWidgetTable::getSizeYColumnName(), CWidgetTable::getConfigurationColumnName()).
-         Values(newWidget.getId(), newWidget.getIdPage(), newWidget.getName(), newWidget.getSizeX(), newWidget.getSizeY(), newWidget.getConfiguration());
+      qInsert. InsertInto(CWidgetTable::getTableName(), CWidgetTable::getIdColumnName(),CWidgetTable::getIdPageColumnName(), CWidgetTable::getNameColumnName(), CWidgetTable::getSizeXColumnName(), CWidgetTable::getSizeYColumnName(), CWidgetTable::getPositionXColumnName(), CWidgetTable::getPositionYColumnName(), CWidgetTable::getConfigurationColumnName()).
+         Values(newWidget.getId(), newWidget.getIdPage(), newWidget.getName(), newWidget.getSizeX(), newWidget.getSizeY(), newWidget.getPositionX(), newWidget.getPositionY(), newWidget.getConfiguration());
    }
    else
    {
-      qInsert. InsertInto(CWidgetTable::getTableName(), CWidgetTable::getIdPageColumnName(), CWidgetTable::getNameColumnName(), CWidgetTable::getSizeXColumnName(), CWidgetTable::getSizeYColumnName(), CWidgetTable::getConfigurationColumnName()).
-         Values(newWidget.getIdPage(), newWidget.getName(), newWidget.getSizeX(), newWidget.getSizeY(), newWidget.getConfiguration());
+      qInsert. InsertInto(CWidgetTable::getTableName(), CWidgetTable::getIdPageColumnName(), CWidgetTable::getNameColumnName(), CWidgetTable::getSizeXColumnName(), CWidgetTable::getSizeYColumnName(), CWidgetTable::getPositionXColumnName(), CWidgetTable::getPositionYColumnName(), CWidgetTable::getConfigurationColumnName()).
+         Values(newWidget.getIdPage(), newWidget.getName(), newWidget.getSizeX(), newWidget.getSizeY(), newWidget.getPositionX(), newWidget.getPositionY(), newWidget.getConfiguration());
    }
    if(m_databaseRequester->queryStatement(qInsert) <= 0)
       throw CEmptyResultException("No lines affected");
@@ -42,7 +42,9 @@ int CSQLiteWidgetRequester::addWidget(const CWidget & newWidget)
       And(CWidgetTable::getNameColumnName(), CQUERY_OP_EQUAL, newWidget.getName()).
       And(CWidgetTable::getSizeXColumnName(), CQUERY_OP_EQUAL, newWidget.getSizeX()).
       And(CWidgetTable::getSizeYColumnName(), CQUERY_OP_EQUAL, newWidget.getSizeY()).
-      And(CWidgetTable::getConfigurationColumnName(), CQUERY_OP_EQUAL, newWidget.getConfiguration()).
+      And(CWidgetTable::getPositionXColumnName(), CQUERY_OP_EQUAL, newWidget.getPositionX()).
+      And(CWidgetTable::getPositionYColumnName(), CQUERY_OP_EQUAL, newWidget.getPositionY()).
+	  And(CWidgetTable::getConfigurationColumnName(), CQUERY_OP_EQUAL, newWidget.getConfiguration()).
       OrderBy(CWidgetTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
    CSingleValueAdapter<int> adapter;
@@ -116,6 +118,16 @@ void CSQLiteWidgetRequester::updateWidgetSize(int widgetId, int sizeX, int sizeY
       throw CEmptyResultException("No lines affected");
 }
 
+void CSQLiteWidgetRequester::updateWidgetPosition(int widgetId, int positionX, int positionY)
+{
+   CQuery qUpdate;
+   qUpdate. Update(CHardwareTable::getTableName()).
+      Set(CWidgetTable::getPositionXColumnName(), positionX, CWidgetTable::getPositionYColumnName(), positionY).
+      Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetId);
+
+   if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+      throw CEmptyResultException("No lines affected");
+}
 
 void CSQLiteWidgetRequester::removeWidget(int widgetId)
 {
