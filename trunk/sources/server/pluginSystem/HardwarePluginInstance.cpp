@@ -70,6 +70,7 @@ void CHardwarePluginInstance::doWork()
 
    YADOMS_LOG(error) << getName() << " plugin(" << m_pPlugin->getInformation()->getName() << ") was evaluated as not safe and disabled.";
    //TODO : c'est pas le tout de l'dire, mais faut l'faire !
+   // TODO : attention de désactiver le plugin mais ne pas arrêter les instances qui tournent encore
 }
 
 void CHardwarePluginInstance::updateConfiguration(const std::string& newConfiguration) const
