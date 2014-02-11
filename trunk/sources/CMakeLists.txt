@@ -79,25 +79,25 @@ if(MSVC)
 	# Use the next link to see how to remove warning 
 	#https://svn.boost.org/trac/boost/wiki/Guidelines/WarningsGuidelines
 	
-	#disable warning C4512: l'opérateur d'assignation n'a pas pu être généré
+	#disable warning C4512: assignment operator could not be generated
 	add_definitions( "/wd4512" )
 	
-	#disable warning C4610: struct '' ne peut jamais être instancié(e) : résolution : la même que pour C4512
+	#disable warning C4610: object 'class' can never be instantiated - user-defined constructor required : solution : same as C4512
 	add_definitions( "/wd4610" )
 	
-	#disable warning C4127: l'expression conditionnelle est une constante
+	#disable warning C4127: conditional expression is constant
 	add_definitions( "/wd4127" )
 
 	#disable warning C4100: unreferenced formal parameter
 	add_definitions( "/wd4100" )
 	
-	#disable warning C4714: fonction '' marquée comme __forceinline non inline
+	#disable warning C4714: function 'function' marked as __forceinline not inlined
 	add_definitions( "/wd4714" )
 	
-	#disable warning C4510: le constructeur par défaut n'a pas pu être généré
+	#disable warning C4510: 'class' : default constructor could not be generated
 	add_definitions( "/wd4510" )
 
-	#disable warning C4505: la fonction locale non référencée a été supprimée : résolution : supprimer le code mort
+	#disable warning C4505: 'function' : unreferenced local function has been removed
 	add_definitions( "/wd4505" )
 	
 	#to allow BOOST in precompiled header (specify Precompiled Header Memory Allocation Limit) 
