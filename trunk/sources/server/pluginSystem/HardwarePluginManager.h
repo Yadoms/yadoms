@@ -59,20 +59,18 @@ public:
    static boost::shared_ptr<CHardwarePluginManager> newHardwarePluginManager(const std::string & initialDir, boost::shared_ptr<IHardwareRequester> database, boost::shared_ptr<IHardwareEventLoggerRequester> eventLoggerDatabase);
 
    //--------------------------------------------------------------
-   /// \brief           Start a registered instance of plugin (and enable it)
+   /// \brief           Enable a registered instance of plugin (and start it)
    /// \param [in] id   Instance Id
    /// \throw           CInvalidParameterException if id is unknown
-   /// \note            Do nothing if instance already running
    //--------------------------------------------------------------
-   void startInstance(int id);
+   void enableInstance(int id);
 
    //--------------------------------------------------------------
-   /// \brief           Stop a running instance of plugin (and disable it)
+   /// \brief           Disable a running instance of plugin (and stop it)
    /// \param [in] id   Instance Id
    /// \throw           CInvalidParameterException if id is unknown
-   /// \note            Do nothing if instance already stopped
    //--------------------------------------------------------------
-   void stopInstance(int id);
+   void disableInstance(int id);
 
    //--------------------------------------------------------------
    /// \brief           Read the available plugin list
@@ -207,7 +205,7 @@ private:
    /// \throw           CInvalidParameterException if id is unknown
    /// \note            Just start instance, doesn't modify data in base
    //--------------------------------------------------------------
-   void doStartInstance(int id);
+   void startInstance(int id);
 
    //--------------------------------------------------------------
    /// \brief           Stop a running instance of plugin
@@ -215,7 +213,7 @@ private:
    /// \throw           CInvalidParameterException if id is unknown
    /// \note            Just start instance, doesn't modify data in base
    //--------------------------------------------------------------
-   void doStopInstance(int id);
+   void stopInstance(int id);
 
 private:
    //--------------------------------------------------------------
