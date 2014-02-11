@@ -316,28 +316,25 @@ endif()
 source_group(yadoms-shared shared/*.*)
 
 IF (USE_TESTS_SHARED_EVENT)
-   set(YADOMS_TESTS_SHARED_EVENT
+  set(YADOMS_TESTS_SHARED_EVENT
 
-   ../sources/shared/stdafx.cpp
-   ../sources/shared/stdafx.h
-   
-   
-   ../sources/shared/shared/StringExtension.h
-   ../sources/shared/shared/StringExtension.cpp
-   
-   ../sources/shared/shared/Exceptions/BadConversionException.hpp
-   
-   ../sources/shared/shared/Event/Event.hpp
-   ../sources/shared/shared/Event/EventBase.hpp
-   ../sources/shared/shared/Event/EventHandler.hpp
-   
-   ../sources/shared/shared/Exceptions/BadConversionException.hpp
-   ../sources/shared/shared/Exceptions/EmptyResultException.hpp
-   ../sources/shared/shared/Exceptions/Exception.hpp
-   ../sources/shared/shared/Exceptions/InvalidParameterException.hpp
+  ../sources/shared/stdafx.cpp
+  ../sources/shared/stdafx.h
+
+
+  ../sources/shared/shared/StringExtension.h
+  ../sources/shared/shared/StringExtension.cpp
+
+  ../sources/shared/shared/Event/Event.hpp
+  ../sources/shared/shared/Event/EventBase.hpp
+  ../sources/shared/shared/Event/EventHandler.hpp
+
+  ../sources/shared/shared/Exceptions/BadConversionException.hpp
+  ../sources/shared/shared/Exceptions/EmptyResultException.hpp
+  ../sources/shared/shared/Exceptions/Exception.hpp
+  ../sources/shared/shared/Exceptions/InvalidParameterException.hpp
 
 	shared/MainTestEvent.cpp
-
 	)
    add_executable(MainTestEvent ${YADOMS_TESTS_SHARED_EVENT} ${YADOMS_SRC})
    add_precompiled_header(MainTestEvent stdafx.h)
