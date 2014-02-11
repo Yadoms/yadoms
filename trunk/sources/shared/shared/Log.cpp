@@ -19,7 +19,7 @@ void CLog::configure_file_per_thread(const boost::log::trivial::severity_level  
    CreateFilePerThreadSink();
 
    // Add some attributes too
-   boost::log::core::get()->add_global_attribute("TimeStamp", boost::log::attributes::local_clock());
+   boost::log::core::get()->add_global_attribute("TimeStamp", boost::log::attributes::utc_clock());
    boost::log::core::get()->add_global_attribute("RecordID", boost::log::attributes::counter< unsigned int >());
 
    //we filter on severity
@@ -37,7 +37,7 @@ void CLog::configure_one_rolling_file(const boost::log::trivial::severity_level 
    CreateRollingFileSink();
 
    // Add some attributes too
-   boost::log::core::get()->add_global_attribute("TimeStamp", boost::log::attributes::local_clock());
+   boost::log::core::get()->add_global_attribute("TimeStamp", boost::log::attributes::utc_clock());
    boost::log::core::get()->add_global_attribute("RecordID", boost::log::attributes::counter< unsigned int >());
 
    //we filter on severity
