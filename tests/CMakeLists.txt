@@ -340,8 +340,8 @@ IF (USE_TESTS_SHARED_EVENT)
 
 set(YADOMS_TESTS_SHARED_EVENT
 
-        ../sources/server/stdafx.cpp
-        ../sources/server/stdafx.h
+        ../sources/shared/stdafx.cpp
+        ../sources/shared/stdafx.h
 
  	../sources/shared/shared/StringExtension.h
  	../sources/shared/shared/StringExtension.cpp
@@ -410,46 +410,14 @@ set(SHARED_LIB_SRC
 	../sources/tools/tools/stdafx.cpp
 	../sources/tools/tools/stdafx.h
 
-	../sources/shared/shared/ThreadBase.cpp
-	../sources/shared/shared/ThreadBase.h
-
-	../sources/shared/shared/Log.h
-	../sources/shared/shared/Log.cpp
-	../sources/shared/shared/StringExtension.h
-	../sources/shared/shared/StringExtension.cpp
-	../sources/shared/shared/Exceptions/Exception.hpp
-	../sources/shared/shared/Exceptions/NotImplementedException.hpp
-	../sources/shared/shared/Exceptions/NullReferenceException.hpp
-	../sources/shared/shared/Exceptions/EmptyResultException.hpp
-
-	../sources/shared/shared/Event/Event.hpp
-	../sources/shared/shared/Event/EventHandler.hpp
-	../sources/shared/shared/Event/EventBase.hpp
-
-	../sources/shared/shared/Xpl/XplMessage.h
-	../sources/shared/shared/Xpl/XplMessage.cpp
-	../sources/shared/shared/Xpl/XplService.h
-	../sources/shared/shared/Xpl/XplService.cpp
-	../sources/shared/shared/Xpl/XplActor.h
-	../sources/shared/shared/Xpl/XplActor.cpp
-	../sources/shared/shared/Xpl/XplMessageSchemaIdentifier.h
-	../sources/shared/shared/Xpl/XplMessageSchemaIdentifier.cpp
-	../sources/shared/shared/Xpl/XplHelper.h
-	../sources/shared/shared/Xpl/XplHelper.cpp
-
+	../sources/tools/tools/dir_monitor/dir_monitor.hpp
+	../sources/tools/tools/dir_monitor/basic_dir_monitor.hpp
 	../sources/tools/tools/DirectoryChangeListener.h
 	../sources/tools/tools/DirectoryChangeListener.cpp
 	
-	#include both platform files to see them into IDE
-	../sources/shared/windows/shared/DynamicLibrary.hpp
-	../sources/shared/windows/shared/Export.h
-	../sources/tools/windows/tools/dir_monitor/basic_dir_monitor_service.hpp
-	../sources/tools/windows/tools/dir_monitor/dir_monitor_impl.hpp
 
-	../sources/shared/linux/shared/DynamicLibrary.hpp
-	../sources/shared/linux/shared/Export.h
-	../sources/tools/linux/tools/dir_monitor/basic_dir_monitor_service.hpp
-	../sources/tools/linux/tools/dir_monitor/dir_monitor_impl.hpp
+	../sources/tools/tools/Version.h
+	../sources/tools/tools/Version.cpp
 )
 
 #Append platform specific files

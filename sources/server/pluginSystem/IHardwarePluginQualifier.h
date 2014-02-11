@@ -43,7 +43,7 @@ public:
    /// \param[in]  pluginInformation     Plugin information (name, version...)
    /// \return                true if safe (don't crash too much)
    //--------------------------------------------------------------
-   virtual bool isSafe(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation) = 0;//TODO pas encore appelé
+   virtual bool isSafe(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation) = 0;
 
    //--------------------------------------------------------------
    /// \brief			         Get The quality level
@@ -52,5 +52,5 @@ public:
    //                         Can be kNoEnoughData if evaluation is not significative (plugin doesn't run for enough time)
    //--------------------------------------------------------------
    enum { kNoEnoughData = -1 };
-   virtual int getQualityLevel(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation) = 0;//TODO pas encore appelé
+   virtual int getQualityLevel(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation) = 0;
 };
