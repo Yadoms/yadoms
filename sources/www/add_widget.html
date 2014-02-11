@@ -38,45 +38,74 @@
     //we indicate that add_widget.html has been loaded
     addWidgetHasBeenLoaded = true;
 
+    //This function ask for widget packages list to the server
+    //It is called to add a new widget
+    function askWidgetPackages()
+    {
+       $.getJSON("rest/widget/packages")
+               .done(requestWidgetsTypeDone())
+               .fail(function() {notifyError("Unable to get widget packages")});
+    }
+
+    //This function is the callback of the request widget packages
+    function requestWidgetsTypeDone()
+    {
+       return function( data ) {
+          //we parse the json answer
+          if (data.result != "true")
+          {
+             notifyError("Error during requesting widget packages");
+             return;
+          }
+          $("#new-widget-carousel .carousel-inner > div").remove();
+          $.each(data.data.packages, function(index, value) {
+             //foreach widget-type
+             //carousel item creation
+             $("#new-widget-carousel .carousel-inner").append(
+                     "<div class=\"item\" package=\"" + value.name + "\" >" +
+                             "<img class=\"carousel-widget-preview\" src=\"/widgets/" + value.name + "/preview.png\">" +
+                             "<div class=\"carousel-caption\">" + value.description + "</div>" +
+                             "</div>"
+             );
+          });
+
+          //we activate first item of carousel
+          $("#new-widget-carousel .item").first().addClass("active");
+
+          $('.carousel').carousel('pause');
+
+          //we display the modal
+          $('#new-widget-modal').modal();
+       };
+    }
+
+    //This function is called on click on add widget button in its modal
     $("#btn-confirm-add-widget").click(function () {
 
         //we close the new widget modal
         $("#new-widget-modal").modal("hide");
 
+        var packageName = $('#new-widget-carousel .active').attr("package");
+        
         $.ajax({
             type: "POST",
             url: "/rest/widget",
-            data: { idPage: "1", name: "temperature", sizeX: "1", sizeY:"1", positionX:"1", positionY:"1" },
+            data: JSON.stringify({ idPage: getCurrentPage().id, name: packageName, sizeX: "1", sizeY:"1", positionX:"1", positionY:"1" }),
+            contentType: "application/json; charset=utf-8",
             dataType: "json"
         })
         .done(function(data) {
-                    //we parse the json answer
-                    debugger;
-                    if (data.result != "true")
-                    {
-                        notifyError("Error during creating widget");
-                        return;
-                    }
-                    notifySuccess("Widget successfully created");
-
+            //we parse the json answer
+            if (data.result != "true")
+            {
+               notifyError("Error during creating widget");
+               return;
+            }
+            notifySuccess("Widget successfully created");
+            //we add the widget dynamically
+            var w = new Widget(data.data.id, data.data.idPage, data.data.name, data.data.sizeX, data.data.sizeY, data.data.positionX, data.data.positionY, data.data.configuration);
+            addWidgetToIHM(w);
         })
-        .fail(function(widgetName) { return function() {notifyError("Unable to create widget of type " + widgetName)}}("temperature"));
-
-        //var creatingWidgetNoty = noty({text: 'Creating widget ...', timeout:2000,  layout:'topLeft'});
-        //ask for widget creation to the server
-        $.ajax({
-            url: '/rest/widget',
-            type: 'PUT'
-        })
-                .done(function() {
-                    //TODO : check the answer
-                    creatingWidgetNoty.close();
-                    noty({text: 'Widget sucesfully created', timeout:2000,  layout:'topLeft', type: 'success'});
-                })
-                .fail(function() {
-                    noty({text: 'Unable to create widget', timeout:2000,  layout:'topLeft', type: 'error'});
-                })
-                .always(function() {
-                });
+        .fail(function(widgetName) { return function() {notifyError("Unable to create widget of type " + widgetName)}}(data.data.name));
     });
 </script>

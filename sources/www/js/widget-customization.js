@@ -60,11 +60,51 @@ $("#tabContainer").click(function() {
    //exitCustomization();
 });
 
+dateReplacer = function(key, value){
+   if (this[key] instanceof Date){
+      var date = this[key];
+      return date.getDay() + "/" + date.getMonth() + "/" + date.getYear();
+   }else{
+      return value;
+   }
+}
+
+//This function end customization and send all configuration to server
 function exitCustomization() {
-    $("#customizeButton").removeClass('btn-primary').addClass('btn-inverse');
-    enableGridsterCustomization(false);
-    $(".customization-item").addClass("hidden");
-    $(".widget").removeClass("liWidgetCustomization");
+   customization = false;
+   $("#customizeButton").removeClass('btn-primary').addClass('btn-inverse');
+   enableGridsterCustomization(false);
+   $(".customization-item").addClass("hidden");
+   $(".widget").removeClass("liWidgetCustomization");
+
+   //we save all widgets in each page
+   for(pageId in pageArray) {
+      for(widgetId in pageArray[pageId].widgets) {
+         var widget =  pageArray[pageId].widgets[widgetId];
+         //we synchronize gridster information into the widget class
+         widget.updateDataFromGridster();
+      }
+      data = pageArray[pageId].widgetsToJson();
+
+      $.ajax({
+          type: "PUT",
+          url: "/rest/page/" + pageId + "/widget",
+          data: pageArray[pageId].widgetsToJson(),
+          contentType: "application/json; charset=utf-8",
+          dataType: "json"
+       })
+       .done(function(data) {
+          //we parse the json answer
+          if (data.result != "true")
+          {
+            notifyError("Error during saving customization");
+            console.log(data.message);
+            return;
+          }
+          notifySuccess("Customization successfully saved");
+       })
+       .fail(function() {notifyError("Unable to save customization")});
+   }
 }
 
 $("#btn-add-widget").click(function() {
@@ -88,42 +128,6 @@ $("#btn-add-widget").click(function() {
     }
 });
 
-function askWidgetPackages()
-{
-    $.getJSON("rest/widget/packages")
-        .done(requestWidgetsTypeDone())
-        .fail(function() {notifyError("Unable to get widget packages")});
-}
 
-function requestWidgetsTypeDone()
-{
-    return function( data ) {
-        //we parse the json answer
-        if (data.result != "true")
-        {
-            notifyError("Error during requesting widget packages");
-            return;
-        }
-        $("#new-widget-carousel .carousel-inner > div").remove();
-        $.each(data.data.packages, function(index, value) {
-            //foreach widget-type
-            //carousel item creation
-            $("#new-widget-carousel .carousel-inner").append(
-                "<div class=\"item\">" +
-                    "<img class=\"carousel-widget-preview\" src=\"/widgets/" + value.name + "/preview.png\">" +
-                    "<div class=\"carousel-caption\">" + value.description + "</div>" +
-                "</div>"
-            );
-        });
-
-        //we activate first item of carousel
-        $("#new-widget-carousel .item").first().addClass("active");
-
-        $('.carousel').carousel('pause');
-
-        //we display the modal
-        $('#new-widget-modal').modal();
-    };
-}
 
 
