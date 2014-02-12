@@ -36,9 +36,11 @@ public:
    static typename std::vector< boost::shared_ptr<TObjectBase> > DeserializeCollection(CJson data, IEntityDeserializer<TObjectBase> & entitySerilizer, const std::string & itemKeyword)
    {
       std::vector< boost::shared_ptr<TObjectBase> > result;
-      CJson objectList = data.get_child(itemKeyword);
-      if(objectList.empty())
-         objectList = data;
+
+      CJson objectList = data;
+      if(objectList.find(itemKeyword) != objectList.not_found())
+         objectList = objectList.get_child(itemKeyword);
+
       for (CJson::const_iterator it = objectList.begin(); it != objectList.end(); ++it)
       {
          result.push_back(entitySerilizer.deserialize(it->second));
