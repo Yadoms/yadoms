@@ -309,7 +309,9 @@ set(YADOMS_SRC
 	server/web/WebServerManager.cpp
 	
 	server/web/rest/IRestService.h
-	server/web/rest/json/json.h
+	server/web/rest/json/Json.h
+	server/web/rest/json/JsonUtility.h
+	server/web/rest/json/JsonUtility.cpp
 	server/web/rest/json/JsonCollectionSerializer.h
 	server/web/rest/json/IEntitySerializer.h
 	server/web/rest/json/IEntityDeserializer.h
