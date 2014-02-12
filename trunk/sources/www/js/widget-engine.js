@@ -1,96 +1,24 @@
 /**
- * Created by nicolasHILAIRE on 06/02/14.
+ * global viewModel object used to get the viewModel of each widget
  */
+var widgetViewModel = null;
 
-function Page(id, name) {
-   assert(id !== undefined, "id of a page must be defined");
-   assert(name !== undefined, "name of a page must be defined");
-
-   this.id = id;
-   this.name = name;
-   this.gridster;
-   this.widgets = new Array();
-
-   this.widgetsToJson = function() {
-      data = new Array();
-      for(widgetId in this.widgets) {
-         data.push(this.widgets[widgetId]);
-      }
-      return JSON.stringify(data);
-   }
-}
-
-function Widget(id, idPage, name, sizeX, sizeY, positionX, positionY, configuration) {
-   assert(id !== undefined, "id of a widget must be defined");
-   assert(idPage !== undefined, "idPage of a widget must be defined");
-   assert(name !== undefined, "name of a widget must be defined");
-   assert(sizeX !== undefined, "sizeX of a widget must be defined");
-   assert(sizeY !== undefined, "sizeY of a widget must be defined");
-   assert(positionX !== undefined, "positionX of a widget must be defined");
-   assert(positionY !== undefined, "positionY of a widget must be defined");
-   //configuration can be undefined
-
-   this.id = id;
-   this.idPage = idPage;
-   this.name = name;
-   this.sizeX = sizeX;
-   this.sizeY = sizeY;
-   this.positionX = positionX;
-   this.positionY = positionY;
-   this.configuration = configuration;
-
-   this.viewModel;
-
-   //gridster item
-   this.$gridsterWidget;
-
-   //div where is embed the widget
-   this.$div;
-
-   //package information of the current widget type (package.json file)
-   this.package;
-
-   /*
-    {
-    id: "1",
-    idPage: "1",
-    name: "temperature",
-    sizeX: "2",
-    sizeY: "2",
-    positionX: "1",
-    positionY: "1",
-    configuration: ""
-    },
-    */
-   this.toJSON = function () {
-      return "{" +
-                  "id:'" + this.id + "'," +
-                  "idPage:'" + this.idPage + "'," +
-                  "name:'" + this.name + "'," +
-                  "sizeX:'" + this.sizeX + "'," +
-                  "sizeY:'" + this.sizeY + "'," +
-                  "positionX:'" + this.positionX + "'," +
-                  "positionY:'" + this.positionY + "'," +
-                  "configuration:'" + this.configuration + "'," +
-               "}";
-   };
-
-   this.updateDataFromGridster = function() {
-      this.sizeX = this.$gridsterWidget.data('coords').grid.size_x;
-      this.sizeY = this.$gridsterWidget.data('coords').grid.size_y;
-      this.positionX = this.$gridsterWidget.data('col');
-      this.positionY = this.$gridsterWidget.data('row');
-   }
-}
-
+/**
+ * Return a Widget object from the gridster DOM object
+ * @param $element gridster DOM object concerned
+ * @returns {Widget}
+ */
 function getWidgetFromGridsterElement($element)
 {
-   str = $element[0].id;
-   res = str.split("-");
-   assert(res.length == 3, "gridster id must be formed name-idPage-idWidget");
-   return pageArray[res[1]].widgets[res[2]];
+   var str = $element[0].id;
+   var res = str.split("-");
+   assert(res.length >= 3, "gridster id must be formed name-idPage-idWidget");
+   return pageArray[res[res.length - 2]].widgets[res[res.length - 1]];
 }
 
+/**
+ * Launch page request from the REST server
+ */
 function requestPages()
 {
    //we get pages
@@ -99,30 +27,34 @@ function requestPages()
       .fail(function() { notifyError("Unable to get Pages"); });
 }
 
+/**
+ * Callback of the request page from the rest server
+ * @returns {Function}
+ */
 function requestPageDone()
 {
     return function( data ) {
       //we parse the json answer
       if (data.result != "true")
       {
-         notifyError("Error during requesting pages")
+         notifyError("Error during requesting pages");
          return;
       }
 
       $.each(data.data.page, function(index, value) {
          //foreach page
-         currentPage = new Page(value.id, value.name);
+         var currentPage = new Page(value.id, value.name);
 
          var tabIdAsText = "tab-" + value.id;
          //pill creation
-         $("#tabContainer .tab-content").append(
+         $("div#tabContainer").find(".tab-content").append(
              "<div class=\"widgetPage tab-pane active\" id=\"" + tabIdAsText + "\">" +
                  "<div class=\"gridster\">" +
                  "<ul></ul>" +
                  "</div>" +
                  "</div>");
          //page creation
-         $("#pageMenu ul").append(
+         $("div#pageMenu").find("ul").append(
              "<li class=\"tabPagePills\" page-id=\"" + value.id + "\">" +
                  "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" + value.name + "</a>" +
              "</li>");
@@ -137,16 +69,31 @@ function requestPageDone()
              resize: {
                  enabled: true,
                  resize: function(e, ui, $widget) {
-                     widgetObject = getWidgetFromGridsterElement($widget);
-
-                     if (widgetObject.viewModel.resized !== undefined)
-                        widgetObject.viewModel.resized();
+                    var widgetObject = getWidgetFromGridsterElement($widget);
+                    try
+                    {
+                        if (widgetObject.viewModel.resized !== undefined)
+                           widgetObject.viewModel.resized();
+                    }
+                    catch (e)
+                    {
+                       console.log("the widget " + widget.name + " has generated an exception :");
+                       console.log(e);
+                       notifyWarning("The widget " + widget.name + " has generated an exception");
+                    }
                  },
                  stop: function(e, ui, $widget) {
-                     widgetObject = getWidgetFromGridsterElement($widget);
-
-                     if (widgetObject.viewModel.resized !== undefined)
-                        widgetObject.viewModel.resized();
+                    var widgetObject = getWidgetFromGridsterElement($widget);
+                    try
+                    {
+                       if (widgetObject.viewModel.resized !== undefined)
+                          widgetObject.viewModel.resized();
+                    }
+                    catch (e)
+                    {
+                       notifyWarning("The widget " + widget.name + " has generated an exception");
+                       console.warn(e);
+                    }
                  }
              }
          }).data('gridster');
@@ -155,24 +102,29 @@ function requestPageDone()
 
          //we request widgets for this page
          $.getJSON("/rest/page/" + currentPage.id + "/widget")
-           .done(requestWidgetsDone(currentPage))
+           .done(requestWidgetsDone())
            .fail(function(page) { return function() {notifyError("Unable to get Widgets for page " + page.name)}}(currentPage));
       });
 
       //we activate first page on the pills
-      $("#pageMenu ul li").first().addClass("active");
+      $("div#pageMenu").find("ul li").first().addClass("active");
 
       //we remove the active class of all hidden gridster
-      $(".tab-content div").not($(".tab-content div").first()).removeClass("active");
+      var $tabs = $("div.tab-content div");
+      $tabs.not($tabs.first()).removeClass("active");
 
-      $(".widgetPage .gridster").width(numberOfColumns * (gridWidth + gridMargin * 2));
+      $("div.widgetPage div.gridster").width(numberOfColumns * (gridWidth + gridMargin * 2));
 
       //we deactivate the customization
       enableGridsterCustomization(false);
     };
 }
 
-function requestWidgetsDone(page)
+/**
+ * Callback of the request widgets from the rest server
+ * @returns {Function}
+ */
+function requestWidgetsDone()
 {
    return function(data) {
       //we parse the json answer
@@ -188,6 +140,10 @@ function requestWidgetsDone(page)
    };
 }
 
+/**
+ * Graphically add the widget to the correct tab
+ * @param widget widget to add
+ */
 function addWidgetToIHM(widget)
 {
    pageArray[widget.idPage].widgets[widget.id] = widget;
@@ -197,10 +153,16 @@ function addWidgetToIHM(widget)
       .fail(function(widget) { return function() {notifyError("Unable to get view of the widget " + widget.name) }}(widget));
 }
 
+/**
+ * Callback of the request for the view of the widget from the web server
+ * @param page page concerned
+ * @param widget widget concerned
+ * @returns {Function}
+ */
 function getWidgetViewDone(page, widget)
 {
    return function( data ) {
-      $("#templates").append(data);
+      $("div#templates").append(data);
       //we get script to execute for this widget
       //$.getScript( "widgets/" + widget.name + "/viewModel.js", getWidgetViewModelDone(page, widget));
       $.getScript("widgets/" + widget.name + "/viewModel.js")
@@ -209,7 +171,12 @@ function getWidgetViewDone(page, widget)
    };
 }
 
-//Create a new widget and add it to the page
+/**
+ * Create a new graphic Widget and add it to the corresponding gridster
+ * @param page page concerned
+ * @param widget widget to add
+ * @returns {gridster}
+ */
 function createWidget(page, widget) {
     assert(page !== undefined, "createWidget function invalid page argument");
     assert(widget !== undefined, "createWidget function widget must be defined");
@@ -226,28 +193,40 @@ function createWidget(page, widget) {
             "</li>", widget.sizeX, widget.sizeY, widget.positionX, widget.positionY);
 }
 
+/**
+ * Callback for the request of the viewModel of a widget from the web server
+ * @param page page concerned
+ * @param widget widget concerned
+ * @returns {Function}
+ */
 function getWidgetViewModelDone(page, widget)
 {
    //viewModel.js has been executed
+   //noinspection JSUnusedLocalSymbols
    return function(data, textStatus, jqxhr) {
       widget.viewModel = widgetViewModel;
       //we clear the widgetViewModel for the next viewModel
       widgetViewModel = null;
-      widgetDivId = "widget-" + widget.id;
-      gridsterWidgetId = "gridsterWidget-" + widget.id;
+      var widgetDivId = "widget-" + widget.id;
       widget.$gridsterWidget = createWidget(page, widget);
-      widget.$div = $("#" + widgetDivId);
+      widget.$div = $("div#" + widgetDivId);
 
       //we apply binding
       ko.applyBindings(widget.viewModel, widget.$div[0]);
 
       $.getJSON( "widgets/" + widget.name + "/package.json")
-         .done(getWidgetConfigurationDone(page, widget))
+         .done(getWidgetPackageDone(page, widget))
          .fail(function(widget) { return function() {notifyError("Unable to get the configuration of the widget " + widget.name)}}(widget));
    };
 }
 
-function getWidgetConfigurationDone(page, widget)
+/**
+ * Callback of the request Package information of a widget
+ * @param page page concerned
+ * @param widget widget concerned
+ * @returns {Function}
+ */
+function getWidgetPackageDone(page, widget)
 {
    return function( data ) {
       //we set the min and max size if they are defined
@@ -271,13 +250,21 @@ function getWidgetConfigurationDone(page, widget)
       }
 
       //we initialize the widget
-      if (widget.viewModel.initialize !== undefined)
-         widget.viewModel.initialize(page, widget);
+      try
+      {
+         if (widget.viewModel.initialize !== undefined)
+            widget.viewModel.initialize(page, widget);
 
-      if (widget.viewModel.resized !== undefined)
-         widget.viewModel.resized();
+         if (widget.viewModel.resized !== undefined)
+            widget.viewModel.resized();
+      }
+      catch (e)
+      {
+         notifyWarning("The widget " + widget.name + " has generated an exception");
+         console.warn(e);
+      }
 
-      $(".widget button").tooltip({
+      $("li.widget button").tooltip({
          animated: 'fade',
          placement: 'bottom'
       });
@@ -286,13 +273,16 @@ function getWidgetConfigurationDone(page, widget)
       if (customization)
       {
          $(".customization-item").removeClass("hidden");
-         $(".widget").addClass("liWidgetCustomization");
+         $("li.widget").addClass("liWidgetCustomization");
       }
    };
 }
 
-//Return the Page object which is currently displayed
+/**
+ * Return the current displayed page
+ * @returns {Page}
+ */
 function getCurrentPage()
 {
-   return pageArray[$(".page-tabs .active").attr("page-id")];
+   return pageArray[$("ul.page-tabs li.active").attr("page-id")];
 }

@@ -16,22 +16,11 @@
 
     <!-- Custom styles for this template -->
     <link href="css/yadoms.css" rel="stylesheet">
-	<link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+	 <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="css/gridster.css" rel="stylesheet">
 
-   <!--<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=FontName">-->
-   
-    <!-- Just for debugging purposes. Don't actually copy this line! -->
-    <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-    <![endif]-->
-
-      <!-- Gridster includes -->
-      <link href="libs/gridster/css/jquery.gridster.css" rel="stylesheet">
+    <!-- Gridster includes -->
+    <link href="libs/gridster/css/jquery.gridster.css" rel="stylesheet">
   </head>
 
   <body>
@@ -78,8 +67,7 @@
                   </div>
               </div>
           </div>
-          </div><!--/.nav-collapse -->
-      </div>
+      </div><!--/.nav-collapse -->
   </div>
 
   <div id="tabContainer">
@@ -108,13 +96,14 @@
    <script src="libs/bootstrap/js/bootstrap.min.js"></script>
 
    <!-- Gridster includes -->
-   <!--TODO: reprendre la version min-->
-   <script src="libs/gridster/js/jquery.gridster.js"></script>
+   <script src="libs/gridster/js/jquery.gridster.min.js"></script>
 
    <script src="libs/transit/js/jquery.transit.min.js"></script>
    <script src="libs/knockout/js/knockout-3.0.0.js"></script>
 
    <script src="js/utility.js"></script>
+   <script src="js/objects/page.js"></script>
+   <script src="js/objects/widget.js"></script>
 
    <script src="js/widget-engine.js"></script>
    <script src="js/widget-customization.js"></script>
@@ -125,25 +114,37 @@
 
 	<script type="text/javascript">
 
-   //var declaration
-   var customization = false;
-
-   var pageArray = {};
-
-   //the id of the page displayed
-   var widgetViewModel;
-
+   //TODO - Passer les variables suivantes en variable de conf
    var numberOfColumns = 9;
    var gridWidth = 100;
    var gridMargin = 5;
-   
-   //we havn't yet loaded the modal qrCode
+
+   /**
+    * Array of pages
+    * @type {Array}
+    */
+   var pageArray = [];
+
+   /**
+    * Indicate if the modal qrcode has already been loaded
+    * */
    var qrcodeHasBeenLoaded = false;
+
+   /**
+    * Indicate if the modal add widget has already been loaded
+    * */
    var addWidgetHasBeenLoaded = false;
 
-   $( document ).ready(function() {
+   /**
+    * On page loaded
+    */
+   $(document).ready(function() {
       requestPages();
-      
+
+      /**
+       * Callback of the click on the show qr code button
+       * Make lazy loading of the qrcode modal
+       */
       $("#btn-show-qrcode").click(function() {
          if (qrcodeHasBeenLoaded)
          {
@@ -167,8 +168,5 @@
    });
    
 	</script>
-
-
-
   </body>
 </html>
