@@ -9,7 +9,7 @@
 #include "database/DatabaseException.hpp"
 
 CSQLiteRequester::CSQLiteRequester(sqlite3 * pDatabaseHandler)
-   :m_pDatabaseHandler(pDatabaseHandler)
+   :m_pDatabaseHandler(pDatabaseHandler), m_bOneTransactionActive(false)
 {
 }
 
@@ -23,8 +23,8 @@ int CSQLiteRequester::queryStatement(const CQuery & querytoExecute)
    BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kNotYetDefined);
    BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kSelect);
 
-      //execute the query
-      char *zErrMsg = NULL;
+   //execute the query
+   char *zErrMsg = NULL;
    sqlite3_exec(m_pDatabaseHandler, querytoExecute.c_str(),  NULL, 0, &zErrMsg);
 
    if(zErrMsg)
@@ -84,19 +84,35 @@ CSQLiteRequester::QueryResults CSQLiteRequester::query(const CQuery & querytoExe
 
 void CSQLiteRequester::transactionBegin()
 {
-   sqlite3_exec(m_pDatabaseHandler, "BEGIN", 0, 0, 0);
+   if(!m_bOneTransactionActive)
+   {
+      sqlite3_exec(m_pDatabaseHandler, "BEGIN", 0, 0, 0);
+      m_bOneTransactionActive = true;
+   }
 }
 
 void CSQLiteRequester::transactionCommit()
 {
-   sqlite3_exec(m_pDatabaseHandler, "COMMIT", 0, 0, 0);
+   if(m_bOneTransactionActive)
+   {
+      sqlite3_exec(m_pDatabaseHandler, "COMMIT", 0, 0, 0);
+      m_bOneTransactionActive = false;
+   }
 }
 
 void CSQLiteRequester::transactionRollback()
 {
-   sqlite3_exec(m_pDatabaseHandler, "ROLLBACK", 0, 0, 0);
+   if(m_bOneTransactionActive)
+   {
+      sqlite3_exec(m_pDatabaseHandler, "ROLLBACK", 0, 0, 0);
+      m_bOneTransactionActive = false;
+   }
 }
 
+bool CSQLiteRequester::transactionIsAlreadyCreated()
+{
+   return m_bOneTransactionActive;
+}
 
 bool CSQLiteRequester::checkTableExists(const std::string & tableName)
 {

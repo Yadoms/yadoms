@@ -34,6 +34,7 @@ public:
    // IDatabaseProvider implementation
 	bool load();
 	void unload();
+   boost::shared_ptr<ITransactionalProvider> getTransactionalEngine();
    boost::shared_ptr<IHardwareRequester> getHardwareRequester() { return m_hardwareRequester; }
    boost::shared_ptr<IConfigurationRequester> getConfigurationRequester() { return m_configurationRequester; }
    boost::shared_ptr<IDeviceRequester> getDeviceRequester() { return m_deviceRequester; }

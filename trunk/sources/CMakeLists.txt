@@ -282,6 +282,7 @@ set(YADOMS_SRC
 	server/XplLogger.cpp
 	
 	server/database/IDataProvider.h
+	server/database/ITransactionalProvider.h
 	server/database/IHardwareRequester.h
 	server/database/IConfigurationRequester.h
 	server/database/IDeviceRequester.h
@@ -319,6 +320,7 @@ set(YADOMS_SRC
 	server/web/rest/json/JsonSerializers.cpp
 	server/web/rest/json/JsonSerializersHelpers.hpp
 
+	server/web/rest/RestDispatcher.h
 	server/web/rest/RestDispatcher.cpp
 	server/web/rest/RestDispatcherHelpers.hpp
 

@@ -23,6 +23,8 @@ public:
    CJson replaceAllWidgetsForPage(const std::vector<std::string> & parameters, const CJson & requestContent);   
    CJson deleteAllWidgetsForPage(const std::vector<std::string> & parameters, const CJson & requestContent);   
 
+   CJson transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const CJson & requestContent);
+
 private:
    boost::shared_ptr<IDataProvider> m_dataProvider;
    static std::string m_restKeyword;

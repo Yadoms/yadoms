@@ -8,6 +8,7 @@
 #include "IPageRequester.h"
 #include "IWidgetRequester.h"
 #include "IHardwareEventLoggerRequester.h"
+#include "ITransactionalProvider.h"
 
 class IDataProvider
 {
@@ -27,6 +28,13 @@ public:
 	/// \Brief	Unoad the database system
 	//--------------------------------------------------------------
 	virtual void unload() = 0;
+
+	//--------------------------------------------------------------
+	/// \Brief		get the transactional engine
+	/// \return 	the transactional engine (can be NULL if transactional mode is not supported)
+	/// \throws 		
+	//--------------------------------------------------------------  
+   virtual boost::shared_ptr<ITransactionalProvider> getTransactionalEngine() = 0;
 
 	//--------------------------------------------------------------
 	/// \Brief		get the hardware requester

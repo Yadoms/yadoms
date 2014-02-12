@@ -107,5 +107,8 @@ void CSQLiteDataProvider::loadRequesters()
 
 
 
-
-
+boost::shared_ptr<ITransactionalProvider> CSQLiteDataProvider::getTransactionalEngine() 
+{
+   if(!m_databaseRequester->transactionIsAlreadyCreated())
+      return m_databaseRequester; 
+}
