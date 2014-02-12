@@ -1,26 +1,39 @@
 /**
  * Created by nicolasHILAIRE on 06/02/14.
  */
-//var declaration
+
+/**
+ * Indicate if customization is in progress or not
+ * @type {boolean}
+ */
 var customization = false;
 
+/**
+ * Enable or disable customization on gridster elements
+ * @param enable
+ */
 function enableGridsterCustomization(enable) {
-   $.each(pageArray, function (index, value) {
-      if (enable)
-      {
-         value.gridster.enable();
-         value.gridster.enable_resize();
+   for(var pageId in pageArray) {
+      if (pageArray.hasOwnProperty(pageId)) {
+         if (enable)
+         {
+            pageArray[pageId].gridster.enable();
+            pageArray[pageId].gridster.enable_resize();
+         }
+         else
+         {
+            pageArray[pageId].gridster.disable();
+            pageArray[pageId].gridster.disable_resize();
+         }
       }
-      else
-      {
-         value.gridster.disable();
-         value.gridster.disable_resize();
-      }
-   });
+   }
 }
 
+/**
+ * Animate the customization wrench button
+ */
 function animateCustomizeButton() {
-   $("#customizeButton i").transition({
+   $("a#customizeButton i").transition({
       rotate: '+=30deg',
       duration: 500,
       easing: 'linear',
@@ -28,7 +41,7 @@ function animateCustomizeButton() {
          if (customization)
             animateCustomizeButton();
          else
-            $("#customizeButton i").transition({
+            $("a#customizeButton i").transition({
                rotate: '0deg',
                duration: 100
             });
@@ -36,76 +49,86 @@ function animateCustomizeButton() {
    });
 }
 
-$("#customizeButton").click(function() {
+/**
+ * Callback of the click on the customize button
+ */
+$("a#customizeButton").click(function() {
    customization = !customization;
 
    if (customization)
    {
-      $("#customizeButton").removeClass('btn-inverse').addClass('btn-primary');
+      $("a#customizeButton").removeClass('btn-inverse').addClass('btn-primary');
       enableGridsterCustomization(true);
       animateCustomizeButton();
       $(".customization-item").removeClass("hidden");
-      $(".widget").addClass("liWidgetCustomization");
+      $("li.widget").addClass("liWidgetCustomization");
    }
    else
        exitCustomization();
 });
 
-$("#btn-exit-customization").click(function() {
+/**
+ * Callback of the click on the exit customize button
+ */
+$("a#btn-exit-customization").click(function() {
     exitCustomization();
 });
 
-$("#tabContainer").click(function() {
+/**
+ * Callback of the click on the background to stop customization
+ */
+$("div#tabContainer").click(function() {
    //TODO : ne fonctionne pas pour l'instant il faut pouvoir quitter la customization en cliquant sur le fond et non un item
    //exitCustomization();
 });
 
-dateReplacer = function(key, value){
-   if (this[key] instanceof Date){
-      var date = this[key];
-      return date.getDay() + "/" + date.getMonth() + "/" + date.getYear();
-   }else{
-      return value;
-   }
-}
-
-//This function end customization and send all configuration to server
+/**
+ * End customization and send all configuration to server
+ */
 function exitCustomization() {
    customization = false;
-   $("#customizeButton").removeClass('btn-primary').addClass('btn-inverse');
+   $("a#customizeButton").removeClass('btn-primary').addClass('btn-inverse');
    enableGridsterCustomization(false);
    $(".customization-item").addClass("hidden");
-   $(".widget").removeClass("liWidgetCustomization");
+   $("li.widget").removeClass("liWidgetCustomization");
 
    //we save all widgets in each page
-   for(pageId in pageArray) {
-      for(widgetId in pageArray[pageId].widgets) {
-         var widget =  pageArray[pageId].widgets[widgetId];
-         //we synchronize gridster information into the widget class
-         widget.updateDataFromGridster();
-      }
+   for(var pageId in pageArray) {
+      if (pageArray.hasOwnProperty(pageId)) {
+         var page = pageArray[pageId];
+         for(var widgetId in page.widgets) {
+            if (page.widgets.hasOwnProperty(widgetId)) {
+               //we synchronize gridster information into the widget class
+               pageArray[pageId].widgets[widgetId].updateDataFromGridster();
+            }
+         }
 
-      $.ajax({
-          type: "PUT",
-          url: "/rest/page/" + pageId + "/widget",
-          data: pageArray[pageId].widgetsToJson(),
-          contentType: "application/json; charset=utf-8",
-          dataType: "json"
-       })
-       .done(function(data) {
-          //we parse the json answer
-          if (data.result != "true")
-          {
-            notifyError("Error during saving customization");
-            console.log(data.message);
-            return;
-          }
-          notifySuccess("Customization successfully saved");
-       })
-       .fail(function() {notifyError("Unable to save customization")});
+         $.ajax({
+             type: "PUT",
+             url: "/rest/page/" + pageId + "/widget",
+             data: page.widgetsToJsonString(),
+             contentType: "application/json; charset=utf-8",
+             dataType: "json"
+          })
+          .done(function(data) {
+             //we parse the json answer
+             if (data.result != "true")
+             {
+               notifyError("Error during saving customization");
+               console.error(data.message);
+               return;
+             }
+             notifySuccess("Customization successfully saved");
+          })
+          .fail(function() {notifyError("Unable to save customization")});
+      }
    }
 }
 
+/**
+ * Callback of the click on the add widget button
+ * Make lazy loading of the add widget modal
+ */
 $("#btn-add-widget").click(function() {
     if (addWidgetHasBeenLoaded)
     {

@@ -38,8 +38,9 @@
     //we indicate that add_widget.html has been loaded
     addWidgetHasBeenLoaded = true;
 
-    //This function ask for widget packages list to the server
-    //It is called to add a new widget
+    /**
+     * Ask for widget packages to the REST server
+     */
     function askWidgetPackages()
     {
        $.getJSON("rest/widget/packages")
@@ -47,7 +48,10 @@
                .fail(function() {notifyError("Unable to get widget packages")});
     }
 
-    //This function is the callback of the request widget packages
+    /**
+     * Callback of the request widget packages
+     * @returns {Function}
+     */
     function requestWidgetsTypeDone()
     {
        return function( data ) {
@@ -57,11 +61,12 @@
              notifyError("Error during requesting widget packages");
              return;
           }
-          $("#new-widget-carousel .carousel-inner > div").remove();
+          $("div#new-widget-carousel > div.carousel-inner > div").remove();
+          //noinspection JSUnusedLocalSymbols
           $.each(data.data.packages, function(index, value) {
              //foreach widget-type
              //carousel item creation
-             $("#new-widget-carousel .carousel-inner").append(
+             $("div#new-widget-carousel > div.carousel-inner").append(
                      "<div class=\"item\" package=\"" + value.name + "\" >" +
                              "<img class=\"carousel-widget-preview\" src=\"/widgets/" + value.name + "/preview.png\">" +
                              "<div class=\"carousel-caption\">" + value.description + "</div>" +
@@ -70,22 +75,24 @@
           });
 
           //we activate first item of carousel
-          $("#new-widget-carousel .item").first().addClass("active");
+          $("div#new-widget-carousel div.item").first().addClass("active");
 
-          $('.carousel').carousel('pause');
+          $('div.carousel').carousel('pause');
 
           //we display the modal
-          $('#new-widget-modal').modal();
+          $('div#new-widget-modal').modal();
        };
     }
 
-    //This function is called on click on add widget button in its modal
-    $("#btn-confirm-add-widget").click(function () {
+    /**
+     * Callback to the click of the button to confirm an add of a new widget
+     */
+    $("button#btn-confirm-add-widget").click(function () {
 
         //we close the new widget modal
-        $("#new-widget-modal").modal("hide");
+        $("div#new-widget-modal").modal("hide");
 
-        var packageName = $('#new-widget-carousel .active').attr("package");
+        var packageName = $('div#new-widget-carousel div.active').attr("package");
         
         $.ajax({
             type: "POST",
@@ -106,6 +113,7 @@
             var w = new Widget(data.data.id, data.data.idPage, data.data.name, data.data.sizeX, data.data.sizeY, data.data.positionX, data.data.positionY, data.data.configuration);
             addWidgetToIHM(w);
         })
-        .fail(function(widgetName) { return function() {notifyError("Unable to create widget of type " + widgetName)}}(data.data.name));
+        .fail(function(widgetName) { return function() {notifyError("Unable to create widget of type " + widgetName)}}(packageName));
     });
+
 </script>
