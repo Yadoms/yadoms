@@ -20,7 +20,7 @@ public:
    virtual ~CSQLiteVersion1();
    
    // ISQLiteVersionUpgrade implementation
-   virtual void checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester);
+   virtual void checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester, const CVersion & currentVersion);
    // [END] ISQLiteVersionUpgrade implementation
 
 private:
