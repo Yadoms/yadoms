@@ -17,62 +17,38 @@ CSQLiteVersion1::~CSQLiteVersion1()
 }
 
 // ISQLiteVersionUpgrade implementation
-void CSQLiteVersion1::checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester)
+void CSQLiteVersion1::checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester, const CVersion & currentVersion)
 {
    bool bNeedToCreateOrUpgrade = true;
 
-   //get the database version
-   CQuery qVersion;
-   qVersion.Select(CConfigurationTable::getValueColumnName()).
-      From(CConfigurationTable::getTableName()).
-      Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database").
-      And(CConfigurationTable::getNameColumnName(), CQUERY_OP_EQUAL, "Version");
-
-   CSingleValueAdapter<std::string> adapter;
-   pRequester->queryEntities<std::string>(&adapter, qVersion);
-   std::vector<std::string> results = adapter.getResults();
-   if(results.size() >= 1)
+   if(currentVersion >= CVersion(1,0,0,0))
    {
-      //une version est déjà configurée
-      CVersion versionFromdatabase(results[0]);
-      YADOMS_LOG(info) << "database version  : " << results[0];
-      if(versionFromdatabase >= CVersion(1,0,0,0))
-      {
-         //not for me, version is correct
+      //not for me, version is correct
 
-         //check that table all tables exists
-         if(!pRequester->checkTableExists(CAcquisitionTable::getTableName()) ||
-            !pRequester->checkTableExists(CConfigurationTable::getTableName()) ||
-            !pRequester->checkTableExists(CDeviceTable::getTableName()) ||
-            !pRequester->checkTableExists(CHardwareTable::getTableName()) ||
-            !pRequester->checkTableExists(CKeywordTable::getTableName()) ||
-            !pRequester->checkTableExists(CPageTable::getTableName()) ||
-            !pRequester->checkTableExists(CWidgetTable::getTableName()) ||
-            !pRequester->checkTableExists(CHardwareEventLoggerTable::getTableName()))
-         {
-            //at least one table is missing
-            bNeedToCreateOrUpgrade = true;
-         }
-         else
-         {
-            //good version, but missing table (developpement mode only)
-            bNeedToCreateOrUpgrade = false;
-         }
+      //check that table all tables exists
+      if(!pRequester->checkTableExists(CAcquisitionTable::getTableName()) ||
+         !pRequester->checkTableExists(CConfigurationTable::getTableName()) ||
+         !pRequester->checkTableExists(CDeviceTable::getTableName()) ||
+         !pRequester->checkTableExists(CHardwareTable::getTableName()) ||
+         !pRequester->checkTableExists(CKeywordTable::getTableName()) ||
+         !pRequester->checkTableExists(CPageTable::getTableName()) ||
+         !pRequester->checkTableExists(CWidgetTable::getTableName()) ||
+         !pRequester->checkTableExists(CHardwareEventLoggerTable::getTableName()))
+      {
+         //at least one table is missing
+         bNeedToCreateOrUpgrade = true;
       }
       else
       {
-         //version is lower to 1.0.0.0, then create database
-         bNeedToCreateOrUpgrade = true;
+         //good version, but missing table (developpement mode only)
+         bNeedToCreateOrUpgrade = false;
       }
    }
    else
    {
-      //la version n'a jamais été configurée
-      YADOMS_LOG(info) << "version has never been configured";
+      //version is lower to 1.0.0.0, then create database
       bNeedToCreateOrUpgrade = true;
    }
-
-   
 
    if(bNeedToCreateOrUpgrade)
    {
@@ -137,6 +113,9 @@ void CSQLiteVersion1::CreateDatabase(const boost::shared_ptr<CSQLiteRequester> &
          Values( "Database", "Version", 1.0, "Database version");
       pRequester->queryStatement(qInsert);
 
+	   //add a default empty page 
+      pRequester->queryStatement(CQuery().InsertInto(CPageTable::getTableName(), CPageTable::getNameColumnName(), CPageTable::getPageOrderColumnName()).Values("", 1));
+
       //commit transaction
       pRequester->transactionCommit();
    }
@@ -147,5 +126,4 @@ void CSQLiteVersion1::CreateDatabase(const boost::shared_ptr<CSQLiteRequester> &
       pRequester->transactionRollback();
       throw CSQLiteVersionException("Failed to create database");
    }
-
 }

@@ -10,6 +10,9 @@
 #include "versioning/SQLiteVersionUpgraderFactory.h"
 #include "versioning/SQLiteVersionException.h"
 #include <shared/Exceptions/NotSupportedException.hpp>
+#include "database/sqlite/SQLiteDatabaseTables.h"
+#include "database/sqlite/adapters/SingleValueAdapter.hpp"
+#include "tools/Version.h"
 
 CSQLiteDataProvider::CSQLiteDataProvider(const std::string & dbFile)
    :m_dbFile(dbFile), m_pDatabaseHandler(NULL)
@@ -55,7 +58,38 @@ bool CSQLiteDataProvider::load()
 
          //check for update
          YADOMS_LOG(info) << "Check for database update...";
-         CSQLiteVersionUpgraderFactory::GetUpgrader()->checkForUpgrade(m_databaseRequester);
+
+         //get the database version
+         CVersion currentVersion;
+
+         try
+         {
+            CQuery qVersion;
+            qVersion.Select(CConfigurationTable::getValueColumnName()).
+               From(CConfigurationTable::getTableName()).
+               Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database").
+               And(CConfigurationTable::getNameColumnName(), CQUERY_OP_EQUAL, "Version");
+
+            CSingleValueAdapter<std::string> adapter;
+            m_databaseRequester->queryEntities<std::string>(&adapter, qVersion);
+            std::vector<std::string> results = adapter.getResults();
+         
+         
+            if(results.size() >= 1)
+            {
+               currentVersion = CVersion(results[0]);
+            }
+         }
+         catch (std::exception & ex)
+         {
+            YADOMS_LOG(warning) << "Fail to get version of database : " << ex.what();
+         }
+         catch (...)
+         {
+            YADOMS_LOG(warning) << "Fail to get version of database : Unkonown exception";
+         }
+         
+         CSQLiteVersionUpgraderFactory::GetUpgrader()->checkForUpgrade(m_databaseRequester, currentVersion);
 
          //create entities requester (high level querier)
          loadRequesters();

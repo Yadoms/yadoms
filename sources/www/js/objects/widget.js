@@ -49,14 +49,14 @@ function Widget(id, idPage, name, sizeX, sizeY, positionX, positionY, configurat
  */
 Widget.prototype.toJSON = function () {
    return "{" +
-      "id:'" + this.id + "'," +
-      "idPage:'" + this.idPage + "'," +
-      "name:'" + this.name + "'," +
-      "sizeX:'" + this.sizeX + "'," +
-      "sizeY:'" + this.sizeY + "'," +
-      "positionX:'" + this.positionX + "'," +
-      "positionY:'" + this.positionY + "'," +
-      "configuration:'" + this.configuration + "'," +
+      "\"id\":\"" + this.id + "\"," +
+      "\"idPage\":\"" + this.idPage + "\"," +
+      "\"name\":\"" + this.name + "\"," +
+      "\"sizeX\":\"" + this.sizeX + "\"," +
+      "\"sizeY\":\"" + this.sizeY + "\"," +
+      "\"positionX\":\"" + this.positionX + "\"," +
+      "\"positionY\":\"" + this.positionY + "\"," +
+      "\"configuration\":\"" + this.configuration + "\"," +
       "}";
 };
 
