@@ -29,12 +29,42 @@ void CWidgetRestService::configureDispatcher(CRestDispatcher & dispatcher)
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CWidgetRestService::getOneWidget);
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")(CAcquisitionRestService::getRestKeyword()), CWidgetRestService::getWidgetAcquisitions);
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("packages"), CWidgetRestService::findWidgetPackages);
-   REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword), CWidgetRestService::addWidget);
-   REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword), CWidgetRestService::replaceAllWidgets);
-   REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*"), CWidgetRestService::updateOneWidget);
-   REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword), CWidgetRestService::deleteAllWidgets);
-   REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("*"), CWidgetRestService::deleteOneWidget);
+   REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CWidgetRestService::addWidget, CWidgetRestService::transactionalMethod);
+   REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword), CWidgetRestService::replaceAllWidgets, CWidgetRestService::transactionalMethod);
+   REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CWidgetRestService::updateOneWidget, CWidgetRestService::transactionalMethod);
+   REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CWidgetRestService::deleteAllWidgets, CWidgetRestService::transactionalMethod);
+   REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CWidgetRestService::deleteOneWidget, CWidgetRestService::transactionalMethod);
 }
+
+CJson CWidgetRestService::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const CJson & requestContent)
+{
+   boost::shared_ptr<ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
+   CJson result;
+   try
+   {
+      if(pTransactionalEngine)
+         pTransactionalEngine->transactionBegin();
+      result = realMethod(parameters, requestContent);
+   }
+   catch(std::exception &ex)
+   {
+      result = CJsonResult::GenerateError(ex);
+   }
+   catch(...)
+   {
+      result = CJsonResult::GenerateError("unknown exception widget rest method");
+   }
+
+   if(pTransactionalEngine)
+   {
+      if(CJsonResult::isSuccess(result))
+         pTransactionalEngine->transactionCommit();
+      else
+         pTransactionalEngine->transactionRollback();
+   }
+   return result;
+}
+
 
 const std::string & CWidgetRestService::getRestKeyword()
 {
@@ -95,7 +125,7 @@ CJson CWidgetRestService::addWidget(const std::vector<std::string> & parameters,
    }
    catch(std::exception &ex)
    {
-      return CJsonResult::GenerateError(ex);
+     return CJsonResult::GenerateError(ex);
    }
    catch(...)
    {
@@ -134,7 +164,7 @@ CJson CWidgetRestService::updateOneWidget(const std::vector<std::string> & param
    }
    catch(std::exception &ex)
    {
-      return CJsonResult::GenerateError(ex);
+     return CJsonResult::GenerateError(ex);
    }
    catch(...)
    {
@@ -183,6 +213,7 @@ CJson CWidgetRestService::replaceAllWidgets(const std::vector<std::string> & par
       {
          m_dataProvider->getWidgetRequester()->addWidget(*pw);
       }
+
       return CJsonResult::GenerateSuccess();
    }
    catch(std::exception &ex)

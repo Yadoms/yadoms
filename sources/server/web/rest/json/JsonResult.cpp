@@ -16,7 +16,7 @@ CJson CJsonResult::GenerateError(const std::exception & error, const CJson & dat
 {
    return GenerateInteral(false, error.what(), data);
 }
-   
+
 CJson CJsonResult::GenerateSuccess(const CJson & data /*= CJsonResult::EmptyCJson*/)
 {
    return GenerateInteral(true, CStringExtension::EmptyString, data);
@@ -33,4 +33,10 @@ CJson CJsonResult::GenerateInteral(const bool result, const std::string & messag
    return error;
 }
 
+bool CJsonResult::isSuccess(const CJson & data)
+{
+   if(data.find(m_resultFieldName) != data.not_found())
+      return data.get<bool>(m_resultFieldName);
+   return false;
+}
 

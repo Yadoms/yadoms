@@ -5,8 +5,9 @@
 #include <shared/Exceptions/NullReferenceException.hpp>
 #include <shared/Log.h>
 #include "Query.h"
+#include "database/ITransactionalProvider.h"
 
-class CSQLiteRequester
+class CSQLiteRequester : public ITransactionalProvider
 {
 public:
    CSQLiteRequester(sqlite3 * pDatabaseHandler);
@@ -100,21 +101,17 @@ public:
    }
 
 
+   // ITransactionalProvider implementation
+   virtual void transactionBegin();
+   virtual void transactionCommit();
+   virtual void transactionRollback();
+   // [END] ITransactionalProvider implementation
 
    //--------------------------------------------------------------
-   /// \Brief	Start a transaction
+   /// \Brief	       Check if a transaction is already created
+   /// \return	       true if a transaction is already created
    //--------------------------------------------------------------
-   void transactionBegin();
-
-   //--------------------------------------------------------------
-   /// \Brief	Commit a transaction
-   //--------------------------------------------------------------
-   void transactionCommit();
-
-   //--------------------------------------------------------------
-   /// \Brief	Rollback a transaction
-   //--------------------------------------------------------------
-   void transactionRollback();
+   bool transactionIsAlreadyCreated();
 
    //--------------------------------------------------------------
    /// \Brief	Check if a table already exists in database
@@ -144,4 +141,8 @@ private:
    //--------------------------------------------------------------
    sqlite3 * m_pDatabaseHandler;
 
+   //--------------------------------------------------------------
+   /// \Brief		true if a transaction is already begin
+   //--------------------------------------------------------------
+   bool m_bOneTransactionActive;
 };

@@ -32,6 +32,11 @@ public:
    //-----------------------------------------
    static CJson GenerateSuccess(const CJson & data = CJsonResult::EmptyCJson);
 
+   //-----------------------------------------
+   ///\brief   check if the CJson data is a success messsage
+   ///\return  true if the CJson data is a success messsage
+   //-----------------------------------------
+   static bool isSuccess(const CJson & data);
 public:
    //-----------------------------------------
    ///\brief   Empty Json data (can be used as optionnal parameter for references

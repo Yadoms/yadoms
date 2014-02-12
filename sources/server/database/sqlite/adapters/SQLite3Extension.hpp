@@ -28,6 +28,7 @@ public:
       std::string textAsUtf8String;
       textAsUtf8String.assign(textAsWideString.begin(), textAsWideString.end());
       return textAsUtf8String;
+      //return std::string((char*)sqlite3_column_text(pStmt, i));
    }
 
    //--------------------------------------------------------------

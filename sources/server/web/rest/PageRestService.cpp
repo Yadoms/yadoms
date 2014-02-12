@@ -30,12 +30,41 @@ void CPageRestService::configureDispatcher(CRestDispatcher & dispatcher)
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CPageRestService::getOnePage);
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::getPageWidget);
 
-   REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::addWidgetForPage);
-   REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::replaceAllWidgetsForPage);
-   REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::deleteAllWidgetsForPage);
-
-
+   REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::addWidgetForPage, CPageRestService::transactionalMethod);
+   REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::replaceAllWidgetsForPage, CPageRestService::transactionalMethod);
+   REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::deleteAllWidgetsForPage, CPageRestService::transactionalMethod);
 }
+
+
+CJson CPageRestService::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const CJson & requestContent)
+{
+   boost::shared_ptr<ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
+   CJson result;
+   try
+   {
+      if(pTransactionalEngine)
+         pTransactionalEngine->transactionBegin();
+      result = realMethod(parameters, requestContent);
+   }
+   catch(std::exception &ex)
+   {
+      result = CJsonResult::GenerateError(ex);
+   }
+   catch(...)
+   {
+      result = CJsonResult::GenerateError("unknown exception widget rest method");
+   }
+
+   if(pTransactionalEngine)
+   {
+      if(CJsonResult::isSuccess(result))
+         pTransactionalEngine->transactionCommit();
+      else
+         pTransactionalEngine->transactionRollback();
+   }
+   return result;
+}
+
 
 CJson CPageRestService::getOnePage(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
@@ -159,4 +188,5 @@ CJson CPageRestService::deleteAllWidgetsForPage(const std::vector<std::string> &
    {
       return CJsonResult::GenerateError("unknown exception in creating a new widget");
    }
+
 }
