@@ -563,31 +563,6 @@ BOOST_AUTO_TEST_CASE(Different_HardwarePluginsPath_hardwarePluginsPath_Initialis
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -d
-/// \result         No Error - the device plugins path is changed
-//--------------------------------------------------------------
-/*
-BOOST_AUTO_TEST_CASE(Different_DevicePluginsPath_d_Initialisation)
-{
-  CreateDirectory ("home");
-
-  char *argv[] = {"./MainTestStartOptionsLoader","-d","home"};
-
-  CStartupOptionsLoader StartupOptions (3, argv);
-
-  BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
-  BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-  BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
-  BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"home");
-  BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-
-  RemoveDirectory ("home");
-}
-*/
-//--------------------------------------------------------------
 /// \brief	    Test CStartupOptionsLoader with the argument -DevicePluginsPath
 /// \result         No Error - the device plugins path is changed
 //--------------------------------------------------------------
@@ -986,6 +961,19 @@ BOOST_AUTO_TEST_CASE(Config_File_All_Options3)
   RemoveDirectory ("try1");
   RemoveDirectory ("try2");
   RemoveDirectory ("try3");
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test CStartupOptionsLoader with the parameter -p without value
+/// \result         No Error - No Exception thrown
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Parameter_Missing_No_Exception)
+{ 
+  char *argv[] = {"./MainTestStartOptionsLoader","-p"};
+
+  BOOST_REQUIRE_NO_THROW( CStartupOptionsLoader StartupOptions (2, argv) );
+
 }
 
 //BOOST_AUTO_TEST_SUITE_END()
