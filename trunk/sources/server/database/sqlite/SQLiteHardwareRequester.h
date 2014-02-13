@@ -28,6 +28,7 @@ public:
 	virtual std::vector<boost::shared_ptr<CHardware> > getHardwares(bool evenDeleted);
    virtual void updateHardwareConfiguration(int hardwareId, const std::string& newConfiguration);
    virtual void enableInstance(int hardwareId, bool enable);
+   virtual void disableAllPluginInstance(const std::string& pluginName);
    // [END] IHardwareRequester implementation
 
    //test

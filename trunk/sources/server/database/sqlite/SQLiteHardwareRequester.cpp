@@ -130,8 +130,15 @@ void CSQLiteHardwareRequester::enableInstance(int hardwareId, bool enable)
    if(m_databaseRequester->queryStatement(qUpdate) <= 0)
       throw CEmptyResultException("No lines affected");
 }
+
+void CSQLiteHardwareRequester::disableAllPluginInstance(const std::string& pluginName)
+{
+   CQuery qUpdate;
+   qUpdate. Update(CHardwareTable::getTableName()).
+      Set(CHardwareTable::getEnabledColumnName(), false).
+      Where(CHardwareTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, pluginName);
+
+   m_databaseRequester->queryStatement(qUpdate);
+}
+
 // [END] IHardwareRequester implementation
-
-
-
-

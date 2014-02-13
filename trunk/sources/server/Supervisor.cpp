@@ -18,6 +18,7 @@
 #include <shared/ThreadBase.h>
 #include <shared/Peripherals.h>
 
+
 CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
    :CThreadBase("Supervisor"), m_startupOptions(startupOptions)
 {
@@ -83,7 +84,8 @@ void CSupervisor::doWork()
 
       // Start the hardware plugin manager
       boost::shared_ptr<CHardwarePluginManager> hardwarePluginManager = CHardwarePluginManager::newHardwarePluginManager(
-         m_startupOptions.getHarwarePluginsPath(), pDataProvider->getHardwareRequester(), pDataProvider->getHardwareEventLoggerRequester());
+         m_startupOptions.getHarwarePluginsPath(), pDataProvider->getHardwareRequester(), pDataProvider->getHardwareEventLoggerRequester(),
+         *this, kHardwarePluginManagerEvent);
 
       //TODO ######################### test interface hardwarePluginManager #########################
 #if DEV_ACTIVATE_HARDWARE_PLUGIN_MANAGER_TESTS
@@ -244,7 +246,19 @@ void CSupervisor::doWork()
       YADOMS_LOG(info) << "Supervisor is running...";
       try
       {
-         waitForEvents();
+         while(true)
+         {
+            switch(waitForEvents())
+            {
+            case kHardwarePluginManagerEvent:
+               hardwarePluginManager->signalEvent(popEvent<CHardwarePluginManagerEvent>());
+               break;
+            default:
+               YADOMS_LOG(error) << "Unknown message id";
+               BOOST_ASSERT(false);
+               break;
+            }
+         }
       }
       catch (boost::thread_interrupted&)
       {

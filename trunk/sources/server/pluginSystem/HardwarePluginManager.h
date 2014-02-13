@@ -9,9 +9,12 @@
 
 #include "HardwarePluginFactory.h"
 #include "HardwarePluginInstance.h"
+#include "HardwarePluginManagerEvent.h"
 #include "../database/IHardwareRequester.h"
 #include "../database/IHardwareEventLoggerRequester.h"
 #include <shared/StringExtension.h>
+#include <shared/Event/EventHandler.hpp>
+
 
 //--------------------------------------------------------------
 /// \brief	this class is used to manage plugin. 
@@ -31,8 +34,11 @@ protected:
    /// \param [in]   initialDir initial plugins search directory
    /// \param [in]   database database link
    /// \param [in]   eventLoggerDatabase: database link for events on plugins
+   /// \param [in]   supervisor     the supervisor event handler
+   /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
    //--------------------------------------------------------------
-   CHardwarePluginManager(const std::string & initialDir, boost::shared_ptr<IHardwareRequester> database, boost::shared_ptr<IHardwareEventLoggerRequester> eventLoggerDatabase);
+   CHardwarePluginManager(const std::string & initialDir, boost::shared_ptr<IHardwareRequester> database, boost::shared_ptr<IHardwareEventLoggerRequester> eventLoggerDatabase,
+      CEventHandler& supervisor, int pluginManagerEventId);
 
    //--------------------------------------------------------------
    /// \brief			Initialization, used for the 2-steps construction
@@ -55,8 +61,11 @@ public:
    /// \param [in]   initialDir: initial plugins search directory
    /// \param [in]   database: database link
    /// \param [in]   eventLoggerDatabase: database link for events on plugins
+   /// \param [in]   supervisor     the supervisor event handler
+   /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
    //--------------------------------------------------------------
-   static boost::shared_ptr<CHardwarePluginManager> newHardwarePluginManager(const std::string & initialDir, boost::shared_ptr<IHardwareRequester> database, boost::shared_ptr<IHardwareEventLoggerRequester> eventLoggerDatabase);
+   static boost::shared_ptr<CHardwarePluginManager> newHardwarePluginManager(const std::string & initialDir, boost::shared_ptr<IHardwareRequester> database,
+      boost::shared_ptr<IHardwareEventLoggerRequester> eventLoggerDatabase, CEventHandler& supervisor, int pluginManagerEventId);
 
    //--------------------------------------------------------------
    /// \brief           Enable a registered instance of plugin (and start it)
@@ -151,6 +160,12 @@ public:
    /// \throw           CException if fails
    //--------------------------------------------------------------
    void setInstanceConfiguration(int id, const std::string& newConfiguration);   
+
+   //--------------------------------------------------------------
+   /// \brief           Signal an asynchronous event on plugin manager
+   /// \param [in] event   Event data
+   //--------------------------------------------------------------
+   void signalEvent(const CHardwarePluginManagerEvent& event);
 
 private:
    //--------------------------------------------------------------
@@ -253,4 +268,14 @@ private:
    /// \brief			Plugin qualifier
    //--------------------------------------------------------------
    const boost::shared_ptr<IHardwarePluginQualifier> m_qualifier;
+
+   //--------------------------------------------------------------
+   /// \brief			Supervisor event handler
+   //--------------------------------------------------------------
+   CEventHandler& m_supervisor;
+
+   //--------------------------------------------------------------
+   /// \brief			ID to use to send events to supervisor
+   //--------------------------------------------------------------
+   const int m_pluginManagerEventId;
 };

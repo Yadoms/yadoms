@@ -6,6 +6,13 @@
 
 class CSupervisor : public CThreadBase, public CEventHandler
 {
+private:
+   // Event IDs
+   enum
+   {
+      kHardwarePluginManagerEvent = CEventHandler::kUserFirstId,
+   };
+
 public:
    CSupervisor(const IStartupOptions& startupOptions);
    virtual ~CSupervisor(void);

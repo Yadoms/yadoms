@@ -7,92 +7,13 @@
 
 #include "IHardwarePluginQualifier.h"
 #include "database/IHardwareEventLoggerRequester.h"
+#include "HardwarePluginIdentityForQualifier.h"
 
 //--------------------------------------------------------------
 /// \brief	this class is used to qualify a plugin
 //--------------------------------------------------------------
 class CHardwarePluginQualifier : public IHardwarePluginQualifier
 {
-private:
-   //--------------------------------------------------------------
-   /// \brief	Internal plugin identity
-   //--------------------------------------------------------------
-   class CPluginIdentityCompare;
-   class CPluginIdentity   // TODO à déplacer dans un autre fichier ?
-   {
-   public:
-      //--------------------------------------------------------------
-      /// \brief	Constructor
-      //--------------------------------------------------------------
-      CPluginIdentity(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation)
-         :m_name(pluginInformation->getName()), m_version(pluginInformation->getVersion()), m_releaseType(pluginInformation->getReleaseType())
-      {
-      }
-
-      //--------------------------------------------------------------
-      /// \brief	Constructor
-      //--------------------------------------------------------------
-      CPluginIdentity(const std::string& name, const std::string& version, IHardwarePluginInformation::EReleaseType releaseType)
-         :m_name(name), m_version(version), m_releaseType(releaseType)
-      {
-      }
-
-      //--------------------------------------------------------------
-      /// \brief	Destructor
-      //--------------------------------------------------------------
-      virtual ~CPluginIdentity()
-      {
-      }
-
-      //--------------------------------------------------------------
-      /// \brief	   Name getter
-      /// \return    Plugin name
-      //--------------------------------------------------------------
-      const std::string& getName() const
-      {
-         return m_name;
-      }
-
-      //--------------------------------------------------------------
-      /// \brief	   Version getter
-      /// \return    Plugin version
-      //--------------------------------------------------------------
-      const std::string& getVersion() const
-      {
-         return m_version;
-      }
-
-      //--------------------------------------------------------------
-      /// \brief	   Release type getter
-      /// \return    Plugin release type
-      //--------------------------------------------------------------
-      const IHardwarePluginInformation::EReleaseType getReleaseType() const
-      {
-         return m_releaseType;
-      }
-
-   private:
-      const std::string m_name;
-      const std::string m_version;
-      const IHardwarePluginInformation::EReleaseType m_releaseType;
-   };
-
-   //--------------------------------------------------------------
-   /// \brief	Compare operator (used in map)
-   //--------------------------------------------------------------
-   class CPluginIdentityCompare// TODO à déplacer dans un autre fichier ?
-   {
-   public:
-      bool operator() (const CPluginIdentity& lhs, const CPluginIdentity& rhs)
-      {
-         if (lhs.getName() != rhs.getName())
-            return lhs.getName() < rhs.getName();
-         if (lhs.getVersion() != rhs.getVersion())
-            return lhs.getVersion() < rhs.getVersion();
-         return lhs.getReleaseType() < rhs.getReleaseType();
-      }
-   };
-
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
