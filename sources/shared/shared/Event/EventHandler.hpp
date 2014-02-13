@@ -107,11 +107,11 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Get and pop the next event
    /// \template DataType  Type of the data in the event
-   /// \return     Event data
+   /// \return     const reference on Event data (caller have to copy data if it want to keep them)
    /// \throw      CBadConversionException if event data is not correct
    //--------------------------------------------------------------
    template<typename DataType>
-   DataType popEvent()
+   const DataType popEvent()
    {
       boost::mutex::scoped_lock lock(m_EventsQueueMutex);
       try

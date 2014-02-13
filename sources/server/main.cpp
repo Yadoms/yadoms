@@ -69,7 +69,6 @@ int main (int argc, char** argv)
          // Help was invoked, just print to console
          YADOMS_LOG(info) << e.what();
       }
-      BOOST_ASSERT_MSG(false, "Yadoms exited with error, see console for details");
    }
    catch(...)
    {

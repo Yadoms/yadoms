@@ -6,7 +6,9 @@
 #pragma once
 
 #include <shared/ThreadBase.h>
+#include <shared/Event/EventHandler.hpp>
 #include "HardwarePluginFactory.h"
+#include "HardwarePluginManagerEvent.h"
 #include "database/entities/Hardware.h"
 #include "IHardwarePluginQualifier.h"
 
@@ -21,9 +23,11 @@ public:
    /// \param [in]	plugin         the plugin used for this instance
    /// \param [in]   context        the database accessor
    /// \param [in]   qualifier      the plugin qualifier
+   /// \param [in]   supervisor     the supervisor event handler
+   /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
    //--------------------------------------------------------------
    CHardwarePluginInstance(const boost::shared_ptr<const CHardwarePluginFactory> plugin, const boost::shared_ptr<CHardware> context,
-      const boost::shared_ptr<IHardwarePluginQualifier> qualifier);
+      const boost::shared_ptr<IHardwarePluginQualifier> qualifier, CEventHandler& supervisor, int pluginManagerEventId);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -67,4 +71,14 @@ private:
    /// \brief			The plugin qualifier
    //--------------------------------------------------------------
    const boost::shared_ptr<IHardwarePluginQualifier> m_qualifier;
+
+   //--------------------------------------------------------------
+   /// \brief			The supervisor event handler
+   //--------------------------------------------------------------
+   CEventHandler& m_supervisor;
+
+   //--------------------------------------------------------------
+   /// \brief			ID to use to send events to supervisor
+   //--------------------------------------------------------------
+   const int m_pluginManagerEventId;
 };

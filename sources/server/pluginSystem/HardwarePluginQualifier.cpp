@@ -63,7 +63,8 @@ void CHardwarePluginQualifier::AddEventToDatabase(const boost::shared_ptr<const 
 
 bool CHardwarePluginQualifier::isSafe(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation)
 {
-   return getQualityLevel(pluginInformation) >= m_SafetyThreshold;
+   int quality = getQualityLevel(pluginInformation);
+   return quality == kNoEnoughData || quality >= m_SafetyThreshold;
 }
 
 int CHardwarePluginQualifier::getQualityLevel(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation)
@@ -134,6 +135,10 @@ int CHardwarePluginQualifier::computeQuality(const CPluginIdentity& identity) co
          }
       }
    }
+
+   // If too many crashes while the first 96 hours, return worst quality
+   if (crashsNb >= 20 && runningDuration < boost::posix_time::hours(96))
+      return 0;
 
    // If running time is less than 1 hour, data are not significant
    if (runningDuration < boost::posix_time::hours(1))

@@ -4,15 +4,26 @@
 #include "HardwarePluginQualifier.h"
 
 
-boost::shared_ptr<CHardwarePluginManager> CHardwarePluginManager::newHardwarePluginManager(const std::string & initialDir, boost::shared_ptr<IHardwareRequester> database, boost::shared_ptr<IHardwareEventLoggerRequester> eventLoggerDatabase)
+boost::shared_ptr<CHardwarePluginManager> CHardwarePluginManager::newHardwarePluginManager(
+   const std::string & initialDir,
+   boost::shared_ptr<IHardwareRequester> database,
+   boost::shared_ptr<IHardwareEventLoggerRequester> eventLoggerDatabase,
+   CEventHandler& supervisor,
+   int pluginManagerEventId)
 {
-   boost::shared_ptr<CHardwarePluginManager> manager (new CHardwarePluginManager(initialDir, database, eventLoggerDatabase));
+   boost::shared_ptr<CHardwarePluginManager> manager (new CHardwarePluginManager(initialDir, database, eventLoggerDatabase, supervisor, pluginManagerEventId));
    manager->init();
    return manager;
 }
 
-CHardwarePluginManager::CHardwarePluginManager(const std::string& initialDir, boost::shared_ptr<IHardwareRequester> database, boost::shared_ptr<IHardwareEventLoggerRequester> eventLoggerDatabase)
-   :m_database(database), m_pluginPath(initialDir), m_qualifier(new CHardwarePluginQualifier(eventLoggerDatabase))
+CHardwarePluginManager::CHardwarePluginManager(
+   const std::string& initialDir,
+   boost::shared_ptr<IHardwareRequester> database,
+   boost::shared_ptr<IHardwareEventLoggerRequester> eventLoggerDatabase,
+   CEventHandler& supervisor,
+   int pluginManagerEventId)
+   :m_database(database), m_pluginPath(initialDir), m_qualifier(new CHardwarePluginQualifier(eventLoggerDatabase)),
+   m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId)
 {
    BOOST_ASSERT(m_database);
 }
@@ -279,6 +290,46 @@ void CHardwarePluginManager::setInstanceConfiguration(int id, const std::string&
    m_runningInstances[id]->updateConfiguration(newConfiguration);
 }
 
+void CHardwarePluginManager::signalEvent(const CHardwarePluginManagerEvent& event)
+{
+   switch(event.getSubEventId())
+   {
+   case CHardwarePluginManagerEvent::kPluginInstanceAbnormalStopped:
+      {
+         // The thread of an instance has stopped in a non-conventional way (probably crashed)
+
+         // First perform the full stop
+         stopInstance(event.getInstanceId());
+
+         // Now, evaluate if it is still safe
+         if (m_qualifier->isSafe(event.getPluginInformation()))
+         {
+            // Don't restart if event occurs when instance was stopping
+            if (!event.getStopping())
+            {
+               // Still safe, try to restart it
+               startInstance(event.getInstanceId());
+            }
+         }
+         else
+         {
+            // Not safe anymore. Disable it (user will just be able to start it manually)
+            // Not that this won't stop other instances of this plugin
+            YADOMS_LOG(warning) << " plugin " << event.getPluginInformation()->getName() << " was evaluated as not safe and disabled.";
+            m_database->disableAllPluginInstance(event.getPluginInformation()->getName());
+         }
+
+         break;
+      }
+   default:
+      {
+         YADOMS_LOG(error) << "Unknown message id";
+         BOOST_ASSERT(false);
+         break;
+      }
+   }
+}
+
 void CHardwarePluginManager::onPluginDirectoryChanges(const boost::asio::dir_monitor_event& ev)
 {
    YADOMS_LOG(debug) << "CHardwarePluginManager::onPluginDirectoryChanges" << ev.type;
@@ -307,7 +358,7 @@ void CHardwarePluginManager::startInstance(int id)
 
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
-      boost::shared_ptr<CHardwarePluginInstance> pluginInstance(new CHardwarePluginInstance(plugin, databasePluginInstance, m_qualifier));
+      boost::shared_ptr<CHardwarePluginInstance> pluginInstance(new CHardwarePluginInstance(plugin, databasePluginInstance, m_qualifier, m_supervisor, m_pluginManagerEventId));
       m_runningInstances[databasePluginInstance->getId()] = pluginInstance;
    }
    catch (CInvalidPluginException& e)

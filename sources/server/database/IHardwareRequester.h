@@ -51,6 +51,12 @@ public:
    virtual void enableInstance(int hardwareId, bool enable) = 0;
 
    //--------------------------------------------------------------
+   /// \brief           Disable all instance of a plugin
+   /// \param [in] pluginName    plugin to disable
+   //--------------------------------------------------------------
+   virtual void disableAllPluginInstance(const std::string& pluginName) = 0;
+
+   //--------------------------------------------------------------
    /// \brief       Destructor
    //--------------------------------------------------------------
    virtual ~IHardwareRequester()

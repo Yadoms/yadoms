@@ -8,8 +8,10 @@
 CHardwarePluginInstance::CHardwarePluginInstance(
    const boost::shared_ptr<const CHardwarePluginFactory> plugin,
    const boost::shared_ptr<CHardware> context,
-   const boost::shared_ptr<IHardwarePluginQualifier> qualifier)
-    : CThreadBase(context->getName()), m_pPlugin(plugin), m_context(context), m_qualifier(qualifier)
+   const boost::shared_ptr<IHardwarePluginQualifier> qualifier,
+   CEventHandler& supervisor,
+   int pluginManagerEventId)
+    : CThreadBase(context->getName()), m_pPlugin(plugin), m_context(context), m_qualifier(qualifier), m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId)
 {
 	BOOST_ASSERT(m_pPlugin);
    m_pPluginInstance.reset(m_pPlugin->construct());
@@ -26,51 +28,46 @@ void CHardwarePluginInstance::doWork()
    BOOST_ASSERT(m_pPluginInstance);
    YADOMS_LOG_CONFIGURE(getName());
 
-   // Loop to restart plugin when crashed
-   do
+   try
    {
-      try
-      {
-         // Execute plugin code
-         m_pPluginInstance->doWork(m_context->getConfiguration());
+      // Execute plugin code
+      m_pPluginInstance->doWork(m_context->getConfiguration());
 
-         if (getStatus() == kStopping)
-         {
-            // Normal stop
-            return;
-         }
-         else
-         {
-            // Plugin has stopped without stop requested
-            YADOMS_LOG(error) << getName() << " has stopped without stop requested.";
-            m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin stopped itself");
-         }
-      }
-      catch (boost::thread_interrupted&)
+      if (getStatus() == kStopping)
       {
-         // End-of-thread exception was not catch by plugin,
-         // it's a developer's error, we have to report it
-         YADOMS_LOG(error) << getName() << " didn't catch boost::thread_interrupted.";
-         m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin didn't catch boost::thread_interrupted");
+         // Normal stop
+         return;
       }
-      catch (std::exception& e)
+      else
       {
-         // Plugin crashed
-         YADOMS_LOG(error) << getName() << " crashed in doWork with exception : " << e.what();
-         m_qualifier->signalCrash(m_pPlugin->getInformation(), std::string("Plugin crashed in doWork with exception : ") + e.what());
-      }
-      catch (...)
-      {
-         // Plugin crashed
-         YADOMS_LOG(error) << getName() << " crashed in doWork with unknown exception.";
-         m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin crashed in doWork with unknown exception");
+         // Plugin has stopped without stop requested
+         YADOMS_LOG(error) << getName() << " has stopped itself.";
+         m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin stopped itself");
       }
    }
-   while (m_qualifier->isSafe(m_pPlugin->getInformation())); // Loop if plugin still considered as safe
+   catch (boost::thread_interrupted&)
+   {
+      // End-of-thread exception was not catch by plugin,
+      // it's a developer's error, we have to report it
+      YADOMS_LOG(error) << getName() << " didn't catch boost::thread_interrupted.";
+      m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin didn't catch boost::thread_interrupted");
+   }
+   catch (std::exception& e)
+   {
+      // Plugin crashed
+      YADOMS_LOG(error) << getName() << " crashed in doWork with exception : " << e.what();
+      m_qualifier->signalCrash(m_pPlugin->getInformation(), std::string("Plugin crashed in doWork with exception : ") + e.what());
+   }
+   catch (...)
+   {
+      // Plugin crashed
+      YADOMS_LOG(error) << getName() << " crashed in doWork with unknown exception.";
+      m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin crashed in doWork with unknown exception");
+   }
 
-   YADOMS_LOG(error) << getName() << " plugin(" << m_pPlugin->getInformation()->getName() << ") was evaluated as not safe and disabled.";
-   //TODO : c'est pas le tout de l'dire, mais faut l'faire !
-   // TODO : attention de désactiver le plugin mais ne pas arrêter les instances qui tournent encore
+   // Signal the abnormal stop
+   CHardwarePluginManagerEvent event(CHardwarePluginManagerEvent::kPluginInstanceAbnormalStopped, m_context->getId(), m_pPlugin->getInformation(), getStatus() == kStopping);
+   m_supervisor.sendEvent<CHardwarePluginManagerEvent>(m_pluginManagerEventId, event);
 }
 
 void CHardwarePluginInstance::updateConfiguration(const std::string& newConfiguration) const
