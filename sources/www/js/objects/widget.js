@@ -31,16 +31,16 @@ function Widget(id, idPage, name, sizeX, sizeY, positionX, positionY, configurat
    this.positionY = positionY;
    this.configuration = configuration;
 
-   this.viewModel;
+   this.viewModel = null;
 
    //gridster item
-   this.$gridsterWidget;
+   this.$gridsterWidget = null;
 
    //div where is embed the widget
-   this.$div;
+   this.$div = null;
 
    //package information of the current widget type (package.json file)
-   this.package;
+   this.package = null;
 }
 
 /**
@@ -64,8 +64,8 @@ Widget.prototype.toJSON = function () {
  * Synchronize data from grister object and properties of the class
  */
 Widget.prototype.updateDataFromGridster = function() {
-   this.sizeX = this.$gridsterWidget.data('coords').grid.size_x;
-   this.sizeY = this.$gridsterWidget.data('coords').grid.size_y;
-   this.positionX = this.$gridsterWidget.data('col');
-   this.positionY = this.$gridsterWidget.data('row');
-}
+   this.sizeX = this.$gridsterWidget.data("coords").grid.size_x;
+   this.sizeY = this.$gridsterWidget.data("coords").grid.size_y;
+   this.positionX = this.$gridsterWidget.data("col");
+   this.positionY = this.$gridsterWidget.data("row");
+};

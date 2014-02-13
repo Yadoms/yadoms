@@ -1,7 +1,7 @@
 /**
- * global viewModel object used to get the viewModel of each widget
+ * global viewModel object used to get the viewModelCtor of each kind of widget
  */
-var widgetViewModel = null;
+var widgetViewModelCtor = null;
 
 /**
  * Return a Widget object from the gridster DOM object
@@ -146,136 +146,207 @@ function requestWidgetsDone()
  */
 function addWidgetToIHM(widget)
 {
-   pageArray[widget.idPage].widgets[widget.id] = widget;
-   //for each widget we add view, viewModel and configuration of the widget
-   $.get("widgets/" + widget.name + "/view.html")
-      .done(getWidgetViewDone(pageArray[widget.idPage], widget))
-      .fail(function(widget) { return function() {notifyError("Unable to get view of the widget " + widget.name) }}(widget));
+   if (widgetPackages[widget.name] === undefined)
+      widgetPackages[widget.name] = new WidgetPackage();
+
+   //if we havn't yet downloaded the view we ask for lazy load
+   if (!widgetPackages[widget.name].viewHasBeenDownloaded)
+   {
+      //there is no need to download again it will do it
+      widgetPackages[widget.name].viewHasBeenDownloaded = true;
+      $.get("widgets/" + widget.name + "/view.html")
+         .done(getWidgetViewDone(widget))
+         .fail(function(widget) { return function() {notifyError("Unable to get view of the widget " + widget.name) }}(widget));
+   }
+   else
+   {
+      constructViewModel(widget);
+   }
 }
 
 /**
  * Callback of the request for the view of the widget from the web server
- * @param page page concerned
  * @param widget widget concerned
  * @returns {Function}
  */
-function getWidgetViewDone(page, widget)
+function getWidgetViewDone(widget)
 {
    return function( data ) {
       $("div#templates").append(data);
+      //we indicate that the view for this king of widget has been lazy loaded
+      //widgetPackages[widget.name].viewHasBeenDownloaded = true;
+      constructViewModel(widget)
+   };
+}
+
+/**
+ * Check if the viewModelConstructor for this kind of widget has been already downloaded if not it lazy load it
+ * @param widget widget concerned
+ */
+function constructViewModel(widget)
+{
+   //if we haven't yet downloaded the ViewModelConstructor we ask for lazy load
+   if ((widgetPackages[widget.name] === undefined) || (widgetPackages[widget.name].viewModelCtor == null))
+   {
       //we get script to execute for this widget
-      //$.getScript( "widgets/" + widget.name + "/viewModel.js", getWidgetViewModelDone(page, widget));
-      $.getScript("widgets/" + widget.name + "/viewModel.js")
-         .done(getWidgetViewModelDone(page, widget))
-         .fail(function(widget) { return function() {notifyError("Unable to get viewModel of the widget " + pageArray[pageId].widgets[widgetId].name)}}(widget));
-   };
-}
-
-/**
- * Create a new graphic Widget and add it to the corresponding gridster
- * @param page page concerned
- * @param widget widget to add
- * @returns {gridster}
- */
-function createWidget(page, widget) {
-    assert(page !== undefined, "createWidget function invalid page argument");
-    assert(widget !== undefined, "createWidget function widget must be defined");
-
-    return page.gridster.add_widget(
-        "<li class=\"widget\" id=\"gridsterWidget-" + page.id + "-" + widget.id +"\">" +
-            "<div class=\"widgetCustomizationToolbar customization-item hidden\">" +
-            "<div class=\"btn-group btn-group-sm\">" +
-            "<button type=\"button\" class=\"btn btn-default\" title=\"Configure\"><i class=\"fa fa-cog\"></i></button>" +
-            "<button type=\"button\" class=\"btn btn-default\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
-            "</div>" +
-            "</div>" +
-            "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + widget.name + "-template', data: data }\"/>" +
-            "</li>", widget.sizeX, widget.sizeY, widget.positionX, widget.positionY);
-}
-
-/**
- * Callback for the request of the viewModel of a widget from the web server
- * @param page page concerned
- * @param widget widget concerned
- * @returns {Function}
- */
-function getWidgetViewModelDone(page, widget)
-{
-   //viewModel.js has been executed
-   //noinspection JSUnusedLocalSymbols
-   return function(data, textStatus, jqxhr) {
-      widget.viewModel = widgetViewModel;
-      //we clear the widgetViewModel for the next viewModel
-      widgetViewModel = null;
-      var widgetDivId = "widget-" + widget.id;
-      widget.$gridsterWidget = createWidget(page, widget);
-      widget.$div = $("div#" + widgetDivId);
-
-      //we apply binding
-      ko.applyBindings(widget.viewModel, widget.$div[0]);
-
-      $.getJSON( "widgets/" + widget.name + "/package.json")
-         .done(getWidgetPackageDone(page, widget))
-         .fail(function(widget) { return function() {notifyError("Unable to get the configuration of the widget " + widget.name)}}(widget));
-   };
-}
-
-/**
- * Callback of the request Package information of a widget
- * @param page page concerned
- * @param widget widget concerned
- * @returns {Function}
- */
-function getWidgetPackageDone(page, widget)
-{
-   return function( data ) {
-      //we set the min and max size if they are defined
-      assert(data !== undefined, "Configuration of widget must be defined");
-
-      widget.package = data;
-
-      if (data.dimensions.min !== undefined)
-      {
-         //min dimension is set
-         assert((data.dimensions.min.x !== undefined) && (data.dimensions.min.y !== undefined), "You can't set only one axe of the widget minimum dimension");
-         widget.$gridsterWidget.data('coords').grid.min_size_x = data.dimensions.min.x;
-         widget.$gridsterWidget.data('coords').grid.min_size_y = data.dimensions.min.y;
-      }
-
-      if (data.dimensions.max !== undefined)
-      {
-         //min dimension is set
-         assert((data.dimensions.max.x !== undefined) && (data.dimensions.max.y !== undefined), "You can't set only one axe of the widget maximum dimension");
-         page.gridster.set_widget_max_size(widget.$gridsterWidget, [data.dimensions.max.x, data.dimensions.max.y])
-      }
-
-      //we initialize the widget
+      widgetViewModelCtor = null;
       try
       {
-         if (widget.viewModel.initialize !== undefined)
-            widget.viewModel.initialize(page, widget);
-
-         if (widget.viewModel.resized !== undefined)
-            widget.viewModel.resized();
+         $.getScript("widgets/" + widget.name + "/viewModel.js")
+            .done(getWidgetViewModelConstructorDone(widget))
+            .fail(function(widgetName) { return function() {debugger;notifyError("Unable to get viewModel of the widget " + widgetName)}}(widget.name));
       }
       catch (e)
       {
          notifyWarning("The widget " + widget.name + " has generated an exception");
          console.warn(e);
       }
+   }
+   else
+   {
+      //we construct the viewModel of the current widget
+      //noinspection JSPotentiallyInvalidConstructorUsage
+      widget.viewModel = new widgetPackages[widget.name].viewModelCtor();
+      //we ask to add package information to the current widget
+      addPackageInformation(widget);
+   }
+}
 
-      $("li.widget button").tooltip({
-         animated: 'fade',
-         placement: 'bottom'
-      });
-
-      //we check if we are in customization we must apply customization on the new item
-      if (customization)
-      {
-         $(".customization-item").removeClass("hidden");
-         $("li.widget").addClass("liWidgetCustomization");
-      }
+/**
+ * Callback for the request of the viewModel of a widget from the web server
+ * @param widget widget concerned
+ * @returns {Function}
+ */
+function getWidgetViewModelConstructorDone(widget) {
+   //viewModel.js has been executed
+   //noinspection JSUnusedLocalSymbols
+   return function(data, textStatus, jqxhr) {
+      //we save the ctor in the map
+      widgetPackages[widget.name].viewModelCtor = widgetViewModelCtor;
+      //we use to construct the viewModel of the current widget
+      //noinspection JSPotentiallyInvalidConstructorUsage
+      widget.viewModel = new widgetPackages[widget.name].viewModelCtor();
+      //we ask to add package information to the current widget
+      addPackageInformation(widget);
    };
+}
+
+function addPackageInformation(widget) {
+   //if we haven't yet downloaded the package.json file we ask for lazy load
+   if ((widgetPackages[widget.name] === undefined) || (widgetPackages[widget.name].packageInformation == null))
+   {
+      $.getJSON( "widgets/" + widget.name + "/package.json")
+         .done(getWidgetPackageDone(widget))
+         .fail(function(widgetName) { return function() {notifyError("Unable to get the configuration of the widget " + widgetName)}}(widget.name));
+   }
+   else
+   {
+      //we apply it to the current widget
+      widget.package = widgetPackages[widget.name].packageInformation;
+      finalizeWidgetCreation(widget);
+   }
+}
+
+/**
+ * Callback of the request Package information of a widget
+  * @param widget widget concerned
+ * @returns {Function}
+ */
+function getWidgetPackageDone(widget)
+{
+   return function( data ) {
+      //we set the min and max size if they are defined
+      assert(data !== undefined, "Configuration of widget must be defined");
+
+      //we save the package information in the map
+      widgetPackages[widget.name].packageInformation = data;
+
+      //we apply it to the current widget
+      widget.package = widgetPackages[widget.name].packageInformation;
+
+      finalizeWidgetCreation(widget);
+   };
+}
+
+/**
+ * Create a new graphic Widget and add it to the corresponding gridster
+ * @param widget widget to add
+ * @returns {gridster}
+ */
+function createGridsterWidget(widget) {
+   assert(widget !== undefined, "createWidget function widget must be defined");
+
+   return pageArray[widget.idPage].gridster.add_widget(
+      "<li class=\"widget\" id=\"gridsterWidget-" + widget.idPage + "-" + widget.id +"\">" +
+         "<div class=\"widgetCustomizationToolbar customization-item hidden\">" +
+         "<div class=\"btn-group btn-group-sm\">" +
+         "<button type=\"button\" class=\"btn btn-default\" title=\"Configure\"><i class=\"fa fa-cog\"></i></button>" +
+         "<button type=\"button\" class=\"btn btn-default\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
+         "</div>" +
+         "</div>" +
+         "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + widget.name + "-template', data: data }\"/>" +
+         "</li>", widget.sizeX, widget.sizeY, widget.positionX, widget.positionY);
+}
+
+/**
+ * This function end the widget creation process
+ * @param widget
+ */
+function finalizeWidgetCreation(widget) {
+
+   pageArray[widget.idPage].widgets[widget.id] = widget;
+
+   //last configuration of properties
+   var widgetDivId = "widget-" + widget.id;
+   widget.$gridsterWidget = createGridsterWidget(widget);
+   widget.$div = $("div#" + widgetDivId);
+
+   //we apply binding to the view
+   ko.applyBindings(widget.viewModel, widget.$div[0]);
+
+   //we add minimum dimension constraint to the gridster widget
+   if (widget.package.dimensions.min !== undefined)
+   {
+      //min dimension is set
+      assert((widget.package.dimensions.min.x !== undefined) && (widget.package.dimensions.min.y !== undefined), "You can't set only one axe of the widget minimum dimension");
+      widget.$gridsterWidget.data('coords').grid.min_size_x = widget.package.dimensions.min.x;
+      widget.$gridsterWidget.data('coords').grid.min_size_y = widget.package.dimensions.min.y;
+   }
+
+   if (widget.package.dimensions.max !== undefined)
+   {
+      //min dimension is set
+      assert((widget.package.dimensions.max.x !== undefined) && (widget.package.dimensions.max.y !== undefined), "You can't set only one axe of the widget maximum dimension");
+      pageArray[widget.idPage] .gridster.set_widget_max_size(widget.$gridsterWidget, [widget.package.dimensions.max.x, widget.package.dimensions.max.y]);
+   }
+
+   //we initialize the widget
+   try
+   {
+      if (widget.viewModel.initialize !== undefined)
+         widget.viewModel.initialize(widget);
+
+      if (widget.viewModel.resized !== undefined)
+         widget.viewModel.resized();
+   }
+   catch (e)
+   {
+      notifyWarning("The widget " + widget.name + " has generated an exception");
+      console.warn(e);
+   }
+
+   //we add tooltip to customize buttons
+   $("li.widget button").tooltip({
+      animated: 'fade',
+      placement: 'bottom'
+   });
+
+   //we check if we are in customization we must apply customization on the new item
+   if (customization)
+   {
+      $(".customization-item").removeClass("hidden");
+      $("li.widget").addClass("liWidgetCustomization");
+   }
 }
 
 /**
