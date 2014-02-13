@@ -89,6 +89,7 @@ body {
     border-width: 1px;
     text-align: center;
 }
+
 .liWidgetCustomization:after{
     content: " ";
     position: absolute;
@@ -137,3 +138,10 @@ body {
     width: 50px;
 }
 
+.pageCustomizationToolbar {
+   position: absolute;
+   right: 0px;
+   top: 0px;
+   margin-top: 2px;
+   margin-right: 2px;
+}

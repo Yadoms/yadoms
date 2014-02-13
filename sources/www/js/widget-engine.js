@@ -4,6 +4,14 @@
 var widgetViewModelCtor = null;
 
 /**
+ * Array of widget during loading
+ * @type {Array}
+ */
+var widgetArrayForLoading = [];
+
+var loadWidgetsNotification = null;
+
+/**
  * Return a Widget object from the gridster DOM object
  * @param $element gridster DOM object concerned
  * @returns {Widget}
@@ -21,6 +29,8 @@ function getWidgetFromGridsterElement($element)
  */
 function requestPages()
 {
+   console.timeStamp("start");
+   loadWidgetsNotification = noty({text: "Loading widgets ...", layout:'bottomRight', type: "information"});
    //we get pages
    $.getJSON("/rest/page")
       .done(requestPageDone())
@@ -56,7 +66,16 @@ function requestPageDone()
          //page creation
          $("div#pageMenu").find("ul").append(
              "<li class=\"tabPagePills\" page-id=\"" + value.id + "\">" +
-                 "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" + value.name + "</a>" +
+                 "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" +
+                     value.name +
+                     "<div class=\"pageCustomizationToolbar btn-group btn-group-sm customization-item pull-right hidden\">" +
+                        "<button type=\"button\" class=\"btn btn-default\" title=\"Move to left\"><i class=\"glyphicon glyphicon-arrow-left\"></i></button>" +
+                        "<button type=\"button\" class=\"btn btn-default\" title=\"Move to right\"><i class=\"glyphicon glyphicon-arrow-right\"></i></button>" +
+                        "<button type=\"button\" class=\"btn btn-default\" title=\"Rename\"><i class=\"fa fa-pencil\"></i></button>" +
+                        "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
+                     "</div>" +
+                 "</a>" +
+
              "</li>");
 
          //gridster creation
@@ -99,11 +118,6 @@ function requestPageDone()
          }).data('gridster');
 
          pageArray[currentPage.id] = currentPage;
-
-         //we request widgets for this page
-         $.getJSON("/rest/page/" + currentPage.id + "/widget")
-           .done(requestWidgetsDone())
-           .fail(function(page) { return function() {notifyError("Unable to get Widgets for page " + page.name)}}(currentPage));
       });
 
       //we activate first page on the pills
@@ -117,6 +131,11 @@ function requestPageDone()
 
       //we deactivate the customization
       enableGridsterCustomization(false);
+
+      //we request widgets for this page
+      $.getJSON("/rest/widget")
+         .done(requestWidgetsDone())
+         .fail(function() {notifyError("Unable to get Widgets")});
     };
 }
 
@@ -127,16 +146,127 @@ function requestPageDone()
 function requestWidgetsDone()
 {
    return function(data) {
+      console.timeStamp("Widget getted");
       //we parse the json answer
       if (data.result != "true")
       {
          notifyError("Error during requesting widgets");
          return;
       }
+
+      //we list all kind of widget we have
+      var widgetTypes = new Array();
       $.each(data.data.widget, function(index, value) {
          var w = new Widget(value.id, value.idPage, value.name, value.sizeX, value.sizeY, value.positionX, value.positionY, value.configuration);
-         addWidgetToIHM(w);
+         widgetArrayForLoading.push(w);
+         if (widgetTypes.indexOf(value.name) == -1)
+            widgetTypes.push(value.name);
+         //addWidgetToIHM(w);
       });
+
+      //we've got the list of widget type to ask
+      $.each(widgetTypes, function(index, value) {
+         askForWidgetPackage(value);
+      });
+   };
+}
+
+function askForWidgetPackage(packageName)
+{
+   widgetPackages[packageName] = new WidgetPackage();
+   //we ask for the view
+   $.get("widgets/" + packageName + "/view.html")
+      .done(getWidgetViewDone(packageName))
+      .fail(function(packageName) { return function() {notifyError("Unable to get view of the widget package " + packageName) }}(packageName));
+}
+
+/**
+ * Callback of the request for the view of the widget from the web server
+ * @param packageName package concerned
+ * @returns {Function}
+ */
+function getWidgetViewDone(packageName)
+{
+   return function( data ) {
+      $("div#templates").append(data);
+      //we indicate that the view for this king of widget has been lazy loaded
+      widgetPackages[packageName].viewHasBeenDownloaded = true;
+      //we get script to execute for this widget
+      askViewModelCtor(packageName);
+   };
+}
+
+function askViewModelCtor(packageName)
+{
+   widgetViewModelCtor = null;
+   try
+   {
+      $.getScript("widgets/" + packageName + "/viewModel.js")
+         .done(getWidgetViewModelConstructorDone(packageName))
+         .fail(function(packageName) { return function() {debugger;notifyError("Unable to get viewModel of the widget package " + packageName)}}(packageName));
+   }
+   catch (e)
+   {
+      notifyWarning("The widget " + packageName + " has generated an exception");
+      console.warn(e);
+   }
+}
+
+/**
+ * Callback for the request of the viewModel of a widget from the web server
+ * @param packageName package concerned
+ * @returns {Function}
+ */
+function getWidgetViewModelConstructorDone(packageName) {
+   //viewModel.js has been executed
+   //noinspection JSUnusedLocalSymbols
+   return function(data, textStatus, jqxhr) {
+      //we save the ctor in the map
+      widgetPackages[packageName].viewModelCtor = widgetViewModelCtor;
+
+      //we ask to add package information to the current widget package
+      askForPackageInformation(packageName);
+   };
+}
+
+function askForPackageInformation(packageName)
+{
+   $.getJSON( "widgets/" + packageName + "/package.json")
+      .done(getWidgetPackageInformationDone(packageName))
+      .fail(function(packageName) { return function() {notifyError("Unable to get the configuration of the widget package " + packageName)}}(packageName));
+}
+
+/**
+ * Callback of the request Package information of a widget
+ * @param packageName package concerned
+ * @returns {Function}
+ */
+function getWidgetPackageInformationDone(packageName)
+{
+   return function( data ) {
+      //we set the min and max size if they are defined
+      assert(data !== undefined, "Configuration of widget must be defined");
+
+      //we save the package information in the map
+      widgetPackages[packageName].packageInformation = data;
+
+      //all data for this package have been downloaded
+      //we look for all widgets of this kind
+      i = widgetArrayForLoading.length - 1;
+      while (i >= 0) {
+         var widget = widgetArrayForLoading[i];
+         if (widget.name == packageName) {
+            widgetArrayForLoading.splice(i, 1);
+            addWidgetToIHM(widget);
+         }
+         i--;
+      }
+      //we have finished to load every widgets
+      if ((widgetArrayForLoading.length == 0) && (loadWidgetsNotification != null)) {
+         loadWidgetsNotification.close();
+         loadWidgetsNotification = null;
+      }
+
    };
 }
 
@@ -144,128 +274,41 @@ function requestWidgetsDone()
  * Graphically add the widget to the correct tab
  * @param widget widget to add
  */
-function addWidgetToIHM(widget)
-{
+function addWidgetToIHM(widget) {
+
    if (widgetPackages[widget.name] === undefined)
       widgetPackages[widget.name] = new WidgetPackage();
 
-   //if we havn't yet downloaded the view we ask for lazy load
-   if (!widgetPackages[widget.name].viewHasBeenDownloaded)
-   {
-      //there is no need to download again it will do it
-      widgetPackages[widget.name].viewHasBeenDownloaded = true;
+   //if we haven't yet downloaded the view we ask for lazy load
+   if (!widgetPackages[widget.name].viewHasBeenDownloaded) {
+      //we indicate that we have this widget to load
+      widgetArrayForLoading.push(widget);
       $.get("widgets/" + widget.name + "/view.html")
-         .done(getWidgetViewDone(widget))
+         .done(getWidgetViewDone(widget.name))
          .fail(function(widget) { return function() {notifyError("Unable to get view of the widget " + widget.name) }}(widget));
    }
-   else
-   {
-      constructViewModel(widget);
-   }
-}
-
-/**
- * Callback of the request for the view of the widget from the web server
- * @param widget widget concerned
- * @returns {Function}
- */
-function getWidgetViewDone(widget)
-{
-   return function( data ) {
-      $("div#templates").append(data);
-      //we indicate that the view for this king of widget has been lazy loaded
-      //widgetPackages[widget.name].viewHasBeenDownloaded = true;
-      constructViewModel(widget)
-   };
-}
-
-/**
- * Check if the viewModelConstructor for this kind of widget has been already downloaded if not it lazy load it
- * @param widget widget concerned
- */
-function constructViewModel(widget)
-{
-   //if we haven't yet downloaded the ViewModelConstructor we ask for lazy load
-   if ((widgetPackages[widget.name] === undefined) || (widgetPackages[widget.name].viewModelCtor == null))
-   {
-      //we get script to execute for this widget
-      widgetViewModelCtor = null;
-      try
-      {
-         $.getScript("widgets/" + widget.name + "/viewModel.js")
-            .done(getWidgetViewModelConstructorDone(widget))
-            .fail(function(widgetName) { return function() {debugger;notifyError("Unable to get viewModel of the widget " + widgetName)}}(widget.name));
+   else {
+      //if we haven't yet downloaded the viewModelCtor we ask for lazy load
+      if ((widgetPackages[widget.name] === undefined) || (widgetPackages[widget.name].viewModelCtor == null)) {
+         //we indicate that we have this widget to load
+         widgetArrayForLoading.push(widget);
+         askViewModelCtor(widget.name);
       }
-      catch (e)
-      {
-         notifyWarning("The widget " + widget.name + " has generated an exception");
-         console.warn(e);
+      else {
+         //if we haven't yet downloaded the package.json file we ask for lazy load
+         if ((widgetPackages[widget.name] === undefined) || (widgetPackages[widget.name].packageInformation == null)) {
+            //we indicate that we have this widget to load
+            widgetArrayForLoading.push(widget);
+            askForPackageInformation(widget.name);
+         }
+         else
+         {
+            //we have all information about the package we can create the widget
+            finalizeWidgetCreation(widget);
+         }
       }
+
    }
-   else
-   {
-      //we construct the viewModel of the current widget
-      //noinspection JSPotentiallyInvalidConstructorUsage
-      widget.viewModel = new widgetPackages[widget.name].viewModelCtor();
-      //we ask to add package information to the current widget
-      addPackageInformation(widget);
-   }
-}
-
-/**
- * Callback for the request of the viewModel of a widget from the web server
- * @param widget widget concerned
- * @returns {Function}
- */
-function getWidgetViewModelConstructorDone(widget) {
-   //viewModel.js has been executed
-   //noinspection JSUnusedLocalSymbols
-   return function(data, textStatus, jqxhr) {
-      //we save the ctor in the map
-      widgetPackages[widget.name].viewModelCtor = widgetViewModelCtor;
-      //we use to construct the viewModel of the current widget
-      //noinspection JSPotentiallyInvalidConstructorUsage
-      widget.viewModel = new widgetPackages[widget.name].viewModelCtor();
-      //we ask to add package information to the current widget
-      addPackageInformation(widget);
-   };
-}
-
-function addPackageInformation(widget) {
-   //if we haven't yet downloaded the package.json file we ask for lazy load
-   if ((widgetPackages[widget.name] === undefined) || (widgetPackages[widget.name].packageInformation == null))
-   {
-      $.getJSON( "widgets/" + widget.name + "/package.json")
-         .done(getWidgetPackageDone(widget))
-         .fail(function(widgetName) { return function() {notifyError("Unable to get the configuration of the widget " + widgetName)}}(widget.name));
-   }
-   else
-   {
-      //we apply it to the current widget
-      widget.package = widgetPackages[widget.name].packageInformation;
-      finalizeWidgetCreation(widget);
-   }
-}
-
-/**
- * Callback of the request Package information of a widget
-  * @param widget widget concerned
- * @returns {Function}
- */
-function getWidgetPackageDone(widget)
-{
-   return function( data ) {
-      //we set the min and max size if they are defined
-      assert(data !== undefined, "Configuration of widget must be defined");
-
-      //we save the package information in the map
-      widgetPackages[widget.name].packageInformation = data;
-
-      //we apply it to the current widget
-      widget.package = widgetPackages[widget.name].packageInformation;
-
-      finalizeWidgetCreation(widget);
-   };
 }
 
 /**
@@ -279,10 +322,10 @@ function createGridsterWidget(widget) {
    return pageArray[widget.idPage].gridster.add_widget(
       "<li class=\"widget\" id=\"gridsterWidget-" + widget.idPage + "-" + widget.id +"\">" +
          "<div class=\"widgetCustomizationToolbar customization-item hidden\">" +
-         "<div class=\"btn-group btn-group-sm\">" +
-         "<button type=\"button\" class=\"btn btn-default\" title=\"Configure\"><i class=\"fa fa-cog\"></i></button>" +
-         "<button type=\"button\" class=\"btn btn-default\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
-         "</div>" +
+            "<div class=\"btn-group btn-group-sm\">" +
+               "<button type=\"button\" class=\"btn btn-default\" title=\"Configure\"><i class=\"fa fa-cog\"></i></button>" +
+               "<button type=\"button\" class=\"btn btn-default\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
+            "</div>" +
          "</div>" +
          "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + widget.name + "-template', data: data }\"/>" +
          "</li>", widget.sizeX, widget.sizeY, widget.positionX, widget.positionY);
@@ -293,6 +336,11 @@ function createGridsterWidget(widget) {
  * @param widget
  */
 function finalizeWidgetCreation(widget) {
+
+   //we use to construct the viewModel of the current widget
+   //noinspection JSPotentiallyInvalidConstructorUsage
+   widget.viewModel = new widgetPackages[widget.name].viewModelCtor();
+   widget.package = widgetPackages[widget.name].packageInformation;
 
    pageArray[widget.idPage].widgets[widget.id] = widget;
 
@@ -336,7 +384,7 @@ function finalizeWidgetCreation(widget) {
    }
 
    //we add tooltip to customize buttons
-   $("li.widget button").tooltip({
+   $("li.widget button, li.tabPagePills button").tooltip({
       animated: 'fade',
       placement: 'bottom'
    });
@@ -347,6 +395,15 @@ function finalizeWidgetCreation(widget) {
       $(".customization-item").removeClass("hidden");
       $("li.widget").addClass("liWidgetCustomization");
    }
+
+   $(".delete-page").click(function(e) {
+      e.stopPropagation();
+   });
+
+   //we prevent from click on widget to be propagated on the rest of the window
+   $(".widget").click(function(e) {
+      e.stopPropagation();
+   });
 }
 
 /**

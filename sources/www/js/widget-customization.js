@@ -68,18 +68,10 @@ $("a#customizeButton").click(function() {
 });
 
 /**
- * Callback of the click on the exit customize button
- */
-$("a#btn-exit-customization").click(function() {
-    exitCustomization();
-});
-
-/**
  * Callback of the click on the background to stop customization
  */
 $("div#tabContainer").click(function() {
-   //TODO : ne fonctionne pas pour l'instant il faut pouvoir quitter la customization en cliquant sur le fond et non un item
-   //exitCustomization();
+   exitCustomization();
 });
 
 /**
@@ -118,7 +110,7 @@ function exitCustomization() {
                console.error(data.message);
                return;
              }
-             notifySuccess("Customization successfully saved");
+             //notifySuccess("Customization successfully saved");
           })
           .fail(function() {notifyError("Unable to save customization")});
       }

@@ -24,6 +24,7 @@
   </head>
 
   <body>
+  <button id="testBtn" type="button" class="btn btn-default hidden" title="Rename"><i class="glyphicon glyphicon-arrow-left"></i></button>
 
   <!-- Fixed navbar -->
   <div class="navbar navbar-default navbar-static-top" role="navigation">
@@ -48,7 +49,6 @@
                               </ul>
                           </li>
                           <li><a href="#" class="btn btn-inverse customization-item hidden" id="btn-add-widget"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Add a new widget</a></li>
-                          <li><a href="#" class="btn btn-inverse customization-item hidden" id="btn-exit-customization"><i class="fa fa-times"></i>&nbsp;&nbsp;Exit customization</a></li>
                       </ul>
                       <ul class="nav navbar-nav navbar-right">
                           <li><a href="#" class="btn btn-inverse" id="chartButton"><i class="fa fa-bar-chart-o"></i></a></li>
@@ -173,6 +173,29 @@
                     });
          }
       });
+
+      $(document).keyup(function(e) {
+         if (e.keyCode == 27) {
+            if (customization)
+               exitCustomization();
+         }   // esc
+      });
+
+      $("#testBtn").click(function() {
+         $.ajax({
+            type: "POST",
+            url: "http://192.168.109.91:8080/rest/page",
+            data: { name: "etet ca" },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+         })
+                 .done(function(data) {
+                    console.log(data);
+                 })
+                 .fail(function(data) {console.error(data)});
+      });
+
+
    });
    
 	</script>
