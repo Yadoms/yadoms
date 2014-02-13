@@ -104,6 +104,8 @@
    <script src="js/utility.js"></script>
    <script src="js/objects/page.js"></script>
    <script src="js/objects/widget.js"></script>
+   <script src="js/objects/widget-package.js"></script>
+
 
    <script src="js/widget-engine.js"></script>
    <script src="js/widget-customization.js"></script>
@@ -124,6 +126,12 @@
     * @type {Array}
     */
    var pageArray = [];
+
+   /**
+    * Contains all Ctor of all loaded viewModels
+    * @type {Array}
+    */
+   var widgetPackages = [];
 
    /**
     * Indicate if the modal qrcode has already been loaded

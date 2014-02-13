@@ -1,33 +1,29 @@
+widgetViewModelCtor =
+
 /**
  * Create a Temperature ViewModel
  * @constructor
  */
 function TemperatureViewModel() {
    //observable data
-   this.data = null;
+   this.data = ko.observable({ temperature: 24, rssi: 80 });
 
    //widget identifier
    this.widget = null;
-}
-/**
- * Initialization method
- * @param page page where the widget is
- * @param widget widget class object
- */
-TemperatureViewModel.prototype.initialize = function(page, widget) {
-   this.widget = widget;
-};
 
-/**
- * Dispatch the data to the viewModel
- * @param data data to dispatch
- */
-TemperatureViewModel.prototype.dispatch = function(data) {
-   alert("dispatch temperature " + data);
-};
+   /**
+    * Initialization method
+    * @param widget widget class object
+    */
+   this.initialize = function(widget) {
+      this.widget = widget;
+   };
 
-/**
- * Widget ViewModel instantiation
- */
-widgetViewModel = new TemperatureViewModel();
-widgetViewModel.data = ko.observable({ temperature: 24, rssi: 80 });
+   /**
+    * Dispatch the data to the viewModel
+    * @param data data to dispatch
+    */
+   this.dispatch = function(data) {
+      alert("dispatch temperature " + data);
+   };
+};

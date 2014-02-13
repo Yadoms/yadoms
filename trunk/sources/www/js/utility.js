@@ -18,7 +18,7 @@ function notify(message, gravity)
 {
    assert(message != undefined, "Message must be defined");
    assert(gravity != undefined, "Gravity must be defined");
-   return noty({text: message, timeout:2000,  layout:'topLeft', type: gravity});
+   return noty({text: message, timeout:2000,  layout:'bottomRight', type: gravity});
 }
 
 /**
