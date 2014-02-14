@@ -67,14 +67,14 @@ void CFakePlugin::doWork(const std::string& configurationValues)
          case kEvtXplMessage:
             {
                // Xpl message was received
-               const CXplMessage& xplMessage = popEvent<CXplMessage>();
+               CXplMessage xplMessage = popEvent<CXplMessage>();
                YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
                break;
             }
          case kEvtUpdateConfiguration:
             {
                // Configuration was updated
-               const std::string& newConfigurationValues = popEvent<std::string>();
+               std::string newConfigurationValues = popEvent<std::string>();
                YADOMS_LOG(debug) << "configuration was updated...";
                BOOST_ASSERT(!newConfigurationValues.empty());  // newConfigurationValues shouldn't be empty, or kEvtUpdateConfiguration shouldn't be generated
 
