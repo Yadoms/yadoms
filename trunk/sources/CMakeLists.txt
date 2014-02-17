@@ -356,6 +356,49 @@ source_group(Server\\web  server/web/*.*)
 source_group(Server\\web\\REST  server/web/rest/*.*)
 source_group(Server\\web\\REST\\Json  server/web/rest/json/*.*)
 
+# Tools
+set(YADOMS_SRC ${YADOMS_SRC}
+	Server/tools/tools/dir_monitor/dir_monitor.hpp
+	Server/tools/tools/dir_monitor/basic_dir_monitor.hpp
+	Server/tools/tools/DirectoryChangeListener.h
+	Server/tools/tools/DirectoryChangeListener.cpp
+	Server/tools/tools/Version.h
+	Server/tools/tools/Version.cpp
+)
+
+IF(MSVC)
+set(YADOMS_SRC ${YADOMS_SRC}
+	Server/tools/windows/tools/dir_monitor/basic_dir_monitor_service.hpp
+	Server/tools/windows/tools/dir_monitor/dir_monitor_impl.hpp
+)	
+ELSEIF(APPLE)
+set(YADOMS_SRC ${YADOMS_SRC}
+	Server/tools/mac/tools/dir_monitor/basic_dir_monitor_service.hpp
+	Server/tools/mac/tools/dir_monitor/dir_monitor_impl.hpp
+)	
+ELSE()
+set(YADOMS_SRC ${YADOMS_SRC}
+	Server/tools/linux/tools/dir_monitor/basic_dir_monitor_service.hpp
+	Server/tools/linux/tools/dir_monitor/dir_monitor_impl.hpp
+)	
+ENDIF()
+
+# Define include directories (allow easy includes)
+set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/Server/tools)
+
+IF(WIN32)
+	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/Server/tools/windows)
+ELSEIF(APPLE)
+	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/Server/tools/mac)
+ELSE()
+	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/Server/tools/linux)
+ENDIF()
+
+source_group(Server\\Tools tools/*.*)
+source_group(Server\\Tools\\PlatformSpecific\\windows Server/tools/windows/tools/*.*)
+source_group(Server\\Tools\\PlatformSpecific\\linux Server/tools/linux/tools/*.*)
+source_group(Server\\Tools\\PlatformSpecific\\mac Server/tools/mac/tools/*.*)
+
 #Database
 IF(USE_SQLITE_DATABASE)
 	set(YADOMS_SRC ${YADOMS_SRC}
@@ -437,6 +480,7 @@ ENDIF()
 add_executable(yadoms ${YADOMS_SRC})
 add_precompiled_header(yadoms stdafx.h)
 
+
 ##################################################################################################
 ## yadoms-shared
 ##################################################################################################
@@ -454,72 +498,6 @@ ENDIF()
 
 
 ##################################################################################################
-## yadoms-tools
-##################################################################################################
-
-# Library Sources
-set(TOOLS_LIB_SRC
-	tools/tools/stdafx.cpp
-	tools/tools/stdafx.h
-
-	tools/tools/dir_monitor/dir_monitor.hpp
-	tools/tools/dir_monitor/basic_dir_monitor.hpp
-	tools/tools/DirectoryChangeListener.h
-	tools/tools/DirectoryChangeListener.cpp
-	
-
-	tools/tools/Version.h
-	tools/tools/Version.cpp
-)
-
-#Append platform specific files
-IF(MSVC)
-set(TOOLS_LIB_SRC	
-	${TOOLS_LIB_SRC}
-	tools/windows/tools/dir_monitor/basic_dir_monitor_service.hpp
-	tools/windows/tools/dir_monitor/dir_monitor_impl.hpp
-)	
-
-ELSEIF(APPLE)
-set(TOOLS_LIB_SRC	
-	${TOOLS_LIB_SRC}
-	tools/mac/tools/dir_monitor/basic_dir_monitor_service.hpp
-	tools/mac/tools/dir_monitor/dir_monitor_impl.hpp
-)	
-ELSE()
-set(TOOLS_LIB_SRC	
-	${TOOLS_LIB_SRC}
-	tools/linux/tools/dir_monitor/basic_dir_monitor_service.hpp
-	tools/linux/tools/dir_monitor/dir_monitor_impl.hpp
-)	
-ENDIF()
-
-# Define project folders
-source_group(PlatformSpecific\\windows tools/windows/tools/*.*)
-source_group(PlatformSpecific\\linux tools/linux/tools/*.*)
-source_group(PlatformSpecific\\mac tools/mac/tools/*.*)
-source_group(Exception tools/tools/Exceptions/*.* )	
-source_group(Xpl tools/tools/Xpl/*.* )	
-
-# Define library outputs
-add_library(yadoms-tools STATIC  ${TOOLS_LIB_SRC})
-add_precompiled_header(yadoms-tools stdafx.h)
-target_link_libraries(yadoms-tools ${LIBS} ${CMAKE_DL_LIBS})
-
-# Define include directories (allow easy includes)
-set(TOOLS_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tools ${CMAKE_CURRENT_SOURCE_DIR}/tools/tools)
-
-IF(WIN32)
-	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tools/windows)
-ELSEIF(APPLE)
-	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tools/mac)
-ELSE()
-	set(TOOLS_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/tools/linux)
-ENDIF()
-
-set_property( TARGET yadoms-tools PROPERTY INCLUDE_DIRECTORIES ${TOOLS_INCL_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
-
-##################################################################################################
 ## Plugins
 ##################################################################################################
 
@@ -534,7 +512,6 @@ set(YADOMS_INCL_DIR
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/server
 	${YADOMS_INCL_DIR}
-	${TOOLS_INCL_DIR}
 	${SHARED_INCL_DIR}
 )
 set_property( TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${BOOST_INCL_DIR})
@@ -542,7 +519,7 @@ set_property( TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${BO
 ##################################################################################################
 ## Link
 ##################################################################################################
-target_link_libraries(yadoms yadoms-tools yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
+target_link_libraries(yadoms yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 
 ##################################################################################################
 ## Post build commands
