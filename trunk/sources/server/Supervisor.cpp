@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "Supervisor.h"
 #include "pluginSystem/HardwarePluginManager.h"
 #include "database/sqlite/SQLiteDataProvider.h"
@@ -78,6 +78,9 @@ void CSupervisor::doWork()
          }
          YADOMS_LOG(info) << "[END] List of all hardwares";
          YADOMS_LOG(info) << "[END] Testing database";
+
+         //pDataProvider->getPageRequester()->addPage("Test été àèîôïö@ç#~");
+
          //\TODO ######################### [END] test database #########################
 #endif
       }
@@ -280,7 +283,7 @@ void CSupervisor::doWork()
       if(webServerManager.get() != NULL)
          webServerManager->stop();
       
-      pDataProvider->unload();//TODO : mettre un appel � unload dans le destructeur de IDataProvider (si pas d�j� unloaded �videmment).
+      pDataProvider->unload();//TODO : mettre un appel à unload dans le destructeur de IDataProvider (si pas déjà unloaded évidemment).
 
 
       YADOMS_LOG(info) << "Supervisor is stopped";
