@@ -16,12 +16,11 @@
     * @constructor
     */
     function Coords(obj) {
-        if (obj[0] && $.isPlainObject(obj[0])) {
+       if (obj[0] && $.isPlainObject(obj[0])) {
             this.data = obj[0];
         }else {
             this.el = obj;
         }
-
         this.isCoords = true;
         this.coords = {};
         this.init();
@@ -33,20 +32,36 @@
 
 
     fn.init = function(){
-        this.set();
-        this.original_coords = this.get();
+       this.set();
+       this.original_coords = this.get();
     };
+
+   fn.loopedOffset = function(elem) {
+      var offsetLeft = elem.offsetLeft,
+         offsetTop = elem.offsetTop;
+      while (elem = elem.offsetParent) {
+         offsetLeft += elem.offsetLeft;
+         offsetTop += elem.offsetTop;
+      }
+      return {
+         left: offsetLeft,
+         top: offsetTop
+      };
+   };
 
 
     fn.set = function(update, not_update_offsets) {
         var el = this.el;
-
         if (el && !update) {
-            this.data = el.offset();
+           //console.log('set() step 1 ' + (new Date() - startTime));
+           //this line need to be optimized
+           //this.data = el[0].getBoundingClientRect();
+           this.data = el.offset();
+           //this.data = this.loopedOffset(el[0]);
+           //console.log('set() step 1.1 ' + (new Date() - startTime));
             this.data.width = el.width();
             this.data.height = el.height();
         }
-
         if (el && update && !not_update_offsets) {
             var offset = el.offset();
             this.data.top = offset.top;
@@ -95,9 +110,8 @@
         if (this.data('coords') ) {
             return this.data('coords');
         }
-
         var ins = new Coords(this, arguments[0]);
-        this.data('coords', ins);
+       this.data('coords', ins);
         return ins;
     };
 
@@ -933,7 +947,8 @@
     */
     fn.add_widget = function(html, size_x, size_y, col, row, max_size) {
         var pos;
-        size_x || (size_x = 1);
+
+       size_x || (size_x = 1);
         size_y || (size_y = 1);
 
         if (!col & !row) {
@@ -946,30 +961,28 @@
 
             this.empty_cells(col, row, size_x, size_y);
         }
-
         var $w = $(html).attr({
                 'data-col': pos.col,
                 'data-row': pos.row,
                 'data-sizex' : size_x,
                 'data-sizey' : size_y
-            }).addClass('gs-w').appendTo(this.$el).hide();
-
+            }).addClass('gs-w').appendTo(this.$el);
+            //Modified by lgm42
+            //.hide();
+            //End of modification
         this.$widgets = this.$widgets.add($w);
-
         this.register_widget($w);
-
         this.add_faux_rows(pos.size_y);
         //this.add_faux_cols(pos.size_x);
-
         if (max_size) {
             this.set_widget_max_size($w, max_size);
         }
-
         this.set_dom_grid_height();
-
-        return $w.fadeIn();
+        return $w;
+       //Modified by lgm42
+       //.fadeIn();
+       //End of modification
     };
-
 
     /**
     * Change widget size limits.
@@ -1392,7 +1405,7 @@
     * @return {Array} Returns the instance of the Gridster class.
     */
     fn.register_widget = function($el) {
-        var wgd = {
+       var wgd = {
             'col': parseInt($el.attr('data-col'), 10),
             'row': parseInt($el.attr('data-row'), 10),
             'size_x': parseInt($el.attr('data-sizex'), 10),
@@ -1405,7 +1418,6 @@
             //End of modification
             'el': $el
         };
-
         if (this.options.avoid_overlapped_widgets &&
             !this.can_move_to(
              {size_x: wgd.size_x, size_y: wgd.size_y}, wgd.col, wgd.row)
@@ -1418,16 +1430,12 @@
                 'data-sizey': wgd.size_y
             });
         }
-
         // attach Coord object to player data-coord attribute
         $el.data('coords', $el.coords());
         // Extend Coord object with grid position info
         $el.data('coords').grid = wgd;
-
         this.add_to_gridmap(wgd, $el);
-
         this.options.resize.enabled && this.add_resize_handle($el);
-
         return this;
     };
 

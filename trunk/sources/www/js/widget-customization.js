@@ -71,7 +71,9 @@ $("a#customizeButton").click(function() {
  * Callback of the click on the background to stop customization
  */
 $("div#tabContainer").click(function() {
-   exitCustomization();
+   //TODO : remettre qd le drag remarchera
+   //if (customization)
+      //exitCustomization();
 });
 
 /**
