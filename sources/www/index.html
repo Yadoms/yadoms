@@ -13,7 +13,6 @@
     <!-- Bootstrap core CSS -->
     <link href="libs/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="css/bootstrap-non-responsive.css" rel="stylesheet">
-
     <!-- Custom styles for this template -->
     <link href="css/yadoms.css" rel="stylesheet">
 	 <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
@@ -74,7 +73,6 @@
       <div class="tab-content">
           <!-- Gridster tabs will be inserted here -->
       </div>
-
       <footer class="footer">
          <div class="navbar navbar-default">
             <ul class="nav navbar-nav">
@@ -96,7 +94,7 @@
    <script src="libs/bootstrap/js/bootstrap.min.js"></script>
 
    <!-- Gridster includes -->
-   <script src="libs/gridster/js/jquery.gridster.min.js"></script>
+   <script src="libs/gridster/js/jquery.gridster.js"></script>
 
    <script src="libs/transit/js/jquery.transit.min.js"></script>
    <script src="libs/knockout/js/knockout-3.0.0.js"></script>
@@ -148,7 +146,6 @@
     */
    $(document).ready(function() {
       requestPages();
-
       /**
        * Callback of the click on the show qr code button
        * Make lazy loading of the qrcode modal
@@ -194,6 +191,7 @@
                  })
                  .fail(function(data) {console.error(data)});
       });
+
 
 
    });

@@ -10,6 +10,23 @@ var widgetViewModelCtor = null;
 var widgetArrayForLoading = [];
 
 var loadWidgetsNotification = null;
+var loadPagesNotification = null;
+
+var pagesLoaded = [];
+
+var startTime = null;
+
+/**
+ * Return a Widget object from the gridster DOM object
+ * @param tabElement tab hash concerned
+ * @returns {Page}
+ */
+function getPageFromTabElement(tabElement)
+{
+   var res = tabElement.split("-");
+   assert(res.length == 2, "tabElement must be formed #tab-idPage");
+   return pageArray[res[1]];
+}
 
 /**
  * Return a Widget object from the gridster DOM object
@@ -29,8 +46,8 @@ function getWidgetFromGridsterElement($element)
  */
 function requestPages()
 {
-   console.timeStamp("start");
-   loadWidgetsNotification = noty({text: "Loading widgets ...", layout:'bottomRight', type: "information"});
+   startTime = new Date();
+   loadPagesNotification = notify("Loading pages ...", "information", 0);
    //we get pages
    $.getJSON("/rest/page")
       .done(requestPageDone())
@@ -44,6 +61,13 @@ function requestPages()
 function requestPageDone()
 {
     return function( data ) {
+       //console.log('requestPageDone()' + (new Date() - startTime));
+
+      if (loadPagesNotification != null) {
+         loadPagesNotification.close();
+         loadPagesNotification = null;
+      }
+
       //we parse the json answer
       if (data.result != "true")
       {
@@ -132,11 +156,23 @@ function requestPageDone()
       //we deactivate the customization
       enableGridsterCustomization(false);
 
-      //we request widgets for this page
-      $.getJSON("/rest/widget")
-         .done(requestWidgetsDone())
-         .fail(function() {notifyError("Unable to get Widgets")});
+      //we listen click event on tab click
+      $('.page-tabs').bind('click', function (e) { return tabClick(getPageFromTabElement(e.target.hash)); } );
+      requestWidgets(getCurrentPage());
+
     };
+}
+
+function requestWidgets(page) {
+   //we request widgets for the first page
+   loadWidgetsNotification = notify("Loading widgets for page " + page.name + " ...", "information", 0);
+
+   //we save the information that the widgets for this page have already been asked
+   pagesLoaded[page.id] = true;
+
+   $.getJSON("/rest/page/" + page.id + "/widget")
+      .done(requestWidgetsDone())
+      .fail(function() {notifyError("Unable to get Widgets")});
 }
 
 /**
@@ -146,11 +182,21 @@ function requestPageDone()
 function requestWidgetsDone()
 {
    return function(data) {
-      console.timeStamp("Widget getted");
+      //console.log('requestWidgetsDone()' + (new Date() - startTime));
       //we parse the json answer
       if (data.result != "true")
       {
          notifyError("Error during requesting widgets");
+         return;
+      }
+
+      //if there is no widget it's finished
+      if (data.data.widget.length == 0) {
+         //we close the noty
+         if (loadWidgetsNotification != null) {
+            loadWidgetsNotification.close();
+            loadWidgetsNotification = null;
+         }
          return;
       }
 
@@ -161,7 +207,6 @@ function requestWidgetsDone()
          widgetArrayForLoading.push(w);
          if (widgetTypes.indexOf(value.name) == -1)
             widgetTypes.push(value.name);
-         //addWidgetToIHM(w);
       });
 
       //we've got the list of widget type to ask
@@ -173,6 +218,7 @@ function requestWidgetsDone()
 
 function askForWidgetPackage(packageName)
 {
+   //console.log('askForWidgetPackage(' + packageName + ')' + (new Date() - startTime));
    widgetPackages[packageName] = new WidgetPackage();
    //we ask for the view
    $.get("widgets/" + packageName + "/view.html")
@@ -188,6 +234,7 @@ function askForWidgetPackage(packageName)
 function getWidgetViewDone(packageName)
 {
    return function( data ) {
+      //console.log('getWidgetViewDone(' + packageName + ')' + (new Date() - startTime));
       $("div#templates").append(data);
       //we indicate that the view for this king of widget has been lazy loaded
       widgetPackages[packageName].viewHasBeenDownloaded = true;
@@ -198,12 +245,13 @@ function getWidgetViewDone(packageName)
 
 function askViewModelCtor(packageName)
 {
+   //console.log('askViewModelCtor(' + packageName + ')' + (new Date() - startTime));
    widgetViewModelCtor = null;
    try
    {
       $.getScript("widgets/" + packageName + "/viewModel.js")
          .done(getWidgetViewModelConstructorDone(packageName))
-         .fail(function(packageName) { return function() {debugger;notifyError("Unable to get viewModel of the widget package " + packageName)}}(packageName));
+         .fail(function(packageName) { return function() {notifyError("Unable to get viewModel of the widget package " + packageName)}}(packageName));
    }
    catch (e)
    {
@@ -221,6 +269,7 @@ function getWidgetViewModelConstructorDone(packageName) {
    //viewModel.js has been executed
    //noinspection JSUnusedLocalSymbols
    return function(data, textStatus, jqxhr) {
+      //console.log('getWidgetViewModelConstructorDone(' + packageName + ')' + (new Date() - startTime));
       //we save the ctor in the map
       widgetPackages[packageName].viewModelCtor = widgetViewModelCtor;
 
@@ -231,6 +280,7 @@ function getWidgetViewModelConstructorDone(packageName) {
 
 function askForPackageInformation(packageName)
 {
+   //console.log('askForPackageInformation(' + packageName + ')' + (new Date() - startTime));
    $.getJSON( "widgets/" + packageName + "/package.json")
       .done(getWidgetPackageInformationDone(packageName))
       .fail(function(packageName) { return function() {notifyError("Unable to get the configuration of the widget package " + packageName)}}(packageName));
@@ -244,6 +294,7 @@ function askForPackageInformation(packageName)
 function getWidgetPackageInformationDone(packageName)
 {
    return function( data ) {
+      //console.log('getWidgetPackageInformationDone(' + packageName + ')' + (new Date() - startTime));
       //we set the min and max size if they are defined
       assert(data !== undefined, "Configuration of widget must be defined");
 
@@ -261,10 +312,31 @@ function getWidgetPackageInformationDone(packageName)
          }
          i--;
       }
-      //we have finished to load every widgets
-      if ((widgetArrayForLoading.length == 0) && (loadWidgetsNotification != null)) {
-         loadWidgetsNotification.close();
-         loadWidgetsNotification = null;
+      //we have finished to load every widgets on this page
+      if (widgetArrayForLoading.length == 0) {
+
+         //we add tooltip to customize buttons
+         $("li.widget button, li.tabPagePills button").tooltip({
+            animated: 'fade',
+            placement: 'bottom'
+         });
+
+         //we prevent from click on widget to be propagated on the rest of the window
+         /*$(".widget").click(function(e) {
+            e.stopPropagation();
+         });*/
+
+         $(".delete-page").click(function(e) {
+            e.stopPropagation();
+         });
+
+         //we close the noty
+         if (loadWidgetsNotification != null) {
+            loadWidgetsNotification.close();
+            loadWidgetsNotification = null;
+         }
+
+         console.log('Widgets loaded in ' + (new Date() - startTime) + " ms");
       }
 
    };
@@ -275,7 +347,7 @@ function getWidgetPackageInformationDone(packageName)
  * @param widget widget to add
  */
 function addWidgetToIHM(widget) {
-
+   //console.log('addWidgetToIHM(' + widget.id + ')' + (new Date() - startTime));
    if (widgetPackages[widget.name] === undefined)
       widgetPackages[widget.name] = new WidgetPackage();
 
@@ -307,7 +379,6 @@ function addWidgetToIHM(widget) {
             finalizeWidgetCreation(widget);
          }
       }
-
    }
 }
 
@@ -336,7 +407,6 @@ function createGridsterWidget(widget) {
  * @param widget
  */
 function finalizeWidgetCreation(widget) {
-
    //we use to construct the viewModel of the current widget
    //noinspection JSPotentiallyInvalidConstructorUsage
    widget.viewModel = new widgetPackages[widget.name].viewModelCtor();
@@ -349,9 +419,16 @@ function finalizeWidgetCreation(widget) {
    widget.$gridsterWidget = createGridsterWidget(widget);
    widget.$div = $("div#" + widgetDivId);
 
+   //we check if we are in customization we must apply customization on the new item
+   if (customization)
+   {
+      widget.$gridsterWidget.find(".customization-item").removeClass("hidden");
+      widget.$gridsterWidget.addClass("liWidgetCustomization");
+   }
+
+   //console.log('before binding(' + widget.id + ')' + (new Date() - startTime));
    //we apply binding to the view
    ko.applyBindings(widget.viewModel, widget.$div[0]);
-
    //we add minimum dimension constraint to the gridster widget
    if (widget.package.dimensions.min !== undefined)
    {
@@ -365,7 +442,7 @@ function finalizeWidgetCreation(widget) {
    {
       //min dimension is set
       assert((widget.package.dimensions.max.x !== undefined) && (widget.package.dimensions.max.y !== undefined), "You can't set only one axe of the widget maximum dimension");
-      pageArray[widget.idPage] .gridster.set_widget_max_size(widget.$gridsterWidget, [widget.package.dimensions.max.x, widget.package.dimensions.max.y]);
+      pageArray[widget.idPage].gridster.set_widget_max_size(widget.$gridsterWidget, [widget.package.dimensions.max.x, widget.package.dimensions.max.y]);
    }
 
    //we initialize the widget
@@ -382,28 +459,6 @@ function finalizeWidgetCreation(widget) {
       notifyWarning("The widget " + widget.name + " has generated an exception");
       console.warn(e);
    }
-
-   //we add tooltip to customize buttons
-   $("li.widget button, li.tabPagePills button").tooltip({
-      animated: 'fade',
-      placement: 'bottom'
-   });
-
-   //we check if we are in customization we must apply customization on the new item
-   if (customization)
-   {
-      $(".customization-item").removeClass("hidden");
-      $("li.widget").addClass("liWidgetCustomization");
-   }
-
-   $(".delete-page").click(function(e) {
-      e.stopPropagation();
-   });
-
-   //we prevent from click on widget to be propagated on the rest of the window
-   $(".widget").click(function(e) {
-      e.stopPropagation();
-   });
 }
 
 /**
@@ -413,4 +468,21 @@ function finalizeWidgetCreation(widget) {
 function getCurrentPage()
 {
    return pageArray[$("ul.page-tabs li.active").attr("page-id")];
+}
+
+/**
+ * Occurs when user click on a tab
+ * @param page tab clicked
+ */
+function tabClick(page) {
+
+   //we check for widget loading if page is different than the current
+   if (getCurrentPage() == page)
+      return;
+
+   //and if it's not loaded for the moment
+   if (!pagesLoaded[page.id])
+   {
+      requestWidgets(page);
+   }
 }

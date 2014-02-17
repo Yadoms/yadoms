@@ -13,12 +13,15 @@ var assert = function(condition, message) {
  * @param message message to display
  * @param gravity gravity of the message
  * @returns {noty}
+ * @param timeout timeout of the noty
  */
-function notify(message, gravity)
+function notify(message, gravity, timeout)
 {
+   if (timeout === undefined)
+      timeout = 2000;
    assert(message != undefined, "Message must be defined");
    assert(gravity != undefined, "Gravity must be defined");
-   return noty({text: message, timeout:2000,  layout:'bottomRight', type: gravity});
+   return noty({text: message, timeout:timeout,  layout:'bottomRight', type: gravity});
 }
 
 /**
