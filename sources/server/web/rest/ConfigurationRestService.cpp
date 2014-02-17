@@ -28,7 +28,9 @@ void CConfigurationRestService::configureDispatcher(CRestDispatcher & dispatcher
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CConfigurationRestService::getAllConfigurations);
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CConfigurationRestService::getSectionConfigurations);
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("*"), CConfigurationRestService::getConfiguration);
+   REGISTER_DISPATCHER_HANDLER(dispatcher, "POST", (m_restKeyword), CConfigurationRestService::createOneConfiguration);
    REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("*"), CConfigurationRestService::updateOneConfiguration);
+   REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword), CConfigurationRestService::updateAllConfigurations);
    REGISTER_DISPATCHER_HANDLER(dispatcher, "DELETE", (m_restKeyword)("*")("*"), CConfigurationRestService::deleteOneConfiguration);
 }
 
@@ -75,16 +77,23 @@ CJson CConfigurationRestService::getAllConfigurations(const std::vector<std::str
 
 CJson CConfigurationRestService::createOneConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
-   //TODO : � faire
-    return CJsonResult::GenerateError("not yet implemented");
+   //get data from request content
+   CConfigurationEntitySerializer hes;
+   boost::shared_ptr<CConfiguration> configToCreate = hes.deserialize(requestContent);
 
-}
+   //check that configuration entry do not already exists
+   boost::shared_ptr<CConfiguration> checkExistEntity = m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate->getSection(), configToCreate->getName());
+   if(checkExistEntity.get() != NULL)
+      return CJsonResult::GenerateError("The entry to create already exists", hes.serialize(*checkExistEntity.get()));
 
-CJson CConfigurationRestService::createAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent)
-{
-   //TODO : � faire
-    return CJsonResult::GenerateError("not yet implemented");
+   //update modification date
+   configToCreate->setLastModificationDate(boost::posix_time::second_clock::universal_time());
 
+   //commit changes to database
+   m_dataProvider->getConfigurationRequester()->create(*configToCreate.get());
+
+   boost::shared_ptr<CConfiguration> widgetFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate->getSection(), configToCreate->getName());
+   return CJsonResult::GenerateSuccess(hes.serialize(*widgetFound.get()));
 }
 
 
@@ -130,10 +139,31 @@ CJson CConfigurationRestService::updateOneConfiguration(const std::vector<std::s
    }
 }
 
+
+
+
 CJson CConfigurationRestService::updateAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
-   //TODO : � faire
-    return CJsonResult::GenerateError("not yet implemented");
+   try
+   {
+      CConfigurationEntitySerializer hes;
+      std::vector<boost::shared_ptr<CConfiguration> > listToUpdate = CJsonCollectionSerializer<CConfiguration>::DeserializeCollection(requestContent, hes, getRestKeyword());
+
+      BOOST_FOREACH(boost::shared_ptr<CConfiguration> pw, listToUpdate)
+      {
+         m_dataProvider->getConfigurationRequester()->updateConfiguration(*pw);
+      }
+
+      return CJsonResult::GenerateSuccess();
+   }
+   catch(std::exception &ex)
+   {
+      return CJsonResult::GenerateError(ex);
+   }
+   catch(...)
+   {
+      return CJsonResult::GenerateError("unknown exception in updating all configuration");
+   }
 }
 
 
