@@ -12,12 +12,12 @@ CNetworkHelper::~CNetworkHelper()
 {
 }
 
-std::vector<boost::asio::ip::address> getLocalIps()
+std::vector<boost::asio::ip::address> CNetworkHelper::getLocalIps()
 {
-   std::vector<boost::asio::ip::address> result = new std::vector<boost::asio::ip::address>();
+   std::vector<boost::asio::ip::address> result = std::vector<boost::asio::ip::address>();
    boost::asio::io_service io_service;
    boost::asio::ip::udp::resolver resolver(io_service);
-   boost::asio::ip::udp::resolver::query query("localhost", "");
+   boost::asio::ip::udp::resolver::query query(boost::asio::ip::host_name(), "");
    boost::asio::ip::udp::resolver::iterator iter = resolver.resolve(query);
    boost::asio::ip::udp::resolver::iterator end; // End marker.
    
@@ -28,6 +28,8 @@ std::vector<boost::asio::ip::address> getLocalIps()
       //we manage only ipv4
       if(addr.is_v4())
          result.push_back(addr);
+      
+      iter++;
    }
 
    return result;
