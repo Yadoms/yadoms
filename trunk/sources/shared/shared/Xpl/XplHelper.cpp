@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "XplHelper.h"
 #include "shared/NetworkHelper.h"
+#include "shared/Log.h"
 
 const std::string CXplHelper::HeartbeatClassID = "hbeat";
 const std::string CXplHelper::HeartbeatTypeId = "app";
@@ -27,7 +28,7 @@ boost::asio::ip::udp::endpoint CXplHelper::getFirstIPV4AddressEndPoint()
       return boost::asio::ip::udp::endpoint(ips[0], XplProtocolPort);
    
    //We haven't found any valid ipv4 address we assume that we are only in local
-   return boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::from_string("127.0.0.1"), XplProtocolPort);
+   return boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::from_string("localhost"), XplProtocolPort);
 }
 
 bool CXplHelper::getEndPointFromInterfaceIp(const std::string & localIPOfTheInterfaceToUse, boost::asio::ip::udp::endpoint & result)
