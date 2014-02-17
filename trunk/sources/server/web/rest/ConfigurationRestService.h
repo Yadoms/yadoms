@@ -24,7 +24,6 @@ public:
    CJson getAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent);
 
    CJson createOneConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent);
-   CJson createAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent);
    CJson updateOneConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent);
    CJson updateAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent);
    CJson deleteOneConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent);

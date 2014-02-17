@@ -34,6 +34,7 @@ void CPageRestService::configureDispatcher(CRestDispatcher & dispatcher)
    REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::addWidgetForPage, CPageRestService::transactionalMethod);
    REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::replaceAllWidgetsForPage, CPageRestService::transactionalMethod);
    REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::deleteAllWidgetsForPage, CPageRestService::transactionalMethod);
+   REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPageRestService::deletePage, CPageRestService::transactionalMethod);
 }
 
 
@@ -211,4 +212,35 @@ CJson CPageRestService::deleteAllWidgetsForPage(const std::vector<std::string> &
       return CJsonResult::GenerateError("unknown exception in creating a new widget");
    }
 
+}
+
+CJson CPageRestService::deletePage(const std::vector<std::string> & parameters, const CJson & requestContent)
+{
+   try
+   {
+      int pageId = 0;
+      if(parameters.size()>1)
+      {
+         pageId = boost::lexical_cast<int>(parameters[1].c_str());
+
+         //remove all widgets in page
+         m_dataProvider->getWidgetRequester()->removeWidgetsInPage(pageId);
+
+         //remove page
+         m_dataProvider->getPageRequester()->removePage(pageId);
+         return CJsonResult::GenerateSuccess();
+      }
+      else
+      {
+         return CJsonResult::GenerateError("Invalid parameter count (need page id in url)");
+      }
+   }
+   catch(std::exception &ex)
+   {
+      return CJsonResult::GenerateError(ex);
+   }
+   catch(...)
+   {
+      return CJsonResult::GenerateError("unknown exception in creating a new widget");
+   }
 }
