@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "XplHelper.h"
+#include "shared/NetworkHelper.h"
 
 const std::string CXplHelper::HeartbeatClassID = "hbeat";
 const std::string CXplHelper::HeartbeatTypeId = "app";
@@ -20,50 +21,28 @@ bool CXplHelper::isVendorIdOrDeviceIdMatchRules(const std::string & element)
 boost::asio::ip::udp::endpoint CXplHelper::getFirstIPV4AddressEndPoint()
 {
    //we look for the first ip v4
-   boost::asio::io_service io_service;
-   boost::asio::ip::udp::resolver resolver(io_service);
-   boost::asio::ip::udp::resolver::query query(boost::asio::ip::host_name(), "");
-   boost::asio::ip::udp::resolver::iterator iter = resolver.resolve(query);
-   boost::asio::ip::udp::resolver::iterator end; // End marker.
+   std::vector<boost::asio::ip::address> ips = CNetworkHelper::getLocalIps();
    
-   while (iter != end)
-   {
-      boost::asio::ip::address addr = iter->endpoint().address();
-      if(addr.is_v4())
-      {
-         iter->endpoint().port(CXplHelper::XplProtocolPort);
-         return iter->endpoint();
-      }
+   if (ips.size() > 0)
+      return boost::asio::ip::udp::endpoint(ips[0], XplProtocolPort);
    
-      iter++;
-   }
-
    //We haven't found any valid ipv4 address we assume that we are only in local
    return boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::from_string("127.0.0.1"), XplProtocolPort);
 }
 
 bool CXplHelper::getEndPointFromInterfaceIp(const std::string & localIPOfTheInterfaceToUse, boost::asio::ip::udp::endpoint & result)
 {
-   //we check that the ip adress given exist on one of our interfaces
-   boost::asio::io_service io_service;
-   boost::asio::ip::udp::resolver resolver(io_service);
-   boost::asio::ip::udp::resolver::query query(boost::asio::ip::host_name(), "");
-   boost::asio::ip::udp::resolver::iterator iter = resolver.resolve(query);
-   boost::asio::ip::udp::resolver::iterator end; // End marker.
-   bool find = false;
+   std::vector<boost::asio::ip::address> ips = CNetworkHelper::getLocalIps();
    
-   while ((!find) && (iter != end))
+   BOOST_FOREACH (boost::asio::ip::address addr, ips)
    {
-      boost::asio::ip::address addr = iter->endpoint().address();
       if(addr.to_string() == localIPOfTheInterfaceToUse)
       {
-         result = iter->endpoint();
+         result = boost::asio::ip::udp::endpoint(addr, XplProtocolPort);
          return true;
       }
-   
-      iter++;
    }
-
+   
    //We haven't found the ip specified 
    return false;
 }
