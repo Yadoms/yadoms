@@ -9,6 +9,7 @@
 #include "database/entities/Page.h"
 #include "database/entities/Widget.h"
 #include "database/entities/HardwareEventLogger.h"
+#include "database/entities/EventLogger.h"
 
 DECLARE_TABLE(Hardware,
    (Id)
@@ -76,5 +77,12 @@ DECLARE_TABLE(HardwareEventLogger,
    (PluginRelease)
    (EventType)
    (Message)
+)
+
+DECLARE_TABLE(EventLogger,
+   (Id)
+   (EventDate)
+   (EventType)
+   (OptionalData)
 )
 

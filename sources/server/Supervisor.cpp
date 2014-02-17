@@ -15,6 +15,7 @@
 #include "web/rest/AcquisitionRestService.h"
 #include "web/rest/ConfigurationRestService.h"
 #include "web/rest/HardwareEventLoggerRestService.h"
+#include "web/rest/EventLoggerRestService.h"
 #include <shared/ThreadBase.h>
 #include <shared/Peripherals.h>
 
@@ -217,6 +218,7 @@ void CSupervisor::doWork()
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CAcquisitionRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CConfigurationRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CHardwareEventLoggerRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CEventLoggerRestService(pDataProvider)));
       }
 
       boost::shared_ptr<CWebServerManager> webServerManager(new CWebServerManager(webServer));

@@ -137,6 +137,7 @@ void CSQLiteDataProvider::loadRequesters()
    m_pageRequester.reset(new CSQLitePageRequester(*this, m_databaseRequester));
    m_widgetRequester.reset(new CSQLiteWidgetRequester(*this, m_databaseRequester));
    m_hardwareEventLoggerRequester.reset(new CSQLiteHardwareEventLoggerRequester(*this, m_databaseRequester));
+   m_eventLoggerRequester.reset(new CSQLiteEventLoggerRequester(*this, m_databaseRequester));
 }
 
 
@@ -145,4 +146,5 @@ boost::shared_ptr<ITransactionalProvider> CSQLiteDataProvider::getTransactionalE
 {
    if(!m_databaseRequester->transactionIsAlreadyCreated())
       return m_databaseRequester; 
+   return boost::shared_ptr<ITransactionalProvider>(NULL);
 }
