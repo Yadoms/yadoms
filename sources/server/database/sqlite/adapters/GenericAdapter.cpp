@@ -25,7 +25,7 @@ bool CGenericAdapter::adapt(sqlite3_stmt * pStatement)
       {
          std::map<std::string, std::string> newRow;
          for (int nCol = 0; nCol < nCols;nCol++) 
-            newRow.insert(std::make_pair(cols[nCol], CSQLite3Extension::sqlite3_column_text_utf8(pStatement, nCol) ));
+            newRow.insert(std::make_pair(cols[nCol], CSQLite3Extension::extractData<std::string>(pStatement, nCol) ));
          m_results.push_back(newRow);
       }
       return true;

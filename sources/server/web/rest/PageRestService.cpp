@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "PageRestService.h"
 #include <shared/Exceptions/NotImplementedException.hpp>
 #include "json/JsonSerializers.h"
@@ -30,6 +30,7 @@ void CPageRestService::configureDispatcher(CRestDispatcher & dispatcher)
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CPageRestService::getOnePage);
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::getPageWidget);
 
+   REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPageRestService::addPage, CPageRestService::transactionalMethod);
    REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::addWidgetForPage, CPageRestService::transactionalMethod);
    REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::replaceAllWidgetsForPage, CPageRestService::transactionalMethod);
    REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::deleteAllWidgetsForPage, CPageRestService::transactionalMethod);
@@ -64,6 +65,7 @@ CJson CPageRestService::transactionalMethod(CRestDispatcher::CRestMethodHandler 
    }
    return result;
 }
+
 
 
 CJson CPageRestService::getOnePage(const std::vector<std::string> & parameters, const CJson & requestContent)
@@ -103,6 +105,26 @@ CJson CPageRestService::getPageWidget(const std::vector<std::string> & parameter
    else
    {
       return CJsonResult::GenerateError("Invalid parameter count (need page id in url)");
+   }
+}
+
+CJson CPageRestService::addPage(const std::vector<std::string> & parameters, const CJson & requestContent)
+{
+   try
+   {
+      CPageEntitySerializer hes;
+      boost::shared_ptr<CPage> pageToAdd = hes.deserialize(requestContent);
+      int idCreated = m_dataProvider->getPageRequester()->addPage(pageToAdd->getName());
+      boost::shared_ptr<CPage> pageFound =  m_dataProvider->getPageRequester()->getPage(idCreated);
+      return CJsonResult::GenerateSuccess(hes.serialize(*pageFound.get()));
+   }
+   catch(std::exception &ex)
+   {
+      return CJsonResult::GenerateError(ex);
+   }
+   catch(...)
+   {
+      return CJsonResult::GenerateError("unknown exception in creating a new page");
    }
 }
 

@@ -136,7 +136,7 @@
 //                					}
 //                				else
 //                				{
-//                					 YADOMS_LOG(warning) << "Unknown column Name= " << cols[nCol] << " Value=" << CSQLite3Extension::sqlite3_column_text_utf8(pStatement, nCol);
+//                					 YADOMS_LOG(warning) << "Unknown column Name= " << cols[nCol] << " Value=" << CSQLite3Extension::extractData(pStatement, nCol);
 //                				}
 //                			}
 //                			m_results.push_back(newEntity);
@@ -250,7 +250,7 @@
                ADAPT_COLUMNS(_tablename, _seq) \
                else \
                { \
-                  YADOMS_LOG(warning) << "Unknown column Name= " << cols[nCol] << " Value=" << CSQLite3Extension::sqlite3_column_text_utf8(pStatement, nCol); \
+                  YADOMS_LOG(warning) << "Unknown column Name= " << cols[nCol] << " Value=" << CSQLite3Extension::extractData<std::string>(pStatement, nCol); \
                } \
             } \
             m_results.push_back(newEntity); \

@@ -15,23 +15,6 @@ class CSQLite3Extension
 {
 public:
    //--------------------------------------------------------------
-   ///\brief  Extract a column value as text with handling utf8 format
-   ///\param [in]    pStmt The current statement
-   ///\param [in]    i The index (zero based) of the targeted column
-   ///\return    The text as std::string with UTF8 characters (accent, ...) 
-   //--------------------------------------------------------------
-   static const std::string sqlite3_column_text_utf8(sqlite3_stmt *pStmt, int i)
-   {
-      //read text as wide string
-      std::wstring textAsWideString((wchar_t*)sqlite3_column_text16(pStmt, i));
-      //convert it to standard string
-      std::string textAsUtf8String;
-      textAsUtf8String.assign(textAsWideString.begin(), textAsWideString.end());
-      return textAsUtf8String;
-      //return std::string((char*)sqlite3_column_text(pStmt, i));
-   }
-
-   //--------------------------------------------------------------
    ///\brief  Extract a column value in a typed way
    ///\param [in]    pStmt    The current statement
    ///\param [in]    i        The index (zero based) of the targeted column
@@ -49,7 +32,7 @@ template<class TValue>
 inline TValue CSQLite3Extension::extractData(sqlite3_stmt * pStatement, int nCol)
 {
    //as default way, read text from database and extractData it with c++ side functions
-   return CStringExtension::parse<TValue>(CSQLite3Extension::sqlite3_column_text_utf8(pStatement, nCol).c_str());
+   return CStringExtension::parse<TValue>((char*)sqlite3_column_text(pStmt, nCol));
 }
 
 //--------------------------------------------------------------
@@ -94,7 +77,7 @@ inline unsigned char* CSQLite3Extension::extractData(sqlite3_stmt * pStatement, 
 template<>
 inline std::string CSQLite3Extension::extractData(sqlite3_stmt * pStatement, int nCol)
 {
-   return CSQLite3Extension::sqlite3_column_text_utf8(pStatement, nCol);
+   return std::string((char*)sqlite3_column_text(pStatement, nCol));
 }
 
 //--------------------------------------------------------------
@@ -112,7 +95,7 @@ inline bool CSQLite3Extension::extractData(sqlite3_stmt * pStatement, int nCol)
 template<>
 inline boost::posix_time::ptime CSQLite3Extension::extractData(sqlite3_stmt * pStatement, int nCol)
 {
-   return boost::posix_time::time_from_string(CSQLite3Extension::sqlite3_column_text_utf8(pStatement, nCol));
+   return boost::posix_time::time_from_string(extractData<std::string>(pStatement, nCol));
 }
 
 

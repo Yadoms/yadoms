@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "ConfigurationRestService.h"
 #include <shared/Exceptions/NotImplementedException.hpp>
 #include "json/JsonSerializers.h"
@@ -75,14 +75,14 @@ CJson CConfigurationRestService::getAllConfigurations(const std::vector<std::str
 
 CJson CConfigurationRestService::createOneConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
-   //TODO : à faire
+   //TODO : ï¿½ faire
     return CJsonResult::GenerateError("not yet implemented");
 
 }
 
 CJson CConfigurationRestService::createAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
-   //TODO : à faire
+   //TODO : ï¿½ faire
     return CJsonResult::GenerateError("not yet implemented");
 
 }
@@ -132,7 +132,7 @@ CJson CConfigurationRestService::updateOneConfiguration(const std::vector<std::s
 
 CJson CConfigurationRestService::updateAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
-   //TODO : à faire
+   //TODO : ï¿½ faire
     return CJsonResult::GenerateError("not yet implemented");
 }
 

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "IRestService.h"
 #include "database/IDataProvider.h"
@@ -18,7 +18,10 @@ public:
    CJson getOnePage(const std::vector<std::string> & parameters, const CJson & requestContent);   
    CJson getAllPages(const std::vector<std::string> & parameters, const CJson & requestContent);  
    CJson getPageWidget(const std::vector<std::string> & parameters, const CJson & requestContent);   
-   
+
+   CJson addPage(const std::vector<std::string> & parameters, const CJson & requestContent);   
+
+
    CJson addWidgetForPage(const std::vector<std::string> & parameters, const CJson & requestContent);   
    CJson replaceAllWidgetsForPage(const std::vector<std::string> & parameters, const CJson & requestContent);   
    CJson deleteAllWidgetsForPage(const std::vector<std::string> & parameters, const CJson & requestContent);   
