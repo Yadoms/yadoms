@@ -24,9 +24,15 @@ boost::asio::ip::udp::endpoint CXplHelper::getFirstIPV4AddressEndPoint()
    //we look for the first ip v4
    std::vector<boost::asio::ip::address> ips = CNetworkHelper::getLocalIps();
    
-   if (ips.size() > 0)
-      return boost::asio::ip::udp::endpoint(ips[0], XplProtocolPort);
-   
+   //we look for the first IP which is not loopback
+   BOOST_FOREACH (boost::asio::ip::address addr, ips)
+   {
+      if(!addr.is_loopback())
+      {
+         return boost::asio::ip::udp::endpoint(addr, XplProtocolPort);
+      }
+   }
+      
    //We haven't found any valid ipv4 address we assume that we are only in local
    return boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::from_string("localhost"), XplProtocolPort);
 }
