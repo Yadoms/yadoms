@@ -68,3 +68,11 @@ DECLARE_TABLE_COLUMN_NAMES(HardwareEventLogger, "HardwareEventLogger",
    ((EventType)("eventType"))
    ((Message)("message"))
 )
+
+DECLARE_TABLE_COLUMN_NAMES(EventLogger, "EventLogger",
+   ((Id)("id"))
+   ((EventDate)("eventDate"))
+   ((EventType)("eventType"))
+   ((OptionalData)("optionalData"))
+)
+

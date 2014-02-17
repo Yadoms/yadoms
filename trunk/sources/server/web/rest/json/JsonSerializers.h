@@ -11,6 +11,7 @@
 #include "database/entities/Page.h"
 #include "database/entities/Widget.h"
 #include "database/entities/HardwareEventLogger.h"
+#include "database/entities/EventLogger.h"
 
 DECLARE_JSON_ENTITY_HEADER(Hardware,
    (Id)
@@ -80,3 +81,11 @@ DECLARE_JSON_ENTITY_HEADER(HardwareEventLogger,
    (EventType)
    (Message)
 )
+
+DECLARE_JSON_ENTITY_HEADER(EventLogger,
+   (Id)
+   (EventDate)
+   (EventType)
+   (OptionalData)
+)
+

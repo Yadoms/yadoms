@@ -70,3 +70,12 @@ DECLARE_ADAPTER_IMPLEMENTATION(HardwareEventLogger,
    ((EventType)(CHardwareEventLogger::EEventType)(CHardwareEventLogger::kUnload)(int))
    ((Message)(std::string)(""))
 )
+
+DECLARE_ADAPTER_IMPLEMENTATION(EventLogger,
+   ((Id)(int)(0))
+   ((EventDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
+   ((EventType)(int)(0))
+   ((OptionalData)(std::string)(""))
+)
+
+

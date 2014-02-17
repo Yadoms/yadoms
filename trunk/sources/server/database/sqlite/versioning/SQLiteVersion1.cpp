@@ -33,7 +33,8 @@ void CSQLiteVersion1::checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> 
          !pRequester->checkTableExists(CKeywordTable::getTableName()) ||
          !pRequester->checkTableExists(CPageTable::getTableName()) ||
          !pRequester->checkTableExists(CWidgetTable::getTableName()) ||
-         !pRequester->checkTableExists(CHardwareEventLoggerTable::getTableName()))
+         !pRequester->checkTableExists(CHardwareEventLoggerTable::getTableName()) ||
+         !pRequester->checkTableExists(CEventLoggerTable::getTableName()))
       {
          //at least one table is missing
          bNeedToCreateOrUpgrade = true;
@@ -88,6 +89,8 @@ void CSQLiteVersion1::CreateDatabase(const boost::shared_ptr<CSQLiteRequester> &
          throw CSQLiteVersionException("Failed to delete Widget table");
       if(!pRequester->dropTableIfExists(CHardwareEventLoggerTable::getTableName()))
          throw CSQLiteVersionException("Failed to delete HardwareEventLogger table");
+      if(!pRequester->dropTableIfExists(CEventLoggerTable::getTableName()))
+         throw CSQLiteVersionException("Failed to delete EventLogger table");
 
       //create tables
       if(!pRequester->createTableIfNotExists(CAcquisitionTable::getTableName(), CAcquisitionTable::getTableCreationScript()))
@@ -106,6 +109,8 @@ void CSQLiteVersion1::CreateDatabase(const boost::shared_ptr<CSQLiteRequester> &
          throw CSQLiteVersionException("Failed to create Widget table");
       if(!pRequester->createTableIfNotExists(CHardwareEventLoggerTable::getTableName(), CHardwareEventLoggerTable::getTableCreationScript()))
          throw CSQLiteVersionException("Failed to create HardwareEventLogger table");
+      if(!pRequester->createTableIfNotExists(CEventLoggerTable::getTableName(), CEventLoggerTable::getTableCreationScript()))
+         throw CSQLiteVersionException("Failed to create EventLogger table");
 
       //set the database version
       CQuery qInsert;
