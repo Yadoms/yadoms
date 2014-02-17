@@ -146,5 +146,5 @@ boost::shared_ptr<ITransactionalProvider> CSQLiteDataProvider::getTransactionalE
 {
    if(!m_databaseRequester->transactionIsAlreadyCreated())
       return m_databaseRequester; 
-   return boost::shared_ptr<ITransactionalProvider>(NULL);
+   return boost::shared_ptr<ITransactionalProvider>();
 }
