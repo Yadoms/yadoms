@@ -346,58 +346,58 @@ set(YADOMS_SRC
 	)
 
 # Project folders
-source_group(Server server/*.*)
-source_group(Server\\pluginSystem server/pluginSystem/*.* )
-source_group(Server\\pluginSystem\\external plugins/hardware/IHardwarePlugin.h )
-source_group(Server\\database  server/database/*.*)
-source_group(Server\\StartupOptions  server/StartupOptions/*.*)
-source_group(Server\\database\\entities  server/database/entities/*.*)
-source_group(Server\\web  server/web/*.*)
-source_group(Server\\web\\REST  server/web/rest/*.*)
-source_group(Server\\web\\REST\\Json  server/web/rest/json/*.*)
+source_group(server server/*.*)
+source_group(server\\pluginSystem server/pluginSystem/*.* )
+source_group(server\\pluginSystem\\external plugins/hardware/IHardwarePlugin.h )
+source_group(server\\database  server/database/*.*)
+source_group(server\\StartupOptions  server/StartupOptions/*.*)
+source_group(server\\database\\entities  server/database/entities/*.*)
+source_group(server\\web  server/web/*.*)
+source_group(server\\web\\REST  server/web/rest/*.*)
+source_group(server\\web\\REST\\Json  server/web/rest/json/*.*)
 
 # Tools
 set(YADOMS_SRC ${YADOMS_SRC}
-	Server/tools/tools/dir_monitor/dir_monitor.hpp
-	Server/tools/tools/dir_monitor/basic_dir_monitor.hpp
-	Server/tools/tools/DirectoryChangeListener.h
-	Server/tools/tools/DirectoryChangeListener.cpp
-	Server/tools/tools/Version.h
-	Server/tools/tools/Version.cpp
+	server/tools/tools/dir_monitor/dir_monitor.hpp
+	server/tools/tools/dir_monitor/basic_dir_monitor.hpp
+	server/tools/tools/DirectoryChangeListener.h
+	server/tools/tools/DirectoryChangeListener.cpp
+	server/tools/tools/Version.h
+	server/tools/tools/Version.cpp
 )
 
 IF(MSVC)
 set(YADOMS_SRC ${YADOMS_SRC}
-	Server/tools/windows/tools/dir_monitor/basic_dir_monitor_service.hpp
-	Server/tools/windows/tools/dir_monitor/dir_monitor_impl.hpp
+	server/tools/windows/tools/dir_monitor/basic_dir_monitor_service.hpp
+	server/tools/windows/tools/dir_monitor/dir_monitor_impl.hpp
 )	
 ELSEIF(APPLE)
 set(YADOMS_SRC ${YADOMS_SRC}
-	Server/tools/mac/tools/dir_monitor/basic_dir_monitor_service.hpp
-	Server/tools/mac/tools/dir_monitor/dir_monitor_impl.hpp
+	server/tools/mac/tools/dir_monitor/basic_dir_monitor_service.hpp
+	server/tools/mac/tools/dir_monitor/dir_monitor_impl.hpp
 )	
 ELSE()
 set(YADOMS_SRC ${YADOMS_SRC}
-	Server/tools/linux/tools/dir_monitor/basic_dir_monitor_service.hpp
-	Server/tools/linux/tools/dir_monitor/dir_monitor_impl.hpp
+	server/tools/linux/tools/dir_monitor/basic_dir_monitor_service.hpp
+	server/tools/linux/tools/dir_monitor/dir_monitor_impl.hpp
 )	
 ENDIF()
 
 # Define include directories (allow easy includes)
-set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/Server/tools)
+set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools)
 
 IF(WIN32)
-	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/Server/tools/windows)
+	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/windows)
 ELSEIF(APPLE)
-	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/Server/tools/mac)
+	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/mac)
 ELSE()
-	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/Server/tools/linux)
+	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/linux)
 ENDIF()
 
-source_group(Server\\Tools tools/*.*)
-source_group(Server\\Tools\\PlatformSpecific\\windows Server/tools/windows/tools/*.*)
-source_group(Server\\Tools\\PlatformSpecific\\linux Server/tools/linux/tools/*.*)
-source_group(Server\\Tools\\PlatformSpecific\\mac Server/tools/mac/tools/*.*)
+source_group(server\\Tools tools/*.*)
+source_group(server\\Tools\\PlatformSpecific\\windows server/tools/windows/tools/*.*)
+source_group(server\\Tools\\PlatformSpecific\\linux server/tools/linux/tools/*.*)
+source_group(server\\Tools\\PlatformSpecific\\mac server/tools/mac/tools/*.*)
 
 #Database
 IF(USE_SQLITE_DATABASE)
@@ -451,9 +451,9 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/versioning/SQLiteTablesScripts.cpp
 	)
 	
-	source_group(Server\\database\\sqlite  server/database/sqlite/*.*)
-	source_group(Server\\database\\sqlite\\adapters  server/database/sqlite/adapters/*.*)
-	source_group(Server\\database\\sqlite\\versioning  server/database/sqlite/versioning/*.*)
+	source_group(server\\database\\sqlite  server/database/sqlite/*.*)
+	source_group(server\\database\\sqlite\\adapters  server/database/sqlite/adapters/*.*)
+	source_group(server\\database\\sqlite\\versioning  server/database/sqlite/versioning/*.*)
 	
 	set(LIBS ${LIBS} sqlite)
 	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${SQLITE_INCLUDE_DIRECTORY})
@@ -468,7 +468,7 @@ IF(USE_WEBEM_WEBSERVER)
 		server/web/webem/RestHandler.cpp
 	)
 	
-	source_group(Server\\web\\webem  server/web/webem/*.*)
+	source_group(server\\web\\webem  server/web/webem/*.*)
 
 	add_definitions( -DWEBSERVER_DONT_USE_ZIP )
 	

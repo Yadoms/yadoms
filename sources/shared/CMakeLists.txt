@@ -94,6 +94,8 @@ set(SHARED_LIB_SRC
 	windows/shared/Export.h
 	windows/shared/Peripherals.h
 	windows/shared/Peripherals.cpp
+	windows/shared/NetworkHelper.h
+	windows/shared/NetworkHelper.cpp
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/windows)
 
@@ -104,6 +106,8 @@ set(SHARED_LIB_SRC
 	mac/shared/Export.h
 	mac/shared/Peripherals.h
 	mac/shared/Peripherals.cpp
+	mac/shared/NetworkHelper.h
+	mac/shared/NetworkHelper.cpp
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mac)
 
@@ -114,6 +118,8 @@ set(SHARED_LIB_SRC
 	linux/shared/Export.h
 	linux/shared/Peripherals.h
 	linux/shared/Peripherals.cpp
+	linux/shared/NetworkHelper.h
+	linux/shared/NetworkHelper.cpp
 )	
 set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/linux)
 
