@@ -294,6 +294,7 @@ set(YADOMS_SRC
 	server/database/IPageRequester.h
 	server/database/IWidgetRequester.h
 	server/database/IHardwareEventLoggerRequester.h
+	server/database/IEventLoggerRequester.h
 	server/database/DatabaseException.hpp
 
 	server/database/entities/EntityHelpers.hpp

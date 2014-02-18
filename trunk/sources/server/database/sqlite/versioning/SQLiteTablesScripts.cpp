@@ -84,6 +84,6 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(HardwareEventLogger, "CREATE TABLE Hardware
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(EventLogger, "CREATE TABLE EventLogger\
                                                             (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\
                                                                eventDate  DATETIME NOT NULL,\
-                                                               eventType INTEGER NOT NULL,\
+                                                               eventType TEXT NOT NULL,\
                                                                optionalData  TEXT \
                                                             )")

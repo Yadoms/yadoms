@@ -19,7 +19,7 @@ CSQLiteEventLoggerRequester::~CSQLiteEventLoggerRequester()
 }
 
 // IEventLoggerRequester implementation
-int CSQLiteEventLoggerRequester::addEvent(const int eventType, const std::string & optionalData)
+int CSQLiteEventLoggerRequester::addEvent(const std::string & eventType, const std::string & optionalData)
 {
    boost::posix_time::ptime insertDate = boost::posix_time::second_clock::universal_time();
 
