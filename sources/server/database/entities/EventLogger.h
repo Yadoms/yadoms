@@ -17,7 +17,7 @@ public:
 
    DELCARE_FIELD_CEVENT_LOGGER(int, Id);
    DELCARE_FIELD_CEVENT_LOGGER(boost::posix_time::ptime, EventDate);
-   DELCARE_FIELD_CEVENT_LOGGER(int , EventType);
+   DELCARE_FIELD_CEVENT_LOGGER(std::string , EventType);
    DELCARE_FIELD_CEVENT_LOGGER(std::string, OptionalData);
 };
 

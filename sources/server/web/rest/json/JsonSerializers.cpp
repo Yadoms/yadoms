@@ -77,6 +77,6 @@ DECLARE_JSON_ENTITY_IMPLEMENTATION(HardwareEventLogger,  "HardwareEventLogger",
 DECLARE_JSON_ENTITY_IMPLEMENTATION(EventLogger,  "EventLogger",
    ((Id)("id")JSON_INT)
    ((EventDate)("eventDate")JSON_DATE)
-   ((EventType)("eventType")JSON_INT)
+   ((EventType)("eventType")JSON_STRING)
    ((OptionalData)("optionalData")JSON_STRING)
 )

@@ -74,7 +74,7 @@ DECLARE_ADAPTER_IMPLEMENTATION(HardwareEventLogger,
 DECLARE_ADAPTER_IMPLEMENTATION(EventLogger,
    ((Id)(int)(0))
    ((EventDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
-   ((EventType)(int)(0))
+   ((EventType)(std::string)(""))
    ((OptionalData)(std::string)(""))
 )
 
