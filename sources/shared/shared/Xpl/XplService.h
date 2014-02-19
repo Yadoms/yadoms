@@ -3,6 +3,9 @@
 #include <shared/Export.h>
 #include "XplActor.h"
 #include "XplMessage.h"
+#include <shared/Event/EventHandler.hpp>
+
+
 
 class YADOMS_SHARED_EXPORT CXplService 
 {
@@ -16,7 +19,7 @@ public:
    /// \param [in]   deviceId : The device Id delivered by Xpl Project
    /// \param [in]   instanceId : The instance Id
    //--------------------------------------------------------------
-   CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId);
+   CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId, boost::shared_ptr< boost::asio::io_service > pluginIOService = NULL);
    
    //--------------------------------------------------------------
    /// \brief			Ctor
@@ -25,7 +28,7 @@ public:
    /// \param [in]   instanceId : The instance Id
    /// \param [in] : localIPOfTheInterfaceToUse : Local @ ip used to select network interface to send
    //--------------------------------------------------------------
-   CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId, const std::string & localIPOfTheInterfaceToUse);   
+   CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId, const std::string & localIPOfTheInterfaceToUse, boost::shared_ptr< boost::asio::io_service > pluginIOService = NULL);   
    
    //--------------------------------------------------------------
    /// \brief			Dtor
@@ -46,8 +49,18 @@ public:
    //--------------------------------------------------------------
    /// \brief			Record the given method to the event Message received
    /// \param [in]   dlg : the method to call when a message is received (ex : boost::bind(&CClass::onMessageReceived, this, _1)
+   /// \example      xplService->messageReceived(boost::bind(&CMyClass::onMessageReceived, this, _1));
+   ///               void CFakePlugin::onMessageReceived(CXplMessage & message) { treat message here }
    //--------------------------------------------------------------
    void messageReceived(const SigMessageReceivedDelegate &dlg);
+
+   //--------------------------------------------------------------
+   /// \brief			Record an event handler to notify it when a message is receeived
+   /// \param [in]   handler : a shared_ptr on the eventhandler
+   /// \param [in]   eventTypeIdentifier : the event type to generate when an XplMessage is received
+   /// \eexample     xplService->messageReceived(shared_from_this(), kEvtXplMessage);
+   //--------------------------------------------------------------
+   void messageReceived(boost::shared_ptr< CEventHandler > handler, const int eventTypeIdentifier);
 
    //--------------------------------------------------------------
    /// \brief			Remove all methods which handles the event Message received
@@ -97,13 +110,19 @@ private:
    //--------------------------------------------------------------
    void fireMessageReceivedEvent(CXplMessage & msg);
 
-   boost::asio::io_service m_ioService;
-   boost::asio::deadline_timer m_timer;
+   //--------------------------------------------------------------
+   /// \brief			Utility method which call m_sigMessageReceived
+   ///               Only called in a thread to ensure non blocking calls
+   /// \param [in]   message : The message which just has been received
+   //--------------------------------------------------------------
+   void asyncSendMessage(CXplMessage & msg);
+
+   boost::shared_ptr< boost::asio::deadline_timer > m_timer;
 
    boost::asio::ip::udp::endpoint m_localEndPoint;
    boost::asio::ip::udp::endpoint m_remoteEndPoint;
    
-   boost::asio::ip::udp::socket m_socket;
+   boost::shared_ptr< boost::asio::ip::udp::socket > m_socket;
 
    boost::shared_ptr<boost::thread> m_serviceThread;
 
@@ -114,6 +133,9 @@ private:
    boost::array<char, 1024> m_receiveBuffer;
 
    SigMessageReceived m_sigMessageReceived;
+   
+   boost::shared_ptr< CEventHandler > m_eventHandler;
+   int m_eventIdToSignal;
 
    SFilter m_filter;
 
@@ -125,5 +147,15 @@ private:
 
    static const int HubDiscoveryTimeOut = 2 * 60;
 
+
+   //--------------------------------------------------------------
+   /// \brief			boost asio io_serice
+   //--------------------------------------------------------------
+   boost::shared_ptr< boost::asio::io_service > m_ioService;
+
+   //--------------------------------------------------------------
+   /// \brief			true if the ioService is manage by this instance, or false if it is given from owner
+   //--------------------------------------------------------------
+   bool m_manageIoService;
 };
 

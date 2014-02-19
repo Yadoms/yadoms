@@ -23,7 +23,7 @@ CHardwarePluginManager::CHardwarePluginManager(
    CEventHandler& supervisor,
    int pluginManagerEventId)
    :m_database(database), m_pluginPath(initialDir), m_qualifier(new CHardwarePluginQualifier(eventLoggerDatabase)),
-   m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId)
+   m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_terminate(false)
 {
    BOOST_ASSERT(m_database);
 }
@@ -41,6 +41,17 @@ void CHardwarePluginManager::stop()
       stopInstance(m_runningInstances.begin()->first);
 
    YADOMS_LOG(info) << "CHardwarePluginManager all plugins are stopped";
+
+   YADOMS_LOG(info) << "CHardwarePluginManager stop io service...";
+   m_terminate = true;
+   
+   if(m_pluginIOService.get() != NULL)
+      m_pluginIOService->stop();
+   
+   if(m_ioServiceThread.get())
+      m_ioServiceThread->join();
+
+   YADOMS_LOG(info) << "CHardwarePluginManager io service is stopped";
 }
 
 
@@ -49,8 +60,11 @@ void CHardwarePluginManager::init()
    // Initialize the plugin list (detect available plugins)
    updatePluginList();
 
-   // Start the directory changes monitor
-   m_pluginsDirectoryMonitor.reset(new CDirectoryChangeListener(m_pluginPath, boost::bind(&CHardwarePluginManager::onPluginDirectoryChanges, this, _1)));
+   //create ioservice for all plugin instances
+   m_pluginIOService.reset(new boost::asio::io_service());
+   m_ioServiceThread.reset(new boost::thread(boost::bind(&CHardwarePluginManager::runPluginIOService, this)));
+
+   while (m_pluginIOService->stopped());
 
    // Create and start plugin instances from database
    std::vector<boost::shared_ptr<CHardware> > databasePluginInstances = m_database->getHardwares();
@@ -58,6 +72,28 @@ void CHardwarePluginManager::init()
    {
       if (databasePluginInstance->getEnabled())
          startInstance(databasePluginInstance->getId());
+   }
+
+   // Start the directory changes monitor
+   m_pluginsDirectoryMonitor.reset(new CDirectoryChangeListener(m_pluginPath, boost::bind(&CHardwarePluginManager::onPluginDirectoryChanges, this, _1)));
+
+}
+
+void CHardwarePluginManager::runPluginIOService()
+{
+   try
+   {
+      //m_pluginIOService->run();
+      boost::asio::io_service::work work(*m_pluginIOService.get()); // 3
+      m_pluginIOService->run();
+
+      //while(!m_terminate)
+      //   m_pluginIOService->poll_one();
+   }
+   catch (std::exception& e)
+   {
+      // Deal with exception as appropriate.
+      YADOMS_LOG(error) << "CHardwarePluginManager io_service exception : " << e.what();
    }
 }
 
@@ -215,6 +251,7 @@ std::string CHardwarePluginManager::getPluginConfigurationSchema(int id) const
    return getPluginConfigurationSchema(instanceData->getPluginName());
 }
 
+//TODO : supprimer cette fonction ?  à priori le pluginanager ne devrait pas faire d'insert en base
 int CHardwarePluginManager::createInstance(const std::string& instanceName, const std::string& pluginName,
                                            const std::string& configuration)
 {
@@ -358,7 +395,7 @@ void CHardwarePluginManager::startInstance(int id)
 
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
-      boost::shared_ptr<CHardwarePluginInstance> pluginInstance(new CHardwarePluginInstance(plugin, databasePluginInstance, m_qualifier, m_supervisor, m_pluginManagerEventId));
+      boost::shared_ptr<CHardwarePluginInstance> pluginInstance(new CHardwarePluginInstance(plugin, databasePluginInstance, m_qualifier, m_supervisor, m_pluginManagerEventId, m_pluginIOService));
       m_runningInstances[databasePluginInstance->getId()] = pluginInstance;
    }
    catch (CInvalidPluginException& e)

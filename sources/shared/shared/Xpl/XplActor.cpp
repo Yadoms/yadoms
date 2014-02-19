@@ -20,6 +20,13 @@ CXplActor::~CXplActor()
 {
 }
 
+bool CXplActor::operator==(const CXplActor& rhs)
+{
+   return   boost::iequals(m_vendorId, rhs.m_vendorId) &&
+            boost::iequals(m_deviceId, rhs.m_deviceId) &&
+            boost::iequals(m_instanceId, rhs.m_instanceId);
+}
+
 const CXplActor CXplActor::createActor(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId)
 {
    CXplActor actor;
