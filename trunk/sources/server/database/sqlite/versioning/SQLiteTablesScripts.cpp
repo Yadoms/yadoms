@@ -36,7 +36,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Device, "  CREATE TABLE Device\
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Hardware, "CREATE TABLE Hardware\
                                                 (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\
                                                    name TEXT NOT NULL,\
-                                                   pluginName TEXT NOT NULL,\
+                                                   pluginName TEXT NOT NULL UNIQUE,\
                                                    configuration  TEXT, \
                                                    deleted  INTEGER DEFAULT 0, \
                                                    enabled  INTEGER DEFAULT 1\
