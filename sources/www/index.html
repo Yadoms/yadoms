@@ -47,6 +47,7 @@
                                   <li><a href="#">Restart</a></li>
                               </ul>
                           </li>
+                          <li><a href="#" class="btn btn-inverse customization-item hidden" id="btn-add-page"><i class="fa fa-file-o"></i>&nbsp;&nbsp;Add a new page</a></li>
                           <li><a href="#" class="btn btn-inverse customization-item hidden" id="btn-add-widget"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Add a new widget</a></li>
                       </ul>
                       <ul class="nav navbar-nav navbar-right">
@@ -142,6 +143,11 @@
    var addWidgetHasBeenLoaded = false;
 
    /**
+    * Indicate if the modal modify page has already been loaded
+    * */
+   var modificationPageModalHasBeenLoaded = false;
+
+   /**
     * On page loaded
     */
    $(document).ready(function() {
@@ -177,22 +183,6 @@
                exitCustomization();
          }   // esc
       });
-
-      $("#testBtn").click(function() {
-         $.ajax({
-            type: "POST",
-            url: "http://192.168.109.91:8080/rest/page",
-            data: { name: "etet ca" },
-            contentType: "application/json; charset=utf-8",
-            dataType: "json"
-         })
-                 .done(function(data) {
-                    console.log(data);
-                 })
-                 .fail(function(data) {console.error(data)});
-      });
-
-
 
    });
    

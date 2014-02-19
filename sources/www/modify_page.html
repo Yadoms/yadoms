@@ -1,0 +1,127 @@
+<link href="css/add_widget.css" rel="stylesheet">
+
+<!--Modify page Modal -->
+<div class="modal fade" id="modify-page-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="modify-page-modal-title">New Page</h4>
+            </div>
+            <div class="modal-body">
+               <input id="modify-page-text" type="text" class="form-control" placeholder="Enter Page name">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="btn-confirm-modify-page" type="button" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //we indicate that modify_page.html has been loaded
+    modificationPageModalHasBeenLoaded = true;
+
+    var pageCurrentlyModified = undefined;
+
+   /**
+   * Ask for widget packages to the REST server
+   */
+   function showPageModificationModal(pageId)
+   {
+      if (pageId !== undefined)
+      {
+         pageCurrentlyModified = pageArray[pageId];
+         //we are currently modifying a page
+         $("h4#modify-page-modal-title").text("Rename page");
+         $("button#btn-confirm-modify-page").text("Rename");
+         $("input#modify-page-text").val(pageCurrentlyModified.name);
+      }
+      else
+      {
+         //we are currently adding a new page
+         $("h4#modify-page-modal-title").text("Create a new page");
+         $("button#btn-confirm-modify-page").text("Create");
+         $("input#modify-page-text").val("");
+      }
+      //we display the modal
+      $('div#modify-page-modal').modal();
+   }
+
+   $('div#modify-page-modal').on('shown.bs.modal', function () {
+      $('input#modify-page-text').focus();
+   })
+
+   /**
+   * Callback to the click of the button to confirm modifying of a page
+   */
+   $("button#btn-confirm-modify-page").click(function () {
+
+      //we close the new widget modal
+      $("div#modify-page-modal").modal("hide");
+      var newPageName= $('input#modify-page-text').val();
+
+      if (pageCurrentlyModified !== undefined) {
+         //we have validated a page modification
+         $.ajax({
+            type: "PUT",
+            url: "/rest/page/" + pageCurrentlyModified.id,
+            data: JSON.stringify({ id: pageCurrentlyModified.id, name: encodeURIComponent(newPageName), pageOrder: pageCurrentlyModified.pageOrder }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+         })
+         .done(function(data) {
+           //we parse the json answer
+           if (data.result != "true")
+           {
+              notifyError("Error during modifying page");
+              return;
+           }
+           notifySuccess("Page modified successfully");
+           //we modify the page dynamically
+           var newName = decodeURIComponent(data.data.name);
+           pageCurrentlyModified.name = newName;
+           $("li.tabPagePills[page-id=\"" + pageCurrentlyModified.id + "\"] a span").text(newName);
+         })
+         .fail(function(pageName) { return function() {notifyError("Unable to modify page " + pageName)}}(newPageName))
+         .always(function() {
+            //we clear the current id
+            pageCurrentlyModified = undefined;
+         })
+      }
+      else {
+         //we have validated a page creation
+         //we look for the new pageOrder value
+         var lastPageOrder = -1;
+         for(var pageId in pageArray) {
+            lastPageOrder = Math.max(lastPageOrder, pageArray[pageId].pageOrder);
+         }
+         //we increment the pageOrder for the new page
+         lastPageOrder++;
+
+         $.ajax({
+            type: "POST",
+            url: "/rest/page/",
+            data: JSON.stringify({ name: encodeURIComponent(newPageName), pageOrder: lastPageOrder }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+         })
+         .done(function(data) {
+           //we parse the json answer
+           if (data.result != "true")
+           {
+              notifyError("Error during creating page");
+              return;
+           }
+           notifySuccess("Page created successfully");
+           //we add the page dynamically
+           var p = new Page(data.data.id, decodeURIComponent(data.data.name), data.data.pageOrder);
+           pageArray[data.data.id] = p;
+           addPageToIHM(p);
+         })
+         .fail(function(pageName) { return function() {notifyError("Unable to create page " + pageName)}}(newPageName));
+      }
+   });
+
+</script>

@@ -18,18 +18,6 @@ var startTime = null;
 
 /**
  * Return a Widget object from the gridster DOM object
- * @param tabElement tab hash concerned
- * @returns {Page}
- */
-function getPageFromTabElement(tabElement)
-{
-   var res = tabElement.split("-");
-   assert(res.length == 2, "tabElement must be formed #tab-idPage");
-   return pageArray[res[1]];
-}
-
-/**
- * Return a Widget object from the gridster DOM object
  * @param $element gridster DOM object concerned
  * @returns {Widget}
  */
@@ -60,7 +48,7 @@ function requestPages()
  */
 function requestPageDone()
 {
-    return function( data ) {
+   return function( data ) {
        //console.log('requestPageDone()' + (new Date() - startTime));
 
       if (loadPagesNotification != null) {
@@ -77,90 +65,98 @@ function requestPageDone()
 
       $.each(data.data.page, function(index, value) {
          //foreach page
-         var currentPage = new Page(value.id, value.name);
-
-         var tabIdAsText = "tab-" + value.id;
-         //pill creation
-         $("div#tabContainer").find(".tab-content").append(
-             "<div class=\"widgetPage tab-pane active\" id=\"" + tabIdAsText + "\">" +
-                 "<div class=\"gridster\">" +
-                 "<ul></ul>" +
-                 "</div>" +
-                 "</div>");
-         //page creation
-         $("div#pageMenu").find("ul").append(
-             "<li class=\"tabPagePills\" page-id=\"" + value.id + "\">" +
-                 "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" +
-                     value.name +
-                     "<div class=\"pageCustomizationToolbar btn-group btn-group-sm customization-item pull-right hidden\">" +
-                        "<button type=\"button\" class=\"btn btn-default\" title=\"Move to left\"><i class=\"glyphicon glyphicon-arrow-left\"></i></button>" +
-                        "<button type=\"button\" class=\"btn btn-default\" title=\"Move to right\"><i class=\"glyphicon glyphicon-arrow-right\"></i></button>" +
-                        "<button type=\"button\" class=\"btn btn-default\" title=\"Rename\"><i class=\"fa fa-pencil\"></i></button>" +
-                        "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
-                     "</div>" +
-                 "</a>" +
-
-             "</li>");
-
-         //gridster creation
-         currentPage.gridster = $("#" + tabIdAsText + " ul").gridster({
-             page_object: pageArray[value.id],
-             widget_margins: [gridMargin, gridMargin],
-             widget_base_dimensions: [gridWidth, gridWidth],
-             min_cols: numberOfColumns,
-             max_cols: numberOfColumns,
-             resize: {
-                 enabled: true,
-                 resize: function(e, ui, $widget) {
-                    var widgetObject = getWidgetFromGridsterElement($widget);
-                    try
-                    {
-                        if (widgetObject.viewModel.resized !== undefined)
-                           widgetObject.viewModel.resized();
-                    }
-                    catch (e)
-                    {
-                       console.log("the widget " + widget.name + " has generated an exception :");
-                       console.log(e);
-                       notifyWarning("The widget " + widget.name + " has generated an exception");
-                    }
-                 },
-                 stop: function(e, ui, $widget) {
-                    var widgetObject = getWidgetFromGridsterElement($widget);
-                    try
-                    {
-                       if (widgetObject.viewModel.resized !== undefined)
-                          widgetObject.viewModel.resized();
-                    }
-                    catch (e)
-                    {
-                       notifyWarning("The widget " + widget.name + " has generated an exception");
-                       console.warn(e);
-                    }
-                 }
-             }
-         }).data('gridster');
-
+         var currentPage = new Page(value.id, decodeURIComponent(value.name), value.pageOrder);
          pageArray[currentPage.id] = currentPage;
+         addPageToIHM(currentPage);
       });
 
       //we activate first page on the pills
       $("div#pageMenu").find("ul li").first().addClass("active");
 
-      //we remove the active class of all hidden gridster
-      var $tabs = $("div.tab-content div");
-      $tabs.not($tabs.first()).removeClass("active");
-
-      $("div.widgetPage div.gridster").width(numberOfColumns * (gridWidth + gridMargin * 2));
+      //we activate the first page
+      $("div#tabContainer div.widgetPage").first().addClass("active");
 
       //we deactivate the customization
       enableGridsterCustomization(false);
 
       //we listen click event on tab click
-      $('.page-tabs').bind('click', function (e) { return tabClick(getPageFromTabElement(e.target.hash)); } );
-      requestWidgets(getCurrentPage());
+      $('li.tabPagePills').bind('click', function (e) {
+         return tabClick($(e.currentTarget).attr("page-id")); } );
 
-    };
+      //we listen click event on rename click
+      $('button.rename-page').bind('click', function (e) {
+         createOrUpdatePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id")); } );
+
+      requestWidgets(getCurrentPage());
+   };
+}
+
+function addPageToIHM(page) {
+   var tabIdAsText = "tab-" + page.id;
+   //pill creation
+   $("div#tabContainer").find(".tab-content").append(
+      "<div class=\"widgetPage tab-pane active\" id=\"" + tabIdAsText + "\">" +
+         "<div class=\"gridster\">" +
+            "<ul></ul>" +
+         "</div>" +
+      "</div>");
+   //page creation
+   $("div#pageMenu").find("ul").append(
+      "<li class=\"tabPagePills\" page-id=\"" + page.id + "\">" +
+         "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" +
+            "<span>" + page.name + "</span>" +
+            "<div class=\"pageCustomizationToolbar btn-group btn-group-sm customization-item pull-right hidden\">" +
+               "<button type=\"button\" class=\"btn btn-default\" title=\"Move to left\"><i class=\"glyphicon glyphicon-arrow-left\"></i></button>" +
+               "<button type=\"button\" class=\"btn btn-default\" title=\"Move to right\"><i class=\"glyphicon glyphicon-arrow-right\"></i></button>" +
+               "<button type=\"button\" class=\"btn btn-default rename-page\" title=\"Rename\"><i class=\"fa fa-pencil\"></i></button>" +
+               "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
+            "</div>" +
+         "</a>" +
+      "</li>");
+
+   //gridster creation
+   page.gridster = $("#" + tabIdAsText + " ul").gridster({
+      page_object: pageArray[page.id],
+      widget_margins: [gridMargin, gridMargin],
+      widget_base_dimensions: [gridWidth, gridWidth],
+      min_cols: numberOfColumns,
+      max_cols: numberOfColumns,
+      resize: {
+         enabled: true,
+         resize: function(e, ui, $widget) {
+            var widgetObject = getWidgetFromGridsterElement($widget);
+            try
+            {
+               if (widgetObject.viewModel.resized !== undefined)
+                  widgetObject.viewModel.resized();
+            }
+            catch (e)
+            {
+               console.log("the widget " + widget.name + " has generated an exception :");
+               console.log(e);
+               notifyWarning("The widget " + widget.name + " has generated an exception");
+            }
+         },
+         stop: function(e, ui, $widget) {
+            var widgetObject = getWidgetFromGridsterElement($widget);
+            try
+            {
+               if (widgetObject.viewModel.resized !== undefined)
+                  widgetObject.viewModel.resized();
+            }
+            catch (e)
+            {
+               notifyWarning("The widget " + widget.name + " has generated an exception");
+               console.warn(e);
+            }
+         }
+      }
+   }).data('gridster');
+
+   //we remove the active class of hidden gridster
+   $("div#" + tabIdAsText).removeClass("active");
+
+   $("div#" + tabIdAsText + " .gridster").width(numberOfColumns * (gridWidth + gridMargin * 2));
 }
 
 function requestWidgets(page) {
@@ -322,9 +318,9 @@ function getWidgetPackageInformationDone(packageName)
          });
 
          //we prevent from click on widget to be propagated on the rest of the window
-         /*$(".widget").click(function(e) {
+         $(".widget").click(function(e) {
             e.stopPropagation();
-         });*/
+         });
 
          $(".delete-page").click(function(e) {
             e.stopPropagation();
@@ -472,17 +468,17 @@ function getCurrentPage()
 
 /**
  * Occurs when user click on a tab
- * @param page tab clicked
+ * @param pageId tab id clicked
  */
-function tabClick(page) {
+function tabClick(pageId) {
 
    //we check for widget loading if page is different than the current
-   if (getCurrentPage() == page)
+   if (getCurrentPage().id == pageId)
       return;
 
    //and if it's not loaded for the moment
-   if (!pagesLoaded[page.id])
+   if (!pagesLoaded[pageId])
    {
-      requestWidgets(page);
+      requestWidgets(pageArray[pageId]);
    }
 }

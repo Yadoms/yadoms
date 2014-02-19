@@ -71,9 +71,8 @@ $("a#customizeButton").click(function() {
  * Callback of the click on the background to stop customization
  */
 $("div#tabContainer").click(function() {
-   //TODO : remettre qd le drag remarchera
-   //if (customization)
-      //exitCustomization();
+   if (customization)
+      exitCustomization();
 });
 
 /**
@@ -144,6 +143,31 @@ $("#btn-add-widget").click(function() {
     }
 });
 
+/**
+ * Callback of the click on the add widget button
+ * Make lazy loading of the add widget modal
+ */
+$("#btn-add-page").click(function() {
+   createOrUpdatePage();
+});
 
-
-
+function createOrUpdatePage(pageId) {
+   if (modificationPageModalHasBeenLoaded)
+   {
+      //we show the modal to modify page name in add mode
+      showPageModificationModal(pageId);
+   }
+   else
+   {
+      $.ajax( "modify_page.html" )
+         .done(function(data) {
+            //we append it to the index
+            $('body').append(data);
+            //we show the modal to modify page
+            showPageModificationModal(pageId);
+         })
+         .fail(function() {
+            notifyError("Unable to load page modification form");
+         });
+   }
+}
