@@ -6,12 +6,14 @@
  * @param name name of the page
  * @constructor
  */
-function Page(id, name) {
+function Page(id, name, pageOrder) {
    assert(id !== undefined, "id of a page must be defined");
    assert(name !== undefined, "name of a page must be defined");
+   assert(pageOrder !== undefined, "order of a page must be defined");
 
    this.id = id;
    this.name = name;
+   this.pageOrder = pageOrder;
    this.gridster;
    this.widgets = new Array();
 }
@@ -28,3 +30,15 @@ Page.prototype.widgetsToJsonString = function() {
    }
    return JSON.stringify(data);
 }
+
+/**
+ * Override JSON.stringify method in order to send only database columns
+ * @returns {string}
+ */
+Page.prototype.toJSON = function () {
+   return {
+      id : this.id,
+      name: this.name,
+      pageOrder: this.pageOrder
+   };
+};

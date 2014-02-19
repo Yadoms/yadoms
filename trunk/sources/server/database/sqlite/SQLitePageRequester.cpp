@@ -73,7 +73,7 @@ std::vector<boost::shared_ptr<CPage> > CSQLitePageRequester::getPages()
 void CSQLitePageRequester::updatePage(int pageId, const std::string& name, const int pageOrder)
 {
    CQuery qUpdate;
-   qUpdate. Update(CHardwareTable::getTableName()).
+   qUpdate.Update(CPageTable::getTableName()).
             Set(CPageTable::getNameColumnName(), name, CPageTable::getPageOrderColumnName(), pageOrder).
             Where(CPageTable::getIdColumnName(), CQUERY_OP_EQUAL, pageId);
 
