@@ -19,11 +19,11 @@ CSQLitePageRequester::~CSQLitePageRequester()
 
 
 // IPageRequester implementation
-int CSQLitePageRequester::addPage(const std::string& name)
+int CSQLitePageRequester::addPage(const std::string& name, const int pageOrder)
 {
    CQuery qInsert;
-   qInsert. InsertInto(CPageTable::getTableName(), CPageTable::getNameColumnName()).
-            Values(name);
+   qInsert. InsertInto(CPageTable::getTableName(), CPageTable::getNameColumnName(), CPageTable::getPageOrderColumnName()).
+            Values(name, pageOrder);
    if(m_databaseRequester->queryStatement(qInsert) <= 0)
       throw CEmptyResultException("No lines affected");
       
@@ -70,11 +70,11 @@ std::vector<boost::shared_ptr<CPage> > CSQLitePageRequester::getPages()
    return adapter.getResults();
 }
 
-void CSQLitePageRequester::updatePage(int pageId, const std::string& name)
+void CSQLitePageRequester::updatePage(int pageId, const std::string& name, const int pageOrder)
 {
    CQuery qUpdate;
    qUpdate. Update(CHardwareTable::getTableName()).
-            Set(CPageTable::getNameColumnName(), name).
+            Set(CPageTable::getNameColumnName(), name, CPageTable::getPageOrderColumnName(), pageOrder).
             Where(CPageTable::getIdColumnName(), CQUERY_OP_EQUAL, pageId);
 
    if(m_databaseRequester->queryStatement(qUpdate) <= 0)
@@ -90,7 +90,12 @@ void CSQLitePageRequester::removePage(int pageId)
       throw CEmptyResultException("No lines affected");
 }
 
-
+void CSQLitePageRequester::removeAllPages()
+{
+   CQuery qDelete;
+   qDelete. DeleteFrom(CPageTable::getTableName());
+   m_databaseRequester->queryStatement(qDelete);
+}
 
 
 
