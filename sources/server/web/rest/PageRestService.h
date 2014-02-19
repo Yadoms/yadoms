@@ -20,11 +20,14 @@ public:
    CJson getPageWidget(const std::vector<std::string> & parameters, const CJson & requestContent);   
 
    CJson addPage(const std::vector<std::string> & parameters, const CJson & requestContent);   
-   
+   CJson updatePage(const std::vector<std::string> & parameters, const CJson & requestContent);   
+   CJson deletePage(const std::vector<std::string> & parameters, const CJson & requestContent);   
+   CJson deleteAllPages(const std::vector<std::string> & parameters, const CJson & requestContent);   
+
+
    CJson addWidgetForPage(const std::vector<std::string> & parameters, const CJson & requestContent);   
    CJson replaceAllWidgetsForPage(const std::vector<std::string> & parameters, const CJson & requestContent);   
    CJson deleteAllWidgetsForPage(const std::vector<std::string> & parameters, const CJson & requestContent);   
-   CJson deletePage(const std::vector<std::string> & parameters, const CJson & requestContent);   
 
    CJson transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const CJson & requestContent);
 

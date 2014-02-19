@@ -31,10 +31,13 @@ void CPageRestService::configureDispatcher(CRestDispatcher & dispatcher)
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::getPageWidget);
 
    REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPageRestService::addPage, CPageRestService::transactionalMethod);
+   REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CPageRestService::updatePage, CPageRestService::transactionalMethod);
+   REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPageRestService::deletePage, CPageRestService::transactionalMethod);
+   REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CPageRestService::deleteAllPages, CPageRestService::transactionalMethod);
+
    REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::addWidgetForPage, CPageRestService::transactionalMethod);
    REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::replaceAllWidgetsForPage, CPageRestService::transactionalMethod);
    REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::deleteAllWidgetsForPage, CPageRestService::transactionalMethod);
-   REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPageRestService::deletePage, CPageRestService::transactionalMethod);
 }
 
 
@@ -115,7 +118,7 @@ CJson CPageRestService::addPage(const std::vector<std::string> & parameters, con
    {
       CPageEntitySerializer hes;
       boost::shared_ptr<CPage> pageToAdd = hes.deserialize(requestContent);
-      int idCreated = m_dataProvider->getPageRequester()->addPage(pageToAdd->getName());
+      int idCreated = m_dataProvider->getPageRequester()->addPage(pageToAdd->getName(), pageToAdd->getPageOrder());
       boost::shared_ptr<CPage> pageFound =  m_dataProvider->getPageRequester()->getPage(idCreated);
       return CJsonResult::GenerateSuccess(hes.serialize(*pageFound.get()));
    }
@@ -129,6 +132,89 @@ CJson CPageRestService::addPage(const std::vector<std::string> & parameters, con
    }
 }
 
+CJson CPageRestService::updatePage(const std::vector<std::string> & parameters, const CJson & requestContent)
+{
+   try
+   {
+      int pageId = 0;
+      if(parameters.size()>1)
+      {
+         pageId = boost::lexical_cast<int>(parameters[1].c_str());
+
+         CPageEntitySerializer hes;
+         boost::shared_ptr<CPage> pageToReplace = hes.deserialize(requestContent);
+         if(pageToReplace->getId() > 0 && pageId == pageToReplace->getId())
+         {
+            m_dataProvider->getPageRequester()->updatePage(pageToReplace->getId(), pageToReplace->getName(), pageToReplace->getPageOrder());
+            return CJsonResult::GenerateSuccess(hes.serialize(*m_dataProvider->getPageRequester()->getPage(pageToReplace->getId())));
+         }
+         else
+         {
+            return CJsonResult::GenerateError("The page to replace must have a valid id");
+         }
+      }
+   }
+   catch(std::exception &ex)
+   {
+      return CJsonResult::GenerateError(ex);
+   }
+   catch(...)
+   {
+      return CJsonResult::GenerateError("unknown exception in replacing a page");
+   }
+}
+
+CJson CPageRestService::deletePage(const std::vector<std::string> & parameters, const CJson & requestContent)
+{
+   try
+   {
+      int pageId = 0;
+      if(parameters.size()>1)
+      {
+         pageId = boost::lexical_cast<int>(parameters[1].c_str());
+
+         //delete all widgets
+         m_dataProvider->getWidgetRequester()->removeWidgetsInPage(pageId);
+
+         //remove page
+         m_dataProvider->getPageRequester()->removePage(pageId);
+         return CJsonResult::GenerateSuccess();
+      }
+      else
+      {
+         return CJsonResult::GenerateError("The page to delete must have an id");
+      }
+   }
+   catch(std::exception &ex)
+   {
+      return CJsonResult::GenerateError(ex);
+   }
+   catch(...)
+   {
+      return CJsonResult::GenerateError("unknown exception in deleting a page");
+   }
+}
+
+CJson CPageRestService::deleteAllPages(const std::vector<std::string> & parameters, const CJson & requestContent)
+{
+   try
+   {
+      //delete all widgets
+      m_dataProvider->getWidgetRequester()->removeAllWidgets();
+
+      //remove page
+      m_dataProvider->getPageRequester()->removeAllPages();
+      return CJsonResult::GenerateSuccess();
+   }
+   catch(std::exception &ex)
+   {
+      return CJsonResult::GenerateError(ex);
+   }
+   catch(...)
+   {
+      return CJsonResult::GenerateError("unknown exception in deleting all pages");
+   }
+}
 
 CJson CPageRestService::addWidgetForPage(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
@@ -212,35 +298,4 @@ CJson CPageRestService::deleteAllWidgetsForPage(const std::vector<std::string> &
       return CJsonResult::GenerateError("unknown exception in creating a new widget");
    }
 
-}
-
-CJson CPageRestService::deletePage(const std::vector<std::string> & parameters, const CJson & requestContent)
-{
-   try
-   {
-      int pageId = 0;
-      if(parameters.size()>1)
-      {
-         pageId = boost::lexical_cast<int>(parameters[1].c_str());
-
-         //remove all widgets in page
-         m_dataProvider->getWidgetRequester()->removeWidgetsInPage(pageId);
-
-         //remove page
-         m_dataProvider->getPageRequester()->removePage(pageId);
-         return CJsonResult::GenerateSuccess();
-      }
-      else
-      {
-         return CJsonResult::GenerateError("Invalid parameter count (need page id in url)");
-      }
-   }
-   catch(std::exception &ex)
-   {
-      return CJsonResult::GenerateError(ex);
-   }
-   catch(...)
-   {
-      return CJsonResult::GenerateError("unknown exception in creating a new widget");
-   }
 }
