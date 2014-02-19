@@ -16,7 +16,7 @@ CHardwarePluginQualifier::~CHardwarePluginQualifier()
 {
 }
 
-void CHardwarePluginQualifier::signalLoad(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation)
+void CHardwarePluginQualifier::signalLoad(const boost::shared_ptr<const shared::plugin::IInformation> pluginInformation)
 {
    // Insert event in database
    AddEventToDatabase(pluginInformation, CHardwareEventLogger::kLoad);
@@ -25,7 +25,7 @@ void CHardwarePluginQualifier::signalLoad(const boost::shared_ptr<const IHardwar
    obsoleteQualityIndicatorCache(CPluginIdentity(pluginInformation));
 }
 
-void CHardwarePluginQualifier::signalUnload(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation)
+void CHardwarePluginQualifier::signalUnload(const boost::shared_ptr<const shared::plugin::IInformation> pluginInformation)
 {
    // Insert event in database
    AddEventToDatabase(pluginInformation, CHardwareEventLogger::kUnload);
@@ -34,7 +34,7 @@ void CHardwarePluginQualifier::signalUnload(const boost::shared_ptr<const IHardw
    obsoleteQualityIndicatorCache(CPluginIdentity(pluginInformation));
 }
 
-void CHardwarePluginQualifier::signalCrash(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation, const std::string& reason)
+void CHardwarePluginQualifier::signalCrash(const boost::shared_ptr<const shared::plugin::IInformation> pluginInformation, const std::string& reason)
 {
    // Insert event in database
    AddEventToDatabase(pluginInformation, CHardwareEventLogger::kCrash, reason);
@@ -43,7 +43,7 @@ void CHardwarePluginQualifier::signalCrash(const boost::shared_ptr<const IHardwa
    obsoleteQualityIndicatorCache(CPluginIdentity(pluginInformation));
 }
 
-void CHardwarePluginQualifier::AddEventToDatabase(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation, CHardwareEventLogger::EEventType eventType, const std::string& reason)
+void CHardwarePluginQualifier::AddEventToDatabase(const boost::shared_ptr<const shared::plugin::IInformation> pluginInformation, CHardwareEventLogger::EEventType eventType, const std::string& reason)
 {
    try
    {
@@ -61,13 +61,13 @@ void CHardwarePluginQualifier::AddEventToDatabase(const boost::shared_ptr<const 
    }
 }
 
-bool CHardwarePluginQualifier::isSafe(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation)
+bool CHardwarePluginQualifier::isSafe(const boost::shared_ptr<const shared::plugin::IInformation> pluginInformation)
 {
    int quality = getQualityLevel(pluginInformation);
    return quality == kNoEnoughData || quality >= m_SafetyThreshold;
 }
 
-int CHardwarePluginQualifier::getQualityLevel(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation)
+int CHardwarePluginQualifier::getQualityLevel(const boost::shared_ptr<const shared::plugin::IInformation> pluginInformation)
 {
    CPluginIdentity identity(pluginInformation);
 

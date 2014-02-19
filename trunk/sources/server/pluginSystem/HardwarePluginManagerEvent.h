@@ -27,7 +27,7 @@ public:
    /// \param[in]    pluginInformation Informations on plugin (name, version...)
    /// \param[in]    stopping true is crash occurred when plugin stopped
    //--------------------------------------------------------------
-   CHardwarePluginManagerEvent(ESubEventType eventId, int instanceId, const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation, bool stopping)
+   CHardwarePluginManagerEvent(ESubEventType eventId, int instanceId, const boost::shared_ptr<const shared::plugin::IInformation> pluginInformation, bool stopping)
       :m_eventId(eventId), m_instanceId(instanceId), m_pluginInformation(pluginInformation), m_stopping(stopping)
    {
    }
@@ -54,7 +54,7 @@ public:
    /// \brief	   Plugin information getter
    /// \return    Information on plugin (name, version...)
    //--------------------------------------------------------------
-   boost::shared_ptr<const IHardwarePluginInformation> getPluginInformation() const
+   boost::shared_ptr<const shared::plugin::IInformation> getPluginInformation() const
    {
       return m_pluginInformation;
    }
@@ -82,7 +82,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	   Plugin information
    //--------------------------------------------------------------
-   const boost::shared_ptr<const IHardwarePluginInformation> m_pluginInformation;
+   const boost::shared_ptr<const shared::plugin::IInformation> m_pluginInformation;
 
    //--------------------------------------------------------------
    /// \brief	   Instance stopping state, when event occurred

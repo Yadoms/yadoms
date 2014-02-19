@@ -31,14 +31,14 @@ CJson CHardwareEventLoggerRestService::getLogsForPluginName(const std::vector<st
 {
    std::string pluginName = "";
    std::string pluginVersion = "";
-   IHardwarePluginInformation::EReleaseType rType = IHardwarePluginInformation::kStable;
+   shared::plugin::IInformation::EReleaseType rType = shared::plugin::IInformation::kStable;
 
    if(parameters.size()>1)
       pluginName = parameters[1];
    if(parameters.size()>2)
       pluginVersion = parameters[2];
    if(parameters.size()>3)
-      rType = (IHardwarePluginInformation::EReleaseType)atoi(parameters[3].c_str());
+      rType = (shared::plugin::IInformation::EReleaseType)atoi(parameters[3].c_str());
 
    CHardwareEventLoggerEntitySerializer hes;
    std::vector< boost::shared_ptr<CHardwareEventLogger> > dvList = m_dataProvider->getHardwareEventLoggerRequester()->getHardwareEvents(pluginName, pluginVersion, rType);
@@ -50,14 +50,14 @@ CJson CHardwareEventLoggerRestService::getLogsForPluginNameFromDate(const std::v
    std::string pluginName = "";
    std::string pluginVersion = "";
    boost::posix_time::ptime fromDate;
-   IHardwarePluginInformation::EReleaseType rType = IHardwarePluginInformation::kStable;
+   shared::plugin::IInformation::EReleaseType rType = shared::plugin::IInformation::kStable;
 
    if(parameters.size()>1)
       pluginName = parameters[1];
    if(parameters.size()>2)
       pluginVersion = parameters[2];
    if(parameters.size()>3)
-      rType = (IHardwarePluginInformation::EReleaseType)atoi(parameters[3].c_str());
+      rType = (shared::plugin::IInformation::EReleaseType)atoi(parameters[3].c_str());
    if(parameters.size()>4)
       fromDate = boost::posix_time::time_from_string(parameters[4]);
 

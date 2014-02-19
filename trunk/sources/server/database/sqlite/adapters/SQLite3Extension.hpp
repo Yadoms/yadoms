@@ -2,7 +2,7 @@
 
 #include "sqlite3.h"
 #include <shared/StringExtension.h>
-#include <shared/HardwarePlugin/Interfaces/IHardwarePluginInformation.h>
+#include <shared/plugin/information/IInformation.h>
 #include "database/entities/HardwareEventLogger.h"
 #include "database/entities/Configuration.h"
 
