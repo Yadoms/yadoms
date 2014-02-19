@@ -29,37 +29,38 @@ set(SHARED_LIB_SRC
 	shared/Exceptions/NotSupportedException.hpp
 	shared/Exceptions/NullReferenceException.hpp
 
-  	shared/HardwarePlugin/ImplementationHelper.h
+  shared/plugin/ImplementationHelper.h
 	
-	shared/HardwarePlugin/Configuration/Configuration.h
-	shared/HardwarePlugin/Configuration/Configuration.cpp
-	shared/HardwarePlugin/Configuration/ConfigurationFactory.h
-	shared/HardwarePlugin/Configuration/ConfigurationFactory.cpp
-	shared/HardwarePlugin/Configuration/BitsFieldParameter.h
-	shared/HardwarePlugin/Configuration/BitsFieldParameter.cpp
-	shared/HardwarePlugin/Configuration/BoolParameter.h
-	shared/HardwarePlugin/Configuration/BoolParameter.cpp
-	shared/HardwarePlugin/Configuration/EnumGenericParameter.h
-	shared/HardwarePlugin/Configuration/EnumGenericParameter.cpp
-	shared/HardwarePlugin/Configuration/DoubleParameter.h
-	shared/HardwarePlugin/Configuration/DoubleParameter.cpp
-	shared/HardwarePlugin/Configuration/EnumParameter.hpp
-	shared/HardwarePlugin/Configuration/IntParameter.h
-	shared/HardwarePlugin/Configuration/IntParameter.cpp
-	shared/HardwarePlugin/Configuration/Parameter.h
-	shared/HardwarePlugin/Configuration/Parameter.cpp
-	shared/HardwarePlugin/Configuration/Parameters.h
-	shared/HardwarePlugin/Configuration/SimpleParameter.hpp
-	shared/HardwarePlugin/Configuration/SerialPortParameter.h
-	shared/HardwarePlugin/Configuration/SerialPortParameter.cpp
-	shared/HardwarePlugin/Configuration/StringParameter.h
-	shared/HardwarePlugin/Configuration/StringParameter.cpp	
-	shared/HardwarePlugin/Information/Information.cpp
-	shared/HardwarePlugin/Information/Information.h
+	shared/plugin/Configuration/Configuration.h
+	shared/plugin/Configuration/Configuration.cpp
+	shared/plugin/Configuration/ConfigurationFactory.h
+	shared/plugin/Configuration/ConfigurationFactory.cpp
+	shared/plugin/Configuration/BitsFieldParameter.h
+	shared/plugin/Configuration/BitsFieldParameter.cpp
+	shared/plugin/Configuration/BoolParameter.h
+	shared/plugin/Configuration/BoolParameter.cpp
+	shared/plugin/Configuration/EnumGenericParameter.h
+	shared/plugin/Configuration/EnumGenericParameter.cpp
+	shared/plugin/Configuration/DoubleParameter.h
+	shared/plugin/Configuration/DoubleParameter.cpp
+	shared/plugin/Configuration/EnumParameter.hpp
+	shared/plugin/Configuration/IntParameter.h
+	shared/plugin/Configuration/IntParameter.cpp
+	shared/plugin/Configuration/Parameter.h
+	shared/plugin/Configuration/Parameter.cpp
+	shared/plugin/Configuration/Parameters.h
+	shared/plugin/Configuration/SimpleParameter.hpp
+	shared/plugin/Configuration/SerialPortParameter.h
+	shared/plugin/Configuration/SerialPortParameter.cpp
+	shared/plugin/Configuration/StringParameter.h
+	shared/plugin/Configuration/StringParameter.cpp	
+  
+	shared/plugin/Information/IInformation.h
+	shared/plugin/Information/Information.cpp
+	shared/plugin/Information/Information.h
 
-	shared/HardwarePlugin/Interfaces/IHardwarePlugin.h
-	shared/HardwarePlugin/Interfaces/IHardwarePluginInformation.h
-	shared/HardwarePlugin/Interfaces/IHardwarePluginConfigurationSchema.h
+	shared/plugin/Interfaces/IHardwarePlugin.h
+	shared/plugin/Interfaces/IHardwarePluginConfigurationSchema.h
 
 	shared/Serialization/IPtreeToStringSerializer.h
 	shared/Serialization/PTreeToJsonSerializer.h
@@ -130,10 +131,10 @@ source_group(Event shared/Event/*.*)
 
 source_group(Exceptions shared/Exceptions/*.*)
 
-source_group(HardwarePlugin shared/shared/HardwarePlugin/*.* )	
-source_group(HardwarePlugin\\Configuration shared/shared/HardwarePlugin/Configuration/*.* )	
-source_group(HardwarePlugin\\Information shared/shared/HardwarePlugin/Information/*.* )	
-source_group(HardwarePlugin\\Interfaces shared/shared/HardwarePlugin/Interfaces/*.* )	
+source_group(plugin shared/shared/plugin/*.* )	
+source_group(plugin\\Configuration shared/shared/plugin/Configuration/*.* )	
+source_group(plugin\\Information shared/shared/plugin/Information/*.* )	
+source_group(plugin\\Interfaces shared/shared/plugin/Interfaces/*.* )	
 
 source_group(PlatformSpecific\\windows shared/windows/shared/*.*)
 source_group(PlatformSpecific\\linux shared/linux/shared/*.*)

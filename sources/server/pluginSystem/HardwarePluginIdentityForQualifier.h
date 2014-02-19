@@ -16,12 +16,12 @@ public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    //--------------------------------------------------------------
-   CPluginIdentity(const boost::shared_ptr<const IHardwarePluginInformation> pluginInformation);
+   CPluginIdentity(const boost::shared_ptr<const shared::plugin::IInformation> pluginInformation);
 
    //--------------------------------------------------------------
    /// \brief	Constructor
    //--------------------------------------------------------------
-   CPluginIdentity(const std::string& name, const std::string& version, IHardwarePluginInformation::EReleaseType releaseType);
+   CPluginIdentity(const std::string& name, const std::string& version, shared::plugin::IInformation::EReleaseType releaseType);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -44,12 +44,12 @@ public:
    /// \brief	   Release type getter
    /// \return    Plugin release type
    //--------------------------------------------------------------
-   const IHardwarePluginInformation::EReleaseType getReleaseType() const;
+   const shared::plugin::IInformation::EReleaseType getReleaseType() const;
 
 private:
    const std::string m_name;
    const std::string m_version;
-   const IHardwarePluginInformation::EReleaseType m_releaseType;
+   const shared::plugin::IInformation::EReleaseType m_releaseType;
 };
 
 //--------------------------------------------------------------

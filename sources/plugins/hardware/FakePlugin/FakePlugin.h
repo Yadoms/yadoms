@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/HardwarePlugin/ImplementationHelper.h>
+#include <shared/plugin/ImplementationHelper.h>
 #include <shared/Xpl/XplMessage.h>
 #include <shared/Event/EventHandler.hpp>
 #include "FakePluginConfiguration.h"

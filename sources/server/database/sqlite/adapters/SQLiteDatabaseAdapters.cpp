@@ -66,7 +66,7 @@ DECLARE_ADAPTER_IMPLEMENTATION(HardwareEventLogger,
    ((EventDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
    ((PluginName)(std::string)(""))
    ((PluginVersion)(std::string)(""))
-   ((PluginRelease)(IHardwarePluginInformation::EReleaseType)(IHardwarePluginInformation::kStable)(int))
+   ((PluginRelease)(shared::plugin::IInformation::EReleaseType)(shared::plugin::IInformation::kStable)(int))
    ((EventType)(CHardwareEventLogger::EEventType)(CHardwareEventLogger::kUnload)(int))
    ((Message)(std::string)(""))
 )

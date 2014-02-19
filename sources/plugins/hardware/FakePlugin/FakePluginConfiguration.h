@@ -1,7 +1,7 @@
 #pragma once
 
-#include <shared/HardwarePlugin/Configuration/Configuration.h>
-#include <shared/HardwarePlugin/ImplementationHelper.h>
+#include <shared/plugin/Configuration/Configuration.h>
+#include <shared/plugin/ImplementationHelper.h>
 
 
 // An example of an enum type of parameter

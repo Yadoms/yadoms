@@ -2,7 +2,7 @@
 
 #include "JsonSerializers.h"
 #include "JsonSerializersHelpers.hpp"
-#include <shared/HardwarePlugin/Interfaces/IHardwarePluginInformation.h>
+#include <shared/plugin/information/IInformation.h>
 #include "database/entities/HardwareEventLogger.h"
 
 DECLARE_JSON_ENTITY_IMPLEMENTATION(Hardware, "Hardware",
@@ -69,7 +69,7 @@ DECLARE_JSON_ENTITY_IMPLEMENTATION(HardwareEventLogger,  "HardwareEventLogger",
    ((EventDate)("eventDate")JSON_DATE)
    ((PluginName)("pluginName")JSON_STRING)
    ((PluginVersion)("pluginVersion")JSON_STRING)
-   ((PluginRelease)("pluginRelease")JSON_ENUM(IHardwarePluginInformation::EReleaseType))
+   ((PluginRelease)("pluginRelease")JSON_ENUM(shared::plugin::IInformation::EReleaseType))
    ((EventType)("eventType")JSON_ENUM(CHardwareEventLogger::EEventType))
    ((Message)("message")JSON_STRING)
 )

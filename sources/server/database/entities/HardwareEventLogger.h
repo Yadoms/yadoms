@@ -1,7 +1,7 @@
 #pragma once
 
 #include "EntityHelpers.hpp"
-#include <shared/HardwarePlugin/Interfaces/IHardwarePluginInformation.h>
+#include <shared/plugin/information/IInformation.h>
 
 #define DELCARE_FIELD_CHARDWARE_EVENT_LOGGER(t,n)   DELCARE_FIELD(CHardwareEventLogger,t,n)
 
@@ -28,7 +28,7 @@ public:
    DELCARE_FIELD_CHARDWARE_EVENT_LOGGER(boost::posix_time::ptime, EventDate);
    DELCARE_FIELD_CHARDWARE_EVENT_LOGGER(std::string, PluginName);
    DELCARE_FIELD_CHARDWARE_EVENT_LOGGER(std::string, PluginVersion);
-   DELCARE_FIELD_CHARDWARE_EVENT_LOGGER(IHardwarePluginInformation::EReleaseType, PluginRelease);
+   DELCARE_FIELD_CHARDWARE_EVENT_LOGGER(shared::plugin::IInformation::EReleaseType, PluginRelease);
    DELCARE_FIELD_CHARDWARE_EVENT_LOGGER(EEventType, EventType);
    DELCARE_FIELD_CHARDWARE_EVENT_LOGGER(std::string, Message);
 };

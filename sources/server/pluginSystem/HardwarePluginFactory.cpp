@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "HardwarePluginFactory.h"
-#include <shared/HardwarePlugin/Information/Information.h>
+#include <shared/plugin/Information/Information.h>
 #include <shared/StringExtension.h>
 
 CHardwarePluginFactory::CHardwarePluginFactory(const boost::filesystem::path& libraryPath)
@@ -22,7 +22,7 @@ void CHardwarePluginFactory::load()
 
    // Load plugin static methods
    m_construct = (IHardwarePlugin* (*)(void))GetFunctionPointer("construct");
-   m_getInformation = (const IHardwarePluginInformation& (*)())GetFunctionPointer("getInformation");
+   m_getInformation = (const shared::plugin::IInformation& (*)())GetFunctionPointer("getInformation");
    m_getConfigurationSchema = (const IHardwarePluginConfigurationSchema& (*)())GetFunctionPointer("getConfigurationSchemaInterface");
 
    // Check if all non-optional methods are loaded
@@ -55,12 +55,12 @@ const boost::filesystem::path& CHardwarePluginFactory::getLibraryPath() const
    return m_libraryPath;
 }
 
-boost::shared_ptr<const IHardwarePluginInformation> CHardwarePluginFactory::getInformation() const
+boost::shared_ptr<const shared::plugin::IInformation> CHardwarePluginFactory::getInformation() const
 {
    BOOST_ASSERT(m_getInformation);  // getInformation can not be called if load was unsuccessfully
 
    // Because library can be unloaded at any time (so memory will be freed), return a copy of informations
-   boost::shared_ptr<IHardwarePluginInformation> information(new CHardwarePluginInformation(m_getInformation()));
+   boost::shared_ptr<shared::plugin::IInformation> information(new shared::plugin::CInformation(m_getInformation()));
    return information;
 }
 
@@ -78,7 +78,7 @@ std::string CHardwarePluginFactory::getConfigurationSchema() const
 /// Static functions
 //-------------------------------------------------------------
 
-boost::shared_ptr<const IHardwarePluginInformation> CHardwarePluginFactory::getInformation(const boost::filesystem::path& libraryPath)
+boost::shared_ptr<const shared::plugin::IInformation> CHardwarePluginFactory::getInformation(const boost::filesystem::path& libraryPath)
 {
    CHardwarePluginFactory plugin(libraryPath);
    return plugin.getInformation();
