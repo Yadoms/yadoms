@@ -119,6 +119,7 @@ public:
    /// \param [in] configuration The configuration of the instance if needed
    /// \return          Id of the created instance
    /// \throw           CException if fails
+   /// \throw           CDatabaseException if duplicate record (instanceName must be unique)
    //--------------------------------------------------------------
    int createInstance(const std::string& instanceName, const std::string& pluginName,
       const std::string& configuration = CStringExtension::EmptyString);
