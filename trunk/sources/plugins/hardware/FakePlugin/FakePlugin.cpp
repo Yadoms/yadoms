@@ -3,7 +3,9 @@
 #include <shared/Log.h>
 #include <shared/Xpl/XplService.h>
 #include <shared/Xpl/XplMessage.h>
+#include <shared/Xpl/XplConstants.h>
 #include <shared/Exceptions/BadConversionException.hpp>
+#include <shared/StringExtension.h>
 
 
 // Use this macro to define some basic informations about the plugin
@@ -37,9 +39,19 @@ void CFakePlugin::onMessageReceived(CXplMessage & message)
 {
    // This function is called in the Xpl service thread context, so send a event to CFakePlugin thread
    sendEvent<CXplMessage>(kEvtXplMessage, message);
+
+   /*
+   static int currentCall = 0;     
+   currentCall++;
+
+   if(currentCall == 100)
+   {
+      YADOMS_LOG(debug) << "le plugin plante";
+      while(1);
+   }*/
 }
 
-void CFakePlugin::doWork(const std::string& configurationValues)
+void CFakePlugin::doWork(const std::string& configurationValues, boost::shared_ptr< boost::asio::io_service > pluginIOService)
 {
    //TODO : understand why it throws when this step is done in xplService dtor, which is called when catching boost::thread_interrupted
    boost::shared_ptr<CXplService> xplService;
@@ -48,7 +60,12 @@ void CFakePlugin::doWork(const std::string& configurationValues)
       YADOMS_LOG_CONFIGURE("FakePlugin");
       YADOMS_LOG(debug) << "CFakePlugin is starting...";
 
-      xplService.reset(new CXplService("yadoms", "fake", "1"));
+      xplService.reset(new CXplService(CXplConstants::getYadomsVendorId(), "fake", "1", pluginIOService));
+      
+      //use this line to use be notified from CEventHandler on an xplMessage
+      //xplService->messageReceived(shared_from_this(), kEvtXplMessage);
+
+      //use this line to provide a method whichi will be called on an xplMessage
       xplService->messageReceived(boost::bind(&CFakePlugin::onMessageReceived, this, _1));
 
       // Load configuration values (provided by database)
@@ -62,13 +79,13 @@ void CFakePlugin::doWork(const std::string& configurationValues)
       while(1)
       {
          // Wait for an event, with timeout
-         switch(waitForEvents(boost::posix_time::milliseconds(1000)))
+         switch(waitForEvents(boost::posix_time::milliseconds(20000)))
          {
          case kEvtXplMessage:
             {
                // Xpl message was received
                CXplMessage xplMessage = popEvent<CXplMessage>();
-               YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
+               //YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
                break;
             }
          case kEvtUpdateConfiguration:
@@ -92,7 +109,10 @@ void CFakePlugin::doWork(const std::string& configurationValues)
          case kTimeout:
             {
                // Timeout, used here to send a XPL message periodicaly
-               CXplMessage msg(CXplMessage::kXplStat, xplService->getActor(), CXplActor::createBroadcastActor(), CXplMessageSchemaIdentifier("clock", "basic"));
+               //CXplConstants::getYadomsVendorId(), "logger", "1"
+               
+               CXplMessage msg(CXplMessage::kXplStat, xplService->getActor(), CXplActor::createActor(CXplConstants::getYadomsVendorId(), "logger", "1"), CXplMessageSchemaIdentifier("clock", "basic"));
+               //CXplMessage msg(CXplMessage::kXplStat, xplService->getActor(), CXplActor::createBroadcastActor(), CXplMessageSchemaIdentifier("clock", "basic"));
                msg.addToBody("value", boost::lexical_cast<std::string>(value++));
                xplService->sendMessage(msg);
                break;

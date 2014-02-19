@@ -1,10 +1,12 @@
 #pragma once
 #include <shared/plugin/ImplementationHelper.h>
 #include <shared/Xpl/XplMessage.h>
+#include <shared/Xpl/XplService.h>
 #include <shared/Event/EventHandler.hpp>
 #include "FakePluginConfiguration.h"
 
-class CFakePlugin : public CEventHandler, public IHardwarePlugin
+class CFakePlugin : public CEventHandler, public IHardwarePlugin, public boost::enable_shared_from_this<CFakePlugin>
+
 {  
 public:
    CFakePlugin();
@@ -12,7 +14,7 @@ public:
    virtual ~CFakePlugin();
 
    // IHardwarePlugin implementation
-   virtual void doWork(const std::string& configurationValues);
+   virtual void doWork(const std::string& configurationValues, boost::shared_ptr< boost::asio::io_service > pluginIOService);
    virtual void updateConfiguration(const std::string& configurationValues);
   // [END] IHardwarePlugin implementation
 

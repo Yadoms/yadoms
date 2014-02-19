@@ -16,17 +16,35 @@
 //en repete les données sur la liste des client connectés sur leur port respectifs
 
 
-CXplService::CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId)
-   : m_ioService(), m_timer(m_ioService), m_socket(m_ioService)
+CXplService::CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId, boost::shared_ptr< boost::asio::io_service > ioService)
+   : m_manageIoService(ioService.get() == NULL), m_eventHandler(NULL)
 {
+   if(m_manageIoService)
+      m_ioService.reset(new boost::asio::io_service() );
+   else
+      m_ioService = ioService;
+
+   m_timer.reset( new boost::asio::deadline_timer(*m_ioService.get()) );
+   m_socket.reset( new boost::asio::ip::udp::socket(*m_ioService.get()) );
+
+
    m_localEndPoint = CXplHelper::getFirstIPV4AddressEndPoint();
    m_source = CXplActor::createActor(vendorId, deviceId, instanceId);
+
    initializeConnector();
 }
 
-CXplService::CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId, const std::string & localIPOfTheInterfaceToUse)
-   : m_ioService(), m_timer(m_ioService), m_socket(m_ioService)
+CXplService::CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId, const std::string & localIPOfTheInterfaceToUse, boost::shared_ptr< boost::asio::io_service > ioService)
+   : m_manageIoService(m_ioService.get() == NULL)
 {
+   if(m_manageIoService)
+      m_ioService.reset(new boost::asio::io_service() );
+   else
+      m_ioService = ioService;
+
+   m_timer.reset( new boost::asio::deadline_timer(*m_ioService.get()) );
+   m_socket.reset( new boost::asio::ip::udp::socket(*m_ioService.get()) );
+
    if (!CXplHelper::getEndPointFromInterfaceIp(localIPOfTheInterfaceToUse, m_localEndPoint))
    {
       //If we havn't found the given ip, we take the first address IPV4
@@ -50,16 +68,17 @@ void CXplService::initializeConnector()
    runHeartbeatSequenceIn(HeartbeatFrequencyDuringInitialDiscoveryPhase);
 
    //we configure the socket
-   m_socket.open(boost::asio::ip::udp::v4());
-   m_socket.set_option(boost::asio::ip::udp::socket::reuse_address(true));
-   m_socket.set_option(boost::asio::socket_base::broadcast(true));
-   m_socket.bind(m_localEndPoint);
+   m_socket->open(boost::asio::ip::udp::v4());
+   m_socket->set_option(boost::asio::ip::udp::socket::reuse_address(true));
+   m_socket->set_option(boost::asio::socket_base::broadcast(true));
+   m_socket->bind(m_localEndPoint);
 
    m_remoteEndPoint = boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::broadcast(), CXplHelper::XplProtocolPort);
 
-   m_serviceThread.reset(new boost::thread(boost::bind(&CXplService::startService, this)));
+   if(m_manageIoService)
+      m_serviceThread.reset(new boost::thread(boost::bind(&CXplService::startService, this)));
 
-   m_socket.async_receive(
+   m_socket->async_receive(
       boost::asio::buffer(m_receiveBuffer),
       boost::bind(&CXplService::handleReceive, this,
       boost::asio::placeholders::error,
@@ -71,7 +90,7 @@ void CXplService::startService()
    try
    {
       YADOMS_LOG_CONFIGURE(m_source.toString());
-      m_ioService.run();
+      m_ioService->run();
    }
    catch (std::exception& e)
    {
@@ -82,16 +101,16 @@ void CXplService::startService()
 
 void CXplService::runHeartbeatSequenceIn(const int seconds)
 {
-   if(!m_ioService.stopped())
+   if(!m_ioService->stopped())
    {
-      m_timer.expires_from_now(boost::posix_time::seconds(seconds));
-      m_timer.async_wait(boost::bind(&CXplService::heartbeatSequence, this));
+      m_timer->expires_from_now(boost::posix_time::seconds(seconds));
+      m_timer->async_wait(boost::bind(&CXplService::heartbeatSequence, this));
    }
 }
 
 void CXplService::heartbeatSequence()
 {
-   if(!m_ioService.stopped())
+   if(!m_ioService->stopped())
    {
       YADOMS_LOG(debug) << "hbeat";
 
@@ -120,14 +139,14 @@ void CXplService::heartbeatSequence()
       }
 
 
-      if(m_socket.is_open())
+      if(m_socket->is_open())
       {
          //We send the hbeat
          //we set always the interval of HeartbeatInterval in the message
-         CXplMessage msg = CXplMessageFactory::createHeartbeatMessage(m_source, HeartbeatInterval, m_socket.local_endpoint().address().to_string(), m_socket.local_endpoint().port());
+         CXplMessage msg = CXplMessageFactory::createHeartbeatMessage(m_source, HeartbeatInterval, m_socket->local_endpoint().address().to_string(), m_socket->local_endpoint().port());
          try
          {
-            m_socket.send_to(boost::asio::buffer(msg.toString()), m_remoteEndPoint);
+            m_socket->send_to(boost::asio::buffer(msg.toString()), m_remoteEndPoint);
          }
          catch(...)
          {
@@ -142,7 +161,7 @@ void CXplService::heartbeatSequence()
 void CXplService::handleReceive(const boost::system::error_code& error,
                                 std::size_t bytes_transferred)
 {
-   if(!m_ioService.stopped())
+   if(!m_ioService->stopped())
    {
       if (!error || error == boost::asio::error::message_size)
       {
@@ -167,7 +186,7 @@ void CXplService::handleReceive(const boost::system::error_code& error,
                if (!CStringExtension::tryParse<int>(msg.getBodyValue("port"), port))
                   throw CXplException("port in Heartbeat message is incorrect : " + msg.toString());
 
-               if ((!m_hubHasBeenFound) && (m_localEndPoint.address().to_string() == msg.getBodyValue("remote-ip")) && (m_socket.local_endpoint().port() == port))
+               if ((!m_hubHasBeenFound) && (m_localEndPoint.address().to_string() == msg.getBodyValue("remote-ip")) && (m_socket->local_endpoint().port() == port))
                {
                   YADOMS_LOG(info) << "Hub found";
                   m_hubHasBeenFound = true;
@@ -218,9 +237,9 @@ void CXplService::handleReceive(const boost::system::error_code& error,
          }      
       }
 
-      if(m_socket.is_open())
+      if(m_socket->is_open())
       {
-         m_socket.async_receive(
+         m_socket->async_receive(
             boost::asio::buffer(m_receiveBuffer),
             boost::bind(&CXplService::handleReceive, this,
             boost::asio::placeholders::error,
@@ -236,13 +255,21 @@ void CXplService::handleReceive(const boost::system::error_code& error,
 
 void CXplService::sendMessage(const CXplMessage & message)
 {
-   m_socket.send_to(boost::asio::buffer(message.toString()), m_remoteEndPoint);
+   m_socket->send_to(boost::asio::buffer(message.toString()), m_remoteEndPoint);
 }
 
 void CXplService::messageReceived(const SigMessageReceivedDelegate &dlg)
 {
    m_sigMessageReceived.connect(dlg);
 }
+
+
+void CXplService::messageReceived(boost::shared_ptr< CEventHandler > eventHandler, const int eventIdToSignal)
+{
+   m_eventHandler = eventHandler;
+   m_eventIdToSignal = eventIdToSignal;
+}
+
 
 void CXplService::removeAllHandlers()
 {
@@ -252,22 +279,35 @@ void CXplService::removeAllHandlers()
 void CXplService::stop()
 {
    removeAllHandlers();
-   m_ioService.stop();
-   m_timer.cancel();
-   m_socket.close();
+   m_timer->cancel();
+   m_socket->close();
 
-   if(m_serviceThread.get())
-      m_serviceThread->join();
-
+   if(m_manageIoService)
+   {
+      m_ioService->stop();
+      if(m_serviceThread.get())
+         m_serviceThread->join();
+   }
    YADOMS_LOG(debug) << "CXplService stopped.";
+}
+void CXplService::asyncSendMessage(CXplMessage & msg)
+{
+   if (!m_sigMessageReceived.empty()) 
+      m_sigMessageReceived(boost::ref(msg));
 }
 
 void CXplService::fireMessageReceivedEvent(CXplMessage & msg)
 {
-   if(!m_ioService.stopped())
+   if(!m_ioService->stopped())
    {
       if (!m_sigMessageReceived.empty()) 
-         m_sigMessageReceived(boost::ref(msg));
+      {
+         //call the m_sigMessageReceived method through a thread to ensure a non blocking state
+         boost::shared_ptr<boost::thread> localTh(new boost::thread(boost::bind(&CXplService::asyncSendMessage, this, msg)));
+      }
+
+      if(m_eventHandler.get() != NULL)
+         m_eventHandler->sendEvent<CXplMessage>(m_eventIdToSignal, boost::ref(msg));
    }
 }
 

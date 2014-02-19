@@ -81,13 +81,25 @@ public:
    //--------------------------------------------------------------
    static const CXplActor createActor(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId);
 
-      //--------------------------------------------------------------
+   //--------------------------------------------------------------
    /// \brief	    Create a new actor
    /// \param [in]   rawActorString : Chaine de texte à parser pour representer un acteur
    /// \return     the new actor
    //--------------------------------------------------------------
    static const CXplActor parse(const std::string & rawActorString);
 
+   //--------------------------------------------------------------
+   /// \brief	    Tells if the current instance is a broadcast one
+   /// \return     true if the current instance is a broadcast one
+   //--------------------------------------------------------------
+   const bool isBroadcastActor() { return m_broadcastActive; }
+
+   //--------------------------------------------------------------
+   /// \brief	    Compare this instance with another. It compare vendorId, deviceId and instanceId.
+   /// \param [in] rhs : instance to compare with
+   /// \return     true if the two instances are equals
+   //--------------------------------------------------------------
+   bool operator==(const CXplActor& rhs);
 private:
 
    std::string m_vendorId;
