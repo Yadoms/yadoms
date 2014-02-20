@@ -108,7 +108,7 @@ BOOST_AUTO_TEST_CASE(Initialisation_Test)
   CStartupOptionsLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -129,7 +129,7 @@ BOOST_AUTO_TEST_CASE(Different_Port_p_Initialisation)
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 2000);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)2000);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -150,7 +150,7 @@ BOOST_AUTO_TEST_CASE(Different_Port_port_Initialisation)
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 2000);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)2000);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -196,7 +196,7 @@ BOOST_AUTO_TEST_CASE(Different_Database_databaseFile_Initialisation)
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "toto.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -229,7 +229,7 @@ BOOST_AUTO_TEST_CASE(Different_Database_d_Initialisation)
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "toto.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -250,7 +250,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_trace_Initialisation)
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::trace);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -271,7 +271,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_debug_Initialisation)
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::debug);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -292,7 +292,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_info_Initialisation)
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -313,7 +313,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_warning_Initialisation)
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::warning);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -334,7 +334,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_error_Initialisation)
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::error);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -355,7 +355,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_fatal_Initialisation)
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::fatal);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -400,7 +400,7 @@ BOOST_AUTO_TEST_CASE(Different_IP_i_Initialisation)
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -421,7 +421,7 @@ BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Initialisation)
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -468,7 +468,7 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_w_Initialisation)
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -493,7 +493,7 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_Initialisation)
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -528,7 +528,7 @@ BOOST_AUTO_TEST_CASE(Different_HardwarePluginsPath_h_Initialisation)
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"/home/");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -551,7 +551,7 @@ BOOST_AUTO_TEST_CASE(Different_HardwarePluginsPath_hardwarePluginsPath_Initialis
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"home");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -576,7 +576,7 @@ BOOST_AUTO_TEST_CASE(Different_WidgetPath_WidgetPath_Initialisation)
   CStartupOptionsLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"home");
@@ -601,7 +601,7 @@ BOOST_AUTO_TEST_CASE(Disable_XPL_x_Initialisation)
   CStartupOptionsLoader StartupOptions (2, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -622,7 +622,7 @@ BOOST_AUTO_TEST_CASE(Disable_XPL_disableXplHubStart_Initialisation)
   CStartupOptionsLoader StartupOptions (2, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -644,7 +644,7 @@ BOOST_AUTO_TEST_CASE(Config_File_Port_Number)
   CStartupOptionsLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8085);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -669,7 +669,7 @@ BOOST_AUTO_TEST_CASE(Config_File_Port_Number_Error1)
   CStartupOptionsLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -697,7 +697,7 @@ BOOST_AUTO_TEST_CASE(Config_File_database_file)
   CStartupOptionsLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "AnOtherFile.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -723,7 +723,7 @@ BOOST_AUTO_TEST_CASE(Config_File_Hardware_Plugins)
   CStartupOptionsLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"try");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -750,7 +750,7 @@ BOOST_AUTO_TEST_CASE(Config_File_Device_Plugins)
   CStartupOptionsLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"try");
@@ -776,7 +776,7 @@ BOOST_AUTO_TEST_CASE(Config_File_XPL_Option)
   CStartupOptionsLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -801,7 +801,7 @@ BOOST_AUTO_TEST_CASE(Config_File_getWebServerIPAddress)
   CStartupOptionsLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -827,7 +827,7 @@ BOOST_AUTO_TEST_CASE(Config_File_webServerPath)
   CStartupOptionsLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -853,7 +853,7 @@ BOOST_AUTO_TEST_CASE(Config_File_Log)
   CStartupOptionsLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::warning);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -889,7 +889,7 @@ BOOST_AUTO_TEST_CASE(Config_File_All_Options1)
   CStartupOptionsLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::warning);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8085);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"try1");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"try2");
@@ -921,7 +921,7 @@ BOOST_AUTO_TEST_CASE(Config_File_All_Options2)
   CStartupOptionsLoader StartupOptions (17, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::warning);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8085);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"try1");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"try2");
@@ -950,7 +950,7 @@ BOOST_AUTO_TEST_CASE(Config_File_All_Options3)
   CStartupOptionsLoader StartupOptions (15, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::warning);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8085);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"try1");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
