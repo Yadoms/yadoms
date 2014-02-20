@@ -27,7 +27,7 @@ public:
    /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
    //--------------------------------------------------------------
    CHardwarePluginInstance(const boost::shared_ptr<const CHardwarePluginFactory> plugin, const boost::shared_ptr<CHardware> context,
-      const boost::shared_ptr<IHardwarePluginQualifier> qualifier, CEventHandler& supervisor, int pluginManagerEventId, boost::shared_ptr< boost::asio::io_service > pluginIOService);
+      const boost::shared_ptr<IHardwarePluginQualifier> qualifier, CEventHandler& supervisor, int pluginManagerEventId, boost::asio::io_service * pluginIOService);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -85,5 +85,5 @@ private:
    //--------------------------------------------------------------
    /// \brief			Plugin IOService (common for all plugin instances)
    //--------------------------------------------------------------
-   boost::shared_ptr< boost::asio::io_service > m_pluginIOService;
+   boost::asio::io_service * m_pluginIOService;
 };

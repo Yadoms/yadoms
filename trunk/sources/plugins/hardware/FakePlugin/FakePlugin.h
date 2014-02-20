@@ -5,7 +5,7 @@
 #include <shared/Event/EventHandler.hpp>
 #include "FakePluginConfiguration.h"
 
-class CFakePlugin : public CEventHandler, public IHardwarePlugin, public boost::enable_shared_from_this<CFakePlugin>
+class CFakePlugin : public CEventHandler, public IHardwarePlugin
 
 {  
 public:
@@ -14,7 +14,7 @@ public:
    virtual ~CFakePlugin();
 
    // IHardwarePlugin implementation
-   virtual void doWork(const std::string& configurationValues, boost::shared_ptr< boost::asio::io_service > pluginIOService);
+   virtual void doWork(const std::string& configurationValues, boost::asio::io_service * pluginIOService);
    virtual void updateConfiguration(const std::string& configurationValues);
   // [END] IHardwarePlugin implementation
 

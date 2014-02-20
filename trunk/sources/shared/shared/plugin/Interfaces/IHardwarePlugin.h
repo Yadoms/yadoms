@@ -18,7 +18,7 @@ public:
    //                      Be careful to put some sleeps to prevent using too much system ressources.
    //                      Use boost::this_thread::sleep is a watch stop point (a point where thread is able to stop).
    //--------------------------------------------------------------
-   virtual void doWork(const std::string& configurationValues, boost::shared_ptr< boost::asio::io_service > ioService) = 0;
+   virtual void doWork(const std::string& configurationValues, boost::asio::io_service * ioService) = 0;
 
    //--------------------------------------------------------------
    /// \brief              Notify the plugin that its configuration was changed

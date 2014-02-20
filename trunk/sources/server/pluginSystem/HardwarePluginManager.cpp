@@ -23,7 +23,7 @@ CHardwarePluginManager::CHardwarePluginManager(
    CEventHandler& supervisor,
    int pluginManagerEventId)
    :m_database(database), m_pluginPath(initialDir), m_qualifier(new CHardwarePluginQualifier(eventLoggerDatabase)),
-   m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_terminate(false)
+   m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId)
 {
    BOOST_ASSERT(m_database);
 }
@@ -35,23 +35,24 @@ CHardwarePluginManager::~CHardwarePluginManager()
 
 void CHardwarePluginManager::stop()
 {
+   YADOMS_LOG(info) << "CHardwarePluginManager stop io service...";
+   if(!m_pluginIOService.stopped())
+   {
+      m_pluginIOService.stop();
+      while(!m_pluginIOService.stopped());
+   }
+
+   if(m_ioServiceThread.get())
+      m_ioServiceThread->join();
+
+   YADOMS_LOG(info) << "CHardwarePluginManager io service is stopped";
+
    YADOMS_LOG(info) << "CHardwarePluginManager stop plugins...";
 
    while (!m_runningInstances.empty())
       stopInstance(m_runningInstances.begin()->first);
 
    YADOMS_LOG(info) << "CHardwarePluginManager all plugins are stopped";
-
-   YADOMS_LOG(info) << "CHardwarePluginManager stop io service...";
-   m_terminate = true;
-   
-   if(m_pluginIOService.get() != NULL)
-      m_pluginIOService->stop();
-   
-   if(m_ioServiceThread.get())
-      m_ioServiceThread->join();
-
-   YADOMS_LOG(info) << "CHardwarePluginManager io service is stopped";
 }
 
 
@@ -61,10 +62,7 @@ void CHardwarePluginManager::init()
    updatePluginList();
 
    //create ioservice for all plugin instances
-   m_pluginIOService.reset(new boost::asio::io_service());
    m_ioServiceThread.reset(new boost::thread(boost::bind(&CHardwarePluginManager::runPluginIOService, this)));
-
-   while (m_pluginIOService->stopped());
 
    // Create and start plugin instances from database
    std::vector<boost::shared_ptr<CHardware> > databasePluginInstances = m_database->getHardwares();
@@ -83,12 +81,8 @@ void CHardwarePluginManager::runPluginIOService()
 {
    try
    {
-      //m_pluginIOService->run();
-      boost::asio::io_service::work work(*m_pluginIOService.get()); // 3
-      m_pluginIOService->run();
-
-      //while(!m_terminate)
-      //   m_pluginIOService->poll_one();
+      boost::asio::io_service::work work(m_pluginIOService); // 3
+      m_pluginIOService.run();
    }
    catch (std::exception& e)
    {
@@ -395,7 +389,7 @@ void CHardwarePluginManager::startInstance(int id)
 
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
-      boost::shared_ptr<CHardwarePluginInstance> pluginInstance(new CHardwarePluginInstance(plugin, databasePluginInstance, m_qualifier, m_supervisor, m_pluginManagerEventId, m_pluginIOService));
+      boost::shared_ptr<CHardwarePluginInstance> pluginInstance(new CHardwarePluginInstance(plugin, databasePluginInstance, m_qualifier, m_supervisor, m_pluginManagerEventId, &m_pluginIOService));
       m_runningInstances[databasePluginInstance->getId()] = pluginInstance;
    }
    catch (CInvalidPluginException& e)

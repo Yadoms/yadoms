@@ -11,7 +11,7 @@ CHardwarePluginInstance::CHardwarePluginInstance(
    const boost::shared_ptr<IHardwarePluginQualifier> qualifier,
    CEventHandler& supervisor,
    int pluginManagerEventId, 
-   boost::shared_ptr< boost::asio::io_service > pluginIOService)
+   boost::asio::io_service * pluginIOService)
     : CThreadBase(context->getName()), m_pPlugin(plugin), m_context(context), m_qualifier(qualifier), m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_pluginIOService(pluginIOService)
 {
 	BOOST_ASSERT(m_pPlugin);

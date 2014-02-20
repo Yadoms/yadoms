@@ -16,16 +16,16 @@
 //en repete les données sur la liste des client connectés sur leur port respectifs
 
 
-CXplService::CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId, boost::shared_ptr< boost::asio::io_service > ioService)
-   : m_manageIoService(ioService.get() == NULL), m_eventHandler(NULL)
+CXplService::CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId, boost::asio::io_service * externalIOService)
+   : m_manageIoService(externalIOService == NULL), m_eventHandler(NULL)
 {
    if(m_manageIoService)
-      m_ioService.reset(new boost::asio::io_service() );
+      m_ioService = new boost::asio::io_service();
    else
-      m_ioService = ioService;
+      m_ioService = externalIOService;
 
-   m_timer.reset( new boost::asio::deadline_timer(*m_ioService.get()) );
-   m_socket.reset( new boost::asio::ip::udp::socket(*m_ioService.get()) );
+   m_timer.reset( new boost::asio::deadline_timer(*m_ioService) );
+   m_socket.reset( new boost::asio::ip::udp::socket(*m_ioService) );
 
 
    m_localEndPoint = CXplHelper::getFirstIPV4AddressEndPoint();
@@ -34,16 +34,16 @@ CXplService::CXplService(const std::string & vendorId, const std::string & devic
    initializeConnector();
 }
 
-CXplService::CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId, const std::string & localIPOfTheInterfaceToUse, boost::shared_ptr< boost::asio::io_service > ioService)
-   : m_manageIoService(m_ioService.get() == NULL)
+CXplService::CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId, const std::string & localIPOfTheInterfaceToUse, boost::asio::io_service * externalIOService)
+   : m_manageIoService(externalIOService == NULL), m_eventHandler(NULL)
 {
    if(m_manageIoService)
-      m_ioService.reset(new boost::asio::io_service() );
+      m_ioService = new boost::asio::io_service();
    else
-      m_ioService = ioService;
+      m_ioService = externalIOService;
 
-   m_timer.reset( new boost::asio::deadline_timer(*m_ioService.get()) );
-   m_socket.reset( new boost::asio::ip::udp::socket(*m_ioService.get()) );
+   m_timer.reset( new boost::asio::deadline_timer(*m_ioService) );
+   m_socket.reset( new boost::asio::ip::udp::socket(*m_ioService) );
 
    if (!CXplHelper::getEndPointFromInterfaceIp(localIPOfTheInterfaceToUse, m_localEndPoint))
    {
@@ -58,6 +58,8 @@ CXplService::CXplService(const std::string & vendorId, const std::string & devic
 CXplService::~CXplService()
 {
    stop();
+   if(m_manageIoService)
+      delete m_ioService;
 }
 
 void CXplService::initializeConnector()
@@ -90,18 +92,19 @@ void CXplService::startService()
    try
    {
       YADOMS_LOG_CONFIGURE(m_source.toString());
-      m_ioService->run();
+      if(m_ioService !=NULL)
+         m_ioService->run();
    }
    catch (std::exception& e)
    {
       // Deal with exception as appropriate.
-      YADOMS_LOG(warning) << "CXplService io_service exception : " << e.what();
+      YADOMS_LOG(warning) << "CXplService io_service exception : " << m_source.toString() << std::endl << "Exeption details : " << e.what();
    }
 }
 
 void CXplService::runHeartbeatSequenceIn(const int seconds)
 {
-   if(!m_ioService->stopped())
+   if(m_ioService !=NULL && !m_ioService->stopped())
    {
       m_timer->expires_from_now(boost::posix_time::seconds(seconds));
       m_timer->async_wait(boost::bind(&CXplService::heartbeatSequence, this));
@@ -110,7 +113,7 @@ void CXplService::runHeartbeatSequenceIn(const int seconds)
 
 void CXplService::heartbeatSequence()
 {
-   if(!m_ioService->stopped())
+   if(m_ioService !=NULL && !m_ioService->stopped())
    {
       YADOMS_LOG(debug) << "hbeat";
 
@@ -161,7 +164,7 @@ void CXplService::heartbeatSequence()
 void CXplService::handleReceive(const boost::system::error_code& error,
                                 std::size_t bytes_transferred)
 {
-   if(!m_ioService->stopped())
+   if(m_ioService !=NULL && !m_ioService->stopped())
    {
       if (!error || error == boost::asio::error::message_size)
       {
@@ -258,57 +261,55 @@ void CXplService::sendMessage(const CXplMessage & message)
    m_socket->send_to(boost::asio::buffer(message.toString()), m_remoteEndPoint);
 }
 
-void CXplService::messageReceived(const SigMessageReceivedDelegate &dlg)
+void CXplService::messageReceived(CEventHandler * pEventHandler, const int eventIdToSignal)
 {
-   m_sigMessageReceived.connect(dlg);
-}
-
-
-void CXplService::messageReceived(boost::shared_ptr< CEventHandler > eventHandler, const int eventIdToSignal)
-{
-   m_eventHandler = eventHandler;
+   m_eventHandler = pEventHandler;
    m_eventIdToSignal = eventIdToSignal;
 }
 
 
-void CXplService::removeAllHandlers()
-{
-   m_sigMessageReceived.disconnect_all_slots();
-}
-
 void CXplService::stop()
 {
-   removeAllHandlers();
-   m_timer->cancel();
-   m_socket->close();
+   //disable event handling
+   m_eventHandler = NULL;
 
+   //stop io_service, must be done first
    if(m_manageIoService)
    {
-      m_ioService->stop();
+      if(m_ioService != NULL && !m_ioService->stopped())
+      {
+         m_ioService->stop();
+         while(!m_ioService->stopped());
+         m_ioService = NULL;
+      }
+
       if(m_serviceThread.get())
          m_serviceThread->join();
    }
+
+   //cancel the timer
+   m_timer->cancel();
+
+   //stop the socket (shutdown, then close)
+   try
+   {
+      m_socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+   }
+   catch(std::exception &ex)
+   {
+      YADOMS_LOG(warning) << "Fail to shutdown socket : " << ex.what();
+   }
+   m_socket->close();
+
+
    YADOMS_LOG(debug) << "CXplService stopped.";
 }
-void CXplService::asyncSendMessage(CXplMessage & msg)
-{
-   if (!m_sigMessageReceived.empty()) 
-      m_sigMessageReceived(boost::ref(msg));
-}
+
 
 void CXplService::fireMessageReceivedEvent(CXplMessage & msg)
 {
-   if(!m_ioService->stopped())
-   {
-      if (!m_sigMessageReceived.empty()) 
-      {
-         //call the m_sigMessageReceived method through a thread to ensure a non blocking state
-         boost::shared_ptr<boost::thread> localTh(new boost::thread(boost::bind(&CXplService::asyncSendMessage, this, msg)));
-      }
-
-      if(m_eventHandler.get() != NULL)
-         m_eventHandler->sendEvent<CXplMessage>(m_eventIdToSignal, boost::ref(msg));
-   }
+   if(m_eventHandler != NULL)
+      m_eventHandler->sendEvent<CXplMessage>(m_eventIdToSignal, boost::ref(msg));
 }
 
 void CXplService::setFilter(const std::string & filter)

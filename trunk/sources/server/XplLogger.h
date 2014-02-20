@@ -1,20 +1,25 @@
 #pragma once
 #include "database/IDataProvider.h"
-#include <shared/Xpl/XplMessage.h>
-#include <shared/Xpl/XplService.h>
+#include <shared/ThreadBase.h>
+#include <shared/Event/EventHandler.hpp>
 
-class CXplLogger
+class CXplLogger: public CThreadBase, public CEventHandler
 {
 public:
    CXplLogger(boost::shared_ptr<IDataProvider> dataProvider);
    virtual ~CXplLogger();
 
-   void start();
-   void stop();
 private:
-   void onMessageReceived(CXplMessage & message);
+   enum
+   {
+      kXplMessageReceived = CEventHandler::kUserFirstId,
+   };
+
+private:
+   // CThreadBase Implementation
+   void doWork();
+   // [END] CThreadBase Implementation
 
 private:
    boost::shared_ptr<IDataProvider> m_dataProvider;
-   boost::shared_ptr<CXplService> m_xplService;
 };
