@@ -48,7 +48,7 @@
                               </ul>
                           </li>
                           <li><a href="#" class="btn btn-inverse customization-item hidden" id="btn-add-page"><i class="fa fa-file-o"></i>&nbsp;&nbsp;Add a new page</a></li>
-                          <li><a href="#" class="btn btn-inverse customization-item hidden" id="btn-add-widget"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Add a new widget</a></li>
+                          <li><a href="#" class="btn btn-inverse customization-item hidden" id="btn-add-widget"><i class="fa fa-puzzle-piece"></i>&nbsp;&nbsp;Add a new widget</a></li>
                       </ul>
                       <ul class="nav navbar-nav navbar-right">
                           <li><a href="#" class="btn btn-inverse" id="chartButton"><i class="fa fa-bar-chart-o"></i></a></li>
@@ -148,10 +148,17 @@
    var modificationPageModalHasBeenLoaded = false;
 
    /**
+    * Indicate if the modal delete page has already been loaded
+    * */
+   var deletePageModalHasBeenLoaded = false;
+
+   /**
     * On page loaded
     */
    $(document).ready(function() {
+
       requestPages();
+
       /**
        * Callback of the click on the show qr code button
        * Make lazy loading of the qrcode modal
@@ -164,7 +171,7 @@
          }
          else
          {
-            $.ajax("qrcode.html")
+            $.ajax("modals/qrcode.html")
                     .done(function(data) {
                        //we append it to the index
                        $('body').append(data);
@@ -178,6 +185,7 @@
       });
 
       $(document).keyup(function(e) {
+         //escape key
          if (e.keyCode == 27) {
             if (customization)
                exitCustomization();

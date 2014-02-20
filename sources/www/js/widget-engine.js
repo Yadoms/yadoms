@@ -16,6 +16,74 @@ var pagesLoaded = [];
 
 var startTime = null;
 
+function initializeEvents() {
+
+   //Tabs events
+
+   //we listen click event on tab click
+   $('li.tabPagePills').bind('click', function (e) {
+      return tabClick($(e.currentTarget).attr("page-id")); } );
+
+   //we listen click event on rename click
+   $('button.rename-page').bind('click', function (e) {
+      createOrUpdatePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id")); } );
+
+   //we listen click event on rename click
+   $('button.delete-page').bind('click', function (e) {
+      deletePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id")); } );
+
+   //we listen click event on move left click
+   $('button.move-left-page').bind('click', function (e) {
+      movePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id"), "left"); } );
+
+   //we listen click event on move right click
+   $('button.move-right-page').bind('click', function (e) {
+      movePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id"), "right"); } );
+
+   /**
+    * Callback of the click on the add widget button
+    * Make lazy loading of the add widget modal
+    */
+   $("#btn-add-page").click(function() {
+      createOrUpdatePage();
+   });
+
+   //Widget events
+
+}
+
+function movePage(pageId, direction) {
+   if (direction == "right") {
+      //we search the nearest upper pageOrder than our
+      var nearestId = null;
+      var nearestPageOrder = Infinity;
+      for (var index in pageArray) {
+         //if the current pageOrder is greater than our and smaller than the nearest it's the new nearest
+         if ((pageArray[index].pageOrder > pageArray[pageId].pageOrder) && (pageArray[index].pageOrder < nearestPageOrder)) {
+            nearestPageOrder = pageArray[index].pageOrder;
+            nearestId = index;
+         }
+      }
+   }
+   else {
+      //we search the nearest lower pageOrder than our
+      var nearestId = null;
+      var nearestPageOrder = -Infinity;
+      for (var index in pageArray) {
+         //if the current pageOrder is smaller than our and greater than the nearest it's the new nearest
+         if ((pageArray[index].pageOrder < pageArray[pageId].pageOrder) && (pageArray[index].pageOrder > nearestPageOrder)) {
+            nearestPageOrder = pageArray[index].pageOrder;
+            nearestId = index;
+         }
+      }
+   }
+   if (nearestId != null) {
+      //we can move pageOrder
+      //TODO json request
+      //TODO detach() jquery pour enlever l'onglet et utiliser insetBefore et insertAfter sur le nearest pour le remettre au bon endroit
+   }
+}
+
 /**
  * Return a Widget object from the gridster DOM object
  * @param $element gridster DOM object concerned
@@ -79,13 +147,7 @@ function requestPageDone()
       //we deactivate the customization
       enableGridsterCustomization(false);
 
-      //we listen click event on tab click
-      $('li.tabPagePills').bind('click', function (e) {
-         return tabClick($(e.currentTarget).attr("page-id")); } );
-
-      //we listen click event on rename click
-      $('button.rename-page').bind('click', function (e) {
-         createOrUpdatePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id")); } );
+      initializeEvents();
 
       requestWidgets(getCurrentPage());
    };
@@ -95,7 +157,7 @@ function addPageToIHM(page) {
    var tabIdAsText = "tab-" + page.id;
    //pill creation
    $("div#tabContainer").find(".tab-content").append(
-      "<div class=\"widgetPage tab-pane active\" id=\"" + tabIdAsText + "\">" +
+      "<div class=\"widgetPage tab-pane active\" id=\"" + tabIdAsText + "\" page-id=\"" + page.id + "\">" +
          "<div class=\"gridster\">" +
             "<ul></ul>" +
          "</div>" +
@@ -106,8 +168,8 @@ function addPageToIHM(page) {
          "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" +
             "<span>" + page.name + "</span>" +
             "<div class=\"pageCustomizationToolbar btn-group btn-group-sm customization-item pull-right hidden\">" +
-               "<button type=\"button\" class=\"btn btn-default\" title=\"Move to left\"><i class=\"glyphicon glyphicon-arrow-left\"></i></button>" +
-               "<button type=\"button\" class=\"btn btn-default\" title=\"Move to right\"><i class=\"glyphicon glyphicon-arrow-right\"></i></button>" +
+               "<button type=\"button\" class=\"btn btn-default move-left-page\" title=\"Move to left\"><i class=\"glyphicon glyphicon-arrow-left\"></i></button>" +
+               "<button type=\"button\" class=\"btn btn-default move-right-page\" title=\"Move to right\"><i class=\"glyphicon glyphicon-arrow-right\"></i></button>" +
                "<button type=\"button\" class=\"btn btn-default rename-page\" title=\"Rename\"><i class=\"fa fa-pencil\"></i></button>" +
                "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
             "</div>" +

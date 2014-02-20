@@ -130,7 +130,7 @@ $("#btn-add-widget").click(function() {
     }
     else
     {
-        $.ajax( "add_widget.html" )
+        $.ajax( "modals/add_widget.html" )
             .done(function(data) {
                 //we append it to the index
                 $('body').append(data);
@@ -143,14 +143,6 @@ $("#btn-add-widget").click(function() {
     }
 });
 
-/**
- * Callback of the click on the add widget button
- * Make lazy loading of the add widget modal
- */
-$("#btn-add-page").click(function() {
-   createOrUpdatePage();
-});
-
 function createOrUpdatePage(pageId) {
    if (modificationPageModalHasBeenLoaded)
    {
@@ -159,7 +151,7 @@ function createOrUpdatePage(pageId) {
    }
    else
    {
-      $.ajax( "modify_page.html" )
+      $.ajax( "modals/modify_page.html" )
          .done(function(data) {
             //we append it to the index
             $('body').append(data);
@@ -168,6 +160,27 @@ function createOrUpdatePage(pageId) {
          })
          .fail(function() {
             notifyError("Unable to load page modification form");
+         });
+   }
+}
+
+function deletePage(pageId) {
+   if (deletePageModalHasBeenLoaded)
+   {
+      //we show the modal to delete a page
+      showDeletePageModal(pageId);
+   }
+   else
+   {
+      $.ajax( "modals/delete_page.html" )
+         .done(function(data) {
+            //we append it to the index
+            $('body').append(data);
+            //we show the modal to delete a page
+            showDeletePageModal(pageId);
+         })
+         .fail(function() {
+            notifyError("Unable to load page deletion form");
          });
    }
 }
