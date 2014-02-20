@@ -38,7 +38,7 @@ endif()
 ##################################################################################################
 ## Debug makefile
 ##################################################################################################
-#if(CMAKE_COMPIER_IS_GNUCXX)
+#if(CMAKE_COMPILER_IS_GNUCXX)
 #	set(CMAKE_VERBOSE_MAKEFILE on)
 #endif()
 
@@ -57,6 +57,19 @@ if(MSVC)
 	include("windows.cmake")
 endif()
 
+##################################################################################################
+## Manage CrossCompilation for Raspberry PI
+##################################################################################################
+if(CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER)
+	SET(CMAKE_SYSTEM_NAME Linux)
+	SET(CMAKE_SYSTEM_VERSION 1)
+	SET(CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER ON)
+	SET(CMAKE_C_COMPILER ${CC_PI_FOLDER}/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc)
+	SET(CMAKE_CXX_COMPILER ${CC_PI_FOLDER}/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-g++)
+	SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+	SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+	SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+endif()
 
 ##################################################################################################
 ## IDE configurations
@@ -108,22 +121,30 @@ if(MSVC)
 	add_definitions(-D_WIN32_WINNT=${CURRENT_WINNT_VERSION})
 endif()
 
-if(CMAKE_COMPIER_IS_GNUCXX)
-	add_definitions("-Wall -Wextra -pedantic")
+if(CMAKE_COMPILER_IS_GNUCXX)
+	add_definitions("-Wall")
 	add_definitions("-fpermissive")
 	add_definitions("-std=c++0x")
-	
-	# In case unix is 64bits, append -fPIC to gcc
-	IF(UNIX AND NOT WIN32)
-	   FIND_PROGRAM(CMAKE_UNAME uname /bin /usr/bin /usr/local/bin )
-	   IF(CMAKE_UNAME)
-		 EXEC_PROGRAM(uname ARGS -m OUTPUT_VARIABLE CMAKE_SYSTEM_PROCESSOR)
-		 SET(CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR} CACHE INTERNAL "processor type (i386 and x86_64)")
-		 IF(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
-		   add_definitions(-fPIC)
-		 ENDIF(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
-	   ENDIF(CMAKE_UNAME)
-	ENDIF(UNIX AND NOT WIN32)
+
+	#warning: comparison of unsigned expression < 0 is always false (from boost)
+	add_definitions("-Wno-type-limits")
+
+	#warning: unused parameter (from boost)
+	add_definitions("-Wno-unused-parameter")
+endif()
+
+
+if (CMAKE_COMPILER_IS_CLANG)
+	add_definitions("-Wall -Wextra -pedantic")
+	add_definitions("-std=c++0x")
+   add_definitions("-Woverloaded-virtual")
+   add_definitions("-Wunused-variable")
+endif()
+
+#Cross compiling for Raspberry
+if (CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER)
+	message("Cross compile for Raspberry")   
+	add_definitions("-Wno-psabi")
 endif()
 
 # with -fPIC
@@ -137,16 +158,6 @@ IF(UNIX AND NOT WIN32)
      ENDIF(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
    ENDIF(CMAKE_UNAME)
 ENDIF(UNIX AND NOT WIN32)
-
-
-
-
-if (CMAKE_COMPIER_IS_CLANG)
-	add_definitions("-Wall -Wextra -pedantic")
-	add_definitions("-std=c++0x")
-   add_definitions("-Woverloaded-virtual")
-   add_definitions("-Wunused-variable")
-endif()
 
 #check eclispe debug options
 if(DEBUG_WITH_ECLIPSE)
