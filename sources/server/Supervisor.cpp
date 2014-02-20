@@ -268,6 +268,7 @@ void CSupervisor::doWork()
             case kHardwarePluginManagerEvent:
                hardwarePluginManager->signalEvent(popEvent<CHardwarePluginManagerEvent>());
                break;
+
             default:
                YADOMS_LOG(error) << "Unknown message id";
                BOOST_ASSERT(false);

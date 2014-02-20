@@ -2,58 +2,86 @@
 #include "XplLogger.h"
 #include <shared/Log.h>
 #include <shared/Xpl/XplConstants.h>
+#include <shared/Xpl/XplMessage.h>
+#include <shared/Xpl/XplService.h>
+
 
 CXplLogger::CXplLogger(boost::shared_ptr<IDataProvider> dataProvider)
-   :m_dataProvider(dataProvider)
+   :CThreadBase("XplLogger"), m_dataProvider(dataProvider)
 {
 }
 
 CXplLogger::~CXplLogger()
 {
-   stop();
-	YADOMS_LOG(info) << "XplLogger stopped";
 }
 
-void CXplLogger::onMessageReceived(CXplMessage & message)
+void CXplLogger::doWork()
 {
-	YADOMS_LOG(debug) << "Message received : " << message.toString();
-
    try
    {
-      std::pair<std::string, std::string> bodyLine;
-      BOOST_FOREACH(bodyLine, message.getBody())
+      YADOMS_LOG_CONFIGURE("XplLogger");
+      YADOMS_LOG(debug) << "XplLogger is starting...";
+
+      CXplService xplService(CXplConstants::getYadomsVendorId(), "logger", "1");
+
+      //use this line to use be notified from CEventHandler on an xplMessage
+      xplService.messageReceived(this, kXplMessageReceived);
+
+      while(1)
       {
-         CAcquisition acq;
-         acq.setSource(message.getSource().toString());
-         acq.setKeyword(bodyLine.first);
-         acq.setValue(bodyLine.second);
-         acq.setDate(boost::posix_time::second_clock::universal_time());
-         m_dataProvider->getAcquisitionRequester()->addAcquisition(acq);
-      }
+         // Wait for an event, with timeout
+         switch(waitForEvents(boost::posix_time::milliseconds(500)))
+         {
+         case kXplMessageReceived:
+            {
+               // Xpl message was received
+               CXplMessage xplMessage = popEvent<CXplMessage>();
+               //YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
+               try
+               {
+                  std::pair<std::string, std::string> bodyLine;
+                  BOOST_FOREACH(bodyLine, xplMessage.getBody())
+                  {
+                     CAcquisition acq;
+                     acq.setSource(xplMessage.getSource().toString());
+                     acq.setKeyword(bodyLine.first);
+                     acq.setValue(bodyLine.second);
+                     acq.setDate(boost::posix_time::second_clock::universal_time());
+                     m_dataProvider->getAcquisitionRequester()->addAcquisition(acq);
+                  }
+               }
+               catch(std::exception &ex)
+               {
+                  YADOMS_LOG(error) << "XplLogger fails to store message. " << ex.what();
+               }
+               catch(...)
+               {
+               }
+               break;
+            }
+
+         case kTimeout:
+         case kNoEvent:
+            //do nothing
+            break;
+
+         default:
+            {
+               YADOMS_LOG(error) << "XplLogger : Unknown message id";
+
+               // We need to consume this unknown event
+               popEvent();
+
+               break;
+            }
+         }
+      };
    }
-   catch(std::exception &ex)
+   catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(error) << "XplLogger fails to store message. " << ex.what();
+      YADOMS_LOG(info) << "XplLogger is stopping..."  << std::endl;
    }
    catch(...)
    {
    }
-}
-
-void CXplLogger::start()
-{
-   m_xplService.reset(new CXplService(CXplConstants::getYadomsVendorId(), "logger", "1"));
-   m_xplService->messageReceived(boost::bind(&CXplLogger::onMessageReceived, this, _1));
-	YADOMS_LOG(info) << "XplLogger started";
-}
-
-void CXplLogger::stop()
-{
-   if(m_xplService.get() != NULL)
-   {
-      m_xplService->removeAllHandlers();
-      m_xplService->stop();
-   }
-
-   
 }

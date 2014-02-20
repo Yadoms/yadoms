@@ -289,12 +289,11 @@ private:
    //--------------------------------------------------------------
    /// \brief			Plugin IOService (common for all plugin instances)
    //--------------------------------------------------------------
-   boost::shared_ptr< boost::asio::io_service > m_pluginIOService;
+   boost::asio::io_service m_pluginIOService;
 
    //--------------------------------------------------------------
    /// \brief			thread which runs IOService
    //--------------------------------------------------------------
    boost::shared_ptr<boost::thread> m_ioServiceThread;
 
-   bool m_terminate;
 };
