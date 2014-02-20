@@ -21,7 +21,7 @@
 #include <shared/Peripherals.h>
 
 
-CSupervisor::CSupervisor(const IStartupOptions& startupOptions)
+CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
    :CThreadBase("Supervisor"), m_startupOptions(startupOptions)
 {
 }

@@ -14,7 +14,7 @@ private:
    };
 
 public:
-   CSupervisor(const IStartupOptions& startupOptions);
+   CSupervisor(const startupOptions::IStartupOptions& startupOptions);
    virtual ~CSupervisor(void);
 
    // CThreadBase Implementation
@@ -22,6 +22,6 @@ public:
    // [END] CThreadBase Implementation
 
 private:
-   const IStartupOptions& m_startupOptions;
+   const startupOptions::IStartupOptions& m_startupOptions;
 };
 

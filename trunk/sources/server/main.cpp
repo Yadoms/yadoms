@@ -22,7 +22,7 @@ int main (int argc, char** argv)
 
    try
    {
-      CStartupOptionsLoader startupOptions(argc, argv);
+      startupOptions::CLoader startupOptions(argc, argv);
 
       if(startupOptions.getDebugFlag())
          CLog::configure_file_per_thread(startupOptions.getLogLevel());
@@ -58,7 +58,7 @@ int main (int argc, char** argv)
       
       YADOMS_LOG(info) << "Yadoms is stopped ";
    }
-   catch(CStartupOptionsLoaderException& e)
+   catch(startupOptions::CLoaderException& e)
    {
       if (e.isError())
       {
@@ -73,8 +73,8 @@ int main (int argc, char** argv)
    catch(...)
    {
       //dual logging in case logger fails/throws
-      std::cout << "An unhandled exception occurs. Yadoms is now stopped" << std::endl;
-      YADOMS_LOG(fatal) << "An unhandled exception occurs. Yadoms is now stopped";
+      std::cout << "An unhandled exception occurred. Yadoms is now stopped" << std::endl;
+      YADOMS_LOG(fatal) << "An unhandled exception occurred. Yadoms is now stopped";
       BOOST_ASSERT_MSG(false, "Yadoms exited with error, see console for details");
    }
 
