@@ -153,6 +153,10 @@ CJson CPageRestService::updatePage(const std::vector<std::string> & parameters, 
             return CJsonResult::GenerateError("The page to replace must have a valid id");
          }
       }
+      else
+      {
+         return CJsonResult::GenerateError("Invalid parameter count (need page id in url)");
+      }
    }
    catch(std::exception &ex)
    {

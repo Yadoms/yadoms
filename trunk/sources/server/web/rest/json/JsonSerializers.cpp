@@ -2,7 +2,7 @@
 
 #include "JsonSerializers.h"
 #include "JsonSerializersHelpers.hpp"
-#include <shared/plugin/information/IInformation.h>
+#include <shared/plugin/Information/IInformation.h>
 #include "database/entities/HardwareEventLogger.h"
 
 DECLARE_JSON_ENTITY_IMPLEMENTATION(Hardware, "Hardware",

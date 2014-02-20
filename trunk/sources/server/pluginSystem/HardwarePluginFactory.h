@@ -7,7 +7,7 @@
 
 #include <shared/DynamicLibrary.hpp>
 #include <shared/plugin/Interfaces/IHardwarePlugin.h>
-#include <shared/plugin/information/IInformation.h>
+#include <shared/plugin/Information/IInformation.h>
 #include <shared/plugin/Interfaces/IHardwarePluginConfigurationSchema.h>
 #include "InvalidPluginException.hpp"
 
