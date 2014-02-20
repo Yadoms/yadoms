@@ -1,4 +1,4 @@
-<link href="css/add_widget.css" rel="stylesheet">
+<link href="../css/add_widget.css" rel="stylesheet">
 
 <!--Modify page Modal -->
 <div class="modal fade" id="modify-page-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -28,8 +28,7 @@
    /**
    * Ask for widget packages to the REST server
    */
-   function showPageModificationModal(pageId)
-   {
+   function showPageModificationModal(pageId) {
       if (pageId !== undefined)
       {
          pageCurrentlyModified = pageArray[pageId];
@@ -78,7 +77,7 @@
               notifyError("Error during modifying page");
               return;
            }
-           notifySuccess("Page modified successfully");
+
            //we modify the page dynamically
            var newName = decodeURIComponent(data.data.name);
            pageCurrentlyModified.name = newName;
@@ -114,7 +113,7 @@
               notifyError("Error during creating page");
               return;
            }
-           notifySuccess("Page created successfully");
+
            //we add the page dynamically
            var p = new Page(data.data.id, decodeURIComponent(data.data.name), data.data.pageOrder);
            pageArray[data.data.id] = p;
