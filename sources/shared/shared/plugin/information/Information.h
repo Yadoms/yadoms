@@ -3,7 +3,7 @@
 #include <shared/Export.h>
 #include "IInformation.h"
 
-namespace shared { namespace plugin
+namespace shared { namespace plugin { namespace information
 {
    //--------------------------------------------------------------
    /// \brief		Container class for information about Hardware plugins
@@ -20,7 +20,7 @@ namespace shared { namespace plugin
       /// \param      author : plugin author
       /// \param      url : plugin url
       /// \note      Version : Note that this value must be string-comparable to let Yadoms
-      ///            know if newer version is avalaible (for the comparaison
+      ///            know if newer version is available (for the comparison
       ///            method, see http://www.cplusplus.com/reference/string/string/compare/).
       ///            Mainly, don't change the version format in the plugin life.
       ///            Recommended format is "xx.yy"
@@ -52,4 +52,4 @@ namespace shared { namespace plugin
       std::string m_author;
       std::string m_url;
    };
-} } // namespace shared::plugin
+} } } // namespace shared::plugin::information

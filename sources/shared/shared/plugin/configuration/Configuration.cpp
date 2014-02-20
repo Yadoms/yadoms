@@ -4,16 +4,19 @@
 #include "../../Exceptions/OutOfRangeException.hpp"
 #include "../../StringExtension.h"
 #include "Configuration.h"
-#include "ConfigurationFactory.h"
+#include "Factory.h"
 
 
-CHardwarePluginConfiguration::CHardwarePluginConfiguration()
-   :m_configurationSerializer(CConfigurationFactory::createSerializer())
+namespace shared { namespace plugin { namespace configuration
+{
+
+CConfiguration::CConfiguration()
+   :m_configurationSerializer(CFactory::createSerializer())
 {
 
 }
 
-CHardwarePluginConfiguration::CHardwarePluginConfiguration(const CHardwarePluginConfiguration& src, const std::string& configurationValues)
+CConfiguration::CConfiguration(const CConfiguration& src, const std::string& configurationValues)
    :m_configurationSerializer(src.m_configurationSerializer)
 {
    boost::lock_guard<boost::mutex> lock(m_configurationMapMutex);
@@ -29,17 +32,17 @@ CHardwarePluginConfiguration::CHardwarePluginConfiguration(const CHardwarePlugin
    setValues(configurationValues);
 }
 
-CHardwarePluginConfiguration::~CHardwarePluginConfiguration()
+CConfiguration::~CConfiguration()
 {
 }
 
-void CHardwarePluginConfiguration::buildSchema()
+void CConfiguration::buildSchema()
 {
    boost::lock_guard<boost::mutex> lock(m_configurationMapMutex);
    doBuildSchema();
 }
 
-std::string CHardwarePluginConfiguration::getSchema() const
+std::string CConfiguration::getSchema() const
 {
    boost::lock_guard<boost::mutex> lock(m_configurationMapMutex);
 
@@ -49,7 +52,7 @@ std::string CHardwarePluginConfiguration::getSchema() const
    return m_configurationSerializer->serialize(pt);
 }
 
-void CHardwarePluginConfiguration::setValues(const std::string& serializedConfiguration)
+void CConfiguration::setValues(const std::string& serializedConfiguration)
 {
    boost::property_tree::ptree pt;
    m_configurationSerializer->deserialize(serializedConfiguration, pt);
@@ -70,20 +73,21 @@ void CHardwarePluginConfiguration::setValues(const std::string& serializedConfig
    }
 }
 
-void CHardwarePluginConfiguration::AddParameter(boost::shared_ptr<CHardwarePluginConfigurationParameter> parameter)
+void CConfiguration::AddParameter(boost::shared_ptr<CParameter> parameter)
 {
    BOOST_ASSERT(m_configurationMap.find(parameter->getName()) == m_configurationMap.end());  // Item already exists
    m_configurationMap[parameter->getName()] = parameter;
 }
 
-void CHardwarePluginConfiguration::AddParameter(CHardwarePluginConfigurationParameter* parameter)
+void CConfiguration::AddParameter(CParameter* parameter)
 {
-   boost::shared_ptr<CHardwarePluginConfigurationParameter> parameterPtr(parameter);
+   boost::shared_ptr<CParameter> parameterPtr(parameter);
    AddParameter(parameterPtr);
 }
 
-const CHardwarePluginConfigurationParameter& CHardwarePluginConfiguration::operator[](const std::string& parameterName) const
+const CParameter& CConfiguration::operator[](const std::string& parameterName) const
 {
    return *m_configurationMap.at(parameterName);
 }
 
+} } } // namespace shared::plugin::configuration

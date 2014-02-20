@@ -69,7 +69,7 @@ DECLARE_JSON_ENTITY_IMPLEMENTATION(HardwareEventLogger,  "HardwareEventLogger",
    ((EventDate)("eventDate")JSON_DATE)
    ((PluginName)("pluginName")JSON_STRING)
    ((PluginVersion)("pluginVersion")JSON_STRING)
-   ((PluginRelease)("pluginRelease")JSON_ENUM(shared::plugin::IInformation::EReleaseType))
+   ((PluginRelease)("pluginRelease")JSON_ENUM(shared::plugin::information::EReleaseType))
    ((EventType)("eventType")JSON_ENUM(CHardwareEventLogger::EEventType))
    ((Message)("message")JSON_STRING)
 )

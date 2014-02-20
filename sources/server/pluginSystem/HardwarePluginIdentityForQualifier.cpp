@@ -2,12 +2,12 @@
 #include "HardwarePluginIdentityForQualifier.h"
 
 
-CPluginIdentity::CPluginIdentity(const boost::shared_ptr<const shared::plugin::IInformation> pluginInformation)
+CPluginIdentity::CPluginIdentity(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation)
    :m_name(pluginInformation->getName()), m_version(pluginInformation->getVersion()), m_releaseType(pluginInformation->getReleaseType())
 {
 }
 
-CPluginIdentity::CPluginIdentity(const std::string& name, const std::string& version, shared::plugin::IInformation::EReleaseType releaseType)
+CPluginIdentity::CPluginIdentity(const std::string& name, const std::string& version, shared::plugin::information::EReleaseType releaseType)
    :m_name(name), m_version(version), m_releaseType(releaseType)
 {
 }
@@ -26,7 +26,7 @@ const std::string& CPluginIdentity::getVersion() const
    return m_version;
 }
 
-const shared::plugin::IInformation::EReleaseType CPluginIdentity::getReleaseType() const
+const shared::plugin::information::EReleaseType CPluginIdentity::getReleaseType() const
 {
    return m_releaseType;
 }

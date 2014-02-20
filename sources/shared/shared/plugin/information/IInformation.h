@@ -3,24 +3,23 @@
 #include <shared/Export.h>
 #include <string>
 
-namespace shared { namespace plugin
+namespace shared { namespace plugin { namespace information
 {
+   //--------------------------------------------------------------
+   /// \brief		Enum for plugin release state
+   //--------------------------------------------------------------
+   enum EReleaseType
+   {
+      kStable = 0,   /// \brief		plugin is stable
+      kTesting,      /// \brief		plugin is in testing phase
+      kBeta          /// \brief		plugin is in beta state
+   };
+
    //--------------------------------------------------------------
    /// \brief		Interface for information about Hardware plugins
    //--------------------------------------------------------------
    class YADOMS_SHARED_EXPORT IInformation 
    {
-   public:
-      //--------------------------------------------------------------
-      /// \brief		Enum for plugin state
-      //--------------------------------------------------------------
-      enum EReleaseType
-      {
-         kStable = 0,   /// \brief		plugin is stable
-         kTesting,      /// \brief		plugin is in testing phase
-         kBeta          /// \brief		plugin is in beta state
-      };
-
    public:
       //--------------------------------------------------------------
       /// \brief	    Destructor
@@ -63,4 +62,4 @@ namespace shared { namespace plugin
       //--------------------------------------------------------------
       virtual std::string toString() const = 0;
    };
-} } // namespace shared::plugin
+} } } // namespace shared::plugin::information

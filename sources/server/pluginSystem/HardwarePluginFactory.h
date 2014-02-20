@@ -7,7 +7,7 @@
 
 #include <shared/DynamicLibrary.hpp>
 #include <shared/plugin/Interfaces/IHardwarePlugin.h>
-#include <shared/plugin/Information/IInformation.h>
+#include <shared/plugin/information/IInformation.h>
 #include <shared/plugin/Interfaces/IHardwarePluginConfigurationSchema.h>
 #include "InvalidPluginException.hpp"
 
@@ -23,7 +23,7 @@ public:
    /// \return       Plugin associated informations
    /// \throw        CInvalidPluginException if plugin is not valid
    //--------------------------------------------------------------
-   static boost::shared_ptr<const shared::plugin::IInformation> getInformation(const boost::filesystem::path& libraryPath);
+   static boost::shared_ptr<const shared::plugin::information::IInformation> getInformation(const boost::filesystem::path& libraryPath);
 
    //--------------------------------------------------------------
    /// \brief	      Get plugin configuration schema
@@ -62,7 +62,7 @@ public:
    /// \brief	    Get information about this hardware plugin
    /// \return     information about this hardware plugin
    //-------------------------------------------------------------
-   boost::shared_ptr<const shared::plugin::IInformation> getInformation() const;
+   boost::shared_ptr<const shared::plugin::information::IInformation> getInformation() const;
 
    //--------------------------------------------------------------
    /// \brief	    Get plugin configuration schema
@@ -95,7 +95,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Pointer to the plugin getInformation method
    //--------------------------------------------------------------
-   boost::function<const shared::plugin::IInformation& ()> m_getInformation;
+   boost::function<const shared::plugin::information::IInformation& ()> m_getInformation;
 
    //--------------------------------------------------------------
    /// \brief	    Pointer to the plugin getConfigurationSchemaInterface method (optional)
