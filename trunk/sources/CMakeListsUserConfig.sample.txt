@@ -5,6 +5,12 @@
 ##### use only absolute path , and do not use anti slash : only '/' ######
 #set(BOOST_ROOT "/path/to/boost/boost_1_55_0")
 
+#to cross compile for Raspberry PI, set the option to ON and set CC_PI_FOLDER
+#set(CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER ON)
+#set(CC_PI_FOLDER /path/to/raspberrypi)
+
+
+
 #activate this option to enable eclipse debugging
 set(DEBUG_WITH_ECLIPSE OFF)
 
