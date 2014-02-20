@@ -281,14 +281,14 @@ set(YADOMS_SRC
 	server/pluginSystem/IHardwarePluginQualifier.h
 	server/pluginSystem/InvalidPluginException.hpp
   
-	server/StartupOptions/MustExistPathOption.hpp
-	server/StartupOptions/ValidIpAddressOption.hpp
-	server/StartupOptions/LoaderCustomValidators.hpp
-	server/StartupOptions/Loader.h
-	server/StartupOptions/Loader.cpp
-	server/StartupOptions/LoaderException.hpp
-	server/StartupOptions/StartupOptions.h
-	server/StartupOptions/InvalidOptionException.hpp
+	server/startupOptions/MustExistPathOption.hpp
+	server/startupOptions/ValidIpAddressOption.hpp
+	server/startupOptions/LoaderCustomValidators.hpp
+	server/startupOptions/Loader.h
+	server/startupOptions/Loader.cpp
+	server/startupOptions/LoaderException.hpp
+	server/startupOptions/StartupOptions.h
+	server/startupOptions/InvalidOptionException.hpp
   
 	server/ApplicationStopHandler.h
 	server/ApplicationStopHandler.cpp
@@ -365,7 +365,7 @@ source_group(server server/*.*)
 source_group(server\\pluginSystem server/pluginSystem/*.* )
 source_group(server\\pluginSystem\\external plugins/hardware/IHardwarePlugin.h )
 source_group(server\\database  server/database/*.*)
-source_group(server\\StartupOptions  server/StartupOptions/*.*)
+source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\web  server/web/*.*)
 source_group(server\\web\\REST  server/web/rest/*.*)

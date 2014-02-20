@@ -2,13 +2,16 @@
 #include "Loader.h"
 #include "InvalidOptionException.hpp"
 
+namespace startupOptions
+{
+
 namespace po = boost::program_options;
 
 // The optional configuration file name
-const std::string CStartupOptionsLoader::OptionalConfigFile("yadoms.cfg");
+const std::string CLoader::OptionalConfigFile("yadoms.cfg");
 
 // Options
-void CStartupOptionsLoader::buildOptionsDescription()
+void CLoader::buildOptionsDescription()
 {
    m_optionsDescription.add_options()
       ("help", "produce help message")
@@ -34,7 +37,7 @@ void CStartupOptionsLoader::buildOptionsDescription()
       ;
 }
 
-CStartupOptionsLoader::CStartupOptionsLoader(int argc, char** argv)
+CLoader::CLoader(int argc, char** argv)
    :m_optionsDescription("Allowed options")
 {
    buildOptionsDescription();
@@ -49,26 +52,26 @@ CStartupOptionsLoader::CStartupOptionsLoader(int argc, char** argv)
       po::notify(vm);
 
       if (vm.count("help"))
-         throw CStartupOptionsLoaderException(m_optionsDescription);
+         throw CLoaderException(m_optionsDescription);
 
       m_startXplHub = !vm.count("disableXplHubStart");
       //m_debugFlag = vm.count("debug");
    }
    catch(po::unknown_option& e)
    {
-      throw CStartupOptionsLoaderException(m_optionsDescription, e.what());
+      throw CLoaderException(m_optionsDescription, e.what());
    }
    catch(po::validation_error& e)
    {
-      throw CStartupOptionsLoaderException(m_optionsDescription, e.what());
+      throw CLoaderException(m_optionsDescription, e.what());
    }
    catch(po::invalid_command_line_syntax& e)
    {
-      throw CStartupOptionsLoaderException(m_optionsDescription, e.what());
+      throw CLoaderException(m_optionsDescription, e.what());
    }
 }
 
-CStartupOptionsLoader::~CStartupOptionsLoader()
+CLoader::~CLoader()
 {
 }
 
@@ -124,3 +127,5 @@ std::ostream& operator<<(std::ostream& stream, const CValidIpAddressOption& ipAd
    stream.flush();
    return stream;
 }
+
+} // namespace startupOptions
