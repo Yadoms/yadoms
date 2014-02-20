@@ -9,16 +9,16 @@
 //////////////////////////////////////////////////////////////////////////
 // Plugin implementation helper
 //////////////////////////////////////////////////////////////////////////
-// see shared::plugin::IInformation documentation to know what formats are accepted for each field
+// see shared::plugin::information::IInformation documentation to know what formats are accepted for each field
 #define IMPLEMENT_HARDWARE_PLUGIN(pluginClassName,pluginName,version,release,author,url)  \
    EXPORT_LIBRARY_FUNCTION IHardwarePlugin* construct()                                   \
    {                                                                                      \
       return new pluginClassName();                                                       \
    }                                                                                      \
                                                                                           \
-   static const shared::plugin::CInformation                                              \
+   static const shared::plugin::information::CInformation                                 \
       PluginInformations(pluginName,version,release,author,url);                          \
-   EXPORT_LIBRARY_FUNCTION const shared::plugin::IInformation& getInformation()           \
+   EXPORT_LIBRARY_FUNCTION const shared::plugin::information::IInformation& getInformation() \
    {                                                                                      \
       return PluginInformations;                                                          \
    }

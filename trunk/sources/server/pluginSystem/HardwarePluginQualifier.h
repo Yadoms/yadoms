@@ -27,11 +27,11 @@ public:
    virtual ~CHardwarePluginQualifier();
 
    // IHardwarePluginQualifier implementation
-   virtual void signalLoad(const boost::shared_ptr<const shared::plugin::IInformation> pluginInformation);
-   virtual void signalUnload(const boost::shared_ptr<const shared::plugin::IInformation> pluginInformation);
-   virtual void signalCrash(const boost::shared_ptr<const shared::plugin::IInformation> pluginInformation, const std::string& reason);
-   virtual bool isSafe(const boost::shared_ptr<const shared::plugin::IInformation> pluginInformation);
-   virtual int getQualityLevel(const boost::shared_ptr<const shared::plugin::IInformation> pluginInformation);
+   virtual void signalLoad(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation);
+   virtual void signalUnload(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation);
+   virtual void signalCrash(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation, const std::string& reason);
+   virtual bool isSafe(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation);
+   virtual int getQualityLevel(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation);
    // [END] IHardwarePluginQualifier implementation
 
 private:
@@ -41,7 +41,7 @@ private:
    /// \param[in]  eventType  Event type (load, unload, crash...)
    /// \param[in]  reason     Crash cause (exception...)
    //--------------------------------------------------------------
-   void AddEventToDatabase(const boost::shared_ptr<const shared::plugin::IInformation> pluginInformation,
+   void AddEventToDatabase(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
       CHardwareEventLogger::EEventType eventType, const std::string& reason = CStringExtension::EmptyString);
 
    //--------------------------------------------------------------

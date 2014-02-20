@@ -1,6 +1,6 @@
 #pragma once
 
-#include <shared/plugin/Configuration/Configuration.h>
+#include <shared/plugin/configuration/Configuration.h>
 #include <shared/plugin/ImplementationHelper.h>
 
 
@@ -12,17 +12,26 @@ enum EEnumType
    kEnumValue3
 };
 
-class CFakePluginConfiguration : public CHardwarePluginConfiguration
+class CFakePluginConfiguration : public shared::plugin::configuration::CConfiguration
 {
    // Call this macro to declare that plugin has a configuration
    DECLARE_CONFIGURATION(CFakePluginConfiguration)
 
 public:
+   //--------------------------------------------------------------
+   /// \brief	    Destructor
+   //--------------------------------------------------------------
    virtual ~CFakePluginConfiguration();
 
    //--------------------------------------------------------------
+   /// \brief	    Just for test, not needed for real plugin
+   //--------------------------------------------------------------
+   void trace();
+
+protected:
+   //--------------------------------------------------------------
    /// \brief	    Build the configuration schema
-   /// \note       CHardwarePluginConfiguration implementation
+   /// \note       CConfiguration implementation
    //--------------------------------------------------------------
    virtual void doBuildSchema();
 };

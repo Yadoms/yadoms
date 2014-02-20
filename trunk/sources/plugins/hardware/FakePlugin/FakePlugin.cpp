@@ -13,7 +13,7 @@ IMPLEMENT_HARDWARE_PLUGIN(
    CFakePlugin,                                 // IHardwarePlugin implementation class
    "FakePlugin",                                // Plugin name (std::string)
    "0.1",                                       // Current plugin version (std::string)
-   shared::plugin::IInformation::kBeta,         // Current release state (shared::plugin::IInformation::EReleaseType)
+   shared::plugin::information::kBeta,          // Current release state (shared::plugin::information::EReleaseType)
    "yadoms-team",                               // Author name (std::string)
    "http://sourceforge.net/projects/yadoms/")   // Url of author web site (std::string)
 
@@ -52,7 +52,7 @@ void CFakePlugin::doWork(const std::string& configurationValues, boost::asio::io
       // Load configuration values (provided by database)
       m_Configuration.setValues(configurationValues);
       // Trace the configuration (just for test)
-      traceConfiguration();
+      m_Configuration.trace();
 
       int value = 0;
 
@@ -145,7 +145,7 @@ void CFakePlugin::traceConfiguration()
    try
    {
       // Get simple parameters
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is " << m_Configuration.getParam<CHardwarePluginConfigurationSerialPortParameter>("Serial port").get();
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is " << m_Configuration.getParam<shared::plugin::configuration::CSerialPortParameter>("Serial port").get();
       YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is (with macro helper) " << m_Configuration.CFG_GET_SERIAL_PORT("Serial port");
       YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'StringParameter' is " << m_Configuration.CFG_GET_STRING("StringParameter");
       YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is " << m_Configuration.CFG_GET_BOOL("BoolParameter");
@@ -154,7 +154,7 @@ void CFakePlugin::traceConfiguration()
 
       // Enum
       // - Nominal form
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'EnumParameter' is " << m_Configuration.getParam<CHardwarePluginConfigurationEnumParameter<EEnumType> >("EnumParameter").get();
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'EnumParameter' is " << m_Configuration.getParam<shared::plugin::configuration::CEnumParameter<EEnumType> >("EnumParameter").get();
       // - With macro helper
       std::ostringstream os;
       os << "CFakePlugin::doWork, parameter 'EnumParameter' is ";
@@ -169,7 +169,7 @@ void CFakePlugin::traceConfiguration()
 
       // Bits field
       // - Nominal form
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[first checkbox]' is " << m_Configuration.getParam<CHardwarePluginConfigurationBitsFieldParameter>("BitsFieldParameter").get()["first checkbox"];
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[first checkbox]' is " << m_Configuration.getParam<shared::plugin::configuration::CBitsFieldParameter>("BitsFieldParameter").get()["first checkbox"];
       // - With macro helper
       YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[second one]' is " << m_Configuration.CFG_GET_BITS_FIELD("BitsFieldParameter")["second one"];
       YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[and a third]' is " << m_Configuration.CFG_GET_BITS_FIELD("BitsFieldParameter")["and a third"];

@@ -29,35 +29,35 @@ set(SHARED_LIB_SRC
 	shared/Exceptions/NotSupportedException.hpp
 	shared/Exceptions/NullReferenceException.hpp
 
-  shared/plugin/ImplementationHelper.h
+	shared/plugin/ImplementationHelper.h
 	
-	shared/plugin/Configuration/Configuration.h
-	shared/plugin/Configuration/Configuration.cpp
-	shared/plugin/Configuration/ConfigurationFactory.h
-	shared/plugin/Configuration/ConfigurationFactory.cpp
-	shared/plugin/Configuration/BitsFieldParameter.h
-	shared/plugin/Configuration/BitsFieldParameter.cpp
-	shared/plugin/Configuration/BoolParameter.h
-	shared/plugin/Configuration/BoolParameter.cpp
-	shared/plugin/Configuration/EnumGenericParameter.h
-	shared/plugin/Configuration/EnumGenericParameter.cpp
-	shared/plugin/Configuration/DoubleParameter.h
-	shared/plugin/Configuration/DoubleParameter.cpp
-	shared/plugin/Configuration/EnumParameter.hpp
-	shared/plugin/Configuration/IntParameter.h
-	shared/plugin/Configuration/IntParameter.cpp
-	shared/plugin/Configuration/Parameter.h
-	shared/plugin/Configuration/Parameter.cpp
-	shared/plugin/Configuration/Parameters.h
-	shared/plugin/Configuration/SimpleParameter.hpp
-	shared/plugin/Configuration/SerialPortParameter.h
-	shared/plugin/Configuration/SerialPortParameter.cpp
-	shared/plugin/Configuration/StringParameter.h
-	shared/plugin/Configuration/StringParameter.cpp	
+	shared/plugin/configuration/Configuration.h
+	shared/plugin/configuration/Configuration.cpp
+	shared/plugin/configuration/Factory.h
+	shared/plugin/configuration/Factory.cpp
+	shared/plugin/configuration/BitsFieldParameter.h
+	shared/plugin/configuration/BitsFieldParameter.cpp
+	shared/plugin/configuration/BoolParameter.h
+	shared/plugin/configuration/BoolParameter.cpp
+	shared/plugin/configuration/EnumGenericParameter.h
+	shared/plugin/configuration/EnumGenericParameter.cpp
+	shared/plugin/configuration/DoubleParameter.h
+	shared/plugin/configuration/DoubleParameter.cpp
+	shared/plugin/configuration/EnumParameter.hpp
+	shared/plugin/configuration/IntParameter.h
+	shared/plugin/configuration/IntParameter.cpp
+	shared/plugin/configuration/Parameter.h
+	shared/plugin/configuration/Parameter.cpp
+	shared/plugin/configuration/Parameters.h
+	shared/plugin/configuration/SimpleParameter.hpp
+	shared/plugin/configuration/SerialPortParameter.h
+	shared/plugin/configuration/SerialPortParameter.cpp
+	shared/plugin/configuration/StringParameter.h
+	shared/plugin/configuration/StringParameter.cpp	
   
-	shared/plugin/Information/IInformation.h
-	shared/plugin/Information/Information.cpp
-	shared/plugin/Information/Information.h
+	shared/plugin/information/IInformation.h
+	shared/plugin/information/Information.cpp
+	shared/plugin/information/Information.h
 
 	shared/plugin/Interfaces/IHardwarePlugin.h
 	shared/plugin/Interfaces/IHardwarePluginConfigurationSchema.h
@@ -132,8 +132,8 @@ source_group(Event shared/Event/*.*)
 source_group(Exceptions shared/Exceptions/*.*)
 
 source_group(plugin shared/shared/plugin/*.* )	
-source_group(plugin\\Configuration shared/shared/plugin/Configuration/*.* )	
-source_group(plugin\\Information shared/shared/plugin/Information/*.* )	
+source_group(plugin\\configuration shared/shared/plugin/configuration/*.* )	
+source_group(plugin\\information shared/shared/plugin/information/*.* )	
 source_group(plugin\\Interfaces shared/shared/plugin/Interfaces/*.* )	
 
 source_group(PlatformSpecific\\windows shared/windows/shared/*.*)

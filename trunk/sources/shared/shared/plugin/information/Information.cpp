@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Information.h"
 
-namespace shared { namespace plugin
+namespace shared { namespace plugin { namespace information
 {
 
 CInformation::CInformation (const std::string & name, const std::string & version,
@@ -29,7 +29,7 @@ const std::string& CInformation::getVersion() const
    return  m_version;
 }
 
-const IInformation::EReleaseType CInformation::getReleaseType() const
+const EReleaseType CInformation::getReleaseType() const
 {
    return m_releaseType;
 }
@@ -57,4 +57,4 @@ std::string CInformation::toString() const
    return formatedInformations.str();
 }
 
-} } // namespace shared::plugin
+} } } // namespace shared::plugin::information

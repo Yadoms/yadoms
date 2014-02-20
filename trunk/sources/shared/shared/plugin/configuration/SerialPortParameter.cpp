@@ -4,31 +4,34 @@
 #include "../../StringExtension.h"
 #include <shared/Peripherals.h>
 
-CHardwarePluginConfigurationSerialPortParameter::CHardwarePluginConfigurationSerialPortParameter(const std::string& name,
+namespace shared { namespace plugin { namespace configuration
+{
+
+CSerialPortParameter::CSerialPortParameter(const std::string& name,
    const std::string& description)
-   :CHardwarePluginConfigurationEnumGeneric(name, description, ValuesNames())
+   :CEnumGeneric(name, description, ValuesNames())
 {
 }
 
-boost::shared_ptr<CHardwarePluginConfigurationParameter> CHardwarePluginConfigurationSerialPortParameter::clone() const
+boost::shared_ptr<CParameter> CSerialPortParameter::clone() const
 {
-   CHardwarePluginConfigurationSerialPortParameter* parameter = new CHardwarePluginConfigurationSerialPortParameter(getName(), getDescription());
+   CSerialPortParameter* parameter = new CSerialPortParameter(getName(), getDescription());
    parameter->m_value = get();
-   boost::shared_ptr<CHardwarePluginConfigurationParameter> p(parameter);
+   boost::shared_ptr<CParameter> p(parameter);
    return p;
 }
 
-const std::string& CHardwarePluginConfigurationSerialPortParameter::get() const
+const std::string& CSerialPortParameter::get() const
 {
    return m_value;
 }
 
-void CHardwarePluginConfigurationSerialPortParameter::setValue(const boost::property_tree::ptree& pt)
+void CSerialPortParameter::setValue(const boost::property_tree::ptree& pt)
 {
    m_value = pt.get<std::string>(getName() + ".value");
 }
 
-void CHardwarePluginConfigurationSerialPortParameter::build(boost::property_tree::ptree& pt) const
+void CSerialPortParameter::build(boost::property_tree::ptree& pt) const
 {
    // Update m_valuesNames before building schema
    // The normaly read-only m_valuesNames is here dynamic. So we need a write-access.
@@ -42,8 +45,10 @@ void CHardwarePluginConfigurationSerialPortParameter::build(boost::property_tree
    }
 
    // Normally build schema
-   CHardwarePluginConfigurationEnumGeneric::build(pt);
+   CEnumGeneric::build(pt);
 
    // Default value doesn't make sense here
    pt.put(getName() + ".default", CStringExtension::EmptyString);
 }
+
+} } } // namespace shared::plugin::configuration
