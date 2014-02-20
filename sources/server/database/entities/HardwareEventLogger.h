@@ -1,7 +1,7 @@
 #pragma once
 
 #include "EntityHelpers.hpp"
-#include <shared/plugin/information/IInformation.h>
+#include <shared/plugin/Information/IInformation.h>
 
 #define DELCARE_FIELD_CHARDWARE_EVENT_LOGGER(t,n)   DELCARE_FIELD(CHardwareEventLogger,t,n)
 

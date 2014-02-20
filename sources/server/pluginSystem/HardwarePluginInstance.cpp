@@ -2,7 +2,7 @@
 
 #include "HardwarePluginInstance.h"
 #include <shared/plugin/Interfaces/IHardwarePlugin.h>
-#include <shared/plugin/information/IInformation.h>
+#include <shared/plugin/Information/IInformation.h>
 
 
 CHardwarePluginInstance::CHardwarePluginInstance(
