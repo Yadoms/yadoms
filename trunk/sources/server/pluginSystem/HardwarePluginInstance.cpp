@@ -2,14 +2,14 @@
 
 #include "HardwarePluginInstance.h"
 #include <shared/plugin/Interfaces/IHardwarePlugin.h>
-#include <shared/plugin/Information/IInformation.h>
+#include <shared/plugin/information/IInformation.h>
 
 
 CHardwarePluginInstance::CHardwarePluginInstance(
    const boost::shared_ptr<const CHardwarePluginFactory> plugin,
    const boost::shared_ptr<server::database::entities::CHardware> context,
    const boost::shared_ptr<IHardwarePluginQualifier> qualifier,
-   CEventHandler& supervisor,
+   shared::event::CEventHandler& supervisor,
    int pluginManagerEventId, 
    boost::asio::io_service * pluginIOService)
     : CThreadBase(context->getName()), m_pPlugin(plugin), m_context(context), m_qualifier(qualifier), m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_pluginIOService(pluginIOService)

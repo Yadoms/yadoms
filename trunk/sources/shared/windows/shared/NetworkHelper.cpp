@@ -1,8 +1,11 @@
 #include "stdafx.h"
 
-#include "../../shared/Exceptions/Exception.hpp"
+#include "../../shared/exceptions/Exception.hpp"
 #include "../../shared/Log.h"
 #include "NetworkHelper.h"
+
+namespace shared
+{
 
 CNetworkHelper::CNetworkHelper()
 {
@@ -34,3 +37,5 @@ std::vector<boost::asio::ip::address> CNetworkHelper::getLocalIps()
 
    return result;
 }
+
+} // namespace shared

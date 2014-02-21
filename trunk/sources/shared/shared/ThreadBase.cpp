@@ -2,6 +2,9 @@
 #include "ThreadBase.h"
 #include "Log.h"
 
+namespace shared
+{
+
 const int CThreadBase::DefaultStopTimeoutSeconds = 100;
 
 
@@ -119,3 +122,5 @@ void CThreadBase::doWorkInternal()
 
    changeStatus(kStopped);
 }
+
+} // namespace shared

@@ -1,9 +1,9 @@
 ﻿#include "stdafx.h"
 #include "XplLogger.h"
 #include <shared/Log.h>
-#include <shared/Xpl/XplConstants.h>
-#include <shared/Xpl/XplMessage.h>
-#include <shared/Xpl/XplService.h>
+#include <shared/xpl/XplConstants.h>
+#include <shared/xpl/XplMessage.h>
+#include <shared/xpl/XplService.h>
 
 
 CXplLogger::CXplLogger(boost::shared_ptr<server::database::IDataProvider> dataProvider)
@@ -22,20 +22,20 @@ void CXplLogger::doWork()
       YADOMS_LOG_CONFIGURE("XplLogger");
       YADOMS_LOG(debug) << "XplLogger is starting...";
 
-      CXplService xplService(CXplConstants::getYadomsVendorId(), "logger", "1");
+      shared::xpl::CXplService xplService(shared::xpl::CXplConstants::getYadomsVendorId(), "logger", "1");
 
-      //use this line to use be notified from CEventHandler on an xplMessage
+      //use this line to use be notified from shared::event::CEventHandler on an xplMessage
       xplService.messageReceived(this, kXplMessageReceived);
 
       while(1)
       {
-         // Wait for an event, with timeout
-         switch(waitForEvents(boost::posix_time::milliseconds(500)))
+         // Wait for an event
+         switch(waitForEvents())
          {
          case kXplMessageReceived:
             {
                // Xpl message was received
-               CXplMessage xplMessage = popEvent<CXplMessage>();
+               shared::xpl::CXplMessage xplMessage = popEvent<shared::xpl::CXplMessage>();
                //YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
                try
                {
@@ -60,8 +60,8 @@ void CXplLogger::doWork()
                break;
             }
 
-         case kTimeout:
          case kNoEvent:
+            YADOMS_LOG(warning) << "CXplLogger::doWork, unknown event received";
             //do nothing
             break;
 

@@ -4,10 +4,10 @@
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "database/DatabaseException.hpp"
 #include <shared/Log.h>
-#include <shared/Exceptions/NotSupportedException.hpp>
+#include <shared/exceptions/NotSupportedException.hpp>
 #include "web/webem/WebServer.h"
 #include "web/WebServerManager.h"
-#include <shared/Xpl/XplHub.h>
+#include <shared/xpl/XplHub.h>
 #include "XplLogger.h"
 #include "web/rest/HardwareRestService.h"
 #include "web/rest/DeviceRestService.h"
@@ -197,10 +197,10 @@ void CSupervisor::doWork()
 
       // ######################### Xpl Hub #########################
       //we start xpl hub only if it's necessary
-      boost::shared_ptr<CXplHub> hub;
+      boost::shared_ptr<shared::xpl::CXplHub> hub;
       if (m_startupOptions.getStartXplHubFlag())
       {
-         hub.reset(new CXplHub(m_startupOptions.getXplNetworkIpAddress()));
+         hub.reset(new shared::xpl::CXplHub(m_startupOptions.getXplNetworkIpAddress()));
          hub->start();
       }
 

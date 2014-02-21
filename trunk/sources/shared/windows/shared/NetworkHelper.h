@@ -5,26 +5,31 @@
 //
 #pragma once
 
-//--------------------------------------------------------------
-/// \brief	this class is used to provide helpers in networking
-//--------------------------------------------------------------
-class CNetworkHelper
+namespace shared
 {
-public:
-   //--------------------------------------------------------------
-   /// \brief			Destructor
-   //--------------------------------------------------------------
-   virtual ~CNetworkHelper();
 
    //--------------------------------------------------------------
-   /// \brief			Return all locals ip
-   /// \return a list of ip detected on the computer
+   /// \brief	this class is used to provide helpers in networking
    //--------------------------------------------------------------
-   static std::vector<boost::asio::ip::address> getLocalIps();
+   class CNetworkHelper
+   {
+   public:
+      //--------------------------------------------------------------
+      /// \brief			Destructor
+      //--------------------------------------------------------------
+      virtual ~CNetworkHelper();
 
-private:
-   //--------------------------------------------------------------
-   /// \brief			Constructor
-   //--------------------------------------------------------------
-   CNetworkHelper();
-};
+      //--------------------------------------------------------------
+      /// \brief			Return all locals ip
+      /// \return a list of ip detected on the computer
+      //--------------------------------------------------------------
+      static std::vector<boost::asio::ip::address> getLocalIps();
+
+   private:
+      //--------------------------------------------------------------
+      /// \brief			Constructor
+      //--------------------------------------------------------------
+      CNetworkHelper();
+   };
+
+} // namespace shared

@@ -3,7 +3,8 @@
 #include "IWebServer.h"
 #include <shared/ThreadBase.h>
 
-class CWebServerManager : public CThreadBase
+//TODO commenter
+class CWebServerManager : public shared::CThreadBase
 {
 public:
    CWebServerManager(boost::shared_ptr<IWebServer> webServerInstance);

@@ -3,9 +3,11 @@
 #include <shared/Export.h>
 #include "XplActor.h"
 #include "XplMessage.h"
-#include <shared/Event/EventHandler.hpp>
+#include <shared/event/EventHandler.hpp>
 
 
+namespace shared { namespace xpl
+{
 
 class YADOMS_SHARED_EXPORT CXplService 
 {
@@ -47,12 +49,12 @@ public:
    void sendMessage(const CXplMessage & message);
 
    //--------------------------------------------------------------
-   /// \brief			Record an event handler to notify it when a message is receeived
-   /// \param [in]   handler : a pointer on the eventhandler
+   /// \brief			Record an event handler to notify it when a message is received
+   /// \param [in]   handler : a pointer on the shared::event::eventhandler
    /// \param [in]   eventTypeIdentifier : the event type to generate when an XplMessage is received
    /// \eexample     xplService->messageReceived(shared_from_this(), kEvtXplMessage);
    //--------------------------------------------------------------
-   void messageReceived(CEventHandler * pHandler, const int eventTypeIdentifier);
+   void messageReceived(event::CEventHandler * pHandler, const int eventTypeIdentifier);
 
    
    //--------------------------------------------------------------
@@ -116,7 +118,7 @@ private:
    //--------------------------------------------------------------
    /// \brief  Pointer to eventHandler which will receive notifications
    //--------------------------------------------------------------
-   CEventHandler * m_eventHandler;
+   event::CEventHandler * m_eventHandler;
 
    //--------------------------------------------------------------
    /// \brief  The event type to generate when an XplMessage is received
@@ -145,3 +147,4 @@ private:
    bool m_manageIoService;
 };
 
+} } // namespace shared::xpl

@@ -11,7 +11,7 @@
 //--------------------------------------------------------------
 /// \brief	this class is used to monitor a directory for changes 
 //--------------------------------------------------------------
-class CDirectoryChangeListener : protected CThreadBase
+class CDirectoryChangeListener : protected shared::CThreadBase
 {
 public:
    //--------------------------------------------------------------

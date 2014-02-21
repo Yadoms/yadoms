@@ -3,6 +3,9 @@
 #include "XplMessageSchemaIdentifier.h"
 #include "XplException.h"
 
+namespace shared { namespace xpl
+{
+
 CXplMessageSchemaIdentifier::CXplMessageSchemaIdentifier()
 {
 }
@@ -85,3 +88,5 @@ bool CXplMessageSchemaIdentifier::isHeartbeatMessageSchemaIdentifier(const CXplM
 {
    return (msi.getClassId() == CXplHelper::HeartbeatClassID);
 }
+
+} } // namespace shared::xpl

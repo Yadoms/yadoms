@@ -14,7 +14,7 @@
 //--------------------------------------------------------------
 /// \brief	this class is used to load a plugin file library and construct instance
 //--------------------------------------------------------------
-class CHardwarePluginFactory : public CDynamicLibrary
+class CHardwarePluginFactory : public shared::CDynamicLibrary
 {
 public:
    //--------------------------------------------------------------

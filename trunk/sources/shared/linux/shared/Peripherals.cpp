@@ -4,6 +4,8 @@
 #include "../../shared/Log.h"
 #include "Peripherals.h"
 
+namespace shared
+{
 
 CPeripherals::CPeripherals()
 {
@@ -34,3 +36,5 @@ const boost::shared_ptr<CPeripherals::SerialPortsMap> CPeripherals::getSerialPor
 
    return serialPorts;
 }
+
+} // namespace shared

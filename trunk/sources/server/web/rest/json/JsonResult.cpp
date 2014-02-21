@@ -7,7 +7,7 @@ std::string CJsonResult::m_errorMessageFieldName = "message";
 std::string CJsonResult::m_dataFieldName = "data";
 CJson CJsonResult::EmptyCJson = CJson();
 
-CJson CJsonResult::GenerateError(const std::string & errorMessage /*= CStringExtension::EmptyString*/, const CJson & data /*= CJsonResult::EmptyCJson*/)
+CJson CJsonResult::GenerateError(const std::string & errorMessage /*= shared::CStringExtension::EmptyString*/, const CJson & data /*= CJsonResult::EmptyCJson*/)
 {
    return GenerateInteral(false, errorMessage, data);
 }
@@ -19,7 +19,7 @@ CJson CJsonResult::GenerateError(const std::exception & error, const CJson & dat
 
 CJson CJsonResult::GenerateSuccess(const CJson & data /*= CJsonResult::EmptyCJson*/)
 {
-   return GenerateInteral(true, CStringExtension::EmptyString, data);
+   return GenerateInteral(true, shared::CStringExtension::EmptyString, data);
 }
 
 CJson CJsonResult::GenerateInteral(const bool result, const std::string & message, const CJson & data)

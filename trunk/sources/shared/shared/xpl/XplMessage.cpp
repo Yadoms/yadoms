@@ -4,6 +4,9 @@
 #include "XplHelper.h"
 #include "XplException.h"
 
+namespace shared { namespace xpl
+{
+
 const std::string CXplMessage::XplCmdTypeIdentifier = "xpl-cmd";
 const std::string CXplMessage::XplStatTypeIdentifier = "xpl-stat";
 const std::string CXplMessage::XplTrigTypeIdentifier = "xpl-trig";
@@ -320,3 +323,5 @@ CXplMessage CXplMessage::parse(const std::string & rawMessage)
    }
    return msg;
 }
+
+} } // namespace shared::xpl

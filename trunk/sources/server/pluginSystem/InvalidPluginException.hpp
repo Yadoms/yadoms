@@ -5,7 +5,7 @@
 //
 #pragma once
 
-#include <shared/Exceptions/Exception.hpp>
+#include <shared/exceptions/Exception.hpp>
 
 
 //--------------------------------------------------------------

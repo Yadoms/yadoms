@@ -5,7 +5,7 @@
 //
 #pragma once
 
-#include <shared/plugin/Information/Information.h>
+#include <shared/plugin/information/Information.h>
 #include "HardwarePluginFactory.h"
 
 //--------------------------------------------------------------

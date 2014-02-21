@@ -15,7 +15,7 @@ public:
    ///\param [in] data : optionnal additionnal data
    ///\return  the message as CJson format
    //-----------------------------------------
-   static CJson GenerateError(const std::string & errorMessage = CStringExtension::EmptyString, const CJson & data = CJsonResult::EmptyCJson);
+   static CJson GenerateError(const std::string & errorMessage = shared::CStringExtension::EmptyString, const CJson & data = CJsonResult::EmptyCJson);
 
    //-----------------------------------------
    ///\brief   Generate an error JSON message

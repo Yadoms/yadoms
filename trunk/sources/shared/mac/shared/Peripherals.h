@@ -5,26 +5,31 @@
 //
 #pragma once
 
-//--------------------------------------------------------------
-/// \brief	this class is used to manage platforms peripherals
-//--------------------------------------------------------------
-class CPeripherals
+namespace shared
 {
-public:
-   //--------------------------------------------------------------
-   /// \brief			Constructor
-   //--------------------------------------------------------------
-   CPeripherals();
 
    //--------------------------------------------------------------
-   /// \brief			Destructor
+   /// \brief	this class is used to manage platforms peripherals
    //--------------------------------------------------------------
-   virtual ~CPeripherals();
+   class CPeripherals
+   {
+   public:
+      //--------------------------------------------------------------
+      /// \brief			Constructor
+      //--------------------------------------------------------------
+      CPeripherals();
 
-    //--------------------------------------------------------------
-    /// \brief			List machine serial ports (all)
-    /// \return       The serial ports names (keys are real name, values are common name or comment ("used by..."))
-    //--------------------------------------------------------------
-    typedef std::map<std::string, std::string> SerialPortsMap;
-    static const boost::shared_ptr<SerialPortsMap> getSerialPorts();
-};
+      //--------------------------------------------------------------
+      /// \brief			Destructor
+      //--------------------------------------------------------------
+      virtual ~CPeripherals();
+
+       //--------------------------------------------------------------
+       /// \brief			List machine serial ports (all)
+       /// \return       The serial ports names (keys are real name, values are common name or comment ("used by..."))
+       //--------------------------------------------------------------
+       typedef std::map<std::string, std::string> SerialPortsMap;
+       static const boost::shared_ptr<SerialPortsMap> getSerialPorts();
+   };
+
+} // namespace shared

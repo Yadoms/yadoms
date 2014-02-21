@@ -42,7 +42,7 @@ private:
    /// \param[in]  reason     Crash cause (exception...)
    //--------------------------------------------------------------
    void AddEventToDatabase(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-      server::database::entities::CHardwareEventLogger::EEventType eventType, const std::string& reason = CStringExtension::EmptyString);
+      server::database::entities::CHardwareEventLogger::EEventType eventType, const std::string& reason = shared::CStringExtension::EmptyString);
 
    //--------------------------------------------------------------
    /// \brief	               Make corresponding quality indicator obsolete in cache

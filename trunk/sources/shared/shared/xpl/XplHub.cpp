@@ -9,6 +9,9 @@
 #include "XplException.h"
 #include "../ThreadBase.h"
 
+namespace shared { namespace xpl
+{
+
 CXplHub::CXplHub(const std::string & localIPOfTheInterfaceToUse)
    : CThreadBase("XplHub"), m_ioService(), m_socket(m_ioService), m_timer(m_ioService)
 {
@@ -177,3 +180,5 @@ void CXplHub::checkApplicationLifeCycle()
    //we relaunch the check in one minute
    runCheckApplicationLifeCycleTimeout();
 }
+
+} } // namespace shared::xpl
