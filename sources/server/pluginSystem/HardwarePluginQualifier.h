@@ -19,7 +19,7 @@ public:
    /// \brief	Constructor
    /// \param[in] eventLoggerDatabase    Event logger database
    //--------------------------------------------------------------
-   CHardwarePluginQualifier(boost::shared_ptr<IHardwareEventLoggerRequester> eventLoggerDatabase);
+   CHardwarePluginQualifier(boost::shared_ptr<server::database::IHardwareEventLoggerRequester> eventLoggerDatabase);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -42,7 +42,7 @@ private:
    /// \param[in]  reason     Crash cause (exception...)
    //--------------------------------------------------------------
    void AddEventToDatabase(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-      CHardwareEventLogger::EEventType eventType, const std::string& reason = CStringExtension::EmptyString);
+      server::database::entities::CHardwareEventLogger::EEventType eventType, const std::string& reason = CStringExtension::EmptyString);
 
    //--------------------------------------------------------------
    /// \brief	               Make corresponding quality indicator obsolete in cache
@@ -81,5 +81,5 @@ private:
    //--------------------------------------------------------------
    /// \brief	database access
    //--------------------------------------------------------------
-   boost::shared_ptr<IHardwareEventLoggerRequester> m_eventLoggerDatabase;
+   boost::shared_ptr<server::database::IHardwareEventLoggerRequester> m_eventLoggerDatabase;
 };

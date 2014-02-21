@@ -4,16 +4,24 @@
 
 #define DELCARE_FIELD_CKEYWORD(t,n)   DELCARE_FIELD(CKeyword,t,n)
 
-class CKeyword
-{
-public:
-   CKeyword()
-   {
-   }
+namespace server { 
+namespace database { 
+namespace entities {
 
-   virtual ~CKeyword()
+   class CKeyword
    {
-   }
+   public:
+      CKeyword()
+      {
+      }
 
-   DELCARE_FIELD_CKEYWORD(std::string, Name);
-};
+      virtual ~CKeyword()
+      {
+      }
+
+      DELCARE_FIELD_CKEYWORD(std::string, Name);
+   };
+
+} //namespace entities
+} //namespace database
+} //namespace server

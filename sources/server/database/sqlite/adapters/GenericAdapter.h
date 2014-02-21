@@ -2,30 +2,41 @@
 
 #include "ISQLiteResultAdapter.h"
 
-//--------------------------------------------------------------
-/// \Brief		Adapter for generic table results
-//--------------------------------------------------------------
-class CGenericAdapter : public ISQLiteResultAdapter<std::map<std::string, std::string> >
-{
-public:
-   //--------------------------------------------------------------
-   /// \Brief		Constructor
-   //--------------------------------------------------------------
-   CGenericAdapter();
-   
-   //--------------------------------------------------------------
-   /// \Brief		Destructor
-   //--------------------------------------------------------------
-   virtual ~CGenericAdapter();
-   
-   // ISQLiteResultAdapter implementation
-   bool adapt(sqlite3_stmt * pStatement);
-   std::vector<std::map<std::string, std::string> > getResults(); 
-   // [END] ISQLiteResultAdapter implementation
+namespace server { 
+namespace database { 
+namespace sqlite { 
+namespace adapters { 
 
-private:
+
    //--------------------------------------------------------------
-   /// \Brief		Contains the list of Hardware entities
+   /// \Brief		Adapter for generic table results
    //--------------------------------------------------------------
-   std::vector<std::map<std::string, std::string> > m_results;
-};
+   class CGenericAdapter : public ISQLiteResultAdapter<std::map<std::string, std::string> >
+   {
+   public:
+      //--------------------------------------------------------------
+      /// \Brief		Constructor
+      //--------------------------------------------------------------
+      CGenericAdapter();
+   
+      //--------------------------------------------------------------
+      /// \Brief		Destructor
+      //--------------------------------------------------------------
+      virtual ~CGenericAdapter();
+   
+      // ISQLiteResultAdapter implementation
+      bool adapt(sqlite3_stmt * pStatement);
+      std::vector<std::map<std::string, std::string> > getResults(); 
+      // [END] ISQLiteResultAdapter implementation
+
+   private:
+      //--------------------------------------------------------------
+      /// \Brief		Contains the list of Hardware entities
+      //--------------------------------------------------------------
+      std::vector<std::map<std::string, std::string> > m_results;
+   };
+
+} //namespace adapters
+} //namespace sqlite
+} //namespace database 
+} //namespace server

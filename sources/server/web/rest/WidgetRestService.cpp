@@ -11,7 +11,7 @@
 
 std::string CWidgetRestService::m_restKeyword= std::string("widget");
 
-CWidgetRestService::CWidgetRestService(boost::shared_ptr<IDataProvider> dataProvider, const std::string & webServerPath)
+CWidgetRestService::CWidgetRestService(boost::shared_ptr<server::database::IDataProvider> dataProvider, const std::string & webServerPath)
    :m_dataProvider(dataProvider), m_webServerPath(webServerPath)
 {
 
@@ -38,7 +38,7 @@ void CWidgetRestService::configureDispatcher(CRestDispatcher & dispatcher)
 
 CJson CWidgetRestService::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const CJson & requestContent)
 {
-   boost::shared_ptr<ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
+   boost::shared_ptr<server::database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
    CJson result;
    try
    {
@@ -81,7 +81,7 @@ CJson CWidgetRestService::getOneWidget(const std::vector<std::string> & paramete
       if(parameters.size()>1)
       {
          objectId = boost::lexical_cast<int>(parameters[1]);
-         boost::shared_ptr<CWidget> widgetFound =  m_dataProvider->getWidgetRequester()->getWidget(objectId);
+         boost::shared_ptr<server::database::entities::CWidget> widgetFound =  m_dataProvider->getWidgetRequester()->getWidget(objectId);
          return CJsonResult::GenerateSuccess(hes.serialize(*widgetFound.get()));
       }
       else
@@ -102,15 +102,15 @@ CJson CWidgetRestService::getOneWidget(const std::vector<std::string> & paramete
 CJson CWidgetRestService::getAllWidgets(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    CWidgetEntitySerializer hes;
-   std::vector< boost::shared_ptr<CWidget> > hwList = m_dataProvider->getWidgetRequester()->getWidgets();
-   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<CWidget>::SerializeCollection(hwList, hes, getRestKeyword()));
+   std::vector< boost::shared_ptr<server::database::entities::CWidget> > hwList = m_dataProvider->getWidgetRequester()->getWidgets();
+   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<server::database::entities::CWidget>::SerializeCollection(hwList, hes, getRestKeyword()));
 }
 
 CJson CWidgetRestService::getWidgetAcquisitions(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    CWidgetEntitySerializer hes;
-   std::vector< boost::shared_ptr<CWidget> > hwList = m_dataProvider->getWidgetRequester()->getWidgets();
-   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<CWidget>::SerializeCollection(hwList, hes, CAcquisitionRestService::getRestKeyword()));
+   std::vector< boost::shared_ptr<server::database::entities::CWidget> > hwList = m_dataProvider->getWidgetRequester()->getWidgets();
+   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<server::database::entities::CWidget>::SerializeCollection(hwList, hes, CAcquisitionRestService::getRestKeyword()));
 }
 
 CJson CWidgetRestService::addWidget(const std::vector<std::string> & parameters, const CJson & requestContent)
@@ -118,9 +118,9 @@ CJson CWidgetRestService::addWidget(const std::vector<std::string> & parameters,
    try
    {
       CWidgetEntitySerializer hes;
-      boost::shared_ptr<CWidget> widgetToAdd = hes.deserialize(requestContent);
+      boost::shared_ptr<server::database::entities::CWidget> widgetToAdd = hes.deserialize(requestContent);
       int idCreated = m_dataProvider->getWidgetRequester()->addWidget(*widgetToAdd);
-      boost::shared_ptr<CWidget> widgetFound =  m_dataProvider->getWidgetRequester()->getWidget(idCreated);
+      boost::shared_ptr<server::database::entities::CWidget> widgetFound =  m_dataProvider->getWidgetRequester()->getWidget(idCreated);
       return CJsonResult::GenerateSuccess(hes.serialize(*widgetFound.get()));
    }
    catch(std::exception &ex)
@@ -138,7 +138,7 @@ CJson CWidgetRestService::updateOneWidget(const std::vector<std::string> & param
    try
    {
       CWidgetEntitySerializer hes;
-      boost::shared_ptr<CWidget> widgetToUpdate = hes.deserialize(requestContent);
+      boost::shared_ptr<server::database::entities::CWidget> widgetToUpdate = hes.deserialize(requestContent);
 
       int objectId = 0;
       if(parameters.size()>1)
@@ -207,9 +207,9 @@ CJson CWidgetRestService::replaceAllWidgets(const std::vector<std::string> & par
       m_dataProvider->getWidgetRequester()->removeAllWidgets();
 
       CWidgetEntitySerializer hes;
-      std::vector<boost::shared_ptr<CWidget> > widgetsToAdd = CJsonCollectionSerializer<CWidget>::DeserializeCollection(requestContent, hes, getRestKeyword());
+      std::vector<boost::shared_ptr<server::database::entities::CWidget> > widgetsToAdd = CJsonCollectionSerializer<server::database::entities::CWidget>::DeserializeCollection(requestContent, hes, getRestKeyword());
 
-      BOOST_FOREACH(boost::shared_ptr<CWidget> pw, widgetsToAdd)
+      BOOST_FOREACH(boost::shared_ptr<server::database::entities::CWidget> pw, widgetsToAdd)
       {
          m_dataProvider->getWidgetRequester()->addWidget(*pw);
       }

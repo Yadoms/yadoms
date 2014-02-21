@@ -11,7 +11,7 @@
 std::string CConfigurationRestService::m_restKeyword= std::string("configuration");
 
 
-CConfigurationRestService::CConfigurationRestService(boost::shared_ptr<IDataProvider> dataProvider)
+CConfigurationRestService::CConfigurationRestService(boost::shared_ptr<server::database::IDataProvider> dataProvider)
    :m_dataProvider(dataProvider)
 {
 
@@ -51,7 +51,7 @@ CJson CConfigurationRestService::getConfiguration(const std::vector<std::string>
    if(parameters.size()>2)
       keyname = parameters[2];
 
-   boost::shared_ptr<CConfiguration> widgetFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(section, keyname);
+   boost::shared_ptr<server::database::entities::CConfiguration> widgetFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(section, keyname);
    return CJsonResult::GenerateSuccess(hes.serialize(*widgetFound.get()));
 }
 
@@ -64,25 +64,25 @@ CJson CConfigurationRestService::getSectionConfigurations(const std::vector<std:
       section = parameters[1];
 
 
-   std::vector< boost::shared_ptr<CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations(section);
-   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<CConfiguration>::SerializeCollection(hwList, hes, getRestKeyword()));
+   std::vector< boost::shared_ptr<server::database::entities::CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations(section);
+   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<server::database::entities::CConfiguration>::SerializeCollection(hwList, hes, getRestKeyword()));
 }
 
 CJson CConfigurationRestService::getAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    CConfigurationEntitySerializer hes;
-   std::vector< boost::shared_ptr<CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations();
-   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<CConfiguration>::SerializeCollection(hwList, hes, getRestKeyword()));
+   std::vector< boost::shared_ptr<server::database::entities::CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations();
+   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<server::database::entities::CConfiguration>::SerializeCollection(hwList, hes, getRestKeyword()));
 }
 
 CJson CConfigurationRestService::createOneConfiguration(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    //get data from request content
    CConfigurationEntitySerializer hes;
-   boost::shared_ptr<CConfiguration> configToCreate = hes.deserialize(requestContent);
+   boost::shared_ptr<server::database::entities::CConfiguration> configToCreate = hes.deserialize(requestContent);
 
    //check that configuration entry do not already exists
-   boost::shared_ptr<CConfiguration> checkExistEntity = m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate->getSection(), configToCreate->getName());
+   boost::shared_ptr<server::database::entities::CConfiguration> checkExistEntity = m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate->getSection(), configToCreate->getName());
    if(checkExistEntity.get() != NULL)
       return CJsonResult::GenerateError("The entry to create already exists", hes.serialize(*checkExistEntity.get()));
 
@@ -92,7 +92,7 @@ CJson CConfigurationRestService::createOneConfiguration(const std::vector<std::s
    //commit changes to database
    m_dataProvider->getConfigurationRequester()->create(*configToCreate.get());
 
-   boost::shared_ptr<CConfiguration> widgetFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate->getSection(), configToCreate->getName());
+   boost::shared_ptr<server::database::entities::CConfiguration> widgetFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate->getSection(), configToCreate->getName());
    return CJsonResult::GenerateSuccess(hes.serialize(*widgetFound.get()));
 }
 
@@ -102,7 +102,7 @@ CJson CConfigurationRestService::updateOneConfiguration(const std::vector<std::s
    try
    {
       CConfigurationEntitySerializer hes;
-      boost::shared_ptr<CConfiguration> configToUpdate = hes.deserialize(requestContent);
+      boost::shared_ptr<server::database::entities::CConfiguration> configToUpdate = hes.deserialize(requestContent);
 
       std::string section = "";
       std::string keyname = "";
@@ -147,9 +147,9 @@ CJson CConfigurationRestService::updateAllConfigurations(const std::vector<std::
    try
    {
       CConfigurationEntitySerializer hes;
-      std::vector<boost::shared_ptr<CConfiguration> > listToUpdate = CJsonCollectionSerializer<CConfiguration>::DeserializeCollection(requestContent, hes, getRestKeyword());
+      std::vector<boost::shared_ptr<server::database::entities::CConfiguration> > listToUpdate = CJsonCollectionSerializer<server::database::entities::CConfiguration>::DeserializeCollection(requestContent, hes, getRestKeyword());
 
-      BOOST_FOREACH(boost::shared_ptr<CConfiguration> pw, listToUpdate)
+      BOOST_FOREACH(boost::shared_ptr<server::database::entities::CConfiguration> pw, listToUpdate)
       {
          m_dataProvider->getConfigurationRequester()->updateConfiguration(*pw);
       }
@@ -179,7 +179,7 @@ CJson CConfigurationRestService::deleteOneConfiguration(const std::vector<std::s
 
    if(!section.empty() && !keyname.empty())
    {
-      CConfiguration configToRemove;
+      server::database::entities::CConfiguration configToRemove;
       configToRemove.setSection(section);
       configToRemove.setName(keyname);
       m_dataProvider->getConfigurationRequester()->removeConfiguration(configToRemove);

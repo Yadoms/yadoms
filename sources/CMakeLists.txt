@@ -424,33 +424,34 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/Query.cpp
 		server/database/sqlite/QueryValue.h
 		server/database/sqlite/QueryValue.cpp
+		server/database/sqlite/SQLiteDataProvider.h
+		server/database/sqlite/SQLiteDataProvider.cpp
+		server/database/sqlite/SQLiteRequester.h
+		server/database/sqlite/SQLiteRequester.cpp
 		server/database/sqlite/SQLiteDatabaseTables.h
 		server/database/sqlite/SQLiteDatabaseTables.cpp
 		server/database/sqlite/SQLiteSystemTables.h
 		server/database/sqlite/SQLiteSystemTables.cpp
 		server/database/sqlite/SQLiteDatabaseTablesHelpers.hpp
-		server/database/sqlite/SQLiteHardwareRequester.h
-		server/database/sqlite/SQLiteHardwareRequester.cpp
-		server/database/sqlite/SQLiteConfigurationRequester.h
-		server/database/sqlite/SQLiteConfigurationRequester.cpp
-		server/database/sqlite/SQLiteKeywordRequester.h
-		server/database/sqlite/SQLiteKeywordRequester.cpp
-		server/database/sqlite/SQLiteAcquisitionRequester.h
-		server/database/sqlite/SQLiteAcquisitionRequester.cpp		
-		server/database/sqlite/SQLiteDeviceRequester.h
-		server/database/sqlite/SQLiteDeviceRequester.cpp		
-		server/database/sqlite/SQLiteDataProvider.h
-		server/database/sqlite/SQLiteDataProvider.cpp
-		server/database/sqlite/SQLiteRequester.h
-		server/database/sqlite/SQLiteRequester.cpp
-		server/database/sqlite/SQLitePageRequester.h
-		server/database/sqlite/SQLitePageRequester.cpp		
-		server/database/sqlite/SQLiteWidgetRequester.h
-		server/database/sqlite/SQLiteWidgetRequester.cpp		
-		server/database/sqlite/SQLiteHardwareEventLoggerRequester.h
-		server/database/sqlite/SQLiteHardwareEventLoggerRequester.cpp
-		server/database/sqlite/SQLiteEventLoggerRequester.h
-		server/database/sqlite/SQLiteEventLoggerRequester.cpp
+		server/database/sqlite/SQLiteTablesScripts.cpp
+		server/database/sqlite/requesters/SQLiteHardwareRequester.h
+		server/database/sqlite/requesters/SQLiteHardwareRequester.cpp
+		server/database/sqlite/requesters/SQLiteConfigurationRequester.h
+		server/database/sqlite/requesters/SQLiteConfigurationRequester.cpp
+		server/database/sqlite/requesters/SQLiteKeywordRequester.h
+		server/database/sqlite/requesters/SQLiteKeywordRequester.cpp
+		server/database/sqlite/requesters/SQLiteAcquisitionRequester.h
+		server/database/sqlite/requesters/SQLiteAcquisitionRequester.cpp		
+		server/database/sqlite/requesters/SQLiteDeviceRequester.h
+		server/database/sqlite/requesters/SQLiteDeviceRequester.cpp		
+		server/database/sqlite/requesters/SQLitePageRequester.h
+		server/database/sqlite/requesters/SQLitePageRequester.cpp		
+		server/database/sqlite/requesters/SQLiteWidgetRequester.h
+		server/database/sqlite/requesters/SQLiteWidgetRequester.cpp		
+		server/database/sqlite/requesters/SQLiteHardwareEventLoggerRequester.h
+		server/database/sqlite/requesters/SQLiteHardwareEventLoggerRequester.cpp
+		server/database/sqlite/requesters/SQLiteEventLoggerRequester.h
+		server/database/sqlite/requesters/SQLiteEventLoggerRequester.cpp
 		
 		server/database/sqlite/adapters/SQLite3Extension.hpp
 		server/database/sqlite/adapters/SQLiteDatabaseAdapters.h
@@ -468,11 +469,12 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/versioning/SQLiteVersionUpgraderFactory.h
 		server/database/sqlite/versioning/SQLiteVersionUpgraderFactory.cpp
 		server/database/sqlite/versioning/SQLiteVersionException.h
-		server/database/sqlite/versioning/SQLiteTablesScripts.cpp
+		
 	)
 	
 	source_group(server\\database\\sqlite  server/database/sqlite/*.*)
 	source_group(server\\database\\sqlite\\adapters  server/database/sqlite/adapters/*.*)
+	source_group(server\\database\\sqlite\\requesters  server/database/sqlite/requesters/*.*)
 	source_group(server\\database\\sqlite\\versioning  server/database/sqlite/versioning/*.*)
 	
 	set(LIBS ${LIBS} sqlite)

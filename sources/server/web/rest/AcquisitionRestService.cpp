@@ -9,7 +9,7 @@
 std::string CAcquisitionRestService::m_restKeyword= std::string("acquisition");
 
 
-CAcquisitionRestService::CAcquisitionRestService(boost::shared_ptr<IDataProvider> dataProvider)
+CAcquisitionRestService::CAcquisitionRestService(boost::shared_ptr<server::database::IDataProvider> dataProvider)
    :m_dataProvider(dataProvider)
 {
 }
@@ -36,7 +36,7 @@ void CAcquisitionRestService::configureDispatcher(CRestDispatcher & dispatcher)
 CJson CAcquisitionRestService::getOneAcquisition(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    CAcquisitionEntitySerializer hes;
-   boost::shared_ptr<CAcquisition> acquisitionFound =  m_dataProvider->getAcquisitionRequester()->getAcquisition(boost::lexical_cast<int>(parameters[0]));
+   boost::shared_ptr<server::database::entities::CAcquisition> acquisitionFound =  m_dataProvider->getAcquisitionRequester()->getAcquisition(boost::lexical_cast<int>(parameters[0]));
    return CJsonResult::GenerateSuccess(hes.serialize(*acquisitionFound.get()));
 }
 
@@ -44,6 +44,6 @@ CJson CAcquisitionRestService::getAllAcquisitions(const std::vector<std::string>
 {
    CAcquisitionEntitySerializer hes;
    //TODO : voir les parametres
-   std::vector< boost::shared_ptr<CAcquisition> > dvList = m_dataProvider->getAcquisitionRequester()->getAcquisitions("", "");
-   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<CAcquisition>::SerializeCollection(dvList, hes, getRestKeyword()));
+   std::vector< boost::shared_ptr<server::database::entities::CAcquisition> > dvList = m_dataProvider->getAcquisitionRequester()->getAcquisitions("", "");
+   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<server::database::entities::CAcquisition>::SerializeCollection(dvList, hes, getRestKeyword()));
 }

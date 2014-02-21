@@ -2,12 +2,23 @@
 
 #include "ISQLiteVersionUpgrade.h"
 
-class CSQLiteVersionUpgraderFactory
-{
-public:
-   static boost::shared_ptr<ISQLiteVersionUpgrade> GetUpgrader();
+namespace server { 
+   namespace database { 
+      namespace sqlite { 
+         namespace versioning { 
 
-private:
-   CSQLiteVersionUpgraderFactory();
-   virtual ~CSQLiteVersionUpgraderFactory();
-};
+
+            class CSQLiteVersionUpgraderFactory
+            {
+            public:
+               static boost::shared_ptr<ISQLiteVersionUpgrade> GetUpgrader();
+
+            private:
+               CSQLiteVersionUpgraderFactory();
+               virtual ~CSQLiteVersionUpgraderFactory();
+            };
+
+         } //namespace versioning
+      } //namespace sqlite
+   } //namespace database 
+} //namespace server

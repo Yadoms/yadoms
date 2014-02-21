@@ -10,7 +10,7 @@
 std::string CDeviceRestService::m_restKeyword= std::string("device");
 
 
-CDeviceRestService::CDeviceRestService(boost::shared_ptr<IDataProvider> dataProvider)
+CDeviceRestService::CDeviceRestService(boost::shared_ptr<server::database::IDataProvider> dataProvider)
    :m_dataProvider(dataProvider)
 {
 }
@@ -40,15 +40,15 @@ CJson CDeviceRestService::getOneDevice(const std::vector<std::string> & paramete
       objectId = parameters[1];
 
    CDeviceEntitySerializer hes;
-   boost::shared_ptr<CDevice> deviceFound =  m_dataProvider->getDeviceRequester()->getDevice(boost::lexical_cast<int>(objectId));
+   boost::shared_ptr<server::database::entities::CDevice> deviceFound =  m_dataProvider->getDeviceRequester()->getDevice(boost::lexical_cast<int>(objectId));
    return CJsonResult::GenerateSuccess(hes.serialize(*deviceFound.get()));
 }
 
 CJson CDeviceRestService::getAllDevices(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    CDeviceEntitySerializer hes;
-   std::vector< boost::shared_ptr<CDevice> > dvList = m_dataProvider->getDeviceRequester()->getDevices();
-   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<CDevice>::SerializeCollection(dvList, hes, getRestKeyword()));
+   std::vector< boost::shared_ptr<server::database::entities::CDevice> > dvList = m_dataProvider->getDeviceRequester()->getDevices();
+   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<server::database::entities::CDevice>::SerializeCollection(dvList, hes, getRestKeyword()));
 }
 
 CJson CDeviceRestService::getDeviceLastAcquisition(const std::vector<std::string> & parameters, const CJson & requestContent)
@@ -57,12 +57,12 @@ CJson CDeviceRestService::getDeviceLastAcquisition(const std::vector<std::string
    if(parameters.size()>1)
       objectId = parameters[1];
 
-   boost::shared_ptr<CDevice> deviceFound =  m_dataProvider->getDeviceRequester()->getDevice(boost::lexical_cast<int>(objectId));
+   boost::shared_ptr<server::database::entities::CDevice> deviceFound =  m_dataProvider->getDeviceRequester()->getDevice(boost::lexical_cast<int>(objectId));
    if(deviceFound.get() != NULL)
    {
       CAcquisitionEntitySerializer hes;
-      std::vector< boost::shared_ptr<CAcquisition> > allAcq =  m_dataProvider->getAcquisitionRequester()->getLastAcquisitions(deviceFound->getDataSource());
-     return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<CAcquisition>::SerializeCollection(allAcq, hes, CAcquisitionRestService::getRestKeyword()));
+      std::vector< boost::shared_ptr<server::database::entities::CAcquisition> > allAcq =  m_dataProvider->getAcquisitionRequester()->getLastAcquisitions(deviceFound->getDataSource());
+     return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<server::database::entities::CAcquisition>::SerializeCollection(allAcq, hes, CAcquisitionRestService::getRestKeyword()));
    }
    else
       return CJsonResult::GenerateError("Device not found");

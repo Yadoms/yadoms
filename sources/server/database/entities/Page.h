@@ -4,18 +4,26 @@
 
 #define DELCARE_FIELD_CPAGE(t,n)   DELCARE_FIELD(CPage,t,n)
 
-class CPage
-{
-public:
-   CPage()
-   {
-   }
+namespace server { 
+namespace database { 
+namespace entities {
 
-   virtual ~CPage()
+   class CPage
    {
-   }
+   public:
+      CPage()
+      {
+      }
 
-   DELCARE_FIELD_CPAGE(int, Id);
-   DELCARE_FIELD_CPAGE(std::string, Name);
-   DELCARE_FIELD_CPAGE(int, PageOrder);
-};
+      virtual ~CPage()
+      {
+      }
+
+      DELCARE_FIELD_CPAGE(int, Id);
+      DELCARE_FIELD_CPAGE(std::string, Name);
+      DELCARE_FIELD_CPAGE(int, PageOrder);
+   };
+
+} //namespace entities
+} //namespace database
+} //namespace server

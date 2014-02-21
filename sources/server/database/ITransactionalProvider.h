@@ -1,29 +1,30 @@
 #pragma once
 
 
+namespace server { 
+namespace database { 
+   
+   class ITransactionalProvider
+   {
+   public:
+      virtual ~ITransactionalProvider()
+      {
+      }
 
+      //--------------------------------------------------------------
+      /// \Brief	Start a transaction
+      //--------------------------------------------------------------
+      virtual void transactionBegin() = 0;
 
-class ITransactionalProvider
-{
-public:
-	virtual ~ITransactionalProvider()
-	{
-	}
+      //--------------------------------------------------------------
+      /// \Brief	Commit a transaction
+      //--------------------------------------------------------------
+      virtual void transactionCommit() = 0;
 
-   //--------------------------------------------------------------
-   /// \Brief	Start a transaction
-   //--------------------------------------------------------------
-   virtual void transactionBegin() = 0;
-
-   //--------------------------------------------------------------
-   /// \Brief	Commit a transaction
-   //--------------------------------------------------------------
-   virtual void transactionCommit() = 0;
-
-   //--------------------------------------------------------------
-   /// \Brief	Rollback a transaction
-   //--------------------------------------------------------------
-   virtual void transactionRollback() = 0;
-  
-
-};
+      //--------------------------------------------------------------
+      /// \Brief	Rollback a transaction
+      //--------------------------------------------------------------
+      virtual void transactionRollback() = 0;
+   };
+} //namespace server 
+} //namespace database 

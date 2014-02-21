@@ -6,7 +6,7 @@
 class CDeviceRestService : public IRestService
 {
 public:
-   CDeviceRestService(boost::shared_ptr<IDataProvider> dataProvider);
+   CDeviceRestService(boost::shared_ptr<server::database::IDataProvider> dataProvider);
    virtual ~CDeviceRestService();
 
 public:
@@ -20,6 +20,6 @@ public:
    CJson getDeviceLastAcquisition(const std::vector<std::string> & parameters, const CJson & requestContent);  
    
 private:
-   boost::shared_ptr<IDataProvider> m_dataProvider;
+   boost::shared_ptr<server::database::IDataProvider> m_dataProvider;
    static std::string m_restKeyword;
 };

@@ -21,7 +21,7 @@ DECLARE_JSON_ENTITY_IMPLEMENTATION(Configuration,  "Configuration",
    ((Value)("value")JSON_STRING)
    ((DefaultValue)("default_value")JSON_STRING)
    ((Description)("description")JSON_STRING)
-   ((SecurityAccess)("securityAccess")JSON_ENUM(CConfiguration::ESecurityAccess))
+   ((SecurityAccess)("securityAccess")JSON_ENUM(server::database::entities::CConfiguration::ESecurityAccess))
    ((LastModificationDate)("last_modification_date")JSON_DATE)
 )
 
@@ -70,7 +70,7 @@ DECLARE_JSON_ENTITY_IMPLEMENTATION(HardwareEventLogger,  "HardwareEventLogger",
    ((PluginName)("pluginName")JSON_STRING)
    ((PluginVersion)("pluginVersion")JSON_STRING)
    ((PluginRelease)("pluginRelease")JSON_ENUM(shared::plugin::information::EReleaseType))
-   ((EventType)("eventType")JSON_ENUM(CHardwareEventLogger::EEventType))
+   ((EventType)("eventType")JSON_ENUM(server::database::entities::CHardwareEventLogger::EEventType))
    ((Message)("message")JSON_STRING)
 )
 

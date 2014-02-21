@@ -6,7 +6,7 @@
 class CPageRestService : public IRestService
 {
 public:
-   CPageRestService(boost::shared_ptr<IDataProvider> dataProvider);
+   CPageRestService(boost::shared_ptr<server::database::IDataProvider> dataProvider);
    virtual ~CPageRestService();
 
 public:
@@ -32,6 +32,6 @@ public:
    CJson transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const CJson & requestContent);
 
 private:
-   boost::shared_ptr<IDataProvider> m_dataProvider;
+   boost::shared_ptr<server::database::IDataProvider> m_dataProvider;
    static std::string m_restKeyword;
 };

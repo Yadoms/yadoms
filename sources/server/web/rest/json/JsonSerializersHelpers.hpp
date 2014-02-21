@@ -176,7 +176,7 @@
 ///\brief Macro which provide the entity class:
 ///       Example for _classname= Hardware -> CHardware
 //-------------------------------------------------------
-#define DECLARE_JSON_ENTITY_CLASS(_classname) BOOST_PP_CAT(C,_classname)
+#define DECLARE_JSON_ENTITY_CLASS(_classname) BOOST_PP_CAT(server::database::entities::C,_classname)
 
 //-------------------------------------------------------
 ///\brief Macro which provide the entity definition class:
@@ -252,14 +252,14 @@ private:\
 ///       write the class header 
 //-------------------------------------------------------   
 #define DECLARE_JSON_SERIALIZER(_classname) \
-class BOOST_PP_CAT(C, BOOST_PP_CAT(_classname, EntitySerializer)) : public IEntitySerializer<BOOST_PP_CAT(C,_classname)>, public IEntityDeserializer<BOOST_PP_CAT(C,_classname)> \
+class BOOST_PP_CAT(C, BOOST_PP_CAT(_classname, EntitySerializer)) : public IEntitySerializer< DECLARE_JSON_ENTITY_CLASS(_classname) >, public IEntityDeserializer< DECLARE_JSON_ENTITY_CLASS(_classname) > \
 { \
 public:\
    BOOST_PP_CAT(C, BOOST_PP_CAT(_classname, EntitySerializer))(); \
    virtual BOOST_PP_CAT(~C, BOOST_PP_CAT(_classname, EntitySerializer))(); \
    \
-   CJson serialize(const BOOST_PP_CAT(C,_classname) & object); \
-   boost::shared_ptr< BOOST_PP_CAT(C,_classname) > deserialize(const CJson & object); \
+   CJson serialize(const DECLARE_JSON_ENTITY_CLASS(_classname) & object); \
+   boost::shared_ptr< DECLARE_JSON_ENTITY_CLASS(_classname) > deserialize(const CJson & object); \
  };   
 
  
