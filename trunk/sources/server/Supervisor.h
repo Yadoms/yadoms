@@ -10,7 +10,7 @@ private:
    // Event IDs
    enum
    {
-      kHardwarePluginManagerEvent = shared::event::CEventHandler::kUserFirstId,
+      kPluginManagerEvent = shared::event::CEventHandler::kUserFirstId,
    };
 
 public:

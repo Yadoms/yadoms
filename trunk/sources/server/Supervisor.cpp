@@ -45,13 +45,13 @@ void CSupervisor::doWork()
          throw CException("Fail to load database");
       }
 
-      // Start the hardware plugin manager
-      boost::shared_ptr<pluginSystem::CManager> pluginManager = pluginSystem::CManager::newPluginManager(
+      // Start the plugin manager
+      boost::shared_ptr<pluginSystem::CManager> pluginManager = pluginSystem::CManager::newManager(
          m_startupOptions.getPluginsPath(), pDataProvider->getHardwareRequester(), pDataProvider->getHardwareEventLoggerRequester(),
-         *this, kHardwarePluginManagerEvent);
+         *this, kPluginManagerEvent);
 
       //TODO ######################### test interface pluginManager #########################
-#if DEV_ACTIVATE_HARDWARE_PLUGIN_MANAGER_TESTS
+#if DEV_ACTIVATE_PLUGIN_MANAGER_TESTS
       // 1) List all available plugins (even if not loaded) and associated informations
       pluginSystem::CManager::AvalaiblePluginMap plugins = pluginManager->getPluginList();
       YADOMS_LOG(debug) << "Available plugins :";
@@ -223,7 +223,7 @@ void CSupervisor::doWork()
          {
             switch(waitForEvents())
             {
-            case kHardwarePluginManagerEvent:
+            case kPluginManagerEvent:
                pluginManager->signalEvent(popEvent<pluginSystem::CManagerEvent>());
                break;
 
