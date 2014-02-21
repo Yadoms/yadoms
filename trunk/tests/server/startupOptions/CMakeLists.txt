@@ -9,31 +9,22 @@
 add_definitions( -DBOOST_AUTO_TEST_MAIN )
 
 IF (USE_TESTS_START_OPTIONS_LOADER)
+   set(YADOMS_SRC ../../../sources/)
    set(YADOMS_TESTS_STARTUP_OPTIONS_LOADER_SRC
-#       ${YADOMS_SRC} #FIXME : Pas moyen d'utiliser directement cela au lieu des autres chemins dessous ???
+    ${YADOMS_SRC}/server/startupOptions/Loader.h
+    ${YADOMS_SRC}/server/startupOptions/Loader.cpp
+    ${YADOMS_SRC}/server/startupOptions/InvalidOptionException.hpp
+    ${YADOMS_SRC}/server/startupOptions/LoaderCustomValidators.hpp
+    ${YADOMS_SRC}/server/startupOptions/LoaderException.hpp
+    ${YADOMS_SRC}/server/startupOptions/MustExistPathOption.hpp
+    ${YADOMS_SRC}/server/startupOptions/IStartupOptions.h
+    ${YADOMS_SRC}/server/startupOptions/ValidIpAddressOption.hpp
 
-   ../../../sources/server/stdafx.cpp
-   ../../../sources/server/stdafx.h
-  
-	../../../sources/server/StartupOptions/Loader.h
-	../../../sources/server/StartupOptions/Loader.cpp
-	../../../sources/server/StartupOptions/InvalidOptionException.hpp
-	../../../sources/server/StartupOptions/LoaderCustomValidators.hpp
-	../../../sources/server/StartupOptions/LoaderException.hpp
-	../../../sources/server/StartupOptions/MustExistPathOption.hpp
-	../../../sources/server/StartupOptions/StartupOptions.h
-	../../../sources/server/StartupOptions/ValidIpAddressOption.hpp
-
-	MainTestStartOptionsLoader.cpp
-      )
-
-   add_executable(MainTestStartOptionsLoader ${YADOMS_TESTS_STARTUP_OPTIONS_LOADER_SRC} ${YADOMS_SRC})
-   add_precompiled_header(MainTestStartOptionsLoader stdafx.h)
-   set_property( TARGET MainTestStartOptionsLoader 
-                 PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR}
-               )
-   target_link_libraries(MainTestStartOptionsLoader ${LIBS} ${CMAKE_DL_LIBS} )
-
-#	GENERATE_TEST_EXECUTABLE ( MainTestStartOptionsLoader, ${YADOMS_TESTS_STARTUP_OPTIONS_LOADER_SRC})
-
+     mock/stdafx.h
+    
+     MainTestStartOptionsLoader.cpp
+   )
+   add_executable(MainTestStartOptionsLoader ${YADOMS_TESTS_STARTUP_OPTIONS_LOADER_SRC})
+   set_property( TARGET MainTestStartOptionsLoader PROPERTY INCLUDE_DIRECTORIES ${MOCK_INCL_DIR} ${BOOST_INCL_DIR} ${SHARED_INCL_DIR})
+   target_link_libraries(MainTestStartOptionsLoader ${LIBS} ${CMAKE_DL_LIBS})
 ENDIF()

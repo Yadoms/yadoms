@@ -52,6 +52,9 @@ include("PrecompiledHeader.cmake")
 #include user specific configuration
 include("CMakeListsUserConfig.txt" OPTIONAL)
 
+#include tests Common Definitions
+include("YadomsTestsCommon.cmake")
+
 #include Windows specific macro
 if(WIN32)
 	include("windows.cmake")
@@ -111,7 +114,8 @@ if(CMAKE_COMPIER_IS_GNUCXX)
 	add_definitions("-Wall -Wextra -pedantic")
 	add_definitions("-fpermissive")
 	add_definitions("-std=c++0x")
-	
+	set (CMAKE_C_FLAGS_ALL "${CMAKE_C_FLAGS_ALL} -march=native -msse -msse2 -msse3 -mfpmath=sse")	
+  
 	# In case unix is 64bits, append -fPIC to gcc
 	IF(UNIX AND NOT WIN32)
 	   FIND_PROGRAM(CMAKE_UNAME uname /bin /usr/bin /usr/local/bin )
@@ -146,6 +150,8 @@ endif()
 ##################################################################################################
 ## Project output configuration
 ##################################################################################################
+
+#TODO : Changer la destination de chaque test, puis les exÃ©cuter Ã  l'endroit oÃ¹ ils sont. Cela permettra d'avoir des tests avec les mÃªmes noms Ã  des endroits diffÃ©rents.
 
 #define outputs
 set(youroutputdirectory ${PROJECT_SOURCE_DIR}/builds)
@@ -207,16 +213,6 @@ endif()
 # define libraries to link with
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})
 
-##################################################################################################
-## Tests selection to build
-##################################################################################################
-
-# TODO déplacer dans le CMakeListsUserConfig.txt (ou plutôt permettre la désactivation à partir de ce fichier)
-set(USE_TESTS_START_OPTIONS_LOADER TRUE)
-set(USE_TESTS_HARDWARE_PLUGIN_MANAGER FALSE)
-set(USE_TESTS_SHARED_EVENT TRUE)
-set(USE_TESTS_DIRECTORY_CHANGE_LISTENER TRUE)
-
 
 ##################################################################################################
 ## Include directories
@@ -250,137 +246,11 @@ set(MOCK_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mock)
 
 
 ##################################################################################################
-## Tests on Yadoms classes
+## Tests selection to build
 ##################################################################################################
 
-#TODO : mettre en commun des trucs par macro/fonction
-#TODO : les stdafx.h-mocks devraient être locaux aux tests, de façons à ne mettre que le nécessaire dedans
-
-source_group(Yadoms server/*.*)
-
-
-IF (USE_TESTS_START_OPTIONS_LOADER)
-   set(YADOMS_TESTS_STARTUP_OPTIONS_LOADER_SRC
-    ../sources/server/startupOptions/Loader.h
-    ../sources/server/startupOptions/Loader.cpp
-    ../sources/server/startupOptions/InvalidOptionException.hpp
-    ../sources/server/startupOptions/LoaderCustomValidators.hpp
-    ../sources/server/startupOptions/LoaderException.hpp
-    ../sources/server/startupOptions/MustExistPathOption.hpp
-    ../sources/server/startupOptions/IStartupOptions.h
-    ../sources/server/startupOptions/ValidIpAddressOption.hpp
-
-     mock/stdafx.h
-    
-     server/MainTestStartOptionsLoader.cpp
-   )
-   add_executable(MainTestStartOptionsLoader ${YADOMS_TESTS_STARTUP_OPTIONS_LOADER_SRC})
-   set_property( TARGET MainTestStartOptionsLoader PROPERTY INCLUDE_DIRECTORIES ${MOCK_INCL_DIR} ${BOOST_INCL_DIR} ${SHARED_INCL_DIR})
-   target_link_libraries(MainTestStartOptionsLoader ${LIBS} ${CMAKE_DL_LIBS})
-ENDIF()
-
-IF (USE_TESTS_DIRECTORY_CHANGE_LISTENER)
-  set(USE_TESTS_DIRECTORY_CHANGE_LISTENER_SRC
-    ../sources/shared/shared/ThreadBase.h
-    ../sources/shared/shared/ThreadBase.cpp
-
-    ../sources/server/tools/tools/DirectoryChangeListener.h
-    ../sources/server/tools/tools/DirectoryChangeListener.cpp
-
-    mock/shared/stdafx.h
-    mock/shared/shared/Export.h
-    mock/shared/shared/Log.h
-    
-    server/MainTestDirectoryChangeListener.cpp   
-  )
-
-  IF(WIN32)
-  set(USE_TESTS_DIRECTORY_CHANGE_LISTENER_SRC ${USE_TESTS_DIRECTORY_CHANGE_LISTENER_SRC}
-    ../sources/server/tools/windows/tools/dir_monitor/basic_dir_monitor_service.hpp
-    ../sources/server/tools/windows/tools/dir_monitor/dir_monitor_impl.hpp
-  )
-  ELSEIF(APPLE)
-  set(USE_TESTS_DIRECTORY_CHANGE_LISTENER_SRC ${USE_TESTS_DIRECTORY_CHANGE_LISTENER_SRC}
-    ../sources/server/tools/mac/tools/dir_monitor/basic_dir_monitor_service.hpp
-    ../sources/server/tools/mac/tools/dir_monitor/dir_monitor_impl.hpp
-  )	
-  ELSE()
-  set(USE_TESTS_DIRECTORY_CHANGE_LISTENER_SRC ${USE_TESTS_DIRECTORY_CHANGE_LISTENER_SRC}
-    ../sources/server/tools/linux/tools/dir_monitor/basic_dir_monitor_service.hpp
-    ../sources/server/tools/linux/tools/dir_monitor/dir_monitor_impl.hpp
-  )	
-  ENDIF()
-
-  add_executable(MainTestDirectoryChangeListener ${USE_TESTS_DIRECTORY_CHANGE_LISTENER_SRC})
-  set_property( TARGET MainTestDirectoryChangeListener PROPERTY INCLUDE_DIRECTORIES ${MOCK_SHARED_INCL_DIR} ${BOOST_INCL_DIR} ${TOOLS_PF_INCL_DIR} ${SHARED_INCL_DIR})
-  target_link_libraries(MainTestDirectoryChangeListener ${LIBS} ${CMAKE_DL_LIBS})
-ENDIF()
-
-IF (USE_TESTS_HARDWARE_PLUGIN_MANAGER)
-   set(YADOMS_TESTS_HARDWARE_PLUGIN_MANAGER
-
-   ../sources/server/stdafx.cpp
-   ../sources/server/stdafx.h
-  
-#	../sources/server/pluginSystem/HardwarePluginManager.h
-#	../sources/server/pluginSystem/HardwarePluginManager.cpp
-#       ../sources/server/pluginSystem/HardwarePluginFactory.h
-#        ../sources/server/pluginSystem/HardwarePluginFactory.cpp
-#        ../sources/plugins/hardware/IHardwarePlugin.h
-#        ../sources/server/database/entities/Hardware.h
-
-#	../sources/server/startupOptions/Loader.h
-#	../sources/server/startupOptions/Loader.cpp
-#	../sources/server/startupOptions/InvalidOptionException.hpp
-#	../sources/server/startupOptions/LoaderCustomValidators.hpp
-#	../sources/server/startupOptions/LoaderException.hpp
-#	../sources/server/startupOptions/MustExistPathOption.hpp
-#	../sources/server/startupOptions/IStartupOptions.h
-#	../sources/server/startupOptions/ValidIpAddressOption.hpp
-
-#        server/pluginSystem/MainTestHardwarePluginManager.cpp
-
-   )
-   add_executable(MainTestHardwarePluginManager ${YADOMS_TESTS_HARDWARE_PLUGIN_MANAGER} ${YADOMS_SRC})
-   add_precompiled_header(MainTestHardwarePluginManager stdafx.h)
-   set_property( TARGET MainTestHardwarePluginManager PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
-   target_link_libraries(MainTestHardwarePluginManager ${LIBS} ${CMAKE_DL_LIBS})
-ENDIF()
-
-
-
-##################################################################################################
-## Tests on yadoms-shared classes
-##################################################################################################
-
-if(WIN32)
-  # Define yadoms_shared_EXPORTS variable to simulate shared library building
-  add_definitions(-Dyadoms_shared_EXPORTS)
-endif()
-
-source_group(yadoms-shared shared/*.*)
-
-IF (USE_TESTS_SHARED_EVENT)
-  set(YADOMS_TESTS_SHARED_EVENT
-    ../sources/shared/shared/Event/Event.hpp
-    ../sources/shared/shared/Event/EventBase.hpp
-    ../sources/shared/shared/Event/EventHandler.hpp
-
-    mock/shared/stdafx.h
-    
-    shared/MainTestEvent.cpp
-	)
-   add_executable(MainTestEvent ${YADOMS_TESTS_SHARED_EVENT} ${YADOMS_SRC})
-   set_property( TARGET MainTestEvent PROPERTY INCLUDE_DIRECTORIES ${MOCK_SHARED_INCL_DIR} ${BOOST_INCL_DIR} ${SHARED_INCL_DIR})
-	target_link_libraries(MainTestEvent ${LIBS} ${CMAKE_DL_LIBS})
-ENDIF()
-
-	
-##################################################################################################
-## Tests on plugins classes
-##################################################################################################
-
-# Not test on plugins for the moment
+add_subdirectory(server)
+add_subdirectory(shared)
 
 
 ##################################################################################################
