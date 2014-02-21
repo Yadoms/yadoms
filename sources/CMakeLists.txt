@@ -113,6 +113,9 @@ if(MSVC)
 	#disable warning C4505: 'function' : unreferenced local function has been removed
 	add_definitions( "/wd4505" )
 	
+	#disable warning C4503: 'identifier' : decorated name length exceeded, name was truncated
+	add_definitions( "/wd4503" )
+	
 	#to allow BOOST in precompiled header (specify Precompiled Header Memory Allocation Limit) 
 	add_definitions("/Zm256")
 

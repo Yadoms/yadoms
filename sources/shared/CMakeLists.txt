@@ -62,9 +62,9 @@ set(SHARED_LIB_SRC
 	shared/plugin/Interfaces/IHardwarePlugin.h
 	shared/plugin/Interfaces/IHardwarePluginConfigurationSchema.h
 
-	shared/Serialization/IPtreeToStringSerializer.h
-	shared/Serialization/PTreeToJsonSerializer.h
-	shared/Serialization/PTreeToJsonSerializer.cpp
+	shared/serialization/IPtreeToStringSerializer.h
+	shared/serialization/PTreeToJsonSerializer.h
+	shared/serialization/PTreeToJsonSerializer.cpp
 
 	shared/Xpl/XplConstants.h
 	shared/Xpl/XplConstants.cpp
@@ -139,6 +139,8 @@ source_group(plugin\\Interfaces shared/shared/plugin/Interfaces/*.* )
 source_group(PlatformSpecific\\windows shared/windows/shared/*.*)
 source_group(PlatformSpecific\\linux shared/linux/shared/*.*)
 source_group(PlatformSpecific\\mac shared/mac/shared/*.*)
+
+source_group(serialization shared/shared/serialization/*.* )	
 
 source_group(Xpl shared/Xpl/*.*)
 

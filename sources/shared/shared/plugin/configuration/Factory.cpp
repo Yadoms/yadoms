@@ -1,15 +1,15 @@
 #include "stdafx.h"
 
 #include "Factory.h"
-#include "../../Serialization/PTreeToJsonSerializer.h"
+#include "../../serialization/PTreeToJsonSerializer.h"
 
 
 namespace shared { namespace plugin { namespace configuration
 {
 
-boost::shared_ptr<IPtreeToStringSerializer> CFactory::createSerializer()
+boost::shared_ptr<serialization::IPtreeToStringSerializer> CFactory::createSerializer()
 {
-   boost::shared_ptr<IPtreeToStringSerializer> serializer(new CPtreeToJsonSerializer);
+   boost::shared_ptr<serialization::IPtreeToStringSerializer> serializer(new serialization::CPtreeToJsonSerializer);
    return serializer;
 }
 

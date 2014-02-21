@@ -68,9 +68,10 @@ private:
    //-------------------------------------- 
    CJson callRealMethod(CRestMethodHandler realMethod, CRestMethodIndirector encapsulatedMethod, const std::vector<std::string> & url, const CJson & urlPattern);
 
-   //--------------------------------------   
+   //--------------------------------------
    ///\brief         Contains all the rest method pointers with their url pattern
-   //--------------------------------------   
-   std::map<std::string, std::map<CUrlPattern, std::pair<CRestMethodHandler, CRestMethodIndirector> > > m_handledFunctions;
+   //--------------------------------------
+   typedef std::map<CUrlPattern, std::pair<CRestMethodHandler, CRestMethodIndirector> > RestMethodMap;
+   std::map<std::string, RestMethodMap> m_handledFunctions;
 };
 
