@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "SQLiteHardwareRequester.h"
-#include <shared/Exceptions/NotImplementedException.hpp>
+#include <shared/exceptions/NotImplemented.hpp>
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "database/sqlite/adapters/SQLiteDatabaseAdapters.h"
-#include <shared/Exceptions/EmptyResultException.hpp>
+#include <shared/exceptions/EmptyResult.hpp>
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 
@@ -34,7 +34,7 @@ namespace server {
                   newHardware->getEnabled());
 
                if(m_databaseRequester->queryStatement(qInsert) <= 0)
-                  throw CEmptyResultException("No lines affected");
+                  throw shared::exception::CEmptyResult("No lines affected");
 
 
                CQuery qSelect;
@@ -49,7 +49,7 @@ namespace server {
                if(adapter.getResults().size() >= 1)
                   return adapter.getResults()[0];
                else
-                  throw CEmptyResultException("Cannot retrieve inserted Hardware");
+                  throw shared::exception::CEmptyResult("Cannot retrieve inserted Hardware");
             }
 
             boost::shared_ptr<server::database::entities::CHardware> CSQLiteHardwareRequester::getHardware(int hardwareId)
@@ -68,7 +68,7 @@ namespace server {
                {
                   // Hardware not found
                   std::string sEx = (boost::format("Hardware Id %1% not found in database") % hardwareId).str(); 
-                  throw CException(sEx);
+                  throw shared::exception::CException(sEx);
                }
                return adapter.getResults().at(0);
             }
@@ -110,7 +110,7 @@ namespace server {
                   Where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId);
 
                if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-                  throw CEmptyResultException("No lines affected");
+                  throw shared::exception::CEmptyResult("No lines affected");
             }
 
             void CSQLiteHardwareRequester::removeHardware(int hardwareId)
@@ -121,7 +121,7 @@ namespace server {
                   Where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId);
 
                if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-                  throw CEmptyResultException("No lines affected");
+                  throw shared::exception::CEmptyResult("No lines affected");
             }
 
             void CSQLiteHardwareRequester::enableInstance(int hardwareId, bool enable)
@@ -132,7 +132,7 @@ namespace server {
                   Where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId);
 
                if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-                  throw CEmptyResultException("No lines affected");
+                  throw shared::exception::CEmptyResult("No lines affected");
             }
 
             void CSQLiteHardwareRequester::disableAllPluginInstance(const std::string& pluginName)

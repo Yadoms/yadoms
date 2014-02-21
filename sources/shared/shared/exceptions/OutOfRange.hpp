@@ -1,36 +1,30 @@
-//
-// InvalidPluginException.h
-//
-// Invalid plugin exception
-//
 #pragma once
 
-#include <shared/exceptions/Exception.hpp>
+#include "Exception.hpp"
 
-namespace pluginSystem
+namespace shared { namespace exception
 {
 
    //--------------------------------------------------------------
-   /// \class Configuration loading error exception
+   /// \class Exception for value out of range
    //--------------------------------------------------------------
-   class CInvalidPluginException : public shared::exception::CException
+   class COutOfRange : public CException
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in]  plugin              Plugin name
       //--------------------------------------------------------------
-      CInvalidPluginException(const std::string& plugin)
-         :CException(std::string("Invalid plugin found " + plugin).c_str())
+      COutOfRange(const std::string& message)
+         :CException(std::string("Out of range " + message))
       {
       }
 
       //--------------------------------------------------------------
       /// \brief      Destructor
       //--------------------------------------------------------------
-      virtual ~CInvalidPluginException() throw()
+      virtual ~COutOfRange() throw()
       {
       }
    };
 
-} // namespace pluginSystem
+} } // namespace shared::exception

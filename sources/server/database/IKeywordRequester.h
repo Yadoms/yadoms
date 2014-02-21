@@ -11,7 +11,7 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief                    Add new keyword
       /// \param [in] newKeywords   New keyword informations
-      /// \throw                    CEmptyResultException if fails
+      /// \throw                    shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void addKeyword(boost::shared_ptr<entities::CKeyword> newKeyword) = 0;
 
@@ -31,7 +31,7 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief           Remove a keyword
       /// \param [in]      keyword   the keyword to delete
-      /// \throw           CEmptyResultException if fails
+      /// \throw           shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void removeKeyword(const std::string & keyword) = 0;
 

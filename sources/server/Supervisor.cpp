@@ -4,7 +4,7 @@
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "database/DatabaseException.hpp"
 #include <shared/Log.h>
-#include <shared/exceptions/NotSupportedException.hpp>
+#include <shared/exceptions/NotSupported.hpp>
 #include "web/webem/WebServer.h"
 #include "web/WebServerManager.h"
 #include <shared/xpl/XplHub.h>
@@ -42,7 +42,7 @@ void CSupervisor::doWork()
       boost::shared_ptr<server::database::IDataProvider> pDataProvider(new server::database::sqlite::CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
       if (!pDataProvider->load())
       {
-         throw CException("Fail to load database");
+         throw shared::exception::CException("Fail to load database");
       }
 
       // Start the plugin manager
@@ -160,7 +160,7 @@ void CSupervisor::doWork()
             YADOMS_LOG(debug) << "Found serial port : " << serialPort.first << " (" << serialPort.second << ")";
          }
       }
-      catch (CNotSupportedException& e)
+      catch (shared::exception::CNotSupported& e)
       {
          YADOMS_LOG(debug) << "Not supported function : " << e.what();
       }

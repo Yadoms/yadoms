@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SQLiteConfigurationRequester.h"
-#include <shared/Exceptions/NotImplementedException.hpp>
-#include <shared/Exceptions/EmptyResultException.hpp>
+#include <shared/exceptions/NotImplemented.hpp>
+#include <shared/exceptions/EmptyResult.hpp>
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "database/sqlite/adapters/SQLiteDatabaseAdapters.h"
@@ -30,7 +30,7 @@ namespace requesters {
       qInsert. InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName(), CConfigurationTable::getDefaultValueColumnName(), CConfigurationTable::getLastModificationDateColumnName()).
                Values(configurationToCreate.getSection(), configurationToCreate.getName(), configurationToCreate.getValue(), configurationToCreate.getDescription(), configurationToCreate.getDefaultValue(), boost::gregorian::day_clock::universal_day());
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
-         throw CEmptyResultException("No lines affected");
+         throw shared::exception::CEmptyResult("No lines affected");
    }
 
    boost::shared_ptr<server::database::entities::CConfiguration> CSQLiteConfigurationRequester::getConfiguration(const std::string & section, const std::string & name)
@@ -48,7 +48,7 @@ namespace requesters {
       else
       {
          std::string sEx = (boost::format("Cannot retrieve Configuration Section=%1% and Name=%2% in database") % section % name).str(); 
-         throw CEmptyResultException(sEx);
+         throw shared::exception::CEmptyResult(sEx);
       }
    }
 
@@ -88,7 +88,7 @@ namespace requesters {
                And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, configurationToUpdate.getName());
 
       if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-         throw CEmptyResultException("No lines affected");
+         throw shared::exception::CEmptyResult("No lines affected");
    }
 
    void CSQLiteConfigurationRequester::removeConfiguration(server::database::entities::CConfiguration& configurationToRemove)
@@ -98,7 +98,7 @@ namespace requesters {
                Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, configurationToRemove.getSection()).
                And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, configurationToRemove.getName());
       if(m_databaseRequester->queryStatement(qDelete) <= 0)
-         throw new CEmptyResultException("No lines affected");
+         throw new shared::exception::CEmptyResult("No lines affected");
    }
    // [END] IConfigurationRequester implementation
 

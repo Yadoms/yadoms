@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "SQLiteKeywordRequester.h"
-#include <shared/Exceptions/NotImplementedException.hpp>
+#include <shared/exceptions/NotImplemented.hpp>
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "database/sqlite/adapters/SQLiteDatabaseAdapters.h"
-#include <shared/Exceptions/EmptyResultException.hpp>
-#include <shared/Exceptions/InvalidParameterException.hpp>
+#include <shared/exceptions/EmptyResult.hpp>
+#include <shared/exceptions/InvalidParameter.hpp>
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 
@@ -31,7 +31,7 @@ namespace server {
                   Values(newKeyword->getName());
 
                if(m_databaseRequester->queryStatement(qInsert) <= 0)
-                  throw CEmptyResultException("No lines affected");
+                  throw shared::exception::CEmptyResult("No lines affected");
             }
 
             boost::shared_ptr<server::database::entities::CKeyword> CSQLiteKeywordRequester::getKeyword(const std::string & keyword)
@@ -49,7 +49,7 @@ namespace server {
                {
                   // Keyword not found
                   std::string sEx = (boost::format("Keyword name %1% not found in database") % keyword).str(); 
-                  throw CException(sEx);
+                  throw shared::exception::CException(sEx);
                }
                return adapter.getResults().at(0);
             }
@@ -70,7 +70,7 @@ namespace server {
                qDelete. DeleteFrom(CKeywordTable::getTableName()).
                   Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
                if(m_databaseRequester->queryStatement(qDelete) <= 0)
-                  throw CEmptyResultException("No lines affected");
+                  throw shared::exception::CEmptyResult("No lines affected");
             }
             // [END] IKeywordRequester implementation
 

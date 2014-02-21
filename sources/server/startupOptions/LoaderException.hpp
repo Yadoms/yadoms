@@ -12,7 +12,7 @@ namespace startupOptions
    //--------------------------------------------------------------
    /// \class Configuration loading error exception
    //--------------------------------------------------------------
-   class CLoaderException : public CException
+   class CLoaderException : public shared::exception::CException
    {
    public:
       //--------------------------------------------------------------

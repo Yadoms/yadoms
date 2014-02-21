@@ -1,36 +1,30 @@
-//
-// InvalidPluginException.h
-//
-// Invalid plugin exception
-//
 #pragma once
 
-#include <shared/exceptions/Exception.hpp>
+#include "Exception.hpp"
 
-namespace pluginSystem
+namespace shared { namespace exception
 {
 
    //--------------------------------------------------------------
-   /// \class Configuration loading error exception
+   /// \class Exception for accessing NULL objects
    //--------------------------------------------------------------
-   class CInvalidPluginException : public shared::exception::CException
+   class CInvalidParameter : public CException
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in]  plugin              Plugin name
       //--------------------------------------------------------------
-      CInvalidPluginException(const std::string& plugin)
-         :CException(std::string("Invalid plugin found " + plugin).c_str())
+      CInvalidParameter(const std::string& parameter)
+         :CException(std::string("Invalid parameter " + parameter))
       {
       }
 
       //--------------------------------------------------------------
       /// \brief      Destructor
       //--------------------------------------------------------------
-      virtual ~CInvalidPluginException() throw()
+      virtual ~CInvalidParameter() throw()
       {
       }
    };
 
-} // namespace pluginSystem
+} } // namespace shared::exception

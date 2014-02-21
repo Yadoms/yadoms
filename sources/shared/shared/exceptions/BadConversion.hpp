@@ -1,36 +1,31 @@
-//
-// InvalidPluginException.h
-//
-// Invalid plugin exception
-//
 #pragma once
 
-#include <shared/exceptions/Exception.hpp>
+#include "Exception.hpp"
 
-namespace pluginSystem
+namespace shared { namespace exception
 {
 
    //--------------------------------------------------------------
-   /// \class Configuration loading error exception
+   /// \class Exception for fail to cast object
    //--------------------------------------------------------------
-   class CInvalidPluginException : public shared::exception::CException
+   class CBadConversion : public CException
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in]  plugin              Plugin name
       //--------------------------------------------------------------
-      CInvalidPluginException(const std::string& plugin)
-         :CException(std::string("Invalid plugin found " + plugin).c_str())
+      CBadConversion(const std::string& variableName, const std::string& variableType)
+         :CException(std::string("Bad conversion of " + variableName + " to " + variableType))
       {
       }
+
 
       //--------------------------------------------------------------
       /// \brief      Destructor
       //--------------------------------------------------------------
-      virtual ~CInvalidPluginException() throw()
+      virtual ~CBadConversion() throw()
       {
       }
    };
 
-} // namespace pluginSystem
+} } // namespace shared::exception

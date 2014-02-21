@@ -1,36 +1,32 @@
-//
-// InvalidPluginException.h
-//
-// Invalid plugin exception
-//
 #pragma once
+#include "Exception.hpp"
 
-#include <shared/exceptions/Exception.hpp>
-
-namespace pluginSystem
+namespace shared { namespace exception
 {
 
    //--------------------------------------------------------------
-   /// \class Configuration loading error exception
+   /// \class Exception for non implemented part of code
    //--------------------------------------------------------------
-   class CInvalidPluginException : public shared::exception::CException
+   class CNotImplemented : public CException
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in]  plugin              Plugin name
       //--------------------------------------------------------------
-      CInvalidPluginException(const std::string& plugin)
-         :CException(std::string("Invalid plugin found " + plugin).c_str())
+      CNotImplemented(const std::string& function)
+         :CException(function + " is not yet implemented")
       {
       }
 
       //--------------------------------------------------------------
       /// \brief      Destructor
       //--------------------------------------------------------------
-      virtual ~CInvalidPluginException() throw()
+      virtual ~CNotImplemented() throw()
       {
       }
    };
 
-} // namespace pluginSystem
+   // Helper macro
+   #define NOT_IMPLEMENTED    throw CNotImplemented(__FUNCTION__)
+
+} } // namespace shared::exception

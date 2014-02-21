@@ -38,7 +38,7 @@ public:
    CMsPortsLibrary()
    {
       if (!load("MsPorts.dll"))
-         throw CException("MsPorts.dll not found");
+         throw exception::CException("MsPorts.dll not found");
 
       m_ComDBOpen = (ComDBOpenFunctionType) GetFunctionPointer("ComDBOpen");
       m_ComDBClose = (ComDBCloseFunctionType) GetFunctionPointer("ComDBClose");
@@ -48,7 +48,7 @@ public:
       if(m_ComDBOpen == NULL || m_ComDBClose == NULL || m_ComDBGetCurrentPortUsage == NULL || m_ComDBClaimNextFreePort == NULL)
       {
          unload();
-         throw CException("MsPorts.dll is invalid");
+         throw exception::CException("MsPorts.dll is invalid");
       }
    }
 
@@ -150,17 +150,17 @@ const boost::shared_ptr<std::set<std::string> > CPeripherals::getUsedSerialPorts
 
       HCOMDB hComDB;
       if (msPortLibrary.ComDBOpen(&hComDB) != ERROR_SUCCESS)
-         throw CException("Unable to open COM database");
+         throw exception::CException("Unable to open COM database");
 
       // First get the ports number
       DWORD maxPortsReported = 0;
       if (msPortLibrary.ComDBGetCurrentPortUsage(hComDB, NULL, 0, 0, &maxPortsReported) != ERROR_SUCCESS)
-         throw CException("Unable to get serial ports number");
+         throw exception::CException("Unable to get serial ports number");
 
       // Now get the serial port usage
       unsigned char* portsInUse = new unsigned char[maxPortsReported]();
       if (msPortLibrary.ComDBGetCurrentPortUsage(hComDB, portsInUse, maxPortsReported, CDB_REPORT_BYTES, NULL) != ERROR_SUCCESS)
-         throw CException("Unable to get serial ports usage");
+         throw exception::CException("Unable to get serial ports usage");
 
       for (DWORD idxPort = 0 ; idxPort < maxPortsReported ; idxPort ++)
       {
@@ -177,7 +177,7 @@ const boost::shared_ptr<std::set<std::string> > CPeripherals::getUsedSerialPorts
 
       return usedSerialPorts;
    }
-   catch (CException& e)
+   catch (exception::CException& e)
    {
       YADOMS_LOG(error) << "unable to load MsPorts.dll : " << e.what();
    }

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "PTreeToJsonSerializer.h"
-#include "../Exceptions/InvalidParameterException.hpp"
+#include "../Exceptions/InvalidParameter.hpp"
 
 namespace shared { namespace serialization
 {
@@ -28,7 +28,7 @@ void CPtreeToJsonSerializer::deserialize(const std::string& str, boost::property
    }
    catch (boost::property_tree::json_parser::json_parser_error& e)
    {
-      throw CInvalidParameterException(e.what());   	
+      throw exception::CInvalidParameter(e.what());   	
    }
 }
 

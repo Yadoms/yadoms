@@ -1,6 +1,6 @@
 #pragma once
 #include "Event.hpp"
-#include <shared/exceptions/BadConversionException.hpp>
+#include <shared/exceptions/BadConversion.hpp>
 
 namespace shared { namespace event
 {
@@ -111,7 +111,7 @@ namespace shared { namespace event
       /// \brief	    Get and pop the next event
       /// \template DataType  Type of the data in the event
       /// \return     const reference on Event data (caller have to copy data if it want to keep them)
-      /// \throw      CBadConversionException if event data is not correct
+      /// \throw      exception::CBadConversion if event data is not correct
       //--------------------------------------------------------------
       template<typename DataType>
       const DataType popEvent()
@@ -125,7 +125,7 @@ namespace shared { namespace event
          }
          catch (std::bad_cast&)
          {
-            throw CBadConversionException("popEvent", boost::lexical_cast<std::string>(m_EventsQueue.back()->getId()));
+            throw exception::CBadConversion("popEvent", boost::lexical_cast<std::string>(m_EventsQueue.back()->getId()));
          }
       }
 

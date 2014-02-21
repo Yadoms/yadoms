@@ -20,14 +20,14 @@ set(SHARED_LIB_SRC
 	shared/event/EventBase.hpp
 	shared/event/EventHandler.hpp
 
- 	shared/exceptions/BadConversionException.hpp
-	shared/exceptions/EmptyResultException.hpp
+ 	shared/exceptions/BadConversion.hpp
+	shared/exceptions/EmptyResult.hpp
 	shared/exceptions/Exception.hpp
-	shared/exceptions/InvalidParameterException.hpp
-	shared/exceptions/OutOfRangeException.hpp
-	shared/exceptions/NotImplementedException.hpp
-	shared/exceptions/NotSupportedException.hpp
-	shared/exceptions/NullReferenceException.hpp
+	shared/exceptions/InvalidParameter.hpp
+	shared/exceptions/OutOfRange.hpp
+	shared/exceptions/NotImplemented.hpp
+	shared/exceptions/NotSupported.hpp
+	shared/exceptions/NullReference.hpp
 
 	shared/plugin/ImplementationHelper.h
 	shared/plugin/IPlugin.h

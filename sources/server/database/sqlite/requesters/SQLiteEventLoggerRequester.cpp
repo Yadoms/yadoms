@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "SQLiteEventLoggerRequester.h"
-#include <shared/Exceptions/NotImplementedException.hpp>
+#include <shared/exceptions/NotImplemented.hpp>
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "database/sqlite/adapters/SQLiteDatabaseAdapters.h"
-#include <shared/Exceptions/EmptyResultException.hpp>
+#include <shared/exceptions/EmptyResult.hpp>
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 
@@ -32,7 +32,7 @@ namespace server {
                   Values(eventType, optionalData, insertDate);
 
                if(m_databaseRequester->queryStatement(qInsert) <= 0)
-                  throw CEmptyResultException("No lines affected");
+                  throw shared::exception::CEmptyResult("No lines affected");
 
                CQuery qSelect;
                qSelect. Select(CEventLoggerTable::getIdColumnName()).
@@ -46,7 +46,7 @@ namespace server {
                if(adapter.getResults().size() >= 1)
                   return adapter.getResults()[0];
                else
-                  throw CEmptyResultException("Cannot retrieve inserted ");      
+                  throw shared::exception::CEmptyResult("Cannot retrieve inserted ");      
             }
 
             int CSQLiteEventLoggerRequester::addEvent(const server::database::entities::CEventLogger & logEntry)

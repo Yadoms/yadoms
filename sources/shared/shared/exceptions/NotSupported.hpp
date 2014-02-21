@@ -1,36 +1,32 @@
-//
-// InvalidPluginException.h
-//
-// Invalid plugin exception
-//
 #pragma once
+#include "Exception.hpp"
 
-#include <shared/exceptions/Exception.hpp>
-
-namespace pluginSystem
+namespace shared { namespace exception
 {
 
    //--------------------------------------------------------------
-   /// \class Configuration loading error exception
+   /// \class Exception for non supported function
    //--------------------------------------------------------------
-   class CInvalidPluginException : public shared::exception::CException
+   class CNotSupported : public CException
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in]  plugin              Plugin name
       //--------------------------------------------------------------
-      CInvalidPluginException(const std::string& plugin)
-         :CException(std::string("Invalid plugin found " + plugin).c_str())
+      CNotSupported(const std::string& function)
+         :CException(function + " is not supported")
       {
       }
 
       //--------------------------------------------------------------
       /// \brief      Destructor
       //--------------------------------------------------------------
-      virtual ~CInvalidPluginException() throw()
+      virtual ~CNotSupported() throw()
       {
       }
    };
 
-} // namespace pluginSystem
+   // Helper macro
+   #define NOT_SUPPORTED    throw CNotSupported(__FUNCTION__)
+
+} } // namespace shared::exception

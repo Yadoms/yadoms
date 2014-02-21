@@ -4,7 +4,7 @@
 #include "Parameters.h"
 #include "ISchema.h"
 #include "../../serialization/IPtreeToStringSerializer.h"
-#include <shared/exceptions/BadConversionException.hpp>
+#include <shared/exceptions/BadConversion.hpp>
 
 
 namespace shared { namespace plugin { namespace configuration
@@ -69,7 +69,7 @@ namespace shared { namespace plugin { namespace configuration
       /// \brief	    Get parameter
       /// \param [in] parameterName    Name of the parameter
       /// \return     The parameter
-      /// \throw      CBadConversionException if parameter is not the expected type
+      /// \throw      exception::CBadConversion if parameter is not the expected type
       //--------------------------------------------------------------
       template<typename T>
       const T& getParam(const std::string& parameterName) const
@@ -80,7 +80,7 @@ namespace shared { namespace plugin { namespace configuration
          }
          catch (std::bad_cast&)
          {
-            throw CBadConversionException(parameterName, "getParam");
+            throw exception::CBadConversion(parameterName, "getParam");
          }
       }
 
