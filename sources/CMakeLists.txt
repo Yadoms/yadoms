@@ -287,7 +287,7 @@ set(YADOMS_SRC
 	server/startupOptions/Loader.h
 	server/startupOptions/Loader.cpp
 	server/startupOptions/LoaderException.hpp
-	server/startupOptions/StartupOptions.h
+	server/startupOptions/IStartupOptions.h
 	server/startupOptions/InvalidOptionException.hpp
   
 	server/ApplicationStopHandler.h

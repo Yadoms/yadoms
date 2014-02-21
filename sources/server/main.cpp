@@ -8,7 +8,7 @@
 
 #include <iostream>
 #include "Supervisor.h"
-#include "StartupOptions/Loader.h"
+#include "startupOptions/Loader.h"
 #include "ApplicationStopHandler.h"
 #include <shared/Log.h>
 

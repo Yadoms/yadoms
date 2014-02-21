@@ -267,7 +267,7 @@ IF (USE_TESTS_START_OPTIONS_LOADER)
     ../sources/server/startupOptions/LoaderCustomValidators.hpp
     ../sources/server/startupOptions/LoaderException.hpp
     ../sources/server/startupOptions/MustExistPathOption.hpp
-    ../sources/server/startupOptions/StartupOptions.h
+    ../sources/server/startupOptions/IStartupOptions.h
     ../sources/server/startupOptions/ValidIpAddressOption.hpp
 
      mock/stdafx.h
@@ -335,7 +335,7 @@ IF (USE_TESTS_HARDWARE_PLUGIN_MANAGER)
 #	../sources/server/startupOptions/LoaderCustomValidators.hpp
 #	../sources/server/startupOptions/LoaderException.hpp
 #	../sources/server/startupOptions/MustExistPathOption.hpp
-#	../sources/server/startupOptions/StartupOptions.h
+#	../sources/server/startupOptions/IStartupOptions.h
 #	../sources/server/startupOptions/ValidIpAddressOption.hpp
 
 #        server/pluginSystem/MainTestHardwarePluginManager.cpp
