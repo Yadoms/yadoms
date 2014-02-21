@@ -1,66 +1,23 @@
-// \brief #define BOOST_AUTO_TEST_MAIN This definition is now configured into the CmakeFile
-#include "stdafx.h"
-
-/*
-\file main.cpp
-
-\brief Can use "brief" tag to explicitly generate comments for file documentation.
-
-*/
-
-#include <iostream>
-#include <fstream>
-#include "../../../sources/server/StartupOptions/Loader.h"
+// Includes needed to compile tested classes
+#include <boost/log/trivial.hpp>
+#include <boost/program_options.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/asio.hpp>
+#include "../../../sources/server/startupOptions/Loader.h"
 #include "../../../sources/server/ApplicationStopHandler.h"
 
 #define BOOST_TEST_MODULE TestStartupOptionsLoader
 
 #include <boost/test/unit_test.hpp>
 
-/* TODO : A voir pour sortie directe en xml
-#include <boost/test/results_reporter.hpp>
-
-//--------------------------------------------------------------
-/// \brief	    Redirect in an xml file the result
-//--------------------------------------------------------------
-
-std::ofstream out;
-
-struct ReportRedirector
-{
-    ReportRedirector()
-    {
-        out.open("test_results.xml");
-        assert( out.is_open() );
-        boost::unit_test::results_reporter::set_stream(out);
-    }
-};
-
-BOOST_GLOBAL_FIXTURE(ReportRedirector)
-*/
-
 //--------------------------------------------------------------
 /// \brief	    This function is needed to check the correct exception
 //--------------------------------------------------------------
 
-bool validate(CStartupOptionsLoaderException str)
+bool validate(startupOptions::CLoaderException str)
 {
-  return str.isError();
+ return str.isError();
 }
-
-/*
-\brief Main application entry point
-*/
-
-/*void write_settings ( std::string value )
-{
-  std::ofstream settings_file ("yadoms.cfg");
-
-  //settings_file << "port = " << value.c_str();
-  settings_file << "port = 8085";
-  settings_file.close();
-}
-*/
 
 void write_settings ( std::string name, std::string value )
 {
@@ -74,12 +31,8 @@ void write_settings ( std::string name, std::string value )
 
 void CreateDirectory ( std::string name )
 {
-	//const char dir_path[] = "c:\\temp\\cplusplus";
-
-	boost::filesystem::path dir(name.c_str());
-	if(boost::filesystem::create_directory(dir)) {
-	//	std::cout << "Success" << "\n";
-	}
+   boost::filesystem::path dir(name.c_str());
+   BOOST_TEST_REQUIRE(boost::filesystem::create_directory(dir));
 }
 
 void RemoveDirectory (std::string name )
@@ -93,10 +46,8 @@ void RemoveFile ( std::string name)
 	                boost::filesystem::remove(name.c_str());
 }
 
-//BOOST_AUTO_TEST_SUITE(Initialisation)
-
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with no argument
+/// \brief	    Test startupOptions::CLoader with no argument
 /// \result         No Error
 //--------------------------------------------------------------
 
@@ -105,10 +56,10 @@ BOOST_AUTO_TEST_CASE(Initialisation_Test)
 	//remove the configuration before tests
 	RemoveFile ("yadoms.cfg");
 
-  CStartupOptionsLoader StartupOptions (0, NULL);
+  startupOptions::CLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -118,7 +69,7 @@ BOOST_AUTO_TEST_CASE(Initialisation_Test)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the change of the port with -p
+/// \brief	    Test startupOptions::CLoader with the change of the port with -p
 /// \result         No Error - port number change
 //--------------------------------------------------------------
 
@@ -126,10 +77,10 @@ BOOST_AUTO_TEST_CASE(Different_Port_p_Initialisation)
 { 
   char *argv[] = {"./MainTestStartOptionsLoader","-p","2000"};
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+  startupOptions::CLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 2000);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)2000);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -139,7 +90,7 @@ BOOST_AUTO_TEST_CASE(Different_Port_p_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the change of the port with --port
+/// \brief	    Test startupOptions::CLoader with the change of the port with --port
 /// \result         No Error - port number change
 //--------------------------------------------------------------
 
@@ -147,10 +98,10 @@ BOOST_AUTO_TEST_CASE(Different_Port_port_Initialisation)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","--port","2000"};
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+  startupOptions::CLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 2000);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)2000);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -160,7 +111,7 @@ BOOST_AUTO_TEST_CASE(Different_Port_port_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with an argument error : --por
+/// \brief	    Test startupOptions::CLoader with an argument error : --por
 /// \result         Error : Raise an Exception
 //--------------------------------------------------------------
 
@@ -168,11 +119,11 @@ BOOST_AUTO_TEST_CASE(Port_Initialisation_Error1)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","--por","2000"};
 
-  BOOST_REQUIRE_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderException, validate );
+  BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, validate);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with an argument error : -port
+/// \brief	    Test startupOptions::CLoader with an argument error : -port
 /// \result         Error : Raise an Exception
 //--------------------------------------------------------------
 
@@ -181,11 +132,11 @@ BOOST_AUTO_TEST_CASE(Port_Initialisation_Error2)
   char *argv[] = {"./MainTestStartOptionsLoader","-port","2000"};
   
   //Test the exception, and if this one is the correct one !
-  BOOST_REQUIRE_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderException, validate );
+  BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, validate);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument --databaseFile
+/// \brief	    Test startupOptions::CLoader with the argument --databaseFile
 /// \result         No Error - database name change
 //--------------------------------------------------------------
 
@@ -193,10 +144,10 @@ BOOST_AUTO_TEST_CASE(Different_Database_databaseFile_Initialisation)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","--databaseFile","toto.db3"};
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+  startupOptions::CLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "toto.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -206,7 +157,7 @@ BOOST_AUTO_TEST_CASE(Different_Database_databaseFile_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the faulty argument --database
+/// \brief	    Test startupOptions::CLoader with the faulty argument --database
 /// \result         Error : Raise an Exception
 //--------------------------------------------------------------
 
@@ -214,11 +165,11 @@ BOOST_AUTO_TEST_CASE(Different_Database_databaseFile_Error1)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","--database","toto.db3"};
 
-  BOOST_REQUIRE_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderException, validate );
+  BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, validate);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -d
+/// \brief	    Test startupOptions::CLoader with the argument -d
 /// \result         No Error - database name change
 //--------------------------------------------------------------
 
@@ -226,10 +177,10 @@ BOOST_AUTO_TEST_CASE(Different_Database_d_Initialisation)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","-D","toto.db3"};
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+  startupOptions::CLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "toto.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -239,7 +190,7 @@ BOOST_AUTO_TEST_CASE(Different_Database_d_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -l
+/// \brief	    Test startupOptions::CLoader with the argument -l
 /// \result         No Error - logs change to trace
 //--------------------------------------------------------------
 
@@ -247,10 +198,10 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_trace_Initialisation)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","-l","trace"};
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+  startupOptions::CLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::trace);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -260,7 +211,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_trace_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -l
+/// \brief	    Test startupOptions::CLoader with the argument -l
 /// \result         No Error - logs change to debug
 //--------------------------------------------------------------
 
@@ -268,10 +219,10 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_debug_Initialisation)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","-l","debug"};
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+  startupOptions::CLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::debug);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -281,7 +232,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_debug_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -l
+/// \brief	    Test startupOptions::CLoader with the argument -l
 /// \result         No Error - logs change to info
 //--------------------------------------------------------------
 
@@ -289,10 +240,10 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_info_Initialisation)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","-l","info"};
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+  startupOptions::CLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -302,7 +253,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_info_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -l
+/// \brief	    Test startupOptions::CLoader with the argument -l
 /// \result         No Error - logs change to warning
 //--------------------------------------------------------------
 
@@ -310,10 +261,10 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_warning_Initialisation)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","-l","warning"};
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+  startupOptions::CLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::warning);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -323,7 +274,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_warning_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -l
+/// \brief	    Test startupOptions::CLoader with the argument -l
 /// \result         No Error - logs change to error
 //--------------------------------------------------------------
 
@@ -331,10 +282,10 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_error_Initialisation)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","-l","error"};
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+  startupOptions::CLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::error);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -344,7 +295,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_error_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -l
+/// \brief	    Test startupOptions::CLoader with the argument -l
 /// \result         No Error - logs change to fatal
 //--------------------------------------------------------------
 
@@ -352,10 +303,10 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_fatal_Initialisation)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","-l","fatal"};
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+  startupOptions::CLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::fatal);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -365,7 +316,7 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_fatal_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with a faulty log argument -l
+/// \brief	    Test startupOptions::CLoader with a faulty log argument -l
 /// \result         Raise an exception
 //--------------------------------------------------------------
 
@@ -373,11 +324,11 @@ BOOST_AUTO_TEST_CASE(Unknow_Log_l_Error1)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","-l","toto"};
 
-  BOOST_REQUIRE_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderException, validate );
+  BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, validate);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with a faulty argument entry
+/// \brief	    Test startupOptions::CLoader with a faulty argument entry
 /// \result         Raise an exception
 //--------------------------------------------------------------
 
@@ -385,11 +336,11 @@ BOOST_AUTO_TEST_CASE(Unknow_option_Error2)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","-a","info"};
 
-  BOOST_REQUIRE_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderException, validate );
+  BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, validate);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -i
+/// \brief	    Test startupOptions::CLoader with the argument -i
 /// \result         No Error - the adresse IP is changed
 //--------------------------------------------------------------
 
@@ -397,10 +348,10 @@ BOOST_AUTO_TEST_CASE(Different_IP_i_Initialisation)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","-i","192.168.1.1"};
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+  startupOptions::CLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -410,7 +361,7 @@ BOOST_AUTO_TEST_CASE(Different_IP_i_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -i
+/// \brief	    Test startupOptions::CLoader with the argument -i
 /// \result         No Error - the adresse IP is changed
 //--------------------------------------------------------------
 
@@ -418,10 +369,10 @@ BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Initialisation)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","--webServerIp","192.168.1.1"};
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+  startupOptions::CLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -431,7 +382,7 @@ BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the wrong argument -webServe
+/// \brief	    Test startupOptions::CLoader with the wrong argument -webServe
 /// \result         Raise a Exception
 //--------------------------------------------------------------
 
@@ -439,11 +390,11 @@ BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Error1)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","--webServe","192.168.1.1"};
 
-  BOOST_REQUIRE_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderException, validate );
+  BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, validate);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with a malform IP address (not complete)
+/// \brief	    Test startupOptions::CLoader with a malform IP address (not complete)
 /// \result         Raise a Exception
 //--------------------------------------------------------------
 
@@ -451,11 +402,11 @@ BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Error2)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","-i","192.168.1."};
 
-  BOOST_REQUIRE_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderException, validate );
+  BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, validate);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -w
+/// \brief	    Test startupOptions::CLoader with the argument -w
 /// \result         No Error - the website address is changed
 //--------------------------------------------------------------
 
@@ -465,10 +416,10 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_w_Initialisation)
 
   char *argv[] = {"./MainTestStartOptionsLoader","-w","toto"};
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+  startupOptions::CLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -480,7 +431,7 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_w_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -w
+/// \brief	    Test startupOptions::CLoader with the argument -w
 /// \result         No Error - the website address is changed
 //--------------------------------------------------------------
 
@@ -490,10 +441,10 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_Initialisation)
 
   char *argv[] = {"./MainTestStartOptionsLoader","--webServerPath","home"};
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+  startupOptions::CLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -505,7 +456,7 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -w
+/// \brief	    Test startupOptions::CLoader with the argument -w
 /// \result         No Error - the website address is changed
 //--------------------------------------------------------------
 
@@ -513,11 +464,11 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_WrongPath)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","--webServerPath","/home/ww"};
 
-  BOOST_REQUIRE_EXCEPTION( CStartupOptionsLoader StartupOptions (3, argv), CStartupOptionsLoaderException, validate );
+  BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, validate);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -w
+/// \brief	    Test startupOptions::CLoader with the argument -w
 /// \result         No Error - the hardware plugins path is changed
 //--------------------------------------------------------------
 
@@ -525,10 +476,10 @@ BOOST_AUTO_TEST_CASE(Different_HardwarePluginsPath_h_Initialisation)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","-h","/home/"};
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+  startupOptions::CLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"/home/");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -538,7 +489,7 @@ BOOST_AUTO_TEST_CASE(Different_HardwarePluginsPath_h_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -w
+/// \brief	    Test startupOptions::CLoader with the argument -w
 /// \result         No Error - the hardware plugins path is changed
 //--------------------------------------------------------------
 
@@ -548,10 +499,10 @@ BOOST_AUTO_TEST_CASE(Different_HardwarePluginsPath_hardwarePluginsPath_Initialis
 
   char *argv[] = {"./MainTestStartOptionsLoader","--hardwarePluginsPath","home"};
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+  startupOptions::CLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"home");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -563,7 +514,7 @@ BOOST_AUTO_TEST_CASE(Different_HardwarePluginsPath_hardwarePluginsPath_Initialis
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -DevicePluginsPath
+/// \brief	    Test startupOptions::CLoader with the argument -DevicePluginsPath
 /// \result         No Error - the device plugins path is changed
 //--------------------------------------------------------------
 
@@ -573,10 +524,10 @@ BOOST_AUTO_TEST_CASE(Different_WidgetPath_WidgetPath_Initialisation)
 
   CreateDirectory ("home");
 
-  CStartupOptionsLoader StartupOptions (3, argv);
+  startupOptions::CLoader StartupOptions (3, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"home");
@@ -590,7 +541,7 @@ BOOST_AUTO_TEST_CASE(Different_WidgetPath_WidgetPath_Initialisation)
 //TODO : Tester HardwarePluginsPath et DevicePluginsPath avec un faux chemin
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -x
+/// \brief	    Test startupOptions::CLoader with the argument -x
 /// \result         No Error - the XPL is disactivated
 //--------------------------------------------------------------
 
@@ -598,10 +549,10 @@ BOOST_AUTO_TEST_CASE(Disable_XPL_x_Initialisation)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","-x"};
 
-  CStartupOptionsLoader StartupOptions (2, argv);
+  startupOptions::CLoader StartupOptions (2, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -611,7 +562,7 @@ BOOST_AUTO_TEST_CASE(Disable_XPL_x_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument -disableXplHubStart
+/// \brief	    Test startupOptions::CLoader with the argument -disableXplHubStart
 /// \result         No Error - the XPL is disactivated
 //--------------------------------------------------------------
 
@@ -619,10 +570,10 @@ BOOST_AUTO_TEST_CASE(Disable_XPL_disableXplHubStart_Initialisation)
 {
   char *argv[] = {"./MainTestStartOptionsLoader","--disableXplHubStart"};
 
-  CStartupOptionsLoader StartupOptions (2, argv);
+  startupOptions::CLoader StartupOptions (2, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -632,7 +583,7 @@ BOOST_AUTO_TEST_CASE(Disable_XPL_disableXplHubStart_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument port in configuration file
+/// \brief	    Test startupOptions::CLoader with the argument port in configuration file
 /// \result         No Error - the port number is changed
 //--------------------------------------------------------------
 
@@ -641,10 +592,10 @@ BOOST_AUTO_TEST_CASE(Config_File_Port_Number)
   //Creation of the config file
   write_settings( "port", "8085" );
 
-  CStartupOptionsLoader StartupOptions (0, NULL);
+  startupOptions::CLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8085);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -657,7 +608,7 @@ BOOST_AUTO_TEST_CASE(Config_File_Port_Number)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument port in configuration file
+/// \brief	    Test startupOptions::CLoader with the argument port in configuration file
 /// \result         No Error - the port number is not changed - No Exception
 //--------------------------------------------------------------
 
@@ -666,10 +617,10 @@ BOOST_AUTO_TEST_CASE(Config_File_Port_Number_Error1)
   //Creation of the config file
   write_settings( "portable", "8085" );
 
-  CStartupOptionsLoader StartupOptions (0, NULL);
+  startupOptions::CLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -678,14 +629,14 @@ BOOST_AUTO_TEST_CASE(Config_File_Port_Number_Error1)
   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 
   // There should no have exception !
-  BOOST_REQUIRE_NO_THROW( CStartupOptionsLoader StartupOptions (0, NULL) );
+  BOOST_REQUIRE_NO_THROW( startupOptions::CLoader StartupOptions (0, NULL) );
 
   //remove the configuration before tests
   RemoveFile ("yadoms.cfg");
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument databaseFile in configuration file
+/// \brief	    Test startupOptions::CLoader with the argument databaseFile in configuration file
 /// \result         No Error - the database file name is changed
 //--------------------------------------------------------------
 
@@ -694,10 +645,10 @@ BOOST_AUTO_TEST_CASE(Config_File_database_file)
   //Creation of the config file
   write_settings( "databaseFile", "AnOtherFile.db3" );
 
-  CStartupOptionsLoader StartupOptions (0, NULL);
+  startupOptions::CLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "AnOtherFile.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -710,7 +661,7 @@ BOOST_AUTO_TEST_CASE(Config_File_database_file)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument hardwarePluginsPath in configuration file
+/// \brief	    Test startupOptions::CLoader with the argument hardwarePluginsPath in configuration file
 /// \result         No Error - the hardware plugins path is changed
 //--------------------------------------------------------------
 
@@ -720,10 +671,10 @@ BOOST_AUTO_TEST_CASE(Config_File_Hardware_Plugins)
   write_settings( "hardwarePluginsPath", "try" );
   CreateDirectory ("try");
 
-  CStartupOptionsLoader StartupOptions (0, NULL);
+  startupOptions::CLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"try");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -737,7 +688,7 @@ BOOST_AUTO_TEST_CASE(Config_File_Hardware_Plugins)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument devicePluginsPath in configuration file
+/// \brief	    Test startupOptions::CLoader with the argument devicePluginsPath in configuration file
 /// \result         No Error - the device plugins path is changed
 //--------------------------------------------------------------
 
@@ -747,10 +698,10 @@ BOOST_AUTO_TEST_CASE(Config_File_Device_Plugins)
   write_settings( "widgetsPath", "try" );
   CreateDirectory ("try");
 
-  CStartupOptionsLoader StartupOptions (0, NULL);
+  startupOptions::CLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"try");
@@ -764,7 +715,7 @@ BOOST_AUTO_TEST_CASE(Config_File_Device_Plugins)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument disableXplHubStart in configuration file
+/// \brief	    Test startupOptions::CLoader with the argument disableXplHubStart in configuration file
 /// \result         No Error - the Xpl is off
 //--------------------------------------------------------------
 
@@ -773,10 +724,10 @@ BOOST_AUTO_TEST_CASE(Config_File_XPL_Option)
   //Creation of the config file
   write_settings( "disableXplHubStart", "false" );
 
-  CStartupOptionsLoader StartupOptions (0, NULL);
+  startupOptions::CLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -789,7 +740,7 @@ BOOST_AUTO_TEST_CASE(Config_File_XPL_Option)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument webServerIp in configuration file
+/// \brief	    Test startupOptions::CLoader with the argument webServerIp in configuration file
 /// \result         No Error - the web Server IP address is changed
 //--------------------------------------------------------------
 
@@ -798,10 +749,10 @@ BOOST_AUTO_TEST_CASE(Config_File_getWebServerIPAddress)
   //Creation of the config file
   write_settings( "webServerIp", "192.168.1.1" );
 
-  CStartupOptionsLoader StartupOptions (0, NULL);
+  startupOptions::CLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -814,7 +765,7 @@ BOOST_AUTO_TEST_CASE(Config_File_getWebServerIPAddress)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument webServerIp in configuration file
+/// \brief	    Test startupOptions::CLoader with the argument webServerIp in configuration file
 /// \result         No Error - the web Server path is changed
 //--------------------------------------------------------------
 
@@ -824,10 +775,10 @@ BOOST_AUTO_TEST_CASE(Config_File_webServerPath)
   write_settings( "webServerPath", "home" );
   CreateDirectory ("home");
 
-  CStartupOptionsLoader StartupOptions (0, NULL);
+  startupOptions::CLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -841,7 +792,7 @@ BOOST_AUTO_TEST_CASE(Config_File_webServerPath)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the argument webServerIp in configuration file
+/// \brief	    Test startupOptions::CLoader with the argument webServerIp in configuration file
 /// \result         No Error - the log level is changed
 //--------------------------------------------------------------
 
@@ -850,10 +801,10 @@ BOOST_AUTO_TEST_CASE(Config_File_Log)
   //Creation of the config file
   write_settings( "logLevel", "warning" );
 
-  CStartupOptionsLoader StartupOptions (0, NULL);
+  startupOptions::CLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::warning);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8080);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"plugins/hardware");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -866,7 +817,7 @@ BOOST_AUTO_TEST_CASE(Config_File_Log)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the all arguments
+/// \brief	    Test startupOptions::CLoader with the all arguments
 /// \result         No Error - all options are changed
 //--------------------------------------------------------------
 
@@ -886,10 +837,10 @@ BOOST_AUTO_TEST_CASE(Config_File_All_Options1)
   CreateDirectory ("try2");
   CreateDirectory ("try3");
 
-  CStartupOptionsLoader StartupOptions (0, NULL);
+  startupOptions::CLoader StartupOptions (0, NULL);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::warning);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8085);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"try1");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"try2");
@@ -906,7 +857,7 @@ BOOST_AUTO_TEST_CASE(Config_File_All_Options1)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the all arguments with argc/argv
+/// \brief	    Test startupOptions::CLoader with the all arguments with argc/argv
 /// \result         No Error - all options are changed
 //--------------------------------------------------------------
 
@@ -918,10 +869,10 @@ BOOST_AUTO_TEST_CASE(Config_File_All_Options2)
   CreateDirectory ("try2");
   CreateDirectory ("try3");
 
-  CStartupOptionsLoader StartupOptions (17, argv);
+  startupOptions::CLoader StartupOptions (17, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::warning);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8085);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"try1");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"try2");
@@ -935,7 +886,7 @@ BOOST_AUTO_TEST_CASE(Config_File_All_Options2)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the all arguments (low profile) by argc/argv
+/// \brief	    Test startupOptions::CLoader with the all arguments (low profile) by argc/argv
 /// \result         No Error - all options are changed
 //--------------------------------------------------------------
 
@@ -947,10 +898,10 @@ BOOST_AUTO_TEST_CASE(Config_File_All_Options3)
   CreateDirectory ("try2");
   CreateDirectory ("try3");
 
-  CStartupOptionsLoader StartupOptions (15, argv);
+  startupOptions::CLoader StartupOptions (15, argv);
 
   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::warning);
-  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), 8085);
+  BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
   BOOST_CHECK_EQUAL(StartupOptions.getHarwarePluginsPath(),"try1");
   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
@@ -964,7 +915,7 @@ BOOST_AUTO_TEST_CASE(Config_File_All_Options3)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test CStartupOptionsLoader with the parameter -p without value
+/// \brief	    Test startupOptions::CLoader with the parameter -p without value
 /// \result         No Error - No Exception thrown
 //--------------------------------------------------------------
 
@@ -972,7 +923,7 @@ BOOST_AUTO_TEST_CASE(Parameter_Missing_No_Exception)
 { 
   char *argv[] = {"./MainTestStartOptionsLoader","-p"};
 
-  BOOST_REQUIRE_EXCEPTION( CStartupOptionsLoader StartupOptions (2, argv), CStartupOptionsLoaderException, validate );
+  BOOST_REQUIRE_NO_THROW( startupOptions::CLoader StartupOptions (2, argv) );
 
 }
 
