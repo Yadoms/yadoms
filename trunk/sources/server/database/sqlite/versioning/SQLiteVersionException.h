@@ -7,9 +7,9 @@ namespace server {
          namespace versioning { 
 
             //--------------------------------------------------------------
-            /// \class Standard excption with some text
+            /// \class Standard exception with some text
             //--------------------------------------------------------------
-            class CSQLiteVersionException : public CException
+            class CSQLiteVersionException : public shared::exception::CException
             {
             public:
                //--------------------------------------------------------------

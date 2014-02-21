@@ -11,7 +11,7 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief           Add new acquisition 
       /// \param [in] newAcquisition   New acquisition informations
-      /// \throw           CEmptyResultException if fails
+      /// \throw           shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void addAcquisition(const entities::CAcquisition & newAcquisition) = 0;
 
@@ -40,7 +40,7 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief           Remove acquisition 
       /// \param [in]      acquisitionId   Acquisition  Id
-      /// \throw           CEmptyResultException if fails
+      /// \throw           shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void removeAcquisition(int acquisitionId) = 0;
 

@@ -70,7 +70,7 @@ void CFakePluginConfiguration::trace()
       YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[second one]' is " << CFG_GET_BITS_FIELD("BitsFieldParameter")["second one"];
       YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[and a third]' is " << CFG_GET_BITS_FIELD("BitsFieldParameter")["and a third"];
    }
-   catch (const CBadConversionException& bc)
+   catch (const shared::exception::CBadConversion& bc)
    {
       BOOST_ASSERT(false);  // Parameter is wrong type
       YADOMS_LOG(error) << "Bad cast error: " << bc.what();

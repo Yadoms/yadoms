@@ -246,9 +246,8 @@ std::string CManager::getPluginConfigurationSchema(int id) const
    return getPluginConfigurationSchema(instanceData->getPluginName());
 }
 
-//TODO : supprimer cette fonction ?  à priori le pluginanager ne devrait pas faire d'insert en base
-int CManager::createInstance(const std::string& instanceName, const std::string& pluginName,
-                                           const std::string& configuration)
+int CManager::createInstance(const std::string& instanceName,
+   const std::string& pluginName, const std::string& configuration)
 {
    // First step, record instance in database, to get its ID
    boost::shared_ptr<server::database::entities::CHardware> dbRecord(new server::database::entities::CHardware);

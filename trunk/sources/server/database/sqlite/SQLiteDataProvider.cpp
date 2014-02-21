@@ -9,7 +9,7 @@
 #include <shared/Log.h>
 #include "versioning/SQLiteVersionUpgraderFactory.h"
 #include "versioning/SQLiteVersionException.h"
-#include <shared/Exceptions/NotSupportedException.hpp>
+#include <shared/exceptions/NotSupported.hpp>
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "tools/Version.h"
@@ -21,9 +21,9 @@ namespace sqlite {
 CSQLiteDataProvider::CSQLiteDataProvider(const std::string & dbFile)
    :m_dbFile(dbFile), m_pDatabaseHandler(NULL)
 {
-   //check that library is comiled with THREAD_SAFE= 1 (ensure that it is full mutex access)
+   //check that library is compiled with THREAD_SAFE= 1 (ensure that it is full mutex access)
    if(sqlite3_threadsafe() != 1)
-      throw CNotSupportedException("SQLite3 non threadsafe");
+      throw shared::exception::CNotSupported("SQLite3 non threadsafe");
 }
 
 CSQLiteDataProvider::~CSQLiteDataProvider()

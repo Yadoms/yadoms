@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SQLiteAcquisitionRequester.h"
-#include <shared/Exceptions/NotImplementedException.hpp>
-#include <shared/Exceptions/EmptyResultException.hpp>
+#include <shared/exceptions/NotImplemented.hpp>
+#include <shared/exceptions/EmptyResult.hpp>
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "database/sqlite/adapters/SQLiteDatabaseAdapters.h"
@@ -30,7 +30,7 @@ namespace server {
                qInsert. InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getSourceColumnName(), CAcquisitionTable::getKeywordColumnName(), CAcquisitionTable::getValueColumnName(), CAcquisitionTable::getDateColumnName()).
                   Values(newAcquisition.getSource(), newAcquisition.getKeyword(), newAcquisition.getValue(), newAcquisition.getDate());
                if(m_databaseRequester->queryStatement(qInsert) <= 0)
-                  throw CEmptyResultException("No lines affected");
+                  throw shared::exception::CEmptyResult("No lines affected");
             }
 
             boost::shared_ptr<server::database::entities::CAcquisition> CSQLiteAcquisitionRequester::getAcquisition(int acquisitionId)
@@ -47,7 +47,7 @@ namespace server {
                else
                {
                   std::string sEx = (boost::format("Cannot retrieve Acquisition Id=%1% in database") % acquisitionId).str(); 
-                  throw CEmptyResultException(sEx);
+                  throw shared::exception::CEmptyResult(sEx);
                }
 
             }
@@ -86,7 +86,7 @@ namespace server {
                qDelete. DeleteFrom(CAcquisitionTable::getTableName()).
                   Where(CAcquisitionTable::getIdColumnName(), CQUERY_OP_EQUAL, acquisitionId);
                if(m_databaseRequester->queryStatement(qDelete) <= 0)
-                  throw CEmptyResultException("No lines affected");
+                  throw shared::exception::CEmptyResult("No lines affected");
             }
 
          } //namespace requesters

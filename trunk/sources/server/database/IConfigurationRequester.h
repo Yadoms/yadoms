@@ -11,7 +11,7 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief      Create a new configuration entry
       /// \param [in] configurationToCreate  New configuration informations
-      /// \throw      CEmptyResultException if fails
+      /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void create(entities::CConfiguration& configurationToCreate) = 0;
 
@@ -20,7 +20,7 @@ namespace database {
       /// \param [in] section    the configuration SECTION
       /// \param [in] name       the configuration NAME
       /// \return     The configuration entry found
-      /// \throw      CEmptyResultException if fails
+      /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual boost::shared_ptr<entities::CConfiguration> getConfiguration(const std::string & section, const std::string & name) = 0;
       
@@ -28,28 +28,28 @@ namespace database {
       /// \brief      Read all configuration entries for one section
       /// \param [in] section    the configuration SECTION
       /// \return     The entries found
-      /// \throw      CEmptyResultException if fails
+      /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<entities::CConfiguration> > getConfigurations(const std::string & section) = 0;
 
       //--------------------------------------------------------------
       /// \brief      Read all configuration entries 
       /// \return     The entries found
-      /// \throw      CEmptyResultException if fails
+      /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<entities::CConfiguration> > getConfigurations() = 0;
 
       //--------------------------------------------------------------
       /// \brief      Update a configuration entry
       /// \param [in] configurationToUpdate  Configuration informations
-      /// \throw      CEmptyResultException if fails
+      /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void updateConfiguration(entities::CConfiguration& configurationToUpdate) = 0;
       
       //--------------------------------------------------------------
       /// \brief      Remove a configuration entry
       /// \param [in] configurationToRemove  The configuration to delete
-      /// \throw      CEmptyResultException if fails
+      /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual void removeConfiguration(entities::CConfiguration& configurationToRemove) = 0;
 

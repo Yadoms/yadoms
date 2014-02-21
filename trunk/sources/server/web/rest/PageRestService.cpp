@@ -1,6 +1,6 @@
 ﻿#include "stdafx.h"
 #include "PageRestService.h"
-#include <shared/exceptions/NotImplementedException.hpp>
+#include <shared/exceptions/NotImplemented.hpp>
 #include "json/JsonSerializers.h"
 #include "json/JsonCollectionSerializer.h"
 #include "RestDispatcherHelpers.hpp"

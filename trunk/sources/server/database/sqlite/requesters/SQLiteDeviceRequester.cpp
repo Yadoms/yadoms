@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SQLiteDeviceRequester.h"
-#include <shared/Exceptions/NotImplementedException.hpp>
-#include <shared/Exceptions/EmptyResultException.hpp>
+#include <shared/exceptions/NotImplemented.hpp>
+#include <shared/exceptions/EmptyResult.hpp>
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "database/sqlite/adapters/SQLiteDatabaseAdapters.h"
@@ -30,7 +30,7 @@ namespace server {
                qInsert. InsertInto(CDeviceTable::getTableName(), CDeviceTable::getDataSourceColumnName(), CDeviceTable::getNameColumnName(), CDeviceTable::getConfigurationColumnName()).
                   Values(newDevice->getDataSource(), newDevice->getName(), newDevice->getConfiguration());
                if(m_databaseRequester->queryStatement(qInsert) <= 0)
-                  throw CEmptyResultException("No lines affected");
+                  throw shared::exception::CEmptyResult("No lines affected");
 
                CQuery qSelect;
                qSelect. Select(CDeviceTable::getIdColumnName()).
@@ -45,7 +45,7 @@ namespace server {
                if(adapter.getResults().size() >= 1)
                   return adapter.getResults()[0];
                else
-                  throw CEmptyResultException("Cannot retrieve inserted Hardware");      
+                  throw shared::exception::CEmptyResult("Cannot retrieve inserted Hardware");      
             }
 
             boost::shared_ptr<server::database::entities::CDevice> CSQLiteDeviceRequester::getDevice(int deviceId)
@@ -62,7 +62,7 @@ namespace server {
                else
                {
                   std::string sEx = (boost::format("Cannot retrieve Device Id=%1% in database") % deviceId).str(); 
-                  throw CEmptyResultException(sEx);
+                  throw shared::exception::CEmptyResult(sEx);
                }
             }
 
@@ -85,7 +85,7 @@ namespace server {
                   Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
 
                if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-                  throw CEmptyResultException("No lines affected");
+                  throw shared::exception::CEmptyResult("No lines affected");
             }
 
             void CSQLiteDeviceRequester::removeDevice(int deviceId)
@@ -94,7 +94,7 @@ namespace server {
                qDelete. DeleteFrom(CDeviceTable::getTableName()).
                   Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
                if(m_databaseRequester->queryStatement(qDelete) <= 0)
-                  throw  CEmptyResultException("No lines affected");
+                  throw  shared::exception::CEmptyResult("No lines affected");
             }
             // [END] IDeviceRequester implementation
 

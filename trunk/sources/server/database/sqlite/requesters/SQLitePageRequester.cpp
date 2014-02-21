@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SQLitePageRequester.h"
-#include <shared/Exceptions/NotImplementedException.hpp>
-#include <shared/Exceptions/EmptyResultException.hpp>
+#include <shared/exceptions/NotImplemented.hpp>
+#include <shared/exceptions/EmptyResult.hpp>
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "database/sqlite/adapters/SQLiteDatabaseAdapters.h"
@@ -30,7 +30,7 @@ namespace server {
                qInsert. InsertInto(CPageTable::getTableName(), CPageTable::getNameColumnName(), CPageTable::getPageOrderColumnName()).
                   Values(name, pageOrder);
                if(m_databaseRequester->queryStatement(qInsert) <= 0)
-                  throw CEmptyResultException("No lines affected");
+                  throw shared::exception::CEmptyResult("No lines affected");
 
                CQuery qSelect;
                qSelect. Select(CPageTable::getIdColumnName()).
@@ -43,7 +43,7 @@ namespace server {
                if(adapter.getResults().size() >= 1)
                   return adapter.getResults()[0];
                else
-                  throw CEmptyResultException("Cannot retrieve inserted Page");      
+                  throw shared::exception::CEmptyResult("Cannot retrieve inserted Page");      
             }
 
             boost::shared_ptr<server::database::entities::CPage> CSQLitePageRequester::getPage(int pageId)
@@ -60,7 +60,7 @@ namespace server {
                else
                {
                   std::string sEx = (boost::format("Cannot retrieve Page Id=%1% in database") % pageId).str(); 
-                  throw CEmptyResultException(sEx);
+                  throw shared::exception::CEmptyResult(sEx);
                }
             }
 
@@ -83,7 +83,7 @@ namespace server {
                   Where(CPageTable::getIdColumnName(), CQUERY_OP_EQUAL, pageId);
 
                if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-                  throw CEmptyResultException("No lines affected");
+                  throw shared::exception::CEmptyResult("No lines affected");
             }
 
             void CSQLitePageRequester::removePage(int pageId)
@@ -92,7 +92,7 @@ namespace server {
                qDelete. DeleteFrom(CPageTable::getTableName()).
                   Where(CPageTable::getIdColumnName(), CQUERY_OP_EQUAL, pageId);
                if(m_databaseRequester->queryStatement(qDelete) <= 0)
-                  throw CEmptyResultException("No lines affected");
+                  throw shared::exception::CEmptyResult("No lines affected");
             }
 
             void CSQLitePageRequester::removeAllPages()

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Qualifier.h"
-#include <shared/exceptions/EmptyResultException.hpp>
+#include <shared/exceptions/EmptyResult.hpp>
 
 namespace pluginSystem
 {
@@ -56,7 +56,7 @@ void CQualifier::AddEventToDatabase(const boost::shared_ptr<const shared::plugin
          eventType,
          reason);
    }
-   catch (CEmptyResultException& e)
+   catch (shared::exception::CEmptyResult& e)
    {
       // Just log the error
       YADOMS_LOG(error) << "Error when adding plugin " << eventType << " event in database : " << e.what();

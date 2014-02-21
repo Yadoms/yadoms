@@ -7,7 +7,7 @@ namespace database {
    //--------------------------------------------------------------
    /// \class Exception for accessing NULL objects
    //--------------------------------------------------------------
-   class CDatabaseException : public CException
+   class CDatabaseException : public shared::exception::CException
    {
    public:
       //--------------------------------------------------------------
