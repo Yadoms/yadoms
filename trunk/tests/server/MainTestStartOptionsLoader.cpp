@@ -1,43 +1,14 @@
-// \brief #define BOOST_AUTO_TEST_MAIN This definition is now configured into the CmakeFile
-#include "stdafx.h"
-
-/*
-\file main.cpp
-
-\brief Can use "brief" tag to explicitly generate comments for file documentation.
-
-*/
-
-#include <iostream>
-#include <fstream>
-#include "../../sources/server/StartupOptions/Loader.h"
+// Includes needed to compile tested classes
+#include <boost/log/trivial.hpp>
+#include <boost/program_options.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/asio.hpp>
+#include "../../sources/server/startupOptions/Loader.h"
 #include "../../sources/server/ApplicationStopHandler.h"
 
 #define BOOST_TEST_MODULE TestStartupOptionsLoader
 
 #include <boost/test/unit_test.hpp>
-
-/* TODO : A voir pour sortie directe en xml
-#include <boost/test/results_reporter.hpp>
-
-//--------------------------------------------------------------
-/// \brief	    Redirect in an xml file the result
-//--------------------------------------------------------------
-
-std::ofstream out;
-
-struct ReportRedirector
-{
-    ReportRedirector()
-    {
-        out.open("test_results.xml");
-        assert( out.is_open() );
-        boost::unit_test::results_reporter::set_stream(out);
-    }
-};
-
-BOOST_GLOBAL_FIXTURE(ReportRedirector)
-*/
 
 //--------------------------------------------------------------
 /// \brief	    This function is needed to check the correct exception
@@ -47,20 +18,6 @@ bool validate(startupOptions::CLoaderException str)
 {
  return str.isError();
 }
-
-/*
-\brief Main application entry point
-*/
-
-/*void write_settings ( std::string value )
-{
-  std::ofstream settings_file ("yadoms.cfg");
-
-  //settings_file << "port = " << value.c_str();
-  settings_file << "port = 8085";
-  settings_file.close();
-}
-*/
 
 void write_settings ( std::string name, std::string value )
 {
@@ -74,12 +31,8 @@ void write_settings ( std::string name, std::string value )
 
 void CreateDirectory ( std::string name )
 {
-	//const char dir_path[] = "c:\\temp\\cplusplus";
-
-	boost::filesystem::path dir(name.c_str());
-	if(boost::filesystem::create_directory(dir)) {
-	//	std::cout << "Success" << "\n";
-	}
+   boost::filesystem::path dir(name.c_str());
+   BOOST_TEST_REQUIRE(boost::filesystem::create_directory(dir));
 }
 
 void RemoveDirectory (std::string name )
@@ -92,8 +45,6 @@ void RemoveFile ( std::string name)
 	if(boost::filesystem::exists(name.c_str()))
 	                boost::filesystem::remove(name.c_str());
 }
-
-//BOOST_AUTO_TEST_SUITE(Initialization)
 
 //--------------------------------------------------------------
 /// \brief	    Test startupOptions::CLoader with no argument

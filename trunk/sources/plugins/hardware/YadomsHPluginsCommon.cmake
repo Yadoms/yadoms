@@ -11,7 +11,7 @@ MACRO(ADD_HARDWARE_PLUGIN _targetName)
 	set_property( TARGET ${_targetName} PROPERTY INCLUDE_DIRECTORIES ${HPLUGIN_PRECOMPILED_HEADER_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR} )
 	target_link_libraries(${_targetName} yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 
-	IF(MSVC OR XCODE)
+	IF(WIN32 OR XCODE)
 		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "Plugins")
 	ENDIF()
 ENDMACRO()
