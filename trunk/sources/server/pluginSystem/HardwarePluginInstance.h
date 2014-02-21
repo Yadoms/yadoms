@@ -26,7 +26,7 @@ public:
    /// \param [in]   supervisor     the supervisor event handler
    /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
    //--------------------------------------------------------------
-   CHardwarePluginInstance(const boost::shared_ptr<const CHardwarePluginFactory> plugin, const boost::shared_ptr<CHardware> context,
+   CHardwarePluginInstance(const boost::shared_ptr<const CHardwarePluginFactory> plugin, const boost::shared_ptr<server::database::entities::CHardware> context,
       const boost::shared_ptr<IHardwarePluginQualifier> qualifier, CEventHandler& supervisor, int pluginManagerEventId, boost::asio::io_service * pluginIOService);
 
    //--------------------------------------------------------------
@@ -65,7 +65,7 @@ private:
    //--------------------------------------------------------------
    /// \brief			The database accessor
    //--------------------------------------------------------------
-   const boost::shared_ptr<CHardware> m_context;
+   const boost::shared_ptr<server::database::entities::CHardware> m_context;
 
    //--------------------------------------------------------------
    /// \brief			The plugin qualifier

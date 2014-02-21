@@ -2,13 +2,20 @@
 
 #include "database/sqlite/SQLiteDatabaseTablesHelpers.hpp"
 
-#define SQLITEMASTER_TABLE "table"
+namespace server { 
+namespace database { 
+namespace sqlite { 
 
-DECLARE_TABLE(SqliteMaster, 
-   (Type)
-   (Name)
-   (TableName)
-   (RootPage)
-   (Sql)
-)
+   #define SQLITEMASTER_TABLE "table"
 
+   DECLARE_TABLE(SqliteMaster, 
+      (Type)
+      (Name)
+      (TableName)
+      (RootPage)
+      (Sql)
+   )
+
+} //namespace sqlite
+} //namespace database 
+} //namespace server

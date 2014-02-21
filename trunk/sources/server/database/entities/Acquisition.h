@@ -4,20 +4,27 @@
 
 #define DELCARE_FIELD_CACQUISITION(t,n)   DELCARE_FIELD(CAcquisition,t,n)
 
-class CAcquisition
-{
-public:
-   CAcquisition()
-   {
-   }
+namespace server { 
+namespace database { 
+namespace entities {
 
-   virtual ~CAcquisition()
+   class CAcquisition
    {
-   }
+   public:
+      CAcquisition()
+      {
+      }
 
-   DELCARE_FIELD_CACQUISITION(int, Id);
-   DELCARE_FIELD_CACQUISITION(std::string, Source);
-   DELCARE_FIELD_CACQUISITION(std::string, Keyword);
-   DELCARE_FIELD_CACQUISITION(std::string, Value);
-   DELCARE_FIELD_CACQUISITION(boost::posix_time::ptime, Date);
-};
+      virtual ~CAcquisition()
+      {
+      }
+
+      DELCARE_FIELD_CACQUISITION(int, Id);
+      DELCARE_FIELD_CACQUISITION(std::string, Source);
+      DELCARE_FIELD_CACQUISITION(std::string, Keyword);
+      DELCARE_FIELD_CACQUISITION(std::string, Value);
+      DELCARE_FIELD_CACQUISITION(boost::posix_time::ptime, Date);
+   };
+} //namespace entities
+} //namespace database
+} //namespace server

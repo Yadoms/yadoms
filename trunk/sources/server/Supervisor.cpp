@@ -39,52 +39,10 @@ void CSupervisor::doWork()
 
    try
    {
-      boost::shared_ptr<IDataProvider> pDataProvider(new CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
-      if (pDataProvider->load())
+      boost::shared_ptr<server::database::IDataProvider> pDataProvider(new server::database::sqlite::CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
+      if (!pDataProvider->load())
       {
-#if DEV_ACTIVATE_DATABASE_TESTS
-         //TODO ######################### test database #########################
-         YADOMS_LOG(info) << "Testing database";
-
-         std::vector<boost::shared_ptr<CHardware> > hardwares = pDataProvider->getHardwareRequester()->getHardwares();
-         YADOMS_LOG(info) << "List of all hardwares";
-         BOOST_FOREACH(boost::shared_ptr<CHardware> hardware, hardwares)
-         {
-            YADOMS_LOG(info) << "Name=" << hardware->getName() << " PluginName=" << hardware->getPluginName();
-         }
-         YADOMS_LOG(info) << "[END] List of all hardwares";
-
-
-         YADOMS_LOG(info) << "Insert HW";
-         boost::shared_ptr<CHardware> toAdd(new CHardware);
-         toAdd->setName("AddHw1").setPluginName("FakePluginHw").setConfiguration("configuration pour le plugin AddHw1").setEnabled(true);
-         int addedId = pDataProvider->getHardwareRequester()->addHardware(toAdd);
-
-         YADOMS_LOG(info) << "Retrieve HW";
-         boost::shared_ptr<CHardware> addedHw = pDataProvider->getHardwareRequester()->getHardware(addedId);
-         YADOMS_LOG(info) << "Name=" << addedHw->getName() << " PluginName=" << addedHw->getPluginName() << " Config = " << addedHw->getConfiguration();
-
-         YADOMS_LOG(info) << "Update config HW";
-         pDataProvider->getHardwareRequester()->updateHardwareConfiguration(addedHw->getId(), "{\"BoolParameter\":\"true\",\"DoubleParameter\":\"56.78\",\"EnumParameter\":\"7\",\"IntParameter\":\"7\",\"Serial port\":\"tty0\",\"StringParameter\":\"Yadoms is so powerful !\"}");
-
-         YADOMS_LOG(info) << "Retrieve updated HW";
-         boost::shared_ptr<CHardware> addedHw2 = pDataProvider->getHardwareRequester()->getHardware(addedId);
-         YADOMS_LOG(info) << "Name=" << addedHw2->getName() << " PluginName=" << addedHw2->getPluginName() << " Config = " << addedHw2->getConfiguration();
-
-         pDataProvider->getHardwareRequester()->removeHardware(addedHw2->getId());
-
-         YADOMS_LOG(info) << "List of all hardwares";
-         BOOST_FOREACH(boost::shared_ptr<CHardware> hardware, hardwares)
-         {
-            YADOMS_LOG(info) << "Name=" << hardware->getName() << " PluginName=" << hardware->getPluginName();
-         }
-         YADOMS_LOG(info) << "[END] List of all hardwares";
-         YADOMS_LOG(info) << "[END] Testing database";
-
-         //pDataProvider->getPageRequester()->addPage("Test été àèîôïö@ç#~");
-
-         //\TODO ######################### [END] test database #########################
-#endif
+         throw CException("Fail to load database");
       }
 
       // Start the hardware plugin manager

@@ -6,7 +6,7 @@
 class CAcquisitionRestService : public IRestService
 {
 public:
-   CAcquisitionRestService(boost::shared_ptr<IDataProvider> dataProvider);
+   CAcquisitionRestService(boost::shared_ptr<server::database::IDataProvider> dataProvider);
    virtual ~CAcquisitionRestService();
 
 public:
@@ -19,6 +19,6 @@ public:
    CJson getAllAcquisitions(const std::vector<std::string> & parameters, const CJson & requestContent);  
    
 private:
-   boost::shared_ptr<IDataProvider> m_dataProvider;
+   boost::shared_ptr<server::database::IDataProvider> m_dataProvider;
    static std::string m_restKeyword;
 };

@@ -1,24 +1,30 @@
 #pragma once
 #include <shared/Exceptions/Exception.hpp>
 
-//--------------------------------------------------------------
-/// \class Exception for accessing NULL objects
-//--------------------------------------------------------------
-class CDatabaseException : public CException
-{
-public:
-   //--------------------------------------------------------------
-   /// \brief	                        Constructor
-   //--------------------------------------------------------------
-   CDatabaseException(const std::string & errMsg)
-       :CException(std::string(errMsg))
-   {
-   }
+namespace server { 
+namespace database { 
 
    //--------------------------------------------------------------
-   /// \brief      Destructor
+   /// \class Exception for accessing NULL objects
    //--------------------------------------------------------------
-   virtual ~CDatabaseException() throw()
+   class CDatabaseException : public CException
    {
-   }
-};
+   public:
+      //--------------------------------------------------------------
+      /// \brief	                        Constructor
+      //--------------------------------------------------------------
+      CDatabaseException(const std::string & errMsg)
+          :CException(std::string(errMsg))
+      {
+      }
+
+      //--------------------------------------------------------------
+      /// \brief      Destructor
+      //--------------------------------------------------------------
+      virtual ~CDatabaseException() throw()
+      {
+      }
+   };
+   
+} //namespace server 
+} //namespace database 

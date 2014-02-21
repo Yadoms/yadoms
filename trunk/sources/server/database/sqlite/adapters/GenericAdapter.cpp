@@ -3,38 +3,49 @@
 #include <shared/Log.h>
 #include "SQLite3Extension.hpp"
 
-CGenericAdapter::CGenericAdapter()
-{
-}
+namespace server { 
+namespace database { 
+namespace sqlite { 
+namespace adapters { 
 
-CGenericAdapter::~CGenericAdapter()
-{
-}
 
-bool CGenericAdapter::adapt(sqlite3_stmt * pStatement)
-{
-   int nCols = sqlite3_column_count(pStatement);
-   if (nCols) 
+   CGenericAdapter::CGenericAdapter()
    {
-      std::vector<std::string> cols;
-      for (int nCol = 0; nCol < nCols; nCol++) 
-         cols.push_back(std::string(sqlite3_column_name(pStatement, nCol)));
-
-      int rc;
-      while ((rc = sqlite3_step(pStatement)) == 100) 
-      {
-         std::map<std::string, std::string> newRow;
-         for (int nCol = 0; nCol < nCols;nCol++) 
-            newRow.insert(std::make_pair(cols[nCol], CSQLite3Extension::extractData<std::string>(pStatement, nCol) ));
-         m_results.push_back(newRow);
-      }
-      return true;
    }
-   return false;
-}
+
+   CGenericAdapter::~CGenericAdapter()
+   {
+   }
+
+   bool CGenericAdapter::adapt(sqlite3_stmt * pStatement)
+   {
+      int nCols = sqlite3_column_count(pStatement);
+      if (nCols) 
+      {
+         std::vector<std::string> cols;
+         for (int nCol = 0; nCol < nCols; nCol++) 
+            cols.push_back(std::string(sqlite3_column_name(pStatement, nCol)));
+
+         int rc;
+         while ((rc = sqlite3_step(pStatement)) == 100) 
+         {
+            std::map<std::string, std::string> newRow;
+            for (int nCol = 0; nCol < nCols;nCol++) 
+               newRow.insert(std::make_pair(cols[nCol], CSQLite3Extension::extractData<std::string>(pStatement, nCol) ));
+            m_results.push_back(newRow);
+         }
+         return true;
+      }
+      return false;
+   }
 
 
-std::vector<std::map<std::string, std::string> > CGenericAdapter::getResults()  
-{ 
-   return m_results; 
-}
+   std::vector<std::map<std::string, std::string> > CGenericAdapter::getResults()  
+   { 
+      return m_results; 
+   }
+
+} //namespace adapters
+} //namespace sqlite
+} //namespace database 
+} //namespace server

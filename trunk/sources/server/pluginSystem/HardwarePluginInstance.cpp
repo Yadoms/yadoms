@@ -7,7 +7,7 @@
 
 CHardwarePluginInstance::CHardwarePluginInstance(
    const boost::shared_ptr<const CHardwarePluginFactory> plugin,
-   const boost::shared_ptr<CHardware> context,
+   const boost::shared_ptr<server::database::entities::CHardware> context,
    const boost::shared_ptr<IHardwarePluginQualifier> qualifier,
    CEventHandler& supervisor,
    int pluginManagerEventId, 

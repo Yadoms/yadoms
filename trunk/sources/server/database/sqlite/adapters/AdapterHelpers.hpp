@@ -194,7 +194,7 @@
 //-------------------------------------------------------------------
 /// \brief  Retreive the entity class name
 //-------------------------------------------------------------------
-#define ENTITY_CLASS(_tablename) BOOST_PP_CAT(C,_tablename)
+#define ENTITY_CLASS(_tablename) BOOST_PP_CAT(server::database::entities::C,_tablename)
 
 
 //-------------------------------------------------------------------

@@ -6,7 +6,7 @@
 #include "shared/Log.h"
 
 
-CEventLoggerRestService::CEventLoggerRestService(boost::shared_ptr<IDataProvider> dataProvider)
+CEventLoggerRestService::CEventLoggerRestService(boost::shared_ptr<server::database::IDataProvider> dataProvider)
    :m_dataProvider(dataProvider), m_restKeyword("EventLogger")
 {
 }

@@ -9,7 +9,7 @@
 
 std::string CPageRestService::m_restKeyword= std::string("page");
 
-CPageRestService::CPageRestService(boost::shared_ptr<IDataProvider> dataProvider)
+CPageRestService::CPageRestService(boost::shared_ptr<server::database::IDataProvider> dataProvider)
    :m_dataProvider(dataProvider)
 {
 }
@@ -43,7 +43,7 @@ void CPageRestService::configureDispatcher(CRestDispatcher & dispatcher)
 
 CJson CPageRestService::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const CJson & requestContent)
 {
-   boost::shared_ptr<ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
+   boost::shared_ptr<server::database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
    CJson result;
    try
    {
@@ -79,7 +79,7 @@ CJson CPageRestService::getOnePage(const std::vector<std::string> & parameters, 
    {
       pageId = boost::lexical_cast<int>(parameters[1]);
       CPageEntitySerializer hes;
-      boost::shared_ptr<CPage> pageFound =  m_dataProvider->getPageRequester()->getPage(pageId);
+      boost::shared_ptr<server::database::entities::CPage> pageFound =  m_dataProvider->getPageRequester()->getPage(pageId);
       return CJsonResult::GenerateSuccess(hes.serialize(*pageFound.get()));
    }
    else
@@ -91,8 +91,8 @@ CJson CPageRestService::getOnePage(const std::vector<std::string> & parameters, 
 CJson CPageRestService::getAllPages(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    CPageEntitySerializer hes;
-   std::vector< boost::shared_ptr<CPage> > hwList = m_dataProvider->getPageRequester()->getPages();
-   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<CPage>::SerializeCollection(hwList, hes, getRestKeyword()));
+   std::vector< boost::shared_ptr<server::database::entities::CPage> > hwList = m_dataProvider->getPageRequester()->getPages();
+   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<server::database::entities::CPage>::SerializeCollection(hwList, hes, getRestKeyword()));
 }
 
 CJson CPageRestService::getPageWidget(const std::vector<std::string> & parameters, const CJson & requestContent)
@@ -103,8 +103,8 @@ CJson CPageRestService::getPageWidget(const std::vector<std::string> & parameter
       pageId = parameters[1];
 
       CWidgetEntitySerializer hes;
-      std::vector< boost::shared_ptr<CWidget> > widgetList = m_dataProvider->getWidgetRequester()->getWidgetsForPage(boost::lexical_cast<int>(pageId));
-      return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<CWidget>::SerializeCollection(widgetList, hes, CWidgetRestService::getRestKeyword()));
+      std::vector< boost::shared_ptr<server::database::entities::CWidget> > widgetList = m_dataProvider->getWidgetRequester()->getWidgetsForPage(boost::lexical_cast<int>(pageId));
+      return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<server::database::entities::CWidget>::SerializeCollection(widgetList, hes, CWidgetRestService::getRestKeyword()));
    }
    else
    {
@@ -117,9 +117,9 @@ CJson CPageRestService::addPage(const std::vector<std::string> & parameters, con
    try
    {
       CPageEntitySerializer hes;
-      boost::shared_ptr<CPage> pageToAdd = hes.deserialize(requestContent);
+      boost::shared_ptr<server::database::entities::CPage> pageToAdd = hes.deserialize(requestContent);
       int idCreated = m_dataProvider->getPageRequester()->addPage(pageToAdd->getName(), pageToAdd->getPageOrder());
-      boost::shared_ptr<CPage> pageFound =  m_dataProvider->getPageRequester()->getPage(idCreated);
+      boost::shared_ptr<server::database::entities::CPage> pageFound =  m_dataProvider->getPageRequester()->getPage(idCreated);
       return CJsonResult::GenerateSuccess(hes.serialize(*pageFound.get()));
    }
    catch(std::exception &ex)
@@ -142,7 +142,7 @@ CJson CPageRestService::updatePage(const std::vector<std::string> & parameters, 
          pageId = boost::lexical_cast<int>(parameters[1].c_str());
 
          CPageEntitySerializer hes;
-         boost::shared_ptr<CPage> pageToReplace = hes.deserialize(requestContent);
+         boost::shared_ptr<server::database::entities::CPage> pageToReplace = hes.deserialize(requestContent);
          if(pageToReplace->getId() > 0 && pageId == pageToReplace->getId())
          {
             m_dataProvider->getPageRequester()->updatePage(pageToReplace->getId(), pageToReplace->getName(), pageToReplace->getPageOrder());
@@ -225,9 +225,9 @@ CJson CPageRestService::addWidgetForPage(const std::vector<std::string> & parame
    try
    {
       CWidgetEntitySerializer hes;
-      boost::shared_ptr<CWidget> widgetToAdd = hes.deserialize(requestContent);
+      boost::shared_ptr<server::database::entities::CWidget> widgetToAdd = hes.deserialize(requestContent);
       int idCreated = m_dataProvider->getWidgetRequester()->addWidget(*widgetToAdd);
-      boost::shared_ptr<CWidget> widgetFound =  m_dataProvider->getWidgetRequester()->getWidget(idCreated);
+      boost::shared_ptr<server::database::entities::CWidget> widgetFound =  m_dataProvider->getWidgetRequester()->getWidget(idCreated);
       return CJsonResult::GenerateSuccess(hes.serialize(*widgetFound.get()));
    }
    catch(std::exception &ex)
@@ -254,8 +254,8 @@ CJson CPageRestService::replaceAllWidgetsForPage(const std::vector<std::string> 
 
          //crreate all
          CWidgetEntitySerializer hes;
-         std::vector<boost::shared_ptr<CWidget> > widgetsToAdd = CJsonCollectionSerializer<CWidget>::DeserializeCollection(requestContent, hes, getRestKeyword());
-         BOOST_FOREACH(boost::shared_ptr<CWidget> pw, widgetsToAdd)
+         std::vector<boost::shared_ptr<server::database::entities::CWidget> > widgetsToAdd = CJsonCollectionSerializer<server::database::entities::CWidget>::DeserializeCollection(requestContent, hes, getRestKeyword());
+         BOOST_FOREACH(boost::shared_ptr<server::database::entities::CWidget> pw, widgetsToAdd)
          {
             m_dataProvider->getWidgetRequester()->addWidget(*pw);
          }

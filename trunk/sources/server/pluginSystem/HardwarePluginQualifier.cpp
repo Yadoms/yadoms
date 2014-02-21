@@ -7,7 +7,7 @@
 const int CHardwarePluginQualifier::m_SafetyThreshold = 7;
 
 
-CHardwarePluginQualifier::CHardwarePluginQualifier(boost::shared_ptr<IHardwareEventLoggerRequester> eventLoggerDatabase)
+CHardwarePluginQualifier::CHardwarePluginQualifier(boost::shared_ptr<server::database::IHardwareEventLoggerRequester> eventLoggerDatabase)
    :m_eventLoggerDatabase(eventLoggerDatabase)
 {
 }
@@ -19,7 +19,7 @@ CHardwarePluginQualifier::~CHardwarePluginQualifier()
 void CHardwarePluginQualifier::signalLoad(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation)
 {
    // Insert event in database
-   AddEventToDatabase(pluginInformation, CHardwareEventLogger::kLoad);
+   AddEventToDatabase(pluginInformation, server::database::entities::CHardwareEventLogger::kLoad);
 
    // Since a new event is recorded, cache of quality indicator is obsolete
    obsoleteQualityIndicatorCache(CPluginIdentity(pluginInformation));
@@ -28,7 +28,7 @@ void CHardwarePluginQualifier::signalLoad(const boost::shared_ptr<const shared::
 void CHardwarePluginQualifier::signalUnload(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation)
 {
    // Insert event in database
-   AddEventToDatabase(pluginInformation, CHardwareEventLogger::kUnload);
+   AddEventToDatabase(pluginInformation, server::database::entities::CHardwareEventLogger::kUnload);
 
    // Since a new event is recorded, cache of quality indicator is obsolete
    obsoleteQualityIndicatorCache(CPluginIdentity(pluginInformation));
@@ -37,13 +37,13 @@ void CHardwarePluginQualifier::signalUnload(const boost::shared_ptr<const shared
 void CHardwarePluginQualifier::signalCrash(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation, const std::string& reason)
 {
    // Insert event in database
-   AddEventToDatabase(pluginInformation, CHardwareEventLogger::kCrash, reason);
+   AddEventToDatabase(pluginInformation, server::database::entities::CHardwareEventLogger::kCrash, reason);
 
    // Since a new event is recorded, cache of quality indicator is obsolete
    obsoleteQualityIndicatorCache(CPluginIdentity(pluginInformation));
 }
 
-void CHardwarePluginQualifier::AddEventToDatabase(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation, CHardwareEventLogger::EEventType eventType, const std::string& reason)
+void CHardwarePluginQualifier::AddEventToDatabase(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation, server::database::entities::CHardwareEventLogger::EEventType eventType, const std::string& reason)
 {
    try
    {
@@ -105,17 +105,17 @@ int CHardwarePluginQualifier::computeQuality(const CPluginIdentity& identity) co
    boost::posix_time::ptime lastLoadTime(boost::posix_time::not_a_date_time);
 
    boost::gregorian::date fromDate = boost::gregorian::day_clock::universal_day() - boost::gregorian::days(90);
-   std::vector<boost::shared_ptr<CHardwareEventLogger> > pluginEvents = m_eventLoggerDatabase->getHardwareEvents(identity.getName(), identity.getVersion(), identity.getReleaseType(), boost::posix_time::ptime(fromDate));
-   for (std::vector<boost::shared_ptr<CHardwareEventLogger> >::const_iterator it = pluginEvents.begin() ; it != pluginEvents.end() ; it++)
+   std::vector<boost::shared_ptr<server::database::entities::CHardwareEventLogger> > pluginEvents = m_eventLoggerDatabase->getHardwareEvents(identity.getName(), identity.getVersion(), identity.getReleaseType(), boost::posix_time::ptime(fromDate));
+   for (std::vector<boost::shared_ptr<server::database::entities::CHardwareEventLogger> >::const_iterator it = pluginEvents.begin() ; it != pluginEvents.end() ; it++)
    {
       switch((*it)->getEventType())
       {
-      case CHardwareEventLogger::kLoad:
+      case server::database::entities::CHardwareEventLogger::kLoad:
          {
             lastLoadTime = (*it)->getEventDate();
             break;
          }
-      case CHardwareEventLogger::kUnload:
+      case server::database::entities::CHardwareEventLogger::kUnload:
          {
             if(lastLoadTime != boost::posix_time::not_a_date_time)
                runningDuration += (*it)->getEventDate() - lastLoadTime;
@@ -123,7 +123,7 @@ int CHardwarePluginQualifier::computeQuality(const CPluginIdentity& identity) co
             lastLoadTime = boost::posix_time::not_a_date_time;
             break;
          }
-      case CHardwareEventLogger::kCrash:
+      case server::database::entities::CHardwareEventLogger::kCrash:
          {
             crashsNb++;
             break;
