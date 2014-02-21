@@ -1,20 +1,23 @@
 #include "stdafx.h"
-#include "HardwarePluginFactory.h"
+#include "Factory.h"
 #include <shared/plugin/information/Information.h>
 #include <shared/StringExtension.h>
 
-CHardwarePluginFactory::CHardwarePluginFactory(const boost::filesystem::path& libraryPath)
+namespace pluginSystem
+{
+
+CFactory::CFactory(const boost::filesystem::path& libraryPath)
       :m_libraryPath(libraryPath), m_construct(NULL), m_getInformation(NULL), m_getConfigurationSchema(NULL)
 {
    load();
 }
 
-CHardwarePluginFactory::~CHardwarePluginFactory()
+CFactory::~CFactory()
 {
    unload();
 }
 
-void CHardwarePluginFactory::load()
+void CFactory::load()
 {
    // Load the plugin library (platform-specific)
    if (!shared::CDynamicLibrary::load(m_libraryPath.string()))
@@ -37,12 +40,12 @@ void CHardwarePluginFactory::load()
    YADOMS_LOG(info) << "Hardware plugin loaded : " << getInformation()->toString();
 }
 
-void CHardwarePluginFactory::unload()
+void CFactory::unload()
 {
    shared::CDynamicLibrary::unload();
 }
 
-shared::plugin::IPlugin* CHardwarePluginFactory::construct() const
+shared::plugin::IPlugin* CFactory::construct() const
 {
 	BOOST_ASSERT(m_construct);  // construct can not be called if load was unsuccessfully
    if(m_construct != NULL)
@@ -50,12 +53,12 @@ shared::plugin::IPlugin* CHardwarePluginFactory::construct() const
 	return NULL;
 }
 
-const boost::filesystem::path& CHardwarePluginFactory::getLibraryPath() const
+const boost::filesystem::path& CFactory::getLibraryPath() const
 {
    return m_libraryPath;
 }
 
-boost::shared_ptr<const shared::plugin::information::IInformation> CHardwarePluginFactory::getInformation() const
+boost::shared_ptr<const shared::plugin::information::IInformation> CFactory::getInformation() const
 {
    BOOST_ASSERT(m_getInformation);  // getInformation can not be called if load was unsuccessfully
 
@@ -64,7 +67,7 @@ boost::shared_ptr<const shared::plugin::information::IInformation> CHardwarePlug
    return information;
 }
 
-std::string CHardwarePluginFactory::getConfigurationSchema() const
+std::string CFactory::getConfigurationSchema() const
 {
    if (!m_getConfigurationSchema)
       return shared::CStringExtension::EmptyString; // Plugin has no configuration
@@ -78,14 +81,16 @@ std::string CHardwarePluginFactory::getConfigurationSchema() const
 /// Static functions
 //-------------------------------------------------------------
 
-boost::shared_ptr<const shared::plugin::information::IInformation> CHardwarePluginFactory::getInformation(const boost::filesystem::path& libraryPath)
+boost::shared_ptr<const shared::plugin::information::IInformation> CFactory::getInformation(const boost::filesystem::path& libraryPath)
 {
-   CHardwarePluginFactory plugin(libraryPath);
+   CFactory plugin(libraryPath);
    return plugin.getInformation();
 }
 
-std::string CHardwarePluginFactory::getConfigurationSchema(const boost::filesystem::path& libraryPath)
+std::string CFactory::getConfigurationSchema(const boost::filesystem::path& libraryPath)
 {
-   CHardwarePluginFactory plugin(libraryPath);
+   CFactory plugin(libraryPath);
    return plugin.getConfigurationSchema();
 }
+
+} // namespace pluginSystem

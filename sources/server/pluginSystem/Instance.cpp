@@ -1,14 +1,17 @@
 #include "stdafx.h"
 
-#include "HardwarePluginInstance.h"
+#include "Instance.h"
 #include <shared/plugin/IPlugin.h>
 #include <shared/plugin/information/IInformation.h>
 
 
-CHardwarePluginInstance::CHardwarePluginInstance(
-   const boost::shared_ptr<const CHardwarePluginFactory> plugin,
+namespace pluginSystem
+{
+
+CInstance::CInstance(
+   const boost::shared_ptr<const CFactory> plugin,
    const boost::shared_ptr<server::database::entities::CHardware> context,
-   const boost::shared_ptr<IHardwarePluginQualifier> qualifier,
+   const boost::shared_ptr<IQualifier> qualifier,
    shared::event::CEventHandler& supervisor,
    int pluginManagerEventId, 
    boost::asio::io_service * pluginIOService)
@@ -20,12 +23,12 @@ CHardwarePluginInstance::CHardwarePluginInstance(
    start();
 }
 
-CHardwarePluginInstance::~CHardwarePluginInstance()
+CInstance::~CInstance()
 {
    stop();
 }
 
-void CHardwarePluginInstance::doWork()
+void CInstance::doWork()
 {
    BOOST_ASSERT(m_pPluginInstance);
    YADOMS_LOG_CONFIGURE(getName());
@@ -68,11 +71,11 @@ void CHardwarePluginInstance::doWork()
    }
 
    // Signal the abnormal stop
-   CHardwarePluginManagerEvent event(CHardwarePluginManagerEvent::kPluginInstanceAbnormalStopped, m_context->getId(), m_pPlugin->getInformation(), getStatus() == kStopping);
-   m_supervisor.sendEvent<CHardwarePluginManagerEvent>(m_pluginManagerEventId, event);
+   CManagerEvent event(CManagerEvent::kPluginInstanceAbnormalStopped, m_context->getId(), m_pPlugin->getInformation(), getStatus() == kStopping);
+   m_supervisor.sendEvent<CManagerEvent>(m_pluginManagerEventId, event);
 }
 
-void CHardwarePluginInstance::updateConfiguration(const std::string& newConfiguration) const
+void CInstance::updateConfiguration(const std::string& newConfiguration) const
 {
    BOOST_ASSERT(m_pPluginInstance);
 
@@ -94,7 +97,9 @@ void CHardwarePluginInstance::updateConfiguration(const std::string& newConfigur
    }
 }
 
-const std::string CHardwarePluginInstance::getPluginName() const
+const std::string CInstance::getPluginName() const
 {
    return m_pPlugin->getLibraryPath().stem().string();
 }
+
+} // namespace pluginSystem

@@ -1,49 +1,51 @@
 #include "stdafx.h"
-#include "HardwarePluginQualifier.h"
+#include "Qualifier.h"
 #include <shared/exceptions/EmptyResultException.hpp>
 
+namespace pluginSystem
+{
 
 // 7 ==> Tolerance of 1 crash per week
-const int CHardwarePluginQualifier::m_SafetyThreshold = 7;
+const int CQualifier::m_SafetyThreshold = 7;
 
 
-CHardwarePluginQualifier::CHardwarePluginQualifier(boost::shared_ptr<server::database::IHardwareEventLoggerRequester> eventLoggerDatabase)
+CQualifier::CQualifier(boost::shared_ptr<server::database::IHardwareEventLoggerRequester> eventLoggerDatabase)
    :m_eventLoggerDatabase(eventLoggerDatabase)
 {
 }
 
-CHardwarePluginQualifier::~CHardwarePluginQualifier()
+CQualifier::~CQualifier()
 {
 }
 
-void CHardwarePluginQualifier::signalLoad(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation)
+void CQualifier::signalLoad(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation)
 {
    // Insert event in database
    AddEventToDatabase(pluginInformation, server::database::entities::CHardwareEventLogger::kLoad);
 
    // Since a new event is recorded, cache of quality indicator is obsolete
-   obsoleteQualityIndicatorCache(CPluginIdentity(pluginInformation));
+   obsoleteQualityIndicatorCache(CIdentityForQualifier(pluginInformation));
 }
 
-void CHardwarePluginQualifier::signalUnload(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation)
+void CQualifier::signalUnload(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation)
 {
    // Insert event in database
    AddEventToDatabase(pluginInformation, server::database::entities::CHardwareEventLogger::kUnload);
 
    // Since a new event is recorded, cache of quality indicator is obsolete
-   obsoleteQualityIndicatorCache(CPluginIdentity(pluginInformation));
+   obsoleteQualityIndicatorCache(CIdentityForQualifier(pluginInformation));
 }
 
-void CHardwarePluginQualifier::signalCrash(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation, const std::string& reason)
+void CQualifier::signalCrash(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation, const std::string& reason)
 {
    // Insert event in database
    AddEventToDatabase(pluginInformation, server::database::entities::CHardwareEventLogger::kCrash, reason);
 
    // Since a new event is recorded, cache of quality indicator is obsolete
-   obsoleteQualityIndicatorCache(CPluginIdentity(pluginInformation));
+   obsoleteQualityIndicatorCache(CIdentityForQualifier(pluginInformation));
 }
 
-void CHardwarePluginQualifier::AddEventToDatabase(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation, server::database::entities::CHardwareEventLogger::EEventType eventType, const std::string& reason)
+void CQualifier::AddEventToDatabase(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation, server::database::entities::CHardwareEventLogger::EEventType eventType, const std::string& reason)
 {
    try
    {
@@ -61,15 +63,15 @@ void CHardwarePluginQualifier::AddEventToDatabase(const boost::shared_ptr<const 
    }
 }
 
-bool CHardwarePluginQualifier::isSafe(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation)
+bool CQualifier::isSafe(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation)
 {
    int quality = getQualityLevel(pluginInformation);
    return quality == kNoEnoughData || quality >= m_SafetyThreshold;
 }
 
-int CHardwarePluginQualifier::getQualityLevel(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation)
+int CQualifier::getQualityLevel(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation)
 {
-   CPluginIdentity identity(pluginInformation);
+   CIdentityForQualifier identity(pluginInformation);
 
    boost::lock_guard<boost::mutex> lock(m_qualityIndicatorsCacheMutex);
 
@@ -86,7 +88,7 @@ int CHardwarePluginQualifier::getQualityLevel(const boost::shared_ptr<const shar
    return qualityLevel;
 }
 
-void CHardwarePluginQualifier::obsoleteQualityIndicatorCache(const CPluginIdentity& identity)
+void CQualifier::obsoleteQualityIndicatorCache(const CIdentityForQualifier& identity)
 {
    boost::lock_guard<boost::mutex> lock(m_qualityIndicatorsCacheMutex);
 
@@ -97,7 +99,7 @@ void CHardwarePluginQualifier::obsoleteQualityIndicatorCache(const CPluginIdenti
    m_qualityIndicatorsCache.erase(cacheIterator);
 }
 
-int CHardwarePluginQualifier::computeQuality(const CPluginIdentity& identity) const
+int CQualifier::computeQuality(const CIdentityForQualifier& identity) const
 {
    // First, compute total running time and crashes number, on a 90-days period
    int crashsNb = 0;
@@ -164,3 +166,5 @@ int CHardwarePluginQualifier::computeQuality(const CPluginIdentity& identity) co
 
    return quality;
 }
+
+} // namespace pluginSystem
