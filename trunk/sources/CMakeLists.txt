@@ -270,18 +270,18 @@ set(YADOMS_SRC
 	server/Supervisor.cpp
 	server/Supervisor.h
   
-	server/pluginSystem/HardwarePluginIdentityForQualifier.cpp
-	server/pluginSystem/HardwarePluginIdentityForQualifier.h
-	server/pluginSystem/HardwarePluginQualifier.h
-	server/pluginSystem/HardwarePluginQualifier.cpp
-	server/pluginSystem/HardwarePluginManager.h
-	server/pluginSystem/HardwarePluginManager.cpp
-	server/pluginSystem/HardwarePluginManagerEvent.h
-	server/pluginSystem/HardwarePluginInstance.h
-	server/pluginSystem/HardwarePluginInstance.cpp
-	server/pluginSystem/HardwarePluginFactory.h
-	server/pluginSystem/HardwarePluginFactory.cpp
-	server/pluginSystem/IHardwarePluginQualifier.h
+	server/pluginSystem/IdentityForQualifier.cpp
+	server/pluginSystem/IdentityForQualifier.h
+	server/pluginSystem/Qualifier.h
+	server/pluginSystem/Qualifier.cpp
+	server/pluginSystem/Manager.h
+	server/pluginSystem/Manager.cpp
+	server/pluginSystem/ManagerEvent.h
+	server/pluginSystem/Instance.h
+	server/pluginSystem/Instance.cpp
+	server/pluginSystem/Factory.h
+	server/pluginSystem/Factory.cpp
+	server/pluginSystem/IQualifier.h
 	server/pluginSystem/InvalidPluginException.hpp
   
 	server/startupOptions/MustExistPathOption.hpp

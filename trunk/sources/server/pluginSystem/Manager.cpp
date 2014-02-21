@@ -1,41 +1,44 @@
 #include "stdafx.h"
-#include "HardwarePluginManager.h"
-#include "HardwarePluginInstance.h"
-#include "HardwarePluginQualifier.h"
+#include "Manager.h"
+#include "Instance.h"
+#include "Qualifier.h"
 
 
-boost::shared_ptr<CHardwarePluginManager> CHardwarePluginManager::newHardwarePluginManager(
+namespace pluginSystem
+{
+
+boost::shared_ptr<CManager> CManager::newPluginManager(
    const std::string & initialDir,
    boost::shared_ptr<server::database::IHardwareRequester> database,
    boost::shared_ptr<server::database::IHardwareEventLoggerRequester> eventLoggerDatabase,
    shared::event::CEventHandler& supervisor,
    int pluginManagerEventId)
 {
-   boost::shared_ptr<CHardwarePluginManager> manager (new CHardwarePluginManager(initialDir, database, eventLoggerDatabase, supervisor, pluginManagerEventId));
+   boost::shared_ptr<CManager> manager (new CManager(initialDir, database, eventLoggerDatabase, supervisor, pluginManagerEventId));
    manager->init();
    return manager;
 }
 
-CHardwarePluginManager::CHardwarePluginManager(
+CManager::CManager(
    const std::string& initialDir,
    boost::shared_ptr<server::database::IHardwareRequester> database,
    boost::shared_ptr<server::database::IHardwareEventLoggerRequester> eventLoggerDatabase,
    shared::event::CEventHandler& supervisor,
    int pluginManagerEventId)
-   :m_database(database), m_pluginPath(initialDir), m_qualifier(new CHardwarePluginQualifier(eventLoggerDatabase)),
+   :m_database(database), m_pluginPath(initialDir), m_qualifier(new CQualifier(eventLoggerDatabase)),
    m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId)
 {
    BOOST_ASSERT(m_database);
 }
 
-CHardwarePluginManager::~CHardwarePluginManager()
+CManager::~CManager()
 {
    stop();
 }
 
-void CHardwarePluginManager::stop()
+void CManager::stop()
 {
-   YADOMS_LOG(info) << "CHardwarePluginManager stop io service...";
+   YADOMS_LOG(info) << "pluginSystem::CManager stop io service...";
    if(!m_pluginIOService.stopped())
    {
       m_pluginIOService.stop();
@@ -45,24 +48,22 @@ void CHardwarePluginManager::stop()
    if(m_ioServiceThread.get())
       m_ioServiceThread->join();
 
-   YADOMS_LOG(info) << "CHardwarePluginManager io service is stopped";
-
-   YADOMS_LOG(info) << "CHardwarePluginManager stop plugins...";
+   YADOMS_LOG(info) << "pluginSystem::CManager stop plugins...";
 
    while (!m_runningInstances.empty())
       stopInstance(m_runningInstances.begin()->first);
 
-   YADOMS_LOG(info) << "CHardwarePluginManager all plugins are stopped";
+   YADOMS_LOG(info) << "pluginSystem::CManager all plugins are stopped";
 }
 
 
-void CHardwarePluginManager::init()
+void CManager::init()
 {
    // Initialize the plugin list (detect available plugins)
    updatePluginList();
 
    //create ioservice for all plugin instances
-   m_ioServiceThread.reset(new boost::thread(boost::bind(&CHardwarePluginManager::runPluginIOService, this)));
+   m_ioServiceThread.reset(new boost::thread(boost::bind(&CManager::runPluginIOService, this)));
 
    // Create and start plugin instances from database
    std::vector<boost::shared_ptr<server::database::entities::CHardware> > databasePluginInstances = m_database->getHardwares();
@@ -73,11 +74,11 @@ void CHardwarePluginManager::init()
    }
 
    // Start the directory changes monitor
-   m_pluginsDirectoryMonitor.reset(new CDirectoryChangeListener(m_pluginPath, boost::bind(&CHardwarePluginManager::onPluginDirectoryChanges, this, _1)));
+   m_pluginsDirectoryMonitor.reset(new CDirectoryChangeListener(m_pluginPath, boost::bind(&CManager::onPluginDirectoryChanges, this, _1)));
 
 }
 
-void CHardwarePluginManager::runPluginIOService()
+void CManager::runPluginIOService()
 {
    try
    {
@@ -87,11 +88,11 @@ void CHardwarePluginManager::runPluginIOService()
    catch (std::exception& e)
    {
       // Deal with exception as appropriate.
-      YADOMS_LOG(error) << "CHardwarePluginManager io_service exception : " << e.what();
+      YADOMS_LOG(error) << "pluginSystem::CManager io_service exception : " << e.what();
    }
 }
 
-void CHardwarePluginManager::enableInstance(int id)
+void CManager::enableInstance(int id)
 {
    // Start instance (throw if fails)
    startInstance(id);
@@ -100,7 +101,7 @@ void CHardwarePluginManager::enableInstance(int id)
    m_database->enableInstance(id, true);
 }
 
-void CHardwarePluginManager::disableInstance(int id)
+void CManager::disableInstance(int id)
 {
    // Start instance (throw if fails)
    stopInstance(id);
@@ -109,7 +110,7 @@ void CHardwarePluginManager::disableInstance(int id)
    m_database->enableInstance(id, false);
 }
 
-std::vector<boost::filesystem::path> CHardwarePluginManager::findPluginFilenames()
+std::vector<boost::filesystem::path> CManager::findPluginFilenames()
 {
    std::vector<boost::filesystem::path> pluginFilenames;
 
@@ -132,7 +133,7 @@ std::vector<boost::filesystem::path> CHardwarePluginManager::findPluginFilenames
    return pluginFilenames;
 }
 
-boost::shared_ptr<CHardwarePluginFactory> CHardwarePluginManager::loadPlugin(const std::string& pluginName)
+boost::shared_ptr<CFactory> CManager::loadPlugin(const std::string& pluginName)
 {
    // Check if already loaded
    if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
@@ -143,7 +144,7 @@ boost::shared_ptr<CHardwarePluginFactory> CHardwarePluginManager::loadPlugin(con
       throw CInvalidPluginException(pluginName);   // Invalid plugin
 
    // Load the plugin
-   boost::shared_ptr<CHardwarePluginFactory> pNewFactory (new CHardwarePluginFactory(toPath(pluginName)));
+   boost::shared_ptr<CFactory> pNewFactory (new CFactory(toPath(pluginName)));
    m_loadedPlugins[pluginName] = pNewFactory;
 
    // Signal qualifier that a plugin was loaded
@@ -152,7 +153,7 @@ boost::shared_ptr<CHardwarePluginFactory> CHardwarePluginManager::loadPlugin(con
    return pNewFactory;
 }
 
-bool CHardwarePluginManager::unloadPlugin(const std::string& pluginName)
+bool CManager::unloadPlugin(const std::string& pluginName)
 {
    PluginInstanceMap::const_iterator instance;
    for (instance = m_runningInstances.begin() ; instance != m_runningInstances.end() ; ++instance)
@@ -172,7 +173,7 @@ bool CHardwarePluginManager::unloadPlugin(const std::string& pluginName)
    return true;
 }
 
-void CHardwarePluginManager::buildAvailablePluginList()
+void CManager::buildAvailablePluginList()
 {
    // Empty the list
    m_availablePlugins.clear();
@@ -192,7 +193,7 @@ void CHardwarePluginManager::buildAvailablePluginList()
          if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
             m_availablePlugins[pluginName] = m_loadedPlugins[pluginName]->getInformation();
          else
-            m_availablePlugins[pluginName] = CHardwarePluginFactory::getInformation(toPath(pluginName));
+            m_availablePlugins[pluginName] = CFactory::getInformation(toPath(pluginName));
 
          YADOMS_LOG(info) << "Plugin " << pluginName << " successfully loaded";
       }
@@ -204,7 +205,7 @@ void CHardwarePluginManager::buildAvailablePluginList()
    }
 }
 
-void CHardwarePluginManager::updatePluginList()
+void CManager::updatePluginList()
 {
    // Plugin directory have change, so re-build plugin available list
    boost::lock_guard<boost::mutex> lock(m_availablePluginsMutex);
@@ -212,23 +213,23 @@ void CHardwarePluginManager::updatePluginList()
 }
 
 
-CHardwarePluginManager::AvalaiblePluginMap CHardwarePluginManager::getPluginList()
+CManager::AvalaiblePluginMap CManager::getPluginList()
 {
    boost::lock_guard<boost::mutex> lock(m_availablePluginsMutex);
    AvalaiblePluginMap mapCopy = m_availablePlugins;
    return mapCopy;
 }
 
-std::string CHardwarePluginManager::getPluginConfigurationSchema(const std::string& pluginName) const
+std::string CManager::getPluginConfigurationSchema(const std::string& pluginName) const
 {
    // If plugin is already loaded, use its information
    if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
       return m_loadedPlugins.at(pluginName)->getConfigurationSchema();
 
-   return CHardwarePluginFactory::getConfigurationSchema(toPath(pluginName));
+   return CFactory::getConfigurationSchema(toPath(pluginName));
 }
 
-int CHardwarePluginManager::getPluginQualityIndicator(const std::string& pluginName) const
+int CManager::getPluginQualityIndicator(const std::string& pluginName) const
 {
    if (m_availablePlugins.find(pluginName) == m_availablePlugins.end())
       throw CInvalidPluginException(pluginName);   // Invalid plugin
@@ -236,7 +237,7 @@ int CHardwarePluginManager::getPluginQualityIndicator(const std::string& pluginN
    return m_qualifier->getQualityLevel(m_availablePlugins.at(pluginName));
 }
 
-std::string CHardwarePluginManager::getPluginConfigurationSchema(int id) const
+std::string CManager::getPluginConfigurationSchema(int id) const
 {
    // Get database instance data
    BOOST_ASSERT(m_database->getHardware(id));
@@ -246,7 +247,7 @@ std::string CHardwarePluginManager::getPluginConfigurationSchema(int id) const
 }
 
 //TODO : supprimer cette fonction ?  à priori le pluginanager ne devrait pas faire d'insert en base
-int CHardwarePluginManager::createInstance(const std::string& instanceName, const std::string& pluginName,
+int CManager::createInstance(const std::string& instanceName, const std::string& pluginName,
                                            const std::string& configuration)
 {
    // First step, record instance in database, to get its ID
@@ -260,7 +261,7 @@ int CHardwarePluginManager::createInstance(const std::string& instanceName, cons
    return instanceId;
 }
 
-void CHardwarePluginManager::deleteInstance(int id)
+void CManager::deleteInstance(int id)
 {
    // First step, disable and stop instance
    disableInstance(id);
@@ -269,7 +270,7 @@ void CHardwarePluginManager::deleteInstance(int id)
    m_database->removeHardware(id);
 }
 
-boost::shared_ptr<std::vector<int> > CHardwarePluginManager::getInstanceList () const
+boost::shared_ptr<std::vector<int> > CManager::getInstanceList () const
 {
    boost::shared_ptr<std::vector<int> > instances(new std::vector<int>);
    std::vector<boost::shared_ptr<server::database::entities::CHardware> > databasePluginInstances = m_database->getHardwares();
@@ -282,7 +283,7 @@ boost::shared_ptr<std::vector<int> > CHardwarePluginManager::getInstanceList () 
    return instances;
 }
 
-boost::shared_ptr<CHardwarePluginManager::PluginDetailedInstanceMap> CHardwarePluginManager::getInstanceListDetails () const
+boost::shared_ptr<CManager::PluginDetailedInstanceMap> CManager::getInstanceListDetails () const
 {
    boost::shared_ptr<PluginDetailedInstanceMap> instances(new std::map<int, boost::shared_ptr <const server::database::entities::CHardware> >);
    std::vector<boost::shared_ptr<server::database::entities::CHardware> > databasePluginInstances = m_database->getHardwares(true);
@@ -294,7 +295,7 @@ boost::shared_ptr<CHardwarePluginManager::PluginDetailedInstanceMap> CHardwarePl
    return instances;
 }
 
-std::string CHardwarePluginManager::getInstanceConfiguration(int id) const
+std::string CManager::getInstanceConfiguration(int id) const
 {
    // First check if a schema is available
    std::string pluginConfigurationSchema(getPluginConfigurationSchema(id));
@@ -309,7 +310,7 @@ std::string CHardwarePluginManager::getInstanceConfiguration(int id) const
    return instanceData->getConfiguration();
 }
 
-void CHardwarePluginManager::setInstanceConfiguration(int id, const std::string& newConfiguration)
+void CManager::setInstanceConfiguration(int id, const std::string& newConfiguration)
 {
    // First update configuration in database
    m_database->updateHardwareConfiguration(id, newConfiguration);
@@ -321,11 +322,11 @@ void CHardwarePluginManager::setInstanceConfiguration(int id, const std::string&
    m_runningInstances[id]->updateConfiguration(newConfiguration);
 }
 
-void CHardwarePluginManager::signalEvent(const CHardwarePluginManagerEvent& event)
+void CManager::signalEvent(const CManagerEvent& event)
 {
    switch(event.getSubEventId())
    {
-   case CHardwarePluginManagerEvent::kPluginInstanceAbnormalStopped:
+   case CManagerEvent::kPluginInstanceAbnormalStopped:
       {
          // The thread of an instance has stopped in a non-conventional way (probably crashed)
 
@@ -361,20 +362,20 @@ void CHardwarePluginManager::signalEvent(const CHardwarePluginManagerEvent& even
    }
 }
 
-void CHardwarePluginManager::onPluginDirectoryChanges(const boost::asio::dir_monitor_event& ev)
+void CManager::onPluginDirectoryChanges(const boost::asio::dir_monitor_event& ev)
 {
-   YADOMS_LOG(debug) << "CHardwarePluginManager::onPluginDirectoryChanges" << ev.type;
+   YADOMS_LOG(debug) << "pluginSystem::CManager::onPluginDirectoryChanges" << ev.type;
    updatePluginList();
 }
 
-boost::filesystem::path CHardwarePluginManager::toPath(const std::string& pluginName) const
+boost::filesystem::path CManager::toPath(const std::string& pluginName) const
 {
    boost::filesystem::path path(m_pluginPath);
    path /= shared::CDynamicLibrary::ToFileName(pluginName);
    return path;
 }
 
-void CHardwarePluginManager::startInstance(int id)
+void CManager::startInstance(int id)
 {
    if (m_runningInstances.find(id) != m_runningInstances.end())
       return;     // Already started ==> nothing more to do
@@ -385,11 +386,11 @@ void CHardwarePluginManager::startInstance(int id)
    // Load the plugin
    try
    {
-      boost::shared_ptr<CHardwarePluginFactory> plugin(loadPlugin(databasePluginInstance->getPluginName()));
+      boost::shared_ptr<CFactory> plugin(loadPlugin(databasePluginInstance->getPluginName()));
 
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
-      boost::shared_ptr<CHardwarePluginInstance> pluginInstance(new CHardwarePluginInstance(plugin, databasePluginInstance, m_qualifier, m_supervisor, m_pluginManagerEventId, &m_pluginIOService));
+      boost::shared_ptr<CInstance> pluginInstance(new CInstance(plugin, databasePluginInstance, m_qualifier, m_supervisor, m_pluginManagerEventId, &m_pluginIOService));
       m_runningInstances[databasePluginInstance->getId()] = pluginInstance;
    }
    catch (CInvalidPluginException& e)
@@ -398,7 +399,7 @@ void CHardwarePluginManager::startInstance(int id)
    }
 }
 
-void CHardwarePluginManager::stopInstance(int id)
+void CManager::stopInstance(int id)
 {
    if (m_runningInstances.find(id) == m_runningInstances.end())
       return;     // Already stopped ==> nothing more to do
@@ -412,3 +413,5 @@ void CHardwarePluginManager::stopInstance(int id)
    // Try to unload associated plugin (if no more used)
    unloadPlugin(pluginName);
 }
+
+} // namespace pluginSystem

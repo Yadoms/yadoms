@@ -1,6 +1,6 @@
 ﻿#include "stdafx.h"
 #include "Supervisor.h"
-#include "pluginSystem/HardwarePluginManager.h"
+#include "pluginSystem/Manager.h"
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "database/DatabaseException.hpp"
 #include <shared/Log.h>
@@ -46,25 +46,25 @@ void CSupervisor::doWork()
       }
 
       // Start the hardware plugin manager
-      boost::shared_ptr<CHardwarePluginManager> hardwarePluginManager = CHardwarePluginManager::newHardwarePluginManager(
+      boost::shared_ptr<pluginSystem::CManager> pluginManager = pluginSystem::CManager::newPluginManager(
          m_startupOptions.getPluginsPath(), pDataProvider->getHardwareRequester(), pDataProvider->getHardwareEventLoggerRequester(),
          *this, kHardwarePluginManagerEvent);
 
-      //TODO ######################### test interface hardwarePluginManager #########################
+      //TODO ######################### test interface pluginManager #########################
 #if DEV_ACTIVATE_HARDWARE_PLUGIN_MANAGER_TESTS
       // 1) List all available plugins (even if not loaded) and associated informations
-      CHardwarePluginManager::AvalaiblePluginMap plugins = hardwarePluginManager->getPluginList();
+      pluginSystem::CManager::AvalaiblePluginMap plugins = pluginManager->getPluginList();
       YADOMS_LOG(debug) << "Available plugins :";
-      BOOST_FOREACH(CHardwarePluginManager::AvalaiblePluginMap::value_type plugin, plugins)
+      BOOST_FOREACH(pluginSystem::CManager::AvalaiblePluginMap::value_type plugin, plugins)
       {
          YADOMS_LOG(debug) << "   - " << plugin.first << " : " << plugin.second->toString() <<
-            ", Quality indicator = " << hardwarePluginManager->getPluginQualityIndicator(plugin.first);
+            ", Quality indicator = " << pluginManager->getPluginQualityIndicator(plugin.first);
       }
 
       // 2) User want to create new plugin instance
       // 2.1) Get configuration schema (= default configuration) from a specific plugin
       const std::string& pluginName="fakePlugin";
-      std::string pluginConfigurationSchema(hardwarePluginManager->getPluginConfigurationSchema(pluginName));
+      std::string pluginConfigurationSchema(pluginManager->getPluginConfigurationSchema(pluginName));
       if (!pluginConfigurationSchema.empty())
       {
          YADOMS_LOG(debug) << pluginName << " configuration schema is : \"" << pluginConfigurationSchema << "\"";
@@ -83,7 +83,7 @@ void CSupervisor::doWork()
       int createdInstanceId;
       try
       {
-         createdInstanceId = hardwarePluginManager->createInstance("theInstanceName", pluginName, newConf);
+         createdInstanceId = pluginManager->createInstance("theInstanceName", pluginName, newConf);
       }
       catch (CDatabaseException& e)
       {
@@ -93,7 +93,7 @@ void CSupervisor::doWork()
 
       // 3) List of IDs of existing plugin instances (all known instances, EXCEPT deleted)
       {
-         boost::shared_ptr<std::vector<int> > instances = hardwarePluginManager->getInstanceList();
+         boost::shared_ptr<std::vector<int> > instances = pluginManager->getInstanceList();
          std::ostringstream os;
          os << "Existing instances : ";
          BOOST_FOREACH(int value, *instances)
@@ -103,9 +103,9 @@ void CSupervisor::doWork()
 
       // 4) List of all plugin instances, with details (all instances, EVEN deleted)
       {
-         boost::shared_ptr<CHardwarePluginManager::PluginDetailedInstanceMap> instances = hardwarePluginManager->getInstanceListDetails();
+         boost::shared_ptr<pluginSystem::CManager::PluginDetailedInstanceMap> instances = pluginManager->getInstanceListDetails();
          YADOMS_LOG(debug) << "Existing instances, with details : ";
-         BOOST_FOREACH(CHardwarePluginManager::PluginDetailedInstanceMap::value_type instance, *instances)
+         BOOST_FOREACH(pluginSystem::CManager::PluginDetailedInstanceMap::value_type instance, *instances)
             YADOMS_LOG(debug) << "Id#" << instance.second->getId() <<
             ", name=" << instance.second->getName() <<
             ", plugin=" << instance.second->getPluginName() <<
@@ -117,11 +117,11 @@ void CSupervisor::doWork()
       // 5) Update instance configuration
       {
          // 5.1) First, get the configuration schema
-         std::string pluginConfigurationSchema(hardwarePluginManager->getPluginConfigurationSchema(createdInstanceId));
+         std::string pluginConfigurationSchema(pluginManager->getPluginConfigurationSchema(createdInstanceId));
          if (!pluginConfigurationSchema.empty())
          {
             // 5.2) Next, get the actual configuration
-            std::string instanceConfiguration(hardwarePluginManager->getInstanceConfiguration(createdInstanceId));
+            std::string instanceConfiguration(pluginManager->getInstanceConfiguration(createdInstanceId));
             if (instanceConfiguration.empty())
             {
                YADOMS_LOG(debug) << "Instance created at step #2 has no configuration";
@@ -133,21 +133,21 @@ void CSupervisor::doWork()
                instanceConfiguration.replace(instanceConfiguration.find("\"BoolParameter\": { \"value\": \"false\" }"), 37, "\"BoolParameter\": { \"value\": \"true\" }");
 
                // 5.3) Valid the new configuration
-               hardwarePluginManager->setInstanceConfiguration(createdInstanceId, instanceConfiguration);
+               pluginManager->setInstanceConfiguration(createdInstanceId, instanceConfiguration);
             }
          }
       }
 
       // 6) Disable (and stop) registered plugin instance (to be able to remove/replace plugin for example)
-      hardwarePluginManager->disableInstance(createdInstanceId);
+      pluginManager->disableInstance(createdInstanceId);
 
       // 7) Enable registered plugin instance (and start it)
-      hardwarePluginManager->enableInstance(createdInstanceId);
+      pluginManager->enableInstance(createdInstanceId);
 
       // 8) Remove an instance
-      hardwarePluginManager->deleteInstance(createdInstanceId);
+      pluginManager->deleteInstance(createdInstanceId);
 #endif
-      //\TODO ######################### [END] test interface hardwarePluginManager #########################
+      //\TODO ######################### [END] test interface pluginManager #########################
 
       //TODO ######################### test serial ports getter #########################
 #if DEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS
@@ -165,7 +165,7 @@ void CSupervisor::doWork()
          YADOMS_LOG(debug) << "Not supported function : " << e.what();
       }
 #endif
-      //\TODO ######################### [END] test interface hardwarePluginManager #########################
+      //\TODO ######################### [END] test interface pluginManager #########################
 
 
       // ######################### Web server #########################
@@ -205,8 +205,8 @@ void CSupervisor::doWork()
       }
 
 #if DEV_ACTIVATE_XPL_TESTS
-//      if(hardwarePluginManager.get() != NULL)
-//         int createdInstanceId = hardwarePluginManager->createInstance("testOfXpl", "fakePlugin");
+//      if(pluginManager.get() != NULL)
+//         int createdInstanceId = pluginManager->createInstance("testOfXpl", "fakePlugin");
 #endif
       // ######################### [END] Xpl Hub #########################
 
@@ -224,7 +224,7 @@ void CSupervisor::doWork()
             switch(waitForEvents())
             {
             case kHardwarePluginManagerEvent:
-               hardwarePluginManager->signalEvent(popEvent<CHardwarePluginManagerEvent>());
+               pluginManager->signalEvent(popEvent<pluginSystem::CManagerEvent>());
                break;
 
             default:
@@ -240,8 +240,8 @@ void CSupervisor::doWork()
       }
 
       //stop all plugins
-      if(hardwarePluginManager.get() != NULL)
-         hardwarePluginManager->stop();
+      if(pluginManager.get() != NULL)
+         pluginManager->stop();
 
       //stop xpl logger
       xplLogger.stop();
