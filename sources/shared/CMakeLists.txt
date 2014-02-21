@@ -88,7 +88,7 @@ set(SHARED_LIB_SRC
 )
 
 #Append platform specific files
-IF(MSVC)
+IF(WIN32)
 set(SHARED_LIB_SRC	
 	${SHARED_LIB_SRC}
 	windows/shared/DynamicLibrary.hpp

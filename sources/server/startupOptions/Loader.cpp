@@ -55,7 +55,6 @@ CLoader::CLoader(int argc, char** argv)
          throw CLoaderException(m_optionsDescription);
 
       m_startXplHub = !vm.count("disableXplHubStart");
-      //m_debugFlag = vm.count("debug");
    }
    catch(po::unknown_option& e)
    {

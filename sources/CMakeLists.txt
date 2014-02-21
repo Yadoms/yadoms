@@ -53,7 +53,7 @@ include("PrecompiledHeader.cmake")
 include("CMakeListsUserConfig.txt" OPTIONAL)
 
 #include Windows specific macro
-if(MSVC)
+if(WIN32)
 	include("windows.cmake")
 endif()
 
@@ -381,7 +381,7 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/tools/tools/Version.cpp
 )
 
-IF(MSVC)
+IF(WIN32)
 set(YADOMS_SRC ${YADOMS_SRC}
 	server/tools/windows/tools/dir_monitor/basic_dir_monitor_service.hpp
 	server/tools/windows/tools/dir_monitor/dir_monitor_impl.hpp
@@ -588,7 +588,7 @@ if(NOT Boost_USE_STATIC_LIBS)
 		get_filename_component(UTF_BASE_NAME ${BOOSTLIBRARY} NAME_WE)
 		get_filename_component(UTF_PATH ${BOOSTLIBRARY} PATH)
 	
-		if(MSVC)
+		if(WIN32)
 			#windows
 			set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.dll)
 		elseif(APPLE)

@@ -51,7 +51,7 @@ if ( WIN32 )
   set_target_properties ( sqlite PROPERTIES PREFIX "" )
 endif()
 
-IF(MSVC)
+IF(WIN32)
 	SET_PROPERTY(TARGET sqlite PROPERTY FOLDER "External Libs")
 	
 	#set warning level3 only for this project

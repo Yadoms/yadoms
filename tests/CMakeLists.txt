@@ -53,7 +53,7 @@ include("PrecompiledHeader.cmake")
 include("CMakeListsUserConfig.txt" OPTIONAL)
 
 #include Windows specific macro
-if(MSVC)
+if(WIN32)
 	include("windows.cmake")
 endif()
 
@@ -61,7 +61,7 @@ endif()
 ## IDE configurations
 ##################################################################################################
 
-if(MSVC)
+if(WIN32)
 	#allow solution folders
 	SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -188,13 +188,13 @@ set(BOOST_LIBS
 	log 
 	log_setup 
 	program_options
-        unit_test_framework system
+  unit_test_framework system
 	regex
 )
 
 # search boost libs
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
-set(BOOST_INCL_DIR ${YADOMS_INCL_DIR} ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
+set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 
 ## thread library (pthread)
 FIND_PACKAGE(Threads)
@@ -215,6 +215,7 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})
 set(USE_TESTS_START_OPTIONS_LOADER TRUE)
 set(USE_TESTS_HARDWARE_PLUGIN_MANAGER FALSE)
 set(USE_TESTS_SHARED_EVENT TRUE)
+set(USE_TESTS_DIRECTORY_CHANGE_LISTENER TRUE)
 
 
 ##################################################################################################
@@ -223,19 +224,29 @@ set(USE_TESTS_SHARED_EVENT TRUE)
 
 set(SHARED_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../sources/shared)
 IF(WIN32)
-	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/shared/windows)
+	set(SHARED_PF_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/shared/windows)
 ELSEIF(APPLE)
-	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/shared/mac)
+	set(SHARED_PF_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/shared/mac)
 ELSE()
-	set(SHARED_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/shared/linux)
+	set(SHARED_PF_INCL_DIR ${SHARED_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/shared/linux)
+ENDIF()
+
+set(TOOLS_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../sources/server/tools)
+IF(WIN32)
+	set(TOOLS_PF_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/server/tools/windows)
+ELSEIF(APPLE)
+	set(TOOLS_PF_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/server/tools/mac)
+ELSE()
+	set(TOOLS_PF_INCL_DIR ${TOOLS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../sources/server/tools/linux)
 ENDIF()
 
 
-set(YADOMS_INCL_DIR
-	${CMAKE_CURRENT_SOURCE_DIR}/../sources/server
-	${CMAKE_CURRENT_SOURCE_DIR}/../sources/tools
-	${SHARED_INCL_DIR}
-)
+##################################################################################################
+## Mocks
+##################################################################################################
+
+set(MOCK_SHARED_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mock/shared)
+set(MOCK_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mock)
 
 
 ##################################################################################################
@@ -243,32 +254,66 @@ set(YADOMS_INCL_DIR
 ##################################################################################################
 
 #TODO : mettre en commun des trucs par macro/fonction
+#TODO : les stdafx.h-mocks devraient être locaux aux tests, de façons à ne mettre que le nécessaire dedans
 
 source_group(Yadoms server/*.*)
 
 
 IF (USE_TESTS_START_OPTIONS_LOADER)
    set(YADOMS_TESTS_STARTUP_OPTIONS_LOADER_SRC
-   
-   ../sources/server/stdafx.cpp
-   ../sources/server/stdafx.h
-  
-	../sources/server/StartupOptions/Loader.h
-	../sources/server/StartupOptions/Loader.cpp
-	../sources/server/StartupOptions/InvalidOptionException.hpp
-	../sources/server/StartupOptions/LoaderCustomValidators.hpp
-	../sources/server/StartupOptions/LoaderException.hpp
-	../sources/server/StartupOptions/MustExistPathOption.hpp
-	../sources/server/StartupOptions/StartupOptions.h
-	../sources/server/StartupOptions/ValidIpAddressOption.hpp
+    ../sources/server/startupOptions/Loader.h
+    ../sources/server/startupOptions/Loader.cpp
+    ../sources/server/startupOptions/InvalidOptionException.hpp
+    ../sources/server/startupOptions/LoaderCustomValidators.hpp
+    ../sources/server/startupOptions/LoaderException.hpp
+    ../sources/server/startupOptions/MustExistPathOption.hpp
+    ../sources/server/startupOptions/StartupOptions.h
+    ../sources/server/startupOptions/ValidIpAddressOption.hpp
 
-   server/MainTestStartOptionsLoader.cpp
-   
+     mock/stdafx.h
+    
+     server/MainTestStartOptionsLoader.cpp
    )
    add_executable(MainTestStartOptionsLoader ${YADOMS_TESTS_STARTUP_OPTIONS_LOADER_SRC})
-   add_precompiled_header(MainTestStartOptionsLoader stdafx.h)
-   set_property( TARGET MainTestStartOptionsLoader PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
+   set_property( TARGET MainTestStartOptionsLoader PROPERTY INCLUDE_DIRECTORIES ${MOCK_INCL_DIR} ${BOOST_INCL_DIR} ${SHARED_INCL_DIR})
    target_link_libraries(MainTestStartOptionsLoader ${LIBS} ${CMAKE_DL_LIBS})
+ENDIF()
+
+IF (USE_TESTS_DIRECTORY_CHANGE_LISTENER)
+  set(USE_TESTS_DIRECTORY_CHANGE_LISTENER_SRC
+    ../sources/shared/shared/ThreadBase.h
+    ../sources/shared/shared/ThreadBase.cpp
+
+    ../sources/server/tools/tools/DirectoryChangeListener.h
+    ../sources/server/tools/tools/DirectoryChangeListener.cpp
+
+    mock/shared/stdafx.h
+    mock/shared/shared/Export.h
+    mock/shared/shared/Log.h
+    
+    server/MainTestDirectoryChangeListener.cpp   
+  )
+
+  IF(WIN32)
+  set(USE_TESTS_DIRECTORY_CHANGE_LISTENER_SRC ${USE_TESTS_DIRECTORY_CHANGE_LISTENER_SRC}
+    ../sources/server/tools/windows/tools/dir_monitor/basic_dir_monitor_service.hpp
+    ../sources/server/tools/windows/tools/dir_monitor/dir_monitor_impl.hpp
+  )
+  ELSEIF(APPLE)
+  set(USE_TESTS_DIRECTORY_CHANGE_LISTENER_SRC ${USE_TESTS_DIRECTORY_CHANGE_LISTENER_SRC}
+    ../sources/server/tools/mac/tools/dir_monitor/basic_dir_monitor_service.hpp
+    ../sources/server/tools/mac/tools/dir_monitor/dir_monitor_impl.hpp
+  )	
+  ELSE()
+  set(USE_TESTS_DIRECTORY_CHANGE_LISTENER_SRC ${USE_TESTS_DIRECTORY_CHANGE_LISTENER_SRC}
+    ../sources/server/tools/linux/tools/dir_monitor/basic_dir_monitor_service.hpp
+    ../sources/server/tools/linux/tools/dir_monitor/dir_monitor_impl.hpp
+  )	
+  ENDIF()
+
+  add_executable(MainTestDirectoryChangeListener ${USE_TESTS_DIRECTORY_CHANGE_LISTENER_SRC})
+  set_property( TARGET MainTestDirectoryChangeListener PROPERTY INCLUDE_DIRECTORIES ${MOCK_SHARED_INCL_DIR} ${BOOST_INCL_DIR} ${TOOLS_PF_INCL_DIR} ${SHARED_INCL_DIR})
+  target_link_libraries(MainTestDirectoryChangeListener ${LIBS} ${CMAKE_DL_LIBS})
 ENDIF()
 
 IF (USE_TESTS_HARDWARE_PLUGIN_MANAGER)
@@ -284,14 +329,14 @@ IF (USE_TESTS_HARDWARE_PLUGIN_MANAGER)
 #        ../sources/plugins/hardware/IHardwarePlugin.h
 #        ../sources/server/database/entities/Hardware.h
 
-#	../sources/server/StartupOptions/Loader.h
-#	../sources/server/StartupOptions/Loader.cpp
-#	../sources/server/StartupOptions/InvalidOptionException.hpp
-#	../sources/server/StartupOptions/LoaderCustomValidators.hpp
-#	../sources/server/StartupOptions/LoaderException.hpp
-#	../sources/server/StartupOptions/MustExistPathOption.hpp
-#	../sources/server/StartupOptions/StartupOptions.h
-#	../sources/server/StartupOptions/ValidIpAddressOption.hpp
+#	../sources/server/startupOptions/Loader.h
+#	../sources/server/startupOptions/Loader.cpp
+#	../sources/server/startupOptions/InvalidOptionException.hpp
+#	../sources/server/startupOptions/LoaderCustomValidators.hpp
+#	../sources/server/startupOptions/LoaderException.hpp
+#	../sources/server/startupOptions/MustExistPathOption.hpp
+#	../sources/server/startupOptions/StartupOptions.h
+#	../sources/server/startupOptions/ValidIpAddressOption.hpp
 
 #        server/pluginSystem/MainTestHardwarePluginManager.cpp
 
@@ -308,7 +353,7 @@ ENDIF()
 ## Tests on yadoms-shared classes
 ##################################################################################################
 
-if(MSVC)
+if(WIN32)
   # Define yadoms_shared_EXPORTS variable to simulate shared library building
   add_definitions(-Dyadoms_shared_EXPORTS)
 endif()
@@ -317,28 +362,16 @@ source_group(yadoms-shared shared/*.*)
 
 IF (USE_TESTS_SHARED_EVENT)
   set(YADOMS_TESTS_SHARED_EVENT
+    ../sources/shared/shared/Event/Event.hpp
+    ../sources/shared/shared/Event/EventBase.hpp
+    ../sources/shared/shared/Event/EventHandler.hpp
 
-  ../sources/shared/stdafx.cpp
-  ../sources/shared/stdafx.h
-
-
-  ../sources/shared/shared/StringExtension.h
-  ../sources/shared/shared/StringExtension.cpp
-
-  ../sources/shared/shared/Event/Event.hpp
-  ../sources/shared/shared/Event/EventBase.hpp
-  ../sources/shared/shared/Event/EventHandler.hpp
-
-  ../sources/shared/shared/Exceptions/BadConversionException.hpp
-  ../sources/shared/shared/Exceptions/EmptyResultException.hpp
-  ../sources/shared/shared/Exceptions/Exception.hpp
-  ../sources/shared/shared/Exceptions/InvalidParameterException.hpp
-
-	shared/MainTestEvent.cpp
+    mock/shared/stdafx.h
+    
+    shared/MainTestEvent.cpp
 	)
    add_executable(MainTestEvent ${YADOMS_TESTS_SHARED_EVENT} ${YADOMS_SRC})
-   add_precompiled_header(MainTestEvent stdafx.h)
-   set_property( TARGET MainTestEvent PROPERTY INCLUDE_DIRECTORIES ${SHARED_INCL_DIR} ${BOOST_INCL_DIR})
+   set_property( TARGET MainTestEvent PROPERTY INCLUDE_DIRECTORIES ${MOCK_SHARED_INCL_DIR} ${BOOST_INCL_DIR} ${SHARED_INCL_DIR})
 	target_link_libraries(MainTestEvent ${LIBS} ${CMAKE_DL_LIBS})
 ENDIF()
 
@@ -400,7 +433,7 @@ if(NOT Boost_USE_STATIC_LIBS)
 		get_filename_component(UTF_BASE_NAME ${BOOSTLIBRARY} NAME_WE)
 		get_filename_component(UTF_PATH ${BOOSTLIBRARY} PATH)
 	
-		if(MSVC)
+		if(WIN32)
 			#windows
 			set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.dll)
 		elseif(APPLE)

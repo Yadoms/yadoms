@@ -41,11 +41,11 @@ set_property( TARGET webem PROPERTY INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR} ${B
 
 #
 # Strip 'lib' prefix when compiling for windows
-if ( WIN32 )
+if(WIN32)
   set_target_properties ( webem PROPERTIES PREFIX "" )
 endif()
 
-IF(MSVC)
+IF(WIN32)
 	SET_PROPERTY(TARGET webem PROPERTY FOLDER "External Libs")
 ENDIF()
 

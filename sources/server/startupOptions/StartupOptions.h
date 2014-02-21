@@ -3,7 +3,7 @@
 //
 #pragma once
 
-namespace startupOptions
+namespace startupOptions//TODO renommer le fichier en IStartupOptions.h
 {
 
    class IStartupOptions
