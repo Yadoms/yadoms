@@ -6,9 +6,9 @@
 #pragma once
 
 #include <shared/DynamicLibrary.hpp>
-#include <shared/plugin/Interfaces/IHardwarePlugin.h>
+#include <shared/plugin/IPlugin.h>
 #include <shared/plugin/information/IInformation.h>
-#include <shared/plugin/Interfaces/IHardwarePluginConfigurationSchema.h>
+#include <shared/plugin/configuration/ISchema.h>
 #include "InvalidPluginException.hpp"
 
 //--------------------------------------------------------------
@@ -47,10 +47,10 @@ public:
    virtual ~CHardwarePluginFactory();
 
    //--------------------------------------------------------------
-   /// \brief	    Construct a plugin instance (call the contruct library method)
+   /// \brief	    Construct a plugin instance (call the construct library method)
    /// \return     a new plugin instance
    //-------------------------------------------------------------
-   IHardwarePlugin* construct() const;
+   shared::plugin::IPlugin* construct() const;
 
    //--------------------------------------------------------------
    /// \brief	    Get the plugin library path
@@ -59,8 +59,8 @@ public:
    const boost::filesystem::path& getLibraryPath() const;
 
    //--------------------------------------------------------------
-   /// \brief	    Get information about this hardware plugin
-   /// \return     information about this hardware plugin
+   /// \brief	    Get information about this plugin
+   /// \return     information about this plugin
    //-------------------------------------------------------------
    boost::shared_ptr<const shared::plugin::information::IInformation> getInformation() const;
 
@@ -90,7 +90,7 @@ private:
    //-------------------------------------------------------------
    /// \brief	    Function pointer to "construct" exported function
    //-------------------------------------------------------------
-   boost::function<IHardwarePlugin* ()> m_construct;
+   boost::function<shared::plugin::IPlugin* ()> m_construct;
 
    //--------------------------------------------------------------
    /// \brief	    Pointer to the plugin getInformation method
@@ -100,5 +100,5 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Pointer to the plugin getConfigurationSchemaInterface method (optional)
    //--------------------------------------------------------------
-   boost::function<const IHardwarePluginConfigurationSchema& ()> m_getConfigurationSchema;
+   boost::function<const shared::plugin::configuration::ISchema& ()> m_getConfigurationSchema;
 };

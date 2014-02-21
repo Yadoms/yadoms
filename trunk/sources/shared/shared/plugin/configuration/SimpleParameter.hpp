@@ -6,7 +6,7 @@ namespace shared { namespace plugin { namespace configuration
 {
 
    //--------------------------------------------------------------
-   /// \class  Hardware plugin configuration templated parameter for simple types
+   /// \class  Plugin configuration templated parameter for simple types
    /// \note   To use this class, types have to support << operator
    //--------------------------------------------------------------
    template<typename T>

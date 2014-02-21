@@ -8,7 +8,7 @@ namespace shared { namespace plugin { namespace configuration
 {
 
    //--------------------------------------------------------------
-   /// \class Hardware plugin configuration parameter base class
+   /// \class Plugin configuration parameter base class
    //--------------------------------------------------------------
    class YADOMS_SHARED_EXPORT CParameter
    {

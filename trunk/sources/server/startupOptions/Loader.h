@@ -45,8 +45,8 @@ namespace startupOptions
          { return m_webServerInitialPath.get(); }
       virtual const std::string& getDatabaseFile() const
          { return m_databaseFile; }
-      virtual const std::string& getHarwarePluginsPath() const
-         { return m_hardwarePluginsPath.get(); }
+      virtual const std::string& getPluginsPath() const
+         { return m_PluginsPath.get(); }
       virtual const std::string& getWidgetsPath() const
          { return m_widgetsPath.get(); }
       virtual bool getStartXplHubFlag() const
@@ -77,7 +77,7 @@ namespace startupOptions
       CValidIpAddressOption m_webServerIPAddress;
       CMustExistPathOption m_webServerInitialPath;
       std::string m_databaseFile;
-      CMustExistPathOption m_hardwarePluginsPath;
+      CMustExistPathOption m_PluginsPath;
       CMustExistPathOption m_widgetsPath;
       bool m_startXplHub;
       CValidIpAddressOption m_xplNetworkIPAddress;

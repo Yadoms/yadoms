@@ -7,7 +7,7 @@ namespace shared { namespace plugin { namespace configuration
 {
 
    //--------------------------------------------------------------
-   /// \class Hardware plugin configuration serial port parameter
+   /// \class Plugin configuration serial port parameter
    //--------------------------------------------------------------
    class YADOMS_SHARED_EXPORT CSerialPortParameter : public CEnumGeneric
    {

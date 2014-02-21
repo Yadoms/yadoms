@@ -7,7 +7,7 @@ namespace shared { namespace plugin { namespace configuration
 {
 
    //--------------------------------------------------------------
-   /// \type Hardware plugin configuration int parameter
+   /// \type Plugin configuration int parameter
    //--------------------------------------------------------------
    class YADOMS_SHARED_EXPORT CIntParameter : public CSimpleParameter<int>
    {

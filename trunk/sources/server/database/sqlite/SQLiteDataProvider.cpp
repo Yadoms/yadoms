@@ -128,9 +128,6 @@ void CSQLiteDataProvider::unload()
       sqlite3_close(m_pDatabaseHandler);  
 }
 
-// [END] IHardwarePlugin implementation
-
-
 void CSQLiteDataProvider::loadRequesters()
 {
    m_hardwareRequester.reset(new server::database::sqlite::requesters::CSQLiteHardwareRequester(*this, m_databaseRequester));

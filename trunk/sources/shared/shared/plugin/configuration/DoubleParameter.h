@@ -7,7 +7,7 @@ namespace shared { namespace plugin { namespace configuration
 {
 
    //--------------------------------------------------------------
-   /// \type Hardware plugin configuration double parameter
+   /// \type Plugin configuration double parameter
    //--------------------------------------------------------------
    class YADOMS_SHARED_EXPORT CDoubleParameter : public CSimpleParameter<double>
    {

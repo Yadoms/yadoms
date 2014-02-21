@@ -30,6 +30,7 @@ set(SHARED_LIB_SRC
 	shared/exceptions/NullReferenceException.hpp
 
 	shared/plugin/ImplementationHelper.h
+	shared/plugin/IPlugin.h
 	
 	shared/plugin/configuration/Configuration.h
 	shared/plugin/configuration/Configuration.cpp
@@ -44,6 +45,7 @@ set(SHARED_LIB_SRC
 	shared/plugin/configuration/DoubleParameter.h
 	shared/plugin/configuration/DoubleParameter.cpp
 	shared/plugin/configuration/EnumParameter.hpp
+	shared/plugin/configuration/ISchema.h
 	shared/plugin/configuration/IntParameter.h
 	shared/plugin/configuration/IntParameter.cpp
 	shared/plugin/configuration/Parameter.h
@@ -58,9 +60,6 @@ set(SHARED_LIB_SRC
 	shared/plugin/information/IInformation.h
 	shared/plugin/information/Information.cpp
 	shared/plugin/information/Information.h
-
-	shared/plugin/Interfaces/IHardwarePlugin.h
-	shared/plugin/Interfaces/IHardwarePluginConfigurationSchema.h
 
 	shared/serialization/IPtreeToStringSerializer.h
 	shared/serialization/PTreeToJsonSerializer.h

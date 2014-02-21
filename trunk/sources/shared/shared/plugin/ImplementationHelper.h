@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interfaces/IHardwarePlugin.h"
+#include "IPlugin.h"
 #include "information/Information.h"
 #include "configuration/Configuration.h"
 #include <shared/Export.h>
@@ -10,8 +10,8 @@
 // Plugin implementation helper
 //////////////////////////////////////////////////////////////////////////
 // see shared::plugin::information::IInformation documentation to know what formats are accepted for each field
-#define IMPLEMENT_HARDWARE_PLUGIN(pluginClassName,pluginName,version,release,author,url)  \
-   EXPORT_LIBRARY_FUNCTION IHardwarePlugin* construct()                                   \
+#define IMPLEMENT_PLUGIN(pluginClassName,pluginName,version,release,author,url)           \
+   EXPORT_LIBRARY_FUNCTION shared::plugin::IPlugin* construct()                           \
    {                                                                                      \
       return new pluginClassName();                                                       \
    }                                                                                      \
@@ -42,7 +42,7 @@
       Configuration->buildSchema();                                                       \
       return *Configuration;                                                              \
    }                                                                                      \
-   EXPORT_LIBRARY_FUNCTION const IHardwarePluginConfigurationSchema& getConfigurationSchemaInterface() \
+   EXPORT_LIBRARY_FUNCTION const shared::plugin::configuration::ISchema& getConfigurationSchemaInterface() \
    {                                                                                      \
       return PluginConfigurationClassName::getPluginSchema();                             \
    }

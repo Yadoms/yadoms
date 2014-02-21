@@ -7,7 +7,7 @@ namespace shared { namespace plugin { namespace configuration
 {
 
    //--------------------------------------------------------------
-   /// \class Hardware plugin configuration bool parameter
+   /// \class Plugin configuration bool parameter
    //--------------------------------------------------------------
    class YADOMS_SHARED_EXPORT CBoolParameter : public CSimpleParameter<bool>
    {

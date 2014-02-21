@@ -12,7 +12,7 @@
 ///         - receive a XPL message
 ///         - send a XPL message
 //--------------------------------------------------------------
-class CFakePlugin : public shared::event::CEventHandler, public IHardwarePlugin
+class CFakePlugin : public shared::event::CEventHandler, public shared::plugin::IPlugin
 {  
 public:
    //--------------------------------------------------------------
@@ -25,10 +25,10 @@ public:
    //--------------------------------------------------------------
    virtual ~CFakePlugin();
 
-   // IHardwarePlugin implementation
+   // IPlugin implementation
    virtual void doWork(const std::string& configurationValues, boost::asio::io_service * pluginIOService);
    virtual void updateConfiguration(const std::string& configurationValues);
-  // [END] IHardwarePlugin implementation
+  // [END] IPlugin implementation
 
    //--------------------------------------------------------------
    /// \brief	TODO : commenter

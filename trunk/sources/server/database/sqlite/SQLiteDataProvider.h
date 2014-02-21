@@ -50,7 +50,7 @@ namespace sqlite {
       boost::shared_ptr<server::database::IEventLoggerRequester> getEventLoggerRequester() { return m_eventLoggerRequester; }
 
 
-      // [END] IHardwarePlugin implementation
+      // [END] IDatabaseProvider implementation
 
    private:
       //--------------------------------------------------------------
