@@ -2,7 +2,7 @@
 
 #include "Interfaces/IHardwarePlugin.h"
 #include "Information/Information.h"
-#include "Configuration/Configuration.h"
+#include "configuration/Configuration.h"
 #include <shared/Export.h>
 
 
