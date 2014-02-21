@@ -19,11 +19,11 @@ CConfiguration::CConfiguration()
 CConfiguration::CConfiguration(const CConfiguration& src, const std::string& configurationValues)
    :m_configurationSerializer(src.m_configurationSerializer)
 {
-   boost::lock_guard<boost::mutex> lock(m_configurationMapMutex);
-   boost::lock_guard<boost::mutex> srcLock(src.m_configurationMapMutex);
+   boost::lock_guard<boost::mutex> lock(m_parametersMapMutex);
+   boost::lock_guard<boost::mutex> srcLock(src.m_parametersMapMutex);
 
    // Full copy of configuration schema
-   for(CHardwarePluginConfigurationMap::const_iterator itParameter = src.m_configurationMap.begin() ; itParameter != src.m_configurationMap.end() ; itParameter++)
+   for(CParametersMap::const_iterator itParameter = src.m_parametersMap.begin() ; itParameter != src.m_parametersMap.end() ; itParameter++)
    {
       AddParameter(itParameter->second->clone());
    }
@@ -38,16 +38,16 @@ CConfiguration::~CConfiguration()
 
 void CConfiguration::buildSchema()
 {
-   boost::lock_guard<boost::mutex> lock(m_configurationMapMutex);
+   boost::lock_guard<boost::mutex> lock(m_parametersMapMutex);
    doBuildSchema();
 }
 
 std::string CConfiguration::getSchema() const
 {
-   boost::lock_guard<boost::mutex> lock(m_configurationMapMutex);
+   boost::lock_guard<boost::mutex> lock(m_parametersMapMutex);
 
    boost::property_tree::ptree pt;
-   for(CHardwarePluginConfigurationMap::const_iterator itParameter = m_configurationMap.begin() ; itParameter != m_configurationMap.end() ; itParameter++)
+   for(CParametersMap::const_iterator itParameter = m_parametersMap.begin() ; itParameter != m_parametersMap.end() ; itParameter++)
       itParameter->second->build(pt);
    return m_configurationSerializer->serialize(pt);
 }
@@ -57,9 +57,9 @@ void CConfiguration::setValues(const std::string& serializedConfiguration)
    boost::property_tree::ptree pt;
    m_configurationSerializer->deserialize(serializedConfiguration, pt);
 
-   boost::lock_guard<boost::mutex> lock(m_configurationMapMutex);
+   boost::lock_guard<boost::mutex> lock(m_parametersMapMutex);
 
-   for(CHardwarePluginConfigurationMap::iterator itParameter = m_configurationMap.begin() ; itParameter != m_configurationMap.end() ; itParameter++)
+   for(CParametersMap::iterator itParameter = m_parametersMap.begin() ; itParameter != m_parametersMap.end() ; itParameter++)
    {
       try
       {
@@ -75,8 +75,8 @@ void CConfiguration::setValues(const std::string& serializedConfiguration)
 
 void CConfiguration::AddParameter(boost::shared_ptr<CParameter> parameter)
 {
-   BOOST_ASSERT(m_configurationMap.find(parameter->getName()) == m_configurationMap.end());  // Item already exists
-   m_configurationMap[parameter->getName()] = parameter;
+   BOOST_ASSERT(m_parametersMap.find(parameter->getName()) == m_parametersMap.end());  // Item already exists
+   m_parametersMap[parameter->getName()] = parameter;
 }
 
 void CConfiguration::AddParameter(CParameter* parameter)
@@ -87,7 +87,7 @@ void CConfiguration::AddParameter(CParameter* parameter)
 
 const CParameter& CConfiguration::operator[](const std::string& parameterName) const
 {
-   return *m_configurationMap.at(parameterName);
+   return *m_parametersMap.at(parameterName);
 }
 
 } } } // namespace shared::plugin::configuration

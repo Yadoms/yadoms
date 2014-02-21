@@ -9,8 +9,8 @@
 
 
 // Use this macro to define some basic informations about the plugin
-IMPLEMENT_HARDWARE_PLUGIN(
-   CFakePlugin,                                 // IHardwarePlugin implementation class
+IMPLEMENT_PLUGIN(
+   CFakePlugin,                                 // IPlugin implementation class
    "FakePlugin",                                // Plugin name (std::string)
    "0.1",                                       // Current plugin version (std::string)
    shared::plugin::information::kBeta,          // Current release state (shared::plugin::information::EReleaseType)
@@ -43,7 +43,7 @@ void CFakePlugin::doWork(const std::string& configurationValues, boost::asio::io
       YADOMS_LOG(debug) << "CFakePlugin is starting...";
 
       // Register to XPL service
-      //TODO : faire une macro ? (le deviceId pourrait provenir de ce qui est renseigné par la macro IMPLEMENT_HARDWARE_PLUGIN)
+      //TODO : faire une macro ? (le deviceId pourrait provenir de ce qui est renseigné par la macro IMPLEMENT_PLUGIN)
       shared::xpl::CXplService xplService(shared::xpl::CXplConstants::getYadomsVendorId(), "fake", "1", pluginIOService);
       // Use this line to use be notified from shared::event::CEventHandler on an xplMessage
       xplService.messageReceived(this, kEvtXplMessage);

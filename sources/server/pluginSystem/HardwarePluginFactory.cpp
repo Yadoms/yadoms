@@ -21,9 +21,9 @@ void CHardwarePluginFactory::load()
       throw CInvalidPluginException(m_libraryPath.string());
 
    // Load plugin static methods
-   m_construct = (IHardwarePlugin* (*)(void))GetFunctionPointer("construct");
+   m_construct = (shared::plugin::IPlugin* (*)(void))GetFunctionPointer("construct");
    m_getInformation = (const shared::plugin::information::IInformation& (*)())GetFunctionPointer("getInformation");
-   m_getConfigurationSchema = (const IHardwarePluginConfigurationSchema& (*)())GetFunctionPointer("getConfigurationSchemaInterface");
+   m_getConfigurationSchema = (const shared::plugin::configuration::ISchema& (*)())GetFunctionPointer("getConfigurationSchemaInterface");
 
    // Check if all non-optional methods are loaded
    if(m_construct == NULL || m_getInformation == NULL)
@@ -42,7 +42,7 @@ void CHardwarePluginFactory::unload()
    shared::CDynamicLibrary::unload();
 }
 
-IHardwarePlugin* CHardwarePluginFactory::construct() const
+shared::plugin::IPlugin* CHardwarePluginFactory::construct() const
 {
 	BOOST_ASSERT(m_construct);  // construct can not be called if load was unsuccessfully
    if(m_construct != NULL)

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "HardwarePluginInstance.h"
-#include <shared/plugin/Interfaces/IHardwarePlugin.h>
+#include <shared/plugin/IPlugin.h>
 #include <shared/plugin/information/IInformation.h>
 
 

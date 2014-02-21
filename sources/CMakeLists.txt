@@ -119,7 +119,7 @@ if(MSVC)
 	#to allow BOOST in precompiled header (specify Precompiled Header Memory Allocation Limit) 
 	add_definitions("/Zm256")
 
-	#add WIN32_WINNT preprocessor deifinition
+	#add WIN32_WINNT preprocessor definition
 	get_WIN32_WINNT(CURRENT_WINNT_VERSION)
 	add_definitions(-D_WIN32_WINNT=${CURRENT_WINNT_VERSION})
 endif()
@@ -366,7 +366,6 @@ set(YADOMS_SRC
 # Project folders
 source_group(server server/*.*)
 source_group(server\\pluginSystem server/pluginSystem/*.* )
-source_group(server\\pluginSystem\\external plugins/hardware/IHardwarePlugin.h )
 source_group(server\\database  server/database/*.*)
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)

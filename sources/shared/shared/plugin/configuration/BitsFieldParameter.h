@@ -7,7 +7,7 @@ namespace shared { namespace plugin { namespace configuration
 {
 
    //--------------------------------------------------------------
-   /// \class Hardware plugin configuration booleans list parameter
+   /// \class Plugin configuration booleans list parameter
    //--------------------------------------------------------------
    class YADOMS_SHARED_EXPORT CBitsFieldParameter : public CParameter
    {

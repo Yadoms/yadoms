@@ -6,8 +6,8 @@
 namespace shared { namespace plugin { namespace information
 {
    //--------------------------------------------------------------
-   /// \brief		Container class for information about Hardware plugins
-   /// \note      This class is usually implemented by IMPLEMENT_HARDWARE_PLUGIN macro
+   /// \brief		Container class for information about plugins
+   /// \note      This class is usually implemented by IMPLEMENT_PLUGIN macro
    //--------------------------------------------------------------
    class YADOMS_SHARED_EXPORT CInformation : public IInformation
    {

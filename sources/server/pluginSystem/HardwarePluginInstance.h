@@ -61,7 +61,7 @@ private:
    //--------------------------------------------------------------
    /// \brief			The plugin instance
    //--------------------------------------------------------------
-   boost::shared_ptr<IHardwarePlugin> m_pPluginInstance;
+   boost::shared_ptr<shared::plugin::IPlugin> m_pPluginInstance;
 
    //--------------------------------------------------------------
    /// \brief			The database accessor

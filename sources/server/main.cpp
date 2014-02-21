@@ -40,7 +40,7 @@ int main (int argc, char** argv)
       YADOMS_LOG(info) << "\tWeb server ip = " << startupOptions.getWebServerIPAddress();
       YADOMS_LOG(info) << "\tWeb server path = " << startupOptions.getWebServerInitialPath();
       YADOMS_LOG(info) << "\tdb path = " << startupOptions.getDatabaseFile();
-      YADOMS_LOG(info) << "\thardware plugins = " << startupOptions.getHarwarePluginsPath();
+      YADOMS_LOG(info) << "\tplugins path = " << startupOptions.getPluginsPath();
       YADOMS_LOG(info) << "\twidgets path = " << startupOptions.getWidgetsPath();
       YADOMS_LOG(info) << "\tstart Xpl Hub = " << startupOptions.getStartXplHubFlag();
       YADOMS_LOG(info) << "********************************************************************";

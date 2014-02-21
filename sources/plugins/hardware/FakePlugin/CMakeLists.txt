@@ -1,5 +1,5 @@
 # include common plugin definitions
-include("../YadomsHPluginsCommon.cmake")
+include("../YadomsPluginsCommon.cmake")
 
 ########################
 ## FakePlugin
@@ -12,4 +12,4 @@ set(FAKE_PLUGING_SRC
 )
 
 
-ADD_HARDWARE_PLUGIN(fakePlugin ${FAKE_PLUGING_SRC})
+ADD_PLUGIN(fakePlugin ${FAKE_PLUGING_SRC})

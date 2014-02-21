@@ -3,7 +3,7 @@
 //
 #pragma once
 
-namespace startupOptions//TODO renommer le fichier en IStartupOptions.h
+namespace startupOptions
 {
 
    class IStartupOptions
@@ -46,11 +46,11 @@ namespace startupOptions//TODO renommer le fichier en IStartupOptions.h
       virtual const std::string& getDatabaseFile() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	    Get the path of the hardware plugins
-      /// \return     Hardware plugins directory (absolute)
+      /// \brief	    Get the path of the plugins
+      /// \return     Plugins directory (absolute)
       /// \note       If explicitly provided, path must exist
       //--------------------------------------------------------------
-      virtual const std::string& getHarwarePluginsPath() const = 0;
+      virtual const std::string& getPluginsPath() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Get the path of the widgets

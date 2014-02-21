@@ -16,7 +16,7 @@ namespace shared { namespace plugin { namespace information
    };
 
    //--------------------------------------------------------------
-   /// \brief		Interface for information about Hardware plugins
+   /// \brief		Interface for information about plugins
    //--------------------------------------------------------------
    class YADOMS_SHARED_EXPORT IInformation 
    {

@@ -7,7 +7,7 @@ namespace shared { namespace plugin { namespace configuration
 {
 
    //--------------------------------------------------------------
-   /// \class Hardware plugin configuration factory
+   /// \class Plugin configuration factory
    //--------------------------------------------------------------
    class CFactory
    {

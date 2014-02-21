@@ -9,7 +9,7 @@ namespace shared { namespace plugin { namespace configuration
 {
 
    //--------------------------------------------------------------
-   /// \class Hardware plugin configuration enum parameter
+   /// \class Plugin configuration enum parameter
    //--------------------------------------------------------------
    template<typename Enum>
    class CEnumParameter : public CEnumGeneric

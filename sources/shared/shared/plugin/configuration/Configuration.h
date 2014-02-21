@@ -2,7 +2,7 @@
 
 #include <shared/Export.h>
 #include "Parameters.h"
-#include "../Interfaces/IHardwarePluginConfigurationSchema.h"
+#include "ISchema.h"
 #include "../../serialization/IPtreeToStringSerializer.h"
 #include <shared/exceptions/BadConversionException.hpp>
 
@@ -13,12 +13,12 @@ namespace shared { namespace plugin { namespace configuration
    class IConfigurationSerializer;
 
    //--------------------------------------------------------------
-   /// \class Hardware plugin configuration
+   /// \class Plugin configuration
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CConfiguration : public IHardwarePluginConfigurationSchema
+   class YADOMS_SHARED_EXPORT CConfiguration : public ISchema
    {
    public:
-      typedef std::map<std::string, boost::shared_ptr<CParameter> > CHardwarePluginConfigurationMap;
+      typedef std::map<std::string, boost::shared_ptr<CParameter> > CParametersMap;
 
    public:
       //--------------------------------------------------------------
@@ -41,9 +41,9 @@ namespace shared { namespace plugin { namespace configuration
       //--------------------------------------------------------------
       void buildSchema();
 
-      // IHardwarePluginConfigurationSchema implementation
+      // ISchema implementation
       virtual std::string getSchema() const;
-      // [END] IHardwarePluginConfigurationSchema implementation
+      // [END] ISchema implementation
 
       //--------------------------------------------------------------
       /// \brief	    Set configuration values from saved data
@@ -76,7 +76,7 @@ namespace shared { namespace plugin { namespace configuration
       {
          try
          {
-            return dynamic_cast<const T&> (*m_configurationMap.at(parameterName));
+            return dynamic_cast<const T&> (*m_parametersMap.at(parameterName));
          }
          catch (std::bad_cast&)
          {
@@ -96,12 +96,12 @@ namespace shared { namespace plugin { namespace configuration
       //--------------------------------------------------------------
       /// \brief	   The map containing the configuration parameters
       //--------------------------------------------------------------
-      CHardwarePluginConfigurationMap m_configurationMap;
+      CParametersMap m_parametersMap;
 
       //--------------------------------------------------------------
       /// \brief	   Mutex protecting the configuration map
       //--------------------------------------------------------------
-      mutable boost::mutex m_configurationMapMutex;
+      mutable boost::mutex m_parametersMapMutex;
 
       //--------------------------------------------------------------
       /// \brief	   The serializer used for schema and values serialization
