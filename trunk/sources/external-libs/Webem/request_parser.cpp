@@ -289,6 +289,7 @@ boost::tribool request_parser::consume(request& req, char input)
   case expecting_newline_3:
 	  if (input == '\n')
 	  {
+        //request get are always content less
 		  if( req.method == "GET" ) 
 		  {
 			  // finished
@@ -306,8 +307,16 @@ boost::tribool request_parser::consume(request& req, char input)
 				  }
 			  }
 
-			  state_ = reading_content;
-			  return boost::indeterminate;
+           if(req.content_length > 0)
+			  {
+              state_ = reading_content;
+   			  return boost::indeterminate;
+           }
+           else
+           {
+              //any request type which dont have content
+              return true;
+           }
 		  }
 	  } else
 	  {
