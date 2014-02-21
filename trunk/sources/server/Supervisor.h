@@ -2,7 +2,7 @@
 
 #include <shared/ThreadBase.h>
 #include <shared/Event/EventHandler.hpp>
-#include "StartupOptions/StartupOptions.h"
+#include "startupOptions/IStartupOptions.h"
 
 class CSupervisor : public CThreadBase, public CEventHandler
 {

@@ -3,7 +3,7 @@
 //
 #pragma once
 
-#include "StartupOptions.h"
+#include "IStartupOptions.h"
 #include "LoaderException.hpp"
 #include "LoaderCustomValidators.hpp"
 

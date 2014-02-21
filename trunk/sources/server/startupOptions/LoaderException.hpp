@@ -3,7 +3,7 @@
 //
 #pragma once
 
-#include "StartupOptions.h"
+#include "IStartupOptions.h"
 #include <shared/Exceptions/Exception.hpp>
 
 namespace startupOptions
