@@ -3,7 +3,7 @@
 #include <shared/Export.h>
 #include "Parameters.h"
 #include "../Interfaces/IHardwarePluginConfigurationSchema.h"
-#include "../../Serialization/IPtreeToStringSerializer.h"
+#include "../../serialization/IPtreeToStringSerializer.h"
 #include <shared/Exceptions/BadConversionException.hpp>
 
 
@@ -106,7 +106,7 @@ namespace shared { namespace plugin { namespace configuration
       //--------------------------------------------------------------
       /// \brief	   The serializer used for schema and values serialization
       //--------------------------------------------------------------
-      boost::shared_ptr<IPtreeToStringSerializer> m_configurationSerializer;
+      boost::shared_ptr<serialization::IPtreeToStringSerializer> m_configurationSerializer;
    };
 
 } } } // namespace shared::plugin::configuration

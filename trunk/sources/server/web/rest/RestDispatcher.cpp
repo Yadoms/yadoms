@@ -24,7 +24,7 @@ CJson CRestDispatcher::dispath(const std::string & requestType, const std::vecto
    if(m_handledFunctions.find(requestType) != m_handledFunctions.end())
    {
       //browse all patterns and check if it match to given url
-      std::map<CUrlPattern, std::pair<CRestMethodHandler, CRestMethodIndirector> >::iterator iPatterns;
+      RestMethodMap::iterator iPatterns;
 
       //first pass without handling wildcards (priority to full written patterns)
       for(iPatterns = m_handledFunctions[requestType].begin(); iPatterns != m_handledFunctions[requestType].end(); iPatterns++)

@@ -2,6 +2,9 @@
 #include "PTreeToJsonSerializer.h"
 #include "../Exceptions/InvalidParameterException.hpp"
 
+namespace shared { namespace serialization
+{
+
 CPtreeToJsonSerializer::~CPtreeToJsonSerializer()
 {
 }
@@ -29,3 +32,4 @@ void CPtreeToJsonSerializer::deserialize(const std::string& str, boost::property
    }
 }
 
+} } // namespace shared::serialization

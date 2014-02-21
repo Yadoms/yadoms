@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "JsonResult.h"
-#include <shared/Serialization/PTreeToJsonSerializer.h>
+#include <shared/serialization/PTreeToJsonSerializer.h>
 
 std::string CJsonResult::m_resultFieldName = "result";
 std::string CJsonResult::m_errorMessageFieldName = "message";

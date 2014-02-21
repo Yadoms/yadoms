@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Serialization/IPtreeToStringSerializer.h"
+#include "../../serialization/IPtreeToStringSerializer.h"
 
 
 namespace shared { namespace plugin { namespace configuration
@@ -19,7 +19,7 @@ namespace shared { namespace plugin { namespace configuration
       /// \brief	   Serializer creation
       /// \return    A new serializer instance
       //--------------------------------------------------------------
-      static boost::shared_ptr<IPtreeToStringSerializer> createSerializer();
+      static boost::shared_ptr<serialization::IPtreeToStringSerializer> createSerializer();
    };
 
 } } } // namespace shared::plugin::configuration
