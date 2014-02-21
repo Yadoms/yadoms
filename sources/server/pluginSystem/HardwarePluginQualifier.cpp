@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "HardwarePluginQualifier.h"
-#include <shared/Exceptions/EmptyResultException.hpp>
+#include <shared/exceptions/EmptyResultException.hpp>
 
 
 // 7 ==> Tolerance of 1 crash per week

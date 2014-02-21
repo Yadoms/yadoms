@@ -29,7 +29,7 @@ namespace server {
                virtual ~CSQLiteHardwareEventLoggerRequester();
 
                // IHardwareEventLoggerRequester implementation
-               virtual int addEvent(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType pluginReleaseType, const server::database::entities::CHardwareEventLogger::EEventType eventType, const std::string & message = CStringExtension::EmptyString);
+               virtual int addEvent(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType pluginReleaseType, const server::database::entities::CHardwareEventLogger::EEventType eventType, const std::string & message = shared::CStringExtension::EmptyString);
                virtual int addEvent(const server::database::entities::CHardwareEventLogger & hardwareLogEntry);
                virtual std::vector<boost::shared_ptr<server::database::entities::CHardwareEventLogger> > getHardwareEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType pluginReleaseType);
                virtual std::vector<boost::shared_ptr<server::database::entities::CHardwareEventLogger> > getHardwareEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType pluginReleaseType, const boost::posix_time::ptime & fromDate);

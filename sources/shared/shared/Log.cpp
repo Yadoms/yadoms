@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "Log.h"
 
+namespace shared
+{
+
 CLog::CLog()
 {
 }
@@ -135,3 +138,4 @@ void CLog::CreateConsoleSink()
    boost::log::core::get()->add_sink(sinklog);
 }
 
+} // namespace shared

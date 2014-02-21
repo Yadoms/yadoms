@@ -1,9 +1,9 @@
 #pragma once
 #include "database/IDataProvider.h"
 #include <shared/ThreadBase.h>
-#include <shared/Event/EventHandler.hpp>
+#include <shared/event/EventHandler.hpp>
 
-class CXplLogger: public CThreadBase, public CEventHandler
+class CXplLogger: public shared::CThreadBase, public shared::event::CEventHandler
 {
 public:
    CXplLogger(boost::shared_ptr<server::database::IDataProvider> dataProvider);
@@ -12,7 +12,7 @@ public:
 private:
    enum
    {
-      kXplMessageReceived = CEventHandler::kUserFirstId,
+      kXplMessageReceived = shared::event::CEventHandler::kUserFirstId,
    };
 
 private:

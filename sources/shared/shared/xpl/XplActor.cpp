@@ -3,6 +3,9 @@
 #include "XplHelper.h"
 #include "XplException.h"
 
+namespace shared { namespace xpl
+{
+
 CXplActor::CXplActor()
 {
    m_broadcastActive = false;
@@ -136,3 +139,5 @@ const CXplActor CXplActor::parse(const std::string & rawActorString)
 
    return actor;
 }
+
+} } // namespace shared::xpl

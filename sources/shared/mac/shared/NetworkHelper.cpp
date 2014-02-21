@@ -10,6 +10,9 @@
 #include <net/if.h>
 #include <ifaddrs.h>
 
+namespace shared
+{
+
 CNetworkHelper::CNetworkHelper()
 {
 }
@@ -71,3 +74,5 @@ std::vector<boost::asio::ip::address> CNetworkHelper::getLocalIps()
    freeifaddrs(myaddrs);
    return result;
 }
+
+} // namespace shared

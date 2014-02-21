@@ -17,7 +17,7 @@ CHardwarePluginFactory::~CHardwarePluginFactory()
 void CHardwarePluginFactory::load()
 {
    // Load the plugin library (platform-specific)
-   if (!CDynamicLibrary::load(m_libraryPath.string()))
+   if (!shared::CDynamicLibrary::load(m_libraryPath.string()))
       throw CInvalidPluginException(m_libraryPath.string());
 
    // Load plugin static methods
@@ -29,7 +29,7 @@ void CHardwarePluginFactory::load()
    if(m_construct == NULL || m_getInformation == NULL)
    {
       // This library is not a valid plugin
-      CDynamicLibrary::unload();
+      shared::CDynamicLibrary::unload();
       throw CInvalidPluginException(m_libraryPath.string());
    }
 
@@ -39,7 +39,7 @@ void CHardwarePluginFactory::load()
 
 void CHardwarePluginFactory::unload()
 {
-   CDynamicLibrary::unload();
+   shared::CDynamicLibrary::unload();
 }
 
 IHardwarePlugin* CHardwarePluginFactory::construct() const
@@ -67,7 +67,7 @@ boost::shared_ptr<const shared::plugin::information::IInformation> CHardwarePlug
 std::string CHardwarePluginFactory::getConfigurationSchema() const
 {
    if (!m_getConfigurationSchema)
-      return CStringExtension::EmptyString; // Plugin has no configuration
+      return shared::CStringExtension::EmptyString; // Plugin has no configuration
 
    // Because library can be unloaded at any time (so memory will be freed), return a copy of configuration
    return m_getConfigurationSchema().getSchema();

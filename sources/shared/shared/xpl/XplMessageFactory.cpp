@@ -5,6 +5,8 @@
 #include "XplMessageSchemaIdentifier.h"
 #include "XplMessage.h"
 
+namespace shared { namespace xpl
+{
 
 CXplMessage CXplMessageFactory::createHeartbeatMessage(const CXplActor & source, const int heartbeatInterval, const std::string & remoteIpAddress, const int listeningPort)
 {
@@ -27,4 +29,4 @@ CXplMessageFactory::~CXplMessageFactory(void)
 {
 }
 
-
+} } // namespace shared::xpl

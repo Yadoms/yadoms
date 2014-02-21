@@ -1,16 +1,28 @@
 #pragma once
 #include <shared/plugin/ImplementationHelper.h>
-#include <shared/Xpl/XplMessage.h>
-#include <shared/Xpl/XplService.h>
-#include <shared/Event/EventHandler.hpp>
+#include <shared/xpl/XplMessage.h>
+#include <shared/xpl/XplService.h>
+#include <shared/event/EventHandler.hpp>
 #include "FakePluginConfiguration.h"
 
-class CFakePlugin : public CEventHandler, public IHardwarePlugin
-
+//--------------------------------------------------------------
+/// \brief	This class is a simple plugin example
+/// \note   This plugin do nothing useful, just demonstrate how to :
+///         - use a configuration
+///         - receive a XPL message
+///         - send a XPL message
+//--------------------------------------------------------------
+class CFakePlugin : public shared::event::CEventHandler, public IHardwarePlugin
 {  
 public:
+   //--------------------------------------------------------------
+   /// \brief	Constructor
+   //--------------------------------------------------------------
    CFakePlugin();
 
+   //--------------------------------------------------------------
+   /// \brief	Destructor
+   //--------------------------------------------------------------
    virtual ~CFakePlugin();
 
    // IHardwarePlugin implementation
@@ -18,16 +30,16 @@ public:
    virtual void updateConfiguration(const std::string& configurationValues);
   // [END] IHardwarePlugin implementation
 
+   //--------------------------------------------------------------
+   /// \brief	TODO : commenter
+   //--------------------------------------------------------------
    // TODO : WhatTheFuck ? ? ? C'est quoi ces adresses ?
    void init(const std::string & pluginAddress, const std::string & serverAddress);
 
 private:
-   void onMessageReceived(CXplMessage & message);
-
-   // Trace the configuration
-   // This function shows how to get configuration values
-   void traceConfiguration();
-
+   //--------------------------------------------------------------
+   /// \brief	The plugin configuration
+   //--------------------------------------------------------------
    CFakePluginConfiguration m_Configuration;
 };
 

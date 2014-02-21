@@ -4,7 +4,9 @@
 #include "XplHelper.h"
 #include "XplException.h"
 
-//m_socket(m_ioService), 
+namespace shared { namespace xpl
+{
+
 CXplHubConnectedPeripheral::CXplHubConnectedPeripheral(boost::asio::io_service & io_service, std::string ip, unsigned short portNumber, int interval) 
    :  m_portNumber(portNumber), m_interval(interval), m_ip(ip), m_socket(io_service), m_lastTimeSeen(boost::posix_time::second_clock::universal_time())
 {
@@ -61,3 +63,5 @@ void CXplHubConnectedPeripheral::sendMessage(const CXplMessage & message)
 {
    m_socket.send_to(boost::asio::buffer(message.toString()), m_remoteEndPoint);
 }
+
+} } // namespace shared::xpl

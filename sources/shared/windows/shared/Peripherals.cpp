@@ -1,11 +1,13 @@
 #include "stdafx.h"
 
 #include "DynamicLibrary.hpp"
-#include "../../shared/Exceptions/Exception.hpp"
+#include "../../shared/exceptions/Exception.hpp"
 #include "../../shared/Log.h"
 #include "Peripherals.h"
 #include <windows.h>
 
+namespace shared
+{
 
 // Defines From MsPorts.h original file
 DECLARE_HANDLE(HCOMDB);
@@ -17,7 +19,7 @@ typedef HCOMDB *PHCOMDB;
 // [END] Defines From MsPorts.h original file
 
 
-class CMsPortsLibrary : protected CDynamicLibrary
+class CMsPortsLibrary : protected shared::CDynamicLibrary
 {
 protected:
    typedef LONG (CALLBACK* ComDBOpenFunctionType)(PHCOMDB);
@@ -183,3 +185,4 @@ const boost::shared_ptr<std::set<std::string> > CPeripherals::getUsedSerialPorts
    return usedSerialPorts;
 }
 
+} // namespace shared

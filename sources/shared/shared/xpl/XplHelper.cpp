@@ -3,6 +3,9 @@
 #include "shared/NetworkHelper.h"
 #include "shared/Log.h"
 
+namespace shared { namespace xpl
+{
+
 const std::string CXplHelper::HeartbeatClassID = "hbeat";
 const std::string CXplHelper::HeartbeatTypeId = "app";
 const std::string CXplHelper::WildcardString = "*";
@@ -22,7 +25,7 @@ bool CXplHelper::isVendorIdOrDeviceIdMatchRules(const std::string & element)
 boost::asio::ip::udp::endpoint CXplHelper::getFirstIPV4AddressEndPoint()
 {
    //we look for the first ip v4
-   std::vector<boost::asio::ip::address> ips = CNetworkHelper::getLocalIps();
+   std::vector<boost::asio::ip::address> ips = shared::CNetworkHelper::getLocalIps();
    
    //we look for the first IP which is not loopback
    BOOST_FOREACH (boost::asio::ip::address addr, ips)
@@ -39,7 +42,7 @@ boost::asio::ip::udp::endpoint CXplHelper::getFirstIPV4AddressEndPoint()
 
 bool CXplHelper::getEndPointFromInterfaceIp(const std::string & localIPOfTheInterfaceToUse, boost::asio::ip::udp::endpoint & result)
 {
-   std::vector<boost::asio::ip::address> ips = CNetworkHelper::getLocalIps();
+   std::vector<boost::asio::ip::address> ips = shared::CNetworkHelper::getLocalIps();
    
    BOOST_FOREACH (boost::asio::ip::address addr, ips)
    {
@@ -61,3 +64,5 @@ CXplHelper::CXplHelper()
 CXplHelper::~CXplHelper()
 {
 }
+
+} } // namespace shared::xpl

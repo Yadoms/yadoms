@@ -15,6 +15,8 @@
 //un hub ecoute le port xpl
 //en repete les données sur la liste des client connectés sur leur port respectifs
 
+namespace shared { namespace xpl
+{
 
 CXplService::CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId, boost::asio::io_service * externalIOService)
    : m_manageIoService(externalIOService == NULL), m_eventHandler(NULL)
@@ -261,7 +263,7 @@ void CXplService::sendMessage(const CXplMessage & message)
    m_socket->send_to(boost::asio::buffer(message.toString()), m_remoteEndPoint);
 }
 
-void CXplService::messageReceived(CEventHandler * pEventHandler, const int eventIdToSignal)
+void CXplService::messageReceived(event::CEventHandler * pEventHandler, const int eventIdToSignal)
 {
    m_eventHandler = pEventHandler;
    m_eventIdToSignal = eventIdToSignal;
@@ -375,3 +377,5 @@ CXplActor CXplService::getActor() const
 {
    return m_source;
 }
+
+} } // namespace shared::xpl

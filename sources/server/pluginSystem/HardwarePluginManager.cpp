@@ -8,7 +8,7 @@ boost::shared_ptr<CHardwarePluginManager> CHardwarePluginManager::newHardwarePlu
    const std::string & initialDir,
    boost::shared_ptr<server::database::IHardwareRequester> database,
    boost::shared_ptr<server::database::IHardwareEventLoggerRequester> eventLoggerDatabase,
-   CEventHandler& supervisor,
+   shared::event::CEventHandler& supervisor,
    int pluginManagerEventId)
 {
    boost::shared_ptr<CHardwarePluginManager> manager (new CHardwarePluginManager(initialDir, database, eventLoggerDatabase, supervisor, pluginManagerEventId));
@@ -20,7 +20,7 @@ CHardwarePluginManager::CHardwarePluginManager(
    const std::string& initialDir,
    boost::shared_ptr<server::database::IHardwareRequester> database,
    boost::shared_ptr<server::database::IHardwareEventLoggerRequester> eventLoggerDatabase,
-   CEventHandler& supervisor,
+   shared::event::CEventHandler& supervisor,
    int pluginManagerEventId)
    :m_database(database), m_pluginPath(initialDir), m_qualifier(new CHardwarePluginQualifier(eventLoggerDatabase)),
    m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId)
@@ -117,7 +117,7 @@ std::vector<boost::filesystem::path> CHardwarePluginManager::findPluginFilenames
    {
       boost::filesystem::directory_iterator endFileIterator;
 
-      static const std::string pluginEndWithString = CDynamicLibrary::DotExtension();
+      static const std::string pluginEndWithString = shared::CDynamicLibrary::DotExtension();
 
       for(boost::filesystem::directory_iterator fileIterator(m_pluginPath) ; fileIterator != endFileIterator ; ++fileIterator)
       {
@@ -186,7 +186,7 @@ void CHardwarePluginManager::buildAvailablePluginList()
       try
       {
          // Get informations for current found plugin
-         const std::string& pluginName = CDynamicLibrary::ToLibName((*libPathIt).string());
+         const std::string& pluginName = shared::CDynamicLibrary::ToLibName((*libPathIt).string());
 
          // If plugin is already loaded, use its information
          if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
@@ -299,7 +299,7 @@ std::string CHardwarePluginManager::getInstanceConfiguration(int id) const
    // First check if a schema is available
    std::string pluginConfigurationSchema(getPluginConfigurationSchema(id));
    if (pluginConfigurationSchema.empty())
-      return CStringExtension::EmptyString; // Plugin has no configuration
+      return shared::CStringExtension::EmptyString; // Plugin has no configuration
 
    // Next get database instance data
    BOOST_ASSERT(m_database->getHardware(id));
@@ -370,7 +370,7 @@ void CHardwarePluginManager::onPluginDirectoryChanges(const boost::asio::dir_mon
 boost::filesystem::path CHardwarePluginManager::toPath(const std::string& pluginName) const
 {
    boost::filesystem::path path(m_pluginPath);
-   path /= CDynamicLibrary::ToFileName(pluginName);
+   path /= shared::CDynamicLibrary::ToFileName(pluginName);
    return path;
 }
 

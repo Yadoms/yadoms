@@ -1,16 +1,16 @@
 #pragma once
 
 #include <shared/ThreadBase.h>
-#include <shared/Event/EventHandler.hpp>
+#include <shared/event/EventHandler.hpp>
 #include "startupOptions/IStartupOptions.h"
 
-class CSupervisor : public CThreadBase, public CEventHandler
+class CSupervisor : public shared::CThreadBase, public shared::event::CEventHandler
 {
 private:
    // Event IDs
    enum
    {
-      kHardwarePluginManagerEvent = CEventHandler::kUserFirstId,
+      kHardwarePluginManagerEvent = shared::event::CEventHandler::kUserFirstId,
    };
 
 public:

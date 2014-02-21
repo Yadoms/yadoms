@@ -6,7 +6,7 @@
 #pragma once
 
 #include <shared/ThreadBase.h>
-#include <shared/Event/EventHandler.hpp>
+#include <shared/event/EventHandler.hpp>
 #include "HardwarePluginFactory.h"
 #include "HardwarePluginManagerEvent.h"
 #include "database/entities/Hardware.h"
@@ -15,7 +15,7 @@
 //--------------------------------------------------------------
 /// \brief	this class is used to manage a plugin instance. 
 //--------------------------------------------------------------
-class CHardwarePluginInstance : public CThreadBase
+class CHardwarePluginInstance : public shared::CThreadBase
 {
 public:
    //--------------------------------------------------------------
@@ -27,7 +27,8 @@ public:
    /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
    //--------------------------------------------------------------
    CHardwarePluginInstance(const boost::shared_ptr<const CHardwarePluginFactory> plugin, const boost::shared_ptr<server::database::entities::CHardware> context,
-      const boost::shared_ptr<IHardwarePluginQualifier> qualifier, CEventHandler& supervisor, int pluginManagerEventId, boost::asio::io_service * pluginIOService);
+      const boost::shared_ptr<IHardwarePluginQualifier> qualifier, shared::event::CEventHandler& supervisor,
+      int pluginManagerEventId, boost::asio::io_service * pluginIOService);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -75,7 +76,7 @@ private:
    //--------------------------------------------------------------
    /// \brief			The supervisor event handler
    //--------------------------------------------------------------
-   CEventHandler& m_supervisor;
+   shared::event::CEventHandler& m_supervisor;
 
    //--------------------------------------------------------------
    /// \brief			ID to use to send events to supervisor

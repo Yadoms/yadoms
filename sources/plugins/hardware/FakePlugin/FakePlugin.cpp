@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "FakePlugin.h"
 #include <shared/Log.h>
-#include <shared/Xpl/XplService.h>
-#include <shared/Xpl/XplMessage.h>
-#include <shared/Xpl/XplConstants.h>
-#include <shared/Exceptions/BadConversionException.hpp>
+#include <shared/xpl/XplService.h>
+#include <shared/xpl/XplMessage.h>
+#include <shared/xpl/XplConstants.h>
+#include <shared/exceptions/BadConversionException.hpp>
 #include <shared/StringExtension.h>
 
 
@@ -31,22 +31,21 @@ CFakePlugin::~CFakePlugin()
 // Event IDs
 enum
 {
-   kEvtXplMessage = CEventHandler::kUserFirstId,   // Always start from CEventHandler::kUserFirstId
+   kEvtXplMessage = shared::event::CEventHandler::kUserFirstId,   // Always start from shared::event::CEventHandler::kUserFirstId
    kEvtUpdateConfiguration
 };
 
 void CFakePlugin::doWork(const std::string& configurationValues, boost::asio::io_service * pluginIOService)
 {
-   //TODO : understand why it throws when this step is done in xplService dtor, which is called when catching boost::thread_interrupted
-   
    try
    {
       YADOMS_LOG_CONFIGURE("FakePlugin");
       YADOMS_LOG(debug) << "CFakePlugin is starting...";
 
-      CXplService xplService(CXplConstants::getYadomsVendorId(), "fake", "1", pluginIOService);
-      
-      //use this line to use be notified from CEventHandler on an xplMessage
+      // Register to XPL service
+      //TODO : faire une macro ? (le deviceId pourrait provenir de ce qui est renseigné par la macro IMPLEMENT_HARDWARE_PLUGIN)
+      shared::xpl::CXplService xplService(shared::xpl::CXplConstants::getYadomsVendorId(), "fake", "1", pluginIOService);
+      // Use this line to use be notified from shared::event::CEventHandler on an xplMessage
       xplService.messageReceived(this, kEvtXplMessage);
 
       // Load configuration values (provided by database)
@@ -65,19 +64,8 @@ void CFakePlugin::doWork(const std::string& configurationValues, boost::asio::io
          case kEvtXplMessage:
             {
                // Xpl message was received
-               CXplMessage xplMessage = popEvent<CXplMessage>();
-               //YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
-
-               /*
-               static int currentCall = 0;     
-               currentCall++;
-
-               if(currentCall == 100)
-               {
-                  YADOMS_LOG(debug) << "le plugin plante";
-                  while(1);
-               }*/
-
+               shared::xpl::CXplMessage xplMessage = popEvent<shared::xpl::CXplMessage>();
+               YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
                break;
             }
          case kEvtUpdateConfiguration:
@@ -94,19 +82,27 @@ void CFakePlugin::doWork(const std::string& configurationValues, boost::asio::io
                m_Configuration.setValues(newConfigurationValues);
 
                // Trace the configuration
-               traceConfiguration();
+               m_Configuration.trace();
 
                break;
             }
          case kTimeout:
             {
-               // Timeout, used here to send a XPL message periodicaly
-               //CXplConstants::getYadomsVendorId(), "logger", "1"
-               
-               CXplMessage msg(CXplMessage::kXplStat, xplService.getActor(), CXplActor::createActor(CXplConstants::getYadomsVendorId(), "logger", "1"), CXplMessageSchemaIdentifier("clock", "basic"));
-               //CXplMessage msg(CXplMessage::kXplStat, xplService.getActor(), CXplActor::createBroadcastActor(), CXplMessageSchemaIdentifier("clock", "basic"));
+               // Timeout, used here to send a XPL message periodically
+
+               // Create the message
+               shared::xpl::CXplMessage msg(
+                  shared::xpl::CXplMessage::kXplStat,
+                  xplService.getActor(),
+                  shared::xpl::CXplActor::createActor(shared::xpl::CXplConstants::getYadomsVendorId(), "logger", "1"),
+                  shared::xpl::CXplMessageSchemaIdentifier("clock", "basic"));
+
+               // Add data to message
                msg.addToBody("value", boost::lexical_cast<std::string>(value++));
+
+               // Send it
                xplService.sendMessage(msg);
+
                break;
             }
          default:
@@ -136,55 +132,10 @@ void CFakePlugin::doWork(const std::string& configurationValues, boost::asio::io
 
 void CFakePlugin::updateConfiguration(const std::string& configurationValues)
 {
-   // This function is called in a Yadoms thread context, so send a event to CFakePlugin thread
+   // This function is called in a Yadoms thread context, so send a event to the CFakePlugin thread
    sendEvent<std::string>(kEvtUpdateConfiguration, configurationValues);
 }
 
-void CFakePlugin::traceConfiguration()
-{
-   try
-   {
-      // Get simple parameters
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is " << m_Configuration.getParam<shared::plugin::configuration::CSerialPortParameter>("Serial port").get();
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is (with macro helper) " << m_Configuration.CFG_GET_SERIAL_PORT("Serial port");
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'StringParameter' is " << m_Configuration.CFG_GET_STRING("StringParameter");
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is " << m_Configuration.CFG_GET_BOOL("BoolParameter");
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'DoubleParameter' is " << m_Configuration.CFG_GET_DOUBLE("DoubleParameter");
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'IntParameter' is " << m_Configuration.CFG_GET_INT("IntParameter");
-
-      // Enum
-      // - Nominal form
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'EnumParameter' is " << m_Configuration.getParam<shared::plugin::configuration::CEnumParameter<EEnumType> >("EnumParameter").get();
-      // - With macro helper
-      std::ostringstream os;
-      os << "CFakePlugin::doWork, parameter 'EnumParameter' is ";
-      switch (m_Configuration.CFG_GET_ENUM(EEnumType,"EnumParameter"))
-      {
-      case kEnumValue1: os << "EnumValue1"; break;
-      case kEnumValue2: os << "EnumValue2"; break;
-      case kEnumValue3: os << "EnumValue3"; break;
-      default: os << "Invalid value"; break;
-      }
-      YADOMS_LOG(debug) << os.str();
-
-      // Bits field
-      // - Nominal form
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[first checkbox]' is " << m_Configuration.getParam<shared::plugin::configuration::CBitsFieldParameter>("BitsFieldParameter").get()["first checkbox"];
-      // - With macro helper
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[second one]' is " << m_Configuration.CFG_GET_BITS_FIELD("BitsFieldParameter")["second one"];
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BitsFieldParameter[and a third]' is " << m_Configuration.CFG_GET_BITS_FIELD("BitsFieldParameter")["and a third"];
-   }
-   catch (const CBadConversionException& bc)
-   {
-      BOOST_ASSERT(false);  // Parameter is wrong type
-      YADOMS_LOG(error) << "Bad cast error: " << bc.what();
-   }
-   catch (const std::out_of_range& oor)
-   {
-      BOOST_ASSERT(false);  // Parameter doesn't exist
-      YADOMS_LOG(error) << "Out of Range error: " << oor.what();
-   }
-}
 
 
 // TODO : WhatTheFuck ? ? ? C'est quoi ces adresses ?

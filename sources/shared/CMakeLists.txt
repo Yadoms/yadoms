@@ -16,18 +16,18 @@ set(SHARED_LIB_SRC
 	shared/StringExtension.h
 	shared/StringExtension.cpp
   
-	shared/Event/Event.hpp
-	shared/Event/EventBase.hpp
-	shared/Event/EventHandler.hpp
+	shared/event/Event.hpp
+	shared/event/EventBase.hpp
+	shared/event/EventHandler.hpp
 
- 	shared/Exceptions/BadConversionException.hpp
-	shared/Exceptions/EmptyResultException.hpp
-	shared/Exceptions/Exception.hpp
-	shared/Exceptions/InvalidParameterException.hpp
-	shared/Exceptions/OutOfRangeException.hpp
-	shared/Exceptions/NotImplementedException.hpp
-	shared/Exceptions/NotSupportedException.hpp
-	shared/Exceptions/NullReferenceException.hpp
+ 	shared/exceptions/BadConversionException.hpp
+	shared/exceptions/EmptyResultException.hpp
+	shared/exceptions/Exception.hpp
+	shared/exceptions/InvalidParameterException.hpp
+	shared/exceptions/OutOfRangeException.hpp
+	shared/exceptions/NotImplementedException.hpp
+	shared/exceptions/NotSupportedException.hpp
+	shared/exceptions/NullReferenceException.hpp
 
 	shared/plugin/ImplementationHelper.h
 	
@@ -66,25 +66,25 @@ set(SHARED_LIB_SRC
 	shared/serialization/PTreeToJsonSerializer.h
 	shared/serialization/PTreeToJsonSerializer.cpp
 
-	shared/Xpl/XplConstants.h
-	shared/Xpl/XplConstants.cpp
-	shared/Xpl/XplActor.cpp
-	shared/Xpl/XplActor.h
-	shared/Xpl/XplException.h
-	shared/Xpl/XplHelper.cpp
-	shared/Xpl/XplHelper.h
-	shared/Xpl/XplHub.cpp
-	shared/Xpl/XplHub.h
-	shared/Xpl/XplMessage.cpp
-	shared/Xpl/XplMessage.h
-	shared/Xpl/XplMessageFactory.cpp
-	shared/Xpl/XplMessageFactory.h
-	shared/Xpl/XplMessageSchemaIdentifier.cpp
-	shared/Xpl/XplMessageSchemaIdentifier.h
-	shared/Xpl/XplService.cpp
-	shared/Xpl/XplService.h
-	shared/Xpl/XplHubConnectedPeripheral.cpp
-	shared/Xpl/XplHubConnectedPeripheral.h 
+	shared/xpl/XplConstants.h
+	shared/xpl/XplConstants.cpp
+	shared/xpl/XplActor.cpp
+	shared/xpl/XplActor.h
+	shared/xpl/XplException.h
+	shared/xpl/XplHelper.cpp
+	shared/xpl/XplHelper.h
+	shared/xpl/XplHub.cpp
+	shared/xpl/XplHub.h
+	shared/xpl/XplMessage.cpp
+	shared/xpl/XplMessage.h
+	shared/xpl/XplMessageFactory.cpp
+	shared/xpl/XplMessageFactory.h
+	shared/xpl/XplMessageSchemaIdentifier.cpp
+	shared/xpl/XplMessageSchemaIdentifier.h
+	shared/xpl/XplService.cpp
+	shared/xpl/XplService.h
+	shared/xpl/XplHubConnectedPeripheral.cpp
+	shared/xpl/XplHubConnectedPeripheral.h 
 )
 
 #Append platform specific files
@@ -127,22 +127,22 @@ set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/linux)
 ENDIF()
 
 # Define project folders
-source_group(Event shared/Event/*.*)
+source_group(event shared/event/*.*)
 
-source_group(Exceptions shared/Exceptions/*.*)
+source_group(exceptions shared/exceptions/*.*)
 
 source_group(plugin shared/shared/plugin/*.* )	
 source_group(plugin\\configuration shared/shared/plugin/configuration/*.* )	
 source_group(plugin\\information shared/shared/plugin/information/*.* )	
 source_group(plugin\\Interfaces shared/shared/plugin/Interfaces/*.* )	
 
-source_group(PlatformSpecific\\windows shared/windows/shared/*.*)
-source_group(PlatformSpecific\\linux shared/linux/shared/*.*)
-source_group(PlatformSpecific\\mac shared/mac/shared/*.*)
+source_group(platformSpecific\\windows shared/windows/shared/*.*)
+source_group(platformSpecific\\linux shared/linux/shared/*.*)
+source_group(platformSpecific\\mac shared/mac/shared/*.*)
 
 source_group(serialization shared/shared/serialization/*.* )	
 
-source_group(Xpl shared/Xpl/*.*)
+source_group(xpl shared/xpl/*.*)
 
 
 
