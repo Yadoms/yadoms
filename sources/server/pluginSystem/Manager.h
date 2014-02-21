@@ -1,5 +1,5 @@
 //
-// HardwarePluginManager.h
+// Manager.h
 //
 // Yadoms-plugin manager
 //
@@ -33,7 +33,7 @@ namespace pluginSystem
 
    protected:
       //--------------------------------------------------------------
-      /// \brief			Constructor (protected, use newHardwarePluginManager to create instance)
+      /// \brief			Constructor (protected, use newManager to create instance)
       /// \param [in]   initialDir initial plugins search directory
       /// \param [in]   database database link
       /// \param [in]   eventLoggerDatabase: database link for events on plugins
@@ -67,7 +67,7 @@ namespace pluginSystem
       /// \param [in]   supervisor     the supervisor event handler
       /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
       //--------------------------------------------------------------
-      static boost::shared_ptr<CManager> newPluginManager(const std::string & initialDir, boost::shared_ptr<server::database::IHardwareRequester> database,
+      static boost::shared_ptr<CManager> newManager(const std::string & initialDir, boost::shared_ptr<server::database::IHardwareRequester> database,
          boost::shared_ptr<server::database::IHardwareEventLoggerRequester> eventLoggerDatabase, shared::event::CEventHandler& supervisor, int pluginManagerEventId);
 
       //--------------------------------------------------------------
@@ -94,7 +94,7 @@ namespace pluginSystem
       /// \brief           Read the plugin quality indicator
       /// \param [in] pluginName  Plugin name
       /// \return          The plugin quality indicator, from 0 (worst) to 100 (best),
-      ///                  or IHardwarePluginQualifier::kNoEnoughData if no measure available.
+      ///                  or IQualifier::kNoEnoughData if no measure available.
       /// \throw           CInvalidPluginException if plugin is not available
       //--------------------------------------------------------------
       int getPluginQualityIndicator(const std::string& pluginName) const;

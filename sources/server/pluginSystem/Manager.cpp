@@ -7,7 +7,7 @@
 namespace pluginSystem
 {
 
-boost::shared_ptr<CManager> CManager::newPluginManager(
+boost::shared_ptr<CManager> CManager::newManager(
    const std::string & initialDir,
    boost::shared_ptr<server::database::IHardwareRequester> database,
    boost::shared_ptr<server::database::IHardwareEventLoggerRequester> eventLoggerDatabase,

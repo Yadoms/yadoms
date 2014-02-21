@@ -29,13 +29,13 @@ namespace pluginSystem
       //--------------------------------------------------------------
       virtual ~CQualifier();
 
-      // IHardwarePluginQualifier implementation
+      // IQualifier implementation
       virtual void signalLoad(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation);
       virtual void signalUnload(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation);
       virtual void signalCrash(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation, const std::string& reason);
       virtual bool isSafe(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation);
       virtual int getQualityLevel(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation);
-      // [END] IHardwarePluginQualifier implementation
+      // [END] IQualifier implementation
 
    private:
       //--------------------------------------------------------------

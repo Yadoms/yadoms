@@ -37,7 +37,7 @@ void CFactory::load()
    }
 
    // Log loaded plugin
-   YADOMS_LOG(info) << "Hardware plugin loaded : " << getInformation()->toString();
+   YADOMS_LOG(info) << "Plugin loaded : " << getInformation()->toString();
 }
 
 void CFactory::unload()
