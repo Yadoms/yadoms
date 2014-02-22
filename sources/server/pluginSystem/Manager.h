@@ -272,7 +272,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Plugin directory listener
       //--------------------------------------------------------------
-      boost::shared_ptr<CDirectoryChangeListener> m_pluginsDirectoryMonitor;
+      boost::shared_ptr<tools::CDirectoryChangeListener> m_pluginsDirectoryMonitor;
 
       //--------------------------------------------------------------
       /// \brief			Plugin qualifier

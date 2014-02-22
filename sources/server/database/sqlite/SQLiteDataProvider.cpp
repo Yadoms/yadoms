@@ -64,7 +64,7 @@ bool CSQLiteDataProvider::load()
          YADOMS_LOG(info) << "Check for database update...";
 
          //get the database version
-         CVersion currentVersion;
+         tools::CVersion currentVersion;
 
          try
          {
@@ -81,7 +81,7 @@ bool CSQLiteDataProvider::load()
          
             if(results.size() >= 1)
             {
-               currentVersion = CVersion(results[0]);
+               currentVersion = tools::CVersion(results[0]);
             }
          }
          catch (std::exception & ex)

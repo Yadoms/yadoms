@@ -25,7 +25,7 @@ namespace server {
                virtual ~CSQLiteVersion1();
 
                // ISQLiteVersionUpgrade implementation
-               virtual void checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester, const CVersion & currentVersion);
+               virtual void checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester, const tools::CVersion & currentVersion);
                // [END] ISQLiteVersionUpgrade implementation
 
             private:

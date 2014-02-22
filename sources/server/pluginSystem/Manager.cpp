@@ -74,7 +74,7 @@ void CManager::init()
    }
 
    // Start the directory changes monitor
-   m_pluginsDirectoryMonitor.reset(new CDirectoryChangeListener(m_pluginPath, boost::bind(&CManager::onPluginDirectoryChanges, this, _1)));
+   m_pluginsDirectoryMonitor.reset(new tools::CDirectoryChangeListener(m_pluginPath, boost::bind(&CManager::onPluginDirectoryChanges, this, _1)));
 
 }
 

@@ -3,6 +3,8 @@
 #include <shared/Log.h>
 #include "DirectoryChangeListener.h"
 
+namespace tools
+{
 
 CDirectoryChangeListener::CDirectoryChangeListener(const boost::filesystem::path& path,
                                                    boost::function<void (const boost::asio::dir_monitor_event&)> callback)
@@ -52,3 +54,4 @@ void CDirectoryChangeListener::directoryEventHandler(const boost::system::error_
    m_callback(ev);
 } 
 
+} // namespace tools
