@@ -2,6 +2,8 @@
 #include "Version.h"
 #include <shared/Log.h>
 
+namespace tools
+{
 
 CVersion::CVersion()
 {
@@ -144,3 +146,4 @@ void CVersion::setValues(int major, int minor, int buildNumber, int revision)
    m_versionInfo.push_back(revision);
 }
 
+} // namespace tools

@@ -20,7 +20,7 @@ namespace server {
                ///\param [in] currentVersion version of the actual database
                ///\throw      CSQLiteVersionException if upgrade failed
                //-------------------------------------------------------------------
-               virtual void checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester, const CVersion & currentVersion) =0;
+               virtual void checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester, const tools::CVersion & currentVersion) =0;
             };
 
          } //namespace versioning

@@ -21,11 +21,11 @@ namespace server {
             }
 
             // ISQLiteVersionUpgrade implementation
-            void CSQLiteVersion1::checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester, const CVersion & currentVersion)
+            void CSQLiteVersion1::checkForUpgrade(const boost::shared_ptr<CSQLiteRequester> & pRequester, const tools::CVersion & currentVersion)
             {
                bool bNeedToCreateOrUpgrade = true;
 
-               if(currentVersion >= CVersion(1,0,0,0))
+               if(currentVersion >= tools::CVersion(1,0,0,0))
                {
                   //not for me, version is correct
 
