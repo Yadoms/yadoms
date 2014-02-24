@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "../../shared/exceptions/Exception.hpp"
+#include "../../shared/exception/Exception.hpp"
 #include "../../shared/Log.h"
 #include "NetworkHelper.h"
 #include <sys/types.h>
@@ -28,7 +28,7 @@ std::vector<boost::asio::ip::address> CNetworkHelper::getLocalIps()
    void *in_addr;
 
    if(getifaddrs(&myaddrs) != 0)
-       throw exceptions::CException("Unable to list local IPs");
+       throw exception::CException("Unable to list local IPs");
 
    for (ifa = myaddrs; ifa != NULL; ifa = ifa->ifa_next)
    {
@@ -48,13 +48,13 @@ std::vector<boost::asio::ip::address> CNetworkHelper::getLocalIps()
               char str[INET_ADDRSTRLEN];
 
               if (!inet_ntop(AF_INET, in_addr, str, INET_ADDRSTRLEN))
-                 throw exceptions::CException("Unable to get IP object from in_addr object");
+                 throw exception::CException("Unable to get IP object from in_addr object");
                   
               //we convert string to boost::asio::ip::address
               boost::system::error_code ec;
               boost::asio::ip::address addr = boost::asio::ip::address::from_string(str, ec);
               if (ec)
-                 throw exceptions::CException("Unable to get IP object from ip string : " + std::string(str) + ": " + ec.message());
+                 throw exception::CException("Unable to get IP object from ip string : " + std::string(str) + ": " + ec.message());
                
               result.push_back(addr);
               break;
