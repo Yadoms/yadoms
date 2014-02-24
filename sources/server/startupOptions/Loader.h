@@ -26,7 +26,7 @@ namespace startupOptions
       /// \param[in]  argv    Main argv parameter (from command line)
       /// \throw              CLoaderException
       //--------------------------------------------------------------
-      CLoader(int argc, char** argv);
+      CLoader(int argc, const char* const argv[]);
 
       //--------------------------------------------------------------
       /// \brief	    Destructor
