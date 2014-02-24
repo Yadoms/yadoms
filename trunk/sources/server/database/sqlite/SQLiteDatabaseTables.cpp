@@ -2,7 +2,7 @@
 #include "SQLiteDatabaseTables.h"
 #include "SQLiteDatabaseTablesHelpers.hpp"
 
-namespace server { 
+
 namespace database { 
 namespace sqlite { 
 
@@ -83,4 +83,4 @@ namespace sqlite {
    
 } //namespace sqlite
 } //namespace database 
-} //namespace server
+

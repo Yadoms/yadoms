@@ -14,7 +14,7 @@
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "tools/Version.h"
 
-namespace server { 
+
 namespace database { 
 namespace sqlite { 
 
@@ -74,7 +74,7 @@ bool CSQLiteDataProvider::load()
                Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database").
                And(CConfigurationTable::getNameColumnName(), CQUERY_OP_EQUAL, "Version");
 
-            server::database::sqlite::adapters::CSingleValueAdapter<std::string> adapter;
+            database::sqlite::adapters::CSingleValueAdapter<std::string> adapter;
             m_databaseRequester->queryEntities<std::string>(&adapter, qVersion);
             std::vector<std::string> results = adapter.getResults();
          
@@ -93,7 +93,7 @@ bool CSQLiteDataProvider::load()
             YADOMS_LOG(warning) << "Fail to get version of database : Unkonown exception";
          }
          
-         server::database::sqlite::versioning::CSQLiteVersionUpgraderFactory::GetUpgrader()->checkForUpgrade(m_databaseRequester, currentVersion);
+         database::sqlite::versioning::CSQLiteVersionUpgraderFactory::GetUpgrader()->checkForUpgrade(m_databaseRequester, currentVersion);
 
          //create entities requester (high level querier)
          loadRequesters();
@@ -103,7 +103,7 @@ bool CSQLiteDataProvider::load()
 
       }
    }
-   catch(server::database::sqlite::versioning::CSQLiteVersionException & exc)
+   catch(database::sqlite::versioning::CSQLiteVersionException & exc)
    {
       YADOMS_LOG(error) << "Fail to load database (upgrade error) : " << std::endl << exc.what();
       if(m_pDatabaseHandler != NULL)
@@ -130,20 +130,20 @@ void CSQLiteDataProvider::unload()
 
 void CSQLiteDataProvider::loadRequesters()
 {
-   m_hardwareRequester.reset(new server::database::sqlite::requesters::CSQLiteHardwareRequester(*this, m_databaseRequester));
-   m_configurationRequester.reset(new server::database::sqlite::requesters::CSQLiteConfigurationRequester(*this, m_databaseRequester));
-   m_deviceRequester.reset(new server::database::sqlite::requesters::CSQLiteDeviceRequester(*this, m_databaseRequester));
-   m_acquisitionRequester.reset(new server::database::sqlite::requesters::CSQLiteAcquisitionRequester(*this, m_databaseRequester));
-   m_keywordRequester.reset(new server::database::sqlite::requesters::CSQLiteKeywordRequester(*this, m_databaseRequester));
-   m_pageRequester.reset(new server::database::sqlite::requesters::CSQLitePageRequester(*this, m_databaseRequester));
-   m_widgetRequester.reset(new server::database::sqlite::requesters::CSQLiteWidgetRequester(*this, m_databaseRequester));
-   m_hardwareEventLoggerRequester.reset(new server::database::sqlite::requesters::CSQLiteHardwareEventLoggerRequester(*this, m_databaseRequester));
-   m_eventLoggerRequester.reset(new server::database::sqlite::requesters::CSQLiteEventLoggerRequester(*this, m_databaseRequester));
+   m_hardwareRequester.reset(new database::sqlite::requesters::CSQLiteHardwareRequester(*this, m_databaseRequester));
+   m_configurationRequester.reset(new database::sqlite::requesters::CSQLiteConfigurationRequester(*this, m_databaseRequester));
+   m_deviceRequester.reset(new database::sqlite::requesters::CSQLiteDeviceRequester(*this, m_databaseRequester));
+   m_acquisitionRequester.reset(new database::sqlite::requesters::CSQLiteAcquisitionRequester(*this, m_databaseRequester));
+   m_keywordRequester.reset(new database::sqlite::requesters::CSQLiteKeywordRequester(*this, m_databaseRequester));
+   m_pageRequester.reset(new database::sqlite::requesters::CSQLitePageRequester(*this, m_databaseRequester));
+   m_widgetRequester.reset(new database::sqlite::requesters::CSQLiteWidgetRequester(*this, m_databaseRequester));
+   m_hardwareEventLoggerRequester.reset(new database::sqlite::requesters::CSQLiteHardwareEventLoggerRequester(*this, m_databaseRequester));
+   m_eventLoggerRequester.reset(new database::sqlite::requesters::CSQLiteEventLoggerRequester(*this, m_databaseRequester));
 }
 
 
 
-boost::shared_ptr<server::database::ITransactionalProvider> CSQLiteDataProvider::getTransactionalEngine() 
+boost::shared_ptr<database::ITransactionalProvider> CSQLiteDataProvider::getTransactionalEngine() 
 {
    if(!m_databaseRequester->transactionIsAlreadyCreated())
       return m_databaseRequester; 
@@ -152,4 +152,4 @@ boost::shared_ptr<server::database::ITransactionalProvider> CSQLiteDataProvider:
 
 } //namespace sqlite
 } //namespace database 
-} //namespace server
+

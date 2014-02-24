@@ -11,7 +11,7 @@
 #include "database/entities/HardwareEventLogger.h"
 #include "database/entities/EventLogger.h"
 
-namespace server { 
+
 namespace database { 
 namespace sqlite { 
 
@@ -93,4 +93,4 @@ namespace sqlite {
 
 } //namespace sqlite
 } //namespace database 
-} //namespace server
+

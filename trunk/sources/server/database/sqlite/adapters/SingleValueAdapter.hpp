@@ -2,7 +2,7 @@
 
 #include "SQLite3Extension.hpp"
 
-namespace server { 
+
 namespace database { 
 namespace sqlite { 
 namespace adapters { 
@@ -64,4 +64,4 @@ namespace adapters {
 } //namespace adapters
 } //namespace sqlite
 } //namespace database 
-} //namespace server
+

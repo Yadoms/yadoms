@@ -8,7 +8,7 @@
 #include "SQLiteSystemTables.h"
 #include "database/DatabaseException.hpp"
 
-namespace server { 
+
 namespace database { 
 namespace sqlite { 
 
@@ -54,7 +54,7 @@ namespace sqlite {
       BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kNotYetDefined);
       BOOST_ASSERT(querytoExecute.GetQueryType() == CQuery::kSelect);
 
-      server::database::sqlite::adapters::CSingleValueAdapter<int> countAdapter;
+      database::sqlite::adapters::CSingleValueAdapter<int> countAdapter;
       queryEntities<int>(&countAdapter, querytoExecute);
 
       if(countAdapter.getResults().size() >= 1)
@@ -80,7 +80,7 @@ namespace sqlite {
       BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kNotYetDefined);
       BOOST_ASSERT(querytoExecute.GetQueryType() == CQuery::kSelect);
 
-      server::database::sqlite::adapters::CGenericAdapter genericAdapter;
+      database::sqlite::adapters::CGenericAdapter genericAdapter;
       queryEntities<std::map<std::string, std::string> >(&genericAdapter, querytoExecute);
       return genericAdapter.getResults();
    }
@@ -155,4 +155,4 @@ namespace sqlite {
 
 } //namespace sqlite
 } //namespace database 
-} //namespace server
+

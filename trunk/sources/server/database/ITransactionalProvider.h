@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace server { 
+
 namespace database { 
    
    class ITransactionalProvider
@@ -26,5 +26,5 @@ namespace database {
       //--------------------------------------------------------------
       virtual void transactionRollback() = 0;
    };
-} //namespace server 
+ 
 } //namespace database 

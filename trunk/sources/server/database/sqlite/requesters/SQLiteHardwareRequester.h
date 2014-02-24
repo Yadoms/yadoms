@@ -3,7 +3,7 @@
 #include "server/database/IHardwareRequester.h"
 
 
-namespace server { 
+
    namespace database { 
       namespace sqlite { 
 
@@ -30,10 +30,10 @@ namespace server {
                virtual ~CSQLiteHardwareRequester();
 
                // IHardwareRequester implementation
-               virtual int addHardware(boost::shared_ptr<server::database::entities::CHardware> newHardware);
+               virtual int addHardware(boost::shared_ptr<database::entities::CHardware> newHardware);
                virtual void removeHardware(int hardwareId);
-               virtual boost::shared_ptr<server::database::entities::CHardware> getHardware(int hardwareId);
-               virtual std::vector<boost::shared_ptr<server::database::entities::CHardware> > getHardwares(bool evenDeleted);
+               virtual boost::shared_ptr<database::entities::CHardware> getHardware(int hardwareId);
+               virtual std::vector<boost::shared_ptr<database::entities::CHardware> > getHardwares(bool evenDeleted);
                virtual void updateHardwareConfiguration(int hardwareId, const std::string& newConfiguration);
                virtual void enableInstance(int hardwareId, bool enable);
                virtual void disableAllPluginInstance(const std::string& pluginName);
@@ -57,4 +57,4 @@ namespace server {
          } //namespace requesters
       } //namespace sqlite
    } //namespace database 
-} //namespace server
+

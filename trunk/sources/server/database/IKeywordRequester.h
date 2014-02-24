@@ -2,7 +2,7 @@
 
 #include "entities/Keyword.h"
 
-namespace server { 
+
 namespace database { 
 
    class IKeywordRequester
@@ -42,5 +42,5 @@ namespace database {
       {
       }
    };
-} //namespace server 
+ 
 } //namespace database 

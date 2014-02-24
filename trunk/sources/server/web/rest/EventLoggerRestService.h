@@ -6,7 +6,7 @@
 class CEventLoggerRestService : public IRestService
 {
 public:
-   CEventLoggerRestService(boost::shared_ptr<server::database::IDataProvider> dataProvider);
+   CEventLoggerRestService(boost::shared_ptr<database::IDataProvider> dataProvider);
    virtual ~CEventLoggerRestService();
 
 public:
@@ -18,6 +18,6 @@ public:
  
 
 private:
-   boost::shared_ptr<server::database::IDataProvider> m_dataProvider;
+   boost::shared_ptr<database::IDataProvider> m_dataProvider;
    std::string m_restKeyword;
 };

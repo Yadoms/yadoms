@@ -8,7 +8,7 @@
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 
-namespace server { 
+
    namespace database { 
       namespace sqlite { 
          namespace requesters { 
@@ -24,7 +24,7 @@ namespace server {
 
 
             // IDeviceRequester implementation
-            int CSQLiteDeviceRequester::addDevice(boost::shared_ptr<server::database::entities::CDevice> newDevice)
+            int CSQLiteDeviceRequester::addDevice(boost::shared_ptr<database::entities::CDevice> newDevice)
             {
                CQuery qInsert;
                qInsert. InsertInto(CDeviceTable::getTableName(), CDeviceTable::getDataSourceColumnName(), CDeviceTable::getNameColumnName(), CDeviceTable::getConfigurationColumnName()).
@@ -40,7 +40,7 @@ namespace server {
                   And(CDeviceTable::getConfigurationColumnName(), CQUERY_OP_EQUAL, newDevice->getConfiguration()).
                   OrderBy(CDeviceTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
-               server::database::sqlite::adapters::CSingleValueAdapter<int> adapter;
+               database::sqlite::adapters::CSingleValueAdapter<int> adapter;
                m_databaseRequester->queryEntities<int>(&adapter, qSelect);
                if(adapter.getResults().size() >= 1)
                   return adapter.getResults()[0];
@@ -48,15 +48,15 @@ namespace server {
                   throw shared::exception::CEmptyResult("Cannot retrieve inserted Hardware");      
             }
 
-            boost::shared_ptr<server::database::entities::CDevice> CSQLiteDeviceRequester::getDevice(int deviceId)
+            boost::shared_ptr<database::entities::CDevice> CSQLiteDeviceRequester::getDevice(int deviceId)
             {
                CQuery qSelect;
                qSelect. Select().
                   From(CDeviceTable::getTableName()).
                   Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
 
-               server::database::sqlite::adapters::CDeviceAdapter adapter;
-               m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CDevice> >(&adapter, qSelect);
+               database::sqlite::adapters::CDeviceAdapter adapter;
+               m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
                if(adapter.getResults().size() >= 1)
                   return adapter.getResults()[0];
                else
@@ -66,14 +66,14 @@ namespace server {
                }
             }
 
-            std::vector<boost::shared_ptr<server::database::entities::CDevice> > CSQLiteDeviceRequester::getDevices()
+            std::vector<boost::shared_ptr<database::entities::CDevice> > CSQLiteDeviceRequester::getDevices()
             {
                CQuery qSelect;
                qSelect. Select().
                   From(CDeviceTable::getTableName());
 
-               server::database::sqlite::adapters::CDeviceAdapter adapter;
-               m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CDevice> >(&adapter, qSelect);
+               database::sqlite::adapters::CDeviceAdapter adapter;
+               m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
                return adapter.getResults();
             }
 
@@ -101,5 +101,5 @@ namespace server {
          } //namespace requesters
       } //namespace sqlite
    } //namespace database 
-} //namespace server
+
 

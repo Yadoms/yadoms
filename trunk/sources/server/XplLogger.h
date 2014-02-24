@@ -6,7 +6,7 @@
 class CXplLogger: public shared::CThreadBase, public shared::event::CEventHandler
 {
 public:
-   CXplLogger(boost::shared_ptr<server::database::IDataProvider> dataProvider);
+   CXplLogger(boost::shared_ptr<database::IDataProvider> dataProvider);
    virtual ~CXplLogger();
 
 private:
@@ -21,5 +21,5 @@ private:
    // [END] CThreadBase Implementation
 
 private:
-   boost::shared_ptr<server::database::IDataProvider> m_dataProvider;
+   boost::shared_ptr<database::IDataProvider> m_dataProvider;
 };

@@ -8,7 +8,7 @@
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 
-namespace server {    namespace database {       namespace sqlite {          namespace requesters { 
+   namespace database {       namespace sqlite {          namespace requesters { 
 
    CSQLitePageRequester::CSQLitePageRequester(const CSQLiteDataProvider & databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
       :m_databaseHandler(databaseHandler), m_databaseRequester(databaseRequester)
@@ -21,7 +21,7 @@ namespace server {    namespace database {       namespace sqlite {          nam
 
 
    // IPageRequester implementation
-   int CSQLitePageRequester::addPage(const server::database::entities::CPage & page)
+   int CSQLitePageRequester::addPage(const database::entities::CPage & page)
    {
 
       CQuery qInsert;
@@ -45,7 +45,7 @@ namespace server {    namespace database {       namespace sqlite {          nam
          Where(CPageTable::getNameColumnName(), CQUERY_OP_EQUAL, page.getName()).
          OrderBy(CPageTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
-      server::database::sqlite::adapters::CSingleValueAdapter<int> adapter;
+      database::sqlite::adapters::CSingleValueAdapter<int> adapter;
       m_databaseRequester->queryEntities<int>(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
          return adapter.getResults()[0];
@@ -68,7 +68,7 @@ namespace server {    namespace database {       namespace sqlite {          nam
          Where(CPageTable::getNameColumnName(), CQUERY_OP_EQUAL, name).
          OrderBy(CPageTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
-      server::database::sqlite::adapters::CSingleValueAdapter<int> adapter;
+      database::sqlite::adapters::CSingleValueAdapter<int> adapter;
       m_databaseRequester->queryEntities<int>(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
          return adapter.getResults()[0];
@@ -78,15 +78,15 @@ namespace server {    namespace database {       namespace sqlite {          nam
 
 
 
-   boost::shared_ptr<server::database::entities::CPage> CSQLitePageRequester::getPage(int pageId)
+   boost::shared_ptr<database::entities::CPage> CSQLitePageRequester::getPage(int pageId)
    {
       CQuery qSelect;
       qSelect. Select().
          From(CPageTable::getTableName()).
          Where(CPageTable::getIdColumnName(), CQUERY_OP_EQUAL, pageId);
 
-      server::database::sqlite::adapters::CPageAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CPage> >(&adapter, qSelect);
+      database::sqlite::adapters::CPageAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CPage> >(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
          return adapter.getResults()[0];
       else
@@ -96,14 +96,14 @@ namespace server {    namespace database {       namespace sqlite {          nam
       }
    }
 
-   std::vector<boost::shared_ptr<server::database::entities::CPage> > CSQLitePageRequester::getPages()
+   std::vector<boost::shared_ptr<database::entities::CPage> > CSQLitePageRequester::getPages()
    {
       CQuery qSelect;
       qSelect. Select().
          From(CPageTable::getTableName());
 
-      server::database::sqlite::adapters::CPageAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CPage> >(&adapter, qSelect);
+      database::sqlite::adapters::CPageAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CPage> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
@@ -139,6 +139,6 @@ namespace server {    namespace database {       namespace sqlite {          nam
 } //namespace requesters
 } //namespace sqlite
 } //namespace database 
-} //namespace server
+
 
 

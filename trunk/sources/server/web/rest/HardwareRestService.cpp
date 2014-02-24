@@ -9,7 +9,7 @@
 
 std::string CHardwareRestService::m_restKeyword= std::string("hardware");
 
-CHardwareRestService::CHardwareRestService(boost::shared_ptr<server::database::IDataProvider> dataProvider)
+CHardwareRestService::CHardwareRestService(boost::shared_ptr<database::IDataProvider> dataProvider)
    :m_dataProvider(dataProvider)
 {
 }
@@ -38,7 +38,7 @@ void CHardwareRestService::configureDispatcher(CRestDispatcher & dispatcher)
 
 CJson CHardwareRestService::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const CJson & requestContent)
 {
-   boost::shared_ptr<server::database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
+   boost::shared_ptr<database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
    CJson result;
    try
    {
@@ -73,15 +73,15 @@ CJson CHardwareRestService::transactionalMethod(CRestDispatcher::CRestMethodHand
       objectId = parameters[1];
 
    CHardwareEntitySerializer hes;
-   boost::shared_ptr<server::database::entities::CHardware> hardwareFound =  m_dataProvider->getHardwareRequester()->getHardware(boost::lexical_cast<int>(objectId));
+   boost::shared_ptr<database::entities::CHardware> hardwareFound =  m_dataProvider->getHardwareRequester()->getHardware(boost::lexical_cast<int>(objectId));
    return CJsonResult::GenerateSuccess(hes.serialize(*hardwareFound.get()));
 }
 
 CJson CHardwareRestService::getAllHardwares(const std::vector<std::string> & parameters, const CJson & requestContent)
 {
    CHardwareEntitySerializer hes;
-   std::vector< boost::shared_ptr<server::database::entities::CHardware> > hwList = m_dataProvider->getHardwareRequester()->getHardwares();
-   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<server::database::entities::CHardware>::SerializeCollection(hwList, hes, getRestKeyword()));
+   std::vector< boost::shared_ptr<database::entities::CHardware> > hwList = m_dataProvider->getHardwareRequester()->getHardwares();
+   return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<database::entities::CHardware>::SerializeCollection(hwList, hes, getRestKeyword()));
 }
 
 CJson CHardwareRestService::createHardware(const std::vector<std::string> & parameters, const CJson & requestContent)

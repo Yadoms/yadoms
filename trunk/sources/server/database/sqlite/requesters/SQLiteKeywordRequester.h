@@ -2,7 +2,7 @@
 
 #include "server/database/IKeywordRequester.h"
 
-namespace server { 
+
    namespace database { 
       namespace sqlite { 
 
@@ -29,9 +29,9 @@ namespace server {
                virtual ~CSQLiteKeywordRequester();
 
                // IKeywordRequester implementation
-               virtual void addKeyword(boost::shared_ptr<server::database::entities::CKeyword> newKeyword);
-               virtual boost::shared_ptr<server::database::entities::CKeyword> getKeyword(const std::string & keyword);
-               virtual std::vector<boost::shared_ptr<server::database::entities::CKeyword> > getKeywords();
+               virtual void addKeyword(boost::shared_ptr<database::entities::CKeyword> newKeyword);
+               virtual boost::shared_ptr<database::entities::CKeyword> getKeyword(const std::string & keyword);
+               virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getKeywords();
                virtual void removeKeyword(const std::string & keyword);
                // [END] IKeywordRequester implementation
 
@@ -50,4 +50,4 @@ namespace server {
          } //namespace requesters
       } //namespace sqlite
    } //namespace database 
-} //namespace server
+

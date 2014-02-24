@@ -8,7 +8,7 @@
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 
-namespace server { 
+
    namespace database { 
       namespace sqlite { 
          namespace requesters { 
@@ -41,7 +41,7 @@ namespace server {
                   And(CEventLoggerTable::getEventDateColumnName(), CQUERY_OP_EQUAL, insertDate).
                   OrderBy(CEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC);
                
-               server::database::sqlite::adapters::CSingleValueAdapter<int> adapter;
+               database::sqlite::adapters::CSingleValueAdapter<int> adapter;
                m_databaseRequester->queryEntities<int>(&adapter, qSelect);
                if(adapter.getResults().size() >= 1)
                   return adapter.getResults()[0];
@@ -49,21 +49,21 @@ namespace server {
                   throw shared::exception::CEmptyResult("Cannot retrieve inserted ");      
             }
 
-            int CSQLiteEventLoggerRequester::addEvent(const server::database::entities::CEventLogger & logEntry)
+            int CSQLiteEventLoggerRequester::addEvent(const database::entities::CEventLogger & logEntry)
             {
                return addEvent(logEntry.getEventType(), logEntry.getOptionalData());
             }
 
 
-            std::vector<boost::shared_ptr<server::database::entities::CEventLogger> > CSQLiteEventLoggerRequester::getEvents()
+            std::vector<boost::shared_ptr<database::entities::CEventLogger> > CSQLiteEventLoggerRequester::getEvents()
             {
                CQuery qSelect;
                qSelect. Select().
                   From(CEventLoggerTable::getTableName()).
                   OrderBy(CEventLoggerTable::getEventDateColumnName(), CQUERY_ORDER_DESC);
 
-               server::database::sqlite::adapters::CEventLoggerAdapter adapter;
-               m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CEventLogger> >(&adapter, qSelect);
+               database::sqlite::adapters::CEventLoggerAdapter adapter;
+               m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CEventLogger> >(&adapter, qSelect);
                return adapter.getResults();
             }
             // [END] IEventLoggerRequester implementation
@@ -71,4 +71,4 @@ namespace server {
          } //namespace requesters
       } //namespace sqlite
    } //namespace database 
-} //namespace server
+

@@ -7,7 +7,7 @@
 #include "Query.h"
 #include "database/ITransactionalProvider.h"
 
-namespace server { 
+
 namespace database { 
 namespace sqlite { 
 
@@ -64,7 +64,7 @@ namespace sqlite {
       /// \return	       the vector of entities
       //--------------------------------------------------------------
       template<class TEntity>
-      void queryEntities(server::database::sqlite::adapters::ISQLiteResultAdapter<TEntity> * pAdapter, const CQuery & querytoExecute)
+      void queryEntities(database::sqlite::adapters::ISQLiteResultAdapter<TEntity> * pAdapter, const CQuery & querytoExecute)
       {
          BOOST_ASSERT(pAdapter != NULL);
 
@@ -153,4 +153,4 @@ namespace sqlite {
 
 } //namespace sqlite
 } //namespace database 
-} //namespace server
+

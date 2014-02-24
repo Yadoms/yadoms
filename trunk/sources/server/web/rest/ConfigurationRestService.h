@@ -7,7 +7,7 @@
 class CConfigurationRestService : public IRestService
 {
 public:
-   CConfigurationRestService(boost::shared_ptr<server::database::IDataProvider> dataProvider);
+   CConfigurationRestService(boost::shared_ptr<database::IDataProvider> dataProvider);
    virtual ~CConfigurationRestService();
 
 public:
@@ -30,6 +30,6 @@ public:
    CJson deleteAllConfigurations(const std::vector<std::string> & parameters, const CJson & requestContent);
 
 private:
-   boost::shared_ptr<server::database::IDataProvider> m_dataProvider;
+   boost::shared_ptr<database::IDataProvider> m_dataProvider;
    static std::string m_restKeyword;
 };

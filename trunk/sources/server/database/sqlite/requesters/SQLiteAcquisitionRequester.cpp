@@ -8,7 +8,7 @@
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 
-namespace server { 
+
    namespace database { 
       namespace sqlite { 
          namespace requesters { 
@@ -24,7 +24,7 @@ namespace server {
 
 
             // IAcquisitionRequester implementation
-            void CSQLiteAcquisitionRequester::addAcquisition(const server::database::entities::CAcquisition & newAcquisition)
+            void CSQLiteAcquisitionRequester::addAcquisition(const database::entities::CAcquisition & newAcquisition)
             {
                CQuery qInsert;
                qInsert. InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getSourceColumnName(), CAcquisitionTable::getKeywordColumnName(), CAcquisitionTable::getValueColumnName(), CAcquisitionTable::getDateColumnName()).
@@ -33,15 +33,15 @@ namespace server {
                   throw shared::exception::CEmptyResult("No lines affected");
             }
 
-            boost::shared_ptr<server::database::entities::CAcquisition> CSQLiteAcquisitionRequester::getAcquisition(int acquisitionId)
+            boost::shared_ptr<database::entities::CAcquisition> CSQLiteAcquisitionRequester::getAcquisition(int acquisitionId)
             {
                CQuery qSelect;
                qSelect. Select().
                   From(CAcquisitionTable::getTableName()).
                   Where(CAcquisitionTable::getIdColumnName(), CQUERY_OP_EQUAL, acquisitionId);
 
-               server::database::sqlite::adapters::CAcquisitionAdapter adapter;
-               m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CAcquisition> >(&adapter, qSelect);
+               database::sqlite::adapters::CAcquisitionAdapter adapter;
+               m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CAcquisition> >(&adapter, qSelect);
                if(adapter.getResults().size() >= 1)
                   return adapter.getResults()[0];
                else
@@ -52,7 +52,7 @@ namespace server {
 
             }
 
-            std::vector<boost::shared_ptr<server::database::entities::CAcquisition> > CSQLiteAcquisitionRequester::getAcquisitions(const std::string & source, const std::string & keyword)
+            std::vector<boost::shared_ptr<database::entities::CAcquisition> > CSQLiteAcquisitionRequester::getAcquisitions(const std::string & source, const std::string & keyword)
             {
                CQuery qSelect;
                qSelect. Select().
@@ -60,13 +60,13 @@ namespace server {
                   Where(CAcquisitionTable::getSourceColumnName(), CQUERY_OP_EQUAL, source).
                   And(CAcquisitionTable::getKeywordColumnName(), CQUERY_OP_EQUAL, keyword);
 
-               server::database::sqlite::adapters::CAcquisitionAdapter adapter;
-               m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CAcquisition> >(&adapter, qSelect);
+               database::sqlite::adapters::CAcquisitionAdapter adapter;
+               m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CAcquisition> >(&adapter, qSelect);
                return adapter.getResults();
             }
 
 
-            std::vector<boost::shared_ptr<server::database::entities::CAcquisition> > CSQLiteAcquisitionRequester::getLastAcquisitions(const std::string & source)
+            std::vector<boost::shared_ptr<database::entities::CAcquisition> > CSQLiteAcquisitionRequester::getLastAcquisitions(const std::string & source)
             {
                CQuery qSelect;
                qSelect. Select().
@@ -75,8 +75,8 @@ namespace server {
                   GroupBy(CAcquisitionTable::getKeywordColumnName()).
                   OrderBy(CAcquisitionTable::getDateColumnName(), CQUERY_ORDER_DESC);
 
-               server::database::sqlite::adapters::CAcquisitionAdapter adapter;
-               m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CAcquisition> >(&adapter, qSelect);
+               database::sqlite::adapters::CAcquisitionAdapter adapter;
+               m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CAcquisition> >(&adapter, qSelect);
                return adapter.getResults();
             }
 
@@ -92,4 +92,4 @@ namespace server {
          } //namespace requesters
       } //namespace sqlite
    } //namespace database 
-} //namespace server
+

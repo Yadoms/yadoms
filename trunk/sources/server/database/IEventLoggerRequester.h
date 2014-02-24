@@ -3,7 +3,7 @@
 #include "entities/EventLogger.h"
 #include <shared/StringExtension.h>
 
-namespace server { 
+
 namespace database { 
 
    class IEventLoggerRequester
@@ -40,5 +40,5 @@ namespace database {
       {
       }
    };
-} //namespace server 
+ 
 } //namespace database 

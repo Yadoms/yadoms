@@ -8,7 +8,7 @@
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 
-namespace server { 
+
    namespace database { 
       namespace sqlite { 
          namespace requesters { 
@@ -24,7 +24,7 @@ namespace server {
 
 
             // IWidgetRequester implementation
-            int CSQLiteWidgetRequester::addWidget(const server::database::entities::CWidget & newWidget)
+            int CSQLiteWidgetRequester::addWidget(const database::entities::CWidget & newWidget)
             {
                CQuery qInsert;
                if(newWidget.getId() != 0)
@@ -52,7 +52,7 @@ namespace server {
                   And(CWidgetTable::getConfigurationColumnName(), CQUERY_OP_EQUAL, newWidget.getConfiguration()).
                   OrderBy(CWidgetTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
-               server::database::sqlite::adapters::CSingleValueAdapter<int> adapter;
+               database::sqlite::adapters::CSingleValueAdapter<int> adapter;
                m_databaseRequester->queryEntities<int>(&adapter, qSelect);
                if(adapter.getResults().size() >= 1)
                   return adapter.getResults()[0];
@@ -60,15 +60,15 @@ namespace server {
                   throw shared::exception::CEmptyResult("Cannot retrieve inserted Widget");      
             }
 
-            boost::shared_ptr<server::database::entities::CWidget> CSQLiteWidgetRequester::getWidget(int widgetId)
+            boost::shared_ptr<database::entities::CWidget> CSQLiteWidgetRequester::getWidget(int widgetId)
             {
                CQuery qSelect;
                qSelect. Select().
                   From(CWidgetTable::getTableName()).
                   Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetId);
 
-               server::database::sqlite::adapters::CWidgetAdapter adapter;
-               m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CWidget> >(&adapter, qSelect);
+               database::sqlite::adapters::CWidgetAdapter adapter;
+               m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CWidget> >(&adapter, qSelect);
                if(adapter.getResults().size() >= 1)
                   return adapter.getResults()[0];
                else
@@ -78,26 +78,26 @@ namespace server {
                }
             }
 
-            std::vector<boost::shared_ptr<server::database::entities::CWidget> > CSQLiteWidgetRequester::getWidgets()
+            std::vector<boost::shared_ptr<database::entities::CWidget> > CSQLiteWidgetRequester::getWidgets()
             {
                CQuery qSelect;
                qSelect. Select().
                   From(CWidgetTable::getTableName());
 
-               server::database::sqlite::adapters::CWidgetAdapter adapter;
-               m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CWidget> >(&adapter, qSelect);
+               database::sqlite::adapters::CWidgetAdapter adapter;
+               m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CWidget> >(&adapter, qSelect);
                return adapter.getResults();
             }
 
-            std::vector<boost::shared_ptr<server::database::entities::CWidget> > CSQLiteWidgetRequester::getWidgetsForPage(int pageId)
+            std::vector<boost::shared_ptr<database::entities::CWidget> > CSQLiteWidgetRequester::getWidgetsForPage(int pageId)
             {
                CQuery qSelect;
                qSelect. Select().
                   From(CWidgetTable::getTableName()).
                   Where(CWidgetTable::getIdPageColumnName(), CQUERY_OP_EQUAL, pageId);
 
-               server::database::sqlite::adapters::CWidgetAdapter adapter;
-               m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CWidget> >(&adapter, qSelect);
+               database::sqlite::adapters::CWidgetAdapter adapter;
+               m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CWidget> >(&adapter, qSelect);
                return adapter.getResults();
             }
 
@@ -169,6 +169,6 @@ namespace server {
          } //namespace requesters
       } //namespace sqlite
    } //namespace database 
-} //namespace server
+
 
 

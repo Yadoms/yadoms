@@ -176,7 +176,7 @@
 ///\brief Macro which provide the entity class:
 ///       Example for _classname= Hardware -> CHardware
 //-------------------------------------------------------
-#define DECLARE_JSON_ENTITY_CLASS(_classname) BOOST_PP_CAT(server::database::entities::C,_classname)
+#define DECLARE_JSON_ENTITY_CLASS(_classname) BOOST_PP_CAT(database::entities::C,_classname)
 
 //-------------------------------------------------------
 ///\brief Macro which provide the entity definition class:

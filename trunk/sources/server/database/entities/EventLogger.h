@@ -4,7 +4,7 @@
 
 #define DELCARE_FIELD_CEVENT_LOGGER(t,n)   DELCARE_FIELD(CEventLogger,t,n)
 
-namespace server { 
+
 namespace database { 
 namespace entities {
 
@@ -27,5 +27,5 @@ namespace entities {
 
 } //namespace entities
 } //namespace database
-} //namespace server
+
    

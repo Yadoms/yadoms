@@ -13,14 +13,14 @@
 #include "SQLiteRequester.h"
 #include "sqlite3.h"
 
-namespace server { 
+
 namespace database { 
 namespace sqlite { 
 
    //--------------------------------------------------------------
    /// \Brief		   Database provider for SQLite
    //--------------------------------------------------------------
-   class CSQLiteDataProvider : public server::database::IDataProvider
+   class CSQLiteDataProvider : public database::IDataProvider
    {
    public:
       //--------------------------------------------------------------
@@ -38,16 +38,16 @@ namespace sqlite {
       // IDatabaseProvider implementation
       bool load();
       void unload();
-      boost::shared_ptr<server::database::ITransactionalProvider> getTransactionalEngine();
-      boost::shared_ptr<server::database::IHardwareRequester> getHardwareRequester() { return m_hardwareRequester; }
-      boost::shared_ptr<server::database::IConfigurationRequester> getConfigurationRequester() { return m_configurationRequester; }
-      boost::shared_ptr<server::database::IDeviceRequester> getDeviceRequester() { return m_deviceRequester; }
-      boost::shared_ptr<server::database::IAcquisitionRequester> getAcquisitionRequester() { return m_acquisitionRequester; }
-      boost::shared_ptr<server::database::IKeywordRequester> getKeywordRequester() { return m_keywordRequester; }
-      boost::shared_ptr<server::database::IPageRequester> getPageRequester() { return m_pageRequester; }
-      boost::shared_ptr<server::database::IWidgetRequester> getWidgetRequester() { return m_widgetRequester; }
-      boost::shared_ptr<server::database::IHardwareEventLoggerRequester> getHardwareEventLoggerRequester() { return m_hardwareEventLoggerRequester; }
-      boost::shared_ptr<server::database::IEventLoggerRequester> getEventLoggerRequester() { return m_eventLoggerRequester; }
+      boost::shared_ptr<database::ITransactionalProvider> getTransactionalEngine();
+      boost::shared_ptr<database::IHardwareRequester> getHardwareRequester() { return m_hardwareRequester; }
+      boost::shared_ptr<database::IConfigurationRequester> getConfigurationRequester() { return m_configurationRequester; }
+      boost::shared_ptr<database::IDeviceRequester> getDeviceRequester() { return m_deviceRequester; }
+      boost::shared_ptr<database::IAcquisitionRequester> getAcquisitionRequester() { return m_acquisitionRequester; }
+      boost::shared_ptr<database::IKeywordRequester> getKeywordRequester() { return m_keywordRequester; }
+      boost::shared_ptr<database::IPageRequester> getPageRequester() { return m_pageRequester; }
+      boost::shared_ptr<database::IWidgetRequester> getWidgetRequester() { return m_widgetRequester; }
+      boost::shared_ptr<database::IHardwareEventLoggerRequester> getHardwareEventLoggerRequester() { return m_hardwareEventLoggerRequester; }
+      boost::shared_ptr<database::IEventLoggerRequester> getEventLoggerRequester() { return m_eventLoggerRequester; }
 
 
       // [END] IDatabaseProvider implementation
@@ -62,47 +62,47 @@ namespace sqlite {
       //--------------------------------------------------------------
       /// \Brief		Hardware requester
       //--------------------------------------------------------------
-      boost::shared_ptr<server::database::sqlite::requesters::CSQLiteHardwareRequester>		m_hardwareRequester;
+      boost::shared_ptr<database::sqlite::requesters::CSQLiteHardwareRequester>		m_hardwareRequester;
       
       //--------------------------------------------------------------
       /// \Brief		Hardware requester
       //--------------------------------------------------------------
-      boost::shared_ptr<server::database::sqlite::requesters::CSQLiteConfigurationRequester>		m_configurationRequester;
+      boost::shared_ptr<database::sqlite::requesters::CSQLiteConfigurationRequester>		m_configurationRequester;
 
       //--------------------------------------------------------------
       /// \Brief		Device requester
       //--------------------------------------------------------------
-      boost::shared_ptr<server::database::sqlite::requesters::CSQLiteDeviceRequester>		m_deviceRequester;
+      boost::shared_ptr<database::sqlite::requesters::CSQLiteDeviceRequester>		m_deviceRequester;
 
       //--------------------------------------------------------------
       /// \Brief		Acquisition requester
       //--------------------------------------------------------------
-      boost::shared_ptr<server::database::sqlite::requesters::CSQLiteAcquisitionRequester>		m_acquisitionRequester;
+      boost::shared_ptr<database::sqlite::requesters::CSQLiteAcquisitionRequester>		m_acquisitionRequester;
 
       //--------------------------------------------------------------
       /// \Brief		Keyword requester
       //--------------------------------------------------------------
-      boost::shared_ptr<server::database::sqlite::requesters::CSQLiteKeywordRequester>		m_keywordRequester;
+      boost::shared_ptr<database::sqlite::requesters::CSQLiteKeywordRequester>		m_keywordRequester;
 
       //--------------------------------------------------------------
       /// \Brief		Page requester
       //--------------------------------------------------------------
-      boost::shared_ptr<server::database::sqlite::requesters::CSQLitePageRequester>		m_pageRequester;
+      boost::shared_ptr<database::sqlite::requesters::CSQLitePageRequester>		m_pageRequester;
 
       //--------------------------------------------------------------
       /// \Brief		Widget requester
       //--------------------------------------------------------------
-      boost::shared_ptr<server::database::sqlite::requesters::CSQLiteWidgetRequester>		m_widgetRequester;
+      boost::shared_ptr<database::sqlite::requesters::CSQLiteWidgetRequester>		m_widgetRequester;
 
       //--------------------------------------------------------------
       /// \Brief		HardwareEventLogger requester
       //--------------------------------------------------------------
-      boost::shared_ptr<server::database::sqlite::requesters::CSQLiteHardwareEventLoggerRequester> m_hardwareEventLoggerRequester;
+      boost::shared_ptr<database::sqlite::requesters::CSQLiteHardwareEventLoggerRequester> m_hardwareEventLoggerRequester;
       
       //--------------------------------------------------------------
       /// \Brief		EventLogger requester
       //--------------------------------------------------------------
-      boost::shared_ptr<server::database::sqlite::requesters::CSQLiteEventLoggerRequester> m_eventLoggerRequester;
+      boost::shared_ptr<database::sqlite::requesters::CSQLiteEventLoggerRequester> m_eventLoggerRequester;
       
       
       //--------------------------------------------------------------
@@ -124,4 +124,4 @@ namespace sqlite {
 
 } //namespace sqlite
 } //namespace database 
-} //namespace server
+

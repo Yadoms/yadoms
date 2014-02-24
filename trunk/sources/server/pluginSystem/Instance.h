@@ -29,7 +29,7 @@ namespace pluginSystem
       /// \param [in]   supervisor     the supervisor event handler
       /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
       //--------------------------------------------------------------
-      CInstance(const boost::shared_ptr<const CFactory> plugin, const boost::shared_ptr<server::database::entities::CHardware> context,
+      CInstance(const boost::shared_ptr<const CFactory> plugin, const boost::shared_ptr<database::entities::CHardware> context,
          const boost::shared_ptr<IQualifier> qualifier, shared::event::CEventHandler& supervisor,
          int pluginManagerEventId, boost::asio::io_service * pluginIOService);
 
@@ -69,7 +69,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			The database accessor
       //--------------------------------------------------------------
-      const boost::shared_ptr<server::database::entities::CHardware> m_context;
+      const boost::shared_ptr<database::entities::CHardware> m_context;
 
       //--------------------------------------------------------------
       /// \brief			The plugin qualifier

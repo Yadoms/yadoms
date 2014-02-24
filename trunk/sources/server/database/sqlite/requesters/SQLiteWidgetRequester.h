@@ -2,7 +2,7 @@
 
 #include "server/database/IWidgetRequester.h"
 
-namespace server { 
+
    namespace database { 
       namespace sqlite { 
 
@@ -29,10 +29,10 @@ namespace server {
                virtual ~CSQLiteWidgetRequester();
 
                // IWidgetRequester implementation
-               virtual int addWidget(const server::database::entities::CWidget & newWidget);
-               virtual boost::shared_ptr<server::database::entities::CWidget> getWidget(int widgetId);
-               virtual std::vector<boost::shared_ptr<server::database::entities::CWidget> > getWidgets();
-               virtual std::vector<boost::shared_ptr<server::database::entities::CWidget> > getWidgetsForPage(int pageId);
+               virtual int addWidget(const database::entities::CWidget & newWidget);
+               virtual boost::shared_ptr<database::entities::CWidget> getWidget(int widgetId);
+               virtual std::vector<boost::shared_ptr<database::entities::CWidget> > getWidgets();
+               virtual std::vector<boost::shared_ptr<database::entities::CWidget> > getWidgetsForPage(int pageId);
                virtual void updateWidgetConfiguration(int widgetId, const std::string& newConfiguration);
                virtual void updateWidgetSize(int widgetId, int sizeX, int sizeY);
                virtual void updateWidgetPosition(int widgetId, int positionX, int positionY);
@@ -56,4 +56,4 @@ namespace server {
          } //namespace requesters
       } //namespace sqlite
    } //namespace database 
-} //namespace server
+

@@ -3,7 +3,7 @@
 #include "entities/HardwareEventLogger.h"
 #include <shared/StringExtension.h>
 
-namespace server { 
+
 namespace database { 
 
    class IHardwareEventLoggerRequester
@@ -57,5 +57,5 @@ namespace database {
       {
       }
    };
-} //namespace server 
+ 
 } //namespace database 

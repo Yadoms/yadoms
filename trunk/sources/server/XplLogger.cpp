@@ -6,7 +6,7 @@
 #include <shared/xpl/XplService.h>
 
 
-CXplLogger::CXplLogger(boost::shared_ptr<server::database::IDataProvider> dataProvider)
+CXplLogger::CXplLogger(boost::shared_ptr<database::IDataProvider> dataProvider)
    :CThreadBase("XplLogger"), m_dataProvider(dataProvider)
 {
 }
@@ -42,7 +42,7 @@ void CXplLogger::doWork()
                   std::pair<std::string, std::string> bodyLine;
                   BOOST_FOREACH(bodyLine, xplMessage.getBody())
                   {
-                     server::database::entities::CAcquisition acq;
+                     database::entities::CAcquisition acq;
                      acq.setSource(xplMessage.getSource().toString());
                      acq.setKeyword(bodyLine.first);
                      acq.setValue(bodyLine.second);

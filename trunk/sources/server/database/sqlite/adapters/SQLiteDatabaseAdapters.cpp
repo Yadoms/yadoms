@@ -4,7 +4,7 @@
 #include <shared/Log.h>
 #include "AdapterHelpers.hpp"
 
-namespace server { 
+
 namespace database { 
 namespace sqlite { 
 namespace adapters { 
@@ -25,7 +25,7 @@ namespace adapters {
       ((Value)(std::string)(""))
       ((DefaultValue)(std::string)(""))
       ((Description)(std::string)(""))
-      ((SecurityAccess)(server::database::entities::CConfiguration::ESecurityAccess)(server::database::entities::CConfiguration::kNone)(int))
+      ((SecurityAccess)(database::entities::CConfiguration::ESecurityAccess)(database::entities::CConfiguration::kNone)(int))
       ((LastModificationDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
       )
 
@@ -72,7 +72,7 @@ namespace adapters {
       ((PluginName)(std::string)(""))
       ((PluginVersion)(std::string)(""))
       ((PluginRelease)(shared::plugin::information::EReleaseType)(shared::plugin::information::kStable)(int))
-      ((EventType)(server::database::entities::CHardwareEventLogger::EEventType)(server::database::entities::CHardwareEventLogger::kUnload)(int))
+      ((EventType)(database::entities::CHardwareEventLogger::EEventType)(database::entities::CHardwareEventLogger::kUnload)(int))
       ((Message)(std::string)(""))
    )
 
@@ -87,4 +87,4 @@ namespace adapters {
 } //namespace adapters
 } //namespace sqlite
 } //namespace database 
-} //namespace server
+

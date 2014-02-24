@@ -9,7 +9,7 @@
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 
-namespace server { 
+
    namespace database { 
       namespace sqlite { 
          namespace requesters { 
@@ -24,7 +24,7 @@ namespace server {
             }
 
             // IKeywordRequester implementation
-            void CSQLiteKeywordRequester::addKeyword(boost::shared_ptr<server::database::entities::CKeyword> newKeyword)
+            void CSQLiteKeywordRequester::addKeyword(boost::shared_ptr<database::entities::CKeyword> newKeyword)
             {
                CQuery qInsert;
                qInsert.InsertInto(CKeywordTable::getTableName(), CKeywordTable::getNameColumnName()).
@@ -34,9 +34,9 @@ namespace server {
                   throw shared::exception::CEmptyResult("No lines affected");
             }
 
-            boost::shared_ptr<server::database::entities::CKeyword> CSQLiteKeywordRequester::getKeyword(const std::string & keyword)
+            boost::shared_ptr<database::entities::CKeyword> CSQLiteKeywordRequester::getKeyword(const std::string & keyword)
             {
-               server::database::sqlite::adapters::CKeywordAdapter adapter;
+               database::sqlite::adapters::CKeywordAdapter adapter;
 
                CQuery qSelect;
 
@@ -44,7 +44,7 @@ namespace server {
                   From(CKeywordTable::getTableName()).
                   Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
 
-               m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CKeyword> >(&adapter, qSelect);
+               m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CKeyword> >(&adapter, qSelect);
                if (adapter.getResults().empty())
                {
                   // Keyword not found
@@ -54,13 +54,13 @@ namespace server {
                return adapter.getResults().at(0);
             }
 
-            std::vector<boost::shared_ptr<server::database::entities::CKeyword> > CSQLiteKeywordRequester::getKeywords()
+            std::vector<boost::shared_ptr<database::entities::CKeyword> > CSQLiteKeywordRequester::getKeywords()
             {
-               server::database::sqlite::adapters::CKeywordAdapter adapter;
+               database::sqlite::adapters::CKeywordAdapter adapter;
                CQuery qSelect;
                qSelect. Select().
                   From(CKeywordTable::getTableName());
-               m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CKeyword> >(&adapter, qSelect);
+               m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CKeyword> >(&adapter, qSelect);
                return adapter.getResults();
             }
 
@@ -77,4 +77,4 @@ namespace server {
          } //namespace requesters
       } //namespace sqlite
    } //namespace database 
-} //namespace server
+

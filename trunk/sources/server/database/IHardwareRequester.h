@@ -2,7 +2,7 @@
 
 #include "entities/Hardware.h"
 
-namespace server { 
+
 namespace database { 
 
    class IHardwareRequester
@@ -66,5 +66,5 @@ namespace database {
       {
       }
    };
-} //namespace server 
+ 
 } //namespace database 

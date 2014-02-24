@@ -4,7 +4,7 @@
 
 #define DELCARE_FIELD_CHARDWARE(t,n)   DELCARE_FIELD(CHardware,t,n)
 
-namespace server { 
+
 namespace database { 
 namespace entities {
 
@@ -29,4 +29,3 @@ namespace entities {
 
 } //namespace entities
 } //namespace database
-} //namespace server
