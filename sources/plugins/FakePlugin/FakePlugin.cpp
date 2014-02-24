@@ -4,7 +4,7 @@
 #include <shared/xpl/XplService.h>
 #include <shared/xpl/XplMessage.h>
 #include <shared/xpl/XplConstants.h>
-#include <shared/exceptions/BadConversion.hpp>
+#include <shared/exception/BadConversion.hpp>
 #include <shared/StringExtension.h>
 
 

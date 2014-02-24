@@ -1,6 +1,6 @@
 ﻿#include "stdafx.h"
 #include "ConfigurationRestService.h"
-#include <shared/exceptions/NotImplemented.hpp>
+#include <shared/exception/NotImplemented.hpp>
 #include "json/JsonSerializers.h"
 #include "json/JsonResult.h"
 #include "json/JsonCollectionSerializer.h"

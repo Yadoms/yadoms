@@ -1,6 +1,6 @@
 #pragma once
 #include "Event.hpp"
-#include <shared/exceptions/BadConversion.hpp>
+#include <shared/exception/BadConversion.hpp>
 
 namespace shared { namespace event
 {

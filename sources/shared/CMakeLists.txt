@@ -20,14 +20,14 @@ set(SHARED_LIB_SRC
 	shared/event/EventBase.hpp
 	shared/event/EventHandler.hpp
 
- 	shared/exceptions/BadConversion.hpp
-	shared/exceptions/EmptyResult.hpp
-	shared/exceptions/Exception.hpp
-	shared/exceptions/InvalidParameter.hpp
-	shared/exceptions/OutOfRange.hpp
-	shared/exceptions/NotImplemented.hpp
-	shared/exceptions/NotSupported.hpp
-	shared/exceptions/NullReference.hpp
+ 	shared/exception/BadConversion.hpp
+	shared/exception/EmptyResult.hpp
+	shared/exception/Exception.hpp
+	shared/exception/InvalidParameter.hpp
+	shared/exception/OutOfRange.hpp
+	shared/exception/NotImplemented.hpp
+	shared/exception/NotSupported.hpp
+	shared/exception/NullReference.hpp
 
 	shared/plugin/ImplementationHelper.h
 	shared/plugin/IPlugin.h
@@ -128,7 +128,7 @@ ENDIF()
 # Define project folders
 source_group(event shared/event/*.*)
 
-source_group(exceptions shared/exceptions/*.*)
+source_group(exception shared/exception/*.*)
 
 source_group(plugin shared/shared/plugin/*.* )	
 source_group(plugin\\configuration shared/shared/plugin/configuration/*.* )	

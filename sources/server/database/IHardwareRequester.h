@@ -19,7 +19,7 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief           Get hardware informations
       /// \param [in] hardwareId   Hardware plugin instance Id
-      /// \throw           CInvalidParameterException if hardwareId is unknown
+      /// \throw           CInvalidParameter if hardwareId is unknown
       //--------------------------------------------------------------
       virtual boost::shared_ptr<entities::CHardware> getHardware(int hardwareId) = 0;
 

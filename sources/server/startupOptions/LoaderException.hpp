@@ -4,7 +4,7 @@
 #pragma once
 
 #include "IStartupOptions.h"
-#include <shared/exceptions/Exception.hpp>
+#include <shared/exception/Exception.hpp>
 
 namespace startupOptions
 {

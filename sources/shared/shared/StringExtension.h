@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/Export.h>
-#include "exceptions/Exception.hpp"
+#include "exception/Exception.hpp"
 #include <stdarg.h>
 
 namespace shared

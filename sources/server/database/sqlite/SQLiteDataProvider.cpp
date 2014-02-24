@@ -9,7 +9,7 @@
 #include <shared/Log.h>
 #include "versioning/SQLiteVersionUpgraderFactory.h"
 #include "versioning/SQLiteVersionException.h"
-#include <shared/exceptions/NotSupported.hpp>
+#include <shared/exception/NotSupported.hpp>
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "tools/Version.h"

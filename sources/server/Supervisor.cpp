@@ -4,7 +4,7 @@
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "database/DatabaseException.hpp"
 #include <shared/Log.h>
-#include <shared/exceptions/NotSupported.hpp>
+#include <shared/exception/NotSupported.hpp>
 #include "web/webem/WebServer.h"
 #include "web/WebServerManager.h"
 #include <shared/xpl/XplHub.h>

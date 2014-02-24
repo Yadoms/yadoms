@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "PTreeToJsonSerializer.h"
-#include "../exceptions/InvalidParameter.hpp"
+#include "../exception/InvalidParameter.hpp"
 
 namespace shared { namespace serialization
 {

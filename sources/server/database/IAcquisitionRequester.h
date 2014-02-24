@@ -18,7 +18,7 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief           Get acquisition informations
       /// \param [in]      acquisitionId   Acquisition  Id
-      /// \throw           CInvalidParameterException if acquisitionId is unknown
+      /// \throw           CInvalidParameter if acquisitionId is unknown
       //--------------------------------------------------------------
       virtual boost::shared_ptr<entities::CAcquisition> getAcquisition(int acquisitionId) = 0;
 

@@ -73,14 +73,14 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief           Enable a registered instance of plugin (and start it)
       /// \param [in] id   Instance Id
-      /// \throw           CInvalidParameterException if id is unknown
+      /// \throw           CInvalidParameter if id is unknown
       //--------------------------------------------------------------
       void enableInstance(int id);
 
       //--------------------------------------------------------------
       /// \brief           Disable a running instance of plugin (and stop it)
       /// \param [in] id   Instance Id
-      /// \throw           CInvalidParameterException if id is unknown
+      /// \throw           CInvalidParameter if id is unknown
       //--------------------------------------------------------------
       void disableInstance(int id);
 
@@ -221,7 +221,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief           Start a registered instance of plugin
       /// \param [in] id   Instance Id
-      /// \throw           CInvalidParameterException if id is unknown
+      /// \throw           CInvalidParameter if id is unknown
       /// \note            Just start instance, doesn't modify data in base
       //--------------------------------------------------------------
       void startInstance(int id);
@@ -229,7 +229,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief           Stop a running instance of plugin
       /// \param [in] id   Instance Id
-      /// \throw           CInvalidParameterException if id is unknown
+      /// \throw           CInvalidParameter if id is unknown
       /// \note            Just start instance, doesn't modify data in base
       //--------------------------------------------------------------
       void stopInstance(int id);

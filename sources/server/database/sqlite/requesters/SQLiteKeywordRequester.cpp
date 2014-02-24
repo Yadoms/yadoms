@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "SQLiteKeywordRequester.h"
-#include <shared/exceptions/NotImplemented.hpp>
+#include <shared/exception/NotImplemented.hpp>
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "database/sqlite/adapters/SQLiteDatabaseAdapters.h"
-#include <shared/exceptions/EmptyResult.hpp>
-#include <shared/exceptions/InvalidParameter.hpp>
+#include <shared/exception/EmptyResult.hpp>
+#include <shared/exception/InvalidParameter.hpp>
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 
