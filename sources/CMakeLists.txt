@@ -134,6 +134,10 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 
 	#warning: unused parameter (from boost)
 	add_definitions("-Wno-unused-parameter")
+	
+	#warning:  typedef ‘value_t’ locally defined but not used [-Wunused-local-typedefs]
+	add_definitions("-Wno-unused-local-typedefs")
+	
 endif()
 
 
