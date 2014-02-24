@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/exceptions/Exception.hpp>
 
-namespace server { 
+
    namespace database { 
       namespace sqlite { 
          namespace versioning { 
@@ -32,4 +32,4 @@ namespace server {
          } //namespace versioning
       } //namespace sqlite
    } //namespace database 
-} //namespace server
+

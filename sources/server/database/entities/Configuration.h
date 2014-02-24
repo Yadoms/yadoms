@@ -4,7 +4,7 @@
 
 #define DELCARE_FIELD_CCONFIGURATION(t,n)   DELCARE_FIELD(CConfiguration,t,n)
 
-namespace server { 
+
 namespace database { 
 namespace entities {
 
@@ -39,4 +39,4 @@ namespace entities {
  
 } //namespace entities
 } //namespace database
-} //namespace server
+

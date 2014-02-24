@@ -4,7 +4,7 @@
 
 #define DELCARE_FIELD_CWIDGET(t,n)   DELCARE_FIELD(CWidget,t,n)
 
-namespace server { 
+
 namespace database { 
 namespace entities {
 
@@ -39,4 +39,4 @@ namespace entities {
 
 } //namespace entities
 } //namespace database
-} //namespace server
+

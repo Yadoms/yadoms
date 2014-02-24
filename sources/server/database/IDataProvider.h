@@ -10,7 +10,7 @@
 #include "IHardwareEventLoggerRequester.h"
 #include "ITransactionalProvider.h"
 
-namespace server { 
+
 namespace database { 
 
    class IDataProvider
@@ -101,5 +101,5 @@ namespace database {
       }
    };
 
-} //namespace server 
+ 
 } //namespace database 

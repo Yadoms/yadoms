@@ -2,7 +2,7 @@
 
 #include "entities/Widget.h"
 
-namespace server { 
+
 namespace database { 
 
    class IWidgetRequester
@@ -80,5 +80,5 @@ namespace database {
       {
       }
    };
-} //namespace server 
+ 
 } //namespace database 

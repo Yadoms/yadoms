@@ -8,7 +8,7 @@
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 
-namespace server { 
+
 namespace database { 
 namespace sqlite { 
 namespace requesters { 
@@ -24,7 +24,7 @@ namespace requesters {
 
 
    // IConfigurationRequester implementation
-   void CSQLiteConfigurationRequester::create(server::database::entities::CConfiguration& configurationToCreate)
+   void CSQLiteConfigurationRequester::create(database::entities::CConfiguration& configurationToCreate)
    {
       CQuery qInsert;
       qInsert. InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName(), CConfigurationTable::getDefaultValueColumnName(), CConfigurationTable::getLastModificationDateColumnName()).
@@ -33,7 +33,7 @@ namespace requesters {
          throw shared::exception::CEmptyResult("No lines affected");
    }
 
-   boost::shared_ptr<server::database::entities::CConfiguration> CSQLiteConfigurationRequester::getConfiguration(const std::string & section, const std::string & name)
+   boost::shared_ptr<database::entities::CConfiguration> CSQLiteConfigurationRequester::getConfiguration(const std::string & section, const std::string & name)
    {
       CQuery qSelect;
       qSelect. Select().
@@ -41,8 +41,8 @@ namespace requesters {
                Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section).
                And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, name);
 
-      server::database::sqlite::adapters::CConfigurationAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CConfiguration> >(&adapter, qSelect);
+      database::sqlite::adapters::CConfigurationAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CConfiguration> >(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
          return adapter.getResults()[0];
       else
@@ -52,7 +52,7 @@ namespace requesters {
       }
    }
 
-   std::vector<boost::shared_ptr<server::database::entities::CConfiguration> > CSQLiteConfigurationRequester::getConfigurations(const std::string & section)
+   std::vector<boost::shared_ptr<database::entities::CConfiguration> > CSQLiteConfigurationRequester::getConfigurations(const std::string & section)
    {
       CQuery qSelect;
       qSelect. Select().
@@ -60,25 +60,25 @@ namespace requesters {
                Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section).
                OrderBy(CConfigurationTable::getNameColumnName(), CQUERY_ORDER_ASC);
 
-      server::database::sqlite::adapters::CConfigurationAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CConfiguration> >(&adapter, qSelect);
+      database::sqlite::adapters::CConfigurationAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CConfiguration> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
-   std::vector<boost::shared_ptr<server::database::entities::CConfiguration> > CSQLiteConfigurationRequester::getConfigurations()
+   std::vector<boost::shared_ptr<database::entities::CConfiguration> > CSQLiteConfigurationRequester::getConfigurations()
    {
       CQuery qSelect;
       qSelect. Select().
                From(CConfigurationTable::getTableName()).
                OrderBy(CConfigurationTable::getSectionColumnName(), CQUERY_ORDER_ASC, CConfigurationTable::getNameColumnName(), CQUERY_ORDER_ASC);
 
-      server::database::sqlite::adapters::CConfigurationAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CConfiguration> >(&adapter, qSelect);
+      database::sqlite::adapters::CConfigurationAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CConfiguration> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
 
-   void CSQLiteConfigurationRequester::updateConfiguration(server::database::entities::CConfiguration& configurationToUpdate)
+   void CSQLiteConfigurationRequester::updateConfiguration(database::entities::CConfiguration& configurationToUpdate)
    {
       CQuery qUpdate;
       qUpdate. Update(CConfigurationTable::getTableName()).
@@ -91,7 +91,7 @@ namespace requesters {
          throw shared::exception::CEmptyResult("No lines affected");
    }
 
-   void CSQLiteConfigurationRequester::removeConfiguration(server::database::entities::CConfiguration& configurationToRemove)
+   void CSQLiteConfigurationRequester::removeConfiguration(database::entities::CConfiguration& configurationToRemove)
    {
       CQuery qDelete;
       qDelete. DeleteFrom(CConfigurationTable::getTableName()).
@@ -105,7 +105,7 @@ namespace requesters {
 } //namespace requesters
 } //namespace sqlite
 } //namespace database 
-} //namespace server
+
 
 
 

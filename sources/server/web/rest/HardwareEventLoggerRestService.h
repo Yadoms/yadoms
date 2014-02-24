@@ -6,7 +6,7 @@
 class CHardwareEventLoggerRestService : public IRestService
 {
 public:
-   CHardwareEventLoggerRestService(boost::shared_ptr<server::database::IDataProvider> dataProvider);
+   CHardwareEventLoggerRestService(boost::shared_ptr<database::IDataProvider> dataProvider);
    virtual ~CHardwareEventLoggerRestService();
 
 public:
@@ -20,6 +20,6 @@ public:
    CJson getLogsForPluginNameFromDate(const std::vector<std::string> & parameters, const CJson & requestContent);  
 
 private:
-   boost::shared_ptr<server::database::IDataProvider> m_dataProvider;
+   boost::shared_ptr<database::IDataProvider> m_dataProvider;
    std::string m_restKeyword;
 };

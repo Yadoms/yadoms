@@ -4,7 +4,7 @@
 
 #define DELCARE_FIELD_CPAGE(t,n)   DELCARE_FIELD(CPage,t,n)
 
-namespace server { 
+
 namespace database { 
 namespace entities {
 
@@ -29,4 +29,4 @@ namespace entities {
 
 } //namespace entities
 } //namespace database
-} //namespace server
+

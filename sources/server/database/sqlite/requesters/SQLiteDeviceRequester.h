@@ -4,7 +4,7 @@
 class CSQLiteDataProvider;
 class CSQLiteRequester;
 
-namespace server { 
+
    namespace database { 
       namespace sqlite { 
 
@@ -31,9 +31,9 @@ namespace server {
                virtual ~CSQLiteDeviceRequester();
 
                // IDeviceRequester implementation
-               virtual int addDevice(boost::shared_ptr<server::database::entities::CDevice> newDevice);
-               virtual boost::shared_ptr<server::database::entities::CDevice> getDevice(int deviceId);
-               virtual std::vector<boost::shared_ptr<server::database::entities::CDevice> > getDevices();
+               virtual int addDevice(boost::shared_ptr<database::entities::CDevice> newDevice);
+               virtual boost::shared_ptr<database::entities::CDevice> getDevice(int deviceId);
+               virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevices();
                virtual void updateDeviceConfiguration(int deviceId, const std::string& newConfiguration);
                virtual void removeDevice(int deviceId);
                // [END] IDeviceRequester implementation
@@ -53,4 +53,4 @@ namespace server {
          } //namespace requesters
       } //namespace sqlite
    } //namespace database 
-} //namespace server
+

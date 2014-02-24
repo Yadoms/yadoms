@@ -39,7 +39,7 @@ void CSupervisor::doWork()
 
    try
    {
-      boost::shared_ptr<server::database::IDataProvider> pDataProvider(new server::database::sqlite::CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
+      boost::shared_ptr<database::IDataProvider> pDataProvider(new database::sqlite::CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
       if (!pDataProvider->load())
       {
          throw shared::exception::CException("Fail to load database");

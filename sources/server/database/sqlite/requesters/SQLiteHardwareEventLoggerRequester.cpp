@@ -8,7 +8,7 @@
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 
-namespace server { 
+
    namespace database { 
       namespace sqlite { 
          namespace requesters { 
@@ -24,7 +24,7 @@ namespace server {
 
             // IHardwareEventLoggerRequester implementation
 
-            int CSQLiteHardwareEventLoggerRequester::addEvent(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType pluginReleaseType, const server::database::entities::CHardwareEventLogger::EEventType eventType, const std::string & message /*= CStringExtension::EmptyString*/)
+            int CSQLiteHardwareEventLoggerRequester::addEvent(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType pluginReleaseType, const database::entities::CHardwareEventLogger::EEventType eventType, const std::string & message /*= CStringExtension::EmptyString*/)
             {
                boost::posix_time::ptime insertDate = boost::posix_time::second_clock::universal_time();
 
@@ -45,7 +45,7 @@ namespace server {
                   And(CHardwareEventLoggerTable::getEventDateColumnName(), CQUERY_OP_EQUAL, insertDate).
                   OrderBy(CHardwareEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
-               server::database::sqlite::adapters::CSingleValueAdapter<int> adapter;
+               database::sqlite::adapters::CSingleValueAdapter<int> adapter;
                m_databaseRequester->queryEntities<int>(&adapter, qSelect);
                if(adapter.getResults().size() >= 1)
                   return adapter.getResults()[0];
@@ -53,12 +53,12 @@ namespace server {
                   throw shared::exception::CEmptyResult("Cannot retrieve inserted Hardware");      
             }
 
-            int CSQLiteHardwareEventLoggerRequester::addEvent(const server::database::entities::CHardwareEventLogger & hardwareLogEntry)
+            int CSQLiteHardwareEventLoggerRequester::addEvent(const database::entities::CHardwareEventLogger & hardwareLogEntry)
             {
                return addEvent(hardwareLogEntry.getPluginName(), hardwareLogEntry.getPluginVersion(), hardwareLogEntry.getPluginRelease(), hardwareLogEntry.getEventType(), hardwareLogEntry.getMessage());
             }
 
-            std::vector<boost::shared_ptr<server::database::entities::CHardwareEventLogger> > CSQLiteHardwareEventLoggerRequester::getHardwareEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType pluginReleaseType)
+            std::vector<boost::shared_ptr<database::entities::CHardwareEventLogger> > CSQLiteHardwareEventLoggerRequester::getHardwareEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType pluginReleaseType)
             {
                CQuery qSelect;
                qSelect. Select().
@@ -68,13 +68,13 @@ namespace server {
                   And(CHardwareEventLoggerTable::getPluginReleaseColumnName(), CQUERY_OP_EQUAL, pluginReleaseType).
                   OrderBy(CHardwareEventLoggerTable::getEventDateColumnName(), CQUERY_ORDER_DESC);
 
-               server::database::sqlite::adapters::CHardwareEventLoggerAdapter adapter;
-               m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CHardwareEventLogger> >(&adapter, qSelect);
+               database::sqlite::adapters::CHardwareEventLoggerAdapter adapter;
+               m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CHardwareEventLogger> >(&adapter, qSelect);
                return adapter.getResults();
             }
 
 
-            std::vector<boost::shared_ptr<server::database::entities::CHardwareEventLogger> > CSQLiteHardwareEventLoggerRequester::getHardwareEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType pluginReleaseType, const boost::posix_time::ptime & fromDate)
+            std::vector<boost::shared_ptr<database::entities::CHardwareEventLogger> > CSQLiteHardwareEventLoggerRequester::getHardwareEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType pluginReleaseType, const boost::posix_time::ptime & fromDate)
             {
                CQuery qSelect;
                qSelect. Select().
@@ -85,8 +85,8 @@ namespace server {
                   And(CHardwareEventLoggerTable::getEventDateColumnName(), CQUERY_OP_SUP, fromDate).
                   OrderBy(CHardwareEventLoggerTable::getEventDateColumnName(), CQUERY_ORDER_DESC);
 
-               server::database::sqlite::adapters::CHardwareEventLoggerAdapter adapter;
-               m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CHardwareEventLogger> >(&adapter, qSelect);
+               database::sqlite::adapters::CHardwareEventLoggerAdapter adapter;
+               m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CHardwareEventLogger> >(&adapter, qSelect);
                return adapter.getResults();
             }
             // [END] IHardwareEventLoggerRequester implementation
@@ -94,4 +94,4 @@ namespace server {
          } //namespace requesters
       } //namespace sqlite
    } //namespace database 
-} //namespace server
+

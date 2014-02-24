@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/exceptions/Exception.hpp>
 
-namespace server { 
+
 namespace database { 
 
    //--------------------------------------------------------------
@@ -26,5 +26,5 @@ namespace database {
       }
    };
    
-} //namespace server 
+ 
 } //namespace database 

@@ -4,7 +4,7 @@
 
 #define DELCARE_FIELD_CDEVICE(t,n)   DELCARE_FIELD(CDevice,t,n)
 
-namespace server { 
+
 namespace database { 
 namespace entities {
 
@@ -27,4 +27,3 @@ namespace entities {
 
 } //namespace entities
 } //namespace database
-} //namespace server

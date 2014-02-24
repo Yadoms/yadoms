@@ -2,7 +2,7 @@
 
 #include "entities/Configuration.h"
 
-namespace server { 
+
 namespace database { 
 
    class IConfigurationRequester
@@ -61,5 +61,5 @@ namespace database {
       }
    };
    
-} //namespace server 
+ 
 } //namespace database 

@@ -2,7 +2,7 @@
 
 #include "server/database/IAcquisitionRequester.h"
 
-namespace server { 
+
    namespace database { 
       namespace sqlite { 
 
@@ -29,10 +29,10 @@ namespace server {
                virtual ~CSQLiteAcquisitionRequester();
 
                // IAcquisitionRequester implementation
-               virtual void addAcquisition(const server::database::entities::CAcquisition & newAcquisition);
-               virtual boost::shared_ptr<server::database::entities::CAcquisition> getAcquisition(int acquisitionId);
-               virtual std::vector<boost::shared_ptr<server::database::entities::CAcquisition> > getAcquisitions(const std::string & source, const std::string & keyword);
-               virtual std::vector<boost::shared_ptr<server::database::entities::CAcquisition> > getLastAcquisitions(const std::string & source);
+               virtual void addAcquisition(const database::entities::CAcquisition & newAcquisition);
+               virtual boost::shared_ptr<database::entities::CAcquisition> getAcquisition(int acquisitionId);
+               virtual std::vector<boost::shared_ptr<database::entities::CAcquisition> > getAcquisitions(const std::string & source, const std::string & keyword);
+               virtual std::vector<boost::shared_ptr<database::entities::CAcquisition> > getLastAcquisitions(const std::string & source);
                virtual void removeAcquisition(int acquisitionId);   
                // [END] IAcquisitionRequester implementation
 
@@ -51,4 +51,4 @@ namespace server {
          } //namespace requesters
       } //namespace sqlite
    } //namespace database 
-} //namespace server
+

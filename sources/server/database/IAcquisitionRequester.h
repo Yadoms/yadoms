@@ -2,7 +2,7 @@
 
 #include "entities/Acquisition.h"
 
-namespace server { 
+
 namespace database { 
 
    class IAcquisitionRequester
@@ -52,5 +52,5 @@ namespace database {
       }
    };
 
-} //namespace server 
+ 
 } //namespace database 

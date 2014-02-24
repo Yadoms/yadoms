@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Query.h"
 
-namespace server { 
+
 namespace database { 
 namespace sqlite { 
 
@@ -374,4 +374,4 @@ namespace sqlite {
 
 } //namespace sqlite
 } //namespace database 
-} //namespace server
+

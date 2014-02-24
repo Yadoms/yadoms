@@ -8,7 +8,7 @@
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 
-namespace server { 
+
    namespace database { 
       namespace sqlite { 
          namespace requesters { 
@@ -23,7 +23,7 @@ namespace server {
             }
 
             // IHardwareRequester implementation
-            int CSQLiteHardwareRequester::addHardware(boost::shared_ptr<server::database::entities::CHardware> newHardware)
+            int CSQLiteHardwareRequester::addHardware(boost::shared_ptr<database::entities::CHardware> newHardware)
             {
                CQuery qInsert;
 
@@ -44,7 +44,7 @@ namespace server {
                   And(CHardwareTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, newHardware->getPluginName()).
                   OrderBy(CHardwareTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
-               server::database::sqlite::adapters::CSingleValueAdapter<int> adapter;
+               database::sqlite::adapters::CSingleValueAdapter<int> adapter;
                m_databaseRequester->queryEntities<int>(&adapter, qSelect);
                if(adapter.getResults().size() >= 1)
                   return adapter.getResults()[0];
@@ -52,9 +52,9 @@ namespace server {
                   throw shared::exception::CEmptyResult("Cannot retrieve inserted Hardware");
             }
 
-            boost::shared_ptr<server::database::entities::CHardware> CSQLiteHardwareRequester::getHardware(int hardwareId)
+            boost::shared_ptr<database::entities::CHardware> CSQLiteHardwareRequester::getHardware(int hardwareId)
             {
-               server::database::sqlite::adapters::CHardwareAdapter adapter;
+               database::sqlite::adapters::CHardwareAdapter adapter;
 
                CQuery qSelect;
 
@@ -63,7 +63,7 @@ namespace server {
                   Where(CHardwareTable::getIdColumnName(), CQUERY_OP_EQUAL, hardwareId).
                   And(CHardwareTable::getDeletedColumnName(), CQUERY_OP_EQUAL, false);
 
-               m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CHardware> >(&adapter, qSelect);
+               m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CHardware> >(&adapter, qSelect);
                if (adapter.getResults().empty())
                {
                   // Hardware not found
@@ -73,9 +73,9 @@ namespace server {
                return adapter.getResults().at(0);
             }
 
-            std::vector<boost::shared_ptr<server::database::entities::CHardware> > CSQLiteHardwareRequester::getHardwares(bool evenDeleted)
+            std::vector<boost::shared_ptr<database::entities::CHardware> > CSQLiteHardwareRequester::getHardwares(bool evenDeleted)
             {
-               server::database::sqlite::adapters::CHardwareAdapter adapter;
+               database::sqlite::adapters::CHardwareAdapter adapter;
 
                CQuery qSelect;
                qSelect.Select().From(CHardwareTable::getTableName());
@@ -83,14 +83,14 @@ namespace server {
                if (!evenDeleted)
                   qSelect.Where(CHardwareTable::getDeletedColumnName(), CQUERY_OP_EQUAL, false);
 
-               m_databaseRequester->queryEntities<boost::shared_ptr<server::database::entities::CHardware> >(&adapter, qSelect);
+               m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CHardware> >(&adapter, qSelect);
                return adapter.getResults();
             }
 
             //test
             std::vector<std::string> CSQLiteHardwareRequester::getHardwareNameList()
             {
-               server::database::sqlite::adapters::CSingleValueAdapter<std::string> adapter;
+               database::sqlite::adapters::CSingleValueAdapter<std::string> adapter;
 
                CQuery qSelect;
                qSelect. Select(CHardwareTable::getNameColumnName()).
@@ -150,4 +150,4 @@ namespace server {
          } //namespace requesters
       } //namespace sqlite
    } //namespace database 
-} //namespace server
+

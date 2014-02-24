@@ -2,7 +2,7 @@
 
 #include "entities/Device.h"
 
-namespace server { 
+
 namespace database { 
 
 
@@ -53,6 +53,6 @@ namespace database {
       }
    };
 
-} //namespace server 
+ 
 } //namespace database 
    

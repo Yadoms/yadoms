@@ -7,7 +7,7 @@
 class CWidgetRestService : public IRestService
 {
 public:
-   CWidgetRestService(boost::shared_ptr<server::database::IDataProvider> dataProvider, const std::string & webServerPath);
+   CWidgetRestService(boost::shared_ptr<database::IDataProvider> dataProvider, const std::string & webServerPath);
    virtual ~CWidgetRestService();
 
 public:
@@ -31,7 +31,7 @@ public:
    
    CJson transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const CJson & requestContent);
 private:
-   boost::shared_ptr<server::database::IDataProvider> m_dataProvider;
+   boost::shared_ptr<database::IDataProvider> m_dataProvider;
    static std::string m_restKeyword;
    std::string m_webServerPath;
 };

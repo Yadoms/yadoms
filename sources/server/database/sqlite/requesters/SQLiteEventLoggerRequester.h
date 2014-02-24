@@ -4,7 +4,7 @@
 
 
 
-namespace server { 
+
    namespace database { 
       namespace sqlite { 
 
@@ -32,8 +32,8 @@ namespace server {
 
                // IEventLoggerRequester implementation
                virtual int addEvent(const std::string & eventType, const std::string & optionalData);
-               virtual int addEvent(const server::database::entities::CEventLogger & logEntry);
-               virtual std::vector<boost::shared_ptr<server::database::entities::CEventLogger> > getEvents(); 
+               virtual int addEvent(const database::entities::CEventLogger & logEntry);
+               virtual std::vector<boost::shared_ptr<database::entities::CEventLogger> > getEvents(); 
                // [END] IEventLoggerRequester implementation
 
             private:
@@ -51,4 +51,4 @@ namespace server {
          } //namespace requesters
       } //namespace sqlite
    } //namespace database 
-} //namespace server
+

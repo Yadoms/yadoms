@@ -40,7 +40,7 @@ namespace pluginSystem
       /// \param [in]   supervisor     the supervisor event handler
       /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
       //--------------------------------------------------------------
-      CManager(const std::string & initialDir, boost::shared_ptr<server::database::IHardwareRequester> database, boost::shared_ptr<server::database::IHardwareEventLoggerRequester> eventLoggerDatabase,
+      CManager(const std::string & initialDir, boost::shared_ptr<database::IHardwareRequester> database, boost::shared_ptr<database::IHardwareEventLoggerRequester> eventLoggerDatabase,
          shared::event::CEventHandler& supervisor, int pluginManagerEventId);
 
       //--------------------------------------------------------------
@@ -67,8 +67,8 @@ namespace pluginSystem
       /// \param [in]   supervisor     the supervisor event handler
       /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
       //--------------------------------------------------------------
-      static boost::shared_ptr<CManager> newManager(const std::string & initialDir, boost::shared_ptr<server::database::IHardwareRequester> database,
-         boost::shared_ptr<server::database::IHardwareEventLoggerRequester> eventLoggerDatabase, shared::event::CEventHandler& supervisor, int pluginManagerEventId);
+      static boost::shared_ptr<CManager> newManager(const std::string & initialDir, boost::shared_ptr<database::IHardwareRequester> database,
+         boost::shared_ptr<database::IHardwareEventLoggerRequester> eventLoggerDatabase, shared::event::CEventHandler& supervisor, int pluginManagerEventId);
 
       //--------------------------------------------------------------
       /// \brief           Enable a registered instance of plugin (and start it)
@@ -146,7 +146,7 @@ namespace pluginSystem
       /// \return          Map of instances ID of all known instances, started or not, even deleted.
       ///                  Keys are instance ID, values are instances details
       //--------------------------------------------------------------
-      typedef std::map<int, boost::shared_ptr <const server::database::entities::CHardware> > PluginDetailedInstanceMap;
+      typedef std::map<int, boost::shared_ptr <const database::entities::CHardware> > PluginDetailedInstanceMap;
       boost::shared_ptr<PluginDetailedInstanceMap> getInstanceListDetails () const;
 
       //--------------------------------------------------------------
@@ -262,7 +262,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Database access point
       //--------------------------------------------------------------
-      boost::shared_ptr<server::database::IHardwareRequester> m_database;
+      boost::shared_ptr<database::IHardwareRequester> m_database;
 
       //--------------------------------------------------------------
       /// \brief			Plugin path

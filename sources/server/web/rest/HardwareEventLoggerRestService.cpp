@@ -6,7 +6,7 @@
 #include "shared/Log.h"
 
 
-CHardwareEventLoggerRestService::CHardwareEventLoggerRestService(boost::shared_ptr<server::database::IDataProvider> dataProvider)
+CHardwareEventLoggerRestService::CHardwareEventLoggerRestService(boost::shared_ptr<database::IDataProvider> dataProvider)
    :m_dataProvider(dataProvider), m_restKeyword("hardwareEventLogger")
 {
 }
@@ -41,8 +41,8 @@ CJson CHardwareEventLoggerRestService::getLogsForPluginName(const std::vector<st
       rType = (shared::plugin::information::EReleaseType)atoi(parameters[3].c_str());
 
    CHardwareEventLoggerEntitySerializer hes;
-   std::vector< boost::shared_ptr<server::database::entities::CHardwareEventLogger> > dvList = m_dataProvider->getHardwareEventLoggerRequester()->getHardwareEvents(pluginName, pluginVersion, rType);
-   return CJsonCollectionSerializer<server::database::entities::CHardwareEventLogger>::SerializeCollection(dvList, hes, getRestKeyword());
+   std::vector< boost::shared_ptr<database::entities::CHardwareEventLogger> > dvList = m_dataProvider->getHardwareEventLoggerRequester()->getHardwareEvents(pluginName, pluginVersion, rType);
+   return CJsonCollectionSerializer<database::entities::CHardwareEventLogger>::SerializeCollection(dvList, hes, getRestKeyword());
 }
 
 CJson CHardwareEventLoggerRestService::getLogsForPluginNameFromDate(const std::vector<std::string> & parameters, const CJson & requestContent)
@@ -62,7 +62,7 @@ CJson CHardwareEventLoggerRestService::getLogsForPluginNameFromDate(const std::v
       fromDate = boost::posix_time::time_from_string(parameters[4]);
 
    CHardwareEventLoggerEntitySerializer hes;
-   std::vector< boost::shared_ptr<server::database::entities::CHardwareEventLogger> > dvList = m_dataProvider->getHardwareEventLoggerRequester()->getHardwareEvents(pluginName, pluginVersion, rType, fromDate);
-   return CJsonCollectionSerializer<server::database::entities::CHardwareEventLogger>::SerializeCollection(dvList, hes, getRestKeyword());
+   std::vector< boost::shared_ptr<database::entities::CHardwareEventLogger> > dvList = m_dataProvider->getHardwareEventLoggerRequester()->getHardwareEvents(pluginName, pluginVersion, rType, fromDate);
+   return CJsonCollectionSerializer<database::entities::CHardwareEventLogger>::SerializeCollection(dvList, hes, getRestKeyword());
 }
  

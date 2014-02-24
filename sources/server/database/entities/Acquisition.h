@@ -4,7 +4,7 @@
 
 #define DELCARE_FIELD_CACQUISITION(t,n)   DELCARE_FIELD(CAcquisition,t,n)
 
-namespace server { 
+
 namespace database { 
 namespace entities {
 
@@ -27,4 +27,4 @@ namespace entities {
    };
 } //namespace entities
 } //namespace database
-} //namespace server
+

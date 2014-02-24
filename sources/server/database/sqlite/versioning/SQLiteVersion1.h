@@ -3,7 +3,7 @@
 #include "ISQLiteVersionUpgrade.h"
 #include "database/sqlite/SQLiteRequester.h"
 
-namespace server { 
+
    namespace database { 
       namespace sqlite { 
          namespace versioning { 
@@ -39,4 +39,4 @@ namespace server {
          } //namespace versioning
       } //namespace sqlite
    } //namespace database 
-} //namespace server
+
