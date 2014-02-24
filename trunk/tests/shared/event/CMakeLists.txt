@@ -5,13 +5,13 @@
 add_definitions( -DBOOST_AUTO_TEST_MAIN )
 
 IF (USE_TESTS_SHARED_EVENT)
-  set(YADOMS_SRC ../../sources/)
+  set(YADOMS_SRC ../../../sources/)
   set(YADOMS_TESTS_SHARED_EVENT
-    ${YADOMS_SRC}/shared/shared/Event/Event.hpp
-    ${YADOMS_SRC}/shared/shared/Event/EventBase.hpp
-    ${YADOMS_SRC}/shared/shared/Event/EventHandler.hpp
+    ${YADOMS_SRC}/shared/shared/event/Event.hpp
+    ${YADOMS_SRC}/shared/shared/event/EventBase.hpp
+    ${YADOMS_SRC}/shared/shared/event/EventHandler.hpp
 
-    ../mock/shared/stdafx.h
+    ../../mock/shared/stdafx.h
     
     MainTestEvent.cpp
 	)

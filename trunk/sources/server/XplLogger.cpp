@@ -60,7 +60,7 @@ void CXplLogger::doWork()
                break;
             }
 
-         case kNoEvent:
+         case shared::event::kNoEvent:
             YADOMS_LOG(warning) << "CXplLogger::doWork, unknown event received";
             //do nothing
             break;

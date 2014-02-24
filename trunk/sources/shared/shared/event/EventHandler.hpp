@@ -4,6 +4,15 @@
 
 namespace shared { namespace event
 {
+   //--------------------------------------------------------------
+   /// \brief	    Special event id values, used by waitForEvents return value
+   //--------------------------------------------------------------
+   enum
+   {
+      kNoEvent = -2,       // No event in the queue
+      kTimeout = -1,       // Timeout
+      kUserFirstId = 0     // Base of user-defined IDs
+   };
 
    //--------------------------------------------------------------
    /// \brief	    An handler for events
@@ -48,16 +57,6 @@ namespace shared { namespace event
          boost::mutex::scoped_lock lock(m_EventsQueueMutex);
          return m_EventsQueue.empty();
       }
-
-      //--------------------------------------------------------------
-      /// \brief	    Special event id values, used by waitForEvents return value
-      //--------------------------------------------------------------
-      enum
-      {
-         kNoEvent = -2,       // No event in the queue
-         kTimeout = -1,       // Timeout
-         kUserFirstId = 0     // Base of user-defined IDs
-      };
 
       //--------------------------------------------------------------
       /// \brief	    wait for an event
