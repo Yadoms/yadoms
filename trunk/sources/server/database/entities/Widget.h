@@ -13,7 +13,14 @@ namespace entities {
    public:
       CWidget()
       {
-         m_Id = 0;
+         m_Id_filled = false;
+         m_IdPage_filled = false;
+         m_Name_filled = false;
+         m_SizeX_filled = false;
+         m_SizeY_filled = false;
+         m_PositionX_filled = false;
+         m_PositionY_filled = false;
+         m_Configuration_filled = false;
       }
 
       virtual ~CWidget()
