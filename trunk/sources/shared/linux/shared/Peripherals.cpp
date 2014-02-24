@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "../../shared/exceptions/NotSupported.hpp"
+#include "../../shared/exception/NotSupported.hpp"
 #include "../../shared/Log.h"
 #include "Peripherals.h"
 
