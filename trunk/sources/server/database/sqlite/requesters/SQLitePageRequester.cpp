@@ -8,7 +8,7 @@
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 
-   namespace database {       namespace sqlite {          namespace requesters { 
+namespace database {  namespace sqlite { namespace requesters { 
 
    CSQLitePageRequester::CSQLitePageRequester(const CSQLiteDataProvider & databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
       :m_databaseHandler(databaseHandler), m_databaseRequester(databaseRequester)
@@ -52,7 +52,7 @@
       else
          throw shared::exception::CEmptyResult("Cannot retrieve inserted Page");      
    }
-               
+
 
    int CSQLitePageRequester::addPage(const std::string& name, const int pageOrder)
    {

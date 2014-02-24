@@ -10,7 +10,7 @@ namespace pluginSystem
 
 CInstance::CInstance(
    const boost::shared_ptr<const CFactory> plugin,
-   const boost::shared_ptr<database::entities::CHardware> context,
+   const boost::shared_ptr<database::entities::CPlugin> context,
    const boost::shared_ptr<IQualifier> qualifier,
    shared::event::CEventHandler& supervisor,
    int pluginManagerEventId, 

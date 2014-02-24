@@ -1,16 +1,25 @@
-#include "stdafx.h"
-#include "SQLiteDatabaseAdapters.h"
-#include "sqlite3.h"
-#include <shared/Log.h>
-#include "AdapterHelpers.hpp"
-
+#pragma once
+#include "EntityHelpers.hpp"
+#include <shared/plugin/information/IInformation.h>
 
 namespace database { 
-namespace sqlite { 
-namespace adapters { 
+namespace entities {
 
+   enum ESecurityAccess
+   {
+      kNone = 0, 
+      kAdmin = 1, 
+      kUser = 2  
+   };
 
-   DECLARE_ADAPTER_IMPLEMENTATION(Plugin,
+   enum EEventType
+   {
+      kUnload = 0, 
+      kLoad = 1, 
+      kCrash = 2  
+   };
+   
+   DECLARE_ENTITY_CLASS(Plugin,
       ((Id)(int)(0))
       ((Name)(std::string)(""))
       ((PluginName)(std::string)(""))
@@ -19,17 +28,17 @@ namespace adapters {
       ((Deleted)(bool)(false))
       )
 
-   DECLARE_ADAPTER_IMPLEMENTATION(Configuration,
+   DECLARE_ENTITY_CLASS(Configuration,
       ((Section)(std::string)(""))
       ((Name)(std::string)(""))
       ((Value)(std::string)(""))
       ((DefaultValue)(std::string)(""))
       ((Description)(std::string)(""))
-      ((SecurityAccess)(database::entities::ESecurityAccess)(database::entities::kNone)(int))
+      ((SecurityAccess)(database::entities::ESecurityAccess)(database::entities::kNone))
       ((LastModificationDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
       )
 
-   DECLARE_ADAPTER_IMPLEMENTATION(Acquisition,
+   DECLARE_ENTITY_CLASS(Acquisition,
       ((Id)(int)(0))
       ((Source)(std::string)(""))
       ((Keyword)(std::string)(""))
@@ -37,25 +46,25 @@ namespace adapters {
       ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
       )
 
-   DECLARE_ADAPTER_IMPLEMENTATION(Device,
+   DECLARE_ENTITY_CLASS(Device,
       ((Id)(int)(0))
       ((DataSource)(std::string)(""))
       ((Name)(std::string)(""))
       ((Configuration)(std::string)(""))
       )
 
-   DECLARE_ADAPTER_IMPLEMENTATION(Keyword,
+   DECLARE_ENTITY_CLASS(Keyword,
       ((Name)(std::string)(""))
       )
 
-   DECLARE_ADAPTER_IMPLEMENTATION(Page,
+   DECLARE_ENTITY_CLASS(Page,
       ((Id)(int)(0))
       ((Name)(std::string)(""))
       ((PageOrder)(int)(0))
       )
 
 
-   DECLARE_ADAPTER_IMPLEMENTATION(Widget,
+   DECLARE_ENTITY_CLASS(Widget,
       ((Id)(int)(0))
       ((IdPage)(int)(0))
       ((Name)(std::string)(""))
@@ -66,17 +75,17 @@ namespace adapters {
       ((Configuration)(std::string)(""))
       )
 
-   DECLARE_ADAPTER_IMPLEMENTATION(PluginEventLogger,
+   DECLARE_ENTITY_CLASS(PluginEventLogger,
       ((Id)(int)(0))
       ((EventDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
       ((PluginName)(std::string)(""))
       ((PluginVersion)(std::string)(""))
-      ((PluginRelease)(shared::plugin::information::EReleaseType)(shared::plugin::information::kStable)(int))
-      ((EventType)(database::entities::EEventType)(database::entities::kUnload)(int))
+      ((PluginRelease)(shared::plugin::information::EReleaseType)(shared::plugin::information::kStable))
+      ((EventType)(database::entities::EEventType)(database::entities::kUnload))
       ((Message)(std::string)(""))
    )
 
-   DECLARE_ADAPTER_IMPLEMENTATION(EventLogger,
+   DECLARE_ENTITY_CLASS(EventLogger,
       ((Id)(int)(0))
       ((EventDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
       ((EventType)(std::string)(""))
@@ -84,7 +93,5 @@ namespace adapters {
    )
 
 
-} //namespace adapters
-} //namespace sqlite
-} //namespace database 
-
+} //namespace entities
+} //namespace database

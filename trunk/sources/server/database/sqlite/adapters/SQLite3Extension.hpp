@@ -3,8 +3,7 @@
 #include "sqlite3.h"
 #include <shared/StringExtension.h>
 #include <shared/plugin/information/IInformation.h>
-#include "database/entities/HardwareEventLogger.h"
-#include "database/entities/Configuration.h"
+#include "database/entities/Entities.h"
 
 
 namespace database { 

@@ -9,9 +9,7 @@
 #include "database/sqlite/Query.h"
 
 
-namespace database { 
-namespace sqlite { 
-namespace requesters { 
+namespace database { namespace sqlite { namespace requesters { 
 
    CSQLiteConfigurationRequester::CSQLiteConfigurationRequester(const CSQLiteDataProvider & databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
       :m_databaseHandler(databaseHandler), m_databaseRequester(databaseRequester)
@@ -28,7 +26,7 @@ namespace requesters {
    {
       CQuery qInsert;
       qInsert. InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName(), CConfigurationTable::getDefaultValueColumnName(), CConfigurationTable::getLastModificationDateColumnName()).
-               Values(configurationToCreate.getSection(), configurationToCreate.getName(), configurationToCreate.getValue(), configurationToCreate.getDescription(), configurationToCreate.getDefaultValue(), boost::gregorian::day_clock::universal_day());
+         Values(configurationToCreate.getSection(), configurationToCreate.getName(), configurationToCreate.getValue(), configurationToCreate.getDescription(), configurationToCreate.getDefaultValue(), boost::gregorian::day_clock::universal_day());
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
    }
@@ -37,9 +35,9 @@ namespace requesters {
    {
       CQuery qSelect;
       qSelect. Select().
-               From(CConfigurationTable::getTableName()).
-               Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section).
-               And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, name);
+         From(CConfigurationTable::getTableName()).
+         Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section).
+         And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, name);
 
       database::sqlite::adapters::CConfigurationAdapter adapter;
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CConfiguration> >(&adapter, qSelect);
@@ -56,9 +54,9 @@ namespace requesters {
    {
       CQuery qSelect;
       qSelect. Select().
-               From(CConfigurationTable::getTableName()).
-               Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section).
-               OrderBy(CConfigurationTable::getNameColumnName(), CQUERY_ORDER_ASC);
+         From(CConfigurationTable::getTableName()).
+         Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section).
+         OrderBy(CConfigurationTable::getNameColumnName(), CQUERY_ORDER_ASC);
 
       database::sqlite::adapters::CConfigurationAdapter adapter;
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CConfiguration> >(&adapter, qSelect);
@@ -69,8 +67,8 @@ namespace requesters {
    {
       CQuery qSelect;
       qSelect. Select().
-               From(CConfigurationTable::getTableName()).
-               OrderBy(CConfigurationTable::getSectionColumnName(), CQUERY_ORDER_ASC, CConfigurationTable::getNameColumnName(), CQUERY_ORDER_ASC);
+         From(CConfigurationTable::getTableName()).
+         OrderBy(CConfigurationTable::getSectionColumnName(), CQUERY_ORDER_ASC, CConfigurationTable::getNameColumnName(), CQUERY_ORDER_ASC);
 
       database::sqlite::adapters::CConfigurationAdapter adapter;
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CConfiguration> >(&adapter, qSelect);
@@ -82,10 +80,10 @@ namespace requesters {
    {
       CQuery qUpdate;
       qUpdate. Update(CConfigurationTable::getTableName()).
-               Set(CConfigurationTable::getValueColumnName(), configurationToUpdate.getValue(),
-                   CConfigurationTable::getLastModificationDateColumnName(), configurationToUpdate.getLastModificationDate()).
-               Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, configurationToUpdate.getSection()).
-               And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, configurationToUpdate.getName());
+         Set(CConfigurationTable::getValueColumnName(), configurationToUpdate.getValue(),
+         CConfigurationTable::getLastModificationDateColumnName(), configurationToUpdate.getLastModificationDate()).
+         Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, configurationToUpdate.getSection()).
+         And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, configurationToUpdate.getName());
 
       if(m_databaseRequester->queryStatement(qUpdate) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
@@ -95,8 +93,8 @@ namespace requesters {
    {
       CQuery qDelete;
       qDelete. DeleteFrom(CConfigurationTable::getTableName()).
-               Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, configurationToRemove.getSection()).
-               And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, configurationToRemove.getName());
+         Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, configurationToRemove.getSection()).
+         And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, configurationToRemove.getName());
       if(m_databaseRequester->queryStatement(qDelete) <= 0)
          throw new shared::exception::CEmptyResult("No lines affected");
    }

@@ -185,7 +185,8 @@ CJson CPageRestService::updateAllPages(const std::vector<std::string> & paramete
          m_dataProvider->getPageRequester()->addPage(*page);
       }
      
-      return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<database::entities::CPage>::SerializeCollection(m_dataProvider->getPageRequester()->getPages(), hes, getRestKeyword()));
+      std::vector<boost::shared_ptr<database::entities::CPage> > allPages = m_dataProvider->getPageRequester()->getPages();
+      return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<database::entities::CPage>::SerializeCollection(allPages, hes, getRestKeyword()));
       
    }
    catch(std::exception &ex)

@@ -24,10 +24,10 @@ namespace sqlite {
       CQuery q;
       
       q. Select().
-         From(CHardwareTable::getTableName()).
-         Where(CHardwareTable::getIdColumnName(), "=", 2);
+         From(CPluginTable::getTableName()).
+         Where(CPluginTable::getIdColumnName(), "=", 2);
          
-      q. InsertInto(CHardwareTable::getTableName(), CHardwareTable::getIdColumnName(), CHardwareTable::getNameColumnName()).
+      q. InsertInto(CPluginTable::getTableName(), CPluginTable::getIdColumnName(), CPluginTable::getNameColumnName()).
          Values(1, "test");
          
    */

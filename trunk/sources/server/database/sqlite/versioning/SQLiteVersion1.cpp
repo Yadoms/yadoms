@@ -33,11 +33,11 @@
                   if(!pRequester->checkTableExists(CAcquisitionTable::getTableName()) ||
                      !pRequester->checkTableExists(CConfigurationTable::getTableName()) ||
                      !pRequester->checkTableExists(CDeviceTable::getTableName()) ||
-                     !pRequester->checkTableExists(CHardwareTable::getTableName()) ||
+                     !pRequester->checkTableExists(CPluginTable::getTableName()) ||
                      !pRequester->checkTableExists(CKeywordTable::getTableName()) ||
                      !pRequester->checkTableExists(CPageTable::getTableName()) ||
                      !pRequester->checkTableExists(CWidgetTable::getTableName()) ||
-                     !pRequester->checkTableExists(CHardwareEventLoggerTable::getTableName()) ||
+                     !pRequester->checkTableExists(CPluginEventLoggerTable::getTableName()) ||
                      !pRequester->checkTableExists(CEventLoggerTable::getTableName()))
                   {
                      //at least one table is missing
@@ -83,16 +83,16 @@
                      throw CSQLiteVersionException("Failed to delete Configuration table");
                   if(!pRequester->dropTableIfExists(CDeviceTable::getTableName()))
                      throw CSQLiteVersionException("Failed to delete Device table");
-                  if(!pRequester->dropTableIfExists(CHardwareTable::getTableName()))
-                     throw CSQLiteVersionException("Failed to delete Hardware table");
+                  if(!pRequester->dropTableIfExists(CPluginTable::getTableName()))
+                     throw CSQLiteVersionException("Failed to delete Plugin table");
                   if(!pRequester->dropTableIfExists(CKeywordTable::getTableName()))
                      throw CSQLiteVersionException("Failed to delete Keyword table");
                   if(!pRequester->dropTableIfExists(CPageTable::getTableName()))
                      throw CSQLiteVersionException("Failed to delete Page table");
                   if(!pRequester->dropTableIfExists(CWidgetTable::getTableName()))
                      throw CSQLiteVersionException("Failed to delete Widget table");
-                  if(!pRequester->dropTableIfExists(CHardwareEventLoggerTable::getTableName()))
-                     throw CSQLiteVersionException("Failed to delete HardwareEventLogger table");
+                  if(!pRequester->dropTableIfExists(CPluginEventLoggerTable::getTableName()))
+                     throw CSQLiteVersionException("Failed to delete PluginEventLogger table");
                   if(!pRequester->dropTableIfExists(CEventLoggerTable::getTableName()))
                      throw CSQLiteVersionException("Failed to delete EventLogger table");
 
@@ -103,16 +103,16 @@
                      throw CSQLiteVersionException("Failed to create Configuration table");
                   if(!pRequester->createTableIfNotExists(CDeviceTable::getTableName(), CDeviceTable::getTableCreationScript()))
                      throw CSQLiteVersionException("Failed to create Device table");
-                  if(!pRequester->createTableIfNotExists(CHardwareTable::getTableName(), CHardwareTable::getTableCreationScript()))
-                     throw CSQLiteVersionException("Failed to create Hardware table");
+                  if(!pRequester->createTableIfNotExists(CPluginTable::getTableName(), CPluginTable::getTableCreationScript()))
+                     throw CSQLiteVersionException("Failed to create Plugin table");
                   if(!pRequester->createTableIfNotExists(CKeywordTable::getTableName(), CKeywordTable::getTableCreationScript()))
                      throw CSQLiteVersionException("Failed to create Keyword table");
                   if(!pRequester->createTableIfNotExists(CPageTable::getTableName(), CPageTable::getTableCreationScript()))
                      throw CSQLiteVersionException("Failed to create Page table");
                   if(!pRequester->createTableIfNotExists(CWidgetTable::getTableName(), CWidgetTable::getTableCreationScript()))
                      throw CSQLiteVersionException("Failed to create Widget table");
-                  if(!pRequester->createTableIfNotExists(CHardwareEventLoggerTable::getTableName(), CHardwareEventLoggerTable::getTableCreationScript()))
-                     throw CSQLiteVersionException("Failed to create HardwareEventLogger table");
+                  if(!pRequester->createTableIfNotExists(CPluginEventLoggerTable::getTableName(), CPluginEventLoggerTable::getTableCreationScript()))
+                     throw CSQLiteVersionException("Failed to create PluginEventLogger table");
                   if(!pRequester->createTableIfNotExists(CEventLoggerTable::getTableName(), CEventLoggerTable::getTableCreationScript()))
                      throw CSQLiteVersionException("Failed to create EventLogger table");
 

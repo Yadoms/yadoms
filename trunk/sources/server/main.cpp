@@ -30,7 +30,7 @@ int main (int argc, char** argv)
          shared::CLog::configure_one_rolling_file(startupOptions.getLogLevel());
 
       YADOMS_LOG_CONFIGURE("Main");
-      
+
       YADOMS_LOG(info) << "********************************************************************";
       YADOMS_LOG(info) << "Yadoms is starting";
       YADOMS_LOG(info) << "********************************************************************";
@@ -55,7 +55,7 @@ int main (int argc, char** argv)
       }
 
       supervisor.stop();
-      
+
       YADOMS_LOG(info) << "Yadoms is stopped ";
    }
    catch(startupOptions::CLoaderException& e)

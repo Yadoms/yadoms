@@ -8,10 +8,10 @@
 //        HEADER PART
 // ==========================================================================
 //
-// Example : Hardware entity => class CHardwareEntityJsonDefinition and CHardwareEntitySerializer
+// Example : Plugin entity => class CPluginEntityJsonDefinition and CPluginEntitySerializer
 //
 //   Input :
-//             DECLARE_JSON_ENTITY_HEADER(Hardware, 
+//             DECLARE_JSON_ENTITY_HEADER(Plugin, 
 //                (Id)
 //                (Name)
 //                (PluginName)
@@ -21,41 +21,41 @@
 //             )
 //
 //    Ouptut :
-//             class CHardwareEntityJsonDefinition
+//             class CPluginEntityJsonDefinition
 //             {
 //             private:
-//                CHardwareEntityJsonDefinition() {}
-//                virtual ~CHardwareEntityJsonDefinition() {}
+//                CPluginEntityJsonDefinition() {}
+//                virtual ~CPluginEntityJsonDefinition() {}
 //             
 //             public:
-//                static const std::string & getIdIdentifier() { return m_hardwareIdIdentifier; }
-//                static const std::string & getNameIdentifier() { return m_hardwareNameIdentifier; }
-//                static const std::string & getPluginNameIdentifier() { return m_hardwarePluginNameIdentifier; }
-//                static const std::string & getConfigurationIdentifier() { return m_hardwareConfigurationIdentifier; }
-//                static const std::string & getEnabledIdentifier() { return m_hardwareEnabledIdentifier; }
-//                static const std::string & getDeletedIdentifier() { return m_hardwareDeletedIdentifier; }
+//                static const std::string & getIdIdentifier() { return m_pluginIdIdentifier; }
+//                static const std::string & getNameIdentifier() { return m_pluginNameIdentifier; }
+//                static const std::string & getPluginNameIdentifier() { return m_pluginPluginNameIdentifier; }
+//                static const std::string & getConfigurationIdentifier() { return m_pluginConfigurationIdentifier; }
+//                static const std::string & getEnabledIdentifier() { return m_pluginEnabledIdentifier; }
+//                static const std::string & getDeletedIdentifier() { return m_pluginDeletedIdentifier; }
 //             
 //             private:
-//                static std::string m_hardwareIdIdentifier;
-//                static std::string m_hardwareNameIdentifier;
-//                static std::string m_hardwarePluginNameIdentifier;
-//                static std::string m_hardwareConfigurationIdentifier;
-//                static std::string m_hardwareEnabledIdentifier;
-//                static std::string m_hardwareDeletedIdentifier;
+//                static std::string m_pluginIdIdentifier;
+//                static std::string m_pluginNameIdentifier;
+//                static std::string m_pluginPluginNameIdentifier;
+//                static std::string m_pluginConfigurationIdentifier;
+//                static std::string m_pluginEnabledIdentifier;
+//                static std::string m_pluginDeletedIdentifier;
 //             };
 //             
-//             class CHardwareEntitySerializer : public IEntitySerializer<CHardware>, public IEntityDeserializer<CHardware>
+//             class CPluginEntitySerializer : public IEntitySerializer<CPlugin>, public IEntityDeserializer<CPlugin>
 //             {
 //             public:
-//                CHardwareEntitySerializer();
-//                virtual ~CHardwareEntitySerializer();
+//                CPluginEntitySerializer();
+//                virtual ~CPluginEntitySerializer();
 //                
 //                // IEntitySerializer implementation
-//                CJson serialize(const CHardware & object);
+//                CJson serialize(const CPlugin & object);
 //                // [END] IEntitySerializer implementation
 //             
 //                // IEntityDeserializer implementation
-//                CHardware deserialize(const CJson & object);
+//                CPlugin deserialize(const CJson & object);
 //                // [END] IEntityDeserializer implementation
 //             }
 //         
@@ -65,10 +65,10 @@
 // ==========================================================================
 //
 //
-// Example : Hardware entity => implementation of class CHardwareEntityJsonDefinition and CHardwareEntitySerializer
+// Example : Plugin entity => implementation of class CPluginEntityJsonDefinition and CPluginEntitySerializer
 //
 //   Input :
-//          DECLARE_JSON_ENTITY_IMPLEMENTATION(Hardware, "Hardware",
+//          DECLARE_JSON_ENTITY_IMPLEMENTATION(Plugin, "Plugin",
 //             ((Id)("id")JSON_INT)
 //             ((Name)("name")JSON_STRING)
 //             ((PluginName)("pluginName")JSON_STRING)
@@ -78,60 +78,60 @@
 //          )
 //
 //    Ouptut :
-//             //implementation of class CHardwareEntityJsonDefinition
-//             std::string CHardwareEntityJsonDefinition::m_hardwareIdIdentifier = "Id";
-//             std::string CHardwareEntityJsonDefinition::m_hardwareNameIdentifier = "name";
-//             std::string CHardwareEntityJsonDefinition::m_hardwarePluginNameIdentifier = "pluginName";
-//             std::string CHardwareEntityJsonDefinition::m_hardwareConfigurationIdentifier = "configuration";
-//             std::string CHardwareEntityJsonDefinition::m_hardwareEnabledIdentifier = "enabled";
-//             std::string CHardwareEntityJsonDefinition::m_hardwareDeletedIdentifier = "deleted";
+//             //implementation of class CPluginEntityJsonDefinition
+//             std::string CPluginEntityJsonDefinition::m_pluginIdIdentifier = "Id";
+//             std::string CPluginEntityJsonDefinition::m_pluginNameIdentifier = "name";
+//             std::string CPluginEntityJsonDefinition::m_pluginPluginNameIdentifier = "pluginName";
+//             std::string CPluginEntityJsonDefinition::m_pluginConfigurationIdentifier = "configuration";
+//             std::string CPluginEntityJsonDefinition::m_pluginEnabledIdentifier = "enabled";
+//             std::string CPluginEntityJsonDefinition::m_pluginDeletedIdentifier = "deleted";
 //
-//             //implementation of class CHardwareEntitySerializer
-//             CHardwareEntitySerializer::CHardwareEntitySerializer()
+//             //implementation of class CPluginEntitySerializer
+//             CPluginEntitySerializer::CPluginEntitySerializer()
 //             {
 //             }
 //             
-//             CHardwareEntitySerializer::~CHardwareEntitySerializer()
+//             CPluginEntitySerializer::~CPluginEntitySerializer()
 //             {
 //             }
 //             
 //             // IEntitySerializer implementation
-//             CJson CHardwareEntitySerializer::serialize(const CHardware & object)
+//             CJson CPluginEntitySerializer::serialize(const CPlugin & object)
 //             {
 //                CJson result;
-//                result.put(CHardwareEntityJsonDefinition::getIdIdentifier(), object.getId());
-//                result.put(CHardwareEntityJsonDefinition::getEnabledIdentifier(), object.getEnabled());
-//                result.put(CHardwareEntityJsonDefinition::getDeletedIdentifier(), object.getDeleted());
-//                result.put(CHardwareEntityJsonDefinition::getConfigurationIdentifier(), object.getConfiguration());
-//                result.put(CHardwareEntityJsonDefinition::getNameIdentifier(), object.getName());
-//                result.put(CHardwareEntityJsonDefinition::getPluginNameIdentifier(), object.getPluginName());
+//                result.put(CPluginEntityJsonDefinition::getIdIdentifier(), object.getId());
+//                result.put(CPluginEntityJsonDefinition::getEnabledIdentifier(), object.getEnabled());
+//                result.put(CPluginEntityJsonDefinition::getDeletedIdentifier(), object.getDeleted());
+//                result.put(CPluginEntityJsonDefinition::getConfigurationIdentifier(), object.getConfiguration());
+//                result.put(CPluginEntityJsonDefinition::getNameIdentifier(), object.getName());
+//                result.put(CPluginEntityJsonDefinition::getPluginNameIdentifier(), object.getPluginName());
 //                return result;
 //             }
 //             // [END] IEntitySerializer implementation
 //             
 //             
 //             // IEntityDeserializer implementation
-//             CHardware CHardwareEntitySerializer::deserialize(const CJson & object)
+//             CPlugin CPluginEntitySerializer::deserialize(const CJson & object)
 //             {
-//                CHardware entity;
+//                CPlugin entity;
 //             
-//                if(object.find(CHardwareEntityJsonDefinition::getIdIdentifier()) != object.not_found())
-//                   entity.setId(object.get<int>(CHardwareEntityJsonDefinition::getIdIdentifier()));
+//                if(object.find(CPluginEntityJsonDefinition::getIdIdentifier()) != object.not_found())
+//                   entity.setId(object.get<int>(CPluginEntityJsonDefinition::getIdIdentifier()));
 //             
-//                if(object.find(CHardwareEntityJsonDefinition::getEnabledIdentifier()) != object.not_found())
-//                   entity.setEnabled(object.get<bool>(CHardwareEntityJsonDefinition::getEnabledIdentifier()));
+//                if(object.find(CPluginEntityJsonDefinition::getEnabledIdentifier()) != object.not_found())
+//                   entity.setEnabled(object.get<bool>(CPluginEntityJsonDefinition::getEnabledIdentifier()));
 //             
-//                if(object.find(CHardwareEntityJsonDefinition::getDeletedIdentifier()) != object.not_found())
-//                   entity.setDeleted(object.get<bool>(CHardwareEntityJsonDefinition::getDeletedIdentifier()));
+//                if(object.find(CPluginEntityJsonDefinition::getDeletedIdentifier()) != object.not_found())
+//                   entity.setDeleted(object.get<bool>(CPluginEntityJsonDefinition::getDeletedIdentifier()));
 //             
-//                if(object.find(CHardwareEntityJsonDefinition::getConfigurationIdentifier()) != object.not_found())
-//                   entity.setConfiguration(object.get<std::string>(CHardwareEntityJsonDefinition::getConfigurationIdentifier()));
+//                if(object.find(CPluginEntityJsonDefinition::getConfigurationIdentifier()) != object.not_found())
+//                   entity.setConfiguration(object.get<std::string>(CPluginEntityJsonDefinition::getConfigurationIdentifier()));
 //             
-//                if(object.find(CHardwareEntityJsonDefinition::getNameIdentifier()) != object.not_found())
-//                   entity.setName(object.get<std::string>(CHardwareEntityJsonDefinition::getNameIdentifier()));
+//                if(object.find(CPluginEntityJsonDefinition::getNameIdentifier()) != object.not_found())
+//                   entity.setName(object.get<std::string>(CPluginEntityJsonDefinition::getNameIdentifier()));
 //             
-//                if(object.find(CHardwareEntityJsonDefinition::getPluginNameIdentifier()) != object.not_found())
-//                   entity.setPluginName(object.get<std::string>(CHardwareEntityJsonDefinition::getPluginNameIdentifier()));
+//                if(object.find(CPluginEntityJsonDefinition::getPluginNameIdentifier()) != object.not_found())
+//                   entity.setPluginName(object.get<std::string>(CPluginEntityJsonDefinition::getPluginNameIdentifier()));
 //             
 //                return entity;
 //             }
@@ -174,19 +174,19 @@
 
 //-------------------------------------------------------
 ///\brief Macro which provide the entity class:
-///       Example for _classname= Hardware -> CHardware
+///       Example for _classname= Plugin -> CPlugin
 //-------------------------------------------------------
 #define DECLARE_JSON_ENTITY_CLASS(_classname) BOOST_PP_CAT(database::entities::C,_classname)
 
 //-------------------------------------------------------
 ///\brief Macro which provide the entity definition class:
-///       Example for _classname= Hardware -> CHardwareEntityJsonDefinition
+///       Example for _classname= Plugin -> CPluginEntityJsonDefinition
 //-------------------------------------------------------
 #define DECLARE_JSON_ENTITY_DEFINITION_CLASS(_classname) BOOST_PP_CAT(C, BOOST_PP_CAT(_classname, EntityJsonDefinition))
 
 //-------------------------------------------------------
 ///\brief Macro which provide the entity serializer class:
-///       Example for _classname= Hardware -> CHardwareEntitySerializer
+///       Example for _classname= Plugin -> CPluginEntitySerializer
 //-------------------------------------------------------
 #define DECLARE_JSON_ENTITY_SERIALIZER_CLASS(_classname) BOOST_PP_CAT(C, BOOST_PP_CAT(_classname, EntitySerializer))
 
@@ -319,8 +319,8 @@ boost::shared_ptr< DECLARE_JSON_ENTITY_CLASS(_classname) > DECLARE_JSON_ENTITY_S
 //-------------------------------------------------------
 ///\brief   Declare the JSON entity classes header
 ///         -> a class CxxxxEntityJsonDefinition which contains the name of each field (static declaration)
-///         Example : for entity class CHardware :
-///               class CHardwareEntityJsonDefinition 
+///         Example : for entity class CPlugin :
+///               class CPluginEntityJsonDefinition 
 ///               { 
 ///               public: 
 ///               	static const std::string & getIdIdentifier() { return m_IdIdentifier; } 
@@ -341,14 +341,14 @@ boost::shared_ptr< DECLARE_JSON_ENTITY_CLASS(_classname) > DECLARE_JSON_ENTITY_S
 ///
 ///
 ///         -> a class CxxxxEntitySerializer which contains the entity serializer
-///               class CHardwareEntitySerializer : public IEntitySerializer<CHardware>, public IEntityDeserializer<CHardware> 
+///               class CPluginEntitySerializer : public IEntitySerializer<CPlugin>, public IEntityDeserializer<CPlugin> 
 ///               { 
 ///               public: 
-///               	CHardwareEntitySerializer(); 
-///               	virtual ~CHardwareEntitySerializer(); 
+///               	CPluginEntitySerializer(); 
+///               	virtual ~CPluginEntitySerializer(); 
 ///               	
-///               	CJson serialize(const CHardware & object); 
-///               	boost::shared_ptr<CHardware> deserialize(const CJson & object); 
+///               	CJson serialize(const CPlugin & object); 
+///               	boost::shared_ptr<CPlugin> deserialize(const CJson & object); 
 ///               };
 //-------------------------------------------------------
 #define DECLARE_JSON_ENTITY_HEADER(_classname, _seq)\
@@ -358,59 +358,59 @@ boost::shared_ptr< DECLARE_JSON_ENTITY_CLASS(_classname) > DECLARE_JSON_ENTITY_S
 //-------------------------------------------------------
 ///\brief   Declare the JSON entity classes implementation
 ///         -> the class CxxxxEntityJsonDefinition static fields definition 
-///             Example : for entity class CHardware :
-///                   std::string CHardwareEntityJsonDefinition::m_IdIdentifier = "id" ;
-///                   std::string CHardwareEntityJsonDefinition::m_NameIdentifier = "name" ;
-///                   std::string CHardwareEntityJsonDefinition::m_PluginNameIdentifier = "pluginName" ;
-///                   std::string CHardwareEntityJsonDefinition::m_ConfigurationIdentifier = "configuration" ;
-///                   std::string CHardwareEntityJsonDefinition::m_EnabledIdentifier = "enabled" ;
-///                   std::string CHardwareEntityJsonDefinition::m_DeletedIdentifier = "deleted" ;
+///             Example : for entity class CPlugin :
+///                   std::string CPluginEntityJsonDefinition::m_IdIdentifier = "id" ;
+///                   std::string CPluginEntityJsonDefinition::m_NameIdentifier = "name" ;
+///                   std::string CPluginEntityJsonDefinition::m_PluginNameIdentifier = "pluginName" ;
+///                   std::string CPluginEntityJsonDefinition::m_ConfigurationIdentifier = "configuration" ;
+///                   std::string CPluginEntityJsonDefinition::m_EnabledIdentifier = "enabled" ;
+///                   std::string CPluginEntityJsonDefinition::m_DeletedIdentifier = "deleted" ;
 ///                   
 ///               
 ///         -> the class CxxxxxEntitySerializer implementation
-///             Example : for entity class CHardware : 
-///                  CHardwareEntitySerializer::CHardwareEntitySerializer()
+///             Example : for entity class CPlugin : 
+///                  CPluginEntitySerializer::CPluginEntitySerializer()
 ///                  {
 ///                  }
 ///                  
-///                  CHardwareEntitySerializer::~CHardwareEntitySerializer()
+///                  CPluginEntitySerializer::~CPluginEntitySerializer()
 ///                  {
 ///                  }
 ///                  
 ///                  // IEntitySerializer implementation
-///                  CJson CHardwareEntitySerializer::serialize(const CHardware & object)
+///                  CJson CPluginEntitySerializer::serialize(const CPlugin & object)
 ///                  {
 ///                     CJson result;
-///                     result.put(CHardwareEntityJsonDefinition::getIdIdentifier(), object.getId());
-///                     result.put(CHardwareEntityJsonDefinition::getEnabledIdentifier(), object.getEnabled());
-///                     result.put(CHardwareEntityJsonDefinition::getDeletedIdentifier(), object.getDeleted());
-///                     result.put(CHardwareEntityJsonDefinition::getConfigurationIdentifier(), object.getConfiguration());
-///                     result.put(CHardwareEntityJsonDefinition::getNameIdentifier(), object.getName());
-///                     result.put(CHardwareEntityJsonDefinition::getPluginNameIdentifier(), object.getPluginName());
+///                     result.put(CPluginEntityJsonDefinition::getIdIdentifier(), object.getId());
+///                     result.put(CPluginEntityJsonDefinition::getEnabledIdentifier(), object.getEnabled());
+///                     result.put(CPluginEntityJsonDefinition::getDeletedIdentifier(), object.getDeleted());
+///                     result.put(CPluginEntityJsonDefinition::getConfigurationIdentifier(), object.getConfiguration());
+///                     result.put(CPluginEntityJsonDefinition::getNameIdentifier(), object.getName());
+///                     result.put(CPluginEntityJsonDefinition::getPluginNameIdentifier(), object.getPluginName());
 ///                     return result;
 ///                  }
 ///                  
-///                  boost::shared_ptr<CHardware> CHardwareEntitySerializer::deserialize(const CJson & object)
+///                  boost::shared_ptr<CPlugin> CPluginEntitySerializer::deserialize(const CJson & object)
 ///                  {
-///                     CHardware entity;
+///                     CPlugin entity;
 ///                  
-///                     if(object.find(CHardwareEntityJsonDefinition::getIdIdentifier()) != object.not_found())
-///                        entity.setId(object.get<int>(CHardwareEntityJsonDefinition::getIdIdentifier()));
+///                     if(object.find(CPluginEntityJsonDefinition::getIdIdentifier()) != object.not_found())
+///                        entity.setId(object.get<int>(CPluginEntityJsonDefinition::getIdIdentifier()));
 ///                  
-///                     if(object.find(CHardwareEntityJsonDefinition::getEnabledIdentifier()) != object.not_found())
-///                        entity.setEnabled(object.get<bool>(CHardwareEntityJsonDefinition::getEnabledIdentifier()));
+///                     if(object.find(CPluginEntityJsonDefinition::getEnabledIdentifier()) != object.not_found())
+///                        entity.setEnabled(object.get<bool>(CPluginEntityJsonDefinition::getEnabledIdentifier()));
 ///                  
-///                     if(object.find(CHardwareEntityJsonDefinition::getDeletedIdentifier()) != object.not_found())
-///                        entity.setDeleted(object.get<bool>(CHardwareEntityJsonDefinition::getDeletedIdentifier()));
+///                     if(object.find(CPluginEntityJsonDefinition::getDeletedIdentifier()) != object.not_found())
+///                        entity.setDeleted(object.get<bool>(CPluginEntityJsonDefinition::getDeletedIdentifier()));
 ///                  
-///                     if(object.find(CHardwareEntityJsonDefinition::getConfigurationIdentifier()) != object.not_found())
-///                        entity.setConfiguration(object.get<std::string>(CHardwareEntityJsonDefinition::getConfigurationIdentifier()));
+///                     if(object.find(CPluginEntityJsonDefinition::getConfigurationIdentifier()) != object.not_found())
+///                        entity.setConfiguration(object.get<std::string>(CPluginEntityJsonDefinition::getConfigurationIdentifier()));
 ///                  
-///                     if(object.find(CHardwareEntityJsonDefinition::getNameIdentifier()) != object.not_found())
-///                        entity.setName(object.get<std::string>(CHardwareEntityJsonDefinition::getNameIdentifier()));
+///                     if(object.find(CPluginEntityJsonDefinition::getNameIdentifier()) != object.not_found())
+///                        entity.setName(object.get<std::string>(CPluginEntityJsonDefinition::getNameIdentifier()));
 ///                  
-///                     if(object.find(CHardwareEntityJsonDefinition::getPluginNameIdentifier()) != object.not_found())
-///                        entity.setPluginName(object.get<std::string>(CHardwareEntityJsonDefinition::getPluginNameIdentifier()));
+///                     if(object.find(CPluginEntityJsonDefinition::getPluginNameIdentifier()) != object.not_found())
+///                        entity.setPluginName(object.get<std::string>(CPluginEntityJsonDefinition::getPluginNameIdentifier()));
 ///                  
 ///                     return entity;
 ///                  }

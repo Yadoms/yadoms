@@ -3,11 +3,11 @@
 #include "IRestService.h"
 #include "database/IDataProvider.h"
 
-class CHardwareEventLoggerRestService : public IRestService
+class CPluginEventLoggerRestService : public IRestService
 {
 public:
-   CHardwareEventLoggerRestService(boost::shared_ptr<database::IDataProvider> dataProvider);
-   virtual ~CHardwareEventLoggerRestService();
+   CPluginEventLoggerRestService(boost::shared_ptr<database::IDataProvider> dataProvider);
+   virtual ~CPluginEventLoggerRestService();
 
 public:
     // IRestService implementation

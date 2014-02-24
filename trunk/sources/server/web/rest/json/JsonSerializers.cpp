@@ -3,9 +3,9 @@
 #include "JsonSerializers.h"
 #include "JsonSerializersHelpers.hpp"
 #include <shared/plugin/information/IInformation.h>
-#include "database/entities/HardwareEventLogger.h"
+#include "database/entities/Entities.h"
 
-DECLARE_JSON_ENTITY_IMPLEMENTATION(Hardware, "Hardware",
+DECLARE_JSON_ENTITY_IMPLEMENTATION(Plugin, "Plugin",
    ((Id)("id")JSON_INT)
    ((Name)("name")JSON_STRING)
    ((PluginName)("pluginName")JSON_STRING)
@@ -21,7 +21,7 @@ DECLARE_JSON_ENTITY_IMPLEMENTATION(Configuration,  "Configuration",
    ((Value)("value")JSON_STRING)
    ((DefaultValue)("default_value")JSON_STRING)
    ((Description)("description")JSON_STRING)
-   ((SecurityAccess)("securityAccess")JSON_ENUM(database::entities::CConfiguration::ESecurityAccess))
+   ((SecurityAccess)("securityAccess")JSON_ENUM(database::entities::ESecurityAccess))
    ((LastModificationDate)("last_modification_date")JSON_DATE)
 )
 
@@ -64,13 +64,13 @@ DECLARE_JSON_ENTITY_IMPLEMENTATION(Widget,  "Widget",
    ((Configuration)("configuration")JSON_STRING)
 )
 
-DECLARE_JSON_ENTITY_IMPLEMENTATION(HardwareEventLogger,  "HardwareEventLogger",
+DECLARE_JSON_ENTITY_IMPLEMENTATION(PluginEventLogger,  "PluginEventLogger",
    ((Id)("id")JSON_INT)
    ((EventDate)("eventDate")JSON_DATE)
    ((PluginName)("pluginName")JSON_STRING)
    ((PluginVersion)("pluginVersion")JSON_STRING)
    ((PluginRelease)("pluginRelease")JSON_ENUM(shared::plugin::information::EReleaseType))
-   ((EventType)("eventType")JSON_ENUM(database::entities::CHardwareEventLogger::EEventType))
+   ((EventType)("eventType")JSON_ENUM(database::entities::EEventType))
    ((Message)("message")JSON_STRING)
 )
 

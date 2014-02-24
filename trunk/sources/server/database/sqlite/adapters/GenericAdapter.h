@@ -31,7 +31,7 @@ namespace adapters {
 
    private:
       //--------------------------------------------------------------
-      /// \Brief		Contains the list of Hardware entities
+      /// \Brief		Contains the list of Plugin entities
       //--------------------------------------------------------------
       std::vector<std::map<std::string, std::string> > m_results;
    };

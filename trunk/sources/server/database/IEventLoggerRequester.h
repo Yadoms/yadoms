@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entities/EventLogger.h"
+#include "entities/Entities.h"
 #include <shared/StringExtension.h>
 
 

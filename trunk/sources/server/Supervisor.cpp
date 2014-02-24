@@ -9,13 +9,13 @@
 #include "web/WebServerManager.h"
 #include <shared/xpl/XplHub.h>
 #include "XplLogger.h"
-#include "web/rest/HardwareRestService.h"
+#include "web/rest/PluginRestService.h"
 #include "web/rest/DeviceRestService.h"
 #include "web/rest/PageRestService.h"
 #include "web/rest/WidgetRestService.h"
 #include "web/rest/AcquisitionRestService.h"
 #include "web/rest/ConfigurationRestService.h"
-#include "web/rest/HardwareEventLoggerRestService.h"
+#include "web/rest/PluginEventLoggerRestService.h"
 #include "web/rest/EventLoggerRestService.h"
 #include <shared/ThreadBase.h>
 #include <shared/Peripherals.h>
@@ -47,7 +47,7 @@ void CSupervisor::doWork()
 
       // Start the plugin manager
       boost::shared_ptr<pluginSystem::CManager> pluginManager = pluginSystem::CManager::newManager(
-         m_startupOptions.getPluginsPath(), pDataProvider->getHardwareRequester(), pDataProvider->getHardwareEventLoggerRequester(),
+         m_startupOptions.getPluginsPath(), pDataProvider->getPluginRequester(), pDataProvider->getPluginEventLoggerRequester(),
          *this, kPluginManagerEvent);
 
       //TODO ######################### test interface pluginManager #########################
@@ -179,13 +179,13 @@ void CSupervisor::doWork()
       boost::shared_ptr<IRestHandler> restHanlder = webServer->getRestHandler();
       if(restHanlder.get() != NULL)
       {
-         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CHardwareRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CPluginRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CDeviceRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CPageRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CWidgetRestService(pDataProvider, webServerPath)));
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CAcquisitionRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CConfigurationRestService(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CHardwareEventLoggerRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CPluginEventLoggerRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CEventLoggerRestService(pDataProvider)));
       }
 
