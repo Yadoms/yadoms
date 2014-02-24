@@ -189,7 +189,10 @@ void CXplService::handleReceive(const boost::system::error_code& error,
                //we've got an heartbeat if it's our hbeat and we are m_hubHasBeenFound = false we have found a hub
                int port;
                if (!CStringExtension::tryParse<int>(msg.getBodyValue("port"), port))
-                  throw CXplException("port in Heartbeat message is incorrect : " + msg.toString());
+               {
+                  //it is a hbeat request from another client to get our information
+                  //for the moment we don't manage it (it is not mandatory)
+               }
 
                if ((!m_hubHasBeenFound) && (m_localEndPoint.address().to_string() == msg.getBodyValue("remote-ip")) && (m_socket->local_endpoint().port() == port))
                {

@@ -39,11 +39,10 @@
     */
    $("button#btn-confirm-delete-page").click(function () {
 
-      assert(pageToDelete !== undefined, "Page Id must be defined");
+      assert(pageToDelete !== undefined, "Page must be defined");
 
       //we close the new widget modal
       $("div#delete-page-modal").modal("hide");
-      debugger;
       //we ask for deletion of the page
       $.ajax({
          type: "DELETE",
@@ -51,7 +50,6 @@
          dataType: "json"
       })
       .done(function(data) {
-         debugger;
          //we parse the json answer
          if (data.result != "true")
          {
@@ -60,9 +58,10 @@
          }
 
          //we delete the page dynamically
-         $(".widgetPage[page-id=" + pageToDelete.id + "]").remove();
-         $(".tabPagePills[page-id=" + pageToDelete.id + "]").remove();
+         pageToDelete.$tab.remove();
+         pageToDelete.$content.remove();
          pageArray.splice(pageToDelete.id, 1);
+         ensureOnePageIsSelected();
       })
       .fail(function(pageName) { return function() {notifyError("Unable to delete page " + pageName)}}(pageToDelete.name))
       .always(function() {

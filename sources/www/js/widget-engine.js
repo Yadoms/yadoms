@@ -16,27 +16,7 @@ var pagesLoaded = [];
 
 var startTime = null;
 
-function initializePageEvents() {
-
-   //we listen click event on tab click
-   $('li.tabPagePills').bind('click', function (e) {
-      return tabClick($(e.currentTarget).attr("page-id")); } );
-
-   //we listen click event on rename click
-   $('button.rename-page').bind('click', function (e) {
-      createOrUpdatePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id")); } );
-
-   //we listen click event on rename click
-   $('button.delete-page').bind('click', function (e) {
-      deletePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id")); } );
-
-   //we listen click event on move left click
-   $('button.move-left-page').bind('click', function (e) {
-      movePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id"), "left"); } );
-
-   //we listen click event on move right click
-   $('button.move-right-page').bind('click', function (e) {
-      movePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id"), "right"); } );
+function initializeWidgetEngine() {
 
    /**
     * Callback of the click on the add widget button
@@ -46,15 +26,68 @@ function initializePageEvents() {
       createOrUpdatePage();
    });
 
+   /**
+    * Callback of the click on the add widget button
+    * Make lazy loading of the add widget modal
+    */
+   $("#btn-add-widget").click(function() {
+      //we make something only if there is some pages
+      if (pageArray.length == 0) {
+         notifyError("You must have at least one page to add widget");
+         return;
+      }
+
+      if (addWidgetHasBeenLoaded)
+      {
+         //we ask the package to display the modal
+         askWidgetPackages();
+      }
+      else
+      {
+         $.ajax( "modals/add_widget.html" )
+            .done(function(data) {
+               //we append it to the index
+               $('body').append(data);
+               //we ask the package to display the modal
+               askWidgetPackages();
+            })
+            .fail(function() {
+               notifyError("Unable to add a widget");
+            });
+      }
+   });
 }
 
-function initializeWidgetEvents() {
+function initializePageEvents(page) {
+
+   //we listen click event on tab click
+   page.$tab.bind('click', function (e) {
+      return tabClick($(e.currentTarget).attr("page-id")); } );
+
+   //we listen click event on rename click
+   page.$tab.find('button.rename-page').bind('click', function (e) {
+      createOrUpdatePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id")); } );
+
+   //we listen click event on rename click
+   page.$tab.find('button.delete-page').bind('click', function (e) {
+      deletePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id")); } );
+
+   //we listen click event on move left click
+   page.$tab.find('button.move-left-page').bind('click', function (e) {
+      movePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id"), "left"); } );
+
+   //we listen click event on move right click
+   page.$tab.find('button.move-right-page').bind('click', function (e) {
+      movePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id"), "right"); } );
+}
+
+function initializeWidgetEvents(widget) {
    //we listen click event on configure click
-   $('button.configure-widget').bind('click', function (e) {
+   widget.$gridsterWidget.find('button.configure-widget').bind('click', function (e) {
       configureWidget($(e.currentTarget).parents("li.widget").attr("widget-id")); } );
 
    //we listen click event on delete click
-   $('button.delete-widget').bind('click', function (e) {
+   widget.$gridsterWidget.find('button.delete-widget').bind('click', function (e) {
       var widgetDOMElement = $(e.currentTarget).parents("li.widget");
       deleteWidget(widgetDOMElement.attr("page-id"), widgetDOMElement.attr("widget-id"));
    });
@@ -178,38 +211,41 @@ function requestPageDone()
 
       //we deactivate the customization
       enableGridsterCustomization(false);
-
-      initializePageEvents();
-
-      requestWidgets(getCurrentPage());
    };
 }
 
 function addPageToIHM(page) {
    var tabIdAsText = "tab-" + page.id;
    //pill creation
-   $("div#tabContainer").find(".tab-content").append(
-      "<div class=\"widgetPage tab-pane active\" id=\"" + tabIdAsText + "\" page-id=\"" + page.id + "\">" +
-         "<div class=\"gridster\">" +
-            "<ul></ul>" +
-         "</div>" +
-      "</div>");
-   //page creation
-   $("div#pageMenu").find("ul").append(
+
+   var container  = $("div#pageMenu").find("ul").append(
       "<li class=\"tabPagePills\" page-id=\"" + page.id + "\">" +
          "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" +
-            "<span>" + page.name + "</span>" +
-            "<div class=\"pageCustomizationToolbar btn-group btn-group-sm customization-item pull-right hidden\">" +
-               "<button type=\"button\" class=\"btn btn-default move-left-page\" title=\"Move to left\"><i class=\"glyphicon glyphicon-arrow-left\"></i></button>" +
-               "<button type=\"button\" class=\"btn btn-default move-right-page\" title=\"Move to right\"><i class=\"glyphicon glyphicon-arrow-right\"></i></button>" +
-               "<button type=\"button\" class=\"btn btn-default rename-page\" title=\"Rename\"><i class=\"fa fa-pencil\"></i></button>" +
-               "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
-            "</div>" +
+         "<span>" + page.name + "</span>" +
+         "<div class=\"pageCustomizationToolbar btn-group btn-group-sm customization-item pull-right hidden\">" +
+         "<button type=\"button\" class=\"btn btn-default move-left-page\" title=\"Move to left\"><i class=\"glyphicon glyphicon-arrow-left\"></i></button>" +
+         "<button type=\"button\" class=\"btn btn-default move-right-page\" title=\"Move to right\"><i class=\"glyphicon glyphicon-arrow-right\"></i></button>" +
+         "<button type=\"button\" class=\"btn btn-default rename-page\" title=\"Rename\"><i class=\"fa fa-pencil\"></i></button>" +
+         "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
+         "</div>" +
          "</a>" +
-      "</li>");
+         "</li>");
+
+   page.$tab = container.find("li[page-id=\"" + page.id + "\"]");
+
+   //page creation
+   container = $("div#tabContainer").find(".tab-content").append(
+      "<div class=\"widgetPage tab-pane active\" id=\"" + tabIdAsText + "\" page-id=\"" + page.id + "\">" +
+         "<div class=\"gridster\">" +
+         "<ul></ul>" +
+         "</div>" +
+         "</div>");
+
+   //we save the content of the page dom node
+   page.$content = container.find("div#" + tabIdAsText);
 
    //gridster creation
-   page.gridster = $("#" + tabIdAsText + " ul").gridster({
+   page.gridster = page.$content.find("ul").gridster({
       page_object: pageArray[page.id],
       widget_margins: [gridMargin, gridMargin],
       widget_base_dimensions: [gridWidth, gridWidth],
@@ -251,6 +287,15 @@ function addPageToIHM(page) {
    $("div#" + tabIdAsText).removeClass("active");
 
    $("div#" + tabIdAsText + " .gridster").width(numberOfColumns * (gridWidth + gridMargin * 2));
+
+   //we check if we are in customization we must apply customization on the new page
+   if (customization)
+   {
+      page.$tab.find(".customization-item").removeClass("hidden");
+   }
+
+   initializePageEvents(page);
+   ensureOnePageIsSelected();
 }
 
 function requestWidgets(page) {
@@ -426,8 +471,6 @@ function getWidgetPackageInformationDone(packageName)
             loadWidgetsNotification = null;
          }
 
-         initializeWidgetEvents();
-
          console.log('Widgets loaded in ' + (new Date() - startTime) + " ms");
       }
 
@@ -551,6 +594,19 @@ function finalizeWidgetCreation(widget) {
       notifyWarning("The widget " + widget.name + " has generated an exception");
       console.warn(e);
    }
+
+   initializeWidgetEvents(widget);
+}
+
+function ensureOnePageIsSelected() {
+   //if there is no page selected we select the first one
+   if (getCurrentPage() === undefined) {
+      //we selected the first page
+      for (var index in pageArray) {
+         pageArray[index].$tab.trigger("click");
+         return;
+      }
+   }
 }
 
 /**
@@ -569,7 +625,7 @@ function getCurrentPage()
 function tabClick(pageId) {
 
    //we check for widget loading if page is different than the current
-   if (getCurrentPage().id == pageId)
+   if ((getCurrentPage() !== undefined) && (getCurrentPage().id == pageId))
       return;
 
    //and if it's not loaded for the moment

@@ -16,6 +16,8 @@ function Page(id, name, pageOrder) {
    this.pageOrder = pageOrder;
    this.gridster;
    this.widgets = new Array();
+   this.$tab = null;
+   this.$content = null;
 }
 
 /**
