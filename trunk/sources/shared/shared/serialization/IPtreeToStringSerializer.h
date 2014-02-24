@@ -27,7 +27,7 @@ namespace shared { namespace serialization
       /// \brief              Deserialize string to property tree
       /// \par str            Input string
       /// \par [out] pt       Property tree populated
-      /// \throw              CInvalidParameterException if str is not in the valid format
+      /// \throw              CInvalidParameter if str is not in the valid format
       //--------------------------------------------------------------
       virtual void deserialize(const std::string& str, boost::property_tree::ptree& pt) = 0;
    };

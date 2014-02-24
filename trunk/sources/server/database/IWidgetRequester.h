@@ -19,7 +19,7 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief                 Get widget informations
       /// \param [in] widgetId   Widget Id
-      /// \throw                 CInvalidParameterException if widgetId is unknown
+      /// \throw                 CInvalidParameter if widgetId is unknown
       //--------------------------------------------------------------
       virtual boost::shared_ptr<entities::CWidget> getWidget(int widgetId) = 0;
 

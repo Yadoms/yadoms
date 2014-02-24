@@ -29,7 +29,7 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief                 Get page informations
       /// \param [in] pageId     Page Id
-      /// \throw                 CInvalidParameterException if pageId is unknown
+      /// \throw                 CInvalidParameter if pageId is unknown
       //--------------------------------------------------------------
       virtual boost::shared_ptr<entities::CPage> getPage(int pageId) = 0;
 

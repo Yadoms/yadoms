@@ -18,7 +18,7 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief           Get a keyword
       /// \param [in]      keyword   the keyword to get
-      /// \throw           CInvalidParameterException if keyword is unknown
+      /// \throw           CInvalidParameter if keyword is unknown
       //--------------------------------------------------------------
       virtual boost::shared_ptr<entities::CKeyword> getKeyword(const std::string & keyword) = 0;
 

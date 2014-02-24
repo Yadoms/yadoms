@@ -4,7 +4,7 @@
 #include "Parameters.h"
 #include "ISchema.h"
 #include "../../serialization/IPtreeToStringSerializer.h"
-#include <shared/exceptions/BadConversion.hpp>
+#include <shared/exception/BadConversion.hpp>
 
 
 namespace shared { namespace plugin { namespace configuration

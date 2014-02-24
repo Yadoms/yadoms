@@ -20,7 +20,7 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief                 Get device informations
       /// \param [in] deviceId   Device Id
-      /// \throw                 CInvalidParameterException if deviceId is unknown
+      /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
       virtual boost::shared_ptr<entities::CDevice> getDevice(int deviceId) = 0;
 

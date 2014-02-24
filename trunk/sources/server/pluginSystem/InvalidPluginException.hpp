@@ -5,7 +5,7 @@
 //
 #pragma once
 
-#include <shared/exceptions/Exception.hpp>
+#include <shared/exception/Exception.hpp>
 
 namespace pluginSystem
 {

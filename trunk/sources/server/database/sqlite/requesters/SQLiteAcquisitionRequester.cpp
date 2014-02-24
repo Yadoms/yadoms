@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SQLiteAcquisitionRequester.h"
-#include <shared/exceptions/NotImplemented.hpp>
-#include <shared/exceptions/EmptyResult.hpp>
+#include <shared/exception/NotImplemented.hpp>
+#include <shared/exception/EmptyResult.hpp>
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "database/sqlite/adapters/SQLiteDatabaseAdapters.h"

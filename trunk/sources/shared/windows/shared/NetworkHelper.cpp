@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "../../shared/exceptions/Exception.hpp"
+#include "../../shared/exception/Exception.hpp"
 #include "../../shared/Log.h"
 #include "NetworkHelper.h"
 

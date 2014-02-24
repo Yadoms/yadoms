@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Qualifier.h"
-#include <shared/exceptions/EmptyResult.hpp>
+#include <shared/exception/EmptyResult.hpp>
 
 namespace pluginSystem
 {
