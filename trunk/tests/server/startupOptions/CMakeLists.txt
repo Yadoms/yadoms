@@ -1,7 +1,3 @@
-# include common plugin definitions
-#include("../YadomsHPluginsCommon.cmake")
-#include("../../YadomsTestsCommon.cmake")
-
 ########################
 ## StartupOptions
 ########################

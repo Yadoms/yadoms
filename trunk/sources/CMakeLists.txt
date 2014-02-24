@@ -411,10 +411,10 @@ ELSE()
 	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/tools/linux)
 ENDIF()
 
-source_group(server\\Tools tools/*.*)
-source_group(server\\Tools\\PlatformSpecific\\windows server/tools/windows/tools/*.*)
-source_group(server\\Tools\\PlatformSpecific\\linux server/tools/linux/tools/*.*)
-source_group(server\\Tools\\PlatformSpecific\\mac server/tools/mac/tools/*.*)
+source_group(server\\tools tools/*.*)
+source_group(server\\tools\\platformSpecific\\windows server/tools/windows/tools/*.*)
+source_group(server\\tools\\platformSpecific\\linux server/tools/linux/tools/*.*)
+source_group(server\\tools\\platformSpecific\\mac server/tools/mac/tools/*.*)
 
 #Database
 IF(USE_SQLITE_DATABASE)
@@ -523,7 +523,7 @@ ENDIF()
 ##################################################################################################
 
 #include Plugins CMake file
-add_subdirectory(plugins/hardware)
+add_subdirectory(plugins)
 
 
 ##################################################################################################
