@@ -66,7 +66,7 @@
          $.ajax({
             type: "PUT",
             url: "/rest/page/" + pageCurrentlyModified.id,
-            data: JSON.stringify({ id: pageCurrentlyModified.id, name: encodeURIComponent(newPageName), pageOrder: pageCurrentlyModified.pageOrder }),
+            data: JSON.stringify(pageCurrentlyModified),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
          })

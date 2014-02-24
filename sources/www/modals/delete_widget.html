@@ -1,44 +1,47 @@
 <link href="../css/qrcode.css" rel="stylesheet">
 
 <!--QRCode Modal -->
-<div class="modal fade" id="delete-page-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="delete-widget-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
    <div class="modal-dialog">
        <div class="modal-content">
            <div class="modal-header">
                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-               <h4 class="modal-title" id="myModalLabel">Delete Page confirmation</h4>
+               <h4 class="modal-title" id="myModalLabel">Delete Widget confirmation</h4>
            </div>
            <div class="modal-body">
-               <p>You will delete page <span id="name-delete-page-modal"></span> and all of its widgets. Continue anyway ?</p>
+               <p>You will delete widget <span id="name-delete-widget-modal"></span>. Continue anyway ?</p>
            </div>
            <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-              <button id="btn-confirm-delete-page" type="button" class="btn btn-primary">Confirm</button>
+              <button id="btn-confirm-delete-widget" type="button" class="btn btn-primary">Confirm</button>
            </div>
        </div>
    </div>
 </div>
+
 <script>
-   //we indicate that delete_page.html has been loaded
-   deletePageModalHasBeenLoaded = true;
+   //we indicate that delete_widget.html has been loaded
+   deleteWidgetModalHasBeenLoaded = true;
 
-   var pageToDelete = undefined;
+   var widgetToDelete = undefined;
 
-   function showDeletePageModal(pageId) {
+   function showDeleteWidgetModal(pageId, widgetId) {
       assert(pageId !== undefined, "Page Id must be defined");
-      pageToDelete = pageArray[pageId];
+      assert(widgetId !== undefined, "Widget Id must be defined");
+      widgetToDelete = pageArray[pageId].widgets[widgetId];
 
-      $("span#name-delete-page-modal").text(pageToDelete.name);
+      $("span#name-delete-widget-modal").text(widgetToDelete.name);
 
       //we display the modal
-      $('div#delete-page-modal').modal();
+      $('div#delete-widget-modal').modal();
    }
 
    /**
     * Callback to the click of the button to confirm deletion of a page
     */
    $("button#btn-confirm-delete-page").click(function () {
-
+      //TODO
+      dkjhsdkjgsdjkdfs
       assert(pageToDelete !== undefined, "Page Id must be defined");
 
       //we close the new widget modal
