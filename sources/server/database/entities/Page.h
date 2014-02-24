@@ -13,6 +13,9 @@ namespace entities {
    public:
       CPage()
       {
+         m_Id_filled = false;
+         m_Name_filled = false;
+         m_PageOrder_filled = false;
       }
 
       virtual ~CPage()

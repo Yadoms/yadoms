@@ -21,6 +21,7 @@ public:
 
    CJson addPage(const std::vector<std::string> & parameters, const CJson & requestContent);   
    CJson updatePage(const std::vector<std::string> & parameters, const CJson & requestContent);   
+   CJson updateAllPages(const std::vector<std::string> & parameters, const CJson & requestContent);   
    CJson deletePage(const std::vector<std::string> & parameters, const CJson & requestContent);   
    CJson deleteAllPages(const std::vector<std::string> & parameters, const CJson & requestContent);   
 

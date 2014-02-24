@@ -31,6 +31,7 @@ void CPageRestService::configureDispatcher(CRestDispatcher & dispatcher)
    REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")(CWidgetRestService::getRestKeyword()), CPageRestService::getPageWidget);
 
    REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPageRestService::addPage, CPageRestService::transactionalMethod);
+   REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword), CPageRestService::updateAllPages, CPageRestService::transactionalMethod);
    REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CPageRestService::updatePage, CPageRestService::transactionalMethod);
    REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPageRestService::deletePage, CPageRestService::transactionalMethod);
    REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CPageRestService::deleteAllPages, CPageRestService::transactionalMethod);
@@ -167,6 +168,39 @@ CJson CPageRestService::updatePage(const std::vector<std::string> & parameters, 
       return CJsonResult::GenerateError("unknown exception in replacing a page");
    }
 }
+
+
+
+
+CJson CPageRestService::updateAllPages(const std::vector<std::string> & parameters, const CJson & requestContent)
+{
+   try
+   {
+      m_dataProvider->getPageRequester()->removeAllPages();
+      
+      CPageEntitySerializer hes;
+      std::vector<boost::shared_ptr<server::database::entities::CPage> > pagesToUpdate = CJsonCollectionSerializer<server::database::entities::CPage>::DeserializeCollection(requestContent, hes, getRestKeyword());
+      BOOST_FOREACH(boost::shared_ptr<server::database::entities::CPage> page, pagesToUpdate)
+      {
+         m_dataProvider->getPageRequester()->addPage(*page);
+      }
+     
+      return CJsonResult::GenerateSuccess(CJsonCollectionSerializer<server::database::entities::CPage>::SerializeCollection(m_dataProvider->getPageRequester()->getPages(), hes, getRestKeyword()));
+      
+   }
+   catch(std::exception &ex)
+   {
+      return CJsonResult::GenerateError(ex);
+   }
+   catch(...)
+   {
+      return CJsonResult::GenerateError("unknown exception in updating all pages");
+   }
+}
+
+
+
+
 
 CJson CPageRestService::deletePage(const std::vector<std::string> & parameters, const CJson & requestContent)
 {

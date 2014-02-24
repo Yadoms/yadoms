@@ -29,6 +29,7 @@ namespace server {
                virtual ~CSQLitePageRequester();
 
                // IPageRequester implementation
+               virtual int addPage(const server::database::entities::CPage & page);
                virtual int addPage(const std::string& name, const int pageOrder);
                virtual boost::shared_ptr<server::database::entities::CPage> getPage(int pageId);
                virtual std::vector<boost::shared_ptr<server::database::entities::CPage> > getPages();
