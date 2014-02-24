@@ -12,6 +12,6 @@ MACRO(ADD_PLUGIN _targetName)
 	target_link_libraries(${_targetName} yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 
 	IF(WIN32 OR XCODE)
-		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "Plugins")
+		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "plugins")
 	ENDIF()
 ENDMACRO()

@@ -12,7 +12,7 @@ public:
 private:
    enum
    {
-      kXplMessageReceived = shared::event::CEventHandler::kUserFirstId,
+      kXplMessageReceived = shared::event::kUserFirstId,
    };
 
 private:

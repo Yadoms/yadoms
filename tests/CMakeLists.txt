@@ -158,13 +158,13 @@ set(youroutputdirectory ${PROJECT_SOURCE_DIR}/builds)
 
 # First for the generic no-config case (e.g. with gcc)
 set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${youroutputdirectory} )
-set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${youroutputdirectory}/plugins/hardware )
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${youroutputdirectory}/plugins )
 set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${youroutputdirectory} )
 # Second, for multi-config builds (e.g. msvc)
 foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
     set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG} )
-    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG}/plugins/hardware )
+    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG}/plugins )
     set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG} )
 endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
@@ -314,27 +314,6 @@ if(NOT Boost_USE_STATIC_LIBS)
 			set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.so)
 		endif()
 		
-		#check existance
-		if(EXISTS ${LIBFILE})
-			MESSAGE(STATUS "    Library file : ${LIBFILE}")
-				
-			#create post build command
-			add_custom_command(TARGET MainTestStartOptionsLoader POST_BUILD        	# Adds a post-build event to yadoms
-				COMMAND ${CMAKE_COMMAND} -E copy_if_different  	# which executes "cmake - E copy_if_different..."
-					"${LIBFILE}"     							# <--this is in-file
-					$<TARGET_FILE_DIR:MainTestStartOptionsLoader>)   				# <--this is out-file path
-			add_custom_command(TARGET MainTestHardwarePluginManager POST_BUILD        	# Adds a post-build event to yadoms
-				COMMAND ${CMAKE_COMMAND} -E copy_if_different  	# which executes "cmake - E copy_if_different..."
-					"${LIBFILE}"     							# <--this is in-file
-					$<TARGET_FILE_DIR:MainTestHardwarePluginManager>)   
-
-			add_custom_command(TARGET MainTestEvent POST_BUILD        	# Adds a post-build event to yadoms
-				COMMAND ${CMAKE_COMMAND} -E copy_if_different  	# which executes "cmake - E copy_if_different..."
-					"${LIBFILE}"     							# <--this is in-file
-					$<TARGET_FILE_DIR:MainTestEvent>)   
-		else()
-			MESSAGE("    Library file not found : ${LIBFILE}")
-		endif()
 	ENDFOREACH(BOOSTLIBRARY)
 endif()		
 

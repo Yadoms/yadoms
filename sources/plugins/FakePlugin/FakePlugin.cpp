@@ -31,7 +31,7 @@ CFakePlugin::~CFakePlugin()
 // Event IDs
 enum
 {
-   kEvtXplMessage = shared::event::CEventHandler::kUserFirstId,   // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtXplMessage = shared::event::kUserFirstId,   // Always start from shared::event::CEventHandler::kUserFirstId
    kEvtUpdateConfiguration
 };
 
@@ -86,7 +86,7 @@ void CFakePlugin::doWork(const std::string& configurationValues, boost::asio::io
 
                break;
             }
-         case kTimeout:
+         case shared::event::kTimeout:
             {
                // Timeout, used here to send a XPL message periodically
 

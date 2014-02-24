@@ -4,8 +4,8 @@
 #include <queue>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread.hpp>
-#include "../../sources/shared/shared/Exceptions/BadConversionException.hpp"
-#include "../../sources/shared/shared/Event/EventHandler.hpp"
+#include "../../../sources/shared/shared/exceptions/BadConversion.hpp"
+#include "../../../sources/shared/shared/event/EventHandler.hpp"
 
 #define BOOST_TEST_MODULE MainTestEvent
 
@@ -15,7 +15,7 @@
 // Event IDs
 enum
 {
-   FirstMessage = CEventHandler::kUserFirstId,   // Always start from CEventHandler::kUserFirstId
+   FirstMessage = shared::event::kUserFirstId,   // Always start from shared::event::kUserFirstId
    Message1
 };
 
@@ -24,7 +24,7 @@ long Receiver_Message1Counter;
 long Receiver_TimeoutCounter;
 long Receiver_DefaultCounter;
 
-CEventHandler EvtHandler;
+shared::event::CEventHandler EvtHandler;
 
 void ThreadReceiver(long l_nb_messages)
 {
@@ -51,7 +51,7 @@ void ThreadReceiver(long l_nb_messages)
             std::cout << "Thread Receiver: Message 1 Received (#" << Receiver_Message1Counter << ")" << std::endl;
             break;
          }
-      case CEventHandler::kTimeout:
+      case shared::event::kTimeout:
          {
             Receiver_TimeoutCounter++;
             std::cout << "Thread Receiver: TimeOut (#" << Receiver_TimeoutCounter << ")" << std::endl;

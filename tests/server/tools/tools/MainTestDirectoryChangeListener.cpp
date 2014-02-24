@@ -94,7 +94,7 @@ BOOST_AUTO_TEST_CASE(NewFile_Test)
 {
    CTestContext context(TestDirectory);
    Events.clear();
-   CDirectoryChangeListener listener (TestDirectory, onEventOnDirectory);
+   tools::CDirectoryChangeListener listener (TestDirectory, onEventOnDirectory);
    boost::this_thread::sleep_for(boost::chrono::milliseconds(200));
 
    CreateFile(TestDirectory, TestFile);
@@ -118,7 +118,7 @@ BOOST_AUTO_TEST_CASE(DeleteFile_Test)
    Events.clear();
    CreateFile(TestDirectory, TestFile);
 
-   CDirectoryChangeListener listener (TestDirectory, onEventOnDirectory);
+   tools::CDirectoryChangeListener listener (TestDirectory, onEventOnDirectory);
    boost::this_thread::sleep_for(boost::chrono::milliseconds(200));
    RemoveFile(TestDirectory, TestFile);
    boost::this_thread::sleep_for(boost::chrono::milliseconds(200));
@@ -141,7 +141,7 @@ BOOST_AUTO_TEST_CASE(ModifyFile_Test)
    Events.clear();
    CreateFile(TestDirectory, TestFile);
 
-   CDirectoryChangeListener listener (TestDirectory, onEventOnDirectory);
+   tools::CDirectoryChangeListener listener (TestDirectory, onEventOnDirectory);
    boost::this_thread::sleep_for(boost::chrono::milliseconds(200));
    WriteFile(TestDirectory, TestFile);
    boost::this_thread::sleep_for(boost::chrono::milliseconds(200));
@@ -167,7 +167,7 @@ BOOST_AUTO_TEST_CASE(RenameFile_Test)
    Events.clear();
    CreateFile(TestDirectory, TestFile);
 
-   CDirectoryChangeListener listener (TestDirectory, onEventOnDirectory);
+   tools::CDirectoryChangeListener listener (TestDirectory, onEventOnDirectory);
    boost::this_thread::sleep_for(boost::chrono::milliseconds(200));
    const std::string newFileName (TestFile + "2");
    RenameFile(TestDirectory, TestFile, newFileName);
