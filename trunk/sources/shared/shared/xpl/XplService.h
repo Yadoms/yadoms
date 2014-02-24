@@ -12,7 +12,20 @@ namespace shared { namespace xpl
 class YADOMS_SHARED_EXPORT CXplService 
 {
 public:
-  
+  //TODO : virer les ctor inutiles
+   //--------------------------------------------------------------
+   /// \brief			Ctor using default network interface
+   /// \param [in]   deviceId : The device Id delivered by Xpl Project
+   /// \param [in]   instanceId : The instance Id
+   /// \param [in]   pEventHandler : a pointer on event handler that will be notified when a XPL message is received
+   /// \param [in]   eventTypeIdentifier : the event type to generate when a XplMessage is received
+   /// \param [in]   externalIOService : a pointer to an external ioservice. if NULL a new ioservice is created.
+   /// \note         Using this constructor implies that vendor Id will be CXplConstants::getYadomsVendorId
+   //--------------------------------------------------------------
+   CXplService(const std::string & deviceId, const std::string & instanceId,
+      boost::asio::io_service * externalIOService = NULL,
+      event::CEventHandler * pEventHandler = NULL, int eventTypeIdentifier = 0);
+
    //--------------------------------------------------------------
    /// \brief			Ctor using default network interface
    /// \param [in]   vendorId : The vendor Id delivered by Xpl Project
@@ -52,9 +65,9 @@ public:
    /// \brief			Record an event handler to notify it when a message is received
    /// \param [in]   handler : a pointer on the shared::event::eventhandler
    /// \param [in]   eventTypeIdentifier : the event type to generate when an XplMessage is received
-   /// \eexample     xplService->messageReceived(shared_from_this(), kEvtXplMessage);
+   /// \eexample     xplService->messageReceived(this, kEvtXplMessage);
    //--------------------------------------------------------------
-   void messageReceived(event::CEventHandler * pHandler, const int eventTypeIdentifier);
+   void messageReceived(event::CEventHandler * pHandler, int eventTypeIdentifier);
 
    
    //--------------------------------------------------------------

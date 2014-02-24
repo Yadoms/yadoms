@@ -7,16 +7,41 @@
 #include "XplMessageFactory.h"
 #include "XplActor.h"
 #include "XplHelper.h"
+#include "XplConstants.h"
 #include "../StringExtension.h"
 
-//un client broadcast sa donnée sur le port XPL
-//et passe en ecoute de données sur n'importe quel port de n'importe qui qu'il donne dans sa trame xpl
+// A client send its data as broadcast on the XPL port,
+// and listen on a certain port, given in its XPL frame.
 
-//un hub ecoute le port xpl
-//en repete les données sur la liste des client connectés sur leur port respectifs
+// A hub is listening the XPL port, repeat all received data to the connected clients on their respective ports.
 
 namespace shared { namespace xpl
 {
+
+CXplService::CXplService(
+   const std::string & deviceId,
+   const std::string & instanceId,
+   boost::asio::io_service * externalIOService,
+   event::CEventHandler * pEventHandler,
+   int eventTypeIdentifier)
+   : m_manageIoService(externalIOService == NULL), m_eventHandler(NULL)
+{
+   if(m_manageIoService)
+      m_ioService = new boost::asio::io_service();
+   else
+      m_ioService = externalIOService;
+
+   m_timer.reset( new boost::asio::deadline_timer(*m_ioService) );
+   m_socket.reset( new boost::asio::ip::udp::socket(*m_ioService) );
+
+
+   m_localEndPoint = CXplHelper::getFirstIPV4AddressEndPoint();
+   m_source = CXplActor::createActor(CXplConstants::getYadomsVendorId(), deviceId, instanceId);
+
+   messageReceived(pEventHandler, eventTypeIdentifier);
+
+   initializeConnector();
+}
 
 CXplService::CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId, boost::asio::io_service * externalIOService)
    : m_manageIoService(externalIOService == NULL), m_eventHandler(NULL)
@@ -49,7 +74,7 @@ CXplService::CXplService(const std::string & vendorId, const std::string & devic
 
    if (!CXplHelper::getEndPointFromInterfaceIp(localIPOfTheInterfaceToUse, m_localEndPoint))
    {
-      //If we havn't found the given ip, we take the first address IPV4
+      //If we haven't found the given ip, we take the first address IPV4
       m_localEndPoint = CXplHelper::getFirstIPV4AddressEndPoint();
    }
 

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "XplActor.h"
 #include "XplHelper.h"
+#include "XplConstants.h"
 #include "XplException.h"
 
 namespace shared { namespace xpl
@@ -34,6 +35,16 @@ const CXplActor CXplActor::createActor(const std::string & vendorId, const std::
 {
    CXplActor actor;
    actor.setVendorId(vendorId);
+   actor.setDeviceId(deviceId);
+   actor.setInstanceId(instanceId);
+
+   return actor;
+}
+
+const CXplActor CXplActor::createActor(const std::string & deviceId, const std::string & instanceId)
+{
+   CXplActor actor;
+   actor.setVendorId(CXplConstants::getYadomsVendorId());
    actor.setDeviceId(deviceId);
    actor.setInstanceId(instanceId);
 

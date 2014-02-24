@@ -36,7 +36,7 @@ void CInstance::doWork()
    try
    {
       // Execute plugin code
-      m_pPluginInstance->doWork(m_context->getConfiguration(), m_pluginIOService);
+      m_pPluginInstance->doWork(m_context->getId(), m_context->getConfiguration(), m_pluginIOService);
 
       if (getStatus() == kStopping)
       {
