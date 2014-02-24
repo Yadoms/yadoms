@@ -24,7 +24,7 @@ function Page(id, name, pageOrder) {
  * @return {string} json string
  */
 Page.prototype.widgetsToJsonString = function() {
-   data = new Array();
+   var data = new Array();
    for(widgetId in this.widgets) {
       data.push(this.widgets[widgetId]);
    }
@@ -38,7 +38,7 @@ Page.prototype.widgetsToJsonString = function() {
 Page.prototype.toJSON = function () {
    return {
       id : this.id,
-      name: this.name,
+      name: encodeURIComponent(this.name),
       pageOrder: this.pageOrder
    };
 };

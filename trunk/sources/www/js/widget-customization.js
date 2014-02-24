@@ -184,3 +184,24 @@ function deletePage(pageId) {
          });
    }
 }
+
+function deleteWidget(pageId, widgetId) {
+   if (deleteWidgetModalHasBeenLoaded)
+   {
+      //we show the modal to delete a widget
+      showDeleteWidgetModal(pageId, widgetId);
+   }
+   else
+   {
+      $.ajax( "modals/delete_widget.html" )
+         .done(function(data) {
+            //we append it to the index
+            $('body').append(data);
+            //we show the modal to delete a widget
+            showDeleteWidgetModal(widgetId);
+         })
+         .fail(function() {
+            notifyError("Unable to load widget deletion form");
+         });
+   }
+}

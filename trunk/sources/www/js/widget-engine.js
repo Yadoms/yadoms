@@ -16,9 +16,7 @@ var pagesLoaded = [];
 
 var startTime = null;
 
-function initializeEvents() {
-
-   //Tabs events
+function initializePageEvents() {
 
    //we listen click event on tab click
    $('li.tabPagePills').bind('click', function (e) {
@@ -48,8 +46,18 @@ function initializeEvents() {
       createOrUpdatePage();
    });
 
-   //Widget events
+}
 
+function initializeWidgetEvents() {
+   //we listen click event on configure click
+   $('button.configure-widget').bind('click', function (e) {
+      configureWidget($(e.currentTarget).parents("li.widget").attr("widget-id")); } );
+
+   //we listen click event on delete click
+   $('button.delete-widget').bind('click', function (e) {
+      var widgetDOMElement = $(e.currentTarget).parents("li.widget");
+      deleteWidget(widgetDOMElement.attr("page-id"), widgetDOMElement.attr("widget-id"));
+   });
 }
 
 function movePage(pageId, direction) {
@@ -79,22 +87,46 @@ function movePage(pageId, direction) {
    }
    if (nearestId != null) {
       //we can move pageOrder
-      //TODO json request
-      //TODO detach() jquery pour enlever l'onglet et utiliser insetBefore et insertAfter sur le nearest pour le remettre au bon endroit
+      //we move it into the array and send the complete collection to rest server
+      pageArray[nearestId].pageOrder = pageArray[pageId].pageOrder;
+      pageArray[pageId].pageOrder = nearestPageOrder;
+
+      //we make an array of pages to send to rest server
+      var data = new Array();
+      for(pageId in pageArray) {
+         data.push(pageArray[pageId]);
+      }
+
+      $.ajax({
+         type: "PUT",
+         url: "/rest/page",
+         data: JSON.stringify(data),
+         contentType: "application/json; charset=utf-8",
+         dataType: "json"
+      })
+         .done(savePageMoveDone(pageId, nearestId, direction))
+         .fail(function() {notifyError("Unable to save page position")});
    }
 }
 
-/**
- * Return a Widget object from the gridster DOM object
- * @param $element gridster DOM object concerned
- * @returns {Widget}
- */
-function getWidgetFromGridsterElement($element)
-{
-   var str = $element[0].id;
-   var res = str.split("-");
-   assert(res.length >= 3, "gridster id must be formed name-idPage-idWidget");
-   return pageArray[res[res.length - 2]].widgets[res[res.length - 1]];
+function savePageMoveDone(pageId, nearestId, direction) {
+   return function(data) {
+      //we parse the json answer
+      if (data.result != "true")
+      {
+         notifyError("Error during saving page position");
+         console.error(data.message);
+         return;
+      }
+      //we move the tab dynamically
+      var tabDOMElement = $("li.tabPagePills[page-id=" + pageId + "]").detach();
+      if (direction == "right") {
+         $("li.tabPagePills[page-id=" + nearestId + "]").insertAfter(tabDOMElement);
+      }
+      else {
+         $("li.tabPagePills[page-id=" + nearestId + "]").insertBefore(tabDOMElement);
+      }
+   };
 }
 
 /**
@@ -147,7 +179,7 @@ function requestPageDone()
       //we deactivate the customization
       enableGridsterCustomization(false);
 
-      initializeEvents();
+      initializePageEvents();
 
       requestWidgets(getCurrentPage());
    };
@@ -394,6 +426,8 @@ function getWidgetPackageInformationDone(packageName)
             loadWidgetsNotification = null;
          }
 
+         initializeWidgetEvents();
+
          console.log('Widgets loaded in ' + (new Date() - startTime) + " ms");
       }
 
@@ -449,11 +483,11 @@ function createGridsterWidget(widget) {
    assert(widget !== undefined, "createWidget function widget must be defined");
 
    return pageArray[widget.idPage].gridster.add_widget(
-      "<li class=\"widget\" id=\"gridsterWidget-" + widget.idPage + "-" + widget.id +"\">" +
+      "<li class=\"widget\" page-id=\"" + widget.idPage + "\" widget-id=\"" + widget.id +"\">" +
          "<div class=\"widgetCustomizationToolbar customization-item hidden\">" +
             "<div class=\"btn-group btn-group-sm\">" +
-               "<button type=\"button\" class=\"btn btn-default\" title=\"Configure\"><i class=\"fa fa-cog\"></i></button>" +
-               "<button type=\"button\" class=\"btn btn-default\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
+               "<button type=\"button\" class=\"btn btn-default configure-widget\" title=\"Configure\"><i class=\"fa fa-cog\"></i></button>" +
+               "<button type=\"button\" class=\"btn btn-default delete-widget\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
             "</div>" +
          "</div>" +
          "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + widget.name + "-template', data: data }\"/>" +
