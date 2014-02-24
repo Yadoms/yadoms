@@ -9,6 +9,7 @@
 
 
 // Use this macro to define some basic informations about the plugin
+// Defines the static PluginInformations value that can be used by plugin to retrieve values
 IMPLEMENT_PLUGIN(
    CFakePlugin,                                 // IPlugin implementation class
    "FakePlugin",                                // Plugin name (std::string)
@@ -35,30 +36,33 @@ enum
    kEvtUpdateConfiguration
 };
 
-void CFakePlugin::doWork(const std::string& configurationValues, boost::asio::io_service * pluginIOService)
+void CFakePlugin::doWork(int instanceUniqueId, const std::string& configurationValues, boost::asio::io_service * pluginIOService)
 {
    try
    {
       YADOMS_LOG_CONFIGURE("FakePlugin");
       YADOMS_LOG(debug) << "CFakePlugin is starting...";
 
-      // Register to XPL service
-      //TODO : faire une macro ? (le deviceId pourrait provenir de ce qui est renseigné par la macro IMPLEMENT_PLUGIN)
-      shared::xpl::CXplService xplService(shared::xpl::CXplConstants::getYadomsVendorId(), "fake", "1", pluginIOService);
-      // Use this line to use be notified from shared::event::CEventHandler on an xplMessage
-      xplService.messageReceived(this, kEvtXplMessage);
-
       // Load configuration values (provided by database)
       m_Configuration.setValues(configurationValues);
       // Trace the configuration (just for test)
       m_Configuration.trace();
 
-      int value = 0;
+      // Register to XPL service
+      // Note that we use plugin instance id (guaranteed by Yadoms to be unique among all instances of all plugins)
+      // as XPL device instance ID
+      shared::xpl::CXplService xplService(PluginInformations.getName(), boost::lexical_cast<std::string>(instanceUniqueId),
+         pluginIOService, this, kEvtXplMessage);
 
+      // A simple incrementing value, sent on XPL network
+      int xplTestData = 0;
+
+      // the main loop
       YADOMS_LOG(debug) << "CFakePlugin is running...";
       while(1)
       {
          // Wait for an event, with timeout
+         // Timeout is used here to send periodically a XPL message
          switch(waitForEvents(boost::posix_time::milliseconds(20000)))
          {
          case kEvtXplMessage:
@@ -92,13 +96,13 @@ void CFakePlugin::doWork(const std::string& configurationValues, boost::asio::io
 
                // Create the message
                shared::xpl::CXplMessage msg(
-                  shared::xpl::CXplMessage::kXplStat,
-                  xplService.getActor(),
-                  shared::xpl::CXplActor::createActor(shared::xpl::CXplConstants::getYadomsVendorId(), "logger", "1"),
-                  shared::xpl::CXplMessageSchemaIdentifier("clock", "basic"));
+                  shared::xpl::CXplMessage::kXplStat,                            // Message type
+                  xplService.getActor(),                                         // Source actor (here : our fake plugin instance)
+                  shared::xpl::CXplActor::createActor("logger", "1"),            // Target actor (here : the XPL logger of Yadoms)
+                  shared::xpl::CXplMessageSchemaIdentifier("clock", "basic"));   // The message schema
 
                // Add data to message
-               msg.addToBody("value", boost::lexical_cast<std::string>(value++));
+               msg.addToBody("value", boost::lexical_cast<std::string>(xplTestData++));
 
                // Send it
                xplService.sendMessage(msg);
@@ -135,11 +139,3 @@ void CFakePlugin::updateConfiguration(const std::string& configurationValues)
    // This function is called in a Yadoms thread context, so send a event to the CFakePlugin thread
    sendEvent<std::string>(kEvtUpdateConfiguration, configurationValues);
 }
-
-
-
-// TODO : WhatTheFuck ? ? ? C'est quoi ces adresses ?
-void CFakePlugin::init(const std::string & pluginAddress, const std::string & serverAddress)
-{
-}
-

@@ -86,7 +86,16 @@ namespace shared { namespace xpl
 
       //--------------------------------------------------------------
       /// \brief	    Create a new actor
-      /// \param [in]   rawActorString : Chaine de texte à parser pour representer un acteur
+      /// \param [in]   deviceId : The device Id delivered by Xpl Project
+      /// \param [in]   instanceId : The instance Id
+      /// \return     the new actor
+      /// \note      When using this constructor, vendor Id used will be CXplConstants::getYadomsVendorId
+      //--------------------------------------------------------------
+      static const CXplActor createActor(const std::string & deviceId, const std::string & instanceId);
+
+      //--------------------------------------------------------------
+      /// \brief	    Create a new actor
+      /// \param [in]   rawActorString : Text string representing an actor
       /// \return     the new actor
       //--------------------------------------------------------------
       static const CXplActor parse(const std::string & rawActorString);

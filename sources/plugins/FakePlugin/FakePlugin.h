@@ -26,15 +26,9 @@ public:
    virtual ~CFakePlugin();
 
    // IPlugin implementation
-   virtual void doWork(const std::string& configurationValues, boost::asio::io_service * pluginIOService);
+   virtual void doWork(int instanceUniqueId, const std::string& configurationValues, boost::asio::io_service * pluginIOService);
    virtual void updateConfiguration(const std::string& configurationValues);
   // [END] IPlugin implementation
-
-   //--------------------------------------------------------------
-   /// \brief	TODO : commenter
-   //--------------------------------------------------------------
-   // TODO : WhatTheFuck ? ? ? C'est quoi ces adresses ?
-   void init(const std::string & pluginAddress, const std::string & serverAddress);
 
 private:
    //--------------------------------------------------------------
