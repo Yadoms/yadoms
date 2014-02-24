@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#include "../../Exceptions/BadConversion.hpp"
-#include "../../Exceptions/OutOfRange.hpp"
+#include "../../exceptions/BadConversion.hpp"
+#include "../../exceptions/OutOfRange.hpp"
 #include "../../StringExtension.h"
 #include "Configuration.h"
 #include "Factory.h"

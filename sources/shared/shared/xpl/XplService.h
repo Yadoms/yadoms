@@ -116,11 +116,6 @@ private:
    boost::array<char, 1024> m_receiveBuffer;
 
    //--------------------------------------------------------------
-   /// \brief  Pointer to eventHandler which will receive notifications
-   //--------------------------------------------------------------
-   event::CEventHandler * m_eventHandler;
-
-   //--------------------------------------------------------------
    /// \brief  The event type to generate when an XplMessage is received
    //--------------------------------------------------------------
    int m_eventIdToSignal;
@@ -145,6 +140,11 @@ private:
    /// \brief			true if the ioService is manage by this instance, or false if it is given from owner
    //--------------------------------------------------------------
    bool m_manageIoService;
+   
+   //--------------------------------------------------------------
+   /// \brief  Pointer to eventHandler which will receive notifications
+   //--------------------------------------------------------------
+   event::CEventHandler * m_eventHandler;
 };
 
 } } // namespace shared::xpl

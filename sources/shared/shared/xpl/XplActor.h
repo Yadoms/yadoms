@@ -111,9 +111,9 @@ namespace shared { namespace xpl
 
       bool m_broadcastActive;
 
-      static const int VendorIdMaxLength = 8;
-      static const int DeviceIdMaxLength = 8;
-      static const int InstanceIdMaxLength = 16;
+      static const unsigned int VendorIdMaxLength = 8;
+      static const unsigned int DeviceIdMaxLength = 8;
+      static const unsigned int InstanceIdMaxLength = 16;
    };
 
 } } // namespace shared::xpl

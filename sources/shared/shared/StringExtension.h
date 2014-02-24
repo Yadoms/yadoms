@@ -72,7 +72,7 @@ namespace shared
 	   {
 		   T result;
 		   if (!tryParse(s, result, f))
-			   throw CException("Unable to parse " + s);
+			   throw exception::CException("Unable to parse " + s);
 		   return result;
 	   }
 
