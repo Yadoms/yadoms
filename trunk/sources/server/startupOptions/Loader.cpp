@@ -25,9 +25,9 @@ void CLoader::buildOptionsDescription()
       "set log level, accepted values are : trace, debug, info, warning, error, fatal")
       ("databaseFile,D", po::value<std::string>(&m_databaseFile)->default_value("yadoms.db3"),
       "use a specific dataBase file")
-      ("pluginsPath,u", po::value<CMustExistPathOption>(&m_PluginsPath)->default_value(CMustExistPathOption("plugins")),
+      ("pluginsPath,P", po::value<CMustExistPathOption>(&m_PluginsPath)->default_value(CMustExistPathOption("plugins")),
       "use a specific path to plugins")
-      ("widgetsPath", po::value<CMustExistPathOption>(&m_widgetsPath)->default_value(CMustExistPathOption("widgets")),
+      ("widgetsPath,W", po::value<CMustExistPathOption>(&m_widgetsPath)->default_value(CMustExistPathOption("widgets")),
       "use a specific path to widgets path")
       ("disableXplHubStart,x",
       "don't start the Xpl hub, useful if another Xpl hub is already running on the same machine")
@@ -37,7 +37,7 @@ void CLoader::buildOptionsDescription()
       ;
 }
 
-CLoader::CLoader(int argc, char** argv)
+CLoader::CLoader(int argc, const char* const argv[])
    :m_optionsDescription("Allowed options")
 {
    buildOptionsDescription();
