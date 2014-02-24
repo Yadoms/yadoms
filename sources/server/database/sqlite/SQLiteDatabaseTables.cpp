@@ -6,7 +6,7 @@
 namespace database { 
 namespace sqlite { 
 
-   DECLARE_TABLE_COLUMN_NAMES(Hardware, "Hardware",
+   DECLARE_TABLE_COLUMN_NAMES(Plugin, "Plugin",
       ((Id)("id"))
       ((Name)("name"))
       ((PluginName)("pluginName"))
@@ -63,7 +63,7 @@ namespace sqlite {
       ((Configuration)("configuration"))
    )
 
-   DECLARE_TABLE_COLUMN_NAMES(HardwareEventLogger, "HardwareEventLogger",
+   DECLARE_TABLE_COLUMN_NAMES(PluginEventLogger, "PluginEventLogger",
       ((Id)("id"))
       ((EventDate)("eventDate"))
       ((PluginName)("pluginName"))

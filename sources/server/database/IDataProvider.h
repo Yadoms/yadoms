@@ -1,13 +1,13 @@
 #pragma once
 
-#include "IHardwareRequester.h"
+#include "IPluginRequester.h"
 #include "IConfigurationRequester.h"
 #include "IDeviceRequester.h"
 #include "IAcquisitionRequester.h"
 #include "IKeywordRequester.h"
 #include "IPageRequester.h"
 #include "IWidgetRequester.h"
-#include "IHardwareEventLoggerRequester.h"
+#include "IPluginEventLoggerRequester.h"
 #include "ITransactionalProvider.h"
 
 
@@ -40,11 +40,11 @@ namespace database {
       virtual boost::shared_ptr<ITransactionalProvider> getTransactionalEngine() = 0;
 
       //--------------------------------------------------------------
-      /// \Brief		get the hardware requester
-      /// \return 	the hardware requester
+      /// \Brief		get the plugin requester
+      /// \return 	the plugin requester
       /// \throws 		
       //--------------------------------------------------------------  
-      virtual boost::shared_ptr<IHardwareRequester> getHardwareRequester() = 0;
+      virtual boost::shared_ptr<IPluginRequester> getPluginRequester() = 0;
 
       //--------------------------------------------------------------
       /// \Brief		get the configuration requester
@@ -89,11 +89,11 @@ namespace database {
       virtual boost::shared_ptr<IWidgetRequester> getWidgetRequester() = 0;
 
       //--------------------------------------------------------------
-      /// \Brief		get the hardware event logger requester
-      /// \return 	the hardware event logger requester
+      /// \Brief		get the plugin event logger requester
+      /// \return 	the plugin event logger requester
       /// \throws 		
       //--------------------------------------------------------------  
-      virtual boost::shared_ptr<IHardwareEventLoggerRequester> getHardwareEventLoggerRequester() = 0;
+      virtual boost::shared_ptr<IPluginEventLoggerRequester> getPluginEventLoggerRequester() = 0;
       
    protected:
       IDataProvider()

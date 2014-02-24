@@ -300,27 +300,19 @@ set(YADOMS_SRC
 	
 	server/database/IDataProvider.h
 	server/database/ITransactionalProvider.h
-	server/database/IHardwareRequester.h
+	server/database/IPluginRequester.h
 	server/database/IConfigurationRequester.h
 	server/database/IDeviceRequester.h
 	server/database/IAcquisitionRequester.h
 	server/database/IKeywordRequester.h
 	server/database/IPageRequester.h
 	server/database/IWidgetRequester.h
-	server/database/IHardwareEventLoggerRequester.h
+	server/database/IPluginEventLoggerRequester.h
 	server/database/IEventLoggerRequester.h
 	server/database/DatabaseException.hpp
 
 	server/database/entities/EntityHelpers.hpp
-	server/database/entities/Hardware.h
-	server/database/entities/Configuration.h
-	server/database/entities/Acquisition.h
-	server/database/entities/Device.h
-	server/database/entities/Keyword.h
-	server/database/entities/Page.h
-	server/database/entities/Widget.h
-	server/database/entities/HardwareEventLogger.h
-	server/database/entities/EventLogger.h
+	server/database/entities/Entities.h
 	
 	server/web/IWebServer.h
 	server/web/IRestHandler.h
@@ -345,8 +337,8 @@ set(YADOMS_SRC
 	server/web/rest/RestDispatcher.cpp
 	server/web/rest/RestDispatcherHelpers.hpp
 
-	server/web/rest/HardwareRestService.h
-	server/web/rest/HardwareRestService.cpp
+	server/web/rest/PluginRestService.h
+	server/web/rest/PluginRestService.cpp
 	server/web/rest/DeviceRestService.h
 	server/web/rest/DeviceRestService.cpp
 	server/web/rest/PageRestService.h
@@ -357,8 +349,8 @@ set(YADOMS_SRC
 	server/web/rest/AcquisitionRestService.cpp
 	server/web/rest/ConfigurationRestService.h
 	server/web/rest/ConfigurationRestService.cpp
-	server/web/rest/HardwareEventLoggerRestService.h
-	server/web/rest/HardwareEventLoggerRestService.cpp
+	server/web/rest/PluginEventLoggerRestService.h
+	server/web/rest/PluginEventLoggerRestService.cpp
 	server/web/rest/EventLoggerRestService.h
 	server/web/rest/EventLoggerRestService.cpp
 	)
@@ -433,8 +425,8 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/SQLiteSystemTables.cpp
 		server/database/sqlite/SQLiteDatabaseTablesHelpers.hpp
 		server/database/sqlite/SQLiteTablesScripts.cpp
-		server/database/sqlite/requesters/SQLiteHardwareRequester.h
-		server/database/sqlite/requesters/SQLiteHardwareRequester.cpp
+		server/database/sqlite/requesters/SQLitePluginRequester.h
+		server/database/sqlite/requesters/SQLitePluginRequester.cpp
 		server/database/sqlite/requesters/SQLiteConfigurationRequester.h
 		server/database/sqlite/requesters/SQLiteConfigurationRequester.cpp
 		server/database/sqlite/requesters/SQLiteKeywordRequester.h
@@ -447,8 +439,8 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/requesters/SQLitePageRequester.cpp		
 		server/database/sqlite/requesters/SQLiteWidgetRequester.h
 		server/database/sqlite/requesters/SQLiteWidgetRequester.cpp		
-		server/database/sqlite/requesters/SQLiteHardwareEventLoggerRequester.h
-		server/database/sqlite/requesters/SQLiteHardwareEventLoggerRequester.cpp
+		server/database/sqlite/requesters/SQLitePluginEventLoggerRequester.h
+		server/database/sqlite/requesters/SQLitePluginEventLoggerRequester.cpp
 		server/database/sqlite/requesters/SQLiteEventLoggerRequester.h
 		server/database/sqlite/requesters/SQLiteEventLoggerRequester.cpp
 		

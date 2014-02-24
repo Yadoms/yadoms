@@ -1,21 +1,13 @@
 #pragma once
 
 #include "SQLiteDatabaseTablesHelpers.hpp"
-#include "database/entities/Acquisition.h"
-#include "database/entities/Configuration.h"
-#include "database/entities/Device.h"
-#include "database/entities/Hardware.h"
-#include "database/entities/Keyword.h"
-#include "database/entities/Page.h"
-#include "database/entities/Widget.h"
-#include "database/entities/HardwareEventLogger.h"
-#include "database/entities/EventLogger.h"
+#include "database/entities/Entities.h"
 
 
 namespace database { 
 namespace sqlite { 
 
-   DECLARE_TABLE(Hardware,
+   DECLARE_TABLE(Plugin,
       (Id)
       (Name)
       (PluginName)
@@ -73,7 +65,7 @@ namespace sqlite {
       (Configuration)
    )
 
-   DECLARE_TABLE(HardwareEventLogger,
+   DECLARE_TABLE(PluginEventLogger,
       (Id)
       (EventDate)
       (PluginName)

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entities/Acquisition.h"
+#include "entities/Entities.h"
 
 
 namespace database { 

@@ -6,7 +6,7 @@
 #pragma once
 
 #include "IQualifier.h"
-#include "database/IHardwareEventLoggerRequester.h"
+#include "database/IPluginEventLoggerRequester.h"
 #include "IdentityForQualifier.h"
 
 namespace pluginSystem
@@ -22,7 +22,7 @@ namespace pluginSystem
       /// \brief	Constructor
       /// \param[in] eventLoggerDatabase    Event logger database
       //--------------------------------------------------------------
-      CQualifier(boost::shared_ptr<database::IHardwareEventLoggerRequester> eventLoggerDatabase);
+      CQualifier(boost::shared_ptr<database::IPluginEventLoggerRequester> eventLoggerDatabase);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -45,7 +45,7 @@ namespace pluginSystem
       /// \param[in]  reason     Crash cause (exception...)
       //--------------------------------------------------------------
       void AddEventToDatabase(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation,
-         database::entities::CHardwareEventLogger::EEventType eventType, const std::string& reason = shared::CStringExtension::EmptyString);
+         database::entities::EEventType eventType, const std::string& reason = shared::CStringExtension::EmptyString);
 
       //--------------------------------------------------------------
       /// \brief	               Make corresponding quality indicator obsolete in cache
@@ -84,7 +84,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	database access
       //--------------------------------------------------------------
-      boost::shared_ptr<database::IHardwareEventLoggerRequester> m_eventLoggerDatabase;
+      boost::shared_ptr<database::IPluginEventLoggerRequester> m_eventLoggerDatabase;
    };
 
 } // namespace pluginSystem

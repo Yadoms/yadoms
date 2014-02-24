@@ -4,7 +4,7 @@
 //
 // Example : 
 //   Input :
-//      DECLARE_TABLE(Hardware, 
+//      DECLARE_TABLE(Plugin, 
 //         (Id)("id")
 //         (Name)("name")
 //         (PluginName)("pluginName")
@@ -14,7 +14,7 @@
 //         )
 //
 //    Ouptut :
-//         class CHardwareTable
+//         class CPluginTable
 //         {
 //         public:
 //            static const std::string & getTableName() { return m_TableName; }
@@ -37,7 +37,7 @@
 //         
 //  Example:
 //    Input :
-//          DECLARE_TABLE_COLUMN_NAMES(Hardware, 
+//          DECLARE_TABLE_COLUMN_NAMES(Plugin, 
 //              (Id)("id")
 //              (Name)("name")
 //              (PluginName)("pluginName")
@@ -47,13 +47,13 @@
 //          )
 //
 //    Output :
-//         std::string CHardwareTable::m_TableName = "Hardware";
-//         std::string CHardwareTable::m_ColumnId = "id";
-//         std::string CHardwareTable::m_ColumnName = "name";
-//         std::string CHardwareTable::m_ColumnPluginName = "pluginName";
-//         std::string CHardwareTable::m_ColumnConfiguration = "configuration";
-//         std::string CHardwareTable::m_ColumnEnabled = "enabled";
-//         std::string CHardwareTable::m_ColumnDeleted = "deleted";
+//         std::string CPluginTable::m_TableName = "Plugin";
+//         std::string CPluginTable::m_ColumnId = "id";
+//         std::string CPluginTable::m_ColumnName = "name";
+//         std::string CPluginTable::m_ColumnPluginName = "pluginName";
+//         std::string CPluginTable::m_ColumnConfiguration = "configuration";
+//         std::string CPluginTable::m_ColumnEnabled = "enabled";
+//         std::string CPluginTable::m_ColumnDeleted = "deleted";
 
 
 //
