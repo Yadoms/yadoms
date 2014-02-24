@@ -37,7 +37,7 @@ namespace adapters {
    inline TValue CSQLite3Extension::extractData(sqlite3_stmt * pStatement, int nCol)
    {
       //as default way, read text from database and extractData it with c++ side functions
-      return CStringExtension::parse<TValue>((char*)sqlite3_column_text(pStatement, nCol));
+      return shared::CStringExtension::parse<TValue>((char*)sqlite3_column_text(pStatement, nCol));
    }
 
    //--------------------------------------------------------------
