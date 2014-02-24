@@ -95,31 +95,40 @@ void CXplHub::handleReceive(const boost::system::error_code& error,
                //we check if we already known this periph
                unsigned short port;
                if (!CStringExtension::tryParse<unsigned short>(msg.getBodyValue("port"), port))
-                  throw CXplException("port in Heartbeat message is incorrect : " + msg.toString());
-
-               int interval;
-               if (!CStringExtension::tryParse<int>(msg.getBodyValue("interval"), interval))
-                  throw CXplException("interval in Heartbeat message is incorrect : " + msg.toString());
-
-               size_t i = 0;
-
-               while ((i < m_discoveredPeripherals.size()) && (port != m_discoveredPeripherals[i]->getPortNumber()))
                {
-                  i++;
-               }
+                  //it is not a hbeat request to be identified but to identify other service, we rebroadcast it
 
-               if (i < m_discoveredPeripherals.size())
-               {
-                  //we already known the peripheral, so we update its interval and its last time seen
-                  YADOMS_LOG(debug) << "Update peripheral information";
-                  m_discoveredPeripherals[i]->setInterval(interval);
-                  m_discoveredPeripherals[i]->updateLastTimeSeenFromNow();
                }
                else
                {
-                  //it's a new peripheral, so we add it to the list
-                  YADOMS_LOG(debug) << "New peripheral";
-                  m_discoveredPeripherals.push_back(boost::shared_ptr<CXplHubConnectedPeripheral>(new CXplHubConnectedPeripheral(m_ioService, m_localEndPoint.address().to_string(), port, interval)));
+                  int interval;
+                  if (!CStringExtension::tryParse<int>(msg.getBodyValue("interval"), interval))
+                  {
+                     //it is not a hbeat request to be identified but to identify other service, we rebroadcast it
+                  }
+                  else
+                  {
+                     size_t i = 0;
+
+                     while ((i < m_discoveredPeripherals.size()) && (port != m_discoveredPeripherals[i]->getPortNumber()))
+                     {
+                        i++;
+                     }
+
+                     if (i < m_discoveredPeripherals.size())
+                     {
+                        //we already known the peripheral, so we update its interval and its last time seen
+                        YADOMS_LOG(debug) << "Update peripheral information";
+                        m_discoveredPeripherals[i]->setInterval(interval);
+                        m_discoveredPeripherals[i]->updateLastTimeSeenFromNow();
+                     }
+                     else
+                     {
+                        //it's a new peripheral, so we add it to the list
+                        YADOMS_LOG(debug) << "New peripheral";
+                        m_discoveredPeripherals.push_back(boost::shared_ptr<CXplHubConnectedPeripheral>(new CXplHubConnectedPeripheral(m_ioService, m_localEndPoint.address().to_string(), port, interval)));
+                     }
+                  }
                }
             }
             else

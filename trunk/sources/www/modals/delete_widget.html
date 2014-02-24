@@ -39,38 +39,34 @@
    /**
     * Callback to the click of the button to confirm deletion of a page
     */
-   $("button#btn-confirm-delete-page").click(function () {
-      //TODO
-      dkjhsdkjgsdjkdfs
-      assert(pageToDelete !== undefined, "Page Id must be defined");
+   $("button#btn-confirm-delete-widget").click(function () {
+      assert(widgetToDelete !== undefined, "Widget must be defined");
 
       //we close the new widget modal
-      $("div#delete-page-modal").modal("hide");
-      debugger;
+      $("div#delete-widget-modal").modal("hide");
+
       //we ask for deletion of the page
       $.ajax({
          type: "DELETE",
-         url: "/rest/page/" + pageToDelete.id,
+         url: "/rest/widget/" + widgetToDelete.id,
          dataType: "json"
       })
       .done(function(data) {
-         debugger;
          //we parse the json answer
          if (data.result != "true")
          {
-           notifyError("Error during deleting page");
+           notifyError("Error during deleting widget");
            return;
          }
 
          //we delete the page dynamically
-         $(".widgetPage[page-id=" + pageToDelete.id + "]").remove();
-         $(".tabPagePills[page-id=" + pageToDelete.id + "]").remove();
-         pageArray.splice(pageToDelete.id, 1);
+         pageArray[widgetToDelete.idPage].gridster.remove_widget(widgetToDelete.$gridsterWidget);
+         pageArray[widgetToDelete.idPage].widgets.splice(widgetToDelete.id, 1);
       })
-      .fail(function(pageName) { return function() {notifyError("Unable to delete page " + pageName)}}(pageToDelete.name))
+      .fail(function(pageName) { return function() {notifyError("Unable to delete widget " + widgetName)}}(widgetToDelete.name))
       .always(function() {
         //we clear the current id
-        pageToDelete = undefined;
+        widgetToDelete = undefined;
       });
    });
 </script>

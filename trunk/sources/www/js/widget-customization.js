@@ -118,31 +118,6 @@ function exitCustomization() {
    }
 }
 
-/**
- * Callback of the click on the add widget button
- * Make lazy loading of the add widget modal
- */
-$("#btn-add-widget").click(function() {
-    if (addWidgetHasBeenLoaded)
-    {
-        //we ask the package to display the modal
-        askWidgetPackages();
-    }
-    else
-    {
-        $.ajax( "modals/add_widget.html" )
-            .done(function(data) {
-                //we append it to the index
-                $('body').append(data);
-                //we ask the package to display the modal
-                askWidgetPackages();
-            })
-            .fail(function() {
-                notifyError("Unable to add a widget");
-            });
-    }
-});
-
 function createOrUpdatePage(pageId) {
    if (modificationPageModalHasBeenLoaded)
    {
@@ -173,16 +148,20 @@ function deletePage(pageId) {
    else
    {
       $.ajax( "modals/delete_page.html" )
-         .done(function(data) {
-            //we append it to the index
-            $('body').append(data);
-            //we show the modal to delete a page
-            showDeletePageModal(pageId);
-         })
+         .done(deletePageDone(pageId))
          .fail(function() {
             notifyError("Unable to load page deletion form");
          });
    }
+}
+
+function deletePageDone(pageId) {
+   return function(data) {
+      //we append it to the index
+      $('body').append(data);
+      //we show the modal to delete a page
+      showDeletePageModal(pageId);
+   };
 }
 
 function deleteWidget(pageId, widgetId) {
@@ -194,14 +173,18 @@ function deleteWidget(pageId, widgetId) {
    else
    {
       $.ajax( "modals/delete_widget.html" )
-         .done(function(data) {
-            //we append it to the index
-            $('body').append(data);
-            //we show the modal to delete a widget
-            showDeleteWidgetModal(widgetId);
-         })
+         .done(deleteWidgetDone(pageId, widgetId))
          .fail(function() {
             notifyError("Unable to load widget deletion form");
          });
    }
+}
+
+function deleteWidgetDone(pageId, widgetId) {
+   return function(data) {
+      //we append it to the index
+      $('body').append(data);
+      //we show the modal to delete a widget
+      showDeleteWidgetModal(pageId, widgetId);
+   };
 }
