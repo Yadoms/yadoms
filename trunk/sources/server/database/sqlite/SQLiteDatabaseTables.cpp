@@ -75,8 +75,8 @@ namespace sqlite {
 
    DECLARE_TABLE_COLUMN_NAMES(EventLogger, "EventLogger",
       ((Id)("id"))
-      ((EventDate)("eventDate"))
-      ((EventType)("eventType"))
+      ((Date)("date"))
+      ((Code)("code"))
       ((OptionalData)("optionalData"))
    )
 

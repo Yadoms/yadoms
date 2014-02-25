@@ -2,14 +2,23 @@
 #include "JsonUtility.h"
 #include <shared/Log.h>
 
-//----------------------------------------------
-///\brief Log CJson to log
-//----------------------------------------------
-void CJsonUtility::Log(const CJson & jsonData)
-{
-   for (CJson::const_iterator it = jsonData.begin(); it != jsonData.end(); ++it) 
+namespace web { namespace rest { namespace json {
+
+
+   //----------------------------------------------
+   ///\brief Log CJson to log
+   //----------------------------------------------
+   void CJsonUtility::Log(const CJson & jsonData)
    {
-      YADOMS_LOG(debug) << it->first << " : " << it->second.get_value<std::string>();
-      Log(it->second);
+      for (CJson::const_iterator it = jsonData.begin(); it != jsonData.end(); ++it) 
+      {
+         YADOMS_LOG(debug) << it->first << " : " << it->second.get_value<std::string>();
+         Log(it->second);
+      }
    }
-}
+
+
+} //namespace json
+} //namespace rest
+} //namespace web 
+

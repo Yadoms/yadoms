@@ -9,14 +9,14 @@
 #include "web/WebServerManager.h"
 #include <shared/xpl/XplHub.h>
 #include "XplLogger.h"
-#include "web/rest/PluginRestService.h"
-#include "web/rest/DeviceRestService.h"
-#include "web/rest/PageRestService.h"
-#include "web/rest/WidgetRestService.h"
-#include "web/rest/AcquisitionRestService.h"
-#include "web/rest/ConfigurationRestService.h"
-#include "web/rest/PluginEventLoggerRestService.h"
-#include "web/rest/EventLoggerRestService.h"
+#include "web/rest/service/PluginRestService.h"
+#include "web/rest/service/DeviceRestService.h"
+#include "web/rest/service/PageRestService.h"
+#include "web/rest/service/WidgetRestService.h"
+#include "web/rest/service/AcquisitionRestService.h"
+#include "web/rest/service/ConfigurationRestService.h"
+#include "web/rest/service/PluginEventLoggerRestService.h"
+#include "web/rest/service/EventLoggerRestService.h"
 #include <shared/ThreadBase.h>
 #include <shared/Peripherals.h>
 
@@ -174,22 +174,22 @@ void CSupervisor::doWork()
       const std::string webServerPath = m_startupOptions.getWebServerInitialPath();
       const std::string webServerWidgetPath = m_startupOptions.getWidgetsPath();
 
-      boost::shared_ptr<IWebServer> webServer(new CWebServer(webServerIp, webServerPort, webServerPath, "/rest/"));
+      boost::shared_ptr<web::IWebServer> webServer(new web::webem::CWebServer(webServerIp, webServerPort, webServerPath, "/rest/"));
       webServer->configureAlias("widget", webServerWidgetPath);
-      boost::shared_ptr<IRestHandler> restHanlder = webServer->getRestHandler();
+      boost::shared_ptr<web::IRestHandler> restHanlder = webServer->getRestHandler();
       if(restHanlder.get() != NULL)
       {
-         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CPluginRestService(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CDeviceRestService(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CPageRestService(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CWidgetRestService(pDataProvider, webServerPath)));
-         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CAcquisitionRestService(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CConfigurationRestService(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CPluginEventLoggerRestService(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<IRestService>(new CEventLoggerRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDeviceRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPageRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CWidgetRestService(pDataProvider, webServerPath)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisitionRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfigurationRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLoggerRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLoggerRestService(pDataProvider)));
       }
 
-      boost::shared_ptr<CWebServerManager> webServerManager(new CWebServerManager(webServer));
+      boost::shared_ptr<web::CWebServerManager> webServerManager(new web::CWebServerManager(webServer));
       webServerManager->start();
       
       // ######################### [END] Web server #########################

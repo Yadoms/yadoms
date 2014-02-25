@@ -4,126 +4,128 @@
 #include "web/rest/json/JsonResult.h"
 #include "web/rest/json/JsonCollectionSerializer.h"
 
-CRestHandler::CRestHandler(const std::string & restBaseKeyword)
-   :m_restBaseKeyword(restBaseKeyword)
-{
-}
+namespace web { namespace webem {
 
-CRestHandler::~CRestHandler()
-{
-}
+   CRestHandler::CRestHandler(const std::string & restBaseKeyword)
+      :m_restBaseKeyword(restBaseKeyword)
+   {
+   }
 
-const std::string & CRestHandler::getRestKeyword()
-{ 
-   return m_restBaseKeyword; 
-}
+   CRestHandler::~CRestHandler()
+   {
+   }
 
-void CRestHandler::registerRestService(boost::shared_ptr<IRestService> restService)
-{
-   if(restService.get() != NULL)
-      m_restService.push_back(restService);
-}
+   const std::string & CRestHandler::getRestKeyword()
+   { 
+      return m_restBaseKeyword; 
+   }
 
-
-void CRestHandler::initialize()
-{
-   BOOST_FOREACH(boost::shared_ptr<IRestService> restService, m_restService)
+   void CRestHandler::registerRestService(boost::shared_ptr<web::rest::service::IRestService> restService)
    {
       if(restService.get() != NULL)
-         restService->configureDispatcher(m_restDispatcher);
+         m_restService.push_back(restService);
    }
-}
 
-std::vector<std::string> CRestHandler::parseUrl(const std::string & url)
-{
-   std::vector<std::string> strs;
-   //split on slash or anti slash
-   boost::split(strs, url, boost::is_any_of("/\\"), boost::algorithm::token_compress_on);
-   //remove empty strings
-   //do not use std::empty in std::remove_if because MacOs Clang do not support it
-   std::vector<std::string>::iterator i = strs.begin();
-   while(i != strs.end())
+
+   void CRestHandler::initialize()
    {
-      if(i->empty())
+      BOOST_FOREACH(boost::shared_ptr<web::rest::service::IRestService> restService, m_restService)
       {
-         i = strs.erase(i);
-      }
-      else
-      {
-         ++i;
+         if(restService.get() != NULL)
+            restService->configureDispatcher(m_restDispatcher);
       }
    }
 
-   return strs;
-}
-
-
-std::string CRestHandler::manageRestRequests(const http::server::request & request)
-{
-   // Decode url to path.
-   std::string request_path;
-   try
+   std::vector<std::string> CRestHandler::parseUrl(const std::string & url)
    {
-      std::vector<std::string> parameters;
-
-      if (http::server::request_handler::url_decode(request.uri, request_path))
+      std::vector<std::string> strs;
+      //split on slash or anti slash
+      boost::split(strs, url, boost::is_any_of("/\\"), boost::algorithm::token_compress_on);
+      //remove empty strings
+      //do not use std::empty in std::remove_if because MacOs Clang do not support it
+      std::vector<std::string>::iterator i = strs.begin();
+      while(i != strs.end())
       {
-         //remove the fist /rest/ string
-         request_path = request_path.substr(m_restBaseKeyword.size());
-
-         //parse url to parameters
-         parameters = parseUrl(request_path);
-
-         //parse content to json format
-         CJson requestContent;
-         try
+         if(i->empty())
          {
-            BOOST_FOREACH(http::server::header headerData, request.headers)
+            i = strs.erase(i);
+         }
+         else
+         {
+            ++i;
+         }
+      }
+
+      return strs;
+   }
+
+
+   std::string CRestHandler::manageRestRequests(const http::server::request & request)
+   {
+      // Decode url to path.
+      std::string request_path;
+      try
+      {
+         std::vector<std::string> parameters;
+
+         if (http::server::request_handler::url_decode(request.uri, request_path))
+         {
+            //remove the fist /rest/ string
+            request_path = request_path.substr(m_restBaseKeyword.size());
+
+            //parse url to parameters
+            parameters = parseUrl(request_path);
+
+            //parse content to json format
+            web::rest::json::CJson requestContent;
+            try
             {
-               if(boost::iequals(headerData.name, "contentType") || boost::iequals(headerData.name, "Content-Type") )
+               BOOST_FOREACH(http::server::header headerData, request.headers)
                {
-                  if(boost::ifind_first(headerData.value, "application/json"))
+                  if(boost::iequals(headerData.name, "contentType") || boost::iequals(headerData.name, "Content-Type") )
                   {
-                     CJsonSerializer ser;
-                     ser.deserialize(request.content, requestContent);                  
+                     if(boost::ifind_first(headerData.value, "application/json"))
+                     {
+                        web::rest::json::CJsonSerializer ser;
+                        ser.deserialize(request.content, requestContent);                  
+                     }
+                     else
+                     {
+                        YADOMS_LOG(warning) << "Ignore content because its format is not supported";
+                     }
                   }
-                  else
-                  {
-                     YADOMS_LOG(warning) << "Ignore content because its format is not supported";
-                  }
+
                }
-               
+
+            }
+            catch(std::exception &ex)
+            {
+               YADOMS_LOG(error) << "Fail to read request content as Json format. Exception : " << ex.what();
+               return m_jsonSerializer.serialize(web::rest::json::CJsonResult::GenerateError("Fail to read request content as Json format"));
             }
 
+            //dispatch url to rest dispatcher
+            web::rest::json::CJson js = m_restDispatcher.dispath(request.method, parameters, requestContent);
+            return m_jsonSerializer.serialize(js);
          }
-         catch(std::exception &ex)
+         else
          {
-            YADOMS_LOG(error) << "Fail to read request content as Json format. Exception : " << ex.what();
-            return m_jsonSerializer.serialize(CJsonResult::GenerateError("Fail to read request content as Json format"));
+            return m_jsonSerializer.serialize(web::rest::json::CJsonResult::GenerateError("Rest handler : cannot decode url"));
          }
-
-         //dispatch url to rest dispatcher
-         CJson js = m_restDispatcher.dispath(request.method, parameters, requestContent);
-         return m_jsonSerializer.serialize(js);
       }
-      else
+      catch(std::exception &ex)
       {
-         return m_jsonSerializer.serialize(CJsonResult::GenerateError("Rest handler : cannot decode url"));
+         YADOMS_LOG(error) << "An exception occured in treating REST url : " << request_path << std::endl << "Exception : " << ex.what();
+         return m_jsonSerializer.serialize(web::rest::json::CJsonResult::GenerateError(ex));
+      }
+      catch(...)
+      {
+         YADOMS_LOG(error) << "An unknown exception occured in treating REST url : " << request_path;
+         return m_jsonSerializer.serialize(web::rest::json::CJsonResult::GenerateError("An unknown exception occured in treating REST url : " + request_path));
       }
    }
-   catch(std::exception &ex)
-   {
-      YADOMS_LOG(error) << "An exception occured in treating REST url : " << request_path << std::endl << "Exception : " << ex.what();
-      return m_jsonSerializer.serialize(CJsonResult::GenerateError(ex));
-   }
-   catch(...)
-   {
-      YADOMS_LOG(error) << "An unknown exception occured in treating REST url : " << request_path;
-      return m_jsonSerializer.serialize(CJsonResult::GenerateError("An unknown exception occured in treating REST url : " + request_path));
-   }
-}
 
-
-
+} //namespace webem
+} //namespace web
 
 

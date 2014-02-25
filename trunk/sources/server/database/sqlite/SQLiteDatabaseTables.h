@@ -77,8 +77,8 @@ namespace sqlite {
 
    DECLARE_TABLE(EventLogger,
       (Id)
-      (EventDate)
-      (EventType)
+      (Date)
+      (Code)
       (OptionalData)
    )
 

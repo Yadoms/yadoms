@@ -5,79 +5,86 @@
 #include "JsonSerializersHelpers.hpp"
 #include "database/entities/Entities.h"
 
-DECLARE_JSON_ENTITY_HEADER(Plugin,
-   (Id)
-   (Name)
-   (PluginName)
-   (Configuration)
-   (Enabled)
-   (Deleted)
-)
+namespace web { namespace rest { namespace json {
 
-DECLARE_JSON_ENTITY_HEADER(Configuration,
+   DECLARE_JSON_ENTITY_HEADER(Plugin,
+   (Id)
+      (Name)
+      (PluginName)
+      (Configuration)
+      (Enabled)
+      (Deleted)
+      )
+
+      DECLARE_JSON_ENTITY_HEADER(Configuration,
    (Section)
+      (Name)
+      (Value)
+      (DefaultValue)
+      (Description)
+      (SecurityAccess)
+      (LastModificationDate)
+      )
+
+      DECLARE_JSON_ENTITY_HEADER(Acquisition,
+   (Id)
+      (Source)
+      (Keyword)
+      (Value)
+      (Date)
+      )
+
+
+      DECLARE_JSON_ENTITY_HEADER(Device,
+   (Id)
+      (DataSource)
+      (Name)
+      (Configuration)
+      )
+
+
+      DECLARE_JSON_ENTITY_HEADER(Keyword,
    (Name)
-   (Value)
-   (DefaultValue)
-   (Description)
-   (SecurityAccess)
-   (LastModificationDate)
-)
+      )
 
-DECLARE_JSON_ENTITY_HEADER(Acquisition,
+
+      DECLARE_JSON_ENTITY_HEADER(Page,
    (Id)
-   (Source)
-   (Keyword)
-   (Value)
-   (Date)
-)
+      (Name)
+      (PageOrder)
+      )
 
-
-DECLARE_JSON_ENTITY_HEADER(Device,
+      DECLARE_JSON_ENTITY_HEADER(Widget,
    (Id)
-   (DataSource)
-   (Name)
-   (Configuration)
-)
+      (IdPage)
+      (Name)
+      (SizeX)
+      (SizeY)
+      (PositionX)
+      (PositionY)
+      (Configuration)
+      )
 
 
-DECLARE_JSON_ENTITY_HEADER(Keyword,
-   (Name)
-)
-
-
-DECLARE_JSON_ENTITY_HEADER(Page,
+      DECLARE_JSON_ENTITY_HEADER(PluginEventLogger,
    (Id)
-   (Name)
-   (PageOrder)
-)
+      (EventDate)
+      (PluginName)
+      (PluginVersion)
+      (PluginRelease)
+      (EventType)
+      (Message)
+      )
 
-DECLARE_JSON_ENTITY_HEADER(Widget,
+      DECLARE_JSON_ENTITY_HEADER(EventLogger,
    (Id)
-   (IdPage)
-   (Name)
-   (SizeX)
-   (SizeY)
-   (PositionX)
-   (PositionY)
-   (Configuration)
-)
+      (Date)
+      (Code)
+      (OptionalData)
+      )
 
 
-DECLARE_JSON_ENTITY_HEADER(PluginEventLogger,
-   (Id)
-   (EventDate)
-   (PluginName)
-   (PluginVersion)
-   (PluginRelease)
-   (EventType)
-   (Message)
-)
-
-DECLARE_JSON_ENTITY_HEADER(EventLogger,
-   (Id)
-   (EventDate)
-   (EventType)
-   (OptionalData)
-)
+} //namespace json
+} //namespace rest
+} //namespace web 
 

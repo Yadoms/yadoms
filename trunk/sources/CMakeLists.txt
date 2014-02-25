@@ -323,7 +323,10 @@ set(YADOMS_SRC
 	server/web/WebServerManager.h
 	server/web/WebServerManager.cpp
 	
-	server/web/rest/IRestService.h
+	server/web/rest/RestDispatcher.h
+	server/web/rest/RestDispatcher.cpp
+	server/web/rest/RestDispatcherHelpers.hpp
+
 	server/web/rest/json/Json.h
 	server/web/rest/json/JsonUtility.h
 	server/web/rest/json/JsonUtility.cpp
@@ -337,26 +340,23 @@ set(YADOMS_SRC
 	server/web/rest/json/JsonSerializers.cpp
 	server/web/rest/json/JsonSerializersHelpers.hpp
 
-	server/web/rest/RestDispatcher.h
-	server/web/rest/RestDispatcher.cpp
-	server/web/rest/RestDispatcherHelpers.hpp
-
-	server/web/rest/PluginRestService.h
-	server/web/rest/PluginRestService.cpp
-	server/web/rest/DeviceRestService.h
-	server/web/rest/DeviceRestService.cpp
-	server/web/rest/PageRestService.h
-	server/web/rest/PageRestService.cpp
-	server/web/rest/WidgetRestService.h
-	server/web/rest/WidgetRestService.cpp
-	server/web/rest/AcquisitionRestService.h
-	server/web/rest/AcquisitionRestService.cpp
-	server/web/rest/ConfigurationRestService.h
-	server/web/rest/ConfigurationRestService.cpp
-	server/web/rest/PluginEventLoggerRestService.h
-	server/web/rest/PluginEventLoggerRestService.cpp
-	server/web/rest/EventLoggerRestService.h
-	server/web/rest/EventLoggerRestService.cpp
+	server/web/rest/service/IRestService.h
+	server/web/rest/service/PluginRestService.h
+	server/web/rest/service/PluginRestService.cpp
+	server/web/rest/service/DeviceRestService.h
+	server/web/rest/service/DeviceRestService.cpp
+	server/web/rest/service/PageRestService.h
+	server/web/rest/service/PageRestService.cpp
+	server/web/rest/service/WidgetRestService.h
+	server/web/rest/service/WidgetRestService.cpp
+	server/web/rest/service/AcquisitionRestService.h
+	server/web/rest/service/AcquisitionRestService.cpp
+	server/web/rest/service/ConfigurationRestService.h
+	server/web/rest/service/ConfigurationRestService.cpp
+	server/web/rest/service/PluginEventLoggerRestService.h
+	server/web/rest/service/PluginEventLoggerRestService.cpp
+	server/web/rest/service/EventLoggerRestService.h
+	server/web/rest/service/EventLoggerRestService.cpp
 	)
 
 # Project folders
@@ -366,8 +366,9 @@ source_group(server\\database  server/database/*.*)
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\web  server/web/*.*)
-source_group(server\\web\\REST  server/web/rest/*.*)
-source_group(server\\web\\REST\\Json  server/web/rest/json/*.*)
+source_group(server\\web\\rest  server/web/rest/*.*)
+source_group(server\\web\\rest\\json  server/web/rest/json/*.*)
+source_group(server\\web\\rest\\service  server/web/rest/service/*.*)
 
 # Tools
 set(YADOMS_SRC ${YADOMS_SRC}

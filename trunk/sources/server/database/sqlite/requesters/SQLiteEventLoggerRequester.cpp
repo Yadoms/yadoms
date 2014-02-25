@@ -21,13 +21,13 @@ namespace database { namespace sqlite { namespace requesters {
    }
 
    // IEventLoggerRequester implementation
-   int CSQLiteEventLoggerRequester::addEvent(const std::string & eventType, const std::string & optionalData)
+   int CSQLiteEventLoggerRequester::addEvent(const std::string & eventCode, const std::string & optionalData)
    {
       boost::posix_time::ptime insertDate = boost::posix_time::second_clock::universal_time();
 
       CQuery qInsert;
-      qInsert. InsertInto(CEventLoggerTable::getTableName(), CEventLoggerTable::getEventTypeColumnName(), CEventLoggerTable::getOptionalDataColumnName(), CEventLoggerTable::getEventDateColumnName()).
-         Values(eventType, optionalData, insertDate);
+      qInsert. InsertInto(CEventLoggerTable::getTableName(), CEventLoggerTable::getCodeColumnName(), CEventLoggerTable::getOptionalDataColumnName(), CEventLoggerTable::getDateColumnName()).
+         Values(eventCode, optionalData, insertDate);
 
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
@@ -35,8 +35,8 @@ namespace database { namespace sqlite { namespace requesters {
       CQuery qSelect;
       qSelect. Select(CEventLoggerTable::getIdColumnName()).
          From(CEventLoggerTable::getTableName()).
-         Where(CEventLoggerTable::getEventTypeColumnName(), CQUERY_OP_EQUAL, eventType).
-         And(CEventLoggerTable::getEventDateColumnName(), CQUERY_OP_EQUAL, insertDate).
+         Where(CEventLoggerTable::getCodeColumnName(), CQUERY_OP_EQUAL, eventCode).
+         And(CEventLoggerTable::getDateColumnName(), CQUERY_OP_EQUAL, insertDate).
          OrderBy(CEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
       database::sqlite::adapters::CSingleValueAdapter<int> adapter;
@@ -49,7 +49,7 @@ namespace database { namespace sqlite { namespace requesters {
 
    int CSQLiteEventLoggerRequester::addEvent(const database::entities::CEventLogger & logEntry)
    {
-      return addEvent(logEntry.getEventType(), logEntry.getOptionalData());
+      return addEvent(logEntry.getCode(), logEntry.getOptionalData());
    }
 
 
@@ -58,7 +58,7 @@ namespace database { namespace sqlite { namespace requesters {
       CQuery qSelect;
       qSelect. Select().
          From(CEventLoggerTable::getTableName()).
-         OrderBy(CEventLoggerTable::getEventDateColumnName(), CQUERY_ORDER_DESC);
+         OrderBy(CEventLoggerTable::getDateColumnName(), CQUERY_ORDER_DESC);
 
       database::sqlite::adapters::CEventLoggerAdapter adapter;
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CEventLogger> >(&adapter, qSelect);

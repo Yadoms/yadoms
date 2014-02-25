@@ -87,8 +87,8 @@ namespace entities {
 
    DECLARE_ENTITY_CLASS(EventLogger,
       ((Id)(int)(0))
-      ((EventDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
-      ((EventType)(std::string)(""))
+      ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
+      ((Code)(std::string)(""))
       ((OptionalData)(std::string)(""))
    )
 
