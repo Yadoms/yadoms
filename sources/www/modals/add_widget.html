@@ -89,6 +89,9 @@
      */
     $("button#btn-confirm-add-widget").click(function () {
 
+       var currentPage = getCurrentPage();
+       assert(currentPage != null, "A page must be selected");
+
         //we close the new widget modal
         $("div#new-widget-modal").modal("hide");
 
@@ -97,7 +100,7 @@
         $.ajax({
             type: "POST",
             url: "/rest/widget",
-            data: JSON.stringify({ idPage: getCurrentPage().id, name: packageName, sizeX: "1", sizeY:"1", positionX:"1", positionY:"1" }),
+            data: JSON.stringify({ idPage: currentPage.id, name: packageName, sizeX: "1", sizeY:"1", positionX:"1", positionY:"1" }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
         })

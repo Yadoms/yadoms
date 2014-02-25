@@ -13,20 +13,16 @@ var customization = false;
  * @param enable
  */
 function enableGridsterCustomization(enable) {
-   for(var pageId in pageArray) {
-      if (pageArray.hasOwnProperty(pageId)) {
-         if (enable)
-         {
-            pageArray[pageId].gridster.enable();
-            pageArray[pageId].gridster.enable_resize();
-         }
-         else
-         {
-            pageArray[pageId].gridster.disable();
-            pageArray[pageId].gridster.disable_resize();
-         }
+   $.each(pageContainer.pages, function (index, value) {
+      if (enable) {
+         value.gridster.enable();
+         value.gridster.enable_resize();
       }
-   }
+      else {
+         value.gridster.disable();
+         value.gridster.disable_resize();
+      }
+   });
 }
 
 /**
@@ -86,36 +82,30 @@ function exitCustomization() {
    $("li.widget").removeClass("liWidgetCustomization");
 
    //we save all widgets in each page
-   for(var pageId in pageArray) {
-      if (pageArray.hasOwnProperty(pageId)) {
-         var page = pageArray[pageId];
-         for(var widgetId in page.widgets) {
-            if (page.widgets.hasOwnProperty(widgetId)) {
-               //we synchronize gridster information into the widget class
-               pageArray[pageId].widgets[widgetId].updateDataFromGridster();
-            }
-         }
+   $.each(pageContainer.pages, function (index, currentPage) {
+      $.each(currentPage.widgets, function (index, currentWidget) {
+         //we synchronize gridster information into the widget class
+         currentWidget.updateDataFromGridster();
 
-         $.ajax({
-             type: "PUT",
-             url: "/rest/page/" + pageId + "/widget",
-             data: page.widgetsToJsonString(),
-             contentType: "application/json; charset=utf-8",
-             dataType: "json"
-          })
-          .done(function(data) {
-             //we parse the json answer
-             if (data.result != "true")
-             {
+      });
+      $.ajax({
+         type: "PUT",
+         url: "/rest/page/" + currentPage.id + "/widget",
+         data: JSON.stringify(currentPage.widgets),
+         contentType: "application/json; charset=utf-8",
+         dataType: "json"
+      })
+         .done(function(data) {
+            //we parse the json answer
+            if (data.result != "true")
+            {
                notifyError("Error during saving customization");
                console.error(data.message);
                return;
-             }
-             //notifySuccess("Customization successfully saved");
-          })
-          .fail(function() {notifyError("Unable to save customization")});
-      }
-   }
+            }
+         })
+         .fail(function() {notifyError("Unable to save customization")});
+   });
 }
 
 function createOrUpdatePage(pageId) {

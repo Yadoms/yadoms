@@ -23,7 +23,7 @@
     //we indicate that modify_page.html has been loaded
     modificationPageModalHasBeenLoaded = true;
 
-    var pageCurrentlyModified = undefined;
+    var pageCurrentlyModified = null;
 
    /**
    * Ask for widget packages to the REST server
@@ -31,7 +31,9 @@
    function showPageModificationModal(pageId) {
       if (pageId !== undefined)
       {
-         pageCurrentlyModified = pageArray[pageId];
+         pageCurrentlyModified = pageContainer.getPage(pageId);
+         assert(pageCurrentlyModified != null, "page Id doesn't exit");
+
          //we are currently modifying a page
          $("h4#modify-page-modal-title").text("Rename page");
          $("button#btn-confirm-modify-page").text("Rename");
@@ -61,7 +63,7 @@
       $("div#modify-page-modal").modal("hide");
       var newPageName= $('input#modify-page-text').val();
 
-      if (pageCurrentlyModified !== undefined) {
+      if (pageCurrentlyModified != null) {
          //we have validated a page modification
          $.ajax({
             type: "PUT",
@@ -92,10 +94,12 @@
       else {
          //we have validated a page creation
          //we look for the new pageOrder value
+
          var lastPageOrder = -1;
-         for(var pageId in pageArray) {
-            lastPageOrder = Math.max(lastPageOrder, pageArray[pageId].pageOrder);
-         }
+         $.each(pageContainer.pages, function (index, currentPage) {
+            lastPageOrder = Math.max(lastPageOrder, currentPage.pageOrder);
+         });
+
          //we increment the pageOrder for the new page
          lastPageOrder++;
 
@@ -116,7 +120,7 @@
 
            //we add the page dynamically
            var p = new Page(data.data.id, decodeURIComponent(data.data.name), data.data.pageOrder);
-           pageArray[data.data.id] = p;
+           pageContainer.addPage(p);
            addPageToIHM(p);
          })
          .fail(function(pageName) { return function() {notifyError("Unable to create page " + pageName)}}(newPageName));

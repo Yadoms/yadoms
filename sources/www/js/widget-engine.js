@@ -12,8 +12,6 @@ var widgetArrayForLoading = [];
 var loadWidgetsNotification = null;
 var loadPagesNotification = null;
 
-var pagesLoaded = [];
-
 var startTime = null;
 
 function initializeWidgetEngine() {
@@ -32,7 +30,7 @@ function initializeWidgetEngine() {
     */
    $("#btn-add-widget").click(function() {
       //we make something only if there is some pages
-      if (pageArray.length == 0) {
+      if (pageContainer.pages.length == 0) {
          notifyError("You must have at least one page to add widget");
          return;
       }
@@ -61,8 +59,8 @@ function initializeWidgetEngine() {
 function initializePageEvents(page) {
 
    //we listen click event on tab click
-   page.$tab.bind('click', function (e) {
-      return tabClick($(e.currentTarget).attr("page-id")); } );
+   page.$tab.find("a").bind('click', function (e) {
+      return tabClick($(e.currentTarget).parent().attr("page-id")); } );
 
    //we listen click event on rename click
    page.$tab.find('button.rename-page').bind('click', function (e) {
@@ -93,52 +91,74 @@ function initializeWidgetEvents(widget) {
    });
 }
 
+/**
+ * Return the widget object attached to gridster element
+ * @param $gridsterElement
+ * @returns {Widget}
+ */
+function getWidgetFromGridsterElement($gridsterElement) {
+   var pageId = $gridsterElement.attr("page-id");
+   var page = pageContainer.getPage(pageId);
+   assert(page != null, "Unable to find page Id");
+   var widgetId = $gridsterElement.attr("widget-id");
+   var widget = page.getWidget(widgetId);
+   assert(widget != null, "Unable to find widget Id in the page");
+   return widget;
+}
+
 function movePage(pageId, direction) {
+
+   var pageToMove = pageContainer.getPage(pageId);
+   assert(pageToMove != null, "Unable to find page to move");
+
+   var nearestId = null;
+   var nearestPageOrder;
+
    if (direction == "right") {
       //we search the nearest upper pageOrder than our
-      var nearestId = null;
-      var nearestPageOrder = Infinity;
-      for (var index in pageArray) {
+      nearestPageOrder = Infinity;
+
+      $.each(pageContainer.pages, function (index, currentPage) {
          //if the current pageOrder is greater than our and smaller than the nearest it's the new nearest
-         if ((pageArray[index].pageOrder > pageArray[pageId].pageOrder) && (pageArray[index].pageOrder < nearestPageOrder)) {
-            nearestPageOrder = pageArray[index].pageOrder;
-            nearestId = index;
+         if ((currentPage.pageOrder > pageToMove.pageOrder) && (currentPage.pageOrder < nearestPageOrder)) {
+            nearestPageOrder = currentPage.pageOrder;
+            nearestId = currentPage.id;
          }
-      }
+      });
    }
    else {
       //we search the nearest lower pageOrder than our
-      var nearestId = null;
-      var nearestPageOrder = -Infinity;
-      for (var index in pageArray) {
-         //if the current pageOrder is smaller than our and greater than the nearest it's the new nearest
-         if ((pageArray[index].pageOrder < pageArray[pageId].pageOrder) && (pageArray[index].pageOrder > nearestPageOrder)) {
-            nearestPageOrder = pageArray[index].pageOrder;
-            nearestId = index;
+      nearestPageOrder = -Infinity;
+
+      $.each(pageContainer.pages, function (index, currentPage) {
+         //if the current pageOrder is greater than our and smaller than the nearest it's the new nearest
+         if ((currentPage.pageOrder < pageToMove.pageOrder) && (currentPage.pageOrder > nearestPageOrder)) {
+            nearestPageOrder = currentPage.pageOrder;
+            nearestId = currentPage.id;
          }
-      }
+      });
    }
+
    if (nearestId != null) {
+
+      var nearestPage = pageContainer.getPage(nearestId);
+      assert(nearestPage != null, "Unable to find nearest page to move");
+
       //we can move pageOrder
       //we move it into the array and send the complete collection to rest server
-      pageArray[nearestId].pageOrder = pageArray[pageId].pageOrder;
-      pageArray[pageId].pageOrder = nearestPageOrder;
+      nearestPage.pageOrder = pageToMove.pageOrder;
+      pageToMove.pageOrder = nearestPageOrder;
 
       //we make an array of pages to send to rest server
-      var data = new Array();
-      for(pageId in pageArray) {
-         data.push(pageArray[pageId]);
-      }
-
       $.ajax({
          type: "PUT",
          url: "/rest/page",
-         data: JSON.stringify(data),
+         data: JSON.stringify(pageContainer.pages),
          contentType: "application/json; charset=utf-8",
          dataType: "json"
       })
-         .done(savePageMoveDone(pageId, nearestId, direction))
-         .fail(function() {notifyError("Unable to save page position")});
+      .done(savePageMoveDone(pageId, nearestId, direction))
+      .fail(function() {notifyError("Unable to save page position")});
    }
 }
 
@@ -151,13 +171,22 @@ function savePageMoveDone(pageId, nearestId, direction) {
          console.error(data.message);
          return;
       }
+
+      var pageToMove = pageContainer.getPage(pageId);
+      assert(pageToMove != null, "Unable to find page to move");
+
+      var nearestPage = pageContainer.getPage(nearestId);
+      assert(nearestPage != null, "Unable to find nearest page to move");
+
       //we move the tab dynamically
-      var tabDOMElement = $("li.tabPagePills[page-id=" + pageId + "]").detach();
+      var tabDOMElement = pageToMove.$tab.detach();
       if (direction == "right") {
-         $("li.tabPagePills[page-id=" + nearestId + "]").insertAfter(tabDOMElement);
+         //nearestPage.$tab.insertAfter(tabDOMElement);
+         tabDOMElement.insertAfter(nearestPage.$tab);
       }
       else {
-         $("li.tabPagePills[page-id=" + nearestId + "]").insertBefore(tabDOMElement);
+         //nearestPage.$tab.insertBefore(tabDOMElement);
+         tabDOMElement.insertBefore(nearestPage.$tab);
       }
    };
 }
@@ -196,21 +225,19 @@ function requestPageDone()
          return;
       }
 
+      data.data.page.sort(function(a, b) { return a.pageOrder > b.pageOrder; });
+
       $.each(data.data.page, function(index, value) {
          //foreach page
          var currentPage = new Page(value.id, decodeURIComponent(value.name), value.pageOrder);
-         pageArray[currentPage.id] = currentPage;
+         pageContainer.addPage(currentPage);
          addPageToIHM(currentPage);
       });
 
-      //we activate first page on the pills
-      $("div#pageMenu").find("ul li").first().addClass("active");
-
-      //we activate the first page
-      $("div#tabContainer div.widgetPage").first().addClass("active");
-
       //we deactivate the customization
       enableGridsterCustomization(false);
+
+      ensureOnePageIsSelected();
    };
 }
 
@@ -246,7 +273,6 @@ function addPageToIHM(page) {
 
    //gridster creation
    page.gridster = page.$content.find("ul").gridster({
-      page_object: pageArray[page.id],
       widget_margins: [gridMargin, gridMargin],
       widget_base_dimensions: [gridWidth, gridWidth],
       min_cols: numberOfColumns,
@@ -295,7 +321,6 @@ function addPageToIHM(page) {
    }
 
    initializePageEvents(page);
-   ensureOnePageIsSelected();
 }
 
 function requestWidgets(page) {
@@ -303,7 +328,7 @@ function requestWidgets(page) {
    loadWidgetsNotification = notify("Loading widgets for page " + page.name + " ...", "information", 0);
 
    //we save the information that the widgets for this page have already been asked
-   pagesLoaded[page.id] = true;
+   page.loaded = true;
 
    $.getJSON("/rest/page/" + page.id + "/widget")
       .done(requestWidgetsDone())
@@ -450,12 +475,6 @@ function getWidgetPackageInformationDone(packageName)
       //we have finished to load every widgets on this page
       if (widgetArrayForLoading.length == 0) {
 
-         //we add tooltip to customize buttons
-         $("li.widget button, li.tabPagePills button").tooltip({
-            animated: 'fade',
-            placement: 'bottom'
-         });
-
          //we prevent from click on widget to be propagated on the rest of the window
          $(".widget").click(function(e) {
             e.stopPropagation();
@@ -523,9 +542,11 @@ function addWidgetToIHM(widget) {
  * @returns {gridster}
  */
 function createGridsterWidget(widget) {
-   assert(widget !== undefined, "createWidget function widget must be defined");
+   assert(widget !== undefined, "widget must be defined");
+   var page = pageContainer.getPage(widget.idPage);
+   assert(page != null, "page doesn't exist in pageContainer");
 
-   return pageArray[widget.idPage].gridster.add_widget(
+   return  page.gridster.add_widget(
       "<li class=\"widget\" page-id=\"" + widget.idPage + "\" widget-id=\"" + widget.id +"\">" +
          "<div class=\"widgetCustomizationToolbar customization-item hidden\">" +
             "<div class=\"btn-group btn-group-sm\">" +
@@ -542,12 +563,13 @@ function createGridsterWidget(widget) {
  * @param widget
  */
 function finalizeWidgetCreation(widget) {
+   var page = pageContainer.getPage(widget.idPage);
+   assert(page != null, "page doesn't exist in pageContainer");
+
    //we use to construct the viewModel of the current widget
    //noinspection JSPotentiallyInvalidConstructorUsage
    widget.viewModel = new widgetPackages[widget.name].viewModelCtor();
    widget.package = widgetPackages[widget.name].packageInformation;
-
-   pageArray[widget.idPage].widgets[widget.id] = widget;
 
    //last configuration of properties
    var widgetDivId = "widget-" + widget.id;
@@ -577,7 +599,9 @@ function finalizeWidgetCreation(widget) {
    {
       //min dimension is set
       assert((widget.package.dimensions.max.x !== undefined) && (widget.package.dimensions.max.y !== undefined), "You can't set only one axe of the widget maximum dimension");
-      pageArray[widget.idPage].gridster.set_widget_max_size(widget.$gridsterWidget, [widget.package.dimensions.max.x, widget.package.dimensions.max.y]);
+      var page = pageContainer.getPage(widget.idPage);
+      assert(page != null, "PageId not found");
+      page.gridster.set_widget_max_size(widget.$gridsterWidget, [widget.package.dimensions.max.x, widget.package.dimensions.max.y]);
    }
 
    //we initialize the widget
@@ -594,18 +618,20 @@ function finalizeWidgetCreation(widget) {
       notifyWarning("The widget " + widget.name + " has generated an exception");
       console.warn(e);
    }
-
    initializeWidgetEvents(widget);
+
+   //we add the widget to the collection
+   page.addWidget(widget);
 }
 
 function ensureOnePageIsSelected() {
    //if there is no page selected we select the first one
-   if (getCurrentPage() === undefined) {
+   if (getCurrentPage() == null) {
       //we selected the first page
-      for (var index in pageArray) {
-         pageArray[index].$tab.trigger("click");
-         return;
-      }
+      $.each(pageContainer.pages, function (index, currentPage) {
+         currentPage.$tab.find("a").trigger("click");
+         return false;
+      });
    }
 }
 
@@ -615,7 +641,8 @@ function ensureOnePageIsSelected() {
  */
 function getCurrentPage()
 {
-   return pageArray[$("ul.page-tabs li.active").attr("page-id")];
+   var pageId = $("ul.page-tabs li.active").attr("page-id");
+   return pageContainer.getPage(pageId);
 }
 
 /**
@@ -625,12 +652,17 @@ function getCurrentPage()
 function tabClick(pageId) {
 
    //we check for widget loading if page is different than the current
-   if ((getCurrentPage() !== undefined) && (getCurrentPage().id == pageId))
+   var currentPage = getCurrentPage();
+
+   if ((currentPage != null) && (currentPage.id == pageId))
       return;
 
+   var page = pageContainer.getPage(pageId);
+   assert(page != null, "page Id doesn't exit");
+
    //and if it's not loaded for the moment
-   if (!pagesLoaded[pageId])
+   if (!page.loaded)
    {
-      requestWidgets(pageArray[pageId]);
+      requestWidgets(page);
    }
 }

@@ -23,12 +23,16 @@
    //we indicate that delete_widget.html has been loaded
    deleteWidgetModalHasBeenLoaded = true;
 
-   var widgetToDelete = undefined;
+   var widgetToDelete = null;
 
    function showDeleteWidgetModal(pageId, widgetId) {
       assert(pageId !== undefined, "Page Id must be defined");
       assert(widgetId !== undefined, "Widget Id must be defined");
-      widgetToDelete = pageArray[pageId].widgets[widgetId];
+
+      var page = pageContainer.getPage(pageId);
+      assert(page != null, "page Id doesn't exit");
+      widgetToDelete = page.getWidget(widgetId);
+      assert(widgetToDelete != null, "widget Id doesn't exit in the page");
 
       $("span#name-delete-widget-modal").text(widgetToDelete.name);
 
@@ -59,14 +63,17 @@
            return;
          }
 
-         //we delete the page dynamically
-         pageArray[widgetToDelete.idPage].gridster.remove_widget(widgetToDelete.$gridsterWidget);
-         pageArray[widgetToDelete.idPage].widgets.splice(widgetToDelete.id, 1);
+         //we delete the widget dynamically
+         var page = pageContainer.getPage(widgetToDelete.idPage);
+         assert(page != null, "page Id doesn't exit");
+
+         page.gridster.remove_widget(widgetToDelete.$gridsterWidget);
+         page.widgets.splice($.inArray(widgetToDelete, page.widgets), 1);
       })
       .fail(function(pageName) { return function() {notifyError("Unable to delete widget " + widgetName)}}(widgetToDelete.name))
       .always(function() {
         //we clear the current id
-        widgetToDelete = undefined;
+        widgetToDelete = null;
       });
    });
 </script>
