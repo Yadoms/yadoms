@@ -1,4 +1,6 @@
 // Includes needed to compile tested classes
+#include <iostream>
+#include <fstream>
 #include <boost/log/trivial.hpp>
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
@@ -22,7 +24,7 @@ bool validate(startupOptions::CLoaderException exception)
 void CreateDirectory ( std::string name )
 {
    boost::filesystem::path dir(name.c_str());
-   BOOST_TEST_REQUIRE(boost::filesystem::create_directory(dir));
+   BOOST_REQUIRE(boost::filesystem::create_directory(dir));
 }
 
 void RemoveDirectory (std::string name )
@@ -71,8 +73,7 @@ public:
    }
    void writeSettings (std::string setting, std::string value)
    {
-      std::ofstream file;
-      file.open(m_configFile, std::fstream::out | std::fstream::app );
+      std::ofstream file(m_configFile.c_str(), std::ios_base::out | std::ios_base::app );
       file << setting.c_str() << " = " << value.c_str() << "\n";
       file.close();
    }

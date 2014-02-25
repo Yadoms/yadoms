@@ -1,4 +1,6 @@
 // Includes needed to compile tested classes
+#include <iostream>
+#include <fstream>
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
@@ -17,7 +19,7 @@
 void CreateDirectory(std::string name)
 {
    boost::filesystem::path dir(name.c_str());
-   BOOST_TEST_REQUIRE(boost::filesystem::create_directory(dir));
+   BOOST_REQUIRE(boost::filesystem::create_directory(dir));
 }
 
 void RemoveDirectory(std::string name)
@@ -29,13 +31,13 @@ void CreateFile(std::string dir, std::string file)
 {
    boost::filesystem::path fullPath = boost::filesystem::path(dir) / file;
    std::ofstream outfile(fullPath.string());
-   BOOST_TEST_REQUIRE(outfile.is_open());
+   BOOST_REQUIRE(outfile.is_open());
 }
 
 void RemoveFile(std::string dir, std::string file)
 {
    boost::filesystem::path fullPath = boost::filesystem::path(dir) / file;
-   BOOST_TEST_REQUIRE(boost::filesystem::remove(fullPath));
+   BOOST_REQUIRE(boost::filesystem::remove(fullPath));
 }
 
 void WriteFile(std::string dir, std::string file)
