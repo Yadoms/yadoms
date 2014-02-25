@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "XplHelper.h"
-#include "shared/NetworkHelper.h"
-#include "shared/Log.h"
+#include <shared/NetworkHelper.h>
+#include "../exception/BadConversion.hpp"
+#include <iostream>
+#include "../Log.h"
 
 namespace shared { namespace xpl
 {
@@ -20,6 +22,55 @@ bool CXplHelper::isVendorIdOrDeviceIdMatchRules(const std::string & element)
 {
 	const boost::regex e("([a-z0-9]*)");
 	return regex_match(element, e);
+}
+
+std::string CXplHelper::toStructuralElement(const std::string & elementName)
+{
+   std::string temp;
+
+   // First, convert to lower case
+   temp.resize(elementName.size());
+   std::transform(elementName.begin(), elementName.end(), temp.begin(), ::tolower);
+
+   // Next, remove all unsupported characters
+   std::string xplElementName;
+   for (std::string::const_iterator it = temp.begin() ; it < temp.end() ; it ++)
+   {
+      if (isalnum(*it) || *it == '-')
+         xplElementName.append(1, *it);
+   }
+
+   if (xplElementName.empty() || !isStructuralElementMatchRules(xplElementName))
+      throw shared::exception::CBadConversion(elementName, "XPL element");
+
+   return xplElementName;
+}
+
+std::string CXplHelper::toStructuralElement(int elementId)
+{
+   return toStructuralElement(boost::lexical_cast<std::string>(elementId));
+}
+
+std::string CXplHelper::toVendorIdOrDeviceId(const std::string & id)
+{
+   std::string temp;
+
+   // First, convert to lower case
+   temp.resize(id.size());
+   std::transform(id.begin(), id.end(), temp.begin(), ::tolower);
+
+   // Next, remove all unsupported characters
+   std::string xplId;
+   for (std::string::const_iterator it = temp.begin() ; it < temp.end() ; it ++)
+   {
+      if (isalnum(*it))
+         xplId.append(1, *it);
+   }
+
+   if (xplId.empty() || !isVendorIdOrDeviceIdMatchRules(xplId))
+      throw shared::exception::CBadConversion(id, "XPL vendor or device ID");
+
+   return xplId;
 }
 
 boost::asio::ip::udp::endpoint CXplHelper::getFirstIPV4AddressEndPoint()

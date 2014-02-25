@@ -1,4 +1,7 @@
 #pragma once
+#include <string>
+
+#include <shared/Export.h>
 
 namespace shared { namespace xpl
 {
@@ -6,7 +9,7 @@ namespace shared { namespace xpl
    //--------------------------------------------------------------
    /// \class static helper class for xpl management
    //--------------------------------------------------------------
-   class CXplHelper
+   class YADOMS_SHARED_EXPORT CXplHelper
    {
    public:
       //--------------------------------------------------------------
@@ -22,6 +25,29 @@ namespace shared { namespace xpl
       /// \return                         true if the elemnt match rules, false otherwize
       //--------------------------------------------------------------
       static bool isVendorIdOrDeviceIdMatchRules(const std::string & element);
+
+      //--------------------------------------------------------------
+      /// \brief	                        Convert a string to an XPL element string (a-z, 0-9 and "-" caracters authorized)
+      /// \param[in]  elementName         Element name
+      /// \return                         Element name, XPL compatible
+      //--------------------------------------------------------------
+      static std::string toStructuralElement(const std::string & elementName);
+
+      //--------------------------------------------------------------
+      /// \brief	                        Convert an integer identifier to an XPL element string (a-z, 0-9 and "-" caracters authorized)
+      /// \param[in]  elementId           Element identifier
+      /// \return                         Element name, XPL compatible
+      /// \throw                          shared::exception::CBadConversion if conversion can not be achieved
+      /// \note                           This function is useful for plugins identified on the XPL network by their instance ID
+      //--------------------------------------------------------------
+      static std::string toStructuralElement(int elementId);
+
+      //--------------------------------------------------------------
+      /// \brief	                        Convert a string to an XPL vendor or deveice ID (a-z, 0-9 caracters authorized, but no "-")
+      /// \param[in]  id                  Id
+      /// \return                         Id, XPL compatible
+      //--------------------------------------------------------------
+      static std::string toVendorIdOrDeviceId(const std::string & id);
 
       //--------------------------------------------------------------
       /// \brief	                        Permit to get the first local IPv4 address of the localhost
@@ -49,6 +75,7 @@ namespace shared { namespace xpl
       static const std::string HeartbeatTypeId;
 
       static const std::string WildcardString;
+
    private:
       CXplHelper();
       ~CXplHelper();

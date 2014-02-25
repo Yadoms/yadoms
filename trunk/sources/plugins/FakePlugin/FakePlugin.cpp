@@ -3,7 +3,7 @@
 #include <shared/Log.h>
 #include <shared/xpl/XplService.h>
 #include <shared/xpl/XplMessage.h>
-#include <shared/xpl/XplConstants.h>
+#include <shared/xpl/XplHelper.h>
 #include <shared/exception/BadConversion.hpp>
 #include <shared/StringExtension.h>
 
@@ -49,10 +49,12 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configurationV
       m_Configuration.trace();
 
       // Register to XPL service
-      // Note that we use plugin instance id (guaranteed by Yadoms to be unique among all instances of all plugins)
-      // as XPL device instance ID
-      shared::xpl::CXplService xplService(PluginInformations.getName(), boost::lexical_cast<std::string>(instanceUniqueId),
-         pluginIOService, this, kEvtXplMessage);
+      shared::xpl::CXplService xplService(
+         shared::xpl::CXplHelper::toVendorIdOrDeviceId(PluginInformations.getName()),     // Use the plugin name as XPL device ID
+         shared::xpl::CXplHelper::toStructuralElement(instanceUniqueId),                  // Use the plugin instance id (guaranteed by Yadoms to be unique among all instances of all plugins) as XPL instance id
+         pluginIOService,                                                                 // Use the provided io service for better performance
+         this,                                                                            // Subscribe for XPL message receive event
+         kEvtXplMessage);                                                                 // Set the event ID to rise when XPL message is received
 
       // A simple incrementing value, sent on XPL network
       int xplTestData = 0;

@@ -22,10 +22,7 @@ void CXplLogger::doWork()
       YADOMS_LOG_CONFIGURE("XplLogger");
       YADOMS_LOG(debug) << "XplLogger is starting...";
 
-      shared::xpl::CXplService xplService(shared::xpl::CXplConstants::getYadomsVendorId(), "logger", "1");
-
-      //use this line to use be notified from shared::event::CEventHandler on an xplMessage
-      xplService.messageReceived(this, kXplMessageReceived);
+      shared::xpl::CXplService xplService("logger", "1", NULL, this, kXplMessageReceived);
 
       while(1)
       {
@@ -36,7 +33,6 @@ void CXplLogger::doWork()
             {
                // Xpl message was received
                shared::xpl::CXplMessage xplMessage = popEvent<shared::xpl::CXplMessage>();
-               //YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
                try
                {
                   std::pair<std::string, std::string> bodyLine;
