@@ -4,14 +4,19 @@
 #
 # It configure the plugin to link as a module, with boost
 
-MACRO(ADD_PLUGIN _targetName)
-	MESSAGE(STATUS "Plugin precompiled header dir = ${PLUGIN_PRECOMPILED_HEADER_DIR}")
-
-	add_library(${_targetName} MODULE ${PLUGIN_BASE_HEADER_SRC} ${PLUGIN_PRECOMPILED_HEADER_DIR}/stdafx.h ${PLUGIN_PRECOMPILED_HEADER_DIR}/stdafx.cpp ${ARGN})
-	set_property( TARGET ${_targetName} PROPERTY INCLUDE_DIRECTORIES ${PLUGIN_PRECOMPILED_HEADER_DIR} ${SHARED_INCL_DIR} ${BOOST_INCL_DIR} )
-	target_link_libraries(${_targetName} yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
-
-	IF(WIN32 OR XCODE)
+MACRO(PLUGIN_SOURCES _targetName)
+	add_library(${_targetName} MODULE ${ARGN})
+	
+	IF(MSVC OR XCODE)
 		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "plugins")
 	ENDIF()
 ENDMACRO()
+
+MACRO(PLUGIN_INCLDIR _targetName)
+	set_property( TARGET ${_targetName} PROPERTY INCLUDE_DIRECTORIES ${SHARED_INCL_DIR} ${BOOST_INCL_DIR} ${ARGN})
+ENDMACRO()
+
+MACRO(PLUGIN_LINK _targetName)
+	target_link_libraries(${_targetName} yadoms-shared ${LIBS} ${CMAKE_DL_LIBS} ${ARGN})
+ENDMACRO()
+
