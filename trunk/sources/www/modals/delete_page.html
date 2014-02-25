@@ -22,11 +22,12 @@
    //we indicate that delete_page.html has been loaded
    deletePageModalHasBeenLoaded = true;
 
-   var pageToDelete = undefined;
+   var pageToDelete = null;
 
    function showDeletePageModal(pageId) {
       assert(pageId !== undefined, "Page Id must be defined");
-      pageToDelete = pageArray[pageId];
+      pageToDelete = pageContainer.getPage(pageId);
+      assert(pageToDelete != null, "page Id doesn't exit");
 
       $("span#name-delete-page-modal").text(pageToDelete.name);
 
@@ -39,7 +40,7 @@
     */
    $("button#btn-confirm-delete-page").click(function () {
 
-      assert(pageToDelete !== undefined, "Page must be defined");
+      assert(pageToDelete != null, "Page must be defined");
 
       //we close the new widget modal
       $("div#delete-page-modal").modal("hide");
@@ -60,13 +61,13 @@
          //we delete the page dynamically
          pageToDelete.$tab.remove();
          pageToDelete.$content.remove();
-         pageArray.splice(pageToDelete.id, 1);
+         pageContainer.pages.splice( $.inArray(pageToDelete, pageContainer.pages), 1);
          ensureOnePageIsSelected();
       })
       .fail(function(pageName) { return function() {notifyError("Unable to delete page " + pageName)}}(pageToDelete.name))
       .always(function() {
         //we clear the current id
-        pageToDelete = undefined;
+        pageToDelete = null;
       });
    });
 </script>

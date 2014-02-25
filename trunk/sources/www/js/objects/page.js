@@ -18,19 +18,28 @@ function Page(id, name, pageOrder) {
    this.widgets = new Array();
    this.$tab = null;
    this.$content = null;
+   this.loaded = false;
 }
 
 /**
- * Create a list of widget in json string format
- * @this {Circle}
- * @return {string} json string
+ * Get Widget with its id in the page. return null if it's not exist
+ * @param widgetId
+ * @returns {Widget}
  */
-Page.prototype.widgetsToJsonString = function() {
-   var data = new Array();
-   for(widgetId in this.widgets) {
-      data.push(this.widgets[widgetId]);
-   }
-   return JSON.stringify(data);
+Page.prototype.getWidget = function(widgetId) {
+   var res = $.grep(this.widgets, function(item) {
+      return (item.id == widgetId);
+   });
+   if (res.length != 1)
+      return null;
+   return res[0];
+}
+
+Page.prototype.addWidget = function(widget) {
+   //we look if it isn't already in page
+   var res = this.getWidget(widget.id);
+   assert(res == null, "Widget has already been added to this page");
+   this.widgets.push(widget);
 }
 
 /**
