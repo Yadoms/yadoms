@@ -4,7 +4,7 @@
 #include <queue>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread.hpp>
-#include "../../../sources/shared/shared/exceptions/BadConversion.hpp"
+#include "../../../sources/shared/shared/exception/BadConversion.hpp"
 #include "../../../sources/shared/shared/event/EventHandler.hpp"
 
 #define BOOST_TEST_MODULE MainTestEvent

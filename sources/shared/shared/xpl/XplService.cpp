@@ -38,25 +38,8 @@ CXplService::CXplService(
    m_localEndPoint = CXplHelper::getFirstIPV4AddressEndPoint();
    m_source = CXplActor::createActor(CXplConstants::getYadomsVendorId(), deviceId, instanceId);
 
-   messageReceived(pEventHandler, eventTypeIdentifier);
-
-   initializeConnector();
-}
-
-CXplService::CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId, boost::asio::io_service * externalIOService)
-   : m_manageIoService(externalIOService == NULL), m_eventHandler(NULL)
-{
-   if(m_manageIoService)
-      m_ioService = new boost::asio::io_service();
-   else
-      m_ioService = externalIOService;
-
-   m_timer.reset( new boost::asio::deadline_timer(*m_ioService) );
-   m_socket.reset( new boost::asio::ip::udp::socket(*m_ioService) );
-
-
-   m_localEndPoint = CXplHelper::getFirstIPV4AddressEndPoint();
-   m_source = CXplActor::createActor(vendorId, deviceId, instanceId);
+   if (pEventHandler)
+      messageReceived(pEventHandler, eventTypeIdentifier);
 
    initializeConnector();
 }
@@ -72,7 +55,7 @@ CXplService::CXplService(const std::string & vendorId, const std::string & devic
    m_timer.reset( new boost::asio::deadline_timer(*m_ioService) );
    m_socket.reset( new boost::asio::ip::udp::socket(*m_ioService) );
 
-   if (!CXplHelper::getEndPointFromInterfaceIp(localIPOfTheInterfaceToUse, m_localEndPoint))
+   if (localIPOfTheInterfaceToUse.empty() || !CXplHelper::getEndPointFromInterfaceIp(localIPOfTheInterfaceToUse, m_localEndPoint))
    {
       //If we haven't found the given ip, we take the first address IPV4
       m_localEndPoint = CXplHelper::getFirstIPV4AddressEndPoint();

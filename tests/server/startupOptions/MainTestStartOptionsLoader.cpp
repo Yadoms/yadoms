@@ -14,9 +14,9 @@
 /// \brief	    This function is needed to check the correct exception
 //--------------------------------------------------------------
 
-bool validate(startupOptions::CLoaderException str)
+bool validate(startupOptions::CLoaderException exception)
 {
-   return str.isError();
+   return exception.isError();
 }
 
 void CreateDirectory ( std::string name )
