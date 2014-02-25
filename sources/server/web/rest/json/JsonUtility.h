@@ -2,18 +2,25 @@
 
 #include "Json.h"
 
-
-//----------------------------------------------
-///\brief Class providing utilities about CJson
-//----------------------------------------------
-class CJsonUtility
-{
-public:
+namespace web { namespace rest { namespace json {
 
    //----------------------------------------------
-   ///\brief Log CJson to log
-   ///\param [in]  jsonData : the CJson data to log
+   ///\brief Class providing utilities about CJson
    //----------------------------------------------
-   static void Log(const CJson & jsonData);
+   class CJsonUtility
+   {
+   public:
 
-};
+      //----------------------------------------------
+      ///\brief Log CJson to log
+      ///\param [in]  jsonData : the CJson data to log
+      //----------------------------------------------
+      static void Log(const CJson & jsonData);
+
+   };
+
+
+} //namespace json
+} //namespace rest
+} //namespace web 
+

@@ -69,7 +69,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Widget, "CREATE TABLE Widget\
 
 
 
-DECLARE_STATIC_TABLE_CREATION_SCRIPT(HardwareEventLogger, "CREATE TABLE HardwareEventLogger\
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(HardwareEventLogger, "CREATE TABLE PluginEventLogger\
                                                             (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\
                                                                eventDate  DATETIME NOT NULL,\
                                                                pluginName TEXT NOT NULL,\
@@ -83,7 +83,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(HardwareEventLogger, "CREATE TABLE Hardware
 
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(EventLogger, "CREATE TABLE EventLogger\
                                                             (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\
-                                                               eventDate  DATETIME NOT NULL,\
-                                                               eventType TEXT NOT NULL,\
+                                                               date  DATETIME NOT NULL,\
+                                                               code TEXT NOT NULL,\
                                                                optionalData  TEXT \
                                                             )")

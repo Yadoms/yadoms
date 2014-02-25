@@ -3,16 +3,37 @@
 #include "IWebServer.h"
 #include <shared/ThreadBase.h>
 
-//TODO commenter
-class CWebServerManager : public shared::CThreadBase
-{
-public:
-   CWebServerManager(boost::shared_ptr<IWebServer> webServerInstance);
-   virtual ~CWebServerManager(void);
-   void doWork();
+namespace web {
 
-   //override CThreadBase::stop to stop web server
-   virtual bool stop();
-private:
-   boost::shared_ptr<IWebServer> m_webServerInstance;
-};
+   //----------------------------------------
+   ///\brief   Class which manage a WebServer.
+   ///         The aim is to run a webserver into a thread
+   //----------------------------------------
+   class CWebServerManager : public shared::CThreadBase
+   {
+   public:
+      //----------------------------------------
+      ///\brief      Constructor
+      ///\param [in] webServerInstance a web server instance to run into a thread
+      //----------------------------------------
+      CWebServerManager(boost::shared_ptr<IWebServer> webServerInstance);
+
+      //----------------------------------------
+      ///\brief      Destructor
+      //----------------------------------------
+      virtual ~CWebServerManager();
+
+      // CThreadBase implmentation
+      virtual bool stop();
+   protected:
+      void doWork();
+      // [END] CThreadBase implmentation
+
+   private:
+      //----------------------------------------
+      ///\brief      The web server instance
+      //----------------------------------------
+      boost::shared_ptr<IWebServer> m_webServerInstance;
+   };
+
+} //namespace web
