@@ -144,6 +144,7 @@ if(DEBUG_WITH_ECLIPSE)
 endif()
 
 
+add_definitions( -DBOOST_AUTO_TEST_MAIN )
 
 
 
