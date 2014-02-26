@@ -30,7 +30,7 @@ void RemoveDirectory(std::string name)
 void CreateFile(std::string dir, std::string file)
 {
    boost::filesystem::path fullPath = boost::filesystem::path(dir) / file;
-   std::ofstream outfile(fullPath.string(), std::ofstream::out);
+   std::ofstream outfile(fullPath.string().c_str(), std::ios_base::out);
    BOOST_REQUIRE(outfile.is_open());
 }
 
@@ -43,7 +43,7 @@ void RemoveFile(std::string dir, std::string file)
 void WriteFile(std::string dir, std::string file)
 {
    boost::filesystem::path fullPath = boost::filesystem::path(dir) / file;
-   std::ofstream outfile(fullPath.string(), std::ofstream::out);
+   std::ofstream outfile(fullPath.string().c_str(), std::ios_base::out);
    outfile << "some text...";
 }
 
@@ -75,7 +75,7 @@ private:
 
 static const std::string TestDirectory("test_directory");
 static const std::string TestFile("test_file");
-std::vector<const boost::asio::dir_monitor_event> Events;
+std::vector<boost::asio::dir_monitor_event> Events;
 boost::mutex EventsMutex;
 
 //--------------------------------------------------------------
