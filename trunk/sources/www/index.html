@@ -105,6 +105,7 @@
    <script src="js/objects/widget.js"></script>
    <script src="js/objects/widget-package.js"></script>
    <script src="js/objects/page-container.js"></script>
+   <script src="js/objects/lazy-loader-manager.js"></script>
 
 
    <script src="js/widget-engine.js"></script>
@@ -126,6 +127,8 @@
     * @type {Array}
     */
    var pageContainer = new PageContainer();
+
+   var modals = {};
 
    /**
     * Contains all Ctor of all loaded viewModels
@@ -163,6 +166,14 @@
     */
    $(document).ready(function() {
 
+      //we define all the modals to lazy load
+      modals.widgetAdd = new LazyLoaderManager("modals/add_widget.html");
+      modals.widgetConfiguration = new LazyLoaderManager("modals/configure_widget.html");
+      modals.widgetDelete = new LazyLoaderManager("modals/delete_widget.html");
+      modals.pageDelete = new LazyLoaderManager("modals/delete_page.html");
+      modals.pageModification = new LazyLoaderManager("modals/modify_page.html");
+      modals.qrCode = new LazyLoaderManager("modals/qrcode.html");
+
       initializeWidgetEngine();
       requestPages();
 
@@ -171,24 +182,7 @@
        * Make lazy loading of the qrcode modal
        */
       $("#btn-show-qrcode").click(function() {
-         if (qrcodeHasBeenLoaded)
-         {
-            //we display the modal
-            $('#qrcode-modal').modal(); 
-         }
-         else
-         {
-            $.ajax("modals/qrcode.html")
-                    .done(function(data) {
-                       //we append it to the index
-                       $('body').append(data);
-                       //we display the modal
-                       $('#qrcode-modal').modal();
-                    })
-                    .fail(function() {
-                       notifyError("Unable to display QRCode");
-                    });
-         }
+         modals.qrCode.load(function() {$('#qrcode-modal').modal();});
       });
 
       $(document).keyup(function(e) {

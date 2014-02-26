@@ -35,24 +35,7 @@ function initializeWidgetEngine() {
          return;
       }
 
-      if (addWidgetHasBeenLoaded)
-      {
-         //we ask the package to display the modal
-         askWidgetPackages();
-      }
-      else
-      {
-         $.ajax( "modals/add_widget.html" )
-            .done(function(data) {
-               //we append it to the index
-               $('body').append(data);
-               //we ask the package to display the modal
-               askWidgetPackages();
-            })
-            .fail(function() {
-               notifyError("Unable to add a widget");
-            });
-      }
+      modals.widgetAdd.load(function() {askWidgetPackages();});
    });
 }
 
@@ -68,7 +51,9 @@ function initializePageEvents(page) {
 
    //we listen click event on rename click
    page.$tab.find('button.delete-page').bind('click', function (e) {
-      deletePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id")); } );
+      var pageId = $(e.currentTarget).parents("li.tabPagePills").attr("page-id");
+      modals.pageDelete.load(function (pageId) {return function() {showDeletePageModal(pageId)}}(pageId));
+   } );
 
    //we listen click event on move left click
    page.$tab.find('button.move-left-page').bind('click', function (e) {
@@ -82,12 +67,18 @@ function initializePageEvents(page) {
 function initializeWidgetEvents(widget) {
    //we listen click event on configure click
    widget.$gridsterWidget.find('button.configure-widget').bind('click', function (e) {
-      configureWidget($(e.currentTarget).parents("li.widget").attr("widget-id")); } );
+      var widgetDOMElement = $(e.currentTarget).parents("li.widget");
+      var pageId = widgetDOMElement.attr("page-id");
+      var widgetId = widgetDOMElement.attr("widget-id");
+      modals.widgetConfiguration.load(function (pageId, widgetId) {return function() {showWidgetConfigurationModal(pageId, widgetId)}}(pageId, widgetId));
+   });
 
    //we listen click event on delete click
    widget.$gridsterWidget.find('button.delete-widget').bind('click', function (e) {
       var widgetDOMElement = $(e.currentTarget).parents("li.widget");
-      deleteWidget(widgetDOMElement.attr("page-id"), widgetDOMElement.attr("widget-id"));
+      var pageId = widgetDOMElement.attr("page-id");
+      var widgetId = widgetDOMElement.attr("widget-id");
+      modals.widgetDelete.load(function (pageId, widgetId) {return function() {showDeleteWidgetModal(pageId, widgetId)}}(pageId, widgetId));
    });
 }
 
