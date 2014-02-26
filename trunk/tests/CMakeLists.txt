@@ -11,137 +11,32 @@
 ##################################################################################################
 project (YadomsTests)
 
-##################################################################################################
-## Check for minimum version
-##################################################################################################
-
 # Check the minimum CMake version
 cmake_minimum_required (VERSION 2.8.9)
-
-# Check for minimum GCC version
-MESSAGE(STATUS "Compiler = ${CMAKE_CXX_COMPILER_ID}")
-MESSAGE(STATUS "Compiler Version = ${CMAKE_CXX_COMPILER_VERSION}")
-
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    # require at least gcc 4.5 (for boost::log)
-    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.5)
-        message(FATAL_ERROR "GCC version must be at least 4.5!")
-    endif()
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    # require at least clang 3.2
-    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.2)
-        message(FATAL_ERROR "Clang version must be at least 3.2!")
-    endif()
-endif()
-
-
-##################################################################################################
-## Debug makefile
-##################################################################################################
-if(CMAKE_COMPIER_IS_GNUCXX)
-	set(CMAKE_VERBOSE_MAKEFILE on)
-endif()
 
 ##################################################################################################
 ## Include other cmake scripts
 ##################################################################################################
 
-#include precompiled headers
+# First checks (compilers versions...)
+include("../sources/preChecks.cmake")
+
+# Precompiled headers
 include("PrecompiledHeader.cmake")
 
-#include user specific configuration
+# User specific configuration
 include("CMakeListsUserConfig.txt" OPTIONAL)
 
-#include tests Common Definitions
+# Tests Common Definitions
 include("YadomsTestsCommon.cmake")
 
-#include Windows specific macro
+# Windows specific macro
 if(WIN32)
 	include("windows.cmake")
 endif()
 
-##################################################################################################
-## IDE configurations
-##################################################################################################
-
-if(WIN32)
-	#allow solution folders
-	SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
-
-	#global disable (for all targets)
-	#disable warning C4996   Function call with parameters that may be unsafe 
-	add_definitions( "/wd4996 /wd4251" )
-
-	#######################################################
-	## Activate warning level4, and disable useless ones ##
-	#######################################################
-	add_definitions("/W4")
-	
-	# A lot of level 4 warnings are involved by boost.
-	# Use the next link to see how to remove warning 
-	#https://svn.boost.org/trac/boost/wiki/Guidelines/WarningsGuidelines
-	
-	#disable warning C4512: assignment operator could not be generated
-	add_definitions( "/wd4512" )
-	
-	#disable warning C4610: object 'class' can never be instantiated - user-defined constructor required : solution : same as C4512
-	add_definitions( "/wd4610" )
-	
-	#disable warning C4127: conditional expression is constant
-	add_definitions( "/wd4127" )
-
-	#disable warning C4100: unreferenced formal parameter
-	add_definitions( "/wd4100" )
-	
-	#disable warning C4714: function 'function' marked as __forceinline not inlined
-	add_definitions( "/wd4714" )
-	
-	#disable warning C4510: 'class' : default constructor could not be generated
-	add_definitions( "/wd4510" )
-
-	#disable warning C4505: 'function' : unreferenced local function has been removed
-	add_definitions( "/wd4505" )
-	
-	#to allow BOOST in precompiled header (specify Precompiled Header Memory Allocation Limit) 
-	add_definitions("/Zm256")
-
-	#add WIN32_WINNT preprocessor deifinition
-	get_WIN32_WINNT(CURRENT_WINNT_VERSION)
-	add_definitions(-D_WIN32_WINNT=${CURRENT_WINNT_VERSION})
-endif()
-
-if(CMAKE_COMPIER_IS_GNUCXX)
-	add_definitions("-Wall -Wextra -pedantic")
-	add_definitions("-fpermissive")
-	add_definitions("-std=c++0x")
-	set (CMAKE_C_FLAGS_ALL "${CMAKE_C_FLAGS_ALL} -march=native -msse -msse2 -msse3 -mfpmath=sse")	
-  
-	# In case unix is 64bits, append -fPIC to gcc
-	IF(UNIX AND NOT WIN32)
-	   FIND_PROGRAM(CMAKE_UNAME uname /bin /usr/bin /usr/local/bin )
-	   IF(CMAKE_UNAME)
-		 EXEC_PROGRAM(uname ARGS -m OUTPUT_VARIABLE CMAKE_SYSTEM_PROCESSOR)
-		 SET(CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR} CACHE INTERNAL "processor type (i386 and x86_64)")
-		 IF(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
-		   add_definitions(-fPIC)
-		 ENDIF(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
-	   ENDIF(CMAKE_UNAME)
-	ENDIF(UNIX AND NOT WIN32)
-endif()
-
-
-if (CMAKE_COMPIER_IS_CLANG)
-	add_definitions("-Wall -Wextra -pedantic")
-	add_definitions("-std=c++0x")
-   add_definitions("-Woverloaded-virtual")
-   add_definitions("-Wunused-variable")
-endif()
-
-#check eclispe debug options
-if(DEBUG_WITH_ECLIPSE)
-	add_definitions(-DDEBUG)
-	add_definitions("-g")
-endif()
+# Compilers/IDE configurations
+include("../sources/compilers.cmake")
 
 
 add_definitions( -DBOOST_AUTO_TEST_MAIN )
