@@ -1,7 +1,5 @@
 #pragma once
 #include <shared/plugin/ImplementationHelper.h>
-#include <shared/xpl/XplMessage.h>
-#include <shared/xpl/XplService.h>
 #include <shared/event/EventHandler.hpp>
 #include "FakePluginConfiguration.h"
 
@@ -34,7 +32,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
-   CFakePluginConfiguration m_Configuration;
+   CFakePluginConfiguration m_configuration;
 };
 
 

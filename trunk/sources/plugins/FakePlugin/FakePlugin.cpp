@@ -4,8 +4,6 @@
 #include <shared/xpl/XplService.h>
 #include <shared/xpl/XplMessage.h>
 #include <shared/xpl/XplHelper.h>
-#include <shared/exception/BadConversion.hpp>
-#include <shared/StringExtension.h>
 
 
 // Use this macro to define some basic informations about the plugin
@@ -22,7 +20,7 @@ IMPLEMENT_PLUGIN(
 CFakePlugin::CFakePlugin()
 {
    // Build the schema
-   m_Configuration.buildSchema();
+   m_configuration.buildSchema();
 }
 
 CFakePlugin::~CFakePlugin()
@@ -40,13 +38,13 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configurationV
 {
    try
    {
-      YADOMS_LOG_CONFIGURE("FakePlugin");
+      YADOMS_LOG_CONFIGURE(PluginInformations.getName());
       YADOMS_LOG(debug) << "CFakePlugin is starting...";
 
       // Load configuration values (provided by database)
-      m_Configuration.setValues(configurationValues);
+      m_configuration.setValues(configurationValues);
       // Trace the configuration (just for test)
-      m_Configuration.trace();
+      m_configuration.trace();
 
       // Register to XPL service
       shared::xpl::CXplService xplService(
@@ -85,10 +83,10 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configurationV
                // - Restart the plugin if necessary,
                // - Update some resources,
                // - etc...
-               m_Configuration.setValues(newConfigurationValues);
+               m_configuration.setValues(newConfigurationValues);
 
                // Trace the configuration
-               m_Configuration.trace();
+               m_configuration.trace();
 
                break;
             }
