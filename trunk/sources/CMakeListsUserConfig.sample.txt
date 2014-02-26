@@ -5,10 +5,10 @@
 ##### use only absolute path , and do not use anti slash : only '/' ######
 #set(BOOST_ROOT "/path/to/boost/boost_1_55_0")
 
-#to cross compile for Raspberry PI, set the option to ON and set CC_PI_FOLDER
+#to cross compile for Raspberry PI, set the option to ON and set CC_RPI_GCC and CC_RPI_GXX
 #set(CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER ON)
-#set(CC_PI_FOLDER /path/to/raspberrypi)
-
+#SET(CC_RPI_GCC /path/to/raspberry/git/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc)
+#SET(CC_RPI_GXX /path/to/raspberry/git/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-g++)
 
 
 #activate this option to enable eclipse debugging
