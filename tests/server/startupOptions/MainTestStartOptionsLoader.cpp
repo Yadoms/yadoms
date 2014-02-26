@@ -74,7 +74,7 @@ public:
    void writeSettings (std::string setting, std::string value)
    {
       std::ofstream file(m_configFile.c_str(), std::ios_base::out | std::ios_base::app );
-      file << setting.c_str() << " = " << value.c_str() << "\n";
+      file << setting << " = " << value << "\n";
       file.close();
    }
 private:

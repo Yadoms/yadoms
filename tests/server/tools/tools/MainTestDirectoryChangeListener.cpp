@@ -30,7 +30,7 @@ void RemoveDirectory(std::string name)
 void CreateFile(std::string dir, std::string file)
 {
    boost::filesystem::path fullPath = boost::filesystem::path(dir) / file;
-   std::ofstream outfile(fullPath.string());
+   std::ofstream outfile(fullPath.string(), std::ofstream::out);
    BOOST_REQUIRE(outfile.is_open());
 }
 
@@ -43,7 +43,7 @@ void RemoveFile(std::string dir, std::string file)
 void WriteFile(std::string dir, std::string file)
 {
    boost::filesystem::path fullPath = boost::filesystem::path(dir) / file;
-   std::ofstream outfile(fullPath.string());
+   std::ofstream outfile(fullPath.string(), std::ofstream::out);
    outfile << "some text...";
 }
 
