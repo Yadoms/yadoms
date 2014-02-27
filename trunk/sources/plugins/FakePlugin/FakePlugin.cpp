@@ -11,6 +11,11 @@
 IMPLEMENT_PLUGIN(
    CFakePlugin,                                 // IPlugin implementation class
    "FakePlugin",                                // Plugin name (std::string)
+   "This is just a fake plugin, designed to serve as example to write real plugins.\n"    // Plugin description (std::string)
+   "This plugin do nothing useful, just demonstrate how to :\n"
+   " - use a configuration\n"
+   " - receive a XPL message\n"
+   " - send a XPL message\n",
    "0.1",                                       // Current plugin version (std::string)
    shared::plugin::information::kBeta,          // Current release state (shared::plugin::information::EReleaseType)
    "yadoms-team",                               // Author name (std::string)

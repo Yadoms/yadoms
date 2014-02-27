@@ -10,17 +10,17 @@
 // Plugin implementation helper
 //////////////////////////////////////////////////////////////////////////
 // see shared::plugin::information::IInformation documentation to know what formats are accepted for each field
-#define IMPLEMENT_PLUGIN(pluginClassName,pluginName,version,release,author,url)           \
-   EXPORT_LIBRARY_FUNCTION shared::plugin::IPlugin* construct()                           \
-   {                                                                                      \
-      return new pluginClassName();                                                       \
-   }                                                                                      \
-                                                                                          \
-   static const shared::plugin::information::CInformation                                 \
-      PluginInformations(pluginName,version,release,author,url);                          \
-   EXPORT_LIBRARY_FUNCTION const shared::plugin::information::IInformation& getInformation() \
-   {                                                                                      \
-      return PluginInformations;                                                          \
+#define IMPLEMENT_PLUGIN(pluginClassName,pluginDescription, pluginName,version,release,author,url)          \
+   EXPORT_LIBRARY_FUNCTION shared::plugin::IPlugin* construct()                                             \
+   {                                                                                                        \
+      return new pluginClassName();                                                                         \
+   }                                                                                                        \
+                                                                                                            \
+   static const shared::plugin::information::CInformation                                                   \
+      PluginInformations(pluginName,pluginDescription,version,release,author,url);                          \
+   EXPORT_LIBRARY_FUNCTION const shared::plugin::information::IInformation& getInformation()                \
+   {                                                                                                        \
+      return PluginInformations;                                                                            \
    }
 
 

@@ -33,6 +33,12 @@ namespace shared { namespace plugin { namespace information
       virtual const std::string& getName() const = 0;
 
       //--------------------------------------------------------------
+      /// \brief	    get the plugin Description
+      /// \return     the plugin description (can be multiline string)
+      //--------------------------------------------------------------
+      virtual const std::string& getDescription() const = 0;
+
+      //--------------------------------------------------------------
       /// \brief	    get the plugin version
       /// \return     the plugin version
       //--------------------------------------------------------------
