@@ -6,7 +6,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/asio.hpp>
 #include "../../../sources/server/startupOptions/Loader.h"
-#include "../../../sources/server/ApplicationStopHandler.h"
 
 #define BOOST_TEST_MODULE TestStartupOptionsLoader
 
