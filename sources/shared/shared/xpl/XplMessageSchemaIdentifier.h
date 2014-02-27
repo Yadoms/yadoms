@@ -87,8 +87,8 @@ namespace shared { namespace xpl
       std::string m_classId;
       std::string m_typeId;
    
-      static const int ClassIdMaxLength = 8;
-      static const int TypeIdMaxLength = 8;
+      static const size_t ClassIdMaxLength = 8;
+      static const size_t TypeIdMaxLength = 8;
    };
 
 } } // namespace shared::xpl

@@ -157,8 +157,8 @@ namespace shared { namespace xpl
 
       std::map<std::string, std::string> m_body;
 
-      static const int BodyNameMaxLength = 16;
-      static const int MaxMessageSize = 1500;
+      static const size_t BodyNameMaxLength = 16;
+      static const size_t MaxMessageSize = 1500;
 
       static const std::string XplCmdTypeIdentifier;
       static const std::string XplStatTypeIdentifier;
