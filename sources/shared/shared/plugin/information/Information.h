@@ -15,6 +15,7 @@ namespace shared { namespace plugin { namespace information
       //--------------------------------------------------------------
       /// \brief	    Constructor
       /// \param      name : plugin name
+      /// \param      descrption : plugin description (multiline string)
       /// \param      version : plugin version
       /// \param      releaseType : plugin state
       /// \param      author : plugin author
@@ -25,7 +26,7 @@ namespace shared { namespace plugin { namespace information
       ///            Mainly, don't change the version format in the plugin life.
       ///            Recommended format is "xx.yy"
       //--------------------------------------------------------------
-      CInformation (const std::string & name, const std::string & version,
+      CInformation (const std::string & name, const std::string & description, const std::string & version,
          const EReleaseType & releaseType, const std::string & author,
          const std::string & url);
 
@@ -38,6 +39,7 @@ namespace shared { namespace plugin { namespace information
       // shared::plugin::IInformation implementation
       virtual ~CInformation ();
       virtual const std::string& getName() const;
+      virtual const std::string& getDescription() const;
       virtual const std::string& getVersion() const;
       virtual const EReleaseType getReleaseType() const;
       virtual const std::string& getAuthor() const;
@@ -47,6 +49,7 @@ namespace shared { namespace plugin { namespace information
 
    private:
       std::string m_name;
+      std::string m_description;
       std::string m_version;
       EReleaseType m_releaseType;
       std::string m_author;
