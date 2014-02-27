@@ -389,6 +389,11 @@ function getWidgetViewDone(packageName)
       $("div#templates").append(data);
       //we indicate that the view for this king of widget has been lazy loaded
       widgetPackages[packageName].viewHasBeenDownloaded = true;
+
+      //todo beautifier
+      i18n.options.resGetPath = 'widgets/__ns__/locales/__lng__.json';
+      i18n.loadNamespace(packageName);
+
       //we get script to execute for this widget
       askViewModelCtor(packageName);
    };
@@ -610,6 +615,8 @@ function finalizeWidgetCreation(widget) {
       console.warn(e);
    }
    initializeWidgetEvents(widget);
+
+   widget.$div.i18n();
 
    //we add the widget to the collection
    page.addWidget(widget);

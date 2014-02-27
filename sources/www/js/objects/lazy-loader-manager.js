@@ -28,8 +28,10 @@ LazyLoaderManager.prototype.load = function (callback){
    {
       $.ajax(this.modalPath)
          .done(function(data) {
+            $data = $(data);
+            $data.i18n();
             //we add the modal to the body
-            $('body').append(data);
+            $('body').append($data);
             //we save the information that the modal has been loaded
             this.modalHasBeenLoaded = true;
             //we call the callback

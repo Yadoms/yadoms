@@ -38,17 +38,17 @@
                           <li class="dropdown">
                               <a href="" class="dropdown-toggle btn btn-inverse" data-toggle="dropdown"><i class="caret"></i></a>
                               <ul class="dropdown-menu">
-                                  <li><a href="#">Configuration</a></li>
-                                  <li><a href="#">Check For Update</a></li>
+                                  <li><a href="#" data-i18n="mainPage.menu.configuration" ></a></li>
+                                  <li><a href="#" data-i18n="mainPage.menu.checkForUpdate">Check For Update</a></li>
                                   <li><a href="#">...</a></li>
                                   <li class="divider"></li>
                                   <li class="dropdown-header">Shutdown/Restart</li>
-                                  <li><a href="#">Shutdown</a></li>
-                                  <li><a href="#">Restart</a></li>
+                                  <li><a href="#" data-i18n="mainPage.menu.shutdown">Shutdown</a></li>
+                                  <li><a href="#" data-i18n="mainPage.menu.restart">Restart</a></li>
                               </ul>
                           </li>
-                          <li><a href="#" class="btn btn-inverse customization-item hidden" id="btn-add-page"><i class="fa fa-file-o"></i>&nbsp;&nbsp;Add a new page</a></li>
-                          <li><a href="#" class="btn btn-inverse customization-item hidden" id="btn-add-widget"><i class="fa fa-puzzle-piece"></i>&nbsp;&nbsp;Add a new widget</a></li>
+                          <li><a href="#" class="btn btn-inverse customization-item hidden" id="btn-add-page"><i class="fa fa-file-o"></i>&nbsp;&nbsp;<span data-i18n="customization.addNewPage"></span></a></li>
+                          <li><a href="#" class="btn btn-inverse customization-item hidden" id="btn-add-widget"><i class="fa fa-puzzle-piece"></i>&nbsp;&nbsp;<span data-i18n="customization.addNewWidget"></span></a></li>
                       </ul>
                       <ul class="nav navbar-nav navbar-right">
                           <li><a href="#" class="btn btn-inverse" id="chartButton"><i class="fa fa-bar-chart-o"></i></a></li>
@@ -99,6 +99,8 @@
 
    <script src="libs/transit/js/jquery.transit.min.js"></script>
    <script src="libs/knockout/js/knockout-3.0.0.js"></script>
+
+   <script src="libs/i18next/js/i18next-1.7.2.js"></script>
 
    <script src="js/utility.js"></script>
    <script src="js/objects/page.js"></script>
@@ -173,6 +175,12 @@
       modals.pageDelete = new LazyLoaderManager("modals/delete_page.html");
       modals.pageModification = new LazyLoaderManager("modals/modify_page.html");
       modals.qrCode = new LazyLoaderManager("modals/qrcode.html");
+
+
+      var option = { resGetPath: 'locales/__lng__.json', fallbackLng:"en" };
+      i18n.init(option, function() {
+         $("html").i18n();
+      });
 
       initializeWidgetEngine();
       requestPages();

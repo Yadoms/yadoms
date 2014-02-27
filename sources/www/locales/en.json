@@ -1,0 +1,14 @@
+{
+   "customization" : {
+      "addNewPage" : "Add a new page",
+      "addNewWidget" : "Add a new widget"
+   },
+   "mainPage" : {
+      "menu" : {
+         "configuration" : "Configuration",
+         "checkForUpdate" : "Check for Update",
+         "restart" : "Restart",
+         "shutdown" : "Shutdown"
+      }
+   }
+}
