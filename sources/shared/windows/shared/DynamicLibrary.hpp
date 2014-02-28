@@ -83,7 +83,8 @@ namespace shared
 
          if (m_libraryHandle == NULL)
          {
-            YADOMS_LOG(error) << "Fail to load library : " << libraryFile << GetLastError();
+            DWORD lastError = GetLastError();
+            YADOMS_LOG(error) << "Fail to load library : " << libraryFile << ", erreur : " << lastError;
             return false;
          }
 

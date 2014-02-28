@@ -20,6 +20,7 @@
 // ! please keep for full list alphabetic ordered !!
 ////////////////////////////////////////
 #include <boost/algorithm/string.hpp>
+#include <boost/range/algorithm/find_if.hpp>
 #include <boost/asio.hpp>
 #include <boost/assert.hpp>
 #include <boost/bind.hpp>

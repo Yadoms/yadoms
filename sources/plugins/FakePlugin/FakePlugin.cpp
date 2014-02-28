@@ -4,22 +4,12 @@
 #include <shared/xpl/XplService.h>
 #include <shared/xpl/XplMessage.h>
 #include <shared/xpl/XplHelper.h>
+#include <boost/shared_ptr.hpp>
 
-
-// Use this macro to define some basic informations about the plugin
-// Defines the static PluginInformations value that can be used by plugin to retrieve values
-IMPLEMENT_PLUGIN(
-   CFakePlugin,                                 // IPlugin implementation class
-   "FakePlugin",                                // Plugin name (std::string)
-   "This is just a fake plugin, designed to serve as example to write real plugins.\n"    // Plugin description (std::string)
-   "This plugin do nothing useful, just demonstrate how to :\n"
-   " - use a configuration\n"
-   " - receive a XPL message\n"
-   " - send a XPL message\n",
-   "0.1",                                       // Current plugin version (std::string)
-   shared::plugin::information::kBeta,          // Current release state (shared::plugin::information::EReleaseType)
-   "yadoms-team",                               // Author name (std::string)
-   "http://sourceforge.net/projects/yadoms/")   // Url of author web site (std::string)
+// Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
+// Note that you have to provide some extra files, like package.json, and icon.png
+// This macro also defines the static PluginInformations value that can be used by plugin to get information values
+IMPLEMENT_PLUGIN(CFakePlugin)
 
 
 CFakePlugin::CFakePlugin()
@@ -43,7 +33,7 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configurationV
 {
    try
    {
-      YADOMS_LOG_CONFIGURE(PluginInformations.getName());
+      YADOMS_LOG_CONFIGURE(Informations->getName());
       YADOMS_LOG(debug) << "CFakePlugin is starting...";
 
       // Load configuration values (provided by database)
@@ -53,11 +43,11 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configurationV
 
       // Register to XPL service
       shared::xpl::CXplService xplService(
-         shared::xpl::CXplHelper::toVendorIdOrDeviceId(PluginInformations.getName()),     // Use the plugin name as XPL device ID
-         shared::xpl::CXplHelper::toStructuralElement(instanceUniqueId),                  // Use the plugin instance id (guaranteed by Yadoms to be unique among all instances of all plugins) as XPL instance id
-         pluginIOService,                                                                 // Use the provided io service for better performance
-         this,                                                                            // Subscribe for XPL message receive event
-         kEvtXplMessage);                                                                 // Set the event ID to rise when XPL message is received
+         shared::xpl::CXplHelper::toVendorIdOrDeviceId(Informations->getName()),    // Use the plugin name as XPL device ID
+         shared::xpl::CXplHelper::toStructuralElement(instanceUniqueId),            // Use the plugin instance id (guaranteed by Yadoms to be unique among all instances of all plugins) as XPL instance id
+         pluginIOService,                                                           // Use the provided io service for better performance
+         this,                                                                      // Subscribe for XPL message receive event
+         kEvtXplMessage);                                                           // Set the event ID to rise when XPL message is received
 
       // A simple incrementing value, sent on XPL network
       int xplTestData = 0;

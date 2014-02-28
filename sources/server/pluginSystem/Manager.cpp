@@ -2,6 +2,7 @@
 #include "Manager.h"
 #include "Instance.h"
 #include "Qualifier.h"
+#include <shared/DynamicLibrary.hpp>
 
 
 namespace pluginSystem
@@ -110,27 +111,35 @@ void CManager::disableInstance(int id)
    m_database->enableInstance(id, false);
 }
 
-std::vector<boost::filesystem::path> CManager::findPluginFilenames()
+std::vector<boost::filesystem::path> CManager::findPluginDirectories()
 {
-   std::vector<boost::filesystem::path> pluginFilenames;
+   // Look for all subdirectories in m_pluginPath directory, where it contains library with same name,
+   // for example a subdirectory "fakePlugin" containing a "fakePlugin.dll|so" file
+   std::vector<boost::filesystem::path> plugins;
+   static const std::string pluginEndWithString = shared::CDynamicLibrary::DotExtension();
 
    if (boost::filesystem::exists(m_pluginPath) && boost::filesystem::is_directory(m_pluginPath))
    {
-      boost::filesystem::directory_iterator endFileIterator;
-
-      static const std::string pluginEndWithString = shared::CDynamicLibrary::DotExtension();
-
-      for(boost::filesystem::directory_iterator fileIterator(m_pluginPath) ; fileIterator != endFileIterator ; ++fileIterator)
+      // Check all subdirectories in m_pluginPath
+      for(boost::filesystem::directory_iterator subDirIterator(m_pluginPath) ; subDirIterator != boost::filesystem::directory_iterator() ; ++subDirIterator)
       {
-         if (boost::filesystem::is_regular_file(fileIterator->status()) &&
-            fileIterator->path().extension() == pluginEndWithString)
+         if (boost::filesystem::is_directory(subDirIterator->status()))
          {
-            pluginFilenames.push_back(fileIterator->path().filename());
+            // Subdirectory, check if it is a plugin (= contains a dynamic library with same name)
+            for (boost::filesystem::directory_iterator fileIterator(subDirIterator->path()); fileIterator != boost::filesystem::directory_iterator() ; ++fileIterator)
+            {
+               if (boost::filesystem::is_regular_file(fileIterator->status()) &&                // It's a file...
+                  fileIterator->path().stem() == subDirIterator->path().leaf() &&               // ...with the same name as sub-directory...
+                  fileIterator->path().extension() == shared::CDynamicLibrary::DotExtension())  // ...with a dynamic-library standard extension
+               {
+                  plugins.push_back(subDirIterator->path().leaf());
+               }
+            }
          }
       }
    }
 
-   return pluginFilenames;
+   return plugins;
 }
 
 boost::shared_ptr<CFactory> CManager::loadPlugin(const std::string& pluginName)
@@ -179,15 +188,15 @@ void CManager::buildAvailablePluginList()
    m_availablePlugins.clear();
 
    // Search for library files
-   std::vector<boost::filesystem::path> avalaiblePluginFileNames = findPluginFilenames();
+   std::vector<boost::filesystem::path> avalaiblePluginDirectories = findPluginDirectories();
 
-   for (std::vector<boost::filesystem::path>::const_iterator libPathIt = avalaiblePluginFileNames.begin() ;
-      libPathIt != avalaiblePluginFileNames.end() ; ++libPathIt)
+   for (std::vector<boost::filesystem::path>::const_iterator libPathIt = avalaiblePluginDirectories.begin() ;
+      libPathIt != avalaiblePluginDirectories.end() ; ++libPathIt)
    {
       try
       {
          // Get informations for current found plugin
-         const std::string& pluginName = shared::CDynamicLibrary::ToLibName((*libPathIt).string());
+         const std::string& pluginName = (*libPathIt).string();
 
          // If plugin is already loaded, use its information
          if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
@@ -370,6 +379,7 @@ void CManager::onPluginDirectoryChanges(const boost::asio::dir_monitor_event& ev
 boost::filesystem::path CManager::toPath(const std::string& pluginName) const
 {
    boost::filesystem::path path(m_pluginPath);
+   path /= pluginName;
    path /= shared::CDynamicLibrary::ToFileName(pluginName);
    return path;
 }

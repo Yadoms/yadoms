@@ -92,6 +92,8 @@ set(SHARED_LIB_SRC
 	${SHARED_LIB_SRC}
 	windows/shared/DynamicLibrary.hpp
 	windows/shared/Export.h
+   windows/shared/FileSystemExtension.h
+	windows/shared/FileSystemExtension.cpp
 	windows/shared/Peripherals.h
 	windows/shared/Peripherals.cpp
 	windows/shared/NetworkHelper.h
@@ -104,6 +106,8 @@ set(SHARED_LIB_SRC
 	${SHARED_LIB_SRC}
 	mac/shared/DynamicLibrary.hpp
 	mac/shared/Export.h
+   mac/shared/FileSystemExtension.h
+	mac/shared/FileSystemExtension.cpp
 	mac/shared/Peripherals.h
 	mac/shared/Peripherals.cpp
 	mac/shared/NetworkHelper.h
@@ -116,6 +120,8 @@ set(SHARED_LIB_SRC
 	${SHARED_LIB_SRC}
 	linux/shared/DynamicLibrary.hpp
 	linux/shared/Export.h
+   linux/shared/FileSystemExtension.h
+	linux/shared/FileSystemExtension.cpp
 	linux/shared/Peripherals.h
 	linux/shared/Peripherals.cpp
 	linux/shared/NetworkHelper.h

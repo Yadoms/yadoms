@@ -173,12 +173,12 @@ namespace pluginSystem
 
    private:
       //--------------------------------------------------------------
-      /// \brief        Returns all plugin libraries installed
-      /// \return       a list of all found plugins filenames
-      /// \note         This function just lists plugin files by their names.
+      /// \brief        Returns all plugin directories installed
+      /// \return       a list of all found plugin directories
+      /// \note         This function just lists plugin dorectory names.
       ///               It doesn't check if plugin is valid (export expected functions)
       //--------------------------------------------------------------
-      std::vector<boost::filesystem::path> findPluginFilenames();
+      std::vector<boost::filesystem::path> findPluginDirectories();
 
       //--------------------------------------------------------------
       /// \brief        Update the plugin list if needed

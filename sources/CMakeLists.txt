@@ -84,7 +84,7 @@ set(BOOST_LIBS
 
 # search boost libs
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
-set(BOOST_INCL_DIR ${YADOMS_INCL_DIR} ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
+set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 
 ## thread library (pthread)
 FIND_PACKAGE(Threads)
@@ -108,7 +108,7 @@ endif()
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})
 
 ##################################################################################################
-## Internal libraries (SQlite, Webem) comletly build from sources
+## Internal libraries (SQlite, Webem) completly build from sources
 ##################################################################################################
 
 #Use Sqlite database system

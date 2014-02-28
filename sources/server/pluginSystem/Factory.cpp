@@ -36,6 +36,20 @@ void CFactory::load()
       throw CInvalidPluginException(m_libraryPath.string());
    }
 
+   // Check if fonctions throw
+   try
+   {
+      getInformation();
+      delete construct();
+      getConfigurationSchema();
+   }
+   catch (...)
+   {
+      YADOMS_LOG(error) << "Plugin " << m_libraryPath << " crashed at loading, considered as not valid plugin.";
+      shared::CDynamicLibrary::unload();
+      throw CInvalidPluginException(m_libraryPath.string());
+   }
+
    // Log loaded plugin
    YADOMS_LOG(info) << "Plugin loaded : " << getInformation()->toString();
 }
