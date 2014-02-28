@@ -4,24 +4,29 @@
 #include "information/Information.h"
 #include "configuration/Configuration.h"
 #include <shared/Export.h>
+#include <shared/FileSystemExtension.h>
+#include <boost/shared_ptr.hpp>
 
-
-//////////////////////////////////////////////////////////////////////////
-// Plugin implementation helper
-//////////////////////////////////////////////////////////////////////////
-// see shared::plugin::information::IInformation documentation to know what formats are accepted for each field
-#define IMPLEMENT_PLUGIN(pluginClassName,pluginDescription, pluginName,version,release,author,url)          \
+//--------------------------------------------------------------
+/// \brief		                  Plugin implementation helper
+/// \param pluginClassName       The name of the main plugin class (implementing shared::plugin::IPlugin)
+/// \note                        This macro create and export needed functions for the plugin
+//--------------------------------------------------------------
+#define IMPLEMENT_PLUGIN(pluginClassName)                                                                   \
+   IMPLEMENT_GET_MODULE_PATH                                                                                \
    EXPORT_LIBRARY_FUNCTION shared::plugin::IPlugin* construct()                                             \
    {                                                                                                        \
       return new pluginClassName();                                                                         \
    }                                                                                                        \
                                                                                                             \
-   static const shared::plugin::information::CInformation                                                   \
-      PluginInformations(pluginName,pluginDescription,version,release,author,url);                          \
+   static boost::shared_ptr<const shared::plugin::information::CInformation> Informations;                  \
    EXPORT_LIBRARY_FUNCTION const shared::plugin::information::IInformation& getInformation()                \
    {                                                                                                        \
-      return PluginInformations;                                                                            \
-   }
+      if (!Informations)                                                                                    \
+         Informations.reset(new shared::plugin::information::CInformation(getModulePath()));                \
+      return *Informations;                                                                                 \
+   }\
+
 
 
 //////////////////////////////////////////////////////////////////////////

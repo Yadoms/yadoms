@@ -15,7 +15,7 @@ const std::string CXplHelper::WildcardString = "*";
 bool CXplHelper::isStructuralElementMatchRules(const std::string & element)
 {
    const boost::regex e("([a-z0-9-]*)"); //-
-   return regex_match(element.c_str(), e);
+   return regex_match(element, e);
 }
    
 bool CXplHelper::isVendorIdOrDeviceIdMatchRules(const std::string & element)

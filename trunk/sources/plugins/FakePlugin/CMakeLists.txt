@@ -34,9 +34,17 @@ set(FAKE_PLUGIN_LINK
 ##add_definitions("-lwiringPi")
 
 #########################################
-## Always leave this three lines to configure plugin correctly
+## Always leave these lines to configure plugin correctly
 ## even if FAKE_PLUGIN_INCLDIR or FAKE_PLUGIN_LINK are empty
 #########################################
 PLUGIN_SOURCES(fakePlugin ${FAKE_PLUGIN_SOURCES})
 PLUGIN_INCLDIR(fakePlugin ${FAKE_PLUGIN_ADDITIONAL_INC_DIR})
 PLUGIN_LINK(fakePlugin ${FAKE_PLUGIN_ADDITIONAL_LIB})
+
+#########################################
+## Post-build commands
+## Copy files to build directory
+## "package.json" and "icon.png" are needed, but you can add extra-files
+#########################################
+PLUGIN_POST_BUILD_COPY_FILE(fakePlugin package.json)
+PLUGIN_POST_BUILD_COPY_FILE(fakePlugin icon.png)

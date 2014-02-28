@@ -1,10 +1,12 @@
-# Macro for setting up a plugin
+# Macros for setting up a plugin
 #
-#   ADD_PLUGIN(target [sourcefile1.cpp sourcefile2.cpp ...])
-#
-# It configure the plugin to link as a module, with boost
 
 MACRO(PLUGIN_SOURCES _targetName)
+   set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${youroutputdirectory}/plugins/${_targetName} )
+   foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
+       string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
+       set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${youroutputdirectory}/${OUTPUTCONFIG}/plugins/${_targetName} )
+   endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 	add_library(${_targetName} MODULE ${ARGN})
 	
 	IF(MSVC OR XCODE)
@@ -20,3 +22,7 @@ MACRO(PLUGIN_LINK _targetName)
 	target_link_libraries(${_targetName} yadoms-shared ${LIBS} ${CMAKE_DL_LIBS} ${ARGN})
 ENDMACRO()
 
+MACRO(PLUGIN_POST_BUILD_COPY_FILE _targetName _resource)
+   add_custom_command(TARGET ${_targetName} POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}>/${_resource})
+ENDMACRO()

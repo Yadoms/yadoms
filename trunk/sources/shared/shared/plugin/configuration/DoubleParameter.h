@@ -9,7 +9,7 @@ namespace shared { namespace plugin { namespace configuration
    //--------------------------------------------------------------
    /// \type Plugin configuration double parameter
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CDoubleParameter : public CSimpleParameter<double>
+   class YADOMS_SHARED_EXPORT CDoubleParameter : public CSimpleParameter<double>//TODO : renommer en decimal
    {
    public:
       //--------------------------------------------------------------
