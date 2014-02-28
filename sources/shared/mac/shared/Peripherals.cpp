@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#include "shared/Exceptions/NotImplementedException.hpp"
-#include "shared/Log.h"
+#include "../../shared/exception/NotImplemented.hpp"
+#include "../../shared/Log.h"
 #include "Peripherals.h"
 
 #include <stdio.h>
