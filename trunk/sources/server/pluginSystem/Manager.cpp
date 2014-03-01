@@ -116,7 +116,6 @@ std::vector<boost::filesystem::path> CManager::findPluginDirectories()
    // Look for all subdirectories in m_pluginPath directory, where it contains library with same name,
    // for example a subdirectory "fakePlugin" containing a "fakePlugin.dll|so" file
    std::vector<boost::filesystem::path> plugins;
-   static const std::string pluginEndWithString = shared::CDynamicLibrary::DotExtension();
 
    if (boost::filesystem::exists(m_pluginPath) && boost::filesystem::is_directory(m_pluginPath))
    {
@@ -132,7 +131,7 @@ std::vector<boost::filesystem::path> CManager::findPluginDirectories()
                if (boost::filesystem::is_regular_file(fileIterator->status()) &&                // It's a file...
                   fileIterator->path().filename() == expectedLibName)                           // ...with the same name as sub-directory...
                {
-                  plugins.push_back(subDirIterator->path().leaf());
+                  plugins.push_back(subDirIterator->path());
                }
             }
          }
@@ -196,7 +195,7 @@ void CManager::buildAvailablePluginList()
       try
       {
          // Get informations for current found plugin
-         const std::string& pluginName = (*libPathIt).string();
+         const std::string& pluginName = (*libPathIt).filename().string();
 
          // If plugin is already loaded, use its information
          if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())

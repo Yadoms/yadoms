@@ -36,7 +36,7 @@ void CFactory::load()
       throw CInvalidPluginException(m_libraryPath.string());
    }
 
-   // Check if fonctions throw
+   // Check if functions throw
    try
    {
       getInformation();
