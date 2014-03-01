@@ -24,11 +24,12 @@ namespace http {
 namespace server {
 
 
-request_handler::request_handler(const std::string& doc_root, cWebem* webem)
-  : doc_root_(doc_root), myWebem(webem)
 
+request_handler::request_handler(const std::string& doc_root, cWebem* webem)
+  : doc_root_(doc_root)
 {
 #ifndef WEBSERVER_DONT_USE_ZIP
+    myWebem = webem;
 	m_uf=NULL;
 	m_bIsZIP=(doc_root.find(".zip")!=std::string::npos)||(doc_root.find(".dat")!=std::string::npos);
 	if (m_bIsZIP)
@@ -42,6 +43,8 @@ request_handler::request_handler(const std::string& doc_root, cWebem* webem)
 #endif
 }
 
+    
+    
 request_handler::~request_handler()
 {
 #ifndef WEBSERVER_DONT_USE_ZIP

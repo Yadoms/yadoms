@@ -34,6 +34,7 @@ class request_handler
 public:
   /// Construct with a directory containing files to be served.
   explicit request_handler(const std::string& doc_root, cWebem* webem);
+    
   ~request_handler();
 
   /// Handle a request and produce a reply.
@@ -50,15 +51,17 @@ public:
   std::string doc_root_;
 
 private:
-	// Webem link to application code
-	cWebem* myWebem;
+
 	  //zip support
 #ifndef WEBSERVER_DONT_USE_ZIP
-	  zlib_filefunc_def m_ffunc;
-	  unzFile m_uf;
-	  bool m_bIsZIP;
-	  void *m_pUnzipBuffer;
-	  int do_extract_currentfile(unzFile uf, const char* password, std::string &outputstr);
+	// Webem link to application code
+	cWebem* myWebem;
+    
+   zlib_filefunc_def m_ffunc;
+	unzFile m_uf;
+	bool m_bIsZIP;
+	void *m_pUnzipBuffer;
+	int do_extract_currentfile(unzFile uf, const char* password, std::string &outputstr);
 #endif
 };
 
