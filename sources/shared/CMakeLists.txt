@@ -42,8 +42,8 @@ set(SHARED_LIB_SRC
 	shared/plugin/configuration/BoolParameter.cpp
 	shared/plugin/configuration/EnumGenericParameter.h
 	shared/plugin/configuration/EnumGenericParameter.cpp
-	shared/plugin/configuration/DoubleParameter.h
-	shared/plugin/configuration/DoubleParameter.cpp
+	shared/plugin/configuration/DecimalParameter.h
+	shared/plugin/configuration/DecimalParameter.cpp
 	shared/plugin/configuration/EnumParameter.hpp
 	shared/plugin/configuration/ISchema.h
 	shared/plugin/configuration/IntParameter.h

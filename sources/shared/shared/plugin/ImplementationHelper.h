@@ -36,7 +36,7 @@
 #define DECLARE_CONFIGURATION(PluginConfigurationClassName)                               \
    public: static const PluginConfigurationClassName& getPluginSchema();
 
-// Call this macro in the plugin configuration class definition file (usualy .cpp file)
+// Call this macro in the plugin configuration class definition file (usually .cpp file)
 #define IMPLEMENT_CONFIGURATION(PluginConfigurationClassName)                             \
    const PluginConfigurationClassName& PluginConfigurationClassName::getPluginSchema()    \
    {                                                                                      \
