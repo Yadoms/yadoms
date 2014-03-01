@@ -29,9 +29,9 @@ namespace shared
 	      return std::string("lib") + libName + DotExtension();
       }
 
-      static const std::string ToLibName(const std::string& libName)
+      static const std::string ToLibName(const std::string& fileName)
       {
-	      boost::filesystem::path libFile(libName);
+	      boost::filesystem::path libFile(fileName);
 	      std::string libFileNameWithoutExtension = libFile.stem().string();
 	      if (boost::starts_with(libFileNameWithoutExtension, "lib"))
 		      return libFileNameWithoutExtension.substr(3, libFileNameWithoutExtension.length()-3);
