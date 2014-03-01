@@ -1,7 +1,7 @@
 //
-// Peripherals.h
+// FileSystemExtension.h
 //
-// Platforms peripherals management (serial ports...)
+// File system extensions
 //
 #pragma once
 
