@@ -18,21 +18,24 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	Returns platform standard dynamic library extension
       //--------------------------------------------------------------
-      static const std::string Extension() { return "dylib"; }
-      static const std::string DotExtension() { return ".dylib"; }
+      static const std::string Extension() { return "so"; }
+      static const std::string DotExtension() { return ".so"; }
 
       //--------------------------------------------------------------
       /// \brief	Conversion fileName (platform-dependent) <=> libName (non-platform-dependent)
       //--------------------------------------------------------------
       static const std::string ToFileName(const std::string& libName)
       {
-	      return libName + DotExtension();
+	      return std::string("lib") + libName + DotExtension();
       }
 
-      static const std::string ToLibName(const std::string& libName)
+      static const std::string ToLibName(const std::string& fileName)
       {
-	      boost::filesystem::path libFile(libName);
-	      return libFile.stem().string();
+	      boost::filesystem::path libFile(fileName);
+	      std::string libFileNameWithoutExtension = libFile.stem().string();
+	      if (boost::starts_with(libFileNameWithoutExtension, "lib"))
+		      return libFileNameWithoutExtension.substr(3, libFileNameWithoutExtension.length()-3);
+	      return libFileNameWithoutExtension;
       }
 
    protected:
