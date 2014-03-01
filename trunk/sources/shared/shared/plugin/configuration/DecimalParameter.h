@@ -7,9 +7,9 @@ namespace shared { namespace plugin { namespace configuration
 {
 
    //--------------------------------------------------------------
-   /// \type Plugin configuration double parameter
+   /// \type Plugin configuration decimal parameter
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CDoubleParameter : public CSimpleParameter<double>//TODO : renommer en decimal
+   class YADOMS_SHARED_EXPORT CDecimalParameter : public CSimpleParameter<double>
    {
    public:
       //--------------------------------------------------------------
@@ -18,12 +18,12 @@ namespace shared { namespace plugin { namespace configuration
       /// \param[in] description  Parameter description
       /// \param[in] defaultValue  Parameter default value
       //--------------------------------------------------------------
-      CDoubleParameter(const std::string& name, const std::string& description, double defaultValue);
+      CDecimalParameter(const std::string& name, const std::string& description, double defaultValue);
 
       //--------------------------------------------------------------
       /// \brief	    Destructor
       //--------------------------------------------------------------
-      virtual ~CDoubleParameter() {}
+      virtual ~CDecimalParameter() {}
 
       // CParameter implementation
       virtual boost::shared_ptr<CParameter> clone() const;
@@ -34,6 +34,6 @@ namespace shared { namespace plugin { namespace configuration
    /// \brief	    Macro helper to get the parameter value
    /// \param paramName    Parameter name
    //--------------------------------------------------------------
-   #define CFG_GET_DOUBLE(paramName) getParam<shared::plugin::configuration::CDoubleParameter>(paramName).get()
+   #define CFG_GET_DECIMAL(paramName) getParam<shared::plugin::configuration::CDecimalParameter>(paramName).get()
 
 } } } // namespace shared::plugin::configuration

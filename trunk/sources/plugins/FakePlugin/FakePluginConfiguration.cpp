@@ -15,7 +15,7 @@ void CFakePluginConfiguration::doBuildSchema()
    AddParameter(new cfg::CStringParameter("StringParameter", "Just a string parameter", "Yadoms is so powerful !"));
    AddParameter(new cfg::CBoolParameter("BoolParameter", "Just a boolean example", false));
    AddParameter(new cfg::CIntParameter("IntParameter", "This is my int parameter example", 258));
-   AddParameter(new cfg::CDoubleParameter("DoubleParameter", "Now a double", 25.3));
+   AddParameter(new cfg::CDecimalParameter("DecimalParameter", "Now a decimal", 25.3));
    
    // Enum type, first declare keys labels
    static const cfg::CEnumParameter<EEnumType>::ValuesNames EEnumTypeNames = boost::assign::map_list_of
@@ -45,7 +45,7 @@ void CFakePluginConfiguration::trace()
       YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is (with macro helper) " << CFG_GET_SERIAL_PORT("Serial port");
       YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'StringParameter' is " << CFG_GET_STRING("StringParameter");
       YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is " << CFG_GET_BOOL("BoolParameter");
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'DoubleParameter' is " << CFG_GET_DOUBLE("DoubleParameter");
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'DecimalParameter' is " << CFG_GET_DECIMAL("DecimalParameter");
       YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'IntParameter' is " << CFG_GET_INT("IntParameter");
 
       // Enum

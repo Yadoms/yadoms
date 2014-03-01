@@ -6,7 +6,7 @@
 
 
 #include "BoolParameter.h"
-#include "DoubleParameter.h"
+#include "DecimalParameter.h"
 #include "EnumParameter.hpp"
 #include "IntParameter.h"
 #include "SerialPortParameter.h"
