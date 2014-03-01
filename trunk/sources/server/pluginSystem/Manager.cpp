@@ -126,11 +126,11 @@ std::vector<boost::filesystem::path> CManager::findPluginDirectories()
          if (boost::filesystem::is_directory(subDirIterator->status()))
          {
             // Subdirectory, check if it is a plugin (= contains a dynamic library with same name)
+            const std::string expectedLibName(shared::CDynamicLibrary::ToFileName(subDirIterator->path().filename().string()));
             for (boost::filesystem::directory_iterator fileIterator(subDirIterator->path()); fileIterator != boost::filesystem::directory_iterator() ; ++fileIterator)
             {
                if (boost::filesystem::is_regular_file(fileIterator->status()) &&                // It's a file...
-                  fileIterator->path().stem() == subDirIterator->path().leaf() &&               // ...with the same name as sub-directory...
-                  fileIterator->path().extension() == shared::CDynamicLibrary::DotExtension())  // ...with a dynamic-library standard extension
+                  fileIterator->path().filename() == expectedLibName)                           // ...with the same name as sub-directory...
                {
                   plugins.push_back(subDirIterator->path().leaf());
                }

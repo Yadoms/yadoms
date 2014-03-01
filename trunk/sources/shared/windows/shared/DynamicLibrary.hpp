@@ -30,9 +30,9 @@ namespace shared
 	      return libName + DotExtension();
       }
 
-      static const std::string ToLibName(const std::string& libName)
+      static const std::string ToLibName(const std::string& fileName)
       {
-	      boost::filesystem::path libFile(libName);
+	      boost::filesystem::path libFile(fileName);
 	      return libFile.stem().string();
       }
 
