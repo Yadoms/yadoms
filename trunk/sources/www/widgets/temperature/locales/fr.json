@@ -1,3 +1,58 @@
 {
+   "description": "A simple widget that display temperature",
+   "configurationSchema" : {
+      "offsetHour" : {
+         "name" : "Offset d'heure",
+         "description" : "Permet de faire un ajout ou une soustractio d'heure en fonction de votre région"
+      },
+      "prefixText" : {
+         "name" : "Text de préfixe",
+         "description" : "Texte à afficher avant l'heure"
+      },
+      "bitFieldParameter" : {
+         "name" : "Champs de bits",
+         "description" : "un truc qui sert sais pas encore a quoi"
+      },
+      "booleanParameter" : {
+         "name" : "paramètre de type booleen",
+         "description" : "parametre qui vaut vrai ou faux"
+      },
+      "decimalParameter" : {
+         "name" : "paramètre de type decimal",
+         "description" : "Parametre qui permet de stocker un nombre décimal"
+      },
+      "timeFormat" : {
+         "name" : "Format d'affichage de l'heure",
+         "description" : "Permet de choisir si l'heure doit être affichée en format 24h ou AM-PM",
+         "values" : {
+            "12H" : "12 heures",
+            "24H" : "24 heures"
+         }
+      },
+      "serialPortParameter" : {
+         "name" : "Port série à utiliser",
+         "description" : "Port série par lequelle va entrer l'heure à afficher"
+      },
+      "deviceParameter" : {
+         "name" : "Device à interroger",
+         "description" : "Device qui va fournir l'heure"
+      },
+      "valueDeviceTupleParameter" : {
+         "name" : "Champs d'un device",
+         "description" : "Donnée a tracer dans le graphe"
+      },
+      "pointCollection" : {
+         "name" : "Liste des points",
+         "description" : "Contient la liste des points pour faire la courbe de temperature à appliquer"
+      },
+      "baseParameters" : {
+         "name" : "Configuration de base",
+         "description" : "Contient la configuration pour les utilisateurs lambda"
+      },
+      "advancedParameters" : {
+         "name" : "Configuration avancée",
+         "description" : "Contient la configuration pour les mecs comme nous ;)"
+      }
+   },
    "signalStrength" : "Puissance du signal :"
 }

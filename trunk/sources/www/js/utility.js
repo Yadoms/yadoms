@@ -40,7 +40,7 @@ function notifyInformation(message)
  * @param message message to display
  * @returns {noty}
  */
-function notifyWarning(message)
+   function notifyWarning(message)
 {
    console.warn(message);
    return notify(message, 'alert');
