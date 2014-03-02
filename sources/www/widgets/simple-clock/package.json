@@ -2,7 +2,6 @@
     "name": "simple-clock",
     "version": "0.1",
     "author": "Nicolas HILAIRE",
-    "description": "A widget that display a resizable clock",
     "dimensions": {
         "min": {
             "x": 1,
@@ -17,7 +16,12 @@
             "y": 1
         }
     },
-    "configuration-schema": {
-
+    "configurationSchema": {
+       "intParameter" : {
+          "type" : "int",
+          "defaultValue" : "0",
+          "maximumValue" : "23",
+          "minimumValue" : "0"
+       }
     }
 }

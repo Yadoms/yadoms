@@ -32,13 +32,20 @@
       widgetToConfigure = page.getWidget(widgetId);
       assert(widgetToConfigure != null, "widget Id doesn't exit in the page");
 
+      var configMgr = new ConfigurationManager(widgetToConfigure, widgetToConfigure.package.configurationSchema, widgetToConfigure.configuration);
+      configMgr.initialize();
+
+      $('div#configure-widget-modal').find(".modal-body").append(configMgr.getDOMObject());
+
+
+
       //we display the modal
       $('div#configure-widget-modal').modal();
    }
 
    $('div#configure-widget-modal').on('shown.bs.modal', function () {
        //$('input#configuration-widget-text').focus();
-    })
+    });
 
    /**
    * Callback to the click of the button to confirm modifying of a page
