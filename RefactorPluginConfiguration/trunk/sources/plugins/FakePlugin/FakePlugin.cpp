@@ -4,7 +4,6 @@
 #include <shared/xpl/XplService.h>
 #include <shared/xpl/XplMessage.h>
 #include <shared/xpl/XplHelper.h>
-#include <boost/shared_ptr.hpp>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png

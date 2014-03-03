@@ -36,26 +36,6 @@ set(SHARED_LIB_SRC
 	shared/plugin/configuration/Configuration.cpp
 	shared/plugin/configuration/Factory.h
 	shared/plugin/configuration/Factory.cpp
-	shared/plugin/configuration/BitsFieldParameter.h
-	shared/plugin/configuration/BitsFieldParameter.cpp
-	shared/plugin/configuration/BoolParameter.h
-	shared/plugin/configuration/BoolParameter.cpp
-	shared/plugin/configuration/EnumGenericParameter.h
-	shared/plugin/configuration/EnumGenericParameter.cpp
-	shared/plugin/configuration/DecimalParameter.h
-	shared/plugin/configuration/DecimalParameter.cpp
-	shared/plugin/configuration/EnumParameter.hpp
-	shared/plugin/configuration/ISchema.h
-	shared/plugin/configuration/IntParameter.h
-	shared/plugin/configuration/IntParameter.cpp
-	shared/plugin/configuration/Parameter.h
-	shared/plugin/configuration/Parameter.cpp
-	shared/plugin/configuration/Parameters.h
-	shared/plugin/configuration/SimpleParameter.hpp
-	shared/plugin/configuration/SerialPortParameter.h
-	shared/plugin/configuration/SerialPortParameter.cpp
-	shared/plugin/configuration/StringParameter.h
-	shared/plugin/configuration/StringParameter.cpp	
   
 	shared/plugin/information/IInformation.h
 	shared/plugin/information/Information.cpp

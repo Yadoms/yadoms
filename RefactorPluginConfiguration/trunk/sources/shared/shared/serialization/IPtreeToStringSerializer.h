@@ -1,6 +1,7 @@
 #pragma once
 
 #include <shared/Export.h>
+#include <boost/property_tree/ptree.hpp>
 
 namespace shared { namespace serialization
 {
