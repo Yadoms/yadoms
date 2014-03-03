@@ -37,12 +37,10 @@ void CSerialPortParameter::build(boost::property_tree::ptree& pt) const
    // The normaly read-only m_valuesNames is here dynamic. So we need a write-access.
    ValuesNames* valuesNames = const_cast<ValuesNames*>(&m_valuesNames);
    valuesNames->clear();
-   boost::shared_ptr<CPeripherals::SerialPortsMap> serialPorts(CPeripherals::getSerialPorts());
+   const boost::shared_ptr<const CPeripherals::SerialPortsMap> serialPorts(CPeripherals::getSerialPorts());
    int index=0;
-   BOOST_FOREACH(CPeripherals::SerialPortsMap::value_type serialPort, *serialPorts)
-   {
-      (*valuesNames)[index]=serialPort.first;
-   }
+   for (shared::CPeripherals::SerialPortsMap::const_iterator serialPort = serialPorts->begin() ; serialPort != serialPorts->end() ; ++serialPort)
+      (*valuesNames)[index]=serialPort->first;
 
    // Normally build schema
    CEnumGeneric::build(pt);

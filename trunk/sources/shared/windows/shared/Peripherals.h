@@ -5,13 +5,15 @@
 //
 #pragma once
 
+#include <shared/Export.h>
+
 namespace shared
 {
 
    //--------------------------------------------------------------
    /// \brief	this class is used to manage platforms peripherals
    //--------------------------------------------------------------
-   class CPeripherals
+   class YADOMS_SHARED_EXPORT CPeripherals
    {
    public:
       //--------------------------------------------------------------
@@ -26,17 +28,10 @@ namespace shared
 
       //--------------------------------------------------------------
       /// \brief			List machine serial ports (all)
-      /// \return       The serial ports names (keys are real name, values are common name or comment ("used by..."))
+      /// \return       The serial ports names (keys are real name, values are common name)
       //--------------------------------------------------------------
       typedef std::map<std::string, std::string> SerialPortsMap;
-      static const boost::shared_ptr<SerialPortsMap> getSerialPorts();
-
-   private:
-      //--------------------------------------------------------------
-      /// \brief			List used serial ports
-      /// \return       The used serial ports names, Windows-standard named ("COM1", "COM3"...)
-      //--------------------------------------------------------------
-      static const boost::shared_ptr<std::set<std::string> > getUsedSerialPorts();
+      static const boost::shared_ptr<const SerialPortsMap> getSerialPorts();
    };
 
 } // namespace shared
