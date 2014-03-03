@@ -38,10 +38,12 @@ namespace shared
          if (dladdr((void *)getModulePath, &dl_info) == 0) 
          { 
             const std::string error(strerror(errno));
-            throw shared::exception::CException(std::string("CFileSystemExtension::getModulePath fails with error ")
-               + error);
+            throw shared::exception::CException(std::string("CFileSystemExtension::getModulePath fails with error ") + error);
          } 
-         return boost::filesystem::path(dl_info.dli_fname);
+         
+         /* We've got the path, construct a path from it */
+         boost::filesystem::path fullPath(dl_info.dli_fname);
+         return fullPath.parent_path();
       }
 
    };
