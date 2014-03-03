@@ -11,22 +11,19 @@ function ConfigurationManager(objectToConfigure, configurationSchema, configurat
    assert(objectToConfigure !== undefined, "objectToConfigure must contain widget or plugin object");
    assert(configurationSchema !== undefined, "configurationSchema must be defined");
 
-   this.configrationSchema = configurationSchema;
+   this.configurationSchema = configurationSchema;
    this.objectToConfigure = objectToConfigure;
    this.configurationValues = configurationValues;
 
-   //we build ihm from configuration-schema and configurationValues
-   this.generatedForm = "<div></div>";
-   this.$generatedForm = $(this.generatedForm);
-
    this.configurationHandlers = new Array();
 
+   var self = this;
    //for each key in package
-   $.each(configurationSchema, function (key, value) {
-      var idx = configurationValues.indexOf(key);
-      var currentValue = (idx != -1) ? configurationValues[currentValue] : "";
-      var handler = this.prototype.createParameterHandler(objectToConfigure, key, value, currentValue);
-      configurationHandlers.push(handler);
+   $.each(self.configurationSchema, function (key, value) {
+      var idx = (self.configurationValues !== undefined) ? self.configurationValues.indexOf(key) : -1 ;
+      var currentValue = (idx != -1) ? self.configurationValues[currentValue] : "";
+      var handler = self.createParameterHandler(self.objectToConfigure, key, value, currentValue);
+      self.configurationHandlers.push(handler);
    });
 }
 
@@ -48,12 +45,12 @@ ConfigurationManager.prototype.createParameterHandler = function (objectToConfig
          throw Error("type " + content.type + " of parameter " + name + " is unsupported");
          break;
    }
-}
+};
 
 ConfigurationManager.prototype.getDOMObject = function() {
-   var result = {};
-   $.each(configurationHandlers, function (configHandler) {
-      result += configHandler.getDOMObject();
+   var result = "";
+   $.each(this.configurationHandlers, function (key, value) {
+      result += value.getDOMObject();
       result += "\n\r";
    });
    return result;

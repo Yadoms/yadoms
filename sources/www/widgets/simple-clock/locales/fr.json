@@ -2,8 +2,9 @@
    "time" : "Temps :",
    "description": "A widget that display a resizable clock",
    "configurationSchema" : {
-      "offsetHour" : {
-         "name" : "Offset d'heure",
-         "description" : "Permet de faire un ajout ou une soustractio d'heure en fonction de votre région"
+      "intParameter" : {
+         "name" : "Paramètre entier",
+         "description" : "Valeur entiere à saisir"
       }
+   }
 }
