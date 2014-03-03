@@ -7,7 +7,7 @@
 #include <shared/exception/EmptyResult.hpp>
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
-
+#include "database/DatabaseException.hpp"
 
 namespace database { namespace sqlite { namespace requesters { 
 
@@ -109,6 +109,71 @@ namespace database { namespace sqlite { namespace requesters {
 
       if(m_databaseRequester->queryStatement(qUpdate) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
+   }
+
+   void CSQLitePluginRequester::updatePlugin(const database::entities::CPlugin & updatedPluginData)
+   {
+      CQuery qUpdate;
+
+      if(!updatedPluginData.isIdFilled())
+         throw database::CDatabaseException("Need an id to update");
+
+      //update pluginName
+      if(updatedPluginData.isPluginNameFilled())
+      {
+         qUpdate.CLear().Update(CPluginTable::getTableName()).
+         Set(CPluginTable::getPluginNameColumnName(), updatedPluginData.getPluginName()).
+         Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.getId());
+
+         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+            throw database::CDatabaseException("Failed to update pluginName");
+      }
+
+      //update name
+      if(updatedPluginData.isNameFilled())
+      {
+         qUpdate.CLear().Update(CPluginTable::getTableName()).
+         Set(CPluginTable::getNameColumnName(), updatedPluginData.getName()).
+         Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.getId());
+
+         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+            throw database::CDatabaseException("Failed to update name");
+      }
+
+      //update configuration
+      if(updatedPluginData.isConfigurationFilled())
+      {
+         qUpdate.CLear().Update(CPluginTable::getTableName()).
+         Set(CPluginTable::getConfigurationColumnName(), updatedPluginData.getConfiguration()).
+         Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.getId());
+
+         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+            throw database::CDatabaseException("Failed to update configuration");
+      }
+      
+      //update deleted
+      if(updatedPluginData.isDeletedFilled())
+      {
+         qUpdate.CLear().Update(CPluginTable::getTableName()).
+         Set(CPluginTable::getDeletedColumnName(), updatedPluginData.getDeleted()).
+         Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.getId());
+
+         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+            throw database::CDatabaseException("Failed to update deleted field");
+      }
+      
+      //update enabled
+      if(updatedPluginData.isEnabledFilled())
+      {
+         qUpdate.CLear().Update(CPluginTable::getTableName()).
+            Set(CPluginTable::getEnabledColumnName(), updatedPluginData.getEnabled()).
+         Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.getId());
+
+         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+            throw database::CDatabaseException("Failed to update enabled field");
+      }
+      
+
    }
 
    void CSQLitePluginRequester::removePlugin(int pluginId)

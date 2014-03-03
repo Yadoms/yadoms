@@ -60,6 +60,12 @@ namespace sqlite {
       virtual ~CQuery();
 
       //
+      /// \brief              Clear current query
+      /// \return             A reference to itself to allow method chaining
+      //  
+      CQuery & CLear();
+
+      //
       /// \brief           Start a query with 'SELECT *'
       /// \return          A reference to itself to allow method chaining
       //
@@ -396,6 +402,8 @@ namespace sqlite {
       /// \return             the type if this query
       //  
       const EQueryType & GetQueryType() const { return m_queryType; }
+
+
    private:
       //
       /// \brief              Append the where clause

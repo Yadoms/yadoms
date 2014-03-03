@@ -2,13 +2,14 @@
 
 #include "IRestService.h"
 #include "database/IDataProvider.h"
+#include "pluginSystem/Manager.h"
 
 namespace web { namespace rest { namespace service {
 
    class CPluginRestService : public IRestService
    {
    public:
-      CPluginRestService(boost::shared_ptr<database::IDataProvider> dataProvider);
+      CPluginRestService(boost::shared_ptr<database::IDataProvider> dataProvider, boost::shared_ptr<pluginSystem::CManager> pluginManager);
       virtual ~CPluginRestService();
 
    public:
@@ -28,6 +29,7 @@ namespace web { namespace rest { namespace service {
 
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;
+      boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
       std::string m_restKeyword;
    };
 

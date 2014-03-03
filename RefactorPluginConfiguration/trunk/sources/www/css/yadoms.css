@@ -145,3 +145,8 @@ body {
    margin-top: 2px;
    margin-right: 2px;
 }
+
+.popover {
+   z-index: 9999;
+   position: fixed;
+}

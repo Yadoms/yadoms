@@ -6,7 +6,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title">Widget configuration</h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body form-group">
                <div class="progress progress-striped active">
                   <div class="progress-bar"  role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
                   </div>
@@ -33,10 +33,11 @@
       assert(widgetToConfigure != null, "widget Id doesn't exit in the page");
 
       var configMgr = new ConfigurationManager(widgetToConfigure, widgetToConfigure.package.configurationSchema, widgetToConfigure.configuration);
-      configMgr.initialize();
 
-      $('div#configure-widget-modal').find(".modal-body").append(configMgr.getDOMObject());
-
+      var $modalBody = $('div#configure-widget-modal').find(".modal-body");
+      $modalBody.empty();
+      $modalBody.append(configMgr.getDOMObject());
+      $modalBody.i18n();
 
 
       //we display the modal
@@ -52,8 +53,10 @@
    */
    $("button#btn-confirm-configure-widget").click(function () {
 
-      $("div#configure-widget-modal").modal("hide");
 
+      $("div#configure-widget-modal").modal("hide");
+      var $modalBody = $('div#configure-widget-modal').find(".modal-body");
+      $modalBody.empty();
    });
 
 </script>

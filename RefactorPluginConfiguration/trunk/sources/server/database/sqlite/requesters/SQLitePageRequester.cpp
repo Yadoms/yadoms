@@ -100,7 +100,8 @@ namespace database {  namespace sqlite { namespace requesters {
    {
       CQuery qSelect;
       qSelect. Select().
-         From(CPageTable::getTableName());
+         From(CPageTable::getTableName()).
+         OrderBy(CPageTable::getPageOrderColumnName());
 
       database::sqlite::adapters::CPageAdapter adapter;
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CPage> >(&adapter, qSelect);

@@ -34,11 +34,23 @@ function IntParameterHandler(objectToConfigure, name, content, currentValue) {
 }
 
 IntParameterHandler.prototype.getDOMObject = function () {
-   //if (ValueRounded) {
-      //we provide a spinEdit
-   //}
-   //else {
-      //we provide a textBox
-      return "<intput type=\"number\" id=\"" + this.name + "\" data-i18n=\"[placeholder]" + this.objectToConfigure +":configurationSchema." + this.name + ".name\" />" ;
-   //}
+   //we provide a textBox
+   return "<div class=\"form-group\">" +
+               "<label for=\"" + this.name + "\" data-i18n=\"" + this.objectToConfigure.name +":configurationSchema." + this.name + ".name\"></label>" +
+               "<div class=\"input-group\">" +
+                  "<input type=\"number\" class=\"form-control\" id=\"" + this.name + "\" data-i18n=\"[title]" + this.objectToConfigure.name +":configurationSchema." + this.name + ".description\">" +
+                  "<span class=\"input-group-btn\">" +
+                     "<button id=\"" + this.name + "-help\" type=\"button\" class=\"btn btn-default\" data-container=\"body\" data-toggle=\"popover\" data-placement=\"right\" data-i18n=\"[data-content]" + this.objectToConfigure.name +":configurationSchema." + this.name + ".description\">" +
+                        "<i class=\"fa fa-question\"></i>" +
+                     "</button>" +
+                  "</span>" +
+               "</div>" +
+          "</div>" +
+          "<script>" +
+               "$(\"button#" + this.name + "-help\").popover().click(function () {\n\r" +
+                  "setTimeout(function () {\n\r" +
+                     "$(\"button#" + this.name + "-help\").popover(\"hide\"); \n\r" +
+                  "}, 5000);\n\r" +
+               "});" +
+          "</script>";
 }
