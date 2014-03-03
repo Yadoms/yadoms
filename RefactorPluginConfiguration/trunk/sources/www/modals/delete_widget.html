@@ -1,0 +1,79 @@
+<link href="../css/qrcode.css" rel="stylesheet">
+
+<!--QRCode Modal -->
+<div class="modal fade" id="delete-widget-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+       <div class="modal-content">
+           <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+               <h4 class="modal-title" id="myModalLabel">Delete Widget confirmation</h4>
+           </div>
+           <div class="modal-body">
+               <p>You will delete widget <span id="name-delete-widget-modal"></span>. Continue anyway ?</p>
+           </div>
+           <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <button id="btn-confirm-delete-widget" type="button" class="btn btn-primary">Confirm</button>
+           </div>
+       </div>
+   </div>
+</div>
+
+<script>
+   //we indicate that delete_widget.html has been loaded
+   deleteWidgetModalHasBeenLoaded = true;
+
+   var widgetToDelete = null;
+
+   function showDeleteWidgetModal(pageId, widgetId) {
+      assert(pageId !== undefined, "Page Id must be defined");
+      assert(widgetId !== undefined, "Widget Id must be defined");
+
+      var page = pageContainer.getPage(pageId);
+      assert(page != null, "page Id doesn't exit");
+      widgetToDelete = page.getWidget(widgetId);
+      assert(widgetToDelete != null, "widget Id doesn't exit in the page");
+
+      $("span#name-delete-widget-modal").text(widgetToDelete.name);
+
+      //we display the modal
+      $('div#delete-widget-modal').modal();
+   }
+
+   /**
+    * Callback to the click of the button to confirm deletion of a page
+    */
+   $("button#btn-confirm-delete-widget").click(function () {
+      assert(widgetToDelete !== undefined, "Widget must be defined");
+
+      //we close the new widget modal
+      $("div#delete-widget-modal").modal("hide");
+
+      //we ask for deletion of the page
+      $.ajax({
+         type: "DELETE",
+         url: "/rest/widget/" + widgetToDelete.id,
+         dataType: "json"
+      })
+      .done(function(data) {
+         //we parse the json answer
+         if (data.result != "true")
+         {
+           notifyError("Error during deleting widget");
+           return;
+         }
+
+         //we delete the widget dynamically
+         var page = pageContainer.getPage(widgetToDelete.idPage);
+         assert(page != null, "page Id doesn't exit");
+
+         page.gridster.remove_widget(widgetToDelete.$gridsterWidget);
+         page.widgets.splice($.inArray(widgetToDelete, page.widgets), 1);
+      })
+      .fail(function(pageName) { return function() {notifyError("Unable to delete widget " + widgetName)}}(widgetToDelete.name))
+      .always(function() {
+        //we clear the current id
+        widgetToDelete = null;
+      });
+   });
+</script>

@@ -1,0 +1,19 @@
+{
+   "customization" : {
+      "addNewPage" : "Ajouter une nouvelle page",
+      "addNewWidget" : "Ajouter un nouveau widget"
+   },
+   "mainPage" : {
+      "menu" : {
+         "configuration" : "Configuration",
+         "checkForUpdate" : "Rechercher une mise à jour",
+         "restart" : "Redémarrer",
+         "shutdown" : "Eteindre"
+      }
+   },
+   "modals" : {
+      "qrcode" : {
+         "title" : "QR Code de Yadoms"
+      }
+   }
+}

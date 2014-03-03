@@ -1,0 +1,86 @@
+{
+   "name": "temperature",
+   "version": "0.1",
+   "author": "Nicolas HILAIRE",
+   "url" : "http://www.yadoms.com/wiki/widgets/simple-clock.html",
+   "dimensions": {
+      "min": {
+         "x": 1,
+         "y": 1
+      },
+      "max": {
+         "x": 3,
+         "y": 2
+      },
+      "default": {
+         "x": 1,
+         "y": 1
+      }
+   },
+   "configurationSchema": {
+      "offsetHour" : {
+        "type" : "int",
+        "defaultValue" : "0",
+         "maximumValue" : "23",
+         "minimumValue" : "0"
+      },
+      "prefixText" : {
+        "type" : "string",
+        "defaultValue" : ""
+      },
+      "booleanParameter" : {
+        "type" : "bool",
+        "defaultValue" : "false"
+      },
+      "decimalParameter" : {
+        "type" : "decimal",
+        "defaultValue" : "1.5"
+      },
+      "timeFormat" : {
+        "type" : "enum",
+        "values" : [
+            "12H",
+            "24H"
+        ],
+        "defaultValue" : "12H"
+      },
+      "serialPortParameter" : {
+        "type" : "serialPort"
+      },
+      "deviceParameter" : {
+        "type" : "device"
+      },
+      "valueDeviceTupleParameter" : {
+        "type" : "valueDeviceTuple"
+      },
+      "pointCollection" : {
+        "type" : "listOf double"
+      },
+      "baseParameters" : {
+         "type" : "section",
+         "content" : {
+            "booleanParameter" : {
+               "type" : "bool",
+               "defaultValue" : "false"
+            },
+            "decimalParameter" : {
+               "type" : "decimal",
+               "defaultValue" : "1.5"
+            }
+         }
+      },
+      "advancedParameters" : {
+         "type" : "section",
+         "content" : {
+            "booleanParameter" : {
+               "type" : "bool",
+               "defaultValue" : "false"
+            },
+            "decimalParameter" : {
+               "type" : "decimal",
+               "defaultValue" : "1.5"
+            }
+         }
+      }
+   }
+}

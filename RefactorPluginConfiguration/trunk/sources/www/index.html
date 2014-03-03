@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Yet Another DOMotic System">
+    <meta name="author" content="yadoms team">
+    <link rel="shortcut icon" href="assets/ico/favicon.png">
+
+    <title>Yadoms</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="libs/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-non-responsive.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/yadoms.css" rel="stylesheet">
+	 <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/gridster.css" rel="stylesheet">
+
+    <!-- Gridster includes -->
+    <link href="libs/gridster/css/jquery.gridster.css" rel="stylesheet">
+  </head>
+
+  <body>
+  <button id="testBtn" type="button" class="btn btn-default hidden" title="Rename"><i class="glyphicon glyphicon-arrow-left"></i></button>
+
+  <!-- Fixed navbar -->
+  <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container">
+          <div class="row" id="mainNavBar">
+              <div class="col-md-12">
+                  <div class="navbar-header">
+                      <a class="navbar-brand" href="#">Yadoms</a>
+                  </div>
+                  <div class="navbar-collapse collapse">
+                      <ul class="nav navbar-nav">
+                          <li class="dropdown">
+                              <a href="" class="dropdown-toggle btn btn-inverse" data-toggle="dropdown"><i class="caret"></i></a>
+                              <ul class="dropdown-menu">
+                                  <li><a href="#" data-i18n="mainPage.menu.configuration" ></a></li>
+                                  <li><a href="#" data-i18n="mainPage.menu.checkForUpdate">Check For Update</a></li>
+                                  <li><a href="#">...</a></li>
+                                  <li class="divider"></li>
+                                  <li class="dropdown-header">Shutdown/Restart</li>
+                                  <li><a href="#" data-i18n="mainPage.menu.shutdown">Shutdown</a></li>
+                                  <li><a href="#" data-i18n="mainPage.menu.restart">Restart</a></li>
+                              </ul>
+                          </li>
+                          <li><a href="#" class="btn btn-inverse customization-item hidden" id="btn-add-page"><i class="fa fa-file-o"></i>&nbsp;&nbsp;<span data-i18n="customization.addNewPage"></span></a></li>
+                          <li><a href="#" class="btn btn-inverse customization-item hidden" id="btn-add-widget"><i class="fa fa-puzzle-piece"></i>&nbsp;&nbsp;<span data-i18n="customization.addNewWidget"></span></a></li>
+                      </ul>
+                      <ul class="nav navbar-nav navbar-right">
+                          <li><a href="#" class="btn btn-inverse" id="chartButton"><i class="fa fa-bar-chart-o"></i></a></li>
+                          <li><a href="#" class="btn btn-inverse" id="customizeButton"><i class="fa fa-wrench"></i></a></li>
+                      </ul>
+                      </div>
+                  </div>
+              </div>
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="nav navbar-nav" id = "pageMenu">
+                      <ul class="nav nav-pills nav-justified page-tabs">
+                          <!-- Nav pills of pages will be inserted here -->
+                      </ul>
+                      <!--<a href="#" class="btn btn-inverse customization-item hidden" id="btn-add-page"><i class="fa fa-plus"></i></a>-->
+                  </div>
+              </div>
+          </div>
+      </div><!--/.nav-collapse -->
+  </div>
+
+  <div id="tabContainer">
+      <div class="tab-content">
+          <!-- Gridster tabs will be inserted here -->
+      </div>
+      <footer class="footer">
+         <div class="navbar navbar-default">
+            <ul class="nav navbar-nav">
+               <li>
+                  <a class="btn btn-inverse" id="btn-show-qrcode"><i class="fa fa-qrcode"></i></a>
+               </li>
+               <li>
+                  <p class="navbar-text navbar-left"> &copy; Yadoms 2014</p>
+               </li>
+            </ul>
+         </div>
+      </footer>
+  </div>
+
+   <!-- Bootstrap core JavaScript
+   ================================================== -->
+   <!-- Placed at the end of the document so the pages load faster -->
+   <script src="libs/jquery/js/jquery-1.11.0.min.js"></script>
+   <script src="libs/bootstrap/js/bootstrap.min.js"></script>
+
+   <!-- Gridster includes -->
+   <script src="libs/gridster/js/jquery.gridster.js"></script>
+
+   <script src="libs/transit/js/jquery.transit.min.js"></script>
+   <script src="libs/knockout/js/knockout-3.0.0.js"></script>
+
+   <script src="libs/i18next/js/i18next-1.7.2.js"></script>
+
+   <script src="js/utility.js"></script>
+   <script src="js/objects/page.js"></script>
+   <script src="js/objects/widget.js"></script>
+   <script src="js/objects/widget-package.js"></script>
+   <script src="js/objects/page-container.js"></script>
+   <script src="js/objects/lazy-loader-manager.js"></script>
+
+   <script src="js/objects/configuration/configuration-manager.js"></script>
+   <script src="js/objects/configuration/int-parameter-handler.js"></script>
+
+
+   <script src="js/widget-engine.js"></script>
+   <script src="js/widget-customization.js"></script>
+
+   <script type="text/javascript" src="libs/noty/js/packaged/jquery.noty.packaged.min.js"></script>
+
+   <div id="templates" class="hidden"></div>
+
+	<script type="text/javascript">
+
+   //TODO - Passer les variables suivantes en variable de conf
+   var numberOfColumns = 9;
+   var gridWidth = 100;
+   var gridMargin = 5;
+
+   /**
+    * Array of pages
+    * @type {Array}
+    */
+   var pageContainer = new PageContainer();
+
+   var modals = {};
+
+   /**
+    * Contains all Ctor of all loaded viewModels
+    * @type {Array}
+    */
+   var widgetPackages = [];
+
+   /**
+    * Indicate if the modal qrcode has already been loaded
+    * */
+   var qrcodeHasBeenLoaded = false;
+
+   /**
+    * Indicate if the modal add widget has already been loaded
+    * */
+   var addWidgetHasBeenLoaded = false;
+
+   /**
+    * Indicate if the modal modify page has already been loaded
+    * */
+   var modificationPageModalHasBeenLoaded = false;
+
+   /**
+    * Indicate if the modal delete page has already been loaded
+    * */
+   var deletePageModalHasBeenLoaded = false;
+
+   /**
+    * Indicate if the modal delete widget has already been loaded
+    * */
+   var deleteWidgetModalHasBeenLoaded = false;
+
+   /**
+    * On page loaded
+    */
+   $(document).ready(function() {
+
+      //we define all the modals to lazy load
+      modals.widgetAdd = new LazyLoaderManager("modals/add_widget.html");
+      modals.widgetConfiguration = new LazyLoaderManager("modals/configure_widget.html");
+      modals.widgetDelete = new LazyLoaderManager("modals/delete_widget.html");
+      modals.pageDelete = new LazyLoaderManager("modals/delete_page.html");
+      modals.pageModification = new LazyLoaderManager("modals/modify_page.html");
+      modals.qrCode = new LazyLoaderManager("modals/qrcode.html");
+
+
+      var option = { resGetPath: 'locales/__lng__.json', fallbackLng:"en" };
+      i18n.init(option, function() {
+         $("html").i18n();
+      });
+
+      initializeWidgetEngine();
+      requestPages();
+
+      /**
+       * Callback of the click on the show qr code button
+       * Make lazy loading of the qrcode modal
+       */
+      $("#btn-show-qrcode").click(function() {
+         modals.qrCode.load(function() {$('#qrcode-modal').modal();});
+      });
+
+      $(document).keyup(function(e) {
+         //escape key
+         if (e.keyCode == 27) {
+            if (customization)
+               exitCustomization();
+         }   // esc
+      });
+
+   });
+   
+	</script>
+  </body>
+</html>
