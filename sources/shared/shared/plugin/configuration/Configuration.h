@@ -1,10 +1,9 @@
 #pragma once
 
 #include <shared/Export.h>
-#include "Parameters.h"
-#include "ISchema.h"
 #include "../../serialization/IPtreeToStringSerializer.h"
-#include <shared/exception/BadConversion.hpp>
+#include <shared/exception/InvalidParameter.hpp>
+#include <shared/exception/OutOfRange.hpp>
 
 
 namespace shared { namespace plugin { namespace configuration
@@ -15,98 +14,85 @@ namespace shared { namespace plugin { namespace configuration
    //--------------------------------------------------------------
    /// \class Plugin configuration
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CConfiguration : public ISchema
+   class YADOMS_SHARED_EXPORT CConfiguration
    {
-   public:
-      typedef std::map<std::string, boost::shared_ptr<CParameter> > CParametersMap;
-
    public:
       //--------------------------------------------------------------
       /// \brief	    Constructor
       //--------------------------------------------------------------
       CConfiguration();
-
-      //--------------------------------------------------------------
-      /// \brief	    Constructs and set values
-      //--------------------------------------------------------------
-      CConfiguration(const CConfiguration& src, const std::string& configurationValues);
-
+      
       //--------------------------------------------------------------
       /// \brief	    Destructor
       //--------------------------------------------------------------
       virtual ~CConfiguration();
 
       //--------------------------------------------------------------
-      /// \brief	    Build the configuration schema
-      //--------------------------------------------------------------
-      void buildSchema();
-
-      // ISchema implementation
-      virtual std::string getSchema() const;
-      // [END] ISchema implementation
-
-      //--------------------------------------------------------------
       /// \brief	    Set configuration values from saved data
       /// \param[in] serializedConfiguration    String containing the configuration values (JSON format)
       //--------------------------------------------------------------
-      virtual void setValues(const std::string& serializedConfiguration);
+      virtual void set(const std::string& serializedConfiguration);
 
       //--------------------------------------------------------------
-      /// \brief	    Add a parameter in the configuration
-      /// \param [in] Pointer on the new parameter
-      //--------------------------------------------------------------
-      void AddParameter(boost::shared_ptr<CParameter> parameter);
-      void AddParameter(CParameter* parameter);
-
-      //--------------------------------------------------------------
-      /// \brief	    Direct const access to parameter
-      /// \param [in] parameterName    The parameter name
-      /// \return     Const reference on the expected parameter
-      //--------------------------------------------------------------
-      const CParameter& operator[](const std::string& parameterName) const;
-
-      //--------------------------------------------------------------
-      /// \brief	    Get parameter
+      /// \brief	    Get parameter value
       /// \param [in] parameterName    Name of the parameter
-      /// \return     The parameter
-      /// \throw      exception::CBadConversion if parameter is not the expected type
+      /// \return     The parameter value
+      /// \throw      shared::exception::COutOfRange if parameter can not be converted
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<typename T>
-      const T& getParam(const std::string& parameterName) const
+      T getValue(const std::string& parameterName) const
       {
+         boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
          try
          {
-            return dynamic_cast<const T&> (*m_parametersMap.at(parameterName));
+            return m_tree.get<T> (parameterName);
          }
-         catch (std::bad_cast&)
+         catch (boost::property_tree::ptree_bad_path& e)
          {
-            throw exception::CBadConversion(parameterName, "getParam");
+            throw exception::CInvalidParameter(parameterName + " : " + e.what());
+         }
+         catch (boost::property_tree::ptree_bad_data& e)
+         {
+            throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
          }
       }
 
-   protected:
       //--------------------------------------------------------------
-      /// \brief	    Build the configuration schema
-      /// \note       Plugin must override this function to describe its configuration
+      /// \brief	    Type representing authorized enum values list
       //--------------------------------------------------------------
-      virtual void doBuildSchema() = 0;
+      typedef std::map<std::string, unsigned int> EnumValuesNames;
 
+      //--------------------------------------------------------------
+      /// \brief	    Get enum parameter value
+      /// \param [in] parameterName    Name of the enum parameter
+      /// \param[in]  valueNames  List of authorized values for the enum
+      /// \return     The parameter value
+      /// \throw      shared::exception::COutOfRange if parameter value is not in the provided list
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
+      //--------------------------------------------------------------
+      template<typename EnumType>
+      EnumType getEnumValue(const std::string& parameterName, const EnumValuesNames& valuesNames) const
+      {
+         std::string stringValue = getValue<std::string>(parameterName);
+         EnumValuesNames::const_iterator it = valuesNames.find(stringValue);
+         if (it != valuesNames.end())
+            return (EnumType)(it->second);
+
+         throw exception::COutOfRange(std::string("Value ") + stringValue + " was not found for " + parameterName + " parameter");
+      }
 
    private:
       //--------------------------------------------------------------
-      /// \brief	   The map containing the configuration parameters
+      /// \brief	   The configuration content
       //--------------------------------------------------------------
-      CParametersMap m_parametersMap;
+      boost::property_tree::ptree m_tree;
 
       //--------------------------------------------------------------
-      /// \brief	   Mutex protecting the configuration map
+      /// \brief	   Mutex protecting the configuration content
       //--------------------------------------------------------------
-      mutable boost::mutex m_parametersMapMutex;
-
-      //--------------------------------------------------------------
-      /// \brief	   The serializer used for schema and values serialization
-      //--------------------------------------------------------------
-      boost::shared_ptr<serialization::IPtreeToStringSerializer> m_configurationSerializer;
+      mutable boost::mutex m_treeMutex;
    };
 
 } } } // namespace shared::plugin::configuration

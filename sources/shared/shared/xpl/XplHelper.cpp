@@ -67,6 +67,8 @@ std::string CXplHelper::toVendorIdOrDeviceId(const std::string & id)
          xplId.append(1, *it);
    }
 
+   xplId.resize(8 /*CXplActor::DeviceIdMaxLength*/); // TODO : patch crado en attendant la gestion de l'unicité des deviceId/VendorId
+
    if (xplId.empty() || !isVendorIdOrDeviceIdMatchRules(xplId))
       throw shared::exception::CBadConversion(id, "XPL vendor or device ID");
 

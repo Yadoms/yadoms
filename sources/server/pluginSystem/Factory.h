@@ -8,7 +8,6 @@
 #include <shared/DynamicLibrary.hpp>
 #include <shared/plugin/IPlugin.h>
 #include <shared/plugin/information/IInformation.h>
-#include <shared/plugin/configuration/ISchema.h>
 #include "InvalidPluginException.hpp"
 
 namespace pluginSystem
@@ -27,14 +26,6 @@ namespace pluginSystem
       /// \throw        CInvalidPluginException if plugin is not valid
       //--------------------------------------------------------------
       static boost::shared_ptr<const shared::plugin::information::IInformation> getInformation(const boost::filesystem::path& libraryPath);
-
-      //--------------------------------------------------------------
-      /// \brief	      Get plugin configuration schema
-      /// \param [in]   libraryPath: the plugin path
-      /// \return       Configuration schema if available for this plugin (empty string if not)
-      /// \throw        CInvalidPluginException if plugin is not valid
-      //-------------------------------------------------------------
-      static std::string getConfigurationSchema(const boost::filesystem::path& libraryPath);
 
    public:
       //--------------------------------------------------------------
@@ -67,12 +58,6 @@ namespace pluginSystem
       //-------------------------------------------------------------
       boost::shared_ptr<const shared::plugin::information::IInformation> getInformation() const;
 
-      //--------------------------------------------------------------
-      /// \brief	    Get plugin configuration schema
-      /// \return     Configuration schema if available for this plugin (empty string if not)
-      //-------------------------------------------------------------
-      std::string getConfigurationSchema() const;
-    
    private:
       //--------------------------------------------------------------
       /// \brief	    Load a plugin file
@@ -99,11 +84,6 @@ namespace pluginSystem
       /// \brief	    Pointer to the plugin getInformation method
       //--------------------------------------------------------------
       boost::function<const shared::plugin::information::IInformation& ()> m_getInformation;
-
-      //--------------------------------------------------------------
-      /// \brief	    Pointer to the plugin getConfigurationSchemaInterface method (optional)
-      //--------------------------------------------------------------
-      boost::function<const shared::plugin::configuration::ISchema& ()> m_getConfigurationSchema;
    };
 
 } // namespace pluginSystem

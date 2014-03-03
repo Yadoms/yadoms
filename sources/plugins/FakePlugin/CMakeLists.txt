@@ -48,3 +48,4 @@ PLUGIN_LINK(fakePlugin ${FAKE_PLUGIN_ADDITIONAL_LIB})
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(fakePlugin package.json)
 PLUGIN_POST_BUILD_COPY_FILE(fakePlugin icon.png)
+PLUGIN_POST_BUILD_COPY_FILE(fakePlugin fr.json)

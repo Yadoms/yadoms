@@ -4,7 +4,6 @@
 #include <shared/xpl/XplService.h>
 #include <shared/xpl/XplMessage.h>
 #include <shared/xpl/XplHelper.h>
-#include <boost/shared_ptr.hpp>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -14,8 +13,6 @@ IMPLEMENT_PLUGIN(CFakePlugin)
 
 CFakePlugin::CFakePlugin()
 {
-   // Build the schema
-   m_configuration.buildSchema();
 }
 
 CFakePlugin::~CFakePlugin()
@@ -29,7 +26,7 @@ enum
    kEvtUpdateConfiguration
 };
 
-void CFakePlugin::doWork(int instanceUniqueId, const std::string& configurationValues, boost::asio::io_service * pluginIOService)
+void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service * pluginIOService)
 {
    try
    {
@@ -37,12 +34,12 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configurationV
       YADOMS_LOG(debug) << "CFakePlugin is starting...";
 
       // Load configuration values (provided by database)
-      m_configuration.setValues(configurationValues);
+      m_configuration.set(configuration);
       // Trace the configuration (just for test)
       m_configuration.trace();
 
       // Register to XPL service
-      shared::xpl::CXplService xplService(
+      shared::xpl::CXplService xplService(/* TODO remplacer toVendorIdOrDeviceId(fct à supprimer) par une constante avec gros commentaires (contraintes de nommage, réservation du nom, etc...)*/
          shared::xpl::CXplHelper::toVendorIdOrDeviceId(Informations->getName()),    // Use the plugin name as XPL device ID
          shared::xpl::CXplHelper::toStructuralElement(instanceUniqueId),            // Use the plugin instance id (guaranteed by Yadoms to be unique among all instances of all plugins) as XPL instance id
          pluginIOService,                                                           // Use the provided io service for better performance
@@ -70,15 +67,15 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configurationV
          case kEvtUpdateConfiguration:
             {
                // Configuration was updated
-               std::string newConfigurationValues = popEvent<std::string>();
+               std::string newConfiguration = popEvent<std::string>();
                YADOMS_LOG(debug) << "configuration was updated...";
-               BOOST_ASSERT(!newConfigurationValues.empty());  // newConfigurationValues shouldn't be empty, or kEvtUpdateConfiguration shouldn't be generated
+               BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEvtUpdateConfiguration shouldn't be generated
 
                // Take into account the new configuration
                // - Restart the plugin if necessary,
                // - Update some resources,
                // - etc...
-               m_configuration.setValues(newConfigurationValues);
+               m_configuration.set(newConfiguration);
 
                // Trace the configuration
                m_configuration.trace();
@@ -129,8 +126,8 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configurationV
 
 }
 
-void CFakePlugin::updateConfiguration(const std::string& configurationValues)
+void CFakePlugin::updateConfiguration(const std::string& configuration)
 {
    // This function is called in a Yadoms thread context, so send a event to the CFakePlugin thread
-   sendEvent<std::string>(kEvtUpdateConfiguration, configurationValues);
+   sendEvent<std::string>(kEvtUpdateConfiguration, configuration);
 }

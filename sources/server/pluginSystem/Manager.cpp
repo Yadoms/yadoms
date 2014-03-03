@@ -3,6 +3,7 @@
 #include "Instance.h"
 #include "Qualifier.h"
 #include <shared/DynamicLibrary.hpp>
+#include <shared/exception/InvalidParameter.hpp>
 
 
 namespace pluginSystem
@@ -95,20 +96,36 @@ void CManager::runPluginIOService()
 
 void CManager::enableInstance(int id)
 {
-   // Start instance (throw if fails)
-   startInstance(id);
+   try
+   {
+      // Start instance (throw if fails)
+      startInstance(id);
 
-   // Update instance state in database
-   m_database->enableInstance(id, true);
+      // Update instance state in database
+      m_database->enableInstance(id, true);
+   }
+   catch (shared::exception::CException& e)
+   {
+      YADOMS_LOG(error) << "Unable to enable plugin instance (" << id << ") : " << e.what();
+      throw shared::exception::CInvalidParameter(boost::lexical_cast<std::string>(id));
+   }
 }
 
 void CManager::disableInstance(int id)
 {
-   // Start instance (throw if fails)
-   stopInstance(id);
+   try
+   {
+      // Start instance (throw if fails)
+      stopInstance(id);
 
-   // Update instance state in database
-   m_database->enableInstance(id, false);
+      // Update instance state in database
+      m_database->enableInstance(id, false);
+   }
+   catch (shared::exception::CException& e)
+   {
+      YADOMS_LOG(error) << "Unable to disable plugin instance (" << id << ") : " << e.what();
+      throw shared::exception::CInvalidParameter(boost::lexical_cast<std::string>(id));
+   }
 }
 
 std::vector<boost::filesystem::path> CManager::findPluginDirectories()
@@ -228,30 +245,12 @@ CManager::AvalaiblePluginMap CManager::getPluginList()
    return mapCopy;
 }
 
-std::string CManager::getPluginConfigurationSchema(const std::string& pluginName) const
-{
-   // If plugin is already loaded, use its information
-   if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
-      return m_loadedPlugins.at(pluginName)->getConfigurationSchema();
-
-   return CFactory::getConfigurationSchema(toPath(pluginName));
-}
-
 int CManager::getPluginQualityIndicator(const std::string& pluginName) const
 {
    if (m_availablePlugins.find(pluginName) == m_availablePlugins.end())
       throw CInvalidPluginException(pluginName);   // Invalid plugin
 
    return m_qualifier->getQualityLevel(m_availablePlugins.at(pluginName));
-}
-
-std::string CManager::getPluginConfigurationSchema(int id) const
-{
-   // Get database instance data
-   BOOST_ASSERT(m_database->getPlugin(id));
-   boost::shared_ptr<database::entities::CPlugin> instanceData(m_database->getPlugin(id));
-
-   return getPluginConfigurationSchema(instanceData->getPluginName());
 }
 
 int CManager::createInstance(const std::string& instanceName,
@@ -270,11 +269,19 @@ int CManager::createInstance(const std::string& instanceName,
 
 void CManager::deleteInstance(int id)
 {
-   // First step, disable and stop instance
-   disableInstance(id);
+   try
+   {
+      // First step, disable and stop instance
+      disableInstance(id);
 
-   // Next, delete in database (or flag as deleted)
-   m_database->removePlugin(id);
+      // Next, delete in database (or flag as deleted)
+      m_database->removePlugin(id);
+   }
+   catch (shared::exception::CException& e)
+   {
+      YADOMS_LOG(error) << "Unable to delete plugin instance (" << id << ") : " << e.what();
+      throw shared::exception::CInvalidParameter(boost::lexical_cast<std::string>(id));
+   }
 }
 
 boost::shared_ptr<std::vector<int> > CManager::getInstanceList () const
@@ -302,15 +309,9 @@ boost::shared_ptr<CManager::PluginDetailedInstanceMap> CManager::getInstanceList
    return instances;
 }
 
-std::string CManager::getInstanceConfiguration(int id) const
+std::string CManager::getInstanceConfiguration(int id) const//TODO déplacer dans le REST ?
 {
-   // First check if a schema is available
-   std::string pluginConfigurationSchema(getPluginConfigurationSchema(id));
-   if (pluginConfigurationSchema.empty())
-      return shared::CStringExtension::EmptyString; // Plugin has no configuration
-
    // Next get database instance data
-   BOOST_ASSERT(m_database->getPlugin(id));
    boost::shared_ptr<database::entities::CPlugin> instanceData(m_database->getPlugin(id));
 
    // Returns configuration from database
