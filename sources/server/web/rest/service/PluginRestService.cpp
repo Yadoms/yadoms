@@ -9,8 +9,8 @@
 
 namespace web { namespace rest { namespace service {
 
-   CPluginRestService::CPluginRestService(boost::shared_ptr<database::IDataProvider> dataProvider)
-      :m_dataProvider(dataProvider), m_restKeyword("plugin")
+   CPluginRestService::CPluginRestService(boost::shared_ptr<database::IDataProvider> dataProvider, boost::shared_ptr<pluginSystem::CManager> pluginManager)
+      :m_dataProvider(dataProvider), m_pluginManager(pluginManager), m_restKeyword("plugin")
    {
    }
 

@@ -39,6 +39,13 @@ namespace database {
       virtual void updatePluginConfiguration(int pluginId, const std::string& newConfiguration) = 0;
 
       //--------------------------------------------------------------
+      /// \brief           Update plugin
+      /// \param [in]      updatedPluginData   Plugin information (only filled fields are updated)
+      /// \throw           shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void updatePlugin(const database::entities::CPlugin & updatedPluginData) = 0;
+
+      //--------------------------------------------------------------
       /// \brief           Remove plugin plugin instance
       /// \param [in] pluginId   Plugin plugin instance Id
       /// \throw           shared::exception::CEmptyResult if fails

@@ -14,6 +14,13 @@ namespace sqlite {
    {
    }
 
+   CQuery &  CQuery::CLear()
+   {
+      m_queryType = kNotYetDefined;
+      m_currentQuery = "";
+      return *this;
+   }
+
    CQuery & CQuery::Select()
    { 
       ChangeQueryType(kSelect);
