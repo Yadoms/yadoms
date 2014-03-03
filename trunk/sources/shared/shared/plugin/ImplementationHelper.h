@@ -25,28 +25,3 @@
          Informations.reset(new shared::plugin::information::CInformation(shared::CFileSystemExtension::getModulePath())); \
       return *Informations;                                                                                                \
    }
-
-
-
-//////////////////////////////////////////////////////////////////////////
-// Implement configuration
-//////////////////////////////////////////////////////////////////////////
-// Call this macro in the plugin configuration class declaration
-#define DECLARE_CONFIGURATION(PluginConfigurationClassName)                               \
-   public: static const PluginConfigurationClassName& getPluginSchema();
-
-// Call this macro in the plugin configuration class definition file (usually .cpp file)
-#define IMPLEMENT_CONFIGURATION(PluginConfigurationClassName)                             \
-   const PluginConfigurationClassName& PluginConfigurationClassName::getPluginSchema()    \
-   {                                                                                      \
-      static boost::shared_ptr<PluginConfigurationClassName> Configuration;               \
-      if (Configuration)                                                                  \
-         return *Configuration;   /* Already initialized */                               \
-      Configuration.reset(new PluginConfigurationClassName);                              \
-      Configuration->buildSchema();                                                       \
-      return *Configuration;                                                              \
-   }                                                                                      \
-   EXPORT_LIBRARY_FUNCTION const shared::plugin::configuration::ISchema& getConfigurationSchemaInterface() \
-   {                                                                                      \
-      return PluginConfigurationClassName::getPluginSchema();                             \
-   }

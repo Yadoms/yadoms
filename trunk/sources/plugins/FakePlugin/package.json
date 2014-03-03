@@ -1,11 +1,81 @@
 {
-    "name": "FakePlugin",
-    "description": "This is just a fake plugin, designed to serve as example to write real plugins. This plugin do nothing useful, just demonstrate how to :\n   - use a configuration\n   - receive a XPL message\n   - send a XPL message\n",
-    "version": "0.1",
-    "releaseType": "beta",
-    "author": "yadoms-team",
-    "url": "http://sourceforge.net/projects/yadoms/",
-    "configuration-schema": {
-
-    }
+   "name": "FakePlugin",
+   "description": "This is just a fake plugin, designed to serve as example to write real plugins. This plugin do nothing useful, just demonstrate how to :\n   - use a configuration\n   - receive a XPL message\n   - send a XPL message\n",
+   "version": "0.1",
+   "releaseType": "beta",
+   "author": "yadoms-team",
+   "url": "http://sourceforge.net/projects/yadoms/",
+   "configurationSchema":
+   {
+      "StringParameter":
+      {
+         "name": "A string example",
+         "description": "Just a string parameter",
+         "type": "string",
+         "defaultValue": "Yadoms is so powerful !"
+      },
+      "BoolParameter":
+      {
+         "name": "A bool example",
+         "description": "Just a boolean example",
+         "type": "bool",
+         "defaultValue": "false"
+      },
+      "IntParameter":
+      {
+         "name": "An integer example",
+         "description": "This is my int parameter example",
+         "type": "int",
+         "defaultValue": "258"
+      },
+      "DecimalParameter":
+      {
+         "name": "A decimal example",
+         "description": "Now a decimal",
+         "type": "decimal",
+         "defaultValue": "25.3"
+      },
+      "EnumParameter":
+      {
+         "name": "A custom enum example",
+         "description": "Example of an enum with 3 values",
+         "type": "enum",
+         "values":
+         {
+            "EnumValue1": "My first value",
+            "EnumValue2": "My second value",
+            "EnumValue3": "My third value"
+         },
+         "defaultValue": "EnumValue2"
+      },
+      "Serial Port":
+      {
+         "name": "A serial port",
+         "description": "Specific serial port parameter. Yadoms will populate available values with system serial ports.",
+         "type": "serialPort"
+      },
+      "MySection":
+      {
+         "name": "A section",
+         "description": "Example of using a section in configuration tree.",
+         "type" : "section",
+         "content":
+         {
+            "SubIntParameter":
+            {
+               "name": "An integer-in-section example",
+               "description": "An int in sub-section example",
+               "type": "int",
+               "defaultValue": "65535"
+            },
+            "SubStringParameter":
+            {
+               "name": "A string-in-section example",
+               "description": "Just a string parameter in the sub-section",
+               "type": "string",
+               "defaultValue": "Sub-sections make configuration very powerful !"
+            }
+         }
+      }
+   }
 }

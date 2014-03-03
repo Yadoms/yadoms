@@ -11,7 +11,7 @@
 ///         - send a XPL message
 //--------------------------------------------------------------
 class CFakePlugin : public shared::event::CEventHandler, public shared::plugin::IPlugin
-{  
+{
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
@@ -24,8 +24,8 @@ public:
    virtual ~CFakePlugin();
 
    // IPlugin implementation
-   virtual void doWork(int instanceUniqueId, const std::string& configurationValues, boost::asio::io_service * pluginIOService);
-   virtual void updateConfiguration(const std::string& configurationValues);
+   virtual void doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service * pluginIOService);
+   virtual void updateConfiguration(const std::string& configuration);
   // [END] IPlugin implementation
 
 private:
