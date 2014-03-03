@@ -2,12 +2,13 @@
 #include "Factory.h"
 #include <shared/plugin/information/Information.h>
 #include <shared/StringExtension.h>
+#include <shared/exception/Exception.hpp>
 
 namespace pluginSystem
 {
 
 CFactory::CFactory(const boost::filesystem::path& libraryPath)
-      :m_libraryPath(libraryPath), m_construct(NULL), m_getInformation(NULL), m_getConfigurationSchema(NULL)
+      :m_libraryPath(libraryPath), m_construct(NULL), m_getInformation(NULL)
 {
    load();
 }
@@ -26,7 +27,6 @@ void CFactory::load()
    // Load plugin static methods
    m_construct = (shared::plugin::IPlugin* (*)(void))GetFunctionPointer("construct");
    m_getInformation = (const shared::plugin::information::IInformation& (*)())GetFunctionPointer("getInformation");
-   m_getConfigurationSchema = (const shared::plugin::configuration::ISchema& (*)())GetFunctionPointer("getConfigurationSchemaInterface");
 
    // Check if all non-optional methods are loaded
    if(m_construct == NULL || m_getInformation == NULL)
@@ -41,7 +41,6 @@ void CFactory::load()
    {
       getInformation();
       delete construct();
-      getConfigurationSchema();
    }
    catch (...)
    {
@@ -77,17 +76,16 @@ boost::shared_ptr<const shared::plugin::information::IInformation> CFactory::get
    BOOST_ASSERT(m_getInformation);  // getInformation can not be called if load was unsuccessfully
 
    // Because library can be unloaded at any time (so memory will be freed), return a copy of informations
-   boost::shared_ptr<shared::plugin::information::IInformation> information(new shared::plugin::information::CInformation(m_getInformation()));
-   return information;
-}
-
-std::string CFactory::getConfigurationSchema() const
-{
-   if (!m_getConfigurationSchema)
-      return shared::CStringExtension::EmptyString; // Plugin has no configuration
-
-   // Because library can be unloaded at any time (so memory will be freed), return a copy of configuration
-   return m_getConfigurationSchema().getSchema();
+   try
+   {
+      boost::shared_ptr<shared::plugin::information::IInformation> information(new shared::plugin::information::CInformation(m_getInformation()));
+      return information;
+   }
+   catch(shared::exception::CException& e)
+   {
+      YADOMS_LOG(error) << "Error getting plugin " << shared::CDynamicLibrary::ToLibName(m_libraryPath.string()) << " information : " << e.what();
+      throw shared::exception::CException("Error getting plugin information");
+   }
 }
 
 
@@ -99,12 +97,6 @@ boost::shared_ptr<const shared::plugin::information::IInformation> CFactory::get
 {
    CFactory plugin(libraryPath);
    return plugin.getInformation();
-}
-
-std::string CFactory::getConfigurationSchema(const boost::filesystem::path& libraryPath)
-{
-   CFactory plugin(libraryPath);
-   return plugin.getConfigurationSchema();
 }
 
 } // namespace pluginSystem

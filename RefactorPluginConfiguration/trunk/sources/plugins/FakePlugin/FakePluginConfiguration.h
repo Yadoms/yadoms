@@ -20,9 +20,6 @@ enum EEnumType
 //--------------------------------------------------------------
 class CFakePluginConfiguration : public shared::plugin::configuration::CConfiguration
 {
-   // Call this macro to declare that plugin has a configuration
-   DECLARE_CONFIGURATION(CFakePluginConfiguration)
-
 public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -34,11 +31,11 @@ public:
    //--------------------------------------------------------------
    void trace();
 
-protected:
    //--------------------------------------------------------------
-   /// \brief	    Build the configuration schema
-   /// \note       CConfiguration implementation
+   /// \brief	    Serial port getter 
    //--------------------------------------------------------------
-   virtual void doBuildSchema();
+   std::string getSerialPort() const;
+
+   // TODO ajouter les autres getters
 };
 

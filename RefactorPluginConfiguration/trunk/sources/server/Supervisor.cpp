@@ -62,17 +62,9 @@ void CSupervisor::doWork()
       }
 
       // 2) User want to create new plugin instance
-      // 2.1) Get configuration schema (= default configuration) from a specific plugin
+      // 2.1) GUI directly get the configuration schema (= default configuration) from a specific plugin
       const std::string& pluginName="fakePlugin";
-      std::string pluginConfigurationSchema(pluginManager->getPluginConfigurationSchema(pluginName));
-      if (!pluginConfigurationSchema.empty())
-      {
-         YADOMS_LOG(debug) << pluginName << " configuration schema is : \"" << pluginConfigurationSchema << "\"";
-      }
-      else
-      {
-         YADOMS_LOG(debug) << pluginName << " has no configuration";
-      }
+
       // 2.2) User can update default values, GUI returns configuration values
       // Here, were modified :
       // - EnumParameter from "EnumValue2" to "EnumValue1"
@@ -85,7 +77,7 @@ void CSupervisor::doWork()
       {
          createdInstanceId = pluginManager->createInstance("theInstanceName", pluginName, newConf);
       }
-      catch (CDatabaseException& e)
+      catch (database::CDatabaseException& e)
       {
       	YADOMS_LOG(error) << pluginName << " unable to create \"theInstanceName\", check that it doesn't already exist : " << e.what();
          createdInstanceId = 0;
@@ -115,37 +107,58 @@ void CSupervisor::doWork()
       }
 
       // 5) Update instance configuration
+      try
       {
-         // 5.1) First, get the configuration schema
-         std::string pluginConfigurationSchema(pluginManager->getPluginConfigurationSchema(createdInstanceId));
-         if (!pluginConfigurationSchema.empty())
+         // 5.1) Next, get the actual configuration
+         std::string instanceConfiguration(pluginManager->getInstanceConfiguration(createdInstanceId));
+         if (instanceConfiguration.empty())
          {
-            // 5.2) Next, get the actual configuration
-            std::string instanceConfiguration(pluginManager->getInstanceConfiguration(createdInstanceId));
-            if (instanceConfiguration.empty())
-            {
-               YADOMS_LOG(debug) << "Instance created at step #2 has no configuration";
-            }
-            else
-            {
-               // 5.3) Now, change some values (Serial port from tty0 to tty1, and BoolParameter from false to true)
-               instanceConfiguration.replace(instanceConfiguration.find("\"Serial port\": { \"value\": \"tty0\" }"), 34, "\"Serial port\": { \"value\": \"tty1\" }");
-               instanceConfiguration.replace(instanceConfiguration.find("\"BoolParameter\": { \"value\": \"false\" }"), 37, "\"BoolParameter\": { \"value\": \"true\" }");
-
-               // 5.3) Valid the new configuration
-               pluginManager->setInstanceConfiguration(createdInstanceId, instanceConfiguration);
-            }
+            YADOMS_LOG(debug) << "Instance created at step #2 has no configuration";
          }
+         else
+         {
+            // 5.2) Now, change some values (Serial port from tty0 to tty1, and BoolParameter from false to true)
+            instanceConfiguration.replace(instanceConfiguration.find("\"Serial port\": { \"value\": \"tty0\" }"), 34, "\"Serial port\": { \"value\": \"tty1\" }");
+            instanceConfiguration.replace(instanceConfiguration.find("\"BoolParameter\": { \"value\": \"false\" }"), 37, "\"BoolParameter\": { \"value\": \"true\" }");
+
+            // 5.3) Valid the new configuration
+            pluginManager->setInstanceConfiguration(createdInstanceId, instanceConfiguration);
+         }
+      }
+      catch(shared::exception::CException& e)
+      {
+         YADOMS_LOG(debug) << "Unable to update instance configuration : " << e.what();
       }
 
       // 6) Disable (and stop) registered plugin instance (to be able to remove/replace plugin for example)
-      pluginManager->disableInstance(createdInstanceId);
+      try
+      {
+         pluginManager->disableInstance(createdInstanceId);
+      }
+      catch(shared::exception::CException& e)
+      {
+         YADOMS_LOG(debug) << "Unable to disbale instance : " << e.what();
+      }
 
       // 7) Enable registered plugin instance (and start it)
-      pluginManager->enableInstance(createdInstanceId);
+      try
+      {
+         pluginManager->enableInstance(createdInstanceId);
+      }
+      catch(shared::exception::CException& e)
+      {
+         YADOMS_LOG(debug) << "Unable to enable instance : " << e.what();
+      }
 
       // 8) Remove an instance
-      pluginManager->deleteInstance(createdInstanceId);
+      try
+      {
+         pluginManager->deleteInstance(createdInstanceId);
+      }
+      catch(shared::exception::CException& e)
+      {
+         YADOMS_LOG(debug) << "Unable to delete instance : " << e.what();
+      }
 #endif
       //\TODO ######################### [END] test interface pluginManager #########################
 
