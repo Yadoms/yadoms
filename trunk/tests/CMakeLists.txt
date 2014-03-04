@@ -142,14 +142,6 @@ set(MOCK_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mock)
 
 
 ##################################################################################################
-## Tests selection to build
-##################################################################################################
-
-add_subdirectory(server)
-add_subdirectory(shared)
-
-
-##################################################################################################
 ## Post build commands
 ##################################################################################################
 
@@ -190,27 +182,48 @@ ENDFOREACH(BOOSTLIBRARY)
 
 
 #Take each boost lib file, find its dll and add it to a post build command
-if(NOT Boost_USE_STATIC_LIBS)
-	MESSAGE(STATUS "Add boost libraries to be copied as postbuild")
-	#todo : choose debug/optimized mode
-	FOREACH (BOOSTLIBRARY ${BOOST_LIBS_DEBUG})
+MACRO(COPY_BOOST_LIBS _targetName)
+   if(NOT Boost_USE_STATIC_LIBS)
+      MESSAGE(STATUS "Add boost libraries to be copied as postbuild")
+      #todo : choose debug/optimized mode
+      FOREACH (BOOSTLIBRARY ${BOOST_LIBS_DEBUG})
 
-		#construct the dll/so fil path
-		get_filename_component(UTF_BASE_NAME ${BOOSTLIBRARY} NAME_WE)
-		get_filename_component(UTF_PATH ${BOOSTLIBRARY} PATH)
-	
-		if(WIN32)
-			#windows
-			set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.dll)
-		elseif(APPLE)
-			#mac
-			set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.dylib)
-		else()
-			#linux
-			set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.so)
-		endif()
-		
-	ENDFOREACH(BOOSTLIBRARY)
-endif()		
+         #construct the dll/so fil path
+         get_filename_component(UTF_BASE_NAME ${BOOSTLIBRARY} NAME_WE)
+         get_filename_component(UTF_PATH ${BOOSTLIBRARY} PATH)
+      
+         if(WIN32)
+            #windows
+            set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.dll)
+         elseif(APPLE)
+            #mac
+            set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.dylib)
+         else()
+            #linux
+            set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.so)
+         endif()
+
+         #check existance
+         if(EXISTS ${LIBFILE})
+            MESSAGE(STATUS "    Library file : ${LIBFILE}")
+               
+            #create post build command
+            add_custom_command(TARGET ${_targetName} POST_BUILD        	# Adds a post-build event to target
+               COMMAND ${CMAKE_COMMAND} -E copy_if_different  	# which executes "cmake - E copy_if_different..."
+                  "${LIBFILE}"     							# <--this is in-file
+                  $<TARGET_FILE_DIR:${_targetName}>)   				# <--this is out-file path
+         else()
+            MESSAGE("    Library file not found : ${LIBFILE}")
+         endif()		
+      ENDFOREACH(BOOSTLIBRARY)
+   endif()		
+ENDMACRO()
+
+##################################################################################################
+## Tests selection to build
+##################################################################################################
+
+add_subdirectory(server)
+add_subdirectory(shared)
 
 
