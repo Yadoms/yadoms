@@ -13,7 +13,6 @@ namespace web { namespace rest { namespace json {
       (PluginName)
       (Configuration)
       (Enabled)
-      (Deleted)
       )
 
       DECLARE_JSON_ENTITY_HEADER(Configuration,

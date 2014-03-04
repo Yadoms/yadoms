@@ -73,14 +73,14 @@ namespace web { namespace rest { namespace service {
          objectId = parameters[1];
 
       web::rest::json::CPluginEntitySerializer hes;
-      boost::shared_ptr<database::entities::CPlugin> pluginFound =  m_dataProvider->getPluginRequester()->getPlugin(boost::lexical_cast<int>(objectId));
+      boost::shared_ptr<database::entities::CPlugin> pluginFound =  m_dataProvider->getPluginRequester()->getInstance(boost::lexical_cast<int>(objectId));
       return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*pluginFound.get()));
    }
 
    web::rest::json::CJson CPluginRestService::getAllPlugins(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
       web::rest::json::CPluginEntitySerializer hes;
-      std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_dataProvider->getPluginRequester()->getPlugins();
+      std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_dataProvider->getPluginRequester()->getInstances();
       return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CPlugin>::SerializeCollection(hwList, hes, getRestKeyword()));
    }
 

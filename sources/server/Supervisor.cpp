@@ -70,12 +70,25 @@ void CSupervisor::doWork()
       // - EnumParameter from "EnumValue2" to "EnumValue1"
       // - DecimalParameter from "25.3" to "18.4"
       // - BitsFieldParameter : value "second one" from true to false
-      std::string newConf("{ \"BitsFieldParameter\": { \"value\": { \"and a third\": \"true\", \"first checkbox\": \"false\", \"second one\": \"false\" } }, \"BoolParameter\": { \"value\": \"false\" }, \"DecimalParameter\": { \"value\": \"18.4\" }, \"EnumParameter\": { \"value\": \"EnumValue1\" }, \"IntParameter\": { \"value\": \"42\" }, \"Serial port\": { \"value\": \"tty0\" }, \"StringParameter\": { \"value\": \"Yadoms is so powerful !\" } }");
+      std::string newConf("{"
+         "\"BoolParameter\": \"true\","
+         "\"DecimalParameter\": \"18.4\","
+         "\"EnumParameter\": \"EnumValue1\","
+         "\"IntParameter\": \"42\","
+         "\"Serial port\": \"tty0\","
+         "\"StringParameter\": \"Yadoms is so powerful !\","
+         "\"MySection\": {"
+         "\"SubIntParameter\": \"123\","
+         "\"SubStringParameter\": \"Just a string parameter in the sub-section\""
+         "}"
+         "}");
       // 2.3) User press OK to valid configuration and create the new instance
       int createdInstanceId;
       try
       {
-         createdInstanceId = pluginManager->createInstance("theInstanceName", pluginName, newConf);
+         database::entities::CPlugin pluginData;
+         pluginData.setName("theInstanceName").setPluginName(pluginName).setConfiguration(newConf).setEnabled(true).setDeleted(false);
+         createdInstanceId = pluginManager->createInstance(pluginData);
       }
       catch (database::CDatabaseException& e)
       {
@@ -83,46 +96,37 @@ void CSupervisor::doWork()
          createdInstanceId = 0;
       }
 
-      // 3) List of IDs of existing plugin instances (all known instances, EXCEPT deleted)
+      // 3) List of all plugin instances
       {
-         boost::shared_ptr<std::vector<int> > instances = pluginManager->getInstanceList();
-         std::ostringstream os;
-         os << "Existing instances : ";
-         BOOST_FOREACH(int value, *instances)
-            os << value << " | ";
-         YADOMS_LOG(debug) << os.str();
-      }
-
-      // 4) List of all plugin instances, with details (all instances, EVEN deleted)
-      {
-         boost::shared_ptr<pluginSystem::CManager::PluginDetailedInstanceMap> instances = pluginManager->getInstanceListDetails();
+         std::vector<boost::shared_ptr<database::entities::CPlugin> > instances = pluginManager->getInstanceList();
          YADOMS_LOG(debug) << "Existing instances, with details : ";
-         BOOST_FOREACH(pluginSystem::CManager::PluginDetailedInstanceMap::value_type instance, *instances)
-            YADOMS_LOG(debug) << "Id#" << instance.second->getId() <<
-            ", name=" << instance.second->getName() <<
-            ", plugin=" << instance.second->getPluginName() <<
-            ", enabled=" << (instance.second->getEnabled() ? "true":"false") <<
-            ", deleted=" << (instance.second->getDeleted() ? "true":"false") <<
-            ", configuration=" << instance.second->getConfiguration();
+         for (std::vector<boost::shared_ptr<database::entities::CPlugin> >::const_iterator it = instances.begin() ; it != instances.end() ; it++)
+            YADOMS_LOG(debug) << "Id#" << (*it)->getId() <<
+            ", name=" << (*it)->getName() <<
+            ", plugin=" << (*it)->getPluginName() <<
+            ", enabled=" << ((*it)->getEnabled() ? "true":"false") <<
+            ", configuration=" << (*it)->getConfiguration();
       }
 
-      // 5) Update instance configuration
+      // 4) Update instance configuration
       try
       {
-         // 5.1) Next, get the actual configuration
-         std::string instanceConfiguration(pluginManager->getInstanceConfiguration(createdInstanceId));
-         if (instanceConfiguration.empty())
+         // 4.1) Next, get the actual configuration
+         boost::shared_ptr<database::entities::CPlugin> instanceData(pluginManager->getInstance(createdInstanceId));
+         if (instanceData->getConfiguration().empty())
          {
             YADOMS_LOG(debug) << "Instance created at step #2 has no configuration";
          }
          else
          {
-            // 5.2) Now, change some values (Serial port from tty0 to tty1, and BoolParameter from false to true)
-            instanceConfiguration.replace(instanceConfiguration.find("\"Serial port\": { \"value\": \"tty0\" }"), 34, "\"Serial port\": { \"value\": \"tty1\" }");
-            instanceConfiguration.replace(instanceConfiguration.find("\"BoolParameter\": { \"value\": \"false\" }"), 37, "\"BoolParameter\": { \"value\": \"true\" }");
+            // 4.2) Now, change some values (Serial port from tty0 to tty1, and MySection.SubStringParameter)
+            std::string configuration = instanceData->getConfiguration();
+            configuration.replace(configuration.find("\"Serial port\": \"tty0\""), 21, "\"Serial port\": \"tty1\"");
+            configuration.replace(configuration.find("\"SubStringParameter\": \"Just a string parameter in the sub-section\""), 66, "\"SubStringParameter\": \"Just a *MODIFIED* string parameter in the sub-section\"");
+            instanceData->setConfiguration(configuration);
 
-            // 5.3) Valid the new configuration
-            pluginManager->setInstanceConfiguration(createdInstanceId, instanceConfiguration);
+            // 4.3) Valid the new configuration
+            pluginManager->updateInstance(*instanceData);
          }
       }
       catch(shared::exception::CException& e)
@@ -130,27 +134,31 @@ void CSupervisor::doWork()
          YADOMS_LOG(debug) << "Unable to update instance configuration : " << e.what();
       }
 
-      // 6) Disable (and stop) registered plugin instance (to be able to remove/replace plugin for example)
+      // 5) Disable (and stop) registered plugin instance (to be able to remove/replace plugin for example)
       try
       {
-         pluginManager->disableInstance(createdInstanceId);
+         boost::shared_ptr<database::entities::CPlugin> instanceData(pluginManager->getInstance(createdInstanceId));
+         instanceData->setEnabled(false);
+         pluginManager->updateInstance(*instanceData);
       }
       catch(shared::exception::CException& e)
       {
          YADOMS_LOG(debug) << "Unable to disbale instance : " << e.what();
       }
 
-      // 7) Enable registered plugin instance (and start it)
+      // 6) Enable registered plugin instance (and start it)
       try
       {
-         pluginManager->enableInstance(createdInstanceId);
+         boost::shared_ptr<database::entities::CPlugin> instanceData(pluginManager->getInstance(createdInstanceId));
+         instanceData->setEnabled(true);
+         pluginManager->updateInstance(*instanceData);
       }
       catch(shared::exception::CException& e)
       {
          YADOMS_LOG(debug) << "Unable to enable instance : " << e.what();
       }
 
-      // 8) Remove an instance
+      // 7) Remove an instance
       try
       {
          pluginManager->deleteInstance(createdInstanceId);

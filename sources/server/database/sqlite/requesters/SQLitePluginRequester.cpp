@@ -21,15 +21,15 @@ namespace database { namespace sqlite { namespace requesters {
    }
 
    // IPluginRequester implementation
-   int CSQLitePluginRequester::addPlugin(boost::shared_ptr<database::entities::CPlugin> newPlugin)
+   int CSQLitePluginRequester::addInstance(const database::entities::CPlugin& newPlugin)
    {
       CQuery qInsert;
 
       qInsert.InsertInto(CPluginTable::getTableName(), CPluginTable::getNameColumnName(), CPluginTable::getPluginNameColumnName(), CPluginTable::getConfigurationColumnName(), CPluginTable::getEnabledColumnName() ).
-         Values(newPlugin->getName(), 
-         newPlugin->getPluginName(),
-         newPlugin->getConfiguration(), 
-         newPlugin->getEnabled());
+         Values(newPlugin.getName(), 
+         newPlugin.getPluginName(),
+         newPlugin.getConfiguration(), 
+         newPlugin.getEnabled());
 
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
@@ -38,8 +38,8 @@ namespace database { namespace sqlite { namespace requesters {
       CQuery qSelect;
       qSelect. Select(CPluginTable::getIdColumnName()).
          From(CPluginTable::getTableName()).
-         Where(CPluginTable::getNameColumnName(), CQUERY_OP_EQUAL, newPlugin->getName()).
-         And(CPluginTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, newPlugin->getPluginName()).
+         Where(CPluginTable::getNameColumnName(), CQUERY_OP_EQUAL, newPlugin.getName()).
+         And(CPluginTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, newPlugin.getPluginName()).
          OrderBy(CPluginTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
       database::sqlite::adapters::CSingleValueAdapter<int> adapter;
@@ -50,16 +50,15 @@ namespace database { namespace sqlite { namespace requesters {
          throw shared::exception::CEmptyResult("Cannot retrieve inserted Plugin");
    }
 
-   boost::shared_ptr<database::entities::CPlugin> CSQLitePluginRequester::getPlugin(int pluginId)
+   boost::shared_ptr<database::entities::CPlugin> CSQLitePluginRequester::getInstance(int pluginId)
    {
       database::sqlite::adapters::CPluginAdapter adapter;
 
       CQuery qSelect;
 
-      qSelect. Select().
+      qSelect.Select().
          From(CPluginTable::getTableName()).
-         Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, pluginId).
-         And(CPluginTable::getDeletedColumnName(), CQUERY_OP_EQUAL, false);
+         Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, pluginId);
 
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CPlugin> >(&adapter, qSelect);
       if (adapter.getResults().empty())
@@ -71,15 +70,12 @@ namespace database { namespace sqlite { namespace requesters {
       return adapter.getResults().at(0);
    }
 
-   std::vector<boost::shared_ptr<database::entities::CPlugin> > CSQLitePluginRequester::getPlugins(bool evenDeleted)
+   std::vector<boost::shared_ptr<database::entities::CPlugin> > CSQLitePluginRequester::getInstances()
    {
       database::sqlite::adapters::CPluginAdapter adapter;
 
       CQuery qSelect;
       qSelect.Select().From(CPluginTable::getTableName());
-
-      if (!evenDeleted)
-         qSelect.Where(CPluginTable::getDeletedColumnName(), CQUERY_OP_EQUAL, false);
 
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CPlugin> >(&adapter, qSelect);
       return adapter.getResults();
@@ -93,41 +89,18 @@ namespace database { namespace sqlite { namespace requesters {
       CQuery qSelect;
       qSelect. Select(CPluginTable::getNameColumnName()).
          From(CPluginTable::getTableName()).
-         Where(CPluginTable::getDeletedColumnName(), CQUERY_OP_EQUAL, false).
          OrderBy(CPluginTable::getNameColumnName());
 
       m_databaseRequester->queryEntities<std::string>(&adapter, qSelect);
       return adapter.getResults();
    }
 
-   void CSQLitePluginRequester::updatePluginConfiguration(int pluginId, const std::string& newConfiguration)
-   {
-      CQuery qUpdate;
-      qUpdate. Update(CPluginTable::getTableName()).
-         Set(CPluginTable::getConfigurationColumnName(), newConfiguration).
-         Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, pluginId);
-
-      if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-         throw shared::exception::CEmptyResult("No lines affected");
-   }
-
-   void CSQLitePluginRequester::updatePlugin(const database::entities::CPlugin & updatedPluginData)
+   void CSQLitePluginRequester::updateInstance(const database::entities::CPlugin & updatedPluginData)
    {
       CQuery qUpdate;
 
       if(!updatedPluginData.isIdFilled())
          throw database::CDatabaseException("Need an id to update");
-
-      //update pluginName
-      if(updatedPluginData.isPluginNameFilled())
-      {
-         qUpdate.CLear().Update(CPluginTable::getTableName()).
-         Set(CPluginTable::getPluginNameColumnName(), updatedPluginData.getPluginName()).
-         Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.getId());
-
-         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-            throw database::CDatabaseException("Failed to update pluginName");
-      }
 
       //update name
       if(updatedPluginData.isNameFilled())
@@ -151,17 +124,6 @@ namespace database { namespace sqlite { namespace requesters {
             throw database::CDatabaseException("Failed to update configuration");
       }
       
-      //update deleted
-      if(updatedPluginData.isDeletedFilled())
-      {
-         qUpdate.CLear().Update(CPluginTable::getTableName()).
-         Set(CPluginTable::getDeletedColumnName(), updatedPluginData.getDeleted()).
-         Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.getId());
-
-         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-            throw database::CDatabaseException("Failed to update deleted field");
-      }
-      
       //update enabled
       if(updatedPluginData.isEnabledFilled())
       {
@@ -172,33 +134,19 @@ namespace database { namespace sqlite { namespace requesters {
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
             throw database::CDatabaseException("Failed to update enabled field");
       }
-      
-
    }
 
-   void CSQLitePluginRequester::removePlugin(int pluginId)
+   void CSQLitePluginRequester::removeInstance(int pluginId)
    {
       CQuery qUpdate;
-      qUpdate. Update(CPluginTable::getTableName()).
-         Set(CPluginTable::getDeletedColumnName(), true).
+      qUpdate. DeleteFrom(CPluginTable::getTableName()).
          Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, pluginId);
 
       if(m_databaseRequester->queryStatement(qUpdate) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
    }
 
-   void CSQLitePluginRequester::enableInstance(int pluginId, bool enable)
-   {
-      CQuery qUpdate;
-      qUpdate. Update(CPluginTable::getTableName()).
-         Set(CPluginTable::getEnabledColumnName(), enable).
-         Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, pluginId);
-
-      if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-         throw shared::exception::CEmptyResult("No lines affected");
-   }
-
-   void CSQLitePluginRequester::disableAllPluginInstance(const std::string& pluginName)
+   void CSQLitePluginRequester::disableAllPluginInstances(const std::string& pluginName)
    {
       CQuery qUpdate;
       qUpdate. Update(CPluginTable::getTableName()).

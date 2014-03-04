@@ -41,7 +41,6 @@
                                                       name TEXT NOT NULL,\
                                                       pluginName TEXT NOT NULL UNIQUE,\
                                                       configuration  TEXT, \
-                                                      deleted  INTEGER DEFAULT 0, \
                                                       enabled  INTEGER DEFAULT 1\
                                                    )")
 
