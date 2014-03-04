@@ -8,15 +8,15 @@
 namespace web { namespace rest { namespace json {
 
    DECLARE_JSON_ENTITY_HEADER(Plugin,
-   (Id)
+      (Id)
       (Name)
       (PluginName)
       (Configuration)
       (Enabled)
       )
 
-      DECLARE_JSON_ENTITY_HEADER(Configuration,
-   (Section)
+   DECLARE_JSON_ENTITY_HEADER(Configuration,
+      (Section)
       (Name)
       (Value)
       (DefaultValue)
@@ -25,8 +25,8 @@ namespace web { namespace rest { namespace json {
       (LastModificationDate)
       )
 
-      DECLARE_JSON_ENTITY_HEADER(Acquisition,
-   (Id)
+   DECLARE_JSON_ENTITY_HEADER(Acquisition,
+      (Id)
       (Source)
       (Keyword)
       (Value)
@@ -34,27 +34,27 @@ namespace web { namespace rest { namespace json {
       )
 
 
-      DECLARE_JSON_ENTITY_HEADER(Device,
-   (Id)
+   DECLARE_JSON_ENTITY_HEADER(Device,
+      (Id)
       (DataSource)
       (Name)
       (Configuration)
       )
 
 
-      DECLARE_JSON_ENTITY_HEADER(Keyword,
-   (Name)
-      )
+   DECLARE_JSON_ENTITY_HEADER(Keyword,
+      (Name)
+   )
 
 
-      DECLARE_JSON_ENTITY_HEADER(Page,
-   (Id)
+   DECLARE_JSON_ENTITY_HEADER(Page,
+      (Id)
       (Name)
       (PageOrder)
-      )
+   )
 
-      DECLARE_JSON_ENTITY_HEADER(Widget,
-   (Id)
+   DECLARE_JSON_ENTITY_HEADER(Widget,
+      (Id)
       (IdPage)
       (Name)
       (SizeX)
@@ -62,25 +62,25 @@ namespace web { namespace rest { namespace json {
       (PositionX)
       (PositionY)
       (Configuration)
-      )
+   )
 
 
-      DECLARE_JSON_ENTITY_HEADER(PluginEventLogger,
-   (Id)
+   DECLARE_JSON_ENTITY_HEADER(PluginEventLogger,
+      (Id)
       (EventDate)
       (PluginName)
       (PluginVersion)
       (PluginRelease)
       (EventType)
       (Message)
-      )
+   )
 
-      DECLARE_JSON_ENTITY_HEADER(EventLogger,
-   (Id)
+   DECLARE_JSON_ENTITY_HEADER(EventLogger,
+      (Id)
       (Date)
       (Code)
       (OptionalData)
-      )
+   )
 
 
 } //namespace json

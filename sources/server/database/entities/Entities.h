@@ -25,7 +25,6 @@ namespace entities {
       ((PluginName)(std::string)(""))
       ((Configuration)(std::string)(""))
       ((Enabled)(bool)(true))
-      ((Deleted)(bool)(false))
       )
 
    DECLARE_ENTITY_CLASS(Configuration,

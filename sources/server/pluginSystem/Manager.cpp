@@ -274,7 +274,6 @@ void CManager::updateInstance(const database::entities::CPlugin& newData)
    m_database->updateInstance(newData);
 
    // Last, apply modifications
-   BOOST_ASSERT(previousData->getDeleted() == newData.getDeleted());     // Don't use this method to delete instance
    if (newData.isEnabledFilled() && previousData->getEnabled() != newData.getEnabled())
    {
       // Enable state was updated
