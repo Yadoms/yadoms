@@ -14,7 +14,7 @@ cmake_find_frameworks(IOKit)
 cmake_find_frameworks(CoreFoundation)
 
 if (IOKit_FRAMEWORKS)
-   set(IOKIT_LIBRARY "-framework IOKit -framework CoreFoundation" CACHE FILEPATH "IOKit framework" FORCE)
+   set(IOKIT_LIBRARY "-framework IOKit -framework CoreFoundation -framework CoreServices" CACHE FILEPATH "IOKit framework" FORCE)
    set(IOKIT_FOUND 1)
 endif (IOKit_FRAMEWORKS)
 
