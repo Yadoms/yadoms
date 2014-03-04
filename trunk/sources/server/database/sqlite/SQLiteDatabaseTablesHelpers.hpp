@@ -10,7 +10,6 @@
 //         (PluginName)("pluginName")
 //         (Configuration)("configuration")
 //         (Enabled)("enabled")
-//         (Deleted)("deleted")
 //         )
 //
 //    Ouptut :
@@ -23,7 +22,6 @@
 //            static const std::string & getPluginNameColumn() { return m_ColumnPluginName; }
 //            static const std::string & getConfigurationColumn() { return m_ColumnConfiguration; }
 //            static const std::string & getEnabledColumn() { return m_ColumnEnabled; }
-//            static const std::string & getDeletedColumn() { return m_ColumnDeleted; }
 //         
 //         private:
 //            static std::string m_TableName;
@@ -32,7 +30,6 @@
 //            static std::string m_ColumnPluginName;
 //            static std::string m_ColumnConfiguration;
 //            static std::string m_ColumnEnabled;
-//            static std::string m_ColumnDeleted;
 //         };
 //         
 //  Example:
@@ -43,7 +40,6 @@
 //              (PluginName)("pluginName")
 //              (Configuration)("configuration")
 //              (Enabled)("enabled")
-//              (Deleted)("deleted")
 //          )
 //
 //    Output :
@@ -53,7 +49,6 @@
 //         std::string CPluginTable::m_ColumnPluginName = "pluginName";
 //         std::string CPluginTable::m_ColumnConfiguration = "configuration";
 //         std::string CPluginTable::m_ColumnEnabled = "enabled";
-//         std::string CPluginTable::m_ColumnDeleted = "deleted";
 
 
 //

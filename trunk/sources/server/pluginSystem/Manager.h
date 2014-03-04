@@ -71,20 +71,6 @@ namespace pluginSystem
          boost::shared_ptr<database::IPluginEventLoggerRequester> eventLoggerDatabase, shared::event::CEventHandler& supervisor, int pluginManagerEventId);
 
       //--------------------------------------------------------------
-      /// \brief           Enable a registered instance of plugin (and start it)
-      /// \param [in] id   Instance Id
-      /// \throw           CInvalidParameter if id is unknown
-      //--------------------------------------------------------------
-      void enableInstance(int id);
-
-      //--------------------------------------------------------------
-      /// \brief           Disable a running instance of plugin (and stop it)
-      /// \param [in] id   Instance Id
-      /// \throw           CInvalidParameter if id is unknown
-      //--------------------------------------------------------------
-      void disableInstance(int id);
-
-      //--------------------------------------------------------------
       /// \brief           Read the available plugin list
       /// \return          The available plugin map (with informations)
       //--------------------------------------------------------------
@@ -101,37 +87,25 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief           Create a new instance of a plugin
-      /// \param [in] instanceName the name of the new instance
-      /// \param [in] pluginName The plugin name for the instance
-      /// \param [in] configuration The configuration of the instance if needed
+      /// \param [in] data Data fo the plugin instance to create (instance name, plugin name, configuration, etc...)
       /// \return          Id of the created instance
       /// \throw           CException if fails
-      /// \throw           CDatabaseException if duplicate record (instanceName must be unique)
+      /// \throw           CDatabaseException if duplicate record (instance name must be unique)
       //--------------------------------------------------------------
-      int createInstance(const std::string& instanceName, const std::string& pluginName,
-         const std::string& configuration = shared::CStringExtension::EmptyString);
+      int createInstance(const database::entities::CPlugin& data);
     
       //--------------------------------------------------------------
       /// \brief           Delete a plugin instance
       /// \param [in] id   Instance Id
-      /// \throw           CInvalidParameter if fails
-      /// \note            Do nothing if already deleted
+      /// \throw           CInvalidParameter if instance id is unknown fails
       //--------------------------------------------------------------
       void deleteInstance(int id);
 
       //--------------------------------------------------------------
       /// \brief           Get the plugin instances list
-      /// \return          List of instances ID of all known instances, started or not, except deleted
+      /// \return          List of instances ID of all known instances, started or not
       //--------------------------------------------------------------
-      boost::shared_ptr<std::vector<int> > getInstanceList () const;
-
-      //--------------------------------------------------------------
-      /// \brief           Get the plugin instances list with details
-      /// \return          Map of instances ID of all known instances, started or not, even deleted.
-      ///                  Keys are instance ID, values are instances details
-      //--------------------------------------------------------------
-      typedef std::map<int, boost::shared_ptr <const database::entities::CPlugin> > PluginDetailedInstanceMap;
-      boost::shared_ptr<PluginDetailedInstanceMap> getInstanceListDetails () const;
+      std::vector<boost::shared_ptr<database::entities::CPlugin> > getInstanceList () const;
 
       //--------------------------------------------------------------
       /// \brief           Get the instance configuration
@@ -139,15 +113,16 @@ namespace pluginSystem
       /// \return          The instance configuration, if available (empty string if not)
       /// \throw           CException if fails
       //--------------------------------------------------------------
-      std::string getInstanceConfiguration(int id) const;
-
+      boost::shared_ptr<database::entities::CPlugin> getInstance(int id) const;
+      
       //--------------------------------------------------------------
       /// \brief           Get the instance configuration
       /// \param [in] id   Instance Id
       /// \param [in] newConfiguration   The instance new configuration
+      /// \throw           CNotSupported if request to apply unsupported modifications
       /// \throw           CException if fails
       //--------------------------------------------------------------
-      void setInstanceConfiguration(int id, const std::string& newConfiguration);   
+      void updateInstance(const database::entities::CPlugin& newData);
 
       //--------------------------------------------------------------
       /// \brief           Signal an asynchronous event on plugin manager

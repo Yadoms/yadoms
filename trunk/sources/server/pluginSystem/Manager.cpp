@@ -4,6 +4,7 @@
 #include "Qualifier.h"
 #include <shared/DynamicLibrary.hpp>
 #include <shared/exception/InvalidParameter.hpp>
+#include <shared/exception/NotSupported.hpp>
 
 
 namespace pluginSystem
@@ -68,7 +69,7 @@ void CManager::init()
    m_ioServiceThread.reset(new boost::thread(boost::bind(&CManager::runPluginIOService, this)));
 
    // Create and start plugin instances from database
-   std::vector<boost::shared_ptr<database::entities::CPlugin> > databasePluginInstances = m_database->getPlugins();
+   std::vector<boost::shared_ptr<database::entities::CPlugin> > databasePluginInstances = m_database->getInstances();
    BOOST_FOREACH(boost::shared_ptr<database::entities::CPlugin> databasePluginInstance, databasePluginInstances)
    {
       if (databasePluginInstance->getEnabled())
@@ -91,40 +92,6 @@ void CManager::runPluginIOService()
    {
       // Deal with exception as appropriate.
       YADOMS_LOG(error) << "pluginSystem::CManager io_service exception : " << e.what();
-   }
-}
-
-void CManager::enableInstance(int id)
-{
-   try
-   {
-      // Start instance (throw if fails)
-      startInstance(id);
-
-      // Update instance state in database
-      m_database->enableInstance(id, true);
-   }
-   catch (shared::exception::CException& e)
-   {
-      YADOMS_LOG(error) << "Unable to enable plugin instance (" << id << ") : " << e.what();
-      throw shared::exception::CInvalidParameter(boost::lexical_cast<std::string>(id));
-   }
-}
-
-void CManager::disableInstance(int id)
-{
-   try
-   {
-      // Start instance (throw if fails)
-      stopInstance(id);
-
-      // Update instance state in database
-      m_database->enableInstance(id, false);
-   }
-   catch (shared::exception::CException& e)
-   {
-      YADOMS_LOG(error) << "Unable to disable plugin instance (" << id << ") : " << e.what();
-      throw shared::exception::CInvalidParameter(boost::lexical_cast<std::string>(id));
    }
 }
 
@@ -253,13 +220,10 @@ int CManager::getPluginQualityIndicator(const std::string& pluginName) const
    return m_qualifier->getQualityLevel(m_availablePlugins.at(pluginName));
 }
 
-int CManager::createInstance(const std::string& instanceName,
-   const std::string& pluginName, const std::string& configuration)
+int CManager::createInstance(const database::entities::CPlugin& data)
 {
    // First step, record instance in database, to get its ID
-   boost::shared_ptr<database::entities::CPlugin> dbRecord(new database::entities::CPlugin);
-   dbRecord->setName(instanceName).setPluginName(pluginName).setConfiguration(configuration).setEnabled(true).setDeleted(false);
-   int instanceId = m_database->addPlugin(dbRecord);
+   int instanceId = m_database->addInstance(data);
 
    // Next create instance
    startInstance(instanceId);
@@ -272,10 +236,10 @@ void CManager::deleteInstance(int id)
    try
    {
       // First step, disable and stop instance
-      disableInstance(id);
+      stopInstance(id);
 
-      // Next, delete in database (or flag as deleted)
-      m_database->removePlugin(id);
+      // Next, delete in database
+      m_database->removeInstance(id);
    }
    catch (shared::exception::CException& e)
    {
@@ -284,50 +248,48 @@ void CManager::deleteInstance(int id)
    }
 }
 
-boost::shared_ptr<std::vector<int> > CManager::getInstanceList () const
+std::vector<boost::shared_ptr<database::entities::CPlugin> > CManager::getInstanceList () const
 {
-   boost::shared_ptr<std::vector<int> > instances(new std::vector<int>);
-   std::vector<boost::shared_ptr<database::entities::CPlugin> > databasePluginInstances = m_database->getPlugins();
-   BOOST_FOREACH(boost::shared_ptr<database::entities::CPlugin> databasePluginInstance, databasePluginInstances)
+   return m_database->getInstances();
+}
+
+boost::shared_ptr<database::entities::CPlugin> CManager::getInstance(int id) const
+{
+   return m_database->getInstance(id);
+}
+
+void CManager::updateInstance(const database::entities::CPlugin& newData)
+{
+   // Check for supported modifications
+   if (!newData.isIdFilled())
    {
-      if (!databasePluginInstance->getDeleted())
-         instances->push_back(databasePluginInstance->getId());
+      BOOST_ASSERT(false); // ID must be provided
+      throw new shared::exception::CException("Update instance : instance ID was not provided");
    }
 
-   return instances;
-}
+   // First get old configuration from database
+   boost::shared_ptr<const database::entities::CPlugin> previousData = m_database->getInstance(newData.getId());
 
-boost::shared_ptr<CManager::PluginDetailedInstanceMap> CManager::getInstanceListDetails () const
-{
-   boost::shared_ptr<PluginDetailedInstanceMap> instances(new std::map<int, boost::shared_ptr <const database::entities::CPlugin> >);
-   std::vector<boost::shared_ptr<database::entities::CPlugin> > databasePluginInstances = m_database->getPlugins(true);
-   BOOST_FOREACH(boost::shared_ptr<database::entities::CPlugin> databasePluginInstance, databasePluginInstances)
+   // Next, update configuration in database
+   m_database->updateInstance(newData);
+
+   // Last, apply modifications
+   BOOST_ASSERT(previousData->getDeleted() == newData.getDeleted());     // Don't use this method to delete instance
+   if (newData.isEnabledFilled() && previousData->getEnabled() != newData.getEnabled())
    {
-      (*instances)[databasePluginInstance->getId()] = databasePluginInstance;
+      // Enable state was updated
+      if (newData.getEnabled())
+         startInstance(newData.getId());
+      else
+         stopInstance(newData.getId());
    }
-
-   return instances;
-}
-
-std::string CManager::getInstanceConfiguration(int id) const//TODO déplacer dans le REST ?
-{
-   // Next get database instance data
-   boost::shared_ptr<database::entities::CPlugin> instanceData(m_database->getPlugin(id));
-
-   // Returns configuration from database
-   return instanceData->getConfiguration();
-}
-
-void CManager::setInstanceConfiguration(int id, const std::string& newConfiguration)
-{
-   // First update configuration in database
-   m_database->updatePluginConfiguration(id, newConfiguration);
-
-   // Next notify the instance, if running
-   if (m_runningInstances.find(id) == m_runningInstances.end())
-      return;  // Instance is not running, nothing to do more
-
-   m_runningInstances[id]->updateConfiguration(newConfiguration);
+   else if (newData.isConfigurationFilled()
+      && previousData->getConfiguration() != newData.getConfiguration()) // No need to notify configuration if instance was enabled/disabled
+   {
+      // Configuration was updated, notify the instance, if running
+      if (m_runningInstances.find(newData.getId()) != m_runningInstances.end())
+         m_runningInstances[newData.getId()]->updateConfiguration(newData.getConfiguration());
+   }
 }
 
 void CManager::signalEvent(const CManagerEvent& event)
@@ -356,7 +318,7 @@ void CManager::signalEvent(const CManagerEvent& event)
             // Not safe anymore. Disable it (user will just be able to start it manually)
             // Not that this won't stop other instances of this plugin
             YADOMS_LOG(warning) << " plugin " << event.getPluginInformation()->getName() << " was evaluated as not safe and disabled.";
-            m_database->disableAllPluginInstance(event.getPluginInformation()->getName());
+            m_database->disableAllPluginInstances(event.getPluginInformation()->getName());
          }
 
          break;
@@ -390,7 +352,7 @@ void CManager::startInstance(int id)
       return;     // Already started ==> nothing more to do
 
    // Get instance informations from database
-   boost::shared_ptr<database::entities::CPlugin> databasePluginInstance (m_database->getPlugin(id));
+   boost::shared_ptr<database::entities::CPlugin> databasePluginInstance(m_database->getInstance(id));
 
    // Load the plugin
    try

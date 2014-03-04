@@ -46,7 +46,5 @@ public:
    /// \brief	    Enum parameter
    //--------------------------------------------------------------
    EEnumType getEnumParameter() const;
-
-   // TODO ajouter les autres getters
 };
 

@@ -12,7 +12,6 @@ namespace sqlite {
       ((PluginName)("pluginName"))
       ((Configuration)("configuration"))
       ((Enabled)("enabled"))
-      ((Deleted)("deleted"))
    )
 
    DECLARE_TABLE_COLUMN_NAMES(Configuration,  "Configuration",

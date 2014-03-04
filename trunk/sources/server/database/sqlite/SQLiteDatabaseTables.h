@@ -13,7 +13,6 @@ namespace sqlite {
       (PluginName)
       (Configuration)
       (Enabled)
-      (Deleted)
    )
 
    DECLARE_TABLE(Configuration,

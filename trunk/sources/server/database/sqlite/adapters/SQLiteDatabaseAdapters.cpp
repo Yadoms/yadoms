@@ -16,7 +16,6 @@ namespace adapters {
       ((PluginName)(std::string)(""))
       ((Configuration)(std::string)(""))
       ((Enabled)(bool)(true))
-      ((Deleted)(bool)(false))
       )
 
    DECLARE_ADAPTER_IMPLEMENTATION(Configuration,

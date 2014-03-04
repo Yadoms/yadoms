@@ -15,13 +15,6 @@ CInformation::CInformation(const boost::filesystem::path& pluginPath)
       boost::filesystem::path packageFile;
       packageFile = m_path / "package.json";
       boost::property_tree::json_parser::read_json(packageFile.string(), propertyTree);
-
-      boost::property_tree::ptree::const_assoc_iterator configurationSchema = propertyTree.find("configurationSchema");
-      if (configurationSchema != propertyTree.not_found() && !configurationSchema->first.empty())
-      {
-         // Une configuration est disponible
-         // TODO a-t-on réellement quelque chose à faire ici ?
-      }
    }
    catch (boost::property_tree::json_parser::json_parser_error& e)
    {

@@ -17,7 +17,6 @@
 //                (PluginName)
 //                (Configuration)
 //                (Enabled)
-//                (Deleted)
 //             )
 //
 //    Ouptut :
@@ -33,7 +32,6 @@
 //                static const std::string & getPluginNameIdentifier() { return m_pluginPluginNameIdentifier; }
 //                static const std::string & getConfigurationIdentifier() { return m_pluginConfigurationIdentifier; }
 //                static const std::string & getEnabledIdentifier() { return m_pluginEnabledIdentifier; }
-//                static const std::string & getDeletedIdentifier() { return m_pluginDeletedIdentifier; }
 //             
 //             private:
 //                static std::string m_pluginIdIdentifier;
@@ -41,7 +39,6 @@
 //                static std::string m_pluginPluginNameIdentifier;
 //                static std::string m_pluginConfigurationIdentifier;
 //                static std::string m_pluginEnabledIdentifier;
-//                static std::string m_pluginDeletedIdentifier;
 //             };
 //             
 //             class CPluginEntitySerializer : public IEntitySerializer<CPlugin>, public IEntityDeserializer<CPlugin>
@@ -74,7 +71,6 @@
 //             ((PluginName)("pluginName")JSON_STRING)
 //             ((Configuration)("configuration")JSON_STRING)
 //             ((Enabled)("enabled")JSON_BOOL)
-//             ((Deleted)("deleted")JSON_BOOL)
 //          )
 //
 //    Ouptut :
@@ -84,7 +80,6 @@
 //             std::string CPluginEntityJsonDefinition::m_pluginPluginNameIdentifier = "pluginName";
 //             std::string CPluginEntityJsonDefinition::m_pluginConfigurationIdentifier = "configuration";
 //             std::string CPluginEntityJsonDefinition::m_pluginEnabledIdentifier = "enabled";
-//             std::string CPluginEntityJsonDefinition::m_pluginDeletedIdentifier = "deleted";
 //
 //             //implementation of class CPluginEntitySerializer
 //             CPluginEntitySerializer::CPluginEntitySerializer()
@@ -101,7 +96,6 @@
 //                CJson result;
 //                result.put(CPluginEntityJsonDefinition::getIdIdentifier(), object.getId());
 //                result.put(CPluginEntityJsonDefinition::getEnabledIdentifier(), object.getEnabled());
-//                result.put(CPluginEntityJsonDefinition::getDeletedIdentifier(), object.getDeleted());
 //                result.put(CPluginEntityJsonDefinition::getConfigurationIdentifier(), object.getConfiguration());
 //                result.put(CPluginEntityJsonDefinition::getNameIdentifier(), object.getName());
 //                result.put(CPluginEntityJsonDefinition::getPluginNameIdentifier(), object.getPluginName());
@@ -120,9 +114,6 @@
 //             
 //                if(object.find(CPluginEntityJsonDefinition::getEnabledIdentifier()) != object.not_found())
 //                   entity.setEnabled(object.get<bool>(CPluginEntityJsonDefinition::getEnabledIdentifier()));
-//             
-//                if(object.find(CPluginEntityJsonDefinition::getDeletedIdentifier()) != object.not_found())
-//                   entity.setDeleted(object.get<bool>(CPluginEntityJsonDefinition::getDeletedIdentifier()));
 //             
 //                if(object.find(CPluginEntityJsonDefinition::getConfigurationIdentifier()) != object.not_found())
 //                   entity.setConfiguration(object.get<std::string>(CPluginEntityJsonDefinition::getConfigurationIdentifier()));
@@ -328,14 +319,12 @@ boost::shared_ptr< DECLARE_JSON_ENTITY_CLASS(_classname) > DECLARE_JSON_ENTITY_S
 ///               	static const std::string & getPluginNameIdentifier() { return m_PluginNameIdentifier; } 
 ///               	static const std::string & getConfigurationIdentifier() { return m_ConfigurationIdentifier; } 
 ///               	static const std::string & getEnabledIdentifier() { return m_EnabledIdentifier; } 
-///               	static const std::string & getDeletedIdentifier() { return m_DeletedIdentifier; }   
 ///               private: 
 ///               	static std::string m_IdIdentifier; 
 ///               	static std::string m_NameIdentifier; 
 ///               	static std::string m_PluginNameIdentifier; 
 ///               	static std::string m_ConfigurationIdentifier; 
 ///               	static std::string m_EnabledIdentifier; 
-///               	static std::string m_DeletedIdentifier;   
 ///               };
 ///
 ///
@@ -364,7 +353,6 @@ boost::shared_ptr< DECLARE_JSON_ENTITY_CLASS(_classname) > DECLARE_JSON_ENTITY_S
 ///                   std::string CPluginEntityJsonDefinition::m_PluginNameIdentifier = "pluginName" ;
 ///                   std::string CPluginEntityJsonDefinition::m_ConfigurationIdentifier = "configuration" ;
 ///                   std::string CPluginEntityJsonDefinition::m_EnabledIdentifier = "enabled" ;
-///                   std::string CPluginEntityJsonDefinition::m_DeletedIdentifier = "deleted" ;
 ///                   
 ///               
 ///         -> the class CxxxxxEntitySerializer implementation
@@ -383,7 +371,6 @@ boost::shared_ptr< DECLARE_JSON_ENTITY_CLASS(_classname) > DECLARE_JSON_ENTITY_S
 ///                     CJson result;
 ///                     result.put(CPluginEntityJsonDefinition::getIdIdentifier(), object.getId());
 ///                     result.put(CPluginEntityJsonDefinition::getEnabledIdentifier(), object.getEnabled());
-///                     result.put(CPluginEntityJsonDefinition::getDeletedIdentifier(), object.getDeleted());
 ///                     result.put(CPluginEntityJsonDefinition::getConfigurationIdentifier(), object.getConfiguration());
 ///                     result.put(CPluginEntityJsonDefinition::getNameIdentifier(), object.getName());
 ///                     result.put(CPluginEntityJsonDefinition::getPluginNameIdentifier(), object.getPluginName());
@@ -399,9 +386,6 @@ boost::shared_ptr< DECLARE_JSON_ENTITY_CLASS(_classname) > DECLARE_JSON_ENTITY_S
 ///                  
 ///                     if(object.find(CPluginEntityJsonDefinition::getEnabledIdentifier()) != object.not_found())
 ///                        entity.setEnabled(object.get<bool>(CPluginEntityJsonDefinition::getEnabledIdentifier()));
-///                  
-///                     if(object.find(CPluginEntityJsonDefinition::getDeletedIdentifier()) != object.not_found())
-///                        entity.setDeleted(object.get<bool>(CPluginEntityJsonDefinition::getDeletedIdentifier()));
 ///                  
 ///                     if(object.find(CPluginEntityJsonDefinition::getConfigurationIdentifier()) != object.not_found())
 ///                        entity.setConfiguration(object.get<std::string>(CPluginEntityJsonDefinition::getConfigurationIdentifier()));

@@ -14,7 +14,6 @@ namespace web { namespace rest { namespace json {
       ((PluginName)("pluginName")JSON_STRING)
       ((Configuration)("configuration")JSON_STRING)
       ((Enabled)("enabled")JSON_BOOL)
-      ((Deleted)("deleted")JSON_BOOL)
       )
 
 
