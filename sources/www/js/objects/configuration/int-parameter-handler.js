@@ -2,8 +2,8 @@
  * Created by Nicolas on 01/03/14.
  */
 
-function IntParameterHandler(objectToConfigure, name, content, currentValue) {
-   assert(objectToConfigure !== undefined, "objectToConfigure must contain widget or plugin object");
+function IntParameterHandler(i18nContext, name, content, currentValue) {
+   assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(name !== undefined, "name must be defined");
    assert(content !== undefined, "content must be defined");
 
@@ -29,28 +29,47 @@ function IntParameterHandler(objectToConfigure, name, content, currentValue) {
       this.ValueRounded = false;
 
    this.name = name;
-   this.objectToConfigure = objectToConfigure;
+   this.i18nContext = i18nContext;
    this.content = content;
 }
 
+function createFormGroup(parameterHandler, controlToInsert) {
+
+   assert(parameterHandler !== undefined, "parameterHandler must be defined");
+   assert(controlToInsert !== undefined, "controlToInsert must be defined");
+
+   var s =
+   "<div class=\"form-group\">" +
+      "<label for=\"" + parameterHandler.name + "\" data-i18n=\"" + parameterHandler.i18nContext + parameterHandler.name + ".name\" class=\"control-label col-sm-3\"></label>" +
+      "<button id=\"" + parameterHandler.name + "-help\" class=\"col-sm-1\" type=\"button\" class=\"btn btn-default\" data-container=\"body\">" +
+         "<i class=\"fa fa-question\"></i>" +
+      "</button>" +
+      "<div class=\"col-sm-8\">" +
+         controlToInsert +
+      "</div>" +
+   "</div>" +
+   "<script>" +
+      "$(\"#" + parameterHandler.name + "\").popover({\"placement\" : \"right\"});\n" +
+      "$(\"button#" + parameterHandler.name + "-help\").click(function () {\n" +
+         "$(\"#" + parameterHandler.name + "\").popover(\"toggle\");\n" +
+         "setTimeout(function () {\n" +
+            "$(\"#" + parameterHandler.name + "\").popover(\"hide\"); \n" +
+         "}, 5000);\n" +
+      "});\n" +
+   "</script>";
+
+   return s;
+}
+
 IntParameterHandler.prototype.getDOMObject = function () {
-   //we provide a textBox
-   return "<div class=\"form-group\">" +
-               "<label for=\"" + this.name + "\" data-i18n=\"" + this.objectToConfigure.name +":configurationSchema." + this.name + ".name\"></label>" +
-               "<div class=\"input-group\">" +
-                  "<input type=\"number\" class=\"form-control\" id=\"" + this.name + "\" data-i18n=\"[title]" + this.objectToConfigure.name +":configurationSchema." + this.name + ".description\">" +
-                  "<span class=\"input-group-btn\">" +
-                     "<button id=\"" + this.name + "-help\" type=\"button\" class=\"btn btn-default\" data-container=\"body\" data-toggle=\"popover\" data-placement=\"right\" data-i18n=\"[data-content]" + this.objectToConfigure.name +":configurationSchema." + this.name + ".description\">" +
-                        "<i class=\"fa fa-question\"></i>" +
-                     "</button>" +
-                  "</span>" +
-               "</div>" +
-          "</div>" +
-          "<script>" +
-               "$(\"button#" + this.name + "-help\").popover().click(function () {\n\r" +
-                  "setTimeout(function () {\n\r" +
-                     "$(\"button#" + this.name + "-help\").popover(\"hide\"); \n\r" +
-                  "}, 5000);\n\r" +
-               "});" +
-          "</script>";
+   //we provide a SpinEdit
+   var input = "<input " +
+                        "type=\"number\" " +
+                        "class=\"form-control\" " +
+                        "id=\"" + this.name + "\" " +
+                        "data-i18n=\"[data-content]" + this.i18nContext + this.name + ".description\" " +
+               ">";
+   var self = this;
+
+   return createFormGroup(self, input);
 }

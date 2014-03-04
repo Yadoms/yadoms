@@ -23,20 +23,19 @@
   </head>
 
   <body>
-  <button id="testBtn" type="button" class="btn btn-default hidden" title="Rename"><i class="glyphicon glyphicon-arrow-left"></i></button>
-
   <!-- Fixed navbar -->
   <div class="navbar navbar-default navbar-static-top" role="navigation">
       <div class="container">
           <div class="row" id="mainNavBar">
               <div class="col-md-12">
                   <div class="navbar-header">
-                      <a class="navbar-brand" href="#">Yadoms</a>
+                     <a class="navbar-brand" href="#">Yadoms</a>
+                     <!--<label class="label label-default">v 0.7</label>-->
                   </div>
-                  <div class="navbar-collapse collapse">
+                  <div class="">
                       <ul class="nav navbar-nav">
                           <li class="dropdown">
-                              <a href="" class="dropdown-toggle btn btn-inverse" data-toggle="dropdown"><i class="caret"></i></a>
+                              <a class="dropdown-toggle" data-toggle="dropdown"><i class="caret"></i></a>
                               <ul class="dropdown-menu">
                                   <li><a href="#" data-i18n="mainPage.menu.configuration" ></a></li>
                                   <li><a href="#" data-i18n="mainPage.menu.checkForUpdate">Check For Update</a></li>
@@ -47,12 +46,12 @@
                                   <li><a href="#" data-i18n="mainPage.menu.restart">Restart</a></li>
                               </ul>
                           </li>
-                          <li><a href="#" class="btn btn-inverse customization-item hidden" id="btn-add-page"><i class="fa fa-file-o"></i>&nbsp;&nbsp;<span data-i18n="customization.addNewPage"></span></a></li>
-                          <li><a href="#" class="btn btn-inverse customization-item hidden" id="btn-add-widget"><i class="fa fa-puzzle-piece"></i>&nbsp;&nbsp;<span data-i18n="customization.addNewWidget"></span></a></li>
+                          <li><button class="btn btn-default customization-item hidden" id="btn-add-page"><i class="fa fa-file-o"></i><span class="hidden-xs">&nbsp;&nbsp;</span><span class="hidden-xs" data-i18n="customization.addNewPage"></span></button></li>
+                          <li><button class="btn btn-default customization-item hidden" id="btn-add-widget"><i class="fa fa-puzzle-piece"></i><span class="hidden-xs">&nbsp;&nbsp;</span><span class="hidden-xs" data-i18n="customization.addNewWidget"></span></button></li>
                       </ul>
                       <ul class="nav navbar-nav navbar-right">
-                          <li><a href="#" class="btn btn-inverse" id="chartButton"><i class="fa fa-bar-chart-o"></i></a></li>
-                          <li><a href="#" class="btn btn-inverse" id="customizeButton"><i class="fa fa-wrench"></i></a></li>
+                          <li><a href="#" class="" id="chartButton"><i class="fa fa-bar-chart-o"></i></a></li>
+                          <li><a href="#" class="" id="customizeButton"><i class="fa fa-wrench"></i></a></li>
                       </ul>
                       </div>
                   </div>
@@ -63,7 +62,6 @@
                       <ul class="nav nav-pills nav-justified page-tabs">
                           <!-- Nav pills of pages will be inserted here -->
                       </ul>
-                      <!--<a href="#" class="btn btn-inverse customization-item hidden" id="btn-add-page"><i class="fa fa-plus"></i></a>-->
                   </div>
               </div>
           </div>
@@ -75,16 +73,8 @@
           <!-- Gridster tabs will be inserted here -->
       </div>
       <footer class="footer">
-         <div class="navbar navbar-default">
-            <ul class="nav navbar-nav">
-               <li>
-                  <a class="btn btn-inverse" id="btn-show-qrcode"><i class="fa fa-qrcode"></i></a>
-               </li>
-               <li>
-                  <p class="navbar-text navbar-left"> &copy; Yadoms 2014</p>
-               </li>
-            </ul>
-         </div>
+         <button class="btn btn-primary" id="btn-show-qrcode"><i class="fa fa-qrcode"></i></button>
+         <label class="label label-default">&copy; Yadoms 2014</label>
       </footer>
   </div>
 

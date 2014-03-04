@@ -36,9 +36,13 @@ function ConfigurationManager(objectToConfigure, configurationSchema, configurat
 ConfigurationManager.prototype.createParameterHandler = function (objectToConfigure, name, content, currentValue) {
    assert(objectToConfigure !== undefined, "objectToConfigure must contain widget or plugin object");
    assert(content.type !== undefined, "type field must be found in " + name + " parameter");
+
+   //we build the i18n context
+   var i18nContext = objectToConfigure.name + ":configurationSchema.";
+
    switch (content.type.toLowerCase()) {
       case "int" :
-            return new IntParameterHandler(objectToConfigure, name, content, currentValue);
+            return new IntParameterHandler(i18nContext, name, content, currentValue);
          break;
 
       default :
@@ -48,10 +52,13 @@ ConfigurationManager.prototype.createParameterHandler = function (objectToConfig
 };
 
 ConfigurationManager.prototype.getDOMObject = function() {
-   var result = "";
+   var result = "<form class=\"form-horizontal\" role=\"form\">\n\r";
    $.each(this.configurationHandlers, function (key, value) {
       result += value.getDOMObject();
       result += "\n\r";
    });
+
+   result += "</form>\n\r";
+
    return result;
 }

@@ -384,6 +384,12 @@ void CXplService::setFilter(const std::string & msgtype, const std::string & ven
       m_filter.typeId = boost::shared_ptr<std::string>(new std::string(boost::trim_copy(typeId)));
 }
 
+void CXplService::setFilterToReceiveMessageOnlyForMe()
+{
+   //we get information from source actor
+   setFilter("*", m_source.getVendorId(), m_source.getDeviceId(), m_source.getInstanceId(), "*", "*");
+}
+
 CXplActor CXplService::getActor() const
 {
    return m_source;

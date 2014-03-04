@@ -53,7 +53,6 @@ $("a#customizeButton").click(function() {
 
    if (customization)
    {
-      $("a#customizeButton").removeClass('btn-inverse').addClass('btn-primary');
       enableGridsterCustomization(true);
       animateCustomizeButton();
       $(".customization-item").removeClass("hidden");
@@ -76,7 +75,6 @@ $("div#tabContainer").click(function() {
  */
 function exitCustomization() {
    customization = false;
-   $("a#customizeButton").removeClass('btn-primary').addClass('btn-inverse');
    enableGridsterCustomization(false);
    $(".customization-item").addClass("hidden");
    $("li.widget").removeClass("liWidgetCustomization");

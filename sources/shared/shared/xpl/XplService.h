@@ -77,6 +77,11 @@ namespace shared { namespace xpl
                      const std::string & classId, const std::string & typeId);
 
       //--------------------------------------------------------------
+      /// \brief			Configure the filter to receive message wich recipient is source actor of broadcast
+      //--------------------------------------------------------------
+      void setFilterToReceiveMessageOnlyForMe();
+
+      //--------------------------------------------------------------
       /// \brief		 Get the actor defined in the service
       /// \return		The current actor
       //--------------------------------------------------------------
