@@ -83,7 +83,7 @@ boost::mutex EventsMutex;
 //--------------------------------------------------------------
 void onEventOnDirectory(const boost::asio::dir_monitor_event& evt)
 {
-   std::cout << "onEventOnDirectory : " << evt.dirname << ", " << evt.filename << ", " << evt.type << std::endl;
+   std::cout << "onEventOnDirectory : " << evt << std::endl;
    boost::mutex::scoped_lock lock(EventsMutex);
    Events.push_back(evt);
 }
@@ -105,8 +105,8 @@ BOOST_AUTO_TEST_CASE(NewFile_Test)
    // Now, check results
    boost::mutex::scoped_lock lock(EventsMutex);
    BOOST_REQUIRE_EQUAL(Events.size(), (size_t)1);
-   BOOST_CHECK_EQUAL(Events[0].dirname, TestDirectory);
-   BOOST_CHECK_EQUAL(Events[0].filename, TestFile);
+   BOOST_CHECK_EQUAL(Events[0].path.parent_path(), TestDirectory);
+   BOOST_CHECK_EQUAL(Events[0].path.filename(), TestFile);
    BOOST_CHECK_EQUAL(Events[0].type, boost::asio::dir_monitor_event::added);
 }
 
@@ -128,8 +128,8 @@ BOOST_AUTO_TEST_CASE(DeleteFile_Test)
    // Now, check results
    boost::mutex::scoped_lock lock(EventsMutex);
    BOOST_REQUIRE_EQUAL(Events.size(), (size_t)1);
-   BOOST_CHECK_EQUAL(Events[0].dirname, TestDirectory);
-   BOOST_CHECK_EQUAL(Events[0].filename, TestFile);
+   BOOST_CHECK_EQUAL(Events[0].path.parent_path(), TestDirectory);
+   BOOST_CHECK_EQUAL(Events[0].path.filename(), TestFile);
    BOOST_CHECK_EQUAL(Events[0].type, boost::asio::dir_monitor_event::removed);
 }
 
@@ -151,11 +151,11 @@ BOOST_AUTO_TEST_CASE(ModifyFile_Test)
    // Now, check results (2 events : at file open, at file close)
    boost::mutex::scoped_lock lock(EventsMutex);
    BOOST_REQUIRE_EQUAL(Events.size(), (size_t)2);
-   BOOST_CHECK_EQUAL(Events[0].dirname, TestDirectory);
-   BOOST_CHECK_EQUAL(Events[0].filename, TestFile);
+   BOOST_CHECK_EQUAL(Events[0].path.parent_path(), TestDirectory);
+   BOOST_CHECK_EQUAL(Events[0].path.filename(), TestFile);
    BOOST_CHECK_EQUAL(Events[0].type, boost::asio::dir_monitor_event::modified);
-   BOOST_CHECK_EQUAL(Events[1].dirname, TestDirectory);
-   BOOST_CHECK_EQUAL(Events[1].filename, TestFile);
+   BOOST_CHECK_EQUAL(Events[1].path.parent_path(), TestDirectory);
+   BOOST_CHECK_EQUAL(Events[1].path.filename(), TestFile);
    BOOST_CHECK_EQUAL(Events[1].type, boost::asio::dir_monitor_event::modified);
 }
 
@@ -178,13 +178,13 @@ BOOST_AUTO_TEST_CASE(RenameFile_Test)
    // Now, check results
    boost::mutex::scoped_lock lock(EventsMutex);
    BOOST_REQUIRE_EQUAL(Events.size(), (size_t)3);
-   BOOST_CHECK_EQUAL(Events[0].dirname, TestDirectory);
-   BOOST_CHECK_EQUAL(Events[0].filename, TestFile);
+   BOOST_CHECK_EQUAL(Events[0].path.parent_path(), TestDirectory);
+   BOOST_CHECK_EQUAL(Events[0].path.filename(), TestFile);
    BOOST_CHECK_EQUAL(Events[0].type, boost::asio::dir_monitor_event::renamed_old_name);
-   BOOST_CHECK_EQUAL(Events[1].dirname, TestDirectory);
-   BOOST_CHECK_EQUAL(Events[1].filename, newFileName);
+   BOOST_CHECK_EQUAL(Events[1].path.parent_path(), TestDirectory);
+   BOOST_CHECK_EQUAL(Events[1].path.filename(), newFileName);
    BOOST_CHECK_EQUAL(Events[1].type, boost::asio::dir_monitor_event::renamed_new_name);
-   BOOST_CHECK_EQUAL(Events[2].dirname, TestDirectory);
-   BOOST_CHECK_EQUAL(Events[2].filename, newFileName);
+   BOOST_CHECK_EQUAL(Events[2].path.parent_path(), TestDirectory);
+   BOOST_CHECK_EQUAL(Events[2].path.filename(), newFileName);
    BOOST_CHECK_EQUAL(Events[2].type, boost::asio::dir_monitor_event::modified);
 }
