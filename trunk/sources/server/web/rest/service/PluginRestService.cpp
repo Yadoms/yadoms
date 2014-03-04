@@ -68,41 +68,117 @@ namespace web { namespace rest { namespace service {
 
    web::rest::json::CJson CPluginRestService::getOnePlugin(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
-      std::string objectId = "";
-      if(parameters.size()>1)
-         objectId = parameters[1];
+      try
+      {
+         int instanceId = 0;
+         if(parameters.size()>1)
+         {
+            instanceId = boost::lexical_cast<int>(parameters[1]);
 
-      web::rest::json::CPluginEntitySerializer hes;
-      boost::shared_ptr<database::entities::CPlugin> pluginFound =  m_dataProvider->getPluginRequester()->getInstance(boost::lexical_cast<int>(objectId));
-      return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*pluginFound.get()));
+            web::rest::json::CPluginEntitySerializer hes;
+            boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(instanceId);
+            return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*pluginFound.get()));
+         }
+         else
+         {
+            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id in utrl");
+         }
+      }
+      catch(std::exception &ex)
+      {
+         return web::rest::json::CJsonResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return web::rest::json::CJsonResult::GenerateError("unknown exception in retreiving one plugin instance");
+      }
    }
 
    web::rest::json::CJson CPluginRestService::getAllPlugins(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
       web::rest::json::CPluginEntitySerializer hes;
-      std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_dataProvider->getPluginRequester()->getInstances();
+      std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
       return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CPlugin>::SerializeCollection(hwList, hes, getRestKeyword()));
    }
 
    web::rest::json::CJson CPluginRestService::createPlugin(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
-      return web::rest::json::CJsonResult::GenerateError("Not yet implemented");
+      try
+      {
+         web::rest::json::CPluginEntitySerializer hes;
+         boost::shared_ptr<database::entities::CPlugin> instanceToAdd = hes.deserialize(requestContent);
+         int idCreated = m_pluginManager->createInstance(*instanceToAdd);
+
+         boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(idCreated);
+         return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*pluginFound.get()));
+      }
+      catch(std::exception &ex)
+      {
+         return web::rest::json::CJsonResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return web::rest::json::CJsonResult::GenerateError("unknown exception in creating a new plugin instance");
+      }
    }
 
    web::rest::json::CJson CPluginRestService::updatePlugin(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
-      return web::rest::json::CJsonResult::GenerateError("Not yet implemented");
+      try
+      {
+         web::rest::json::CPluginEntitySerializer hes;
+         boost::shared_ptr<database::entities::CPlugin> instanceToUpdate = hes.deserialize(requestContent);
+         m_pluginManager->updateInstance(*instanceToUpdate);
+
+         boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(instanceToUpdate->getId());
+         return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*pluginFound.get()));
+      }
+      catch(std::exception &ex)
+      {
+         return web::rest::json::CJsonResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return web::rest::json::CJsonResult::GenerateError("unknown exception in updating a plugin instance");
+      }
    }
 
 
    web::rest::json::CJson CPluginRestService::deletePlugin(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
-      return web::rest::json::CJsonResult::GenerateError("Not yet implemented");
+      try
+      {
+         int instanceId = 0;
+         if(parameters.size()>1)
+         {
+            instanceId = boost::lexical_cast<int>(parameters[1]);
+            m_pluginManager->deleteInstance(instanceId);
+            return web::rest::json::CJsonResult::GenerateSuccess();
+         }
+         else
+         {
+            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id in utrl");
+         }
+      }
+      catch(std::exception &ex)
+      {
+         return web::rest::json::CJsonResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return web::rest::json::CJsonResult::GenerateError("unknown exception in deleting one plugin instance");
+      }
    }
 
    web::rest::json::CJson CPluginRestService::deleteAllPlugins(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
-      return web::rest::json::CJsonResult::GenerateError("Not yet implemented");
+      std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
+      BOOST_FOREACH(boost::shared_ptr<database::entities::CPlugin> toDelete, hwList)
+      {
+         m_pluginManager->deleteInstance(toDelete->getId());
+      }
+
+      return web::rest::json::CJsonResult::GenerateSuccess();
    }
 
 
