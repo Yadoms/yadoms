@@ -4,9 +4,7 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying 
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt) 
 // 
-
-#ifndef BOOST_ASIO_BASIC_DIR_MONITOR_SERVICE_HPP 
-#define BOOST_ASIO_BASIC_DIR_MONITOR_SERVICE_HPP 
+#pragma once
 
 #include "dir_monitor_impl.hpp" 
 #include <boost/asio.hpp> 
@@ -227,8 +225,9 @@ private:
             { 
                 // If a file handle is closed GetQueuedCompletionStatus() returns and bytes_transferred will be set to 0. 
                 // The completion key must be deleted then as it won't be used anymore. 
-                if (!bytes_transferred) 
+                if (!bytes_transferred) {
                     delete ck; 
+                }
                 else 
                 { 
                     // We must check if the implementation still exists. If the I/O object is destroyed while a directory event 
@@ -237,8 +236,9 @@ private:
                     implementation_type impl = ck->impl.lock(); 
 
                     // If the implementation doesn't exist anymore we must delete the completion key as it won't be used anymore. 
-                    if (!impl) 
+                    if (!impl) {
                         delete ck; 
+                    }
                     else 
                     { 
                         DWORD offset = 0; 
@@ -254,8 +254,10 @@ private:
                             case FILE_ACTION_MODIFIED: type = dir_monitor_event::modified; break; 
                             case FILE_ACTION_RENAMED_OLD_NAME: type = dir_monitor_event::renamed_old_name; break; 
                             case FILE_ACTION_RENAMED_NEW_NAME: type = dir_monitor_event::renamed_new_name; break; 
-                            } 
-                            impl->pushback_event(dir_monitor_event(ck->dirname, to_utf8(fni->FileName, fni->FileNameLength / sizeof(WCHAR)), type)); 
+                            }
+                            boost::filesystem::path pathName(ck->dirname);
+                            pathName /= to_utf8(fni->FileName, fni->FileNameLength / sizeof(WCHAR));
+                            impl->pushback_event(dir_monitor_event(pathName, type)); 
                             offset += fni->NextEntryOffset; 
                         } 
                         while (fni->NextEntryOffset); 
@@ -348,4 +350,3 @@ boost::asio::io_service::id basic_dir_monitor_service<DirMonitorImplementation>:
 
 #pragma warning (pop)
 
-#endif 

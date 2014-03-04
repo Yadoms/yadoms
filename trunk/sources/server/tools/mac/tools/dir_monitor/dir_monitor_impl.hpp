@@ -1,213 +1,242 @@
-// 
-// Copyright (c) 2008, 2009 Boris Schaeling <boris@highscore.de> 
-// 
-// Distributed under the Boost Software License, Version 1.0. (See accompanying 
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt) 
-// 
+//
+// FSEvents-based implementation for OSX
+//
+// Apple documentation about FSEvents interface:
+// https://developer.apple.com/library/mac/documentation/Darwin/Reference/FSEvents_Ref/
+//     Reference/reference.html#//apple_ref/doc/c_ref/kFSEventStreamCreateFlagFileEvents
+//
+// Copyright (c) 2014 Stanislav Karchebnyy <berkus@atta-metta.net>
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+#pragma once
 
-#ifndef BOOST_ASIO_DIR_MONITOR_IMPL_HPP 
-#define BOOST_ASIO_DIR_MONITOR_IMPL_HPP 
+#include <boost/filesystem.hpp>
+#include <boost/unordered_set.hpp>
+#include <boost/system/error_code.hpp>
+#include <boost/system/system_error.hpp>
+#include <string>
+#include <deque>
+#include <boost/thread.hpp>
+#include <CoreServices/CoreServices.h>
 
-#include <boost/enable_shared_from_this.hpp> 
-#include <boost/asio.hpp> 
-#include <boost/thread.hpp> 
-#include <boost/bind.hpp> 
-#include <boost/scoped_ptr.hpp> 
-#include <boost/array.hpp> 
-#include <boost/bimap.hpp> 
-#include <boost/system/error_code.hpp> 
-#include <boost/system/system_error.hpp> 
-#include <string> 
-#include <deque> 
+namespace boost {
+namespace asio {
 
-namespace boost { 
-namespace asio { 
+class dir_monitor_impl
+{
+public:
+    dir_monitor_impl()
+        : run_(true)
+        , work_thread_(&boost::asio::dir_monitor_impl::work_thread, this)
+    {}
 
-class dir_monitor_impl : 
-    public boost::enable_shared_from_this<dir_monitor_impl> 
-{ 
-public: 
-    dir_monitor_impl() 
-        /*: fd_(init_fd()), 
-        stream_descriptor_(inotify_io_service_, fd_), 
-        inotify_work_(new boost::asio::io_service::work(inotify_io_service_)), 
-        inotify_work_thread_(boost::bind(&boost::asio::io_service::run, &inotify_io_service_)), 
-        run_(true) */
-    { 
-    } 
+    ~dir_monitor_impl()
+    {
+        stop_work_thread();
+        work_thread_.join();
+        stop_fsevents();
+    }
 
-    void add_directory(const std::string &dirname) 
-    { 
-         //\TODO : make it works for mac
-         /*
-        int wd = inotify_add_watch(fd_, dirname.c_str(), IN_CREATE | IN_DELETE | IN_MOVED_FROM | IN_MOVED_TO); 
-        if (wd == -1) 
-        { 
-            boost::system::system_error e(boost::system::error_code(errno, boost::system::get_system_category()), "boost::asio::dir_monitor_impl::add_directory: inotify_add_watch failed"); 
-            boost::throw_exception(e); 
-        } 
+    void add_directory(boost::filesystem::path dirname)
+    {
+        boost::unique_lock<boost::mutex> lock(dirs_mutex_);
+        dirs_.insert(dirname.native());//@todo Store path in dictionary
+        stop_fsevents();
+        start_fsevents();
+    }
 
-        boost::unique_lock<boost::mutex> lock(watch_descriptors_mutex_); 
-        watch_descriptors_.insert(watch_descriptors_t::value_type(wd, dirname)); 
-        */
-    } 
+    void remove_directory(boost::filesystem::path dirname)
+    {
+        boost::unique_lock<boost::mutex> lock(dirs_mutex_);
+        dirs_.erase(dirname.native());
+        stop_fsevents();
+        start_fsevents();
+    }
 
-    void remove_directory(const std::string &dirname) 
-    { 
-         //\TODO : make it works for mac
-         /*
-    
-        boost::unique_lock<boost::mutex> lock(watch_descriptors_mutex_); 
-        watch_descriptors_t::right_map::iterator it = watch_descriptors_.right.find(dirname); 
-        if (it != watch_descriptors_.right.end()) 
-        { 
-            inotify_rm_watch(fd_, it->second); 
-            watch_descriptors_.right.erase(it); 
-        } 
-        */
-    } 
+    void destroy()
+    {
+        boost::unique_lock<boost::mutex> lock(events_mutex_);
+        run_ = false;
+        events_cond_.notify_all();
+    }
 
-    void destroy() 
-    { 
-         //\TODO : make it works for mac
-         /*
-    
-        inotify_work_.reset(); 
-        inotify_io_service_.stop(); 
-        inotify_work_thread_.join(); 
-
-        boost::unique_lock<boost::mutex> lock(events_mutex_); 
-        run_ = false; 
-        events_cond_.notify_all(); 
-        */
-    } 
-
-    dir_monitor_event popfront_event(boost::system::error_code &ec) 
-    { 
-         //\TODO : make it works for mac
-         /*
-
-        boost::unique_lock<boost::mutex> lock(events_mutex_); 
-        while (run_ && events_.empty()) 
-            events_cond_.wait(lock); 
-        dir_monitor_event ev; 
-        if (!events_.empty()) 
-        { 
-            ec = boost::system::error_code(); 
-            ev = events_.front(); 
-            events_.pop_front(); 
-        } 
-        else 
-            ec = boost::asio::error::operation_aborted; 
-        return ev; 
-        */
+    dir_monitor_event popfront_event(boost::system::error_code &ec)
+    {
+        boost::unique_lock<boost::mutex> lock(events_mutex_);
+        while (run_ && events_.empty()) {
+            events_cond_.wait(lock);
+        }
         dir_monitor_event ev;
+        if (!events_.empty())
+        {
+            ec = boost::system::error_code();
+            ev = events_.front();
+            events_.pop_front();
+        }
+        else {
+            ec = boost::asio::error::operation_aborted;
+        }
         return ev;
-    } 
+    }
 
-    void pushback_event(dir_monitor_event ev) 
-    { 
-         //\TODO : make it works for mac
-         /*    
-        boost::unique_lock<boost::mutex> lock(events_mutex_); 
-        if (run_) 
-        { 
-            events_.push_back(ev); 
-            events_cond_.notify_all(); 
-        } 
-        */
-    } 
+    void pushback_event(dir_monitor_event ev)
+    {
+        boost::unique_lock<boost::mutex> lock(events_mutex_);
+        if (run_)
+        {
+            events_.push_back(ev);
+            events_cond_.notify_all();
+        }
+    }
 
-private: 
-    int init_fd() 
-    { 
-         //\TODO : make it works for mac
-         /*    
-        int fd = inotify_init(); 
-        if (fd == -1) 
-        { 
-            boost::system::system_error e(boost::system::error_code(errno, boost::system::get_system_category()), "boost::asio::dir_monitor_impl::init_fd: init_inotify failed"); 
-            boost::throw_exception(e); 
-        } 
-        return fd; 
-        */
-        return -1;
-    } 
+private:
+    CFArrayRef make_array(boost::unordered_set<std::string> in)
+    {
+        CFArrayCallBacks callbacks;
+        CFMutableArrayRef arr = CFArrayCreateMutable(kCFAllocatorDefault, in.size(), &callbacks);
+        for (auto str : in) {
+            CFStringRef cfstr = CFStringCreateWithCString(kCFAllocatorDefault, str.c_str(), kCFStringEncodingUTF8);
+            CFArrayAppendValue(arr, cfstr);
+            // @todo CFRelease(cfstr); ??
+        }
+        return arr;
+    }
 
-public: 
-    void begin_read() 
-    { 
-         //\TODO : make it works for mac
-         /*        stream_descriptor_.async_read_some(boost::asio::buffer(read_buffer_), 
-            boost::bind(&dir_monitor_impl::end_read, shared_from_this(), 
-            boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)); 
-            */
-    } 
+    void start_fsevents()
+    {
+        FSEventStreamContext context = {0, this, NULL, NULL, NULL};
+        fsevents_ =
+            FSEventStreamCreate(
+                kCFAllocatorDefault,
+                &boost::asio::dir_monitor_impl::fsevents_callback,
+                &context,
+                make_array(dirs_),
+                kFSEventStreamEventIdSinceNow, /* only new modifications */
+                (CFTimeInterval)5.0, /* 5 seconds latency interval */
+                kFSEventStreamCreateFlagFileEvents);
+        FSEventStreamRetain(fsevents_);
 
-private: 
-    void end_read(const boost::system::error_code &ec, std::size_t bytes_transferred) 
-    { 
-         //\TODO : make it works for mac
-         /*    
-        if (!ec) 
-        { 
-            pending_read_buffer_ += std::string(read_buffer_.data(), bytes_transferred); 
-            while (pending_read_buffer_.size() > sizeof(inotify_event)) 
-            { 
-                const inotify_event *iev = reinterpret_cast<const inotify_event*>(pending_read_buffer_.data()); 
-                dir_monitor_event::event_type type = dir_monitor_event::null; 
-                switch (iev->mask) 
-                { 
-                case IN_CREATE: type = dir_monitor_event::added; break; 
-                case IN_DELETE: type = dir_monitor_event::removed; break; 
-                case IN_MOVED_FROM: type = dir_monitor_event::renamed_old_name; break; 
-                case IN_MOVED_TO: type = dir_monitor_event::renamed_new_name; break; 
-                } 
-                pushback_event(dir_monitor_event(get_dirname(iev->wd), iev->name, type)); 
-                pending_read_buffer_.erase(0, sizeof(inotify_event) + iev->len); 
-            } 
+        if (!fsevents_)
+        {
+            boost::system::system_error e(boost::system::error_code(errno, boost::system::get_system_category()), "boost::asio::dir_monitor_impl::init_kqueue: kqueue failed");
+            boost::throw_exception(e);
+        }
 
-            begin_read(); 
-        } 
-        else if (ec != boost::asio::error::operation_aborted) 
-        { 
-            boost::system::system_error e(ec); 
-            boost::throw_exception(e); 
-        } 
-        */
-    } 
+        while (!runloop_) {
+            boost::this_thread::yield();
+        }
 
-    std::string get_dirname(int wd) 
-    { 
-         //\TODO : make it works for mac
-         /*    
-        boost::unique_lock<boost::mutex> lock(watch_descriptors_mutex_); 
-        watch_descriptors_t::left_map::iterator it = watch_descriptors_.left.find(wd); 
-        return it != watch_descriptors_.left.end() ? it->second : ""; 
-        */
-        return "";
-    } 
+        FSEventStreamScheduleWithRunLoop(fsevents_, runloop_, kCFRunLoopDefaultMode);
+        FSEventStreamStart(fsevents_);
+        runloop_cond_.notify_all();
+        FSEventStreamFlushAsync(fsevents_);
+    }
 
-             //\TODO : make it works for mac
-         /*
-    int fd_; 
-    boost::asio::io_service inotify_io_service_; 
-    boost::asio::posix::stream_descriptor stream_descriptor_; 
-    boost::scoped_ptr<boost::asio::io_service::work> inotify_work_; 
-    boost::thread inotify_work_thread_; 
-    boost::array<char, 4096> read_buffer_; 
-    std::string pending_read_buffer_; 
-    boost::mutex watch_descriptors_mutex_; 
-    typedef boost::bimap<int, std::string> watch_descriptors_t; 
-    watch_descriptors_t watch_descriptors_; 
-    boost::mutex events_mutex_; 
-    boost::condition_variable events_cond_; 
-    bool run_; 
-    std::deque<dir_monitor_event> events_; 
-    */
-}; 
+    void stop_fsevents()
+    {
+        if (fsevents_)
+        {
+            FSEventStreamStop(fsevents_);
+            // FSEventStreamUnscheduleFromRunLoop(fsevents_, runloop_, kCFRunLoopDefaultMode);
+            FSEventStreamInvalidate(fsevents_);
+            FSEventStreamRelease(fsevents_);
+        }
+    }
 
-} 
-} 
+    static void fsevents_callback(
+            ConstFSEventStreamRef streamRef,
+            void *clientCallBackInfo,
+            size_t numEvents,
+            void *eventPaths,
+            const FSEventStreamEventFlags eventFlags[],
+            const FSEventStreamEventId eventIds[])
+    {
+        size_t i;
+        char **paths = (char**)eventPaths;
+        dir_monitor_impl* impl = (dir_monitor_impl*)clientCallBackInfo;
+        bool rename_old = true;
 
-#endif 
+
+        for (i = 0; i < numEvents; ++i)
+        {
+            boost::filesystem::path dir(paths[i]);
+            if (eventFlags[i] & kFSEventStreamEventFlagMustScanSubDirs) {
+                impl->pushback_event(dir_monitor_event(dir, dir_monitor_event::recursive_rescan));
+            }
+            if (eventFlags[i] & kFSEventStreamEventFlagItemCreated) {
+                impl->pushback_event(dir_monitor_event(dir, dir_monitor_event::added));
+            }
+            if (eventFlags[i] & kFSEventStreamEventFlagItemRemoved) {
+                impl->pushback_event(dir_monitor_event(dir, dir_monitor_event::removed));
+            }
+            if (eventFlags[i] & kFSEventStreamEventFlagItemModified) {
+                impl->pushback_event(dir_monitor_event(dir, dir_monitor_event::modified));
+            }
+            // We assume renames always come in pairs inside a single callback, old name first.
+            // This might be wrong in general, but I haven't seen evidence yet.
+            if (eventFlags[i] & kFSEventStreamEventFlagItemRenamed)
+            {
+                if (rename_old)
+                {
+                    rename_old = false;
+                    impl->pushback_event(dir_monitor_event(dir, dir_monitor_event::renamed_old_name));
+                }
+                else
+                {
+                    rename_old = true;
+                    impl->pushback_event(dir_monitor_event(dir, dir_monitor_event::renamed_new_name));
+                }
+            }
+       }
+    }
+
+    void work_thread()
+    {
+        runloop_ = CFRunLoopGetCurrent();
+
+        while (running())
+        {
+            boost::unique_lock<boost::mutex> lock(runloop_mutex_);
+            runloop_cond_.wait(lock);
+            CFRunLoopRun();
+        }
+    }
+
+    bool running()
+    {
+        boost::unique_lock<boost::mutex> lock(work_thread_mutex_);
+        return run_;
+    }
+
+    void stop_work_thread()
+    {
+        // Access to run_ is sychronized with running().
+        boost::mutex::scoped_lock lock(work_thread_mutex_);
+        run_ = false;
+        CFRunLoopStop(runloop_); // exits the thread
+        runloop_cond_.notify_all();
+    }
+
+    bool run_{false};
+    CFRunLoopRef runloop_;
+    boost::mutex runloop_mutex_;
+    boost::condition_variable runloop_cond_;
+
+    boost::mutex work_thread_mutex_;
+    boost::thread work_thread_;
+
+    FSEventStreamRef fsevents_;
+
+    boost::mutex dirs_mutex_;
+    boost::unordered_set<std::string> dirs_;
+
+    boost::mutex events_mutex_;
+    boost::condition_variable events_cond_;
+    std::deque<dir_monitor_event> events_;
+};
+
+} // asio namespace
+} // boost namespace
+
