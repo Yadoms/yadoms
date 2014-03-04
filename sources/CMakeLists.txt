@@ -404,7 +404,7 @@ target_link_libraries(yadoms yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 ##################################################################################################
 
 #create lib lists, one for debug libs and another for optimized (release)
-# Boost_LIBRARIES is a list whchi contains something like this:
+# Boost_LIBRARIES is a list which contains something like this:
 #
 #	debug							(<- define that next list entry if for debug mode)
 #	path/to/debug/boost-...gd.lib)
