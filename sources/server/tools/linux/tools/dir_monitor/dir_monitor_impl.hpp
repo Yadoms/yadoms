@@ -135,7 +135,9 @@ private:
                 case IN_MOVED_FROM: type = dir_monitor_event::renamed_old_name; break; 
                 case IN_MOVED_TO: type = dir_monitor_event::renamed_new_name; break; 
                 } 
-                pushback_event(dir_monitor_event(get_dirname(iev->wd), iev->name, type)); 
+                boost::filesystem::path pathName(get_dirname(iev->wd));
+                pathName /= iev->name;
+                pushback_event(dir_monitor_event(pathName, type)); 
                 pending_read_buffer_.erase(0, sizeof(inotify_event) + iev->len); 
             } 
 
