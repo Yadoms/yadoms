@@ -108,7 +108,7 @@ int CQualifier::computeQuality(const CIdentityForQualifier& identity) const
 
    boost::gregorian::date fromDate = boost::gregorian::day_clock::universal_day() - boost::gregorian::days(90);
    std::vector<boost::shared_ptr<database::entities::CPluginEventLogger> > pluginEvents = m_eventLoggerDatabase->getPluginEvents(identity.getName(), identity.getVersion(), identity.getReleaseType(), boost::posix_time::ptime(fromDate));
-   for (std::vector<boost::shared_ptr<database::entities::CPluginEventLogger> >::const_iterator it = pluginEvents.begin() ; it != pluginEvents.end() ; it++)
+   for (std::vector<boost::shared_ptr<database::entities::CPluginEventLogger> >::const_iterator it = pluginEvents.begin() ; it != pluginEvents.end() ; ++it)
    {
       switch((*it)->getEventType())
       {

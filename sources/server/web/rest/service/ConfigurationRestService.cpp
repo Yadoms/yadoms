@@ -190,19 +190,6 @@ namespace web { namespace rest { namespace service {
       return web::rest::json::CJson();
    }
 
-   web::rest::json::CJson CConfigurationRestService::deleteAllConfigurations(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
-   {
-      std::string section = "";
-      std::string keyname = "";
-      if(parameters.size()>1)
-         section = parameters[1];
-      if(parameters.size()>2)
-         keyname = parameters[2];
-
-      //m_dataProvider->getConfigurationRequester()->removeConfiguration();
-      return web::rest::json::CJsonResult::GenerateError();
-   }
-
 
 
 } //namespace service

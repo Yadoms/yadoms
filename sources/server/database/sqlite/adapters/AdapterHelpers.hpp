@@ -79,8 +79,7 @@
 //                		for (int nCol = 0; nCol < nCols; nCol++)
 //                			cols.push_back(std::string(sqlite3_column_name(pStatement, nCol)));
 //
-//                		int rc;
-//                		while ((rc = sqlite3_step(pStatement)) == SQLITE_ROW)
+//                		while (sqlite3_step(pStatement) == SQLITE_ROW)
 //                		{
 //                			boost::shared_ptr<CConfiguration> newEntity(new CConfiguration());
 //                			for (int nCol = 0; nCol < nCols; nCol++)
@@ -241,8 +240,7 @@
          std::vector<std::string> cols; \
          for (int nCol = 0; nCol < nCols; nCol++) \
             cols.push_back(std::string(sqlite3_column_name(pStatement, nCol))); \
-         int rc; \
-         while ((rc = sqlite3_step(pStatement)) == SQLITE_ROW) \
+         while (sqlite3_step(pStatement) == SQLITE_ROW) \
          { \
             boost::shared_ptr<ENTITY_CLASS(_tablename)> newEntity(new ENTITY_CLASS(_tablename)()); \
             for (int nCol = 0; nCol < nCols; nCol++) \

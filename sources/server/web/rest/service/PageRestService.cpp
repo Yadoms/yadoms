@@ -77,10 +77,9 @@ namespace web { namespace rest { namespace service {
 
    web::rest::json::CJson CPageRestService::getOnePage(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
-      int pageId = 0;
       if(parameters.size()>1)
       {
-         pageId = boost::lexical_cast<int>(parameters[1]);
+         int pageId = boost::lexical_cast<int>(parameters[1]);
          web::rest::json::CPageEntitySerializer hes;
          boost::shared_ptr<database::entities::CPage> pageFound =  m_dataProvider->getPageRequester()->getPage(pageId);
          return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*pageFound.get()));
@@ -139,10 +138,9 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         int pageId = 0;
          if(parameters.size()>1)
          {
-            pageId = boost::lexical_cast<int>(parameters[1].c_str());
+            int pageId = boost::lexical_cast<int>(parameters[1].c_str());
 
             web::rest::json::CPageEntitySerializer hes;
             boost::shared_ptr<database::entities::CPage> pageToReplace = hes.deserialize(requestContent);
@@ -209,10 +207,9 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         int pageId = 0;
          if(parameters.size()>1)
          {
-            pageId = boost::lexical_cast<int>(parameters[1].c_str());
+            int pageId = boost::lexical_cast<int>(parameters[1].c_str());
 
             //delete all widgets
             m_dataProvider->getWidgetRequester()->removeWidgetsInPage(pageId);
@@ -281,10 +278,9 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         int pageId = 0;
          if(parameters.size()>1)
          {
-            pageId = boost::lexical_cast<int>(parameters[1].c_str());
+            int pageId = boost::lexical_cast<int>(parameters[1].c_str());
 
             //remove all widgets in page
             m_dataProvider->getWidgetRequester()->removeWidgetsInPage(pageId);
@@ -317,10 +313,9 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         int pageId = 0;
          if(parameters.size()>1)
          {
-            pageId = boost::lexical_cast<int>(parameters[1].c_str());
+            int pageId = boost::lexical_cast<int>(parameters[1].c_str());
 
             m_dataProvider->getWidgetRequester()->removeWidgetsInPage(pageId);
             return web::rest::json::CJsonResult::GenerateSuccess();

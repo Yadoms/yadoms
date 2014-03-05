@@ -29,14 +29,14 @@ namespace web { namespace rest {
          RestMethodMap::iterator iPatterns;
 
          //first pass without handling wildcards (priority to full written patterns)
-         for(iPatterns = m_handledFunctions[requestType].begin(); iPatterns != m_handledFunctions[requestType].end(); iPatterns++)
+         for(iPatterns = m_handledFunctions[requestType].begin(); iPatterns != m_handledFunctions[requestType].end(); ++iPatterns)
          {
             if(match(url, iPatterns->first, false))
                return callRealMethod(iPatterns->second.first, iPatterns->second.second, url, requestContent);
          }
 
          //second pass with handling wildcards
-         for(iPatterns = m_handledFunctions[requestType].begin(); iPatterns != m_handledFunctions[requestType].end(); iPatterns++)
+         for(iPatterns = m_handledFunctions[requestType].begin(); iPatterns != m_handledFunctions[requestType].end(); ++iPatterns)
          {
             if(match(url, iPatterns->first, true))
                return callRealMethod(iPatterns->second.first, iPatterns->second.second, url, requestContent);

@@ -41,12 +41,8 @@ Webem constructor
 
 */
 cWebem::cWebem()
+:m_DigistRealm("yadoms.com"), m_zippassword(""), m_actsessionid(0),  m_authmethod(AUTH_LOGIN), m_bForceRelogin(false)
 {
-	m_DigistRealm = "yadoms.com";
-	m_zippassword = "";
-	m_actsessionid=0;
-	m_authmethod=AUTH_LOGIN;
-	m_bForceRelogin=false;
 }
 
 
@@ -366,7 +362,7 @@ bool cWebem::CheckForAlias( const request& req, reply& rep, std::string & aliasf
 
 
    std::map < std::string, std::string >::iterator iFoundAlias;
-   for(iFoundAlias = myAliases.begin(); iFoundAlias != myAliases.end(); iFoundAlias++)
+   for(iFoundAlias = myAliases.begin(); iFoundAlias != myAliases.end(); ++iFoundAlias)
    {
       if(boost::algorithm::starts_with(request_path, iFoundAlias->first ))
          break;
@@ -400,7 +396,7 @@ bool cWebem::CheckForCustomOverride( const request& req, reply& rep)
 
 
    std::map < std::string, webem_custom_function >::iterator pfun;
-   for(pfun = myCustoms.begin(); pfun != myCustoms.end(); pfun++)
+   for(pfun = myCustoms.begin(); pfun != myCustoms.end(); ++pfun)
    {
       if(boost::algorithm::starts_with(request_path, pfun->first ))
          break;
@@ -591,7 +587,7 @@ bool cWebem::CheckForPageOverride(const request& req, reply& rep)
 	return true;
 }
 
-void cWebem::AddUserPassword(const unsigned long ID, const std::string username, const std::string password, const _eUserRights userrights)
+void cWebem::AddUserPassword(const unsigned long ID, const std::string & username, const std::string & password, const _eUserRights userrights)
 {
 	_tWebUserPassword wtmp;
 	wtmp.ID=ID;
@@ -1064,7 +1060,7 @@ static int check_password(
 // Return 1 on success. Always initializes the ah structure.
 int cWebemRequestHandler::parse_auth_header(const request& req, char *buf,	size_t buf_size, struct ah *ah) 
 {
-	char *name, *value, *s;
+	char *value, *s;
 	const char *auth_header;
 
 	(void) memset(ah, 0, sizeof(*ah));
@@ -1107,7 +1103,7 @@ int cWebemRequestHandler::parse_auth_header(const request& req, char *buf,	size_
 		{
 			s++;
 		}
-		name = skip_quoted(&s, "=", " ", 0);
+		char * name = skip_quoted(&s, "=", " ", 0);
 		// Value is either quote-delimited, or ends at first comma or space.
 		if (s[0] == '\"') {
 			s++;
@@ -1247,7 +1243,7 @@ int cWebemRequestHandler::authorize(const request& req)
 	return 0;
 }
 
-bool IsIPInRange(const std::string ip, const _tIPNetwork ipnetwork) 
+bool IsIPInRange(const std::string & ip, const _tIPNetwork & ipnetwork) 
 {
 	if (ipnetwork.hostname.size()!=0)
 	{
@@ -1315,7 +1311,6 @@ int cWebemRequestHandler::check_authorization(const request& req)
 			std::stringstream sstr;
 
 			std::string::size_type dpos=scookie.find(";");
-			std::string sidstr;
 			if (dpos==std::string::npos)
 				sstr << scookie.substr(fpos+4).c_str();
 			else

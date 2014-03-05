@@ -34,9 +34,12 @@ namespace startupOptions
       /// \brief	    Affectation operator
       /// \note       Needed for implementation of boost::program_options::value::default_value()
       //--------------------------------------------------------------
-      void operator=(const CValidIpAddressOption& src)
-      { m_ipAddress = src.m_ipAddress; }
-
+      CValidIpAddressOption& operator=(const CValidIpAddressOption& src)
+      { 
+         m_ipAddress = src.m_ipAddress; 
+         return *this;
+      }
+      
    public:
       //--------------------------------------------------------------
       /// \brief	    Check the provided ip address

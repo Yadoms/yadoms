@@ -28,7 +28,6 @@ namespace web { namespace rest { namespace service {
       web::rest::json::CJson updateOneConfiguration(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
       web::rest::json::CJson updateAllConfigurations(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
       web::rest::json::CJson deleteOneConfiguration(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
-      web::rest::json::CJson deleteAllConfigurations(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
 
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;

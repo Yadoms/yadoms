@@ -18,7 +18,7 @@ const std::string CXplHelper::WildcardString = "*";
 
 bool CXplHelper::matchRules(EElement elementType, const std::string& element)
 {
-   static const std::map<EElement, boost::regex> xplRulesRegex = boost::assign::map_list_of
+   static const std::map<EElement, boost::regex > xplRulesRegex = boost::assign::map_list_of
       (kVendorId     , "([a-z0-9]{1,8})")       /* alphanumerical characters, lower case, 1 to 8 characters */
       (kDeviceId     , "([a-z0-9]{1,8})")       /* alphanumerical characters, lower case, 1 to 8 characters */
       (kInstanceId   , "([a-z0-9-]{1,16})")     /* alphanumerical characters, lower case, '-' accepted, 1 to 16 characters */
@@ -63,7 +63,7 @@ std::string CXplHelper::toInstanceId(const std::string & instanceName)
 
    // Next, remove all unsupported characters
    std::string xplElementName;
-   for (std::string::const_iterator it = temp.begin() ; it < temp.end() ; it ++)
+   for (std::string::const_iterator it = temp.begin() ; it < temp.end() ; ++it)
    {
       if (isalnum(*it) || *it == '-')
          xplElementName.append(1, *it);
