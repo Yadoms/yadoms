@@ -14,7 +14,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button id="btn-confirm-configure-widget" type="button" class="btn btn-primary">Ok</button>
+                <button id="btn-confirm-configure-widget" type="submit" class="btn btn-primary">Ok</button>
             </div>
         </div>
     </div>
@@ -38,7 +38,20 @@
       $modalBody.empty();
       $modalBody.append(configMgr.getDOMObject());
       $modalBody.i18n();
-
+      $modalBody.find("input,select,textarea").jqBootstrapValidation({
+         preventSubmit: true,
+         submitError: function($form, event, errors) {
+            // Here I do nothing, but you could do something like display
+            // the error messages to the user, log, etc.
+         },
+         submitSuccess: function($form, event) {
+            alert("OK");
+            event.preventDefault();
+         },
+         filter: function() {
+            return $(this).is(":visible");
+         }
+      });
 
       //we display the modal
       $('div#configure-widget-modal').modal();
