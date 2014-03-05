@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "XplHelper.h"
+#include "XplException.h"
 #include <shared/NetworkHelper.h>
 #include "../exception/BadConversion.hpp"
+#include "../exception/NotImplemented.hpp"
 #include <iostream>
 #include "../Log.h"
 
@@ -12,25 +14,52 @@ const std::string CXplHelper::HeartbeatClassID = "hbeat";
 const std::string CXplHelper::HeartbeatTypeId = "app";
 const std::string CXplHelper::WildcardString = "*";
 
-bool CXplHelper::isStructuralElementMatchRules(const std::string & element)
+
+
+bool CXplHelper::matchRules(EElement elementType, const std::string& element)
 {
-   const boost::regex e("([a-z0-9-]*)"); //-
-   return regex_match(element, e);
-}
-   
-bool CXplHelper::isVendorIdOrDeviceIdMatchRules(const std::string & element)
-{
-	const boost::regex e("([a-z0-9]*)");
-	return regex_match(element, e);
+   static const std::map<EElement, boost::regex> xplRulesRegex = boost::assign::map_list_of
+      (kVendorId     , "([a-z0-9]{1,8})")       /* alphanumerical characters, lower case, 1 to 8 characters */
+      (kDeviceId     , "([a-z0-9]{1,8})")       /* alphanumerical characters, lower case, 1 to 8 characters */
+      (kInstanceId   , "([a-z0-9-]{1,16})")     /* alphanumerical characters, lower case, '-' accepted, 1 to 16 characters */
+      (kTypeId       , "([a-z0-9-]{1,8})")      /* alphanumerical characters, lower case, '-' accepted, 1 to 8 characters */
+      (kClassId      , "([a-z0-9-]{1,8})")      /* alphanumerical characters, lower case, '-' accepted, 1 to 8 characters */
+      (kBody         , "([a-z0-9-]{1,16})");    /* alphanumerical characters, lower case, '-' accepted, 1 to 16 characters */
+
+   std::map<EElement, boost::regex>::const_iterator it = xplRulesRegex.find(elementType);
+   if (it == xplRulesRegex.end())
+   {
+      // xplRulesRegex table probably not up to date
+      BOOST_ASSERT(false);
+      throw exception::CNotImplemented("CXplHelper::matchRules, unsupported elementType value " + boost::lexical_cast<std::string>(elementType));
+   }
+
+   return regex_match(element, it->second);
 }
 
-std::string CXplHelper::toStructuralElement(const std::string & elementName)
+void CXplHelper::checkRules(EElement elementType, const std::string& element)
+{
+   if (!matchRules(elementType, element))
+   {
+      static const std::map<EElement, std::string> xplelementTypeNames = boost::assign::map_list_of
+         (kVendorId     , "VendorId")
+         (kDeviceId     , "DeviceId")
+         (kInstanceId   , "InstanceId")
+         (kTypeId       , "TypeId")
+         (kClassId      , "ClassId")
+         (kBody         , "Body");
+
+      throw CXplException("the " + xplelementTypeNames.find(elementType)->second + " \"" + element + "\" doesn't match Xpl naming convention");
+   }
+}
+
+std::string CXplHelper::toInstanceId(const std::string & instanceName)
 {
    std::string temp;
 
    // First, convert to lower case
-   temp.resize(elementName.size());
-   std::transform(elementName.begin(), elementName.end(), temp.begin(), ::tolower);
+   temp.resize(instanceName.size());
+   std::transform(instanceName.begin(), instanceName.end(), temp.begin(), ::tolower);
 
    // Next, remove all unsupported characters
    std::string xplElementName;
@@ -40,39 +69,15 @@ std::string CXplHelper::toStructuralElement(const std::string & elementName)
          xplElementName.append(1, *it);
    }
 
-   if (xplElementName.empty() || !isStructuralElementMatchRules(xplElementName))
-      throw shared::exception::CBadConversion(elementName, "XPL element");
+   if (!matchRules(kInstanceId, xplElementName))
+      throw shared::exception::CBadConversion(instanceName, "XPL element");
 
    return xplElementName;
 }
 
-std::string CXplHelper::toStructuralElement(int elementId)
+std::string CXplHelper::toInstanceId(int instanceNumber)
 {
-   return toStructuralElement(boost::lexical_cast<std::string>(elementId));
-}
-
-std::string CXplHelper::toVendorIdOrDeviceId(const std::string & id)
-{
-   std::string temp;
-
-   // First, convert to lower case
-   temp.resize(id.size());
-   std::transform(id.begin(), id.end(), temp.begin(), ::tolower);
-
-   // Next, remove all unsupported characters
-   std::string xplId;
-   for (std::string::const_iterator it = temp.begin() ; it < temp.end() ; it ++)
-   {
-      if (isalnum(*it))
-         xplId.append(1, *it);
-   }
-
-   xplId.resize(8 /*CXplActor::DeviceIdMaxLength*/); // TODO : patch crado en attendant la gestion de l'unicité des deviceId/VendorId
-
-   if (xplId.empty() || !isVendorIdOrDeviceIdMatchRules(xplId))
-      throw shared::exception::CBadConversion(id, "XPL vendor or device ID");
-
-   return xplId;
+   return toInstanceId(boost::lexical_cast<std::string>(instanceNumber));
 }
 
 boost::asio::ip::udp::endpoint CXplHelper::getFirstIPV4AddressEndPoint()

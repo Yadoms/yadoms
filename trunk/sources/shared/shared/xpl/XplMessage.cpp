@@ -123,18 +123,13 @@ const CXplMessageSchemaIdentifier & CXplMessage::getMessageSchemaIdentifier()
 
 void CXplMessage::addToBody(const std::string & name, const std::string & value)
 {
-   if (CXplHelper::isStructuralElementMatchRules(name) && (name.size() <= BodyNameMaxLength))
-   {
-      //the body element mustn't exist
-      if (m_body.find(name) != m_body.end())
-         throw CXplException("Element " + name + " can't be defined more than once");
+   CXplHelper::checkRules(CXplHelper::kBody, name);
 
-      m_body[name] = value;
-   }
-   else
-   {
-      throw CXplException("name" + name + "doesn't match Xpl naming convention");
-   }
+   //the body element must not exist
+   if (m_body.find(name) != m_body.end())
+      throw CXplException("Element " + name + " can't be defined more than once");
+
+   m_body[name] = value;
 }
 
 const std::map<std::string, std::string> & CXplMessage::getBody()
