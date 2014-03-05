@@ -13,41 +13,51 @@ namespace shared { namespace xpl
    {
    public:
       //--------------------------------------------------------------
-      /// \brief	                        Permit to know if element match rules a-z, 0-9 and "-" caracters
-      /// \param[in]  element             Element to check
-      /// \return                         true if the elemnt match rules, false otherwize
+      /// \brief	                        Xml message element
       //--------------------------------------------------------------
-      static bool isStructuralElementMatchRules(const std::string & element);
-   
-      //--------------------------------------------------------------
-      /// \brief	                        Permit to know if element match rules a-z, 0-9 caracters but no "-" caracters
-      /// \param[in]  element             Element to check
-      /// \return                         true if the elemnt match rules, false otherwize
-      //--------------------------------------------------------------
-      static bool isVendorIdOrDeviceIdMatchRules(const std::string & element);
+      enum EElement
+      {
+         kVendorId = 0,
+         kDeviceId,
+         kInstanceId,
+         kTypeId,
+         kClassId,
+         kBody,
+
+         kElementNumber
+      };
 
       //--------------------------------------------------------------
-      /// \brief	                        Convert a string to an XPL element string (a-z, 0-9 and "-" caracters authorized)
-      /// \param[in]  elementName         Element name
-      /// \return                         Element name, XPL compatible
+      /// \brief	                        Check if Xpl element match Xpl naming rules
+      /// \param[in]  elementType         Element type to check
+      /// \param[in]  element             Element to check
+      /// \return                         true if match rules, false otherwize
       //--------------------------------------------------------------
-      static std::string toStructuralElement(const std::string & elementName);
+      static bool matchRules(EElement elementType, const std::string& element);
 
       //--------------------------------------------------------------
-      /// \brief	                        Convert an integer identifier to an XPL element string (a-z, 0-9 and "-" caracters authorized)
-      /// \param[in]  elementId           Element identifier
-      /// \return                         Element name, XPL compatible
+      /// \brief	                        Check if Xpl element match Xpl naming rules
+      /// \param[in]  elementType         Element type to check
+      /// \param[in]  element             Element to check
+      /// \throw                          CXplException if element dosen't match rules
+      //--------------------------------------------------------------
+      static void checkRules(EElement elementType, const std::string& element);
+
+      //--------------------------------------------------------------
+      /// \brief	                        Convert a string to an XPL instance Id
+      /// \param[in]  instanceName         Instance name
+      /// \return                         Instance name, XPL compatible
+      //--------------------------------------------------------------
+      static std::string toInstanceId(const std::string & instanceName);
+
+      //--------------------------------------------------------------
+      /// \brief	                        Convert an integer identifier to an XPL instance Id
+      /// \param[in]  instanceNumber      Instance identifier
+      /// \return                         Instance name, XPL compatible
       /// \throw                          shared::exception::CBadConversion if conversion can not be achieved
       /// \note                           This function is useful for plugins identified on the XPL network by their instance ID
       //--------------------------------------------------------------
-      static std::string toStructuralElement(int elementId);
-
-      //--------------------------------------------------------------
-      /// \brief	                        Convert a string to an XPL vendor or deveice ID (a-z, 0-9 caracters authorized, but no "-")
-      /// \param[in]  id                  Id
-      /// \return                         Id, XPL compatible
-      //--------------------------------------------------------------
-      static std::string toVendorIdOrDeviceId(const std::string & id);
+      static std::string toInstanceId(int instanceNumber);
 
       //--------------------------------------------------------------
       /// \brief	                        Permit to get the first local IPv4 address of the localhost

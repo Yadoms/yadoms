@@ -28,11 +28,8 @@ CXplMessageSchemaIdentifier::~CXplMessageSchemaIdentifier()
 
 void CXplMessageSchemaIdentifier::setClassId(const std::string & classId)
 {
-   bool res = CXplHelper::isStructuralElementMatchRules(classId);
-   if (res && (classId.size() <= ClassIdMaxLength))
-      m_classId = classId;
-   else
-     throw CXplException("classId " + classId + " doesn't match Xpl naming convention");
+   CXplHelper::checkRules(CXplHelper::kClassId, classId);
+   m_classId = classId;
 }
 
 std::string CXplMessageSchemaIdentifier::getClassId() const
@@ -42,10 +39,8 @@ std::string CXplMessageSchemaIdentifier::getClassId() const
 
 void CXplMessageSchemaIdentifier::setTypeId(const std::string & typeId)
 {
-   if (CXplHelper::isStructuralElementMatchRules(typeId) && (typeId.size() <= TypeIdMaxLength))
-      m_typeId = typeId;
-   else
-     throw CXplException("typeId " + typeId + " doesn't match Xpl naming convention");
+   CXplHelper::checkRules(CXplHelper::kTypeId, typeId);
+   m_typeId = typeId;
 }
 
 std::string CXplMessageSchemaIdentifier::getTypeId() const

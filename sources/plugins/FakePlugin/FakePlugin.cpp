@@ -26,6 +26,16 @@ enum
    kEvtUpdateConfiguration
 };
 
+// XPL device ID : use to identify this plugin over the XPL network.
+// Must match XPL rules (see http://xplproject.org.uk/wiki/index.php/XPL_Specification_Document) :
+//   - alphanumerical characters only : [0-9][a-z]
+//   - letters must be lower case
+//   - no characters '.', '-', '_', or so...
+//   - 8 characters max
+// NOTE : To avoid DeviceId confilcts, YADOMS-TEAM manage a device ID reservation table. Please contact to reserve your device ID.
+// You can check that your device ID mach Xpl rules calling shared::xpl::CXplHelper::matchRules(shared::xpl::CXplHelper::kDeviceId, your_device_id)
+static const std::string& XplDeviceId("fakeplug");
+
 void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service * pluginIOService)
 {
    try
@@ -39,12 +49,12 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
       m_configuration.trace();
 
       // Register to XPL service
-      shared::xpl::CXplService xplService(/* TODO remplacer toVendorIdOrDeviceId(fct à supprimer) par une constante avec gros commentaires (contraintes de nommage, réservation du nom, etc...)*/
-         shared::xpl::CXplHelper::toVendorIdOrDeviceId(Informations->getName()),    // Use the plugin name as XPL device ID
-         shared::xpl::CXplHelper::toStructuralElement(instanceUniqueId),            // Use the plugin instance id (guaranteed by Yadoms to be unique among all instances of all plugins) as XPL instance id
-         pluginIOService,                                                           // Use the provided io service for better performance
-         this,                                                                      // Subscribe for XPL message receive event
-         kEvtXplMessage);                                                           // Set the event ID to rise when XPL message is received
+      shared::xpl::CXplService xplService(
+         XplDeviceId,                                                // XPL device ID : use to identify this plugin over the XPL network
+         shared::xpl::CXplHelper::toInstanceId(instanceUniqueId),    // Use the plugin instance id (guaranteed by Yadoms to be unique among all instances of all plugins) as XPL instance id
+         pluginIOService,                                            // Use the provided io service for better performance
+         this,                                                       // Subscribe for XPL message receive event
+         kEvtXplMessage);                                            // Set the event ID to rise when XPL message is received
 
       // A simple incrementing value, sent on XPL network
       int xplTestData = 0;
@@ -120,10 +130,6 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
    {
       YADOMS_LOG(info) << "CFakePlugin is stopping..."  << std::endl;
    }
-   catch(...)
-   {
-   }
-
 }
 
 void CFakePlugin::updateConfiguration(const std::string& configuration)

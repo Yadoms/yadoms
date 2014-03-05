@@ -119,10 +119,6 @@ namespace shared { namespace xpl
       std::string m_instanceId;
 
       bool m_broadcastActive;
-
-      static const unsigned int VendorIdMaxLength = 8;
-      static const unsigned int DeviceIdMaxLength = 8;
-      static const unsigned int InstanceIdMaxLength = 16;
    };
 
 } } // namespace shared::xpl

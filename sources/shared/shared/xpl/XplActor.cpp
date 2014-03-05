@@ -62,10 +62,8 @@ void CXplActor::setVendorId(const std::string & vendorId)
 {
    if (m_broadcastActive)
       throw CXplException("Unable to set vendor Id on a broadcast actor");
-   if (CXplHelper::isVendorIdOrDeviceIdMatchRules(vendorId) && (vendorId.size() <= VendorIdMaxLength))
-      m_vendorId = vendorId;
-   else
-     throw CXplException("vendorId " + vendorId + " doesn't match Xpl naming convention");
+   CXplHelper::checkRules(CXplHelper::kVendorId, vendorId);
+   m_vendorId = vendorId;
 }
 
 std::string CXplActor::getVendorId() const
@@ -79,10 +77,8 @@ void CXplActor::setDeviceId(const std::string & deviceId)
 {
    if (m_broadcastActive)
       throw CXplException("Unable to set vendor Id on a broadcast actor");
-   if (CXplHelper::isVendorIdOrDeviceIdMatchRules(deviceId) && (deviceId.size() <= DeviceIdMaxLength))
-      m_deviceId = deviceId;
-   else
-     throw CXplException("deviceId " + deviceId + " doesn't match Xpl naming convention");
+   CXplHelper::checkRules(CXplHelper::kDeviceId, deviceId);
+   m_deviceId = deviceId;
 }
 
 std::string CXplActor::getDeviceId() const
@@ -96,10 +92,8 @@ void CXplActor::setInstanceId(const std::string & instanceId)
 {
    if (m_broadcastActive)
       throw CXplException("Unable to set vendor Id on a broadcast actor");
-   if (CXplHelper::isStructuralElementMatchRules(instanceId) && (instanceId.size() <= InstanceIdMaxLength))
-      m_instanceId = instanceId;
-   else
-     throw CXplException("instanceId " + instanceId + " doesn't match Xpl naming convention");
+   CXplHelper::checkRules(CXplHelper::kInstanceId, instanceId);
+   m_instanceId = instanceId;
 }
 
 std::string CXplActor::getInstanceId() const
