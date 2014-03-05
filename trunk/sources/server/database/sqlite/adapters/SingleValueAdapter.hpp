@@ -37,8 +37,7 @@ namespace adapters {
          int nCols = sqlite3_column_count(pStatement);
          if (nCols == 1) 
          {
-            int rc;
-            while ((rc = sqlite3_step(pStatement)) == SQLITE_ROW) 
+            while (sqlite3_step(pStatement) == SQLITE_ROW) 
             {
                m_results.push_back(CSQLite3Extension::extractData<TValue>(pStatement, 0));
             }

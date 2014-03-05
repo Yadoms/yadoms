@@ -78,10 +78,9 @@ namespace web { namespace rest { namespace service {
       try
       {
          web::rest::json::CWidgetEntitySerializer hes;
-         int objectId = 0;
          if(parameters.size()>1)
          {
-            objectId = boost::lexical_cast<int>(parameters[1]);
+            int objectId = boost::lexical_cast<int>(parameters[1]);
             boost::shared_ptr<database::entities::CWidget> widgetFound =  m_dataProvider->getWidgetRequester()->getWidget(objectId);
             return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*widgetFound.get()));
          }
@@ -141,10 +140,9 @@ namespace web { namespace rest { namespace service {
          web::rest::json::CWidgetEntitySerializer hes;
          boost::shared_ptr<database::entities::CWidget> widgetToUpdate = hes.deserialize(requestContent);
 
-         int objectId = 0;
          if(parameters.size()>1)
          {
-            objectId = boost::lexical_cast<int>(parameters[1]);
+            int objectId = boost::lexical_cast<int>(parameters[1]);
 
             if(widgetToUpdate->getId() == objectId)
             {
@@ -178,10 +176,9 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         int widgetId = 0;
          if(parameters.size()>1)
          {
-            widgetId = boost::lexical_cast<int>(parameters[1]);
+            int widgetId = boost::lexical_cast<int>(parameters[1]);
             m_dataProvider->getWidgetRequester()->removeWidget(widgetId);
             return web::rest::json::CJsonResult::GenerateSuccess();
          }

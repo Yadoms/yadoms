@@ -100,7 +100,7 @@ void CSupervisor::doWork()
       {
          std::vector<boost::shared_ptr<database::entities::CPlugin> > instances = pluginManager->getInstanceList();
          YADOMS_LOG(debug) << "Existing instances, with details : ";
-         for (std::vector<boost::shared_ptr<database::entities::CPlugin> >::const_iterator it = instances.begin() ; it != instances.end() ; it++)
+         for (std::vector<boost::shared_ptr<database::entities::CPlugin> >::const_iterator it = instances.begin() ; it != instances.end() ; ++it)
             YADOMS_LOG(debug) << "Id#" << (*it)->getId() <<
             ", name=" << (*it)->getName() <<
             ", plugin=" << (*it)->getPluginName() <<
@@ -230,7 +230,7 @@ void CSupervisor::doWork()
 	  database::entities::CPlugin plg;
 	  plg.setName("testOfXpl");
 	  plg.setPluginName("fakePlugin");
-     plg.setConfiguration("{\"BoolParameter\": \"true\", \"DecimalParameter\": \"18.4\", \"EnumParameter\": \"EnumValue1\", \"IntParameter\": \"42\", \"Serial port\": \"tty1\", \"StringParameter\": \"Yadoms is so powerful !\",\"MySection\": { \"SubIntParameter\": \"123\", \"SubStringParameter\": \"Just a *MODIFIED* string parameter in the sub-section\"}}";
+     plg.setConfiguration("{\"BoolParameter\": \"true\", \"DecimalParameter\": \"18.4\", \"EnumParameter\": \"EnumValue1\", \"IntParameter\": \"42\", \"Serial port\": \"tty1\", \"StringParameter\": \"Yadoms is so powerful !\",\"MySection\": { \"SubIntParameter\": \"123\", \"SubStringParameter\": \"Just a *MODIFIED* string parameter in the sub-section\"}}");
 
 	  int createdInstanceId = pluginManager->createInstance(plg);
 #endif

@@ -32,7 +32,7 @@ std::vector<boost::asio::ip::address> CNetworkHelper::getLocalIps()
       if(addr.is_v4())
          result.push_back(addr);
       
-      iter++;
+      ++iter;
    }
 
    return result;

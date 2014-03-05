@@ -106,10 +106,10 @@ void CThreadBase::doWorkInternal()
       // Thread is stopped
       
    }
-   catch(std::exception &ex)
+   catch(std::exception &)
    {
       if(m_bRethrowDoWorkExceptions)
-         throw ex;
+         throw;
    }
    catch(...)
    {

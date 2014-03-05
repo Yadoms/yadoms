@@ -70,10 +70,9 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         int instanceId = 0;
          if(parameters.size()>1)
          {
-            instanceId = boost::lexical_cast<int>(parameters[1]);
+            int instanceId = boost::lexical_cast<int>(parameters[1]);
 
             web::rest::json::CPluginEntitySerializer hes;
             boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(instanceId);
@@ -148,10 +147,9 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         int instanceId = 0;
          if(parameters.size()>1)
          {
-            instanceId = boost::lexical_cast<int>(parameters[1]);
+            int instanceId = boost::lexical_cast<int>(parameters[1]);
             m_pluginManager->deleteInstance(instanceId);
             return web::rest::json::CJsonResult::GenerateSuccess();
          }

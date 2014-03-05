@@ -34,8 +34,11 @@ namespace startupOptions
       /// \brief	    Affectation operator
       /// \note       Needed for implementation of po::value::default_value()
       //--------------------------------------------------------------
-      void operator=(const CMustExistPathOption& src)
-      { m_path = src.m_path; }
+      CMustExistPathOption& operator=(const CMustExistPathOption& src)
+      { 
+         m_path = src.m_path; 
+         return *this;
+      }
 
    public:
       //--------------------------------------------------------------

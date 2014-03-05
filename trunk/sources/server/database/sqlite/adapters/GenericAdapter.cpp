@@ -26,8 +26,7 @@ namespace adapters {
          for (int nCol = 0; nCol < nCols; nCol++) 
             cols.push_back(std::string(sqlite3_column_name(pStatement, nCol)));
 
-         int rc;
-         while ((rc = sqlite3_step(pStatement)) == 100) 
+         while (sqlite3_step(pStatement) == SQLITE_ROW) 
          {
             std::map<std::string, std::string> newRow;
             for (int nCol = 0; nCol < nCols;nCol++) 

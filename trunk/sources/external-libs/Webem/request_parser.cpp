@@ -292,7 +292,7 @@ namespace http {
                // this is a post, put or delete request, so we need to read the content
                req.content_length = 0;
                for( std::vector<header>::iterator ph = req.headers.begin();
-                  ph != req.headers.end(); ph++ )
+                  ph != req.headers.end(); ++ph )
                {
                   if( (*ph).name == "Content-Length" ) {
                      req.content_length = atoi( (*ph).value.c_str());
