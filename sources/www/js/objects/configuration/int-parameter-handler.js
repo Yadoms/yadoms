@@ -22,12 +22,6 @@ function IntParameterHandler(i18nContext, name, content, currentValue) {
    this.minValue = parseInt(content.minimumValue);
    this.maxValue = parseInt(content.maximumValue);
 
-   //we check if the param is double rounded. If yes we change the control by a spinEdit
-   if ((!isNaN(this.minValue)) && (!isNaN(this.maxValue)))
-      this.ValueRounded = true;
-   else
-      this.ValueRounded = false;
-
    this.name = name;
    this.i18nContext = i18nContext;
    this.content = content;
@@ -67,8 +61,16 @@ IntParameterHandler.prototype.getDOMObject = function () {
                         "type=\"number\" " +
                         "class=\"form-control\" " +
                         "id=\"" + this.name + "\" " +
-                        "data-i18n=\"[data-content]" + this.i18nContext + this.name + ".description\" " +
-               ">";
+                        "data-i18n=\"[data-content]" + this.i18nContext + this.name + ".description\" ";
+   if (!isNaN(this.maxValue)) {
+      input += "max=\"" + this.maxValue + "\" ";
+      input += "data-validation-max-message=\"" + "Valeur maximum depassée" + "\""
+   }
+   if (!isNaN(this.minValue))
+      input += "min=\"" + this.minValue + "\" ";
+   "aria-invalid=\"true\"" +
+   ">";
+
    var self = this;
 
    return createFormGroup(self, input);

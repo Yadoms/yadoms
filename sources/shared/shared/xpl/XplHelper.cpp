@@ -85,12 +85,12 @@ boost::asio::ip::udp::endpoint CXplHelper::getFirstIPV4AddressEndPoint()
    {
       if(!addr.is_loopback())
       {
-         return boost::asio::ip::udp::endpoint(addr, XplProtocolPort);
+         return boost::asio::ip::udp::endpoint(addr, 0);
       }
    }
       
    //We haven't found any valid ipv4 address we assume that we are only in local
-   return boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::from_string("localhost"), XplProtocolPort);
+   return boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::from_string("localhost"), 0);
 }
 
 bool CXplHelper::getEndPointFromInterfaceIp(const std::string & localIPOfTheInterfaceToUse, boost::asio::ip::udp::endpoint & result)

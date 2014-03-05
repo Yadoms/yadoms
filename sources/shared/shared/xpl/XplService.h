@@ -133,7 +133,7 @@ namespace shared { namespace xpl
 
       SFilter m_filter;
 
-      static const int HeartbeatInterval = 1;//5;
+	  static const int HeartbeatInterval = 1;// 5;
 
       static const int HeartbeatFrequencyDuringInitialDiscoveryPhase = 5;
       static const int HeartbeatFrequencyDuringSecondDiscoveryPhase = 30;

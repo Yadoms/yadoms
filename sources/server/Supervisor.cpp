@@ -225,10 +225,14 @@ void CSupervisor::doWork()
          hub.reset(new shared::xpl::CXplHub(m_startupOptions.getXplNetworkIpAddress()));
          hub->start();
       }
-
+	  
 #if DEV_ACTIVATE_XPL_TESTS
-//      if(pluginManager.get() != NULL)
-//         int createdInstanceId = pluginManager->createInstance("testOfXpl", "fakePlugin");
+	  database::entities::CPlugin plg;
+	  plg.setName("testOfXpl");
+	  plg.setPluginName("fakePlugin");
+     plg.setConfiguration("{\"BoolParameter\": \"true\", \"DecimalParameter\": \"18.4\", \"EnumParameter\": \"EnumValue1\", \"IntParameter\": \"42\", \"Serial port\": \"tty1\", \"StringParameter\": \"Yadoms is so powerful !\",\"MySection\": { \"SubIntParameter\": \"123\", \"SubStringParameter\": \"Just a *MODIFIED* string parameter in the sub-section\"}}";
+
+	  int createdInstanceId = pluginManager->createInstance(plg);
 #endif
       // ######################### [END] Xpl Hub #########################
 
