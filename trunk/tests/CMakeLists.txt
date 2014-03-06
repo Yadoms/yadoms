@@ -106,6 +106,16 @@ if(UNIX AND NOT APPLE)
     set(RT_LIBRARY rt)
 endif()
 
+## IOKIT (needed for Mac)
+if(APPLE)
+	include("mac.cmake")
+	
+	if(NOT IOKIT_FOUND)
+		message(SEND_ERROR "Unable to find the requested IOKit libraries")
+	endif()
+	set(LIBS ${LIBS} ${IOKIT_LIBRARY})
+endif()
+
 # define libraries to link with
 set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})
 
