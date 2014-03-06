@@ -52,13 +52,12 @@ ConfigurationManager.prototype.createParameterHandler = function (objectToConfig
 };
 
 ConfigurationManager.prototype.getDOMObject = function() {
-   var result = "<form class=\"form-horizontal\" role=\"form\">\n\r";
+   var result = "<div class=\"control-group\">\n<div class=\"controls\">\n";
    $.each(this.configurationHandlers, function (key, value) {
       result += value.getDOMObject();
-      result += "\n\r";
+      result += "\n";
    });
 
-   result += "</form>\n\r";
-
+   result += "</div>\n</div>\n";
    return result;
 }
