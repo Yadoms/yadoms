@@ -19,6 +19,8 @@
     "configurationSchema": {
        "intParameter" : {
           "type" : "int",
+          "name" : "int parameter",
+          "description" : "test of an int parameter",
           "defaultValue" : "0",
           "maximumValue" : "23",
           "minimumValue" : "0"
