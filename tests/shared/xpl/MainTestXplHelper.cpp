@@ -1,139 +1,308 @@
 // Includes needed to compile tested classes
 #include <boost/asio.hpp>
+#include <boost/assign.hpp>
 #include "../../../sources/shared/shared/exception/BadConversion.hpp"
 #include "../../../sources/shared/shared/xpl/XplHelper.h"
+#include "../../../sources/shared/shared/xpl/XplException.h"
 
 #define BOOST_TEST_MODULE MainTestXplHelper
 
 #include <boost/test/unit_test.hpp>
 
 
-bool checkBadConversionException(shared::exception::CBadConversion exception)
+//--------------------------------------------------------------
+/// \brief	    Test matchRules/checkRules with type kVendorId
+//--------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(XplHelper_rulesVendorId)
 {
-   return true;
+   /* alphanumerical characters, lower case, 1 to 8 characters */
+
+   static const std::list<std::string> okStrings = boost::assign::list_of
+      ("a")
+      ("5")
+      ("abcdefgh")
+      ("12345678")
+      ("abcd1234")
+      ("abcd")
+      ("123456");
+
+   static const std::list<std::string> errStrings = boost::assign::list_of
+      ("abcdefghi")
+      ("123456789")
+      ("aBcd1234")
+      ("abcd.123")
+      ("abcd123Z")
+      ("abcd;124")
+      ("a-bc-d1")
+      ("-ab-c34-")
+      ("-")
+      (".")
+      ("");
+
+   for (std::list<std::string>::const_iterator it = okStrings.begin() ; it != okStrings.end() ; ++it)
+   {
+      BOOST_CHECK(shared::xpl::CXplHelper::matchRules(shared::xpl::CXplHelper::kVendorId, *it));
+      BOOST_REQUIRE_NO_THROW(shared::xpl::CXplHelper::checkRules(shared::xpl::CXplHelper::kVendorId, *it));
+   }
+
+   for (std::list<std::string>::const_iterator it = errStrings.begin() ; it != errStrings.end() ; ++it)
+   {
+      BOOST_CHECK(!shared::xpl::CXplHelper::matchRules(shared::xpl::CXplHelper::kVendorId, *it));
+      BOOST_REQUIRE_THROW(shared::xpl::CXplHelper::checkRules(shared::xpl::CXplHelper::kVendorId, *it), shared::xpl::CXplException);
+   }
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test matchRules/checkRules with type kDeviceId
+//--------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(XplHelper_rulesDeviceId)
+{
+   /* alphanumerical characters, lower case, 1 to 8 characters */
+
+   static const std::list<std::string> okStrings = boost::assign::list_of
+      ("a")
+      ("5")
+      ("abcdefgh")
+      ("12345678")
+      ("abcd1234")
+      ("abcd")
+      ("123456");
+
+   static const std::list<std::string> errStrings = boost::assign::list_of
+      ("abcdefghi")
+      ("123456789")
+      ("aBcd1234")
+      ("abcd.123")
+      ("abcd123Z")
+      ("abcd;124")
+      ("a-bc-d1")
+      ("-ab-c34-")
+      ("-")
+      (".")
+      ("");
+
+   for (std::list<std::string>::const_iterator it = okStrings.begin() ; it != okStrings.end() ; ++it)
+   {
+      BOOST_CHECK(shared::xpl::CXplHelper::matchRules(shared::xpl::CXplHelper::kDeviceId, *it));
+      BOOST_REQUIRE_NO_THROW(shared::xpl::CXplHelper::checkRules(shared::xpl::CXplHelper::kDeviceId, *it));
+   }
+
+   for (std::list<std::string>::const_iterator it = errStrings.begin() ; it != errStrings.end() ; ++it)
+   {
+      BOOST_CHECK(!shared::xpl::CXplHelper::matchRules(shared::xpl::CXplHelper::kDeviceId, *it));
+      BOOST_REQUIRE_THROW(shared::xpl::CXplHelper::checkRules(shared::xpl::CXplHelper::kDeviceId, *it), shared::xpl::CXplException);
+   }
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test matchRules/checkRules with type kInstanceId
+//--------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(XplHelper_rulesInstanceId)
+{
+   /* alphanumerical characters, lower case, '-' accepted, 1 to 16 characters */
+
+   static const std::list<std::string> okStrings = boost::assign::list_of
+      ("a")
+      ("5")
+      ("abcdefghijklmnop")
+      ("1234567890123456")
+      ("abcd1234")
+      ("abcd")
+      ("123456")
+      ("a-bc-d1")
+      ("-ab-c34-")
+      ("-");
+
+   static const std::list<std::string> errStrings = boost::assign::list_of
+      ("abcdefghijklmnopq")
+      ("12345678901234567")
+      ("aBcd1234")
+      ("abcd.123")
+      ("abcd123Z")
+      ("abcd;124")
+      (".")
+      ("");
+
+   for (std::list<std::string>::const_iterator it = okStrings.begin() ; it != okStrings.end() ; ++it)
+   {
+      BOOST_CHECK(shared::xpl::CXplHelper::matchRules(shared::xpl::CXplHelper::kInstanceId, *it));
+      BOOST_REQUIRE_NO_THROW(shared::xpl::CXplHelper::checkRules(shared::xpl::CXplHelper::kInstanceId, *it));
+   }
+
+   for (std::list<std::string>::const_iterator it = errStrings.begin() ; it != errStrings.end() ; ++it)
+   {
+      BOOST_CHECK(!shared::xpl::CXplHelper::matchRules(shared::xpl::CXplHelper::kInstanceId, *it));
+      BOOST_REQUIRE_THROW(shared::xpl::CXplHelper::checkRules(shared::xpl::CXplHelper::kInstanceId, *it), shared::xpl::CXplException);
+   }
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test matchRules/checkRules with type kTypeId
+//--------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(XplHelper_rulesTypeId)
+{
+   /* alphanumerical characters, lower case, '-' accepted, 1 to 8 characters */
+
+   static const std::list<std::string> okStrings = boost::assign::list_of
+      ("a")
+      ("5")
+      ("abcdefgh")
+      ("12345678")
+      ("abcd1234")
+      ("abcd")
+      ("123456")
+      ("a-bc-d1")
+      ("-ab-c34-")
+      ("-");
+
+   static const std::list<std::string> errStrings = boost::assign::list_of
+      ("abcdefghi")
+      ("123456789")
+      ("aBcd1234")
+      ("abcd.123")
+      ("abcd123Z")
+      ("abcd;124")
+      (".")
+      ("");
+
+   for (std::list<std::string>::const_iterator it = okStrings.begin() ; it != okStrings.end() ; ++it)
+   {
+      BOOST_CHECK(shared::xpl::CXplHelper::matchRules(shared::xpl::CXplHelper::kTypeId, *it));
+      BOOST_REQUIRE_NO_THROW(shared::xpl::CXplHelper::checkRules(shared::xpl::CXplHelper::kTypeId, *it));
+   }
+
+   for (std::list<std::string>::const_iterator it = errStrings.begin() ; it != errStrings.end() ; ++it)
+   {
+      BOOST_CHECK(!shared::xpl::CXplHelper::matchRules(shared::xpl::CXplHelper::kTypeId, *it));
+      BOOST_REQUIRE_THROW(shared::xpl::CXplHelper::checkRules(shared::xpl::CXplHelper::kTypeId, *it), shared::xpl::CXplException);
+   }
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test matchRules/checkRules with type kClassId
+//--------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(XplHelper_rulesClassId)
+{
+   /* alphanumerical characters, lower case, '-' accepted, 1 to 8 characters */
+
+   static const std::list<std::string> okStrings = boost::assign::list_of
+      ("a")
+      ("5")
+      ("abcdefgh")
+      ("12345678")
+      ("abcd1234")
+      ("abcd")
+      ("123456")
+      ("a-bc-d1")
+      ("-ab-c34-")
+      ("-");
+
+   static const std::list<std::string> errStrings = boost::assign::list_of
+      ("abcdefghi")
+      ("123456789")
+      ("aBcd1234")
+      ("abcd.123")
+      ("abcd123Z")
+      ("abcd;124")
+      (".")
+      ("");
+
+   for (std::list<std::string>::const_iterator it = okStrings.begin() ; it != okStrings.end() ; ++it)
+   {
+      BOOST_CHECK(shared::xpl::CXplHelper::matchRules(shared::xpl::CXplHelper::kClassId, *it));
+      BOOST_REQUIRE_NO_THROW(shared::xpl::CXplHelper::checkRules(shared::xpl::CXplHelper::kClassId, *it));
+   }
+
+   for (std::list<std::string>::const_iterator it = errStrings.begin() ; it != errStrings.end() ; ++it)
+   {
+      BOOST_CHECK(!shared::xpl::CXplHelper::matchRules(shared::xpl::CXplHelper::kClassId, *it));
+      BOOST_REQUIRE_THROW(shared::xpl::CXplHelper::checkRules(shared::xpl::CXplHelper::kClassId, *it), shared::xpl::CXplException);
+   }
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test matchRules/checkRules with type kBody
+//--------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(XplHelper_rulesBodyId)
+{
+   /* alphanumerical characters, lower case, '-' accepted, 1 to 16 characters */
+
+   static const std::list<std::string> okStrings = boost::assign::list_of
+      ("a")
+      ("5")
+      ("abcdefghijklmnop")
+      ("1234567890123456")
+      ("abcd1234")
+      ("abcd")
+      ("123456")
+      ("a-bc-d1")
+      ("-ab-c34-")
+      ("-");
+
+   static const std::list<std::string> errStrings = boost::assign::list_of
+      ("abcdefghijklmnopq")
+      ("12345678901234567")
+      ("aBcd1234")
+      ("abcd.123")
+      ("abcd123Z")
+      ("abcd;124")
+      (".")
+      ("");
+
+   for (std::list<std::string>::const_iterator it = okStrings.begin() ; it != okStrings.end() ; ++it)
+   {
+      BOOST_CHECK(shared::xpl::CXplHelper::matchRules(shared::xpl::CXplHelper::kBody, *it));
+      BOOST_REQUIRE_NO_THROW(shared::xpl::CXplHelper::checkRules(shared::xpl::CXplHelper::kBody, *it));
+   }
+
+   for (std::list<std::string>::const_iterator it = errStrings.begin() ; it != errStrings.end() ; ++it)
+   {
+      BOOST_CHECK(!shared::xpl::CXplHelper::matchRules(shared::xpl::CXplHelper::kBody, *it));
+      BOOST_REQUIRE_THROW(shared::xpl::CXplHelper::checkRules(shared::xpl::CXplHelper::kBody, *it), shared::xpl::CXplException);
+   }
 }
 
 
 
 //--------------------------------------------------------------
-/// \brief	    Test isStructuralElementMatchRules
+/// \brief	    Test toInstanceId(const std::string & elementName)
 //--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(XplHelper_isStructuralElementMatchRules)
+BOOST_AUTO_TEST_CASE(XplHelper_toInstanceIdString)
 {
-   const std::string okStrings[]=
-   {
-      "abcd1234",
-      "a-bc-d12-34",
-      "-ab-cd1234-",
-      "abcd",
-      "123456",
-      ""
-   };
+   // No modification : output string = input string
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId("abcd1234"), "abcd1234");
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId("abcd1234efgh5678"), "abcd1234efgh5678");
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId("a-bc-d12-34"), "a-bc-d12-34");
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId("-ab-cd1234-"), "-ab-cd1234-");
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId("abcd"), "abcd");
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId("123456"), "123456");
 
-   const std::string errStrings[]=
-   {
-      "abcd.1234",
-      "aBcd1234",
-      "abcd1234Z",
-      "abcd;1234",
-      ".",
-      ""
-   };
-
-   for (int idx = 0 ; !okStrings[idx].empty() ; idx++)
-      BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::isStructuralElementMatchRules(okStrings[idx]), true);
-
-   for (int idx = 0 ; !errStrings[idx].empty() ; idx++)
-      BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::isStructuralElementMatchRules(errStrings[idx]), false);
+   // With modifications : output string != input string
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId("abcd.1234"), "abcd1234");
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId("abcd1234efgh56789"), "abcd1234efgh5678");
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId("ABCD.1234"), "abcd1234");
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId("aBcd1234"), "abcd1234");
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId("abcd1234Z"), "abcd1234z");
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId("abcd;1234"), "abcd1234");
+   BOOST_REQUIRE_THROW(shared::xpl::CXplHelper::toInstanceId("."), shared::exception::CBadConversion);
+   BOOST_REQUIRE_THROW(shared::xpl::CXplHelper::toInstanceId(""), shared::exception::CBadConversion);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test isVendorIdOrDeviceIdMatchRules
+/// \brief	    Test toInstanceId(int elementId)
 //--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(XplHelper_isVendorIdOrDeviceIdMatchRules)
-{
-   const std::string okStrings[]=
-   {
-      "abcd1234",
-      "abcd",
-      "123456",
-      ""
-   };
-
-   const std::string errStrings[]=
-   {
-      "a-bc-d12-34",
-      "-ab-cd1234-",
-      "abcd.1234",
-      "aBcd1234",
-      "abcd1234Z",
-      "abcd;1234",
-      ".",
-      ""
-   };
-
-   for (int idx = 0 ; !okStrings[idx].empty() ; idx++)
-      BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::isVendorIdOrDeviceIdMatchRules(okStrings[idx]), true);
-
-   for (int idx = 0 ; !errStrings[idx].empty() ; idx++)
-      BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::isVendorIdOrDeviceIdMatchRules(errStrings[idx]), false);
-}
-
-
-//--------------------------------------------------------------
-/// \brief	    Test toStructuralElement(const std::string & elementName)
-//--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(XplHelper_toStructuralElementString)
+BOOST_AUTO_TEST_CASE(XplHelper_toInstanceIdInt)
 {
    // No modification
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toStructuralElement("abcd1234"), "abcd1234");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toStructuralElement("a-bc-d12-34"), "a-bc-d12-34");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toStructuralElement("-ab-cd1234-"), "-ab-cd1234-");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toStructuralElement("abcd"), "abcd");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toStructuralElement("123456"), "123456");
-
-   // With modifications
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toStructuralElement("abcd.1234"), "abcd1234");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toStructuralElement("ABCD.1234"), "abcd1234");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toStructuralElement("aBcd1234"), "abcd1234");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toStructuralElement("abcd1234Z"), "abcd1234z");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toStructuralElement("abcd;1234"), "abcd1234");
-   BOOST_REQUIRE_EXCEPTION(shared::xpl::CXplHelper::toStructuralElement("."), shared::exception::CBadConversion, checkBadConversionException);
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId(1234), "1234");
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId(0), "0");
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId(-1234), "-1234");
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId(1632154223), "1632154223");
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId(2147483647), "2147483647");
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId(-1), "-1");
+   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toInstanceId(-2147483647), "-2147483647");
 }
 
-//--------------------------------------------------------------
-/// \brief	    Test toStructuralElement(int elementId)
-//--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(XplHelper_toStructuralElementInt)
-{
-   // No modification
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toStructuralElement(1234), "1234");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toStructuralElement(0), "0");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toStructuralElement(-1234), "-1234");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toStructuralElement(1632154223), "1632154223");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toStructuralElement(-1), "-1");
-}
 
-//--------------------------------------------------------------
-/// \brief	    Test toVendorIdOrDeviceId(const std::string & id)
-//--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(XplHelper_toVendorIdOrDeviceId)
-{
-   // No modification
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toVendorIdOrDeviceId("abcd1234"), "abcd1234");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toVendorIdOrDeviceId("abcd"), "abcd");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toVendorIdOrDeviceId("123456"), "123456");
-
-   // With modifications
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toVendorIdOrDeviceId("a-bc-d12-34"), "abcd1234");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toVendorIdOrDeviceId("-ab-cd1234-"), "abcd1234");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toVendorIdOrDeviceId("abcd.1234"), "abcd1234");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toVendorIdOrDeviceId("ABCD.1234"), "abcd1234");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toVendorIdOrDeviceId("aBcd1234"), "abcd1234");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toVendorIdOrDeviceId("abcd1234Z"), "abcd1234z");
-   BOOST_CHECK_EQUAL(shared::xpl::CXplHelper::toVendorIdOrDeviceId("abcd;1234"), "abcd1234");
-   BOOST_REQUIRE_EXCEPTION(shared::xpl::CXplHelper::toVendorIdOrDeviceId("."), shared::exception::CBadConversion, checkBadConversionException);
-   BOOST_REQUIRE_EXCEPTION(shared::xpl::CXplHelper::toVendorIdOrDeviceId("-"), shared::exception::CBadConversion, checkBadConversionException);
-}
 
 //TODO : more tests to add
