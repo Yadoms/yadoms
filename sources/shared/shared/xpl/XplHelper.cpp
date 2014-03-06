@@ -19,12 +19,12 @@ const std::string CXplHelper::WildcardString = "*";
 bool CXplHelper::matchRules(EElement elementType, const std::string& element)
 {
    static const std::map<EElement, boost::regex > xplRulesRegex = boost::assign::map_list_of
-      (kVendorId     , "([a-z0-9]{1,8})")       /* alphanumerical characters, lower case, 1 to 8 characters */
-      (kDeviceId     , "([a-z0-9]{1,8})")       /* alphanumerical characters, lower case, 1 to 8 characters */
-      (kInstanceId   , "([a-z0-9-]{1,16})")     /* alphanumerical characters, lower case, '-' accepted, 1 to 16 characters */
-      (kTypeId       , "([a-z0-9-]{1,8})")      /* alphanumerical characters, lower case, '-' accepted, 1 to 8 characters */
-      (kClassId      , "([a-z0-9-]{1,8})")      /* alphanumerical characters, lower case, '-' accepted, 1 to 8 characters */
-      (kBody         , "([a-z0-9-]{1,16})");    /* alphanumerical characters, lower case, '-' accepted, 1 to 16 characters */
+      (kVendorId     , boost::regex("([a-z0-9]{1,8})"))       /* alphanumerical characters, lower case, 1 to 8 characters */
+      (kDeviceId     , boost::regex("([a-z0-9]{1,8})"))       /* alphanumerical characters, lower case, 1 to 8 characters */
+      (kInstanceId   , boost::regex("([a-z0-9-]{1,16})"))     /* alphanumerical characters, lower case, '-' accepted, 1 to 16 characters */
+      (kTypeId       , boost::regex("([a-z0-9-]{1,8})"))      /* alphanumerical characters, lower case, '-' accepted, 1 to 8 characters */
+      (kClassId      , boost::regex("([a-z0-9-]{1,8})"))      /* alphanumerical characters, lower case, '-' accepted, 1 to 8 characters */
+      (kBody         , boost::regex("([a-z0-9-]{1,16})"));    /* alphanumerical characters, lower case, '-' accepted, 1 to 16 characters */
 
    std::map<EElement, boost::regex>::const_iterator it = xplRulesRegex.find(elementType);
    if (it == xplRulesRegex.end())
