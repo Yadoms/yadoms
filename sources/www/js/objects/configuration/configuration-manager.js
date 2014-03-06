@@ -33,20 +33,20 @@ function ConfigurationManager(objectToConfigure, configurationSchema, configurat
  * @param name
  * @param content
  */
-ConfigurationManager.prototype.createParameterHandler = function (objectToConfigure, name, content, currentValue) {
+ConfigurationManager.prototype.createParameterHandler = function (objectToConfigure, paramName, content, currentValue) {
    assert(objectToConfigure !== undefined, "objectToConfigure must contain widget or plugin object");
-   assert(content.type !== undefined, "type field must be found in " + name + " parameter");
+   assert(content.type !== undefined, "type field must be found in " + paramName + " parameter");
 
    //we build the i18n context
    var i18nContext = objectToConfigure.name + ":configurationSchema.";
 
    switch (content.type.toLowerCase()) {
       case "int" :
-            return new IntParameterHandler(i18nContext, name, content, currentValue);
+            return new IntParameterHandler(i18nContext, paramName, content, currentValue);
          break;
 
       default :
-         throw Error("type " + content.type + " of parameter " + name + " is unsupported");
+         throw Error("type " + content.type + " of parameter " + paramName + " is unsupported");
          break;
    }
 };
