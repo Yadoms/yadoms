@@ -17,9 +17,8 @@ CXplMessageSchemaIdentifier::CXplMessageSchemaIdentifier(const std::string & cla
 }
 
 CXplMessageSchemaIdentifier::CXplMessageSchemaIdentifier(const CXplMessageSchemaIdentifier & identifier)
+   :m_classId(identifier.getClassId()), m_typeId(identifier.getTypeId())
 {
-   m_classId = identifier.getClassId();
-   m_typeId = identifier.getTypeId();
 }
 
 CXplMessageSchemaIdentifier::~CXplMessageSchemaIdentifier()

@@ -13,11 +13,8 @@ CXplActor::CXplActor()
 }
 
 CXplActor::CXplActor(const CXplActor & actor)
+   :m_vendorId(actor.getVendorId()), m_deviceId(actor.getDeviceId()), m_instanceId(actor.getInstanceId()), m_broadcastActive(actor.m_broadcastActive)
 {
-   m_vendorId = actor.getVendorId();
-   m_deviceId = actor.getDeviceId();
-   m_instanceId = actor.getInstanceId();
-   m_broadcastActive = actor.m_broadcastActive;
 }
 
 CXplActor::~CXplActor()
