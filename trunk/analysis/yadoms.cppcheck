@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="1">
+    <includedir>
+        <dir name="../sources/shared/windows/"/>
+        <dir name="../sources/shared/linux/"/>
+        <dir name="../sources/shared/mac/"/>
+    </includedir>  
+    <paths>
+        <dir name="../sources/server"/>
+        <dir name="../sources/shared"/>
+        <dir name="../sources/plugins"/>
+        <dir name="../sources/external-libs/Webem"/>
+    </paths>
+</project>
