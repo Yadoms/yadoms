@@ -27,51 +27,28 @@ function IntParameterHandler(i18nContext, name, content, currentValue) {
    this.content = content;
 }
 
-function createFormGroup(parameterHandler, controlToInsert) {
-
-   assert(parameterHandler !== undefined, "parameterHandler must be defined");
-   assert(controlToInsert !== undefined, "controlToInsert must be defined");
-
-   var s =
-   "<div class=\"form-group\">" +
-      "<label for=\"" + parameterHandler.name + "\" data-i18n=\"" + parameterHandler.i18nContext + parameterHandler.name + ".name\" class=\"control-label col-sm-3\"></label>" +
-      "<button id=\"" + parameterHandler.name + "-help\" class=\"col-sm-1\" type=\"button\" class=\"btn btn-default\" data-container=\"body\">" +
-         "<i class=\"fa fa-question\"></i>" +
-      "</button>" +
-      "<div class=\"col-sm-8\">" +
-         controlToInsert +
-      "</div>" +
-   "</div>" +
-   "<script>" +
-      "$(\"#" + parameterHandler.name + "\").popover({\"placement\" : \"right\"});\n" +
-      "$(\"button#" + parameterHandler.name + "-help\").click(function () {\n" +
-         "$(\"#" + parameterHandler.name + "\").popover(\"toggle\");\n" +
-         "setTimeout(function () {\n" +
-            "$(\"#" + parameterHandler.name + "\").popover(\"hide\"); \n" +
-         "}, 5000);\n" +
-      "});\n" +
-   "</script>";
-
-   return s;
-}
-
 IntParameterHandler.prototype.getDOMObject = function () {
    //we provide a SpinEdit
    var input = "<input " +
                         "type=\"number\" " +
                         "class=\"form-control\" " +
                         "id=\"" + this.name + "\" " +
-                        "data-i18n=\"[data-content]" + this.i18nContext + this.name + ".description\" ";
+                        "data-i18n=\"[data-content]" + this.i18nContext + this.name + ".description\" " +
+                        "required data-validation-required-message=\"Please fill out this field\" " +
+                        "pattern=\"-?[0-9]+\" data-validation-pattern-message=\"Seulement un nombre entier\" ";
+
    if (!isNaN(this.maxValue)) {
       input += "max=\"" + this.maxValue + "\" ";
       input += "data-validation-max-message=\"" + "Valeur maximum depassée" + "\""
    }
-   if (!isNaN(this.minValue))
+   if (!isNaN(this.minValue)) {
       input += "min=\"" + this.minValue + "\" ";
-   "aria-invalid=\"true\"" +
-   ">";
+      input += "data-validation-min-message=\"" + "Valeur mini depassée" + "\""
+   }
+
+   input += " ><p class=\"help-block\"></p>";
 
    var self = this;
 
-   return createFormGroup(self, input);
+   return ConfigurationHelper.createFormGroup(self, input);
 }

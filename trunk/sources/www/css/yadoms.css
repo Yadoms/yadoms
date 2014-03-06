@@ -160,5 +160,5 @@ body {
 
 .popover {
    z-index: 9999;
-   position: fixed;
+   min-width: 200px;
 }

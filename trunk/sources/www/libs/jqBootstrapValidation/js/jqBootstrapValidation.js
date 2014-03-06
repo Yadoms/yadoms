@@ -53,9 +53,9 @@
             var $this = $(el),
               $controlGroup = $this.parents(".control-group").first();
             if (
-              $controlGroup.hasClass("warning")
+              $controlGroup.hasClass("has-warning")
             ) {
-              $controlGroup.removeClass("warning").addClass("error");
+                $controlGroup.removeClass("has-warning").addClass("has-error");
               warningsFound++;
             }
           });
@@ -66,12 +66,10 @@
             if (settings.options.preventSubmit) {
               e.preventDefault();
             }
-            $form.addClass("error");
             if ($.isFunction(settings.options.submitError)) {
               settings.options.submitError($form, e, $inputs.jqBootstrapValidation("collectErrors", true));
             }
           } else {
-            $form.removeClass("error");
             if ($.isFunction(settings.options.submitSuccess)) {
               settings.options.submitSuccess($form, e);
             }
@@ -473,7 +471,7 @@
               // Were there any errors?
               if (errorsFound.length) {
                 // Better flag it up as a warning.
-                $controlGroup.removeClass("success error").addClass("warning");
+                  $controlGroup.removeClass("has-success has-error").addClass("has-warning");
 
                 // How many errors did we find?
                 if (settings.options.semanticallyStrict && errorsFound.length === 1) {
@@ -486,20 +484,20 @@
                     ( settings.options.prependExistingHelpBlock ? $helpBlock.data("original-contents") : "" ));
                 }
               } else {
-                $controlGroup.removeClass("warning error success");
+                  $controlGroup.removeClass("has-warning has-error has-success");
                 if (value.length > 0) {
-                  $controlGroup.addClass("success");
+                    $controlGroup.addClass("has-success");
                 }
                 $helpBlock.html($helpBlock.data("original-contents"));
               }
 
               if (e.type === "blur") {
-                $controlGroup.removeClass("success");
+                  $controlGroup.removeClass("has-success");
               }
             }
           );
           $this.bind("validationLostFocus.validation", function () {
-            $controlGroup.removeClass("success");
+              $controlGroup.removeClass("has-success");
           });
         });
       },
