@@ -238,6 +238,10 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/tools/tools/DirectoryChangeListener.cpp
 	server/tools/tools/Version.h
 	server/tools/tools/Version.cpp
+	server/tools/tools/web/Uri.h
+	server/tools/tools/web/Uri.cpp
+	server/tools/tools/web/FileDownloader.h
+	server/tools/tools/web/FileDownloader.cpp
 )
 
 IF(WIN32)
@@ -269,6 +273,7 @@ ELSE()
 ENDIF()
 
 source_group(server\\tools tools/*.*)
+source_group(server\\tools\\web tools/web/*.*)
 source_group(server\\tools\\platformSpecific\\windows server/tools/windows/tools/*.*)
 source_group(server\\tools\\platformSpecific\\linux server/tools/linux/tools/*.*)
 source_group(server\\tools\\platformSpecific\\mac server/tools/mac/tools/*.*)
