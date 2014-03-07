@@ -4,7 +4,16 @@
         <dir name="../sources/shared/windows/"/>
         <dir name="../sources/shared/linux/"/>
         <dir name="../sources/shared/mac/"/>
-    </includedir>  
+        <dir name="../sources/shared/"/>
+        <dir name="../sources/"/>
+        <dir name="../sources/external-libs/Webem/"/>
+        <dir name="../sources/external-libs/SQLite/sqlite-amalgamation-3080301"/>
+        <dir name="../sources/server/"/>
+        <dir name="../sources/server/tools/"/>
+        <dir name="../sources/server/tools/windows"/>
+        <dir name="../sources/server/tools/linux"/>
+        <dir name="../sources/server/tools/mac"/>
+     </includedir>  
     <paths>
         <dir name="../sources/server"/>
         <dir name="../sources/shared"/>

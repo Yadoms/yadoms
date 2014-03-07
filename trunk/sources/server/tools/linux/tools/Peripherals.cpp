@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#include "tools/Exceptions/NotSupportedException.hpp"
-#include "tools/Log.h"
+#include <shared/exception/NotSupported.hpp>
+#include <shared/Log.h>
 #include "Peripherals.h"
 
 
