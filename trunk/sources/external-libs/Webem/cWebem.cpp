@@ -7,6 +7,7 @@
 #include "cWebem.h"
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/noncopyable.hpp>
 #include "reply.hpp"
 #include "request.hpp"
 #include "mime_types.hpp"
@@ -172,7 +173,7 @@ void cWebem::RegisterAlias(const std::string & alias, const std::string & filesP
 
 		This is a wrapper for the WideCharToMultiByte and MultiByteToWideChar
 		*/
-		class cUTF
+		class cUTF : boost::noncopyable
 		{
 			char * myString8;			///< string in UTF-6
 		public:
@@ -278,16 +279,9 @@ void cWebem::CheckForAction( request& req )
 {
 	// look for cWebem form action request
 	std::string uri = req.uri;
-	int q = 0;
-	if( req.method != "POST" ) {
-		q = uri.find(".webem");
-		if( q == -1 )
-			return;
-	} else {
-		q = uri.find(".webem");
-		if( q == -1 )
-			return;
-	}
+	int q = uri.find(".webem");
+	if( q == -1 )
+		return;
 
 	// find function matching action code
 	std::string code = uri.substr(1,q-1);
@@ -1267,7 +1261,7 @@ bool cWebemRequestHandler::AreWeInLocalNetwork(const request& req)
 {
 	//check if in local network(s)
 
-	if (myWebem->m_localnetworks.size()==0)
+	if (myWebem->m_localnetworks.empty())
 		return false;
 
 	const char *host_header;
@@ -1295,7 +1289,7 @@ int cWebemRequestHandler::check_authorization(const request& req)
 {
 	myWebem->m_actualuser="";
 	myWebem->m_actsessionid=0;
-	if (myWebem->m_userpasswords.size()==0)
+	if (myWebem->m_userpasswords.empty())
 		return 1;//no username/password
 
 	if (AreWeInLocalNetwork(req))
@@ -1400,10 +1394,10 @@ void cWebemRequestHandler::check_cookie(const request& req, reply& rep)
 {
 	if (AreWeInLocalNetwork(req))
 		return;
-	if (myWebem->m_actualuser.size()==0)
+	if (myWebem->m_actualuser.empty())
 		return;
 
-	if (myWebem->m_userpasswords.size()>0)
+	if (!myWebem->m_userpasswords.empty())
 	{
 		if (rep.headers[1].value.find("text/html")!=std::string::npos)
 		{

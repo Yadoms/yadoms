@@ -10,8 +10,11 @@
 namespace shared { namespace xpl
 {
 
-   class YADOMS_SHARED_EXPORT CXplService 
+   class YADOMS_SHARED_EXPORT CXplService
    {
+   private:
+      CXplService(CXplService&){}// Non-copyable
+
    public:
 
       //--------------------------------------------------------------

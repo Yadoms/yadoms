@@ -88,10 +88,10 @@ double CalculateDewPoint(double temp, int humidity)
 
 uint32_t IPToUInt(const std::string &ip) 
 {
-	int a, b, c, d;
+	uint32_t a, b, c, d;
 	uint32_t addr = 0;
 
-	if (sscanf(ip.c_str(), "%d.%d.%d.%d", &a, &b, &c, &d) != 4)
+	if (sscanf(ip.c_str(), "%3u.%3u.%3u.%3u", &a, &b, &c, &d) != 4)
 		return 0;
 
 	addr = a << 24;

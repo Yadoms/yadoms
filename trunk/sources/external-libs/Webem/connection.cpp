@@ -22,7 +22,8 @@ connection::connection(boost::asio::io_service& io_service,
     connection_manager& manager, boost::shared_ptr<request_handler> handler)
   : socket_(io_service),
     connection_manager_(manager),
-    request_handler_(handler)
+    request_handler_(handler),
+    reply_()
 {
 	m_lastresponse=mytime(NULL);
 }
