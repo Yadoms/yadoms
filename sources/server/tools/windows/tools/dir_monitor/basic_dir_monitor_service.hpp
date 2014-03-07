@@ -37,7 +37,8 @@ public:
         completion_key(HANDLE h, const std::string &d, boost::shared_ptr<DirMonitorImplementation> &i) 
             : handle(h), 
             dirname(d), 
-            impl(i) 
+            impl(i),
+            buffer()
         { 
             ZeroMemory(&overlapped, sizeof(overlapped)); 
         } 
