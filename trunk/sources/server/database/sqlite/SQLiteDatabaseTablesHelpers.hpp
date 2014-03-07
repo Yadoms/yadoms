@@ -108,13 +108,13 @@
 /// \brief  Declare table name static value
 //
 #define DECLARE_STATIC_TABLENAME_VALUE(_classname, _tablename) \
-   std::string C##_classname##Table::m_tableName = _tablename;
+   const std::string C##_classname##Table::m_tableName = _tablename;
 
 //
 /// \brief  Declare table creation script static value
 //
 #define DECLARE_STATIC_TABLE_CREATION_SCRIPT(_classname, _tableScript) \
-   std::string C##_classname##Table::m_tableCreationScript = _tableScript;
+   const std::string C##_classname##Table::m_tableCreationScript(_tableScript);
 
 
 //
@@ -131,8 +131,8 @@ public:\
    DECLARE_GETTERS(_seq) \
    \
 private:\
-   static std::string m_tableName; \
-   static std::string m_tableCreationScript; \
+   static const std::string m_tableName; \
+   static const std::string m_tableCreationScript; \
    DECLARE_MEMBERS(_seq) \
 };
 
