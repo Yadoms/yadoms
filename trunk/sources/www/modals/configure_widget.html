@@ -37,11 +37,9 @@
       widgetToConfigure = page.getWidget(widgetId);
       assert(widgetToConfigure != null, "widget Id doesn't exit in the page");
 
-      var configMgr = new ConfigurationManager(widgetToConfigure, widgetToConfigure.package.configurationSchema, widgetToConfigure.configuration);
-
       var $modalBody = $('div#configure-widget-modal').find(".modal-body");
       $modalBody.empty();
-      $modalBody.append(configMgr.getDOMObject());
+      var configMgr = new ConfigurationManager(widgetToConfigure, $modalBody);
 
       //i18n
       $modalBody.i18n();
@@ -56,17 +54,38 @@
                     // the error messages to the user, log, etc.
                  },
                  submitSuccess: function($form, event) {
-                    alert("OK");
-                    event.preventDefault();
+                     event.preventDefault();
+                     widgetToConfigure.configuration = configMgr.getCurrentConfiguration();
+                    debugger;
+                     $.ajax({
+                       type: "PUT",
+                       url: "/rest/widget/" + widgetToConfigure.id,
+                       data: JSON.stringify(widgetToConfigure),
+                       contentType: "application/json; charset=utf-8",
+                       dataType: "json"
+                     })
+                     .done(function(data) {
+                        //we parse the json answer
+                        if (data.result != "true")
+                        {
+                         notifyError("Error during modifying page");
+                         return;
+                        }
+
+                        //we notify the widget its configuration has changed
+                        if (widgetToConfigure.viewModel.configurationChanged !== undefined)
+                           widgetToConfigure.viewModel.configurationChanged();
+                     })
+                     .fail(function(pageName) { return function() {notifyError("Unable to modify widget configuration " + widgetName)}}(widgetToConfigure.name))
+                     .always(function() {
+                        //we clear the current id
+                        widgetToConfigure = undefined;
+                        $modalBody.empty();
+                        $("div#configure-widget-modal").modal("hide");
+                     })
                  },
                  filter: function() {
                     return $(this).is(":visible");
-                 },
-                 highlight: function(element) {
-                    $(element).closest('.form-group').addClass('has-error');
-                 },
-                 unhighlight: function(element) {
-                    $(element).closest('.form-group').removeClass('has-error');
                  }
               }
       );
@@ -78,16 +97,5 @@
    $('div#configure-widget-modal').on('shown.bs.modal', function () {
        //$('input#configuration-widget-text').focus();
     });
-
-   /**
-   * Callback to the click of the button to confirm modifying of a page
-   */
-   /*$("button#btn-confirm-configure-widget").click(function () {
-
-
-      $("div#configure-widget-modal").modal("hide");
-      var $modalBody = $('div#configure-widget-modal').find(".modal-body");
-      $modalBody.empty();
-   });*/
 
 </script>

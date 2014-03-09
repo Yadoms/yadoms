@@ -4,7 +4,7 @@
    "configurationSchema" : {
       "intParameter" : {
          "name" : "Paramètre entier",
-         "description" : "Valeur entiere à saisir"
+         "description" : "Test d'un paramètre entier"
       }
    }
 }

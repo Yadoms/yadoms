@@ -15,5 +15,15 @@
       "qrcode" : {
          "title" : "QR Code de Yadoms"
       }
+   },
+   "widgets" : {
+      "configuration" : {
+         "validationForm" : {
+            "incorrectValue" : "Valeur incorrecte",
+            "onlyIntegerNumberAllowed" : "Seulement les nombres entiers sont autorisés",
+            "maxValueExceeded" : "Valeur maximum dépassée",
+            "minValueExceeded" : "Valeur minimum dépassée"
+         }
+      }
    }
 }

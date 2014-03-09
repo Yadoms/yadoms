@@ -10,5 +10,20 @@
          "restart" : "Restart",
          "shutdown" : "Shutdown"
       }
+   },
+   "modals" : {
+      "qrcode" : {
+         "title" : "QR Code de Yadoms"
+      }
+   },
+   "widgets" : {
+      "configuration" : {
+         "validationForm" : {
+            "incorrectValue" : "Incorrect value",
+            "onlyIntegerNumberAllowed" : "Only integer number are allowed",
+            "maxValueExceeded" : "Maximum value exceeded",
+            "minValueExceeded" : "Minimum value exceeded"
+         }
+      }
    }
 }

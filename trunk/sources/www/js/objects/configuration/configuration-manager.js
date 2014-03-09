@@ -7,24 +7,26 @@
  * @constructor
  * @param modalPath
  */
-function ConfigurationManager(objectToConfigure, configurationSchema, configurationValues) {
+function ConfigurationManager(objectToConfigure, $domContainer) {
    assert(objectToConfigure !== undefined, "objectToConfigure must contain widget or plugin object");
-   assert(configurationSchema !== undefined, "configurationSchema must be defined");
+   assert($domContainer !== undefined, "$domContainer must be defined");
 
-   this.configurationSchema = configurationSchema;
    this.objectToConfigure = objectToConfigure;
-   this.configurationValues = configurationValues;
-
+   this.configurationSchema = objectToConfigure.package.configurationSchema;
+   this.configurationValues = objectToConfigure.configuration;
+   this.$domContainer = $domContainer;
    this.configurationHandlers = new Array();
 
    var self = this;
    //for each key in package
    $.each(self.configurationSchema, function (key, value) {
-      var idx = (self.configurationValues !== undefined) ? self.configurationValues.indexOf(key) : -1 ;
-      var currentValue = (idx != -1) ? self.configurationValues[currentValue] : "";
+      var currentValue = self.configurationValues[key];
+      var currentValue = (currentValue !== undefined) ? currentValue : "";
       var handler = self.createParameterHandler(self.objectToConfigure, key, value, currentValue);
       self.configurationHandlers.push(handler);
    });
+
+   $domContainer.append(this.getDOMObject());
 }
 
 /**
@@ -60,4 +62,14 @@ ConfigurationManager.prototype.getDOMObject = function() {
 
    result += "</div>\n</div>\n";
    return result;
+}
+
+ConfigurationManager.prototype.getCurrentConfiguration = function () {
+   //we update configurationValues with content of DOM
+   this.configurationValues = {};
+   var self = this;
+   $.each(this.configurationHandlers, function (key, value) {
+      self.configurationValues[value.getParamName()] = value.getCurrentConfiguration();
+   });
+   return this.configurationValues;
 }
