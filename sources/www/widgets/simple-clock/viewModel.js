@@ -44,6 +44,10 @@ function SimpleClockViewModel() {
       else
          this.widget.$gridsterWidget.find(".simpleClockWidget").css("font-size", "7.0em");
    };
+
+   this.configurationChanged = function() {
+
+   };
 };
 
 /**

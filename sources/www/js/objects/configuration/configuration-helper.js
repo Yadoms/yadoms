@@ -10,23 +10,23 @@ ConfigurationHelper.createFormGroup = function(parameterHandler, controlToInsert
 
    var s =
       "<div class=\"form-group\">" +
-         "<label for=\"" + parameterHandler.name + "\" data-i18n=\"" + parameterHandler.i18nContext + parameterHandler.name + ".name\" class=\"control-label col-sm-3\"></label>" +
-         "<button id=\"" + parameterHandler.name + "-help\" class=\"col-sm-1\" type=\"button\" class=\"btn btn-default\" data-container=\"body\">" +
-         "<i class=\"fa fa-question\"></i>" +
+         "<label for=\"" + parameterHandler.paramName + "\" data-i18n=\"" + parameterHandler.i18nContext + parameterHandler.paramName + ".name\" class=\"control-label col-sm-3\">" + parameterHandler.name + "</label>" +
+         "<button id=\"" + parameterHandler.paramName + "-help\" class=\"col-sm-1\" type=\"button\" class=\"btn btn-default\" data-container=\"body\">" +
+            "<i class=\"fa fa-question\"></i>" +
          "</button>" +
          "<div class=\"col-sm-8\">" +
-         controlToInsert +
+            controlToInsert +
          "</div>" +
-         "</div>" +
-         "<script>" +
-         "$(\"#" + parameterHandler.name + "\").popover({\"placement\" : \"right\", \"trigger\": \"manual\",});\n" +
-         "$(\"button#" + parameterHandler.name + "-help\").click(function () {\n" +
-         "$(\"#" + parameterHandler.name + "\").popover(\"toggle\");\n" +
-         "setTimeout(function () {\n" +
-         "$(\"#" + parameterHandler.name + "\").popover(\"hide\"); \n" +
-         "}, 5000);\n" +
+      "</div>" +
+      "<script>" +
+         "$(\"#" + parameterHandler.paramName + "\").popover({\"placement\" : \"right\", \"trigger\": \"manual\",});\n" +
+         "$(\"button#" + parameterHandler.paramName + "-help\").click(function () {\n" +
+            "$(\"#" + parameterHandler.paramName + "\").popover(\"toggle\");\n" +
+            "setTimeout(function () {\n" +
+               "$(\"#" + parameterHandler.paramName + "\").popover(\"hide\"); \n" +
+            "}, 5000);\n" +
          "});\n" +
-         "</script>";
+      "</script>";
 
    return s;
 }

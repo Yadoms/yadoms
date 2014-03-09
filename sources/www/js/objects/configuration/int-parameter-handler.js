@@ -34,24 +34,41 @@ IntParameterHandler.prototype.getDOMObject = function () {
    var input = "<input " +
                         "type=\"number\" " +
                         "class=\"form-control\" " +
-                        "id=\"" + this.name + "\" " +
-                        "data-i18n=\"[data-content]" + this.i18nContext + this.name + ".description\" " +
-                        "data-content=\"" + this. + "\"" +
-                        "required data-validation-required-message=\"Please fill out this field\" " +
-                        "pattern=\"-?[0-9]+\" data-validation-pattern-message=\"Seulement un nombre entier\" ";
+                        "id=\"" + this.paramName + "\" " +
+                        "data-content=\"" + this.description + "\"" +
+                        "required " +
+                        "pattern=\"-?[0-9]+\"";
+   var i18nOptions = " i18n-options=\"";
+   var i18nData = " data-i18n=\"";
+
+   i18nData += "[data-content]" + this.i18nContext + this.paramName + ".description";
+   i18nData += ";[data-validation-required-message]widgets.configuration.validationForm.incorrectValue";
+   i18nData += ";[data-validation-pattern-message]widgets.configuration.validationForm.onlyIntegerNumberAllowed";
 
    if (!isNaN(this.maxValue)) {
       input += "max=\"" + this.maxValue + "\" ";
-      input += "data-validation-max-message=\"" + "Valeur maximum depassée" + "\""
+      i18nData += ";[data-validation-max-message]widgets.configuration.validationForm.maxValueExceeded";
    }
    if (!isNaN(this.minValue)) {
       input += "min=\"" + this.minValue + "\" ";
-      input += "data-validation-min-message=\"" + "Valeur mini depassée" + "\""
+      i18nData += ";[data-validation-min-message]widgets.configuration.validationForm.minValueExceeded";
    }
 
-   input += " ><p class=\"help-block\"></p>";
+   i18nOptions += "\" ";
+   i18nData += "\" ";
+   input += i18nData + i18nOptions;
+   input += "value =\"" + this.value + "\" >";
+   input += "</input><p class=\"help-block\"></p>";
 
    var self = this;
-
    return ConfigurationHelper.createFormGroup(self, input);
-}
+};
+
+IntParameterHandler.prototype.getParamName = function() {
+  return this.paramName;
+};
+
+IntParameterHandler.prototype.getCurrentConfiguration = function () {
+   this.value = $("input#" + this.paramName).val();
+   return this.value;
+};
