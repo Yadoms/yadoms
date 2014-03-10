@@ -45,50 +45,47 @@
       $modalBody.i18n();
 
       //validation form
-      $modalBody.find("input,select,textarea").jqBootstrapValidation(
-              {
+      $modalBody.find("input,select,textarea").jqBootstrapValidation({
+         preventSubmit: true,
+         submitError: function($form, event, errors) {
+           // Here I do nothing, but you could do something like display
+           // the error messages to the user, log, etc.
+         },
+         submitSuccess: function($form, event) {
+            event.preventDefault();
+            widgetToConfigure.configuration = configMgr.getCurrentConfiguration();
+            $.ajax({
+              type: "PUT",
+              url: "/rest/widget/" + widgetToConfigure.id,
+              data: JSON.stringify(widgetToConfigure),
+              contentType: "application/json; charset=utf-8",
+              dataType: "json"
+            })
+            .done(function(data) {
+               //we parse the json answer
+               if (data.result != "true")
+               {
+                notifyError("Error during modifying page");
+                return;
+               }
 
-                 preventSubmit: true,
-                 submitError: function($form, event, errors) {
-                    // Here I do nothing, but you could do something like display
-                    // the error messages to the user, log, etc.
-                 },
-                 submitSuccess: function($form, event) {
-                     event.preventDefault();
-                     widgetToConfigure.configuration = configMgr.getCurrentConfiguration();
-                    debugger;
-                     $.ajax({
-                       type: "PUT",
-                       url: "/rest/widget/" + widgetToConfigure.id,
-                       data: JSON.stringify(widgetToConfigure),
-                       contentType: "application/json; charset=utf-8",
-                       dataType: "json"
-                     })
-                     .done(function(data) {
-                        //we parse the json answer
-                        if (data.result != "true")
-                        {
-                         notifyError("Error during modifying page");
-                         return;
-                        }
-
-                        //we notify the widget its configuration has changed
-                        if (widgetToConfigure.viewModel.configurationChanged !== undefined)
-                           widgetToConfigure.viewModel.configurationChanged();
-                     })
-                     .fail(function(pageName) { return function() {notifyError("Unable to modify widget configuration " + widgetName)}}(widgetToConfigure.name))
-                     .always(function() {
-                        //we clear the current id
-                        widgetToConfigure = undefined;
-                        $modalBody.empty();
-                        $("div#configure-widget-modal").modal("hide");
-                     })
-                 },
-                 filter: function() {
-                    return $(this).is(":visible");
-                 }
-              }
-      );
+               //we notify the widget its configuration has changed
+               if (widgetToConfigure.viewModel.configurationChanged !== undefined)
+                  widgetToConfigure.viewModel.configurationChanged();
+            })
+            .fail(function(pageName) { return function() {notifyError("Unable to modify widget configuration " + widgetName)}}(widgetToConfigure.name))
+            .always(function() {
+               //we clear the current id
+               widgetToConfigure = undefined;
+               $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
+               $modalBody.empty();
+               $("div#configure-widget-modal").modal("hide");
+            })
+         },
+         filter: function() {
+           return $(this).is(":visible");
+         }
+      });
 
       //we display the modal
       $('div#configure-widget-modal').modal();

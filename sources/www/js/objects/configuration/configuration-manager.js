@@ -47,6 +47,10 @@ ConfigurationManager.prototype.createParameterHandler = function (objectToConfig
             return new IntParameterHandler(i18nContext, paramName, content, currentValue);
          break;
 
+      case "decimal" :
+         return new DecimalParameterHandler(i18nContext, paramName, content, currentValue);
+         break;
+
       default :
          throw Error("type " + content.type + " of parameter " + paramName + " is unsupported");
          break;
@@ -54,13 +58,13 @@ ConfigurationManager.prototype.createParameterHandler = function (objectToConfig
 };
 
 ConfigurationManager.prototype.getDOMObject = function() {
-   var result = "<div class=\"control-group\">\n<div class=\"controls\">\n";
+   var result = "";
    $.each(this.configurationHandlers, function (key, value) {
       result += value.getDOMObject();
       result += "\n";
    });
 
-   result += "</div>\n</div>\n";
+   result += "";
    return result;
 }
 

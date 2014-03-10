@@ -21,6 +21,7 @@
          "validationForm" : {
             "incorrectValue" : "Incorrect value",
             "onlyIntegerNumberAllowed" : "Only integer number are allowed",
+            "onlyNumberAllowed" : "Only numbers are allowed",
             "maxValueExceeded" : "Maximum value exceeded",
             "minValueExceeded" : "Minimum value exceeded"
          }

@@ -511,6 +511,10 @@
               $controlGroup = $this.parents(".control-group").first(),
               $helpBlock = $controlGroup.find(".help-block").first();
 
+//NHI modification
+             $(this.form).unbind("submit");
+//End of modification
+
             // remove our events
             $this.unbind('.validation'); // events are namespaced.
             // reset help text
