@@ -146,10 +146,8 @@ namespace web { namespace rest { namespace service {
 
             if(widgetToUpdate->getId() == objectId)
             {
-               m_dataProvider->getWidgetRequester()->removeWidget(objectId);
-               int newId = m_dataProvider->getWidgetRequester()->addWidget(*widgetToUpdate);
-               BOOST_ASSERT(objectId == newId);
-               return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*m_dataProvider->getWidgetRequester()->getWidget(newId)));
+               m_dataProvider->getWidgetRequester()->updateWidget(*widgetToUpdate);
+               return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*m_dataProvider->getWidgetRequester()->getWidget(widgetToUpdate->getId())));
             }
             else
             {

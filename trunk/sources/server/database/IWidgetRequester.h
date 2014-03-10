@@ -54,6 +54,13 @@ namespace database {
       virtual void updateWidgetSize(int widgetId, int sizeX, int sizeY) = 0;
       
       //--------------------------------------------------------------
+      /// \brief           Update widget 
+      /// \param [in]      widget   The widget to update (the id must be filled)
+      /// \throw           shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual void updateWidget(const entities::CWidget & widget) = 0;
+
+      //--------------------------------------------------------------
       /// \brief           Remove widget 
       /// \param [in] widgetId   Widget  Id
       /// \throw           shared::exception::CEmptyResult if fails
