@@ -254,8 +254,7 @@ namespace web { namespace rest { namespace service {
 
          boost::filesystem::path someDir(widgetPath);
          boost::filesystem::directory_iterator end_itr; // default construction yields past-the-end
-         web::rest::json::CJsonSerializer ser;
-
+         
          if ( boost::filesystem::exists(someDir) && boost::filesystem::is_directory(someDir))
          {
             web::rest::json::CJson allData;
@@ -279,8 +278,7 @@ namespace web { namespace rest { namespace service {
 
                      std::stringstream ss;
                      ss << ifs.rdbuf();
-                     web::rest::json::CJson jsonFromPackageFile;
-                     ser.deserialize(ss.str(), jsonFromPackageFile);
+                     web::rest::json::CJson jsonFromPackageFile = web::rest::json::CJsonSerializer::deserialize(ss.str());
                      allData.push_back(std::make_pair("", jsonFromPackageFile));
                   }
                }

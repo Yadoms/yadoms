@@ -86,8 +86,7 @@ namespace web { namespace webem {
                   {
                      if(boost::ifind_first(headerData.value, "application/json"))
                      {
-                        web::rest::json::CJsonSerializer ser;
-                        ser.deserialize(request.content, requestContent);                  
+                        requestContent = web::rest::json::CJsonSerializer::deserialize(request.content);                  
                      }
                      else
                      {
@@ -101,27 +100,27 @@ namespace web { namespace webem {
             catch(std::exception &ex)
             {
                YADOMS_LOG(error) << "Fail to read request content as Json format. Exception : " << ex.what();
-               return m_jsonSerializer.serialize(web::rest::json::CJsonResult::GenerateError("Fail to read request content as Json format"));
+               return web::rest::json::CJsonSerializer::serialize(web::rest::json::CJsonResult::GenerateError("Fail to read request content as Json format"));
             }
 
             //dispatch url to rest dispatcher
             web::rest::json::CJson js = m_restDispatcher.dispath(request.method, parameters, requestContent);
-            return m_jsonSerializer.serialize(js);
+            return web::rest::json::CJsonSerializer::serialize(js);
          }
          else
          {
-            return m_jsonSerializer.serialize(web::rest::json::CJsonResult::GenerateError("Rest handler : cannot decode url"));
+            return web::rest::json::CJsonSerializer::serialize(web::rest::json::CJsonResult::GenerateError("Rest handler : cannot decode url"));
          }
       }
       catch(std::exception &ex)
       {
          YADOMS_LOG(error) << "An exception occured in treating REST url : " << request_path << std::endl << "Exception : " << ex.what();
-         return m_jsonSerializer.serialize(web::rest::json::CJsonResult::GenerateError(ex));
+         return web::rest::json::CJsonSerializer::serialize(web::rest::json::CJsonResult::GenerateError(ex));
       }
       catch(...)
       {
          YADOMS_LOG(error) << "An unknown exception occured in treating REST url : " << request_path;
-         return m_jsonSerializer.serialize(web::rest::json::CJsonResult::GenerateError("An unknown exception occured in treating REST url : " + request_path));
+         return web::rest::json::CJsonSerializer::serialize(web::rest::json::CJsonResult::GenerateError("An unknown exception occured in treating REST url : " + request_path));
       }
    }
 

@@ -32,4 +32,12 @@ void CPtreeToJsonSerializer::deserialize(const std::string& str, boost::property
    }
 }
 
+boost::property_tree::ptree CPtreeToJsonSerializer::deserialize(const std::string& str)
+{
+   boost::property_tree::ptree pt;
+   deserialize(str, pt);
+   return pt;
+}
+
+
 } } // namespace shared::serialization

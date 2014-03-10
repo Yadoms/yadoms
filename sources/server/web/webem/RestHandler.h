@@ -68,11 +68,6 @@ namespace web { namespace webem {
       ///\brief  The rest dispatcher
       //-------------------------------------- 
       web::rest::CRestDispatcher m_restDispatcher;
-
-      //--------------------------------------   
-      ///\brief  The Json serializer
-      //-------------------------------------- 
-      web::rest::json::CJsonSerializer   m_jsonSerializer;
    };
 
 
