@@ -19,7 +19,9 @@
 #include "web/rest/service/EventLoggerRestService.h"
 #include <shared/ThreadBase.h>
 #include <shared/Peripherals.h>
-
+#include "tools/web/FileDownloader.h"
+#include "task/Scheduler.h"
+#include "task/update/Plugin.h"
 
 CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
    :CThreadBase("Supervisor"), m_startupOptions(startupOptions)
@@ -189,6 +191,13 @@ void CSupervisor::doWork()
 #endif
       //\TODO ######################### [END] test interface pluginManager #########################
 
+      // ######################### Task manager #########################
+      boost::shared_ptr<task::CScheduler> taskManager = boost::shared_ptr<task::CScheduler>(new task::CScheduler());
+
+#if DEV_ACTIVATE_TASK_MANAGER_TESTS
+      std::string sUpdateTaskId = taskManager->RunTask(boost::shared_ptr<task::ITask>(new task::update::CPlugin()));
+#endif
+      // ######################### [END] Task manager #########################
 
       // ######################### Web server #########################
       const std::string webServerIp = m_startupOptions.getWebServerIPAddress();
@@ -227,12 +236,12 @@ void CSupervisor::doWork()
       }
 	  
 #if DEV_ACTIVATE_XPL_TESTS
-	  //database::entities::CPlugin plg;
-	  //plg.setName("testOfXpl");
-	  //plg.setPluginName("fakePlugin");
-     //plg.setConfiguration("{\"BoolParameter\": \"true\", \"DecimalParameter\": \"18.4\", \"EnumParameter\": \"EnumValue1\", \"IntParameter\": \"42\", \"Serial port\": \"tty1\", \"StringParameter\": \"Yadoms is so powerful !\",\"MySection\": { \"SubIntParameter\": \"123\", \"SubStringParameter\": \"Just a *MODIFIED* string parameter in the sub-section\"}}");
-     //
-	  //pluginManager->createInstance(plg);
+	  database::entities::CPlugin plg;
+	  plg.setName("testOfXpl");
+	  plg.setPluginName("fakePlugin");
+     plg.setConfiguration("{\"BoolParameter\": \"true\", \"DecimalParameter\": \"18.4\", \"EnumParameter\": \"EnumValue1\", \"IntParameter\": \"42\", \"Serial port\": \"tty1\", \"StringParameter\": \"Yadoms is so powerful !\",\"MySection\": { \"SubIntParameter\": \"123\", \"SubStringParameter\": \"Just a *MODIFIED* string parameter in the sub-section\"}}");
+     
+	  pluginManager->createInstance(plg);
 #endif
       // ######################### [END] Xpl Hub #########################
 

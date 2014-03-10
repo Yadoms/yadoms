@@ -217,7 +217,17 @@ set(YADOMS_SRC
 	server/web/rest/service/PluginEventLoggerRestService.cpp
 	server/web/rest/service/EventLoggerRestService.h
 	server/web/rest/service/EventLoggerRestService.cpp
-	)
+	
+	server/task/Scheduler.h
+	server/task/Scheduler.cpp
+	server/task/Instance.h
+	server/task/Instance.cpp
+	server/task/ITask.h
+	server/task/update/Plugin.h
+	server/task/update/Plugin.cpp
+	server/task/update/Yadoms.h
+	server/task/update/Yadoms.cpp
+)
 
 # Project folders
 source_group(server server/*.*)
@@ -229,6 +239,8 @@ source_group(server\\web  server/web/*.*)
 source_group(server\\web\\rest  server/web/rest/*.*)
 source_group(server\\web\\rest\\json  server/web/rest/json/*.*)
 source_group(server\\web\\rest\\service  server/web/rest/service/*.*)
+source_group(server\\task  server/task/*.*)
+source_group(server\\task\\update  server/task/update/*.*)
 
 # Tools
 set(YADOMS_SRC ${YADOMS_SRC}

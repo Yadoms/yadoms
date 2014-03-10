@@ -104,7 +104,7 @@ namespace tools { namespace web {
             {
                   currentReadSize = response.size();
                   output << &response;
-                  currentprogress = (currentReadSize*100.0/(float)contentLength);
+                  currentprogress = (currentReadSize*100.0f/(float)contentLength);
                   reporter(uri.getUriFile(), currentprogress);
             }
                
@@ -127,7 +127,7 @@ namespace tools { namespace web {
 
                //update progress if needed (minimum step of 1% to avoid too much calls)
                //then flush by 1% minimum steps
-               float progress = (currentReadSize*100.0/(float)contentLength);
+               float progress = (currentReadSize*100.0f/(float)contentLength);
                if(abs(currentprogress - progress) >= 1.0)
                {
                   currentprogress = progress;
@@ -151,7 +151,8 @@ namespace tools { namespace web {
       catch (std::exception& e)
       {
          YADOMS_LOG(error) << "Fail to downloaad file : " << e.what() << "\n";
-      }
+         throw;
+      }      
    }
 
 

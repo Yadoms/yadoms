@@ -44,4 +44,6 @@
 #include <boost/signals2.hpp>
 #include <boost/thread.hpp>
 #include <boost/tuple/tuple.hpp>
-
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/uuid_generators.hpp>
