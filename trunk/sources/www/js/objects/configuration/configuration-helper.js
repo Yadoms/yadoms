@@ -3,18 +3,18 @@
  */
 function ConfigurationHelper(){}
 
-ConfigurationHelper.createFormGroup = function(parameterHandler, controlToInsert) {
+ConfigurationHelper.createControlGroup = function(parameterHandler, controlToInsert) {
 
    assert(parameterHandler !== undefined, "parameterHandler must be defined");
    assert(controlToInsert !== undefined, "controlToInsert must be defined");
 
    var s =
-      "<div class=\"form-group\">" +
+      "<div class=\"control-group\">" +
          "<label for=\"" + parameterHandler.paramName + "\" data-i18n=\"" + parameterHandler.i18nContext + parameterHandler.paramName + ".name\" class=\"control-label col-sm-3\">" + parameterHandler.name + "</label>" +
          "<button id=\"" + parameterHandler.paramName + "-help\" class=\"col-sm-1\" type=\"button\" class=\"btn btn-default\" data-container=\"body\">" +
             "<i class=\"fa fa-question\"></i>" +
          "</button>" +
-         "<div class=\"col-sm-8\">" +
+         "<div class=\"controls col-sm-8\">" +
             controlToInsert +
          "</div>" +
       "</div>" +

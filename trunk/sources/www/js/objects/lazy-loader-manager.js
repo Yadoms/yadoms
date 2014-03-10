@@ -20,25 +20,26 @@ function LazyLoaderManager(modalPath) {
 
 LazyLoaderManager.prototype.load = function (callback){
    assert(callback !== undefined, "callback must be defined");
-   if (this.modalHasBeenLoaded) {
+   var self = this;
+   if (self.modalHasBeenLoaded) {
       //we simply call the callback function
       callback();
    }
    else
    {
-      $.ajax(this.modalPath)
+      $.ajax(self.modalPath)
          .done(function(data) {
             $data = $(data);
             $data.i18n();
             //we add the modal to the body
             $('body').append($data);
             //we save the information that the modal has been loaded
-            this.modalHasBeenLoaded = true;
+            self.modalHasBeenLoaded = true;
             //we call the callback
             callback();
          })
          .fail(function() {
-            notifyError("Unable to load modal " + this.modalPath);
+            notifyError("Unable to load modal " + self.modalPath);
          });
    }
 }
