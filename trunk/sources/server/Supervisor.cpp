@@ -227,12 +227,12 @@ void CSupervisor::doWork()
       }
 	  
 #if DEV_ACTIVATE_XPL_TESTS
-	  database::entities::CPlugin plg;
-	  plg.setName("testOfXpl");
-	  plg.setPluginName("fakePlugin");
-     plg.setConfiguration("{\"BoolParameter\": \"true\", \"DecimalParameter\": \"18.4\", \"EnumParameter\": \"EnumValue1\", \"IntParameter\": \"42\", \"Serial port\": \"tty1\", \"StringParameter\": \"Yadoms is so powerful !\",\"MySection\": { \"SubIntParameter\": \"123\", \"SubStringParameter\": \"Just a *MODIFIED* string parameter in the sub-section\"}}");
-
-	  pluginManager->createInstance(plg);
+	  //database::entities::CPlugin plg;
+	  //plg.setName("testOfXpl");
+	  //plg.setPluginName("fakePlugin");
+     //plg.setConfiguration("{\"BoolParameter\": \"true\", \"DecimalParameter\": \"18.4\", \"EnumParameter\": \"EnumValue1\", \"IntParameter\": \"42\", \"Serial port\": \"tty1\", \"StringParameter\": \"Yadoms is so powerful !\",\"MySection\": { \"SubIntParameter\": \"123\", \"SubStringParameter\": \"Just a *MODIFIED* string parameter in the sub-section\"}}");
+     //
+	  //pluginManager->createInstance(plg);
 #endif
       // ######################### [END] Xpl Hub #########################
 

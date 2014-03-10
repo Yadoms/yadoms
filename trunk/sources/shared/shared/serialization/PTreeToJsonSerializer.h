@@ -18,6 +18,7 @@ namespace shared { namespace serialization
       // IPtreeToStringSerializer implementation
       virtual const std::string serialize(const boost::property_tree::ptree& pt) const;
       virtual void deserialize(const std::string& str, boost::property_tree::ptree& pt);
+      virtual boost::property_tree::ptree deserialize(const std::string& str);
       // [END] IPtreeToStringSerializer implementation
    };
 
