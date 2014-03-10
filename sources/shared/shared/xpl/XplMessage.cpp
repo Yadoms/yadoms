@@ -7,7 +7,7 @@
 namespace shared { namespace xpl
 {
 
-const std::string CXplMessage::XplCmdTypeIdentifier = "xpl-cmd";
+const std::string CXplMessage::XplCmdTypeIdentifier = "xpl-cmnd";
 const std::string CXplMessage::XplStatTypeIdentifier = "xpl-stat";
 const std::string CXplMessage::XplTrigTypeIdentifier = "xpl-trig";
 
@@ -183,8 +183,12 @@ CXplMessage CXplMessage::parse(const std::string & rawMessage)
       //we explode the string onto the { char
       std::vector<std::string> result;
       std::string trimRawMessage = boost::trim_copy(rawMessage);
+      if(trimRawMessage[trimRawMessage.size()-1] == '\0')
+         trimRawMessage.pop_back();
+
       boost::split(result, trimRawMessage, boost::is_any_of("{}"), boost::token_compress_on);
 
+      
       //we trim each '\n' '\r' at the beggining or the end of each line
       //and we suppress empty lines due to previous trim
       int i = result.size() - 1;
@@ -192,7 +196,7 @@ CXplMessage CXplMessage::parse(const std::string & rawMessage)
       {
          std::string str = boost::trim_copy_if(result[i], boost::is_any_of("\n"));
          result[i] = str;
-         if (result[i] == "")
+         if (result[i].empty())
             result.erase(result.begin()+i);
          i--;
       }
