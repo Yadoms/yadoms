@@ -26,6 +26,8 @@ void CThreadBase::start()
    //start the thread
    changeStatus(kStarting);
    m_thread = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&CThreadBase::doWorkInternal, this)));
+
+   YADOMS_LOG(debug) << "Thread Id=" << m_thread->get_id() << " Name = " << getName();
 }
 
 bool CThreadBase::stop()

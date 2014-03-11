@@ -11,7 +11,8 @@ namespace shared { namespace xpl
 {
 
 const std::string CXplHelper::HeartbeatClassID = "hbeat";
-const std::string CXplHelper::HeartbeatTypeId = "app";
+const std::string CXplHelper::HeartbeatAppTypeId = "app";
+const std::string CXplHelper::HeartbeatRequestTypeId = "request";
 const std::string CXplHelper::WildcardString = "*";
 
 

@@ -10,6 +10,9 @@
 #include "XplConstants.h"
 #include "../StringExtension.h"
 
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
+
 // A client send its data as broadcast on the XPL port,
 // and listen on a certain port, given in its XPL frame.
 
@@ -88,7 +91,10 @@ void CXplService::initializeConnector()
    m_remoteEndPoint = boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::broadcast(), CXplHelper::XplProtocolPort);
 
    if(m_manageIoService)
+   {
       m_serviceThread.reset(new boost::thread(boost::bind(&CXplService::startService, this)));
+      YADOMS_LOG(debug) << "Thread Id=" << m_serviceThread->get_id() << " Name = CXplService IOService (managed by xplservice)";
+   }
 
    m_socket->async_receive(
       boost::asio::buffer(m_receiveBuffer),
@@ -116,14 +122,20 @@ void CXplService::runHeartbeatSequenceIn(const int seconds)
 {
    if(m_ioService !=NULL && !m_ioService->stopped())
    {
+     //calling expires_from_now cancel the timer, so, from a previous call to async_wait, the heartbeatSequence is called
+      //if a previous call of async_wait has been done, just ignore the call to the method with error_code checking
       m_timer->expires_from_now(boost::posix_time::seconds(seconds));
-      m_timer->async_wait(boost::bind(&CXplService::heartbeatSequence, this));
+      m_timer->async_wait(boost::bind(&CXplService::heartbeatSequence, this, _1));
    }
 }
 
-void CXplService::heartbeatSequence()
+void CXplService::heartbeatSequence(const boost::system::error_code& error)
 {
-   if(m_ioService !=NULL && !m_ioService->stopped())
+   //check IOService is running
+   //check error code from parameter is not the operation_aborted.
+   //because when running runHeartbeatSequenceIn, the expire_from_now cancels the timer so it run into this function
+   //then the async_wait is called
+   if(m_ioService !=NULL && !m_ioService->stopped() && error != boost::asio::error::operation_aborted)
    {
       YADOMS_LOG(debug) << "hbeat";
 
@@ -156,7 +168,7 @@ void CXplService::heartbeatSequence()
       {
          //We send the hbeat
          //we set always the interval of HeartbeatInterval in the message
-         CXplMessage msg = CXplMessageFactory::createHeartbeatMessage(m_source, HeartbeatInterval, m_socket->local_endpoint().address().to_string(), m_socket->local_endpoint().port());
+         CXplMessage msg = CXplMessageFactory::createHeartbeatAppMessage(m_source, HeartbeatInterval, m_socket->local_endpoint().address().to_string(), m_socket->local_endpoint().port());
          try
          {
             m_socket->send_to(boost::asio::buffer(msg.toString()), m_remoteEndPoint);
@@ -187,29 +199,45 @@ void CXplService::handleReceive(const boost::system::error_code& error,
             CXplMessage msg = CXplMessage::parse(data);
 
             //the message is successfully parsed
-            YADOMS_LOG(debug) << "Message received : " << msg.toString();
+            YADOMS_LOG(trace) << "Message received : " << msg.toString();
             //When the hub receives a hbeat.app or config.app message, the hub should extract the "remote-ip" value 
             //from the message body and compare the IP address with the list of addresses the hub is currently bound 
             //to for the local computer. If the address does not match any local addresses, 
             //the packet moves on to the delivery/rebroadcast step.
-            if (CXplMessageSchemaIdentifier::isHeartbeatMessageSchemaIdentifier(msg.getMessageSchemaIdentifier()))
+            if(CXplMessageSchemaIdentifier::isHeartbeatMessageSchemaIdentifier(msg.getMessageSchemaIdentifier()))
             {
-               //we've got an heartbeat if it's our hbeat and we are m_hubHasBeenFound = false we have found a hub
-               int port;
-               if (!CStringExtension::tryParse<int>(msg.getBodyValue("port"), port))
+               if(CXplMessageSchemaIdentifier::isHeartbeatApp(msg.getMessageSchemaIdentifier()))
                {
-                  //it is a hbeat request from another client to get our information
-                  //for the moment we don't manage it (it is not mandatory)
+                     //we've got an heartbeat if it's our hbeat and we are m_hubHasBeenFound = false we have found a hub
+                     int port;
+                     if (CStringExtension::tryParse<int>(msg.getBodyValue("port"), port))
+                     {
+                        if ((!m_hubHasBeenFound) && (m_localEndPoint.address().to_string() == msg.getBodyValue("remote-ip")) && (m_socket->local_endpoint().port() == port))
+                        {
+                           YADOMS_LOG(info) << "Hub found";
+                           m_hubHasBeenFound = true;
+                        }
+                        else
+                        {
+                           //From another ip, nothing to do
+                        }
+                     }
+                     else
+                     {
+                        //invalid heatbeat app message
+                     }
                }
-
-               if ((!m_hubHasBeenFound) && (m_localEndPoint.address().to_string() == msg.getBodyValue("remote-ip")) && (m_socket->local_endpoint().port() == port))
+               else if(CXplMessageSchemaIdentifier::isHeartbeatRequest(msg.getMessageSchemaIdentifier()))
                {
-                  YADOMS_LOG(info) << "Hub found";
-                  m_hubHasBeenFound = true;
+                     //it is a hbeat request from another client to get our information
+                     //for the moment we don't manage it (it is not mandatory)
+                     boost::random::mt19937 gen;
+                     boost::random::uniform_int_distribution<> dist(2, 6);
+                     runHeartbeatSequenceIn(dist(gen));
                }
                else
                {
-                  //From another ip, nothing to do
+                  //another heartbeat which is neither app nor heartbeat
                }
             }
             else

@@ -8,10 +8,10 @@
 namespace shared { namespace xpl
 {
 
-CXplMessage CXplMessageFactory::createHeartbeatMessage(const CXplActor & source, const int heartbeatInterval, const std::string & remoteIpAddress, const int listeningPort)
+CXplMessage CXplMessageFactory::createHeartbeatAppMessage(const CXplActor & source, const int heartbeatInterval, const std::string & remoteIpAddress, const int listeningPort)
 {
    CXplActor actSource = CXplActor::createBroadcastActor();
-   CXplMessageSchemaIdentifier hbeatMsgId = CXplMessageSchemaIdentifier::createHeartbeatMessageSchemaIdentifer();
+   CXplMessageSchemaIdentifier hbeatMsgId = CXplMessageSchemaIdentifier::createHeartbeatAppMessageSchemaIdentifer();
 
    CXplMessage msg(CXplMessage::kXplStat, source, actSource, hbeatMsgId);
    msg.addToBody("interval", boost::lexical_cast<std::string>(heartbeatInterval));
