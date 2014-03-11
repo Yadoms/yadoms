@@ -32,6 +32,16 @@
           "maximumValue" : "2",
           "minimumValue" : "-2",
           "precision" : "2"
+       },
+       "timeFormat" : {
+          "name" : "time format",
+          "description" : "Permit to change the time format of the clock",
+          "type" : "enum",
+          "values" : {
+             "12H" : "12 hours",
+             "24H" : "24 hours"
+          },
+          "defaultValue" : "12H"
        }
     }
 }

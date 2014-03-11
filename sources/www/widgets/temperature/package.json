@@ -38,10 +38,10 @@
       },
       "timeFormat" : {
         "type" : "enum",
-        "values" : [
-            "12H",
-            "24H"
-        ],
+        "values" : {
+           "12H" : "12 hours",
+           "24H" : "24 hours"
+        },
         "defaultValue" : "12H"
       },
       "serialPortParameter" : {
