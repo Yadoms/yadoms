@@ -23,13 +23,13 @@ namespace shared { namespace xpl
       /// \param [in] typeId : Type Id
       //--------------------------------------------------------------
       CXplMessageSchemaIdentifier(const std::string & classId, const std::string & typeId);
-   
+
       //--------------------------------------------------------------
       /// \brief	    Constructor
       /// \param [in] identifier : Message Schema Identifier to copy
       //--------------------------------------------------------------
       CXplMessageSchemaIdentifier(const CXplMessageSchemaIdentifier & identifier);
-   
+
       //--------------------------------------------------------------
       /// \brief      Destructor
       //--------------------------------------------------------------
@@ -40,7 +40,7 @@ namespace shared { namespace xpl
       /// \param [in] classId : class Id delivered by Xpl Project
       //--------------------------------------------------------------
       void setClassId(const std::string & classId);
-   
+
       //--------------------------------------------------------------
       /// \brief	    Get the class Id
       /// \return     The class Id delivered by Xpl Project
@@ -52,7 +52,7 @@ namespace shared { namespace xpl
       /// \param [in] typeId : type Id delivered by Xpl Project
       //--------------------------------------------------------------
       void setTypeId(const std::string & typeId);
-   
+
       //--------------------------------------------------------------
       /// \brief	    Get the type Id
       /// \return     The type Id delivered by Xpl Project
@@ -72,16 +72,28 @@ namespace shared { namespace xpl
       static CXplMessageSchemaIdentifier parse(const std::string & rawMessageSchemaIdentifier);
 
       //--------------------------------------------------------------
-      /// \brief	    Create a Message Schema Identifier for heartbeat
+      /// \brief	    Create a Message Schema Identifier for heartbeat.app
       /// \return     the Message Schema Identifier 
       //--------------------------------------------------------------
-      static CXplMessageSchemaIdentifier createHeartbeatMessageSchemaIdentifer();
+      static CXplMessageSchemaIdentifier createHeartbeatAppMessageSchemaIdentifer();
 
       //--------------------------------------------------------------
       /// \brief	    Permit to know if a Message Schema Identifier is an heartbeat
       /// \return     the Message Schema Identifier 
       //--------------------------------------------------------------
       static bool isHeartbeatMessageSchemaIdentifier(const CXplMessageSchemaIdentifier & msi);
+
+      //--------------------------------------------------------------
+      /// \brief	    Permit to know if a Message Schema Identifier is an heartbeat.request
+      /// \return     true if heartbeat.request, false in other cases
+      //--------------------------------------------------------------
+      static bool isHeartbeatRequest(const CXplMessageSchemaIdentifier & msi);
+
+      //--------------------------------------------------------------
+      /// \brief	    Permit to know if a Message Schema Identifier is an heartbeat.app
+      /// \return     true if heartbeat.app, false in other cases
+      //--------------------------------------------------------------
+      static bool isHeartbeatApp(const CXplMessageSchemaIdentifier & msi);
 
    private:
       std::string m_classId;

@@ -82,7 +82,8 @@ namespace shared { namespace xpl
       /// \brief	                        Heartbeat Message Schema Identifier Information
       //--------------------------------------------------------------
       static const std::string HeartbeatClassID;
-      static const std::string HeartbeatTypeId;
+      static const std::string HeartbeatAppTypeId;
+      static const std::string HeartbeatRequestTypeId;
 
       static const std::string WildcardString;
 

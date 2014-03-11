@@ -16,7 +16,7 @@ CLog::~CLog()
 void CLog::configure_file_per_thread(const boost::log::trivial::severity_level  & logLevel)
 {
    //add console output (one for all)
-   CreateConsoleSink();
+   CreateConsoleSink(logLevel);
 
    //add log per thread
    CreateFilePerThreadSink();
@@ -34,10 +34,10 @@ void CLog::configure_file_per_thread(const boost::log::trivial::severity_level  
 void CLog::configure_one_rolling_file(const boost::log::trivial::severity_level  & logLevel)
 {
    //add console output (one for all)
-   CreateConsoleSink();
+   CreateConsoleSink(logLevel);
 
    //add rolling file
-   CreateRollingFileSink();
+   CreateRollingFileSink(logLevel);
 
    // Add some attributes too
    boost::log::core::get()->add_global_attribute("TimeStamp", boost::log::attributes::utc_clock());
@@ -77,7 +77,7 @@ void CLog::CreateFilePerThreadSink()
 
 
 
-void CLog::CreateRollingFileSink()
+void CLog::CreateRollingFileSink(const boost::log::trivial::severity_level  & logLevel)
 {
 
    // Create a text file sink
@@ -99,21 +99,36 @@ void CLog::CreateRollingFileSink()
 
    // Set up the log record formatter
    //TimeStamp [ThreadName] Severity : message
-   sink->set_formatter
-      (
-      boost::log::expressions::format("%1% [%2%] %3% - %4%")
-      % boost::log::expressions::attr< boost::posix_time::ptime >("TimeStamp")
-      % boost::log::expressions::attr< std::string >("ThreadName")
-      % boost::log::expressions::attr< boost::log::trivial::severity_level >("Severity")
-      % boost::log::expressions::smessage
-      );
+   if(logLevel <= boost::log::trivial::severity_level::debug)
+   {
+      sink->set_formatter
+         (
+         boost::log::expressions::format("%1% [%2% # %3%] %4% - %5%")
+         % boost::log::expressions::attr< boost::posix_time::ptime >("TimeStamp")
+         % boost::log::expressions::attr< std::string >("ThreadName")
+         % boost::log::expressions::attr< boost::thread::id >("ThreadID")
+         % boost::log::expressions::attr< boost::log::trivial::severity_level >("Severity")
+         % boost::log::expressions::smessage
+         );
+   }
+   else
+   {
+      sink->set_formatter
+         (
+         boost::log::expressions::format("%1% [%2%] %4% - %5%")
+         % boost::log::expressions::attr< boost::posix_time::ptime >("TimeStamp")
+         % boost::log::expressions::attr< std::string >("ThreadName")
+         % boost::log::expressions::attr< boost::log::trivial::severity_level >("Severity")
+         % boost::log::expressions::smessage
+         );
+   }
 
    // Add it to the core
    boost::log::core::get()->add_sink(sink);
 }
 
 
-void CLog::CreateConsoleSink()
+void CLog::CreateConsoleSink(const boost::log::trivial::severity_level  & logLevel)
 {
    // Create a backend and attach console log stream
    boost::shared_ptr< boost::log::sinks::text_ostream_backend > backend = boost::make_shared< boost::log::sinks::text_ostream_backend >();
@@ -126,14 +141,29 @@ void CLog::CreateConsoleSink()
    typedef boost::log::sinks::synchronous_sink< boost::log::sinks::text_ostream_backend > sink_t;
    boost::shared_ptr< sink_t > sinklog(new sink_t(backend));
 
-   sinklog->set_formatter
-      (
-      boost::log::expressions::format("%1% [%2%] %3% - %4%")
-      % boost::log::expressions::attr< boost::posix_time::ptime >("TimeStamp")
-      % boost::log::expressions::attr< std::string >("ThreadName")
-      % boost::log::expressions::attr< boost::log::trivial::severity_level >("Severity")
-      % boost::log::expressions::smessage
-      );
+   if(logLevel <= boost::log::trivial::severity_level::debug)
+   {
+      sinklog->set_formatter
+         (
+         boost::log::expressions::format("%1% [%2% # %3%] %4% - %5%")
+         % boost::log::expressions::attr< boost::posix_time::ptime >("TimeStamp")
+         % boost::log::expressions::attr< std::string >("ThreadName")
+         % boost::log::expressions::attr< boost::thread::id >("ThreadID")
+         % boost::log::expressions::attr< boost::log::trivial::severity_level >("Severity")
+         % boost::log::expressions::smessage
+         );
+   }
+   else
+   {
+      sinklog->set_formatter
+         (
+         boost::log::expressions::format("%1% [%2%] %4% - %5%")
+         % boost::log::expressions::attr< boost::posix_time::ptime >("TimeStamp")
+         % boost::log::expressions::attr< std::string >("ThreadName")
+         % boost::log::expressions::attr< boost::log::trivial::severity_level >("Severity")
+         % boost::log::expressions::smessage
+         );
+   }
 
    boost::log::core::get()->add_sink(sinklog);
 }

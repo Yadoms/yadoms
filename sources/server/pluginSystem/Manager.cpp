@@ -67,6 +67,7 @@ void CManager::init()
 
    //create ioservice for all plugin instances
    m_ioServiceThread.reset(new boost::thread(boost::bind(&CManager::runPluginIOService, this)));
+   YADOMS_LOG(debug) << "Thread Id=" << m_ioServiceThread->get_id() << " Name = IO Service (pluginsystem::CManager)";
 
    // Create and start plugin instances from database
    std::vector<boost::shared_ptr<database::entities::CPlugin> > databasePluginInstances = m_database->getInstances();

@@ -80,7 +80,7 @@ void CXplHub::handleReceive(const boost::system::error_code& error,
          CXplMessage msg = CXplMessage::parse(data);
 
          //the message is successfully parsed
-         YADOMS_LOG(debug) << "Received : " << msg.toString();
+         YADOMS_LOG(trace) << "Received : " << msg.toString();
 
          //When the hub receives a hbeat.app or config.app message, the hub should extract the "remote-ip" value 
          //from the message body and compare the IP address with the list of addresses the hub is currently bound 

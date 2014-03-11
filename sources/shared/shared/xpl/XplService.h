@@ -103,7 +103,7 @@ namespace shared { namespace xpl
       };
 
       void initializeConnector();
-      void heartbeatSequence();
+      void heartbeatSequence(const boost::system::error_code& error);
       void runHeartbeatSequenceIn(const int seconds);
       void handleReceive(const boost::system::error_code& error, std::size_t bytes_transferred);
 
@@ -136,7 +136,7 @@ namespace shared { namespace xpl
 
       SFilter m_filter;
 
-	  static const int HeartbeatInterval = 1;// 5;
+	  static const int HeartbeatInterval = 5;
 
       static const int HeartbeatFrequencyDuringInitialDiscoveryPhase = 5;
       static const int HeartbeatFrequencyDuringSecondDiscoveryPhase = 30;

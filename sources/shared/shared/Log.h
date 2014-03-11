@@ -27,7 +27,9 @@ namespace shared
    /// \brief     Macro for easy configure the log:
    /// YADOMS_LOG_CONFIGURE("Main");  //create a log file named main.log for the thread which calls this macro
    //-------------------------------------------------------------
-   #define YADOMS_LOG_CONFIGURE(threadname) BOOST_LOG_SCOPED_THREAD_TAG("ThreadName", threadname)
+   #define YADOMS_LOG_CONFIGURE(threadname) \
+      BOOST_LOG_SCOPED_THREAD_TAG("ThreadName", threadname); \
+      BOOST_LOG_SCOPED_THREAD_TAG("ThreadID", boost::this_thread::get_id());
 
 
    //--------------------------------------------------------------
@@ -52,18 +54,21 @@ namespace shared
 
       //--------------------------------------------------------------
       /// \brief     configure the logger with a file per thread
+      /// \param[in]  logLevel      The log level
       //--------------------------------------------------------------
       static void CreateFilePerThreadSink();
 
       //--------------------------------------------------------------
       /// \brief     configure the logger for console logging
+      /// \param[in]  logLevel      The log level
       //--------------------------------------------------------------
-      static void CreateConsoleSink();
+      static void CreateConsoleSink(const boost::log::trivial::severity_level  & logLevel);
 
       //--------------------------------------------------------------
       /// \brief     configure the logger for logging into rolling file
+      /// \param[in]  logLevel      The log level
       //--------------------------------------------------------------
-      static void CreateRollingFileSink();
+      static void CreateRollingFileSink(const boost::log::trivial::severity_level  & logLevel);
 
 
       //--------------------------------------------------------------

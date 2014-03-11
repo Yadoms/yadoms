@@ -13,7 +13,7 @@ namespace shared { namespace xpl
    class CXplMessageFactory
    {
    public:
-      static CXplMessage createHeartbeatMessage(const CXplActor & actor, const int heartbeatInterval, const std::string & remoteIpAddress, const int listeningPort);
+      static CXplMessage createHeartbeatAppMessage(const CXplActor & actor, const int heartbeatInterval, const std::string & remoteIpAddress, const int listeningPort);
    private:
       CXplMessageFactory(void);
       virtual ~CXplMessageFactory(void);
