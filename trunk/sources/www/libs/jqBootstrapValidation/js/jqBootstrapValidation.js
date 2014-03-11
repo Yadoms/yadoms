@@ -511,7 +511,7 @@
               $controlGroup = $this.parents(".control-group").first(),
               $helpBlock = $controlGroup.find(".help-block").first();
 
-//NHI modification
+//lgm42 modification
              $(this.form).unbind("submit");
 //End of modification
 

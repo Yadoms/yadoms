@@ -51,6 +51,10 @@ ConfigurationManager.prototype.createParameterHandler = function (objectToConfig
          return new DecimalParameterHandler(i18nContext, paramName, content, currentValue);
          break;
 
+      case "enum" :
+         return new EnumParameterHandler(i18nContext, paramName, content, currentValue);
+         break;
+
       default :
          throw Error("type " + content.type + " of parameter " + paramName + " is unsupported");
          break;
