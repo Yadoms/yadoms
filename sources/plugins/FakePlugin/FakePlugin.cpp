@@ -5,6 +5,8 @@
 #include <shared/xpl/XplMessage.h>
 #include <shared/xpl/XplHelper.h>
 
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
 // This macro also defines the static PluginInformations value that can be used by plugin to get information values
@@ -56,8 +58,12 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
          this,                                                       // Subscribe for XPL message receive event
          kEvtXplMessage);                                            // Set the event ID to rise when XPL message is received
 
-      // A simple incrementing value, sent on XPL network
-      int xplTestData = 0;
+      double temperature = 25.0;
+	  int rssi = 50;
+	  double battery = 100;
+
+	  boost::random::mt19937 gen;
+	  boost::random::uniform_int_distribution<> dist(0, 20);
 
       // the main loop
       YADOMS_LOG(debug) << "CFakePlugin is running...";
@@ -65,7 +71,7 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
       {
          // Wait for an event, with timeout
          // Timeout is used here to send periodically a XPL message
-         switch(waitForEvents(boost::posix_time::milliseconds(20000)))
+         switch(waitForEvents(boost::posix_time::milliseconds(30000)))
          {
          case kEvtXplMessage:
             {
@@ -100,11 +106,26 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
                shared::xpl::CXplMessage msg(
                   shared::xpl::CXplMessage::kXplStat,                            // Message type
                   xplService.getActor(),                                         // Source actor (here : our fake plugin instance)
-                  shared::xpl::CXplActor::createActor("logger", "1"),            // Target actor (here : the XPL logger of Yadoms)
-                  shared::xpl::CXplMessageSchemaIdentifier("clock", "basic"));   // The message schema
+                  shared::xpl::CXplActor::createBroadcastActor(),            // Target actor (here : the XPL logger of Yadoms)
+                  shared::xpl::CXplMessageSchemaIdentifier("sensor", "basic"));   // The message schema
 
                // Add data to message
-               msg.addToBody("value", boost::lexical_cast<std::string>(xplTestData++));
+			   msg.addToBody("device", "fakeTempSensor");
+
+			   double offset = dist(gen);
+			   offset -= 10.0;
+			   temperature += offset / 10.0;
+			   if (battery > 20)
+				  battery -= 1;
+
+			   std::ostringstream ss;
+			   ss << std::fixed << std::setprecision(2);
+			   ss << temperature;
+			   std::string s = ss.str();
+
+			   msg.addToBody("temperature", ss.str());
+			   msg.addToBody("rssi", boost::lexical_cast<std::string>(rssi));
+			   msg.addToBody("battery", boost::lexical_cast<std::string>(battery));
 
                // Send it
                xplService.sendMessage(msg);
