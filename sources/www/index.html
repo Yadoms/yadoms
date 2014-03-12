@@ -90,7 +90,6 @@
    <script src="libs/knockout/js/knockout-3.0.0.js"></script>
 
    <script src="libs/i18next/js/i18next-1.7.2.js"></script>
-
    <script src="js/utility.js"></script>
    <script src="js/objects/page.js"></script>
    <script src="js/objects/widget.js"></script>
@@ -105,6 +104,7 @@
    <script src="js/objects/configuration/int-parameter-handler.js"></script>
    <script src="js/objects/configuration/decimal-parameter-handler.js"></script>
    <script src="js/objects/configuration/enum-parameter-handler.js"></script>
+   <script src="js/objects/configuration/string-parameter-handler.js"></script>
 
 
    <script src="js/widget-engine.js"></script>
@@ -174,7 +174,7 @@
       modals.qrCode = new LazyLoaderManager("modals/qrcode.html");
 
 
-      var option = { resGetPath: 'locales/__lng__.json', fallbackLng:"en" };
+      var option = { resGetPath: 'locales/__lng__.json', fallbackLng:"en",useDataAttrOptions: true };
       i18n.init(option, function() {
          $("html").i18n();
       });

@@ -12,10 +12,8 @@ function IntParameterHandler(i18nContext, paramName, content, currentValue) {
 
    if (isNaN(this.value)) {
       this.value = parseInt(content.defaultValue);
-      if (isNaN(this.value)) {
-         console.warn("Unable to parse as int content.defaultValue of " + name + " parameter. Set to 0");
+      if (isNaN(this.value))
          this.value = 0;
-      }
    }
 
    //we search min and max value
@@ -33,7 +31,6 @@ function IntParameterHandler(i18nContext, paramName, content, currentValue) {
 }
 
 IntParameterHandler.prototype.getDOMObject = function () {
-   //we provide a SpinEdit
    var input = "<input " +
                         "type=\"text\" " +
                         "class=\"form-control\" " +
@@ -41,7 +38,8 @@ IntParameterHandler.prototype.getDOMObject = function () {
                         "data-content=\"" + this.description + "\"" +
                         "required " +
                         "pattern=\"-?[0-9]+\"";
-   var i18nOptions = " i18n-options=\"";
+
+   var i18nOptions = {};
    var i18nData = " data-i18n=\"";
 
    i18nData += "[data-content]" + this.i18nContext + this.paramName + ".description";
@@ -49,18 +47,20 @@ IntParameterHandler.prototype.getDOMObject = function () {
    i18nData += ";[data-validation-pattern-message]widgets.configuration.validationForm.onlyIntegerNumberAllowed";
 
    if (!isNaN(this.maxValue)) {
-      input += "max=\"" + this.maxValue + "\" ";
+      input += " max=\"" + this.maxValue + "\" ";
       i18nData += ";[data-validation-max-message]widgets.configuration.validationForm.maxValueExceeded";
+      i18nOptions["maxValue"] = this.maxValue;
    }
    if (!isNaN(this.minValue)) {
-      input += "min=\"" + this.minValue + "\" ";
+      input += " min=\"" + this.minValue + "\" ";
       i18nData += ";[data-validation-min-message]widgets.configuration.validationForm.minValueExceeded";
+      i18nOptions["minValue"] = this.minValue;
    }
 
-   i18nOptions += "\" ";
    i18nData += "\" ";
-   input += i18nData + i18nOptions;
-   input += "value =\"" + this.value + "\" >";
+   input += i18nData;
+   input += "data-i18n-options=\'" + JSON.stringify(i18nOptions) + "\'";
+   input += " value =\"" + this.value + "\" >";
    input += "</input>";
 
    var self = this;

@@ -46,7 +46,7 @@ DecimalParameterHandler.prototype.getDOMObject = function () {
                         "data-content=\"" + this.description + "\"" +
                         "required " +
                         "pattern=\"[-+]?[0-9]*[\.,]?[0-9]*\"";
-   var i18nOptions = " i18n-options=\"";
+   var i18nOptions = {};
    var i18nData = " data-i18n=\"";
 
    i18nData += "[data-content]" + this.i18nContext + this.paramName + ".description";
@@ -56,16 +56,18 @@ DecimalParameterHandler.prototype.getDOMObject = function () {
    if (!isNaN(this.maxValue)) {
       input += "max=\"" + this.maxValue + "\" ";
       i18nData += ";[data-validation-max-message]widgets.configuration.validationForm.maxValueExceeded";
+      i18nOptions["maxValue"] = this.maxValue;
    }
    if (!isNaN(this.minValue)) {
       input += "min=\"" + this.minValue + "\" ";
       i18nData += ";[data-validation-min-message]widgets.configuration.validationForm.minValueExceeded";
+      i18nOptions["minValue"] = this.minValue;
    }
 
-   i18nOptions += "\" ";
    i18nData += "\" ";
-   input += i18nData + i18nOptions;
-   input += "value =\"" + this.value + "\" >";
+   input += i18nData;
+   input += "data-i18n-options=\'" + JSON.stringify(i18nOptions) + "\'";
+   input += " value =\"" + this.value + "\" >";
    input += "</input>";
 
    var self = this;

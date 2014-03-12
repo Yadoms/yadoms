@@ -390,7 +390,6 @@ function getWidgetViewDone(packageName)
       //we indicate that the view for this king of widget has been lazy loaded
       widgetPackages[packageName].viewHasBeenDownloaded = true;
 
-      //todo beautifier
       i18n.options.resGetPath = 'widgets/__ns__/locales/__lng__.json';
       i18n.loadNamespace(packageName);
 
