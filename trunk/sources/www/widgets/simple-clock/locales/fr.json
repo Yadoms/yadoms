@@ -5,6 +5,14 @@
       "intParameter" : {
          "name" : "Paramètre entier",
          "description" : "Test d'un paramètre entier"
+      },
+      "coefficient" : {
+         "name" : "Coefficient",
+         "description" : "Test d'un coefficient flottant"
+      },
+      "timeFormat" : {
+         "name" : "Format d'heure",
+         "description" : "Permet de selectionner le format d'heure (24 heures ou 12 heures)"
       }
    }
 }

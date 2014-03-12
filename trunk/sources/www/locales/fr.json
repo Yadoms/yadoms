@@ -21,8 +21,8 @@
          "validationForm" : {
             "incorrectValue" : "Valeur incorrecte",
             "onlyIntegerNumberAllowed" : "Seulement les nombres entiers sont autorisés",
-            "maxValueExceeded" : "Valeur maximum dépassée",
-            "minValueExceeded" : "Valeur minimum dépassée"
+            "maxValueExceeded" : "La valeur ne peut pas être supérieure à __maxValue__",
+            "minValueExceeded" : "La valeur ne peut pas être inférieure à __minValue__"
          }
       }
    }

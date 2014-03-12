@@ -9,10 +9,6 @@
          "name" : "Text de préfixe",
          "description" : "Texte à afficher avant l'heure"
       },
-      "bitFieldParameter" : {
-         "name" : "Champs de bits",
-         "description" : "un truc qui sert sais pas encore a quoi"
-      },
       "booleanParameter" : {
          "name" : "paramètre de type booleen",
          "description" : "parametre qui vaut vrai ou faux"

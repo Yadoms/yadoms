@@ -21,7 +21,7 @@ function ConfigurationManager(objectToConfigure, $domContainer) {
    //for each key in package
    $.each(self.configurationSchema, function (key, value) {
       var currentValue = self.configurationValues[key];
-      var currentValue = (currentValue !== undefined) ? currentValue : "";
+      //currentValue = (currentValue !== undefined) ? currentValue : "";
       var handler = self.createParameterHandler(self.objectToConfigure, key, value, currentValue);
       self.configurationHandlers.push(handler);
    });
@@ -53,6 +53,10 @@ ConfigurationManager.prototype.createParameterHandler = function (objectToConfig
 
       case "enum" :
          return new EnumParameterHandler(i18nContext, paramName, content, currentValue);
+         break;
+
+      case "string" :
+         return new StringParameterHandler(i18nContext, paramName, content, currentValue);
          break;
 
       default :

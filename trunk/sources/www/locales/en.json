@@ -22,8 +22,8 @@
             "incorrectValue" : "Incorrect value",
             "onlyIntegerNumberAllowed" : "Only integer number are allowed",
             "onlyNumberAllowed" : "Only numbers are allowed",
-            "maxValueExceeded" : "Maximum value exceeded",
-            "minValueExceeded" : "Minimum value exceeded"
+            "maxValueExceeded" : "The value can't be higher than __maxValue__",
+            "minValueExceeded" : "The value can't be lower than __minValue__"
          }
       }
    }

@@ -42,6 +42,13 @@
              "24H" : "24 hours"
           },
           "defaultValue" : "12H"
+       },
+       "prefixText" : {
+          "name" : "String parameter",
+          "description" : "A free text parameter",
+          "type" : "string",
+          "defaultValue" : "default value",
+          "maximumLength" : "30"
        }
     }
 }

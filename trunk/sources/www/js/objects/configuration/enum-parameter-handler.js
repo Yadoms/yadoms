@@ -7,8 +7,7 @@ function EnumParameterHandler(i18nContext, paramName, content, currentValue) {
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
    assert(content.values !== undefined, "values field must be defined");
-   //TODO : restaurer un controle
-   //assert(content.values.length >= 2, "values field must have at least two values");
+   assert(Object.keys(content.values).length >= 2, "values field must have at least two values");
 
    this.values = content.values;
    this.value = currentValue;
@@ -37,20 +36,21 @@ EnumParameterHandler.prototype.getDOMObject = function () {
                         "id=\"" + this.paramName + "\" " +
                         "data-content=\"" + this.description + "\"" +
                         "required ";
-   var i18nOptions = " i18n-options=\"";
    var i18nData = " data-i18n=\"";
 
-   i18nData += "[data-content]" + this.i18nContext + this.paramName + ".description";
+   var self = this;
+   i18nData += "[data-content]" + self.i18nContext + self.paramName + ".description";
 
-   i18nOptions += "\" ";
    i18nData += "\" ";
-   input += i18nData + i18nOptions;
-   input += "value =\"" + this.value + "\" >";
+   input += i18nData + " >";
 
    //we iterate through the vlues collection
-   $.each(this.values, function (key, value) {
+   $.each(self.values, function (key, value) {
+      input += "<option value=\"" + key + "\" data-i18n=\"" + self.i18nContext + self.paramName + ".values." + key + "\"";
       debugger;
-      input += "<option value=\"" + key + "\" data-i18n=\"" + this.i18nContext + this.paramName + ".values." + key + "\">" + value + "</option>\n";
+      if (key == self.value)
+         input += " selected";
+      input += " >" + value + "</option>\n";
    });
 
    input += "</select>";
@@ -64,6 +64,6 @@ EnumParameterHandler.prototype.getParamName = function() {
 };
 
 EnumParameterHandler.prototype.getCurrentConfiguration = function () {
-   this.value = parseInt($("select#" + this.paramName).val());
+   this.value = $("select#" + this.paramName).val();
    return this.value;
 };
