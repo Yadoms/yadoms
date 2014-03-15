@@ -13,6 +13,10 @@
       "timeFormat" : {
          "name" : "Format d'heure",
          "description" : "Permet de selectionner le format d'heure (24 heures ou 12 heures)"
+      },
+      "booleanParameter" : {
+         "name" : "Activé",
+         "description" : "Permet d'activer le widget"
       }
    }
 }

@@ -49,6 +49,12 @@
           "type" : "string",
           "defaultValue" : "default value",
           "maximumLength" : "30"
+       },
+       "booleanParameter" : {
+          "name" : "Enabled",
+          "description" : "Permit to enable the widget",
+          "type" : "bool",
+          "defaultValue" : "true"
        }
     }
 }

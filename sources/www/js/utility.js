@@ -67,3 +67,17 @@ function notifyError(message)
    console.error(message);
    return notify(message, 'error');
 }
+
+function parseBool(string) {
+   if (string === undefined)
+      return undefined;
+   if (string == null)
+      return null;
+   if (typeof(string)=='boolean')
+      return string;
+   switch(string.toLowerCase()){
+      case "true": case "yes": case "1": return true;
+      case "false": case "no": case "0": case null: return false;
+      default: return Boolean(string);
+   }
+}
