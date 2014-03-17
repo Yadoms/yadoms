@@ -26,11 +26,11 @@ namespace shared
    //--------------------------------------------------------------
    /// \brief     Macro for easy configure the log:
    /// YADOMS_LOG_CONFIGURE("Main");  //create a log file named main.log for the thread which calls this macro
+   /// dont use BOOST_LOG_SCOPED_THREAD_TAG because of build error when it appears twice
    //-------------------------------------------------------------
    #define YADOMS_LOG_CONFIGURE(threadname) \
-      BOOST_LOG_SCOPED_THREAD_TAG("ThreadName", threadname); \
-      BOOST_LOG_SCOPED_THREAD_TAG("ThreadID", boost::this_thread::get_id());
-
+       BOOST_LOG_UNUSED_VARIABLE(boost::log::scoped_attribute, BOOST_LOG_UNIQUE_IDENTIFIER_NAME(tag_attrib1), = boost::log::add_scoped_thread_attribute("ThreadName", boost::log::attributes::constant< std::string >(threadname))); \
+       BOOST_LOG_UNUSED_VARIABLE(boost::log::scoped_attribute, BOOST_LOG_UNIQUE_IDENTIFIER_NAME(tag_attrib2), = boost::log::add_scoped_thread_attribute("ThreadId", boost::log::attributes::constant< boost::thread::id >(boost::this_thread::get_id()))); 
 
    //--------------------------------------------------------------
    /// \brief     Class used to configure the logger
