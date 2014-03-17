@@ -55,6 +55,28 @@
           "description" : "Permit to enable the widget",
           "type" : "bool",
           "defaultValue" : "true"
+       },
+       "advancedParameters" : {
+          "type" : "section",
+          "name" : "Advanced parameters",
+          "description" : "For advanced users only",
+          "content" : {
+             "booleanParameter" : {
+                "type" : "bool",
+                "name" : "enabled",
+                "description" : "Permit to enable the widget",
+                "defaultValue" : "true"
+             },
+             "CurrentCoefficient" : {
+                "type" : "decimal",
+                "name" : "correction coefficient",
+                "description" : "Set a correction coefficient to adjust the value",
+                "defaultValue" : "0.0",
+                "maximumValue" : "1.0",
+                "minimumValue" : "-1.0",
+                "precision" : "2"
+             }
+          }
        }
     }
 }

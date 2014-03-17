@@ -21,7 +21,6 @@ function ConfigurationManager(objectToConfigure, $domContainer) {
    //for each key in package
    $.each(self.configurationSchema, function (key, value) {
       var currentValue = self.configurationValues[key];
-      //currentValue = (currentValue !== undefined) ? currentValue : "";
       var handler = ConfigurationHelper.createParameterHandler(self.objectToConfigure, key, value, currentValue);
       self.configurationHandlers.push(handler);
    });

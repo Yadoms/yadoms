@@ -2,28 +2,25 @@
  * Created by Nicolas on 01/03/14.
  */
 
-function SectionParameterHandler(i18nContext, paramName, content, currentValue) {
+function SectionParameterHandler(objectToConfigure, i18nContext, paramName, content, currentValue) {
+   assert(objectToConfigure !== undefined, "objectToConfigure must contain widget or plugin object");
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
 
    this.configurationHandlers = new Array();
-
+   this.configurationValues = currentValue;
    var self = this;
-   //for each key in package
-   $.each(self.configurationSchema, function (key, value) {
-      var v = currentValue[key];
 
-      var handler = ConfigurationHelper.createParameterHandler(self.objectToConfigure, key, value, v);
+   //for each key in package
+   $.each(content.content, function (key, value) {
+      var v = undefined;
+      if ((self.configurationValues !== undefined) && (self.configurationValues != null) && (self.configurationValues.indexOf(key) != -1))
+         v = self.configurationValues[key];
+
+      var handler = ConfigurationHelper.createParameterHandler(objectToConfigure, key, value, v);
       self.configurationHandlers.push(handler);
    });
-
-   //we get max length value
-   this.maximumLength = parseInt(content.maximumLength);
-
-   //we cut the actual value in the maximumLength allowed if greater
-   if (!isNaN(this.maximumLength))
-      this.value =  this.value.substr(0,this.maximumLength);
 
    this.name = content.name;
    this.paramName = paramName;
@@ -33,20 +30,24 @@ function SectionParameterHandler(i18nContext, paramName, content, currentValue) 
 }
 
 SectionParameterHandler.prototype.getDOMObject = function () {
-   var input = "<input " +
-                        "type=\"text\" " +
-                        "class=\"form-control\" " +
-                        "id=\"" + this.paramName + "\" " +
-                        "data-content=\"" + this.description + "\"" +
-                        "required ";
-   if (!isNaN(this.maximumLength))
-      input += "maxlength=\"" + this.maximumLength + "\" ";
+   var input = "<div class=\"control-group configuration-section well\">" +
+                  "<div class=\"configuration-header\" data-i18n=\"" + this.i18nContext + this.paramName + ".name\" >" +
+                     this.name +
+                  "</div>" +
+                  "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.paramName + ".description\" >" +
+                     this.description +
+                  "</div>" +
+                  "<div>";
 
-   input += " value =\"" + this.value + "\" >";
-   input += "</input>";
+   //we append each param in the section
+   $.each(this.configurationHandlers, function (key, value) {
+      input += value.getDOMObject();
+      input += "\n";
+   });
+                  "</div>" +
+               "</div>"
 
-   var self = this;
-   return ConfigurationHelper.createControlGroup(self, input);
+   return input;
 };
 
 SectionParameterHandler.prototype.getParamName = function() {
@@ -54,6 +55,11 @@ SectionParameterHandler.prototype.getParamName = function() {
 };
 
 SectionParameterHandler.prototype.getCurrentConfiguration = function () {
-   this.value = $("input#" + this.paramName).val();
-   return this.value;
+   //we update configurationValues with content of DOM
+   var self = this;
+   self.configurationValues = {};
+   $.each(self.configurationHandlers, function (key, value) {
+      self.configurationValues[value.getParamName()] = value.getCurrentConfiguration();
+   });
+   return self.configurationValues;
 };

@@ -162,3 +162,25 @@ body {
    z-index: 9999;
    min-width: 200px;
 }
+
+.configuration-section {
+   padding: 15px;
+   margin: 15px;
+}
+
+.configuration-header {
+   font-size:14px;
+   font-weight:700;
+   letter-spacing:1px;
+   text-transform:uppercase;
+}
+
+.configuration-description {
+
+}
+
+.control-group:after {
+   content: " ";
+   display: block;
+   clear: both;
+}
