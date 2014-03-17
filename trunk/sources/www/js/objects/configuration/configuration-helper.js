@@ -65,6 +65,10 @@ ConfigurationHelper.createParameterHandler = function (objectToConfigure, paramN
          return new BoolParameterHandler(i18nContext, paramName, content, currentValue);
          break;
 
+      case "section" :
+         return new SectionParameterHandler(objectToConfigure, i18nContext, paramName, content, currentValue);
+         break;
+
       default :
          throw Error("type " + content.type + " of parameter " + paramName + " is unsupported");
          break;
