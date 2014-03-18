@@ -64,7 +64,7 @@ namespace boost {
             YADOMS_LOG(debug) << "Thread Id=" << async_monitor_thread_.get_id() << " Name = Async monitor work (basic_dir_monitor_service)";
          } 
 
-         ~basic_dir_monitor_service() 
+         virtual ~basic_dir_monitor_service() 
          { 
             // The async_monitor thread will finish when async_monitor_work_ is reset as all asynchronous 
             // operations have been aborted and were discarded before (in destroy). 

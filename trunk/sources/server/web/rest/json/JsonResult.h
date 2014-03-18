@@ -13,6 +13,11 @@ namespace web { namespace rest { namespace json {
    {
    public:
       //-----------------------------------------
+      ///\brief   Destructor
+      //-----------------------------------------
+      virtual ~CJsonResult() {}
+
+      //-----------------------------------------
       ///\brief   Generate an error JSON message
       ///\param [in] errorMessage : the error message
       ///\param [in] data : optionnal additionnal data

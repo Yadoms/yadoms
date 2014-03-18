@@ -14,7 +14,12 @@
             class ISQLiteVersionUpgrade
             {
             public:
-               //
+               //-------------------------------------------------------------------
+               ///\brief  Destructor
+               //-------------------------------------------------------------------
+               virtual ~ISQLiteVersionUpgrade() {}
+
+               //-------------------------------------------------------------------
                ///\brief      Check for an upgrade of the database. If needed apply upgrade script
                ///\param [in] pRequester shared pointer to SQLite requester
                ///\param [in] currentVersion version of the actual database

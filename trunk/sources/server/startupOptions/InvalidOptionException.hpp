@@ -19,6 +19,13 @@ namespace startupOptions
       CInvalidOptionException(const std::string& value, const std::string& message)
          :invalid_option_value(value + " : " + message)
       {}
+
+      //--------------------------------------------------------------
+      /// \brief      Destructor
+      //--------------------------------------------------------------
+      virtual ~CInvalidOptionException() throw()
+      {
+      }
    };
 
 } // namespace startupOptions

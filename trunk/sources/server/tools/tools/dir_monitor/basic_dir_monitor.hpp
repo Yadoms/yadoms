@@ -68,6 +68,8 @@ public:
     {
     }
 
+    virtual ~basic_dir_monitor() {}
+
     void add_directory(const std::string &dirname)
     {
         this->service.add_directory(this->implementation, dirname);

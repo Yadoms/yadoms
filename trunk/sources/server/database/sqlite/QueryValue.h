@@ -41,7 +41,7 @@ namespace sqlite {
       //
       /// \brief  Destructor
       //
-      ~CQueryValue();
+      virtual ~CQueryValue();
 
       //
       /// \brief           Copy operator

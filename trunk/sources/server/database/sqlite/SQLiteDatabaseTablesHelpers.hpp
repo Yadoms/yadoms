@@ -126,6 +126,7 @@
 class BOOST_PP_CAT(C, BOOST_PP_CAT(name, Table)) \
 { \
 public:\
+   virtual BOOST_PP_CAT(~C, BOOST_PP_CAT(name, Table))() {} \
    static const std::string & getTableName() { return m_tableName; } \
    static const std::string & getTableCreationScript() { return m_tableCreationScript; } \
    DECLARE_GETTERS(_seq) \

@@ -15,7 +15,7 @@ namespace sqlite {
    {
    public:
       CSQLiteRequester(sqlite3 * pDatabaseHandler);
-      ~CSQLiteRequester();
+      virtual ~CSQLiteRequester();
 
       //--------------------------------------------------------------
       /// \brief	Use do define one row from database (column name, column value)

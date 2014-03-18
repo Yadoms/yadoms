@@ -17,6 +17,8 @@ namespace web { namespace rest { namespace json {
    private:
       CJsonSerializer() {}
 
+      virtual ~CJsonSerializer() {}
+
    private:
       static boost::shared_ptr<shared::serialization::IPtreeToStringSerializer> createSerializer()
       {

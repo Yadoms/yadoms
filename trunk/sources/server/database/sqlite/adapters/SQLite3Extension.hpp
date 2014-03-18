@@ -20,6 +20,11 @@ namespace adapters {
    {
    public:
       //--------------------------------------------------------------
+      ///\brief  Destructor
+      //--------------------------------------------------------------
+      virtual ~CSQLite3Extension() {}
+
+      //--------------------------------------------------------------
       ///\brief  Extract a column value in a typed way
       ///\param [in]    pStmt    The current statement
       ///\param [in]    i        The index (zero based) of the targeted column
@@ -31,7 +36,7 @@ namespace adapters {
    };
 
    //--------------------------------------------------------------
-   ///\brief  Dafault method. Extract data as text and use CStringExtension to convert it in good type
+   ///\brief  Default method. Extract data as text and use CStringExtension to convert it in good type
    //--------------------------------------------------------------
    template<class TValue>
    inline TValue CSQLite3Extension::extractData(sqlite3_stmt * pStatement, int nCol)

@@ -10,6 +10,10 @@ namespace web { namespace rest { namespace json {
    class CJsonUtility
    {
    public:
+      //----------------------------------------------
+      ///\brief Destructor
+      //----------------------------------------------
+      virtual ~CJsonUtility() {}
 
       //----------------------------------------------
       ///\brief Log CJson to log
