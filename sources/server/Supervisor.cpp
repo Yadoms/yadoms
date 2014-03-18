@@ -195,7 +195,7 @@ void CSupervisor::doWork()
       boost::shared_ptr<task::CScheduler> taskManager = boost::shared_ptr<task::CScheduler>(new task::CScheduler());
 
 #if DEV_ACTIVATE_TASK_MANAGER_TESTS
-      std::string sUpdateTaskId = taskManager->RunTask(boost::shared_ptr<task::ITask>(new task::update::CPlugin()));
+      taskManager->RunTask(boost::shared_ptr<task::ITask>(new task::update::CPlugin()));
 #endif
       // ######################### [END] Task manager #########################
 

@@ -99,7 +99,7 @@ void CLog::CreateRollingFileSink(const boost::log::trivial::severity_level  & lo
 
    // Set up the log record formatter
    //TimeStamp [ThreadName] Severity : message
-   if(logLevel <= boost::log::trivial::severity_level::debug)
+   if(logLevel <= boost::log::trivial::debug)
    {
       sink->set_formatter
          (
@@ -141,7 +141,7 @@ void CLog::CreateConsoleSink(const boost::log::trivial::severity_level  & logLev
    typedef boost::log::sinks::synchronous_sink< boost::log::sinks::text_ostream_backend > sink_t;
    boost::shared_ptr< sink_t > sinklog(new sink_t(backend));
 
-   if(logLevel <= boost::log::trivial::severity_level::debug)
+   if(logLevel <= boost::log::trivial::debug)
    {
       sinklog->set_formatter
          (

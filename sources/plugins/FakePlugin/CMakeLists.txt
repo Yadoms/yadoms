@@ -11,6 +11,8 @@ set(FAKE_PLUGIN_SOURCES
 	FakePlugin.cpp 
 	FakePluginConfiguration.h
 	FakePluginConfiguration.cpp 
+	FakeTemperatureSensor.h
+	FakeTemperatureSensor.cpp 
 )
 
 #########################################
