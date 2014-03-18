@@ -17,6 +17,18 @@
       "booleanParameter" : {
          "name" : "Activé",
          "description" : "Permet d'activer le widget"
+      },
+      "advancedParameters" : {
+         "name" : "Paramètres avancés",
+         "description" : "Seulement pour les utilisateurs expérimentés",
+         "booleanParameter" : {
+            "name" : "utiliser les parametres avancés",
+            "description" : "Permet d'activer l'utilisation avacnée du widget"
+         },
+         "CurrentCoefficient" : {
+            "name" : "coefficient avancé",
+            "description" : "Permet de changer la valeur du coeff de la section avancée"
+         }
       }
    }
 }

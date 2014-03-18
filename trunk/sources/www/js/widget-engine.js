@@ -472,11 +472,8 @@ function getWidgetPackageInformationDone(packageName)
 
          //we prevent from click on widget to be propagated on the rest of the window
          $(".widget").click(function(e) {
-            e.stopPropagation();
-         });
-
-         $(".delete-page").click(function(e) {
-            e.stopPropagation();
+            if (!waitForRealeaseButtonAfterEnteringCustomization)
+               e.stopPropagation();
          });
 
          //we close the noty
@@ -487,7 +484,6 @@ function getWidgetPackageInformationDone(packageName)
 
          console.log('Widgets loaded in ' + (new Date() - startTime) + " ms");
       }
-
    };
 }
 

@@ -10,23 +10,23 @@ function SectionParameterHandler(objectToConfigure, i18nContext, paramName, cont
 
    this.configurationHandlers = new Array();
    this.configurationValues = currentValue;
-   var self = this;
-
-   //for each key in package
-   $.each(content.content, function (key, value) {
-      var v = undefined;
-      if ((self.configurationValues !== undefined) && (self.configurationValues != null) && (self.configurationValues.indexOf(key) != -1))
-         v = self.configurationValues[key];
-
-      var handler = ConfigurationHelper.createParameterHandler(objectToConfigure, key, value, v);
-      self.configurationHandlers.push(handler);
-   });
-
    this.name = content.name;
    this.paramName = paramName;
    this.description = content.description;
    this.i18nContext = i18nContext;
    this.content = content;
+
+   var self = this;
+   //for each key in package
+   $.each(content.content, function (key, value) {
+      var v = undefined;
+      if ((self.configurationValues !== undefined) && (self.configurationValues != null))
+         v = self.configurationValues[key];
+
+      var newI18nContext = i18nContext + self.paramName + ".";
+      var handler = ConfigurationHelper.createParameterHandler(objectToConfigure, newI18nContext, key, value, v);
+      self.configurationHandlers.push(handler);
+   });
 }
 
 SectionParameterHandler.prototype.getDOMObject = function () {

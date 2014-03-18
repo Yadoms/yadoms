@@ -23,6 +23,7 @@ function EnumParameterHandler(i18nContext, paramName, content, currentValue) {
    }
 
    this.name = content.name;
+   this.uuid = createUUID();
    this.paramName = paramName;
    this.description = content.description;
    this.i18nContext = i18nContext;
@@ -33,7 +34,7 @@ EnumParameterHandler.prototype.getDOMObject = function () {
    //we provide a SpinEdit
    var input = "<select " +
                         "class=\"form-control\" " +
-                        "id=\"" + this.paramName + "\" " +
+                        "id=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\"" +
                         "required ";
    var i18nData = " data-i18n=\"";
@@ -63,6 +64,6 @@ EnumParameterHandler.prototype.getParamName = function() {
 };
 
 EnumParameterHandler.prototype.getCurrentConfiguration = function () {
-   this.value = $("select#" + this.paramName).val();
+   this.value = $("select#" + this.uuid).val();
    return this.value;
 };
