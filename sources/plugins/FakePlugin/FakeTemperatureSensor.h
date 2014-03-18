@@ -15,7 +15,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    //--------------------------------------------------------------
-   CFakeTemperatureSensor(const std::string deviceId);
+   CFakeTemperatureSensor(const std::string & deviceId);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

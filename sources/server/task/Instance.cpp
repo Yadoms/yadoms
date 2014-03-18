@@ -9,7 +9,7 @@ namespace task {
    ///\brief Constructor
    //------------------------------
    CInstance::CInstance(boost::shared_ptr<ITask> task)
-      :CThreadBase("Task " + task->getName()), m_pTask(task)
+      :CThreadBase("Task " + task->getName()), m_currentProgression(0), m_pTask(task)
    {
       BOOST_ASSERT(m_pTask);
       start();

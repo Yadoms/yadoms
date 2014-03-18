@@ -94,11 +94,6 @@ namespace database {
       /// \throws 		
       //--------------------------------------------------------------  
       virtual boost::shared_ptr<IPluginEventLoggerRequester> getPluginEventLoggerRequester() = 0;
-      
-   protected:
-      IDataProvider()
-      {
-      }
    };
 
  

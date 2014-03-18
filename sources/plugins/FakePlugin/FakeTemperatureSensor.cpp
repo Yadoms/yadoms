@@ -2,7 +2,7 @@
 #include "FakeTemperatureSensor.h"
 
 
-CFakeTemperatureSensor::CFakeTemperatureSensor(const std::string deviceId)
+CFakeTemperatureSensor::CFakeTemperatureSensor(const std::string & deviceId)
    :m_deviceId(deviceId), m_temperature(25.0), m_batteryLevel(100), m_rssi(50), m_dist(0, 20)
 {
 }

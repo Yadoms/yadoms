@@ -7,13 +7,16 @@
         <dir name="../sources/shared/"/>
         <dir name="../sources/"/>
         <dir name="../sources/external-libs/Webem/"/>
-        <dir name="../sources/external-libs/SQLite/sqlite-amalgamation-3080301"/>
+        <dir name="../sources/external-libs/SQLite/sqlite-amalgamation-3080401"/>
         <dir name="../sources/server/"/>
         <dir name="../sources/server/tools/"/>
         <dir name="../sources/server/tools/windows"/>
         <dir name="../sources/server/tools/linux"/>
         <dir name="../sources/server/tools/mac"/>
-     </includedir>  
+    </includedir>
+    <defines>
+        <define name="-DSQLITE_INT64_TYPE 0"/>
+    </defines>
     <paths>
         <dir name="../sources/server"/>
         <dir name="../sources/shared"/>
