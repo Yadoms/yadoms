@@ -30,7 +30,7 @@ namespace shared
    //-------------------------------------------------------------
    #define YADOMS_LOG_CONFIGURE(threadname) \
        BOOST_LOG_UNUSED_VARIABLE(boost::log::scoped_attribute, BOOST_LOG_UNIQUE_IDENTIFIER_NAME(tag_attrib1), = boost::log::add_scoped_thread_attribute("ThreadName", boost::log::attributes::constant< std::string >(threadname))); \
-       BOOST_LOG_UNUSED_VARIABLE(boost::log::scoped_attribute, BOOST_LOG_UNIQUE_IDENTIFIER_NAME(tag_attrib2), = boost::log::add_scoped_thread_attribute("ThreadId", boost::log::attributes::constant< boost::thread::id >(boost::this_thread::get_id()))); 
+       BOOST_LOG_UNUSED_VARIABLE(boost::log::scoped_attribute, BOOST_LOG_UNIQUE_IDENTIFIER_NAME(tag_attrib2), = boost::log::add_scoped_thread_attribute("ThreadID", boost::log::attributes::constant< boost::thread::id >(boost::this_thread::get_id()))); 
 
    //--------------------------------------------------------------
    /// \brief     Class used to configure the logger
