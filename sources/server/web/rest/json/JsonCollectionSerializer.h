@@ -11,6 +11,8 @@ namespace web { namespace rest { namespace json {
    class CJsonCollectionSerializer
    {
    public:
+      virtual ~CJsonCollectionSerializer() {}
+
       static CJson SerializeCollection(typename std::vector< boost::shared_ptr<TObjectBase> > & collectionToSerialize, IEntitySerializer<TObjectBase> & entitySerilizer, const std::string & itemKeyword)
       {
          CJson objectList;

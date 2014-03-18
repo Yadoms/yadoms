@@ -18,6 +18,11 @@ namespace adapters {
    {
    public:
       //--------------------------------------------------------------
+      /// \Brief		   Destructor
+      //--------------------------------------------------------------   
+      virtual ~ISQLiteResultAdapter() {}
+
+      //--------------------------------------------------------------
       /// \Brief		   Adapt a SQlite results (single row) to entity
       /// \param [in]	column         Number of columns in results
       /// \param [in]	columnName     The column values

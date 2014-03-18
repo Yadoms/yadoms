@@ -28,7 +28,7 @@ public:
         { 
         } 
 
-        ~windows_handle() 
+        virtual ~windows_handle() 
         { 
             CloseHandle(handle_); 
         } 
