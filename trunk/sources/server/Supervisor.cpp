@@ -289,9 +289,6 @@ void CSupervisor::doWork()
       if(webServerManager.get() != NULL)
          webServerManager->stop();
       
-      pDataProvider->unload();//TODO : mettre un appel à unload dans le destructeur de IDataProvider (si pas déjà unloaded évidemment).
-
-
       YADOMS_LOG(info) << "Supervisor is stopped";
    }
    catch (std::exception& e)

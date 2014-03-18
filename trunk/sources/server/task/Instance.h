@@ -28,6 +28,9 @@ namespace task {
       //---------------------------------
       void OnTaskProgressUpdated(float progression);
 
+      //--------------------------------------------------------------
+      /// \brief			The current task instance progression
+      //--------------------------------------------------------------
       float m_currentProgression;
 
    protected:
