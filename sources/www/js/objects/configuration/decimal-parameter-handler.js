@@ -31,6 +31,7 @@ function DecimalParameterHandler(i18nContext, paramName, content, currentValue) 
       this.value = this.value.toFixed(this.precision);
 
    this.name = content.name;
+   this.uuid = createUUID();
    this.paramName = paramName;
    this.description = content.description;
    this.i18nContext = i18nContext;
@@ -42,7 +43,7 @@ DecimalParameterHandler.prototype.getDOMObject = function () {
    var input = "<input " +
                         "type=\"text\" " +
                         "class=\"form-control\" " +
-                        "id=\"" + this.paramName + "\" " +
+                        "id=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\"" +
                         "required " +
                         "pattern=\"[-+]?[0-9]*[\.,]?[0-9]*\"";
@@ -80,7 +81,7 @@ DecimalParameterHandler.prototype.getParamName = function() {
 
 DecimalParameterHandler.prototype.getCurrentConfiguration = function () {
    //we allow "," and "."
-   var v = $("input#" + this.paramName).val().replace(',', '.');
+   var v = $("input#" + this.uuid).val().replace(',', '.');
    this.value = parseFloat(v);
    if (!isNaN(this.precision))
       this.value = this.value.toFixed(this.precision);

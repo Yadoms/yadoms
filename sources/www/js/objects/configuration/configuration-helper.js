@@ -11,7 +11,7 @@ ConfigurationHelper.createControlGroup = function(parameterHandler, controlToIns
    var s =
       "<div class=\"control-group\">" +
          "<label for=\"" + parameterHandler.paramName + "\" data-i18n=\"" + parameterHandler.i18nContext + parameterHandler.paramName + ".name\" class=\"control-label col-sm-5\">" + parameterHandler.name + "</label>" +
-         "<button id=\"" + parameterHandler.paramName + "-help\" class=\"col-sm-1\" type=\"button\" class=\"btn btn-default\" data-container=\"body\">" +
+         "<button id=\"" + parameterHandler.uuid + "-help\" class=\"col-sm-1\" type=\"button\" class=\"btn btn-default\" data-container=\"body\">" +
             "<i class=\"fa fa-question\"></i>" +
          "</button>" +
          "<div class=\"controls col-sm-6\">" +
@@ -19,11 +19,11 @@ ConfigurationHelper.createControlGroup = function(parameterHandler, controlToIns
          "</div>" +
       "</div>" +
       "<script>" +
-         "$(\"#" + parameterHandler.paramName + "\").popover({\"placement\" : \"right\", \"trigger\": \"manual\"});\n" +
-         "$(\"button#" + parameterHandler.paramName + "-help\").click(function () {\n" +
-            "$(\"#" + parameterHandler.paramName + "\").popover(\"toggle\");\n" +
+         "$(\"#" + parameterHandler.uuid + "\").popover({\"placement\" : \"right\", \"trigger\": \"manual\"});\n" +
+         "$(\"button#" + parameterHandler.uuid + "-help\").click(function () {\n" +
+            "$(\"#" + parameterHandler.uuid + "\").popover(\"toggle\");\n" +
             "setTimeout(function () {\n" +
-               "$(\"#" + parameterHandler.paramName + "\").popover(\"hide\"); \n" +
+               "$(\"#" + parameterHandler.uuid + "\").popover(\"hide\"); \n" +
             "}, 5000);\n" +
          "});\n" +
       "</script>";
@@ -37,12 +37,12 @@ ConfigurationHelper.createControlGroup = function(parameterHandler, controlToIns
  * @param name
  * @param content
  */
-ConfigurationHelper.createParameterHandler = function (objectToConfigure, paramName, content, currentValue) {
+ConfigurationHelper.createParameterHandler = function (objectToConfigure, i18nContext, paramName, content, currentValue) {
    assert(objectToConfigure !== undefined, "objectToConfigure must contain widget or plugin object");
+   assert(paramName !== undefined, "paramName must be defined");
+   assert(content !== undefined, "content must be defined in " + paramName + " parameter");
    assert(content.type !== undefined, "type field must be found in " + paramName + " parameter");
-
-   //we build the i18n context
-   var i18nContext = objectToConfigure.name + ":configurationSchema.";
+   assert(i18nContext !== undefined, "i18nContext must contain path of i18n " + paramName + " parameter");
 
    switch (content.type.toLowerCase()) {
       case "int" :

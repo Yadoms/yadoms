@@ -16,6 +16,7 @@ function BoolParameterHandler(i18nContext, paramName, content, currentValue) {
       this.value = false;
 
    this.name = content.name;
+   this.uuid = createUUID();
    this.paramName = paramName;
    this.description = content.description;
    this.i18nContext = i18nContext;
@@ -29,11 +30,11 @@ BoolParameterHandler.prototype.getDOMObject = function () {
    var s =
       "<div class=\"control-group\">" +
          "<span class=\"col-sm-5\"></span>" +
-         "<button id=\"" + self.paramName + "-help\" class=\"col-sm-1\" type=\"button\" class=\"btn btn-default\" data-container=\"body\">" +
+         "<button id=\"" + self.uuid + "-help\" class=\"col-sm-1\" type=\"button\" class=\"btn btn-default\" data-container=\"body\">" +
             "<i class=\"fa fa-question\"></i>" +
          "</button>" +
 
-            "<label id=\"" + self.paramName + "\" class=\"controls col-sm-6\" data-content=\"" + self.description + "\" " +
+            "<label id=\"" + self.uuid + "\" class=\"controls col-sm-6\" data-content=\"" + self.description + "\" " +
                "data-i18n=\"[data-content]" + self.i18nContext + self.paramName + ".description" + "\"" +
             "\">" +
                "<input type=\"checkbox\" ";
@@ -46,11 +47,11 @@ BoolParameterHandler.prototype.getDOMObject = function () {
             "</label>"+
       "</div>" +
       "<script>" +
-         "$(\"#" + self.paramName + "\").popover({\"placement\" : \"right\", \"trigger\": \"manual\"});\n" +
-         "$(\"button#" + self.paramName + "-help\").click(function () {\n" +
-         "$(\"#" + self.paramName + "\").popover(\"toggle\");\n" +
+         "$(\"#" + self.uuid + "\").popover({\"placement\" : \"right\", \"trigger\": \"manual\"});\n" +
+         "$(\"button#" + self.uuid + "-help\").click(function () {\n" +
+         "$(\"#" + self.uuid + "\").popover(\"toggle\");\n" +
          "setTimeout(function () {\n" +
-         "$(\"#" + self.paramName + "\").popover(\"hide\"); \n" +
+         "$(\"#" + self.uuid + "\").popover(\"hide\"); \n" +
          "}, 5000);\n" +
          "});\n" +
       "</script>";
@@ -63,6 +64,6 @@ BoolParameterHandler.prototype.getParamName = function() {
 };
 
 BoolParameterHandler.prototype.getCurrentConfiguration = function () {
-   this.value = parseBool($("label#" + this.paramName).find("input").prop("checked"));
+   this.value = parseBool($("label#" + this.uuid).find("input").prop("checked"));
    return this.value;
 };

@@ -9,6 +9,12 @@
 var customization = false;
 
 /**
+ * Indicate if we already have released the click button after entering in customization with long press
+ * @type {boolean}
+ */
+var waitForRealeaseButtonAfterEnteringCustomization = false;
+
+/**
  * Enable or disable customization on gridster elements
  * @param enable
  */
@@ -53,28 +59,26 @@ $("a#customizeButton").click(function() {
 
    if (customization)
    {
-      enableGridsterCustomization(true);
-      animateCustomizeButton();
-      $(".customization-item").removeClass("hidden");
-      $("li.widget").addClass("liWidgetCustomization");
+      enterCustomization();
    }
    else
        exitCustomization();
 });
 
-/**
- * Callback of the click on the background to stop customization
- */
-$("div#tabContainer").click(function() {
-   if (customization)
-      exitCustomization();
-});
+function enterCustomization() {
+   customization = true;
+   enableGridsterCustomization(true);
+   animateCustomizeButton();
+   $(".customization-item").removeClass("hidden");
+   $("li.widget").addClass("liWidgetCustomization");
+}
 
 /**
  * End customization and send all configuration to server
  */
 function exitCustomization() {
    customization = false;
+   waitForRealeaseButtonAfterEnteringCustomization = false;
    enableGridsterCustomization(false);
    $(".customization-item").addClass("hidden");
    $("li.widget").removeClass("liWidgetCustomization");

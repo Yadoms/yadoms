@@ -24,6 +24,7 @@ function IntParameterHandler(i18nContext, paramName, content, currentValue) {
    this.value = Math.max((isNaN(this.minValue)?-Infinity:this.minValue) , Math.min((isNaN(this.maxValue)?Infinity:this.maxValue), this.value));
 
    this.name = content.name;
+   this.uuid = createUUID();
    this.paramName = paramName;
    this.description = content.description;
    this.i18nContext = i18nContext;
@@ -34,7 +35,7 @@ IntParameterHandler.prototype.getDOMObject = function () {
    var input = "<input " +
                         "type=\"text\" " +
                         "class=\"form-control\" " +
-                        "id=\"" + this.paramName + "\" " +
+                        "id=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\"" +
                         "required " +
                         "pattern=\"-?[0-9]+\"";
@@ -72,6 +73,6 @@ IntParameterHandler.prototype.getParamName = function() {
 };
 
 IntParameterHandler.prototype.getCurrentConfiguration = function () {
-   this.value = parseInt($("input#" + this.paramName).val());
+   this.value = parseInt($("input#" + this.uuid).val());
    return this.value;
 };

@@ -18,10 +18,14 @@ function ConfigurationManager(objectToConfigure, $domContainer) {
    this.configurationHandlers = new Array();
 
    var self = this;
+
+   //we build the i18n context
+   var i18nContext = self.objectToConfigure.name + ":configurationSchema.";
+
    //for each key in package
    $.each(self.configurationSchema, function (key, value) {
       var currentValue = self.configurationValues[key];
-      var handler = ConfigurationHelper.createParameterHandler(self.objectToConfigure, key, value, currentValue);
+      var handler = ConfigurationHelper.createParameterHandler(self.objectToConfigure, i18nContext, key, value, currentValue);
       self.configurationHandlers.push(handler);
    });
 

@@ -23,6 +23,7 @@ function StringParameterHandler(i18nContext, paramName, content, currentValue) {
       this.value =  this.value.substr(0,this.maximumLength);
 
    this.name = content.name;
+   this.uuid = createUUID();
    this.paramName = paramName;
    this.description = content.description;
    this.i18nContext = i18nContext;
@@ -33,7 +34,7 @@ StringParameterHandler.prototype.getDOMObject = function () {
    var input = "<input " +
                         "type=\"text\" " +
                         "class=\"form-control\" " +
-                        "id=\"" + this.paramName + "\" " +
+                        "id=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\"" +
                         "required ";
    if (!isNaN(this.maximumLength))
@@ -51,6 +52,6 @@ StringParameterHandler.prototype.getParamName = function() {
 };
 
 StringParameterHandler.prototype.getCurrentConfiguration = function () {
-   this.value = $("input#" + this.paramName).val();
+   this.value = $("input#" + this.uuid).val();
    return this.value;
 };
