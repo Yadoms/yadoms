@@ -41,7 +41,13 @@ const boost::shared_ptr<const CPeripherals::SerialPortsMap> CPeripherals::getSer
       if (dataType == REG_SZ)
       {
          std::string portName((char*)mountPoint);
-         (*serialPorts)[portName] = std::string(serialPortName);
+
+         //ex
+         //portname : COM1
+         //serialPortName : \Device\Serial0
+         //=> friendlyName : COM1 (\Device\Serial0)
+         std::string sFriendlyName((boost::format("%1% (%2%)") % portName % serialPortName).str()); 
+         (*serialPorts)[portName] = sFriendlyName;
       }
 
       // Increment index of key, and reset string length for next iteration
