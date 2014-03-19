@@ -10,6 +10,7 @@
 #include "requesters/SQLiteWidgetRequester.h"
 #include "requesters/SQLitePluginEventLoggerRequester.h"
 #include "requesters/SQLiteEventLoggerRequester.h"
+#include "requesters/SQLiteXplMessageRequester.h"
 #include "SQLiteRequester.h"
 #include "sqlite3.h"
 
@@ -48,7 +49,7 @@ namespace sqlite {
       boost::shared_ptr<database::IWidgetRequester> getWidgetRequester() { return m_widgetRequester; }
       boost::shared_ptr<database::IPluginEventLoggerRequester> getPluginEventLoggerRequester() { return m_pluginEventLoggerRequester; }
       boost::shared_ptr<database::IEventLoggerRequester> getEventLoggerRequester() { return m_eventLoggerRequester; }
-
+      boost::shared_ptr<database::IXplMessageRequester> getXplMessageRequester() { return m_xplMessageRequester; }
 
       // [END] IDatabaseProvider implementation
 
@@ -103,6 +104,11 @@ namespace sqlite {
       /// \Brief		EventLogger requester
       //--------------------------------------------------------------
       boost::shared_ptr<database::sqlite::requesters::CSQLiteEventLoggerRequester> m_eventLoggerRequester;
+
+      //--------------------------------------------------------------
+      /// \Brief		XplMessage requester
+      //--------------------------------------------------------------
+      boost::shared_ptr<database::sqlite::requesters::CSQLiteXplMessageRequester> m_xplMessageRequester;
       
       
       //--------------------------------------------------------------

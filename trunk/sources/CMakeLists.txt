@@ -173,6 +173,7 @@ set(YADOMS_SRC
 	server/database/IWidgetRequester.h
 	server/database/IPluginEventLoggerRequester.h
 	server/database/IEventLoggerRequester.h
+	server/database/IXplMessageRequester.h
 	server/database/DatabaseException.hpp
 
 	server/database/entities/EntityHelpers.hpp
@@ -327,6 +328,8 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/requesters/SQLitePluginEventLoggerRequester.cpp
 		server/database/sqlite/requesters/SQLiteEventLoggerRequester.h
 		server/database/sqlite/requesters/SQLiteEventLoggerRequester.cpp
+		server/database/sqlite/requesters/SQLiteXplMessageRequester.h
+		server/database/sqlite/requesters/SQLiteXplMessageRequester.cpp
 		
 		server/database/sqlite/adapters/SQLite3Extension.hpp
 		server/database/sqlite/adapters/SQLiteDatabaseAdapters.h

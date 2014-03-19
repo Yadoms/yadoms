@@ -142,7 +142,7 @@ namespace database { namespace sqlite { namespace requesters {
       //update name
       if(widgetToUpdate.isNameFilled())
       {
-         qUpdate.CLear().Update(CWidgetTable::getTableName()).
+         qUpdate.Clear().Update(CWidgetTable::getTableName()).
             Set(CWidgetTable::getNameColumnName(), widgetToUpdate.getName()).
             Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.getId());
 
@@ -153,7 +153,7 @@ namespace database { namespace sqlite { namespace requesters {
       //update IdPage
       if(widgetToUpdate.isIdPageFilled())
       {
-         qUpdate.CLear().Update(CWidgetTable::getTableName()).
+         qUpdate.Clear().Update(CWidgetTable::getTableName()).
             Set(CWidgetTable::getIdPageColumnName(), widgetToUpdate.getIdPage()).
             Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.getId());
 
@@ -164,7 +164,7 @@ namespace database { namespace sqlite { namespace requesters {
       //update configuration
       if(widgetToUpdate.isConfigurationFilled())
       {
-         qUpdate.CLear().Update(CWidgetTable::getTableName()).
+         qUpdate.Clear().Update(CWidgetTable::getTableName()).
             Set(CWidgetTable::getConfigurationColumnName(), widgetToUpdate.getConfiguration()).
             Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.getId());
 
@@ -175,7 +175,7 @@ namespace database { namespace sqlite { namespace requesters {
       //update Position X
       if(widgetToUpdate.isPositionXFilled())
       {
-         qUpdate.CLear().Update(CWidgetTable::getTableName()).
+         qUpdate.Clear().Update(CWidgetTable::getTableName()).
             Set(CWidgetTable::getPositionXColumnName(), widgetToUpdate.getPositionX()).
             Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.getId());
 
@@ -186,7 +186,7 @@ namespace database { namespace sqlite { namespace requesters {
       //update Position Y
       if(widgetToUpdate.isPositionYFilled())
       {
-         qUpdate.CLear().Update(CWidgetTable::getTableName()).
+         qUpdate.Clear().Update(CWidgetTable::getTableName()).
             Set(CWidgetTable::getPositionYColumnName(), widgetToUpdate.getPositionY()).
             Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.getId());
 
@@ -197,7 +197,7 @@ namespace database { namespace sqlite { namespace requesters {
       //update Size X
       if(widgetToUpdate.isSizeXFilled())
       {
-         qUpdate.CLear().Update(CWidgetTable::getTableName()).
+         qUpdate.Clear().Update(CWidgetTable::getTableName()).
             Set(CWidgetTable::getSizeXColumnName(), widgetToUpdate.getSizeX()).
             Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.getId());
 
@@ -208,7 +208,7 @@ namespace database { namespace sqlite { namespace requesters {
       //update Size Y
       if(widgetToUpdate.isSizeYFilled())
       {
-         qUpdate.CLear().Update(CWidgetTable::getTableName()).
+         qUpdate.Clear().Update(CWidgetTable::getTableName()).
             Set(CWidgetTable::getSizeYColumnName(), widgetToUpdate.getSizeY()).
             Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.getId());
 

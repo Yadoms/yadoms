@@ -8,6 +8,7 @@
 #include "IPageRequester.h"
 #include "IWidgetRequester.h"
 #include "IPluginEventLoggerRequester.h"
+#include "IXplMessageRequester.h"
 #include "ITransactionalProvider.h"
 
 
@@ -93,7 +94,14 @@ namespace database {
       /// \return 	the plugin event logger requester
       /// \throws 		
       //--------------------------------------------------------------  
-      virtual boost::shared_ptr<IPluginEventLoggerRequester> getPluginEventLoggerRequester() = 0;
+      virtual boost::shared_ptr<IPluginEventLoggerRequester> getPluginEventLoggerRequester() = 0; 
+      
+      //--------------------------------------------------------------
+      /// \Brief		get the XplMessage requester
+      /// \return 	the XplMessage requester
+      /// \throws 		
+      //--------------------------------------------------------------  
+      virtual boost::shared_ptr<IXplMessageRequester> getXplMessageRequester() = 0;
    };
 
  

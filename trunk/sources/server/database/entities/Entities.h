@@ -91,6 +91,22 @@ namespace entities {
       ((OptionalData)(std::string)(""))
    )
 
+   DECLARE_ENTITY_CLASS(XplMessage,
+      ((Id)(int)(0))
+      ((Type)(std::string)(""))
+      ((Hop)(int)(0))
+      ((Source)(std::string)(""))
+      ((Target)(std::string)(""))
+      ((MessageSchemaId)(std::string)(""))
+      ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
+   )
+
+   DECLARE_ENTITY_CLASS(XplMessageContent,
+      ((Id)(int)(0))
+      ((IdMessage)(int)(0))
+      ((Key)(std::string)(""))
+      ((Value)(std::string)(""))
+   )
 
 } //namespace entities
 } //namespace database

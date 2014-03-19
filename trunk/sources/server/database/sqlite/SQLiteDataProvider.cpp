@@ -139,6 +139,7 @@ void CSQLiteDataProvider::loadRequesters()
    m_widgetRequester.reset(new database::sqlite::requesters::CSQLiteWidgetRequester(*this, m_databaseRequester));
    m_pluginEventLoggerRequester.reset(new database::sqlite::requesters::CSQLitePluginEventLoggerRequester(*this, m_databaseRequester));
    m_eventLoggerRequester.reset(new database::sqlite::requesters::CSQLiteEventLoggerRequester(*this, m_databaseRequester));
+   m_xplMessageRequester.reset(new database::sqlite::requesters::CSQLiteXplMessageRequester(*this, m_databaseRequester));
 }
 
 
