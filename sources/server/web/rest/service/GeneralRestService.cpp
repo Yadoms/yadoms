@@ -40,7 +40,7 @@ namespace web { namespace rest { namespace service {
       {
          web::rest::json::CJson result;
          const boost::shared_ptr<const shared::CPeripherals::SerialPortsMap> map = shared::CPeripherals::getSerialPorts();
-         for(shared::CPeripherals::SerialPortsMap::const_iterator i = map->begin(); i != map->end(); i++)
+         for(shared::CPeripherals::SerialPortsMap::const_iterator i = map->begin(); i != map->end(); ++i)
          {
             result.push_back(std::make_pair(i->first, web::rest::json::CJson(std::string(i->second))));
          }
