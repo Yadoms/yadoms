@@ -217,6 +217,8 @@ set(YADOMS_SRC
 	server/web/rest/service/PluginEventLoggerRestService.cpp
 	server/web/rest/service/EventLoggerRestService.h
 	server/web/rest/service/EventLoggerRestService.cpp
+	server/web/rest/service/GeneralRestService.h
+	server/web/rest/service/GeneralRestService.cpp
 	
 	server/task/Scheduler.h
 	server/task/Scheduler.cpp

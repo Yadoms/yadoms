@@ -17,6 +17,7 @@
 #include "web/rest/service/ConfigurationRestService.h"
 #include "web/rest/service/PluginEventLoggerRestService.h"
 #include "web/rest/service/EventLoggerRestService.h"
+#include "web/rest/service/GeneralRestService.h"
 #include <shared/ThreadBase.h>
 #include <shared/Peripherals.h>
 #include "tools/web/FileDownloader.h"
@@ -218,6 +219,7 @@ void CSupervisor::doWork()
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfigurationRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLoggerRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLoggerRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CGeneralRestService()));
       }
 
       boost::shared_ptr<web::CWebServerManager> webServerManager(new web::CWebServerManager(webServer));
