@@ -4,7 +4,7 @@
 #include <boost/function.hpp>
 #include <boost/log/trivial.hpp>
 #include "../../shared/Log.h"
-#include "Windows.h"
+#include <Windows.h>
 
 namespace shared
 {
