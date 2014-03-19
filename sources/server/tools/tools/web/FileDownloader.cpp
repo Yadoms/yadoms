@@ -4,7 +4,6 @@
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 #include "Uri.h"
-#include "math.h"
 
 using boost::asio::ip::tcp;
 

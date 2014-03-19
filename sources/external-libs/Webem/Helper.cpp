@@ -9,7 +9,7 @@
 #include <math.h>
 #include <algorithm>
 #include <cctype>
-#include "boost/thread.hpp"
+#include <boost/thread.hpp>
 
 
 void StringSplit(std::string str, const std::string &delim, std::vector<std::string> &results)
