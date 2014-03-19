@@ -105,7 +105,7 @@ namespace database { namespace sqlite { namespace requesters {
       //update name
       if(updatedPluginData.isNameFilled())
       {
-         qUpdate.CLear().Update(CPluginTable::getTableName()).
+         qUpdate.Clear().Update(CPluginTable::getTableName()).
          Set(CPluginTable::getNameColumnName(), updatedPluginData.getName()).
          Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.getId());
 
@@ -116,7 +116,7 @@ namespace database { namespace sqlite { namespace requesters {
       //update configuration
       if(updatedPluginData.isConfigurationFilled())
       {
-         qUpdate.CLear().Update(CPluginTable::getTableName()).
+         qUpdate.Clear().Update(CPluginTable::getTableName()).
          Set(CPluginTable::getConfigurationColumnName(), updatedPluginData.getConfiguration()).
          Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.getId());
 
@@ -127,7 +127,7 @@ namespace database { namespace sqlite { namespace requesters {
       //update enabled
       if(updatedPluginData.isEnabledFilled())
       {
-         qUpdate.CLear().Update(CPluginTable::getTableName()).
+         qUpdate.Clear().Update(CPluginTable::getTableName()).
             Set(CPluginTable::getEnabledColumnName(), updatedPluginData.getEnabled()).
          Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.getId());
 

@@ -14,7 +14,7 @@ namespace sqlite {
    {
    }
 
-   CQuery &  CQuery::CLear()
+   CQuery &  CQuery::Clear()
    {
       m_queryType = kNotYetDefined;
       m_currentQuery = "";

@@ -38,7 +38,9 @@
                      !pRequester->checkTableExists(CPageTable::getTableName()) ||
                      !pRequester->checkTableExists(CWidgetTable::getTableName()) ||
                      !pRequester->checkTableExists(CPluginEventLoggerTable::getTableName()) ||
-                     !pRequester->checkTableExists(CEventLoggerTable::getTableName()))
+                     !pRequester->checkTableExists(CEventLoggerTable::getTableName()) ||
+                     !pRequester->checkTableExists(CXplMessageTable::getTableName()) ||
+                     !pRequester->checkTableExists(CXplMessageContentTable::getTableName()))
                   {
                      //at least one table is missing
                      bNeedToCreateOrUpgrade = true;
@@ -95,6 +97,10 @@
                      throw CSQLiteVersionException("Failed to delete PluginEventLogger table");
                   if(!pRequester->dropTableIfExists(CEventLoggerTable::getTableName()))
                      throw CSQLiteVersionException("Failed to delete EventLogger table");
+                  if(!pRequester->dropTableIfExists(CXplMessageTable::getTableName()))
+                     throw CSQLiteVersionException("Failed to delete XplMessage table");
+                  if(!pRequester->dropTableIfExists(CXplMessageContentTable::getTableName()))
+                     throw CSQLiteVersionException("Failed to delete XplMessageContent table");
 
                   //create tables
                   if(!pRequester->createTableIfNotExists(CAcquisitionTable::getTableName(), CAcquisitionTable::getTableCreationScript()))
@@ -115,6 +121,10 @@
                      throw CSQLiteVersionException("Failed to create PluginEventLogger table");
                   if(!pRequester->createTableIfNotExists(CEventLoggerTable::getTableName(), CEventLoggerTable::getTableCreationScript()))
                      throw CSQLiteVersionException("Failed to create EventLogger table");
+                  if(!pRequester->createTableIfNotExists(CXplMessageTable::getTableName(), CXplMessageTable::getTableCreationScript()))
+                     throw CSQLiteVersionException("Failed to create XplMessage table");
+                  if(!pRequester->createTableIfNotExists(CXplMessageContentTable::getTableName(), CXplMessageContentTable::getTableCreationScript()))
+                     throw CSQLiteVersionException("Failed to create XplMessageContent table");
 
                   //set the database version
                   CQuery qInsert;

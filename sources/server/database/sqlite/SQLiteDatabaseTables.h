@@ -81,7 +81,23 @@ namespace sqlite {
       (OptionalData)
    )
 
+   DECLARE_TABLE(XplMessage,
+      (Id)
+      (Type)
+      (Hop)
+      (Source)
+      (Target)
+      (MessageSchemaId)
+      (Date)
+   )   
 
+   DECLARE_TABLE(XplMessageContent,
+      (Id)
+      (IdMessage)
+      (Key)
+      (Value)
+   )   
+   
 } //namespace sqlite
 } //namespace database 
 

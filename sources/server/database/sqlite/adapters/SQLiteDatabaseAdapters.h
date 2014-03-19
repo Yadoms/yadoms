@@ -23,6 +23,8 @@ namespace adapters {
    DECLARE_ADAPTER_HEADER(Widget)
    DECLARE_ADAPTER_HEADER(PluginEventLogger)
    DECLARE_ADAPTER_HEADER(EventLogger)
+   DECLARE_ADAPTER_HEADER(XplMessage)
+   DECLARE_ADAPTER_HEADER(XplMessageContent)
 
 } //namespace adapters
 } //namespace sqlite

@@ -63,7 +63,7 @@ namespace sqlite {
       /// \brief              Clear current query
       /// \return             A reference to itself to allow method chaining
       //  
-      CQuery & CLear();
+      CQuery & Clear();
 
       //
       /// \brief           Start a query with 'SELECT *'

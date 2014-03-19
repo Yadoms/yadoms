@@ -20,7 +20,7 @@ namespace sqlite {
       ((Value)("value"))
       ((DefaultValue)("default_value"))
       ((Description)("description"))
-      ((SecurityAccess)("securityAccess"))
+      ((SecurityAccess)("security_access"))
       ((LastModificationDate)("last_modification_date"))
    )
 
@@ -79,7 +79,25 @@ namespace sqlite {
       ((OptionalData)("optionalData"))
    )
 
+
+
+   DECLARE_TABLE_COLUMN_NAMES(XplMessage, "XplMessage",
+      ((Id)("id"))
+      ((Type)("type"))
+      ((Hop)("hop"))
+      ((Source)("source"))
+      ((Target)("target"))
+      ((MessageSchemaId)("messageSchemaId"))
+      ((Date)("date"))
+   )
    
+
+   DECLARE_TABLE_COLUMN_NAMES(XplMessageContent, "XplMessageContent",
+      ((Id)("id"))
+      ((IdMessage)("idMessage"))
+      ((Key)("key"))
+      ((Value)("value"))
+   )
 } //namespace sqlite
 } //namespace database 
 

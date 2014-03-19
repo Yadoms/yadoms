@@ -33,18 +33,30 @@ void CXplLogger::doWork()
             {
                // Xpl message was received
                shared::xpl::CXplMessage xplMessage = popEvent<shared::xpl::CXplMessage>();
+               YADOMS_LOG(trace) << "Xpl Message received : " << xplMessage.toString();
                try
                {
+                  database::entities::CXplMessage dbXplMsg;
+                  dbXplMsg.setHop(xplMessage.getHop());
+                  dbXplMsg.setSource(xplMessage.getSource().toString());
+                  dbXplMsg.setTarget(xplMessage.getTarget().toString());
+                  dbXplMsg.setType(xplMessage.getTypeIdentifierAsString());
+                  dbXplMsg.setMessageSchemaId(xplMessage.getMessageSchemaIdentifier().toString());
+                  dbXplMsg.setDate(boost::posix_time::second_clock::universal_time());
+
+                  std::vector<database::entities::CXplMessageContent> dbXplMsgContent;
+
                   std::pair<std::string, std::string> bodyLine;
                   BOOST_FOREACH(bodyLine, xplMessage.getBody())
                   {
-                     database::entities::CAcquisition acq;
-                     acq.setSource(xplMessage.getSource().toString());
-                     acq.setKeyword(bodyLine.first);
-                     acq.setValue(bodyLine.second);
-                     acq.setDate(boost::posix_time::second_clock::universal_time());
-                     m_dataProvider->getAcquisitionRequester()->addAcquisition(acq);
+                     database::entities::CXplMessageContent contentLine;
+                     contentLine.setKey(bodyLine.first);
+                     contentLine.setValue(bodyLine.second);
+                     dbXplMsgContent.push_back(contentLine);
                   }
+
+                  m_dataProvider->getXplMessageRequester()->addXplMessage(dbXplMsg, dbXplMsgContent);
+
                }
                catch(std::exception &ex)
                {
