@@ -58,6 +58,7 @@ namespace database {  namespace sqlite {  namespace requesters {
                throw shared::exception::CEmptyResult("Fail to insert xpl message content");
          }
 
+         return insertedId;
       }
       else
          throw shared::exception::CEmptyResult("Cannot retrieve inserted XplMessage");      
