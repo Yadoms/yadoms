@@ -62,6 +62,10 @@ function initializePageEvents(page) {
    //we listen click event on move right click
    page.$tab.find('button.move-right-page').bind('click', function (e) {
       movePage($(e.currentTarget).parents("li.tabPagePills").attr("page-id"), "right"); } );
+
+   //we listen for click event with no code inside to help event transmission until exit customization
+   page.$tab.bind('click', function (e) {
+   } );
 }
 
 function initializeWidgetEvents(widget) {

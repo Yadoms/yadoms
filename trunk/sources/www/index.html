@@ -34,15 +34,15 @@
                   </div>
                   <div class="">
                       <ul class="nav navbar-nav">
-                          <li class="dropdown">
+                         <li class="dropdown">
                               <a class="dropdown-toggle" data-toggle="dropdown"><i class="caret"></i></a>
                               <ul class="dropdown-menu">
-                                  <li><a href="#" data-i18n="mainPage.menu.configuration" ></a></li>
-                                  <li><a href="#" data-i18n="mainPage.menu.checkForUpdate">Check For Update</a></li>
+                                  <li><a href="#" ><i class="fa fa-cog iconMenuItem"></i><span data-i18n="mainPage.menu.configuration"></span></a></li>
+                                  <!--<li><a href="#" data-i18n="mainPage.menu.checkForUpdate">Check For Update</a></li>
                                   <li><a href="#">...</a></li>
                                   <li class="divider"></li>
                                   <li><a href="#" data-i18n="mainPage.menu.shutdown"></a></li>
-                                  <li><a href="#" data-i18n="mainPage.menu.restart"></a></li>
+                                  <li><a href="#" data-i18n="mainPage.menu.restart"></a></li>-->
                               </ul>
                           </li>
                           <li><button class="btn btn-default customization-item hidden" id="btn-add-page"><i class="fa fa-file-o"></i><span class="hidden-xs">&nbsp;&nbsp;</span><span class="hidden-xs" data-i18n="customization.addNewPage"></span></button></li>
@@ -145,31 +145,6 @@
    var widgetPackages = [];
 
    /**
-    * Indicate if the modal qrcode has already been loaded
-    * */
-   var qrcodeHasBeenLoaded = false;
-
-   /**
-    * Indicate if the modal add widget has already been loaded
-    * */
-   var addWidgetHasBeenLoaded = false;
-
-   /**
-    * Indicate if the modal modify page has already been loaded
-    * */
-   var modificationPageModalHasBeenLoaded = false;
-
-   /**
-    * Indicate if the modal delete page has already been loaded
-    * */
-   var deletePageModalHasBeenLoaded = false;
-
-   /**
-    * Indicate if the modal delete widget has already been loaded
-    * */
-   var deleteWidgetModalHasBeenLoaded = false;
-
-   /**
     * On page loaded
     */
    $(document).ready(function() {
@@ -181,7 +156,6 @@
       modals.pageDelete = new LazyLoaderManager("modals/delete_page.html");
       modals.pageModification = new LazyLoaderManager("modals/modify_page.html");
       modals.qrCode = new LazyLoaderManager("modals/qrcode.html");
-
 
       var option = { resGetPath: 'locales/__lng__.json', fallbackLng:"en",useDataAttrOptions: true };
       i18n.init(option, function() {
@@ -202,15 +176,16 @@
       /**
        * Enter in customization with long press on the document
        */
-      $(document).click(function() {
-         clearTimeout(tapHoldTimer);
-         // Clear timeout
+      $("#tabContainer").click(function() {
          //if we are in customization and it's not the first release click (after a long click to enter in customization) we exit customization
          if (customization && !waitForRealeaseButtonAfterEnteringCustomization)
             exitCustomization();
 
          //in all case we clear the release flag
          waitForRealeaseButtonAfterEnteringCustomization = false;
+      }).mouseup(function() {
+         clearTimeout(tapHoldTimer);
+
       }).mousedown(function() {
         // Set timeout
         tapHoldTimer = window.setTimeout(function() {

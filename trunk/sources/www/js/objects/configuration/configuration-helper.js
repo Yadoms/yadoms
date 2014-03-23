@@ -70,7 +70,13 @@ ConfigurationHelper.createParameterHandler = function (objectToConfigure, i18nCo
          break;
 
       default :
-         throw Error("type " + content.type + " of parameter " + paramName + " is unsupported");
+         //we search patterns
+         if (content.type.toLowerCase().match("listof")) {
+            return new ListOfParameterHandler(objectToConfigure, i18nContext, paramName, content, currentValue);
+         }
+         else {
+            throw Error("type " + content.type + " of parameter " + paramName + " is unsupported");
+         }
          break;
    }
 };

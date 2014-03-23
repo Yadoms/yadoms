@@ -1,5 +1,5 @@
 {
-   "description": "A simple widget that display temperature",
+   "description": "Un widget tout simple qui affiche la temperature",
    "configurationSchema" : {
       "offsetHour" : {
          "name" : "Offset d'heure",
