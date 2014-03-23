@@ -184,3 +184,6 @@ body {
    display: block;
    clear: both;
 }
+.iconMenuItem {
+    margin-right: 10px;
+}

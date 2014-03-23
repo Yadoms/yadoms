@@ -1,7 +1,8 @@
 {
     "name": "simple-clock",
+    "description": "A widget that display a resizable clock",
     "version": "0.1",
-    "author": "Nicolas HILAIRE",
+    "author": "yadoms team",
     "dimensions": {
         "min": {
             "x": 1,
@@ -77,6 +78,18 @@
                 "precision" : "2"
              }
           }
+       },
+       "intValues" : {
+          "type" : "list",
+          "name" : "Values",
+          "description" : "List of integer values",
+          "items" : {
+             "type" : "int",
+             "defaultValue" : "0",
+             "maximumValue" : "100"
+          },
+          "maximumItems" : "10",
+          "minimumItems" : "2"
        }
     }
 }

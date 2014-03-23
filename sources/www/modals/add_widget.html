@@ -35,9 +35,6 @@
 </div>
 
 <script>
-    //we indicate that add_widget.html has been loaded
-    addWidgetHasBeenLoaded = true;
-
     /**
      * Ask for widget packages to the REST server
      */
@@ -66,13 +63,18 @@
           $.each(data.data.packages, function(index, value) {
              //foreach widget-type
              //carousel item creation
+             var i18ncontext = value.name + ":";
              $("div#new-widget-carousel > div.carousel-inner").append(
                      "<div class=\"item\" package=\"" + value.name + "\" >" +
                              "<img class=\"carousel-widget-preview\" src=\"/widgets/" + value.name + "/preview.png\">" +
-                             "<div class=\"carousel-caption\">" + value.description + "</div>" +
-                             "</div>"
+                             "<div class=\"carousel-caption\" data-i18n=\"" + i18ncontext + "description\">" +
+                                 value.description +
+                             "</div>" +
+                     "</div>"
              );
           });
+
+          $("div#new-widget-carousel").i18n();
 
           //we activate first item of carousel
           $("div#new-widget-carousel div.item").first().addClass("active");

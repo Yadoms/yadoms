@@ -22,9 +22,6 @@
 <script type="text/javascript" src="../libs/qrcode.js/js/qrcode.min.js"></script>
 
 <script>
-   //we indicate that qrcode.html has been loaded
-   qrcodeHasBeenLoaded = true;
-   
    var qrcode = new QRCode("qrcode");
    qrcode.makeCode($(location).attr('href'));
 </script>

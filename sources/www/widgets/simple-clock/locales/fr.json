@@ -1,6 +1,6 @@
 {
    "time" : "Temps :",
-   "description": "A widget that display a resizable clock",
+   "description": "Un widget d'horloge redimensionnable",
    "configurationSchema" : {
       "intParameter" : {
          "name" : "Paramètre entier",
