@@ -15,13 +15,41 @@ function SectionParameterHandler(objectToConfigure, i18nContext, paramName, cont
    this.description = content.description;
    this.i18nContext = i18nContext;
    this.content = content;
+   this.cbValue = undefined;
+   this.uuid = createUUID();
 
    var self = this;
+
+   //we look if the section has a checkbox to enable the section
+   this.enableWithCheckBox = content.enableWithCheckBox;
+
+   //if the option has been not enabled the default value is false
+   if (this.enableWithCheckBox === undefined)
+      this.enableWithCheckBox = false;
+
+   if (this.enableWithCheckBox) {
+      //we have to add a checkbox
+      this.cbUuid = createUUID();
+      //we look for the current value of the checkbox
+      if ((self.configurationValues !== undefined) && (self.configurationValues != null))
+         this.cbValue = self.configurationValues.checkbox;
+      else if ((content.enableWithCheckBoxDefaultValue !== undefined) && (content.enableWithCheckBoxDefaultValue != null))
+         this.cbValue = content.enableWithCheckBoxDefaultValue;
+      else
+         this.cbValue = false;
+
+      //we get the behavior to have when the checkbox is unchecked (disabled, hidden, or collapsed)
+      if ((content.checkBoxBehavior !== undefined) && (content.checkBoxBehavior != null))
+         this.uncheckedBehavior = content.uncheckedBehavior;
+      else
+         this.uncheckedBehavior = "disabled";
+   }
+
    //for each key in package
    $.each(content.content, function (key, value) {
       var v = undefined;
-      if ((self.configurationValues !== undefined) && (self.configurationValues != null))
-         v = self.configurationValues[key];
+      if ((self.configurationValues !== undefined) && (self.configurationValues != null) && (self.configurationValues.values != null) && (self.configurationValues.values != undefined))
+         v = self.configurationValues.values[key];
 
       var newI18nContext = i18nContext + self.paramName + ".";
       var handler = ConfigurationHelper.createParameterHandler(objectToConfigure, newI18nContext, key, value, v);
@@ -30,14 +58,39 @@ function SectionParameterHandler(objectToConfigure, i18nContext, paramName, cont
 }
 
 SectionParameterHandler.prototype.getDOMObject = function () {
-   var input = "<div class=\"control-group configuration-section well\">" +
-                  "<div class=\"configuration-header\" data-i18n=\"" + this.i18nContext + this.paramName + ".name\" >" +
-                     this.name +
-                  "</div>" +
+   var input = "<div class=\"control-group configuration-section well\" >" +
+                  "<div class=\"configuration-header\" >";
+
+   if (this.enableWithCheckBox) {
+      input +=       "<div class=\"checkbox\">" +
+                        "<label>" +
+                           "<input type=\"checkbox\" id=\"" + this.cbUuid + "\"";
+      if (this.cbValue)
+         input +=                "checked ";
+      input +=             ">";
+   }
+   input +=                "<span data-i18n=\"" + this.i18nContext + this.paramName + ".name\" >" +
+                              this.name +
+                           "</span>";
+   if (this.enableWithCheckBox) {
+      input +=          "</label>" +
+                     "</div>" +
+                     "<script>\n" +
+                        "$(\"#" + this.cbUuid + "\").change(function () {\n" +
+                           "if ($(\"#" + this.cbUuid + "\").prop(\"checked\")) {\n" +
+                              "$(\"#" + this.uuid + "\").removeClass(\"hidden\");" +
+                           "}\n" +
+                           "else {\n" +
+                              "$(\"#" + this.uuid + "\").addClass(\"hidden\");" +
+                           "}\n" +
+                        "});\n" +
+                     "</script>";
+   }
+   input +=       "</div>" +
                   "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.paramName + ".description\" >" +
                      this.description +
                   "</div>" +
-                  "<div>";
+                  "<div id=\"" + this.uuid + "\">";
 
    //we append each param in the section
    $.each(this.configurationHandlers, function (key, value) {

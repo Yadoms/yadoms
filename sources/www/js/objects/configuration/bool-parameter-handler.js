@@ -37,14 +37,17 @@ BoolParameterHandler.prototype.getDOMObject = function () {
             "<label id=\"" + self.uuid + "\" class=\"controls col-sm-6\" data-content=\"" + self.description + "\" " +
                "data-i18n=\"[data-content]" + self.i18nContext + self.paramName + ".description" + "\"" +
             "\">" +
+         "<div class=\"checkbox\">" +
+            "<label>" +
                "<input type=\"checkbox\" ";
    if (this.value)
-      s += "checked ";
-   s +=        "></input>&nbsp;&nbsp;" +
-               "<span data-i18n=\"" + self.i18nContext + self.paramName + ".name\" >" +
-                  self.name +
-               "</span>" +
-            "</label>"+
+      s +=        "checked ";
+   s +=        ">" +
+                  "<span data-i18n=\"" + self.i18nContext + self.paramName + ".name\" >" +
+                     self.name +
+                  "</span>" +
+            "</label>" +
+         "</div>" +
       "</div>" +
       "<script>" +
          "$(\"#" + self.uuid + "\").popover({\"placement\" : \"right\", \"trigger\": \"manual\"});\n" +
