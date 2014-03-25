@@ -61,6 +61,9 @@
           "type" : "section",
           "name" : "Advanced parameters",
           "description" : "For advanced users only",
+          "enableWithCheckBox" : "true",
+          "enableWithCheckBoxDefaultValue" : "false",
+          "uncheckedBehavior" : "disabled",
           "content" : {
              "booleanParameter" : {
                 "type" : "bool",
@@ -78,18 +81,6 @@
                 "precision" : "2"
              }
           }
-       },
-       "intValues" : {
-          "type" : "list",
-          "name" : "Values",
-          "description" : "List of integer values",
-          "items" : {
-             "type" : "int",
-             "defaultValue" : "0",
-             "maximumValue" : "100"
-          },
-          "maximumItems" : "10",
-          "minimumItems" : "2"
        }
     }
 }
