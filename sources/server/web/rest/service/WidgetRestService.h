@@ -23,7 +23,7 @@ namespace web { namespace rest { namespace service {
    public:
       web::rest::json::CJson getOneWidget(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
       web::rest::json::CJson getAllWidgets(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
-      web::rest::json::CJson getWidgetAcquisitions(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
+      //web::rest::json::CJson getWidgetAcquisitions(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
       web::rest::json::CJson addWidget(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
       web::rest::json::CJson deleteOneWidget(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
       web::rest::json::CJson deleteAllWidgets(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);

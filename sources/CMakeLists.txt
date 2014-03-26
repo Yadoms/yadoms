@@ -159,21 +159,18 @@ set(YADOMS_SRC
   
 	server/ApplicationStopHandler.h
 	server/ApplicationStopHandler.cpp
-	server/XplLogger.h
-	server/XplLogger.cpp
 	
 	server/database/IDataProvider.h
 	server/database/ITransactionalProvider.h
 	server/database/IPluginRequester.h
 	server/database/IConfigurationRequester.h
 	server/database/IDeviceRequester.h
-	server/database/IAcquisitionRequester.h
 	server/database/IKeywordRequester.h
 	server/database/IPageRequester.h
 	server/database/IWidgetRequester.h
 	server/database/IPluginEventLoggerRequester.h
 	server/database/IEventLoggerRequester.h
-	server/database/IXplMessageRequester.h
+	server/database/IMessageRequester.h
 	server/database/DatabaseException.hpp
 
 	server/database/entities/EntityHelpers.hpp
@@ -210,8 +207,6 @@ set(YADOMS_SRC
 	server/web/rest/service/PageRestService.cpp
 	server/web/rest/service/WidgetRestService.h
 	server/web/rest/service/WidgetRestService.cpp
-	server/web/rest/service/AcquisitionRestService.h
-	server/web/rest/service/AcquisitionRestService.cpp
 	server/web/rest/service/ConfigurationRestService.h
 	server/web/rest/service/ConfigurationRestService.cpp
 	server/web/rest/service/PluginEventLoggerRestService.h
@@ -230,6 +225,28 @@ set(YADOMS_SRC
 	server/task/update/Plugin.cpp
 	server/task/update/Yadoms.h
 	server/task/update/Yadoms.cpp
+	
+	server/communication/XplGateway.h
+	server/communication/XplGateway.cpp	
+	server/communication/rules/IRule.h
+	server/communication/rules/IFactory.h
+	server/communication/rules/RuleInstanceManager.hpp
+	server/communication/rules/RulerFactory.h
+	server/communication/rules/RulerFactory.cpp
+	server/communication/rules/standard/RuleFactory.h
+	server/communication/rules/standard/RuleFactory.cpp
+	server/communication/rules/standard/AcBasic.h
+	server/communication/rules/standard/AcBasic.cpp
+	server/communication/rules/standard/X10Basic.h
+	server/communication/rules/standard/X10Basic.cpp
+	server/communication/rules/standard/SensorBasic.h
+	server/communication/rules/standard/SensorBasic.cpp
+	server/communication/rules/rfxLanXpl/RuleFactory.h
+	server/communication/rules/rfxLanXpl/RuleFactory.cpp
+	server/communication/rules/rfxLanXpl/AcBasic.h
+	server/communication/rules/rfxLanXpl/AcBasic.cpp
+	server/communication/rules/rfxLanXpl/SensorBasic.h
+	server/communication/rules/rfxLanXpl/SensorBasic.cpp
 )
 
 # Project folders
@@ -244,6 +261,10 @@ source_group(server\\web\\rest\\json  server/web/rest/json/*.*)
 source_group(server\\web\\rest\\service  server/web/rest/service/*.*)
 source_group(server\\task  server/task/*.*)
 source_group(server\\task\\update  server/task/update/*.*)
+source_group(server\\communication  server/communication/*.*)
+source_group(server\\communication\\rules  server/communication/rules/*.*)
+source_group(server\\communication\\rules\\standard  server/communication/rules/standard/*.*)
+source_group(server\\communication\\rules\\rfxLanXpl  server/communication/rules/rfxLanXpl/*.*)
 
 # Tools
 set(YADOMS_SRC ${YADOMS_SRC}
@@ -316,8 +337,6 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/requesters/SQLiteConfigurationRequester.cpp
 		server/database/sqlite/requesters/SQLiteKeywordRequester.h
 		server/database/sqlite/requesters/SQLiteKeywordRequester.cpp
-		server/database/sqlite/requesters/SQLiteAcquisitionRequester.h
-		server/database/sqlite/requesters/SQLiteAcquisitionRequester.cpp		
 		server/database/sqlite/requesters/SQLiteDeviceRequester.h
 		server/database/sqlite/requesters/SQLiteDeviceRequester.cpp		
 		server/database/sqlite/requesters/SQLitePageRequester.h
@@ -328,8 +347,8 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/requesters/SQLitePluginEventLoggerRequester.cpp
 		server/database/sqlite/requesters/SQLiteEventLoggerRequester.h
 		server/database/sqlite/requesters/SQLiteEventLoggerRequester.cpp
-		server/database/sqlite/requesters/SQLiteXplMessageRequester.h
-		server/database/sqlite/requesters/SQLiteXplMessageRequester.cpp
+		server/database/sqlite/requesters/SQLiteMessageRequester.h
+		server/database/sqlite/requesters/SQLiteMessageRequester.cpp
 		
 		server/database/sqlite/adapters/SQLite3Extension.hpp
 		server/database/sqlite/adapters/SQLiteDatabaseAdapters.h

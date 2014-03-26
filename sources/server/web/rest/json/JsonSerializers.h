@@ -25,20 +25,12 @@ namespace web { namespace rest { namespace json {
       (LastModificationDate)
       )
 
-   DECLARE_JSON_ENTITY_HEADER(Acquisition,
-      (Id)
-      (Source)
-      (Keyword)
-      (Value)
-      (Date)
-      )
-
-
    DECLARE_JSON_ENTITY_HEADER(Device,
       (Id)
-      (DataSource)
+      (Address)
+      (Protocol)
       (Name)
-      (Configuration)
+      (HardwareIdentifier)
       )
 
 

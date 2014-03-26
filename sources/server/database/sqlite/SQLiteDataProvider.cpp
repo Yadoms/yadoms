@@ -133,13 +133,12 @@ void CSQLiteDataProvider::loadRequesters()
    m_pluginRequester.reset(new database::sqlite::requesters::CSQLitePluginRequester(*this, m_databaseRequester));
    m_configurationRequester.reset(new database::sqlite::requesters::CSQLiteConfigurationRequester(*this, m_databaseRequester));
    m_deviceRequester.reset(new database::sqlite::requesters::CSQLiteDeviceRequester(*this, m_databaseRequester));
-   m_acquisitionRequester.reset(new database::sqlite::requesters::CSQLiteAcquisitionRequester(*this, m_databaseRequester));
    m_keywordRequester.reset(new database::sqlite::requesters::CSQLiteKeywordRequester(*this, m_databaseRequester));
    m_pageRequester.reset(new database::sqlite::requesters::CSQLitePageRequester(*this, m_databaseRequester));
    m_widgetRequester.reset(new database::sqlite::requesters::CSQLiteWidgetRequester(*this, m_databaseRequester));
    m_pluginEventLoggerRequester.reset(new database::sqlite::requesters::CSQLitePluginEventLoggerRequester(*this, m_databaseRequester));
    m_eventLoggerRequester.reset(new database::sqlite::requesters::CSQLiteEventLoggerRequester(*this, m_databaseRequester));
-   m_xplMessageRequester.reset(new database::sqlite::requesters::CSQLiteXplMessageRequester(*this, m_databaseRequester));
+   m_messageRequester.reset(new database::sqlite::requesters::CSQLiteMessageRequester(*this, m_databaseRequester));
 }
 
 

@@ -1,6 +1,8 @@
 #pragma once
 #include "Exception.hpp"
 
+
+
 namespace shared { namespace exception
 {
 
@@ -26,7 +28,10 @@ namespace shared { namespace exception
       }
    };
 
-   // Helper macro
-   #define NOT_IMPLEMENTED    throw CNotImplemented(__FUNCTION__)
 
 } } // namespace shared::exception
+
+// Helper macro
+#define NOT_IMPLEMENTED    throw shared::exception::CNotImplemented(__FUNCTION__)
+
+

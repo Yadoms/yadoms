@@ -26,22 +26,6 @@ namespace sqlite {
    )
 
 
-   DECLARE_TABLE(Acquisition,
-      (Id)
-      (Source)
-      (Keyword)
-      (Value)
-      (Date)
-   )
-
-
-   DECLARE_TABLE(Device,
-      (Id)
-      (DataSource)
-      (Name)
-      (Configuration)
-   )
-
    DECLARE_TABLE(Keyword,
       (Name)
    )
@@ -81,23 +65,26 @@ namespace sqlite {
       (OptionalData)
    )
 
-   DECLARE_TABLE(XplMessage,
+   DECLARE_TABLE(Message,
       (Id)
-      (Type)
-      (Hop)
-      (Source)
-      (Target)
-      (MessageSchemaId)
       (Date)
+      (DeviceId)
    )   
 
-   DECLARE_TABLE(XplMessageContent,
+   DECLARE_TABLE(MessageContent,
       (Id)
       (IdMessage)
       (Key)
       (Value)
    )   
    
+   DECLARE_TABLE(Device,
+      (Id)
+      (Address)
+      (Protocol)
+      (HardwareIdentifier)
+      (Name)
+   )
 } //namespace sqlite
 } //namespace database 
 

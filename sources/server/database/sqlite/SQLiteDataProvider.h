@@ -3,14 +3,13 @@
 #include "server/database/IDataProvider.h"
 #include "requesters/SQLitePluginRequester.h"
 #include "requesters/SQLiteConfigurationRequester.h"
-#include "requesters/SQLiteAcquisitionRequester.h"
 #include "requesters/SQLiteDeviceRequester.h"
 #include "requesters/SQLiteKeywordRequester.h"
 #include "requesters/SQLitePageRequester.h"
 #include "requesters/SQLiteWidgetRequester.h"
 #include "requesters/SQLitePluginEventLoggerRequester.h"
 #include "requesters/SQLiteEventLoggerRequester.h"
-#include "requesters/SQLiteXplMessageRequester.h"
+#include "requesters/SQLiteMessageRequester.h"
 #include "SQLiteRequester.h"
 #include "sqlite3.h"
 
@@ -43,13 +42,12 @@ namespace sqlite {
       boost::shared_ptr<database::IPluginRequester> getPluginRequester() { return m_pluginRequester; }
       boost::shared_ptr<database::IConfigurationRequester> getConfigurationRequester() { return m_configurationRequester; }
       boost::shared_ptr<database::IDeviceRequester> getDeviceRequester() { return m_deviceRequester; }
-      boost::shared_ptr<database::IAcquisitionRequester> getAcquisitionRequester() { return m_acquisitionRequester; }
       boost::shared_ptr<database::IKeywordRequester> getKeywordRequester() { return m_keywordRequester; }
       boost::shared_ptr<database::IPageRequester> getPageRequester() { return m_pageRequester; }
       boost::shared_ptr<database::IWidgetRequester> getWidgetRequester() { return m_widgetRequester; }
       boost::shared_ptr<database::IPluginEventLoggerRequester> getPluginEventLoggerRequester() { return m_pluginEventLoggerRequester; }
       boost::shared_ptr<database::IEventLoggerRequester> getEventLoggerRequester() { return m_eventLoggerRequester; }
-      boost::shared_ptr<database::IXplMessageRequester> getXplMessageRequester() { return m_xplMessageRequester; }
+      boost::shared_ptr<database::IMessageRequester> getMessageRequester() { return m_messageRequester; }
 
       // [END] IDatabaseProvider implementation
 
@@ -74,11 +72,6 @@ namespace sqlite {
       /// \Brief		Device requester
       //--------------------------------------------------------------
       boost::shared_ptr<database::sqlite::requesters::CSQLiteDeviceRequester>		m_deviceRequester;
-
-      //--------------------------------------------------------------
-      /// \Brief		Acquisition requester
-      //--------------------------------------------------------------
-      boost::shared_ptr<database::sqlite::requesters::CSQLiteAcquisitionRequester>		m_acquisitionRequester;
 
       //--------------------------------------------------------------
       /// \Brief		Keyword requester
@@ -108,7 +101,7 @@ namespace sqlite {
       //--------------------------------------------------------------
       /// \Brief		XplMessage requester
       //--------------------------------------------------------------
-      boost::shared_ptr<database::sqlite::requesters::CSQLiteXplMessageRequester> m_xplMessageRequester;
+      boost::shared_ptr<database::sqlite::requesters::CSQLiteMessageRequester> m_messageRequester;
       
       
       //--------------------------------------------------------------

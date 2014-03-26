@@ -5,7 +5,6 @@
 #include "web/rest/json/JsonCollectionSerializer.h"
 #include "web/rest/json/JsonResult.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
-#include "AcquisitionRestService.h"
 
 namespace web { namespace rest { namespace service {
 
@@ -31,7 +30,6 @@ namespace web { namespace rest { namespace service {
    {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CDeviceRestService::getAllDevices);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CDeviceRestService::getOneDevice);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")(CAcquisitionRestService::getRestKeyword()), CDeviceRestService::getDeviceLastAcquisition);
    }
 
 
@@ -53,6 +51,7 @@ namespace web { namespace rest { namespace service {
       return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CDevice>::SerializeCollection(dvList, hes, getRestKeyword()));
    }
 
+   /*
    web::rest::json::CJson CDeviceRestService::getDeviceLastAcquisition(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
       std::string objectId = "";
@@ -69,6 +68,7 @@ namespace web { namespace rest { namespace service {
       else
          return web::rest::json::CJsonResult::GenerateError("Device not found");
    }
+   */
 
 
 } //namespace service
