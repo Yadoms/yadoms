@@ -33,20 +33,20 @@ BoolParameterHandler.prototype.getDOMObject = function () {
          "<button id=\"" + self.uuid + "-help\" class=\"col-sm-1\" type=\"button\" class=\"btn btn-default\" data-container=\"body\">" +
             "<i class=\"fa fa-question\"></i>" +
          "</button>" +
-
-            "<label id=\"" + self.uuid + "\" class=\"controls col-sm-6\" data-content=\"" + self.description + "\" " +
-               "data-i18n=\"[data-content]" + self.i18nContext + self.paramName + ".description" + "\"" +
-            "\">" +
-         "<div class=\"checkbox\">" +
-            "<label>" +
-               "<input type=\"checkbox\" ";
+         "<div class=\"controls col-sm-6\">" +
+            "<div class=\"checkbox\">" +
+               "<label id=\"" + self.uuid + "\"  data-content=\"" + self.description + "\" " +
+                    "data-i18n=\"[data-content]" + self.i18nContext + self.paramName + ".description" + "\"" +
+               "\">" +
+                  "<input type=\"checkbox\" ";
    if (this.value)
-      s +=        "checked ";
-   s +=        ">" +
+      s +=          "checked ";
+   s +=           ">" +
                   "<span data-i18n=\"" + self.i18nContext + self.paramName + ".name\" >" +
-                     self.name +
+                    self.name +
                   "</span>" +
-            "</label>" +
+                "</label>" +
+            "</div>" +
          "</div>" +
       "</div>" +
       "<script>" +

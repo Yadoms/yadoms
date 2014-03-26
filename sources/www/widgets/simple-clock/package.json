@@ -63,7 +63,6 @@
           "description" : "For advanced users only",
           "enableWithCheckBox" : "true",
           "enableWithCheckBoxDefaultValue" : "false",
-          "uncheckedBehavior" : "disabled",
           "content" : {
              "booleanParameter" : {
                 "type" : "bool",
