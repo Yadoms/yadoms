@@ -19,21 +19,24 @@ cmake_minimum_required (VERSION 2.8.9)
 ##################################################################################################
 
 # First checks (compilers versions...)
-include("preChecks.cmake")
+include(preChecks.cmake)
 
 # Precompiled headers
-include("PrecompiledHeader.cmake")
+include(PrecompiledHeader.cmake)
 
 # User specific configuration
-include("CMakeListsUserConfig.txt" OPTIONAL)
+include(CMakeListsUserConfig.txt OPTIONAL)
 
 # Windows specific macro
 if(WIN32)
-	include("windows.cmake")
+	include(windows.cmake)
 endif()
 
 # Compilers/IDE configurations
-include("compilers.cmake")
+include(compilers.cmake)
+
+# Boost built libraries copy helper
+include(copyBoost.cmake)
 
 
 ##################################################################################################
@@ -444,77 +447,7 @@ target_link_libraries(yadoms yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 ## Post build commands
 ##################################################################################################
 
-#create lib lists, one for debug libs and another for optimized (release)
-# Boost_LIBRARIES is a list which contains something like this:
-#
-#	debug							(<- define that next list entry if for debug mode)
-#	path/to/debug/boost-...gd.lib)
-#	optimize                        (<- define that next list entry if for release mode)
-#	path/to/debug/boost-...lib)
-#	...
-#
-# In some configurations, the list contains only lib file path without (debug/optimize)
-# So if debug and optimize or not found, then just add library to debug or optimized list
-#
-set(TYPEISKNOWN OFF)
-set(TYPEISDEBUG OFF)
-FOREACH (BOOSTLIBRARY ${Boost_LIBRARIES})
-	if(TYPEISKNOWN)
-		if(TYPEISDEBUG)
-			list(APPEND BOOST_LIBS_DEBUG ${BOOSTLIBRARY})
-		else()
-			list(APPEND BOOST_LIBS_OPTIMIZED ${BOOSTLIBRARY})
-		endif()
-		set(TYPEISKNOWN OFF)
-	else()
-		if(${BOOSTLIBRARY} MATCHES "debug") 
-			set(TYPEISKNOWN ON)
-			set(TYPEISDEBUG ON)
-		elseif(${BOOSTLIBRARY} MATCHES "optimized") 
-			set(TYPEISKNOWN ON)
-			set(TYPEISDEBUG OFF)
-		else()
-			list(APPEND BOOST_LIBS_DEBUG ${BOOSTLIBRARY})
-		endif()
-	endif()
-ENDFOREACH(BOOSTLIBRARY)
-
-
-#Take each boost lib file, find its dll and add it to a post build command
-if(NOT Boost_USE_STATIC_LIBS)
-	MESSAGE(STATUS "Add boost libraries to be copied as postbuild")
-	#todo : choose debug/optimized mode
-	FOREACH (BOOSTLIBRARY ${BOOST_LIBS_DEBUG})
-
-		#construct the dll/so fil path
-		get_filename_component(UTF_BASE_NAME ${BOOSTLIBRARY} NAME_WE)
-		get_filename_component(UTF_PATH ${BOOSTLIBRARY} PATH)
-	
-		if(WIN32)
-			#windows
-			set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.dll)
-		elseif(APPLE)
-			#mac
-			set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.dylib)
-		else()
-			#linux
-			set(LIBFILE ${UTF_PATH}/${UTF_BASE_NAME}.so)
-		endif()
-		
-		#check existance
-		if(EXISTS ${LIBFILE})
-			MESSAGE(STATUS "    Library file : ${LIBFILE}")
-				
-			#create post build command
-			add_custom_command(TARGET yadoms POST_BUILD        	# Adds a post-build event to yadoms
-				COMMAND ${CMAKE_COMMAND} -E copy_if_different  	# which executes "cmake - E copy_if_different..."
-					"${LIBFILE}"     							# <--this is in-file
-					$<TARGET_FILE_DIR:yadoms>)   				# <--this is out-file path
-		else()
-			MESSAGE("    Library file not found : ${LIBFILE}")
-		endif()
-	ENDFOREACH(BOOSTLIBRARY)
-endif()		
+POST_BUILD_COPY_BOOST_LIBRARIES(yadoms)
 
 #copy www directory into build directory
 add_custom_command(TARGET yadoms POST_BUILD
