@@ -14,6 +14,7 @@ class CFakeTemperatureSensor
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
+   /// \param[in] deviceId    The device ID
    //--------------------------------------------------------------
    CFakeTemperatureSensor(const std::string & deviceId);
 
