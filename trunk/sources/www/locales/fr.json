@@ -14,7 +14,12 @@
    "modals" : {
       "qrcode" : {
          "title" : "QR Code de Yadoms"
-      }
+      },
+      "configure-widget" : {
+         "title" : "Configuration du widget"
+      },
+      "ok" : "Ok",
+      "cancel" : "Annuler"
    },
    "widgets" : {
       "configuration" : {

@@ -10,9 +10,17 @@
          "name" : "Coefficient",
          "description" : "Test d'un coefficient flottant"
       },
+      "prefixText" : {
+         "name" : "Paramètre de chaine",
+         "description" : "Un champ libre de texte"
+      },
       "timeFormat" : {
          "name" : "Format d'heure",
-         "description" : "Permet de selectionner le format d'heure (24 heures ou 12 heures)"
+         "description" : "Permet de selectionner le format d'heure (24 heures ou 12 heures)",
+         "values" : {
+            "12H" : "12 heures",
+            "24H" : "24 heures"
+         }
       },
       "booleanParameter" : {
          "name" : "Activé",

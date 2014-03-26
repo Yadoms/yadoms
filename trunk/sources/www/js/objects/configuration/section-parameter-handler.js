@@ -90,15 +90,22 @@ SectionParameterHandler.prototype.getDOMObject = function () {
                   "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.paramName + ".description\" >" +
                      this.description +
                   "</div>" +
-                  "<div id=\"" + this.uuid + "\">";
+                  "<div id=\"" + this.uuid + "\" ";
+
+   //if checkbox is unchecked
+   if ((this.enableWithCheckBox) && (!this.cbValue)) {
+      input +=       "class=\"hidden\" ";
+   }
+   input +=       ">";
 
    //we append each param in the section
    $.each(this.configurationHandlers, function (key, value) {
       input += value.getDOMObject();
       input += "\n";
    });
-                  "</div>" +
-               "</div>"
+
+   input +=       "</div>" +
+               "</div>";
 
    return input;
 };
@@ -111,8 +118,15 @@ SectionParameterHandler.prototype.getCurrentConfiguration = function () {
    //we update configurationValues with content of DOM
    var self = this;
    self.configurationValues = {};
+   self.configurationValues.values = {};
    $.each(self.configurationHandlers, function (key, value) {
-      self.configurationValues[value.getParamName()] = value.getCurrentConfiguration();
+      self.configurationValues.values[value.getParamName()] = value.getCurrentConfiguration();
    });
+
+   //we get the checkbox value if used
+   if (this.enableWithCheckBox) {
+      self.configurationValues.checkbox = parseBool($("input#" + this.cbUuid).prop("checked"));
+   }
+   debugger;
    return self.configurationValues;
 };
