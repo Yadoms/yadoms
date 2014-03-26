@@ -21,30 +21,6 @@ namespace database {  namespace sqlite { namespace requesters {
    }
 
 
-   // IDeviceRequester implementation
-   int CSQLiteDeviceRequester::addDevice(boost::shared_ptr<database::entities::CDevice> newDevice)
-   {
-      CQuery qInsert;
-      qInsert. InsertInto(CDeviceTable::getTableName(), CDeviceTable::getDataSourceColumnName(), CDeviceTable::getNameColumnName(), CDeviceTable::getConfigurationColumnName()).
-         Values(newDevice->getDataSource(), newDevice->getName(), newDevice->getConfiguration());
-      if(m_databaseRequester->queryStatement(qInsert) <= 0)
-         throw shared::exception::CEmptyResult("No lines affected");
-
-      CQuery qSelect;
-      qSelect. Select(CDeviceTable::getIdColumnName()).
-         From(CDeviceTable::getTableName()).
-         Where(CDeviceTable::getDataSourceColumnName(), CQUERY_OP_EQUAL, newDevice->getDataSource()).
-         And(CDeviceTable::getNameColumnName(), CQUERY_OP_EQUAL, newDevice->getName()).
-         And(CDeviceTable::getConfigurationColumnName(), CQUERY_OP_EQUAL, newDevice->getConfiguration()).
-         OrderBy(CDeviceTable::getIdColumnName(), CQUERY_ORDER_DESC);
-
-      database::sqlite::adapters::CSingleValueAdapter<int> adapter;
-      m_databaseRequester->queryEntities<int>(&adapter, qSelect);
-      if(adapter.getResults().size() >= 1)
-         return adapter.getResults()[0];
-      else
-         throw shared::exception::CEmptyResult("Cannot retrieve inserted Plugin");      
-   }
 
    boost::shared_ptr<database::entities::CDevice> CSQLiteDeviceRequester::getDevice(int deviceId)
    {
@@ -64,6 +40,46 @@ namespace database {  namespace sqlite { namespace requesters {
       }
    }
 
+   boost::shared_ptr<entities::CDevice>  CSQLiteDeviceRequester::getDevice(const std::string & address, const std::string & protocol, const std::string & hardwareIdentifier)
+   {
+      //serach for sucgh a device
+      CQuery qSelect;
+      qSelect. Select().
+         From(CDeviceTable::getTableName()).
+         Where(CDeviceTable::getAddressColumnName(), CQUERY_OP_EQUAL, address).
+         And(CDeviceTable::getProtocolColumnName(), CQUERY_OP_EQUAL, protocol).
+         And(CDeviceTable::getHardwareIdentifierColumnName(), CQUERY_OP_EQUAL, hardwareIdentifier);
+
+      database::sqlite::adapters::CDeviceAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
+      if(adapter.getResults().size() >= 1)
+      {
+         //the device is found, return its entity
+         return adapter.getResults()[0];
+      }
+      else
+      {
+         //device not found, create it
+         CQuery qInsert;
+         qInsert. InsertInto(CDeviceTable::getTableName(), CDeviceTable::getAddressColumnName(), CDeviceTable::getProtocolColumnName(), CDeviceTable::getNameColumnName(), CDeviceTable::getHardwareIdentifierColumnName()).
+            Values(address, protocol, address, hardwareIdentifier);
+         if(m_databaseRequester->queryStatement(qInsert) <= 0)
+            throw shared::exception::CEmptyResult("Fail to insert new device");
+
+         //device is created, just find it in table and return entity
+         m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
+         if(adapter.getResults().size() >= 1)
+         {
+            return adapter.getResults()[0];
+         }
+         else
+         {
+            throw shared::exception::CEmptyResult("Fail to retreive created device");
+         }
+      }
+   }
+
+
    std::vector<boost::shared_ptr<database::entities::CDevice> > CSQLiteDeviceRequester::getDevices()
    {
       CQuery qSelect;
@@ -73,17 +89,6 @@ namespace database {  namespace sqlite { namespace requesters {
       database::sqlite::adapters::CDeviceAdapter adapter;
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
       return adapter.getResults();
-   }
-
-   void CSQLiteDeviceRequester::updateDeviceConfiguration(int deviceId, const std::string& newConfiguration)
-   {
-      CQuery qUpdate;
-      qUpdate. Update(CPluginTable::getTableName()).
-         Set(CDeviceTable::getConfigurationColumnName(), newConfiguration).
-         Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
-
-      if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-         throw shared::exception::CEmptyResult("No lines affected");
    }
 
    void CSQLiteDeviceRequester::removeDevice(int deviceId)

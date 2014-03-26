@@ -24,22 +24,6 @@ namespace sqlite {
       ((LastModificationDate)("last_modification_date"))
    )
 
-   DECLARE_TABLE_COLUMN_NAMES(Acquisition,  "Acquisition",
-      ((Id)("id"))
-      ((Source)("source"))
-      ((Keyword)("keyword"))
-      ((Value)("value"))
-      ((Date)("date"))
-   )
-
-
-   DECLARE_TABLE_COLUMN_NAMES(Device,  "Device",
-      ((Id)("id"))
-      ((DataSource)("data_source"))
-      ((Name)("name"))
-      ((Configuration)("configuration"))
-   )
-
 
    DECLARE_TABLE_COLUMN_NAMES(Keyword,  "Keyword",
       ((Name)("name"))
@@ -81,23 +65,29 @@ namespace sqlite {
 
 
 
-   DECLARE_TABLE_COLUMN_NAMES(XplMessage, "XplMessage",
+   DECLARE_TABLE_COLUMN_NAMES(Message, "Message",
       ((Id)("id"))
-      ((Type)("type"))
-      ((Hop)("hop"))
-      ((Source)("source"))
-      ((Target)("target"))
-      ((MessageSchemaId)("messageSchemaId"))
       ((Date)("date"))
+      ((DeviceId)("deviceId"))
    )
    
 
-   DECLARE_TABLE_COLUMN_NAMES(XplMessageContent, "XplMessageContent",
+   DECLARE_TABLE_COLUMN_NAMES(MessageContent, "MessageContent",
       ((Id)("id"))
       ((IdMessage)("idMessage"))
       ((Key)("key"))
       ((Value)("value"))
    )
+
+      DECLARE_TABLE_COLUMN_NAMES(Device,  "Device",
+      ((Id)("id"))
+      ((Address)("address"))
+      ((Protocol)("protocol"))
+      ((HardwareIdentifier)("hardwareIdentifier"))
+      ((Name)("name"))
+   )
+
+
 } //namespace sqlite
 } //namespace database 
 

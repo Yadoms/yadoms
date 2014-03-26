@@ -6,14 +6,6 @@
    namespace database { 
       namespace sqlite { 
 
-DECLARE_STATIC_TABLE_CREATION_SCRIPT(Acquisition, "CREATE TABLE Acquisition                                       \
-                                                   (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,              \
-                                                      source VARCHAR(50) NOT NULL,                                \
-                                                      keyword TEXT NOT NULL,                                      \
-                                                      value TEXT NOT NULL,                                        \
-                                                      date DATETIME NOT NULL                                      \
-                                                   )")
-
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Configuration, " CREATE TABLE Configuration                                  \
                                                       (  section VARCHAR(50) NOT NULL,                            \
                                                          name VARCHAR(50) NOT NULL,                               \
@@ -25,13 +17,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Configuration, " CREATE TABLE Configuration
                                                          PRIMARY KEY(section,name)                                \
                                                       )")
 
-DECLARE_STATIC_TABLE_CREATION_SCRIPT(Device, "  CREATE TABLE Device                                               \
-                                                (                                                                 \
-                                                   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
-                                                   data_source VARCHAR(50) NOT NULL,                              \
-                                                   name TEXT NOT NULL,                                            \
-                                                   configuration TEXT                                             \
-                                                )")
+
 
 
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Plugin, "CREATE TABLE Plugin                                             \
@@ -69,7 +55,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Widget, "CREATE TABLE Widget               
 
 
 
-DECLARE_STATIC_TABLE_CREATION_SCRIPT(PluginEventLogger, "CREATE TABLE PluginEventLogger                         \
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(PluginEventLogger,   "CREATE TABLE PluginEventLogger                         \
                                                             (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,     \
                                                                eventDate  DATETIME NOT NULL,                      \
                                                                pluginName TEXT NOT NULL,                          \
@@ -90,24 +76,30 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(EventLogger, "CREATE TABLE EventLogger     
 
                                                             
                                                             
-DECLARE_STATIC_TABLE_CREATION_SCRIPT(XplMessage, "CREATE TABLE XplMessage                                         \
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(Message,    "CREATE TABLE Message                                            \
                                                       (  id INTEGER NOT NULL PRIMARY KEY  AUTOINCREMENT,          \
-                                                         type TEXT NOT NULL ,                                     \
-                                                         hop INTEGER NOT NULL DEFAULT 1,                          \
-                                                         source TEXT NOT NULL,                                    \
-                                                         target TEXT NOT NULL ,                                   \
-                                                         messageSchemaId TEXT NOT NULL,                           \
-                                                         date DATETIME NOT NULL                                   \
+                                                         date DATETIME NOT NULL,                                  \
+                                                         deviceId INTEGER NOT NULL                                \
                                                          )")                           
 
-DECLARE_STATIC_TABLE_CREATION_SCRIPT(XplMessageContent, "CREATE TABLE XplMessageContent                           \
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(MessageContent,    "CREATE TABLE MessageContent                              \
                                                          (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,        \
                                                             idMessage INTEGER NOT NULL,                           \
                                                             key TEXT NOT NULL ,                                   \
                                                             value TEXT NOT NULL                                   \
                                                          )")                                                         
                                                             
-                                                                                                                             
+                                                                                         
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(Device, "  CREATE TABLE Device                                               \
+                                                (                                                                 \
+                                                   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
+                                                   address TEXT NOT NULL,                                         \
+                                                   protocol TEXT NOT NULL,                                        \
+                                                   hardwareIdentifier TEXT NOT NULL,                              \
+                                                   name TEXT NOT NULL                                             \
+                                                )")
+
+
       } //namespace sqlite
    } //namespace database 
 

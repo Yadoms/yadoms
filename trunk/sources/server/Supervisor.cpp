@@ -8,12 +8,11 @@
 #include "web/webem/WebServer.h"
 #include "web/WebServerManager.h"
 #include <shared/xpl/XplHub.h>
-#include "XplLogger.h"
+#include "communication/XplGateway.h"
 #include "web/rest/service/PluginRestService.h"
 #include "web/rest/service/DeviceRestService.h"
 #include "web/rest/service/PageRestService.h"
 #include "web/rest/service/WidgetRestService.h"
-#include "web/rest/service/AcquisitionRestService.h"
 #include "web/rest/service/ConfigurationRestService.h"
 #include "web/rest/service/PluginEventLoggerRestService.h"
 #include "web/rest/service/EventLoggerRestService.h"
@@ -215,7 +214,6 @@ void CSupervisor::doWork()
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDeviceRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPageRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CWidgetRestService(pDataProvider, webServerPath)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisitionRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfigurationRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLoggerRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLoggerRestService(pDataProvider)));
@@ -248,8 +246,8 @@ void CSupervisor::doWork()
       // ######################### [END] Xpl Hub #########################
 
       // ######################### Xpl Logger #########################
-      CXplLogger xplLogger(pDataProvider);
-      xplLogger.start();
+      communication::CXplGateway xplGateway(pDataProvider);
+      xplGateway.start();
 
       // ######################### [END] Xpl Logger #########################
 
@@ -281,7 +279,7 @@ void CSupervisor::doWork()
          pluginManager->stop();
 
       //stop xpl logger
-      xplLogger.stop();
+      xplGateway.stop();
 
       //stop xpl hub
       if(hub.get() != NULL)

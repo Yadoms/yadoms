@@ -28,21 +28,12 @@ namespace web { namespace rest { namespace json {
       ((LastModificationDate)("last_modification_date")JSON_DATE)
    )
 
-
-   DECLARE_JSON_ENTITY_IMPLEMENTATION(Acquisition,  "Acquisition",
-      ((Id)("id")JSON_INT)
-      ((Source)("source")JSON_STRING)
-      ((Keyword)("keyword")JSON_STRING)
-      ((Value)("value")JSON_STRING)
-      ((Date)("date")JSON_DATE)
-   )
-
-
    DECLARE_JSON_ENTITY_IMPLEMENTATION(Device,  "Device",
       ((Id)("id")JSON_INT)
-      ((DataSource)("data_source")JSON_STRING)
+      ((Address)("address")JSON_STRING)
+      ((Protocol)("protocol")JSON_STRING)
       ((Name)("name")JSON_STRING)
-      ((Configuration)("configuration")JSON_STRING)
+      ((HardwareIdentifier)("hardwareIdentifier")JSON_STRING)
    )
 
 
@@ -68,51 +59,6 @@ namespace web { namespace rest { namespace json {
    )
    
    
-
-//std::string CWidgetEntityJsonDefinition::m_IdIdentifier = "id" ;
-//std::string CWidgetEntityJsonDefinition::m_IdPageIdentifier = "idPage" ;
-//std::string CWidgetEntityJsonDefinition::m_NameIdentifier = "name" ;
-//std::string CWidgetEntityJsonDefinition::m_SizeXIdentifier = "sizeX" ;
-//std::string CWidgetEntityJsonDefinition::m_SizeYIdentifier = "sizeY" ;
-//std::string CWidgetEntityJsonDefinition::m_PositionXIdentifier = "positionX" ;
-//std::string CWidgetEntityJsonDefinition::m_PositionYIdentifier = "positionY" ;
-//std::string CWidgetEntityJsonDefinition::m_ConfigurationIdentifier = "configuration" ;
-//
-//   CWidgetEntitySerializer::CWidgetEntitySerializer() {
-//   }
-//   CWidgetEntitySerializer::~CWidgetEntitySerializer() {
-//   }
-//   CJson CWidgetEntitySerializer::serialize(const database::entities::CWidget & object) {
-//	   CJson result;
-//	   result.put(CWidgetEntityJsonDefinition::getIdIdentifier(), object.getId());
-//	   result.put(CWidgetEntityJsonDefinition::getIdPageIdentifier(), object.getIdPage());
-//	   result.put(CWidgetEntityJsonDefinition::getNameIdentifier(), object.getName());
-//	   result.put(CWidgetEntityJsonDefinition::getSizeXIdentifier(), object.getSizeX());
-//	   result.put(CWidgetEntityJsonDefinition::getSizeYIdentifier(), object.getSizeY());
-//	   result.put(CWidgetEntityJsonDefinition::getPositionXIdentifier(), object.getPositionX());
-//	   result.put(CWidgetEntityJsonDefinition::getPositionYIdentifier(), object.getPositionY());
-//	   //result.put(CWidgetEntityJsonDefinition::getConfigurationIdentifier(), object.getConfiguration());
-//
-//      
-//      result.add_child(CWidgetEntityJsonDefinition::getConfigurationIdentifier(), CJsonSerializer::deserialize(object.getConfiguration()));
-//	   return result;
-//   }
-//   boost::shared_ptr< database::entities::CWidget > CWidgetEntitySerializer::deserialize(const CJson & object) {
-//	   boost::shared_ptr< database::entities::CWidget > entity(new database::entities::CWidget() );
-//	   if(object.find(CWidgetEntityJsonDefinition::getIdIdentifier()) != object.not_found()) entity->setId(object.get<int >(CWidgetEntityJsonDefinition::getIdIdentifier()));
-//	   if(object.find(CWidgetEntityJsonDefinition::getIdPageIdentifier()) != object.not_found()) entity->setIdPage(object.get<int >(CWidgetEntityJsonDefinition::getIdPageIdentifier()));
-//	   if(object.find(CWidgetEntityJsonDefinition::getNameIdentifier()) != object.not_found()) entity->setName(object.get<std::string >(CWidgetEntityJsonDefinition::getNameIdentifier()));
-//	   if(object.find(CWidgetEntityJsonDefinition::getSizeXIdentifier()) != object.not_found()) entity->setSizeX(object.get<int >(CWidgetEntityJsonDefinition::getSizeXIdentifier()));
-//	   if(object.find(CWidgetEntityJsonDefinition::getSizeYIdentifier()) != object.not_found()) entity->setSizeY(object.get<int >(CWidgetEntityJsonDefinition::getSizeYIdentifier()));
-//	   if(object.find(CWidgetEntityJsonDefinition::getPositionXIdentifier()) != object.not_found()) entity->setPositionX(object.get<int >(CWidgetEntityJsonDefinition::getPositionXIdentifier()));
-//	   if(object.find(CWidgetEntityJsonDefinition::getPositionYIdentifier()) != object.not_found()) entity->setPositionY(object.get<int >(CWidgetEntityJsonDefinition::getPositionYIdentifier()));
-//	   if(object.find(CWidgetEntityJsonDefinition::getConfigurationIdentifier()) != object.not_found()) 
-//      {
-//            entity->setConfiguration(CJsonSerializer::serialize(object.get_child(CWidgetEntityJsonDefinition::getConfigurationIdentifier())));
-//      }
-//	   return entity;
-//   }
-
    DECLARE_JSON_ENTITY_IMPLEMENTATION(PluginEventLogger,  "PluginEventLogger",
       ((Id)("id")JSON_INT)
       ((EventDate)("eventDate")JSON_DATE)

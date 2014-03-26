@@ -28,20 +28,6 @@ namespace adapters {
       ((LastModificationDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
       )
 
-   DECLARE_ADAPTER_IMPLEMENTATION(Acquisition,
-      ((Id)(int)(0))
-      ((Source)(std::string)(""))
-      ((Keyword)(std::string)(""))
-      ((Value)(std::string)(""))
-      ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
-      )
-
-   DECLARE_ADAPTER_IMPLEMENTATION(Device,
-      ((Id)(int)(0))
-      ((DataSource)(std::string)(""))
-      ((Name)(std::string)(""))
-      ((Configuration)(std::string)(""))
-      )
 
    DECLARE_ADAPTER_IMPLEMENTATION(Keyword,
       ((Name)(std::string)(""))
@@ -83,22 +69,26 @@ namespace adapters {
    )
 
 
-   DECLARE_ADAPTER_IMPLEMENTATION(XplMessage,
+   DECLARE_ADAPTER_IMPLEMENTATION(Message,
       ((Id)(int)(0))
-      ((Type)(std::string)(""))
-      ((Hop)(int)(0))
-      ((Source)(std::string)(""))
-      ((Target)(std::string)(""))
-      ((MessageSchemaId)(std::string)(""))
       ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
+      ((DeviceId)(int)(0))
    )
 
-   DECLARE_ADAPTER_IMPLEMENTATION(XplMessageContent,
+   DECLARE_ADAPTER_IMPLEMENTATION(MessageContent,
       ((Id)(int)(0))
       ((IdMessage)(int)(0))
       ((Key)(std::string)(""))
       ((Value)(std::string)(""))
    )
+
+   DECLARE_ADAPTER_IMPLEMENTATION(Device,
+      ((Id)(int)(0))
+      ((Address)(std::string)(""))
+      ((Protocol)(std::string)(""))
+      ((HardwareIdentifier)(std::string)(""))
+      ((Name)(std::string)(""))
+      )
 
 
 

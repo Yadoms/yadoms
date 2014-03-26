@@ -3,12 +3,11 @@
 #include "IPluginRequester.h"
 #include "IConfigurationRequester.h"
 #include "IDeviceRequester.h"
-#include "IAcquisitionRequester.h"
 #include "IKeywordRequester.h"
 #include "IPageRequester.h"
 #include "IWidgetRequester.h"
 #include "IPluginEventLoggerRequester.h"
-#include "IXplMessageRequester.h"
+#include "IMessageRequester.h"
 #include "ITransactionalProvider.h"
 
 
@@ -62,13 +61,6 @@ namespace database {
       virtual boost::shared_ptr<IDeviceRequester> getDeviceRequester()  = 0;
 
       //--------------------------------------------------------------
-      /// \Brief		get the acquistion requester
-      /// \return 	the acquistion requester
-      /// \throws 		
-      //--------------------------------------------------------------  
-      virtual boost::shared_ptr<IAcquisitionRequester> getAcquisitionRequester()  = 0;
-
-      //--------------------------------------------------------------
       /// \Brief		get the keyword requester
       /// \return 	the keyword requester
       /// \throws 		
@@ -101,7 +93,7 @@ namespace database {
       /// \return 	the XplMessage requester
       /// \throws 		
       //--------------------------------------------------------------  
-      virtual boost::shared_ptr<IXplMessageRequester> getXplMessageRequester() = 0;
+      virtual boost::shared_ptr<IMessageRequester> getMessageRequester() = 0;
    };
 
  

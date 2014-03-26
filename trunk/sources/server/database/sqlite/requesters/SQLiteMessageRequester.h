@@ -1,6 +1,6 @@
 #pragma once
 
-#include "server/database/IXplMessageRequester.h"
+#include "server/database/IMessageRequester.h"
 
 
 namespace database { namespace sqlite { 
@@ -13,22 +13,22 @@ namespace database { namespace sqlite {
       //--------------------------------------------------------------
       /// \Brief		   XplMessage requester for SQLite database
       //--------------------------------------------------------------
-      class CSQLiteXplMessageRequester: public IXplMessageRequester
+      class CSQLiteMessageRequester: public IMessageRequester
       {
       public:
          //--------------------------------------------------------------
          /// \Brief		   Constructor
          /// \param [in]	pDatabaseHandler: the database handler
          //--------------------------------------------------------------
-         CSQLiteXplMessageRequester(const CSQLiteDataProvider & databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester);
+         CSQLiteMessageRequester(const CSQLiteDataProvider & databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester);
 
          //--------------------------------------------------------------
          /// \Brief		   Destructor
          //--------------------------------------------------------------
-         virtual ~CSQLiteXplMessageRequester();
+         virtual ~CSQLiteMessageRequester();
 
          // IAcquisitionRequester implementation
-         virtual int addXplMessage(const database::entities::CXplMessage & newXplMessage, const std::vector<database::entities::CXplMessageContent> & messageContent);
+         virtual int insertMessage(const database::entities::CMessage & newMessage, const std::vector<database::entities::CMessageContent> & messageContent);
          // [END] IAcquisitionRequester implementation
 
       private:
