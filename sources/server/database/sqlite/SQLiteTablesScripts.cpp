@@ -12,7 +12,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Configuration, " CREATE TABLE Configuration
                                                          value TEXT NOT NULL,                                     \
                                                          default_value TEXT,                                      \
                                                          description TEXT,                                        \
-                                                         security_access  INTEGER DEFAULT 0,                       \
+                                                         security_access  INTEGER DEFAULT 0,                      \
                                                          last_modification_date DATETIME,                         \
                                                          PRIMARY KEY(section,name)                                \
                                                       )")
@@ -20,7 +20,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Configuration, " CREATE TABLE Configuration
 
 
 
-DECLARE_STATIC_TABLE_CREATION_SCRIPT(Plugin, "CREATE TABLE Plugin                                             \
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(Plugin, "CREATE TABLE Plugin                                                 \
                                                 (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
                                                    name TEXT NOT NULL,                                            \
                                                    pluginName TEXT NOT NULL UNIQUE,                               \
@@ -30,9 +30,15 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Plugin, "CREATE TABLE Plugin               
 
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Keyword, " CREATE TABLE Keyword                                              \
                                                 (                                                                 \
-                                                         name TEXT NOT NULL,                                      \
-                                                         PRIMARY KEY(name)                                        \
-                                                )")
+                                                       deviceId INTEGER NOT NULL,                                 \
+                                                       name TEXT NOT NULL,                                        \
+                                                       units TEXT,                                                \
+                                                       type TEXT,                                                 \
+                                                       minimum FLOAT,                                             \
+                                                       maximum FLOAT,                                             \
+                                                       parameters TEXT,                                           \
+                                                       PRIMARY KEY(deviceId,name)                                 \
+                                                )")                                                               
 
 
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Page, " CREATE TABLE Page                                                    \

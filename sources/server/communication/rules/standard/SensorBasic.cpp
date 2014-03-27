@@ -21,7 +21,12 @@ namespace communication { namespace rules { namespace standard {
       MessageContent data;
       return data;
    }
-
+      
+   std::vector< boost::shared_ptr<database::entities::CKeyword> > CSensorBasic::identifyKeywords(shared::xpl::CXplMessage & msg)
+   {
+      std::vector< boost::shared_ptr<database::entities::CKeyword> > keywords;
+      return keywords;
+   }
 } //namespace standard
 } //namespace rules
 } //namespace communication

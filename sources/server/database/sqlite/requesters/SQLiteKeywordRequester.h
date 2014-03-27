@@ -30,9 +30,9 @@
 
                // IKeywordRequester implementation
                virtual void addKeyword(boost::shared_ptr<database::entities::CKeyword> newKeyword);
-               virtual boost::shared_ptr<database::entities::CKeyword> getKeyword(const std::string & keyword);
-               virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getKeywords();
-               virtual void removeKeyword(const std::string & keyword);
+               virtual boost::shared_ptr<database::entities::CKeyword> getKeyword(const int deviceId, const std::string & keyword);
+               virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getKeywords(const int deviceId);
+               virtual void removeKeyword(const int deviceId, const std::string & keyword);
                // [END] IKeywordRequester implementation
 
             private:
