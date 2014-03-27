@@ -27,7 +27,13 @@ namespace sqlite {
 
 
    DECLARE_TABLE(Keyword,
+      (DeviceId)
       (Name)
+      (Units)
+      (Type)
+      (Minimum)
+      (Maximum)
+      (Parameters)
    )
 
 

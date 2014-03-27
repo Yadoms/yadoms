@@ -42,9 +42,19 @@ namespace communication {
                      boost::shared_ptr<rules::IRule> rule = m_rulerFactory.identifyRule(xplMessage);
                      if(rule.get() != NULL)
                      {
+                        //create the device in database
                         rules::DeviceIdentifier deviceAddress = rule->GetDeviceAddressFromMessage(xplMessage);
                         boost::shared_ptr<database::entities::CDevice> device = m_dataProvider->getDeviceRequester()->getDevice(deviceAddress, xplMessage.getMessageSchemaIdentifier().toString(), xplMessage.getSource().toString());
 
+                        //create keyword
+                        std::vector< boost::shared_ptr<database::entities::CKeyword> > allKeywords = rule->identifyKeywords(xplMessage);
+                        BOOST_FOREACH(boost::shared_ptr<database::entities::CKeyword> keyword, allKeywords)
+                        {
+                           keyword->setDeviceId(device->getId());
+                           m_dataProvider->getKeywordRequester()->addKeyword(keyword);
+                        }
+
+                        //create message to insert in database
                         database::entities::CMessage msgToInsert;
                         msgToInsert.setDate(boost::posix_time::second_clock::universal_time());
                         msgToInsert.setDeviceId(device->getId());

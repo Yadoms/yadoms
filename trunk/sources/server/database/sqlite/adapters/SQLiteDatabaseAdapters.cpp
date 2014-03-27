@@ -30,8 +30,15 @@ namespace adapters {
 
 
    DECLARE_ADAPTER_IMPLEMENTATION(Keyword,
+      ((DeviceId)(int)(0))
       ((Name)(std::string)(""))
+      ((Units)(std::string)(""))
+      ((Type)(std::string)(""))
+      ((Minimum)(double)(0))
+      ((Maximum)(double)(0))
+      ((Parameters)(std::string)(""))
       )
+
 
    DECLARE_ADAPTER_IMPLEMENTATION(Page,
       ((Id)(int)(0))

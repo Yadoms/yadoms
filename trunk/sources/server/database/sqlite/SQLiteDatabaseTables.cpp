@@ -26,8 +26,15 @@ namespace sqlite {
 
 
    DECLARE_TABLE_COLUMN_NAMES(Keyword,  "Keyword",
+      ((DeviceId)("deviceId"))
       ((Name)("name"))
+      ((Units)("units"))
+      ((Type)("type"))
+      ((Minimum)("minimum"))
+      ((Maximum)("maximum"))
+      ((Parameters)("parameters"))
    )
+
 
    DECLARE_TABLE_COLUMN_NAMES(Page,  "Page",
       ((Id)("id"))
