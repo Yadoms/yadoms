@@ -56,9 +56,10 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief           Update widget 
       /// \param [in]      widget   The widget to update (the id must be filled)
+      /// \param [in]      createIfNotExists   if true the widget will be created if it do not already exist in db
       /// \throw           shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual void updateWidget(const entities::CWidget & widget) = 0;
+      virtual void updateWidget(const entities::CWidget & widget, bool createIfNotExists) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove widget 

@@ -272,13 +272,13 @@ public:\
 ///\brief   Declare the JSON serializer for one field IMPLEMENTATION  when the content is treated as a value
 //-------------------------------------------------------
 #define DECLARE_JSON_SERIALIZER_FIELD_CONTENT_AS_VALUE(r, _classname, elem) \
-   result.put(DECLARE_JSON_ENTITY_DEFINITION_CLASS(_classname)::BOOST_PP_CAT(BOOST_PP_CAT(get, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem)), Identifier()), BOOST_PP_SEQ_ELEM(JSON_COLUMN_CONVERT_TO, elem)(object.BOOST_PP_CAT(get, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem))()));
+   result.put(DECLARE_JSON_ENTITY_DEFINITION_CLASS(_classname)::BOOST_PP_CAT(BOOST_PP_CAT(get, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem)), Identifier()), BOOST_PP_SEQ_ELEM(JSON_COLUMN_CONVERT_TO, elem)(object.BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem)()));
 
 //-------------------------------------------------------
 ///\brief   Declare the JSON serializer for one field IMPLEMENTATION  when the content is treated as a child
 //-------------------------------------------------------
 #define DECLARE_JSON_SERIALIZER_FIELD_CONTENT_AS_CHILD(r, _classname, elem) \
-   result.add_child(DECLARE_JSON_ENTITY_DEFINITION_CLASS(_classname)::BOOST_PP_CAT(BOOST_PP_CAT(get, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem)), Identifier()), BOOST_PP_SEQ_ELEM(JSON_COLUMN_CONVERT_TO, elem)(object.BOOST_PP_CAT(get, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem))()));
+   result.add_child(DECLARE_JSON_ENTITY_DEFINITION_CLASS(_classname)::BOOST_PP_CAT(BOOST_PP_CAT(get, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem)), Identifier()), BOOST_PP_SEQ_ELEM(JSON_COLUMN_CONVERT_TO, elem)(object.BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem)()));
 
 
 //-------------------------------------------------------
@@ -310,13 +310,13 @@ CJson DECLARE_JSON_ENTITY_SERIALIZER_CLASS(_classname)::serialize(const DECLARE_
 ///\brief   Declare the JSON deserializer for one field IMPLEMENTATION when the content is treated as a value
 //-------------------------------------------------------
 #define DECLARE_JSON_DESERIALIZER_FIELD_CONTENT_AS_VALUE(r, _classname, elem) \
-   entity->BOOST_PP_CAT(set, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem))(BOOST_PP_SEQ_ELEM(JSON_COLUMN_CONVERT_FROM, elem)(object.get<BOOST_PP_SEQ_ELEM(JSON_COLUMN_TYPE, elem)>(DECLARE_JSON_ENTITY_DEFINITION_CLASS(_classname)::BOOST_PP_CAT(BOOST_PP_CAT(get, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem)), Identifier()))));\
+   entity->BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem) = BOOST_PP_SEQ_ELEM(JSON_COLUMN_CONVERT_FROM, elem)(object.get<BOOST_PP_SEQ_ELEM(JSON_COLUMN_TYPE, elem)>(DECLARE_JSON_ENTITY_DEFINITION_CLASS(_classname)::BOOST_PP_CAT(BOOST_PP_CAT(get, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem)), Identifier())));\
 
 //-------------------------------------------------------
 ///\brief   Declare the JSON deserializer for one field IMPLEMENTATION when the content is treated as a child
 //-------------------------------------------------------
 #define DECLARE_JSON_DESERIALIZER_FIELD_CONTENT_AS_CHILD(r, _classname, elem) \
-   entity->BOOST_PP_CAT(set, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem))(BOOST_PP_SEQ_ELEM(JSON_COLUMN_CONVERT_FROM, elem)(object.get_child(DECLARE_JSON_ENTITY_DEFINITION_CLASS(_classname)::BOOST_PP_CAT(BOOST_PP_CAT(get, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem)), Identifier()))));\
+   entity->BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem) = BOOST_PP_SEQ_ELEM(JSON_COLUMN_CONVERT_FROM, elem)(object.get_child(DECLARE_JSON_ENTITY_DEFINITION_CLASS(_classname)::BOOST_PP_CAT(BOOST_PP_CAT(get, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem)), Identifier())));\
 
 //-------------------------------------------------------
 ///\brief   Declare the JSON deserializer ofr one field IMPLEMENTATION

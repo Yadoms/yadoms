@@ -37,15 +37,15 @@ namespace communication { namespace rules { namespace rfxLanXpl {
       boost::shared_ptr<database::entities::CKeyword> mainKeyword(new database::entities::CKeyword());
 
       //COMMON
-      mainKeyword->setName(msg.getBodyValue("type"));
+      mainKeyword->Name = msg.getBodyValue("type");
       if(msg.getBody().find("units") != msg.getBody().end())
-         mainKeyword->setUnits(msg.getBodyValue("units"));
+         mainKeyword->Units = msg.getBodyValue("units");
 
       if(boost::iequals(msg.getBodyValue("type"), "battery"))
       {
-         mainKeyword->setType("numeric");
-         mainKeyword->setMinimum(0);
-         mainKeyword->setMaximum(100);
+         mainKeyword->Type = "numeric";
+         mainKeyword->Minimum = 0;
+         mainKeyword->Maximum = 100;
       }
 
       //DIGIMAX
@@ -53,12 +53,12 @@ namespace communication { namespace rules { namespace rfxLanXpl {
       {
          if(msg.getBodyValue("type") == "demand")
          {
-            mainKeyword->setType("enumeration");
-            mainKeyword->setParameters("heater_on|heater_off|cooling_on|cooling_off");
+            mainKeyword->Type = "enumeration";
+            mainKeyword->Parameters = "heater_on|heater_off|cooling_on|cooling_off";
          }
          else
          {
-            mainKeyword->setType("numeric");
+            mainKeyword->Type = "numeric";
          }
       }
 
@@ -67,32 +67,32 @@ namespace communication { namespace rules { namespace rfxLanXpl {
       {
          if(boost::iequals(msg.getBodyValue("type"), "voltage"))
          {
-            if(!mainKeyword->isUnitsFilled())
-               mainKeyword->setUnits("volt");
+            if(!mainKeyword->Units.isDefined())
+               mainKeyword->Units = "volt";
          }
-         mainKeyword->setType("numeric");
+         mainKeyword->Type = "numeric";
       }
 
       //RFXMETER
       if(boost::starts_with(msg.getBodyValue("device"), "rfxmeter") && boost::iequals(msg.getBodyValue("type"), "count"))
       {
-         mainKeyword->setType("numeric");
-         mainKeyword->setMinimum(0);
-         mainKeyword->setMaximum(16777215);
+         mainKeyword->Type = "numeric";
+         mainKeyword->Minimum = 0;
+         mainKeyword->Maximum = 16777215;
       }
 
       //RFXLAN IO
       if(boost::starts_with(msg.getBodyValue("device"), "io"))
       {
-         mainKeyword->setType("enumeration");
-         mainKeyword->setParameters("high|low");
+         mainKeyword->Type = "enumeration";
+         mainKeyword->Parameters = "high|low";
       }
 
       //Mertik
       if(boost::starts_with(msg.getBodyValue("device"), "0x") && boost::iequals(msg.getBodyValue("type"), "mertik"))
       {
-         mainKeyword->setType("enumeration");
-         mainKeyword->setParameters("on|off|step_up|step_down|run_up|run_down|stop");
+         mainKeyword->Type = "enumeration";
+         mainKeyword->Parameters = "on|off|step_up|step_down|run_up|run_down|stop";
       }
 
       //Oregon
@@ -100,21 +100,21 @@ namespace communication { namespace rules { namespace rfxLanXpl {
       {
          if(boost::iequals(msg.getBodyValue("type"), "humidity"))
          {
-            mainKeyword->setType("numeric");
-            mainKeyword->setMinimum(0);
-            mainKeyword->setMaximum(100);
+            mainKeyword->Type = "numeric";
+            mainKeyword->Minimum = 0;
+            mainKeyword->Maximum =100;
 
             boost::shared_ptr<database::entities::CKeyword> descriptionKeyword(new database::entities::CKeyword());
-            descriptionKeyword->setName("description");
-            descriptionKeyword->setType("enumeration");
-            descriptionKeyword->setParameters("normal|comfort|dry|wet");
+            descriptionKeyword->Name = "description";
+            descriptionKeyword->Type = "enumeration";
+            descriptionKeyword->Parameters = "normal|comfort|dry|wet";
             keywords.push_back(descriptionKeyword);
          }
 
          if(boost::iequals(msg.getBodyValue("type"), "status"))
          {
-            mainKeyword->setType("enumeration");
-            mainKeyword->setParameters("normal|comfort|dry|wet ");
+            mainKeyword->Type = "enumeration";
+            mainKeyword->Parameters = "normal|comfort|dry|wet";
          }
 
          if(boost::iequals(msg.getBodyValue("type"), "temp") ||
@@ -126,42 +126,42 @@ namespace communication { namespace rules { namespace rfxLanXpl {
             boost::iequals(msg.getBodyValue("type"), "power") ||
             boost::iequals(msg.getBodyValue("type"), "energy"))
          {
-            mainKeyword->setType("numeric");
+            mainKeyword->Type = "numeric";
          }
 
          if(boost::iequals(msg.getBodyValue("type"), "pressure"))
          {
-            mainKeyword->setType("numeric");
+            mainKeyword->Type = "numeric";
             boost::shared_ptr<database::entities::CKeyword> forecastKeyword(new database::entities::CKeyword());
-            forecastKeyword->setName("forecast");
-            forecastKeyword->setType("enumeration");
-            forecastKeyword->setParameters("sunny|partly cloudy|cloudy|rain");
+            forecastKeyword->Name = "forecast";
+            forecastKeyword->Type = "enumeration";
+            forecastKeyword->Parameters = "sunny|partly cloudy|cloudy|rain";
             keywords.push_back(forecastKeyword);
          }
 
          if(boost::iequals(msg.getBodyValue("type"), "direction"))
          {
-            mainKeyword->setMinimum(0);
-            mainKeyword->setMaximum(359);
-            mainKeyword->setType("numeric");
+            mainKeyword->Minimum = 0;
+            mainKeyword->Maximum = 359;
+            mainKeyword->Type = "numeric";
          }
 
          if(boost::iequals(msg.getBodyValue("type"), "uv"))
          {
-            mainKeyword->setMinimum(0);
-            mainKeyword->setMaximum(12);
+            mainKeyword->Minimum = 0;
+            mainKeyword->Maximum = 12;
 
             boost::shared_ptr<database::entities::CKeyword> descriptionKeyword(new database::entities::CKeyword());
-            descriptionKeyword->setName("description");
-            descriptionKeyword->setType("enumeration");
-            descriptionKeyword->setParameters("low|medium|high|very high|dangerous");
+            descriptionKeyword->Name = "description";
+            descriptionKeyword->Type = "enumeration";
+            descriptionKeyword->Parameters = "low|medium|high|very high|dangerous";
             keywords.push_back(descriptionKeyword);
          }
 
          if(boost::starts_with(msg.getBodyValue("device"), "elec") && boost::iequals(msg.getBodyValue("type"), "current"))
          {
-            mainKeyword->setUnits("A");
-            mainKeyword->setType("numeric");
+            mainKeyword->Units = "A";
+            mainKeyword->Type = "numeric";
          }
 
       }

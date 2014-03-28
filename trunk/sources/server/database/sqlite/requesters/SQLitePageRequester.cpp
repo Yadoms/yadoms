@@ -25,15 +25,15 @@ namespace database {  namespace sqlite { namespace requesters {
    {
 
       CQuery qInsert;
-      if(page.isIdFilled())
+      if(page.Id.isDefined())
       {
          qInsert. InsertInto(CPageTable::getTableName(), CPageTable::getIdColumnName(), CPageTable::getNameColumnName(), CPageTable::getPageOrderColumnName()).
-            Values(page.getId(), page.getName(), page.getPageOrder());
+            Values(page.Id(), page.Name(), page.PageOrder());
       }
       else
       {
          qInsert. InsertInto(CPageTable::getTableName(), CPageTable::getNameColumnName(), CPageTable::getPageOrderColumnName()).
-            Values(page.getName(), page.getPageOrder());
+            Values(page.Name(), page.PageOrder());
       }
 
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
@@ -42,7 +42,7 @@ namespace database {  namespace sqlite { namespace requesters {
       CQuery qSelect;
       qSelect. Select(CPageTable::getIdColumnName()).
          From(CPageTable::getTableName()).
-         Where(CPageTable::getNameColumnName(), CQUERY_OP_EQUAL, page.getName()).
+         Where(CPageTable::getNameColumnName(), CQUERY_OP_EQUAL, page.Name()).
          OrderBy(CPageTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
       database::sqlite::adapters::CSingleValueAdapter<int> adapter;

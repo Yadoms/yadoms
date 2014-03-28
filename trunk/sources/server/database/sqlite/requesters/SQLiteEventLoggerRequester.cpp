@@ -49,7 +49,7 @@ namespace database { namespace sqlite { namespace requesters {
 
    int CSQLiteEventLoggerRequester::addEvent(const database::entities::CEventLogger & logEntry)
    {
-      return addEvent(logEntry.getCode(), logEntry.getOptionalData());
+      return addEvent(logEntry.Code(), logEntry.OptionalData());
    }
 
 

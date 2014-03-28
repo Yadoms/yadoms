@@ -26,10 +26,10 @@ namespace database { namespace sqlite { namespace requesters {
       CQuery qInsert;
 
       qInsert.InsertInto(CPluginTable::getTableName(), CPluginTable::getNameColumnName(), CPluginTable::getPluginNameColumnName(), CPluginTable::getConfigurationColumnName(), CPluginTable::getEnabledColumnName() ).
-         Values(newPlugin.getName(), 
-         newPlugin.getPluginName(),
-         newPlugin.getConfiguration(), 
-         newPlugin.getEnabled());
+         Values(newPlugin.Name(), 
+         newPlugin.PluginName(),
+         newPlugin.Configuration(), 
+         newPlugin.Enabled());
 
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
@@ -38,8 +38,8 @@ namespace database { namespace sqlite { namespace requesters {
       CQuery qSelect;
       qSelect. Select(CPluginTable::getIdColumnName()).
          From(CPluginTable::getTableName()).
-         Where(CPluginTable::getNameColumnName(), CQUERY_OP_EQUAL, newPlugin.getName()).
-         And(CPluginTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, newPlugin.getPluginName()).
+         Where(CPluginTable::getNameColumnName(), CQUERY_OP_EQUAL, newPlugin.Name()).
+         And(CPluginTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, newPlugin.PluginName()).
          OrderBy(CPluginTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
       database::sqlite::adapters::CSingleValueAdapter<int> adapter;
@@ -99,37 +99,37 @@ namespace database { namespace sqlite { namespace requesters {
    {
       CQuery qUpdate;
 
-      if(!updatedPluginData.isIdFilled())
+      if(!updatedPluginData.Id.isDefined())
          throw database::CDatabaseException("Need an id to update");
 
       //update name
-      if(updatedPluginData.isNameFilled())
+      if(updatedPluginData.Name.isDefined())
       {
          qUpdate.Clear().Update(CPluginTable::getTableName()).
-         Set(CPluginTable::getNameColumnName(), updatedPluginData.getName()).
-         Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.getId());
+         Set(CPluginTable::getNameColumnName(), updatedPluginData.Name()).
+         Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
             throw database::CDatabaseException("Failed to update name");
       }
 
       //update configuration
-      if(updatedPluginData.isConfigurationFilled())
+      if(updatedPluginData.Configuration.isDefined())
       {
          qUpdate.Clear().Update(CPluginTable::getTableName()).
-         Set(CPluginTable::getConfigurationColumnName(), updatedPluginData.getConfiguration()).
-         Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.getId());
+         Set(CPluginTable::getConfigurationColumnName(), updatedPluginData.Configuration()).
+         Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
             throw database::CDatabaseException("Failed to update configuration");
       }
       
       //update enabled
-      if(updatedPluginData.isEnabledFilled())
+      if(updatedPluginData.Enabled.isDefined())
       {
          qUpdate.Clear().Update(CPluginTable::getTableName()).
-            Set(CPluginTable::getEnabledColumnName(), updatedPluginData.getEnabled()).
-         Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.getId());
+            Set(CPluginTable::getEnabledColumnName(), updatedPluginData.Enabled()).
+         Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
             throw database::CDatabaseException("Failed to update enabled field");

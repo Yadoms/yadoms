@@ -27,7 +27,7 @@ namespace database {  namespace sqlite {  namespace requesters {
 
       //create XplMessage entry
       qInsert.InsertInto(CMessageTable::getTableName(), CMessageTable::getDateColumnName(), CMessageTable::getDeviceIdColumnName()).
-         Values(newMessage.getDate(), newMessage.getDeviceId());
+         Values(newMessage.Date(), newMessage.DeviceId());
 
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("Fail to insert message");
@@ -36,8 +36,8 @@ namespace database {  namespace sqlite {  namespace requesters {
       CQuery qSelect;
       qSelect. Select(CMessageTable::getIdColumnName()).
          From(CMessageTable::getTableName()).
-         Where(CMessageTable::getDateColumnName(), CQUERY_OP_EQUAL, newMessage.getDate()).
-         And(CMessageTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, newMessage.getDeviceId()).
+         Where(CMessageTable::getDateColumnName(), CQUERY_OP_EQUAL, newMessage.Date()).
+         And(CMessageTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, newMessage.DeviceId()).
          OrderBy(CMessageTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
       database::sqlite::adapters::CSingleValueAdapter<int> adapter;
@@ -49,7 +49,7 @@ namespace database {  namespace sqlite {  namespace requesters {
          BOOST_FOREACH(database::entities::CMessageContent bodyLine, messageContent)
          {
             qInsert.Clear().InsertInto(CMessageContentTable::getTableName(), CMessageContentTable::getIdMessageColumnName(), CMessageContentTable::getKeyColumnName(), CMessageContentTable::getValueColumnName()).
-               Values(insertedId, bodyLine.getKey(), bodyLine.getValue());
+               Values(insertedId, bodyLine.Key(), bodyLine.Value());
             if(m_databaseRequester->queryStatement(qInsert) <= 0)
                throw shared::exception::CEmptyResult("Fail to insert xpl message content");
          }

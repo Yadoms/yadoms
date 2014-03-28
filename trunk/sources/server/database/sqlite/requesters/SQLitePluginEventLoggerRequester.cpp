@@ -53,7 +53,7 @@ namespace database { namespace sqlite { namespace requesters {
 
    int CSQLitePluginEventLoggerRequester::addEvent(const database::entities::CPluginEventLogger & pluginLogEntry)
    {
-      return addEvent(pluginLogEntry.getPluginName(), pluginLogEntry.getPluginVersion(), pluginLogEntry.getPluginRelease(), pluginLogEntry.getEventType(), pluginLogEntry.getMessage());
+      return addEvent(pluginLogEntry.PluginName(), pluginLogEntry.PluginVersion(), pluginLogEntry.PluginRelease(), pluginLogEntry.EventType(), pluginLogEntry.Message());
    }
 
    std::vector<boost::shared_ptr<database::entities::CPluginEventLogger> > CSQLitePluginEventLoggerRequester::getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType pluginReleaseType)

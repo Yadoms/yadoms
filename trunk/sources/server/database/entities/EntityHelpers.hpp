@@ -130,7 +130,8 @@
 //
 /// \brief Macro used to declare the entity field filled status
 //
-#define ENTITY_FIELD(_fieldName) BOOST_PP_CAT(m_, _fieldName)
+#define ENTITY_FIELD(_fieldName) _fieldName
+//#define ENTITY_FIELD(_fieldName) BOOST_PP_CAT(m_, _fieldName)
 
 
 //
@@ -142,27 +143,26 @@
 /// \brief Macro used to declare a private field with public getter and setter
 //
 #define DELCARE_FIELD(className, fieldType, fieldName) \
+   CField< fieldType > ENTITY_FIELD(fieldName);
+   /*
    public:\
-      const fieldType BOOST_PP_CAT(get, fieldName)() const {return ENTITY_FIELD(fieldName); } \
-      const bool BOOST_PP_CAT(BOOST_PP_CAT(is, fieldName), Filled()) const {return ENTITY_FIELD_FILLED(fieldName); } \
-      ENTITY_CLASSNAME(className) & BOOST_PP_CAT(set, fieldName)(const fieldType newValue) { ENTITY_FIELD(fieldName) = newValue; ENTITY_FIELD_FILLED(fieldName) = true; return *this; } \
+      const CField< fieldType > fieldName() const {return ENTITY_FIELD(fieldName); } \
    private:\
-      fieldType ENTITY_FIELD(fieldName);\
-      bool ENTITY_FIELD_FILLED(fieldName);
+      CField< fieldType > ENTITY_FIELD(fieldName);\*/
       
 //
 /// \brief Macro which initialize a field filled status to false (the field is not yet filled)
 //
-#define DECLARE_ENTITY_FILLED_INITIALISER(r, data, elem) \
-   ENTITY_FIELD_FILLED(BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_NAME, elem)) = false;\
-   ENTITY_FIELD(BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_NAME, elem)) = BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_DEFAULT, elem);
+#define DECLARE_ENTITY_FILLED_INITIALISER(r, data, idx, elem) \
+   BOOST_PP_COMMA_IF(BOOST_PP_NOT_EQUAL(idx,0)) \
+   ENTITY_FIELD(BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_NAME, elem))(BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_DEFAULT, elem))
       
 //
 /// \brief  Macro which initialize all fields state to false
 ///         For each ID in input sequence, call DECLARE_ENTITY_FILLED_INITIALISER
 //
 #define DECLARE_ENTITY_FILLED_INITIALISERS(_seq) \
-   BOOST_PP_SEQ_FOR_EACH(DECLARE_ENTITY_FILLED_INITIALISER, _, _seq)      
+   BOOST_PP_SEQ_FOR_EACH_I(DECLARE_ENTITY_FILLED_INITIALISER, _, _seq)      
 
 
 //
@@ -191,8 +191,8 @@ class ENTITY_CLASSNAME(_classname)                                           \
 {                                                                            \
    public:                                                                   \
       ENTITY_CLASSNAME(_classname)()                                         \
+        : DECLARE_ENTITY_FILLED_INITIALISERS(_seq)                           \
       {                                                                      \
-         DECLARE_ENTITY_FILLED_INITIALISERS(_seq)                            \
       }                                                                      \
       virtual ~ENTITY_CLASSNAME(_classname)()                                \
       {                                                                      \
