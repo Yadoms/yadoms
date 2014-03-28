@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include <boost/test/unit_test.hpp>
+
 // Includes needed to compile tested classes
 #include "../../../../sources/shared/shared/plugin/information/Information.h"
 #include "../../../../sources/shared/shared/exception/InvalidParameter.hpp"

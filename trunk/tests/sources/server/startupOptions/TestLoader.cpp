@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include <boost/test/unit_test.hpp>
+
 // Includes needed to compile tested classes
 #include "../../../../sources/server/startupOptions/Loader.h"
 

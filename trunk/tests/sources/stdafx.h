@@ -36,7 +36,6 @@
 #include <boost/signals2.hpp>
 #include <boost/thread.hpp>
 #include <boost/tuple/tuple.hpp>
-#include <boost/test/unit_test.hpp>
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
