@@ -1,6 +1,7 @@
 #pragma once
 #include "EntityHelpers.hpp"
 #include <shared/plugin/information/IInformation.h>
+#include "Field.hpp"
 
 namespace database { 
 namespace entities {
@@ -19,53 +20,6 @@ namespace entities {
       kCrash = 2  
    };
    
-
-   template<class T>
-   class CField
-   {
-   public:
-      CField()
-         :m_defined(false), m_value(default(T))
-      {
-      }
-
-      CField(const T & value)
-         :m_defined(true), m_value(value)
-      {
-      }
-
-      CField(const T & value, bool defined)
-         :m_defined(defined), m_value(value)
-      {
-      }
-      
-      T const& operator () () const { return m_value; }  
-
-      operator T() const
-      {
-          return m_value;
-      }
-      
-      operator std::string() const
-      {
-          return boost:lexical_cast<std::string>(m_value);
-      }
-
-      CField<T>& operator=(T const& obj)
-      {
-         m_value = obj();
-         return *this;
-      }
-
-      const bool isDefined()
-      {
-         return m_defined;
-      }
-
-   private:
-      T m_value;
-      bool m_defined;
-   };
 
    /*
       class CPlugin 

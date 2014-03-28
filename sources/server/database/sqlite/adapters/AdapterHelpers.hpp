@@ -178,9 +178,9 @@
    if(boost::iequals(BOOST_PP_CAT(C##data##Table::get,BOOST_PP_CAT(BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem), ColumnName())), cols[nCol])) \
 	{ \
       if(sqlite3_column_type(pStatement, nCol) == SQLITE_NULL) \
-   		BOOST_PP_CAT(newEntity->set, BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem)) (BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_DEFAULT, elem) ); \
+   		BOOST_PP_CAT(newEntity->, BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem)) = BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_DEFAULT, elem); \
       else \
-         BOOST_PP_CAT(newEntity->set, BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem)) ( ADAPT_COLUMN_GET_REAL_TYPE(elem) CSQLite3Extension::extractData< ADAPT_COLUMN_GET_INTERNAL_TYPE(elem) >(pStatement, nCol) ); \
+         BOOST_PP_CAT(newEntity->, BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem)) = ADAPT_COLUMN_GET_REAL_TYPE(elem) CSQLite3Extension::extractData< ADAPT_COLUMN_GET_INTERNAL_TYPE(elem) >(pStatement, nCol) ; \
    }
 
 //-------------------------------------------------------------------

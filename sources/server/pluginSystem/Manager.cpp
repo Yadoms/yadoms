@@ -73,8 +73,8 @@ void CManager::init()
    std::vector<boost::shared_ptr<database::entities::CPlugin> > databasePluginInstances = m_database->getInstances();
    BOOST_FOREACH(boost::shared_ptr<database::entities::CPlugin> databasePluginInstance, databasePluginInstances)
    {
-      if (databasePluginInstance->getEnabled())
-         startInstance(databasePluginInstance->getId());
+      if (databasePluginInstance->Enabled())
+         startInstance(databasePluginInstance->Id());
    }
 
    // Start the directory changes monitor
@@ -262,33 +262,33 @@ boost::shared_ptr<database::entities::CPlugin> CManager::getInstance(int id) con
 void CManager::updateInstance(const database::entities::CPlugin& newData)
 {
    // Check for supported modifications
-   if (!newData.isIdFilled())
+   if (!newData.Id.isDefined())
    {
       BOOST_ASSERT(false); // ID must be provided
       throw new shared::exception::CException("Update instance : instance ID was not provided");
    }
 
    // First get old configuration from database
-   boost::shared_ptr<const database::entities::CPlugin> previousData = m_database->getInstance(newData.getId());
+   boost::shared_ptr<const database::entities::CPlugin> previousData = m_database->getInstance(newData.Id());
 
    // Next, update configuration in database
    m_database->updateInstance(newData);
 
    // Last, apply modifications
-   if (newData.isEnabledFilled() && previousData->getEnabled() != newData.getEnabled())
+   if (newData.Enabled.isDefined() && previousData->Enabled() != newData.Enabled())
    {
       // Enable state was updated
-      if (newData.getEnabled())
-         startInstance(newData.getId());
+      if (newData.Enabled())
+         startInstance(newData.Id());
       else
-         stopInstance(newData.getId());
+         stopInstance(newData.Id());
    }
-   else if (newData.isConfigurationFilled()
-      && previousData->getConfiguration() != newData.getConfiguration()) // No need to notify configuration if instance was enabled/disabled
+   else if (newData.Configuration.isDefined()
+      && previousData->Configuration() != newData.Configuration()) // No need to notify configuration if instance was enabled/disabled
    {
       // Configuration was updated, notify the instance, if running
-      if (m_runningInstances.find(newData.getId()) != m_runningInstances.end())
-         m_runningInstances[newData.getId()]->updateConfiguration(newData.getConfiguration());
+      if (m_runningInstances.find(newData.Id()) != m_runningInstances.end())
+         m_runningInstances[newData.Id()]->updateConfiguration(newData.Configuration());
    }
 }
 
@@ -357,12 +357,12 @@ void CManager::startInstance(int id)
    // Load the plugin
    try
    {
-      boost::shared_ptr<CFactory> plugin(loadPlugin(databasePluginInstance->getPluginName()));
+      boost::shared_ptr<CFactory> plugin(loadPlugin(databasePluginInstance->PluginName()));
 
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
       boost::shared_ptr<CInstance> pluginInstance(new CInstance(plugin, databasePluginInstance, m_qualifier, m_supervisor, m_pluginManagerEventId, &m_pluginIOService));
-      m_runningInstances[databasePluginInstance->getId()] = pluginInstance;
+      m_runningInstances[databasePluginInstance->Id()] = pluginInstance;
    }
    catch (CInvalidPluginException& e)
    {

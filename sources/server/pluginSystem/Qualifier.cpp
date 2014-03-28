@@ -110,17 +110,17 @@ int CQualifier::computeQuality(const CIdentityForQualifier& identity) const
    std::vector<boost::shared_ptr<database::entities::CPluginEventLogger> > pluginEvents = m_eventLoggerDatabase->getPluginEvents(identity.getName(), identity.getVersion(), identity.getReleaseType(), boost::posix_time::ptime(fromDate));
    for (std::vector<boost::shared_ptr<database::entities::CPluginEventLogger> >::const_iterator it = pluginEvents.begin() ; it != pluginEvents.end() ; ++it)
    {
-      switch((*it)->getEventType())
+      switch((*it)->EventType)
       {
       case database::entities::kLoad:
          {
-            lastLoadTime = (*it)->getEventDate();
+            lastLoadTime = (*it)->EventDate();
             break;
          }
       case database::entities::kUnload:
          {
             if(lastLoadTime != boost::posix_time::not_a_date_time)
-               runningDuration += (*it)->getEventDate() - lastLoadTime;
+               runningDuration += (*it)->EventDate() - lastLoadTime;
 
             lastLoadTime = boost::posix_time::not_a_date_time;
             break;
@@ -132,7 +132,7 @@ int CQualifier::computeQuality(const CIdentityForQualifier& identity) const
          }
       default:
          {
-            YADOMS_LOG(error) << "Compute plugin quality : unknown event type " << (*it)->getEventType();
+            YADOMS_LOG(error) << "Compute plugin quality : unknown event type " << (*it)->EventType();
             break;
          }
       }

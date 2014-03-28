@@ -32,16 +32,16 @@ namespace communication { namespace rules { namespace rfxLanXpl {
       boost::shared_ptr<database::entities::CKeyword> mainKeyword(new database::entities::CKeyword());
 
       //COMMON
-      mainKeyword->setName("command");
-      mainKeyword->setType("enumeration");
-      mainKeyword->setParameters("on|off|preset");
+      mainKeyword->Name = "command";
+      mainKeyword->Type = "enumeration";
+      mainKeyword->Parameters = "on|off|preset";
 
       //LEVEL
       boost::shared_ptr<database::entities::CKeyword> levelKeyword(new database::entities::CKeyword());
-      levelKeyword->setName("level");
-      levelKeyword->setType("numeric");
-      levelKeyword->setMinimum(0);
-      levelKeyword->setMaximum(15);
+      levelKeyword->Name = "level";
+      levelKeyword->Type = "numeric";
+      levelKeyword->Minimum = 0;
+      levelKeyword->Maximum = 15;
       keywords.push_back(levelKeyword);
 
       keywords.push_back(mainKeyword);

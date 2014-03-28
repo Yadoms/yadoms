@@ -84,17 +84,17 @@ namespace web { namespace rest { namespace service {
       boost::shared_ptr<database::entities::CConfiguration> configToCreate = hes.deserialize(requestContent);
 
       //check that configuration entry do not already exists
-      boost::shared_ptr<database::entities::CConfiguration> checkExistEntity = m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate->getSection(), configToCreate->getName());
+      boost::shared_ptr<database::entities::CConfiguration> checkExistEntity = m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate->Section(), configToCreate->Name());
       if(checkExistEntity.get() != NULL)
          return web::rest::json::CJsonResult::GenerateError("The entry to create already exists", hes.serialize(*checkExistEntity.get()));
 
       //update modification date
-      configToCreate->setLastModificationDate(boost::posix_time::second_clock::universal_time());
+      configToCreate->LastModificationDate = boost::posix_time::second_clock::universal_time();
 
       //commit changes to database
       m_dataProvider->getConfigurationRequester()->create(*configToCreate.get());
 
-      boost::shared_ptr<database::entities::CConfiguration> widgetFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate->getSection(), configToCreate->getName());
+      boost::shared_ptr<database::entities::CConfiguration> widgetFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate->Section(), configToCreate->Name());
       return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*widgetFound.get()));
    }
 
@@ -114,14 +114,14 @@ namespace web { namespace rest { namespace service {
             keyname = parameters[2];
 
 
-         if((configToUpdate->getSection().empty() && configToUpdate->getName().empty()) ||
-            (boost::iequals(configToUpdate->getSection(), section) &&  boost::iequals(configToUpdate->getName(), keyname)))
+         if((configToUpdate->Section().empty() && configToUpdate->Name().empty()) ||
+            (boost::iequals(configToUpdate->Section(), section) &&  boost::iequals(configToUpdate->Name(), keyname)))
          {
             //ensure section and name are corretly filled
-            configToUpdate->setSection(section);
-            configToUpdate->setName(keyname);
+            configToUpdate->Section = section;
+            configToUpdate->Name = keyname;
             //update modification date
-            configToUpdate->setLastModificationDate(boost::posix_time::second_clock::universal_time());
+            configToUpdate->LastModificationDate = boost::posix_time::second_clock::universal_time();
             //commit changes to database
             m_dataProvider->getConfigurationRequester()->updateConfiguration(*configToUpdate);
             return web::rest::json::CJsonResult::GenerateSuccess(getConfiguration(parameters, requestContent));
@@ -182,8 +182,8 @@ namespace web { namespace rest { namespace service {
       if(!section.empty() && !keyname.empty())
       {
          database::entities::CConfiguration configToRemove;
-         configToRemove.setSection(section);
-         configToRemove.setName(keyname);
+         configToRemove.Section = section;
+         configToRemove.Name = keyname;
          m_dataProvider->getConfigurationRequester()->removeConfiguration(configToRemove);
       }
 

@@ -25,15 +25,15 @@ namespace database { namespace sqlite { namespace requesters {
    int CSQLiteWidgetRequester::addWidget(const database::entities::CWidget & newWidget)
    {
       CQuery qInsert;
-      if(newWidget.getId() != 0)
+      if(newWidget.Id() != 0)
       {
          qInsert. InsertInto(CWidgetTable::getTableName(), CWidgetTable::getIdColumnName(),CWidgetTable::getIdPageColumnName(), CWidgetTable::getNameColumnName(), CWidgetTable::getSizeXColumnName(), CWidgetTable::getSizeYColumnName(), CWidgetTable::getPositionXColumnName(), CWidgetTable::getPositionYColumnName(), CWidgetTable::getConfigurationColumnName()).
-            Values(newWidget.getId(), newWidget.getIdPage(), newWidget.getName(), newWidget.getSizeX(), newWidget.getSizeY(), newWidget.getPositionX(), newWidget.getPositionY(), newWidget.getConfiguration());
+            Values(newWidget.Id(), newWidget.IdPage(), newWidget.Name(), newWidget.SizeX(), newWidget.SizeY(), newWidget.PositionX(), newWidget.PositionY(), newWidget.Configuration());
       }
       else
       {
          qInsert. InsertInto(CWidgetTable::getTableName(), CWidgetTable::getIdPageColumnName(), CWidgetTable::getNameColumnName(), CWidgetTable::getSizeXColumnName(), CWidgetTable::getSizeYColumnName(), CWidgetTable::getPositionXColumnName(), CWidgetTable::getPositionYColumnName(), CWidgetTable::getConfigurationColumnName()).
-            Values(newWidget.getIdPage(), newWidget.getName(), newWidget.getSizeX(), newWidget.getSizeY(), newWidget.getPositionX(), newWidget.getPositionY(), newWidget.getConfiguration());
+            Values(newWidget.IdPage(), newWidget.Name(), newWidget.SizeX(), newWidget.SizeY(), newWidget.PositionX(), newWidget.PositionY(), newWidget.Configuration());
       }
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
@@ -41,13 +41,13 @@ namespace database { namespace sqlite { namespace requesters {
       CQuery qSelect;
       qSelect. Select(CWidgetTable::getIdColumnName()).
          From(CWidgetTable::getTableName()).
-         Where(CWidgetTable::getIdPageColumnName(), CQUERY_OP_EQUAL, newWidget.getIdPage()).
-         And(CWidgetTable::getNameColumnName(), CQUERY_OP_EQUAL, newWidget.getName()).
-         And(CWidgetTable::getSizeXColumnName(), CQUERY_OP_EQUAL, newWidget.getSizeX()).
-         And(CWidgetTable::getSizeYColumnName(), CQUERY_OP_EQUAL, newWidget.getSizeY()).
-         And(CWidgetTable::getPositionXColumnName(), CQUERY_OP_EQUAL, newWidget.getPositionX()).
-         And(CWidgetTable::getPositionYColumnName(), CQUERY_OP_EQUAL, newWidget.getPositionY()).
-         And(CWidgetTable::getConfigurationColumnName(), CQUERY_OP_EQUAL, newWidget.getConfiguration()).
+         Where(CWidgetTable::getIdPageColumnName(), CQUERY_OP_EQUAL, newWidget.IdPage()).
+         And(CWidgetTable::getNameColumnName(), CQUERY_OP_EQUAL, newWidget.Name()).
+         And(CWidgetTable::getSizeXColumnName(), CQUERY_OP_EQUAL, newWidget.SizeX()).
+         And(CWidgetTable::getSizeYColumnName(), CQUERY_OP_EQUAL, newWidget.SizeY()).
+         And(CWidgetTable::getPositionXColumnName(), CQUERY_OP_EQUAL, newWidget.PositionX()).
+         And(CWidgetTable::getPositionYColumnName(), CQUERY_OP_EQUAL, newWidget.PositionY()).
+         And(CWidgetTable::getConfigurationColumnName(), CQUERY_OP_EQUAL, newWidget.Configuration()).
          OrderBy(CWidgetTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
       database::sqlite::adapters::CSingleValueAdapter<int> adapter;
@@ -132,88 +132,108 @@ namespace database { namespace sqlite { namespace requesters {
          throw shared::exception::CEmptyResult("No lines affected");
    }
 
-   void CSQLiteWidgetRequester::updateWidget(const entities::CWidget & widgetToUpdate)
+   void CSQLiteWidgetRequester::updateWidget(const entities::CWidget & widgetToUpdate, bool createIfNotExists)
    {
       CQuery qUpdate;
 
-      if(!widgetToUpdate.isIdFilled())
+      //in all cases the Id must be filled
+      if(!widgetToUpdate.Id.isDefined())
          throw database::CDatabaseException("Need an id to update");
 
-      //update name
-      if(widgetToUpdate.isNameFilled())
-      {
-         qUpdate.Clear().Update(CWidgetTable::getTableName()).
-            Set(CWidgetTable::getNameColumnName(), widgetToUpdate.getName()).
-            Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.getId());
+      //search for the widget
+      CQuery qSelect;
+      qSelect. Select().
+         From(CWidgetTable::getTableName()).
+         Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
 
-         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-            throw database::CDatabaseException("Failed to update name");
+      database::sqlite::adapters::CWidgetAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CWidget> >(&adapter, qSelect);
+      if(adapter.getResults().size() == 0)
+      {
+         //do not exist, just add it
+         addWidget(widgetToUpdate);
       }
-
-      //update IdPage
-      if(widgetToUpdate.isIdPageFilled())
+      else
       {
-         qUpdate.Clear().Update(CWidgetTable::getTableName()).
-            Set(CWidgetTable::getIdPageColumnName(), widgetToUpdate.getIdPage()).
-            Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.getId());
+         //already exists, just update fields
 
-         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-            throw database::CDatabaseException("Failed to update id page");
-      }
 
-      //update configuration
-      if(widgetToUpdate.isConfigurationFilled())
-      {
-         qUpdate.Clear().Update(CWidgetTable::getTableName()).
-            Set(CWidgetTable::getConfigurationColumnName(), widgetToUpdate.getConfiguration()).
-            Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.getId());
+         //update name
+         if(widgetToUpdate.Name.isDefined())
+         {
+            qUpdate.Clear().Update(CWidgetTable::getTableName()).
+               Set(CWidgetTable::getNameColumnName(), widgetToUpdate.Name()).
+               Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
 
-         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-            throw database::CDatabaseException("Failed to update configuration");
-      }
+            if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+               throw database::CDatabaseException("Failed to update name");
+         }
 
-      //update Position X
-      if(widgetToUpdate.isPositionXFilled())
-      {
-         qUpdate.Clear().Update(CWidgetTable::getTableName()).
-            Set(CWidgetTable::getPositionXColumnName(), widgetToUpdate.getPositionX()).
-            Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.getId());
+         //update IdPage
+         if(widgetToUpdate.IdPage.isDefined())
+         {
+            qUpdate.Clear().Update(CWidgetTable::getTableName()).
+               Set(CWidgetTable::getIdPageColumnName(), widgetToUpdate.IdPage()).
+               Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
 
-         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-            throw database::CDatabaseException("Failed to update Position X");
-      }
+            if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+               throw database::CDatabaseException("Failed to update id page");
+         }
 
-      //update Position Y
-      if(widgetToUpdate.isPositionYFilled())
-      {
-         qUpdate.Clear().Update(CWidgetTable::getTableName()).
-            Set(CWidgetTable::getPositionYColumnName(), widgetToUpdate.getPositionY()).
-            Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.getId());
+         //update configuration
+         if(widgetToUpdate.Configuration.isDefined())
+         {
+            qUpdate.Clear().Update(CWidgetTable::getTableName()).
+               Set(CWidgetTable::getConfigurationColumnName(), widgetToUpdate.Configuration()).
+               Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
 
-         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-            throw database::CDatabaseException("Failed to update Position Y");
-      }
+            if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+               throw database::CDatabaseException("Failed to update configuration");
+         }
 
-      //update Size X
-      if(widgetToUpdate.isSizeXFilled())
-      {
-         qUpdate.Clear().Update(CWidgetTable::getTableName()).
-            Set(CWidgetTable::getSizeXColumnName(), widgetToUpdate.getSizeX()).
-            Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.getId());
+         //update Position X
+         if(widgetToUpdate.PositionX.isDefined())
+         {
+            qUpdate.Clear().Update(CWidgetTable::getTableName()).
+               Set(CWidgetTable::getPositionXColumnName(), widgetToUpdate.PositionX()).
+               Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
 
-         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-            throw database::CDatabaseException("Failed to update Size X");
-      }
+            if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+               throw database::CDatabaseException("Failed to update Position X");
+         }
 
-      //update Size Y
-      if(widgetToUpdate.isSizeYFilled())
-      {
-         qUpdate.Clear().Update(CWidgetTable::getTableName()).
-            Set(CWidgetTable::getSizeYColumnName(), widgetToUpdate.getSizeY()).
-            Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.getId());
+         //update Position Y
+         if(widgetToUpdate.PositionY.isDefined())
+         {
+            qUpdate.Clear().Update(CWidgetTable::getTableName()).
+               Set(CWidgetTable::getPositionYColumnName(), widgetToUpdate.PositionY()).
+               Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
 
-         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-            throw database::CDatabaseException("Failed to update Size Y");
+            if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+               throw database::CDatabaseException("Failed to update Position Y");
+         }
+
+         //update Size X
+         if(widgetToUpdate.SizeX.isDefined())
+         {
+            qUpdate.Clear().Update(CWidgetTable::getTableName()).
+               Set(CWidgetTable::getSizeXColumnName(), widgetToUpdate.SizeX()).
+               Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
+
+            if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+               throw database::CDatabaseException("Failed to update Size X");
+         }
+
+         //update Size Y
+         if(widgetToUpdate.SizeY.isDefined())
+         {
+            qUpdate.Clear().Update(CWidgetTable::getTableName()).
+               Set(CWidgetTable::getSizeYColumnName(), widgetToUpdate.SizeY()).
+               Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
+
+            if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+               throw database::CDatabaseException("Failed to update Size Y");
+         }
       }
    }
 

@@ -129,7 +129,7 @@ namespace web { namespace rest { namespace service {
          boost::shared_ptr<database::entities::CPlugin> instanceToUpdate = hes.deserialize(requestContent);
          m_pluginManager->updateInstance(*instanceToUpdate);
 
-         boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(instanceToUpdate->getId());
+         boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(instanceToUpdate->Id());
          return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*pluginFound.get()));
       }
       catch(std::exception &ex)
@@ -173,7 +173,7 @@ namespace web { namespace rest { namespace service {
       std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
       BOOST_FOREACH(boost::shared_ptr<database::entities::CPlugin> toDelete, hwList)
       {
-         m_pluginManager->deleteInstance(toDelete->getId());
+         m_pluginManager->deleteInstance(toDelete->Id());
       }
 
       return web::rest::json::CJsonResult::GenerateSuccess();

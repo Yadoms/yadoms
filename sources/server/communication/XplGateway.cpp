@@ -50,14 +50,14 @@ namespace communication {
                         std::vector< boost::shared_ptr<database::entities::CKeyword> > allKeywords = rule->identifyKeywords(xplMessage);
                         BOOST_FOREACH(boost::shared_ptr<database::entities::CKeyword> keyword, allKeywords)
                         {
-                           keyword->setDeviceId(device->getId());
+                           keyword->DeviceId = device->Id();
                            m_dataProvider->getKeywordRequester()->addKeyword(keyword);
                         }
 
                         //create message to insert in database
                         database::entities::CMessage msgToInsert;
-                        msgToInsert.setDate(boost::posix_time::second_clock::universal_time());
-                        msgToInsert.setDeviceId(device->getId());
+                        msgToInsert.Date = boost::posix_time::second_clock::universal_time();
+                        msgToInsert.DeviceId = device->Id();
 
                         rules::MessageContent data = rule->ExtractMessageData(xplMessage);
                         std::vector<database::entities::CMessageContent> msgContentEntries;
@@ -66,8 +66,8 @@ namespace communication {
                         for(i = data.begin(); i!= data.end(); ++i)
                         {
                            database::entities::CMessageContent item;
-                           item.setKey(i->first);
-                           item.setValue(i->second);
+                           item.Key = i->first;
+                           item.Value = i->second;
                            msgContentEntries.push_back(item);
                         }
 

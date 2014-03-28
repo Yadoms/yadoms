@@ -145,10 +145,10 @@ namespace web { namespace rest { namespace service {
          {
             int objectId = boost::lexical_cast<int>(parameters[1]);
 
-            if(widgetToUpdate->getId() == objectId)
+            if(widgetToUpdate->Id() == objectId)
             {
-               m_dataProvider->getWidgetRequester()->updateWidget(*widgetToUpdate);
-               return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*m_dataProvider->getWidgetRequester()->getWidget(widgetToUpdate->getId())));
+               m_dataProvider->getWidgetRequester()->updateWidget(*widgetToUpdate, true);
+               return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*m_dataProvider->getWidgetRequester()->getWidget(widgetToUpdate->Id())));
             }
             else
             {

@@ -120,7 +120,7 @@ namespace web { namespace rest { namespace service {
       {
          web::rest::json::CPageEntitySerializer hes;
          boost::shared_ptr<database::entities::CPage> pageToAdd = hes.deserialize(requestContent);
-         int idCreated = m_dataProvider->getPageRequester()->addPage(pageToAdd->getName(), pageToAdd->getPageOrder());
+         int idCreated = m_dataProvider->getPageRequester()->addPage(pageToAdd->Name(), pageToAdd->PageOrder());
          boost::shared_ptr<database::entities::CPage> pageFound =  m_dataProvider->getPageRequester()->getPage(idCreated);
          return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*pageFound.get()));
       }
@@ -144,10 +144,10 @@ namespace web { namespace rest { namespace service {
 
             web::rest::json::CPageEntitySerializer hes;
             boost::shared_ptr<database::entities::CPage> pageToReplace = hes.deserialize(requestContent);
-            if(pageToReplace->getId() > 0 && pageId == pageToReplace->getId())
+            if(pageToReplace->Id() > 0 && pageId == pageToReplace->Id())
             {
-               m_dataProvider->getPageRequester()->updatePage(pageToReplace->getId(), pageToReplace->getName(), pageToReplace->getPageOrder());
-               return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*m_dataProvider->getPageRequester()->getPage(pageToReplace->getId())));
+               m_dataProvider->getPageRequester()->updatePage(pageToReplace->Id(), pageToReplace->Name(), pageToReplace->PageOrder());
+               return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*m_dataProvider->getPageRequester()->getPage(pageToReplace->Id())));
             }
             else
             {
