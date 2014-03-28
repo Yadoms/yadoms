@@ -1,7 +1,6 @@
 #pragma once
 
 #include <shared/plugin/configuration/Configuration.h>
-#include <shared/plugin/ImplementationHelper.h>
 
 
 //--------------------------------------------------------------

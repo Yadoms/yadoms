@@ -2,7 +2,6 @@
 
 #include "IPlugin.h"
 #include "information/Information.h"
-#include "configuration/Configuration.h"
 #include <shared/Export.h>
 #include <shared/FileSystemExtension.h>
 #include <boost/shared_ptr.hpp>
