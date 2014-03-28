@@ -2,8 +2,7 @@
 // Includes needed to compile tested classes
 #include "../../../../sources/shared/shared/plugin/configuration/Configuration.h"
 
-#define BOOST_TEST_MODULE TestPluginConfiguration
-#include <boost/test/unit_test.hpp>
+BOOST_AUTO_TEST_SUITE(TestPluginConfiguration)
 
 enum EEnumType
 {
@@ -46,3 +45,4 @@ BOOST_AUTO_TEST_CASE(ReadDefaultConfiguration)
    BOOST_CHECK_EQUAL(cfg.getValue<std::string>("MySection.SubStringParameter"), "Just a string parameter in the sub-section");
 }
 
+BOOST_AUTO_TEST_SUITE_END()

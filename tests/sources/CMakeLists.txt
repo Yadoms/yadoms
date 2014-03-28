@@ -130,6 +130,8 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})
 set(YADOMS_TESTS_SRC
 	stdafx.cpp
 	stdafx.h
+
+	testMain.cpp
    
    testCommon/fileSystem.h
    testCommon/fileSystem.cpp
@@ -175,7 +177,7 @@ add_precompiled_header(yadomsTests stdafx.h)
 ##################################################################################################
 ## Include directories
 ##################################################################################################
-include_directories(${BOOST_INCL_DIR} mock ${YADOMS_PATH}/shared ${YADOMS_PATH}/server/tools)
+include_directories(${BOOST_INCL_DIR} . mock ${YADOMS_PATH}/shared ${YADOMS_PATH}/server/tools)
 IF(WIN32)
    include_directories(${YADOMS_PATH}/server/tools/windows)
 ELSEIF(APPLE)

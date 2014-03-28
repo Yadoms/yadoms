@@ -2,8 +2,7 @@
 // Includes needed to compile tested classes
 #include "../../../../sources/plugins/FakePlugin/FakePluginConfiguration.h"
 
-#define BOOST_TEST_MODULE TestFakePluginConfiguration
-#include <boost/test/unit_test.hpp>
+BOOST_AUTO_TEST_SUITE(TestFakePluginConfiguration)
 
 const std::string defaultConf("{"
    "\"EnumParameter\": \"EnumValue1\","
@@ -19,3 +18,4 @@ BOOST_AUTO_TEST_CASE(ReadFakePluginDefaultConfiguration)
    BOOST_CHECK_EQUAL(cfg.getEnumParameter(), (EEnumType)kEnumValue1);
 }
 
+BOOST_AUTO_TEST_SUITE_END()

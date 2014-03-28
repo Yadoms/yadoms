@@ -2,12 +2,10 @@
 // Includes needed to compile tested classes
 #include "../../../../sources/server/startupOptions/Loader.h"
 
-#define BOOST_TEST_MODULE TestLoader
-
-#include <boost/test/unit_test.hpp>
-
 // Includes needed to compile the test
 #include "../../testCommon/fileSystem.h"
+
+BOOST_AUTO_TEST_SUITE(TestLoader)
 
 
 //--------------------------------------------------------------
@@ -909,3 +907,5 @@ BOOST_AUTO_TEST_CASE(Parameter_Missing_No_Exception)
 
    BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (2, argv), startupOptions::CLoaderException, ValidateLoaderException);
 }
+
+BOOST_AUTO_TEST_SUITE_END()

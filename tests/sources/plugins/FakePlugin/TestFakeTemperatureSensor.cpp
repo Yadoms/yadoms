@@ -2,8 +2,7 @@
 // Includes needed to compile tested classes
 #include "../../../../sources/plugins/FakePlugin/FakeTemperatureSensor.h"
 
-#define BOOST_TEST_MODULE TestFakeTemperatureSensor
-#include <boost/test/unit_test.hpp>
+BOOST_AUTO_TEST_SUITE(TestFakeTemperatureSensor)
 
 static const std::string sensorId("MyTemperatureSensor");
 
@@ -67,3 +66,4 @@ BOOST_AUTO_TEST_CASE(TemperatureVariations)
    }
 }
 
+BOOST_AUTO_TEST_SUITE_END()

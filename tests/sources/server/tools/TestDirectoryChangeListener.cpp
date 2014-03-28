@@ -12,9 +12,7 @@
 #include "../../testCommon/fileSystem.h"
 #include <boost/chrono.hpp>
 
-#define BOOST_TEST_MODULE TestDirectoryChangeListener
-
-#include <boost/test/unit_test.hpp>
+BOOST_AUTO_TEST_SUITE(TestDirectoryChangeListener)
 
 
 class CTestContext
@@ -149,3 +147,4 @@ BOOST_AUTO_TEST_CASE(RenameFile_Test)
    BOOST_CHECK_EQUAL(Events[2].type, boost::asio::dir_monitor_event::modified);
 }
 
+BOOST_AUTO_TEST_SUITE_END()
