@@ -13,6 +13,13 @@ namespace shared { namespace plugin { namespace information
    {
    public:
       //--------------------------------------------------------------
+      /// \brief	      Strings associated at IInformation::EReleaseType values
+      //--------------------------------------------------------------
+      typedef std::map<std::string, EReleaseType> ReleaseTypeValuesNameList;
+      static const ReleaseTypeValuesNameList ReleaseTypeValuesNames;
+
+   public:
+      //--------------------------------------------------------------
       /// \brief	      Constructor
       /// \param[in]    pluginPath : plugin executing path
       /// \throw        exception::CInvalidParameter if file is not valid or complete

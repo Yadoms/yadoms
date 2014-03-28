@@ -6,6 +6,12 @@
 namespace shared { namespace plugin { namespace information
 {
 
+const CInformation::ReleaseTypeValuesNameList CInformation::ReleaseTypeValuesNames = boost::assign::map_list_of
+   ("stable"   , kStable)
+   ("testing"  , kTesting)
+   ("beta"     , kBeta);
+
+
 CInformation::CInformation(const boost::filesystem::path& pluginPath)
    :m_path(pluginPath)
 {
@@ -37,11 +43,20 @@ CInformation::CInformation(const boost::filesystem::path& pluginPath)
       if (m_version.empty() || !regex_match(m_version, boost::regex("\\d+.\\d+")))
          throw exception::CInvalidParameter("Error reading package.json : plugin version doesn't match expected format (x.x)");
 
-      std::string releaseType = propertyTree.get<std::string>("releaseType");
-      if      (releaseType == "beta"   ) m_releaseType = kBeta;
-      else if (releaseType == "testing") m_releaseType = kTesting;
-      else if (releaseType == "stable" ) m_releaseType = kStable;
-      else throw exception::CInvalidParameter("Error reading package.json : plugin release type doesn't match expected values (beta, testing or stable)");
+      ReleaseTypeValuesNameList::const_iterator it = ReleaseTypeValuesNames.find(propertyTree.get<std::string>("releaseType"));
+      if (it == ReleaseTypeValuesNames.end())
+      {
+         std::string expectedValues;
+         for (it = ReleaseTypeValuesNames.begin() ; it != ReleaseTypeValuesNames.end() ; ++ it)
+         {
+            expectedValues += it->first;
+            ReleaseTypeValuesNameList::const_iterator it2 = it;
+            if ((++it2) != ReleaseTypeValuesNames.end())
+               expectedValues += ", ";
+         }
+         throw exception::CInvalidParameter("Error reading package.json : plugin release type doesn't match expected values (" + expectedValues + ")");
+      }
+      m_releaseType = (EReleaseType)(it->second);
 
       m_author = propertyTree.get<std::string>("author");
       if (m_author.empty())
@@ -102,9 +117,14 @@ std::string CInformation::toString() const
 {
    std::ostringstream formatedInformations;
 
+   std::string releaseType;
+   for (ReleaseTypeValuesNameList::const_iterator it = ReleaseTypeValuesNames.begin() ; it != ReleaseTypeValuesNames.end() ; ++ it)
+      if (it->second == m_releaseType)
+         releaseType = it->first;
+
    formatedInformations << m_name;
    formatedInformations << " v" << m_version;
-   formatedInformations << "[" << m_releaseType << "]";
+   formatedInformations << "[" << releaseType << "]";
    formatedInformations << " by " << m_author;
    formatedInformations << " (" << m_url << ")";
 
