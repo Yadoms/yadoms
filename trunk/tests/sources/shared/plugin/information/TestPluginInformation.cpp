@@ -3,11 +3,10 @@
 #include "../../../../sources/shared/shared/plugin/information/Information.h"
 #include "../../../../sources/shared/shared/exception/InvalidParameter.hpp"
 
-#define BOOST_TEST_MODULE TestPluginInformation
-#include <boost/test/unit_test.hpp>
-
 // Includes needed to compile the test
 #include "../../../testCommon/fileSystem.h"
+
+BOOST_AUTO_TEST_SUITE(TestPluginInformation)
 
 static const std::string DefaultPackageFileContent(
 "{"
@@ -314,3 +313,4 @@ BOOST_AUTO_TEST_CASE(NullOrEmptyPluginAuthor)
    BOOST_REQUIRE_THROW(shared::plugin::information::CInformation info(fileContentWithoutAuthor), shared::exception::CInvalidParameter);
 }
 
+BOOST_AUTO_TEST_SUITE_END()

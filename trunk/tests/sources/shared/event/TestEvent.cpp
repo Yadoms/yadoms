@@ -7,9 +7,7 @@
 #include <boost/thread.hpp>
 #include "../../../../sources/shared/shared/event/EventHandler.hpp"
 
-#define BOOST_TEST_MODULE TestEvent
-
-#include <boost/test/unit_test.hpp>
+BOOST_AUTO_TEST_SUITE(TestEvent)
 
 
 // Event IDs
@@ -89,7 +87,6 @@ void ThreadSender(long nb_messages)
 	std::cout << "Thread Sender: finished" << std::endl;
 }
 
-//BOOST_AUTO_TEST_SUITE(Initialisation)
 
 //--------------------------------------------------------------
 /// \brief	    Test Events with 1 event sent
@@ -142,4 +139,4 @@ BOOST_AUTO_TEST_CASE(Event_100_Messages)
 }
 
 
-//BOOST_AUTO_TEST_SUITE_END()
+BOOST_AUTO_TEST_SUITE_END()
