@@ -1,8 +1,11 @@
 #include "stdafx.h"
+#include <boost/test/unit_test.hpp>
+
 // Includes needed to compile tested classes
 #include "../../../../sources/plugins/FakePlugin/FakePluginConfiguration.h"
 
 BOOST_AUTO_TEST_SUITE(TestFakePluginConfiguration)
+
 
 const std::string defaultConf("{"
    "\"EnumParameter\": \"EnumValue1\","

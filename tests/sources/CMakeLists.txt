@@ -79,7 +79,9 @@ add_definitions( -DBOOST_ALL_DYN_LINK )
 add_definitions( -DBOOST_SPIRIT_THREADSAFE )
 
 # Boost tests units definitions
-add_definitions( -DBOOST_AUTO_TEST_MAIN )
+#TODO add_definitions( -DBOOST_AUTO_TEST_MAIN )
+add_definitions( -DBOOST_TEST_DYN_LINK )
+
 
 # define all needed boost libraries
 set(BOOST_LIBS 
