@@ -7,7 +7,7 @@ namespace database { namespace entities {
    {
    public:
       CField()
-         :m_defined(false), m_value(default(T))
+         :m_defined(false), m_value()
       {
       }
 
@@ -41,8 +41,8 @@ namespace database { namespace entities {
       }
 
    private:
-      T m_value;
       bool m_defined;
+      T m_value;
    };
    
 
