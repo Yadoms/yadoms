@@ -33,7 +33,7 @@ enum
 //   - letters must be lower case
 //   - no characters '.', '-', '_', or so...
 //   - 8 characters max
-// NOTE : To avoid DeviceId confilcts, YADOMS-TEAM manage a device ID reservation table. Please contact to reserve your device ID.
+// NOTE : To avoid DeviceId conflicts, YADOMS-TEAM manage a device ID reservation table. Please contact to reserve your device ID.
 // You can check that your device ID mach Xpl rules calling shared::xpl::CXplHelper::matchRules(shared::xpl::CXplHelper::kDeviceId, your_device_id)
 static const std::string& XplDeviceId("fakeplug");
 
