@@ -1,10 +1,10 @@
-IF(EXISTS ${GAMMU_ROOT}/libgammu/Debug/Gammu.lib)
+# User specific configuration
+include("CMakeListsUserConfig.txt")
+
+IF(EXISTS ${GAMMU_ROOT}/libgammu/Debug/Gammu.lib) #TODO : le Debug me gêne...
 
 	# include common plugin definitions
 	include("../YadomsPluginsCommon.cmake")
-
-	# User specific configuration
-	include("CMakeListsUserConfig.txt")
 
 	#########################################
 	## Place here all the plugin source files
@@ -16,7 +16,6 @@ IF(EXISTS ${GAMMU_ROOT}/libgammu/Debug/Gammu.lib)
 		GammuPhone.cpp
 		GammuPhoneConnection.h
 		GammuPhoneConnection.cpp
-		GammuSmsSendReport.hpp
 		IPhone.h
 		ISmsDialerConfiguration.h
 		PhoneException.hpp
@@ -63,5 +62,5 @@ IF(EXISTS ${GAMMU_ROOT}/libgammu/Debug/Gammu.lib)
 	PLUGIN_POST_BUILD_COPY_FILE(smsDialer icon.png)
 	PLUGIN_POST_BUILD_COPY_FILE(smsDialer fr.json)
 ELSE()
-	message(WARNING "SMS dialer plugin is not available. Gammo is Mssing")
+	message(WARNING "SMS dialer plugin is not available. Gammu is Mssing")
 ENDIF()
