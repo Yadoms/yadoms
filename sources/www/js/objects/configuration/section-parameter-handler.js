@@ -58,6 +58,8 @@ function SectionParameterHandler(objectToConfigure, i18nContext, paramName, cont
 }
 
 SectionParameterHandler.prototype.getDOMObject = function () {
+   var self = this;
+
    var input = "<div class=\"control-group configuration-section well\" >" +
                   "<div class=\"configuration-header\" >";
 
@@ -78,10 +80,14 @@ SectionParameterHandler.prototype.getDOMObject = function () {
                      "<script>\n" +
                         "$(\"#" + this.cbUuid + "\").change(function () {\n" +
                            "if ($(\"#" + this.cbUuid + "\").prop(\"checked\")) {\n" +
-                              "$(\"#" + this.uuid + "\").removeClass(\"hidden\");" +
+                              "\t$(\"#" + this.uuid + "\").removeClass(\"hidden\");\n" +
+                              "\t$(\"#" + this.uuid + "\").removeClass(\"has-warning\");\n" +
+                              "\t$(\"#" + this.uuid + "\").find(\"input,select,textarea\").addClass(\"enable-validation\");\n" +
                            "}\n" +
                            "else {\n" +
-                              "$(\"#" + this.uuid + "\").addClass(\"hidden\");" +
+                              "\t$(\"#" + this.uuid + "\").addClass(\"hidden\");\n" +
+                              "\t$(\"#" + this.uuid + "\").removeClass(\"has-warning\");\n" +
+                              "\t$(\"#" + this.uuid + "\").find(\"input,select,textarea\").removeClass(\"enable-validation\");\n" +
                            "}\n" +
                         "});\n" +
                      "</script>";
@@ -127,6 +133,5 @@ SectionParameterHandler.prototype.getCurrentConfiguration = function () {
    if (this.enableWithCheckBox) {
       self.configurationValues.checkbox = parseBool($("input#" + this.cbUuid).prop("checked"));
    }
-   debugger;
    return self.configurationValues;
 };

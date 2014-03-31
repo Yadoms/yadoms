@@ -334,8 +334,7 @@ function requestWidgets(page) {
  * Callback of the request widgets from the rest server
  * @returns {Function}
  */
-function requestWidgetsDone()
-{
+function requestWidgetsDone() {
    return function(data) {
       //console.log('requestWidgetsDone()' + (new Date() - startTime));
       //we parse the json answer
@@ -371,8 +370,7 @@ function requestWidgetsDone()
    };
 }
 
-function askForWidgetPackage(packageName)
-{
+function askForWidgetPackage(packageName) {
    //console.log('askForWidgetPackage(' + packageName + ')' + (new Date() - startTime));
    widgetPackages[packageName] = new WidgetPackage();
    //we ask for the view
@@ -386,8 +384,7 @@ function askForWidgetPackage(packageName)
  * @param packageName package concerned
  * @returns {Function}
  */
-function getWidgetViewDone(packageName)
-{
+function getWidgetViewDone(packageName) {
    return function( data ) {
       //console.log('getWidgetViewDone(' + packageName + ')' + (new Date() - startTime));
       $("div#templates").append(data);
@@ -402,8 +399,7 @@ function getWidgetViewDone(packageName)
    };
 }
 
-function askViewModelCtor(packageName)
-{
+function askViewModelCtor(packageName) {
    //console.log('askViewModelCtor(' + packageName + ')' + (new Date() - startTime));
    widgetViewModelCtor = null;
    try

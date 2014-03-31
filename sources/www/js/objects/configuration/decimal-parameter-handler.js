@@ -42,7 +42,7 @@ DecimalParameterHandler.prototype.getDOMObject = function () {
    //we provide a SpinEdit
    var input = "<input " +
                         "type=\"text\" " +
-                        "class=\"form-control\" " +
+                        "class=\"form-control enable-validation\" " +
                         "id=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\"" +
                         "required " +

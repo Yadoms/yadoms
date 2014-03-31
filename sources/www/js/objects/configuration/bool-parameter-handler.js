@@ -10,10 +10,14 @@ function BoolParameterHandler(i18nContext, paramName, content, currentValue) {
    //we set the current value of the default value or false
    if ((currentValue !== undefined) && (currentValue != null))
       this.value = parseBool(currentValue);
-   else if ((content.defaultValue !== undefined) && (content.defaultValue != null))
-      this.value = content.defaultValue;
-   else
-      this.value = false;
+   else if ((content.defaultValue !== undefined) && (content.defaultValue != null)) {
+      this.defaultValue = parseBool(content.defaultValue);
+      this.value = this.defaultValue;
+   }
+   else {
+      this.defaultValue = false;
+      this.value = this.defaultValue;
+   }
 
    this.name = content.name;
    this.uuid = createUUID();
@@ -24,7 +28,6 @@ function BoolParameterHandler(i18nContext, paramName, content, currentValue) {
 }
 
 BoolParameterHandler.prototype.getDOMObject = function () {
-
    var self = this;
 
    var s =
@@ -38,7 +41,7 @@ BoolParameterHandler.prototype.getDOMObject = function () {
                "<label id=\"" + self.uuid + "\"  data-content=\"" + self.description + "\" " +
                     "data-i18n=\"[data-content]" + self.i18nContext + self.paramName + ".description" + "\"" +
                "\">" +
-                  "<input type=\"checkbox\" ";
+                  "<input class=\"enable-validation\" type=\"checkbox\" ";
    if (this.value)
       s +=          "checked ";
    s +=           ">" +

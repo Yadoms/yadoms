@@ -31,7 +31,6 @@ function EnumParameterHandler(i18nContext, paramName, content, currentValue) {
 }
 
 EnumParameterHandler.prototype.getDOMObject = function () {
-   //we provide a SpinEdit
    var input = "<select " +
                         "class=\"form-control\" " +
                         "id=\"" + this.uuid + "\" " +

@@ -34,7 +34,7 @@ function IntParameterHandler(i18nContext, paramName, content, currentValue) {
 IntParameterHandler.prototype.getDOMObject = function () {
    var input = "<input " +
                         "type=\"text\" " +
-                        "class=\"form-control\" " +
+                        "class=\"form-control enable-validation\" " +
                         "id=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\"" +
                         "required " +
