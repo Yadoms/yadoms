@@ -91,6 +91,29 @@ namespace database {  namespace sqlite { namespace requesters {
       return adapter.getResults();
    }
 
+
+   
+   std::vector<boost::shared_ptr<database::entities::CDevice> > CSQLiteDeviceRequester::getDevicesMatchingKeyword(const std::string & keyword)
+   {
+      //sous requetes qui filtre les deviceID
+      CQuery subquery;
+      subquery.Select(CQUERY_DISTINCT(CKeywordTable::getDeviceIdColumnName())).
+               From(CKeywordTable::getTableName()).
+               Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
+
+      //requete qui lit les deviceId filtrés
+      CQuery qSelect;
+      qSelect. Select().
+         From(CDeviceTable::getTableName()).
+         Where(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, subquery) ;
+      
+      database::sqlite::adapters::CDeviceAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
+      return adapter.getResults();
+   }
+
+
+
    void CSQLiteDeviceRequester::removeDevice(int deviceId)
    {
       CQuery qDelete;

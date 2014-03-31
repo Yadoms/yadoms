@@ -30,6 +30,7 @@ namespace web { namespace rest { namespace service {
    {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CDeviceRestService::getAllDevices);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CDeviceRestService::getOneDevice);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("matchkeyword")("*"), CDeviceRestService::getDeviceWithKeyword);
    }
 
 
@@ -50,6 +51,23 @@ namespace web { namespace rest { namespace service {
       std::vector< boost::shared_ptr<database::entities::CDevice> > dvList = m_dataProvider->getDeviceRequester()->getDevices();
       return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CDevice>::SerializeCollection(dvList, hes, getRestKeyword()));
    }
+
+   web::rest::json::CJson CDeviceRestService::getDeviceWithKeyword(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   {
+      std::string keyword = "";
+      if(parameters.size()>2)
+      {
+         keyword = parameters[2];
+         web::rest::json::CDeviceEntitySerializer hes;
+         std::vector< boost::shared_ptr<database::entities::CDevice> > dvList = m_dataProvider->getDeviceRequester()->getDevicesMatchingKeyword(keyword);
+         return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CDevice>::SerializeCollection(dvList, hes, getRestKeyword()));
+      }
+      else
+      {
+         return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive keyword in url");
+      }
+   }
+
 
    /*
    web::rest::json::CJson CDeviceRestService::getDeviceLastAcquisition(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
