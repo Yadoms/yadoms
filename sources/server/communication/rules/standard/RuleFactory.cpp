@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "RuleFactory.h"
-#include "AcBasic.h"
 #include "SensorBasic.h"
 #include "X10Basic.h"
 
@@ -24,9 +23,6 @@ namespace communication { namespace rules { namespace standard {
    // IFactory implementation
    boost::shared_ptr<IRule> CRuleFactory::identifyRule(shared::xpl::CXplMessage & msg, CRuleInstanceManager & instanceManager)
    {
-      if(boost::iequals(msg.getMessageSchemaIdentifier().toString(), "ac.basic"))
-         return instanceManager.getRule<CAcBasic>();
-      
       if(boost::iequals(msg.getMessageSchemaIdentifier().toString(), "x10.basic"))
          return instanceManager.getRule<CX10Basic>();
          

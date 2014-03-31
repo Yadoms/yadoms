@@ -11,8 +11,8 @@ namespace communication { namespace rules { namespace rfxLanXpl {
       virtual ~CAcBasic();
       
       // IRule implementation
-      virtual const DeviceIdentifier GetDeviceAddressFromMessage(shared::xpl::CXplMessage & msg);
-      virtual MessageContent ExtractMessageData(shared::xpl::CXplMessage & msg);
+      virtual const DeviceIdentifier getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg);
+      virtual MessageContent extractMessageData(shared::xpl::CXplMessage & msg);
       virtual std::vector< boost::shared_ptr<database::entities::CKeyword> > identifyKeywords(shared::xpl::CXplMessage & msg);
       // [END] IRule implementation
      
