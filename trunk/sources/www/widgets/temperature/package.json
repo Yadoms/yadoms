@@ -19,69 +19,11 @@
       }
    },
    "configurationSchema": {
-      "offsetHour" : {
-        "type" : "int",
-        "defaultValue" : "0",
-         "maximumValue" : "23",
-         "minimumValue" : "0"
-      },
-      "prefixText" : {
-        "type" : "string",
-        "defaultValue" : ""
-      },
-      "booleanParameter" : {
-        "type" : "bool",
-        "defaultValue" : "false"
-      },
-      "decimalParameter" : {
-        "type" : "decimal",
-        "defaultValue" : "1.5"
-      },
-      "timeFormat" : {
-        "type" : "enum",
-        "values" : {
-           "12H" : "12 hours",
-           "24H" : "24 hours"
-        },
-        "defaultValue" : "12H"
-      },
-      "serialPortParameter" : {
-        "type" : "serialPort"
-      },
-      "deviceParameter" : {
-        "type" : "device"
-      },
-      "valueDeviceTupleParameter" : {
-        "type" : "valueDeviceTuple"
-      },
-      "pointCollection" : {
-        "type" : "listOf double"
-      },
-      "baseParameters" : {
-         "type" : "section",
-         "content" : {
-            "booleanParameter" : {
-               "type" : "bool",
-               "defaultValue" : "false"
-            },
-            "decimalParameter" : {
-               "type" : "decimal",
-               "defaultValue" : "1.5"
-            }
-         }
-      },
-      "advancedParameters" : {
-         "type" : "section",
-         "content" : {
-            "booleanParameter" : {
-               "type" : "bool",
-               "defaultValue" : "false"
-            },
-            "decimalParameter" : {
-               "type" : "decimal",
-               "defaultValue" : "1.5"
-            }
-         }
+      "device" : {
+         "name" : "TempSensor",
+         "description" : "Device which provide temperature",
+         "type" : "device",
+         "expectedKeyword" : "temp"
       }
    }
 }

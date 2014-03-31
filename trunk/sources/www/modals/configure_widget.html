@@ -83,7 +83,8 @@
             })
          },
          filter: function() {
-           return $(this).is(":visible");
+            //we check only control that have class enable-validation
+            return $(this).is(".enable-validation");
          }
       });
 

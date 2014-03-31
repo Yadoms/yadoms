@@ -44,6 +44,8 @@ ConfigurationHelper.createParameterHandler = function (objectToConfigure, i18nCo
    assert(content.type !== undefined, "type field must be found in " + paramName + " parameter");
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n " + paramName + " parameter");
 
+   //objectToConfigure will be use later ton check special types (ie: serialPort only for plugins and not for widgets)
+
    switch (content.type.toLowerCase()) {
       case "int" :
          return new IntParameterHandler(i18nContext, paramName, content, currentValue);
@@ -69,14 +71,12 @@ ConfigurationHelper.createParameterHandler = function (objectToConfigure, i18nCo
          return new SectionParameterHandler(objectToConfigure, i18nContext, paramName, content, currentValue);
          break;
 
+      case "device" :
+         return new DeviceParameterHandler(i18nContext, paramName, content, currentValue);
+         break;
+
       default :
-         //we search patterns
-         if (content.type.toLowerCase().match("listof")) {
-            return new ListOfParameterHandler(objectToConfigure, i18nContext, paramName, content, currentValue);
-         }
-         else {
-            throw Error("type " + content.type + " of parameter " + paramName + " is unsupported");
-         }
+         throw Error("type " + content.type + " of parameter " + paramName + " is unsupported");
          break;
    }
 };
