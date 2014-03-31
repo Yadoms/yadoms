@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/event/EventHandler.hpp>
 #include "ISmsDialerConfiguration.h"
 #include "GammuPhoneConnection.h"   //TODO en faire une interface
 #include "IPhone.h"
@@ -8,7 +7,7 @@
 //--------------------------------------------------------------
 /// \brief	Use GAMMU library (http://wammu.eu/) to dial with phone
 //--------------------------------------------------------------
-class CGammuPhone : protected shared::event::CEventHandler, public IPhone
+class CGammuPhone : public IPhone
 {
 public:
    //--------------------------------------------------------------
@@ -53,7 +52,12 @@ private:
    //--------------------------------------------------------------
    /// \brief	   Phone connection
    //--------------------------------------------------------------
-   CGammuPhoneConnection m_connection;
+   CGammuPhoneConnection m_connection; // TODO : voir si on ne peut pas se connecter qu'à chaque envoi
+
+   //--------------------------------------------------------------
+   /// \brief	   SMS Send Gammu status
+   //--------------------------------------------------------------
+   GSM_Error m_smsSendStatus;
 };
 
 

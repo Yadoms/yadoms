@@ -1,15 +1,7 @@
 #include "stdafx.h"
 #include <shared/Log.h>
 #include "GammuPhone.h"
-#include "GammuSmsSendReport.hpp"
 #include "PhoneException.hpp"
-
-
-// Event IDs
-enum
-{
-   kEvtSmsSent = shared::event::kUserFirstId,   // Always start from shared::event::CEventHandler::kUserFirstId
-};
 
 
 CGammuPhone::CGammuPhone(const ISmsDialerConfiguration& configuration)
@@ -97,42 +89,44 @@ void CGammuPhone::send(const std::string& targetPhoneNumer, const std::string& t
       // Send message
       handleGammuError(GSM_SendSMS(m_connection.getGsmContext(), &sms.SMS[partIndex]), "Sending SMS : Fail to send SMS.");
 
-      // Wait for network reply (GSM_ReadDevice manage a timeout)
-      // Result is returned by the sendSmsCallback function
-      GSM_ReadDevice(m_connection.getGsmContext(), true);
-
-      switch(waitForEvents(boost::posix_time::milliseconds(1000)))
+      // Set flag before calling SendSMS, some phones might give
+		// instant response
+      m_smsSendStatus = ERR_TIMEOUT;
+      
+      while (m_smsSendStatus == ERR_TIMEOUT)
       {
-      case kEvtSmsSent:
-         {
-            // SMS was sent, check report
-            CGammuSmsSendReport smsSendReport = popEvent<CGammuSmsSendReport>();
-            if (smsSendReport.getStatus() != 0)
-            {
-               // Error sending message
-               throw CPhoneException(std::string ("SMS send report : error ") + boost::lexical_cast<std::string>(smsSendReport.getStatus()));
-            }
-            YADOMS_LOG(info) << "SMS send successfully";
-            break;
-         }
-      case shared::event::kTimeout:
-         {
-            // Timeout sending SMS
-            throw CPhoneException("Sending SMS : timeout (no answer from Gammu)");
-            break;
-         }
-      default:
-         {
-            YADOMS_LOG(error) << "Unknown message id";
-            popEvent();    // We need to consume this unknown event
-            break;
-         }
+         // Wait for network reply
+         // Result is returned by the sendSmsCallback function
+         GSM_ReadDevice(m_connection.getGsmContext(), true);
+
+#undef sleep   // Need because Gammu defined 'sleep' as macro, that prevent to use boost::this_thread method
+         // Give a chance to stop (by boost::thread_interrupted exception)
+         boost::this_thread::sleep(boost::posix_time::milliseconds(0));
       }
+
+      if (m_smsSendStatus != ERR_NONE)
+      {
+         // Message sending failed
+         throw CPhoneException(std::string ("SMS send report : error "));
+      }
+
+      // Message sent OK
+      YADOMS_LOG(info) << "SMS sent successfully";
+      return;
    }
 }
 
 void CGammuPhone::sendSmsCallback(GSM_StateMachine *sm, int status, int MessageReference, void * user_data)
 {
-   CGammuSmsSendReport smsSendReport(status, MessageReference);
-   ((CGammuPhone*)user_data)->sendEvent<CGammuSmsSendReport>(kEvtSmsSent, smsSendReport);
+   CGammuPhone* instance = (CGammuPhone*)user_data;
+
+   if (status != 0)
+   {
+      YADOMS_LOG(error) << "SMS send report : error " << boost::lexical_cast<int>(status);
+      instance->m_smsSendStatus = ERR_UNKNOWN;
+   }
+   else
+   {
+      instance->m_smsSendStatus = ERR_NONE;
+   }
 }
