@@ -46,7 +46,7 @@ namespace communication {
                         rules::DeviceIdentifier deviceAddress = rule->getDeviceAddressFromMessage(xplMessage);
                         boost::shared_ptr<database::entities::CDevice> device = m_dataProvider->getDeviceRequester()->getDevice(deviceAddress, xplMessage.getMessageSchemaIdentifier().toString(), xplMessage.getSource().toString());
 
-                        //create keyword
+                        //create message keywords in database
                         std::vector< boost::shared_ptr<database::entities::CKeyword> > allKeywords = rule->identifyKeywords(xplMessage);
                         BOOST_FOREACH(boost::shared_ptr<database::entities::CKeyword> keyword, allKeywords)
                         {

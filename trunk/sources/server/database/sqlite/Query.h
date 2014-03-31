@@ -10,6 +10,8 @@ namespace sqlite {
 
    #define CQUERY_OP_EQUAL "="
    #define CQUERY_OP_LIKE " LIKE "
+   #define CQUERY_DISTINCT(_x) "DISTINCT(" +  _x  + ")"
+   #define CQUERY_OP_IN " IN "
    #define CQUERY_OP_SUP ">"
    #define CQUERY_OP_INF "<"
    #define CQUERY_OP_NOT_EQUAL "<>"

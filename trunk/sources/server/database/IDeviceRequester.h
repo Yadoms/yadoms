@@ -32,6 +32,14 @@ namespace database {
       virtual std::vector<boost::shared_ptr<entities::CDevice> > getDevices() = 0;
 
       //--------------------------------------------------------------
+      /// \brief           List all devices which supports the keyword
+      /// \param [in]      keyword   The keyword to check
+      /// \return          List of devices which supports the keyword
+      /// \throw           shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevicesMatchingKeyword(const std::string & keyword) = 0;
+
+      //--------------------------------------------------------------
       /// \brief           Remove device 
       /// \param [in] deviceId   Device  Id
       /// \throw           shared::exception::CEmptyResult if fails

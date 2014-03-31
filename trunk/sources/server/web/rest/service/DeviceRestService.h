@@ -19,6 +19,7 @@ namespace web { namespace rest { namespace service {
       static const std::string & getRestKeyword();
       web::rest::json::CJson getOneDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
       web::rest::json::CJson getAllDevices(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
+      web::rest::json::CJson getDeviceWithKeyword(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
       //web::rest::json::CJson getDeviceLastAcquisition(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
 
    private:

@@ -34,6 +34,7 @@ class CSQLiteRequester;
                virtual boost::shared_ptr<database::entities::CDevice> getDevice(int deviceId);
                virtual boost::shared_ptr<entities::CDevice> getDevice(const std::string & address, const std::string & protocol, const std::string & hardwareIdentifier);
                virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevices();
+               virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevicesMatchingKeyword(const std::string & keyword);
                virtual void removeDevice(int deviceId);
                // [END] IDeviceRequester implementation
 
