@@ -22,100 +22,48 @@
 // Example :
 //
 //   Input :
-//                DECLARE_ENTITY_CLASS(Acquisition,
-//                   ((Id)(int)(0))
-//                   ((Source)(std::string)(""))
-//                   ((Keyword)(std::string)(""))
-//                   ((Value)(std::string)(""))
-//                   ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
-//                   )
+//            DECLARE_ENTITY_CLASS(Widget,
+//               ((Id)(int)(0))
+//               ((IdPage)(int)(0))
+//               ((Name)(std::string)(""))
+//               ((SizeX)(int)(1))
+//               ((SizeY)(int)(1))
+//               ((PositionX)(int)(1))
+//               ((PositionY)(int)(1))
+//               ((Configuration)(std::string)(""))
+//               )
 //
 //    Ouptut :
-//                class CAcquisition
-//                {
-//                public: 
-//                    CAcquisition()
-//                    {
-//                        m_Id_filled = false;
-//                        m_Id = 0 ;
-//                        m_Source_filled = false;
-//                        m_Source = "" ;
-//                        m_Keyword_filled = false;
-//                        m_Keyword = "" ;
-//                        m_Value_filled = false;
-//                        m_Value = "" ;
-//                        m_Date_filled = false;
-//                        m_Date = boost::posix_time::second_clock::universal_time() ;
-//                    }
-//                    virtual ~CAcquisition()
-//                    {
-//                    }
-//             
-//                public: 
-//                   const int  getId() const { return m_Id; }
-//                   const bool isIdFilled() const { return m_Id_filled; }
-//                   CAcquisition& setId(const int  newValue)
-//                   {
-//                      m_Id = newValue;
-//                      m_Id_filled = true;
-//                      return *this;
-//                   }
-//             
-//                private: 
-//                   int  m_Id;
-//                   bool m_Id_filled;
-//             
-//                public: 
-//                   const std::string  getSource() const { return m_Source; }
-//                   const bool isSourceFilled() const { return m_Source_filled; }
-//                   CAcquisition& setSource(const std::string  newValue)
-//                   {
-//                      m_Source = newValue;
-//                      m_Source_filled = true;
-//                      return *this;
-//                   }
-//                private: 
-//                   std::string  m_Source;
-//                   bool m_Source_filled;
-//                public: 
-//                   const std::string  getKeyword() const { return m_Keyword; }
-//                   const bool isKeywordFilled() const { return m_Keyword_filled; }
-//                   CAcquisition& setKeyword(const std::string  newValue)
-//                   {
-//                      m_Keyword = newValue;
-//                      m_Keyword_filled = true;
-//                      return *this;
-//                   }
-//                private: 
-//                   std::string  m_Keyword;
-//                   bool m_Keyword_filled;
-//                public: 
-//                   const std::string  getValue() const { return m_Value; }
-//                   const bool isValueFilled() const { return m_Value_filled; }
-//                   CAcquisition& setValue(const std::string  newValue)
-//                   {
-//                      m_Value = newValue;
-//                      m_Value_filled = true;
-//                      return *this;
-//                   }
-//                private: 
-//                   std::string  m_Value;
-//                   bool m_Value_filled;
-//                public: 
-//                   const boost::posix_time::ptime  getDate() const { return m_Date; }
-//                   const bool isDateFilled() const { return m_Date_filled; }
-//                   CAcquisition& setDate(const boost::posix_time::ptime  newValue)
-//                   {
-//                      m_Date = newValue;
-//                      m_Date_filled = true;
-//                      return *this;
-//                   }
-//                private: 
-//                   boost::posix_time::ptime  m_Date;
-//                   bool m_Date_filled;
+//                
+//                class CWidget {
+//                	public: 
+//                      
+//                      CWidget() 
+//                      :  Id (0 ) , 
+//                         IdPage (0 ) , 
+//                         Name ("" ) , 
+//                         SizeX (1 ) , 
+//                         SizeY (1 ) , 
+//                         PositionX (1 ) , 
+//                         PositionY (1 ) , 
+//                         Configuration ("" ) 
+//                      {
+//                	   }
+//                	
+//                      virtual ~CWidget() 
+//                      {
+//                	   }
+//                	public: 
+//                      CField< int  > Id;
+//                	   CField< int  > IdPage;
+//                	   CField< std::string  > Name;
+//                	   CField< int  > SizeX;
+//                	   CField< int  > SizeY;
+//                	   CField< int  > PositionX;
+//                	   CField< int  > PositionY;
+//                	   CField< std::string  > Configuration;
 //                };
-
-
+//                
 
 #define ENTITY_COLUMN_NAME   0
 #define ENTITY_COLUMN_TYPE   1
@@ -131,7 +79,6 @@
 /// \brief Macro used to declare the entity field filled status
 //
 #define ENTITY_FIELD(_fieldName) _fieldName
-//#define ENTITY_FIELD(_fieldName) BOOST_PP_CAT(m_, _fieldName)
 
 
 //
@@ -144,11 +91,7 @@
 //
 #define DELCARE_FIELD(className, fieldType, fieldName) \
    CField< fieldType > ENTITY_FIELD(fieldName);
-   /*
-   public:\
-      const CField< fieldType > fieldName() const {return ENTITY_FIELD(fieldName); } \
-   private:\
-      CField< fieldType > ENTITY_FIELD(fieldName);\*/
+
       
 //
 /// \brief Macro which initialize a field filled status to false (the field is not yet filled)

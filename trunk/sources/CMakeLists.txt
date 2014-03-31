@@ -239,8 +239,6 @@ set(YADOMS_SRC
 	server/communication/rules/RulerFactory.cpp
 	server/communication/rules/standard/RuleFactory.h
 	server/communication/rules/standard/RuleFactory.cpp
-	server/communication/rules/standard/AcBasic.h
-	server/communication/rules/standard/AcBasic.cpp
 	server/communication/rules/standard/X10Basic.h
 	server/communication/rules/standard/X10Basic.cpp
 	server/communication/rules/standard/SensorBasic.h

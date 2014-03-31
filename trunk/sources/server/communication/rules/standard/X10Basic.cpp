@@ -11,12 +11,12 @@ namespace communication { namespace rules { namespace standard {
    {
    }
 
-   const DeviceIdentifier CX10Basic::GetDeviceAddressFromMessage(shared::xpl::CXplMessage & msg)
+   const DeviceIdentifier CX10Basic::getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg)
    {
       return "";
    }
 
-   MessageContent CX10Basic::ExtractMessageData(shared::xpl::CXplMessage & msg)
+   MessageContent CX10Basic::extractMessageData(shared::xpl::CXplMessage & msg)
    {
       MessageContent data;
       return data;

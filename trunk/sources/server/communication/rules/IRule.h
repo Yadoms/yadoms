@@ -8,6 +8,14 @@ namespace communication { namespace rules {
    typedef std::string DeviceIdentifier;
    typedef std::map<std::string, std::string> MessageContent;
 
+   //------------------------------------
+   ///\brief   A rule is an interface between devices and yadoms.
+   ///         A device send XplMessage to yadoms, then the Rule read it and parse data
+   ///         A widget from GUI wish to send a command to the device, then ask the Rule to prepare the message to send
+   ///
+   /// The aim is to parse and create XplMessage used to communicate with device. 
+   /// In fact, some devices may need to have specific writing rules (for example, with RfxLanXpl firmware, XplMessages need to fill some fields depending on the protocol)
+   //------------------------------------
    class IRule
    {
    public:
@@ -18,14 +26,14 @@ namespace communication { namespace rules {
       ///\param [in] msg the message from which extract the device address
       ///\return the device identifier
       //------------------------------------
-      virtual const DeviceIdentifier GetDeviceAddressFromMessage(shared::xpl::CXplMessage & msg) = 0;
+      virtual const DeviceIdentifier getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg) = 0;
 
       //------------------------------------
       ///\brief Provide all the usefull <key, value> contained in message
       ///\param [in] msg the message from which extract the data
       ///\return the <key, value> contained in message
       //------------------------------------
-      virtual MessageContent ExtractMessageData(shared::xpl::CXplMessage & msg) = 0;
+      virtual MessageContent extractMessageData(shared::xpl::CXplMessage & msg) = 0;
 
       //------------------------------------
       ///\brief Identify keywords inside message

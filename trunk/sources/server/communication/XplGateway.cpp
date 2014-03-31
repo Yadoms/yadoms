@@ -43,7 +43,7 @@ namespace communication {
                      if(rule.get() != NULL)
                      {
                         //create the device in database
-                        rules::DeviceIdentifier deviceAddress = rule->GetDeviceAddressFromMessage(xplMessage);
+                        rules::DeviceIdentifier deviceAddress = rule->getDeviceAddressFromMessage(xplMessage);
                         boost::shared_ptr<database::entities::CDevice> device = m_dataProvider->getDeviceRequester()->getDevice(deviceAddress, xplMessage.getMessageSchemaIdentifier().toString(), xplMessage.getSource().toString());
 
                         //create keyword
@@ -59,7 +59,7 @@ namespace communication {
                         msgToInsert.Date = boost::posix_time::second_clock::universal_time();
                         msgToInsert.DeviceId = device->Id();
 
-                        rules::MessageContent data = rule->ExtractMessageData(xplMessage);
+                        rules::MessageContent data = rule->extractMessageData(xplMessage);
                         std::vector<database::entities::CMessageContent> msgContentEntries;
 
                         rules::MessageContent::iterator i;

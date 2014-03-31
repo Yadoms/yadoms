@@ -11,12 +11,12 @@ namespace communication { namespace rules { namespace rfxLanXpl {
    {
    }
 
-   const DeviceIdentifier CSensorBasic::GetDeviceAddressFromMessage(shared::xpl::CXplMessage & msg)
+   const DeviceIdentifier CSensorBasic::getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg)
    {
       return msg.getBodyValue("device");
    }
 
-   MessageContent CSensorBasic::ExtractMessageData(shared::xpl::CXplMessage & msg)
+   MessageContent CSensorBasic::extractMessageData(shared::xpl::CXplMessage & msg)
    {
       MessageContent data;
       data.insert(std::make_pair(msg.getBodyValue("type"), msg.getBodyValue("current")));
