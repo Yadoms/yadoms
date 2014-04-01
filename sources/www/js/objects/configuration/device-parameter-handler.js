@@ -26,7 +26,7 @@ function DeviceParameterHandler(i18nContext, paramName, content, currentValue) {
    //we async ask for device list that support expectedKeyword
    $.getJSON("/rest/device/matchkeyword/" + self.expectedKeyword)
       .done(populateDeviceList(self))
-      .fail(function() {notifyError("Unable to get device list that match keyword " + slef.expectedKeyword)});
+      .fail(function() {notifyError("Unable to get device list that match keyword " + self.expectedKeyword);});
 }
 
 function populateDeviceList(handler) {

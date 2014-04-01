@@ -66,6 +66,9 @@ function initializePageEvents(page) {
    //we listen for click event with no code inside to help event transmission until exit customization
    page.$tab.bind('click', function (e) {
    } );
+
+   //TODO mettre le 1000 en configuration
+   setInterval(updateWidgets, 1000);
 }
 
 function initializeWidgetEvents(widget) {
@@ -545,7 +548,7 @@ function createGridsterWidget(widget) {
                "<button type=\"button\" class=\"btn btn-default delete-widget\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
             "</div>" +
          "</div>" +
-         "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + widget.name + "-template', data: data }\"/>" +
+         "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + widget.name + "-template' }\"/>" +
          "</li>", widget.sizeX, widget.sizeY, widget.positionX, widget.positionY);
 }
 
@@ -658,4 +661,37 @@ function tabClick(pageId) {
    {
       requestWidgets(page);
    }
+}
+
+function updateWidgets() {
+   //we browse each widget instance
+   var page = getCurrentPage();
+   if (page == null)
+      return;
+
+   $.each(page.widgets, function(widgetIndex, widget) {
+      //we ask which devices are needed for this widget instance
+      var list = widget.viewModel.getDevicesToListen();
+      $.each(list, function(deviceIndex, device) {
+         //foreach device we ask for last values
+         $.getJSON("/rest/device/" + device  + "/lastdata")
+            .done(dispatchDeviceDataToWidget(device, widget))
+            .fail(function() {notifyError("Unable to get device data");});
+      });
+   });
+}
+
+function dispatchDeviceDataToWidget(device, widget) {
+   return function(data) {
+      //we parse the json answer
+      if (data.result != "true")
+      {
+         notifyError("Error during requesting device last data");
+         return;
+      }
+
+      //we disptach the device to the widget if the widget support the method
+      if (widget.viewModel.dispatch !== undefined)
+         widget.viewModel.dispatch(device, data.data);
+   };
 }

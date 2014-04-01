@@ -13,7 +13,7 @@
     padding-left: 10%;
     text-align: right;
     float:left;
-    font-size:3.0em;
+    font-size:2.6em;
 }
 
 .unit {
@@ -22,7 +22,7 @@
     float:left;
 }
 
-.rssi {
+.battery {
     clear: both;
     font-size:0.7em;
     margin-right: 10px;
