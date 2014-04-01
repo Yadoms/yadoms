@@ -18,12 +18,12 @@ namespace web { namespace rest { namespace json {
 
       std::vector<std::map<std::string, std::string> >::const_iterator i;
 
-      for(i=data.begin(); i!=data.end(); i++)
+      for(i=data.begin(); i!=data.end(); ++i)
       {
          CJson result;
 
          std::map<std::string, std::string>::const_iterator fieldIterator;
-         for(fieldIterator = i->begin(); fieldIterator != i->end(); fieldIterator++)
+         for(fieldIterator = i->begin(); fieldIterator != i->end(); ++fieldIterator)
          {
             result.put(fieldIterator->first, fieldIterator->second);
          }

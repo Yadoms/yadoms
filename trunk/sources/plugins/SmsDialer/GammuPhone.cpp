@@ -118,7 +118,7 @@ void CGammuPhone::send(const std::string& targetPhoneNumer, const std::string& t
 
 void CGammuPhone::sendSmsCallback(GSM_StateMachine *sm, int status, int MessageReference, void * user_data)
 {
-   CGammuPhone* instance = (CGammuPhone*)user_data;
+   CGammuPhone* instance = static_cast< CGammuPhone* > user_data;
 
    if (status != 0)
    {

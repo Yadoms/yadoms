@@ -90,7 +90,7 @@ namespace web { namespace rest { namespace service {
             web::rest::json::CJson objectList;
             std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string> >::const_iterator i;
 
-            for(i=allData.begin(); i!=allData.end(); i++)
+            for(i=allData.begin(); i!=allData.end(); ++i)
             {
                web::rest::json::CJson result;
                result.put("date", web::rest::json::CJsonDate::toString(i->get<0>()));

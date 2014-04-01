@@ -47,8 +47,8 @@ namespace adapters {
          int nCols = sqlite3_column_count(pStatement);
          if (nCols) 
          {
-            int rc;
-            while ((rc = sqlite3_step(pStatement)) == SQLITE_ROW) 
+           
+            while (sqlite3_step(pStatement) == SQLITE_ROW) 
             {
                //check only one column is returned by query
                //for(int i=0; i<column ; i++)
