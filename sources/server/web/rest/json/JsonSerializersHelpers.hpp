@@ -156,8 +156,8 @@
 
 
 #define JSON_NO_CONV(x) x
-#define JSON_FROM_DATE(x) boost::posix_time::time_from_string(x)
-#define JSON_TO_DATE(x) boost::posix_time::to_simple_string(x)
+#define JSON_FROM_DATE(x) CJsonDate::fromString(x)
+#define JSON_TO_DATE(x) CJsonDate::toString(x)
 #define JSON_FROM_PTREE(x) CJsonSerializer::serialize(x)
 #define JSON_TO_PTREE(x) CJsonSerializer::deserialize(x)
 

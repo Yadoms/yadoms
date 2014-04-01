@@ -91,6 +91,15 @@ namespace adapters {
    }
 
    //--------------------------------------------------------------
+   ///\brief  Override method for type = std::string (use specific sqlite3 function)
+   //--------------------------------------------------------------
+   template<>
+   inline boost::tuples::null_type CSQLite3Extension::extractData(sqlite3_stmt * pStatement, int nCol)
+   {
+      return boost::tuples::null_type();
+   }
+
+   //--------------------------------------------------------------
    ///\brief  Override method for type = bool (use specific sqlite3 function)
    //--------------------------------------------------------------
    template<>
@@ -105,7 +114,7 @@ namespace adapters {
    template<>
    inline boost::posix_time::ptime CSQLite3Extension::extractData(sqlite3_stmt * pStatement, int nCol)
    {
-      return boost::posix_time::time_from_string(extractData<std::string>(pStatement, nCol));
+      return boost::posix_time::from_iso_string(extractData<std::string>(pStatement, nCol));
    }
 
 

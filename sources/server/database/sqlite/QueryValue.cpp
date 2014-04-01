@@ -14,9 +14,20 @@ namespace sqlite {
    {
    }
 
-   CQueryValue::CQueryValue(const std::string & value) 
+   CQueryValue::CQueryValue(const std::string & value, bool secure /*= true*/) 
    { 
-      initialize("'" + value + "'");
+      if(secure)
+         initialize("'" + value + "'");
+      else
+         initialize(value);
+   }
+
+   CQueryValue::CQueryValue(const boost::posix_time::ptime & anyValue, bool secure)
+   {
+      if(secure)
+         initialize("'" + boost::posix_time::to_iso_string(anyValue) + "'");
+      else
+         initialize(boost::posix_time::to_iso_string(anyValue));
    }
 
    CQueryValue::CQueryValue(const bool value) 

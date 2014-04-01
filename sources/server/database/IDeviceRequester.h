@@ -40,6 +40,13 @@ namespace database {
       virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevicesMatchingKeyword(const std::string & keyword) = 0;
 
       //--------------------------------------------------------------
+      /// \brief                 Get the device last data
+      /// \param [in] deviceId   Device Id
+      /// \throw                 CInvalidParameter if deviceId is unknown
+      //--------------------------------------------------------------
+      virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string>  > getDeviceLastData(int deviceId) = 0;
+
+      //--------------------------------------------------------------
       /// \brief           Remove device 
       /// \param [in] deviceId   Device  Id
       /// \throw           shared::exception::CEmptyResult if fails

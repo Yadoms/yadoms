@@ -199,32 +199,6 @@ void CSupervisor::doWork()
 #endif
       // ######################### [END] Task manager #########################
 
-      // ######################### Web server #########################
-      const std::string webServerIp = m_startupOptions.getWebServerIPAddress();
-      const std::string webServerPort = boost::lexical_cast<std::string>(m_startupOptions.getWebServerPortNumber());
-      const std::string webServerPath = m_startupOptions.getWebServerInitialPath();
-      const std::string webServerWidgetPath = m_startupOptions.getWidgetsPath();
-
-      boost::shared_ptr<web::IWebServer> webServer(new web::webem::CWebServer(webServerIp, webServerPort, webServerPath, "/rest/"));
-      webServer->configureAlias("widget", webServerWidgetPath);
-      boost::shared_ptr<web::IRestHandler> restHanlder = webServer->getRestHandler();
-      if(restHanlder.get() != NULL)
-      {
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginRestService(pDataProvider, pluginManager)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDeviceRestService(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPageRestService(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CWidgetRestService(pDataProvider, webServerPath)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfigurationRestService(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLoggerRestService(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLoggerRestService(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CGeneralRestService()));
-      }
-
-      boost::shared_ptr<web::CWebServerManager> webServerManager(new web::CWebServerManager(webServer));
-      webServerManager->start();
-      
-      // ######################### [END] Web server #########################
-
 
       // ######################### Xpl Hub #########################
       //we start xpl hub only if it's necessary
@@ -250,6 +224,34 @@ void CSupervisor::doWork()
       xplGateway.start();
 
       // ######################### [END] Xpl Logger #########################
+
+
+      // ######################### Web server #########################
+      const std::string webServerIp = m_startupOptions.getWebServerIPAddress();
+      const std::string webServerPort = boost::lexical_cast<std::string>(m_startupOptions.getWebServerPortNumber());
+      const std::string webServerPath = m_startupOptions.getWebServerInitialPath();
+      const std::string webServerWidgetPath = m_startupOptions.getWidgetsPath();
+
+      boost::shared_ptr<web::IWebServer> webServer(new web::webem::CWebServer(webServerIp, webServerPort, webServerPath, "/rest/"));
+      webServer->configureAlias("widget", webServerWidgetPath);
+      boost::shared_ptr<web::IRestHandler> restHanlder = webServer->getRestHandler();
+      if(restHanlder.get() != NULL)
+      {
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginRestService(pDataProvider, pluginManager)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDeviceRestService(pDataProvider, xplGateway)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPageRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CWidgetRestService(pDataProvider, webServerPath)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfigurationRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLoggerRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLoggerRestService(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CGeneralRestService()));
+      }
+
+      boost::shared_ptr<web::CWebServerManager> webServerManager(new web::CWebServerManager(webServer));
+      webServerManager->start();
+      
+      // ######################### [END] Web server #########################
+
 
       YADOMS_LOG(info) << "Supervisor is running...";
       try

@@ -20,7 +20,7 @@ namespace sqlite {
       /// \brief        Constructor
       /// \param value  A string used as value
       //
-      CQueryValue(const std::string & value);
+      CQueryValue(const std::string & value, bool secure = true);
 
       //
       /// \brief        Constructor
@@ -33,10 +33,20 @@ namespace sqlite {
       /// \param anyValue  Any type of value used. Convert it with lexical_cast
       //
       template<class T>
-      CQueryValue(const T & anyValue)
+      CQueryValue(const T & anyValue, bool secure = true)
       {
-         initialize("'" + boost::lexical_cast<std::string>(anyValue) + "'");
+         if(secure)
+            initialize("'" + boost::lexical_cast<std::string>(anyValue) + "'");
+         else
+            initialize(boost::lexical_cast<std::string>(anyValue));
       }
+
+      //
+      /// \brief           Constructor
+      /// \param anyValue  Any type of value used. Convert it with lexical_cast
+      //
+      CQueryValue(const boost::posix_time::ptime & anyValue, bool secure = true);
+
 
       //
       /// \brief  Destructor
@@ -92,6 +102,9 @@ namespace sqlite {
       //
       bool m_bIsDefined;
    };
+
+
+
 
 } //namespace sqlite
 } //namespace database 
