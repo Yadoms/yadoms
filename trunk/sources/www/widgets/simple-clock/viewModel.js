@@ -48,7 +48,13 @@ function SimpleClockViewModel() {
    this.configurationChanged = function() {
 
    };
-};
+
+   this.getDevicesToListen = function() {
+      //we are not linked to any device
+      return new Array();
+   }
+
+ };
 
 /**
  * Update the time onto the widget

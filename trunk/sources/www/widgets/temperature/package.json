@@ -20,7 +20,7 @@
    },
    "configurationSchema": {
       "device" : {
-         "name" : "TempSensor",
+         "name" : "Temp Sensor",
          "description" : "Device which provide temperature",
          "type" : "device",
          "expectedKeyword" : "temp"
