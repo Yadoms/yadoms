@@ -148,7 +148,8 @@ namespace communication {
 
             if(message.getCallback().get() != NULL)
             {
-               message.getCallback()->sendResult(command::CResult::CreateSuccess());
+               command::CResult result = command::CResult::CreateSuccess();
+               message.getCallback()->sendResult(result);
             }
          }
          else
@@ -157,7 +158,7 @@ namespace communication {
             YADOMS_LOG(error) << errorMessage;
             if(message.getCallback().get() != NULL)
             {
-               message.getCallback()->sendResult(command::CResult::CreateError(errorMessage));
+               command::CResult result = command::CResult::CreateError(errorMessage);               message.getCallback()->sendResult(result);
             }
          }
 
@@ -169,7 +170,7 @@ namespace communication {
             
          if(message.getCallback().get() != NULL)
          {
-            message.getCallback()->sendResult(command::CResult::CreateError(errorMessage));
+            command::CResult result = command::CResult::CreateError(errorMessage);            message.getCallback()->sendResult(result);
          }
       }  
    }
