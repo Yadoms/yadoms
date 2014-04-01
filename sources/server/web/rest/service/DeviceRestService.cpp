@@ -7,15 +7,15 @@
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/json/JsonGenericSerializer.h"
 #include "web/rest/json/JsonDate.h"
-
+#include "communication/command/DeviceCommand.h"
 
 namespace web { namespace rest { namespace service {
 
    std::string CDeviceRestService::m_restKeyword= std::string("device");
 
 
-   CDeviceRestService::CDeviceRestService(boost::shared_ptr<database::IDataProvider> dataProvider, shared::event::CEventHandler & eventHandler)
-      :m_dataProvider(dataProvider), m_eventHandler(eventHandler)
+   CDeviceRestService::CDeviceRestService(boost::shared_ptr<database::IDataProvider> dataProvider, shared::event::CEventHandler & eventHandler, int sendMessageEventIdentifier)
+      :m_dataProvider(dataProvider), m_eventHandler(eventHandler), m_sendMessageEventIdentifier(sendMessageEventIdentifier)
    {
    }
 
@@ -104,7 +104,7 @@ namespace web { namespace rest { namespace service {
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive widget id in utrl");
+            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive widget id in url");
          }
       }
       catch(std::exception &ex)
@@ -121,40 +121,48 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         
-         return web::rest::json::CJsonResult::GenerateSuccess();
-      }
-      catch(std::exception &ex)
-      {
-         return web::rest::json::CJsonResult::GenerateError(ex);
-      }
-      catch(...)
-      {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in sending command to device");
-      }
+         if(parameters.size()>1)
+         {
+            //get device id from URL
+            int deviceId = boost::lexical_cast<int>(parameters[1]);
+
+            //create the command data (all request content values are stored into a single map
+            communication::command::CDeviceCommand::CommandData commandData;
+            BOOST_FOREACH(const web::rest::json::CJson::value_type &v, requestContent)
+            {
+               commandData.insert(std::make_pair(v.first.data(), v.second.data()));
+            }
+
+            //create the command
+            boost::shared_ptr<communication::command::CCallback> resultHandler(new communication::command::CCallback);
+            communication::command::CDeviceCommand command(deviceId, commandData, resultHandler);
+
+            //send the command
+            m_eventHandler.sendEvent(m_sendMessageEventIdentifier, command);
+
+            //wait for a result
+            communication::command::CResult result = resultHandler->waitForResult(boost::posix_time::milliseconds(2000));
+
+            //reply to rest caller
+            if(result.isSuccess())
+               return web::rest::json::CJsonResult::GenerateSuccess();
+            else
+               return web::rest::json::CJsonResult::GenerateError(result.getErrorMessage());
+         }
+         else
+         {
+            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not device widget id in url");
+         }
    }
-
-
-
-   /*
-   web::rest::json::CJson CDeviceRestService::getDeviceLastAcquisition(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   catch(std::exception &ex)
    {
-   std::string objectId = "";
-   if(parameters.size()>1)
-   objectId = parameters[1];
-
-   boost::shared_ptr<database::entities::CDevice> deviceFound =  m_dataProvider->getDeviceRequester()->getDevice(boost::lexical_cast<int>(objectId));
-   if(deviceFound.get() != NULL)
+      return web::rest::json::CJsonResult::GenerateError(ex);
+   }
+   catch(...)
    {
-   web::rest::json::CAcquisitionEntitySerializer hes;
-   std::vector< boost::shared_ptr<database::entities::CAcquisition> > allAcq =  m_dataProvider->getAcquisitionRequester()->getLastAcquisitions(deviceFound->getDataSource());
-   return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CAcquisition>::SerializeCollection(allAcq, hes, CAcquisitionRestService::getRestKeyword()));
+      return web::rest::json::CJsonResult::GenerateError("unknown exception in sending command to device");
    }
-   else
-   return web::rest::json::CJsonResult::GenerateError("Device not found");
-   }
-   */
-
+}
 
 } //namespace service
 } //namespace rest

@@ -235,6 +235,12 @@ set(YADOMS_SRC
 	
 	server/communication/XplGateway.h
 	server/communication/XplGateway.cpp	
+	server/communication/command/DeviceCommand.h
+	server/communication/command/DeviceCommand.cpp	
+	server/communication/command/Result.h
+	server/communication/command/Result.cpp	
+	server/communication/command/Callback.h
+	server/communication/command/Callback.cpp	
 	server/communication/rules/IRule.h
 	server/communication/rules/IFactory.h
 	server/communication/rules/RuleInstanceManager.hpp
@@ -267,6 +273,7 @@ source_group(server\\web\\rest\\service  server/web/rest/service/*.*)
 source_group(server\\task  server/task/*.*)
 source_group(server\\task\\update  server/task/update/*.*)
 source_group(server\\communication  server/communication/*.*)
+source_group(server\\communication\\command  server/communication/command/*.*)
 source_group(server\\communication\\rules  server/communication/rules/*.*)
 source_group(server\\communication\\rules\\standard  server/communication/rules/standard/*.*)
 source_group(server\\communication\\rules\\rfxLanXpl  server/communication/rules/rfxLanXpl/*.*)

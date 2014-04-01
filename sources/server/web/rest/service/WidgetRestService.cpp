@@ -85,7 +85,7 @@ namespace web { namespace rest { namespace service {
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive widget id in utrl");
+            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive widget id in url");
          }
       }
       catch(std::exception &ex)
@@ -157,7 +157,7 @@ namespace web { namespace rest { namespace service {
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive widget id in utrl");
+            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive widget id in url");
          }
       }
       catch(std::exception &ex)
@@ -183,7 +183,7 @@ namespace web { namespace rest { namespace service {
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive widget id in utrl");
+            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive widget id in url");
          }
       }
       catch(std::exception &ex)
