@@ -21,7 +21,7 @@ namespace web { namespace rest {
       //--------------------------------------   
       ///\brief         dispatch url 
       ///\param [in]    requestType       the type of request, usually GET, PUT, POST or DELETE
-      ///\param [in]    url               the utrl keywords (each entry is url split with /)
+      ///\param [in]    url               the url keywords (each entry is url split with /)
       ///\param [in]    requestContent    request content (put, post or delete request)
       ///\return        the data in Json format
       //-------------------------------------- 

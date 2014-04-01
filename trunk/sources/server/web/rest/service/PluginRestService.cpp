@@ -80,7 +80,7 @@ namespace web { namespace rest { namespace service {
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id in utrl");
+            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id in url");
          }
       }
       catch(std::exception &ex)
@@ -155,7 +155,7 @@ namespace web { namespace rest { namespace service {
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id in utrl");
+            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id in url");
          }
       }
       catch(std::exception &ex)

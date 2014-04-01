@@ -9,7 +9,7 @@ namespace web { namespace rest { namespace service {
    class CDeviceRestService : public IRestService
    {
    public:
-      CDeviceRestService(boost::shared_ptr<database::IDataProvider> dataProvider, shared::event::CEventHandler & eventHandler);
+      CDeviceRestService(boost::shared_ptr<database::IDataProvider> dataProvider, shared::event::CEventHandler & eventHandler, int sendMessageEventIdentifier);
       virtual ~CDeviceRestService();
 
    public:
@@ -27,7 +27,9 @@ namespace web { namespace rest { namespace service {
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;
       static std::string m_restKeyword;
+
       shared::event::CEventHandler & m_eventHandler;
+      int m_sendMessageEventIdentifier;
    };
 
 
