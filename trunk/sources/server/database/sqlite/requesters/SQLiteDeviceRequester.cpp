@@ -5,6 +5,7 @@
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "database/sqlite/adapters/SQLiteDatabaseAdapters.h"
+#include "database/sqlite/adapters/MultipleValueAdapter.hpp"
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 
@@ -92,27 +93,49 @@ namespace database {  namespace sqlite { namespace requesters {
    }
 
 
-   
+
    std::vector<boost::shared_ptr<database::entities::CDevice> > CSQLiteDeviceRequester::getDevicesMatchingKeyword(const std::string & keyword)
    {
       //sous requetes qui filtre les deviceID
       CQuery subquery;
       subquery.Select(CQUERY_DISTINCT(CKeywordTable::getDeviceIdColumnName())).
-               From(CKeywordTable::getTableName()).
-               Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
+         From(CKeywordTable::getTableName()).
+         Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
 
       //requete qui lit les deviceId filtrés
       CQuery qSelect;
       qSelect. Select().
          From(CDeviceTable::getTableName()).
          Where(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, subquery) ;
-      
+
       database::sqlite::adapters::CDeviceAdapter adapter;
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
+   /*
+   SELECT date, key, value
+   from Message, MessageContent
+   where MessageContent.idMessage = Message.id
+   and deviceId = 2
+   group by key
+   */
 
+   std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string>  > CSQLiteDeviceRequester::getDeviceLastData(int deviceId)
+   {
+      CQuery qSelect;
+      qSelect. Select(CMessageTable::getDateColumnName(), CMessageContentTable::getKeyColumnName(), CMessageContentTable::getValueColumnName()).
+         From(CMessageTable::getTableName(), CMessageContentTable::getTableName()).
+         Where(CMessageTable::getTableName() + "." + CMessageTable::getIdColumnName(), CQUERY_OP_EQUAL, CQueryValue(CMessageContentTable::getTableName() + "." + CMessageContentTable::getIdMessageColumnName(), false)).
+         And(CMessageTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, deviceId).
+         GroupBy(CMessageContentTable::getKeyColumnName());
+
+      database::sqlite::adapters::CMultipleValueAdapter<boost::posix_time::ptime, std::string, std::string> mva;
+      
+      m_databaseRequester->queryEntities(&mva, qSelect);
+
+      return mva.getResults();
+   }
 
    void CSQLiteDeviceRequester::removeDevice(int deviceId)
    {

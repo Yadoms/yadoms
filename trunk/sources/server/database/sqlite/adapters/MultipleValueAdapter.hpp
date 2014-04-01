@@ -43,6 +43,7 @@ namespace adapters {
       // ISQLiteResultAdapter implementation
       bool adapt(sqlite3_stmt * pStatement)
       {
+         bool returnValue = false;
          int nCols = sqlite3_column_count(pStatement);
          if (nCols) 
          {
@@ -54,26 +55,26 @@ namespace adapters {
                T0 t0; T1 t1; T2 t2; T3 t3; T4 t4;
                T5 t5; T6 t6; T7 t7; T8 t8; T9 t9;
 
-               if(column > 0)
+               if(nCols > 0)
                   t0 = CSQLite3Extension::extractData<T0 >(pStatement, 0);
-               if(column > 1)
-                  t1 = CSQLite3Extension::extractData<T1 >(columValues[1]);
-               if(column > 2)
-                  t2 = CSQLite3Extension::extractData<T2 >(columValues[2]);
-               if(column > 3)
-                  t3 = CSQLite3Extension::extractData<T3 >(columValues[3]);
-               if(column > 4)
-                  t4 = CSQLite3Extension::extractData<T4 >(columValues[4]);
-               if(column > 5)
-                  t5 = CSQLite3Extension::extractData<T5 >(columValues[5]);
-               if(column > 6)
-                  t6 = CSQLite3Extension::extractData<T6 >(columValues[6]);
-               if(column > 7)
-                  t7 = CSQLite3Extension::extractData<T7 >(columValues[7]);
-               if(column > 8)
-                  t8 = CSQLite3Extension::extractData<T8 >(columValues[8]);
-               if(column > 9)
-                  t9 = CSQLite3Extension::extractData<T9 >(columValues[9]);
+               if(nCols > 1)
+                  t1 = CSQLite3Extension::extractData<T1 >(pStatement, 1);
+               if(nCols > 2)
+                  t2 = CSQLite3Extension::extractData<T2 >(pStatement, 2);
+               if(nCols > 3)
+                  t3 = CSQLite3Extension::extractData<T3 >(pStatement, 3);
+               if(nCols > 4)
+                  t4 = CSQLite3Extension::extractData<T4 >(pStatement, 4);
+               if(nCols > 5)
+                  t5 = CSQLite3Extension::extractData<T5 >(pStatement, 5);
+               if(nCols > 6)
+                  t6 = CSQLite3Extension::extractData<T6 >(pStatement, 6);
+               if(nCols > 7)
+                  t7 = CSQLite3Extension::extractData<T7 >(pStatement, 7);
+               if(nCols > 8)
+                  t8 = CSQLite3Extension::extractData<T8 >(pStatement, 8);
+               if(nCols > 9)
+                  t9 = CSQLite3Extension::extractData<T9 >(pStatement, 9);
 
                m_results.push_back(boost::tuple<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9));
 

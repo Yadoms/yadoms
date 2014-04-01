@@ -196,10 +196,13 @@ set(YADOMS_SRC
 	server/web/rest/json/IEntitySerializer.h
 	server/web/rest/json/IEntityDeserializer.h
 	server/web/rest/json/JsonResult.h
-	server/web/rest/json/JsonResult.cpp
-	server/web/rest/json/JsonSerializers.h
+	server/web/rest/json/JsonResult.cpp	
+	server/web/rest/json/JsonDate.h
+	server/web/rest/json/JsonDate.cpp
 	server/web/rest/json/JsonSerializers.h
 	server/web/rest/json/JsonSerializers.cpp
+	server/web/rest/json/JsonGenericSerializer.h
+	server/web/rest/json/JsonGenericSerializer.cpp
 	server/web/rest/json/JsonSerializersHelpers.hpp
 
 	server/web/rest/service/IRestService.h
