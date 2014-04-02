@@ -1,5 +1,15 @@
-# User specific configuration
-include("CMakeListsUserConfig.txt")
+# Check dependencies
+#TODO#include("CMakeListsUserConfig.txt")
+include(findGammu.cmake)
+
+#TODO
+# find_package (Gammu)
+# if (GAMMU_FOUND)
+   # message("Gammu found")
+# else (GAMMU_FOUND)
+   # message("### Gammu NOT found ###")
+# endif (GAMMU_FOUND)
+
 
 IF(EXISTS ${GAMMU_ROOT}/libgammu/Debug/Gammu.lib) #TODO : le Debug me gêne...
 

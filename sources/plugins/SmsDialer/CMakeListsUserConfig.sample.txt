@@ -3,5 +3,5 @@
 
 #define Gammu ROOT
 ##### use only absolute path , and do not use anti slash : only '/' ######
-set(GAMMU_ROOT "C:/Users/seb/Documents/Projets/Domotique/gammu-1.33.0/gammu-1.33.0")
+set(GAMMU_ROOT "/path/to/Gammu/gammu-1.33.0")
 
