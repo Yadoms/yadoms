@@ -11,7 +11,7 @@ include(findGammu.cmake)
 # endif (GAMMU_FOUND)
 
 
-IF(EXISTS ${GAMMU_ROOT}/libgammu/Debug/Gammu.lib) #TODO : le Debug me gêne...
+IF(GAMMU_FOUND) #TODO : le Debug me gêne...
 
 	# include common plugin definitions
 	include("../YadomsPluginsCommon.cmake")
@@ -72,5 +72,5 @@ IF(EXISTS ${GAMMU_ROOT}/libgammu/Debug/Gammu.lib) #TODO : le Debug me gêne...
 	PLUGIN_POST_BUILD_COPY_FILE(smsDialer icon.png)
 	PLUGIN_POST_BUILD_COPY_FILE(smsDialer fr.json)
 ELSE()
-	message(WARNING "SMS dialer plugin is not available. Gammu is Mssing")
+	message(WARNING "smsDialer plugin is not available. Gammu is Mssing")
 ENDIF()
