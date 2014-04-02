@@ -1,29 +1,28 @@
 #pragma once
-#include "ISms.h"
 
 //--------------------------------------------------------------
-/// \brief	This class has nothing to do with the famous smartphone...
-///         This class represent a phone, used to send/receive SMS
+/// \brief	This interface represent a SMS
 //--------------------------------------------------------------
-class IPhone
+class ISms
 {  
 public:
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~IPhone() {}
+   virtual ~ISms() {}
 
    //--------------------------------------------------------------
-   /// \brief	                  Send a SMS
-   /// \param [in] sms           The SMS to send
+   /// \brief	   Get the phone number
+   /// \return    The phone number of the sender in case of received message,
+   ///            or the recipient in case of sent message
    //--------------------------------------------------------------
-   virtual void send(boost::shared_ptr<ISms> sms) = 0;
+   virtual const std::string& getNumber() const = 0;
 
    //--------------------------------------------------------------
-   /// \brief	                  Get the next incoming message
-   /// \return                   The incoming message, NULL if none
+   /// \brief	   Get the message text
+   /// \return    Message text
    //--------------------------------------------------------------
-   virtual boost::shared_ptr<ISms> getIncomingSMS() = 0;
+   virtual const std::string& getContent() const = 0;
 };
 
 

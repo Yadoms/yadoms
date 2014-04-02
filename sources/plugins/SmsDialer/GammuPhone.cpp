@@ -29,41 +29,24 @@ void CGammuPhone::handleGammuError(GSM_Error gsmError, const std::string& errorM
       throw CPhoneException(std::string ("Phone communication : ") + errorMessage + std::string(" : ") + std::string(GSM_ErrorString(gsmError)));
 }
 
-void CGammuPhone::power(bool on)
+void CGammuPhone::send(boost::shared_ptr<ISms> sms)
 {
-   ////TODO
-   //YADOMS_LOG(debug) << "Power " << (on ? "on" : "off") << " the phone";
-
-   //// Initialization
-   //try
-   //{
-   //   initPhone();
-   //}
-   //catch (CPhoneException& e)
-   //{
-   //   YADOMS_LOG(error) << "Unexpected answer from AT Phone : " << e.what();
-   //   //TODO que faire si l'init s'est mal passée ?
-   //}
-}
-
-void CGammuPhone::send(const std::string& targetPhoneNumer, const std::string& text)
-{
-   YADOMS_LOG(info) << "Send SMS to number " << targetPhoneNumer << " \"" << text << "\"";
+   YADOMS_LOG(info) << "Send SMS to number " << sms->getNumber() << " \"" << sms->getContent() << "\"";
    
    // Fill in SMS info structure which will be used to generate messages.
    GSM_MultiPartSMSInfo SMSInfo;
-   boost::shared_ptr<unsigned char> messageUnicode(new unsigned char[(text.size() + 1) * 2]);
+   boost::shared_ptr<unsigned char> messageUnicode(new unsigned char[(sms->getContent().size() + 1) * 2]);
    GSM_ClearMultiPartSMSInfo(&SMSInfo);
    SMSInfo.Class = 1;                                                // Class 1 message (normal)
    SMSInfo.EntriesNum = 1;                                           // Message will be consist of one part
    SMSInfo.UnicodeCoding = FALSE;                                    // No unicode
    SMSInfo.Entries[0].ID = SMS_ConcatenatedTextLong;                 // The part has type long text
-   EncodeUnicode(messageUnicode.get(), text.c_str(), text.size());   // Encode message text
+   EncodeUnicode(messageUnicode.get(), sms->getContent().c_str(), sms->getContent().size());   // Encode message text
    SMSInfo.Entries[0].Buffer = messageUnicode.get();
 
    // Encode message into PDU parts
-   GSM_MultiSMSMessage sms;
-   handleGammuError(GSM_EncodeMultiPartSMS(NULL, &SMSInfo, &sms), "Sending SMS : Unable to encode message into PDU parts");
+   GSM_MultiSMSMessage gammuSms;
+   handleGammuError(GSM_EncodeMultiPartSMS(NULL, &SMSInfo, &gammuSms), "Sending SMS : Unable to encode message into PDU parts");
 
    // Set callback for message sending
    // This needs to be done after connection initialized
@@ -75,19 +58,19 @@ void CGammuPhone::send(const std::string& targetPhoneNumer, const std::string& t
    handleGammuError(GSM_GetSMSC(m_connection.getGsmContext(), &PhoneSMSC), "Sending SMS : Unable to get the SMS center number (SMSC) from the SIM. Check the phone configuration, and try to send SMS manually from phone.");
 
    // Send message parts
-   for (int partIndex = 0; partIndex < sms.Number ; ++ partIndex)
+   for (int partIndex = 0; partIndex < gammuSms.Number ; ++ partIndex)
    {
       // Set the SMSC number in message
-      CopyUnicodeString(sms.SMS[partIndex].SMSC.Number, PhoneSMSC.Number);
+      CopyUnicodeString(gammuSms.SMS[partIndex].SMSC.Number, PhoneSMSC.Number);
 
       // Prepare message
       // Encode recipient number
-      EncodeUnicode(sms.SMS[partIndex].Number, targetPhoneNumer.c_str(), targetPhoneNumer.size());
+      EncodeUnicode(gammuSms.SMS[partIndex].Number, sms->getNumber().c_str(), sms->getNumber().size());
       // It's a outgoing message
-      sms.SMS[partIndex].PDU = SMS_Submit;
+      gammuSms.SMS[partIndex].PDU = SMS_Submit;
 
       // Send message
-      handleGammuError(GSM_SendSMS(m_connection.getGsmContext(), &sms.SMS[partIndex]), "Sending SMS : Fail to send SMS.");
+      handleGammuError(GSM_SendSMS(m_connection.getGsmContext(), &gammuSms.SMS[partIndex]), "Sending SMS : Fail to send SMS.");
 
       // Set flag before calling SendSMS, some phones might give
 		// instant response
@@ -129,4 +112,54 @@ void CGammuPhone::sendSmsCallback(GSM_StateMachine *sm, int status, int MessageR
    {
       instance->m_smsSendStatus = ERR_NONE;
    }
+}
+
+//TODO : modifier la valeur de retour pour retourner une liste des messages reçus
+boost::shared_ptr<ISms> CGammuPhone::getIncomingSMS()
+{
+   boost::shared_ptr<ISms> sms;
+   bool newSms;
+   
+   GSM_SMSMemoryStatus gammuSmsStatus;
+   GSM_Error gammuError = GSM_GetSMSStatus(m_connection.getGsmContext(), &gammuSmsStatus);
+   switch (gammuError)
+   {
+   case ERR_NONE:
+      {
+         newSms = (gammuSmsStatus.SIMUsed + gammuSmsStatus.PhoneUsed > 0);
+         break;
+      }
+   case ERR_NOTSUPPORTED:
+   case ERR_NOTIMPLEMENTED:
+      {
+         // Not supported, try another method
+         GSM_MultiSMSMessage gammuSms;
+         gammuSms.Number = 0;
+         gammuSms.SMS[0].Location = 0;
+         gammuSms.SMS[0].Folder = 0;
+         newSms = (GSM_GetNextSMS(m_connection.getGsmContext(), &gammuSms, TRUE) == ERR_NONE);
+         break;
+      }
+   default:
+      {
+         // Error
+         YADOMS_LOG(error) << "Error getting SMS status : " << gammuError;
+         return sms;
+      }
+   }
+
+   // SMS were found in phone
+   if (newSms)
+   {
+      return readAndDeleteSms();
+   }
+
+   return sms;
+}
+
+boost::shared_ptr<ISms> CGammuPhone::readAndDeleteSms() const
+{
+   //TODO voir le code de SMSD_ReadDeleteSMS (core.c)
+   boost::shared_ptr<ISms> sms;
+   return sms;
 }
