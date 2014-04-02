@@ -67,7 +67,7 @@ void CGammuPhone::send(const std::string& targetPhoneNumer, const std::string& t
 
    // Set callback for message sending
    // This needs to be done after connection initialized
-   GSM_SetSendSMSStatusCallback(m_connection.getGsmContext(), sendSmsCallback, this);//TODO : la callback n'a pas l'air utile, à voir...
+   GSM_SetSendSMSStatusCallback(m_connection.getGsmContext(), sendSmsCallback, this);
 
    // Get the SMSC number from phone
    GSM_SMSC PhoneSMSC;
@@ -75,7 +75,7 @@ void CGammuPhone::send(const std::string& targetPhoneNumer, const std::string& t
    handleGammuError(GSM_GetSMSC(m_connection.getGsmContext(), &PhoneSMSC), "Sending SMS : Unable to get the SMS center number (SMSC) from the SIM. Check the phone configuration, and try to send SMS manually from phone.");
 
    // Send message parts
-   for (int partIndex = 0; partIndex < sms.Number; ++ partIndex)
+   for (int partIndex = 0; partIndex < 15; ++ partIndex)
    {
       // Set the SMSC number in message
       CopyUnicodeString(sms.SMS[partIndex].SMSC.Number, PhoneSMSC.Number);
@@ -109,16 +109,16 @@ void CGammuPhone::send(const std::string& targetPhoneNumer, const std::string& t
          // Message sending failed
          throw CPhoneException(std::string ("SMS send report : error "));
       }
-
-      // Message sent OK
-      YADOMS_LOG(info) << "SMS sent successfully";
-      return;
    }
+
+   // Message sent OK
+   YADOMS_LOG(info) << "SMS sent successfully";
+   return;
 }
 
 void CGammuPhone::sendSmsCallback(GSM_StateMachine *sm, int status, int MessageReference, void * user_data)
 {
-   CGammuPhone* instance = static_cast< CGammuPhone* > user_data;
+   CGammuPhone* instance = static_cast< CGammuPhone* > (user_data);
 
    if (status != 0)
    {
