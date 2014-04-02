@@ -4,7 +4,7 @@
 #  GAMMU_INCLUDE_DIRS, where to find gammu.h
 #  GAMMU_LIBRARIES, where to find libraries needed to build with Gammu
 
-include (CMakeListsUserConfig.txt)
+include (CMakeListsUserConfig.txt OPTIONAL)
 
 if(GAMMU_INCLUDE_DIRS AND GAMMU_LIBRARIES)
     # Already in cache
@@ -12,7 +12,7 @@ if(GAMMU_INCLUDE_DIRS AND GAMMU_LIBRARIES)
 endif(GAMMU_INCLUDE_DIRS AND GAMMU_LIBRARIES)
 
 if(WIN32)
-   # Use GAMMU_ROOT defined into CMakeListsUserConfig.txt
+   # Use GAMMU_ROOT defined in CMakeListsUserConfig.txt
    set(GAMMU_PKG_INCLUDE_DIRS ${GAMMU_ROOT}/include)
    set(GAMMU_PKG_LIBRARY_DIRS  ${GAMMU_ROOT}/libgammu/Debug)#TODO : gérer les configurations
    set(GAMMU_PKG_LIBRARIES Gammu.lib)
