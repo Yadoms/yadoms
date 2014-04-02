@@ -28,13 +28,19 @@ public:
    // IPlugin implementation
    virtual void doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service * pluginIOService);
    virtual void updateConfiguration(const std::string& configurationValues);
-  // [END] IPlugin implementation
+   // [END] IPlugin implementation
 
+protected:
    //--------------------------------------------------------------
    /// \brief	                     Called when an XPL message is received
    /// \param [in] xplMessage       The received message
    //--------------------------------------------------------------
    void onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Check if incomming SMS and process it
+   //--------------------------------------------------------------
+   void processIncommingSMS();
 
 private:
    //--------------------------------------------------------------

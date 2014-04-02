@@ -28,7 +28,10 @@ IF(GAMMU_FOUND) #TODO : le Debug me gêne...
 		GammuPhoneConnection.cpp
 		IPhone.h
 		ISmsDialerConfiguration.h
+		ISms.h
 		PhoneException.hpp
+		Sms.h
+		Sms.cpp 
 		SmsDialer.h
 		SmsDialer.cpp 
 		SmsDialerConfiguration.h

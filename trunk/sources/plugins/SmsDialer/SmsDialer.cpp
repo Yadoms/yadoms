@@ -6,6 +6,7 @@
 #include <shared/xpl/XplHelper.h>
 #include "SmsDialerFactory.h"
 #include "PhoneException.hpp"
+#include "Sms.h"
 
 
 IMPLEMENT_PLUGIN(CSmsDialer)
@@ -61,7 +62,8 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
       while(1)
       {
          // Wait for an event
-         switch(waitForEvents())//TODO ajouter une vérification périodique de la connection
+         static const boost::posix_time::time_duration incommingSmsPeriod(boost::posix_time::seconds(20));
+         switch(waitForEvents(incommingSmsPeriod))
          {
          case kEvtXplMessage:
             {
@@ -85,6 +87,11 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
                // Create new phone
                m_phone = CSmsDialerFactory::constructPhone(m_configuration);
 
+               break;
+            }
+         case shared::event::kTimeout:
+            {
+               processIncommingSMS();
                break;
             }
          default:
@@ -119,15 +126,21 @@ void CSmsDialer::onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage
    // TODO traiter le message comme il faut !
    try
    {
-      m_phone->send("0609414394", "Ceci est un suuuuuuuuuupeeeeeeer loooooooooonnnnnnnnng SMS envoyé par le plugin smsDialer de Yadoms, d'ailleurs, pour être bien sûr qu'il fait plusieurs fois cent soixante caractères, je le répète : Ceci est un suuuuuuuuuupeeeeeeer loooooooooonnnnnnnnng SMS envoyé par le plugin smsDialer de Yadoms. Et encore une fois : Ceci est un suuuuuuuuuupeeeeeeer loooooooooonnnnnnnnng SMS envoyé par le plugin smsDialer de Yadoms. Encore : Ceci est un suuuuuuuuuupeeeeeeer loooooooooonnnnnnnnng SMS envoyé par le plugin smsDialer de Yadoms :-)");//Christelle
-      //m_phone->send("0609414394", "Ceci est un SMS envoyé par le plugin smsDialer de Yadoms :-)");//Christelle
-      //m_phone->send("0609414394", "Ceci est un SMS envoyé par le plugin smsDialer de Yadoms :-)");//Christelle
-      //TODO : tester avec un message de plus de 160 caractères
-      //m_phone->send("0672784436", "Ceci est un SMS envoyé par le plugin smsDialer de Yadoms :-)");//Nico
-      //m_phone->send("0607966794", "Ceci est un SMS envoyé par le plugin smsDialer de Yadoms :-)");//JMB
+      boost::shared_ptr<ISms> sms(new CSms("0609414394", "1 - Ceci est un suuuuuuuuuupeeeeeeer loooooooooonnnnnnnnng SMS envoyé par le plugin smsDialer de Yadoms, d'ailleurs, pour être bien sûr qu'il fait plusieurs fois cent soixante caractères, je le répète : Ceci est un suuuuuuuuuupeeeeeeer loooooooooonnnnnnnnng SMS envoyé par le plugin smsDialer de Yadoms. Et encore une fois : Ceci est un suuuuuuuuuupeeeeeeer loooooooooonnnnnnnnng SMS envoyé par le plugin smsDialer de Yadoms. Encore : Ceci est un suuuuuuuuuupeeeeeeer loooooooooonnnnnnnnng SMS envoyé par le plugin smsDialer de Yadoms :-)"));//Christelle
+      m_phone->send(sms);
    }
    catch (CPhoneException& e)
    {
       YADOMS_LOG(error) << "Error sending SMS : " << e.what();
    }
+}
+
+void CSmsDialer::processIncommingSMS()
+{
+   // Check if incoming SMS
+   boost::shared_ptr<ISms> incommingSms = m_phone->getIncomingSMS();
+   if (!incommingSms)
+      return;  // No new message
+
+   //TODO : traiter le message reçu
 }

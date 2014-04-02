@@ -1,6 +1,6 @@
 #pragma once
 #include "ISmsDialerConfiguration.h"
-#include "GammuPhoneConnection.h"   //TODO en faire une interface
+#include "GammuPhoneConnection.h"
 #include "IPhone.h"
 #include <gammu.h>
 
@@ -21,8 +21,8 @@ public:
    virtual ~CGammuPhone();
 
    // IPhone implementation
-   virtual void power(bool on);
-   virtual void send(const std::string& targetPhoneNumer, const std::string& text);
+   virtual void send(boost::shared_ptr<ISms> sms);
+   virtual boost::shared_ptr<ISms> getIncomingSMS();
   // [END] IPhone implementation
 
 protected:
@@ -43,6 +43,12 @@ protected:
    //--------------------------------------------------------------
    static void sendSmsCallback(GSM_StateMachine *gsmContext, int status, int MessageReference, void * user_data);
 
+   //--------------------------------------------------------------
+   /// \brief	                  Read and delete SMS from phone
+   /// \return                   The next message
+   //--------------------------------------------------------------
+   boost::shared_ptr<ISms> readAndDeleteSms() const;
+
 private:
    //--------------------------------------------------------------
    /// \brief	   The plugin instance configuration
@@ -52,7 +58,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	   Phone connection
    //--------------------------------------------------------------
-   CGammuPhoneConnection m_connection; // TODO : voir si on ne peut pas se connecter qu'à chaque envoi
+   CGammuPhoneConnection m_connection;
 
    //--------------------------------------------------------------
    /// \brief	   SMS Send Gammu status
