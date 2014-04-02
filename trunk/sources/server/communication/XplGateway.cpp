@@ -5,6 +5,7 @@
 #include <shared/xpl/XplMessage.h>
 #include <shared/xpl/XplService.h>
 #include "command/DeviceCommand.h"
+#include "rules/ICommandRule.h"
 
 namespace communication {
 
@@ -48,7 +49,7 @@ namespace communication {
             case kXplSendMessage:
                {
                   command::CDeviceCommand command = popEvent<command::CDeviceCommand>();
-                  OnSendDeviceCommand(command);
+                  OnSendDeviceCommand(command, xplService);
                   break;
                }
 
@@ -135,7 +136,7 @@ namespace communication {
    ///\brief Function handler used to send a command to a device
    ///\param [in] The command to send
    //----------------------------------------------
-   void CXplGateway::OnSendDeviceCommand(command::CDeviceCommand & message)
+   void CXplGateway::OnSendDeviceCommand(command::CDeviceCommand & message, shared::xpl::CXplService & xplService)
    {
       try
       {
@@ -146,11 +147,59 @@ namespace communication {
 
          if(device.get() != NULL)
          {
+            //get rule
+            boost::shared_ptr<rules::IRule> rule = m_rulerFactory.identifyRule(*device.get());
 
-            if(message.getCallback().get() != NULL)
+            //check if the rule handled commands
+            boost::shared_ptr<rules::ICommandRule> commandRule = boost::dynamic_pointer_cast<rules::ICommandRule>(rule);
+            if(commandRule.get() != NULL)
             {
-               command::CResult result = command::CResult::CreateSuccess();
-               message.getCallback()->sendResult(result);
+               boost::shared_ptr< shared::xpl::CXplMessage > messageToSend(new shared::xpl::CXplMessage());
+               
+               messageToSend->setTypeIdentifier(shared::xpl::CXplMessage::kXplTrigger);
+               messageToSend->setSource(xplService.getActor());
+               messageToSend->setTarget(m_rulerFactory.identifyXplActor(*device.get()));
+
+               commandRule->fillMessage(messageToSend, *device.get(), message);
+
+               if(messageToSend.get() != NULL)
+               {
+                  xplService.sendMessage(*messageToSend.get());
+
+                  //send result
+                  if(message.getCallback().get() != NULL)
+                  {
+                     command::CResult result = command::CResult::CreateSuccess();
+                     message.getCallback()->sendResult(result);
+                  }
+               }
+               else
+               {
+                  //send result
+                  std::string errorMessage = "invalid command";
+                  YADOMS_LOG(error) << errorMessage;
+
+                  if(message.getCallback().get() != NULL)
+                  {
+                     command::CResult result = command::CResult::CreateError(errorMessage);
+                     message.getCallback()->sendResult(result);
+                  }
+
+               }
+            }
+            else
+            {
+
+               //send result
+               std::string errorMessage = (boost::format("The device (id=%1% nmae=%2%) do not support commands") % device->Id() % device->Name()).str();
+               YADOMS_LOG(error) << errorMessage;
+
+               if(message.getCallback().get() != NULL)
+               {
+                  command::CResult result = command::CResult::CreateError(errorMessage);
+                  message.getCallback()->sendResult(result);
+               }
+               
             }
          }
          else
@@ -168,7 +217,7 @@ namespace communication {
       {
          std::string errorMessage = (boost::format("CXplGateway fail to send message : %1%") % ex.what()).str();
          YADOMS_LOG(error) << errorMessage;
-            
+
          if(message.getCallback().get() != NULL)
          {
             command::CResult result = command::CResult::CreateError(errorMessage);            message.getCallback()->sendResult(result);

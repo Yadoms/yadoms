@@ -5,6 +5,8 @@
 #include "rules/RulerFactory.h"
 #include "command/DeviceCommand.h"
 #include "ISendMessageEventHandler.h"
+#include <shared/xpl/XplService.h>
+
 
 namespace communication {
 
@@ -53,9 +55,10 @@ namespace communication {
 
       //----------------------------------------------
       ///\brief Function handler used to send a command to a device
-      ///\param [in] The command to send
+      ///\param [in] message : The command to send
+      ///\param [in] xplService : the xpl service
       //----------------------------------------------
-      void OnSendDeviceCommand(command::CDeviceCommand & message);
+      void OnSendDeviceCommand(command::CDeviceCommand & message, shared::xpl::CXplService & xplService);
 
    private:
       //----------------------------------------------
