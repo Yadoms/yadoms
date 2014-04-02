@@ -13,8 +13,9 @@ endif(GAMMU_INCLUDE_DIRS AND GAMMU_LIBRARIES)
 
 if(WIN32)
    # Use GAMMU_ROOT defined into CMakeListsUserConfig.txt
-   set (GAMMU_PKG_INCLUDE_DIRS ${GAMMU_ROOT}/include)
-   set (GAMMU_PKG_LIBRARY_DIRS  ${GAMMU_ROOT}/libgammu/Debug)
+   set(GAMMU_PKG_INCLUDE_DIRS ${GAMMU_ROOT}/include)
+   set(GAMMU_PKG_LIBRARY_DIRS  ${GAMMU_ROOT}/libgammu/Debug)#TODO : gérer les configurations
+   set(GAMMU_PKG_LIBRARIES Gammu.lib)
 else(WIN32)
    # Use pkg-config to get the directories and then use these values
    # in the FIND_PATH() and FIND_LIBRARY() calls
@@ -34,7 +35,7 @@ find_path(GAMMU_INCLUDE_DIRS NAMES gammu.h
    ${GAMMU_PKG_INCLUDE_DIRS}
 )
 
-find_library(GAMMU_LIBRARIES 
+find_library(GAMMU_LIBRARIES NAMEs ${GAMMU_PKG_LIBRARIES}
    PATHS
    ${GAMMU_PKG_LIBRARY_DIRS}
 )
