@@ -14,8 +14,8 @@ namespace web { namespace rest { namespace service {
    std::string CDeviceRestService::m_restKeyword= std::string("device");
 
 
-   CDeviceRestService::CDeviceRestService(boost::shared_ptr<database::IDataProvider> dataProvider, shared::event::CEventHandler & eventHandler, int sendMessageEventIdentifier)
-      :m_dataProvider(dataProvider), m_eventHandler(eventHandler), m_sendMessageEventIdentifier(sendMessageEventIdentifier)
+   CDeviceRestService::CDeviceRestService(boost::shared_ptr<database::IDataProvider> dataProvider, communication::ISendMessageAsync & messageSender)
+      :m_dataProvider(dataProvider), m_messageSender(messageSender)
    {
    }
 
@@ -138,7 +138,7 @@ namespace web { namespace rest { namespace service {
             communication::command::CDeviceCommand command(deviceId, commandData, resultHandler);
 
             //send the command
-            m_eventHandler.sendEvent(m_sendMessageEventIdentifier, command);
+            m_messageSender.sendCommandAsync(command);
 
             //wait for a result
             communication::command::CResult result = resultHandler->waitForResult(boost::posix_time::milliseconds(2000));

@@ -4,13 +4,15 @@
 #include <shared/event/EventHandler.hpp>
 #include "rules/RulerFactory.h"
 #include "command/DeviceCommand.h"
+#include "ISendMessageEventHandler.h"
 
 namespace communication {
+
 
    //----------------------------------------------
    ///\brief Class used to communicate througt Xpl
    //----------------------------------------------
-   class CXplGateway : public shared::CThreadBase, public shared::event::CEventHandler
+   class CXplGateway : public shared::CThreadBase, public shared::event::CEventHandler, public ISendMessageAsync
    {
    public:
       //----------------------------------------------
@@ -34,16 +36,15 @@ namespace communication {
       };
 
    public:
-      //----------------------------------------------
-      ///\brief get the event identifier used to send a message
-      //----------------------------------------------
-      int getSendMessageEventIdentifier();
+      // ISendMessageAsync Implementation
+      void sendCommandAsync(command::CDeviceCommand & message);
+      // [END] ISendMessageAsync Implementation
 
    private:
       // CThreadBase Implementation
       void doWork();
       // [END] CThreadBase Implementation
-
+      
       //----------------------------------------------
       ///\brief Function handler when receiving XplMessage
       ///\param [in] The xpl message received

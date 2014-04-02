@@ -235,6 +235,7 @@ set(YADOMS_SRC
 	
 	server/communication/XplGateway.h
 	server/communication/XplGateway.cpp	
+	server/communication/ISendMessageEventHandler.h
 	server/communication/command/DeviceCommand.h
 	server/communication/command/DeviceCommand.cpp	
 	server/communication/command/Result.h

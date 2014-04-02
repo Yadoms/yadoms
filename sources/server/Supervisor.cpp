@@ -238,7 +238,7 @@ void CSupervisor::doWork()
       if(restHanlder.get() != NULL)
       {
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginRestService(pDataProvider, pluginManager)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDeviceRestService(pDataProvider, xplGateway, xplGateway.getSendMessageEventIdentifier())));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDeviceRestService(pDataProvider, xplGateway)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPageRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CWidgetRestService(pDataProvider, webServerPath)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfigurationRestService(pDataProvider)));

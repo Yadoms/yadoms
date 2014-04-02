@@ -17,10 +17,11 @@ namespace communication {
    {
    }
 
-   int CXplGateway::getSendMessageEventIdentifier()
+   void CXplGateway::sendCommandAsync(command::CDeviceCommand & message)
    {
-      return kXplSendMessage;
+      sendEvent(kXplSendMessage, message);
    }
+
 
    void CXplGateway::doWork()
    {
@@ -174,6 +175,9 @@ namespace communication {
          }
       }  
    }
+
+
+
 
 
 } //namespace communication
