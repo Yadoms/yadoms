@@ -15,9 +15,9 @@ namespace communication { namespace rules {
    CRulerFactory::~CRulerFactory()
    {
    }
-   
+
    boost::shared_ptr<IRule> CRulerFactory::identifyRule(shared::xpl::CXplMessage & msg)
-   {      
+   {
       BOOST_FOREACH(boost::shared_ptr<IFactory> currentFactory, m_allSpecificRuleFactories)
       {
          if(currentFactory->isHandled(msg))
@@ -29,8 +29,34 @@ namespace communication { namespace rules {
       }
       return m_standardFactories->identifyRule(msg, m_instanceManager);
    }
-   
-   
+
+   boost::shared_ptr<IRule> CRulerFactory::identifyRule(database::entities::CDevice & device)
+   {
+      BOOST_FOREACH(boost::shared_ptr<IFactory> currentFactory, m_allSpecificRuleFactories)
+      {
+         if(currentFactory->isHandled(device))
+         {
+            boost::shared_ptr<IRule> foundRule = currentFactory->identifyRule(device, m_instanceManager);
+            if(foundRule.get() != NULL)
+               return foundRule;
+         }
+      }
+      return m_standardFactories->identifyRule(device, m_instanceManager);
+   }
+
+   shared::xpl::CXplActor CRulerFactory::identifyXplActor(database::entities::CDevice & device)
+   {
+      BOOST_FOREACH(boost::shared_ptr<IFactory> currentFactory, m_allSpecificRuleFactories)
+      {
+         if(currentFactory->isHandled(device))
+         {
+            return currentFactory->identifyXplActor(device);
+         }
+      }
+      return m_standardFactories->identifyXplActor(device);
+   }
+
+
 } //namespace rules
 } //namespace communication
 

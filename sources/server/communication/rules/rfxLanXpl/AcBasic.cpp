@@ -11,6 +11,7 @@ namespace communication { namespace rules { namespace rfxLanXpl {
    {
    }
 
+   // IRule implementation
    const DeviceIdentifier CAcBasic::getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg)
    {
       return msg.getBodyValue("address") + "-" +  msg.getBodyValue("unit");
@@ -47,6 +48,36 @@ namespace communication { namespace rules { namespace rfxLanXpl {
       keywords.push_back(mainKeyword);
       return keywords;
    }
+   // [END] IRule implementation
+
+   // ICommandRule implemntation
+   void CAcBasic::fillMessage(boost::shared_ptr< shared::xpl::CXplMessage > & messageToFill, database::entities::CDevice & targetDevice, communication::command::CDeviceCommand & commandData)
+   {
+      communication::command::CDeviceCommand::CommandData content = commandData.getCommandData();
+      if(content.find("command") != content.end())
+      {
+         shared::xpl::CXplMessageSchemaIdentifier acbasic("ac", "basic");
+         messageToFill->setMessageSchemaIdentifier(acbasic);
+
+         std::string address = targetDevice.Address;
+         std::vector<std::string> splittedAddress;
+         boost::split(splittedAddress, address, boost::is_any_of("-"), boost::token_compress_on);
+
+         messageToFill->addToBody("command", content["command"]);
+         messageToFill->addToBody("address", splittedAddress[0]);
+         messageToFill->addToBody("unit", splittedAddress[1]);
+
+
+         communication::command::CDeviceCommand::CommandData::const_iterator i;
+         for(i=content.begin(); i!=content.end(); ++i)
+         {
+            if(!boost::iequals(i->first, "command"))
+               messageToFill->addToBody(i->first, i->second);
+         }
+         
+      }
+   }
+   // [END] ICommandRule implemntation
 
 } //namespace rfxLanXpl
 } //namespace rules

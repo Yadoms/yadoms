@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../IRule.h"
+#include "../ICommandRule.h"
 
 namespace communication { namespace rules { namespace rfxLanXpl {
 
-   class CAcBasic : public IRule
+   class CAcBasic : public ICommandRule
    {
    public:
       CAcBasic();
@@ -16,6 +16,9 @@ namespace communication { namespace rules { namespace rfxLanXpl {
       virtual std::vector< boost::shared_ptr<database::entities::CKeyword> > identifyKeywords(shared::xpl::CXplMessage & msg);
       // [END] IRule implementation
      
+      // ICommandRule implemntation
+      virtual void fillMessage(boost::shared_ptr< shared::xpl::CXplMessage > & messagetoFill, database::entities::CDevice & targetDevice, communication::command::CDeviceCommand & commandData);
+      // [END] ICommandRule implemntation
    };
    
 } //namespace rfxLanXpl

@@ -19,6 +19,9 @@ namespace communication { namespace rules {
    class IRule
    {
    public:
+      //------------------------------------
+      ///\brief Destructor
+      //------------------------------------
       virtual ~IRule(){}
 
       //------------------------------------
