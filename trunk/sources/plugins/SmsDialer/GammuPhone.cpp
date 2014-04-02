@@ -75,7 +75,7 @@ void CGammuPhone::send(const std::string& targetPhoneNumer, const std::string& t
    handleGammuError(GSM_GetSMSC(m_connection.getGsmContext(), &PhoneSMSC), "Sending SMS : Unable to get the SMS center number (SMSC) from the SIM. Check the phone configuration, and try to send SMS manually from phone.");
 
    // Send message parts
-   for (int partIndex = 0; partIndex < 15; ++ partIndex)
+   for (int partIndex = 0; partIndex < sms.Number ; ++ partIndex)
    {
       // Set the SMSC number in message
       CopyUnicodeString(sms.SMS[partIndex].SMSC.Number, PhoneSMSC.Number);
