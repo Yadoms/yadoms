@@ -119,9 +119,9 @@ void CSmsDialer::onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage
    // TODO traiter le message comme il faut !
    try
    {
-      m_phone->send("0609414394", "Ceci est un SMS envoyé par le plugin smsDialer de Yadoms :-)");//Christelle
-      m_phone->send("0609414394", "Ceci est un SMS envoyé par le plugin smsDialer de Yadoms :-)");//Christelle
-      m_phone->send("0609414394", "Ceci est un SMS envoyé par le plugin smsDialer de Yadoms :-)");//Christelle
+      m_phone->send("0609414394", "Ceci est un suuuuuuuuuupeeeeeeer loooooooooonnnnnnnnng SMS envoyé par le plugin smsDialer de Yadoms, d'ailleurs, pour être bien sûr qu'il fait plusieurs fois cent soixante caractères, je le répète : Ceci est un suuuuuuuuuupeeeeeeer loooooooooonnnnnnnnng SMS envoyé par le plugin smsDialer de Yadoms. Et encore une fois : Ceci est un suuuuuuuuuupeeeeeeer loooooooooonnnnnnnnng SMS envoyé par le plugin smsDialer de Yadoms. Encore : Ceci est un suuuuuuuuuupeeeeeeer loooooooooonnnnnnnnng SMS envoyé par le plugin smsDialer de Yadoms :-)");//Christelle
+      //m_phone->send("0609414394", "Ceci est un SMS envoyé par le plugin smsDialer de Yadoms :-)");//Christelle
+      //m_phone->send("0609414394", "Ceci est un SMS envoyé par le plugin smsDialer de Yadoms :-)");//Christelle
       //TODO : tester avec un message de plus de 160 caractères
       //m_phone->send("0672784436", "Ceci est un SMS envoyé par le plugin smsDialer de Yadoms :-)");//Nico
       //m_phone->send("0607966794", "Ceci est un SMS envoyé par le plugin smsDialer de Yadoms :-)");//JMB
