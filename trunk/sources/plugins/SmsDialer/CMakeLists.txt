@@ -1,17 +1,7 @@
 # Check dependencies
-#TODO#include("CMakeListsUserConfig.txt")
 include(findGammu.cmake)
 
-#TODO
-# find_package (Gammu)
-# if (GAMMU_FOUND)
-   # message("Gammu found")
-# else (GAMMU_FOUND)
-   # message("### Gammu NOT found ###")
-# endif (GAMMU_FOUND)
-
-
-IF(GAMMU_FOUND) #TODO : le Debug me gêne...
+IF(GAMMU_FOUND)
 
 	# include common plugin definitions
 	include("../YadomsPluginsCommon.cmake")
@@ -45,14 +35,14 @@ IF(GAMMU_FOUND) #TODO : le Debug me gêne...
 	## (by default yadoms-shared and boost are included)
 	#########################################
 	set(SMS_DIALER_ADDITIONAL_INC_DIR
-		${GAMMU_ROOT}/include
+		${GAMMU_INCLUDE_DIRS}
 	)
 
 	#########################################
 	## Place here all additional libraries to link with
 	## (by default yadoms-shared and boost are included)
 	#########################################
-	#toto gérer les différentes config et PF
+	#todo gérer les différentes config et PF
 	set(SMS_DIALER_ADDITIONAL_LIB
 		${GAMMU_ROOT}/libgammu/Debug/Gammu.lib
 		${GAMMU_ROOT}/helper/Debug/string.lib

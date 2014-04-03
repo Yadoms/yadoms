@@ -27,6 +27,7 @@ else(WIN32)
    #   - GAMMU_PKG_INCLUDE_DIRS : the '-I' preprocessor flags
    #   - GAMMU_PKG_CFLAGS : all required cflags
    #   - GAMMU_PKG_CFLAGS_OTHER : the other compiler flags
+   find_package(PkgConfig)
    pkg_check_modules(GAMMU_PKG gammu)
 endif(WIN32)
 
@@ -35,7 +36,7 @@ find_path(GAMMU_INCLUDE_DIRS NAMES gammu.h
    ${GAMMU_PKG_INCLUDE_DIRS}
 )
 
-find_library(GAMMU_LIBRARIES NAMEs ${GAMMU_PKG_LIBRARIES}
+find_library(GAMMU_LIBRARIES NAMES ${GAMMU_PKG_LIBRARIES}
    PATHS
    ${GAMMU_PKG_LIBRARY_DIRS}
 )
