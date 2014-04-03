@@ -12,6 +12,12 @@
 namespace database { 
 namespace sqlite { 
 
+   //---------------------------
+   // Maximum tries
+   //---------------------------
+   int CSQLiteRequester::m_maxTries = 3;
+
+
    CSQLiteRequester::CSQLiteRequester(sqlite3 * pDatabaseHandler)
       :m_pDatabaseHandler(pDatabaseHandler), m_bOneTransactionActive(false)
    {
@@ -29,22 +35,55 @@ namespace sqlite {
 
       //execute the query
       char *zErrMsg = NULL;
-      sqlite3_exec(m_pDatabaseHandler, querytoExecute.c_str(),  NULL, 0, &zErrMsg);
+      int remainingTries = m_maxTries;
+      bool retry = false;
 
-      if(zErrMsg)
+      do
       {
-         //make a copy of the err message
-         std::string errMessage(zErrMsg);
+         //ensure retry is reset to false
+         retry = false;
 
-         //log the message
-         YADOMS_LOG(error) << "Query failed : " << std::endl << "Query: " << querytoExecute.str() << std::endl << "Error : " << zErrMsg;
+         //execute query
+         int rc = sqlite3_exec(m_pDatabaseHandler, querytoExecute.c_str(),  NULL, 0, &zErrMsg);
 
-         //free allocated memory by sqlite
-         sqlite3_free(zErrMsg);
+         //if an error occurred
+         //then   log it
+         //       if error is known like "database locked" then retry the query
+         if(rc != SQLITE_OK)
+         {
+            //make a copy of the err message
+            std::string errMessage(zErrMsg);
 
-         //throw
-         throw CDatabaseException(errMessage);
+            //log the message
+            YADOMS_LOG(error) << "Query failed : " << std::endl << "Query: " << querytoExecute.str() << std::endl << "Error : " << zErrMsg;
+
+            //free allocated memory by sqlite
+            sqlite3_free(zErrMsg);
+
+            //if it is a database locked error, just wait and retry
+            if(rc == SQLITE_LOCKED && remainingTries>1)
+            {
+               //the database is locked (likely by another program)
+               //just sleep some time and wish it is not locked anymore
+               boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+
+               //retry
+               retry = true;
+            }
+            else
+            {
+               //throw
+               throw CDatabaseException(errMessage);
+            }
+         }
+         else
+         {
+            //query is successfull
+            retry = false;
+         }
       }
+      while( (--remainingTries) > 0 && retry);
+
       return sqlite3_changes(m_pDatabaseHandler);
    }
 

@@ -73,20 +73,43 @@ namespace sqlite {
 
             try
             {
-               sqlite3_stmt *stmt;
-               int rc = sqlite3_prepare_v2(m_pDatabaseHandler, querytoExecute.c_str(), -1, &stmt, 0);
-               if (rc == SQLITE_OK)
+               int remainingTries = m_maxTries;
+               bool retry = false;
+
+               do
                {
-                  if(!pAdapter->adapt(stmt))
+                  //ensure retry is reset to false
+                  retry = false;
+
+                  sqlite3_stmt *stmt;
+                  int rc = sqlite3_prepare_v2(m_pDatabaseHandler, querytoExecute.c_str(), -1, &stmt, 0);
+                  if (rc == SQLITE_OK)
                   {
-                     YADOMS_LOG(error) << "Fail to adapt values";
+                     if(!pAdapter->adapt(stmt))
+                     {
+                        YADOMS_LOG(error) << "Fail to adapt values";
+                     }
+                     sqlite3_finalize(stmt);
                   }
-                  sqlite3_finalize(stmt);
+                  else
+                  {
+                     if(rc == SQLITE_LOCKED && remainingTries>1)
+                     {
+                        //the database is locked (likely by another program)
+                        //just sleep some time and wish it is not locked anymore
+                        boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+
+                        //retry
+                        retry = true;                     
+                     }
+                     else
+                     {
+                        YADOMS_LOG(error) << "Fail to execute query : " << sqlite3_errmsg(m_pDatabaseHandler);
+                     }
+                  }
                }
-               else
-               {
-                  YADOMS_LOG(error) << "Fail to execute query : " << sqlite3_errmsg(m_pDatabaseHandler);
-               }
+               while( (--remainingTries) > 0 && retry);
+
             }
             catch(std::exception &ex)
             {
@@ -149,6 +172,11 @@ namespace sqlite {
       /// \Brief		true if a transaction is already begin
       //--------------------------------------------------------------
       bool m_bOneTransactionActive;
+
+      //--------------------------------------------------------------
+      /// \Brief		In case of some errors, (database locked,...) the query may be retried
+      //--------------------------------------------------------------
+      static int m_maxTries;
    };
 
 } //namespace sqlite
