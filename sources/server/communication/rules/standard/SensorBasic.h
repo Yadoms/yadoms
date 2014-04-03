@@ -16,6 +16,13 @@ namespace communication { namespace rules { namespace standard {
       virtual std::vector< boost::shared_ptr<database::entities::CKeyword> > identifyKeywords(shared::xpl::CXplMessage & msg);
       // [END] IRule implementation
      
+   private:
+      //-------------------------------------
+      ///\brief   Rewrite a keyword
+      ///\param [in] keyword The keyword to check
+      ///\return the keyword renammed if needed
+      //-------------------------------------
+      std::string rewriteKeyword(const std::string & keyword);
    };
    
 } //namespace standard
