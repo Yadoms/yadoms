@@ -1,15 +1,17 @@
 #include "stdafx.h"
 #include "RulerFactory.h"
-#include "standard/RuleFactory.h"
-#include "rfxLanXpl/RuleFactory.h"
+#include "standard/DeviceManager.h"
+#include "rfxLanXpl/DeviceManager.h"
+#include <shared/exception/Exception.hpp>
+#include "ICommandRule.h"
 
 namespace communication { namespace rules {
 
    CRulerFactory::CRulerFactory()
-      :m_standardFactories(boost::shared_ptr<IFactory>(new standard::CRuleFactory()))
+      :m_standardFactories(boost::shared_ptr<IDeviceManager>(new standard::CDeviceManager()))
    {
       //all specific rules factory
-      m_allSpecificRuleFactories.push_back(boost::shared_ptr<IFactory>(new rfxLanXpl::CRuleFactory));
+      m_allSpecificRuleFactories.push_back(boost::shared_ptr<IDeviceManager>(new rfxLanXpl::CDeviceManager()));
    }
 
    CRulerFactory::~CRulerFactory()
@@ -18,7 +20,7 @@ namespace communication { namespace rules {
 
    boost::shared_ptr<IRule> CRulerFactory::identifyRule(shared::xpl::CXplMessage & msg)
    {
-      BOOST_FOREACH(boost::shared_ptr<IFactory> currentFactory, m_allSpecificRuleFactories)
+      BOOST_FOREACH(boost::shared_ptr<IDeviceManager> currentFactory, m_allSpecificRuleFactories)
       {
          if(currentFactory->isHandled(msg))
          {
@@ -32,7 +34,7 @@ namespace communication { namespace rules {
 
    boost::shared_ptr<IRule> CRulerFactory::identifyRule(database::entities::CDevice & device)
    {
-      BOOST_FOREACH(boost::shared_ptr<IFactory> currentFactory, m_allSpecificRuleFactories)
+      BOOST_FOREACH(boost::shared_ptr<IDeviceManager> currentFactory, m_allSpecificRuleFactories)
       {
          if(currentFactory->isHandled(device))
          {
@@ -44,17 +46,38 @@ namespace communication { namespace rules {
       return m_standardFactories->identifyRule(device, m_instanceManager);
    }
 
-   shared::xpl::CXplActor CRulerFactory::identifyXplActor(database::entities::CDevice & device)
+
+
+   boost::shared_ptr< shared::xpl::CXplMessage > CRulerFactory::createXplCommand(database::entities::CDevice & targetDevice, communication::command::CDeviceCommand & deviceCommand)
    {
-      BOOST_FOREACH(boost::shared_ptr<IFactory> currentFactory, m_allSpecificRuleFactories)
+      //identify the device Rule 
+      boost::shared_ptr<rules::IRule> rule = identifyRule(targetDevice);
+
+      if(rule)
       {
-         if(currentFactory->isHandled(device))
+         //check if the rule handled commands
+         boost::shared_ptr<ICommandRule> commandRule = boost::dynamic_pointer_cast<ICommandRule>(rule);
+
+         if(commandRule)
          {
-            return currentFactory->identifyXplActor(device);
+            return commandRule->createXplCommand(targetDevice, deviceCommand);
+         }
+         else
+         {
+            std::string errorMessage = (boost::format("The device (id=%1% name=%2%) do not support commands") % targetDevice.Id() % targetDevice.Name()).str();
+            throw shared::exception::CException(errorMessage);
          }
       }
-      return m_standardFactories->identifyXplActor(device);
+      else
+      {
+         std::string errorMessage = (boost::format("The device (id=%1% name=%2%) is not handled by Yadoms") % targetDevice.Id() % targetDevice.Name()).str();
+         throw shared::exception::CException(errorMessage);
+      }
+
+
+
    }
+
 
 
 } //namespace rules

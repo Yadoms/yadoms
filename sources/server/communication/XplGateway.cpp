@@ -142,56 +142,30 @@ namespace communication {
       {
          YADOMS_LOG(trace) << "Sending message : " << message.toString();
 
+
          //find device in database
          boost::shared_ptr<database::entities::CDevice> device = m_dataProvider->getDeviceRequester()->getDevice(message.getDeviceId());
 
          if(device.get() != NULL)
          {
-            //get rule
-            boost::shared_ptr<rules::IRule> rule = m_rulerFactory.identifyRule(*device.get());
 
-            //check if the rule handled commands
-            boost::shared_ptr<rules::ICommandRule> commandRule = boost::dynamic_pointer_cast<rules::ICommandRule>(rule);
-            if(commandRule.get() != NULL)
+            boost::shared_ptr< shared::xpl::CXplMessage > messageToSend = m_rulerFactory.createXplCommand(*device.get(), message);
+            if(messageToSend)
             {
-               boost::shared_ptr< shared::xpl::CXplMessage > messageToSend(new shared::xpl::CXplMessage());
-               
-               messageToSend->setTypeIdentifier(shared::xpl::CXplMessage::kXplTrigger);
                messageToSend->setSource(xplService.getActor());
-               messageToSend->setTarget(m_rulerFactory.identifyXplActor(*device.get()));
+               xplService.sendMessage(*messageToSend.get());
 
-               commandRule->fillMessage(messageToSend, *device.get(), message);
-
-               if(messageToSend.get() != NULL)
+               //send result
+               if(message.getCallback().get() != NULL)
                {
-                  xplService.sendMessage(*messageToSend.get());
-
-                  //send result
-                  if(message.getCallback().get() != NULL)
-                  {
-                     command::CResult result = command::CResult::CreateSuccess();
-                     message.getCallback()->sendResult(result);
-                  }
-               }
-               else
-               {
-                  //send result
-                  std::string errorMessage = "invalid command";
-                  YADOMS_LOG(error) << errorMessage;
-
-                  if(message.getCallback().get() != NULL)
-                  {
-                     command::CResult result = command::CResult::CreateError(errorMessage);
-                     message.getCallback()->sendResult(result);
-                  }
-
+                  command::CResult result = command::CResult::CreateSuccess();
+                  message.getCallback()->sendResult(result);
                }
             }
             else
             {
-
                //send result
-               std::string errorMessage = (boost::format("The device (id=%1% nmae=%2%) do not support commands") % device->Id() % device->Name()).str();
+               std::string errorMessage = "Fail to create the Xpl message to send to the device";
                YADOMS_LOG(error) << errorMessage;
 
                if(message.getCallback().get() != NULL)
@@ -199,7 +173,7 @@ namespace communication {
                   command::CResult result = command::CResult::CreateError(errorMessage);
                   message.getCallback()->sendResult(result);
                }
-               
+
             }
          }
          else

@@ -50,32 +50,76 @@ namespace communication { namespace rules { namespace rfxLanXpl {
    }
    // [END] IRule implementation
 
+
+
    // ICommandRule implemntation
-   void CAcBasic::fillMessage(boost::shared_ptr< shared::xpl::CXplMessage > & messageToFill, database::entities::CDevice & targetDevice, communication::command::CDeviceCommand & commandData)
+   boost::shared_ptr< shared::xpl::CXplMessage > CAcBasic::createXplCommand(database::entities::CDevice & targetDevice, command::CDeviceCommand & deviceCommand)
    {
-      communication::command::CDeviceCommand::CommandData content = commandData.getCommandData();
-      if(content.find("command") != content.end())
+      ////////////////////////////
+      // do some checks
+      ////////////////////////////
+
+      //check the device address is valid
+      std::string address = targetDevice.Address;
+      std::vector<std::string> splittedAddress;
+      boost::split(splittedAddress, address, boost::is_any_of("-"), boost::token_compress_on);
+
+      if(splittedAddress.size() != 2)
       {
-         shared::xpl::CXplMessageSchemaIdentifier acbasic("ac", "basic");
-         messageToFill->setMessageSchemaIdentifier(acbasic);
-
-         std::string address = targetDevice.Address;
-         std::vector<std::string> splittedAddress;
-         boost::split(splittedAddress, address, boost::is_any_of("-"), boost::token_compress_on);
-
-         messageToFill->addToBody("command", content["command"]);
-         messageToFill->addToBody("address", splittedAddress[0]);
-         messageToFill->addToBody("unit", splittedAddress[1]);
-
-
-         communication::command::CDeviceCommand::CommandData::const_iterator i;
-         for(i=content.begin(); i!=content.end(); ++i)
-         {
-            if(!boost::iequals(i->first, "command"))
-               messageToFill->addToBody(i->first, i->second);
-         }
-         
+         throw shared::exception::CException("ac.basic protocol needs a device address matching pattern : <address>-<unit> ");
       }
+
+      //check the command value
+      communication::command::CDeviceCommand::CommandData content = deviceCommand.getCommandData();
+      if(content.find("command") == content.end())
+      {
+         throw shared::exception::CException("ac.basic protocol needs a parameter 'command' ");
+      }
+   
+      if( !boost::iequals(content["command"], "on") &&
+         !boost::iequals(content["command"], "off") &
+         !boost::iequals(content["command"], "preset"))
+      {
+         throw shared::exception::CException("ac.basic protocol needs a parameter 'command' that match 'on' or 'off' or 'preset'");
+      }
+
+
+
+      ////////////////////////////
+      // create the message
+      ////////////////////////////
+
+      //create the message
+      boost::shared_ptr< shared::xpl::CXplMessage > newMessage(new shared::xpl::CXplMessage());
+
+      //the AC.BSACI XplMessage if a xpl-trig
+      newMessage->setTypeIdentifier(shared::xpl::CXplMessage::kXplTrigger);
+
+      //set hop to 1
+      newMessage->setHop(1);
+
+      //set the target (rfxcom-lan-<hax mac address>)
+      newMessage->setTarget(shared::xpl::CXplActor::parse(targetDevice.HardwareIdentifier()));
+
+      //set the ac.basic
+      newMessage->setMessageSchemaIdentifier(shared::xpl::CXplMessageSchemaIdentifier::CXplMessageSchemaIdentifier("ac", "basic"));
+
+      //set the device addesss and unit (parse from argetDevice.Address)
+      newMessage->addToBody("address", splittedAddress[0]);
+      newMessage->addToBody("unit", splittedAddress[1]);
+
+      //set the command
+      newMessage->addToBody("command", content["command"]);
+
+      //if there is any other data to send, just add key/value to bidy
+      communication::command::CDeviceCommand::CommandData::const_iterator i;
+      for(i=content.begin(); i!=content.end(); ++i)
+      {
+         if(!boost::iequals(i->first, "command"))
+            newMessage->addToBody(i->first, i->second);
+      }
+
+      return newMessage;
    }
    // [END] ICommandRule implemntation
 
