@@ -1,23 +1,32 @@
 #pragma once
 
-#include "../IFactory.h"
+#include "../IDeviceManager.h"
 
-namespace communication { namespace rules { namespace standard {
+namespace communication { namespace rules { namespace rfxLanXpl {
 
-   class CRuleFactory : public IFactory
+   //--------------------------------
+   ///\brief Class which manages RfxLanXpl devices
+   //--------------------------------
+   class CDeviceManager : public IDeviceManager
    {
    public:
-      CRuleFactory();
-      virtual ~CRuleFactory();
+      //--------------------------------
+      ///\brief Constructor
+      //--------------------------------
+      CDeviceManager();
+
+      //--------------------------------
+      ///\brief Destructor
+      //--------------------------------
+      virtual ~CDeviceManager();
       
-      // IFactory implementation
+      // IDeviceManager implementation
       virtual bool isHandled(shared::xpl::CXplMessage & message);
       virtual boost::shared_ptr<IRule> identifyRule(shared::xpl::CXplMessage & msg, CRuleInstanceManager & instanceManager);
-      
+
       virtual bool isHandled(database::entities::CDevice & device);
       virtual boost::shared_ptr<IRule> identifyRule(database::entities::CDevice & device, CRuleInstanceManager & instanceManager);
-      virtual shared::xpl::CXplActor identifyXplActor(database::entities::CDevice & device);
-      // [END] IFactory implementation
+      // [END] IDeviceManager implementation
    private:
 
       //------------------------------------------
@@ -33,10 +42,9 @@ namespace communication { namespace rules { namespace standard {
       ///\return the rule for the given protocol (may be null if protocol not handled
       //------------------------------------------
       boost::shared_ptr<IRule> identifyRule(const std::string & protocolName, CRuleInstanceManager & instanceManager);
-      // [END] IFactory implementation
-     
+
    };
    
-} //namespace standard
+} //namespace rfxLanXpl
 } //namespace rules
 } //namespace communication

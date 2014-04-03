@@ -22,7 +22,7 @@ namespace communication { namespace rules {
       ///\param [in]    commandData    The command data
       ///\return an xpl message ready to be sent
       //------------------------------------
-      virtual void fillMessage(boost::shared_ptr< shared::xpl::CXplMessage > & messagetoFill, database::entities::CDevice & targetDevice, communication::command::CDeviceCommand & commandData) = 0;
+      virtual boost::shared_ptr< shared::xpl::CXplMessage > createXplCommand(database::entities::CDevice & targetDevice, command::CDeviceCommand & deviceCommand) = 0;
    };
 
 } //namespace rules

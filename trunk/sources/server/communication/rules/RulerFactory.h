@@ -1,13 +1,24 @@
 #pragma once
-#include "IFactory.h"
+#include "IDeviceManager.h"
 #include "RuleInstanceManager.hpp"
+#include "communication/command/DeviceCommand.h"
 
 namespace communication { namespace rules {
 
+   //--------------------------------
+   ///\brief class which handle rules
+   //--------------------------------
    class CRulerFactory
    {
    public:
+      //--------------------------------
+      ///\brief Constructor
+      //--------------------------------
       CRulerFactory();
+
+      //--------------------------------
+      ///\brief Destructor
+      //--------------------------------
       virtual ~CRulerFactory();
       
 
@@ -26,11 +37,13 @@ namespace communication { namespace rules {
       boost::shared_ptr<IRule> identifyRule(database::entities::CDevice & device);
          
       //--------------------------------
-      ///\brief Identify the Xpl actor for the device
-      ///\param [in]  device The device
-      ///\return the xplActor
+      ///\brief Create the XplMessage matching a command, to send to a specific device
+      ///\param [in]  targetDevice The device target of the message
+      ///\param [in]  deviceCommand The command data
+      ///\return the XplMessage to send
+      ///\throws  shared::exception::CException  if device do not support commands
       //--------------------------------
-      shared::xpl::CXplActor identifyXplActor(database::entities::CDevice & device);
+      boost::shared_ptr< shared::xpl::CXplMessage > createXplCommand(database::entities::CDevice & targetDevice, communication::command::CDeviceCommand & deviceCommand);
 
    private:
       //--------------------------------
@@ -41,12 +54,12 @@ namespace communication { namespace rules {
       //--------------------------------
       ///\brief All specific factories
       //--------------------------------      
-      std::vector< boost::shared_ptr<IFactory> > m_allSpecificRuleFactories;
+      std::vector< boost::shared_ptr<IDeviceManager> > m_allSpecificRuleFactories;
       
       //--------------------------------
       ///\brief The Xpl standard factory
       //--------------------------------      
-      boost::shared_ptr<IFactory> m_standardFactories;
+      boost::shared_ptr<IDeviceManager> m_standardFactories;
    };
    
 } //namespace rules

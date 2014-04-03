@@ -244,18 +244,18 @@ set(YADOMS_SRC
 	server/communication/command/Callback.cpp	
 	server/communication/rules/IRule.h
 	server/communication/rules/ICommandRule.h
-	server/communication/rules/IFactory.h
+	server/communication/rules/IDeviceManager.h
 	server/communication/rules/RuleInstanceManager.hpp
 	server/communication/rules/RulerFactory.h
 	server/communication/rules/RulerFactory.cpp
-	server/communication/rules/standard/RuleFactory.h
-	server/communication/rules/standard/RuleFactory.cpp
+	server/communication/rules/standard/DeviceManager.h
+	server/communication/rules/standard/DeviceManager.cpp
 	server/communication/rules/standard/X10Basic.h
 	server/communication/rules/standard/X10Basic.cpp
 	server/communication/rules/standard/SensorBasic.h
 	server/communication/rules/standard/SensorBasic.cpp
-	server/communication/rules/rfxLanXpl/RuleFactory.h
-	server/communication/rules/rfxLanXpl/RuleFactory.cpp
+	server/communication/rules/rfxLanXpl/DeviceManager.h
+	server/communication/rules/rfxLanXpl/DeviceManager.cpp
 	server/communication/rules/rfxLanXpl/AcBasic.h
 	server/communication/rules/rfxLanXpl/AcBasic.cpp
 	server/communication/rules/rfxLanXpl/SensorBasic.h

@@ -7,15 +7,15 @@
 namespace communication { namespace rules {
 
    //------------------------------------------
-   ///\brief   Interface for Rule factories
+   ///\brief   Interface for Device manager
    //------------------------------------------
-   class IFactory
+   class IDeviceManager
    {
    public:
       //------------------------------------------
       ///\brief   Destructor
       //------------------------------------------
-      virtual ~IFactory() {}
+      virtual ~IDeviceManager() {}
       
       //------------------------------------------
       ///\brief   Check if the message is handled by this factory
@@ -48,12 +48,6 @@ namespace communication { namespace rules {
       //--------------------------------
       virtual boost::shared_ptr<IRule> identifyRule(database::entities::CDevice & device, CRuleInstanceManager & instanceManager) = 0;
 
-      //--------------------------------
-      ///\brief Identify the Xpl actor for the device
-      ///\param [in]  device The device
-      ///\return the xplActor
-      //--------------------------------
-      virtual shared::xpl::CXplActor identifyXplActor(database::entities::CDevice & device)=0;
    };
    
    
