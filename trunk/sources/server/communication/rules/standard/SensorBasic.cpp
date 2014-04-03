@@ -62,13 +62,21 @@ namespace communication { namespace rules { namespace standard {
             !boost::iequals(currentKeyValuePair->first, "units"))
          {
             boost::shared_ptr<database::entities::CKeyword> descriptionKeyword(new database::entities::CKeyword());
-            descriptionKeyword->Name = currentKeyValuePair->first;
+            descriptionKeyword->Name = rewriteKeyword(currentKeyValuePair->first);
             keywords.push_back(descriptionKeyword);
          }
       }
 
       return keywords;
    }
+
+   std::string CSensorBasic::rewriteKeyword(const std::string & keyword)
+   {
+      if(boost::iequals(keyword, "temperature"))
+         return "temp";
+      return keyword;
+   }
+
 } //namespace standard
 } //namespace rules
 } //namespace communication

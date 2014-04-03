@@ -18,7 +18,7 @@ namespace communication { namespace rules { namespace rfxLanXpl {
    // IFactory implementation
    bool CDeviceManager::isHandled(shared::xpl::CXplMessage & message)
    {
-      return isHandled(message.getSource().toString()) || isHandled(message.getTarget().toString());
+      return isHandled(message.getSource().toString()) || (boost::istarts_with(message.getSource().getVendorId(), "yadoms") && isHandled(message.getTarget().toString()));
    }
 
    boost::shared_ptr<IRule> CDeviceManager::identifyRule(shared::xpl::CXplMessage & msg, CRuleInstanceManager & instanceManager)
