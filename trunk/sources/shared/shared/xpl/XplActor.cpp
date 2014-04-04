@@ -109,22 +109,54 @@ namespace shared { namespace xpl
 
    const CXplActor CXplActor::parse(const std::string & rawActorString)
    {
+      //an xplactor string shoudl match the pattern:
+      // vendorId-feviceId.instanceId
+      //
+      // a-z, 0-9 and "-" (lower case letters, numbers and the hyphen/dash character -- ASCII 45)
+      //
+      // According to Xpl protocol :
+      // vendorId 8 char max ( "-" is not authorized)
+      // deviceId 8 char max ( "-" is not authorized)
+      // instanceId 16 char max
       std::string lineString = boost::trim_copy(rawActorString);
 
+      //check for broadcast actor
       if (lineString == CXplHelper::WildcardString)
          return createBroadcastActor();
 
-      std::vector<std::string> line;
-      boost::split(line, lineString, boost::is_any_of("-."), boost::token_compress_on);
+      
+      //use regex to check:
+      // vendorId : is lower case and digits, from 1 to 8 characters
+      // deviceId : is lower case and digits, from 1 to 8 characters
+      // instanceId : is lower case and digits, with "-" , from 1 to 16 characters
+      //
+      // vendorId and deviceId are seprated by "-"
+      // deviceId and instanceId are seprated by "."
+      //
+      //To get the splitted result, just enclose expression by ( and )
+      //  (?<name>expr) is used to name the expr result
+      boost::regex re("^(?<vendor>[a-z0-9]{1,8})-(?<device>[a-z0-9]{1,8})\\.(?<instance>[a-z0-9-]{1,16})$");
 
-      //We must have 3 results : vendor Id, Device Id and instance Id
-      if (line.size() != 3)
-         throw CXplException("Header part must have 3 fields : vendor Id-Device Id.instance Id");
+      //check if it matches regex, and the result contains 4 fields (the first is the initial regex, the last 3 are vendor, device and instanceId)
+      boost::match_results<std::string::const_iterator> results;
+      if (!boost::regex_match(lineString, results, re) || results.size() != 4)
+      {
+         throw CXplException("Header part must have 3 fields : vendorId-DeviceId.instanceId");
+      }
+
+      //result[0] is the regex
+      //result[1] is the vendor
+      //result[2] is the device
+      //result[3] is the instance
+      std::string vendor = results[1];  
+      std::string device = results[2];  
+      std::string instance = results[3];
 
       CXplActor actor;
-      actor.setVendorId(line[0]);
-      actor.setDeviceId(line[1]);
-      actor.setInstanceId(line[2]);
+      actor.setVendorId(vendor);
+      actor.setDeviceId(device);
+      actor.setInstanceId(instance);
+
       return actor;
    }
 
