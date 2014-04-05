@@ -59,6 +59,7 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
       shared::xpl::CXplMessage temp;
       onXplMessageReceived(temp);
 
+      //TODO gérer une machine d'état pour essayer de se connecter réglièrement, et traiter les envoi/réceptions que si connecté
       while(1)
       {
          // Wait for an event
@@ -138,8 +139,10 @@ void CSmsDialer::onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage
 void CSmsDialer::processIncommingSMS()
 {
    // Check if incoming SMS
-   boost::shared_ptr<ISms> incommingSms = m_phone->getIncomingSMS();
-   if (!incommingSms)
+
+   //TODO
+   //boost::shared_ptr<std::vector<ISms> > incommingSms = m_phone->getIncomingSMS();
+   //if (!incommingSms)
       return;  // No new message
 
    //TODO : traiter le message reçu
