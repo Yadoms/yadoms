@@ -114,10 +114,9 @@ void CGammuPhone::sendSmsCallback(GSM_StateMachine *sm, int status, int MessageR
    }
 }
 
-//TODO : modifier la valeur de retour pour retourner une liste des messages reçus
-boost::shared_ptr<ISms> CGammuPhone::getIncomingSMS()
+boost::shared_ptr<std::vector<ISms> > CGammuPhone::getIncomingSMS()
 {
-   boost::shared_ptr<ISms> sms;
+   boost::shared_ptr<std::vector<ISms> > noSms;
    bool newSms;
    
    GSM_SMSMemoryStatus gammuSmsStatus;
@@ -144,22 +143,124 @@ boost::shared_ptr<ISms> CGammuPhone::getIncomingSMS()
       {
          // Error
          YADOMS_LOG(error) << "Error getting SMS status : " << gammuError;
-         return sms;
+         return noSms;
       }
    }
 
-   // SMS were found in phone
-   if (newSms)
-   {
-      return readAndDeleteSms();
-   }
-
-   return sms;
+   // No SMS found in phone
+   if (!newSms)
+      return noSms;
+   
+   // Read found SMS
+   return readSms(false);//TODO  passer à true
 }
 
-boost::shared_ptr<ISms> CGammuPhone::readAndDeleteSms() const
+boost::shared_ptr<std::vector<ISms> > CGammuPhone::readSms(bool deleteSms)
 {
-   //TODO voir le code de SMSD_ReadDeleteSMS (core.c)
-   boost::shared_ptr<ISms> sms;
-   return sms;
+   //TODO fonction à découper
+   boost::shared_ptr<std::vector<ISms> > noSms;
+   
+   GSM_MultiSMSMessage gammuSms;
+   std::vector<GSM_MultiSMSMessage> gammuSmsVector;
+   GSM_Error gammuError = ERR_NONE;
+
+   gboolean start = TRUE;
+   while (gammuError == ERR_NONE)
+   {
+      gammuSms.SMS[0].Folder = 0;
+      gammuError = GSM_GetNextSMS(m_connection.getGsmContext(), &gammuSms, start);
+
+      switch (gammuError)
+      {
+      case ERR_EMPTY:
+         {
+            // No more sms
+            break;
+         }
+      case ERR_NONE:
+         {
+            if (isValidMessage(&gammuSms))
+               gammuSmsVector.push_back(gammuSms);
+            break;
+         }
+      default:
+         {
+            YADOMS_LOG(error) << "Error getting SMS : " << gammuError;
+            return noSms;
+         }
+      }
+
+      start = FALSE;
+   }
+
+   // Now we have to regroup SMS (if some were parted)
+   // Convert from vector to array of pointers (as expected by GSM_LinkSMS function)
+   boost::shared_ptr<GSM_MultiSMSMessage*> gammuSmsPtrArray(new GSM_MultiSMSMessage*[gammuSmsVector.size()+1]);
+   size_t gammuSmsPtrArrayIndex = 0;
+   for (std::vector<GSM_MultiSMSMessage>::iterator it = gammuSmsVector.begin() ; it != gammuSmsVector.end() ; ++it)
+   {
+      gammuSmsPtrArray.get()[gammuSmsPtrArrayIndex++] = &(*it);
+   }
+   gammuSmsPtrArray.get()[gammuSmsPtrArrayIndex] = NULL;
+
+   boost::shared_ptr<GSM_MultiSMSMessage*> gammuSortedSmsPtrArray(new GSM_MultiSMSMessage*[gammuSmsVector.size()+1]);
+   if (GSM_LinkSMS(NULL, gammuSmsPtrArray.get(), gammuSortedSmsPtrArray.get(), TRUE) != ERR_NONE)
+   {
+      YADOMS_LOG(error) << "Error getting SMS : " << gammuError;
+      return noSms;
+   }
+
+   // Process messages
+   //TODO
+   //boost::shared_ptr<std::vector<ISms> > smsList(new std::vector<CSms>);
+   //for (size_t idxSms = 0 ; gammuSortedSmsPtrArray.get()[idxSms] != NULL ; ++i)
+   //{
+   //   // Check incomplete message (for long parted SMS)
+   //   if (!checkMultipart(gammuSortedSmsPtrArray.get()[idxSms]))
+   //   {
+   //      return noSms;
+   //   }
+
+   //   // Record the message
+   //   boost::shared_ptr<ISms> sms(new CSms(gammuSortedSmsPtrArray.get()[idxSms]->SMS.));
+
+   //   }
+
+      // Delete processed messages
+   //TODO
+      //if (deleteSms)
+      //{
+      //   for (int idxPart = 0 ; idxPart < gammuSortedSmsPtrArray.get()[idxSms]->Number ; ++idxPart)
+      //   {
+      //      gammuSortedSmsPtrArray.get()[idxSms]->SMS[idxPart].Folder = 0;
+      //      error = GSM_DeleteSMS(m_connection.getGsmContext(), &gammuSortedSmsPtrArray.get()[idxSms]->SMS[idxPart]);
+      //      switch (error)
+      //      {
+      //      case ERR_NONE:
+      //      case ERR_EMPTY:
+      //         break;
+      //      default:
+      //         YADOMS_LOG(error) << "Error deleting SMS : " << error;
+      //         return noSms;
+      //      }
+      //   }
+      //}
+   return noSms;
+}
+
+bool CGammuPhone::isValidMessage(GSM_MultiSMSMessage* gammuSms) const
+{
+   // SMS is not in Inbox SMS ==> exit
+   if (!gammuSms->SMS[0].InboxFolder)
+      return false;
+
+   // Message is OK
+   YADOMS_LOG(debug) << "Received message";
+   return true;
+}
+
+bool CGammuPhone::checkMultipart(GSM_MultiSMSMessage* gammuSms)
+{
+   //TODO
+   return false;
 }

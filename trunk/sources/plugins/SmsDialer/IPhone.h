@@ -21,9 +21,9 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                  Get the next incoming message
-   /// \return                   The incoming message, NULL if none
+   /// \return                   The list of incoming messages, NULL if none
    //--------------------------------------------------------------
-   virtual boost::shared_ptr<ISms> getIncomingSMS() = 0;
+   virtual boost::shared_ptr<std::vector<ISms> > getIncomingSMS() = 0;
 };
 
 

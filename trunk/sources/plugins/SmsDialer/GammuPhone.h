@@ -22,7 +22,7 @@ public:
 
    // IPhone implementation
    virtual void send(boost::shared_ptr<ISms> sms);
-   virtual boost::shared_ptr<ISms> getIncomingSMS();
+   boost::shared_ptr<std::vector<ISms> > getIncomingSMS();
   // [END] IPhone implementation
 
 protected:
@@ -45,9 +45,24 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	                  Read and delete SMS from phone
-   /// \return                   The next message
+   /// \param[in] deleteSms         true to delete the read message
+   /// \return                   The list of received SMS
    //--------------------------------------------------------------
-   boost::shared_ptr<ISms> readAndDeleteSms() const;
+   boost::shared_ptr<std::vector<ISms> > readSms(bool deleteSms = true);
+
+   //--------------------------------------------------------------
+   /// \brief	                  Check if message is valid
+   /// \param[in] gammuSms       The message
+   /// \return                   true if valid
+   //--------------------------------------------------------------
+   bool isValidMessage(GSM_MultiSMSMessage* gammuSms) const;
+
+   //--------------------------------------------------------------
+   /// \brief	                  Check if message is multi-parted
+   /// \param[in] gammuSms       The message
+   /// \return                   true if multi-parted
+   //--------------------------------------------------------------
+   bool checkMultipart(GSM_MultiSMSMessage* gammuSms);
 
 private:
    //--------------------------------------------------------------
