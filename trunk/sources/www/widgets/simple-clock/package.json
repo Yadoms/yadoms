@@ -70,7 +70,7 @@
                 "description" : "Permit to enable the widget",
                 "defaultValue" : "true"
              },
-             "CurrentCoefficient" : {
+             "currentCoefficient" : {
                 "type" : "decimal",
                 "name" : "correction coefficient",
                 "description" : "Set a correction coefficient to adjust the value",
@@ -78,6 +78,37 @@
                 "maximumValue" : "1.0",
                 "minimumValue" : "-1.0",
                 "precision" : "2"
+             }
+          }
+       },
+       "connection" : {
+          "type" : "radioSection",
+          "name" : "Connection",
+          "description" : "kind of connection used",
+          "content" : {
+             "ethernet" : {
+                "type" : "section",
+                "name" : "Ethernet",
+                "description" : "An ethernet connection",
+                "content" : {
+                   "ipAddress" : {
+                      "type" : "string",
+                      "name" : "IP Address",
+                      "description" : "Set the IP Address of the peripheral"
+                   }
+                }
+             },
+             "serial" : {
+                "type" : "section",
+                "name" : "Serial",
+                "description" : "A serial Connection",
+                "content" : {
+                   "serialPort" : {
+                      "type" : "string",
+                      "name" : "Serial Port Name",
+                      "description" : "Set the serial port name where the peripheral is plugged on of the peripheral"
+                   }
+                }
              }
           }
        }
