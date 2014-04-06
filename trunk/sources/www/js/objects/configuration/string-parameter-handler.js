@@ -33,7 +33,7 @@ function StringParameterHandler(i18nContext, paramName, content, currentValue) {
 StringParameterHandler.prototype.getDOMObject = function () {
    var input = "<input " +
                         "type=\"text\" " +
-                        "class=\"form-control enableValidation\" " +
+                        "class=\"form-control enable-validation\" " +
                         "id=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\"" +
                         "required ";

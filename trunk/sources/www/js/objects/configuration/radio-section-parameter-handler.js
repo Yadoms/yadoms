@@ -7,6 +7,7 @@ function RadioSectionParameterHandler(objectToConfigure, i18nContext, paramName,
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
+   assert(Object.keys(content.content).length >= 2, "You must have at least two sub sections into a radioSection");
 
    this.objectToConfigure = objectToConfigure;
    this.configurationHandlers = new Array();
@@ -20,10 +21,19 @@ function RadioSectionParameterHandler(objectToConfigure, i18nContext, paramName,
    this.radioGroupUuid = createUUID();
    var self = this;
 
+   if (isNullOrUndefined(self.configurationValues))
+      self.configurationValues = {};
+
+   if (isNullOrUndefined(self.configurationValues.activeSection)) {
+      //for the moment no section have been defined so we select the first one
+      self.configurationValues.activeSection = Object.keys(content.content)[0];
+   }
+
+
    //for each key in package
    $.each(content.content, function (key, value) {
       var v = undefined;
-      if ((self.configurationValues !== undefined) && (self.configurationValues != null) && (self.configurationValues.values != null) && (self.configurationValues.values != undefined))
+      if ((self.configurationValues.values != null) && (self.configurationValues.values != undefined))
          v = self.configurationValues.values[key];
 
       var newI18nContext = i18nContext + self.paramName + ".";
@@ -32,7 +42,7 @@ function RadioSectionParameterHandler(objectToConfigure, i18nContext, paramName,
       assert((value.type !== undefined), "Content section of the configuration " + self.name + " must be defined");
       assert((value.type.toLowerCase() == "section"), "Content section of the configuration " + self.name + " must contain only section items");
       var radioActive = false;
-      if ((self.configurationValues !== undefined) && (self.configurationValues.activeSection == key))
+      if (self.configurationValues.activeSection == key)
          radioActive = true;
       var handler = new SectionParameterHandler(self.objectToConfigure, newI18nContext, key, value, v, self.radioGroupUuid, radioActive);
       self.configurationHandlers.push(handler);

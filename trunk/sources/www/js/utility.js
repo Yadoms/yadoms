@@ -101,3 +101,7 @@ function createUUID() {
    var uuid = s.join("");
    return uuid;
 }
+
+function isNullOrUndefined(object) {
+   return ((object === undefined) || (object == null));
+}
