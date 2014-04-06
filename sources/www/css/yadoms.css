@@ -187,3 +187,7 @@ body {
 .iconMenuItem {
     margin-right: 10px;
 }
+
+.radioSection {
+    float: left;
+}

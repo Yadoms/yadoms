@@ -2,7 +2,8 @@
  * Created by Nicolas on 01/03/14.
  */
 
-function SectionParameterHandler(objectToConfigure, i18nContext, paramName, content, currentValue) {
+//radioButtonSectionName is only for section contained in radioSection content
+function SectionParameterHandler(objectToConfigure, i18nContext, paramName, content, currentValue, radioButtonSectionName, radioSectionActive) {
    assert(objectToConfigure !== undefined, "objectToConfigure must contain widget or plugin object");
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
@@ -17,6 +18,15 @@ function SectionParameterHandler(objectToConfigure, i18nContext, paramName, cont
    this.content = content;
    this.cbValue = undefined;
    this.uuid = createUUID();
+   this.selectorUuid = createUUID();
+
+   //we look for radio button
+   if (radioButtonSectionName !== undefined) {
+      this.radioButtonSectionName = radioButtonSectionName;
+      this.radioSectionActive = false;
+      if (radioSectionActive !== undefined)
+         this.radioSectionActive = parseBool(radioSectionActive);
+   }
 
    var self = this;
 
@@ -29,7 +39,6 @@ function SectionParameterHandler(objectToConfigure, i18nContext, paramName, cont
 
    if (this.enableWithCheckBox) {
       //we have to add a checkbox
-      this.cbUuid = createUUID();
       //we look for the current value of the checkbox
       if ((self.configurationValues !== undefined) && (self.configurationValues != null))
          this.cbValue = self.configurationValues.checkbox;
@@ -37,13 +46,10 @@ function SectionParameterHandler(objectToConfigure, i18nContext, paramName, cont
          this.cbValue = content.enableWithCheckBoxDefaultValue;
       else
          this.cbValue = false;
-
-      //we get the behavior to have when the checkbox is unchecked (disabled, hidden, or collapsed)
-      if ((content.checkBoxBehavior !== undefined) && (content.checkBoxBehavior != null))
-         this.uncheckedBehavior = content.uncheckedBehavior;
-      else
-         this.uncheckedBehavior = "disabled";
    }
+
+   //if radioButtonSectionName is defined enableWithCheckBox can't
+   assert((this.radioButtonSectionName === undefined) || (!this.enableWithCheckBox), "enableWithCheckBox parameter can't be used in section in radioSection");
 
    //for each key in package
    $.each(content.content, function (key, value) {
@@ -66,11 +72,20 @@ SectionParameterHandler.prototype.getDOMObject = function () {
    if (this.enableWithCheckBox) {
       input +=       "<div class=\"checkbox\">" +
                         "<label>" +
-                           "<input type=\"checkbox\" id=\"" + this.cbUuid + "\"";
+                           "<input type=\"checkbox\" id=\"" + this.selectorUuid + "\"";
       if (this.cbValue)
          input +=                "checked ";
       input +=             ">";
    }
+   if (this.radioButtonSectionName) {
+      input +=       "<div class=\"radio\">" +
+                        "<label>" +
+                           "<input type=\"radio\" id=\"" + this.selectorUuid + "\" name=\"" + this.radioButtonSectionName + "\" ";
+      if (this.radioSectionActive)
+         input +=                "checked ";
+      input +=             ">";
+   }
+
    input +=                "<span data-i18n=\"" + this.i18nContext + this.paramName + ".name\" >" +
                               this.name +
                            "</span>";
@@ -78,29 +93,55 @@ SectionParameterHandler.prototype.getDOMObject = function () {
       input +=          "</label>" +
                      "</div>" +
                      "<script>\n" +
-                        "$(\"#" + this.cbUuid + "\").change(function () {\n" +
-                           "if ($(\"#" + this.cbUuid + "\").prop(\"checked\")) {\n" +
-                              "\t$(\"#" + this.uuid + "\").removeClass(\"hidden\");\n" +
-                              "\t$(\"#" + this.uuid + "\").removeClass(\"has-warning\");\n" +
-                              "\t$(\"#" + this.uuid + "\").find(\"input,select,textarea\").addClass(\"enable-validation\");\n" +
+                        "$(\"#" + this.selectorUuid + "\").change(function () {\n" +
+                           "if ($(\"#" + this.selectorUuid + "\").prop(\"checked\")) {\n" +
+                              "\t$(\"div#" + this.uuid + "\").removeClass(\"hidden\");\n" +
+                              "\t$(\"div#" + this.uuid + "\").removeClass(\"has-warning\");\n" +
+                              "\t$(\"div#" + this.uuid + "\").find(\"input,select,textarea\").addClass(\"enable-validation\");\n" +
                            "}\n" +
                            "else {\n" +
-                              "\t$(\"#" + this.uuid + "\").addClass(\"hidden\");\n" +
-                              "\t$(\"#" + this.uuid + "\").removeClass(\"has-warning\");\n" +
-                              "\t$(\"#" + this.uuid + "\").find(\"input,select,textarea\").removeClass(\"enable-validation\");\n" +
+                              "\t$(\"div#" + this.uuid + "\").addClass(\"hidden\");\n" +
+                              "\t$(\"div#" + this.uuid + "\").removeClass(\"has-warning\");\n" +
+                              "\t$(\"div#" + this.uuid + "\").find(\"input,select,textarea\").removeClass(\"enable-validation\");\n" +
+                           "}\n" +
+                        "});\n" +
+                     "</script>";
+      //debugger;
+   }
+
+   //if it's included in a radioSection
+   if (this.radioButtonSectionName) {
+      input +=          "</label>" +
+                     "</div>" +
+                     "<script>\n" +
+                        "$(\"#" + this.selectorUuid + "\").change(function () {\n" +
+                           "if ($(\"input#" + this.selectorUuid + ":checked\").val() == \"on\") {\n" +
+                              "\t//we hide all sections-content in the radioSection\n" +
+                              "\tvar radioSections = $(\"input#" + this.selectorUuid + "\").parents(\"div.configuration-radio-section\").find(\"div.section-content\");\n" +
+                              "\tradioSections.addClass(\"hidden\");\n" +
+                              "\tradioSections.removeClass(\"has-warning\");\n" +
+                              "\tradioSections.find(\"input,select,textarea\").removeClass(\"enable-validation\");\n" +
+                              "\t//we show current\n" +
+                              "\t$(\"div#" + this.uuid + "\").removeClass(\"hidden\");\n" +
+                              "\t$(\"div#" + this.uuid + "\").removeClass(\"has-warning\");\n" +
+                              "\t$(\"div#" + this.uuid + "\").find(\"input,select,textarea\").addClass(\"enable-validation\");\n" +
                            "}\n" +
                         "});\n" +
                      "</script>";
    }
+
    input +=       "</div>" +
                   "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.paramName + ".description\" >" +
                      this.description +
                   "</div>" +
                   "<div id=\"" + this.uuid + "\" ";
 
-   //if checkbox is unchecked
-   if ((this.enableWithCheckBox) && (!this.cbValue)) {
-      input +=       "class=\"hidden\" ";
+   //if checkbox is unchecked or the radio button is unselected
+   if (((this.enableWithCheckBox) && (!this.cbValue)) || ((this.radioSectionActive !== undefined) && (!this.radioSectionActive))) {
+      input +=       "class=\"section-content hidden\" ";
+   }
+   else {
+      input +=       "class=\"section-content\" ";
    }
    input +=       ">";
 
@@ -131,7 +172,13 @@ SectionParameterHandler.prototype.getCurrentConfiguration = function () {
 
    //we get the checkbox value if used
    if (this.enableWithCheckBox) {
-      self.configurationValues.checkbox = parseBool($("input#" + this.cbUuid).prop("checked"));
+      self.configurationValues.checkbox = parseBool($("input#" + this.selectorUuid).prop("checked"));
    }
+
+   //we get the radioButton value if used
+   if (this.radioButtonSectionName) {
+      self.configurationValues.radio = parseBool($("input#" + this.selectorUuid + ":checked").val(), false);
+   }
+
    return self.configurationValues;
 };

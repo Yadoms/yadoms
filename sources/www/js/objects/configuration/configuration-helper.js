@@ -71,6 +71,10 @@ ConfigurationHelper.createParameterHandler = function (objectToConfigure, i18nCo
          return new SectionParameterHandler(objectToConfigure, i18nContext, paramName, content, currentValue);
          break;
 
+      case "radiosection" :
+         return new RadioSectionParameterHandler(objectToConfigure, i18nContext, paramName, content, currentValue);
+         break;
+
       case "device" :
          return new DeviceParameterHandler(i18nContext, paramName, content, currentValue);
          break;

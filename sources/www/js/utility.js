@@ -68,11 +68,11 @@ function notifyError(message)
    return notify(message, 'error');
 }
 
-function parseBool(string) {
+function parseBool(string, defaultValue) {
    if (string === undefined)
-      return undefined;
+      return defaultValue;
    if (string == null)
-      return null;
+      return defaultValue;
    if (typeof(string)=='boolean')
       return string;
    switch(string.toLowerCase()){
