@@ -94,7 +94,9 @@
                    "ipAddress" : {
                       "type" : "string",
                       "name" : "IP Address",
-                      "description" : "Set the IP Address of the peripheral"
+                      "description" : "Set the IP Address of the peripheral",
+                      "regex" : "([0-9]{1,3}\\.){3}[0-9]{1,3}",
+                      "regexErrorMessage" : "Must be an ipv4 adress like 192.168.0.12"
                    }
                 }
              },

@@ -22,6 +22,12 @@ function StringParameterHandler(i18nContext, paramName, content, currentValue) {
    if (!isNaN(this.maximumLength))
       this.value =  this.value.substr(0,this.maximumLength);
 
+   //we look for a regex pattern
+   if (!isNullOrUndefined(content.regex)) {
+      this.regex = content.regex;
+      this.regexErrorMessage = content.regexErrorMessage;
+   }
+
    this.name = content.name;
    this.uuid = createUUID();
    this.paramName = paramName;
@@ -39,6 +45,11 @@ StringParameterHandler.prototype.getDOMObject = function () {
                         "required ";
    if (!isNaN(this.maximumLength))
       input += "maxlength=\"" + this.maximumLength + "\" ";
+
+   if (!isNullOrUndefined(this.regex)) {
+      input += "pattern=\"" + this.regex + "\" data-i18n=\"[data-validation-pattern-message]" + this.i18nContext + this.paramName + ".regexErrorMessage\" " +
+               "data-validation-pattern-message=\"" + this.regexErrorMessage + "\"";
+   }
 
    input += " value =\"" + this.value + "\" >";
    input += "</input>";
