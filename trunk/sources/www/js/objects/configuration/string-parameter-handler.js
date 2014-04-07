@@ -43,15 +43,21 @@ StringParameterHandler.prototype.getDOMObject = function () {
                         "id=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\"" +
                         "required ";
+   var dataI18n = "data-i18n=\"";
+   dataI18n += "[data-content]" + this.i18nContext + this.paramName + ".description";
+
    if (!isNaN(this.maximumLength))
       input += "maxlength=\"" + this.maximumLength + "\" ";
 
    if (!isNullOrUndefined(this.regex)) {
-      input += "pattern=\"" + this.regex + "\" data-i18n=\"[data-validation-pattern-message]" + this.i18nContext + this.paramName + ".regexErrorMessage\" " +
-               "data-validation-pattern-message=\"" + this.regexErrorMessage + "\"";
+      input += "pattern=\"" + this.regex + "\" data-validation-pattern-message=\"" + this.regexErrorMessage + "\"";
+      dataI18n += ";[data-validation-pattern-message]" + this.i18nContext + this.paramName + ".regexErrorMessage";
    }
 
-   input += " value =\"" + this.value + "\" >";
+   dataI18n += "\"";
+
+   input += " value =\"" + this.value + "\" ";
+   input += dataI18n + " >";
    input += "</input>";
 
    var self = this;

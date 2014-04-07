@@ -54,7 +54,7 @@
          submitSuccess: function($form, event) {
             event.preventDefault();
             widgetToConfigure.configuration = configMgr.getCurrentConfiguration();
-            debugger;
+
             $.ajax({
               type: "PUT",
               url: "/rest/widget/" + widgetToConfigure.id,

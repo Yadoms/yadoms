@@ -2,9 +2,14 @@
    "time" : "Temps :",
    "description": "Un widget d'horloge redimensionnable",
    "configurationSchema" : {
+      "fakeText" : {
+         "name" : "parametre d'IP",
+         "description" : "FRANCAIS",
+         "regexErrorMessage" : "Doit etre un IP du style 192.168.0.12"
+      },
       "intParameter" : {
-         "name" : "Paramètre entier",
-         "description" : "Test d'un paramètre entier"
+            "name" : "Paramètre entier",
+            "description" : "Test d'un paramètre entier"
       },
       "coefficient" : {
          "name" : "Coefficient",
