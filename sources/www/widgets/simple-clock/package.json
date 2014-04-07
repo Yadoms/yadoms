@@ -18,6 +18,14 @@
         }
     },
     "configurationSchema": {
+       "fakeText" : {
+          "name" : "IP parameter",
+          "description" : "A free text parameter",
+          "type" : "string",
+          "defaultValue" : "default value",
+          "regex" : "([0-9]{1,3}\\.){3}[0-9]{1,3}",
+          "regexErrorMessage" : "Must be an ipv4 adress like 192.168.0.12"
+       },
        "intParameter" : {
           "type" : "int",
           "name" : "int parameter",
