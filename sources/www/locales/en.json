@@ -12,13 +12,51 @@
       }
    },
    "modals" : {
-      "qrcode" : {
-         "title" : "QR Code de Yadoms"
+      "add-widget" : {
+         "title" : "Add a new widget",
+         "getMore" : "Get More widgets",
+         "errorDuringGettingPackages" : "Error during requesting widget packages",
+         "errorDuringCreatingWidget" : "Error during creating widget",
+         "widgetSuccessfullyCreated" : "Widget successfully created",
+         "unableToCreateWidgetOfType" : "Unable to create widget of type __widgetType__"
       },
       "configure-widget" : {
-         "title" : "Widget configuration"
+         "title" : "Widget configuration",
+         "errorDuringModifyingWidget" : "Error during modifying widget",
+         "errorDuringModifyingWidgetNamed" : "Error during modifying widget of type __widgetType__"
+      },
+      "delete-widget" : {
+         "title" : "Delete widget confirmation",
+         "text" : "This operation will delete widget __widgetType__. Continue anyway ?",
+         "widgetSuccessfullyDeleted" : "Widget successfully deleted",
+         "errorDuringDeletingWidget" : "Error during deleting widget",
+         "errorDuringDeletingWidgetNamed" : "Error during deleting widget of type __widgetType__"
+      },
+      "delete-page" : {
+         "title" : "Delete page confirmation",
+         "text" : "This operation will delete page __pageName__ and all of its widgets. Continue anyway ?",
+         "pageSuccessfullyDeleted" : "Page successfully deleted",
+         "errorDuringDeletingPage" : "Error during deleting page",
+         "errorDuringDeletingPageNamed" : "Error during deleting page __pageName__"
+      },
+      "modify-page" : {
+         "renamePageTitle" : "Rename Page",
+         "renamePageValidationButton" : "Rename",
+         "createNewPageTitle" : "Create a new Page",
+         "createNewPageValidationButton" : "Create",
+         "errorDuringModifyingPage" : "Error during modifying page",
+         "errorDuringModifyingPageNamed" : "Error during modifying page __pageName__",
+         "errorDuringCreatingPage" : "Error during creating page",
+         "errorDuringCreatingPageNamed" : "Error during creating page __pageName__",
+         "placeholder" : "Enter Page name"
+      },
+      "qrcode" : {
+         "title" : "QR Code de Yadoms",
+         "text" : "Here is the QRCode of Yadoms. You can now flash it with your phone to access Yadoms everywhere."
       },
       "ok" : "Ok",
+      "confirm" : "Confirm",
+      "close" : "Close",
       "cancel" : "Cancel"
    },
    "widgets" : {

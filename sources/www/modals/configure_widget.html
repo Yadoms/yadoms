@@ -40,7 +40,7 @@
       var $modalBody = $('div#configure-widget-modal').find(".modal-body");
       $modalBody.empty();
       var configMgr = new ConfigurationManager(widgetToConfigure, $modalBody);
-      debugger;
+
       //i18n
       $modalBody.i18n();
 
@@ -48,8 +48,8 @@
       $modalBody.find("input,select,textarea").jqBootstrapValidation({
          preventSubmit: true,
          submitError: function($form, event, errors) {
-           // Here I do nothing, but you could do something like display
-           // the error messages to the user, log, etc.
+            debugger;
+            //nothing to do
          },
          submitSuccess: function($form, event) {
             event.preventDefault();
@@ -66,15 +66,15 @@
                //we parse the json answer
                if (data.result != "true")
                {
-                notifyError("Error during modifying page");
-                return;
+                  notifyError($.t("modals.configure-widget.errorDuringModifyingWidget"));
+                  return;
                }
 
                //we notify the widget its configuration has changed
                if (widgetToConfigure.viewModel.configurationChanged !== undefined)
                   widgetToConfigure.viewModel.configurationChanged();
             })
-            .fail(function(pageName) { return function() {notifyError("Unable to modify widget configuration " + widgetName)}}(widgetToConfigure.name))
+            .fail(function(widgetName) { return function() {notifyError($.t("modals.configure-widget.errorDuringModifyingWidgetNamed", {"widgetType" : widgetName}));};}(widgetToConfigure.name))
             .always(function() {
                //we clear the current id
                widgetToConfigure = undefined;
@@ -94,7 +94,6 @@
    }
 
    $('div#configure-widget-modal').on('shown.bs.modal', function () {
-       //$('input#configuration-widget-text').focus();
     });
 
 </script>

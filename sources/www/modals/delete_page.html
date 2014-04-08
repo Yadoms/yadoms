@@ -6,14 +6,13 @@
        <div class="modal-content">
            <div class="modal-header">
                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-               <h4 class="modal-title" id="myModalLabel">Delete Page confirmation</h4>
+               <h4 class="modal-title" id="myModalLabel" data-i18n="modals.delete-page.title">Delete page confirmation</h4>
            </div>
            <div class="modal-body">
-               <p>You will delete page <span id="name-delete-page-modal"></span> and all of its widgets. Continue anyway ?</p>
            </div>
            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-              <button id="btn-confirm-delete-page" type="button" class="btn btn-primary">Confirm</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="modals.cancel">Cancel</button>
+              <button id="btn-confirm-delete-page" type="button" class="btn btn-primary" data-i18n="modals.confirm">Confirm</button>
            </div>
        </div>
    </div>
@@ -26,7 +25,7 @@
       pageToDelete = pageContainer.getPage(pageId);
       assert(pageToDelete != null, "page Id doesn't exit");
 
-      $("span#name-delete-page-modal").text(pageToDelete.name);
+      $("div#delete-page-modal").find("div.modal-body").text($.t("modals.delete-page.text", { pageName : pageToDelete.name}));
 
       //we display the modal
       $('div#delete-page-modal').modal();
@@ -51,17 +50,18 @@
          //we parse the json answer
          if (data.result != "true")
          {
-           notifyError("Error during deleting page");
+           notifyError($.t("modals.delete-page.errorDuringDeletingPage"));
            return;
          }
 
+         notifySuccess($.t("modals.delete-page.pageSuccessfullyDeleted"));
          //we delete the page dynamically
          pageToDelete.$tab.remove();
          pageToDelete.$content.remove();
          pageContainer.pages.splice( $.inArray(pageToDelete, pageContainer.pages), 1);
          ensureOnePageIsSelected();
       })
-      .fail(function(pageName) { return function() {notifyError("Unable to delete page " + pageName)}}(pageToDelete.name))
+      .fail(function(pageName) { return function() {notifyError($.t("modals.delete-page.errorDuringDeletingPageNamed", {"pageName" : pageName}));};}(pageToDelete.name))
       .always(function() {
         //we clear the current id
         pageToDelete = null;
