@@ -6,7 +6,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Add a new Widget</h4>
+                <h4 class="modal-title" id="myModalLabel" data-i18n="modals.add-widget.title">Add a new Widget</h4>
             </div>
             <div class="modal-body">
                 <div id="new-widget-carousel" class="carousel slide">
@@ -26,9 +26,9 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="btn-get-more-widget" type="button" class="btn btn-primary pull-left">Get more widget</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button id="btn-confirm-add-widget" type="button" class="btn btn-primary">Add new</button>
+                <button id="btn-get-more-widget" type="button" class="btn btn-primary pull-left" data-i18n="modals.add-widget.getMore">Get more widget</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="modals.cancel">Cancel</button>
+                <button id="btn-confirm-add-widget" type="button" class="btn btn-primary" data-i18n="modals.ok">Add new</button>
             </div>
         </div>
     </div>
@@ -42,7 +42,7 @@
     {
        $.getJSON("rest/widget/packages")
                .done(requestWidgetsTypeDone())
-               .fail(function() {notifyError("Unable to get widget packages")});
+               .fail(function() {notifyError($.t("modals.add-widget.errorDuringGettingPackages"));});
     }
 
     /**
@@ -55,7 +55,7 @@
           //we parse the json answer
           if (data.result != "true")
           {
-             notifyError("Error during requesting widget packages");
+             notifyError($.t("modals.add-widget.errorDuringGettingPackages"));
              return;
           }
           $("div#new-widget-carousel > div.carousel-inner > div").remove();
@@ -94,31 +94,32 @@
        var currentPage = getCurrentPage();
        assert(currentPage != null, "A page must be selected");
 
-        //we close the new widget modal
-        $("div#new-widget-modal").modal("hide");
+       //we close the new widget modal
+       $("div#new-widget-modal").modal("hide");
 
-        var packageName = $('div#new-widget-carousel div.active').attr("package");
+       var packageName = $('div#new-widget-carousel div.active').attr("package");
         
-        $.ajax({
+       $.ajax({
             type: "POST",
             url: "/rest/widget",
             data: JSON.stringify({ idPage: currentPage.id, name: packageName, sizeX: "1", sizeY:"1", positionX:"1", positionY:"1" }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
-        })
-        .done(function(data) {
-            //we parse the json answer
-            if (data.result != "true")
-            {
-               notifyError("Error during creating widget");
-               return;
-            }
-            notifySuccess("Widget successfully created");
-            //we add the widget dynamically
-            var w = new Widget(data.data.id, data.data.idPage, data.data.name, data.data.sizeX, data.data.sizeY, data.data.positionX, data.data.positionY, data.data.configuration);
-            addWidgetToIHM(w);
-        })
-        .fail(function(widgetName) { return function() {notifyError("Unable to create widget of type " + widgetName)}}(packageName));
+       })
+       .done(function(data) {
+           //we parse the json answer
+           if (data.result != "true")
+           {
+              notifyError($.t("modals.add-widget.errorDuringCreatingWidget"));
+              return;
+           }
+
+           notifySuccess($.t("modals.add-widget.widgetSuccessfullyCreated"));
+           //we add the widget dynamically
+           var w = new Widget(data.data.id, data.data.idPage, data.data.name, data.data.sizeX, data.data.sizeY, data.data.positionX, data.data.positionY, data.data.configuration);
+           addWidgetToIHM(w);
+       })
+       .fail(function(widgetName) { return function() {notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {"widgetType" : widgetName}))}}(packageName));
     });
 
 </script>

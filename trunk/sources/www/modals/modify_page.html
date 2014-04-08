@@ -4,14 +4,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="modify-page-modal-title">New Page</h4>
+                <h4 class="modal-title" id="modify-page-modal-title"></h4>
             </div>
             <div class="modal-body">
-               <input id="modify-page-text" type="text" class="form-control" placeholder="Enter Page name">
+               <input id="modify-page-text" type="text" class="form-control" placeholder="Enter Page name" data-i18n="[placeholder]modals.modify-page.placeholder">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button id="btn-confirm-modify-page" type="button" class="btn btn-primary">Create</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="modals.cancel">Cancel</button>
+                <button id="btn-confirm-modify-page" type="button" class="btn btn-primary"></button>
             </div>
         </div>
     </div>
@@ -30,15 +30,15 @@
          assert(pageCurrentlyModified != null, "page Id doesn't exit");
 
          //we are currently modifying a page
-         $("h4#modify-page-modal-title").text("Rename page");
-         $("button#btn-confirm-modify-page").text("Rename");
+         $("h4#modify-page-modal-title").text($.t("modals.modify-page.renamePageTitle"));
+         $("button#btn-confirm-modify-page").text($.t("modals.modify-page.renamePageValidationButton"));
          $("input#modify-page-text").val(pageCurrentlyModified.name);
       }
       else
       {
          //we are currently adding a new page
-         $("h4#modify-page-modal-title").text("Create a new page");
-         $("button#btn-confirm-modify-page").text("Create");
+         $("h4#modify-page-modal-title").text($.t("modals.modify-page.createNewPageTitle"));
+         $("button#btn-confirm-modify-page").text($.t("modals.modify-page.createNewPageValidationButton"));
          $("input#modify-page-text").val("");
       }
       //we display the modal
@@ -71,7 +71,7 @@
            //we parse the json answer
            if (data.result != "true")
            {
-              notifyError("Error during modifying page");
+              notifyError($.t("modals.modify-page.errorDuringModifyingPage"));
               return;
            }
 
@@ -80,7 +80,7 @@
            pageCurrentlyModified.name = newName;
            pageCurrentlyModified.$tab.find("a span").text(newName);
          })
-         .fail(function(pageName) { return function() {notifyError("Unable to modify page " + pageName)}}(newPageName))
+         .fail(function(pageName) { return function() {$.t("modals.delete-page.errorDuringDeletingPageNamed", {"pageName" : pageName});};}(newPageName))
          .always(function() {
             //we clear the current id
             pageCurrentlyModified = undefined;
@@ -109,7 +109,7 @@
            //we parse the json answer
            if (data.result != "true")
            {
-              notifyError("Error during creating page");
+              notifyError($.t("modals.modify-page.errorDuringCreatingPage"));
               return;
            }
 
@@ -118,7 +118,7 @@
            pageContainer.addPage(p);
            addPageToIHM(p);
          })
-         .fail(function(pageName) { return function() {notifyError("Unable to create page " + pageName)}}(newPageName));
+         .fail(function(pageName) { return function() {$.t("modals.delete-page.errorDuringCreatingPageNamed", {"pageName" : pageName});};}(newPageName));
       }
    });
 

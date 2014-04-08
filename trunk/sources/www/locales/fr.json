@@ -12,13 +12,51 @@
       }
    },
    "modals" : {
-      "qrcode" : {
-         "title" : "QR Code de Yadoms"
+      "add-widget" : {
+         "title" : "Ajouter un nouveau widget",
+         "getMore" : "Obtenir des widgets",
+         "errorDuringGettingPackages" : "Erreur lors de la demande les paquets des widgets",
+         "errorDuringCreatingWidget" : "Erreur pendant la creation du widget",
+         "widgetSuccessfullyCreated" : "Widget créé avec succès",
+         "unableToCreateWidgetOfType" : "Impossible de créer le widget du type __widgetType__"
       },
       "configure-widget" : {
-         "title" : "Configuration du widget"
+         "title" : "Configuration du widget",
+         "errorDuringModifyingWidget" : "Erreur pendant la modification de la configuration du widget",
+         "errorDuringModifyingWidgetNamed" : "Erreur pendant la modification de la configuration du widget de type __widgetType__"
+      },
+      "delete-widget" : {
+         "title" : "Confirmation de la suppression du widget",
+         "text" : "Cette opération va supprimer le widget de type __widgetType__. Continuer tout de même ?",
+         "widgetSuccessfullyDeleted" : "Widget supprimé avec succés",
+         "errorDuringDeletingWidget" : "Erreur pendant la suppression du widget",
+         "errorDuringDeletingWidgetNamed" : "Erreur pendant la suppression du widget de type __widgetType__"
+      },
+      "delete-page" : {
+         "title" : "Confirmation de la suppression d'une page",
+         "text" : "Cette opération va supprimer la page __pageName__ ainsi que tous les widgets qu'elle contient. Continuer tout de même ?",
+         "pageSuccessfullyDeleted" : "Page supprimée avec succés",
+         "errorDuringDeletingPage" : "Erreur pendant la suppression de la page",
+         "errorDuringDeletingPageNamed" : "Erreur pendant la suppression de la page __pageName__"
+      },
+      "modify-page" : {
+         "renamePageTitle" : "Renommer une page",
+         "renamePageValidationButton" : "Renommer",
+         "createNewPageTitle" : "Créer une nouvelle page",
+         "createNewPageValidationButton" : "Créer",
+         "errorDuringModifyingPage" : "Erreur pendant la modification de la page",
+         "errorDuringModifyingPageNamed" : "Erreur pendant la modification de la page __pageName__",
+         "errorDuringCreatingPage" : "Erreur pendant la creation de la page",
+         "errorDuringCreatingPageNamed" : "Erreur pendant la creation de la page __pageName__",
+         "placeholder" : "Saisissez un nom de page"
+      },
+      "qrcode" : {
+         "title" : "QR Code de Yadoms",
+         "text" : "Voici le QRCode de Yadoms. Vous pouvez le flasher avec votre téléphone pour accéder à Yadoms de partout."
       },
       "ok" : "Ok",
+      "confirm" : "Confirmer",
+      "close" : "Fermer",
       "cancel" : "Annuler"
    },
    "widgets" : {
@@ -26,6 +64,7 @@
          "validationForm" : {
             "incorrectValue" : "Valeur incorrecte",
             "onlyIntegerNumberAllowed" : "Seulement les nombres entiers sont autorisés",
+            "onlyNumberAllowed" : "Seulement les nombres sont autorisés",
             "maxValueExceeded" : "La valeur ne peut pas être supérieure à __maxValue__",
             "minValueExceeded" : "La valeur ne peut pas être inférieure à __minValue__"
          }
