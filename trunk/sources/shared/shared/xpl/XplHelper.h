@@ -44,6 +44,14 @@ namespace shared { namespace xpl
       static void checkRules(EElement elementType, const std::string& element);
 
       //--------------------------------------------------------------
+      /// \brief	                        Check if a string match a full xpl actor
+      /// \param[in]  xplActorString      The string which should contains Xpl Actor i.e. : "rfxcom-lan.0x144522"
+      /// \param[out] xplActorFields      A vector that will receive all xpl fields separately (if match rules) i.e. : ["rfxcom", "lan", "0x144522"]
+      /// \return                         true if match rules, false otherwize
+      //--------------------------------------------------------------
+      static bool matchActorRules(const std::string& xplActorString, std::vector<std::string> & xplActorFields);
+
+      //--------------------------------------------------------------
       /// \brief	                        Convert a string to an XPL instance Id
       /// \param[in]  instanceName         Instance name
       /// \return                         Instance name, XPL compatible
@@ -86,6 +94,37 @@ namespace shared { namespace xpl
       static const std::string HeartbeatRequestTypeId;
 
       static const std::string WildcardString;
+
+   private:
+      //--------------------------------------------------------------
+      /// \brief The regex string used to check VendorId
+      //--------------------------------------------------------------
+      static const std::string RegexStringVendorId;
+
+      //--------------------------------------------------------------
+      /// \brief The regex string used to check DeviceId
+      //--------------------------------------------------------------
+      static const std::string RegexStringDeviceId;
+
+      //--------------------------------------------------------------
+      /// \brief The regex string used to check InstanceId
+      //--------------------------------------------------------------
+      static const std::string RegexStringInstanceId;
+
+      //--------------------------------------------------------------
+      /// \brief The regex string used to check typeId
+      //--------------------------------------------------------------
+      static const std::string RegexStringTypeId;
+
+      //--------------------------------------------------------------
+      /// \brief The regex string used to check ClassId
+      //--------------------------------------------------------------
+      static const std::string RegexStringClassId;
+
+      //--------------------------------------------------------------
+      /// \brief The regex string used to check Body
+      //--------------------------------------------------------------
+      static const std::string RegexStringBody;
 
    private:
       CXplHelper();

@@ -93,7 +93,7 @@ namespace communication { namespace rules { namespace rfxLanXpl {
       boost::shared_ptr< shared::xpl::CXplMessage > newMessage(new shared::xpl::CXplMessage());
 
       //the AC.BSACI XplMessage if a xpl-trig
-      newMessage->setTypeIdentifier(shared::xpl::CXplMessage::kXplTrigger);
+      newMessage->setTypeIdentifier(shared::xpl::CXplMessage::kXplCommand);
 
       //set hop to 1
       newMessage->setHop(1);

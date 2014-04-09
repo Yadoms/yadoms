@@ -124,39 +124,18 @@ namespace shared { namespace xpl
       if (lineString == CXplHelper::WildcardString)
          return createBroadcastActor();
 
-      
-      //use regex to check:
-      // vendorId : is lower case and digits, from 1 to 8 characters
-      // deviceId : is lower case and digits, from 1 to 8 characters
-      // instanceId : is lower case and digits, with "-" , from 1 to 16 characters
-      //
-      // vendorId and deviceId are seprated by "-"
-      // deviceId and instanceId are seprated by "."
-      //
-      //To get the splitted result, just enclose expression by ( and )
-      //  (?<name>expr) is used to name the expr result
-      boost::regex re("^(?<vendor>[a-z0-9]{1,8})-(?<device>[a-z0-9]{1,8})\\.(?<instance>[a-z0-9-]{1,16})$");
-
-      //check if it matches regex, and the result contains 4 fields (the first is the initial regex, the last 3 are vendor, device and instanceId)
-      boost::match_results<std::string::const_iterator> results;
-      if (!boost::regex_match(lineString, results, re) || results.size() != 4)
+      std::vector<std::string> actorFields;
+      if(!CXplHelper::matchActorRules(lineString,actorFields))
       {
          throw CXplException("Header part must have 3 fields : vendorId-DeviceId.instanceId");
       }
-
-      //result[0] is the regex
-      //result[1] is the vendor
-      //result[2] is the device
-      //result[3] is the instance
-      std::string vendor = results[1];  
-      std::string device = results[2];  
-      std::string instance = results[3];
-
+      //actorFields[0] is the vendor
+      //actorFields[1] is the device
+      //actorFields[2] is the instance
       CXplActor actor;
-      actor.setVendorId(vendor);
-      actor.setDeviceId(device);
-      actor.setInstanceId(instance);
-
+      actor.setVendorId(actorFields[0]);
+      actor.setDeviceId(actorFields[1]);
+      actor.setInstanceId(actorFields[2]);
       return actor;
    }
 
