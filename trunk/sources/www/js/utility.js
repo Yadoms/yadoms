@@ -6,6 +6,7 @@
 var assert = function(condition, message) {
    if (!condition)
       throw Error("Assert failed" + (typeof message !== "undefined" ? ": " + message : ""));
+   return true;
 };
 
 /**
@@ -78,7 +79,7 @@ function parseBool(string, defaultValue) {
    switch(string.toLowerCase()){
       case "true": case "yes": case "1": return true;
       case "false": case "no": case "0": case null: return false;
-      default: return Boolean(string);
+      default: return defaultValue;
    }
 }
 
