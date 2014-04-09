@@ -17,15 +17,24 @@ const std::string CXplHelper::WildcardString = "*";
 
 
 
+
+const std::string CXplHelper::RegexStringVendorId = "[a-z0-9]{1,8}"; /* alphanumerical characters, lower case, 1 to 8 characters */
+const std::string CXplHelper::RegexStringDeviceId = "[a-z0-9]{1,8}"; /* alphanumerical characters, lower case, 1 to 8 characters */
+const std::string CXplHelper::RegexStringInstanceId = "[a-z0-9-]{1,16}"; /* alphanumerical characters, lower case, '-' accepted, 1 to 16 characters */
+const std::string CXplHelper::RegexStringTypeId = "[a-z0-9-]{1,8}";  /* alphanumerical characters, lower case, '-' accepted, 1 to 8 characters */
+const std::string CXplHelper::RegexStringClassId = "[a-z0-9-]{1,8}"; /* alphanumerical characters, lower case, '-' accepted, 1 to 8 characters */
+const std::string CXplHelper::RegexStringBody = "[a-z0-9-]{1,16}"; /* alphanumerical characters, lower case, '-' accepted, 1 to 16 characters */
+
+
 bool CXplHelper::matchRules(EElement elementType, const std::string& element)
 {
    static const std::map<EElement, boost::regex > xplRulesRegex = boost::assign::map_list_of
-      (kVendorId     , boost::regex("[a-z0-9]{1,8}"))       /* alphanumerical characters, lower case, 1 to 8 characters */
-      (kDeviceId     , boost::regex("[a-z0-9]{1,8}"))       /* alphanumerical characters, lower case, 1 to 8 characters */
-      (kInstanceId   , boost::regex("[a-z0-9-]{1,16}"))     /* alphanumerical characters, lower case, '-' accepted, 1 to 16 characters */
-      (kTypeId       , boost::regex("[a-z0-9-]{1,8}"))      /* alphanumerical characters, lower case, '-' accepted, 1 to 8 characters */
-      (kClassId      , boost::regex("[a-z0-9-]{1,8}"))      /* alphanumerical characters, lower case, '-' accepted, 1 to 8 characters */
-      (kBody         , boost::regex("[a-z0-9-]{1,16}"));    /* alphanumerical characters, lower case, '-' accepted, 1 to 16 characters */
+      (kVendorId     , boost::regex(RegexStringVendorId))       
+      (kDeviceId     , boost::regex(RegexStringDeviceId))       
+      (kInstanceId   , boost::regex(RegexStringInstanceId))     
+      (kTypeId       , boost::regex(RegexStringTypeId))     
+      (kClassId      , boost::regex(RegexStringClassId))      
+      (kBody         , boost::regex(RegexStringBody));    
 
    std::map<EElement, boost::regex>::const_iterator it = xplRulesRegex.find(elementType);
    if (it == xplRulesRegex.end())
@@ -121,6 +130,34 @@ bool CXplHelper::getEndPointFromInterfaceIp(const std::string & localIPOfTheInte
    //We haven't found the ip specified 
    return false;
 }
+
+bool CXplHelper::matchActorRules(const std::string& xplActorString, std::vector<std::string> & xplActorFields)
+{
+   //create the regex from : ^RegexStringVendorId-RegexStringDeviceId.RegexStringInstanceId$
+   //result :  "^(?<vendor>[a-z0-9]{1,8})-(?<device>[a-z0-9]{1,8})\\.(?<instance>[a-z0-9-]{1,16})$"
+   std::string regexString = (boost::format("^(?<vendor>%1%)-(?<device>%2%)\\.(?<instance>%3%)$") % RegexStringVendorId % RegexStringDeviceId % RegexStringInstanceId).str();
+   boost::regex xplActorParseRegex(regexString);
+
+   //check if it matches regex, and the result contains 4 fields (the first is the initial regex, the last 3 are vendor, device and instanceId)
+   boost::match_results<std::string::const_iterator> results;
+   if (!boost::regex_match(xplActorString, results, xplActorParseRegex) || results.size() != 4)
+   {
+      return false;
+   }
+
+   //if success, just provide the 3 parts of xpl actor in resulting vector
+
+   xplActorFields.clear();
+   //result[0] is the regex, not used
+   //result[1] is the vendor
+   xplActorFields.push_back(results[1]);
+   //result[2] is the device
+   xplActorFields.push_back(results[2]);
+   //result[3] is the instance
+   xplActorFields.push_back(results[3]);
+   return true;
+}
+
 
 CXplHelper::CXplHelper()
 {
