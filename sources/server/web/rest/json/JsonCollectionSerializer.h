@@ -13,6 +13,20 @@ namespace web { namespace rest { namespace json {
    public:
       virtual ~CJsonCollectionSerializer() {}
 
+
+      static CJson SerializeCollection(typename std::vector< TObjectBase > & collectionToSerialize, const std::string & itemKeyword)
+      {
+         web::rest::json::CJson objectList;
+         BOOST_FOREACH(TObjectBase obj, collectionToSerialize)
+         {
+            //objectList.put("", hw);
+            objectList.push_back(std::make_pair(itemKeyword, web::rest::json::CJson(obj)));
+         }
+         return objectList;
+      }
+
+      
+
       static CJson SerializeCollection(typename std::vector< boost::shared_ptr<TObjectBase> > & collectionToSerialize, IEntitySerializer<TObjectBase> & entitySerilizer, const std::string & itemKeyword)
       {
          CJson objectList;

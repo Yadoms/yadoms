@@ -205,7 +205,6 @@ namespace communication { namespace rules { namespace rfxLanXpl {
    }
 
 
-
 } //namespace rfxLanXpl
 } //namespace rules
 } //namespace communication

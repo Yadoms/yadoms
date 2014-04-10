@@ -73,11 +73,32 @@ namespace communication { namespace rules {
          std::string errorMessage = (boost::format("The device (id=%1% name=%2%) is not handled by Yadoms") % targetDevice.Id() % targetDevice.Name()).str();
          throw shared::exception::CException(errorMessage);
       }
-
-
-
    }
 
+
+   std::vector<std::string> CRulerFactory::getHardwareProtocols(const std::string & hardwareIdentifier)
+   {
+      BOOST_FOREACH(boost::shared_ptr<IDeviceManager> currentFactory, m_allSpecificRuleFactories)
+      {
+         if(currentFactory->matchHardware(hardwareIdentifier))
+         {
+            return currentFactory->getHandledProtocols();
+         }
+      }
+      return m_standardFactories->getHandledProtocols();
+   }
+
+   std::string CRulerFactory::generateVirtualDeviceIdentifier(const std::string & hardwareIdentifier, const std::string & protocolIdentifier)
+   {
+      BOOST_FOREACH(boost::shared_ptr<IDeviceManager> currentFactory, m_allSpecificRuleFactories)
+      {
+         if(currentFactory->matchHardware(hardwareIdentifier))
+         {
+            return currentFactory->generateVirtualDeviceIdentifier(protocolIdentifier, m_instanceManager);
+         }
+      }
+      return m_standardFactories->generateVirtualDeviceIdentifier(protocolIdentifier, m_instanceManager);
+   }
 
 
 } //namespace rules

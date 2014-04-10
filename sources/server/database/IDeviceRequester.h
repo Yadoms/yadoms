@@ -47,6 +47,12 @@ namespace database {
       virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string>  > getDeviceLastData(int deviceId) = 0;
 
       //--------------------------------------------------------------
+      /// \brief            Get all device hardwares
+      /// \return           List of hardwares known by yadoms
+      //--------------------------------------------------------------
+      virtual std::vector< std::string > getDeviceHardwares() = 0;
+
+      //--------------------------------------------------------------
       /// \brief           Remove device 
       /// \param [in] deviceId   Device  Id
       /// \throw           shared::exception::CEmptyResult if fails

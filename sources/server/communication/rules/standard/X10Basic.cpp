@@ -27,6 +27,7 @@ namespace communication { namespace rules { namespace standard {
       std::vector< boost::shared_ptr<database::entities::CKeyword> > keywords;
       return keywords;
    }
+
 } //namespace standard
 } //namespace rules
 } //namespace communication

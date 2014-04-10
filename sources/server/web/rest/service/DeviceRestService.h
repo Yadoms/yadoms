@@ -4,6 +4,7 @@
 #include "database/IDataProvider.h"
 #include <shared/event/EventHandler.hpp>
 #include "communication/ISendMessageEventHandler.h"
+#include "communication/rules/RulerFactory.h"
 
 namespace web { namespace rest { namespace service {
 
@@ -46,6 +47,26 @@ namespace web { namespace rest { namespace service {
       //-----------------------------------------
       web::rest::json::CJson sendDeviceCommand(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
 
+      //-----------------------------------------
+      ///\brief   get device hardwares
+      //-----------------------------------------
+      web::rest::json::CJson getDeviceHardwares(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+
+      //-----------------------------------------
+      ///\brief   get the protocols handled by hardwares
+      //-----------------------------------------
+      web::rest::json::CJson getDeviceHardwareProtocols(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+
+      //-----------------------------------------
+      ///\brief   generate a virtual device
+      //-----------------------------------------
+      web::rest::json::CJson generateVirtualDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+
+      //-----------------------------------------
+      ///\brief   create a device in database
+      //-----------------------------------------
+      web::rest::json::CJson createDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+
    private:
       //-----------------------------------------
       ///\brief   Data provider
@@ -62,6 +83,10 @@ namespace web { namespace rest { namespace service {
       //-----------------------------------------
       communication::ISendMessageAsync & m_messageSender;
 
+      //-----------------------------------------
+      ///\brief   A device rule factory
+      //-----------------------------------------
+      communication::rules::CRulerFactory m_deviceRules;
    };
 
 
