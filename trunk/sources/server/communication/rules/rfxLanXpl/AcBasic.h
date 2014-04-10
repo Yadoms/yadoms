@@ -18,6 +18,7 @@ namespace communication { namespace rules { namespace rfxLanXpl {
      
       // ICommandRule implemntation
       virtual boost::shared_ptr< shared::xpl::CXplMessage > createXplCommand(database::entities::CDevice & targetDevice, command::CDeviceCommand & deviceCommand);
+      virtual std::string generateVirtualDeviceIdentifier();
       // [END] ICommandRule implemntation
    };
    

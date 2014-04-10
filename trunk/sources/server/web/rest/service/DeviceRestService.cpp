@@ -36,8 +36,11 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("matchkeyword")("*"), CDeviceRestService::getDeviceWithKeyword);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("lastdata"), CDeviceRestService::getLastDeviceData);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "POST",  (m_restKeyword)("*")("command"), CDeviceRestService::sendDeviceCommand);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("hardwares"), CDeviceRestService::getDeviceHardwares);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("hardwares")("*")("protocols"), CDeviceRestService::getDeviceHardwareProtocols);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("generate")("*")("*"), CDeviceRestService::generateVirtualDevice);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "POST",  (m_restKeyword), CDeviceRestService::createDevice);
    }
-
 
    web::rest::json::CJson CDeviceRestService::getOneDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
@@ -153,16 +156,110 @@ namespace web { namespace rest { namespace service {
          {
             return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not device widget id in url");
          }
+      }
+      catch(std::exception &ex)
+      {
+         return web::rest::json::CJsonResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return web::rest::json::CJsonResult::GenerateError("unknown exception in sending command to device");
+      }
    }
-   catch(std::exception &ex)
+
+
+
+   web::rest::json::CJson CDeviceRestService::getDeviceHardwares(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
-      return web::rest::json::CJsonResult::GenerateError(ex);
+      try
+      {
+         std::vector<std::string> allHardwares = m_dataProvider->getDeviceRequester()->getDeviceHardwares();
+         web::rest::json::CJson objectList = web::rest::json::CJsonCollectionSerializer<std::string>::SerializeCollection(allHardwares, "");
+         return web::rest::json::CJsonResult::GenerateSuccess(objectList);
+      }
+      catch(std::exception &ex)
+      {
+         return web::rest::json::CJsonResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return web::rest::json::CJsonResult::GenerateError("unknown exception in getting available device hardwares");
+      }
    }
-   catch(...)
+
+   web::rest::json::CJson CDeviceRestService::getDeviceHardwareProtocols(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
-      return web::rest::json::CJsonResult::GenerateError("unknown exception in sending command to device");
+      try
+      {
+         if(parameters.size()>1)
+         {
+            //get hardware id from URL
+            std::string hardwareId = parameters[2];
+
+            std::vector<std::string> allProtocols =  m_deviceRules.getHardwareProtocols(hardwareId);
+            web::rest::json::CJson objectList = web::rest::json::CJsonCollectionSerializer<std::string>::SerializeCollection(allProtocols, "");
+            return web::rest::json::CJsonResult::GenerateSuccess(objectList);
+         }
+         else
+         {
+            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive hardware identifier in url");
+         }
+      }
+      catch(std::exception &ex)
+      {
+         return web::rest::json::CJsonResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return web::rest::json::CJsonResult::GenerateError("unknown exception in getting hardware protocols");
+      }
    }
-}
+
+   web::rest::json::CJson CDeviceRestService::generateVirtualDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   {
+      try
+      {
+         if(parameters.size()>2)
+         {
+            //get hardware id from URL
+            std::string hardwareId = parameters[2];
+            std::string protocolId = parameters[3];
+
+            web::rest::json::CJson result;
+            result.put_value(m_deviceRules.generateVirtualDeviceIdentifier(hardwareId, protocolId));
+            return web::rest::json::CJsonResult::GenerateSuccess(result);
+         }
+         else
+         {
+            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive hardware identifier and protocol identifier in url");
+         }
+         return web::rest::json::CJsonResult::GenerateSuccess();
+      }
+      catch(std::exception &ex)
+      {
+         return web::rest::json::CJsonResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return web::rest::json::CJsonResult::GenerateError("unknown exception in generating a virtual device");
+      }
+   }
+
+   web::rest::json::CJson CDeviceRestService::createDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   {
+      try
+      {
+         return web::rest::json::CJsonResult::GenerateSuccess();
+      }
+      catch(std::exception &ex)
+      {
+         return web::rest::json::CJsonResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return web::rest::json::CJsonResult::GenerateError("unknown exception in creating a device");
+      }
+   }
 
 } //namespace service
 } //namespace rest

@@ -48,6 +48,28 @@ namespace communication { namespace rules {
       //--------------------------------
       virtual boost::shared_ptr<IRule> identifyRule(database::entities::CDevice & device, CRuleInstanceManager & instanceManager) = 0;
 
+
+      //------------------------------------------
+      ///\brief   Check if the hardware is handled by 
+      ///\param [in] hardwareIdentifier : the hardware identifier
+      ///\return true if the hardware identifier is managed by this manager
+      //------------------------------------------
+      virtual bool matchHardware(const std::string & hardwareIdentifier) = 0;
+
+      //--------------------------------
+      ///\brief Get the list of handled protocols
+      ///\return the list of handled protocols
+      //--------------------------------
+      virtual std::vector<std::string> getHandledProtocols() = 0;
+
+      //--------------------------------
+      ///\brief generate a random virtual device identifier (i.e. : 0x123456-2)
+      ///\param [in]  protocolIdentifier the protocol
+      ///\param [in] instanceManager : the instance manager
+      ///\return a virtual device identifier
+      //--------------------------------
+      virtual std::string generateVirtualDeviceIdentifier(const std::string & protocolIdentifier, CRuleInstanceManager & instanceManager) = 0;
+
    };
    
    

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "AcBasic.h"
+#include <boost/random/independent_bits.hpp>
 
 namespace communication { namespace rules { namespace rfxLanXpl {
 
@@ -75,7 +76,7 @@ namespace communication { namespace rules { namespace rfxLanXpl {
       {
          throw shared::exception::CException("ac.basic protocol needs a parameter 'command' ");
       }
-   
+
       if( !boost::iequals(content["command"], "on") &&
          !boost::iequals(content["command"], "off") &
          !boost::iequals(content["command"], "preset"))
@@ -121,7 +122,55 @@ namespace communication { namespace rules { namespace rfxLanXpl {
 
       return newMessage;
    }
+
+   unsigned int generateRandom26bits(bool zeroAllowed)
+   {
+      unsigned int ret=0; 
+      boost::random::independent_bits_engine<boost::random::mt19937, 26, boost::uint32_t> gen26bits(std::time(0));
+      boost::random::uniform_int_distribution<> m_dist(1, pow(2,26)-1);
+      if(zeroAllowed)
+         ret = m_dist(gen26bits); 
+      else
+      {
+
+         do
+         {
+            ret = m_dist(gen26bits); 
+         }
+         while(ret == 0);
+      }
+      return ret;
+   }
+
+   unsigned int generateRandom4bits(bool zeroAllowed)
+   {
+      unsigned int ret=0; 
+      boost::random::independent_bits_engine<boost::random::mt19937, 4, boost::uint32_t> gen26bits(std::time(0));
+      boost::random::uniform_int_distribution<> m_dist(1, pow(2,4)-1);
+
+      if(zeroAllowed)
+         ret = m_dist(gen26bits); 
+      else
+      {
+
+         do
+         {
+            ret = m_dist(gen26bits); 
+         }
+         while(ret == 0);
+      }
+      return ret;
+   }
+
+
+   std::string CAcBasic::generateVirtualDeviceIdentifier()
+   {
+      return (boost::format("0x%1$08X-%2%") % generateRandom26bits(false) % generateRandom4bits(false)).str();
+   }
+
    // [END] ICommandRule implemntation
+
+
 
 } //namespace rfxLanXpl
 } //namespace rules

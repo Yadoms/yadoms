@@ -244,6 +244,8 @@ set(YADOMS_SRC
 	server/communication/command/Callback.cpp	
 	server/communication/rules/IRule.h
 	server/communication/rules/ICommandRule.h
+	server/communication/rules/IProtocol.h
+	server/communication/rules/Protocol.h
 	server/communication/rules/IDeviceManager.h
 	server/communication/rules/RuleInstanceManager.hpp
 	server/communication/rules/RulerFactory.h

@@ -45,6 +45,21 @@ namespace communication { namespace rules {
       //--------------------------------
       boost::shared_ptr< shared::xpl::CXplMessage > createXplCommand(database::entities::CDevice & targetDevice, communication::command::CDeviceCommand & deviceCommand);
 
+      //--------------------------------
+      ///\brief Get the list of handled protocols by a hardware
+      ///\return the list of handled protocols by a hardware
+      //--------------------------------
+      std::vector<std::string> getHardwareProtocols(const std::string & hardwareIdentifier);
+
+      //--------------------------------
+      ///\brief generate a random virtual device identifier (i.e. : 0x123456-2)
+      ///\param [in]  hardwareIdentifier The hardware identifier
+      ///\param [in]  protocolIdentifier the protocol
+      ///\return a virtual device identifier
+      //--------------------------------
+      std::string generateVirtualDeviceIdentifier(const std::string & hardwareIdentifier, const std::string & protocolIdentifier);
+
+
    private:
       //--------------------------------
       ///\brief Instance manager

@@ -137,6 +137,19 @@ namespace database {  namespace sqlite { namespace requesters {
       return mva.getResults();
    }
 
+   std::vector< std::string > CSQLiteDeviceRequester::getDeviceHardwares()
+   {
+      //sous requetes qui filtre les deviceID
+      CQuery qSelect;
+      qSelect.Select(CQUERY_DISTINCT(CDeviceTable::getHardwareIdentifierColumnName())).
+         From(CDeviceTable::getTableName()).
+         OrderBy(CDeviceTable::getHardwareIdentifierColumnName());
+
+      database::sqlite::adapters::CSingleValueAdapter<std::string> sva;
+      m_databaseRequester->queryEntities(&sva, qSelect);
+      return sva.getResults();
+   }
+
    void CSQLiteDeviceRequester::removeDevice(int deviceId)
    {
       CQuery qDelete;

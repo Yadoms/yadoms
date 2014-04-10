@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../IDeviceManager.h"
+#include "../IProtocol.h"
 
 namespace communication { namespace rules { namespace rfxLanXpl {
 
@@ -26,6 +27,10 @@ namespace communication { namespace rules { namespace rfxLanXpl {
 
       virtual bool isHandled(database::entities::CDevice & device);
       virtual boost::shared_ptr<IRule> identifyRule(database::entities::CDevice & device, CRuleInstanceManager & instanceManager);
+
+      virtual bool matchHardware(const std::string & hardwareIdentifier);
+      virtual std::vector<std::string> getHandledProtocols();
+      virtual std::string generateVirtualDeviceIdentifier(const std::string & protocolIdentifier, CRuleInstanceManager & instanceManager);
       // [END] IDeviceManager implementation
    private:
 
@@ -43,6 +48,15 @@ namespace communication { namespace rules { namespace rfxLanXpl {
       //------------------------------------------
       boost::shared_ptr<IRule> identifyRule(const std::string & protocolName, CRuleInstanceManager & instanceManager);
 
+      //------------------------------------------
+      ///\brief  Type : vector of Protocols
+      //------------------------------------------
+      typedef std::vector< boost::shared_ptr< communication::rules::IProtocol > > Protocols;
+
+      //------------------------------------------
+      ///\brief  Vector of handled protocols
+      //------------------------------------------
+      Protocols m_handledProtocols;
    };
    
 } //namespace rfxLanXpl
