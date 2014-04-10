@@ -1,0 +1,11 @@
+<script type="text/html" id="switch-template">
+    <link href="widgets/switch/widget.css" rel="stylesheet">
+    <div class="switchWidget">
+       <span class="switchWidgetText">Command</span>
+       <div class="strut"></div>
+       <div class="btn-group btn-toggle">
+          <button class="btn btn-default" data-bind="css: { active: command() == 'on', 'btn-primary': command() == 'on', 'btn-default': command() != 'on' }, event: {click: function() {commandClick('on')}}">ON</button> <!--, event: {click: function() {commandClick(off)}}-->
+          <button class="btn btn-primary active" data-bind="css: { active: command() == 'off', 'btn-primary': command() == 'off', 'btn-default': command() != 'off' }, event: {click: function() {commandClick('off')}}">OFF</button>
+       </div>
+    </div>
+</script>
