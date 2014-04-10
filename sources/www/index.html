@@ -59,7 +59,7 @@
               <div class="col-md-12">
                   <div class="nav navbar-nav" id = "pageMenu">
                       <ul class="nav nav-pills nav-justified page-tabs">
-                          <!-- Nav pills of pages will be inserted here -->
+                         <!-- Nav pills of pages will be inserted here -->
                       </ul>
                   </div>
               </div>
@@ -81,7 +81,7 @@
    ================================================== -->
    <!-- Placed at the end of the document so the pages load faster -->
    <script src="libs/jquery/js/jquery-1.11.0.min.js"></script>
-   <script src="libs/bootstrap/js/bootstrap.min.js"></script>
+   <script src="libs/bootstrap/js/bootstrap.js"></script>
 
    <!-- Gridster includes -->
    <script src="libs/gridster/js/jquery.gridster.js"></script>
@@ -90,6 +90,8 @@
    <script src="libs/knockout/js/knockout-3.0.0.js"></script>
 
    <script src="libs/i18next/js/i18next-1.7.2.js"></script>
+   <script src="libs/lazyload/js/lazyload.js"></script>
+
    <script src="js/utility.js"></script>
    <script src="js/objects/page.js"></script>
    <script src="js/objects/widget.js"></script>
@@ -178,6 +180,7 @@
       /**
        * Enter in customization with long press on the document
        */
+      /*
       $("#tabContainer").click(function() {
          //if we are in customization and it's not the first release click (after a long click to enter in customization) we exit customization
          if (customization && !waitForRealeaseButtonAfterEnteringCustomization)
@@ -195,7 +198,7 @@
            waitForRealeaseButtonAfterEnteringCustomization = true;
            enterCustomization();
         }, longPressDelayToEnterInCustomizationMode);
-      });
+      });*/
 
       /**
        * Exit customization pressed esc key

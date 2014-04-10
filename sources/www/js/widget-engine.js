@@ -473,11 +473,15 @@ function getWidgetPackageInformationDone(packageName)
       //we have finished to load every widgets on this page
       if (widgetArrayForLoading.length == 0) {
 
+         /*
+         //Warning : This part is used to manage customization mode with long click but
+         //it introduce a bug with button-toggle which never receive their event and the toggle don't work
          //we prevent from click on widget to be propagated on the rest of the window
          $(".widget").click(function(e) {
-            if (!waitForRealeaseButtonAfterEnteringCustomization)
-               e.stopPropagation();
+            //if (!waitForRealeaseButtonAfterEnteringCustomization)
+            //   e.stopPropagation();
          });
+         */
 
          //we close the noty
          if (loadWidgetsNotification != null) {
@@ -689,6 +693,8 @@ function dispatchDeviceDataToWidget(device, widget) {
          notifyError("Error during requesting device last data");
          return;
       }
+
+      console.debug("Dispatch : " + JSON.stringify(data.data));
 
       //we disptach the device to the widget if the widget support the method
       if (widget.viewModel.dispatch !== undefined)

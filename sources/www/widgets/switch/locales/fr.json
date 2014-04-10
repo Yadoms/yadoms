@@ -1,0 +1,9 @@
+{
+   "description": "Un widget tout simple qui permet de gerer les interrupteurs",
+   "configurationSchema" : {
+      "device" : {
+         "name" : "Périphérique interrupteur",
+         "description" : "Périphérique à émuler"
+      }
+   }
+}
