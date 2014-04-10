@@ -290,6 +290,7 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/tools/tools/DirectoryChangeListener.cpp
 	server/tools/tools/Version.h
 	server/tools/tools/Version.cpp
+	server/tools/tools/Random.h
 	server/tools/tools/web/Uri.h
 	server/tools/tools/web/Uri.cpp
 	server/tools/tools/web/FileDownloader.h

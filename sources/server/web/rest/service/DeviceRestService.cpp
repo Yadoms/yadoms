@@ -233,7 +233,6 @@ namespace web { namespace rest { namespace service {
          {
             return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive hardware identifier and protocol identifier in url");
          }
-         return web::rest::json::CJsonResult::GenerateSuccess();
       }
       catch(std::exception &ex)
       {
