@@ -103,7 +103,7 @@ namespace communication { namespace rules { namespace rfxLanXpl {
       newMessage->setTarget(shared::xpl::CXplActor::parse(targetDevice.HardwareIdentifier()));
 
       //set the ac.basic
-      newMessage->setMessageSchemaIdentifier(shared::xpl::CXplMessageSchemaIdentifier::CXplMessageSchemaIdentifier("ac", "basic"));
+      newMessage->setMessageSchemaIdentifier(shared::xpl::CXplMessageSchemaIdentifier("ac", "basic"));
 
       //set the device addesss and unit (parse from argetDevice.Address)
       newMessage->addToBody("address", splittedAddress[0]);
