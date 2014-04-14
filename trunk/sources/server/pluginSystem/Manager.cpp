@@ -86,7 +86,7 @@ void CManager::runPluginIOService()
 {
    try
    {
-      boost::asio::io_service::work work(m_pluginIOService); // 3
+      boost::asio::io_service::work work(m_pluginIOService);
       m_pluginIOService.run();
    }
    catch (std::exception& e)
