@@ -36,7 +36,13 @@ namespace web { namespace rest { namespace json {
 
 
    DECLARE_JSON_ENTITY_HEADER(Keyword,
+      (DeviceId)
       (Name)
+      (Units)
+      (Type)
+      (Minimum)
+      (Maximum)
+      (Parameters)
    )
 
 

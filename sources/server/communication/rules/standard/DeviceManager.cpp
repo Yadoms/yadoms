@@ -20,31 +20,12 @@ namespace communication { namespace rules { namespace standard {
 
 
    // IFactory implementation
-   bool CDeviceManager::isHandled(shared::xpl::CXplMessage & message)
+   bool CDeviceManager::isHandled(const std::string & message)
    {
       //this factory is for the Xpl Standard
       //so all messages are handled
       return true;
    }
-
-   boost::shared_ptr<IRule> CDeviceManager::identifyRule(shared::xpl::CXplMessage & msg, CRuleInstanceManager & instanceManager)
-   {
-      return identifyRule(msg.getMessageSchemaIdentifier().toString(), instanceManager);
-   }
-      
-   bool CDeviceManager::isHandled(database::entities::CDevice & device)
-   {
-      //this factory is for the Xpl Standard
-      //so all messages are handled
-      return true;
-   }
-
-   boost::shared_ptr<IRule> CDeviceManager::identifyRule(database::entities::CDevice & device, CRuleInstanceManager & instanceManager)
-   {
-      return identifyRule(device.Protocol, instanceManager);
-   }
-   // [END] IFactory implementation
-
 
    boost::shared_ptr<IRule> CDeviceManager::identifyRule(const std::string & protocolName, CRuleInstanceManager & instanceManager)
    {
@@ -57,14 +38,8 @@ namespace communication { namespace rules { namespace standard {
       //not handled
       return boost::shared_ptr<IRule>();
    }
+   // [END] IFactory implementation
 
-
-   bool CDeviceManager::matchHardware(const std::string & hardwareIdentifier)
-   {
-      //this factory is for the Xpl Standard
-      //so all hardwares
-      return true;
-   }
 
    std::vector<std::string> CDeviceManager::getHandledProtocols()
    {

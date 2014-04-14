@@ -39,7 +39,13 @@ namespace web { namespace rest { namespace json {
 
 
       DECLARE_JSON_ENTITY_IMPLEMENTATION(Keyword,  "Keyword",
-   ((Name)("name")JSON_STRING)
+         ((DeviceId)("deviceId")JSON_INT)
+         ((Name)("name")JSON_STRING)
+         ((Units)("units")JSON_STRING)
+         ((Type)("type")JSON_STRING)
+         ((Minimum)("minimum")JSON_DOUBLE)
+         ((Maximum)("maximum")JSON_DOUBLE)
+         ((Parameters)("parameters")JSON_STRING)
       )
 
       DECLARE_JSON_ENTITY_IMPLEMENTATION(Page,  "Page",

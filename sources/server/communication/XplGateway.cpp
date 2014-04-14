@@ -90,12 +90,16 @@ namespace communication {
       {
          YADOMS_LOG(trace) << "Xpl Message received : " << xplMessage.toString();
 
-         boost::shared_ptr<rules::IRule> rule = m_rulerFactory.identifyRule(xplMessage);
+         std::string realSource = xplMessage.getSource().toString();
+         if(boost::istarts_with(realSource, shared::xpl::CXplConstants::getYadomsVendorId()))
+            realSource = xplMessage.getTarget().toString();
+      
+         boost::shared_ptr<rules::IRule> rule = m_rulerFactory.identifyRule(realSource, xplMessage.getMessageSchemaIdentifier().toString());
          if(rule.get() != NULL)
          {
             //create the device in database
             rules::DeviceIdentifier deviceAddress = rule->getDeviceAddressFromMessage(xplMessage);
-            boost::shared_ptr<database::entities::CDevice> device = m_dataProvider->getDeviceRequester()->getDevice(deviceAddress, xplMessage.getMessageSchemaIdentifier().toString(), xplMessage.getSource().toString());
+            boost::shared_ptr<database::entities::CDevice> device = m_dataProvider->getDeviceRequester()->getDevice(deviceAddress, xplMessage.getMessageSchemaIdentifier().toString(), realSource);
 
             //create message keywords in database
             std::vector< boost::shared_ptr<database::entities::CKeyword> > allKeywords = rule->identifyKeywords(xplMessage);

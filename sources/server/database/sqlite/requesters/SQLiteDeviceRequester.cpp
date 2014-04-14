@@ -137,6 +137,33 @@ namespace database {  namespace sqlite { namespace requesters {
       return mva.getResults();
    }
 
+
+   std::vector< boost::tuple<boost::posix_time::ptime, std::string>  >  CSQLiteDeviceRequester::getDeviceData(int deviceId, const std::string & keyword,  boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo )
+   {
+      CQuery qSelect;
+      qSelect. Select(CMessageTable::getDateColumnName(),CMessageContentTable::getValueColumnName()).
+         From(CMessageTable::getTableName(), CMessageContentTable::getTableName()).
+         Where(CMessageTable::getTableName() + "." + CMessageTable::getIdColumnName(), CQUERY_OP_EQUAL, CQueryValue(CMessageContentTable::getTableName() + "." + CMessageContentTable::getIdMessageColumnName(), false)).
+         And(CMessageContentTable::getTableName() + "." + CMessageContentTable::getKeyColumnName(), CQUERY_OP_EQUAL, keyword).
+         And(CMessageTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, deviceId);
+
+      if(!timeFrom.is_not_a_date_time())
+      {
+         qSelect.And(CMessageTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, timeFrom);
+         if(!timeTo.is_not_a_date_time())
+         {
+            qSelect.And(CMessageTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, timeTo);
+         }
+      }
+
+      qSelect.OrderBy(CMessageTable::getDateColumnName());
+
+      database::sqlite::adapters::CMultipleValueAdapter<boost::posix_time::ptime, std::string> mva;
+      m_databaseRequester->queryEntities(&mva, qSelect);
+      return mva.getResults();
+   }
+
+
    std::vector< std::string > CSQLiteDeviceRequester::getDeviceHardwares()
    {
       //sous requetes qui filtre les deviceID
@@ -149,6 +176,7 @@ namespace database {  namespace sqlite { namespace requesters {
       m_databaseRequester->queryEntities(&sva, qSelect);
       return sva.getResults();
    }
+
 
    void CSQLiteDeviceRequester::removeDevice(int deviceId)
    {

@@ -4,6 +4,7 @@
 #include "rfxLanXpl/DeviceManager.h"
 #include <shared/exception/Exception.hpp>
 #include "ICommandRule.h"
+#include <shared/xpl/XplConstants.h>
 
 namespace communication { namespace rules {
 
@@ -18,40 +19,59 @@ namespace communication { namespace rules {
    {
    }
 
-   boost::shared_ptr<IRule> CRulerFactory::identifyRule(shared::xpl::CXplMessage & msg)
+   boost::shared_ptr<IRule> CRulerFactory::identifyRule(const std::string & hardwareIdentifier, const std::string & protocol)
    {
       BOOST_FOREACH(boost::shared_ptr<IDeviceManager> currentFactory, m_allSpecificRuleFactories)
       {
-         if(currentFactory->isHandled(msg))
+         if(currentFactory->isHandled(hardwareIdentifier))
          {
-            boost::shared_ptr<IRule> foundRule = currentFactory->identifyRule(msg, m_instanceManager);
+            boost::shared_ptr<IRule> foundRule = currentFactory->identifyRule(protocol, m_instanceManager);
             if(foundRule.get() != NULL)
                return foundRule;
          }
       }
-      return m_standardFactories->identifyRule(msg, m_instanceManager);
+      return m_standardFactories->identifyRule(protocol, m_instanceManager);
+   }
+
+   /*
+   boost::shared_ptr<IRule> CRulerFactory::identifyRule(shared::xpl::CXplMessage & msg)
+   {
+      std::string realSource = msg.getSource().toString();
+      if(boost::istarts_with(realSource, shared::xpl::CXplConstants::getYadomsVendorId()))
+         realSource = msg.getTarget().toString();
+
+      BOOST_FOREACH(boost::shared_ptr<IDeviceManager> currentFactory, m_allSpecificRuleFactories)
+      {
+         if(currentFactory->isHandled(realSource))
+         {
+            boost::shared_ptr<IRule> foundRule = currentFactory->identifyRule(msg.getMessageSchemaIdentifier().toString(), m_instanceManager);
+            if(foundRule.get() != NULL)
+               return foundRule;
+         }
+      }
+      return m_standardFactories->identifyRule(msg.getMessageSchemaIdentifier().toString(), m_instanceManager);
    }
 
    boost::shared_ptr<IRule> CRulerFactory::identifyRule(database::entities::CDevice & device)
    {
       BOOST_FOREACH(boost::shared_ptr<IDeviceManager> currentFactory, m_allSpecificRuleFactories)
       {
-         if(currentFactory->isHandled(device))
+         if(currentFactory->isHandled(device.HardwareIdentifier()))
          {
-            boost::shared_ptr<IRule> foundRule = currentFactory->identifyRule(device, m_instanceManager);
+            boost::shared_ptr<IRule> foundRule = currentFactory->identifyRule(device.Protocol(), m_instanceManager);
             if(foundRule.get() != NULL)
                return foundRule;
          }
       }
-      return m_standardFactories->identifyRule(device, m_instanceManager);
+      return m_standardFactories->identifyRule(device.Protocol(), m_instanceManager);
    }
-
+   */
 
 
    boost::shared_ptr< shared::xpl::CXplMessage > CRulerFactory::createXplCommand(database::entities::CDevice & targetDevice, communication::command::CDeviceCommand & deviceCommand)
    {
       //identify the device Rule 
-      boost::shared_ptr<rules::IRule> rule = identifyRule(targetDevice);
+      boost::shared_ptr<rules::IRule> rule = identifyRule(targetDevice.HardwareIdentifier(), targetDevice.Protocol());
 
       if(rule)
       {
@@ -80,7 +100,7 @@ namespace communication { namespace rules {
    {
       BOOST_FOREACH(boost::shared_ptr<IDeviceManager> currentFactory, m_allSpecificRuleFactories)
       {
-         if(currentFactory->matchHardware(hardwareIdentifier))
+         if(currentFactory->isHandled(hardwareIdentifier))
          {
             return currentFactory->getHandledProtocols();
          }
@@ -92,7 +112,7 @@ namespace communication { namespace rules {
    {
       BOOST_FOREACH(boost::shared_ptr<IDeviceManager> currentFactory, m_allSpecificRuleFactories)
       {
-         if(currentFactory->matchHardware(hardwareIdentifier))
+         if(currentFactory->isHandled(hardwareIdentifier))
          {
             return currentFactory->generateVirtualDeviceIdentifier(protocolIdentifier, m_instanceManager);
          }

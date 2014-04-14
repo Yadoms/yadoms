@@ -36,8 +36,9 @@ class CSQLiteRequester;
                virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevices();
                virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevicesMatchingKeyword(const std::string & keyword);
                virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string>  > getDeviceLastData(int deviceId);
+               virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string>  > getDeviceData(int deviceId, const std::string & keyword,  boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo );
                virtual std::vector< std::string > getDeviceHardwares();
-               virtual void removeDevice(int deviceId);               
+               virtual void removeDevice(int deviceId);
                // [END] IDeviceRequester implementation
 
             private:

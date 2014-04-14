@@ -35,6 +35,9 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CDeviceRestService::getOneDevice);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("matchkeyword")("*"), CDeviceRestService::getDeviceWithKeyword);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("lastdata"), CDeviceRestService::getLastDeviceData);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("data")("*"), CDeviceRestService::getDeviceData); //get all keyword data
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("data")("*")("*"), CDeviceRestService::getDeviceData); //get keyword data from date
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("data")("*")("*")("*"), CDeviceRestService::getDeviceData); //get keyword data between two dates
       REGISTER_DISPATCHER_HANDLER(dispatcher, "POST",  (m_restKeyword)("*")("command"), CDeviceRestService::sendDeviceCommand);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("hardwares"), CDeviceRestService::getDeviceHardwares);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("hardwares")("*")("protocols"), CDeviceRestService::getDeviceHardwareProtocols);
@@ -248,6 +251,7 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
+         //TODO : créer un device depuis le REST
          return web::rest::json::CJsonResult::GenerateSuccess();
       }
       catch(std::exception &ex)
@@ -260,6 +264,85 @@ namespace web { namespace rest { namespace service {
       }
    }
 
+
+   web::rest::json::CJson CDeviceRestService::getDeviceData(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   {
+      try
+      {
+
+         if(parameters.size()>=4)
+         {
+            //get device id from URL
+            int deviceId = boost::lexical_cast<int>(parameters[1]);
+            boost::shared_ptr<database::entities::CDevice> deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+            if(deviceFound)
+            {
+               //get the keyword
+               std::string keyword = parameters[3];
+               boost::shared_ptr<database::entities::CKeyword> keywordFound = m_dataProvider->getKeywordRequester()->getKeyword(deviceId, keyword);
+               if(keywordFound)
+               {
+                  //try to get from and to limits.
+                  //as this method is common for three rest url, those variable may keep unfilled
+                  boost::posix_time::ptime timeFrom, timeTo;
+
+                  if(parameters.size()>=5)
+                     timeFrom = web::rest::json::CJsonDate::fromString(parameters[4]);
+
+                  if(parameters.size()>=6)
+                     timeTo = web::rest::json::CJsonDate::fromString(parameters[5]);
+
+
+                  std::vector< boost::tuple<boost::posix_time::ptime, std::string> > allData = m_dataProvider->getDeviceRequester()->getDeviceData(deviceId, keyword, timeFrom, timeTo);
+                  web::rest::json::CJson objectList;
+                  std::vector< boost::tuple<boost::posix_time::ptime, std::string> >::const_iterator i;
+
+                  for(i=allData.begin(); i!=allData.end(); ++i)
+                  {
+                     web::rest::json::CJson result;
+                     result.put("date", web::rest::json::CJsonDate::toString(i->get<0>()));
+                     result.put("key", i->get<1>());
+                     objectList.push_back(std::make_pair("", result));
+                  }
+
+                  web::rest::json::CJson result;
+
+
+                  web::rest::json::CDeviceEntitySerializer des;
+                  web::rest::json::CKeywordEntitySerializer kes;
+
+
+                  result.put_child("device", des.serialize(*deviceFound.get()));
+                  result.put_child("keyword", kes.serialize(*keywordFound.get()));
+                  result.put_child("data", objectList);
+
+                  return web::rest::json::CJsonResult::GenerateSuccess(result);
+               }
+               else
+               {
+                  return web::rest::json::CJsonResult::GenerateError("unknow keyword for this device");
+               }
+            }
+            else
+            {
+               return web::rest::json::CJsonResult::GenerateError("can not retreive device");
+            }
+         }
+         else
+         {
+            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive parameters in url");
+         }
+
+      }
+      catch(std::exception &ex)
+      {
+         return web::rest::json::CJsonResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return web::rest::json::CJsonResult::GenerateError("unknown exception in reading device data");
+      }
+   }
 } //namespace service
 } //namespace rest
 } //namespace web 
