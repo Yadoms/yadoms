@@ -25,6 +25,12 @@
          "type" : "device",
          "expectedKeyword" : "command"
       },
+      "showDeviceName" : {
+         "name" : "Show device name",
+         "description" : "Determine if you want to see the device name on the widget",
+         "type" : "bool",
+         "defaultValue" : "true"
+      },
       "kind" : {
          "type" : "enum",
          "name" : "Kind of switch",
@@ -32,7 +38,8 @@
          "defaultValue" : "simple",
          "values" : {
             "simple" : "simple",
-            "blind" : "blind"
+            "blind" : "blind",
+            "ringbell" : "ring bell"
          }
       }
    }
