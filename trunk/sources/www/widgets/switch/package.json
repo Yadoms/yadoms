@@ -24,6 +24,16 @@
          "description" : "Device to emulate",
          "type" : "device",
          "expectedKeyword" : "command"
+      },
+      "kind" : {
+         "type" : "enum",
+         "name" : "Kind of switch",
+         "description" : "Define the kinb of switch is defined. Permit to change interactions in function of the kind of switch",
+         "defaultValue" : "simple",
+         "values" : {
+            "simple" : "simple",
+            "blind" : "blind"
+         }
       }
    }
 }
