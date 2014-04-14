@@ -603,10 +603,14 @@ function finalizeWidgetCreation(widget) {
    }
 
    //we initialize the widget
+   //TODO : separate widget method calls into multiple try catch blocks
    try
    {
       if (widget.viewModel.initialize !== undefined)
          widget.viewModel.initialize(widget);
+
+      if (widget.viewModel.configurationChanged !== undefined)
+         widget.viewModel.configurationChanged(widget);
 
       if (widget.viewModel.resized !== undefined)
          widget.viewModel.resized();

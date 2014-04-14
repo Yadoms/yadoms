@@ -7,10 +7,15 @@ widgetViewModelCtor =
 function SwitchViewModel() {
    //observable data
    //this.data = ko.observable({ temperature: 24, battery: 80 });
+
    this.command = ko.observable("on");
 
    //widget identifier
    this.widget = null;
+
+   this.kind = ko.observable("simple");
+
+   this.switchText = ko.observable("");
 
    this.commandClick = function(newState) {
      //alert(this.command());
@@ -40,6 +45,31 @@ function SwitchViewModel() {
     */
    this.initialize = function(widget) {
       this.widget = widget;
+      if (!isNullOrUndefined(this.widget.configuration.device)) {
+         //we ask for device information
+         var self = this;
+         $.getJSON("rest/device/" + this.widget.configuration.device)
+            .done(function( data ) {
+               //we parse the json answer
+               if (data.result != "true")
+               {
+                  //TODO : i18N
+                  notifyError($.t("I18N"));
+                  return;
+               }
+               self.switchText(data.data.name);
+
+            })
+            //TODO : i18N
+            .fail(function() {notifyError($.t("I18N"));});
+      }
+   };
+
+   this.configurationChanged = function() {
+      //we update the kind observable property
+      if ((!isNullOrUndefined(this.widget)) && (!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.kind))) {
+         this.kind(this.widget.configuration.kind);
+      }
    };
 
    /**
