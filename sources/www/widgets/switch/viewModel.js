@@ -17,8 +17,9 @@ function SwitchViewModel() {
 
    this.switchText = ko.observable("");
 
+   this.showDeviceName = ko.observable(true);
+
    this.commandClick = function(newState) {
-     //alert(this.command());
 
       $.ajax({
          type: "POST",
@@ -45,8 +46,23 @@ function SwitchViewModel() {
     */
    this.initialize = function(widget) {
       this.widget = widget;
+   };
+
+   this.configurationChanged = function() {
+      //we update the kind observable property
+      if ((isNullOrUndefined(this.widget)) || (isNullOrUndefined(this.widget.configuration)))
+         return;
+
+      if (!isNullOrUndefined(this.widget.configuration.kind)) {
+         this.kind(this.widget.configuration.kind);
+      }
+debugger;
+      if (!isNullOrUndefined(this.widget.configuration.showDeviceName)) {
+         this.showDeviceName(this.widget.configuration.showDeviceName);
+      }
+
+      //we ask for device information
       if (!isNullOrUndefined(this.widget.configuration.device)) {
-         //we ask for device information
          var self = this;
          $.getJSON("rest/device/" + this.widget.configuration.device)
             .done(function( data ) {
@@ -62,13 +78,6 @@ function SwitchViewModel() {
             })
             //TODO : i18N
             .fail(function() {notifyError($.t("I18N"));});
-      }
-   };
-
-   this.configurationChanged = function() {
-      //we update the kind observable property
-      if ((!isNullOrUndefined(this.widget)) && (!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.kind))) {
-         this.kind(this.widget.configuration.kind);
       }
    };
 
