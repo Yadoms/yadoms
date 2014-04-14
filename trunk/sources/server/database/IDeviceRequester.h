@@ -47,6 +47,17 @@ namespace database {
       virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string>  > getDeviceLastData(int deviceId) = 0;
 
       //--------------------------------------------------------------
+      /// \brief                 Get the device data
+      /// \param [in] deviceId   Device Id
+      /// \param [in] keyword    The keyword
+      /// \param [in] timeFrom   The start date (optionnal)
+      /// \param [in] timeTo     The end date (optionnal)
+      /// \return                Map of data : (date, value)
+      /// \throw                 CInvalidParameter if deviceId is unknown
+      //--------------------------------------------------------------
+      virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string>  > getDeviceData(int deviceId, const std::string & keyword,  boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo ) = 0;
+
+      //--------------------------------------------------------------
       /// \brief            Get all device hardwares
       /// \return           List of hardwares known by yadoms
       //--------------------------------------------------------------

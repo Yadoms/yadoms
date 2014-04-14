@@ -67,6 +67,11 @@ namespace web { namespace rest { namespace service {
       //-----------------------------------------
       web::rest::json::CJson createDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
 
+      //-----------------------------------------
+      ///\brief   get a device data
+      //-----------------------------------------
+      web::rest::json::CJson getDeviceData(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
+
    private:
       //-----------------------------------------
       ///\brief   Data provider

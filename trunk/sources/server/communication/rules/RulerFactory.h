@@ -24,17 +24,11 @@ namespace communication { namespace rules {
 
       //--------------------------------
       ///\brief Get the rule from an XplMessage
-      ///\param [in]  msg The message to extract the rule from
+      ///\param [in]  hardwareIdentifier The hardware identifier
+      ///\param [in]  protocol The protocol
       ///\return the rule (may be null)
       //--------------------------------
-      boost::shared_ptr<IRule> identifyRule(shared::xpl::CXplMessage & msg);
-         
-      //--------------------------------
-      ///\brief Get the rule for a device
-      ///\param [in]  msg The device
-      ///\return the rule (may be null)
-      //--------------------------------
-      boost::shared_ptr<IRule> identifyRule(database::entities::CDevice & device);
+      boost::shared_ptr<IRule> identifyRule(const std::string & hardwareIdentifier, const std::string & protocol);
          
       //--------------------------------
       ///\brief Create the XplMessage matching a command, to send to a specific device

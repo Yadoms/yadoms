@@ -3,6 +3,7 @@
 #include "AcBasic.h"
 #include "SensorBasic.h"
 #include "../Protocol.h"
+#include <shared/xpl/XplConstants.h>
 
 namespace communication { namespace rules { namespace rfxLanXpl {
 
@@ -20,29 +21,11 @@ namespace communication { namespace rules { namespace rfxLanXpl {
 
 
    // IFactory implementation
-   bool CDeviceManager::isHandled(shared::xpl::CXplMessage & message)
+   bool CDeviceManager::isHandled(const std::string & hardwareIdentifier)
    {
-      return matchHardware(message.getSource().toString()) || (boost::istarts_with(message.getSource().toString(), "yadoms") && matchHardware(message.getTarget().toString()));
+      //this factory is for the RfxComLan with Xpl firmware
+      return boost::starts_with(hardwareIdentifier, "rfxcom-lan.");
    }
-
-   boost::shared_ptr<IRule> CDeviceManager::identifyRule(shared::xpl::CXplMessage & msg, CRuleInstanceManager & instanceManager)
-   {
-      return identifyRule(msg.getMessageSchemaIdentifier().toString(), instanceManager);
-   }
-
-
-   bool CDeviceManager::isHandled(database::entities::CDevice & device)
-   {
-      return matchHardware(device.HardwareIdentifier);
-   }
-
-   boost::shared_ptr<IRule> CDeviceManager::identifyRule(database::entities::CDevice & device, CRuleInstanceManager & instanceManager)
-   {
-      return identifyRule(device.Protocol, instanceManager);
-   }
-   // [END] IFactory implementation
-
-
 
    boost::shared_ptr<IRule> CDeviceManager::identifyRule(const std::string & protocolName, CRuleInstanceManager & instanceManager)
    {
@@ -56,11 +39,11 @@ namespace communication { namespace rules { namespace rfxLanXpl {
       return boost::shared_ptr<IRule>();
    }
 
-   bool CDeviceManager::matchHardware(const std::string & hardwareIdentifier)
-   {
-      //this factory is for the RfxComLan with Xpl firmware
-      return boost::starts_with(hardwareIdentifier, "rfxcom-lan.");
-   }
+   // [END] IFactory implementation
+
+
+
+
 
    std::vector<std::string> CDeviceManager::getHandledProtocols()
    {
