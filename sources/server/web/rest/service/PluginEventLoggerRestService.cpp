@@ -60,8 +60,8 @@ namespace web { namespace rest { namespace service {
       if(parameters.size()>3)
          rType = (shared::plugin::information::EReleaseType)atoi(parameters[3].c_str());
       if(parameters.size()>4)
-         fromDate = boost::posix_time::from_iso_string(parameters[4]);
-
+         fromDate = web::rest::json::CJsonDate::fromString(parameters[4]);
+      
       web::rest::json::CPluginEventLoggerEntitySerializer hes;
       std::vector< boost::shared_ptr<database::entities::CPluginEventLogger> > dvList = m_dataProvider->getPluginEventLoggerRequester()->getPluginEvents(pluginName, pluginVersion, rType, fromDate);
       return web::rest::json::CJsonCollectionSerializer<database::entities::CPluginEventLogger>::SerializeCollection(dvList, hes, getRestKeyword());

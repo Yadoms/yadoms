@@ -27,7 +27,6 @@ namespace web { namespace rest { namespace service {
    {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CWidgetRestService::getAllWidgets);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CWidgetRestService::getOneWidget);
-//      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")(CAcquisitionRestService::getRestKeyword()), CWidgetRestService::getWidgetAcquisitions);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("packages"), CWidgetRestService::findWidgetPackages);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CWidgetRestService::addWidget, CWidgetRestService::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword), CWidgetRestService::replaceAllWidgets, CWidgetRestService::transactionalMethod);
@@ -105,14 +104,6 @@ namespace web { namespace rest { namespace service {
       return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CWidget>::SerializeCollection(hwList, hes, getRestKeyword()));
    }
 
-   /*
-   web::rest::json::CJson CWidgetRestService::getWidgetAcquisitions(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
-   {
-      web::rest::json::CWidgetEntitySerializer hes;
-      std::vector< boost::shared_ptr<database::entities::CWidget> > hwList = m_dataProvider->getWidgetRequester()->getWidgets();
-      return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CWidget>::SerializeCollection(hwList, hes, CAcquisitionRestService::getRestKeyword()));
-   }
-   */
 
    web::rest::json::CJson CWidgetRestService::addWidget(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {

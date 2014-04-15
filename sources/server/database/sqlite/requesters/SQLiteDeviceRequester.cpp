@@ -41,7 +41,7 @@ namespace database {  namespace sqlite { namespace requesters {
       }
    }
 
-   boost::shared_ptr<entities::CDevice>  CSQLiteDeviceRequester::getDevice(const std::string & address, const std::string & protocol, const std::string & hardwareIdentifier)
+   boost::shared_ptr<entities::CDevice> CSQLiteDeviceRequester::getDevice(const std::string & address, const std::string & protocol, const std::string & hardwareIdentifier)
    {
       //serach for sucgh a device
       CQuery qSelect;
@@ -58,20 +58,36 @@ namespace database {  namespace sqlite { namespace requesters {
          //the device is found, return its entity
          return adapter.getResults()[0];
       }
+      return boost::shared_ptr<entities::CDevice>();
+   }
+
+   boost::shared_ptr<entities::CDevice> CSQLiteDeviceRequester::createDevice(const std::string & address, const std::string & protocol, const std::string & hardwareIdentifier, const std::string & name /*= shared::CStringExtension::EmptyString*/)
+   {
+      if(getDevice(address, protocol, hardwareIdentifier))
+      {
+         throw shared::exception::CEmptyResult("The device already exists, cannot create it a new time");
+      }
       else
       {
-         //device not found, create it
+         //device not found, creation is enabled
+
+         //get a good name
+         std::string realName = name;
+         if(realName == shared::CStringExtension::EmptyString)
+            realName = address;
+
+         //insert in db
          CQuery qInsert;
          qInsert. InsertInto(CDeviceTable::getTableName(), CDeviceTable::getAddressColumnName(), CDeviceTable::getProtocolColumnName(), CDeviceTable::getNameColumnName(), CDeviceTable::getHardwareIdentifierColumnName()).
-            Values(address, protocol, address, hardwareIdentifier);
+            Values(address, protocol, realName, hardwareIdentifier);
          if(m_databaseRequester->queryStatement(qInsert) <= 0)
             throw shared::exception::CEmptyResult("Fail to insert new device");
 
          //device is created, just find it in table and return entity
-         m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
-         if(adapter.getResults().size() >= 1)
+         boost::shared_ptr<entities::CDevice> deviceCreated = getDevice(address, protocol, hardwareIdentifier);
+         if(deviceCreated)
          {
-            return adapter.getResults()[0];
+            return deviceCreated;
          }
          else
          {
@@ -131,7 +147,7 @@ namespace database {  namespace sqlite { namespace requesters {
          GroupBy(CMessageContentTable::getKeyColumnName());
 
       database::sqlite::adapters::CMultipleValueAdapter<boost::posix_time::ptime, std::string, std::string> mva;
-      
+
       m_databaseRequester->queryEntities(&mva, qSelect);
 
       return mva.getResults();

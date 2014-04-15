@@ -72,7 +72,17 @@ namespace web { namespace rest { namespace service {
       //-----------------------------------------
       web::rest::json::CJson getDeviceData(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
 
+      //-----------------------------------------
+      ///\brief   delete a device in database
+      //-----------------------------------------
+      web::rest::json::CJson deleteDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+
    private:
+      //-----------------------------------------
+      ///\brief   Transactional method used to encapsulate operation in transactions
+      //-----------------------------------------
+      web::rest::json::CJson transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
+
       //-----------------------------------------
       ///\brief   Data provider
       //-----------------------------------------
