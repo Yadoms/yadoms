@@ -111,7 +111,7 @@ endif()
 
 ## IOKIT (needed for Mac)
 if(APPLE)
-	include("mac.cmake")
+	include(${YADOMS_PATH}/mac.cmake)
 	
 	if(NOT IOKIT_FOUND)
 		message(SEND_ERROR "Unable to find the requested IOKit libraries")
