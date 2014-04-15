@@ -97,9 +97,17 @@ namespace communication {
          boost::shared_ptr<rules::IRule> rule = m_rulerFactory.identifyRule(realSource, xplMessage.getMessageSchemaIdentifier().toString());
          if(rule.get() != NULL)
          {
-            //create the device in database
+            //retreeive device identifier
             rules::DeviceIdentifier deviceAddress = rule->getDeviceAddressFromMessage(xplMessage);
+
+            //try to find device in db
             boost::shared_ptr<database::entities::CDevice> device = m_dataProvider->getDeviceRequester()->getDevice(deviceAddress, xplMessage.getMessageSchemaIdentifier().toString(), realSource);
+            if(!device)
+            {
+               //create the device in database
+               //TODO : make rule generate a pseudo real name
+               device = m_dataProvider->getDeviceRequester()->createDevice(deviceAddress, xplMessage.getMessageSchemaIdentifier().toString(), realSource, deviceAddress);
+            }
 
             //create message keywords in database
             std::vector< boost::shared_ptr<database::entities::CKeyword> > allKeywords = rule->identifyKeywords(xplMessage);
@@ -150,7 +158,7 @@ namespace communication {
          //find device in database
          boost::shared_ptr<database::entities::CDevice> device = m_dataProvider->getDeviceRequester()->getDevice(message.getDeviceId());
 
-         if(device.get() != NULL)
+         if(device)
          {
 
             boost::shared_ptr< shared::xpl::CXplMessage > messageToSend = m_rulerFactory.createXplCommand(*device.get(), message);

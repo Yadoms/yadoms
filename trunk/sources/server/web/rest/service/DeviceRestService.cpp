@@ -38,11 +38,12 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("data")("*"), CDeviceRestService::getDeviceData); //get all keyword data
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("data")("*")("*"), CDeviceRestService::getDeviceData); //get keyword data from date
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("data")("*")("*")("*"), CDeviceRestService::getDeviceData); //get keyword data between two dates
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "POST",  (m_restKeyword)("*")("command"), CDeviceRestService::sendDeviceCommand);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("hardwares"), CDeviceRestService::getDeviceHardwares);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("hardwares")("*")("protocols"), CDeviceRestService::getDeviceHardwareProtocols);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("generate")("*")("*"), CDeviceRestService::generateVirtualDevice);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "POST",  (m_restKeyword), CDeviceRestService::createDevice);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST",  (m_restKeyword)("*")("command"), CDeviceRestService::sendDeviceCommand, CDeviceRestService::transactionalMethod);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST",  (m_restKeyword), CDeviceRestService::createDevice, CDeviceRestService::transactionalMethod);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE",  (m_restKeyword)("*"), CDeviceRestService::deleteDevice, CDeviceRestService::transactionalMethod);
    }
 
    web::rest::json::CJson CDeviceRestService::getOneDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
@@ -251,8 +252,10 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         //TODO : créer un device depuis le REST
-         return web::rest::json::CJsonResult::GenerateSuccess();
+         web::rest::json::CDeviceEntitySerializer des;
+         boost::shared_ptr<database::entities::CDevice> deviceToAdd = des.deserialize(requestContent);
+         boost::shared_ptr<database::entities::CDevice> deviceFound = m_dataProvider->getDeviceRequester()->createDevice(deviceToAdd->Address(), deviceToAdd->Protocol(), deviceToAdd->HardwareIdentifier(), deviceToAdd->Name());
+         return web::rest::json::CJsonResult::GenerateSuccess(des.serialize(*deviceFound.get()));
       }
       catch(std::exception &ex)
       {
@@ -342,6 +345,66 @@ namespace web { namespace rest { namespace service {
       {
          return web::rest::json::CJsonResult::GenerateError("unknown exception in reading device data");
       }
+   }
+
+
+   web::rest::json::CJson CDeviceRestService::deleteDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   {
+      try
+      {
+
+         if(parameters.size()>=1)
+         {
+            //get device id from URL
+            int deviceId = boost::lexical_cast<int>(parameters[1]);
+
+            //remove device in db
+            m_dataProvider->getDeviceRequester()->removeDevice(deviceId);
+            return web::rest::json::CJsonResult::GenerateSuccess();
+         }
+         else
+         {
+            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive device id in url");
+         }
+
+      }
+      catch(std::exception &ex)
+      {
+         return web::rest::json::CJsonResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return web::rest::json::CJsonResult::GenerateError("unknown exception in reading device data");
+      }
+   }
+
+   web::rest::json::CJson CDeviceRestService::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   {
+      boost::shared_ptr<database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
+      web::rest::json::CJson result;
+      try
+      {
+         if(pTransactionalEngine)
+            pTransactionalEngine->transactionBegin();
+         result = realMethod(parameters, requestContent);
+      }
+      catch(std::exception &ex)
+      {
+         result = web::rest::json::CJsonResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         result = web::rest::json::CJsonResult::GenerateError("unknown exception device rest method");
+      }
+
+      if(pTransactionalEngine)
+      {
+         if(web::rest::json::CJsonResult::isSuccess(result))
+            pTransactionalEngine->transactionCommit();
+         else
+            pTransactionalEngine->transactionRollback();
+      }
+      return result;
    }
 } //namespace service
 } //namespace rest
