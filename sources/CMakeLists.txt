@@ -164,6 +164,7 @@ set(YADOMS_SRC
 	server/ApplicationStopHandler.cpp
 	
 	server/database/IDataProvider.h
+	server/database/IDataBackup.h
 	server/database/ITransactionalProvider.h
 	server/database/IPluginRequester.h
 	server/database/IConfigurationRequester.h

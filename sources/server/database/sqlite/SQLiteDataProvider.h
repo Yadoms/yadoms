@@ -1,6 +1,7 @@
 #pragma once
 
 #include "server/database/IDataProvider.h"
+#include "server/database/IDataBackup.h"
 #include "requesters/SQLitePluginRequester.h"
 #include "requesters/SQLiteConfigurationRequester.h"
 #include "requesters/SQLiteDeviceRequester.h"
@@ -20,7 +21,7 @@ namespace sqlite {
    //--------------------------------------------------------------
    /// \Brief		   Database provider for SQLite
    //--------------------------------------------------------------
-   class CSQLiteDataProvider : public database::IDataProvider
+   class CSQLiteDataProvider : public database::IDataProvider, public database::IDataBackup
    {
    public:
       //--------------------------------------------------------------
@@ -48,8 +49,11 @@ namespace sqlite {
       boost::shared_ptr<database::IPluginEventLoggerRequester> getPluginEventLoggerRequester() { return m_pluginEventLoggerRequester; }
       boost::shared_ptr<database::IEventLoggerRequester> getEventLoggerRequester() { return m_eventLoggerRequester; }
       boost::shared_ptr<database::IMessageRequester> getMessageRequester() { return m_messageRequester; }
-
       // [END] IDatabaseProvider implementation
+
+      // IDataBackup implementation
+      void backupData(const std::string & backupLocation, ProgressFunc reporter);
+      // [END] IDataBackup implementation
 
    private:
       //--------------------------------------------------------------
