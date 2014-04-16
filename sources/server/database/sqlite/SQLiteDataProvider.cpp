@@ -164,14 +164,13 @@ namespace database { namespace sqlite {
          if( pBackup )
          {
 
-            /* Each iteration of this loop copies 5 database pages from database
+            /* Each iteration of this loop copies 20 database pages from database
             ** pDb to the backup database. If the return value of backup_step()
             ** indicates that there are still further pages to copy, sleep for
             ** 250 ms before repeating. */
             do
             {
-               rc = sqlite3_backup_step(pBackup, 5);
-
+               rc = sqlite3_backup_step(pBackup, 20);
                if(reporter)
                {
                   reporter(
