@@ -29,7 +29,9 @@ class dir_monitor_impl
 public:
     dir_monitor_impl()
         : run_(true)
+        , runloop_(NULL)
         , work_thread_(&boost::asio::dir_monitor_impl::work_thread, this)
+        , fsevents_(NULL)
     {}
 
     ~dir_monitor_impl()
@@ -94,12 +96,10 @@ public:
 private:
     CFArrayRef make_array(boost::unordered_set<std::string> in)
     {
-        CFArrayCallBacks callbacks;
-        CFMutableArrayRef arr = CFArrayCreateMutable(kCFAllocatorDefault, in.size(), &callbacks);
+        CFMutableArrayRef arr = CFArrayCreateMutable(kCFAllocatorDefault, 0, NULL);
         for (auto str : in) {
             CFStringRef cfstr = CFStringCreateWithCString(kCFAllocatorDefault, str.c_str(), kCFStringEncodingUTF8);
             CFArrayAppendValue(arr, cfstr);
-            // @todo CFRelease(cfstr); ??
         }
         return arr;
     }
@@ -109,12 +109,12 @@ private:
         FSEventStreamContext context = {0, this, NULL, NULL, NULL};
         fsevents_ =
             FSEventStreamCreate(
-                kCFAllocatorDefault,
+                NULL,
                 &boost::asio::dir_monitor_impl::fsevents_callback,
                 &context,
                 make_array(dirs_),
                 kFSEventStreamEventIdSinceNow, /* only new modifications */
-                (CFTimeInterval)5.0, /* 5 seconds latency interval */
+                (CFTimeInterval)0.0, /* 0.0 seconds latency interval */
                 kFSEventStreamCreateFlagFileEvents);
         FSEventStreamRetain(fsevents_);
 
@@ -139,11 +139,32 @@ private:
         if (fsevents_)
         {
             FSEventStreamStop(fsevents_);
-            // FSEventStreamUnscheduleFromRunLoop(fsevents_, runloop_, kCFRunLoopDefaultMode);
+            FSEventStreamUnscheduleFromRunLoop(fsevents_, runloop_, kCFRunLoopDefaultMode);
             FSEventStreamInvalidate(fsevents_);
             FSEventStreamRelease(fsevents_);
         }
     }
+   
+	   // Return path when appended to a_From will resolve to same as a_To
+   static boost::filesystem::path make_relative( boost::filesystem::path a_From, boost::filesystem::path a_To )
+   {
+      a_From = boost::filesystem::absolute( a_From ); a_To = boost::filesystem::absolute( a_To );
+      boost::filesystem::path ret;
+      boost::filesystem::path::const_iterator itrFrom( a_From.begin() ), itrTo( a_To.begin() );
+      // Find common base
+      for( boost::filesystem::path::const_iterator toEnd( a_To.end() ), fromEnd( a_From.end() ) ; itrFrom != fromEnd && itrTo != toEnd && *itrFrom == *itrTo; ++itrFrom, ++itrTo );
+      // Navigate backwards in directory to reach previously found base
+      for( boost::filesystem::path::const_iterator fromEnd( a_From.end() ); itrFrom != fromEnd; ++itrFrom )
+      {
+         if( (*itrFrom) != "." )
+            ret /= "..";
+      }
+      // Now navigate down the directory branch
+      for( ; itrTo != a_To.end() ; ++itrTo )
+         ret /= *itrTo;
+      
+      return ret;
+   }
 
     static void fsevents_callback(
             ConstFSEventStreamRef streamRef,
@@ -162,17 +183,19 @@ private:
         for (i = 0; i < numEvents; ++i)
         {
             boost::filesystem::path dir(paths[i]);
+            boost::filesystem::path relativePath = make_relative(boost::filesystem::current_path(),dir);
+           
             if (eventFlags[i] & kFSEventStreamEventFlagMustScanSubDirs) {
-                impl->pushback_event(dir_monitor_event(dir, dir_monitor_event::recursive_rescan));
+                impl->pushback_event(dir_monitor_event(relativePath, dir_monitor_event::recursive_rescan));
             }
             if (eventFlags[i] & kFSEventStreamEventFlagItemCreated) {
-                impl->pushback_event(dir_monitor_event(dir, dir_monitor_event::added));
+                impl->pushback_event(dir_monitor_event(relativePath, dir_monitor_event::added));
             }
             if (eventFlags[i] & kFSEventStreamEventFlagItemRemoved) {
-                impl->pushback_event(dir_monitor_event(dir, dir_monitor_event::removed));
+                impl->pushback_event(dir_monitor_event(relativePath, dir_monitor_event::removed));
             }
             if (eventFlags[i] & kFSEventStreamEventFlagItemModified) {
-                impl->pushback_event(dir_monitor_event(dir, dir_monitor_event::modified));
+                impl->pushback_event(dir_monitor_event(relativePath, dir_monitor_event::modified));
             }
             // We assume renames always come in pairs inside a single callback, old name first.
             // This might be wrong in general, but I haven't seen evidence yet.
@@ -181,12 +204,12 @@ private:
                 if (rename_old)
                 {
                     rename_old = false;
-                    impl->pushback_event(dir_monitor_event(dir, dir_monitor_event::renamed_old_name));
+                    impl->pushback_event(dir_monitor_event(relativePath, dir_monitor_event::renamed_old_name));
                 }
                 else
                 {
                     rename_old = true;
-                    impl->pushback_event(dir_monitor_event(dir, dir_monitor_event::renamed_new_name));
+                    impl->pushback_event(dir_monitor_event(relativePath, dir_monitor_event::renamed_new_name));
                 }
             }
        }
