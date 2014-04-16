@@ -233,6 +233,8 @@ set(YADOMS_SRC
 	server/task/update/Plugin.cpp
 	server/task/update/Yadoms.h
 	server/task/update/Yadoms.cpp
+	server/task/backup/Database.h
+	server/task/backup/Database.cpp
 	
 	server/communication/XplGateway.h
 	server/communication/XplGateway.cpp	
@@ -277,6 +279,7 @@ source_group(server\\web\\rest\\json  server/web/rest/json/*.*)
 source_group(server\\web\\rest\\service  server/web/rest/service/*.*)
 source_group(server\\task  server/task/*.*)
 source_group(server\\task\\update  server/task/update/*.*)
+source_group(server\\task\\backup  server/task/backup/*.*)
 source_group(server\\communication  server/communication/*.*)
 source_group(server\\communication\\command  server/communication/command/*.*)
 source_group(server\\communication\\rules  server/communication/rules/*.*)
