@@ -22,6 +22,7 @@
 #include "tools/web/FileDownloader.h"
 #include "task/Scheduler.h"
 #include "task/update/Plugin.h"
+#include "task/backup/Database.h"
 
 CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
    :CThreadBase("Supervisor"), m_startupOptions(startupOptions)
@@ -195,7 +196,8 @@ void CSupervisor::doWork()
       boost::shared_ptr<task::CScheduler> taskManager = boost::shared_ptr<task::CScheduler>(new task::CScheduler());
 
 #if DEV_ACTIVATE_TASK_MANAGER_TESTS
-      taskManager->RunTask(boost::shared_ptr<task::ITask>(new task::update::CPlugin()));
+//      taskManager->RunTask(boost::shared_ptr<task::ITask>(new task::update::CPlugin()));
+      taskManager->RunTask(boost::shared_ptr<task::ITask>(new task::backup::CDatabase(boost::dynamic_pointer_cast<database::IDataBackup>(pDataProvider), "yadoms_backup.db3")));
 #endif
       // ######################### [END] Task manager #########################
 
