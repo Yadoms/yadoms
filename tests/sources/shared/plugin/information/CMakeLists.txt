@@ -1,5 +1,5 @@
 
-IF(NOT DISABLE_TEST_PLUGIN_CONFIGURATION)
+IF(NOT DISABLE_TEST_PLUGIN_INFORMATION)
    ADD_YADOMS_SOURCES(
       shared/shared/StringExtension.h
       shared/shared/StringExtension.cpp
