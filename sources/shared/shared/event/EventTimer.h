@@ -5,18 +5,18 @@
 namespace shared { namespace event
 {
    //--------------------------------------------------------------
-   /// \brief	    An timer for events system
+   /// \brief	    A timer for events system
    //--------------------------------------------------------------
    class YADOMS_SHARED_EXPORT CEventTimer : public ITimeEvent
    {
    public:
       //--------------------------------------------------------------
       /// \brief	    Constructor
-      /// \param[in] timerEventId   Id of the timer event
+      /// \param[in] eventId        Id of the event
       /// \param[in] periodic       true if the timer is periodic, false if timer is one-shot
       /// \param[in] period         Timer period. If provided, timer starts immediatley, else user must call start method
       //--------------------------------------------------------------
-      CEventTimer(int timerEventId, bool periodic = false,
+      CEventTimer(int eventId, bool periodic = false,
          const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time);
 
       //--------------------------------------------------------------
@@ -33,6 +33,7 @@ namespace shared { namespace event
       // ITimeEvent Implementation
       virtual boost::posix_time::ptime getNextStopPoint() const;
       virtual void reset();
+      virtual bool canBeDetached() const;
       virtual int getId() const;
       // [END] ITimeEvent Implementation
 

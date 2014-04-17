@@ -5,7 +5,7 @@ namespace shared { namespace event
 {
 
    //--------------------------------------------------------------
-   /// \brief	    Interface for timer events
+   /// \brief	    Interface for time events
    //--------------------------------------------------------------
    class YADOMS_SHARED_EXPORT ITimeEvent
    {
@@ -22,9 +22,16 @@ namespace shared { namespace event
       virtual boost::posix_time::ptime getNextStopPoint() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	    Reset the timer (stop it if non-periodic)
+      /// \brief	    Reset the time event (stop it if non-periodic)
       //--------------------------------------------------------------
       virtual void reset() = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	    Check if time event can be detached (if no more make sense because
+      ///             no more event is to come).
+      /// \return     true if the time event no more make sense and can be detached from event handler
+      //--------------------------------------------------------------
+      virtual bool canBeDetached() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Id getter

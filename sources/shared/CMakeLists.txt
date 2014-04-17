@@ -21,6 +21,8 @@ set(SHARED_LIB_SRC
 	shared/event/EventHandler.hpp
 	shared/event/EventTimer.cpp
 	shared/event/EventTimer.h
+	shared/event/EventTimePoint.cpp
+	shared/event/EventTimePoint.h
 	shared/event/ITimeEvent.h
 	shared/event/Now.h
 	shared/event/Now.cpp

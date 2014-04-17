@@ -1,6 +1,7 @@
 #pragma once
 #include "Event.hpp"
 #include "EventTimer.h"
+#include "EventTimePoint.h"
 #include "Now.h"
 #include <shared/exception/BadConversion.hpp>
 
@@ -168,6 +169,19 @@ namespace shared { namespace event
          m_timeEvents.push_back(timer);
       }
 
+      //--------------------------------------------------------------
+      /// \brief	    Create time point event associated with this event handler
+      /// \param[in] timePointEventId  Id of the time point event
+      /// \param[in] dateTime          date/time when to raise the event, must be in the future
+      //--------------------------------------------------------------
+      void createTimePoint(int timePointEventId, const boost::posix_time::ptime& dateTime)
+      {
+         BOOST_ASSERT(dateTime > now());
+
+         boost::shared_ptr<ITimeEvent> timePoint(new CEventTimePoint(timePointEventId, dateTime));
+         m_timeEvents.push_back(timePoint);
+      }
+
    protected:
       //--------------------------------------------------------------
       /// \brief	    Send an event
@@ -176,8 +190,6 @@ namespace shared { namespace event
       void sendEvent(boost::shared_ptr<CEventBase> & event)
       {
          BOOST_ASSERT(event->getId() >= kUserFirstId);
-
-//         boost::shared_ptr<CEventBase> evt(event);//TODO : evt est-il nécessaire ? Ne peut-on pas poster directement event ?
 
          boost::mutex::scoped_lock lock(m_eventsQueueMutex);
          m_eventsQueue.push(event);
@@ -198,7 +210,7 @@ namespace shared { namespace event
          // Find the closer time event
          boost::posix_time::ptime lower = boost::posix_time::max_date_time;
          boost::shared_ptr<ITimeEvent> nextTimeEvent;
-         for (std::vector<boost::shared_ptr<ITimeEvent> >::const_iterator it = m_timeEvents.begin() ;
+         for (TimeEventList::const_iterator it = m_timeEvents.begin() ;
             it != m_timeEvents.end() ; ++it)
          {
             boost::posix_time::ptime nextStopPoint = (*it)->getNextStopPoint();
@@ -223,7 +235,7 @@ namespace shared { namespace event
          if (m_timeEvents.empty())
             return false;
 
-         for (std::vector<boost::shared_ptr<ITimeEvent> >::const_iterator it = m_timeEvents.begin() ;
+         for (TimeEventList::const_iterator it = m_timeEvents.begin() ;
             it != m_timeEvents.end() ; ++it)
          {
             if ((*it)->getNextStopPoint() != boost::date_time::not_a_date_time)
@@ -241,7 +253,7 @@ namespace shared { namespace event
          if (m_timeEvents.empty())
             return;
 
-         for (std::vector<boost::shared_ptr<ITimeEvent> >::const_iterator it = m_timeEvents.begin() ;
+         for (TimeEventList::const_iterator it = m_timeEvents.begin() ;
             it != m_timeEvents.end() ; ++it)
          {
             boost::posix_time::ptime nextStopPoint = (*it)->getNextStopPoint();
@@ -259,6 +271,19 @@ namespace shared { namespace event
          boost::shared_ptr<CEventBase> evt(new CEventBase(timeEvent->getId()));
          m_eventsQueue.push(evt);
          timeEvent->reset();
+         if (timeEvent->canBeDetached())
+         {
+            // Find and detach time event
+            for (TimeEventList::const_iterator it = m_timeEvents.begin() ;
+               it != m_timeEvents.end() ; ++it)
+            {
+               if (*it == timeEvent)
+               {
+                  m_timeEvents.erase(it);
+                  return;
+               }
+            }
+         }
       }
 
    private:
@@ -280,7 +305,8 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       /// \brief	   The time events associated with this event handler
       //--------------------------------------------------------------
-      std::vector<boost::shared_ptr<ITimeEvent> > m_timeEvents;
+      typedef std::vector<boost::shared_ptr<ITimeEvent> > TimeEventList;
+      TimeEventList m_timeEvents;
    };
 
 } } // namespace shared::event
