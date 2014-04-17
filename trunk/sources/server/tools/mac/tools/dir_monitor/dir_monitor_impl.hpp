@@ -10,6 +10,7 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
+// Note from SG : it seems to not work very well on Maverick. No solution for the moment...
 #pragma once
 
 #include <boost/filesystem.hpp>
@@ -116,7 +117,6 @@ private:
                 kFSEventStreamEventIdSinceNow, /* only new modifications */
                 (CFTimeInterval)0.0, /* 0.0 seconds latency interval */
                 kFSEventStreamCreateFlagFileEvents);
-        FSEventStreamRetain(fsevents_);
 
         if (!fsevents_)
         {
@@ -131,7 +131,7 @@ private:
         FSEventStreamScheduleWithRunLoop(fsevents_, runloop_, kCFRunLoopDefaultMode);
         FSEventStreamStart(fsevents_);
         runloop_cond_.notify_all();
-        FSEventStreamFlushAsync(fsevents_);
+        FSEventStreamFlushSync(fsevents_);
     }
 
     void stop_fsevents()
@@ -139,7 +139,6 @@ private:
         if (fsevents_)
         {
             FSEventStreamStop(fsevents_);
-            FSEventStreamUnscheduleFromRunLoop(fsevents_, runloop_, kCFRunLoopDefaultMode);
             FSEventStreamInvalidate(fsevents_);
             FSEventStreamRelease(fsevents_);
         }
@@ -178,7 +177,6 @@ private:
         char **paths = (char**)eventPaths;
         dir_monitor_impl* impl = (dir_monitor_impl*)clientCallBackInfo;
         bool rename_old = true;
-
 
         for (i = 0; i < numEvents; ++i)
         {
