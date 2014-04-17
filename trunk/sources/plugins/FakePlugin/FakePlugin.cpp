@@ -4,6 +4,7 @@
 #include <shared/xpl/XplService.h>
 #include <shared/xpl/XplMessage.h>
 #include <shared/xpl/XplHelper.h>
+#include <shared/event/EventTimer.h>
 #include "FakeTemperatureSensor.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
@@ -24,7 +25,8 @@ CFakePlugin::~CFakePlugin()
 enum
 {
    kEvtXplMessage = shared::event::kUserFirstId,   // Always start from shared::event::CEventHandler::kUserFirstId
-   kEvtUpdateConfiguration
+   kEvtUpdateConfiguration,
+   kEvtTimerSendMessage
 };
 
 // XPL device ID : use to identify this plugin over the XPL network.
@@ -60,13 +62,15 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
       // Fake temperature sensor
       CFakeTemperatureSensor temperatureSensor("fakeTempSensor");
 
+      // Timer used to send a XPL message periodically
+      createTimer(kEvtTimerSendMessage, true, boost::posix_time::milliseconds(10000));
+
       // the main loop
       YADOMS_LOG(debug) << "CFakePlugin is running...";
       while(1)
       {
-         // Wait for an event, with timeout
-         // Timeout is used here to send periodically a XPL message
-         switch(waitForEvents(boost::posix_time::milliseconds(30000)))
+         // Wait for an event
+         switch(waitForEvents(boost::date_time::pos_infin))
          {
          case kEvtXplMessage:
             {
@@ -93,9 +97,12 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
 
                break;
             }
-         case shared::event::kTimeout:
+         case kEvtTimerSendMessage:
             {
-               // Timeout, used here to send a XPL message periodically
+               // Timer used here to send a XPL message periodically
+
+               // We need to consume this timer event
+               popEvent();
 
                // First read the sensor value
                temperatureSensor.read();
@@ -121,6 +128,8 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
 
                // Send it
                xplService.sendMessage(msg);
+
+               YADOMS_LOG(debug) << "Send the periodically temperature message...";
 
                break;
             }

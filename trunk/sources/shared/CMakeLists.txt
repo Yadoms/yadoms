@@ -19,6 +19,11 @@ set(SHARED_LIB_SRC
 	shared/event/Event.hpp
 	shared/event/EventBase.hpp
 	shared/event/EventHandler.hpp
+	shared/event/EventTimer.cpp
+	shared/event/EventTimer.h
+	shared/event/ITimeEvent.h
+	shared/event/Now.h
+	shared/event/Now.cpp
 
  	shared/exception/BadConversion.hpp
 	shared/exception/EmptyResult.hpp
