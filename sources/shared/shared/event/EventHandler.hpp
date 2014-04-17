@@ -1,5 +1,7 @@
 #pragma once
 #include "Event.hpp"
+#include "EventTimer.h"
+#include "Now.h"
 #include <shared/exception/BadConversion.hpp>
 
 namespace shared { namespace event
@@ -54,8 +56,8 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       bool empty() const
       {
-         boost::mutex::scoped_lock lock(m_EventsQueueMutex);
-         return m_EventsQueue.empty();
+         boost::mutex::scoped_lock lock(m_eventsQueueMutex);
+         return m_eventsQueue.empty();
       }
 
       //--------------------------------------------------------------
@@ -71,30 +73,53 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       int waitForEvents(const boost::posix_time::time_duration& timeout = boost::date_time::pos_infin)
       {
-         boost::mutex::scoped_lock lock(m_EventsQueueMutex);
+         // If time events are elapsed, must post corresponding event to the queue
+         signalElapsedTimeEvents();
+
+         boost::mutex::scoped_lock lock(m_eventsQueueMutex);
 
          // Don't wait if event is already present
-         if (!m_EventsQueue.empty())
-            return m_EventsQueue.back()->getId();
+         if (!m_eventsQueue.empty())
+            return m_eventsQueue.back()->getId();
 
-         // No event is present
+         // No event is currently present
          if (timeout == boost::date_time::min_date_time)
          {
             // No wait
             return kNoEvent;
          }
-         else if (timeout == boost::date_time::pos_infin)
+         else if (!hasRunningTimeEvents() && timeout == boost::date_time::pos_infin)
          {
             // Wait inifinite for event
             m_condition.wait(lock);
+            return m_eventsQueue.back()->getId();
          }
          else
          {
-            // Wait for event with timeout
-            if (!m_condition.timed_wait(lock, timeout))
-               return kTimeout;
+            // Have time event or timeout
+            boost::shared_ptr<ITimeEvent> closerTimeEvent = getNextTimeEventStopPoint();
+            if (closerTimeEvent && (closerTimeEvent->getNextStopPoint() < (now() + timeout)) )
+            {
+               // Next stop point will be the closer time event
+               if (!m_condition.timed_wait(lock, closerTimeEvent->getNextStopPoint() - now()))
+               {
+                  // No event ==> Signal time event
+                  signalTimeEvent(closerTimeEvent);
+               }
+            }
+            else
+            {
+               // Next stop point will be the normal timeout
+               if (!m_condition.timed_wait(lock, timeout))
+               {
+                  // No event ==> timeout
+                  return kTimeout;
+               }
+            }
+            
+            // Event occurs during wait or time event was signaled
+            return m_eventsQueue.back()->getId();
          }
-         return m_EventsQueue.back()->getId();
       }
 
       //--------------------------------------------------------------
@@ -102,8 +127,8 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       void popEvent()
       {
-         boost::mutex::scoped_lock lock(m_EventsQueueMutex);
-         m_EventsQueue.pop();
+         boost::mutex::scoped_lock lock(m_eventsQueueMutex);
+         m_eventsQueue.pop();
       }
 
       //--------------------------------------------------------------
@@ -115,17 +140,32 @@ namespace shared { namespace event
       template<typename DataType>
       const DataType popEvent()
       {
-         boost::mutex::scoped_lock lock(m_EventsQueueMutex);
+         boost::mutex::scoped_lock lock(m_eventsQueueMutex);
          try
          {
-            CEvent<DataType> evt = dynamic_cast<CEvent<DataType> & >(*m_EventsQueue.front());
-            m_EventsQueue.pop();
+            CEvent<DataType> evt = dynamic_cast<CEvent<DataType> & >(*m_eventsQueue.front());
+            m_eventsQueue.pop();
             return evt.getData();
          }
          catch (std::bad_cast&)
          {
-            throw exception::CBadConversion("popEvent", boost::lexical_cast<std::string>(m_EventsQueue.back()->getId()));
+            throw exception::CBadConversion("popEvent", boost::lexical_cast<std::string>(m_eventsQueue.back()->getId()));
          }
+      }
+
+      //--------------------------------------------------------------
+      /// \brief	    Create timer associated with this event handler
+      /// \param[in] timerEventId   Id of the timer event
+      /// \param[in] periodic       true if the timer is periodic, false if timer is one-shot
+      /// \param[in] period         Timer period. If provided, timer starts immediatley, else user must call start method
+      //--------------------------------------------------------------
+      void createTimer(int timerEventId, bool periodic = false,
+         const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time)
+      {
+         BOOST_ASSERT(timerEventId >= kUserFirstId);
+
+         boost::shared_ptr<ITimeEvent> timer(new CEventTimer(timerEventId, periodic, period));
+         m_timeEvents.push_back(timer);
       }
 
    protected:
@@ -137,29 +177,110 @@ namespace shared { namespace event
       {
          BOOST_ASSERT(event->getId() >= kUserFirstId);
 
-         boost::shared_ptr<CEventBase> evt(event);
+//         boost::shared_ptr<CEventBase> evt(event);//TODO : evt est-il nécessaire ? Ne peut-on pas poster directement event ?
 
-         boost::mutex::scoped_lock lock(m_EventsQueueMutex);
-         m_EventsQueue.push(evt);
+         boost::mutex::scoped_lock lock(m_eventsQueueMutex);
+         m_eventsQueue.push(event);
          lock.unlock();
          m_condition.notify_one();
+      }
+
+      //--------------------------------------------------------------
+      /// \brief	   Get the next time event stop point
+      ///            This function compute the next event to arrive, between registred time events
+      /// \return    The next time event (null pointer if none)
+      //--------------------------------------------------------------
+      boost::shared_ptr<ITimeEvent> getNextTimeEventStopPoint()
+      {
+         if (m_timeEvents.empty())
+            return boost::shared_ptr<ITimeEvent>();
+
+         // Find the closer time event
+         boost::posix_time::ptime lower = boost::posix_time::max_date_time;
+         boost::shared_ptr<ITimeEvent> nextTimeEvent;
+         for (std::vector<boost::shared_ptr<ITimeEvent> >::const_iterator it = m_timeEvents.begin() ;
+            it != m_timeEvents.end() ; ++it)
+         {
+            boost::posix_time::ptime nextStopPoint = (*it)->getNextStopPoint();
+            if (nextStopPoint != boost::date_time::not_a_date_time)
+            {
+               if (nextStopPoint < lower)
+               {
+                  lower = nextStopPoint;
+                  nextTimeEvent = *it;
+               }
+            }
+         }
+         return nextTimeEvent;
+      }
+
+      //--------------------------------------------------------------
+      /// \brief	   Check if some time event(s) is(are) running
+      /// \return    true if time event is running, false if none
+      //--------------------------------------------------------------
+      bool hasRunningTimeEvents()
+      {
+         if (m_timeEvents.empty())
+            return false;
+
+         for (std::vector<boost::shared_ptr<ITimeEvent> >::const_iterator it = m_timeEvents.begin() ;
+            it != m_timeEvents.end() ; ++it)
+         {
+            if ((*it)->getNextStopPoint() != boost::date_time::not_a_date_time)
+               return true;
+         }
+
+         return false;
+      }
+
+      //--------------------------------------------------------------
+      /// \brief	   Check for elapsed time events, and post corresponding events to the queue
+      //--------------------------------------------------------------
+      void signalElapsedTimeEvents()
+      {
+         if (m_timeEvents.empty())
+            return;
+
+         for (std::vector<boost::shared_ptr<ITimeEvent> >::const_iterator it = m_timeEvents.begin() ;
+            it != m_timeEvents.end() ; ++it)
+         {
+            boost::posix_time::ptime nextStopPoint = (*it)->getNextStopPoint();
+            if (nextStopPoint != boost::date_time::not_a_date_time && nextStopPoint < now())
+               signalTimeEvent(*it);
+         }
+      }
+
+      //--------------------------------------------------------------
+      /// \brief	            Signal that time event elapsed
+      /// \param[in] timeEvent    Time event to signal
+      //--------------------------------------------------------------
+      void signalTimeEvent(boost::shared_ptr<ITimeEvent> timeEvent)
+      {
+         boost::shared_ptr<CEventBase> evt(new CEventBase(timeEvent->getId()));
+         m_eventsQueue.push(evt);
+         timeEvent->reset();
       }
 
    private:
       //--------------------------------------------------------------
       /// \brief	   The events queue
       //--------------------------------------------------------------
-      std::queue<boost::shared_ptr<CEventBase> > m_EventsQueue;
+      std::queue<boost::shared_ptr<CEventBase> > m_eventsQueue;
 
       //--------------------------------------------------------------
       /// \brief	   Mutex protecting the events queue
       //--------------------------------------------------------------
-      mutable boost::mutex m_EventsQueueMutex;
+      mutable boost::mutex m_eventsQueueMutex;
 
       //--------------------------------------------------------------
       /// \brief	   Condition variable signaling an event arrives
       //--------------------------------------------------------------
       boost::condition_variable m_condition;
+
+      //--------------------------------------------------------------
+      /// \brief	   The time events associated with this event handler
+      //--------------------------------------------------------------
+      std::vector<boost::shared_ptr<ITimeEvent> > m_timeEvents;
    };
 
 } } // namespace shared::event
