@@ -1,4 +1,3 @@
-#pragma once
 #include "stdafx.h"
 #include "../exception/InvalidParameter.hpp"
 #include "Now.h"
@@ -8,7 +7,7 @@ namespace shared { namespace event
 {
 
 CEventTimePoint::CEventTimePoint(int eventId, const boost::posix_time::ptime& dateTime)
-   :m_dateTime(dateTime), m_id(eventId)
+   :m_id(eventId), m_dateTime(dateTime)
 {
    if (m_dateTime <= now())
       throw shared::exception::CInvalidParameter("Provided dateTime value is not in the future");

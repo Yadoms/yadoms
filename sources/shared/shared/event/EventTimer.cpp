@@ -1,4 +1,3 @@
-#pragma once
 #include "stdafx.h"
 #include "../exception/InvalidParameter.hpp"
 #include "Now.h"
@@ -8,7 +7,7 @@ namespace shared { namespace event
 {
 
 CEventTimer::CEventTimer(int eventId, bool periodic, const boost::posix_time::time_duration& period)
-   :m_periodic(periodic), m_period(period), m_id(eventId)
+   :m_id(eventId), m_periodic(periodic), m_period(period)
 {
    if (m_period != boost::date_time::not_a_date_time)
       start(m_period);

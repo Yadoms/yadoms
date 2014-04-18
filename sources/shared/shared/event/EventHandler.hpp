@@ -161,7 +161,7 @@ namespace shared { namespace event
       /// \param[in] period         Timer period. If provided, timer starts immediatley, else user must call start method
       //--------------------------------------------------------------
       void createTimer(int timerEventId, bool periodic = false,
-         const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time)
+         const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time)//TODO : retourner l'objet créé
       {
          BOOST_ASSERT(timerEventId >= kUserFirstId);
 
@@ -274,7 +274,7 @@ namespace shared { namespace event
          if (timeEvent->canBeDetached())
          {
             // Find and detach time event
-            for (TimeEventList::const_iterator it = m_timeEvents.begin() ;
+            for (TimeEventList::iterator it = m_timeEvents.begin() ;
                it != m_timeEvents.end() ; ++it)
             {
                if (*it == timeEvent)
