@@ -44,9 +44,8 @@ IF(GAMMU_FOUND)
 	#########################################
 	#todo gérer les différentes config et PF
 	set(SMS_DIALER_ADDITIONAL_LIB
-		${GAMMU_ROOT}/libgammu/Debug/Gammu.lib
-		${GAMMU_ROOT}/helper/Debug/string.lib
-		${GAMMU_ROOT}/helper/Debug/win32dirent.lib)
+	    ${GAMMU_LIBRARIES}
+	)
 
 	#########################################
 	## Always leave this three lines to configure plugin correctly

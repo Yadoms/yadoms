@@ -16,6 +16,7 @@ if(WIN32)
    set(GAMMU_PKG_INCLUDE_DIRS ${GAMMU_ROOT}/include)
    set(GAMMU_PKG_LIBRARY_DIRS  ${GAMMU_ROOT}/libgammu/Debug)#TODO : gérer les configurations
    set(GAMMU_PKG_LIBRARIES Gammu.lib)
+   set(GAMMU_ADDITIONAL_LIBRARIES  ${GAMMU_ROOT}/helper/Debug/string.lib ${GAMMU_ROOT}/helper/Debug/win32dirent.lib)#TODO : gérer les configurations
 else(WIN32)
    # Use pkg-config to get the directories and then use these values
    # in the FIND_PATH() and FIND_LIBRARY() calls
@@ -41,9 +42,12 @@ find_library(GAMMU_LIBRARIES NAMES ${GAMMU_PKG_LIBRARIES}
    ${GAMMU_PKG_LIBRARY_DIRS}
 )
 
- # handle the QUIETLY and REQUIRED arguments and set GAMMU_FOUND to TRUE if 
- # all listed variables are TRUE
- include(FindPackageHandleStandardArgs)
- find_package_handle_standard_args(Gammu DEFAULT_MSG GAMMU_INCLUDE_DIRS GAMMU_LIBRARIES)
+# Add additional libraries
+set(GAMMU_LIBRARIES ${GAMMU_LIBRARIES} ${GAMMU_ADDITIONAL_LIBRARIES})
 
- mark_as_advanced(GAMMU_INCLUDE_DIRS GAMMU_LIBRARIES)
+# handle the QUIETLY and REQUIRED arguments and set GAMMU_FOUND to TRUE if 
+# all listed variables are TRUE
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(Gammu DEFAULT_MSG GAMMU_INCLUDE_DIRS GAMMU_LIBRARIES)
+
+mark_as_advanced(GAMMU_INCLUDE_DIRS GAMMU_LIBRARIES)
