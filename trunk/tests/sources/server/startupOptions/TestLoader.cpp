@@ -65,7 +65,7 @@ private:
 static const std::string testNewPluginPath = "newPluginPath";
 static const std::string testNewWidgetsPath = "newWidgetsPath";
 static const std::string testNewWebServerPath = "newNewWebServerPath";
-
+static const std::string testFalsePath = "FalsePath";
 
 //--------------------------------------------------------------
 /// \brief	    Test startupOptions::CLoader with no argument
@@ -468,13 +468,14 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument --webServerPath
-/// \result         No Error - the website address is changed
+/// \brief	    Test startupOptions::CLoader with the argument --webServerPath with a wrong Path
+/// \result         Raise a Exception
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_WrongPath)
 {
-   const char *argv[] = {"./TestLoader","--webServerPath","wrongPath"};
+	CTestPath webServerPath(testNewWebServerPath);
+   const char *argv[] = {"./TestLoader","--webServerPath",testFalsePath.c_str()};
 
    BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderException);
 }
@@ -545,7 +546,39 @@ BOOST_AUTO_TEST_CASE(Different_WidgetPath_WidgetPath_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
-//TODO : Tester pluginsPath et widgetsPath avec un faux chemin
+//--------------------------------------------------------------
+/// \brief	    Test startupOptions::CLoader with the argument --widgetsPath and a wrong Path
+/// \result         Raise a Exception
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Different_WidgetPath_False_Path_Initialisation)
+{
+	// Create the path with testNewWidgetsPath
+   CTestPath widgetsPath(testNewWidgetsPath);
+
+   // Argument with the false path
+   const char *argv[] = {"./TestLoader","--widgetsPath",testFalsePath.c_str()};
+
+   //An exception should be throw !
+   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderException);
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test startupOptions::CLoader with the argument --pluginsPath and a wrong Path
+/// \result         Raise a Exception
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Different_PluginPath_False_Path_Initialisation)
+{
+	// Create the path with testNewWidgetsPath
+   CTestPath pluginPath(testNewPluginPath);
+
+   // Argument with the false path
+   const char *argv[] = {"./TestLoader","--pluginsPath",testFalsePath.c_str()};
+
+   //An exception should be throw !
+   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderException);
+}
 
 //--------------------------------------------------------------
 /// \brief	    Test startupOptions::CLoader with the argument -x
