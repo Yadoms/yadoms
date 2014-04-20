@@ -16,51 +16,65 @@ BOOST_AUTO_TEST_SUITE(TestEvent)
 enum
 {
    FirstMessage = shared::event::kUserFirstId,   // Always start from shared::event::kUserFirstId
-   Message1
+   Message1,
+   Message2
 };
 
-long Receiver_FirstMessageCounter;
-long Receiver_Message1Counter;
-long Receiver_TimeoutCounter;
-long Receiver_DefaultCounter;
+struct structData
+{
+	int maData[10];
+};
+
+long ReceiverFirstMessageCounter;
+long ReceiverMessage1Counter;
+long ReceiverTimeoutCounter;
+long ReceiverDefaultCounter;
+
+bool ReceiverMessageCorrect;
 
 shared::event::CEventHandler EvtHandler;
 
-void ThreadReceiver(long l_nb_messages)
+void ThreadReceiver(long nbMessages)
 {
-   while ((Receiver_FirstMessageCounter + Receiver_Message1Counter + Receiver_TimeoutCounter + Receiver_DefaultCounter ) != l_nb_messages)
+   while ((ReceiverFirstMessageCounter + ReceiverMessage1Counter + ReceiverTimeoutCounter + ReceiverDefaultCounter ) != nbMessages)
    {
 
       //boost::posix_time::seconds workTime(1);
 
       std::cout << "Thread Receiver: WaitForEvents()" << std::endl;
       //Pretend to do something useful...
-      switch(EvtHandler.waitForEvents(boost::posix_time::milliseconds(10000)))
+      switch(EvtHandler.waitForEvents(boost::posix_time::milliseconds(5000)))
       {
       case FirstMessage:
          {
             EvtHandler.popEvent();
-            Receiver_FirstMessageCounter++;
-            std::cout << "Thread Receiver: First message received (#" << Receiver_FirstMessageCounter  << ")" << std::endl;
+            ReceiverFirstMessageCounter++;
+            std::cout << "Thread Receiver: First message received (#" << ReceiverFirstMessageCounter  << ")" << std::endl;
             break;
          }
       case Message1:
          {
             EvtHandler.popEvent();
-            Receiver_Message1Counter++;
-            std::cout << "Thread Receiver: Message 1 Received (#" << Receiver_Message1Counter << ")" << std::endl;
+            ReceiverMessage1Counter++;
+            std::cout << "Thread Receiver: Message 1 Received (#" << ReceiverMessage1Counter << ")" << std::endl;
             break;
          }
       case shared::event::kTimeout:
          {
-            Receiver_TimeoutCounter++;
-            std::cout << "Thread Receiver: TimeOut (#" << Receiver_TimeoutCounter << ")" << std::endl;
+            ReceiverTimeoutCounter++;
+            std::cout << "Thread Receiver: TimeOut (#" << ReceiverTimeoutCounter << ")" << std::endl;
+            break;
+         }
+      case shared::event::kNoEvent:
+         {
+            //ReceiverTimeoutCounter++;
+            std::cout << "Thread Receiver: NoEvent (#" << ReceiverTimeoutCounter << ")" << std::endl;
             break;
          }
       default:
          {
-            Receiver_DefaultCounter++;
-            std::cout << "Thread Receiver: Unknown message id (#" << Receiver_DefaultCounter << ")" << std::endl;
+            ReceiverDefaultCounter++;
+            std::cout << "Thread Receiver: Unknown message id (#" << ReceiverDefaultCounter << ")" << std::endl;
             break;
          }
       }
@@ -68,17 +82,81 @@ void ThreadReceiver(long l_nb_messages)
    std::cout << "Thread Receiver: finished" << std::endl;
 }
 
-void ThreadSender(long nb_messages)
+void ThreadReceiverWithMessages(long nbMessages)
+{
+	int counter;
+	structData DataReceived;
+
+   while ((ReceiverFirstMessageCounter + ReceiverMessage1Counter + ReceiverTimeoutCounter + ReceiverDefaultCounter ) != nbMessages)
+   {
+
+      //boost::posix_time::seconds workTime(1);
+
+      std::cout << "Thread Receiver: WaitForEvents()" << std::endl;
+      //Pretend to do something useful...
+      switch(EvtHandler.waitForEvents(boost::posix_time::milliseconds(5000)))
+      {
+      case FirstMessage:
+         {
+            DataReceived = EvtHandler.popEvent<structData>();
+            ReceiverFirstMessageCounter++;
+            std::cout << "Thread Receiver: First message received (#" << ReceiverFirstMessageCounter  << ")" << std::endl;
+            break;
+         }
+      case Message1:
+         {
+            DataReceived = EvtHandler.popEvent<structData>();
+            ReceiverMessage1Counter++;
+            std::cout << "Thread Receiver: Message 1 Received (#" << ReceiverMessage1Counter << ")" << std::endl;
+            break;
+         }
+      case shared::event::kTimeout:
+         {
+            ReceiverTimeoutCounter++;
+            std::cout << "Thread Receiver: TimeOut (#" << ReceiverTimeoutCounter << ")" << std::endl;
+            break;
+         }
+      case shared::event::kNoEvent:
+         {
+            //ReceiverTimeoutCounter++;
+            std::cout << "Thread Receiver: NoEvent (#" << ReceiverTimeoutCounter << ")" << std::endl;
+            break;
+         }
+      default:
+         {
+            ReceiverDefaultCounter++;
+            std::cout << "Thread Receiver: Unknown message id (#" << ReceiverDefaultCounter << ")" << std::endl;
+            break;
+         }
+      }
+
+	   //check the received Data
+
+	   counter = 0;
+	   while (counter < 10 && DataReceived.maData[counter]==counter)
+		   counter++;
+
+	   if (counter == 10)
+	   {
+		   ReceiverMessageCorrect = ReceiverMessageCorrect & true;
+		   std::cout << "Data Received Correctly" << std::endl;
+	   }
+	   else
+	   {
+		   ReceiverMessageCorrect = ReceiverMessageCorrect & false;
+		   std::cout << "Data Not Received Correctly" << std::endl;
+	   }
+   }
+
+   std::cout << "Thread Receiver: finished" << std::endl;
+}
+
+void ThreadSender(long nbMessages)
 {
 	long i;
 
-	//boost::posix_time::seconds workTime(1);
-	//std::cout << "Thread Sender: sleep" << std::endl;
-
-	//Pretend to do something useful...
-	//boost::this_thread::sleep(workTime);
-	std::cout << "Thread Sender: sendEvent" << std::endl;
-	for (i = 0 ; i < nb_messages; i++)
+	std::cout << "Thread Sender: sendEvent (a)" << std::endl;
+	for (i = 0 ; i < nbMessages; i++)
 	{
 	  EvtHandler.sendEvent(Message1);
 
@@ -89,56 +167,238 @@ void ThreadSender(long nb_messages)
 	std::cout << "Thread Sender: finished" << std::endl;
 }
 
-
-//--------------------------------------------------------------
-/// \brief	    Test Events with 1 event sent
-/// \result         No Error
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Event_1_Message)
+void ThreadSenderWithMessages(long nbMessages)
 {
-	long l_nbmessages = 1;
+	long counter;
+	structData DataSent;
 
-	Receiver_FirstMessageCounter = 0;
-	Receiver_Message1Counter     = 0;
-	Receiver_TimeoutCounter      = 0;
-	Receiver_DefaultCounter      = 0;
+	for (counter = 0; counter < 10; counter++)
+		DataSent.maData[counter] = counter;
 
-	boost::thread ConsoThread(ThreadReceiver , l_nbmessages);//TODO pas de français !
-	boost::thread ProdThread(ThreadSender    , l_nbmessages);
+	std::cout << "Thread Sender: sendEvent (a)" << std::endl;
+	for (counter = 0 ; counter < nbMessages; counter++)
+	{
+	  EvtHandler.sendEvent<structData>(Message1,DataSent);
 
-	ConsoThread.join();
+	  std::cout << "Thread Sender: sendEvent(Message1) nb:" << counter  << std::endl;
+	}
 
-	BOOST_CHECK_EQUAL(Receiver_FirstMessageCounter, 0);
-	BOOST_CHECK_EQUAL(Receiver_Message1Counter    , l_nbmessages);
-	BOOST_CHECK_EQUAL(Receiver_TimeoutCounter     , 0);
-	BOOST_CHECK_EQUAL(Receiver_DefaultCounter     , 0);
+	//boost::this_thread::sleep(workTime);
+	std::cout << "Thread Sender: finished" << std::endl;
+}
+
+void ThreadSenderWithMessagesString(long nbMessages)
+{
+	long counter;
+	std::string DataSent = "Hello World";
+
+	std::cout << "Thread Sender: sendEvent (a)" << std::endl;
+	for (counter = 0 ; counter < nbMessages; counter++)
+	{
+	  EvtHandler.sendEvent<std::string>(Message1,DataSent);
+
+	  std::cout << "Thread Sender: sendEvent(Message1) nb:" << counter  << std::endl;
+	}
+
+	//boost::this_thread::sleep(workTime);
+	std::cout << "Thread Sender: finished" << std::endl;
+}
+
+void InitReceiverCounter()
+{
+	ReceiverFirstMessageCounter = 0;
+	ReceiverMessage1Counter     = 0;
+	ReceiverTimeoutCounter      = 0;
+	ReceiverDefaultCounter      = 0;
+}
+
+bool ValidateBadConversionException(shared::exception::CBadConversion exception)
+{
+   //return exception.isError();
+	return true;
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test Events with 100 events sent simultaneously
+/// \brief	    Test Events with 1 event sent - 1 Sender / 1 Receiver
+/// \result         No Error
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Event_1_Frame)
+{
+	long nbOfFrames = 1;
+
+	InitReceiverCounter();
+
+	boost::thread receiverThread(ThreadReceiver , nbOfFrames);
+	boost::thread senderThread(ThreadSender     , nbOfFrames);
+
+	receiverThread.join();
+
+	BOOST_CHECK_EQUAL(ReceiverFirstMessageCounter, 0);
+	BOOST_CHECK_EQUAL(ReceiverMessage1Counter    , nbOfFrames);
+	BOOST_CHECK_EQUAL(ReceiverTimeoutCounter     , 0);
+	BOOST_CHECK_EQUAL(ReceiverDefaultCounter     , 0);
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test Events with 100 events sent simultaneously - 1 Sender / 1 Receiver
 /// \result         No Error
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Event_100_Messages)
 {
-	long l_nbmessages = 100;
+	long nbOfFrames = 100;
 
-	Receiver_FirstMessageCounter = 0;
-	Receiver_Message1Counter     = 0;
-	Receiver_TimeoutCounter      = 0;
-	Receiver_DefaultCounter      = 0;
+	InitReceiverCounter();
 
-	boost::thread ConsoThread(ThreadReceiver , l_nbmessages);
-	boost::thread ProdThread(ThreadSender    , l_nbmessages);
+	boost::thread receiverThread(ThreadReceiver , nbOfFrames);
+	boost::thread senderThread(ThreadSender     , nbOfFrames);
 
-	ConsoThread.join();
+	receiverThread.join();
 
-	BOOST_CHECK_EQUAL(Receiver_FirstMessageCounter, 0);
-	BOOST_CHECK_EQUAL(Receiver_Message1Counter    , l_nbmessages);
-	BOOST_CHECK_EQUAL(Receiver_TimeoutCounter     , 0);
-	BOOST_CHECK_EQUAL(Receiver_DefaultCounter     , 0);
+	BOOST_CHECK_EQUAL(ReceiverFirstMessageCounter, 0);
+	BOOST_CHECK_EQUAL(ReceiverMessage1Counter    , nbOfFrames);
+	BOOST_CHECK_EQUAL(ReceiverTimeoutCounter     , 0);
+	BOOST_CHECK_EQUAL(ReceiverDefaultCounter     , 0);
 }
 
+//--------------------------------------------------------------
+/// \brief	    Test Events with 1 event sent with Data - 1 Sender / 1 Receiver
+/// \result         No Error
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Event_1_Frame_with_Data)
+{
+	long nbOfFrames        = 1;
+	ReceiverMessageCorrect = true;
+
+	InitReceiverCounter();
+
+	boost::thread receiverThread(ThreadReceiverWithMessages , nbOfFrames);
+	boost::thread senderThread(ThreadSenderWithMessages     , nbOfFrames);
+
+	receiverThread.join();
+
+	BOOST_CHECK_EQUAL(ReceiverFirstMessageCounter, 0);
+	BOOST_CHECK_EQUAL(ReceiverMessage1Counter    , nbOfFrames);
+	BOOST_CHECK_EQUAL(ReceiverTimeoutCounter     , 0);
+	BOOST_CHECK_EQUAL(ReceiverDefaultCounter     , 0);
+	BOOST_CHECK_EQUAL(ReceiverMessageCorrect     , true);
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test Events with 1 event sent with Data - 1 Sender / 1 Receiver
+/// \result         No Error
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Event_100_Frame_with_Data)
+{
+	long nbOfFrames        = 100;
+	ReceiverMessageCorrect = true;
+
+	InitReceiverCounter();
+
+	boost::thread receiverThread(ThreadReceiverWithMessages , nbOfFrames);
+	boost::thread senderThread(ThreadSenderWithMessages     , nbOfFrames);
+
+	receiverThread.join();
+
+	BOOST_CHECK_EQUAL(ReceiverFirstMessageCounter, 0);
+	BOOST_CHECK_EQUAL(ReceiverMessage1Counter    , nbOfFrames);
+	BOOST_CHECK_EQUAL(ReceiverTimeoutCounter     , 0);
+	BOOST_CHECK_EQUAL(ReceiverDefaultCounter     , 0);
+	BOOST_CHECK_EQUAL(ReceiverMessageCorrect     , true);
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test Events with 1 event not sent - 1 Sender / 1 Receiver
+/// \result         1 Message in TimeOut should be detected
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Event_TimeOut)
+{
+	long nbOfFramesSend     = 0;
+	long nbOfFramesReceived = 1;
+
+	InitReceiverCounter();
+
+	boost::thread receiverThread(ThreadReceiver , nbOfFramesReceived);
+	boost::thread senderThread  (ThreadSender   , nbOfFramesSend    );
+
+	receiverThread.join();
+
+	BOOST_CHECK_EQUAL(ReceiverFirstMessageCounter, 0);
+	BOOST_CHECK_EQUAL(ReceiverMessage1Counter    , 0);
+	BOOST_CHECK_EQUAL(ReceiverTimeoutCounter     , 1);
+	BOOST_CHECK_EQUAL(ReceiverDefaultCounter     , 0);
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test Events with 50 events sent simultaneously by two senders - 2 Senders / 1 Receiver
+/// \result         No Error
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Event_2_Senders_50_Messages_1_Receiver)
+{
+	long nbOfFramesSend     = 50;
+	long nbOfFramesReceived = 100;
+
+	InitReceiverCounter();
+
+	boost::thread receiverThread (ThreadReceiver , nbOfFramesReceived);
+	boost::thread senderThread1  (ThreadSender   , nbOfFramesSend    );
+	boost::thread senderThread2  (ThreadSender   , nbOfFramesSend    );
+
+	receiverThread.join();
+
+	BOOST_CHECK_EQUAL(ReceiverFirstMessageCounter, 0);
+	BOOST_CHECK_EQUAL(ReceiverMessage1Counter    , nbOfFramesReceived);
+	BOOST_CHECK_EQUAL(ReceiverTimeoutCounter     , 0);
+	BOOST_CHECK_EQUAL(ReceiverDefaultCounter     , 0);
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test Events with 1 event sent simultaneously by 1 hundred senders - 100 Senders / 1 Receiver
+/// \result         No Error
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Event_100_Senders_1_Message_1_Receiver)
+{
+	long nbOfFramesSend     = 1;
+	long nbOfFramesReceived = 100;
+
+	InitReceiverCounter();
+
+	boost::thread receiverThread (ThreadReceiver , nbOfFramesReceived);
+
+	for (char counter = 0; counter < nbOfFramesReceived; counter++)
+	{
+		boost::thread senderThread2  (ThreadSender   , nbOfFramesSend    );
+	}
+
+	receiverThread.join();
+
+	BOOST_CHECK_EQUAL(ReceiverFirstMessageCounter, 0);
+	BOOST_CHECK_EQUAL(ReceiverMessage1Counter    , nbOfFramesReceived);
+	BOOST_CHECK_EQUAL(ReceiverTimeoutCounter     , 0);
+	BOOST_CHECK_EQUAL(ReceiverDefaultCounter     , 0);
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test Events with 1 event sent with Data - 1 Sender / 1 Receiver BadConversion
+/// \result         Raise an Exception
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Event_1_Frame_with_Data_Exception)
+{
+	long nbOfFrames        = 1;
+	ReceiverMessageCorrect = true;
+
+	EvtHandler.sendEvent<std::string>(Message1,"Hello World");
+
+	InitReceiverCounter();
+
+	BOOST_REQUIRE_THROW (EvtHandler.popEvent<structData>(),shared::exception::CBadConversion);
+}
 
 BOOST_AUTO_TEST_SUITE_END()
