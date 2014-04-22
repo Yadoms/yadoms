@@ -1,6 +1,7 @@
 #pragma once
 #include "task/ITask.h"
 #include "server/database/IDataBackup.h"
+#include <shared/event/EventHandler.hpp>
 
 namespace task { namespace backup {
 

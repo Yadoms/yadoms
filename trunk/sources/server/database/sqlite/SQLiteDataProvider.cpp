@@ -170,7 +170,7 @@ namespace database { namespace sqlite {
             ** 250 ms before repeating. */
             do
             {
-               rc = sqlite3_backup_step(pBackup, 20);
+               rc = sqlite3_backup_step(pBackup,-1);
                if(reporter)
                {
                   reporter(

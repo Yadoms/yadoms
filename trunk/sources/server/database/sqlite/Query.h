@@ -3,35 +3,34 @@
 #include "QueryValue.h"
 
 
-namespace database { 
-namespace sqlite { 
+namespace database { namespace sqlite { 
 
-   #define EMPTY_STR ""
+#define EMPTY_STR ""
 
-   #define CQUERY_OP_EQUAL "="
-   #define CQUERY_OP_LIKE " LIKE "
-   #define CQUERY_DISTINCT(_x) "DISTINCT(" +  _x  + ")"
-   #define CQUERY_OP_IN " IN "
-   #define CQUERY_OP_SUP ">"
-   #define CQUERY_OP_INF "<"
-   #define CQUERY_OP_NOT_EQUAL "<>"
-   #define CQUERY_OP_SUP_EQUAL ">="
-   #define CQUERY_OP_INF_EQUAL "<="
+#define CQUERY_OP_EQUAL "="
+#define CQUERY_OP_LIKE " LIKE "
+#define CQUERY_DISTINCT(_x) "DISTINCT(" +  _x  + ")"
+#define CQUERY_OP_IN " IN "
+#define CQUERY_OP_SUP ">"
+#define CQUERY_OP_INF "<"
+#define CQUERY_OP_NOT_EQUAL "<>"
+#define CQUERY_OP_SUP_EQUAL ">="
+#define CQUERY_OP_INF_EQUAL "<="
 
-   #define CQUERY_ORDER_ASC ""
-   #define CQUERY_ORDER_DESC "DESC"
+#define CQUERY_ORDER_ASC ""
+#define CQUERY_ORDER_DESC "DESC"
 
 
    /*
-      CQuery q;
-      
-      q. Select().
-         From(CPluginTable::getTableName()).
-         Where(CPluginTable::getIdColumnName(), "=", 2);
-         
-      q. InsertInto(CPluginTable::getTableName(), CPluginTable::getIdColumnName(), CPluginTable::getNameColumnName()).
-         Values(1, "test");
-         
+   CQuery q;
+
+   q. Select().
+   From(CPluginTable::getTableName()).
+   Where(CPluginTable::getIdColumnName(), "=", 2);
+
+   q. InsertInto(CPluginTable::getTableName(), CPluginTable::getIdColumnName(), CPluginTable::getNameColumnName()).
+   Values(1, "test");
+
    */
 
    //
@@ -127,14 +126,14 @@ namespace sqlite {
       /// \return          A reference to itself to allow method chaining
       //   
       CQuery & From(const std::string & table1, const std::string & table2 = EMPTY_STR, const std::string & table3 = EMPTY_STR, const std::string & table4 = EMPTY_STR, const std::string & table5 = EMPTY_STR, const std::string & table6 = EMPTY_STR, const std::string & table7 = EMPTY_STR, const std::string & table8 = EMPTY_STR, const std::string & table9 = EMPTY_STR, const std::string & table10 = EMPTY_STR) ;
-      
+
       //
       /// \brief           Append the where clause
       /// \param  condition the where condition
       /// \return          A reference to itself to allow method chaining
       //     
       CQuery & Where(const std::string & condition);
-      
+
       //
       /// \brief           Append the where clause
       ///                  Where("id", "=", "12")
@@ -144,7 +143,7 @@ namespace sqlite {
       /// \return          A reference to itself to allow method chaining
       //     
       CQuery & Where(const std::string & field, const std::string & op, const CQueryValue & value);
-      
+
       //
       /// \brief           Append the where clause with a subquery
       ///                  CQuery q2 = ... ; //SELECT id FROM table WHERE...
@@ -155,14 +154,14 @@ namespace sqlite {
       /// \return          A reference to itself to allow method chaining
       //    
       CQuery & Where(const std::string & field, const std::string & op, CQuery & subQuery);
-      
+
       //
       /// \brief           Append the AND clause
       /// \param  condition the condition
       /// \return          A reference to itself to allow method chaining
       //        
       CQuery & And(const std::string & condition) ;
-      
+
       //
       /// \brief           Append the And clause
       ///                  And("id", "=", "12")
@@ -172,7 +171,7 @@ namespace sqlite {
       /// \return          A reference to itself to allow method chaining
       //     
       CQuery & And(const std::string & field, const std::string & op, const CQueryValue & value);
-      
+
       //
       /// \brief           Append the AND clause with a subquery
       ///                  CQuery q2 = ... ; //SELECT id FROM table WHERE...
@@ -183,14 +182,14 @@ namespace sqlite {
       /// \return          A reference to itself to allow method chaining
       //    
       CQuery & And(const std::string & field, const std::string & op, CQuery & subQuery);
-         
+
       //
       /// \brief           Append the OR clause
       /// \param  condition the condition
       /// \return          A reference to itself to allow method chaining
       //          
       CQuery & Or(const std::string & condition) ;
-      
+
       //
       /// \brief           Append the Or clause
       ///                  Or("id", "=", "12")
@@ -200,7 +199,7 @@ namespace sqlite {
       /// \return          A reference to itself to allow method chaining
       //        
       CQuery & Or(const std::string & field, const std::string & op, const CQueryValue & value);
-      
+
       //
       /// \brief           Append the OR clause with a subquery
       ///                  CQuery q2 = ... ; //SELECT id FROM table WHERE...
@@ -211,7 +210,7 @@ namespace sqlite {
       /// \return          A reference to itself to allow method chaining
       //       
       CQuery & Or(const std::string & field, const std::string & op, CQuery & subQuery);
-      
+
       //
       /// \brief           Append 'ORDER BY field1 [way1][,field2 [way2]]'
       /// \param  field1   a field to order by
@@ -237,16 +236,16 @@ namespace sqlite {
       /// \return          A reference to itself to allow method chaining
       //     
       CQuery & OrderBy( const std::string & field1, const std::string & way1 = EMPTY_STR, 
-                        const std::string & field2  = EMPTY_STR, const std::string &  way2  =EMPTY_STR,
-                        const std::string & field3  = EMPTY_STR, const std::string &  way3  =EMPTY_STR,
-                        const std::string & field4  = EMPTY_STR, const std::string &  way4  =EMPTY_STR,
-                        const std::string & field5  = EMPTY_STR, const std::string &  way5  =EMPTY_STR,
-                        const std::string & field6  = EMPTY_STR, const std::string &  way6  =EMPTY_STR,
-                        const std::string & field7  = EMPTY_STR, const std::string &  way7  =EMPTY_STR,
-                        const std::string & field8  = EMPTY_STR, const std::string &  way8  =EMPTY_STR,
-                        const std::string & field9  = EMPTY_STR, const std::string &  way9  =EMPTY_STR,
-                        const std::string & field10 = EMPTY_STR, const std::string & way10 =EMPTY_STR);
-      
+         const std::string & field2  = EMPTY_STR, const std::string &  way2  =EMPTY_STR,
+         const std::string & field3  = EMPTY_STR, const std::string &  way3  =EMPTY_STR,
+         const std::string & field4  = EMPTY_STR, const std::string &  way4  =EMPTY_STR,
+         const std::string & field5  = EMPTY_STR, const std::string &  way5  =EMPTY_STR,
+         const std::string & field6  = EMPTY_STR, const std::string &  way6  =EMPTY_STR,
+         const std::string & field7  = EMPTY_STR, const std::string &  way7  =EMPTY_STR,
+         const std::string & field8  = EMPTY_STR, const std::string &  way8  =EMPTY_STR,
+         const std::string & field9  = EMPTY_STR, const std::string &  way9  =EMPTY_STR,
+         const std::string & field10 = EMPTY_STR, const std::string & way10 =EMPTY_STR);
+
       //
       /// \brief           Append 'GROUP BY field1 [,field2 [,field3...]]'
       /// \param  field1   a field name to append to the group by clause
@@ -262,7 +261,7 @@ namespace sqlite {
       /// \return          A reference to itself to allow method chaining
       //      
       CQuery & GroupBy(const std::string & field1, const std::string & field2 = EMPTY_STR, const std::string & field3 = EMPTY_STR, const std::string & field4 = EMPTY_STR, const std::string & field5 = EMPTY_STR, const std::string & field6 = EMPTY_STR, const std::string & field7 = EMPTY_STR, const std::string & field8 = EMPTY_STR, const std::string & field9 = EMPTY_STR, const std::string & field10 = EMPTY_STR);
-      
+
       //
       /// \brief           Append 'INSERT INTO table (field1 [,field2 [,field3...]])'
       /// \param  table    the target table 
@@ -315,7 +314,7 @@ namespace sqlite {
       CQuery & Values(const CQueryValue & value1, const CQueryValue & value2 = CQueryValue(), const CQueryValue & value3 = CQueryValue(), const CQueryValue & value4 = CQueryValue(), const CQueryValue & value5 = CQueryValue(), const CQueryValue & value6 = CQueryValue(), const CQueryValue & value7 = CQueryValue(), const CQueryValue & value8 = CQueryValue(), const CQueryValue & value9 = CQueryValue(), const CQueryValue & value10 = CQueryValue()) ;
 
 
-    
+
 
       //
       /// \brief           Append the UPDATE clause
@@ -349,23 +348,40 @@ namespace sqlite {
       /// \return          A reference to itself to allow method chaining
       //     
       CQuery & Set(const std::string & field1, const CQueryValue & value1, 
-                  const std::string & field2  = EMPTY_STR, const CQueryValue &  value2  =CQueryValue(),
-                  const std::string & field3  = EMPTY_STR, const CQueryValue &  value3  =CQueryValue(),
-                  const std::string & field4  = EMPTY_STR, const CQueryValue &  value4  =CQueryValue(),
-                  const std::string & field5  = EMPTY_STR, const CQueryValue &  value5  =CQueryValue(),
-                  const std::string & field6  = EMPTY_STR, const CQueryValue &  value6  =CQueryValue(),
-                  const std::string & field7  = EMPTY_STR, const CQueryValue &  value7  =CQueryValue(),
-                  const std::string & field8  = EMPTY_STR, const CQueryValue &  value8  =CQueryValue(),
-                  const std::string & field9  = EMPTY_STR, const CQueryValue &  value9  =CQueryValue(),
-                  const std::string & field10 = EMPTY_STR, const CQueryValue &  value10 =CQueryValue());
-      
+         const std::string & field2  = EMPTY_STR, const CQueryValue &  value2  =CQueryValue(),
+         const std::string & field3  = EMPTY_STR, const CQueryValue &  value3  =CQueryValue(),
+         const std::string & field4  = EMPTY_STR, const CQueryValue &  value4  =CQueryValue(),
+         const std::string & field5  = EMPTY_STR, const CQueryValue &  value5  =CQueryValue(),
+         const std::string & field6  = EMPTY_STR, const CQueryValue &  value6  =CQueryValue(),
+         const std::string & field7  = EMPTY_STR, const CQueryValue &  value7  =CQueryValue(),
+         const std::string & field8  = EMPTY_STR, const CQueryValue &  value8  =CQueryValue(),
+         const std::string & field9  = EMPTY_STR, const CQueryValue &  value9  =CQueryValue(),
+         const std::string & field10 = EMPTY_STR, const CQueryValue &  value10 =CQueryValue());
+
+
+      //
+      /// \brief           create the LIMIT clause
+      /// \param  numberOfRowsToReturn    the maximum number of rows to return
+      /// \return          A reference to itself to allow method chaining
+      //     
+      CQuery & Limit(const int numberOfRowsToReturn);
+
+      //
+      /// \brief           create the LIMIT clause with OFFSET
+      /// \param  numberOfRowsToReturn    the maximum number of rows to return
+      /// \param  offset    the offset (number of rows to skip)
+      /// \return          A reference to itself to allow method chaining
+      //     
+      CQuery & Limit(const int numberOfRowsToReturn, const int offset);
+
+
       //
       /// \brief           create the DELETE clause
       /// \param  table    the table name
       /// \return          A reference to itself to allow method chaining
       //     
       CQuery & DeleteFrom(const std::string & table);
-     
+
       //
       /// \brief              append text to query
       /// \param  queryPart   the query part to append
@@ -379,14 +395,14 @@ namespace sqlite {
       /// \return             A reference to itself to allow method chaining
       //   
       CQuery & Append(const std::string & queryPart);
-      
+
       //
       /// \brief              append text to query
       /// \param  queryPart   another query
       /// \return             A reference to itself to allow method chaining
       //   
       CQuery & Append(CQuery & queryPart);
-      
+
       //
       /// \brief    get the full query
       /// \return   the full query

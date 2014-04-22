@@ -7,7 +7,8 @@
 
 namespace task {
 
-   CScheduler::CScheduler()
+   CScheduler::CScheduler(shared::event::CEventHandler & eventHandler, const int systemEventCode)
+      :m_eventHandler(eventHandler), m_systemEventCode(systemEventCode)
    {
    }
 
@@ -22,7 +23,7 @@ namespace task {
 
       boost::uuids::uuid u =boost::uuids::random_generator()();
       std::string uniqueId = boost::uuids::to_string(u);
-      m_runningTasks.insert(std::make_pair(uniqueId, boost::shared_ptr<CInstance>(new CInstance(taskToRun))));
+      m_runningTasks.insert(std::make_pair(uniqueId, boost::shared_ptr<CInstance>(new CInstance(taskToRun, m_eventHandler, m_systemEventCode))));
       return uniqueId;
    }
    

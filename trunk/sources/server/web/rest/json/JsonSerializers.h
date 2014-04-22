@@ -78,7 +78,8 @@ namespace web { namespace rest { namespace json {
       (Id)
       (Date)
       (Code)
-      (OptionalData)
+      (Who)
+      (What)
    )
 
 

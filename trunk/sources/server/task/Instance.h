@@ -2,6 +2,7 @@
 
 #include <shared/ThreadBase.h>
 #include "ITask.h"
+#include <shared/event/EventHandler.hpp>
 
 namespace task {
 
@@ -14,7 +15,7 @@ namespace task {
       //------------------------------
       ///\brief Constructor
       //------------------------------
-      CInstance(boost::shared_ptr<ITask> task);
+      CInstance(boost::shared_ptr<ITask> task, shared::event::CEventHandler & eventHandler, const int systemEventCode);
       
       //------------------------------
       ///\brief public destructor
@@ -45,6 +46,15 @@ namespace task {
       //--------------------------------------------------------------
       boost::shared_ptr<ITask> m_pTask;
 
+      //------------------------------------------
+      ///\brief   A reference to the main event handler (to report start and stop status)
+      //------------------------------------------
+      shared::event::CEventHandler & m_eventHandler;
+
+      //------------------------------------------
+      ///\brief   The event identifier for event handler
+      //------------------------------------------
+      int m_systemEventCode;
 
    };
 

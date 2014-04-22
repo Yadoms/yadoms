@@ -21,13 +21,14 @@ namespace database { namespace sqlite { namespace requesters {
    }
 
    // IEventLoggerRequester implementation
-   int CSQLiteEventLoggerRequester::addEvent(const std::string & eventCode, const std::string & optionalData)
+
+   int CSQLiteEventLoggerRequester::addEvent(const database::entities::ESystemEventCode & eventCode, const std::string & who, const std::string & what)
    {
       boost::posix_time::ptime insertDate = boost::posix_time::second_clock::universal_time();
 
       CQuery qInsert;
-      qInsert. InsertInto(CEventLoggerTable::getTableName(), CEventLoggerTable::getCodeColumnName(), CEventLoggerTable::getOptionalDataColumnName(), CEventLoggerTable::getDateColumnName()).
-         Values(eventCode, optionalData, insertDate);
+      qInsert. InsertInto(CEventLoggerTable::getTableName(), CEventLoggerTable::getCodeColumnName(), CEventLoggerTable::getWhoColumnName(), CEventLoggerTable::getWhatColumnName(), CEventLoggerTable::getDateColumnName()).
+         Values(eventCode, who, what, insertDate);
 
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
@@ -49,7 +50,7 @@ namespace database { namespace sqlite { namespace requesters {
 
    int CSQLiteEventLoggerRequester::addEvent(const database::entities::CEventLogger & logEntry)
    {
-      return addEvent(logEntry.Code(), logEntry.OptionalData());
+      return addEvent(logEntry.Code(), logEntry.Who(), logEntry.What());
    }
 
 
@@ -58,12 +59,56 @@ namespace database { namespace sqlite { namespace requesters {
       CQuery qSelect;
       qSelect. Select().
          From(CEventLoggerTable::getTableName()).
-         OrderBy(CEventLoggerTable::getDateColumnName(), CQUERY_ORDER_DESC);
+         OrderBy(CEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
       database::sqlite::adapters::CEventLoggerAdapter adapter;
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CEventLogger> >(&adapter, qSelect);
       return adapter.getResults();
    }
+
+   boost::shared_ptr<entities::CEventLogger>  CSQLiteEventLoggerRequester::getLastEvent()
+   {
+      CQuery qSelect;
+      qSelect. Select().
+         From(CEventLoggerTable::getTableName()).
+         OrderBy(CEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC).
+         Limit(1);
+
+      database::sqlite::adapters::CEventLoggerAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CEventLogger> >(&adapter, qSelect);
+
+      std::vector<boost::shared_ptr<database::entities::CEventLogger> > list = adapter.getResults();
+      if(list.empty())
+         return boost::shared_ptr<entities::CEventLogger>(); 
+      return adapter.getResults()[0];
+   }
+
+   std::vector<boost::shared_ptr<entities::CEventLogger> >  CSQLiteEventLoggerRequester::getEventsFrom(const int eventId)
+   {
+      CQuery qSelect;
+      qSelect. Select().
+         From(CEventLoggerTable::getTableName()).
+         Where(CEventLoggerTable::getIdColumnName(), CQUERY_OP_SUP, eventId).
+         OrderBy(CEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC, CEventLoggerTable::getDateColumnName(), CQUERY_ORDER_DESC);
+
+      database::sqlite::adapters::CEventLoggerAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CEventLogger> >(&adapter, qSelect);
+      return adapter.getResults();
+   }
+
+   std::vector<boost::shared_ptr<entities::CEventLogger> >  CSQLiteEventLoggerRequester::getEventsRange(const int offset, const int count)
+   {
+      CQuery qSelect;
+      qSelect. Select().
+         From(CEventLoggerTable::getTableName()).
+         OrderBy(CEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC, CEventLoggerTable::getDateColumnName(), CQUERY_ORDER_DESC).
+         Limit(count, offset);
+
+      database::sqlite::adapters::CEventLoggerAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CEventLogger> >(&adapter, qSelect);
+      return adapter.getResults();
+   }
+
    // [END] IEventLoggerRequester implementation
 
 } //namespace requesters

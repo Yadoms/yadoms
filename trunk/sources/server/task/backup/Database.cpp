@@ -29,7 +29,7 @@ namespace task { namespace backup {
    void CDatabase::OnProgressionUpdatedInternal(int remaining, int total)
    {
       if(m_reportRealProgress)
-         m_reportRealProgress( (float)(total-remaining)*100.0 / (float)total);
+         m_reportRealProgress( (float)(total-remaining)*(float)100.0 / (float)total);
    }
 
    void CDatabase::doWork(TaskProgressFunc pFunctor)

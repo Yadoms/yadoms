@@ -71,8 +71,9 @@ namespace adapters {
    DECLARE_ADAPTER_IMPLEMENTATION(EventLogger,
       ((Id)(int)(0))
       ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
-      ((Code)(std::string)(""))
-      ((OptionalData)(std::string)(""))
+      ((Code)(database::entities::ESystemEventCode)(database::entities::kDefaultCode)(int))
+      ((Who)(std::string)(""))
+      ((What)(std::string)(""))
    )
 
 

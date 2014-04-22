@@ -20,6 +20,16 @@ namespace entities {
       kCrash = 2  
    };
    
+   enum ESystemEventCode
+   {
+      kYadomsCash = -255,
+      kPluginCrash = -3,
+      kTaskFailed = -1,
+      kDefaultCode = 0,
+      kStarted = 1,
+      kStopped = 2,
+      kUpdated = 3,
+   };
 
    /*
       class CPlugin 
@@ -104,8 +114,9 @@ namespace entities {
    DECLARE_ENTITY_CLASS(EventLogger,
       ((Id)(int)(0))
       ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
-      ((Code)(std::string)(""))
-      ((OptionalData)(std::string)(""))
+      ((Code)(database::entities::ESystemEventCode)(database::entities::kDefaultCode))
+      ((Who)(std::string)(""))
+      ((What)(std::string)(""))
    )
 
    DECLARE_ENTITY_CLASS(Message,

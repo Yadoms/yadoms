@@ -40,9 +40,10 @@ void CSupervisor::doWork()
    YADOMS_LOG_CONFIGURE("Supervisor");
    YADOMS_LOG(info) << "Supervisor is starting";   
 
+   boost::shared_ptr<database::IDataProvider> pDataProvider;
    try
    {
-      boost::shared_ptr<database::IDataProvider> pDataProvider(new database::sqlite::CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
+      pDataProvider.reset(new database::sqlite::CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
       if (!pDataProvider->load())
       {
          throw shared::exception::CException("Fail to load database");
@@ -95,7 +96,7 @@ void CSupervisor::doWork()
       }
       catch (database::CDatabaseException& e)
       {
-      	YADOMS_LOG(error) << pluginName << " unable to create \"theInstanceName\", check that it doesn't already exist : " << e.what();
+         YADOMS_LOG(error) << pluginName << " unable to create \"theInstanceName\", check that it doesn't already exist : " << e.what();
          createdInstanceId = 0;
       }
 
@@ -193,10 +194,10 @@ void CSupervisor::doWork()
       //\TODO ######################### [END] test interface pluginManager #########################
 
       // ######################### Task manager #########################
-      boost::shared_ptr<task::CScheduler> taskManager = boost::shared_ptr<task::CScheduler>(new task::CScheduler());
+      boost::shared_ptr<task::CScheduler> taskManager = boost::shared_ptr<task::CScheduler>(new task::CScheduler(*this, kSystemEvent));
 
 #if DEV_ACTIVATE_TASK_MANAGER_TESTS
-      taskManager->RunTask(boost::shared_ptr<task::ITask>(new task::update::CPlugin()));
+      //taskManager->RunTask(boost::shared_ptr<task::ITask>(new task::update::CPlugin()));
       taskManager->RunTask(boost::shared_ptr<task::ITask>(new task::backup::CDatabase(boost::dynamic_pointer_cast<database::IDataBackup>(pDataProvider), "yadoms_backup.db3")));
 #endif
       // ######################### [END] Task manager #########################
@@ -210,14 +211,14 @@ void CSupervisor::doWork()
          hub.reset(new shared::xpl::CXplHub(m_startupOptions.getXplNetworkIpAddress()));
          hub->start();
       }
-	  
+
 #if DEV_ACTIVATE_XPL_TESTS
-	  database::entities::CPlugin plg;
-	  plg.setName("testOfXpl");
-	  plg.setPluginName("fakePlugin");
-     plg.setConfiguration("{\"BoolParameter\": \"true\", \"DecimalParameter\": \"18.4\", \"EnumParameter\": \"EnumValue1\", \"IntParameter\": \"42\", \"Serial port\": \"tty1\", \"StringParameter\": \"Yadoms is so powerful !\",\"MySection\": { \"SubIntParameter\": \"123\", \"SubStringParameter\": \"Just a *MODIFIED* string parameter in the sub-section\"}}");
-     
-	  pluginManager->createInstance(plg);
+      database::entities::CPlugin plg;
+      plg.setName("testOfXpl");
+      plg.setPluginName("fakePlugin");
+      plg.setConfiguration("{\"BoolParameter\": \"true\", \"DecimalParameter\": \"18.4\", \"EnumParameter\": \"EnumValue1\", \"IntParameter\": \"42\", \"Serial port\": \"tty1\", \"StringParameter\": \"Yadoms is so powerful !\",\"MySection\": { \"SubIntParameter\": \"123\", \"SubStringParameter\": \"Just a *MODIFIED* string parameter in the sub-section\"}}");
+
+      pluginManager->createInstance(plg);
 #endif
       // ######################### [END] Xpl Hub #########################
 
@@ -251,9 +252,11 @@ void CSupervisor::doWork()
 
       boost::shared_ptr<web::CWebServerManager> webServerManager(new web::CWebServerManager(webServer));
       webServerManager->start();
-      
+
       // ######################### [END] Web server #########################
 
+
+      pDataProvider->getEventLoggerRequester()->addEvent(database::entities::kStarted, "yadoms", shared::CStringExtension::EmptyString);
 
       YADOMS_LOG(info) << "Supervisor is running...";
       try
@@ -264,6 +267,10 @@ void CSupervisor::doWork()
             {
             case kPluginManagerEvent:
                pluginManager->signalEvent(popEvent<pluginSystem::CManagerEvent>());
+               break;
+
+            case kSystemEvent:
+               pDataProvider->getEventLoggerRequester()->addEvent(popEvent<database::entities::CEventLogger>());
                break;
 
             default:
@@ -292,15 +299,22 @@ void CSupervisor::doWork()
       //stop web server
       if(webServerManager.get() != NULL)
          webServerManager->stop();
-      
+
       YADOMS_LOG(info) << "Supervisor is stopped";
+
+      pDataProvider->getEventLoggerRequester()->addEvent(database::entities::kStopped, "yadoms", shared::CStringExtension::EmptyString);
+
    }
    catch (std::exception& e)
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception " << e.what();
+      if(pDataProvider)
+         pDataProvider->getEventLoggerRequester()->addEvent(database::entities::kYadomsCash, "yadoms",  e.what());
    }
    catch (...)
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception.";
+      if(pDataProvider)
+         pDataProvider->getEventLoggerRequester()->addEvent(database::entities::kYadomsCash, "yadoms",  "unknwon error");
    }
 }

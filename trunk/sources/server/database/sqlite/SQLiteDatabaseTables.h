@@ -68,7 +68,8 @@ namespace sqlite {
       (Id)
       (Date)
       (Code)
-      (OptionalData)
+      (Who)
+      (What)
    )
 
    DECLARE_TABLE(Message,
