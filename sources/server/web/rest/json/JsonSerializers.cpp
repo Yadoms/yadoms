@@ -79,8 +79,9 @@ namespace web { namespace rest { namespace json {
       DECLARE_JSON_ENTITY_IMPLEMENTATION(EventLogger,  "EventLogger",
    ((Id)("id")JSON_INT)
       ((Date)("date")JSON_DATE)
-      ((Code)("code")JSON_STRING)
-      ((OptionalData)("optionalData")JSON_STRING)
+      ((Code)("code")JSON_ENUM(database::entities::ESystemEventCode))
+      ((Who)("who")JSON_STRING)
+      ((What)("what")JSON_STRING)
       )
 
 

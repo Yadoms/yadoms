@@ -1,10 +1,21 @@
 #pragma once
 
+
 #include <shared/Export.h>
 
 namespace shared
 {
 
+
+#ifdef DISABLE_BOOST_LOG
+   //--------------------------------------------------------------
+   /// \brief     Macro for easy logging to console
+   /// YADOMS_LOG(error) << "this is an error";
+   //-------------------------------------------------------------
+   #define YADOMS_LOG(lvl) std::cout << std::endl << BOOST_PP_STRINGIZE(lvl) << ":"
+   #define YADOMS_LOG_CONFIGURE(threadname) ;
+#else
+   
    typedef boost::log::sources::severity_channel_logger_mt<
        boost::log::trivial::severity_level,     // the type of the severity level
        std::string         // the type of the channel name
@@ -31,6 +42,8 @@ namespace shared
    #define YADOMS_LOG_CONFIGURE(threadname) \
        BOOST_LOG_UNUSED_VARIABLE(boost::log::scoped_attribute, BOOST_LOG_UNIQUE_IDENTIFIER_NAME(tag_attrib1), = boost::log::add_scoped_thread_attribute("ThreadName", boost::log::attributes::constant< std::string >(threadname))); \
        BOOST_LOG_UNUSED_VARIABLE(boost::log::scoped_attribute, BOOST_LOG_UNIQUE_IDENTIFIER_NAME(tag_attrib2), = boost::log::add_scoped_thread_attribute("ThreadID", boost::log::attributes::constant< boost::thread::id >(boost::this_thread::get_id()))); 
+
+
 
    //--------------------------------------------------------------
    /// \brief     Class used to configure the logger
@@ -81,5 +94,5 @@ namespace shared
       //-------------------------------------------------------------
       virtual ~CLog();
    };
-
+#endif
 } // namespace shared

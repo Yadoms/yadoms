@@ -5,6 +5,7 @@
 #include "IDeviceRequester.h"
 #include "IKeywordRequester.h"
 #include "IPageRequester.h"
+#include "IEventLoggerRequester.h"
 #include "IWidgetRequester.h"
 #include "IPluginEventLoggerRequester.h"
 #include "IMessageRequester.h"
@@ -93,7 +94,14 @@ namespace database {
       /// \return 	the XplMessage requester
       /// \throws 		
       //--------------------------------------------------------------  
-      virtual boost::shared_ptr<IMessageRequester> getMessageRequester() = 0;
+      virtual boost::shared_ptr<IMessageRequester> getMessageRequester() = 0;    
+      
+      //--------------------------------------------------------------
+      /// \Brief		get the Event Logger requester
+      /// \return 	the Event Logger requester
+      /// \throws 		
+      //--------------------------------------------------------------  
+      virtual boost::shared_ptr<IEventLoggerRequester> getEventLoggerRequester() = 0;
    };
 
  

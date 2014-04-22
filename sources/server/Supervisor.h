@@ -11,6 +11,7 @@ private:
    enum
    {
       kPluginManagerEvent = shared::event::kUserFirstId,
+      kSystemEvent,
    };
 
 public:

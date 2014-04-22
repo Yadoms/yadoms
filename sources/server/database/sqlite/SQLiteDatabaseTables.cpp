@@ -67,7 +67,8 @@ namespace sqlite {
       ((Id)("id"))
       ((Date)("date"))
       ((Code)("code"))
-      ((OptionalData)("optionalData"))
+      ((Who)("who"))
+      ((What)("what"))
    )
 
 

@@ -76,8 +76,9 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(PluginEventLogger,   "CREATE TABLE PluginEv
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(EventLogger, "CREATE TABLE EventLogger                                       \
                                                             (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,     \
                                                                date  DATETIME NOT NULL,                           \
-                                                               code TEXT NOT NULL,                                \
-                                                               optionalData  TEXT                                 \
+                                                               code INTEGERNOT NULL DEFAULT 0,                    \
+                                                               who  TEXT,                                         \
+                                                               what TEXT                                          \
                                                             )")
 
                                                             

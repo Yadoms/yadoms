@@ -1,6 +1,7 @@
 #pragma once
 #include "Instance.h"
 #include "ITask.h"
+#include <shared/event/EventHandler.hpp>
 
 namespace task {
 
@@ -13,7 +14,7 @@ namespace task {
       //------------------------------
       ///\brief Constructor
       //------------------------------
-      CScheduler();
+      CScheduler(shared::event::CEventHandler & eventHandler, const int systemEventCode);
       
       //------------------------------
       ///\brief public destructor
@@ -33,6 +34,15 @@ namespace task {
       //--------------------------------------------------------------
       typedef std::map< std::string, boost::shared_ptr<CInstance> > TaskInstanceMap;
       TaskInstanceMap m_runningTasks;
+
+      //------------------------------------------
+      ///\brief   A reference to the main event handler (to report start and stop status)
+      //------------------------------------------
+      shared::event::CEventHandler & m_eventHandler;
+      //------------------------------------------
+      ///\brief   The event code used to notify
+      //------------------------------------------
+      int m_systemEventCode;
    };
 
 } //namespace task
