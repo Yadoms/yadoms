@@ -26,7 +26,6 @@
 }
 
 .gridster .gs-w {
-    background-color: white;
     cursor: pointer;
 }
 
@@ -34,9 +33,11 @@
     background: #BBB;
 }
 
-
 .gridster .preview-holder {
     border: none!important;
     background: red!important;
 }
 
+.gs-resize-handle {
+   opacity: 1;
+}
