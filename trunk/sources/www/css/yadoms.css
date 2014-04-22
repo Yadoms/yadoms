@@ -20,15 +20,6 @@ body {
     bottom: 0;
     width: 100%;
 }
-/*
-.nav-pills a {
-    height: 50px;
-    line-height: 50px;
-}*/
-
-#mainNavBar {
-    /*background: rgba(210, 210, 210, 0.3);*/
-}
 
 #pageMenu {
     float:  none;
@@ -44,7 +35,7 @@ body {
 }
 
 .widget {
-    background-color: white;
+   background-color: transparent;
 }
 
 .widget > div{
@@ -56,11 +47,11 @@ body {
 }
 
 .widgetDiv {
-    background-color: white;
+   background-color: transparent;
 }
 
 /*Widget during customization*/
-.liWidgetCustomization:before{
+/*.liWidgetCustomization:before{
     content: " ";
     position: absolute;
     width: 90%;
@@ -81,7 +72,7 @@ body {
     -khtml-transform: rotate(-5deg);
     transform: rotate(-5deg);
     z-index: -1;
-}
+}*/
 .widgetCustomizationToolbar{
     z-index: 18;
     border-color: darkslategray;
@@ -89,7 +80,7 @@ body {
     border-width: 1px;
     text-align: center;
 }
-
+/*
 .liWidgetCustomization:after{
     content: " ";
     position: absolute;
@@ -113,7 +104,7 @@ body {
     transform: rotate(5deg);
     z-index: -1;
 }
-
+*/
 .customization-item > .btn-group {
     left: auto;
 }
