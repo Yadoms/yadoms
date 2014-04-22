@@ -38,11 +38,6 @@
                               <a class="dropdown-toggle" data-toggle="dropdown"><i class="caret"></i></a>
                               <ul class="dropdown-menu">
                                   <li><a href="#" ><i class="fa fa-cog iconMenuItem"></i><span data-i18n="mainPage.menu.configuration"></span></a></li>
-                                  <!--<li><a href="#" data-i18n="mainPage.menu.checkForUpdate">Check For Update</a></li>
-                                  <li><a href="#">...</a></li>
-                                  <li class="divider"></li>
-                                  <li><a href="#" data-i18n="mainPage.menu.shutdown"></a></li>
-                                  <li><a href="#" data-i18n="mainPage.menu.restart"></a></li>-->
                               </ul>
                           </li>
                           <li><button class="btn btn-default customization-item hidden" id="btn-add-page"><i class="fa fa-file-o"></i><span class="hidden-xs">&nbsp;&nbsp;</span><span class="hidden-xs" data-i18n="customization.addNewPage"></span></button></li>
@@ -127,6 +122,9 @@
    var gridWidth = 100;
    var gridMargin = 5;
    var longPressDelayToEnterInCustomizationMode = 500;
+   var UpdateInterval = 1000;
+   var UpdateIntervalInOfflineMode = 10000;
+
 
    /**
     * Array of pages

@@ -19,7 +19,7 @@ var assert = function(condition, message) {
 function notify(message, gravity, timeout)
 {
    if (timeout === undefined)
-      timeout = 2000;
+      timeout = 4000;
    assert(message != undefined, "Message must be defined");
    assert(gravity != undefined, "Gravity must be defined");
    return noty({text: message, timeout:timeout,  layout:'bottomRight', type: gravity});
@@ -44,7 +44,7 @@ function notifyInformation(message)
    function notifyWarning(message)
 {
    console.warn(message);
-   return notify(message, 'alert');
+   return notify(message, 'warning');
 }
 
 /**
@@ -66,7 +66,7 @@ function notifySuccess(message)
 function notifyError(message)
 {
    console.error(message);
-   return notify(message, 'error');
+   return notify(message, 'error', false);
 }
 
 function parseBool(string, defaultValue) {

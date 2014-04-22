@@ -56,7 +56,7 @@ function SwitchViewModel() {
       if (!isNullOrUndefined(this.widget.configuration.kind)) {
          this.kind(this.widget.configuration.kind);
       }
-debugger;
+
       if (!isNullOrUndefined(this.widget.configuration.showDeviceName)) {
          this.showDeviceName(this.widget.configuration.showDeviceName);
       }

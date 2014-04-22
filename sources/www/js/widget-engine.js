@@ -14,6 +14,10 @@ var loadPagesNotification = null;
 
 var startTime = null;
 
+var widgetUpdateInterval;
+var serverIsOnline;
+var OfflineServerNotification = null
+
 function initializeWidgetEngine() {
 
    /**
@@ -67,8 +71,8 @@ function initializePageEvents(page) {
    page.$tab.bind('click', function (e) {
    } );
 
-   //TODO mettre le 1000 en configuration
-   setInterval(updateWidgets, 1000);
+   serverIsOnline = true;
+   widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
 }
 
 function initializeWidgetEvents(widget) {
@@ -671,6 +675,45 @@ function tabClick(pageId) {
    }
 }
 
+function periodicUpdateTask() {
+   //we first check if the server is online and only if it answer we ask widgets informations
+   //to do tahat we ask event message
+   //TODO : cahnger par la reception des messages d'evennements
+   $.getJSON("/rest/device/")
+      .done(function() {
+         //if we were offline we go back to online status
+         if (!serverIsOnline) {
+            serverIsOnline = true;
+            //we signal that server has been back
+            notifyInformation("Connection to server has been restored");
+            //if the errorNotification is always visible we close it
+            if (OfflineServerNotification != null) {
+               OfflineServerNotification.close();
+               OfflineServerNotification = null;
+            }
+            //we change the interval period to the normal one
+            clearInterval(widgetUpdateInterval);
+            widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
+         }
+         //TODO : traiter la réponse aux trames d'evennements
+         //we ask for widget's devices
+         updateWidgets();
+      })
+      .fail(function(jqxhr, textStatus, error) {
+         var err = textStatus + ", " + error;
+         if (serverIsOnline)
+         {
+            //we indicate that server has passed offline
+            serverIsOnline = false;
+            OfflineServerNotification = notifyError("You have been disconnected from the server or it has gone offline");
+            //we change the interval period
+            clearInterval(widgetUpdateInterval);
+            widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateIntervalInOfflineMode);
+         }
+         //if we are again offline there is nothing to do
+      });
+}
+
 function updateWidgets() {
    //we browse each widget instance
    var page = getCurrentPage();
@@ -683,8 +726,9 @@ function updateWidgets() {
       $.each(list, function(deviceIndex, device) {
          //foreach device we ask for last values
          $.getJSON("/rest/device/" + device  + "/lastdata")
-            .done(dispatchDeviceDataToWidget(device, widget))
-            .fail(function() {notifyError("Unable to get device data");});
+            .done(dispatchDeviceDataToWidget(device, widget));
+            //we don't need to manage the fail because the server is online
+            //it happens that server is offline but it will be shown next time by the first check
       });
    });
 }
