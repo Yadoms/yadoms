@@ -255,7 +255,7 @@ function addPageToIHM(page) {
          "<button type=\"button\" class=\"btn btn-default move-left-page\" title=\"Move to left\"><i class=\"glyphicon glyphicon-arrow-left\"></i></button>" +
          "<button type=\"button\" class=\"btn btn-default move-right-page\" title=\"Move to right\"><i class=\"glyphicon glyphicon-arrow-right\"></i></button>" +
          "<button type=\"button\" class=\"btn btn-default rename-page\" title=\"Rename\"><i class=\"fa fa-pencil\"></i></button>" +
-         "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
+         "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\"><i class=\"glyphicon glyphicon-trash\"></i></button>" +
          "</div>" +
          "</a>" +
          "</li>");
@@ -553,7 +553,7 @@ function createGridsterWidget(widget) {
          "<div class=\"widgetCustomizationToolbar customization-item hidden\">" +
             "<div class=\"btn-group btn-group-sm\">" +
                "<button type=\"button\" class=\"btn btn-default configure-widget\" title=\"Configure\"><i class=\"fa fa-cog\"></i></button>" +
-               "<button type=\"button\" class=\"btn btn-default delete-widget\" title=\"Delete\"><i class=\"fa fa-times\"></i></button>" +
+               "<button type=\"button\" class=\"btn btn-default delete-widget\" title=\"Delete\"><i class=\"glyphicon glyphicon-trash\"></i></button>" +
             "</div>" +
          "</div>" +
          "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + widget.name + "-template' }\"/>" +
