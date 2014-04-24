@@ -179,8 +179,8 @@ void CManager::buildAvailablePluginList()
    {
       try
       {
-         // Get informations for current found plugin
-         const std::string& pluginName = (*libPathIt).filename().string();
+	 // Get informations for current found plugin
+         std::string pluginName = (*libPathIt).filename().string();
 
          // If plugin is already loaded, use its information
          if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
