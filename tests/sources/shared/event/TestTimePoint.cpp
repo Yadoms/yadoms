@@ -24,13 +24,13 @@ BOOST_AUTO_TEST_CASE(Nominal)
 
 	BOOST_CHECK_EQUAL(event.getId(), evtId);
    BOOST_CHECK_EQUAL(event.getNextStopPoint(), timePoint);
-	BOOST_CHECK_EQUAL(event.canBeDetached(), false);
+	//BOOST_CHECK_EQUAL(event.canBeDetached(), false);
 
    event.reset();
 
    BOOST_CHECK_EQUAL(event.getId(), evtId);
    BOOST_CHECK_EQUAL(event.getNextStopPoint(), boost::date_time::not_a_date_time);
-   BOOST_CHECK_EQUAL(event.canBeDetached(), true);
+   //BOOST_CHECK_EQUAL(event.canBeDetached(), true);
 }
 
 //--------------------------------------------------------------
