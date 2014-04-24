@@ -305,7 +305,7 @@ namespace shared { namespace event
          if (m_timeEvents.empty())
             return;
 
-         for (TimeEventList::const_iterator it = m_timeEvents.begin() ;
+         for (TimeEventList::iterator it = m_timeEvents.begin() ;
             it != m_timeEvents.end() ; )
          {
             if ((*it).unique() && (*it)->canBeRemoved())
