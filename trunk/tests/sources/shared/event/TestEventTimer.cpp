@@ -9,23 +9,33 @@
 #include <boost/thread.hpp>
 #include "../../../../sources/shared/shared/exception/InvalidParameter.hpp"
 #include "../../../../sources/shared/shared/event/EventTimer.h"
+#include "../../../../sources/shared/shared/event/Now.h"
+#include "../../../../sources/shared/shared/event/EventHandler.hpp"
+
+shared::event::CEventHandler EvtHandler;
 
 BOOST_AUTO_TEST_SUITE(TestEventTimer)
 
 //--------------------------------------------------------------
-/// \brief	    Nominal case
+/// \brief	    Nominal case 1
 //--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(Nominal)
+
+BOOST_AUTO_TEST_CASE(Nominal1)
 {
 	
-   //const boost::posix_time::ptime timePoint(shared::event::now() + boost::posix_time::seconds(3));
-   const boost::posix_time::time_duration period(0,0,5);
-	const int evtId = 123456;
-   shared::event::CEventTimer theEvent(evtId, false, period);
+    const boost::posix_time::ptime timePoint(shared::event::now() + boost::posix_time::seconds(5));
+    const boost::posix_time::time_duration period(0,0,5);
+    const int evtId = 123456;
+
+    shared::event::CEventTimer theEvent(evtId, shared::event::CEventTimer::kOneShot, period);
 
 	BOOST_CHECK_EQUAL(theEvent.getId(), evtId);
-   BOOST_CHECK_EQUAL (event.getNextStopPoint(), timePoint);
-	BOOST_CHECK_EQUAL(event.canBeDetached(), false);
+    BOOST_CHECK_EQUAL (theEvent.getNextStopPoint(), timePoint); //TODO : Vérifier la valeur initiale donnée
+
+	std::cout << shared::event::now() << std::endl;
+	std::cout << theEvent.getNextStopPoint() << std::endl;
+
+	
 /*
    event.reset();
 
