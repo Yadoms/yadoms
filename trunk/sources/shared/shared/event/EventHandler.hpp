@@ -94,7 +94,7 @@ namespace shared { namespace event
          }
          else if (!hasRunningTimeEvents() && timeout == boost::date_time::pos_infin)
          {
-            // Wait inifinite for event
+            // Wait infinite for event
             m_condition.wait(lock);
             return m_eventsQueue.front()->getId();
          }
