@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SQLiteEventLoggerRequester.h"
 #include <shared/exception/NotImplemented.hpp>
+#include <shared/exception/InvalidParameter.hpp>
 #include "database/sqlite/SQLiteDataProvider.h"
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "database/sqlite/adapters/SQLiteDatabaseAdapters.h"
@@ -50,6 +51,9 @@ namespace database { namespace sqlite { namespace requesters {
 
    int CSQLiteEventLoggerRequester::addEvent(const database::entities::CEventLogger & logEntry)
    {
+      if(!logEntry.Code.isDefined())
+         throw shared::exception::CInvalidParameter("The event code must be filled");      
+
       return addEvent(logEntry.Code(), logEntry.Who(), logEntry.What());
    }
 
