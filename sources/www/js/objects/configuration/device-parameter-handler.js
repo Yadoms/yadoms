@@ -34,7 +34,7 @@ function populateDeviceList(handler) {
       //we parse the json answer
       if (data.result != "true")
       {
-         notifyError("Error during requesting devices");
+         notifyError("Error during requesting devices", JSON.stringify(data));
          return;
       }
 

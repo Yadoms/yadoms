@@ -20,24 +20,25 @@ function SwitchViewModel() {
    this.showDeviceName = ko.observable(true);
 
    this.commandClick = function(newState) {
-
-      $.ajax({
-         type: "POST",
-         url: "/rest/device/" + this.widget.configuration.device + "/command",
-         data: JSON.stringify({ command: newState }),
-         contentType: "application/json; charset=utf-8",
-         dataType: "json"
-      })
-         .done(function(data) {
-            //we parse the json answer
-            if (data.result != "true")
-            {
-               notifyError("Error during sending command");
-               return;
-            }
-
+      if (!isNullOrUndefined(this.widget.configuration.device)) {
+         $.ajax({
+            type: "POST",
+            url: "/rest/device/" + this.widget.configuration.device + "/command",
+            data: JSON.stringify({ command: newState }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
          })
-         .fail(function() {notifyError("Error during sending command"); });
+            .done(function(data) {
+               //we parse the json answer
+               if (data.result != "true")
+               {
+                  notifyError("Error during sending command", JSON.stringify(data));
+                  return;
+               }
+
+            })
+            .fail(function() {notifyError("Error during sending command"); });
+      }
    };
 
    /**
@@ -70,7 +71,7 @@ function SwitchViewModel() {
                if (data.result != "true")
                {
                   //TODO : i18N
-                  notifyError($.t("I18N"));
+                  notifyError($.t("I18N"), JSON.stringify(data));
                   return;
                }
                self.switchText(data.data.name);
@@ -88,9 +89,9 @@ function SwitchViewModel() {
     */
    this.dispatch = function(deviceId, data) {
       var self = this;
-      if ((this.widget.configuration !== undefined) && (this.widget.configuration.device !== undefined)) {
+      if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
          if (deviceId == this.widget.configuration.device) {
-            //it the good device
+            //it is the good device
             //we browse the list of keywords values
             //debugger;
             $.each(data, function(keywordIndex, keyword) {
@@ -107,7 +108,7 @@ function SwitchViewModel() {
    this.getDevicesToListen = function() {
       var result = new Array();
 
-      if ((this.widget.configuration !== undefined) && (this.widget.configuration.device !== undefined)) {
+      if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
          result.push(this.widget.configuration.device);
       }
       return result;

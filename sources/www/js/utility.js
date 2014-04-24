@@ -63,10 +63,10 @@ function notifySuccess(message)
  * @param message message to display
  * @returns {noty}
  */
-function notifyError(message)
+function notifyError(message, errorInfo, timeout)
 {
-   console.error(message);
-   return notify(message, 'error', false);
+   console.error(message, errorInfo);
+   return notify(message, 'error', timeout);
 }
 
 function parseBool(string, defaultValue) {
@@ -104,5 +104,5 @@ function createUUID() {
 }
 
 function isNullOrUndefined(object) {
-   return ((object === undefined) || (object == null));
+   return ((object === undefined) || (object == null) || (object == "null"));
 }
