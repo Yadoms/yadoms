@@ -421,7 +421,7 @@ BOOST_AUTO_TEST_CASE(Event_100_Messages)
 /// \result         No Error
 //--------------------------------------------------------------
 
-// TODO : DEBUT CODE SG
+// TODO : DEBUT_CODE_SG
 void Event_1_Frame_with_Data_SG_senderThread(shared::event::CEventHandler* receiver)
 {
    structData DataSent;
@@ -443,7 +443,7 @@ BOOST_AUTO_TEST_CASE(Event_1_Frame_with_Data_SG)//TODO : n'en conserver qu'un
 
    sender.join();
 }
-// TODO : FIN CODE SG
+// TODO : FIN_CODE_SG
 
 BOOST_AUTO_TEST_CASE(Event_1_Frame_with_Data)
 {
