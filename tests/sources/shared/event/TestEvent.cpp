@@ -421,6 +421,30 @@ BOOST_AUTO_TEST_CASE(Event_100_Messages)
 /// \result         No Error
 //--------------------------------------------------------------
 
+// TODO : DEBUT CODE SG
+void Event_1_Frame_with_Data_SG_senderThread(shared::event::CEventHandler* receiver)
+{
+   structData DataSent;
+   for (int counter = 0; counter < 10; counter++)   // TODO : ces 2 lignes seraient mieux dans le ctor de structData
+      DataSent.tab[counter] = counter;
+
+   receiver->sendEvent<structData>(FirstMessage, DataSent);
+}
+
+BOOST_AUTO_TEST_CASE(Event_1_Frame_with_Data_SG)//TODO : n'en conserver qu'un
+{
+   shared::event::CEventHandler evtHandler;
+
+   // Data are sent by another thread
+   boost::thread sender(Event_1_Frame_with_Data_SG_senderThread, &evtHandler);
+
+   BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(5000)), FirstMessage);
+   BOOST_REQUIRE_NO_THROW(evtHandler.popEvent<structData>());
+
+   sender.join();
+}
+// TODO : FIN CODE SG
+
 BOOST_AUTO_TEST_CASE(Event_1_Frame_with_Data)
 {
 	int nbOfFrames        = 1;
