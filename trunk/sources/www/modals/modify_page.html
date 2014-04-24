@@ -71,7 +71,7 @@
            //we parse the json answer
            if (data.result != "true")
            {
-              notifyError($.t("modals.modify-page.errorDuringModifyingPage"));
+              notifyError($.t("modals.modify-page.errorDuringModifyingPage"), JSON.stringify(data));
               return;
            }
 
@@ -109,7 +109,7 @@
            //we parse the json answer
            if (data.result != "true")
            {
-              notifyError($.t("modals.modify-page.errorDuringCreatingPage"));
+              notifyError($.t("modals.modify-page.errorDuringCreatingPage"), JSON.stringify(data));
               return;
            }
 

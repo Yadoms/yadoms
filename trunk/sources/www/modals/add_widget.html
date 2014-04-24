@@ -55,7 +55,7 @@
           //we parse the json answer
           if (data.result != "true")
           {
-             notifyError($.t("modals.add-widget.errorDuringGettingPackages"));
+             notifyError($.t("modals.add-widget.errorDuringGettingPackages"), JSON.stringify(data));
              return;
           }
           $("div#new-widget-carousel > div.carousel-inner > div").remove();
@@ -110,7 +110,7 @@
            //we parse the json answer
            if (data.result != "true")
            {
-              notifyError($.t("modals.add-widget.errorDuringCreatingWidget"));
+              notifyError($.t("modals.add-widget.errorDuringCreatingWidget"), JSON.stringify(data));
               return;
            }
 

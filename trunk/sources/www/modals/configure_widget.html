@@ -13,7 +13,6 @@
                      </div>
                   </div>
               </div>
-
               <div class="modal-footer">
                  <div class="form-actions">
                     <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="modals.cancel">Cancel</button>
@@ -66,7 +65,7 @@
                //we parse the json answer
                if (data.result != "true")
                {
-                  notifyError($.t("modals.configure-widget.errorDuringModifyingWidget"));
+                  notifyError($.t("modals.configure-widget.errorDuringModifyingWidget"), JSON.stringify(data));
                   return;
                }
 
@@ -85,8 +84,8 @@
             })
          },
          filter: function() {
-            //we check only control that have class enable-validation
-            return $(this).is(".enable-validation");
+            //we check only control that have class enable-validation and are visible
+            return $(this).is(".enable-validation") && $(this).is(":visible");
          }
       });
 

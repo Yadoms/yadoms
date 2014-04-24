@@ -55,7 +55,7 @@
          //we parse the json answer
          if (data.result != "true")
          {
-            notifyError($.t("modals.delete-widget.errorDuringDeletingWidget"));
+            notifyError($.t("modals.delete-widget.errorDuringDeletingWidget"), JSON.stringify(data));
             return;
          }
 

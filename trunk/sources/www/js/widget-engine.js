@@ -16,7 +16,9 @@ var startTime = null;
 
 var widgetUpdateInterval;
 var serverIsOnline;
-var OfflineServerNotification = null
+var OfflineServerNotification = null;
+
+var LastEventLogId = null;
 
 function initializeWidgetEngine() {
 
@@ -71,8 +73,27 @@ function initializePageEvents(page) {
    page.$tab.bind('click', function (e) {
    } );
 
-   serverIsOnline = true;
-   widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
+   //we ask for the last event to ask only those occurs after this one
+   $.getJSON("/rest/eventLogger/last")
+      .done(requestLastEventLoggerDone())
+      .fail(function() { notifyError("Unable to get event log"); });
+}
+
+function requestLastEventLoggerDone() {
+   return function(data) {
+      //we parse the json answer
+      if (data.result != "true")
+      {
+         notifyError("Error during requesting Last event log", JSON.stringify(data));
+         return;
+      }
+      //we save the id of the last event
+      LastEventLogId = data.data.id;
+
+      //we can start the periodic update
+      serverIsOnline = true;
+      widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
+   }
 }
 
 function initializeWidgetEvents(widget) {
@@ -169,7 +190,7 @@ function savePageMoveDone(pageId, nearestId, direction) {
       //we parse the json answer
       if (data.result != "true")
       {
-         notifyError("Error during saving page position");
+         notifyError("Error during saving page position", JSON.stringify(data));
          console.error(data.message);
          return;
       }
@@ -223,7 +244,7 @@ function requestPageDone()
       //we parse the json answer
       if (data.result != "true")
       {
-         notifyError("Error during requesting pages");
+         notifyError("Error during requesting pages", JSON.stringify(data));
          return;
       }
 
@@ -254,7 +275,7 @@ function addPageToIHM(page) {
          "<div class=\"pageCustomizationToolbar btn-group btn-group-sm customization-item pull-right hidden\">" +
          "<button type=\"button\" class=\"btn btn-default move-left-page\" title=\"Move to left\"><i class=\"glyphicon glyphicon-arrow-left\"></i></button>" +
          "<button type=\"button\" class=\"btn btn-default move-right-page\" title=\"Move to right\"><i class=\"glyphicon glyphicon-arrow-right\"></i></button>" +
-         "<button type=\"button\" class=\"btn btn-default rename-page\" title=\"Rename\"><i class=\"fa fa-pencil\"></i></button>" +
+         "<button type=\"button\" class=\"btn btn-default rename-page\" title=\"Rename\"><i class=\"glyphicon glyphicon-pencil\"></i></button>" +
          "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\"><i class=\"glyphicon glyphicon-trash\"></i></button>" +
          "</div>" +
          "</a>" +
@@ -347,7 +368,7 @@ function requestWidgetsDone() {
       //we parse the json answer
       if (data.result != "true")
       {
-         notifyError("Error during requesting widgets");
+         notifyError("Error during requesting widgets", JSON.stringify(data));
          return;
       }
 
@@ -552,7 +573,7 @@ function createGridsterWidget(widget) {
       "<li class=\"widget\" page-id=\"" + widget.idPage + "\" widget-id=\"" + widget.id +"\">" +
          "<div class=\"widgetCustomizationToolbar customization-item hidden\">" +
             "<div class=\"btn-group btn-group-sm\">" +
-               "<button type=\"button\" class=\"btn btn-default configure-widget\" title=\"Configure\"><i class=\"fa fa-cog\"></i></button>" +
+               "<button type=\"button\" class=\"btn btn-default configure-widget\" title=\"Configure\"><i class=\"glyphicon glyphicon-cog\"></i></button>" +
                "<button type=\"button\" class=\"btn btn-default delete-widget\" title=\"Delete\"><i class=\"glyphicon glyphicon-trash\"></i></button>" +
             "</div>" +
          "</div>" +
@@ -676,11 +697,10 @@ function tabClick(pageId) {
 }
 
 function periodicUpdateTask() {
-   //we first check if the server is online and only if it answer we ask widgets informations
-   //to do tahat we ask event message
-   //TODO : cahnger par la reception des messages d'evennements
-   $.getJSON("/rest/device/")
-      .done(function() {
+   //we first check if the server is online and only if it answer to the eventLog new messages
+   //to do that we ask event message
+   $.getJSON("/rest/eventLogger/from/" + LastEventLogId)
+      .done(function(data) {
          //if we were offline we go back to online status
          if (!serverIsOnline) {
             serverIsOnline = true;
@@ -695,7 +715,28 @@ function periodicUpdateTask() {
             clearInterval(widgetUpdateInterval);
             widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
          }
-         //TODO : traiter la réponse aux trames d'evennements
+
+         //if there is new messages we display them
+         //we parse the json answer
+         if (data.result != "true")
+         {
+            notifyError("Error during requesting new logs events", JSON.stringify(data));
+            return;
+         }
+
+         $.each(data.data.EventLogger, function(index, value) {
+            var eventLogger = new EventLogger(value.id, value.date, value.code, value.who, value.what);
+            if (eventLogger.code > 0) {
+               notifyInformation(EventLoggerHelper.toString(eventLogger));
+            }
+            else {
+               notifyError(EventLoggerHelper.toString(eventLogger), value.what, false);
+            }
+
+            //we update the lastEvent Id Read
+            LastEventLogId = value.id;
+         });
+
          //we ask for widget's devices
          updateWidgets();
       })
@@ -705,7 +746,7 @@ function periodicUpdateTask() {
          {
             //we indicate that server has passed offline
             serverIsOnline = false;
-            OfflineServerNotification = notifyError("You have been disconnected from the server or it has gone offline");
+            OfflineServerNotification = notifyError("You have been disconnected from the server or it has gone offline", "", false);
             //we change the interval period
             clearInterval(widgetUpdateInterval);
             widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateIntervalInOfflineMode);
@@ -738,13 +779,13 @@ function dispatchDeviceDataToWidget(device, widget) {
       //we parse the json answer
       if (data.result != "true")
       {
-         notifyError("Error during requesting device last data");
+         notifyError("Error during requesting device last data", JSON.stringify(data));
          return;
       }
 
       console.debug("Dispatch : " + JSON.stringify(data.data));
 
-      //we disptach the device to the widget if the widget support the method
+      //we dispatch the device to the widget if the widget support the method
       if (widget.viewModel.dispatch !== undefined)
          widget.viewModel.dispatch(device, data.data);
    };
