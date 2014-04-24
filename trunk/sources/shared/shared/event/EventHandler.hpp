@@ -57,7 +57,7 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       bool empty() const
       {
-         boost::mutex::scoped_lock lock(m_eventsQueueMutex);
+         boost::recursive_timed_mutex::scoped_lock lock(m_eventsQueueMutex);
          return m_eventsQueue.empty();
       }
 
@@ -77,11 +77,11 @@ namespace shared { namespace event
          // If time events are elapsed, must post corresponding event to the queue
          signalElapsedTimeEvents();
 
-         boost::mutex::scoped_lock lock(m_eventsQueueMutex);
+         boost::recursive_timed_mutex::scoped_lock lock(m_eventsQueueMutex);
 
          // Don't wait if event is already present
          if (!m_eventsQueue.empty())
-            return m_eventsQueue.back()->getId();
+            return m_eventsQueue.front()->getId();
 
          // No event is currently present
          if (timeout == boost::date_time::min_date_time)
@@ -93,16 +93,16 @@ namespace shared { namespace event
          {
             // Wait inifinite for event
             m_condition.wait(lock);
-            return m_eventsQueue.back()->getId();
+            return m_eventsQueue.front()->getId();
          }
          else
          {
             // Have time event or timeout
-            boost::shared_ptr<ITimeEvent> closerTimeEvent = getNextTimeEventStopPoint();
-            if (closerTimeEvent && (closerTimeEvent->getNextStopPoint() < (now() + timeout)) )
+            const boost::shared_ptr<ITimeEvent>* closerTimeEvent = getNextTimeEventStopPoint();
+            if (closerTimeEvent && (*closerTimeEvent) && ((*closerTimeEvent)->getNextStopPoint() < (now() + timeout)) )
             {
                // Next stop point will be the closer time event
-               if (!m_condition.timed_wait(lock, closerTimeEvent->getNextStopPoint() - now()))
+               if (!m_condition.timed_wait(lock, (*closerTimeEvent)->getNextStopPoint() - now()))
                {
                   // No event ==> Signal time event
                   signalTimeEvent(closerTimeEvent);
@@ -119,7 +119,7 @@ namespace shared { namespace event
             }
             
             // Event occurs during wait or time event was signaled
-            return m_eventsQueue.back()->getId();
+            return m_eventsQueue.front()->getId();
          }
       }
 
@@ -128,7 +128,7 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       void popEvent()
       {
-         boost::mutex::scoped_lock lock(m_eventsQueueMutex);
+         boost::recursive_timed_mutex::scoped_lock lock(m_eventsQueueMutex);
          m_eventsQueue.pop();
       }
 
@@ -141,7 +141,7 @@ namespace shared { namespace event
       template<typename DataType>
       const DataType popEvent()
       {
-         boost::mutex::scoped_lock lock(m_eventsQueueMutex);
+         boost::recursive_timed_mutex::scoped_lock lock(m_eventsQueueMutex);
          try
          {
             CEvent<DataType> evt = dynamic_cast<CEvent<DataType> & >(*m_eventsQueue.front());
@@ -150,7 +150,7 @@ namespace shared { namespace event
          }
          catch (std::bad_cast&)
          {
-            throw exception::CBadConversion("popEvent", boost::lexical_cast<std::string>(m_eventsQueue.back()->getId()));
+            throw exception::CBadConversion("popEvent", boost::lexical_cast<std::string>(m_eventsQueue.front()->getId()));
          }
       }
 
@@ -159,28 +159,39 @@ namespace shared { namespace event
       /// \param[in] timerEventId   Id of the timer event
       /// \param[in] periodic       true if the timer is periodic, false if timer is one-shot
       /// \param[in] period         Timer period. If provided, timer starts immediatley, else user must call start method
+      /// \return     the created timer (see note)
+      /// \note       Usually, caller don't need to get the timer object as it is owned (and will be destroyed) by the event handler.
+      //              Keep a reference on the timer object can be useful if you want to re-use it or differ start. In this case,
+      //              the event handler won't remove it from it's time events list.
       //--------------------------------------------------------------
-      void createTimer(int timerEventId, bool periodic = false,
-         const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time)//TODO : retourner l'objet créé
+      boost::shared_ptr<CEventTimer> createTimer(int timerEventId, bool periodic = false,//TODO pour plus de lisibilité, utiliser un enum pour periodic
+         const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time)
       {
          BOOST_ASSERT(timerEventId >= kUserFirstId);
 
-         boost::shared_ptr<ITimeEvent> timer(new CEventTimer(timerEventId, periodic, period));
+         boost::shared_ptr<CEventTimer> timer(new CEventTimer(timerEventId, periodic, period));
          m_timeEvents.push_back(timer);
+         return timer;
       }
 
       //--------------------------------------------------------------
       /// \brief	    Create time point event associated with this event handler
       /// \param[in] timePointEventId  Id of the time point event
       /// \param[in] dateTime          date/time when to raise the event, must be in the future
+      /// \return     the created time point (see note)
+      /// \note       Usually, caller don't need to get the time point object as it is owned (and will be destroyed) by the event handler.
+      //              Keep a reference on the time point object can be useful if you want to re-use it or differ initialization. In this case,
+      //              the event handler won't remove it from it's time events list.
       //--------------------------------------------------------------
-      void createTimePoint(int timePointEventId, const boost::posix_time::ptime& dateTime)
+      boost::shared_ptr<CEventTimePoint> createTimePoint(int timePointEventId, const boost::posix_time::ptime& dateTime)
       {
          BOOST_ASSERT(dateTime > now());
 
-         boost::shared_ptr<ITimeEvent> timePoint(new CEventTimePoint(timePointEventId, dateTime));
+         boost::shared_ptr<CEventTimePoint> timePoint(new CEventTimePoint(timePointEventId, dateTime));
          m_timeEvents.push_back(timePoint);
+         return timePoint;
       }
+
 
    protected:
       //--------------------------------------------------------------
@@ -189,12 +200,20 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       void sendEvent(boost::shared_ptr<CEventBase> & event)
       {
+         pushEvent(event);
+         m_condition.notify_one();
+      }
+
+      //--------------------------------------------------------------
+      /// \brief	    Push an event to the queue
+      /// \param[in] event event to push
+      //--------------------------------------------------------------
+      void pushEvent(boost::shared_ptr<CEventBase> & event)
+      {
          BOOST_ASSERT(event->getId() >= kUserFirstId);
 
-         boost::mutex::scoped_lock lock(m_eventsQueueMutex);
+         boost::recursive_timed_mutex::scoped_lock lock(m_eventsQueueMutex);
          m_eventsQueue.push(event);
-         lock.unlock();
-         m_condition.notify_one();
       }
 
       //--------------------------------------------------------------
@@ -202,14 +221,14 @@ namespace shared { namespace event
       ///            This function compute the next event to arrive, between registred time events
       /// \return    The next time event (null pointer if none)
       //--------------------------------------------------------------
-      boost::shared_ptr<ITimeEvent> getNextTimeEventStopPoint()
+      const boost::shared_ptr<ITimeEvent>* getNextTimeEventStopPoint() const
       {
          if (m_timeEvents.empty())
-            return boost::shared_ptr<ITimeEvent>();
+            return NULL;
 
          // Find the closer time event
          boost::posix_time::ptime lower = boost::posix_time::max_date_time;
-         boost::shared_ptr<ITimeEvent> nextTimeEvent;
+         const boost::shared_ptr<ITimeEvent>* nextTimeEvent = NULL;
          for (TimeEventList::const_iterator it = m_timeEvents.begin() ;
             it != m_timeEvents.end() ; ++it)
          {
@@ -219,7 +238,7 @@ namespace shared { namespace event
                if (nextStopPoint < lower)
                {
                   lower = nextStopPoint;
-                  nextTimeEvent = *it;
+                  nextTimeEvent = &(*it);
                }
             }
          }
@@ -258,7 +277,7 @@ namespace shared { namespace event
          {
             boost::posix_time::ptime nextStopPoint = (*it)->getNextStopPoint();
             if (nextStopPoint != boost::date_time::not_a_date_time && nextStopPoint < now())
-               signalTimeEvent(*it);
+               signalTimeEvent(&(*it));   // Elapsed time point, signal it
          }
       }
 
@@ -266,18 +285,24 @@ namespace shared { namespace event
       /// \brief	            Signal that time event elapsed
       /// \param[in] timeEvent    Time event to signal
       //--------------------------------------------------------------
-      void signalTimeEvent(boost::shared_ptr<ITimeEvent> timeEvent)
+      void signalTimeEvent(const boost::shared_ptr<ITimeEvent>* timeEvent)
       {
-         boost::shared_ptr<CEventBase> evt(new CEventBase(timeEvent->getId()));
-         m_eventsQueue.push(evt);
-         timeEvent->reset();
-         if (timeEvent->canBeDetached())
+         BOOST_ASSERT(timeEvent);
+
+         boost::shared_ptr<CEventBase> evt(new CEventBase((*timeEvent)->getId()));
+         pushEvent(evt);
+         (*timeEvent)->reset();
+
+         // Time event elapsed, destroy it if no more needed.
+         // To check if time event can be remove from the list, just check the reference count of
+         // the shared_ptr, as it is == 1 if caller didn't get the object.
+         if ((*timeEvent).unique() && (*timeEvent)->canBeRemoved())
          {
-            // Find and detach time event
+            // Find and destroy time event
             for (TimeEventList::iterator it = m_timeEvents.begin() ;
                it != m_timeEvents.end() ; ++it)
             {
-               if (*it == timeEvent)
+               if (*it == *timeEvent)
                {
                   m_timeEvents.erase(it);
                   return;
@@ -295,12 +320,12 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       /// \brief	   Mutex protecting the events queue
       //--------------------------------------------------------------
-      mutable boost::mutex m_eventsQueueMutex;
+      mutable boost::recursive_timed_mutex m_eventsQueueMutex;
 
       //--------------------------------------------------------------
       /// \brief	   Condition variable signaling an event arrives
       //--------------------------------------------------------------
-      boost::condition_variable m_condition;
+      boost::condition_variable_any m_condition;
 
       //--------------------------------------------------------------
       /// \brief	   The time events associated with this event handler

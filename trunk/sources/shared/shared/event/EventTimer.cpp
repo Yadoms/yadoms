@@ -7,7 +7,7 @@ namespace shared { namespace event
 {
 
 CEventTimer::CEventTimer(int eventId, bool periodic, const boost::posix_time::time_duration& period)
-   :m_id(eventId), m_periodic(periodic), m_period(period)
+   :m_id(eventId), m_periodic(periodic), m_period(period), m_nextStopPoint(boost::date_time::not_a_date_time)
 {
    if (m_period != boost::date_time::not_a_date_time)
       start(m_period);
@@ -44,11 +44,10 @@ void CEventTimer::reset()
       m_nextStopPoint = boost::date_time::not_a_date_time;
 }
 
-bool CEventTimer::canBeDetached() const
+bool CEventTimer::canBeRemoved() const
 {
-   // As a stopped timer (non-periodic) can be restarted at any-time by a call to start() method,
-   // this timer can never be detached.
-   return false;
+   // Timer can be removed if no more event is to come
+   return (m_nextStopPoint == boost::date_time::not_a_date_time);
 }
 
 int CEventTimer::getId() const

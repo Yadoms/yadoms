@@ -63,7 +63,7 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
       CFakeTemperatureSensor temperatureSensor("fakeTempSensor");
 
       // Timer used to send a XPL message periodically
-      createTimer(kEvtTimerSendMessage, true, boost::posix_time::milliseconds(10000));
+      createTimer(kEvtTimerSendMessage, true, boost::posix_time::seconds(10));
 
       // the main loop
       YADOMS_LOG(debug) << "CFakePlugin is running...";

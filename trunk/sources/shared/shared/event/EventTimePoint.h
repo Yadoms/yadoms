@@ -13,19 +13,26 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       /// \brief	    Constructor
       /// \param[in] eventId        Id of the event  
-      /// \param[in] dateTime       date/time when to raise the event, must be in the future
+      /// \param[in] dateTime       date/time when to raise the event, must be in the future. If not provided,
+      ///                           caller has to call set() method.
       //--------------------------------------------------------------
-      CEventTimePoint(int eventId, const boost::posix_time::ptime& dateTime);
+      CEventTimePoint(int eventId, const boost::posix_time::ptime& dateTime = boost::date_time::not_a_date_time);
 
       //--------------------------------------------------------------
       /// \brief	    Destructor
       //--------------------------------------------------------------
       virtual ~CEventTimePoint();
+
+      //--------------------------------------------------------------
+      /// \brief	    Set the time point
+      /// \param[in] dateTime       date/time when to raise the event, must be in the future
+      //--------------------------------------------------------------
+      void set(const boost::posix_time::ptime& dateTime);
       
       // ITimeEvent Implementation
       virtual boost::posix_time::ptime getNextStopPoint() const;
       virtual void reset();
-      virtual bool canBeDetached() const;
+      virtual bool canBeRemoved() const;
       virtual int getId() const;
       // [END] ITimeEvent Implementation
 
