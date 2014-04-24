@@ -10,13 +10,20 @@ namespace shared { namespace event
    class YADOMS_SHARED_EXPORT CEventTimer : public ITimeEvent
    {
    public:
+      enum EPeriodicity
+      {
+         kPeriodic,
+         kOneShot
+      };
+
+   public:
       //--------------------------------------------------------------
       /// \brief	    Constructor
       /// \param[in] eventId        Id of the event
-      /// \param[in] periodic       true if the timer is periodic, false if timer is one-shot
+      /// \param[in] periodic       Periodic or one-shot timer
       /// \param[in] period         Timer period. If provided, timer starts immediatley, else user must call start method
       //--------------------------------------------------------------
-      CEventTimer(int eventId, bool periodic = false,
+      CEventTimer(int eventId, EPeriodicity periodicity = kOneShot,
          const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time);
 
       //--------------------------------------------------------------
@@ -44,9 +51,9 @@ namespace shared { namespace event
       const int m_id;
 
       //--------------------------------------------------------------
-      /// \brief	    Is the timer periodic (true), or one-shot
+      /// \brief	    Timer periodicity
       //--------------------------------------------------------------
-      const bool m_periodic;
+      const EPeriodicity m_periodicity;
 
       //--------------------------------------------------------------
       /// \brief	    The constant timer period (if provided at construction, boost::date_time::not_a_date_time else)

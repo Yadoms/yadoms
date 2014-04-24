@@ -6,8 +6,8 @@
 namespace shared { namespace event
 {
 
-CEventTimer::CEventTimer(int eventId, bool periodic, const boost::posix_time::time_duration& period)
-   :m_id(eventId), m_periodic(periodic), m_period(period), m_nextStopPoint(boost::date_time::not_a_date_time)
+CEventTimer::CEventTimer(int eventId, EPeriodicity periodicity, const boost::posix_time::time_duration& period)
+   :m_id(eventId), m_periodicity(periodicity), m_period(period), m_nextStopPoint(boost::date_time::not_a_date_time)
 {
    if (m_period != boost::date_time::not_a_date_time)
       start(m_period);
@@ -26,7 +26,7 @@ void CEventTimer::start(const boost::posix_time::time_duration& period)
 
    // If periodic (and not the first time), next start point begins from last start point
    // Else next start point begins from now
-   boost::posix_time::ptime startPoint = (m_periodic && m_nextStopPoint != boost::date_time::not_a_date_time) ? m_nextStopPoint : now();
+   boost::posix_time::ptime startPoint = (m_periodicity == kPeriodic && m_nextStopPoint != boost::date_time::not_a_date_time) ? m_nextStopPoint : now();
 
    m_nextStopPoint = startPoint + periodToUse;
 }
@@ -38,7 +38,7 @@ boost::posix_time::ptime CEventTimer::getNextStopPoint() const
 
 void CEventTimer::reset()
 {
-   if (m_periodic)
+   if (m_periodicity == kPeriodic)
       start();
    else
       m_nextStopPoint = boost::date_time::not_a_date_time;
