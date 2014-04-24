@@ -33,7 +33,7 @@ namespace shared { namespace event
       // ITimeEvent Implementation
       virtual boost::posix_time::ptime getNextStopPoint() const;
       virtual void reset();
-      virtual bool canBeDetached() const;
+      virtual bool canBeRemoved() const;
       virtual int getId() const;
       // [END] ITimeEvent Implementation
 

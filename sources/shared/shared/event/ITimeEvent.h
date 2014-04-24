@@ -27,11 +27,12 @@ namespace shared { namespace event
       virtual void reset() = 0;
 
       //--------------------------------------------------------------
-      /// \brief	    Check if time event can be detached (if no more make sense because
-      ///             no more event is to come).
-      /// \return     true if the time event no more make sense and can be detached from event handler
+      /// \brief	    Check if time event can be removed from the event handler time events list
+      ///             (for example if no more make sense because no more event is to come).
+      /// \return     true if the time event can be removed from the event handler list
+      /// \note       Normaly only called by event handler
       //--------------------------------------------------------------
-      virtual bool canBeDetached() const = 0;
+      virtual bool canBeRemoved() const = 0;
 
       //--------------------------------------------------------------
       /// \brief	    Id getter
