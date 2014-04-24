@@ -74,6 +74,9 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       int waitForEvents(const boost::posix_time::time_duration& timeout = boost::date_time::pos_infin)
       {
+         // Clean the list
+         timeEventListCleanup();
+
          // If time events are elapsed, must post corresponding event to the queue
          signalElapsedTimeEvents();
 
@@ -157,19 +160,19 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       /// \brief	    Create timer associated with this event handler
       /// \param[in] timerEventId   Id of the timer event
-      /// \param[in] periodic       true if the timer is periodic, false if timer is one-shot
+      /// \param[in] periodic       Periodic or one-shot timer
       /// \param[in] period         Timer period. If provided, timer starts immediatley, else user must call start method
       /// \return     the created timer (see note)
       /// \note       Usually, caller don't need to get the timer object as it is owned (and will be destroyed) by the event handler.
       //              Keep a reference on the timer object can be useful if you want to re-use it or differ start. In this case,
       //              the event handler won't remove it from it's time events list.
       //--------------------------------------------------------------
-      boost::shared_ptr<CEventTimer> createTimer(int timerEventId, bool periodic = false,//TODO pour plus de lisibilité, utiliser un enum pour periodic
+      boost::shared_ptr<CEventTimer> createTimer(int timerEventId, CEventTimer::EPeriodicity periodicity = CEventTimer::kOneShot,
          const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time)
       {
          BOOST_ASSERT(timerEventId >= kUserFirstId);
 
-         boost::shared_ptr<CEventTimer> timer(new CEventTimer(timerEventId, periodic, period));
+         boost::shared_ptr<CEventTimer> timer(new CEventTimer(timerEventId, periodicity, period));
          m_timeEvents.push_back(timer);
          return timer;
       }
@@ -292,21 +295,27 @@ namespace shared { namespace event
          boost::shared_ptr<CEventBase> evt(new CEventBase((*timeEvent)->getId()));
          pushEvent(evt);
          (*timeEvent)->reset();
+      }
 
-         // Time event elapsed, destroy it if no more needed.
-         // To check if time event can be remove from the list, just check the reference count of
-         // the shared_ptr, as it is == 1 if caller didn't get the object.
-         if ((*timeEvent).unique() && (*timeEvent)->canBeRemoved())
+      //--------------------------------------------------------------
+      /// \brief	            Purge obsolets time events
+      //--------------------------------------------------------------
+      void timeEventListCleanup()
+      {
+         if (m_timeEvents.empty())
+            return;
+
+         for (TimeEventList::const_iterator it = m_timeEvents.begin() ;
+            it != m_timeEvents.end() ; )
          {
-            // Find and destroy time event
-            for (TimeEventList::iterator it = m_timeEvents.begin() ;
-               it != m_timeEvents.end() ; ++it)
+            if ((*it).unique() && (*it)->canBeRemoved())
             {
-               if (*it == *timeEvent)
-               {
-                  m_timeEvents.erase(it);
-                  return;
-               }
+               // Time event no more make sens, and is not referenced by user, so erase it from the list
+               it = m_timeEvents.erase(it);
+            }
+            else
+            {
+               ++it;
             }
          }
       }
