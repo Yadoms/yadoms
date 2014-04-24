@@ -11,13 +11,18 @@ if(GAMMU_INCLUDE_DIRS AND GAMMU_LIBRARIES)
     set(Gammu_FIND_QUIETLY TRUE)
 endif(GAMMU_INCLUDE_DIRS AND GAMMU_LIBRARIES)
 
-if(WIN32)
+if(MSVC)
    # Use GAMMU_ROOT defined in CMakeListsUserConfig.txt
    set(GAMMU_PKG_INCLUDE_DIRS ${GAMMU_ROOT}/include)
    set(GAMMU_PKG_LIBRARY_DIRS  ${GAMMU_ROOT}/libgammu/Debug)#TODO : gérer les configurations
-   set(GAMMU_PKG_LIBRARIES Gammu.lib)
+   set(GAMMU_PKG_LIBRARIES
+		${GAMMU_ROOT}/libgammu/Debug/Gammu.lib    #TODO : gérer les configurations
+		${GAMMU_ROOT}/helper/Debug/string.lib
+		${GAMMU_ROOT}/helper/Debug/win32dirent.lib)
    set(GAMMU_ADDITIONAL_LIBRARIES  ${GAMMU_ROOT}/helper/Debug/string.lib ${GAMMU_ROOT}/helper/Debug/win32dirent.lib)#TODO : gérer les configurations
-else(WIN32)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX AND NOT CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER)#TODO "AND NOT CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER" utile ?
    # Use pkg-config to get the directories and then use these values
    # in the FIND_PATH() and FIND_LIBRARY() calls
    # This line will define these variables :
@@ -30,7 +35,19 @@ else(WIN32)
    #   - GAMMU_PKG_CFLAGS_OTHER : the other compiler flags
    find_package(PkgConfig)
    pkg_check_modules(GAMMU_PKG gammu)
-endif(WIN32)
+endif()
+
+if (CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER)
+   # Do not use PkgConfig as PkgConfig will return host libs
+   # Use GAMMU_ROOT defined in CMakeListsUserConfig.txt
+   set(GAMMU_PKG_INCLUDE_DIRS ${GAMMU_ROOT}/include)
+   set(GAMMU_PKG_LIBRARY_DIRS  ${GAMMU_ROOT}/libgammu)
+   set(GAMMU_PKG_LIBRARIES libGammu.so)
+#		${GAMMU_ROOT}/libgammu/Debug/Gammu.lib    #TODO : gérer les configurations
+#		${GAMMU_ROOT}/helper/Debug/string.lib
+#		${GAMMU_ROOT}/helper/Debug/win32dirent.lib)
+#   set(GAMMU_ADDITIONAL_LIBRARIES  ${GAMMU_ROOT}/helper/Debug/string.lib ${GAMMU_ROOT}/helper/Debug/win32dirent.lib)
+endif()
 
 find_path(GAMMU_INCLUDE_DIRS NAMES gammu.h
    PATHS
@@ -39,7 +56,7 @@ find_path(GAMMU_INCLUDE_DIRS NAMES gammu.h
 
 find_library(GAMMU_LIBRARIES NAMES ${GAMMU_PKG_LIBRARIES}
    PATHS
-   ${GAMMU_PKG_LIBRARY_DIRS}
+   ${GAMMU_PKG_LIBRARIES}
 )
 
 # Add additional libraries
