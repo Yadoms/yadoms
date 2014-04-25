@@ -4,6 +4,7 @@
  * Creates an instance of Page
  * @param id database id of the page
  * @param name name of the page
+ * @param pageOrder
  * @constructor
  */
 function Page(id, name, pageOrder) {
@@ -14,8 +15,7 @@ function Page(id, name, pageOrder) {
    this.id = id;
    this.name = name;
    this.pageOrder = pageOrder;
-   this.gridster;
-   this.widgets = new Array();
+   this.widgets = [];
    this.$tab = null;
    this.$content = null;
    this.loaded = false;
@@ -33,14 +33,14 @@ Page.prototype.getWidget = function(widgetId) {
    if (res.length != 1)
       return null;
    return res[0];
-}
+};
 
 Page.prototype.addWidget = function(widget) {
    //we look if it isn't already in page
    var res = this.getWidget(widget.id);
    assert(res == null, "Widget has already been added to this page");
    this.widgets.push(widget);
-}
+};
 
 /**
  * Override JSON.stringify method in order to send only database columns

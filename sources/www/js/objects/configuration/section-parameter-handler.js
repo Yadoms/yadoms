@@ -2,14 +2,24 @@
  * Created by Nicolas on 01/03/14.
  */
 
-//radioButtonSectionName is only for section contained in radioSection content
+/**
+ * Create a section parameter handler
+ * @param objectToConfigure
+ * @param i18nContext
+ * @param paramName
+ * @param content
+ * @param currentValue
+ * @param radioButtonSectionName
+ * @param radioSectionActive
+ * @constructor
+ */
 function SectionParameterHandler(objectToConfigure, i18nContext, paramName, content, currentValue, radioButtonSectionName, radioSectionActive) {
    assert(objectToConfigure !== undefined, "objectToConfigure must contain widget or plugin object");
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
 
-   this.configurationHandlers = new Array();
+   this.configurationHandlers = [];
    this.configurationValues = currentValue;
    this.name = content.name;
    this.paramName = paramName;
@@ -63,9 +73,11 @@ function SectionParameterHandler(objectToConfigure, i18nContext, paramName, cont
    });
 }
 
+/**
+ * Get the DOM Object to insert
+ * @returns {string}
+ */
 SectionParameterHandler.prototype.getDOMObject = function () {
-   var self = this;
-
    var input = "<div class=\"control-group configuration-section well\" >" +
                   "<div class=\"configuration-header\" >";
 
@@ -157,10 +169,18 @@ SectionParameterHandler.prototype.getDOMObject = function () {
    return input;
 };
 
+/**
+ * Get the param name
+ * @returns {string}
+ */
 SectionParameterHandler.prototype.getParamName = function() {
   return this.paramName;
 };
 
+/**
+ * Get the current configuration in the form
+ * @returns {object}
+ */
 SectionParameterHandler.prototype.getCurrentConfiguration = function () {
    //we update configurationValues with content of DOM
    var self = this;

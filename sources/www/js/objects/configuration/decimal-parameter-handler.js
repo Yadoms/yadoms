@@ -2,6 +2,14 @@
  * Created by Nicolas on 01/03/14.
  */
 
+/**
+ * Create a decimal parameter handler
+ * @param i18nContext
+ * @param paramName
+ * @param content
+ * @param currentValue
+ * @constructor
+ */
 function DecimalParameterHandler(i18nContext, paramName, content, currentValue) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
@@ -38,6 +46,10 @@ function DecimalParameterHandler(i18nContext, paramName, content, currentValue) 
    this.content = content;
 }
 
+/**
+ * Get the DOM Object to insert
+ * @returns {string}
+ */
 DecimalParameterHandler.prototype.getDOMObject = function () {
    //we provide a SpinEdit
    var input = "<input " +
@@ -75,10 +87,18 @@ DecimalParameterHandler.prototype.getDOMObject = function () {
    return ConfigurationHelper.createControlGroup(self, input);
 };
 
+/**
+ * Get the param name
+ * @returns {string}
+ */
 DecimalParameterHandler.prototype.getParamName = function() {
   return this.paramName;
 };
 
+/**
+ * Get the current configuration in the form
+ * @returns {double}
+ */
 DecimalParameterHandler.prototype.getCurrentConfiguration = function () {
    //we allow "," and "."
    var v = $("input#" + this.uuid).val().replace(',', '.');

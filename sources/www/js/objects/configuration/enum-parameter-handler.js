@@ -2,6 +2,14 @@
  * Created by Nicolas on 01/03/14.
  */
 
+/**
+ * Create an enum parameter handler
+ * @param i18nContext
+ * @param paramName
+ * @param content
+ * @param currentValue
+ * @constructor
+ */
 function EnumParameterHandler(i18nContext, paramName, content, currentValue) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
@@ -30,6 +38,10 @@ function EnumParameterHandler(i18nContext, paramName, content, currentValue) {
    this.content = content;
 }
 
+/**
+ * Get the DOM Object to insert
+ * @returns {string}
+ */
 EnumParameterHandler.prototype.getDOMObject = function () {
    var input = "<select " +
                         "class=\"form-control\" " +
@@ -53,15 +65,21 @@ EnumParameterHandler.prototype.getDOMObject = function () {
    });
 
    input += "</select>";
-
-   var self = this;
    return ConfigurationHelper.createControlGroup(self, input);
 };
 
+/**
+ * Get the param name
+ * @returns {string}
+ */
 EnumParameterHandler.prototype.getParamName = function() {
   return this.paramName;
 };
 
+/**
+ * Get the current configuration in the form
+ * @returns {string}
+ */
 EnumParameterHandler.prototype.getCurrentConfiguration = function () {
    this.value = $("select#" + this.uuid).val();
    return this.value;

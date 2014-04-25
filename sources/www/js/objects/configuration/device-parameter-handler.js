@@ -2,6 +2,14 @@
  * Created by Nicolas on 01/03/14.
  */
 
+/**
+ * Create a device parameter handler
+ * @param i18nContext
+ * @param paramName
+ * @param content
+ * @param currentValue
+ * @constructor
+ */
 function DeviceParameterHandler(i18nContext, paramName, content, currentValue) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
@@ -29,6 +37,11 @@ function DeviceParameterHandler(i18nContext, paramName, content, currentValue) {
       .fail(function() {notifyError("Unable to get device list that match keyword " + self.expectedKeyword);});
 }
 
+/**
+ * Asynchronous populate the list
+ * @param handler
+ * @returns {Function}
+ */
 function populateDeviceList(handler) {
    return function(data) {
       //we parse the json answer
@@ -50,6 +63,10 @@ function populateDeviceList(handler) {
    };
 }
 
+/**
+ * Get the DOM Object to insert
+ * @returns {string}
+ */
 DeviceParameterHandler.prototype.getDOMObject = function () {
    var input = "<select " +
                         "class=\"form-control\" " +
@@ -69,14 +86,21 @@ DeviceParameterHandler.prototype.getDOMObject = function () {
               "" +
             "</div>";
 
-   var self = this;
    return ConfigurationHelper.createControlGroup(self, input);
 };
 
+/**
+ * Get the param name
+ * @returns {string}
+ */
 DeviceParameterHandler.prototype.getParamName = function() {
   return this.paramName;
 };
 
+/**
+ * Get the current configuration in the form
+ * @returns {string}
+ */
 DeviceParameterHandler.prototype.getCurrentConfiguration = function () {
    this.value = $("select#" + this.uuid).val();
    return this.value;
