@@ -15,14 +15,11 @@ if(MSVC)
    # Use GAMMU_ROOT defined in CMakeListsUserConfig.txt
    set(GAMMU_PKG_INCLUDE_DIRS ${GAMMU_ROOT}/include)
    set(GAMMU_PKG_LIBRARY_DIRS  ${GAMMU_ROOT}/libgammu/Debug)#TODO : gérer les configurations
-   set(GAMMU_PKG_LIBRARIES
-		${GAMMU_ROOT}/libgammu/Debug/Gammu.lib    #TODO : gérer les configurations
-		${GAMMU_ROOT}/helper/Debug/string.lib
-		${GAMMU_ROOT}/helper/Debug/win32dirent.lib)
+   set(GAMMU_PKG_LIBRARIES Gammu.lib)#TODO : gérer les configurations
    set(GAMMU_ADDITIONAL_LIBRARIES  ${GAMMU_ROOT}/helper/Debug/string.lib ${GAMMU_ROOT}/helper/Debug/win32dirent.lib)#TODO : gérer les configurations
 endif()
 
-if(CMAKE_COMPILER_IS_GNUCXX AND NOT CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER)#TODO "AND NOT CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER" utile ?
+if(CMAKE_COMPILER_IS_GNUCXX AND NOT CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER)
    # Use pkg-config to get the directories and then use these values
    # in the FIND_PATH() and FIND_LIBRARY() calls
    # This line will define these variables :
@@ -43,21 +40,22 @@ if (CMAKE_COMPILER_IS_RASPBERRY_CROSS_COMPILER)
    set(GAMMU_PKG_INCLUDE_DIRS ${GAMMU_ROOT}/include)
    set(GAMMU_PKG_LIBRARY_DIRS  ${GAMMU_ROOT}/libgammu)
    set(GAMMU_PKG_LIBRARIES libGammu.so)
-#		${GAMMU_ROOT}/libgammu/Debug/Gammu.lib    #TODO : gérer les configurations
-#		${GAMMU_ROOT}/helper/Debug/string.lib
-#		${GAMMU_ROOT}/helper/Debug/win32dirent.lib)
-#   set(GAMMU_ADDITIONAL_LIBRARIES  ${GAMMU_ROOT}/helper/Debug/string.lib ${GAMMU_ROOT}/helper/Debug/win32dirent.lib)
 endif()
 
+message (GAMMU_PKG_INCLUDE_DIRS = ${GAMMU_PKG_INCLUDE_DIRS})#TODO
 find_path(GAMMU_INCLUDE_DIRS NAMES gammu.h
    PATHS
    ${GAMMU_PKG_INCLUDE_DIRS}
 )
+message (GAMMU_INCLUDE_DIRS = ${GAMMU_INCLUDE_DIRS})#TODO
 
+message (GAMMU_PKG_LIBRARIES = ${GAMMU_PKG_LIBRARIES})#TODO
+message (GAMMU_PKG_LIBRARY_DIRS = ${GAMMU_PKG_LIBRARY_DIRS})#TODO
 find_library(GAMMU_LIBRARIES NAMES ${GAMMU_PKG_LIBRARIES}
    PATHS
-   ${GAMMU_PKG_LIBRARIES}
+   ${GAMMU_PKG_LIBRARY_DIRS}
 )
+message (GAMMU_LIBRARIES = ${GAMMU_LIBRARIES})#TODO
 
 # Add additional libraries
 set(GAMMU_LIBRARIES ${GAMMU_LIBRARIES} ${GAMMU_ADDITIONAL_LIBRARIES})
