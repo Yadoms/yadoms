@@ -75,14 +75,14 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
          case kEvtXplMessage:
             {
                // Xpl message was received
-               shared::xpl::CXplMessage xplMessage = popEvent<shared::xpl::CXplMessage>();
+               shared::xpl::CXplMessage xplMessage = getEventData<shared::xpl::CXplMessage>();
                YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
                break;
             }
          case kEvtUpdateConfiguration:
             {
                // Configuration was updated
-               std::string newConfiguration = popEvent<std::string>();
+               std::string newConfiguration = getEventData<std::string>();
                YADOMS_LOG(debug) << "configuration was updated...";
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEvtUpdateConfiguration shouldn't be generated
 
@@ -100,9 +100,6 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
          case kEvtTimerSendMessage:
             {
                // Timer used here to send a XPL message periodically
-
-               // We need to consume this timer event
-               popEvent();
 
                // First read the sensor value
                temperatureSensor.read();
@@ -136,10 +133,6 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
          default:
             {
                YADOMS_LOG(error) << "Unknown message id";
-
-               // We need to consume this unknown event
-               popEvent();
-
                break;
             }
          }

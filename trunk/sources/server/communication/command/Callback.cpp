@@ -21,7 +21,7 @@ namespace communication { namespace command {
    {
       if(waitForEvents(timeout) == kResult)
       {
-         return popEvent<CResult>();
+         return getEventData<CResult>();
       }
       return CResult::CreateError("No answer.");
    }

@@ -266,11 +266,11 @@ void CSupervisor::doWork()
             switch(waitForEvents())
             {
             case kPluginManagerEvent:
-               pluginManager->signalEvent(popEvent<pluginSystem::CManagerEvent>());
+               pluginManager->signalEvent(getEventData<pluginSystem::CManagerEvent>());
                break;
 
             case kSystemEvent:
-               pDataProvider->getEventLoggerRequester()->addEvent(popEvent<database::entities::CEventLogger>());
+               pDataProvider->getEventLoggerRequester()->addEvent(getEventData<database::entities::CEventLogger>());
                break;
 
             default:

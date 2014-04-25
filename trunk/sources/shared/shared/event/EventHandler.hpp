@@ -74,7 +74,10 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       int waitForEvents(const boost::posix_time::time_duration& timeout = boost::date_time::pos_infin)
       {
-         // Clean the list
+         // Clean last received message data
+         m_lastEvent.reset();
+
+         // Clean the time event list
          timeEventListCleanup();
 
          // If time events are elapsed, must post corresponding event to the queue
@@ -84,7 +87,7 @@ namespace shared { namespace event
 
          // Don't wait if event is already present
          if (!m_eventsQueue.empty())
-            return m_eventsQueue.front()->getId();
+            return popEvent();
 
          // No event is currently present
          if (timeout == boost::date_time::min_date_time)
@@ -96,7 +99,7 @@ namespace shared { namespace event
          {
             // Wait infinite for event
             m_condition.wait(lock);
-            return m_eventsQueue.front()->getId();
+            return popEvent();
          }
          else
          {
@@ -122,17 +125,8 @@ namespace shared { namespace event
             }
             
             // Event occurs during wait or time event was signaled
-            return m_eventsQueue.front()->getId();
+            return popEvent();
          }
-      }
-
-      //--------------------------------------------------------------
-      /// \brief	    Pop the next event
-      //--------------------------------------------------------------
-      void popEvent()
-      {
-         boost::recursive_timed_mutex::scoped_lock lock(m_eventsQueueMutex);
-         m_eventsQueue.pop();
       }
 
       //--------------------------------------------------------------
@@ -142,18 +136,16 @@ namespace shared { namespace event
       /// \throw      exception::CBadConversion if event data is not correct
       //--------------------------------------------------------------
       template<typename DataType>
-      const DataType popEvent()
+      const DataType getEventData()
       {
-         boost::recursive_timed_mutex::scoped_lock lock(m_eventsQueueMutex);
          try
          {
-            CEvent<DataType> evt = dynamic_cast<CEvent<DataType> & >(*m_eventsQueue.front());
-            m_eventsQueue.pop();
+            CEvent<DataType> evt = dynamic_cast<CEvent<DataType> & >(*m_lastEvent);
             return evt.getData();
          }
          catch (std::bad_cast&)
          {
-            throw exception::CBadConversion("popEvent", boost::lexical_cast<std::string>(m_eventsQueue.front()->getId()));
+            throw exception::CBadConversion("getEventData", boost::lexical_cast<std::string>(m_lastEvent->getId()));
          }
       }
 
@@ -217,6 +209,18 @@ namespace shared { namespace event
 
          boost::recursive_timed_mutex::scoped_lock lock(m_eventsQueueMutex);
          m_eventsQueue.push(event);
+      }
+
+      //--------------------------------------------------------------
+      /// \brief	    Pop the next event
+      /// \return     ID of the next event
+      //--------------------------------------------------------------
+      int popEvent()
+      {
+         boost::recursive_timed_mutex::scoped_lock lock(m_eventsQueueMutex);
+         m_lastEvent = m_eventsQueue.front();
+         m_eventsQueue.pop();
+         return m_lastEvent->getId();
       }
 
       //--------------------------------------------------------------
@@ -325,6 +329,11 @@ namespace shared { namespace event
       /// \brief	   The events queue
       //--------------------------------------------------------------
       std::queue<boost::shared_ptr<CEventBase> > m_eventsQueue;
+
+      //--------------------------------------------------------------
+      /// \brief	   The last received event
+      //--------------------------------------------------------------
+      boost::shared_ptr<CEventBase> m_lastEvent;
 
       //--------------------------------------------------------------
       /// \brief	   Mutex protecting the events queue
