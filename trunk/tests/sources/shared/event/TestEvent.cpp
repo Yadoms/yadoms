@@ -30,6 +30,31 @@ struct structData
 	int tab[10];
 };
 
+class eventData
+{
+public:
+   eventData()
+   {
+      for (int counter = 0; counter < 10; counter++)
+         m_tab[counter] = counter;
+   }
+
+   ~eventData() {}
+
+   bool isValid()
+   {
+      for (int counter = 0; counter < 10; counter++)
+         if (m_tab[counter] != counter)
+            return false;
+
+      return true;
+   }
+private:
+   int m_tab[10];
+};
+
+
+
 int ReceiverFirstMessageCounter;
 int ReceiverMessage1Counter;
 int ReceiverMessage2Counter;
@@ -56,7 +81,6 @@ void ThreadReceiver(long nbMessages)
       {
       case FirstMessage:
          {
-            EvtHandler.popEvent();
             ReceiverFirstMessageCounter++;
 #ifdef DEBUG
             std::cout << "DEBUG Thread Receiver: First message received (#" << ReceiverFirstMessageCounter  << ")" << std::endl;
@@ -65,7 +89,6 @@ void ThreadReceiver(long nbMessages)
          }
       case Message1:
          {
-            EvtHandler.popEvent();
             ReceiverMessage1Counter++;
 #ifdef DEBUG
             std::cout << "DEBUG Thread Receiver: Message 1 Received (#" << ReceiverMessage1Counter << ")" << std::endl;
@@ -130,7 +153,7 @@ void ThreadReceiverWithMessages(long nbMessages)
       {
       case FirstMessage:
          {
-            DataReceived = EvtHandler.popEvent<structData>();
+            DataReceived = EvtHandler.getEventData<structData>();
             ReceiverFirstMessageCounter++;
 			messagePrecedent = 0;
 #ifdef DEBUG            
@@ -140,7 +163,7 @@ void ThreadReceiverWithMessages(long nbMessages)
          }
       case Message1:
          {
-            DataReceived = EvtHandler.popEvent<structData>();
+            DataReceived = EvtHandler.getEventData<structData>();
             ReceiverMessage1Counter++;
 			if (messagePrecedent != 5)
 				ReceiverMessageOrderOk = ReceiverMessageOrderOk & false;
@@ -153,7 +176,7 @@ void ThreadReceiverWithMessages(long nbMessages)
          }
       case Message2:
          {
-            DataReceived = EvtHandler.popEvent<structData>();
+            DataReceived = EvtHandler.getEventData<structData>();
             ReceiverMessage2Counter++;
 
 			if (messagePrecedent != 1)
@@ -167,7 +190,7 @@ void ThreadReceiverWithMessages(long nbMessages)
          }
       case Message3:
          {
-            DataReceived = EvtHandler.popEvent<structData>();
+            DataReceived = EvtHandler.getEventData<structData>();
             ReceiverMessage3Counter++;
 
 			if (messagePrecedent != 2)
@@ -181,7 +204,7 @@ void ThreadReceiverWithMessages(long nbMessages)
          }
       case Message4:
          {
-            DataReceived = EvtHandler.popEvent<structData>();
+            DataReceived = EvtHandler.getEventData<structData>();
             ReceiverMessage4Counter++;
 
 			if (messagePrecedent != 3)
@@ -195,7 +218,7 @@ void ThreadReceiverWithMessages(long nbMessages)
          }
       case Message5:
          {
-            DataReceived = EvtHandler.popEvent<structData>();
+            DataReceived = EvtHandler.getEventData<structData>();
             ReceiverMessage5Counter++;
 
 			if (messagePrecedent != 4)
@@ -424,11 +447,8 @@ BOOST_AUTO_TEST_CASE(Event_100_Messages)
 // TODO : DEBUT_CODE_SG
 void Event_1_Frame_with_Data_SG_senderThread(shared::event::CEventHandler* receiver)
 {
-   structData DataSent;
-   for (int counter = 0; counter < 10; counter++)   // TODO : ces 2 lignes seraient mieux dans le ctor de structData
-      DataSent.tab[counter] = counter;
-
-   receiver->sendEvent<structData>(FirstMessage, DataSent);
+   eventData sentData;
+   receiver->sendEvent<eventData>(FirstMessage, sentData);
 }
 
 BOOST_AUTO_TEST_CASE(Event_1_Frame_with_Data_SG)//TODO : n'en conserver qu'un
@@ -439,7 +459,9 @@ BOOST_AUTO_TEST_CASE(Event_1_Frame_with_Data_SG)//TODO : n'en conserver qu'un
    boost::thread sender(Event_1_Frame_with_Data_SG_senderThread, &evtHandler);
 
    BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(5000)), FirstMessage);
-   BOOST_REQUIRE_NO_THROW(evtHandler.popEvent<structData>());
+   eventData receivedData;
+   BOOST_REQUIRE_NO_THROW(receivedData = evtHandler.getEventData<eventData>());
+   BOOST_CHECK(receivedData.isValid());
 
    sender.join();
 }
@@ -578,7 +600,7 @@ BOOST_AUTO_TEST_CASE(Event_1_Frame_with_Data_Exception)
 {
 	EvtHandler.sendEvent<std::string>(Message1,"Hello World");
 
-	BOOST_REQUIRE_THROW (EvtHandler.popEvent<structData>(),shared::exception::CBadConversion);
+	BOOST_REQUIRE_THROW (EvtHandler.getEventData<structData>(),shared::exception::CBadConversion);
 }
 
 //--------------------------------------------------------------
