@@ -101,9 +101,8 @@ function exitCustomization() {
             //we parse the json answer
             if (data.result != "true")
             {
-               notifyError("Error during saving customization", JSON.stringify(data));
+               notifyError("Error during saving customization", JSON.stringify(data), undefined);
                console.error(data.message);
-               return;
             }
          })
          .fail(function() {notifyError("Unable to save customization")});

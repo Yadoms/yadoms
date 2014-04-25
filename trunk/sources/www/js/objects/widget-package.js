@@ -11,7 +11,7 @@ function WidgetPackage() {
    this.viewHasBeenDownloaded = false;
 
    /**
-    * Use this object to contruct an instance of the viewModel
+    * Use this object to construct an instance of the viewModel
     */
    this.viewModelCtor = null;
 

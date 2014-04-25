@@ -2,7 +2,14 @@
   
 body {
     padding-bottom: 20px;
-    background: url('../img/background.jpg');
+    background: url('../img/background2.jpg');
+    -moz-background-size: 100% 100%;           /* Gecko 1.9.2 (Firefox 3.6) */
+    -o-background-size: 100% 100%;           /* Opera 9.5 */
+    -webkit-background-size: 100% 100%;           /* Safari 3.0 */
+    background-size: 100% 100%;           /* Gecko 2.0 (Firefox 4.0) et les autres navigateurs gérant CSS3 */
+
+    -moz-border-image: url("../img/background2.jpg") 0;    /* Gecko 1.9.1 (Firefox 3.5) */
+
     background-attachment: fixed;
     min-width: 265px;
 }
@@ -154,22 +161,6 @@ body {
    min-width: 200px;
 }
 
-.configuration-section {
-   padding: 15px;
-   margin: 15px;
-}
-
-.configuration-header {
-   font-size:14px;
-   font-weight:700;
-   letter-spacing:1px;
-   text-transform:uppercase;
-}
-
-.configuration-description {
-
-}
-
 .control-group:after {
    content: " ";
    display: block;
@@ -181,4 +172,40 @@ body {
 
 .radioSection {
     float: left;
+}
+
+.configuration-section {
+    padding: 15px;
+    margin: 15px;
+}
+
+.configuration-header {
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
+
+.configuration-label {
+}
+
+.configuration-label-content {
+    display:inline-block;
+    float: left;
+    text-align: left;
+}
+
+.configuration-label-name {
+    font-weight: bold;
+}
+
+.configuration-label-description {
+    clear: left;
+    font-size: 0.8em;
+    font-style: normal;
+    font-weight: normal;
+}
+
+.configuration-control {
+    vertical-align:middle;
 }

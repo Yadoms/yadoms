@@ -2,6 +2,14 @@
  * Created by Nicolas on 01/03/14.
  */
 
+/**
+ * Create an int parameter handler
+ * @param i18nContext
+ * @param paramName
+ * @param content
+ * @param currentValue
+ * @constructor
+ */
 function IntParameterHandler(i18nContext, paramName, content, currentValue) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
@@ -31,6 +39,10 @@ function IntParameterHandler(i18nContext, paramName, content, currentValue) {
    this.content = content;
 }
 
+/**
+ * Get the DOM Object to insert
+ * @returns {string}
+ */
 IntParameterHandler.prototype.getDOMObject = function () {
    var input = "<input " +
                         "type=\"text\" " +
@@ -68,10 +80,18 @@ IntParameterHandler.prototype.getDOMObject = function () {
    return ConfigurationHelper.createControlGroup(self, input);
 };
 
+/**
+ * Get the param name
+ * @returns {string}
+ */
 IntParameterHandler.prototype.getParamName = function() {
   return this.paramName;
 };
 
+/**
+ * Get the current configuration in the form
+ * @returns {int}
+ */
 IntParameterHandler.prototype.getCurrentConfiguration = function () {
    this.value = parseInt($("input#" + this.uuid).val());
    return this.value;

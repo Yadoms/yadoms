@@ -12,7 +12,7 @@ function PageContainer() {
     * Array of pages
     * @type {Array}
     */
-   this.pages = new Array();
+   this.pages = [];
 }
 
 /**
@@ -27,11 +27,11 @@ PageContainer.prototype.getPage = function(pageId) {
    if (res.length != 1)
       return null;
    return res[0];
-}
+};
 
 PageContainer.prototype.addPage = function(page) {
    //we look if it isn't already in pageContainer
    var res = this.getPage(page.id);
    assert(res == null, "Page has already been added to the container");
    this.pages.push(page);
-}
+};

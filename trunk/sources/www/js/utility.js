@@ -33,7 +33,7 @@ function notify(message, gravity, timeout)
 function notifyInformation(message)
 {
    console.info(message);
-   return notify(message, 'information');
+   return notify(message, 'information', undefined);
 }
 
 /**
@@ -44,7 +44,7 @@ function notifyInformation(message)
    function notifyWarning(message)
 {
    console.warn(message);
-   return notify(message, 'warning');
+   return notify(message, 'warning', undefined);
 }
 
 /**
@@ -55,12 +55,14 @@ function notifyInformation(message)
 function notifySuccess(message)
 {
    console.info(message);
-   return notify(message, 'success');
+   return notify(message, 'success', undefined);
 }
 
 /**
  * Notify an Error message to the window using noty library
  * @param message message to display
+ * @param errorInfo
+ * @param timeout
  * @returns {noty}
  */
 function notifyError(message, errorInfo, timeout)
@@ -86,7 +88,7 @@ function parseBool(string, defaultValue) {
 /**
  * Create an unique identifier following RFC4122
  * https://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
- * @returns {unique UUID}
+ * @returns {string}
  */
 function createUUID() {
    // http://www.ietf.org/rfc/rfc4122.txt
@@ -99,10 +101,14 @@ function createUUID() {
    s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
    s[8] = s[13] = s[18] = s[23] = "-";
 
-   var uuid = s.join("");
-   return uuid;
+   return s.join("");
 }
 
+/**
+ * Check if the object is null or undefined
+ * @param object
+ * @returns {boolean}
+ */
 function isNullOrUndefined(object) {
    return ((object === undefined) || (object == null) || (object == "null"));
 }

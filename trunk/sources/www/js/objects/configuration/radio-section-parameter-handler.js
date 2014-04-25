@@ -2,6 +2,15 @@
  * Created by Nicolas on 01/03/14.
  */
 
+/**
+ * Create a radio section parameter handler
+ * @param objectToConfigure
+ * @param i18nContext
+ * @param paramName
+ * @param content
+ * @param currentValue
+ * @constructor
+ */
 function RadioSectionParameterHandler(objectToConfigure, i18nContext, paramName, content, currentValue) {
    assert(objectToConfigure !== undefined, "objectToConfigure must contain widget or plugin object");
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
@@ -10,7 +19,7 @@ function RadioSectionParameterHandler(objectToConfigure, i18nContext, paramName,
    assert(Object.keys(content.content).length >= 2, "You must have at least two sub sections into a radioSection");
 
    this.objectToConfigure = objectToConfigure;
-   this.configurationHandlers = new Array();
+   this.configurationHandlers = [];
    this.configurationValues = currentValue;
    this.name = content.name;
    this.paramName = paramName;
@@ -49,8 +58,11 @@ function RadioSectionParameterHandler(objectToConfigure, i18nContext, paramName,
    });
 }
 
+/**
+ * Get the DOM Object to insert
+ * @returns {string}
+ */
 RadioSectionParameterHandler.prototype.getDOMObject = function () {
-   var self = this;
 
    var input = "<div class=\"control-group configuration-radio-section well\" >" +
                   "<div class=\"configuration-header\" >" +
@@ -74,10 +86,18 @@ RadioSectionParameterHandler.prototype.getDOMObject = function () {
    return input;
 };
 
+/**
+ * Get the param name
+ * @returns {string}
+ */
 RadioSectionParameterHandler.prototype.getParamName = function() {
   return this.paramName;
 };
 
+/**
+ * Get the current configuration in the form
+ * @returns {object}
+ */
 RadioSectionParameterHandler.prototype.getCurrentConfiguration = function () {
    //we update configurationValues with content of DOM
    var self = this;

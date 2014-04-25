@@ -18,6 +18,10 @@ function LazyLoaderManager(modalPath) {
    this.modalPath = modalPath;
 }
 
+/**
+ * Load the modal with lazy loading if needed
+ * @param callback
+ */
 LazyLoaderManager.prototype.load = function (callback){
    assert(callback !== undefined, "callback must be defined");
    var self = this;
@@ -42,4 +46,4 @@ LazyLoaderManager.prototype.load = function (callback){
             notifyError("Unable to load modal " + self.modalPath);
          });
    }
-}
+};

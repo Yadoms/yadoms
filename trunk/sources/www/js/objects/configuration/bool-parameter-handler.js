@@ -2,6 +2,14 @@
  * Created by Nicolas on 01/03/14.
  */
 
+/**
+ * Classe permettant de gerer les parametre de type booleeen
+ * @param i18nContext
+ * @param paramName
+ * @param content
+ * @param currentValue
+ * @constructor
+ */
 function BoolParameterHandler(i18nContext, paramName, content, currentValue) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
@@ -27,48 +35,33 @@ function BoolParameterHandler(i18nContext, paramName, content, currentValue) {
    this.content = content;
 }
 
+/**
+ * Get the DOM Object to insert
+ * @returns {string}
+ */
 BoolParameterHandler.prototype.getDOMObject = function () {
    var self = this;
 
-   var s =
-      "<div class=\"control-group\">" +
-         "<span class=\"col-sm-5\"></span>" +
-         "<button id=\"" + self.uuid + "-help\" class=\"col-sm-1\" type=\"button\" class=\"btn btn-default\" data-container=\"body\">" +
-            "<i class=\"fa fa-question\"></i>" +
-         "</button>" +
-         "<div class=\"controls col-sm-6\">" +
-            "<div class=\"checkbox\">" +
-               "<label id=\"" + self.uuid + "\"  data-content=\"" + self.description + "\" " +
-                    "data-i18n=\"[data-content]" + self.i18nContext + self.paramName + ".description" + "\"" +
-               "\">" +
-                  "<input class=\"enable-validation\" type=\"checkbox\" ";
+   var input = "<input class=\"enable-validation\" type=\"checkbox\" ";
    if (this.value)
-      s +=          "checked ";
-   s +=           ">" +
-                  "<span data-i18n=\"" + self.i18nContext + self.paramName + ".name\" >" +
-                    self.name +
-                  "</span>" +
-                "</label>" +
-            "</div>" +
-         "</div>" +
-      "</div>" +
-      "<script>" +
-         "$(\"#" + self.uuid + "\").popover({\"placement\" : \"right\", \"trigger\": \"manual\"});\n" +
-         "$(\"button#" + self.uuid + "-help\").click(function () {\n" +
-         "$(\"#" + self.uuid + "\").popover(\"toggle\");\n" +
-         "setTimeout(function () {\n" +
-         "$(\"#" + self.uuid + "\").popover(\"hide\"); \n" +
-         "}, 5000);\n" +
-         "});\n" +
-      "</script>";
+      input +=          "checked ";
+   input +=           ">";
 
-   return s;
+   return ConfigurationHelper.createControlGroup(self, input, true, "checkbox");
 };
 
+/**
+ * Get the param name
+ * @returns {string}
+ */
 BoolParameterHandler.prototype.getParamName = function() {
   return this.paramName;
 };
 
+/**
+ * Get the current configuration in the form
+ * @returns {bool}
+ */
 BoolParameterHandler.prototype.getCurrentConfiguration = function () {
    this.value = parseBool($("label#" + this.uuid).find("input").prop("checked"));
    return this.value;

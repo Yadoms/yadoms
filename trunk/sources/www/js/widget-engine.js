@@ -37,7 +37,7 @@ function initializeWidgetEngine() {
    $("#btn-add-widget").click(function() {
       //we make something only if there is some pages
       if (pageContainer.pages.length == 0) {
-         notifyError("You must have at least one page to add widget");
+         notifyError("You must have at least one page to add widget", undefined, undefined);
          return;
       }
 
@@ -76,7 +76,7 @@ function initializePageEvents(page) {
    //we ask for the last event to ask only those occurs after this one
    $.getJSON("/rest/eventLogger/last")
       .done(requestLastEventLoggerDone())
-      .fail(function() { notifyError("Unable to get event log"); });
+      .fail(function() { notifyError("Unable to get event log", undefined, undefined); });
 }
 
 function requestLastEventLoggerDone() {
@@ -181,7 +181,7 @@ function movePage(pageId, direction) {
          dataType: "json"
       })
       .done(savePageMoveDone(pageId, nearestId, direction))
-      .fail(function() {notifyError("Unable to save page position")});
+      .fail(function() {notifyError("Unable to save page position", undefined, undefined)});
    }
 }
 
@@ -190,7 +190,7 @@ function savePageMoveDone(pageId, nearestId, direction) {
       //we parse the json answer
       if (data.result != "true")
       {
-         notifyError("Error during saving page position", JSON.stringify(data));
+         notifyError("Error during saving page position", JSON.stringify(data), undefined);
          console.error(data.message);
          return;
       }
@@ -224,7 +224,7 @@ function requestPages()
    //we get pages
    $.getJSON("/rest/page")
       .done(requestPageDone())
-      .fail(function() { notifyError("Unable to get Pages"); });
+      .fail(function() { notifyError("Unable to get Pages", undefined, undefined); });
 }
 
 /**
@@ -355,7 +355,7 @@ function requestWidgets(page) {
 
    $.getJSON("/rest/page/" + page.id + "/widget")
       .done(requestWidgetsDone())
-      .fail(function() {notifyError("Unable to get Widgets")});
+      .fail(function() {notifyError("Unable to get Widgets", undefined, undefined)});
 }
 
 /**
@@ -368,7 +368,7 @@ function requestWidgetsDone() {
       //we parse the json answer
       if (data.result != "true")
       {
-         notifyError("Error during requesting widgets", JSON.stringify(data));
+         notifyError("Error during requesting widgets", JSON.stringify(data), undefined);
          return;
       }
 
@@ -720,7 +720,7 @@ function periodicUpdateTask() {
          //we parse the json answer
          if (data.result != "true")
          {
-            notifyError("Error during requesting new logs events", JSON.stringify(data));
+            notifyError("Error during requesting new logs events", JSON.stringify(data), undefined);
             return;
          }
 

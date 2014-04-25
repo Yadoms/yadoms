@@ -4,8 +4,9 @@
 
 /**
  * Creates an instance of LazyLoaderManager
+ * @param objectToConfigure
+ * @param $domContainer
  * @constructor
- * @param modalPath
  */
 function ConfigurationManager(objectToConfigure, $domContainer) {
    assert(objectToConfigure !== undefined, "objectToConfigure must contain widget or plugin object");
@@ -14,8 +15,7 @@ function ConfigurationManager(objectToConfigure, $domContainer) {
    this.objectToConfigure = objectToConfigure;
    this.configurationSchema = objectToConfigure.package.configurationSchema;
    this.configurationValues = objectToConfigure.configuration;
-   this.$domContainer = $domContainer;
-   this.configurationHandlers = new Array();
+   this.configurationHandlers = [];
 
    var self = this;
 
@@ -32,7 +32,11 @@ function ConfigurationManager(objectToConfigure, $domContainer) {
    $domContainer.append(this.getDOMObject());
 }
 
-ConfigurationManager.prototype.getDOMObject = function() {
+/**
+ * Get the DOM Object to insert
+ * @returns {string}
+ */
+ConfigurationManager.prototype.getDOMObject = function () {
    var result = "";
    $.each(this.configurationHandlers, function (key, value) {
       result += value.getDOMObject();
@@ -41,8 +45,12 @@ ConfigurationManager.prototype.getDOMObject = function() {
 
    result += "";
    return result;
-}
+};
 
+/**
+ * Get the current configuration in the form
+ * @returns {object}
+ */
 ConfigurationManager.prototype.getCurrentConfiguration = function () {
    //we update configurationValues with content of DOM
    this.configurationValues = {};
@@ -51,4 +59,4 @@ ConfigurationManager.prototype.getCurrentConfiguration = function () {
       self.configurationValues[value.getParamName()] = value.getCurrentConfiguration();
    });
    return this.configurationValues;
-}
+};
