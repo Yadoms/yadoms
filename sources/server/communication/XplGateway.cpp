@@ -41,14 +41,14 @@ namespace communication {
             case kXplMessageReceived:
                {
                   // Xpl message was received
-                  shared::xpl::CXplMessage xplMessage = popEvent<shared::xpl::CXplMessage>();
+                  shared::xpl::CXplMessage xplMessage = getEventData<shared::xpl::CXplMessage>();
                   OnXplMessageReceived(xplMessage);
                   break;
                }
 
             case kXplSendMessage:
                {
-                  command::CDeviceCommand command = popEvent<command::CDeviceCommand>();
+                  command::CDeviceCommand command = getEventData<command::CDeviceCommand>();
                   OnSendDeviceCommand(command, xplService);
                   break;
                }

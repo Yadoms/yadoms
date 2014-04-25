@@ -24,7 +24,8 @@ CSmsDialer::~CSmsDialer()
 enum
 {
    kEvtXplMessage = shared::event::kUserFirstId,   // Always start from shared::event::CEventHandler::kUserFirstId
-   kEvtUpdateConfiguration
+   kEvtUpdateConfiguration,
+   kEvtTimerCheckForIncommingSms
 };
 
 // XPL device ID
@@ -60,22 +61,25 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
       onXplMessageReceived(temp);
 
       //TODO gérer une machine d'état pour essayer de se connecter réglièrement, et traiter les envoi/réceptions que si connecté
+
+      // Timer used to periodically check for incomming SMS
+      createTimer(kEvtTimerCheckForIncommingSms, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(30));
+
       while(1)
       {
          // Wait for an event
-         static const boost::posix_time::time_duration incommingSmsPeriod(boost::posix_time::seconds(20));
-         switch(waitForEvents(incommingSmsPeriod))
+         switch(waitForEvents(boost::date_time::pos_infin))
          {
          case kEvtXplMessage:
             {
                // Xpl message was received
-               onXplMessageReceived(popEvent<shared::xpl::CXplMessage>());
+               onXplMessageReceived(getEventData<shared::xpl::CXplMessage>());
                break;
             }
          case kEvtUpdateConfiguration:
             {
                // Configuration was updated
-               std::string newConfiguration = popEvent<std::string>();
+               std::string newConfiguration = getEventData<std::string>();
                YADOMS_LOG(debug) << "configuration was updated...";
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEvtUpdateConfiguration shouldn't be generated
 
@@ -90,7 +94,7 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
 
                break;
             }
-         case shared::event::kTimeout:
+         case kEvtTimerCheckForIncommingSms:
             {
                processIncommingSMS();
                break;
@@ -98,7 +102,6 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
          default:
             {
                YADOMS_LOG(error) << "Unknown message id";
-               popEvent();    // We need to consume this unknown event
                break;
             }
          }
