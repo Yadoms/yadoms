@@ -5,5 +5,7 @@
          "name" : "Périphérique interrupteur",
          "description" : "Périphérique à émuler"
       }
-   }
+   },
+   "errorDuringSendingCommand" : "Erreur pendant l'envoi de la commande",
+   "errorDuringGettingDeviceInformation" : "Erreur pendant la recupérationd d'informations sur le device"
 }

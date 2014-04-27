@@ -6,8 +6,6 @@ widgetViewModelCtor =
  */
 function SwitchViewModel() {
    //observable data
-   //this.data = ko.observable({ temperature: 24, battery: 80 });
-
    this.command = ko.observable("on");
 
    //widget identifier
@@ -32,12 +30,10 @@ function SwitchViewModel() {
                //we parse the json answer
                if (data.result != "true")
                {
-                  notifyError("Error during sending command", JSON.stringify(data));
-                  return;
+                  notifyError($.t("switch:errorDuringSendingCommand"), JSON.stringify(data));
                }
-
             })
-            .fail(function() {notifyError("Error during sending command"); });
+            .fail(function() {notifyError($.t("switch:errorDuringSendingCommand")); });
       }
    };
 
@@ -70,15 +66,12 @@ function SwitchViewModel() {
                //we parse the json answer
                if (data.result != "true")
                {
-                  //TODO : i18N
-                  notifyError($.t("I18N"), JSON.stringify(data));
+                  notifyError($.t("switch:errorDuringGettingDeviceInformation"), JSON.stringify(data));
                   return;
                }
                self.switchText(data.data.name);
-
             })
-            //TODO : i18N
-            .fail(function() {notifyError($.t("I18N"));});
+            .fail(function() {notifyError($.t("switch:errorDuringGettingDeviceInformation"));});
       }
    };
 
@@ -86,6 +79,7 @@ function SwitchViewModel() {
     * Dispatch the data to the viewModel
     * @deviceId device identifier which make the values
     * @param data data to dispatch
+    * @param deviceId
     */
    this.dispatch = function(deviceId, data) {
       var self = this;
@@ -99,14 +93,14 @@ function SwitchViewModel() {
                   case "command" :
                      self.command(keyword.value);
                      break;
-               };
+               }
             });
          }
       }
    };
 
    this.getDevicesToListen = function() {
-      var result = new Array();
+      var result = [];
 
       if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
          result.push(this.widget.configuration.device);

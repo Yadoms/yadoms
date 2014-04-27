@@ -29,7 +29,7 @@ test( "createUUID", function() {
    var uuid = createUUID();
    ok (uuid.length == 36, "uuid length" );
    ok (((uuid[8] == "-") && (uuid[13] == "-") && (uuid[18] == "-") && (uuid[23] == "-")), "uuid pattern" );
-   for (i = 1; i <= 1000; i++)
+   for (var i = 1; i <= 1000; i++)
       ok (createUUID() != createUUID(), "uuid unique test n° " + i);
 });
 

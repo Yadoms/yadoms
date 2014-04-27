@@ -130,17 +130,11 @@
 
    /**
     * Array of pages
-    * @type {Array}
+    * @type {PageContainer}
     */
    var pageContainer = new PageContainer();
 
    var modals = {};
-
-   /**
-    * Timer used for long press detection
-    * @type {Timer}
-    */
-   var tapHoldTimer;
 
    /**
     * Contains all Ctor of all loaded viewModels
@@ -176,29 +170,6 @@
       $("#btn-show-qrcode").click(function() {
          modals.qrCode.load(function() {$('#qrcode-modal').modal();});
       });
-
-      /**
-       * Enter in customization with long press on the document
-       */
-      /*
-      $("#tabContainer").click(function() {
-         //if we are in customization and it's not the first release click (after a long click to enter in customization) we exit customization
-         if (customization && !waitForRealeaseButtonAfterEnteringCustomization)
-            exitCustomization();
-
-         //in all case we clear the release flag
-         waitForRealeaseButtonAfterEnteringCustomization = false;
-      }).mouseup(function() {
-         clearTimeout(tapHoldTimer);
-
-      }).mousedown(function() {
-        // Set timeout
-        tapHoldTimer = window.setTimeout(function() {
-           //we indicate that we expect on click that is not a query to exit customization
-           waitForRealeaseButtonAfterEnteringCustomization = true;
-           enterCustomization();
-        }, longPressDelayToEnterInCustomizationMode);
-      });*/
 
       /**
        * Exit customization pressed esc key
