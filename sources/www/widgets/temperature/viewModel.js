@@ -6,9 +6,8 @@ widgetViewModelCtor =
  */
 function TemperatureViewModel() {
    //observable data
-   //this.data = ko.observable({ temperature: 24, battery: 80 });
-   this.temperature = ko.observable(24);
-   this.battery = ko.observable(80);
+   this.temperature = ko.observable(25);
+   this.battery = ko.observable(100);
 
    //widget identifier
    this.widget = null;
@@ -25,6 +24,7 @@ function TemperatureViewModel() {
     * Dispatch the data to the viewModel
     * @deviceId device identifier which make the values
     * @param data data to dispatch
+    * @param deviceId
     */
    this.dispatch = function(deviceId, data) {
       var self = this;
@@ -40,14 +40,14 @@ function TemperatureViewModel() {
                   case "battery" :
                      self.battery(keyword.value);
                      break;
-               };
+               }
             });
          }
       }
    };
 
    this.getDevicesToListen = function() {
-      var result = new Array();
+      var result = [];
       if ((this.widget.configuration !== undefined) && (this.widget.configuration.device !== undefined)) {
          result.push(this.widget.configuration.device);
       }

@@ -8,10 +8,6 @@
                    <h4 class="modal-title" data-i18n="modals.configure-widget.title">Widget configuration</h4>
               </div>
               <div class="modal-body form-group">
-                  <div class="progress progress-striped active">
-                     <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-                     </div>
-                  </div>
               </div>
               <div class="modal-footer">
                  <div class="form-actions">
@@ -36,7 +32,7 @@
       widgetToConfigure = page.getWidget(widgetId);
       assert(widgetToConfigure != null, "widget Id doesn't exit in the page");
 
-      var $modalBody = $('div#configure-widget-modal').find(".modal-body");
+      var $modalBody = $('div#configure-widget-modal .modal-body');
       $modalBody.empty();
       var configMgr = new ConfigurationManager(widgetToConfigure, $modalBody);
 
@@ -47,8 +43,7 @@
       $modalBody.find("input,select,textarea").jqBootstrapValidation({
          preventSubmit: true,
          submitError: function($form, event, errors) {
-            debugger;
-            //nothing to do
+            console.warn("Unable to validate form: " + errors);
          },
          submitSuccess: function($form, event) {
             event.preventDefault();
@@ -69,10 +64,18 @@
                   return;
                }
 
-               //TODO : add try catch block
-               //we notify the widget its configuration has changed
-               if (widgetToConfigure.viewModel.configurationChanged !== undefined)
-                  widgetToConfigure.viewModel.configurationChanged();
+              //we notify that configuration has changed
+              try
+              {
+                 if (widgetToConfigure.viewModel.configurationChanged !== undefined)
+                    widgetToConfigure.viewModel.configurationChanged();
+              }
+              catch (e)
+              {
+                 notifyWarning("The widget " + widget.name + " has generated an exception during call configurationChanged() method");
+                 console.warn(e);
+              }
+
             })
             .fail(function(widgetName) { return function() {notifyError($.t("modals.configure-widget.errorDuringModifyingWidgetNamed", {"widgetType" : widgetName}));};}(widgetToConfigure.name))
             .always(function() {

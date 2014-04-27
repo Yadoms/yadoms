@@ -1,7 +1,11 @@
 {
    "customization" : {
       "addNewPage" : "Add a new page",
-      "addNewWidget" : "Add a new widget"
+      "addNewWidget" : "Add a new widget",
+      "moveToLeft" : "Move to left",
+      "moveToRight" : "Move to right",
+      "rename" : "Rename",
+      "delete" : "Delete"
    },
    "mainPage" : {
       "menu" : {
@@ -9,6 +13,23 @@
          "checkForUpdate" : "Check for Update",
          "restart" : "Restart",
          "shutdown" : "Shutdown"
+      },
+      "actions" : {
+         "loadingPages" : "Loading Pages ...",
+         "loadingWidgetsOfPage" : "Loading widgets of __pageName__ page ..."
+      },
+      "errors" : {
+         "unableToAddWidgetWithoutPage" : "You must have at least one page to add widget",
+         "unableToGetEventLog" : "Unable to get event log",
+         "errorDuringRequestingLastEventLog" : "Error during requesting last event log",
+         "errorDuringSavingPagePosition" : "Error during saving page position",
+         "unableToGetPages" : "Unable to get pages",
+         "unableToGetWidgets" : "Unable to get Widgets",
+         "errorDuringRequestingPages" : "Error during requesting pages",
+         "errorDuringRequestingWidgets" : "Error during requesting widgets",
+         "unableToGetViewOfTheWidget" : "Unable to get view of the __widgetName__ widget",
+         "unableToGetViewmodelOfTheWidget" : "Unable to get viewmodel of the __widgetName__ widget",
+         "unableToGetConfigurationOfTheWidget" : "Unable to get configuration of the __widgetName__ widget"
       }
    },
    "modals" : {
@@ -68,6 +89,9 @@
             "maxValueExceeded" : "The value can't be higher than __maxValue__",
             "minValueExceeded" : "The value can't be lower than __minValue__"
          }
+      },
+      "errors" : {
+         "widgetHasGeneratedAnExceptionDuringCallingMethod" : "The widget __widgetName__ has generated an exception calling __methodName__()"
       }
    },
    "eventLogger" : {

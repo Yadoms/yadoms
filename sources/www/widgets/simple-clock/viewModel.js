@@ -51,7 +51,7 @@ function SimpleClockViewModel() {
 
    this.getDevicesToListen = function() {
       //we are not linked to any device
-      return new Array();
+      return [];
    }
 
  };

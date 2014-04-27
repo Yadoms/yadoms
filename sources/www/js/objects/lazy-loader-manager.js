@@ -33,7 +33,7 @@ LazyLoaderManager.prototype.load = function (callback){
    {
       $.ajax(self.modalPath)
          .done(function(data) {
-            $data = $(data);
+            var $data = $(data);
             $data.i18n();
             //we add the modal to the body
             $('body').append($data);

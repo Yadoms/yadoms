@@ -60,6 +60,25 @@ function notifySuccess(message)
 
 /**
  * Notify an Error message to the window using noty library
+ * @param message
+ * @returns {noty}
+ */
+function notifyError(message) {
+   return notifyError(message, undefined, undefined);
+}
+
+
+/**
+ * Notify an Error message to the window using noty library
+ * @param message
+ * @param errorInfo
+ */
+function notifyError(message, errorInfo) {
+   return notifyError(message, errorInfo, undefined);
+}
+
+/**
+ * Notify an Error message to the window using noty library
  * @param message message to display
  * @param errorInfo
  * @param timeout

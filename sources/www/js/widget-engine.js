@@ -37,7 +37,7 @@ function initializeWidgetEngine() {
    $("#btn-add-widget").click(function() {
       //we make something only if there is some pages
       if (pageContainer.pages.length == 0) {
-         notifyError("You must have at least one page to add widget", undefined, undefined);
+         notifyError($.t("mainPage.errors.unableToAddWidgetWithoutPage"));
          return;
       }
 
@@ -76,7 +76,7 @@ function initializePageEvents(page) {
    //we ask for the last event to ask only those occurs after this one
    $.getJSON("/rest/eventLogger/last")
       .done(requestLastEventLoggerDone())
-      .fail(function() { notifyError("Unable to get event log", undefined, undefined); });
+      .fail(function() { notifyError($.t("mainPage.errors.unableToGetEventLog")); });
 }
 
 function requestLastEventLoggerDone() {
@@ -84,7 +84,7 @@ function requestLastEventLoggerDone() {
       //we parse the json answer
       if (data.result != "true")
       {
-         notifyError("Error during requesting Last event log", JSON.stringify(data));
+         notifyError($.t("mainPage.errors.errorDuringRequestingLastEventLog"), JSON.stringify(data));
          return;
       }
       //we save the id of the last event
@@ -181,7 +181,7 @@ function movePage(pageId, direction) {
          dataType: "json"
       })
       .done(savePageMoveDone(pageId, nearestId, direction))
-      .fail(function() {notifyError("Unable to save page position", undefined, undefined)});
+      .fail(function() {notifyError($.t("mainPage.errors.errorDuringSavingPagePosition"))});
    }
 }
 
@@ -190,7 +190,7 @@ function savePageMoveDone(pageId, nearestId, direction) {
       //we parse the json answer
       if (data.result != "true")
       {
-         notifyError("Error during saving page position", JSON.stringify(data), undefined);
+         notifyError($.t("mainPage.errors.errorDuringSavingPagePosition"), JSON.stringify(data));
          console.error(data.message);
          return;
       }
@@ -220,11 +220,11 @@ function savePageMoveDone(pageId, nearestId, direction) {
 function requestPages()
 {
    startTime = new Date();
-   loadPagesNotification = notify("Loading pages ...", "information", 0);
+   loadPagesNotification = notifyInformation($.t("mainPage.actions.loadingPages"));
    //we get pages
    $.getJSON("/rest/page")
       .done(requestPageDone())
-      .fail(function() { notifyError("Unable to get Pages", undefined, undefined); });
+      .fail(function() { notifyError($.t("mainPage.errors.unableToGetPages")); });
 }
 
 /**
@@ -234,8 +234,6 @@ function requestPages()
 function requestPageDone()
 {
    return function( data ) {
-       //console.log('requestPageDone()' + (new Date() - startTime));
-
       if (loadPagesNotification != null) {
          loadPagesNotification.close();
          loadPagesNotification = null;
@@ -244,7 +242,7 @@ function requestPageDone()
       //we parse the json answer
       if (data.result != "true")
       {
-         notifyError("Error during requesting pages", JSON.stringify(data));
+         notifyError($.t("mainPages.errors.errorDuringRequestingPages"), JSON.stringify(data));
          return;
       }
 
@@ -273,15 +271,18 @@ function addPageToIHM(page) {
          "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" +
          "<span>" + page.name + "</span>" +
          "<div class=\"pageCustomizationToolbar btn-group btn-group-sm customization-item pull-right hidden\">" +
-         "<button type=\"button\" class=\"btn btn-default move-left-page\" title=\"Move to left\"><i class=\"glyphicon glyphicon-arrow-left\"></i></button>" +
-         "<button type=\"button\" class=\"btn btn-default move-right-page\" title=\"Move to right\"><i class=\"glyphicon glyphicon-arrow-right\"></i></button>" +
-         "<button type=\"button\" class=\"btn btn-default rename-page\" title=\"Rename\"><i class=\"glyphicon glyphicon-pencil\"></i></button>" +
-         "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\"><i class=\"glyphicon glyphicon-trash\"></i></button>" +
+         "<button type=\"button\" class=\"btn btn-default move-left-page\" title=\"Move to left\" data-i18n=\"[title]customization.moveToLeft\"><i class=\"glyphicon glyphicon-arrow-left\"></i></button>" +
+         "<button type=\"button\" class=\"btn btn-default move-right-page\" title=\"Move to right\" data-i18n=\"[title]customization.moveToRight\"><i class=\"glyphicon glyphicon-arrow-right\"></i></button>" +
+         "<button type=\"button\" class=\"btn btn-default rename-page\" title=\"Rename\" data-i18n=\"[title]customization.rename\"><i class=\"glyphicon glyphicon-pencil\"></i></button>" +
+         "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\" data-i18n=\"[title]customization.delete\"><i class=\"glyphicon glyphicon-trash\"></i></button>" +
          "</div>" +
          "</a>" +
          "</li>");
 
    page.$tab = container.find("li[page-id=\"" + page.id + "\"]");
+
+   //i18n of page tab
+   page.$tab.i18n();
 
    //page creation
    container = $("div#tabContainer").find(".tab-content").append(
@@ -311,9 +312,8 @@ function addPageToIHM(page) {
             }
             catch (e)
             {
-               console.log("the widget " + widget.name + " has generated an exception :");
-               console.log(e);
-               notifyWarning("The widget " + widget.name + " has generated an exception");
+               notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.name, methodName : 'resized'}));
+               console.warn(e);
             }
          },
          stop: function(e, ui, $widget) {
@@ -325,7 +325,7 @@ function addPageToIHM(page) {
             }
             catch (e)
             {
-               notifyWarning("The widget " + widget.name + " has generated an exception");
+               notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.name, methodName : 'resized'}));
                console.warn(e);
             }
          }
@@ -348,14 +348,14 @@ function addPageToIHM(page) {
 
 function requestWidgets(page) {
    //we request widgets for the first page
-   loadWidgetsNotification = notify("Loading widgets for page " + page.name + " ...", "information", 0);
+   loadWidgetsNotification = notifyInformation($.t("mainPage.actions.loadingWidgetsOfPage", {pageName : page.name}));
 
    //we save the information that the widgets for this page have already been asked
    page.loaded = true;
 
    $.getJSON("/rest/page/" + page.id + "/widget")
       .done(requestWidgetsDone())
-      .fail(function() {notifyError("Unable to get Widgets", undefined, undefined)});
+      .fail(function() {notifyError($.t("mainPage.errors.unableToGetWidgets"))});
 }
 
 /**
@@ -364,11 +364,10 @@ function requestWidgets(page) {
  */
 function requestWidgetsDone() {
    return function(data) {
-      //console.log('requestWidgetsDone()' + (new Date() - startTime));
       //we parse the json answer
       if (data.result != "true")
       {
-         notifyError("Error during requesting widgets", JSON.stringify(data), undefined);
+         notifyError($.t("mainPage.errors.errorDuringRequestingWidgets"), JSON.stringify(data));
          return;
       }
 
@@ -383,7 +382,7 @@ function requestWidgetsDone() {
       }
 
       //we list all kind of widget we have
-      var widgetTypes = new Array();
+      var widgetTypes = [];
       $.each(data.data.widget, function(index, value) {
          var w = new Widget(value.id, value.idPage, value.name, value.sizeX, value.sizeY, value.positionX, value.positionY, value.configuration);
          widgetArrayForLoading.push(w);
@@ -399,12 +398,11 @@ function requestWidgetsDone() {
 }
 
 function askForWidgetPackage(packageName) {
-   //console.log('askForWidgetPackage(' + packageName + ')' + (new Date() - startTime));
    widgetPackages[packageName] = new WidgetPackage();
    //we ask for the view
    $.get("widgets/" + packageName + "/view.html")
       .done(getWidgetViewDone(packageName))
-      .fail(function(packageName) { return function() {notifyError("Unable to get view of the widget package " + packageName) }}(packageName));
+      .fail(function(packageName) { return function() {notifyError($.t("mainPage.errors.unableToGetViewOfTheWidget", {widgetName : packageName}));}}(packageName));
 }
 
 /**
@@ -414,7 +412,6 @@ function askForWidgetPackage(packageName) {
  */
 function getWidgetViewDone(packageName) {
    return function( data ) {
-      //console.log('getWidgetViewDone(' + packageName + ')' + (new Date() - startTime));
       $("div#templates").append(data);
       //we indicate that the view for this king of widget has been lazy loaded
       widgetPackages[packageName].viewHasBeenDownloaded = true;
@@ -428,19 +425,10 @@ function getWidgetViewDone(packageName) {
 }
 
 function askViewModelCtor(packageName) {
-   //console.log('askViewModelCtor(' + packageName + ')' + (new Date() - startTime));
    widgetViewModelCtor = null;
-   try
-   {
-      $.getScript("widgets/" + packageName + "/viewModel.js")
+   $.getScript("widgets/" + packageName + "/viewModel.js")
          .done(getWidgetViewModelConstructorDone(packageName))
-         .fail(function(packageName) { return function() {notifyError("Unable to get viewModel of the widget package " + packageName)}}(packageName));
-   }
-   catch (e)
-   {
-      notifyWarning("The widget " + packageName + " has generated an exception");
-      console.warn(e);
-   }
+         .fail(function(packageName) { return function() {notifyError($.t("mainPage.errors.unableToGetViewmodelOfTheWidget", {widgetName : packageName}));}}(packageName));
 }
 
 /**
@@ -452,7 +440,6 @@ function getWidgetViewModelConstructorDone(packageName) {
    //viewModel.js has been executed
    //noinspection JSUnusedLocalSymbols
    return function(data, textStatus, jqxhr) {
-      //console.log('getWidgetViewModelConstructorDone(' + packageName + ')' + (new Date() - startTime));
       //we save the ctor in the map
       widgetPackages[packageName].viewModelCtor = widgetViewModelCtor;
 
@@ -463,10 +450,9 @@ function getWidgetViewModelConstructorDone(packageName) {
 
 function askForPackageInformation(packageName)
 {
-   //console.log('askForPackageInformation(' + packageName + ')' + (new Date() - startTime));
    $.getJSON( "widgets/" + packageName + "/package.json")
       .done(getWidgetPackageInformationDone(packageName))
-      .fail(function(packageName) { return function() {notifyError("Unable to get the configuration of the widget package " + packageName)}}(packageName));
+      .fail(function(packageName) { return function() {notifyError($.t("mainPage.errors.unableToGetConfigurationOfTheWidget", {widgetName : packageName}));}}(packageName));
 }
 
 /**
@@ -477,7 +463,6 @@ function askForPackageInformation(packageName)
 function getWidgetPackageInformationDone(packageName)
 {
    return function( data ) {
-      //console.log('getWidgetPackageInformationDone(' + packageName + ')' + (new Date() - startTime));
       //we set the min and max size if they are defined
       assert(data !== undefined, "Configuration of widget must be defined");
 
@@ -486,7 +471,7 @@ function getWidgetPackageInformationDone(packageName)
 
       //all data for this package have been downloaded
       //we look for all widgets of this kind
-      i = widgetArrayForLoading.length - 1;
+      var i = widgetArrayForLoading.length - 1;
       while (i >= 0) {
          var widget = widgetArrayForLoading[i];
          if (widget.name == packageName) {
@@ -497,16 +482,6 @@ function getWidgetPackageInformationDone(packageName)
       }
       //we have finished to load every widgets on this page
       if (widgetArrayForLoading.length == 0) {
-
-         /*
-         //Warning : This part is used to manage customization mode with long click but
-         //it introduce a bug with button-toggle which never receive their event and the toggle don't work
-         //we prevent from click on widget to be propagated on the rest of the window
-         $(".widget").click(function(e) {
-            //if (!waitForRealeaseButtonAfterEnteringCustomization)
-            //   e.stopPropagation();
-         });
-         */
 
          //we close the noty
          if (loadWidgetsNotification != null) {
@@ -524,7 +499,6 @@ function getWidgetPackageInformationDone(packageName)
  * @param widget widget to add
  */
 function addWidgetToIHM(widget) {
-   //console.log('addWidgetToIHM(' + widget.id + ')' + (new Date() - startTime));
    if (widgetPackages[widget.name] === undefined)
       widgetPackages[widget.name] = new WidgetPackage();
 
@@ -534,7 +508,7 @@ function addWidgetToIHM(widget) {
       widgetArrayForLoading.push(widget);
       $.get("widgets/" + widget.name + "/view.html")
          .done(getWidgetViewDone(widget.name))
-         .fail(function(widget) { return function() {notifyError("Unable to get view of the widget " + widget.name) }}(widget));
+         .fail(function(widget) { return function() {notifyError($.t("mainPage.errors.unableToGetViewOfTheWidget", {widgetName : widget.name})); }}(widget));
    }
    else {
       //if we haven't yet downloaded the viewModelCtor we ask for lazy load
@@ -569,7 +543,7 @@ function createGridsterWidget(widget) {
    var page = pageContainer.getPage(widget.idPage);
    assert(page != null, "page doesn't exist in pageContainer");
 
-   return  page.gridster.add_widget(
+   var item = page.gridster.add_widget(
       "<li class=\"widget\" page-id=\"" + widget.idPage + "\" widget-id=\"" + widget.id +"\">" +
          "<div class=\"widgetCustomizationToolbar customization-item hidden\">" +
             "<div class=\"btn-group btn-group-sm\">" +
@@ -579,6 +553,9 @@ function createGridsterWidget(widget) {
          "</div>" +
          "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + widget.name + "-template' }\"/>" +
          "</li>", widget.sizeX, widget.sizeY, widget.positionX, widget.positionY);
+
+   item.i18n();
+   return item;
 }
 
 /**
@@ -606,7 +583,6 @@ function finalizeWidgetCreation(widget) {
       widget.$gridsterWidget.addClass("liWidgetCustomization");
    }
 
-   //console.log('before binding(' + widget.id + ')' + (new Date() - startTime));
    //we apply binding to the view
    ko.applyBindings(widget.viewModel, widget.$div[0]);
    //we add minimum dimension constraint to the gridster widget
@@ -622,29 +598,46 @@ function finalizeWidgetCreation(widget) {
    {
       //min dimension is set
       assert((widget.package.dimensions.max.x !== undefined) && (widget.package.dimensions.max.y !== undefined), "You can't set only one axe of the widget maximum dimension");
-      var page = pageContainer.getPage(widget.idPage);
-      assert(page != null, "PageId not found");
       page.gridster.set_widget_max_size(widget.$gridsterWidget, [widget.package.dimensions.max.x, widget.package.dimensions.max.y]);
    }
 
    //we initialize the widget
-   //TODO : separate widget method calls into multiple try catch blocks
    try
    {
       if (widget.viewModel.initialize !== undefined)
          widget.viewModel.initialize(widget);
-
-      if (widget.viewModel.configurationChanged !== undefined)
-         widget.viewModel.configurationChanged(widget);
-
-      if (widget.viewModel.resized !== undefined)
-         widget.viewModel.resized();
    }
    catch (e)
    {
-      notifyWarning("The widget " + widget.name + " has generated an exception");
+      notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.name, methodName : 'initialize'}));
       console.warn(e);
    }
+
+   //we notify that configuration has changed
+   try
+   {
+      if (widget.viewModel.configurationChanged !== undefined)
+         widget.viewModel.configurationChanged();
+   }
+   catch (e)
+   {
+      notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.name, methodName : 'configurationChanged'}));
+      console.warn(e);
+   }
+
+   //we notify that widget has been resized
+   try
+   {
+      if (widget.viewModel.resized !== undefined) {
+         widget.viewModel.resized();
+      }
+   }
+   catch (e)
+   {
+      notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.name, methodName : 'resized'}));
+      console.warn(e);
+   }
+
    initializeWidgetEvents(widget);
 
    widget.$div.i18n();
@@ -720,7 +713,7 @@ function periodicUpdateTask() {
          //we parse the json answer
          if (data.result != "true")
          {
-            notifyError("Error during requesting new logs events", JSON.stringify(data), undefined);
+            notifyError("Error during requesting new logs events", JSON.stringify(data));
             return;
          }
 
@@ -740,8 +733,7 @@ function periodicUpdateTask() {
          //we ask for widget's devices
          updateWidgets();
       })
-      .fail(function(jqxhr, textStatus, error) {
-         var err = textStatus + ", " + error;
+      .fail(function() {
          if (serverIsOnline)
          {
             //we indicate that server has passed offline
