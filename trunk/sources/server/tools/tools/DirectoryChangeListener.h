@@ -14,6 +14,7 @@ namespace tools
    //--------------------------------------------------------------
    /// \brief	this class is used to monitor a directory for changes 
    //--------------------------------------------------------------
+   //TODO : décider si on garde ou non cette classe, sachant qu'elle n'est pas encore fonctionnelle sous Mac, et que les événements "fichier modifiés" ne sont pas remontés sous linux, et sachant qu'on en aura probablement pas besoin.
    class CDirectoryChangeListener : protected shared::CThreadBase
    {
    public:
