@@ -309,12 +309,12 @@ void CSupervisor::doWork()
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception " << e.what();
       if(pDataProvider)
-         pDataProvider->getEventLoggerRequester()->addEvent(database::entities::kYadomsCash, "yadoms",  e.what());
+         pDataProvider->getEventLoggerRequester()->addEvent(database::entities::kYadomsCrash, "yadoms",  e.what());
    }
    catch (...)
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception.";
       if(pDataProvider)
-         pDataProvider->getEventLoggerRequester()->addEvent(database::entities::kYadomsCash, "yadoms",  "unknwon error");
+         pDataProvider->getEventLoggerRequester()->addEvent(database::entities::kYadomsCrash, "yadoms",  "unknwon error");
    }
 }
