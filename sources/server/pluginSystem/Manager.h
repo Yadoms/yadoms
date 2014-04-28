@@ -12,6 +12,7 @@
 #include "ManagerEvent.h"
 #include "database/IPluginRequester.h"
 #include "database/IPluginEventLoggerRequester.h"
+#include "database/IEventLoggerRequester.h"
 #include <shared/StringExtension.h>
 #include <shared/event/EventHandler.hpp>
 
@@ -35,13 +36,19 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Constructor (protected, use newManager to create instance)
       /// \param [in]   initialDir initial plugins search directory
-      /// \param [in]   database database link
-      /// \param [in]   eventLoggerDatabase: database link for events on plugins
+      /// \param [in]   pluginDBTable           Database link to plugin
+      /// \param [in]   pluginLoggerDBTable     Database link to plugin events
+      /// \param [in]   mainLoggerDBTable       Database link to main events logger
       /// \param [in]   supervisor     the supervisor event handler
       /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
       //--------------------------------------------------------------
-      CManager(const std::string & initialDir, boost::shared_ptr<database::IPluginRequester> database, boost::shared_ptr<database::IPluginEventLoggerRequester> eventLoggerDatabase,
-         shared::event::CEventHandler& supervisor, int pluginManagerEventId);
+      CManager(
+         const std::string & initialDir,
+         boost::shared_ptr<database::IPluginRequester> pluginDBTable,
+         boost::shared_ptr<database::IPluginEventLoggerRequester> pluginLoggerDBTable,
+         boost::shared_ptr<database::IEventLoggerRequester> mainLoggerDBTable,
+         shared::event::CEventHandler& supervisor,
+         int pluginManagerEventId);
 
       //--------------------------------------------------------------
       /// \brief			Initialization, used for the 2-steps construction
@@ -61,14 +68,20 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief			Create new CManager instance
-      /// \param [in]   initialDir: initial plugins search directory
-      /// \param [in]   database: database link
-      /// \param [in]   eventLoggerDatabase: database link for events on plugins
-      /// \param [in]   supervisor     the supervisor event handler
+      /// \param [in]   initialDir              Initial plugins search directory
+      /// \param [in]   pluginDBTable           Database link to plugin
+      /// \param [in]   pluginLoggerDBTable     Database link to plugin events
+      /// \param [in]   mainLoggerDBTable       Database link to main events logger
+      /// \param [in]   supervisor              The supervisor event handler
       /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
       //--------------------------------------------------------------
-      static boost::shared_ptr<CManager> newManager(const std::string & initialDir, boost::shared_ptr<database::IPluginRequester> database,
-         boost::shared_ptr<database::IPluginEventLoggerRequester> eventLoggerDatabase, shared::event::CEventHandler& supervisor, int pluginManagerEventId);
+      static boost::shared_ptr<CManager> newManager(
+         const std::string & initialDir,
+         boost::shared_ptr<database::IPluginRequester> pluginDBTable,
+         boost::shared_ptr<database::IPluginEventLoggerRequester> pluginLoggerDBTable,
+         boost::shared_ptr<database::IEventLoggerRequester> mainLoggerDBTable,
+         shared::event::CEventHandler& supervisor,
+         int pluginManagerEventId);
 
       //--------------------------------------------------------------
       /// \brief           Read the available plugin list
@@ -219,9 +232,14 @@ namespace pluginSystem
       PluginInstanceMap m_runningInstances;
 
       //--------------------------------------------------------------
-      /// \brief			Database access point
+      /// \brief			Plugins in database
       //--------------------------------------------------------------
-      boost::shared_ptr<database::IPluginRequester> m_database;
+      boost::shared_ptr<database::IPluginRequester> m_pluginDBTable;
+
+      //--------------------------------------------------------------
+      /// \brief			Main logger in database
+      //--------------------------------------------------------------
+      boost::shared_ptr<database::IEventLoggerRequester> m_mainLoggerDBTable;
 
       //--------------------------------------------------------------
       /// \brief			Plugin path

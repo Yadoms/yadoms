@@ -9,8 +9,9 @@ namespace pluginSystem
 const int CQualifier::m_SafetyThreshold = 7;
 
 
-CQualifier::CQualifier(boost::shared_ptr<database::IPluginEventLoggerRequester> eventLoggerDatabase)
-   :m_eventLoggerDatabase(eventLoggerDatabase)
+CQualifier::CQualifier(boost::shared_ptr<database::IPluginEventLoggerRequester> pluginLogger,
+   boost::shared_ptr<database::IEventLoggerRequester> mainLogger)
+   :m_pluginLogger(pluginLogger), m_mainLogger(mainLogger)
 {
 }
 
@@ -49,12 +50,17 @@ void CQualifier::AddEventToDatabase(const boost::shared_ptr<const shared::plugin
 {
    try
    {
-      m_eventLoggerDatabase->addEvent(
+      // Add event into plugin event logger table
+      m_pluginLogger->addEvent(
          pluginInformation->getName(),
          pluginInformation->getVersion(),
          pluginInformation->getReleaseType(),
          eventType,
          reason);
+
+      // Only crashs have to be logged in the main event logger table
+      if (eventType == database::entities::kCrash)
+         m_mainLogger->addEvent(database::entities::kPluginCrash, "plugin " + pluginInformation->getIdentity(), reason);
    }
    catch (shared::exception::CEmptyResult& e)
    {
@@ -107,7 +113,7 @@ int CQualifier::computeQuality(const CIdentityForQualifier& identity) const
    boost::posix_time::ptime lastLoadTime(boost::posix_time::not_a_date_time);
 
    boost::gregorian::date fromDate = boost::gregorian::day_clock::universal_day() - boost::gregorian::days(90);
-   std::vector<boost::shared_ptr<database::entities::CPluginEventLogger> > pluginEvents = m_eventLoggerDatabase->getPluginEvents(identity.getName(), identity.getVersion(), identity.getReleaseType(), boost::posix_time::ptime(fromDate));
+   std::vector<boost::shared_ptr<database::entities::CPluginEventLogger> > pluginEvents = m_pluginLogger->getPluginEvents(identity.getName(), identity.getVersion(), identity.getReleaseType(), boost::posix_time::ptime(fromDate));
    for (std::vector<boost::shared_ptr<database::entities::CPluginEventLogger> >::const_iterator it = pluginEvents.begin() ; it != pluginEvents.end() ; ++it)
    {
       switch((*it)->EventType)

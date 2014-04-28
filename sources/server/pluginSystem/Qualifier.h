@@ -7,6 +7,7 @@
 
 #include "IQualifier.h"
 #include "database/IPluginEventLoggerRequester.h"
+#include "database/IEventLoggerRequester.h"
 #include "IdentityForQualifier.h"
 
 namespace pluginSystem
@@ -20,9 +21,11 @@ namespace pluginSystem
    public:
       //--------------------------------------------------------------
       /// \brief	Constructor
-      /// \param[in] eventLoggerDatabase    Event logger database
+      /// \param[in] pluginLogger   Main logger database requester
+      /// \param[in] mainLogger     Plugin logger database requester
       //--------------------------------------------------------------
-      CQualifier(boost::shared_ptr<database::IPluginEventLoggerRequester> eventLoggerDatabase);
+      CQualifier(boost::shared_ptr<database::IPluginEventLoggerRequester> pluginLogger,
+         boost::shared_ptr<database::IEventLoggerRequester> mainLogger);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -82,9 +85,14 @@ namespace pluginSystem
       boost::mutex m_qualityIndicatorsCacheMutex;
 
       //--------------------------------------------------------------
-      /// \brief	database access
+      /// \brief	Plugin logger access
       //--------------------------------------------------------------
-      boost::shared_ptr<database::IPluginEventLoggerRequester> m_eventLoggerDatabase;
+      boost::shared_ptr<database::IPluginEventLoggerRequester> m_pluginLogger;
+
+      //--------------------------------------------------------------
+      /// \brief	Main logger access
+      //--------------------------------------------------------------
+      boost::shared_ptr<database::IEventLoggerRequester> m_mainLogger;
    };
 
 } // namespace pluginSystem

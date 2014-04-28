@@ -68,6 +68,12 @@ namespace shared { namespace plugin { namespace information
       virtual const std::string& getUrl() const = 0;
 
       //--------------------------------------------------------------
+      /// \brief	    get all identity informations in printable format
+      /// \return     all plugin informations (plugin name and version)
+      //--------------------------------------------------------------
+      virtual std::string getIdentity() const = 0;
+
+      //--------------------------------------------------------------
       /// \brief	    get all informations in printable format
       /// \return     all plugin informations
       //--------------------------------------------------------------
