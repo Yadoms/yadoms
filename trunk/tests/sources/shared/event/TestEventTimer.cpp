@@ -16,33 +16,36 @@ shared::event::CEventHandler EvtHandler;
 
 BOOST_AUTO_TEST_SUITE(TestEventTimer)
 
+
+// Function checking if provided times are close enough
+bool isTimeClose(const boost::posix_time::ptime& left, const boost::posix_time::ptime& right, const boost::posix_time::time_duration& tolerance)
+{
+   const boost::posix_time::time_duration absoluteDuration = (left > right) ? (left - right) : (right - left);
+   return (absoluteDuration <= tolerance);
+}
+
+
 //--------------------------------------------------------------
 /// \brief	    Nominal case 1
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Nominal1)
 {
-	
-    const boost::posix_time::ptime timePoint(shared::event::now() + boost::posix_time::seconds(5));
-    const boost::posix_time::time_duration period(0,0,5);
-    const int evtId = 123456;
+   const boost::posix_time::time_duration period(0,0,5);
+   const int evtId = 123456;
 
-    shared::event::CEventTimer theEvent(evtId, shared::event::CEventTimer::kOneShot, period);
+   shared::event::CEventTimer event(evtId, shared::event::CEventTimer::kOneShot, period);
+   const boost::posix_time::ptime nextTimePoint(shared::event::now() + period);
 
-	BOOST_CHECK_EQUAL(theEvent.getId(), evtId);
-    BOOST_CHECK_EQUAL (theEvent.getNextStopPoint(), timePoint); //TODO : Vérifier la valeur initiale donnée
+   BOOST_CHECK_EQUAL(event.getId(), evtId);
+   BOOST_CHECK(isTimeClose(event.getNextStopPoint(), nextTimePoint, boost::posix_time::millisec(1)));
+   BOOST_CHECK_EQUAL(event.canBeRemoved(), false);
 
-	std::cout << shared::event::now() << std::endl;
-	std::cout << theEvent.getNextStopPoint() << std::endl;
-
-	
-/*
    event.reset();
 
    BOOST_CHECK_EQUAL(event.getId(), evtId);
    BOOST_CHECK_EQUAL(event.getNextStopPoint(), boost::date_time::not_a_date_time);
-   BOOST_CHECK_EQUAL(event.canBeDetached(), true);
-   */
+   BOOST_CHECK_EQUAL(event.canBeRemoved(), true);
 }
 
 //--------------------------------------------------------------

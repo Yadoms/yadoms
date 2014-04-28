@@ -70,7 +70,7 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
       while(1)
       {
          // Wait for an event
-         switch(waitForEvents(boost::date_time::pos_infin))
+         switch(waitForEvents())
          {
          case kEvtXplMessage:
             {
