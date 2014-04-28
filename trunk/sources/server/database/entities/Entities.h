@@ -24,6 +24,7 @@ namespace entities {
    {
       kYadomsCash = -255,
       kPluginCrash = -3,
+      kPluginDisabled = -2,
       kTaskFailed = -1,
       kDefaultCode = 0,
       kStarted = 1,

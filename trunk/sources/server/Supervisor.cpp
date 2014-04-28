@@ -52,7 +52,7 @@ void CSupervisor::doWork()
       // Start the plugin manager
       boost::shared_ptr<pluginSystem::CManager> pluginManager = pluginSystem::CManager::newManager(
          m_startupOptions.getPluginsPath(), pDataProvider->getPluginRequester(), pDataProvider->getPluginEventLoggerRequester(),
-         *this, kPluginManagerEvent);
+         pDataProvider->getEventLoggerRequester(), *this, kPluginManagerEvent);
 
       //TODO ######################### test interface pluginManager #########################
 #if DEV_ACTIVATE_PLUGIN_MANAGER_TESTS

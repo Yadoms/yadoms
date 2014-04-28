@@ -12,26 +12,28 @@ namespace pluginSystem
 
 boost::shared_ptr<CManager> CManager::newManager(
    const std::string & initialDir,
-   boost::shared_ptr<database::IPluginRequester> database,
-   boost::shared_ptr<database::IPluginEventLoggerRequester> eventLoggerDatabase,
+   boost::shared_ptr<database::IPluginRequester> pluginDBTable,
+   boost::shared_ptr<database::IPluginEventLoggerRequester> pluginLoggerDBTable,
+   boost::shared_ptr<database::IEventLoggerRequester> mainLoggerDBTable,
    shared::event::CEventHandler& supervisor,
    int pluginManagerEventId)
 {
-   boost::shared_ptr<CManager> manager (new CManager(initialDir, database, eventLoggerDatabase, supervisor, pluginManagerEventId));
+   boost::shared_ptr<CManager> manager (new CManager(initialDir, pluginDBTable, pluginLoggerDBTable, mainLoggerDBTable, supervisor, pluginManagerEventId));
    manager->init();
    return manager;
 }
 
 CManager::CManager(
    const std::string& initialDir,
-   boost::shared_ptr<database::IPluginRequester> database,
-   boost::shared_ptr<database::IPluginEventLoggerRequester> eventLoggerDatabase,
+   boost::shared_ptr<database::IPluginRequester> pluginDBTable,
+   boost::shared_ptr<database::IPluginEventLoggerRequester> pluginLoggerDBTable,
+   boost::shared_ptr<database::IEventLoggerRequester> mainLoggerDBTable,
    shared::event::CEventHandler& supervisor,
    int pluginManagerEventId)
-   :m_database(database), m_pluginPath(initialDir), m_qualifier(new CQualifier(eventLoggerDatabase)),
+   :m_pluginDBTable(pluginDBTable), m_mainLoggerDBTable(mainLoggerDBTable), m_pluginPath(initialDir), m_qualifier(new CQualifier(pluginLoggerDBTable, mainLoggerDBTable)),
    m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId)
 {
-   BOOST_ASSERT(m_database);
+   BOOST_ASSERT(m_pluginDBTable);
 }
 
 CManager::~CManager()
@@ -70,7 +72,7 @@ void CManager::init()
    YADOMS_LOG(debug) << "Thread Id=" << m_ioServiceThread->get_id() << " Name = IO Service (pluginsystem::CManager)";
 
    // Create and start plugin instances from database
-   std::vector<boost::shared_ptr<database::entities::CPlugin> > databasePluginInstances = m_database->getInstances();
+   std::vector<boost::shared_ptr<database::entities::CPlugin> > databasePluginInstances = m_pluginDBTable->getInstances();
    BOOST_FOREACH(boost::shared_ptr<database::entities::CPlugin> databasePluginInstance, databasePluginInstances)
    {
       if (databasePluginInstance->Enabled())
@@ -224,7 +226,7 @@ int CManager::getPluginQualityIndicator(const std::string& pluginName) const
 int CManager::createInstance(const database::entities::CPlugin& data)
 {
    // First step, record instance in database, to get its ID
-   int instanceId = m_database->addInstance(data);
+   int instanceId = m_pluginDBTable->addInstance(data);
 
    // Next create instance
    startInstance(instanceId);
@@ -240,7 +242,7 @@ void CManager::deleteInstance(int id)
       stopInstance(id);
 
       // Next, delete in database
-      m_database->removeInstance(id);
+      m_pluginDBTable->removeInstance(id);
    }
    catch (shared::exception::CException& e)
    {
@@ -251,12 +253,12 @@ void CManager::deleteInstance(int id)
 
 std::vector<boost::shared_ptr<database::entities::CPlugin> > CManager::getInstanceList () const
 {
-   return m_database->getInstances();
+   return m_pluginDBTable->getInstances();
 }
 
 boost::shared_ptr<database::entities::CPlugin> CManager::getInstance(int id) const
 {
-   return m_database->getInstance(id);
+   return m_pluginDBTable->getInstance(id);
 }
 
 void CManager::updateInstance(const database::entities::CPlugin& newData)
@@ -269,10 +271,10 @@ void CManager::updateInstance(const database::entities::CPlugin& newData)
    }
 
    // First get old configuration from database
-   boost::shared_ptr<const database::entities::CPlugin> previousData = m_database->getInstance(newData.Id());
+   boost::shared_ptr<const database::entities::CPlugin> previousData = m_pluginDBTable->getInstance(newData.Id());
 
    // Next, update configuration in database
-   m_database->updateInstance(newData);
+   m_pluginDBTable->updateInstance(newData);
 
    // Last, apply modifications
    if (newData.Enabled.isDefined() && previousData->Enabled() != newData.Enabled())
@@ -318,7 +320,10 @@ void CManager::signalEvent(const CManagerEvent& event)
             // Not safe anymore. Disable it (user will just be able to start it manually)
             // Not that this won't stop other instances of this plugin
             YADOMS_LOG(warning) << " plugin " << event.getPluginInformation()->getName() << " was evaluated as not safe and disabled.";
-            m_database->disableAllPluginInstances(event.getPluginInformation()->getName());
+            m_pluginDBTable->disableAllPluginInstances(event.getPluginInformation()->getName());
+
+            // Log this event in the main event logger
+            m_mainLoggerDBTable->addEvent(database::entities::kPluginDisabled, "plugin " + event.getPluginInformation()->getIdentity(), "Plugin was evaluated as not safe and disabled.");
          }
 
          break;
@@ -352,7 +357,7 @@ void CManager::startInstance(int id)
       return;     // Already started ==> nothing more to do
 
    // Get instance informations from database
-   boost::shared_ptr<database::entities::CPlugin> databasePluginInstance(m_database->getInstance(id));
+   boost::shared_ptr<database::entities::CPlugin> databasePluginInstance(m_pluginDBTable->getInstance(id));
 
    // Load the plugin
    try

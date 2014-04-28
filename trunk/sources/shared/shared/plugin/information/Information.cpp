@@ -113,7 +113,7 @@ const std::string& CInformation::getUrl() const
    return  m_url;
 }
 
-std::string CInformation::toString() const
+std::string CInformation::getIdentity() const
 {
    std::ostringstream formatedInformations;
 
@@ -125,6 +125,17 @@ std::string CInformation::toString() const
    formatedInformations << m_name;
    formatedInformations << " v" << m_version;
    formatedInformations << "[" << releaseType << "]";
+
+   return formatedInformations.str();
+}
+
+
+std::string CInformation::toString() const
+{
+   // Full informations = identity + author name + url
+   std::ostringstream formatedInformations;
+
+   formatedInformations << getIdentity();
    formatedInformations << " by " << m_author;
    formatedInformations << " (" << m_url << ")";
 

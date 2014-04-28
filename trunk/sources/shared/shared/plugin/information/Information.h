@@ -41,6 +41,7 @@ namespace shared { namespace plugin { namespace information
       virtual const std::string& getAuthor() const;
       virtual const std::string& getUrl() const;
       virtual std::string toString() const;
+      virtual std::string getIdentity() const;
       // [END] shared::plugin::IInformation implementation
 
       //--------------------------------------------------------------
