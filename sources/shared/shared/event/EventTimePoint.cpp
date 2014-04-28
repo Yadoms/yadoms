@@ -26,6 +26,11 @@ void CEventTimePoint::set(const boost::posix_time::ptime& dateTime)
    m_dateTime = dateTime;
 }
 
+void CEventTimePoint::cancel()
+{
+   reset();
+}
+
 boost::posix_time::ptime CEventTimePoint::getNextStopPoint() const
 {
    return m_dateTime;

@@ -6,6 +6,7 @@ namespace shared { namespace event
 {
    //--------------------------------------------------------------
    /// \brief	    A timer for events system
+   /// \note       CEventTimer is not thread-safe, use it only on the thread calling waitForEvents of associated event handler
    //--------------------------------------------------------------
    class YADOMS_SHARED_EXPORT CEventTimer : public ITimeEvent
    {
@@ -37,6 +38,13 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       void start(const boost::posix_time::time_duration& period = boost::date_time::not_a_date_time);
 
+      //--------------------------------------------------------------
+      /// \brief	    Stop the timer
+      //--------------------------------------------------------------
+      void stop();
+
+   protected:
+      friend class CEventHandler;
       // ITimeEvent Implementation
       virtual boost::posix_time::ptime getNextStopPoint() const;
       virtual void reset();

@@ -31,6 +31,11 @@ void CEventTimer::start(const boost::posix_time::time_duration& period)
    m_nextStopPoint = startPoint + periodToUse;
 }
 
+void CEventTimer::stop()
+{
+   m_nextStopPoint = boost::date_time::not_a_date_time;
+}
+
 boost::posix_time::ptime CEventTimer::getNextStopPoint() const
 {
    return m_nextStopPoint;

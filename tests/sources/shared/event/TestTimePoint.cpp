@@ -13,6 +13,19 @@
 
 BOOST_AUTO_TEST_SUITE(TestTimePoint)
 
+// Class used to gain access to protected members of CEventTimer
+class CEventTimePointAccessProtectedMembers : public shared::event::CEventTimePoint
+{
+public:
+   CEventTimePointAccessProtectedMembers(int eventId, const boost::posix_time::ptime& dateTime = boost::date_time::not_a_date_time)
+      :CEventTimePoint(eventId, dateTime) {}
+   virtual ~CEventTimePointAccessProtectedMembers() {}
+   boost::posix_time::ptime getNextStopPoint() const { return CEventTimePoint::getNextStopPoint(); }
+   void reset() { CEventTimePoint::reset(); }
+   bool canBeRemoved() const { return CEventTimePoint::canBeRemoved(); }
+   int getId() const { return CEventTimePoint::getId(); }
+};
+
 //--------------------------------------------------------------
 /// \brief	    Nominal case
 //--------------------------------------------------------------
@@ -20,7 +33,7 @@ BOOST_AUTO_TEST_CASE(Nominal)
 {
    const boost::posix_time::ptime timePoint(shared::event::now() + boost::posix_time::seconds(3));
    const int evtId = 123456;
-   shared::event::CEventTimePoint event(evtId, timePoint);
+   CEventTimePointAccessProtectedMembers event(evtId, timePoint);
 
 	BOOST_CHECK_EQUAL(event.getId(), evtId);
    BOOST_CHECK_EQUAL(event.getNextStopPoint(), timePoint);
@@ -40,7 +53,7 @@ BOOST_AUTO_TEST_CASE(timePointInThePast)
 {
    const boost::posix_time::ptime timePoint(shared::event::now() - boost::posix_time::seconds(3));
    const int evtId = 123456;
-   BOOST_REQUIRE_THROW(shared::event::CEventTimePoint event(evtId, timePoint), shared::exception::CInvalidParameter);
+   BOOST_REQUIRE_THROW(shared::event::CEventTimePoint timer(evtId, timePoint), shared::exception::CInvalidParameter);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
