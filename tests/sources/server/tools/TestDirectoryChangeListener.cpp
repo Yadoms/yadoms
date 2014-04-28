@@ -95,6 +95,7 @@ BOOST_AUTO_TEST_CASE(DeleteFile_Test)
    BOOST_CHECK_EQUAL(Events[0].type, boost::asio::dir_monitor_event::removed);
 }
 
+#if 0 // TODO : à remettre en place si on souhaite faire fonctionner CDirectoryChangeListener
 //--------------------------------------------------------------
 /// \brief	    Test of file modification
 /// \result         No Error
@@ -148,5 +149,6 @@ BOOST_AUTO_TEST_CASE(RenameFile_Test)
    BOOST_CHECK_EQUAL(Events[2].path, ExpectedRenamedPath);
    BOOST_CHECK_EQUAL(Events[2].type, boost::asio::dir_monitor_event::modified);
 }
+#endif
 
 BOOST_AUTO_TEST_SUITE_END()
