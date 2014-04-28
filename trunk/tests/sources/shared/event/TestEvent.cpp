@@ -9,8 +9,6 @@
 #include <boost/thread.hpp>
 #include "../../../../sources/shared/shared/event/EventHandler.hpp"
 
-//#define DEBUG
-
 BOOST_AUTO_TEST_SUITE(TestEvent)
 
 
@@ -46,10 +44,8 @@ public:
       return true;
    }
 private:
-   int m_tab[10];
+   int m_tab[SIZE_DATA];
 };
-
-
 
 int ReceiverFirstMessageCounter;
 int ReceiverMessage1Counter;
@@ -63,22 +59,56 @@ int ReceiverDefaultCounter;
 static bool ReceiverMessageOrderOk;
 static bool ReceiverMessageCorrect;//TODO à supprimer ?
 
-//static bool firstExecution;
+class messageList
+{
+public:
+	messageList(): m_position_Add(0), m_position_Valid(0) 
+	{   // Initialisation of the tab
+		for (int counter = 0; counter < 1000; counter++)
+			m_Data[counter]=0;
+	}
+	~messageList(){}
+
+	void addToList(int p_value)
+	{
+		m_Data[m_position_Add] = p_value;
+		m_position_Add++;
+	}
+
+	bool isListIdentical(messageList& list)
+	{
+		for (int counter = 0; counter < 1000; counter++)
+		{
+			if (m_Data[m_position_Valid] != list.m_Data[m_position_Valid])
+				return false;
+		}
+		return true;
+	}
+protected:
+  int m_Data[1000];
+  int m_position_Add;
+  int m_position_Valid;
+};
+
+messageList listMessages;
 
 void ThreadReceiver(shared::event::CEventHandler* receiver,int nbMessages)
 {
+	messageList ReceivedMessagesList;
+
    while ((ReceiverFirstMessageCounter + ReceiverMessage1Counter + ReceiverTimeoutCounter + ReceiverDefaultCounter ) != nbMessages)
    {  
       switch(receiver->waitForEvents(boost::posix_time::milliseconds(5000)))
       {
       case FirstMessage:
          {
-            ReceiverFirstMessageCounter++;          
+            ReceiverFirstMessageCounter++;
 			break;
          }
       case Message1:
          {
-            ReceiverMessage1Counter++;          
+            ReceiverMessage1Counter++;
+			ReceivedMessagesList.addToList(1);
 			break;
          }
       case shared::event::kTimeout:
@@ -98,16 +128,15 @@ void ThreadReceiver(shared::event::CEventHandler* receiver,int nbMessages)
          }
       }
    }
+   if (ReceiverTimeoutCounter == 0)
+     BOOST_CHECK_EQUAL(ReceivedMessagesList.isListIdentical(listMessages), true);
 }
 
 void ThreadReceiverWithMessages(shared::event::CEventHandler* receiver,int nbMessages)
 {
-	int messagePrecedent = 255;
 	eventData DataReceived;
 	bool exit = false;
-	bool firstExecution = true;
-
-	//TODO : Vérifier l'ordre des évènements et rajouter plusieurs messages
+	messageList ReceivedMessagesList;
 
    while (!exit)
    {
@@ -117,17 +146,16 @@ void ThreadReceiverWithMessages(shared::event::CEventHandler* receiver,int nbMes
          {
             BOOST_REQUIRE_NO_THROW(DataReceived = receiver->getEventData<eventData>());
             ReceiverFirstMessageCounter++;
-			messagePrecedent = 0;         
 			break;
          }
       case Message1:
          {
             BOOST_REQUIRE_NO_THROW(DataReceived = receiver->getEventData<eventData>());
             ReceiverMessage1Counter++;
-			if (messagePrecedent != 5 && !firstExecution)
-				ReceiverMessageOrderOk = false;
 
-			messagePrecedent = 1;         
+			ReceivedMessagesList.addToList(1);
+
+			BOOST_CHECK_EQUAL( DataReceived.isValid(), true );
 			break;
          }
       case Message2:
@@ -135,10 +163,9 @@ void ThreadReceiverWithMessages(shared::event::CEventHandler* receiver,int nbMes
             BOOST_REQUIRE_NO_THROW(DataReceived = receiver->getEventData<eventData>());
             ReceiverMessage2Counter++;
 
-			if (messagePrecedent != 1 && !firstExecution)
-				ReceiverMessageOrderOk = false;
+			ReceivedMessagesList.addToList(2);
 
-			messagePrecedent = 2;          
+			BOOST_CHECK_EQUAL( DataReceived.isValid(), true );
 			break;
          }
       case Message3:
@@ -146,10 +173,9 @@ void ThreadReceiverWithMessages(shared::event::CEventHandler* receiver,int nbMes
             BOOST_REQUIRE_NO_THROW(DataReceived = receiver->getEventData<eventData>());
             ReceiverMessage3Counter++;
 
-			if (messagePrecedent != 2 && !firstExecution)
-				ReceiverMessageOrderOk = false;
+			ReceivedMessagesList.addToList(3);
 
-			messagePrecedent = 3;          
+			BOOST_CHECK_EQUAL( DataReceived.isValid(), true );
 			break;
          }
       case Message4:
@@ -157,10 +183,9 @@ void ThreadReceiverWithMessages(shared::event::CEventHandler* receiver,int nbMes
             BOOST_REQUIRE_NO_THROW(DataReceived = receiver->getEventData<eventData>());
             ReceiverMessage4Counter++;
 
-			if (messagePrecedent != 3 && !firstExecution)
-				ReceiverMessageOrderOk = false;
+			ReceivedMessagesList.addToList(4);
 
-			messagePrecedent = 4;           
+			BOOST_CHECK_EQUAL( DataReceived.isValid(), true );
 			break;
          }
       case Message5:
@@ -168,34 +193,26 @@ void ThreadReceiverWithMessages(shared::event::CEventHandler* receiver,int nbMes
             BOOST_REQUIRE_NO_THROW(DataReceived = receiver->getEventData<eventData>());
             ReceiverMessage5Counter++;
 
-			if (messagePrecedent != 4 && !firstExecution)
-				ReceiverMessageOrderOk = false;
+			ReceivedMessagesList.addToList(5);
 
-			messagePrecedent = 5;          
+			BOOST_CHECK_EQUAL( DataReceived.isValid(), true );
 			break;
          }
       case shared::event::kTimeout:
          {
             ReceiverTimeoutCounter++;
-			messagePrecedent = 250;           
 			break;
          }
       case shared::event::kNoEvent:
-         {
-			messagePrecedent = 251;     
+         {   
 			break;
          }
       default:
          {
             ReceiverDefaultCounter++;
-			messagePrecedent = 252;   
 			break;
          }
       }
-
-	   //check the received Data
-	if (messagePrecedent >0 && messagePrecedent <6)
-		BOOST_CHECK_EQUAL( DataReceived.isValid(), true );
 
 	  if  ((   ReceiverFirstMessageCounter + 
 			   ReceiverMessage1Counter + 
@@ -206,15 +223,18 @@ void ThreadReceiverWithMessages(shared::event::CEventHandler* receiver,int nbMes
 			   ReceiverTimeoutCounter + 
 			   ReceiverDefaultCounter ) >= nbMessages)
 		exit = true;
-
-	  firstExecution = false;
    }
+   if (ReceiverTimeoutCounter == 0)
+     BOOST_CHECK_EQUAL(ReceivedMessagesList.isListIdentical(listMessages), true);
 }
 
 void ThreadSender(shared::event::CEventHandler* receiver,int nbMessages)
 {
 	for (int counter = 0 ; counter < nbMessages; counter++)
+	{
 	  receiver->sendEvent(Message1);
+	  listMessages.addToList(1);
+	}
 }
 
 void ThreadSenderWithMessages(shared::event::CEventHandler* receiver,int nbMessages)
@@ -222,20 +242,29 @@ void ThreadSenderWithMessages(shared::event::CEventHandler* receiver,int nbMessa
 	eventData DataSent;
 
 	for (int counter = 0 ; counter < nbMessages; counter++)
+	{
 	  receiver->sendEvent<eventData>(Message1,DataSent);
+	  listMessages.addToList(1);
+	}
 }
 
 void ThreadSenderWith5Messages(shared::event::CEventHandler* receiver,int nbMessages)
 {
 	eventData DataSent;
+	static int messageListPosition=0;
 
 	for (int counter = 0 ; counter < nbMessages; counter++)
 	{
 	  receiver->sendEvent<eventData>(Message1,DataSent);
+	  listMessages.addToList(1);
 	  receiver->sendEvent<eventData>(Message2,DataSent);
+	  listMessages.addToList(2);
 	  receiver->sendEvent<eventData>(Message3,DataSent);
+	  listMessages.addToList(3);
 	  receiver->sendEvent<eventData>(Message4,DataSent);
+	  listMessages.addToList(4);
 	  receiver->sendEvent<eventData>(Message5,DataSent);
+	  listMessages.addToList(5);
 	}
 }
 
@@ -271,11 +300,11 @@ BOOST_AUTO_TEST_CASE(Event_1_Frame)
 
 	InitReceiverCounter();
 
-	boost::thread receiverThread(ThreadReceiver ,&evtHandler, nbOfFrames);
 	boost::thread senderThread(ThreadSender     ,&evtHandler, nbOfFrames);
 
 	senderThread.join();
-	receiverThread.join();
+
+	ThreadReceiver(&evtHandler, nbOfFrames);
 
 	BOOST_CHECK_EQUAL(ReceiverFirstMessageCounter, 0);
 	BOOST_CHECK_EQUAL(ReceiverMessage1Counter    , nbOfFrames);
@@ -295,11 +324,10 @@ BOOST_AUTO_TEST_CASE(Event_100_Messages)
 
 	InitReceiverCounter();
 
-	boost::thread receiverThread(ThreadReceiver , &evtHandler, nbOfFrames);
 	boost::thread senderThread(ThreadSender     , &evtHandler, nbOfFrames);
 
 	senderThread.join();
-	receiverThread.join();
+	ThreadReceiver ( &evtHandler, nbOfFrames );
 
 	BOOST_CHECK_EQUAL(ReceiverFirstMessageCounter, 0);
 	BOOST_CHECK_EQUAL(ReceiverMessage1Counter    , nbOfFrames);
@@ -343,11 +371,10 @@ BOOST_AUTO_TEST_CASE(Event_1_Frame_with_Data)
 
 	InitReceiverCounter();
 
-	boost::thread receiverThread(ThreadReceiverWithMessages ,&evtHandler, nbOfFrames);
 	boost::thread senderThread(ThreadSenderWithMessages     ,&evtHandler, nbOfFrames);
 
 	senderThread.join();
-	receiverThread.join();
+	ThreadReceiverWithMessages(&evtHandler, nbOfFrames);
 
 	BOOST_CHECK_EQUAL(ReceiverFirstMessageCounter, 0);
 	BOOST_CHECK_EQUAL(ReceiverMessage1Counter    , nbOfFrames);
@@ -367,11 +394,10 @@ BOOST_AUTO_TEST_CASE(Event_100_Frame_with_Data)
 
 	InitReceiverCounter();
 
-	boost::thread receiverThread(ThreadReceiverWithMessages ,&evtHandler, nbOfFrames);
 	boost::thread senderThread(ThreadSenderWithMessages     ,&evtHandler, nbOfFrames);
 
 	senderThread.join();
-	receiverThread.join();
+	ThreadReceiverWithMessages(&evtHandler, nbOfFrames);
 
 	BOOST_CHECK_EQUAL(ReceiverFirstMessageCounter, 0);
 	BOOST_CHECK_EQUAL(ReceiverMessage1Counter    , nbOfFrames);
@@ -392,11 +418,11 @@ BOOST_AUTO_TEST_CASE(Event_TimeOut)
 
 	InitReceiverCounter();
 
-	boost::thread receiverThread(ThreadReceiver ,&evtHandler, nbOfFramesReceived);
 	boost::thread senderThread  (ThreadSender   ,&evtHandler, nbOfFramesSend    );
 
 	senderThread.join();
-	receiverThread.join();
+
+	ThreadReceiver(&evtHandler, nbOfFramesReceived);
 
 	BOOST_CHECK_EQUAL(ReceiverFirstMessageCounter, 0);
 	BOOST_CHECK_EQUAL(ReceiverMessage1Counter    , 0);
@@ -417,13 +443,12 @@ BOOST_AUTO_TEST_CASE(Event_2_Senders_50_Messages_1_Receiver)
 
 	InitReceiverCounter();
 
-	boost::thread receiverThread (ThreadReceiver ,&evtHandler, nbOfFramesReceived);
 	boost::thread senderThread1  (ThreadSender   ,&evtHandler, nbOfFramesSend    );
 	boost::thread senderThread2  (ThreadSender   ,&evtHandler, nbOfFramesSend    );
 
 	senderThread1.join();
 	senderThread2.join();
-	receiverThread.join();
+	ThreadReceiver(&evtHandler, nbOfFramesReceived);
 
 	BOOST_CHECK_EQUAL(ReceiverFirstMessageCounter, 0);
 	BOOST_CHECK_EQUAL(ReceiverMessage1Counter    , nbOfFramesReceived);
@@ -444,16 +469,13 @@ BOOST_AUTO_TEST_CASE(Event_100_Senders_1_Message_1_Receiver)
 
 	InitReceiverCounter();
 
-	boost::thread receiverThread (ThreadReceiver ,&evtHandler, nbOfFramesReceived);
-
 	for (char counter = 0; counter < nbOfFramesReceived; counter++)
 	{
 		boost::thread senderThread  (ThreadSender,&evtHandler, nbOfFramesSend    );
-
 		senderThread.join();
 	}
 
-	receiverThread.join();
+	ThreadReceiver(&evtHandler, nbOfFramesReceived);
 
 	BOOST_CHECK_EQUAL(ReceiverFirstMessageCounter, 0);
 	BOOST_CHECK_EQUAL(ReceiverMessage1Counter    , nbOfFramesReceived);
@@ -470,14 +492,14 @@ BOOST_AUTO_TEST_CASE(Event_1_Frame_with_Data_Exception)
 {
 	shared::event::CEventHandler evtHandler;
 
-	evtHandler.sendEvent<std::string>(Message1, "Hello World");
-   BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), Message1);  // No wait
-	BOOST_REQUIRE_THROW(evtHandler.getEventData<eventData>(),shared::exception::CBadConversion);
+	evtHandler.sendEvent<std::string>(Message1,"Hello World");
+	BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), Message1);  // No wait
+	BOOST_REQUIRE_THROW (evtHandler.getEventData<eventData>(),shared::exception::CBadConversion);
 }
 
 //--------------------------------------------------------------
 /// \brief	    Test Events with 500 events (5 differents messages) sent with Data - 1 Sender / 1 Receiver
-/// \result         Messages arrives with the same order
+/// \result         Messages arrive with the same order
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Event_100x5_Frames_Different_Messages_with_Data)
@@ -485,16 +507,14 @@ BOOST_AUTO_TEST_CASE(Event_100x5_Frames_Different_Messages_with_Data)
 	int nbOfFramesSent      = 100;
 	int nbOfFramesReceived  = 5 * nbOfFramesSent;
 	shared::event::CEventHandler evtHandler;
-//	ReceiverMessageCorrect = true; TODO : A supprimer
 	ReceiverMessageOrderOk = true;
 
 	InitReceiverCounter();
 
-	boost::thread receiverThread(ThreadReceiverWithMessages  ,&evtHandler, nbOfFramesReceived);
 	boost::thread senderThread  (ThreadSenderWith5Messages   ,&evtHandler, nbOfFramesSent);
 
 	senderThread.join();
-	receiverThread.join();
+	ThreadReceiverWithMessages(&evtHandler, nbOfFramesReceived);
 	
 	BOOST_CHECK_EQUAL(ReceiverFirstMessageCounter, 0);
 	BOOST_CHECK_EQUAL(ReceiverMessage1Counter    , nbOfFramesSent);
@@ -504,8 +524,43 @@ BOOST_AUTO_TEST_CASE(Event_100x5_Frames_Different_Messages_with_Data)
 	BOOST_CHECK_EQUAL(ReceiverMessage5Counter    , nbOfFramesSent);
 	BOOST_CHECK_EQUAL(ReceiverTimeoutCounter     , 0);
 	BOOST_CHECK_EQUAL(ReceiverDefaultCounter     , 0);
-//	BOOST_CHECK_EQUAL(ReceiverMessageCorrect     , true); // TODO A supprimer
 	BOOST_CHECK_EQUAL(ReceiverMessageOrderOk     , true);
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test one message with no WaitForEvent
+/// \result         No Error ??
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Event_1_No_WaitForEvent)
+{
+	int nbOfFrames = 1;
+	shared::event::CEventHandler evtHandler;
+
+	boost::thread senderThread(ThreadSender     ,&evtHandler, nbOfFrames);
+
+	senderThread.join();
+
+	BOOST_REQUIRE_THROW (evtHandler.getEventData<eventData>(),shared::exception::CBadConversion); //TODO : A voir avec Seb -> Aujourd'hui, une erreur !
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test Events with 1 event sent with Data - 1 Sender / 1 Receiver BadConversion
+/// \result         Raise an Exception
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Event_1_Frame_with_2_GetEventData)
+{
+	shared::event::CEventHandler evtHandler;
+	eventData DataSent;
+	eventData DataReceived;
+
+	evtHandler.sendEvent<eventData>(Message1,DataSent);
+	BOOST_REQUIRE_EQUAL (evtHandler.waitForEvents(boost::date_time::min_date_time), Message1);  // No wait
+	BOOST_REQUIRE_NO_THROW ( DataReceived = evtHandler.getEventData<eventData>());
+	BOOST_REQUIRE_EQUAL (DataReceived.isValid(), true);
+	BOOST_REQUIRE_NO_THROW ( DataReceived = evtHandler.getEventData<eventData>());
+	BOOST_REQUIRE_EQUAL (DataReceived.isValid(), true);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
