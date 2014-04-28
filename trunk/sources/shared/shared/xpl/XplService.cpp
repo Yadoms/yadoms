@@ -90,6 +90,9 @@ void CXplService::initializeConnector()
 
    m_remoteEndPoint = boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::broadcast(), CXplHelper::XplProtocolPort);
 
+   YADOMS_LOG(debug) << "CXplService : Local EndPoint: " << m_localEndPoint.address().to_string() << " on port : " << m_localEndPoint.port();
+   YADOMS_LOG(debug) << "CXplService : Remote EndPoint: " << m_remoteEndPoint.address().to_string() << " on port : " << m_remoteEndPoint.port();
+
    if(m_manageIoService)
    {
       m_serviceThread.reset(new boost::thread(boost::bind(&CXplService::startService, this)));

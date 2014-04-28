@@ -31,8 +31,10 @@ CXplHub::CXplHub(const std::string & localIPOfTheInterfaceToUse)
    m_socket.bind(m_localEndPoint);
 
    YADOMS_LOG(info) << "Xpl Hub is starting";
-   YADOMS_LOG(info) << "Listening on ip : " << m_localEndPoint.address().to_string() << " on port : " << m_localEndPoint.port();
+   YADOMS_LOG(info) << "Xpl Hub Listening on ip : " << m_localEndPoint.address().to_string() << " on port : " << m_localEndPoint.port();
    m_remoteEndPoint = boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::broadcast(), CXplHelper::XplProtocolPort);
+
+   YADOMS_LOG(debug) << "Xpl Hub Remote EndPoint: " << m_remoteEndPoint.address().to_string() << " on port : " << m_remoteEndPoint.port();
 
    runCheckApplicationLifeCycleTimeout();
    m_stopRequested = false;
