@@ -61,7 +61,7 @@ int ReceiverTimeoutCounter;
 int ReceiverDefaultCounter;
 
 static bool ReceiverMessageOrderOk;
-static bool ReceiverMessageCorrect;
+static bool ReceiverMessageCorrect;//TODO à supprimer ?
 
 //static bool firstExecution;
 
@@ -470,8 +470,9 @@ BOOST_AUTO_TEST_CASE(Event_1_Frame_with_Data_Exception)
 {
 	shared::event::CEventHandler evtHandler;
 
-	evtHandler.sendEvent<std::string>(Message1,"Hello World");
-	BOOST_REQUIRE_THROW (evtHandler.getEventData<eventData>(),shared::exception::CBadConversion);
+	evtHandler.sendEvent<std::string>(Message1, "Hello World");
+   BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), Message1);  // No wait
+	BOOST_REQUIRE_THROW(evtHandler.getEventData<eventData>(),shared::exception::CBadConversion);
 }
 
 //--------------------------------------------------------------

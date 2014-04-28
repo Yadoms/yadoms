@@ -130,10 +130,11 @@ namespace shared { namespace event
       }
 
       //--------------------------------------------------------------
-      /// \brief	    Get and pop the next event
+      /// \brief	    Get data from last event
       /// \template DataType  Type of the data in the event
-      /// \return     const reference on Event data (caller have to copy data if it want to keep them)
-      /// \throw      exception::CBadConversion if event data is not correct
+      /// \return     Copy of event data
+      /// \throw      exception::CBadConversion if event data is not of correct type
+      /// \note       Must be called after waitForEvents
       //--------------------------------------------------------------
       template<typename DataType>
       const DataType getEventData()
