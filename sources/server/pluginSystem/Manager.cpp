@@ -323,7 +323,9 @@ void CManager::signalEvent(const CManagerEvent& event)
             m_pluginDBTable->disableAllPluginInstances(event.getPluginInformation()->getName());
 
             // Log this event in the main event logger
-            m_mainLoggerDBTable->addEvent(database::entities::kPluginDisabled, "plugin " + event.getPluginInformation()->getIdentity(), "Plugin was evaluated as not safe and disabled.");
+            m_mainLoggerDBTable->addEvent(database::entities::kPluginDisabled,
+               event.getPluginInformation()->getIdentity(),
+               "Plugin " + event.getPluginInformation()->getIdentity() + " was evaluated as not safe and disabled.");
          }
 
          break;

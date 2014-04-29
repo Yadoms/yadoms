@@ -1,9 +1,0 @@
-{
-   "name": "RaspberryPI",
-   "description": "This plugin provide Raspberry information\n",
-   "version": "1.0",
-   "releaseType": "beta",
-   "author": "yadoms-team",
-   "url": "http://sourceforge.net/projects/yadoms/",
-   "configurationSchema": ""
-}
