@@ -4,6 +4,7 @@
 #include "EventTimePoint.h"
 #include "Now.h"
 #include <shared/exception/BadConversion.hpp>
+#include <shared/exception/NullReference.hpp>
 
 namespace shared { namespace event
 {
@@ -134,11 +135,15 @@ namespace shared { namespace event
       /// \template DataType  Type of the data in the event
       /// \return     Copy of event data
       /// \throw      exception::CBadConversion if event data is not of correct type
+      /// \throw      exception::CNullReference if no event data is available
       /// \note       Must be called after waitForEvents
       //--------------------------------------------------------------
       template<typename DataType>
       const DataType getEventData()
       {
+         if (!m_lastEvent)
+            throw exception::CNullReference("getEventData, no event available");
+
          try
          {
             CEvent<DataType> evt = dynamic_cast<CEvent<DataType> & >(*m_lastEvent);
