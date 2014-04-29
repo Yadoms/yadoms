@@ -5,6 +5,11 @@
    "releaseType": "beta",
    "author": "Sébastien Gallou",
    "url": "http://sourceforge.net/projects/yadoms/",
+   "SupportedPlatforms":
+   {
+      "mac": "none",
+      "others": "include"
+   },
    "configurationSchema":
    {
       "Serial Port":
