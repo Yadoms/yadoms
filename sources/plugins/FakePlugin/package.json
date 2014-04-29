@@ -5,6 +5,7 @@
    "releaseType": "beta",
    "author": "yadoms-team",
    "url": "http://sourceforge.net/projects/yadoms/",
+   "SupportedPlatforms": "all",
    "configurationSchema":
    {
       "StringParameter":
