@@ -537,11 +537,10 @@ BOOST_AUTO_TEST_CASE(Event_1_No_WaitForEvent)
 	int nbOfFrames = 1;
 	shared::event::CEventHandler evtHandler;
 
-	boost::thread senderThread(ThreadSender     ,&evtHandler, nbOfFrames);
-
+	boost::thread senderThread(ThreadSender, &evtHandler, nbOfFrames);
 	senderThread.join();
 
-	BOOST_REQUIRE_THROW (evtHandler.getEventData<eventData>(),shared::exception::CBadConversion); //TODO : A voir avec Seb -> Aujourd'hui, une erreur !
+	BOOST_REQUIRE_THROW (evtHandler.getEventData<eventData>(), shared::exception::CNullReference);
 }
 
 //--------------------------------------------------------------
