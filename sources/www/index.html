@@ -87,6 +87,10 @@
    <script src="libs/i18next/js/i18next-1.7.2.js"></script>
    <script src="libs/lazyload/js/lazyload.js"></script>
 
+   <script src="libs/moment.js/js/moment.min.js"></script>
+   <script src="libs/moment.js/js/moment-timezone.min.js"></script>
+   <script src="libs/moment.js/js/moment-timezone-data.min.js"></script>
+
    <script src="js/utility.js"></script>
    <script src="js/objects/page.js"></script>
    <script src="js/objects/widget.js"></script>
@@ -112,6 +116,8 @@
 
    <script src="js/widget-engine.js"></script>
    <script src="js/widget-customization.js"></script>
+
+   <script src="js/objects/date-time.js"></script>
 
    <script type="text/javascript" src="libs/noty/js/packaged/jquery.noty.packaged.min.js"></script>
 
@@ -141,6 +147,12 @@
     * @type {Array}
     */
    var widgetPackages = [];
+
+   /**
+    * Formatter used to display date and time
+    */
+   //TODO : recupere le formattage et le timezone depuis le serveur --> configuration
+   var dateTimeFormatter = new DateTimeFormatter("DD/MM/YYYY HH:mm:ss", "Europe/Paris");
 
    /**
     * On page loaded
