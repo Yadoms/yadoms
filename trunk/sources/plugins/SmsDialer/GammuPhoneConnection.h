@@ -9,8 +9,7 @@ class CGammuPhoneConnection
 {
 public:
    //--------------------------------------------------------------
-   /// \brief	Constructor, establish the connection
-   /// \throw  CPhoneException is unable to connect to phone
+   /// \brief	Constructor, also try to establish the connection
    //--------------------------------------------------------------
    CGammuPhoneConnection(const ISmsDialerConfiguration& configuration);
 
@@ -25,19 +24,24 @@ public:
    //--------------------------------------------------------------
    GSM_StateMachine* getGsmContext();
 
-protected:
    //--------------------------------------------------------------
    /// \brief	Phone connection
-   /// \throw  CPhoneException if trouble connecting to phone
+   /// \return true is phone is connected, false else
    //--------------------------------------------------------------
-   void connect();
+   bool connect();
 
    //--------------------------------------------------------------
    /// \brief	Phone disconnection
-   /// \throw  CPhoneException if trouble disconnecting from phone
    //--------------------------------------------------------------
    void disconnect();
 
+   //--------------------------------------------------------------
+   /// \brief	Phone connection status
+   /// \return true is phone is connected, false else
+   //--------------------------------------------------------------
+   bool isConnected() const;
+
+protected:
    //--------------------------------------------------------------
    /// \brief	                  Gammu error handler
    /// \param[in] gsmError       Gammu error value
@@ -57,6 +61,3 @@ private:
    //--------------------------------------------------------------
    GSM_StateMachine* m_gsmContext;
 };
-
-
-

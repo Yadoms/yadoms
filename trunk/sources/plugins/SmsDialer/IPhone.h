@@ -14,6 +14,18 @@ public:
    virtual ~IPhone() {}
 
    //--------------------------------------------------------------
+   /// \brief	Establish the phone connection
+   /// \return true is phone is connected, false else
+   //--------------------------------------------------------------
+   virtual bool connect() = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	Get the phone connection status
+   /// \return true is phone is connected, false else
+   //--------------------------------------------------------------
+   virtual bool isConnected() const = 0;
+
+   //--------------------------------------------------------------
    /// \brief	                  Send a SMS
    /// \param [in] sms           The SMS to send
    //--------------------------------------------------------------

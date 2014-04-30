@@ -7,16 +7,6 @@
 CGammuPhone::CGammuPhone(const ISmsDialerConfiguration& configuration)
    :m_configuration(configuration), m_connection(configuration)
 {
-   // Read some phone informations
-   char readValue[MAX(GSM_MAX_MANUFACTURER_LENGTH, GSM_MAX_MODEL_LENGTH) + 1];
-
-   // Manufacturer
-   handleGammuError(GSM_GetManufacturer(m_connection.getGsmContext(), readValue), "Unable to get phone manufacturer");
-   YADOMS_LOG(info) << "Manufacturer : " << readValue;
-
-   // Model name
-   handleGammuError(GSM_GetModel(m_connection.getGsmContext(), readValue), "Unable to get phone model");
-   YADOMS_LOG(info) << "Model         : " << GSM_GetModelInfo(m_connection.getGsmContext())->model << "(" << readValue << ")";
 }
 
 CGammuPhone::~CGammuPhone()
@@ -29,8 +19,36 @@ void CGammuPhone::handleGammuError(GSM_Error gsmError, const std::string& errorM
       throw CPhoneException(std::string ("Phone communication : ") + errorMessage + std::string(" : ") + std::string(GSM_ErrorString(gsmError)));
 }
 
+bool CGammuPhone::connect()
+{
+   if (!m_connection.connect())
+      return false;
+
+   // Read some phone informations
+   char readValue[MAX(GSM_MAX_MANUFACTURER_LENGTH, GSM_MAX_MODEL_LENGTH) + 1];
+
+   // Manufacturer
+   handleGammuError(GSM_GetManufacturer(m_connection.getGsmContext(), readValue), "Unable to get phone manufacturer");
+   YADOMS_LOG(info) << "Manufacturer : " << readValue;
+
+   // Model name
+   handleGammuError(GSM_GetModel(m_connection.getGsmContext(), readValue), "Unable to get phone model");
+   YADOMS_LOG(info) << "Model         : " << GSM_GetModelInfo(m_connection.getGsmContext())->model << "(" << readValue << ")";
+
+   return true;
+}
+
+bool CGammuPhone::isConnected() const
+{
+   return m_connection.isConnected();
+}
+
 void CGammuPhone::send(boost::shared_ptr<ISms> sms)
 {
+   BOOST_ASSERT_MSG(isConnected(), "Phone must be connected to send SMS");
+   if (!isConnected())
+      throw CPhoneException("Phone must be connected to send SMS");
+
    YADOMS_LOG(info) << "Send SMS to number " << sms->getNumber() << " \"" << sms->getContent() << "\"";
    
    // Fill in SMS info structure which will be used to generate messages.
@@ -116,6 +134,10 @@ void CGammuPhone::sendSmsCallback(GSM_StateMachine *sm, int status, int MessageR
 
 boost::shared_ptr<std::vector<ISms> > CGammuPhone::getIncomingSMS()
 {
+   BOOST_ASSERT_MSG(isConnected(), "Phone must be connected to read incomming SMS");
+   if (!isConnected())
+      throw CPhoneException("Phone must be connected to read incomming SMS");
+
    boost::shared_ptr<std::vector<ISms> > noSms;
    bool newSms;
    

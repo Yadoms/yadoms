@@ -7,29 +7,6 @@
 CGammuPhoneConnection::CGammuPhoneConnection(const ISmsDialerConfiguration& configuration)
    :m_configuration(configuration)
 {
-   // Connect to phone
-   connect();
-}
-
-CGammuPhoneConnection::~CGammuPhoneConnection()
-{
-   // Close connection
-   disconnect();
-}
-
-GSM_StateMachine* CGammuPhoneConnection::getGsmContext()
-{
-   return m_gsmContext;
-}
-
-void CGammuPhoneConnection::handleGammuError(GSM_Error gsmError, const std::string& errorMessage) const
-{
-   if (gsmError != ERR_NONE)
-      throw CPhoneException(std::string ("Phone connection : ") + errorMessage + std::string(" : ") + std::string(GSM_ErrorString(gsmError)));
-}
-
-void CGammuPhoneConnection::connect()
-{
    GSM_InitLocales(NULL);
 
    // Initialize Gammu context
@@ -48,15 +25,63 @@ void CGammuPhoneConnection::connect()
    gsmConfig->Connection = strdup(m_configuration.getGammuProtocol().c_str());
    GSM_SetConfigNum(m_gsmContext, 1);
 
-   // Connect to phone
-   handleGammuError(GSM_InitConnection(m_gsmContext, 1), "Unable to connect to phone");
+   // Try to connect
+   connect();
+}
+
+CGammuPhoneConnection::~CGammuPhoneConnection()
+{
+   // Close connection
+   disconnect();
+
+   GSM_FreeStateMachine(m_gsmContext);
+}
+
+GSM_StateMachine* CGammuPhoneConnection::getGsmContext()
+{
+   return m_gsmContext;
+}
+
+void CGammuPhoneConnection::handleGammuError(GSM_Error gsmError, const std::string& errorMessage) const
+{
+   if (gsmError != ERR_NONE)
+      throw CPhoneException(std::string ("Phone connection : ") + errorMessage + std::string(" : ") + std::string(GSM_ErrorString(gsmError)));
+}
+
+bool CGammuPhoneConnection::connect()
+{
+   if (isConnected())
+      return true;
+
+   try
+   {
+      // Connect to phone
+      handleGammuError(GSM_InitConnection(m_gsmContext, 1), "Unable to connect to phone");
+   }
+   catch (CPhoneException& e)
+   {
+      YADOMS_LOG(error) << e.what();
+   }
+
+   return isConnected();
 }
 
 void CGammuPhoneConnection::disconnect()
 {
-   if (GSM_IsConnected(m_gsmContext))
-      handleGammuError(GSM_TerminateConnection(m_gsmContext), "Unable to close connection");
+   if (!isConnected())
+      return;
 
-   GSM_FreeStateMachine(m_gsmContext);
-   m_gsmContext = NULL;
+   try
+   {
+      handleGammuError(GSM_TerminateConnection(m_gsmContext), "Unable to close connection");
+   }
+   catch (CPhoneException& e)
+   {
+      YADOMS_LOG(error) << e.what();
+   }
+}
+
+bool CGammuPhoneConnection::isConnected() const
+{
+   return GSM_IsConnected(m_gsmContext) == TRUE;
 }

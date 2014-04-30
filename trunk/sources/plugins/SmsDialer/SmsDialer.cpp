@@ -4,6 +4,7 @@
 #include <shared/xpl/XplService.h>
 #include <shared/xpl/XplMessage.h>
 #include <shared/xpl/XplHelper.h>
+#include <shared/xpl/XplException.h>
 #include "SmsDialerFactory.h"
 #include "PhoneException.hpp"
 #include "Sms.h"
@@ -25,6 +26,7 @@ enum
 {
    kEvtXplMessage = shared::event::kUserFirstId,   // Always start from shared::event::CEventHandler::kUserFirstId
    kEvtUpdateConfiguration,
+   kEvtTimerTryToConnectToPhone,
    kEvtTimerCheckForIncommingSms
 };
 
@@ -53,19 +55,107 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
          this,
          kEvtXplMessage);
 
+      // Configure XPL filter to only receive SMS commands from Yadoms
+      xplService.setFilter(
+         "xpl-cmnd",
+         xplService.getActor().getVendorId(),
+         shared::xpl::CXplHelper::WildcardString,
+         xplService.getActor().getInstanceId(),
+         "sendmsg",
+         "basic");
+
       // the main loop
       YADOMS_LOG(debug) << "CSmsDialer is running...";
 
-      //TODO à virer
-      shared::xpl::CXplMessage temp;
-      onXplMessageReceived(temp);
-
-      //TODO gérer une machine d'état pour essayer de se connecter réglièrement, et traiter les envoi/réceptions que si connecté
+      // Timer used to periodically try to connect to phone
+      m_connectionTimer = createTimer(kEvtTimerTryToConnectToPhone, shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(1));
+      m_connectionTimer->stop();
 
       // Timer used to periodically check for incomming SMS
-      createTimer(kEvtTimerCheckForIncommingSms, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(30));
+      m_incommingSmsPollTimer = createTimer(kEvtTimerCheckForIncommingSms, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(30));
+      m_incommingSmsPollTimer->stop();
 
       while(1)
+      {
+         if (!m_phone->isConnected())
+            ProcessNotConnectedState();
+         else
+            ProcessConnectedState();
+      };
+   }
+   catch (boost::thread_interrupted&)
+   {
+      YADOMS_LOG(info) << "CSmsDialer is stopping..."  << std::endl;
+   }
+}
+
+void CSmsDialer::ProcessNotConnectedState()
+{
+   m_incommingSmsPollTimer->stop();
+   m_connectionTimer->start();
+
+   while (!m_phone->isConnected())
+   {
+      try
+      {
+         // Wait for an event
+         switch(waitForEvents())
+         {
+         case kEvtXplMessage:
+            {
+               // Ignore all XPL message
+               break;
+            }
+         case kEvtUpdateConfiguration:
+            {
+               // Configuration was updated
+               std::string newConfiguration = getEventData<std::string>();
+               YADOMS_LOG(debug) << "configuration was updated...";
+               BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEvtUpdateConfiguration shouldn't be generated
+
+               // Destroy current phone instance to update configuration
+               m_phone.reset();
+
+               // Update configuration
+               m_configuration.set(newConfiguration);
+
+               // Create new phone
+               m_phone = CSmsDialerFactory::constructPhone(m_configuration);
+
+               break;
+            }
+         case kEvtTimerTryToConnectToPhone:
+            {
+               m_phone->connect();
+               break;
+            }
+         case kEvtTimerCheckForIncommingSms:
+            {
+               // Ignore this event
+               break;
+            }
+         default:
+            {
+               YADOMS_LOG(error) << "Unknown message id";
+               break;
+            }
+         }
+      }
+      catch (CPhoneException& e)
+      {
+         YADOMS_LOG(error) << "Phone critical error : " << e.what();
+      }
+   }
+}
+
+void CSmsDialer::ProcessConnectedState()
+{
+   m_connectionTimer->stop();
+   m_incommingSmsPollTimer->start();
+
+   while (m_phone->isConnected())
+   {
+      try
       {
          // Wait for an event
          switch(waitForEvents())
@@ -94,6 +184,11 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
 
                break;
             }
+         case kEvtTimerTryToConnectToPhone:
+            {
+               // Ignore this event
+               break;
+            }
          case kEvtTimerCheckForIncommingSms:
             {
                processIncommingSMS();
@@ -105,15 +200,11 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
                break;
             }
          }
-      };
-   }
-   catch (CPhoneException& e)
-   {
-      YADOMS_LOG(error) << "Phone critical error : " << e.what();
-   }
-   catch (boost::thread_interrupted&)
-   {
-      YADOMS_LOG(info) << "CSmsDialer is stopping..."  << std::endl;
+      }
+      catch (CPhoneException& e)
+      {
+         YADOMS_LOG(error) << "Phone critical error : " << e.what();
+      }
    }
 }
 
@@ -127,11 +218,19 @@ void CSmsDialer::onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage
 {
    YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
 
-   // TODO traiter le message comme il faut !
+   BOOST_ASSERT_MSG(xplMessage.getMessageSchemaIdentifier().getClassId() == "sendsms", "Filter doesn't work");
+   BOOST_ASSERT_MSG(xplMessage.getMessageSchemaIdentifier().getTypeId() == "basic", "Filter doesn't work");
+   BOOST_ASSERT_MSG(!xplMessage.getBodyValue("to").empty(), "SMS recipient is empty");
+   BOOST_ASSERT_MSG(!xplMessage.getBodyValue("body").empty(), "SMS message body is empty");
+
    try
    {
-      boost::shared_ptr<ISms> sms(new CSms("0609414394", "1 - Ceci est un suuuuuuuuuupeeeeeeer loooooooooonnnnnnnnng SMS envoyé par le plugin smsDialer de Yadoms, d'ailleurs, pour être bien sûr qu'il fait plusieurs fois cent soixante caractères, je le répète : Ceci est un suuuuuuuuuupeeeeeeer loooooooooonnnnnnnnng SMS envoyé par le plugin smsDialer de Yadoms. Et encore une fois : Ceci est un suuuuuuuuuupeeeeeeer loooooooooonnnnnnnnng SMS envoyé par le plugin smsDialer de Yadoms. Encore : Ceci est un suuuuuuuuuupeeeeeeer loooooooooonnnnnnnnng SMS envoyé par le plugin smsDialer de Yadoms :-)"));//Christelle
+      boost::shared_ptr<ISms> sms(new CSms(xplMessage.getBodyValue("to"), xplMessage.getBodyValue("body")));
       m_phone->send(sms);
+   }
+   catch (shared::xpl::CXplException& e)
+   {
+      YADOMS_LOG(error) << "Can not send SMS, the XPL message is invalid : " << e.what();
    }
    catch (CPhoneException& e)
    {

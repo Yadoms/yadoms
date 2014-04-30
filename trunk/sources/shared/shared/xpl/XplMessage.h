@@ -114,7 +114,7 @@ namespace shared { namespace xpl
       /// \brief	    Get the Message Schema Identifier
       /// \return     The message schema identifier
       //--------------------------------------------------------------
-      const CXplMessageSchemaIdentifier & getMessageSchemaIdentifier();
+      const CXplMessageSchemaIdentifier & getMessageSchemaIdentifier() const;
 
       //--------------------------------------------------------------
       /// \brief	    Permit to add a key/value element to the body
@@ -127,14 +127,15 @@ namespace shared { namespace xpl
       /// \brief	    Get the Map of the body
       /// \return     The Map containning all the body
       //--------------------------------------------------------------
-      const std::map<std::string, std::string> & getBody();
+      const std::map<std::string, std::string> & getBody() const;
 
       //--------------------------------------------------------------
       /// \brief	    Get the Map of the body
-      /// \param [in]  key : key of the key/value element
-      /// \return      A value contained in the Mbody
+      /// \param [in] key : key of the key/value element
+      /// \return     A value contained in the Mbody
+      /// \throw      CXplException if key was not found
       //--------------------------------------------------------------
-      const std::string & getBodyValue(const std::string & key);
+      const std::string & getBodyValue(const std::string & key) const;
 
       //--------------------------------------------------------------
       /// \brief	    Get the message as it has to be sent
