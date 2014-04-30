@@ -101,11 +101,11 @@ function exitCustomization() {
             //we parse the json answer
             if (data.result != "true")
             {
-               notifyError("Error during saving customization", JSON.stringify(data));
+               notifyError($.t("mainPage.errors.errorSavingCustomization"), JSON.stringify(data));
                console.error(data.message);
             }
          })
-         .fail(function() {notifyError("Unable to save customization")});
+         .fail(function() {notifyError($.t("mainPage.errors.errorSavingCustomization"))});
    });
 }
 
