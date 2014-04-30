@@ -271,10 +271,10 @@ function addPageToIHM(page) {
          "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" +
          "<span>" + page.name + "</span>" +
          "<div class=\"pageCustomizationToolbar btn-group btn-group-sm customization-item pull-right hidden\">" +
-         "<button type=\"button\" class=\"btn btn-default move-left-page\" title=\"Move to left\" data-i18n=\"[title]customization.moveToLeft\"><i class=\"glyphicon glyphicon-arrow-left\"></i></button>" +
-         "<button type=\"button\" class=\"btn btn-default move-right-page\" title=\"Move to right\" data-i18n=\"[title]customization.moveToRight\"><i class=\"glyphicon glyphicon-arrow-right\"></i></button>" +
-         "<button type=\"button\" class=\"btn btn-default rename-page\" title=\"Rename\" data-i18n=\"[title]customization.rename\"><i class=\"glyphicon glyphicon-pencil\"></i></button>" +
-         "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\" data-i18n=\"[title]customization.delete\"><i class=\"glyphicon glyphicon-trash\"></i></button>" +
+         "<button type=\"button\" class=\"btn btn-default move-left-page\" title=\"Move to left\" data-i18n=\"[title]mainPage.customization.moveToLeft\"><i class=\"glyphicon glyphicon-arrow-left\"></i></button>" +
+         "<button type=\"button\" class=\"btn btn-default move-right-page\" title=\"Move to right\" data-i18n=\"[title]mainPage.customization.moveToRight\"><i class=\"glyphicon glyphicon-arrow-right\"></i></button>" +
+         "<button type=\"button\" class=\"btn btn-default rename-page\" title=\"Rename\" data-i18n=\"[title]mainPage.customization.rename\"><i class=\"glyphicon glyphicon-pencil\"></i></button>" +
+         "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\" data-i18n=\"[title]mainPage.customization.delete\"><i class=\"glyphicon glyphicon-trash\"></i></button>" +
          "</div>" +
          "</a>" +
          "</li>");
@@ -698,7 +698,7 @@ function periodicUpdateTask() {
          if (!serverIsOnline) {
             serverIsOnline = true;
             //we signal that server has been back
-            notifyInformation("Connection to server has been restored");
+            notifyInformation($.t("mainPage.notifications.connectionToServerHasBeenRestored"));
             //if the errorNotification is always visible we close it
             if (OfflineServerNotification != null) {
                OfflineServerNotification.close();
@@ -713,7 +713,7 @@ function periodicUpdateTask() {
          //we parse the json answer
          if (data.result != "true")
          {
-            notifyError("Error during requesting new logs events", JSON.stringify(data));
+            notifyError($.t("mainPage.errors.errorDuringRequestingNewLogEvents"), JSON.stringify(data));
             return;
          }
 
@@ -738,7 +738,7 @@ function periodicUpdateTask() {
          {
             //we indicate that server has passed offline
             serverIsOnline = false;
-            OfflineServerNotification = notifyError("You have been disconnected from the server or it has gone offline", "", false);
+            OfflineServerNotification = notifyError($.t("mainPage.errors.youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline"), "", false);
             //we change the interval period
             clearInterval(widgetUpdateInterval);
             widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateIntervalInOfflineMode);
@@ -771,7 +771,7 @@ function dispatchDeviceDataToWidget(device, widget) {
       //we parse the json answer
       if (data.result != "true")
       {
-         notifyError("Error during requesting device last data", JSON.stringify(data));
+         notifyError($.t("mainPage.errors.errorDuringRequestingDeviceLastData"), JSON.stringify(data));
          return;
       }
 

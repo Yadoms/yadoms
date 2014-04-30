@@ -1,73 +1,118 @@
 {
-   "customization" : {
-      "addNewPage" : "Ajouter une nouvelle page",
-      "addNewWidget" : "Ajouter un nouveau widget"
-   },
-   "mainPage" : {
-      "menu" : {
-         "configuration" : "Configuration",
-         "checkForUpdate" : "Rechercher une mise à jour",
-         "restart" : "Redémarrer",
-         "shutdown" : "Eteindre"
+  "mainPage": {
+    "menu": {
+      "configuration": "Configuration",
+      "checkForUpdate": "Rechercher une mise à jour",
+      "restart": "Redémarrer",
+      "shutdown": "Eteindre"
+    },
+    "actions": {
+      "loadingPages": "Chargement des pages ...",
+      "loadingWidgetsOfPage": "Chargement des widgets de la page __pageName__ ..."
+    },
+    "customization": {
+      "addNewPage": "Ajouter une nouvelle page",
+      "addNewWidget": "Ajouter un nouveau widget",
+      "moveToLeft": "Déplacer à gauche",
+      "moveToRight": "Déplacer à droite",
+      "rename": "Renommer",
+      "delete": "Supprimer"
+    },
+    "errors": {
+      "unableToAddWidgetWithoutPage": "Vous devez avoir créé au moins une page avant de pouvoir ajouter des widgets",
+      "unableToGetEventLog": "Impossible de récupérer le journal des évènements",
+      "errorDuringRequestingLastEventLog": "Erreur pendant la récupération du dernier évènements serveur",
+      "errorDuringSavingPagePosition": "Erreur pendant la sauvegarde de la position des pages",
+      "unableToGetPages": "Impossible de récupérer les pages",
+      "unableToGetWidgets": "Impossible de récupérer les widgets",
+      "errorDuringRequestingPages": "Erreur pendant la récupération des pages",
+      "errorDuringRequestingWidgets": "Erreur pendant la récupération des widgets",
+      "unableToGetViewOfTheWidget": "Impossible de récupérer la vue du widget __widgetName__",
+      "unableToGetViewmodelOfTheWidget": "Impossible de récupérer le vue modèle du widget __widgetName__",
+      "unableToGetConfigurationOfTheWidget": "Impossible de récupérer la configuration du widget __widgetName__",
+      "errorDuringRequestingNewLogEvents": "Erreur pendant la demande de nouveaux évènements serveur",
+      "youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline": "Vous avez été déconnecté du serveur ou il est éteint",
+      "errorDuringRequestingDeviceLastData": "Erreur pendant la demande des dernières données",
+      "errorSavingCustomization": "Erreur pendant la sauvegarde de la personnalisation"
+    },
+    "notifications": {
+      "connectionToServerHasBeenRestored": "la connexion au serveur a été rétablie"
+    }
+  },
+  "modals": {
+    "add-widget": {
+      "title": "Ajouter un nouveau widget",
+      "getMore": "Obtenir des widgets",
+      "errorDuringGettingPackages": "Erreur lors de la demande les paquets des widgets",
+      "errorDuringCreatingWidget": "Erreur pendant la creation du widget",
+      "widgetSuccessfullyCreated": "Widget créé avec succès",
+      "unableToCreateWidgetOfType": "Impossible de créer le widget du type __widgetType__"
+    },
+    "configure-widget": {
+      "title": "Configuration du widget",
+      "errorDuringModifyingWidget": "Erreur pendant la modification de la configuration du widget",
+      "errorDuringModifyingWidgetNamed": "Erreur pendant la modification de la configuration du widget de type __widgetType__"
+    },
+    "delete-widget": {
+      "title": "Confirmation de la suppression du widget",
+      "text": "Cette opération va supprimer le widget de type __widgetType__. Continuer tout de même ?",
+      "widgetSuccessfullyDeleted": "Widget supprimé avec succès",
+      "errorDuringDeletingWidget": "Erreur pendant la suppression du widget",
+      "errorDuringDeletingWidgetNamed": "Erreur pendant la suppression du widget de type __widgetType__"
+    },
+    "delete-page": {
+      "title": "Confirmation de la suppression d'une page",
+      "text": "Cette opération va supprimer la page __pageName__ ainsi que tous les widgets qu'elle contient. Continuer tout de même ?",
+      "pageSuccessfullyDeleted": "Page supprimée avec succès",
+      "errorDuringDeletingPage": "Erreur pendant la suppression de la page",
+      "errorDuringDeletingPageNamed": "Erreur pendant la suppression de la page __pageName__"
+    },
+    "modify-page": {
+      "renamePageTitle": "Renommer une page",
+      "renamePageValidationButton": "Renommer",
+      "createNewPageTitle": "Créer une nouvelle page",
+      "createNewPageValidationButton": "Créer",
+      "errorDuringModifyingPage": "Erreur pendant la modification de la page",
+      "errorDuringModifyingPageNamed": "Erreur pendant la modification de la page __pageName__",
+      "errorDuringCreatingPage": "Erreur pendant la creation de la page",
+      "errorDuringCreatingPageNamed": "Erreur pendant la creation de la page __pageName__",
+      "placeholder": "Saisissez un nom de page"
+    },
+    "qrcode": {
+      "title": "QR Code de Yadoms",
+      "text": "Voici le QRCode de Yadoms. Vous pouvez le flasher avec votre téléphone pour accéder à Yadoms de partout."
+    },
+    "ok": "Ok",
+    "confirm": "Confirmer",
+    "close": "Fermer",
+    "cancel": "Annuler"
+  },
+  "widgets": {
+    "configuration": {
+      "validationForm": {
+        "incorrectValue": "Valeur incorrecte",
+        "onlyIntegerNumberAllowed": "Seulement les nombres entiers sont autorisés",
+        "onlyNumberAllowed": "Seulement les nombres sont autorisés",
+        "maxValueExceeded": "La valeur ne peut pas être supérieure à __maxValue__",
+        "minValueExceeded": "La valeur ne peut pas être inférieure à __minValue__"
       }
-   },
-   "modals" : {
-      "add-widget" : {
-         "title" : "Ajouter un nouveau widget",
-         "getMore" : "Obtenir des widgets",
-         "errorDuringGettingPackages" : "Erreur lors de la demande les paquets des widgets",
-         "errorDuringCreatingWidget" : "Erreur pendant la creation du widget",
-         "widgetSuccessfullyCreated" : "Widget créé avec succès",
-         "unableToCreateWidgetOfType" : "Impossible de créer le widget du type __widgetType__"
-      },
-      "configure-widget" : {
-         "title" : "Configuration du widget",
-         "errorDuringModifyingWidget" : "Erreur pendant la modification de la configuration du widget",
-         "errorDuringModifyingWidgetNamed" : "Erreur pendant la modification de la configuration du widget de type __widgetType__"
-      },
-      "delete-widget" : {
-         "title" : "Confirmation de la suppression du widget",
-         "text" : "Cette opération va supprimer le widget de type __widgetType__. Continuer tout de même ?",
-         "widgetSuccessfullyDeleted" : "Widget supprimé avec succés",
-         "errorDuringDeletingWidget" : "Erreur pendant la suppression du widget",
-         "errorDuringDeletingWidgetNamed" : "Erreur pendant la suppression du widget de type __widgetType__"
-      },
-      "delete-page" : {
-         "title" : "Confirmation de la suppression d'une page",
-         "text" : "Cette opération va supprimer la page __pageName__ ainsi que tous les widgets qu'elle contient. Continuer tout de même ?",
-         "pageSuccessfullyDeleted" : "Page supprimée avec succés",
-         "errorDuringDeletingPage" : "Erreur pendant la suppression de la page",
-         "errorDuringDeletingPageNamed" : "Erreur pendant la suppression de la page __pageName__"
-      },
-      "modify-page" : {
-         "renamePageTitle" : "Renommer une page",
-         "renamePageValidationButton" : "Renommer",
-         "createNewPageTitle" : "Créer une nouvelle page",
-         "createNewPageValidationButton" : "Créer",
-         "errorDuringModifyingPage" : "Erreur pendant la modification de la page",
-         "errorDuringModifyingPageNamed" : "Erreur pendant la modification de la page __pageName__",
-         "errorDuringCreatingPage" : "Erreur pendant la creation de la page",
-         "errorDuringCreatingPageNamed" : "Erreur pendant la creation de la page __pageName__",
-         "placeholder" : "Saisissez un nom de page"
-      },
-      "qrcode" : {
-         "title" : "QR Code de Yadoms",
-         "text" : "Voici le QRCode de Yadoms. Vous pouvez le flasher avec votre téléphone pour accéder à Yadoms de partout."
-      },
-      "ok" : "Ok",
-      "confirm" : "Confirmer",
-      "close" : "Fermer",
-      "cancel" : "Annuler"
-   },
-   "widgets" : {
-      "configuration" : {
-         "validationForm" : {
-            "incorrectValue" : "Valeur incorrecte",
-            "onlyIntegerNumberAllowed" : "Seulement les nombres entiers sont autorisés",
-            "onlyNumberAllowed" : "Seulement les nombres sont autorisés",
-            "maxValueExceeded" : "La valeur ne peut pas être supérieure à __maxValue__",
-            "minValueExceeded" : "La valeur ne peut pas être inférieure à __minValue__"
-         }
-      }
-   }
+    },
+    "errors": {
+      "widgetHasGeneratedAnExceptionDuringCallingMethod": "Le widget __widgetName__ a généré une exception pendant l'appel à la méthode __methodName__()"
+    }
+  },
+  "eventLogger": {
+    "default": "Evènnement inconnu : __what__ généré par $t(system.__who__)",
+    "started": "$t(system.__who__) a démarré",
+    "stopped": "$t(system.__who__) s'est arrêté",
+    "yadomsCrashed": "Yadoms à planté",
+    "pluginCrashed": "Le plugin __who__ à planté",
+    "taskFailed": "La tâche $t(system.__who__) a planté"
+  },
+  "system": {
+    "yadoms": "yadoms",
+    "backup": "Sauvegarde de base de données",
+    "pluginUpdate": "Mise à jour de plugin",
+    "yadomsUpdate": "Mise à jour de yadoms"
+  }
 }

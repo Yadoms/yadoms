@@ -1,12 +1,4 @@
 {
-   "customization" : {
-      "addNewPage" : "Add a new page",
-      "addNewWidget" : "Add a new widget",
-      "moveToLeft" : "Move to left",
-      "moveToRight" : "Move to right",
-      "rename" : "Rename",
-      "delete" : "Delete"
-   },
    "mainPage" : {
       "menu" : {
          "configuration" : "Configuration",
@@ -17,6 +9,14 @@
       "actions" : {
          "loadingPages" : "Loading Pages ...",
          "loadingWidgetsOfPage" : "Loading widgets of __pageName__ page ..."
+      },
+      "customization" : {
+         "addNewPage" : "Add a new page",
+         "addNewWidget" : "Add a new widget",
+         "moveToLeft" : "Move to left",
+         "moveToRight" : "Move to right",
+         "rename" : "Rename",
+         "delete" : "Delete"
       },
       "errors" : {
          "unableToAddWidgetWithoutPage" : "You must have at least one page to add widget",
@@ -29,7 +29,14 @@
          "errorDuringRequestingWidgets" : "Error during requesting widgets",
          "unableToGetViewOfTheWidget" : "Unable to get view of the __widgetName__ widget",
          "unableToGetViewmodelOfTheWidget" : "Unable to get viewmodel of the __widgetName__ widget",
-         "unableToGetConfigurationOfTheWidget" : "Unable to get configuration of the __widgetName__ widget"
+         "unableToGetConfigurationOfTheWidget" : "Unable to get configuration of the __widgetName__ widget",
+         "errorDuringRequestingNewLogEvents" : "Error during requesting new logs events",
+         "youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline" : "You have been disconnected from the server or it has gone offline",
+         "errorDuringRequestingDeviceLastData" : "Error during requesting device last data",
+         "errorSavingCustomization" : "Error saving customization"
+      },
+      "notifications" : {
+         "connectionToServerHasBeenRestored" : "Connection to server has been restored"
       }
    },
    "modals" : {
