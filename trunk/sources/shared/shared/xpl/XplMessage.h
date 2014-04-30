@@ -166,16 +166,6 @@ namespace shared { namespace xpl
       static const std::string XplHopHeader;
       static const std::string XplSourceHeader;
       static const std::string XplTargetHeader;
-
-      //TODO : A supprimer qd intégré a l'appli globale
-      //Essaie de parser la chaine dans le type result et renvoie vrai si ok
-	   //il est possible de specifier une base en 3eme parametre facultatif
-	   template <class T>
-	   static bool tryParse(const std::string & s, T& result, std::ios_base& (*f)(std::ios_base&) = std::dec)
-	   {
-		   std::istringstream iss(s);
-		   return !(iss >> std::boolalpha >> f >> result).fail();
-	   }
    };
 
 } } // namespace shared::xpl

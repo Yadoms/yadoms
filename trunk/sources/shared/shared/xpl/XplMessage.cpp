@@ -3,6 +3,7 @@
 #include "XplActor.h"
 #include "XplHelper.h"
 #include "XplException.h"
+#include "../StringExtension.h"
 
 namespace shared { namespace xpl
 {
@@ -265,7 +266,7 @@ CXplMessage CXplMessage::parse(const std::string & rawMessage)
          if (headerLineDecomposed[nameIndex] == XplHopHeader)
          {
             int hop;
-            if (!tryParse<int>(headerLineDecomposed[valueIndex], hop))
+            if (!CStringExtension::tryParse<int>(headerLineDecomposed[valueIndex], hop))
                throw CXplException("Hop value must be an int");
          
             msg.setHop(hop);
