@@ -21,6 +21,8 @@ public:
    virtual ~CGammuPhone();
 
    // IPhone implementation
+   virtual bool connect();
+   virtual bool isConnected() const;
    virtual void send(boost::shared_ptr<ISms> sms);
    boost::shared_ptr<std::vector<ISms> > getIncomingSMS();
   // [END] IPhone implementation

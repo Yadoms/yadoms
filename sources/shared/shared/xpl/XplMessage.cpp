@@ -117,7 +117,7 @@ void CXplMessage::setMessageSchemaIdentifier(const CXplMessageSchemaIdentifier &
    m_messageSchemaIdentifier = CXplMessageSchemaIdentifier(messageSchemaIdentifier);
 }
 
-const CXplMessageSchemaIdentifier & CXplMessage::getMessageSchemaIdentifier()
+const CXplMessageSchemaIdentifier & CXplMessage::getMessageSchemaIdentifier() const
 {
    return m_messageSchemaIdentifier;
 }
@@ -133,14 +133,17 @@ void CXplMessage::addToBody(const std::string & name, const std::string & value)
    m_body[name] = value;
 }
 
-const std::map<std::string, std::string> & CXplMessage::getBody()
+const std::map<std::string, std::string> & CXplMessage::getBody() const
 {
    return m_body;
 }
 
-const std::string & CXplMessage::getBodyValue(const std::string & key)
+const std::string & CXplMessage::getBodyValue(const std::string & key) const
 {
-   return m_body[key];
+   std::map<std::string, std::string>::const_iterator it = m_body.find(key);
+   if (it == m_body.end())
+      throw CXplException("XPL message body value not found : " + key);
+   return it->second;
 }
 
 std::string CXplMessage::toString() const

@@ -74,7 +74,12 @@ namespace shared { namespace xpl
 
       //--------------------------------------------------------------
       /// \brief			Configure the filter to apply to the received messages
-      /// \param [in]   filter to apply. It must be formed like : [msgtype].[vendor].[device].[instance].[class].[type] (* is allowed for each param)
+      /// \param [in]   msgtype     Type of message to receive (* allowed)
+      /// \param [in]   vendor      Vendor from which to receive messages (* allowed)
+      /// \param [in]   device      Device from which to receive messages (* allowed)
+      /// \param [in]   instance    Instance from which to receive messages (* allowed)
+      /// \param [in]   classId     Class Id from which to receive messages (* allowed)
+      /// \param [in]   typeId      Type of message to receive  (* allowed)
       //--------------------------------------------------------------
       void setFilter(const std::string & msgtype, const std::string & vendor, const std::string & device, const std::string & instance, 
                      const std::string & classId, const std::string & typeId);

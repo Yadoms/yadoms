@@ -32,6 +32,16 @@ public:
 
 protected:
    //--------------------------------------------------------------
+   /// \brief	                     Process the not connected state (wait for connection)
+   //--------------------------------------------------------------
+   void ProcessNotConnectedState();
+
+   //--------------------------------------------------------------
+   /// \brief	                     Process the connected state (Treat XPL messages, send SMS...)
+   //--------------------------------------------------------------
+   void ProcessConnectedState();
+
+   //--------------------------------------------------------------
    /// \brief	                     Called when an XPL message is received
    /// \param [in] xplMessage       The received message
    //--------------------------------------------------------------
@@ -52,6 +62,16 @@ private:
    /// \brief	The phone used to send/receive SMS
    //--------------------------------------------------------------
    boost::shared_ptr<IPhone> m_phone;
+
+   //--------------------------------------------------------------
+   /// \brief	Timer to try connection to phone
+   //--------------------------------------------------------------
+   boost::shared_ptr<shared::event::CEventTimer> m_connectionTimer;
+
+   //--------------------------------------------------------------
+   /// \brief	Timer to poll for incomming SMS
+   //--------------------------------------------------------------
+   boost::shared_ptr<shared::event::CEventTimer> m_incommingSmsPollTimer;
 };
 
 
