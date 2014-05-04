@@ -37,7 +37,7 @@
                          <li class="dropdown">
                               <a class="dropdown-toggle" data-toggle="dropdown"><i class="caret"></i></a>
                               <ul class="dropdown-menu">
-                                  <li><a href="#" ><i class="fa fa-cog iconMenuItem"></i><span data-i18n="mainPage.menu.dashboard"></span></a></li>
+                                  <li><a href="#" id="btn-show-dashboard"><i class="fa fa-cog iconMenuItem"></i><span data-i18n="mainPage.menu.dashboard"></span></a></li>
                               </ul>
                           </li>
                           <li><button class="btn btn-default customization-item hidden" id="btn-add-page"><i class="fa fa-file-o"></i><span class="hidden-xs">&nbsp;&nbsp;</span><span class="hidden-xs" data-i18n="mainPage.customization.addNewPage"></span></button></li>
@@ -166,6 +166,7 @@
       modals.pageDelete = new LazyLoaderManager("modals/delete_page.html");
       modals.pageModification = new LazyLoaderManager("modals/modify_page.html");
       modals.qrCode = new LazyLoaderManager("modals/qrcode.html");
+      modals.mainDashboard = new LazyLoaderManager("modals/main-dashboard.html");
 
       var option = { resGetPath: 'locales/__lng__.json', fallbackLng:"en",useDataAttrOptions: true };
       i18n.init(option, function() {
@@ -181,6 +182,10 @@
        */
       $("#btn-show-qrcode").click(function() {
          modals.qrCode.load(function() {$('#qrcode-modal').modal();});
+      });
+
+      $("#btn-show-dashboard").click(function() {
+         modals.mainDashboard.load(function() {$('#main-dashboard-modal').modal();});
       });
 
       /**

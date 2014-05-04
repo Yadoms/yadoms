@@ -1,0 +1,106 @@
+<link href="../css/dashboard.css" rel="stylesheet">
+
+<!--Main Dashboard Modal -->
+<div class="modal fade" id="main-dashboard-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog main-dashboard-modal">
+       <div class="modal-content main-dashboard-modal-content">
+           <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+               <h4 class="modal-title" id="myModalLabel" data-i18n="modals.dashboard.title">Dashboard</h4>
+           </div>
+           <div class="modal-body dashboard-modal-body">
+               <div class="">
+                  <div class="row">
+                     <!-- Dashboard menu -->
+                     <div class="col-sm-3 col-md-2 sidebar">
+                        <ul class="nav nav-sidebar">
+                           <li id="btn-dashboard-summary" class="active"><a href="#" data-i18n="modals.dashboard.sub-windows.summary.title"></a></li>
+                           <li id="btn-dashboard-user-management" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.user-management.title"></a></li>
+                           <li id="btn-dashboard-system-configuration" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.system-configuration.title"></a></li>
+                           <li id="btn-dashboard-user-configuration" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.user-configuration.title"></a></li>
+                           <li id="btn-dashboard-plugins" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.plugins.title"></a></li>
+                           <li id="btn-dashboard-addons" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.addons.title"></a></li>
+                           <li id="btn-dashboard-devices" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.devices.title"></a></li>
+                           <li id="btn-dashboard-update" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.update.title"></a></li>
+                           <li id="btn-dashboard-about" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.about.title"></a></li>
+                        </ul>
+                     </div>
+                     <!-- Dashboard content -->
+                     <div id="main-dashboard-sub-window-content" class="col-sm-9 col-md-10">
+                        <!--sub windows will be inserted here -->
+                     </div>
+                  </div>
+               </div>
+           </div>
+           <div class="modal-footer">
+               <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="modals.close">Close</button>
+           </div>
+       </div>
+   </div>
+</div>
+
+<script>
+   function asyncLoad(subWindowPath, callback) {
+      assert(!isNullOrUndefined(subWindowPath), "subWindowPath must be defined");
+      //debugger;
+      var animationDuration = 300;
+      $container = $("div#main-dashboard-sub-window-content");
+      $container.slideUp(animationDuration, function() {
+         $container.empty();
+         $.ajax(subWindowPath)
+                 .done(function(data) {
+                    var $data = $(data);
+                    $data.i18n();
+                    //we add the modal to the body
+                    $container.append($data);
+                    $container.slideDown(animationDuration);
+                    //we call the callback
+                    if (!isNullOrUndefined(callback))
+                       callback();
+                 })
+                 .fail(function() {
+                    //TODO : i18n
+                    notifyError("Unable to load sub window " + subWindowPath);
+                 });
+      });
+   }
+
+   $("#btn-dashboard-summary").click(function() {
+      asyncLoad("modals/dashboard/summary.html");
+   });
+
+   $("#btn-dashboard-user-management").click(function() {
+      asyncLoad("modals/dashboard/user-management.html");
+   });
+
+   $("#btn-dashboard-system-configuration").click(function() {
+      asyncLoad("modals/dashboard/system-configuration.html");
+   });
+
+   $("#btn-dashboard-user-configuration").click(function() {
+      asyncLoad("modals/dashboard/user-configuration.html");
+   });
+
+   $("#btn-dashboard-plugins").click(function() {
+      asyncLoad("modals/dashboard/plugins.html");
+   });
+
+   $("#btn-dashboard-addons").click(function() {
+      asyncLoad("modals/dashboard/addons.html");
+   });
+
+   $("#btn-dashboard-devices").click(function() {
+      asyncLoad("modals/dashboard/devices.html");
+   });
+
+
+   $("#btn-dashboard-update").click(function() {
+      asyncLoad("modals/dashboard/update.html");
+   });
+
+   $("#btn-dashboard-about").click(function() {
+      asyncLoad("modals/dashboard/about.html");
+   });
+   //we load summary
+   $("#btn-dashboard-summary").click();
+</script>
