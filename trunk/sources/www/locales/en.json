@@ -82,6 +82,44 @@
          "title" : "QR Code de Yadoms",
          "text" : "Here is the QRCode of Yadoms. You can now flash it with your phone to access Yadoms everywhere."
       },
+      "dashboard" : {
+         "title" : "Dashboard",
+         "sub-windows" : {
+            "summary" : {
+               "title" : "Summary",
+               "information" : "Information",
+               "connectedUser" : "Connected user",
+               "platform" : "Platform",
+               "softwareVersion" : "Software Version",
+               "runningFrom" : "Running from",
+               "networkInterface" : "Network interface"
+            },
+            "user-management" : {
+               "title" : "User management"
+            },
+            "system-configuration" : {
+               "title" : "System configuration"
+            },
+            "user-configuration" : {
+               "title" : "User configuration"
+            },
+            "plugins" : {
+               "title" : "Plugins"
+            },
+            "addons" : {
+               "title" : "Addons"
+            },
+            "devices" : {
+               "title" : "Devices"
+            },
+            "update" : {
+               "title" : "Update"
+            },
+            "about" : {
+               "title" : "About"
+            }
+         }
+      },
       "ok" : "Ok",
       "confirm" : "Confirm",
       "close" : "Close",
@@ -114,5 +152,6 @@
       "backup" : "Database backup",
       "pluginUpdate" : "Plugin update",
       "yadomsUpdate" : "Yadoms update"
-   }
+   },
+   "inProgress" : "Development in progress ..."
 }

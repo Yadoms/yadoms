@@ -43,6 +43,7 @@ LazyLoaderManager.prototype.load = function (callback){
             callback();
          })
          .fail(function() {
+            //TODO : i18n
             notifyError("Unable to load modal " + self.modalPath);
          });
    }

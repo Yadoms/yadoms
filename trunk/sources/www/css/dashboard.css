@@ -1,0 +1,55 @@
+.main-dashboard-modal {
+    width: 98%;
+    /*height: 92%;*/
+    padding: 0;
+}
+
+.main-dashboard-modal-content {
+    /*height: 99%;*/
+}
+
+.dashboard-modal-body {
+    padding-top: 0px;
+    margin-left: -5px;
+    padding-bottom: 0px;
+    margin-bottom: -15px;
+}
+
+.sidebar {
+    /*position: fixed;*/
+    /*top: 51px;*/
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    background-color: #f5f5f5;
+    border-right: 1px solid #eee;
+}
+
+/* Sidebar navigation */
+.nav-sidebar {
+    margin-right: -21px; /* 20px padding + 1px border */
+    margin-bottom: 20px;
+    margin-left: -20px;
+}
+.nav-sidebar > li > a {
+    padding-right: 20px;
+    padding-left: 20px;
+}
+.nav-sidebar > .active > a {
+    color: #fff;
+    background-color: #428bca;
+}
+
+.summary-table {
+    width: 50%;
+    margin: auto;
+}
+
+.summary-table td {
+    width: 50%;
+}
+
+.summary-table .header {
+    text-align: right;
+}
