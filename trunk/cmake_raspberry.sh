@@ -11,6 +11,7 @@ then
 	echo "Which choice would you like?"
 	echo " -> Generate a linux makefile to run on RaspberryPI (p)"
 	echo " -> Generate a linux makefile for Cross Compilation (c)"
+	echo " -> Generate Eclpise CDT4 project files for CrossCompilation (e)"
 	read choice
 else
 	choice=$1
@@ -21,12 +22,18 @@ case "$choice" in
 
     p)
 	# cmake for makefile
-	cmake -DCMAKE_CXX_COMPILER=g++-4.7 -DCMAKE_CC_COMPILER=gcc-4.7 ../sources
+	cmake -D CMAKE_YADOMS_PLATFORM=Raspberry -DCMAKE_CXX_COMPILER=g++-4.7 -DCMAKE_CC_COMPILER=gcc-4.7 ../sources
 	;;
     c)
 	# cmake for cross compilation
-	cmake  ../sources
+	cmake   -D CMAKE_YADOMS_PLATFORM=Raspberry ../sources
 	;;
+	
+    e)
+	# cmake for compilation and debug with Eclipse
+	cmake -G"Eclipse CDT4 - Unix Makefiles" -D CMAKE_YADOMS_PLATFORM=Raspberry -D CMAKE_BUILD_TYPE=Debug  -DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE ../sources
+	;;
+	
     *)
 	# generate an error and return 1
 	echo "$choice is not a valid choice"
