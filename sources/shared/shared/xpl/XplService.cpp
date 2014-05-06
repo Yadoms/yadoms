@@ -104,6 +104,8 @@ void CXplService::initializeConnector()
       boost::bind(&CXplService::handleReceive, this,
       boost::asio::placeholders::error,
       boost::asio::placeholders::bytes_transferred));
+
+
 }
 
 void CXplService::startService()
@@ -269,7 +271,6 @@ void CXplService::handleReceive(const boost::system::error_code& error,
                //We fire the message only if it is not filtered
                if (msgCanBeFired)
                {
-                  YADOMS_LOG(debug) << "Message not filtered";
                   fireMessageReceivedEvent(msg);
                }
                else

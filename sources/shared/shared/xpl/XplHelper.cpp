@@ -114,6 +114,7 @@ boost::asio::ip::udp::endpoint CXplHelper::getFirstIPV4AddressEndPoint()
    return boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::from_string("localhost"), 0);
 }
 
+
 bool CXplHelper::getEndPointFromInterfaceIp(const std::string & localIPOfTheInterfaceToUse, boost::asio::ip::udp::endpoint & result)
 {
    std::vector<boost::asio::ip::address> ips = shared::CNetworkHelper::getLocalIps();

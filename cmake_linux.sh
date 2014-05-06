@@ -11,6 +11,7 @@ then
 	echo "Which choice would you like?"
 	echo " -> Generate a linux makefile (m)"
 	echo " -> Generate a Codeblock project (c)"
+	echo " -> Generate Eclpise CDT4 project files (e)"
 	read choice
 else
 	choice=$1
@@ -23,10 +24,17 @@ case "$choice" in
 	# cmake for makefile
 	cmake ../sources
 	;;
+
     c)
 	# cmake for codeblock
 	cmake  -G "CodeBlocks - Unix Makefiles" ../sources
 	;;
+	
+    e)
+	# cmake for compilation and debug with Eclipse
+	cmake -G"Eclipse CDT4 - Unix Makefiles" -D CMAKE_YADOMS_PLATFORM=Raspberry -D CMAKE_BUILD_TYPE=Debug  -DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE ../sources
+	;;
+	
     *)
 	# generate an error and return 1
 	echo "$choice is not a valid choice"
