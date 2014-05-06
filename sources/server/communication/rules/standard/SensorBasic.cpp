@@ -23,7 +23,7 @@ namespace communication { namespace rules { namespace standard {
 
       std::map<std::string, std::string>::const_iterator currentKeyValuePair;
 
-      //on extrait toutes les données sauf celles connues
+      // Extraction of all known data expected
       for(currentKeyValuePair = msg.getBody().begin(); currentKeyValuePair!=msg.getBody().end(); ++currentKeyValuePair)
       {
          if(!boost::iequals(currentKeyValuePair->first, "device") &&
@@ -52,8 +52,8 @@ namespace communication { namespace rules { namespace standard {
 
       std::map<std::string, std::string>::const_iterator currentKeyValuePair;
 
-      //chaque mot clé contenu dans le message (autre que device, type, current et units sont des mots clés spécifiues au device)
-      //doit etre traité comme fournissant une donnée
+      // Each keyword contained in message (other than device, type, current et units) is keyword specific to the device.
+      // It have to provide data.
       for(currentKeyValuePair = msg.getBody().begin(); currentKeyValuePair!=msg.getBody().end(); ++currentKeyValuePair)
       {
          if(!boost::iequals(currentKeyValuePair->first, "device") &&

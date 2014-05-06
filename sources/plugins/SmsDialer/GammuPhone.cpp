@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include <shared/Log.h>
+#include <shared/StringExtension.h>
 #include "GammuPhone.h"
 #include "PhoneException.hpp"
 
@@ -21,6 +22,8 @@ void CGammuPhone::handleGammuError(GSM_Error gsmError, const std::string& errorM
 
 bool CGammuPhone::connect()
 {
+   m_phoneId.clear();
+
    if (!m_connection.connect())
       return false;
 
@@ -29,11 +32,18 @@ bool CGammuPhone::connect()
 
    // Manufacturer
    handleGammuError(GSM_GetManufacturer(m_connection.getGsmContext(), readValue), "Unable to get phone manufacturer");
-   YADOMS_LOG(info) << "Manufacturer : " << readValue;
+   m_phoneId.append(readValue);
 
    // Model name
    handleGammuError(GSM_GetModel(m_connection.getGsmContext(), readValue), "Unable to get phone model");
-   YADOMS_LOG(info) << "Model         : " << GSM_GetModelInfo(m_connection.getGsmContext())->model << "(" << readValue << ")";
+   GSM_PhoneModel* model = GSM_GetModelInfo(m_connection.getGsmContext());
+   if (!model)
+      handleGammuError(ERR_UNKNOWNMODELSTRING, "Unable to get phone model info");
+   m_phoneId.append(", ").append(model->model);
+   m_phoneId.append(" (").append(readValue).append(") ");
+   m_phoneId.append(model->number);
+
+   YADOMS_LOG(info) << "Phone found : " << m_phoneId;
 
    return true;
 }
@@ -41,6 +51,11 @@ bool CGammuPhone::connect()
 bool CGammuPhone::isConnected() const
 {
    return m_connection.isConnected();
+}
+
+std::string CGammuPhone::getUniqueId() const
+{
+   return m_phoneId;
 }
 
 void CGammuPhone::send(boost::shared_ptr<ISms> sms)

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "SmsDialer.h"
 #include <shared/Log.h>
-#include <shared/xpl/XplService.h>
 #include <shared/xpl/XplMessage.h>
 #include <shared/xpl/XplHelper.h>
 #include <shared/xpl/XplException.h>
@@ -71,12 +70,15 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
       m_connectionTimer = createTimer(kEvtTimerTryToConnectToPhone, shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(1));
       m_connectionTimer->stop();
 
-      // Timer used to periodically check for incomming SMS
+      // Timer used to periodically check for incoming SMS
       m_incommingSmsPollTimer = createTimer(kEvtTimerCheckForIncommingSms, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(30));
       m_incommingSmsPollTimer->stop();
 
       while(1)
       {
+         // Send connection state message
+         sendConnectionState(xplService);
+
          if (!m_phone->isConnected())
             ProcessNotConnectedState();
          else
@@ -91,6 +93,8 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
 
 void CSmsDialer::ProcessNotConnectedState()
 {
+   YADOMS_LOG(info) << "Phone is not connected"  << std::endl;
+
    m_incommingSmsPollTimer->stop();
    m_connectionTimer->start();
 
@@ -150,6 +154,8 @@ void CSmsDialer::ProcessNotConnectedState()
 
 void CSmsDialer::ProcessConnectedState()
 {
+   YADOMS_LOG(info) << "Phone is sconnected"  << std::endl;
+
    m_connectionTimer->stop();
    m_incommingSmsPollTimer->start();
 
@@ -248,4 +254,25 @@ void CSmsDialer::processIncommingSMS()
       return;  // No new message
 
    //TODO : traiter le message reçu
+}
+
+void CSmsDialer::sendConnectionState(shared::xpl::CXplService& xplService) const
+{
+   shared::xpl::CXplMessage msg(
+      shared::xpl::CXplMessage::kXplStat,                            // Message type
+      xplService.getActor(),                                         // Source actor (here : our plugin instance)
+      shared::xpl::CXplActor::createBroadcastActor(),                // Target actor (here : the XPL logger of Yadoms)
+      shared::xpl::CXplMessageSchemaIdentifier("sensor", "basic"));  // The message schema
+
+   // Add data to message
+   // - Device ID
+   msg.addToBody("device", m_phone->getUniqueId());
+   // - Sensor type
+   msg.addToBody("type", "sms");
+   // - State
+   msg.addToBody("current", m_phone->isConnected() ? "on" : "off");
+
+   // Send it
+   xplService.sendMessage(msg);
+
 }
