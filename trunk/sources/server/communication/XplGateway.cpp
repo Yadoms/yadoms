@@ -9,6 +9,8 @@
 
 namespace communication {
 
+   std::string CXplGateway::m_gateway_device_id = "gateway";
+
    CXplGateway::CXplGateway(boost::shared_ptr<database::IDataProvider> dataProvider)
       :CThreadBase("XplGateway"), m_dataProvider(dataProvider)
    {
@@ -31,7 +33,7 @@ namespace communication {
          YADOMS_LOG_CONFIGURE("XplGateway");
          YADOMS_LOG(debug) << "XplGateway is starting...";
 
-         shared::xpl::CXplService xplService("gateway", "1", NULL, this, kXplMessageReceived);
+         shared::xpl::CXplService xplService(m_gateway_device_id, "1", NULL, this, kXplMessageReceived);
 
          while(1)
          {
@@ -91,7 +93,9 @@ namespace communication {
          YADOMS_LOG(trace) << "Xpl Message received : " << xplMessage.toString();
 
          std::string realSource = xplMessage.getSource().toString();
-         if(boost::istarts_with(realSource, shared::xpl::CXplConstants::getYadomsVendorId()))
+         //if incomming message has been sent from me, use target has real source
+         if(xplMessage.getSource().getVendorId() == shared::xpl::CXplConstants::getYadomsVendorId() &&
+        		 xplMessage.getSource().getDeviceId() == m_gateway_device_id)
             realSource = xplMessage.getTarget().toString();
       
          boost::shared_ptr<rules::IRule> rule = m_rulerFactory.identifyRule(realSource, xplMessage.getMessageSchemaIdentifier().toString());

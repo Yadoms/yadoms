@@ -70,6 +70,11 @@ namespace communication {
       ///\brief  The ruler factory
       //----------------------------------------------
       rules::CRulerFactory m_rulerFactory;
+
+      //----------------------------------------------
+      ///\brief  The gateway xpl device id
+      //----------------------------------------------
+      static std::string m_gateway_device_id;
    };
 
 } //namespace communication

@@ -52,7 +52,7 @@ void CRaspberryPI::doWork(int instanceUniqueId, const std::string& configuration
          shared::xpl::CXplHelper::toInstanceId(instanceUniqueId),    // Use the plugin instance id (guaranteed by Yadoms to be unique among all instances of all plugins) as XPL instance id
          pluginIOService,                                            // Use the provided io service for better performance
          NULL,                                                       // Subscribe for XPL message receive event
-         0);                                                         // Set the event ID to rise when XPL message is received
+         0);                                           				 // Set the event ID to rise when XPL message is received
 
       // Fake temperature sensor
       CRaspberryPITemperatureSensor temperatureSensor("temperatureSensor");
@@ -65,44 +65,40 @@ void CRaspberryPI::doWork(int instanceUniqueId, const std::string& configuration
       while(1)
       {
          // Wait for an event
-         switch(waitForEvents(boost::date_time::pos_infin))
+         switch(waitForEvents())
          {
          case kEvtTimerSendMessage:
             {
                // Timer used here to send a XPL message periodically
 
-               // We need to consume this timer event
-               popEvent();
-
                // First read the sensor value
-               temperatureSensor.read();
+               if(temperatureSensor.read())
+               {
+				   // Create the message
+				   shared::xpl::CXplMessage msg(
+					  shared::xpl::CXplMessage::kXplStat,                            // Message type
+					  xplService.getActor(),                                         // Source actor (here : our fake plugin instance)
+					  shared::xpl::CXplActor::createBroadcastActor(),            // Target actor (here : the XPL logger of Yadoms)
+					  shared::xpl::CXplMessageSchemaIdentifier("sensor", "basic"));   // The message schema
 
-               // Create the message
-               shared::xpl::CXplMessage msg(
-                  shared::xpl::CXplMessage::kXplStat,                            // Message type
-                  xplService.getActor(),                                         // Source actor (here : our fake plugin instance)
-                  shared::xpl::CXplActor::createBroadcastActor(),            // Target actor (here : the XPL logger of Yadoms)
-                  shared::xpl::CXplMessageSchemaIdentifier("sensor", "basic"));   // The message schema
+				   // Add data to message
+				   // - Device ID
+				   msg.addToBody("device", temperatureSensor.getDeviceId());
 
-               // Add data to message
-               // - Device ID
-	       msg.addToBody("device", temperatureSensor.getDeviceId());
-               // - Temperature
-               std::ostringstream ss;
-               ss << std::fixed << std::setprecision(2) << temperatureSensor.getTemperature();
-               msg.addToBody("temp", ss.str());
-               // Send it
-               xplService.sendMessage(msg);
-
+				   // - Temperature
+				   msg.addToBody("type", "temp");
+				   msg.addToBody("units", "°C");
+				   std::ostringstream ss;
+				   ss << std::fixed << std::setprecision(2) << temperatureSensor.getTemperature();
+				   msg.addToBody("current", ss.str());
+				   // Send it
+				   xplService.sendMessage(msg);
+               }
                break;
             }
          default:
             {
                YADOMS_LOG(error) << "Unknown message id";
-
-               // We need to consume this unknown event
-               popEvent();
-
                break;
             }
          }
