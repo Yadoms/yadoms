@@ -114,12 +114,16 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
                // Add data to message
                // - Device ID
 			      msg.addToBody("device", temperatureSensor.getDeviceId());
+               // - Sensor type
+               msg.addToBody("type", "temp");
+               // - Unit
+               msg.addToBody("units", "°C");
                // - Signal strength
                msg.addToBody("rssi", boost::lexical_cast<std::string>(temperatureSensor.getRssi()));
-               // - Temperature
+               // - Current temperature
                std::ostringstream ss;
                ss << std::fixed << std::setprecision(2) << temperatureSensor.getTemperature();
-               msg.addToBody("temperature", ss.str());
+               msg.addToBody("current", ss.str());
                // - Battery level
 			      msg.addToBody("battery", boost::lexical_cast<std::string>(temperatureSensor.getBatteryLevel()));
 
