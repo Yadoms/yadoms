@@ -32,7 +32,7 @@ case "$choice" in
 	
     e)
 	# cmake for compilation and debug with Eclipse
-	cmake -G"Eclipse CDT4 - Unix Makefiles" -D CMAKE_YADOMS_PLATFORM=Raspberry -D CMAKE_BUILD_TYPE=Debug  -DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE ../sources
+	cmake -G"Eclipse CDT4 - Unix Makefiles" -D CMAKE_BUILD_TYPE=Debug  -DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE ../sources
 	;;
 	
     *)
