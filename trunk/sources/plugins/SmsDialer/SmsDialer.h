@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/plugin/ImplementationHelper.h>
 #include <shared/xpl/XplMessage.h>
+#include <shared/xpl/XplService.h>
 #include <shared/event/EventHandler.hpp>
 #include "SmsDialerConfiguration.h"
 #include "IPhone.h"
@@ -48,9 +49,15 @@ protected:
    void onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage);
 
    //--------------------------------------------------------------
-   /// \brief	                     Check if incomming SMS and process it
+   /// \brief	                     Check if incoming SMS and process it
    //--------------------------------------------------------------
    void processIncommingSMS();
+
+   //--------------------------------------------------------------
+   /// \brief	                     Send the actual connection send to XPL network
+   /// \param [in] xplService       The XPL service used to send phone connection state
+   //--------------------------------------------------------------
+   void sendConnectionState(shared::xpl::CXplService& xplService) const;
 
 private:
    //--------------------------------------------------------------

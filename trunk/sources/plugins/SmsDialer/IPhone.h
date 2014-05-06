@@ -26,6 +26,12 @@ public:
    virtual bool isConnected() const = 0;
 
    //--------------------------------------------------------------
+   /// \brief	Get the phone unique ID
+   /// \return A phone ID composed for example of Manufacturer + model + IMEI
+   //--------------------------------------------------------------
+   virtual std::string getUniqueId() const = 0;
+
+   //--------------------------------------------------------------
    /// \brief	                  Send a SMS
    /// \param [in] sms           The SMS to send
    //--------------------------------------------------------------

@@ -23,6 +23,7 @@ public:
    // IPhone implementation
    virtual bool connect();
    virtual bool isConnected() const;
+   virtual std::string getUniqueId() const;
    virtual void send(boost::shared_ptr<ISms> sms);
    boost::shared_ptr<std::vector<ISms> > getIncomingSMS();
   // [END] IPhone implementation
@@ -81,6 +82,11 @@ private:
    /// \brief	   SMS Send Gammu status
    //--------------------------------------------------------------
    GSM_Error m_smsSendStatus;
+
+   //--------------------------------------------------------------
+   /// \brief	   Phone ID, get when connection is established
+   //--------------------------------------------------------------
+   std::string m_phoneId;
 };
 
 
