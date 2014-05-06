@@ -99,6 +99,9 @@ void CThreadBase::doWorkInternal()
    changeStatus(kRunning);
    try 
    {
+	  //configure the log with thread name
+	  YADOMS_LOG_CONFIGURE(getName());
+
       doWork();
    } 
    catch(boost::thread_interrupted&)

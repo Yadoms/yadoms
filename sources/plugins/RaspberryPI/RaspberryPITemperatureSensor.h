@@ -6,7 +6,7 @@
 //--------------------------------------------------------------
 /// \brief	Fake temperature sensor
 /// \note   Use to simulate a temperature sensor, with 2 variables values :
-///         - temperature : start at 25°, and vary from +- 0.0 to 1.0° at each read
+///         - temperature : start at 25ï¿½, and vary from +- 0.0 to 1.0ï¿½ at each read
 ///         - battery level : start at 100%, decrease by 1% at each read, to 20%
 //--------------------------------------------------------------
 class CRaspberryPITemperatureSensor
@@ -25,8 +25,9 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
-   //--------------------------------------------------------------
-   void read();
+   /// \return      true if the temparature has been read with success, other cases false
+      //--------------------------------------------------------------
+   bool read();
 
    //--------------------------------------------------------------
    /// \brief	    Returns the sensor device ID
@@ -36,7 +37,7 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    Returns read (computed) temperature
-   /// \return     Temperature in °C
+   /// \return     Temperature in ï¿½C
    //--------------------------------------------------------------
    double getTemperature() const;
 
@@ -47,7 +48,7 @@ private:
    const std::string m_deviceId;
 
    //--------------------------------------------------------------
-   /// \brief	    Temperature in °C
+   /// \brief	    Temperature in ï¿½C
    //--------------------------------------------------------------
    double m_temperature;
 };

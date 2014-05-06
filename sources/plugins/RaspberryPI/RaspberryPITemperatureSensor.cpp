@@ -3,7 +3,7 @@
 #include <shared/Log.h>
 
 CRaspberryPITemperatureSensor::CRaspberryPITemperatureSensor(const std::string & deviceId)
-   :m_deviceId(deviceId), m_temperature(25.0)//TODO : prévoir que la température ne puisse pas être remontée (erreur d'accès au fichier par exemple). Dans ce cas, il ne faut rien remonter.
+   :m_deviceId(deviceId), m_temperature(25.0)
 {
 }
 
@@ -11,20 +11,34 @@ CRaspberryPITemperatureSensor::~CRaspberryPITemperatureSensor()
 {
 }
 
-void CRaspberryPITemperatureSensor::read()
+bool CRaspberryPITemperatureSensor::read()
 {
    try
    {
       std::ifstream temperatureFile("/sys/class/thermal/thermal_zone0/temp");
       std::string readValue;
       while(!temperatureFile.eof())
-         getline(temperatureFile, readValue);
+      {
+    	  getline(temperatureFile, readValue);
+    	  if(!readValue.empty())
+    	  {
+    		  break;
+    	  }
+      }
+      temperatureFile.close();
 
-      m_temperature = atof(readValue.c_str()) / 1000;
+      m_temperature = atof(readValue.c_str()) / 1000.0;
+      return true;
+   }
+   catch(std::exception & ex)
+   {
+	   YADOMS_LOG(error) << "Fail to read RaspberryPI thermal sensor : " << ex.what();
    }
    catch(...)
    {
+	   YADOMS_LOG(error) << "Fail to read RaspberryPI thermal sensor";
    }
+   return false;
 }
 
 const std::string& CRaspberryPITemperatureSensor::getDeviceId() const

@@ -72,10 +72,12 @@ public:
 
     void add_directory(implementation_type &impl, const std::string &dirname) 
     { 
+		//TODO : make it works under Raspberry
+    	/*
         if (!boost::filesystem::is_directory(dirname)) 
             throw std::invalid_argument("boost::asio::basic_dir_monitor_service::add_directory: " + dirname + " is not a valid directory entry"); 
 
-        impl->add_directory(dirname); 
+        impl->add_directory(dirname); */
     } 
 
     void remove_directory(implementation_type &impl, const std::string &dirname) 
