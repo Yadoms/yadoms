@@ -2,6 +2,7 @@
 #include "RulerFactory.h"
 #include "standard/DeviceManager.h"
 #include "rfxLanXpl/DeviceManager.h"
+#include "extensions/DeviceManager.h"
 #include <shared/exception/Exception.hpp>
 #include "ICommandRule.h"
 #include <shared/xpl/XplConstants.h>
@@ -12,6 +13,7 @@ namespace communication { namespace rules {
       :m_standardFactories(boost::shared_ptr<IDeviceManager>(new standard::CDeviceManager()))
    {
       //all specific rules factory
+      m_allSpecificRuleFactories.push_back(boost::shared_ptr<IDeviceManager>(new extensions::CDeviceManager()));
       m_allSpecificRuleFactories.push_back(boost::shared_ptr<IDeviceManager>(new rfxLanXpl::CDeviceManager()));
    }
 
@@ -32,41 +34,7 @@ namespace communication { namespace rules {
       }
       return m_standardFactories->identifyRule(protocol, m_instanceManager);
    }
-
-   /*
-   boost::shared_ptr<IRule> CRulerFactory::identifyRule(shared::xpl::CXplMessage & msg)
-   {
-      std::string realSource = msg.getSource().toString();
-      if(boost::istarts_with(realSource, shared::xpl::CXplConstants::getYadomsVendorId()))
-         realSource = msg.getTarget().toString();
-
-      BOOST_FOREACH(boost::shared_ptr<IDeviceManager> currentFactory, m_allSpecificRuleFactories)
-      {
-         if(currentFactory->isHandled(realSource))
-         {
-            boost::shared_ptr<IRule> foundRule = currentFactory->identifyRule(msg.getMessageSchemaIdentifier().toString(), m_instanceManager);
-            if(foundRule.get() != NULL)
-               return foundRule;
-         }
-      }
-      return m_standardFactories->identifyRule(msg.getMessageSchemaIdentifier().toString(), m_instanceManager);
-   }
-
-   boost::shared_ptr<IRule> CRulerFactory::identifyRule(database::entities::CDevice & device)
-   {
-      BOOST_FOREACH(boost::shared_ptr<IDeviceManager> currentFactory, m_allSpecificRuleFactories)
-      {
-         if(currentFactory->isHandled(device.HardwareIdentifier()))
-         {
-            boost::shared_ptr<IRule> foundRule = currentFactory->identifyRule(device.Protocol(), m_instanceManager);
-            if(foundRule.get() != NULL)
-               return foundRule;
-         }
-      }
-      return m_standardFactories->identifyRule(device.Protocol(), m_instanceManager);
-   }
-   */
-
+   
 
    boost::shared_ptr< shared::xpl::CXplMessage > CRulerFactory::createXplCommand(database::entities::CDevice & targetDevice, communication::command::CDeviceCommand & deviceCommand)
    {
