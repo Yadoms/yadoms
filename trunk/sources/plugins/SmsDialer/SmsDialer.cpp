@@ -234,8 +234,7 @@ void CSmsDialer::onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage
    BOOST_ASSERT_MSG(!xplMessage.getBodyValue("to").empty(), "SMS recipient is empty");
    BOOST_ASSERT_MSG(!xplMessage.getBodyValue("body").empty(), "SMS message body is empty");
 
-   const std::string ackRequiredStr = xplMessage.getBodyValue("acknowledgment");
-   const bool ackRequired = !ackRequiredStr.empty() && ackRequiredStr == "true";
+   const bool ackRequired = xplMessage.hasBodyValue("acknowledgment") && xplMessage.getBodyValue("acknowledgment") == "true";
 
    const std::string to = xplMessage.getBodyValue("to");
    const std::string body = xplMessage.getBodyValue("body");
@@ -256,10 +255,9 @@ void CSmsDialer::onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage
    catch (CPhoneException& e)
    {
       YADOMS_LOG(error) << "Error sending SMS : " << e.what();
-      SendXplAck(false, body);
+      if (ackRequired)
+         SendXplAck(false, body);
    }
-
-   //TODO gérer le sendmsg.confirm (http://xplproject.org.uk/wiki/index.php?title=Schema_-_SENDMSG.BASIC)
 }
 
 void CSmsDialer::processIncommingSMS()
@@ -309,7 +307,7 @@ void CSmsDialer::SendXplAck(bool ok, const std::string& sourceMsg) const
    // Add data to message
    // - Device ID
    msg.addToBody("device", m_phone->getUniqueId());
-   // - From (doesn't make sense for an aknowledge)
+   // - From (doesn't make sense for an acknowledge)
    msg.addToBody("from", shared::CStringExtension::EmptyString);
    // - Type
    msg.addToBody("type", ok ? "acknowledgment" : "error");

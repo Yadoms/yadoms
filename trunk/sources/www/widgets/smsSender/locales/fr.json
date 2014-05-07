@@ -6,6 +6,9 @@
          "description" : "Téléphone utilisé pour envoyer des SMS"
       }
    },
-   "sendsms": "Envoyer SMS",
-   "errorDuringSending" : "Echec à l'envoi du SMS",
+   "text": "Envoyer un SMS",
+   "sendSmsButton": "Envoyer SMS",
+   "message": "Message",
+   "to": "À",
+   "errorDuringSending" : "Echec à l'envoi du SMS"
 }

@@ -125,14 +125,21 @@ namespace shared { namespace xpl
 
       //--------------------------------------------------------------
       /// \brief	    Get the Map of the body
-      /// \return     The Map containning all the body
+      /// \return     The Map containing all the body
       //--------------------------------------------------------------
       const std::map<std::string, std::string> & getBody() const;
 
       //--------------------------------------------------------------
-      /// \brief	    Get the Map of the body
+      /// \brief	    Check if body contains the given value
       /// \param [in] key : key of the key/value element
-      /// \return     A value contained in the Mbody
+      /// \return     true if body contains the value
+      //--------------------------------------------------------------
+      bool hasBodyValue(const std::string & key) const;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get body value
+      /// \param [in] key : key of the key/value element
+      /// \return     A value contained in the body
       /// \throw      CXplException if key was not found
       //--------------------------------------------------------------
       const std::string & getBodyValue(const std::string & key) const;

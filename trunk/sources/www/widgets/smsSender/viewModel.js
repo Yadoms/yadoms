@@ -6,34 +6,23 @@ widgetViewModelCtor =
  */
 function SmsSenderViewModel() {
    //observable data
-   this.to = ko.observable("0628084514");//TODO virer ?
-   this.body = ko.observable("message");//TODO virer ?
+   this.to = ko.observable();
+   this.body = ko.observable();
    
    //widget identifier
-   this.widget = null; //TODO à quoi ça sert ?
+   this.widget = null;
 
-   this.kind = ko.observable("simple");//TODO à quoi ça sert ?
-
-   this.smsSenderText = ko.observable("text");//TODO à quoi ça sert ?
-
-   this.showDeviceName = ko.observable(true);//TODO à quoi ça sert ?
+   this.smsSenderText = ko.observable();
 
    this.send = function() {
-         console.debug("OUAIS !");
-         console.debug("to=" + this.to);
-         console.debug("body=" + this.body);
+      // Check that widget is configured, and to/body data are valid
+      if ((!isNullOrUndefined(this.widget.configuration.device)) && (this.to()) && (this.body())) {
+
          var sms = new Object();
-         sms.to = to;
-         sms.body = body;
-         console.debug(JSON.stringify(sms));
-      if (!isNullOrUndefined(this.widget.configuration.device)) {
-         
-         console.debug("OUAIS !");
+         sms.to = this.to();
+         sms.body = this.body();
+         sms.acknowledgment = 'true';
       
-         var sms = new Object();
-         sms.to = to;
-         sms.body = body;
-         
          $.ajax({
             type: "POST",
             url: "/rest/device/" + this.widget.configuration.device + "/command",
@@ -60,7 +49,6 @@ function SmsSenderViewModel() {
       this.widget = widget;
    };
 
-   //TODO à virer ?
    this.configurationChanged = function() {
       //we update the kind observable property
       if ((isNullOrUndefined(this.widget)) || (isNullOrUndefined(this.widget.configuration)))
