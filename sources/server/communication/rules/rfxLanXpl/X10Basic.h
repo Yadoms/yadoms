@@ -2,7 +2,7 @@
 
 #include "../ICommandRule.h"
 
-namespace communication { namespace rules { namespace standard {
+namespace communication { namespace rules { namespace rfxLanXpl {
 
    class CX10Basic : public ICommandRule
    {
@@ -22,6 +22,6 @@ namespace communication { namespace rules { namespace standard {
       // [END] ICommandRule implemntation
    };
    
-} //namespace standard
+} //namespace rfxLanXpl
 } //namespace rules
 } //namespace communication

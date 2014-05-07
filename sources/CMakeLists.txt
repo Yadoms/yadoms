@@ -269,6 +269,8 @@ set(YADOMS_SRC
 	server/communication/rules/rfxLanXpl/AcBasic.cpp
 	server/communication/rules/rfxLanXpl/SensorBasic.h
 	server/communication/rules/rfxLanXpl/SensorBasic.cpp
+	server/communication/rules/rfxLanXpl/X10Basic.h
+	server/communication/rules/rfxLanXpl/X10Basic.cpp
 	
 	
 )

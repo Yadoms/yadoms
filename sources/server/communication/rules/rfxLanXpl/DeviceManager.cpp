@@ -2,6 +2,7 @@
 #include "DeviceManager.h"
 #include "AcBasic.h"
 #include "SensorBasic.h"
+#include "X10Basic.h"
 #include "../Protocol.h"
 #include <shared/xpl/XplConstants.h>
 
@@ -11,7 +12,7 @@ namespace communication { namespace rules { namespace rfxLanXpl {
    {
       m_handledProtocols.push_back( boost::shared_ptr< communication::rules::IProtocol >( new CProtocol<CAcBasic>("ac.basic") ) );
       m_handledProtocols.push_back( boost::shared_ptr< communication::rules::IProtocol >( new CProtocol<CSensorBasic>("sensor.basic") ) );
-
+      m_handledProtocols.push_back( boost::shared_ptr< communication::rules::IProtocol >( new CProtocol<CX10Basic>("x10.basic") ) );
    }
 
    CDeviceManager::~CDeviceManager()
