@@ -27,6 +27,11 @@ namespace communication {
       //----------------------------------------------
       virtual ~CXplGateway();
 
+      //--------------------------------------------------------------
+      /// \brief			Start the gateway, blocking until gateway is fully started
+      //--------------------------------------------------------------
+      virtual void start();
+
    private:
       //----------------------------------------------
       ///\brief Enumeration of events used by this class
@@ -46,6 +51,12 @@ namespace communication {
       // CThreadBase Implementation
       void doWork();
       // [END] CThreadBase Implementation
+
+      //----------------------------------------------
+      ///\brief Wait full start of gateway
+      ///\throw CException if timeout or bad event received
+      //----------------------------------------------
+      void waitForstarted();
       
       //----------------------------------------------
       ///\brief Function handler when receiving XplMessage
@@ -75,6 +86,11 @@ namespace communication {
       ///\brief  The gateway xpl device id
       //----------------------------------------------
       static std::string m_gateway_device_id;
+
+      //----------------------------------------------
+      ///\brief  The event handler used to wait for full gateway start
+      //----------------------------------------------
+      shared::event::CEventHandler m_StartEventHandler;
    };
 
 } //namespace communication

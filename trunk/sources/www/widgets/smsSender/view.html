@@ -1,0 +1,16 @@
+<script type="text/html" id="smsSender-template">
+   <link href="widgets/smsSender/widget.css" rel="stylesheet">
+   <span class="smsSenderWidget">
+      <span class="input-group">
+         <input type="to" class="form-control" data-bind="text: to" placeholder="To">
+         <input type="body" class="form-control" data-bind="text: body" placeholder="Message">
+      </span>
+      
+      <button class="btn btn-lg btn-primary" data-bind="event: {click: function() {send()}}">
+         <span class="glyphicon glyphicon-send"></span>
+         toto
+         <span data-i18n="smsSender:sendsms"></span>
+      </button>
+      </span>
+   </span>
+</script>

@@ -1,0 +1,11 @@
+{
+   "description": "Widget which send SMS",
+   "configurationSchema" : {
+      "device" : {
+         "name" : "Phone",
+         "description" : "Device used to send SMS",
+      }
+   },
+   "sendsms": "Send SMS",
+   "errorDuringSending" : "Fail to send SMS",
+}

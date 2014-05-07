@@ -49,10 +49,65 @@ void CSupervisor::doWork()
          throw shared::exception::CException("Fail to load database");
       }
 
-      // Start the plugin manager
+      //TODO ######################### test serial ports getter #########################
+#if DEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS
+      try
+      {
+         const boost::shared_ptr<const shared::CPeripherals::SerialPortsMap> serialPorts(shared::CPeripherals::getSerialPorts());
+         YADOMS_LOG(debug) << "Search system serial ports...";
+         if (serialPorts->empty())
+            YADOMS_LOG(debug) << "No serial port found.";
+         else
+            for (shared::CPeripherals::SerialPortsMap::const_iterator serialPort = serialPorts->begin() ; serialPort != serialPorts->end() ; ++serialPort)
+               YADOMS_LOG(debug) << "Found serial port : " << serialPort->first << " (" << serialPort->second << ")";
+      }
+      catch (shared::exception::CNotSupported& e)
+      {
+         YADOMS_LOG(debug) << "Not supported function : " << e.what();
+      }
+#endif
+      //\TODO ######################### [END] test serial ports getter #########################
+
+      // ######################### Task manager #########################
+      boost::shared_ptr<task::CScheduler> taskManager = boost::shared_ptr<task::CScheduler>(new task::CScheduler(*this, kSystemEvent));
+
+#if DEV_ACTIVATE_TASK_MANAGER_TESTS
+      //taskManager->RunTask(boost::shared_ptr<task::ITask>(new task::update::CPlugin()));
+      taskManager->RunTask(boost::shared_ptr<task::ITask>(new task::backup::CDatabase(boost::dynamic_pointer_cast<database::IDataBackup>(pDataProvider), "yadoms_backup.db3")));
+#endif
+      // ######################### [END] Task manager #########################
+
+
+      // ######################### Xpl Hub #########################
+      //we start xpl hub only if it's necessary
+      boost::shared_ptr<shared::xpl::CXplHub> hub;
+      if (m_startupOptions.getStartXplHubFlag())
+      {
+         hub.reset(new shared::xpl::CXplHub(m_startupOptions.getXplNetworkIpAddress()));
+         hub->start();
+      }
+
+#if DEV_ACTIVATE_XPL_TESTS
+      database::entities::CPlugin plg;
+      plg.setName("testOfXpl");
+      plg.setPluginName("fakePlugin");
+      plg.setConfiguration("{\"BoolParameter\": \"true\", \"DecimalParameter\": \"18.4\", \"EnumParameter\": \"EnumValue1\", \"IntParameter\": \"42\", \"Serial port\": \"tty1\", \"StringParameter\": \"Yadoms is so powerful !\",\"MySection\": { \"SubIntParameter\": \"123\", \"SubStringParameter\": \"Just a *MODIFIED* string parameter in the sub-section\"}}");
+
+      pluginManager->createInstance(plg);
+#endif
+      // ######################### [END] Xpl Hub #########################
+
+      // ######################### Xpl Logger #########################
+      communication::CXplGateway xplGateway(pDataProvider);
+      xplGateway.start();
+
+      // ######################### [END] Xpl Logger #########################
+
+      // ######################### Plugin manager #########################
       boost::shared_ptr<pluginSystem::CManager> pluginManager = pluginSystem::CManager::newManager(
          m_startupOptions.getPluginsPath(), pDataProvider->getPluginRequester(), pDataProvider->getPluginEventLoggerRequester(),
          pDataProvider->getEventLoggerRequester(), *this, kPluginManagerEvent);
+      // ######################### [END] Plugin manager #########################
 
       //TODO ######################### test interface pluginManager #########################
 #if DEV_ACTIVATE_PLUGIN_MANAGER_TESTS
@@ -174,59 +229,6 @@ void CSupervisor::doWork()
 #endif
       //\TODO ######################### [END] test interface pluginManager #########################
 
-      //TODO ######################### test serial ports getter #########################
-#if DEV_ACTIVATE_SERIAL_PORTS_GETTER_TESTS
-      try
-      {
-         const boost::shared_ptr<const shared::CPeripherals::SerialPortsMap> serialPorts(shared::CPeripherals::getSerialPorts());
-         YADOMS_LOG(debug) << "Search system serial ports...";
-         if (serialPorts->empty())
-            YADOMS_LOG(debug) << "No serial port found.";
-         else
-            for (shared::CPeripherals::SerialPortsMap::const_iterator serialPort = serialPorts->begin() ; serialPort != serialPorts->end() ; ++serialPort)
-               YADOMS_LOG(debug) << "Found serial port : " << serialPort->first << " (" << serialPort->second << ")";
-      }
-      catch (shared::exception::CNotSupported& e)
-      {
-         YADOMS_LOG(debug) << "Not supported function : " << e.what();
-      }
-#endif
-      //\TODO ######################### [END] test interface pluginManager #########################
-
-      // ######################### Task manager #########################
-      boost::shared_ptr<task::CScheduler> taskManager = boost::shared_ptr<task::CScheduler>(new task::CScheduler(*this, kSystemEvent));
-
-#if DEV_ACTIVATE_TASK_MANAGER_TESTS
-      //taskManager->RunTask(boost::shared_ptr<task::ITask>(new task::update::CPlugin()));
-      taskManager->RunTask(boost::shared_ptr<task::ITask>(new task::backup::CDatabase(boost::dynamic_pointer_cast<database::IDataBackup>(pDataProvider), "yadoms_backup.db3")));
-#endif
-      // ######################### [END] Task manager #########################
-
-
-      // ######################### Xpl Hub #########################
-      //we start xpl hub only if it's necessary
-      boost::shared_ptr<shared::xpl::CXplHub> hub;
-      if (m_startupOptions.getStartXplHubFlag())
-      {
-         hub.reset(new shared::xpl::CXplHub(m_startupOptions.getXplNetworkIpAddress()));
-         hub->start();
-      }
-
-#if DEV_ACTIVATE_XPL_TESTS
-      database::entities::CPlugin plg;
-      plg.setName("testOfXpl");
-      plg.setPluginName("fakePlugin");
-      plg.setConfiguration("{\"BoolParameter\": \"true\", \"DecimalParameter\": \"18.4\", \"EnumParameter\": \"EnumValue1\", \"IntParameter\": \"42\", \"Serial port\": \"tty1\", \"StringParameter\": \"Yadoms is so powerful !\",\"MySection\": { \"SubIntParameter\": \"123\", \"SubStringParameter\": \"Just a *MODIFIED* string parameter in the sub-section\"}}");
-
-      pluginManager->createInstance(plg);
-#endif
-      // ######################### [END] Xpl Hub #########################
-
-      // ######################### Xpl Logger #########################
-      communication::CXplGateway xplGateway(pDataProvider);
-      xplGateway.start();
-
-      // ######################### [END] Xpl Logger #########################
 
 
       // ######################### Web server #########################
