@@ -1,0 +1,16 @@
+.smsSenderWidget {
+    width: 100%;
+    text-align: center;
+    margin: auto;
+}
+
+.to {
+   width: 20%;
+   height: auto;
+}
+
+.body {
+   width: 20%;
+   height: auto;
+}
+

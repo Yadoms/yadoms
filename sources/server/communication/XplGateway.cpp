@@ -11,6 +11,8 @@ namespace communication {
 
    std::string CXplGateway::m_gateway_device_id = "gateway";
 
+   enum { kStartEvent = shared::event::kUserFirstId };
+
    CXplGateway::CXplGateway(boost::shared_ptr<database::IDataProvider> dataProvider)
       :CThreadBase("XplGateway"), m_dataProvider(dataProvider)
    {
@@ -18,6 +20,30 @@ namespace communication {
 
    CXplGateway::~CXplGateway()
    {
+   }
+
+   void CXplGateway::start()
+   {
+      CThreadBase::start();
+
+      waitForstarted();
+   }
+
+   void CXplGateway::waitForstarted()
+   {
+      switch (m_StartEventHandler.waitForEvents(boost::posix_time::seconds(10)))
+      {
+      case kStartEvent: // Gateway started
+         return;
+      case shared::event::kTimeout:
+         BOOST_ASSERT_MSG(false, "Unable to start XPL gateway");
+         throw shared::exception::CException("Unable to start XPL gateway");
+         break;
+      default:
+         BOOST_ASSERT_MSG(false, "XPL gateway : unknown event");
+         throw shared::exception::CException("XPL gateway : unknown event");
+         break;
+      }
    }
 
    void CXplGateway::sendCommandAsync(command::CDeviceCommand & message)
@@ -34,6 +60,9 @@ namespace communication {
          YADOMS_LOG(debug) << "XplGateway is starting...";
 
          shared::xpl::CXplService xplService(m_gateway_device_id, "1", NULL, this, kXplMessageReceived);
+
+         // Signal that gateway is fully started
+         m_StartEventHandler.sendEvent(kStartEvent);
 
          while(1)
          {

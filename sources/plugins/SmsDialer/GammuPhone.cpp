@@ -55,6 +55,7 @@ bool CGammuPhone::isConnected() const
 
 std::string CGammuPhone::getUniqueId() const
 {
+   return "test";//TODO à virer
    return m_phoneId;
 }
 

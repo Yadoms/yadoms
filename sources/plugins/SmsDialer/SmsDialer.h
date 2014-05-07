@@ -55,9 +55,15 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	                     Send the actual connection send to XPL network
-   /// \param [in] xplService       The XPL service used to send phone connection state
    //--------------------------------------------------------------
-   void sendConnectionState(shared::xpl::CXplService& xplService) const;
+   void sendConnectionState() const;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Send the acknowledge to XPL network
+   /// \param [in] ok               true for positive ack, false for negative ack
+   /// \param [in] sourceMsg        Original sent message
+   //--------------------------------------------------------------
+   void SendXplAck(bool ok, const std::string& sourceMsg) const;
 
 private:
    //--------------------------------------------------------------
@@ -79,6 +85,11 @@ private:
    /// \brief	Timer to poll for incomming SMS
    //--------------------------------------------------------------
    boost::shared_ptr<shared::event::CEventTimer> m_incommingSmsPollTimer;
+
+   //--------------------------------------------------------------
+   /// \brief	The XPL service used to send phone connection state
+   //--------------------------------------------------------------
+   boost::shared_ptr<shared::xpl::CXplService> m_xplService;
 };
 
 
