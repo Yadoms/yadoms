@@ -4,13 +4,21 @@
     margin: auto;
 }
 
+.sendSmsText{
+    text-align: left;
+}
+
 .to {
    width: 20%;
-   height: auto;
+   line-height: 2em;
 }
 
 .body {
-   width: 20%;
-   height: auto;
+    width: 60%;
+   line-height: 2em;
+}
+
+.btn {
+    resize: none;
 }
 

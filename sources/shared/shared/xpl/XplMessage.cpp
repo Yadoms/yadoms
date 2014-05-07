@@ -138,6 +138,12 @@ const std::map<std::string, std::string> & CXplMessage::getBody() const
    return m_body;
 }
 
+bool CXplMessage::hasBodyValue(const std::string & key) const
+{
+   std::map<std::string, std::string>::const_iterator it = m_body.find(key);
+   return (it != m_body.end());
+}
+
 const std::string & CXplMessage::getBodyValue(const std::string & key) const
 {
    std::map<std::string, std::string>::const_iterator it = m_body.find(key);
