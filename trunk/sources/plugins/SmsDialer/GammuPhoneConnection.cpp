@@ -86,5 +86,8 @@ void CGammuPhoneConnection::disconnect()
 bool CGammuPhoneConnection::isConnected() const
 {
    // Check if serial port is open, and if get the phone manufacturer (to check if a phone is really connected)
-   return GSM_IsConnected(m_gsmContext) == TRUE && GSM_GetManufacturer(m_gsmContext, NULL) != ERR_NONE;
+   if (GSM_IsConnected(m_gsmContext) != TRUE)
+      return false;
+   
+   return GSM_InitConnection(m_gsmContext, 1) != ERR_NONE;
 }
