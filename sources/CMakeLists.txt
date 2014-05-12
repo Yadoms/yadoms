@@ -297,10 +297,6 @@ source_group(server\\communication\\rules\\rfxLanXpl  server/communication/rules
 
 # Tools
 set(YADOMS_SRC ${YADOMS_SRC}
-	server/tools/tools/dir_monitor/dir_monitor.hpp
-	server/tools/tools/dir_monitor/basic_dir_monitor.hpp
-	server/tools/tools/DirectoryChangeListener.h
-	server/tools/tools/DirectoryChangeListener.cpp
 	server/tools/tools/Version.h
 	server/tools/tools/Version.cpp
 	server/tools/tools/Random.h
@@ -312,18 +308,15 @@ set(YADOMS_SRC ${YADOMS_SRC}
 
 IF(WIN32)
 set(YADOMS_SRC ${YADOMS_SRC}
-	server/tools/windows/tools/dir_monitor/basic_dir_monitor_service.hpp
-	server/tools/windows/tools/dir_monitor/dir_monitor_impl.hpp
+	# Add here server/tools/windows/tools/ sources
 )	
 ELSEIF(APPLE)
 set(YADOMS_SRC ${YADOMS_SRC}
-	server/tools/mac/tools/dir_monitor/basic_dir_monitor_service.hpp
-	server/tools/mac/tools/dir_monitor/dir_monitor_impl.hpp
+	# Add here server/tools/mac/tools/ sources
 )	
 ELSE()
 set(YADOMS_SRC ${YADOMS_SRC}
-	server/tools/linux/tools/dir_monitor/basic_dir_monitor_service.hpp
-	server/tools/linux/tools/dir_monitor/dir_monitor_impl.hpp
+	# Add here server/tools/linux/tools/ sources
 )	
 ENDIF()
 
