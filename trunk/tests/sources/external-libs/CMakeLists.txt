@@ -1,7 +1,6 @@
-#todo : pas encore de test U sur les lib externes
 
 # List subdirectories here
-#todo
+#For example :
 #add_subdirectory(SQLite)
 
 
