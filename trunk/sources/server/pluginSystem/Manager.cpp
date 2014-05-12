@@ -78,10 +78,6 @@ void CManager::init()
       if (databasePluginInstance->Enabled())
          startInstance(databasePluginInstance->Id());
    }
-
-   // Start the directory changes monitor
-   m_pluginsDirectoryMonitor.reset(new tools::CDirectoryChangeListener(m_pluginPath, boost::bind(&CManager::onPluginDirectoryChanges, this, _1)));
-
 }
 
 void CManager::runPluginIOService()
@@ -337,12 +333,6 @@ void CManager::signalEvent(const CManagerEvent& event)
          break;
       }
    }
-}
-
-void CManager::onPluginDirectoryChanges(const boost::asio::dir_monitor_event& ev)
-{
-   YADOMS_LOG(debug) << "pluginSystem::CManager::onPluginDirectoryChanges" << ev.type;
-   updatePluginList();
 }
 
 boost::filesystem::path CManager::toPath(const std::string& pluginName) const

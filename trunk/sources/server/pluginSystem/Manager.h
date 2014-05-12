@@ -5,8 +5,6 @@
 //
 #pragma once
 
-#include "tools/DirectoryChangeListener.h"
-
 #include "Factory.h"
 #include "Instance.h"
 #include "ManagerEvent.h"
@@ -143,6 +141,11 @@ namespace pluginSystem
       //--------------------------------------------------------------
       void signalEvent(const CManagerEvent& event);
 
+      //--------------------------------------------------------------
+      /// \brief        Update the plugin list if needed (after plugin installation for example)
+      //--------------------------------------------------------------
+      void updatePluginList();
+
    private:
       //--------------------------------------------------------------
       /// \brief        Returns all plugin directories installed
@@ -151,11 +154,6 @@ namespace pluginSystem
       ///               It doesn't check if plugin is valid (export expected functions)
       //--------------------------------------------------------------
       std::vector<boost::filesystem::path> findPluginDirectories();
-
-      //--------------------------------------------------------------
-      /// \brief        Update the plugin list if needed
-      //--------------------------------------------------------------
-      void updatePluginList();
 
       //--------------------------------------------------------------
       /// \brief        Build the available plugin map (update m_availablePlugins)
@@ -176,12 +174,6 @@ namespace pluginSystem
       /// \return       true if plugin was unloaded
       //--------------------------------------------------------------
       bool unloadPlugin(const std::string& pluginName);
-
-      //--------------------------------------------------------------
-      /// \brief			Event when plugin directory changes
-      /// \param [in] ev Informations about the event
-      //--------------------------------------------------------------
-      void onPluginDirectoryChanges(const boost::asio::dir_monitor_event& ev);
 
       //--------------------------------------------------------------
       /// \brief			Get the plugin library path from the plugin name
@@ -245,11 +237,6 @@ namespace pluginSystem
       /// \brief			Plugin path
       //--------------------------------------------------------------
       boost::filesystem::path m_pluginPath;
-
-      //--------------------------------------------------------------
-      /// \brief			Plugin directory listener
-      //--------------------------------------------------------------
-      boost::shared_ptr<tools::CDirectoryChangeListener> m_pluginsDirectoryMonitor;
 
       //--------------------------------------------------------------
       /// \brief			Plugin qualifier

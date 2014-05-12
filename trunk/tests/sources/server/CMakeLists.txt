@@ -3,7 +3,6 @@
 
 # List subdirectories here
 add_subdirectory(startupOptions)
-add_subdirectory(tools)
 
 
 
