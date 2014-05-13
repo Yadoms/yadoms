@@ -6,7 +6,7 @@
 
 
 CGammuPhone::CGammuPhone(const ISmsDialerConfiguration& configuration)
-   :m_configuration(configuration), m_connection(configuration)
+   :m_configuration(configuration), m_connection(configuration), m_incompleteMessageId(-1), m_incompleteMessageTime(0)
 {
 }
 
@@ -149,9 +149,9 @@ void CGammuPhone::sendSmsCallback(GSM_StateMachine *sm, int status, int MessageR
 
 boost::shared_ptr<std::vector<ISms> > CGammuPhone::getIncomingSMS()
 {
-   BOOST_ASSERT_MSG(isConnected(), "Phone must be connected to read incomming SMS");
+   BOOST_ASSERT_MSG(isConnected(), "Phone must be connected to read incoming SMS");
    if (!isConnected())
-      throw CPhoneException("Phone must be connected to read incomming SMS");
+      throw CPhoneException("Phone must be connected to read incoming SMS");
 
    boost::shared_ptr<std::vector<ISms> > noSms;
    bool newSms;
@@ -248,20 +248,16 @@ boost::shared_ptr<std::vector<ISms> > CGammuPhone::readSms(bool deleteSms)
    }
 
    // Process messages
-   //TODO
-   //boost::shared_ptr<std::vector<ISms> > smsList(new std::vector<CSms>);
-   //for (size_t idxSms = 0 ; gammuSortedSmsPtrArray.get()[idxSms] != NULL ; ++i)
-   //{
-   //   // Check incomplete message (for long parted SMS)
-   //   if (!checkMultipart(gammuSortedSmsPtrArray.get()[idxSms]))
-   //   {
-   //      return noSms;
-   //   }
+   for (size_t idxSms = 0 ; gammuSortedSmsPtrArray.get()[idxSms] != NULL ; ++idxSms)
+   {
+      // Check incomplete message (for long parted SMS)
+      if (!checkMultipart(gammuSortedSmsPtrArray.get()[idxSms]))
+         return noSms;
 
-   //   // Record the message
-   //   boost::shared_ptr<ISms> sms(new CSms(gammuSortedSmsPtrArray.get()[idxSms]->SMS.));
-
-   //   }
+      // Record the message
+//      boost::shared_ptr<std::vector<ISms> > smsList(new std::vector<CSms>);
+      //boost::shared_ptr<ISms> sms(new CSms(gammuSortedSmsPtrArray.get()[idxSms]->SMS.));
+   }
 
       // Delete processed messages
    //TODO
@@ -298,6 +294,59 @@ bool CGammuPhone::isValidMessage(GSM_MultiSMSMessage* gammuSms) const
 
 bool CGammuPhone::checkMultipart(GSM_MultiSMSMessage* gammuSms)
 {
-   //TODO
+   /* Does the message have UDH (is multipart)? */
+   if (gammuSms->SMS[0].UDH.Type == UDH_NoUDH || gammuSms->SMS[0].UDH.AllParts == -1)
+      return true;
+
+   /* Grab current id */
+   int currentId = (gammuSms->SMS[0].UDH.ID16bit != -1) ? gammuSms->SMS[0].UDH.ID16bit : gammuSms->SMS[0].UDH.ID8bit;
+
+   /* Do we have same id as last incomplete? */
+   bool sameId = (m_incompleteMessageId != -1 && m_incompleteMessageId == currentId);
+
+   /* Check if we have all parts */
+   if (gammuSms->SMS[0].UDH.AllParts == gammuSms->Number)
+   {
+      if (sameId)
+         razMultipartWaitFlags();
+      return true;
+   }
+
+   /* Have we seen this message recently? */
+   static const double multipartTimeout = 600;  // 600 seconds to retrieve all parts os a message
+   if (sameId)
+   {
+      if (m_incompleteMessageTime != 0 && difftime(time(NULL), m_incompleteMessageTime) >= multipartTimeout)
+      {
+         // Incomplete multipart message processing after timeout
+         razMultipartWaitFlags();
+         return true;
+      }
+      else
+      {
+         // Incomplete multipart message, waiting for other parts
+      }
+   }
+   else
+   {
+      if (m_incompleteMessageTime == 0)
+      {
+         // Incomplete multipart message, waiting for other parts
+         m_incompleteMessageId = (gammuSms->SMS[0].UDH.ID16bit != -1) ? gammuSms->SMS[0].UDH.ID16bit : gammuSms->SMS[0].UDH.ID8bit;
+         m_incompleteMessageTime = time(NULL);
+      }
+      else
+      {
+         // Incomplete multipart message, but waiting for other one
+      }
+   }
+
+   // Incomplete multipart message
    return false;
+}
+
+void CGammuPhone::razMultipartWaitFlags()
+{
+   m_incompleteMessageTime = 0;
+   m_incompleteMessageId = -1;
 }

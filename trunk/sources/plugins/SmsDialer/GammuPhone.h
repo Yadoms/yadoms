@@ -67,6 +67,11 @@ protected:
    //--------------------------------------------------------------
    bool checkMultipart(GSM_MultiSMSMessage* gammuSms);
 
+   //--------------------------------------------------------------
+   /// \brief	                  Raz the multi-parted wait flag
+   //--------------------------------------------------------------
+   void razMultipartWaitFlags();
+
 private:
    //--------------------------------------------------------------
    /// \brief	   The plugin instance configuration
@@ -87,6 +92,16 @@ private:
    /// \brief	   Phone ID, get when connection is established
    //--------------------------------------------------------------
    std::string m_phoneId;
+
+   //--------------------------------------------------------------
+   /// \brief	   Gammu context data : incomplete message ID (Multipart messages processing)
+   //--------------------------------------------------------------
+   int m_incompleteMessageId;
+
+   //--------------------------------------------------------------
+   /// \brief	   Gammu context data : incomplete message time (Multipart messages processing)
+   //--------------------------------------------------------------
+   time_t m_incompleteMessageTime;
 };
 
 
