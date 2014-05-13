@@ -1,8 +1,20 @@
 #include "stdafx.h"
 #include "MessageSms.h"
 #include "tools/Random.h"
+#include "communication/rules/KeywordManager.h"
+#include <shared/Log.h>
 
 namespace communication { namespace rules { namespace extensions {
+
+
+   std::string CMessageSms::m_keywordDevice = "device";
+   std::string CMessageSms::m_keywordFrom = "from";
+   std::string CMessageSms::m_keywordTo = "to";
+   std::string CMessageSms::m_keywordContent = "content";
+   std::string CMessageSms::m_keywordType = "type";
+   std::string CMessageSms::m_keywordTypeValues = "message|acknowledgment|error";
+   std::string CMessageSms::m_keywordAcknowledgment = "acknowledgment";
+   std::string CMessageSms::m_keywordAcknowledgmentValues = "true|false";
 
    CMessageSms::CMessageSms()
    {
@@ -13,32 +25,20 @@ namespace communication { namespace rules { namespace extensions {
    }
 
    // IRule implementation
-   const DeviceIdentifier CMessageSms::getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg)
+   const CDeviceIdentifier CMessageSms::getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg)
    {
-      return msg.getBodyValue("device");
+      return CDeviceIdentifier(msg.getBodyValue(m_keywordDevice));
    }
 
    MessageContent CMessageSms::extractMessageData(shared::xpl::CXplMessage & msg)
    {
       MessageContent data;
 
-      if(msg.getBody().find("from") != msg.getBody().end())
-         data.insert(std::make_pair("from", msg.getBodyValue("from")));
-
-      if(msg.getBody().find("type") != msg.getBody().end())
-         data.insert(std::make_pair("type", msg.getBodyValue("type")));
-
-      if(msg.getBody().find("content") != msg.getBody().end())
-         data.insert(std::make_pair("content", msg.getBodyValue("content")));
-
-      if(msg.getBody().find("to") != msg.getBody().end())
-         data.insert(std::make_pair("to", msg.getBodyValue("to")));
-
-      if(msg.getBody().find("body") != msg.getBody().end())
-         data.insert(std::make_pair("body", msg.getBodyValue("body")));
-
-      if(msg.getBody().find("acknowledgment") != msg.getBody().end())
-         data.insert(std::make_pair("acknowledgment", msg.getBodyValue("acknowledgment")));
+      BOOST_FOREACH( const MessageContent::value_type &i, msg.getBody())
+      {
+         if(!boost::iequals(i.first, m_keywordDevice))
+            data.insert(i);
+      }
 
       return data;      
    }
@@ -47,52 +47,20 @@ namespace communication { namespace rules { namespace extensions {
    {
       std::vector< boost::shared_ptr<database::entities::CKeyword> > keywords;
 
+      //from
+      keywords.push_back(communication::rules::CKeywordManager::createString(m_keywordFrom));
 
-      if(msg.getTypeIdentifier(), shared::xpl::CXplMessage::kXplTrigger)
-      {
-         //from
-         boost::shared_ptr<database::entities::CKeyword> fromKeyword(new database::entities::CKeyword());
-         fromKeyword->Name = "from";
-         fromKeyword->Type = "string";
-         keywords.push_back(fromKeyword);
+      //to
+      keywords.push_back(communication::rules::CKeywordManager::createString(m_keywordTo));
 
-         //type
-         boost::shared_ptr<database::entities::CKeyword> typeKeyword(new database::entities::CKeyword());
-         typeKeyword->Name = "type";
-         typeKeyword->Type = "enumeration";
-         typeKeyword->Parameters = "message|acknowledgment|error";
-         keywords.push_back(typeKeyword);
+      //type
+      keywords.push_back(communication::rules::CKeywordManager::createEnumeration(m_keywordType, m_keywordTypeValues));
 
-         //content
-         boost::shared_ptr<database::entities::CKeyword> contentKeyword(new database::entities::CKeyword());
-         contentKeyword->Name = "from";
-         contentKeyword->Type = "string";
-         keywords.push_back(contentKeyword);
+      //content
+      keywords.push_back(communication::rules::CKeywordManager::createString(m_keywordContent));
 
-      }
-
-
-      if(msg.getTypeIdentifier(), shared::xpl::CXplMessage::kXplCommand)
-      {
-         //to
-         boost::shared_ptr<database::entities::CKeyword> toKeyword(new database::entities::CKeyword());
-         toKeyword->Name = "to";
-         toKeyword->Type = "string";
-         keywords.push_back(toKeyword);
-
-         //body
-         boost::shared_ptr<database::entities::CKeyword> bodyKeyword(new database::entities::CKeyword());
-         bodyKeyword->Name = "from";
-         bodyKeyword->Type = "string";
-         keywords.push_back(bodyKeyword);
-
-         //acknowledgment
-         boost::shared_ptr<database::entities::CKeyword> acknowledgmentKeyword(new database::entities::CKeyword());
-         acknowledgmentKeyword->Name = "type";
-         acknowledgmentKeyword->Type = "enumeration";
-         acknowledgmentKeyword->Parameters = "true|false";
-         keywords.push_back(acknowledgmentKeyword);
-      }
+      //acknowledgment
+      keywords.push_back(communication::rules::CKeywordManager::createEnumeration(m_keywordAcknowledgment, m_keywordAcknowledgmentValues));
 
       return keywords;
    }
@@ -112,14 +80,15 @@ namespace communication { namespace rules { namespace extensions {
 
       //check the command value
       communication::command::CDeviceCommand::CommandData content = deviceCommand.getCommandData();
-      if(content.find("to") == content.end())
+      if(content.find(m_keywordTo) == content.end())
       {
-         throw shared::exception::CException("message.sms protocol needs a parameter 'to' ");
+         throw shared::exception::CException( (boost::format("message.sms protocol needs a parameter '%1%'") % m_keywordTo).str());
       }
 
-      if(content.find("body") == content.end())
+      if(content.find(m_keywordContent) == content.end())
       {
-         throw shared::exception::CException("message.sms protocol needs a parameter 'body' ");
+         throw shared::exception::CException( (boost::format("message.sms protocol needs a parameter '%1%'") % m_keywordContent).str());
+
       }
 
 
@@ -143,18 +112,25 @@ namespace communication { namespace rules { namespace extensions {
       newMessage->setMessageSchemaIdentifier(shared::xpl::CXplMessageSchemaIdentifier("message", "sms"));
 
       //set the device addesss and unit (parse from argetDevice.Address)
-      newMessage->addToBody("device", device);
-      
+      newMessage->addToBody(m_keywordDevice, device);
+
       //set the message target
-      newMessage->addToBody("to", content["to"]);
+      newMessage->addToBody(m_keywordTo, content[m_keywordTo]);
 
       //set the message body
-      newMessage->addToBody("body", content["body"]);
+      newMessage->addToBody(m_keywordContent, content[m_keywordContent]);
 
       //set the acknowlegment if specified
-      if(content.find("acknowledgment") != content.end())
+      if(content.find(m_keywordAcknowledgment) != content.end())
       {
-         newMessage->addToBody("acknowledgment", content["acknowledgment"]);
+         if(CKeywordManager::isEnumerationValue(content[m_keywordAcknowledgment], m_keywordAcknowledgmentValues))
+         {
+            newMessage->addToBody(m_keywordAcknowledgment, content[m_keywordAcknowledgment]);
+         }
+         else
+         {
+            YADOMS_LOG(warning) << "The value : '" << content[m_keywordAcknowledgment] << "' is not a valid enumeration one for acknowledgment";
+         }
       }
       return newMessage;
    }

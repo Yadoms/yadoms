@@ -249,7 +249,11 @@ set(YADOMS_SRC
 	server/communication/rules/ICommandRule.h
 	server/communication/rules/IProtocol.h
 	server/communication/rules/Protocol.h
+	server/communication/rules/KeywordManager.h
+	server/communication/rules/KeywordManager.cpp
 	server/communication/rules/IDeviceManager.h
+	server/communication/rules/DeviceIdentifier.h
+	server/communication/rules/DeviceIdentifier.cpp
 	server/communication/rules/RuleInstanceManager.hpp
 	server/communication/rules/RulerFactory.h
 	server/communication/rules/RulerFactory.cpp

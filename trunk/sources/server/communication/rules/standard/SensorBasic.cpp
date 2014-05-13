@@ -11,9 +11,9 @@ namespace communication { namespace rules { namespace standard {
    {
    }
    
-   const DeviceIdentifier CSensorBasic::getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg)
+   const CDeviceIdentifier CSensorBasic::getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg)
    {
-      return msg.getBodyValue("device");
+      return CDeviceIdentifier(msg.getBodyValue("device"));
    }
    
    MessageContent CSensorBasic::extractMessageData(shared::xpl::CXplMessage & msg)

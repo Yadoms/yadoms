@@ -12,9 +12,9 @@ namespace communication { namespace rules { namespace rfxLanXpl {
    {
    }
 
-   const DeviceIdentifier CX10Basic::getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg)
+   const CDeviceIdentifier CX10Basic::getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg)
    {
-      return msg.getBodyValue("device");
+      return CDeviceIdentifier(msg.getBodyValue("device"));
    }
 
    MessageContent CX10Basic::extractMessageData(shared::xpl::CXplMessage & msg)

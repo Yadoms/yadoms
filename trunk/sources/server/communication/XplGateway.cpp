@@ -131,15 +131,15 @@ namespace communication {
          if(rule.get() != NULL)
          {
             //retreeive device identifier
-            rules::DeviceIdentifier deviceAddress = rule->getDeviceAddressFromMessage(xplMessage);
+            rules::CDeviceIdentifier deviceAddress = rule->getDeviceAddressFromMessage(xplMessage);
 
             //try to find device in db
-            boost::shared_ptr<database::entities::CDevice> device = m_dataProvider->getDeviceRequester()->getDevice(deviceAddress, xplMessage.getMessageSchemaIdentifier().toString(), realSource);
+            boost::shared_ptr<database::entities::CDevice> device = m_dataProvider->getDeviceRequester()->getDevice(deviceAddress.getId(), xplMessage.getMessageSchemaIdentifier().toString(), realSource);
             if(!device)
             {
                //create the device in database
                //TODO : make rule generate a pseudo real name
-               device = m_dataProvider->getDeviceRequester()->createDevice(deviceAddress, xplMessage.getMessageSchemaIdentifier().toString(), realSource, deviceAddress);
+               device = m_dataProvider->getDeviceRequester()->createDevice(deviceAddress.getId(), xplMessage.getMessageSchemaIdentifier().toString(), realSource, deviceAddress.getCommercialName());
             }
 
             //create message keywords in database
