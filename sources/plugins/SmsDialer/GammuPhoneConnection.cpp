@@ -63,6 +63,8 @@ bool CGammuPhoneConnection::connect()
    catch (CPhoneException& e)
    {
       YADOMS_LOG(error) << e.what();
+      disconnect();
+      return false;
    }
 
    return isConnected();
@@ -70,9 +72,6 @@ bool CGammuPhoneConnection::connect()
 
 void CGammuPhoneConnection::disconnect()
 {
-   if (!isConnected())
-      return;
-
    try
    {
       handleGammuError(GSM_TerminateConnection(m_gsmContext), "Unable to close connection");
@@ -89,5 +88,5 @@ bool CGammuPhoneConnection::isConnected() const
    if (GSM_IsConnected(m_gsmContext) != TRUE)
       return false;
    
-   return GSM_InitConnection(m_gsmContext, 1) != ERR_NONE;
+   return GSM_GetManufacturer(m_gsmContext, NULL) == ERR_NONE;
 }

@@ -76,7 +76,6 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
 
       while(1)
       {
-         sendConnectionState();//TODO virer
          if (!m_phone->isConnected())
          {
             ProcessNotConnectedState();
@@ -159,7 +158,7 @@ void CSmsDialer::ProcessNotConnectedState()
 
 void CSmsDialer::ProcessConnectedState()
 {
-   YADOMS_LOG(info) << "Phone is sconnected"  << std::endl;
+   YADOMS_LOG(info) << "Phone is connected"  << std::endl;
 
    m_connectionTimer->stop();
    m_incommingSmsPollTimer->start();
@@ -265,9 +264,8 @@ void CSmsDialer::processIncommingSMS()
    // Check if incoming SMS
 
    //TODO
-   //boost::shared_ptr<std::vector<ISms> > incommingSms = m_phone->getIncomingSMS();
+   boost::shared_ptr<std::vector<ISms> > incommingSms = m_phone->getIncomingSMS();
    //if (!incommingSms)
-      return;  // No new message
 
    //TODO : traiter le message reçu
 }
