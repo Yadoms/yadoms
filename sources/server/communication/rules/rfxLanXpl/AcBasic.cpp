@@ -1,8 +1,16 @@
 #include "stdafx.h"
 #include "AcBasic.h"
 #include "tools/Random.h"
+#include "communication/rules/KeywordManager.h"
 
 namespace communication { namespace rules { namespace rfxLanXpl {
+
+
+   std::string CAcBasic::m_keywordAddress = "address";
+   std::string CAcBasic::m_keywordUnit = "unit";
+   std::string CAcBasic::m_keywordCommand = "command";
+   std::string CAcBasic::m_keywordCommandValues = "on|off|preset";
+   std::string CAcBasic::m_keywordLevel = "level";
 
    CAcBasic::CAcBasic()
    {
@@ -13,40 +21,28 @@ namespace communication { namespace rules { namespace rfxLanXpl {
    }
 
    // IRule implementation
-   const DeviceIdentifier CAcBasic::getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg)
+   const CDeviceIdentifier CAcBasic::getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg)
    {
-      return msg.getBodyValue("address") + "-" +  msg.getBodyValue("unit");
+      return CDeviceIdentifier(msg.getBodyValue(m_keywordAddress) + "-" +  msg.getBodyValue(m_keywordUnit));
    }
 
    MessageContent CAcBasic::extractMessageData(shared::xpl::CXplMessage & msg)
    {
       MessageContent data;
-      data.insert(std::make_pair("command", msg.getBodyValue("command")));
-      if(msg.getBody().find("level") != msg.getBody().end())
-         data.insert(std::make_pair("level", msg.getBodyValue("level")));
+      data.insert(std::make_pair(m_keywordCommand, msg.getBodyValue(m_keywordCommand)));
+      if(msg.getBody().find(m_keywordLevel) != msg.getBody().end())
+         data.insert(std::make_pair(m_keywordLevel, msg.getBodyValue(m_keywordLevel)));
       return data;
    }
 
    std::vector< boost::shared_ptr<database::entities::CKeyword> > CAcBasic::identifyKeywords(shared::xpl::CXplMessage & msg)
    {
       std::vector< boost::shared_ptr<database::entities::CKeyword> > keywords;
+      //command
+      keywords.push_back(CKeywordManager::createEnumeration(m_keywordCommand, m_keywordCommandValues));
 
-      boost::shared_ptr<database::entities::CKeyword> mainKeyword(new database::entities::CKeyword());
-
-      //COMMON
-      mainKeyword->Name = "command";
-      mainKeyword->Type = "enumeration";
-      mainKeyword->Parameters = "on|off|preset";
-
-      //LEVEL
-      boost::shared_ptr<database::entities::CKeyword> levelKeyword(new database::entities::CKeyword());
-      levelKeyword->Name = "level";
-      levelKeyword->Type = "numeric";
-      levelKeyword->Minimum = 0;
-      levelKeyword->Maximum = 15;
-      keywords.push_back(levelKeyword);
-
-      keywords.push_back(mainKeyword);
+      //level
+      keywords.push_back(CKeywordManager::createNumeric(m_keywordLevel, 0, 15));
       return keywords;
    }
    // [END] IRule implementation
@@ -72,16 +68,14 @@ namespace communication { namespace rules { namespace rfxLanXpl {
 
       //check the command value
       communication::command::CDeviceCommand::CommandData content = deviceCommand.getCommandData();
-      if(content.find("command") == content.end())
+      if(content.find(m_keywordCommand) == content.end())
       {
-         throw shared::exception::CException("ac.basic protocol needs a parameter 'command' ");
+         throw shared::exception::CException( (boost::format("ac.basic protocol needs a parameter '%1%'") % m_keywordCommand).str());
       }
 
-      if( !boost::iequals(content["command"], "on") &&
-         !boost::iequals(content["command"], "off") &
-         !boost::iequals(content["command"], "preset"))
+      if(!CKeywordManager::isEnumerationValue(content[m_keywordCommand], m_keywordCommandValues))
       {
-         throw shared::exception::CException("ac.basic protocol needs a parameter 'command' that match 'on' or 'off' or 'preset'");
+         throw shared::exception::CException( (boost::format("ac.basic protocol needs a parameter '%1%' that match one off : '%2%' ( '|' separated )") % m_keywordCommand % m_keywordCommandValues).str());
       }
 
 
@@ -106,17 +100,17 @@ namespace communication { namespace rules { namespace rfxLanXpl {
       newMessage->setMessageSchemaIdentifier(shared::xpl::CXplMessageSchemaIdentifier("ac", "basic"));
 
       //set the device addesss and unit (parse from argetDevice.Address)
-      newMessage->addToBody("address", splittedAddress[0]);
-      newMessage->addToBody("unit", splittedAddress[1]);
+      newMessage->addToBody(m_keywordAddress, splittedAddress[0]);
+      newMessage->addToBody(m_keywordUnit, splittedAddress[1]);
 
       //set the command
-      newMessage->addToBody("command", content["command"]);
+      newMessage->addToBody(m_keywordCommand, content[m_keywordCommand]);
 
       //if there is any other data to send, just add key/value to bidy
       communication::command::CDeviceCommand::CommandData::const_iterator i;
       for(i=content.begin(); i!=content.end(); ++i)
       {
-         if(!boost::iequals(i->first, "command"))
+         if(!boost::iequals(i->first, m_keywordCommand))
             newMessage->addToBody(i->first, i->second);
       }
 

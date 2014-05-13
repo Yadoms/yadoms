@@ -3,6 +3,20 @@
 
 namespace communication { namespace rules { namespace rfxLanXpl {
 
+
+   //-------------------------------------------------------------------------------------
+   //-------------------------------------------------------------------------------------
+   //-------------------------------------------------------------------------------------
+   //-------------------------------------------------------------------------------------
+   //-------------------------------------------------------------------------------------
+   // All this file has been written from the "RFXCOM Implementation.pdf"
+   // RFXLAN xPL version 7.8 04-01-2013
+   //-------------------------------------------------------------------------------------
+   //-------------------------------------------------------------------------------------
+   //-------------------------------------------------------------------------------------
+   //-------------------------------------------------------------------------------------
+   //-------------------------------------------------------------------------------------
+
    CSensorBasic::CSensorBasic()
    {
    }
@@ -11,9 +25,112 @@ namespace communication { namespace rules { namespace rfxLanXpl {
    {
    }
 
-   const DeviceIdentifier CSensorBasic::getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg)
+   const CDeviceIdentifier CSensorBasic::getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg)
    {
-      return msg.getBodyValue("device");
+      std::string deviceId = msg.getBodyValue("device");
+      std::string deviceName="";
+
+      if(boost::istarts_with(deviceId, "digimax"))
+         deviceName="digimax";
+
+      if(boost::istarts_with(deviceId, "rfxsensor"))
+         deviceName="RFXSensor";
+
+      if(boost::istarts_with(deviceId, "rfxmeter"))
+         deviceName="RFXMeter";
+
+      if(boost::istarts_with(deviceId, "io"))
+      {
+         deviceName="RFXLAN I/O Line ";
+         deviceName += deviceId[2];
+      }
+
+      if(boost::istarts_with(deviceId, "0x") && boost::iequals(msg.getBodyValue("type"), "mertik"))
+         deviceName="Mertik-Maxitrol";
+      
+      if(isOregonDevice(msg))
+      {
+         deviceName="Oregon";
+         
+         if(boost::istarts_with(deviceId, "temp1"))
+            deviceName += " Inside temperature (THR128/138 THC138)";
+
+         if(boost::istarts_with(deviceId, "temp2"))
+            deviceName += " Outside/Water/BBQ temperature (THC238/268, THN122N/132N, THWR288A, THRN122N, AW129/131)";
+
+         if(boost::istarts_with(deviceId, "temp3"))
+            deviceName += " Water temperature (THWR800)";
+
+         if(boost::istarts_with(deviceId, "temp4"))
+            deviceName += " Outside Temperature (RTHN318)";
+
+         if(boost::istarts_with(deviceId, "th1"))
+            deviceName += " Inside Temp-Hygro  (THGN122N/123N, THGR122NX, THGR228N, THGR238/268)";
+
+         if(boost::istarts_with(deviceId, "th2"))
+            deviceName += " Inside Temp-Hygro  (THGR810)";
+
+         if(boost::istarts_with(deviceId, "th3"))
+            deviceName += " Outside Temp-Hygro (RTGR328N)";
+
+         if(boost::istarts_with(deviceId, "th4"))
+            deviceName += " Outside Temp-Hygro (THGR328N)";
+
+         if(boost::istarts_with(deviceId, "th5"))
+            deviceName += " Outside Temp-Hygro (WTGR800)";
+
+         if(boost::istarts_with(deviceId, "th6"))
+            deviceName += " Outside Temp-Hygro (THGR918, THGRN228NX, THGN500)";
+
+         if(boost::istarts_with(deviceId, "thb1"))
+            deviceName += " Inside Temp-Hygro-Baro (Huger-BTHR918)";
+
+         if(boost::istarts_with(deviceId, "thb2"))
+            deviceName += " Inside Temp-Hygro-Baro (BTHR918N, BTHR968)";
+
+         if(boost::istarts_with(deviceId, "rain1"))
+            deviceName += " Rain gauge (RGR126, RGR682, RGR918)";
+
+         if(boost::istarts_with(deviceId, "rain2"))
+            deviceName += " Rain gauge (PCR800)";
+
+         if(boost::istarts_with(deviceId, "wind1"))
+            deviceName += " Anemometer (WTGR800)";
+
+         if(boost::istarts_with(deviceId, "wind2"))
+            deviceName += " Anemometer (WGR800)";
+
+         if(boost::istarts_with(deviceId, "wind3"))
+            deviceName += " Anemometer (Huger-STR918, WGR918)";
+
+         if(boost::istarts_with(deviceId, "uv1"))
+            deviceName += " UV sensor (UVN128, UV138)";
+
+         if(boost::istarts_with(deviceId, "uv2"))
+            deviceName += " UV sensor (UVN800)";
+
+         if(boost::istarts_with(deviceId, "dt1"))
+            deviceName += " Date & Time (RTGR328N)";
+
+         if(boost::istarts_with(deviceId, "WEIGHT1"))
+            deviceName += " Body Weight Monitor (BWR102)";
+
+         if(boost::istarts_with(deviceId, "WEIGHT2"))
+            deviceName += " Body Weight Monitor (GR101)";
+
+         if(boost::istarts_with(deviceId, "elec1"))
+            deviceName += " Ampere meter (cent-a-meter, Electrisave, OWL CM113)";
+
+         if(boost::istarts_with(deviceId, "elec2"))
+            deviceName += " Power meter (OWL CM119, CM160)";
+
+         if(boost::istarts_with(deviceId, "elec3"))
+            deviceName += " Power meter (OWL CM180)";
+
+         if(boost::istarts_with(deviceId, "elec4"))
+            deviceName += " Ampere+Power meter (OWL CM180i)";
+      }
+      return CDeviceIdentifier(deviceId, deviceName);
    }
 
    MessageContent CSensorBasic::extractMessageData(shared::xpl::CXplMessage & msg)

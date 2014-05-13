@@ -11,7 +11,7 @@ namespace communication { namespace rules { namespace rfxLanXpl {
       virtual ~CSensorBasic();
       
       // IRule implementation
-      virtual const DeviceIdentifier getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg);
+      virtual const CDeviceIdentifier getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg);
       virtual MessageContent extractMessageData(shared::xpl::CXplMessage & msg);
       virtual std::vector< boost::shared_ptr<database::entities::CKeyword> > identifyKeywords(shared::xpl::CXplMessage & msg);
       // [END] IRule implementation
