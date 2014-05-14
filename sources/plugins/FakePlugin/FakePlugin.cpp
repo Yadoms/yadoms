@@ -55,18 +55,18 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
       shared::xpl::CXplService xplService(
          XplDeviceId,                                                // XPL device ID : use to identify this plugin over the XPL network
          shared::xpl::CXplHelper::toInstanceId(instanceUniqueId),    // Use the plugin instance id (guaranteed by Yadoms to be unique among all instances of all plugins) as XPL instance id
-         pluginIOService,                                            // Use the provided io service for better performance
-         this,                                                       // Subscribe for XPL message receive event
-         kEvtXplMessage);                                            // Set the event ID to rise when XPL message is received
+         pluginIOService);                                           // Use the provided io service for better performance
 
       // Configure XPL filter to only receive some messages from Yadoms
-      xplService.setFilter(
+      xplService.subscribeForMessages(
          "xpl-cmnd",                                                 // Only commands
          xplService.getActor().getVendorId(),                        // From Yadoms
          shared::xpl::CXplHelper::WildcardString,                    // From any devices
          xplService.getActor().getInstanceId(),                      // From current Yadoms instance
          shared::xpl::CXplHelper::WildcardString,                    // From any device classes
-         "basic");                                                   // From any devices type
+         "basic", 
+         this,                                                       // Subscribe for XPL message receive event
+         kEvtXplMessage);                                            // Set the event ID to rise when XPL message is received
 
       // Fake temperature sensor
       CFakeTemperatureSensor temperatureSensor("fakeTempSensor");
