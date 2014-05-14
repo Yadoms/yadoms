@@ -59,7 +59,8 @@ namespace communication {
          YADOMS_LOG_CONFIGURE("XplGateway");
          YADOMS_LOG(debug) << "XplGateway is starting...";
 
-         shared::xpl::CXplService xplService(m_gateway_device_id, "1", NULL, this, kXplMessageReceived);
+         shared::xpl::CXplService xplService(m_gateway_device_id, "1", NULL);
+         xplService.subscribeForAllMessages(this, kXplMessageReceived);
 
          // Signal that gateway is fully started
          m_StartEventHandler.sendEvent(kStartEvent);
