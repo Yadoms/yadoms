@@ -226,6 +226,7 @@ void CSmsDialer::updateConfiguration(const std::string& configuration)
 
 void CSmsDialer::onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage)
 {
+   //TODO : gérer aussi le sendmsg.basic (pour ça, il faut une mécanique de filtres XPL plus complexe)
    YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
 
    BOOST_ASSERT_MSG(xplMessage.getMessageSchemaIdentifier().getClassId() == "message", "Filter doesn't work");
