@@ -15,13 +15,13 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	Establish the phone connection
-   /// \return true is phone is connected, false else
+   /// \return true if phone is connected, false else
    //--------------------------------------------------------------
    virtual bool connect() = 0;
 
    //--------------------------------------------------------------
    /// \brief	Get the phone connection status
-   /// \return true is phone is connected, false else
+   /// \return true if phone is connected, false else
    //--------------------------------------------------------------
    virtual bool isConnected() const = 0;
 

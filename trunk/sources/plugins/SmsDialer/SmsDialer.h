@@ -7,11 +7,7 @@
 #include "IPhone.h"
 
 //--------------------------------------------------------------
-/// \brief	This class is a simple plugin example
-/// \note   This plugin do nothing useful, just demonstrate how to :
-///         - use a configuration
-///         - receive a XPL message
-///         - send a XPL message
+/// \brief	This plugin can send and receive SMS using a connected phone
 //--------------------------------------------------------------
 class CSmsDialer : public shared::event::CEventHandler, public shared::plugin::IPlugin
 {  
@@ -87,7 +83,7 @@ private:
    boost::shared_ptr<shared::event::CEventTimer> m_incommingSmsPollTimer;
 
    //--------------------------------------------------------------
-   /// \brief	The XPL service used to send phone connection state
+   /// \brief	The XPL service used to send XPL messages to Yadoms
    //--------------------------------------------------------------
    boost::shared_ptr<shared::xpl::CXplService> m_xplService;
 };
