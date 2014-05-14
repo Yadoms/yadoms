@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SensorBasic.h"
+#include "communication/rules/KeywordManager.h"
 
 namespace communication { namespace rules { namespace rfxLanXpl {
 
@@ -16,6 +17,75 @@ namespace communication { namespace rules { namespace rfxLanXpl {
    //-------------------------------------------------------------------------------------
    //-------------------------------------------------------------------------------------
    //-------------------------------------------------------------------------------------
+   std::string CSensorBasic::m_keywordHex = "0x";
+   std::string CSensorBasic::m_keywordDevice = "device";
+   std::string CSensorBasic::m_keywordType = "type";
+   std::string CSensorBasic::m_keywordTypeBattery = "battery";
+   std::string CSensorBasic::m_keywordTypeDemand = "demand";
+   std::string CSensorBasic::m_keywordTypeVoltage = "voltage";
+   std::string CSensorBasic::m_keywordTypeMertik = "mertik";
+   std::string CSensorBasic::m_keywordTypeCount = "count";
+   std::string CSensorBasic::m_keywordTypeHumidity = "humidity";
+   std::string CSensorBasic::m_keywordTypeStatus = "status";
+   std::string CSensorBasic::m_keywordTypePressure = "pressure";
+   std::string CSensorBasic::m_keywordTypeDirection = "direction";
+   std::string CSensorBasic::m_keywordTypeUv = "uv";
+   std::string CSensorBasic::m_keywordCurrent = "current";
+   std::string CSensorBasic::m_keywordDescription = "description";
+   std::string CSensorBasic::m_keywordForecast = "forecast";
+   std::string CSensorBasic::m_keywordUnits = "units";
+
+   std::string CSensorBasic::m_keywordTypeDemandValues = "heater_on|heater_off|cooling_on|cooling_off";
+   std::string CSensorBasic::m_keywordTypeIoValues = "high|low";
+   std::string CSensorBasic::m_keywordTypeMertikValues = "on|off|step_up|step_down|run_up|run_down|stop";
+   std::string CSensorBasic::m_keywordTypeHumidityValues = "normal|comfort|dry|wet";
+   std::string CSensorBasic::m_keywordTypeForecastValues = "sunny|partly cloudy|cloudy|rain";
+   std::string CSensorBasic::m_keywordTypeUvDescriptionValues =  "low|medium|high|very high|dangerous";
+   
+   std::string CSensorBasic::m_keywordTypeTemp = "temp";
+   std::string CSensorBasic::m_keywordTypeRainRate = "rainrate";
+   std::string CSensorBasic::m_keywordTypeRainTotal = "raintotal";
+   std::string CSensorBasic::m_keywordTypeGust = "gust";
+   std::string CSensorBasic::m_keywordTypeAverageSpeed = "average_speed";
+   std::string CSensorBasic::m_keywordTypeWeight = "weight";
+   std::string CSensorBasic::m_keywordTypePower = "power";
+   std::string CSensorBasic::m_keywordTypeEnergy = "energy";
+   
+
+   std::string CSensorBasic::m_keywordDeviceDigimax = "digimax";
+   std::string CSensorBasic::m_keywordDeviceRfxSensor = "rfxsensor";
+   std::string CSensorBasic::m_keywordDeviceRfxMeter = "rfxmeter";
+   std::string CSensorBasic::m_keywordDeviceRfxLanIo = "io";
+   std::string CSensorBasic::m_keywordDeviceMertik = "";
+   std::string CSensorBasic::m_keywordDeviceOregonTemp1="temp1";
+   std::string CSensorBasic::m_keywordDeviceOregonTemp2="temp2";
+   std::string CSensorBasic::m_keywordDeviceOregonTemp3="temp3";
+   std::string CSensorBasic::m_keywordDeviceOregonTemp4="temp4";
+   std::string CSensorBasic::m_keywordDeviceOregonTh1="th1";
+   std::string CSensorBasic::m_keywordDeviceOregonTh2="th2";
+   std::string CSensorBasic::m_keywordDeviceOregonTh3="th3";
+   std::string CSensorBasic::m_keywordDeviceOregonTh4="th4";
+   std::string CSensorBasic::m_keywordDeviceOregonTh5="th5";
+   std::string CSensorBasic::m_keywordDeviceOregonTh6="th6";
+   std::string CSensorBasic::m_keywordDeviceOregonThb1="thb1";
+   std::string CSensorBasic::m_keywordDeviceOregonThb2="thb2";
+   std::string CSensorBasic::m_keywordDeviceOregonRain1="rain1";
+   std::string CSensorBasic::m_keywordDeviceOregonRain2="rain2";
+   std::string CSensorBasic::m_keywordDeviceOregonWind1="wind1";
+   std::string CSensorBasic::m_keywordDeviceOregonWind2="wind2";
+   std::string CSensorBasic::m_keywordDeviceOregonWind3="wind3";
+   std::string CSensorBasic::m_keywordDeviceOregonUv1="uv1";
+   std::string CSensorBasic::m_keywordDeviceOregonUv2="uv2";
+   std::string CSensorBasic::m_keywordDeviceOregonDateTime1="dt1";
+   std::string CSensorBasic::m_keywordDeviceOregonWeight1="WEIGHT1";
+   std::string CSensorBasic::m_keywordDeviceOregonWeight2="WEIGHT2";
+   std::string CSensorBasic::m_keywordDeviceOregonElec1="elec1";
+   std::string CSensorBasic::m_keywordDeviceOregonElec2="elec2";
+   std::string CSensorBasic::m_keywordDeviceOregonElec3="elec3";
+   std::string CSensorBasic::m_keywordDeviceOregonElec4="elec4";
+
+   std::string CSensorBasic::m_keywordUnitAmpere = "A";
+   std::string CSensorBasic::m_keywordUnitVolts = "V";
 
    CSensorBasic::CSensorBasic()
    {
@@ -27,107 +97,107 @@ namespace communication { namespace rules { namespace rfxLanXpl {
 
    const CDeviceIdentifier CSensorBasic::getDeviceAddressFromMessage(shared::xpl::CXplMessage & msg)
    {
-      std::string deviceId = msg.getBodyValue("device");
+      std::string deviceId = msg.getBodyValue(m_keywordDevice);
       std::string deviceName="";
 
-      if(boost::istarts_with(deviceId, "digimax"))
-         deviceName="digimax";
+      if(boost::istarts_with(deviceId, m_keywordDeviceDigimax))
+         deviceName="Digimax";
 
-      if(boost::istarts_with(deviceId, "rfxsensor"))
+      if(boost::istarts_with(deviceId, m_keywordDeviceRfxSensor))
          deviceName="RFXSensor";
 
-      if(boost::istarts_with(deviceId, "rfxmeter"))
+      if(boost::istarts_with(deviceId, m_keywordDeviceRfxMeter))
          deviceName="RFXMeter";
 
-      if(boost::istarts_with(deviceId, "io"))
+      if(boost::istarts_with(deviceId, m_keywordDeviceRfxLanIo))
       {
          deviceName="RFXLAN I/O Line ";
          deviceName += deviceId[2];
       }
 
-      if(boost::istarts_with(deviceId, "0x") && boost::iequals(msg.getBodyValue("type"), "mertik"))
+      if(boost::istarts_with(deviceId, m_keywordHex) && boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeMertik))
          deviceName="Mertik-Maxitrol";
-      
+
       if(isOregonDevice(msg))
       {
          deviceName="Oregon";
-         
-         if(boost::istarts_with(deviceId, "temp1"))
+
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonTemp1))
             deviceName += " Inside temperature (THR128/138 THC138)";
 
-         if(boost::istarts_with(deviceId, "temp2"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonTemp2))
             deviceName += " Outside/Water/BBQ temperature (THC238/268, THN122N/132N, THWR288A, THRN122N, AW129/131)";
 
-         if(boost::istarts_with(deviceId, "temp3"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonTemp3))
             deviceName += " Water temperature (THWR800)";
 
-         if(boost::istarts_with(deviceId, "temp4"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonTemp4))
             deviceName += " Outside Temperature (RTHN318)";
 
-         if(boost::istarts_with(deviceId, "th1"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonTh1))
             deviceName += " Inside Temp-Hygro  (THGN122N/123N, THGR122NX, THGR228N, THGR238/268)";
 
-         if(boost::istarts_with(deviceId, "th2"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonTh2))
             deviceName += " Inside Temp-Hygro  (THGR810)";
 
-         if(boost::istarts_with(deviceId, "th3"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonTh3))
             deviceName += " Outside Temp-Hygro (RTGR328N)";
 
-         if(boost::istarts_with(deviceId, "th4"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonTh4))
             deviceName += " Outside Temp-Hygro (THGR328N)";
 
-         if(boost::istarts_with(deviceId, "th5"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonTh5))
             deviceName += " Outside Temp-Hygro (WTGR800)";
 
-         if(boost::istarts_with(deviceId, "th6"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonTh6))
             deviceName += " Outside Temp-Hygro (THGR918, THGRN228NX, THGN500)";
 
-         if(boost::istarts_with(deviceId, "thb1"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonThb1))
             deviceName += " Inside Temp-Hygro-Baro (Huger-BTHR918)";
 
-         if(boost::istarts_with(deviceId, "thb2"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonThb2))
             deviceName += " Inside Temp-Hygro-Baro (BTHR918N, BTHR968)";
 
-         if(boost::istarts_with(deviceId, "rain1"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonRain1))
             deviceName += " Rain gauge (RGR126, RGR682, RGR918)";
 
-         if(boost::istarts_with(deviceId, "rain2"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonRain2))
             deviceName += " Rain gauge (PCR800)";
 
-         if(boost::istarts_with(deviceId, "wind1"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonWind1))
             deviceName += " Anemometer (WTGR800)";
 
-         if(boost::istarts_with(deviceId, "wind2"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonWind2))
             deviceName += " Anemometer (WGR800)";
 
-         if(boost::istarts_with(deviceId, "wind3"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonWind3))
             deviceName += " Anemometer (Huger-STR918, WGR918)";
 
-         if(boost::istarts_with(deviceId, "uv1"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonUv1))
             deviceName += " UV sensor (UVN128, UV138)";
 
-         if(boost::istarts_with(deviceId, "uv2"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonUv2))
             deviceName += " UV sensor (UVN800)";
 
-         if(boost::istarts_with(deviceId, "dt1"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonDateTime1))
             deviceName += " Date & Time (RTGR328N)";
 
-         if(boost::istarts_with(deviceId, "WEIGHT1"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonWeight1))
             deviceName += " Body Weight Monitor (BWR102)";
 
-         if(boost::istarts_with(deviceId, "WEIGHT2"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonWeight1))
             deviceName += " Body Weight Monitor (GR101)";
 
-         if(boost::istarts_with(deviceId, "elec1"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonElec1))
             deviceName += " Ampere meter (cent-a-meter, Electrisave, OWL CM113)";
 
-         if(boost::istarts_with(deviceId, "elec2"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonElec2))
             deviceName += " Power meter (OWL CM119, CM160)";
 
-         if(boost::istarts_with(deviceId, "elec3"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonElec3))
             deviceName += " Power meter (OWL CM180)";
 
-         if(boost::istarts_with(deviceId, "elec4"))
+         if(boost::istarts_with(deviceId, m_keywordDeviceOregonElec4))
             deviceName += " Ampere+Power meter (OWL CM180i)";
       }
       return CDeviceIdentifier(deviceId, deviceName);
@@ -136,13 +206,13 @@ namespace communication { namespace rules { namespace rfxLanXpl {
    MessageContent CSensorBasic::extractMessageData(shared::xpl::CXplMessage & msg)
    {
       MessageContent data;
-      data.insert(std::make_pair(msg.getBodyValue("type"), msg.getBodyValue("current")));
+      data.insert(std::make_pair(msg.getBodyValue(m_keywordType), msg.getBodyValue(m_keywordCurrent)));
 
-      if(msg.getBody().find("description") != msg.getBody().end())
-         data.insert(std::make_pair("description", msg.getBodyValue("description")));
+      if(msg.getBody().find(m_keywordDescription) != msg.getBody().end())
+         data.insert(std::make_pair(m_keywordDescription, msg.getBodyValue(m_keywordDescription)));
 
-      if(msg.getBody().find("forecast") != msg.getBody().end())
-         data.insert(std::make_pair("forecast", msg.getBodyValue("forecast")));
+      if(msg.getBody().find(m_keywordForecast) != msg.getBody().end())
+         data.insert(std::make_pair(m_keywordForecast, msg.getBodyValue(m_keywordForecast)));
 
       return data;
    }
@@ -151,174 +221,145 @@ namespace communication { namespace rules { namespace rfxLanXpl {
    {
       std::vector< boost::shared_ptr<database::entities::CKeyword> > keywords;
 
-      boost::shared_ptr<database::entities::CKeyword> mainKeyword(new database::entities::CKeyword());
-
       //COMMON
-      mainKeyword->Name = msg.getBodyValue("type");
-      if(msg.getBody().find("units") != msg.getBody().end())
-         mainKeyword->Units = msg.getBodyValue("units");
+      std::string units = "";
+      if(msg.getBody().find(m_keywordUnits) != msg.getBody().end())
+         units = msg.getBodyValue(m_keywordUnits);
 
-      if(boost::iequals(msg.getBodyValue("type"), "battery"))
+      if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeBattery))
       {
-         mainKeyword->Type = "numeric";
-         mainKeyword->Minimum = 0;
-         mainKeyword->Maximum = 100;
+         keywords.push_back(CKeywordManager::createNumeric(msg.getBodyValue(m_keywordType), 0, 100, units));
       }
 
       //DIGIMAX
-      if(boost::starts_with(msg.getBodyValue("device"), "digimax"))
+      if(boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceDigimax))
       {
-         if(msg.getBodyValue("type") == "demand")
+         if(msg.getBodyValue(m_keywordType) == m_keywordTypeDemand)
          {
-            mainKeyword->Type = "enumeration";
-            mainKeyword->Parameters = "heater_on|heater_off|cooling_on|cooling_off";
+            keywords.push_back(CKeywordManager::createEnumeration(msg.getBodyValue(m_keywordType), m_keywordTypeDemandValues));
          }
          else
          {
-            mainKeyword->Type = "numeric";
+            keywords.push_back(CKeywordManager::createNumeric(msg.getBodyValue(m_keywordType), units));
          }
       }
 
       //RFXSENSOR
-      if(boost::starts_with(msg.getBodyValue("device"), "rfxsensor"))
+      if(boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxSensor))
       {
-         if(boost::iequals(msg.getBodyValue("type"), "voltage"))
+         if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeVoltage))
          {
-            if(!mainKeyword->Units.isDefined())
-               mainKeyword->Units = "volt";
+            if(units.empty())
+               units = m_keywordUnitVolts;
          }
-         mainKeyword->Type = "numeric";
+         keywords.push_back(CKeywordManager::createNumeric(msg.getBodyValue(m_keywordType), units));
       }
 
       //RFXMETER
-      if(boost::starts_with(msg.getBodyValue("device"), "rfxmeter") && boost::iequals(msg.getBodyValue("type"), "count"))
+      if(boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxMeter) && boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeCount))
       {
-         mainKeyword->Type = "numeric";
-         mainKeyword->Minimum = 0;
-         mainKeyword->Maximum = 16777215;
+         keywords.push_back(CKeywordManager::createNumeric(msg.getBodyValue(m_keywordType), 0, 16777215, units));
       }
 
       //RFXLAN IO
-      if(boost::starts_with(msg.getBodyValue("device"), "io"))
+      if(boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxLanIo))
       {
-         mainKeyword->Type = "enumeration";
-         mainKeyword->Parameters = "high|low";
+         keywords.push_back(CKeywordManager::createEnumeration(msg.getBodyValue(m_keywordType), m_keywordTypeIoValues));
       }
 
       //Mertik
-      if(boost::starts_with(msg.getBodyValue("device"), "0x") && boost::iequals(msg.getBodyValue("type"), "mertik"))
+      if(boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordHex) && boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeMertik))
       {
-         mainKeyword->Type = "enumeration";
-         mainKeyword->Parameters = "on|off|step_up|step_down|run_up|run_down|stop";
+         keywords.push_back(CKeywordManager::createEnumeration(msg.getBodyValue(m_keywordType), m_keywordTypeMertikValues));
       }
 
       //Oregon
       if(isOregonDevice(msg))
       {
-         if(boost::iequals(msg.getBodyValue("type"), "humidity"))
+         if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeHumidity))
          {
-            mainKeyword->Type = "numeric";
-            mainKeyword->Minimum = 0;
-            mainKeyword->Maximum =100;
-
-            boost::shared_ptr<database::entities::CKeyword> descriptionKeyword(new database::entities::CKeyword());
-            descriptionKeyword->Name = "description";
-            descriptionKeyword->Type = "enumeration";
-            descriptionKeyword->Parameters = "normal|comfort|dry|wet";
-            keywords.push_back(descriptionKeyword);
+            keywords.push_back(CKeywordManager::createNumeric(msg.getBodyValue(m_keywordType), 0, 100, units));
+            keywords.push_back(CKeywordManager::createEnumeration(m_keywordDescription, m_keywordTypeHumidityValues));
          }
 
-         if(boost::iequals(msg.getBodyValue("type"), "status"))
+         if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeStatus))
          {
-            mainKeyword->Type = "enumeration";
-            mainKeyword->Parameters = "normal|comfort|dry|wet";
+            keywords.push_back(CKeywordManager::createEnumeration(msg.getBodyValue(m_keywordType), m_keywordTypeHumidityValues));
          }
 
-         if(boost::iequals(msg.getBodyValue("type"), "temp") ||
-            boost::iequals(msg.getBodyValue("type"), "rainrate") ||
-            boost::iequals(msg.getBodyValue("type"), "raintotal") ||
-            boost::iequals(msg.getBodyValue("type"), "gust") ||
-            boost::iequals(msg.getBodyValue("type"), "average_speed") ||
-            boost::iequals(msg.getBodyValue("type"), "weight") ||
-            boost::iequals(msg.getBodyValue("type"), "power") ||
-            boost::iequals(msg.getBodyValue("type"), "energy"))
+         if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeTemp) ||
+            boost::iequals(msg.getBodyValue(m_keywordType),  m_keywordTypeRainRate) ||
+            boost::iequals(msg.getBodyValue(m_keywordType),  m_keywordTypeRainTotal) ||
+            boost::iequals(msg.getBodyValue(m_keywordType),  m_keywordTypeGust) ||
+            boost::iequals(msg.getBodyValue(m_keywordType),  m_keywordTypeAverageSpeed) ||
+            boost::iequals(msg.getBodyValue(m_keywordType),  m_keywordTypeWeight) ||
+            boost::iequals(msg.getBodyValue(m_keywordType),  m_keywordTypePower) ||
+            boost::iequals(msg.getBodyValue(m_keywordType),  m_keywordTypeEnergy))
          {
-            mainKeyword->Type = "numeric";
+            keywords.push_back(CKeywordManager::createNumeric(msg.getBodyValue(m_keywordType), units));
          }
 
-         if(boost::iequals(msg.getBodyValue("type"), "pressure"))
+         if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypePressure))
          {
-            mainKeyword->Type = "numeric";
-            boost::shared_ptr<database::entities::CKeyword> forecastKeyword(new database::entities::CKeyword());
-            forecastKeyword->Name = "forecast";
-            forecastKeyword->Type = "enumeration";
-            forecastKeyword->Parameters = "sunny|partly cloudy|cloudy|rain";
-            keywords.push_back(forecastKeyword);
+            keywords.push_back(CKeywordManager::createNumeric(msg.getBodyValue(m_keywordType), units));
+            keywords.push_back(CKeywordManager::createEnumeration(m_keywordForecast, m_keywordTypeForecastValues));
          }
 
-         if(boost::iequals(msg.getBodyValue("type"), "direction"))
+         if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeDirection))
          {
-            mainKeyword->Minimum = 0;
-            mainKeyword->Maximum = 359;
-            mainKeyword->Type = "numeric";
+            keywords.push_back(CKeywordManager::createNumeric(msg.getBodyValue(m_keywordType), 0, 359, units));
          }
 
-         if(boost::iequals(msg.getBodyValue("type"), "uv"))
+         if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeUv))
          {
-            mainKeyword->Minimum = 0;
-            mainKeyword->Maximum = 12;
-
-            boost::shared_ptr<database::entities::CKeyword> descriptionKeyword(new database::entities::CKeyword());
-            descriptionKeyword->Name = "description";
-            descriptionKeyword->Type = "enumeration";
-            descriptionKeyword->Parameters = "low|medium|high|very high|dangerous";
-            keywords.push_back(descriptionKeyword);
+            keywords.push_back(CKeywordManager::createNumeric(msg.getBodyValue(m_keywordType), 0, 12, units));
+            keywords.push_back(CKeywordManager::createEnumeration(m_keywordDescription, m_keywordTypeUvDescriptionValues));
          }
 
-         if(boost::starts_with(msg.getBodyValue("device"), "elec") && boost::iequals(msg.getBodyValue("type"), "current"))
+         if( (boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec1) ||
+              boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec2) ||
+              boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec3) ||
+              boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec4)) && 
+              boost::iequals(msg.getBodyValue(m_keywordType), m_keywordCurrent))
          {
-            mainKeyword->Units = "A";
-            mainKeyword->Type = "numeric";
+            units = m_keywordUnitAmpere;
+            keywords.push_back(CKeywordManager::createNumeric(msg.getBodyValue(m_keywordType), units));
          }
 
       }
-
-      keywords.push_back(mainKeyword);
-
       return keywords;
-
    }
 
 
    bool CSensorBasic::isOregonDevice(shared::xpl::CXplMessage & msg)
    {
-      std::string device = boost::to_lower_copy(msg.getBodyValue("device"));
-      return boost::starts_with(device, "temp1") ||
-         boost::starts_with(device, "temp2") ||
-         boost::starts_with(device, "temp3") ||
-         boost::starts_with(device, "temp4") ||
-         boost::starts_with(device, "th1") ||
-         boost::starts_with(device, "th2") ||
-         boost::starts_with(device, "th3") ||
-         boost::starts_with(device, "th4") ||
-         boost::starts_with(device, "th5") ||
-         boost::starts_with(device, "th6") ||
-         boost::starts_with(device, "thb1") ||
-         boost::starts_with(device, "thb2") ||
-         boost::starts_with(device, "rain1") ||
-         boost::starts_with(device, "rain2") ||
-         boost::starts_with(device, "wind1") ||
-         boost::starts_with(device, "wind2") ||
-         boost::starts_with(device, "wind3") ||
-         boost::starts_with(device, "uv1") ||
-         boost::starts_with(device, "uv2") ||
-         boost::starts_with(device, "dt1") ||
-         boost::starts_with(device, "weight1") ||
-         boost::starts_with(device, "weight2") ||
-         boost::starts_with(device, "elec1") ||
-         boost::starts_with(device, "elec2") ||
-         boost::starts_with(device, "elec3") ||
-         boost::starts_with(device, "elec4");
+      std::string device = boost::to_lower_copy(msg.getBodyValue(m_keywordDevice));
+      return boost::starts_with(device, m_keywordDeviceOregonTemp1) ||
+         boost::starts_with(device, m_keywordDeviceOregonTemp2) ||
+         boost::starts_with(device, m_keywordDeviceOregonTemp3) ||
+         boost::starts_with(device, m_keywordDeviceOregonTemp4) ||
+         boost::starts_with(device, m_keywordDeviceOregonTh1) ||
+         boost::starts_with(device, m_keywordDeviceOregonTh2) ||
+         boost::starts_with(device, m_keywordDeviceOregonTh3) ||
+         boost::starts_with(device, m_keywordDeviceOregonTh4) ||
+         boost::starts_with(device, m_keywordDeviceOregonTh5) ||
+         boost::starts_with(device, m_keywordDeviceOregonTh6) ||
+         boost::starts_with(device, m_keywordDeviceOregonThb1) ||
+         boost::starts_with(device, m_keywordDeviceOregonThb2) ||
+         boost::starts_with(device, m_keywordDeviceOregonRain1) ||
+         boost::starts_with(device, m_keywordDeviceOregonRain2) ||
+         boost::starts_with(device, m_keywordDeviceOregonWind1) ||
+         boost::starts_with(device, m_keywordDeviceOregonWind2) ||
+         boost::starts_with(device, m_keywordDeviceOregonWind3) ||
+         boost::starts_with(device, m_keywordDeviceOregonUv1) ||
+         boost::starts_with(device, m_keywordDeviceOregonUv2) ||
+         boost::starts_with(device, m_keywordDeviceOregonDateTime1) ||
+         boost::starts_with(device, m_keywordDeviceOregonWeight1) ||
+         boost::starts_with(device, m_keywordDeviceOregonWeight2) ||
+         boost::starts_with(device, m_keywordDeviceOregonElec1) ||
+         boost::starts_with(device, m_keywordDeviceOregonElec2) ||
+         boost::starts_with(device, m_keywordDeviceOregonElec3) ||
+         boost::starts_with(device, m_keywordDeviceOregonElec4);
    }
 
 

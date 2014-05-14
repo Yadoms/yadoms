@@ -21,11 +21,11 @@ namespace communication { namespace rules { namespace rfxLanXpl {
       virtual std::string generateVirtualDeviceIdentifier();
       // [END] ICommandRule implemntation
    private:
-      static std::string CAcBasic::m_keywordAddress;
-      static std::string CAcBasic::m_keywordUnit;
-      static std::string CAcBasic::m_keywordCommand;
-      static std::string CAcBasic::m_keywordCommandValues;
-      static std::string CAcBasic::m_keywordLevel;
+      static std::string m_keywordAddress;
+      static std::string m_keywordUnit;
+      static std::string m_keywordCommand;
+      static std::string m_keywordCommandValues;
+      static std::string m_keywordLevel;
    };
    
 } //namespace rfxLanXpl
