@@ -75,7 +75,7 @@ namespace shared { namespace xpl
       void subscribeForAllMessages(event::CEventHandler * pEventHandler, int eventTypeIdentifier, bool continueChainingNotification = true);
 
       //--------------------------------------------------------------
-      /// \brief		   Subscribe to receive all messages which are targetted to this XplService instance 
+      /// \brief		   Subscribe to receive all messages which are targeted to this XplService instance 
       /// \param [in]   pEventHandler                 The event handler to notify when a message is received
       /// \param [in]   eventTypeIdentifier           The event id to use in notification
       /// \param [in]   continueChainingNotification  indicates if the notification queue should continue when a message match this filter

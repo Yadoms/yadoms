@@ -25,7 +25,7 @@ public:
    virtual bool isConnected() const;
    virtual std::string getUniqueId() const;
    virtual void send(boost::shared_ptr<ISms> sms);
-   boost::shared_ptr<std::vector<ISms> > getIncomingSMS();
+   boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > getIncomingSMS();
   // [END] IPhone implementation
 
 protected:
@@ -51,7 +51,7 @@ protected:
    /// \param[in] deleteSms         true to delete the read message
    /// \return                   The list of received SMS
    //--------------------------------------------------------------
-   boost::shared_ptr<std::vector<ISms> > readSms(bool deleteSms = true);
+   boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > readSms(bool deleteSms = true);
 
    //--------------------------------------------------------------
    /// \brief	                  Check if message is valid
