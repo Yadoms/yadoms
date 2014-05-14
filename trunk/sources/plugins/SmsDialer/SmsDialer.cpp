@@ -50,18 +50,27 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
       m_xplService.reset(new shared::xpl::CXplService(
          XplDeviceId,
          shared::xpl::CXplHelper::toInstanceId(instanceUniqueId),
-         pluginIOService,
-         this,
-         kEvtXplMessage));
+         pluginIOService));
 
-      // Configure XPL filter to only receive SMS commands from Yadoms
-      m_xplService->setFilter(
+      // Configure 2 XPL filters to receive only the 2 SMS supported commands
+      m_xplService->subscribeForMessages(                   // message.sms
          "xpl-cmnd",
          m_xplService->getActor().getVendorId(),
          shared::xpl::CXplHelper::WildcardString,
          m_xplService->getActor().getInstanceId(),
          "message",
-         "sms");
+         "sms",
+         this,
+         kEvtXplMessage);
+      m_xplService->subscribeForMessages(                   // sendmsg.basic
+         "xpl-cmnd",
+         m_xplService->getActor().getVendorId(),
+         shared::xpl::CXplHelper::WildcardString,
+         m_xplService->getActor().getInstanceId(),
+         "message",
+         "sms",
+         this,
+         kEvtXplMessage);
 
       // the main loop
       YADOMS_LOG(debug) << "CSmsDialer is running...";
@@ -73,6 +82,8 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
       // Timer used to periodically check for incoming SMS
       m_incommingSmsPollTimer = createTimer(kEvtTimerCheckForIncommingSms, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(30));
       m_incommingSmsPollTimer->stop();
+
+      m_phone->connect();
 
       while(1)
       {
@@ -226,18 +237,18 @@ void CSmsDialer::updateConfiguration(const std::string& configuration)
 
 void CSmsDialer::onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage)
 {
-   //TODO : gérer aussi le sendmsg.basic (pour ça, il faut une mécanique de filtres XPL plus complexe)
    YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
 
-   BOOST_ASSERT_MSG(xplMessage.getMessageSchemaIdentifier().getClassId() == "message", "Filter doesn't work");
-   BOOST_ASSERT_MSG(xplMessage.getMessageSchemaIdentifier().getTypeId() == "sms", "Filter doesn't work");
+   BOOST_ASSERT_MSG(
+      (xplMessage.getMessageSchemaIdentifier().getClassId() == "message" && xplMessage.getMessageSchemaIdentifier().getTypeId() == "sms") ||
+      (xplMessage.getMessageSchemaIdentifier().getClassId() == "sendmsg" && xplMessage.getMessageSchemaIdentifier().getTypeId() == "basic"),
+      "Filter doesn't work, messages must be message.sms or sendmsg.basic");
    BOOST_ASSERT_MSG(!xplMessage.getBodyValue("to").empty(), "SMS recipient is empty");
    BOOST_ASSERT_MSG(!xplMessage.getBodyValue("body").empty(), "SMS message body is empty");
 
-   const bool ackRequired = xplMessage.hasBodyValue("acknowledgment") && xplMessage.getBodyValue("acknowledgment") == "true";
-
    const std::string to = xplMessage.getBodyValue("to");
    const std::string body = xplMessage.getBodyValue("body");
+   const bool ackRequired = xplMessage.hasBodyValue("acknowledgment") && xplMessage.getBodyValue("acknowledgment") == "true";
 
    try
    {
@@ -264,8 +275,12 @@ void CSmsDialer::processIncommingSMS()
 {
    // Check if incoming SMS
 
-   //TODO
-   boost::shared_ptr<std::vector<ISms> > incommingSms = m_phone->getIncomingSMS();
+   boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > incommingSms = m_phone->getIncomingSMS();
+   for (std::vector<boost::shared_ptr<ISms> >::const_iterator it = incommingSms->begin() ; it != incommingSms->end() ; ++it)
+   {
+      YADOMS_LOG(info) << "SMS received";
+      YADOMS_LOG(debug) << "SMS received from " << (*it)->getNumber() << " : " << (*it)->getContent();
+   }
    //if (!incommingSms)
 
    //TODO : traiter le message reçu

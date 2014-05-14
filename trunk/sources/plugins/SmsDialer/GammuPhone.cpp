@@ -3,6 +3,7 @@
 #include <shared/StringExtension.h>
 #include "GammuPhone.h"
 #include "PhoneException.hpp"
+#include "Sms.h"
 
 
 CGammuPhone::CGammuPhone(const ISmsDialerConfiguration& configuration)
@@ -147,13 +148,12 @@ void CGammuPhone::sendSmsCallback(GSM_StateMachine *sm, int status, int MessageR
    }
 }
 
-boost::shared_ptr<std::vector<ISms> > CGammuPhone::getIncomingSMS()
+boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::getIncomingSMS()
 {
-   BOOST_ASSERT_MSG(isConnected(), "Phone must be connected to read incoming SMS");
    if (!isConnected())
       throw CPhoneException("Phone must be connected to read incoming SMS");
 
-   boost::shared_ptr<std::vector<ISms> > noSms;
+   boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > noSms;
    bool newSms;
    
    GSM_SMSMemoryStatus gammuSmsStatus;
@@ -192,10 +192,10 @@ boost::shared_ptr<std::vector<ISms> > CGammuPhone::getIncomingSMS()
    return readSms(false);//TODO  passer à true
 }
 
-boost::shared_ptr<std::vector<ISms> > CGammuPhone::readSms(bool deleteSms)
+boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::readSms(bool deleteSms)
 {
    //TODO fonction à découper
-   boost::shared_ptr<std::vector<ISms> > noSms;
+   boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > noSms;
    
    GSM_MultiSMSMessage gammuSms;
    std::vector<GSM_MultiSMSMessage> gammuSmsVector;
@@ -248,6 +248,7 @@ boost::shared_ptr<std::vector<ISms> > CGammuPhone::readSms(bool deleteSms)
    }
 
    // Process messages
+   boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > smsList(new std::vector<boost::shared_ptr<ISms> >);
    for (size_t idxSms = 0 ; gammuSortedSmsPtrArray.get()[idxSms] != NULL ; ++idxSms)
    {
       // Check incomplete message (for long parted SMS)
@@ -255,8 +256,8 @@ boost::shared_ptr<std::vector<ISms> > CGammuPhone::readSms(bool deleteSms)
          return noSms;
 
       // Record the message
-//      boost::shared_ptr<std::vector<ISms> > smsList(new std::vector<CSms>);
-      //boost::shared_ptr<ISms> sms(new CSms(gammuSortedSmsPtrArray.get()[idxSms]->SMS.));
+      boost::shared_ptr<ISms> sms(new CSms(*gammuSortedSmsPtrArray.get()[idxSms]));
+      smsList->push_back(sms);
    }
 
       // Delete processed messages
@@ -278,7 +279,7 @@ boost::shared_ptr<std::vector<ISms> > CGammuPhone::readSms(bool deleteSms)
       //      }
       //   }
       //}
-   return noSms;
+   return smsList;
 }
 
 bool CGammuPhone::isValidMessage(GSM_MultiSMSMessage* gammuSms) const

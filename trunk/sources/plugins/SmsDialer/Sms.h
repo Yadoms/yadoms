@@ -1,5 +1,6 @@
 #pragma once
 #include "ISms.h"
+#include "gammu.h"
 
 //--------------------------------------------------------------
 /// \brief	This class represent a SMS
@@ -8,9 +9,17 @@ class CSms : public ISms
 {  
 public:
    //--------------------------------------------------------------
-   /// \brief	Constructor
+   /// \brief	            Constructor from raw SMS data
+   /// \param[in] number   Target recipient phone number
+   /// \param[in] content  SMS text
    //--------------------------------------------------------------
    CSms(const std::string& number, const std::string& content);
+
+   //--------------------------------------------------------------
+   /// \brief	            Constructor from Gammu data
+   /// \param[in] smsGammu Gammu SMS structure
+   //--------------------------------------------------------------
+   CSms(const GSM_MultiSMSMessage& gammuSms);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
