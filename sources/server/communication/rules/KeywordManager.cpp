@@ -36,7 +36,8 @@ namespace communication { namespace rules {
       boost::shared_ptr<database::entities::CKeyword> keyword(new database::entities::CKeyword());
       keyword->Name = name;
       keyword->Type = m_typeNumeric;
-      keyword->Units = units;
+      if(!units.empty())
+         keyword->Units = units;
       return keyword;
    }
 
@@ -57,7 +58,8 @@ namespace communication { namespace rules {
       keyword->Type = m_typeNumeric;
       keyword->Minimum = min;
       keyword->Maximum = max;
-      keyword->Units = units;
+      if(!units.empty())
+         keyword->Units = units;
       return keyword;
    }
 
