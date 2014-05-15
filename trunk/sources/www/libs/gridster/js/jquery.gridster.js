@@ -1836,6 +1836,9 @@
         var max_width = Infinity;
         var max_height = Infinity;
 
+        var min_width = 1;
+        var min_height = 1;
+
         var inc_units_x = Math.ceil((rel_x /
                 (this.options.widget_base_dimensions[0] +
                     this.options.widget_margins[0] * 2)) - 0.2);
@@ -1850,16 +1853,20 @@
         //Modified by lgm42
         size_x = Math.max(size_x, this.resize_min_size_x);
         size_y = Math.max(size_y, this.resize_min_size_y);
-        //End of modification
 
         size_x = Math.min(size_x, this.resize_max_size_x);
         max_width = (this.resize_max_size_x * wbd_x) +
             ((size_x - 1) * this.options.widget_margins[0] * 2);
 
+        min_width = (this.resize_min_size_x * wbd_x) +
+          ((size_x - 1) * this.options.widget_margins[0] * 2);
+
         size_y = Math.min(size_y, this.resize_max_size_y);
         max_height = (this.resize_max_size_y * wbd_y) +
             ((size_y - 1) * this.options.widget_margins[1] * 2);
 
+        min_height = (this.resize_min_size_y * wbd_y) +
+          ((size_y - 1) * this.options.widget_margins[1] * 2);
 
         if (this.resize_dir.right) {
             size_y = this.resize_initial_sizey;
@@ -1868,10 +1875,12 @@
         }
 
         var css_props = {};
-        !this.resize_dir.bottom && (css_props.width = Math.min(
-            this.resize_initial_width + rel_x, max_width));
-        !this.resize_dir.right && (css_props.height = Math.min(
-            this.resize_initial_height + rel_y, max_height));
+        !this.resize_dir.bottom && (css_props.width = Math.max(Math.min(
+            this.resize_initial_width + rel_x, max_width), min_width));
+        !this.resize_dir.right && (css_props.height = Math.max(Math.min(
+            this.resize_initial_height + rel_y, max_height), min_height));
+
+        //End of modification
 
         this.$resized_widget.css(css_props);
 
