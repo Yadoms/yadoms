@@ -1,6 +1,6 @@
 #pragma once
 #include "ISms.h"
-#include "gammu.h"
+#include <gammu.h>
 
 //--------------------------------------------------------------
 /// \brief	This class represent a SMS

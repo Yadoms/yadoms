@@ -59,6 +59,32 @@ std::string CGammuPhone::getUniqueId() const
    return m_phoneId;
 }
 
+void CGammuPhone::unlock(const std::string& pin)
+{//TODO ajouter sécurité pour ne pas saisir plusieurs fois le même pin sur le même téléphone
+   GSM_SecurityCode SecurityCode;
+   handleGammuError(GSM_GetSecurityStatus(m_connection.getGsmContext(), &SecurityCode.Type), "Unable to get the phone security status");
+
+   // Check phone security mode
+   switch (SecurityCode.Type)
+   {
+   case SEC_None:                // Phone is not locked
+      return;                    
+   case SEC_Pin:                 // Phone is locked by PIN code
+      break;
+   default:
+      throw CPhoneException(std::string ("Phone security mode not supported : ") + boost::lexical_cast<std::string>(SecurityCode.Type));
+      break;
+   }
+
+   // Check PIN validity
+   if (!regex_match(pin, boost::regex("[0-9]{4}")))
+      throw CPhoneException(std::string ("Can not unlock phone, because PIN code is invalid (must be 4 digits)"));
+
+   // Unlock the phone
+   strcpy_s(SecurityCode.Code, sizeof(SecurityCode.Code), pin.c_str());
+   handleGammuError(GSM_EnterSecurityCode(m_connection.getGsmContext(), &SecurityCode), "Unable to unlock the phone");
+}
+
 void CGammuPhone::send(boost::shared_ptr<ISms> sms)
 {
    BOOST_ASSERT_MSG(isConnected(), "Phone must be connected to send SMS");
@@ -189,12 +215,11 @@ boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::getIncomi
       return noSms;
    
    // Read found SMS
-   return readSms(false);//TODO  passer à true
+   return readSms(true);
 }
 
 boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::readSms(bool deleteSms)
 {
-   //TODO fonction à découper
    boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > noSms;
    
    GSM_MultiSMSMessage gammuSms;
@@ -260,26 +285,32 @@ boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > CGammuPhone::readSms(b
       smsList->push_back(sms);
    }
 
-      // Delete processed messages
-   //TODO
-      //if (deleteSms)
-      //{
-      //   for (int idxPart = 0 ; idxPart < gammuSortedSmsPtrArray.get()[idxSms]->Number ; ++idxPart)
-      //   {
-      //      gammuSortedSmsPtrArray.get()[idxSms]->SMS[idxPart].Folder = 0;
-      //      error = GSM_DeleteSMS(m_connection.getGsmContext(), &gammuSortedSmsPtrArray.get()[idxSms]->SMS[idxPart]);
-      //      switch (error)
-      //      {
-      //      case ERR_NONE:
-      //      case ERR_EMPTY:
-      //         break;
-      //      default:
-      //         YADOMS_LOG(error) << "Error deleting SMS : " << error;
-      //         return noSms;
-      //      }
-      //   }
-      //}
+   // Delete processed messages if requested
+   if (deleteSms)
+      deleteSmsFromPhone(gammuSortedSmsPtrArray);
+
    return smsList;
+}
+
+void CGammuPhone::deleteSmsFromPhone(boost::shared_ptr<GSM_MultiSMSMessage*> gammuSmsPtrArray)
+{
+   // Delete each part of each SMS
+   for (size_t idxSms = 0 ; gammuSmsPtrArray.get()[idxSms] != NULL ; ++idxSms)
+   {
+      for (int idxPart = 0 ; idxPart < gammuSmsPtrArray.get()[idxSms]->Number ; ++idxPart)
+      {
+         gammuSmsPtrArray.get()[idxSms]->SMS[idxPart].Folder = 0;
+         GSM_Error gammuError = GSM_DeleteSMS(m_connection.getGsmContext(), &gammuSmsPtrArray.get()[idxSms]->SMS[idxPart]);
+         switch (gammuError)
+         {
+         case ERR_NONE:
+         case ERR_EMPTY:
+            break;
+         default:
+            YADOMS_LOG(error) << "Error deleting SMS : " << gammuError;
+         }
+      }
+   }
 }
 
 bool CGammuPhone::isValidMessage(GSM_MultiSMSMessage* gammuSms) const

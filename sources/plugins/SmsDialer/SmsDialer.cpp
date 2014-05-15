@@ -172,6 +172,14 @@ void CSmsDialer::ProcessConnectedState()
    YADOMS_LOG(info) << "Phone is connected"  << std::endl;
 
    m_connectionTimer->stop();
+
+   // First, unlock phone
+   m_phone->unlock("5554"/*TODO m_configuration.getPINCode()*/);
+
+   // Next, check for incoming SMS
+   processIncommingSMS();
+
+   // And start timer for next incoming SMS check
    m_incommingSmsPollTimer->start();
 
    while (m_phone->isConnected())

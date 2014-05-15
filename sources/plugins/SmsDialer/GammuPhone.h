@@ -24,6 +24,7 @@ public:
    virtual bool connect();
    virtual bool isConnected() const;
    virtual std::string getUniqueId() const;
+   virtual void unlock(const std::string& pin);
    virtual void send(boost::shared_ptr<ISms> sms);
    boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > getIncomingSMS();
   // [END] IPhone implementation
@@ -52,6 +53,12 @@ protected:
    /// \return                   The list of received SMS
    //--------------------------------------------------------------
    boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > readSms(bool deleteSms = true);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Delete listed SMS from phone
+   /// \param[in] gammuSmsPtrArray  List of SMS (Gammu format) to delete
+   //--------------------------------------------------------------
+   void deleteSmsFromPhone(boost::shared_ptr<GSM_MultiSMSMessage*> gammuSmsPtrArray);
 
    //--------------------------------------------------------------
    /// \brief	                  Check if message is valid
