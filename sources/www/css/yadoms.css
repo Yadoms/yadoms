@@ -209,3 +209,13 @@ body {
 .configuration-control {
     vertical-align:middle;
 }
+#btn-instantiate-plugin {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    float: right;
+}
+
+#plugin-instance-list td {
+    padding: 8px;
+    vertical-align: middle;
+}

@@ -16,6 +16,10 @@
             <td id="dashboard-summary-software-version">0.7b</td>
          </tr>
          <tr>
+            <td class="header" data-i18n="modals.dashboard.sub-windows.summary.databaseVersion"></td>
+            <td id="dashboard-summary-database-version">0.7b</td>
+         </tr>
+         <tr>
             <td class="header" data-i18n="modals.dashboard.sub-windows.summary.runningFrom"></td>
             <td id="dashboard-summary-running-from">2 days 4 hours 21 minutes 34 seconds</td>
          </tr>
@@ -26,3 +30,22 @@
       </table>
    </div>
 </div>
+
+<script>
+   //we update all fields
+   $.getJSON("rest/configuration/Database/Version")
+      .done(function(data) {
+
+         //we parse the json answer
+         if (data.result != "true") {
+           notifyError($.t("dashboard.sub-windows.summary.errorRequestingDatabaseVersion"), JSON.stringify(data));
+            return;
+         }
+
+         $("td#dashboard-summary-database-version").text(data.data.value);
+
+      })
+      .fail(function() { notifyError($.t("dashboard.sub-windows.summary.errorRequestingDatabaseVersion")); });
+
+   //TODO get other information
+</script>
