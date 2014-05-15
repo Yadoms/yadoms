@@ -52,6 +52,11 @@ set(SHARED_LIB_SRC
 	shared/serialization/PTreeToJsonSerializer.h
 	shared/serialization/PTreeToJsonSerializer.cpp
 
+	shared/encryption/Xor.h
+	shared/encryption/Xor.cpp
+	shared/encryption/Base64.h
+	shared/encryption/Base64.cpp
+	
 	shared/xpl/XplConstants.h
 	shared/xpl/XplConstants.cpp
 	shared/xpl/XplActor.cpp
@@ -133,6 +138,7 @@ source_group(platformSpecific\\linux shared/linux/shared/*.*)
 source_group(platformSpecific\\mac shared/mac/shared/*.*)
 
 source_group(serialization shared/shared/serialization/*.* )	
+source_group(encryption shared/shared/encryption/*.* )	
 
 source_group(xpl shared/xpl/*.*)
 
