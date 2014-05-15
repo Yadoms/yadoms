@@ -1,4 +1,50 @@
 <div id="dashboard-plugins">
    <h1 class="page-header" data-i18n="modals.dashboard.sub-windows.plugins.title"></h1>
-   <h2 class="sub-header"  data-i18n="inProgress"></h2>
+   <form>
+      <span data-i18n="modals.dashboard.sub-windows.plugins.pluginInstanceListDescription"></span>
+      <button id="btn-instantiate-plugin" type="button" class="btn btn-success"><span class="fa fa-rocket"></span>&nbsp;&nbsp;<span>Instantiate a new plugin</span></button>
+      <table id="plugin-instance-list" class="table table-bordered table-striped table-hover">
+         <tr>
+            <td data-i18n="modals.dashboard.sub-windows.plugins.table.name">
+            </td>
+            <td data-i18n="modals.dashboard.sub-windows.plugins.table.status">
+            </td>
+            <td data-i18n="modals.dashboard.sub-windows.plugins.table.address">
+            </td>
+            <td data-i18n="modals.dashboard.sub-windows.plugins.table.protocol">
+            </td>
+            <td data-i18n="modals.dashboard.sub-windows.plugins.table.schemaIdentifier">
+            </td>
+            <td data-i18n="modals.dashboard.sub-windows.plugins.table.actions">
+            </td>
+         </tr>
+         <!-- plugin instance will be listed here-->
+         <tr>
+            <td>
+               Rfxcom
+            </td>
+            <td class = "success">
+               Running
+            </td>
+            <td>
+               rfxcom.lan 0x458742
+            </td>
+            <td>
+               protocol
+            </td>
+            <td>
+               sensor.basic
+            </td>
+            <td>
+               <button type="button" class="btn btn-info"><span class="glyphicon glyphicon-off"></span></button>
+               <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-cog"></span></button>
+               <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+
+            </td>
+         </tr>
+      </table>
+   </form>
+   <script>
+
+   </script>
 </div>

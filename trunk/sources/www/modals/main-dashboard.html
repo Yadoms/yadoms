@@ -13,7 +13,7 @@
                   <div class="row">
                      <!-- Dashboard menu -->
                      <div class="col-sm-3 col-md-2 sidebar">
-                        <ul class="nav nav-sidebar">
+                        <ul id="dashboard-btns" class="nav nav-sidebar">
                            <li id="btn-dashboard-summary" class="active"><a href="#" data-i18n="modals.dashboard.sub-windows.summary.title"></a></li>
                            <li id="btn-dashboard-user-management" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.user-management.title"></a></li>
                            <li id="btn-dashboard-system-configuration" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.system-configuration.title"></a></li>
@@ -65,41 +65,55 @@
       });
    }
 
+   function setBtnActive(btnId) {
+      $("ul#dashboard-btns > li").removeClass("active");
+      $("li#" + btnId).addClass("active");
+   }
+
    $("#btn-dashboard-summary").click(function() {
       asyncLoad("modals/dashboard/summary.html");
+      setBtnActive(this.id);
    });
 
    $("#btn-dashboard-user-management").click(function() {
       asyncLoad("modals/dashboard/user-management.html");
+      setBtnActive(this.id);
    });
 
    $("#btn-dashboard-system-configuration").click(function() {
       asyncLoad("modals/dashboard/system-configuration.html");
+      setBtnActive(this.id);
    });
 
    $("#btn-dashboard-user-configuration").click(function() {
       asyncLoad("modals/dashboard/user-configuration.html");
+      setBtnActive(this.id);
    });
 
    $("#btn-dashboard-plugins").click(function() {
       asyncLoad("modals/dashboard/plugins.html");
+      setBtnActive(this.id);
    });
 
    $("#btn-dashboard-addons").click(function() {
       asyncLoad("modals/dashboard/addons.html");
+      setBtnActive(this.id);
    });
 
    $("#btn-dashboard-devices").click(function() {
       asyncLoad("modals/dashboard/devices.html");
+      setBtnActive(this.id);
    });
 
 
    $("#btn-dashboard-update").click(function() {
       asyncLoad("modals/dashboard/update.html");
+      setBtnActive(this.id);
    });
 
    $("#btn-dashboard-about").click(function() {
       asyncLoad("modals/dashboard/about.html");
+      setBtnActive(this.id);
    });
    //we load summary
    $("#btn-dashboard-summary").click();
