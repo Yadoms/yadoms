@@ -1,7 +1,7 @@
 widgetViewModelCtor =
 
 /**
- * Create a smsSender ViewModel
+ * Create a sms-sender ViewModel
  * @constructor
  */
 function SmsSenderViewModel() {
@@ -20,7 +20,7 @@ function SmsSenderViewModel() {
 
          var sms = new Object();
          sms.to = this.to();
-         sms.body = this.body();
+         sms.content = this.body();
          sms.acknowledgment = 'true';
       
          $.ajax({
@@ -34,10 +34,10 @@ function SmsSenderViewModel() {
                //we parse the json answer
                if (data.result != "true")
                {
-                  notifyError($.t("smsSender:errorDuringSending"), JSON.stringify(data));
+                  notifyError($.t("sms-sender:errorDuringSending"), JSON.stringify(data));
                }
             })
-            .fail(function() {notifyError($.t("smsSender:errorDuringSending")); });
+            .fail(function() {notifyError($.t("sms-sender:errorDuringSending")); });
       }
    };
 
@@ -70,12 +70,12 @@ function SmsSenderViewModel() {
                //we parse the json answer
                if (data.result != "true")
                {
-                  notifyError($.t("smsSender:errorDuringGettingDeviceInformation"), JSON.stringify(data));
+                  notifyError($.t("sms-sender:errorDuringGettingDeviceInformation"), JSON.stringify(data));
                   return;
                }
                self.smsSenderText(data.data.name);
             })
-            .fail(function() {notifyError($.t("smsSender:errorDuringGettingDeviceInformation"));});
+            .fail(function() {notifyError($.t("sms-sender:errorDuringGettingDeviceInformation"));});
       }
    };
 
