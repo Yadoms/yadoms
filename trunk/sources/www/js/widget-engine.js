@@ -755,14 +755,16 @@ function updateWidgets() {
 
    $.each(page.widgets, function(widgetIndex, widget) {
       //we ask which devices are needed for this widget instance
-      var list = widget.viewModel.getDevicesToListen();
-      $.each(list, function(deviceIndex, device) {
-         //foreach device we ask for last values
-         $.getJSON("/rest/device/" + device  + "/lastdata")
-            .done(dispatchDeviceDataToWidget(device, widget));
-            //we don't need to manage the fail because the server is online
-            //it happens that server is offline but it will be shown next time by the first check
-      });
+      if (!isNullOrUndefined(widget.viewModel.getDevicesToListen)) {
+         var list = widget.viewModel.getDevicesToListen();
+         $.each(list, function(deviceIndex, device) {
+            //foreach device we ask for last values
+            $.getJSON("/rest/device/" + device  + "/lastdata")
+               .done(dispatchDeviceDataToWidget(device, widget));
+               //we don't need to manage the fail because the server is online
+               //it happens that server is offline but it will be shown next time by the first check
+         });
+      }
    });
 }
 
