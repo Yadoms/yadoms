@@ -42,7 +42,6 @@
       {
          "name": "Une section",
          "description": "Exemple d'utilisation d'une section de configuration.",
-         "type" : "section",
          "content":
          {
             "SubIntParameter":
