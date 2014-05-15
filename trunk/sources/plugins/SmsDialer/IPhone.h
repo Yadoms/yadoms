@@ -32,6 +32,12 @@ public:
    virtual std::string getUniqueId() const = 0;
 
    //--------------------------------------------------------------
+   /// \brief	                  Unlock phone injecting PIN code
+   /// \param [in] pin           PIN code
+   //--------------------------------------------------------------
+   virtual void unlock(const std::string& pin) = 0;
+
+   //--------------------------------------------------------------
    /// \brief	                  Send a SMS
    /// \param [in] sms           The SMS to send
    //--------------------------------------------------------------
