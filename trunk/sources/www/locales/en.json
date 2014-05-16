@@ -27,7 +27,7 @@
          "unableToGetWidgets" : "Unable to get Widgets",
          "errorDuringRequestingPages" : "Error during requesting pages",
          "errorDuringRequestingWidgets" : "Error during requesting widgets",
-         "unableToGetViewOfTheWidget" : "Unable to get view of the __widgetName__ widget",
+         "unableToGetViewOfTheWidget" : "Unable to get view of the __widgetName__ widget. Delete all instances ?",
          "unableToGetViewmodelOfTheWidget" : "Unable to get viewmodel of the __widgetName__ widget",
          "unableToGetConfigurationOfTheWidget" : "Unable to get configuration of the __widgetName__ widget",
          "errorDuringRequestingNewLogEvents" : "Error during requesting new logs events",

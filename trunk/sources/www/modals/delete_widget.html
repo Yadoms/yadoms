@@ -45,7 +45,7 @@
       //we close the new widget modal
       $("div#delete-widget-modal").modal("hide");
 
-      //we ask for deletion of the page
+      //we ask for deletion of the widget
       $.ajax({
          type: "DELETE",
          url: "/rest/widget/" + widgetToDelete.id,
@@ -67,7 +67,7 @@
          page.gridster.remove_widget(widgetToDelete.$gridsterWidget);
          page.widgets.splice($.inArray(widgetToDelete, page.widgets), 1);
       })
-      .fail(function(widgetName) { return function() {notifyError($.t("modals.delete-page.errorDuringDeletingPageNamed", {"widgetType" : widgetName}));};}(widgetToDelete.name))
+      .fail(function(widgetName) { return function() {notifyError($.t("modals.delete-page.errorDuringDeletingWidgetNamed", {"widgetType" : widgetName}));};}(widgetToDelete.name))
       .always(function() {
         //we clear the current id
         widgetToDelete = null;
