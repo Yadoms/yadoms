@@ -62,6 +62,24 @@
             "irdagnapbus": "irdagnapbus"
          },
          "defaultValue": "at115200"
+      },
+      "PINCode":
+      {
+         "name" : "PIN code",
+         "description" : "Phone PIN code, required to access to locked phone",
+         "type" : "section",
+         "enableWithCheckBox" : "true",
+         "enableWithCheckBoxDefaultValue" : "false",
+         "content" :
+         {
+            "PIN":
+            {
+               "name": "PIN",
+               "description": "Phone PIN code",
+               "type": "string",
+               "regex" : "[0-9]{4}"
+            }      
+         }
       }
    }
 }

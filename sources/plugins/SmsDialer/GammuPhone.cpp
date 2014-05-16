@@ -81,7 +81,7 @@ void CGammuPhone::unlock(const std::string& pin)
       throw CPhoneException(std::string ("Can not unlock phone, because PIN code is invalid (must be 4 digits)"));
 
    // Unlock the phone
-   strcpy_s(SecurityCode.Code, sizeof(SecurityCode.Code), pin.c_str());
+   strcpy(SecurityCode.Code, pin.c_str()); // strcpy is safe here because 'pin' length is 4 (just validated by the regex)
    handleGammuError(GSM_EnterSecurityCode(m_connection.getGsmContext(), &SecurityCode), "Unable to unlock the phone");
 }
 

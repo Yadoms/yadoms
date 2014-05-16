@@ -136,6 +136,31 @@ namespace pluginSystem
       void updateInstance(const database::entities::CPlugin& newData);
 
       //--------------------------------------------------------------
+      /// \brief           Start a registered instance of plugin
+      /// \param [in] id   Instance Id
+      /// \throw           CInvalidParameter if id is unknown
+      /// \note            Just start instance, doesn't modify data in base
+      //--------------------------------------------------------------
+      void startInstance(int id);
+
+      //--------------------------------------------------------------
+      /// \brief           Stop a running instance of plugin
+      /// \param [in] id   Instance Id
+      /// \throw           CInvalidParameter if id is unknown
+      /// \note            Just start instance, doesn't modify data in base
+      //--------------------------------------------------------------
+      void stopInstance(int id);
+
+      //--------------------------------------------------------------
+      /// \brief           Get the running state of a particular instance of plugin
+      /// \param [in] id   Instance Id
+      /// \return          true if instance is running
+      /// \throw           CInvalidParameter if id is unknown
+      /// \note            Just start instance, doesn't modify data in base
+      //--------------------------------------------------------------
+      bool isInstanceRunning(int id) const;
+
+      //--------------------------------------------------------------
       /// \brief           Signal an asynchronous event on plugin manager
       /// \param [in] event   Event data
       //--------------------------------------------------------------
@@ -181,23 +206,6 @@ namespace pluginSystem
       /// \return       The full plugin library path
       //--------------------------------------------------------------
       boost::filesystem::path toPath(const std::string& pluginName) const;
-
-      //--------------------------------------------------------------
-      /// \brief           Start a registered instance of plugin
-      /// \param [in] id   Instance Id
-      /// \throw           CInvalidParameter if id is unknown
-      /// \note            Just start instance, doesn't modify data in base
-      //--------------------------------------------------------------
-      void startInstance(int id);
-
-      //--------------------------------------------------------------
-      /// \brief           Stop a running instance of plugin
-      /// \param [in] id   Instance Id
-      /// \throw           CInvalidParameter if id is unknown
-      /// \note            Just start instance, doesn't modify data in base
-      //--------------------------------------------------------------
-      void stopInstance(int id);
-
 
       //--------------------------------------------------------------
       /// \brief           Start the IO service for all plugin

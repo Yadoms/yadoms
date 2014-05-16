@@ -60,6 +60,19 @@ namespace shared { namespace plugin { namespace configuration
       }
 
       //--------------------------------------------------------------
+      /// \brief	    Check if parameter value is present
+      /// \param [in] parameterName    Name of the parameter
+      /// \return     true if parameter found
+      //--------------------------------------------------------------
+      bool hasValue(const std::string& parameterName) const
+      {
+         boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+         boost::optional<const boost::property_tree::ptree&> value = m_tree.get_child_optional(parameterName);
+         return !!value;
+      }
+
+      //--------------------------------------------------------------
       /// \brief	    Type representing authorized enum values list
       //--------------------------------------------------------------
       typedef std::map<std::string, unsigned int> EnumValuesNames;

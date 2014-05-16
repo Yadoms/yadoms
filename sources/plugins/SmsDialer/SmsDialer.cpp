@@ -146,6 +146,8 @@ void CSmsDialer::ProcessNotConnectedState()
          case kEvtTimerTryToConnectToPhone:
             {
                m_phone->connect();
+
+               // TODO : gérer le code PIN (attention à n'essayer qu'une fois ! ! !)
                break;
             }
          case kEvtTimerCheckForIncommingSms:
@@ -174,7 +176,7 @@ void CSmsDialer::ProcessConnectedState()
    m_connectionTimer->stop();
 
    // First, unlock phone
-   m_phone->unlock("5554"/*TODO m_configuration.getPINCode()*/);
+   m_phone->unlock(m_configuration.getPhonePIN());
 
    // Next, check for incoming SMS
    processIncommingSMS();

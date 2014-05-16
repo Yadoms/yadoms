@@ -2,25 +2,23 @@
 
 #include <shared/plugin/configuration/Configuration.h>
 #include <shared/plugin/ImplementationHelper.h>
-#include "ISmsDialerConfiguration.h"
+#include "IRfxcomConfiguration.h"
 
 
 //--------------------------------------------------------------
 /// \brief	Configuration of the plugin
 /// \note   To implement configuration, we have to derive from shared::plugin::configuration::CConfiguration
 //--------------------------------------------------------------
-class CSmsDialerConfiguration : public shared::plugin::configuration::CConfiguration, public ISmsDialerConfiguration
+class CRfxcomConfiguration : public shared::plugin::configuration::CConfiguration, public IRfxcomConfiguration
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CSmsDialerConfiguration();
+   virtual ~CRfxcomConfiguration();
 
-   // ISmsDialerConfiguration implementation
-   virtual std::string getGammuPort() const;
-   virtual std::string getGammuProtocol() const;
-   virtual std::string getPhonePIN() const;
-   // [END] ISmsDialerConfiguration implementation
+   // IRfxcomConfiguration implementation
+   virtual std::string getSerialPort() const;
+   // [END] IRfxcomConfiguration implementation
 };
 
