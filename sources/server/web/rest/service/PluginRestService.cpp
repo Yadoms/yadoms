@@ -225,16 +225,18 @@ namespace web { namespace rest { namespace service {
          if(parameters.size()>1)
          {
             int instanceId = boost::lexical_cast<int>(parameters[1]);
-            
-            web::rest::json::CJson result;
 
-            //TODO: ask for instance status from m_pluginManager
-            if( (instanceId%2) == 0 )
-               result.put("status", "running");
+            boost::shared_ptr<database::entities::CPlugin> pluginInstanceFound = m_pluginManager->getInstance(instanceId);
+            if(pluginInstanceFound)
+            {
+               web::rest::json::CJson result;
+               result.put("running", m_pluginManager->isInstanceRunning(instanceId));
+               return web::rest::json::CJsonResult::GenerateSuccess(result);
+            }
             else
-               result.put("status", "stopped");
-
-            return web::rest::json::CJsonResult::GenerateSuccess(result);
+            {
+               return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id");
+            }
          }
          else
          {
@@ -259,10 +261,21 @@ namespace web { namespace rest { namespace service {
          {
             int instanceId = boost::lexical_cast<int>(parameters[1]);
             
-            //TODO: start instance from m_pluginManager
-
-            //TODO: check for instance status
-            return web::rest::json::CJsonResult::GenerateSuccess();
+            boost::shared_ptr<database::entities::CPlugin> pluginInstanceFound = m_pluginManager->getInstance(instanceId);
+            if(pluginInstanceFound)
+            {
+               //start instance
+               m_pluginManager->startInstance(instanceId);
+               //check for instance status
+               bool state = m_pluginManager->isInstanceRunning(instanceId);
+               if(state)
+                  return web::rest::json::CJsonResult::GenerateSuccess();
+               return web::rest::json::CJsonResult::GenerateError("Fail to start the plugin instance");
+            }
+            else
+            {
+               return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id");
+            }
          }
          else
          {
@@ -287,10 +300,21 @@ namespace web { namespace rest { namespace service {
          {
             int instanceId = boost::lexical_cast<int>(parameters[1]);
             
-            //TODO: stop instance from m_pluginManager
-
-            //TODO: check for instance status
-            return web::rest::json::CJsonResult::GenerateSuccess();
+            boost::shared_ptr<database::entities::CPlugin> pluginInstanceFound = m_pluginManager->getInstance(instanceId);
+            if(pluginInstanceFound)
+            {
+               //stop instance
+               m_pluginManager->stopInstance(instanceId);
+               //check for instance status
+               bool state = m_pluginManager->isInstanceRunning(instanceId);
+               if(!state)
+                  return web::rest::json::CJsonResult::GenerateSuccess();
+               return web::rest::json::CJsonResult::GenerateError("Fail to stop the plugin instance");
+            }
+            else
+            {
+               return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id");
+            }
          }
          else
          {
