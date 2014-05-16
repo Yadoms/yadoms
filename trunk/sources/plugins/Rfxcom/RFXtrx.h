@@ -701,7 +701,7 @@ SDK version 4.9
 
 typedef union tRBUF {
 	struct {
-		BYTE	packetlength;
+		BYTE  	packetlength;
 		BYTE	packettype;
 		BYTE	subtype;
 		BYTE	seqnbr;

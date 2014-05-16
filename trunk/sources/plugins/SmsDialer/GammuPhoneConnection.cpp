@@ -2,7 +2,6 @@
 #include <shared/Log.h>
 #include "PhoneException.hpp"
 #include "GammuPhoneConnection.h"
-#include <../libgammu/gsmstate.h>
 
 
 CGammuPhoneConnection::CGammuPhoneConnection(const ISmsDialerConfiguration& configuration)

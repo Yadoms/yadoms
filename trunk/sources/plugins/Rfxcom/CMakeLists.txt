@@ -18,6 +18,7 @@ set(RFXCOM_SOURCES
    RfxcomFactory.h
    RfxcomFactory.cpp
    RFXtrx.h
+   RFXtrxTypes.h
    SerialPort.h
    SerialPort.cpp
    SerialPortSubscription.hpp

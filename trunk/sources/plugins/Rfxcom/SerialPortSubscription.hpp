@@ -63,7 +63,7 @@ public:
    bool hasSubscription() const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
-      return m_eventHandler;
+      return !!m_eventHandler;
    }
 
    //--------------------------------------------------------------
