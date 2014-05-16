@@ -36,6 +36,8 @@ class CSQLiteRequester;
                virtual boost::shared_ptr<entities::CDevice> createDevice(const std::string & address, const std::string & protocol, const std::string & hardwareIdentifier, const std::string & name);
                virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevices();
                virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevicesMatchingKeyword(const std::string & keyword);
+               virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevicesMatchingProtocol(const std::string & protocol);
+               virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevicesMatchingProtocolWithKeyword(const std::string & protocol, const std::string & keyword);
                virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string>  > getDeviceLastData(int deviceId);
                virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string>  > getDeviceData(int deviceId, const std::string & keyword,  boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo );
                virtual std::vector< std::string > getDeviceHardwares();

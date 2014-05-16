@@ -34,6 +34,8 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CDeviceRestService::getAllDevices);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CDeviceRestService::getOneDevice);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("matchkeyword")("*"), CDeviceRestService::getDeviceWithKeyword);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("matchprotocol")("*"), CDeviceRestService::getDeviceWhichSupportProtocol);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("matchprotocol")("*")("*"), CDeviceRestService::getDeviceWhichSupportProtocolAndKeyword);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("lastdata"), CDeviceRestService::getLastDeviceData);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("data")("*"), CDeviceRestService::getDeviceData); //get all keyword data
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("data")("*")("*"), CDeviceRestService::getDeviceData); //get keyword data from date
@@ -79,6 +81,43 @@ namespace web { namespace rest { namespace service {
          return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive keyword in url");
       }
    }
+
+
+   web::rest::json::CJson CDeviceRestService::getDeviceWhichSupportProtocol(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   {
+      std::string protocol = "";
+      if(parameters.size()>2)
+      {
+         protocol = parameters[2];
+         web::rest::json::CDeviceEntitySerializer hes;
+         std::vector< boost::shared_ptr<database::entities::CDevice> > dvList = m_dataProvider->getDeviceRequester()->getDevicesMatchingProtocol(protocol);
+         return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CDevice>::SerializeCollection(dvList, hes, getRestKeyword()));
+      }
+      else
+      {
+         return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive protocol in url");
+      }
+   }
+
+
+   web::rest::json::CJson CDeviceRestService::getDeviceWhichSupportProtocolAndKeyword(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   {
+      std::string protocol = "";
+      std::string keyword = "";
+      if(parameters.size()>3)
+      {
+         protocol = parameters[2];
+         keyword = parameters[3];
+         web::rest::json::CDeviceEntitySerializer hes;
+         std::vector< boost::shared_ptr<database::entities::CDevice> > dvList = m_dataProvider->getDeviceRequester()->getDevicesMatchingProtocolWithKeyword(protocol, keyword);
+         return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CDevice>::SerializeCollection(dvList, hes, getRestKeyword()));
+      }
+      else
+      {
+         return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive protocol and keyword in url");
+      }
+   }
+
 
 
    web::rest::json::CJson CDeviceRestService::getLastDeviceData(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)

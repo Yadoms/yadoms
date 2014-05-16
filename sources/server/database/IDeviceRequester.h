@@ -51,6 +51,24 @@ namespace database {
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevicesMatchingKeyword(const std::string & keyword) = 0;
 
+
+      //--------------------------------------------------------------
+      /// \brief           List all devices which supports an Xpl protocol
+      /// \param [in]      protocol   The protocol to check
+      /// \return          List of devices which supports the protocol
+      /// \throw           shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevicesMatchingProtocol(const std::string & protocol) = 0;
+      
+      //--------------------------------------------------------------
+      /// \brief           List all devices which supports an Xpl protocol with a keyword
+      /// \param [in]      protocol   The protocol to check
+      /// \param [in]      keyword   The keyword to check
+      /// \return          List of devices which supports the protocol with the keyword
+      /// \throw           shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevicesMatchingProtocolWithKeyword(const std::string & protocol, const std::string & keyword) = 0;
+      
       //--------------------------------------------------------------
       /// \brief                 Get the device last data
       /// \param [in] deviceId   Device Id
