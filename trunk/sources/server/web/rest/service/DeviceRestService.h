@@ -38,6 +38,16 @@ namespace web { namespace rest { namespace service {
       web::rest::json::CJson getDeviceWithKeyword(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
 
       //-----------------------------------------
+      ///\brief   get all devices which support a given xpl protocol
+      //-----------------------------------------
+      web::rest::json::CJson getDeviceWhichSupportProtocol(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+
+      //-----------------------------------------
+      ///\brief   get all devices which support a given xpl protocol and keyword
+      //-----------------------------------------
+      web::rest::json::CJson getDeviceWhichSupportProtocolAndKeyword(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+
+      //-----------------------------------------
       ///\brief   get the last data for each keyword supported by a device
       //-----------------------------------------
       web::rest::json::CJson getLastDeviceData(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
