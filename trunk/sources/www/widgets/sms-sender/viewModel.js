@@ -91,7 +91,6 @@ function SmsSenderViewModel() {
          if (deviceId == this.widget.configuration.device) {
             //it is the good device
             //we browse the list of keywords values
-            //debugger;
             $.each(data, function(keywordIndex, keyword) {
                switch(keyword.key) {
                   case "send" :
