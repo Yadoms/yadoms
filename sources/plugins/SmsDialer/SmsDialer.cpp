@@ -251,31 +251,32 @@ void CSmsDialer::onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage
       (xplMessage.getMessageSchemaIdentifier().getClassId() == "message" && xplMessage.getMessageSchemaIdentifier().getTypeId() == "sms") ||
       (xplMessage.getMessageSchemaIdentifier().getClassId() == "sendmsg" && xplMessage.getMessageSchemaIdentifier().getTypeId() == "basic"),
       "Filter doesn't work, messages must be message.sms or sendmsg.basic");
+   BOOST_ASSERT_MSG(xplMessage.getBodyValue("device") == m_phone->getUniqueId(), "Device ID is not correct");
    BOOST_ASSERT_MSG(!xplMessage.getBodyValue("to").empty(), "SMS recipient is empty");
-   BOOST_ASSERT_MSG(!xplMessage.getBodyValue("body").empty(), "SMS message body is empty");
+   BOOST_ASSERT_MSG(!xplMessage.getBodyValue("content").empty(), "SMS message content is empty");
 
    const std::string to = xplMessage.getBodyValue("to");
-   const std::string body = xplMessage.getBodyValue("body");
+   const std::string content = xplMessage.getBodyValue("content");
    const bool ackRequired = xplMessage.hasBodyValue("acknowledgment") && xplMessage.getBodyValue("acknowledgment") == "true";
 
    try
    {
-      boost::shared_ptr<ISms> sms(new CSms(to, body));
+      boost::shared_ptr<ISms> sms(new CSms(to, content));
       m_phone->send(sms);
       if (ackRequired)
-         xplSendAck(true, body);
+         xplSendAck(true, content);
    }
    catch (shared::xpl::CXplException& e)
    {
       YADOMS_LOG(error) << "Can not send SMS, the XPL message is invalid : " << e.what();
       if (ackRequired)
-         xplSendAck(false, body);
+         xplSendAck(false, content);
    }
    catch (CPhoneException& e)
    {
       YADOMS_LOG(error) << "Error sending SMS : " << e.what();
       if (ackRequired)
-         xplSendAck(false, body);
+         xplSendAck(false, content);
    }
 }
 
