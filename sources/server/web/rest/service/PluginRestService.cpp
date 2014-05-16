@@ -26,8 +26,12 @@ namespace web { namespace rest { namespace service {
 
    void CPluginRestService::configureDispatcher(CRestDispatcher & dispatcher)
    {
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CPluginRestService::getAllPlugins);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CPluginRestService::getAllAvailablePlugins);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instances"), CPluginRestService::getAllPluginsInstance);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CPluginRestService::getOnePlugin);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("status"), CPluginRestService::getInstanceStatus);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT",  (m_restKeyword)("*")("start"), CPluginRestService::startInstance);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT",  (m_restKeyword)("*")("stop"), CPluginRestService::stopInstance);
 
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPluginRestService::createPlugin, CPluginRestService::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CPluginRestService::updatePlugin, CPluginRestService::transactionalMethod);
@@ -93,11 +97,46 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   web::rest::json::CJson CPluginRestService::getAllPlugins(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   web::rest::json::CJson CPluginRestService::getAllPluginsInstance(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
       web::rest::json::CPluginEntitySerializer hes;
       std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
       return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CPlugin>::SerializeCollection(hwList, hes, getRestKeyword()));
+   }
+
+   web::rest::json::CJson CPluginRestService::getAllAvailablePlugins(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   {
+      try
+      {
+         web::rest::json::CPluginEntitySerializer hes;
+         pluginSystem::CManager::AvalaiblePluginMap pluginList = m_pluginManager->getPluginList();
+
+         pluginSystem::CManager::AvalaiblePluginMap::iterator i;
+         web::rest::json::CJson result;
+         for(i=pluginList.begin(); i!=pluginList.end(); ++i)
+         {
+            web::rest::json::CJson thisPluginData;
+            thisPluginData.put("name", i->first);
+            thisPluginData.put("author", i->second->getAuthor());
+            thisPluginData.put("description", i->second->getDescription());
+            thisPluginData.put("nameInformation", i->second->getName());
+            thisPluginData.put("identity", i->second->getIdentity());
+            thisPluginData.put("releaseType", i->second->getReleaseType());
+            thisPluginData.put("url", i->second->getUrl());
+            thisPluginData.put("version", i->second->getVersion());
+
+            result.push_back(std::make_pair("", thisPluginData));
+         }
+         return web::rest::json::CJsonResult::GenerateSuccess(result);
+      }
+      catch(std::exception &ex)
+      {
+         return web::rest::json::CJsonResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return web::rest::json::CJsonResult::GenerateError("unknown exception in creating a new plugin instance");
+      }
    }
 
    web::rest::json::CJson CPluginRestService::createPlugin(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
@@ -177,6 +216,95 @@ namespace web { namespace rest { namespace service {
       }
 
       return web::rest::json::CJsonResult::GenerateSuccess();
+   }
+
+   web::rest::json::CJson CPluginRestService::getInstanceStatus(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)  
+   {
+      try
+      {
+         if(parameters.size()>1)
+         {
+            int instanceId = boost::lexical_cast<int>(parameters[1]);
+            
+            web::rest::json::CJson result;
+
+            //TODO: ask for instance status from m_pluginManager
+            if( (instanceId%2) == 0 )
+               result.put("status", "running");
+            else
+               result.put("status", "stopped");
+
+            return web::rest::json::CJsonResult::GenerateSuccess(result);
+         }
+         else
+         {
+            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+         }
+      }
+      catch(std::exception &ex)
+      {
+         return web::rest::json::CJsonResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return web::rest::json::CJsonResult::GenerateError("unknown exception in reading plugin instance status");
+      }
+   }
+
+   web::rest::json::CJson CPluginRestService::startInstance(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   {
+      try
+      {
+         if(parameters.size()>1)
+         {
+            int instanceId = boost::lexical_cast<int>(parameters[1]);
+            
+            //TODO: start instance from m_pluginManager
+
+            //TODO: check for instance status
+            return web::rest::json::CJsonResult::GenerateSuccess();
+         }
+         else
+         {
+            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+         }
+      }
+      catch(std::exception &ex)
+      {
+         return web::rest::json::CJsonResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return web::rest::json::CJsonResult::GenerateError("unknown exception in starting plugin instance");
+      }
+   }
+
+   web::rest::json::CJson CPluginRestService::stopInstance(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   {
+      try
+      {
+         if(parameters.size()>1)
+         {
+            int instanceId = boost::lexical_cast<int>(parameters[1]);
+            
+            //TODO: stop instance from m_pluginManager
+
+            //TODO: check for instance status
+            return web::rest::json::CJsonResult::GenerateSuccess();
+         }
+         else
+         {
+            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+         }
+      }
+      catch(std::exception &ex)
+      {
+         return web::rest::json::CJsonResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return web::rest::json::CJsonResult::GenerateError("unknown exception in stopping plugin instance");
+      }
    }
 
 
