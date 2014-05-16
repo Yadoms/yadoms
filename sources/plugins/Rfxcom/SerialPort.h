@@ -18,7 +18,7 @@ public:
    /// \param[in] stop_bits         Nb of stop bits (see boost::asio::serial_port_base::stop_bits::type for values)
    /// \param[in] flowControl       Flow control (see boost::asio::serial_port_base::flow_control::type for values)
    //--------------------------------------------------------------
-   CSerialPort::CSerialPort(
+   CSerialPort(
       boost::asio::io_service& iOService,
       const std::string& port,
       boost::asio::serial_port_base::baud_rate baudrate = boost::asio::serial_port_base::baud_rate(9600),

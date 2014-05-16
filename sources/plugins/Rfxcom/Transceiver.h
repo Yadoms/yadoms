@@ -2,6 +2,7 @@
 
 #include "ITransceiver.h"
 #include "IPort.h"
+#include "RFXtrxTypes.h"
 #include "RFXtrx.h"
 
 //--------------------------------------------------------------
@@ -36,7 +37,7 @@ protected:
    /// \param [in] ptr              Buffer pointer
    /// \param [in] sier             Buffer size
    //--------------------------------------------------------------
-   std::string CTransceiver::msgToString(const void* ptr, size_t size) const;
+   std::string msgToString(const void* ptr, size_t size) const;
 
 private:
    //--------------------------------------------------------------
