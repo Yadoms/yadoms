@@ -52,14 +52,29 @@ protected:
    //--------------------------------------------------------------
    /// \brief	                     Send the actual connection send to XPL network
    //--------------------------------------------------------------
-   void sendConnectionState() const;
+   void xplSendConnectionState() const;
 
    //--------------------------------------------------------------
    /// \brief	                     Send the acknowledge to XPL network
    /// \param [in] ok               true for positive ack, false for negative ack
    /// \param [in] sourceMsg        Original sent message
    //--------------------------------------------------------------
-   void SendXplAck(bool ok, const std::string& sourceMsg) const;
+   void xplSendAck(bool ok, const std::string& sourceMsg) const;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Send the received SMS to XPL network
+   /// \param [in] sms              sms to transmit to XPL network
+   //--------------------------------------------------------------
+   void xplSendSmsReceived(const boost::shared_ptr<ISms> sms) const;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Send the XPL-trig message to XPL network (low-level method)
+   /// \param [in] from             "from" recipient (should be empty for an acknowledge)
+   /// \param [in] type             Message type
+   /// \param [in] content          Message content
+   /// \note See XPL message "message.sms" specification (Yadoms specific message)
+   //--------------------------------------------------------------
+   void xplSendSmsTrigger(const std::string& from, const std::string& type, const std::string& content) const;
 
 private:
    //--------------------------------------------------------------
