@@ -1,0 +1,18 @@
+{
+   "name": "rfxcom",
+   "description": "RFXCom radio interface support (see http://rfxcom.com/)",
+   "version": "0.1",
+   "releaseType": "beta",
+   "author": "Sébastien Gallou",
+   "url": "http://sourceforge.net/projects/yadoms/",
+   "SupportedPlatforms": "all",
+   "configurationSchema":
+   {
+      "Serial Port":
+      {
+         "name": "Serial port",
+         "description": "The virtual serial port connected to the RFXCom",
+         "type": "serialPort"
+      }
+  }
+}

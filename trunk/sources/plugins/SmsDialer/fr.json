@@ -11,6 +11,19 @@
       {
          "name": "Protocole",
          "description": "Le protocole utilisé pour la connexion entre smsDialer et le téléphone. Utilisez Wammu (http://wammu.eu/) pour déterminer le protocole accepté par votre téléphone.",
+      },
+      "PINCode":
+      {
+         "name" : "Code PIN",
+         "description" : "Code PIN du téléphone, requis pour accéder à un téléphone protégé.",
+         "content" :
+         {
+            "PIN":
+            {
+               "name": "PIN",
+               "description": "Code PIN du téléphone",
+            }      
+         }
       }
    }
 }

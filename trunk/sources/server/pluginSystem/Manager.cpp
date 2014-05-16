@@ -351,9 +351,9 @@ void CManager::startInstance(int id)
    // Get instance informations from database
    boost::shared_ptr<database::entities::CPlugin> databasePluginInstance(m_pluginDBTable->getInstance(id));
 
-   // Load the plugin
    try
    {
+      // Load the plugin
       boost::shared_ptr<CFactory> plugin(loadPlugin(databasePluginInstance->PluginName()));
 
       // Create instance
@@ -380,6 +380,11 @@ void CManager::stopInstance(int id)
 
    // Try to unload associated plugin (if no more used)
    unloadPlugin(pluginName);
+}
+
+bool CManager::isInstanceRunning(int id) const
+{
+   return m_runningInstances.find(id) != m_runningInstances.end();
 }
 
 } // namespace pluginSystem
