@@ -400,9 +400,10 @@ function requestWidgetsDone() {
 function askForWidgetPackage(packageName) {
    widgetPackages[packageName] = new WidgetPackage();
    //we ask for the view
+   //TODO : corriger i18n par la bonne chaine
    $.get("widgets/" + packageName + "/view.html")
       .done(getWidgetViewDone(packageName))
-      .fail(function(packageName) { return function() {notifyError($.t("mainPage.errors.unableToGetViewOfTheWidget", {widgetName : packageName}));}}(packageName));
+      .fail(function(pkg) { return function() {askForWidgetDelete(pkg, $.t("mainPage.errors.unableToGetViewOfTheWidget", {widgetName : pkg}));};}(packageName));
 }
 
 /**
@@ -494,6 +495,48 @@ function getWidgetPackageInformationDone(packageName)
    };
 }
 
+function askForWidgetDelete(packageName, errorMessage) {
+   assert(!isNullOrUndefined(packageName), "packageName must be defined in askForWidgetDelete()");
+   assert(!isNullOrUndefined(errorMessage), "errorMessage must be defined in askForWidgetDelete()");
+
+   notifyConfirm(errorMessage, "error",
+      function($noty) {
+         // this = button element
+         // $noty = $noty element
+         $noty.close();
+
+         //we must retrieve which widgets are concerned by this package and we ask for widget deletion
+         var i = widgetArrayForLoading.length - 1;
+         while (i >= 0) {
+            var widget = widgetArrayForLoading[i];
+            if (widget.name == packageName) {
+               widgetArrayForLoading.splice(i, 1);
+               //we ask for deletion of the widget
+               $.ajax({
+                  type: "DELETE",
+                  url: "/rest/widget/" + widget.id,
+                  dataType: "json"
+               })
+                  .done(function(data) {
+                     //we parse the json answer
+                     if (data.result != "true")
+                     {
+                        notifyError($.t("modals.delete-widget.errorDuringDeletingWidget"), JSON.stringify(data));
+                        return;
+                     }
+                  })
+                  .fail(function(widgetName) { return function() {notifyError($.t("modals.delete-page.errorDuringDeletingWidgetNamed", {"widgetType" : widgetName}));};}(widget.name));
+            }
+            i--;
+         }
+      },
+      function($noty) {
+         // this = button element
+         // $noty = $noty element
+         $noty.close();
+      });
+}
+
 /**
  * Graphically add the widget to the correct tab
  * @param widget widget to add
@@ -508,7 +551,7 @@ function addWidgetToIHM(widget) {
       widgetArrayForLoading.push(widget);
       $.get("widgets/" + widget.name + "/view.html")
          .done(getWidgetViewDone(widget.name))
-         .fail(function(widget) { return function() {notifyError($.t("mainPage.errors.unableToGetViewOfTheWidget", {widgetName : widget.name})); }}(widget));
+         .fail(function(pkg) { return function() {askForWidgetDelete(pkg, $.t("mainPage.errors.unableToGetViewOfTheWidget", {widgetName : pkg}));};}(widget.name));
    }
    else {
       //if we haven't yet downloaded the viewModelCtor we ask for lazy load

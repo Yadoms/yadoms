@@ -27,7 +27,7 @@
       "unableToGetWidgets": "Impossible de récupérer les widgets",
       "errorDuringRequestingPages": "Erreur pendant la récupération des pages",
       "errorDuringRequestingWidgets": "Erreur pendant la récupération des widgets",
-      "unableToGetViewOfTheWidget": "Impossible de récupérer la vue du widget __widgetName__",
+      "unableToGetViewOfTheWidget": "Impossible de récupérer la vue du widget __widgetName__. Supprimer toutes les instances ?",
       "unableToGetViewmodelOfTheWidget": "Impossible de récupérer le vue modèle du widget __widgetName__",
       "unableToGetConfigurationOfTheWidget": "Impossible de récupérer la configuration du widget __widgetName__",
       "errorDuringRequestingNewLogEvents": "Erreur pendant la demande de nouveaux évènements serveur",

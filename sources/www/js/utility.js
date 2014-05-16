@@ -9,6 +9,9 @@ var assert = function(condition, message) {
    return true;
 };
 
+var defaultNotyTimeout = 4000;
+var defaultNotyLayout = "bottomRight";
+
 /**
  * Notify a message to the window using noty library
  * @param message message to display
@@ -19,10 +22,10 @@ var assert = function(condition, message) {
 function notify(message, gravity, timeout)
 {
    if (timeout === undefined)
-      timeout = 4000;
+      timeout = defaultNotyTimeout;
    assert(message != undefined, "Message must be defined");
    assert(gravity != undefined, "Gravity must be defined");
-   return noty({text: message, timeout:timeout,  layout:'bottomRight', type: gravity});
+   return noty({text: message, timeout:timeout,  layout:defaultNotyLayout, type: gravity});
 }
 
 /**
@@ -41,7 +44,7 @@ function notifyInformation(message)
  * @param message message to display
  * @returns {noty}
  */
-   function notifyWarning(message)
+function notifyWarning(message)
 {
    console.warn(message);
    return notify(message, 'warning', undefined);
@@ -102,6 +105,25 @@ function parseBool(string, defaultValue) {
       case "false": case "no": case "0": case null: return false;
       default: return defaultValue;
    }
+}
+
+function notifyConfirm(message, gravity, confirmCallback, cancelCallback) {
+   assert(message != undefined, "Message must be defined");
+   assert(gravity != undefined, "Gravity must be defined");
+//todo : i18n
+   return noty({
+      text: message,
+      layout:defaultNotyLayout,
+      gravity: gravity,
+      buttons: [
+         {
+            addClass: 'btn btn-primary', text: 'Ok', onClick: confirmCallback
+         },
+         {
+            addClass: 'btn btn-danger', text: 'Cancel', onClick: cancelCallback
+         }
+      ]
+   });
 }
 
 /**
