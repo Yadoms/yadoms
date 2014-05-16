@@ -8,15 +8,20 @@ CSms::CSms(const std::string& number, const std::string& content)
 
 CSms::CSms(const GSM_MultiSMSMessage& gammuSms)
 {
-   char strUtf8[MAX(sizeof(gammuSms.SMS[0].Number), sizeof(gammuSms.SMS[0].Text)) * 2];
-   EncodeUTF8(strUtf8, gammuSms.SMS[0].Number);//TODO conversion KO
-   m_number = std::string(strUtf8);
+   // Need to decode the UTF-16 used by Gammu
+
+   // 4 bytes max per character for UTF-8
+   static const size_t Utf8Size = (MAX(sizeof(gammuSms.SMS[0].Number), sizeof(gammuSms.SMS[0].Text)) + 1) * 4;
+   char utf8[Utf8Size];
+
+   DecodeUnicode(gammuSms.SMS[0].Number, utf8);
+   m_number = std::string(utf8);
 
    m_content.clear();
    for (int smsPart = 0 ; smsPart < gammuSms.Number ; ++ smsPart)
    {
-      EncodeUTF8(strUtf8, gammuSms.SMS[smsPart].Text);
-      m_content.append(boost::lexical_cast<std::string>(strUtf8));
+      DecodeUnicode(gammuSms.SMS[smsPart].Text, utf8);
+      m_content.append(utf8);
    }
 }
 

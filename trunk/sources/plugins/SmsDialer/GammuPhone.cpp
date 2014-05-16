@@ -60,7 +60,7 @@ std::string CGammuPhone::getUniqueId() const
 }
 
 void CGammuPhone::unlock(const std::string& pin)
-{//TODO ajouter sécurité pour ne pas saisir plusieurs fois le même pin sur le même téléphone
+{
    GSM_SecurityCode SecurityCode;
    handleGammuError(GSM_GetSecurityStatus(m_connection.getGsmContext(), &SecurityCode.Type), "Unable to get the phone security status");
 

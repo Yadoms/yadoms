@@ -94,7 +94,7 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
          else
          {
             // Send connection state message
-            sendConnectionState();
+            xplSendConnectionState();
 
             ProcessConnectedState();
          }
@@ -146,8 +146,6 @@ void CSmsDialer::ProcessNotConnectedState()
          case kEvtTimerTryToConnectToPhone:
             {
                m_phone->connect();
-
-               // TODO : gérer le code PIN (attention à n'essayer qu'une fois ! ! !)
                break;
             }
          case kEvtTimerCheckForIncommingSms:
@@ -265,38 +263,40 @@ void CSmsDialer::onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage
       boost::shared_ptr<ISms> sms(new CSms(to, body));
       m_phone->send(sms);
       if (ackRequired)
-         SendXplAck(true, body);
+         xplSendAck(true, body);
    }
    catch (shared::xpl::CXplException& e)
    {
       YADOMS_LOG(error) << "Can not send SMS, the XPL message is invalid : " << e.what();
       if (ackRequired)
-         SendXplAck(false, body);
+         xplSendAck(false, body);
    }
    catch (CPhoneException& e)
    {
       YADOMS_LOG(error) << "Error sending SMS : " << e.what();
       if (ackRequired)
-         SendXplAck(false, body);
+         xplSendAck(false, body);
    }
 }
 
 void CSmsDialer::processIncommingSMS()
 {
    // Check if incoming SMS
-
    boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > incommingSms = m_phone->getIncomingSMS();
-   for (std::vector<boost::shared_ptr<ISms> >::const_iterator it = incommingSms->begin() ; it != incommingSms->end() ; ++it)
+   if (incommingSms)
    {
-      YADOMS_LOG(info) << "SMS received";
-      YADOMS_LOG(debug) << "SMS received from " << (*it)->getNumber() << " : " << (*it)->getContent();
-   }
-   //if (!incommingSms)
+      for (std::vector<boost::shared_ptr<ISms> >::const_iterator it = incommingSms->begin() ; it != incommingSms->end() ; ++it)
+      {
+         YADOMS_LOG(info) << "SMS received";
+         YADOMS_LOG(debug) << "SMS received from " << (*it)->getNumber() << " : " << (*it)->getContent();
 
-   //TODO : traiter le message reçu
+         // Send SMS to XPL network
+         xplSendSmsReceived(*it);
+      }
+   }
 }
 
-void CSmsDialer::sendConnectionState() const
+void CSmsDialer::xplSendConnectionState() const
 {
    // Send state only if phone is known
    if (m_phone->getUniqueId().empty())
@@ -316,9 +316,25 @@ void CSmsDialer::sendConnectionState() const
    m_xplService->sendMessage(msg);
 }
 
-void CSmsDialer::SendXplAck(bool ok, const std::string& sourceMsg) const
+void CSmsDialer::xplSendAck(bool ok, const std::string& sourceMsg) const
 {
-   // Send state only if phone is known
+   xplSendSmsTrigger(
+      shared::CStringExtension::EmptyString,       // From (doesn't make sense for an acknowledge)
+      ok ? "acknowledgment" : "error",             // Type
+      sourceMsg);                                  // Content
+}
+
+void CSmsDialer::xplSendSmsReceived(const boost::shared_ptr<ISms> sms) const
+{
+   xplSendSmsTrigger(
+      sms->getNumber(),                            // From
+      "message",                                   // Type
+      sms->getContent());                          // Content
+}
+
+void CSmsDialer::xplSendSmsTrigger(const std::string& from, const std::string& type, const std::string& content) const
+{
+   // Send XPl message only if phone is known
    if (m_phone->getUniqueId().empty())
       return;
 
@@ -332,11 +348,11 @@ void CSmsDialer::SendXplAck(bool ok, const std::string& sourceMsg) const
    // - Device ID
    msg.addToBody("device", m_phone->getUniqueId());
    // - From (doesn't make sense for an acknowledge)
-   msg.addToBody("from", shared::CStringExtension::EmptyString);
+   msg.addToBody("from", from);
    // - Type
-   msg.addToBody("type", ok ? "acknowledgment" : "error");
+   msg.addToBody("type", type);
    // - Content
-   msg.addToBody("content", sourceMsg);
+   msg.addToBody("content", content);
 
    // Send it
    m_xplService->sendMessage(msg);
