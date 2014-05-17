@@ -400,10 +400,9 @@ function requestWidgetsDone() {
 function askForWidgetPackage(packageName) {
    widgetPackages[packageName] = new WidgetPackage();
    //we ask for the view
-   //TODO : corriger i18n par la bonne chaine
    $.get("widgets/" + packageName + "/view.html")
       .done(getWidgetViewDone(packageName))
-      .fail(function(pkg) { return function() {askForWidgetDelete(pkg, $.t("mainPage.errors.unableToGetViewOfTheWidget", {widgetName : pkg}));};}(packageName));
+      .fail(function(pkg) { return function() {askForWidgetDelete(pkg, $.t("mainPage.errors.partOfWidgetIsMissing", {widgetName : pkg}));};}(packageName));
 }
 
 /**
@@ -429,7 +428,7 @@ function askViewModelCtor(packageName) {
    widgetViewModelCtor = null;
    $.getScript("widgets/" + packageName + "/viewModel.js")
          .done(getWidgetViewModelConstructorDone(packageName))
-         .fail(function(packageName) { return function() {notifyError($.t("mainPage.errors.unableToGetViewmodelOfTheWidget", {widgetName : packageName}));}}(packageName));
+         .fail(function(pkg) { return function() {askForWidgetDelete(pkg, $.t("mainPage.errors.partOfWidgetIsMissing", {widgetName : pkg}));};}(packageName));
 }
 
 /**
@@ -453,7 +452,7 @@ function askForPackageInformation(packageName)
 {
    $.getJSON( "widgets/" + packageName + "/package.json")
       .done(getWidgetPackageInformationDone(packageName))
-      .fail(function(packageName) { return function() {notifyError($.t("mainPage.errors.unableToGetConfigurationOfTheWidget", {widgetName : packageName}));}}(packageName));
+      .fail(function(pkg) { return function() {askForWidgetDelete(pkg, $.t("mainPage.errors.partOfWidgetIsMissing", {widgetName : pkg}));};}(packageName));
 }
 
 /**
@@ -551,7 +550,7 @@ function addWidgetToIHM(widget) {
       widgetArrayForLoading.push(widget);
       $.get("widgets/" + widget.name + "/view.html")
          .done(getWidgetViewDone(widget.name))
-         .fail(function(pkg) { return function() {askForWidgetDelete(pkg, $.t("mainPage.errors.unableToGetViewOfTheWidget", {widgetName : pkg}));};}(widget.name));
+         .fail(function(pkg) { return function() {askForWidgetDelete(pkg, $.t("mainPage.errors.partOfWidgetIsMissing", {widgetName : pkg}));};}(widget.name));
    }
    else {
       //if we haven't yet downloaded the viewModelCtor we ask for lazy load

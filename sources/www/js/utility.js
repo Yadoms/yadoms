@@ -110,17 +110,16 @@ function parseBool(string, defaultValue) {
 function notifyConfirm(message, gravity, confirmCallback, cancelCallback) {
    assert(message != undefined, "Message must be defined");
    assert(gravity != undefined, "Gravity must be defined");
-//todo : i18n
    return noty({
       text: message,
       layout:defaultNotyLayout,
       gravity: gravity,
       buttons: [
          {
-            addClass: 'btn btn-primary', text: 'Ok', onClick: confirmCallback
+            addClass: 'btn btn-primary', text: $.t("common.yes"), onClick: confirmCallback
          },
          {
-            addClass: 'btn btn-danger', text: 'Cancel', onClick: cancelCallback
+            addClass: 'btn btn-danger', text: $.t("common.no"), onClick: cancelCallback
          }
       ]
    });

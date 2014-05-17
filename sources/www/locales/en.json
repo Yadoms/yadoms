@@ -1,4 +1,12 @@
 {
+   "common" : {
+      "ok" : "Ok",
+      "confirm" : "Confirm",
+      "close" : "Close",
+      "cancel" : "Cancel",
+      "yes" : "Yes",
+      "no" : "No"
+   },
    "mainPage" : {
       "menu" : {
          "dashboard" : "Dashboard",
@@ -27,9 +35,7 @@
          "unableToGetWidgets" : "Unable to get Widgets",
          "errorDuringRequestingPages" : "Error during requesting pages",
          "errorDuringRequestingWidgets" : "Error during requesting widgets",
-         "unableToGetViewOfTheWidget" : "Unable to get view of the __widgetName__ widget. Delete all instances ?",
-         "unableToGetViewmodelOfTheWidget" : "Unable to get viewmodel of the __widgetName__ widget",
-         "unableToGetConfigurationOfTheWidget" : "Unable to get configuration of the __widgetName__ widget",
+         "partOfWidgetIsMissing" : "Unable to get part of __widgetName__ widget. Delete all instances ?",
          "errorDuringRequestingNewLogEvents" : "Error during requesting new logs events",
          "youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline" : "You have been disconnected from the server or it has gone offline",
          "errorDuringRequestingDeviceLastData" : "Error during requesting device last data",
@@ -130,11 +136,7 @@
                "title" : "About"
             }
          }
-      },
-      "ok" : "Ok",
-      "confirm" : "Confirm",
-      "close" : "Close",
-      "cancel" : "Cancel"
+      }
    },
    "widgets" : {
       "configuration" : {
@@ -155,7 +157,7 @@
       "started" : "$t(system.__who__) has started",
       "stopped" : "$t(system.__who__) has stopped",
       "yadomsCrashed" : "yadoms has crashed",
-      "pluginCrashed" : "plugin __who__ has been crashed",
+      "pluginCrashed" : "__who__ has been crashed",
       "taskFailed" : "The $t(system.__who__) task has been crashed"
    },
    "system" : {
