@@ -173,10 +173,9 @@
       var option = { resGetPath: 'locales/__lng__.json', fallbackLng:"en",useDataAttrOptions: true };
       i18n.init(option, function() {
          $("html").i18n();
+         initializeWidgetEngine();
+         requestPages();
       });
-
-      initializeWidgetEngine();
-      requestPages();
 
       /**
        * Callback of the click on the show qr code button

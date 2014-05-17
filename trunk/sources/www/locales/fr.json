@@ -1,5 +1,13 @@
 {
-  "mainPage": {
+   "common" : {
+      "ok" : "Ok",
+      "confirm" : "Confirmer",
+      "close" : "Fermer",
+      "cancel" : "Annuler",
+      "yes" : "Oui",
+      "no" : "Non"
+   },
+   "mainPage": {
     "menu": {
       "dashboard": "Tableau de bord",
       "checkForUpdate": "Rechercher une mise à jour",
@@ -27,9 +35,7 @@
       "unableToGetWidgets": "Impossible de récupérer les widgets",
       "errorDuringRequestingPages": "Erreur pendant la récupération des pages",
       "errorDuringRequestingWidgets": "Erreur pendant la récupération des widgets",
-      "unableToGetViewOfTheWidget": "Impossible de récupérer la vue du widget __widgetName__. Supprimer toutes les instances ?",
-      "unableToGetViewmodelOfTheWidget": "Impossible de récupérer le vue modèle du widget __widgetName__",
-      "unableToGetConfigurationOfTheWidget": "Impossible de récupérer la configuration du widget __widgetName__",
+      "partOfWidgetIsMissing" : "Impossible d'obtenir une partie du widget __widgetName__. Supprimer toutes les instances ?",
       "errorDuringRequestingNewLogEvents": "Erreur pendant la demande de nouveaux évènements serveur",
       "youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline": "Vous avez été déconnecté du serveur ou il est éteint",
       "errorDuringRequestingDeviceLastData": "Erreur pendant la demande des dernières données",
@@ -81,11 +87,7 @@
     "qrcode": {
       "title": "QR Code de Yadoms",
       "text": "Voici le QRCode de Yadoms. Vous pouvez le flasher avec votre téléphone pour accéder à Yadoms de partout."
-    },
-    "ok": "Ok",
-    "confirm": "Confirmer",
-    "close": "Fermer",
-    "cancel": "Annuler"
+    }
   },
   "widgets": {
     "configuration": {
@@ -106,7 +108,7 @@
     "started": "$t(system.__who__) a démarré",
     "stopped": "$t(system.__who__) s'est arrêté",
     "yadomsCrashed": "Yadoms à planté",
-    "pluginCrashed": "Le plugin __who__ à planté",
+    "pluginCrashed": "__who__ à planté",
     "taskFailed": "La tâche $t(system.__who__) a planté"
   },
   "system": {
