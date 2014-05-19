@@ -13,6 +13,7 @@ public:
    /// \brief	Constructor
    //--------------------------------------------------------------
    CSerialPortSubscription()
+      :m_id(shared::event::kNoEvent)
    {
    }
 

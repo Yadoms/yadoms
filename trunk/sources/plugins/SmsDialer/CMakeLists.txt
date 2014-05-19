@@ -44,7 +44,6 @@ if(MSVC OR CMAKE_COMPILER_IS_GNUCXX OR RASPBERRYPI)
       ## Place here all additional libraries to link with
       ## (by default yadoms-shared and boost are included)
       #########################################
-      #todo gérer les différentes config et PF
       set(SMS_DIALER_ADDITIONAL_LIB
           ${GAMMU_LIBRARIES}
       )
