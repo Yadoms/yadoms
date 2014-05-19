@@ -1,50 +1,81 @@
 <div id="dashboard-plugins">
-   <h1 class="page-header" data-i18n="modals.dashboard.sub-windows.plugins.title"></h1>
+   <h1 class="page-header"><span class="fa fa-rocket"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.plugins.title"></span></h1>
    <form>
       <span data-i18n="modals.dashboard.sub-windows.plugins.pluginInstanceListDescription"></span>
       <button id="btn-instantiate-plugin" type="button" class="btn btn-success"><span class="fa fa-rocket"></span>&nbsp;&nbsp;<span>Instantiate a new plugin</span></button>
       <table id="plugin-instance-list" class="table table-bordered table-striped table-hover">
          <tr>
-            <td data-i18n="modals.dashboard.sub-windows.plugins.table.name">
-            </td>
-            <td data-i18n="modals.dashboard.sub-windows.plugins.table.status">
-            </td>
-            <td data-i18n="modals.dashboard.sub-windows.plugins.table.address">
-            </td>
-            <td data-i18n="modals.dashboard.sub-windows.plugins.table.protocol">
-            </td>
-            <td data-i18n="modals.dashboard.sub-windows.plugins.table.schemaIdentifier">
-            </td>
-            <td data-i18n="modals.dashboard.sub-windows.plugins.table.actions">
-            </td>
+            <td data-i18n="modals.dashboard.sub-windows.plugins.table.name"></td>
+            <td data-i18n="modals.dashboard.sub-windows.plugins.table.enabled"></td>
+            <td data-i18n="modals.dashboard.sub-windows.plugins.table.status"></td>
+            <td data-i18n="modals.dashboard.sub-windows.plugins.table.pluginName"></td>
+            <td data-i18n="modals.dashboard.sub-windows.plugins.table.actions"></td>
          </tr>
          <!-- plugin instance will be listed here-->
-         <tr>
-            <td>
-               Rfxcom
-            </td>
-            <td class = "success">
-               Running
-            </td>
-            <td>
-               rfxcom.lan 0x458742
-            </td>
-            <td>
-               protocol
-            </td>
-            <td>
-               sensor.basic
-            </td>
-            <td>
-               <button type="button" class="btn btn-info"><span class="glyphicon glyphicon-off"></span></button>
-               <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-cog"></span></button>
-               <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
-
-            </td>
-         </tr>
       </table>
    </form>
-   <script>
-
-   </script>
 </div>
+<script>
+      var pluginInstanceList = [];
+
+      function initializePluginDashboard() {
+         //we remove all rows except header
+         $("table#plugin-instance-list").find("tr:gt(0)").remove();
+         //we clear pluginInstance array
+         pluginInstanceList = [];
+
+         //we dynamically ask for plugins
+         $.getJSON("/rest/plugin/instances")
+            .done(function (data) {
+               //we parse the json answer
+               if (data.result != "true")
+               {
+                  notifyError($.t("modals.dashboard.sub-windows.plugins.errorGettingPluginList"), JSON.stringify(data));
+                  return;
+               }
+
+               //we define action Buttons string once
+               var actionsBtns = "<div class=\"btn-group\">\n" +
+                                    "<button type=\"button\" class=\"btn btn-primary\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.enableDisable\"><span class=\"glyphicon glyphicon-adjust\"></span></button>\n" +
+                                    "<button type=\"button\" class=\"btn btn-primary\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.startStop\"><span class=\"glyphicon glyphicon-off\"></span></button>\n" +
+                                    "<button type=\"button\" class=\"btn btn-primary\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.configure\"><span class=\"glyphicon glyphicon-cog\"></span></button>\n" +
+                                    "<button type=\"button\" class=\"btn btn-danger\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.delete\"><span class=\"glyphicon glyphicon-trash\"></span></button>\n" +
+                                 "</div>";
+
+               //foreach result we append a <tr>
+               $.each(data.data.plugin, function(index, value) {
+                  var pi = new PluginInstance(value.id, value.name, value.pluginName, value.configuration, value.enabled);
+                  pluginInstanceList.push(pi);
+                  //we add it to the DOM
+                  $("table#plugin-instance-list").append("<tr plugin-id=\"" + pi.id + "\"><td class=\"plugin-name\"></td><td class=\"plugin-enabled\"></td><td class=\"plugin-status\"></td><td class=\"plugin-pluginName\"></td><td class=\"plugin-actions\"></td></tr>");
+                  //we fill the data
+                  $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-name").text(pi.name);
+                  $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-enabled").text(pi.enabled);
+                  $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-status").text($.t("modals.dashboard.sub-windows.plugins.status.unknown"));
+                  $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-pluginName").text(pi.pluginName);
+
+                  //we add actions to the plugin
+                  $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-actions").append(actionsBtns);
+
+                  //we ask async for the status
+                  pi.getStatus(function (status) {
+                     var textStatus = "";
+                     if(status) {
+                        textStatus = $.t("modals.dashboard.sub-windows.plugins.status.running");
+                        $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-status").addClass("success");
+                        $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-status").removeClass("danger");
+                     }
+                     else {
+                        textStatus = $.t("modals.dashboard.sub-windows.plugins.status.stopped");
+                        $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-status").removeClass("success");
+                        $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-status").addClass("danger");
+                     }
+
+                     $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-status").text(textStatus);
+
+                  });
+               });
+            })
+            .fail(function() {notifyError($.t("modals.dashboard.sub-windows.plugins.errorGettingPluginList"), JSON.stringify(data));});
+      }
+</script>
