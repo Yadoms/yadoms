@@ -209,6 +209,9 @@ body {
 .configuration-control {
     vertical-align:middle;
 }
+
+/*Plugins Dashboard*/
+
 #btn-instantiate-plugin {
     margin-top: 10px;
     margin-bottom: 10px;
@@ -218,4 +221,9 @@ body {
 #plugin-instance-list td {
     padding: 8px;
     vertical-align: middle;
+}
+
+.table-btn {
+   margin-left: 5px;
+   margin-right: 5px;
 }
