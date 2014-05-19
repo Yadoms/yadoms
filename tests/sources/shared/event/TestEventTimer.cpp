@@ -322,21 +322,68 @@ BOOST_AUTO_TEST_CASE(NominalEventHandler10TimerPeriodic)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test Nominal timePoint
-/// \result     No Error : the event is sent within two seconds
+/// \brief	    Test timer with CEventHandler
+/// \result     No Error : 1 periodic timer, test 10 occurences and a heavy load !
 //--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(NominalTimePoint)
+
+BOOST_AUTO_TEST_CASE(HeavyLoadEventHandler1TimerPeriodic)
 {
 	shared::event::CEventHandler evtHandler;
 	const boost::posix_time::time_duration period = boost::posix_time::seconds(1);
+	const boost::posix_time::time_duration RunningPeriod = boost::posix_time::seconds(5);
     const int evtId1 = 1;
+	int Counter = 0;
+	bool exit=false;
+	boost::posix_time::ptime TimePoint       = boost::date_time::not_a_date_time; 
+    boost::posix_time::ptime evtId1TimePoint = boost::date_time::not_a_date_time;
+	
+	boost::posix_time::ptime start = shared::event::now();
 
-	evtHandler.createTimePoint (evtId1, shared::event::now() + period);
+    evtHandler.createTimer(evtId1, shared::event::CEventTimer::kPeriodic, period);
 
-	BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::posix_time::seconds(2)), evtId1); // One TimePoint
+	while (!exit)
+   {
+	  Sleep (1500);
+
+      switch(evtHandler.waitForEvents(boost::posix_time::milliseconds(3000)))
+      {
+      case evtId1:
+         {
+			evtId1TimePoint = TimePoint;
+            //TimePoint = shared::event::now();
+
+			//if (evtId1TimePoint != boost::date_time::not_a_date_time)
+			   //BOOST_REQUIRE_EQUAL(isTimeClose(evtId1TimePoint + period, TimePoint, boost::posix_time::millisec(50)),true);
+			Counter++;
+			break;
+         }
+	  case shared::event::kTimeout: BOOST_ERROR("TimeOut occured"); break;
+	  default: BOOST_ERROR("Default case occured !"); break;
+	  }
+	  if (shared::event::now() > start + RunningPeriod)
+		  exit = true;
+
+	  // Not All events have been captured
+	  BOOST_CHECK( Counter < 5 );
+	}
 }
-//TODO : Faire Test TimePoint non nominaux
-//TODO : Faire test Timer en charge !
-//TODO : Faire test avec un timeout d'abord suivi par un timer.
+
+//--------------------------------------------------------------
+/// \brief	    Test timer with CEventHandler
+/// \result     No Error : 1 periodic timer, timeout, follow by the timer !
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(TimerBeforeTheEventEventHandler1TimerPeriodic)
+{
+	shared::event::CEventHandler evtHandler;
+	const boost::posix_time::time_duration period = boost::posix_time::seconds(2);
+    const int evtId1 = 1;
+	boost::posix_time::ptime TimePoint       = boost::date_time::not_a_date_time; 
+
+    evtHandler.createTimer(evtId1, shared::event::CEventTimer::kOneShot, period);
+
+	BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::posix_time::milliseconds(1500)), shared::event::kTimeout); // TimeOut
+	BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::posix_time::seconds(5)), evtId1); // Must be Event
+}
 
 BOOST_AUTO_TEST_SUITE_END()
