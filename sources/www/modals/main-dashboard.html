@@ -40,6 +40,8 @@
 </div>
 
 <script>
+   var periodicDashboardTask = {};
+
    function asyncLoad(subWindowPath, callback) {
       assert(!isNullOrUndefined(subWindowPath), "subWindowPath must be defined");
       //debugger;
@@ -71,47 +73,56 @@
    }
 
    $("#btn-dashboard-summary").click(function() {
+      clearInterval(periodicDashboardTask);
       asyncLoad("modals/dashboard/summary.html");
       setBtnActive(this.id);
    });
 
    $("#btn-dashboard-user-management").click(function() {
+      clearInterval(periodicDashboardTask);
       asyncLoad("modals/dashboard/user-management.html");
       setBtnActive(this.id);
    });
 
    $("#btn-dashboard-system-configuration").click(function() {
+      clearInterval(periodicDashboardTask);
       asyncLoad("modals/dashboard/system-configuration.html");
       setBtnActive(this.id);
    });
 
    $("#btn-dashboard-user-configuration").click(function() {
+      clearInterval(periodicDashboardTask);
       asyncLoad("modals/dashboard/user-configuration.html");
       setBtnActive(this.id);
    });
 
    $("#btn-dashboard-plugins").click(function() {
+      clearInterval(periodicDashboardTask);
       setBtnActive(this.id);
       asyncLoad("modals/dashboard/plugins.html", function() { initializePluginDashboard(); });
    });
 
    $("#btn-dashboard-addons").click(function() {
+      clearInterval(periodicDashboardTask);
       asyncLoad("modals/dashboard/addons.html");
       setBtnActive(this.id);
    });
 
    $("#btn-dashboard-devices").click(function() {
+      clearInterval(periodicDashboardTask);
       asyncLoad("modals/dashboard/devices.html");
       setBtnActive(this.id);
    });
 
 
    $("#btn-dashboard-update").click(function() {
+      clearInterval(periodicDashboardTask);
       asyncLoad("modals/dashboard/update.html");
       setBtnActive(this.id);
    });
 
    $("#btn-dashboard-about").click(function() {
+      clearInterval(periodicDashboardTask);
       asyncLoad("modals/dashboard/about.html");
       setBtnActive(this.id);
    });
