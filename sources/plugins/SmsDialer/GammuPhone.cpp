@@ -345,9 +345,9 @@ bool CGammuPhone::checkMultipart(GSM_MultiSMSMessage* gammuSms)
    }
 
    /* Have we seen this message recently? */
-   static const double multipartTimeout = 600;  // 600 seconds to retrieve all parts os a message
    if (sameId)
    {
+      static const double multipartTimeout = 600;  // 600 seconds to retrieve all parts os a message
       if (m_incompleteMessageTime != 0 && difftime(time(NULL), m_incompleteMessageTime) >= multipartTimeout)
       {
          // Incomplete multipart message processing after timeout

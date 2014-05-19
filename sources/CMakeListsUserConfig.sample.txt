@@ -14,6 +14,5 @@
 #activate this option to enable eclipse debugging
 set(DEBUG_WITH_ECLIPSE OFF)
 
-#activate this option to enable database tests 
-#add_definitions(-DDEV_ACTIVATE_DATABASE_TESTS)
+
 
