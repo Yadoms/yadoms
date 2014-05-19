@@ -11,7 +11,6 @@
 
 BOOST_AUTO_TEST_SUITE(TestEvent)
 
-
 // Event IDs
 enum
 {
