@@ -16,6 +16,7 @@ function PluginInstance(id, name, pluginName, configuration, enabled) {
    this.pluginName = pluginName;
    this.configuration = configuration;
    this.enabled = enabled;
+   this.lastRunningStatus = false;
 }
 
 PluginInstance.prototype.getStatus = function(callback) {
@@ -37,6 +38,10 @@ PluginInstance.prototype.getStatus = function(callback) {
          }
          if (!isNullOrUndefined(callback))
             callback(result);
+
+         //we update the lastRunningStatus
+         self.lastRunningStatus = result;
+
          return result;
       })
       .fail(function() { notifyError($.t("objects.pluginInstance.errorGettingStatus", {pluginName : self.name}), JSON.stringify(data)); });

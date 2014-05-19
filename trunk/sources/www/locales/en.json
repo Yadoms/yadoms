@@ -116,21 +116,18 @@
                "pluginInstanceListDescription" : "Here is the list of all instances of plugins. You can instantiate new plugins, manage and delete currents.",
                "table" : {
                   "name" : "Name",
-                  "enabled" : "Enabled",
                   "status" : "Status",
+                  "launchAtStartup" : "Launch At Startup",
                   "pluginName" : "Plugin type",
                   "actions" : "Actions"
                },
                "enableDisable" : "Enable / Disable the plugin",
                "startStop" : "Start / Stop the plugin",
+               "start" : "Start",
+               "stop" : "Stop",
                "configure" : "Configure the plugin",
                "delete" : "Delete the plugin",
-               "errorGettingPluginList" : "An error has occurred acquiring plugin list",
-               "status" : {
-                  "running" : "Running",
-                  "stopped" : "Stopped",
-                  "unknown" : "Unknown"
-               }
+               "errorGettingPluginList" : "An error has occurred acquiring plugin list"
             },
             "addons" : {
                "title" : "Addons"
