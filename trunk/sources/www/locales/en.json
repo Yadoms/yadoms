@@ -84,6 +84,16 @@
          "errorDuringCreatingPageNamed" : "Error during creating page __pageName__",
          "placeholder" : "Enter Page name"
       },
+      "add-plugin" : {
+         "title" : "Add a new plugin",
+         "getMore" : "Get More plugins",
+         "pluginName" : "Plugin name",
+         "enterPluginName" : "Enter a friendly name for the plugin",
+         "pluginType" : "Plugin type",
+         "errorDuringGettingPluginTypes" : "Error during requesting plugin types",
+         "errorDuringCreatingPlugin" : "Error during creating plugin",
+         "pluginSuccessfullyCreated" : "Plugin successfully created"
+      },
       "qrcode" : {
          "title" : "QR Code de Yadoms",
          "text" : "Here is the QRCode of Yadoms. You can now flash it with your phone to access Yadoms everywhere."
@@ -129,7 +139,8 @@
                "stopped" : "Stopped",
                "configure" : "Configure the plugin",
                "delete" : "Delete the plugin",
-               "errorGettingPluginList" : "An error has occurred acquiring plugin list"
+               "errorGettingPluginList" : "An error has occurred acquiring plugin list",
+               "confirmPluginDeletion" : "This action will delete the plugin __pluginName__. Continue anyway ?"
             },
             "addons" : {
                "title" : "Addons"
@@ -144,6 +155,9 @@
                "title" : "About"
             }
          }
+      },
+      "confirmation" : {
+         "title" : "Confirmation"
       }
    },
    "widgets" : {
@@ -164,7 +178,8 @@
      "pluginInstance" : {
         "errorGettingStatus" : "An error has occurred getting status of plugin __pluginName__",
         "errorStarting" : "An error has occurred starting __pluginName__",
-        "errorStopping" : "An error has occurred stopping __pluginName__"
+        "errorStopping" : "An error has occurred stopping __pluginName__",
+        "errorDeleting" : "An error has occurred deleting __pluginName__"
      }
    },
    "eventLogger" : {

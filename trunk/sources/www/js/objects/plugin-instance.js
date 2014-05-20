@@ -44,7 +44,7 @@ PluginInstance.prototype.getStatus = function(callback) {
 
          return result;
       })
-      .fail(function() { notifyError($.t("objects.pluginInstance.errorGettingStatus", {pluginName : self.name}), JSON.stringify(data)); });
+      .fail(function() { notifyError($.t("objects.pluginInstance.errorGettingStatus", {pluginName : self.name})); });
 };
 
 PluginInstance.prototype.start = function(callback) {
@@ -65,7 +65,7 @@ PluginInstance.prototype.start = function(callback) {
          if (!isNullOrUndefined(callback))
             callback();
       })
-      .fail(function() {notifyError($.t("objects.pluginInstance.errorStarting", {pluginName : self.name}), JSON.stringify(data));});
+      .fail(function() {notifyError($.t("objects.pluginInstance.errorStarting", {pluginName : self.name}));});
 }
 
 PluginInstance.prototype.stop = function(callback) {
@@ -87,5 +87,27 @@ PluginInstance.prototype.stop = function(callback) {
          if (!isNullOrUndefined(callback))
             callback();
       })
-      .fail(function() {notifyError($.t("objects.pluginInstance.errorStopping", {pluginName : self.name}), JSON.stringify(data));});
+      .fail(function() {notifyError($.t("objects.pluginInstance.errorStopping", {pluginName : self.name}));});
+}
+
+PluginInstance.prototype.deleteFromServer = function(callback) {
+   var self = this;
+   $.ajax({
+      type: "DELETE",
+      url: "/rest/plugin/" + this.id,
+      contentType: "application/json; charset=utf-8",
+      dataType: "json"
+   })
+      .done(function(data) {
+         //we parse the json answer
+         if (data.result != "true")
+         {
+            notifyError($.t("objects.pluginInstance.errorDeleting", {pluginName : self.name}), JSON.stringify(data));
+            return;
+         }
+
+         if (!isNullOrUndefined(callback))
+            callback();
+      })
+      .fail(function() {notifyError($.t("objects.pluginInstance.errorDeleting", {pluginName : self.name}));});
 }
