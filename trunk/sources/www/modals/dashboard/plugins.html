@@ -35,8 +35,8 @@
             //foreach result we append a <tr>
             $.each(data.data.plugin, function(index, value) {
                var pi = new PluginInstance(value.id, value.name, value.pluginName, value.configuration, value.enabled);
-               addPluginInstanceToDom(pi);
                pluginInstanceList.push(pi);
+               addPluginInstanceToDom(pi);
             });
 
             //we use the periodic task of the dashboard
@@ -49,15 +49,16 @@
 
    function addPluginInstanceToDom(pi) {
       var actionsBtns = "<div class=\"btn-group\">\n" +
+              "<button type=\"button\" class=\"btn btn-startStop\"><span class=\"glyphicon glyphicon-off\"></span></button>\n" +
               "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.configure\"><span class=\"glyphicon glyphicon-cog\"></span></button>\n" +
               "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.delete\"><span class=\"glyphicon glyphicon-trash\"></span></button>\n" +
               "</div>";
 
       var autoStartCommand = "<input type=\"checkbox\">";
 
-      var statusField = "<span class=\"label label-success\"></span>\n" +
+      var statusField = "<span class=\"label label-success label-status\"></span>\n";/* +
               "&nbsp;&nbsp;" +
-              "<button type=\"button\" class=\"btn\"></button>";
+              "<button type=\"button\" class=\"btn btn-startStop\"></button>";*/
 
       //we add it to the DOM
       $("table#plugin-instance-list").append("<tr plugin-id=\"" + pi.id + "\"><td class=\"plugin-name\"></td><td class=\"plugin-pluginName\"></td><td class=\"plugin-status\"></td><td class=\"plugin-autoStart\"></td><td class=\"plugin-actions\"></td></tr>");
@@ -71,9 +72,9 @@
       $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-actions").append(actionsBtns);
 
       //we bind event on the different actions
-      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-status").find("button.btn").unbind('click').bind('click', startStopPlugin(pi));
-      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-actions").find("button.btn-configure").unbind('click').bind('click', configurePlugin(pi));
-      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-actions").find("button.btn-delete").unbind('click').bind('click', deletePlugin(pi));
+      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("button.btn-startStop").unbind('click').bind('click', startStopPlugin(pi));
+      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("button.btn-configure").unbind('click').bind('click', configurePlugin(pi));
+      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("button.btn-delete").unbind('click').bind('click', deletePlugin(pi));
    }
 
    function startStopPlugin(pi) {
@@ -107,7 +108,6 @@
                //deletion has been confirmed
                pi.deleteFromServer(function() {
                   //we remove pi from array
-                  debugger;
                   var i = pluginInstanceList.indexOf(pi);
                   if(i != -1) {
                      pluginInstanceList.splice(i, 1);
@@ -132,12 +132,16 @@
                   var btn;
                   var label;
                   if(status) {
-                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("td.plugin-status").find("span.label").addClass("label-success").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.running"));
-                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("td.plugin-status").find("button.btn").addClass("btn-danger").removeClass("btn-success").text($.t("modals.dashboard.sub-windows.plugins.stop"));
+                     //$("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("span.label-status").addClass("label-success").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.running"));
+                     //$("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("button.btn-startStop").addClass("btn-danger").removeClass("btn-success").text($.t("modals.dashboard.sub-windows.plugins.stop"));
+                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("span.label-status").addClass("label-success").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.running"));
+                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("button.btn-startStop").addClass("btn-warning").removeClass("btn-success");
                   }
                   else {
-                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("td.plugin-status").find("span.label").addClass("label-danger").removeClass("label-success").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
-                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("td.plugin-status").find("button.btn").addClass("btn-success").removeClass("btn-danger").text($.t("modals.dashboard.sub-windows.plugins.start"));
+                     //$("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("span.label-status").addClass("label-danger").removeClass("label-success").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
+                     //$("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("button.btn-startStop").addClass("btn-success").removeClass("btn-danger").text($.t("modals.dashboard.sub-windows.plugins.start"));
+                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("span.label-status").addClass("label-danger").removeClass("label-success").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
+                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("button.btn-startStop").addClass("btn-success").removeClass("btn-warning");
                   }
                }
             });

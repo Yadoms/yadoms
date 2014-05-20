@@ -100,7 +100,6 @@
            }
 
            notifySuccess($.t("modals.add-plugin.pluginSuccessfullyCreated"));
-            debugger;
            //we add the plugin dynamically
            var pi = new PluginInstance(data.data.id, data.data.name, data.data.pluginName, data.data.configuration, data.data.enabled);
            addPluginInstanceToDom(pi);
