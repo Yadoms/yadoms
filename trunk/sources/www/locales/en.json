@@ -125,6 +125,8 @@
                "startStop" : "Start / Stop the plugin",
                "start" : "Start",
                "stop" : "Stop",
+               "running" : "Running",
+               "stopped" : "Stopped",
                "configure" : "Configure the plugin",
                "delete" : "Delete the plugin",
                "errorGettingPluginList" : "An error has occurred acquiring plugin list"
