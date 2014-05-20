@@ -77,6 +77,7 @@ void CSupervisor::doWork()
 
       boost::shared_ptr<web::IWebServer> webServer(new web::webem::CWebServer(webServerIp, webServerPort, webServerPath, "/rest/"));
       webServer->configureAlias("widget", webServerWidgetPath);
+      webServer->configureAlias("plugin", m_startupOptions.getPluginsPath());
       boost::shared_ptr<web::IRestHandler> restHanlder = webServer->getRestHandler();
       if(restHanlder.get() != NULL)
       {
