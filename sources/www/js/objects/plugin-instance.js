@@ -68,7 +68,7 @@ PluginInstance.prototype.start = function(callback) {
       .fail(function() {notifyError($.t("objects.pluginInstance.errorStarting", {pluginName : self.name}), JSON.stringify(data));});
 }
 
-PluginInstance.prototype.start = function() {
+PluginInstance.prototype.stop = function(callback) {
    var self = this;
    $.ajax({
       type: "PUT",

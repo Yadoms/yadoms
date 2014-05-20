@@ -40,6 +40,10 @@
 
                var autoStartCommand = "<input type=\"checkbox\">";
 
+               var statusField = "<span class=\"label label-success\"></span>\n" +
+                                 "&nbsp;&nbsp;" +
+                                 "<button type=\"button\" class=\"btn\"></button>";
+
                //foreach result we append a <tr>
                $.each(data.data.plugin, function(index, value) {
                   var pi = new PluginInstance(value.id, value.name, value.pluginName, value.configuration, value.enabled);
@@ -50,11 +54,13 @@
                   $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-name").text(pi.name);
                   $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-pluginName").text(pi.pluginName);
                   $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-autoStart").html(autoStartCommand);
-                  $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-status").text();
-
+                  $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-status").html(statusField);
 
                   //we add actions to the plugin
                   $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-actions").append(actionsBtns);
+
+                  //we bind event on the different actions
+                  $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("td.plugin-status").find("button.btn").bind('click', startStopPlugin(pi));
                });
 
                //we use the periodic task of the dashboard
@@ -65,6 +71,21 @@
             .fail(function() {notifyError($.t("modals.dashboard.sub-windows.plugins.errorGettingPluginList"), JSON.stringify(data));});
       }
 
+   function startStopPlugin(pi) {
+      //pi represent the pluginInstance concerned
+      return function() {
+         if (pi.lastRunningStatus) {
+            //we ask for stop
+            pi.stop();
+         }
+         else
+         {
+            //we ask for start
+            pi.start();
+         }
+      }
+   }
+
    function periodicDashboardPluginTask() {
       //periodically we check the status of each plugin
       if (serverIsOnline) {
@@ -74,18 +95,15 @@
                if (status != value.lastRunningStatus) {
                   var textStatus = "";
                   var btn;
+                  var label;
                   if(status) {
-                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("td.plugin-name").addClass("success");
-                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("td.plugin-name").removeClass("danger");
-                     btn = "<button type=\"button\" class=\"btn btn-warning\" data-i18n=\"modals.dashboard.sub-windows.plugins.stop\"></button>";
+                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("td.plugin-status").find("span.label").addClass("label-success").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.running"));
+                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("td.plugin-status").find("button.btn").addClass("btn-danger").removeClass("btn-success").text($.t("modals.dashboard.sub-windows.plugins.stop"));
                   }
                   else {
-                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("td.plugin-name").removeClass("success");
-                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("td.plugin-name").addClass("danger");
-                     btn = "<button type=\"button\" class=\"btn btn-success\" data-i18n=\"modals.dashboard.sub-windows.plugins.start\"></button>";
+                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("td.plugin-status").find("span.label").addClass("label-danger").removeClass("label-success").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
+                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("td.plugin-status").find("button.btn").addClass("btn-success").removeClass("btn-danger").text($.t("modals.dashboard.sub-windows.plugins.start"));
                   }
-
-                  $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("td.plugin-status").html(btn).i18n();
                }
             });
          });
