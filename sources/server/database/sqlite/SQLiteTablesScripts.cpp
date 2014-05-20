@@ -23,7 +23,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Configuration, " CREATE TABLE Configuration
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Plugin, "CREATE TABLE Plugin                                                 \
                                                 (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
                                                    name TEXT NOT NULL,                                            \
-                                                   pluginName TEXT NOT NULL UNIQUE,                               \
+                                                   pluginName TEXT NOT NULL,                                      \
                                                    configuration  TEXT,                                           \
                                                    enabled  INTEGER DEFAULT 1                                     \
                                                 )")
