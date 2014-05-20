@@ -16,7 +16,7 @@ function PluginInstance(id, name, pluginName, configuration, enabled) {
    this.pluginName = pluginName;
    this.configuration = configuration;
    this.enabled = enabled;
-   this.lastRunningStatus = false;
+   this.lastRunningStatus = null;
 }
 
 PluginInstance.prototype.getStatus = function(callback) {
