@@ -1,0 +1,117 @@
+<!--Configure plugin Modal -->
+<div class="modal fade" id="configure-plugin-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+           <form class="form-horizontal" novalidate >
+              <div class="modal-header">
+                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                   <h4 class="modal-title" data-i18n="modals.configure-plugin.title"></h4>
+              </div>
+              <div class="modal-body form-group">
+                 <!--configuration will be inserted here-->
+              </div>
+              <div class="modal-footer">
+                 <div class="form-actions">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
+                    <button type="submit" id="btn-confirm-configure-plugin" class="btn btn-primary" data-i18n="common.ok"></button>
+                 </div>
+              </div>
+           </form>
+        </div>
+    </div>
+</div>
+
+<script>
+   function configurePluginInstance(pluginInstance, hasToCreate) {
+      assert(pluginInstance !== undefined, "pluginInstance must be defined");
+
+      var $modalBody = $("div#configure-plugin-modal .modal-body");
+      $modalBody.empty();
+
+      //we append the text section
+      var nameParameter = new StringParameterHandler("modals.configure-plugin.", "name-configuration", {regex:'.+'}, pluginInstance.name);
+      $modalBody.append(nameParameter.getDOMObject());
+
+      //we append classic configuration
+      var configMgr = new ConfigurationManager(pluginInstance, $modalBody);
+
+      //i18n
+      $modalBody.i18n();
+
+      //validation form
+      $modalBody.find("input,select,textarea").jqBootstrapValidation({
+         preventSubmit: true,
+         submitError: function($form, event, errors) {
+            console.warn("Unable to validate form: " + errors);
+         },
+         submitSuccess: function($form, event) {
+            event.preventDefault();
+            pluginInstance.name = nameParameter.getCurrentConfiguration();
+            pluginInstance.configuration = configMgr.getCurrentConfiguration();
+debugger;
+            if (!isNullOrUndefined(hasToCreate)) {
+               //it's a plugin creation
+               $.ajax({
+                  type: "POST",
+                  url: "/rest/plugin",
+                  data: JSON.stringify({ name: pluginInstance.name, pluginName: pluginInstance.pluginName, configuration: pluginInstance.configuration, enabled: pluginInstance.enabled}),
+                  contentType: "application/json; charset=utf-8",
+                  dataType: "json"
+               })
+                       .done(function(data) {
+                          //we parse the json answer
+                          if (data.result != "true")
+                          {
+                             notifyError($.t("modals.configure-plugin.errorDuringCreatingPlugin"), JSON.stringify(data));
+                             return;
+                          }
+
+                          notifySuccess($.t("modals.configure-plugin.pluginSuccessfullyCreated"));
+                          //we add the plugin dynamically given by the server and not own to be ok with the server in case of difference
+                          var pi = new PluginInstance(data.data.id, data.data.name, data.data.pluginName, data.data.configuration, data.data.enabled);
+                          addPluginInstanceToDom(pi);
+                          pluginInstanceList.push(pi);
+                       })
+                       .fail(function() {notifyError($.t("modals.configure-plugin.errorDuringCreatingPlugin"));})
+                       .always(function() {
+                          $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
+                          $modalBody.empty();
+                          $("div#configure-plugin-modal").modal("hide");
+                       });
+            }
+            else {
+               //it's a plugin configuration
+               $.ajax({
+                  type: "PUT",
+                  url: "/rest/plugin/" + pluginInstance.id,
+                  data: JSON.stringify(pluginInstance),
+                  contentType: "application/json; charset=utf-8",
+                  dataType: "json"
+               })
+               .done(function(data) {
+                 //we parse the json answer
+                 if (data.result != "true")
+                 {
+                    notifyError($.t("modals.configure-plugin.errorDuringModifyingPlugin"), JSON.stringify(data));
+                    return;
+                 }
+                 //it's okay nothing to do
+               })
+               .fail(function() {notifyError($.t("modals.configure-widget.errorDuringModifyingPlugin"));})
+               .always(function() {
+                 $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
+                 $modalBody.empty();
+                 $("div#configure-plugin-modal").modal("hide");
+               });
+            }
+         },
+         filter: function() {
+            //we check only control that have class enable-validation and are visible
+            return $(this).is(".enable-validation") && $(this).is(":visible");
+         }
+      });
+
+      //we display the modal
+      $('div#configure-plugin-modal').modal();
+   }
+</script>

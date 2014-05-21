@@ -8,6 +8,7 @@ namespace web { namespace webem {
       :m_configAddress(address), m_configPort(port), m_configDocRoot(doc_root)
    {
       m_restHandler.reset(new CRestHandler(restKeywordBase));
+      m_embeddedWebServer.reset(new http::server::cWebem());
    }
 
    CWebServer::~CWebServer()
@@ -19,7 +20,6 @@ namespace web { namespace webem {
    // IWebServer implementation
    void CWebServer::start()
    {
-      m_embeddedWebServer.reset(new http::server::cWebem());
       m_embeddedWebServer->Configure(m_configAddress, m_configPort, m_configDocRoot);
       m_restHandler->initialize();
       YADOMS_LOG(info) << "WebServer configure to " << m_configAddress << ":" << m_configPort;

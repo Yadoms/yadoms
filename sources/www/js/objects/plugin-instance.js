@@ -66,7 +66,7 @@ PluginInstance.prototype.start = function(callback) {
             callback();
       })
       .fail(function() {notifyError($.t("objects.pluginInstance.errorStarting", {pluginName : self.name}));});
-}
+};
 
 PluginInstance.prototype.stop = function(callback) {
    var self = this;
@@ -88,7 +88,7 @@ PluginInstance.prototype.stop = function(callback) {
             callback();
       })
       .fail(function() {notifyError($.t("objects.pluginInstance.errorStopping", {pluginName : self.name}));});
-}
+};
 
 PluginInstance.prototype.deleteFromServer = function(callback) {
    var self = this;
@@ -110,4 +110,29 @@ PluginInstance.prototype.deleteFromServer = function(callback) {
             callback();
       })
       .fail(function() {notifyError($.t("objects.pluginInstance.errorDeleting", {pluginName : self.name}));});
-}
+};
+
+PluginInstance.prototype.downloadPackage = function(callback) {
+   var self = this;
+   $.getJSON( "plugin/" + self.pluginName + "/package.json")
+      .done(function (data) {
+         self.package = data;
+         if (!isNullOrUndefined(callback))
+            callback();
+      })
+      .fail(function() {notifyError($.t("objects.pluginInstance.errorGettingPackage", {pluginName : self.name}));});
+};
+
+/**
+ * Override JSON.stringify method in order to send only database columns
+ * @returns {{id: *, name: *, pluginName: *, configuration: *, enabled: *}}
+ */
+PluginInstance.prototype.toJSON = function () {
+   return {
+      id : this.id,
+      name: this.name,
+      pluginName: this.pluginName,
+      configuration: this.configuration,
+      enabled: this.enabled
+   };
+};
