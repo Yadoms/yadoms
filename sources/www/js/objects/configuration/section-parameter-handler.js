@@ -118,7 +118,6 @@ SectionParameterHandler.prototype.getDOMObject = function () {
                            "}\n" +
                         "});\n" +
                      "</script>";
-      //debugger;
    }
 
    //if it's included in a radioSection
