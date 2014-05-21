@@ -323,6 +323,19 @@ BOOST_AUTO_TEST_CASE(NominalEventHandler10TimerPeriodic)
 //--------------------------------------------------------------
 /// \brief	    Test timer with CEventHandler
 /// \result     No Error : 1 periodic timer, test 10 occurences and a heavy load !
+///
+/// Start
+/// Wait 1500ms
+/// waitForEvents( 1 Event already waiting  : Counter = 1)
+/// Wait 1500ms
+/// waitForEvents( 2 Events already waiting : Only One Retreive) -> Counter = 2
+/// Wait 1500ms
+/// waitForEvents( 2 Events already waiting : Only One Retreive) -> Counter = 3
+/// Wait 1500ms
+/// waitForEvents( 3 Events already waiting : Only One Retreive) -> Counter = 4
+/// waitForEvents( 2 Events already waiting : Only One Retreive)
+/// waitForEvents( 1 Events already waiting : Only One Retreive)
+///
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(HeavyLoadEventHandler1TimerPeriodic)
@@ -335,32 +348,35 @@ BOOST_AUTO_TEST_CASE(HeavyLoadEventHandler1TimerPeriodic)
    bool exit=false;
    boost::posix_time::ptime TimePoint       = boost::date_time::not_a_date_time; 
    boost::posix_time::ptime evtId1TimePoint = boost::date_time::not_a_date_time;
-
+	
    boost::posix_time::ptime start = shared::event::now();
 
    evtHandler.createTimer(evtId1, shared::event::CEventTimer::kPeriodic, period);
 
    while (!exit)
    {
-      boost::this_thread::sleep(boost::posix_time::milliseconds(1500));
+      boost::this_thread::sleep(boost::posix_time::milliseconds(1600));
 
-      switch(evtHandler.waitForEvents(boost::posix_time::milliseconds(3000)))
+      switch(evtHandler.waitForEvents(boost::posix_time::milliseconds(6000)))
       {
       case evtId1:
          {
-            evtId1TimePoint = TimePoint;
-            Counter++;
-            break;
+			evtId1TimePoint = TimePoint;
+			Counter++;
+			break;
          }
       case shared::event::kTimeout: BOOST_ERROR("TimeOut occured"); break;
       default: BOOST_ERROR("Default case occured !"); break;
       }
       if (shared::event::now() > start + RunningPeriod)
          exit = true;
-
-      // Not All events have been captured
-      BOOST_CHECK( Counter < 5 );
    }
+
+	// All events have been captured should have been captured
+   BOOST_REQUIRE_EQUAL(Counter, 4);
+
+   BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), evtId1); // Must be Event
+   BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), evtId1); // Must be Event
 }
 
 //--------------------------------------------------------------
@@ -368,7 +384,7 @@ BOOST_AUTO_TEST_CASE(HeavyLoadEventHandler1TimerPeriodic)
 /// \result     No Error : 1 periodic timer, timeout, follow by the timer !
 //--------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(TimerBeforeTheEventEventHandler1TimerPeriodic)
+BOOST_AUTO_TEST_CASE(TimerAfterTimeOut)
 {
    shared::event::CEventHandler evtHandler;
    const boost::posix_time::time_duration period = boost::posix_time::seconds(2);

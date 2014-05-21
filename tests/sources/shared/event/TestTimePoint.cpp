@@ -10,6 +10,7 @@
 #include "../../../../sources/shared/shared/exception/InvalidParameter.hpp"
 #include "../../../../sources/shared/shared/event/Now.h"
 #include "../../../../sources/shared/shared/event/EventTimePoint.h"
+#include "../../../../sources/shared/shared/event/EventHandler.hpp"
 
 BOOST_AUTO_TEST_SUITE(TestTimePoint)
 
@@ -28,6 +29,7 @@ public:
 
 //--------------------------------------------------------------
 /// \brief	    Nominal case
+/// \result     No Error
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(Nominal)
 {
@@ -48,12 +50,45 @@ BOOST_AUTO_TEST_CASE(Nominal)
 
 //--------------------------------------------------------------
 /// \brief	    Try to create CEventTimePoint with time point in the past
+/// \result     Throw an error
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(timePointInThePast)
 {
    const boost::posix_time::ptime timePoint(shared::event::now() - boost::posix_time::seconds(3));
    const int evtId = 123456;
    BOOST_REQUIRE_THROW(shared::event::CEventTimePoint timer(evtId, timePoint), shared::exception::CInvalidParameter);
+}
+
+//--------------------------------------------------------------
+/// \brief	    Nominal case + EventHandler
+/// \result     No Error
+//--------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(NominalWithEventHandler)
+{
+   shared::event::CEventHandler evtHandler;
+	const boost::posix_time::ptime timePoint(shared::event::now() + boost::posix_time::seconds(1));
+   const int evtId1 = 123456;
+
+   evtHandler.createTimePoint( evtId1, timePoint );
+
+	BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::posix_time::seconds(3)), evtId1); // Must be Event
+}
+
+//--------------------------------------------------------------
+/// \brief	    Received a Message after a waiting Time
+/// \result     No Error
+//--------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(TimePointBeforeAWait)
+{
+   shared::event::CEventHandler evtHandler;
+	const boost::posix_time::ptime timePoint(shared::event::now() + boost::posix_time::seconds(1));
+   const int evtId1 = 123456;
+
+   evtHandler.createTimePoint( evtId1, timePoint );
+
+   boost::this_thread::sleep( boost::posix_time::seconds(2) );
+
+	BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::posix_time::seconds(5)), evtId1); // Must be Event
 }
 
 BOOST_AUTO_TEST_SUITE_END()
