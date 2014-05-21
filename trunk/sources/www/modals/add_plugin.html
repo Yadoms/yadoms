@@ -9,11 +9,7 @@
             <div class="modal-body">
                <form>
                   <div class="form-group">
-                     <label for="pluginName" data-i18n="modals.add-plugin.pluginName"></label>
-                     <input class="form-control" id="pluginName" data-i18n="[placeholder]modals.add-plugin.enterPluginName">
-                  </div>
-                  <div class="form-group">
-                     <label for="pluginName" data-i18n="modals.add-plugin.pluginType"></label>
+                     <label for="pluginTypeList" data-i18n="modals.add-plugin.pluginType"></label>
                      <select id="pluginTypeList" class="form-control">
                      </select>
                   </div>
@@ -64,10 +60,6 @@
              $("select#pluginTypeList").append("<option>" + value.name + "</option>");
           });
 
-          //TODO : add jqvalidation form
-
-          $("input#pluginName").text("");
-
           //we display the modal
           $('div#new-plugin-modal').modal();
        };
@@ -81,31 +73,17 @@
        //we close the new widget modal
        $("div#new-plugin-modal").modal("hide");
 
-       var pluginName = $("input#pluginName").val();
        var pluginType = $("select#pluginTypeList").val();
 
-       $.ajax({
-            type: "POST",
-            url: "/rest/plugin",
-            data: JSON.stringify({ name: pluginName, pluginName: pluginType, configuration: '', enabled: true}),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json"
-       })
-       .done(function(data) {
-           //we parse the json answer
-           if (data.result != "true")
-           {
-              notifyError($.t("modals.add-plugin.errorDuringCreatingPlugin"), JSON.stringify(data));
-              return;
-           }
+       var pi = new PluginInstance(null, "", pluginType, "", 1);
 
-           notifySuccess($.t("modals.add-plugin.pluginSuccessfullyCreated"));
-           //we add the plugin dynamically
-           var pi = new PluginInstance(data.data.id, data.data.name, data.data.pluginName, data.data.configuration, data.data.enabled);
-           addPluginInstanceToDom(pi);
-           pluginInstanceList.push(pi);
-       })
-       .fail(function() {notifyError($.t("modals.add-plugin.errorDuringCreatingPlugin"), JSON.stringify(data));})
+       //we get package.json
+       pi.downloadPackage(function() {
+          //we ask for configuration modal async
+          modals.pluginConfigure.load(function() {
+             configurePluginInstance(pi, true);
+          });
+       });
     });
 
 </script>

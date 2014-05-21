@@ -60,11 +60,16 @@
               "&nbsp;&nbsp;" +
               "<button type=\"button\" class=\"btn btn-startStop\"></button>";*/
 
+      var name = "<span>pi.name</span>";
+
+      var type = "<img src=\"plugin/" + pi.pluginName + "/icon.png\" class=\"img-thumbnail plugin-icon\">&nbsp;&nbsp;" +
+                  "<span>pi.pluginName</span>";
+
       //we add it to the DOM
       $("table#plugin-instance-list").append("<tr plugin-id=\"" + pi.id + "\"><td class=\"plugin-name\"></td><td class=\"plugin-pluginName\"></td><td class=\"plugin-status\"></td><td class=\"plugin-autoStart\"></td><td class=\"plugin-actions\"></td></tr>");
       //we fill the data
-      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-name").text(pi.name);
-      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-pluginName").text(pi.pluginName);
+      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-name").html(name);
+      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-pluginName").html(type);
       $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-autoStart").html(autoStartCommand);
       $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-status").html(statusField);
 
@@ -95,7 +100,13 @@
    function configurePlugin(pi) {
       //pi represent the pluginInstance concerned
       return function() {
-
+         //we get package.json
+         pi.downloadPackage(function() {
+            //we ask for configuration modal async
+            modals.pluginConfigure.load(function() {
+               configurePluginInstance(pi);
+            });
+         });
       }
    }
 

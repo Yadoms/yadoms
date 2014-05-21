@@ -23,7 +23,7 @@ function SectionParameterHandler(objectToConfigure, i18nContext, paramName, cont
    this.configurationValues = currentValue;
    this.name = content.name;
    this.paramName = paramName;
-   this.description = content.description;
+   this.description = isNullOrUndefined(content.description)?"":content.description;
    this.i18nContext = i18nContext;
    this.content = content;
    this.cbValue = undefined;

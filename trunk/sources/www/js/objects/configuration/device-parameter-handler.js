@@ -26,7 +26,7 @@ function DeviceParameterHandler(i18nContext, paramName, content, currentValue) {
    this.name = content.name;
    this.uuid = createUUID();
    this.paramName = paramName;
-   this.description = content.description;
+   this.description = isNullOrUndefined(content.description)?"":content.description;
    this.i18nContext = i18nContext;
    this.content = content;
 

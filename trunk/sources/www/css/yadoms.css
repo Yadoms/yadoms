@@ -232,3 +232,7 @@ body {
    margin-top: 20px;
    width : initial;
 }
+
+.plugin-icon {
+   max-height: 50px;
+}

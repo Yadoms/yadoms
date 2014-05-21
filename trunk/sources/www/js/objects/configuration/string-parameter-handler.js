@@ -39,7 +39,7 @@ function StringParameterHandler(i18nContext, paramName, content, currentValue) {
    this.name = content.name;
    this.uuid = createUUID();
    this.paramName = paramName;
-   this.description = content.description;
+   this.description = isNullOrUndefined(content.description)?"":content.description;
    this.i18nContext = i18nContext;
    this.content = content;
 }
@@ -54,7 +54,7 @@ StringParameterHandler.prototype.getDOMObject = function () {
                         "class=\"form-control enable-validation\" " +
                         "id=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\"" +
-                        "required ";
+                        " ";
    var dataI18n = "data-i18n=\"";
    dataI18n += "[data-content]" + this.i18nContext + this.paramName + ".description";
 
