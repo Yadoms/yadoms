@@ -10,12 +10,16 @@ set(RFXCOM_SOURCES
    stdafx.cpp
    IPort.h
    IRfxcomConfiguration.h
+   ISequenceNumberProvider.h
    ITransceiver.h
+   NullSequenceNumber.h
    rfxcomMessages/IRfxcomMessage.h
    rfxcomMessages/Lighting1.h
    rfxcomMessages/Lighting1.cpp
    rfxcomMessages/Lighting3.h
    rfxcomMessages/Lighting3.cpp
+   rfxcomMessages/Lighting6.h
+   rfxcomMessages/Lighting6.cpp
    rfxcomMessages/Curtain1.h
    rfxcomMessages/Curtain1.cpp
    rfxcomMessages/RFXtrx.h

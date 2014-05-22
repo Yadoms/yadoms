@@ -5,6 +5,7 @@
 #include <shared/xpl/XplException.h>
 #include "xplMessages/X10Basic.h"
 #include "rfxcomMessages/IRfxcomMessage.h"
+#include "NullSequenceNumber.h"
 
 
 // Macro helpers to access RBUF parts
@@ -18,7 +19,7 @@
 
 
 CTransceiver::CTransceiver(boost::shared_ptr<IPort> port)
-   :m_port(port), m_seqNumber(0)
+   :m_port(port), m_seqNumberProvider(new CNullSequenceNumber())
 {
    MEMCLEAR(m_request);
 }
@@ -42,7 +43,7 @@ void CTransceiver::sendCommand(unsigned char command)
    m_request.ICMND.packetlength = sizeof(m_request.ICMND);
    m_request.ICMND.packettype = pTypeInterfaceControl;
    m_request.ICMND.subtype = sTypeInterfaceCommand;
-   m_request.ICMND.seqnbr = m_seqNumber;
+   m_request.ICMND.seqnbr = m_seqNumberProvider->getNext();
    m_request.ICMND.cmnd = command;
 
    LOG_WRITE(m_request.ICMND);
@@ -90,7 +91,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::createRfxcomMess
    boost::shared_ptr<xplMessages::IXplMessage> xplMsg;
 
    if (classId == "x10" && typeId == "basic")
-      xplMsg.reset(new xplMessages::CXplMsgX10Basic(xplMessage));
+      xplMsg.reset(new xplMessages::CXplMsgX10Basic(xplMessage, m_seqNumberProvider));
    //TODO compléter
    else
       throw shared::exception::CInvalidParameter("Unsupported XPL message for RFXCom : " + xplMessage.toString());

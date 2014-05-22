@@ -7,24 +7,25 @@
 namespace rfxcomMessages
 {
    //--------------------------------------------------------------
-   /// \brief	The Lightning3 protocol support
+   /// \brief	The Lightning6 protocol support
    //--------------------------------------------------------------
-   class CLighting3 : public IRfxcomMessage
+   class CLighting6 : public IRfxcomMessage
    {
    public:
       //--------------------------------------------------------------
       /// \brief	               Constructor
-      /// \param [in] system     The system code
-      /// \param [in] channel    The channel code
+      /// \param [in] id         The device id
+      /// \param [in] groupCode  The device group code
+      /// \param [in] unitCode   The device unit code
       /// \param [in] cmnd       The command
       /// \param[in] seqNumberProvider The sequence number provider
       //--------------------------------------------------------------
-      CLighting3(unsigned char system, unsigned short channel, unsigned char cmnd, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider);
+      CLighting6(unsigned short id, unsigned char groupCode, unsigned char unitCode, unsigned char cmnd, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CLighting3();
+      virtual ~CLighting6();
 
       //--------------------------------------------------------------
       /// \brief	Get the buffer for serial link

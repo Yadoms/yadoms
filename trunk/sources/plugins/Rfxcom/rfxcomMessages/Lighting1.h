@@ -2,6 +2,7 @@
 
 #include "IRfxcomMessage.h"
 #include "RFXtrxDefinitions.h"
+#include "../ISequenceNumberProvider.h"
 
 namespace rfxcomMessages
 {
@@ -17,8 +18,9 @@ namespace rfxcomMessages
       /// \param [in] houseCode  The house code
       /// \param [in] unitCode   The unit code
       /// \param [in] cmnd       The command
+      /// \param[in] seqNumberProvider The sequence number provider
       //--------------------------------------------------------------
-      CLighting1(unsigned char subType, unsigned char houseCode, unsigned char unitCode, unsigned char cmnd);
+      CLighting1(unsigned char subType, unsigned char houseCode, unsigned char unitCode, unsigned char cmnd, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

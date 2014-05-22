@@ -11,8 +11,8 @@
 namespace xplMessages
 {
 
-CXplMsgX10Basic::CXplMsgX10Basic(const shared::xpl::CXplMessage& xplMessage)
-   :m_xplMessage(xplMessage)
+CXplMsgX10Basic::CXplMsgX10Basic(const shared::xpl::CXplMessage& xplMessage, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
+   :m_xplMessage(xplMessage), m_seqNumberProvider(seqNumberProvider)
 {
    BOOST_ASSERT_MSG(m_xplMessage.getMessageSchemaIdentifier().getClassId() == "x10" &&
       m_xplMessage.getMessageSchemaIdentifier().getTypeId() == "basic", "Wrong message format");
@@ -101,7 +101,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CXplMsgX10Basic::createLightin
    else
       throw shared::xpl::CXplException("Fail to extract command data from XPL message : unknown command value " + command);
 
-   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> rfxcomMsg (new rfxcomMessages::CLighting1(subType, houseCode, unitCode, cmnd));
+   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> rfxcomMsg (new rfxcomMessages::CLighting1(subType, houseCode, unitCode, cmnd, m_seqNumberProvider));
    return rfxcomMsg;
 }
 
@@ -164,7 +164,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CXplMsgX10Basic::createLightin
          throw shared::xpl::CXplException("Fail to extract command data from XPL message : unknown command value " + command);
    }
 
-   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> rfxcomMsg (new rfxcomMessages::CLighting3(system, channel, cmnd));
+   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> rfxcomMsg (new rfxcomMessages::CLighting3(system, channel, cmnd, m_seqNumberProvider));
    return rfxcomMsg;
 }
 
@@ -205,7 +205,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CXplMsgX10Basic::createCurtain
    else
       throw shared::xpl::CXplException("Fail to extract command data from XPL message : unknown command value " + command);
 
-   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> rfxcomMsg (new rfxcomMessages::CCurtain1(houseCode, unitCode, cmnd));
+   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> rfxcomMsg (new rfxcomMessages::CCurtain1(houseCode, unitCode, cmnd, m_seqNumberProvider));
    return rfxcomMsg;
 }
 
