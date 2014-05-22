@@ -1,11 +1,11 @@
-{
+ï»¿{
    "description": "Support du module radio RFXCom (voir http://rfxcom.com/)",
    "configurationSchema":
    {
       "Serial Port":
       {
-         "name": "Port série",
-         "description": "Le port série virtuel connecté au RFXCom."
+         "name": "Port sÃ©rie",
+         "description": "Le port sÃ©rie virtuel connectÃ© au RFXCom."
       }
    }
 }

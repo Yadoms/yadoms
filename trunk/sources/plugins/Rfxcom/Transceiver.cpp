@@ -2,6 +2,7 @@
 #include "Transceiver.h"
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
+#include <shared/xpl/XplException.h>
 #include "xplMessages/X10Basic.h"
 #include "rfxcomMessages/IRfxcomMessage.h"
 
@@ -69,10 +70,15 @@ void CTransceiver::send(const shared::xpl::CXplMessage& xplMessage)
 
       m_port->send(rfxcomMsg->getBuffer());
    }
+   catch (shared::xpl::CXplException& e)
+   {
+      YADOMS_LOG(error) << "Error decoding XPL message : " << e.what() << ", message : " << xplMessage.toString();
+      BOOST_ASSERT_MSG(false, "Error decoding XPL message");
+   }
    catch (shared::exception::CInvalidParameter& e)
    {
-      YADOMS_LOG(error) << "Error encoding XPL message : " << e.what() << ", message : " << xplMessage.toString();
-      BOOST_ASSERT_MSG(false, "Error encoding XPL message");
+      YADOMS_LOG(error) << "Error decoding XPL message : " << e.what() << ", message : " << xplMessage.toString();
+      BOOST_ASSERT_MSG(false, "Error decoding XPL message");
    }
 }
 
