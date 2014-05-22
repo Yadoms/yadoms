@@ -3,7 +3,7 @@
 #include "IXplMessage.h"
 #include "../rfxcomMessages/RFXtrxDefinitions.h"
 #include <shared/xpl/XplMessage.h>
-#include "ISequenceNumberProvider.h"
+#include "../ISequenceNumberProvider.h"
 
 
 namespace xplMessages
