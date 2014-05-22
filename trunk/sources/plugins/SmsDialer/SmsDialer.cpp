@@ -52,7 +52,7 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
          shared::xpl::CXplHelper::toInstanceId(instanceUniqueId),
          pluginIOService));
 
-      // Configure 2 XPL filters to receive only the 2 SMS supported commands
+      // Configure 2 XPL filters to receive only the 2 SMS supported commands //TODO ajouter le message de power ON/OFF
       m_xplService->subscribeForMessages(                   // message.sms
          "xpl-cmnd",
          m_xplService->getActor().getVendorId(),
@@ -93,8 +93,8 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
          }
          else
          {
-            // Send connection state message
-            xplSendConnectionState();
+            // Announce the xplDevices
+            xplAnnounceDevices();
 
             processConnectedState();
          }
@@ -297,12 +297,18 @@ void CSmsDialer::processIncommingSMS()
    }
 }
 
-void CSmsDialer::xplSendConnectionState() const // TODO convertir le message en hbeat ?
+void CSmsDialer::xplAnnounceDevices() const
 {
-   // Send state only if phone is known
+   // Announce devices only if phone is known
    if (m_phone->getUniqueId().empty())
       return;
 
+   xplAnnounceMainDevice();
+   xplAnnounceOnOffDevice();
+}
+
+void CSmsDialer::xplAnnounceMainDevice() const
+{
    shared::xpl::CXplMessage msg(
       shared::xpl::CXplMessage::kXplStat,                            // Message type
       m_xplService->getActor(),                                      // Source actor (here : our plugin instance)
@@ -315,6 +321,11 @@ void CSmsDialer::xplSendConnectionState() const // TODO convertir le message en 
 
    // Send it
    m_xplService->sendMessage(msg);
+}
+
+void CSmsDialer::xplAnnounceOnOffDevice() const
+{
+   //TODO à faire
 }
 
 void CSmsDialer::xplSendAck(bool ok, const std::string& sourceMsg) const

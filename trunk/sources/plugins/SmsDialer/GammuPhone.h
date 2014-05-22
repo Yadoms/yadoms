@@ -23,6 +23,8 @@ public:
    // IPhone implementation
    virtual bool connect();
    virtual bool isConnected() const;
+   virtual void powerOn(bool on);
+   virtual bool isOn() const;
    virtual std::string getUniqueId() const;
    virtual void unlock(const std::string& pin);
    virtual void send(boost::shared_ptr<ISms> sms);
@@ -109,6 +111,11 @@ private:
    /// \brief	   Gammu context data : incomplete message time (Multipart messages processing)
    //--------------------------------------------------------------
    time_t m_incompleteMessageTime;
+
+   //--------------------------------------------------------------
+   /// \brief	   Phone power status
+   //--------------------------------------------------------------
+   bool m_on;
 };
 
 

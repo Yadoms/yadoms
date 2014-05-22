@@ -59,10 +59,6 @@ bool CGammuPhoneConnection::connect()
    {
       // Connect to phone
       handleGammuError(GSM_InitConnection(m_gsmContext, 1), "Unable to connect to phone");
-
-      //TODO Pour le power on/off, faire des fonctions à part
-      //const std::string cmd("AT+CFUN=1\r");
-      //GSM_WaitFor(m_gsmContext, (const unsigned char*) cmd.c_str(), cmd.length(), 0x00, 3, ID_Reset);
    }
    catch (CPhoneException& e)
    {
