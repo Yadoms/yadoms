@@ -117,6 +117,11 @@ PluginInstance.prototype.downloadPackage = function(callback) {
    $.getJSON( "plugin/" + self.pluginName + "/package.json")
       .done(function (data) {
          self.package = data;
+
+         //we manage i18n
+         i18n.options.resGetPath = 'plugin/__ns__/locales/__lng__.json';
+         i18n.loadNamespace(self.pluginName);
+
          if (!isNullOrUndefined(callback))
             callback();
       })

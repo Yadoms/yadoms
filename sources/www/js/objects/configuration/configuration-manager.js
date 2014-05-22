@@ -8,8 +8,9 @@
  * @param $domContainer
  * @constructor
  */
-function ConfigurationManager(objectToConfigure, $domContainer) {
+function ConfigurationManager(objectToConfigure, i18nNamespace, $domContainer) {
    assert(objectToConfigure !== undefined, "objectToConfigure must contain widget or plugin object");
+   assert(i18nNamespace !== undefined, "i18nNamespace must contain widget or plugin object");
    assert($domContainer !== undefined, "$domContainer must be defined");
 
    this.objectToConfigure = objectToConfigure;
@@ -20,7 +21,7 @@ function ConfigurationManager(objectToConfigure, $domContainer) {
    var self = this;
 
    //we build the i18n context
-   var i18nContext = self.objectToConfigure.name + ":configurationSchema.";
+   var i18nContext = i18nNamespace + ":configurationSchema.";
 
    //for each key in package
    $.each(self.configurationSchema, function (key, value) {
