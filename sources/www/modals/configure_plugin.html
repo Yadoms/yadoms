@@ -49,6 +49,7 @@
             pluginInstance.name = nameParameter.getCurrentConfiguration();
             pluginInstance.configuration = configMgr.getCurrentConfiguration();
 
+            console.debug("End of Plugin Configuration : " + JSON.stringify(pluginInstance));
             if (!isNullOrUndefined(hasToCreate)) {
                //it's a plugin creation
                $.ajax({
