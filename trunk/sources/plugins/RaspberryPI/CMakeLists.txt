@@ -49,5 +49,5 @@ IF(RASPBERRYPI)
 	#########################################
 	PLUGIN_POST_BUILD_COPY_FILE(raspberrypi package.json)
 	PLUGIN_POST_BUILD_COPY_FILE(raspberrypi icon.png)
-	PLUGIN_POST_BUILD_COPY_FILE(raspberrypi fr.json)
+	PLUGIN_POST_BUILD_COPY_FILE(raspberrypi locales/fr.json)
 ENDIF()

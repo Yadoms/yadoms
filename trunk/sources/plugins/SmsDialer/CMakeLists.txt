@@ -63,7 +63,7 @@ if(MSVC OR CMAKE_COMPILER_IS_GNUCXX OR RASPBERRYPI)
       #########################################
       PLUGIN_POST_BUILD_COPY_FILE(smsDialer package.json)
       PLUGIN_POST_BUILD_COPY_FILE(smsDialer icon.png)
-      PLUGIN_POST_BUILD_COPY_FILE(smsDialer fr.json)
+      PLUGIN_POST_BUILD_COPY_FILE(smsDialer locales/fr.json)
    else()
       message(WARNING "smsDialer plugin is not available. Gammu is Mssing")
    endif()
