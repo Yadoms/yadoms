@@ -145,6 +145,14 @@ namespace shared { namespace xpl
       const std::string & getBodyValue(const std::string & key) const;
 
       //--------------------------------------------------------------
+      /// \brief	    Get body value, with default value
+      /// \param [in] key : key of the key/value element
+      /// \param [in] defaultValue : default value, returned if key was not found
+      /// \return     A value contained in the body, or the default value if key was not found
+      //--------------------------------------------------------------
+      const std::string & getBodyValue(const std::string & key, const std::string & defaultValue) const;
+
+      //--------------------------------------------------------------
       /// \brief	    Get the message as it has to be sent
       /// \return     the message as it has to be sent
       //--------------------------------------------------------------

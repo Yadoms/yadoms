@@ -2,8 +2,8 @@
 
 #include "ITransceiver.h"
 #include "IPort.h"
-#include "RFXtrxTypes.h"
-#include "RFXtrx.h"
+#include "rfxcomMessages/IRfxcomMessage.h"
+#include "rfxcomMessages/RFXtrxDefinitions.h"
 
 //--------------------------------------------------------------
 /// \brief	This class implement the RFXCom protocol
@@ -22,7 +22,8 @@ public:
    virtual ~CTransceiver();
 
    // ITransceiver implementation
-   virtual void reset();
+   virtual void sendReset();
+   virtual void send(const shared::xpl::CXplMessage& xplMessage);
    // [END] ITransceiver implementation
 
 protected:
@@ -38,6 +39,14 @@ protected:
    /// \param [in] sier             Buffer size
    //--------------------------------------------------------------
    std::string msgToString(const void* ptr, size_t size) const;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Create the corresponding RFXCom message associated with a XPL message
+   /// \param [in] xplMessage       The received XPL message
+   /// \return                      RFXCom message
+   /// \throw shared::exception::CInvalidParameter if no corresponding RFXCom message was found (XPL message not supported by RFXCom)
+   //--------------------------------------------------------------
+   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> createRfxcomMessage(const shared::xpl::CXplMessage& xplMessage) const;
 
 private:
    //--------------------------------------------------------------

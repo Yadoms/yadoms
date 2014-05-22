@@ -35,6 +35,16 @@ protected:
    //--------------------------------------------------------------
    void onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage);
 
+   //--------------------------------------------------------------
+   /// \brief	                     Called when the RFXCom becomes connected
+   //--------------------------------------------------------------
+   void processRfxcomConnectionEvent();
+
+   //--------------------------------------------------------------
+   /// \brief	                     Called when the RFXCom becomes unconnected
+   //--------------------------------------------------------------
+   void processRfxcomUnConnectionEvent();
+
 private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration

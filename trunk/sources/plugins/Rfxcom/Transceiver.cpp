@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "Transceiver.h"
 #include <shared/Log.h>
+#include <shared/exception/InvalidParameter.hpp>
+#include "xplMessages/X10Basic.h"
+#include "rfxcomMessages/IRfxcomMessage.h"
 
 
 // Macro helpers to access RBUF parts
@@ -12,6 +15,7 @@
 #define LOG_WRITE(structure) YADOMS_LOG(debug)<<" RFXCom <<< "<<msgToString(BUFFER_AND_SIZE(structure));
 #define LOG_READ(structure) YADOMS_LOG(debug)<<" RFXCom >>> "<<msgToString(BUFFER_AND_SIZE(structure));
 
+
 CTransceiver::CTransceiver(boost::shared_ptr<IPort> port)
    :m_port(port), m_seqNumber(0)
 {
@@ -22,7 +26,7 @@ CTransceiver::~CTransceiver()
 {
 }
 
-void CTransceiver::reset()
+void CTransceiver::sendReset()
 {
    sendCommand(cmdRESET);
 
@@ -53,4 +57,40 @@ std::string CTransceiver::msgToString(const void* ptr, size_t size) const
       ss << std::fixed << std::setprecision(2) << std::hex << ucharPtr[idx] << " ";
 
    return ss.str();
+}
+
+void CTransceiver::send(const shared::xpl::CXplMessage& xplMessage)
+{
+   BOOST_ASSERT_MSG(xplMessage.getTypeIdentifier() == shared::xpl::CXplMessage::kXplCommand, "Message should be xpl-cmnd");
+
+   try
+   {
+      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> rfxcomMsg = createRfxcomMessage(xplMessage);
+
+      m_port->send(rfxcomMsg->getBuffer());
+   }
+   catch (shared::exception::CInvalidParameter& e)
+   {
+      YADOMS_LOG(error) << "Error encoding XPL message : " << e.what() << ", message : " << xplMessage.toString();
+      BOOST_ASSERT_MSG(false, "Error encoding XPL message");
+   }
+}
+
+boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::createRfxcomMessage(const shared::xpl::CXplMessage& xplMessage) const
+{
+   const std::string& classId = xplMessage.getMessageSchemaIdentifier().getClassId();
+   const std::string& typeId = xplMessage.getMessageSchemaIdentifier().getTypeId();
+   
+   boost::shared_ptr<xplMessages::IXplMessage> xplMsg;
+
+   if (classId == "x10" && typeId == "basic")
+      xplMsg.reset(new xplMessages::CXplMsgX10Basic(xplMessage));
+   //TODO compléter
+   else
+      throw shared::exception::CInvalidParameter("Unsupported XPL message for RFXCom : " + xplMessage.toString());
+
+   // Convert message from XPL to RFXCom
+   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> msg(xplMsg->toRfxComMessage()); //TODO erreurs à gérer ?
+
+   return msg;
 }

@@ -55,8 +55,8 @@ void CRfxcom::doWork(int instanceUniqueId, const std::string& configuration, boo
          m_xplService->getActor().getVendorId(),
          shared::xpl::CXplHelper::WildcardString,
          m_xplService->getActor().getInstanceId(),
-         "*",
-         "*",
+         shared::xpl::CXplHelper::WildcardString,
+         shared::xpl::CXplHelper::WildcardString,
          this,
          kEvtXplMessage);
 
@@ -95,21 +95,10 @@ void CRfxcom::doWork(int instanceUniqueId, const std::string& configuration, boo
          case kEvtPortConnection:
             {
                if (getEventData<bool>())
-               {
-                  YADOMS_LOG(debug) << "RFXCom is now connected";
-                  //TODO envoyer une notification ? Utiliser IEventLoggerRequester
-
-                  m_transceiver.reset();
-                  m_transceiver = CRfxcomFactory::constructTransceiver(m_port);
-
-                  // Reset the RFXCom state
-                  m_transceiver->reset();
-               }
+                  processRfxcomConnectionEvent();
                else
-               {
-                  YADOMS_LOG(debug) << "RFXCom connection was lost";
-                  //TODO envoyer une notification
-               }
+                  processRfxcomUnConnectionEvent();
+
                break;
             }
          case kEvtPortDataReceived:
@@ -141,4 +130,33 @@ void CRfxcom::updateConfiguration(const std::string& configuration)
 void CRfxcom::onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage)
 {
    YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
+
+   BOOST_ASSERT_MSG(xplMessage.getTypeIdentifier() == shared::xpl::CXplMessage::kXplCommand, "Filter doesn't work, messages must be xpl-cmnd");
+
+   if (m_transceiver)
+      m_transceiver->send(xplMessage);
 }
+
+void CRfxcom::processRfxcomConnectionEvent()
+{
+   YADOMS_LOG(debug) << "RFXCom is now connected";
+   //TODO envoyer une notification ? Utiliser IEventLoggerRequester
+
+   BOOST_ASSERT_MSG(!m_transceiver, "RFXCom was already connected");
+   m_transceiver.reset();
+
+   m_transceiver = CRfxcomFactory::constructTransceiver(m_port);
+
+   // Reset the RFXCom state
+   m_transceiver->sendReset();
+}
+
+void CRfxcom::processRfxcomUnConnectionEvent()
+{
+   YADOMS_LOG(debug) << "RFXCom connection was lost";
+
+   m_transceiver.reset();
+
+   //TODO envoyer une notification
+}
+

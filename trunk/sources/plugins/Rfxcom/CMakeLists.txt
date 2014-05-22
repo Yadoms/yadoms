@@ -11,19 +11,27 @@ set(RFXCOM_SOURCES
    IPort.h
    IRfxcomConfiguration.h
    ITransceiver.h
+   rfxcomMessages/IRfxcomMessage.h
+   rfxcomMessages/Lighting1.h
+   rfxcomMessages/Lighting1.cpp
+   rfxcomMessages/Curtain1.h
+   rfxcomMessages/Curtain1.cpp
+   rfxcomMessages/RFXtrx.h
+   rfxcomMessages/RFXtrxDefinitions.h
+   xplMessages/IXplMessage.h
+   xplMessages/X10Basic.h
+   xplMessages/X10Basic.cpp
    Rfxcom.h
    Rfxcom.cpp 
    RfxcomConfiguration.h
    RfxcomConfiguration.cpp
    RfxcomFactory.h
    RfxcomFactory.cpp
-   RFXtrx.h
-   RFXtrxTypes.h
    SerialPort.h
    SerialPort.cpp
    SerialPortSubscription.hpp
    Transceiver.h
-   Transceiver.cpp 
+   Transceiver.cpp
 )
 
 #########################################

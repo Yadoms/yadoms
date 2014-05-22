@@ -8,3 +8,5 @@
 // to be cross-platform compatible
 typedef unsigned char BYTE;
 
+// Include the RFXtrx.h file provided by RFXCom
+#include "RFXtrx.h"

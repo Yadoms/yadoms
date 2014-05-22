@@ -31,12 +31,12 @@ protected:
    //--------------------------------------------------------------
    /// \brief	                     Process the not connected state (wait for connection)
    //--------------------------------------------------------------
-   void ProcessNotConnectedState();
+   void processNotConnectedState();
 
    //--------------------------------------------------------------
    /// \brief	                     Process the connected state (Treat XPL messages, send SMS...)
    //--------------------------------------------------------------
-   void ProcessConnectedState();
+   void processConnectedState();
 
    //--------------------------------------------------------------
    /// \brief	                     Called when an XPL message is received
