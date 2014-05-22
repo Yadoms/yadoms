@@ -66,4 +66,4 @@ PLUGIN_LINK(rfxcom ${RFXCOM_ADDITIONAL_LIB})
 #########################################
 PLUGIN_POST_BUILD_COPY_FILE(rfxcom package.json)
 PLUGIN_POST_BUILD_COPY_FILE(rfxcom icon.png)
-PLUGIN_POST_BUILD_COPY_FILE(rfxcom fr.json)
+PLUGIN_POST_BUILD_COPY_FILE(rfxcom locales/fr.json)
