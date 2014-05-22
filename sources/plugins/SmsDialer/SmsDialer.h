@@ -50,9 +50,19 @@ protected:
    void processIncommingSMS();
 
    //--------------------------------------------------------------
-   /// \brief	                     Send the actual connection send to XPL network
+   /// \brief                       Announce the XPL devices associated with the phone
    //--------------------------------------------------------------
-   void xplSendConnectionState() const;
+   void xplAnnounceDevices() const;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Announce the main device (used to send/receive SMS)
+   //--------------------------------------------------------------
+   void xplAnnounceMainDevice() const;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Announce the on/off device (a switch type device used to power on/off the phone)
+   //--------------------------------------------------------------
+   void xplAnnounceOnOffDevice() const;
 
    //--------------------------------------------------------------
    /// \brief	                     Send the acknowledge to XPL network

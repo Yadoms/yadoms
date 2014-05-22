@@ -68,7 +68,7 @@ namespace communication { namespace rules { namespace extensions {
 
 
 
-   // ICommandRule implemntation
+   // ICommandRule implementation
    boost::shared_ptr< shared::xpl::CXplMessage > CMessageSms::createXplCommand(database::entities::CDevice & targetDevice, command::CDeviceCommand & deviceCommand)
    {
       ////////////////////////////
@@ -120,7 +120,7 @@ namespace communication { namespace rules { namespace extensions {
       //set the message body
       newMessage->addToBody(m_keywordContent, content[m_keywordContent]);
 
-      //set the acknowlegment if specified
+      //set the acknowledgment if specified
       if(content.find(m_keywordAcknowledgment) != content.end())
       {
          if(CKeywordManager::isEnumerationValue(content[m_keywordAcknowledgment], m_keywordAcknowledgmentValues))
@@ -140,7 +140,7 @@ namespace communication { namespace rules { namespace extensions {
       return (boost::format("%1%") % tools::CRandom::generateRandomNumber<32>(false)).str();
    }
 
-   // [END] ICommandRule implemntation
+   // [END] ICommandRule implementation
 
 
 

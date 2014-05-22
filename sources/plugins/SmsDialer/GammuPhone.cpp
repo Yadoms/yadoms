@@ -7,7 +7,7 @@
 
 
 CGammuPhone::CGammuPhone(const ISmsDialerConfiguration& configuration)
-   :m_configuration(configuration), m_connection(configuration), m_incompleteMessageId(-1), m_incompleteMessageTime(0)
+   :m_configuration(configuration), m_connection(configuration), m_incompleteMessageId(-1), m_incompleteMessageTime(0), m_on(false)
 {
 }
 
@@ -52,6 +52,17 @@ bool CGammuPhone::connect()
 bool CGammuPhone::isConnected() const
 {
    return m_connection.isConnected();
+}
+
+void CGammuPhone::powerOn(bool on)
+{
+   GSM_SetPower(m_connection.getGsmContext(), on ? TRUE : FALSE);
+   m_on = on;
+}
+
+bool CGammuPhone::isOn() const
+{
+   return m_on;
 }
 
 std::string CGammuPhone::getUniqueId() const

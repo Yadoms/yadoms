@@ -26,6 +26,19 @@ public:
    virtual bool isConnected() const = 0;
 
    //--------------------------------------------------------------
+   /// \brief	Get the phone power status
+   /// \param[in] on true to power ON the phone, false to power OFF
+   /// \return true if phone is powered ON, false if OFF
+   //--------------------------------------------------------------
+   virtual void powerOn(bool on) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	Get the phone power status
+   /// \return true if phone is powered ON, false if OFF
+   //--------------------------------------------------------------
+   virtual bool isOn() const = 0;
+
+   //--------------------------------------------------------------
    /// \brief	Get the phone unique ID
    /// \return A phone ID composed for example of Manufacturer + model + IMEI
    //--------------------------------------------------------------
