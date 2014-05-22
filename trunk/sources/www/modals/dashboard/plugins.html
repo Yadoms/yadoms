@@ -60,10 +60,10 @@
               "&nbsp;&nbsp;" +
               "<button type=\"button\" class=\"btn btn-startStop\"></button>";*/
 
-      var name = "<span>pi.name</span>";
+      var name = "<span>" + pi.name + "</span>";
 
       var type = "<img src=\"plugin/" + pi.pluginName + "/icon.png\" class=\"img-thumbnail plugin-icon\">&nbsp;&nbsp;" +
-                  "<span>pi.pluginName</span>";
+                  "<span>" + pi.pluginName + "</span>";
 
       //we add it to the DOM
       $("table#plugin-instance-list").append("<tr plugin-id=\"" + pi.id + "\"><td class=\"plugin-name\"></td><td class=\"plugin-pluginName\"></td><td class=\"plugin-status\"></td><td class=\"plugin-autoStart\"></td><td class=\"plugin-actions\"></td></tr>");
@@ -94,6 +94,8 @@
             //we ask for start
             pi.start();
          }
+         //we deactivate the button until next status will be aquired to prevent flooding
+         $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("button.btn-startStop").prop('disabled', true);
       }
    }
 
@@ -155,6 +157,8 @@
                      $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("button.btn-startStop").addClass("btn-success").removeClass("btn-warning");
                   }
                }
+               //we re enable the startStop button in case of using it last time
+               $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("button.btn-startStop").prop('disabled', false);
             });
          });
       }

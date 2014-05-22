@@ -42,7 +42,7 @@ function BoolParameterHandler(i18nContext, paramName, content, currentValue) {
 BoolParameterHandler.prototype.getDOMObject = function () {
    var self = this;
 
-   var input = "<input class=\"enable-validation\" type=\"checkbox\" ";
+   var input = "<input class=\"enable-validation\" id=\"" + this.uuid + "\" type=\"checkbox\" ";
    if (this.value)
       input +=          "checked ";
    input +=           ">";
@@ -63,6 +63,6 @@ BoolParameterHandler.prototype.getParamName = function() {
  * @returns {bool}
  */
 BoolParameterHandler.prototype.getCurrentConfiguration = function () {
-   this.value = parseBool($("label#" + this.uuid).find("input").prop("checked"));
+   this.value = parseBool($("input#" + this.uuid).prop("checked"));
    return this.value;
 };

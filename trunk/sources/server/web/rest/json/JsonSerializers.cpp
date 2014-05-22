@@ -13,7 +13,7 @@ namespace web { namespace rest { namespace json {
    ((Id)("id")JSON_INT)
       ((Name)("name")JSON_STRING)
       ((PluginName)("pluginName")JSON_STRING)
-      ((Configuration)("configuration")JSON_STRING)
+      ((Configuration)("configuration")JSON_PTREE)
       ((Enabled)("enabled")JSON_BOOL)
       )
 
