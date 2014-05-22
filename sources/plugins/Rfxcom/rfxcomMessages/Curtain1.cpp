@@ -8,7 +8,7 @@ CCurtain1::CCurtain1(unsigned char houseCode, unsigned char unitCode, unsigned c
 {
    m_buffer.CURTAIN1.packetlength = sizeof(m_buffer.CURTAIN1) - sizeof(m_buffer.CURTAIN1.packetlength);
    m_buffer.CURTAIN1.packettype = pTypeCurtain;
-   m_buffer.CURTAIN1.subtype = 0;
+   m_buffer.CURTAIN1.subtype = sTypeHarrison;
    m_buffer.CURTAIN1.seqnbr = 0;//TODO : fournir un sequenceNumberProvider. Spec dit "Sequence number, this is not used by the RFXCOM. This can be used in the application to synchronize the commands sent with response messages. If not used in the application leave it zero."
    m_buffer.CURTAIN1.housecode = houseCode;
    m_buffer.CURTAIN1.unitcode = unitCode;

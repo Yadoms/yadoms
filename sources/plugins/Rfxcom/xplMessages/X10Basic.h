@@ -38,6 +38,13 @@ namespace xplMessages
       boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CXplMsgX10Basic::createLighting1Msg() const;
 
       //--------------------------------------------------------------
+      /// \brief	Create a RFXCom Loghtning3 message from the XPL message
+      /// \return the created RFXCom message
+      /// \throw shared::xpl::CXplException if fails to get data from the XPL message
+      //--------------------------------------------------------------
+      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CXplMsgX10Basic::createLighting3Msg() const;
+
+      //--------------------------------------------------------------
       /// \brief	Create a RFXCom Curtain1 message from the XPL message
       /// \return the created RFXCom message
       /// \throw shared::xpl::CXplException if fails to get data from the XPL message
