@@ -152,6 +152,14 @@ const std::string & CXplMessage::getBodyValue(const std::string & key) const
    return it->second;
 }
 
+const std::string & CXplMessage::getBodyValue(const std::string & key, const std::string & defaultValue) const
+{
+   std::map<std::string, std::string>::const_iterator it = m_body.find(key);
+   if (it == m_body.end())
+      return defaultValue;
+   return it->second;
+}
+
 std::string CXplMessage::toString() const
 {
    std::stringstream ss;

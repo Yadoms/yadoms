@@ -89,14 +89,14 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
       {
          if (!m_phone->isConnected())
          {
-            ProcessNotConnectedState();
+            processNotConnectedState();
          }
          else
          {
             // Send connection state message
             xplSendConnectionState();
 
-            ProcessConnectedState();
+            processConnectedState();
          }
       };
    }
@@ -106,7 +106,7 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
    }
 }
 
-void CSmsDialer::ProcessNotConnectedState()
+void CSmsDialer::processNotConnectedState()
 {
    YADOMS_LOG(info) << "Phone is not connected"  << std::endl;
 
@@ -167,7 +167,7 @@ void CSmsDialer::ProcessNotConnectedState()
    }
 }
 
-void CSmsDialer::ProcessConnectedState()
+void CSmsDialer::processConnectedState()
 {
    YADOMS_LOG(info) << "Phone is connected"  << std::endl;
 
@@ -297,7 +297,7 @@ void CSmsDialer::processIncommingSMS()
    }
 }
 
-void CSmsDialer::xplSendConnectionState() const
+void CSmsDialer::xplSendConnectionState() const // TODO convertir le message en hbeat ?
 {
    // Send state only if phone is known
    if (m_phone->getUniqueId().empty())
