@@ -4,6 +4,7 @@
 #include "IPort.h"
 #include "rfxcomMessages/IRfxcomMessage.h"
 #include "rfxcomMessages/RFXtrxDefinitions.h"
+#include "ISequenceNumberProvider.h"
 
 //--------------------------------------------------------------
 /// \brief	This class implement the RFXCom protocol
@@ -57,10 +58,10 @@ private:
    //--------------------------------------------------------------
    /// \brief  The message sequence number
    //--------------------------------------------------------------
-   unsigned char m_seqNumber;
+   boost::shared_ptr<ISequenceNumberProvider> m_seqNumberProvider;
 
    //--------------------------------------------------------------
-   /// \brief  The message structure (keeped here for better performance)
+   /// \brief  The message structure (keep here for better performance)
    //--------------------------------------------------------------
    RBUF m_request;
 };
