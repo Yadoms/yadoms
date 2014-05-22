@@ -84,6 +84,17 @@
       "errorDuringCreatingPageNamed": "Erreur pendant la creation de la page __pageName__",
       "placeholder": "Saisissez un nom de page"
     },
+    "configure-plugin" : {
+      "title" : "Configuration du plugin",
+      "name-configuration" : {
+         "name" : "Nom",
+         "description" : "Nom personnalisable du plugin",
+         "regexErrorMessage" : "Le nom du plugin doit contenir au minimum 1 caactère"
+      },
+      "errorDuringCreatingPlugin" : "Erreur pendant la création du plugin",
+      "pluginSuccessfullyCreated" : "Plugin créé avec succès",
+      "errorDuringModifyingPlugin" : "Erreur pendant la modification du plugin"
+    },
     "qrcode": {
       "title": "QR Code de Yadoms",
       "text": "Voici le QRCode de Yadoms. Vous pouvez le flasher avec votre téléphone pour accéder à Yadoms de partout."

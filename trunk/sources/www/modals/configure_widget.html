@@ -34,7 +34,7 @@
 
       var $modalBody = $('div#configure-widget-modal .modal-body');
       $modalBody.empty();
-      var configMgr = new ConfigurationManager(widgetToConfigure, $modalBody);
+      var configMgr = new ConfigurationManager(widgetToConfigure, widgetToConfigure.name, $modalBody);
 
       //i18n
       $modalBody.i18n();
