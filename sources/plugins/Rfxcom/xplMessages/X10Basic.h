@@ -3,7 +3,6 @@
 #include "IXplMessage.h"
 #include "../rfxcomMessages/RFXtrxDefinitions.h"
 #include <shared/xpl/XplMessage.h>
-#include "../ISequenceNumberProvider.h"
 
 
 namespace xplMessages
@@ -17,10 +16,9 @@ namespace xplMessages
    public:
       //--------------------------------------------------------------
       /// \brief	Constructor from the XPL message
-      /// \param[in] xplMessage        The Xpl message to transmit
-      /// \param[in] seqNumberProvider The sequence number provider
+      /// \param [in] xplMessage       The Xpl message to transmit
       //--------------------------------------------------------------
-      CXplMsgX10Basic(const shared::xpl::CXplMessage& xplMessage, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider);
+      CXplMsgX10Basic(const shared::xpl::CXplMessage& xplMessage);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -37,32 +35,27 @@ namespace xplMessages
       /// \return the created RFXCom message
       /// \throw shared::xpl::CXplException if fails to get data from the XPL message
       //--------------------------------------------------------------
-      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CXplMsgX10Basic::createLighting1Msg() const;
+      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> createLighting1Msg() const;
 
       //--------------------------------------------------------------
       /// \brief	Create a RFXCom Loghtning3 message from the XPL message
       /// \return the created RFXCom message
       /// \throw shared::xpl::CXplException if fails to get data from the XPL message
       //--------------------------------------------------------------
-      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CXplMsgX10Basic::createLighting3Msg() const;
+      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> createLighting3Msg() const;
 
       //--------------------------------------------------------------
       /// \brief	Create a RFXCom Curtain1 message from the XPL message
       /// \return the created RFXCom message
       /// \throw shared::xpl::CXplException if fails to get data from the XPL message
       //--------------------------------------------------------------
-      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CXplMsgX10Basic::createCurtain1Msg() const;
+      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> createCurtain1Msg() const;
 
    private:
       //--------------------------------------------------------------
       /// \brief	The XPl message
       //--------------------------------------------------------------
       const shared::xpl::CXplMessage& m_xplMessage;
-
-      //--------------------------------------------------------------
-      /// \brief	The sequence number provider
-      //--------------------------------------------------------------
-      boost::shared_ptr<ISequenceNumberProvider> m_seqNumberProvider;
    };
 
 } // namespace xplMessages
