@@ -173,7 +173,7 @@
       modals.pluginAdd = new LazyLoaderManager("modals/add_plugin.html");
       modals.pluginConfigure = new LazyLoaderManager("modals/configure_plugin.html");
 
-      var option = { resGetPath: 'locales/__lng__.json', fallbackLng:"en",useDataAttrOptions: true };
+      var option = { resGetPath: 'locales/__lng__.json', fallbackLng:"en",useDataAttrOptions: true};
       i18n.init(option, function() {
          $("html").i18n();
          initializeWidgetEngine();

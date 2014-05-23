@@ -31,24 +31,30 @@
     /**
      * Ask for plugin types to the REST server
      */
-    function askPluginTypes()
+    function askPluginTypes(callback)
     {
+       assert(callback !== undefined, "callback must be defined");
        $.getJSON("rest/plugin/")
-               .done(requestPluginTypesDone())
-               .fail(function() {notifyError($.t("modals.add-plugin.errorDuringGettingPluginTypes"));});
+               .done(requestPluginTypesDone(callback))
+               .fail(function() {
+                  notifyError($.t("modals.add-plugin.errorDuringGettingPluginTypes"));
+                  callback(null);
+               });
     }
 
     /**
      * Callback of the request plugin types
      * @returns {Function}
      */
-    function requestPluginTypesDone()
+    function requestPluginTypesDone(callback)
     {
+       assert(callback !== undefined, "callback must be defined");
        return function( data ) {
           //we parse the json answer
           if (data.result != "true")
           {
              notifyError($.t("modals.add-plugin.errorDuringGettingPluginTypes"), JSON.stringify(data));
+             callback(null);
              return;
           }
 
@@ -60,30 +66,19 @@
              $("select#pluginTypeList").append("<option>" + value.name + "</option>");
           });
 
+          //event click on add plugin button
+          $("button#btn-confirm-add-plugin").bind("click", function() {
+             //we close the new widget modal
+             $("div#new-plugin-modal").modal("hide");
+
+             var pluginType = $("select#pluginTypeList").val();
+
+             callback(pluginType);
+          });
+
           //we display the modal
           $('div#new-plugin-modal').modal();
        };
     }
-
-    /**
-     * Callback to the click of the button to confirm an add of a new plugin
-     */
-    $("button#btn-confirm-add-plugin").click(function () {
-
-       //we close the new widget modal
-       $("div#new-plugin-modal").modal("hide");
-
-       var pluginType = $("select#pluginTypeList").val();
-
-       var pi = new PluginInstance(null, "", pluginType, "", 1);
-
-       //we get package.json
-       pi.downloadPackage(function() {
-          //we ask for configuration modal async
-          modals.pluginConfigure.load(function() {
-             configurePluginInstance(pi, true);
-          });
-       });
-    });
 
 </script>
