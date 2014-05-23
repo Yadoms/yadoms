@@ -112,6 +112,85 @@ PluginInstance.prototype.deleteFromServer = function(callback) {
       .fail(function() {notifyError($.t("objects.pluginInstance.errorDeleting", {pluginName : self.name}));});
 };
 
+PluginInstance.prototype.createToServer = function(callback) {
+   var self = this;
+
+   $.ajax({
+      type: "POST",
+      url: "/rest/plugin",
+      data: JSON.stringify({ name: self.name, pluginName: self.pluginName, configuration: self.configuration, enabled: self.enabled}),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json"
+   })
+   .done(function(data) {
+      //we parse the json answer
+      if (data.result != "true")
+      {
+         notifyError($.t("objects.pluginInstance.errorCreating", {pluginName : self.name}), JSON.stringify(data));
+         //launch callback with false as ko result
+         if (!isNullOrUndefined(callback))
+            callback(false);
+         return;
+      }
+
+      //we update our information from the server
+      self.id = data.data.id;
+      self.name = data.data.name;
+      self.pluginName = data.data.pluginName;
+      self.configuration = data.data.configuration;
+      self.enabled = parseBool(data.data.enabled);
+
+      if (!isNullOrUndefined(callback))
+         callback(true);
+   })
+   .fail(function() {
+      notifyError($.t("objects.pluginInstance.errorCreating", {pluginName : self.name}));
+      //launch callback with false as ko result
+      if (!isNullOrUndefined(callback))
+         callback(false);
+   });
+};
+
+PluginInstance.prototype.updateToServer = function(callback) {
+   var self = this;
+
+   $.ajax({
+      type: "PUT",
+      url: "/rest/plugin/" + self.id,
+      data: JSON.stringify(self),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json"
+   })
+   .done(function(data) {
+      //we parse the json answer
+      if (data.result != "true")
+      {
+         notifyError($.t("objects.pluginInstance.errorUpdating", {pluginName : self.name}), JSON.stringify(data));
+         //launch callback with false as ko result
+         if (!isNullOrUndefined(callback))
+            callback(false);
+         return;
+      }
+      //it's okay
+      //we update our information from the server
+      self.id = data.data.id;
+      self.name = data.data.name;
+      self.pluginName = data.data.pluginName;
+      self.configuration = data.data.configuration;
+      self.enabled = parseBool(data.data.enabled);
+
+      //we call the callback with true as a ok result
+      if (!isNullOrUndefined(callback))
+         callback(true);
+   })
+   .fail(function() {
+      notifyError($.t("objects.pluginInstance.errorUpdating", {pluginName : self.name}));
+      //launch callback with false as ko result
+      if (!isNullOrUndefined(callback))
+         callback(false);
+   });
+};
+
 PluginInstance.prototype.downloadPackage = function(callback) {
    var self = this;
    $.getJSON( "plugin/" + self.pluginName + "/package.json")

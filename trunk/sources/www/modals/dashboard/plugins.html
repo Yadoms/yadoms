@@ -31,7 +31,6 @@
                notifyError($.t("modals.dashboard.sub-windows.plugins.errorGettingPluginList"), JSON.stringify(data));
                return;
             }
-
             //foreach result we append a <tr>
             $.each(data.data.plugin, function(index, value) {
                var pi = new PluginInstance(value.id, value.name, value.pluginName, value.configuration, value.enabled);
@@ -54,7 +53,7 @@
               "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.delete\"><span class=\"glyphicon glyphicon-trash\"></span></button>\n" +
               "</div>";
 
-      var autoStartCommand = "<input type=\"checkbox\">";
+      var autoStartCommand = "<input class=\"cb-autoStart\" type=\"checkbox\">";
 
       var statusField = "<span class=\"label label-success label-status\"></span>\n";/* +
               "&nbsp;&nbsp;" +
@@ -66,20 +65,28 @@
                   "<span>" + pi.pluginName + "</span>";
 
       //we add it to the DOM
-      $("table#plugin-instance-list").append("<tr plugin-id=\"" + pi.id + "\"><td class=\"plugin-name\"></td><td class=\"plugin-pluginName\"></td><td class=\"plugin-status\"></td><td class=\"plugin-autoStart\"></td><td class=\"plugin-actions\"></td></tr>");
+      var $pluginInstanceList = $("table#plugin-instance-list");
+
+      $pluginInstanceList.append("<tr plugin-id=\"" + pi.id + "\"><td class=\"plugin-name\"></td><td class=\"plugin-pluginName\"></td><td class=\"plugin-status\"></td><td class=\"plugin-autoStart\"></td><td class=\"plugin-actions\"></td></tr>");
+
+      var $pluginInstanceRow = $pluginInstanceList.find("tr[plugin-id='" + pi.id + "']");
       //we fill the data
-      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-name").html(name);
-      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-pluginName").html(type);
-      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-autoStart").html(autoStartCommand);
-      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-status").html(statusField);
+      $pluginInstanceRow.find("td.plugin-name").html(name);
+      $pluginInstanceRow.find("td.plugin-pluginName").html(type);
+      $pluginInstanceRow.find("td.plugin-autoStart").html(autoStartCommand);
+      $pluginInstanceRow.find("td.plugin-status").html(statusField);
 
       //we add actions to the plugin
-      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("td.plugin-actions").append(actionsBtns);
+      $pluginInstanceRow.find("td.plugin-actions").append(actionsBtns);
+
+      //we set autostart value
+      $pluginInstanceRow.find("input.cb-autoStart").prop("checked",pi.enabled);
 
       //we bind event on the different actions
-      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("button.btn-startStop").unbind('click').bind('click', startStopPlugin(pi));
-      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("button.btn-configure").unbind('click').bind('click', configurePlugin(pi));
-      $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("button.btn-delete").unbind('click').bind('click', deletePlugin(pi));
+      $pluginInstanceRow.find("button.btn-startStop").unbind('click').bind('click', startStopPlugin(pi));
+      $pluginInstanceRow.find("button.btn-configure").unbind('click').bind('click', configurePlugin(pi));
+      $pluginInstanceRow.find("button.btn-delete").unbind('click').bind('click', deletePlugin(pi));
+      $pluginInstanceRow.find("input.cb-autoStart").unbind('change').bind('change', autoStartChange(pi));
    }
 
    function startStopPlugin(pi) {
@@ -106,7 +113,10 @@
          pi.downloadPackage(function() {
             //we ask for configuration modal async
             modals.pluginConfigure.load(function() {
-               configurePluginInstance(pi);
+               configurePluginInstance(pi, function() {
+                  pluginInstance.updateToServer(function(result) {
+                  });
+               });
             });
          });
       }
@@ -130,6 +140,17 @@
                   $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").remove();
                });
             });
+         });
+      }
+   }
+
+   function autoStartChange(pi) {
+      //pi represent the pluginInstance concerned
+      return function() {
+         //we set autoStart attr to cb value and send it to the server as an update
+         pi.enabled = $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("input.cb-autoStart").prop("disabled", true).prop("checked");
+         pi.updateToServer(function(result) {
+            $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("input.cb-autoStart").prop("disabled", false).prop("checked", pi.enabled);
          });
       }
    }
@@ -165,6 +186,28 @@
    }
 
    $("#btn-add-new-plugin").click(function() {
-      modals.pluginAdd.load(function() {askPluginTypes();});
+      modals.pluginAdd.load(function() {
+         askPluginTypes(function(pluginType) {
+            var pi = new PluginInstance(null, "", pluginType, "", 1);
+            //we get package.json
+            pi.downloadPackage(function() {
+               //we ask for configuration modal async
+               modals.pluginConfigure.load(function() {
+                  //we lauch configureInstance GUI
+                  configurePluginInstance(pi, function() {
+                     //we ask for pluginInstance creation
+                     pluginInstance.createToServer(function(result) {
+                        //if it's okay
+                        if (result) {
+                           notifySuccess($.t("modals.configure-plugin.pluginSuccessfullyCreated"));
+                           addPluginInstanceToDom(pluginInstance);
+                           pluginInstanceList.push(pluginInstance);
+                        }
+                     });
+                  });
+               });
+            });
+         });
+      });
    });
 </script>

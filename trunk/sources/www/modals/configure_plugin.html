@@ -22,8 +22,9 @@
 </div>
 
 <script>
-   function configurePluginInstance(pluginInstance, hasToCreate) {
+   function configurePluginInstance(pluginInstance, callback) {
       assert(pluginInstance !== undefined, "pluginInstance must be defined");
+      assert(callback !== undefined, "callback must be defined");
 
       var $modalBody = $("div#configure-plugin-modal .modal-body");
       $modalBody.empty();
@@ -50,61 +51,11 @@
             pluginInstance.configuration = configMgr.getCurrentConfiguration();
 
             console.debug("End of Plugin Configuration : " + JSON.stringify(pluginInstance));
-            if (!isNullOrUndefined(hasToCreate)) {
-               //it's a plugin creation
-               $.ajax({
-                  type: "POST",
-                  url: "/rest/plugin",
-                  data: JSON.stringify({ name: pluginInstance.name, pluginName: pluginInstance.pluginName, configuration: pluginInstance.configuration, enabled: pluginInstance.enabled}),
-                  contentType: "application/json; charset=utf-8",
-                  dataType: "json"
-               })
-                       .done(function(data) {
-                          //we parse the json answer
-                          if (data.result != "true")
-                          {
-                             notifyError($.t("modals.configure-plugin.errorDuringCreatingPlugin"), JSON.stringify(data));
-                             return;
-                          }
 
-                          notifySuccess($.t("modals.configure-plugin.pluginSuccessfullyCreated"));
-                          //we add the plugin dynamically given by the server and not own to be ok with the server in case of difference
-                          var pi = new PluginInstance(data.data.id, data.data.name, data.data.pluginName, data.data.configuration, data.data.enabled);
-                          addPluginInstanceToDom(pi);
-                          pluginInstanceList.push(pi);
-                       })
-                       .fail(function() {notifyError($.t("modals.configure-plugin.errorDuringCreatingPlugin"));})
-                       .always(function() {
-                          $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
-                          $modalBody.empty();
-                          $("div#configure-plugin-modal").modal("hide");
-                       });
-            }
-            else {
-               //it's a plugin configuration
-               $.ajax({
-                  type: "PUT",
-                  url: "/rest/plugin/" + pluginInstance.id,
-                  data: JSON.stringify(pluginInstance),
-                  contentType: "application/json; charset=utf-8",
-                  dataType: "json"
-               })
-               .done(function(data) {
-                 //we parse the json answer
-                 if (data.result != "true")
-                 {
-                    notifyError($.t("modals.configure-plugin.errorDuringModifyingPlugin"), JSON.stringify(data));
-                    return;
-                 }
-                 //it's okay nothing to do
-               })
-               .fail(function() {notifyError($.t("modals.configure-widget.errorDuringModifyingPlugin"));})
-               .always(function() {
-                 $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
-                 $modalBody.empty();
-                 $("div#configure-plugin-modal").modal("hide");
-               });
-            }
+            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
+            $modalBody.empty();
+            $("div#configure-plugin-modal").modal("hide");
+            callback();
          },
          filter: function() {
             //we check only control that have class enable-validation and are visible
