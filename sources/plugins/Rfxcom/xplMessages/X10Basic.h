@@ -3,6 +3,7 @@
 #include "IXplMessage.h"
 #include "../rfxcomMessages/RFXtrxDefinitions.h"
 #include <shared/xpl/XplMessage.h>
+#include "../ISequenceNumberProvider.h"
 
 
 namespace xplMessages
@@ -19,6 +20,13 @@ namespace xplMessages
       /// \param [in] xplMessage       The Xpl message to transmit
       //--------------------------------------------------------------
       CXplMsgX10Basic(const shared::xpl::CXplMessage& xplMessage);
+
+      //--------------------------------------------------------------
+      /// \brief	Constructor from the XPL message
+      /// \param [in] xplMessage          The Xpl message to transmit
+      /// \param [in] seqNumberProvider    
+      //--------------------------------------------------------------
+      CXplMsgX10Basic(const shared::xpl::CXplMessage& xplMessage, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -56,6 +64,8 @@ namespace xplMessages
       /// \brief	The XPl message
       //--------------------------------------------------------------
       const shared::xpl::CXplMessage& m_xplMessage;
+
+      boost::shared_ptr<ISequenceNumberProvider> m_seqNumberProvider;
    };
 
 } // namespace xplMessages
