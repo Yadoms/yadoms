@@ -734,8 +734,11 @@ function tabClick(pageId) {
 function periodicUpdateTask() {
    //we first check if the server is online and only if it answer to the eventLog new messages
    //to do that we ask event message
-   $.getJSON("/rest/eventLogger/from/" + LastEventLogId)
-      .done(function(data) {
+   $.ajax({
+      url:"/rest/eventLogger/from/" + LastEventLogId,
+      dataType:"json",
+      timeout: 3000
+   }).done(function(data) {
          //if we were offline we go back to online status
          if (!serverIsOnline) {
             serverIsOnline = true;
@@ -774,8 +777,8 @@ function periodicUpdateTask() {
 
          //we ask for widget's devices
          updateWidgets();
-      })
-      .fail(function() {
+     })
+     .fail(function() {
          if (serverIsOnline)
          {
             //we indicate that server has passed offline
@@ -786,7 +789,7 @@ function periodicUpdateTask() {
             widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateIntervalInOfflineMode);
          }
          //if we are again offline there is nothing to do
-      });
+     });
 }
 
 function updateWidgets() {
