@@ -107,7 +107,7 @@ PluginInstanceManager.createToServer = function(pluginInstance, callback) {
    $.ajax({
       type: "POST",
       url: "/rest/plugin",
-      data: JSON.stringify({ name: pluginInstance.name, pluginName: pluginInstance.pluginName, configuration: pluginInstance.configuration, enabled: pluginInstance.enabled}),
+      data: JSON.stringify({ name: pluginInstance.name, type: pluginInstance.type, configuration: pluginInstance.configuration, autoStart: pluginInstance.autoStart}),
       contentType: "application/json; charset=utf-8",
       dataType: "json"
    })
@@ -125,9 +125,9 @@ PluginInstanceManager.createToServer = function(pluginInstance, callback) {
          //we update our information from the server
          pluginInstance.id = data.data.id;
          pluginInstance.name = data.data.name;
-         pluginInstance.pluginName = data.data.pluginName;
+         pluginInstance.type = data.data.type;
          pluginInstance.configuration = data.data.configuration;
-         pluginInstance.enabled = parseBool(data.data.enabled);
+         pluginInstance.autoStart = parseBool(data.data.autoStart);
 
          if (!isNullOrUndefined(callback))
             callback(true);
@@ -163,9 +163,9 @@ PluginInstanceManager.updateToServer = function(pluginInstance, callback) {
          //we update our information from the server
          pluginInstance.id = data.data.id;
          pluginInstance.name = data.data.name;
-         pluginInstance.pluginName = data.data.pluginName;
+         pluginInstance.type = data.data.type;
          pluginInstance.configuration = data.data.configuration;
-         pluginInstance.enabled = parseBool(data.data.enabled);
+         pluginInstance.autoStart = parseBool(data.data.autoStart);
 
          //we call the callback with true as a ok result
          if (!isNullOrUndefined(callback))
@@ -181,13 +181,13 @@ PluginInstanceManager.updateToServer = function(pluginInstance, callback) {
 
 PluginInstanceManager.downloadPackage = function(pluginInstance, callback) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
-   $.getJSON( "plugin/" + pluginInstance.pluginName + "/package.json")
+   $.getJSON( "plugin/" + pluginInstance.type + "/package.json")
       .done(function (data) {
          pluginInstance.package = data;
 
          //we manage i18n
          i18n.options.resGetPath = 'plugin/__ns__/locales/__lng__.json';
-         i18n.loadNamespace(pluginInstance.pluginName);
+         i18n.loadNamespace(pluginInstance.type);
 
          if (!isNullOrUndefined(callback))
             callback();

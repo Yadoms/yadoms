@@ -133,7 +133,7 @@
                   "name" : "Name",
                   "status" : "Status",
                   "launchAtStartup" : "Launch At Startup",
-                  "pluginName" : "Plugin type",
+                  "type" : "Plugin type",
                   "actions" : "Actions"
                },
                "enableDisable" : "Enable / Disable the plugin",
