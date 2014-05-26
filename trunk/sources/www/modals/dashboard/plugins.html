@@ -87,6 +87,8 @@
       $pluginInstanceRow.find("button.btn-configure").unbind('click').bind('click', configurePlugin(pi));
       $pluginInstanceRow.find("button.btn-delete").unbind('click').bind('click', deletePlugin(pi));
       $pluginInstanceRow.find("input.cb-autoStart").unbind('change').bind('change', autoStartChange(pi));
+
+      $("#btn-add-new-plugin").unbind("click").bind("click", addNewPlugin);
    }
 
    function startStopPlugin(pi) {
@@ -181,7 +183,7 @@
       }
    }
 
-   $("#btn-add-new-plugin").click(function() {
+   function addNewPlugin() {
       modals.pluginAdd.load(function() {
          askPluginTypes(function(pluginType) {
             var pi = new PluginInstance(null, "", pluginType, "", 1);
@@ -205,5 +207,6 @@
             });
          });
       });
-   });
+   }
+
 </script>
