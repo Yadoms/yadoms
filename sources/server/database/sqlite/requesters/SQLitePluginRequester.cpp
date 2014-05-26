@@ -25,11 +25,11 @@ namespace database { namespace sqlite { namespace requesters {
    {
       CQuery qInsert;
 
-      qInsert.InsertInto(CPluginTable::getTableName(), CPluginTable::getNameColumnName(), CPluginTable::getPluginNameColumnName(), CPluginTable::getConfigurationColumnName(), CPluginTable::getEnabledColumnName() ).
+      qInsert.InsertInto(CPluginTable::getTableName(), CPluginTable::getNameColumnName(), CPluginTable::getTypeColumnName(), CPluginTable::getConfigurationColumnName(), CPluginTable::getAutoStartColumnName() ).
          Values(newPlugin.Name(), 
-         newPlugin.PluginName(),
+         newPlugin.Type(),
          newPlugin.Configuration(), 
-         newPlugin.Enabled());
+         newPlugin.AutoStart());
 
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
@@ -39,7 +39,7 @@ namespace database { namespace sqlite { namespace requesters {
       qSelect. Select(CPluginTable::getIdColumnName()).
          From(CPluginTable::getTableName()).
          Where(CPluginTable::getNameColumnName(), CQUERY_OP_EQUAL, newPlugin.Name()).
-         And(CPluginTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, newPlugin.PluginName()).
+         And(CPluginTable::getTypeColumnName(), CQUERY_OP_EQUAL, newPlugin.Type()).
          OrderBy(CPluginTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
       database::sqlite::adapters::CSingleValueAdapter<int> adapter;
@@ -124,11 +124,11 @@ namespace database { namespace sqlite { namespace requesters {
             throw database::CDatabaseException("Failed to update configuration");
       }
       
-      //update enabled
-      if(updatedPluginData.Enabled.isDefined())
+      //update autostart
+      if(updatedPluginData.AutoStart.isDefined())
       {
          qUpdate.Clear().Update(CPluginTable::getTableName()).
-            Set(CPluginTable::getEnabledColumnName(), updatedPluginData.Enabled()).
+            Set(CPluginTable::getAutoStartColumnName(), updatedPluginData.AutoStart()).
          Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
@@ -146,12 +146,12 @@ namespace database { namespace sqlite { namespace requesters {
          throw shared::exception::CEmptyResult("No lines affected");
    }
 
-   void CSQLitePluginRequester::disableAllPluginInstances(const std::string& pluginName)
+   void CSQLitePluginRequester::disableAutoStartForAllPluginInstances(const std::string& pluginName)
    {
       CQuery qUpdate;
       qUpdate. Update(CPluginTable::getTableName()).
-         Set(CPluginTable::getEnabledColumnName(), false).
-         Where(CPluginTable::getPluginNameColumnName(), CQUERY_OP_EQUAL, pluginName);
+         Set(CPluginTable::getAutoStartColumnName(), false).
+         Where(CPluginTable::getTypeColumnName(), CQUERY_OP_EQUAL, pluginName);
 
       m_databaseRequester->queryStatement(qUpdate);
    }

@@ -75,7 +75,7 @@ void CManager::init()
    std::vector<boost::shared_ptr<database::entities::CPlugin> > databasePluginInstances = m_pluginDBTable->getInstances();
    BOOST_FOREACH(boost::shared_ptr<database::entities::CPlugin> databasePluginInstance, databasePluginInstances)
    {
-      if (databasePluginInstance->Enabled())
+      if (databasePluginInstance->AutoStart())
          startInstance(databasePluginInstance->Id());
    }
 }
@@ -273,10 +273,10 @@ void CManager::updateInstance(const database::entities::CPlugin& newData)
    m_pluginDBTable->updateInstance(newData);
 
    // Last, apply modifications
-   if (newData.Enabled.isDefined() && previousData->Enabled() != newData.Enabled())
+   if (newData.AutoStart.isDefined() && previousData->AutoStart() != newData.AutoStart())
    {
       // Enable state was updated
-      if (newData.Enabled())
+      if (newData.AutoStart())
          startInstance(newData.Id());
       else
          stopInstance(newData.Id());
@@ -313,15 +313,15 @@ void CManager::signalEvent(const CManagerEvent& event)
          }
          else
          {
-            // Not safe anymore. Disable it (user will just be able to start it manually)
+            // Not safe anymore. Disable plugin autostart mode (user will just be able to start it manually)
             // Not that this won't stop other instances of this plugin
-            YADOMS_LOG(warning) << " plugin " << event.getPluginInformation()->getName() << " was evaluated as not safe and disabled.";
-            m_pluginDBTable->disableAllPluginInstances(event.getPluginInformation()->getName());
+            YADOMS_LOG(warning) << " plugin " << event.getPluginInformation()->getName() << " was evaluated as not safe and will not start automatically anymore.";
+            m_pluginDBTable->disableAutoStartForAllPluginInstances(event.getPluginInformation()->getName());
 
             // Log this event in the main event logger
             m_mainLoggerDBTable->addEvent(database::entities::kPluginDisabled,
                event.getPluginInformation()->getIdentity(),
-               "Plugin " + event.getPluginInformation()->getIdentity() + " was evaluated as not safe and disabled.");
+               "Plugin " + event.getPluginInformation()->getIdentity() + " was evaluated as not safe and will not start automatically anymore.");
          }
 
          break;
@@ -354,7 +354,7 @@ void CManager::startInstance(int id)
    try
    {
       // Load the plugin
-      boost::shared_ptr<CFactory> plugin(loadPlugin(databasePluginInstance->PluginName()));
+      boost::shared_ptr<CFactory> plugin(loadPlugin(databasePluginInstance->Type()));
 
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded

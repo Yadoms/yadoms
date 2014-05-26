@@ -10,9 +10,9 @@ namespace sqlite {
    DECLARE_TABLE(Plugin,
       (Id)
       (Name)
-      (PluginName)
+      (Type)
       (Configuration)
-      (Enabled)
+      (AutoStart)
    )
 
    DECLARE_TABLE(Configuration,

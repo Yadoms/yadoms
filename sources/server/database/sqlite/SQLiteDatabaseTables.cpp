@@ -9,9 +9,9 @@ namespace sqlite {
    DECLARE_TABLE_COLUMN_NAMES(Plugin, "Plugin",
       ((Id)("id"))
       ((Name)("name"))
-      ((PluginName)("pluginName"))
+      ((Type)("type"))
       ((Configuration)("configuration"))
-      ((Enabled)("enabled"))
+      ((AutoStart)("auto_start"))
    )
 
    DECLARE_TABLE_COLUMN_NAMES(Configuration,  "Configuration",

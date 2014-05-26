@@ -12,9 +12,9 @@ namespace web { namespace rest { namespace json {
    DECLARE_JSON_ENTITY_IMPLEMENTATION(Plugin, "Plugin",
    ((Id)("id")JSON_INT)
       ((Name)("name")JSON_STRING)
-      ((PluginName)("pluginName")JSON_STRING)
+      ((Type)("type")JSON_STRING)
       ((Configuration)("configuration")JSON_PTREE)
-      ((Enabled)("enabled")JSON_BOOL)
+      ((AutoStart)("autoStart")JSON_BOOL)
       )
 
 

@@ -23,9 +23,9 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Configuration, " CREATE TABLE Configuration
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Plugin, "CREATE TABLE Plugin                                                 \
                                                 (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
                                                    name TEXT NOT NULL,                                            \
-                                                   pluginName TEXT NOT NULL,                                      \
+                                                   type TEXT NOT NULL,                                            \
                                                    configuration  TEXT,                                           \
-                                                   enabled  INTEGER DEFAULT 1                                     \
+                                                   auto_start  INTEGER DEFAULT 1                                   \
                                                 )")
 
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Keyword, " CREATE TABLE Keyword                                              \

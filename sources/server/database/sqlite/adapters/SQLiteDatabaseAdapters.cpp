@@ -13,9 +13,9 @@ namespace adapters {
    DECLARE_ADAPTER_IMPLEMENTATION(Plugin,
       ((Id)(int)(0))
       ((Name)(std::string)(""))
-      ((PluginName)(std::string)(""))
+      ((Type)(std::string)(""))
       ((Configuration)(std::string)(""))
-      ((Enabled)(bool)(true))
+      ((AutoStart)(bool)(true))
       )
 
    DECLARE_ADAPTER_IMPLEMENTATION(Configuration,
