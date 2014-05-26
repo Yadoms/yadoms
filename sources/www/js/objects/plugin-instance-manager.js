@@ -59,9 +59,10 @@ PluginInstanceManager.start = function(pluginInstance, callback) {
 
 PluginInstanceManager.stop = function(pluginInstance, callback) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
+
    $.ajax({
       type: "PUT",
-      url: "/rest/plugin/" + this.id + "/stop",
+      url: "/rest/plugin/" + pluginInstance.id + "/stop",
       contentType: "application/json; charset=utf-8",
       dataType: "json"
    })
