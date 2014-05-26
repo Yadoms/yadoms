@@ -113,6 +113,7 @@ namespace web { namespace rest { namespace service {
 
          pluginSystem::CManager::AvalaiblePluginMap::iterator i;
          web::rest::json::CJson result;
+         web::rest::json::CJson pluginCollection;
          for(i=pluginList.begin(); i!=pluginList.end(); ++i)
          {
             web::rest::json::CJson thisPluginData;
@@ -125,8 +126,10 @@ namespace web { namespace rest { namespace service {
             thisPluginData.put("url", i->second->getUrl());
             thisPluginData.put("version", i->second->getVersion());
 
-            result.push_back(std::make_pair("", thisPluginData));
+            pluginCollection.push_back(std::make_pair("", thisPluginData));
          }
+
+         result.add_child("plugins", pluginCollection);
          return web::rest::json::CJsonResult::GenerateSuccess(result);
       }
       catch(std::exception &ex)

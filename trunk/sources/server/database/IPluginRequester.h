@@ -45,10 +45,10 @@ namespace database {
       virtual void removeInstance(int pluginId) = 0;
 
       //--------------------------------------------------------------
-      /// \brief           Disable all instances of a plugin
+      /// \brief           Disable the AtuoStart field for all instances of a plugin
       /// \param [in] pluginName    plugin to disable
       //--------------------------------------------------------------
-      virtual void disableAllPluginInstances(const std::string& pluginName) = 0;
+      virtual void disableAutoStartForAllPluginInstances(const std::string& pluginName) = 0;
 
       //--------------------------------------------------------------
       /// \brief       Destructor

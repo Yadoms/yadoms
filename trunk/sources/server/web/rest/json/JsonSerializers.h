@@ -11,9 +11,9 @@ namespace web { namespace rest { namespace json {
    DECLARE_JSON_ENTITY_HEADER(Plugin,
       (Id)
       (Name)
-      (PluginName)
+      (Type)
       (Configuration)
-      (Enabled)
+      (AutoStart)
       )
 
    DECLARE_JSON_ENTITY_HEADER(Configuration,
