@@ -67,7 +67,7 @@
           });
 
           //event click on add plugin button
-          $("button#btn-confirm-add-plugin").bind("click", function() {
+          $("button#btn-confirm-add-plugin").unbind("click").bind("click", function() {
              //we close the new widget modal
              $("div#new-plugin-modal").modal("hide");
 
