@@ -94,12 +94,12 @@
       return function() {
          if (pi.lastRunningStatus) {
             //we ask for stop
-            pi.stop();
+            PluginInstanceManager.stop(pi);
          }
          else
          {
             //we ask for start
-            pi.start();
+            PluginInstanceManager.start(pi);
          }
          //we deactivate the button until next status will be aquired to prevent flooding
          $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("button.btn-startStop").prop('disabled', true);
@@ -110,11 +110,11 @@
       //pi represent the pluginInstance concerned
       return function() {
          //we get package.json
-         pi.downloadPackage(function() {
+         PluginInstanceManager.downloadPackage(pi, function() {
             //we ask for configuration modal async
             modals.pluginConfigure.load(function() {
                configurePluginInstance(pi, function() {
-                  pluginInstance.updateToServer(function(result) {
+                  PluginInstanceManager.updateToServer(pi, function(result) {
                   });
                });
             });
@@ -129,7 +129,7 @@
             showConfirmModal(btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.plugins.confirmPluginDeletion", {pluginName:pi.name}),
             function () {
                //deletion has been confirmed
-               pi.deleteFromServer(function() {
+               PluginInstanceManager.deleteFromServer(pi, function() {
                   //we remove pi from array
                   var i = pluginInstanceList.indexOf(pi);
                   if(i != -1) {
@@ -149,7 +149,7 @@
       return function() {
          //we set autoStart attr to cb value and send it to the server as an update
          pi.enabled = $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("input.cb-autoStart").prop("disabled", true).prop("checked");
-         pi.updateToServer(function(result) {
+         PluginInstanceManager.updateToServer(pi, function(result) {
             $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("input.cb-autoStart").prop("disabled", false).prop("checked", pi.enabled);
          });
       }
@@ -160,20 +160,16 @@
       if (serverIsOnline) {
          $.each(pluginInstanceList, function(index, value) {
             //we ask async for the status
-            value.getStatus(function (status) {
+            PluginInstanceManager.getStatus(value, function (status) {
                if (status != value.lastRunningStatus) {
                   var textStatus = "";
                   var btn;
                   var label;
                   if(status) {
-                     //$("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("span.label-status").addClass("label-success").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.running"));
-                     //$("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("button.btn-startStop").addClass("btn-danger").removeClass("btn-success").text($.t("modals.dashboard.sub-windows.plugins.stop"));
                      $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("span.label-status").addClass("label-success").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.running"));
                      $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("button.btn-startStop").addClass("btn-warning").removeClass("btn-success");
                   }
                   else {
-                     //$("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("span.label-status").addClass("label-danger").removeClass("label-success").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
-                     //$("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("button.btn-startStop").addClass("btn-success").removeClass("btn-danger").text($.t("modals.dashboard.sub-windows.plugins.start"));
                      $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("span.label-status").addClass("label-danger").removeClass("label-success").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
                      $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("button.btn-startStop").addClass("btn-success").removeClass("btn-warning");
                   }
@@ -190,18 +186,18 @@
          askPluginTypes(function(pluginType) {
             var pi = new PluginInstance(null, "", pluginType, "", 1);
             //we get package.json
-            pi.downloadPackage(function() {
+            PluginInstanceManager.downloadPackage(pi, function() {
                //we ask for configuration modal async
                modals.pluginConfigure.load(function() {
-                  //we lauch configureInstance GUI
+                  //we launch configureInstance GUI
                   configurePluginInstance(pi, function() {
                      //we ask for pluginInstance creation
-                     pluginInstance.createToServer(function(result) {
+                     PluginInstanceManager.createToServer(pi, function(result) {
                         //if it's okay
                         if (result) {
                            notifySuccess($.t("modals.configure-plugin.pluginSuccessfullyCreated"));
-                           addPluginInstanceToDom(pluginInstance);
-                           pluginInstanceList.push(pluginInstance);
+                           addPluginInstanceToDom(pi);
+                           pluginInstanceList.push(pi);
                         }
                      });
                   });
