@@ -40,17 +40,17 @@ void CFakePluginConfiguration::trace()
       YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'EnumParameter' is " << getEnumParameter();
 
       // Parameters in sections
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'MySection.SubIntParameter' is " << getValue<int>("MySection.SubIntParameter");
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'MySection.SubStringParameter' is " << getValue<std::string>("MySection.SubStringParameter");
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'MySection.SubIntParameter' is " << getValue<int>("MySection.values.SubIntParameter");
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'MySection.SubStringParameter' is " << getValue<std::string>("MySection.values.SubStringParameter");
    }
    catch (const shared::exception::CInvalidParameter& e)
    {
-      BOOST_ASSERT(false);  // Parameter is not found in configuration
       YADOMS_LOG(error) << "Parameter not found : " << e.what();
+      BOOST_ASSERT(false);  // Parameter is not found in configuration
    }
    catch (const shared::exception::COutOfRange& e)
    {
-      BOOST_ASSERT(false);  // Parameter value is out of range
       YADOMS_LOG(error) << "Parameter value out of range : " << e.what();
+      BOOST_ASSERT(false);  // Parameter value is out of range
    }
 }
