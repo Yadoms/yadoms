@@ -4,31 +4,31 @@
  * Creates an instance of Page
  * @constructor
  */
-function PluginInstance(id, name, pluginName, configuration, enabled) {
+function PluginInstance(id, name, type, configuration, autoStart) {
    assert(id !== undefined, "id of a pluginInstance must be defined");
    assert(name !== undefined, "name of a pluginInstance must be defined");
-   assert(pluginName !== undefined, "pluginName of a pluginInstance must be defined");
+   assert(type !== undefined, "type of a pluginInstance must be defined");
    assert(configuration !== undefined, "configuration of a pluginInstance must be defined");
-   assert(enabled !== undefined, "enabled of a pluginInstance must be defined");
+   assert(autoStart !== undefined, "autoStart of a pluginInstance must be defined");
 
    this.id = id;
    this.name = name;
-   this.pluginName = pluginName;
+   this.type = type;
    this.configuration = configuration;
-   this.enabled = enabled;
+   this.autoStart = autoStart;
    this.lastRunningStatus = null;
 }
 
 /**
  * Override JSON.stringify method in order to send only database columns
- * @returns {{id: *, name: *, pluginName: *, configuration: *, enabled: *}}
+ * @returns {{id: *, name: *, type: *, configuration: *, autoStart: *}}
  */
 PluginInstance.prototype.toJSON = function () {
    return {
       id : this.id,
       name: this.name,
-      pluginName: this.pluginName,
+      type: this.type,
       configuration: this.configuration,
-      enabled: this.enabled
+      autoStart: this.autoStart
    };
 };

@@ -60,8 +60,7 @@
 
           $("select#pluginTypeList").empty();
 
-          //TODO : rajouter "plugin" une fois que ce sera ajouté dans le rest
-          $.each(data.data, function(index, value) {
+          $.each(data.data.plugins, function(index, value) {
              //foreach plugin-type
              $("select#pluginTypeList").append("<option>" + value.name + "</option>");
           });

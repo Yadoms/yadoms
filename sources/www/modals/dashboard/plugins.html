@@ -5,7 +5,7 @@
    <table id="plugin-instance-list" class="table table-bordered table-striped">
       <tr>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.name"></td>
-         <td data-i18n="modals.dashboard.sub-windows.plugins.table.pluginName"></td>
+         <td data-i18n="modals.dashboard.sub-windows.plugins.table.type"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.status"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.launchAtStartup"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.actions"></td>
@@ -22,6 +22,8 @@
       //we clear pluginInstance array
       pluginInstanceList = [];
 
+      $("#btn-add-new-plugin").unbind("click").bind("click", addNewPlugin);
+
       //we dynamically ask for plugins
       $.getJSON("/rest/plugin/instances")
          .done(function (data) {
@@ -33,7 +35,7 @@
             }
             //foreach result we append a <tr>
             $.each(data.data.plugin, function(index, value) {
-               var pi = new PluginInstance(value.id, value.name, value.pluginName, value.configuration, value.enabled);
+               var pi = new PluginInstance(value.id, value.name, value.type, value.configuration, value.autoStart);
                pluginInstanceList.push(pi);
                addPluginInstanceToDom(pi);
             });
@@ -61,18 +63,18 @@
 
       var name = "<span>" + pi.name + "</span>";
 
-      var type = "<img src=\"plugin/" + pi.pluginName + "/icon.png\" class=\"img-thumbnail plugin-icon\">&nbsp;&nbsp;" +
-                  "<span>" + pi.pluginName + "</span>";
+      var type = "<img src=\"plugin/" + pi.type + "/icon.png\" class=\"img-thumbnail plugin-icon\">&nbsp;&nbsp;" +
+                  "<span>" + pi.type + "</span>";
 
       //we add it to the DOM
       var $pluginInstanceList = $("table#plugin-instance-list");
 
-      $pluginInstanceList.append("<tr plugin-id=\"" + pi.id + "\"><td class=\"plugin-name\"></td><td class=\"plugin-pluginName\"></td><td class=\"plugin-status\"></td><td class=\"plugin-autoStart\"></td><td class=\"plugin-actions\"></td></tr>");
+      $pluginInstanceList.append("<tr plugin-id=\"" + pi.id + "\"><td class=\"plugin-name\"></td><td class=\"plugin-type\"></td><td class=\"plugin-status\"></td><td class=\"plugin-autoStart\"></td><td class=\"plugin-actions\"></td></tr>");
 
       var $pluginInstanceRow = $pluginInstanceList.find("tr[plugin-id='" + pi.id + "']");
       //we fill the data
       $pluginInstanceRow.find("td.plugin-name").html(name);
-      $pluginInstanceRow.find("td.plugin-pluginName").html(type);
+      $pluginInstanceRow.find("td.plugin-type").html(type);
       $pluginInstanceRow.find("td.plugin-autoStart").html(autoStartCommand);
       $pluginInstanceRow.find("td.plugin-status").html(statusField);
 
@@ -80,15 +82,13 @@
       $pluginInstanceRow.find("td.plugin-actions").append(actionsBtns);
 
       //we set autostart value
-      $pluginInstanceRow.find("input.cb-autoStart").prop("checked",pi.enabled);
+      $pluginInstanceRow.find("input.cb-autoStart").prop("checked", pi.autoStart);
 
       //we bind event on the different actions
       $pluginInstanceRow.find("button.btn-startStop").unbind('click').bind('click', startStopPlugin(pi));
       $pluginInstanceRow.find("button.btn-configure").unbind('click').bind('click', configurePlugin(pi));
       $pluginInstanceRow.find("button.btn-delete").unbind('click').bind('click', deletePlugin(pi));
       $pluginInstanceRow.find("input.cb-autoStart").unbind('change').bind('change', autoStartChange(pi));
-
-      $("#btn-add-new-plugin").unbind("click").bind("click", addNewPlugin);
    }
 
    function startStopPlugin(pi) {
@@ -150,9 +150,9 @@
       //pi represent the pluginInstance concerned
       return function() {
          //we set autoStart attr to cb value and send it to the server as an update
-         pi.enabled = $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("input.cb-autoStart").prop("disabled", true).prop("checked");
+         pi.autoStart = $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("input.cb-autoStart").prop("disabled", true).prop("checked");
          PluginInstanceManager.updateToServer(pi, function(result) {
-            $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("input.cb-autoStart").prop("disabled", false).prop("checked", pi.enabled);
+            $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("input.cb-autoStart").prop("disabled", false).prop("checked", pi.autoStart);
          });
       }
    }
