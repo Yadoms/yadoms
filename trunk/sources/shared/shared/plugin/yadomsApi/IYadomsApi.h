@@ -45,7 +45,6 @@ Questions:
 Notes:
 SG> Mon avis sur les questions :
    1. Je suis favorable aux exceptions, plus objet, à condition que ça ne génère pas d'incompatibilité (plugin compilé avec un autre compilo que Yadoms). A tester.
-   2. Oui.
 */
 
 
@@ -83,7 +82,7 @@ public:
 
    //-----------------------------------------------------
    ///\brief Container class for device commands sent by server
-   //not yet finalized ;-)
+   //TODO not yet finalized ;-)
    //-----------------------------------------------------
    class CDeviceCommand
    {
@@ -111,7 +110,6 @@ public:
    
    //-----------------------------------------------------
    ///\brief Check if a device already exists for the server
-   ///\param    [in]    pluginInstanceId   The plugin instance id (given as doWork parameter)
    ///\param    [in]    deviceName         The device name (must be unique)
    ///\return true if the device exists, false if not
    //-----------------------------------------------------
@@ -119,7 +117,6 @@ public:
 
    //-----------------------------------------------------
    ///\brief Declare a new device
-   ///\param    [in]    pluginInstanceId   The plugin instance id (given as doWork parameter)
    ///\param    [in]    deviceName         The device name (must be unique)
    ///\param    [in]    capacities         The device capacity list
    ///\return true if the device has been successfully created, false if not
@@ -141,7 +138,6 @@ public:
    
    //-----------------------------------------------------
    ///\brief Historize a new data values
-   ///\param    [in]    pluginInstanceId   The plugin instance id (given as doWork parameter)
    ///\param    [in]    deviceName         The device name (must be unique)
    ///\param    [in]    capacity           The device capacity (temperature, rssi,...)
    ///\param    [in]    value              The capacity value
@@ -162,7 +158,7 @@ public:
    //----------------------------------------------------------------------------------------------------------------
    //----------------------------------------------------------------------------------------------------------------
    //--
-   //-- Plugin event recorder (Note SG : renommer pour éviter les confusions avec le système de log)
+   //-- Plugin event recorder
    //--
    //----------------------------------------------------------------------------------------------------------------
    //----------------------------------------------------------------------------------------------------------------
@@ -183,7 +179,6 @@ public:
    
    //-----------------------------------------------------
    ///\brief Record a plugin major event (recorded in Yadoms database)
-   ///\param    [in]    pluginInstanceId   The plugin instance id (given as doWork parameter)
    ///\param    [in]    severity           The message severity
    ///\param    [in]    message            The message
    ///\return true if the message has been successfully stored, false if not
