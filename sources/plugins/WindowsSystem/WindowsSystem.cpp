@@ -5,7 +5,8 @@
 #include <shared/xpl/XplMessage.h>
 #include <shared/xpl/XplHelper.h>
 #include <shared/event/EventTimer.h>
-#include "WindowsSystemMemoryLoad.h"
+#include "windows/WindowsSystemMemoryLoad.h"
+#include "windows/WindowsSystemCPULoad.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -13,7 +14,7 @@
 IMPLEMENT_PLUGIN(CWindowsSystem)
 
 
-CWindowsSystem::CWindowsSystem()
+   CWindowsSystem::CWindowsSystem()
 {
 }
 
@@ -47,22 +48,16 @@ void CWindowsSystem::doWork(int instanceUniqueId, const std::string& configurati
 
 
       // Register to XPL service
-            // Register to XPL service
       shared::xpl::CXplService xplService(
          XplDeviceId,                                                // XPL device ID : use to identify this plugin over the XPL network
          shared::xpl::CXplHelper::toInstanceId(instanceUniqueId),    // Use the plugin instance id (guaranteed by Yadoms to be unique among all instances of all plugins) as XPL instance id
          pluginIOService);                                           // Use the provided io service for better performance
-/*      m_xplService.reset(new shared::xpl::CXplService(
-         XplDeviceId,
-         shared::xpl::CXplHelper::toInstanceId(instanceUniqueId),
-         pluginIOService));
-*/
-      // Fake temperature sensor
-	  //TODO : Faire la charge mémoire à ce niveau
+
       CWindowsSystemMemoryLoad MemoryLoad("MemoryLoad");
+      CWindowsSystemCPULoad CPULoad("CPULoad");
 
       // Timer used to send a XPL message periodically
-      createTimer(kEvtTimerSendMessage, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(30));
+      createTimer(kEvtTimerSendMessage, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
 
       // the main loop
       YADOMS_LOG(debug) << "WindowsSystem plugin is running...";
@@ -81,31 +76,41 @@ void CWindowsSystem::doWork(int instanceUniqueId, const std::string& configurati
                // First read the memory load
                if(MemoryLoad.read())
                {
-				   // Create the message
-				   shared::xpl::CXplMessage msg(
-					  shared::xpl::CXplMessage::kXplStat,                            // Message type
-					  xplService.getActor(),                                         // Source actor (here : our fake plugin instance)
-					  shared::xpl::CXplActor::createBroadcastActor(),                // Target actor (here : the XPL logger of Yadoms)
-					  shared::xpl::CXplMessageSchemaIdentifier("sensor", "basic"));  // The message schema
+                  // Create the message
+                  shared::xpl::CXplMessage msg(
+                     shared::xpl::CXplMessage::kXplStat,                            // Message type
+                     xplService.getActor(),                                         // Source actor (here : our fake plugin instance)
+                     shared::xpl::CXplActor::createBroadcastActor(),                // Target actor (here : the XPL logger of Yadoms)
+                     shared::xpl::CXplMessageSchemaIdentifier("sensor", "basic"));  // The message schema
 
-				   // Add data to message
-				   // - Device ID
-				   msg.addToBody("device", MemoryLoad.getDeviceId());
+                  // Add data to message
+                  // - Device ID
+                  msg.addToBody("device", MemoryLoad.getDeviceId());
 
-				   // - Memory in %
-				   msg.addToBody("type", "mem");
-				   msg.addToBody("units", "%");
-				   std::ostringstream ss;
-				   ss << std::fixed << std::setprecision(2) << MemoryLoad.getMemoryLoad();
-				   msg.addToBody("current", ss.str());
-				   // Send it
-				   xplService.sendMessage(msg);
+                  // - Memory in %
+                  msg.addToBody("type", "mem");
+                  msg.addToBody("units", "%");
+                  std::ostringstream ss;
+                  std::ostringstream ss1;
 
-               YADOMS_LOG(debug) << "WindowsSystem plugin :  Send a value : " << ss.str();
-               }
-               else
-               {
-                  YADOMS_LOG(debug) << "WindowsSystem plugin :  Error Reading Value...";
+                  try
+                  {
+                     ss << std::fixed << std::setprecision(2) << MemoryLoad.getValue();
+                     msg.addToBody("current", ss.str());
+                     // Send it
+                     xplService.sendMessage(msg);
+
+                     YADOMS_LOG(debug) << "WindowsSystem plugin :  Memory Load : " << ss.str();
+
+                     ss1 << std::fixed << std::setprecision(2) << CPULoad.getValue();
+
+                     YADOMS_LOG(debug) << "WindowsSystem plugin :  CPU Load : " << ss1.str();
+                  }
+                  catch (boost::system::system_error& e)
+                  {
+                     YADOMS_LOG(error) << "WindowsSystem plugin :  Error Reading Value..." << e.what();
+                     return;
+                  }
                }
 
                break;

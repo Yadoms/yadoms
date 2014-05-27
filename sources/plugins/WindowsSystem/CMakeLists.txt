@@ -10,8 +10,11 @@ IF(WIN32)
 		stdafx.cpp
 		WindowsSystem.h
 		WindowsSystem.cpp 
-		WindowsSystemMemoryLoad.h
-		WindowsSystemMemoryLoad.cpp 
+		windows/WindowsSystemMemoryLoad.h
+		windows/WindowsSystemMemoryLoad.cpp
+		windows/WindowsSystemCPULoad.h
+		windows/WindowsSystemCPULoad.cpp
+		shared/ILoad.h
 	)
 
 	#########################################
