@@ -2,12 +2,13 @@
 
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
+#include "../shared/ILoad.h"
 
 //--------------------------------------------------------------
 /// \brief	Memory Load of the Windows System
 /// \note   return the memory load under Windows Operating System
 //--------------------------------------------------------------
-class CWindowsSystemMemoryLoad
+class CWindowsSystemMemoryLoad : public ILoad
 {
 public:
    //--------------------------------------------------------------
@@ -24,22 +25,23 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
    /// \return      true if the memory load has been read with success, other cases false
-      //--------------------------------------------------------------
+   //--------------------------------------------------------------
    bool read();
 
    //--------------------------------------------------------------
    /// \brief	    Returns the sensor device ID
    /// \return     Device ID
    //--------------------------------------------------------------
-   const std::string& getDeviceId() const;
+   virtual const std::string& getDeviceId() const;
 
    //--------------------------------------------------------------
    /// \brief	    Returns read (computed) memory load
    /// \return     Temperature in �C
    //--------------------------------------------------------------
-   double getMemoryLoad() const;
+   virtual double getValue() const;
 
 private:
+
    //--------------------------------------------------------------
    /// \brief	    Device ID
    //--------------------------------------------------------------
