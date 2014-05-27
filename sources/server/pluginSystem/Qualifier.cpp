@@ -58,7 +58,7 @@ void CQualifier::AddEventToDatabase(const boost::shared_ptr<const shared::plugin
          eventType,
          reason);
 
-      // Only crashs have to be logged in the main event logger table
+      // Only crashes have to be logged in the main event logger table
       if (eventType == database::entities::kCrash)
          m_mainLogger->addEvent(database::entities::kPluginCrash, "plugin " + pluginInformation->getIdentity(), reason);
    }
