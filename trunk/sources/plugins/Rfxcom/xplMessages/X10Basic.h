@@ -24,7 +24,7 @@ namespace xplMessages
       //--------------------------------------------------------------
       /// \brief	Constructor from the XPL message
       /// \param [in] xplMessage          The Xpl message to transmit
-      /// \param [in] seqNumberProvider    
+      /// \param [in] seqNumberProvider   The sequence number provider
       //--------------------------------------------------------------
       CXplMsgX10Basic(const shared::xpl::CXplMessage& xplMessage, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider);
 
@@ -65,6 +65,9 @@ namespace xplMessages
       //--------------------------------------------------------------
       const shared::xpl::CXplMessage& m_xplMessage;
 
+      //--------------------------------------------------------------
+      /// \brief	The sequence number provider
+      //--------------------------------------------------------------
       boost::shared_ptr<ISequenceNumberProvider> m_seqNumberProvider;
    };
 

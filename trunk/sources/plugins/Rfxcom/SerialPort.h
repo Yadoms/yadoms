@@ -38,8 +38,10 @@ public:
    virtual bool isConnected() const;
    virtual void subscribeConnectionState(boost::shared_ptr<shared::event::CEventHandler> forEventHandler, int forId);
    virtual void subscribeReceiveData(boost::shared_ptr<shared::event::CEventHandler> forEventHandler, int forId);
-   virtual void send(const std::string& message);
+   virtual void flush();
    virtual void send(const boost::asio::const_buffer& buffer);
+   virtual void asyncSend(const boost::asio::const_buffer& buffer);
+   virtual void receive(boost::asio::mutable_buffer& buffer);
    // [END] IPort Implementation
 
 protected:

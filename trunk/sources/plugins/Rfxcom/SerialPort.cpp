@@ -2,6 +2,7 @@
 #include "SerialPort.h"
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
+#include "PortException.hpp"
 
 
 const boost::posix_time::time_duration CSerialPort::ConnectRetryDelay(boost::posix_time::minutes(1));
@@ -84,6 +85,11 @@ void CSerialPort::subscribeReceiveData(boost::shared_ptr<shared::event::CEventHa
    m_receiveDataSubscription.subscribe(forEventHandler, forId);
 }
 
+void CSerialPort::flush()
+{
+   //TODO
+}
+
 void CSerialPort::tryConnect()
 {
    BOOST_ASSERT_MSG(!isConnected(), "Already connected");
@@ -134,13 +140,6 @@ void CSerialPort::readCompleted(const boost::system::error_code& error, std::siz
    startRead();
 }
 
-void CSerialPort::send(const std::string& message)
-{
-   // Start an asynchronous write and call write_complete when it completes or fails 
-   async_write_some(boost::asio::buffer(message), 
-      boost::bind(&CSerialPort::writeCompleted, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
-}
-
 void CSerialPort::send(const boost::asio::const_buffer& buffer)
 {
    try
@@ -157,7 +156,18 @@ void CSerialPort::send(const boost::asio::const_buffer& buffer)
       }
 
       m_connectionStateSubscription.notify(false);
+
+      throw CPortException(
+         (e.code() == boost::asio::error::eof) ? CPortException::kConnectionClosed : CPortException::kConnectionError,
+         e.what());
    }
+}
+
+void CSerialPort::asyncSend(const boost::asio::const_buffer& buffer)
+{
+   // Start an asynchronous write and call write_complete when it completes or fails 
+   async_write_some(boost::asio::buffer(buffer), 
+      boost::bind(&CSerialPort::writeCompleted, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 }
 
 void CSerialPort::writeCompleted(const boost::system::error_code& error, std::size_t bytesTransferred)
@@ -176,5 +186,28 @@ void CSerialPort::writeCompleted(const boost::system::error_code& error, std::si
    }
 
    // Write OK
+}
+
+void CSerialPort::receive(boost::asio::mutable_buffer& buffer)
+{
+   try
+   {
+      read_some(boost::asio::mutable_buffers_1(buffer));
+   }
+   catch (boost::system::system_error& e)
+   {
+      // boost::asio::error::eof is the normal stop
+      if (e.code() != boost::asio::error::eof)
+      {
+         YADOMS_LOG(error) << "Serial port read error : " << e.what();
+         disconnect();
+      }
+
+      m_connectionStateSubscription.notify(false);
+
+      throw CPortException(
+         (e.code() == boost::asio::error::eof) ? CPortException::kConnectionClosed : CPortException::kConnectionError,
+         e.what());
+   }
 }
 

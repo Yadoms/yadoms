@@ -13,6 +13,7 @@ set(RFXCOM_SOURCES
    ISequenceNumberProvider.h
    ITransceiver.h
    NullSequenceNumber.h
+   PortException.hpp
    rfxcomMessages/IRfxcomMessage.h
    rfxcomMessages/Lighting1.h
    rfxcomMessages/Lighting1.cpp

@@ -35,6 +35,12 @@ protected:
    void sendCommand(unsigned char command);
 
    //--------------------------------------------------------------
+   /// \brief	                     Wait for the status answer from RFXCom
+   /// \return                      true if status received, false if error
+   //--------------------------------------------------------------
+   bool waitStatus();
+
+   //--------------------------------------------------------------
    /// \brief	                     Adapt a buffer to be loggable
    /// \param [in] ptr              Buffer pointer
    /// \param [in] sier             Buffer size
@@ -49,6 +55,19 @@ protected:
    //--------------------------------------------------------------
    boost::shared_ptr<rfxcomMessages::IRfxcomMessage> createRfxcomMessage(const shared::xpl::CXplMessage& xplMessage) const;
 
+   //--------------------------------------------------------------
+   /// \brief	                     Get the RFXCom type as string
+   /// \param [in] rfxcomType       The raw coded value
+   /// \return                      RFXCom type as string
+   //--------------------------------------------------------------
+   static const std::string rfxcomTypeToString(const unsigned char rfxcomType);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Trace the RFXCom configured protocols
+   /// \param [in] rbuf             The raw received message (must be IRESPONSE subtype)
+   //--------------------------------------------------------------
+   static void TraceRfxComConfiguredProtocols(const RBUF& rbuf);
+
 private:
    //--------------------------------------------------------------
    /// \brief  The communication port
@@ -61,9 +80,14 @@ private:
    boost::shared_ptr<ISequenceNumberProvider> m_seqNumberProvider;
 
    //--------------------------------------------------------------
-   /// \brief  The message structure (keep here for better performance)
+   /// \brief  The request structure (keep here for better performance)
    //--------------------------------------------------------------
    RBUF m_request;
+
+   //--------------------------------------------------------------
+   /// \brief  The answer structure (keep here for better performance)
+   //--------------------------------------------------------------
+   RBUF m_answer;
 };
 
 
