@@ -150,6 +150,8 @@ set(YADOMS_SRC
 	server/pluginSystem/Factory.cpp
 	server/pluginSystem/IQualifier.h
 	server/pluginSystem/InvalidPluginException.hpp
+   server/pluginSystem/YadomsApiImplementation.h
+   server/pluginSystem/YadomsApiImplementation.cpp
   
 	server/startupOptions/MustExistPathOption.hpp
 	server/startupOptions/ValidIpAddressOption.hpp

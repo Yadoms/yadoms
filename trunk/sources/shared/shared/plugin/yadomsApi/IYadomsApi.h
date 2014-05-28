@@ -1,8 +1,9 @@
 #pragma once
-#include <shared/Export.h>
 #include "Capacity.h"
+#include <shared/event/EventHandler.hpp>
 
 /*
+TODO nettoyer tous ces commentaires en français
 Besoins des widgets
 
 	1. Lister les devices qui fournissent une donnée (température, hygro,...)
@@ -81,8 +82,8 @@ namespace shared { namespace plugin { namespace yadomsApi
          //-----------------------------------------------------
          ///\brief The plugin receive an event from Yadoms
          //-----------------------------------------------------
-         kEvtUpdateConfiguration = kUserFirstId,      // Yadoms notify the plugin that its configuration was changed
-         kDeviceCommand                               // Yadoms send a command to a device managed by this plugin
+         kEvtUpdateConfiguration = shared::event::kUserFirstId,   // Yadoms notify the plugin that its configuration was changed
+         kDeviceCommand                                           // Yadoms send a command to a device managed by this plugin
       };
 
       //-----------------------------------------------------
