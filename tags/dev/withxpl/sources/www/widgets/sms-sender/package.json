@@ -1,0 +1,29 @@
+{
+   "name": "sms-sender",
+   "description": "A widget that send SMS",
+   "version": "0.1",
+   "author": "yadoms team",
+   "url" : "http://www.yadoms.com/wiki/widgets/sms-sender.html",
+   "dimensions": {
+      "min": {
+         "x": 3,
+         "y": 1
+      },
+      "max": {
+         "x": 6,
+         "y": 1
+      },
+      "default": {
+         "x": 3,
+         "y": 1
+      }
+   },
+   "configurationSchema": {
+      "device" : {
+         "name" : "Phone",
+         "description" : "Device used to send SMS",
+         "type" : "device",
+         "expectedKeyword" : "from"
+      }
+   }
+}

@@ -1,0 +1,24 @@
+.smsSenderWidget {
+    width: 100%;
+    text-align: center;
+    margin: auto;
+}
+
+.sendSmsText{
+    text-align: left;
+}
+
+.to {
+   width: 20%;
+   line-height: 2em;
+}
+
+.body {
+    width: 60%;
+   line-height: 2em;
+}
+
+.btn {
+    resize: none;
+}
+

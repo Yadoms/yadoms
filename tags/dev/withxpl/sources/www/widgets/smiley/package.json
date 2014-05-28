@@ -1,0 +1,17 @@
+{
+   "name": "smiley",
+   "description": "A widget that display a smiley",
+   "version": "0.1",
+   "author": "yadoms team",
+   "url" : "http://www.yadoms.com/wiki/widgets/smiley.html",
+   "dimensions": {
+      "min": {
+         "x": 1,
+         "y": 1
+      },
+      "default": {
+         "x": 1,
+         "y": 1
+      }
+   }
+}
