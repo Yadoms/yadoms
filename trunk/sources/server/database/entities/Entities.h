@@ -134,14 +134,37 @@ namespace entities {
       ((Value)(std::string)(""))
    )
 
+   
+   enum ECapacityAccessMode
+   {
+      kNoAccess = 0, 
+      kRead = 1, 
+      kWrite = 2,
+      kReadWrite = 3
+   };
+
+   DECLARE_ENTITY_CLASS(Capacity,
+      ((Id)(int)(0))
+      ((Name)(std::string)(""))
+      )
+
+   DECLARE_ENTITY_CLASS(InterDeviceCapacity,
+      ((DeviceId)(int)(0))
+      ((CapacityId)(int)(0))
+      ((AccessMode)(database::entities::ECapacityAccessMode)(database::entities::kNoAccess))
+      )
 
    DECLARE_ENTITY_CLASS(Device,
       ((Id)(int)(0))
-      ((Address)(std::string)(""))
-      ((Protocol)(std::string)(""))
-      ((HardwareIdentifier)(std::string)(""))
+      ((PluginId)(int)(0))
       ((Name)(std::string)(""))
+      ((FriendlyName)(std::string)(""))
+      ((CapacityList)( std::vector< CCapacity > )(std::vector< CCapacity >() ))
       )
+
+
+
+
 
 } //namespace entities
 } //namespace database

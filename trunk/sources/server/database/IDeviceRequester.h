@@ -17,25 +17,23 @@ namespace database {
       virtual boost::shared_ptr<entities::CDevice> getDevice(int deviceId) = 0;
 
       //--------------------------------------------------------------
-      /// \brief                          Get a device identified by (adress, protocol and hardware).
-      /// \param [in] address             The device address  (i.e. : temp2 0x1234)
-      /// \param [in] protocol            The device commuinication protocol (i.e. : ac.basic)
-      /// \param [in] hardwareIdentifier   The hardware identifier (i.e. : rfxcomlan-0112312)
+      /// \brief                          Get a device identified by (pluginId and name).
+      /// \param [in] pluginId            The pluginId
+      /// \param [in] name                The device name (plugin internal name)
       /// \return                         The device found (null if not found)
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CDevice> getDevice(const std::string & address, const std::string & protocol, const std::string & hardwareIdentifier) = 0;
+      virtual boost::shared_ptr<entities::CDevice> getDevice(const int pluginId, const std::string & name) = 0;
 
       //--------------------------------------------------------------
-      /// \brief                          Create a device identified by (adress, protocol and hardware).
-      /// \param [in] address             The device address  (i.e. : temp2 0x1234)
-      /// \param [in] protocol            The device commuinication protocol (i.e. : ac.basic)
-      /// \param [in] hardwareIdentifier  The hardware identifier (i.e. : rfxcomlan-0112312)
-      /// \param [in] hardwareIdentifier  The device user friendly name (if empty, device address is used)
+      /// \brief                          Create a device identified by (pluginId and name).
+      /// \param [in] pluginId            The pluginId
+      /// \param [in] name                The device name (plugin internal name)
+      /// \param [in] friendlyName        The user friendly device name
       /// \return                         The device created (null if creation failed)
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CDevice> createDevice(const std::string & address, const std::string & protocol, const std::string & hardwareIdentifier, const std::string & name) = 0;
+      virtual boost::shared_ptr<entities::CDevice> createDevice(int pluginId, const std::string & name, const std::string & friendlyName) = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all devices
@@ -43,32 +41,7 @@ namespace database {
       //--------------------------------------------------------------
       virtual std::vector<boost::shared_ptr<entities::CDevice> > getDevices() = 0;
 
-      //--------------------------------------------------------------
-      /// \brief           List all devices which supports the keyword
-      /// \param [in]      keyword   The keyword to check
-      /// \return          List of devices which supports the keyword
-      /// \throw           shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevicesMatchingKeyword(const std::string & keyword) = 0;
-
-
-      //--------------------------------------------------------------
-      /// \brief           List all devices which supports an Xpl protocol
-      /// \param [in]      protocol   The protocol to check
-      /// \return          List of devices which supports the protocol
-      /// \throw           shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevicesMatchingProtocol(const std::string & protocol) = 0;
-      
-      //--------------------------------------------------------------
-      /// \brief           List all devices which supports an Xpl protocol with a keyword
-      /// \param [in]      protocol   The protocol to check
-      /// \param [in]      keyword   The keyword to check
-      /// \return          List of devices which supports the protocol with the keyword
-      /// \throw           shared::exception::CEmptyResult if fails
-      //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDevicesMatchingProtocolWithKeyword(const std::string & protocol, const std::string & keyword) = 0;
-      
+     
       //--------------------------------------------------------------
       /// \brief                 Get the device last data
       /// \param [in] deviceId   Device Id
@@ -86,12 +59,6 @@ namespace database {
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
       virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string>  > getDeviceData(int deviceId, const std::string & keyword,  boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo ) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief            Get all device hardwares
-      /// \return           List of hardwares known by yadoms
-      //--------------------------------------------------------------
-      virtual std::vector< std::string > getDeviceHardwares() = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove device 

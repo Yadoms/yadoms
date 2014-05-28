@@ -23,6 +23,8 @@ namespace adapters {
    DECLARE_ADAPTER_HEADER(EventLogger)
    DECLARE_ADAPTER_HEADER(Message)
    DECLARE_ADAPTER_HEADER(MessageContent)
+   DECLARE_ADAPTER_HEADER(Capacity)
+   DECLARE_ADAPTER_HEADER(InterDeviceCapacity)
    DECLARE_ADAPTER_HEADER(Device)
    
 } //namespace adapters

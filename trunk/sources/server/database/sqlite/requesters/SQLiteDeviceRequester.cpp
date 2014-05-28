@@ -41,15 +41,14 @@ namespace database {  namespace sqlite { namespace requesters {
       }
    }
 
-   boost::shared_ptr<entities::CDevice> CSQLiteDeviceRequester::getDevice(const std::string & address, const std::string & protocol, const std::string & hardwareIdentifier)
+   boost::shared_ptr<entities::CDevice> CSQLiteDeviceRequester::getDevice(const int pluginId, const std::string & name)
    {
       //serach for sucgh a device
       CQuery qSelect;
       qSelect. Select().
          From(CDeviceTable::getTableName()).
-         Where(CDeviceTable::getAddressColumnName(), CQUERY_OP_EQUAL, address).
-         And(CDeviceTable::getProtocolColumnName(), CQUERY_OP_EQUAL, protocol).
-         And(CDeviceTable::getHardwareIdentifierColumnName(), CQUERY_OP_EQUAL, hardwareIdentifier);
+         Where(CDeviceTable::getPluginIdColumnName(), CQUERY_OP_EQUAL, pluginId).
+         And(CDeviceTable::getNameColumnName(), CQUERY_OP_EQUAL, name);
 
       database::sqlite::adapters::CDeviceAdapter adapter;
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
@@ -61,9 +60,9 @@ namespace database {  namespace sqlite { namespace requesters {
       return boost::shared_ptr<entities::CDevice>();
    }
 
-   boost::shared_ptr<entities::CDevice> CSQLiteDeviceRequester::createDevice(const std::string & address, const std::string & protocol, const std::string & hardwareIdentifier, const std::string & name /*= shared::CStringExtension::EmptyString*/)
+   boost::shared_ptr<entities::CDevice> CSQLiteDeviceRequester::createDevice(int pluginId, const std::string & name, const std::string & friendlyName)
    {
-      if(getDevice(address, protocol, hardwareIdentifier))
+      if(getDevice(pluginId, name))
       {
          throw shared::exception::CEmptyResult("The device already exists, cannot create it a new time");
       }
@@ -72,19 +71,19 @@ namespace database {  namespace sqlite { namespace requesters {
          //device not found, creation is enabled
 
          //get a good name
-         std::string realName = name;
-         if(realName == shared::CStringExtension::EmptyString)
-            realName = address;
+         std::string realFriendlyName = friendlyName;
+         if(realFriendlyName == shared::CStringExtension::EmptyString)
+            realFriendlyName = name;
 
          //insert in db
          CQuery qInsert;
-         qInsert. InsertInto(CDeviceTable::getTableName(), CDeviceTable::getAddressColumnName(), CDeviceTable::getProtocolColumnName(), CDeviceTable::getNameColumnName(), CDeviceTable::getHardwareIdentifierColumnName()).
-            Values(address, protocol, realName, hardwareIdentifier);
+         qInsert. InsertInto(CDeviceTable::getTableName(), CDeviceTable::getPluginIdColumnName(), CDeviceTable::getNameColumnName(), CDeviceTable::getFriendlyNameColumnName()).
+            Values(pluginId, name, realFriendlyName);
          if(m_databaseRequester->queryStatement(qInsert) <= 0)
             throw shared::exception::CEmptyResult("Fail to insert new device");
 
          //device is created, just find it in table and return entity
-         boost::shared_ptr<entities::CDevice> deviceCreated = getDevice(address, protocol, hardwareIdentifier);
+         boost::shared_ptr<entities::CDevice> deviceCreated = getDevice(pluginId, name);
          if(deviceCreated)
          {
             return deviceCreated;
@@ -109,68 +108,6 @@ namespace database {  namespace sqlite { namespace requesters {
    }
 
 
-
-   std::vector<boost::shared_ptr<database::entities::CDevice> > CSQLiteDeviceRequester::getDevicesMatchingKeyword(const std::string & keyword)
-   {
-      //sous requetes qui filtre les deviceID
-      CQuery subquery;
-      subquery.Select(CQUERY_DISTINCT(CKeywordTable::getDeviceIdColumnName())).
-         From(CKeywordTable::getTableName()).
-         Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
-
-      //requete qui lit les deviceId filtrés
-      CQuery qSelect;
-      qSelect. Select().
-         From(CDeviceTable::getTableName()).
-         Where(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, subquery) ;
-
-      database::sqlite::adapters::CDeviceAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
-      return adapter.getResults();
-   }
-
-   std::vector<boost::shared_ptr<database::entities::CDevice> > CSQLiteDeviceRequester::getDevicesMatchingProtocol(const std::string & protocol)
-   {
-      //requete qui lit les deviceId filtrés
-      CQuery qSelect;
-      qSelect. Select().
-         From(CDeviceTable::getTableName()).
-         Where(CDeviceTable::getProtocolColumnName(), CQUERY_OP_EQUAL, protocol) ;
-
-      database::sqlite::adapters::CDeviceAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
-      return adapter.getResults();
-   }
-
-   std::vector<boost::shared_ptr<database::entities::CDevice> > CSQLiteDeviceRequester::getDevicesMatchingProtocolWithKeyword(const std::string & protocol, const std::string & keyword)
-   {
-      //sous requetes qui filtre les deviceID
-      CQuery subquery;
-      subquery.Select(CQUERY_DISTINCT(CKeywordTable::getDeviceIdColumnName())).
-         From(CKeywordTable::getTableName()).
-         Where(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
-
-      //requete qui lit les deviceId filtrés
-      CQuery qSelect;
-      qSelect. Select().
-         From(CDeviceTable::getTableName()).
-         Where(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, subquery).
-         And(CDeviceTable::getProtocolColumnName(), CQUERY_OP_EQUAL, protocol);
-
-      database::sqlite::adapters::CDeviceAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
-      return adapter.getResults();
-   }
-
-
-
-   /*
-   SELECT date, key, value
-   from Message, MessageContent
-   where MessageContent.idMessage = Message.id
-   and deviceId = 2
-   group by key
-   */
 
    std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string>  > CSQLiteDeviceRequester::getDeviceLastData(int deviceId)
    {
@@ -212,20 +149,6 @@ namespace database {  namespace sqlite { namespace requesters {
       database::sqlite::adapters::CMultipleValueAdapter<boost::posix_time::ptime, std::string> mva;
       m_databaseRequester->queryEntities(&mva, qSelect);
       return mva.getResults();
-   }
-
-
-   std::vector< std::string > CSQLiteDeviceRequester::getDeviceHardwares()
-   {
-      //sous requetes qui filtre les deviceID
-      CQuery qSelect;
-      qSelect.Select(CQUERY_DISTINCT(CDeviceTable::getHardwareIdentifierColumnName())).
-         From(CDeviceTable::getTableName()).
-         OrderBy(CDeviceTable::getHardwareIdentifierColumnName());
-
-      database::sqlite::adapters::CSingleValueAdapter<std::string> sva;
-      m_databaseRequester->queryEntities(&sva, qSelect);
-      return sva.getResults();
    }
 
 

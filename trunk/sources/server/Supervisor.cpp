@@ -8,7 +8,6 @@
 #include "web/webem/WebServer.h"
 #include "web/WebServerManager.h"
 #include <shared/xpl/XplHub.h>
-#include "communication/XplGateway.h"
 #include "web/rest/service/PluginRestService.h"
 #include "web/rest/service/DeviceRestService.h"
 #include "web/rest/service/PageRestService.h"
@@ -23,6 +22,8 @@
 #include "task/Scheduler.h"
 #include "task/update/Plugin.h"
 #include "task/backup/Database.h"
+#include "communication/PluginGateway.h"
+
 
 CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
    :CThreadBase("Supervisor"), m_startupOptions(startupOptions)
@@ -61,8 +62,8 @@ void CSupervisor::doWork()
       }
 
       // Start Xpl Logger
-      communication::CXplGateway xplGateway(pDataProvider);
-      xplGateway.start();
+      communication::CPluginGateway pluginGateway(pDataProvider);
+      pluginGateway.start();
 
       // Start Plugin manager
       boost::shared_ptr<pluginSystem::CManager> pluginManager = pluginSystem::CManager::newManager(
@@ -82,7 +83,7 @@ void CSupervisor::doWork()
       if(restHanlder.get() != NULL)
       {
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginRestService(pDataProvider, pluginManager)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDeviceRestService(pDataProvider, xplGateway)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDeviceRestService(pDataProvider, pluginGateway)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPageRestService(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CWidgetRestService(pDataProvider, webServerPath)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfigurationRestService(pDataProvider)));
@@ -130,8 +131,6 @@ void CSupervisor::doWork()
       if(pluginManager.get() != NULL)
          pluginManager->stop();
 
-      //stop xpl logger
-      xplGateway.stop();
 
       //stop xpl hub
       if(hub.get() != NULL)

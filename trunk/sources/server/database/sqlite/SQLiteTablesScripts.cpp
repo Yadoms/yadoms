@@ -100,11 +100,27 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(MessageContent,    "CREATE TABLE MessageCon
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Device, "  CREATE TABLE Device                                               \
                                                 (                                                                 \
                                                    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
-                                                   address TEXT NOT NULL,                                         \
-                                                   protocol TEXT NOT NULL,                                        \
-                                                   hardwareIdentifier TEXT NOT NULL,                              \
+                                                   pluginId INTEGER NOT NULL,                                     \
+                                                   name TEXT NOT NULL,                                            \
+                                                   friendlyName TEXT NOT NULL                                     \
+                                                )")
+
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(Capacity, "CREATE TABLE Capacity                                             \
+                                                (                                                                 \
+                                                   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
                                                    name TEXT NOT NULL                                             \
                                                 )")
+
+
+
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(InterDeviceCapacity, "CREATE TABLE InterDeviceCapacity                       \
+                                                           (                                                      \
+                                                               idDevice INTEGER NOT NULL,                         \
+                                                               idCapacity INTEGER NOT NULL,                       \
+                                                               accessMode INTEGER NOT NULL,                       \
+                                                               PRIMARY KEY(idDevice,idCapacity)                   \
+)                                                            )")
+
 
 
       } //namespace sqlite

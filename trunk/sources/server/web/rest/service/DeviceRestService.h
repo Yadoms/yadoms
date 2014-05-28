@@ -4,7 +4,6 @@
 #include "database/IDataProvider.h"
 #include <shared/event/EventHandler.hpp>
 #include "communication/ISendMessageEventHandler.h"
-#include "communication/rules/RulerFactory.h"
 
 namespace web { namespace rest { namespace service {
 
@@ -33,16 +32,6 @@ namespace web { namespace rest { namespace service {
       web::rest::json::CJson getAllDevices(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
 
       //-----------------------------------------
-      ///\brief   get all devices which support a given xpl protocol
-      //-----------------------------------------
-      web::rest::json::CJson getDeviceWhichSupportProtocol(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
-
-      //-----------------------------------------
-      ///\brief   get all devices which support a given xpl protocol and keyword
-      //-----------------------------------------
-      web::rest::json::CJson getDeviceWhichSupportProtocolAndKeyword(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
-
-      //-----------------------------------------
       ///\brief   get the last data for each keyword supported by a device
       //-----------------------------------------
       web::rest::json::CJson getLastDeviceData(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
@@ -51,21 +40,6 @@ namespace web { namespace rest { namespace service {
       ///\brief   send a command to a device
       //-----------------------------------------
       web::rest::json::CJson sendDeviceCommand(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
-
-      //-----------------------------------------
-      ///\brief   get device hardwares
-      //-----------------------------------------
-      web::rest::json::CJson getDeviceHardwares(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
-
-      //-----------------------------------------
-      ///\brief   get the protocols handled by hardwares
-      //-----------------------------------------
-      web::rest::json::CJson getDeviceHardwareProtocols(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
-
-      //-----------------------------------------
-      ///\brief   generate a virtual device
-      //-----------------------------------------
-      web::rest::json::CJson generateVirtualDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
 
       //-----------------------------------------
       ///\brief   create a device in database
@@ -102,11 +76,6 @@ namespace web { namespace rest { namespace service {
       ///\brief   The send message interface
       //-----------------------------------------
       communication::ISendMessageAsync & m_messageSender;
-
-      //-----------------------------------------
-      ///\brief   A device rule factory
-      //-----------------------------------------
-      communication::rules::CRulerFactory m_deviceRules;
    };
 
 

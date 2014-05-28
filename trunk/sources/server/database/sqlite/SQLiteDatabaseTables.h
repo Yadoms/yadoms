@@ -85,13 +85,26 @@ namespace sqlite {
       (Value)
    )   
    
-   DECLARE_TABLE(Device,
+   DECLARE_TABLE(Capacity,
       (Id)
-      (Address)
-      (Protocol)
-      (HardwareIdentifier)
       (Name)
    )
+
+   DECLARE_TABLE(InterDeviceCapacity,
+      (DeviceId)
+      (CapacityId)
+      (AccessMode)
+   )
+
+
+   DECLARE_TABLE(Device,
+      (Id)
+      (PluginId)
+      (Name)
+      (FriendlyName)
+   )
+
+
 } //namespace sqlite
 } //namespace database 
 

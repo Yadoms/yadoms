@@ -29,13 +29,7 @@ namespace web { namespace rest { namespace json {
       ((LastModificationDate)("last_modification_date")JSON_DATE)
       )
 
-      DECLARE_JSON_ENTITY_IMPLEMENTATION(Device,  "Device",
-   ((Id)("id")JSON_INT)
-      ((Address)("address")JSON_STRING)
-      ((Protocol)("protocol")JSON_STRING)
-      ((Name)("name")JSON_STRING)
-      ((HardwareIdentifier)("hardwareIdentifier")JSON_STRING)
-      )
+
 
 
       DECLARE_JSON_ENTITY_IMPLEMENTATION(Keyword,  "Keyword",
@@ -82,6 +76,24 @@ namespace web { namespace rest { namespace json {
       ((Code)("code")JSON_ENUM(database::entities::ESystemEventCode))
       ((Who)("who")JSON_STRING)
       ((What)("what")JSON_STRING)
+      )
+
+      DECLARE_JSON_ENTITY_IMPLEMENTATION(Capacity,  "Capacity",
+         ((Id)("id")JSON_INT)
+         ((Name)("name")JSON_STRING)
+      )
+
+      DECLARE_JSON_ENTITY_IMPLEMENTATION(InterDeviceCapacity,  "InterDeviceCapacity",
+         ((DeviceId)("idDevice")JSON_INT)
+         ((CapacityId)("idCapacity")JSON_INT)
+         ((AccessMode)("accessMode")JSON_ENUM(database::entities::ECapacityAccessMode))
+      )
+
+      DECLARE_JSON_ENTITY_IMPLEMENTATION(Device,  "Device",
+         ((Id)("id")JSON_INT)
+         ((PluginId)("pluginId")JSON_INT)
+         ((Name)("name")JSON_STRING)
+         ((FriendlyName)("friendlyName")JSON_STRING)
       )
 
 

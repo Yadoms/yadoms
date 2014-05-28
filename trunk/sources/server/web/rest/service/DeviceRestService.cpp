@@ -33,15 +33,10 @@ namespace web { namespace rest { namespace service {
    {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CDeviceRestService::getAllDevices);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CDeviceRestService::getOneDevice);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("matchprotocol")("*"), CDeviceRestService::getDeviceWhichSupportProtocol);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("matchprotocol")("*")("*"), CDeviceRestService::getDeviceWhichSupportProtocolAndKeyword);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("lastdata"), CDeviceRestService::getLastDeviceData);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("data")("*"), CDeviceRestService::getDeviceData); //get all keyword data
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("data")("*")("*"), CDeviceRestService::getDeviceData); //get keyword data from date
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("data")("*")("*")("*"), CDeviceRestService::getDeviceData); //get keyword data between two dates
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("hardwares"), CDeviceRestService::getDeviceHardwares);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("hardwares")("*")("protocols"), CDeviceRestService::getDeviceHardwareProtocols);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("generate")("*")("*"), CDeviceRestService::generateVirtualDevice);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST",  (m_restKeyword)("*")("command"), CDeviceRestService::sendDeviceCommand, CDeviceRestService::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST",  (m_restKeyword), CDeviceRestService::createDevice, CDeviceRestService::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE",  (m_restKeyword)("*"), CDeviceRestService::deleteDevice, CDeviceRestService::transactionalMethod);
@@ -64,44 +59,6 @@ namespace web { namespace rest { namespace service {
       std::vector< boost::shared_ptr<database::entities::CDevice> > dvList = m_dataProvider->getDeviceRequester()->getDevices();
       return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CDevice>::SerializeCollection(dvList, hes, getRestKeyword()));
    }
-
-
-   web::rest::json::CJson CDeviceRestService::getDeviceWhichSupportProtocol(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
-   {
-      std::string protocol = "";
-      if(parameters.size()>2)
-      {
-         protocol = parameters[2];
-         web::rest::json::CDeviceEntitySerializer hes;
-         std::vector< boost::shared_ptr<database::entities::CDevice> > dvList = m_dataProvider->getDeviceRequester()->getDevicesMatchingProtocol(protocol);
-         return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CDevice>::SerializeCollection(dvList, hes, getRestKeyword()));
-      }
-      else
-      {
-         return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive protocol in url");
-      }
-   }
-
-
-   web::rest::json::CJson CDeviceRestService::getDeviceWhichSupportProtocolAndKeyword(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
-   {
-      std::string protocol = "";
-      std::string keyword = "";
-      if(parameters.size()>3)
-      {
-         protocol = parameters[2];
-         keyword = parameters[3];
-         web::rest::json::CDeviceEntitySerializer hes;
-         std::vector< boost::shared_ptr<database::entities::CDevice> > dvList = m_dataProvider->getDeviceRequester()->getDevicesMatchingProtocolWithKeyword(protocol, keyword);
-         return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CDevice>::SerializeCollection(dvList, hes, getRestKeyword()));
-      }
-      else
-      {
-         return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive protocol and keyword in url");
-      }
-   }
-
-
 
    web::rest::json::CJson CDeviceRestService::getLastDeviceData(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
@@ -194,89 +151,13 @@ namespace web { namespace rest { namespace service {
    }
 
 
-
-   web::rest::json::CJson CDeviceRestService::getDeviceHardwares(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
-   {
-      try
-      {
-         std::vector<std::string> allHardwares = m_dataProvider->getDeviceRequester()->getDeviceHardwares();
-         web::rest::json::CJson objectList = web::rest::json::CJsonCollectionSerializer<std::string>::SerializeCollection(allHardwares, "");
-         return web::rest::json::CJsonResult::GenerateSuccess(objectList);
-      }
-      catch(std::exception &ex)
-      {
-         return web::rest::json::CJsonResult::GenerateError(ex);
-      }
-      catch(...)
-      {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in getting available device hardwares");
-      }
-   }
-
-   web::rest::json::CJson CDeviceRestService::getDeviceHardwareProtocols(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
-   {
-      try
-      {
-         if(parameters.size()>1)
-         {
-            //get hardware id from URL
-            std::string hardwareId = parameters[2];
-
-            std::vector<std::string> allProtocols =  m_deviceRules.getHardwareProtocols(hardwareId);
-            web::rest::json::CJson objectList = web::rest::json::CJsonCollectionSerializer<std::string>::SerializeCollection(allProtocols, "");
-            return web::rest::json::CJsonResult::GenerateSuccess(objectList);
-         }
-         else
-         {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive hardware identifier in url");
-         }
-      }
-      catch(std::exception &ex)
-      {
-         return web::rest::json::CJsonResult::GenerateError(ex);
-      }
-      catch(...)
-      {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in getting hardware protocols");
-      }
-   }
-
-   web::rest::json::CJson CDeviceRestService::generateVirtualDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
-   {
-      try
-      {
-         if(parameters.size()>2)
-         {
-            //get hardware id from URL
-            std::string hardwareId = parameters[2];
-            std::string protocolId = parameters[3];
-
-            web::rest::json::CJson result;
-            result.put_value(m_deviceRules.generateVirtualDeviceIdentifier(hardwareId, protocolId));
-            return web::rest::json::CJsonResult::GenerateSuccess(result);
-         }
-         else
-         {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive hardware identifier and protocol identifier in url");
-         }
-      }
-      catch(std::exception &ex)
-      {
-         return web::rest::json::CJsonResult::GenerateError(ex);
-      }
-      catch(...)
-      {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in generating a virtual device");
-      }
-   }
-
    web::rest::json::CJson CDeviceRestService::createDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
       try
       {
          web::rest::json::CDeviceEntitySerializer des;
          boost::shared_ptr<database::entities::CDevice> deviceToAdd = des.deserialize(requestContent);
-         boost::shared_ptr<database::entities::CDevice> deviceFound = m_dataProvider->getDeviceRequester()->createDevice(deviceToAdd->Address(), deviceToAdd->Protocol(), deviceToAdd->HardwareIdentifier(), deviceToAdd->Name());
+         boost::shared_ptr<database::entities::CDevice> deviceFound = m_dataProvider->getDeviceRequester()->createDevice(deviceToAdd->PluginId(), deviceToAdd->Name(), deviceToAdd->FriendlyName());
          return web::rest::json::CJsonResult::GenerateSuccess(des.serialize(*deviceFound.get()));
       }
       catch(std::exception &ex)
