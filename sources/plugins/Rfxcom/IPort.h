@@ -49,16 +49,30 @@ public:
    virtual void subscribeReceiveData(boost::shared_ptr<shared::event::CEventHandler> forEventHandler, int forId) = 0;
 
    //--------------------------------------------------------------
-   /// \brief	                  Send a string message on the port
-   /// \param [in] message       The message to send
+   /// \brief	                  Flush the input buffer
+   /// \note This function flush the input buffer, and erase pending received data events
    //--------------------------------------------------------------
-   virtual void send(const std::string& message) = 0;//TODO à garder ?
+   virtual void flush() = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	                  Send a buffer on the port (synchronously)
+   /// \param [in] buffer        The buffer to send
+   /// \throw                    CPortException if error
+   //--------------------------------------------------------------
+   virtual void send(const boost::asio::const_buffer& buffer) = 0;
 
    //--------------------------------------------------------------
    /// \brief	                  Send a string message on the port
    /// \param [in] buffer        The buffer to send
    //--------------------------------------------------------------
-   virtual void send(const boost::asio::const_buffer& buffer) = 0;
+   virtual void asyncSend(const boost::asio::const_buffer& buffer) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	                  Receive a buffer from the port (synchronously)
+   /// \param [in] buffer        The buffer to fill with received data
+   /// \throw                    CPortException if error
+   //--------------------------------------------------------------
+   virtual void receive(boost::asio::mutable_buffer& buffer) = 0;
 };
 
 

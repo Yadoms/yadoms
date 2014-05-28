@@ -23,7 +23,8 @@ CSmsDialer::~CSmsDialer()
 // Event IDs
 enum
 {
-   kEvtXplMessage = shared::event::kUserFirstId,   // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtXplMessagePowerPhone = shared::event::kUserFirstId,   // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtXplMessageSendSms,
    kEvtUpdateConfiguration,
    kEvtTimerTryToConnectToPhone,
    kEvtTimerCheckForIncommingSms
@@ -52,25 +53,8 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
          shared::xpl::CXplHelper::toInstanceId(instanceUniqueId),
          pluginIOService));
 
-      // Configure 2 XPL filters to receive only the 2 SMS supported commands //TODO ajouter le message de power ON/OFF
-      m_xplService->subscribeForMessages(                   // message.sms
-         "xpl-cmnd",
-         m_xplService->getActor().getVendorId(),
-         shared::xpl::CXplHelper::WildcardString,
-         m_xplService->getActor().getInstanceId(),
-         "message",
-         "sms",
-         this,
-         kEvtXplMessage);
-      m_xplService->subscribeForMessages(                   // sendmsg.basic
-         "xpl-cmnd",
-         m_xplService->getActor().getVendorId(),
-         shared::xpl::CXplHelper::WildcardString,
-         m_xplService->getActor().getInstanceId(),
-         "message",
-         "sms",
-         this,
-         kEvtXplMessage);
+      // Configure the XPL filters (for incomming XPL messages)
+      configureXplFilters();
 
       // the main loop
       YADOMS_LOG(debug) << "CSmsDialer is running...";
@@ -93,8 +77,8 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
          }
          else
          {
-            // Announce the xplDevices
-            xplAnnounceDevices();
+            // Declare the XPL devices
+            xplDeclareDevices();
 
             processConnectedState();
          }
@@ -108,7 +92,7 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
 
 void CSmsDialer::processNotConnectedState()
 {
-   YADOMS_LOG(info) << "Phone is not connected"  << std::endl;
+   YADOMS_LOG(info) << "Phone is not connected"  << std::endl;//TODO notifier Yadoms
 
    m_incommingSmsPollTimer->stop();
    m_connectionTimer->start();
@@ -120,7 +104,8 @@ void CSmsDialer::processNotConnectedState()
          // Wait for an event
          switch(waitForEvents())
          {
-         case kEvtXplMessage:
+         case kEvtXplMessageSendSms:
+         case kEvtXplMessagePowerPhone:
             {
                // Ignore all XPL message
                break;
@@ -169,7 +154,7 @@ void CSmsDialer::processNotConnectedState()
 
 void CSmsDialer::processConnectedState()
 {
-   YADOMS_LOG(info) << "Phone is connected"  << std::endl;
+   YADOMS_LOG(info) << "Phone is connected"  << std::endl;//TODO notifier Yadoms
 
    m_connectionTimer->stop();
 
@@ -189,10 +174,16 @@ void CSmsDialer::processConnectedState()
          // Wait for an event
          switch(waitForEvents())
          {
-         case kEvtXplMessage:
+         case kEvtXplMessagePowerPhone:
             {
                // Xpl message was received
-               onXplMessageReceived(getEventData<shared::xpl::CXplMessage>());
+               onPowerPhoneXplRequest(getEventData<shared::xpl::CXplMessage>());
+               break;
+            }
+         case kEvtXplMessageSendSms:
+            {
+               // Xpl message was received
+               onSendSmsXplRequest(getEventData<shared::xpl::CXplMessage>());
                break;
             }
          case kEvtUpdateConfiguration:
@@ -243,7 +234,32 @@ void CSmsDialer::updateConfiguration(const std::string& configuration)
    sendEvent<std::string>(kEvtUpdateConfiguration, configuration);
 }
 
-void CSmsDialer::onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage)
+void CSmsDialer::onPowerPhoneXplRequest(const shared::xpl::CXplMessage& xplMessage)
+{
+   YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
+
+   BOOST_ASSERT_MSG(xplMessage.getMessageSchemaIdentifier().getClassId() == "control" && xplMessage.getMessageSchemaIdentifier().getTypeId() == "basic",
+      "Filter doesn't work, messages must be control.basic");
+   BOOST_ASSERT_MSG(xplMessage.getBodyValue("device") == m_phone->getUniqueId(), "Device ID is not correct");
+   BOOST_ASSERT_MSG(xplMessage.getBodyValue("type") == "output", "type value is not supported");
+   BOOST_ASSERT_MSG(xplMessage.getBodyValue("current") != "HIGH" && xplMessage.getBodyValue("content") != "LOW", "current value is not supported");
+
+   try
+   {
+      m_phone->powerOn(xplMessage.getBodyValue("current") == "HIGH");
+      xplSendPhonePowerState(m_phone->isOn());
+   }
+   catch (shared::xpl::CXplException& e)
+   {
+      YADOMS_LOG(error) << "Can not send SMS, the XPL message is invalid : " << e.what();
+   }
+   catch (CPhoneException& e)
+   {
+      YADOMS_LOG(error) << "Fail to power ON/OFF the phone : " << e.what();
+   }
+}
+
+void CSmsDialer::onSendSmsXplRequest(const shared::xpl::CXplMessage& xplMessage)
 {
    YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
 
@@ -297,17 +313,58 @@ void CSmsDialer::processIncommingSMS()
    }
 }
 
-void CSmsDialer::xplAnnounceDevices() const
+void CSmsDialer::configureXplFilters()
+{
+   // The plugin uses 2 devices :
+   // - the first used to power ON/OFF the phone
+   // - the second to send/receive SMS
+
+   // Subscribe to messages to power ON/OFF the phone
+   m_xplService->subscribeForMessages(                   // control.basic
+      "xpl-cmnd",
+      m_xplService->getActor().getVendorId(),
+      shared::xpl::CXplHelper::WildcardString,
+      m_xplService->getActor().getInstanceId(),
+      "control",
+      "basic",
+      this,
+      kEvtXplMessagePowerPhone);
+
+   // Subscribe to messages to send SMS
+   // Here we support 2 messages types :
+   // - the first is our specific XPL shema (message.sms)
+   // - the seconf is the standard XPl message (sendmsg.basic)
+   m_xplService->subscribeForMessages(                   // message.sms
+      "xpl-cmnd",
+      m_xplService->getActor().getVendorId(),
+      shared::xpl::CXplHelper::WildcardString,
+      m_xplService->getActor().getInstanceId(),
+      "message",
+      "sms",
+      this,
+      kEvtXplMessageSendSms);
+   m_xplService->subscribeForMessages(                   // sendmsg.basic
+      "xpl-cmnd",
+      m_xplService->getActor().getVendorId(),
+      shared::xpl::CXplHelper::WildcardString,
+      m_xplService->getActor().getInstanceId(),
+      "message",
+      "sms",
+      this,
+      kEvtXplMessageSendSms);
+}
+
+void CSmsDialer::xplDeclareDevices() const
 {
    // Announce devices only if phone is known
    if (m_phone->getUniqueId().empty())
       return;
 
-   xplAnnounceMainDevice();
-   xplAnnounceOnOffDevice();
+   xplDeclareMainDevice();
+   xplDeclareOnOffDevice();
 }
 
-void CSmsDialer::xplAnnounceMainDevice() const
+void CSmsDialer::xplDeclareMainDevice() const
 {
    shared::xpl::CXplMessage msg(
       shared::xpl::CXplMessage::kXplStat,                            // Message type
@@ -323,9 +380,36 @@ void CSmsDialer::xplAnnounceMainDevice() const
    m_xplService->sendMessage(msg);
 }
 
-void CSmsDialer::xplAnnounceOnOffDevice() const
+void CSmsDialer::xplDeclareOnOffDevice() const
 {
-   //TODO à faire
+   // To announce device, just send its state
+   xplSendPhonePowerState(m_phone->isOn());
+}
+
+void CSmsDialer::xplSendPhonePowerState(bool on) const
+{
+   // Send XPl message only if phone is known
+   if (m_phone->getUniqueId().empty())
+      return;
+
+   shared::xpl::CXplMessage msg(
+      shared::xpl::CXplMessage::kXplStat,                            // Message type
+      m_xplService->getActor(),                                      // Source actor (here : our plugin instance)
+      shared::xpl::CXplActor::createBroadcastActor(),                // Target actor (here : the XPL logger of Yadoms)
+      shared::xpl::CXplMessageSchemaIdentifier("sensor", "basic"));  // The message schema
+
+   // Add data to message
+   // - Device ID
+   msg.addToBody("device", m_phone->getUniqueId());
+
+   // - Type
+   msg.addToBody("type", "output");
+
+   // - Current value
+   msg.addToBody("current", m_phone->isOn() ? "HIGH" : "LOW");
+
+   // Send it
+   m_xplService->sendMessage(msg);
 }
 
 void CSmsDialer::xplSendAck(bool ok, const std::string& sourceMsg) const

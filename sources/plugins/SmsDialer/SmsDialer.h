@@ -39,10 +39,16 @@ protected:
    void processConnectedState();
 
    //--------------------------------------------------------------
-   /// \brief	                     Called when an XPL message is received
-   /// \param [in] xplMessage       The received message
+   /// \brief	                     Called when a power on/off request is received from XPL
+   /// \param [in] xplMessage       The xpl request
    //--------------------------------------------------------------
-   void onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage);
+   void onPowerPhoneXplRequest(const shared::xpl::CXplMessage& xplMessage);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Called when a Send SMS request is received from XPL
+   /// \param [in] xplMessage       The xpl request
+   //--------------------------------------------------------------
+   void onSendSmsXplRequest(const shared::xpl::CXplMessage& xplMessage);
 
    //--------------------------------------------------------------
    /// \brief	                     Check if incoming SMS and process it
@@ -50,19 +56,30 @@ protected:
    void processIncommingSMS();
 
    //--------------------------------------------------------------
+   /// \brief                       Configure the XPL filters (messages to be received by the plugin)
+   //--------------------------------------------------------------
+   void configureXplFilters();
+
+   //--------------------------------------------------------------
    /// \brief                       Announce the XPL devices associated with the phone
    //--------------------------------------------------------------
-   void xplAnnounceDevices() const;
+   void xplDeclareDevices() const;
 
    //--------------------------------------------------------------
    /// \brief	                     Announce the main device (used to send/receive SMS)
    //--------------------------------------------------------------
-   void xplAnnounceMainDevice() const;
+   void xplDeclareMainDevice() const;
 
    //--------------------------------------------------------------
    /// \brief	                     Announce the on/off device (a switch type device used to power on/off the phone)
    //--------------------------------------------------------------
-   void xplAnnounceOnOffDevice() const;
+   void xplDeclareOnOffDevice() const;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Send the phone power state to XPL network
+   /// \param [in] on               true if poser is on
+   //--------------------------------------------------------------
+   void xplSendPhonePowerState(bool on) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Send the acknowledge to XPL network
