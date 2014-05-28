@@ -90,13 +90,26 @@ namespace adapters {
       ((Value)(std::string)(""))
    )
 
-   DECLARE_ADAPTER_IMPLEMENTATION(Device,
+
+   DECLARE_ADAPTER_IMPLEMENTATION(Capacity,
       ((Id)(int)(0))
-      ((Address)(std::string)(""))
-      ((Protocol)(std::string)(""))
-      ((HardwareIdentifier)(std::string)(""))
       ((Name)(std::string)(""))
       )
+
+   DECLARE_ADAPTER_IMPLEMENTATION(InterDeviceCapacity,
+      ((DeviceId)(int)(0))
+      ((CapacityId)(int)(0))
+      ((AccessMode)(database::entities::ECapacityAccessMode)(database::entities::kNoAccess)(int))
+      )
+
+   DECLARE_ADAPTER_IMPLEMENTATION(Device,
+      ((Id)(int)(0))
+      ((PluginId)(int)(0))
+      ((Name)(std::string)(""))
+      ((FriendlyName)(std::string)(""))
+      )
+
+
 
 
 

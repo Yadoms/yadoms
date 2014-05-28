@@ -237,9 +237,9 @@ set(YADOMS_SRC
 	server/task/update/Yadoms.cpp
 	server/task/backup/Database.h
 	server/task/backup/Database.cpp
-	
-	server/communication/XplGateway.h
-	server/communication/XplGateway.cpp	
+
+ 	server/communication/PluginGateway.h
+ 	server/communication/PluginGateway.cpp	
 	server/communication/ISendMessageEventHandler.h
 	server/communication/command/DeviceCommand.h
 	server/communication/command/DeviceCommand.cpp	
@@ -247,38 +247,7 @@ set(YADOMS_SRC
 	server/communication/command/Result.cpp	
 	server/communication/command/Callback.h
 	server/communication/command/Callback.cpp	
-	server/communication/rules/IRule.h
-	server/communication/rules/ICommandRule.h
-	server/communication/rules/IProtocol.h
-	server/communication/rules/Protocol.h
-	server/communication/rules/KeywordManager.h
-	server/communication/rules/KeywordManager.cpp
-	server/communication/rules/IDeviceManager.h
-	server/communication/rules/DeviceIdentifier.h
-	server/communication/rules/DeviceIdentifier.cpp
-	server/communication/rules/RuleInstanceManager.hpp
-	server/communication/rules/RulerFactory.h
-	server/communication/rules/RulerFactory.cpp
-	server/communication/rules/standard/DeviceManager.h
-	server/communication/rules/standard/DeviceManager.cpp
-	server/communication/rules/standard/X10Basic.h
-	server/communication/rules/standard/X10Basic.cpp
-	server/communication/rules/standard/SensorBasic.h
-	server/communication/rules/standard/SensorBasic.cpp
-	server/communication/rules/extensions/DeviceManager.h
-	server/communication/rules/extensions/DeviceManager.cpp
-	server/communication/rules/extensions/MessageSms.h
-	server/communication/rules/extensions/MessageSms.cpp
-	server/communication/rules/rfxLanXpl/DeviceManager.h
-	server/communication/rules/rfxLanXpl/DeviceManager.cpp
-	server/communication/rules/rfxLanXpl/AcBasic.h
-	server/communication/rules/rfxLanXpl/AcBasic.cpp
-	server/communication/rules/rfxLanXpl/SensorBasic.h
-	server/communication/rules/rfxLanXpl/SensorBasic.cpp
-	server/communication/rules/rfxLanXpl/X10Basic.h
-	server/communication/rules/rfxLanXpl/X10Basic.cpp
-	
-	
+
 )
 
 # Project folders
@@ -296,10 +265,6 @@ source_group(server\\task\\update  server/task/update/*.*)
 source_group(server\\task\\backup  server/task/backup/*.*)
 source_group(server\\communication  server/communication/*.*)
 source_group(server\\communication\\command  server/communication/command/*.*)
-source_group(server\\communication\\rules  server/communication/rules/*.*)
-source_group(server\\communication\\rules\\standard  server/communication/rules/standard/*.*)
-source_group(server\\communication\\rules\\extensions  server/communication/rules/extensions/*.*)
-source_group(server\\communication\\rules\\rfxLanXpl  server/communication/rules/rfxLanXpl/*.*)
 
 # Tools
 set(YADOMS_SRC ${YADOMS_SRC}

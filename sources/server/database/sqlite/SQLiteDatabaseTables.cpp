@@ -87,12 +87,22 @@ namespace sqlite {
       ((Value)("value"))
    )
 
-      DECLARE_TABLE_COLUMN_NAMES(Device,  "Device",
+   DECLARE_TABLE_COLUMN_NAMES(Capacity,  "Capacity",
       ((Id)("id"))
-      ((Address)("address"))
-      ((Protocol)("protocol"))
-      ((HardwareIdentifier)("hardwareIdentifier"))
       ((Name)("name"))
+   )
+
+   DECLARE_TABLE_COLUMN_NAMES(InterDeviceCapacity,  "InterDeviceCapacity",
+      ((DeviceId)("idDevice"))
+      ((CapacityId)("idCapacity"))
+      ((AccessMode)("accessMode"))
+   )
+
+   DECLARE_TABLE_COLUMN_NAMES(Device,  "Device",
+      ((Id)("id"))
+      ((PluginId)("pluginId"))
+      ((Name)("name"))
+      ((FriendlyName)("friendlyName"))
    )
 
 

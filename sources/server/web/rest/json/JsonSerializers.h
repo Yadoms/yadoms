@@ -26,13 +26,6 @@ namespace web { namespace rest { namespace json {
       (LastModificationDate)
       )
 
-   DECLARE_JSON_ENTITY_HEADER(Device,
-      (Id)
-      (Address)
-      (Protocol)
-      (Name)
-      (HardwareIdentifier)
-      )
 
 
    DECLARE_JSON_ENTITY_HEADER(Keyword,
@@ -80,6 +73,25 @@ namespace web { namespace rest { namespace json {
       (Code)
       (Who)
       (What)
+   )
+
+
+   DECLARE_JSON_ENTITY_HEADER(Capacity,
+      (Id)
+      (Name)
+   )
+
+   DECLARE_JSON_ENTITY_HEADER(InterDeviceCapacity,
+      (DeviceId)
+      (CapacityId)
+      (AccessMode)
+   )
+
+   DECLARE_JSON_ENTITY_HEADER(Device,
+      (Id)
+      (PluginId)
+      (Name)
+      (FriendlyName)
    )
 
 
