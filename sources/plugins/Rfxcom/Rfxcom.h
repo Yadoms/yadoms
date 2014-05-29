@@ -45,6 +45,11 @@ protected:
    //--------------------------------------------------------------
    void processRfxcomUnConnectionEvent();
 
+   //--------------------------------------------------------------
+   /// \brief	                     Log event in Yadoms
+   //--------------------------------------------------------------
+   void LogEvent(const std::string& reason);
+
 private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration

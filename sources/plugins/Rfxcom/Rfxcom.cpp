@@ -4,6 +4,7 @@
 #include <shared/xpl/XplMessage.h>
 #include <shared/xpl/XplHelper.h>
 #include <shared/xpl/XplException.h>
+#include <shared/exception/EmptyResult.hpp>
 #include "RfxcomFactory.h"
 
 IMPLEMENT_PLUGIN(CRfxcom)
@@ -140,7 +141,7 @@ void CRfxcom::onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage)
 void CRfxcom::processRfxcomConnectionEvent()
 {
    YADOMS_LOG(debug) << "RFXCom is now connected";
-   //TODO envoyer une notification ? Utiliser IEventLoggerRequester
+   LogEvent("RFXCom is now connected");
 
    BOOST_ASSERT_MSG(!m_transceiver, "RFXCom was already connected");
    m_transceiver.reset();
@@ -154,9 +155,27 @@ void CRfxcom::processRfxcomConnectionEvent()
 void CRfxcom::processRfxcomUnConnectionEvent()
 {
    YADOMS_LOG(debug) << "RFXCom connection was lost";
+   LogEvent("RFXCom connection was lost");
 
    m_transceiver.reset();
-
-   //TODO envoyer une notification
 }
 
+void CRfxcom::LogEvent(const std::string& reason)
+{
+   try
+   {
+      // Add event into plugin event logger table
+      //TODO 
+      //m_pluginLogger->addEvent(
+      //   getInformation().getName(),
+      //   getInformation().getVersion(),
+      //   getInformation().getReleaseType(),
+      //   kInfo,
+      //   reason);
+   }
+   catch (shared::exception::CEmptyResult& e)
+   {
+      // Just log the error
+      YADOMS_LOG(error) << "Error when adding plugin event in database : " << e.what();
+   }
+}
