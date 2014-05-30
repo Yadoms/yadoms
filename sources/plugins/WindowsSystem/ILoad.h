@@ -1,11 +1,8 @@
 #pragma once
 
-//#include <boost/random/mersenne_twister.hpp>
-//#include <boost/random/uniform_int_distribution.hpp>
-
 //--------------------------------------------------------------
 /// \brief	Interface Load definition
-/// \note   return the load in poucentage for all system information
+/// \note   return the load in pourcentage of a value
 //--------------------------------------------------------------
 class ILoad
 {
@@ -22,9 +19,9 @@ public:
    virtual const std::string& getDeviceId() const = 0;
 
    //--------------------------------------------------------------
-   /// \brief	    Returns read (computed) memory load
-   /// \return     Temperature in ?C
+   /// \brief	    Returns read (computed) load value
+   /// \return     value in pourcentage
    //--------------------------------------------------------------
-   virtual double getValue() const = 0;
+   virtual double getValue() = 0;
 };
 

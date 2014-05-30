@@ -5,16 +5,20 @@
 #include <shared/xpl/XplMessage.h>
 #include <shared/xpl/XplHelper.h>
 #include <shared/event/EventTimer.h>
-#include "windows/WindowsSystemMemoryLoad.h"
-#include "windows/WindowsSystemCPULoad.h"
+#include "WindowsSystemMemoryLoad.h"
+#include "WindowsSystemCPULoad.h"
+#include "WindowsSystemYadomsCPULoad.h"
+#include "WindowsSystemDiskUsage.h"
+#include "WindowsSystemDisksList.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
 // This macro also defines the static PluginInformations value that can be used by plugin to get information values
+
 IMPLEMENT_PLUGIN(CWindowsSystem)
 
 
-   CWindowsSystem::CWindowsSystem()
+CWindowsSystem::CWindowsSystem()
 {
 }
 
@@ -55,6 +59,8 @@ void CWindowsSystem::doWork(int instanceUniqueId, const std::string& configurati
 
       CWindowsSystemMemoryLoad MemoryLoad("MemoryLoad");
       CWindowsSystemCPULoad CPULoad("CPULoad");
+      CWindowsSystemYadomsCPULoad YadomsCPULoad("YadomsCPULoad");
+      CWindowsSystemDisksList DisksList("DiskList");
 
       // Timer used to send a XPL message periodically
       createTimer(kEvtTimerSendMessage, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
@@ -73,9 +79,6 @@ void CWindowsSystem::doWork(int instanceUniqueId, const std::string& configurati
 
                YADOMS_LOG(debug) << "WindowsSystem plugin :  Read a value...";
 
-               // First read the memory load
-               if(MemoryLoad.read())
-               {
                   // Create the message
                   shared::xpl::CXplMessage msg(
                      shared::xpl::CXplMessage::kXplStat,                            // Message type
@@ -92,6 +95,8 @@ void CWindowsSystem::doWork(int instanceUniqueId, const std::string& configurati
                   msg.addToBody("units", "%");
                   std::ostringstream ss;
                   std::ostringstream ss1;
+                  std::ostringstream ss2;
+                  std::ostringstream ss3;
 
                   try
                   {
@@ -105,13 +110,30 @@ void CWindowsSystem::doWork(int instanceUniqueId, const std::string& configurati
                      ss1 << std::fixed << std::setprecision(2) << CPULoad.getValue();
 
                      YADOMS_LOG(debug) << "WindowsSystem plugin :  CPU Load : " << ss1.str();
+
+                     ss2 << std::fixed << std::setprecision(2) << YadomsCPULoad.getValue();
+
+                     YADOMS_LOG(debug) << "WindowsSystem plugin :  Yadoms CPU Load : " << ss2.str();
+
+                     std::vector<std::string>::const_iterator DisksListIterator;
+                     std::vector<std::string> TempList;
+                     
+                     TempList = DisksList.getList();
+
+                     for(DisksListIterator=TempList.begin(); DisksListIterator!=TempList.end(); DisksListIterator++)
+	                  {
+                        CWindowsSystemDiskUsage DiskUsage("DiskUsage", *DisksListIterator);
+
+                        ss3 << std::fixed << std::setprecision(2) << DiskUsage.getValue();
+
+                        YADOMS_LOG(debug) << "WindowsSystem plugin :  Yadoms Disk Usage " << *DisksListIterator << " :" << ss3.str();
+                     }
                   }
                   catch (boost::system::system_error& e)
                   {
-                     YADOMS_LOG(error) << "WindowsSystem plugin :  Error Reading Value..." << e.what();
+                     YADOMS_LOG(error) << "WindowsSystem plugin :  Exception" << e.what();
                      return;
                   }
-               }
 
                break;
             }
