@@ -1,32 +1,25 @@
 #pragma once
 
-#include <boost/random/mersenne_twister.hpp>
-#include <boost/random/uniform_int_distribution.hpp>
-#include "../shared/ILoad.h"
+//#include <boost/random/mersenne_twister.hpp>
+//#include <boost/random/uniform_int_distribution.hpp>
 
 //--------------------------------------------------------------
-/// \brief	Memory Load of the Windows System
-/// \note   return the memory load under Windows Operating System
+/// \brief	CPU Load of the Windows System
+/// \note   return the list of availables disks with Windows Operating System
 //--------------------------------------------------------------
-class CWindowsSystemMemoryLoad : public ILoad
+class CWindowsSystemDisksList
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] deviceId    The device ID
    //--------------------------------------------------------------
-   CWindowsSystemMemoryLoad(const std::string & deviceId);
+   CWindowsSystemDisksList(const std::string & deviceId);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CWindowsSystemMemoryLoad();
-
-   //--------------------------------------------------------------
-   /// \brief	    Make a sensor read (compute new values)
-   /// \return      true if the memory load has been read with success, other cases false
-   //--------------------------------------------------------------
-   bool read();
+   virtual ~CWindowsSystemDisksList();
 
    //--------------------------------------------------------------
    /// \brief	    Returns the sensor device ID
@@ -35,10 +28,10 @@ public:
    virtual const std::string& getDeviceId() const;
 
    //--------------------------------------------------------------
-   /// \brief	    Returns read (computed) memory load
+   /// \brief	    Returns read (computed) CPU load
    /// \return     Temperature in �C
    //--------------------------------------------------------------
-   virtual double getValue() const;
+   std::vector<std::string>& getList();
 
 private:
 
@@ -50,6 +43,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Memory Load in %
    //--------------------------------------------------------------
-   double m_memoryLoad;
+   std::vector<std::string> DrivesList;
 };
 
