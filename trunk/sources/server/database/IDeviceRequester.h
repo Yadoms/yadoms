@@ -68,6 +68,13 @@ namespace database {
       virtual void removeDevice(int deviceId) = 0;
 
       //--------------------------------------------------------------
+      /// \Brief		      Get all the capacities of a device
+      /// \param [in/out]	device: the device
+      /// \return          The list of capacities
+      //--------------------------------------------------------------
+      virtual std::vector< entities::CDeviceCapacity > GetDeviceCapacities(entities::CDevice & device) = 0;
+
+      //--------------------------------------------------------------
       /// \brief       Destructor
       //--------------------------------------------------------------
       virtual ~IDeviceRequester()

@@ -22,6 +22,36 @@ namespace database {  namespace sqlite { namespace requesters {
    }
 
 
+   std::vector< database::entities::CDeviceCapacity > CSQLiteDeviceRequester::GetDeviceCapacities(entities::CDevice & device)
+   {
+      //clear device capacities
+      std::vector< database::entities::CDeviceCapacity > fullList;
+
+      CQuery qSelect;
+      qSelect. Select(CCapacityTable::getIdColumnName(), CCapacityTable::getNameColumnName(), CInterDeviceCapacityTable::getAccessModeColumnName()).
+         From(CCapacityTable::getTableName(), CInterDeviceCapacityTable::getTableName()).
+         Where(CCapacityTable::getIdColumnName() , CQUERY_OP_EQUAL, CInterDeviceCapacityTable::getCapacityIdColumnName()).
+         And(CInterDeviceCapacityTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, device.Id() );
+
+      //get results (capacityId, capacityName, accesMode)
+      database::sqlite::adapters::CMultipleValueAdapter< int, std::string, int > mva;
+      m_databaseRequester->queryEntities(&mva, qSelect);
+
+      //convert results
+      std::vector< boost::tuple< int, std::string, int > >::iterator i;
+      std::vector< boost::tuple< int, std::string, int > > queryResult = mva.getResults();
+
+      for(i=queryResult.begin(); i!=queryResult.end(); ++i)
+      {
+         database::entities::CCapacity cap;
+         cap.Id = i->get<0>();
+         cap.Name = i->get<1>();
+
+         fullList.push_back( boost::tuple<database::entities::CCapacity, database::entities::ECapacityAccessMode>(cap, (database::entities::ECapacityAccessMode)i->get<2>()) );
+      }
+
+      return fullList;
+   }
 
    boost::shared_ptr<database::entities::CDevice> CSQLiteDeviceRequester::getDevice(int deviceId)
    {
@@ -33,7 +63,9 @@ namespace database {  namespace sqlite { namespace requesters {
       database::sqlite::adapters::CDeviceAdapter adapter;
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
+      {
          return adapter.getResults()[0];
+      }
       else
       {
          std::string sEx = (boost::format("Cannot retrieve Device Id=%1% in database") % deviceId).str(); 
@@ -157,6 +189,11 @@ namespace database {  namespace sqlite { namespace requesters {
       CQuery qDelete;
       qDelete. DeleteFrom(CDeviceTable::getTableName()).
          Where(CDeviceTable::getIdColumnName(), CQUERY_OP_EQUAL, deviceId);
+      if(m_databaseRequester->queryStatement(qDelete) <= 0)
+         throw  shared::exception::CEmptyResult("No lines affected");
+
+      qDelete.Clear(). DeleteFrom(CInterDeviceCapacityTable::getTableName()).
+         Where(CInterDeviceCapacityTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, deviceId);
       if(m_databaseRequester->queryStatement(qDelete) <= 0)
          throw  shared::exception::CEmptyResult("No lines affected");
    }

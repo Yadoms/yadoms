@@ -154,12 +154,14 @@ namespace entities {
       ((AccessMode)(database::entities::ECapacityAccessMode)(database::entities::kNoAccess))
       )
 
+
+   typedef boost::tuple< CCapacity, database::entities::ECapacityAccessMode > CDeviceCapacity;
+
    DECLARE_ENTITY_CLASS(Device,
       ((Id)(int)(0))
       ((PluginId)(int)(0))
       ((Name)(std::string)(""))
       ((FriendlyName)(std::string)(""))
-      ((CapacityList)( std::vector< CCapacity > )(std::vector< CCapacity >() ))
       )
 
 
