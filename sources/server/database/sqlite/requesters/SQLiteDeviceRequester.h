@@ -38,6 +38,7 @@ class CSQLiteRequester;
                virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string>  > getDeviceLastData(int deviceId);
                virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string>  > getDeviceData(int deviceId, const std::string & keyword,  boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo );
                virtual void removeDevice(int deviceId);
+               virtual std::vector< entities::CDeviceCapacity > GetDeviceCapacities(entities::CDevice & device);
                // [END] IDeviceRequester implementation
 
             private:
