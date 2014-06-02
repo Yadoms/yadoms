@@ -31,7 +31,7 @@ enum
 static const std::string& XplDeviceId("rfxcom");
 
 
-void CRfxcom::doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service * pluginIOService)
+void CRfxcom::doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service& pluginIOService)
 {
    try
    {
@@ -42,13 +42,13 @@ void CRfxcom::doWork(int instanceUniqueId, const std::string& configuration, boo
       m_configuration.set(configuration);
 
       // Create the port instance
-      m_port = CRfxcomFactory::constructPort(m_configuration, *pluginIOService, shared_from_this(), kEvtPortConnection, kEvtPortDataReceived);
+      m_port = CRfxcomFactory::constructPort(m_configuration, pluginIOService, shared_from_this(), kEvtPortConnection, kEvtPortDataReceived);
 
       // Register to XPL service
       m_xplService.reset(new shared::xpl::CXplService(
          XplDeviceId,
          shared::xpl::CXplHelper::toInstanceId(instanceUniqueId),
-         pluginIOService));
+         &pluginIOService));
 
       // Configure XPL filter to only receive commands from Yadoms
       m_xplService->subscribeForMessages(
@@ -89,7 +89,7 @@ void CRfxcom::doWork(int instanceUniqueId, const std::string& configuration, boo
                m_configuration.set(newConfiguration);
 
                // Create new connection
-               m_port = CRfxcomFactory::constructPort(m_configuration, *pluginIOService, shared_from_this(), kEvtPortConnection, kEvtPortDataReceived);
+               m_port = CRfxcomFactory::constructPort(m_configuration, pluginIOService, shared_from_this(), kEvtPortConnection, kEvtPortDataReceived);
 
                break;
             }

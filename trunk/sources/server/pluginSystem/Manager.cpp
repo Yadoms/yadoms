@@ -358,7 +358,7 @@ void CManager::startInstance(int id)
 
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
-      boost::shared_ptr<CInstance> pluginInstance(new CInstance(plugin, databasePluginInstance, m_qualifier, m_supervisor, m_pluginManagerEventId, &m_pluginIOService));
+      boost::shared_ptr<CInstance> pluginInstance(new CInstance(plugin, databasePluginInstance, m_qualifier, m_supervisor, m_pluginManagerEventId, m_pluginIOService));
       m_runningInstances[databasePluginInstance->Id()] = pluginInstance;
    }
    catch (CInvalidPluginException& e)

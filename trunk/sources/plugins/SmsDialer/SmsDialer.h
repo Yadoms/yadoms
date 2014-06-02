@@ -23,7 +23,7 @@ public:
    virtual ~CSmsDialer();
 
    // IPlugin implementation
-   virtual void doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service * pluginIOService);
+   virtual void doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service& pluginIOService);
    virtual void updateConfiguration(const std::string& configurationValues);
    // [END] IPlugin implementation
 
