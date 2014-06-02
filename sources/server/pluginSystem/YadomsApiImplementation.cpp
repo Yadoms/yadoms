@@ -4,8 +4,8 @@
 namespace pluginSystem
 {
 
-CYadomsApiImplementation::CYadomsApiImplementation(int pluginInstanceId, boost::asio::io_service& pGlobalPluginIOService)
-   :m_pluginInstanceId(pluginInstanceId), m_pGlobalPluginIOService(pGlobalPluginIOService)
+CYadomsApiImplementation::CYadomsApiImplementation(const boost::shared_ptr<database::entities::CPlugin> pluginData, boost::asio::io_service& pGlobalPluginIOService)
+   :m_pGlobalPluginIOService(pGlobalPluginIOService), m_pluginData(pluginData)
 {
 }
       
@@ -22,7 +22,7 @@ bool CYadomsApiImplementation::deviceExists(const std::string & deviceName)
    return false;
 }
 
-bool CYadomsApiImplementation::declareNewDevice(const std::string & deviceName, std::vector< shared::plugin::yadomsApi::CCapacity > & capacities)
+bool CYadomsApiImplementation::declareNewDevice(const std::string & deviceName, const std::vector<shared::plugin::yadomsApi::CCapacity> & capacities)
 {
 /*
    using the database requester declare the device
@@ -32,14 +32,18 @@ bool CYadomsApiImplementation::declareNewDevice(const std::string & deviceName, 
    return false;
 }
       
-bool CYadomsApiImplementation::historizeData(const std::string & deviceName, const shared::plugin::yadomsApi::CCapacity & capacity, const std::string & value)
+void CYadomsApiImplementation::historizeData(const std::string & deviceName, const shared::plugin::yadomsApi::CCapacity & capacity, const std::string & value)
 {
 /*
    using the database requester save new capacity value
 */
       
    //TODO : !
-   return false;
+}
+
+const std::string CYadomsApiImplementation::getConfiguration() const
+{
+   return m_pluginData->Configuration;
 }
         
 bool CYadomsApiImplementation::recordPluginEvent(PluginEventSeverity severity, const std::string & message)
@@ -56,6 +60,11 @@ bool CYadomsApiImplementation::recordPluginEvent(PluginEventSeverity severity, c
 boost::asio::io_service & CYadomsApiImplementation::getPluginsIoService()
 {
    return m_pGlobalPluginIOService;
+}
+
+int CYadomsApiImplementation::getInstanceId() const
+{
+   return m_pluginData->Id;
 }
 	
 } // namespace pluginSystem	

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "yadomsApi/IYadomsApi.h"
+
 
 namespace shared { namespace plugin
 {
@@ -14,15 +16,13 @@ namespace shared { namespace plugin
 
       //--------------------------------------------------------------
       /// \brief              Main plugin function
-      /// \param [in]         instanceUniqueId   Plugin unique instance identifier
-      /// \param [in]         configuration      Plugin instance configuration values from database (Json)
-      /// \param [in]         ioService          The IO service
-      /// \note               Do the work. This function runs in specific-thread context (Yadoms main-thread independent).
+      /// \param [in]         yadoms  Plugin execution context (Yadoms API)
+      /// \note               Do the work. This function runs in specific-thread context (independent from Yadoms main-thread).
       //                      Implementation should loop until end is asked by Yadoms.
       //                      Be careful to put some sleeps to prevent using too much system resources.
-      //                      Use boost::this_thread::sleep is a watch stop point (a point where thread is able to stop).
+      //                      Use boost::this_thread::sleep as a watch stop point (a point where thread is able to stop).
       //--------------------------------------------------------------
-      virtual void doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service * ioService) = 0;
+      virtual void doWork(boost::shared_ptr<shared::plugin::yadomsApi::IYadomsApi> yadoms) = 0;
 
       //--------------------------------------------------------------
       /// \brief              Notify the plugin that its configuration was changed

@@ -24,7 +24,7 @@ public:
    virtual ~CFakePlugin();
 
    // IPlugin implementation
-   virtual void doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service * pluginIOService);
+   virtual void doWork(boost::shared_ptr<shared::plugin::yadomsApi::IYadomsApi> yadoms);
    virtual void updateConfiguration(const std::string& configuration);
   // [END] IPlugin implementation
 

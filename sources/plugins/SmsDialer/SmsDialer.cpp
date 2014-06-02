@@ -34,7 +34,7 @@ enum
 static const std::string& XplDeviceId("smsdial");
 
 
-void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service * pluginIOService)
+void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service& pluginIOService)
 {
    try
    {
@@ -51,7 +51,7 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
       m_xplService.reset(new shared::xpl::CXplService(
          XplDeviceId,
          shared::xpl::CXplHelper::toInstanceId(instanceUniqueId),
-         pluginIOService));
+         &pluginIOService));
 
       // Configure the XPL filters (for incomming XPL messages)
       configureXplFilters();

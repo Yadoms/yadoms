@@ -2,6 +2,7 @@
 
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
+#include <shared/plugin/yadomsApi/Capacity.h>
 
 //--------------------------------------------------------------
 /// \brief	Fake temperature sensor
@@ -9,7 +10,7 @@
 ///         - temperature : start at 25°, and vary from +- 0.0 to 1.0° at each read
 ///         - battery level : start at 100%, decrease by 1% at each read, to 20%
 //--------------------------------------------------------------
-class CFakeTemperatureSensor
+class CFakeTemperatureSensor//TODO faire en sorte qu'il remonte 2 températures
 {
 public:
    //--------------------------------------------------------------
@@ -51,6 +52,12 @@ public:
    /// \return     Signal strengh (0 to 100)
    //--------------------------------------------------------------
    int getRssi() const;
+
+   //--------------------------------------------------------------
+   /// \brief	    Returns the device capacities
+   /// \return     The list of device capacities
+   //--------------------------------------------------------------
+   static const std::vector<shared::plugin::yadomsApi::CCapacity>& getCapacities();
 
 private:
    //--------------------------------------------------------------

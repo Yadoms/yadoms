@@ -10,12 +10,13 @@ namespace pluginSystem
 
 CInstance::CInstance(
    const boost::shared_ptr<const CFactory> plugin,
-   const boost::shared_ptr<database::entities::CPlugin> context,
+   const boost::shared_ptr<database::entities::CPlugin> pluginData,
    const boost::shared_ptr<IQualifier> qualifier,
    shared::event::CEventHandler& supervisor,
    int pluginManagerEventId, 
-   boost::asio::io_service * pluginIOService)
-    : CThreadBase(context->Name()), m_pPlugin(plugin), m_context(context), m_qualifier(qualifier), m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_pluginIOService(pluginIOService)
+   boost::asio::io_service& pluginIOService)
+    : CThreadBase(pluginData->Name()), m_pPlugin(plugin), m_qualifier(qualifier), m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId),
+    m_api(new CYadomsApiImplementation(pluginData, pluginIOService))
 {
 	BOOST_ASSERT(m_pPlugin);
    m_pPluginInstance.reset(m_pPlugin->construct());
@@ -36,7 +37,7 @@ void CInstance::doWork()
    try
    {
       // Execute plugin code
-      m_pPluginInstance->doWork(m_context->Id(), m_context->Configuration(), m_pluginIOService);
+      m_pPluginInstance->doWork(m_api);
 
       if (getStatus() == kStopping)
       {
@@ -71,7 +72,7 @@ void CInstance::doWork()
    }
 
    // Signal the abnormal stop
-   CManagerEvent event(CManagerEvent::kPluginInstanceAbnormalStopped, m_context->Id(), m_pPlugin->getInformation(), getStatus() == kStopping);
+   CManagerEvent event(CManagerEvent::kPluginInstanceAbnormalStopped, m_api->getInstanceId(), m_pPlugin->getInformation(), getStatus() == kStopping);
    m_supervisor.sendEvent<CManagerEvent>(m_pluginManagerEventId, event);
 }
 

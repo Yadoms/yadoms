@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "FakePlugin.h"
 #include <shared/Log.h>
-#include <shared/xpl/XplService.h>
-#include <shared/xpl/XplMessage.h>
-#include <shared/xpl/XplHelper.h>
+#include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/event/EventTimer.h>
 #include "FakeTemperatureSensor.h"
 
@@ -24,52 +22,26 @@ CFakePlugin::~CFakePlugin()
 // Event IDs
 enum
 {
-   kEvtXplMessage = shared::event::kUserFirstId,   // Always start from shared::event::CEventHandler::kUserFirstId
-   kEvtUpdateConfiguration,
-   kEvtTimerSendMessage
+   kEvtTimerSendMessage = shared::plugin::yadomsApi::IYadomsApi::kPluginFirstId,   // Always start from shared::plugin::yadomsApi::IYadomsApi::kPluginFirstId
 };
 
-// XPL device ID : use to identify this plugin over the XPL network.
-// Must match XPL rules (see http://xplproject.org.uk/wiki/index.php/XPL_Specification_Document) :
-//   - alphanumerical characters only : [0-9][a-z]
-//   - letters must be lower case
-//   - no characters '.', '-', '_', or so...
-//   - 8 characters max
-// NOTE : To avoid DeviceId conflicts, YADOMS-TEAM manage a device ID reservation table. Please contact to reserve your device ID.
-// You can check that your device ID mach Xpl rules calling shared::xpl::CXplHelper::matchRules(shared::xpl::CXplHelper::kDeviceId, your_device_id)
-static const std::string& XplDeviceId("fakeplug");
-
-void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service * pluginIOService)
+void CFakePlugin::doWork(boost::shared_ptr<shared::plugin::yadomsApi::IYadomsApi> yadoms)
 {
    try
    {
-      YADOMS_LOG_CONFIGURE(Informations->getName());
+      YADOMS_LOG_CONFIGURE(Informations->getName());//TODO Informations à mettre dans le package.json ?
       YADOMS_LOG(debug) << "CFakePlugin is starting...";
 
       // Load configuration values (provided by database)
-      m_configuration.set(configuration);
+      m_configuration.set(yadoms->getConfiguration());
       // Trace the configuration (just for test)
       m_configuration.trace();
 
-      // Register to XPL service
-      shared::xpl::CXplService xplService(
-         XplDeviceId,                                                // XPL device ID : use to identify this plugin over the XPL network
-         shared::xpl::CXplHelper::toInstanceId(instanceUniqueId),    // Use the plugin instance id (guaranteed by Yadoms to be unique among all instances of all plugins) as XPL instance id
-         pluginIOService);                                           // Use the provided io service for better performance
-
-      // Configure XPL filter to only receive some messages from Yadoms
-      xplService.subscribeForMessages(
-         "xpl-cmnd",                                                 // Only commands
-         xplService.getActor().getVendorId(),                        // From Yadoms
-         shared::xpl::CXplHelper::WildcardString,                    // From any devices
-         xplService.getActor().getInstanceId(),                      // From current Yadoms instance
-         shared::xpl::CXplHelper::WildcardString,                    // From any device classes
-         "basic", 
-         this,                                                       // Subscribe for XPL message receive event
-         kEvtXplMessage);                                            // Set the event ID to rise when XPL message is received
-
       // Fake temperature sensor
       CFakeTemperatureSensor temperatureSensor("fakeTempSensor");
+      // Declare it if not alreasy exists
+      if (!yadoms->deviceExists(temperatureSensor.getDeviceId()))
+         yadoms->declareNewDevice(temperatureSensor.getDeviceId(), temperatureSensor.getCapacities());
 
       // Timer used to send a XPL message periodically
       createTimer(kEvtTimerSendMessage, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
@@ -81,14 +53,14 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
          // Wait for an event
          switch(waitForEvents())
          {
-         case kEvtXplMessage:
+         case shared::plugin::yadomsApi::IYadomsApi::kDeviceCommand://TODO : revoir, nom trop long
             {
-               // Xpl message was received
-               shared::xpl::CXplMessage xplMessage = getEventData<shared::xpl::CXplMessage>();
-               YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
+               // Command was received from Yadoms
+               //TODO shared::plugin::yadomsApi::IYadomsApi::CDeviceCommand command = getEventData<shared::plugin::yadomsApi::IYadomsApi::CDeviceCommand>();
+               //YADOMS_LOG(debug) << "Command received from Yadoms :" << command.toString();
                break;
             }
-         case kEvtUpdateConfiguration:
+         case shared::plugin::yadomsApi::IYadomsApi::kEvtUpdateConfiguration:
             {
                // Configuration was updated
                std::string newConfiguration = getEventData<std::string>();
@@ -108,36 +80,16 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
             }
          case kEvtTimerSendMessage:
             {
-               // Timer used here to send a XPL message periodically
+               // Timer used here to send the temperature to Yadoms periodically
 
                // First read the sensor value
                temperatureSensor.read();
 
-               // Create the message
-               shared::xpl::CXplMessage msg(
-                  shared::xpl::CXplMessage::kXplStat,                            // Message type
-                  xplService.getActor(),                                         // Source actor (here : our fake plugin instance)
-                  shared::xpl::CXplActor::createBroadcastActor(),            // Target actor (here : the XPL logger of Yadoms)
-                  shared::xpl::CXplMessageSchemaIdentifier("sensor", "basic"));   // The message schema
+               // Send data to Yadoms : read temperature, battery level and Rssi measure
+               yadoms->historizeData(temperatureSensor.getDeviceId(), shared::plugin::yadomsApi::CStandardCapacities::getTemperatureSensorCapacity(), boost::lexical_cast<std::string>(temperatureSensor.getTemperature()));
+               yadoms->historizeData(temperatureSensor.getDeviceId(), shared::plugin::yadomsApi::CStandardCapacities::getBatteryLevelCapacity(), boost::lexical_cast<std::string>(temperatureSensor.getBatteryLevel()));
+               yadoms->historizeData(temperatureSensor.getDeviceId(), shared::plugin::yadomsApi::CStandardCapacities::getRssiMeasureCapacity(), boost::lexical_cast<std::string>(temperatureSensor.getRssi()));
 
-               // Add data to message
-               // - Device ID
-			      msg.addToBody("device", temperatureSensor.getDeviceId());
-               // - Sensor type
-               msg.addToBody("type", "temp");
-               // - Unit
-               msg.addToBody("units", "°C");
-               // - Signal strength
-               msg.addToBody("rssi", boost::lexical_cast<std::string>(temperatureSensor.getRssi()));
-               // - Current temperature
-               std::ostringstream ss;
-               ss << std::fixed << std::setprecision(2) << temperatureSensor.getTemperature();
-               msg.addToBody("current", ss.str());
-               // - Battery level
-			      msg.addToBody("battery", boost::lexical_cast<std::string>(temperatureSensor.getBatteryLevel()));
-
-               // Send it
-               xplService.sendMessage(msg);
 
                YADOMS_LOG(debug) << "Send the periodically temperature message...";
 
@@ -160,8 +112,8 @@ void CFakePlugin::doWork(int instanceUniqueId, const std::string& configuration,
    }
 }
 
-void CFakePlugin::updateConfiguration(const std::string& configuration)
+void CFakePlugin::updateConfiguration(const std::string& configuration)//TODO, l'événement doit maintenant être généré par Yadoms
 {
    // This function is called in a Yadoms thread context, so send a event to the CFakePlugin thread
-   sendEvent<std::string>(kEvtUpdateConfiguration, configuration);
+   sendEvent<std::string>(shared::plugin::yadomsApi::IYadomsApi::kEvtUpdateConfiguration, configuration);
 }

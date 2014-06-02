@@ -48,6 +48,11 @@ set(SHARED_LIB_SRC
 	shared/plugin/information/Information.cpp
 	shared/plugin/information/Information.h
 
+	shared/plugin/yadomsApi/Capacity.h
+	shared/plugin/yadomsApi/StandardCapacities.h
+	shared/plugin/yadomsApi/StandardCapacities.cpp
+	shared/plugin/yadomsApi/IYadomsApi.h
+   
 	shared/serialization/IPtreeToStringSerializer.h
 	shared/serialization/PTreeToJsonSerializer.h
 	shared/serialization/PTreeToJsonSerializer.cpp
@@ -131,7 +136,7 @@ source_group(exception shared/exception/*.*)
 source_group(plugin shared/shared/plugin/*.* )	
 source_group(plugin\\configuration shared/shared/plugin/configuration/*.* )	
 source_group(plugin\\information shared/shared/plugin/information/*.* )	
-source_group(plugin\\Interfaces shared/shared/plugin/Interfaces/*.* )	
+source_group(plugin\\yadomsApi shared/shared/plugin/yadomsApi/*.* )	
 
 source_group(platformSpecific\\windows shared/windows/shared/*.*)
 source_group(platformSpecific\\linux shared/linux/shared/*.*)

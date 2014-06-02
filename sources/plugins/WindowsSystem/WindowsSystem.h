@@ -25,7 +25,7 @@ public:
    virtual ~CWindowsSystem();
 
    // IPlugin implementation
-   virtual void doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service * pluginIOService);
+   virtual void doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service& pluginIOService);
    virtual void updateConfiguration(const std::string& configuration);
   // [END] IPlugin implementation
 

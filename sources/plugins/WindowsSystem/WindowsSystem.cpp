@@ -43,7 +43,7 @@ enum
 // You can check that your device ID mach Xpl rules calling shared::xpl::CXplHelper::matchRules(shared::xpl::CXplHelper::kDeviceId, your_device_id)
 static const std::string& XplDeviceId("winsys");
 
-void CWindowsSystem::doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service * pluginIOService)
+void CWindowsSystem::doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service& pluginIOService)
 {
    try
    {
@@ -55,7 +55,7 @@ void CWindowsSystem::doWork(int instanceUniqueId, const std::string& configurati
       shared::xpl::CXplService xplService(
          XplDeviceId,                                                // XPL device ID : use to identify this plugin over the XPL network
          shared::xpl::CXplHelper::toInstanceId(instanceUniqueId),    // Use the plugin instance id (guaranteed by Yadoms to be unique among all instances of all plugins) as XPL instance id
-         pluginIOService);                                           // Use the provided io service for better performance
+         &pluginIOService);                                           // Use the provided io service for better performance
 
       CWindowsSystemMemoryLoad MemoryLoad("MemoryLoad");
       CWindowsSystemCPULoad CPULoad("CPULoad");

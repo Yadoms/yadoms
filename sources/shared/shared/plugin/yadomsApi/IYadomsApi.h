@@ -83,7 +83,9 @@ namespace shared { namespace plugin { namespace yadomsApi
          ///\brief The plugin receive an event from Yadoms
          //-----------------------------------------------------
          kEvtUpdateConfiguration = shared::event::kUserFirstId,   // Yadoms notify the plugin that its configuration was changed
-         kDeviceCommand                                           // Yadoms send a command to a device managed by this plugin
+         kDeviceCommand,                                          // Yadoms send a command to a device managed by this plugin
+
+         kPluginFirstId                                           // The next usable event ID for the plugin code
       };
 
       //-----------------------------------------------------
@@ -92,9 +94,20 @@ namespace shared { namespace plugin { namespace yadomsApi
       //-----------------------------------------------------
       class CDeviceCommand
       {
+      private:
+         //TODO à commenter
          CCapacity m_capacity;
          std::string m_value;
-         std::string targetDeviceName;
+         std::string m_targetDeviceName;
+
+      public:
+         std::string toString() const
+         {
+            // Full informations = identity + author name + url
+            std::ostringstream str;
+            str << m_targetDeviceName << " = " << m_value;
+            return str.str();
+         }
       };   
       
       
@@ -129,7 +142,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\throw   CAlreadyExistException if the device already exists
       ///\throw   CBadParameterException if the plugin instance id is not known
       //-----------------------------------------------------   
-      virtual bool declareNewDevice(const std::string & deviceName, std::vector< CCapacity > & capacities) = 0;
+      virtual bool declareNewDevice(const std::string & deviceName, const std::vector<CCapacity> & capacities) = 0;
       
       
       
@@ -138,13 +151,34 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\param    [in]    deviceName         The device name (must be unique)
       ///\param    [in]    capacity           The device capacity (temperature, rssi,...)
       ///\param    [in]    value              The capacity value
-      ///\return true if the data has been successfully stored, false if not
-      ///\throw   CAlreadyExistException if the device already exists
-      ///\throw   CBadParameterException if the plugin instance id is not known
+      ///\throw   CBadParameterException if the device is not known
       //-----------------------------------------------------     
-      virtual bool historizeData(const std::string & deviceName, const CCapacity & capacity, const std::string & value) = 0;
+      virtual void historizeData(const std::string & deviceName, const CCapacity & capacity, const std::string & value) = 0;
       
       
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //--
+      //-- Plugin configuration
+      //--
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+
+      //-----------------------------------------------------
+      ///\brief Get the current plugin configuration
+      ///\return The current plugin configuration
+      //-----------------------------------------------------      
+      virtual const std::string getConfiguration() const = 0;
+
+
       //----------------------------------------------------------------------------------------------------------------
       //----------------------------------------------------------------------------------------------------------------
       //----------------------------------------------------------------------------------------------------------------

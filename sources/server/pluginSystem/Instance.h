@@ -9,8 +9,9 @@
 #include <shared/event/EventHandler.hpp>
 #include "Factory.h"
 #include "ManagerEvent.h"
-#include "database/entities/Entities.h"
 #include "IQualifier.h"
+#include "YadomsApiImplementation.h"
+#include "database/entities/Entities.h"
 
 namespace pluginSystem
 {
@@ -24,14 +25,14 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief	Constructor
       /// \param [in]	plugin         the plugin used for this instance
-      /// \param [in]   context        the database entity
+      /// \param [in]   pluginData     the database entity
       /// \param [in]   qualifier      the plugin qualifier
       /// \param [in]   supervisor     the supervisor event handler
       /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
       //--------------------------------------------------------------
-      CInstance(const boost::shared_ptr<const CFactory> plugin, const boost::shared_ptr<database::entities::CPlugin> context,
+      CInstance(const boost::shared_ptr<const CFactory> plugin, const boost::shared_ptr<database::entities::CPlugin> pluginData,
          const boost::shared_ptr<IQualifier> qualifier, shared::event::CEventHandler& supervisor,
-         int pluginManagerEventId, boost::asio::io_service * pluginIOService);
+         int pluginManagerEventId, boost::asio::io_service& pluginIOService);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -67,11 +68,6 @@ namespace pluginSystem
       boost::shared_ptr<shared::plugin::IPlugin> m_pPluginInstance;
 
       //--------------------------------------------------------------
-      /// \brief			The database accessor
-      //--------------------------------------------------------------
-      const boost::shared_ptr<database::entities::CPlugin> m_context;
-
-      //--------------------------------------------------------------
       /// \brief			The plugin qualifier
       //--------------------------------------------------------------
       const boost::shared_ptr<IQualifier> m_qualifier;
@@ -89,7 +85,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Plugin IOService (common for all plugin instances)
       //--------------------------------------------------------------
-      boost::asio::io_service * m_pluginIOService;
+      boost::shared_ptr<CYadomsApiImplementation> m_api;
    };
 
 } // namespace pluginSystem
