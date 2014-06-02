@@ -38,8 +38,8 @@ Détails/remarques :
    
    1. Il existera une instance de l'implémentation de IYadomsApi par instance de plugin. Ca permet de ne pas diffuser l'instanceId au code du plugin (entre autre) et
    d'une manière générale que cet objet contienne des données/méthodes concernant l'instance du plugin (comme l'eventHandler) en plus des données/méthodes globales de Yadoms.
-   2. L'instance de plugin reçoit tous les événements (kEvtUpdateConfiguration, kDeviceCommand) sans besoin de s'abonner explicitement. Les événements ne sont de toutes
-   façons levés que si actif (kEvtUpdateConfiguration levé que si le plugin contient une configuration, kDeviceCommand que si le plugin a déclaré un device canWrite).
+   2. L'instance de plugin reçoit tous les événements (kEventUpdateConfiguration, kEventDeviceCommand) sans besoin de s'abonner explicitement. Les événements ne sont de toutes
+   façons levés que si actif (kEventUpdateConfiguration levé que si le plugin contient une configuration, kDeviceCommand que si le plugin a déclaré un device canWrite).
 	
    
 Questions:
@@ -82,10 +82,10 @@ namespace shared { namespace plugin { namespace yadomsApi
          //-----------------------------------------------------
          ///\brief The plugin receive an event from Yadoms
          //-----------------------------------------------------
-         kEvtUpdateConfiguration = shared::event::kUserFirstId,   // Yadoms notify the plugin that its configuration was changed
-         kDeviceCommand,                                          // Yadoms send a command to a device managed by this plugin
+         kEventUpdateConfiguration = shared::event::kUserFirstId, // Yadoms notify the plugin that its configuration was changed
+         kEventDeviceCommand,                                     // Yadoms send a command to a device managed by this plugin
 
-         kPluginFirstId                                           // The next usable event ID for the plugin code
+         kPluginFirstEventId                                      // The next usable event ID for the plugin code
       };
 
       //-----------------------------------------------------
@@ -149,11 +149,12 @@ namespace shared { namespace plugin { namespace yadomsApi
       //-----------------------------------------------------
       ///\brief Historize a new data values
       ///\param    [in]    deviceName         The device name (must be unique)
+      ///\param    [in]    keyword            The value name ("temp1", "temp2", "humidity", "batteryLevel", "rssi"...)
       ///\param    [in]    capacity           The device capacity (temperature, rssi,...)
       ///\param    [in]    value              The capacity value
       ///\throw   CBadParameterException if the device is not known
       //-----------------------------------------------------     
-      virtual void historizeData(const std::string & deviceName, const CCapacity & capacity, const std::string & value) = 0;
+      virtual void historizeData(const std::string & deviceName, const std::string & keyword, const CCapacity & capacity, const std::string & value) = 0;
       
       
       //----------------------------------------------------------------------------------------------------------------
@@ -233,7 +234,30 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\brief Get the global io_service
       ///\return A reference (non copyable) to the io_service
       //-----------------------------------------------------   
-      virtual boost::asio::io_service & getPluginsIoService() = 0;
+      virtual boost::asio::io_service & getPluginsIoService() const = 0;
+
+
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //--
+      //-- Event handler
+      //--
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------
+      //----------------------------------------------------------------------------------------------------------------   
+      //-----------------------------------------------------
+      ///\brief Get the event handler associated to the plugin. The event handler is used
+      ///       to received, wait for, or post events from/to Yadoms
+      ///\return The plugin event handler
+      //-----------------------------------------------------   
+      virtual shared::event::CEventHandler & getEventHandler() = 0;
    };
 	
 } } } // namespace shared::plugin::yadomsApi	

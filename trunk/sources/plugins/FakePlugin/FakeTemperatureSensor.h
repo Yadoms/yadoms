@@ -10,7 +10,7 @@
 ///         - temperature : start at 25°, and vary from +- 0.0 to 1.0° at each read
 ///         - battery level : start at 100%, decrease by 1% at each read, to 20%
 //--------------------------------------------------------------
-class CFakeTemperatureSensor//TODO faire en sorte qu'il remonte 2 températures
+class CFakeTemperatureSensor
 {
 public:
    //--------------------------------------------------------------
@@ -36,10 +36,16 @@ public:
    const std::string& getDeviceId() const;
 
    //--------------------------------------------------------------
-   /// \brief	    Returns read (computed) temperature
+   /// \brief	    Returns read (computed) temperature 1
    /// \return     Temperature in °C
    //--------------------------------------------------------------
-   double getTemperature() const;
+   double getTemperature1() const;
+
+   //--------------------------------------------------------------
+   /// \brief	    Returns read (computed) temperature 2
+   /// \return     Temperature in °C
+   //--------------------------------------------------------------
+   double getTemperature2() const;
 
    //--------------------------------------------------------------
    /// \brief	    Returns read (computed) battery level
@@ -48,8 +54,8 @@ public:
    int getBatteryLevel() const;
 
    //--------------------------------------------------------------
-   /// \brief	    Returns read (const value here) signal strengh
-   /// \return     Signal strengh (0 to 100)
+   /// \brief	    Returns read (const value here) signal strength
+   /// \return     Signal strength (0 to 100)
    //--------------------------------------------------------------
    int getRssi() const;
 
@@ -66,9 +72,10 @@ private:
    const std::string m_deviceId;
 
    //--------------------------------------------------------------
-   /// \brief	    Temperature in °C
+   /// \brief	    Temperatures in °C
    //--------------------------------------------------------------
-   double m_temperature;
+   double m_temperature1;
+   double m_temperature2;
 
    //--------------------------------------------------------------
    /// \brief	    Battery level (0 to 100%)

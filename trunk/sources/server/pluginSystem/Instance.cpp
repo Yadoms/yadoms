@@ -73,29 +73,14 @@ void CInstance::doWork()
 
    // Signal the abnormal stop
    CManagerEvent event(CManagerEvent::kPluginInstanceAbnormalStopped, m_api->getInstanceId(), m_pPlugin->getInformation(), getStatus() == kStopping);
-   m_supervisor.sendEvent<CManagerEvent>(m_pluginManagerEventId, event);
+   m_supervisor.postEvent<CManagerEvent>(m_pluginManagerEventId, event);
 }
 
 void CInstance::updateConfiguration(const std::string& newConfiguration) const
 {
-   BOOST_ASSERT(m_pPluginInstance);
-
-   try
-   {
-      m_pPluginInstance->updateConfiguration(newConfiguration);
-   }
-   catch (std::exception& e)
-   {
-      // Plugin crashed
-      YADOMS_LOG(error) << getName() << " crashed in updateConfiguration with exception : " << e.what();
-      m_qualifier->signalCrash(m_pPlugin->getInformation(), std::string("Plugin crashed in doWork with exception : ") + e.what());
-   }
-   catch (...)
-   {
-      // Plugin crashed
-      YADOMS_LOG(error) << getName() << " crashed in updateConfiguration with unknown exception.";
-      m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin crashed in doWork with unknown exception");
-   }
+   BOOST_ASSERT(m_api);
+   // Post event to the plugin
+   m_api->getEventHandler().postEvent<std::string>(shared::plugin::yadomsApi::IYadomsApi::kEventUpdateConfiguration, newConfiguration);
 }
 
 const std::string CInstance::getPluginName() const

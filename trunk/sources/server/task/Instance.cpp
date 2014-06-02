@@ -42,14 +42,14 @@ namespace task {
          database::entities::CEventLogger entry;
          entry.Code = database::entities::kStarted;
          entry.Who = m_pTask->getName();
-         m_eventHandler.sendEvent(m_systemEventCode, entry);
+         m_eventHandler.postEvent(m_systemEventCode, entry);
 
          // Execute plugin code
          m_pTask->doWork(boost::bind(&CInstance::OnTaskProgressUpdated, this, _1));
 
          //log event stopped
          entry.Code = database::entities::kStopped;
-         m_eventHandler.sendEvent(m_systemEventCode, entry);
+         m_eventHandler.postEvent(m_systemEventCode, entry);
 
       }
       catch (boost::thread_interrupted&)
@@ -62,7 +62,7 @@ namespace task {
          entry.Code = database::entities::kTaskFailed;
          entry.Who = m_pTask->getName();
          entry.What = "didn't catch boost::thread_interrupted.";
-         m_eventHandler.sendEvent(m_systemEventCode, entry);
+         m_eventHandler.postEvent(m_systemEventCode, entry);
       }
       catch (std::exception& e)
       {
@@ -73,7 +73,7 @@ namespace task {
          entry.Code = database::entities::kTaskFailed;
          entry.Who = m_pTask->getName();
          entry.What =  (boost::format("Crashed in doWork with exception %1%") % e.what()).str();
-         m_eventHandler.sendEvent(m_systemEventCode, entry);
+         m_eventHandler.postEvent(m_systemEventCode, entry);
 
       }
       catch (...)
@@ -85,7 +85,7 @@ namespace task {
          entry.Code = database::entities::kTaskFailed;
          entry.Who = m_pTask->getName();
          entry.What =  "Crashed in doWork with unknown exception";
-         m_eventHandler.sendEvent(m_systemEventCode, entry);
+         m_eventHandler.postEvent(m_systemEventCode, entry);
       }
    }
    

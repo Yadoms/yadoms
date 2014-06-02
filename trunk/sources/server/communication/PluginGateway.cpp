@@ -42,7 +42,7 @@ namespace communication {
 
    void CPluginGateway::sendCommandAsync(command::CDeviceCommand & message)
    {
-      sendEvent(kXplSendMessage, message);
+      postEvent(kXplSendMessage, message);
    }
 
 
@@ -54,7 +54,7 @@ namespace communication {
          YADOMS_LOG(debug) << "PluginGateway is starting...";
 
          // Signal that gateway is fully started
-         m_StartEventHandler.sendEvent(kStartEvent);
+         m_StartEventHandler.postEvent(kStartEvent);
 
          while(1)
          {

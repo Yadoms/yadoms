@@ -7,10 +7,10 @@
 /// \brief	This class is a simple plugin example
 /// \note   This plugin do nothing useful, just demonstrate how to :
 ///         - use a configuration
-///         - receive a XPL message
-///         - send a XPL message
+///         - process a command from Yadoms
+///         - send sensor state to Yadoms
 //--------------------------------------------------------------
-class CFakePlugin : public shared::event::CEventHandler, public shared::plugin::IPlugin
+class CFakePlugin : public shared::plugin::IPlugin
 {
 public:
    //--------------------------------------------------------------
@@ -25,7 +25,6 @@ public:
 
    // IPlugin implementation
    virtual void doWork(boost::shared_ptr<shared::plugin::yadomsApi::IYadomsApi> yadoms);
-   virtual void updateConfiguration(const std::string& configuration);
   // [END] IPlugin implementation
 
 private:
