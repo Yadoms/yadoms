@@ -25,6 +25,16 @@ namespace database {
       //--------------------------------------------------------------
       virtual boost::shared_ptr<entities::CDevice> getDevice(const int pluginId, const std::string & name) = 0;
 
+
+      //--------------------------------------------------------------
+      /// \brief                          Get the device list which support a capaicty
+      /// \param [in] capacityName        The capacity name
+      /// \param [in] capacityAccessMode  The capacity access mode
+      /// \return                         the device list which support a capaicty
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CDevice> > getDeviceWithCapacity(const std::string & capacityName, const database::entities::ECapacityAccessMode capacityAccessMode) =0;
+
       //--------------------------------------------------------------
       /// \brief                          Create a device identified by (pluginId and name).
       /// \param [in] pluginId            The pluginId
@@ -43,22 +53,12 @@ namespace database {
 
      
       //--------------------------------------------------------------
-      /// \brief                 Get the device last data
-      /// \param [in] deviceId   Device Id
-      /// \throw                 CInvalidParameter if deviceId is unknown
+      /// \brief                          Update a device friendly name
+      /// \param [in] deviceId            The device id
+      /// \param [in] newFriendlyName     The new friendly name
+      /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string>  > getDeviceLastData(int deviceId) = 0;
-
-      //--------------------------------------------------------------
-      /// \brief                 Get the device data
-      /// \param [in] deviceId   Device Id
-      /// \param [in] keyword    The keyword
-      /// \param [in] timeFrom   The start date (optionnal)
-      /// \param [in] timeTo     The end date (optionnal)
-      /// \return                Map of data : (date, value)
-      /// \throw                 CInvalidParameter if deviceId is unknown
-      //--------------------------------------------------------------
-      virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string>  > getDeviceData(int deviceId, const std::string & keyword,  boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo ) = 0;
+      virtual void updateDeviceFriendlyName(int deviceId, const std::string & newFriendlyName) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove device 
@@ -67,12 +67,6 @@ namespace database {
       //--------------------------------------------------------------
       virtual void removeDevice(int deviceId) = 0;
 
-      //--------------------------------------------------------------
-      /// \Brief		      Get all the capacities of a device
-      /// \param [in/out]	device: the device
-      /// \return          The list of capacities
-      //--------------------------------------------------------------
-      virtual std::vector< entities::CDeviceCapacity > GetDeviceCapacities(entities::CDevice & device) = 0;
 
       //--------------------------------------------------------------
       /// \brief       Destructor

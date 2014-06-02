@@ -38,8 +38,7 @@
                      !pRequester->checkTableExists(CWidgetTable::getTableName()) ||
                      !pRequester->checkTableExists(CPluginEventLoggerTable::getTableName()) ||
                      !pRequester->checkTableExists(CEventLoggerTable::getTableName()) ||
-                     !pRequester->checkTableExists(CMessageTable::getTableName()) ||
-                     !pRequester->checkTableExists(CMessageContentTable::getTableName()))
+                     !pRequester->checkTableExists(CAcquisitionTable::getTableName()))
                   {
                      //at least one table is missing
                      bNeedToCreateOrUpgrade = true;
@@ -94,10 +93,8 @@
                      throw CSQLiteVersionException("Failed to delete PluginEventLogger table");
                   if(!pRequester->dropTableIfExists(CEventLoggerTable::getTableName()))
                      throw CSQLiteVersionException("Failed to delete EventLogger table");
-                  if(!pRequester->dropTableIfExists(CMessageTable::getTableName()))
-                     throw CSQLiteVersionException("Failed to delete Message table");
-                  if(!pRequester->dropTableIfExists(CMessageContentTable::getTableName()))
-                     throw CSQLiteVersionException("Failed to delete MessageContent table");
+                  if(!pRequester->dropTableIfExists(CAcquisitionTable::getTableName()))
+                     throw CSQLiteVersionException("Failed to delete Acquisition table");
 
                   //create tables
                   if(!pRequester->createTableIfNotExists(CConfigurationTable::getTableName(), CConfigurationTable::getTableCreationScript()))
@@ -116,10 +113,8 @@
                      throw CSQLiteVersionException("Failed to create PluginEventLogger table");
                   if(!pRequester->createTableIfNotExists(CEventLoggerTable::getTableName(), CEventLoggerTable::getTableCreationScript()))
                      throw CSQLiteVersionException("Failed to create EventLogger table");
-                  if(!pRequester->createTableIfNotExists(CMessageTable::getTableName(), CMessageTable::getTableCreationScript()))
-                     throw CSQLiteVersionException("Failed to create Message table");
-                  if(!pRequester->createTableIfNotExists(CMessageContentTable::getTableName(), CMessageContentTable::getTableCreationScript()))
-                     throw CSQLiteVersionException("Failed to create MessageContent table");
+                  if(!pRequester->createTableIfNotExists(CAcquisitionTable::getTableName(), CAcquisitionTable::getTableCreationScript()))
+                     throw CSQLiteVersionException("Failed to create Acquisition table");
 
                   //set the database version
                   CQuery qInsert;

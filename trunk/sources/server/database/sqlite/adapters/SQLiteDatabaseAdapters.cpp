@@ -16,7 +16,7 @@ namespace adapters {
       ((Type)(std::string)(""))
       ((Configuration)(std::string)(""))
       ((AutoStart)(bool)(true))
-      )
+   )
 
    DECLARE_ADAPTER_IMPLEMENTATION(Configuration,
       ((Section)(std::string)(""))
@@ -26,25 +26,16 @@ namespace adapters {
       ((Description)(std::string)(""))
       ((SecurityAccess)(database::entities::ESecurityAccess)(database::entities::kNone)(int))
       ((LastModificationDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
-      )
+   )
 
 
-   DECLARE_ADAPTER_IMPLEMENTATION(Keyword,
-      ((DeviceId)(int)(0))
-      ((Name)(std::string)(""))
-      ((Units)(std::string)(""))
-      ((Type)(std::string)(""))
-      ((Minimum)(double)(0))
-      ((Maximum)(double)(0))
-      ((Parameters)(std::string)(""))
-      )
 
 
    DECLARE_ADAPTER_IMPLEMENTATION(Page,
       ((Id)(int)(0))
       ((Name)(std::string)(""))
       ((PageOrder)(int)(0))
-      )
+   )
 
 
    DECLARE_ADAPTER_IMPLEMENTATION(Widget,
@@ -56,7 +47,7 @@ namespace adapters {
       ((PositionX)(int)(1))
       ((PositionY)(int)(1))
       ((Configuration)(std::string)(""))
-      )
+   )
 
    DECLARE_ADAPTER_IMPLEMENTATION(PluginEventLogger,
       ((Id)(int)(0))
@@ -77,40 +68,33 @@ namespace adapters {
    )
 
 
-   DECLARE_ADAPTER_IMPLEMENTATION(Message,
-      ((Id)(int)(0))
-      ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
-      ((DeviceId)(int)(0))
-   )
-
-   DECLARE_ADAPTER_IMPLEMENTATION(MessageContent,
-      ((Id)(int)(0))
-      ((IdMessage)(int)(0))
-      ((Key)(std::string)(""))
-      ((Value)(std::string)(""))
-   )
-
-
-   DECLARE_ADAPTER_IMPLEMENTATION(Capacity,
-      ((Id)(int)(0))
-      ((Name)(std::string)(""))
-      )
-
-   DECLARE_ADAPTER_IMPLEMENTATION(InterDeviceCapacity,
-      ((DeviceId)(int)(0))
-      ((CapacityId)(int)(0))
-      ((AccessMode)(database::entities::ECapacityAccessMode)(database::entities::kNoAccess)(int))
-      )
-
    DECLARE_ADAPTER_IMPLEMENTATION(Device,
       ((Id)(int)(0))
       ((PluginId)(int)(0))
       ((Name)(std::string)(""))
       ((FriendlyName)(std::string)(""))
-      )
+   )
+
+   DECLARE_ADAPTER_IMPLEMENTATION(Keyword,
+      ((Id)(int)(0))
+      ((DeviceId)(int)(0))
+      ((CapacityName)(std::string)(""))
+      ((CapacityAccessMode)(database::entities::ECapacityAccessMode)(database::entities::kNoAccess)(int))
+      ((Name)(std::string)(""))
+      ((FriendlyName)(std::string)(""))
+      ((Units)(std::string)(""))
+      ((Minimum)(double)(0))
+      ((Maximum)(double)(0))
+   )
 
 
-
+   DECLARE_ADAPTER_IMPLEMENTATION(Acquisition,
+      ((Id)(int)(0))
+      ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
+      ((KeywordId)(int)(0))
+      ((Value)(std::string)(""))
+   )
+  
 
 
 } //namespace adapters

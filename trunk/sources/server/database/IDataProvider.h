@@ -8,7 +8,7 @@
 #include "IEventLoggerRequester.h"
 #include "IWidgetRequester.h"
 #include "IPluginEventLoggerRequester.h"
-#include "IMessageRequester.h"
+#include "IAcquisitionRequester.h"
 #include "ITransactionalProvider.h"
 
 
@@ -90,11 +90,11 @@ namespace database {
       virtual boost::shared_ptr<IPluginEventLoggerRequester> getPluginEventLoggerRequester() = 0; 
       
       //--------------------------------------------------------------
-      /// \Brief		get the XplMessage requester
-      /// \return 	the XplMessage requester
+      /// \Brief		get the Acquisiton requester
+      /// \return 	the Acquisiton requester
       /// \throws 		
       //--------------------------------------------------------------  
-      virtual boost::shared_ptr<IMessageRequester> getMessageRequester() = 0;    
+      virtual boost::shared_ptr<IAcquisitionRequester> getAcquisitionRequester() = 0;    
       
       //--------------------------------------------------------------
       /// \Brief		get the Event Logger requester
