@@ -16,7 +16,7 @@ CYadomsApiImplementation::~CYadomsApiImplementation()
 bool CYadomsApiImplementation::deviceExists(const std::string & deviceName)
 {
 /*
-   using the database requester check for device existance
+   using the database requester check for device existence
 */
    //TODO : !
    return false;
@@ -32,7 +32,7 @@ bool CYadomsApiImplementation::declareNewDevice(const std::string & deviceName, 
    return false;
 }
       
-void CYadomsApiImplementation::historizeData(const std::string & deviceName, const shared::plugin::yadomsApi::CCapacity & capacity, const std::string & value)
+void CYadomsApiImplementation::historizeData(const std::string & deviceName, const std::string & keyword, const shared::plugin::yadomsApi::CCapacity & capacity, const std::string & value)
 {
 /*
    using the database requester save new capacity value
@@ -57,9 +57,14 @@ bool CYadomsApiImplementation::recordPluginEvent(PluginEventSeverity severity, c
 }
       
     
-boost::asio::io_service & CYadomsApiImplementation::getPluginsIoService()
+boost::asio::io_service & CYadomsApiImplementation::getPluginsIoService() const
 {
    return m_pGlobalPluginIOService;
+}
+
+shared::event::CEventHandler & CYadomsApiImplementation::getEventHandler()
+{
+   return m_pluginEventHandler;
 }
 
 int CYadomsApiImplementation::getInstanceId() const

@@ -32,10 +32,10 @@ namespace shared { namespace event
       /// \brief	    Send empty event (without data)
       /// \param[in] id Event id
       //--------------------------------------------------------------
-      void sendEvent(int id)
+      void postEvent(int id)
       {
          boost::shared_ptr<CEventBase> evt(new CEventBase(id));
-         sendEvent(evt);
+         postEvent(evt);
       }
 
       //--------------------------------------------------------------
@@ -45,10 +45,10 @@ namespace shared { namespace event
       /// \param[in] data Event data
       //--------------------------------------------------------------
       template<typename DataType>
-      void sendEvent(int id, const DataType& data)
+      void postEvent(int id, const DataType& data)
       {
          boost::shared_ptr<CEventBase> evt(new CEvent<DataType>(id, data));
-         sendEvent(evt);
+         postEvent(evt);
       }
 
       //--------------------------------------------------------------
@@ -199,7 +199,7 @@ namespace shared { namespace event
       /// \brief	    Send an event
       /// \param[in] event event to send
       //--------------------------------------------------------------
-      void sendEvent(boost::shared_ptr<CEventBase> & event)
+      void postEvent(boost::shared_ptr<CEventBase> & event)
       {
          pushEvent(event);
          m_condition.notify_one();

@@ -285,7 +285,7 @@ namespace shared { namespace xpl
             if(pEventHandler)
             {
                //send notification
-               pEventHandler->sendEvent<CXplMessage>(subscriber.get<2>(), boost::ref(msg));
+               pEventHandler->postEvent<CXplMessage>(subscriber.get<2>(), boost::ref(msg));
 
                //
                atLeastOneNotificationSend = true;

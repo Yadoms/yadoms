@@ -22,7 +22,7 @@ CFakePlugin::~CFakePlugin()
 // Event IDs
 enum
 {
-   kEvtTimerSendMessage = shared::plugin::yadomsApi::IYadomsApi::kPluginFirstId,   // Always start from shared::plugin::yadomsApi::IYadomsApi::kPluginFirstId
+   kSendTemperatureTimerEventId = shared::plugin::yadomsApi::IYadomsApi::kPluginFirstEventId,   // Always start from shared::plugin::yadomsApi::IYadomsApi::kPluginFirstEventId
 };
 
 void CFakePlugin::doWork(boost::shared_ptr<shared::plugin::yadomsApi::IYadomsApi> yadoms)
@@ -39,33 +39,33 @@ void CFakePlugin::doWork(boost::shared_ptr<shared::plugin::yadomsApi::IYadomsApi
 
       // Fake temperature sensor
       CFakeTemperatureSensor temperatureSensor("fakeTempSensor");
-      // Declare it if not alreasy exists
+      // Declare it if not already exists
       if (!yadoms->deviceExists(temperatureSensor.getDeviceId()))
          yadoms->declareNewDevice(temperatureSensor.getDeviceId(), temperatureSensor.getCapacities());
 
-      // Timer used to send a XPL message periodically
-      createTimer(kEvtTimerSendMessage, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
+      // Timer used to send fake sensor states periodically
+      yadoms->getEventHandler().createTimer(kSendTemperatureTimerEventId, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
 
       // the main loop
       YADOMS_LOG(debug) << "CFakePlugin is running...";
       while(1)
       {
          // Wait for an event
-         switch(waitForEvents())
+         switch(yadoms->getEventHandler().waitForEvents())
          {
-         case shared::plugin::yadomsApi::IYadomsApi::kDeviceCommand://TODO : revoir, nom trop long
+         case shared::plugin::yadomsApi::IYadomsApi::kEventDeviceCommand://TODO : revoir, nom trop long
             {
                // Command was received from Yadoms
                //TODO shared::plugin::yadomsApi::IYadomsApi::CDeviceCommand command = getEventData<shared::plugin::yadomsApi::IYadomsApi::CDeviceCommand>();
                //YADOMS_LOG(debug) << "Command received from Yadoms :" << command.toString();
                break;
             }
-         case shared::plugin::yadomsApi::IYadomsApi::kEvtUpdateConfiguration:
+         case shared::plugin::yadomsApi::IYadomsApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
-               std::string newConfiguration = getEventData<std::string>();
+               std::string newConfiguration = yadoms->getEventHandler().getEventData<std::string>();
                YADOMS_LOG(debug) << "configuration was updated...";
-               BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEvtUpdateConfiguration shouldn't be generated
+               BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
                // Take into account the new configuration
                // - Restart the plugin if necessary,
@@ -78,7 +78,7 @@ void CFakePlugin::doWork(boost::shared_ptr<shared::plugin::yadomsApi::IYadomsApi
 
                break;
             }
-         case kEvtTimerSendMessage:
+         case kSendTemperatureTimerEventId:
             {
                // Timer used here to send the temperature to Yadoms periodically
 
@@ -86,9 +86,10 @@ void CFakePlugin::doWork(boost::shared_ptr<shared::plugin::yadomsApi::IYadomsApi
                temperatureSensor.read();
 
                // Send data to Yadoms : read temperature, battery level and Rssi measure
-               yadoms->historizeData(temperatureSensor.getDeviceId(), shared::plugin::yadomsApi::CStandardCapacities::getTemperatureSensorCapacity(), boost::lexical_cast<std::string>(temperatureSensor.getTemperature()));
-               yadoms->historizeData(temperatureSensor.getDeviceId(), shared::plugin::yadomsApi::CStandardCapacities::getBatteryLevelCapacity(), boost::lexical_cast<std::string>(temperatureSensor.getBatteryLevel()));
-               yadoms->historizeData(temperatureSensor.getDeviceId(), shared::plugin::yadomsApi::CStandardCapacities::getRssiMeasureCapacity(), boost::lexical_cast<std::string>(temperatureSensor.getRssi()));
+               yadoms->historizeData(temperatureSensor.getDeviceId(), "temp1", shared::plugin::yadomsApi::CStandardCapacities::getTemperatureSensorCapacity(), boost::lexical_cast<std::string>(temperatureSensor.getTemperature1()));
+               yadoms->historizeData(temperatureSensor.getDeviceId(), "temp2", shared::plugin::yadomsApi::CStandardCapacities::getTemperatureSensorCapacity(), boost::lexical_cast<std::string>(temperatureSensor.getTemperature2()));
+               yadoms->historizeData(temperatureSensor.getDeviceId(), "battery", shared::plugin::yadomsApi::CStandardCapacities::getBatteryLevelCapacity(), boost::lexical_cast<std::string>(temperatureSensor.getBatteryLevel()));
+               yadoms->historizeData(temperatureSensor.getDeviceId(), "Rssi", shared::plugin::yadomsApi::CStandardCapacities::getRssiMeasureCapacity(), boost::lexical_cast<std::string>(temperatureSensor.getRssi()));
 
 
                YADOMS_LOG(debug) << "Send the periodically temperature message...";
@@ -110,10 +111,4 @@ void CFakePlugin::doWork(boost::shared_ptr<shared::plugin::yadomsApi::IYadomsApi
    {
       YADOMS_LOG(info) << "CFakePlugin is stopping..."  << std::endl;
    }
-}
-
-void CFakePlugin::updateConfiguration(const std::string& configuration)//TODO, l'événement doit maintenant être généré par Yadoms
-{
-   // This function is called in a Yadoms thread context, so send a event to the CFakePlugin thread
-   sendEvent<std::string>(shared::plugin::yadomsApi::IYadomsApi::kEvtUpdateConfiguration, configuration);
 }

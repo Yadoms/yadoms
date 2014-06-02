@@ -14,7 +14,7 @@ namespace communication { namespace command {
 
    void CCallback::sendResult(CResult & result)
    {
-      sendEvent(kResult, result);
+      postEvent(kResult, result);
    }
 
    CResult CCallback::waitForResult(const boost::posix_time::time_duration& timeout /*= boost::date_time::pos_infin*/)
