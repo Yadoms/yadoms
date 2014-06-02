@@ -2,15 +2,15 @@
 
 #include "server/database/IDataProvider.h"
 #include "server/database/IDataBackup.h"
-#include "requesters/SQLitePluginRequester.h"
-#include "requesters/SQLiteConfigurationRequester.h"
-#include "requesters/SQLiteDeviceRequester.h"
-#include "requesters/SQLiteKeywordRequester.h"
-#include "requesters/SQLitePageRequester.h"
-#include "requesters/SQLiteWidgetRequester.h"
-#include "requesters/SQLitePluginEventLoggerRequester.h"
-#include "requesters/SQLiteEventLoggerRequester.h"
-#include "requesters/SQLiteMessageRequester.h"
+#include "requesters/Plugin.h"
+#include "requesters/Configuration.h"
+#include "requesters/Device.h"
+#include "requesters/Keyword.h"
+#include "requesters/Page.h"
+#include "requesters/Widget.h"
+#include "requesters/PluginEventLogger.h"
+#include "requesters/EventLogger.h"
+#include "requesters/Acquisition.h"
 #include "SQLiteRequester.h"
 #include "sqlite3.h"
 
@@ -48,7 +48,7 @@ namespace sqlite {
       boost::shared_ptr<database::IWidgetRequester> getWidgetRequester() { return m_widgetRequester; }
       boost::shared_ptr<database::IPluginEventLoggerRequester> getPluginEventLoggerRequester() { return m_pluginEventLoggerRequester; }
       boost::shared_ptr<database::IEventLoggerRequester> getEventLoggerRequester() { return m_eventLoggerRequester; }
-      boost::shared_ptr<database::IMessageRequester> getMessageRequester() { return m_messageRequester; }
+      boost::shared_ptr<database::IAcquisitionRequester> getAcquisitionRequester() { return m_acquisitionRequester; }
       // [END] IDatabaseProvider implementation
 
       // IDataBackup implementation
@@ -65,47 +65,47 @@ namespace sqlite {
       //--------------------------------------------------------------
       /// \Brief		Plugin requester
       //--------------------------------------------------------------
-      boost::shared_ptr<database::sqlite::requesters::CSQLitePluginRequester>		m_pluginRequester;
+      boost::shared_ptr<database::sqlite::requesters::CPlugin>		m_pluginRequester;
       
       //--------------------------------------------------------------
       /// \Brief		Plugin requester
       //--------------------------------------------------------------
-      boost::shared_ptr<database::sqlite::requesters::CSQLiteConfigurationRequester>		m_configurationRequester;
+      boost::shared_ptr<database::sqlite::requesters::CConfiguration>		m_configurationRequester;
 
       //--------------------------------------------------------------
       /// \Brief		Device requester
       //--------------------------------------------------------------
-      boost::shared_ptr<database::sqlite::requesters::CSQLiteDeviceRequester>		m_deviceRequester;
+      boost::shared_ptr<database::sqlite::requesters::CDevice>		m_deviceRequester;
 
       //--------------------------------------------------------------
       /// \Brief		Keyword requester
       //--------------------------------------------------------------
-      boost::shared_ptr<database::sqlite::requesters::CSQLiteKeywordRequester>		m_keywordRequester;
+      boost::shared_ptr<database::sqlite::requesters::CKeyword>		m_keywordRequester;
 
       //--------------------------------------------------------------
       /// \Brief		Page requester
       //--------------------------------------------------------------
-      boost::shared_ptr<database::sqlite::requesters::CSQLitePageRequester>		m_pageRequester;
+      boost::shared_ptr<database::sqlite::requesters::CPage>		m_pageRequester;
 
       //--------------------------------------------------------------
       /// \Brief		Widget requester
       //--------------------------------------------------------------
-      boost::shared_ptr<database::sqlite::requesters::CSQLiteWidgetRequester>		m_widgetRequester;
+      boost::shared_ptr<database::sqlite::requesters::CWidget>		m_widgetRequester;
 
       //--------------------------------------------------------------
       /// \Brief		PluginEventLogger requester
       //--------------------------------------------------------------
-      boost::shared_ptr<database::sqlite::requesters::CSQLitePluginEventLoggerRequester> m_pluginEventLoggerRequester;
+      boost::shared_ptr<database::sqlite::requesters::CPluginEventLogger> m_pluginEventLoggerRequester;
       
       //--------------------------------------------------------------
       /// \Brief		EventLogger requester
       //--------------------------------------------------------------
-      boost::shared_ptr<database::sqlite::requesters::CSQLiteEventLoggerRequester> m_eventLoggerRequester;
+      boost::shared_ptr<database::sqlite::requesters::CEventLogger> m_eventLoggerRequester;
 
       //--------------------------------------------------------------
       /// \Brief		XplMessage requester
       //--------------------------------------------------------------
-      boost::shared_ptr<database::sqlite::requesters::CSQLiteMessageRequester> m_messageRequester;
+      boost::shared_ptr<database::sqlite::requesters::CAcquisition> m_acquisitionRequester;
       
       
       //--------------------------------------------------------------

@@ -8,14 +8,14 @@
 #include "web/webem/WebServer.h"
 #include "web/WebServerManager.h"
 #include <shared/xpl/XplHub.h>
-#include "web/rest/service/PluginRestService.h"
-#include "web/rest/service/DeviceRestService.h"
-#include "web/rest/service/PageRestService.h"
-#include "web/rest/service/WidgetRestService.h"
-#include "web/rest/service/ConfigurationRestService.h"
-#include "web/rest/service/PluginEventLoggerRestService.h"
-#include "web/rest/service/EventLoggerRestService.h"
-#include "web/rest/service/GeneralRestService.h"
+#include "web/rest/service/Plugin.h"
+#include "web/rest/service/Device.h"
+#include "web/rest/service/Page.h"
+#include "web/rest/service/Widget.h"
+#include "web/rest/service/Configuration.h"
+#include "web/rest/service/PluginEventLogger.h"
+#include "web/rest/service/EventLogger.h"
+#include "web/rest/service/General.h"
 #include <shared/ThreadBase.h>
 #include <shared/Peripherals.h>
 #include "tools/web/FileDownloader.h"
@@ -82,14 +82,14 @@ void CSupervisor::doWork()
       boost::shared_ptr<web::IRestHandler> restHanlder = webServer->getRestHandler();
       if(restHanlder.get() != NULL)
       {
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginRestService(pDataProvider, pluginManager)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDeviceRestService(pDataProvider, pluginGateway)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPageRestService(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CWidgetRestService(pDataProvider, webServerPath)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfigurationRestService(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLoggerRestService(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLoggerRestService(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CGeneralRestService()));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDevice(pDataProvider, pluginGateway)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPage(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CWidget(pDataProvider, webServerPath)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfiguration(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLogger(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLogger(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CGeneral()));
       }
 
       boost::shared_ptr<web::CWebServerManager> webServerManager(new web::CWebServerManager(webServer));

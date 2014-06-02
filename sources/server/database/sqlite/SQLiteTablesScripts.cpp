@@ -28,17 +28,6 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Plugin, "CREATE TABLE Plugin               
                                                    auto_start  INTEGER DEFAULT 1                                   \
                                                 )")
 
-DECLARE_STATIC_TABLE_CREATION_SCRIPT(Keyword, " CREATE TABLE Keyword                                              \
-                                                (                                                                 \
-                                                       deviceId INTEGER NOT NULL,                                 \
-                                                       name TEXT NOT NULL,                                        \
-                                                       units TEXT,                                                \
-                                                       type TEXT,                                                 \
-                                                       minimum FLOAT,                                             \
-                                                       maximum FLOAT,                                             \
-                                                       parameters TEXT,                                           \
-                                                       PRIMARY KEY(deviceId,name)                                 \
-                                                )")                                                               
 
 
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Page, " CREATE TABLE Page                                                    \
@@ -82,21 +71,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(EventLogger, "CREATE TABLE EventLogger     
                                                             )")
 
                                                             
-                                                            
-DECLARE_STATIC_TABLE_CREATION_SCRIPT(Message,    "CREATE TABLE Message                                            \
-                                                      (  id INTEGER NOT NULL PRIMARY KEY  AUTOINCREMENT,          \
-                                                         date DATETIME NOT NULL,                                  \
-                                                         deviceId INTEGER NOT NULL                                \
-                                                         )")                           
-
-DECLARE_STATIC_TABLE_CREATION_SCRIPT(MessageContent,    "CREATE TABLE MessageContent                              \
-                                                         (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,        \
-                                                            idMessage INTEGER NOT NULL,                           \
-                                                            key TEXT NOT NULL ,                                   \
-                                                            value TEXT NOT NULL                                   \
-                                                         )")                                                         
-                                                            
-                                                                                         
+                                                                                        
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Device, "  CREATE TABLE Device                                               \
                                                 (                                                                 \
                                                    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
@@ -105,23 +80,27 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Device, "  CREATE TABLE Device             
                                                    friendlyName TEXT NOT NULL                                     \
                                                 )")
 
-DECLARE_STATIC_TABLE_CREATION_SCRIPT(Capacity, "CREATE TABLE Capacity                                             \
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(Keyword, " CREATE TABLE Keyword                                              \
                                                 (                                                                 \
                                                    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
-                                                   name TEXT NOT NULL                                             \
-                                                )")
+                                                   deviceId INTEGER NOT NULL,                                     \
+                                                   capacityName TEXT NOT NULL,                                    \
+                                                   capacityAccessMode INTEGER NOT NULL,                           \
+                                                   name TEXT NOT NULL,                                            \
+                                                   friendlyName TEXT,                                             \
+                                                   units TEXT,                                                    \
+                                                   minimum FLOAT,                                                 \
+                                                   maximum FLOAT                                                  \
+                                                )")                                                               
 
 
-
-DECLARE_STATIC_TABLE_CREATION_SCRIPT(InterDeviceCapacity, "CREATE TABLE InterDeviceCapacity                       \
-                                                           (                                                      \
-                                                               idDevice INTEGER NOT NULL,                         \
-                                                               idCapacity INTEGER NOT NULL,                       \
-                                                               accessMode INTEGER NOT NULL,                       \
-                                                               PRIMARY KEY(idDevice,idCapacity)                   \
-)                                                            )")
-
-
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(Acquisition,    "CREATE TABLE Acquisition                                    \
+                                                      (  id INTEGER NOT NULL PRIMARY KEY  AUTOINCREMENT,          \
+                                                         date DATETIME NOT NULL,                                  \
+                                                         keywordId INTEGER NOT NULL,                              \
+                                                         value TEXT NOT NULL                                      \
+                                                         )")                           
+                                                            
 
       } //namespace sqlite
    } //namespace database 

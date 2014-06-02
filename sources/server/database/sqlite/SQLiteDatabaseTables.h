@@ -26,15 +26,6 @@ namespace sqlite {
    )
 
 
-   DECLARE_TABLE(Keyword,
-      (DeviceId)
-      (Name)
-      (Units)
-      (Type)
-      (Minimum)
-      (Maximum)
-      (Parameters)
-   )
 
 
    DECLARE_TABLE(Page,
@@ -72,37 +63,31 @@ namespace sqlite {
       (What)
    )
 
-   DECLARE_TABLE(Message,
-      (Id)
-      (Date)
-      (DeviceId)
-   )   
-
-   DECLARE_TABLE(MessageContent,
-      (Id)
-      (IdMessage)
-      (Key)
-      (Value)
-   )   
-   
-   DECLARE_TABLE(Capacity,
-      (Id)
-      (Name)
-   )
-
-   DECLARE_TABLE(InterDeviceCapacity,
-      (DeviceId)
-      (CapacityId)
-      (AccessMode)
-   )
-
-
    DECLARE_TABLE(Device,
       (Id)
       (PluginId)
       (Name)
       (FriendlyName)
    )
+
+   DECLARE_TABLE(Keyword,
+      (Id)
+      (DeviceId)
+      (CapacityName)
+      (CapacityAccessMode)
+      (Name)
+      (FriendlyName)
+      (Units)
+      (Minimum)
+      (Maximum)
+   )
+
+   DECLARE_TABLE(Acquisition,
+      (Id)
+      (Date)
+      (KeywordId)
+      (Value)
+   )   
 
 
 } //namespace sqlite

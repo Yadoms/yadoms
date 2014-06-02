@@ -27,18 +27,6 @@ namespace web { namespace rest { namespace json {
       )
 
 
-
-   DECLARE_JSON_ENTITY_HEADER(Keyword,
-      (DeviceId)
-      (Name)
-      (Units)
-      (Type)
-      (Minimum)
-      (Maximum)
-      (Parameters)
-   )
-
-
    DECLARE_JSON_ENTITY_HEADER(Page,
       (Id)
       (Name)
@@ -76,23 +64,26 @@ namespace web { namespace rest { namespace json {
    )
 
 
-   DECLARE_JSON_ENTITY_HEADER(Capacity,
-      (Id)
-      (Name)
-   )
-
-   DECLARE_JSON_ENTITY_HEADER(InterDeviceCapacity,
-      (DeviceId)
-      (CapacityId)
-      (AccessMode)
-   )
-
    DECLARE_JSON_ENTITY_HEADER(Device,
       (Id)
       (PluginId)
       (Name)
       (FriendlyName)
    )
+
+   DECLARE_JSON_ENTITY_HEADER(Keyword,
+      (Id)
+      (DeviceId)
+      (CapacityName)
+      (CapacityAccessMode)
+      (Name)
+      (FriendlyName)
+      (Units)
+      (Minimum)
+      (Maximum)
+   )
+
+
 
 
 

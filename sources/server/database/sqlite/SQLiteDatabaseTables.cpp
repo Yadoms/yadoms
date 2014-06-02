@@ -25,15 +25,6 @@ namespace sqlite {
    )
 
 
-   DECLARE_TABLE_COLUMN_NAMES(Keyword,  "Keyword",
-      ((DeviceId)("deviceId"))
-      ((Name)("name"))
-      ((Units)("units"))
-      ((Type)("type"))
-      ((Minimum)("minimum"))
-      ((Maximum)("maximum"))
-      ((Parameters)("parameters"))
-   )
 
 
    DECLARE_TABLE_COLUMN_NAMES(Page,  "Page",
@@ -73,31 +64,6 @@ namespace sqlite {
 
 
 
-   DECLARE_TABLE_COLUMN_NAMES(Message, "Message",
-      ((Id)("id"))
-      ((Date)("date"))
-      ((DeviceId)("deviceId"))
-   )
-   
-
-   DECLARE_TABLE_COLUMN_NAMES(MessageContent, "MessageContent",
-      ((Id)("id"))
-      ((IdMessage)("idMessage"))
-      ((Key)("key"))
-      ((Value)("value"))
-   )
-
-   DECLARE_TABLE_COLUMN_NAMES(Capacity,  "Capacity",
-      ((Id)("id"))
-      ((Name)("name"))
-   )
-
-   DECLARE_TABLE_COLUMN_NAMES(InterDeviceCapacity,  "InterDeviceCapacity",
-      ((DeviceId)("idDevice"))
-      ((CapacityId)("idCapacity"))
-      ((AccessMode)("accessMode"))
-   )
-
    DECLARE_TABLE_COLUMN_NAMES(Device,  "Device",
       ((Id)("id"))
       ((PluginId)("pluginId"))
@@ -105,6 +71,24 @@ namespace sqlite {
       ((FriendlyName)("friendlyName"))
    )
 
+   DECLARE_TABLE_COLUMN_NAMES(Keyword,  "Keyword",
+      ((Id)("id"))
+      ((DeviceId)("deviceId"))
+      ((CapacityName)("capacityName"))
+      ((CapacityAccessMode)("capacityAccessMode"))
+      ((Name)("name"))
+      ((FriendlyName)("friendlyName"))
+      ((Units)("units"))
+      ((Minimum)("minimum"))
+      ((Maximum)("maximum"))
+   )
+
+   DECLARE_TABLE_COLUMN_NAMES(Acquisition, "Acquisition",
+      ((Id)("id"))
+      ((Date)("date"))
+      ((KeywordId)("keywordId"))
+      ((Value)("value"))
+   )
 
 } //namespace sqlite
 } //namespace database 

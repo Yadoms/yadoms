@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
 #include "SQLiteDataProvider.h"
-#include "requesters/SQLitePluginRequester.h"
-#include "requesters/SQLiteConfigurationRequester.h"
+#include "requesters/Plugin.h"
+#include "requesters/Configuration.h"
 #include "sqlite3.h"
 #include <boost/filesystem.hpp>
 #include "SQLiteRequester.h"
@@ -129,15 +129,15 @@ namespace database { namespace sqlite {
 
    void CSQLiteDataProvider::loadRequesters()
    {
-      m_pluginRequester.reset(new database::sqlite::requesters::CSQLitePluginRequester(*this, m_databaseRequester));
-      m_configurationRequester.reset(new database::sqlite::requesters::CSQLiteConfigurationRequester(*this, m_databaseRequester));
-      m_deviceRequester.reset(new database::sqlite::requesters::CSQLiteDeviceRequester(*this, m_databaseRequester));
-      m_keywordRequester.reset(new database::sqlite::requesters::CSQLiteKeywordRequester(*this, m_databaseRequester));
-      m_pageRequester.reset(new database::sqlite::requesters::CSQLitePageRequester(*this, m_databaseRequester));
-      m_widgetRequester.reset(new database::sqlite::requesters::CSQLiteWidgetRequester(*this, m_databaseRequester));
-      m_pluginEventLoggerRequester.reset(new database::sqlite::requesters::CSQLitePluginEventLoggerRequester(*this, m_databaseRequester));
-      m_eventLoggerRequester.reset(new database::sqlite::requesters::CSQLiteEventLoggerRequester(*this, m_databaseRequester));
-      m_messageRequester.reset(new database::sqlite::requesters::CSQLiteMessageRequester(*this, m_databaseRequester));
+      m_pluginRequester.reset(new database::sqlite::requesters::CPlugin(*this, m_databaseRequester));
+      m_configurationRequester.reset(new database::sqlite::requesters::CConfiguration(*this, m_databaseRequester));
+      m_deviceRequester.reset(new database::sqlite::requesters::CDevice(*this, m_databaseRequester));
+      m_keywordRequester.reset(new database::sqlite::requesters::CKeyword(*this, m_databaseRequester));
+      m_pageRequester.reset(new database::sqlite::requesters::CPage(*this, m_databaseRequester));
+      m_widgetRequester.reset(new database::sqlite::requesters::CWidget(*this, m_databaseRequester));
+      m_pluginEventLoggerRequester.reset(new database::sqlite::requesters::CPluginEventLogger(*this, m_databaseRequester));
+      m_eventLoggerRequester.reset(new database::sqlite::requesters::CEventLogger(*this, m_databaseRequester));
+      m_acquisitionRequester.reset(new database::sqlite::requesters::CAcquisition(*this, m_databaseRequester));
    }
 
 

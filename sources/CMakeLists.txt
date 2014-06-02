@@ -176,7 +176,7 @@ set(YADOMS_SRC
 	server/database/IWidgetRequester.h
 	server/database/IPluginEventLoggerRequester.h
 	server/database/IEventLoggerRequester.h
-	server/database/IMessageRequester.h
+	server/database/IAcquisitionRequester.h
 	server/database/DatabaseException.hpp
 
 	server/database/entities/EntityHelpers.hpp
@@ -209,22 +209,24 @@ set(YADOMS_SRC
 	server/web/rest/json/JsonSerializersHelpers.hpp
 
 	server/web/rest/service/IRestService.h
-	server/web/rest/service/PluginRestService.h
-	server/web/rest/service/PluginRestService.cpp
-	server/web/rest/service/DeviceRestService.h
-	server/web/rest/service/DeviceRestService.cpp
-	server/web/rest/service/PageRestService.h
-	server/web/rest/service/PageRestService.cpp
-	server/web/rest/service/WidgetRestService.h
-	server/web/rest/service/WidgetRestService.cpp
-	server/web/rest/service/ConfigurationRestService.h
-	server/web/rest/service/ConfigurationRestService.cpp
-	server/web/rest/service/PluginEventLoggerRestService.h
-	server/web/rest/service/PluginEventLoggerRestService.cpp
-	server/web/rest/service/EventLoggerRestService.h
-	server/web/rest/service/EventLoggerRestService.cpp
-	server/web/rest/service/GeneralRestService.h
-	server/web/rest/service/GeneralRestService.cpp
+	server/web/rest/service/Plugin.h
+	server/web/rest/service/Plugin.cpp
+	server/web/rest/service/Device.h
+	server/web/rest/service/Device.cpp
+	server/web/rest/service/Page.h
+	server/web/rest/service/Page.cpp
+	server/web/rest/service/Widget.h
+	server/web/rest/service/Widget.cpp
+	server/web/rest/service/Configuration.h
+	server/web/rest/service/Configuration.cpp
+	server/web/rest/service/PluginEventLogger.h
+	server/web/rest/service/PluginEventLogger.cpp
+	server/web/rest/service/EventLogger.h
+	server/web/rest/service/EventLogger.cpp
+	server/web/rest/service/General.h
+	server/web/rest/service/General.cpp
+	server/web/rest/service/Acquisition.h
+	server/web/rest/service/Acquisition.cpp
 	
 	server/task/Scheduler.h
 	server/task/Scheduler.cpp
@@ -325,24 +327,24 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/SQLiteSystemTables.cpp
 		server/database/sqlite/SQLiteDatabaseTablesHelpers.hpp
 		server/database/sqlite/SQLiteTablesScripts.cpp
-		server/database/sqlite/requesters/SQLitePluginRequester.h
-		server/database/sqlite/requesters/SQLitePluginRequester.cpp
-		server/database/sqlite/requesters/SQLiteConfigurationRequester.h
-		server/database/sqlite/requesters/SQLiteConfigurationRequester.cpp
-		server/database/sqlite/requesters/SQLiteKeywordRequester.h
-		server/database/sqlite/requesters/SQLiteKeywordRequester.cpp
-		server/database/sqlite/requesters/SQLiteDeviceRequester.h
-		server/database/sqlite/requesters/SQLiteDeviceRequester.cpp		
-		server/database/sqlite/requesters/SQLitePageRequester.h
-		server/database/sqlite/requesters/SQLitePageRequester.cpp		
-		server/database/sqlite/requesters/SQLiteWidgetRequester.h
-		server/database/sqlite/requesters/SQLiteWidgetRequester.cpp		
-		server/database/sqlite/requesters/SQLitePluginEventLoggerRequester.h
-		server/database/sqlite/requesters/SQLitePluginEventLoggerRequester.cpp
-		server/database/sqlite/requesters/SQLiteEventLoggerRequester.h
-		server/database/sqlite/requesters/SQLiteEventLoggerRequester.cpp
-		server/database/sqlite/requesters/SQLiteMessageRequester.h
-		server/database/sqlite/requesters/SQLiteMessageRequester.cpp
+		server/database/sqlite/requesters/Plugin.h
+		server/database/sqlite/requesters/Plugin.cpp
+		server/database/sqlite/requesters/Configuration.h
+		server/database/sqlite/requesters/Configuration.cpp
+		server/database/sqlite/requesters/Keyword.h
+		server/database/sqlite/requesters/Keyword.cpp
+		server/database/sqlite/requesters/Device.h
+		server/database/sqlite/requesters/Device.cpp		
+		server/database/sqlite/requesters/Page.h
+		server/database/sqlite/requesters/Page.cpp		
+		server/database/sqlite/requesters/Widget.h
+		server/database/sqlite/requesters/Widget.cpp		
+		server/database/sqlite/requesters/PluginEventLogger.h
+		server/database/sqlite/requesters/PluginEventLogger.cpp
+		server/database/sqlite/requesters/EventLogger.h
+		server/database/sqlite/requesters/EventLogger.cpp
+		server/database/sqlite/requesters/Acquisition.h
+		server/database/sqlite/requesters/Acquisition.cpp
 		
 		server/database/sqlite/adapters/SQLite3Extension.hpp
 		server/database/sqlite/adapters/SQLiteDatabaseAdapters.h
