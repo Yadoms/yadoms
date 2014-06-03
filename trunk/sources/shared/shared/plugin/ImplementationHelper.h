@@ -2,6 +2,7 @@
 
 #include "IPlugin.h"
 
+
 //--------------------------------------------------------------
 /// \brief		                  Plugin implementation helper
 /// \param pluginClassName       The name of the main plugin class (implementing shared::plugin::IPlugin)

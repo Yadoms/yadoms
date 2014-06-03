@@ -52,12 +52,12 @@ int CFakeTemperatureSensor::getRssi() const
    return m_rssi;
 }
 
-const std::vector<shared::plugin::yadomsApi::CCapacity>& CFakeTemperatureSensor::getCapacities()
+const std::vector<yApi::CCapacity>& CFakeTemperatureSensor::getCapacities()
 {
-   static const std::vector<shared::plugin::yadomsApi::CCapacity> capacities = boost::assign::list_of
-      (shared::plugin::yadomsApi::CStandardCapacities::getTemperatureSensorCapacity())
-      (shared::plugin::yadomsApi::CStandardCapacities::getBatteryLevelCapacity())
-      (shared::plugin::yadomsApi::CStandardCapacities::getRssiMeasureCapacity());
+   static const std::vector<yApi::CCapacity> capacities = boost::assign::list_of
+      (yApi::CStandardCapacities::getTemperatureSensorCapacity())
+      (yApi::CStandardCapacities::getBatteryLevelCapacity())
+      (yApi::CStandardCapacities::getRssiMeasureCapacity());
 
    return capacities;
 }
