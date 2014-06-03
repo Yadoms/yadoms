@@ -12,6 +12,7 @@
 #include "IQualifier.h"
 #include "YadomsApiImplementation.h"
 #include "database/entities/Entities.h"
+#include "communication/command/DeviceCommand.h"
 
 namespace pluginSystem
 {
@@ -38,6 +39,12 @@ namespace pluginSystem
       /// \brief	Destructor
       //--------------------------------------------------------------
       virtual ~CInstance();
+
+      //--------------------------------------------------------------
+      /// \brief			            Post a command to the plugin
+      /// \param  message           Command to post
+      //--------------------------------------------------------------
+      virtual void postCommand(const communication::command::CDeviceCommand & message) const;
 
       //--------------------------------------------------------------
       /// \brief			            Notify the plugin about its configuration changed
@@ -83,9 +90,9 @@ namespace pluginSystem
       const int m_pluginManagerEventId;
 
       //--------------------------------------------------------------
-      /// \brief			Plugin IOService (common for all plugin instances)
+      /// \brief			Plugin context (Yadoms API)
       //--------------------------------------------------------------
-      boost::shared_ptr<CYadomsApiImplementation> m_api;
+      boost::shared_ptr<CYadomsApiImplementation> m_context;
    };
 
 } // namespace pluginSystem

@@ -7,8 +7,8 @@ namespace communication {
 
    enum { kStartEvent = shared::event::kUserFirstId };
 
-   CPluginGateway::CPluginGateway(boost::shared_ptr<database::IDataProvider> dataProvider)
-      :CThreadBase("PluginGateway"), m_dataProvider(dataProvider)
+   CPluginGateway::CPluginGateway(boost::shared_ptr<database::IDataProvider> dataProvider, boost::shared_ptr<pluginSystem::CManager> pluginManager)
+      :CThreadBase("PluginGateway"), m_dataProvider(dataProvider), m_pluginManager(pluginManager)
    {
    }
 
@@ -25,7 +25,7 @@ namespace communication {
 
    void CPluginGateway::waitForstarted()
    {
-      switch (m_StartEventHandler.waitForEvents(boost::posix_time::seconds(10)))
+      switch (m_startEventHandler.waitForEvents(boost::posix_time::seconds(10)))
       {
       case kStartEvent: // Gateway started
          return;
@@ -40,11 +40,11 @@ namespace communication {
       }
    }
 
-   void CPluginGateway::sendCommandAsync(command::CDeviceCommand & message)
+   void CPluginGateway::sendCommandAsync(const command::CDeviceCommand & message)
    {
-      postEvent(kXplSendMessage, message);
+      // Dispatch command to the right plugin
+      m_pluginManager->postCommand(m_dataProvider->getDeviceRequester()->getDevice(message.getDeviceId())->PluginId, message);
    }
-
 
    void CPluginGateway::doWork()
    {
@@ -54,12 +54,12 @@ namespace communication {
          YADOMS_LOG(debug) << "PluginGateway is starting...";
 
          // Signal that gateway is fully started
-         m_StartEventHandler.postEvent(kStartEvent);
+         m_startEventHandler.postEvent(kStartEvent);
 
          while(1)
          {
             // Wait for an event
-            switch(waitForEvents())
+            switch(m_mainEventHandler.waitForEvents())
             {
             case shared::event::kNoEvent:
                YADOMS_LOG(warning) << "CPluginGateway::doWork, unknown event received";
@@ -67,14 +67,8 @@ namespace communication {
                break;
 
             default:
-               {
-                  YADOMS_LOG(error) << "CPluginGateway : Unknown message id";
-
-                  // We need to consume this unknown event
-                  popEvent();
-
-                  break;
-               }
+               YADOMS_LOG(error) << "CPluginGateway : Unknown message id";
+               break;
             }
          };
       }

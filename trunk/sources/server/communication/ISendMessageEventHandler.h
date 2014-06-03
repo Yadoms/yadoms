@@ -21,7 +21,7 @@ namespace communication {
       ///\brief Send a command
       ///\param [in] message the message to send
       //----------------------------------------------
-      virtual void sendCommandAsync(command::CDeviceCommand & message) = 0;
+      virtual void sendCommandAsync(const command::CDeviceCommand & message) = 0;
    };
 
 } //namespace communication

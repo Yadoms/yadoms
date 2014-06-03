@@ -10,19 +10,6 @@
 namespace pluginSystem
 {
 
-boost::shared_ptr<CManager> CManager::newManager(
-   const std::string & initialDir,
-   boost::shared_ptr<database::IPluginRequester> pluginDBTable,
-   boost::shared_ptr<database::IPluginEventLoggerRequester> pluginLoggerDBTable,
-   boost::shared_ptr<database::IEventLoggerRequester> mainLoggerDBTable,
-   shared::event::CEventHandler& supervisor,
-   int pluginManagerEventId)
-{
-   boost::shared_ptr<CManager> manager (new CManager(initialDir, pluginDBTable, pluginLoggerDBTable, mainLoggerDBTable, supervisor, pluginManagerEventId));
-   manager->init();
-   return manager;
-}
-
 CManager::CManager(
    const std::string& initialDir,
    boost::shared_ptr<database::IPluginRequester> pluginDBTable,
@@ -39,6 +26,24 @@ CManager::CManager(
 CManager::~CManager()
 {
    stop();
+}
+
+void CManager::start()
+{
+   // Initialize the plugin list (detect available plugins)
+   updatePluginList();
+
+   // Create ioservice for all plugin instances
+   m_ioServiceThread.reset(new boost::thread(boost::bind(&CManager::runPluginIOService, this)));
+   YADOMS_LOG(debug) << "Thread Id=" << m_ioServiceThread->get_id() << " Name = IO Service (pluginsystem::CManager)";
+
+   // Create and start plugin instances from database
+   std::vector<boost::shared_ptr<database::entities::CPlugin> > databasePluginInstances = m_pluginDBTable->getInstances();
+   BOOST_FOREACH(boost::shared_ptr<database::entities::CPlugin> databasePluginInstance, databasePluginInstances)
+   {
+      if (databasePluginInstance->AutoStart())
+         startInstance(databasePluginInstance->Id());
+   }
 }
 
 void CManager::stop()
@@ -59,25 +64,6 @@ void CManager::stop()
       stopInstance(m_runningInstances.begin()->first);
 
    YADOMS_LOG(info) << "pluginSystem::CManager all plugins are stopped";
-}
-
-
-void CManager::init()
-{
-   // Initialize the plugin list (detect available plugins)
-   updatePluginList();
-
-   //create ioservice for all plugin instances
-   m_ioServiceThread.reset(new boost::thread(boost::bind(&CManager::runPluginIOService, this)));
-   YADOMS_LOG(debug) << "Thread Id=" << m_ioServiceThread->get_id() << " Name = IO Service (pluginsystem::CManager)";
-
-   // Create and start plugin instances from database
-   std::vector<boost::shared_ptr<database::entities::CPlugin> > databasePluginInstances = m_pluginDBTable->getInstances();
-   BOOST_FOREACH(boost::shared_ptr<database::entities::CPlugin> databasePluginInstance, databasePluginInstances)
-   {
-      if (databasePluginInstance->AutoStart())
-         startInstance(databasePluginInstance->Id());
-   }
 }
 
 void CManager::runPluginIOService()
@@ -385,6 +371,15 @@ void CManager::stopInstance(int id)
 bool CManager::isInstanceRunning(int id) const
 {
    return m_runningInstances.find(id) != m_runningInstances.end();
+}
+
+void CManager::postCommand(int id, const communication::command::CDeviceCommand & message)
+{
+   if (!isInstanceRunning(id))
+      return;     // Instance is stopped, nothing to do
+
+   boost::shared_ptr<CInstance> instance(m_runningInstances.find(id)->second);
+   instance->postCommand(message);
 }
 
 } // namespace pluginSystem

@@ -11,6 +11,7 @@
 #include "database/IPluginRequester.h"
 #include "database/IPluginEventLoggerRequester.h"
 #include "database/IEventLoggerRequester.h"
+#include "communication/command/DeviceCommand.h"
 #include <shared/StringExtension.h>
 #include <shared/event/EventHandler.hpp>
 
@@ -30,7 +31,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       typedef std::map<std::string, boost::shared_ptr<const shared::plugin::information::IInformation> > AvalaiblePluginMap;
 
-   protected:
+   public:
       //--------------------------------------------------------------
       /// \brief			Constructor (protected, use newManager to create instance)
       /// \param [in]   initialDir initial plugins search directory
@@ -51,9 +52,8 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Initialization, used for the 2-steps construction
       //--------------------------------------------------------------
-      void init();
+      void start();
 
-   public:
       //--------------------------------------------------------------
       /// \brief			Destructor
       //--------------------------------------------------------------
@@ -63,23 +63,6 @@ namespace pluginSystem
       /// \brief			Stop all plugin instance
       //--------------------------------------------------------------
       void stop();
-
-      //--------------------------------------------------------------
-      /// \brief			Create new CManager instance
-      /// \param [in]   initialDir              Initial plugins search directory
-      /// \param [in]   pluginDBTable           Database link to plugin
-      /// \param [in]   pluginLoggerDBTable     Database link to plugin events
-      /// \param [in]   mainLoggerDBTable       Database link to main events logger
-      /// \param [in]   supervisor              The supervisor event handler
-      /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
-      //--------------------------------------------------------------
-      static boost::shared_ptr<CManager> newManager(
-         const std::string & initialDir,
-         boost::shared_ptr<database::IPluginRequester> pluginDBTable,
-         boost::shared_ptr<database::IPluginEventLoggerRequester> pluginLoggerDBTable,
-         boost::shared_ptr<database::IEventLoggerRequester> mainLoggerDBTable,
-         shared::event::CEventHandler& supervisor,
-         int pluginManagerEventId);
 
       //--------------------------------------------------------------
       /// \brief           Read the available plugin list
@@ -170,6 +153,13 @@ namespace pluginSystem
       /// \brief        Update the plugin list if needed (after plugin installation for example)
       //--------------------------------------------------------------
       void updatePluginList();
+
+      //--------------------------------------------------------------
+      /// \brief              Post a command to a device on a specific plugin
+      /// \param [in] id      Plugin instance Id
+      /// \param [in] message The command to post
+      //--------------------------------------------------------------
+      void postCommand(int id, const communication::command::CDeviceCommand & message);
 
    private:
       //--------------------------------------------------------------
