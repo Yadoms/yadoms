@@ -11,7 +11,7 @@
 
 namespace database { namespace sqlite { namespace requesters { 
 
-   CConfiguration::CConfiguration(const CSQLiteDataProvider & databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
+   CConfiguration::CConfiguration(CSQLiteDataProvider * databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
       :m_databaseHandler(databaseHandler), m_databaseRequester(databaseRequester)
    {
    }

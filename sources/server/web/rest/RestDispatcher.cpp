@@ -13,11 +13,106 @@ namespace web { namespace rest {
    {
    }
 
-   void CRestDispatcher::registerRestMethodHandler(const std::string & requestType, const CUrlPattern & configKeywords, CRestMethodHandler functionPtr, CRestMethodIndirector indirectPtr /*= NULL*/)
+   void CRestDispatcher::registerRestMethodHandler(const std::string & requestType, const std::vector<std::string> & configKeywords, CRestMethodHandler functionPtr, CRestMethodIndirector indirectPtr /*= NULL*/)
    {
-      m_handledFunctions[requestType][configKeywords] = std::make_pair(functionPtr, indirectPtr);
+      m_handledFunctions[requestType].push_back(CUrlPattern(configKeywords, functionPtr, indirectPtr));
    }
 
+
+
+
+
+
+
+
+
+    CRestDispatcher::CUrlPattern::CUrlPattern(const std::vector<std::string> & pattern, CRestMethodHandler & handler, CRestMethodIndirector & indirector)
+      :m_pattern(pattern), m_methodHandler(handler), m_methodIndirector(indirector)
+   {
+   }
+
+    CRestDispatcher::CUrlPattern::~CUrlPattern()
+   {
+   }
+
+   const std::vector<std::string> &  CRestDispatcher::CUrlPattern::getPattern() const 
+   { 
+      return m_pattern; 
+   }
+   const CRestDispatcher::CRestMethodHandler &  CRestDispatcher::CUrlPattern::getMethodHandler() const 
+   {
+      return m_methodHandler; 
+   }
+   const CRestDispatcher::CRestMethodIndirector &  CRestDispatcher::CUrlPattern::getMethodIndirector() const 
+   { 
+      return m_methodIndirector; 
+   }
+
+
+
+   bool CRestDispatcher::CUrlPattern::operator<(const CRestDispatcher::CUrlPattern &right) const
+   {
+      unsigned int minSize = std::min(getPattern().size(),right.getPattern().size());
+      for(unsigned int i=0; i<minSize; i++)
+      {
+
+         if(getPattern()[i] != "*" && right.getPattern()[i] != "*")
+         {
+            //none of them have a wildcard, see next caracter
+         } 
+         else if(getPattern()[i] != "*" && right.getPattern()[i] == "*")
+         {
+            return true;
+         }
+         else if(getPattern()[i] == "*" && right.getPattern()[i] != "*")
+         {
+            return false;
+         }
+         else
+         {
+            //do nothing, see next step
+         }
+      }
+
+      return (getPattern().size() < right.getPattern().size());
+   }
+
+
+
+   std::string CRestDispatcher::CUrlPattern::toString() const
+   {
+      std::string pattern;
+      for(unsigned int i=0; i<getPattern().size(); ++i)
+      {
+         pattern+= "/";
+         pattern+= getPattern()[i];
+      }
+      return pattern;
+   }
+
+
+
+   void CRestDispatcher::sortRestMethod()
+   {
+      std::map<std::string, RestMethodMap>::iterator i;
+      for(i= m_handledFunctions.begin(); i!=m_handledFunctions.end(); ++i)
+      {
+         std::sort (i->second.begin(), i->second.end()); 
+      }
+
+
+      for(i= m_handledFunctions.begin(); i!=m_handledFunctions.end(); ++i)
+      {
+         YADOMS_LOG(debug) << "******************************************************";
+         YADOMS_LOG(debug) << "Requests type : " << i->first;
+
+         RestMethodMap::iterator iPatterns;
+         for(iPatterns = i->second.begin(); iPatterns!= i->second.end(); ++iPatterns)
+         {
+            YADOMS_LOG(debug) << iPatterns->toString();
+         }
+      }
+   }
 
 
    web::rest::json::CJson CRestDispatcher::dispath(const std::string & requestType, const std::vector<std::string> & url, const web::rest::json::CJson & requestContent)
@@ -28,35 +123,25 @@ namespace web { namespace rest {
          //browse all patterns and check if it match to given url
          RestMethodMap::iterator iPatterns;
 
-         //first pass without handling wildcards (priority to full written patterns)
          for(iPatterns = m_handledFunctions[requestType].begin(); iPatterns != m_handledFunctions[requestType].end(); ++iPatterns)
          {
-            if(match(url, iPatterns->first, false))
-               return callRealMethod(iPatterns->second.first, iPatterns->second.second, url, requestContent);
+            if(match(url, *iPatterns))
+               return callRealMethod(iPatterns->getMethodHandler(), iPatterns->getMethodIndirector(), url, requestContent);
          }
 
-         //second pass with handling wildcards
-         for(iPatterns = m_handledFunctions[requestType].begin(); iPatterns != m_handledFunctions[requestType].end(); ++iPatterns)
-         {
-            if(match(url, iPatterns->first, true))
-               return callRealMethod(iPatterns->second.first, iPatterns->second.second, url, requestContent);
-         }
          return web::rest::json::CJsonResult::GenerateError("This REST url is not handled");
       }
       else
          return web::rest::json::CJsonResult::GenerateError("The type of request : " + requestType + " is not handled");
    }
 
-   const bool CRestDispatcher::match(const std::vector<std::string> & url, const CUrlPattern & urlPattern, const bool allowWildcard)
+   const bool CRestDispatcher::match(const std::vector<std::string> & url, const CUrlPattern & urlPattern)
    {
-      if(url.size() == urlPattern.size())
+      if(url.size() == urlPattern.getPattern().size())
       {
-         for(unsigned int i=0; i<urlPattern.size(); i++)
+         for(unsigned int i=0; i<urlPattern.getPattern().size(); i++)
          {
-            if(!allowWildcard && urlPattern[i] == "*")
-               return false;
-
-            if(urlPattern[i] != "*" && !boost::iequals(urlPattern[i], url[i]))
+            if(urlPattern.getPattern()[i] != "*" && !boost::iequals(urlPattern.getPattern()[i], url[i]))
             {
                return false;
             }

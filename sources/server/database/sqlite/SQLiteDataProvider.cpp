@@ -129,15 +129,15 @@ namespace database { namespace sqlite {
 
    void CSQLiteDataProvider::loadRequesters()
    {
-      m_pluginRequester.reset(new database::sqlite::requesters::CPlugin(*this, m_databaseRequester));
-      m_configurationRequester.reset(new database::sqlite::requesters::CConfiguration(*this, m_databaseRequester));
-      m_deviceRequester.reset(new database::sqlite::requesters::CDevice(*this, m_databaseRequester));
-      m_keywordRequester.reset(new database::sqlite::requesters::CKeyword(*this, m_databaseRequester));
-      m_pageRequester.reset(new database::sqlite::requesters::CPage(*this, m_databaseRequester));
-      m_widgetRequester.reset(new database::sqlite::requesters::CWidget(*this, m_databaseRequester));
-      m_pluginEventLoggerRequester.reset(new database::sqlite::requesters::CPluginEventLogger(*this, m_databaseRequester));
-      m_eventLoggerRequester.reset(new database::sqlite::requesters::CEventLogger(*this, m_databaseRequester));
-      m_acquisitionRequester.reset(new database::sqlite::requesters::CAcquisition(*this, m_databaseRequester));
+      m_pluginRequester.reset(new database::sqlite::requesters::CPlugin(this, m_databaseRequester));
+      m_configurationRequester.reset(new database::sqlite::requesters::CConfiguration(this, m_databaseRequester));
+      m_deviceRequester.reset(new database::sqlite::requesters::CDevice(this, m_databaseRequester));
+      m_keywordRequester.reset(new database::sqlite::requesters::CKeyword(this, m_databaseRequester));
+      m_pageRequester.reset(new database::sqlite::requesters::CPage(this, m_databaseRequester));
+      m_widgetRequester.reset(new database::sqlite::requesters::CWidget(this, m_databaseRequester));
+      m_pluginEventLoggerRequester.reset(new database::sqlite::requesters::CPluginEventLogger(this, m_databaseRequester));
+      m_eventLoggerRequester.reset(new database::sqlite::requesters::CEventLogger(this, m_databaseRequester));
+      m_acquisitionRequester.reset(new database::sqlite::requesters::CAcquisition(this, m_databaseRequester));
    }
 
 
@@ -151,16 +151,14 @@ namespace database { namespace sqlite {
 
    void CSQLiteDataProvider::backupData(const std::string & backupLocation, ProgressFunc reporter)
    {
-      int rc;                     /* Function return code */
       sqlite3 *pFile;             /* Database connection opened on zFilename */
-      sqlite3_backup *pBackup;    /* Backup handle used to copy data */
 
       /* Open the database file identified by zFilename. */
-      rc = sqlite3_open(backupLocation.c_str(), &pFile);
+      int rc = sqlite3_open(backupLocation.c_str(), &pFile);
       if( rc==SQLITE_OK )
       {
          /* Open the sqlite3_backup object used to accomplish the transfer */
-         pBackup = sqlite3_backup_init(pFile, "main", m_pDatabaseHandler, "main");
+         sqlite3_backup *pBackup = sqlite3_backup_init(pFile, "main", m_pDatabaseHandler, "main");
          if( pBackup )
          {
 

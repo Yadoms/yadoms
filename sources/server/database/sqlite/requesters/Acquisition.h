@@ -20,7 +20,7 @@ namespace database { namespace sqlite {
          /// \Brief		   Constructor
          /// \param [in]	pDatabaseHandler: the database handler
          //--------------------------------------------------------------
-         CAcquisition(const CSQLiteDataProvider & databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester);
+         CAcquisition(CSQLiteDataProvider * databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester);
 
          //--------------------------------------------------------------
          /// \Brief		   Destructor
@@ -28,13 +28,19 @@ namespace database { namespace sqlite {
          virtual ~CAcquisition();
 
          // IAcquisitionRequester implementation
+         virtual void saveData(const int keywordId, const std::string & data);
+         virtual void saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime);
+         virtual void removeKeywordData(const int keywordId);
+         virtual boost::shared_ptr< database::entities::CAcquisition > getAcquisitionById(const int acqId);   
+         virtual boost::shared_ptr< database::entities::CAcquisition > getKeywordLastData(const int keywordId);   
+         virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string>  > getKeywordData(int keywordId,  boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);   
          // [END] IAcquisitionRequester implementation
 
       private:
          //--------------------------------------------------------------
-         /// \Brief		   Reference to SQLiteDatabseHandler
+         /// \Brief		   Pointer to SQLiteDatabseHandler
          //--------------------------------------------------------------
-         const CSQLiteDataProvider & m_databaseHandler;
+         CSQLiteDataProvider * m_databaseHandler;
 
          //--------------------------------------------------------------
          /// \Brief		   Reference to SQLiteRequester

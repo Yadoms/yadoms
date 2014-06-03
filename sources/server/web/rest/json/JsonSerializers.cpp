@@ -81,6 +81,15 @@ namespace web { namespace rest { namespace json {
       ((Minimum)("minimum")JSON_DOUBLE)
       ((Maximum)("maximum")JSON_DOUBLE)
    )
+   
+
+
+   DECLARE_JSON_ENTITY_IMPLEMENTATION(Acquisition,  "Acquisition",
+      ((Id)("id")JSON_INT)
+      ((Date)("date")JSON_DATE)
+      ((KeywordId)("keywordId")JSON_INT)
+      ((Value)("value")JSON_STRING)
+   )
 
 } //namespace json
 } //namespace rest

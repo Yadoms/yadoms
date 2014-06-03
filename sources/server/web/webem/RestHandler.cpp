@@ -34,6 +34,7 @@ namespace web { namespace webem {
          if(restService.get() != NULL)
             restService->configureDispatcher(m_restDispatcher);
       }
+      m_restDispatcher.sortRestMethod();
    }
 
    std::vector<std::string> CRestHandler::parseUrl(const std::string & url)

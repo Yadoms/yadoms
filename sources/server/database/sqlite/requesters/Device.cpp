@@ -12,7 +12,7 @@
 
 namespace database {  namespace sqlite { namespace requesters { 
 
-   CDevice::CDevice(const CSQLiteDataProvider & databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
+   CDevice::CDevice(CSQLiteDataProvider * databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
       :m_databaseHandler(databaseHandler), m_databaseRequester(databaseRequester)
    {
    }
