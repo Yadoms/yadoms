@@ -4,6 +4,8 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include <shared/plugin/yadomsApi/Capacity.h>
 
+namespace yApi = shared::plugin::yadomsApi;
+
 //--------------------------------------------------------------
 /// \brief	Fake temperature sensor
 /// \note   Use to simulate a temperature sensor, with 2 variables values :
@@ -63,7 +65,7 @@ public:
    /// \brief	    Returns the device capacities
    /// \return     The list of device capacities
    //--------------------------------------------------------------
-   static const std::vector<shared::plugin::yadomsApi::CCapacity>& getCapacities();
+   static const std::vector<yApi::CCapacity>& getCapacities();
 
 private:
    //--------------------------------------------------------------
