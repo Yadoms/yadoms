@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "YadomsApiImplementation.h"
+#include <shared/FileSystemExtension.h>
 
 namespace pluginSystem
 {
 
 CYadomsApiImplementation::CYadomsApiImplementation(const boost::shared_ptr<database::entities::CPlugin> pluginData, boost::asio::io_service& pGlobalPluginIOService)
-   :m_pGlobalPluginIOService(pGlobalPluginIOService), m_pluginData(pluginData)
+   :m_informations(shared::CFileSystemExtension::getModulePath()), m_pGlobalPluginIOService(pGlobalPluginIOService), m_pluginData(pluginData)
 {
 }
       
@@ -39,6 +40,11 @@ void CYadomsApiImplementation::historizeData(const std::string & deviceName, con
 */
       
    //TODO : !
+}
+
+const shared::plugin::information::IInformation& CYadomsApiImplementation::getInformation() const
+{
+   return m_informations;
 }
 
 const std::string CYadomsApiImplementation::getConfiguration() const
