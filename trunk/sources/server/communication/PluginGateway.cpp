@@ -30,12 +30,12 @@ namespace communication {
       case kStartEvent: // Gateway started
          return;
       case shared::event::kTimeout:
-         BOOST_ASSERT_MSG(false, "Unable to start XPL gateway");
-         throw shared::exception::CException("Unable to start XPL gateway");
+         BOOST_ASSERT_MSG(false, "Unable to start plugin gateway");
+         throw shared::exception::CException("Unable to start plugin gateway");
          break;
       default:
-         BOOST_ASSERT_MSG(false, "XPL gateway : unknown event");
-         throw shared::exception::CException("XPL gateway : unknown event");
+         BOOST_ASSERT_MSG(false, "Plugin gateway : unknown event");
+         throw shared::exception::CException("Plugin gateway : unknown event");
          break;
       }
    }

@@ -5,7 +5,6 @@
 #include "command/DeviceCommand.h"
 #include "pluginSystem/Manager.h"
 #include "ISendMessageEventHandler.h"
-#include <shared/xpl/XplService.h>
 
 
 namespace communication {
