@@ -1,6 +1,5 @@
 #pragma once
-#include <shared/plugin/ImplementationHelper.h>
-#include <shared/event/EventHandler.hpp>
+#include <shared/plugin/IPlugin.h>
 #include "FakePluginConfiguration.h"
 
 //--------------------------------------------------------------
@@ -24,7 +23,7 @@ public:
    virtual ~CFakePlugin();
 
    // IPlugin implementation
-   virtual void doWork(boost::shared_ptr<shared::plugin::yadomsApi::IYadomsApi> yadoms);
+   virtual void doWork(boost::shared_ptr<shared::plugin::yadomsApi::IYadomsApi> yApi);
   // [END] IPlugin implementation
 
 private:

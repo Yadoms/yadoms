@@ -1,10 +1,6 @@
 #pragma once
 
 #include "IPlugin.h"
-#include "information/Information.h"
-#include <shared/Export.h>
-#include <shared/FileSystemExtension.h>
-#include <boost/shared_ptr.hpp>
 
 //--------------------------------------------------------------
 /// \brief		                  Plugin implementation helper
@@ -15,12 +11,4 @@
    EXPORT_LIBRARY_FUNCTION shared::plugin::IPlugin* construct()                                                            \
    {                                                                                                                       \
       return new pluginClassName();                                                                                        \
-   }                                                                                                                       \
-                                                                                                                           \
-   static boost::shared_ptr<const shared::plugin::information::CInformation> Informations;                                 \
-   EXPORT_LIBRARY_FUNCTION const shared::plugin::information::IInformation& getInformation()                               \
-   {                                                                                                                       \
-      if (!Informations)                                                                                                   \
-         Informations.reset(new shared::plugin::information::CInformation(shared::CFileSystemExtension::getModulePath())); \
-      return *Informations;                                                                                                \
    }

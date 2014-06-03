@@ -16,13 +16,13 @@ namespace shared { namespace plugin
 
       //--------------------------------------------------------------
       /// \brief              Main plugin function
-      /// \param [in]         yadoms  Plugin execution context (Yadoms API)
+      /// \param [in]         yApi  Plugin execution context (Yadoms API)
       /// \note               Do the work. This function runs in specific-thread context (independent from Yadoms main-thread).
       //                      Implementation should loop until end is asked by Yadoms.
       //                      Be careful to put some sleeps to prevent using too much system resources.
       //                      Use boost::this_thread::sleep as a watch stop point (a point where thread is able to stop).
       //--------------------------------------------------------------
-      virtual void doWork(boost::shared_ptr<shared::plugin::yadomsApi::IYadomsApi> yadoms) = 0;
+      virtual void doWork(boost::shared_ptr<shared::plugin::yadomsApi::IYadomsApi> yApi) = 0;
    };
 
 } } // namespace shared::plugin
