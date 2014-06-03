@@ -16,7 +16,7 @@ CInstance::CInstance(
    int pluginManagerEventId, 
    boost::asio::io_service& pluginIOService)
     : CThreadBase(pluginData->Name()), m_pPlugin(plugin), m_qualifier(qualifier), m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId),
-    m_api(new CYadomsApiImplementation(pluginData, pluginIOService))
+    m_context(new CYadomsApiImplementation(pluginData, pluginIOService))
 {
 	BOOST_ASSERT(m_pPlugin);
    m_pPluginInstance.reset(m_pPlugin->construct());
@@ -37,7 +37,7 @@ void CInstance::doWork()
    try
    {
       // Execute plugin code
-      m_pPluginInstance->doWork(m_api);
+      m_pPluginInstance->doWork(m_context);
 
       if (getStatus() == kStopping)
       {
@@ -72,15 +72,22 @@ void CInstance::doWork()
    }
 
    // Signal the abnormal stop
-   CManagerEvent event(CManagerEvent::kPluginInstanceAbnormalStopped, m_api->getInstanceId(), m_pPlugin->getInformation(), getStatus() == kStopping);
+   CManagerEvent event(CManagerEvent::kPluginInstanceAbnormalStopped, m_context->getInstanceId(), m_pPlugin->getInformation(), getStatus() == kStopping);
    m_supervisor.postEvent<CManagerEvent>(m_pluginManagerEventId, event);
+}
+
+void CInstance::postCommand(const communication::command::CDeviceCommand & message) const
+{
+   BOOST_ASSERT(m_context);
+   // Post event to the plugin
+   m_context->getEventHandler().postEvent<communication::command::CDeviceCommand>(shared::plugin::yadomsApi::IYadomsApi::kEventDeviceCommand, message);
 }
 
 void CInstance::updateConfiguration(const std::string& newConfiguration) const
 {
-   BOOST_ASSERT(m_api);
+   BOOST_ASSERT(m_context);
    // Post event to the plugin
-   m_api->getEventHandler().postEvent<std::string>(shared::plugin::yadomsApi::IYadomsApi::kEventUpdateConfiguration, newConfiguration);
+   m_context->getEventHandler().postEvent<std::string>(shared::plugin::yadomsApi::IYadomsApi::kEventUpdateConfiguration, newConfiguration);
 }
 
 const std::string CInstance::getPluginName() const

@@ -18,7 +18,7 @@ namespace communication { namespace command {
       //----------------------------------------------
       ///\brief Constructor
       //----------------------------------------------
-      CDeviceCommand(int deviceId, CommandData data, boost::shared_ptr<CCallback> callBack = boost::shared_ptr<CCallback>());
+      CDeviceCommand(int deviceId, const CommandData data, boost::shared_ptr<CCallback> callBack = boost::shared_ptr<CCallback>());
 
       //----------------------------------------------
       ///\brief Destructor
@@ -29,12 +29,12 @@ namespace communication { namespace command {
       //----------------------------------------------
       ///\brief Get the device id
       //----------------------------------------------
-      int getDeviceId();
+      int getDeviceId() const;
 
       //----------------------------------------------
       ///\brief Get the command data
       //----------------------------------------------
-      CommandData& getCommandData();
+      const CommandData& getCommandData() const;
 
       //--------------------------------------------------------------
       /// \brief	    Gets an human readable string of this instance
@@ -47,7 +47,7 @@ namespace communication { namespace command {
       /// \brief	    Get the callback (may be null if callback is not used)
       /// \return    the callback
       //--------------------------------------------------------------
-      boost::shared_ptr<CCallback> & getCallback();
+      const boost::shared_ptr<const CCallback> & getCallback() const;
 
    private:
 
@@ -59,12 +59,12 @@ namespace communication { namespace command {
       //----------------------------------------------
       ///\brief The command data
       //----------------------------------------------
-      CommandData m_commandData;
+      const CommandData m_commandData;
 
       //----------------------------------------------
       ///\brief The result callback
       //----------------------------------------------
-      boost::shared_ptr<CCallback> m_callBack;
+      boost::shared_ptr<const CCallback> m_callBack;
    };
 
 } //namespace command

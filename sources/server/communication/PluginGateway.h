@@ -3,6 +3,7 @@
 #include <shared/ThreadBase.h>
 #include <shared/event/EventHandler.hpp>
 #include "command/DeviceCommand.h"
+#include "pluginSystem/Manager.h"
 #include "ISendMessageEventHandler.h"
 #include <shared/xpl/XplService.h>
 
@@ -13,13 +14,15 @@ namespace communication {
    //----------------------------------------------
    ///\brief Class used to communicate with plugins
    //----------------------------------------------
-   class CPluginGateway : public shared::CThreadBase, public shared::event::CEventHandler, public ISendMessageAsync
+   class CPluginGateway : public shared::CThreadBase, public ISendMessageAsync
    {
    public:
       //----------------------------------------------
-      ///\brief Constructor
+      ///\brief                     Constructor
+      ///\param[in] dataProvider    The main data provider (access to database)
+      ///\param[in] pluginManager   The plugin manager
       //----------------------------------------------
-      CPluginGateway(boost::shared_ptr<database::IDataProvider> dataProvider);
+      CPluginGateway(boost::shared_ptr<database::IDataProvider> dataProvider, boost::shared_ptr<pluginSystem::CManager> pluginManager);
 
       //----------------------------------------------
       ///\brief Destructor
@@ -31,19 +34,9 @@ namespace communication {
       //--------------------------------------------------------------
       virtual void start();
 
-   private:
-      //----------------------------------------------
-      ///\brief Enumeration of events used by this class
-      //----------------------------------------------
-      enum
-      {
-         kXplMessageReceived = shared::event::kUserFirstId,
-         kXplSendMessage
-      };
-
    public:
       // ISendMessageAsync Implementation
-      void sendCommandAsync(command::CDeviceCommand & message);
+      void sendCommandAsync(const command::CDeviceCommand & message);
       // [END] ISendMessageAsync Implementation
 
    private:
@@ -64,9 +57,19 @@ namespace communication {
       boost::shared_ptr<database::IDataProvider> m_dataProvider;
 
       //----------------------------------------------
+      ///\brief  The plugin manager
+      //----------------------------------------------
+      boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
+
+      //----------------------------------------------
       ///\brief  The event handler used to wait for full gateway start
       //----------------------------------------------
-      shared::event::CEventHandler m_StartEventHandler;
+      shared::event::CEventHandler m_startEventHandler;
+
+      //----------------------------------------------
+      ///\brief  The main event handler, used to send/receive data from/to plugins
+      //----------------------------------------------
+      shared::event::CEventHandler m_mainEventHandler;
    };
 
 } //namespace communication

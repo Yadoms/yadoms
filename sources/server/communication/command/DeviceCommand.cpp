@@ -8,7 +8,7 @@ namespace communication { namespace command {
    //----------------------------------------------
    ///\brief Constructor
    //----------------------------------------------
-   CDeviceCommand::CDeviceCommand(int deviceId, CommandData data, boost::shared_ptr<CCallback> callBack)
+   CDeviceCommand::CDeviceCommand(int deviceId, const CommandData data, const boost::shared_ptr<CCallback> callBack)
       :m_deviceId(deviceId), m_commandData(data), m_callBack(callBack)
    {
    }
@@ -23,7 +23,7 @@ namespace communication { namespace command {
    //----------------------------------------------
    ///\brief Get the device id
    //----------------------------------------------
-   int CDeviceCommand::getDeviceId()
+   int CDeviceCommand::getDeviceId() const
    {
       return m_deviceId;
    }
@@ -31,7 +31,7 @@ namespace communication { namespace command {
    //----------------------------------------------
    ///\brief Get the command data
    //----------------------------------------------
-   CDeviceCommand::CommandData & CDeviceCommand::getCommandData()
+   const CDeviceCommand::CommandData & CDeviceCommand::getCommandData() const
    {
       return m_commandData;
    }
@@ -40,7 +40,7 @@ namespace communication { namespace command {
    /// \brief	    Get the callback (may be null if callback is not used)
    /// \return    the callback
    //--------------------------------------------------------------
-   boost::shared_ptr<CCallback> & CDeviceCommand::getCallback()
+   const boost::shared_ptr<const CCallback> & CDeviceCommand::getCallback() const
    {
       return m_callBack;
    }

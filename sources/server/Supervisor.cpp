@@ -61,14 +61,17 @@ void CSupervisor::doWork()
          hub->start();
       }
 
-      // Start Xpl Logger
-      communication::CPluginGateway pluginGateway(pDataProvider);
+      // Create the Plugin manager
+      boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(
+         m_startupOptions.getPluginsPath(), pDataProvider->getPluginRequester(), pDataProvider->getPluginEventLoggerRequester(),
+         pDataProvider->getEventLoggerRequester(), *this, kPluginManagerEvent));
+
+      // Start the plugin gateway
+      communication::CPluginGateway pluginGateway(pDataProvider, pluginManager);
       pluginGateway.start();
 
-      // Start Plugin manager
-      boost::shared_ptr<pluginSystem::CManager> pluginManager = pluginSystem::CManager::newManager(
-         m_startupOptions.getPluginsPath(), pDataProvider->getPluginRequester(), pDataProvider->getPluginEventLoggerRequester(),
-         pDataProvider->getEventLoggerRequester(), *this, kPluginManagerEvent);
+      // Start the plugin manager (start all plugin instances)
+      pluginManager->start();
 
       // Start Web server
       const std::string webServerIp = m_startupOptions.getWebServerIPAddress();
