@@ -142,8 +142,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\param    [in]    deviceName         The device name (must be unique)
       ///\param    [in]    capacities         The device capacity list
       ///\return true if the device has been successfully created, false if not
-      ///\throw   CAlreadyExistException if the device already exists
-      ///\throw   CBadParameterException if the plugin instance id is not known
+      ///\throw shared::exception::CInvalidParameter if the device already exists
       //-----------------------------------------------------   
       virtual bool declareNewDevice(const std::string & deviceName, const std::vector<CCapacity> & capacities) = 0;
       
@@ -260,7 +259,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\brief Get the global io_service
       ///\return A reference (non copyable) to the io_service
       //-----------------------------------------------------   
-      virtual boost::asio::io_service & getPluginsIoService() const = 0;
+      virtual boost::asio::io_service & getPluginsIoService() const = 0; //TODO à virer ?
 
 
       //----------------------------------------------------------------------------------------------------------------

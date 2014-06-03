@@ -11,12 +11,13 @@ namespace pluginSystem
 CInstance::CInstance(
    const boost::shared_ptr<const CFactory> plugin,
    const boost::shared_ptr<database::entities::CPlugin> pluginData,
+   boost::shared_ptr<database::IDeviceRequester> deviceRequester,
    const boost::shared_ptr<IQualifier> qualifier,
    shared::event::CEventHandler& supervisor,
    int pluginManagerEventId, 
    boost::asio::io_service& pluginIOService)
     : CThreadBase(pluginData->Name()), m_pPlugin(plugin), m_qualifier(qualifier), m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId),
-    m_context(new CYadomsApiImplementation(pluginData, pluginIOService))
+    m_context(new CYadomsApiImplementation(pluginData, deviceRequester, pluginIOService))
 {
 	BOOST_ASSERT(m_pPlugin);
    m_pPluginInstance.reset(m_pPlugin->construct());
@@ -72,7 +73,7 @@ void CInstance::doWork()
    }
 
    // Signal the abnormal stop
-   CManagerEvent event(CManagerEvent::kPluginInstanceAbnormalStopped, m_context->getInstanceId(), m_pPlugin->getInformation(), getStatus() == kStopping);
+   CManagerEvent event(CManagerEvent::kPluginInstanceAbnormalStopped, m_context->getPluginId(), m_pPlugin->getInformation(), getStatus() == kStopping);
    m_supervisor.postEvent<CManagerEvent>(m_pluginManagerEventId, event);
 }
 

@@ -38,6 +38,7 @@ namespace pluginSystem
       /// \param [in]   pluginDBTable           Database link to plugin
       /// \param [in]   pluginLoggerDBTable     Database link to plugin events
       /// \param [in]   mainLoggerDBTable       Database link to main events logger
+      /// \param [in]   deviceDBTable           Database link to devices
       /// \param [in]   supervisor     the supervisor event handler
       /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
       //--------------------------------------------------------------
@@ -46,6 +47,7 @@ namespace pluginSystem
          boost::shared_ptr<database::IPluginRequester> pluginDBTable,
          boost::shared_ptr<database::IPluginEventLoggerRequester> pluginLoggerDBTable,
          boost::shared_ptr<database::IEventLoggerRequester> mainLoggerDBTable,
+         boost::shared_ptr<database::IDeviceRequester> deviceDBTable,
          shared::event::CEventHandler& supervisor,
          int pluginManagerEventId);
 
@@ -230,6 +232,11 @@ namespace pluginSystem
       /// \brief			Main logger in database
       //--------------------------------------------------------------
       boost::shared_ptr<database::IEventLoggerRequester> m_mainLoggerDBTable;
+
+      //--------------------------------------------------------------
+      /// \brief			Devices in database
+      //--------------------------------------------------------------
+      boost::shared_ptr<database::IDeviceRequester> m_deviceDBTable;
 
       //--------------------------------------------------------------
       /// \brief			Plugin path
