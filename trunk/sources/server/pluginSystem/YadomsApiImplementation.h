@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
 #include <shared/plugin/information/Information.h>
+#include "database/IDeviceRequester.h"
 #include "database/entities/Entities.h"
 
 
@@ -13,10 +14,13 @@ namespace pluginSystem
    {
    public:
       //-----------------------------------------------------
-      ///\brief Constructor
-      //TODO commenter
+      ///\brief                                 Constructor
+      /// \param [in]   pluginData              the plugin data
+      /// \param [in]   deviceRequester         the device requester
+      /// \param [in]   pluginIOService         The global IO service, used for plugin
       //-----------------------------------------------------
-      CYadomsApiImplementation(const boost::shared_ptr<database::entities::CPlugin> pluginData, boost::asio::io_service& pGlobalPluginIOService);
+      CYadomsApiImplementation(const boost::shared_ptr<database::entities::CPlugin> pluginData,
+         boost::shared_ptr<database::IDeviceRequester> deviceRequester, boost::asio::io_service& pGlobalPluginIOService);
       
       //-----------------------------------------------------
       ///\brief Destructor
@@ -35,9 +39,9 @@ namespace pluginSystem
       // [END] IYadomsApi implementation 
       
       //-----------------------------------------------------
-      ///\brief Get instance ID
+      ///\brief Get the plugin instance ID
       //-----------------------------------------------------
-      virtual int getInstanceId() const;
+      virtual int getPluginId() const;
 
    private:
       //--------------------------------------------------------------
@@ -54,6 +58,11 @@ namespace pluginSystem
       /// \brief			The database accessor
       //--------------------------------------------------------------
       const boost::shared_ptr<database::entities::CPlugin> m_pluginData;
+
+      //--------------------------------------------------------------
+      /// \brief			The device requester
+      //--------------------------------------------------------------
+      boost::shared_ptr<database::IDeviceRequester> m_deviceRequester;
 
       //--------------------------------------------------------------
       /// \brief			The plugin event handler

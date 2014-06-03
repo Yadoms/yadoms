@@ -15,9 +15,11 @@ CManager::CManager(
    boost::shared_ptr<database::IPluginRequester> pluginDBTable,
    boost::shared_ptr<database::IPluginEventLoggerRequester> pluginLoggerDBTable,
    boost::shared_ptr<database::IEventLoggerRequester> mainLoggerDBTable,
+   boost::shared_ptr<database::IDeviceRequester> deviceDBTable,
    shared::event::CEventHandler& supervisor,
    int pluginManagerEventId)
-   :m_pluginDBTable(pluginDBTable), m_mainLoggerDBTable(mainLoggerDBTable), m_pluginPath(initialDir), m_qualifier(new CQualifier(pluginLoggerDBTable, mainLoggerDBTable)),
+   :m_pluginDBTable(pluginDBTable), m_mainLoggerDBTable(mainLoggerDBTable), m_deviceDBTable(deviceDBTable),
+   m_pluginPath(initialDir), m_qualifier(new CQualifier(pluginLoggerDBTable, mainLoggerDBTable)),
    m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId)
 {
    BOOST_ASSERT(m_pluginDBTable);
@@ -344,7 +346,9 @@ void CManager::startInstance(int id)
 
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
-      boost::shared_ptr<CInstance> pluginInstance(new CInstance(plugin, databasePluginInstance, m_qualifier, m_supervisor, m_pluginManagerEventId, m_pluginIOService));
+      boost::shared_ptr<CInstance> pluginInstance(new CInstance(
+         plugin, databasePluginInstance, m_deviceDBTable,
+         m_qualifier, m_supervisor, m_pluginManagerEventId, m_pluginIOService));
       m_runningInstances[databasePluginInstance->Id()] = pluginInstance;
    }
    catch (CInvalidPluginException& e)

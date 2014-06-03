@@ -43,7 +43,7 @@ namespace database {  namespace sqlite { namespace requesters {
 
    boost::shared_ptr<database::entities::CDevice> CDevice::getDevice(const int pluginId, const std::string & name)
    {
-      //serach for sucgh a device
+      //search for such a device
       CQuery qSelect;
       qSelect. Select().
          From(CDeviceTable::getTableName()).
