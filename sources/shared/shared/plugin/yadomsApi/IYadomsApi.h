@@ -101,6 +101,8 @@ namespace shared { namespace plugin { namespace yadomsApi
          std::string m_targetDeviceName;
 
       public:
+         CDeviceCommand(){}
+         virtual ~CDeviceCommand(){}
          std::string toString() const
          {
             // Full informations = identity + author name + url
