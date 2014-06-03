@@ -83,10 +83,12 @@ namespace web { namespace rest { namespace json {
       (Maximum)
    )
 
-
-
-
-
+   DECLARE_JSON_ENTITY_HEADER(Acquisition,
+      (Id)
+      (Date)
+      (KeywordId)
+      (Value)
+   )
 
 } //namespace json
 } //namespace rest

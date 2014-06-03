@@ -12,9 +12,10 @@
 
 namespace database { namespace sqlite { namespace requesters { 
 
-   CKeyword::CKeyword(const CSQLiteDataProvider & databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
+   CKeyword::CKeyword(CSQLiteDataProvider * databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
       :m_databaseHandler(databaseHandler), m_databaseRequester(databaseRequester)
    {
+      BOOST_ASSERT(m_databaseHandler != NULL);
    }
 
    CKeyword::~CKeyword()
@@ -41,7 +42,7 @@ namespace database { namespace sqlite { namespace requesters {
 
          if(m_databaseRequester->queryStatement(qInsert) <= 0)
             throw shared::exception::CEmptyResult("Fail to insert keyword into table");
-         
+
          //update fields
          if(newKeyword->FriendlyName.isDefined())
          {
@@ -114,6 +115,25 @@ namespace database { namespace sqlite { namespace requesters {
       return adapter.getResults().at(0);
    }
 
+   boost::shared_ptr<entities::CKeyword> CKeyword::getKeyword(const int keywordId)
+   {
+      database::sqlite::adapters::CKeywordAdapter adapter;
+
+      CQuery qSelect;
+      qSelect. Select().
+         From(CKeywordTable::getTableName()).
+         Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
+
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CKeyword> >(&adapter, qSelect);
+      if (adapter.getResults().empty())
+      {
+         // Keyword not found
+         std::string sEx = (boost::format("Keyword id %1% not found in database") % keywordId).str(); 
+         throw shared::exception::CException(sEx);
+      }
+      return adapter.getResults().at(0);
+   }
+
    std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeyword::getKeywords(const int deviceId)
    {
       database::sqlite::adapters::CKeywordAdapter adapter;
@@ -142,32 +162,50 @@ namespace database { namespace sqlite { namespace requesters {
 
    void CKeyword::removeKeyword(const int deviceId, const std::string & keyword)
    {
+      boost::shared_ptr<database::entities::CKeyword> keywordToDelete = getKeyword(deviceId, keyword);
+      if(keywordToDelete)
+         removeKeyword(keywordToDelete->Id());
+      else
+         throw shared::exception::CEmptyResult("Can not find keyword");
+   }
+
+   void CKeyword::removeKeyword(const int keywordId)
+   {
+      //delete acquisition data
+      m_databaseHandler->getAcquisitionRequester()->removeKeywordData(keywordId);
+
+      //delete keyword
       CQuery qDelete;
       qDelete. DeleteFrom(CKeywordTable::getTableName()).
-         Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, deviceId).
-         And(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
+         Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
       if(m_databaseRequester->queryStatement(qDelete) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
    }
 
-
-   void CKeyword::updateKeywordFriendlyName(const int deviceId, const std::string & keyword, const std::string & newFriendlyName)
+   void CKeyword::updateKeywordFriendlyName(const int keywordId, const std::string & newFriendlyName)
    {
       //get a good name
       if(newFriendlyName != shared::CStringExtension::EmptyString)
       {
-      //insert in db
-      CQuery qUpdate;
-      qUpdate. Update(CKeywordTable::getTableName()).
-         Set(CKeywordTable::getFriendlyNameColumnName(), newFriendlyName).
-         Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, deviceId).
-         And(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, keyword);
+         //insert in db
+         CQuery qUpdate;
+         qUpdate. Update(CKeywordTable::getTableName()).
+            Set(CKeywordTable::getFriendlyNameColumnName(), newFriendlyName).
+            Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
 
-      if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-         throw shared::exception::CEmptyResult("Fail to update keyword friendlyName");
+         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+            throw shared::exception::CEmptyResult("Fail to update keyword friendlyName");
 
       }
+   }
 
+   void CKeyword::updateKeywordFriendlyName(const int deviceId, const std::string & keyword, const std::string & newFriendlyName)
+   {
+      boost::shared_ptr<database::entities::CKeyword> keywordToUpdate = getKeyword(deviceId, keyword);
+      if(keywordToUpdate)
+         updateKeywordFriendlyName(keywordToUpdate->Id(), keyword, newFriendlyName);
+      else
+         throw shared::exception::CEmptyResult("Can not find keyword");
    }
    // [END] IKeywordRequester implementation
 

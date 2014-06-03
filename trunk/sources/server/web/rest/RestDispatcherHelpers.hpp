@@ -6,7 +6,7 @@
 
 
 #define DECLARE_URL_PATTERN(_seq)\
-CRestDispatcher::CUrlPattern temp; \
+   std::vector<std::string> temp; \
    BOOST_PP_SEQ_FOR_EACH_I(ADD_URL_PATTERN, _var, _seq)
 
 #define REGISTER_HANDLER(dispatcher, reqType, pattern, method) \

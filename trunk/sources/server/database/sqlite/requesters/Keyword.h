@@ -20,7 +20,7 @@ namespace database { namespace sqlite {
          /// \Brief		   Constructor
          /// \param [in]	pDatabaseHandler: the database handler
          //--------------------------------------------------------------
-         CKeyword(const CSQLiteDataProvider & databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester);
+         CKeyword(CSQLiteDataProvider * databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester);
 
          //--------------------------------------------------------------
          /// \Brief		   Destructor
@@ -30,17 +30,21 @@ namespace database { namespace sqlite {
          // IKeywordRequester implementation
          virtual void addKeyword(boost::shared_ptr<database::entities::CKeyword> newKeyword);
          virtual boost::shared_ptr<database::entities::CKeyword> getKeyword(const int deviceId, const std::string & keyword);
+         virtual boost::shared_ptr<entities::CKeyword> getKeyword(const int keywordId);
          virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getKeywords(const int deviceId);
          virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getDeviceKeywordsWithCapacity(const int deviceId, const std::string & capacityName, const database::entities::ECapacityAccessMode capacityAccessMode);
          virtual void removeKeyword(const int deviceId, const std::string & keyword);
+         virtual void removeKeyword(const int keywordId);
          virtual void updateKeywordFriendlyName(const int deviceId, const std::string & keyword, const std::string & newFriendlyName);
+         virtual void updateKeywordFriendlyName(const int keywordId, const std::string & newFriendlyName);
+
          // [END] IKeywordRequester implementation
 
       private:
          //--------------------------------------------------------------
-         /// \Brief		   Reference to SQLiteDatabseHandler
+         /// \Brief		   Pointer to SQLiteDatabseHandler
          //--------------------------------------------------------------
-         const CSQLiteDataProvider & m_databaseHandler;
+         CSQLiteDataProvider * m_databaseHandler;
 
          //--------------------------------------------------------------
          /// \Brief		   Reference to SQLiteRequester

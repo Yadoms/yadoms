@@ -19,7 +19,7 @@ namespace database { namespace sqlite {
          /// \Brief		   Constructor
          /// \param [in]	pDatabaseHandler: the database handler
          //--------------------------------------------------------------
-         CConfiguration(const CSQLiteDataProvider & databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester);
+         CConfiguration(CSQLiteDataProvider * databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester);
 
          //--------------------------------------------------------------
          /// \Brief		   Destructor
@@ -37,9 +37,9 @@ namespace database { namespace sqlite {
 
       private:
          //--------------------------------------------------------------
-         /// \Brief		   Reference to SQLiteDatabseHandler
+         /// \Brief		   Pointer to SQLiteDatabseHandler
          //--------------------------------------------------------------
-         const CSQLiteDataProvider & m_databaseHandler;
+         CSQLiteDataProvider * m_databaseHandler;
 
          //--------------------------------------------------------------
          /// \Brief		   Reference to SQLiteRequester

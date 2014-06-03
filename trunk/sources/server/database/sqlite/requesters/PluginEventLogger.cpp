@@ -11,7 +11,7 @@
 
 namespace database { namespace sqlite { namespace requesters { 
 
-   CPluginEventLogger::CPluginEventLogger(const CSQLiteDataProvider & databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
+   CPluginEventLogger::CPluginEventLogger(CSQLiteDataProvider * databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
       :m_databaseHandler(databaseHandler), m_databaseRequester(databaseRequester)
    {
    }
