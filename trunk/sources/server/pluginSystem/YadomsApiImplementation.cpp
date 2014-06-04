@@ -9,8 +9,8 @@ namespace pluginSystem
 {
 
 CYadomsApiImplementation::CYadomsApiImplementation(const boost::shared_ptr<database::entities::CPlugin> pluginData,
-   boost::shared_ptr<database::IDeviceRequester> deviceRequester)
-   :m_informations(shared::CFileSystemExtension::getModulePath()), m_pluginData(pluginData), m_deviceRequester(deviceRequester)
+   boost::shared_ptr<database::IDeviceRequester> deviceRequester, boost::shared_ptr<database::IKeywordRequester> keywordRequester, boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester)
+   :m_informations(shared::CFileSystemExtension::getModulePath()), m_pluginData(pluginData), m_deviceRequester(deviceRequester), m_keywordRequester(keywordRequester), m_acquisitionRequester(acquisitionRequester)
 {
 }
       
@@ -18,36 +18,33 @@ CYadomsApiImplementation::~CYadomsApiImplementation()
 {
 }
 
-bool CYadomsApiImplementation::deviceExists(const std::string & deviceName)
+bool CYadomsApiImplementation::deviceExists(const std::string& device) const
 {
-   return !!m_deviceRequester->getDevice(getPluginId(), deviceName);
+   return !!m_deviceRequester->getDevice(getPluginId(), device);
 }
 
-bool CYadomsApiImplementation::declareNewDevice(const std::string & deviceName, const std::vector<shared::plugin::yadomsApi::CCapacity> & capacities)
+bool CYadomsApiImplementation::declareDevice(const std::string& device, const std::string& model)
 {
-   if (deviceExists(deviceName))
-      throw shared::exception::CInvalidParameter(deviceName);
-
-   try
-   {
-      m_deviceRequester->createDevice(getPluginId(), deviceName, deviceName);
-   }
-   catch (shared::exception::CEmptyResult& e)
-   {
-      YADOMS_LOG(error) << "Fail to create " << deviceName << " device : " << e.what();
+   if (deviceExists(device))
       return false;
-   }
 
+   m_deviceRequester->createDevice(getPluginId(), device, device, model);
    return true;
 }
       
-void CYadomsApiImplementation::historizeData(const std::string & deviceName, const std::string & keyword, const shared::plugin::yadomsApi::CCapacity & capacity, const std::string & value)
+void CYadomsApiImplementation::historizeData(const std::string & device, const std::string & keyword, const std::string & value)
 {
-/*
-   using the database requester save new capacity value
-*/
-      
-   //TODO : !
+   try
+   {
+      boost::shared_ptr<database::entities::CDevice> deviceEntity = m_deviceRequester->getDevice(getPluginId(), device);
+      boost::shared_ptr<database::entities::CKeyword> keywordEntity = m_keywordRequester->getKeyword(deviceEntity->Id, keyword);
+
+      m_acquisitionRequester->saveData(keywordEntity->Id, value);
+   }
+   catch (shared::exception::CEmptyResult& e)
+   {
+      YADOMS_LOG(error) << "Error historizing data, device or keyword not found : " << e.what();
+   }
 }
 
 const shared::plugin::information::IInformation& CYadomsApiImplementation::getInformation() const

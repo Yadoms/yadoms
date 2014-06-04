@@ -103,7 +103,7 @@ namespace sqlite {
       boost::shared_ptr<database::sqlite::requesters::CEventLogger> m_eventLoggerRequester;
 
       //--------------------------------------------------------------
-      /// \Brief		XplMessage requester
+      /// \Brief		Acquisition requester
       //--------------------------------------------------------------
       boost::shared_ptr<database::sqlite::requesters::CAcquisition> m_acquisitionRequester;
       

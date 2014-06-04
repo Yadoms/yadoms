@@ -13,6 +13,8 @@
 #include "YadomsApiImplementation.h"
 #include "database/entities/Entities.h"
 #include "database/IDeviceRequester.h"
+#include "database/IKeywordRequester.h"
+#include "database/IAcquisitionRequester.h"
 #include "communication/command/DeviceCommand.h"
 
 namespace pluginSystem
@@ -29,12 +31,15 @@ namespace pluginSystem
       /// \param [in]	plugin                  the plugin used for this instance
       /// \param [in]   pluginData              the database entity
       /// \param [in]   deviceRequester         the device requester
+      /// \param [in]   keywordRequester        the keyword requester
+      /// \param [in]   acquisitionRequester    the acquisition requester
       /// \param [in]   qualifier               the plugin qualifier
       /// \param [in]   supervisor              the supervisor event handler
       /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
       //--------------------------------------------------------------
       CInstance(const boost::shared_ptr<const CFactory> plugin, const boost::shared_ptr<database::entities::CPlugin> pluginData,
-         boost::shared_ptr<database::IDeviceRequester> deviceRequester, const boost::shared_ptr<IQualifier> qualifier,
+         boost::shared_ptr<database::IDeviceRequester> deviceRequester, boost::shared_ptr<database::IKeywordRequester> keywordRequester,
+         boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester, const boost::shared_ptr<IQualifier> qualifier,
          shared::event::CEventHandler& supervisor, int pluginManagerEventId);
 
       //--------------------------------------------------------------

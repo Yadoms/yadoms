@@ -11,7 +11,7 @@ namespace database { namespace sqlite {
    namespace requesters { 
 
       //--------------------------------------------------------------
-      /// \Brief		   XplMessage requester for SQLite database
+      /// \Brief		   Acquisition requester for SQLite database
       //--------------------------------------------------------------
       class CAcquisition: public IAcquisitionRequester
       {

@@ -12,7 +12,7 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief                 Get device informations
       /// \param [in] deviceId   Device Id
-      /// \throw                 CInvalidParameter if deviceId is unknown
+      /// \throw                 shared::exception::CEmptyResult if deviceId is unknown
       //--------------------------------------------------------------
       virtual boost::shared_ptr<entities::CDevice> getDevice(int deviceId) = 0;
 
@@ -21,7 +21,7 @@ namespace database {
       /// \param [in] pluginId            The pluginId
       /// \param [in] name                The device name (plugin internal name)
       /// \return                         The device found (null if not found)
-      /// \throw  shared::exception::CEmptyResult if fails
+      /// \throw                          shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
       virtual boost::shared_ptr<entities::CDevice> getDevice(const int pluginId, const std::string & name) = 0;
 
@@ -40,10 +40,11 @@ namespace database {
       /// \param [in] pluginId            The pluginId
       /// \param [in] name                The device name (plugin internal name)
       /// \param [in] friendlyName        The user friendly device name
+      /// \param [in] model               The device model or description (ex : "Oregon Scientific CN185")
       /// \return                         The device created (null if creation failed)
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CDevice> createDevice(int pluginId, const std::string & name, const std::string & friendlyName) = 0;
+      virtual boost::shared_ptr<entities::CDevice> createDevice(int pluginId, const std::string & name, const std::string & friendlyName, const std::string & model) = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all devices

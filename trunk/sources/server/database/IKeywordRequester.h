@@ -11,7 +11,7 @@ namespace database {
       //--------------------------------------------------------------
       /// \brief                    Add new keyword
       /// \param [in] newKeywords   New keyword informations
-      /// \throw                    shared::exception::CEmptyResult if fails
+      /// \throw                    shared::exception::CEmptyResult if deviceId is unknown
       //--------------------------------------------------------------
       virtual void addKeyword(boost::shared_ptr<entities::CKeyword> newKeyword) = 0;
 
@@ -19,7 +19,7 @@ namespace database {
       /// \brief           Get a keyword
       /// \param [in]      deviceId   the device which own the keyword
       /// \param [in]      keyword   the keyword to get
-      /// \throw           CInvalidParameter if keyword is unknown
+      /// \throw           shared::exception::CEmptyResult if deviceId is unknown
       //--------------------------------------------------------------
       virtual boost::shared_ptr<entities::CKeyword> getKeyword(const int deviceId, const std::string & keyword) = 0;
 

@@ -8,7 +8,7 @@ namespace shared { namespace plugin { namespace yadomsApi
    //--------------------------------------------------------------
    /// \brief		Standard capacities
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CStandardCapacities
+   class YADOMS_SHARED_EXPORT CStandardCapacities //TODO utile ?
    {
    public:
       //--------------------------------------------------------------

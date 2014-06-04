@@ -2,6 +2,8 @@
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
 #include <shared/plugin/information/Information.h>
 #include "database/IDeviceRequester.h"
+#include "database/IKeywordRequester.h"
+#include "database/IAcquisitionRequester.h"
 #include "database/entities/Entities.h"
 
 
@@ -17,9 +19,13 @@ namespace pluginSystem
       ///\brief                                 Constructor
       /// \param [in]   pluginData              the plugin data
       /// \param [in]   deviceRequester         the device requester
+      /// \param [in]   keywordRequester        the keyword requester
+      /// \param [in]   acquisitionRequester    the acquisition requester
       //-----------------------------------------------------
       CYadomsApiImplementation(const boost::shared_ptr<database::entities::CPlugin> pluginData,
-         boost::shared_ptr<database::IDeviceRequester> deviceRequester);
+         boost::shared_ptr<database::IDeviceRequester> deviceRequester,
+         boost::shared_ptr<database::IKeywordRequester> keywordRequester,
+         boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester);
       
       //-----------------------------------------------------
       ///\brief Destructor
@@ -27,9 +33,9 @@ namespace pluginSystem
       virtual ~CYadomsApiImplementation();
 
       // IYadomsApi implementation 
-      virtual bool deviceExists(const std::string & deviceName);
-      virtual bool declareNewDevice(const std::string & deviceName, const std::vector<shared::plugin::yadomsApi::CCapacity> & capacities);
-      virtual void historizeData(const std::string & deviceName, const std::string & keyword, const shared::plugin::yadomsApi::CCapacity & capacity, const std::string & value);
+      virtual bool deviceExists(const std::string& device) const;
+      virtual bool declareDevice(const std::string& device, const std::string& model);
+      virtual void historizeData(const std::string & device, const std::string & keyword, const std::string & value);
       virtual const shared::plugin::information::IInformation& getInformation() const;
       virtual const std::string getConfiguration() const;
       virtual bool recordPluginEvent(PluginEventSeverity severity, const std::string & message);
@@ -56,6 +62,16 @@ namespace pluginSystem
       /// \brief			The device requester
       //--------------------------------------------------------------
       boost::shared_ptr<database::IDeviceRequester> m_deviceRequester;
+
+      //--------------------------------------------------------------
+      /// \brief			The keyword requester
+      //--------------------------------------------------------------
+      boost::shared_ptr<database::IKeywordRequester> m_keywordRequester;
+
+      //--------------------------------------------------------------
+      /// \brief			The Acquisition requester
+      //--------------------------------------------------------------
+      boost::shared_ptr<database::IAcquisitionRequester> m_acquisitionRequester;
 
       //--------------------------------------------------------------
       /// \brief			The plugin event handler

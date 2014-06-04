@@ -8,6 +8,7 @@
 #include "Factory.h"
 #include "Instance.h"
 #include "ManagerEvent.h"
+#include "database/IDataProvider.h"
 #include "database/IPluginRequester.h"
 #include "database/IPluginEventLoggerRequester.h"
 #include "database/IEventLoggerRequester.h"
@@ -35,19 +36,13 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Constructor (protected, use newManager to create instance)
       /// \param [in]   initialDir initial plugins search directory
-      /// \param [in]   pluginDBTable           Database link to plugin
-      /// \param [in]   pluginLoggerDBTable     Database link to plugin events
-      /// \param [in]   mainLoggerDBTable       Database link to main events logger
-      /// \param [in]   deviceDBTable           Database link to devices
+      /// \param [in]   dataProvider            Database link
       /// \param [in]   supervisor     the supervisor event handler
       /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
       //--------------------------------------------------------------
       CManager(
          const std::string & initialDir,
-         boost::shared_ptr<database::IPluginRequester> pluginDBTable,
-         boost::shared_ptr<database::IPluginEventLoggerRequester> pluginLoggerDBTable,
-         boost::shared_ptr<database::IEventLoggerRequester> mainLoggerDBTable,
-         boost::shared_ptr<database::IDeviceRequester> deviceDBTable,
+         boost::shared_ptr<database::IDataProvider> dataProvider,
          shared::event::CEventHandler& supervisor,
          int pluginManagerEventId);
 
@@ -219,19 +214,14 @@ namespace pluginSystem
       PluginInstanceMap m_runningInstances;
 
       //--------------------------------------------------------------
-      /// \brief			Plugins in database
+      /// \brief			Global database accessor
+      //--------------------------------------------------------------
+      boost::shared_ptr<database::IDataProvider> m_dataProvider;
+
+      //--------------------------------------------------------------
+      /// \brief			Shortcut to plugins in database
       //--------------------------------------------------------------
       boost::shared_ptr<database::IPluginRequester> m_pluginDBTable;
-
-      //--------------------------------------------------------------
-      /// \brief			Main logger in database
-      //--------------------------------------------------------------
-      boost::shared_ptr<database::IEventLoggerRequester> m_mainLoggerDBTable;
-
-      //--------------------------------------------------------------
-      /// \brief			Devices in database
-      //--------------------------------------------------------------
-      boost::shared_ptr<database::IDeviceRequester> m_deviceDBTable;
 
       //--------------------------------------------------------------
       /// \brief			Plugin path

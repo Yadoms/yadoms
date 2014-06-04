@@ -18,7 +18,7 @@ namespace communication { namespace command {
       //----------------------------------------------
       ///\brief Constructor
       //----------------------------------------------
-      CDeviceCommand(int deviceId, const CommandData data, boost::shared_ptr<CCallback> callBack = boost::shared_ptr<CCallback>());
+      CDeviceCommand(int deviceId, const CommandData& data, boost::shared_ptr<CCallback> callBack = boost::shared_ptr<CCallback>());
 
       //----------------------------------------------
       ///\brief Destructor

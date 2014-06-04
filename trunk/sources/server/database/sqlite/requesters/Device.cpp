@@ -30,15 +30,10 @@ namespace database {  namespace sqlite { namespace requesters {
 
       database::sqlite::adapters::CDeviceAdapter adapter;
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
-      if(adapter.getResults().size() >= 1)
-      {
-         return adapter.getResults()[0];
-      }
-      else
-      {
-         std::string sEx = (boost::format("Cannot retrieve Device Id=%1% in database") % deviceId).str(); 
-         throw shared::exception::CEmptyResult(sEx);
-      }
+      if(adapter.getResults().empty())
+         throw shared::exception::CEmptyResult((boost::format("Cannot retrieve Device Id=%1% in database") % deviceId).str());
+
+      return adapter.getResults()[0];
    }
 
    boost::shared_ptr<database::entities::CDevice> CDevice::getDevice(const int pluginId, const std::string & name)
@@ -52,16 +47,10 @@ namespace database {  namespace sqlite { namespace requesters {
 
       database::sqlite::adapters::CDeviceAdapter adapter;
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
-      if(adapter.getResults().size() >= 1)
-      {
-         //the device is found, return its entity
-         return adapter.getResults()[0];
-      }
-      else
-      {
-         std::string sEx = (boost::format("Cannot retrieve Device name=%1% for plugin=%2%") % name % pluginId).str(); 
-         throw shared::exception::CEmptyResult(sEx);
-      }
+      if(adapter.getResults().empty())
+         throw shared::exception::CEmptyResult((boost::format("Cannot retrieve Device Id=%1% in database") % name).str());
+
+      return adapter.getResults()[0];
    }
 
    std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacity(const std::string & capacityName, const database::entities::ECapacityAccessMode capacityAccessMode)
@@ -83,7 +72,7 @@ namespace database {  namespace sqlite { namespace requesters {
    }
 
 
-   boost::shared_ptr<database::entities::CDevice> CDevice::createDevice(int pluginId, const std::string & name, const std::string & friendlyName)
+   boost::shared_ptr<database::entities::CDevice> CDevice::createDevice(int pluginId, const std::string & name, const std::string & friendlyName, const std::string & model)
    {
       if(getDevice(pluginId, name))
       {
@@ -101,7 +90,7 @@ namespace database {  namespace sqlite { namespace requesters {
          //insert in db
          CQuery qInsert;
          qInsert. InsertInto(CDeviceTable::getTableName(), CDeviceTable::getPluginIdColumnName(), CDeviceTable::getNameColumnName(), CDeviceTable::getFriendlyNameColumnName()).
-            Values(pluginId, name, realFriendlyName);
+            Values(pluginId, name, realFriendlyName);//TODO : ajouter model
          if(m_databaseRequester->queryStatement(qInsert) <= 0)
             throw shared::exception::CEmptyResult("Fail to insert new device");
 
