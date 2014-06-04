@@ -27,7 +27,9 @@ namespace database {  namespace sqlite {  namespace requesters {
    // IAcquisitionRequester implementation
    void CAcquisition::saveData(const int keywordId, const std::string & data)
    {
-      saveData(keywordId, data, boost::posix_time::second_clock::universal_time());
+      //use ptime as variable, because saveData needs a reference
+      boost::posix_time::ptime currentDate = boost::posix_time::second_clock::universal_time();
+      saveData(keywordId, data, currentDate);
    }
 
 
