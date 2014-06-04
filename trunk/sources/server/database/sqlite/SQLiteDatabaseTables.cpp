@@ -69,18 +69,17 @@ namespace sqlite {
       ((PluginId)("pluginId"))
       ((Name)("name"))
       ((FriendlyName)("friendlyName"))
+      ((Model)("model"))
    )
 
    DECLARE_TABLE_COLUMN_NAMES(Keyword,  "Keyword",
       ((Id)("id"))
       ((DeviceId)("deviceId"))
       ((CapacityName)("capacityName"))
-      ((CapacityAccessMode)("capacityAccessMode"))
+      ((AccessMode)("accessMode"))
       ((Name)("name"))
       ((FriendlyName)("friendlyName"))
-      ((Units)("units"))
-      ((Minimum)("minimum"))
-      ((Maximum)("maximum"))
+      ((Details)("details"))
    )
 
    DECLARE_TABLE_COLUMN_NAMES(Acquisition, "Acquisition",

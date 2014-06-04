@@ -77,7 +77,8 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Device, "  CREATE TABLE Device             
                                                    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
                                                    pluginId INTEGER NOT NULL,                                     \
                                                    name TEXT NOT NULL,                                            \
-                                                   friendlyName TEXT NOT NULL                                     \
+                                                   friendlyName TEXT NOT NULL,                                    \
+                                                   model TEXT                                                     \
                                                 )")
 
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Keyword, " CREATE TABLE Keyword                                              \
@@ -85,12 +86,10 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Keyword, " CREATE TABLE Keyword            
                                                    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
                                                    deviceId INTEGER NOT NULL,                                     \
                                                    capacityName TEXT NOT NULL,                                    \
-                                                   capacityAccessMode INTEGER NOT NULL,                           \
+                                                   accessMode INTEGER NOT NULL,                                   \
                                                    name TEXT NOT NULL,                                            \
                                                    friendlyName TEXT,                                             \
-                                                   units TEXT,                                                    \
-                                                   minimum FLOAT,                                                 \
-                                                   maximum FLOAT                                                  \
+                                                   details TEXT                                                   \
                                                 )")                                                               
 
 

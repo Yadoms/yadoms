@@ -32,7 +32,7 @@ namespace database { namespace sqlite {
          virtual boost::shared_ptr<database::entities::CKeyword> getKeyword(const int deviceId, const std::string & keyword);
          virtual boost::shared_ptr<entities::CKeyword> getKeyword(const int keywordId);
          virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getKeywords(const int deviceId);
-         virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getDeviceKeywordsWithCapacity(const int deviceId, const std::string & capacityName, const database::entities::ECapacityAccessMode capacityAccessMode);
+         virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getDeviceKeywordsWithCapacity(const int deviceId, const std::string & capacityName, const database::entities::ECapacityAccessMode accessMode);
          virtual void removeKeyword(const int deviceId, const std::string & keyword);
          virtual void removeKeyword(const int keywordId);
          virtual void updateKeywordFriendlyName(const int deviceId, const std::string & keyword, const std::string & newFriendlyName);

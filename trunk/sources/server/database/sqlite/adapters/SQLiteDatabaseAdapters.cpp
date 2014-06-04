@@ -73,18 +73,17 @@ namespace adapters {
       ((PluginId)(int)(0))
       ((Name)(std::string)(""))
       ((FriendlyName)(std::string)(""))
+      ((Model)(std::string)(""))
    )
 
    DECLARE_ADAPTER_IMPLEMENTATION(Keyword,
       ((Id)(int)(0))
       ((DeviceId)(int)(0))
       ((CapacityName)(std::string)(""))
-      ((CapacityAccessMode)(database::entities::ECapacityAccessMode)(database::entities::kNoAccess)(int))
+      ((AccessMode)(database::entities::ECapacityAccessMode)(database::entities::kNoAccess)(int))
       ((Name)(std::string)(""))
       ((FriendlyName)(std::string)(""))
-      ((Units)(std::string)(""))
-      ((Minimum)(double)(0))
-      ((Maximum)(double)(0))
+      ((Details)(std::string)(""))
    )
 
 

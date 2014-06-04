@@ -68,18 +68,17 @@ namespace sqlite {
       (PluginId)
       (Name)
       (FriendlyName)
+      (Model)
    )
 
    DECLARE_TABLE(Keyword,
       (Id)
       (DeviceId)
       (CapacityName)
-      (CapacityAccessMode)
+      (AccessMode)
       (Name)
       (FriendlyName)
-      (Units)
-      (Minimum)
-      (Maximum)
+      (Details)
    )
 
    DECLARE_TABLE(Acquisition,

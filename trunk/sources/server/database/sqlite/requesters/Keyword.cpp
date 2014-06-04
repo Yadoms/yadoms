@@ -37,56 +37,36 @@ namespace database { namespace sqlite { namespace requesters {
       {
          //create the database entry with needed fields
          CQuery qInsert;
-         qInsert.InsertInto(CKeywordTable::getTableName(), CKeywordTable::getDeviceIdColumnName(), CKeywordTable::getCapacityNameColumnName(), CKeywordTable::getCapacityAccessModeColumnName(), CKeywordTable::getNameColumnName()).
-            Values(newKeyword->DeviceId(), newKeyword->CapacityName(), newKeyword->CapacityAccessMode(), newKeyword->Name());
+         qInsert.InsertInto(CKeywordTable::getTableName(), CKeywordTable::getDeviceIdColumnName(), CKeywordTable::getCapacityNameColumnName(), CKeywordTable::getAccessModeColumnName(), CKeywordTable::getNameColumnName()).
+            Values(newKeyword->DeviceId(), newKeyword->CapacityName(), newKeyword->AccessMode(), newKeyword->Name());
 
          if(m_databaseRequester->queryStatement(qInsert) <= 0)
             throw shared::exception::CEmptyResult("Fail to insert keyword into table");
 
          //update fields
+         std::string friendlyName = newKeyword->Name();
          if(newKeyword->FriendlyName.isDefined())
+            friendlyName =newKeyword->FriendlyName();
+         
+         CQuery update;
+         update.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getFriendlyNameColumnName(), friendlyName).
+            Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword->DeviceId()).
+            And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword->Name());
+
+         if(m_databaseRequester->queryStatement(update) <= 0)
+            throw shared::exception::CEmptyResult("Fail to update FriendlyName field");
+         
+
+         if(newKeyword->Details.isDefined())
          {
             CQuery update;
-            update.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getFriendlyNameColumnName(), newKeyword->FriendlyName()).
+            update.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getDetailsColumnName(), newKeyword->Details()).
                Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword->DeviceId()).
                And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword->Name());
 
             if(m_databaseRequester->queryStatement(update) <= 0)
-               throw shared::exception::CEmptyResult("Fail to update Type field");
+               throw shared::exception::CEmptyResult("Fail to update Details field");
          }
-
-         if(newKeyword->Units.isDefined())
-         {
-            CQuery update;
-            update.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getUnitsColumnName(), newKeyword->Units()).
-               Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword->DeviceId()).
-               And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword->Name());
-
-            if(m_databaseRequester->queryStatement(update) <= 0)
-               throw shared::exception::CEmptyResult("Fail to update Unit field");
-         }
-
-         if(newKeyword->Minimum.isDefined())
-         {
-            CQuery update;
-            update.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getMinimumColumnName(), newKeyword->Minimum()).
-               Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword->DeviceId()).
-               And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword->Name());
-
-            if(m_databaseRequester->queryStatement(update) <= 0)
-               throw shared::exception::CEmptyResult("Fail to update Minimum field");
-         }
-
-         if(newKeyword->Maximum.isDefined())
-         {
-            CQuery update;
-            update.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getMaximumColumnName(), newKeyword->Maximum()).
-               Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword->DeviceId()).
-               And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword->Name());
-
-            if(m_databaseRequester->queryStatement(update) <= 0)
-               throw shared::exception::CEmptyResult("Fail to update Maximum field");
-         }    
       }
       else
       {
@@ -140,7 +120,7 @@ namespace database { namespace sqlite { namespace requesters {
    }
 
 
-   std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeyword::getDeviceKeywordsWithCapacity(const int deviceId, const std::string & capacityName, const database::entities::ECapacityAccessMode capacityAccessMode)
+   std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeyword::getDeviceKeywordsWithCapacity(const int deviceId, const std::string & capacityName, const database::entities::ECapacityAccessMode accessMode)
    {
       database::sqlite::adapters::CKeywordAdapter adapter;
       CQuery qSelect;
@@ -148,7 +128,7 @@ namespace database { namespace sqlite { namespace requesters {
          From(CKeywordTable::getTableName()).
          Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, deviceId).
          And(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, capacityName).
-         And(CKeywordTable::getCapacityAccessModeColumnName(), CQUERY_OP_EQUAL, (int)capacityAccessMode);
+         And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, (int)accessMode);
 
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CKeyword> >(&adapter, qSelect);
       return adapter.getResults();
