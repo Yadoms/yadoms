@@ -1,7 +1,6 @@
 #pragma once
 
-namespace tools
-{
+namespace shared { namespace tools {
 
    //---------------------------------------------
    ///\brief Class which simplify random generation
@@ -45,4 +44,5 @@ namespace tools
 
    };
 
-} // namespace tools
+} // namespace tools 
+} // namespace shared

@@ -61,6 +61,8 @@ set(SHARED_LIB_SRC
 	shared/encryption/Xor.cpp
 	shared/encryption/Base64.h
 	shared/encryption/Base64.cpp
+	
+	shared/tools/Random.h
 )
 
 #Append platform specific files
@@ -124,6 +126,7 @@ source_group(platformSpecific\\mac shared/mac/shared/*.*)
 
 source_group(serialization shared/shared/serialization/*.* )	
 source_group(encryption shared/shared/encryption/*.* )	
+source_group(tools shared/shared/tools/*.* )	
 
 
 
