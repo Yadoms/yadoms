@@ -45,8 +45,6 @@ set(SHARED_LIB_SRC
 	shared/plugin/configuration/Factory.cpp
   
 	shared/plugin/information/IInformation.h
-	shared/plugin/information/Information.cpp
-	shared/plugin/information/Information.h
 
 	shared/plugin/yadomsApi/Capacity.h
 	shared/plugin/yadomsApi/StandardCapacities.h

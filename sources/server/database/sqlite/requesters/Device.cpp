@@ -21,7 +21,33 @@ namespace database {  namespace sqlite { namespace requesters {
    {
    }
 
-   boost::shared_ptr<database::entities::CDevice> CDevice::getDevice(int deviceId)
+   bool CDevice::deviceExists(const int deviceId) const
+   {
+      try
+      {
+         getDevice(deviceId);
+      }
+      catch (shared::exception::CEmptyResult&)
+      {
+         return false;
+      }
+      return true;
+   }
+
+   bool CDevice::deviceExists(const int pluginId, const std::string & deviceName) const
+   {
+      try
+      {
+         getDevice(pluginId, deviceName);
+      }
+      catch (shared::exception::CEmptyResult&)
+      {
+         return false;
+      }
+      return true;
+   }
+
+   boost::shared_ptr<database::entities::CDevice> CDevice::getDevice(int deviceId) const
    {
       CQuery qSelect;
       qSelect. Select().
@@ -36,7 +62,7 @@ namespace database {  namespace sqlite { namespace requesters {
       return adapter.getResults()[0];
    }
 
-   boost::shared_ptr<database::entities::CDevice> CDevice::getDevice(const int pluginId, const std::string & name)
+   boost::shared_ptr<database::entities::CDevice> CDevice::getDevice(const int pluginId, const std::string & name) const
    {
       //search for such a device
       CQuery qSelect;
@@ -53,7 +79,7 @@ namespace database {  namespace sqlite { namespace requesters {
       return adapter.getResults()[0];
    }
 
-   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacity(const std::string & capacityName, const database::entities::ECapacityAccessMode accessMode)
+   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacity(const std::string & capacityName, const database::entities::ECapacityAccessMode accessMode) const
    {
       CQuery subQuery;
       subQuery. Select(CKeywordTable::getDeviceIdColumnName()).
@@ -74,52 +100,41 @@ namespace database {  namespace sqlite { namespace requesters {
 
    boost::shared_ptr<database::entities::CDevice> CDevice::createDevice(int pluginId, const std::string & name, const std::string & friendlyName, const std::string & model)
    {
-      if(getDevice(pluginId, name))
-      {
+      if(deviceExists(pluginId, name))
          throw shared::exception::CEmptyResult("The device already exists, cannot create it a new time");
-      }
-      else
-      {
-         //device not found, creation is enabled
 
-         //get a good name
-         std::string realFriendlyName = friendlyName;
-         if(realFriendlyName == shared::CStringExtension::EmptyString)
-            realFriendlyName = name;
+      //device not found, creation is enabled
 
-         //insert in db
-         CQuery qInsert;
-         qInsert. InsertInto(CDeviceTable::getTableName(), CDeviceTable::getPluginIdColumnName(), CDeviceTable::getNameColumnName(), CDeviceTable::getFriendlyNameColumnName(), CDeviceTable::getModelColumnName()).
-            Values(pluginId, name, realFriendlyName, model);
-         if(m_databaseRequester->queryStatement(qInsert) <= 0)
-            throw shared::exception::CEmptyResult("Fail to insert new device");
+      //get a good name
+      std::string realFriendlyName = friendlyName;
+      if(realFriendlyName == shared::CStringExtension::EmptyString)
+         realFriendlyName = name;
 
-         //device is created, just find it in table and return entity
-         boost::shared_ptr<database::entities::CDevice> deviceCreated = getDevice(pluginId, name);
-         if(deviceCreated)
-         {
-            return deviceCreated;
-         }
-         else
-         {
-            throw shared::exception::CEmptyResult("Fail to retreive created device");
-         }
-      }
+      //insert in db
+      CQuery qInsert;
+      qInsert. InsertInto(CDeviceTable::getTableName(), CDeviceTable::getPluginIdColumnName(), CDeviceTable::getNameColumnName(), CDeviceTable::getFriendlyNameColumnName(), CDeviceTable::getModelColumnName()).
+         Values(pluginId, name, realFriendlyName, model);
+      if(m_databaseRequester->queryStatement(qInsert) <= 0)
+         throw shared::exception::CEmptyResult("Fail to insert new device");
+
+      //device is created, just find it in table and return entity
+      boost::shared_ptr<database::entities::CDevice> deviceCreated = getDevice(pluginId, name);
+      if(!deviceCreated)
+         throw shared::exception::CEmptyResult("Fail to retrieve created device");
+
+      return deviceCreated;
    }
 
    void CDevice::updateDeviceFriendlyName(int deviceId, const std::string & newFriendlyName)
    {
-      if(!getDevice(deviceId))
-      {
+      if(!deviceExists(deviceId))
          throw shared::exception::CEmptyResult("The device do not exists");
-      }
-      else
-      {
-         //device not found, creation is enabled
 
-         //get a good name
-         if(newFriendlyName != shared::CStringExtension::EmptyString)
-         {
+      //device not found, creation is enabled
+
+      //get a good name
+      if(newFriendlyName != shared::CStringExtension::EmptyString)
+      {
          //insert in db
          CQuery qUpdate;
          qUpdate. Update(CDeviceTable::getTableName()).
@@ -128,14 +143,10 @@ namespace database {  namespace sqlite { namespace requesters {
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
             throw shared::exception::CEmptyResult("Fail to update device friendlyName");
-
-         }
-
-      }   
+      }
    }
 
-
-   std::vector<boost::shared_ptr<database::entities::CDevice> > CDevice::getDevices()
+   std::vector<boost::shared_ptr<database::entities::CDevice> > CDevice::getDevices() const
    {
       CQuery qSelect;
       qSelect. Select().
@@ -145,9 +156,6 @@ namespace database {  namespace sqlite { namespace requesters {
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
       return adapter.getResults();
    }
-
-
-
 
    void CDevice::removeDevice(int deviceId)
    {

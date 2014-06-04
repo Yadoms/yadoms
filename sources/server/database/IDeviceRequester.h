@@ -9,31 +9,47 @@ namespace database {
    class IDeviceRequester
    {
    public:
+
       //--------------------------------------------------------------
-      /// \brief                 Get device informations
-      /// \param [in] deviceId   Device Id
-      /// \throw                 shared::exception::CEmptyResult if deviceId is unknown
+      /// \brief                          Check if device exists
+      /// \param [in] deviceId            The device Id
+      /// \return                         true if exist, else false
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CDevice> getDevice(int deviceId) = 0;
+      virtual bool deviceExists(const int deviceId) const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Check if device exists
+      /// \param [in] pluginId            The plugin Id
+      /// \param [in] name                The device name (plugin internal name)
+      /// \return                         true if exist, else false
+      //--------------------------------------------------------------
+      virtual bool deviceExists(const int pluginId, const std::string & deviceName) const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                          Get device informations
+      /// \param [in] deviceId            Device Id
+      /// \throw                          shared::exception::CEmptyResult if deviceId is unknown
+      //--------------------------------------------------------------
+      virtual boost::shared_ptr<entities::CDevice> getDevice(int deviceId) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Get a device identified by (pluginId and name).
       /// \param [in] pluginId            The pluginId
       /// \param [in] name                The device name (plugin internal name)
-      /// \return                         The device found (null if not found)
+      /// \return                         The device found
       /// \throw                          shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CDevice> getDevice(const int pluginId, const std::string & name) = 0;
+      virtual boost::shared_ptr<entities::CDevice> getDevice(const int pluginId, const std::string & name) const = 0;
 
 
       //--------------------------------------------------------------
-      /// \brief                          Get the device list which support a capaicty
+      /// \brief                          Get the device list which support a capacity
       /// \param [in] capacityName        The capacity name
       /// \param [in] capacityAccessMode  The capacity access mode
-      /// \return                         the device list which support a capaicty
+      /// \return                         the device list which support a capacity
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CDevice> > getDeviceWithCapacity(const std::string & capacityName, const database::entities::ECapacityAccessMode capacityAccessMode) =0;
+      virtual std::vector<boost::shared_ptr<entities::CDevice> > getDeviceWithCapacity(const std::string & capacityName, const database::entities::ECapacityAccessMode capacityAccessMode) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Create a device identified by (pluginId and name).
@@ -50,7 +66,7 @@ namespace database {
       /// \brief           List all devices
       /// \return          List of registered devices
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CDevice> > getDevices() = 0;
+      virtual std::vector<boost::shared_ptr<entities::CDevice> > getDevices() const = 0;
 
      
       //--------------------------------------------------------------

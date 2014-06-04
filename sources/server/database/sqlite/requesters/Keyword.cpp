@@ -74,7 +74,7 @@ namespace database { namespace sqlite { namespace requesters {
       }
    }
 
-   boost::shared_ptr<database::entities::CKeyword> CKeyword::getKeyword(const int deviceId, const std::string & keyword)
+   boost::shared_ptr<database::entities::CKeyword> CKeyword::getKeyword(const int deviceId, const std::string & keyword) const
    {
       database::sqlite::adapters::CKeywordAdapter adapter;
 
@@ -92,7 +92,7 @@ namespace database { namespace sqlite { namespace requesters {
       return adapter.getResults().at(0);
    }
 
-   boost::shared_ptr<entities::CKeyword> CKeyword::getKeyword(const int keywordId)
+   boost::shared_ptr<entities::CKeyword> CKeyword::getKeyword(const int keywordId) const
    {
       database::sqlite::adapters::CKeywordAdapter adapter;
 
@@ -108,7 +108,7 @@ namespace database { namespace sqlite { namespace requesters {
       return adapter.getResults().at(0);
    }
 
-   std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeyword::getKeywords(const int deviceId)
+   std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeyword::getKeywords(const int deviceId) const
    {
       database::sqlite::adapters::CKeywordAdapter adapter;
       CQuery qSelect;
@@ -120,7 +120,7 @@ namespace database { namespace sqlite { namespace requesters {
    }
 
 
-   std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeyword::getDeviceKeywordsWithCapacity(const int deviceId, const std::string & capacityName, const database::entities::ECapacityAccessMode accessMode)
+   std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeyword::getDeviceKeywordsWithCapacity(const int deviceId, const std::string & capacityName, const database::entities::ECapacityAccessMode accessMode) const
    {
       database::sqlite::adapters::CKeywordAdapter adapter;
       CQuery qSelect;

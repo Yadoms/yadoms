@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Factory.h"
-#include <shared/plugin/information/Information.h>
+#include "pluginSystem/Information.h"
 #include <shared/StringExtension.h>
 #include <shared/exception/Exception.hpp>
 
@@ -8,7 +8,7 @@ namespace pluginSystem
 {
 
 CFactory::CFactory(const boost::filesystem::path& libraryPath)
-      :m_libraryPath(libraryPath), m_construct(NULL), m_getInformation(NULL)
+      :m_libraryPath(libraryPath), m_construct(NULL)
 {
    load();
 }
@@ -26,10 +26,9 @@ void CFactory::load()
 
    // Load plugin static methods
    m_construct = (shared::plugin::IPlugin* (*)(void))GetFunctionPointer("construct");
-   m_getInformation = (const shared::plugin::information::IInformation& (*)())GetFunctionPointer("getInformation");
 
    // Check if all non-optional methods are loaded
-   if(m_construct == NULL || m_getInformation == NULL)
+   if(m_construct == NULL)
    {
       // This library is not a valid plugin
       shared::CDynamicLibrary::unload();
@@ -73,12 +72,11 @@ const boost::filesystem::path& CFactory::getLibraryPath() const
 
 boost::shared_ptr<const shared::plugin::information::IInformation> CFactory::getInformation() const
 {
-   BOOST_ASSERT(m_getInformation);  // getInformation can not be called if load was unsuccessfully
-
    // Because library can be unloaded at any time (so memory will be freed), return a copy of informations
    try
    {
-      boost::shared_ptr<shared::plugin::information::IInformation> information(new shared::plugin::information::CInformation(m_getInformation()));
+      boost::shared_ptr<shared::plugin::information::IInformation> information(
+         new pluginSystem::CInformation(getLibraryPath().parent_path()));
       return information;
    }
    catch(shared::exception::CException& e)

@@ -139,6 +139,8 @@ set(YADOMS_SRC
   
 	server/pluginSystem/IdentityForQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.h
+	server/pluginSystem/Information.cpp
+	server/pluginSystem/Information.h
 	server/pluginSystem/Qualifier.h
 	server/pluginSystem/Qualifier.cpp
 	server/pluginSystem/Manager.h

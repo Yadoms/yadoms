@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
-#include <shared/plugin/information/Information.h>
+#include <shared/plugin/information/IInformation.h>
 #include "database/IDeviceRequester.h"
 #include "database/IKeywordRequester.h"
 #include "database/IAcquisitionRequester.h"
@@ -17,12 +17,14 @@ namespace pluginSystem
    public:
       //-----------------------------------------------------
       ///\brief                                 Constructor
+      /// \param [in]   pluginInformations      the plugin informations (name, description, version, author...)
       /// \param [in]   pluginData              the plugin data
       /// \param [in]   deviceRequester         the device requester
       /// \param [in]   keywordRequester        the keyword requester
       /// \param [in]   acquisitionRequester    the acquisition requester
       //-----------------------------------------------------
-      CYadomsApiImplementation(const boost::shared_ptr<database::entities::CPlugin> pluginData,
+      CYadomsApiImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
+         const boost::shared_ptr<database::entities::CPlugin> pluginData,
          boost::shared_ptr<database::IDeviceRequester> deviceRequester,
          boost::shared_ptr<database::IKeywordRequester> keywordRequester,
          boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester);
@@ -51,7 +53,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Plugin informations
       //--------------------------------------------------------------
-      const shared::plugin::information::CInformation m_informations;
+      boost::shared_ptr<const shared::plugin::information::IInformation> m_informations;
 
       //--------------------------------------------------------------
       /// \brief			The database accessor

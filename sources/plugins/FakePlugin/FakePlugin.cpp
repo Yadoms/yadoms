@@ -29,9 +29,6 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    try
    {
-      YADOMS_LOG_CONFIGURE(context->getInformation().getName());
-      YADOMS_LOG(debug) << "CFakePlugin is starting...";
-
       // Load configuration values (provided by database)
       m_configuration.set(context->getConfiguration());
       // Trace the configuration (just for test)
@@ -43,6 +40,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       // Declare these sensors
       context->declareDevice(fakeSensor1.getDeviceId(), fakeSensor1.getModel());
       context->declareDevice(fakeSensor2.getDeviceId(), fakeSensor2.getModel());
+      //TODO déclarer les keywords
 
       // Timer used to send fake sensor states periodically
       context->getEventHandler().createTimer(kSendTemperatureTimerEventId, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
@@ -106,6 +104,5 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
    // as a plugin failure.
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(info) << "CFakePlugin is stopping..."  << std::endl;
    }
 }
