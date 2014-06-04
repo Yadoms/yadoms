@@ -125,7 +125,7 @@ source_group(platformSpecific\\mac shared/mac/shared/*.*)
 source_group(serialization shared/shared/serialization/*.* )	
 source_group(encryption shared/shared/encryption/*.* )	
 
-source_group(xpl shared/xpl/*.*)
+
 
 
 
