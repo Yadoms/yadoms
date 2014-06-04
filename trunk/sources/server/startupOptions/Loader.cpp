@@ -29,10 +29,6 @@ void CLoader::buildOptionsDescription()
       "use a specific path to plugins")
       ("widgetsPath,W", po::value<CMustExistPathOption>(&m_widgetsPath)->default_value(CMustExistPathOption("widgets")),
       "use a specific path to widgets path")
-      ("disableXplHubStart,x",
-      "don't start the Xpl hub, useful if another Xpl hub is already running on the same machine")
-      ("XplNetworkIp,I", po::value<CValidIpAddressOption>(&m_xplNetworkIPAddress)->default_value(CValidIpAddressOption("0.0.0.0")),
-      "define on which network Xpl will be listened and send. If not specified, first interface will be taken")
       ("debug", po::bool_switch(&m_debugFlag)->default_value(false), "activate the debug mode (log files are separated by thread)")
       ;
 }
@@ -53,8 +49,6 @@ CLoader::CLoader(int argc, const char* const argv[])
 
       if (vm.count("help"))
          throw CLoaderException(m_optionsDescription);
-
-      m_startXplHub = !vm.count("disableXplHubStart");
    }
    catch(po::unknown_option& e)
    {

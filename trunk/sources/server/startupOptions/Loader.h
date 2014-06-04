@@ -49,10 +49,6 @@ namespace startupOptions
          { return m_PluginsPath.get(); }
       virtual const std::string& getWidgetsPath() const
          { return m_widgetsPath.get(); }
-      virtual bool getStartXplHubFlag() const
-         { return m_startXplHub; }
-      virtual const std::string& getXplNetworkIpAddress() const
-         { return m_xplNetworkIPAddress.get(); }
       virtual bool getDebugFlag() const
          { return m_debugFlag; }
       // [END] IStartupOptions implementation
@@ -79,8 +75,6 @@ namespace startupOptions
       std::string m_databaseFile;
       CMustExistPathOption m_PluginsPath;
       CMustExistPathOption m_widgetsPath;
-      bool m_startXplHub;
-      CValidIpAddressOption m_xplNetworkIPAddress;
       bool m_debugFlag;
    };
 
