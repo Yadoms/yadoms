@@ -199,11 +199,6 @@ namespace pluginSystem
       //--------------------------------------------------------------
       boost::filesystem::path toPath(const std::string& pluginName) const;
 
-      //--------------------------------------------------------------
-      /// \brief           Start the IO service for all plugin
-      //--------------------------------------------------------------
-      void runPluginIOService();
-
    private:
       //--------------------------------------------------------------
       /// \brief			The available plugin map and its mutex
@@ -257,17 +252,6 @@ namespace pluginSystem
       /// \brief			ID to use to send events to supervisor
       //--------------------------------------------------------------
       const int m_pluginManagerEventId;
-
-      //--------------------------------------------------------------
-      /// \brief			Plugin IOService (common for all plugin instances)
-      //--------------------------------------------------------------
-      boost::asio::io_service m_pluginIOService;
-
-      //--------------------------------------------------------------
-      /// \brief			thread which runs IOService
-      //--------------------------------------------------------------
-      boost::shared_ptr<boost::thread> m_ioServiceThread;
-
    };
 
 } // namespace pluginSystem

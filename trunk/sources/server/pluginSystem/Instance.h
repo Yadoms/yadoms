@@ -32,11 +32,10 @@ namespace pluginSystem
       /// \param [in]   qualifier               the plugin qualifier
       /// \param [in]   supervisor              the supervisor event handler
       /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
-      /// \param [in]   pluginIOService         The global IO service, used for plugin
       //--------------------------------------------------------------
       CInstance(const boost::shared_ptr<const CFactory> plugin, const boost::shared_ptr<database::entities::CPlugin> pluginData,
          boost::shared_ptr<database::IDeviceRequester> deviceRequester, const boost::shared_ptr<IQualifier> qualifier,
-         shared::event::CEventHandler& supervisor, int pluginManagerEventId, boost::asio::io_service& pluginIOService);
+         shared::event::CEventHandler& supervisor, int pluginManagerEventId);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

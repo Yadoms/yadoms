@@ -14,10 +14,9 @@ CInstance::CInstance(
    boost::shared_ptr<database::IDeviceRequester> deviceRequester,
    const boost::shared_ptr<IQualifier> qualifier,
    shared::event::CEventHandler& supervisor,
-   int pluginManagerEventId, 
-   boost::asio::io_service& pluginIOService)
+   int pluginManagerEventId)
     : CThreadBase(pluginData->Name()), m_pPlugin(plugin), m_qualifier(qualifier), m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId),
-    m_context(new CYadomsApiImplementation(pluginData, deviceRequester, pluginIOService))
+    m_context(new CYadomsApiImplementation(pluginData, deviceRequester))
 {
 	BOOST_ASSERT(m_pPlugin);
    m_pPluginInstance.reset(m_pPlugin->construct());
