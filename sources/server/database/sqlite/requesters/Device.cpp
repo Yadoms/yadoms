@@ -57,7 +57,11 @@ namespace database {  namespace sqlite { namespace requesters {
          //the device is found, return its entity
          return adapter.getResults()[0];
       }
-      return boost::shared_ptr<database::entities::CDevice>();
+      else
+      {
+         std::string sEx = (boost::format("Cannot retrieve Device name=%1% for plugin=%2%") % name % pluginId).str(); 
+         throw shared::exception::CEmptyResult(sEx);
+      }
    }
 
    std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacity(const std::string & capacityName, const database::entities::ECapacityAccessMode capacityAccessMode)
