@@ -17,10 +17,9 @@ namespace pluginSystem
       ///\brief                                 Constructor
       /// \param [in]   pluginData              the plugin data
       /// \param [in]   deviceRequester         the device requester
-      /// \param [in]   pluginIOService         The global IO service, used for plugin
       //-----------------------------------------------------
       CYadomsApiImplementation(const boost::shared_ptr<database::entities::CPlugin> pluginData,
-         boost::shared_ptr<database::IDeviceRequester> deviceRequester, boost::asio::io_service& pGlobalPluginIOService);
+         boost::shared_ptr<database::IDeviceRequester> deviceRequester);
       
       //-----------------------------------------------------
       ///\brief Destructor
@@ -34,7 +33,6 @@ namespace pluginSystem
       virtual const shared::plugin::information::IInformation& getInformation() const;
       virtual const std::string getConfiguration() const;
       virtual bool recordPluginEvent(PluginEventSeverity severity, const std::string & message);
-      virtual boost::asio::io_service & getPluginsIoService() const;
       virtual shared::event::CEventHandler & getEventHandler();
       // [END] IYadomsApi implementation 
       
@@ -48,11 +46,6 @@ namespace pluginSystem
       /// \brief			Plugin informations
       //--------------------------------------------------------------
       const shared::plugin::information::CInformation m_informations;
-
-      //--------------------------------------------------------------
-      /// \brief			Plugin IOService (common for all plugin instances)
-      //--------------------------------------------------------------
-      boost::asio::io_service& m_pGlobalPluginIOService;
 
       //--------------------------------------------------------------
       /// \brief			The database accessor

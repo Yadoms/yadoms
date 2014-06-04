@@ -9,9 +9,8 @@ namespace pluginSystem
 {
 
 CYadomsApiImplementation::CYadomsApiImplementation(const boost::shared_ptr<database::entities::CPlugin> pluginData,
-   boost::shared_ptr<database::IDeviceRequester> deviceRequester, boost::asio::io_service& pGlobalPluginIOService)
-   :m_informations(shared::CFileSystemExtension::getModulePath()), m_pGlobalPluginIOService(pGlobalPluginIOService),
-   m_pluginData(pluginData), m_deviceRequester(deviceRequester)
+   boost::shared_ptr<database::IDeviceRequester> deviceRequester)
+   :m_informations(shared::CFileSystemExtension::getModulePath()), m_pluginData(pluginData), m_deviceRequester(deviceRequester)
 {
 }
       
@@ -21,7 +20,7 @@ CYadomsApiImplementation::~CYadomsApiImplementation()
 
 bool CYadomsApiImplementation::deviceExists(const std::string & deviceName)
 {
-   return m_deviceRequester->getDevice(getPluginId(), deviceName);
+   return !!m_deviceRequester->getDevice(getPluginId(), deviceName);
 }
 
 bool CYadomsApiImplementation::declareNewDevice(const std::string & deviceName, const std::vector<shared::plugin::yadomsApi::CCapacity> & capacities)
@@ -69,12 +68,6 @@ bool CYadomsApiImplementation::recordPluginEvent(PluginEventSeverity severity, c
       
    //TODO : !
    return false;
-}
-      
-    
-boost::asio::io_service & CYadomsApiImplementation::getPluginsIoService() const
-{
-   return m_pGlobalPluginIOService;
 }
 
 shared::event::CEventHandler & CYadomsApiImplementation::getEventHandler()

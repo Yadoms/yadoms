@@ -35,10 +35,6 @@ void CManager::start()
    // Initialize the plugin list (detect available plugins)
    updatePluginList();
 
-   // Create ioservice for all plugin instances
-   m_ioServiceThread.reset(new boost::thread(boost::bind(&CManager::runPluginIOService, this)));
-   YADOMS_LOG(debug) << "Thread Id=" << m_ioServiceThread->get_id() << " Name = IO Service (pluginsystem::CManager)";
-
    // Create and start plugin instances from database
    std::vector<boost::shared_ptr<database::entities::CPlugin> > databasePluginInstances = m_pluginDBTable->getInstances();
    BOOST_FOREACH(boost::shared_ptr<database::entities::CPlugin> databasePluginInstance, databasePluginInstances)
@@ -50,36 +46,12 @@ void CManager::start()
 
 void CManager::stop()
 {
-   YADOMS_LOG(info) << "pluginSystem::CManager stop io service...";
-   if(!m_pluginIOService.stopped())
-   {
-      m_pluginIOService.stop();
-      while(!m_pluginIOService.stopped());
-   }
-
-   if(m_ioServiceThread.get())
-      m_ioServiceThread->join();
-
    YADOMS_LOG(info) << "pluginSystem::CManager stop plugins...";
 
    while (!m_runningInstances.empty())
       stopInstance(m_runningInstances.begin()->first);
 
    YADOMS_LOG(info) << "pluginSystem::CManager all plugins are stopped";
-}
-
-void CManager::runPluginIOService()
-{
-   try
-   {
-      boost::asio::io_service::work work(m_pluginIOService);
-      m_pluginIOService.run();
-   }
-   catch (std::exception& e)
-   {
-      // Deal with exception as appropriate.
-      YADOMS_LOG(error) << "pluginSystem::CManager io_service exception : " << e.what();
-   }
 }
 
 std::vector<boost::filesystem::path> CManager::findPluginDirectories()
@@ -348,7 +320,7 @@ void CManager::startInstance(int id)
       BOOST_ASSERT(plugin); // Plugin not loaded
       boost::shared_ptr<CInstance> pluginInstance(new CInstance(
          plugin, databasePluginInstance, m_deviceDBTable,
-         m_qualifier, m_supervisor, m_pluginManagerEventId, m_pluginIOService));
+         m_qualifier, m_supervisor, m_pluginManagerEventId));
       m_runningInstances[databasePluginInstance->Id()] = pluginInstance;
    }
    catch (CInvalidPluginException& e)
