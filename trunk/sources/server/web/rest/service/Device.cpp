@@ -37,7 +37,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("*")("*"), CDevice::getDeviceKeywordsForCapacity);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT",  (m_restKeyword)("*"), CDevice::updateDeviceFriendlyName, CDevice::transactionalMethod);
-      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT",  (m_restKeyword)("*")("keyword")("*"), CDevice::updateKeywordFriendlyName, CDevice::transactionalMethod);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT",  (m_restKeyword)("keyword")("*"), CDevice::updateKeywordFriendlyName, CDevice::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST",  (m_restKeyword)("*")("command"), CDevice::sendDeviceCommand, CDevice::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST",  (m_restKeyword), CDevice::createDevice, CDevice::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE",  (m_restKeyword)("*"), CDevice::deleteDevice, CDevice::transactionalMethod);
@@ -304,8 +304,15 @@ namespace web { namespace rest { namespace service {
 
             web::rest::json::CDeviceEntitySerializer des;
             boost::shared_ptr<database::entities::CDevice> deviceToUpdate = des.deserialize(requestContent);
-            m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(deviceId, deviceToUpdate->FriendlyName());
-            return web::rest::json::CJsonResult::GenerateSuccess();
+            if(deviceToUpdate->FriendlyName.isDefined())
+            {
+               m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(deviceId, deviceToUpdate->FriendlyName());
+               return web::rest::json::CJsonResult::GenerateSuccess();
+            }
+            else
+            {
+               return web::rest::json::CJsonResult::GenerateError("invalid request content. could not retreive device friendlyName");
+            }
          }
          else
          {
@@ -330,16 +337,20 @@ namespace web { namespace rest { namespace service {
 
          if(parameters.size()>=3)
          {
-            //get device id from URL
-            int deviceId = boost::lexical_cast<int>(parameters[1]);
+            //get keyword id from URL
+            int keywordId = boost::lexical_cast<int>(parameters[2]);
 
-            //get device id from URL
-            std::string keywordName = parameters[3];
-
-            web::rest::json::CDeviceEntitySerializer des;
-            boost::shared_ptr<database::entities::CDevice> deviceToUpdate = des.deserialize(requestContent);
-            m_dataProvider->getKeywordRequester()->updateKeywordFriendlyName(deviceId, keywordName, deviceToUpdate->FriendlyName());
-            return web::rest::json::CJsonResult::GenerateSuccess();
+            web::rest::json::CKeywordEntitySerializer des;
+            boost::shared_ptr<database::entities::CKeyword> keywordToUpdate = des.deserialize(requestContent);
+            if(keywordToUpdate->FriendlyName.isDefined())
+            {
+               m_dataProvider->getKeywordRequester()->updateKeywordFriendlyName(keywordId, keywordToUpdate->FriendlyName());
+               return web::rest::json::CJsonResult::GenerateSuccess();
+            }
+            else
+            {
+               return web::rest::json::CJsonResult::GenerateError("invalid request content. could not retreive keyword friendlyName");
+            }
          }
          else
          {

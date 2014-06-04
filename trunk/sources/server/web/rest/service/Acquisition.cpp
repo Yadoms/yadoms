@@ -71,9 +71,9 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         if(parameters.size()>1)
+         if(parameters.size()>2)
          {
-            int keywordId = boost::lexical_cast<int>(parameters[1]);
+            int keywordId = boost::lexical_cast<int>(parameters[2]);
             web::rest::json::CAcquisitionEntitySerializer serialiser;
             boost::shared_ptr<database::entities::CAcquisition> acq =  m_dataProvider->getAcquisitionRequester()->getKeywordLastData(keywordId);
             return web::rest::json::CJsonResult::GenerateSuccess(serialiser.serialize(*acq.get()));
@@ -108,10 +108,10 @@ namespace web { namespace rest { namespace service {
             //as this method is common for three rest url, those variable may keep unfilled
             boost::posix_time::ptime timeFrom, timeTo;
 
-            if(parameters.size()>=3)
+            if(parameters.size()>3)
                timeFrom = web::rest::json::CJsonDate::fromString(parameters[3]);
 
-            if(parameters.size()>=4)
+            if(parameters.size()>4)
                timeTo = web::rest::json::CJsonDate::fromString(parameters[4]);
 
 

@@ -187,15 +187,22 @@ namespace database { namespace sqlite { namespace requesters {
       //get a good name
       if(newFriendlyName != shared::CStringExtension::EmptyString)
       {
-         //insert in db
-         CQuery qUpdate;
-         qUpdate. Update(CKeywordTable::getTableName()).
-            Set(CKeywordTable::getFriendlyNameColumnName(), newFriendlyName).
-            Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
+         boost::shared_ptr<database::entities::CKeyword> keywordToUpdate = getKeyword(keywordId);
+         if(keywordToUpdate)
+         {
+            //insert in db
+            CQuery qUpdate;
+            qUpdate. Update(CKeywordTable::getTableName()).
+               Set(CKeywordTable::getFriendlyNameColumnName(), newFriendlyName).
+               Where(CKeywordTable::getIdColumnName(), CQUERY_OP_EQUAL, keywordId);
 
-         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-            throw shared::exception::CEmptyResult("Fail to update keyword friendlyName");
-
+            if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+               throw shared::exception::CEmptyResult("Fail to update keyword friendlyName");
+         }
+         else
+         {
+            throw shared::exception::CEmptyResult("Can not find keyword"); 
+         }
       }
    }
 
