@@ -7,8 +7,9 @@ namespace communication { namespace command {
 
    //----------------------------------------------
    ///\brief Constructor
+   //TODO commenter
    //----------------------------------------------
-   CDeviceCommand::CDeviceCommand(int deviceId, const CommandData data, const boost::shared_ptr<CCallback> callBack)
+   CDeviceCommand::CDeviceCommand(int deviceId, const CommandData& data, const boost::shared_ptr<CCallback> callBack)
       :m_deviceId(deviceId), m_commandData(data), m_callBack(callBack)
    {
    }

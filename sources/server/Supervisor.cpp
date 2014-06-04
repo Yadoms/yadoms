@@ -55,8 +55,7 @@ void CSupervisor::doWork()
 
       // Create the Plugin manager
       boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(
-         m_startupOptions.getPluginsPath(), pDataProvider->getPluginRequester(), pDataProvider->getPluginEventLoggerRequester(),
-         pDataProvider->getEventLoggerRequester(), pDataProvider->getDeviceRequester(), *this, kPluginManagerEvent));
+         m_startupOptions.getPluginsPath(), pDataProvider, *this, kPluginManagerEvent));
 
       // Start the plugin gateway
       communication::CPluginGateway pluginGateway(pDataProvider, pluginManager);

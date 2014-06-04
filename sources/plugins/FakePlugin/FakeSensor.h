@@ -2,7 +2,7 @@
 
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
-#include <shared/plugin/yadomsApi/Capacity.h>
+#include <shared/plugin/yadomsApi/IYadomsApi.h>
 
 namespace yApi = shared::plugin::yadomsApi;
 
@@ -12,24 +12,29 @@ namespace yApi = shared::plugin::yadomsApi;
 ///         - temperature : start at 25°, and vary from +- 0.0 to 1.0° at each read
 ///         - battery level : start at 100%, decrease by 1% at each read, to 20%
 //--------------------------------------------------------------
-class CFakeTemperatureSensor
+class CFakeSensor
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] deviceId    The device ID
    //--------------------------------------------------------------
-   CFakeTemperatureSensor(const std::string & deviceId);
+   CFakeSensor(const std::string & deviceId);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CFakeTemperatureSensor();
+   virtual ~CFakeSensor();
 
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
    //--------------------------------------------------------------
    void read();
+
+   //--------------------------------------------------------------
+   /// \brief	    Send all sensor data to Yadoms
+   //--------------------------------------------------------------
+   void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
 
    //--------------------------------------------------------------
    /// \brief	    Returns the sensor device ID
@@ -38,34 +43,10 @@ public:
    const std::string& getDeviceId() const;
 
    //--------------------------------------------------------------
-   /// \brief	    Returns read (computed) temperature 1
-   /// \return     Temperature in °C
-   //--------------------------------------------------------------
-   double getTemperature1() const;
-
-   //--------------------------------------------------------------
-   /// \brief	    Returns read (computed) temperature 2
-   /// \return     Temperature in °C
-   //--------------------------------------------------------------
-   double getTemperature2() const;
-
-   //--------------------------------------------------------------
-   /// \brief	    Returns read (computed) battery level
-   /// \return     Battery level (0 to 100%)
-   //--------------------------------------------------------------
-   int getBatteryLevel() const;
-
-   //--------------------------------------------------------------
-   /// \brief	    Returns read (const value here) signal strength
-   /// \return     Signal strength (0 to 100)
-   //--------------------------------------------------------------
-   int getRssi() const;
-
-   //--------------------------------------------------------------
-   /// \brief	    Returns the device capacities
+   /// \brief	    Returns the fake sensor model
    /// \return     The list of device capacities
    //--------------------------------------------------------------
-   static const std::vector<yApi::CCapacity>& getCapacities();
+   static const std::string& getModel();
 
 private:
    //--------------------------------------------------------------

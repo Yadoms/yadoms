@@ -107,11 +107,8 @@ namespace database { namespace sqlite { namespace requesters {
 
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CKeyword> >(&adapter, qSelect);
       if (adapter.getResults().empty())
-      {
-         // Keyword not found
-         std::string sEx = (boost::format("Keyword name %1% for device %2% not found in database") % keyword % deviceId).str(); 
-         throw shared::exception::CException(sEx);
-      }
+         throw shared::exception::CException((boost::format("Keyword name %1% for device %2% not found in database") % keyword % deviceId).str());
+
       return adapter.getResults().at(0);
    }
 
@@ -126,11 +123,8 @@ namespace database { namespace sqlite { namespace requesters {
 
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CKeyword> >(&adapter, qSelect);
       if (adapter.getResults().empty())
-      {
-         // Keyword not found
-         std::string sEx = (boost::format("Keyword id %1% not found in database") % keywordId).str(); 
-         throw shared::exception::CException(sEx);
-      }
+         throw shared::exception::CException((boost::format("Keyword id %1% not found in database") % keywordId).str());
+
       return adapter.getResults().at(0);
    }
 

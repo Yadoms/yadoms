@@ -3,7 +3,7 @@
 #include <shared/plugin/ImplementationHelper.h>
 #include <shared/Log.h>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include "FakeTemperatureSensor.h"
+#include "FakeSensor.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -37,11 +37,12 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       // Trace the configuration (just for test)
       m_configuration.trace();
 
-      // Fake temperature sensor
-      CFakeTemperatureSensor temperatureSensor("fakeTempSensor");
-      // Declare it if not already exists
-      if (!context->deviceExists(temperatureSensor.getDeviceId()))
-         context->declareNewDevice(temperatureSensor.getDeviceId(), temperatureSensor.getCapacities());
+      // Create 2 fake sensors
+      CFakeSensor fakeSensor1("fakeSensor1");
+      CFakeSensor fakeSensor2("fakeSensor2");
+      // Declare these sensors
+      context->declareDevice(fakeSensor1.getDeviceId(), fakeSensor1.getModel());
+      context->declareDevice(fakeSensor2.getDeviceId(), fakeSensor2.getModel());
 
       // Timer used to send fake sensor states periodically
       context->getEventHandler().createTimer(kSendTemperatureTimerEventId, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
@@ -82,17 +83,13 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             {
                // Timer used here to send the temperature to Yadoms periodically
 
-               // First read the sensor value
-               temperatureSensor.read();
+               // Read sensor value and send data to Yadoms (temperatures, battery level, Rssi measure...)
+               fakeSensor1.read();
+               fakeSensor1.historizeData(context);
+               fakeSensor2.read();
+               fakeSensor2.historizeData(context);
 
-               // Send data to Yadoms : read temperature, battery level and Rssi measure
-               context->historizeData(temperatureSensor.getDeviceId(), "temp1", yApi::CStandardCapacities::getTemperatureSensorCapacity(), boost::lexical_cast<std::string>(temperatureSensor.getTemperature1()));
-               context->historizeData(temperatureSensor.getDeviceId(), "temp2", yApi::CStandardCapacities::getTemperatureSensorCapacity(), boost::lexical_cast<std::string>(temperatureSensor.getTemperature2()));
-               context->historizeData(temperatureSensor.getDeviceId(), "battery", yApi::CStandardCapacities::getBatteryLevelCapacity(), boost::lexical_cast<std::string>(temperatureSensor.getBatteryLevel()));
-               context->historizeData(temperatureSensor.getDeviceId(), "Rssi", yApi::CStandardCapacities::getRssiMeasureCapacity(), boost::lexical_cast<std::string>(temperatureSensor.getRssi()));
-
-
-               YADOMS_LOG(debug) << "Send the periodically temperature message...";
+               YADOMS_LOG(debug) << "Send the periodically sensors state...";
 
                break;
             }

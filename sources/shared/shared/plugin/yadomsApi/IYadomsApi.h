@@ -99,7 +99,7 @@ namespace shared { namespace plugin { namespace yadomsApi
          //TODO à commenter
          CCapacity m_capacity;
          std::string m_value;
-         std::string m_targetDeviceName;
+         std::string m_targetDevice;
 
       public:
          CDeviceCommand():m_capacity("", false, false){}  //TODO revoir construction
@@ -108,7 +108,7 @@ namespace shared { namespace plugin { namespace yadomsApi
          {
             // Full informations = identity + author name + url
             std::ostringstream str;
-            str << m_targetDeviceName << " = " << m_value;
+            str << m_targetDevice << " = " << m_value;
             return str.str();
          }
       };   
@@ -132,31 +132,30 @@ namespace shared { namespace plugin { namespace yadomsApi
       
       //-----------------------------------------------------
       ///\brief Check if a device already exists for the server
-      ///\param    [in]    deviceName         The device name (must be unique)
+      ///\param    [in]    device             The device name (must be unique)
       ///\return true if the device exists, false if not
       //-----------------------------------------------------
-      virtual bool deviceExists(const std::string & deviceName) = 0;
+      virtual bool deviceExists(const std::string& device) const = 0;
 
       //-----------------------------------------------------
-      ///\brief Declare a new device
-      ///\param    [in]    deviceName         The device name (must be unique)
-      ///\param    [in]    capacities         The device capacity list
-      ///\return true if the device has been successfully created, false if not
-      ///\throw shared::exception::CInvalidParameter if the device already exists
+      ///\brief Declare a device
+      ///\param    [in]    device             The device name
+      ///\param    [in]    model              The device model or description (ex : "Oregon Scientific CN185")
+      ///\return true if the device has been successfully created, false if already exist
+      ///\throw shared::exception::CEmptyResult if creation failed
       //-----------------------------------------------------   
-      virtual bool declareNewDevice(const std::string & deviceName, const std::vector<CCapacity> & capacities) = 0;
+      virtual bool declareDevice(const std::string& device, const std::string& model) = 0;
       
       
       
       //-----------------------------------------------------
       ///\brief Historize a new data values
-      ///\param    [in]    deviceName         The device name (must be unique)
+      ///\param    [in]    device             The device name (must be unique)
       ///\param    [in]    keyword            The value name ("temp1", "temp2", "humidity", "batteryLevel", "rssi"...)
-      ///\param    [in]    capacity           The device capacity (temperature, rssi,...)
       ///\param    [in]    value              The capacity value
-      ///\throw   CBadParameterException if the device is not known
+      ///\throw   shared::exception::CInvalidParameter if the device is not known
       //-----------------------------------------------------     
-      virtual void historizeData(const std::string & deviceName, const std::string & keyword, const CCapacity & capacity, const std::string & value) = 0;
+      virtual void historizeData(const std::string & device, const std::string & keyword, const std::string & value) = 0;
       
       
       //----------------------------------------------------------------------------------------------------------------

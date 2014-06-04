@@ -12,17 +12,14 @@ namespace pluginSystem
 
 CManager::CManager(
    const std::string& initialDir,
-   boost::shared_ptr<database::IPluginRequester> pluginDBTable,
-   boost::shared_ptr<database::IPluginEventLoggerRequester> pluginLoggerDBTable,
-   boost::shared_ptr<database::IEventLoggerRequester> mainLoggerDBTable,
-   boost::shared_ptr<database::IDeviceRequester> deviceDBTable,
+   boost::shared_ptr<database::IDataProvider> dataProvider,
    shared::event::CEventHandler& supervisor,
    int pluginManagerEventId)
-   :m_pluginDBTable(pluginDBTable), m_mainLoggerDBTable(mainLoggerDBTable), m_deviceDBTable(deviceDBTable),
-   m_pluginPath(initialDir), m_qualifier(new CQualifier(pluginLoggerDBTable, mainLoggerDBTable)),
+   :m_dataProvider(dataProvider), m_pluginDBTable(dataProvider->getPluginRequester()), m_pluginPath(initialDir),
+   m_qualifier(new CQualifier(dataProvider->getPluginEventLoggerRequester(), dataProvider->getEventLoggerRequester())),
    m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId)
 {
-   BOOST_ASSERT(m_pluginDBTable);
+   BOOST_ASSERT(m_dataProvider);
 }
 
 CManager::~CManager()
@@ -279,7 +276,7 @@ void CManager::signalEvent(const CManagerEvent& event)
             m_pluginDBTable->disableAutoStartForAllPluginInstances(event.getPluginInformation()->getName());
 
             // Log this event in the main event logger
-            m_mainLoggerDBTable->addEvent(database::entities::kPluginDisabled,
+            m_dataProvider->getEventLoggerRequester()->addEvent(database::entities::kPluginDisabled,
                event.getPluginInformation()->getIdentity(),
                "Plugin " + event.getPluginInformation()->getIdentity() + " was evaluated as not safe and will not start automatically anymore.");
          }
@@ -319,7 +316,7 @@ void CManager::startInstance(int id)
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
       boost::shared_ptr<CInstance> pluginInstance(new CInstance(
-         plugin, databasePluginInstance, m_deviceDBTable,
+         plugin, databasePluginInstance, m_dataProvider->getDeviceRequester(), m_dataProvider->getKeywordRequester(), m_dataProvider->getAcquisitionRequester(),
          m_qualifier, m_supervisor, m_pluginManagerEventId));
       m_runningInstances[databasePluginInstance->Id()] = pluginInstance;
    }

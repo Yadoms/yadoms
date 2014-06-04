@@ -245,7 +245,7 @@ namespace web { namespace rest { namespace service {
       {
          web::rest::json::CDeviceEntitySerializer des;
          boost::shared_ptr<database::entities::CDevice> deviceToAdd = des.deserialize(requestContent);
-         boost::shared_ptr<database::entities::CDevice> deviceFound = m_dataProvider->getDeviceRequester()->createDevice(deviceToAdd->PluginId(), deviceToAdd->Name(), deviceToAdd->FriendlyName());
+         boost::shared_ptr<database::entities::CDevice> deviceFound = m_dataProvider->getDeviceRequester()->createDevice(deviceToAdd->PluginId(), deviceToAdd->Name(), deviceToAdd->FriendlyName(), ""/*TODO ajouter model */);
          return web::rest::json::CJsonResult::GenerateSuccess(des.serialize(*deviceFound.get()));
       }
       catch(std::exception &ex)
