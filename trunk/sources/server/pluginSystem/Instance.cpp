@@ -18,7 +18,7 @@ CInstance::CInstance(
    shared::event::CEventHandler& supervisor,
    int pluginManagerEventId)
     : CThreadBase(pluginData->Name()), m_pPlugin(plugin), m_qualifier(qualifier), m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId),
-    m_context(new CYadomsApiImplementation(pluginData, deviceRequester, keywordRequester, acquisitionRequester))
+    m_context(new CYadomsApiImplementation(plugin->getInformation(), pluginData, deviceRequester, keywordRequester, acquisitionRequester))
 {
 	BOOST_ASSERT(m_pPlugin);
    m_pPluginInstance.reset(m_pPlugin->construct());
@@ -35,6 +35,7 @@ void CInstance::doWork()
 {
    BOOST_ASSERT(m_pPluginInstance);
    YADOMS_LOG_CONFIGURE(getName());
+   YADOMS_LOG(debug) << m_context->getInformation().getName() << " is starting...";
 
    try
    {
@@ -73,6 +74,8 @@ void CInstance::doWork()
       m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin crashed in doWork with unknown exception");
    }
 
+   YADOMS_LOG(info) << m_context->getInformation().getName() << " is stopped";
+   
    // Signal the abnormal stop
    CManagerEvent event(CManagerEvent::kPluginInstanceAbnormalStopped, m_context->getPluginId(), m_pPlugin->getInformation(), getStatus() == kStopping);
    m_supervisor.postEvent<CManagerEvent>(m_pluginManagerEventId, event);

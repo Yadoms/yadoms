@@ -1,11 +1,11 @@
 //
 // IQualifier.h
 //
-// yadoms-plugin qualifier interface
+// Yadoms-plugin qualifier interface
 //
 #pragma once
 
-#include <shared/plugin/information/Information.h>
+#include <shared/plugin/information/IInformation.h>
 #include "Factory.h"
 
 namespace pluginSystem

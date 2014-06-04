@@ -29,10 +29,10 @@ namespace database { namespace sqlite {
 
          // IKeywordRequester implementation
          virtual void addKeyword(boost::shared_ptr<database::entities::CKeyword> newKeyword);
-         virtual boost::shared_ptr<database::entities::CKeyword> getKeyword(const int deviceId, const std::string & keyword);
-         virtual boost::shared_ptr<entities::CKeyword> getKeyword(const int keywordId);
-         virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getKeywords(const int deviceId);
-         virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getDeviceKeywordsWithCapacity(const int deviceId, const std::string & capacityName, const database::entities::ECapacityAccessMode accessMode);
+         virtual boost::shared_ptr<database::entities::CKeyword> getKeyword(const int deviceId, const std::string & keyword) const;
+         virtual boost::shared_ptr<entities::CKeyword> getKeyword(const int keywordId) const;
+         virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getKeywords(const int deviceId) const;
+         virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getDeviceKeywordsWithCapacity(const int deviceId, const std::string & capacityName, const database::entities::ECapacityAccessMode accessMode) const;
          virtual void removeKeyword(const int deviceId, const std::string & keyword);
          virtual void removeKeyword(const int keywordId);
          virtual void updateKeywordFriendlyName(const int deviceId, const std::string & keyword, const std::string & newFriendlyName);

@@ -33,9 +33,6 @@ void CXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
    boost::shared_ptr<xplcore::CXplHub> hub;
    try
    {
-      YADOMS_LOG_CONFIGURE(context->getInformation().getName());
-      YADOMS_LOG(debug) << "CXpl plugin is starting...";
-
       // Load configuration values (provided by database)
       m_configuration.set(context->getConfiguration());
 
@@ -99,7 +96,6 @@ void CXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
    // as a plugin failure.
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(info) << "CXpl plugin is stopping..."  << std::endl;
    }
 
    if(hub)

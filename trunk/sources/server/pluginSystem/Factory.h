@@ -79,11 +79,6 @@ namespace pluginSystem
       /// \brief	    Function pointer to "construct" exported function
       //-------------------------------------------------------------
       boost::function<shared::plugin::IPlugin* ()> m_construct;
-
-      //--------------------------------------------------------------
-      /// \brief	    Pointer to the plugin getInformation method
-      //--------------------------------------------------------------
-      boost::function<const shared::plugin::information::IInformation& ()> m_getInformation;
    };
 
 } // namespace pluginSystem

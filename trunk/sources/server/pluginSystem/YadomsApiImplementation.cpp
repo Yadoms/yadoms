@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "YadomsApiImplementation.h"
-#include <shared/FileSystemExtension.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/Log.h>
@@ -8,9 +7,13 @@
 namespace pluginSystem
 {
 
-CYadomsApiImplementation::CYadomsApiImplementation(const boost::shared_ptr<database::entities::CPlugin> pluginData,
-   boost::shared_ptr<database::IDeviceRequester> deviceRequester, boost::shared_ptr<database::IKeywordRequester> keywordRequester, boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester)
-   :m_informations(shared::CFileSystemExtension::getModulePath()), m_pluginData(pluginData), m_deviceRequester(deviceRequester), m_keywordRequester(keywordRequester), m_acquisitionRequester(acquisitionRequester)
+CYadomsApiImplementation::CYadomsApiImplementation(
+   boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
+   const boost::shared_ptr<database::entities::CPlugin> pluginData,
+   boost::shared_ptr<database::IDeviceRequester> deviceRequester,
+   boost::shared_ptr<database::IKeywordRequester> keywordRequester,
+   boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester)
+   :m_informations(pluginInformations), m_pluginData(pluginData), m_deviceRequester(deviceRequester), m_keywordRequester(keywordRequester), m_acquisitionRequester(acquisitionRequester)
 {
 }
       
@@ -20,7 +23,7 @@ CYadomsApiImplementation::~CYadomsApiImplementation()
 
 bool CYadomsApiImplementation::deviceExists(const std::string& device) const
 {
-   return !!m_deviceRequester->getDevice(getPluginId(), device);
+   return m_deviceRequester->deviceExists(getPluginId(), device);
 }
 
 bool CYadomsApiImplementation::declareDevice(const std::string& device, const std::string& model)
@@ -49,7 +52,7 @@ void CYadomsApiImplementation::historizeData(const std::string & device, const s
 
 const shared::plugin::information::IInformation& CYadomsApiImplementation::getInformation() const
 {
-   return m_informations;
+   return *m_informations;
 }
 
 const std::string CYadomsApiImplementation::getConfiguration() const

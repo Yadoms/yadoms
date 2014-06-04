@@ -1,6 +1,5 @@
 #pragma once
 
-#include <shared/Export.h>
 #include <string>
 
 namespace shared { namespace plugin { namespace information
@@ -18,7 +17,7 @@ namespace shared { namespace plugin { namespace information
    //--------------------------------------------------------------
    /// \brief		Interface for information about plugins
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT IInformation 
+   class IInformation 
    {
    public:
       //--------------------------------------------------------------
