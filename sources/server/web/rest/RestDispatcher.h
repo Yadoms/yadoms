@@ -4,7 +4,11 @@
 
 namespace web { namespace rest {
 
-
+   //--------------------------------------   
+   ///\brief   Class which role is to dispatch rest queries to appropriate code
+   ///\note    Each rest method handler have to be registered with a pattern /device/*; with a fonction pointer to call in case of such a query
+   ///         All the patterns are sorted so wilcard are low priority
+   //-------------------------------------- 
    class CRestDispatcher
    {
    public:
@@ -47,28 +51,76 @@ namespace web { namespace rest {
       void registerRestMethodHandler(const std::string & requestType,  const std::vector<std::string> & urlPattern, CRestMethodHandler functionPtr, CRestMethodIndirector indirectPtr = NULL);
 
       //--------------------------------------   
-      ///\brief Sort the methods to allow a good search
+      ///\brief Print content to log
       //--------------------------------------   
-      void sortRestMethod();
+      void printContentToLog();
 
    private:
       //--------------------------------------   
-      ///\brief   A container class for an url pattern with iths function pointers
+      ///\brief   A container class for an url pattern with its function pointers
       /// /widget/*/acquisitions (=> widget, *, acquisitions)
       //-------------------------------------
       class CUrlPattern
       {
       public:
+         //--------------------------------------   
+         ///\brief   Constructor
+         ///\param [in]    pattern           the url pattern : ie. : /widget/*/acquisitions
+         ///\param [in]    functionPtr       the function pointer to call when url match configuration pattern
+         ///\param [in]    indirectPtr       the function pointer which will call the functionPtr (indirect so some common process can be handled in this function)
+         //-------------------------------------- 
          CUrlPattern(const std::vector<std::string> & pattern, CRestMethodHandler & handler, CRestMethodIndirector & indirector);
+
+         //--------------------------------------   
+         ///\brief   Destructor
+         //--------------------------------------
          virtual ~CUrlPattern();
+
+         //--------------------------------------   
+         ///\brief   Get the pattern
+         ///\return  the pattern (vector of string)
+         //--------------------------------------
          const std::vector<std::string> & getPattern() const;
+
+         //--------------------------------------   
+         ///\brief   Get the function pointer to use when an url match the pattern
+         ///\return  the function pointer
+         //--------------------------------------
          const CRestMethodHandler & getMethodHandler() const;
+
+         //--------------------------------------   
+         ///\brief   Get the function pointer indirector (which encapsulate treatment for methodHandler)
+         ///\return  the function pointer
+         //--------------------------------------
          const CRestMethodIndirector & getMethodIndirector() const;
+
+         //--------------------------------------   
+         ///\brief   Operator <   Allow automatic sorting in std::map or std::set
+         ///\param [in] right The object to compare to
+         ///\return  true if current element is before "right", else other cases
+         //--------------------------------------
          bool operator<(const CUrlPattern &right) const;
+
+         //--------------------------------------   
+         ///\brief   Utility method to get pattern as a string i.e. : /device/matchcapacity/*/*
+         ///\return  the pattern as a string
+         //--------------------------------------
          std::string toString() const;
+
       private:
+         //--------------------------------------   
+         ///\brief   The pattern
+         //--------------------------------------
          std::vector<std::string> m_pattern;
+
+         //--------------------------------------   
+         ///\brief   The function pointer
+         //--------------------------------------
          CRestMethodHandler m_methodHandler;
+
+         //--------------------------------------   
+         ///\brief   The indirector function pointer
+         //--------------------------------------
          CRestMethodIndirector m_methodIndirector;
       };
 
@@ -93,7 +145,7 @@ namespace web { namespace rest {
       //--------------------------------------   
       ///\brief   All the registered handle
       //--------------------------------------   
-      typedef std::vector<CUrlPattern> RestMethodMap;
+      typedef std::set< boost::shared_ptr<CUrlPattern> > RestMethodMap;
       std::map<std::string, RestMethodMap > m_handledFunctions;
    };
 

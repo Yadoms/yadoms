@@ -8,6 +8,7 @@
 #include "web/webem/WebServer.h"
 #include "web/WebServerManager.h"
 #include <shared/xpl/XplHub.h>
+#include "web/rest/service/Acquisition.h"
 #include "web/rest/service/Plugin.h"
 #include "web/rest/service/Device.h"
 #include "web/rest/service/Page.h"
@@ -93,6 +94,7 @@ void CSupervisor::doWork()
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLogger(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLogger(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CGeneral()));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
       }
 
       boost::shared_ptr<web::CWebServerManager> webServerManager(new web::CWebServerManager(webServer));

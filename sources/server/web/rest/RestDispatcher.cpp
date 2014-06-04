@@ -15,18 +15,11 @@ namespace web { namespace rest {
 
    void CRestDispatcher::registerRestMethodHandler(const std::string & requestType, const std::vector<std::string> & configKeywords, CRestMethodHandler functionPtr, CRestMethodIndirector indirectPtr /*= NULL*/)
    {
-      m_handledFunctions[requestType].push_back(CUrlPattern(configKeywords, functionPtr, indirectPtr));
+      m_handledFunctions[requestType].insert( boost::shared_ptr<CUrlPattern>(new CUrlPattern(configKeywords, functionPtr, indirectPtr)) );
    }
 
 
-
-
-
-
-
-
-
-    CRestDispatcher::CUrlPattern::CUrlPattern(const std::vector<std::string> & pattern, CRestMethodHandler & handler, CRestMethodIndirector & indirector)
+   CRestDispatcher::CUrlPattern::CUrlPattern(const std::vector<std::string> & pattern, CRestMethodHandler & handler, CRestMethodIndirector & indirector)
       :m_pattern(pattern), m_methodHandler(handler), m_methodIndirector(indirector)
    {
    }
@@ -92,15 +85,9 @@ namespace web { namespace rest {
 
 
 
-   void CRestDispatcher::sortRestMethod()
+   void CRestDispatcher::printContentToLog()
    {
       std::map<std::string, RestMethodMap>::iterator i;
-      for(i= m_handledFunctions.begin(); i!=m_handledFunctions.end(); ++i)
-      {
-         std::sort (i->second.begin(), i->second.end()); 
-      }
-
-
       for(i= m_handledFunctions.begin(); i!=m_handledFunctions.end(); ++i)
       {
          YADOMS_LOG(debug) << "******************************************************";
@@ -109,7 +96,7 @@ namespace web { namespace rest {
          RestMethodMap::iterator iPatterns;
          for(iPatterns = i->second.begin(); iPatterns!= i->second.end(); ++iPatterns)
          {
-            YADOMS_LOG(debug) << iPatterns->toString();
+            YADOMS_LOG(debug) << (*iPatterns)->toString();
          }
       }
    }
@@ -125,8 +112,10 @@ namespace web { namespace rest {
 
          for(iPatterns = m_handledFunctions[requestType].begin(); iPatterns != m_handledFunctions[requestType].end(); ++iPatterns)
          {
-            if(match(url, *iPatterns))
-               return callRealMethod(iPatterns->getMethodHandler(), iPatterns->getMethodIndirector(), url, requestContent);
+            if(match(url, **iPatterns))
+            {
+               return callRealMethod((*iPatterns)->getMethodHandler(), (*iPatterns)->getMethodIndirector(), url, requestContent);
+            }
          }
 
          return web::rest::json::CJsonResult::GenerateError("This REST url is not handled");
