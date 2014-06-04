@@ -7,7 +7,6 @@
 #include <shared/exception/NotSupported.hpp>
 #include "web/webem/WebServer.h"
 #include "web/WebServerManager.h"
-#include <shared/xpl/XplHub.h>
 #include "web/rest/service/Acquisition.h"
 #include "web/rest/service/Plugin.h"
 #include "web/rest/service/Device.h"
@@ -53,14 +52,6 @@ void CSupervisor::doWork()
 
       // Start Task manager
       boost::shared_ptr<task::CScheduler> taskManager = boost::shared_ptr<task::CScheduler>(new task::CScheduler(*this, kSystemEvent));
-
-      // Start Xpl Hub (only if necessary)
-      boost::shared_ptr<shared::xpl::CXplHub> hub;
-      if (m_startupOptions.getStartXplHubFlag())
-      {
-         hub.reset(new shared::xpl::CXplHub(m_startupOptions.getXplNetworkIpAddress()));
-         hub->start();
-      }
 
       // Create the Plugin manager
       boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(
@@ -136,10 +127,6 @@ void CSupervisor::doWork()
       if(pluginManager.get() != NULL)
          pluginManager->stop();
 
-
-      //stop xpl hub
-      if(hub.get() != NULL)
-         hub->stop();
 
       //stop web server
       if(webServerManager.get() != NULL)

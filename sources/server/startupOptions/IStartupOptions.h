@@ -60,23 +60,10 @@ namespace startupOptions
       virtual const std::string& getWidgetsPath() const = 0;
 
       //--------------------------------------------------------------
-      /// \brief	    Get the startXplHub flag
-      /// \return     flag indicating if Xpl hub must be started or not
-      //--------------------------------------------------------------
-      virtual bool getStartXplHubFlag() const = 0;
-
-      //--------------------------------------------------------------
       /// \brief	    Get the debug flag
       /// \return     flag indicating if debug mode is activated
       //--------------------------------------------------------------
       virtual bool getDebugFlag() const = 0;
-
-      //--------------------------------------------------------------
-      /// \brief	    Get the network where the xpl will send / receive frames
-      /// \return     Ip address of the interface to use
-      //--------------------------------------------------------------
-      virtual const std::string& getXplNetworkIpAddress() const = 0;
-
    };
 
 } // namespace startupOptions

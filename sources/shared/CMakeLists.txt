@@ -61,26 +61,6 @@ set(SHARED_LIB_SRC
 	shared/encryption/Xor.cpp
 	shared/encryption/Base64.h
 	shared/encryption/Base64.cpp
-	
-	shared/xpl/XplConstants.h
-	shared/xpl/XplConstants.cpp
-	shared/xpl/XplActor.cpp
-	shared/xpl/XplActor.h
-	shared/xpl/XplException.h
-	shared/xpl/XplHelper.cpp
-	shared/xpl/XplHelper.h
-	shared/xpl/XplHub.cpp
-	shared/xpl/XplHub.h
-	shared/xpl/XplMessage.cpp
-	shared/xpl/XplMessage.h
-	shared/xpl/XplMessageFactory.cpp
-	shared/xpl/XplMessageFactory.h
-	shared/xpl/XplMessageSchemaIdentifier.cpp
-	shared/xpl/XplMessageSchemaIdentifier.h
-	shared/xpl/XplService.cpp
-	shared/xpl/XplService.h
-	shared/xpl/XplHubConnectedPeripheral.cpp
-	shared/xpl/XplHubConnectedPeripheral.h 
 )
 
 #Append platform specific files
