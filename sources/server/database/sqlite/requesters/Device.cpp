@@ -53,13 +53,13 @@ namespace database {  namespace sqlite { namespace requesters {
       return adapter.getResults()[0];
    }
 
-   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacity(const std::string & capacityName, const database::entities::ECapacityAccessMode capacityAccessMode)
+   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacity(const std::string & capacityName, const database::entities::ECapacityAccessMode accessMode)
    {
       CQuery subQuery;
       subQuery. Select(CKeywordTable::getDeviceIdColumnName()).
                 From(CKeywordTable::getTableName()).
                 Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, capacityName).
-                And(CKeywordTable::getCapacityAccessModeColumnName(), CQUERY_OP_EQUAL, (int)capacityAccessMode);
+                And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, (int)accessMode);
 
       CQuery qSelect;
       qSelect. Select().
@@ -89,8 +89,8 @@ namespace database {  namespace sqlite { namespace requesters {
 
          //insert in db
          CQuery qInsert;
-         qInsert. InsertInto(CDeviceTable::getTableName(), CDeviceTable::getPluginIdColumnName(), CDeviceTable::getNameColumnName(), CDeviceTable::getFriendlyNameColumnName()).
-            Values(pluginId, name, realFriendlyName);//TODO : ajouter model
+         qInsert. InsertInto(CDeviceTable::getTableName(), CDeviceTable::getPluginIdColumnName(), CDeviceTable::getNameColumnName(), CDeviceTable::getFriendlyNameColumnName(), CDeviceTable::getModelColumnName()).
+            Values(pluginId, name, realFriendlyName, model);
          if(m_databaseRequester->queryStatement(qInsert) <= 0)
             throw shared::exception::CEmptyResult("Fail to insert new device");
 

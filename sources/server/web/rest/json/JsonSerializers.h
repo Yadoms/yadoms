@@ -69,18 +69,17 @@ namespace web { namespace rest { namespace json {
       (PluginId)
       (Name)
       (FriendlyName)
+      (Model)
    )
 
    DECLARE_JSON_ENTITY_HEADER(Keyword,
       (Id)
       (DeviceId)
       (CapacityName)
-      (CapacityAccessMode)
+      (AccessMode)
       (Name)
       (FriendlyName)
-      (Units)
-      (Minimum)
-      (Maximum)
+      (Details)
    )
 
    DECLARE_JSON_ENTITY_HEADER(Acquisition,

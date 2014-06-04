@@ -67,6 +67,7 @@ namespace web { namespace rest { namespace json {
       ((PluginId)("pluginId")JSON_INT)
       ((Name)("name")JSON_STRING)
       ((FriendlyName)("friendlyName")JSON_STRING)
+      ((Model)("model")JSON_STRING)
    )
 
 
@@ -74,12 +75,10 @@ namespace web { namespace rest { namespace json {
       ((Id)("id")JSON_INT)
       ((DeviceId)("deviceId")JSON_INT)
       ((CapacityName)("capacityName")JSON_STRING)
-      ((CapacityAccessMode)("capacityAccessMode")JSON_ENUM(database::entities::ECapacityAccessMode))
+      ((AccessMode)("accessMode")JSON_ENUM(database::entities::ECapacityAccessMode))
       ((Name)("name")JSON_STRING)
       ((FriendlyName)("friendlyName")JSON_STRING)
-      ((Units)("units")JSON_STRING)
-      ((Minimum)("minimum")JSON_DOUBLE)
-      ((Maximum)("maximum")JSON_DOUBLE)
+      ((Details)("details")JSON_PTREE)
    )
    
 

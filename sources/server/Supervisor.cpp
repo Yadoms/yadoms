@@ -65,10 +65,10 @@ void CSupervisor::doWork()
       pluginManager->start();
 
       // Start Web server
-      const std::string webServerIp = m_startupOptions.getWebServerIPAddress();
+      const std::string & webServerIp = m_startupOptions.getWebServerIPAddress();
       const std::string webServerPort = boost::lexical_cast<std::string>(m_startupOptions.getWebServerPortNumber());
-      const std::string webServerPath = m_startupOptions.getWebServerInitialPath();
-      const std::string webServerWidgetPath = m_startupOptions.getWidgetsPath();
+      const std::string & webServerPath = m_startupOptions.getWebServerInitialPath();
+      const std::string & webServerWidgetPath = m_startupOptions.getWidgetsPath();
 
       boost::shared_ptr<web::IWebServer> webServer(new web::webem::CWebServer(webServerIp, webServerPort, webServerPath, "/rest/"));
       webServer->configureAlias("widget", webServerWidgetPath);

@@ -18,7 +18,6 @@ namespace shared { namespace encryption {
    std::string CBase64::encode(unsigned char const* bytes_to_encode, unsigned int in_len) {
      std::string ret;
      int i = 0;
-     int j = 0;
      unsigned char char_array_3[3];
      unsigned char char_array_4[4];
 
@@ -38,6 +37,7 @@ namespace shared { namespace encryption {
 
      if (i)
      {
+       int j = 0;
        for(j = i; j < 3; j++)
          char_array_3[j] = '\0';
 
@@ -61,7 +61,6 @@ namespace shared { namespace encryption {
    std::string CBase64::decode(std::string const& encoded_string) {
      int in_len = encoded_string.size();
      int i = 0;
-     int j = 0;
      int in_ = 0;
      unsigned char char_array_4[4], char_array_3[3];
      std::string ret;
@@ -83,6 +82,7 @@ namespace shared { namespace encryption {
      }
 
      if (i) {
+       int j = 0;
        for (j = i; j <4; j++)
          char_array_4[j] = 0;
 
