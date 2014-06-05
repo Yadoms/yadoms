@@ -39,8 +39,6 @@ namespace pluginSystem
 	  virtual bool declareDevice(const std::string& device, const std::string& model, const std::string & details);
       virtual bool keywordExists(const std::string& device, const std::string& keyword) const;
       virtual bool declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode accessMode, const std::string& details);
-      virtual bool capacityExists(const std::string& capacity) const;
-      virtual bool declareCapacity(const std::string& capacity);
       virtual void historizeData(const std::string & device, const std::string & keyword, const std::string & value);
       virtual const shared::plugin::information::IInformation& getInformation() const;
       virtual const std::string getConfiguration() const;

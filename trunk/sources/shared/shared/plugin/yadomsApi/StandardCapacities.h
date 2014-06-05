@@ -8,7 +8,7 @@ namespace shared { namespace plugin { namespace yadomsApi
    //--------------------------------------------------------------
    /// \brief		Standard capacities
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CStandardCapacities //TODO utile ?
+   class YADOMS_SHARED_EXPORT CStandardCapacities
    {
    public:
       //--------------------------------------------------------------
@@ -17,11 +17,6 @@ namespace shared { namespace plugin { namespace yadomsApi
       static const std::string& Temperature;       // Temperature (degrees Celcius)
       static const std::string& BatteryLevel;      // Battery level capacity (percent)
       static const std::string& Rssi;              // Rssi measure capacity (percent)
-
-      //--------------------------------------------------------------
-      /// \brief		Check if capacity exists in standard capacities
-      //--------------------------------------------------------------
-      static const bool Exists(const std::string& capacity);
    };
 
 } } } // namespace shared::plugin::yadomsApi

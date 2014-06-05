@@ -198,45 +198,13 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\brief Declare a keyword
       ///\param    [in]    device             The device name owner of the keyword
       ///\param    [in]    keyword            The keyword name
-      ///\param    [in]    capacity           The capacity name (see yApi::CStandardCapacities for standard capacities, or declare a new capacity with declareCapacity method)
+      ///\param    [in]    capacity           The capacity name (see yApi::CStandardCapacities for standard capacities, or use your own)
       ///\param    [in]    accessMode         The keyword access
       ///\param    [in]    details            The keyword details (JSON string, optional. Can be used to declare specific properties like min/max values)
       ///\return true if the keyword has been successfully created, false if already exist
       ///\throw shared::exception::CEmptyResult if creation failed
       //-----------------------------------------------------   
       virtual bool declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, const std::string& details = shared::CStringExtension::EmptyString) = 0;
-
-
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //--
-      //-- Capacities
-      //--
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-
-      //-----------------------------------------------------
-      ///\brief Check if a capacity already exists for the device
-      ///\param    [in]    capacity           The capacity name
-      ///\return true if the capacity exists, false if not
-      //-----------------------------------------------------
-      virtual bool capacityExists(const std::string& capacity) const = 0;
-
-      //-----------------------------------------------------
-      ///\brief Declare a new capacity
-      ///\param    [in]    capacity           The new capacity name
-      ///\return true if the capacity has been successfully created, false if already exist
-      ///\throw shared::exception::CEmptyResult if creation failed
-      //-----------------------------------------------------   
-      virtual bool declareCapacity(const std::string& capacity) = 0;
       
 
       //----------------------------------------------------------------------------------------------------------------
