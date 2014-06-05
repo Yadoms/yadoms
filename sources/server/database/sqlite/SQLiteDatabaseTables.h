@@ -69,6 +69,7 @@ namespace sqlite {
       (Name)
       (FriendlyName)
       (Model)
+	  (Details)
    )
 
    DECLARE_TABLE(Keyword,

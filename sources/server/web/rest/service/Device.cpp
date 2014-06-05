@@ -38,7 +38,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT",  (m_restKeyword)("*"), CDevice::updateDeviceFriendlyName, CDevice::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT",  (m_restKeyword)("keyword")("*"), CDevice::updateKeywordFriendlyName, CDevice::transactionalMethod);
-      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST",  (m_restKeyword)("*")("command"), CDevice::sendDeviceCommand, CDevice::transactionalMethod);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST",  (m_restKeyword)("keyword")("*")("command"), CDevice::sendDeviceCommand, CDevice::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST",  (m_restKeyword), CDevice::createDevice, CDevice::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE",  (m_restKeyword)("*"), CDevice::deleteDevice, CDevice::transactionalMethod);
    }
@@ -195,10 +195,10 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         if(parameters.size()>1)
+         if(parameters.size()>2)
          {
-            //get device id from URL
-            int deviceId = boost::lexical_cast<int>(parameters[1]);
+            //get keyword id from URL
+            int keywordId = boost::lexical_cast<int>(parameters[2]);
 
             //create the command data (all request content values are stored into a single map
             communication::command::CDeviceCommand::CommandData commandData;
@@ -209,7 +209,7 @@ namespace web { namespace rest { namespace service {
 
             //create the command
             boost::shared_ptr<communication::command::CCallback> resultHandler(new communication::command::CCallback);
-            communication::command::CDeviceCommand command(deviceId, commandData, resultHandler);
+            communication::command::CDeviceCommand command(keywordId, commandData, resultHandler);
 
             //send the command
             m_messageSender.sendCommandAsync(command);
@@ -245,7 +245,7 @@ namespace web { namespace rest { namespace service {
       {
          web::rest::json::CDeviceEntitySerializer des;
          boost::shared_ptr<database::entities::CDevice> deviceToAdd = des.deserialize(requestContent);
-         boost::shared_ptr<database::entities::CDevice> deviceFound = m_dataProvider->getDeviceRequester()->createDevice(deviceToAdd->PluginId(), deviceToAdd->Name(), deviceToAdd->FriendlyName(), deviceToAdd->Model());
+         boost::shared_ptr<database::entities::CDevice> deviceFound = m_dataProvider->getDeviceRequester()->createDevice(deviceToAdd->PluginId(), deviceToAdd->Name(), deviceToAdd->FriendlyName(), deviceToAdd->Model(), deviceToAdd->Details());
          return web::rest::json::CJsonResult::GenerateSuccess(des.serialize(*deviceFound.get()));
       }
       catch(std::exception &ex)

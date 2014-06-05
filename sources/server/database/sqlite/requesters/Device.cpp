@@ -98,7 +98,7 @@ namespace database {  namespace sqlite { namespace requesters {
    }
 
 
-   boost::shared_ptr<database::entities::CDevice> CDevice::createDevice(int pluginId, const std::string & name, const std::string & friendlyName, const std::string & model)
+   boost::shared_ptr<database::entities::CDevice> CDevice::createDevice(int pluginId, const std::string & name, const std::string & friendlyName, const std::string & model, const std::string & details)
    {
       if(deviceExists(pluginId, name))
          throw shared::exception::CEmptyResult("The device already exists, cannot create it a new time");
@@ -112,8 +112,8 @@ namespace database {  namespace sqlite { namespace requesters {
 
       //insert in db
       CQuery qInsert;
-      qInsert. InsertInto(CDeviceTable::getTableName(), CDeviceTable::getPluginIdColumnName(), CDeviceTable::getNameColumnName(), CDeviceTable::getFriendlyNameColumnName(), CDeviceTable::getModelColumnName()).
-         Values(pluginId, name, realFriendlyName, model);
+	  qInsert.InsertInto(CDeviceTable::getTableName(), CDeviceTable::getPluginIdColumnName(), CDeviceTable::getNameColumnName(), CDeviceTable::getFriendlyNameColumnName(), CDeviceTable::getModelColumnName(), CDeviceTable::getDetailsColumnName()).
+		  Values(pluginId, name, realFriendlyName, model, details);
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("Fail to insert new device");
 

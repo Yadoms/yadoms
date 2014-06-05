@@ -153,10 +153,11 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\brief Declare a device
       ///\param    [in]    device             The device name
       ///\param    [in]    model              The device model or description (ex : "Oregon Scientific CN185")
+      ///\param    [in]    details            A free string used by plugin
       ///\return true if the device has been successfully created, false if already exist
       ///\throw shared::exception::CEmptyResult if creation failed
       //-----------------------------------------------------   
-      virtual bool declareDevice(const std::string& device, const std::string& model) = 0;
+	  virtual bool declareDevice(const std::string& device, const std::string& model, const std::string & details) = 0;
       
       
       //----------------------------------------------------------------------------------------------------------------

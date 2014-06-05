@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "FakeSensor.h"
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
-
+#include <shared/StringExtension.h>
 
 CFakeSensor::CFakeSensor(const std::string & deviceId)
    :m_deviceId(deviceId), m_temperature1(25.0), m_temperature2(10.0), m_batteryLevel(100), m_rssi(50), m_dist(0, 20)
@@ -15,7 +15,7 @@ CFakeSensor::~CFakeSensor()
 void CFakeSensor::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    // Declare the device
-   context->declareDevice(m_deviceId, getModel());
+   context->declareDevice(m_deviceId, getModel(), shared::CStringExtension::EmptyString);
 
    // Declare associated keywords (= values managed by this device)
    context->declareKeyword(m_deviceId, "temp1"  , yApi::CStandardCapacities::Temperature , yApi::IYadomsApi::kReadOnly);

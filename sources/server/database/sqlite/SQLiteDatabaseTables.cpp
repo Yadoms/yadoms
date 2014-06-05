@@ -70,6 +70,7 @@ namespace sqlite {
       ((Name)("name"))
       ((FriendlyName)("friendlyName"))
       ((Model)("model"))
+	  ((Details)("details"))
    )
 
    DECLARE_TABLE_COLUMN_NAMES(Keyword,  "Keyword",
