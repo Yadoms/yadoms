@@ -5,22 +5,14 @@
 namespace shared { namespace plugin { namespace yadomsApi
 {
 
-const CCapacity& CStandardCapacities::getTemperatureSensorCapacity()
-{
-   static const CCapacity TemperatureSensorCapacity("TemperatureSensor", true, false);
-   return TemperatureSensorCapacity;
-}
+const std::string& CStandardCapacities::Temperature("temperature");
+const std::string& CStandardCapacities::BatteryLevel("batteryLevel");
+const std::string& CStandardCapacities::Rssi("rssi");
 
-const CCapacity& CStandardCapacities::getBatteryLevelCapacity()
+const bool CStandardCapacities::Exists(const std::string& capacity)
 {
-   static const CCapacity BatteryLevelCapacity("BatteryLevel", true, false);
-   return BatteryLevelCapacity;
-}
-
-const CCapacity& CStandardCapacities::getRssiMeasureCapacity()
-{
-   static const CCapacity RssiMeasureCapacity("RssiMeasure", true, false);
-   return RssiMeasureCapacity;
+   //TODO
+   return true;
 }
 
 } } } // namespace shared::plugin::yadomsApi

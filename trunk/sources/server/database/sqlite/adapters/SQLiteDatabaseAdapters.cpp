@@ -80,7 +80,7 @@ namespace adapters {
       ((Id)(int)(0))
       ((DeviceId)(int)(0))
       ((CapacityName)(std::string)(""))
-      ((AccessMode)(database::entities::ECapacityAccessMode)(database::entities::kNoAccess)(int))
+      ((AccessMode)(database::entities::EKeywordAccessMode)(database::entities::kNoAccess)(int))
       ((Name)(std::string)(""))
       ((FriendlyName)(std::string)(""))
       ((Details)(std::string)(""))

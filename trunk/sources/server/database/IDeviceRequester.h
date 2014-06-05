@@ -49,7 +49,7 @@ namespace database {
       /// \return                         the device list which support a capacity
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CDevice> > getDeviceWithCapacity(const std::string & capacityName, const database::entities::ECapacityAccessMode capacityAccessMode) const = 0;
+      virtual std::vector<boost::shared_ptr<entities::CDevice> > getDeviceWithCapacity(const std::string & capacityName, const database::entities::EKeywordAccessMode capacityAccessMode) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Create a device identified by (pluginId and name).

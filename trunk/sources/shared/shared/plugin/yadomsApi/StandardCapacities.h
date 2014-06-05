@@ -12,22 +12,16 @@ namespace shared { namespace plugin { namespace yadomsApi
    {
    public:
       //--------------------------------------------------------------
-      /// \brief		Temperature sensor capacity
-      /// \note      Temperature is in degrees Celcius
+      /// \brief		Standard capacities
       //--------------------------------------------------------------
-      static const CCapacity& getTemperatureSensorCapacity();
-      
-      ////--------------------------------------------------------------
-      ///// \brief		Battery level capacity
-      ///// \note      Temperature is in percent
-      ////--------------------------------------------------------------
-      static const CCapacity& getBatteryLevelCapacity();
+      static const std::string& Temperature;       // Temperature (degrees Celcius)
+      static const std::string& BatteryLevel;      // Battery level capacity (percent)
+      static const std::string& Rssi;              // Rssi measure capacity (percent)
 
-      ////--------------------------------------------------------------
-      ///// \brief		Rssi measure capacity
-      ///// \note      Rssi value is in percent
-      ////--------------------------------------------------------------
-      static const CCapacity& getRssiMeasureCapacity();
+      //--------------------------------------------------------------
+      /// \brief		Check if capacity exists in standard capacities
+      //--------------------------------------------------------------
+      static const bool Exists(const std::string& capacity);
    };
 
 } } } // namespace shared::plugin::yadomsApi

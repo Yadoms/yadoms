@@ -22,15 +22,28 @@ namespace database { namespace sqlite { namespace requesters {
    {
    }
 
+   bool CKeyword::keywordExists(int deviceId, const std::string& keywordName) const
+   {
+      try
+      {
+         getKeyword(deviceId, keywordName);
+      }
+      catch (shared::exception::CEmptyResult&)
+      {
+         return false;
+      }
+      return true;
+   }
+
    // IKeywordRequester implementation
-   void CKeyword::addKeyword(boost::shared_ptr<database::entities::CKeyword> newKeyword)
+   void CKeyword::addKeyword(const database::entities::CKeyword& newKeyword)
    {
       CQuery qSelect;
 
       qSelect. SelectCount().
          From(CKeywordTable::getTableName()).
-         Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, newKeyword->DeviceId()).
-         And(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, newKeyword->Name());
+         Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, newKeyword.DeviceId()).
+         And(CKeywordTable::getNameColumnName(), CQUERY_OP_EQUAL, newKeyword.Name());
 
       int count = m_databaseRequester->queryCount(qSelect);
       if(count == 0)
@@ -38,31 +51,31 @@ namespace database { namespace sqlite { namespace requesters {
          //create the database entry with needed fields
          CQuery qInsert;
          qInsert.InsertInto(CKeywordTable::getTableName(), CKeywordTable::getDeviceIdColumnName(), CKeywordTable::getCapacityNameColumnName(), CKeywordTable::getAccessModeColumnName(), CKeywordTable::getNameColumnName()).
-            Values(newKeyword->DeviceId(), newKeyword->CapacityName(), newKeyword->AccessMode(), newKeyword->Name());
+            Values(newKeyword.DeviceId(), newKeyword.CapacityName(), newKeyword.AccessMode(), newKeyword.Name());
 
          if(m_databaseRequester->queryStatement(qInsert) <= 0)
             throw shared::exception::CEmptyResult("Fail to insert keyword into table");
 
          //update fields
-         std::string friendlyName = newKeyword->Name();
-         if(newKeyword->FriendlyName.isDefined())
-            friendlyName =newKeyword->FriendlyName();
+         std::string friendlyName = newKeyword.Name();
+         if(newKeyword.FriendlyName.isDefined())
+            friendlyName =newKeyword.FriendlyName();
          
          CQuery update;
          update.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getFriendlyNameColumnName(), friendlyName).
-            Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword->DeviceId()).
-            And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword->Name());
+            Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword.DeviceId()).
+            And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword.Name());
 
          if(m_databaseRequester->queryStatement(update) <= 0)
             throw shared::exception::CEmptyResult("Fail to update FriendlyName field");
          
 
-         if(newKeyword->Details.isDefined())
+         if(newKeyword.Details.isDefined())
          {
             CQuery update;
-            update.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getDetailsColumnName(), newKeyword->Details()).
-               Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword->DeviceId()).
-               And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword->Name());
+            update.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getDetailsColumnName(), newKeyword.Details()).
+               Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword.DeviceId()).
+               And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword.Name());
 
             if(m_databaseRequester->queryStatement(update) <= 0)
                throw shared::exception::CEmptyResult("Fail to update Details field");
@@ -74,7 +87,7 @@ namespace database { namespace sqlite { namespace requesters {
       }
    }
 
-   boost::shared_ptr<database::entities::CKeyword> CKeyword::getKeyword(const int deviceId, const std::string & keyword) const
+   boost::shared_ptr<database::entities::CKeyword> CKeyword::getKeyword(int deviceId, const std::string & keyword) const
    {
       database::sqlite::adapters::CKeywordAdapter adapter;
 
@@ -87,12 +100,12 @@ namespace database { namespace sqlite { namespace requesters {
 
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CKeyword> >(&adapter, qSelect);
       if (adapter.getResults().empty())
-         throw shared::exception::CException((boost::format("Keyword name %1% for device %2% not found in database") % keyword % deviceId).str());
+         throw shared::exception::CEmptyResult((boost::format("Keyword name %1% for device %2% not found in database") % keyword % deviceId).str());
 
       return adapter.getResults().at(0);
    }
 
-   boost::shared_ptr<entities::CKeyword> CKeyword::getKeyword(const int keywordId) const
+   boost::shared_ptr<entities::CKeyword> CKeyword::getKeyword(int keywordId) const
    {
       database::sqlite::adapters::CKeywordAdapter adapter;
 
@@ -103,12 +116,12 @@ namespace database { namespace sqlite { namespace requesters {
 
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CKeyword> >(&adapter, qSelect);
       if (adapter.getResults().empty())
-         throw shared::exception::CException((boost::format("Keyword id %1% not found in database") % keywordId).str());
+         throw shared::exception::CEmptyResult((boost::format("Keyword id %1% not found in database") % keywordId).str());
 
       return adapter.getResults().at(0);
    }
 
-   std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeyword::getKeywords(const int deviceId) const
+   std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeyword::getKeywords(int deviceId) const
    {
       database::sqlite::adapters::CKeywordAdapter adapter;
       CQuery qSelect;
@@ -120,7 +133,7 @@ namespace database { namespace sqlite { namespace requesters {
    }
 
 
-   std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeyword::getDeviceKeywordsWithCapacity(const int deviceId, const std::string & capacityName, const database::entities::ECapacityAccessMode accessMode) const
+   std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeyword::getDeviceKeywordsWithCapacity(int deviceId, const std::string & capacityName, const database::entities::EKeywordAccessMode accessMode) const
    {
       database::sqlite::adapters::CKeywordAdapter adapter;
       CQuery qSelect;
@@ -156,7 +169,7 @@ namespace database { namespace sqlite { namespace requesters {
          throw shared::exception::CEmptyResult("No lines affected");
    }
 
-   void CKeyword::updateKeywordFriendlyName(const int keywordId, const std::string & newFriendlyName)
+   void CKeyword::updateKeywordFriendlyName(int keywordId, const std::string & newFriendlyName)
    {
       //get a good name
       if(newFriendlyName != shared::CStringExtension::EmptyString)
@@ -180,7 +193,7 @@ namespace database { namespace sqlite { namespace requesters {
       }
    }
 
-   void CKeyword::updateKeywordFriendlyName(const int deviceId, const std::string & keyword, const std::string & newFriendlyName)
+   void CKeyword::updateKeywordFriendlyName(int deviceId, const std::string & keyword, const std::string & newFriendlyName)
    {
       boost::shared_ptr<database::entities::CKeyword> keywordToUpdate = getKeyword(deviceId, keyword);
       if(keywordToUpdate)
