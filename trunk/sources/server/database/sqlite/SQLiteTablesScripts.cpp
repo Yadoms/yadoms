@@ -78,7 +78,8 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Device, "  CREATE TABLE Device             
                                                    pluginId INTEGER NOT NULL,                                     \
                                                    name TEXT NOT NULL,                                            \
                                                    friendlyName TEXT NOT NULL,                                    \
-                                                   model TEXT                                                     \
+                                                   model TEXT,                                                    \
+                                                   details TEXT                                                   \
                                                 )")
 
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Keyword, " CREATE TABLE Keyword                                              \

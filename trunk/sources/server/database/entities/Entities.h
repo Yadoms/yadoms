@@ -129,7 +129,8 @@ namespace entities {
       ((Name)(std::string)(""))
       ((FriendlyName)(std::string)(""))
       ((Model)(std::string)(""))
-      )
+	  ((Details)(std::string)(""))
+	  )
 
    DECLARE_ENTITY_CLASS(Keyword,
       ((Id)(int)(0))

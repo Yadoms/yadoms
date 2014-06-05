@@ -27,12 +27,12 @@ bool CYadomsApiImplementation::deviceExists(const std::string& device) const
    return m_deviceRequester->deviceExists(getPluginId(), device);
 }
 
-bool CYadomsApiImplementation::declareDevice(const std::string& device, const std::string& model)
+bool CYadomsApiImplementation::declareDevice(const std::string& device, const std::string& model, const std::string & details)
 {
    if (deviceExists(device))
       return false;
 
-   m_deviceRequester->createDevice(getPluginId(), device, device, model);
+   m_deviceRequester->createDevice(getPluginId(), device, device, model, details);
    return true;
 }
 

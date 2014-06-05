@@ -57,10 +57,11 @@ namespace database {
       /// \param [in] name                The device name (plugin internal name)
       /// \param [in] friendlyName        The user friendly device name
       /// \param [in] model               The device model or description (ex : "Oregon Scientific CN185")
+      /// \param [in] model               A free string managed by plugin
       /// \return                         The device created (null if creation failed)
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CDevice> createDevice(int pluginId, const std::string & name, const std::string & friendlyName, const std::string & model) = 0;
+	  virtual boost::shared_ptr<entities::CDevice> createDevice(int pluginId, const std::string & name, const std::string & friendlyName, const std::string & model, const std::string & details) = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all devices
