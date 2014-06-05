@@ -12,6 +12,18 @@ CFakeSensor::~CFakeSensor()
 {
 }
 
+void CFakeSensor::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   // Declare the device
+   context->declareDevice(m_deviceId, getModel());
+
+   // Declare associated keywords (= values managed by this device)
+   context->declareKeyword(m_deviceId, "temp1"  , yApi::CStandardCapacities::Temperature , yApi::IYadomsApi::kReadOnly);
+   context->declareKeyword(m_deviceId, "temp2"  , yApi::CStandardCapacities::Temperature , yApi::IYadomsApi::kReadOnly);
+   context->declareKeyword(m_deviceId, "battery", yApi::CStandardCapacities::BatteryLevel, yApi::IYadomsApi::kReadOnly);
+   context->declareKeyword(m_deviceId, "Rssi"   , yApi::CStandardCapacities::Rssi        , yApi::IYadomsApi::kReadOnly);
+}
+
 void CFakeSensor::read()
 {
    // Generate a random variation on temperature (+/- 0 to 1.0°)
@@ -30,16 +42,10 @@ void CFakeSensor::read()
 void CFakeSensor::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
-   context->historizeData(getDeviceId(), "temp1", boost::lexical_cast<std::string>(m_temperature1));//TODO si on pouvait éviter les cast
-   context->historizeData(getDeviceId(), "temp2", boost::lexical_cast<std::string>(m_temperature2));
-   context->historizeData(getDeviceId(), "battery", boost::lexical_cast<std::string>(m_batteryLevel));
-   context->historizeData(getDeviceId(), "Rssi", boost::lexical_cast<std::string>(m_rssi));
-}
-
-
-const std::string& CFakeSensor::getDeviceId() const
-{
-   return m_deviceId;
+   context->historizeData(m_deviceId, "temp1", boost::lexical_cast<std::string>(m_temperature1));//TODO si on pouvait éviter les cast
+   context->historizeData(m_deviceId, "temp2", boost::lexical_cast<std::string>(m_temperature2));
+   context->historizeData(m_deviceId, "battery", boost::lexical_cast<std::string>(m_batteryLevel));
+   context->historizeData(m_deviceId, "Rssi", boost::lexical_cast<std::string>(m_rssi));
 }
 
 const std::string& CFakeSensor::getModel()

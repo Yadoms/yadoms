@@ -73,7 +73,7 @@ namespace web { namespace rest { namespace service {
          web::rest::json::CWidgetEntitySerializer hes;
          if(parameters.size()>2)
          {
-            database::entities::ECapacityAccessMode cam = database::entities::kNoAccess;
+            database::entities::EKeywordAccessMode cam = database::entities::kNoAccess;
             //read the capacity mode
             if(parameters[2] == "get")
                cam = database::entities::kRead;
@@ -119,7 +119,7 @@ namespace web { namespace rest { namespace service {
 
             int deviceId = boost::lexical_cast<int>(parameters[1]);
 
-            database::entities::ECapacityAccessMode cam = database::entities::kNoAccess;
+            database::entities::EKeywordAccessMode cam = database::entities::kNoAccess;
             //read the capacity mode
             if(parameters[2] == "get")
                cam = database::entities::kRead;

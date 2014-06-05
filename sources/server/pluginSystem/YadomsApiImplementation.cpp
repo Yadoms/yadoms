@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "YadomsApiImplementation.h"
+#include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/Log.h>
@@ -32,6 +33,63 @@ bool CYadomsApiImplementation::declareDevice(const std::string& device, const st
       return false;
 
    m_deviceRequester->createDevice(getPluginId(), device, device, model);
+   return true;
+}
+
+bool CYadomsApiImplementation::keywordExists(const std::string& device, const std::string& keyword) const
+{
+   if (!deviceExists(device))
+      throw shared::exception::CEmptyResult("Fail to declare keyword : owner device doesn't exist.");
+
+   return m_keywordRequester->keywordExists((m_deviceRequester->getDevice(getPluginId(), device))->Id, keyword);
+}
+
+bool CYadomsApiImplementation::declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode accessMode, const std::string& details)
+{
+   if (keywordExists(device, keyword))
+      return false;
+
+   database::entities::CKeyword keywordEntity;
+   keywordEntity.DeviceId = m_deviceRequester->getDevice(getPluginId(), device)->Id;
+   keywordEntity.CapacityName = capacity;
+   switch(accessMode)
+   {
+   case shared::plugin::yadomsApi::IYadomsApi::kReadWrite: keywordEntity.AccessMode = database::entities::kReadWrite; break;
+   case shared::plugin::yadomsApi::IYadomsApi::kReadOnly : keywordEntity.AccessMode = database::entities::kRead; break;
+   case shared::plugin::yadomsApi::IYadomsApi::kWriteOnly: keywordEntity.AccessMode = database::entities::kWrite; break;
+   default:
+      BOOST_ASSERT_MSG(false, "Unknown accessMode");
+      throw shared::exception::CEmptyResult("Fail to declare keyword : unknown accessMode");
+      break;
+   }
+   keywordEntity.Name = keyword;
+   keywordEntity.FriendlyName = keyword;
+   keywordEntity.Details = details;
+
+   m_keywordRequester->addKeyword(keywordEntity);
+
+   return true;
+}
+
+bool CYadomsApiImplementation::capacityExists(const std::string& capacity) const
+{
+   // First look at standard capacities
+   if (shared::plugin::yadomsApi::CStandardCapacities::Exists(capacity))
+      return true;
+
+   // Not found in standard capacities, look at user capacities
+   //TODO en attendant que la table de UserCapacity existe
+   return false;
+//   return m_userCapacityRequester->capacityExists(capacity);
+}
+
+bool CYadomsApiImplementation::declareCapacity(const std::string& capacity)
+{
+   //TODO en attendant que la table de UserCapacity existe
+   //if (capacityExists(capacity))
+   //   return false;
+
+   //m_userCapacityRequester->createCapacity(capacity);
    return true;
 }
       

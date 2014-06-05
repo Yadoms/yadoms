@@ -28,15 +28,16 @@ namespace database { namespace sqlite {
          virtual ~CKeyword();
 
          // IKeywordRequester implementation
-         virtual void addKeyword(boost::shared_ptr<database::entities::CKeyword> newKeyword);
-         virtual boost::shared_ptr<database::entities::CKeyword> getKeyword(const int deviceId, const std::string & keyword) const;
-         virtual boost::shared_ptr<entities::CKeyword> getKeyword(const int keywordId) const;
-         virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getKeywords(const int deviceId) const;
-         virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getDeviceKeywordsWithCapacity(const int deviceId, const std::string & capacityName, const database::entities::ECapacityAccessMode accessMode) const;
-         virtual void removeKeyword(const int deviceId, const std::string & keyword);
-         virtual void removeKeyword(const int keywordId);
-         virtual void updateKeywordFriendlyName(const int deviceId, const std::string & keyword, const std::string & newFriendlyName);
-         virtual void updateKeywordFriendlyName(const int keywordId, const std::string & newFriendlyName);
+         virtual bool keywordExists(int deviceId, const std::string& keywordName) const;
+         virtual void addKeyword(const database::entities::CKeyword& newKeyword);
+         virtual boost::shared_ptr<database::entities::CKeyword> getKeyword(int deviceId, const std::string & keyword) const;
+         virtual boost::shared_ptr<entities::CKeyword> getKeyword(int keywordId) const;
+         virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getKeywords(int deviceId) const;
+         virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getDeviceKeywordsWithCapacity(int deviceId, const std::string & capacityName, const database::entities::EKeywordAccessMode accessMode) const;
+         virtual void removeKeyword(int deviceId, const std::string & keyword);
+         virtual void removeKeyword(int keywordId);
+         virtual void updateKeywordFriendlyName(int deviceId, const std::string & keyword, const std::string & newFriendlyName);
+         virtual void updateKeywordFriendlyName(int keywordId, const std::string & newFriendlyName);
 
          // [END] IKeywordRequester implementation
 

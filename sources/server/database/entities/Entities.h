@@ -115,7 +115,7 @@ namespace entities {
 
 
    
-   enum ECapacityAccessMode
+   enum EKeywordAccessMode
    {
       kNoAccess = 0, 
       kRead = 1, 
@@ -135,7 +135,7 @@ namespace entities {
       ((Id)(int)(0))
       ((DeviceId)(int)(0))
       ((CapacityName)(std::string)(""))
-      ((AccessMode)(database::entities::ECapacityAccessMode)(database::entities::kNoAccess))
+      ((AccessMode)(database::entities::EKeywordAccessMode)(database::entities::kNoAccess))
       ((Name)(std::string)(""))
       ((FriendlyName)(std::string)(""))
       ((Details)(std::string)(""))

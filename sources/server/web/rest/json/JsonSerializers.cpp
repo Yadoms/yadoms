@@ -75,7 +75,7 @@ namespace web { namespace rest { namespace json {
       ((Id)("id")JSON_INT)
       ((DeviceId)("deviceId")JSON_INT)
       ((CapacityName)("capacityName")JSON_STRING)
-      ((AccessMode)("accessMode")JSON_ENUM(database::entities::ECapacityAccessMode))
+      ((AccessMode)("accessMode")JSON_ENUM(database::entities::EKeywordAccessMode))
       ((Name)("name")JSON_STRING)
       ((FriendlyName)("friendlyName")JSON_STRING)
       ((Details)("details")JSON_PTREE)

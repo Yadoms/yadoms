@@ -142,7 +142,7 @@ void CXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             BOOST_FOREACH(boost::shared_ptr<database::entities::CKeyword> keyword, allKeywords)
             {
                keyword->DeviceId = device->Id();
-               m_dataProvider->getKeywordRequester()->addKeyword(keyword);
+               m_dataProvider->getKeywordRequester()->addKeyword(*keyword);
             }
 
             //create message to insert in database

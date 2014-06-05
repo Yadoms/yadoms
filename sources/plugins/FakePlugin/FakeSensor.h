@@ -27,20 +27,21 @@ public:
    virtual ~CFakeSensor();
 
    //--------------------------------------------------------------
+   /// \brief	            Declare the device and its associated keywords
+   /// \param[in] context  YadomsApi context to which declare the device
+   //--------------------------------------------------------------
+   void declareDevice(boost::shared_ptr<yApi::IYadomsApi> context);
+
+   //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
    //--------------------------------------------------------------
    void read();
 
    //--------------------------------------------------------------
-   /// \brief	    Send all sensor data to Yadoms
+   /// \brief	            Send all sensor data to Yadoms
+   /// \param[in] context  YadomsApi context to which historize data
    //--------------------------------------------------------------
    void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
-
-   //--------------------------------------------------------------
-   /// \brief	    Returns the sensor device ID
-   /// \return     Device ID
-   //--------------------------------------------------------------
-   const std::string& getDeviceId() const;
 
    //--------------------------------------------------------------
    /// \brief	    Returns the fake sensor model
