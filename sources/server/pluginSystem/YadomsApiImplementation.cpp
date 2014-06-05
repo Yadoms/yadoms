@@ -86,6 +86,21 @@ void CYadomsApiImplementation::historizeData(const std::string & device, const s
    }
 }
 
+void CYadomsApiImplementation::historizeData(const std::string & device, const std::string & keyword, bool value)
+{
+   historizeData(device, keyword, boost::lexical_cast<std::string>(value));
+}  
+
+void CYadomsApiImplementation::historizeData(const std::string & device, const std::string & keyword, int value)
+{
+   historizeData(device, keyword, boost::lexical_cast<std::string>(value));
+}  
+
+void CYadomsApiImplementation::historizeData(const std::string & device, const std::string & keyword, double value)
+{
+   historizeData(device, keyword, boost::lexical_cast<std::string>(value));
+}  
+
 const shared::plugin::information::IInformation& CYadomsApiImplementation::getInformation() const
 {
    return *m_informations;

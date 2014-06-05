@@ -1,64 +1,16 @@
 #pragma once
-#include "Capacity.h"
 #include <shared/event/EventHandler.hpp>
 #include <shared/plugin/information/IInformation.h>
 #include <shared/StringExtension.h>
 
-/*
-TODO nettoyer tous ces commentaires en français
-Besoins des widgets
 
-	1. Lister les devices qui fournissent une donnée (température, hygro,...)
-	2. Lister les devices qui supportent des commandes (potentiellement jamais émises)
-	3. Envoyer des commandes à un device
-	4. Recevoir des données d'un device
-	
-	
-
-Fonctions des plugins
-
-	1. Communiquent avec les hardwares (lien série, réseau, ...)
-	2. Créer/rechercher un device
-	3. Historiser des données
-	4. Piloter les hardwares
-	5. Connaissent les fonctions des hardwares (savent décrire leurs capacités : envoi de commande, sonde temperature)
-	
-	
-
-	
-	
-Roadmap
-
-	1. définir IYadomsApi
-	2. définir une capacité (mot clé, read/write, ...)
-	3. définir les interfaces de communications (conteneur de données, de commandes,....)
-	4. diagrammes de séquences
-	5. définir une liste de capacités avec leur détails implicites (unités par exemple, ....)
-   
-   
-Détails/remarques :
-   
-   1. Il existera une instance de l'implémentation de IYadomsApi par instance de plugin. Ca permet de ne pas diffuser l'instanceId au code du plugin (entre autre) et
-   d'une manière générale que cet objet contienne des données/méthodes concernant l'instance du plugin (comme l'eventHandler) en plus des données/méthodes globales de Yadoms.
-   2. L'instance de plugin reçoit tous les événements (kEventUpdateConfiguration, kEventDeviceCommand) sans besoin de s'abonner explicitement. Les événements ne sont de toutes
-   façons levés que si actif (kEventUpdateConfiguration levé que si le plugin contient une configuration, kDeviceCommand que si le plugin a déclaré un device canWrite).
-	
-   
-Questions:
-
-   1. gestion des exceptions ou retour par bool sur les méthodes de l'api ? ou  alors même en retournant un int à la façon linux
-   
-   
-Notes:
-SG> Mon avis sur les questions :
-   1. Je suis favorable aux exceptions, plus objet, à condition que ça ne génère pas d'incompatibilité (plugin compilé avec un autre compilo que Yadoms). A tester.
-*/
-
-// TODO faire le ménage dans ce fichier (commentaires...)
 
 // TODO est-il judicieux d'ajouter ici : namespace yApi = shared::plugin::yadomsApi;
 namespace shared { namespace plugin { namespace yadomsApi
 {
+   //-----------------------------------------------------
+   ///\brief The API used by the plugins to interact with Yadoms
+   //-----------------------------------------------------
    class IYadomsApi
    {
    public:
@@ -109,12 +61,11 @@ namespace shared { namespace plugin { namespace yadomsApi
       {
       private:
          //TODO à commenter
-         CCapacity m_capacity;
          std::string m_value;
          std::string m_targetDevice;
 
       public:
-         CDeviceCommand():m_capacity("", false, false){}  //TODO revoir construction
+         CDeviceCommand(){}  //TODO revoir construction
          virtual ~CDeviceCommand(){}
          std::string toString() const
          {
@@ -179,7 +130,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       //-----------------------------------------------------
       ///\brief Keyword access mode
       //-----------------------------------------------------
-      enum EKeywordAccessMode//TODO remonter d'un cran ?
+      enum EKeywordAccessMode
       {
          kReadWrite,
          kReadOnly,
@@ -229,8 +180,12 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\param    [in]    keyword            The value name ("temp1", "temp2", "humidity", "batteryLevel", "rssi"...)
       ///\param    [in]    value              The capacity value
       ///\throw   shared::exception::CInvalidParameter if the device is not known
+      ///\note Data are all recorded internally as string. The methods which doesn't take string just do a boost::lexical_cast.
       //-----------------------------------------------------     
       virtual void historizeData(const std::string & device, const std::string & keyword, const std::string & value) = 0;
+      virtual void historizeData(const std::string & device, const std::string & keyword, bool value) = 0;
+      virtual void historizeData(const std::string & device, const std::string & keyword, int value) = 0;
+      virtual void historizeData(const std::string & device, const std::string & keyword, double value) = 0;
       
       
       //----------------------------------------------------------------------------------------------------------------

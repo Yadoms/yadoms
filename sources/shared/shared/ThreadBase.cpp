@@ -9,7 +9,7 @@ const int CThreadBase::DefaultStopTimeoutSeconds = 100;
 
 
 CThreadBase::CThreadBase(const std::string & threadName, const bool bRethrowDoWorkExceptions)
-   :m_threadName(threadName), m_threadStatus(kStopped), m_stopTimeoutSeconds(DefaultStopTimeoutSeconds), m_bRethrowDoWorkExceptions(bRethrowDoWorkExceptions)
+   :m_threadName(threadName), m_stopTimeoutSeconds(DefaultStopTimeoutSeconds), m_bRethrowDoWorkExceptions(bRethrowDoWorkExceptions)
 {
 	BOOST_ASSERT(threadName != "");
 }
@@ -21,18 +21,17 @@ CThreadBase::~CThreadBase(void)
 
 void CThreadBase::start()
 {
-   BOOST_ASSERT(getStatus() == kStopped);
+   BOOST_ASSERT(!m_thread);
 
    //start the thread
-   changeStatus(kStarting);
-   m_thread = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&CThreadBase::doWorkInternal, this)));
+   m_thread.reset(new boost::thread(boost::bind(&CThreadBase::doWorkInternal, this)));
 
    YADOMS_LOG(debug) << "Thread Id=" << m_thread->get_id() << " Name = " << getName();
 }
 
 bool CThreadBase::stop()
 {
-   if (getStatus() == kStopped)
+   if (!m_thread)
       return true;   // Already stopped
 
    YADOMS_LOG(info) << "Stopping thread " << getName();
@@ -51,7 +50,6 @@ bool CThreadBase::stop()
 
 void CThreadBase::requestToStop()
 {
-   changeStatus(kStopping);
    m_thread->interrupt();
 }
 
@@ -75,28 +73,17 @@ bool CThreadBase::waitForStop(int seconds)
       stopped = true;
    }
 
-   if (stopped)
-      changeStatus(kStopped);
-
    return stopped;
 }
 
-CThreadBase::EStatus CThreadBase::getStatus() const
+bool CThreadBase::isStopping() const
 {
-   // TODO : rendre m_threadStatus thread-safe
-   return m_threadStatus;
+   return m_thread->interruption_requested();
 }
-
-void CThreadBase::changeStatus(const EStatus & newStatus)
-{
-   m_threadStatus = newStatus;
-}
-
 
 void CThreadBase::doWorkInternal()
 {
    //manage the doWork method. It aims is to manage the thread state around doWork
-   changeStatus(kRunning);
    try 
    {
 	  //configure the log with thread name
@@ -122,8 +109,6 @@ void CThreadBase::doWorkInternal()
       if(m_bRethrowDoWorkExceptions)
          throw;
    }
-
-   changeStatus(kStopped);
 }
 
 } // namespace shared

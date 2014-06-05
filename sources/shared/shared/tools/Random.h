@@ -22,7 +22,7 @@ namespace shared { namespace tools {
          BOOST_ASSERT(NbBits <= 32);
 
          boost::random::independent_bits_engine<boost::random::mt19937, NbBits, boost::uint32_t> genbits((unsigned int)time(0));
-         boost::random::uniform_int_distribution<> m_dist(zeroAllowed?0:1, ((int)pow(2.0,(int)NbBits))-1);//TODO : ça ne serait pas mieux un décalage ?
+         boost::random::uniform_int_distribution<> m_dist(zeroAllowed?0:1, ((int)pow(2.0,(int)NbBits))-1);
          return m_dist(genbits); 
       }      
 

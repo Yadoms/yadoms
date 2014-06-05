@@ -5,15 +5,33 @@
 volatile sig_atomic_t CApplicationStopHandler::StopRequested = false;
 
 
-void CApplicationStopHandler::configure()
+CApplicationStopHandler::CApplicationStopHandler(shared::event::CEventHandler& targetEventHandler, int eventId)
+   :m_targetEventHandler(targetEventHandler), m_eventId(eventId)
 {
+   BOOST_ASSERT_MSG(!m_thread, "CApplicationStopHandler::configure must not be called twice");
+
    signal(SIGINT, handleInternal);   // CTRL+C signal
    signal(SIGTERM,handleInternal);   // Termination request
+
+   // Start signal wait thread
+   StopRequested = false;
+   m_thread.reset(new boost::thread(boost::bind(&CApplicationStopHandler::doWork, this)));
 }
 
-bool CApplicationStopHandler::stopRequested()
+CApplicationStopHandler::~CApplicationStopHandler()
 {
-   return StopRequested ? true : false;
+   m_thread->join();
+   m_thread.reset();
+}
+
+void CApplicationStopHandler::doWork()
+{
+   while (!StopRequested)
+   {
+      boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+   }
+
+   m_targetEventHandler.postEvent(m_eventId);
 }
 
 void CApplicationStopHandler::handleInternal(int signal)
