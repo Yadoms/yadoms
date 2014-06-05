@@ -70,28 +70,6 @@ bool CYadomsApiImplementation::declareKeyword(const std::string& device, const s
 
    return true;
 }
-
-bool CYadomsApiImplementation::capacityExists(const std::string& capacity) const
-{
-   // First look at standard capacities
-   if (shared::plugin::yadomsApi::CStandardCapacities::Exists(capacity))
-      return true;
-
-   // Not found in standard capacities, look at user capacities
-   //TODO en attendant que la table de UserCapacity existe
-   return false;
-//   return m_userCapacityRequester->capacityExists(capacity);
-}
-
-bool CYadomsApiImplementation::declareCapacity(const std::string& capacity)
-{
-   //TODO en attendant que la table de UserCapacity existe
-   //if (capacityExists(capacity))
-   //   return false;
-
-   //m_userCapacityRequester->createCapacity(capacity);
-   return true;
-}
       
 void CYadomsApiImplementation::historizeData(const std::string & device, const std::string & keyword, const std::string & value)
 {

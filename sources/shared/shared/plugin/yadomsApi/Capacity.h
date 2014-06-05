@@ -3,7 +3,7 @@
 #include <shared/Export.h>
 
 
-namespace shared { namespace plugin { namespace yadomsApi
+namespace shared { namespace plugin { namespace yadomsApi //TODO à virer ?
 {
    //--------------------------------------------------------------
    /// \brief		Container class for a capacity
