@@ -42,7 +42,7 @@ void CInstance::doWork()
       // Execute plugin code
       m_pPluginInstance->doWork(m_context);
 
-      if (getStatus() == kStopping)
+      if (isStopping())
       {
          // Normal stop
          return;
@@ -77,7 +77,7 @@ void CInstance::doWork()
    YADOMS_LOG(info) << m_context->getInformation().getName() << " is stopped";
    
    // Signal the abnormal stop
-   CManagerEvent event(CManagerEvent::kPluginInstanceAbnormalStopped, m_context->getPluginId(), m_pPlugin->getInformation(), getStatus() == kStopping);
+   CManagerEvent event(CManagerEvent::kPluginInstanceAbnormalStopped, m_context->getPluginId(), m_pPlugin->getInformation(), isStopping());
    m_supervisor.postEvent<CManagerEvent>(m_pluginManagerEventId, event);
 }
 

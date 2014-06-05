@@ -26,14 +26,13 @@
 
 
 CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
-   :CThreadBase("Supervisor"), m_startupOptions(startupOptions)
+   :m_stopHandler(m_EventHandler, kStopRequested), m_startupOptions(startupOptions)
 {
 }
 
 
-CSupervisor::~CSupervisor(void)
+CSupervisor::~CSupervisor()
 {
-   BOOST_ASSERT(getStatus() == kStopped);   // CSupervisor must be stopped before destroy
 }
 
 void CSupervisor::doWork()
@@ -51,11 +50,11 @@ void CSupervisor::doWork()
       }
 
       // Start Task manager
-      boost::shared_ptr<task::CScheduler> taskManager = boost::shared_ptr<task::CScheduler>(new task::CScheduler(*this, kSystemEvent));
+      boost::shared_ptr<task::CScheduler> taskManager = boost::shared_ptr<task::CScheduler>(new task::CScheduler(m_EventHandler, kSystemEvent));
 
       // Create the Plugin manager
       boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(
-         m_startupOptions.getPluginsPath(), pDataProvider, *this, kPluginManagerEvent));
+         m_startupOptions.getPluginsPath(), pDataProvider, m_EventHandler, kPluginManagerEvent));
 
       // Start the plugin gateway
       communication::CPluginGateway pluginGateway(pDataProvider, pluginManager);
@@ -96,31 +95,31 @@ void CSupervisor::doWork()
 
       // Main loop
       YADOMS_LOG(info) << "Supervisor is running...";
-      try
+      bool running = true;
+      while(running)
       {
-         while(true)
+         switch(m_EventHandler.waitForEvents())
          {
-            switch(waitForEvents())
-            {
-            case kPluginManagerEvent:
-               pluginManager->signalEvent(getEventData<pluginSystem::CManagerEvent>());
-               break;
+         case kStopRequested:
+            running = false;
+            break;
 
-            case kSystemEvent:
-               pDataProvider->getEventLoggerRequester()->addEvent(getEventData<database::entities::CEventLogger>());
-               break;
+         case kPluginManagerEvent:
+            pluginManager->signalEvent(m_EventHandler.getEventData<pluginSystem::CManagerEvent>());
+            break;
 
-            default:
-               YADOMS_LOG(error) << "Unknown message id";
-               BOOST_ASSERT(false);
-               break;
-            }
+         case kSystemEvent:
+            pDataProvider->getEventLoggerRequester()->addEvent(m_EventHandler.getEventData<database::entities::CEventLogger>());
+            break;
+
+         default:
+            YADOMS_LOG(error) << "Unknown message id";
+            BOOST_ASSERT(false);
+            break;
          }
       }
-      catch (boost::thread_interrupted&)
-      {
-         YADOMS_LOG(info) << "Supervisor is interrupted...";
-      }
+
+      YADOMS_LOG(info) << "Supervisor is stopping...";
 
       //stop all plugins
       if(pluginManager.get() != NULL)

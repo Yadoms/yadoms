@@ -9,7 +9,6 @@
 #include <iostream>
 #include "Supervisor.h"
 #include "startupOptions/Loader.h"
-#include "ApplicationStopHandler.h"
 #include <shared/Log.h>
 
 
@@ -18,8 +17,6 @@
 */
 int main (int argc, char** argv)
 {
-   CApplicationStopHandler::configure();
-
    try
    {
       startupOptions::CLoader startupOptions(argc, argv);
@@ -46,14 +43,9 @@ int main (int argc, char** argv)
 
 
       CSupervisor supervisor(startupOptions);
-      supervisor.start();
 
-      while(!CApplicationStopHandler::stopRequested() && supervisor.getStatus() != shared::CThreadBase::kStopped)
-      {
-         boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-      }
-
-      supervisor.stop();
+      // The main job
+      supervisor.doWork();
 
       YADOMS_LOG(info) << "Yadoms is stopped ";
    }

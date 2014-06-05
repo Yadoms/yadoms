@@ -42,10 +42,10 @@ void CFakeSensor::read()
 void CFakeSensor::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
-   context->historizeData(m_deviceId, "temp1", boost::lexical_cast<std::string>(m_temperature1));//TODO si on pouvait éviter les cast
-   context->historizeData(m_deviceId, "temp2", boost::lexical_cast<std::string>(m_temperature2));
-   context->historizeData(m_deviceId, "battery", boost::lexical_cast<std::string>(m_batteryLevel));
-   context->historizeData(m_deviceId, "Rssi", boost::lexical_cast<std::string>(m_rssi));
+   context->historizeData(m_deviceId, "temp1"  , m_temperature1);
+   context->historizeData(m_deviceId, "temp2"  , m_temperature2);
+   context->historizeData(m_deviceId, "battery", m_batteryLevel);
+   context->historizeData(m_deviceId, "Rssi"   , m_rssi        );
 }
 
 const std::string& CFakeSensor::getModel()

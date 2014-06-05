@@ -1,28 +1,56 @@
 #pragma once
 
-#include <shared/ThreadBase.h>
 #include <shared/event/EventHandler.hpp>
+#include "ApplicationStopHandler.h"
 #include "startupOptions/IStartupOptions.h"
 
-class CSupervisor : public shared::CThreadBase, public shared::event::CEventHandler
+//-----------------------------------------------------------------------------
+/// \class              Yadoms supervisor
+//-----------------------------------------------------------------------------
+class CSupervisor
 {
 private:
-   // Event IDs
+   //--------------------------------------------------------------
+   /// \brief	Event IDs
+   //--------------------------------------------------------------
    enum
    {
-      kPluginManagerEvent = shared::event::kUserFirstId,
-      kSystemEvent,
+      kStopRequested = shared::event::kUserFirstId,   // Yadoms stop was required
+      kPluginManagerEvent,                            // Event from plugin manager
+      kSystemEvent,                                   // Event from system
    };
 
 public:
+   //-----------------------------------------------------------------------------
+   /// \brief		                     Constructor
+   /// \param[in] startupOptions       Yadoms startup options
+   //-----------------------------------------------------------------------------
    CSupervisor(const startupOptions::IStartupOptions& startupOptions);
-   virtual ~CSupervisor(void);
 
-   // CThreadBase Implementation
+   //-----------------------------------------------------------------------------
+   /// \brief		                     Destructor
+   //-----------------------------------------------------------------------------
+   virtual ~CSupervisor();
+
+   //-----------------------------------------------------------------------------
+   /// \brief		                     The main method (blocking, returns at Yadoms exit)
+   //-----------------------------------------------------------------------------
    void doWork();
-   // [END] CThreadBase Implementation
 
 private:
+   //-----------------------------------------------------------------------------
+   /// \brief		                     The supervisor event handler
+   //-----------------------------------------------------------------------------
+   shared::event::CEventHandler m_EventHandler;
+
+   //-----------------------------------------------------------------------------
+   /// \brief		                     The stop handler
+   //-----------------------------------------------------------------------------
+   CApplicationStopHandler m_stopHandler;
+
+   //-----------------------------------------------------------------------------
+   /// \brief		                     Yadoms startup options
+   //-----------------------------------------------------------------------------
    const startupOptions::IStartupOptions& m_startupOptions;
 };
 

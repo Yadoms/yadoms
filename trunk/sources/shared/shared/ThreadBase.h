@@ -25,17 +25,6 @@ namespace shared
       //--------------------------------------------------------------
       virtual ~CThreadBase(void);
 
-      //--------------------------------------------------------------
-      /// \brief			Enumeration for all thread status
-      //--------------------------------------------------------------
-      enum EStatus
-      {
-         kStarting,        /// \brief  Thread is starting
-         kRunning,         /// \brief	Thread is running
-         kStopping,        /// \brief	Thread is requested to stop
-         kStopped          /// \brief	Thread is stopped
-      };
-
    public:
       //--------------------------------------------------------------
       /// \brief			Start the thread
@@ -62,10 +51,10 @@ namespace shared
       virtual bool waitForStop(int seconds = 0);
 
       //--------------------------------------------------------------
-      /// \brief			Get the thread status
-      /// \return    	One of the EStatus enum values
+      /// \brief			Check if stop was requested
+      /// \return    	True if stop resquested
       //--------------------------------------------------------------
-      EStatus getStatus() const;
+      bool isStopping() const;
 
       //--------------------------------------------------------------
       /// \brief		Set the thread name
@@ -102,13 +91,6 @@ namespace shared
       //--------------------------------------------------------------
       virtual void doWork() = 0;
 
-      //--------------------------------------------------------------
-      /// \brief			Change the thread status
-      /// \param [in]	newStatus : the new thread status
-      /// \return    	void
-      //--------------------------------------------------------------
-      void changeStatus(const EStatus & newStatus);
-
    private:  
       //--------------------------------------------------------------
       /// \brief			Method which manage the virtual doWork method
@@ -128,16 +110,6 @@ namespace shared
       boost::shared_ptr<boost::thread> m_thread;
 
       //--------------------------------------------------------------
-      /// \brief			Current thread status
-      //--------------------------------------------------------------
-      EStatus m_threadStatus;
-
-      //--------------------------------------------------------------
-      /// \brief			Manage the status change callback
-      //--------------------------------------------------------------
-      boost::signals2::signal<void(const EStatus & newStatus)> m_statusChanged;
-
-      //--------------------------------------------------------------
       /// \brief			Default timeout when stop requested before thread effectively stop.
       ///               If thread is not stopped at timeout, thread is killed.
       //--------------------------------------------------------------
@@ -150,7 +122,7 @@ namespace shared
       static const int DefaultStopTimeoutSeconds;
 
       //--------------------------------------------------------------
-      /// \brief			Indicate if exception of DoWork are rethrown or not
+      /// \brief			Indicate if exception of doWork are rethrown
       //--------------------------------------------------------------
       bool m_bRethrowDoWorkExceptions;
    };

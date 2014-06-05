@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/Export.h>
-#include "Capacity.h"
 
 
 namespace shared { namespace plugin { namespace yadomsApi
