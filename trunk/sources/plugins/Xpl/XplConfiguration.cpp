@@ -13,10 +13,10 @@ CXplConfiguration::~CXplConfiguration()
 
 bool CXplConfiguration::getStartXplhub() const
 {
-   return getValue<bool>("HubXplSection");
+   return getValue<bool>("HubXplSection.checkbox");
 }
 
 std::string CXplConfiguration::getHubLocalIp() const
 {
-   return getValue<std::string>("Hub local Ip");
+   return getValue<std::string>("HubXplSection.values.ipAddress");
 }

@@ -35,18 +35,20 @@ namespace xplrules { namespace rfxLanXpl {
       return data;
    }
 
-   /*
-   std::vector< boost::shared_ptr<database::entities::CKeyword> > CAcBasic::identifyKeywords(xplcore::CXplMessage & msg)
+
+   std::vector< boost::shared_ptr<CDeviceKeyword> > CAcBasic::identifyKeywords(xplcore::CXplMessage & msg)
    {
-      std::vector< boost::shared_ptr<database::entities::CKeyword> > keywords;
+      std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
+      /*
       //command
       keywords.push_back(CKeywordManager::createEnumeration(m_keywordCommand, m_keywordCommandValues));
 
       //level
       keywords.push_back(CKeywordManager::createNumeric(m_keywordLevel, 0, 15));
+      */
       return keywords;
    }
-   */
+
    // [END] IRule implementation
 
 

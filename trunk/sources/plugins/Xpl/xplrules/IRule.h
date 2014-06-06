@@ -2,6 +2,7 @@
 
 #include "../xplcore/XplMessage.h"
 #include "DeviceIdentifier.h"
+#include "DeviceKeyword.h"
 
 namespace xplrules {
 
@@ -42,7 +43,7 @@ namespace xplrules {
       ///\param [in] msg the message from which extract the keyword data
       ///\return the keywords data contained in message
       //------------------------------------
-      //virtual std::vector< boost::shared_ptr<database::entities::CKeyword> > identifyKeywords(xplcore::CXplMessage & msg) = 0;
+      virtual std::vector< boost::shared_ptr<CDeviceKeyword> > identifyKeywords(xplcore::CXplMessage & msg) = 0;
    };
 
 

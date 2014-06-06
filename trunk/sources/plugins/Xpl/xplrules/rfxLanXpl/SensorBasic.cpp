@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SensorBasic.h"
+#include <shared/plugin/yadomsApi/StandardCapacities.h>
 
 namespace xplrules { namespace rfxLanXpl {
 
@@ -215,11 +216,11 @@ namespace xplrules { namespace rfxLanXpl {
 
       return data;
    }
-   /*
-   std::vector< boost::shared_ptr<database::entities::CKeyword> > CSensorBasic::identifyKeywords(xplcore::CXplMessage & msg)
+   
+   std::vector< boost::shared_ptr<CDeviceKeyword> > CSensorBasic::identifyKeywords(xplcore::CXplMessage & msg)
    {
-      std::vector< boost::shared_ptr<database::entities::CKeyword> > keywords;
-
+      std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
+      
       //COMMON
       std::string units = "";
       if(msg.getBody().find(m_keywordUnits) != msg.getBody().end())
@@ -227,9 +228,9 @@ namespace xplrules { namespace rfxLanXpl {
 
       if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeBattery))
       {
-         keywords.push_back(CKeywordManager::createNumeric(msg.getBodyValue(m_keywordType), 0, 100, units));
+         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeBattery, shared::plugin::yadomsApi::CStandardCapacities::BatteryLevel, shared::plugin::yadomsApi::IYadomsApi::kReadOnly, "")));
       }
-
+      /*
       //DIGIMAX
       if(boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceDigimax))
       {
@@ -326,9 +327,10 @@ namespace xplrules { namespace rfxLanXpl {
          }
 
       }
+      */
       return keywords;
    }
-   */
+   
 
    bool CSensorBasic::isOregonDevice(xplcore::CXplMessage & msg)
    {

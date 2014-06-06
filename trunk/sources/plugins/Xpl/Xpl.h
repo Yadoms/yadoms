@@ -36,7 +36,7 @@ private:
    ///\brief Function handler when receiving XplMessage
    ///\param [in] The xpl message received
    //----------------------------------------------
-   void OnXplMessageReceived(xplcore::CXplMessage & message);
+   void OnXplMessageReceived(xplcore::CXplMessage & message, boost::shared_ptr<yApi::IYadomsApi> context);
 
    //----------------------------------------------
    ///\brief  The plugin xpl device id

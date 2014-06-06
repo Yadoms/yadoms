@@ -3,6 +3,8 @@
 #include <shared/plugin/ImplementationHelper.h>
 #include <shared/Log.h>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/exception/Exception.hpp>
+#include <shared/serialization/PTreeToJsonSerializer.h>
 #include "xplcore/XplService.h"
 #include "xplcore/XplHub.h"
 #include "xplcore/XplConstants.h"
@@ -80,7 +82,7 @@ void CXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             {
                // Xpl message was received
                xplcore::CXplMessage xplMessage = context->getEventHandler().getEventData<xplcore::CXplMessage>();
-               OnXplMessageReceived(xplMessage);
+               OnXplMessageReceived(xplMessage, context);
                break;
             }
          default:
@@ -97,6 +99,10 @@ void CXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
    catch (boost::thread_interrupted&)
    {
    }
+   catch (shared::exception::CException &)
+   {
+
+   }
 
    if(hub)
       hub->stop();
@@ -109,7 +115,7 @@ void CXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
    ///\brief Function handler when receiving XplMessage
    ///\param [in] The xpl message received
    //----------------------------------------------
-   void CXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage)
+void CXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::shared_ptr<yApi::IYadomsApi> context)
    {
       try
       {
@@ -120,13 +126,21 @@ void CXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          if(xplMessage.getSource().getVendorId() == xplcore::CXplConstants::getYadomsVendorId() &&
         		 xplMessage.getSource().getDeviceId() == m_xpl_gateway_id)
             realSource = xplMessage.getTarget().toString();
-      
+
          boost::shared_ptr<xplrules::IRule> rule = m_rulerFactory.identifyRule(realSource, xplMessage.getMessageSchemaIdentifier().toString());
          if(rule.get() != NULL)
          {
             //retreeive device identifier
             xplrules::CDeviceIdentifier deviceAddress = rule->getDeviceAddressFromMessage(xplMessage);
 
+            if (!context->deviceExists(deviceAddress.getId()))
+            {
+               boost::property_tree::ptree details;
+               details.put("protocol", xplMessage.getMessageSchemaIdentifier().toString());
+               details.put("source", realSource);
+               shared::serialization::CPtreeToJsonSerializer serialiser;
+               context->declareDevice(deviceAddress.getId(), deviceAddress.getCommercialName(), serialiser.serialize(details));
+            }
             //try to find device in db
             /*
             boost::shared_ptr<database::entities::CDevice> device = m_dataProvider->getDeviceRequester()->getDevice(deviceAddress.getId(), xplMessage.getMessageSchemaIdentifier().toString(), realSource);

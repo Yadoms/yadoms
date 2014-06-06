@@ -31,11 +31,10 @@ namespace xplrules { namespace standard {
       return data;
    }
 
-   /*
-   std::vector< boost::shared_ptr<database::entities::CKeyword> > CX10Basic::identifyKeywords(xplcore::CXplMessage & msg)
+   std::vector< boost::shared_ptr<CDeviceKeyword> > CX10Basic::identifyKeywords(xplcore::CXplMessage & msg)
    {
-      std::vector< boost::shared_ptr<database::entities::CKeyword> > keywords;
-
+      std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
+      /*
       //command
       boost::shared_ptr<database::entities::CKeyword> commandKeyword(new database::entities::CKeyword());
       commandKeyword->Name = "command";
@@ -75,11 +74,12 @@ namespace xplrules { namespace standard {
          keywords.push_back(data2Keyword);
 
       }
-
+      */
       return keywords;
    }
 
-
+   
+   /*
 
    // ICommandRule implemntation
    boost::shared_ptr< xplcore::CXplMessage > CX10Basic::createXplCommand(database::entities::CDevice & targetDevice, command::CDeviceCommand & deviceCommand)
