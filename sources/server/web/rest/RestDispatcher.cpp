@@ -7,6 +7,7 @@ namespace web { namespace rest {
 
    CRestDispatcher::CRestDispatcher()
    {
+      
    }
 
    CRestDispatcher::~CRestDispatcher()
@@ -15,7 +16,7 @@ namespace web { namespace rest {
 
    void CRestDispatcher::registerRestMethodHandler(const std::string & requestType, const std::vector<std::string> & configKeywords, CRestMethodHandler functionPtr, CRestMethodIndirector indirectPtr /*= NULL*/)
    {
-      m_handledFunctions[requestType].insert( boost::shared_ptr<CUrlPattern>(new CUrlPattern(configKeywords, functionPtr, indirectPtr)) );
+      m_handledFunctions[requestType].insert( CUrlPattern(configKeywords, functionPtr, indirectPtr) );
    }
 
 
@@ -96,7 +97,7 @@ namespace web { namespace rest {
          RestMethodMap::iterator iPatterns;
          for(iPatterns = i->second.begin(); iPatterns!= i->second.end(); ++iPatterns)
          {
-            YADOMS_LOG(debug) << (*iPatterns)->toString();
+            YADOMS_LOG(debug) << iPatterns->toString();
          }
       }
    }
@@ -112,9 +113,9 @@ namespace web { namespace rest {
 
          for(iPatterns = m_handledFunctions[requestType].begin(); iPatterns != m_handledFunctions[requestType].end(); ++iPatterns)
          {
-            if(match(url, **iPatterns))
+            if(match(url, *iPatterns))
             {
-               return callRealMethod((*iPatterns)->getMethodHandler(), (*iPatterns)->getMethodIndirector(), url, requestContent);
+               return callRealMethod(iPatterns->getMethodHandler(), iPatterns->getMethodIndirector(), url, requestContent);
             }
          }
 

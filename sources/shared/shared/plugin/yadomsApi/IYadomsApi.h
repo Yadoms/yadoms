@@ -42,7 +42,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       {
          kEventUpdateConfiguration = shared::event::kUserFirstId, // Yadoms notify the plugin that its configuration was changed
          kEventDeviceCommand,                                     // Yadoms send a command to a device managed by this plugin
-
+         kEventGenerateVirtualDevice,                             // Yadoms ask the plugin to generate a device
          kPluginFirstEventId                                      // The next usable event ID for the plugin code
       };
 
@@ -70,7 +70,7 @@ namespace shared { namespace plugin { namespace yadomsApi
          std::string toString() const
          {
             // Full informations = identity + author name + url
-            std::ostringstream str;
+            std::stringstream str;
             str << m_targetDevice << " = " << m_value;
             return str.str();
          }
@@ -95,20 +95,20 @@ namespace shared { namespace plugin { namespace yadomsApi
       
       //-----------------------------------------------------
       ///\brief Check if a device already exists for the server
-      ///\param    [in]    device             The device name
+      ///\param    [in]    deviceName         The device name
       ///\return true if the device exists, false if not
       //-----------------------------------------------------
-      virtual bool deviceExists(const std::string& device) const = 0;
+      virtual bool deviceExists(const std::string& deviceName) const = 0;
 
       //-----------------------------------------------------
       ///\brief Declare a device
-      ///\param    [in]    device             The device name
+      ///\param    [in]    name               The device name
       ///\param    [in]    model              The device model or description (ex : "Oregon Scientific CN185")
       ///\param    [in]    details            A free string used by plugin
       ///\return true if the device has been successfully created, false if already exist
       ///\throw shared::exception::CEmptyResult if creation failed
       //-----------------------------------------------------   
-	  virtual bool declareDevice(const std::string& device, const std::string& model, const std::string & details) = 0;
+	  virtual bool declareDevice(const std::string& name, const std::string& model, const std::string & details) = 0;
       
       
       //----------------------------------------------------------------------------------------------------------------
@@ -147,7 +147,7 @@ namespace shared { namespace plugin { namespace yadomsApi
 
       //-----------------------------------------------------
       ///\brief Declare a keyword
-      ///\param    [in]    device             The device name owner of the keyword
+      ///\param    [in]    deviceName         The device name owner of the keyword
       ///\param    [in]    keyword            The keyword name
       ///\param    [in]    capacity           The capacity name (see yApi::CStandardCapacities for standard capacities, or use your own)
       ///\param    [in]    accessMode         The keyword access
@@ -155,7 +155,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\return true if the keyword has been successfully created, false if already exist
       ///\throw shared::exception::CEmptyResult if creation failed
       //-----------------------------------------------------   
-      virtual bool declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, const std::string& details = shared::CStringExtension::EmptyString) = 0;
+      virtual bool declareKeyword(const std::string& deviceName, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, const std::string& details = shared::CStringExtension::EmptyString) = 0;
       
 
       //----------------------------------------------------------------------------------------------------------------
@@ -176,16 +176,16 @@ namespace shared { namespace plugin { namespace yadomsApi
 
       //-----------------------------------------------------
       ///\brief Historize a new data values
-      ///\param    [in]    device             The device name (must be unique)
+      ///\param    [in]    deviceName         The device name (must be unique)
       ///\param    [in]    keyword            The value name ("temp1", "temp2", "humidity", "batteryLevel", "rssi"...)
       ///\param    [in]    value              The capacity value
       ///\throw   shared::exception::CInvalidParameter if the device is not known
       ///\note Data are all recorded internally as string. The methods which doesn't take string just do a boost::lexical_cast.
       //-----------------------------------------------------     
-      virtual void historizeData(const std::string & device, const std::string & keyword, const std::string & value) = 0;
-      virtual void historizeData(const std::string & device, const std::string & keyword, bool value) = 0;
-      virtual void historizeData(const std::string & device, const std::string & keyword, int value) = 0;
-      virtual void historizeData(const std::string & device, const std::string & keyword, double value) = 0;
+      virtual void historizeData(const std::string & deviceName, const std::string & keyword, const std::string & value) = 0;
+      virtual void historizeData(const std::string & deviceName, const std::string & keyword, bool value) = 0;
+      virtual void historizeData(const std::string & deviceName, const std::string & keyword, int value) = 0;
+      virtual void historizeData(const std::string & deviceName, const std::string & keyword, double value) = 0;
       
       
       //----------------------------------------------------------------------------------------------------------------

@@ -145,7 +145,7 @@ namespace web { namespace rest {
       //--------------------------------------   
       ///\brief   All the registered handle
       //--------------------------------------   
-      typedef std::set< boost::shared_ptr<CUrlPattern> > RestMethodMap;
+      typedef std::multiset< CUrlPattern > RestMethodMap;
       std::map<std::string, RestMethodMap > m_handledFunctions;
    };
 
