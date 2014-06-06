@@ -38,11 +38,11 @@ namespace xplrules { namespace standard {
       return data;
    }
       
-   /*
-   std::vector< boost::shared_ptr<database::entities::CKeyword> > CSensorBasic::identifyKeywords(xplcore::CXplMessage & msg)
+   std::vector< boost::shared_ptr<CDeviceKeyword> > CSensorBasic::identifyKeywords(xplcore::CXplMessage & msg)
    {
-      std::vector< boost::shared_ptr<database::entities::CKeyword> > keywords;
+      std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
 
+      /*
       boost::shared_ptr<database::entities::CKeyword> mainKeyword(new database::entities::CKeyword());
 
       //COMMON
@@ -67,10 +67,10 @@ namespace xplrules { namespace standard {
             keywords.push_back(descriptionKeyword);
          }
       }
-
+      */
       return keywords;
    }
-   */
+
    std::string CSensorBasic::rewriteKeyword(const std::string & keyword)
    {
       if(boost::iequals(keyword, "temperature"))

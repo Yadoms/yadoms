@@ -34,6 +34,8 @@ set(XPL_RULES_SOURCES
 	xplrules/IDeviceManager.h
 	xplrules/DeviceIdentifier.h
 	xplrules/DeviceIdentifier.cpp
+	xplrules/DeviceKeyword.h
+	xplrules/DeviceKeyword.cpp
 	xplrules/RuleInstanceManager.hpp
 	xplrules/RulerFactory.h
 	xplrules/RulerFactory.cpp

@@ -28,12 +28,12 @@ namespace xplrules { namespace rfxLanXpl {
       return data;
    }
 
-   /*
-   std::vector< boost::shared_ptr<database::entities::CKeyword> > CX10Basic::identifyKeywords(xplcore::CXplMessage & msg)
+   
+   std::vector< boost::shared_ptr<CDeviceKeyword> > CX10Basic::identifyKeywords(xplcore::CXplMessage & msg)
    {
-      std::vector< boost::shared_ptr<database::entities::CKeyword> > keywords;
+      std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
 
-
+      /*
       if(msg.getTypeIdentifier(), xplcore::CXplMessage::kXplStat)
       {
          //command
@@ -92,11 +92,11 @@ namespace xplrules { namespace rfxLanXpl {
          keywords.push_back(commandKeyword);
       }
 
-
+      */
       return keywords;
    }
 
-
+   /*
    
    // ICommandRule implemntation
    boost::shared_ptr< xplcore::CXplMessage > CX10Basic::createXplCommand(database::entities::CDevice & targetDevice, command::CDeviceCommand & deviceCommand)
