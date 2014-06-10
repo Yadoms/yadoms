@@ -50,6 +50,9 @@ namespace communication {
 
       // Dispatch command to the right plugin
       m_pluginManager->postCommand(m_dataProvider->getDeviceRequester()->getDevice(deviceId)->PluginId, command);
+
+      // Historize the command
+      m_dataProvider->getAcquisitionRequester()->saveData(keywordId, body);
    }
 
    void CPluginGateway::doWork()
