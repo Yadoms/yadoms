@@ -4,8 +4,13 @@
 namespace rfxcomMessages
 {
 
-CLighting6::CLighting6(unsigned short id, unsigned char groupCode, unsigned char unitCode, unsigned char cmnd, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
+CLighting6::CLighting6(const boost::property_tree::ptree& data, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
 {
+   unsigned char id = data.get<unsigned char>("id");
+   unsigned char groupCode = data.get<unsigned char>("groupCode");
+   unsigned char unitCode = data.get<unsigned char>("unitCode");
+   unsigned char cmnd = data.get<unsigned char>("cmnd");
+
    m_buffer.LIGHTING6.packetlength = sizeof(m_buffer.LIGHTING6) - sizeof(m_buffer.LIGHTING6.packetlength);
    m_buffer.LIGHTING6.packettype = pTypeLighting6;
    m_buffer.LIGHTING6.subtype = sTypeBlyss;

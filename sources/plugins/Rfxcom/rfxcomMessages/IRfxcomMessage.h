@@ -4,7 +4,7 @@
 namespace rfxcomMessages
 {
    //--------------------------------------------------------------
-   /// \brief	The XPL to RFXCom message converter interface
+   /// \brief	The RFXCom message converter interface
    //--------------------------------------------------------------
    class IRfxcomMessage
    {

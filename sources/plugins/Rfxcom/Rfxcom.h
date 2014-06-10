@@ -1,16 +1,16 @@
 #pragma once
-#include <shared/plugin/ImplementationHelper.h>
-#include <shared/xpl/XplMessage.h>
-#include <shared/xpl/XplService.h>
-#include <shared/event/EventHandler.hpp>
+#include <shared/plugin/IPlugin.h>
 #include "RfxcomConfiguration.h"
 #include "Transceiver.h"
 #include "IPort.h"
 
+// Shortcut to yadomsApi namespace
+namespace yApi = shared::plugin::yadomsApi;
+
 //--------------------------------------------------------------
 /// \brief	This plugin support the RFXCom module (see http://rfxcom.com/)
 //--------------------------------------------------------------
-class CRfxcom : public shared::event::CEventHandler, public shared::plugin::IPlugin, public boost::enable_shared_from_this<CRfxcom>
+class CRfxcom : public shared::plugin::IPlugin
 {  
 public:
    //--------------------------------------------------------------
@@ -24,42 +24,40 @@ public:
    virtual ~CRfxcom();
 
    // IPlugin implementation
-   virtual void doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service& pluginIOService);
-   virtual void updateConfiguration(const std::string& configurationValues);
+   virtual void doWork(boost::shared_ptr<yApi::IYadomsApi> context);
    // [END] IPlugin implementation
 
 protected:
    //--------------------------------------------------------------
-   /// \brief	                     Called when an XPL message is received
-   /// \param [in] xplMessage       The received message
+   /// \brief	                     Process a command received from Yadoms
+   /// \param [in] command          The received command
    //--------------------------------------------------------------
-   void onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage);
+   void onCommand(boost::shared_ptr<yApi::IDeviceCommand> command);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the RFXCom becomes connected
+   /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void processRfxcomConnectionEvent();
+   void processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the RFXCom becomes unconnected
+   /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void processRfxcomUnConnectionEvent();
+   void processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context);
 
    //--------------------------------------------------------------
-   /// \brief	                     Log event in Yadoms
+   /// \brief	                     Called when the data are received by the RFXCom
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] data             Data received
    //--------------------------------------------------------------
-   void LogEvent(const std::string& reason);
+   void processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& data);
 
 private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
    CRfxcomConfiguration m_configuration;
-
-   //--------------------------------------------------------------
-   /// \brief	The XPL service used to send XPL messages to Yadoms
-   //--------------------------------------------------------------
-   boost::shared_ptr<shared::xpl::CXplService> m_xplService;
 
    //--------------------------------------------------------------
    /// \brief	The port used to communicate with RFXcom

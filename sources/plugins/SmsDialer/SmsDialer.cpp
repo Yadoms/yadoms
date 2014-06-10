@@ -90,7 +90,7 @@ void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYadomsApi> co
          case yApi::IYadomsApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
-               std::string newConfiguration = getEventData<std::string>();
+               std::string newConfiguration = context->getEventHandler().getEventData<std::string>();
                YADOMS_LOG(debug) << "configuration was updated...";
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEvtUpdateConfiguration shouldn't be generated
 
@@ -174,9 +174,9 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYadomsApi> conte
          case yApi::IYadomsApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
-               std::string newConfiguration = getEventData<std::string>();
+               std::string newConfiguration = context->getEventHandler().getEventData<std::string>();
                YADOMS_LOG(debug) << "configuration was updated...";
-               BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEvtUpdateConfiguration shouldn't be generated
+               BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
                // Close connection with current phone
                m_phone.reset();
@@ -240,10 +240,10 @@ void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context
 
 void CSmsDialer::onSendSmsRequest(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& sendSmsRequest)
 {
-   shared::serialization::CPtreeToJsonSerializer serialiser;
+   shared::serialization::CPtreeToJsonSerializer serializer;
    try
    {
-      boost::property_tree::ptree smsContent = serialiser.deserialize(sendSmsRequest);
+      boost::property_tree::ptree smsContent = serializer.deserialize(sendSmsRequest);
       std::string to = smsContent.get<std::string>("to");
       std::string body = smsContent.get<std::string>("body");
 
@@ -312,6 +312,6 @@ void CSmsDialer::notifySmsReception(boost::shared_ptr<yApi::IYadomsApi> context,
    smsContent.put("from", sms->getNumber());
    smsContent.put("to", shared::CStringExtension::EmptyString);
    smsContent.put("body", sms->getContent());
-   shared::serialization::CPtreeToJsonSerializer serialiser;
-   context->historizeData(m_phone->getUniqueId(), "sms", serialiser.serialize(smsContent));
+   shared::serialization::CPtreeToJsonSerializer serializer;
+   context->historizeData(m_phone->getUniqueId(), "sms", serializer.serialize(smsContent));
 }

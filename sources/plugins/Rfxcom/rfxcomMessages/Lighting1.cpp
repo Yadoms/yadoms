@@ -4,8 +4,13 @@
 namespace rfxcomMessages
 {
 
-CLighting1::CLighting1(unsigned char subType, unsigned char houseCode, unsigned char unitCode, unsigned char cmnd, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
+CLighting1::CLighting1(const boost::property_tree::ptree& data, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
 {
+   unsigned char subType = data.get<unsigned char>("subType");
+   unsigned char houseCode = data.get<unsigned char>("houseCode");
+   unsigned char unitCode = data.get<unsigned char>("unitCode");
+   unsigned char cmnd = data.get<unsigned char>("cmnd");
+
    m_buffer.LIGHTING1.packetlength = sizeof(m_buffer.LIGHTING1) - sizeof(m_buffer.LIGHTING1.packetlength);
    m_buffer.LIGHTING1.packettype = pTypeLighting1;
    m_buffer.LIGHTING1.subtype = subType;

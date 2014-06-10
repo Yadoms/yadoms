@@ -9,7 +9,7 @@ namespace yApi = shared::plugin::yadomsApi;
 //--------------------------------------------------------------
 /// \brief	This plugin can send and receive SMS using a connected phone
 //--------------------------------------------------------------
-class CSmsDialer : public shared::event::CEventHandler, public shared::plugin::IPlugin
+class CSmsDialer : public shared::plugin::IPlugin
 {  
 public:
    //--------------------------------------------------------------

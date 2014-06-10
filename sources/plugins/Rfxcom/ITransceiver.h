@@ -1,6 +1,8 @@
 #pragma once
+#include <shared/plugin/yadomsApi/IYadomsApi.h>
 
-#include <shared/xpl/XplMessage.h>
+// Shortcut to yadomsApi namespace
+namespace yApi = shared::plugin::yadomsApi;
 
 //--------------------------------------------------------------
 /// \brief	The RFXCom protocol interface
@@ -19,10 +21,10 @@ public:
    virtual void sendReset() = 0;
 
    //--------------------------------------------------------------
-   /// \brief	                     Transmit a Xpl message
-   /// \param [in] xplMessage       The Xpl message to transmit
+   /// \brief	                     Send Yadoms command to RFXCom
+   /// \param [in] command          The received command
    //--------------------------------------------------------------
-   virtual void send(const shared::xpl::CXplMessage& xplMessage) = 0;
+   virtual void send(boost::shared_ptr<yApi::IDeviceCommand> command) = 0;
 };
 
 
