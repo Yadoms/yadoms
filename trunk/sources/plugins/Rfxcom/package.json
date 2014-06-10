@@ -12,7 +12,7 @@
       {
          "name": "Serial port",
          "description": "The virtual serial port connected to the RFXCom",
-         "type": "serialPort"
+         "type": "string"
       }
   }
 }

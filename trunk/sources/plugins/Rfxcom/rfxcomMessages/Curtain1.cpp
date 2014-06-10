@@ -4,8 +4,12 @@
 namespace rfxcomMessages
 {
 
-CCurtain1::CCurtain1(unsigned char houseCode, unsigned char unitCode, unsigned char cmnd, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
+CCurtain1::CCurtain1(const boost::property_tree::ptree& data, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
 {
+   unsigned char houseCode = data.get<unsigned char>("houseCode");
+   unsigned char unitCode = data.get<unsigned char>("unitCode");
+   unsigned char cmnd = data.get<unsigned char>("cmnd");
+
    m_buffer.CURTAIN1.packetlength = sizeof(m_buffer.CURTAIN1) - sizeof(m_buffer.CURTAIN1.packetlength);
    m_buffer.CURTAIN1.packettype = pTypeCurtain;
    m_buffer.CURTAIN1.subtype = sTypeHarrison;

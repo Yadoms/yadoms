@@ -14,13 +14,10 @@ namespace rfxcomMessages
    public:
       //--------------------------------------------------------------
       /// \brief	               Constructor
-      /// \param [in] subType    The message subtype
-      /// \param [in] houseCode  The house code
-      /// \param [in] unitCode   The unit code
-      /// \param [in] cmnd       The command
+      /// \param [in] data       The message data
       /// \param[in] seqNumberProvider The sequence number provider
       //--------------------------------------------------------------
-      CLighting1(unsigned char subType, unsigned char houseCode, unsigned char unitCode, unsigned char cmnd, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider);
+      CLighting1(const boost::property_tree::ptree& data, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

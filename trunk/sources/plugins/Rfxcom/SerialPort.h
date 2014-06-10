@@ -1,16 +1,15 @@
 #pragma once
 #include "IPort.h"
-#include "SerialPortSubscription.hpp"
+#include "PortSubscription.hpp"
 
 //--------------------------------------------------------------
 /// \brief	This class manage a serial port
 //--------------------------------------------------------------
-class CSerialPort : public IPort, protected boost::asio::serial_port, public boost::enable_shared_from_this<CSerialPort>
+class CSerialPort : public IPort
 {  
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
-   /// \param[in] iOService         The IO service, used by the port
    /// \param[in] port              Serial port name
    /// \param[in] baudrate          Baudrate (in bauds)
    /// \param[in] parity            Parity (see boost::asio::serial_port_base::parity::type for values)
@@ -19,7 +18,6 @@ public:
    /// \param[in] flowControl       Flow control (see boost::asio::serial_port_base::flow_control::type for values)
    //--------------------------------------------------------------
    CSerialPort(
-      boost::asio::io_service& iOService,
       const std::string& port,
       boost::asio::serial_port_base::baud_rate baudrate = boost::asio::serial_port_base::baud_rate(9600),
       boost::asio::serial_port_base::parity parity = boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::none),
@@ -36,8 +34,8 @@ public:
    virtual bool connect();
    virtual void disconnect();
    virtual bool isConnected() const;
-   virtual void subscribeConnectionState(boost::shared_ptr<shared::event::CEventHandler> forEventHandler, int forId);
-   virtual void subscribeReceiveData(boost::shared_ptr<shared::event::CEventHandler> forEventHandler, int forId);
+   virtual void subscribeConnectionState(shared::event::CEventHandler& forEventHandler, int forId);
+   virtual void subscribeReceiveData(shared::event::CEventHandler& forEventHandler, int forId);
    virtual void flush();
    virtual void send(const boost::asio::const_buffer& buffer);
    virtual void asyncSend(const boost::asio::const_buffer& buffer);
@@ -73,7 +71,12 @@ private:
    //--------------------------------------------------------------
    /// \brief	boost:asio service
    //--------------------------------------------------------------
-   boost::asio::io_service& m_ioService;
+   boost::asio::io_service m_ioService;
+
+   //--------------------------------------------------------------
+   /// \brief	The boost serial port
+   //--------------------------------------------------------------
+   boost::asio::serial_port m_boostSerialPort;
 
    //--------------------------------------------------------------
    /// \brief	Serial port configuration
@@ -86,14 +89,14 @@ private:
    boost::asio::serial_port_base::flow_control m_flowControl;
 
    //--------------------------------------------------------------
-   /// \brief	Connction state event subscription
+   /// \brief	Connection state event subscription
    //--------------------------------------------------------------
-   CSerialPortSubscription m_connectionStateSubscription;
+   CPortSubscription<bool> m_connectionStateSubscription;
 
    //--------------------------------------------------------------
    /// \brief	Data receive event subscription
    //--------------------------------------------------------------
-   CSerialPortSubscription m_receiveDataSubscription;
+   CPortSubscription<boost::asio::const_buffer> m_receiveDataSubscription;
 
    //--------------------------------------------------------------
    /// \brief	Try to reconnect timer delay

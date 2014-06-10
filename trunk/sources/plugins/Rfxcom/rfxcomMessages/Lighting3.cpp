@@ -4,8 +4,12 @@
 namespace rfxcomMessages
 {
 
-CLighting3::CLighting3(unsigned char system, unsigned short channel, unsigned char cmnd, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
+CLighting3::CLighting3(const boost::property_tree::ptree& data, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
 {
+   unsigned char system = data.get<unsigned char>("system");
+   unsigned short channel = data.get<unsigned short>("channel");
+   unsigned char cmnd = data.get<unsigned char>("cmnd");
+
    m_buffer.LIGHTING3.packetlength = sizeof(m_buffer.LIGHTING3) - sizeof(m_buffer.LIGHTING3.packetlength);
    m_buffer.LIGHTING3.packettype = pTypeLighting3;
    m_buffer.LIGHTING3.subtype = sTypeKoppla;
@@ -13,6 +17,7 @@ CLighting3::CLighting3(unsigned char system, unsigned short channel, unsigned ch
    m_buffer.LIGHTING3.system = system;
    m_buffer.LIGHTING3.channel8_1 = (unsigned char)(channel & 0xFF);
    m_buffer.LIGHTING3.channel10_9 = (unsigned char)((channel & 0xFF00) >> 8);
+   m_buffer.LIGHTING3.cmnd = cmnd;
    m_buffer.LIGHTING3.rssi = 0;
    m_buffer.LIGHTING3.filler = 0;
 }

@@ -14,7 +14,7 @@ namespace pluginSystem
 {
 
    //--------------------------------------------------------------
-   /// \brief	this class is used to qualify a plugin
+   /// \brief	this class is used to quality a plugin
    //--------------------------------------------------------------
    class CQualifier : public IQualifier
    {

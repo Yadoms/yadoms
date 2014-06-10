@@ -1,15 +1,14 @@
 #include "stdafx.h"
 #include "Rfxcom.h"
+#include <shared/plugin/ImplementationHelper.h>
 #include <shared/Log.h>
-#include <shared/xpl/XplMessage.h>
-#include <shared/xpl/XplHelper.h>
-#include <shared/xpl/XplException.h>
+#include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/exception/EmptyResult.hpp>
 #include "RfxcomFactory.h"
 
 IMPLEMENT_PLUGIN(CRfxcom)
 
-
+//TODO dans package.json, remettre le type de Serial Port à "serialPort" quand supporté par l'ihm
 CRfxcom::CRfxcom()
 {
 }
@@ -21,45 +20,19 @@ CRfxcom::~CRfxcom()
 // Event IDs
 enum
 {
-   kEvtXplMessage = shared::event::kUserFirstId,   // Always start from shared::event::CEventHandler::kUserFirstId
-   kEvtUpdateConfiguration,
-   kEvtPortConnection,
+   kEvtPortConnection = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from yApi::IYadomsApi::kPluginFirstEventId
    kEvtPortDataReceived
 };
 
-// XPL device ID
-static const std::string& XplDeviceId("rfxcom");
-
-
-void CRfxcom::doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service& pluginIOService)
+void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    try
    {
-      YADOMS_LOG_CONFIGURE(Informations->getName());
-      YADOMS_LOG(debug) << "CRfxcom is starting...";
-
       // Load configuration values (provided by database)
-      m_configuration.set(configuration);
+      m_configuration.set(context->getConfiguration());
 
       // Create the port instance
-      m_port = CRfxcomFactory::constructPort(m_configuration, pluginIOService, shared_from_this(), kEvtPortConnection, kEvtPortDataReceived);
-
-      // Register to XPL service
-      m_xplService.reset(new shared::xpl::CXplService(
-         XplDeviceId,
-         shared::xpl::CXplHelper::toInstanceId(instanceUniqueId),
-         &pluginIOService));
-
-      // Configure XPL filter to only receive commands from Yadoms
-      m_xplService->subscribeForMessages(
-         "xpl-cmnd",
-         m_xplService->getActor().getVendorId(),
-         shared::xpl::CXplHelper::WildcardString,
-         m_xplService->getActor().getInstanceId(),
-         shared::xpl::CXplHelper::WildcardString,
-         shared::xpl::CXplHelper::WildcardString,
-         this,
-         kEvtXplMessage);
+      m_port = CRfxcomFactory::constructPort(m_configuration, context->getEventHandler(), kEvtPortConnection, kEvtPortDataReceived);
 
       // the main loop
       YADOMS_LOG(debug) << "CRfxcom is running...";
@@ -67,20 +40,23 @@ void CRfxcom::doWork(int instanceUniqueId, const std::string& configuration, boo
       while(1)
       {
          // Wait for an event
-         switch(waitForEvents())
+         switch(context->getEventHandler().waitForEvents())
          {
-         case kEvtXplMessage:
+         case yApi::IYadomsApi::kEventDeviceCommand:
             {
-               // Xpl message was received
-               onXplMessageReceived(getEventData<shared::xpl::CXplMessage>());
+               // Command received from Yadoms
+               boost::shared_ptr<yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceCommand> >();
+
+               onCommand(command);
+
                break;
             }
-         case kEvtUpdateConfiguration:
+         case yApi::IYadomsApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
-               std::string newConfiguration = getEventData<std::string>();
+               std::string newConfiguration = context->getEventHandler().getEventData<std::string>();
                YADOMS_LOG(debug) << "configuration was updated...";
-               BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEvtUpdateConfiguration shouldn't be generated
+               BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
                // Close connection
                m_port.reset();
@@ -89,23 +65,22 @@ void CRfxcom::doWork(int instanceUniqueId, const std::string& configuration, boo
                m_configuration.set(newConfiguration);
 
                // Create new connection
-               m_port = CRfxcomFactory::constructPort(m_configuration, pluginIOService, shared_from_this(), kEvtPortConnection, kEvtPortDataReceived);
+               m_port = CRfxcomFactory::constructPort(m_configuration, context->getEventHandler(), kEvtPortConnection, kEvtPortDataReceived);
 
                break;
             }
          case kEvtPortConnection:
             {
-               if (getEventData<bool>())
-                  processRfxcomConnectionEvent();
+               if (context->getEventHandler().getEventData<bool>())
+                  processRfxcomConnectionEvent(context);
                else
-                  processRfxcomUnConnectionEvent();
+                  processRfxcomUnConnectionEvent(context);
 
                break;
             }
          case kEvtPortDataReceived:
             {
-               YADOMS_LOG(debug) << "RFXCom >>> " << getEventData<std::string>();
-               //TODO traiter les données reçues
+               processRfxcomDataReceived(context, context->getEventHandler().getEventData<std::string>());
                break;
             }
          default:
@@ -118,30 +93,21 @@ void CRfxcom::doWork(int instanceUniqueId, const std::string& configuration, boo
    }
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(info) << "CRfxcom is stopping..."  << std::endl;
    }
 }
 
-void CRfxcom::updateConfiguration(const std::string& configuration)
+void CRfxcom::onCommand(boost::shared_ptr<yApi::IDeviceCommand> command)
 {
-   // This function is called in a Yadoms thread context, so send a event to the CRfxcom thread
-   sendEvent<std::string>(kEvtUpdateConfiguration, configuration);
-}
-
-void CRfxcom::onXplMessageReceived(const shared::xpl::CXplMessage& xplMessage)
-{
-   YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
-
-   BOOST_ASSERT_MSG(xplMessage.getTypeIdentifier() == shared::xpl::CXplMessage::kXplCommand, "Filter doesn't work, messages must be xpl-cmnd");
+   YADOMS_LOG(debug) << "Command received :" << command->toString();
 
    if (m_transceiver)
-      m_transceiver->send(xplMessage);
+      m_transceiver->send(command);
 }
 
-void CRfxcom::processRfxcomConnectionEvent()
+void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    YADOMS_LOG(debug) << "RFXCom is now connected";
-   LogEvent("RFXCom is now connected");
+   context->recordPluginEvent(yApi::IYadomsApi::kInfo, "RFXCom is now connected");
 
    BOOST_ASSERT_MSG(!m_transceiver, "RFXCom was already connected");
    m_transceiver.reset();
@@ -152,30 +118,17 @@ void CRfxcom::processRfxcomConnectionEvent()
    m_transceiver->sendReset();
 }
 
-void CRfxcom::processRfxcomUnConnectionEvent()
+void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    YADOMS_LOG(debug) << "RFXCom connection was lost";
-   LogEvent("RFXCom connection was lost");
+   context->recordPluginEvent(yApi::IYadomsApi::kInfo, "RFXCom connection was lost");
 
    m_transceiver.reset();
 }
 
-void CRfxcom::LogEvent(const std::string& reason)
+void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& data)
 {
-   try
-   {
-      // Add event into plugin event logger table
-      //TODO 
-      //m_pluginLogger->addEvent(
-      //   getInformation().getName(),
-      //   getInformation().getVersion(),
-      //   getInformation().getReleaseType(),
-      //   kInfo,
-      //   reason);
-   }
-   catch (shared::exception::CEmptyResult& e)
-   {
-      // Just log the error
-      YADOMS_LOG(error) << "Error when adding plugin event in database : " << e.what();
-   }
+   YADOMS_LOG(debug) << "RFXCom >>> YADOMS : " << data;         //TODO trace en trop ?
+
+   m_transceiver.reset();
 }

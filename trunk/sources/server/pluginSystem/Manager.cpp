@@ -1,7 +1,11 @@
 #include "stdafx.h"
 #include "Manager.h"
 #include "Instance.h"
+#ifdef _DEBUG
+#include "DummyQualifier.h"
+#else
 #include "Qualifier.h"
+#endif
 #include <shared/DynamicLibrary.hpp>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/exception/NotSupported.hpp>
@@ -16,7 +20,11 @@ CManager::CManager(
    shared::event::CEventHandler& supervisor,
    int pluginManagerEventId)
    :m_dataProvider(dataProvider), m_pluginDBTable(dataProvider->getPluginRequester()), m_pluginPath(initialDir),
+#ifdef _DEBUG
+   m_qualifier(new CDummyQualifier()),
+#else
    m_qualifier(new CQualifier(dataProvider->getPluginEventLoggerRequester(), dataProvider->getEventLoggerRequester())),
+#endif
    m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId)
 {
    BOOST_ASSERT(m_dataProvider);

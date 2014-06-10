@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "Transceiver.h"
 #include <shared/Log.h>
+#include <shared/serialization/PTreeToJsonSerializer.h>
 #include <shared/exception/InvalidParameter.hpp>
-#include <shared/xpl/XplException.h>
-#include "xplMessages/X10Basic.h"
-#include "rfxcomMessages/IRfxcomMessage.h"
+#include "rfxcomMessages/Lighting1.h"
+#include "rfxcomMessages/Lighting3.h"
+#include "rfxcomMessages/Lighting6.h"
+#include "rfxcomMessages/Curtain1.h"
 #include "NullSequenceNumber.h"
 #include "PortException.hpp"
 
@@ -33,7 +35,7 @@ CTransceiver::~CTransceiver()
 void CTransceiver::sendReset()
 {
    // Reset the RFXCom.
-   // See the RFXCom SDK sepcification for more information about thise sequence
+   // See the RFXCom SDK specification for more information about this sequence
 
    try
    {
@@ -131,43 +133,62 @@ std::string CTransceiver::msgToString(const void* ptr, size_t size) const
    return ss.str();
 }
 
-void CTransceiver::send(const shared::xpl::CXplMessage& xplMessage)
+void CTransceiver::send(boost::shared_ptr<yApi::IDeviceCommand> command)
 {
-   BOOST_ASSERT_MSG(xplMessage.getTypeIdentifier() == shared::xpl::CXplMessage::kXplCommand, "Message should be xpl-cmnd");
-
    try
    {
-      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> rfxcomMsg = createRfxcomMessage(xplMessage);
+      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> rfxcomMsg = createRfxcomMessage(command);
 
       m_port->send(rfxcomMsg->getBuffer());
    }
-   catch (shared::xpl::CXplException& e)
-   {
-      YADOMS_LOG(error) << "Error decoding XPL message : " << e.what() << ", message : " << xplMessage.toString();
-      BOOST_ASSERT_MSG(false, "Error decoding XPL message");
-   }
    catch (shared::exception::CInvalidParameter& e)
    {
-      YADOMS_LOG(error) << "Error decoding XPL message : " << e.what() << ", message : " << xplMessage.toString();
-      BOOST_ASSERT_MSG(false, "Error decoding XPL message");
+      YADOMS_LOG(error) << "Error sending command to RFXCom : " << e.what();
+      BOOST_ASSERT_MSG(false, "Error sending command to RFXCom");
    }
 }
 
-boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::createRfxcomMessage(const shared::xpl::CXplMessage& xplMessage) const
+boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::createRfxcomMessage(boost::shared_ptr<yApi::IDeviceCommand> command) const
 {
-   const std::string& classId = xplMessage.getMessageSchemaIdentifier().getClassId();
-   const std::string& typeId = xplMessage.getMessageSchemaIdentifier().getTypeId();
-   
-   boost::shared_ptr<xplMessages::IXplMessage> xplMsg;
+   shared::serialization::CPtreeToJsonSerializer serializer;
+   try
+   {
+      boost::property_tree::ptree commandBody = serializer.deserialize(command->getBody());
+      unsigned char type = commandBody.get<unsigned char>("type");
+      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> rfxcomMsg;
 
-   if (classId == "x10" && typeId == "basic")
-      xplMsg.reset(new xplMessages::CXplMsgX10Basic(xplMessage, m_seqNumberProvider));
-   //TODO compléter
-   else
-      throw shared::exception::CInvalidParameter("Unsupported XPL message for RFXCom : " + xplMessage.toString());
+      // Create the RFXCom message
+      switch(type)
+      {
+      case pTypeLighting1:
+         rfxcomMsg.reset(new rfxcomMessages::CLighting1(commandBody, m_seqNumberProvider));
+         break;
+      case pTypeLighting3:
+         rfxcomMsg.reset(new rfxcomMessages::CLighting3(commandBody, m_seqNumberProvider));
+         break;
+      case pTypeLighting6:
+         rfxcomMsg.reset(new rfxcomMessages::CLighting6(commandBody, m_seqNumberProvider));
+         break;
+      case pTypeCurtain:
+         rfxcomMsg.reset(new rfxcomMessages::CCurtain1(commandBody, m_seqNumberProvider));
+         break;
+         //TODO compléter
+      default:
+         YADOMS_LOG(error) << "Invalid command \"" << command->toString() << "\" : " << " unknown type " << type;
+         BOOST_ASSERT_MSG(false, "Invalid command (unknown type)");
+         break;
+      }
 
-   // Convert message from XPL to RFXCom
-   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> msg(xplMsg->toRfxComMessage()); //TODO erreurs à gérer ?
-
-   return msg;
+      return rfxcomMsg;
+   }
+   catch (boost::property_tree::ptree_bad_path& e)
+   {
+      BOOST_ASSERT_MSG(false, "Invalid command (parameter doesn't exist)");
+      throw shared::exception::CInvalidParameter("Invalid command \"" + command->toString() + "\" : " + e.what());
+   }
+   catch (boost::property_tree::ptree_bad_data& e)
+   {
+      BOOST_ASSERT_MSG(false, "Invalid command (fail to extract parameter)");
+      throw shared::exception::CInvalidParameter("Invalid command \"" + command->toString() + "\" : " + e.what());
+   }
 }

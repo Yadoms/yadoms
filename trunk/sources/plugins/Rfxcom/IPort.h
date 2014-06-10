@@ -37,7 +37,7 @@ public:
    /// \throw shared::exception::CInvalidParameter if try to subscribe on event for which a subscription already exists (user must unsubscribe first)
    /// \note The raised event contains a bool data : true if port was connected, false if port was disconnected
    //--------------------------------------------------------------
-   virtual void subscribeConnectionState(boost::shared_ptr<shared::event::CEventHandler> forEventHandler, int forId) = 0;
+   virtual void subscribeConnectionState(shared::event::CEventHandler& forEventHandler, int forId) = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Subscribe/Unsubscribe to the data receive events
@@ -46,7 +46,7 @@ public:
    /// \throw shared::exception::CInvalidParameter if try to subscribe on event for which a subscription already exists (user must unsubscribe first)
    /// \note The raised event contains the read data as string
    //--------------------------------------------------------------
-   virtual void subscribeReceiveData(boost::shared_ptr<shared::event::CEventHandler> forEventHandler, int forId) = 0;
+   virtual void subscribeReceiveData(shared::event::CEventHandler& forEventHandler, int forId) = 0;
 
    //--------------------------------------------------------------
    /// \brief	                  Flush the input buffer

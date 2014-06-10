@@ -25,9 +25,6 @@ set(RFXCOM_SOURCES
    rfxcomMessages/Curtain1.cpp
    rfxcomMessages/RFXtrx.h
    rfxcomMessages/RFXtrxDefinitions.h
-   xplMessages/IXplMessage.h
-   xplMessages/X10Basic.h
-   xplMessages/X10Basic.cpp
    Rfxcom.h
    Rfxcom.cpp 
    RfxcomConfiguration.h
@@ -36,7 +33,7 @@ set(RFXCOM_SOURCES
    RfxcomFactory.cpp
    SerialPort.h
    SerialPort.cpp
-   SerialPortSubscription.hpp
+   PortSubscription.hpp
    Transceiver.h
    Transceiver.cpp
 )

@@ -6,6 +6,9 @@
 #include "rfxcomMessages/RFXtrxDefinitions.h"
 #include "ISequenceNumberProvider.h"
 
+// Shortcut to yadomsApi namespace
+namespace yApi = shared::plugin::yadomsApi;
+
 //--------------------------------------------------------------
 /// \brief	This class implement the RFXCom protocol
 //--------------------------------------------------------------
@@ -24,7 +27,7 @@ public:
 
    // ITransceiver implementation
    virtual void sendReset();
-   virtual void send(const shared::xpl::CXplMessage& xplMessage);
+   virtual void send(boost::shared_ptr<yApi::IDeviceCommand> command);
    // [END] ITransceiver implementation
 
 protected:
@@ -43,17 +46,17 @@ protected:
    //--------------------------------------------------------------
    /// \brief	                     Adapt a buffer to be loggable
    /// \param [in] ptr              Buffer pointer
-   /// \param [in] sier             Buffer size
+   /// \param [in] size             Buffer size
    //--------------------------------------------------------------
    std::string msgToString(const void* ptr, size_t size) const;
 
    //--------------------------------------------------------------
-   /// \brief	                     Create the corresponding RFXCom message associated with a XPL message
-   /// \param [in] xplMessage       The received XPL message
+   /// \brief	                     Create the corresponding RFXCom message associated with the command received from Yadoms
+   /// \param [in] command          The received command
    /// \return                      RFXCom message
-   /// \throw shared::exception::CInvalidParameter if no corresponding RFXCom message was found (XPL message not supported by RFXCom)
+   /// \throw shared::exception::CInvalidParameter if no corresponding RFXCom message was found (invalid command)
    //--------------------------------------------------------------
-   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> createRfxcomMessage(const shared::xpl::CXplMessage& xplMessage) const;
+   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> createRfxcomMessage(boost::shared_ptr<yApi::IDeviceCommand> command) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Get the RFXCom type as string

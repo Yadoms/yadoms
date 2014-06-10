@@ -6,13 +6,14 @@
 //--------------------------------------------------------------
 /// \brief	This class manage a subscription for events on communication port
 //--------------------------------------------------------------
-class CSerialPortSubscription
+template<class DataType>
+class CPortSubscription
 {  
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    //--------------------------------------------------------------
-   CSerialPortSubscription()
+   CPortSubscription()
       :m_id(shared::event::kNoEvent)
    {
    }
@@ -20,7 +21,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~CSerialPortSubscription()
+   virtual ~CPortSubscription()
    {
    }
 
@@ -30,7 +31,7 @@ public:
    /// \param [in] forId            The event id to send for these events (set kNoEvent to unsubscribe)
    /// \throw shared::exception::CInvalidParameter if try to subscribe on event for which a subscription already exists (user must unsubscribe first)
    //--------------------------------------------------------------
-   void subscribe(boost::shared_ptr<shared::event::CEventHandler> forEventHandler, int forId)
+   void subscribe(shared::event::CEventHandler& forEventHandler, int forId)
    {
       // Check for unsubscription request
       if (forId == shared::event::kNoEvent)
@@ -44,7 +45,7 @@ public:
 
       // Do the subscription
       boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
-      m_eventHandler = forEventHandler;
+      m_eventHandler = &forEventHandler;
       m_id = forId;
    }
 
@@ -54,7 +55,7 @@ public:
    void unsubscribe()
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
-      m_eventHandler.reset();
+      m_eventHandler = NULL;
    }
 
    //--------------------------------------------------------------
@@ -64,11 +65,11 @@ public:
    bool hasSubscription() const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
-      return !!m_eventHandler;
+      return m_eventHandler != NULL;
    }
 
    //--------------------------------------------------------------
-   /// \brief	Notify the subscriptor
+   /// \brief	Notify the subscriber
    //--------------------------------------------------------------
    void notify()
    {
@@ -80,16 +81,15 @@ public:
    }
 
    //--------------------------------------------------------------
-   /// \brief	Notify the subscriptor, sending data
+   /// \brief	Notify the subscriber, sending data
    //--------------------------------------------------------------
-   template<typename DataType>
    void notify(const DataType& value)
    {
       if (!hasSubscription())
          return;
 
       boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
-      m_eventHandler->sendEvent<DataType>(m_id, value);
+      m_eventHandler->postEvent<DataType>(m_id, value);
    }
 
 private:
@@ -101,7 +101,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The event handler to notify for events
    //--------------------------------------------------------------
-   boost::shared_ptr<shared::event::CEventHandler> m_eventHandler;
+   shared::event::CEventHandler* m_eventHandler;
 
    //--------------------------------------------------------------
    /// \brief	The event id to send
