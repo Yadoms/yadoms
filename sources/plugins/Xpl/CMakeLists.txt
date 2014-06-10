@@ -45,10 +45,14 @@ set(XPL_RULES_SOURCES
 	xplrules/standard/X10Basic.cpp
 	xplrules/standard/SensorBasic.h
 	xplrules/standard/SensorBasic.cpp
+	xplrules/standard/ControlBasic.h
+	xplrules/standard/ControlBasic.cpp
 	xplrules/rfxLanXpl/DeviceManager.h
 	xplrules/rfxLanXpl/DeviceManager.cpp
 	xplrules/rfxLanXpl/AcBasic.h
 	xplrules/rfxLanXpl/AcBasic.cpp
+	xplrules/rfxLanXpl/ControlBasic.h
+	xplrules/rfxLanXpl/ControlBasic.cpp
 	xplrules/rfxLanXpl/SensorBasic.h
 	xplrules/rfxLanXpl/SensorBasic.cpp
 	xplrules/rfxLanXpl/X10Basic.h

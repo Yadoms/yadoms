@@ -12,8 +12,21 @@ namespace xplrules {
    public:
       //------------------------------------
       ///\brief Constructor
+      ///\param [in] keyword     The keyword used in Xpl data (i.e. : "temp")
+      ///\param [in] capacity    The capacity implemented by the keyword (i.e. : "temperature")
+      ///\param [in] accessMode  The acces mode (read and/or write)
+      ///\param [in] details     A free string which give units, enumeration values,....
       //------------------------------------
       CDeviceKeyword(const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode accessMode, const std::string& details);
+
+      //------------------------------------
+      ///\brief Constructor
+      ///\param [in] keyword     The keyword used in Xpl data (i.e. : "temp")
+      ///\param [in] capacity    The capacity implemented by the keyword (i.e. : "temperature")
+      ///\param [in] accessMode  The acces mode (read and/or write)
+      ///\param [in] details     A free PropertyString which give units, enumeration values,....
+      //------------------------------------
+      CDeviceKeyword(const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode accessMode, const boost::property_tree::ptree & details);
 
       //------------------------------------
       ///\brief Destructor
@@ -63,7 +76,7 @@ namespace xplrules {
       //------------------------------------
       ///\brief The keyword details
       //------------------------------------
-      const std::string& m_details ;      
+      std::string m_details;      
    };
 
 

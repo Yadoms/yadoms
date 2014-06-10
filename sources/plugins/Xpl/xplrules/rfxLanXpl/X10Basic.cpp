@@ -4,6 +4,8 @@
 
 namespace xplrules { namespace rfxLanXpl {
 
+   xplcore::CXplMessageSchemaIdentifier  CX10Basic::m_protocol = xplcore::CXplMessageSchemaIdentifier::parse("x10.basic");
+
    CX10Basic::CX10Basic()
    {
    }
@@ -12,9 +14,38 @@ namespace xplrules { namespace rfxLanXpl {
    {
    }
 
+   const xplcore::CXplMessageSchemaIdentifier CX10Basic::getProtocol()
+   {
+      return m_protocol;
+   }
+
+
    const CDeviceIdentifier CX10Basic::getDeviceAddressFromMessage(xplcore::CXplMessage & msg)
    {
-      return CDeviceIdentifier(msg.getBodyValue("device"));
+      std::string commercialName = msg.getBodyValue("device");
+
+      if (msg.getBody().find("protocol") != msg.getBody().end())
+      {
+         if (msg.getBodyValue("protocol") == "arc")
+            commercialName = "KlikAanKlikUit, Chacon, HomeEasy, DomiaLite, Domia, ByeByeStandBy, ELRO AB600, NEXA Proove Intertechno Duwi";
+
+         if (msg.getBodyValue("protocol") == "flamingo")
+            commercialName = "Flamingo";
+
+         if (msg.getBodyValue("protocol") == "koppla")
+            commercialName = "Ikea Koppla";  
+         
+         if (msg.getBodyValue("protocol") == "he105")
+            commercialName = "HomeEasy";
+
+         if (msg.getBodyValue("protocol") == "rts10")
+            commercialName = "Digimax";
+
+         if (msg.getBodyValue("protocol") == "harrison")
+            commercialName = "Harrison";
+      }
+
+      return CDeviceIdentifier(msg.getBodyValue("device"), commercialName, m_protocol, m_protocol);
    }
 
    MessageContent CX10Basic::extractMessageData(xplcore::CXplMessage & msg)
@@ -33,66 +64,14 @@ namespace xplrules { namespace rfxLanXpl {
    {
       std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
 
-      /*
-      if(msg.getTypeIdentifier(), xplcore::CXplMessage::kXplStat)
-      {
-         //command
-         boost::shared_ptr<database::entities::CKeyword> commandKeyword(new database::entities::CKeyword());
-         commandKeyword->Name = "command";
-         commandKeyword->Type = "enumeration";
-         commandKeyword->Parameters = "on|off|dim|bright|all_lights_on|all_lights_off";
-         keywords.push_back(commandKeyword);
-      }
-
-
-      if(msg.getTypeIdentifier(), xplcore::CXplMessage::kXplCommand)
-      {
-
-         //protocol
-         boost::shared_ptr<database::entities::CKeyword> protocolKeyword(new database::entities::CKeyword());
-         protocolKeyword->Name = "protocol";
-         protocolKeyword->Type = "enumeration";
-         protocolKeyword->Parameters = "arc|flamingo|koppla|waveman|harrison|he105|rts10";
-         keywords.push_back(protocolKeyword);
-
-
-         if(boost::iequals(msg.getBodyValue("protocol"), "koppla"))
-         {
-            //LEVEL
-            boost::shared_ptr<database::entities::CKeyword> levelKeyword(new database::entities::CKeyword());
-            levelKeyword->Name = "level";
-            levelKeyword->Type = "numeric";
-            levelKeyword->Minimum = 0;
-            levelKeyword->Maximum = 100;
-            keywords.push_back(levelKeyword);
-         }
-
-         //command
-         boost::shared_ptr<database::entities::CKeyword> commandKeyword(new database::entities::CKeyword());
-         commandKeyword->Name = "command";
-         commandKeyword->Type = "enumeration";
-         if(msg.getBody().find("protocol") == msg.getBody().end() ||          
-            boost::iequals(msg.getBodyValue("protocol"), "koppla")||          
-            boost::iequals(msg.getBodyValue("protocol"), "harrison"))
-         {
-            //if protocol is not defined (x10 by default) or koppla
-            commandKeyword->Parameters = "on|off|dim|bright|all_lights_on|all_lights_off";
-         }
-         else if(boost::iequals(msg.getBodyValue("protocol"), "arc") || 
-                 boost::iequals(msg.getBodyValue("protocol"), "waveman")|| 
-                 boost::iequals(msg.getBodyValue("protocol"), "rts10"))
-         {
-            commandKeyword->Parameters = "on|off|all_lights_on|all_lights_off";
-         }
-         else if(boost::iequals(msg.getBodyValue("protocol"), "flamingo") ||
-                 boost::iequals(msg.getBodyValue("protocol"), "he105"))
-         {
-            commandKeyword->Parameters = "on|off";
-         }
-         keywords.push_back(commandKeyword);
-      }
-
-      */
+      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("command", "command", shared::plugin::yadomsApi::IYadomsApi::kReadWrite, "{ values : [on,off,dim,bright,all_lights_on,all_lights_off] }")));
+      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("protocol", "protocol", shared::plugin::yadomsApi::IYadomsApi::kReadWrite, "{ values : [arc,flamingo,koppla,waveman,harrison,he105,rts10] }")));
+      
+      boost::property_tree::ptree details;
+      details.put("min", 0);
+      details.put("max", 100);
+      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("level", "level", shared::plugin::yadomsApi::IYadomsApi::kReadWrite, details)));
+      
       return keywords;
    }
 

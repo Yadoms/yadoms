@@ -10,6 +10,12 @@ namespace xplrules { namespace rfxLanXpl {
       CAcBasic();
       virtual ~CAcBasic();
       
+      //------------------------------------
+      ///\brief Provide the xpl protocol implemented by this class
+      ///\return the xpl protocol
+      //------------------------------------
+      static const xplcore::CXplMessageSchemaIdentifier getProtocol();
+
       // IRule implementation
       virtual const CDeviceIdentifier getDeviceAddressFromMessage(xplcore::CXplMessage & msg);
       virtual MessageContent extractMessageData(xplcore::CXplMessage & msg);
@@ -26,6 +32,7 @@ namespace xplrules { namespace rfxLanXpl {
       static std::string m_keywordCommand;
       static std::string m_keywordCommandValues;
       static std::string m_keywordLevel;
+      static xplcore::CXplMessageSchemaIdentifier m_protocol;
    };
    
 } //namespace rfxLanXpl

@@ -4,13 +4,8 @@
 namespace xplrules {
 
 
-   CDeviceIdentifier::CDeviceIdentifier(const std::string & id)
-      :m_id(id)
-   {
-   }
-
-   CDeviceIdentifier::CDeviceIdentifier(const std::string & id, const std::string & commercialName)
-      :m_id(id), m_commercialName(commercialName)
+   CDeviceIdentifier::CDeviceIdentifier(const std::string & id, const std::string & commercialName, const xplcore::CXplMessageSchemaIdentifier & readingProtocol, const xplcore::CXplMessageSchemaIdentifier & writingProtocol)
+      :m_id(id), m_commercialName(commercialName), m_xplProtocolReading(readingProtocol), m_xplProtocolWriting(writingProtocol)
    {
    }
 
@@ -29,6 +24,18 @@ namespace xplrules {
       if(m_commercialName.empty())
          return m_id;
       return m_commercialName;
+   }
+
+   const xplcore::CXplMessageSchemaIdentifier & CDeviceIdentifier::getReadingXplProtocol()
+   {
+      return m_xplProtocolReading;
+   }
+
+ 
+   const xplcore::CXplMessageSchemaIdentifier & CDeviceIdentifier::getWritingXplProtocol()
+   {
+      return m_xplProtocolWriting;
+
    }
 
 } //namespace xplrules

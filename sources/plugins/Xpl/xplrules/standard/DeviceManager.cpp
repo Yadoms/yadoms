@@ -10,8 +10,8 @@ namespace xplrules { namespace standard {
 
    CDeviceManager::CDeviceManager()
    {
-      m_handledProtocols.push_back( boost::shared_ptr< xplrules::IProtocol >( new CProtocol<CX10Basic>("x10.basic") ) );
-      m_handledProtocols.push_back( boost::shared_ptr< xplrules::IProtocol >( new CProtocol<CSensorBasic>("sensor.basic") ) );
+      m_handledProtocols.push_back(boost::shared_ptr< xplrules::IProtocol >(new CProtocol<CX10Basic>(CX10Basic::getProtocol())));
+      m_handledProtocols.push_back(boost::shared_ptr< xplrules::IProtocol >(new CProtocol<CSensorBasic>(CSensorBasic::getProtocol())));
    }
 
    CDeviceManager::~CDeviceManager()

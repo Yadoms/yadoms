@@ -99,9 +99,9 @@ void CXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
    catch (boost::thread_interrupted&)
    {
    }
-   catch (shared::exception::CException &)
+   catch (shared::exception::CException & ex)
    {
-
+      YADOMS_LOG(fatal) << "The XPL plugin fails. Unknown expcetion : " << ex.what();
    }
 
    if(hub)
@@ -136,48 +136,31 @@ void CXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::shared
             if (!context->deviceExists(deviceAddress.getId()))
             {
                boost::property_tree::ptree details;
-               details.put("protocol", xplMessage.getMessageSchemaIdentifier().toString());
+               details.put("readingProtocol", deviceAddress.getReadingXplProtocol().toString());
+               details.put("writingProtocol", deviceAddress.getWritingXplProtocol().toString());
                details.put("source", realSource);
                shared::serialization::CPtreeToJsonSerializer serialiser;
                context->declareDevice(deviceAddress.getId(), deviceAddress.getCommercialName(), serialiser.serialize(details));
             }
-            //try to find device in db
-            /*
-            boost::shared_ptr<database::entities::CDevice> device = m_dataProvider->getDeviceRequester()->getDevice(deviceAddress.getId(), xplMessage.getMessageSchemaIdentifier().toString(), realSource);
-            if(!device)
-            {
-               //create the device in database
-               //TODO : make rule generate a pseudo real name
-               device = m_dataProvider->getDeviceRequester()->createDevice(deviceAddress.getId(), xplMessage.getMessageSchemaIdentifier().toString(), realSource, deviceAddress.getCommercialName());
-            }
 
             //create message keywords in database
-            std::vector< boost::shared_ptr<database::entities::CKeyword> > allKeywords = rule->identifyKeywords(xplMessage);
-            BOOST_FOREACH(boost::shared_ptr<database::entities::CKeyword> keyword, allKeywords)
+            std::vector< boost::shared_ptr<xplrules::CDeviceKeyword> > allKeywords = rule->identifyKeywords(xplMessage);
+            for (std::vector< boost::shared_ptr<xplrules::CDeviceKeyword> >::iterator keyword = allKeywords.begin(); keyword != allKeywords.end(); ++keyword)
             {
-               keyword->DeviceId = device->Id();
-               m_dataProvider->getKeywordRequester()->addKeyword(*keyword);
+               context->declareKeyword(deviceAddress.getId(), (*keyword)->getName(), (*keyword)->getCapacity(), (*keyword)->getAccessMode(), (*keyword)->getDetails());
             }
 
+            
             //create message to insert in database
-            database::entities::CMessage msgToInsert;
-            msgToInsert.Date = boost::posix_time::second_clock::universal_time();
-            msgToInsert.DeviceId = device->Id();
+            xplrules::MessageContent data = rule->extractMessageData(xplMessage);
 
-            rules::MessageContent data = rule->extractMessageData(xplMessage);
-            std::vector<database::entities::CMessageContent> msgContentEntries;
-
-            rules::MessageContent::iterator i;
+            xplrules::MessageContent::iterator i;
             for(i = data.begin(); i!= data.end(); ++i)
             {
-               database::entities::CMessageContent item;
-               item.Key = i->first;
-               item.Value = i->second;
-               msgContentEntries.push_back(item);
+               context->historizeData(deviceAddress.getId(), i->first, i->second);
             }
 
-            m_dataProvider->getMessageRequester()->insertMessage(msgToInsert, msgContentEntries);
-            */
+            
          }
       }
       catch(std::exception &ex)

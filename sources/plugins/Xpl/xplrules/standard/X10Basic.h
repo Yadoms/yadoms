@@ -10,6 +10,12 @@ namespace xplrules { namespace standard {
       CX10Basic();
       virtual ~CX10Basic();
       
+      //------------------------------------
+      ///\brief Provide the xpl protocol implemented by this class
+      ///\return the xpl protocol
+      //------------------------------------
+      static const xplcore::CXplMessageSchemaIdentifier getProtocol();
+
       // IRule implementation
       virtual const CDeviceIdentifier getDeviceAddressFromMessage(xplcore::CXplMessage & msg);
       virtual MessageContent extractMessageData(xplcore::CXplMessage & msg);
@@ -20,6 +26,10 @@ namespace xplrules { namespace standard {
       //virtual boost::shared_ptr< xplcore::CXplMessage > createXplCommand(database::entities::CDevice & targetDevice, command::CDeviceCommand & deviceCommand);
       virtual std::string generateVirtualDeviceIdentifier();
       // [END] ICommandRule implemntation
+
+   private:
+      static xplcore::CXplMessageSchemaIdentifier m_protocol;
+
    };
    
 } //namespace standard

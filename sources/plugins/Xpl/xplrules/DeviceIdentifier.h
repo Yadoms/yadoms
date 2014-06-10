@@ -1,4 +1,5 @@
 #pragma once
+#include "../xplcore/XplMessageSchemaIdentifier.h"
 
 namespace xplrules {
 
@@ -12,15 +13,11 @@ namespace xplrules {
       //------------------------------------
       ///\brief Constructor
       ///\param [in] id The device id
-      //------------------------------------
-      CDeviceIdentifier(const std::string & id);
-
-      //------------------------------------
-      ///\brief Constructor
-      ///\param [in] id The device id
       ///\param [in] commercialName The device commercial name
+      ///\param [in] readingProtocol   The xpl protocol used to read data
+      ///\param [in] writingProtocol   The xpl protocol used to send command
       //------------------------------------
-      CDeviceIdentifier(const std::string & id, const std::string & commercialName);
+      CDeviceIdentifier(const std::string & id, const std::string & commercialName, const xplcore::CXplMessageSchemaIdentifier & readingProtocol, const xplcore::CXplMessageSchemaIdentifier & writingProtocol);
 
       //------------------------------------
       ///\brief Destructor
@@ -40,6 +37,17 @@ namespace xplrules {
       //------------------------------------
       const std::string & getCommercialName();
 
+      //------------------------------------
+      ///\brief Get the xpl protocol used for reading data
+      ///\return the xpl protocol
+      //------------------------------------
+      const xplcore::CXplMessageSchemaIdentifier & getReadingXplProtocol();
+
+      //------------------------------------
+      ///\brief Get the xpl protocol used for sending command
+      ///\return the xpl protocol
+      //------------------------------------
+      const xplcore::CXplMessageSchemaIdentifier & getWritingXplProtocol();
    private:
       //------------------------------------
       ///\brief The device identifier
@@ -50,6 +58,16 @@ namespace xplrules {
       ///\brief The commercial name
       //------------------------------------
       std::string m_commercialName;
+
+      //------------------------------------
+      ///\brief the xpl protocol used for reading data
+      //------------------------------------
+      xplcore::CXplMessageSchemaIdentifier m_xplProtocolReading;
+
+      //------------------------------------
+      ///\brief the xpl protocol used for sending command
+      //------------------------------------
+      xplcore::CXplMessageSchemaIdentifier m_xplProtocolWriting;
    };
 
 

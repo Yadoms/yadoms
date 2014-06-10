@@ -9,8 +9,9 @@ namespace xplrules { namespace rfxLanXpl {
    std::string CAcBasic::m_keywordAddress = "address";
    std::string CAcBasic::m_keywordUnit = "unit";
    std::string CAcBasic::m_keywordCommand = "command";
-   std::string CAcBasic::m_keywordCommandValues = "on|off|preset";
+   std::string CAcBasic::m_keywordCommandValues = "{ values : [on, off, preset] }";
    std::string CAcBasic::m_keywordLevel = "level";
+   xplcore::CXplMessageSchemaIdentifier  CAcBasic::m_protocol = xplcore::CXplMessageSchemaIdentifier::parse("ac.basic");
 
    CAcBasic::CAcBasic()
    {
@@ -21,9 +22,16 @@ namespace xplrules { namespace rfxLanXpl {
    }
 
    // IRule implementation
+   const xplcore::CXplMessageSchemaIdentifier CAcBasic::getProtocol()
+   {
+      return m_protocol;
+   }
+
    const CDeviceIdentifier CAcBasic::getDeviceAddressFromMessage(xplcore::CXplMessage & msg)
    {
-      return CDeviceIdentifier(msg.getBodyValue(m_keywordAddress) + "-" +  msg.getBodyValue(m_keywordUnit));
+      std::string deviceId = msg.getBodyValue(m_keywordAddress) + "-" + msg.getBodyValue(m_keywordUnit);
+      std::string commercialName = "ANSLUT, Chacon, DI.O, KlikAanKlikUit, NEXA, Proove, Intertechno, Düwi, HomeEasy UK/EU";
+      return CDeviceIdentifier(deviceId, commercialName, m_protocol, m_protocol);
    }
 
    MessageContent CAcBasic::extractMessageData(xplcore::CXplMessage & msg)
@@ -39,13 +47,14 @@ namespace xplrules { namespace rfxLanXpl {
    std::vector< boost::shared_ptr<CDeviceKeyword> > CAcBasic::identifyKeywords(xplcore::CXplMessage & msg)
    {
       std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
-      /*
-      //command
-      keywords.push_back(CKeywordManager::createEnumeration(m_keywordCommand, m_keywordCommandValues));
 
-      //level
-      keywords.push_back(CKeywordManager::createNumeric(m_keywordLevel, 0, 15));
-      */
+      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordCommand, m_keywordCommand, shared::plugin::yadomsApi::IYadomsApi::kReadWrite, m_keywordCommandValues)));
+
+      boost::property_tree::ptree details;
+      details.put("min", 0);
+      details.put("max", 15);
+      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordLevel, m_keywordLevel, shared::plugin::yadomsApi::IYadomsApi::kReadWrite, details)));
+
       return keywords;
    }
 

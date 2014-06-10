@@ -17,6 +17,12 @@ namespace xplrules { namespace rfxLanXpl {
       //------------------------------------
       virtual ~CSensorBasic();
       
+      //------------------------------------
+      ///\brief Provide the xpl protocol implemented by this class
+      ///\return the xpl protocol
+      //------------------------------------
+      static const xplcore::CXplMessageSchemaIdentifier getProtocol();
+
       // IRule implementation
       virtual const CDeviceIdentifier getDeviceAddressFromMessage(xplcore::CXplMessage & msg);
       virtual MessageContent extractMessageData(xplcore::CXplMessage & msg);
@@ -40,9 +46,12 @@ namespace xplrules { namespace rfxLanXpl {
       static std::string m_keywordTypeVoltage;
       static std::string m_keywordTypeMertik;
       static std::string m_keywordTypeCount;
+      static std::string m_keywordTypeInput;
       static std::string m_keywordTypeHumidity;
       static std::string m_keywordTypeStatus;
       static std::string m_keywordTypePressure;
+      static std::string m_keywordTypeTemperature;
+      static std::string m_keywordTypeSetpoint;
       static std::string m_keywordTypeDirection;
       static std::string m_keywordTypeUv;
       static std::string m_keywordCurrent;
@@ -96,6 +105,8 @@ namespace xplrules { namespace rfxLanXpl {
       static std::string m_keywordDeviceOregonElec4;
       static std::string m_keywordUnitAmpere;
       static std::string m_keywordUnitVolts;
+
+      static xplcore::CXplMessageSchemaIdentifier m_protocol;
    };
    
 } //namespace rfxLanXpl

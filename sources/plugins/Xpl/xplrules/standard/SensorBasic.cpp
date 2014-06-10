@@ -3,6 +3,8 @@
 
 namespace xplrules { namespace standard {
 
+   xplcore::CXplMessageSchemaIdentifier  CSensorBasic::m_protocol = xplcore::CXplMessageSchemaIdentifier::parse("sensor.basic");
+
    CSensorBasic::CSensorBasic()
    {
    }
@@ -11,9 +13,15 @@ namespace xplrules { namespace standard {
    {
    }
    
+   const xplcore::CXplMessageSchemaIdentifier CSensorBasic::getProtocol()
+   {
+      return m_protocol;
+   }
+
    const CDeviceIdentifier CSensorBasic::getDeviceAddressFromMessage(xplcore::CXplMessage & msg)
    {
-      return CDeviceIdentifier(msg.getBodyValue("device"));
+      //TODO : manage control.basic rule to use it here
+      return CDeviceIdentifier(msg.getBodyValue("device"), msg.getBodyValue("device"), m_protocol, xplcore::CXplMessageSchemaIdentifier::parse("control.basic"));
    }
    
    MessageContent CSensorBasic::extractMessageData(xplcore::CXplMessage & msg)
