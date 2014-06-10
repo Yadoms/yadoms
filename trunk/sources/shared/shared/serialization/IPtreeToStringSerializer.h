@@ -31,6 +31,14 @@ namespace shared { namespace serialization
       /// \throw              CInvalidParameter if str is not in the valid format
       //--------------------------------------------------------------
       virtual void deserialize(const std::string& str, boost::property_tree::ptree& pt) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief              Deserialize string to property tree
+      /// \par str            Input string
+      /// \return             Property tree populated
+      /// \throw              CInvalidParameter if str is not in the valid format
+      //--------------------------------------------------------------
+      virtual boost::property_tree::ptree deserialize(const std::string& str) = 0;
    };
 
 } } // namespace shared::serialization

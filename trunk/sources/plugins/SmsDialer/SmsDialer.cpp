@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "SmsDialer.h"
 #include <shared/Log.h>
-#include <shared/xpl/XplMessage.h>
-#include <shared/xpl/XplHelper.h>
-#include <shared/xpl/XplException.h>
+#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/serialization/PTreeToJsonSerializer.h>
 #include "SmsDialerFactory.h"
 #include "PhoneException.hpp"
 #include "Sms.h"
@@ -23,48 +22,29 @@ CSmsDialer::~CSmsDialer()
 // Event IDs
 enum
 {
-   kEvtXplMessagePowerPhone = shared::event::kUserFirstId,   // Always start from shared::event::CEventHandler::kUserFirstId
-   kEvtXplMessageSendSms,
-   kEvtUpdateConfiguration,
-   kEvtTimerTryToConnectToPhone,
+   kEvtTimerTryToConnectToPhone = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from yApi::IYadomsApi::kPluginFirstEventId
    kEvtTimerCheckForIncommingSms
 };
 
-// XPL device ID
-static const std::string& XplDeviceId("smsdial");
-
-
-void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service& pluginIOService)
+void CSmsDialer::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    try
    {
-      YADOMS_LOG_CONFIGURE(Informations->getName());
-      YADOMS_LOG(debug) << "CSmsDialer is starting...";
-
       // Load configuration values (provided by database)
-      m_configuration.set(configuration);
+      m_configuration.set(context->getConfiguration());
 
       // Create the phone instance
       m_phone = CSmsDialerFactory::constructPhone(m_configuration);
-
-      // Register to XPL service
-      m_xplService.reset(new shared::xpl::CXplService(
-         XplDeviceId,
-         shared::xpl::CXplHelper::toInstanceId(instanceUniqueId),
-         &pluginIOService));
-
-      // Configure the XPL filters (for incomming XPL messages)
-      configureXplFilters();
 
       // the main loop
       YADOMS_LOG(debug) << "CSmsDialer is running...";
 
       // Timer used to periodically try to connect to phone
-      m_connectionTimer = createTimer(kEvtTimerTryToConnectToPhone, shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(1));
+      m_connectionTimer = context->getEventHandler().createTimer(kEvtTimerTryToConnectToPhone, shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(1));
       m_connectionTimer->stop();
 
       // Timer used to periodically check for incoming SMS
-      m_incommingSmsPollTimer = createTimer(kEvtTimerCheckForIncommingSms, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(30));
+      m_incommingSmsPollTimer = context->getEventHandler().createTimer(kEvtTimerCheckForIncommingSms, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(30));
       m_incommingSmsPollTimer->stop();
 
       m_phone->connect();
@@ -73,26 +53,23 @@ void CSmsDialer::doWork(int instanceUniqueId, const std::string& configuration, 
       {
          if (!m_phone->isConnected())
          {
-            processNotConnectedState();
+            processNotConnectedState(context);
          }
          else
          {
-            // Declare the XPL devices
-            xplDeclareDevices();
-
-            processConnectedState();
+            processConnectedState(context);
          }
       };
    }
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(info) << "CSmsDialer is stopping..."  << std::endl;
    }
 }
 
-void CSmsDialer::processNotConnectedState()
+void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYadomsApi> context)
 {
-   YADOMS_LOG(info) << "Phone is not connected"  << std::endl;//TODO notifier Yadoms
+   YADOMS_LOG(info) << "Phone is not connected"  << std::endl;
+   context->recordPluginEvent(yApi::IYadomsApi::kInfo, "Phone is not connected");
 
    m_incommingSmsPollTimer->stop();
    m_connectionTimer->start();
@@ -102,15 +79,15 @@ void CSmsDialer::processNotConnectedState()
       try
       {
          // Wait for an event
-         switch(waitForEvents())
+         switch(context->getEventHandler().waitForEvents())
          {
-         case kEvtXplMessageSendSms:
-         case kEvtXplMessagePowerPhone:
+         case yApi::IYadomsApi::kEventDeviceCommand:
             {
-               // Ignore all XPL message
+               // Ignore all commands
+               YADOMS_LOG(warning) << "Not able to process received the command (phone not connected)";
                break;
             }
-         case kEvtUpdateConfiguration:
+         case yApi::IYadomsApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
                std::string newConfiguration = getEventData<std::string>();
@@ -152,17 +129,21 @@ void CSmsDialer::processNotConnectedState()
    }
 }
 
-void CSmsDialer::processConnectedState()
+void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYadomsApi> context)
 {
-   YADOMS_LOG(info) << "Phone is connected"  << std::endl;//TODO notifier Yadoms
+   YADOMS_LOG(info) << "Phone is connected"  << std::endl;
+   context->recordPluginEvent(yApi::IYadomsApi::kInfo, "Phone is connected");
 
    m_connectionTimer->stop();
 
-   // First, unlock phone
+   // First, declare device to Yadoms
+   declareDevice(context);
+
+   // Next, unlock phone
    m_phone->unlock(m_configuration.getPhonePIN());
 
    // Next, check for incoming SMS
-   processIncommingSMS();
+   processIncommingSMS(context);
 
    // And start timer for next incoming SMS check
    m_incommingSmsPollTimer->start();
@@ -172,21 +153,25 @@ void CSmsDialer::processConnectedState()
       try
       {
          // Wait for an event
-         switch(waitForEvents())
+         switch(context->getEventHandler().waitForEvents())
          {
-         case kEvtXplMessagePowerPhone:
+         case yApi::IYadomsApi::kEventDeviceCommand:
             {
-               // Xpl message was received
-               onPowerPhoneXplRequest(getEventData<shared::xpl::CXplMessage>());
+               // Command received
+               boost::shared_ptr<yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceCommand> >();
+               YADOMS_LOG(debug) << "Command received :" << command->toString();
+
+               const std::string keyword = command->getKeyword();
+               if (keyword == "switch")
+                  onPowerPhoneRequest(context, command->getBody());
+               else if (keyword == "sendSms")
+                  onSendSmsRequest(context, command->getBody());
+               else
+                  YADOMS_LOG(error) << "Unsupported command received : " << command->toString();
+
                break;
             }
-         case kEvtXplMessageSendSms:
-            {
-               // Xpl message was received
-               onSendSmsXplRequest(getEventData<shared::xpl::CXplMessage>());
-               break;
-            }
-         case kEvtUpdateConfiguration:
+         case yApi::IYadomsApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
                std::string newConfiguration = getEventData<std::string>();
@@ -211,7 +196,7 @@ void CSmsDialer::processConnectedState()
             }
          case kEvtTimerCheckForIncommingSms:
             {
-               processIncommingSMS();
+               processIncommingSMS(context);
                break;
             }
          default:
@@ -228,30 +213,24 @@ void CSmsDialer::processConnectedState()
    }
 }
 
-void CSmsDialer::updateConfiguration(const std::string& configuration)
+void CSmsDialer::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
 {
-   // This function is called in a Yadoms thread context, so send a event to the CSmsDialer thread
-   sendEvent<std::string>(kEvtUpdateConfiguration, configuration);
+   // Declare the device
+   context->declareDevice(m_phone->getUniqueId(), m_phone->getUniqueId(), shared::CStringExtension::EmptyString);
+
+   // Declare associated keywords (= values managed by this device)
+   context->declareKeyword(m_phone->getUniqueId(), "power"  , yApi::CStandardCapacities::SwitchOnOff, yApi::IYadomsApi::kReadWrite);
+   context->declareKeyword(m_phone->getUniqueId(), "sms"    , yApi::CStandardCapacities::Message    , yApi::IYadomsApi::kWriteOnly);
 }
 
-void CSmsDialer::onPowerPhoneXplRequest(const shared::xpl::CXplMessage& xplMessage)
+void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& powerRequest)
 {
-   YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
-
-   BOOST_ASSERT_MSG(xplMessage.getMessageSchemaIdentifier().getClassId() == "control" && xplMessage.getMessageSchemaIdentifier().getTypeId() == "basic",
-      "Filter doesn't work, messages must be control.basic");
-   BOOST_ASSERT_MSG(xplMessage.getBodyValue("device") == m_phone->getUniqueId(), "Device ID is not correct");
-   BOOST_ASSERT_MSG(xplMessage.getBodyValue("type") == "output", "type value is not supported");
-   BOOST_ASSERT_MSG(xplMessage.getBodyValue("current") != "HIGH" && xplMessage.getBodyValue("content") != "LOW", "current value is not supported");
+   BOOST_ASSERT_MSG(powerRequest == "on" || powerRequest == "off", "Invalid power request");
 
    try
    {
-      m_phone->powerOn(xplMessage.getBodyValue("current") == "HIGH");
-      xplSendPhonePowerState(m_phone->isOn());
-   }
-   catch (shared::xpl::CXplException& e)
-   {
-      YADOMS_LOG(error) << "Can not send SMS, the XPL message is invalid : " << e.what();
+      m_phone->powerOn(powerRequest == "on");
+      notifyPhonePowerState(context, m_phone->isOn());
    }
    catch (CPhoneException& e)
    {
@@ -259,44 +238,48 @@ void CSmsDialer::onPowerPhoneXplRequest(const shared::xpl::CXplMessage& xplMessa
    }
 }
 
-void CSmsDialer::onSendSmsXplRequest(const shared::xpl::CXplMessage& xplMessage)
+void CSmsDialer::onSendSmsRequest(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& sendSmsRequest)
 {
-   YADOMS_LOG(debug) << "XPL message event received :" << xplMessage.toString();
-
-   BOOST_ASSERT_MSG(
-      (xplMessage.getMessageSchemaIdentifier().getClassId() == "message" && xplMessage.getMessageSchemaIdentifier().getTypeId() == "sms") ||
-      (xplMessage.getMessageSchemaIdentifier().getClassId() == "sendmsg" && xplMessage.getMessageSchemaIdentifier().getTypeId() == "basic"),
-      "Filter doesn't work, messages must be message.sms or sendmsg.basic");
-   BOOST_ASSERT_MSG(xplMessage.getBodyValue("device") == m_phone->getUniqueId(), "Device ID is not correct");
-   BOOST_ASSERT_MSG(!xplMessage.getBodyValue("to").empty(), "SMS recipient is empty");
-   BOOST_ASSERT_MSG(!xplMessage.getBodyValue("content").empty(), "SMS message content is empty");
-
-   const std::string to = xplMessage.getBodyValue("to");
-   const std::string content = xplMessage.getBodyValue("content");
-   const bool ackRequired = xplMessage.hasBodyValue("acknowledgment") && xplMessage.getBodyValue("acknowledgment") == "true";
-
+   shared::serialization::CPtreeToJsonSerializer serialiser;
    try
    {
-      boost::shared_ptr<ISms> sms(new CSms(to, content));
+      boost::property_tree::ptree smsContent = serialiser.deserialize(sendSmsRequest);
+      std::string to = smsContent.get<std::string>("to");
+      std::string body = smsContent.get<std::string>("body");
+
+      boost::shared_ptr<ISms> sms(new CSms(to, body));
       m_phone->send(sms);
-      if (ackRequired)
-         xplSendAck(true, content);
+      notifyAck(true);
    }
-   catch (shared::xpl::CXplException& e)
+   catch (boost::property_tree::ptree_bad_path& e)
    {
-      YADOMS_LOG(error) << "Can not send SMS, the XPL message is invalid : " << e.what();
-      if (ackRequired)
-         xplSendAck(false, content);
+      YADOMS_LOG(error) << "Invalid SMS sending request \"" << sendSmsRequest << "\" : " << e.what();
+      BOOST_ASSERT_MSG(false, "Invalid SMS sending request (parameter doesn't exist)");
+      notifyAck(false);
+      return;
+   }
+   catch (boost::property_tree::ptree_bad_data& e)
+   {
+      YADOMS_LOG(error) << "Invalid SMS sending request \"" << sendSmsRequest << "\" : " << e.what();
+      BOOST_ASSERT_MSG(false, "Invalid SMS sending request (fail to extract parameter)");
+      notifyAck(false);
+      return;
+   }
+   catch (shared::exception::CInvalidParameter& e)
+   {
+      YADOMS_LOG(error) << "Invalid SMS sending request \"" << sendSmsRequest << "\" : " << e.what();
+      BOOST_ASSERT_MSG(false, "Invalid SMS sending request");
+      notifyAck(false);
+      return;
    }
    catch (CPhoneException& e)
    {
       YADOMS_LOG(error) << "Error sending SMS : " << e.what();
-      if (ackRequired)
-         xplSendAck(false, content);
+      notifyAck(false);
    }
 }
 
-void CSmsDialer::processIncommingSMS()
+void CSmsDialer::processIncommingSMS(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    // Check if incoming SMS
    boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > incommingSms = m_phone->getIncomingSMS();
@@ -307,149 +290,28 @@ void CSmsDialer::processIncommingSMS()
          YADOMS_LOG(info) << "SMS received";
          YADOMS_LOG(debug) << "SMS received from " << (*it)->getNumber() << " : " << (*it)->getContent();
 
-         // Send SMS to XPL network
-         xplSendSmsReceived(*it);
+         // Send SMS to Yadoms
+         notifySmsReception(context, *it);
       }
    }
 }
 
-void CSmsDialer::configureXplFilters()
+void CSmsDialer::notifyAck(bool ok) const
 {
-   // The plugin uses 2 devices :
-   // - the first used to power ON/OFF the phone
-   // - the second to send/receive SMS
-
-   // Subscribe to messages to power ON/OFF the phone
-   m_xplService->subscribeForMessages(                   // control.basic
-      "xpl-cmnd",
-      m_xplService->getActor().getVendorId(),
-      shared::xpl::CXplHelper::WildcardString,
-      m_xplService->getActor().getInstanceId(),
-      "control",
-      "basic",
-      this,
-      kEvtXplMessagePowerPhone);
-
-   // Subscribe to messages to send SMS
-   // Here we support 2 messages types :
-   // - the first is our specific XPL shema (message.sms)
-   // - the seconf is the standard XPl message (sendmsg.basic)
-   m_xplService->subscribeForMessages(                   // message.sms
-      "xpl-cmnd",
-      m_xplService->getActor().getVendorId(),
-      shared::xpl::CXplHelper::WildcardString,
-      m_xplService->getActor().getInstanceId(),
-      "message",
-      "sms",
-      this,
-      kEvtXplMessageSendSms);
-   m_xplService->subscribeForMessages(                   // sendmsg.basic
-      "xpl-cmnd",
-      m_xplService->getActor().getVendorId(),
-      shared::xpl::CXplHelper::WildcardString,
-      m_xplService->getActor().getInstanceId(),
-      "message",
-      "sms",
-      this,
-      kEvtXplMessageSendSms);
+   //TODO
 }
 
-void CSmsDialer::xplDeclareDevices() const
+void CSmsDialer::notifyPhonePowerState(boost::shared_ptr<yApi::IYadomsApi> context, bool on) const
 {
-   // Announce devices only if phone is known
-   if (m_phone->getUniqueId().empty())
-      return;
-
-   xplDeclareMainDevice();
-   xplDeclareOnOffDevice();
+   context->historizeData(m_phone->getUniqueId(), "power", std::string(on ? "on" : "off"));
 }
 
-void CSmsDialer::xplDeclareMainDevice() const
+void CSmsDialer::notifySmsReception(boost::shared_ptr<yApi::IYadomsApi> context, const boost::shared_ptr<ISms>& sms) const
 {
-   shared::xpl::CXplMessage msg(
-      shared::xpl::CXplMessage::kXplStat,                            // Message type
-      m_xplService->getActor(),                                      // Source actor (here : our plugin instance)
-      shared::xpl::CXplActor::createBroadcastActor(),                // Target actor (here : the XPL logger of Yadoms)
-      shared::xpl::CXplMessageSchemaIdentifier("message", "sms"));   // The message schema
-
-   // Add data to message
-   // - Device ID
-   msg.addToBody("device", m_phone->getUniqueId());
-
-   // Send it
-   m_xplService->sendMessage(msg);
-}
-
-void CSmsDialer::xplDeclareOnOffDevice() const
-{
-   // To announce device, just send its state
-   xplSendPhonePowerState(m_phone->isOn());
-}
-
-void CSmsDialer::xplSendPhonePowerState(bool on) const
-{
-   // Send XPl message only if phone is known
-   if (m_phone->getUniqueId().empty())
-      return;
-
-   shared::xpl::CXplMessage msg(
-      shared::xpl::CXplMessage::kXplStat,                            // Message type
-      m_xplService->getActor(),                                      // Source actor (here : our plugin instance)
-      shared::xpl::CXplActor::createBroadcastActor(),                // Target actor (here : the XPL logger of Yadoms)
-      shared::xpl::CXplMessageSchemaIdentifier("sensor", "basic"));  // The message schema
-
-   // Add data to message
-   // - Device ID
-   msg.addToBody("device", m_phone->getUniqueId());
-
-   // - Type
-   msg.addToBody("type", "output");
-
-   // - Current value
-   msg.addToBody("current", m_phone->isOn() ? "HIGH" : "LOW");
-
-   // Send it
-   m_xplService->sendMessage(msg);
-}
-
-void CSmsDialer::xplSendAck(bool ok, const std::string& sourceMsg) const
-{
-   xplSendSmsTrigger(
-      shared::CStringExtension::EmptyString,       // From (doesn't make sense for an acknowledge)
-      ok ? "acknowledgment" : "error",             // Type
-      sourceMsg);                                  // Content
-}
-
-void CSmsDialer::xplSendSmsReceived(const boost::shared_ptr<ISms> sms) const
-{
-   xplSendSmsTrigger(
-      sms->getNumber(),                            // From
-      "message",                                   // Type
-      sms->getContent());                          // Content
-}
-
-void CSmsDialer::xplSendSmsTrigger(const std::string& from, const std::string& type, const std::string& content) const
-{
-   // Send XPl message only if phone is known
-   if (m_phone->getUniqueId().empty())
-      return;
-
-   shared::xpl::CXplMessage msg(
-      shared::xpl::CXplMessage::kXplTrigger,                         // Message type
-      m_xplService->getActor(),                                      // Source actor (here : our plugin instance)
-      shared::xpl::CXplActor::createBroadcastActor(),                // Target actor (here : the XPL logger of Yadoms)
-      shared::xpl::CXplMessageSchemaIdentifier("message", "sms"));   // The message schema
-
-   // Add data to message
-   // - Device ID
-   msg.addToBody("device", m_phone->getUniqueId());
-   // - From (doesn't make sense for an acknowledge)
-   msg.addToBody("from", from);
-   // - Type
-   msg.addToBody("type", type);
-   // - Content
-   msg.addToBody("content", content);
-
-   // Send it
-   m_xplService->sendMessage(msg);
+   boost::property_tree::ptree smsContent;
+   smsContent.put("from", sms->getNumber());
+   smsContent.put("to", shared::CStringExtension::EmptyString);
+   smsContent.put("body", sms->getContent());
+   shared::serialization::CPtreeToJsonSerializer serialiser;
+   context->historizeData(m_phone->getUniqueId(), "sms", serialiser.serialize(smsContent));
 }

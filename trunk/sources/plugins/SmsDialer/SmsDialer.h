@@ -1,10 +1,10 @@
 #pragma once
-#include <shared/plugin/ImplementationHelper.h>
-#include <shared/xpl/XplMessage.h>
-#include <shared/xpl/XplService.h>
-#include <shared/event/EventHandler.hpp>
+#include <shared/plugin/IPlugin.h>
 #include "SmsDialerConfiguration.h"
 #include "IPhone.h"
+
+// Shortcut to yadomsApi namespace
+namespace yApi = shared::plugin::yadomsApi;
 
 //--------------------------------------------------------------
 /// \brief	This plugin can send and receive SMS using a connected phone
@@ -23,85 +23,67 @@ public:
    virtual ~CSmsDialer();
 
    // IPlugin implementation
-   virtual void doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service& pluginIOService);
-   virtual void updateConfiguration(const std::string& configurationValues);
+   virtual void doWork(boost::shared_ptr<yApi::IYadomsApi> context);
    // [END] IPlugin implementation
 
 protected:
    //--------------------------------------------------------------
    /// \brief	                     Process the not connected state (wait for connection)
+   /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void processNotConnectedState();
+   void processNotConnectedState(boost::shared_ptr<yApi::IYadomsApi> context);
 
    //--------------------------------------------------------------
-   /// \brief	                     Process the connected state (Treat XPL messages, send SMS...)
+   /// \brief	                     Process the connected state (Check for incomming SMS, send SMS...)
+   /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void processConnectedState();
+   void processConnectedState(boost::shared_ptr<yApi::IYadomsApi> context);
 
    //--------------------------------------------------------------
-   /// \brief	                     Called when a power on/off request is received from XPL
-   /// \param [in] xplMessage       The xpl request
+   /// \brief                       Declare the device for Yadoms
+   /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void onPowerPhoneXplRequest(const shared::xpl::CXplMessage& xplMessage);
+   void declareDevice(boost::shared_ptr<yApi::IYadomsApi> context);
 
    //--------------------------------------------------------------
-   /// \brief	                     Called when a Send SMS request is received from XPL
-   /// \param [in] xplMessage       The xpl request
+   /// \brief                       Process the phone power on/off request
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] powerRequest     Details of the request
    //--------------------------------------------------------------
-   void onSendSmsXplRequest(const shared::xpl::CXplMessage& xplMessage);
+   void onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& powerRequest);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Process a sending message request
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] sendSmsRequest   Details of the request
+   //--------------------------------------------------------------
+   void onSendSmsRequest(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& sendSmsRequest);
 
    //--------------------------------------------------------------
    /// \brief	                     Check if incoming SMS and process it
+   /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void processIncommingSMS();
+   void processIncommingSMS(boost::shared_ptr<yApi::IYadomsApi> context);
 
    //--------------------------------------------------------------
-   /// \brief                       Configure the XPL filters (messages to be received by the plugin)
-   //--------------------------------------------------------------
-   void configureXplFilters();
-
-   //--------------------------------------------------------------
-   /// \brief                       Announce the XPL devices associated with the phone
-   //--------------------------------------------------------------
-   void xplDeclareDevices() const;
-
-   //--------------------------------------------------------------
-   /// \brief	                     Announce the main device (used to send/receive SMS)
-   //--------------------------------------------------------------
-   void xplDeclareMainDevice() const;
-
-   //--------------------------------------------------------------
-   /// \brief	                     Announce the on/off device (a switch type device used to power on/off the phone)
-   //--------------------------------------------------------------
-   void xplDeclareOnOffDevice() const;
-
-   //--------------------------------------------------------------
-   /// \brief	                     Send the phone power state to XPL network
-   /// \param [in] on               true if poser is on
-   //--------------------------------------------------------------
-   void xplSendPhonePowerState(bool on) const;
-
-   //--------------------------------------------------------------
-   /// \brief	                     Send the acknowledge to XPL network
+   /// \brief	                     Send an acknowledge to Yadoms
    /// \param [in] ok               true for positive ack, false for negative ack
-   /// \param [in] sourceMsg        Original sent message
    //--------------------------------------------------------------
-   void xplSendAck(bool ok, const std::string& sourceMsg) const;
+   void notifyAck(bool ok) const;
 
    //--------------------------------------------------------------
-   /// \brief	                     Send the received SMS to XPL network
-   /// \param [in] sms              sms to transmit to XPL network
+   /// \brief	                     Send the phone power state to Yadoms
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] on               true if power is on
    //--------------------------------------------------------------
-   void xplSendSmsReceived(const boost::shared_ptr<ISms> sms) const;
+   void notifyPhonePowerState(boost::shared_ptr<yApi::IYadomsApi> context, bool on) const;
 
    //--------------------------------------------------------------
-   /// \brief	                     Send the XPL-trig message to XPL network (low-level method)
-   /// \param [in] from             "from" recipient (should be empty for an acknowledge)
-   /// \param [in] type             Message type
-   /// \param [in] content          Message content
-   /// \note See XPL message "message.sms" specification (Yadoms specific message)
+   /// \brief	                     Send the received SMS to Yadoms
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] sms              sms to transmit to Yadoms
    //--------------------------------------------------------------
-   void xplSendSmsTrigger(const std::string& from, const std::string& type, const std::string& content) const;
+   void notifySmsReception(boost::shared_ptr<yApi::IYadomsApi> context, const boost::shared_ptr<ISms>& sms) const;
 
 private:
    //--------------------------------------------------------------
@@ -123,11 +105,6 @@ private:
    /// \brief	Timer to poll for incomming SMS
    //--------------------------------------------------------------
    boost::shared_ptr<shared::event::CEventTimer> m_incommingSmsPollTimer;
-
-   //--------------------------------------------------------------
-   /// \brief	The XPL service used to send XPL messages to Yadoms
-   //--------------------------------------------------------------
-   boost::shared_ptr<shared::xpl::CXplService> m_xplService;
 };
 
 

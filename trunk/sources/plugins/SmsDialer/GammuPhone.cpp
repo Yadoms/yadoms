@@ -65,7 +65,7 @@ bool CGammuPhone::isOn() const
    return m_on;
 }
 
-std::string CGammuPhone::getUniqueId() const
+const std::string& CGammuPhone::getUniqueId() const
 {
    return m_phoneId;
 }
