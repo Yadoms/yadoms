@@ -316,7 +316,7 @@ void CManager::startInstance(int id)
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
       boost::shared_ptr<CInstance> pluginInstance(new CInstance(
-         plugin, databasePluginInstance, m_dataProvider->getDeviceRequester(), m_dataProvider->getKeywordRequester(), m_dataProvider->getAcquisitionRequester(),
+         plugin, databasePluginInstance, m_dataProvider->getPluginEventLoggerRequester(), m_dataProvider->getDeviceRequester(), m_dataProvider->getKeywordRequester(), m_dataProvider->getAcquisitionRequester(),
          m_qualifier, m_supervisor, m_pluginManagerEventId));
       m_runningInstances[databasePluginInstance->Id()] = pluginInstance;
    }
@@ -346,13 +346,13 @@ bool CManager::isInstanceRunning(int id) const
    return m_runningInstances.find(id) != m_runningInstances.end();
 }
 
-void CManager::postCommand(int id, const communication::command::CDeviceCommand & message)
+void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> command)
 {
    if (!isInstanceRunning(id))
       return;     // Instance is stopped, nothing to do
 
    boost::shared_ptr<CInstance> instance(m_runningInstances.find(id)->second);
-   instance->postCommand(message);
+   instance->postCommand(command);
 }
 
 } // namespace pluginSystem

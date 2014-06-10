@@ -152,11 +152,11 @@ namespace pluginSystem
       void updatePluginList();
 
       //--------------------------------------------------------------
-      /// \brief              Post a command to a device on a specific plugin
-      /// \param [in] id      Plugin instance Id
-      /// \param [in] message The command to post
+      /// \brief                 Post a command to a device on a specific plugin
+      /// \param [in] id         Plugin instance Id
+      /// \param [in] command    The command to post
       //--------------------------------------------------------------
-      void postCommand(int id, const communication::command::CDeviceCommand & message);
+      void postCommand(int id, boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> command);
 
    private:
       //--------------------------------------------------------------

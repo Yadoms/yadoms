@@ -7,7 +7,6 @@
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/json/JsonGenericSerializer.h"
 #include "web/rest/json/JsonDate.h"
-#include "communication/command/DeviceCommand.h"
 
 namespace web { namespace rest { namespace service {
 
@@ -61,11 +60,6 @@ namespace web { namespace rest { namespace service {
       return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CDevice>::SerializeCollection(dvList, hes, getRestKeyword()));
    }
 
-
-
-
-
-
    web::rest::json::CJson CDevice::getDevicesWithCapacity(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
       try
@@ -104,10 +98,6 @@ namespace web { namespace rest { namespace service {
          return web::rest::json::CJsonResult::GenerateError("unknown exception in retreiving device with get capacity");
       }
    }
-
-
-
-
 
    web::rest::json::CJson CDevice::getDeviceKeywordsForCapacity(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
@@ -151,8 +141,6 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-
-
    web::rest::json::CJson CDevice::getDeviceKeywords(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
       try
@@ -189,8 +177,6 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-
-
    web::rest::json::CJson CDevice::sendDeviceCommand(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
    {
       try
@@ -198,30 +184,30 @@ namespace web { namespace rest { namespace service {
          if(parameters.size()>2)
          {
             //get keyword id from URL
+            int deviceId = boost::lexical_cast<int>(parameters[1]);
             int keywordId = boost::lexical_cast<int>(parameters[2]);
 
-            //create the command data (all request content values are stored into a single map
-            communication::command::CDeviceCommand::CommandData commandData;
-            BOOST_FOREACH(const web::rest::json::CJson::value_type &v, requestContent)
-            {
-               commandData.insert(std::make_pair(v.first.data(), v.second.data()));
-            }
+            //create the command
+            //boost::shared_ptr<shared::plugin::yadomsApi::IDeviceCommand> command(new pluginSystem::CDeviceCommand(deviceId, keywordId, requestContent));
 
             //create the command
-            boost::shared_ptr<communication::command::CCallback> resultHandler(new communication::command::CCallback);
-            communication::command::CDeviceCommand command(keywordId, commandData, resultHandler);
+            //TODO A-t-on besoin d'un retour sur l'envoi d'une commande (l'état du périph doit être mis à jour par historization en principe
+            //boost::shared_ptr<communication::command::CCallback> resultHandler(new communication::command::CCallback);
+            //communication::command::CDeviceCommand command(keywordId, commandData, resultHandler);
 
             //send the command
-            m_messageSender.sendCommandAsync(command);
+            m_messageSender.sendCommandAsync(deviceId, keywordId, web::rest::json::CJsonSerializer::serialize(requestContent));
 
-            //wait for a result
-            communication::command::CResult result = resultHandler->waitForResult(boost::posix_time::milliseconds(2000));
+            //TODO
+            return web::rest::json::CJsonResult::GenerateSuccess();
+            ////wait for a result
+            //communication::command::CResult result = resultHandler->waitForResult(boost::posix_time::milliseconds(2000));
 
-            //reply to rest caller
-            if(result.isSuccess())
-               return web::rest::json::CJsonResult::GenerateSuccess();
-            else
-               return web::rest::json::CJsonResult::GenerateError(result.getErrorMessage());
+            ////reply to rest caller
+            //if(result.isSuccess())
+            //   return web::rest::json::CJsonResult::GenerateSuccess();
+            //else
+            //   return web::rest::json::CJsonResult::GenerateError(result.getErrorMessage());
          }
          else
          {

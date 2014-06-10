@@ -2,7 +2,7 @@
 #include <shared/event/EventHandler.hpp>
 #include "Callback.h"
 
-namespace communication { namespace command {
+namespace communication { namespace command {//TODO à virer ?
 
    //----------------------------------------------
    ///\brief Class container for a device command

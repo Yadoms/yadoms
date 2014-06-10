@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
 #include <shared/plugin/information/IInformation.h>
+#include "database/IPluginEventLoggerRequester.h"
 #include "database/IDeviceRequester.h"
 #include "database/IKeywordRequester.h"
 #include "database/IAcquisitionRequester.h"
@@ -16,15 +17,17 @@ namespace pluginSystem
    {
    public:
       //-----------------------------------------------------
-      ///\brief                                 Constructor
-      /// \param [in]   pluginInformations      the plugin informations (name, description, version, author...)
-      /// \param [in]   pluginData              the plugin data
-      /// \param [in]   deviceRequester         the device requester
-      /// \param [in]   keywordRequester        the keyword requester
-      /// \param [in]   acquisitionRequester    the acquisition requester
+      ///\brief                                    Constructor
+      /// \param [in]   pluginInformations         the plugin informations (name, description, version, author...)
+      /// \param [in]   pluginData                 the plugin data
+      /// \param [in]   pluginEventLoggerRequester the plugin event logger requester
+      /// \param [in]   deviceRequester            the device requester
+      /// \param [in]   keywordRequester           the keyword requester
+      /// \param [in]   acquisitionRequester       the acquisition requester
       //-----------------------------------------------------
       CYadomsApiImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
          const boost::shared_ptr<database::entities::CPlugin> pluginData,
+         boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
          boost::shared_ptr<database::IDeviceRequester> deviceRequester,
          boost::shared_ptr<database::IKeywordRequester> keywordRequester,
          boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester);
@@ -45,7 +48,7 @@ namespace pluginSystem
       virtual void historizeData(const std::string & device, const std::string & keyword, double value);
       virtual const shared::plugin::information::IInformation& getInformation() const;
       virtual const std::string getConfiguration() const;
-      virtual bool recordPluginEvent(PluginEventSeverity severity, const std::string & message);
+      virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message);
       virtual shared::event::CEventHandler & getEventHandler();
       // [END] IYadomsApi implementation 
       
@@ -64,6 +67,11 @@ namespace pluginSystem
       /// \brief			The database accessor
       //--------------------------------------------------------------
       const boost::shared_ptr<database::entities::CPlugin> m_pluginData;
+
+      //--------------------------------------------------------------
+      /// \brief			The plugin event logger requester
+      //--------------------------------------------------------------
+      boost::shared_ptr<database::IPluginEventLoggerRequester> m_pluginEventLoggerRequester;
 
       //--------------------------------------------------------------
       /// \brief			The device requester

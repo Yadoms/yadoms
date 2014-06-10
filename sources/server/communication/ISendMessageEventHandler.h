@@ -18,10 +18,12 @@ namespace communication {
       }
 
       //----------------------------------------------
-      ///\brief Send a command
-      ///\param [in] message the message to send
+      ///\brief                     Send a command
+      ///\param [in] deviceId       Target device Id
+      ///\param [in] keywordId      Target keyword Id
+      ///\param [in] body           The command body to send
       //----------------------------------------------
-      virtual void sendCommandAsync(const command::CDeviceCommand & message) = 0;
+      virtual void sendCommandAsync(int deviceId, int keywordId, const std::string& body) = 0;
    };
 
 } //namespace communication

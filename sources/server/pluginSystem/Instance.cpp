@@ -11,6 +11,7 @@ namespace pluginSystem
 CInstance::CInstance(
    const boost::shared_ptr<const CFactory> plugin,
    const boost::shared_ptr<database::entities::CPlugin> pluginData,
+   boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
    boost::shared_ptr<database::IDeviceRequester> deviceRequester,
    boost::shared_ptr<database::IKeywordRequester> keywordRequester,
    boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
@@ -18,7 +19,7 @@ CInstance::CInstance(
    shared::event::CEventHandler& supervisor,
    int pluginManagerEventId)
     : CThreadBase(pluginData->Name()), m_pPlugin(plugin), m_qualifier(qualifier), m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId),
-    m_context(new CYadomsApiImplementation(plugin->getInformation(), pluginData, deviceRequester, keywordRequester, acquisitionRequester))
+    m_context(new CYadomsApiImplementation(plugin->getInformation(), pluginData, pluginEventLoggerRequester, deviceRequester, keywordRequester, acquisitionRequester))
 {
 	BOOST_ASSERT(m_pPlugin);
    m_pPluginInstance.reset(m_pPlugin->construct());
@@ -81,11 +82,11 @@ void CInstance::doWork()
    m_supervisor.postEvent<CManagerEvent>(m_pluginManagerEventId, event);
 }
 
-void CInstance::postCommand(const communication::command::CDeviceCommand & message) const
+void CInstance::postCommand(boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> command) const
 {
    BOOST_ASSERT(m_context);
    // Post event to the plugin
-   m_context->getEventHandler().postEvent<communication::command::CDeviceCommand>(shared::plugin::yadomsApi::IYadomsApi::kEventDeviceCommand, message);
+   m_context->getEventHandler().postEvent<boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> >(shared::plugin::yadomsApi::IYadomsApi::kEventDeviceCommand, command);
 }
 
 void CInstance::updateConfiguration(const std::string& newConfiguration) const

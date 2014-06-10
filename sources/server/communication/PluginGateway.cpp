@@ -1,6 +1,8 @@
 ﻿#include "stdafx.h"
 #include "PluginGateway.h"
 #include <shared/Log.h>
+#include <shared/plugin/yadomsApi/IDeviceCommand.h>
+#include "pluginSystem/DeviceCommand.h"
 
 namespace communication {
 
@@ -40,10 +42,14 @@ namespace communication {
       }
    }
 
-   void CPluginGateway::sendCommandAsync(const command::CDeviceCommand & message)
+   void CPluginGateway::sendCommandAsync(int deviceId, int keywordId, const std::string& body)
    {
+      // Create the command
+      boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> command(new pluginSystem::CDeviceCommand(m_dataProvider->getDeviceRequester()->getDevice(deviceId)->Name,
+         m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->Name, body));
+
       // Dispatch command to the right plugin
-      m_pluginManager->postCommand(m_dataProvider->getDeviceRequester()->getDevice(message.getDeviceId())->PluginId, message);
+      m_pluginManager->postCommand(m_dataProvider->getDeviceRequester()->getDevice(deviceId)->PluginId, command);
    }
 
    void CPluginGateway::doWork()
