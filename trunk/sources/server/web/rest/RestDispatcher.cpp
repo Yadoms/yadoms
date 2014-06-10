@@ -71,8 +71,6 @@ namespace web { namespace rest {
       return (getPattern().size() < right.getPattern().size());
    }
 
-
-
    std::string CRestDispatcher::CUrlPattern::toString() const
    {
       std::string pattern;

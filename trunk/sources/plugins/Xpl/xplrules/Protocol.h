@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IProtocol.h"
+#include "../xplcore/XplMessageSchemaIdentifier.h"
 
 namespace xplrules {
 
@@ -19,6 +20,15 @@ namespace xplrules {
       //------------------------------------
       CProtocol(const std::string & protocolIdentifier)
          :m_protocolIdentifier(protocolIdentifier)
+      {
+      }
+
+      //------------------------------------
+      ///\brief Constructor of a protocol container
+      ///\param [in] protocolIdentifier : the protocol identifier (i.e. "x10.basic")
+      //------------------------------------
+      CProtocol(const xplcore::CXplMessageSchemaIdentifier & protocolIdentifier)
+         :m_protocolIdentifier(protocolIdentifier.toString())
       {
       }
 

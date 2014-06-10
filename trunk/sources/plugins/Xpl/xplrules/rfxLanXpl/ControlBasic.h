@@ -4,11 +4,11 @@
 
 namespace xplrules { namespace rfxLanXpl {
 
-   class CX10Basic : public ICommandRule
+   class CControlBasic : public ICommandRule
    {
    public:
-      CX10Basic();
-      virtual ~CX10Basic();
+      CControlBasic();
+      virtual ~CControlBasic();
       
       //------------------------------------
       ///\brief Provide the xpl protocol implemented by this class

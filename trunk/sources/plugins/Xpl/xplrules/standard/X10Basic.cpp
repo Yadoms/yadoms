@@ -4,6 +4,8 @@
 
 namespace xplrules { namespace standard {
 
+   xplcore::CXplMessageSchemaIdentifier  CX10Basic::m_protocol = xplcore::CXplMessageSchemaIdentifier::parse("x10.basic");
+
    CX10Basic::CX10Basic()
    {
    }
@@ -12,10 +14,21 @@ namespace xplrules { namespace standard {
    {
    }
 
+   const xplcore::CXplMessageSchemaIdentifier CX10Basic::getProtocol()
+   {
+      return m_protocol;
+   }
+
    const CDeviceIdentifier CX10Basic::getDeviceAddressFromMessage(xplcore::CXplMessage & msg)
    {
       //TODO : manage list of device or list of house !
-      return CDeviceIdentifier(msg.getBodyValue("device"));
+      std::string commercialName = msg.getBodyValue("device");
+      if (msg.getBodyValue("type") == "cn")
+         commercialName = "Chacon, Avidsen, NEXA smoke detector";
+      if (msg.getBodyValue("type") == "mct" || msg.getBodyValue("type") == "mcw")
+         commercialName = "Visonic PowerCode sensors";
+
+      return CDeviceIdentifier(msg.getBodyValue("device"), commercialName, m_protocol, m_protocol);
    }
 
    MessageContent CX10Basic::extractMessageData(xplcore::CXplMessage & msg)

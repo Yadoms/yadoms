@@ -11,9 +11,9 @@ namespace xplrules { namespace rfxLanXpl {
 
    CDeviceManager::CDeviceManager()
    {
-      m_handledProtocols.push_back( boost::shared_ptr< xplrules::IProtocol >( new CProtocol<CAcBasic>("ac.basic") ) );
-      m_handledProtocols.push_back( boost::shared_ptr< xplrules::IProtocol >( new CProtocol<CSensorBasic>("sensor.basic") ) );
-      m_handledProtocols.push_back( boost::shared_ptr< xplrules::IProtocol >( new CProtocol<CX10Basic>("x10.basic") ) );
+      m_handledProtocols.push_back(boost::shared_ptr< xplrules::IProtocol >(new CProtocol<CAcBasic>(CAcBasic::getProtocol())));
+      m_handledProtocols.push_back(boost::shared_ptr< xplrules::IProtocol >(new CProtocol<CSensorBasic>(CSensorBasic::getProtocol())));
+      m_handledProtocols.push_back(boost::shared_ptr< xplrules::IProtocol >(new CProtocol<CX10Basic>(CX10Basic::getProtocol())));
    }
 
    CDeviceManager::~CDeviceManager()
