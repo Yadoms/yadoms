@@ -131,6 +131,20 @@ namespace shared { namespace event
       }
 
       //--------------------------------------------------------------
+      /// \brief	    Get the last event ID
+      /// \return     event ID of the last event
+      /// \throw      exception::CNullReference if no event is available
+      /// \note       Must be called after waitForEvents
+      //--------------------------------------------------------------
+      int getEventId() const
+      {
+         if (!m_lastEvent)
+            throw exception::CNullReference("getEventId, no event available");
+
+         return m_lastEvent->getId();
+      }
+
+      //--------------------------------------------------------------
       /// \brief	    Get data from last event
       /// \template DataType  Type of the data in the event
       /// \return     Copy of event data
@@ -139,7 +153,7 @@ namespace shared { namespace event
       /// \note       Must be called after waitForEvents
       //--------------------------------------------------------------
       template<typename DataType>
-      const DataType getEventData()
+      const DataType getEventData() const
       {
          if (!m_lastEvent)
             throw exception::CNullReference("getEventData, no event available");

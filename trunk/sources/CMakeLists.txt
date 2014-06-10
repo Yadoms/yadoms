@@ -137,6 +137,8 @@ set(YADOMS_SRC
 	server/Supervisor.cpp
 	server/Supervisor.h
   
+   server/pluginSystem/DeviceCommand.cpp
+   server/pluginSystem/DeviceCommand.h
 	server/pluginSystem/IdentityForQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.h
 	server/pluginSystem/Information.cpp

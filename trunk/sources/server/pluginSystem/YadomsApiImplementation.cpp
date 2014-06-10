@@ -11,10 +11,12 @@ namespace pluginSystem
 CYadomsApiImplementation::CYadomsApiImplementation(
    boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
    const boost::shared_ptr<database::entities::CPlugin> pluginData,
+   boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
    boost::shared_ptr<database::IDeviceRequester> deviceRequester,
    boost::shared_ptr<database::IKeywordRequester> keywordRequester,
    boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester)
-   :m_informations(pluginInformations), m_pluginData(pluginData), m_deviceRequester(deviceRequester), m_keywordRequester(keywordRequester), m_acquisitionRequester(acquisitionRequester)
+   :m_informations(pluginInformations), m_pluginData(pluginData), m_pluginEventLoggerRequester(pluginEventLoggerRequester),
+   m_deviceRequester(deviceRequester), m_keywordRequester(keywordRequester), m_acquisitionRequester(acquisitionRequester)
 {
 }
       
@@ -111,14 +113,21 @@ const std::string CYadomsApiImplementation::getConfiguration() const
    return m_pluginData->Configuration;
 }
         
-bool CYadomsApiImplementation::recordPluginEvent(PluginEventSeverity severity, const std::string & message)
+void CYadomsApiImplementation::recordPluginEvent(PluginEventSeverity severity, const std::string & message)
 {
-/*
-   using the PluginLogEvent record a new log entry
-*/
-      
-   //TODO : !
-   return false;
+   database::entities::EEventType evenType;
+   switch(severity)
+   {
+   case kError: evenType = database::entities::kError; break;
+   case kInfo: evenType = database::entities::kInfo; break;
+   default:
+      {
+         BOOST_ASSERT_MSG(false, "Unkown plugin event severity type");
+         evenType = database::entities::kInfo; // Set a default value
+         break;
+      }
+   }
+   m_pluginEventLoggerRequester->addEvent(m_informations->getName(), m_informations->getVersion(), m_informations->getReleaseType(), evenType, message);
 }
 
 shared::event::CEventHandler & CYadomsApiImplementation::getEventHandler()

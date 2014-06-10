@@ -12,6 +12,7 @@
 #include "IQualifier.h"
 #include "YadomsApiImplementation.h"
 #include "database/entities/Entities.h"
+#include "database/IPluginEventLoggerRequester.h"
 #include "database/IDeviceRequester.h"
 #include "database/IKeywordRequester.h"
 #include "database/IAcquisitionRequester.h"
@@ -28,18 +29,22 @@ namespace pluginSystem
    public:
       //--------------------------------------------------------------
       /// \brief	Constructor
-      /// \param [in]	plugin                  the plugin used for this instance
-      /// \param [in]   pluginData              the database entity
-      /// \param [in]   deviceRequester         the device requester
-      /// \param [in]   keywordRequester        the keyword requester
-      /// \param [in]   acquisitionRequester    the acquisition requester
-      /// \param [in]   qualifier               the plugin qualifier
-      /// \param [in]   supervisor              the supervisor event handler
-      /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
+      /// \param [in]	plugin                     the plugin used for this instance
+      /// \param [in]   pluginData                 the database entity
+      /// \param [in]   pluginEventLoggerRequester the plugin event logger requester
+      /// \param [in]   deviceRequester            the device requester
+      /// \param [in]   keywordRequester           the keyword requester
+      /// \param [in]   acquisitionRequester       the acquisition requester
+      /// \param [in]   qualifier                  the plugin qualifier
+      /// \param [in]   supervisor                 the supervisor event handler
+      /// \param [in]   pluginManagerEventId       The ID to use to send events to supervisor
       //--------------------------------------------------------------
       CInstance(const boost::shared_ptr<const CFactory> plugin, const boost::shared_ptr<database::entities::CPlugin> pluginData,
-         boost::shared_ptr<database::IDeviceRequester> deviceRequester, boost::shared_ptr<database::IKeywordRequester> keywordRequester,
-         boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester, const boost::shared_ptr<IQualifier> qualifier,
+         boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
+         boost::shared_ptr<database::IDeviceRequester> deviceRequester,
+         boost::shared_ptr<database::IKeywordRequester> keywordRequester,
+         boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
+         const boost::shared_ptr<IQualifier> qualifier,
          shared::event::CEventHandler& supervisor, int pluginManagerEventId);
 
       //--------------------------------------------------------------
@@ -49,9 +54,9 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief			            Post a command to the plugin
-      /// \param  message           Command to post
+      /// \param  command           Command to post
       //--------------------------------------------------------------
-      virtual void postCommand(const communication::command::CDeviceCommand & message) const;
+      virtual void postCommand(boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> command) const;
 
       //--------------------------------------------------------------
       /// \brief			            Notify the plugin about its configuration changed

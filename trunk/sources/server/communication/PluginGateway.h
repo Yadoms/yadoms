@@ -35,7 +35,7 @@ namespace communication {
 
    public:
       // ISendMessageAsync Implementation
-      void sendCommandAsync(const command::CDeviceCommand & message);
+      void sendCommandAsync(int deviceId, int keywordId, const std::string& body);
       // [END] ISendMessageAsync Implementation
 
    private:

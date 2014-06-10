@@ -31,7 +31,6 @@ namespace web { namespace rest { namespace json {
       error.put(m_resultFieldName, result);
       error.put(m_errorMessageFieldName, message);
 
-      //CPtreeToJsonSerializer ser;
       error.add_child(m_dataFieldName, data);
       return error;
    }

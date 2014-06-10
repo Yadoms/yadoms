@@ -18,7 +18,8 @@ namespace entities {
       kUnload = 0, 
       kLoad = 1, 
       kCrash = 2,
-      kInfo = 3
+      kInfo = 3,
+      kError = 4
    };
    
    enum ESystemEventCode

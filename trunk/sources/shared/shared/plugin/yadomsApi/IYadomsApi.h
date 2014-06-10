@@ -2,6 +2,7 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/plugin/information/IInformation.h>
 #include <shared/StringExtension.h>
+#include "IDeviceCommand.h"
 
 
 
@@ -53,30 +54,6 @@ namespace shared { namespace plugin { namespace yadomsApi
       //-----------------------------------------------------   
       virtual shared::event::CEventHandler & getEventHandler() = 0;
 
-      //-----------------------------------------------------
-      ///\brief Container class for device commands sent by server
-      //TODO not yet finalized ;-)
-      //-----------------------------------------------------
-      class CDeviceCommand
-      {
-      private:
-         //TODO à commenter
-         std::string m_value;
-         std::string m_targetDevice;
-
-      public:
-         CDeviceCommand(){}  //TODO revoir construction
-         virtual ~CDeviceCommand(){}
-         std::string toString() const
-         {
-            // Full informations = identity + author name + url
-            std::stringstream str;
-            str << m_targetDevice << " = " << m_value;
-            return str.str();
-         }
-      };   
-      
-      
       //----------------------------------------------------------------------------------------------------------------
       //----------------------------------------------------------------------------------------------------------------
       //----------------------------------------------------------------------------------------------------------------
@@ -264,9 +241,8 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\brief Record a plugin major event (recorded in Yadoms database)
       ///\param    [in]    severity           The message severity
       ///\param    [in]    message            The message
-      ///\return true if the message has been successfully stored, false if not
       //-----------------------------------------------------      
-      virtual bool recordPluginEvent(PluginEventSeverity severity, const std::string & message) = 0;
+      virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message) = 0;
    };
 	
 } } } // namespace shared::plugin::yadomsApi	

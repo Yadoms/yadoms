@@ -59,8 +59,8 @@ void CXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          case yApi::IYadomsApi::kEventDeviceCommand:
             {
                // Command was received from Yadoms
-               yApi::IYadomsApi::CDeviceCommand command = context->getEventHandler().getEventData<yApi::IYadomsApi::CDeviceCommand>();
-               YADOMS_LOG(debug) << "Command received from Yadoms :" << command.toString();
+               boost::shared_ptr<yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceCommand> >();
+               YADOMS_LOG(debug) << "Command received from Yadoms :" << command->toString();
                break;
             }
          case yApi::IYadomsApi::kEventUpdateConfiguration:
