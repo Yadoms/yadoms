@@ -18,10 +18,10 @@ function SwitchViewModel() {
    this.showDeviceName = ko.observable(true);
 
    this.commandClick = function(newState) {
-      if (!isNullOrUndefined(this.widget.configuration.device)) {
+      if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
          $.ajax({
             type: "POST",
-            url: "/rest/device/" + this.widget.configuration.device + "/command",
+            url: "/rest/device/keyword/" + this.widget.configuration.device.keywordId + "/command",
             data: JSON.stringify({ command: newState }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
@@ -79,21 +79,14 @@ function SwitchViewModel() {
     * Dispatch the data to the viewModel
     * @deviceId device identifier which make the values
     * @param data data to dispatch
-    * @param deviceId
+    * @param device
     */
-   this.dispatch = function(deviceId, data) {
+   this.dispatch = function(device, data) {
       var self = this;
-      if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
-         if (deviceId == this.widget.configuration.device) {
+      if ((this.widget.configuration !== undefined) && (this.widget.configuration.device !== undefined)) {
+         if (device == this.widget.configuration.device) {
             //it is the good device
-            //we browse the list of keywords values
-            $.each(data, function(keywordIndex, keyword) {
-               switch(keyword.key) {
-                  case "command" :
-                     self.command(keyword.value);
-                     break;
-               }
-            });
+            self.command(data.value);
          }
       }
    };

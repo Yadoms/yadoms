@@ -57,7 +57,12 @@
       "configure-widget" : {
          "title" : "Widget configuration",
          "errorDuringModifyingWidget" : "Error during modifying widget",
-         "errorDuringModifyingWidgetNamed" : "Error during modifying widget of type __widgetType__"
+         "errorDuringModifyingWidgetNamed" : "Error during modifying widget of type __widgetType__",
+         "errorDuringGettingDeviceList" : "Error during getting device list",
+         "errorDuringGettingDeviceListMatchCapacity" : "Error during getting device list that match capacity __expectedCapacityAccess__ __expectedCapacity__",
+         "errorDuringGettingKeywordsList" : "Error during getting keyword list",
+         "errorDuringGettingKeywordListMatchCapacity" : "Error during getting keyword list that match capacity __expectedCapacityAccess__ __expectedCapacity__",
+         "errorDuringGettingSerialPortList" : "Error during getting serial port list"
       },
       "delete-widget" : {
          "title" : "Delete widget confirmation",

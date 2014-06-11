@@ -114,7 +114,7 @@
                 "description" : "A serial Connection",
                 "content" : {
                    "serialPort" : {
-                      "type" : "string",
+                      "type" : "serialPort",
                       "name" : "Serial Port Name",
                       "description" : "Set the serial port name where the peripheral is plugged on of the peripheral"
                    }
