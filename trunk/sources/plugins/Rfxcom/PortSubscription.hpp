@@ -14,7 +14,7 @@ public:
    /// \brief	Constructor
    //--------------------------------------------------------------
    CPortSubscription()
-      :m_id(shared::event::kNoEvent)
+      :m_eventHandler(NULL), m_id(shared::event::kNoEvent)
    {
    }
 

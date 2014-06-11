@@ -39,13 +39,13 @@ namespace pluginSystem
 
       // IYadomsApi implementation 
       virtual bool deviceExists(const std::string& device) const;
-      virtual bool declareDevice(const std::string& device, const std::string& model, const std::string & details);
+      virtual bool declareDevice(const std::string& device, const std::string& model, const std::string& details);
       virtual bool keywordExists(const std::string& device, const std::string& keyword) const;
       virtual bool declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode accessMode, const std::string& details);
-      virtual void historizeData(const std::string & device, const std::string & keyword, const std::string & value);
-      virtual void historizeData(const std::string & device, const std::string & keyword, bool value);
-      virtual void historizeData(const std::string & device, const std::string & keyword, int value);
-      virtual void historizeData(const std::string & device, const std::string & keyword, double value);
+      virtual void historizeData(const std::string& device, const std::string& keyword, const std::string& value);
+      virtual void historizeData(const std::string& device, const std::string& keyword, bool value);
+      virtual void historizeData(const std::string& device, const std::string& keyword, int value);
+      virtual void historizeData(const std::string& device, const std::string& keyword, double value);
       virtual const shared::plugin::information::IInformation& getInformation() const;
       virtual const std::string getConfiguration() const;
       virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message);
