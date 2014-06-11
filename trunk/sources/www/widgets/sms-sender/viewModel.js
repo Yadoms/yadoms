@@ -25,7 +25,7 @@ function SmsSenderViewModel() {
       
          $.ajax({
             type: "POST",
-            url: "/rest/device/" + this.widget.configuration.device + "/command",
+            url: "/rest/device/keyword/" + this.widget.configuration.device.keywordId + "/command",
             data: JSON.stringify(sms),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
@@ -65,7 +65,7 @@ function SmsSenderViewModel() {
       //we ask for device information
       if (!isNullOrUndefined(this.widget.configuration.device)) {
          var self = this;
-         $.getJSON("rest/device/" + this.widget.configuration.device)
+         $.getJSON("rest/device/" + this.widget.configuration.device.deviceId)
             .done(function( data ) {
                //we parse the json answer
                if (data.result != "true")
@@ -83,21 +83,14 @@ function SmsSenderViewModel() {
     * Dispatch the data to the viewModel
     * @deviceId device identifier which make the values
     * @param data data to dispatch
-    * @param deviceId
+    * @param device
     */
-   this.dispatch = function(deviceId, data) {
+   this.dispatch = function(device, data) {
       var self = this;
-      if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
-         if (deviceId == this.widget.configuration.device) {
+      if ((this.widget.configuration !== undefined) && (this.widget.configuration.device !== undefined)) {
+         if (device == this.widget.configuration.device) {
             //it is the good device
-            //we browse the list of keywords values
-            $.each(data, function(keywordIndex, keyword) {
-               switch(keyword.key) {
-                  case "send" :
-                     self.send(keyword.value);
-                     break;
-               }
-            });
+            self.send(data.value);
          }
       }
    };

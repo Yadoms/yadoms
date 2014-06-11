@@ -52,8 +52,8 @@ function SectionParameterHandler(objectToConfigure, i18nContext, paramName, cont
       //we look for the current value of the checkbox
       if ((self.configurationValues !== undefined) && (self.configurationValues != null))
          this.cbValue = self.configurationValues.checkbox;
-      else if ((content.enableWithCheckBoxDefaultValue !== undefined) && (content.enableWithCheckBoxDefaultValue != null))
-         this.cbValue = content.enableWithCheckBoxDefaultValue;
+      else if (!isNullOrUndefined(content.enableWithCheckBoxDefaultValue))
+         this.cbValue = parseBool(content.enableWithCheckBoxDefaultValue);
       else
          this.cbValue = false;
    }

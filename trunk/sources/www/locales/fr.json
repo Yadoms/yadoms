@@ -49,7 +49,7 @@
     "add-widget": {
       "title": "Ajouter un nouveau widget",
       "getMore": "Obtenir des widgets",
-      "errorDuringGettingPackages": "Erreur lors de la demande les paquets des widgets",
+      "errorDuringGettingPackages": "Erreur lors de la demande des informations des widgets",
       "errorDuringCreatingWidget": "Erreur pendant la creation du widget",
       "widgetSuccessfullyCreated": "Widget créé avec succès",
       "unableToCreateWidgetOfType": "Impossible de créer le widget du type __widgetType__"

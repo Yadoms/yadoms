@@ -23,7 +23,8 @@
          "name" : "Temp Sensor",
          "description" : "Device which provide temperature",
          "type" : "device",
-         "expectedKeyword" : "temp"
+         "expectedCapacity" : "temperature",
+         "expectedCapacityAccess" : "get"
       }
    }
 }
