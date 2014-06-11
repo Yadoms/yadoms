@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "WindowsSystemCPULoad.h"
-#include "pdh.h"
 #include <shared/exception/Exception.hpp>
 
 #pragma comment(lib, "pdh.lib")

@@ -73,7 +73,7 @@ bool CYadomsApiImplementation::declareKeyword(const std::string& device, const s
    return true;
 }
       
-void CYadomsApiImplementation::historizeData(const std::string & device, const std::string & keyword, const std::string & value)
+void CYadomsApiImplementation::historizeData(const std::string& device, const std::string& keyword, const std::string& value)
 {
    try
    {
@@ -88,17 +88,17 @@ void CYadomsApiImplementation::historizeData(const std::string & device, const s
    }
 }
 
-void CYadomsApiImplementation::historizeData(const std::string & device, const std::string & keyword, bool value)
+void CYadomsApiImplementation::historizeData(const std::string& device, const std::string& keyword, bool value)
 {
    historizeData(device, keyword, boost::lexical_cast<std::string>(value));
 }  
 
-void CYadomsApiImplementation::historizeData(const std::string & device, const std::string & keyword, int value)
+void CYadomsApiImplementation::historizeData(const std::string& device, const std::string& keyword, int value)
 {
    historizeData(device, keyword, boost::lexical_cast<std::string>(value));
 }  
 
-void CYadomsApiImplementation::historizeData(const std::string & device, const std::string & keyword, double value)
+void CYadomsApiImplementation::historizeData(const std::string& device, const std::string& keyword, double value)
 {
    historizeData(device, keyword, boost::lexical_cast<std::string>(value));
 }  
@@ -113,7 +113,7 @@ const std::string CYadomsApiImplementation::getConfiguration() const
    return m_pluginData->Configuration;
 }
         
-void CYadomsApiImplementation::recordPluginEvent(PluginEventSeverity severity, const std::string & message)
+void CYadomsApiImplementation::recordPluginEvent(PluginEventSeverity severity, const std::string& message)
 {
    database::entities::EEventType evenType;
    switch(severity)
