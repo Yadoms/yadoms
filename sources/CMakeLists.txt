@@ -139,6 +139,8 @@ set(YADOMS_SRC
   
    server/pluginSystem/DeviceCommand.cpp
    server/pluginSystem/DeviceCommand.h
+   server/pluginSystem/ManuallyDeviceCreationData.cpp
+   server/pluginSystem/ManuallyDeviceCreationData.h
 	server/pluginSystem/DummyQualifier.h
 	server/pluginSystem/DummyQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.cpp
@@ -248,9 +250,7 @@ set(YADOMS_SRC
 
  	server/communication/PluginGateway.h
  	server/communication/PluginGateway.cpp	
-	server/communication/ISendMessageEventHandler.h
-	server/communication/command/DeviceCommand.h
-	server/communication/command/DeviceCommand.cpp	
+	server/communication/ISendMessageAsync.h
 	server/communication/command/Result.h
 	server/communication/command/Result.cpp	
 	server/communication/command/Callback.h

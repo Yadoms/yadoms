@@ -3,7 +3,7 @@
 #include <shared/plugin/information/IInformation.h>
 #include <shared/StringExtension.h>
 #include "IDeviceCommand.h"
-
+#include "IManuallyDeviceCreationData.h"
 
 
 // TODO est-il judicieux d'ajouter ici : namespace yApi = shared::plugin::yadomsApi;
@@ -43,7 +43,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       {
          kEventUpdateConfiguration = shared::event::kUserFirstId, // Yadoms notify the plugin that its configuration was changed
          kEventDeviceCommand,                                     // Yadoms send a command to a device managed by this plugin
-         kEventGenerateVirtualDevice,                             // Yadoms ask the plugin to generate a device
+         kEventManuallyDeviceCreation,                            // Yadoms ask the plugin to generate a device
          kPluginFirstEventId                                      // The next usable event ID for the plugin code
       };
 

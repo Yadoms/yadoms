@@ -1,8 +1,8 @@
 ﻿#include "stdafx.h"
 #include "PluginGateway.h"
 #include <shared/Log.h>
-#include <shared/plugin/yadomsApi/IDeviceCommand.h>
 #include "pluginSystem/DeviceCommand.h"
+#include "pluginSystem/ManuallyDeviceCreationData.h"
 
 namespace communication {
 
@@ -53,6 +53,15 @@ namespace communication {
 
       // Historize the command
       m_dataProvider->getAcquisitionRequester()->saveData(keywordId, body);
+   }
+
+   void CPluginGateway::sendManuallyDeviceCreationRequestAsync(int pluginId, const std::string& deviceName, const std::string& keywordName, const std::string& capacity, const std::string& parameters)
+   {
+      // Create the request
+      boost::shared_ptr<const shared::plugin::yadomsApi::IManuallyDeviceCreationData> request(new pluginSystem::CManuallyDeviceCreationData(deviceName, keywordName, capacity, parameters));
+
+      // Dispatch command to the right plugin
+      m_pluginManager->postManuallyDeviceCreationRequest(pluginId, request);
    }
 
    void CPluginGateway::doWork()

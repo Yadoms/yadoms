@@ -12,7 +12,6 @@
 #include "database/IPluginRequester.h"
 #include "database/IPluginEventLoggerRequester.h"
 #include "database/IEventLoggerRequester.h"
-#include "communication/command/DeviceCommand.h"
 #include <shared/StringExtension.h>
 #include <shared/event/EventHandler.hpp>
 
@@ -157,6 +156,13 @@ namespace pluginSystem
       /// \param [in] command    The command to post
       //--------------------------------------------------------------
       void postCommand(int id, boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> command);
+
+      //--------------------------------------------------------------
+      /// \brief                 Post a manually device creation request to a plugin
+      /// \param [in] id         Plugin instance Id
+      /// \param [in] data       Request data
+      //--------------------------------------------------------------
+      void postManuallyDeviceCreationRequest(int id, boost::shared_ptr<const shared::plugin::yadomsApi::IManuallyDeviceCreationData> data);
 
    private:
       //--------------------------------------------------------------

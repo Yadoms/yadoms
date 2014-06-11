@@ -363,4 +363,13 @@ void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yadom
    instance->postCommand(command);
 }
 
+void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<const shared::plugin::yadomsApi::IManuallyDeviceCreationData> data)
+{
+   if (!isInstanceRunning(id))
+      return;     // Instance is stopped, nothing to do
+
+   boost::shared_ptr<CInstance> instance(m_runningInstances.find(id)->second);
+   instance->postManuallyDeviceCreationRequest(data);
+}
+
 } // namespace pluginSystem
