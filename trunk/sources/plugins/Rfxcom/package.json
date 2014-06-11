@@ -14,5 +14,141 @@
          "description": "The virtual serial port connected to the RFXCom",
          "type": "string"
       }
-  }
+   },
+   "supportManuallyDeviceCreation": "true",
+   "manuallyDeviceCreationConfigurationSchema":
+   {
+      "type":
+      {
+         "name": "Type",
+         "description": "Type of the device",
+         "type": "radioSection",
+         "content":
+         {
+            "x10":
+            {
+               "type": "section",
+               "name": "x10",
+               "decription": "X10",
+               "content":
+               {
+                  "House Code":
+                  {
+                     "name": "House Code",
+                     "description": "The X10 house code",
+                     "type": "enum",
+                     "values" :
+                     {
+                        "A" : "A",
+                        "B" : "B",
+                        "C" : "C",
+                        "D" : "D",
+                        "E" : "E",
+                        "F" : "F",
+                        "G" : "G",
+                        "H" : "H",
+                        "I" : "I",
+                        "J" : "J",
+                        "K" : "K",
+                        "L" : "L",
+                        "M" : "M",
+                        "N" : "N",
+                        "O" : "O",
+                        "P" : "P"
+                     }
+                  },
+                  "Unit Code":
+                  {
+                     "name": "Unit Code",
+                     "description": "The X10 unit code",
+                     "type": "enum",
+                     "values" :
+                     {
+                        "1" : "1",
+                        "2" : "2",
+                        "3" : "3",
+                        "4" : "4",
+                        "5" : "5",
+                        "6" : "6",
+                        "7" : "7",
+                        "8" : "8",
+                        "9" : "9",
+                        "10" : "10",
+                        "11" : "11",
+                        "12" : "12",
+                        "13" : "13",
+                        "14" : "14",
+                        "15" : "15",
+                        "16" : "16"
+                     }
+                  }               
+               }
+            },
+            "blyss":
+            {
+               "type": "section",
+               "name": "blyss",
+               "decription": "Blyss",
+               "content":
+               {
+                  "id1":
+                  {
+                     "name": "ID1",
+                     "description": "The first byte (most significant) of device ID",
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "255"
+                  },
+                  "id2":
+                  {
+                     "name": "ID2",
+                     "description": "The second byte (least significant) of device ID",
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "255"
+                  },
+                  "Group Code":
+                  {
+                     "name": "Group Code",
+                     "description": "The Blyss group code",
+                     "type": "enum",
+                     "values" :
+                     {
+                        "A" : "A",
+                        "B" : "B",
+                        "C" : "C",
+                        "D" : "D",
+                        "E" : "E",
+                        "F" : "F",
+                        "G" : "G",
+                        "H" : "H",
+                        "I" : "I",
+                        "J" : "J",
+                        "K" : "K",
+                        "L" : "L",
+                        "M" : "M",
+                        "N" : "N",
+                        "O" : "O",
+                        "P" : "P"
+                     }
+                  },
+                  "Unit Code":
+                  {
+                     "name": "Unit Code",
+                     "description": "The Blyss unit code",
+                     "type": "enum",
+                     "values" :
+                     {
+                        "1" : "1",
+                        "2" : "2",
+                        "3" : "3",
+                        "4" : "4",
+                        "5" : "5"
+                     }
+                  }               
+               }
+            }
+         }
+      }
+   }
 }

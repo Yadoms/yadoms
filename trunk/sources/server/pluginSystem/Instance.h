@@ -16,7 +16,6 @@
 #include "database/IDeviceRequester.h"
 #include "database/IKeywordRequester.h"
 #include "database/IAcquisitionRequester.h"
-#include "communication/command/DeviceCommand.h"
 
 namespace pluginSystem
 {
@@ -57,6 +56,12 @@ namespace pluginSystem
       /// \param  command           Command to post
       //--------------------------------------------------------------
       virtual void postCommand(boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> command) const;
+
+      //--------------------------------------------------------------
+      /// \brief			            Post a manually device creation request to the plugin
+      /// \param  data              Request data
+      //--------------------------------------------------------------
+      virtual void postManuallyDeviceCreationRequest(boost::shared_ptr<const shared::plugin::yadomsApi::IManuallyDeviceCreationData> data) const;
 
       //--------------------------------------------------------------
       /// \brief			            Notify the plugin about its configuration changed

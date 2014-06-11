@@ -2,9 +2,8 @@
 #include "database/IDataProvider.h"
 #include <shared/ThreadBase.h>
 #include <shared/event/EventHandler.hpp>
-#include "command/DeviceCommand.h"
 #include "pluginSystem/Manager.h"
-#include "ISendMessageEventHandler.h"
+#include "ISendMessageAsync.h"
 
 
 namespace communication {
@@ -35,7 +34,8 @@ namespace communication {
 
    public:
       // ISendMessageAsync Implementation
-      void sendCommandAsync(int deviceId, int keywordId, const std::string& body);
+      virtual void sendCommandAsync(int deviceId, int keywordId, const std::string& body);
+      virtual void sendManuallyDeviceCreationRequestAsync(int pluginId, const std::string& deviceName, const std::string& keywordName, const std::string& capacity, const std::string& parameters);
       // [END] ISendMessageAsync Implementation
 
    private:

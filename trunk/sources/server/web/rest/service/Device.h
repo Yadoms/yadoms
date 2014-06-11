@@ -3,7 +3,7 @@
 #include "IRestService.h"
 #include "database/IDataProvider.h"
 #include <shared/event/EventHandler.hpp>
-#include "communication/ISendMessageEventHandler.h"
+#include "communication/ISendMessageAsync.h"
 
 namespace web { namespace rest { namespace service {
 
