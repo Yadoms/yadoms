@@ -45,7 +45,7 @@ function RadioSectionParameterHandler(objectToConfigure, i18nContext, paramName,
       if ((self.configurationValues.values != null) && (self.configurationValues.values != undefined))
          v = self.configurationValues.values[key];
 
-      var newI18nContext = i18nContext + self.paramName + ".";
+      var newI18nContext = i18nContext + self.paramName + ".content.";
 
       //all items in content must be section values
       assert((value.type !== undefined), "Content section of the configuration " + self.name + " must be defined");

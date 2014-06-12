@@ -34,33 +34,37 @@
       "advancedParameters" : {
          "name" : "Paramètres avancés",
          "description" : "Seulement pour les utilisateurs expérimentés",
-         "booleanParameter" : {
-            "name" : "utiliser les parametres avancés",
-            "description" : "Permet d'activer l'utilisation avacnée du widget"
-         },
-         "CurrentCoefficient" : {
-            "name" : "coefficient avancé",
-            "description" : "Permet de changer la valeur du coeff de la section avancée"
+         "content" : {
+            "booleanParameter" : {
+               "name" : "utiliser les parametres avancés",
+               "description" : "Permet d'activer l'utilisation avacnée du widget"
+            },
+            "currentCoefficient" : {
+               "name" : "coefficient avancé",
+               "description" : "Permet de changer la valeur du coeff de la section avancée"
+            }
          }
       },
       "connection" : {
          "name" : "Connexion",
          "description" : "Type de connexion utilisée",
-         "ethernet" : {
-            "name" : "Réseau",
-            "description" : "Connexion réseau",
-            "ipAddress" : {
-               "name" : "Adresse IP",
-               "description" : "Adresse IP du périphérique",
-               "regexErrorMessage" : "Doit être une adresse IPV4 comme par exemple : 192.168.0.12"
-            }
-         },
-         "serial" : {
-            "name" : "Série",
-            "description" : "Connexion via port série",
-            "serialPort" : {
-               "name" : "Port série",
-               "description" : "Nom du port série utilisé"
+         "content" : {
+            "ethernet" : {
+               "name" : "Réseau",
+               "description" : "Connexion réseau",
+               "ipAddress" : {
+                  "name" : "Adresse IP",
+                  "description" : "Adresse IP du périphérique",
+                  "regexErrorMessage" : "Doit être une adresse IPV4 comme par exemple : 192.168.0.12"
+               }
+            },
+            "serial" : {
+               "name" : "Série",
+               "description" : "Connexion via port série",
+               "serialPort" : {
+                  "name" : "Port série",
+                  "description" : "Nom du port série utilisé"
+               }
             }
          }
       }
