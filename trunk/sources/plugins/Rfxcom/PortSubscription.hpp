@@ -77,7 +77,7 @@ public:
          return;
 
       boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
-      m_eventHandler->sendEvent(m_id);
+      m_eventHandler->postEvent(m_id);
    }
 
    //--------------------------------------------------------------

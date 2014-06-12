@@ -69,7 +69,7 @@ namespace shared { namespace encryption {
        char_array_4[i++] = encoded_string[in_]; in_++;
        if (i ==4) {
          for (i = 0; i <4; i++)
-           char_array_4[i] = m_base64Chars.find(char_array_4[i]);
+           char_array_4[i] = (unsigned char) m_base64Chars.find(char_array_4[i]);
 
          char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
          char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
@@ -87,7 +87,7 @@ namespace shared { namespace encryption {
          char_array_4[j] = 0;
 
        for (j = 0; j <4; j++)
-         char_array_4[j] = m_base64Chars.find(char_array_4[j]);
+         char_array_4[j] = (unsigned char) m_base64Chars.find(char_array_4[j]);
 
        char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
        char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
