@@ -4,6 +4,7 @@
 #include <shared/StringExtension.h>
 #include "IDeviceCommand.h"
 #include "IManuallyDeviceCreationData.h"
+#include "IManuallyDeviceCreationTestData.h"
 
 
 // TODO est-il judicieux d'ajouter ici : namespace yApi = shared::plugin::yadomsApi;
@@ -77,6 +78,14 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\return true if the device exists, false if not
       //-----------------------------------------------------
       virtual bool deviceExists(const std::string& device) const = 0;
+
+      //-----------------------------------------------------
+      ///\brief Get the details of a device
+      ///\param    [in]    device            The device name
+      ///\return the device details
+      ///\throw shared::exception::CEmptyResult if device dosen't exist
+      //-----------------------------------------------------
+      virtual const std::string getDeviceDetails(const std::string& device) const = 0;
 
       //-----------------------------------------------------
       ///\brief Declare a device

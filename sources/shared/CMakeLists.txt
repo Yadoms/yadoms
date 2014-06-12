@@ -48,8 +48,11 @@ set(SHARED_LIB_SRC
 
    shared/plugin/yadomsApi/IDeviceCommand.h
    shared/plugin/yadomsApi/IManuallyDeviceCreationData.h
+   shared/plugin/yadomsApi/IManuallyDeviceCreationTestData.h
 	shared/plugin/yadomsApi/StandardCapacities.h
 	shared/plugin/yadomsApi/StandardCapacities.cpp
+	shared/plugin/yadomsApi/StandardValues.h
+	shared/plugin/yadomsApi/StandardValues.cpp
 	shared/plugin/yadomsApi/IYadomsApi.h
    
 	shared/serialization/IPtreeToStringSerializer.h

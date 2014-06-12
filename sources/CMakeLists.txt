@@ -141,6 +141,8 @@ set(YADOMS_SRC
    server/pluginSystem/DeviceCommand.h
    server/pluginSystem/ManuallyDeviceCreationData.cpp
    server/pluginSystem/ManuallyDeviceCreationData.h
+   server/pluginSystem/ManuallyDeviceCreationTestData.cpp
+   server/pluginSystem/ManuallyDeviceCreationTestData.h
 	server/pluginSystem/DummyQualifier.h
 	server/pluginSystem/DummyQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.cpp

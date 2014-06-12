@@ -64,6 +64,8 @@ namespace communication {
       m_pluginManager->postManuallyDeviceCreationRequest(pluginId, request);
    }
 
+   //TODO ajouter sendManuallyDeviceCreationTestRequestAsync
+
    void CPluginGateway::doWork()
    {
       try

@@ -1,42 +1,32 @@
 #pragma once
+#include "IManuallyDeviceCreationData.h"
+#include "IDeviceCommand.h"
 
 
 namespace shared { namespace plugin { namespace yadomsApi
 {
    //-----------------------------------------------------
-   ///\brief The API used for manually created devices
+   ///\brief The API used for test before manually create devices
    //-----------------------------------------------------
-   class IManuallyDeviceCreationData
+   class IManuallyDeviceCreationTestData
    {
    public:
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~IManuallyDeviceCreationData() {}
+      virtual ~IManuallyDeviceCreationTestData() {}
 
       //-----------------------------------------------------
-      ///\brief               Get the device
-      ///\return              The device to create
+      ///\brief               Get the command
+      ///\return              The command to send
       //-----------------------------------------------------
-      virtual const std::string& getDevice() const = 0;
-
-      //-----------------------------------------------------
-      ///\brief               Get the keyword
-      ///\return              The keyword to create
-      //-----------------------------------------------------
-      virtual const std::string& getKeyword() const = 0;
-
-      //-----------------------------------------------------
-      ///\brief               Get the capacity
-      ///\return              The capacity used for this device
-      //-----------------------------------------------------
-      virtual const std::string& getCapcity() const = 0;
+      virtual boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> getCommand() const = 0;
 
       //-----------------------------------------------------
       ///\brief               Get the device parameters
       ///\return              The device parameters, as JSON string
       //-----------------------------------------------------
-      virtual const std::string& getParameters() const = 0;
+      virtual const std::string& getDeviceParameters() const = 0;
 
       //-----------------------------------------------------
       ///\brief Describe the command as string

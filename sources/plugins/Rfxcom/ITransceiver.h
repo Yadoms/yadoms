@@ -1,8 +1,4 @@
 #pragma once
-#include <shared/plugin/yadomsApi/IYadomsApi.h>
-
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
 
 //--------------------------------------------------------------
 /// \brief	The RFXCom protocol interface
@@ -22,9 +18,10 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                     Send Yadoms command to RFXCom
-   /// \param [in] command          The received command
+   /// \param [in] command          The received command (JSON string)
+   /// \param [in] deviceParameters The device parameters (JSON string)
    //--------------------------------------------------------------
-   virtual void send(boost::shared_ptr<yApi::IDeviceCommand> command) = 0;
+   virtual void send(const std::string& command, const std::string& deviceParameters) = 0;
 };
 
 

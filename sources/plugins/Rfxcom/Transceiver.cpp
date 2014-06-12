@@ -133,11 +133,11 @@ std::string CTransceiver::msgToString(const void* ptr, size_t size) const
    return ss.str();
 }
 
-void CTransceiver::send(boost::shared_ptr<yApi::IDeviceCommand> command)
+void CTransceiver::send(const std::string& command, const std::string& deviceParameters)
 {
    try
    {
-      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> rfxcomMsg = createRfxcomMessage(command);
+      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> rfxcomMsg = createRfxcomMessage(command, deviceParameters);
 
       m_port->send(rfxcomMsg->getBuffer());
    }
@@ -148,33 +148,34 @@ void CTransceiver::send(boost::shared_ptr<yApi::IDeviceCommand> command)
    }
 }
 
-boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::createRfxcomMessage(boost::shared_ptr<yApi::IDeviceCommand> command) const
+boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::createRfxcomMessage(const std::string& command, const std::string& deviceParameters) const
 {
    shared::serialization::CPtreeToJsonSerializer serializer;
    try
    {
-      boost::property_tree::ptree commandBody = serializer.deserialize(command->getBody());
-      unsigned char type = commandBody.get<unsigned char>("type");
+      boost::property_tree::ptree deviceParametersTree = serializer.deserialize(deviceParameters);
+      unsigned char deviceType = deviceParametersTree.get<unsigned char>("type");
+
       boost::shared_ptr<rfxcomMessages::IRfxcomMessage> rfxcomMsg;
 
       // Create the RFXCom message
-      switch(type)
+      switch(deviceType)
       {
       case pTypeLighting1:
-         rfxcomMsg.reset(new rfxcomMessages::CLighting1(commandBody.get_child("content"), m_seqNumberProvider));
+         rfxcomMsg.reset(new rfxcomMessages::CLighting1(command, deviceParametersTree.get_child("content"), m_seqNumberProvider));
          break;
       case pTypeLighting3:
-         rfxcomMsg.reset(new rfxcomMessages::CLighting3(commandBody.get_child("content"), m_seqNumberProvider));
+         rfxcomMsg.reset(new rfxcomMessages::CLighting3(command, deviceParametersTree.get_child("content"), m_seqNumberProvider));
          break;
       case pTypeLighting6:
-         rfxcomMsg.reset(new rfxcomMessages::CLighting6(commandBody.get_child("content"), m_seqNumberProvider));
+         rfxcomMsg.reset(new rfxcomMessages::CLighting6(command, deviceParametersTree.get_child("content"), m_seqNumberProvider));
          break;
       case pTypeCurtain:
-         rfxcomMsg.reset(new rfxcomMessages::CCurtain1(commandBody.get_child("content"), m_seqNumberProvider));
+         rfxcomMsg.reset(new rfxcomMessages::CCurtain1(command, deviceParametersTree.get_child("content"), m_seqNumberProvider));
          break;
          //TODO compléter
       default:
-         YADOMS_LOG(error) << "Invalid command \"" << command->toString() << "\" : " << " unknown type " << type;
+         YADOMS_LOG(error) << "Invalid command \"" << command << "\" : " << " unknown type " << deviceType;
          BOOST_ASSERT_MSG(false, "Invalid command (unknown type)");
          break;
       }
@@ -184,11 +185,11 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::createRfxcomMess
    catch (boost::property_tree::ptree_bad_path& e)
    {
       BOOST_ASSERT_MSG(false, "Invalid command (parameter doesn't exist)");
-      throw shared::exception::CInvalidParameter("Invalid command \"" + command->toString() + "\" : " + e.what());
+      throw shared::exception::CInvalidParameter("Invalid command \"" + command + "\" : " + e.what());
    }
    catch (boost::property_tree::ptree_bad_data& e)
    {
       BOOST_ASSERT_MSG(false, "Invalid command (fail to extract parameter)");
-      throw shared::exception::CInvalidParameter("Invalid command \"" + command->toString() + "\" : " + e.what());
+      throw shared::exception::CInvalidParameter("Invalid command \"" + command + "\" : " + e.what());
    }
 }

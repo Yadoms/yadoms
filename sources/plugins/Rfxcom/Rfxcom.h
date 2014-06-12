@@ -3,6 +3,7 @@
 #include "RfxcomConfiguration.h"
 #include "Transceiver.h"
 #include "IPort.h"
+#include "IDeviceList.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -30,9 +31,10 @@ public:
 protected:
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
-   /// \param [in] command          The received command
+   /// \param [in] command          The received command (JSON string)
+   /// \param [in] deviceParameters The device parameters (JSON string)
    //--------------------------------------------------------------
-   void onCommand(boost::shared_ptr<yApi::IDeviceCommand> command);
+   void onCommand(const std::string& command, const std::string& deviceParameters);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the RFXCom becomes connected
@@ -68,6 +70,11 @@ private:
    /// \brief	The RFXCom protocol implementation object
    //--------------------------------------------------------------
    boost::shared_ptr<ITransceiver> m_transceiver;
+
+   //--------------------------------------------------------------
+   /// \brief	The cache list of known devices
+   //--------------------------------------------------------------
+   boost::shared_ptr<IDeviceList> m_devices;
 };
 
 

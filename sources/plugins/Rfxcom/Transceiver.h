@@ -6,9 +6,6 @@
 #include "rfxcomMessages/RFXtrxDefinitions.h"
 #include "ISequenceNumberProvider.h"
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
-
 //--------------------------------------------------------------
 /// \brief	This class implement the RFXCom protocol
 //--------------------------------------------------------------
@@ -27,7 +24,7 @@ public:
 
    // ITransceiver implementation
    virtual void sendReset();
-   virtual void send(boost::shared_ptr<yApi::IDeviceCommand> command);
+   virtual void send(const std::string& command, const std::string& deviceParameters);
    // [END] ITransceiver implementation
 
 protected:
@@ -52,11 +49,12 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	                     Create the corresponding RFXCom message associated with the command received from Yadoms
-   /// \param [in] command          The received command
+   /// \param [in] command          The received command (JSON string)
+   /// \param [in] deviceParameters The device parameters (JSON string)
    /// \return                      RFXCom message
    /// \throw shared::exception::CInvalidParameter if no corresponding RFXCom message was found (invalid command)
    //--------------------------------------------------------------
-   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> createRfxcomMessage(boost::shared_ptr<yApi::IDeviceCommand> command) const;
+   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> createRfxcomMessage(const std::string& command, const std::string& deviceParameters) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Get the RFXCom type as string
