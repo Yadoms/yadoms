@@ -84,11 +84,11 @@ function populateDeviceList(handler) {
                $cbKeywords.empty();
 
                //if there is only one the list is hidden else it's visible
-               if (data2.data.keyword.count > 1) {
-                  $cbKeywords.addClass("hidden");
+               if (data2.data.keyword.length > 1) {
+                  $cbKeywords.removeClass("hidden");
                }
                else {
-                  $cbKeywords.removeClass("hidden");
+                  $cbKeywords.addClass("hidden");
                }
 
                //we append each keywords in the list
