@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "RaspberryPITemperatureSensor.h"
 #include <shared/Log.h>
+#include <shared/plugin/yadomsApi/StandardCapacities.h>
+
 
 CRaspberryPITemperatureSensor::CRaspberryPITemperatureSensor(const std::string & deviceId)
    :m_deviceId(deviceId), m_temperature(25.0)
@@ -10,6 +12,24 @@ CRaspberryPITemperatureSensor::CRaspberryPITemperatureSensor(const std::string &
 CRaspberryPITemperatureSensor::~CRaspberryPITemperatureSensor()
 {
 }
+
+
+void CRaspberryPITemperatureSensor::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   // Declare the device
+   context->declareDevice(m_deviceId, getModel(), shared::CStringExtension::EmptyString);
+
+   // Declare associated keywords (= values managed by this device)
+   context->declareKeyword(m_deviceId, "temp"  , yApi::CStandardCapacities::Temperature , yApi::IYadomsApi::kReadOnly);
+}
+
+
+void CRaspberryPITemperatureSensor::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+{
+   BOOST_ASSERT_MSG(context, "context must be defined");
+   context->historizeData(m_deviceId, "temp"  , m_temperature);
+}
+
 
 bool CRaspberryPITemperatureSensor::read()
 {
@@ -41,14 +61,10 @@ bool CRaspberryPITemperatureSensor::read()
    return false;
 }
 
-const std::string& CRaspberryPITemperatureSensor::getDeviceId() const
+const std::string& CRaspberryPITemperatureSensor::getModel()
 {
-   return m_deviceId;
-}
-
-double CRaspberryPITemperatureSensor::getTemperature() const
-{
-   return m_temperature;
+   static const std::string model("RaspberryPI temperature sensor");
+   return model;
 }
 
 
