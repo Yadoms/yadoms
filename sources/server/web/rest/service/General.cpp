@@ -42,9 +42,15 @@ namespace web { namespace rest { namespace service {
          const boost::shared_ptr<const shared::CPeripherals::SerialPortsMap> map = shared::CPeripherals::getSerialPorts();
          for(shared::CPeripherals::SerialPortsMap::const_iterator i = map->begin(); i != map->end(); ++i)
          {
-            result.push_back(std::make_pair(i->first, web::rest::json::CJson(std::string(i->second))));
+            web::rest::json::CJson serialPort;
+            serialPort.put("commonName", i->first);
+            serialPort.put("portAddress", i->second);
+            result.push_back(std::make_pair("", serialPort));
          }
-         return web::rest::json::CJsonResult::GenerateSuccess(result);
+
+         web::rest::json::CJson result2;
+         result2.push_back(std::make_pair("serialPorts", result));
+         return web::rest::json::CJsonResult::GenerateSuccess(result2);
       }
       catch(std::exception &ex)
       {
