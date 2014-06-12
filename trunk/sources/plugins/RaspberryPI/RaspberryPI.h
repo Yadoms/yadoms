@@ -1,12 +1,14 @@
 #pragma once
-#include <shared/plugin/ImplementationHelper.h>
-#include <shared/event/EventHandler.hpp>
+#include <shared/plugin/IPlugin.h>
+
+// Shortcut to yadomsApi namespace
+namespace yApi = shared::plugin::yadomsApi;
 
 //--------------------------------------------------------------
 /// \brief	This class is the RaspberryPI plugin
 /// \note   This plugin send periodically temperature of the Raspberry
 //--------------------------------------------------------------
-class CRaspberryPI : public shared::event::CEventHandler, public shared::plugin::IPlugin
+class CRaspberryPI : public shared::plugin::IPlugin
 {
 public:
    //--------------------------------------------------------------
@@ -20,9 +22,8 @@ public:
    virtual ~CRaspberryPI();
 
    // IPlugin implementation
-   virtual void doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service * pluginIOService);
-   virtual void updateConfiguration(const std::string& configuration);
-  // [END] IPlugin implementation
+   virtual void doWork(boost::shared_ptr<yApi::IYadomsApi> context);
+   // [END] IPlugin implementation
 };
 
 

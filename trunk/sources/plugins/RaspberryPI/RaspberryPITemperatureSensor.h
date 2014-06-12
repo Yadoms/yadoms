@@ -1,7 +1,8 @@
 #pragma once
 
-#include <boost/random/mersenne_twister.hpp>
-#include <boost/random/uniform_int_distribution.hpp>
+#include <shared/plugin/yadomsApi/IYadomsApi.h>
+
+namespace yApi = shared::plugin::yadomsApi;
 
 //--------------------------------------------------------------
 /// \brief	Fake temperature sensor
@@ -26,21 +27,26 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
    /// \return      true if the temparature has been read with success, other cases false
-      //--------------------------------------------------------------
+   //--------------------------------------------------------------
    bool read();
 
    //--------------------------------------------------------------
-   /// \brief	    Returns the sensor device ID
-   /// \return     Device ID
+   /// \brief	            Declare the device and its associated keywords
+   /// \param[in] context  YadomsApi context to which declare the device
    //--------------------------------------------------------------
-   const std::string& getDeviceId() const;
+   void declareDevice(boost::shared_ptr<yApi::IYadomsApi> context);
 
    //--------------------------------------------------------------
-   /// \brief	    Returns read (computed) temperature
-   /// \return     Temperature in �C
+   /// \brief	            Send all sensor data to Yadoms
+   /// \param[in] context  YadomsApi context to which historize data
    //--------------------------------------------------------------
-   double getTemperature() const;
+   void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
 
+   //--------------------------------------------------------------
+   /// \brief	    Returns the fake sensor model
+   /// \return     The list of device capacities
+   //--------------------------------------------------------------
+   static const std::string& getModel();
 private:
    //--------------------------------------------------------------
    /// \brief	    Device ID
