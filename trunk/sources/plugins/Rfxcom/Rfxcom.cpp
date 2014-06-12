@@ -2,7 +2,6 @@
 #include "Rfxcom.h"
 #include <shared/plugin/ImplementationHelper.h>
 #include <shared/Log.h>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/exception/EmptyResult.hpp>
 #include "RfxcomFactory.h"
 
@@ -45,23 +44,20 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          case yApi::IYadomsApi::kEventDeviceCommand:
             {
                // Command received from Yadoms
-               boost::shared_ptr<yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceCommand> >();
+               boost::shared_ptr<yApi::IDeviceCommand> command(context->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceCommand> >());
+               YADOMS_LOG(debug) << "Command received :" << command->toString();
 
-               //TODO : ça ne va pas, la command ne contient pas les paramètres du device (type, id, etc...)
-               onCommand(command);
+               onCommand(command->getBody(), m_devices->getDeviceParameters(command->getTargetDevice()));
 
                break;
             }
          case yApi::IYadomsApi::kEventManuallyDeviceCreationTest:
             {
-               //TODO
-               //// Yadoms asks for device creation
-               //boost::shared_ptr<yApi::IManuallyDeviceCreationData> data = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationData> >();
+               // Yadoms asks for test device parameters to check if it work before creating it. So just send command, don't declare anything.
+               boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> data = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> >();
+               YADOMS_LOG(debug) << "Test of device request received :" << data->toString();
 
-               //// Declare the device
-               //context->declareDevice(data->getDevice(), shared::CStringExtension::EmptyString, data->getParameters());
-               //// Declare associated keywords (= values managed by this device)
-               //context->declareKeyword(data->getDevice(), data->getKeyword(), data->getCapcity(), yApi::IYadomsApi::kWriteOnly);
+               onCommand(data->getCommand()->getBody(), data->getDeviceParameters());
 
                break;
             }
@@ -71,7 +67,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                boost::shared_ptr<yApi::IManuallyDeviceCreationData> data = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationData> >();
 
                // Declare the device
-               context->declareDevice(data->getDevice(), shared::CStringExtension::EmptyString, data->getParameters());
+               m_devices->declareDevice(data->getDevice(), shared::CStringExtension::EmptyString, data->getParameters());
                // Declare associated keywords (= values managed by this device)
                context->declareKeyword(data->getDevice(), data->getKeyword(), data->getCapcity(), yApi::IYadomsApi::kWriteOnly);
 
@@ -122,12 +118,10 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
    }
 }
 
-void CRfxcom::onCommand(boost::shared_ptr<yApi::IDeviceCommand> command)
+void CRfxcom::onCommand(const std::string& command, const std::string& deviceParameters)
 {
-   YADOMS_LOG(debug) << "Command received :" << command->toString();
-
    if (m_transceiver)
-      m_transceiver->send(command);
+      m_transceiver->send(command, deviceParameters);
 }
 
 void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context)

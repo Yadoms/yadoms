@@ -8,6 +8,9 @@ include("../YadomsPluginsCommon.cmake")
 set(RFXCOM_SOURCES
    stdafx.h
    stdafx.cpp
+   DeviceList.h
+   DeviceList.cpp
+   IDeviceList.h
    IPort.h
    IRfxcomConfiguration.h
    ISequenceNumberProvider.h

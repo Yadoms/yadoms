@@ -39,6 +39,7 @@ namespace pluginSystem
 
       // IYadomsApi implementation 
       virtual bool deviceExists(const std::string& device) const;
+      virtual const std::string getDeviceDetails(const std::string& device) const;
       virtual bool declareDevice(const std::string& device, const std::string& model, const std::string& details);
       virtual bool keywordExists(const std::string& device, const std::string& keyword) const;
       virtual bool declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode accessMode, const std::string& details);
