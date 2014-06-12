@@ -44,6 +44,7 @@ function SerialParameterHandler(i18nContext, paramName, content, currentValue) {
 function populateSerialPorts(handler) {
    return function(data) {
       //we parse the json answer
+      debugger;
       if (data.result != "true")
       {
          notifyError($.t("modals.configure-widget.errorDuringGettingSerialPortList"), JSON.stringify(data));
@@ -54,9 +55,9 @@ function populateSerialPorts(handler) {
       $serialList.empty();
 
       var itemToSelect = 0;
-      $.each(data.data.serialports, function(index, value) {
-         $serialList.append("<option value=\"" + value.id + "\">" + value.name + "</option>");
-         if (value.id == handler.value)
+      $.each(data.data.serialPorts, function(index, value) {
+         $serialList.append("<option value=\"" + value.name + "\">" + value.friendlyName + "</option>");
+         if (value.name == handler.value)
             itemToSelect = index;
       });
 
