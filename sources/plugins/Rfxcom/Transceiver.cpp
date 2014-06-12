@@ -7,7 +7,7 @@
 #include "rfxcomMessages/Lighting3.h"
 #include "rfxcomMessages/Lighting6.h"
 #include "rfxcomMessages/Curtain1.h"
-#include "NullSequenceNumber.h"
+#include "IncrementSequenceNumber.h"
 #include "PortException.hpp"
 
 
@@ -22,7 +22,7 @@
 
 
 CTransceiver::CTransceiver(boost::shared_ptr<IPort> port)
-   :m_port(port), m_seqNumberProvider(new CNullSequenceNumber())
+   :m_port(port), m_seqNumberProvider(new CIncrementSequenceNumber())
 {
    MEMCLEAR(m_request);
    MEMCLEAR(m_answer);
@@ -39,6 +39,7 @@ void CTransceiver::sendReset()
 
    try
    {
+      m_seqNumberProvider->reset();
       sendCommand(cmdRESET);
       boost::this_thread::sleep(boost::posix_time::milliseconds(50));
       m_port->flush();
@@ -68,19 +69,19 @@ void CTransceiver::sendCommand(unsigned char command)
 
 bool CTransceiver::waitStatus()
 {
-   boost::asio::mutable_buffer buffer;
-   m_port->receive(buffer);
+   boost::shared_ptr<unsigned char[]> receivedData;
+   std::size_t receivedSize = m_port->receive(receivedData);
 
    // Check answer
 
    // - Check message size
-   if (boost::asio::buffer_size(buffer) != sizeof(m_answer.IRESPONSE))  // TODO Seule solution pour obtenir la taille de RBUF::IRESPONSE. Si m_answer n'est pas nécessaire, utiliser une static const locale
+   if (receivedSize != sizeof(m_answer.IRESPONSE))  // TODO Seule solution pour obtenir la taille de RBUF::IRESPONSE. Si m_answer n'est pas nécessaire, utiliser une static const locale
    {
       YADOMS_LOG(error) << "Error reading status, invalid message size";
       return false;
    }
 
-   const RBUF* answer = boost::asio::buffer_cast<const RBUF*>(buffer);
+   const RBUF* answer = (const RBUF*)receivedData.get();
 
    // - Check message data
    if (answer->IRESPONSE.packetlength != (sizeof(m_answer.IRESPONSE) - 1) ||
@@ -93,7 +94,7 @@ bool CTransceiver::waitStatus()
       return false;
    }
 
-   YADOMS_LOG(info) << "RFXCom status, type (" << rfxcomTypeToString(answer->IRESPONSE.msg1) << "), firmware version (" << answer->IRESPONSE.msg2 << ")";
+   YADOMS_LOG(info) << "RFXCom status, type (" << rfxcomTypeToString(answer->IRESPONSE.msg1) << "), firmware version (" << (int)answer->IRESPONSE.msg2 << ")";
 
    TraceRfxComConfiguredProtocols(*answer);
 

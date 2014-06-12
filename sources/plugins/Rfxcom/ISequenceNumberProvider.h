@@ -12,6 +12,11 @@ public:
    virtual ~ISequenceNumberProvider() {}
 
    //--------------------------------------------------------------
+   /// \brief     Reset the sequence number
+   //--------------------------------------------------------------
+   virtual void reset() = 0;
+
+   //--------------------------------------------------------------
    /// \brief     Get the next sequence number
    /// \return    Next sequence number
    //--------------------------------------------------------------

@@ -39,7 +39,7 @@ public:
    virtual void flush();
    virtual void send(const boost::asio::const_buffer& buffer);
    virtual void asyncSend(const boost::asio::const_buffer& buffer);
-   virtual void receive(boost::asio::mutable_buffer& buffer);
+   virtual std::size_t receive(boost::shared_ptr<unsigned char[]>& buffer);
    // [END] IPort Implementation
 
 protected:
@@ -47,6 +47,12 @@ protected:
    /// \brief	Try to connect asynchronously
    //--------------------------------------------------------------
    void tryConnect();
+
+   //--------------------------------------------------------------
+   /// \brief	                     Handler called when connect retry timer expires
+   /// \param[in] error             Error code (should be 0)
+   //--------------------------------------------------------------
+   void reconnectTimerHandler(const boost::system::error_code& error);//TODO commenter
 
    //--------------------------------------------------------------
    /// \brief	Wait for something to read on the port
@@ -89,6 +95,16 @@ private:
    boost::asio::serial_port_base::flow_control m_flowControl;
 
    //--------------------------------------------------------------
+   /// \brief	Read buffer max size
+   //--------------------------------------------------------------
+   static const std::size_t ReadBufferMaxSize;
+
+   //--------------------------------------------------------------
+   /// \brief	Read buffer max size
+   //--------------------------------------------------------------
+   boost::shared_ptr<unsigned char[]> m_readBuffer;
+
+   //--------------------------------------------------------------
    /// \brief	Connection state event subscription
    //--------------------------------------------------------------
    CPortSubscription<bool> m_connectionStateSubscription;
@@ -104,14 +120,14 @@ private:
    static const boost::posix_time::time_duration ConnectRetryDelay;
 
    //--------------------------------------------------------------
-   /// \brief	Read buffer max size
+   /// \brief	Try to reconnect timer delay
    //--------------------------------------------------------------
-   static const std::size_t ReadBufferMaxSize;
+   boost::asio::deadline_timer m_connectRetryTimer;
 
    //--------------------------------------------------------------
-   /// \brief	Read buffer max size
+   /// \brief	Thread for asynchronous operations
    //--------------------------------------------------------------
-   boost::shared_ptr<char> readBuffer;
+   boost::shared_ptr<boost::thread> m_asyncThread;
 
 
    //TODO : options à rajouter ?
