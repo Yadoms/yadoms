@@ -43,8 +43,8 @@ namespace web { namespace rest { namespace service {
          for(shared::CPeripherals::SerialPortsMap::const_iterator i = map->begin(); i != map->end(); ++i)
          {
             web::rest::json::CJson serialPort;
-            serialPort.put("commonName", i->first);
-            serialPort.put("portAddress", i->second);
+            serialPort.put("name", i->first);
+            serialPort.put("friendlyName", i->second);
             result.push_back(std::make_pair("", serialPort));
          }
 
