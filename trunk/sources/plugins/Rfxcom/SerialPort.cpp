@@ -5,7 +5,7 @@
 #include "PortException.hpp"
 
 
-const boost::posix_time::time_duration CSerialPort::ConnectRetryDelay(boost::posix_time::minutes(1));
+const boost::posix_time::time_duration CSerialPort::ConnectRetryDelay(boost::posix_time::seconds(30));
 const std::size_t CSerialPort::ReadBufferMaxSize(512);
 
 CSerialPort::CSerialPort(
@@ -17,12 +17,11 @@ CSerialPort::CSerialPort(
    boost::asio::serial_port_base::flow_control flowControl)
    :m_boostSerialPort(m_ioService),
    m_port(port), m_baudrate(baudrate), m_parity(parity), m_characterSize(characterSize), m_stop_bits(stop_bits), m_flowControl(flowControl),
-   readBuffer(new char[ReadBufferMaxSize])
+   m_readBuffer(new unsigned char[ReadBufferMaxSize]), m_connectRetryTimer(m_ioService)
 {
-   boost::thread t(boost::bind(&boost::asio::io_service::run, &m_ioService));
-
    // Try to connect
-   tryConnect();
+   m_ioService.post(boost::bind(&CSerialPort::tryConnect, this));
+   m_asyncThread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &m_ioService)));
 }
 
 CSerialPort::~CSerialPort()
@@ -30,7 +29,7 @@ CSerialPort::~CSerialPort()
    disconnect();
 
    m_ioService.stop();
-   m_ioService.reset();
+   m_asyncThread->join();
 }
 
 bool CSerialPort::connect()
@@ -93,6 +92,13 @@ void CSerialPort::flush()
    //TODO
 }
 
+void CSerialPort::reconnectTimerHandler(const boost::system::error_code& error)
+{
+   BOOST_ASSERT_MSG(error == 0, "Error code should be 0 here");
+
+   tryConnect();
+}
+
 void CSerialPort::tryConnect()
 {
    BOOST_ASSERT_MSG(!isConnected(), "Already connected");
@@ -100,8 +106,8 @@ void CSerialPort::tryConnect()
    if (!connect())
    {
       // Fail to reconnect, retry after a certain delay
-      boost::asio::deadline_timer connectRetryTimer(m_ioService, ConnectRetryDelay);     //TODO voir pourquoi le délai n'est pas respecté
-      connectRetryTimer.async_wait(boost::bind(&CSerialPort::tryConnect, this));
+      m_connectRetryTimer.expires_from_now(ConnectRetryDelay);
+      m_connectRetryTimer.async_wait(boost::bind(&CSerialPort::reconnectTimerHandler, this, boost::asio::placeholders::error));
       return;
    }
 
@@ -109,13 +115,14 @@ void CSerialPort::tryConnect()
    m_connectionStateSubscription.notify(true);
 
    // Start listening on the port
-   startRead();
+   //TODO rien à faire, attendre un ordre
+//   startRead();
 }
 
 void CSerialPort::startRead()
 {
    // Start an asynchronous read and call readCompleted when it completes or fails 
-   m_boostSerialPort.async_read_some(boost::asio::buffer(readBuffer.get(), ReadBufferMaxSize), 
+   m_boostSerialPort.async_read_some(boost::asio::buffer(m_readBuffer.get(), ReadBufferMaxSize), 
       boost::bind(&CSerialPort::readCompleted, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 }
 
@@ -137,7 +144,7 @@ void CSerialPort::readCompleted(const boost::system::error_code& error, std::siz
    // Read OK
 
    // Send data
-   m_receiveDataSubscription.notify(boost::asio::buffer(readBuffer.get(), bytesTransferred));
+   m_receiveDataSubscription.notify(boost::asio::buffer(m_readBuffer.get(), bytesTransferred));
 
    // Restart read
    startRead();
@@ -147,6 +154,7 @@ void CSerialPort::send(const boost::asio::const_buffer& buffer)
 {
    try
    {
+      m_boostSerialPort.cancel();
       m_boostSerialPort.write_some(boost::asio::const_buffers_1(buffer));
    }
    catch (boost::system::system_error& e)
@@ -189,13 +197,25 @@ void CSerialPort::writeCompleted(const boost::system::error_code& error, std::si
    }
 
    // Write OK
+
+   // Restart read
+   startRead();
 }
 
-void CSerialPort::receive(boost::asio::mutable_buffer& buffer)
+std::size_t CSerialPort::receive(boost::shared_ptr<unsigned char[]>& buffer)
 {
    try
    {
-      m_boostSerialPort.read_some(boost::asio::mutable_buffers_1(buffer));
+      boost::shared_ptr<unsigned char[]> readBuffer(new unsigned char[ReadBufferMaxSize]);   //TODO mettre readBuffer en membre pour plus de perfs ?
+      std::size_t bytesTransferred = m_boostSerialPort.read_some(boost::asio::buffer(readBuffer.get(), ReadBufferMaxSize));
+
+      BOOST_ASSERT_MSG(bytesTransferred != 0, "bytesTransferred should not be 0 at this point");
+
+      buffer.reset(new unsigned char[bytesTransferred]);
+      for (std::size_t idx = 0 ; idx < bytesTransferred ; ++idx)
+         buffer[idx]=readBuffer[idx];
+
+      return bytesTransferred;
    }
    catch (boost::system::system_error& e)
    {

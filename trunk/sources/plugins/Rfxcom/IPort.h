@@ -69,10 +69,11 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                  Receive a buffer from the port (synchronously)
-   /// \param [in] buffer        The buffer to fill with received data
+   /// \param [in] buffer        The buffer in which to store received data (allocated by the receive method)
+   /// \return                   Received byte number
    /// \throw                    CPortException if error
    //--------------------------------------------------------------
-   virtual void receive(boost::asio::mutable_buffer& buffer) = 0;
+   virtual std::size_t receive(boost::shared_ptr<unsigned char[]>& buffer) = 0;
 };
 
 

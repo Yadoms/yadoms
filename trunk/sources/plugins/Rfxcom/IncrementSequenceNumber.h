@@ -5,23 +5,26 @@
 //--------------------------------------------------------------
 /// \brief	A always null sequence number
 //--------------------------------------------------------------
-class CNullSequenceNumber : public ISequenceNumberProvider
+class CIncrementSequenceNumber : public ISequenceNumberProvider
 {  
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    //--------------------------------------------------------------
-   CNullSequenceNumber() {}
+   CIncrementSequenceNumber() :m_seqNumber(0) {}
 
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~CNullSequenceNumber() {}
+   virtual ~CIncrementSequenceNumber() {}
 
    // ISequenceNumberProvider implementation
-   virtual void reset() {}
-   virtual unsigned char getNext() { return 0; }
+   virtual void reset() { m_seqNumber = 0; }
+   virtual unsigned char getNext() { return m_seqNumber ++; }
    // [END] ISequenceNumberProvider implementation
+
+private:
+   unsigned char m_seqNumber;
 };
 
 

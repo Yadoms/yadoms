@@ -11,6 +11,7 @@ set(RFXCOM_SOURCES
    DeviceList.h
    DeviceList.cpp
    IDeviceList.h
+   IncrementSequenceNumber.h
    IPort.h
    IRfxcomConfiguration.h
    ISequenceNumberProvider.h
