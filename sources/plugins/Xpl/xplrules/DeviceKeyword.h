@@ -1,6 +1,6 @@
 #pragma once
 
-#include <shared/plugin/yadomsApi/IYadomsAPI.h>
+#include <shared/plugin/yadomsApi/IYadomsApi.h>
 
 namespace xplrules {
 
