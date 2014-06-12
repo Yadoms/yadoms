@@ -44,7 +44,6 @@ function SerialParameterHandler(i18nContext, paramName, content, currentValue) {
 function populateSerialPorts(handler) {
    return function(data) {
       //we parse the json answer
-      debugger;
       if (data.result != "true")
       {
          notifyError($.t("modals.configure-widget.errorDuringGettingSerialPortList"), JSON.stringify(data));

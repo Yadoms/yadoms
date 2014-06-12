@@ -67,7 +67,7 @@ function SectionParameterHandler(objectToConfigure, i18nContext, paramName, cont
       if ((self.configurationValues !== undefined) && (self.configurationValues != null) && (self.configurationValues.values != null) && (self.configurationValues.values != undefined))
          v = self.configurationValues.values[key];
 
-      var newI18nContext = i18nContext + self.paramName + ".";
+      var newI18nContext = i18nContext + self.paramName + ".content.";
       var handler = ConfigurationHelper.createParameterHandler(objectToConfigure, newI18nContext, key, value, v);
       self.configurationHandlers.push(handler);
    });
