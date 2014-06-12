@@ -17,10 +17,11 @@ namespace xplrules {
       template<class T>
       boost::shared_ptr< IRule > getRule()
       {
-         BOOST_FOREACH(boost::shared_ptr< IRule > pRule, m_instanciatedRules)
+         std::vector< boost::shared_ptr<IRule> >::iterator i;
+         for(i=m_instanciatedRules.begin(); i!=m_instanciatedRules.end(); ++i)
          {
-             boost::shared_ptr< IRule > pFoundRule = boost::dynamic_pointer_cast< T >(pRule);
-             if(pFoundRule.get() != NULL)
+            boost::shared_ptr< IRule > pFoundRule = boost::dynamic_pointer_cast< T >(*i);
+            if(pFoundRule.get() != NULL)
                return pFoundRule;
          }
          
