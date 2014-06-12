@@ -43,7 +43,8 @@ namespace shared { namespace plugin { namespace yadomsApi
       {
          kEventUpdateConfiguration = shared::event::kUserFirstId, // Yadoms notify the plugin that its configuration was changed
          kEventDeviceCommand,                                     // Yadoms send a command to a device managed by this plugin
-         kEventManuallyDeviceCreation,                            // Yadoms ask the plugin to generate a device
+         kEventManuallyDeviceCreationTest,                        // Yadoms ask the plugin to test a device with provided parameters, before to create it
+         kEventManuallyDeviceCreation,                            // Yadoms ask the plugin to create a device
          kPluginFirstEventId                                      // The next usable event ID for the plugin code
       };
 

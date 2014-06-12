@@ -8,7 +8,6 @@
 
 IMPLEMENT_PLUGIN(CRfxcom)
 
-//TODO dans package.json, remettre le type de Serial Port à "serialPort" quand supporté par l'ihm
 //TODO dans package.json, compléter la liste manuallyDeviceCreationConfigurationSchema/type (voir Domoticz "Switch_Type_Desc")
 CRfxcom::CRfxcom()
 {
@@ -48,7 +47,21 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                // Command received from Yadoms
                boost::shared_ptr<yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceCommand> >();
 
+               //TODO : ça ne va pas, la command ne contient pas les paramètres du device (type, id, etc...)
                onCommand(command);
+
+               break;
+            }
+         case yApi::IYadomsApi::kEventManuallyDeviceCreationTest:
+            {
+               //TODO
+               //// Yadoms asks for device creation
+               //boost::shared_ptr<yApi::IManuallyDeviceCreationData> data = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationData> >();
+
+               //// Declare the device
+               //context->declareDevice(data->getDevice(), shared::CStringExtension::EmptyString, data->getParameters());
+               //// Declare associated keywords (= values managed by this device)
+               //context->declareKeyword(data->getDevice(), data->getKeyword(), data->getCapcity(), yApi::IYadomsApi::kWriteOnly);
 
                break;
             }

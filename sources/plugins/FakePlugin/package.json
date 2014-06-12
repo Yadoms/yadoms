@@ -53,7 +53,7 @@
       {
          "name": "A serial port",
          "description": "Specific serial port parameter. Yadoms will populate available values with system serial ports.",
-         "type": "string"
+         "type": "serialPort"
       },
       "MySection":
       {

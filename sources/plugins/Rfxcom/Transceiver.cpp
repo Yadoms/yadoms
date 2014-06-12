@@ -161,16 +161,16 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::createRfxcomMess
       switch(type)
       {
       case pTypeLighting1:
-         rfxcomMsg.reset(new rfxcomMessages::CLighting1(commandBody, m_seqNumberProvider));
+         rfxcomMsg.reset(new rfxcomMessages::CLighting1(commandBody.get_child("content"), m_seqNumberProvider));
          break;
       case pTypeLighting3:
-         rfxcomMsg.reset(new rfxcomMessages::CLighting3(commandBody, m_seqNumberProvider));
+         rfxcomMsg.reset(new rfxcomMessages::CLighting3(commandBody.get_child("content"), m_seqNumberProvider));
          break;
       case pTypeLighting6:
-         rfxcomMsg.reset(new rfxcomMessages::CLighting6(commandBody, m_seqNumberProvider));
+         rfxcomMsg.reset(new rfxcomMessages::CLighting6(commandBody.get_child("content"), m_seqNumberProvider));
          break;
       case pTypeCurtain:
-         rfxcomMsg.reset(new rfxcomMessages::CCurtain1(commandBody, m_seqNumberProvider));
+         rfxcomMsg.reset(new rfxcomMessages::CCurtain1(commandBody.get_child("content"), m_seqNumberProvider));
          break;
          //TODO compléter
       default:
