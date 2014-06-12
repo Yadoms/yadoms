@@ -98,7 +98,7 @@ function requestLastEventLoggerDone() {
 
 function initializeWidgetEvents(widget) {
    //we listen click event on configure click
-   widget.$gridsterWidget.find('button.configure-widget').bind('click', function (e) {
+   widget.$gridsterWidget.find('span.btn-configure-widget').bind('click', function (e) {
       var widgetDOMElement = $(e.currentTarget).parents("li.widget");
       var pageId = widgetDOMElement.attr("page-id");
       var widgetId = widgetDOMElement.attr("widget-id");
@@ -106,7 +106,7 @@ function initializeWidgetEvents(widget) {
    });
 
    //we listen click event on delete click
-   widget.$gridsterWidget.find('button.delete-widget').bind('click', function (e) {
+   widget.$gridsterWidget.find('span.btn-delete-widget').bind('click', function (e) {
       var widgetDOMElement = $(e.currentTarget).parents("li.widget");
       var pageId = widgetDOMElement.attr("page-id");
       var widgetId = widgetDOMElement.attr("widget-id");
@@ -588,13 +588,11 @@ function createGridsterWidget(widget) {
    var item = page.gridster.add_widget(
       "<li class=\"widget\" page-id=\"" + widget.idPage + "\" widget-id=\"" + widget.id +"\">" +
          "<div class=\"widgetCustomizationToolbar customization-item hidden\">" +
-            "<div class=\"btn-group btn-group-sm\">" +
-               "<button type=\"button\" class=\"btn btn-default configure-widget\" title=\"Configure\"><i class=\"glyphicon glyphicon-cog\"></i></button>" +
-               "<button type=\"button\" class=\"btn btn-default delete-widget\" title=\"Delete\"><i class=\"glyphicon glyphicon-trash\"></i></button>" +
-            "</div>" +
+            "<span class=\"btn-configure-widget\"><i class=\"glyphicon glyphicon-cog\"></i></span>" +
+            "<span class=\"btn-delete-widget\"><i class=\"glyphicon glyphicon-trash\"></i></span>" +
          "</div>" +
          "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + widget.name + "-template' }\"/>" +
-         "</li>", widget.sizeX, widget.sizeY, widget.positionX, widget.positionY);
+      "</li>", widget.sizeX, widget.sizeY, widget.positionX, widget.positionY);
 
    item.i18n();
    return item;

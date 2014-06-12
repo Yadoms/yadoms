@@ -57,29 +57,35 @@ body {
    background-color: transparent;
 }
 
-/*Widget during customization*/
-/*.liWidgetCustomization:before{
-    content: " ";
-    position: absolute;
-    width: 90%;
-    height: 50px;
-    left: 5%;
-    bottom: 25px;
-    background: #000;
-    -moz-box-shadow: 0 25px 15px rgb(0,0,0);
-    -webkit-box-shadow: 0 25px 15px rgb(0,0,0);
-    -o-box-shadow: 0 25px 15px rgb(0,0,0);
-    -ms-box-shadow: 0 25px 15px rgb(0,0,0);
-    -khtml-box-shadow: 0 15px 15px rgb(0,0,0);
-    box-shadow: 0 25px 15px rgb(0,0,0);
-    -moz-transform: rotate(-5deg);
-    -webkit-transform: rotate(-5deg);
-    -o-transform: rotate(-5deg);
-    -ms-transform: rotate(-5deg);
-    -khtml-transform: rotate(-5deg);
-    transform: rotate(-5deg);
-    z-index: -1;
-}*/
+.btn-configure-widget {
+   width: 20px;
+   height: 20px;
+   top: -10px;
+   right:30px;
+   position: absolute;
+   background-color: #428bca;
+   color: white;
+   border-width: 1px;
+   border-color: black;
+   border-style: solid;
+   padding-top: 1px;
+}
+
+.btn-delete-widget {
+   width: 20px;
+   height: 20px;
+   top: -10px;
+   right: 5px;
+   position: absolute;
+   background-color: #428bca;
+   color: white;
+   border-width: 1px;
+   border-color: black;
+   border-style: solid;
+   padding-top: 1px;
+   
+}
+
 .widgetCustomizationToolbar{
     z-index: 18;
     border-color: darkslategray;
@@ -87,31 +93,7 @@ body {
     border-width: 1px;
     text-align: center;
 }
-/*
-.liWidgetCustomization:after{
-    content: " ";
-    position: absolute;
-    bottom: 0;
-    width: 90%;
-    height: 50px;
-    left: 5%;
-    bottom: 25px;
-    background: #000;
-    -moz-box-shadow: 0 25px 15px rgb(0,0,0);
-    -webkit-box-shadow: 0 25px 15px rgb(0,0,0);
-    -o-box-shadow: 0 25px 15px rgb(0,0,0);
-    -ms-box-shadow: 0 25px 15px rgb(0,0,0);
-    -khtml-box-shadow: 0 15px 15px rgb(0,0,0);
-    box-shadow: 0 25px 15px rgb(0,0,0);
-    -moz-transform: rotate(5deg);
-    -webkit-transform: rotate(5deg);
-    -o-transform: rotate(5deg);
-    -ms-transform: rotate(5deg);
-    -khtml-transform: rotate(5deg);
-    transform: rotate(5deg);
-    z-index: -1;
-}
-*/
+
 .customization-item > .btn-group {
     left: auto;
 }
