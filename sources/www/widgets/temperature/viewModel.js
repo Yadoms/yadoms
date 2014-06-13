@@ -35,12 +35,16 @@ widgetViewModelCtor =
  */
 function TemperatureViewModel() {
    //observable data
-   this.temperature = ko.observable(25).extend({ numeric: 2 });
-   this.battery = ko.observable(100).extend({ numeric: 0 });
+   this.temperature = ko.observable(25).extend({ numeric: 1 });
 
+   this.battery = ko.observable(100).extend({ numeric: 0 });
+   this.manageBatteryLevel = ko.observable(false);
+   
    //widget identifier
    this.widget = null;
 
+   this.batterylevelKeywordId = undefined;
+   
    /**
     * Initialization method
     * @param widget widget class object
@@ -49,6 +53,32 @@ function TemperatureViewModel() {
       this.widget = widget;
    };
 
+   this.configurationChanged = function() {
+      //we check if the widget manage battery level. If yes we will display this additionnal information
+      //by default the battery level is no more managed
+      this.batterylevelKeywordId = undefined;
+      this.manageBatteryLevel(false);
+      
+      var self = this;
+      
+      $.getJSON("rest/device/" + this.widget.configuration.device.deviceId + "/get/batteryLevel")
+            .done(function( data ) {
+               //we parse the json answer
+               if (data.result != "true")
+               {
+                  //TODO : i18n
+                  notifyError($.t("ERROR"), JSON.stringify(data));
+                  return;
+               }
+               if (data.data.keyword.length > 0) {
+                  //the device has the capacity
+                  self.manageBatteryLevel(true);
+                  self.batterylevelKeywordId = data.data.keyword[0].id;
+               }
+            })
+            .fail(function() {notifyError($.t("switch:errorDuringGettingDeviceInformation"));});
+   }
+   
    /**
     * Dispatch the data to the viewModel
     * @deviceId device identifier which make the values
@@ -57,10 +87,17 @@ function TemperatureViewModel() {
     */
    this.dispatch = function(device, data) {
       var self = this;
-      if ((this.widget.configuration !== undefined) && (this.widget.configuration.device !== undefined)) {
-         if (device == this.widget.configuration.device) {
+      if ((self.widget.configuration !== undefined) && (self.widget.configuration.device !== undefined)) {
+         if (device == self.widget.configuration.device) {
             //it is the good device
             self.temperature(data.value);
+         }
+         else {
+            if (!isNullOrUndefined(self.batterylevelKeywordId)) {
+               if ((device.deviceId == self.widget.configuration.device.deviceId) && (device.keywordId == self.batterylevelKeywordId)) {
+                  self.battery(data.value);
+               }
+            }
          }
       }
    };
@@ -69,7 +106,13 @@ function TemperatureViewModel() {
       var result = [];
       if ((this.widget.configuration !== undefined) && (this.widget.configuration.device !== undefined)) {
          result.push(this.widget.configuration.device);
+         
+         //we look if the battery level is managed
+         if (!isNullOrUndefined(this.batterylevelKeywordId)) {
+            result.push({deviceId: this.widget.configuration.device.deviceId, keywordId: this.batterylevelKeywordId});
+         }
       }
+      
       return result;
    }
 

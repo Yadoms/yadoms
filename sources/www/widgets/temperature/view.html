@@ -4,7 +4,7 @@
         <div class="temperature" data-bind="text: temperature">
         </div>
         <div class="unit">°C</div>
-        <div class="battery">
+        <div class="battery" data-bind="css: { hidden: manageBatteryLevel() == false}">
            <span data-i18n="temperature:batteryLevel"></span><span data-bind="text: battery"></span><span>%</span>
         </div>
     </div>
