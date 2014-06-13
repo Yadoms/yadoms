@@ -41,6 +41,12 @@ protected:
    bool waitStatus();
 
    //--------------------------------------------------------------
+   /// \brief	                     Wait for the acknowledge from RFXCom
+   /// \return                      true if acknowledge is OK, false if any error
+   //--------------------------------------------------------------
+   bool waitAcknowledge();
+
+   //--------------------------------------------------------------
    /// \brief	                     Adapt a buffer to be loggable
    /// \param [in] ptr              Buffer pointer
    /// \param [in] size             Buffer size

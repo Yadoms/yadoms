@@ -7,7 +7,6 @@
 #include "IManuallyDeviceCreationTestData.h"
 
 
-// TODO est-il judicieux d'ajouter ici : namespace yApi = shared::plugin::yadomsApi;
 namespace shared { namespace plugin { namespace yadomsApi
 {
    //-----------------------------------------------------

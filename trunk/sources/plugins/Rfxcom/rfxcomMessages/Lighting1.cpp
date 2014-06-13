@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "Lighting1.h"
+#include <shared/plugin/yadomsApi/StandardValues.h>
 #include <shared/exception/InvalidParameter.hpp>
+
+// Shortcut to yadomsApi namespace
+namespace yApi = shared::plugin::yadomsApi;
 
 namespace rfxcomMessages
 {
@@ -34,13 +38,13 @@ const boost::asio::const_buffer CLighting1::getBuffer() const
 unsigned char CLighting1::toLighting1Command(const std::string& yadomsCommand) const
 {
    static const std::map<std::string, unsigned char> yadomsCommands = boost::assign::map_list_of
-      ("off", light1_sOff      )  //TODO définir des commandes standard dans Yadoms ?
-      ("on" , light1_sOn       )
-      (""   , light1_sDim      )  //TODO définir les autres valeurs : à priori utilisées qu'en entrée (dim, bright, chime) ou non utilisées par Yadoms (alloff, allon)
-      (""   , light1_sBright   )
-      (""   , light1_sAllOff   )
-      (""   , light1_sAllOn    )
-      (""   , light1_sChime    );   std::map<std::string, unsigned char>::const_iterator itcommand = yadomsCommands.find(yadomsCommand);   if (itcommand == yadomsCommands.end())      throw shared::exception::CInvalidParameter(yadomsCommand);
+      (yApi::CStandardValues::Off, light1_sOff      )
+      (yApi::CStandardValues::On , light1_sOn       )
+      (""                        , light1_sDim      )  //TODO définir les autres valeurs : à priori utilisées qu'en entrée (dim, bright, chime) ou non utilisées par Yadoms (alloff, allon)
+      (""                        , light1_sBright   )
+      (""                        , light1_sAllOff   )
+      (""                        , light1_sAllOn    )
+      (""                        , light1_sChime    );   std::map<std::string, unsigned char>::const_iterator itcommand = yadomsCommands.find(yadomsCommand);   if (itcommand == yadomsCommands.end())      throw shared::exception::CInvalidParameter(yadomsCommand);
    return itcommand->second;
 }
 
