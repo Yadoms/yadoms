@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Curtain1.h"
-#include <shared/plugin/yadomsApi/StandardValues.h>
+#include <shared/plugin/yadomsApi/commands/Curtain.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 // Shortcut to yadomsApi namespace
@@ -35,12 +35,16 @@ const boost::asio::const_buffer CCurtain1::getBuffer() const
 
 unsigned char CCurtain1::toCurtain1Command(const std::string& yadomsCommand) const
 {
-   static const std::map<std::string, unsigned char> yadomsCommands = boost::assign::map_list_of
-      (yApi::CStandardValues::On , curtain_sOpen      )
-      (yApi::CStandardValues::Off, curtain_sClose     )
-      (""                        , curtain_sStop      )  //TODO définir les autres valeurs : à priori utilisées qu'en entrée (dim, bright, chime) ou non utilisées par Yadoms (alloff, allon)
-      (""                        , curtain_sProgram   );   std::map<std::string, unsigned char>::const_iterator itcommand = yadomsCommands.find(yadomsCommand);   if (itcommand == yadomsCommands.end())      throw shared::exception::CInvalidParameter(yadomsCommand);
-   return itcommand->second;
+   yApi::commands::CCurtain cmd(yadomsCommand);
+   switch (cmd.get())
+   {
+   case yApi::commands::CCurtain::kOpen: return curtain_sOpen;
+   case yApi::commands::CCurtain::kClose: return curtain_sClose;
+   case yApi::commands::CCurtain::kStop: return curtain_sStop;
+   default:
+      BOOST_ASSERT_MSG(false, "Unsupported value");
+      throw shared::exception::CInvalidParameter(yadomsCommand);
+   }
 }
 
 } // namespace rfxcomMessages
