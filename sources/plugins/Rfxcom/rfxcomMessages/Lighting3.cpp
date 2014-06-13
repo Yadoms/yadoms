@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "Lighting3.h"
+#include <shared/serialization/PTreeToJsonSerializer.h>
+#include <shared/plugin/yadomsApi/StandardValues.h>
 #include <shared/exception/InvalidParameter.hpp>
+
+// Shortcut to yadomsApi namespace
+namespace yApi = shared::plugin::yadomsApi;
 
 namespace rfxcomMessages
 {
@@ -33,22 +38,50 @@ const boost::asio::const_buffer CLighting3::getBuffer() const
 
 unsigned char CLighting3::toLighting3Command(const std::string& yadomsCommand) const
 {
-   //TODO à finir (gérer les niveaux, etc...)
-   static const std::map<std::string, unsigned char> yadomsCommands = boost::assign::map_list_of
-      (""   , light3_sBright  )  //TODO définir des commandes standard dans Yadoms ?
-      (""   , light3_sDim     )
-      ("on" , light3_sOn      )  //TODO définir les autres valeurs : à priori utilisées qu'en entrée (dim, bright, chime) ou non utilisées par Yadoms (alloff, allon)
-      (""   , light3_sLevel1  )
-      (""   , light3_sLevel2  )
-      (""   , light3_sLevel3  )
-      (""   , light3_sLevel4  )      (""   , light3_sLevel5  )
-      (""   , light3_sLevel6  )
-      (""   , light3_sLevel7  )
-      (""   , light3_sLevel8  )
-      (""   , light3_sLevel9  )
-      ("off", light3_sOff     )
-      (""   , light3_sProgram );   std::map<std::string, unsigned char>::const_iterator itcommand = yadomsCommands.find(yadomsCommand);   if (itcommand == yadomsCommands.end())      throw shared::exception::CInvalidParameter(yadomsCommand);
-   return itcommand->second;
+   if (yadomsCommand == yApi::CStandardValues::On)
+      return light3_sOn;
+   else if (yadomsCommand == yApi::CStandardValues::Off)
+      return light3_sOff;
+   else
+   {
+      // Is a dim command ?
+
+      shared::serialization::CPtreeToJsonSerializer serializer;
+      try
+      {
+         boost::property_tree::ptree yadomsCommandTree = serializer.deserialize(yadomsCommand);
+         int dimValue = yadomsCommandTree.get<int>("dim");
+
+         BOOST_ASSERT_MSG(dimValue >= 0 && dimValue <= 100, "Wrong dim value");
+         if (dimValue < 0 || dimValue > 100)
+            throw shared::exception::CInvalidParameter("Invalid command \"" + yadomsCommand + "\" : dim value out of range");
+
+         switch (dimValue / 100)
+         {
+         case 0: return light3_sOff;
+         case 1: return light3_sLevel1;
+         case 2: return light3_sLevel2;
+         case 3: return light3_sLevel3;
+         case 4: return light3_sLevel4;
+         case 5: return light3_sLevel5;
+         case 6: return light3_sLevel6;
+         case 7: return light3_sLevel7;
+         case 8: return light3_sLevel8;
+         case 9: return light3_sLevel9;
+         default: return light3_sOn;
+         }
+      }
+      catch (boost::property_tree::ptree_bad_path& e)
+      {
+         BOOST_ASSERT_MSG(false, "Invalid command");
+         throw shared::exception::CInvalidParameter("Invalid command \"" + yadomsCommand + "\" : " + e.what());
+      }
+      catch (boost::property_tree::ptree_bad_data& e)
+      {
+         BOOST_ASSERT_MSG(false, "Invalid command");
+         throw shared::exception::CInvalidParameter("Invalid command \"" + yadomsCommand + "\" : " + e.what());
+      }
+   }
 }
 
 } // namespace rfxcomMessages

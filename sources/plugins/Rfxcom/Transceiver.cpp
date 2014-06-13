@@ -101,6 +101,38 @@ bool CTransceiver::waitStatus()
    return true;
 }
 
+bool CTransceiver::waitAcknowledge()
+{
+   boost::shared_ptr<unsigned char[]> receivedData;
+   std::size_t receivedSize = m_port->receive(receivedData);
+
+   // Check acknowledge
+
+   // - Check message size
+   if (receivedSize != sizeof(m_answer.RXRESPONSE))  // TODO Seule solution pour obtenir la taille de RBUF::IRESPONSE. Si m_answer n'est pas nécessaire, utiliser une static const locale
+   {
+      YADOMS_LOG(error) << "Error reading status, invalid message size";
+      return false;
+   }
+
+   const RBUF* answer = (const RBUF*)receivedData.get();
+
+   // - Check message data
+   if (answer->RXRESPONSE.packetlength != (sizeof(m_answer.RXRESPONSE) - 1) ||
+      answer->RXRESPONSE.packettype != pTypeRecXmitMessage ||
+      answer->RXRESPONSE.subtype != sTypeTransmitterResponse ||
+      answer->RXRESPONSE.seqnbr != m_request.ICMND.seqnbr ||
+      answer->RXRESPONSE.msg != 0x00)  // Ack OK
+   {
+      YADOMS_LOG(error) << "Error acknowledge, invalid data received";
+      return false;
+   }
+
+   YADOMS_LOG(info) << "RFXCom acknowledge";
+
+   return true;
+}
+
 const std::string CTransceiver::rfxcomTypeToString(const unsigned char rfxcomType)
 {
    static const std::map<unsigned char, std::string> RfxcomTypes = boost::assign::map_list_of
@@ -138,9 +170,12 @@ void CTransceiver::send(const std::string& command, const std::string& devicePar
 {
    try
    {
+      // Send message
       boost::shared_ptr<rfxcomMessages::IRfxcomMessage> rfxcomMsg = createRfxcomMessage(command, deviceParameters);
-
       m_port->send(rfxcomMsg->getBuffer());
+
+      // Wait acknowledge
+      waitAcknowledge();
    }
    catch (shared::exception::CInvalidParameter& e)
    {

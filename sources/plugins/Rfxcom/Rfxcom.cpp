@@ -65,6 +65,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             {
                // Yadoms asks for device creation
                boost::shared_ptr<yApi::IManuallyDeviceCreationData> data = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationData> >();
+               YADOMS_LOG(debug) << "Manually device creation request received :" << data->toString();
 
                // Declare the device
                m_devices->declareDevice(data->getDevice(), shared::CStringExtension::EmptyString, data->getParameters());
@@ -77,7 +78,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             {
                // Configuration was updated
                std::string newConfiguration = context->getEventHandler().getEventData<std::string>();
-               YADOMS_LOG(debug) << "configuration was updated...";
+               YADOMS_LOG(debug) << "Configuration was updated...";
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
                // Close connection
