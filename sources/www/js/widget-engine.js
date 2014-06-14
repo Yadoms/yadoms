@@ -585,14 +585,19 @@ function createGridsterWidget(widget) {
    var page = pageContainer.getPage(widget.idPage);
    assert(page != null, "page doesn't exist in pageContainer");
 
-   var item = page.gridster.add_widget(
-      "<li class=\"widget\" page-id=\"" + widget.idPage + "\" widget-id=\"" + widget.id +"\">" +
-         "<div class=\"widgetCustomizationToolbar customization-item hidden\">" +
-            "<span class=\"btn-configure-widget\"><i class=\"glyphicon glyphicon-cog\"></i></span>" +
-            "<span class=\"btn-delete-widget\"><i class=\"glyphicon glyphicon-trash\"></i></span>" +
-         "</div>" +
-         "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + widget.name + "-template' }\"/>" +
-      "</li>", widget.sizeX, widget.sizeY, widget.positionX, widget.positionY);
+   var domWidget = "<li class=\"widget\" page-id=\"" + widget.idPage + "\" widget-id=\"" + widget.id +"\">\n" +
+         "<div class=\"widgetCustomizationToolbar customization-item hidden\">\n";
+
+   if (!isNullOrUndefined(widget.package.configurationSchema)) {
+      domWidget += "<span class=\"btn-configure-widget\"><i class=\"glyphicon glyphicon-cog\"></i></span>\n";
+   }
+
+   domWidget +=    "<span class=\"btn-delete-widget\"><i class=\"glyphicon glyphicon-trash\"></i></span>\n" +
+         "</div>\n" +
+         "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + widget.name + "-template' }\"/>\n" +
+      "</li>\n"
+
+   var item = page.gridster.add_widget(domWidget, widget.sizeX, widget.sizeY, widget.positionX, widget.positionY);
 
    item.i18n();
    return item;
