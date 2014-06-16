@@ -27,7 +27,7 @@ namespace pluginSystem
       // IManuallyDeviceCreationData implementation
       virtual const std::string& getDevice() const;
       virtual const std::string& getKeyword() const;
-      virtual const std::string& getCapcity() const;
+      virtual const std::string& getCapacity() const;
       virtual const std::string& getParameters() const;
       virtual const std::string toString() const;
       // [END] IManuallyDeviceCreationData implementation

@@ -70,7 +70,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                // Declare the device
                m_devices->declareDevice(data->getDevice(), shared::CStringExtension::EmptyString, data->getParameters());
                // Declare associated keywords (= values managed by this device)
-               context->declareKeyword(data->getDevice(), data->getKeyword(), data->getCapcity(), yApi::IYadomsApi::kWriteOnly);
+               context->declareKeyword(data->getDevice(), data->getKeyword(), data->getCapacity(), yApi::IYadomsApi::kWriteOnly, yApi::IYadomsApi::kNoData);
 
                break;
             }
