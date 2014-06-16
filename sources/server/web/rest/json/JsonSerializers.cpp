@@ -78,6 +78,8 @@ namespace web { namespace rest { namespace json {
       ((AccessMode)("accessMode")JSON_ENUM(database::entities::EKeywordAccessMode))
       ((Name)("name")JSON_STRING)
       ((FriendlyName)("friendlyName")JSON_STRING)
+      ((Type)("type")JSON_ENUM(database::entities::EKeywordDataType))
+      ((Units)("units")JSON_STRING)
       ((Details)("details")JSON_PTREE)
    )
    

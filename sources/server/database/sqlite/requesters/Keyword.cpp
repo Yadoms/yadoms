@@ -50,8 +50,8 @@ namespace database { namespace sqlite { namespace requesters {
       {
          //create the database entry with needed fields
          CQuery qInsert;
-         qInsert.InsertInto(CKeywordTable::getTableName(), CKeywordTable::getDeviceIdColumnName(), CKeywordTable::getCapacityNameColumnName(), CKeywordTable::getAccessModeColumnName(), CKeywordTable::getNameColumnName()).
-            Values(newKeyword.DeviceId(), newKeyword.CapacityName(), newKeyword.AccessMode(), newKeyword.Name());
+         qInsert.InsertInto(CKeywordTable::getTableName(), CKeywordTable::getDeviceIdColumnName(), CKeywordTable::getCapacityNameColumnName(), CKeywordTable::getAccessModeColumnName(), CKeywordTable::getNameColumnName(), CKeywordTable::getTypeColumnName()).
+            Values(newKeyword.DeviceId(), newKeyword.CapacityName(), newKeyword.AccessMode(), newKeyword.Name(), newKeyword.Type());
 
          if(m_databaseRequester->queryStatement(qInsert) <= 0)
             throw shared::exception::CEmptyResult("Fail to insert keyword into table");
@@ -79,6 +79,17 @@ namespace database { namespace sqlite { namespace requesters {
 
             if(m_databaseRequester->queryStatement(update) <= 0)
                throw shared::exception::CEmptyResult("Fail to update Details field");
+         } 
+         
+         if(newKeyword.Units.isDefined())
+         {
+            CQuery update;
+            update.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getUnitsColumnName(), newKeyword.Units()).
+               Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword.DeviceId()).
+               And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword.Name());
+
+            if(m_databaseRequester->queryStatement(update) <= 0)
+               throw shared::exception::CEmptyResult("Fail to update Units field");
          }
       }
       else

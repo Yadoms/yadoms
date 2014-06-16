@@ -90,6 +90,8 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Keyword, " CREATE TABLE Keyword            
                                                    accessMode INTEGER NOT NULL,                                   \
                                                    name TEXT NOT NULL,                                            \
                                                    friendlyName TEXT,                                             \
+                                                   type INTEGER NOT NULL,                                         \
+                                                   units TEXT,                                                    \
                                                    details TEXT                                                   \
                                                 )")                                                               
 
