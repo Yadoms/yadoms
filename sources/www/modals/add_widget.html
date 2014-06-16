@@ -43,7 +43,7 @@
      */
     function askWidgetPackages()
     {
-       $.getJSON("rest/widget/packages")
+       $.getJSON("rest/widget/package")
                .done(requestWidgetsTypeDone())
                .fail(function() {notifyError($.t("modals.add-widget.errorDuringGettingPackages"));});
     }

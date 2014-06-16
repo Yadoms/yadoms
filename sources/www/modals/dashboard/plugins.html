@@ -1,8 +1,8 @@
 <div id="dashboard-plugins">
    <h1 class="page-header"><span class="fa fa-rocket"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.plugins.title"></span></h1>
    <span data-i18n="modals.dashboard.sub-windows.plugins.pluginInstanceListDescription"></span><br>
-   <button id="btn-add-new-plugin" type="button" class="btn btn-success"><span class="fa fa-rocket"></span>&nbsp;&nbsp;<span>Instantiate a new plugin</span></button>
-   <table id="plugin-instance-list" class="table table-bordered table-striped">
+   <button id="btn-add-new-plugin" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-rocket"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.plugins.new"></span></button>
+   <table id="plugin-instance-list" class="table table-bordered table-striped dashboard-list">
       <tr>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.name"></td>
          <td data-i18n="modals.dashboard.sub-windows.plugins.table.type"></td>
@@ -25,7 +25,7 @@
       $("#btn-add-new-plugin").unbind("click").bind("click", addNewPlugin);
 
       //we dynamically ask for plugins
-      $.getJSON("/rest/plugin/instances")
+      $.getJSON("/rest/plugin/instance")
          .done(function (data) {
             //we parse the json answer
             if (data.result != "true")

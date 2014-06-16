@@ -1,4 +1,54 @@
 <div id="dashboard-devices">
-   <h1 class="page-header" data-i18n="modals.dashboard.sub-windows.devices.title"></h1>
-   <h2 class="sub-header"  data-i18n="inProgress"></h2>
+   <h1 class="page-header"><span class="fa fa-tasks"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.title"></span></h1>
+   <span data-i18n="modals.dashboard.sub-windows.devices.deviceListDescription"></span><br>
+   <button id="btn-add-new-device" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-rocket"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.new"></span></button>
+   <table id="device-list" class="table table-bordered table-striped dashboard-list">
+      <tr>
+         <td data-i18n="modals.dashboard.sub-windows.devices.table.name"></td>
+         <td data-i18n="modals.dashboard.sub-windows.devices.table.attachedTo"></td>
+         <td data-i18n="modals.dashboard.sub-windows.devices.table.model"></td>
+         <td data-i18n="modals.dashboard.sub-windows.devices.table.actions"></td>
+      </tr>
+      <!-- devices will be listed here-->
+   </table>
 </div>
+
+<script>
+   var deviceList = [];
+
+   function initializeDeviceDashboard() {
+      //we remove all rows except header
+      $("table#device-list").find("tr:gt(0)").remove();
+      //we clear pluginInstance array
+      deviceList = [];
+
+      $("#btn-add-new-device").unbind("click").bind("click", addNewDevice);
+
+      //we dynamically ask for devices
+      $.getJSON("/rest/plugin/device")
+         .done(function (data) {
+            //we parse the json answer
+            if (data.result != "true")
+            {
+               notifyError($.t("modals.dashboard.sub-windows.devices.errorGettingDeviceList"), JSON.stringify(data));
+               return;
+            }
+            //foreach result we append a <tr>
+            $.each(data.data.device, function(index, value) {
+               var dev = new Device(value.id, value.name, value.type, value.configuration, value.autoStart);
+               pluginInstanceList.push(pi);
+               addPluginInstanceToDom(pi);
+            });
+
+            //we use the periodic task of the dashboard
+            clearInterval(periodicDashboardTask);
+            periodicDashboardTask = setInterval(periodicDashboardPluginTask, 1000);
+            periodicDashboardPluginTask();
+         })
+         .fail(function() {notifyError($.t("modals.dashboard.sub-windows.devices.errorGettingDeviceList"), JSON.stringify(data));});
+   }
+   
+   function addNewDevice() {
+   }
+   
+</script>

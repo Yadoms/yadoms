@@ -31,7 +31,7 @@ function SerialParameterHandler(i18nContext, paramName, content, currentValue) {
 
    var self = this;
    //we async ask for serial port list
-   $.getJSON("/rest/general/serialports")
+   $.getJSON("/rest/general/serialport")
       .done(populateSerialPorts(self))
       .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingSerialPortList"));});
 }
