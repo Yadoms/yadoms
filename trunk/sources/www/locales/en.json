@@ -133,7 +133,8 @@
             },
             "plugins" : {
                "title" : "Plugins",
-               "pluginInstanceListDescription" : "Here is the list of all instances of plugins. You can instantiate new plugins, manage and delete currents.",
+               "pluginInstanceListDescription" : "Here is the list of all plugins. You can create new plugins, manage and delete currents.",
+               "new" : "Create a new plugin",
                "table" : {
                   "name" : "Name",
                   "status" : "Status",
@@ -156,7 +157,16 @@
                "title" : "Addons"
             },
             "devices" : {
-               "title" : "Devices"
+               "title" : "Devices",
+               "deviceListDescription" : "Here is the list of all devices. You can mùanage you devices from here.",
+               "new" : "Create a new virtual device",
+               "table" : {
+                  "name" : "Name",
+                  "attachedTo" : "Attached to plugin",
+                  "model" : "model",
+                  "actions" : "Actions"
+               },
+               "errorGettingDeviceList" : "An error has occurred acquiring device list"
             },
             "update" : {
                "title" : "Update"
@@ -189,10 +199,15 @@
         "errorGettingStatus" : "An error has occurred getting status of plugin __pluginName__",
         "errorStarting" : "An error has occurred starting __pluginName__",
         "errorStopping" : "An error has occurred stopping __pluginName__",
-        "errorCreating" : "An error has occurred deleting __pluginName__",
+        "errorCreating" : "An error has occurred creating __pluginName__",
         "errorDeleting" : "An error has occurred deleting __pluginName__",
         "errorGettingPackage" : "An error has occurred get package of __pluginName__",
         "errorUpdating" : "An error has occurred updating __pluginName__"
+     },
+     "deviceManager" : {
+         "errorGettingPluginPackageName" : "An error has occurred getting plugin package of device __deviceName__",
+         "errorDeleting" : "An error has occurred deleting __deviceName__",
+         "errorCreating" : "An error has occurred creating __deviceName__",
      }
    },
    "eventLogger" : {
