@@ -17,7 +17,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       static const std::string& Temperature;       // temperature       | degrees Celcius       | Temperature
       static const std::string& BatteryLevel;      // batteryLevel      | percent               | Battery level capacity
       static const std::string& Rssi;              // rssi              | percent               | Rssi measure capacity
-      static const std::string& SwitchOnOff;       // switchOnOff       | none                  | A boolean state (to read a switch, drive a lamp, etc...)
+      static const std::string& Switch;            // switch            | none                  | A string state (to read a switch, drive a lamp, etc...). Can be a single on/off switch or a dimmable one
       static const std::string& Message;           // message           |                       | A message (contains "from", "to" and "body" fields)
    };
 

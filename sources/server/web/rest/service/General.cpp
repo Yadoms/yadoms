@@ -24,7 +24,7 @@ namespace web { namespace rest { namespace service {
 
    void CGeneral::configureDispatcher(CRestDispatcher & dispatcher)
    {
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("serialports"), CGeneral::getSerialPorts);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("serialport"), CGeneral::getSerialPorts);
    }
 
 
