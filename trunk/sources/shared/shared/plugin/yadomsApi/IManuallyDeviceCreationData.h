@@ -30,7 +30,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\brief               Get the capacity
       ///\return              The capacity used for this device
       //-----------------------------------------------------
-      virtual const std::string& getCapcity() const = 0;
+      virtual const std::string& getCapacity() const = 0;
 
       //-----------------------------------------------------
       ///\brief               Get the device parameters

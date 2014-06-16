@@ -54,14 +54,14 @@ namespace xplrules { namespace rfxLanXpl {
       std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
 
       if (msg.getBodyValue("type") == "ninja")
-         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("current", "current", shared::plugin::yadomsApi::IYadomsApi::kReadWrite, "left, right, up, down, p1, prog_p1, p2, prog_p2, p3, prog_p3, p4, prog_p4, center, prog_center, sweep, prog_sweep")));
+         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("current", "current", shared::plugin::yadomsApi::IYadomsApi::kReadWrite, shared::plugin::yadomsApi::IYadomsApi::kString, "", "left, right, up, down, p1, prog_p1, p2, prog_p2, p3, prog_p3, p4, prog_p4, center, prog_center, sweep, prog_sweep")));
 
 
       if (msg.getBodyValue("type") == "mertik")
-         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("current", "current", shared::plugin::yadomsApi::IYadomsApi::kReadWrite, "on, off, step_up, step_down, run_up, run_down, stop")));
+         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("current", "current", shared::plugin::yadomsApi::IYadomsApi::kReadWrite, shared::plugin::yadomsApi::IYadomsApi::kString, "", "on, off, step_up, step_down, run_up, run_down, stop")));
 
       if (msg.getBodyValue("type") == "output")
-         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("current", "current", shared::plugin::yadomsApi::IYadomsApi::kReadWrite, "high, low, toggle")));
+         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("current", "current", shared::plugin::yadomsApi::IYadomsApi::kReadWrite, shared::plugin::yadomsApi::IYadomsApi::kString, "", "high, low, toggle")));
 
       return keywords;
    }

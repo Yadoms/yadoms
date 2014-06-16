@@ -64,14 +64,14 @@ namespace xplrules { namespace rfxLanXpl {
    {
       std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
 
-      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("command", "command", shared::plugin::yadomsApi::IYadomsApi::kReadWrite, "{ values : [on,off,dim,bright,all_lights_on,all_lights_off] }")));
+      /*keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("command", "command", shared::plugin::yadomsApi::IYadomsApi::kReadWrite, "{ values : [on,off,dim,bright,all_lights_on,all_lights_off] }")));
       keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("protocol", "protocol", shared::plugin::yadomsApi::IYadomsApi::kReadWrite, "{ values : [arc,flamingo,koppla,waveman,harrison,he105,rts10] }")));
       
       boost::property_tree::ptree details;
       details.put("min", 0);
       details.put("max", 100);
       keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("level", "level", shared::plugin::yadomsApi::IYadomsApi::kReadWrite, details)));
-      
+      */
       return keywords;
    }
 

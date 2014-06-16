@@ -37,11 +37,12 @@ namespace entities {
 
    enum EKeywordDataType
    {
-      kString = 0,
-      kInteger = 1,
-      kDecimal = 2,
-      kBool = 3,
-      kJson = 4,
+      kNoData = 0,  //only the command keyword
+      kString = 1,
+      kInteger = 2,
+      kDecimal = 3,
+      kBool = 4,
+      kJson = 5,
    };
 
    /*

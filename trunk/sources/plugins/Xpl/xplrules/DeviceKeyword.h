@@ -15,18 +15,22 @@ namespace xplrules {
       ///\param [in] keyword     The keyword used in Xpl data (i.e. : "temp")
       ///\param [in] capacity    The capacity implemented by the keyword (i.e. : "temperature")
       ///\param [in] accessMode  The acces mode (read and/or write)
+      ///\param [in] type        The keyword type
+      ///\param [in] units       The units
       ///\param [in] details     A free string which give units, enumeration values,....
       //------------------------------------
-      CDeviceKeyword(const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode accessMode, const std::string& details);
+      CDeviceKeyword(const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::IYadomsApi::EKeywordType type, const std::string & units, const std::string& details);
 
       //------------------------------------
       ///\brief Constructor
       ///\param [in] keyword     The keyword used in Xpl data (i.e. : "temp")
       ///\param [in] capacity    The capacity implemented by the keyword (i.e. : "temperature")
       ///\param [in] accessMode  The acces mode (read and/or write)
+      ///\param [in] type        The keyword type
+      ///\param [in] units       The units
       ///\param [in] details     A free PropertyString which give units, enumeration values,....
       //------------------------------------
-      CDeviceKeyword(const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode accessMode, const boost::property_tree::ptree & details);
+      CDeviceKeyword(const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::IYadomsApi::EKeywordType type, const std::string & units, const boost::property_tree::ptree & details);
 
       //------------------------------------
       ///\brief Destructor
@@ -49,7 +53,19 @@ namespace xplrules {
       ///\brief Get keyword capacity mode
       ///\return keyword capacity mode
       //------------------------------------
-      shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode getAccessMode();
+      shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode getAccessMode();   
+      
+      //------------------------------------
+      ///\brief Get keyword type
+      ///\return keyword type
+      //------------------------------------
+      shared::plugin::yadomsApi::IYadomsApi::EKeywordType getType();
+
+      //------------------------------------
+      ///\brief Get keyword units
+      ///\return keyword units
+      //------------------------------------
+      const std::string & getUnits();
 
       //------------------------------------
       ///\brief Get keyword details
@@ -71,7 +87,17 @@ namespace xplrules {
       //------------------------------------
       ///\brief The keyword capacity mode
       //------------------------------------
-      shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode m_accessMode;
+      shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode m_accessMode;    
+      
+      //------------------------------------
+      ///\brief The keyword type
+      //------------------------------------
+      shared::plugin::yadomsApi::IYadomsApi::EKeywordType m_type;
+
+      //------------------------------------
+      ///\brief The keyword units
+      //------------------------------------
+      const std::string& m_units;
 
       //------------------------------------
       ///\brief The keyword details

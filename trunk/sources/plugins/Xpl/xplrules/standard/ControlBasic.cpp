@@ -41,7 +41,7 @@ namespace xplrules { namespace standard {
    std::vector< boost::shared_ptr<CDeviceKeyword> > CControlBasic::identifyKeywords(xplcore::CXplMessage & msg)
    {
       std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
-      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("current", "current", shared::plugin::yadomsApi::IYadomsApi::kReadWrite, "")));
+      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("current", "current", shared::plugin::yadomsApi::IYadomsApi::kReadWrite, shared::plugin::yadomsApi::IYadomsApi::kString, "", "")));
       return keywords;
    }
 

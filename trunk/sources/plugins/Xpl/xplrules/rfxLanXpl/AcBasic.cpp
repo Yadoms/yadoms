@@ -2,6 +2,7 @@
 #include "AcBasic.h"
 #include <shared/tools/Random.h>
 #include <shared/serialization/PTreeToJsonSerializer.h>
+#include <shared/plugin/yadomsApi/StandardCapacities.h>
 
 namespace xplrules { namespace rfxLanXpl {
 
@@ -48,12 +49,16 @@ namespace xplrules { namespace rfxLanXpl {
    {
       std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
 
-      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordCommand, m_keywordCommand, shared::plugin::yadomsApi::IYadomsApi::kReadWrite, m_keywordCommandValues)));
+      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordCommand, yApi::CStandardCapacities::SwitchOnOff, shared::plugin::yadomsApi::IYadomsApi::kWriteOnly, shared::plugin::yadomsApi::IYadomsApi::kNoData, "", m_keywordCommandValues)));
+      //keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordCommand, m_keywordCommand, shared::plugin::yadomsApi::IYadomsApi::kReadWrite, m_keywordCommandValues)));
+      //keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordCommand, m_keywordCommand, shared::plugin::yadomsApi::IYadomsApi::kReadWrite, m_keywordCommandValues)));
+
+      
 
       boost::property_tree::ptree details;
       details.put("min", 0);
       details.put("max", 15);
-      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordLevel, m_keywordLevel, shared::plugin::yadomsApi::IYadomsApi::kReadWrite, details)));
+      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordLevel, m_keywordLevel, shared::plugin::yadomsApi::IYadomsApi::kReadWrite, shared::plugin::yadomsApi::IYadomsApi::kInteger, "", details)));
 
       return keywords;
    }
@@ -109,7 +114,7 @@ namespace xplrules { namespace rfxLanXpl {
       newMessage->setTarget(xplcore::CXplActor::parse(rfxAddress));
 
       //set the ac.basic
-      newMessage->setMessageSchemaIdentifier(xplcore::CXplMessageSchemaIdentifier("ac", "basic"));
+      newMessage->setMessageSchemaIdentifier(getProtocol());
 
       //set the device addesss and unit (parse from argetDevice.Address)
       newMessage->addToBody(m_keywordAddress, splittedAddress[0]);

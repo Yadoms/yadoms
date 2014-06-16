@@ -23,7 +23,7 @@ const std::string& CManuallyDeviceCreationData::getKeyword() const
    return m_keyword;
 }
 
-const std::string& CManuallyDeviceCreationData::getCapcity() const
+const std::string& CManuallyDeviceCreationData::getCapacity() const
 {
    return m_capacity;
 }

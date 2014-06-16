@@ -18,10 +18,10 @@ void CFakeSensor::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
    context->declareDevice(m_deviceId, getModel(), shared::CStringExtension::EmptyString);
 
    // Declare associated keywords (= values managed by this device)
-   context->declareKeyword(m_deviceId, "temp1"  , yApi::CStandardCapacities::Temperature , yApi::IYadomsApi::kReadOnly);
-   context->declareKeyword(m_deviceId, "temp2"  , yApi::CStandardCapacities::Temperature , yApi::IYadomsApi::kReadOnly);
-   context->declareKeyword(m_deviceId, "battery", yApi::CStandardCapacities::BatteryLevel, yApi::IYadomsApi::kReadOnly);
-   context->declareKeyword(m_deviceId, "Rssi"   , yApi::CStandardCapacities::Rssi        , yApi::IYadomsApi::kReadOnly);
+   context->declareKeyword(m_deviceId, "temp1", yApi::CStandardCapacities::Temperature, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kDecimal);
+   context->declareKeyword(m_deviceId, "temp2", yApi::CStandardCapacities::Temperature, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kDecimal);
+   context->declareKeyword(m_deviceId, "battery", yApi::CStandardCapacities::BatteryLevel, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kDecimal);
+   context->declareKeyword(m_deviceId, "Rssi", yApi::CStandardCapacities::Rssi, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kDecimal);
 }
 
 void CFakeSensor::read()

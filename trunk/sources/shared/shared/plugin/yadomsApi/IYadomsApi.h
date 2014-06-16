@@ -124,6 +124,20 @@ namespace shared { namespace plugin { namespace yadomsApi
       };
 
       //-----------------------------------------------------
+      ///\brief Keyword type
+      //-----------------------------------------------------
+      enum EKeywordType
+      {
+         kNoData,
+         kString,
+         kInteger,
+         kDecimal,
+         kBool,
+         kJson,
+      };
+
+
+      //-----------------------------------------------------
       ///\brief Check if a keyword already exists for the device
       ///\param    [in]    device             The device name owner of the keyword
       ///\param    [in]    keyword            The keyword name
@@ -137,11 +151,13 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\param    [in]    keyword            The keyword name
       ///\param    [in]    capacity           The capacity name (see yApi::CStandardCapacities for standard capacities, or use your own)
       ///\param    [in]    accessMode         The keyword access
+      ///\param    [in]    type               The keyword type
+      ///\param    [in]    units              The keyword units
       ///\param    [in]    details            The keyword details (JSON string, optional. Can be used to declare specific properties like min/max values)
       ///\return true if the keyword has been successfully created, false if already exist
       ///\throw shared::exception::CEmptyResult if creation failed
       //-----------------------------------------------------   
-      virtual bool declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, const std::string& details = shared::CStringExtension::EmptyString) = 0;
+      virtual bool declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, EKeywordType type, const std::string & units = shared::CStringExtension::EmptyString, const std::string& details = shared::CStringExtension::EmptyString) = 0;
       
 
       //----------------------------------------------------------------------------------------------------------------

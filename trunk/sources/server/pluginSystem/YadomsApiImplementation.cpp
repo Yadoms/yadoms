@@ -51,7 +51,7 @@ bool CYadomsApiImplementation::keywordExists(const std::string& device, const st
    return m_keywordRequester->keywordExists((m_deviceRequester->getDevice(getPluginId(), device))->Id, keyword);
 }
 
-bool CYadomsApiImplementation::declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode accessMode, const std::string& details)
+bool CYadomsApiImplementation::declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, EKeywordType type, const std::string & units, const std::string& details)
 {
    if (keywordExists(device, keyword))
       return false;
@@ -69,6 +69,22 @@ bool CYadomsApiImplementation::declareKeyword(const std::string& device, const s
       throw shared::exception::CEmptyResult("Fail to declare keyword : unknown accessMode");
       break;
    }
+
+   switch (type)
+   {
+   case shared::plugin::yadomsApi::IYadomsApi::EKeywordType::kNoData: keywordEntity.Type = database::entities::kNoData; break;
+   case shared::plugin::yadomsApi::IYadomsApi::EKeywordType::kString: keywordEntity.Type = database::entities::kString; break;
+   case shared::plugin::yadomsApi::IYadomsApi::EKeywordType::kInteger: keywordEntity.Type = database::entities::kInteger; break;
+   case shared::plugin::yadomsApi::IYadomsApi::EKeywordType::kDecimal: keywordEntity.Type = database::entities::kDecimal; break;
+   case shared::plugin::yadomsApi::IYadomsApi::EKeywordType::kBool: keywordEntity.Type = database::entities::kBool; break;
+   case shared::plugin::yadomsApi::IYadomsApi::EKeywordType::kJson: keywordEntity.Type = database::entities::kJson; break;
+   default:
+      BOOST_ASSERT_MSG(false, "Unknown type");
+      throw shared::exception::CEmptyResult("Fail to declare keyword : unknown type");
+      break;
+   }
+
+   keywordEntity.Units = units;
    keywordEntity.Name = keyword;
    keywordEntity.FriendlyName = keyword;
    keywordEntity.Details = details;

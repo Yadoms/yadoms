@@ -53,6 +53,8 @@ set(SHARED_LIB_SRC
 	shared/plugin/yadomsApi/StandardCapacities.cpp
 	shared/plugin/yadomsApi/StandardValues.h
 	shared/plugin/yadomsApi/StandardValues.cpp
+	shared/plugin/yadomsApi/StandardUnits.h
+	shared/plugin/yadomsApi/StandardUnits.cpp
 	shared/plugin/yadomsApi/IYadomsApi.h
 
    shared/plugin/yadomsApi/commands/Curtain.cpp
