@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "AcBasic.h"
 #include <shared/tools/Random.h>
-//#include "communication/rules/KeywordManager.h"
+#include <shared/serialization/PTreeToJsonSerializer.h>
 
 namespace xplrules { namespace rfxLanXpl {
 
@@ -63,15 +63,14 @@ namespace xplrules { namespace rfxLanXpl {
 
 
    // ICommandRule implemntation
-   /*
-   boost::shared_ptr< xplcore::CXplMessage > CAcBasic::createXplCommand(database::entities::CDevice & targetDevice, command::CDeviceCommand & deviceCommand)
+   boost::shared_ptr< xplcore::CXplMessage > CAcBasic::createXplCommand(boost::shared_ptr<yApi::IDeviceCommand> & commandData, const std::string & rfxAddress)
    {
       ////////////////////////////
       // do some checks
       ////////////////////////////
 
       //check the device address is valid
-      std::string address = targetDevice.Address;
+      std::string address = commandData->getTargetDevice();
       std::vector<std::string> splittedAddress;
       boost::split(splittedAddress, address, boost::is_any_of("-"), boost::token_compress_on);
 
@@ -81,17 +80,16 @@ namespace xplrules { namespace rfxLanXpl {
       }
 
       //check the command value
-      communication::command::CDeviceCommand::CommandData content = deviceCommand.getCommandData();
-      if(content.find(m_keywordCommand) == content.end())
-      {
-         throw shared::exception::CException( (boost::format("ac.basic protocol needs a parameter '%1%'") % m_keywordCommand).str());
-      }
+      
 
-      if(!CKeywordManager::isEnumerationValue(content[m_keywordCommand], m_keywordCommandValues))
-      {
-         throw shared::exception::CException( (boost::format("ac.basic protocol needs a parameter '%1%' that match one off : '%2%' ( '|' separated )") % m_keywordCommand % m_keywordCommandValues).str());
-      }
+      boost::property_tree::ptree commandDetails;
+      shared::serialization::CPtreeToJsonSerializer serialiser;
+      serialiser.deserialize(commandData->getBody(), commandDetails);
 
+      std::string commandKeyword = commandDetails.get<std::string>(m_keywordCommand);
+
+      if (commandKeyword.empty())
+         throw shared::exception::CException((boost::format("ac.basic protocol needs a parameter '%1%'") % m_keywordCommand).str());
 
 
       ////////////////////////////
@@ -108,7 +106,7 @@ namespace xplrules { namespace rfxLanXpl {
       newMessage->setHop(1);
 
       //set the target (rfxcom-lan-<hax mac address>)
-      newMessage->setTarget(xplcore::CXplActor::parse(targetDevice.HardwareIdentifier()));
+      newMessage->setTarget(xplcore::CXplActor::parse(rfxAddress));
 
       //set the ac.basic
       newMessage->setMessageSchemaIdentifier(xplcore::CXplMessageSchemaIdentifier("ac", "basic"));
@@ -118,19 +116,20 @@ namespace xplrules { namespace rfxLanXpl {
       newMessage->addToBody(m_keywordUnit, splittedAddress[1]);
 
       //set the command
-      newMessage->addToBody(m_keywordCommand, content[m_keywordCommand]);
+      newMessage->addToBody(m_keywordCommand, commandKeyword);
 
       //if there is any other data to send, just add key/value to bidy
+      /* TODO : ajouter les message supplementaires
       communication::command::CDeviceCommand::CommandData::const_iterator i;
       for(i=content.begin(); i!=content.end(); ++i)
       {
          if(!boost::iequals(i->first, m_keywordCommand))
             newMessage->addToBody(i->first, i->second);
       }
-
+      */
       return newMessage;
    }
-   */
+   
 
    std::string CAcBasic::generateVirtualDeviceIdentifier()
    {

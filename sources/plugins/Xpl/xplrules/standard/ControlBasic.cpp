@@ -52,5 +52,24 @@ namespace xplrules { namespace standard {
 
    // [END] ICommandRule implemntation
 
+
+
+   // ICommandRule implemntation
+   boost::shared_ptr< xplcore::CXplMessage > CControlBasic::createXplCommand(boost::shared_ptr<yApi::IDeviceCommand> & commandData, const std::string & rfxAddress)
+   {
+      ////////////////////////////
+      // create the message
+      ////////////////////////////
+
+      //create the message
+      boost::shared_ptr< xplcore::CXplMessage > newMessage(new xplcore::CXplMessage());
+
+      //TODO : implement it
+
+      return newMessage;
+   }
+   // [END] ICommandRule implemntation
+
+
 } //namespace standard
 } //namespace xplrules
