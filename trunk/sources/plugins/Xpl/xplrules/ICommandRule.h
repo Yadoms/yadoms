@@ -1,7 +1,10 @@
 #pragma once
 
 #include "IRule.h"
-//#include "communication/command/DeviceCommand.h"
+#include <shared/plugin/yadomsApi/IYadomsApi.h>
+
+// Shortcut to yadomsApi namespace
+namespace yApi = shared::plugin::yadomsApi;
 
 namespace xplrules {
 
@@ -16,15 +19,13 @@ namespace xplrules {
       //------------------------------------
       virtual ~ICommandRule(){}
 
-      /*
       //------------------------------------
       ///\brief Fill a command message
-      ///\param [in]    targetDevice   The targetted device
       ///\param [in]    commandData    The command data
       ///\return an xpl message ready to be sent
       //------------------------------------
-      virtual boost::shared_ptr< xplcore::CXplMessage > createXplCommand(database::entities::CDevice & targetDevice, command::CDeviceCommand & deviceCommand) = 0;
-      */
+      virtual boost::shared_ptr< xplcore::CXplMessage > createXplCommand(boost::shared_ptr<yApi::IDeviceCommand> & commandData, const std::string & rfxAddress) = 0;
+      
       //--------------------------------
       ///\brief generate a random virtual device identifier (i.e. : 0x123456-2)
       ///\return a virtual device identifier

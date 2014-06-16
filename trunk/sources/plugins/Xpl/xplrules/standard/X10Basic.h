@@ -23,7 +23,7 @@ namespace xplrules { namespace standard {
       // [END] IRule implementation
      
       // ICommandRule implemntation
-      //virtual boost::shared_ptr< xplcore::CXplMessage > createXplCommand(database::entities::CDevice & targetDevice, command::CDeviceCommand & deviceCommand);
+      virtual boost::shared_ptr< xplcore::CXplMessage > createXplCommand(boost::shared_ptr<yApi::IDeviceCommand> & commandData, const std::string & rfxAddress);
       virtual std::string generateVirtualDeviceIdentifier();
       // [END] ICommandRule implemntation
 

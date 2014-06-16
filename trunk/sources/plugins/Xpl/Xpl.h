@@ -2,6 +2,7 @@
 #include <shared/plugin/IPlugin.h>
 #include "XplConfiguration.h"
 #include "xplcore/XplMessage.h"
+#include "xplcore/XplService.h"
 #include "xplrules/RulerFactory.h"
 
 // Shortcut to yadomsApi namespace
@@ -34,9 +35,17 @@ public:
 private:
    //----------------------------------------------
    ///\brief Function handler when receiving XplMessage
-   ///\param [in] The xpl message received
+   ///\param [in] message The xpl message received
+   ///\param [in] context The plugin API
    //----------------------------------------------
    void OnXplMessageReceived(xplcore::CXplMessage & message, boost::shared_ptr<yApi::IYadomsApi> context);
+
+   //----------------------------------------------
+   ///\brief Function handler use to send a command device
+   ///\param [in] message The xpl message received
+   ///\param [in] context The plugin API
+   //----------------------------------------------
+   void OnSendDeviceCommand(boost::shared_ptr<yApi::IDeviceCommand> command, boost::shared_ptr<yApi::IYadomsApi> context, xplcore::CXplService & xplService);
 
    //----------------------------------------------
    ///\brief  The plugin xpl device id

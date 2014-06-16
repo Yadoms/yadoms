@@ -14,6 +14,7 @@
 #include <boost/asio.hpp>
 #include <boost/assign.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/log/common.hpp>
 #include <boost/log/trivial.hpp>
