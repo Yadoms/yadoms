@@ -166,6 +166,9 @@
                   "model" : "model",
                   "actions" : "Actions"
                },
+               "configure" : "Configure the device",
+               "delete" : "Delete the device",
+               "confirmDeviceDeletion" : "This action will delete the device __deviceName__. Continue anyway ?",
                "errorGettingDeviceList" : "An error has occurred acquiring device list"
             },
             "update" : {
@@ -205,9 +208,10 @@
         "errorUpdating" : "An error has occurred updating __pluginName__"
      },
      "deviceManager" : {
-         "errorGettingPluginPackageName" : "An error has occurred getting plugin package of device __deviceName__",
+         "errorGettingAttachedPlugin" : "An error has occurred getting plugin package of device __deviceName__",
          "errorDeleting" : "An error has occurred deleting __deviceName__",
          "errorCreating" : "An error has occurred creating __deviceName__",
+         "errorUpdating" : "An error has occurred updating __deviceName__"
      }
    },
    "eventLogger" : {
