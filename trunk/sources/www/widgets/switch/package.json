@@ -23,7 +23,7 @@
          "name" : "Switch device",
          "description" : "Device to emulate",
          "type" : "device",
-         "expectedCapacity" : "switch_onOff",
+         "expectedCapacity" : "switch",
          "expectedCapacityAccess" : "set"
       },
       "showDeviceName" : {
