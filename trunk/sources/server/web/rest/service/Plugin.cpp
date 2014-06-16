@@ -27,7 +27,7 @@ namespace web { namespace rest { namespace service {
    void CPlugin::configureDispatcher(CRestDispatcher & dispatcher)
    {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CPlugin::getAllAvailablePlugins);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instances"), CPlugin::getAllPluginsInstance);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance"), CPlugin::getAllPluginsInstance);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CPlugin::getOnePlugin);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("status"), CPlugin::getInstanceStatus);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT",  (m_restKeyword)("*")("start"), CPlugin::startInstance);
