@@ -80,6 +80,8 @@ namespace sqlite {
       ((AccessMode)("accessMode"))
       ((Name)("name"))
       ((FriendlyName)("friendlyName"))
+      ((Type)("type"))
+      ((Units)("units"))
       ((Details)("details"))
    )
 

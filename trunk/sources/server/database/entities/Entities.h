@@ -34,6 +34,16 @@ namespace entities {
       kUpdated = 3,
    };
 
+
+   enum EKeywordDataType
+   {
+      kString = 0,
+      kInteger = 1,
+      kDecimal = 2,
+      kBool = 3,
+      kJson = 4,
+   };
+
    /*
       class CPlugin 
    {
@@ -140,6 +150,8 @@ namespace entities {
       ((AccessMode)(database::entities::EKeywordAccessMode)(database::entities::kNoAccess))
       ((Name)(std::string)(""))
       ((FriendlyName)(std::string)(""))
+      ((Type)(database::entities::EKeywordDataType)(database::entities::kString))
+      ((Units)(std::string)(""))
       ((Details)(std::string)(""))
    )
 

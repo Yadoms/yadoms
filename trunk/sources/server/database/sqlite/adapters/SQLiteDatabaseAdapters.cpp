@@ -84,6 +84,8 @@ namespace adapters {
       ((AccessMode)(database::entities::EKeywordAccessMode)(database::entities::kNoAccess)(int))
       ((Name)(std::string)(""))
       ((FriendlyName)(std::string)(""))
+      ((Type)(database::entities::EKeywordDataType)(database::entities::kString)(int))
+      ((Units)(std::string)(""))
       ((Details)(std::string)(""))
    )
 

@@ -79,6 +79,8 @@ namespace sqlite {
       (AccessMode)
       (Name)
       (FriendlyName)
+      (Type)
+      (Units)
       (Details)
    )
 

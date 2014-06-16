@@ -79,6 +79,8 @@ namespace web { namespace rest { namespace json {
       (AccessMode)
       (Name)
       (FriendlyName)
+      (Type)
+      (Units)
       (Details)
    )
 
