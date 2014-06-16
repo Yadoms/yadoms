@@ -30,6 +30,7 @@ function SerialParameterHandler(i18nContext, paramName, content, currentValue) {
    this.content = content;
 
    var self = this;
+   
    //we async ask for serial port list
    $.getJSON("/rest/general/serialport")
       .done(populateSerialPorts(self))
