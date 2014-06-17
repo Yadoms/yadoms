@@ -1,11 +1,12 @@
 #pragma once
 
-#include "../ICommandRule.h"
+#include "../IRule.h"
 #include "../IReadRule.h"
+#include "../ICommandRule.h"
 
 namespace xplrules { namespace rfxLanXpl {
 
-   class CAcBasic : public IReadRule, public ICommandRule
+   class CAcBasic : public IRule, public IReadRule, public ICommandRule
    {
    public:
       CAcBasic();

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "IRule.h"
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
 
 // Shortcut to yadomsApi namespace
@@ -11,7 +10,7 @@ namespace xplrules {
    //------------------------------------
    ///\brief   This interface describe rules which handles commands
    //------------------------------------
-   class ICommandRule : public IRule
+   class ICommandRule
    {
    public:
       //------------------------------------

@@ -1,9 +1,9 @@
 #pragma once
 #include <shared/plugin/IPlugin.h>
-#include "XplConfiguration.h"
+#include "RfxLanXplConfiguration.h"
 #include "xplcore/XplMessage.h"
 #include "xplcore/XplService.h"
-#include "xplrules/RulerFactory.h"
+#include "xplrules/IDeviceManager.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -15,18 +15,18 @@ namespace yApi = shared::plugin::yadomsApi;
 ///         - process a command from Yadoms
 ///         - send sensor state to Yadoms
 //--------------------------------------------------------------
-class CXpl : public shared::plugin::IPlugin
+class CRfxLanXpl : public shared::plugin::IPlugin
 {
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    //--------------------------------------------------------------
-   CXpl();
+   CRfxLanXpl();
 
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~CXpl();
+   virtual ~CRfxLanXpl();
 
    // IPlugin implementation
    virtual void doWork(boost::shared_ptr<yApi::IYadomsApi> context);
@@ -48,19 +48,25 @@ private:
    void OnSendDeviceCommand(boost::shared_ptr<yApi::IDeviceCommand> command, boost::shared_ptr<yApi::IYadomsApi> context, xplcore::CXplService & xplService);
 
    //----------------------------------------------
+   ///\brief  The device manager
+   //----------------------------------------------
+   boost::shared_ptr<xplrules::IDeviceManager>   m_deviceManager;
+
+   //--------------------------------
+   ///\brief Instance manager
+   //--------------------------------
+   xplrules::CRuleInstanceManager m_instanceManager;
+
+   //----------------------------------------------
    ///\brief  The plugin xpl device id
    //----------------------------------------------
    static std::string m_xpl_gateway_id;
 
-   //----------------------------------------------
-   ///\brief  The ruler factory
-   //----------------------------------------------
-   xplrules::CRulerFactory m_rulerFactory;
 
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
-   CXplConfiguration m_configuration;
+   CRfxLanXplConfiguration m_configuration;
 };
 
 

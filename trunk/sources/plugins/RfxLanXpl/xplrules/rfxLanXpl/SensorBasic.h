@@ -1,10 +1,11 @@
 #pragma once
 
+#include "../IRule.h"
 #include "../IReadRule.h"
 
 namespace xplrules { namespace rfxLanXpl {
 
-   class CSensorBasic : public IReadRule
+   class CSensorBasic : public IRule, public IReadRule
    {
    public:
       //------------------------------------

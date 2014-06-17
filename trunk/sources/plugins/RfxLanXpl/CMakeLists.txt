@@ -4,7 +4,7 @@ include("../YadomsPluginsCommon.cmake")
 #########################################
 ## Place here all the plugin source files
 #########################################
-set(XPL_CORE_SOURCES
+set(RFXLANXPL_CORE_SOURCES
 	xplcore/XplConstants.h
 	xplcore/XplConstants.cpp
 	xplcore/XplActor.cpp
@@ -26,7 +26,7 @@ set(XPL_CORE_SOURCES
 	xplcore/XplHubConnectedPeripheral.h 
 )
 
-set(XPL_RULES_SOURCES
+set(RFXLANXPL_RULES_SOURCES
 	xplrules/IRule.h
 	xplrules/IReadRule.h
 	xplrules/ICommandRule.h
@@ -38,16 +38,6 @@ set(XPL_RULES_SOURCES
 	xplrules/DeviceKeyword.h
 	xplrules/DeviceKeyword.cpp
 	xplrules/RuleInstanceManager.hpp
-	xplrules/RulerFactory.h
-	xplrules/RulerFactory.cpp
-	xplrules/standard/DeviceManager.h
-	xplrules/standard/DeviceManager.cpp
-	xplrules/standard/X10Basic.h
-	xplrules/standard/X10Basic.cpp
-	xplrules/standard/SensorBasic.h
-	xplrules/standard/SensorBasic.cpp
-	xplrules/standard/ControlBasic.h
-	xplrules/standard/ControlBasic.cpp
 	xplrules/rfxLanXpl/DeviceManager.h
 	xplrules/rfxLanXpl/DeviceManager.cpp
 	xplrules/rfxLanXpl/AcBasic.h
@@ -64,21 +54,20 @@ set(XPL_RULES_SOURCES
 )
 
 
-set(XPL_PLUGIN_SOURCES
+set(RFXLANXPL_PLUGIN_SOURCES
 	stdafx.h
 	stdafx.cpp
-	Xpl.h
-	Xpl.cpp 
-	XplConfiguration.h
-	XplConfiguration.cpp 
-	${XPL_CORE_SOURCES}
-	${XPL_RULES_SOURCES}
+	RfxLanXpl.h
+	RfxLanXpl.cpp 
+	RfxLanXplConfiguration.h
+	RfxLanXplConfiguration.cpp 
+	${RFXLANXPL_CORE_SOURCES}
+	${RFXLANXPL_RULES_SOURCES}
 )
 
 
 source_group(xplcore xplcore/*.*)
 source_group(xplrules xplrules/*.*)
-source_group(xplrules\\standard xplrules/standard/*.*)
 source_group(xplrules\\rfxLanXpl xplrules/rfxLanXpl/*.*)
 source_group(xplrules\\rfxLanXpl\\commands xplrules/rfxLanXpl/commands/*.*)
 
@@ -87,14 +76,14 @@ source_group(xplrules\\rfxLanXpl\\commands xplrules/rfxLanXpl/commands/*.*)
 ## Place here all additional include directories
 ## (by default yadoms-shared and boost are included)
 #########################################
-set(XPL_PLUGIN_INCLDIR
+set(RFXLANXPL_PLUGIN_INCLDIR
 )
 
 #########################################
 ## Place here all additional libraries to link with
 ## (by default yadoms-shared and boost are included)
 #########################################
-set(XPL_PLUGIN_LINK
+set(RFXLANXPL_PLUGIN_LINK
 )
 
 #########################################
@@ -107,15 +96,15 @@ set(XPL_PLUGIN_LINK
 ## Always leave these lines to configure plugin correctly
 ## even if FAKE_PLUGIN_INCLDIR or FAKE_PLUGIN_LINK are empty
 #########################################
-PLUGIN_SOURCES(xpl ${XPL_PLUGIN_SOURCES})
-PLUGIN_INCLDIR(xpl ${XPL_PLUGIN_ADDITIONAL_INC_DIR})
-PLUGIN_LINK(xpl ${XPL_PLUGIN_ADDITIONAL_LIB})
+PLUGIN_SOURCES(RfxLanXpl ${RFXLANXPL_PLUGIN_SOURCES})
+PLUGIN_INCLDIR(RfxLanXpl ${RFXLANXPL_PLUGIN_ADDITIONAL_INC_DIR})
+PLUGIN_LINK(RfxLanXpl ${RFXLANXPL_PLUGIN_ADDITIONAL_LIB})
 
 #########################################
 ## Post-build commands
 ## Copy files to build directory
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
-PLUGIN_POST_BUILD_COPY_FILE(xpl package.json)
-PLUGIN_POST_BUILD_COPY_FILE(xpl icon.png)
-PLUGIN_POST_BUILD_COPY_FILE(xpl locales/fr.json)
+PLUGIN_POST_BUILD_COPY_FILE(RfxLanXpl package.json)
+PLUGIN_POST_BUILD_COPY_FILE(RfxLanXpl icon.png)
+PLUGIN_POST_BUILD_COPY_FILE(RfxLanXpl locales/fr.json)

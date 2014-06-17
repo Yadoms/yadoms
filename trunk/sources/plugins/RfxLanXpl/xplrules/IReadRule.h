@@ -1,6 +1,5 @@
 #pragma once
 
-#include "IRule.h"
 #include "../xplcore/XplMessage.h"
 
 namespace xplrules {
@@ -10,7 +9,7 @@ namespace xplrules {
    //------------------------------------
    ///\brief   Interface for rules which allow reading data from xpl
    //------------------------------------
-   class IReadRule : public IRule
+   class IReadRule
    {
    public:
       //------------------------------------

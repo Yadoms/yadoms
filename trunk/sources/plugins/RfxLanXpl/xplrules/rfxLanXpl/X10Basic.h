@@ -1,14 +1,16 @@
 #pragma once
 
+#include "../IRule.h"
+#include "../IReadRule.h"
 #include "../ICommandRule.h"
 
-namespace xplrules { namespace standard {
+namespace xplrules { namespace rfxLanXpl {
 
-   class CControlBasic : public ICommandRule
+   class CX10Basic : public IRule, public IReadRule, public ICommandRule
    {
    public:
-      CControlBasic();
-      virtual ~CControlBasic();
+      CX10Basic();
+      virtual ~CX10Basic();
       
       //------------------------------------
       ///\brief Provide the xpl protocol implemented by this class
@@ -18,9 +20,12 @@ namespace xplrules { namespace standard {
 
       // IRule implementation
       virtual const CDeviceIdentifier getDeviceAddressFromMessage(xplcore::CXplMessage & msg);
-      virtual MessageContent extractMessageData(xplcore::CXplMessage & msg);
       virtual std::vector< boost::shared_ptr<CDeviceKeyword> > identifyKeywords(xplcore::CXplMessage & msg);
       // [END] IRule implementation
+     
+      // IReadRule implementation
+      virtual MessageContent extractMessageData(xplcore::CXplMessage & msg);
+      // [END] IReadRule implementation
      
       // ICommandRule implemntation
       virtual boost::shared_ptr< xplcore::CXplMessage > createXplCommand(boost::shared_ptr<yApi::IDeviceCommand> & commandData, const std::string & rfxAddress);
@@ -30,5 +35,5 @@ namespace xplrules { namespace standard {
       static xplcore::CXplMessageSchemaIdentifier m_protocol;
    };
    
-} //namespace standard
+} //namespace rfxLanXpl
 } //namespace xplrules
