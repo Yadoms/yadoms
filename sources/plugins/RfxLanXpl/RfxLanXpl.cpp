@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Xpl.h"
+#include "RfxLanXpl.h"
 #include <shared/plugin/ImplementationHelper.h>
 #include <shared/Log.h>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
@@ -9,20 +9,22 @@
 #include "xplcore/XplHub.h"
 #include "xplcore/XplConstants.h"
 #include "xplrules/IReadRule.h"
-
+#include "xplrules/ICommandRule.h"
+#include "xplrules/rfxLanXpl/DeviceManager.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
 // This macro also defines the static PluginInformations value that can be used by plugin to get information values
-IMPLEMENT_PLUGIN(CXpl)
+IMPLEMENT_PLUGIN(CRfxLanXpl)
 
-std::string CXpl::m_xpl_gateway_id = "xplplug";
+std::string CRfxLanXpl::m_xpl_gateway_id = "xplplug";
 
-CXpl::CXpl()
+CRfxLanXpl::CRfxLanXpl()
+   :m_deviceManager(new xplrules::rfxLanXpl::CDeviceManager())
 {
 }
 
-CXpl::~CXpl()
+CRfxLanXpl::~CRfxLanXpl()
 {
 }
 
@@ -32,7 +34,7 @@ enum
    kXplMessageReceived = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from yApi::IYadomsApi::kPluginFirstEventId
 };
 
-void CXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
+void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    boost::shared_ptr<xplcore::CXplHub> hub;
    try
@@ -52,7 +54,7 @@ void CXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       }
 
       // the main loop
-      YADOMS_LOG(debug) << "CXpl is running...";
+      YADOMS_LOG(debug) << "RfxLanXpl plugin is running...";
       while (1)
       {
          // Wait for an event
@@ -117,7 +119,7 @@ void CXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 ///\brief Function handler when receiving XplMessage
 ///\param [in] The xpl message received
 //----------------------------------------------
-void CXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::shared_ptr<yApi::IYadomsApi> context)
+void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::shared_ptr<yApi::IYadomsApi> context)
 {
    try
    {
@@ -129,48 +131,63 @@ void CXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::shared
          xplMessage.getSource().getDeviceId() == m_xpl_gateway_id)
          realSource = xplMessage.getTarget().toString();
 
-      boost::shared_ptr<xplrules::IRule> rule = m_rulerFactory.identifyRule(realSource, xplMessage.getMessageSchemaIdentifier().toString());
-      if (rule.get() != NULL)
+      if (m_deviceManager->isHandled(realSource))
       {
-         //retreeive device identifier
-         xplrules::CDeviceIdentifier deviceAddress = rule->getDeviceAddressFromMessage(xplMessage);
 
-         if (!context->deviceExists(deviceAddress.getId()))
+         boost::shared_ptr<xplrules::IRule> rule = m_deviceManager->identifyRule(xplMessage.getMessageSchemaIdentifier().toString(), m_instanceManager);
+         if (rule.get() != NULL)
          {
-            boost::property_tree::ptree details;
-            details.put("readingProtocol", deviceAddress.getReadingXplProtocol().toString());
-            details.put("writingProtocol", deviceAddress.getWritingXplProtocol().toString());
-            details.put("source", realSource);
-            shared::serialization::CPtreeToJsonSerializer serialiser;
-            context->declareDevice(deviceAddress.getId(), deviceAddress.getCommercialName(), serialiser.serialize(details));
-         }
+            //retreeive device identifier
+            xplrules::CDeviceIdentifier deviceAddress = rule->getDeviceAddressFromMessage(xplMessage);
 
-         //create message keywords in database
-         std::vector< boost::shared_ptr<xplrules::CDeviceKeyword> > allKeywords = rule->identifyKeywords(xplMessage);
-         for (std::vector< boost::shared_ptr<xplrules::CDeviceKeyword> >::iterator keyword = allKeywords.begin(); keyword != allKeywords.end(); ++keyword)
-         {
-            context->declareKeyword(deviceAddress.getId(), (*keyword)->getName(), (*keyword)->getCapacity(), (*keyword)->getAccessMode(), (*keyword)->getType(), (*keyword)->getUnits(), (*keyword)->getDetails());
-         }
-
-
-         //check if the rule handle reading
-         boost::shared_ptr<xplrules::IReadRule> readRule = boost::dynamic_pointer_cast<xplrules::IReadRule>(rule);
-
-         if (readRule)
-         {
-
-            //create message to insert in database
-            xplrules::MessageContent data = readRule->extractMessageData(xplMessage);
-
-            xplrules::MessageContent::iterator i;
-            for (i = data.begin(); i != data.end(); ++i)
+            if (!context->deviceExists(deviceAddress.getId()))
             {
-               context->historizeData(deviceAddress.getId(), i->first, i->second);
+               boost::property_tree::ptree details;
+               details.put("readingProtocol", deviceAddress.getReadingXplProtocol().toString());
+               details.put("writingProtocol", deviceAddress.getWritingXplProtocol().toString());
+               details.put("source", realSource);
+               shared::serialization::CPtreeToJsonSerializer serialiser;
+               context->declareDevice(deviceAddress.getId(), deviceAddress.getCommercialName(), serialiser.serialize(details));
             }
+
+            //create message keywords in database
+            std::vector< boost::shared_ptr<xplrules::CDeviceKeyword> > allKeywords = rule->identifyKeywords(xplMessage);
+            for (std::vector< boost::shared_ptr<xplrules::CDeviceKeyword> >::iterator keyword = allKeywords.begin(); keyword != allKeywords.end(); ++keyword)
+            {
+               context->declareKeyword(deviceAddress.getId(), (*keyword)->getName(), (*keyword)->getCapacity(), (*keyword)->getAccessMode(), (*keyword)->getType(), (*keyword)->getUnits(), (*keyword)->getDetails());
+            }
+
+
+            //check if the rule handle reading
+            boost::shared_ptr<xplrules::IReadRule> readRule = boost::dynamic_pointer_cast<xplrules::IReadRule>(rule);
+
+            if (readRule)
+            {
+
+               //create message to insert in database
+               xplrules::MessageContent data = readRule->extractMessageData(xplMessage);
+
+               xplrules::MessageContent::iterator i;
+               for (i = data.begin(); i != data.end(); ++i)
+               {
+                  context->historizeData(deviceAddress.getId(), i->first, i->second);
+               }
+            }
+
+
          }
-
-
+         else
+         {
+            std::string errorMessage = (boost::format("Unsupported protocol = %1%") % xplMessage.getMessageSchemaIdentifier().toString()).str();
+            YADOMS_LOG(error) << errorMessage;
+         }
       }
+      else
+      {
+         std::string errorMessage = (boost::format("Unknown xpl source = %1%") % realSource).str();
+         YADOMS_LOG(error) << errorMessage;
+      }
+
    }
    catch (std::exception &ex)
    {
@@ -184,17 +201,14 @@ void CXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::shared
 ///\brief Function handler used to send a command to a device
 ///\param [in] The command to send
 //----------------------------------------------
-void CXpl::OnSendDeviceCommand(boost::shared_ptr<yApi::IDeviceCommand> command, boost::shared_ptr<yApi::IYadomsApi> context, xplcore::CXplService & xplService)
+void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<yApi::IDeviceCommand> command, boost::shared_ptr<yApi::IYadomsApi> context, xplcore::CXplService & xplService)
 {
    try
    {
       YADOMS_LOG(trace) << "Sending message : " << command->toString();
-
-
       if (context->deviceExists(command->getTargetDevice()))
       {
          //get device details
-
          std::string deviceDetails = context->getDeviceDetails(command->getTargetDevice());
          boost::property_tree::ptree details;
          shared::serialization::CPtreeToJsonSerializer serialiser;
@@ -203,76 +217,51 @@ void CXpl::OnSendDeviceCommand(boost::shared_ptr<yApi::IDeviceCommand> command, 
          std::string protocol = details.get<std::string>("writingProtocol");
          std::string source = details.get<std::string>("source");
 
-         boost::shared_ptr<xplrules::IRule> rule = m_rulerFactory.identifyRule(source, protocol);
-
-         if (rule)
+         if (m_deviceManager->isHandled(source))
          {
-            boost::shared_ptr< xplcore::CXplMessage > messageToSend;// = m_rulerFactory.createXplCommand(command, source);
-            if (messageToSend)
+            boost::shared_ptr<xplrules::IRule> rule = m_deviceManager->identifyRule(protocol, m_instanceManager);
+
+            if (rule)
             {
-               messageToSend->setSource(xplService.getActor());
-               xplService.sendMessage(*messageToSend.get());
+               //check if the rule handle reading
+               boost::shared_ptr<xplrules::ICommandRule> commandRule = boost::dynamic_pointer_cast<xplrules::ICommandRule>(rule);
+
+               if (commandRule)
+               {
+                  boost::shared_ptr< xplcore::CXplMessage > messageToSend = commandRule->createXplCommand(command, source);
+                  if (messageToSend)
+                  {
+                     messageToSend->setSource(xplService.getActor());
+                     xplService.sendMessage(*messageToSend.get());
+                  }
+                  else
+                  {
+                     //send result
+                     std::string errorMessage = "Fail to create the Xpl message to send to the device";
+                     YADOMS_LOG(error) << errorMessage;
+                  }
+
+               }
+               else
+               {
+                  std::string errorMessage = (boost::format("The protocol %1% do not support commands") % protocol).str();
+                  YADOMS_LOG(error) << errorMessage;
+               }
             }
             else
             {
-               //send result
-               std::string errorMessage = "Fail to create the Xpl message to send to the device";
+               std::string errorMessage = (boost::format("Unsupported protocol = %1%") % protocol).str();
                YADOMS_LOG(error) << errorMessage;
             }
          }
          else
          {
-            //std::string errorMessage = (boost::format("Unknown device id = %1%") % message.getDeviceId()).str();
-            //YADOMS_LOG(error) << errorMessage;
+            std::string errorMessage = (boost::format("Unknown xpl source = %1%") % source).str();
+            YADOMS_LOG(error) << errorMessage;
          }
 
       }
 
-      /*
-      //find device in database
-      boost::shared_ptr<database::entities::CDevice> device = m_dataProvider->getDeviceRequester()->getDevice(message.getDeviceId());
-
-      if (device)
-      {
-
-      boost::shared_ptr< shared::xpl::CXplMessage > messageToSend = m_rulerFactory.createXplCommand(*device.get(), message);
-      if (messageToSend)
-      {
-      messageToSend->setSource(xplService.getActor());
-      xplService.sendMessage(*messageToSend.get());
-
-      //send result
-      if (message.getCallback().get() != NULL)
-      {
-      command::CResult result = command::CResult::CreateSuccess();
-      message.getCallback()->sendResult(result);
-      }
-      }
-      else
-      {
-      //send result
-      std::string errorMessage = "Fail to create the Xpl message to send to the device";
-      YADOMS_LOG(error) << errorMessage;
-
-      if (message.getCallback().get() != NULL)
-      {
-      command::CResult result = command::CResult::CreateError(errorMessage);
-      message.getCallback()->sendResult(result);
-      }
-
-      }
-      }
-      else
-      {
-      std::string errorMessage = (boost::format("Unknown device id = %1%") % message.getDeviceId()).str();
-      YADOMS_LOG(error) << errorMessage;
-      if (message.getCallback().get() != NULL)
-      {
-      command::CResult result = command::CResult::CreateError(errorMessage);
-      message.getCallback()->sendResult(result);
-      }
-      }
-      */
    }
    catch (std::exception &ex)
    {

@@ -1,10 +1,11 @@
 #pragma once
 
+#include "../IRule.h"
 #include "../ICommandRule.h"
 
 namespace xplrules { namespace rfxLanXpl {
 
-   class CControlBasic : public ICommandRule
+   class CControlBasic : public IRule, public ICommandRule
    {
    public:
       CControlBasic();

@@ -1,22 +1,22 @@
 #include "stdafx.h"
-#include "XplConfiguration.h"
+#include "RfxLanXplConfiguration.h"
 #include <shared/Log.h>
 
 namespace cfg = shared::plugin::configuration;
 
 
-CXplConfiguration::~CXplConfiguration()
+CRfxLanXplConfiguration::~CRfxLanXplConfiguration()
 {
 }
 
 
 
-bool CXplConfiguration::getStartXplhub() const
+bool CRfxLanXplConfiguration::getStartXplhub() const
 {
    return getValue<bool>("HubXplSection.checkbox");
 }
 
-std::string CXplConfiguration::getHubLocalIp() const
+std::string CRfxLanXplConfiguration::getHubLocalIp() const
 {
    return getValue<std::string>("HubXplSection.values.ipAddress");
 }
