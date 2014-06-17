@@ -6,6 +6,7 @@
 #include <shared/serialization/PTreeToJsonSerializer.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include "database/entities/Entities.h"
+#include <shared/Log.h>
 
 namespace web { namespace rest { namespace json {
 
@@ -70,7 +71,6 @@ namespace web { namespace rest { namespace json {
       ((Model)("model")JSON_STRING)
    )
 
-
    DECLARE_JSON_ENTITY_IMPLEMENTATION(Keyword,  "Keyword",
       ((Id)("id")JSON_INT)
       ((DeviceId)("deviceId")JSON_INT)
@@ -83,8 +83,6 @@ namespace web { namespace rest { namespace json {
       ((Details)("details")JSON_PTREE)
    )
    
-
-
    DECLARE_JSON_ENTITY_IMPLEMENTATION(Acquisition,  "Acquisition",
       ((Id)("id")JSON_INT)
       ((Date)("date")JSON_DATE)

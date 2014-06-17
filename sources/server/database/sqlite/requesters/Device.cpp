@@ -169,6 +169,24 @@ namespace database {  namespace sqlite { namespace requesters {
          Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, deviceId);
       m_databaseRequester->queryStatement(qDelete);
    }
+
+   void CDevice::removeAllDeviceForPlugin(int pluginId)
+   {
+      CQuery qSelect;
+         qSelect.Select().
+         From(CDeviceTable::getTableName()).Where(CDeviceTable::getPluginIdColumnName(), CQUERY_OP_EQUAL, pluginId);
+
+      database::sqlite::adapters::CDeviceAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
+      std::vector<boost::shared_ptr<database::entities::CDevice> > devicestoDelete = adapter.getResults();
+      std::vector<boost::shared_ptr<database::entities::CDevice> >::iterator i;
+
+      for (i = devicestoDelete.begin(); i != devicestoDelete.end(); ++i)
+      {
+         removeDevice( (*i)->Id());
+      }
+   }
+
    // [END] IDeviceRequester implementation
 
 } //namespace requesters

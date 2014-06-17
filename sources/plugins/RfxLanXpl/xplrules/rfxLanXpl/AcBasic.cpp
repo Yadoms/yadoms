@@ -11,7 +11,7 @@ namespace xplrules { namespace rfxLanXpl {
    std::string CAcBasic::m_keywordAddress = "address";
    std::string CAcBasic::m_keywordUnit = "unit";
    std::string CAcBasic::m_keywordCommand = "command";
-   std::string CAcBasic::m_keywordCommandValues = "{ values : [on, off, preset] }";
+   std::string CAcBasic::m_keywordCommandValues = "{ \"values\" : [\"on\", \"off\", \"preset\"] }";
    std::string CAcBasic::m_keywordLevel = "level";
    xplcore::CXplMessageSchemaIdentifier  CAcBasic::m_protocol = xplcore::CXplMessageSchemaIdentifier::parse("ac.basic");
 
