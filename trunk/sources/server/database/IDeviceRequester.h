@@ -85,6 +85,11 @@ namespace database {
       //--------------------------------------------------------------
       virtual void removeDevice(int deviceId) = 0;
 
+      //--------------------------------------------------------------
+      /// \brief           Remove all device for one plugin
+      /// \param [in]      pluginId   plugin  Id
+      //--------------------------------------------------------------
+      virtual void removeAllDeviceForPlugin(int pluginId) = 0;
 
       //--------------------------------------------------------------
       /// \brief       Destructor

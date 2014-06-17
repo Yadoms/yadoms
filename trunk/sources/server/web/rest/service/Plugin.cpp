@@ -192,6 +192,8 @@ namespace web { namespace rest { namespace service {
          if(parameters.size()>1)
          {
             int instanceId = boost::lexical_cast<int>(parameters[1]);
+
+            m_dataProvider->getDeviceRequester()->removeAllDeviceForPlugin(instanceId);
             m_pluginManager->deleteInstance(instanceId);
             return web::rest::json::CJsonResult::GenerateSuccess();
          }

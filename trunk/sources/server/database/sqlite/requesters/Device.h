@@ -37,6 +37,7 @@ namespace database {  namespace sqlite {
          virtual std::vector<boost::shared_ptr<entities::CDevice> > getDeviceWithCapacity(const std::string & capacityName, const database::entities::EKeywordAccessMode accessMode) const;
          virtual void updateDeviceFriendlyName(int deviceId, const std::string & newFriendlyName);
          virtual void removeDevice(int deviceId);
+         virtual void removeAllDeviceForPlugin(int pluginId);
          // [END] IDeviceRequester implementation
 
       private:
