@@ -42,16 +42,23 @@
 <script>
    var periodicDashboardTask = {};
 
+   var subWindowList = [];
+   
    function asyncLoad(subWindowPath, callback) {
       assert(!isNullOrUndefined(subWindowPath), "subWindowPath must be defined");
       var animationDuration = 300;
       $container = $("div#main-dashboard-sub-window-content");
       $container.slideUp(animationDuration, function() {
          $container.empty();
-         $.ajax(subWindowPath)
+         if (isNullOrUndefined(subWindowList[subWindowPath])) {
+            //it's the first time we load this sub window
+            $.ajax(subWindowPath)
                  .done(function(data) {
                     var $data = $(data);
                     $data.i18n();
+                    //we save it in the sub window list
+                    subWindowList[subWindowPath] = $data;
+                    
                     //we add the modal to the body
                     $container.append($data);
                     $container.slideDown(animationDuration);
@@ -63,6 +70,19 @@
                     //TODO : i18n
                     notifyError("Unable to load sub window " + subWindowPath);
                  });
+         }
+         else {
+            //we already have loaded this sub window
+            //we take it from the sub window list
+            $data = subWindowList[subWindowPath];
+            
+            //we add the modal to the body
+            $container.append($data);
+            $container.slideDown(animationDuration);
+            //we call the callback
+            if (!isNullOrUndefined(callback))
+               callback();
+         }
       });
    }
 
@@ -109,7 +129,7 @@
 
    $("#btn-dashboard-devices").click(function() {
       clearInterval(periodicDashboardTask);
-      asyncLoad("modals/dashboard/devices.html");
+      asyncLoad("modals/dashboard/devices.html", function() { initializeDeviceDashboard(); });
       setBtnActive(this.id);
    });
 

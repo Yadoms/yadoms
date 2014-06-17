@@ -98,8 +98,10 @@
    <script src="js/objects/page-container.js"></script>
    <script src="js/objects/lazy-loader-manager.js"></script>
    <script src="js/objects/plugin-instance.js"></script>
-  <script src="js/objects/plugin-instance-manager.js"></script>
-
+   <script src="js/objects/plugin-instance-manager.js"></script>
+   <script src="js/objects/device.js"></script>
+   <script src="js/objects/device-manager.js"></script>
+  
    <script src="libs/jqBootstrapValidation/js/jqBootstrapValidation.js"></script>
 
    <script src="js/objects/configuration/configuration-helper.js"></script>
@@ -175,6 +177,7 @@
       modals.confirmation = new LazyLoaderManager("modals/confirmation.html");
       modals.pluginAdd = new LazyLoaderManager("modals/add_plugin.html");
       modals.pluginConfigure = new LazyLoaderManager("modals/configure_plugin.html");
+      modals.deviceConfigure = new LazyLoaderManager("modals/configure_device.html");
 
       var option = { resGetPath: 'locales/__lng__.json', fallbackLng:"en",useDataAttrOptions: true};
       i18n.init(option, function() {
