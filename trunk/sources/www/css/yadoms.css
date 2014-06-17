@@ -197,14 +197,13 @@ body {
 .dashboard-btn-new {
     margin-top: 10px;
     margin-bottom: 10px;
-    float: right;
 }
 
 .dashboard-list td {
     padding: 8px;
     vertical-align: middle;
     padding-left: 20px;
-   padding-right: 20px;
+    padding-right: 20px;
 }
 
 .dashboard-list {
@@ -213,6 +212,10 @@ body {
    margin-right: auto;*/
    margin-top: 20px;
    width : initial;
+}
+
+.dashboard-list td.long-text {
+   white-space: pre;
 }
 
 .plugin-icon {

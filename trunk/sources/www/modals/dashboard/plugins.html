@@ -35,7 +35,7 @@
             }
             //foreach result we append a <tr>
             $.each(data.data.plugin, function(index, value) {
-               var pi = new PluginInstance(value.id, value.name, value.type, value.configuration, value.autoStart);
+               var pi = PluginInstanceManager.factory(value);
                pluginInstanceList.push(pi);
                addPluginInstanceToDom(pi);
             });
@@ -46,6 +46,10 @@
             periodicDashboardPluginTask();
          })
          .fail(function() {notifyError($.t("modals.dashboard.sub-windows.plugins.errorGettingPluginList"), JSON.stringify(data));});
+   }
+
+   function getPluginDomRow(pluginInstance) {
+      return $("table#plugin-instance-list").find("tr[plugin-id='" + pluginInstance.id + "']");
    }
 
    function addPluginInstanceToDom(pi) {
@@ -71,7 +75,7 @@
 
       $pluginInstanceList.append("<tr plugin-id=\"" + pi.id + "\"><td class=\"plugin-name\"></td><td class=\"plugin-type\"></td><td class=\"plugin-status\"></td><td class=\"plugin-autoStart\"></td><td class=\"plugin-actions\"></td></tr>");
 
-      var $pluginInstanceRow = $pluginInstanceList.find("tr[plugin-id='" + pi.id + "']");
+      var $pluginInstanceRow = getPluginDomRow(pi);
       //we fill the data
       $pluginInstanceRow.find("td.plugin-name").html(name);
       $pluginInstanceRow.find("td.plugin-type").html(type);
@@ -104,7 +108,7 @@
             PluginInstanceManager.start(pi);
          }
          //we deactivate the button until next status will be aquired to prevent flooding
-         $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("button.btn-startStop").prop('disabled', true);
+         getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', true);
       }
    }
 
@@ -117,6 +121,9 @@
             modals.pluginConfigure.load(function() {
                configurePluginInstance(pi, function() {
                   PluginInstanceManager.updateToServer(pi, function(result) {
+                     //We update the information that can have changed after the configuration
+                     var $row = getPluginDomRow(pi);
+                     $row.find("td.plugin-name").html(pi.name);
                   });
                });
             });
@@ -139,7 +146,7 @@
                   }
 
                   //we remove pi from dom
-                  $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").remove();
+                  getPluginDomRow(pi).remove();
                });
             });
          });
@@ -152,7 +159,7 @@
          //we set autoStart attr to cb value and send it to the server as an update
          pi.autoStart = $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("input.cb-autoStart").prop("disabled", true).prop("checked");
          PluginInstanceManager.updateToServer(pi, function(result) {
-            $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("input.cb-autoStart").prop("disabled", false).prop("checked", pi.autoStart);
+            getPluginDomRow(pi).find("input.cb-autoStart").prop("disabled", false).prop("checked", pi.autoStart);
          });
       }
    }
@@ -163,21 +170,23 @@
          $.each(pluginInstanceList, function(index, value) {
             //we ask async for the status
             PluginInstanceManager.getStatus(value, function (status) {
+               var $row = getPluginDomRow(value);
                if (status != value.lastRunningStatus) {
                   var textStatus = "";
                   var btn;
                   var label;
+
                   if(status) {
-                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("span.label-status").addClass("label-success").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.running"));
-                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("button.btn-startStop").addClass("btn-warning").removeClass("btn-success");
+                     $row.find("span.label-status").addClass("label-success").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.running"));
+                     $row.find("button.btn-startStop").addClass("btn-warning").removeClass("btn-success");
                   }
                   else {
-                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("span.label-status").addClass("label-danger").removeClass("label-success").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
-                     $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("button.btn-startStop").addClass("btn-success").removeClass("btn-warning");
+                     $row.find("tr[plugin-id='" + value.id + "']").find("span.label-status").addClass("label-danger").removeClass("label-success").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
+                     $row.find("tr[plugin-id='" + value.id + "']").find("button.btn-startStop").addClass("btn-success").removeClass("btn-warning");
                   }
                }
                //we re enable the startStop button in case of using it last time
-               $("table#plugin-instance-list").find("tr[plugin-id='" + value.id + "']").find("button.btn-startStop").prop('disabled', false);
+               $row.find("button.btn-startStop").prop('disabled', false);
             });
          });
       }

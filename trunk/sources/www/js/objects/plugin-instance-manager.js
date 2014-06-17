@@ -8,6 +8,16 @@
  */
 function PluginInstanceManager(){}
 
+PluginInstanceManager.factory = function(json) {
+   assert(!isNullOrUndefined(json), "json must be defined");
+   assert(!isNullOrUndefined(json.id), "json.id must be defined");
+   assert(!isNullOrUndefined(json.type), "json.type must be defined");
+   assert(!isNullOrUndefined(json.configuration), "json.configuration must be defined");
+   assert(!isNullOrUndefined(json.autoStart), "json.autoStart must be defined");
+
+   return new PluginInstance(json.id, json.name, json.type, json.configuration, json.autoStart);
+};
+
 PluginInstanceManager.getStatus = function(pluginInstance, callback) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
    //we ask for the status of current pluginInstance
@@ -70,14 +80,14 @@ PluginInstanceManager.stop = function(pluginInstance, callback) {
          //we parse the json answer
          if (data.result != "true")
          {
-            notifyError($.t("objects.pluginInstance.errorStopping", {pluginName : self.name}), JSON.stringify(data));
+            notifyError($.t("objects.pluginInstance.errorStopping", {pluginName : pluginInstance.name}), JSON.stringify(data));
             return;
          }
 
          if (!isNullOrUndefined(callback))
             callback();
       })
-      .fail(function() {notifyError($.t("objects.pluginInstance.errorStopping", {pluginName : self.name}));});
+      .fail(function() {notifyError($.t("objects.pluginInstance.errorStopping", {pluginName : pluginInstance.name}));});
 };
 
 PluginInstanceManager.deleteFromServer = function(pluginInstance, callback) {
@@ -145,7 +155,7 @@ PluginInstanceManager.updateToServer = function(pluginInstance, callback) {
    $.ajax({
       type: "PUT",
       url: "/rest/plugin/" + pluginInstance.id,
-      data: JSON.stringify(self),
+      data: JSON.stringify(pluginInstance),
       contentType: "application/json; charset=utf-8",
       dataType: "json"
    })
@@ -161,11 +171,7 @@ PluginInstanceManager.updateToServer = function(pluginInstance, callback) {
          }
          //it's okay
          //we update our information from the server
-         pluginInstance.id = data.data.id;
-         pluginInstance.name = data.data.name;
-         pluginInstance.type = data.data.type;
-         pluginInstance.configuration = data.data.configuration;
-         pluginInstance.autoStart = parseBool(data.data.autoStart);
+         pluginInstance = PluginInstanceManager.factory(data.data);
 
          //we call the callback with true as a ok result
          if (!isNullOrUndefined(callback))

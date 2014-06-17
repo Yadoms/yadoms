@@ -4,10 +4,10 @@
    <button id="btn-add-new-device" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-rocket"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.new"></span></button>
    <table id="device-list" class="table table-bordered table-striped dashboard-list">
       <tr>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.name"></td>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.attachedTo"></td>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.model"></td>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.actions"></td>
+         <td data-i18n="modals.dashboard.sub-windows.devices.table.name" class="col-md-2"></td>
+         <td data-i18n="modals.dashboard.sub-windows.devices.table.attachedTo" class="col-md-1"></td>
+         <td data-i18n="modals.dashboard.sub-windows.devices.table.model" class="long-text col-md-3"></td>
+         <td data-i18n="modals.dashboard.sub-windows.devices.table.actions" class="col-md-2"></td>
       </tr>
       <!-- devices will be listed here-->
    </table>
@@ -25,7 +25,7 @@
       $("#btn-add-new-device").unbind("click").bind("click", addNewDevice);
 
       //we dynamically ask for devices
-      $.getJSON("/rest/plugin/device")
+      $.getJSON("/rest/device")
          .done(function (data) {
             //we parse the json answer
             if (data.result != "true")
@@ -35,17 +35,18 @@
             }
             //foreach result we append a <tr>
             $.each(data.data.device, function(index, value) {
-               var dev = new Device(value.id, value.pluginId, value.name, value.friendlyName, value.model);
+               var dev = DeviceManager.factory(value);
                deviceList.push(dev);
                addDeviceToDom(dev);
             });
-
-            //we don't use the periodic task of the dashboard
-            clearInterval(periodicDashboardTask);
          })
          .fail(function() {notifyError($.t("modals.dashboard.sub-windows.devices.errorGettingDeviceList"), JSON.stringify(data));});
    }
-   
+
+   function getDeviceDomRow(device) {
+      return $("table#device-list").find("tr[device-id='" + device.id + "']");
+   }
+
    function addDeviceToDom(device) {
       var actionsBtns = "<div class=\"btn-group\">\n" +
               "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.configure\"><span class=\"glyphicon glyphicon-cog\"></span></button>\n" +
@@ -57,12 +58,12 @@
 
       //we add it to the DOM
       var $deviceList = $("table#device-list");
-
+      
       $deviceList.append("<tr device-id=\"" + device.id + "\"><td class=\"device-friendlyName\"></td><td class=\"device-attachedTo\"></td><td class=\"device-model\"></td><td class=\"device-actions\"></td></tr>");
 
-      var $deviceRow = $deviceList.find("tr[device-id='" + device.id + "']");
+      var $deviceRow = getDeviceDomRow(device);
       //we fill the data
-      $deviceRow.find("td.device-friendlyName").html(friendlyName);
+      $deviceRow.find("td.device-friendlyName").text(friendlyName);
       $deviceRow.find("td.device-model").html(model);
 
       //we add actions to the device
@@ -72,26 +73,44 @@
       $deviceRow.find("button.btn-configure").unbind('click').bind('click', configureDevice(device));
       $deviceRow.find("button.btn-delete").unbind('click').bind('click', deleteDevice(device));
       
-      //we async ask for attached device
-      //TODO
-      
-      $deviceRow.find("td.device-attachedTo").html(attachedTo);
-      var attachedPlugin = "<img src=\"device/" + pi.type + "/icon.png\" class=\"img-thumbnail device-icon\">&nbsp;&nbsp;" +
-                  "<span>" + pi.type + "</span>";
+      //we async ask for attached plugins
+      $.getJSON("/rest/plugin/" + device.pluginId)
+         .done(manageAttachedPlugin(device))
+         .fail(function() {notifyError($.t("modals.dashboard.sub-windows.devices.errorGettingAttachedPlugin"));});
+   }
+   
+   function manageAttachedPlugin(device) {
+      //device represent the device concerned
+      return function(data) {
+         //we parse the json answer
+         if (data.result != "true")
+         {
+            notifyError($.t("modals.dashboard.sub-windows.devices.errorGettingAttachedPlugin"), JSON.stringify(data));
+            return;
+         }
+         
+         device.attachedPlugin = PluginInstanceManager.factory(data.data);
+         
+         var attachedTo = "<img src=\"plugin/" + device.attachedPlugin.type + "/icon.png\" class=\"img-thumbnail plugin-icon\">&nbsp;&nbsp;" +
+                  "<span>" + device.attachedPlugin.type + "</span>";
+         
+         var $deviceRow = getDeviceDomRow(device);
+         $deviceRow.find("td.device-attachedTo").html(attachedTo);
+      }
    }
    
    function configureDevice(device) {
       //device represent the device concerned
       return function() {
-         //we get package.json
-         DeviceManager.getAttachedPlugin(device, function() {
-            //TODO
-            modals.deviceConfigure.load(function() {
+         //we just ask for the friendly name
+         modals.deviceConfigure.load(function() {
                configureDevice(device, function() {
                   DeviceManager.updateToServer(device, function(result) {
+                     //We update the information that can have changed after the configuration
+                     var $row = getDeviceDomRow(device);
+                     $row.find("td.device-friendlyName").html(device.friendlyName);
                   });
                });
-            });
          });
       }
    }
@@ -111,7 +130,7 @@
                   }
 
                   //we remove device from dom
-                  $("table#device-list").find("tr[device-id='" + device.id + "']").remove();
+                  getDeviceDomRow(device).remove();
                });
             });
          });
@@ -119,7 +138,7 @@
    }
    
    function addNewDevice() {
-   
+      //TODO
    }
    
 </script>
