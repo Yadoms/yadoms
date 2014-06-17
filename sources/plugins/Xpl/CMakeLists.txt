@@ -28,6 +28,7 @@ set(XPL_CORE_SOURCES
 
 set(XPL_RULES_SOURCES
 	xplrules/IRule.h
+	xplrules/IReadRule.h
 	xplrules/ICommandRule.h
 	xplrules/IProtocol.h
 	xplrules/Protocol.h
@@ -57,6 +58,9 @@ set(XPL_RULES_SOURCES
 	xplrules/rfxLanXpl/SensorBasic.cpp
 	xplrules/rfxLanXpl/X10Basic.h
 	xplrules/rfxLanXpl/X10Basic.cpp
+	xplrules/rfxLanXpl/commands/Field.hpp
+	xplrules/rfxLanXpl/commands/AcBasic.h
+	xplrules/rfxLanXpl/commands/AcBasic.cpp
 )
 
 
@@ -76,6 +80,7 @@ source_group(xplcore xplcore/*.*)
 source_group(xplrules xplrules/*.*)
 source_group(xplrules\\standard xplrules/standard/*.*)
 source_group(xplrules\\rfxLanXpl xplrules/rfxLanXpl/*.*)
+source_group(xplrules\\rfxLanXpl\\commands xplrules/rfxLanXpl/commands/*.*)
 
 
 #########################################

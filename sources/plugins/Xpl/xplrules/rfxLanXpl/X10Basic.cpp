@@ -14,11 +14,11 @@ namespace xplrules { namespace rfxLanXpl {
    {
    }
 
+   // IRule implemntation
    const xplcore::CXplMessageSchemaIdentifier CX10Basic::getProtocol()
    {
       return m_protocol;
    }
-
 
    const CDeviceIdentifier CX10Basic::getDeviceAddressFromMessage(xplcore::CXplMessage & msg)
    {
@@ -48,18 +48,7 @@ namespace xplrules { namespace rfxLanXpl {
       return CDeviceIdentifier(msg.getBodyValue("device"), commercialName, m_protocol, m_protocol);
    }
 
-   MessageContent CX10Basic::extractMessageData(xplcore::CXplMessage & msg)
-   {
-      MessageContent data;
-      data.insert(std::make_pair("command", msg.getBodyValue("command")));
-      if(msg.getBody().find("level") != msg.getBody().end())
-         data.insert(std::make_pair("level", msg.getBodyValue("level")));
-      if(msg.getBody().find("protocol") != msg.getBody().end())
-         data.insert(std::make_pair("protocol", msg.getBodyValue("protocol")));
-      return data;
-   }
-
-   
+  
    std::vector< boost::shared_ptr<CDeviceKeyword> > CX10Basic::identifyKeywords(xplcore::CXplMessage & msg)
    {
       std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
@@ -74,7 +63,21 @@ namespace xplrules { namespace rfxLanXpl {
       */
       return keywords;
    }
+   // [END] IRule implemntation
 
+
+   // IReadRule implemntation
+   MessageContent CX10Basic::extractMessageData(xplcore::CXplMessage & msg)
+   {
+      MessageContent data;
+      data.insert(std::make_pair("command", msg.getBodyValue("command")));
+      if (msg.getBody().find("level") != msg.getBody().end())
+         data.insert(std::make_pair("level", msg.getBodyValue("level")));
+      if (msg.getBody().find("protocol") != msg.getBody().end())
+         data.insert(std::make_pair("protocol", msg.getBodyValue("protocol")));
+      return data;
+   }
+   // [END] IReadRule implemntation
 
    // ICommandRule implemntation
    boost::shared_ptr< xplcore::CXplMessage > CX10Basic::createXplCommand(boost::shared_ptr<yApi::IDeviceCommand> & commandData, const std::string & rfxAddress)
@@ -89,6 +92,11 @@ namespace xplrules { namespace rfxLanXpl {
       //TODO : implement it
 
       return newMessage;
+   }
+
+   std::string CX10Basic::generateVirtualDeviceIdentifier()
+   {
+      return (boost::format("%1%") % shared::tools::CRandom::generateRandomNumber<32>(false)).str();
    }
    // [END] ICommandRule implemntation
 
@@ -158,11 +166,7 @@ namespace xplrules { namespace rfxLanXpl {
       return newMessage;
    }
    */
-   std::string CX10Basic::generateVirtualDeviceIdentifier()
-   {
-      return (boost::format("%1%") % shared::tools::CRandom::generateRandomNumber<32>(false)).str();
-   }
 
-   // [END] ICommandRule implemntation
+
 } //namespace rfxLanXpl
 } //namespace xplrules
