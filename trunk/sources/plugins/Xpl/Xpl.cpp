@@ -8,6 +8,8 @@
 #include "xplcore/XplService.h"
 #include "xplcore/XplHub.h"
 #include "xplcore/XplConstants.h"
+#include "xplrules/IReadRule.h"
+
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -151,13 +153,20 @@ void CXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::shared
          }
 
 
-         //create message to insert in database
-         xplrules::MessageContent data = rule->extractMessageData(xplMessage);
+         //check if the rule handle reading
+         boost::shared_ptr<xplrules::IReadRule> readRule = boost::dynamic_pointer_cast<xplrules::IReadRule>(rule);
 
-         xplrules::MessageContent::iterator i;
-         for (i = data.begin(); i != data.end(); ++i)
+         if (readRule)
          {
-            context->historizeData(deviceAddress.getId(), i->first, i->second);
+
+            //create message to insert in database
+            xplrules::MessageContent data = readRule->extractMessageData(xplMessage);
+
+            xplrules::MessageContent::iterator i;
+            for (i = data.begin(); i != data.end(); ++i)
+            {
+               context->historizeData(deviceAddress.getId(), i->first, i->second);
+            }
          }
 
 
@@ -181,7 +190,7 @@ void CXpl::OnSendDeviceCommand(boost::shared_ptr<yApi::IDeviceCommand> command, 
    {
       YADOMS_LOG(trace) << "Sending message : " << command->toString();
 
-      
+
       if (context->deviceExists(command->getTargetDevice()))
       {
          //get device details
@@ -193,7 +202,7 @@ void CXpl::OnSendDeviceCommand(boost::shared_ptr<yApi::IDeviceCommand> command, 
 
          std::string protocol = details.get<std::string>("writingProtocol");
          std::string source = details.get<std::string>("source");
-                  
+
          boost::shared_ptr<xplrules::IRule> rule = m_rulerFactory.identifyRule(source, protocol);
 
          if (rule)
@@ -226,42 +235,42 @@ void CXpl::OnSendDeviceCommand(boost::shared_ptr<yApi::IDeviceCommand> command, 
       if (device)
       {
 
-         boost::shared_ptr< shared::xpl::CXplMessage > messageToSend = m_rulerFactory.createXplCommand(*device.get(), message);
-         if (messageToSend)
-         {
-            messageToSend->setSource(xplService.getActor());
-            xplService.sendMessage(*messageToSend.get());
+      boost::shared_ptr< shared::xpl::CXplMessage > messageToSend = m_rulerFactory.createXplCommand(*device.get(), message);
+      if (messageToSend)
+      {
+      messageToSend->setSource(xplService.getActor());
+      xplService.sendMessage(*messageToSend.get());
 
-            //send result
-            if (message.getCallback().get() != NULL)
-            {
-               command::CResult result = command::CResult::CreateSuccess();
-               message.getCallback()->sendResult(result);
-            }
-         }
-         else
-         {
-            //send result
-            std::string errorMessage = "Fail to create the Xpl message to send to the device";
-            YADOMS_LOG(error) << errorMessage;
-
-            if (message.getCallback().get() != NULL)
-            {
-               command::CResult result = command::CResult::CreateError(errorMessage);
-               message.getCallback()->sendResult(result);
-            }
-
-         }
+      //send result
+      if (message.getCallback().get() != NULL)
+      {
+      command::CResult result = command::CResult::CreateSuccess();
+      message.getCallback()->sendResult(result);
+      }
       }
       else
       {
-         std::string errorMessage = (boost::format("Unknown device id = %1%") % message.getDeviceId()).str();
-         YADOMS_LOG(error) << errorMessage;
-         if (message.getCallback().get() != NULL)
-         {
-            command::CResult result = command::CResult::CreateError(errorMessage);
-            message.getCallback()->sendResult(result);
-         }
+      //send result
+      std::string errorMessage = "Fail to create the Xpl message to send to the device";
+      YADOMS_LOG(error) << errorMessage;
+
+      if (message.getCallback().get() != NULL)
+      {
+      command::CResult result = command::CResult::CreateError(errorMessage);
+      message.getCallback()->sendResult(result);
+      }
+
+      }
+      }
+      else
+      {
+      std::string errorMessage = (boost::format("Unknown device id = %1%") % message.getDeviceId()).str();
+      YADOMS_LOG(error) << errorMessage;
+      if (message.getCallback().get() != NULL)
+      {
+      command::CResult result = command::CResult::CreateError(errorMessage);
+      message.getCallback()->sendResult(result);
+      }
       }
       */
    }

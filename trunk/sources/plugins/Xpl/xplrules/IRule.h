@@ -6,8 +6,6 @@
 
 namespace xplrules {
 
-   typedef std::map<std::string, std::string> MessageContent;
-
    //------------------------------------
    ///\brief   A rule is an interface between devices and yadoms.
    ///         A device send XplMessage to yadoms, then the Rule read it and parse data
@@ -30,13 +28,6 @@ namespace xplrules {
       ///\return the device identifier
       //------------------------------------
       virtual const CDeviceIdentifier getDeviceAddressFromMessage(xplcore::CXplMessage & msg) = 0;
-
-      //------------------------------------
-      ///\brief Provide all the usefull <key, value> contained in message
-      ///\param [in] msg the message from which extract the data
-      ///\return the <key, value> contained in message
-      //------------------------------------
-      virtual MessageContent extractMessageData(xplcore::CXplMessage & msg) = 0;
 
       //------------------------------------
       ///\brief Identify keywords inside message

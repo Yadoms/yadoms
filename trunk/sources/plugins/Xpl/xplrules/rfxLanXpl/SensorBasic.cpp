@@ -242,14 +242,14 @@ namespace xplrules { namespace rfxLanXpl {
 
       if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeBattery))
       {
-         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeBattery, yApi::CStandardCapacities::BatteryLevel, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kInteger, yApi::CStandardUnits::Percent, "")));
+         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeBattery, yApi::CStandardCapacities::BatteryLevel, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kInteger, yApi::CStandardUnits::Percent, shared::CStringExtension::EmptyString)));
       }
 
       //DIGIMAX
       if(boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceDigimax))
       {
          if(msg.getBodyValue(m_keywordType) == m_keywordTypeDemand)
-            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeDemand, m_keywordTypeDemand, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kString, "", m_keywordTypeDemandValues)));
+            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeDemand, m_keywordTypeDemand, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kString, shared::CStringExtension::EmptyString, m_keywordTypeDemandValues)));
       
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeTemp)
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeTemp, yApi::CStandardCapacities::Temperature, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kDecimal, yApi::CStandardUnits::DegreesCelcius, details)));

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../IRule.h"
+#include "../IReadRule.h"
 
 namespace xplrules { namespace standard {
 
-   class CSensorBasic : public IRule
+   class CSensorBasic : public IReadRule
    {
    public:
       CSensorBasic();
@@ -18,9 +18,12 @@ namespace xplrules { namespace standard {
 
       // IRule implementation
       virtual const CDeviceIdentifier getDeviceAddressFromMessage(xplcore::CXplMessage & msg);
-      virtual MessageContent extractMessageData(xplcore::CXplMessage & msg);
       virtual std::vector< boost::shared_ptr<CDeviceKeyword> > identifyKeywords(xplcore::CXplMessage & msg);
       // [END] IRule implementation
+     
+      // IReadRule implementation
+      virtual MessageContent extractMessageData(xplcore::CXplMessage & msg);
+      // [END] IReadRule implementation
      
    private:
       //-------------------------------------

@@ -1,10 +1,11 @@
 #pragma once
 
 #include "../ICommandRule.h"
+#include "../IReadRule.h"
 
 namespace xplrules { namespace rfxLanXpl {
 
-   class CAcBasic : public ICommandRule
+   class CAcBasic : public IReadRule, public ICommandRule
    {
    public:
       CAcBasic();
@@ -18,10 +19,13 @@ namespace xplrules { namespace rfxLanXpl {
 
       // IRule implementation
       virtual const CDeviceIdentifier getDeviceAddressFromMessage(xplcore::CXplMessage & msg);
-      virtual MessageContent extractMessageData(xplcore::CXplMessage & msg);
       virtual std::vector< boost::shared_ptr<CDeviceKeyword> > identifyKeywords(xplcore::CXplMessage & msg);
       // [END] IRule implementation
-     
+
+      // IReadRule implemntation
+      virtual MessageContent extractMessageData(xplcore::CXplMessage & msg);
+      // [END] IReadRule implemntation
+
       // ICommandRule implemntation
       virtual boost::shared_ptr< xplcore::CXplMessage > createXplCommand(boost::shared_ptr<yApi::IDeviceCommand> & commandData, const std::string & rfxAddress);
       virtual std::string generateVirtualDeviceIdentifier();

@@ -3,6 +3,7 @@
 #include <shared/tools/Random.h>
 #include <shared/serialization/PTreeToJsonSerializer.h>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include "commands/AcBasic.h"
 
 namespace xplrules { namespace rfxLanXpl {
 
@@ -35,33 +36,34 @@ namespace xplrules { namespace rfxLanXpl {
       return CDeviceIdentifier(deviceId, commercialName, m_protocol, m_protocol);
    }
 
-   MessageContent CAcBasic::extractMessageData(xplcore::CXplMessage & msg)
-   {
-      MessageContent data;
-      data.insert(std::make_pair(m_keywordCommand, msg.getBodyValue(m_keywordCommand)));
-      if(msg.getBody().find(m_keywordLevel) != msg.getBody().end())
-         data.insert(std::make_pair(m_keywordLevel, msg.getBodyValue(m_keywordLevel)));
-      return data;
-   }
-
-
    std::vector< boost::shared_ptr<CDeviceKeyword> > CAcBasic::identifyKeywords(xplcore::CXplMessage & msg)
    {
       std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
 
-      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordCommand, yApi::CStandardCapacities::Switch, yApi::IYadomsApi::kWriteOnly, shared::plugin::yadomsApi::IYadomsApi::kNoData, "", m_keywordCommandValues)));
+      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordCommand, yApi::CStandardCapacities::Switch, yApi::IYadomsApi::kWriteOnly, shared::plugin::yadomsApi::IYadomsApi::kNoData, shared::CStringExtension::EmptyString, m_keywordCommandValues)));
       
 
       boost::property_tree::ptree details;
       details.put("min", 0);
       details.put("max", 15);
-      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordLevel, m_keywordLevel, shared::plugin::yadomsApi::IYadomsApi::kReadWrite, shared::plugin::yadomsApi::IYadomsApi::kInteger, "", details)));
+      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordLevel, m_keywordLevel, shared::plugin::yadomsApi::IYadomsApi::kReadWrite, shared::plugin::yadomsApi::IYadomsApi::kInteger, shared::CStringExtension::EmptyString, details)));
 
       return keywords;
    }
 
    // [END] IRule implementation
 
+
+   // IReadRule implemntation
+   MessageContent CAcBasic::extractMessageData(xplcore::CXplMessage & msg)
+   {
+      MessageContent data;
+      data.insert(std::make_pair(m_keywordCommand, msg.getBodyValue(m_keywordCommand)));
+      if (msg.getBody().find(m_keywordLevel) != msg.getBody().end())
+         data.insert(std::make_pair(m_keywordLevel, msg.getBodyValue(m_keywordLevel)));
+      return data;
+   }
+   // [END] IReadRule implementation
 
 
    // ICommandRule implemntation
@@ -81,18 +83,8 @@ namespace xplrules { namespace rfxLanXpl {
          throw shared::exception::CException("ac.basic protocol needs a device address matching pattern : <address>-<unit> ");
       }
 
-      //check the command value
-      
-
-      boost::property_tree::ptree commandDetails;
-      shared::serialization::CPtreeToJsonSerializer serialiser;
-      serialiser.deserialize(commandData->getBody(), commandDetails);
-
-      std::string commandKeyword = commandDetails.get<std::string>(m_keywordCommand);
-
-      if (commandKeyword.empty())
-         throw shared::exception::CException((boost::format("ac.basic protocol needs a parameter '%1%'") % m_keywordCommand).str());
-
+      //read command details (may throw exception if something is wrong)
+      commands::CAcBasic commandDetails(commandData->getBody());
 
       ////////////////////////////
       // create the message
@@ -118,17 +110,12 @@ namespace xplrules { namespace rfxLanXpl {
       newMessage->addToBody(m_keywordUnit, splittedAddress[1]);
 
       //set the command
-      newMessage->addToBody(m_keywordCommand, commandKeyword);
+      newMessage->addToBody(m_keywordCommand, commandDetails.Command());
 
       //if there is any other data to send, just add key/value to bidy
-      /* TODO : ajouter les message supplementaires
-      communication::command::CDeviceCommand::CommandData::const_iterator i;
-      for(i=content.begin(); i!=content.end(); ++i)
-      {
-         if(!boost::iequals(i->first, m_keywordCommand))
-            newMessage->addToBody(i->first, i->second);
-      }
-      */
+      if (commandDetails.Level.isDefined())
+         newMessage->addToBody(m_keywordLevel, boost::lexical_cast<std::string>(commandDetails.Level()));
+
       return newMessage;
    }
    
