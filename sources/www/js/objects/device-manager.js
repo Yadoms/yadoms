@@ -16,7 +16,7 @@ DeviceManager.factory = function(json) {
    assert(!isNullOrUndefined(json.friendlyName), "json.friendlyName must be defined");
    assert(!isNullOrUndefined(json.model), "json.model must be defined");
 
-   return new Device(json.id, json.pluginId, json.name, json.friendlyName, json.model);
+   return new Device(json.id, json.pluginId, decodeURIComponent(json.name), decodeURIComponent(json.friendlyName), json.model);
 };
 
 DeviceManager.getAttachedPlugin = function(device, callback) {
@@ -38,7 +38,7 @@ DeviceManager.getAttachedPlugin = function(device, callback) {
          }
          
          //we save the attachedPlugin into the object
-         device.attachedPlugin = data.data;
+         device.attachedPlugin = PluginManager.factory(data.data);
          
          if (!isNullOrUndefined(callback))
             callback(result);

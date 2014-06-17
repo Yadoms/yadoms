@@ -63,7 +63,7 @@
 
       var $deviceRow = getDeviceDomRow(device);
       //we fill the data
-      $deviceRow.find("td.device-friendlyName").text(friendlyName);
+      $deviceRow.find("td.device-friendlyName").html(friendlyName);
       $deviceRow.find("td.device-model").html(model);
 
       //we add actions to the device
