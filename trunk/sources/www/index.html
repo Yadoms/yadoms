@@ -17,6 +17,7 @@
     <link href="css/yadoms.css" rel="stylesheet">
 	 <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="css/gridster.css" rel="stylesheet">
+    <link href="css/widget.css" rel="stylesheet">
 
     <!-- Gridster includes -->
     <link href="libs/gridster/css/jquery.gridster.css" rel="stylesheet">
@@ -131,6 +132,9 @@
    <div id="templates" class="hidden"></div>
 
 	<script type="text/javascript">
+
+   //base configuration
+   $.ajaxSetup({ contentType: "application/json; charset=utf-8"});
 
    //TODO - Passer les variables suivantes en variable de conf
    var numberOfColumns = 9;

@@ -4,8 +4,6 @@
         <div class="temperature" data-bind="text: temperature">
         </div>
         <div class="unit">°C</div>
-        <div class="battery" data-bind="css: { hidden: manageBatteryLevel() == false}">
-           <span data-i18n="temperature:batteryLevel"></span><span data-bind="text: battery"></span><span>%</span>
-        </div>
+        <div class="battery-widget" data-bind="style: { hidden: manageBatteryLevel() == false, 'background-image': 'url(../img/widgets/widget_battery_' + batteryStep() + '.png)'}"></div>
     </div>
 </script>

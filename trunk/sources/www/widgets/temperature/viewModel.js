@@ -37,7 +37,7 @@ function TemperatureViewModel() {
    //observable data
    this.temperature = ko.observable(25).extend({ numeric: 1 });
 
-   this.battery = ko.observable(100).extend({ numeric: 0 });
+   this.batteryStep = ko.observable(3).extend({ numeric: 0 });
    this.manageBatteryLevel = ko.observable(false);
    
    //widget identifier
@@ -95,7 +95,8 @@ function TemperatureViewModel() {
          else {
             if (!isNullOrUndefined(self.batterylevelKeywordId)) {
                if ((device.deviceId == self.widget.configuration.device.deviceId) && (device.keywordId == self.batterylevelKeywordId)) {
-                  self.battery(data.value);
+                  //we set the step associated to the battery level. There is 4 step (0-3)
+                  self.batteryStep(Math.round(data.value / 33.3));
                }
             }
          }

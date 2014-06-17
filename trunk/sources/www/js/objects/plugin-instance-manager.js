@@ -15,7 +15,7 @@ PluginInstanceManager.factory = function(json) {
    assert(!isNullOrUndefined(json.configuration), "json.configuration must be defined");
    assert(!isNullOrUndefined(json.autoStart), "json.autoStart must be defined");
 
-   return new PluginInstance(json.id, json.name, json.type, json.configuration, json.autoStart);
+   return new PluginInstance(json.id, decodeURIComponent(json.name), json.type, json.configuration, json.autoStart);
 };
 
 PluginInstanceManager.getStatus = function(pluginInstance, callback) {
