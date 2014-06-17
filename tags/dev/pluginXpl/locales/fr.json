@@ -1,0 +1,16 @@
+﻿{
+   "description" : "Plugin qui supporte le protocole Xpl. Il gère aussi les  RfxCOMLan avec le firmware xpl",
+   "configurationSchema" : {
+		"HubXplSection" : {
+          "name" : "Démarrer un hub Xpl",
+          "description" : "Démarre un hub Xpl au lancement du plugin",
+          "content" : {
+				"ipAddress" : {
+				  "name" : "IP locale du Hub",
+				  "description" : "Défini l'adresse IP locale du hub",
+				  "regexErrorMessage" : "L'adresse IP doit être de type IPv4. Par exemple : 192.168.0.12"
+			  }          
+		}
+		
+   }
+}
