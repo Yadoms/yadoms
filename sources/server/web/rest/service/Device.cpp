@@ -292,8 +292,14 @@ namespace web { namespace rest { namespace service {
             boost::shared_ptr<database::entities::CDevice> deviceToUpdate = des.deserialize(requestContent);
             if(deviceToUpdate->FriendlyName.isDefined())
             {
+               //update data in base
                m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(deviceId, deviceToUpdate->FriendlyName());
-               return web::rest::json::CJsonResult::GenerateSuccess();
+
+               //return the device info
+               web::rest::json::CDeviceEntitySerializer hes;
+               boost::shared_ptr<database::entities::CDevice> deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+               return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*deviceFound.get()));
+
             }
             else
             {
