@@ -136,6 +136,8 @@ set(YADOMS_SRC
 	server/main.cpp
 	server/Supervisor.cpp
 	server/Supervisor.h
+	server/System.cpp
+	server/System.h
   
    server/pluginSystem/DeviceCommand.cpp
    server/pluginSystem/DeviceCommand.h
@@ -289,14 +291,20 @@ set(YADOMS_SRC ${YADOMS_SRC}
 IF(WIN32)
 set(YADOMS_SRC ${YADOMS_SRC}
 	# Add here server/tools/windows/tools/ sources
+	server/tools/windows/tools/OperatingSystem.h
+	server/tools/windows/tools/OperatingSystem.cpp
 )	
 ELSEIF(APPLE)
 set(YADOMS_SRC ${YADOMS_SRC}
 	# Add here server/tools/mac/tools/ sources
+	server/tools/windows/tools/OperatingSystem.h
+	server/tools/windows/tools/OperatingSystem.cpp
 )	
 ELSE()
 set(YADOMS_SRC ${YADOMS_SRC}
 	# Add here server/tools/linux/tools/ sources
+	server/tools/windows/tools/OperatingSystem.h
+	server/tools/windows/tools/OperatingSystem.cpp
 )	
 ENDIF()
 

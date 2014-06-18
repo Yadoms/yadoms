@@ -2,6 +2,7 @@
 #include "General.h"
 #include <shared/exception/NotImplemented.hpp>
 #include "web/rest/json/JsonCollectionSerializer.h"
+#include "web/rest/json/JsonDate.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/RestDispatcher.h"
 #include "web/rest/json/JsonResult.h"
@@ -11,9 +12,10 @@ namespace web { namespace rest { namespace service {
 
    std::string CGeneral::m_restKeyword= std::string("general");
 
-   CGeneral::CGeneral()
+   CGeneral::CGeneral(boost::shared_ptr<CSystem> systemInformation)
+      :m_systemInformation(systemInformation)
    {
-
+      
    }
 
 
@@ -25,6 +27,7 @@ namespace web { namespace rest { namespace service {
    void CGeneral::configureDispatcher(CRestDispatcher & dispatcher)
    {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("serialport"), CGeneral::getSerialPorts);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("system"), CGeneral::getSystemInformation);
    }
 
 
@@ -62,6 +65,26 @@ namespace web { namespace rest { namespace service {
       }
    }
    
+   web::rest::json::CJson CGeneral::getSystemInformation(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   {
+      try
+      {
+         web::rest::json::CJson result;
+
+         result.put("runningPlatform", m_systemInformation->getOperatingSystemName());
+         result.put("yadomsVersion", m_systemInformation->getSoftwareVersion().toString());
+         result.put("startupTime", web::rest::json::CJsonDate::toString(m_systemInformation->getStartupDateTime()));
+         return web::rest::json::CJsonResult::GenerateSuccess(result);
+      }
+      catch (std::exception &ex)
+      {
+         return web::rest::json::CJsonResult::GenerateError(ex);
+      }
+      catch (...)
+      {
+         return web::rest::json::CJsonResult::GenerateError("unknown exception in retreiving system information");
+      }
+   }
 
 } //namespace service
 } //namespace rest
