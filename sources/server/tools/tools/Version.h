@@ -77,6 +77,12 @@ namespace tools
       //---------------------------------------------
       bool operator==(CVersion const& rhs) const;
 
+      //---------------------------------------------
+      ///\brief Get the version as a string
+      ///\return  the version as a string
+      //---------------------------------------------
+      const std::string toString() const;
+
    protected:
       //---------------------------------------------
       ///\brief Compare the current object to another CVersion

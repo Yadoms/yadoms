@@ -23,7 +23,7 @@
 #include "task/update/Plugin.h"
 #include "task/backup/Database.h"
 #include "communication/PluginGateway.h"
-
+#include "System.h"
 
 CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
    :m_stopHandler(m_EventHandler, kStopRequested), m_startupOptions(startupOptions)
@@ -43,6 +43,10 @@ void CSupervisor::doWork()
    boost::shared_ptr<database::IDataProvider> pDataProvider;
    try
    {
+      //create the system information
+      boost::shared_ptr<CSystem> systemInformation(new CSystem());
+
+      //start database system
       pDataProvider.reset(new database::sqlite::CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
       if (!pDataProvider->load())
       {
@@ -82,7 +86,7 @@ void CSupervisor::doWork()
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfiguration(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLogger(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLogger(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CGeneral()));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CGeneral(systemInformation)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
       }
 

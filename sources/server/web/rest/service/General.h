@@ -3,13 +3,14 @@
 #include "IRestService.h"
 #include "database/IDataProvider.h"
 #include "web/rest/RestDispatcher.h"
+#include "System.h"
 
 namespace web { namespace rest { namespace service {
 
    class CGeneral : public IRestService
    {
    public:
-      CGeneral();
+      CGeneral(boost::shared_ptr<CSystem> systemInformation);
       virtual ~CGeneral();
 
    public:
@@ -21,9 +22,12 @@ namespace web { namespace rest { namespace service {
 
    public:
       web::rest::json::CJson getSerialPorts(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
+      web::rest::json::CJson getSystemInformation(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
 
    private:
       static std::string m_restKeyword;
+
+      boost::shared_ptr<CSystem> m_systemInformation;
    };
 
 
