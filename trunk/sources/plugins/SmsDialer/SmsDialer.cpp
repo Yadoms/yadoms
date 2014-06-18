@@ -2,6 +2,8 @@
 #include "SmsDialer.h"
 #include <shared/Log.h>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yadomsApi/commands/Switch.h>
+#include <shared/plugin/yadomsApi/commands/Message.h>
 #include <shared/serialization/PTreeToJsonSerializer.h>
 #include "SmsDialerFactory.h"
 #include "PhoneException.hpp"
@@ -140,10 +142,18 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYadomsApi> conte
    declareDevice(context);
 
    // Next, unlock phone
-   m_phone->unlock(m_configuration.getPhonePIN());
+   try
+   { 
+      if (m_configuration.hasPINCode())
+         m_phone->unlock(m_configuration.getPhonePIN());
 
-   // Next, check for incoming SMS
-   processIncommingSMS(context);
+      // Check for incoming SMS
+      processIncommingSMS(context);
+   }
+   catch (CPhoneException& e)
+   {
+      YADOMS_LOG(error) << "Phone critical error : " << e.what();
+   }
 
    // And start timer for next incoming SMS check
    m_incommingSmsPollTimer->start();
@@ -162,9 +172,9 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYadomsApi> conte
                YADOMS_LOG(debug) << "Command received :" << command->toString();
 
                const std::string keyword = command->getKeyword();
-               if (keyword == "switch")
+               if (keyword == "power")
                   onPowerPhoneRequest(context, command->getBody());
-               else if (keyword == "sendSms")
+               else if (keyword == "sms")
                   onSendSmsRequest(context, command->getBody());
                else
                   YADOMS_LOG(error) << "Unsupported command received : " << command->toString();
@@ -219,17 +229,18 @@ void CSmsDialer::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
    context->declareDevice(m_phone->getUniqueId(), m_phone->getUniqueId(), shared::CStringExtension::EmptyString);
 
    // Declare associated keywords (= values managed by this device)
-   context->declareKeyword(m_phone->getUniqueId(), "power"  , yApi::CStandardCapacities::SwitchOnOff, yApi::IYadomsApi::kReadWrite);
-   context->declareKeyword(m_phone->getUniqueId(), "sms"    , yApi::CStandardCapacities::Message    , yApi::IYadomsApi::kWriteOnly);
+   context->declareKeyword(m_phone->getUniqueId(), "power", yApi::CStandardCapacities::Switch , yApi::IYadomsApi::kReadWrite, yApi::IYadomsApi::kBool);
+   context->declareKeyword(m_phone->getUniqueId(), "sms"  , yApi::CStandardCapacities::Message, yApi::IYadomsApi::kWriteOnly, yApi::IYadomsApi::kJson);
 }
 
 void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& powerRequest)
 {
-   BOOST_ASSERT_MSG(powerRequest == "on" || powerRequest == "off", "Invalid power request");
+   yApi::commands::CSwitch cmd(powerRequest);
+   BOOST_ASSERT_MSG(cmd.getState() == yApi::commands::CSwitch::kOff || cmd.getState() == yApi::commands::CSwitch::kOn, "Invalid power request");
 
    try
    {
-      m_phone->powerOn(powerRequest == "on");
+      m_phone->powerOn(cmd.getState() == yApi::commands::CSwitch::kOn);
       notifyPhonePowerState(context, m_phone->isOn());
    }
    catch (CPhoneException& e)
@@ -240,30 +251,12 @@ void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context
 
 void CSmsDialer::onSendSmsRequest(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& sendSmsRequest)
 {
-   shared::serialization::CPtreeToJsonSerializer serializer;
    try
    {
-      boost::property_tree::ptree smsContent = serializer.deserialize(sendSmsRequest);
-      std::string to = smsContent.get<std::string>("to");
-      std::string body = smsContent.get<std::string>("body");
-
-      boost::shared_ptr<ISms> sms(new CSms(to, body));
+      yApi::commands::CMessage msg(sendSmsRequest);
+      boost::shared_ptr<ISms> sms(new CSms(msg.to(), msg.body()));
       m_phone->send(sms);
       notifyAck(true);
-   }
-   catch (boost::property_tree::ptree_bad_path& e)
-   {
-      YADOMS_LOG(error) << "Invalid SMS sending request \"" << sendSmsRequest << "\" : " << e.what();
-      BOOST_ASSERT_MSG(false, "Invalid SMS sending request (parameter doesn't exist)");
-      notifyAck(false);
-      return;
-   }
-   catch (boost::property_tree::ptree_bad_data& e)
-   {
-      YADOMS_LOG(error) << "Invalid SMS sending request \"" << sendSmsRequest << "\" : " << e.what();
-      BOOST_ASSERT_MSG(false, "Invalid SMS sending request (fail to extract parameter)");
-      notifyAck(false);
-      return;
    }
    catch (shared::exception::CInvalidParameter& e)
    {

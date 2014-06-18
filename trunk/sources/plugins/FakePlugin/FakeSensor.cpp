@@ -2,6 +2,7 @@
 #include "FakeSensor.h"
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/StringExtension.h>
+#include <shared/Log.h>
 
 CFakeSensor::CFakeSensor(const std::string & deviceId)
    :m_deviceId(deviceId), m_temperature1(25.0), m_temperature2(10.0), m_batteryLevel(100), m_rssi(50), m_dist(0, 20)
@@ -46,6 +47,8 @@ void CFakeSensor::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) con
    context->historizeData(m_deviceId, "temp2"  , m_temperature2);
    context->historizeData(m_deviceId, "battery", m_batteryLevel);
    context->historizeData(m_deviceId, "Rssi"   , m_rssi        );
+
+   YADOMS_LOG(debug) << "historize " << m_deviceId << ", temp1=" << m_temperature1 << ", temp2=" << m_temperature2 << ", battery=" << m_batteryLevel << ", Rssi=" << m_rssi;
 }
 
 const std::string& CFakeSensor::getModel()

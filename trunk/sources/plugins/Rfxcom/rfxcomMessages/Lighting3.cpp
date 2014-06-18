@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Lighting3.h"
-#include <shared/plugin/yadomsApi/commands/SwitchOnOff.h>
-#include <shared/plugin/yadomsApi/commands/SwitchDim.h>
+#include <shared/plugin/yadomsApi/commands/Switch.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 // Shortcut to yadomsApi namespace
@@ -38,32 +37,30 @@ const boost::asio::const_buffer CLighting3::getBuffer() const
 
 unsigned char CLighting3::toLighting3Command(const std::string& yadomsCommand) const
 {
-   // Try switchOnOff command
-   try
+   yApi::commands::CSwitch cmd(yadomsCommand);
+   switch(cmd.getState())
    {
-      yApi::commands::CSwitchOnOff cmd(yadomsCommand);
-      return cmd.isOn() ? light3_sOn : light3_sOff;
-   }
-   catch (shared::exception::CInvalidParameter&)
-   {
-      // Is not a switchOnOff command, maybe a switchDim
-   }
-
-   // Else try a switchDim command
-   yApi::commands::CSwitchDim cmd(yadomsCommand);
-   switch (cmd.getValue() / 100)
-   {
-   case 0: return light3_sOff;
-   case 1: return light3_sLevel1;
-   case 2: return light3_sLevel2;
-   case 3: return light3_sLevel3;
-   case 4: return light3_sLevel4;
-   case 5: return light3_sLevel5;
-   case 6: return light3_sLevel6;
-   case 7: return light3_sLevel7;
-   case 8: return light3_sLevel8;
-   case 9: return light3_sLevel9;
-   default: return light3_sOn;
+   case yApi::commands::CSwitch::kOff: return light3_sOff;
+   case yApi::commands::CSwitch::kOn: return light3_sOn;
+   case yApi::commands::CSwitch::kDim:
+      {
+         switch (cmd.getDimLevel() / 10)  // getDimLevel returns value from 0 to 100
+         {
+         case 0: return light3_sOff;
+         case 1: return light3_sLevel1;
+         case 2: return light3_sLevel2;
+         case 3: return light3_sLevel3;
+         case 4: return light3_sLevel4;
+         case 5: return light3_sLevel5;
+         case 6: return light3_sLevel6;
+         case 7: return light3_sLevel7;
+         case 8: return light3_sLevel8;
+         case 9: return light3_sLevel9;
+         default: return light3_sOn;
+         }
+         break;
+      }
+   default: return light3_sOff;
    }
 }
 

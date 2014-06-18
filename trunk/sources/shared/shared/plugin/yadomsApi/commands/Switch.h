@@ -5,34 +5,56 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
    //-----------------------------------------------------
-   ///\brief The dimmable switch command parser
+   ///\brief The switch command parser
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CSwitchDim
+   class YADOMS_SHARED_EXPORT CSwitch
    {
+   public:
+      //-----------------------------------------------------
+      ///\brief               The switch state
+      //-----------------------------------------------------
+      enum EState
+      {
+         kOff = 0,
+         kOn,
+         kDim
+      };
+
    public:
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] command   Yadoms command, as JSON string
       ///\throw               shared::exception::CInvalidParameter if fail to parse command
       //-----------------------------------------------------
-      CSwitchDim(const std::string& command);
+      CSwitch(const std::string& command);
 
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~CSwitchDim();
+      virtual ~CSwitch();
 
       //-----------------------------------------------------
-      ///\brief               Get the command value
-      ///\return              The command value (0-100)
+      ///\brief               Get the main switch state
+      ///\return              The main switch state
       //-----------------------------------------------------
-      int getValue() const;
+      EState getState() const;
+
+      //-----------------------------------------------------
+      ///\brief               Get the dim level
+      ///\return              The dim level (0-100)
+      //-----------------------------------------------------
+      int getDimLevel() const;
 
    private:
       //-----------------------------------------------------
-      ///\brief               The command value
+      ///\brief               The main state
       //-----------------------------------------------------
-      int m_value;
+      EState m_state;
+
+      //-----------------------------------------------------
+      ///\brief               The dim level
+      //-----------------------------------------------------
+      int m_dimLevel;
    };
 
 
