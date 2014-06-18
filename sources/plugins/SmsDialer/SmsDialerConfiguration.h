@@ -21,6 +21,7 @@ public:
    virtual std::string getGammuPort() const;
    virtual std::string getGammuProtocol() const;
    virtual std::string getPhonePIN() const;
+   virtual bool hasPINCode() const;
    // [END] ISmsDialerConfiguration implementation
 };
 

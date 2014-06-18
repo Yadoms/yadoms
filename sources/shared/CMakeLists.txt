@@ -61,10 +61,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/commands/Curtain.h
    shared/plugin/yadomsApi/commands/Message.cpp
    shared/plugin/yadomsApi/commands/Message.h
-   shared/plugin/yadomsApi/commands/SwitchDim.cpp
-   shared/plugin/yadomsApi/commands/SwitchDim.h
-   shared/plugin/yadomsApi/commands/SwitchOnOff.cpp
-   shared/plugin/yadomsApi/commands/SwitchOnOff.h
+   shared/plugin/yadomsApi/commands/Switch.cpp
+   shared/plugin/yadomsApi/commands/Switch.h
    
 	shared/serialization/IPtreeToStringSerializer.h
 	shared/serialization/PTreeToJsonSerializer.h

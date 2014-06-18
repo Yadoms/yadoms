@@ -72,12 +72,12 @@ bool CYadomsApiImplementation::declareKeyword(const std::string& device, const s
 
    switch (type)
    {
-   case shared::plugin::yadomsApi::IYadomsApi::EKeywordType::kNoData: keywordEntity.Type = database::entities::kNoData; break;
-   case shared::plugin::yadomsApi::IYadomsApi::EKeywordType::kString: keywordEntity.Type = database::entities::kString; break;
-   case shared::plugin::yadomsApi::IYadomsApi::EKeywordType::kInteger: keywordEntity.Type = database::entities::kInteger; break;
-   case shared::plugin::yadomsApi::IYadomsApi::EKeywordType::kDecimal: keywordEntity.Type = database::entities::kDecimal; break;
-   case shared::plugin::yadomsApi::IYadomsApi::EKeywordType::kBool: keywordEntity.Type = database::entities::kBool; break;
-   case shared::plugin::yadomsApi::IYadomsApi::EKeywordType::kJson: keywordEntity.Type = database::entities::kJson; break;
+   case shared::plugin::yadomsApi::IYadomsApi::kNoData: keywordEntity.Type = database::entities::kNoData; break;
+   case shared::plugin::yadomsApi::IYadomsApi::kString: keywordEntity.Type = database::entities::kString; break;
+   case shared::plugin::yadomsApi::IYadomsApi::kInteger: keywordEntity.Type = database::entities::kInteger; break;
+   case shared::plugin::yadomsApi::IYadomsApi::kDecimal: keywordEntity.Type = database::entities::kDecimal; break;
+   case shared::plugin::yadomsApi::IYadomsApi::kBool: keywordEntity.Type = database::entities::kBool; break;
+   case shared::plugin::yadomsApi::IYadomsApi::kJson: keywordEntity.Type = database::entities::kJson; break;
    default:
       BOOST_ASSERT_MSG(false, "Unknown type");
       throw shared::exception::CEmptyResult("Fail to declare keyword : unknown type");

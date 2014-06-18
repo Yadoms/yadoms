@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Lighting1.h"
-#include <shared/plugin/yadomsApi/commands/SwitchOnOff.h>
+#include <shared/plugin/yadomsApi/commands/Switch.h>
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -36,8 +36,8 @@ const boost::asio::const_buffer CLighting1::getBuffer() const
 
 unsigned char CLighting1::toLighting1Command(const std::string& yadomsCommand) const
 {
-   yApi::commands::CSwitchOnOff cmd(yadomsCommand);
-   return cmd.isOn() ? light1_sOn : light1_sOff;
+   yApi::commands::CSwitch cmd(yadomsCommand);
+   return cmd.getState() == yApi::commands::CSwitch::kOff ? light1_sOff : light1_sOn;
 }
 
 } // namespace rfxcomMessages
