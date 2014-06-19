@@ -74,6 +74,8 @@ public:
    /// \throw                    CPortException if error
    //--------------------------------------------------------------
    virtual std::size_t receive(boost::shared_ptr<unsigned char[]>& buffer) = 0;
+
+   //TODO faire le ménage dans la liste des fonctions de comm
 };
 
 
