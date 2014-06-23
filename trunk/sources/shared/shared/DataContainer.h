@@ -109,7 +109,7 @@ namespace shared
 	  /// \throw      shared::exception::COutOfRange if parameter can not be converted
 	  /// \throw      shared::exception::CInvalidParameter if parameter is not found
 	  //--------------------------------------------------------------
-	  inline CDataContainer getChild(const std::string& parameterName) const;
+	  CDataContainer getChild(const std::string& parameterName) const;
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter value. If the name is not found the default value is returned
@@ -145,7 +145,7 @@ namespace shared
       /// \param [in] parameterName    Child name
       /// \param [in] value            Child container
       //--------------------------------------------------------------
-      inline void setChild(const std::string& parameterName, const CDataContainer & value);
+      void setChild(const std::string& parameterName, const CDataContainer & value);
 
       //--------------------------------------------------------------
       /// \brief	    Set parameter values
@@ -153,7 +153,7 @@ namespace shared
       /// \param [in] values           Valuse of the parameter
       //--------------------------------------------------------------
       template<class T>
-      inline void setValues(const std::string& parameterName, std::vector<T> & values);
+      inline void setValues(const std::string& parameterName, const std::vector<T> & values);
 
       //--------------------------------------------------------------
       /// \brief	    Check if parameter value is present
@@ -195,7 +195,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief		Affectation operator
       /// \param [in] rhs  The container to copy
-      /// \return   Reférence to this instance
+      /// \return   Reference to this instance
       //--------------------------------------------------------------
       CDataContainer & operator=(const CDataContainer &rhs);
 
@@ -346,7 +346,7 @@ namespace shared
    }
 
    template<class T>
-   inline void CDataContainer::setValues(const std::string& parameterName, std::vector<T> & values)
+   inline void CDataContainer::setValues(const std::string& parameterName, const std::vector<T> & values)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -354,7 +354,7 @@ namespace shared
       {
          boost::property_tree::ptree innerData;
 
-         std::vector<T>::iterator i;
+         typename std::vector<T>::const_iterator i;
          for (i = values.begin(); i != values.end(); ++i)
          {
             boost::property_tree::ptree t;
@@ -376,7 +376,7 @@ namespace shared
 
 
    template<>
-   inline void CDataContainer::setValues(const std::string& parameterName, std::vector<CDataContainer> & values)
+   inline void CDataContainer::setValues(const std::string& parameterName, const std::vector<CDataContainer> & values)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -384,7 +384,7 @@ namespace shared
       {
          boost::property_tree::ptree innerData;
 
-         std::vector<CDataContainer>::iterator i;
+         std::vector<CDataContainer>::const_iterator i;
          for (i = values.begin(); i != values.end(); ++i)
          {
             innerData.push_back( std::make_pair("", i->m_tree ) );

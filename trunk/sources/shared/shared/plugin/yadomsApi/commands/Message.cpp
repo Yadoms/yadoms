@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "message.h"
+#include "Message.h"
 #include "../StandardValues.h"
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/DataContainer.h>
