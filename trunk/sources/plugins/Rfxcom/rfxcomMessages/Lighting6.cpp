@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Lighting6.h"
 #include <shared/plugin/yadomsApi/commands/Switch.h>
+#include <shared/DataContainer.h>
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -8,7 +9,7 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CLighting6::CLighting6(const std::string& command, const boost::property_tree::ptree& deviceParameters, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
+CLighting6::CLighting6(const std::string& command, const shared::CDataContainer& deviceParameters, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
 {
    unsigned char id = deviceParameters.get<unsigned char>("id");
    unsigned char groupCode = deviceParameters.get<unsigned char>("groupCode");

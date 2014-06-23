@@ -14,7 +14,7 @@ namespace adapters {
       ((Id)(int)(0))
       ((Name)(std::string)(""))
       ((Type)(std::string)(""))
-      ((Configuration)(std::string)(""))
+      ((Configuration)(shared::CDataContainer)(shared::CDataContainer()))
       ((AutoStart)(bool)(true))
    )
 
@@ -46,7 +46,7 @@ namespace adapters {
       ((SizeY)(int)(1))
       ((PositionX)(int)(1))
       ((PositionY)(int)(1))
-      ((Configuration)(std::string)(""))
+      ((Configuration)(shared::CDataContainer)(shared::CDataContainer()))
    )
 
    DECLARE_ADAPTER_IMPLEMENTATION(PluginEventLogger,
@@ -86,7 +86,7 @@ namespace adapters {
       ((FriendlyName)(std::string)(""))
       ((Type)(database::entities::EKeywordDataType)(database::entities::kString)(int))
       ((Units)(std::string)(""))
-      ((Details)(std::string)(""))
+      ((Details)(shared::CDataContainer)(shared::CDataContainer()))
    )
 
 

@@ -116,19 +116,19 @@ namespace web { namespace rest { namespace service {
 
 
             std::vector< boost::tuple<boost::posix_time::ptime, std::string> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordData(keywordId, timeFrom, timeTo);
-            web::rest::json::CJson objectList;
+            std::vector<shared::CDataContainer> objectList;
             std::vector< boost::tuple<boost::posix_time::ptime, std::string> >::const_iterator i;
 
             for(i=allData.begin(); i!=allData.end(); ++i)
             {
-               web::rest::json::CJson result;
-               result.put("date", web::rest::json::CJsonDate::toString(i->get<0>()));
-               result.put("key", i->get<1>());
-               objectList.push_back(std::make_pair("", result));
+               shared::CDataContainer result;
+               result.set("date", web::rest::json::CJsonDate::toString(i->get<0>()));
+               result.set("key", i->get<1>());
+               objectList.push_back(result);
             }
 
             web::rest::json::CJson result;
-            result.put_child("data", objectList);
+            result.setValues("data", objectList);
             return web::rest::json::CJsonResult::GenerateSuccess(result);
 
          }

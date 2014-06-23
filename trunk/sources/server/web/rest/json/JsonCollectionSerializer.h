@@ -29,24 +29,16 @@ namespace web { namespace rest { namespace json {
 
       static CJson SerializeCollection(typename std::vector< boost::shared_ptr<TObjectBase> > & collectionToSerialize, IEntitySerializer<TObjectBase> & entitySerilizer, const std::string & itemKeyword)
       {
-         CJson objectList;
-
+         std::vector<shared::CDataContainer> objectList;
          typename std::vector< boost::shared_ptr<TObjectBase> >::iterator i;
          for(i=collectionToSerialize.begin(); i!=collectionToSerialize.end(); i++)
          {
-            objectList.push_back(std::make_pair("", entitySerilizer.serialize(*i->get())));
+            objectList.push_back(entitySerilizer.serialize(*i->get()));
          }
 
-         if(itemKeyword.empty())
-         {
-            return objectList;
-         }
-         else
-         {
-            CJson result;
-            result.push_back(std::make_pair(itemKeyword, objectList));
-            return result;
-         }
+         CJson result;
+         result.setValues(itemKeyword, objectList);
+         return result;
       }
 
 
@@ -56,13 +48,15 @@ namespace web { namespace rest { namespace json {
       {
          std::vector< boost::shared_ptr<TObjectBase> > result;
 
+         std::vector<std::string> temp;
          CJson objectList = data;
-         if(objectList.find(itemKeyword) != objectList.not_found())
-            objectList = objectList.get_child(itemKeyword);
+         if(objectList.hasValue(itemKeyword))
+            temp = objectList.getValues<std::string>(itemKeyword);
 
-         for (CJson::const_iterator it = objectList.begin(); it != objectList.end(); ++it)
+         for (std::vector<std::string> ::iterator it = temp.begin(); it != temp.end(); ++it)
          {
-            result.push_back(entitySerilizer.deserialize(it->second));
+            CJson obj(*it);
+            result.push_back(entitySerilizer.deserialize(obj));
          }
          return result;
       }

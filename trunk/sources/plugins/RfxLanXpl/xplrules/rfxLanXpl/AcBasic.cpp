@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "AcBasic.h"
 #include <shared/tools/Random.h>
-#include <shared/serialization/PTreeToJsonSerializer.h>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include "commands/AcBasic.h"
 
@@ -43,9 +42,9 @@ namespace xplrules { namespace rfxLanXpl {
       keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordCommand, yApi::CStandardCapacities::Switch, yApi::IYadomsApi::kWriteOnly, shared::plugin::yadomsApi::IYadomsApi::kNoData, shared::CStringExtension::EmptyString, m_keywordCommandValues)));
       
 
-      boost::property_tree::ptree details;
-      details.put("min", 0);
-      details.put("max", 15);
+      shared::CDataContainer details;
+      details.set("min", 0);
+      details.set("max", 15);
       keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordLevel, m_keywordLevel, shared::plugin::yadomsApi::IYadomsApi::kReadWrite, shared::plugin::yadomsApi::IYadomsApi::kInteger, shared::CStringExtension::EmptyString, details)));
 
       return keywords;

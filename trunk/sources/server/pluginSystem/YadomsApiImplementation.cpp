@@ -51,7 +51,7 @@ bool CYadomsApiImplementation::keywordExists(const std::string& device, const st
    return m_keywordRequester->keywordExists((m_deviceRequester->getDevice(getPluginId(), device))->Id, keyword);
 }
 
-bool CYadomsApiImplementation::declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, EKeywordType type, const std::string & units, const std::string& details)
+bool CYadomsApiImplementation::declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, EKeywordType type, const std::string & units, const shared::CDataContainer& details)
 {
    if (keywordExists(device, keyword))
       return false;
@@ -87,6 +87,8 @@ bool CYadomsApiImplementation::declareKeyword(const std::string& device, const s
    keywordEntity.Units = units;
    keywordEntity.Name = keyword;
    keywordEntity.FriendlyName = keyword;
+
+
    keywordEntity.Details = details;
 
    m_keywordRequester->addKeyword(keywordEntity);
@@ -129,7 +131,7 @@ const shared::plugin::information::IInformation& CYadomsApiImplementation::getIn
    return *m_informations;
 }
 
-const std::string CYadomsApiImplementation::getConfiguration() const
+shared::CDataContainer CYadomsApiImplementation::getConfiguration() const
 {
    return m_pluginData->Configuration;
 }

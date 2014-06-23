@@ -14,7 +14,12 @@ set(SHARED_LIB_SRC
 	shared/ThreadBase.h
 
 	shared/StringExtension.h
-	shared/StringExtension.cpp
+	shared/StringExtension.cpp	
+	
+	shared/DataContainer.h
+	shared/DataContainer.cpp
+	shared/serialization/IDataSerializable.h
+	shared/serialization/IDataFileSerializable.h
   
 	shared/event/Event.hpp
 	shared/event/EventBase.hpp
@@ -39,11 +44,6 @@ set(SHARED_LIB_SRC
 	shared/plugin/ImplementationHelper.h
 	shared/plugin/IPlugin.h
 	
-	shared/plugin/configuration/Configuration.h
-	shared/plugin/configuration/Configuration.cpp
-	shared/plugin/configuration/Factory.h
-	shared/plugin/configuration/Factory.cpp
-  
 	shared/plugin/information/IInformation.h
 
    shared/plugin/yadomsApi/IDeviceCommand.h
@@ -64,10 +64,6 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/commands/Switch.cpp
    shared/plugin/yadomsApi/commands/Switch.h
    
-	shared/serialization/IPtreeToStringSerializer.h
-	shared/serialization/PTreeToJsonSerializer.h
-	shared/serialization/PTreeToJsonSerializer.cpp
-
 	shared/encryption/Xor.h
 	shared/encryption/Xor.cpp
 	shared/encryption/Base64.h
@@ -127,7 +123,6 @@ source_group(event shared/event/*.*)
 source_group(exception shared/exception/*.*)
 
 source_group(plugin shared/shared/plugin/*.* )	
-source_group(plugin\\configuration shared/shared/plugin/configuration/*.* )	
 source_group(plugin\\information shared/shared/plugin/information/*.* )	
 source_group(plugin\\yadomsApi shared/shared/plugin/yadomsApi/*.* )	
 

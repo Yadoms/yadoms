@@ -249,7 +249,7 @@ namespace web { namespace rest { namespace service {
          
          if ( boost::filesystem::exists(someDir) && boost::filesystem::is_directory(someDir))
          {
-            web::rest::json::CJson allData;
+            std::vector<shared::CDataContainer> allData;
             for( boost::filesystem::directory_iterator dir_iter(someDir) ; dir_iter != end_itr ; ++dir_iter)
             {
                if(boost::filesystem::is_directory(*dir_iter))
@@ -270,12 +270,11 @@ namespace web { namespace rest { namespace service {
 
                      std::stringstream ss;
                      ss << ifs.rdbuf();
-                     web::rest::json::CJson jsonFromPackageFile = web::rest::json::CJsonSerializer::deserialize(ss.str());
-                     allData.push_back(std::make_pair("", jsonFromPackageFile));
+                     allData.push_back(shared::CDataContainer(ss.str()));
                   }
                }
             }
-            result.add_child("packages", allData);
+            result.setValues("packages", allData);
             return web::rest::json::CJsonResult::GenerateSuccess(result);
          }
          else

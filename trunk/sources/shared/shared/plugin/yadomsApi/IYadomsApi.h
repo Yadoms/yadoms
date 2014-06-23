@@ -2,6 +2,7 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/plugin/information/IInformation.h>
 #include <shared/StringExtension.h>
+#include <shared/DataContainer.h>
 #include "IDeviceCommand.h"
 #include "IManuallyDeviceCreationData.h"
 #include "IManuallyDeviceCreationTestData.h"
@@ -157,7 +158,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\return true if the keyword has been successfully created, false if already exist
       ///\throw shared::exception::CEmptyResult if creation failed
       //-----------------------------------------------------   
-      virtual bool declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, EKeywordType type, const std::string & units = shared::CStringExtension::EmptyString, const std::string& details = shared::CStringExtension::EmptyString) = 0;
+      virtual bool declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, EKeywordType type, const std::string & units = shared::CStringExtension::EmptyString, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) = 0;
       
 
       //----------------------------------------------------------------------------------------------------------------
@@ -233,7 +234,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\brief Get the current plugin configuration
       ///\return The current plugin configuration
       //-----------------------------------------------------      
-      virtual const std::string getConfiguration() const = 0;
+      virtual shared::CDataContainer getConfiguration() const = 0;
 
 
       //----------------------------------------------------------------------------------------------------------------

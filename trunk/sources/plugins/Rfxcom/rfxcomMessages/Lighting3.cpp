@@ -2,6 +2,7 @@
 #include "Lighting3.h"
 #include <shared/plugin/yadomsApi/commands/Switch.h>
 #include <shared/exception/InvalidParameter.hpp>
+#include <shared/DataContainer.h>
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -9,7 +10,7 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CLighting3::CLighting3(const std::string& command, const boost::property_tree::ptree& deviceParameters, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
+CLighting3::CLighting3(const std::string& command, const shared::CDataContainer& deviceParameters, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
 {
    unsigned char system = deviceParameters.get<unsigned char>("system");
    unsigned short channel = deviceParameters.get<unsigned short>("channel");

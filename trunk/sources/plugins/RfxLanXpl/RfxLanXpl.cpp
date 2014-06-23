@@ -4,7 +4,6 @@
 #include <shared/Log.h>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/exception/Exception.hpp>
-#include <shared/serialization/PTreeToJsonSerializer.h>
 #include "xplcore/XplService.h"
 #include "xplcore/XplHub.h"
 #include "xplcore/XplConstants.h"
@@ -34,13 +33,21 @@ enum
    kXplMessageReceived = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from yApi::IYadomsApi::kPluginFirstEventId
 };
 
+void print(shared::CDataContainer const& pt)
+{
+   YADOMS_LOG(debug) << pt.serialize();
+}
+
 void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    boost::shared_ptr<xplcore::CXplHub> hub;
    try
    {
+
+      print(context->getConfiguration());
+
       // Load configuration values (provided by database)
-      m_configuration.set(context->getConfiguration());
+      m_configuration.deserialize(context->getConfiguration().serialize());
 
       //start ioservice
       xplcore::CXplService xplService(m_xpl_gateway_id, "1", NULL);
@@ -70,9 +77,8 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          case yApi::IYadomsApi::kEventUpdateConfiguration:
          {
             // Configuration was updated
-            std::string newConfiguration = context->getEventHandler().getEventData<std::string>();
+            shared::CDataContainer newConfiguration = context->getEventHandler().getEventData<shared::CDataContainer>();
             YADOMS_LOG(debug) << "configuration was updated...";
-            BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
             // Take into account the new configuration
             // - Restart the plugin if necessary,
@@ -142,12 +148,11 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
 
             if (!context->deviceExists(deviceAddress.getId()))
             {
-               boost::property_tree::ptree details;
-               details.put("readingProtocol", deviceAddress.getReadingXplProtocol().toString());
-               details.put("writingProtocol", deviceAddress.getWritingXplProtocol().toString());
-               details.put("source", realSource);
-               shared::serialization::CPtreeToJsonSerializer serialiser;
-               context->declareDevice(deviceAddress.getId(), deviceAddress.getCommercialName(), serialiser.serialize(details));
+               shared::CDataContainer details;
+               details.set("readingProtocol", deviceAddress.getReadingXplProtocol().toString());
+               details.set("writingProtocol", deviceAddress.getWritingXplProtocol().toString());
+               details.set("source", realSource);
+               context->declareDevice(deviceAddress.getId(), deviceAddress.getCommercialName(), details.serialize());
             }
 
             //create message keywords in database
@@ -210,9 +215,8 @@ void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<yApi::IDeviceCommand> com
       {
          //get device details
          std::string deviceDetails = context->getDeviceDetails(command->getTargetDevice());
-         boost::property_tree::ptree details;
-         shared::serialization::CPtreeToJsonSerializer serialiser;
-         serialiser.deserialize(deviceDetails, details);
+         shared::CDataContainer details;
+         details.deserialize(deviceDetails);
 
          std::string protocol = details.get<std::string>("writingProtocol");
          std::string source = details.get<std::string>("source");

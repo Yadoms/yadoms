@@ -2,6 +2,7 @@
 #include "Information.h"
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/StringExtension.h>
+#include <shared/DataContainer.h>
 
 namespace pluginSystem
 {
@@ -19,12 +20,12 @@ static const ReleaseTypeValuesNameList ReleaseTypeValuesNames = boost::assign::m
 CInformation::CInformation(const boost::filesystem::path& pluginPath)
    :m_path(pluginPath)
 {
-   boost::property_tree::ptree propertyTree;
+   shared::CDataContainer container;
    try
    {
       boost::filesystem::path packageFile;
       packageFile = m_path / "package.json";
-      boost::property_tree::json_parser::read_json(packageFile.string(), propertyTree);
+      container.deserializeFromFile(packageFile.string());
    }
    catch (boost::property_tree::json_parser::json_parser_error& e)
    {
@@ -35,19 +36,19 @@ CInformation::CInformation(const boost::filesystem::path& pluginPath)
    {
       // Get and check data
 
-      m_name = propertyTree.get<std::string>("name");
+      m_name = container.get<std::string>("name");
       if (m_name.empty())
          throw shared::exception::CInvalidParameter("Error reading package.json : plugin name can not be empty");
 
-      m_description = propertyTree.get<std::string>("description");
+	  m_description = container.get<std::string>("description");
       if (m_description.empty())
          throw shared::exception::CInvalidParameter("Error reading package.json : plugin description can not be empty");
 
-      m_version = propertyTree.get<std::string>("version");
+	  m_version = container.get<std::string>("version");
       if (m_version.empty() || !regex_match(m_version, boost::regex("\\d+.\\d+")))
          throw shared::exception::CInvalidParameter("Error reading package.json : plugin version doesn't match expected format (x.x)");
 
-      ReleaseTypeValuesNameList::const_iterator it = ReleaseTypeValuesNames.find(propertyTree.get<std::string>("releaseType"));
+	  ReleaseTypeValuesNameList::const_iterator it = ReleaseTypeValuesNames.find(container.get<std::string>("releaseType"));
       if (it == ReleaseTypeValuesNames.end())
       {
          std::string expectedValues;
@@ -62,19 +63,15 @@ CInformation::CInformation(const boost::filesystem::path& pluginPath)
       }
       m_releaseType = (shared::plugin::information::EReleaseType)(it->second);
 
-      m_author = propertyTree.get<std::string>("author");
+	  m_author = container.get<std::string>("author");
       if (m_author.empty())
          throw shared::exception::CInvalidParameter("Error reading package.json : plugin author can not be empty");
 
-      m_url = propertyTree.get<std::string>("url", shared::CStringExtension::EmptyString);   // No check on URL
+	  m_url = container.get<std::string>("url", shared::CStringExtension::EmptyString);   // No check on URL
    }
-   catch (boost::property_tree::ptree_bad_path& e)
+   catch (shared::exception::CException & e)
    {
       throw shared::exception::CInvalidParameter(std::string("Error reading package.json : data not found : ") + e.what());
-   }
-   catch (boost::property_tree::ptree_bad_data& e)
-   {
-      throw shared::exception::CInvalidParameter(std::string("Error reading package.json : data is invalid : ") + e.what());
    }
 }
 

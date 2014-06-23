@@ -2,6 +2,7 @@
 #include "Curtain1.h"
 #include <shared/plugin/yadomsApi/commands/Curtain.h>
 #include <shared/exception/InvalidParameter.hpp>
+#include <shared/DataContainer.h>
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -9,7 +10,7 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CCurtain1::CCurtain1(const std::string& command, const boost::property_tree::ptree& deviceParameters, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
+CCurtain1::CCurtain1(const std::string& command, const shared::CDataContainer& deviceParameters, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
 {
    unsigned char houseCode = deviceParameters.get<unsigned char>("houseCode");
    unsigned char unitCode = deviceParameters.get<unsigned char>("unitCode");

@@ -25,9 +25,9 @@ namespace web { namespace rest { namespace json {
          std::map<std::string, std::string>::const_iterator fieldIterator;
          for(fieldIterator = i->begin(); fieldIterator != i->end(); ++fieldIterator)
          {
-            result.put(fieldIterator->first, fieldIterator->second);
+            result.set(fieldIterator->first, fieldIterator->second);
          }
-         objectList.push_back(std::make_pair("", result));
+         objectList.setChild("", result);
       }
       return objectList;
    }

@@ -1,13 +1,13 @@
 #pragma once
+#include <shared/DataContainer.h>
 
-#include <shared/serialization/PTreeToJsonSerializer.h>
 
 namespace web { namespace rest { namespace json {
 
    //----------------------------------------
    ///\brief   Define the typename used for Json object
    //----------------------------------------
-   typedef boost::property_tree::ptree CJson;
+   typedef shared::CDataContainer CJson;
 
    //----------------------------------------
    ///\brief   Define a static JSon class serializer
@@ -19,24 +19,16 @@ namespace web { namespace rest { namespace json {
 
       virtual ~CJsonSerializer() {}
 
-   private:
-      static boost::shared_ptr<shared::serialization::IPtreeToStringSerializer> createSerializer()
-      {
-         boost::shared_ptr<shared::serialization::IPtreeToStringSerializer> serializer(new shared::serialization::CPtreeToJsonSerializer);
-         return serializer;
-      }
-
    public:
-      static boost::property_tree::ptree deserialize(const std::string& str)
+      static shared::CDataContainer deserialize(const std::string& str)
       {
-         boost::property_tree::ptree pt;
-         createSerializer()->deserialize(str, pt);
+         shared::CDataContainer pt(str);
          return pt;
       }
 
-      static const std::string serialize(const boost::property_tree::ptree& pt)
+      static const std::string serialize(const shared::CDataContainer& pt)
       {
-         return createSerializer()->serialize(pt);
+         return pt.serialize();
       }
 
    };

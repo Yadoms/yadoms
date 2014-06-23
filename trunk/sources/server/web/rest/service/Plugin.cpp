@@ -113,23 +113,23 @@ namespace web { namespace rest { namespace service {
 
          pluginSystem::CManager::AvalaiblePluginMap::iterator i;
          web::rest::json::CJson result;
-         web::rest::json::CJson pluginCollection;
+         std::vector<shared::CDataContainer> pluginCollection;
          for(i=pluginList.begin(); i!=pluginList.end(); ++i)
          {
-            web::rest::json::CJson thisPluginData;
-            thisPluginData.put("name", i->first);
-            thisPluginData.put("author", i->second->getAuthor());
-            thisPluginData.put("description", i->second->getDescription());
-            thisPluginData.put("nameInformation", i->second->getName());
-            thisPluginData.put("identity", i->second->getIdentity());
-            thisPluginData.put("releaseType", i->second->getReleaseType());
-            thisPluginData.put("url", i->second->getUrl());
-            thisPluginData.put("version", i->second->getVersion());
+            shared::CDataContainer thisPluginData;
+            thisPluginData.set("name", i->first);
+            thisPluginData.set("author", i->second->getAuthor());
+            thisPluginData.set("description", i->second->getDescription());
+            thisPluginData.set("nameInformation", i->second->getName());
+            thisPluginData.set("identity", i->second->getIdentity());
+            thisPluginData.set("releaseType", i->second->getReleaseType());
+            thisPluginData.set("url", i->second->getUrl());
+            thisPluginData.set("version", i->second->getVersion());
 
-            pluginCollection.push_back(std::make_pair("", thisPluginData));
+            pluginCollection.push_back(thisPluginData);
          }
 
-         result.add_child("plugins", pluginCollection);
+         result.setValues("plugins", pluginCollection);
          return web::rest::json::CJsonResult::GenerateSuccess(result);
       }
       catch(std::exception &ex)
@@ -235,7 +235,7 @@ namespace web { namespace rest { namespace service {
             if(pluginInstanceFound)
             {
                web::rest::json::CJson result;
-               result.put("running", m_pluginManager->isInstanceRunning(instanceId));
+               result.set("running", m_pluginManager->isInstanceRunning(instanceId));
                return web::rest::json::CJsonResult::GenerateSuccess(result);
             }
             else
