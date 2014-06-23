@@ -27,10 +27,9 @@ namespace web { namespace rest { namespace json {
    CJson CJsonResult::GenerateInteral(const bool result, const std::string & message, const CJson & data)
    {
       CJson error;
-	  error.set(m_resultFieldName, result);
+	   error.set(m_resultFieldName, result);
       error.set(m_errorMessageFieldName, message);
-
-      error.setChild(m_dataFieldName, data);
+      error.set(m_dataFieldName, data);
       return error;
    }
 

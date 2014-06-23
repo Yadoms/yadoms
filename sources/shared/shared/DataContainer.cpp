@@ -40,17 +40,15 @@ namespace shared
    }
 
 
-   CDataContainer CDataContainer::getChild(const std::string& parameterName) const
+   void CDataContainer::get(const std::string& parameterName, IDataContainable & toFill) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       try
       {
-         boost::property_tree::ptree child = m_tree.get_child(parameterName);
-
-		 CDataContainer t;
-		 t.m_tree = child;
-         return t;
+         CDataContainer dc;
+         dc.m_tree = m_tree.get_child(parameterName);
+         toFill.deserializeFromContainer(dc);
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
@@ -62,13 +60,13 @@ namespace shared
       }
    }
 
-   void CDataContainer::setChild(const std::string& parameterName, const CDataContainer & value)
+   void CDataContainer::set(const std::string& parameterName, const IDataContainable & toFill)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       try
       {
-         m_tree.add_child(parameterName, value.m_tree);
+         m_tree.add_child(parameterName, toFill.serializeInContainer().m_tree);
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
@@ -123,6 +121,27 @@ namespace shared
          throw exception::CException(e.what());
       }
    }
+
+
+   const CDataContainer & CDataContainer::serializeInContainer() const
+   {
+      return *this;
+   }
+
+   void CDataContainer::deserializeFromContainer(const CDataContainer & obj)
+   {
+      set(obj);
+   }
+
+
+
+
+
+
+
+
+
+
 
    bool CDataContainer::operator ==(const CDataContainer &rhs) const
    {

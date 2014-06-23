@@ -230,16 +230,16 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::createRfxcomMess
       switch(deviceType)
       {
       case pTypeLighting1:
-         rfxcomMsg.reset(new rfxcomMessages::CLighting1(command, deviceParametersTree.getChild("content"), m_seqNumberProvider));
+         rfxcomMsg.reset(new rfxcomMessages::CLighting1(command, deviceParametersTree.get<shared::CDataContainer>("content"), m_seqNumberProvider));
          break;
       case pTypeLighting3:
-         rfxcomMsg.reset(new rfxcomMessages::CLighting3(command, deviceParametersTree.getChild("content"), m_seqNumberProvider));
+         rfxcomMsg.reset(new rfxcomMessages::CLighting3(command, deviceParametersTree.get<shared::CDataContainer>("content"), m_seqNumberProvider));
          break;
       case pTypeLighting6:
-         rfxcomMsg.reset(new rfxcomMessages::CLighting6(command, deviceParametersTree.getChild("content"), m_seqNumberProvider));
+         rfxcomMsg.reset(new rfxcomMessages::CLighting6(command, deviceParametersTree.get<shared::CDataContainer>("content"), m_seqNumberProvider));
          break;
       case pTypeCurtain:
-         rfxcomMsg.reset(new rfxcomMessages::CCurtain1(command, deviceParametersTree.getChild("content"), m_seqNumberProvider));
+         rfxcomMsg.reset(new rfxcomMessages::CCurtain1(command, deviceParametersTree.get<shared::CDataContainer>("content"), m_seqNumberProvider));
          break;
          //TODO compléter
       default:

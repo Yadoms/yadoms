@@ -27,7 +27,7 @@ namespace web { namespace rest { namespace json {
          {
             result.set(fieldIterator->first, fieldIterator->second);
          }
-         objectList.setChild("", result);
+         objectList.set("", result);
       }
       return objectList;
    }
