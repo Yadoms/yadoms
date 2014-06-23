@@ -40,7 +40,7 @@ namespace shared
    }
 
 
-   inline CDataContainer CDataContainer::getChild(const std::string& parameterName) const
+   CDataContainer CDataContainer::getChild(const std::string& parameterName) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -62,7 +62,7 @@ namespace shared
       }
    }
 
-   inline void CDataContainer::setChild(const std::string& parameterName, const CDataContainer & value)
+   void CDataContainer::setChild(const std::string& parameterName, const CDataContainer & value)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 

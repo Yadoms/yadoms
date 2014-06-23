@@ -34,26 +34,12 @@ namespace sqlite {
       /// \param anyValue  Any type of value used. Convert it with lexical_cast
       //
       template<class T>
-      CQueryValue(const T & anyValue, bool secure = true)
-      {
-         if(secure)
-            initialize("'" + boost::lexical_cast<std::string>(anyValue) + "'");
-         else
-            initialize(boost::lexical_cast<std::string>(anyValue));
-      }
-
+      inline CQueryValue(const T & anyValue, bool secure = true);
       //
       /// \brief           Constructor
       /// \param anyValue  a posix time
       //
       CQueryValue(const boost::posix_time::ptime & anyValue, bool secure = true);
-
-      //
-      /// \brief           Constructor
-      /// \param anyValue  a property tree
-      //
-      template<>
-      CQueryValue(const shared::CDataContainer & anyValue, bool secure);
 
       //
       /// \brief  Destructor
@@ -117,8 +103,18 @@ namespace sqlite {
       bool m_bIsDefined;
    };
 
+
+   template<class T>
+   inline CQueryValue::CQueryValue(const T & anyValue, bool secure)
+   {
+      if (secure)
+         initialize("'" + boost::lexical_cast<std::string>(anyValue)+"'");
+      else
+         initialize(boost::lexical_cast<std::string>(anyValue));
+   }
+
    template<>
-   CQueryValue::CQueryValue(const shared::CDataContainer & anyValue, bool secure)
+   inline CQueryValue::CQueryValue(const shared::CDataContainer & anyValue, bool secure)
    {
       std::string valueAsString = anyValue.serialize();
       if (secure)
