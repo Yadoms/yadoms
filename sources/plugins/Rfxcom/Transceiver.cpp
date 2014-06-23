@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Transceiver.h"
 #include <shared/Log.h>
-#include <shared/serialization/PTreeToJsonSerializer.h>
+#include <shared/DataContainer.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include "rfxcomMessages/Lighting1.h"
 #include "rfxcomMessages/Lighting3.h"
@@ -147,13 +147,46 @@ const std::string CTransceiver::rfxcomTypeToString(const unsigned char rfxcomTyp
       (recType86830FSK  , "868.30MHz FSK"          )
       (recType86835     , "868.35MHz"              )
       (recType86835FSK  , "868.35MHz FSK"          )
-      (recType86895     , "868.95MHz"              );   std::map<unsigned char, std::string>::const_iterator itRfxcomTypes = RfxcomTypes.find(rfxcomType);   if (itRfxcomTypes == RfxcomTypes.end())      return boost::lexical_cast<std::string>(rfxcomType);   return itRfxcomTypes->second;}
+      (recType86895     , "868.95MHz"              );
+
+   std::map<unsigned char, std::string>::const_iterator itRfxcomTypes = RfxcomTypes.find(rfxcomType);
+   if (itRfxcomTypes == RfxcomTypes.end())
+      return boost::lexical_cast<std::string>(rfxcomType);
+
+   return itRfxcomTypes->second;
+}
 
 void CTransceiver::TraceRfxComConfiguredProtocols(const RBUF& rbuf)
 {
    YADOMS_LOG(info) << "RFXCom configured protocols :";
 
-   if (rbuf.IRESPONSE.AEenabled        ) YADOMS_LOG(info) << "   - AE Blyss";   if (rbuf.IRESPONSE.RUBICSONenabled  ) YADOMS_LOG(info) << "   - Rubicson";   if (rbuf.IRESPONSE.FINEOFFSETenabled) YADOMS_LOG(info) << "   - FineOffset/Viking";   if (rbuf.IRESPONSE.LIGHTING4enabled ) YADOMS_LOG(info) << "   - Lighting4";   if (rbuf.IRESPONSE.RSLenabled       ) YADOMS_LOG(info) << "   - RSL";   if (rbuf.IRESPONSE.SXenabled        ) YADOMS_LOG(info) << "   - Byron SX";   if (rbuf.IRESPONSE.RFU6enabled      ) YADOMS_LOG(info) << "   - RFU";   if (rbuf.IRESPONSE.UNDECODEDenabled ) YADOMS_LOG(info) << "   - undecoded messages";   if (rbuf.IRESPONSE.MERTIKenabled    ) YADOMS_LOG(info) << "   - Mertik";   if (rbuf.IRESPONSE.LWRFenabled      ) YADOMS_LOG(info) << "   - AD LightwaveRF";   if (rbuf.IRESPONSE.HIDEKIenabled    ) YADOMS_LOG(info) << "   - Hideki/UPM";   if (rbuf.IRESPONSE.LACROSSEenabled  ) YADOMS_LOG(info) << "   - La Crosse";   if (rbuf.IRESPONSE.FS20enabled      ) YADOMS_LOG(info) << "   - FS20";   if (rbuf.IRESPONSE.PROGUARDenabled  ) YADOMS_LOG(info) << "   - ProGuard";   if (rbuf.IRESPONSE.BLINDST0enabled  ) YADOMS_LOG(info) << "   - BlindsT0";   if (rbuf.IRESPONSE.BLINDST1enabled  ) YADOMS_LOG(info) << "   - BlindsT1";   if (rbuf.IRESPONSE.X10enabled       ) YADOMS_LOG(info) << "   - X10";   if (rbuf.IRESPONSE.ARCenabled       ) YADOMS_LOG(info) << "   - ARC";   if (rbuf.IRESPONSE.ACenabled        ) YADOMS_LOG(info) << "   - AC";   if (rbuf.IRESPONSE.HEEUenabled      ) YADOMS_LOG(info) << "   - HomeEasy EU";   if (rbuf.IRESPONSE.MEIANTECHenabled ) YADOMS_LOG(info) << "   - Meiantech";   if (rbuf.IRESPONSE.OREGONenabled    ) YADOMS_LOG(info) << "   - Oregon Scientific";   if (rbuf.IRESPONSE.ATIenabled       ) YADOMS_LOG(info) << "   - ATI";   if (rbuf.IRESPONSE.VISONICenabled   ) YADOMS_LOG(info) << "   - Visonic";}
+   if (rbuf.IRESPONSE.AEenabled        ) YADOMS_LOG(info) << "   - AE Blyss";
+   if (rbuf.IRESPONSE.RUBICSONenabled  ) YADOMS_LOG(info) << "   - Rubicson";
+   if (rbuf.IRESPONSE.FINEOFFSETenabled) YADOMS_LOG(info) << "   - FineOffset/Viking";
+   if (rbuf.IRESPONSE.LIGHTING4enabled ) YADOMS_LOG(info) << "   - Lighting4";
+   if (rbuf.IRESPONSE.RSLenabled       ) YADOMS_LOG(info) << "   - RSL";
+   if (rbuf.IRESPONSE.SXenabled        ) YADOMS_LOG(info) << "   - Byron SX";
+   if (rbuf.IRESPONSE.RFU6enabled      ) YADOMS_LOG(info) << "   - RFU";
+   if (rbuf.IRESPONSE.UNDECODEDenabled ) YADOMS_LOG(info) << "   - undecoded messages";
+
+   if (rbuf.IRESPONSE.MERTIKenabled    ) YADOMS_LOG(info) << "   - Mertik";
+   if (rbuf.IRESPONSE.LWRFenabled      ) YADOMS_LOG(info) << "   - AD LightwaveRF";
+   if (rbuf.IRESPONSE.HIDEKIenabled    ) YADOMS_LOG(info) << "   - Hideki/UPM";
+   if (rbuf.IRESPONSE.LACROSSEenabled  ) YADOMS_LOG(info) << "   - La Crosse";
+   if (rbuf.IRESPONSE.FS20enabled      ) YADOMS_LOG(info) << "   - FS20";
+   if (rbuf.IRESPONSE.PROGUARDenabled  ) YADOMS_LOG(info) << "   - ProGuard";
+   if (rbuf.IRESPONSE.BLINDST0enabled  ) YADOMS_LOG(info) << "   - BlindsT0";
+   if (rbuf.IRESPONSE.BLINDST1enabled  ) YADOMS_LOG(info) << "   - BlindsT1";
+
+   if (rbuf.IRESPONSE.X10enabled       ) YADOMS_LOG(info) << "   - X10";
+   if (rbuf.IRESPONSE.ARCenabled       ) YADOMS_LOG(info) << "   - ARC";
+   if (rbuf.IRESPONSE.ACenabled        ) YADOMS_LOG(info) << "   - AC";
+   if (rbuf.IRESPONSE.HEEUenabled      ) YADOMS_LOG(info) << "   - HomeEasy EU";
+   if (rbuf.IRESPONSE.MEIANTECHenabled ) YADOMS_LOG(info) << "   - Meiantech";
+   if (rbuf.IRESPONSE.OREGONenabled    ) YADOMS_LOG(info) << "   - Oregon Scientific";
+   if (rbuf.IRESPONSE.ATIenabled       ) YADOMS_LOG(info) << "   - ATI";
+   if (rbuf.IRESPONSE.VISONICenabled   ) YADOMS_LOG(info) << "   - Visonic";
+}
 
 
 std::string CTransceiver::msgToString(const void* ptr, size_t size) const
@@ -186,10 +219,9 @@ void CTransceiver::send(const std::string& command, const std::string& devicePar
 
 boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::createRfxcomMessage(const std::string& command, const std::string& deviceParameters) const
 {
-   shared::serialization::CPtreeToJsonSerializer serializer;
    try
    {
-      boost::property_tree::ptree deviceParametersTree = serializer.deserialize(deviceParameters);
+      shared::CDataContainer deviceParametersTree(deviceParameters);
       unsigned char deviceType = deviceParametersTree.get<unsigned char>("type");
 
       boost::shared_ptr<rfxcomMessages::IRfxcomMessage> rfxcomMsg;
@@ -198,16 +230,16 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::createRfxcomMess
       switch(deviceType)
       {
       case pTypeLighting1:
-         rfxcomMsg.reset(new rfxcomMessages::CLighting1(command, deviceParametersTree.get_child("content"), m_seqNumberProvider));
+         rfxcomMsg.reset(new rfxcomMessages::CLighting1(command, deviceParametersTree.getChild("content"), m_seqNumberProvider));
          break;
       case pTypeLighting3:
-         rfxcomMsg.reset(new rfxcomMessages::CLighting3(command, deviceParametersTree.get_child("content"), m_seqNumberProvider));
+         rfxcomMsg.reset(new rfxcomMessages::CLighting3(command, deviceParametersTree.getChild("content"), m_seqNumberProvider));
          break;
       case pTypeLighting6:
-         rfxcomMsg.reset(new rfxcomMessages::CLighting6(command, deviceParametersTree.get_child("content"), m_seqNumberProvider));
+         rfxcomMsg.reset(new rfxcomMessages::CLighting6(command, deviceParametersTree.getChild("content"), m_seqNumberProvider));
          break;
       case pTypeCurtain:
-         rfxcomMsg.reset(new rfxcomMessages::CCurtain1(command, deviceParametersTree.get_child("content"), m_seqNumberProvider));
+         rfxcomMsg.reset(new rfxcomMessages::CCurtain1(command, deviceParametersTree.getChild("content"), m_seqNumberProvider));
          break;
          //TODO compléter
       default:
@@ -218,14 +250,9 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::createRfxcomMess
 
       return rfxcomMsg;
    }
-   catch (boost::property_tree::ptree_bad_path& e)
+   catch (shared::exception::CException & e)
    {
       BOOST_ASSERT_MSG(false, "Invalid command (parameter doesn't exist)");
-      throw shared::exception::CInvalidParameter("Invalid command \"" + command + "\" : " + e.what());
-   }
-   catch (boost::property_tree::ptree_bad_data& e)
-   {
-      BOOST_ASSERT_MSG(false, "Invalid command (fail to extract parameter)");
       throw shared::exception::CInvalidParameter("Invalid command \"" + command + "\" : " + e.what());
    }
 }

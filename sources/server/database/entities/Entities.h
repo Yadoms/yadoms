@@ -1,6 +1,7 @@
 #pragma once
 #include "EntityHelpers.hpp"
 #include <shared/plugin/information/IInformation.h>
+#include <shared/DataContainer.h>
 #include "Field.hpp"
 
 namespace database { 
@@ -73,7 +74,7 @@ namespace entities {
       ((Id)(int)(0))
       ((Name)(std::string)(""))
       ((Type)(std::string)(""))
-      ((Configuration)(std::string)(""))
+      ((Configuration)(shared::CDataContainer)(shared::CDataContainer()))
       ((AutoStart)(bool)(true))
       )
 
@@ -104,7 +105,7 @@ namespace entities {
       ((SizeY)(int)(1))
       ((PositionX)(int)(1))
       ((PositionY)(int)(1))
-      ((Configuration)(std::string)(""))
+      ((Configuration)(shared::CDataContainer)(shared::CDataContainer()))
       )
 
    DECLARE_ENTITY_CLASS(PluginEventLogger,
@@ -153,7 +154,7 @@ namespace entities {
       ((FriendlyName)(std::string)(""))
       ((Type)(database::entities::EKeywordDataType)(database::entities::kString))
       ((Units)(std::string)(""))
-      ((Details)(std::string)(""))
+      ((Details)(shared::CDataContainer)(shared::CDataContainer()))
    )
 
    DECLARE_ENTITY_CLASS(Acquisition,

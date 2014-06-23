@@ -30,7 +30,7 @@ namespace xplrules {
       ///\param [in] units       The units
       ///\param [in] details     A free PropertyString which give units, enumeration values,....
       //------------------------------------
-      CDeviceKeyword(const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::IYadomsApi::EKeywordType type, const std::string & units, const boost::property_tree::ptree & details);
+      CDeviceKeyword(const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::IYadomsApi::EKeywordType type, const std::string & units, const shared::CDataContainer & details);
 
       //------------------------------------
       ///\brief Destructor
@@ -71,7 +71,7 @@ namespace xplrules {
       ///\brief Get keyword details
       ///\return keyword details
       //------------------------------------
-      const std::string & getDetails();      
+      const shared::CDataContainer & getDetails();      
    private:
      
       //------------------------------------
@@ -102,7 +102,7 @@ namespace xplrules {
       //------------------------------------
       ///\brief The keyword details
       //------------------------------------
-      std::string m_details;      
+      shared::CDataContainer m_details;
    };
 
 

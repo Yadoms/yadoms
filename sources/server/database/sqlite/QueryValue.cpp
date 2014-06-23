@@ -2,6 +2,7 @@
 #include "QueryValue.h"
 
 
+
 namespace database { 
 namespace sqlite { 
 
@@ -30,6 +31,7 @@ namespace sqlite {
          initialize(boost::posix_time::to_iso_string(anyValue));
    }
 
+
    CQueryValue::CQueryValue(const bool value) 
    { 
       initialize(std::string(value?"1":"0"));
@@ -38,6 +40,13 @@ namespace sqlite {
    CQueryValue& CQueryValue::operator=(const CQueryValue & anyValue)
    {
       initialize(anyValue.m_valueAsString);
+      return *this;
+   }
+   
+   CQueryValue& CQueryValue::operator=(const shared::CDataContainer & anyValue)
+   {
+      std::string valueAsString = anyValue.serialize();
+      initialize(valueAsString);
       return *this;
    }
 

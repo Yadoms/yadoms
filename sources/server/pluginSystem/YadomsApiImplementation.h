@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
 #include <shared/plugin/information/IInformation.h>
+#include <shared/DataContainer.h>
 #include "database/IPluginEventLoggerRequester.h"
 #include "database/IDeviceRequester.h"
 #include "database/IKeywordRequester.h"
@@ -42,13 +43,13 @@ namespace pluginSystem
       virtual const std::string getDeviceDetails(const std::string& device) const;
       virtual bool declareDevice(const std::string& device, const std::string& model, const std::string& details);
       virtual bool keywordExists(const std::string& device, const std::string& keyword) const;
-      virtual bool declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, EKeywordType type, const std::string & units = shared::CStringExtension::EmptyString, const std::string& details = shared::CStringExtension::EmptyString);
+      virtual bool declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, EKeywordType type, const std::string & units = shared::CStringExtension::EmptyString, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
       virtual void historizeData(const std::string& device, const std::string& keyword, const std::string& value);
       virtual void historizeData(const std::string& device, const std::string& keyword, bool value);
       virtual void historizeData(const std::string& device, const std::string& keyword, int value);
       virtual void historizeData(const std::string& device, const std::string& keyword, double value);
       virtual const shared::plugin::information::IInformation& getInformation() const;
-      virtual const std::string getConfiguration() const;
+      virtual shared::CDataContainer getConfiguration() const;
       virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message);
       virtual shared::event::CEventHandler & getEventHandler();
       // [END] IYadomsApi implementation 

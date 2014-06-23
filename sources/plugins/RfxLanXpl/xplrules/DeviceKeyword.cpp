@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DeviceKeyword.h"
-#include <shared/serialization/PTreeToJsonSerializer.h>
 
 namespace xplrules {
 
@@ -9,11 +8,9 @@ namespace xplrules {
    {
    }
 
-   CDeviceKeyword::CDeviceKeyword(const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::IYadomsApi::EKeywordType type, const std::string & units, const boost::property_tree::ptree & details)
-      : m_keyword(keyword), m_capacity(capacity), m_accessMode(accessMode), m_type(type), m_units(units)
+   CDeviceKeyword::CDeviceKeyword(const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::IYadomsApi::EKeywordType type, const std::string & units, const shared::CDataContainer & details)
+      : m_keyword(keyword), m_capacity(capacity), m_accessMode(accessMode), m_type(type), m_units(units), m_details(details)
    {
-      shared::serialization::CPtreeToJsonSerializer detailsSerialiser;
-      m_details = detailsSerialiser.serialize(details);
    }
 
 
@@ -46,7 +43,7 @@ namespace xplrules {
       return m_units;
    }
 
-   const std::string & CDeviceKeyword::getDetails()
+   const shared::CDataContainer & CDeviceKeyword::getDetails()
    {
       return m_details;
    }

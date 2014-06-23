@@ -5,7 +5,6 @@
 #include <shared/plugin/information/IInformation.h>
 #include "database/entities/Entities.h"
 
-
 namespace database { 
 namespace sqlite { 
 namespace adapters { 
@@ -116,6 +115,17 @@ namespace adapters {
    {
       return boost::posix_time::from_iso_string(extractData<std::string>(pStatement, nCol));
    }
+
+   //--------------------------------------------------------------
+   ///\brief  Override method for type = shared::CDataContainer (use specific sqlite3 function)
+   //--------------------------------------------------------------
+   template<>
+   inline shared::CDataContainer CSQLite3Extension::extractData(sqlite3_stmt * pStatement, int nCol)
+   {
+      return shared::CDataContainer(extractData<std::string>(pStatement, nCol));
+   }
+
+
 
 
 } //namespace adapters

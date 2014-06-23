@@ -1,5 +1,6 @@
 #pragma once
 #include <shared/Log.h>
+#include <shared/DataContainer.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace commands {
 
@@ -26,22 +27,17 @@ namespace xplrules { namespace rfxLanXpl { namespace commands {
       ///\brief Read the field from a propertytree
       ///\param [in] ptSource   the property tree to read data from
       //-----------------------------
-      void read(boost::property_tree::ptree & ptSource)
+      void read(shared::CDataContainer & ptSource)
       {
          try
          {
             m_value = ptSource.get<T>(m_fieldName);
             m_defined = true;
          }
-         catch (boost::property_tree::ptree_bad_path& e)
+         catch (shared::exception::CException & e)
          {
             m_defined = false;
-            YADOMS_LOG(warning) << "Invalid path for " << m_fieldName << " :" << e.what();
-         }
-         catch (boost::property_tree::ptree_bad_data& e)
-         {
-            m_defined = false;
-            YADOMS_LOG(warning) << "Invalid data for " << m_fieldName << " :"  << e.what();
+            YADOMS_LOG(warning) << "Can not read " << m_fieldName << " :" << e.what();
          }
       }
 

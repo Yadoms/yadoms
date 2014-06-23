@@ -1,6 +1,6 @@
 #pragma once
 
-#include <shared/plugin/configuration/Configuration.h>
+#include <shared/DataContainer.h>
 
 
 //--------------------------------------------------------------
@@ -17,7 +17,7 @@ enum EEnumType
 /// \brief	Configuration of the fake plugin
 /// \note   To implement configuration, we have to derive from shared::plugin::configuration::CConfiguration
 //--------------------------------------------------------------
-class CFakePluginConfiguration : public shared::plugin::configuration::CConfiguration
+class CFakePluginConfiguration : public shared::CDataContainer
 {
 public:
    //--------------------------------------------------------------

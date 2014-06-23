@@ -2,8 +2,6 @@
 #include "RfxLanXplConfiguration.h"
 #include <shared/Log.h>
 
-namespace cfg = shared::plugin::configuration;
-
 
 CRfxLanXplConfiguration::~CRfxLanXplConfiguration()
 {
@@ -13,10 +11,10 @@ CRfxLanXplConfiguration::~CRfxLanXplConfiguration()
 
 bool CRfxLanXplConfiguration::getStartXplhub() const
 {
-   return getValue<bool>("HubXplSection.checkbox");
+   return get<bool>("HubXplSection.checkbox");
 }
 
 std::string CRfxLanXplConfiguration::getHubLocalIp() const
 {
-   return getValue<std::string>("HubXplSection.values.ipAddress");
+   return get<std::string>("HubXplSection.values.ipAddress");
 }

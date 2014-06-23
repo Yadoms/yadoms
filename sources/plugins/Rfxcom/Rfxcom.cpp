@@ -77,7 +77,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          case yApi::IYadomsApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
-               std::string newConfiguration = context->getEventHandler().getEventData<std::string>();
+               shared::CDataContainer newConfiguration = context->getEventHandler().getEventData<shared::CDataContainer>();
                YADOMS_LOG(debug) << "Configuration was updated...";
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 

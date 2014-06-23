@@ -3,6 +3,7 @@
 #include "IRfxcomMessage.h"
 #include "RFXtrxDefinitions.h"
 #include "../ISequenceNumberProvider.h"
+#include <shared/DataContainer.h>
 
 namespace rfxcomMessages
 {
@@ -19,7 +20,7 @@ namespace rfxcomMessages
       /// \param[in] seqNumberProvider    The sequence number provider
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       //--------------------------------------------------------------
-      CLighting3(const std::string& command, const boost::property_tree::ptree& deviceParameters, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider);
+      CLighting3(const std::string& command, const shared::CDataContainer& deviceParameters, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

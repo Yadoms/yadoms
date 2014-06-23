@@ -41,18 +41,18 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         web::rest::json::CJson result;
+         std::vector< shared::CDataContainer > internalList;
          const boost::shared_ptr<const shared::CPeripherals::SerialPortsMap> map = shared::CPeripherals::getSerialPorts();
          for(shared::CPeripherals::SerialPortsMap::const_iterator i = map->begin(); i != map->end(); ++i)
          {
-            web::rest::json::CJson serialPort;
-            serialPort.put("name", i->first);
-            serialPort.put("friendlyName", i->second);
-            result.push_back(std::make_pair("", serialPort));
+            shared::CDataContainer serialPort;
+            serialPort.set("name", i->first);
+            serialPort.set("friendlyName", i->second);
+            internalList.push_back(serialPort);
          }
 
          web::rest::json::CJson result2;
-         result2.push_back(std::make_pair("serialPorts", result));
+         result2.setValues("serialPorts", internalList);
          return web::rest::json::CJsonResult::GenerateSuccess(result2);
       }
       catch(std::exception &ex)
@@ -71,9 +71,9 @@ namespace web { namespace rest { namespace service {
       {
          web::rest::json::CJson result;
 
-         result.put("runningPlatform", m_systemInformation->getOperatingSystemName());
-         result.put("yadomsVersion", m_systemInformation->getSoftwareVersion().toString());
-         result.put("startupTime", web::rest::json::CJsonDate::toString(m_systemInformation->getStartupDateTime()));
+         result.set("runningPlatform", m_systemInformation->getOperatingSystemName());
+         result.set("yadomsVersion", m_systemInformation->getSoftwareVersion().toString());
+         result.set("startupTime", web::rest::json::CJsonDate::toString(m_systemInformation->getStartupDateTime()));
          return web::rest::json::CJsonResult::GenerateSuccess(result);
       }
       catch (std::exception &ex)

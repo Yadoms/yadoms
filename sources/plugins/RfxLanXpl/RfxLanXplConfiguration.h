@@ -1,13 +1,13 @@
 #pragma once
 
-#include <shared/plugin/configuration/Configuration.h>
+#include <shared/DataContainer.h>
 
 
 //--------------------------------------------------------------
 /// \brief	Configuration of the xpl plugin
 /// \note   To implement configuration, we have to derive from shared::plugin::configuration::CConfiguration
 //--------------------------------------------------------------
-class CRfxLanXplConfiguration : public shared::plugin::configuration::CConfiguration
+class CRfxLanXplConfiguration : public shared::CDataContainer
 {
 public:
    //--------------------------------------------------------------

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "JsonResult.h"
-#include <shared/serialization/PTreeToJsonSerializer.h>
 
 namespace web { namespace rest { namespace json {
 
@@ -28,16 +27,16 @@ namespace web { namespace rest { namespace json {
    CJson CJsonResult::GenerateInteral(const bool result, const std::string & message, const CJson & data)
    {
       CJson error;
-      error.put(m_resultFieldName, result);
-      error.put(m_errorMessageFieldName, message);
+	  error.set(m_resultFieldName, result);
+      error.set(m_errorMessageFieldName, message);
 
-      error.add_child(m_dataFieldName, data);
+      error.setChild(m_dataFieldName, data);
       return error;
    }
 
    bool CJsonResult::isSuccess(const CJson & data)
    {
-      if(data.find(m_resultFieldName) != data.not_found())
+      if(data.hasValue(m_resultFieldName) )
          return data.get<bool>(m_resultFieldName);
       return false;
    }

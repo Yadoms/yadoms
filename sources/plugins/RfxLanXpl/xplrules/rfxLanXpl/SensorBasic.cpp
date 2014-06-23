@@ -238,7 +238,7 @@ namespace xplrules { namespace rfxLanXpl {
       if(msg.getBody().find(m_keywordUnits) != msg.getBody().end())
          units = msg.getBodyValue(m_keywordUnits);
 
-      boost::property_tree::ptree details;
+      shared::CDataContainer details;
 
       if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeBattery))
       {
@@ -301,8 +301,8 @@ namespace xplrules { namespace rfxLanXpl {
 
          if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeHumidity))
          {
-            details.put("min", 0);
-            details.put("max", 100);
+            details.set("min", 0);
+            details.set("max", 100);
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeHumidity, m_keywordTypeHumidity, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kInteger, yApi::CStandardUnits::Percent, details)));
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordDescription, m_keywordDescription, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kString, yApi::CStandardUnits::NoUnits, m_keywordTypeHumidityValues)));
          }
@@ -330,15 +330,15 @@ namespace xplrules { namespace rfxLanXpl {
 
          if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeDirection))
          {
-            details.put("min", 0);
-            details.put("max", 359);
+            details.set("min", 0);
+            details.set("max", 359);
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeDirection, m_keywordTypeDirection, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kInteger, yApi::CStandardUnits::NoUnits, details)));
          }
 
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeUv))
          {
-            details.put("min", 0);
-            details.put("max", 12);
+            details.set("min", 0);
+            details.set("max", 12);
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeUv, m_keywordTypeUv, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kInteger, yApi::CStandardUnits::NoUnits, details)));
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordDescription, m_keywordDescription, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kString, yApi::CStandardUnits::NoUnits, m_keywordTypeUvDescriptionValues)));
          }

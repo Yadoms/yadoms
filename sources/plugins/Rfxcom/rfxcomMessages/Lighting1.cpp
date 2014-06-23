@@ -2,13 +2,14 @@
 #include "Lighting1.h"
 #include <shared/plugin/yadomsApi/commands/Switch.h>
 
+
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
 
 namespace rfxcomMessages
 {
 
-CLighting1::CLighting1(const std::string& command, const boost::property_tree::ptree& deviceParameters, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
+CLighting1::CLighting1(const std::string& command, const shared::CDataContainer& deviceParameters, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
 {
    unsigned char subType = deviceParameters.get<unsigned char>("subType");
    unsigned char houseCode = deviceParameters.get<unsigned char>("houseCode");

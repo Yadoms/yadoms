@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Switch.h"
 #include "../StandardValues.h"
-#include <shared/serialization/PTreeToJsonSerializer.h>
+#include <shared/DataContainer.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 
@@ -11,11 +11,10 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 CSwitch::CSwitch(const std::string& command)
    :m_state(kOff), m_dimLevel(0)
 {
-   shared::serialization::CPtreeToJsonSerializer serializer;
    try
    {
-      boost::property_tree::ptree yadomsCommandTree = serializer.deserialize(command);
-      std::string cmdState = yadomsCommandTree.get<std::string>("command");
+	   shared::CDataContainer yadomsCommandTree(command);
+	   std::string cmdState = yadomsCommandTree.get<std::string>("command");
 
       if (cmdState == CStandardValues::Off)
          m_state = kOff;
@@ -24,7 +23,7 @@ CSwitch::CSwitch(const std::string& command)
       else if (cmdState == CStandardValues::Dim)
       {
          m_state = kDim;
-         m_dimLevel = yadomsCommandTree.get<int>("level");
+		 m_dimLevel = yadomsCommandTree.get<int>("level");
       }
       else
       {

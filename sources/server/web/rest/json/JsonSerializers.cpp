@@ -3,7 +3,6 @@
 #include "JsonSerializers.h"
 #include "JsonSerializersHelpers.hpp"
 #include <shared/plugin/information/IInformation.h>
-#include <shared/serialization/PTreeToJsonSerializer.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include "database/entities/Entities.h"
 #include <shared/Log.h>

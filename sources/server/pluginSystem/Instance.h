@@ -67,7 +67,7 @@ namespace pluginSystem
       /// \brief			            Notify the plugin about its configuration changed
       /// \param  newConfiguration  The new configuration to apply
       //--------------------------------------------------------------
-      virtual void updateConfiguration(const std::string& newConfiguration) const;
+      virtual void updateConfiguration(const shared::CDataContainer & newConfiguration) const;
 
       //--------------------------------------------------------------
       /// \brief			Get the plugin name of this instance

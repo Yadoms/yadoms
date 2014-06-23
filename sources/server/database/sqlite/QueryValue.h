@@ -1,5 +1,6 @@
 #pragma once
 
+#include <shared/DataContainer.h>
 
 namespace database { 
 namespace sqlite { 
@@ -43,10 +44,16 @@ namespace sqlite {
 
       //
       /// \brief           Constructor
-      /// \param anyValue  Any type of value used. Convert it with lexical_cast
+      /// \param anyValue  a posix time
       //
       CQueryValue(const boost::posix_time::ptime & anyValue, bool secure = true);
 
+      //
+      /// \brief           Constructor
+      /// \param anyValue  a property tree
+      //
+      template<>
+      CQueryValue(const shared::CDataContainer & anyValue, bool secure);
 
       //
       /// \brief  Destructor
@@ -72,6 +79,13 @@ namespace sqlite {
          initialize("'" +boost::lexical_cast<std::string>(anyValue) + "'");
          return *this;
       }
+
+      //
+      /// \brief           Copy operator for a propertytree
+      /// \param anyValue  A value to copy
+      /// \return          A reference to the copy
+      //
+      CQueryValue& operator=(const shared::CDataContainer & anyValue);
 
       //
       /// \brief           Get the value as a string
@@ -103,9 +117,15 @@ namespace sqlite {
       bool m_bIsDefined;
    };
 
-
-
-
+   template<>
+   CQueryValue::CQueryValue(const shared::CDataContainer & anyValue, bool secure)
+   {
+      std::string valueAsString = anyValue.serialize();
+      if (secure)
+         initialize("'" + valueAsString + "'");
+      else
+         initialize(valueAsString);
+   }
 } //namespace sqlite
 } //namespace database 
 

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "AcBasic.h"
-#include <shared/serialization/PTreeToJsonSerializer.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 
@@ -9,8 +8,7 @@ namespace xplrules { namespace rfxLanXpl { namespace commands {
    CAcBasic::CAcBasic(const std::string& command)
       :Command("command"), Level("level")
    {
-      shared::serialization::CPtreeToJsonSerializer serializer;
-      boost::property_tree::ptree yadomsCommandTree = serializer.deserialize(command);
+      shared::CDataContainer yadomsCommandTree(command);
       
       Command.read(yadomsCommandTree);
 
