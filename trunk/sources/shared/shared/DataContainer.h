@@ -66,7 +66,20 @@ namespace shared
    ///
    ///
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CDataContainer : public serialization::IDataSerializable, public serialization::IDataFileSerializable
+
+   class CDataContainer;
+
+   class YADOMS_SHARED_EXPORT IDataContainable
+   {
+   public:
+      virtual ~IDataContainable() { }
+
+      virtual const CDataContainer & serializeInContainer() const = 0;
+      virtual void deserializeFromContainer(const CDataContainer &) = 0;
+   };
+
+
+   class YADOMS_SHARED_EXPORT CDataContainer : public serialization::IDataSerializable, public serialization::IDataFileSerializable, public IDataContainable
    {
    public:
       //--------------------------------------------------------------
@@ -102,14 +115,9 @@ namespace shared
       template<class T>
       inline T get(const std::string& parameterName) const;
 
-	  //--------------------------------------------------------------
-	  /// \brief	    Get parameter value
-	  /// \param [in] parameterName    Name of the parameter
-	  /// \return     The parameter value
-	  /// \throw      shared::exception::COutOfRange if parameter can not be converted
-	  /// \throw      shared::exception::CInvalidParameter if parameter is not found
-	  //--------------------------------------------------------------
-	  CDataContainer getChild(const std::string& parameterName) const;
+
+      void get(const std::string& parameterName, IDataContainable & toFill) const;
+      void set(const std::string& parameterName, const IDataContainable & toFill);
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter value. If the name is not found the default value is returned
@@ -140,13 +148,6 @@ namespace shared
       template<class T>
       inline void set(const std::string& parameterName, const T & value);
 	  
-	  //--------------------------------------------------------------
-      /// \brief	    Append a child
-      /// \param [in] parameterName    Child name
-      /// \param [in] value            Child container
-      //--------------------------------------------------------------
-      void setChild(const std::string& parameterName, const CDataContainer & value);
-
       //--------------------------------------------------------------
       /// \brief	    Set parameter values
       /// \param [in] parameterName    Name of the parameter
@@ -223,6 +224,10 @@ namespace shared
 	  virtual void deserializeFromFile(const std::string & filename);
 	  // [END] IDataFileSerializable implementation
 
+     // IDataContainable implementation
+     virtual const CDataContainer & serializeInContainer() const;
+     virtual void deserializeFromContainer(const CDataContainer &);
+     // [END] IDataContainable implementation
 
 	  //--------------------------------------------------------------
 	  /// \brief		An empty container which could be used as default method parameter
@@ -274,6 +279,26 @@ namespace shared
       }
    }
 
+   template<>
+   inline CDataContainer CDataContainer::get(const std::string& parameterName) const
+   {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+      try
+      {
+         CDataContainer t;
+         t.m_tree = m_tree.get_child(parameterName);;
+         return t;
+      }
+      catch (boost::property_tree::ptree_bad_path& e)
+      {
+         throw exception::CInvalidParameter(parameterName + " : " + e.what());
+      }
+      catch (boost::property_tree::ptree_bad_data& e)
+      {
+         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
+      }
+   }
 
    template<class T>
    inline T CDataContainer::get(const std::string& parameterName, const T & defaultValue) const
@@ -334,6 +359,25 @@ namespace shared
       try
       {
          m_tree.put(parameterName, value);
+      }
+      catch (boost::property_tree::ptree_bad_path& e)
+      {
+         throw exception::CInvalidParameter(parameterName + " : " + e.what());
+      }
+      catch (boost::property_tree::ptree_bad_data& e)
+      {
+         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
+      }
+   }   
+   
+   template<>
+   inline void CDataContainer::set(const std::string& parameterName, const CDataContainer & value)
+   {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+      try
+      {
+         m_tree.add_child(parameterName, value.m_tree);
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
