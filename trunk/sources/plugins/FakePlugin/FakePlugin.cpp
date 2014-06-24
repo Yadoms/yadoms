@@ -30,7 +30,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
    try
    {
       // Load configuration values (provided by database)
-      m_configuration.set(context->getConfiguration());
+      m_configuration.initializeWith(context->getConfiguration());
       // Trace the configuration (just for test)
       m_configuration.trace();
 
@@ -69,7 +69,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                // - Restart the plugin if necessary,
                // - Update some resources,
                // - etc...
-               m_configuration.set(newConfiguration);
+               m_configuration.initializeWith(newConfiguration);
 
                // Trace the configuration
                m_configuration.trace();

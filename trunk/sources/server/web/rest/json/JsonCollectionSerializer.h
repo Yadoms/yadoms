@@ -33,7 +33,7 @@ namespace web { namespace rest { namespace json {
          }
 
          CJson result;
-         result.setValues(itemKeyword, objectList);
+         result.set< std::vector<shared::CDataContainer> >(itemKeyword, objectList);
          return result;
       }
 
@@ -47,7 +47,7 @@ namespace web { namespace rest { namespace json {
          std::vector<std::string> temp;
          CJson objectList = data;
          if(objectList.hasValue(itemKeyword))
-            temp = objectList.getValues<std::string>(itemKeyword);
+            temp = objectList.get< std::vector<std::string> >(itemKeyword);
 
          for (std::vector<std::string> ::iterator it = temp.begin(); it != temp.end(); ++it)
          {
