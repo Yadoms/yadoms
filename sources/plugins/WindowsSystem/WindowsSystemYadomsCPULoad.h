@@ -2,6 +2,11 @@
 
 #include "ILoad.h"
 
+#include <shared/plugin/yadomsApi/IYadomsApi.h>
+
+// Shortcut to yadomsApi namespace
+namespace yApi = shared::plugin::yadomsApi;
+
 //--------------------------------------------------------------
 /// \brief	CPU Load of the Yadoms Process
 /// \note   return the CPU load of the Yadoms Process under Windows Operating System
@@ -25,6 +30,18 @@ public:
    /// \return     Device ID
    //--------------------------------------------------------------
    virtual const std::string& getDeviceId() const;
+
+   //--------------------------------------------------------------
+   /// \brief	            Declare the device and its associated keywords
+   /// \param[in] context  YadomsApi context to which declare the device
+   //--------------------------------------------------------------
+   void declareDevice(boost::shared_ptr<yApi::IYadomsApi> context);
+
+   //--------------------------------------------------------------
+   /// \brief	            Send all sensor data to Yadoms
+   /// \param[in] context  YadomsApi context to which historize data
+   //--------------------------------------------------------------
+   void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
 
    //--------------------------------------------------------------
    /// \brief	    Returns read (computed) CPU load of the Yadoms Process

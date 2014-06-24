@@ -1,15 +1,18 @@
 #include "stdafx.h"
 #include "WindowsSystem.h"
 #include <shared/Log.h>
+/*
 #include <shared/xpl/XplService.h>
 #include <shared/xpl/XplMessage.h>
 #include <shared/xpl/XplHelper.h>
+*/
 #include <shared/event/EventTimer.h>
 #include "WindowsSystemMemoryLoad.h"
 #include "WindowsSystemCPULoad.h"
 #include "WindowsSystemYadomsCPULoad.h"
 #include "WindowsSystemDiskUsage.h"
 #include "WindowsSystemDisksList.h"
+#include <shared/plugin/yadomsApi/StandardCapacities.h>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -29,41 +32,27 @@ CWindowsSystem::~CWindowsSystem()
 // Event IDs
 enum
 {
-   kEvtXplMessage = shared::event::kUserFirstId,   // Always start from shared::event::CEventHandler::kUserFirstId
-   kEvtTimerSendMessage
+   kEvtTimerSendMessage = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
 };
 
-// XPL device ID : use to identify this plugin over the XPL network.
-// Must match XPL rules (see http://xplproject.org.uk/wiki/index.php/XPL_Specification_Document) :
-//   - alphanumerical characters only : [0-9][a-z]
-//   - letters must be lower case
-//   - no characters '.', '-', '_', or so...
-//   - 8 characters max
-// NOTE : To avoid DeviceId conflicts, YADOMS-TEAM manage a device ID reservation table. Please contact to reserve your device ID.
-// You can check that your device ID mach Xpl rules calling shared::xpl::CXplHelper::matchRules(shared::xpl::CXplHelper::kDeviceId, your_device_id)
-static const std::string& XplDeviceId("winsys");
-
-void CWindowsSystem::doWork(int instanceUniqueId, const std::string& configuration, boost::asio::io_service& pluginIOService)
+void CWindowsSystem::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    try
    {
-      YADOMS_LOG_CONFIGURE(Informations->getName());
       YADOMS_LOG(debug) << "CWindowsSystem is starting...";
-
-
-      // Register to XPL service
-      shared::xpl::CXplService xplService(
-         XplDeviceId,                                                // XPL device ID : use to identify this plugin over the XPL network
-         shared::xpl::CXplHelper::toInstanceId(instanceUniqueId),    // Use the plugin instance id (guaranteed by Yadoms to be unique among all instances of all plugins) as XPL instance id
-         &pluginIOService);                                           // Use the provided io service for better performance
-
-      CWindowsSystemMemoryLoad MemoryLoad("MemoryLoad");
-      CWindowsSystemCPULoad CPULoad("CPULoad");
+//TODO : Doit être remis complètement
+      CWindowsSystemMemoryLoad    MemoryLoad   ("MemoryLoad");
+      CWindowsSystemCPULoad       CPULoad      ("CPULoad");
       CWindowsSystemYadomsCPULoad YadomsCPULoad("YadomsCPULoad");
-      CWindowsSystemDisksList DisksList("DiskList");
+      //TODO : Pas besoin d'identifiant pour celui-ci
+      CWindowsSystemDisksList     DisksList;
 
-      // Timer used to send a XPL message periodically
-      createTimer(kEvtTimerSendMessage, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
+      CPULoad.declareDevice(context);
+      MemoryLoad.declareDevice(context);
+      YadomsCPULoad.declareDevice(context);
+
+      // Timer used to send a message periodically
+      context->getEventHandler().createTimer(kEvtTimerSendMessage, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
 
       // the main loop
       YADOMS_LOG(debug) << "WindowsSystem plugin is running...";
@@ -71,28 +60,14 @@ void CWindowsSystem::doWork(int instanceUniqueId, const std::string& configurati
       while(1)
       {
          // Wait for an event
-         switch(waitForEvents())
+         switch(context->getEventHandler().waitForEvents())
          {
          case kEvtTimerSendMessage:
             {
-               // Timer used here to send a XPL message periodically
+               // Timer used here to send a message periodically
 
                YADOMS_LOG(debug) << "WindowsSystem plugin :  Read a value...";
 
-                  // Create the message
-                  shared::xpl::CXplMessage msg(
-                     shared::xpl::CXplMessage::kXplStat,                            // Message type
-                     xplService.getActor(),                                         // Source actor (here : our fake plugin instance)
-                     shared::xpl::CXplActor::createBroadcastActor(),                // Target actor (here : the XPL logger of Yadoms)
-                     shared::xpl::CXplMessageSchemaIdentifier("sensor", "basic"));  // The message schema
-
-                  // Add data to message
-                  // - Device ID
-                  msg.addToBody("device", MemoryLoad.getDeviceId());
-
-                  // - Memory in %
-                  msg.addToBody("type", "mem");
-                  msg.addToBody("units", "%");
                   std::ostringstream ss;
                   std::ostringstream ss1;
                   std::ostringstream ss2;
@@ -101,15 +76,16 @@ void CWindowsSystem::doWork(int instanceUniqueId, const std::string& configurati
                   try
                   {
                      ss << std::fixed << std::setprecision(2) << MemoryLoad.getValue();
-                     msg.addToBody("current", ss.str());
-                     // Send it
-                     xplService.sendMessage(msg);
 
                      YADOMS_LOG(debug) << "WindowsSystem plugin :  Memory Load : " << ss.str();
+
+                     MemoryLoad.historizeData(context);
 
                      ss1 << std::fixed << std::setprecision(2) << CPULoad.getValue();
 
                      YADOMS_LOG(debug) << "WindowsSystem plugin :  CPU Load : " << ss1.str();
+
+                     CPULoad.historizeData(context);
 
                      ss2 << std::fixed << std::setprecision(2) << YadomsCPULoad.getValue();
 
@@ -152,10 +128,5 @@ void CWindowsSystem::doWork(int instanceUniqueId, const std::string& configurati
    {
       YADOMS_LOG(info) << "WindowsSystem is stopping..."  << std::endl;
    }
-}
-
-void CWindowsSystem::updateConfiguration(const std::string& configuration)
-{
-
 }
 
