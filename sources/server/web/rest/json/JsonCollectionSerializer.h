@@ -17,7 +17,7 @@ namespace web { namespace rest { namespace json {
       static CJson SerializeCollection(typename std::vector< TObjectBase > & collectionToSerialize, const std::string & itemKeyword)
       {
          web::rest::json::CJson objectList;
-         objectList.setValues(itemKeyword, collectionToSerialize);
+         objectList.set< std::vector< TObjectBase > >(itemKeyword, collectionToSerialize);
          return objectList;
       }
 
