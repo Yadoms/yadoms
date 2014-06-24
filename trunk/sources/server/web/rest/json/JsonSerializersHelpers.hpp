@@ -321,8 +321,6 @@ CJson DECLARE_JSON_ENTITY_SERIALIZER_CLASS(_classname)::serialize(const DECLARE_
 #define DECLARE_JSON_DESERIALIZER_FIELD_CONTENT_AS_CHILD(r, _classname, elem) \
    entity->BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem) = BOOST_PP_SEQ_ELEM(JSON_COLUMN_CONVERT_FROM, elem)(object.get<BOOST_PP_SEQ_ELEM(JSON_COLUMN_TYPE, elem)>(DECLARE_JSON_ENTITY_DEFINITION_CLASS(_classname)::BOOST_PP_CAT(BOOST_PP_CAT(get, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem)), Identifier())));\
 
-// entity->BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem) = BOOST_PP_SEQ_ELEM(JSON_COLUMN_CONVERT_FROM, elem)(object.get(DECLARE_JSON_ENTITY_DEFINITION_CLASS(_classname)::BOOST_PP_CAT(BOOST_PP_CAT(get, BOOST_PP_SEQ_ELEM(JSON_COLUMN_ID, elem)), Identifier())));\
-
 //-------------------------------------------------------
 ///\brief   Declare the JSON deserializer ofr one field IMPLEMENTATION
 ///       write the deserialize() part for one field
