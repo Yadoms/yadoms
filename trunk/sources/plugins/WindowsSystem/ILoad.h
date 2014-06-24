@@ -1,5 +1,10 @@
 #pragma once
 
+#include <shared/plugin/yadomsApi/IYadomsApi.h>
+
+// Shortcut to yadomsApi namespace
+namespace yApi = shared::plugin::yadomsApi;
+
 //--------------------------------------------------------------
 /// \brief	Interface Load definition
 /// \note   return the load in pourcentage of a value
@@ -17,6 +22,18 @@ public:
    /// \return     Device ID
    //--------------------------------------------------------------
    virtual const std::string& getDeviceId() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	            Declare the device and its associated keywords
+   /// \param[in] context  YadomsApi context to which declare the device
+   //--------------------------------------------------------------
+   virtual void declareDevice(boost::shared_ptr<yApi::IYadomsApi> context) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	            Send all sensor data to Yadoms
+   /// \param[in] context  YadomsApi context to which historize data
+   //--------------------------------------------------------------
+   virtual void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Returns read (computed) load value

@@ -3,8 +3,7 @@
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 
-CWindowsSystemDisksList::CWindowsSystemDisksList(const std::string & deviceId)
-   :m_deviceId(deviceId)
+CWindowsSystemDisksList::CWindowsSystemDisksList(void)
 {
    DWORD cchBuffer;
    LPSTR driveStrings, driveStringsInit;
@@ -48,11 +47,6 @@ CWindowsSystemDisksList::CWindowsSystemDisksList(const std::string & deviceId)
 
 CWindowsSystemDisksList::~CWindowsSystemDisksList()
 {}
-
-const std::string& CWindowsSystemDisksList::getDeviceId() const
-{
-   return m_deviceId;
-}
 
 std::vector<std::string>& CWindowsSystemDisksList::getList()
 {
