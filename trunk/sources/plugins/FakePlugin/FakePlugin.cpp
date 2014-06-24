@@ -61,7 +61,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          case yApi::IYadomsApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
-            shared::CDataContainer newConfiguration = context->getEventHandler().getEventData<shared::CDataContainer>();
+               shared::CDataContainer newConfiguration = context->getEventHandler().getEventData<shared::CDataContainer>();
                YADOMS_LOG(debug) << "configuration was updated...";
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 

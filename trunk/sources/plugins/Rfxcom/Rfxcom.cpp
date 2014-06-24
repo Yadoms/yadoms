@@ -31,7 +31,8 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       m_configuration.initializeWith(context->getConfiguration());
 
       // Create the port instance
-      m_port = CRfxcomFactory::constructPort(m_configuration, context->getEventHandler(), kEvtPortConnection, kEvtPortDataReceived);
+      boost::shared_ptr<IPortLogger> portLogger(CRfxcomFactory::constructPortLogger());
+      m_port = CRfxcomFactory::constructPort(m_configuration, context->getEventHandler(), kEvtPortConnection, kEvtPortDataReceived, portLogger);
 
       // the main loop
       YADOMS_LOG(debug) << "CRfxcom is running...";
@@ -88,7 +89,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                m_configuration.initializeWith(newConfiguration);
 
                // Create new connection
-               m_port = CRfxcomFactory::constructPort(m_configuration, context->getEventHandler(), kEvtPortConnection, kEvtPortDataReceived);
+               m_port = CRfxcomFactory::constructPort(m_configuration, context->getEventHandler(), kEvtPortConnection, kEvtPortDataReceived, portLogger);
 
                break;
             }
@@ -103,7 +104,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             }
          case kEvtPortDataReceived:
             {
-               processRfxcomDataReceived(context, context->getEventHandler().getEventData<std::string>());
+               processRfxcomDataReceived(context, context->getEventHandler().getEventData<CByteBuffer>());
                break;
             }
          default:
@@ -136,7 +137,7 @@ void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> c
    m_transceiver = CRfxcomFactory::constructTransceiver(m_port);
 
    // Reset the RFXCom state
-   m_transceiver->sendReset();
+   m_transceiver->processReset();
 }
 
 void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context)
@@ -147,9 +148,7 @@ void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYadomsApi>
    m_transceiver.reset();
 }
 
-void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& data)
+void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data)
 {
-   YADOMS_LOG(debug) << "RFXCom >>> YADOMS : " << data;         //TODO trace en trop ?
-
-   m_transceiver.reset();
+   m_transceiver->historize(context, data);
 }

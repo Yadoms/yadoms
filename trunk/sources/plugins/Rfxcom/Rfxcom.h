@@ -53,7 +53,7 @@ protected:
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] data             Data received
    //--------------------------------------------------------------
-   void processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& data);
+   void processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data);
 
 private:
    //--------------------------------------------------------------

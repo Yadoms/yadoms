@@ -1,26 +1,29 @@
 #pragma once
-#include <shared/DataContainer.h>
+#include "Buffer.hpp"
 
 //--------------------------------------------------------------
-/// \brief	Interface of plugin configuration
+/// \brief	This class manage a communication port logger
 //--------------------------------------------------------------
-class IRfxcomConfiguration
-{
+class IPortLogger
+{  
 public:
    //--------------------------------------------------------------
-   /// \brief	    Destructor
+   /// \brief	            Destructor
    //--------------------------------------------------------------
-   virtual ~IRfxcomConfiguration() {}
+   virtual ~IPortLogger() {}
 
    //--------------------------------------------------------------
-   /// \brief		   Load configuration data
-   /// \param [in] data The data container
+   /// \brief	            Log recieved data
+   /// \param[in] log      Buffer to log
    //--------------------------------------------------------------
-   void initializeWith(const shared::CDataContainer &data);
+   virtual void logReceived(const CByteBuffer& data) = 0;
 
    //--------------------------------------------------------------
-   /// \brief	    Virtual serial port connected to the rfxcom
+   /// \brief	            Log sent data
+   /// \param[in] log      Buffer to log
    //--------------------------------------------------------------
-   virtual std::string getSerialPort() const = 0;
+   virtual void logSent(const CByteBuffer& data) = 0;
 };
+
+
 

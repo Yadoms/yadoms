@@ -11,7 +11,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
    {
    public:
       //-----------------------------------------------------
-      ///\brief               The switch state
+      ///\brief                     The switch state
       //-----------------------------------------------------
       enum EState
       {
@@ -22,37 +22,51 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 
    public:
       //-----------------------------------------------------
-      ///\brief               Constructor
-      ///\param[in] command   Yadoms command, as JSON string
-      ///\throw               shared::exception::CInvalidParameter if fail to parse command
+      ///\brief                     Constructor from formated command
+      ///\param[in] yadomsCommand   Yadoms command, as JSON string
+      ///\throw                     shared::exception::CInvalidParameter if fail to parse command
       //-----------------------------------------------------
-      CSwitch(const std::string& command);
+      CSwitch(const std::string& yadomsCommand);
 
       //-----------------------------------------------------
-      ///\brief               Destructor
+      ///\brief                     Constructor from raw data
+      ///\param[in] command         Yadoms command, as JSON string
+      ///\param[in] dimLevel        dim level (0-100)
+      ///\throw                     shared::exception::CInvalidParameter if fail to parse command
+      //-----------------------------------------------------
+      CSwitch(EState state, int dimLevel = 0);
+
+      //-----------------------------------------------------
+      ///\brief                     Destructor
       //-----------------------------------------------------
       virtual ~CSwitch();
 
       //-----------------------------------------------------
-      ///\brief               Get the main switch state
-      ///\return              The main switch state
+      ///\brief                     Get the main switch state
+      ///\return                    The main switch state
       //-----------------------------------------------------
       EState getState() const;
 
       //-----------------------------------------------------
-      ///\brief               Get the dim level
-      ///\return              The dim level (0-100)
+      ///\brief                     Get the dim level
+      ///\return                    The dim level (0-100)
       //-----------------------------------------------------
       int getDimLevel() const;
 
+      //-----------------------------------------------------
+      ///\brief                     Format data to Yadoms format
+      ///\return                    Formatted data
+      //-----------------------------------------------------
+      std::string format() const;
+
    private:
       //-----------------------------------------------------
-      ///\brief               The main state
+      ///\brief                     The main state
       //-----------------------------------------------------
       EState m_state;
 
       //-----------------------------------------------------
-      ///\brief               The dim level
+      ///\brief                     The dim level
       //-----------------------------------------------------
       int m_dimLevel;
    };

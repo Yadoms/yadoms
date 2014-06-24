@@ -4,7 +4,6 @@
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/plugin/yadomsApi/commands/Switch.h>
 #include <shared/plugin/yadomsApi/commands/Message.h>
-#include <shared/serialization/PTreeToJsonSerializer.h>
 #include "SmsDialerFactory.h"
 #include "PhoneException.hpp"
 #include "Sms.h"
@@ -33,7 +32,7 @@ void CSmsDialer::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
    try
    {
       // Load configuration values (provided by database)
-      m_configuration.set(context->getConfiguration());
+      m_configuration.initializeWith(context->getConfiguration());
 
       // Create the phone instance
       m_phone = CSmsDialerFactory::constructPhone(m_configuration);
@@ -100,7 +99,7 @@ void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYadomsApi> co
                m_phone.reset();
 
                // Update configuration
-               m_configuration.set(newConfiguration);
+               m_configuration.initializeWith(newConfiguration);
 
                // Create new phone
                m_phone = CSmsDialerFactory::constructPhone(m_configuration);
@@ -192,7 +191,7 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYadomsApi> conte
                m_phone.reset();
 
                // Update configuration
-               m_configuration.set(newConfiguration);
+               m_configuration.initializeWith(newConfiguration);
 
                // Create new phone
                m_phone = CSmsDialerFactory::constructPhone(m_configuration);
@@ -301,10 +300,9 @@ void CSmsDialer::notifyPhonePowerState(boost::shared_ptr<yApi::IYadomsApi> conte
 
 void CSmsDialer::notifySmsReception(boost::shared_ptr<yApi::IYadomsApi> context, const boost::shared_ptr<ISms>& sms) const
 {
-   boost::property_tree::ptree smsContent;
-   smsContent.put("from", sms->getNumber());
-   smsContent.put("to", shared::CStringExtension::EmptyString);
-   smsContent.put("body", sms->getContent());
-   shared::serialization::CPtreeToJsonSerializer serializer;
-   context->historizeData(m_phone->getUniqueId(), "sms", serializer.serialize(smsContent));
+   shared::CDataContainer smsContent;
+   smsContent.set("from", sms->getNumber());
+   smsContent.set("to", shared::CStringExtension::EmptyString);
+   smsContent.set("body", sms->getContent());
+   context->historizeData(m_phone->getUniqueId(), "sms", smsContent.serialize());
 }

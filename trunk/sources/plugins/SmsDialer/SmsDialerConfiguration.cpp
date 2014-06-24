@@ -2,30 +2,33 @@
 #include "SmsDialerConfiguration.h"
 #include <shared/StringExtension.h>
 
-namespace cfg = shared::plugin::configuration;
-
 
 CSmsDialerConfiguration::~CSmsDialerConfiguration()
 {
 }
 
+void CSmsDialerConfiguration::initializeWith(const shared::CDataContainer &data)
+{
+   m_data.initializeWith(data);
+}
+
 std::string CSmsDialerConfiguration::getGammuPort() const
 {
-   return getValue<std::string>("Serial Port");
+   return m_data.get<std::string>("Serial Port");
 }
 
 std::string CSmsDialerConfiguration::getGammuProtocol() const
 {
-   return getValue<std::string>("Protocol");
+   return m_data.get<std::string>("Protocol");
 }
 
 bool CSmsDialerConfiguration::hasPINCode() const
 {
-   return getValue<bool>("PINCode.checkbox");
+   return m_data.get<bool>("PINCode.checkbox");
 }
 
 std::string CSmsDialerConfiguration::getPhonePIN() const
 {
-   return hasPINCode() ? getValue<std::string>("PINCode.values.PIN") : shared::CStringExtension::EmptyString;
+   return hasPINCode() ? m_data.get<std::string>("PINCode.values.PIN") : shared::CStringExtension::EmptyString;
 }
 

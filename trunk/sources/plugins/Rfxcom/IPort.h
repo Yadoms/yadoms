@@ -1,9 +1,15 @@
 #pragma once
 
 #include "shared/event/EventHandler.hpp"
+#include "IPortLogger.h"
+#include "Buffer.hpp"
 
 //--------------------------------------------------------------
 /// \brief	This class manage a communication port
+// After configuring and starting the port management, the
+// caller can be notified when connection is established or lost,
+// data is received (asynchronously).
+// The caller can also send and receive data synchronously.
 //--------------------------------------------------------------
 class IPort
 {  
@@ -14,15 +20,14 @@ public:
    virtual ~IPort() {}
 
    //--------------------------------------------------------------
-   /// \brief	Establish the connection
-   /// \return true if connected, false else
+   /// \brief	Start the port management (try to connect)
    //--------------------------------------------------------------
-   virtual bool connect() = 0;
+   virtual void start() = 0;
 
    //--------------------------------------------------------------
-   /// \brief	Close the connection
+   /// \brief	Stop the port management
    //--------------------------------------------------------------
-   virtual void disconnect() = 0;
+   virtual void stop() = 0;
 
    //--------------------------------------------------------------
    /// \brief	Get the connection status
@@ -36,6 +41,7 @@ public:
    /// \param [in] forId            The event id to send for these events (set kNoEvent to unsubscribe)
    /// \throw shared::exception::CInvalidParameter if try to subscribe on event for which a subscription already exists (user must unsubscribe first)
    /// \note The raised event contains a bool data : true if port was connected, false if port was disconnected
+   /// \note Must be called before start
    //--------------------------------------------------------------
    virtual void subscribeConnectionState(shared::event::CEventHandler& forEventHandler, int forId) = 0;
 
@@ -45,37 +51,37 @@ public:
    /// \param [in] forId            The event id to send for these events (set kNoEvent to unsubscribe)
    /// \throw shared::exception::CInvalidParameter if try to subscribe on event for which a subscription already exists (user must unsubscribe first)
    /// \note The raised event contains the read data as string
+   /// \note Must be called before start
    //--------------------------------------------------------------
    virtual void subscribeReceiveData(shared::event::CEventHandler& forEventHandler, int forId) = 0;
 
    //--------------------------------------------------------------
-   /// \brief	                  Flush the input buffer
+   /// \brief	                     Set the logger
+   /// \param [in] logger           Logger to used (can be null is not log is expected)
+   //--------------------------------------------------------------
+   virtual void setLogger(boost::shared_ptr<IPortLogger> logger) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Flush the input buffer
    /// \note This function flush the input buffer, and erase pending received data events
    //--------------------------------------------------------------
    virtual void flush() = 0;
 
    //--------------------------------------------------------------
-   /// \brief	                  Send a buffer on the port (synchronously)
-   /// \param [in] buffer        The buffer to send
-   /// \throw                    CPortException if error
+   /// \brief	                     Send a buffer on the port (synchronously)
+   /// \param [in] buffer           The buffer to send
+   /// \throw                       CPortException if error
    //--------------------------------------------------------------
-   virtual void send(const boost::asio::const_buffer& buffer) = 0;
+   virtual void send(const CByteBuffer& buffer) = 0;
 
    //--------------------------------------------------------------
-   /// \brief	                  Send a string message on the port
-   /// \param [in] buffer        The buffer to send
+   /// \brief	                     Send buffer and receive an answer (synchronously)
+   /// \param [in] buffer           The buffer to send
+   /// \return                      Received buffer
+   /// \throw                       CPortException if error
+   /// \note                        While this exchange, the asynchronous read is suspended, and restored after
    //--------------------------------------------------------------
-   virtual void asyncSend(const boost::asio::const_buffer& buffer) = 0;
-
-   //--------------------------------------------------------------
-   /// \brief	                  Receive a buffer from the port (synchronously)
-   /// \param [in] buffer        The buffer in which to store received data (allocated by the receive method)
-   /// \return                   Received byte number
-   /// \throw                    CPortException if error
-   //--------------------------------------------------------------
-   virtual std::size_t receive(boost::shared_ptr<unsigned char[]>& buffer) = 0;
-
-   //TODO faire le ménage dans la liste des fonctions de comm
+   virtual CByteBuffer sendAndReceive(const CByteBuffer& buffer) = 0;
 };
 
 

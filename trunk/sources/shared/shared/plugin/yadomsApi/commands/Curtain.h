@@ -22,22 +22,35 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 
    public:
       //-----------------------------------------------------
-      ///\brief               Constructor
-      ///\param[in] command   Yadoms command, as JSON string
-      ///\throw               shared::exception::CInvalidParameter if fail to parse command
+      ///\brief                     Constructor from formated command
+      ///\param[in] yadomsCommand   Yadoms command, as JSON string
+      ///\throw                     shared::exception::CInvalidParameter if fail to parse command
       //-----------------------------------------------------
-      CCurtain(const std::string& command);
+      CCurtain(const std::string& yadomsCommand);
 
       //-----------------------------------------------------
-      ///\brief               Destructor
+      ///\brief                     Constructor from raw data
+      ///\param[in] command         Yadoms command, as JSON string
+      ///\throw                     shared::exception::CInvalidParameter if fail to parse command
+      //-----------------------------------------------------
+      CCurtain(ECommand state);
+
+      //-----------------------------------------------------
+      ///\brief                     Destructor
       //-----------------------------------------------------
       virtual ~CCurtain();
 
       //-----------------------------------------------------
-      ///\brief               Get the command value
-      ///\return              The command value
+      ///\brief                     Get the command value
+      ///\return                    The command value
       //-----------------------------------------------------
       ECommand get() const;
+
+      //-----------------------------------------------------
+      ///\brief                     Format data to Yadoms format
+      ///\return                    Formatted data
+      //-----------------------------------------------------
+      std::string format() const;
 
    private:
       //-----------------------------------------------------
