@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "Curtain.h"
 #include "../StandardValues.h"
-#include <shared/exception/InvalidParameter.hpp>
 #include <shared/DataContainer.h>
+#include <shared/exception/InvalidParameter.hpp>
+
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
@@ -16,20 +17,11 @@ CCurtain::CCurtain(const std::string& command)
       std::string cmdValue = yadomsCommandTree.get<std::string>("cmd");
 
       if (cmdValue == CStandardValues::Open)
-      {
          m_value = kOpen;
-         return;
-      }
       else if (cmdValue == CStandardValues::Close)
-      {
          m_value = kClose;
-         return;
-      }
       else if (cmdValue == CStandardValues::Stop)
-      {
          m_value = kStop;
-         return;
-      }
       else
       {
          BOOST_ASSERT_MSG(false, "Wrong curtain command value");
@@ -47,9 +39,32 @@ CCurtain::~CCurtain()
 {
 }
 
+CCurtain::CCurtain(ECommand command)
+   :m_value(command)
+{
+}
+
 CCurtain::ECommand CCurtain::get() const
 {
    return m_value;
+}
+
+std::string CCurtain::format() const
+{
+   shared::CDataContainer yadomsCommand;
+
+   switch(m_value)
+   {
+   case kOpen: yadomsCommand.set("cmd", CStandardValues::Open); break;
+   case kClose: yadomsCommand.set("cmd", CStandardValues::Close); break;
+   case kStop: yadomsCommand.set("cmd", CStandardValues::Stop); break;
+   default:
+      BOOST_ASSERT_MSG(false, "Invalid state");
+      throw shared::exception::CInvalidParameter("state");
+      break;
+   }
+
+   return yadomsCommand.serialize();
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

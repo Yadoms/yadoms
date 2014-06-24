@@ -22,7 +22,7 @@ void CFakeSensor::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
    context->declareKeyword(m_deviceId, "temp1", yApi::CStandardCapacities::Temperature, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kDecimal);
    context->declareKeyword(m_deviceId, "temp2", yApi::CStandardCapacities::Temperature, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kDecimal);
    context->declareKeyword(m_deviceId, "battery", yApi::CStandardCapacities::BatteryLevel, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kDecimal);
-   context->declareKeyword(m_deviceId, "Rssi", yApi::CStandardCapacities::Rssi, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kDecimal);
+   context->declareKeyword(m_deviceId, "rssi", yApi::CStandardCapacities::Rssi, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kDecimal);
 }
 
 void CFakeSensor::read()
@@ -46,7 +46,7 @@ void CFakeSensor::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) con
    context->historizeData(m_deviceId, "temp1"  , m_temperature1);
    context->historizeData(m_deviceId, "temp2"  , m_temperature2);
    context->historizeData(m_deviceId, "battery", m_batteryLevel);
-   context->historizeData(m_deviceId, "Rssi"   , m_rssi        );
+   context->historizeData(m_deviceId, "rssi"   , m_rssi        );
 
    YADOMS_LOG(debug) << "historize " << m_deviceId << ", temp1=" << m_temperature1 << ", temp2=" << m_temperature2 << ", battery=" << m_batteryLevel << ", Rssi=" << m_rssi;
 }

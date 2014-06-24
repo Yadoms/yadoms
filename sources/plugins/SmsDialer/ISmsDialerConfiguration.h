@@ -1,5 +1,5 @@
 #pragma once
-
+#include <shared/DataContainer.h>
 
 //--------------------------------------------------------------
 /// \brief	Interface of plugin configuration
@@ -11,6 +11,12 @@ public:
    /// \brief	      Destructor
    //--------------------------------------------------------------
    virtual ~ISmsDialerConfiguration() {}
+
+   //--------------------------------------------------------------
+   /// \brief		   Load configuration data
+   /// \param [in] data The data container
+   //--------------------------------------------------------------
+   void initializeWith(const shared::CDataContainer &data);
 
    //--------------------------------------------------------------
    /// \brief	      Device used for Gammu library (serial port)

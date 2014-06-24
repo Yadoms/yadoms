@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Lighting6.h"
 #include <shared/plugin/yadomsApi/commands/Switch.h>
-#include <shared/DataContainer.h>
+#include <shared/exception/InvalidParameter.hpp>
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -9,40 +9,88 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CLighting6::CLighting6(const std::string& command, const shared::CDataContainer& deviceParameters, boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider)
+CLighting6::CLighting6(const std::string& command, const shared::CDataContainer& deviceParameters)
 {
-   unsigned char id = deviceParameters.get<unsigned char>("id");
-   unsigned char groupCode = deviceParameters.get<unsigned char>("groupCode");
-   unsigned char unitCode = deviceParameters.get<unsigned char>("unitCode");
+   m_subType = deviceParameters.get<unsigned char>("subType");
+   m_id = deviceParameters.get<unsigned short>("id");
+   m_groupCode = deviceParameters.get<unsigned char>("groupCode");
+   m_unitCode = deviceParameters.get<unsigned char>("unitCode");
+   m_state = toProtocolState(command);
+   m_rssi = 0;
+}
 
-   m_buffer.LIGHTING6.packetlength = sizeof(m_buffer.LIGHTING6) - sizeof(m_buffer.LIGHTING6.packetlength);
-   m_buffer.LIGHTING6.packettype = pTypeLighting6;
-   m_buffer.LIGHTING6.subtype = sTypeBlyss;
-   m_buffer.LIGHTING6.seqnbr = seqNumberProvider->getNext();
-   m_buffer.LIGHTING6.id1 = (unsigned char)((id & 0xFF00) >> 8);
-   m_buffer.LIGHTING6.id2 = (unsigned char)(id & 0xFF);
-   m_buffer.LIGHTING6.groupcode = groupCode;
-   m_buffer.LIGHTING6.unitcode = unitCode;
-   m_buffer.LIGHTING6.cmnd = toLighting6Command(command);
-   m_buffer.LIGHTING6.cmndseqnbr = 0;//TODO voir spec
-   m_buffer.LIGHTING6.seqnbr2 = 0;//TODO voir spec
-   m_buffer.LIGHTING6.rssi = 0;
-   m_buffer.LIGHTING6.filler = 0;
+CLighting6::CLighting6(const RBUF& buffer)
+{
+   // Some integrity controls
+   if (buffer.LIGHTING6.packetlength != LIGHTING6_size)
+      throw shared::exception::CInvalidParameter("LIGHTING6 size");
+   if (buffer.LIGHTING6.packettype != pTypeLighting6)
+      throw shared::exception::CInvalidParameter("LIGHTING6 packettype");
+
+   m_subType = buffer.LIGHTING6.subtype;
+   m_id = buffer.LIGHTING6.id1 & (buffer.LIGHTING6.id2 << 8);
+   m_groupCode = buffer.LIGHTING6.groupcode;
+   m_unitCode = buffer.LIGHTING6.unitcode;
+   m_state = buffer.LIGHTING6.cmnd;
+   //TODO voir spec : que faire de : m_buffer.LIGHTING6.cmndseqnbr
+   //TODO voir spec : que faire de : m_buffer.LIGHTING6.seqnbr2
+   m_rssi = buffer.LIGHTING6.rssi;
 }
 
 CLighting6::~CLighting6()
 {
 }
 
-const boost::asio::const_buffer CLighting6::getBuffer() const
+const CByteBuffer CLighting6::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
-   return boost::asio::const_buffer(&m_buffer, sizeof(m_buffer.LIGHTING6));
+   RBUF buffer;
+   MEMCLEAR(buffer.LIGHTING6);
+
+   buffer.LIGHTING6.packetlength = (BYTE)LIGHTING6_size - sizeof(buffer.LIGHTING6.packetlength);
+   buffer.LIGHTING6.packettype = pTypeLighting1;
+   buffer.LIGHTING6.subtype = m_subType;
+   buffer.LIGHTING6.seqnbr = seqNumberProvider->next();
+   buffer.LIGHTING6.id1 = (unsigned char)((m_id & 0xFF00) >> 8);
+   buffer.LIGHTING6.id2 = (unsigned char)(m_id & 0xFF);
+   buffer.LIGHTING6.groupcode = m_groupCode;
+   buffer.LIGHTING6.unitcode = m_unitCode;
+   buffer.LIGHTING6.cmnd = m_state;
+   buffer.LIGHTING6.cmndseqnbr = 0;//TODO voir spec
+   buffer.LIGHTING6.seqnbr2 = 0;//TODO voir spec
+   buffer.LIGHTING6.rssi = 0;
+   buffer.LIGHTING1.filler = 0;
+
+   return CByteBuffer((BYTE*)&buffer, LIGHTING6_size);
 }
 
-unsigned char CLighting6::toLighting6Command(const std::string& yadomsCommand) const
+void CLighting6::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   yApi::commands::CSwitch cmd(yadomsCommand);
+   std::ostringstream ssdeviceName;
+   ssdeviceName << m_subType << "." << m_id << "." << m_groupCode << "." << m_unitCode;
+   std::string deviceName(ssdeviceName.str());
+
+   context->historizeData(deviceName, "state", toYadomsState(m_state));
+   context->historizeData(deviceName, "rssi", m_rssi);
+}
+
+
+unsigned char CLighting6::toProtocolState(const std::string& yadomsState)
+{
+   yApi::commands::CSwitch cmd(yadomsState);
    return cmd.getState() == yApi::commands::CSwitch::kOff ? light6_sOff : light6_sOn;
+}
+
+std::string CLighting6::toYadomsState(unsigned char protocolState)
+{
+   switch(protocolState)
+   {
+   case light6_sOn: return yApi::commands::CSwitch(yApi::commands::CSwitch::kOn).format(); break;
+   case light6_sOff: return yApi::commands::CSwitch(yApi::commands::CSwitch::kOff).format(); break;
+   default:
+      BOOST_ASSERT_MSG(false, "Invalid state");
+      throw shared::exception::CInvalidParameter("state");
+      break;
+   }
 }
 
 } // namespace rfxcomMessages

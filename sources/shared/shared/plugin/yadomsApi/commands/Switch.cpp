@@ -43,6 +43,11 @@ CSwitch::CSwitch(const std::string& command)
    }
 }
 
+CSwitch::CSwitch(EState state, int dimLevel)
+   :m_state(state), m_dimLevel(dimLevel)
+{
+}
+
 CSwitch::~CSwitch()
 {
 }
@@ -55,6 +60,29 @@ CSwitch::EState CSwitch::getState() const
 int CSwitch::getDimLevel() const
 {
    return m_dimLevel;
+}
+
+std::string CSwitch::format() const
+{
+   shared::CDataContainer yadomsCommand;
+
+   switch(m_state)
+   {
+   case kOff: yadomsCommand.set("command", CStandardValues::Off); break;
+   case kOn: yadomsCommand.set("command", CStandardValues::On); break;
+   case kDim:
+      {
+         yadomsCommand.set("command", CStandardValues::Dim);
+         yadomsCommand.set("level", m_dimLevel);
+         break;
+      }
+   default:
+      BOOST_ASSERT_MSG(false, "Invalid state");
+      throw shared::exception::CInvalidParameter("state");
+      break;
+   }
+
+   return yadomsCommand.serialize();
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

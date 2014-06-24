@@ -3,6 +3,7 @@
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include "PortException.hpp"
+#include "Buffer.hpp"
 
 
 const boost::posix_time::time_duration CSerialPort::ConnectRetryDelay(boost::posix_time::seconds(30));
@@ -17,19 +18,35 @@ CSerialPort::CSerialPort(
    boost::asio::serial_port_base::flow_control flowControl)
    :m_boostSerialPort(m_ioService),
    m_port(port), m_baudrate(baudrate), m_parity(parity), m_characterSize(characterSize), m_stop_bits(stop_bits), m_flowControl(flowControl),
-   m_readBuffer(new unsigned char[ReadBufferMaxSize]), m_connectRetryTimer(m_ioService)
+   m_asyncReadBuffer(new unsigned char[ReadBufferMaxSize]), m_connectRetryTimer(m_ioService)
 {
+}
+
+CSerialPort::~CSerialPort()
+{
+   stop();
+}
+
+void CSerialPort::start()
+{
+   if (!!m_asyncThread)
+      return;  // Already started
+
    // Try to connect
    m_ioService.post(boost::bind(&CSerialPort::tryConnect, this));
    m_asyncThread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &m_ioService)));
 }
 
-CSerialPort::~CSerialPort()
+void CSerialPort::stop()
 {
+   if (!m_asyncThread)
+      return;  // Already stopped
+
    disconnect();
 
    m_ioService.stop();
    m_asyncThread->join();
+   m_asyncThread.reset();
 }
 
 bool CSerialPort::connect()
@@ -87,9 +104,25 @@ void CSerialPort::subscribeReceiveData(shared::event::CEventHandler& forEventHan
    m_receiveDataSubscription.subscribe(forEventHandler, forId);
 }
 
+void CSerialPort::setLogger(boost::shared_ptr<IPortLogger> logger)
+{
+   m_logger = logger;
+}
+
 void CSerialPort::flush()
 {
-   //TODO
+   // Stop listening on the port if corresponding notifications are enabled
+   if (m_receiveDataSubscription.hasSubscription())
+   {
+      m_boostSerialPort.cancel();
+      //TODO attendre l'ack du cancel ?
+   }
+
+   receive();
+
+   // Restart listening on the port if corresponding notifications are enabled
+   if (m_receiveDataSubscription.hasSubscription())
+      startRead();
 }
 
 void CSerialPort::reconnectTimerHandler(const boost::system::error_code& error)
@@ -114,15 +147,15 @@ void CSerialPort::tryConnect()
    // Connected
    m_connectionStateSubscription.notify(true);
 
-   // Start listening on the port
-   //TODO rien à faire, attendre un ordre
-//   startRead();
+   // Start listening on the port if corresponding notifications are enabled
+   if (m_receiveDataSubscription.hasSubscription())
+      startRead();
 }
 
 void CSerialPort::startRead()
 {
    // Start an asynchronous read and call readCompleted when it completes or fails 
-   m_boostSerialPort.async_read_some(boost::asio::buffer(m_readBuffer.get(), ReadBufferMaxSize), 
+   m_boostSerialPort.async_read_some(boost::asio::buffer(m_asyncReadBuffer.get(), ReadBufferMaxSize), 
       boost::bind(&CSerialPort::readCompleted, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 }
 
@@ -131,31 +164,37 @@ void CSerialPort::readCompleted(const boost::system::error_code& error, std::siz
    if (error)
    {
       // boost::asio::error::operation_aborted is the normal stop
-      if (error != boost::asio::error::operation_aborted)
-      {
-         YADOMS_LOG(error) << "Serial port read error : " << error.message();
-         disconnect();
-      }
+      if (error == boost::asio::error::operation_aborted)
+         return;
 
+      // Error ==> disconnecting
+      YADOMS_LOG(error) << "Serial port read error : " << error.message();
+      disconnect();
       m_connectionStateSubscription.notify(false);
       return;
    }
 
    // Read OK
+   CByteBuffer buffer(m_asyncReadBuffer.get(), bytesTransferred);
+
+   if (!!m_logger)
+      m_logger->logReceived(buffer);
 
    // Send data
-   m_receiveDataSubscription.notify(boost::asio::buffer(m_readBuffer.get(), bytesTransferred));
+   m_receiveDataSubscription.notify(buffer);
 
    // Restart read
    startRead();
 }
 
-void CSerialPort::send(const boost::asio::const_buffer& buffer)
+void CSerialPort::send(const CByteBuffer& buffer)
 {
    try
    {
-      m_boostSerialPort.cancel();
-      m_boostSerialPort.write_some(boost::asio::const_buffers_1(buffer));
+      if (!!m_logger)
+         m_logger->logSent(buffer);
+
+      m_boostSerialPort.write_some(boost::asio::const_buffers_1(buffer.content(), buffer.size()));
    }
    catch (boost::system::system_error& e)
    {
@@ -174,35 +213,7 @@ void CSerialPort::send(const boost::asio::const_buffer& buffer)
    }
 }
 
-void CSerialPort::asyncSend(const boost::asio::const_buffer& buffer)
-{
-   // Start an asynchronous write and call write_complete when it completes or fails 
-   m_boostSerialPort.async_write_some(boost::asio::buffer(buffer), 
-      boost::bind(&CSerialPort::writeCompleted, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
-}
-
-void CSerialPort::writeCompleted(const boost::system::error_code& error, std::size_t bytesTransferred)
-{
-   if (error)
-   {
-      // boost::asio::error::operation_aborted is the normal stop
-      if (error != boost::asio::error::operation_aborted)
-      {
-         YADOMS_LOG(error) << "Serial port write error : " << error.message();
-         disconnect();
-      }
-
-      m_connectionStateSubscription.notify(false);
-      return;
-   }
-
-   // Write OK
-
-   // Restart read
-   startRead();
-}
-
-std::size_t CSerialPort::receive(boost::shared_ptr<unsigned char[]>& buffer)
+CByteBuffer CSerialPort::receive()
 {
    try
    {
@@ -211,11 +222,11 @@ std::size_t CSerialPort::receive(boost::shared_ptr<unsigned char[]>& buffer)
 
       BOOST_ASSERT_MSG(bytesTransferred != 0, "bytesTransferred should not be 0 at this point");
 
-      buffer.reset(new unsigned char[bytesTransferred]);
-      for (std::size_t idx = 0 ; idx < bytesTransferred ; ++idx)
-         buffer[idx]=readBuffer[idx];
+      CByteBuffer buffer(readBuffer.get(), bytesTransferred);
+      if (!!m_logger)
+         m_logger->logReceived(buffer);
 
-      return bytesTransferred;
+      return buffer;
    }
    catch (boost::system::system_error& e)
    {
@@ -233,4 +244,24 @@ std::size_t CSerialPort::receive(boost::shared_ptr<unsigned char[]>& buffer)
          e.what());
    }
 }
+
+CByteBuffer CSerialPort::sendAndReceive(const CByteBuffer& buffer)
+{
+   // Stop listening on the port if corresponding notifications are enabled
+   if (m_receiveDataSubscription.hasSubscription())
+   {
+      m_boostSerialPort.cancel();
+      //TODO attendre l'ack du cancel ?
+   }
+
+   send(buffer);
+   CByteBuffer receivedData = receive();
+
+   // Restart listening on the port if corresponding notifications are enabled
+   if (m_receiveDataSubscription.hasSubscription())
+      startRead();
+
+   return receivedData;
+}
+
 

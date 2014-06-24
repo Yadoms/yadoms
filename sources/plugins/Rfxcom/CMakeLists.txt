@@ -8,16 +8,20 @@ include("../YadomsPluginsCommon.cmake")
 set(RFXCOM_SOURCES
    stdafx.h
    stdafx.cpp
+   Buffer.hpp
    DeviceList.h
    DeviceList.cpp
    IDeviceList.h
    IncrementSequenceNumber.h
    IPort.h
+   IPortLogger.h
    IRfxcomConfiguration.h
    ISequenceNumberProvider.h
    ITransceiver.h
    NullSequenceNumber.h
    PortException.hpp
+   PortLogger.h
+   PortLogger.cpp
    rfxcomMessages/IRfxcomMessage.h
    rfxcomMessages/Lighting1.h
    rfxcomMessages/Lighting1.cpp
@@ -28,7 +32,8 @@ set(RFXCOM_SOURCES
    rfxcomMessages/Curtain1.h
    rfxcomMessages/Curtain1.cpp
    rfxcomMessages/RFXtrx.h
-   rfxcomMessages/RFXtrxDefinitions.h
+   rfxcomMessages/RFXtrxHelpers.h
+   rfxcomMessages/RFXtrxHelpers.cpp
    Rfxcom.h
    Rfxcom.cpp 
    RfxcomConfiguration.h

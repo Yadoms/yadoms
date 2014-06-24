@@ -20,7 +20,8 @@ public:
 
    // ISequenceNumberProvider implementation
    virtual void reset() {}
-   virtual unsigned char getNext() { return 0; }
+   virtual unsigned char next() { return 0; }
+   virtual unsigned char last() { return 0; }
    // [END] ISequenceNumberProvider implementation
 };
 

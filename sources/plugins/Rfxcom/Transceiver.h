@@ -3,7 +3,7 @@
 #include "ITransceiver.h"
 #include "IPort.h"
 #include "rfxcomMessages/IRfxcomMessage.h"
-#include "rfxcomMessages/RFXtrxDefinitions.h"
+#include "rfxcomMessages/RFXtrxHelpers.h"
 #include "ISequenceNumberProvider.h"
 
 //--------------------------------------------------------------
@@ -23,44 +23,39 @@ public:
    virtual ~CTransceiver();
 
    // ITransceiver implementation
-   virtual void sendReset();
+   virtual void processReset();
    virtual void send(const std::string& command, const std::string& deviceParameters);
+   virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data) const;
    // [END] ITransceiver implementation
 
 protected:
    //--------------------------------------------------------------
-   /// \brief	                     Send a command message to the transceiver
+   /// \brief	                     Build the command message to the transceiver
    /// \param [in] command          Command type
    //--------------------------------------------------------------
-   void sendCommand(unsigned char command);
+   CByteBuffer buildRfxcomCommand(unsigned char command);
 
    //--------------------------------------------------------------
-   /// \brief	                     Wait for the status answer from RFXCom
+   /// \brief	                     Request the RFXCom status
    /// \return                      true if status received, false if error
    //--------------------------------------------------------------
-   bool waitStatus();
+   bool requestStatus();
 
    //--------------------------------------------------------------
-   /// \brief	                     Wait for the acknowledge from RFXCom
+   /// \brief	                     Check the acknowledge received from RFXCom
+   /// \param[in] answer            Buffer received to check
    /// \return                      true if acknowledge is OK, false if any error
    //--------------------------------------------------------------
-   bool waitAcknowledge();
-
-   //--------------------------------------------------------------
-   /// \brief	                     Adapt a buffer to be loggable
-   /// \param [in] ptr              Buffer pointer
-   /// \param [in] size             Buffer size
-   //--------------------------------------------------------------
-   std::string msgToString(const void* ptr, size_t size) const;
+   bool checkAcknowledge(const CByteBuffer& answer);
 
    //--------------------------------------------------------------
    /// \brief	                     Create the corresponding RFXCom message associated with the command received from Yadoms
    /// \param [in] command          The received command (JSON string)
    /// \param [in] deviceParameters The device parameters (JSON string)
-   /// \return                      RFXCom message
+   /// \return                      RFXCom message to send
    /// \throw shared::exception::CInvalidParameter if no corresponding RFXCom message was found (invalid command)
    //--------------------------------------------------------------
-   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> createRfxcomMessage(const std::string& command, const std::string& deviceParameters) const;
+   const CByteBuffer buildRfxcomMessage(const std::string& command, const std::string& deviceParameters) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Get the RFXCom type as string
@@ -85,16 +80,6 @@ private:
    /// \brief  The message sequence number
    //--------------------------------------------------------------
    boost::shared_ptr<ISequenceNumberProvider> m_seqNumberProvider;
-
-   //--------------------------------------------------------------
-   /// \brief  The request structure (keep here for better performance)
-   //--------------------------------------------------------------
-   RBUF m_request;
-
-   //--------------------------------------------------------------
-   /// \brief  The answer structure (keep here for better performance)
-   //--------------------------------------------------------------
-   RBUF m_answer;
 };
 
 

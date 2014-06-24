@@ -15,7 +15,6 @@ enum EEnumType
 
 //--------------------------------------------------------------
 /// \brief	Configuration of the fake plugin
-/// \note   To implement configuration, we have to derive from shared::plugin::configuration::CConfiguration
 //--------------------------------------------------------------
 class CFakePluginConfiguration : public shared::CDataContainer
 {

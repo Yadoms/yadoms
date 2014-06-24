@@ -5,9 +5,14 @@ CRfxcomConfiguration::~CRfxcomConfiguration()
 {
 }
 
+void CRfxcomConfiguration::initializeWith(const shared::CDataContainer &data)
+{
+   m_data.initializeWith(data);
+}
+
 std::string CRfxcomConfiguration::getSerialPort() const
 {
-   return get<std::string>("Serial Port");
+   return m_data.get<std::string>("Serial Port");
 }
 
 

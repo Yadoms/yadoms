@@ -31,16 +31,27 @@ public:
    virtual ~CSerialPort();
 
    // IPort Implementation
-   virtual bool connect();
-   virtual void disconnect();
+   virtual void start();
+   virtual void stop();
    virtual bool isConnected() const;
    virtual void subscribeConnectionState(shared::event::CEventHandler& forEventHandler, int forId);
    virtual void subscribeReceiveData(shared::event::CEventHandler& forEventHandler, int forId);
+   virtual void setLogger(boost::shared_ptr<IPortLogger> logger);
    virtual void flush();
-   virtual void send(const boost::asio::const_buffer& buffer);
-   virtual void asyncSend(const boost::asio::const_buffer& buffer);
-   virtual std::size_t receive(boost::shared_ptr<unsigned char[]>& buffer);
+   virtual void send(const CByteBuffer& buffer);
+   virtual CByteBuffer sendAndReceive(const CByteBuffer& buffer);
    // [END] IPort Implementation
+
+   //--------------------------------------------------------------
+   /// \brief	Establish the connection
+   /// \return true if connected, false else
+   //--------------------------------------------------------------
+   virtual bool connect();
+
+   //--------------------------------------------------------------
+   /// \brief	Close the connection
+   //--------------------------------------------------------------
+   virtual void disconnect();
 
 protected:
    //--------------------------------------------------------------
@@ -67,11 +78,11 @@ protected:
    void readCompleted(const boost::system::error_code& error, std::size_t bytesTransferred);
 
    //--------------------------------------------------------------
-   /// \brief	                     End of write operation handler
-   /// \param[in] error             Result of operation
-   /// \param[in] bytesTransferred  Written bytes number
+   /// \brief	                     Receive data synchronously
+   /// \return                      Buffer received
+   /// \throw                    CPortException if error
    //--------------------------------------------------------------
-   void writeCompleted(const boost::system::error_code& error, std::size_t bytesTransferred);
+   CByteBuffer receive();
 
 private:
    //--------------------------------------------------------------
@@ -100,9 +111,9 @@ private:
    static const std::size_t ReadBufferMaxSize;
 
    //--------------------------------------------------------------
-   /// \brief	Read buffer max size
+   /// \brief	Read buffer for asynchronous operations
    //--------------------------------------------------------------
-   boost::shared_ptr<unsigned char[]> m_readBuffer;
+   boost::shared_ptr<unsigned char[]> m_asyncReadBuffer;
 
    //--------------------------------------------------------------
    /// \brief	Connection state event subscription
@@ -112,7 +123,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	Data receive event subscription
    //--------------------------------------------------------------
-   CPortSubscription<boost::asio::const_buffer> m_receiveDataSubscription;
+   CPortSubscription<CByteBuffer> m_receiveDataSubscription;
 
    //--------------------------------------------------------------
    /// \brief	Try to reconnect timer delay
@@ -128,6 +139,11 @@ private:
    /// \brief	Thread for asynchronous operations
    //--------------------------------------------------------------
    boost::shared_ptr<boost::thread> m_asyncThread;
+
+   //--------------------------------------------------------------
+   /// \brief	Logger to use (can be null to disable log)
+   //--------------------------------------------------------------
+   boost::shared_ptr<IPortLogger> m_logger;
 
 
    //TODO : options à rajouter ?

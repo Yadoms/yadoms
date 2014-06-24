@@ -1,4 +1,8 @@
 #pragma once
+#include <shared/plugin/yadomsApi/IYadomsApi.h>
+#include "Buffer.hpp"
+
+namespace yApi = shared::plugin::yadomsApi;
 
 //--------------------------------------------------------------
 /// \brief	The RFXCom protocol interface
@@ -14,7 +18,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	                     Reset the transceiver
    //--------------------------------------------------------------
-   virtual void sendReset() = 0;
+   virtual void processReset() = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Send Yadoms command to RFXCom
@@ -22,7 +26,11 @@ public:
    /// \param [in] deviceParameters The device parameters (JSON string)
    //--------------------------------------------------------------
    virtual void send(const std::string& command, const std::string& deviceParameters) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Decode RFXCom data and historize to Yadoms
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] data             Data received
+   //--------------------------------------------------------------
+   virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data) const = 0;
 };
-
-
-

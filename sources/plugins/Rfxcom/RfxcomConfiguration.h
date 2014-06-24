@@ -1,6 +1,5 @@
 #pragma once
 
-#include <shared/DataContainer.h>
 #include <shared/plugin/ImplementationHelper.h>
 #include "IRfxcomConfiguration.h"
 
@@ -18,7 +17,14 @@ public:
    virtual ~CRfxcomConfiguration();
 
    // IRfxcomConfiguration implementation
+   virtual void initializeWith(const shared::CDataContainer &data);
    virtual std::string getSerialPort() const;
    // [END] IRfxcomConfiguration implementation
+
+private:
+   //--------------------------------------------------------------
+   /// \brief	    Configuration raw data
+   //--------------------------------------------------------------
+   shared::CDataContainer m_data;
 };
 
