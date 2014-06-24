@@ -52,7 +52,7 @@ namespace web { namespace rest { namespace service {
          }
 
          web::rest::json::CJson result2;
-         result2.setValues("serialPorts", internalList);
+         result2.set< std::vector< shared::CDataContainer > >("serialPorts", internalList);
          return web::rest::json::CJsonResult::GenerateSuccess(result2);
       }
       catch(std::exception &ex)

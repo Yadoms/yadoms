@@ -274,7 +274,7 @@ namespace web { namespace rest { namespace service {
                   }
                }
             }
-            result.setValues("packages", allData);
+            result.set< std::vector<shared::CDataContainer> >("packages", allData);
             return web::rest::json::CJsonResult::GenerateSuccess(result);
          }
          else

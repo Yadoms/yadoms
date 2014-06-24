@@ -128,7 +128,7 @@ namespace web { namespace rest { namespace service {
             }
 
             web::rest::json::CJson result;
-            result.setValues("data", objectList);
+            result.set< std::vector<shared::CDataContainer> >("data", objectList);
             return web::rest::json::CJsonResult::GenerateSuccess(result);
 
          }

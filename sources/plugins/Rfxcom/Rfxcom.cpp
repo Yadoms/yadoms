@@ -28,7 +28,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
    try
    {
       // Load configuration values (provided by database)
-      m_configuration.set(context->getConfiguration());
+      m_configuration.initializeWith(context->getConfiguration());
 
       // Create the port instance
       m_port = CRfxcomFactory::constructPort(m_configuration, context->getEventHandler(), kEvtPortConnection, kEvtPortDataReceived);
@@ -85,7 +85,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                m_port.reset();
 
                // Update configuration
-               m_configuration.set(newConfiguration);
+               m_configuration.initializeWith(newConfiguration);
 
                // Create new connection
                m_port = CRfxcomFactory::constructPort(m_configuration, context->getEventHandler(), kEvtPortConnection, kEvtPortDataReceived);

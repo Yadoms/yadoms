@@ -84,7 +84,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             // - Restart the plugin if necessary,
             // - Update some resources,
             // - etc...
-            m_configuration.set(newConfiguration);
+            m_configuration.initializeWith(newConfiguration);
             break;
          }
 

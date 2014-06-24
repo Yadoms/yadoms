@@ -39,7 +39,7 @@ namespace shared
       return !!value;
    }
 
-
+   /*
    void CDataContainer::get(const std::string& parameterName, IDataContainable & toFill) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
@@ -77,6 +77,7 @@ namespace shared
          throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
       }
    }
+   */
 
    std::string CDataContainer::serialize() const
    {
@@ -122,24 +123,17 @@ namespace shared
       }
    }
 
-
-   const CDataContainer & CDataContainer::serializeInContainer() const
+   /*
+   const CDataContainer & CDataContainer::extractContent() const
    {
       return *this;
    }
 
-   void CDataContainer::deserializeFromContainer(const CDataContainer & obj)
+   void CDataContainer::fillFromContent(const CDataContainer & initialData)
    {
-      set(obj);
+      initializeWith(initialData);
    }
-
-
-
-
-
-
-
-
+   */
 
 
 
@@ -153,7 +147,7 @@ namespace shared
       return serialize() != rhs.serialize();
    }
 
-   void CDataContainer::set(const CDataContainer &rhs)
+   void CDataContainer::initializeWith(const CDataContainer &rhs)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
       m_tree = rhs.m_tree;

@@ -11,40 +11,40 @@ namespace shared
    //--------------------------------------------------------------
    /// \brief	This class should be used as a data container
    ///			The aim is to handle any data; like configuration
-	///			
-	///			The container should contains data by a get/set method
-	///			Each data is associated to a key name
-	///			The data could be a simple type, a list of data, or a DataContainer child
-	///
-	///			The container has the serialize feature
-	///			This is done be serializing/deserializing a string,
-	///			or a file
-	///			
-	///			USAGE
-	///			
-	///			1. simple data container
-	///				shared::CDataContainer test;
-	///				test.set("intValue", 5);
-	///				test.set("doubleValue", 4.0);
-	///				test.set("stringValue", "plouf");
-	///			
-	///				int i = test.get<int>("intValue");
-	///				double d = test.get<double>("doubleValue");
-	///				std::string s = test.get<std::string>("stringValue");
-	///			
-	///			
-	///			2. vector of data container
-	///				std::vector<int> vi;
-	///				...
-	///				test.setValues("vectorint", vi);
-	///			
-	///				std::vector<double> vd;
-	///				...
-	///				test.setValues("vectordouble", vd);
-	///			
-	///			
-	///				std::vector<int> vi2 = test.getValues<int>("vectorint");
-	///				std::vector<double> vd2 = test.getValues<double>("vectordouble");
+   ///			
+   ///			The container should contains data by a get/set method
+   ///			Each data is associated to a key name
+   ///			The data could be a simple type, a list of data, or a DataContainer child
+   ///
+   ///			The container has the serialize feature
+   ///			This is done be serializing/deserializing a string,
+   ///			or a file
+   ///			
+   ///			USAGE
+   ///			
+   ///			1. simple data container
+   ///				shared::CDataContainer test;
+   ///				test.set<int>("intValue", 5);
+   ///				test.set<double>("doubleValue", 4.0);
+   ///				test.set<std::string>("stringValue", "plouf");
+   ///			
+   ///				int i = test.get<int>("intValue");
+   ///				double d = test.get<double>("doubleValue");
+   ///				std::string s = test.get<std::string>("stringValue");
+   ///			
+   ///			
+   ///			2. vector of data container
+   ///				std::vector<int> vi;
+   ///				...
+   ///				test.set< std::vector<int> >("vectorint", vi);
+   ///			
+   ///				std::vector<double> vd;
+   ///				...
+   ///				test.set< std::vector<double> >("vectordouble", vd);
+   ///			
+   ///			
+   ///				std::vector<int> vi2 = test.getValues< std::vector<int> >("vectorint");
+   ///				std::vector<double> vd2 = test.getValues< std::vector<double> >("vectordouble");
    ///			
    ///			
    ///			
@@ -52,21 +52,21 @@ namespace shared
    ///            
    ///            //create another container
    ///            shared::CDataContainer subContainer;
-   ///            subContainer.set("int4", 6);
-   ///            subContainer.set("double1", 8.0);
-   ///            subContainer.set("string2", "plouf2");
+   ///            subContainer.set<int>("int4", 6);
+   ///            subContainer.set<double>("double1", 8.0);
+   ///            subContainer.set<std::string>("string2", "plouf2");
    ///            
    ///            //add it to main container
-   ///            test.setChild("config1", subContainer);
+   ///            test.set("config1", subContainer);
    ///            //retreive container
-   ///            shared::CDataContainer getTree = test.getChild("config1");
+   ///            shared::CDataContainer subt = test.get<shared::CDataContainer>("config1");
    ///            //direct access to a sub container data
    ///            double d = test.get<double>("config1.double1");
    ///
    ///
    ///
    //--------------------------------------------------------------
-
+   /*
    class CDataContainer;
 
    class YADOMS_SHARED_EXPORT IDataContainable
@@ -74,14 +74,33 @@ namespace shared
    public:
       virtual ~IDataContainable() { }
 
-      virtual const CDataContainer & serializeInContainer() const = 0;
-      virtual void deserializeFromContainer(const CDataContainer &) = 0;
+      //--------------------------------------------------------------
+      /// \brief		Extract the data into a data container 
+      /// \return    The data container
+      //--------------------------------------------------------------
+      virtual const CDataContainer & extractContent() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief		Fill this object instance with a container
+      /// \param [in] initialData    Initial data for this container (will be deserialized)
+      //--------------------------------------------------------------
+      virtual void fillFromContent(const CDataContainer & initialData) = 0;
    };
+   */
 
-
-   class YADOMS_SHARED_EXPORT CDataContainer : public serialization::IDataSerializable, public serialization::IDataFileSerializable, public IDataContainable
+   class YADOMS_SHARED_EXPORT CDataContainer : public serialization::IDataSerializable, public serialization::IDataFileSerializable /*, public IDataContainable*/
    {
    public:
+      //--------------------------------------------------------------
+      //
+      //
+      //
+      // Constructors & destructor
+      //
+      //
+      //
+      //--------------------------------------------------------------
+
       //--------------------------------------------------------------
       /// \brief		Constructor. Empty data
       //--------------------------------------------------------------
@@ -105,6 +124,17 @@ namespace shared
       //--------------------------------------------------------------
       virtual ~CDataContainer(void);
 
+
+      //--------------------------------------------------------------
+      //
+      //
+      //
+      // Public get/set methods
+      //
+      //
+      //
+      //--------------------------------------------------------------
+
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
       /// \param [in] parameterName    Name of the parameter
@@ -114,10 +144,6 @@ namespace shared
       //--------------------------------------------------------------
       template<class T>
       inline T get(const std::string& parameterName) const;
-
-
-      void get(const std::string& parameterName, IDataContainable & toFill) const;
-      void set(const std::string& parameterName, const IDataContainable & toFill);
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter value. If the name is not found the default value is returned
@@ -131,38 +157,24 @@ namespace shared
       inline T get(const std::string& parameterName, const T & defaultValue) const;
 
       //--------------------------------------------------------------
-      /// \brief	    Get parameter values
-      /// \param [in] parameterName    Name of the parameter
-      /// \return     The parameter values
-      /// \throw      shared::exception::COutOfRange if parameter can not be converted
-      /// \throw      shared::exception::CInvalidParameter if parameter is not found
-      //--------------------------------------------------------------
-      template<class T>
-      inline std::vector<T> getValues(const std::string& parameterName) const;
-
-      //--------------------------------------------------------------
       /// \brief	    Set parameter value
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
       //--------------------------------------------------------------
       template<class T>
       inline void set(const std::string& parameterName, const T & value);
-	  
-      //--------------------------------------------------------------
-      /// \brief	    Set parameter values
-      /// \param [in] parameterName    Name of the parameter
-      /// \param [in] values           Valuse of the parameter
-      //--------------------------------------------------------------
-      template<class T>
-      inline void setValues(const std::string& parameterName, const std::vector<T> & values);
+
 
       //--------------------------------------------------------------
-      /// \brief	    Check if parameter value is present
-      /// \param [in] parameterName    Name of the parameter
-      /// \return     true if parameter found
+      //
+      //
+      //
+      // Public get/set methods for ENUMS
+      //
+      //
+      //
       //--------------------------------------------------------------
-      bool hasValue(const std::string& parameterName) const;
-      
+
       //--------------------------------------------------------------
       /// \brief	    Type representing authorized enum values list
       //--------------------------------------------------------------
@@ -177,7 +189,43 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<typename EnumType>
-	  EnumType getEnumValue(const std::string& parameterName, const EnumValuesNames& valuesNames) const;
+      EnumType getEnumValue(const std::string& parameterName, const EnumValuesNames& valuesNames) const;
+
+
+      //--------------------------------------------------------------
+      //
+      //
+      //
+      // Public initialization methods
+      //
+      //
+      //
+      //--------------------------------------------------------------
+
+
+      //--------------------------------------------------------------
+      /// \brief		Copy another container to this instance
+      /// \param [in] rhs  The container to copy
+      //--------------------------------------------------------------
+      void initializeWith(const CDataContainer &rhs);
+
+      //--------------------------------------------------------------
+      //
+      //
+      //
+      // Public utility methods
+      //
+      //
+      //
+      //--------------------------------------------------------------
+
+      //--------------------------------------------------------------
+      /// \brief	    Check if parameter value is present
+      /// \param [in] parameterName    Name of the parameter
+      /// \return     true if parameter found
+      //--------------------------------------------------------------
+      bool hasValue(const std::string& parameterName) const;
+
 
       //--------------------------------------------------------------
       /// \brief		Equality operator
@@ -201,38 +249,162 @@ namespace shared
       CDataContainer & operator=(const CDataContainer &rhs);
 
       //--------------------------------------------------------------
-      /// \brief		Copy another container to this instance
-      /// \param [in] rhs  The container to copy
-      //--------------------------------------------------------------
-      void set(const CDataContainer &rhs);
-
-      //--------------------------------------------------------------
       /// \brief		Check if the container is empty
       /// \return    true if contanier is empty
       //--------------------------------------------------------------
       bool empty() const;
 
 
+      //--------------------------------------------------------------
+      //
+      //
+      //
+      // Interface implementations
+      //
+      //
+      //
+      //--------------------------------------------------------------
 
-	  // IDataSerializable implementation
-	  virtual std::string serialize() const;
-	  virtual void deserialize(const std::string & data);
-	  // [END] IDataSerializable implementation
+      // IDataSerializable implementation
+      virtual std::string serialize() const;
+      virtual void deserialize(const std::string & data);
+      // [END] IDataSerializable implementation
 
-	  // IDataFileSerializable implementation
-	  virtual void serializeToFile(const std::string & filename) const;
-	  virtual void deserializeFromFile(const std::string & filename);
-	  // [END] IDataFileSerializable implementation
+      // IDataFileSerializable implementation
+      virtual void serializeToFile(const std::string & filename) const;
+      virtual void deserializeFromFile(const std::string & filename);
+      // [END] IDataFileSerializable implementation
 
-     // IDataContainable implementation
-     virtual const CDataContainer & serializeInContainer() const;
-     virtual void deserializeFromContainer(const CDataContainer &);
-     // [END] IDataContainable implementation
+      // IDataContainable implementation
+      //virtual const CDataContainer & extractContent() const;
+      //virtual void fillFromContent(const CDataContainer & initialData);
+      // [END] IDataContainable implementation
 
-	  //--------------------------------------------------------------
-	  /// \brief		An empty container which could be used as default method parameter
-	  //--------------------------------------------------------------
-	  const static CDataContainer EmptyContainer;
+
+      //--------------------------------------------------------------
+      //
+      //
+      //
+      // Static helpers
+      //
+      //
+      //
+      //--------------------------------------------------------------
+
+
+      //--------------------------------------------------------------
+      /// \brief		An empty container which could be used as default method parameter
+      //--------------------------------------------------------------
+      const static CDataContainer EmptyContainer;
+
+
+   protected:
+
+      //--------------------------------------------------------------
+      //
+      //
+      //
+      // Internal get/set methods
+      //
+      //
+      //
+      //--------------------------------------------------------------
+
+      //--------------------------------------------------------------
+      /// \brief	    Get parameter value
+      /// \param [in] parameterName    Name of the parameter
+      /// \return     The parameter value
+      /// \throw      shared::exception::COutOfRange if parameter can not be converted
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
+      //--------------------------------------------------------------
+      template<class T>
+      inline T getInternal(const std::string& parameterName) const;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get parameter value. If the name is not found the default value is returned
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] defaultValue     Default value
+      /// \return     The parameter value
+      /// \throw      shared::exception::COutOfRange if parameter can not be converted
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
+      //--------------------------------------------------------------
+      template<class T>
+      inline T getInternal(const std::string& parameterName, const T & defaultValue) const;
+
+      //--------------------------------------------------------------
+      /// \brief	    Get parameter values
+      /// \param [in] parameterName    Name of the parameter
+      /// \return     The parameter values
+      /// \throw      shared::exception::COutOfRange if parameter can not be converted
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
+      //--------------------------------------------------------------
+      template<class T>
+      inline std::vector<T> getValuesInternal(const std::string& parameterName) const;
+
+
+      //--------------------------------------------------------------
+      /// \brief	    Set parameter value
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] value            Value of the parameter
+      //--------------------------------------------------------------
+      template<class T>
+      inline void setInternal(const std::string& parameterName, const T & value);
+
+      //--------------------------------------------------------------
+      /// \brief	    Set parameter values
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] values           Valuse of the parameter
+      //--------------------------------------------------------------
+      template<class T>
+      inline void setValuesInternal(const std::string& parameterName, const std::vector<T> & values);
+
+
+      //--------------------------------------------------------------
+      //
+      //
+      //
+      // Internal helpers (allow redirecting to the good get/set internal method)
+      //
+      //
+      //
+      //--------------------------------------------------------------
+
+      //--------------------------------------------------------------
+      /// \brief	    Helper structure for get/set with single value type (int, double, class,...)
+      //--------------------------------------------------------------
+      template <typename T> struct helper {
+         static T getInternal(const CDataContainer * tree, const std::string& parameterName) { return tree->getInternal<T>(parameterName); }
+         static T getInternal(const CDataContainer * tree, const std::string& parameterName, const T & defaultValue)
+         {
+            if (tree->hasValue(parameterName))
+               return tree->getInternal<T>(defaultValue);
+            return defaultValue;
+         }
+         
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const T & value) 
+         { 
+            tree->setInternal<T>(parameterName, value); 
+         }
+         
+      };
+
+      //--------------------------------------------------------------
+      /// \brief	    Helper structure for get/set with vector of value type (vector<int>, vector<double>, vector<class>,...)
+      //--------------------------------------------------------------
+      template <typename T> struct helper < std::vector<T> > {
+         static std::vector<T> getInternal(const CDataContainer * tree, const std::string& parameterName) { return tree->getValuesInternal<T>(parameterName); }
+         static std::vector<T> getInternal(const CDataContainer * tree, const std::string& parameterName, const T & defaultValue)
+         {
+            if (tree->hasValue(parameterName))
+               return tree->getValuesInternal<T>(parameterName);
+            return defaultValue;
+         }
+
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector<T> & value)
+         { 
+            tree->setValuesInternal(parameterName, value);
+         }
+      };
 
    private:
       //--------------------------------------------------------------
@@ -257,11 +429,28 @@ namespace shared
    ///				-> for template methods
    ///				-> for template specialization
    //--------------------------------------------------------------
+   template<typename T>
+   inline T CDataContainer::get(const std::string& parameterName) const
+   {
+      return helper<T>::getInternal(this, parameterName);
+   }
+
+   template<typename T>
+   inline T CDataContainer::get(const std::string& parameterName, const T & defaultValue) const
+   {
+      return helper<T>::getInternal(this, parameterName, defaultValue);
+   }
+
+   template<typename T>
+   inline void CDataContainer::set(const std::string& parameterName, const T & value)
+   {
+      helper<T>::setInternal(this, parameterName, value);
+   }
 
 
 
    template<class T>
-   inline T CDataContainer::get(const std::string& parameterName) const
+   inline T CDataContainer::getInternal(const std::string& parameterName) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -280,7 +469,7 @@ namespace shared
    }
 
    template<>
-   inline CDataContainer CDataContainer::get(const std::string& parameterName) const
+   inline CDataContainer CDataContainer::getInternal(const std::string& parameterName) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -299,17 +488,17 @@ namespace shared
          throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
       }
    }
-
-   template<class T>
-   inline T CDataContainer::get(const std::string& parameterName, const T & defaultValue) const
+   /*
+   template<>
+   inline IDataContainable CDataContainer::getInternal(const std::string& parameterName) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       try
       {
-         if (hasValue(parameterName))
-            return m_tree.get<T>(parameterName);
-         return defaultValue;
+         CDataContainer dc;
+         dc.m_tree = m_tree.get_child(parameterName);
+         return IDataContainable::createFromContainer(dc);
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
@@ -319,13 +508,13 @@ namespace shared
       {
          throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
       }
-   }
+   }*/
 
 
 
 
    template<class T>
-   inline std::vector<T> CDataContainer::getValues(const std::string& parameterName) const
+   inline std::vector<T> CDataContainer::getValuesInternal(const std::string& parameterName) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -352,7 +541,7 @@ namespace shared
 
 
    template<class T>
-   inline void CDataContainer::set(const std::string& parameterName, const T & value)
+   inline void CDataContainer::setInternal(const std::string& parameterName, const T & value)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -368,10 +557,10 @@ namespace shared
       {
          throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
       }
-   }   
-   
+   }
+
    template<>
-   inline void CDataContainer::set(const std::string& parameterName, const CDataContainer & value)
+   inline void CDataContainer::setInternal(const std::string& parameterName, const CDataContainer & value)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -390,7 +579,7 @@ namespace shared
    }
 
    template<class T>
-   inline void CDataContainer::setValues(const std::string& parameterName, const std::vector<T> & values)
+   inline void CDataContainer::setValuesInternal(const std::string& parameterName, const std::vector<T> & values)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -403,7 +592,7 @@ namespace shared
          {
             boost::property_tree::ptree t;
             t.put("", *i);
-            innerData.push_back( std::make_pair("", t ) );
+            innerData.push_back(std::make_pair("", t));
          }
 
          m_tree.add_child(parameterName, innerData);
@@ -420,7 +609,7 @@ namespace shared
 
 
    template<>
-   inline void CDataContainer::setValues(const std::string& parameterName, const std::vector<CDataContainer> & values)
+   inline void CDataContainer::setValuesInternal(const std::string& parameterName, const std::vector<CDataContainer> & values)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -431,7 +620,7 @@ namespace shared
          std::vector<CDataContainer>::const_iterator i;
          for (i = values.begin(); i != values.end(); ++i)
          {
-            innerData.push_back( std::make_pair("", i->m_tree ) );
+            innerData.push_back(std::make_pair("", i->m_tree));
          }
 
          m_tree.add_child(parameterName, innerData);
@@ -449,12 +638,12 @@ namespace shared
    template<typename EnumType>
    EnumType CDataContainer::getEnumValue(const std::string& parameterName, const EnumValuesNames& valuesNames) const
    {
-	   std::string stringValue = get<std::string>(parameterName);
-	   EnumValuesNames::const_iterator it = valuesNames.find(stringValue);
-	   if (it != valuesNames.end())
-		   return (EnumType)(it->second);
+      std::string stringValue = get<std::string>(parameterName);
+      EnumValuesNames::const_iterator it = valuesNames.find(stringValue);
+      if (it != valuesNames.end())
+         return (EnumType)(it->second);
 
-	   throw exception::COutOfRange(std::string("Value ") + stringValue + " was not found for " + parameterName + " parameter");
+      throw exception::COutOfRange(std::string("Value ") + stringValue + " was not found for " + parameterName + " parameter");
    }
 
 } // namespace shared

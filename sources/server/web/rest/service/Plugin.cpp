@@ -129,7 +129,7 @@ namespace web { namespace rest { namespace service {
             pluginCollection.push_back(thisPluginData);
          }
 
-         result.setValues("plugins", pluginCollection);
+         result.set< std::vector<shared::CDataContainer> >("plugins", pluginCollection);
          return web::rest::json::CJsonResult::GenerateSuccess(result);
       }
       catch(std::exception &ex)
