@@ -37,6 +37,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       // Create 2 fake sensors
       CFakeSensor fakeSensor1("fakeSensor1");
       CFakeSensor fakeSensor2("fakeSensor2");
+      
       // Declare these sensors to Yadoms
       fakeSensor1.declareDevice(context);
       fakeSensor2.declareDevice(context);

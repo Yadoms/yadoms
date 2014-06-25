@@ -2,8 +2,6 @@
 
 #include "ILoad.h"
 
-#include <shared/plugin/yadomsApi/IYadomsApi.h>
-
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
 

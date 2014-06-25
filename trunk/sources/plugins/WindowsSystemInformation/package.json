@@ -1,5 +1,5 @@
 {
-   "name": "WindowsSystem",
+   "name": "WindowsSystemInformation",
    "description": "This plugin provide Windows System information (CPU load, memory load,...)\n",
    "version": "1.0",
    "releaseType": "beta",

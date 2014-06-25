@@ -19,3 +19,4 @@
 #include <boost/log/common.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/thread.hpp>
+#include <boost/property_tree/ptree.hpp>
