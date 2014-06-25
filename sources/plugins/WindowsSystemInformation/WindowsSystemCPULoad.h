@@ -3,10 +3,6 @@
 #include "ILoad.h"
 #include <pdh.h>
 #include <string>
-#include <shared/plugin/yadomsApi/IYadomsApi.h>
-
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
 
 //--------------------------------------------------------------
 /// \brief	CPU Load of the Windows System
@@ -72,4 +68,3 @@ private:
    //--------------------------------------------------------------
    PDH_HCOUNTER cpuTotal;
 };
-

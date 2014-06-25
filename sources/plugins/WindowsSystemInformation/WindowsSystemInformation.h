@@ -1,8 +1,5 @@
 #pragma once
-#include <shared/plugin/ImplementationHelper.h>
 #include <shared/plugin/IPlugin.h>
-#include <shared/event/EventHandler.hpp>
-//#include <shared/xpl/XplService.h>
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -15,24 +12,20 @@ namespace yApi = shared::plugin::yadomsApi;
 /// \note   - The CPU load of Yadoms application
 /// \note   - Disks Usages of all fixed disks (HDD)
 //--------------------------------------------------------------
-class CWindowsSystem : public shared::plugin::IPlugin
+class CWindowsSystemInformation : public shared::plugin::IPlugin
 {
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    //--------------------------------------------------------------
-   CWindowsSystem();
+   CWindowsSystemInformation();
 
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~CWindowsSystem();
+   virtual ~CWindowsSystemInformation();
 
 // IPlugin implementation
    virtual void doWork(boost::shared_ptr<yApi::IYadomsApi> context);
   // [END] IPlugin implementation
-   //--------------------------------------------------------------
-   /// \brief	The XPL service used to send XPL messages to Yadoms
-   //--------------------------------------------------------------
-   //boost::shared_ptr<shared::xpl::CXplService> m_xplService;
 };

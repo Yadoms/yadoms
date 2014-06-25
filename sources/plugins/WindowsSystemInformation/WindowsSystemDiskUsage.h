@@ -2,28 +2,27 @@
 
 #include "ILoad.h"
 
-#include <shared/plugin/yadomsApi/IYadomsApi.h>
-
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
 
 //--------------------------------------------------------------
-/// \brief	CPU Load of the Yadoms Process
-/// \note   return the CPU load of the Yadoms Process under Windows Operating System
+/// \brief	Disk Usage for a drive for the Windows System
+/// \note   return the disk usage of a disk for the Windows Operating System
 //--------------------------------------------------------------
-class CWindowsSystemYadomsCPULoad : public ILoad
+class CWindowsSystemDiskUsage : public ILoad
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] deviceId    The device ID
+   /// \param[in] deviceId    The drive name ex: C:\
    //--------------------------------------------------------------
-   CWindowsSystemYadomsCPULoad(const std::string & deviceId);
+   CWindowsSystemDiskUsage(const std::string & deviceId, const std::string & driveName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CWindowsSystemYadomsCPULoad();
+   virtual ~CWindowsSystemDiskUsage();
 
    //--------------------------------------------------------------
    /// \brief	    Returns the sensor device ID
@@ -44,8 +43,8 @@ public:
    void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
 
    //--------------------------------------------------------------
-   /// \brief	    Returns read (computed) CPU load of the Yadoms Process
-   /// \return     CPU Load in %
+   /// \brief	    Returns read (computed) Disk usage
+   /// \return     Disk Usage in %
    //--------------------------------------------------------------
    virtual double getValue();
 
@@ -57,23 +56,13 @@ private:
    const std::string m_deviceId;
 
    //--------------------------------------------------------------
-   /// \brief	    Memory Load in %
+   /// \brief	    Disk Name
    //--------------------------------------------------------------
-   double m_CPULoad;
+   const std::string m_driveName;
 
    //--------------------------------------------------------------
-   /// \brief	    Number of total ticks, System ticks, User Ticks
+   /// \brief	    Value of the Disk Usage in %
    //--------------------------------------------------------------
-   unsigned __int64 lastCPU, lastSysCPU, lastUserCPU;
-
-   //--------------------------------------------------------------
-   /// \brief	    Number of processors
-   //--------------------------------------------------------------
-   int numProcessors;
-
-   //--------------------------------------------------------------
-   /// \brief	    Handle of Yadoms
-   //--------------------------------------------------------------
-   HANDLE self;
+   double m_diskUsage;
 };
 

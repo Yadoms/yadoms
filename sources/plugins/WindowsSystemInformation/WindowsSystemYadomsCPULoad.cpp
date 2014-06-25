@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "WindowsSystemYadomsCPULoad.h"
 #include <shared/exception/Exception.hpp>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
 
 CWindowsSystemYadomsCPULoad::CWindowsSystemYadomsCPULoad(const std::string & deviceId)
    :m_deviceId(deviceId), m_CPULoad(0)
@@ -42,7 +41,7 @@ void CWindowsSystemYadomsCPULoad::declareDevice(boost::shared_ptr<yApi::IYadomsA
    context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
 
    // Declare associated keywords (= values managed by this device)
-   context->declareKeyword(m_deviceId, "temp1"  , yApi::CStandardCapacities::Temperature , yApi::IYadomsApi::kReadOnly);
+   //context->declareKeyword(m_deviceId, "temp1"  , yApi::CStandardCapacities::Temperature , yApi::IYadomsApi::kReadOnly);
    //context->declareKeyword(m_deviceId, "temp2"  , yApi::CStandardCapacities::Temperature , yApi::IYadomsApi::kReadOnly);
    //context->declareKeyword(m_deviceId, "battery", yApi::CStandardCapacities::BatteryLevel, yApi::IYadomsApi::kReadOnly);
    //context->declareKeyword(m_deviceId, "Rssi"   , yApi::CStandardCapacities::Rssi        , yApi::IYadomsApi::kReadOnly);
@@ -52,7 +51,7 @@ void CWindowsSystemYadomsCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsA
 {
    //TODO : A finaliser
    BOOST_ASSERT_MSG(context, "context must be defined");
-   context->historizeData(m_deviceId, "temp1"  , m_CPULoad);
+   //context->historizeData(m_deviceId, "temp1"  , m_CPULoad);
    //context->historizeData(m_deviceId, "temp2"  , m_temperature2);
    //context->historizeData(m_deviceId, "battery", m_batteryLevel);
    //context->historizeData(m_deviceId, "Rssi"   , m_rssi        );
