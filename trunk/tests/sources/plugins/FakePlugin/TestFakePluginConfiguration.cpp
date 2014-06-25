@@ -15,7 +15,7 @@ const std::string defaultConf("{"
 BOOST_AUTO_TEST_CASE(ReadFakePluginDefaultConfiguration)
 {
    CFakePluginConfiguration cfg;
-   cfg.set(defaultConf);
+   cfg.initializeWith(defaultConf);
 
    BOOST_CHECK_EQUAL(cfg.getSerialPort(), "tty0");
    BOOST_CHECK_EQUAL(cfg.getEnumParameter(), (EEnumType)kEnumValue1);

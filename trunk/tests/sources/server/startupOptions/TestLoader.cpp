@@ -81,7 +81,6 @@ BOOST_AUTO_TEST_CASE(Initialisation_Test)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -102,7 +101,6 @@ BOOST_AUTO_TEST_CASE(Different_Port_p_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -123,7 +121,6 @@ BOOST_AUTO_TEST_CASE(Different_Port_port_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -169,7 +166,6 @@ BOOST_AUTO_TEST_CASE(Different_Database_databaseFile_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "toto.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -202,7 +198,6 @@ BOOST_AUTO_TEST_CASE(Different_Database_d_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "toto.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -223,7 +218,6 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_trace_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -244,7 +238,6 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_debug_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -265,7 +258,6 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_info_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -286,7 +278,6 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_warning_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -307,7 +298,6 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_error_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -328,7 +318,6 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_fatal_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -373,7 +362,6 @@ BOOST_AUTO_TEST_CASE(Different_IP_i_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.1");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -394,7 +382,6 @@ BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.1");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -440,7 +427,6 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_w_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), testNewWebServerPath);
 }
@@ -462,7 +448,6 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), testNewWebServerPath);
 }
@@ -497,7 +482,6 @@ BOOST_AUTO_TEST_CASE(Different_PluginsPath_h_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),testNewPluginPath);
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -519,7 +503,6 @@ BOOST_AUTO_TEST_CASE(Different_PluginsPath_PluginsPath_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),testNewPluginPath);
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -541,7 +524,6 @@ BOOST_AUTO_TEST_CASE(Different_WidgetPath_WidgetPath_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),testNewWidgetsPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -581,48 +563,6 @@ BOOST_AUTO_TEST_CASE(Different_PluginPath_False_Path_Initialisation)
 }
 
 //--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument -x
-/// \result         No Error - the XPL is disactivated
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Disable_XPL_x_Initialisation)
-{
-   const char *argv[] = {"./TestLoader","-x"};
-
-   startupOptions::CLoader StartupOptions (2, argv);
-
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),false);
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-}
-
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument -disableXplHubStart
-/// \result         No Error - the XPL is disactivated
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Disable_XPL_disableXplHubStart_Initialisation)
-{
-   const char *argv[] = {"./TestLoader","--disableXplHubStart"};
-
-   startupOptions::CLoader StartupOptions (2, argv);
-
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),false);
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-}
-
-//--------------------------------------------------------------
 /// \brief	    Test startupOptions::CLoader with the argument port in configuration file
 /// \result         No Error - the port number is changed
 //--------------------------------------------------------------
@@ -639,7 +579,6 @@ BOOST_AUTO_TEST_CASE(Config_File_Port_Number)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -661,7 +600,6 @@ BOOST_AUTO_TEST_CASE(Config_File_Port_Number_Error1)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 
@@ -686,7 +624,6 @@ BOOST_AUTO_TEST_CASE(Config_File_database_file)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "AnOtherFile.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -709,7 +646,6 @@ BOOST_AUTO_TEST_CASE(Config_File_PluginsPath)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),testNewPluginPath);
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -732,29 +668,6 @@ BOOST_AUTO_TEST_CASE(Config_File_WidgetsPath)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),testNewWidgetsPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-}
-
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the argument disableXplHubStart in configuration file
-/// \result         No Error - the Xpl is off
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Config_File_XPL_Option)
-{
-   CTestConfigFile config;
-   config.writeSettings("disableXplHubStart", "false");
-
-   startupOptions::CLoader StartupOptions (0, NULL);
-
-   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
-   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
-   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
-   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
-   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),false);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -776,7 +689,6 @@ BOOST_AUTO_TEST_CASE(Config_File_getWebServerIPAddress)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.1");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -799,7 +711,6 @@ BOOST_AUTO_TEST_CASE(Config_File_webServerPath)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), testNewWebServerPath);
 }
@@ -821,7 +732,6 @@ BOOST_AUTO_TEST_CASE(Config_File_Log)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),true);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
@@ -843,7 +753,6 @@ BOOST_AUTO_TEST_CASE(Config_File_All_Options1)
    config.writeSettings("databaseFile"        , "test.db3");
    config.writeSettings("pluginsPath"         , testNewPluginPath);
    config.writeSettings("widgetsPath"         , testNewWidgetsPath);
-   config.writeSettings("disableXplHubStart"  , "false");
    config.writeSettings("webServerIp"         , "192.168.1.2");
    config.writeSettings("webServerPath"       , testNewWebServerPath);
 
@@ -854,7 +763,6 @@ BOOST_AUTO_TEST_CASE(Config_File_All_Options1)
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),testNewPluginPath);
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),testNewWidgetsPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),false);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.2");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), testNewWebServerPath);
 }
@@ -877,20 +785,18 @@ BOOST_AUTO_TEST_CASE(All_Options1)
       "--port","8085",
       "--databaseFile","test.db3",
       "--pluginsPath",testNewPluginPath.c_str(),
-      "--disableXplHubStart","false",
       "--webServerIp","192.168.1.3",
       "--webServerPath",testNewWebServerPath.c_str(),
       "--logLevel","warning"
    };
 
-   startupOptions::CLoader StartupOptions (17, argv);
+   startupOptions::CLoader StartupOptions (15, argv);
 
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::warning);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),testNewPluginPath);
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),testNewWidgetsPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),false);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.3");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), testNewWebServerPath);
 }
@@ -913,20 +819,18 @@ BOOST_AUTO_TEST_CASE(All_Options2)
       "-D","test.db3",
       "-P",testNewPluginPath.c_str(),
       "-W",testNewWidgetsPath.c_str(),
-      "-x","false",
       "-i","192.168.1.3",
       "-l","warning",
       "-w",testNewWebServerPath.c_str()
    };
 
-   startupOptions::CLoader StartupOptions (17, argv);
+   startupOptions::CLoader StartupOptions (15, argv);
 
    BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::warning);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8085);
    BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "test.db3");
    BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),testNewPluginPath);
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),testNewWidgetsPath);
-   BOOST_CHECK_EQUAL(StartupOptions.getStartXplHubFlag(),false);
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "192.168.1.3");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(),testNewWebServerPath);
 }

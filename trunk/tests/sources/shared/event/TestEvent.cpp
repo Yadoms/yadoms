@@ -233,7 +233,7 @@ void ThreadSender(shared::event::CEventHandler* receiver,int nbMessages)
 {
    for (int counter = 0 ; counter < nbMessages; counter++)
    {
-      receiver->sendEvent(Message1);
+      receiver->postEvent(Message1);
       listMessages.addToList(1);
    }
 }
@@ -244,7 +244,7 @@ void ThreadSenderWithMessages(shared::event::CEventHandler* receiver,int nbMessa
 
    for (int counter = 0 ; counter < nbMessages; counter++)
    {
-      receiver->sendEvent<eventData>(Message1,DataSent);
+      receiver->postEvent<eventData>(Message1,DataSent);
       listMessages.addToList(1);
    }
 }
@@ -255,15 +255,15 @@ void ThreadSenderWith5Messages(shared::event::CEventHandler* receiver,int nbMess
 
    for (int counter = 0 ; counter < nbMessages; counter++)
    {
-      receiver->sendEvent<eventData>(Message1,DataSent);
+      receiver->postEvent<eventData>(Message1,DataSent);
       listMessages.addToList(1);
-      receiver->sendEvent<eventData>(Message2,DataSent);
+      receiver->postEvent<eventData>(Message2,DataSent);
       listMessages.addToList(2);
-      receiver->sendEvent<eventData>(Message3,DataSent);
+      receiver->postEvent<eventData>(Message3,DataSent);
       listMessages.addToList(3);
-      receiver->sendEvent<eventData>(Message4,DataSent);
+      receiver->postEvent<eventData>(Message4,DataSent);
       listMessages.addToList(4);
-      receiver->sendEvent<eventData>(Message5,DataSent);
+      receiver->postEvent<eventData>(Message5,DataSent);
       listMessages.addToList(5);
    }
 }
@@ -273,7 +273,7 @@ void ThreadSenderWithMessagesString(shared::event::CEventHandler* receiver, int 
    std::string DataSent = "Hello World";
 
    for (int counter = 0 ; counter < nbMessages; counter++)
-      receiver->sendEvent<std::string>(Message1,DataSent);
+      receiver->postEvent<std::string>(Message1,DataSent);
 }
 
 void InitReceiverCounter()
@@ -468,7 +468,7 @@ BOOST_AUTO_TEST_CASE(Event_1_Frame_with_Data_Exception)
 {
    shared::event::CEventHandler evtHandler;
 
-   evtHandler.sendEvent<std::string>(Message1,"Hello World");
+   evtHandler.postEvent<std::string>(Message1,"Hello World");
    BOOST_REQUIRE_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), Message1);  // No wait
    BOOST_REQUIRE_THROW (evtHandler.getEventData<eventData>(),shared::exception::CBadConversion);
 }
@@ -530,7 +530,7 @@ BOOST_AUTO_TEST_CASE(Event_1_Frame_with_2_GetEventData)
    eventData DataSent;
    eventData DataReceived;
 
-   evtHandler.sendEvent<eventData>(Message1,DataSent);
+   evtHandler.postEvent<eventData>(Message1,DataSent);
    BOOST_REQUIRE_EQUAL (evtHandler.waitForEvents(boost::date_time::min_date_time), Message1);  // No wait
    BOOST_REQUIRE_NO_THROW ( DataReceived = evtHandler.getEventData<eventData>());
    BOOST_REQUIRE_EQUAL (DataReceived.isValid(), true);
@@ -548,7 +548,7 @@ BOOST_AUTO_TEST_CASE(Event_1_Frame_No_Data_GetData)
    shared::event::CEventHandler evtHandler;
    eventData DataReceived;
 
-   evtHandler.sendEvent(Message1);
+   evtHandler.postEvent(Message1);
    BOOST_REQUIRE_EQUAL (evtHandler.waitForEvents(boost::date_time::min_date_time), Message1);  // No wait
    BOOST_REQUIRE_THROW ( DataReceived = evtHandler.getEventData<eventData>(), shared::exception::CBadConversion);
 }
