@@ -92,8 +92,9 @@ std::vector<boost::filesystem::path> CManager::findPluginDirectories()
 boost::shared_ptr<CFactory> CManager::loadPlugin(const std::string& pluginName)
 {
    // Check if already loaded
-   if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
-      return m_loadedPlugins[pluginName];  // Plugin already loaded
+   PluginMap::const_iterator itLoadedPlugin = m_loadedPlugins.find(pluginName);
+   if (itLoadedPlugin != m_loadedPlugins.end())
+      return itLoadedPlugin->second;  // Plugin already loaded
 
    // Check if plugin is available
    if (m_availablePlugins.find(pluginName) == m_availablePlugins.end())
@@ -121,7 +122,8 @@ bool CManager::unloadPlugin(const std::string& pluginName)
       return false;  // No unload : plugin is still used by another instance
 
    // Signal qualifier that a plugin is about to be unloaded
-   m_qualifier->signalUnload(m_loadedPlugins[pluginName]->getInformation());
+   BOOST_ASSERT_MSG(m_loadedPlugins.find(pluginName) != m_loadedPlugins.end(), "pluginName is not loaded");
+   m_qualifier->signalUnload(m_loadedPlugins.find(pluginName)->second->getInformation());
 
    // Effectively unload plugin
    m_loadedPlugins.erase(pluginName);
@@ -238,15 +240,7 @@ void CManager::updateInstance(const database::entities::CPlugin& newData)
    m_pluginDBTable->updateInstance(newData);
 
    // Last, apply modifications
-   if (newData.AutoStart.isDefined() && previousData->AutoStart() != newData.AutoStart())
-   {
-      // Enable state was updated
-      if (newData.AutoStart())
-         startInstance(newData.Id());
-      else
-         stopInstance(newData.Id());
-   }
-   else if (newData.Configuration.isDefined()
+   if (newData.Configuration.isDefined()
       && previousData->Configuration() != newData.Configuration()) // No need to notify configuration if instance was enabled/disabled
    {
       // Configuration was updated, notify the instance, if running
