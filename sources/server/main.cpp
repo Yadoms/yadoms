@@ -15,7 +15,7 @@
 /*
 \brief Main application entry point
 */
-int main (int argc, char** argv)
+int main(int argc, char** argv)
 {
    try
    {

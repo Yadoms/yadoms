@@ -9,6 +9,7 @@
 #include <shared/DynamicLibrary.hpp>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/exception/NotSupported.hpp>
+#include <shared/exception/EmptyResult.hpp>
 
 
 namespace pluginSystem
@@ -37,6 +38,8 @@ CManager::~CManager()
 
 void CManager::start()
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
    // Initialize the plugin list (detect available plugins)
    updatePluginList();
 
@@ -51,6 +54,8 @@ void CManager::start()
 
 void CManager::stop()
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
    YADOMS_LOG(info) << "pluginSystem::CManager stop plugins...";
 
    while (!m_runningInstances.empty())
@@ -91,6 +96,8 @@ std::vector<boost::filesystem::path> CManager::findPluginDirectories()
 
 boost::shared_ptr<CFactory> CManager::loadPlugin(const std::string& pluginName)
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
    // Check if already loaded
    PluginMap::const_iterator itLoadedPlugin = m_loadedPlugins.find(pluginName);
    if (itLoadedPlugin != m_loadedPlugins.end())
@@ -112,6 +119,8 @@ boost::shared_ptr<CFactory> CManager::loadPlugin(const std::string& pluginName)
 
 bool CManager::unloadPlugin(const std::string& pluginName)
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
    PluginInstanceMap::const_iterator instance;
    for (instance = m_runningInstances.begin() ; instance != m_runningInstances.end() ; ++instance)
    {
@@ -133,6 +142,8 @@ bool CManager::unloadPlugin(const std::string& pluginName)
 
 void CManager::buildAvailablePluginList()
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
    // Empty the list
    m_availablePlugins.clear();
 
@@ -166,20 +177,22 @@ void CManager::buildAvailablePluginList()
 void CManager::updatePluginList()
 {
    // Plugin directory have change, so re-build plugin available list
-   boost::lock_guard<boost::mutex> lock(m_availablePluginsMutex);
    buildAvailablePluginList();
 }
 
 
 CManager::AvalaiblePluginMap CManager::getPluginList()
 {
-   boost::lock_guard<boost::mutex> lock(m_availablePluginsMutex);
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
    AvalaiblePluginMap mapCopy = m_availablePlugins;
    return mapCopy;
 }
 
 int CManager::getPluginQualityIndicator(const std::string& pluginName) const
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
    if (m_availablePlugins.find(pluginName) == m_availablePlugins.end())
       throw CInvalidPluginException(pluginName);   // Invalid plugin
 
@@ -188,6 +201,8 @@ int CManager::getPluginQualityIndicator(const std::string& pluginName) const
 
 int CManager::createInstance(const database::entities::CPlugin& data)
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
    // First step, record instance in database, to get its ID
    int instanceId = m_pluginDBTable->addInstance(data);
 
@@ -199,6 +214,8 @@ int CManager::createInstance(const database::entities::CPlugin& data)
 
 void CManager::deleteInstance(int id)
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
    try
    {
       // First step, disable and stop instance
@@ -214,18 +231,24 @@ void CManager::deleteInstance(int id)
    }
 }
 
-std::vector<boost::shared_ptr<database::entities::CPlugin> > CManager::getInstanceList () const
+std::vector<boost::shared_ptr<database::entities::CPlugin> > CManager::getInstanceList() const
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
    return m_pluginDBTable->getInstances();
 }
 
 boost::shared_ptr<database::entities::CPlugin> CManager::getInstance(int id) const
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
    return m_pluginDBTable->getInstance(id);
 }
 
 void CManager::updateInstance(const database::entities::CPlugin& newData)
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
    // Check for supported modifications
    if (!newData.Id.isDefined())
    {
@@ -304,14 +327,16 @@ boost::filesystem::path CManager::toPath(const std::string& pluginName) const
 
 void CManager::startInstance(int id)
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
    if (m_runningInstances.find(id) != m_runningInstances.end())
       return;     // Already started ==> nothing more to do
 
-   // Get instance informations from database
-   boost::shared_ptr<database::entities::CPlugin> databasePluginInstance(m_pluginDBTable->getInstance(id));
-
    try
    {
+      // Get instance informations from database
+      boost::shared_ptr<database::entities::CPlugin> databasePluginInstance(m_pluginDBTable->getInstance(id));
+
       // Load the plugin
       boost::shared_ptr<CFactory> plugin(loadPlugin(databasePluginInstance->Type()));
 
@@ -322,6 +347,11 @@ void CManager::startInstance(int id)
          m_qualifier, m_supervisor, m_pluginManagerEventId));
       m_runningInstances[databasePluginInstance->Id()] = pluginInstance;
    }
+   catch (shared::exception::CEmptyResult& e)
+   {
+      YADOMS_LOG(error) << "startInstance : unable to find plugin instance id " << id << " : " << e.what();
+      return;   	
+   }
    catch (CInvalidPluginException& e)
    {
       YADOMS_LOG(error) << "startInstance : " << e.what();   	
@@ -330,6 +360,8 @@ void CManager::startInstance(int id)
 
 void CManager::stopInstance(int id)
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
    if (m_runningInstances.find(id) == m_runningInstances.end())
       return;     // Already stopped ==> nothing more to do
 
@@ -345,11 +377,14 @@ void CManager::stopInstance(int id)
 
 bool CManager::isInstanceRunning(int id) const
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
    return m_runningInstances.find(id) != m_runningInstances.end();
 }
 
 void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> command)
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
    if (!isInstanceRunning(id))
       return;     // Instance is stopped, nothing to do
 
@@ -359,6 +394,8 @@ void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yadom
 
 void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<const shared::plugin::yadomsApi::IManuallyDeviceCreationData> data)
 {
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
    if (!isInstanceRunning(id))
       return;     // Instance is stopped, nothing to do
 
