@@ -9,7 +9,7 @@ BOOST_AUTO_TEST_SUITE(TestFakeSensor)
 
 static const std::string sensorId("MySensor");
 
-// Moke IInformation //TODO à exporter dans un autre fichier
+// Moke IInformation
 class CDefaultInformationMock : public shared::plugin::information::IInformation
 {
 public:
@@ -26,7 +26,7 @@ public:
    // [END] shared::plugin::IInformation implementation
 };
 
-// Moke IYadomsApi //TODO à exporter dans un autre fichier
+// Moke IYadomsApi
 namespace yApi = shared::plugin::yadomsApi;
 class CDefaultYadomsApiMock : public yApi::IYadomsApi
 {
