@@ -47,7 +47,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       print(context->getConfiguration());
 
       // Load configuration values (provided by database)
-      m_configuration.deserialize(context->getConfiguration().serialize());
+      m_configuration.initializeWith(context->getConfiguration());
 
       //start ioservice
       xplcore::CXplService xplService(m_xpl_gateway_id, "1", NULL);

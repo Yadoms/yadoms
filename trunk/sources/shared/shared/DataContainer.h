@@ -5,6 +5,7 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include "serialization/IDataSerializable.h"
 #include "serialization/IDataFileSerializable.h"
+#include "IDataContainable.h"
 
 namespace shared
 {
@@ -66,28 +67,6 @@ namespace shared
    ///
    ///
    //--------------------------------------------------------------
-   /*
-   class CDataContainer;
-
-   class YADOMS_SHARED_EXPORT IDataContainable
-   {
-   public:
-      virtual ~IDataContainable() { }
-
-      //--------------------------------------------------------------
-      /// \brief		Extract the data into a data container 
-      /// \return    The data container
-      //--------------------------------------------------------------
-      virtual const CDataContainer & extractContent() const = 0;
-
-      //--------------------------------------------------------------
-      /// \brief		Fill this object instance with a container
-      /// \param [in] initialData    Initial data for this container (will be deserialized)
-      //--------------------------------------------------------------
-      virtual void fillFromContent(const CDataContainer & initialData) = 0;
-   };
-   */
-
    class YADOMS_SHARED_EXPORT CDataContainer : public serialization::IDataSerializable, public serialization::IDataFileSerializable /*, public IDataContainable*/
    {
    public:
@@ -164,6 +143,25 @@ namespace shared
       template<class T>
       inline void set(const std::string& parameterName, const T & value);
 
+      //--------------------------------------------------------------
+      /// \brief	    Get a parameter value
+      /// \param [in]  parameterName    Name of the parameter
+      /// \param [out] toFill          The instance to fill
+      /// \return     
+      /// \throw      shared::exception::COutOfRange if parameter can not be converted
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
+      //--------------------------------------------------------------      
+      inline void getObject(const std::string& parameterName, IDataContainable * toFill) const;
+
+      //--------------------------------------------------------------
+      /// \brief	   Set parameter value
+      /// \param [in]  parameterName    Name of the parameter
+      /// \param [in]  value          The value container
+      /// \return     
+      /// \throw      shared::exception::COutOfRange if parameter can not be converted
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
+      //--------------------------------------------------------------      
+      inline void setObject(const std::string& parameterName, IDataContainable * value);
 
       //--------------------------------------------------------------
       //
@@ -283,8 +281,8 @@ namespace shared
       // [END] IDataFileSerializable implementation
 
       // IDataContainable implementation
-      //virtual const CDataContainer & extractContent() const;
-      //virtual void fillFromContent(const CDataContainer & initialData);
+      virtual void extractContent(CDataContainer &) const;
+      virtual void fillFromContent(const CDataContainer & initialData);
       // [END] IDataContainable implementation
 
 
@@ -384,7 +382,7 @@ namespace shared
          static T getInternal(const CDataContainer * tree, const std::string& parameterName, const T & defaultValue)
          {
             if (tree->hasValue(parameterName))
-               return tree->getInternal<T>(defaultValue);
+               return tree->getInternal<T>(parameterName);
             return defaultValue;
          }
          
@@ -495,17 +493,14 @@ namespace shared
          throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
       }
    }
-   /*
-   template<>
-   inline IDataContainable CDataContainer::getInternal(const std::string& parameterName) const
-   {
-      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+   
 
+   inline void CDataContainer::getObject(const std::string& parameterName, IDataContainable * toFill) const
+   {
       try
       {
-         CDataContainer dc;
-         dc.m_tree = m_tree.get_child(parameterName);
-         return IDataContainable::createFromContainer(dc);
+         CDataContainer t2 = getInternal<CDataContainer>(parameterName);
+         toFill->fillFromContent(t2);
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
@@ -515,9 +510,30 @@ namespace shared
       {
          throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
       }
-   }*/
+   }
+
+   inline void CDataContainer::setObject(const std::string& parameterName, IDataContainable * value)
+   {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+      try
+      {
+         CDataContainer subTree;
+         value->extractContent(subTree);
 
 
+         m_tree.add_child(parameterName, subTree.m_tree);
+      }
+      catch (boost::property_tree::ptree_bad_path& e)
+      {
+         throw exception::CInvalidParameter(parameterName + " : " + e.what());
+      }
+      catch (boost::property_tree::ptree_bad_data& e)
+      {
+         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
+      }
+   }
+   
 
 
    template<class T>
@@ -583,7 +599,10 @@ namespace shared
       {
          throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
       }
-   }
+   }  
+   
+   
+
 
    template<class T>
    inline void CDataContainer::setValuesInternal(const std::string& parameterName, const std::vector<T> & values)
