@@ -63,7 +63,7 @@ protected:
    /// \brief	                     Handler called when connect retry timer expires
    /// \param[in] error             Error code (should be 0)
    //--------------------------------------------------------------
-   void reconnectTimerHandler(const boost::system::error_code& error);//TODO commenter
+   void reconnectTimerHandler(const boost::system::error_code& error);
 
    //--------------------------------------------------------------
    /// \brief	Wait for something to read on the port

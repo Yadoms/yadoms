@@ -226,19 +226,19 @@ void CTransceiver::historize(boost::shared_ptr<yApi::IYadomsApi> context, const 
 {
    const RBUF * const buf = reinterpret_cast<const RBUF* const>(data.content());
 
+   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> sensorMessage;
    switch(buf->RXRESPONSE.packettype)
    {
-   case pTypeLighting1:
-      {
-         rfxcomMessages::CLighting1 sensorMessage(*buf);
-         sensorMessage.historizeData(context);
-         break;
-      }
+   case pTypeLighting1:sensorMessage.reset(new rfxcomMessages::CLighting1(*buf)); break;
+   case pTypeLighting3:sensorMessage.reset(new rfxcomMessages::CLighting3(*buf)); break;
+   case pTypeLighting6:sensorMessage.reset(new rfxcomMessages::CLighting6(*buf)); break;
+   case pTypeCurtain:sensorMessage.reset(new rfxcomMessages::CCurtain1(*buf)); break;
       // TODO à compléter
    default:
       {
          YADOMS_LOG(error) << "Invalid RfxCom message received, unknown packet type " << std::fixed << std::setprecision(2) << std::hex << buf->RXRESPONSE.packettype;
-         break;
+         return;
       }
    }
+   sensorMessage->historizeData(context);
 }
