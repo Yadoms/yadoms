@@ -1,7 +1,0 @@
-
-
-# List subdirectories here
-add_subdirectory(configuration)
-
-
-set (YADOMS_TESTS_SRC ${YADOMS_TESTS_SRC} PARENT_SCOPE)
