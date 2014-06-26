@@ -29,7 +29,7 @@ namespace shared
 
    CDataContainer & CDataContainer::operator =(const CDataContainer & rhs)
    {
-      m_tree = rhs.m_tree;
+      initializeWith(rhs);
       return *this;
    }
 
@@ -42,52 +42,16 @@ namespace shared
 
    bool CDataContainer::hasValue(const std::string& parameterName) const
    {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
       boost::optional<const boost::property_tree::ptree&> value = m_tree.get_child_optional(parameterName);
       return !!value;
    }
 
-   /*
-   void CDataContainer::get(const std::string& parameterName, IDataContainable & toFill) const
-   {
-      boost::lock_guard<boost::mutex> lock(m_treeMutex);
-
-      try
-      {
-         CDataContainer dc;
-         dc.m_tree = m_tree.get_child(parameterName);
-         toFill.deserializeFromContainer(dc);
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
-   }
-
-   void CDataContainer::set(const std::string& parameterName, const IDataContainable & toFill)
-   {
-      boost::lock_guard<boost::mutex> lock(m_treeMutex);
-
-      try
-      {
-         m_tree.add_child(parameterName, toFill.serializeInContainer().m_tree);
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
-   }
-   */
-
    std::string CDataContainer::serialize() const
    {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
       std::ostringstream buf;
       boost::property_tree::json_parser::write_json(buf, m_tree, false);
       return buf.str();
@@ -95,6 +59,8 @@ namespace shared
 
    void CDataContainer::deserialize(const std::string & data)
    {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
       m_tree.clear();
 
       if (data.empty())
@@ -113,11 +79,15 @@ namespace shared
 
    void CDataContainer::serializeToFile(const std::string & filename) const
    {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
       boost::property_tree::json_parser::write_json(filename, m_tree);
    }
 
    void CDataContainer::deserializeFromFile(const std::string & file)
    {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
       m_tree.clear();
 
       try
@@ -130,17 +100,17 @@ namespace shared
       }
    }
 
-   /*
-   const CDataContainer & CDataContainer::extractContent() const
+   void CDataContainer::extractContent(CDataContainer & container) const
    {
-      return *this;
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+      container.m_tree = m_tree;
    }
 
    void CDataContainer::fillFromContent(const CDataContainer & initialData)
    {
       initializeWith(initialData);
    }
-   */
+
 
 
 
@@ -163,6 +133,7 @@ namespace shared
 
    bool CDataContainer::empty() const
    {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
       return m_tree.empty();
    }
 

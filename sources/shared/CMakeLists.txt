@@ -16,6 +16,7 @@ set(SHARED_LIB_SRC
 	shared/StringExtension.h
 	shared/StringExtension.cpp	
 	
+	shared/IDataContainable.h
 	shared/DataContainer.h
 	shared/DataContainer.cpp
 	shared/serialization/IDataSerializable.h

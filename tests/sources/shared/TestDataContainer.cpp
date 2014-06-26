@@ -8,7 +8,7 @@
 BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
 
-/*
+
 enum EEnumType
 {
    kEnumValue1 = 7,
@@ -16,11 +16,11 @@ enum EEnumType
    kEnumValue3
 };
 
-static const shared::plugin::configuration::CConfiguration::EnumValuesNames EEnumTypeNames = boost::assign::map_list_of
+static const shared::CDataContainer::EnumValuesNames EEnumTypeNames = boost::assign::map_list_of
    ("EnumValue1", kEnumValue1)
    ("EnumValue2", kEnumValue2)
    ("EnumValue3", kEnumValue3);
-*/
+
 
 BOOST_AUTO_TEST_CASE(SimpleContainer)
 {
@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_CASE(SimpleContainer)
    
    dc.set<bool>("BoolParameter", true);
    dc.set<double>("DecimalParameter", 18.4);
-   //dc.set<std::string>("EnumParameter", kEnumValue1);
+   dc.set<std::string>("EnumParameter", "EnumValue1");
    dc.set<int>("IntParameter", 42);
    dc.set<std::string>("Serial port", "tty0");
    dc.set<std::string>("StringParameter", "Yadoms is so powerful !");
@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE(SimpleContainer)
 
    BOOST_CHECK_EQUAL(dc.get<bool>("BoolParameter"), true);
    BOOST_CHECK_EQUAL(dc.get<double>("DecimalParameter"), 18.4);
-   //BOOST_CHECK_EQUAL(dc.getEnumValue<EEnumType>("EnumParameter", EEnumTypeNames), kEnumValue1);
+   BOOST_CHECK_EQUAL(dc.getEnumValue<EEnumType>("EnumParameter", EEnumTypeNames), kEnumValue1);
    BOOST_CHECK_EQUAL(dc.get<int>("IntParameter"), 42);
    BOOST_CHECK_EQUAL(dc.get<std::string>("Serial port"), "tty0");
    BOOST_CHECK_EQUAL(dc.get<std::string>("StringParameter"), "Yadoms is so powerful !");
@@ -108,6 +108,7 @@ BOOST_AUTO_TEST_CASE(Serialization)
    BOOST_CHECK_EQUAL(cfg.get<bool>("BoolParameter"), true);
    BOOST_CHECK_EQUAL(cfg.get<double>("DecimalParameter"), 18.4);
    BOOST_CHECK_EQUAL(cfg.get<int>("IntParameter"), 42);
+   BOOST_CHECK_EQUAL(cfg.getEnumValue<EEnumType>("EnumParameter", EEnumTypeNames), kEnumValue1);
    BOOST_CHECK_EQUAL(cfg.get<std::string>("Serial port"), "tty0");
    BOOST_CHECK_EQUAL(cfg.get<std::string>("StringParameter"), "Yadoms is so powerful !");
    BOOST_CHECK_EQUAL(cfg.get<int>("MySection.SubIntParameter"), 123);
@@ -122,6 +123,52 @@ BOOST_AUTO_TEST_CASE(Serialization)
    str2.erase(std::remove_if(str2.begin(), str2.end(), boost::is_any_of(" \t\n\r")), str2.end());
 
    BOOST_CHECK_EQUAL(str, str2);
+}
+
+
+class CTestClass : public shared::IDataContainable
+{
+public:
+   CTestClass()
+      :m_aIntValue(0), m_dValue(0), m_sValue("")
+   {
+
+   }
+   CTestClass(int i, double d, std::string s)
+      :m_aIntValue(i), m_dValue(d), m_sValue(s)
+   {
+
+   }
+
+   virtual void extractContent(shared::CDataContainer & cont) const
+   {
+      cont.set("Value1", m_aIntValue);
+      cont.set("Value2", m_dValue);
+      cont.set("Value3", m_sValue);
+   }
+
+   virtual void fillFromContent(const shared::CDataContainer & initialData)
+   {
+      m_aIntValue = initialData.get<int>("Value1");
+      m_dValue = initialData.get<double>("Value2");
+      m_sValue = initialData.get<std::string>("Value3");
+   }
+
+   int m_aIntValue;
+   double m_dValue;
+   std::string m_sValue;
+};
+
+BOOST_AUTO_TEST_CASE(DataContainable)
+{
+   CTestClass obj(1, 42.0, "test de datacontainble");
+   shared::CDataContainer cont;
+   cont.setObject("myobject", &obj);
+
+   CTestClass result;
+   cont.getObject("myobject", &result);
+
+   BOOST_CHECK_EQUAL(obj.m_aIntValue, result.m_aIntValue);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
