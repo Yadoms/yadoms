@@ -246,7 +246,14 @@ namespace shared
       /// \param [in] rhs  The container to copy
       /// \return   Reference to this instance
       //--------------------------------------------------------------
-      CDataContainer & operator=(const CDataContainer &rhs);
+      CDataContainer & operator=(const CDataContainer &rhs);   
+      
+      //--------------------------------------------------------------
+      /// \brief		Affectation operator
+      /// \param [in] rhs  A serialized string
+      /// \return   Reference to this instance
+      //--------------------------------------------------------------
+      CDataContainer & operator=(const std::string &rhs);
 
       //--------------------------------------------------------------
       /// \brief		Check if the container is empty

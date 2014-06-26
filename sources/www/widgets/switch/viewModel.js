@@ -59,9 +59,9 @@ function SwitchViewModel() {
       }
 
       //we ask for device information
-      if (!isNullOrUndefined(this.widget.configuration.device)) {
+      if (!isNullOrUndefined(this.widget.configuration.device.deviceId)) {
          var self = this;
-         $.getJSON("rest/device/" + this.widget.configuration.device)
+         $.getJSON("rest/device/" + this.widget.configuration.device.deviceId)
             .done(function( data ) {
                //we parse the json answer
                if (data.result != "true")

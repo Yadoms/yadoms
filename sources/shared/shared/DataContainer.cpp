@@ -33,6 +33,13 @@ namespace shared
       return *this;
    }
 
+
+   CDataContainer & CDataContainer::operator=(const std::string &rhs)
+   {
+      deserialize(rhs);
+      return *this;
+   }
+
    bool CDataContainer::hasValue(const std::string& parameterName) const
    {
       boost::optional<const boost::property_tree::ptree&> value = m_tree.get_child_optional(parameterName);

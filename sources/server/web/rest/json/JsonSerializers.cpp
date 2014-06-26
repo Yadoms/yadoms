@@ -16,7 +16,7 @@ namespace web { namespace rest { namespace json {
       ((Configuration)("configuration")JSON_PTREE)
       ((AutoStart)("autoStart")JSON_BOOL)
    )
-
+  
    DECLARE_JSON_ENTITY_IMPLEMENTATION(Configuration,  "Configuration",
       ((Section)("section")JSON_STRING)
       ((Name)("name")JSON_STRING)

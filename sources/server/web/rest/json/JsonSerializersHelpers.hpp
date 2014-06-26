@@ -171,7 +171,7 @@
 #define JSON_BOOL (bool)(JSON_NO_CONV)(JSON_NO_CONV)(JSON_TREAD_AS_VALUE)
 #define JSON_DATE (std::string)(JSON_FROM_DATE)(JSON_TO_DATE)(JSON_TREAD_AS_VALUE)
 #define JSON_STRING (std::string)(JSON_NO_CONV)(JSON_NO_CONV)(JSON_TREAD_AS_VALUE)
-#define JSON_PTREE (std::string)(JSON_NO_CONV)(JSON_NO_CONV)(JSON_TREAD_AS_CHILD)
+#define JSON_PTREE (shared::CDataContainer)(JSON_NO_CONV)(JSON_NO_CONV)(JSON_TREAD_AS_CHILD)
 #define JSON_ENUM(_e) (int)((_e))((int))(JSON_TREAD_AS_VALUE)
 
 //-------------------------------------------------------
