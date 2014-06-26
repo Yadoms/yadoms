@@ -65,7 +65,7 @@ namespace database { namespace sqlite { namespace requesters {
       {
          // Plugin not found
          std::string sEx = (boost::format("Plugin Id %1% not found in database") % pluginId).str(); 
-         throw shared::exception::CException(sEx);
+         throw shared::exception::CEmptyResult(sEx);
       }
       return adapter.getResults().at(0);
    }

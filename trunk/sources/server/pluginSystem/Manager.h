@@ -202,9 +202,13 @@ namespace pluginSystem
 
    private:
       //--------------------------------------------------------------
-      /// \brief			The available plugin map and its mutex
+      /// \brief			The plugin manager mutex
       //--------------------------------------------------------------
-      boost::mutex m_availablePluginsMutex;
+      mutable boost::recursive_mutex m_mutex;
+
+      //--------------------------------------------------------------
+      /// \brief			The available plugin map
+      //--------------------------------------------------------------
       AvalaiblePluginMap m_availablePlugins;
 
       //--------------------------------------------------------------

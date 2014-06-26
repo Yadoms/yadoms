@@ -20,7 +20,7 @@ namespace database {
       /// \brief           Get plugin instance informations
       /// \param [in] pluginId   Plugin plugin instance Id
       /// \return          Plugin instance informations
-      /// \throw           CInvalidParameterException if pluginId is unknown
+      /// \throw           shared::exception::CEmptyResult if pluginId is unknown
       //--------------------------------------------------------------
       virtual boost::shared_ptr<entities::CPlugin> getInstance(int pluginId) = 0;
 
