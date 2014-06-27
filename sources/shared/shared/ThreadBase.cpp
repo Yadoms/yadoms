@@ -9,7 +9,7 @@ const int CThreadBase::DefaultStopTimeoutSeconds = 100;
 
 
 CThreadBase::CThreadBase(const std::string & threadName, const bool bRethrowDoWorkExceptions)
-   :m_threadName(threadName), m_stopTimeoutSeconds(DefaultStopTimeoutSeconds), m_bRethrowDoWorkExceptions(bRethrowDoWorkExceptions)
+   :m_threadName(threadName), m_stopTimeoutSeconds(DefaultStopTimeoutSeconds), m_bRethrowDoWorkExceptions(bRethrowDoWorkExceptions), m_stopping(false)
 {
 	BOOST_ASSERT(threadName != "");
 }
@@ -50,6 +50,7 @@ bool CThreadBase::stop()
 
 void CThreadBase::requestToStop()
 {
+   m_stopping = true;
    m_thread->interrupt();
 }
 
@@ -71,6 +72,7 @@ bool CThreadBase::waitForStop(int seconds)
       // no timeout specified
       m_thread->join();
       stopped = true;
+      m_stopping = false;
    }
 
    return stopped;
@@ -78,7 +80,9 @@ bool CThreadBase::waitForStop(int seconds)
 
 bool CThreadBase::isStopping() const
 {
-   return m_thread->interruption_requested();
+   // m_thread->interruption_requested() is not enough, as it returns false as soon as boost::thread_interrupted was catched,
+   // that can be do in user-code.
+   return m_thread->interruption_requested() || m_stopping;
 }
 
 void CThreadBase::doWorkInternal()

@@ -125,6 +125,11 @@ namespace shared
       /// \brief			Indicate if exception of doWork are rethrown
       //--------------------------------------------------------------
       bool m_bRethrowDoWorkExceptions;
+
+      //--------------------------------------------------------------
+      /// \brief			Thread stopping state
+      //--------------------------------------------------------------
+      bool m_stopping;
    };
 
 } // namespace shared
