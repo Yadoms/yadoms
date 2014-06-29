@@ -35,11 +35,11 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
    try
    {
       YADOMS_LOG(debug) << "CWindowsSystemInformation is starting...";
-//TODO : Doit être remis complètement
+
       CWindowsSystemMemoryLoad    MemoryLoad   ("MemoryLoad");
       CWindowsSystemCPULoad       CPULoad      ("CPULoad");
       CWindowsSystemYadomsCPULoad YadomsCPULoad("YadomsCPULoad");
-      //TODO : Pas besoin d'identifiant pour celui-ci
+      
       CWindowsSystemDisksList     DisksList;
 
       CPULoad.declareDevice(context);
