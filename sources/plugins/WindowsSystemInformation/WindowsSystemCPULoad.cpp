@@ -76,7 +76,7 @@ void CWindowsSystemCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> co
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
    
-   context->historizeData(m_deviceId, "LoadWindowsCPU"  , m_CPULoad);
+   context->historizeData(m_deviceId, "WindowsCPULoad"  , m_CPULoad);
 }
 
 double CWindowsSystemCPULoad::getValue() /*const*/
