@@ -118,7 +118,8 @@ void CSerialPort::flush()
       //TODO attendre l'ack du cancel ?
    }
 
-   receive();
+//TODO revoir : le receive est bloquant si rien à recevoir
+//   receive();
 
    // Restart listening on the port if corresponding notifications are enabled
    if (m_receiveDataSubscription.hasSubscription())

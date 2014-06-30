@@ -42,7 +42,7 @@ const CByteBuffer CLighting3::encode(boost::shared_ptr<ISequenceNumberProvider> 
    RBUF buffer;
    MEMCLEAR(buffer.LIGHTING3);
 
-   buffer.LIGHTING3.packetlength = (BYTE)LIGHTING3_size - sizeof(buffer.LIGHTING3.packetlength);
+   buffer.LIGHTING3.packetlength = ENCODE_PACKET_LENGTH(LIGHTING3);
    buffer.LIGHTING3.packettype = pTypeLighting3;
    buffer.LIGHTING3.subtype = m_subType;
    buffer.LIGHTING3.seqnbr = seqNumberProvider->next();

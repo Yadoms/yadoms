@@ -34,10 +34,12 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                           Create a transceiver instance
+   /// \param[in] configuration           Plugin instance configuration (contains the serial port)
    /// \param[in] port                    Port used to exchange messages
    /// \return                            The created transceiver
    //--------------------------------------------------------------
    static boost::shared_ptr<ITransceiver> constructTransceiver(
+      const IRfxcomConfiguration& configuration,
       boost::shared_ptr<IPort> port);
 
    //--------------------------------------------------------------

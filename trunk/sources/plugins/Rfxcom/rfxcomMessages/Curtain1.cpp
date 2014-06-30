@@ -41,7 +41,7 @@ const CByteBuffer CCurtain1::encode(boost::shared_ptr<ISequenceNumberProvider> s
    RBUF buffer;
    MEMCLEAR(buffer.CURTAIN1);
 
-   buffer.CURTAIN1.packetlength = (BYTE)CURTAIN1_size - sizeof(buffer.CURTAIN1.packetlength);
+   buffer.CURTAIN1.packetlength = ENCODE_PACKET_LENGTH(CURTAIN1);
    buffer.CURTAIN1.packettype = pTypeCurtain;
    buffer.CURTAIN1.subtype = m_subType;
    buffer.CURTAIN1.seqnbr = seqNumberProvider->next();

@@ -26,9 +26,9 @@ boost::shared_ptr<IPort> CRfxcomFactory::constructPort(
    return port;
 }
 
-boost::shared_ptr<ITransceiver> CRfxcomFactory::constructTransceiver(boost::shared_ptr<IPort> port)
+boost::shared_ptr<ITransceiver> CRfxcomFactory::constructTransceiver(const IRfxcomConfiguration& configuration, boost::shared_ptr<IPort> port)
 {
-   boost::shared_ptr<ITransceiver> transceiver(new CTransceiver(port));
+   boost::shared_ptr<ITransceiver> transceiver(new CTransceiver(configuration, port));
    return transceiver;
 }
 
