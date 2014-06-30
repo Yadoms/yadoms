@@ -39,13 +39,13 @@ namespace xplrules { namespace rfxLanXpl {
    {
       std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
 
-      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordCommand, yApi::CStandardCapacities::Switch, yApi::IYadomsApi::kWriteOnly, shared::plugin::yadomsApi::IYadomsApi::kNoData, shared::CStringExtension::EmptyString, m_keywordCommandValues)));
+      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordCommand, yApi::CStandardCapacities::Switch, yApi::kWriteOnly, shared::plugin::yadomsApi::kNoData, shared::CStringExtension::EmptyString, m_keywordCommandValues)));
       
 
       shared::CDataContainer details;
       details.set("min", 0);
       details.set("max", 15);
-      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordLevel, m_keywordLevel, shared::plugin::yadomsApi::IYadomsApi::kReadWrite, shared::plugin::yadomsApi::IYadomsApi::kInteger, shared::CStringExtension::EmptyString, details)));
+      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordLevel, m_keywordLevel, shared::plugin::yadomsApi::kReadWrite, shared::plugin::yadomsApi::kInteger, shared::CStringExtension::EmptyString, details)));
 
       return keywords;
    }
