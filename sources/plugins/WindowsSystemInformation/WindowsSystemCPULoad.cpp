@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "WindowsSystemCPULoad.h"
+#include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
@@ -54,7 +55,8 @@ CWindowsSystemCPULoad::~CWindowsSystemCPULoad()
       std::stringstream Message; 
       Message << "PdhCloseQuery failed with status:"; 
       Message << GetLastError();
-      throw shared::exception::CException ( Message.str() );
+
+      YADOMS_LOG(debug) << Message;
    }
 }
 
