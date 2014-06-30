@@ -32,7 +32,7 @@ class CDefaultYadomsApiMock : public yApi::IYadomsApi
 {
 public:
    struct Device { std::string m_model; std::string m_details; };
-   struct Keyword { std::string m_device; std::string m_capacity; EKeywordAccessMode m_accessMode; EKeywordType m_type; std::string m_units; shared::CDataContainer m_details; };
+   struct Keyword { std::string m_device; std::string m_capacity; yApi::EKeywordAccessMode m_accessMode; yApi::EKeywordType m_type; std::string m_units; shared::CDataContainer m_details; };
    struct Data { std::string m_device; std::string m_keyword; std::string m_value; };
 public:
    virtual ~CDefaultYadomsApiMock() {}
@@ -42,8 +42,10 @@ public:
    virtual const std::string getDeviceDetails(const std::string& device) const { return m_devices.find(device)->second.m_details; }
    virtual bool declareDevice(const std::string& device, const std::string& model, const std::string & details) { Device dev = {model, details}; m_devices[device] = dev; return true; }
    virtual bool keywordExists(const std::string& device, const std::string& keyword) const { return false; }
-   virtual bool declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, EKeywordType type, const std::string & units = shared::CStringExtension::EmptyString, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer)
+   virtual bool declareCustomKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, yApi::EKeywordAccessMode accessMode, yApi::EKeywordType type, const std::string & units = shared::CStringExtension::EmptyString, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer)
    { Keyword kw = { device, capacity, accessMode, type, units, details }; m_keywords[keyword] = kw; return true; }
+   virtual bool declareKeyword(const std::string& device, const std::string& keyword, const yApi::CStandardCapacity & capacity, const shared::CDataContainer& details)
+   { Keyword kw = { device, capacity.getName(), capacity.getAccessMode(), capacity.getType(), capacity.getUnit(), details }; m_keywords[keyword] = kw; return true; }
    virtual void historizeData(const std::string & device, const std::string & keyword, const std::string & value) { Data data = {device, keyword, value}; m_data.push_back(data); }
    virtual void historizeData(const std::string & device, const std::string & keyword, bool value) { Data data = {device, keyword, boost::lexical_cast<std::string>(value)}; m_data.push_back(data); }
    virtual void historizeData(const std::string & device, const std::string & keyword, int value) { Data data = {device, keyword, boost::lexical_cast<std::string>(value)}; m_data.push_back(data); }
@@ -65,8 +67,8 @@ protected:
    std::vector<Data> m_data;
 };
 
-void ckeckKeyword(boost::shared_ptr<CDefaultYadomsApiMock> context, const std::string& keyword, const std::string& device, const std::string& capacity, yApi::IYadomsApi::EKeywordAccessMode accessMode,
-   yApi::IYadomsApi::EKeywordType type, const std::string& units)
+void ckeckKeyword(boost::shared_ptr<CDefaultYadomsApiMock> context, const std::string& keyword, const std::string& device, const std::string& capacity, yApi::EKeywordAccessMode accessMode,
+   yApi::EKeywordType type, const std::string& units)
 {
    std::map<std::string, CDefaultYadomsApiMock::Keyword>::const_iterator itKw = context->getKeywords().find(keyword);
    if (itKw == context->getKeywords().end())
@@ -95,10 +97,10 @@ BOOST_AUTO_TEST_CASE(DeviceDeclaration)
 
    // Check keywords declaration
    BOOST_CHECK_EQUAL(context->getKeywords().size(), (unsigned int)4);
-   ckeckKeyword(context, "temp1", sensorId, yApi::CStandardCapacities::Temperature, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kDecimal, shared::CStringExtension::EmptyString);
-   ckeckKeyword(context, "temp2", sensorId, yApi::CStandardCapacities::Temperature, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kDecimal, shared::CStringExtension::EmptyString);
-   ckeckKeyword(context, "battery", sensorId, yApi::CStandardCapacities::BatteryLevel, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kDecimal, shared::CStringExtension::EmptyString);
-   ckeckKeyword(context, "rssi", sensorId, yApi::CStandardCapacities::Rssi, yApi::IYadomsApi::kReadOnly, yApi::IYadomsApi::kDecimal, shared::CStringExtension::EmptyString);
+   ckeckKeyword(context, "temp1", sensorId, yApi::CStandardCapacities::Temperature, yApi::kReadOnly, yApi::kDecimal, shared::CStringExtension::EmptyString);
+   ckeckKeyword(context, "temp2", sensorId, yApi::CStandardCapacities::Temperature, yApi::kReadOnly, yApi::kDecimal, shared::CStringExtension::EmptyString);
+   ckeckKeyword(context, "battery", sensorId, yApi::CStandardCapacities::BatteryLevel, yApi::kReadOnly, yApi::kDecimal, shared::CStringExtension::EmptyString);
+   ckeckKeyword(context, "rssi", sensorId, yApi::CStandardCapacities::Rssi, yApi::kReadOnly, yApi::kDecimal, shared::CStringExtension::EmptyString);
 }
 
 const CDefaultYadomsApiMock::Data& readLastData(boost::shared_ptr<CDefaultYadomsApiMock> context, const std::string& keyword)
