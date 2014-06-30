@@ -93,7 +93,7 @@ void CLinuxSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> context
 
                      for(DisksListIterator=TempList.begin(); DisksListIterator!=TempList.end(); DisksListIterator++)
 	                  {
-                        CWindowsSystemDiskUsage DiskUsage("DiskUsage", *DisksListIterator);
+                        CLinuxSystemDiskUsage DiskUsage("DiskUsage", *DisksListIterator);
 
                         ss3 << std::fixed << std::setprecision(2) << DiskUsage.getValue();
 

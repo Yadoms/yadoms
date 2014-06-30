@@ -23,7 +23,7 @@ void CLinuxSystemDiskUsage::declareDevice(boost::shared_ptr<yApi::IYadomsApi> co
    context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
 
    // Declare associated keywords (= values managed by this device)
-   context->declareKeyword(m_deviceId, "LinuxDiskUsage", "DiskUsage", yApi::IYadomsApi::kReadOnly , yApi::IYadomsApi::kDecimal, shared::plugin::yadomsApi::CStandardUnits::Percent);
+   //context->declareKeyword(m_deviceId, "LinuxDiskUsage", "DiskUsage", yApi::IYadomsApi::kReadOnly , yApi::IYadomsApi::kDecimal, shared::plugin::yadomsApi::CStandardUnits::Percent);
 }
 
 void CLinuxSystemDiskUsage::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

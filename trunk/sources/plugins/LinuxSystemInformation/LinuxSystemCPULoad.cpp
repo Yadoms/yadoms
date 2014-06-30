@@ -4,12 +4,12 @@
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
-LinuxSystemCPULoad::CLinuxSystemCPULoad(const std::string & deviceId)
+CLinuxSystemCPULoad::CLinuxSystemCPULoad(const std::string & deviceId)
    :m_deviceId(deviceId), m_CPULoad(0)
 {
 }
 
-LinuxSystemCPULoad::~CLinuxSystemCPULoad()
+CLinuxSystemCPULoad::~CLinuxSystemCPULoad()
 {
 }
 
@@ -24,7 +24,7 @@ void CLinuxSystemCPULoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> cont
    context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
 
    // Declare associated keywords (= values managed by this device)
-   context->declareKeyword(m_deviceId, "LinuxCPULoad"  , "cpuload", yApi::IYadomsApi::kReadOnly , yApi::IYadomsApi::kDecimal, shared::plugin::yadomsApi::CStandardUnits::Percent);
+   //context->declareKeyword(m_deviceId, "LinuxCPULoad"  , "cpuload", yApi::IYadomsApi::kReadOnly , yApi::IYadomsApi::kDecimal, shared::plugin::yadomsApi::CStandardUnits::Percent);
 }
 
 void CLinuxSystemCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
