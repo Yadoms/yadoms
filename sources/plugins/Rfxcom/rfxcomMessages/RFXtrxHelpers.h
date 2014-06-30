@@ -17,6 +17,7 @@ typedef unsigned char BYTE;
 
 // Structures are defined as it is difficult to get size of each message.
 // Here is an workaround to get size of each message.
+extern const std::size_t ICMND_size;
 extern const std::size_t IRESPONSE_size;
 extern const std::size_t RXRESPONSE_size;
 extern const std::size_t LIGHTING1_size;
@@ -26,3 +27,6 @@ extern const std::size_t LIGHTING4_size;
 extern const std::size_t LIGHTING5_size;
 extern const std::size_t LIGHTING6_size;
 extern const std::size_t CURTAIN1_size;
+
+// Macro helper to encode length (length = packet size except the packet byte)
+#define ENCODE_PACKET_LENGTH(packet)((BYTE)packet##_size - 1)

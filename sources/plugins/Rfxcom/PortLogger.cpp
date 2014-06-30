@@ -26,7 +26,7 @@ std::string CPortLogger::msgToString(const CByteBuffer& data) const
 {
    std::ostringstream ss;
    for (size_t idx = 0 ; idx < data.size() ; ++ idx)
-      ss << std::fixed << std::setprecision(2) << std::hex << data.content()[idx] << " ";
+      ss << std::setfill('0') << std::setw(sizeof(CByteBuffer::value_type) * 2) << std::hex << (int)(data.content()[idx]) << " ";
 
    return ss.str();
 }

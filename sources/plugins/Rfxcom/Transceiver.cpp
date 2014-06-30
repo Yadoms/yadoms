@@ -11,8 +11,8 @@
 #include "PortException.hpp"
 
 
-CTransceiver::CTransceiver(boost::shared_ptr<IPort> port)
-   :m_port(port), m_seqNumberProvider(new CIncrementSequenceNumber())
+CTransceiver::CTransceiver(const IRfxcomConfiguration& configuration, boost::shared_ptr<IPort> port)
+   :m_configuration(configuration), m_port(port), m_seqNumberProvider(new CIncrementSequenceNumber())
 {
 }
 
@@ -32,6 +32,13 @@ void CTransceiver::processReset()
       boost::this_thread::sleep(boost::posix_time::milliseconds(50));
       m_port->flush();
       requestStatus();
+
+      //TODO
+      //if (activeProtocols != m_configuration.getActiveProtocols())
+      //{
+      //   // Update active protocols list
+      //   m_port->send(buildRfxcomCommand(cmdSETMODE, m_configuration.getActiveProtocols()));
+      //}
    }
    catch (CPortException& e)
    {
@@ -44,7 +51,7 @@ CByteBuffer CTransceiver::buildRfxcomCommand(unsigned char command)
    RBUF request;
    MEMCLEAR(request.ICMND);   // For better performance, just clear the needed sub-structure of RBUF
 
-   request.ICMND.packetlength = sizeof(request.ICMND);
+   request.ICMND.packetlength = ENCODE_PACKET_LENGTH(ICMND);
    request.ICMND.packettype = pTypeInterfaceControl;
    request.ICMND.subtype = sTypeInterfaceCommand;
    request.ICMND.seqnbr = m_seqNumberProvider->next();
@@ -236,7 +243,7 @@ void CTransceiver::historize(boost::shared_ptr<yApi::IYadomsApi> context, const 
       // TODO à compléter
    default:
       {
-         YADOMS_LOG(error) << "Invalid RfxCom message received, unknown packet type " << std::fixed << std::setprecision(2) << std::hex << buf->RXRESPONSE.packettype;
+         YADOMS_LOG(error) << "Invalid RfxCom message received, unknown packet type " << std::setfill('0') << std::setw(sizeof(unsigned char) * 2) << std::hex << (int)buf->RXRESPONSE.packettype;
          return;
       }
    }

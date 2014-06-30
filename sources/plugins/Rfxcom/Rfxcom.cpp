@@ -134,7 +134,7 @@ void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> c
    BOOST_ASSERT_MSG(!m_transceiver, "RFXCom was already connected");
    m_transceiver.reset();
 
-   m_transceiver = CRfxcomFactory::constructTransceiver(m_port);
+   m_transceiver = CRfxcomFactory::constructTransceiver(m_configuration, m_port);
 
    // Reset the RFXCom state
    m_transceiver->processReset();

@@ -6,6 +6,7 @@
 //--------------------------------------------------------------
 
 static const RBUF dummyRbufToComputeSizes = { 0 };
+const std::size_t ICMND_size = sizeof(dummyRbufToComputeSizes.ICMND);
 const std::size_t IRESPONSE_size = sizeof(dummyRbufToComputeSizes.IRESPONSE);
 const std::size_t RXRESPONSE_size = sizeof(dummyRbufToComputeSizes.RXRESPONSE);
 const std::size_t LIGHTING1_size = sizeof(dummyRbufToComputeSizes.LIGHTING1);

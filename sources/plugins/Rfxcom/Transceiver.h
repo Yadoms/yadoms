@@ -13,12 +13,14 @@ class CTransceiver : public ITransceiver
 {  
 public:
    //--------------------------------------------------------------
-   /// \brief	Constructor
+   /// \brief	                           Constructor
+   /// \param[in] configuration           Plugin instance configuration (contains the serial port)
+   /// \param[in] port                    Port used to exchange messages
    //--------------------------------------------------------------
-   CTransceiver(boost::shared_ptr<IPort> port);
+   CTransceiver(const IRfxcomConfiguration& configuration, boost::shared_ptr<IPort> port);
 
    //--------------------------------------------------------------
-   /// \brief	Destructor
+   /// \brief	                           Destructor
    //--------------------------------------------------------------
    virtual ~CTransceiver();
 
@@ -71,6 +73,11 @@ protected:
    static void TraceRfxComConfiguredProtocols(const RBUF& rbuf);
 
 private:
+   //--------------------------------------------------------------
+   /// \brief  The plugin configuration
+   //--------------------------------------------------------------
+   const IRfxcomConfiguration& m_configuration;
+
    //--------------------------------------------------------------
    /// \brief  The communication port
    //--------------------------------------------------------------
