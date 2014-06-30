@@ -228,8 +228,8 @@ void CSmsDialer::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
    context->declareDevice(m_phone->getUniqueId(), m_phone->getUniqueId(), shared::CStringExtension::EmptyString);
 
    // Declare associated keywords (= values managed by this device)
-   context->declareKeyword(m_phone->getUniqueId(), "power", yApi::CStandardCapacities::Switch , yApi::IYadomsApi::kReadWrite, yApi::IYadomsApi::kBool);
-   context->declareKeyword(m_phone->getUniqueId(), "sms"  , yApi::CStandardCapacities::Message, yApi::IYadomsApi::kWriteOnly, yApi::IYadomsApi::kJson);
+   context->declareKeyword(m_phone->getUniqueId(), "power", yApi::CStandardCapacities::Switch );
+   context->declareKeyword(m_phone->getUniqueId(), "sms"  , yApi::CStandardCapacities::Message);
 }
 
 void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& powerRequest)
