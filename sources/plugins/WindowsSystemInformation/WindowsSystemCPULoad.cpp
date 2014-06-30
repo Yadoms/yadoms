@@ -69,7 +69,7 @@ void CWindowsSystemCPULoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> co
    context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
 
    // Declare associated keywords (= values managed by this device)
-   context->declareKeyword(m_deviceId, "WindowsCPULoad"  , "cpuload", yApi::IYadomsApi::kReadOnly , yApi::IYadomsApi::kDecimal, shared::plugin::yadomsApi::CStandardUnits::Percent);
+   context->declareCustomKeyword(m_deviceId, "WindowsCPULoad", "cpuload", yApi::kReadOnly, yApi::kDecimal, yApi::CStandardUnits::Percent);
 }
 
 void CWindowsSystemCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

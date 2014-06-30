@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "YadomsApiImplementation.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/Log.h>
@@ -51,7 +50,8 @@ bool CYadomsApiImplementation::keywordExists(const std::string& device, const st
    return m_keywordRequester->keywordExists((m_deviceRequester->getDevice(getPluginId(), device))->Id, keyword);
 }
 
-bool CYadomsApiImplementation::declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, EKeywordType type, const std::string & units, const shared::CDataContainer& details)
+
+bool CYadomsApiImplementation::declareCustomKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::EKeywordType type, const std::string & units, const shared::CDataContainer& details)
 {
    if (keywordExists(device, keyword))
       return false;
@@ -61,9 +61,9 @@ bool CYadomsApiImplementation::declareKeyword(const std::string& device, const s
    keywordEntity.CapacityName = capacity;
    switch(accessMode)
    {
-   case shared::plugin::yadomsApi::IYadomsApi::kReadWrite: keywordEntity.AccessMode = database::entities::kReadWrite; break;
-   case shared::plugin::yadomsApi::IYadomsApi::kReadOnly : keywordEntity.AccessMode = database::entities::kRead; break;
-   case shared::plugin::yadomsApi::IYadomsApi::kWriteOnly: keywordEntity.AccessMode = database::entities::kWrite; break;
+   case shared::plugin::yadomsApi::kReadWrite: keywordEntity.AccessMode = database::entities::kReadWrite; break;
+   case shared::plugin::yadomsApi::kReadOnly : keywordEntity.AccessMode = database::entities::kRead; break;
+   case shared::plugin::yadomsApi::kWriteOnly: keywordEntity.AccessMode = database::entities::kWrite; break;
    default:
       BOOST_ASSERT_MSG(false, "Unknown accessMode");
       throw shared::exception::CEmptyResult("Fail to declare keyword : unknown accessMode");
@@ -72,12 +72,12 @@ bool CYadomsApiImplementation::declareKeyword(const std::string& device, const s
 
    switch (type)
    {
-   case shared::plugin::yadomsApi::IYadomsApi::kNoData: keywordEntity.Type = database::entities::kNoData; break;
-   case shared::plugin::yadomsApi::IYadomsApi::kString: keywordEntity.Type = database::entities::kString; break;
-   case shared::plugin::yadomsApi::IYadomsApi::kInteger: keywordEntity.Type = database::entities::kInteger; break;
-   case shared::plugin::yadomsApi::IYadomsApi::kDecimal: keywordEntity.Type = database::entities::kDecimal; break;
-   case shared::plugin::yadomsApi::IYadomsApi::kBool: keywordEntity.Type = database::entities::kBool; break;
-   case shared::plugin::yadomsApi::IYadomsApi::kJson: keywordEntity.Type = database::entities::kJson; break;
+   case shared::plugin::yadomsApi::kNoData: keywordEntity.Type = database::entities::kNoData; break;
+   case shared::plugin::yadomsApi::kString: keywordEntity.Type = database::entities::kString; break;
+   case shared::plugin::yadomsApi::kInteger: keywordEntity.Type = database::entities::kInteger; break;
+   case shared::plugin::yadomsApi::kDecimal: keywordEntity.Type = database::entities::kDecimal; break;
+   case shared::plugin::yadomsApi::kBool: keywordEntity.Type = database::entities::kBool; break;
+   case shared::plugin::yadomsApi::kJson: keywordEntity.Type = database::entities::kJson; break;
    default:
       BOOST_ASSERT_MSG(false, "Unknown type");
       throw shared::exception::CEmptyResult("Fail to declare keyword : unknown type");
@@ -96,6 +96,13 @@ bool CYadomsApiImplementation::declareKeyword(const std::string& device, const s
    return true;
 }
       
+bool CYadomsApiImplementation::declareKeyword(const std::string& device, const std::string& keyword, const shared::plugin::yadomsApi::CStandardCapacity & capacity, const shared::CDataContainer& details)
+{
+   return declareCustomKeyword(device, keyword, capacity.getName(), capacity.getAccessMode(), capacity.getType(), capacity.getUnit(), details);
+}
+
+
+
 void CYadomsApiImplementation::historizeData(const std::string& device, const std::string& keyword, const std::string& value)
 {
    try

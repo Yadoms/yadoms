@@ -6,10 +6,13 @@
 #include "IDeviceCommand.h"
 #include "IManuallyDeviceCreationData.h"
 #include "IManuallyDeviceCreationTestData.h"
-
+#include <shared/plugin/yadomsApi/StandardCapacity.h>
+#include <shared/plugin/yadomsApi/KeywordAccessMode.h>
+#include <shared/plugin/yadomsApi/KeywordType.h>
 
 namespace shared { namespace plugin { namespace yadomsApi
 {
+
    //-----------------------------------------------------
    ///\brief The API used by the plugins to interact with Yadoms
    //-----------------------------------------------------
@@ -114,29 +117,6 @@ namespace shared { namespace plugin { namespace yadomsApi
       //----------------------------------------------------------------------------------------------------------------
       //----------------------------------------------------------------------------------------------------------------
 
-      //-----------------------------------------------------
-      ///\brief Keyword access mode
-      //-----------------------------------------------------
-      enum EKeywordAccessMode
-      {
-         kReadWrite,
-         kReadOnly,
-         kWriteOnly
-      };
-
-      //-----------------------------------------------------
-      ///\brief Keyword type
-      //-----------------------------------------------------
-      enum EKeywordType
-      {
-         kNoData,
-         kString,
-         kInteger,
-         kDecimal,
-         kBool,
-         kJson,
-      };
-
 
       //-----------------------------------------------------
       ///\brief Check if a keyword already exists for the device
@@ -147,7 +127,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       virtual bool keywordExists(const std::string& device, const std::string& keyword) const = 0;
 
       //-----------------------------------------------------
-      ///\brief Declare a keyword
+      ///\brief Declare a custom keyword
       ///\param    [in]    device             The device name owner of the keyword
       ///\param    [in]    keyword            The keyword name
       ///\param    [in]    capacity           The capacity name (see yApi::CStandardCapacities for standard capacities, or use your own)
@@ -158,8 +138,18 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\return true if the keyword has been successfully created, false if already exist
       ///\throw shared::exception::CEmptyResult if creation failed
       //-----------------------------------------------------   
-      virtual bool declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, EKeywordType type, const std::string & units = shared::CStringExtension::EmptyString, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) = 0;
+      virtual bool declareCustomKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, EKeywordType type, const std::string & units = shared::CStringExtension::EmptyString, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) = 0;
       
+      //-----------------------------------------------------
+      ///\brief Declare a standard keyword
+      ///\param    [in]    device             The device name owner of the keyword
+      ///\param    [in]    keyword            The keyword name
+      ///\param    [in]    capacity           The capacity name (see yApi::CStandardCapacities for standard capacities, or use your own)
+      ///\param    [in]    details            The keyword details (JSON string, optional. Can be used to declare specific properties like min/max values)
+      ///\return true if the keyword has been successfully created, false if already exist
+      ///\throw shared::exception::CEmptyResult if creation failed
+      //-----------------------------------------------------   
+      virtual bool declareKeyword(const std::string& device, const std::string& keyword, const CStandardCapacity & capacity, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) = 0;
 
       //----------------------------------------------------------------------------------------------------------------
       //----------------------------------------------------------------------------------------------------------------

@@ -19,7 +19,7 @@ namespace xplrules {
       ///\param [in] units       The units
       ///\param [in] details     A free string which give units, enumeration values,....
       //------------------------------------
-      CDeviceKeyword(const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::IYadomsApi::EKeywordType type, const std::string & units, const std::string& details);
+      CDeviceKeyword(const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::EKeywordType type, const std::string & units, const std::string& details);
 
       //------------------------------------
       ///\brief Constructor
@@ -30,7 +30,7 @@ namespace xplrules {
       ///\param [in] units       The units
       ///\param [in] details     A free PropertyString which give units, enumeration values,....
       //------------------------------------
-      CDeviceKeyword(const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::IYadomsApi::EKeywordType type, const std::string & units, const shared::CDataContainer & details);
+      CDeviceKeyword(const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::EKeywordType type, const std::string & units, const shared::CDataContainer & details);
 
       //------------------------------------
       ///\brief Destructor
@@ -53,13 +53,13 @@ namespace xplrules {
       ///\brief Get keyword capacity mode
       ///\return keyword capacity mode
       //------------------------------------
-      shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode getAccessMode();   
+      shared::plugin::yadomsApi::EKeywordAccessMode getAccessMode();   
       
       //------------------------------------
       ///\brief Get keyword type
       ///\return keyword type
       //------------------------------------
-      shared::plugin::yadomsApi::IYadomsApi::EKeywordType getType();
+      shared::plugin::yadomsApi::EKeywordType getType();
 
       //------------------------------------
       ///\brief Get keyword units
@@ -87,12 +87,12 @@ namespace xplrules {
       //------------------------------------
       ///\brief The keyword capacity mode
       //------------------------------------
-      shared::plugin::yadomsApi::IYadomsApi::EKeywordAccessMode m_accessMode;    
+      shared::plugin::yadomsApi::EKeywordAccessMode m_accessMode;    
       
       //------------------------------------
       ///\brief The keyword type
       //------------------------------------
-      shared::plugin::yadomsApi::IYadomsApi::EKeywordType m_type;
+      shared::plugin::yadomsApi::EKeywordType m_type;
 
       //------------------------------------
       ///\brief The keyword units

@@ -43,7 +43,8 @@ namespace pluginSystem
       virtual const std::string getDeviceDetails(const std::string& device) const;
       virtual bool declareDevice(const std::string& device, const std::string& model, const std::string& details);
       virtual bool keywordExists(const std::string& device, const std::string& keyword) const;
-      virtual bool declareKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, EKeywordType type, const std::string & units = shared::CStringExtension::EmptyString, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
+      virtual bool declareCustomKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::EKeywordType type, const std::string & units = shared::CStringExtension::EmptyString, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
+      virtual bool declareKeyword(const std::string& device, const std::string& keyword, const shared::plugin::yadomsApi::CStandardCapacity & capacity, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
       virtual void historizeData(const std::string& device, const std::string& keyword, const std::string& value);
       virtual void historizeData(const std::string& device, const std::string& keyword, bool value);
       virtual void historizeData(const std::string& device, const std::string& keyword, int value);
