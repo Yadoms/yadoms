@@ -4,6 +4,9 @@
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
+// Shortcut to yadomsApi namespace
+namespace yApi = shared::plugin::yadomsApi;
+
 CLinuxSystemMemoryLoad::CLinuxSystemMemoryLoad(const std::string & deviceId)
    :m_deviceId(deviceId), m_memoryLoad(0)
 {}
@@ -22,10 +25,10 @@ void CLinuxSystemMemoryLoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> c
    context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
 
    // Declare associated keywords (= values managed by this device)
-   context->declareKeyword(m_deviceId, "LinuxMemoryLoad"  , "MemoryLoad" , yApi::IYadomsApi::kReadOnly , yApi::IYadomsApi::kDecimal, shared::plugin::yadomsApi::CStandardUnits::Percent);
+   //context->declareKeyword(m_deviceId, "LinuxMemoryLoad"  , "MemoryLoad" , yApi::IYadomsApi::kReadOnly , yApi::IYadomsApi::kDecimal, shared::plugin::yadomsApi::CStandardUnits::Percent);
 }
 
-void CLinuxMemoryLoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CLinuxSystemMemoryLoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
    context->historizeData(m_deviceId, "LinuxMemoryLoad"  , m_memoryLoad);
