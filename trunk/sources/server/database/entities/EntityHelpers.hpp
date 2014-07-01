@@ -130,16 +130,135 @@
 /// \param  _seq  the sequence of columns
 //
 #define DECLARE_ENTITY_CLASS(_classname, _seq)                               \
-class ENTITY_CLASSNAME(_classname)                                           \
-{                                                                            \
-   public:                                                                   \
-      ENTITY_CLASSNAME(_classname)()                                         \
-        : DECLARE_ENTITY_FILLED_INITIALISERS(_seq)                           \
-      {                                                                      \
-      }                                                                      \
-      virtual ~ENTITY_CLASSNAME(_classname)()                                \
-      {                                                                      \
-      }                                                                      \
-public:                                                                      \
-   DECLARE_ENTITY_FIELDS(_classname, _seq)                                   \
-};
+   class ENTITY_CLASSNAME(_classname)                                           \
+   {                                                                            \
+      public:                                                                   \
+         ENTITY_CLASSNAME(_classname)()                                         \
+           : DECLARE_ENTITY_FILLED_INITIALISERS(_seq)                           \
+         {                                                                      \
+         }                                                                      \
+         virtual ~ENTITY_CLASSNAME(_classname)()                                \
+         {                                                                      \
+         }                                                                      \
+   public:                                                                      \
+      DECLARE_ENTITY_FIELDS(_classname, _seq)                                   \
+   };
+
+
+
+
+//
+/// \brief  Macro which declare all fields and its filled status
+///         For each ID in input sequence, call DECLARE_ENTITY_FILLED_INITIALISER
+//
+#define DECLARE_ENTITY_DATACONTAINABLE_HEADER()                                     \
+      virtual void extractContent(shared::CDataContainer & containerToFill) const;  \
+      virtual void fillFromContent(const shared::CDataContainer & initialData);
+
+
+
+//-------------------------------------------------------
+///\brief   Declare the JSON serializer IMPLEMENTATION
+///            -> declare serializer implementation
+///            -> declare deserializer implementation
+//-------------------------------------------------------
+#define DECLARE_ENTITY_DATACONTAINABLE_IMPLEMENTATION(_classname, _seq)             \
+   DECLARE_ENTITY_EXTRACT_CONTENT(_classname, _seq)                                 \
+   DECLARE_ENTITY_FILL_CONTENT(_classname, _seq)
+
+
+//
+/// \brief  Declare a table
+/// \param  name  the table name
+/// \param  _seq  the sequence of columns
+//
+#define DECLARE_ENTITY_CLASS_HEADER(_classname, _seq)                                     \
+   class ENTITY_CLASSNAME(_classname) : public shared::IDataContainable                   \
+   {                                                                                      \
+   public:                                                                                \
+         ENTITY_CLASSNAME(_classname)();                                                  \
+         virtual ~ENTITY_CLASSNAME(_classname)();                                         \
+         DECLARE_ENTITY_DATACONTAINABLE_HEADER()                                          \
+   public:                                                                                \
+         DECLARE_ENTITY_FIELDS(_classname, _seq)                                          \
+   };
+
+
+
+
+
+
+
+
+
+
+#define ENTITY_FIELD_SERIALIZATION_IDENTIFIER(elem)                                    \
+ BOOST_PP_STRINGIZE(BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_NAME, elem))
+
+   
+
+//-------------------------------------------------------
+///\brief   Declare the JSON deserializer ofr one field IMPLEMENTATION
+///       write the deserialize() part for one field
+//-------------------------------------------------------
+#define DECLARE_ENTITY_FILL_FIELD_CONTENT(r, _classname, elem)                                                                                                    \
+    if(initialData.hasValue(ENTITY_FIELD_SERIALIZATION_IDENTIFIER(elem)))                                                                                         \
+      BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_NAME, elem) = initialData.get< BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_TYPE, elem) >(ENTITY_FIELD_SERIALIZATION_IDENTIFIER(elem));
+
+
+
+//-------------------------------------------------------
+///\brief   Declare the JSON deserializer IMPLEMENTATION
+///       write the deserialize() method
+//-------------------------------------------------------
+#define DECLARE_ENTITY_FILL_CONTENT(_classname, _seq)                                              \
+   void ENTITY_CLASSNAME(_classname)::fillFromContent(const shared::CDataContainer & initialData)     \
+   {                                                                                                  \
+      BOOST_PP_SEQ_FOR_EACH(DECLARE_ENTITY_FILL_FIELD_CONTENT, _classname, _seq)                      \
+   }
+
+
+
+
+//-------------------------------------------------------
+///\brief   Declare the JSON serializer for one field IMPLEMENTATION  when the content is treated as a child
+//-------------------------------------------------------
+#define DECLARE_ENTITY_EXTRACT_FIELD_CONTENT(r, _classname, elem)                                                                                              \
+   containerToFill.set< BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_TYPE, elem) >( ENTITY_FIELD_SERIALIZATION_IDENTIFIER(elem), BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_NAME, elem)());
+
+
+//-------------------------------------------------------
+///\brief   Declare the JSON serializer IMPLEMENTATION
+///       write the ctor and dtor  method
+///       write the serialize() method
+//-------------------------------------------------------
+#define DECLARE_ENTITY_EXTRACT_CONTENT(_classname, _seq)                                              \
+   void ENTITY_CLASSNAME(_classname)::extractContent(shared::CDataContainer & containerToFill)  const \
+   {                                                                                                  \
+      BOOST_PP_SEQ_FOR_EACH(DECLARE_ENTITY_EXTRACT_FIELD_CONTENT, _classname, _seq)                   \
+   }
+
+
+
+
+
+
+
+
+//
+/// \brief  Declare a table
+/// \param  name  the table name
+/// \param  _seq  the sequence of columns
+//
+#define DECLARE_ENTITY_CLASS_IMPLEMENTATION(_classname, _seq)                             \
+   ENTITY_CLASSNAME(_classname)::ENTITY_CLASSNAME(_classname)()                           \
+   : DECLARE_ENTITY_FILLED_INITIALISERS(_seq)                                             \
+   {                                                                                      \
+   }                                                                                      \
+                                                                                          \
+   ENTITY_CLASSNAME(_classname)::~ENTITY_CLASSNAME(_classname)()                          \
+   {                                                                                      \
+   }                                                                                      \
+                                                                                          \
+   DECLARE_ENTITY_DATACONTAINABLE_IMPLEMENTATION(_classname, _seq)                             
+

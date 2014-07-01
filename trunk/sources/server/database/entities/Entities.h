@@ -2,6 +2,7 @@
 #include "EntityHelpers.hpp"
 #include <shared/plugin/information/IInformation.h>
 #include <shared/DataContainer.h>
+#include <shared/IDataContainable.h>
 #include "Field.hpp"
 
 namespace database { 
@@ -70,60 +71,60 @@ namespace entities {
       CField<bool> Enabled;
    };*/
 
-   DECLARE_ENTITY_CLASS(Plugin,
-      ((Id)(int)(0))
-      ((Name)(std::string)(""))
-      ((Type)(std::string)(""))
-      ((Configuration)(shared::CDataContainer)(shared::CDataContainer()))
-      ((AutoStart)(bool)(true))
+   DECLARE_ENTITY_CLASS_HEADER(Plugin,
+      ((Id)(int))
+      ((Name)(std::string))
+      ((Type)(std::string))
+      ((Configuration)(shared::CDataContainer))
+      ((AutoStart)(bool))
       )
 
-   DECLARE_ENTITY_CLASS(Configuration,
-      ((Section)(std::string)(""))
-      ((Name)(std::string)(""))
-      ((Value)(std::string)(""))
-      ((DefaultValue)(std::string)(""))
-      ((Description)(std::string)(""))
-      ((SecurityAccess)(database::entities::ESecurityAccess)(database::entities::kNone))
-      ((LastModificationDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
-      )
-
-
-
-   DECLARE_ENTITY_CLASS(Page,
-      ((Id)(int)(0))
-      ((Name)(std::string)(""))
-      ((PageOrder)(int)(0))
+   DECLARE_ENTITY_CLASS_HEADER(Configuration,
+      ((Section)(std::string))
+      ((Name)(std::string))
+      ((Value)(std::string))
+      ((DefaultValue)(std::string))
+      ((Description)(std::string))
+      ((SecurityAccess)(database::entities::ESecurityAccess))
+      ((LastModificationDate)(boost::posix_time::ptime))
       )
 
 
-   DECLARE_ENTITY_CLASS(Widget,
-      ((Id)(int)(0))
-      ((IdPage)(int)(0))
-      ((Name)(std::string)(""))
-      ((SizeX)(int)(1))
-      ((SizeY)(int)(1))
-      ((PositionX)(int)(1))
-      ((PositionY)(int)(1))
-      ((Configuration)(shared::CDataContainer)(shared::CDataContainer()))
+
+   DECLARE_ENTITY_CLASS_HEADER(Page,
+      ((Id)(int))
+      ((Name)(std::string))
+      ((PageOrder)(int))
       )
 
-   DECLARE_ENTITY_CLASS(PluginEventLogger,
-      ((Id)(int)(0))
-      ((EventDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
-      ((PluginName)(std::string)(""))
-      ((PluginVersion)(std::string)(""))
-      ((PluginRelease)(shared::plugin::information::EReleaseType)(shared::plugin::information::kStable))
-      ((EventType)(database::entities::EEventType)(database::entities::kUnload))
-      ((Message)(std::string)(""))
+
+   DECLARE_ENTITY_CLASS_HEADER(Widget,
+      ((Id)(int))
+      ((IdPage)(int))
+      ((Name)(std::string))
+      ((SizeX)(int))
+      ((SizeY)(int))
+      ((PositionX)(int))
+      ((PositionY)(int))
+      ((Configuration)(shared::CDataContainer))
+      )
+
+   DECLARE_ENTITY_CLASS_HEADER(PluginEventLogger,
+      ((Id)(int))
+      ((EventDate)(boost::posix_time::ptime))
+      ((PluginName)(std::string))
+      ((PluginVersion)(std::string))
+      ((PluginRelease)(shared::plugin::information::EReleaseType))
+      ((EventType)(database::entities::EEventType))
+      ((Message)(std::string))
    )
 
-   DECLARE_ENTITY_CLASS(EventLogger,
-      ((Id)(int)(0))
-      ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
-      ((Code)(database::entities::ESystemEventCode)(database::entities::kDefaultCode))
-      ((Who)(std::string)(""))
-      ((What)(std::string)(""))
+   DECLARE_ENTITY_CLASS_HEADER(EventLogger,
+      ((Id)(int))
+      ((Date)(boost::posix_time::ptime))
+      ((Code)(database::entities::ESystemEventCode))
+      ((Who)(std::string))
+      ((What)(std::string))
    )
 
 
@@ -136,32 +137,32 @@ namespace entities {
       kReadWrite = 3
    };
 
-   DECLARE_ENTITY_CLASS(Device,
-      ((Id)(int)(0))
-      ((PluginId)(int)(0))
-      ((Name)(std::string)(""))
-      ((FriendlyName)(std::string)(""))
-      ((Model)(std::string)(""))
-	  ((Details)(std::string)(""))
+   DECLARE_ENTITY_CLASS_HEADER(Device,
+      ((Id)(int))
+      ((PluginId)(int))
+      ((Name)(std::string))
+      ((FriendlyName)(std::string))
+      ((Model)(std::string))
+	  ((Details)(std::string))
 	  )
 
-   DECLARE_ENTITY_CLASS(Keyword,
-      ((Id)(int)(0))
-      ((DeviceId)(int)(0))
-      ((CapacityName)(std::string)(""))
-      ((AccessMode)(database::entities::EKeywordAccessMode)(database::entities::kNoAccess))
-      ((Name)(std::string)(""))
-      ((FriendlyName)(std::string)(""))
-      ((Type)(database::entities::EKeywordDataType)(database::entities::kString))
-      ((Units)(std::string)(""))
-      ((Details)(shared::CDataContainer)(shared::CDataContainer()))
+   DECLARE_ENTITY_CLASS_HEADER(Keyword,
+      ((Id)(int))
+      ((DeviceId)(int))
+      ((CapacityName)(std::string))
+      ((AccessMode)(database::entities::EKeywordAccessMode))
+      ((Name)(std::string))
+      ((FriendlyName)(std::string))
+      ((Type)(database::entities::EKeywordDataType))
+      ((Units)(std::string))
+      ((Details)(shared::CDataContainer))
    )
 
-   DECLARE_ENTITY_CLASS(Acquisition,
-      ((Id)(int)(0))
-      ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
-      ((KeywordId)(int)(0))
-      ((Value)(std::string)(""))
+   DECLARE_ENTITY_CLASS_HEADER(Acquisition,
+      ((Id)(int))
+      ((Date)(boost::posix_time::ptime))
+      ((KeywordId)(int))
+      ((Value)(std::string))
    )
 
 
