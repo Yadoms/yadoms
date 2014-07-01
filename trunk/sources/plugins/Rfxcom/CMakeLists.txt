@@ -20,6 +20,7 @@ set(RFXCOM_SOURCES
    ITransceiver.h
    NullSequenceNumber.h
    PortException.hpp
+   ProtocolException.hpp
    PortLogger.h
    PortLogger.cpp
    rfxcomMessages/IRfxcomMessage.h
@@ -34,6 +35,8 @@ set(RFXCOM_SOURCES
    rfxcomMessages/RFXtrx.h
    rfxcomMessages/RFXtrxHelpers.h
    rfxcomMessages/RFXtrxHelpers.cpp
+   rfxcomMessages/Temp.h
+   rfxcomMessages/Temp.cpp
    Rfxcom.h
    Rfxcom.cpp 
    RfxcomConfiguration.h
@@ -45,6 +48,8 @@ set(RFXCOM_SOURCES
    PortSubscription.hpp
    Transceiver.h
    Transceiver.cpp
+   TransceiverStatus.h
+   TransceiverStatus.cpp
 )
 
 #########################################

@@ -27,6 +27,7 @@ extern const std::size_t LIGHTING4_size;
 extern const std::size_t LIGHTING5_size;
 extern const std::size_t LIGHTING6_size;
 extern const std::size_t CURTAIN1_size;
+extern const std::size_t TEMP_size;
 
 // Macro helper to encode length (length = packet size except the packet byte)
 #define ENCODE_PACKET_LENGTH(packet)((BYTE)packet##_size - 1)

@@ -2,6 +2,7 @@
 
 #include "ITransceiver.h"
 #include "IPort.h"
+#include "TransceiverStatus.h"
 #include "rfxcomMessages/IRfxcomMessage.h"
 #include "rfxcomMessages/RFXtrxHelpers.h"
 #include "ISequenceNumberProvider.h"
@@ -33,16 +34,24 @@ public:
 
 protected:
    //--------------------------------------------------------------
-   /// \brief	                     Build the command message to the transceiver
+   /// \brief	                     Build the command message for the transceiver
    /// \param [in] command          Command type
    //--------------------------------------------------------------
-   CByteBuffer buildRfxcomCommand(unsigned char command);
+   CByteBuffer buildRfxcomCommand(unsigned char command) const;
 
    //--------------------------------------------------------------
-   /// \brief	                     Request the RFXCom status
-   /// \return                      true if status received, false if error
+   /// \brief	                     Build the set mode command message for the transceiver
+   /// \param [in] frequency        Frequency to set
+   /// \param [in] configuration    Mode configuration
    //--------------------------------------------------------------
-   bool requestStatus();
+   CByteBuffer buildRfxcomSetModeCommand(unsigned char frequency, const IRfxcomConfiguration& configuration) const;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Send a command to RFXCom and check answer (status message)
+   /// \param [in] cmd              The command to send
+   /// \return                      RfxCom status
+   //--------------------------------------------------------------
+   CTransceiverStatus sendCommand(const CByteBuffer& cmd);
 
    //--------------------------------------------------------------
    /// \brief	                     Check the acknowledge received from RFXCom
@@ -59,19 +68,6 @@ protected:
    /// \throw shared::exception::CInvalidParameter if no corresponding RFXCom message was found (invalid command)
    //--------------------------------------------------------------
    const CByteBuffer buildRfxcomMessage(const std::string& command, const std::string& deviceParameters) const;
-
-   //--------------------------------------------------------------
-   /// \brief	                     Get the RFXCom type as string
-   /// \param [in] rfxcomType       The raw coded value
-   /// \return                      RFXCom type as string
-   //--------------------------------------------------------------
-   static const std::string rfxcomTypeToString(const unsigned char rfxcomType);
-
-   //--------------------------------------------------------------
-   /// \brief	                     Trace the RFXCom configured protocols
-   /// \param [in] rbuf             The raw received message (must be IRESPONSE subtype)
-   //--------------------------------------------------------------
-   static void TraceRfxComConfiguredProtocols(const RBUF& rbuf);
 
 private:
    //--------------------------------------------------------------

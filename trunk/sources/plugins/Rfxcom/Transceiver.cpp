@@ -7,8 +7,10 @@
 #include "rfxcomMessages/Lighting3.h"
 #include "rfxcomMessages/Lighting6.h"
 #include "rfxcomMessages/Curtain1.h"
+#include "rfxcomMessages/Temp.h"
 #include "IncrementSequenceNumber.h"
 #include "PortException.hpp"
+#include "ProtocolException.hpp"
 
 
 CTransceiver::CTransceiver(const IRfxcomConfiguration& configuration, boost::shared_ptr<IPort> port)
@@ -25,28 +27,25 @@ void CTransceiver::processReset()
    // Reset the RFXCom.
    // See the RFXCom SDK specification for more information about this sequence
 
-   try
-   {
-      m_seqNumberProvider->reset();
-      m_port->send(buildRfxcomCommand(cmdRESET));
-      boost::this_thread::sleep(boost::posix_time::milliseconds(50));
-      m_port->flush();
-      requestStatus();
+   m_seqNumberProvider->reset();
+   m_port->send(buildRfxcomCommand(cmdRESET));
+   boost::this_thread::sleep(boost::posix_time::milliseconds(50));
+   m_port->flush();
+   const CTransceiverStatus status = sendCommand(buildRfxcomCommand(cmdSTATUS));
 
-      //TODO
-      //if (activeProtocols != m_configuration.getActiveProtocols())
-      //{
-      //   // Update active protocols list
-      //   m_port->send(buildRfxcomCommand(cmdSETMODE, m_configuration.getActiveProtocols()));
-      //}
-   }
-   catch (CPortException& e)
+   YADOMS_LOG(info) << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware version (" << status.getFirmwareVersion() << ")";
+   status.traceEnabledProtocols();
+
+   if (status.needConfigurationUpdate(m_configuration))
    {
-      YADOMS_LOG(error) << "Error resetting RFXCom transceiver : " << e.what();
+      // Update active protocols list
+      const CTransceiverStatus newStatus = sendCommand(buildRfxcomSetModeCommand(status.getRfxcomType(), m_configuration));// Don't change the frequency (TODO voir si Domoticz le fait, si oui, il faudra le faire)
+      if (newStatus.needConfigurationUpdate(m_configuration))
+         throw CProtocolException("Error configuring RfxCom, configuration was not taken into account");
    }
 }
 
-CByteBuffer CTransceiver::buildRfxcomCommand(unsigned char command)
+CByteBuffer CTransceiver::buildRfxcomCommand(unsigned char command) const
 {
    RBUF request;
    MEMCLEAR(request.ICMND);   // For better performance, just clear the needed sub-structure of RBUF
@@ -60,17 +59,60 @@ CByteBuffer CTransceiver::buildRfxcomCommand(unsigned char command)
    return CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
 }
 
-bool CTransceiver::requestStatus()
+CByteBuffer CTransceiver::buildRfxcomSetModeCommand(unsigned char frequency, const IRfxcomConfiguration& configuration) const
 {
-   CByteBuffer answer = m_port->sendAndReceive(buildRfxcomCommand(cmdSTATUS));
+   RBUF request;
+   MEMCLEAR(request.ICMND);   // For better performance, just clear the needed sub-structure of RBUF
+
+   request.ICMND.packetlength = ENCODE_PACKET_LENGTH(ICMND);
+   request.ICMND.packettype = pTypeInterfaceControl;
+   request.ICMND.subtype = sTypeInterfaceCommand;
+   request.ICMND.seqnbr = m_seqNumberProvider->next();
+   request.ICMND.cmnd = cmdSETMODE;
+
+   // Frequency
+   request.ICMND.msg1 = frequency;
+
+   // Add protocols activation
+   request.ICMND.msg3 = 0;
+   if (configuration.isSXenabled()        ) request.ICMND.msg3 |= 0x20;
+   if (configuration.isRSLenabled()       ) request.ICMND.msg3 |= 0x10;
+   if (configuration.isLIGHTING4enabled() ) request.ICMND.msg3 |= 0x08;
+   if (configuration.isFINEOFFSETenabled()) request.ICMND.msg3 |= 0x04;
+   if (configuration.isRUBICSONenabled()  ) request.ICMND.msg3 |= 0x02;
+   if (configuration.isAEenabled()        ) request.ICMND.msg3 |= 0x01;
+   request.ICMND.msg4 = 0;
+   if (configuration.isBLINDST1enabled()  ) request.ICMND.msg4 |= 0x80;
+   if (configuration.isBLINDST0enabled()  ) request.ICMND.msg4 |= 0x40;
+   if (configuration.isPROGUARDenabled()  ) request.ICMND.msg4 |= 0x20;
+   if (configuration.isFS20enabled()      ) request.ICMND.msg4 |= 0x10;
+   if (configuration.isLACROSSEenabled()  ) request.ICMND.msg4 |= 0x08;
+   if (configuration.isHIDEKIenabled()    ) request.ICMND.msg4 |= 0x04;
+   if (configuration.isLWRFenabled()      ) request.ICMND.msg4 |= 0x02;
+   if (configuration.isMERTIKenabled()    ) request.ICMND.msg4 |= 0x01;
+   request.ICMND.msg5 = 0;
+   if (configuration.isVISONICenabled()   ) request.ICMND.msg5 |= 0x80;
+   if (configuration.isATIenabled()       ) request.ICMND.msg5 |= 0x40;
+   if (configuration.isOREGONenabled()    ) request.ICMND.msg5 |= 0x20;
+   if (configuration.isMEIANTECHenabled() ) request.ICMND.msg5 |= 0x10;
+   if (configuration.isHEEUenabled()      ) request.ICMND.msg5 |= 0x08;
+   if (configuration.isACenabled()        ) request.ICMND.msg5 |= 0x04;
+   if (configuration.isARCenabled()       ) request.ICMND.msg5 |= 0x02;
+   if (configuration.isX10enabled()       ) request.ICMND.msg5 |= 0x01;
+
+   return CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
+}
+
+CTransceiverStatus CTransceiver::sendCommand(const CByteBuffer& cmd)
+{
+   CByteBuffer answer = m_port->sendAndReceive(cmd);
 
    // Check answer
 
    // - Check message size
    if (answer.size() != IRESPONSE_size)
    {
-      YADOMS_LOG(error) << "Error reading status, invalid message size";
-      return false;
+      throw CProtocolException("Error reading status, invalid message size");
    }
 
    const RBUF* rbuf = (const RBUF*)answer.content();
@@ -82,15 +124,11 @@ bool CTransceiver::requestStatus()
       rbuf->IRESPONSE.seqnbr != m_seqNumberProvider->last() ||
       rbuf->IRESPONSE.cmnd != cmdSTATUS)
    {
-      YADOMS_LOG(error) << "Error reading status, invalid data received";
-      return false;
+      throw CProtocolException("Error reading status, invalid data received");
    }
 
-   YADOMS_LOG(info) << "RFXCom status, type (" << rfxcomTypeToString(rbuf->IRESPONSE.msg1) << "), firmware version (" << (int)rbuf->IRESPONSE.msg2 << ")";
-
-   TraceRfxComConfiguredProtocols(*rbuf);
-
-   return true;
+   CTransceiverStatus status(*rbuf);
+   return status;
 }
 
 bool CTransceiver::checkAcknowledge(const CByteBuffer& answer)
@@ -118,61 +156,6 @@ bool CTransceiver::checkAcknowledge(const CByteBuffer& answer)
    YADOMS_LOG(info) << "RFXCom acknowledge";
 
    return true;
-}
-
-const std::string CTransceiver::rfxcomTypeToString(const unsigned char rfxcomType)
-{
-   static const std::map<unsigned char, std::string> RfxcomTypes = boost::assign::map_list_of
-      (recType310       , "310MHz"                 )
-      (recType315       , "315MHz"                 )
-      (recType43392     , "433.92MHz receiver only")
-      (trxType43392     , "433.92MHz transceiver"  )
-      (0x54             , "433.42MHz"              )     // No constant is defined in rfxtrx.h v6.19
-      (recType86800     , "868.00MHz"              )
-      (recType86800FSK  , "868.00MHz FSK"          )
-      (recType86830     , "868.30MHz"              )
-      (recType86830FSK  , "868.30MHz FSK"          )
-      (recType86835     , "868.35MHz"              )
-      (recType86835FSK  , "868.35MHz FSK"          )
-      (recType86895     , "868.95MHz"              );
-
-   std::map<unsigned char, std::string>::const_iterator itRfxcomTypes = RfxcomTypes.find(rfxcomType);
-   if (itRfxcomTypes == RfxcomTypes.end())
-      return boost::lexical_cast<std::string>(rfxcomType);
-
-   return itRfxcomTypes->second;
-}
-
-void CTransceiver::TraceRfxComConfiguredProtocols(const RBUF& rbuf)
-{
-   YADOMS_LOG(info) << "RFXCom configured protocols :";
-
-   if (rbuf.IRESPONSE.AEenabled        ) YADOMS_LOG(info) << "   - AE Blyss";
-   if (rbuf.IRESPONSE.RUBICSONenabled  ) YADOMS_LOG(info) << "   - Rubicson";
-   if (rbuf.IRESPONSE.FINEOFFSETenabled) YADOMS_LOG(info) << "   - FineOffset/Viking";
-   if (rbuf.IRESPONSE.LIGHTING4enabled ) YADOMS_LOG(info) << "   - Lighting4";
-   if (rbuf.IRESPONSE.RSLenabled       ) YADOMS_LOG(info) << "   - RSL";
-   if (rbuf.IRESPONSE.SXenabled        ) YADOMS_LOG(info) << "   - Byron SX";
-   if (rbuf.IRESPONSE.RFU6enabled      ) YADOMS_LOG(info) << "   - RFU";
-   if (rbuf.IRESPONSE.UNDECODEDenabled ) YADOMS_LOG(info) << "   - undecoded messages";
-
-   if (rbuf.IRESPONSE.MERTIKenabled    ) YADOMS_LOG(info) << "   - Mertik";
-   if (rbuf.IRESPONSE.LWRFenabled      ) YADOMS_LOG(info) << "   - AD LightwaveRF";
-   if (rbuf.IRESPONSE.HIDEKIenabled    ) YADOMS_LOG(info) << "   - Hideki/UPM";
-   if (rbuf.IRESPONSE.LACROSSEenabled  ) YADOMS_LOG(info) << "   - La Crosse";
-   if (rbuf.IRESPONSE.FS20enabled      ) YADOMS_LOG(info) << "   - FS20";
-   if (rbuf.IRESPONSE.PROGUARDenabled  ) YADOMS_LOG(info) << "   - ProGuard";
-   if (rbuf.IRESPONSE.BLINDST0enabled  ) YADOMS_LOG(info) << "   - BlindsT0";
-   if (rbuf.IRESPONSE.BLINDST1enabled  ) YADOMS_LOG(info) << "   - BlindsT1";
-
-   if (rbuf.IRESPONSE.X10enabled       ) YADOMS_LOG(info) << "   - X10";
-   if (rbuf.IRESPONSE.ARCenabled       ) YADOMS_LOG(info) << "   - ARC";
-   if (rbuf.IRESPONSE.ACenabled        ) YADOMS_LOG(info) << "   - AC";
-   if (rbuf.IRESPONSE.HEEUenabled      ) YADOMS_LOG(info) << "   - HomeEasy EU";
-   if (rbuf.IRESPONSE.MEIANTECHenabled ) YADOMS_LOG(info) << "   - Meiantech";
-   if (rbuf.IRESPONSE.OREGONenabled    ) YADOMS_LOG(info) << "   - Oregon Scientific";
-   if (rbuf.IRESPONSE.ATIenabled       ) YADOMS_LOG(info) << "   - ATI";
-   if (rbuf.IRESPONSE.VISONICenabled   ) YADOMS_LOG(info) << "   - Visonic";
 }
 
 void CTransceiver::send(const std::string& command, const std::string& deviceParameters)
@@ -240,6 +223,7 @@ void CTransceiver::historize(boost::shared_ptr<yApi::IYadomsApi> context, const 
    case pTypeLighting3:sensorMessage.reset(new rfxcomMessages::CLighting3(*buf)); break;
    case pTypeLighting6:sensorMessage.reset(new rfxcomMessages::CLighting6(*buf)); break;
    case pTypeCurtain:sensorMessage.reset(new rfxcomMessages::CCurtain1(*buf)); break;
+   case pTypeTEMP:sensorMessage.reset(new rfxcomMessages::CTemp(*buf)); break;
       // TODO à compléter
    default:
       {

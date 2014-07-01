@@ -62,7 +62,7 @@ void CLighting1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) cons
    std::string deviceName(ssdeviceName.str());
 
    context->historizeData(deviceName, "state", toYadomsState(m_state));
-   context->historizeData(deviceName, "rssi", m_rssi);
+   context->historizeData(deviceName, "rssi", m_rssi);//TODO : revoir tous les RSSI (devraient être en %)
 }
 
 unsigned char CLighting1::toProtocolState(const std::string& yadomsState)

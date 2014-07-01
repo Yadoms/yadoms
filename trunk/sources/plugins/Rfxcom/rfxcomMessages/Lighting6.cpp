@@ -28,7 +28,7 @@ CLighting6::CLighting6(const RBUF& buffer)
       throw shared::exception::CInvalidParameter("LIGHTING6 packettype");
 
    m_subType = buffer.LIGHTING6.subtype;
-   m_id = buffer.LIGHTING6.id1 & (buffer.LIGHTING6.id2 << 8);
+   m_id = buffer.LIGHTING6.id1 | (buffer.LIGHTING6.id2 << 8);
    m_groupCode = buffer.LIGHTING6.groupcode;
    m_unitCode = buffer.LIGHTING6.unitcode;
    m_state = buffer.LIGHTING6.cmnd;

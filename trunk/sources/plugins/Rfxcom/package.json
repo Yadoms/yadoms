@@ -14,6 +14,41 @@
          "description": "The virtual serial port connected to the RFXCom",
          "type": "serialPort"
       }
+      "Protocols" :
+      {
+          "type" : "section",
+          "name" : "Protocols",
+          "description" : "Supported protocols, see RFXCom manual to configure",
+          "enableWithCheckBox" : "false",
+          "enableWithCheckBoxDefaultValue" : "false",
+          "content" :
+          {
+             "AE Blyss" : { "type" : "bool", "name" : "AE Blyss", "description" : "AE Blyss (Castorama)", "defaultValue" : "true" },
+             "Rubicson" : { "type" : "bool", "name" : "Rubicson", "description" : "Rubicson", "defaultValue" : "true" },
+             "FineOffset/Viking" : { "type" : "bool", "name" : "FineOffset/Viking", "description" : "FineOffset/Viking", "defaultValue" : "true" },
+             "Lighting4" : { "type" : "bool", "name" : "Lighting4", "description" : "Lighting4", "defaultValue" : "true" },
+             "RSL" : { "type" : "bool", "name" : "RSL", "description" : "RSL", "defaultValue" : "true" },
+             "Byron SX" : { "type" : "bool", "name" : "Byron SX", "description" : "Byron SX", "defaultValue" : "true" },
+             "RFU" : { "type" : "bool", "name" : "RFU", "description" : "RFU", "defaultValue" : "true" },
+             "undecoded messages" : { "type" : "bool", "name" : "undecoded messages", "description" : "undecoded messages", "defaultValue" : "true" },
+             "Mertik" : { "type" : "bool", "name" : "Mertik", "description" : "Mertik", "defaultValue" : "true" },
+             "AD LightwaveRF" : { "type" : "bool", "name" : "AD LightwaveRF", "description" : "AD LightwaveRF", "defaultValue" : "true" },
+             "Hideki/UPM" : { "type" : "bool", "name" : "Hideki/UPM", "description" : "Hideki/UPM", "defaultValue" : "true" },
+             "La Crosse" : { "type" : "bool", "name" : "La Crosse", "description" : "La Crosse", "defaultValue" : "true" },
+             "FS20" : { "type" : "bool", "name" : "FS20", "description" : "FS20", "defaultValue" : "true" },
+             "ProGuard" : { "type" : "bool", "name" : "ProGuard", "description" : "ProGuard", "defaultValue" : "true" },
+             "BlindsT0" : { "type" : "bool", "name" : "BlindsT0", "description" : "BlindsT0", "defaultValue" : "true" },
+             "BlindsT1" : { "type" : "bool", "name" : "BlindsT1", "description" : "BlindsT1", "defaultValue" : "true" },
+             "X10" : { "type" : "bool", "name" : "X10", "description" : "X10", "defaultValue" : "true" },
+             "ARC" : { "type" : "bool", "name" : "ARC", "description" : "ARC", "defaultValue" : "true" },
+             "AC" : { "type" : "bool", "name" : "AC", "description" : "AC", "defaultValue" : "true" },
+             "HomeEasy EU" : { "type" : "bool", "name" : "HomeEasy EU", "description" : "HomeEasy EU", "defaultValue" : "true" },
+             "Meiantech" : { "type" : "bool", "name" : "Meiantech", "description" : "Meiantech", "defaultValue" : "true" },
+             "Oregon Scientific" : { "type" : "bool", "name" : "Oregon Scientific", "description" : "Oregon Scientific", "defaultValue" : "true" },
+             "ATI" : { "type" : "bool", "name" : "ATI", "description" : "ATI", "defaultValue" : "true" },
+             "Visonic" : { "type" : "bool", "name" : "Visonic", "description" : "Visonic", "defaultValue" : "true" }
+          }
+       }
    },
    "supportManuallyDeviceCreation": "true",
    "manuallyDeviceCreationConfigurationSchema":
