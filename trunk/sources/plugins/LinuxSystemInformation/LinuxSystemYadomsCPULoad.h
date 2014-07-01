@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ILoad.h"
+#include "sys/times.h"
+#include "sys/vtimes.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -62,15 +64,11 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Number of total ticks, System ticks, User Ticks
    //--------------------------------------------------------------
-
+   clock_t lastCPU, lastSysCPU, lastUserCPU;
 
    //--------------------------------------------------------------
    /// \brief	    Number of processors
    //--------------------------------------------------------------
    int numProcessors;
-
-   //--------------------------------------------------------------
-   /// \brief	    Handle of Yadoms
-   //--------------------------------------------------------------
 };
 
