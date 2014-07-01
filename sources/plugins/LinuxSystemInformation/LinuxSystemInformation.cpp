@@ -61,7 +61,7 @@ void CLinuxSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> context
             {
                // Timer used here to send a message periodically
 
-               YADOMS_LOG(debug) << "WindowsSystem plugin :  Read a value...";
+               YADOMS_LOG(debug) << "LinuxSystem plugin :  Read a value...";
 
                   std::ostringstream ss;
                   std::ostringstream ss1;
@@ -91,7 +91,7 @@ void CLinuxSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> context
                      
                      TempList = DisksList.getList();
 
-                     for(DisksListIterator=TempList.begin(); DisksListIterator!=TempList.end(); DisksListIterator++)
+                     for(DisksListIterator=TempList.begin(); DisksListIterator!=TempList.end(); ++DisksListIterator)
 	                  {
                         CLinuxSystemDiskUsage DiskUsage("DiskUsage", *DisksListIterator);
 
