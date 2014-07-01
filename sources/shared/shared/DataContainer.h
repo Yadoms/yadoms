@@ -7,6 +7,9 @@
 #include "serialization/IDataFileSerializable.h"
 #include "IDataContainable.h"
 
+#include <boost/utility/enable_if.hpp>
+#include <boost/type_traits/is_enum.hpp>
+
 namespace shared
 {
    //--------------------------------------------------------------
@@ -114,6 +117,8 @@ namespace shared
       //
       //--------------------------------------------------------------
 
+      template <int> struct dummy { dummy(int) {} };
+
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
       /// \param [in] parameterName    Name of the parameter
@@ -122,7 +127,10 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline T get(const std::string& parameterName) const;
+      inline T get(const std::string& parameterName, typename boost::disable_if< boost::is_enum< T > >::type* dummy = 0) const;
+
+      template<class T>
+      inline T get(const std::string& parameterName, typename boost::enable_if< boost::is_enum< T > >::type* dummy = 0) const;
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter value. If the name is not found the default value is returned
@@ -133,7 +141,7 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline T get(const std::string& parameterName, const T & defaultValue) const;
+      inline T get(const std::string& parameterName, const T & defaultValue, const void * = NULL) const;
 
       //--------------------------------------------------------------
       /// \brief	    Set parameter value
@@ -426,7 +434,7 @@ namespace shared
 
 
 
-
+ 
    //--------------------------------------------------------------
    /// \brief	    The below part of header contains all the function
    ///				definitions (out of class definition for better 
@@ -435,13 +443,19 @@ namespace shared
    ///				-> for template specialization
    //--------------------------------------------------------------
    template<typename T>
-   inline T CDataContainer::get(const std::string& parameterName) const
+   inline T CDataContainer::get(const std::string& parameterName, typename boost::disable_if< boost::is_enum< T > >::type* dummy) const
    {
       return helper<T>::getInternal(this, parameterName);
    }
 
+   template< typename T>
+   inline T CDataContainer::get(const std::string& parameterName, typename boost::enable_if< boost::is_enum< T > >::type* dummy) const
+   {
+      return (T) helper<int>::getInternal(this, parameterName);
+   }
+
    template<typename T>
-   inline T CDataContainer::get(const std::string& parameterName, const T & defaultValue) const
+   inline T CDataContainer::get(const std::string& parameterName, const T & defaultValue, const void *) const
    {
       return helper<T>::getInternal(this, parameterName, defaultValue);
    }

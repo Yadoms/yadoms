@@ -56,7 +56,7 @@ CWindowsSystemCPULoad::~CWindowsSystemCPULoad()
       Message << "PdhCloseQuery failed with status:"; 
       Message << GetLastError();
 
-      YADOMS_LOG(debug) << Message;
+      YADOMS_LOG(debug) << Message.str();
    }
 }
 
