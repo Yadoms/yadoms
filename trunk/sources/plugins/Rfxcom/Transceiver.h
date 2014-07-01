@@ -5,6 +5,7 @@
 #include "rfxcomMessages/IRfxcomMessage.h"
 #include "rfxcomMessages/RFXtrxHelpers.h"
 #include "ISequenceNumberProvider.h"
+#include "IRfxcomConfiguration.h"
 
 //--------------------------------------------------------------
 /// \brief	This class implement the RFXCom protocol
