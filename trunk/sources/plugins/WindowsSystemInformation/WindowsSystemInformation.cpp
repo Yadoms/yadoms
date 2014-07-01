@@ -91,7 +91,7 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
                      
                      TempList = DisksList.getList();
 
-                     for(DisksListIterator=TempList.begin(); DisksListIterator!=TempList.end(); DisksListIterator++)
+                     for(DisksListIterator=TempList.begin(); DisksListIterator!=TempList.end(); ++DisksListIterator)
 	                  {
                         CWindowsSystemDiskUsage DiskUsage("DiskUsage", *DisksListIterator);
 
