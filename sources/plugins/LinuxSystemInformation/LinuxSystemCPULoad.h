@@ -58,10 +58,8 @@ private:
    double m_CPULoad;
 
    //--------------------------------------------------------------
-   /// \brief	    The Query for the CPU Load
+   /// \brief	    Temp variables
    //--------------------------------------------------------------
-   
-   //--------------------------------------------------------------
-   /// \brief	    Counter TOTAL CPU Load
-   //--------------------------------------------------------------
+   unsigned long long lastTotalUser, lastTotalUserLow, lastTotalSys, lastTotalIdle;
+
 };

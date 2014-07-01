@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ILoad.h"
+#include "sys/sysinfo.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -58,5 +59,10 @@ private:
    /// \brief	    Memory Load in %
    //--------------------------------------------------------------
    double m_memoryLoad;
+
+   //--------------------------------------------------------------
+   /// \brief	    Memory Information Structure
+   //--------------------------------------------------------------
+   struct sysinfo memInfo;
 };
 

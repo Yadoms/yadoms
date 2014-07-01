@@ -7,6 +7,10 @@
 CLinuxSystemCPULoad::CLinuxSystemCPULoad(const std::string & deviceId)
    :m_deviceId(deviceId), m_CPULoad(0)
 {
+        FILE* file = fopen("/proc/stat", "r");
+        fscanf(file, "cpu %Ld %Ld %Ld %Ld", &lastTotalUser, &lastTotalUserLow,
+            &lastTotalSys, &lastTotalIdle);
+        fclose(file);
 }
 
 CLinuxSystemCPULoad::~CLinuxSystemCPULoad()
@@ -34,9 +38,38 @@ void CLinuxSystemCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> cont
    context->historizeData(m_deviceId, "LinuxCPULoad"  , m_CPULoad);
 }
 
-double CLinuxSystemCPULoad::getValue() /*const*/
+double CLinuxSystemCPULoad::getValue()
 {
-  return 0;
+   //TODO : Keep the last value, if an overflow occured
+   double percent;
+   unsigned long long totalUser, totalUserLow, totalSys, totalIdle, total;
+   FILE* file;
+
+   file = fopen("/proc/stat", "r");
+   fscanf(file, "cpu %Ld %Ld %Ld %Ld", &totalUser, &totalUserLow,
+   &totalSys, &totalIdle);
+   fclose(file);
+
+        if (totalUser < lastTotalUser || totalUserLow < lastTotalUserLow ||
+            totalSys < lastTotalSys || totalIdle < lastTotalIdle){
+            //Overflow detection. Just skip this value.
+            percent = -1.0;
+        }
+        else{
+            total = (totalUser - lastTotalUser) + (totalUserLow - lastTotalUserLow) +
+                (totalSys - lastTotalSys);
+            percent = total;
+            total += (totalIdle - lastTotalIdle);
+            percent /= total;
+            percent *= 100;
+        }
+    
+   lastTotalUser = totalUser;
+   lastTotalUserLow = totalUserLow;
+   lastTotalSys = totalSys;
+   lastTotalIdle = totalIdle;
+
+   return percent;
 }
 
 
