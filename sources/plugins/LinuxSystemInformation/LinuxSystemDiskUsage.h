@@ -15,7 +15,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] deviceId    The device ID
-   /// \param[in] deviceId    The drive name ex: C:\
+   /// \param[in] deviceId    The drive name ex: C:
    //--------------------------------------------------------------
    CLinuxSystemDiskUsage(const std::string & deviceId, const std::string & driveName);
 
