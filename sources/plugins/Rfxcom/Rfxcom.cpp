@@ -4,8 +4,11 @@
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 #include "RfxcomFactory.h"
+#include "ProtocolException.hpp"
+#include "PortException.hpp"
 
 IMPLEMENT_PLUGIN(CRfxcom)
+
 
 //TODO dans package.json, compléter la liste manuallyDeviceCreationConfigurationSchema/type (voir Domoticz "Switch_Type_Desc")
 CRfxcom::CRfxcom()
@@ -20,7 +23,8 @@ CRfxcom::~CRfxcom()
 enum
 {
    kEvtPortConnection = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from yApi::IYadomsApi::kPluginFirstEventId
-   kEvtPortDataReceived
+   kEvtPortDataReceived,
+   kprotocolErrorRetryTimer
 };
 
 void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
@@ -107,6 +111,11 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                processRfxcomDataReceived(context, context->getEventHandler().getEventData<CByteBuffer>());
                break;
             }
+         case kprotocolErrorRetryTimer:
+            {
+               m_port = CRfxcomFactory::constructPort(m_configuration, context->getEventHandler(), kEvtPortConnection, kEvtPortDataReceived, portLogger);
+               break;
+            }
          default:
             {
                YADOMS_LOG(error) << "Unknown message id";
@@ -134,10 +143,26 @@ void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> c
    BOOST_ASSERT_MSG(!m_transceiver, "RFXCom was already connected");
    m_transceiver.reset();
 
-   m_transceiver = CRfxcomFactory::constructTransceiver(m_configuration, m_port);
+   try
+   {
+      m_transceiver = CRfxcomFactory::constructTransceiver(m_configuration, m_port);
 
-   // Reset the RFXCom state
-   m_transceiver->processReset();
+      // Reset the RFXCom state
+      m_transceiver->processReset();
+   }
+   catch (CProtocolException& e)
+   {
+      YADOMS_LOG(error) << "Error resetting RFXCom transceiver : " << e.what();
+
+      // Stop the communication, and try later
+      m_port.reset();
+      context->getEventHandler().createTimer(kprotocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
+   }
+   catch (CPortException& e)
+   {
+      YADOMS_LOG(error) << "Error connecting to RFXCom transceiver : " << e.what();
+      // Unconnection will be notified, we just have to wait...
+   }
 }
 
 void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context)

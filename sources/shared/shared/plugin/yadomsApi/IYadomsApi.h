@@ -98,7 +98,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\return true if the device has been successfully created, false if already exist
       ///\throw shared::exception::CEmptyResult if creation failed
       //-----------------------------------------------------   
-	  virtual bool declareDevice(const std::string& device, const std::string& model, const std::string & details) = 0;
+	  virtual bool declareDevice(const std::string& device, const std::string& model, const std::string & details = shared::CStringExtension::EmptyString) = 0;
       
       
       //----------------------------------------------------------------------------------------------------------------

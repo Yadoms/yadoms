@@ -16,3 +16,4 @@ const std::size_t LIGHTING4_size = sizeof(dummyRbufToComputeSizes.LIGHTING4);
 const std::size_t LIGHTING5_size = sizeof(dummyRbufToComputeSizes.LIGHTING5);
 const std::size_t LIGHTING6_size = sizeof(dummyRbufToComputeSizes.LIGHTING6);
 const std::size_t CURTAIN1_size = sizeof(dummyRbufToComputeSizes.CURTAIN1);
+const std::size_t TEMP_size = sizeof(dummyRbufToComputeSizes.TEMP);
