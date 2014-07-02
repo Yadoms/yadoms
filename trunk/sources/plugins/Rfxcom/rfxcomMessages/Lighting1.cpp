@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Lighting1.h"
+#include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/plugin/yadomsApi/commands/Switch.h>
 #include <shared/exception/InvalidParameter.hpp>
 
@@ -16,6 +17,9 @@ CLighting1::CLighting1(const std::string& command, const shared::CDataContainer&
    m_unitCode = deviceParameters.get<unsigned char>("unitCode");
    m_state = toProtocolState(command);
    m_rssi = 0;
+
+   buildDeviceName();
+   buildDeviceModel();
 }
 
 CLighting1::CLighting1(const RBUF& buffer)
@@ -30,7 +34,10 @@ CLighting1::CLighting1(const RBUF& buffer)
    m_houseCode = buffer.LIGHTING1.housecode;
    m_unitCode = buffer.LIGHTING1.unitcode;
    m_state = buffer.LIGHTING1.cmnd;
-   m_rssi = buffer.LIGHTING1.rssi;
+   m_rssi = buffer.LIGHTING1.rssi * 100 / 0x0F;
+
+   buildDeviceName();
+   buildDeviceModel();
 }
 
 CLighting1::~CLighting1()
@@ -57,12 +64,45 @@ const CByteBuffer CLighting1::encode(boost::shared_ptr<ISequenceNumberProvider> 
 
 void CLighting1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
+   if (!context->deviceExists(m_deviceName))
+   {
+      context->declareDevice(m_deviceName, m_deviceModel);
+      context->declareKeyword(m_deviceName, "state", yApi::CStandardCapacities::Switch);
+      context->declareKeyword(m_deviceName, "rssi", yApi::CStandardCapacities::Rssi);
+   }
+
+   context->historizeData(m_deviceName, "state", toYadomsState(m_state));
+   context->historizeData(m_deviceName, "rssi", m_rssi);
+}
+
+void CLighting1::buildDeviceName()
+{
    std::ostringstream ssdeviceName;
    ssdeviceName << m_subType << "." << m_houseCode << "." << m_unitCode;
-   std::string deviceName(ssdeviceName.str());
+   m_deviceName = ssdeviceName.str();
+}
 
-   context->historizeData(deviceName, "state", toYadomsState(m_state));
-   context->historizeData(deviceName, "rssi", m_rssi);//TODO : revoir tous les RSSI (devraient être en %)
+void CLighting1::buildDeviceModel()
+{
+   std::ostringstream ssModel;
+
+   switch(m_subType)
+   {
+   case sTypeX10        : ssModel << "X10 lighting"; break;
+   case sTypeARC        : ssModel << "ARC"; break;
+   case sTypeAB400D     : ssModel << "ELRO AB400D (Flamingo)"; break;
+   case sTypeWaveman    : ssModel << "Waveman"; break;
+   case sTypeEMW200     : ssModel << "Chacon EMW200"; break;
+   case sTypeIMPULS     : ssModel << "IMPULS"; break;
+   case sTypeRisingSun  : ssModel << "RisingSun"; break;
+   case sTypePhilips    : ssModel << "Philips SBC"; break;
+   case sTypeEnergenie  : ssModel << "Energenie ENER010"; break;
+   case sTypeEnergenie5 : ssModel << "Energenie 5-gang"; break;
+   case sTypeGDR2       : ssModel << "COCO GDR2-2000R"; break;
+   default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
+   }
+
+   m_deviceModel = ssModel.str();
 }
 
 unsigned char CLighting1::toProtocolState(const std::string& yadomsState)

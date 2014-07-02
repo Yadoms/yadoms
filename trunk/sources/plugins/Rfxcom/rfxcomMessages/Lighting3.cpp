@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Lighting3.h"
+#include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/plugin/yadomsApi/commands/Switch.h>
 #include <shared/exception/InvalidParameter.hpp>
 
@@ -16,6 +17,9 @@ CLighting3::CLighting3(const std::string& command, const shared::CDataContainer&
    m_channel = deviceParameters.get<unsigned short>("channel");
    m_state = toProtocolState(command);
    m_rssi = 0;
+
+   buildDeviceName();
+   buildDeviceModel();
 }
 
 CLighting3::CLighting3(const RBUF& buffer)
@@ -30,7 +34,10 @@ CLighting3::CLighting3(const RBUF& buffer)
    m_system = buffer.LIGHTING3.system;
    m_channel = buffer.LIGHTING3.channel8_1 & (buffer.LIGHTING3.channel10_9 << 8);
    m_state = buffer.LIGHTING3.cmnd;
-   m_rssi = buffer.LIGHTING3.rssi;
+   m_rssi = buffer.LIGHTING3.rssi * 100 / 0x0F;
+
+   buildDeviceName();
+   buildDeviceModel();
 }
 
 CLighting3::~CLighting3()
@@ -58,12 +65,35 @@ const CByteBuffer CLighting3::encode(boost::shared_ptr<ISequenceNumberProvider> 
 
 void CLighting3::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
+   if (!context->deviceExists(m_deviceName))
+   {
+      context->declareDevice(m_deviceName, m_deviceModel);
+      context->declareKeyword(m_deviceName, "state", yApi::CStandardCapacities::Switch);
+      context->declareKeyword(m_deviceName, "rssi", yApi::CStandardCapacities::Rssi);
+   }
+
+   context->historizeData(m_deviceName, "state", toYadomsState(m_state));
+   context->historizeData(m_deviceName, "rssi", m_rssi);
+}
+
+void CLighting3::buildDeviceName()
+{
    std::ostringstream ssdeviceName;
    ssdeviceName << m_subType << "." << m_system << "." << m_channel;
-   std::string deviceName(ssdeviceName.str());
+   m_deviceName = ssdeviceName.str();
+}
 
-   context->historizeData(deviceName, "state", toYadomsState(m_state));
-   context->historizeData(deviceName, "rssi", m_rssi);
+void CLighting3::buildDeviceModel()
+{
+   std::ostringstream ssModel;
+
+   switch(m_subType)
+   {
+   case sTypeKoppla: ssModel << "Ikea Koppla"; break;
+   default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
+   }
+
+   m_deviceModel = ssModel.str();
 }
 
 unsigned char CLighting3::toProtocolState(const std::string& yadomsState)

@@ -34,16 +34,14 @@ namespace rfxcomMessages
       
    protected:
       //--------------------------------------------------------------
-      /// \brief	                        Get the device name
-      /// \return                         The device name
+      /// \brief	                        Build the device name
       //--------------------------------------------------------------
-      std::string getDeviceName() const;
+      void buildDeviceName();
 
       //--------------------------------------------------------------
-      /// \brief	                        Get the sensor model
-      /// \return                         The sensor commercial name
+      /// \brief	                        Build the sensor model
       //--------------------------------------------------------------
-      std::string getSensorModel() const;
+      void buildDeviceModel();
 
    private:
       //--------------------------------------------------------------
@@ -70,5 +68,15 @@ namespace rfxcomMessages
       /// \brief	The RSSI (percent)
       //--------------------------------------------------------------
       int m_rssi;
+
+      //--------------------------------------------------------------
+      /// \brief	The device name
+      //--------------------------------------------------------------
+      std::string m_deviceName;
+
+      //--------------------------------------------------------------
+      /// \brief	The device model
+      //--------------------------------------------------------------
+      std::string m_deviceModel;
    };
 } // namespace rfxcomMessages

@@ -39,7 +39,7 @@ void CTransceiver::processReset()
    if (status.needConfigurationUpdate(m_configuration))
    {
       // Update active protocols list
-      const CTransceiverStatus newStatus = sendCommand(buildRfxcomSetModeCommand(status.getRfxcomType(), m_configuration));// Don't change the frequency (TODO voir si Domoticz le fait, si oui, il faudra le faire)
+      const CTransceiverStatus newStatus = sendCommand(buildRfxcomSetModeCommand(status.getRfxcomType(), m_configuration));// Don't change the frequency
       if (newStatus.needConfigurationUpdate(m_configuration))
          throw CProtocolException("Error configuring RfxCom, configuration was not taken into account");
    }

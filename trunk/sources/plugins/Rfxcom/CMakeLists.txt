@@ -5,24 +5,7 @@ include("../YadomsPluginsCommon.cmake")
 #########################################
 ## Place here all the plugin source files
 #########################################
-set(RFXCOM_SOURCES
-   stdafx.h
-   stdafx.cpp
-   Buffer.hpp
-   DeviceList.h
-   DeviceList.cpp
-   IDeviceList.h
-   IncrementSequenceNumber.h
-   IPort.h
-   IPortLogger.h
-   IRfxcomConfiguration.h
-   ISequenceNumberProvider.h
-   ITransceiver.h
-   NullSequenceNumber.h
-   PortException.hpp
-   ProtocolException.hpp
-   PortLogger.h
-   PortLogger.cpp
+set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/IRfxcomMessage.h
    rfxcomMessages/Lighting1.h
    rfxcomMessages/Lighting1.cpp
@@ -37,6 +20,23 @@ set(RFXCOM_SOURCES
    rfxcomMessages/RFXtrxHelpers.cpp
    rfxcomMessages/Temp.h
    rfxcomMessages/Temp.cpp
+)
+
+set(RFXCOM_SOURCES
+   stdafx.h
+   stdafx.cpp
+   Buffer.hpp
+   IncrementSequenceNumber.h
+   IPort.h
+   IPortLogger.h
+   IRfxcomConfiguration.h
+   ISequenceNumberProvider.h
+   ITransceiver.h
+   NullSequenceNumber.h
+   PortException.hpp
+   ProtocolException.hpp
+   PortLogger.h
+   PortLogger.cpp
    Rfxcom.h
    Rfxcom.cpp 
    RfxcomConfiguration.h
@@ -50,7 +50,10 @@ set(RFXCOM_SOURCES
    Transceiver.cpp
    TransceiverStatus.h
    TransceiverStatus.cpp
+   ${RFXCOM_MESSAGES_SOURCES}
 )
+
+source_group(rfxcomMessages rfxcomMessages/*.*)
 
 #########################################
 ## Place here all additional include directories
@@ -63,7 +66,6 @@ set(RFXCOM_ADDITIONAL_INC_DIR
 ## Place here all additional libraries to link with
 ## (by default yadoms-shared and boost are included)
 #########################################
-#todo gérer les différentes config et PF
 set(RFXCOM_ADDITIONAL_LIB
 )
 

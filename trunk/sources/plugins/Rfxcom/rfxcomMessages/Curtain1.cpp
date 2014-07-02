@@ -29,7 +29,6 @@ CCurtain1::CCurtain1(const RBUF& buffer)
    m_houseCode = buffer.CURTAIN1.housecode;
    m_unitCode = buffer.CURTAIN1.unitcode;
    m_state = buffer.CURTAIN1.cmnd;
-   //TODO attendre le .h v6.19, a-t-on quelque chose à extraire de buffer.CURTAIN1.filler (voir doc) ?
 }
 
 CCurtain1::~CCurtain1()
@@ -48,7 +47,7 @@ const CByteBuffer CCurtain1::encode(boost::shared_ptr<ISequenceNumberProvider> s
    buffer.CURTAIN1.housecode = m_houseCode;
    buffer.CURTAIN1.unitcode = m_unitCode;
    buffer.CURTAIN1.cmnd = m_state;
-   buffer.CURTAIN1.filler = 0;//TODO attendre le .h v6.19, il y a des choses à mettre dans cet octet (voir doc)
+   buffer.CURTAIN1.filler = 0;
 
    return CByteBuffer((BYTE*)&buffer, CURTAIN1_size);
 }
