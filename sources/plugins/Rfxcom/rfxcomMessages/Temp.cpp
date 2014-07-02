@@ -28,6 +28,9 @@ CTemp::CTemp(const RBUF& buffer)
    m_batteryLevel = buffer.TEMP.battery_level == 0x09 ? 100 : 0;
 
    m_rssi = buffer.TEMP.rssi * 100 / 0x0F;
+
+   buildDeviceName();
+   buildDeviceModel();
 }
 
 CTemp::~CTemp()
@@ -42,28 +45,27 @@ const CByteBuffer CTemp::encode(boost::shared_ptr<ISequenceNumberProvider> seqNu
 
 void CTemp::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   // TODO gérer notre liste locale de devices pour ne déclarer (et tester sa déclaration) qu'une fois le device
-   if (!context->deviceExists(getDeviceName()))
+   if (!context->deviceExists(m_deviceName))
    {
-      context->declareDevice(getDeviceName(), getSensorModel());
-      context->declareKeyword(getDeviceName(), "temperature", yApi::CStandardCapacities::Temperature);
-      context->declareKeyword(getDeviceName(), "battery", yApi::CStandardCapacities::BatteryLevel);
-      context->declareKeyword(getDeviceName(), "rssi", yApi::CStandardCapacities::Rssi);
+      context->declareDevice(m_deviceName, m_deviceModel);
+      context->declareKeyword(m_deviceName, "temperature", yApi::CStandardCapacities::Temperature);
+      context->declareKeyword(m_deviceName, "battery", yApi::CStandardCapacities::BatteryLevel);
+      context->declareKeyword(m_deviceName, "rssi", yApi::CStandardCapacities::Rssi);
    }
 
-   context->historizeData(getDeviceName(), "temperature", m_temperature);
-   context->historizeData(getDeviceName(), "battery", m_batteryLevel);
-   context->historizeData(getDeviceName(), "rssi", m_rssi);
+   context->historizeData(m_deviceName, "temperature", m_temperature);
+   context->historizeData(m_deviceName, "battery", m_batteryLevel);
+   context->historizeData(m_deviceName, "rssi", m_rssi);
 }
 
-std::string CTemp::getDeviceName() const
+void CTemp::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
    ssdeviceName << m_subType << "." << m_id;
-   return ssdeviceName.str();
+   m_deviceName = ssdeviceName.str();
 }
 
-std::string CTemp::getSensorModel() const
+void CTemp::buildDeviceModel()
 {
    std::ostringstream ssModel;
 
@@ -82,7 +84,7 @@ std::string CTemp::getSensorModel() const
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }
 
-   return ssModel.str();
+   m_deviceModel = ssModel.str();
 }
 
 } // namespace rfxcomMessages

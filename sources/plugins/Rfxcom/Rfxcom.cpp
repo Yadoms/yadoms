@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Rfxcom.h"
 #include <shared/plugin/ImplementationHelper.h>
+#include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 #include "RfxcomFactory.h"
@@ -52,7 +53,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                boost::shared_ptr<yApi::IDeviceCommand> command(context->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceCommand> >());
                YADOMS_LOG(debug) << "Command received :" << command->toString();
 
-               onCommand(command->getBody(), m_devices->getDeviceParameters(command->getTargetDevice()));
+               onCommand(command->getBody(), context->getDeviceDetails(command->getTargetDevice()));
 
                break;
             }
@@ -73,9 +74,9 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                YADOMS_LOG(debug) << "Manually device creation request received :" << data->toString();
 
                // Declare the device
-               m_devices->declareDevice(data->getDevice(), shared::CStringExtension::EmptyString, data->getParameters());
+               context->declareDevice(data->getDevice(), shared::CStringExtension::EmptyString, data->getParameters());
                // Declare associated keywords (= values managed by this device)
-               context->declareCustomKeyword(data->getDevice(), data->getKeyword(), data->getCapacity(), yApi::kWriteOnly, yApi::kNoData);
+               context->declareKeyword(data->getDevice(), data->getKeyword(), yApi::CStandardCapacities::Switch/* TODO en attendant de récupérer de data->getCapacity()*/);
 
                break;
             }

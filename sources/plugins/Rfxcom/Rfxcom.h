@@ -3,7 +3,6 @@
 #include "RfxcomConfiguration.h"
 #include "Transceiver.h"
 #include "IPort.h"
-#include "IDeviceList.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -70,11 +69,6 @@ private:
    /// \brief	The RFXCom protocol implementation object
    //--------------------------------------------------------------
    boost::shared_ptr<ITransceiver> m_transceiver;
-
-   //--------------------------------------------------------------
-   /// \brief	The cache list of known devices
-   //--------------------------------------------------------------
-   boost::shared_ptr<IDeviceList> m_devices;
 };
 
 

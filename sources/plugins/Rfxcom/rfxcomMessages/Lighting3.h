@@ -43,6 +43,16 @@ namespace rfxcomMessages
       
    protected:
       //--------------------------------------------------------------
+      /// \brief	                        Build the device name
+      //--------------------------------------------------------------
+      void buildDeviceName();
+
+      //--------------------------------------------------------------
+      /// \brief	                        Build the sensor model
+      //--------------------------------------------------------------
+      void buildDeviceModel();
+
+      //--------------------------------------------------------------
       /// \brief	                        Convert Yadoms command to protocol value
       /// \param[in] yadomsCommand        The command from Yadoms
       /// \return                         The value known by the protocol
@@ -83,5 +93,15 @@ namespace rfxcomMessages
       /// \brief	The RSSI (received messages only)
       //--------------------------------------------------------------
       unsigned char m_rssi;
+
+      //--------------------------------------------------------------
+      /// \brief	The device name
+      //--------------------------------------------------------------
+      std::string m_deviceName;
+
+      //--------------------------------------------------------------
+      /// \brief	The device model
+      //--------------------------------------------------------------
+      std::string m_deviceModel;
    };
 } // namespace rfxcomMessages
