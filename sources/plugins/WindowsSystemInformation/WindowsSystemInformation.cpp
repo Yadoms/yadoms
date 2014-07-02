@@ -92,7 +92,8 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
                      TempList = DisksList.getList();
 
                      for(DisksListIterator=TempList.begin(); DisksListIterator!=TempList.end(); ++DisksListIterator)
-	                  {
+	                  {  
+                        //TODO : Modifier cette déclaration, car les disques ne sont pas historisés pour le moment
                         CWindowsSystemDiskUsage DiskUsage("DiskUsage", *DisksListIterator);
 
                         ss3 << std::fixed << std::setprecision(2) << DiskUsage.getValue();
