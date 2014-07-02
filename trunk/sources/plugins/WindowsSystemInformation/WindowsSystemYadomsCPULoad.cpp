@@ -5,7 +5,7 @@
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
 CWindowsSystemYadomsCPULoad::CWindowsSystemYadomsCPULoad(const std::string & deviceId)
-   :m_deviceId(deviceId), m_CPULoad(0)
+   :m_deviceId(deviceId), m_CPULoad(0), m_Capacity("cpuload"), m_Keyword("YadomsCPULoad")
 {
         SYSTEM_INFO sysInfo;
         FILETIME ftime, fsys, fuser;
@@ -36,19 +36,29 @@ const std::string& CWindowsSystemYadomsCPULoad::getDeviceId() const
    return m_deviceId;
 }
 
+const std::string& CWindowsSystemYadomsCPULoad::getCapacity() const
+{
+   return m_Capacity;
+}
+
+const std::string& CWindowsSystemYadomsCPULoad::getKeyword() const
+{
+   return m_Keyword;
+}
+
 void CWindowsSystemYadomsCPULoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    // Declare the device
    context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
 
    // Declare associated keywords (= values managed by this device)
-   context->declareCustomKeyword(m_deviceId, "YadomsCPULoad", "cpuload", yApi::kReadOnly, yApi::kDecimal, yApi::CStandardUnits::Percent);
+   context->declareCustomKeyword(m_deviceId, getKeyword(), getCapacity(), yApi::kReadOnly, yApi::kDecimal, yApi::CStandardUnits::Percent);
 }
 
 void CWindowsSystemYadomsCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
-   context->historizeData(m_deviceId, "YadomsCPULoad"  , m_CPULoad);
+   context->historizeData(m_deviceId, getKeyword()  , m_CPULoad);
 }
 
 double CWindowsSystemYadomsCPULoad::getValue()

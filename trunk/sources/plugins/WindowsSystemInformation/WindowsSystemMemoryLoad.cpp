@@ -5,7 +5,7 @@
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
 CWindowsSystemMemoryLoad::CWindowsSystemMemoryLoad(const std::string & deviceId)
-   :m_deviceId(deviceId), m_memoryLoad(0)
+   :m_deviceId(deviceId), m_memoryLoad(0), m_Capacity("MemoryLoad"), m_Keyword("WindowsMemoryLoad")
 {}
 
 CWindowsSystemMemoryLoad::~CWindowsSystemMemoryLoad()
@@ -16,19 +16,29 @@ const std::string& CWindowsSystemMemoryLoad::getDeviceId() const
    return m_deviceId;
 }
 
+const std::string& CWindowsSystemMemoryLoad::getCapacity() const
+{
+   return m_Capacity;
+}
+
+const std::string& CWindowsSystemMemoryLoad::getKeyword() const
+{
+   return m_Keyword;
+}
+
 void CWindowsSystemMemoryLoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    // Declare the device
    context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
 
    // Declare associated keywords (= values managed by this device)
-   context->declareCustomKeyword(m_deviceId, "WindowsMemoryLoad", "MemoryLoad", yApi::kReadOnly, yApi::kDecimal, yApi::CStandardUnits::Percent);
+   context->declareCustomKeyword(m_deviceId, getKeyword(), getCapacity(), yApi::kReadOnly, yApi::kDecimal, yApi::CStandardUnits::Percent);
 }
 
 void CWindowsSystemMemoryLoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
-   context->historizeData(m_deviceId, "WindowsMemoryLoad"  , m_memoryLoad);
+   context->historizeData(m_deviceId, getKeyword()  , m_memoryLoad);
 }
 
 double CWindowsSystemMemoryLoad::getValue()

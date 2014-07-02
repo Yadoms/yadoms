@@ -8,7 +8,7 @@
 #pragma comment(lib, "pdh.lib")
 
 CWindowsSystemCPULoad::CWindowsSystemCPULoad(const std::string & deviceId)
-   :m_deviceId(deviceId), m_CPULoad(0)
+   :m_deviceId(deviceId), m_CPULoad(0), m_Capacity("cpuload"), m_Keyword("WindowsCPULoad")
 {
    PDH_STATUS Status;
 
@@ -65,20 +65,30 @@ const std::string& CWindowsSystemCPULoad::getDeviceId() const
    return m_deviceId;
 }
 
+const std::string& CWindowsSystemCPULoad::getCapacity() const
+{
+   return m_Capacity;
+}
+
+const std::string& CWindowsSystemCPULoad::getKeyword() const
+{
+   return m_Keyword;
+}
+
 void CWindowsSystemCPULoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    // Declare the device
    context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
 
    // Declare associated keywords (= values managed by this device)
-   context->declareCustomKeyword(m_deviceId, "WindowsCPULoad", "cpuload", yApi::kReadOnly, yApi::kDecimal, yApi::CStandardUnits::Percent);
+   context->declareCustomKeyword(m_deviceId, getKeyword(), getCapacity(), yApi::kReadOnly, yApi::kDecimal, yApi::CStandardUnits::Percent);
 }
 
 void CWindowsSystemCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
    
-   context->historizeData(m_deviceId, "WindowsCPULoad"  , m_CPULoad);
+   context->historizeData(m_deviceId, getKeyword(), m_CPULoad);
 }
 
 double CWindowsSystemCPULoad::getValue() /*const*/
