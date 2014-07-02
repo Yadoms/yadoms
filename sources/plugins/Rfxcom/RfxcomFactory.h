@@ -34,13 +34,17 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                           Create a transceiver instance
-   /// \param[in] configuration           Plugin instance configuration (contains the serial port)
-   /// \param[in] port                    Port used to exchange messages
+   /// \param[in] context                 Plugin context
+   /// \param[in] configuration           Plugin configuration
+   /// \param[in] evtPortConnection       Port connection event ID
+   /// \param[in] evtPortDataReceived     Data received on port event ID
    /// \return                            The created transceiver
    //--------------------------------------------------------------
    static boost::shared_ptr<ITransceiver> constructTransceiver(
+      boost::shared_ptr<yApi::IYadomsApi> context,
       const IRfxcomConfiguration& configuration,
-      boost::shared_ptr<IPort> port);
+      int evtPortConnection,
+      int evtPortDataReceived);
 
    //--------------------------------------------------------------
    /// \brief	                           Create a port logger instance. This object will log all what is transceived by the port.

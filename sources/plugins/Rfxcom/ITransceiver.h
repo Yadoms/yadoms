@@ -29,8 +29,7 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                     Decode RFXCom data and historize to Yadoms
-   /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] data             Data received
    //--------------------------------------------------------------
-   virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data) const = 0;
+   virtual void historize(const CByteBuffer& data) const = 0;
 };

@@ -24,6 +24,7 @@ namespace shared { namespace serialization {
       //--------------------------------------------------------------
       /// \brief	    Deserialize a string and set data into this CDataContainer instance
       /// \param [in] data    data to deserialize
+      /// \throw      exception::CException on any error
       //--------------------------------------------------------------
       virtual void deserializeFromFile(const std::string & filename) = 0;
    };

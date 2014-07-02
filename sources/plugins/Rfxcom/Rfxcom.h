@@ -61,11 +61,6 @@ private:
    CRfxcomConfiguration m_configuration;
 
    //--------------------------------------------------------------
-   /// \brief	The port used to communicate with RFXcom
-   //--------------------------------------------------------------
-   boost::shared_ptr<IPort> m_port;
-
-   //--------------------------------------------------------------
    /// \brief	The RFXCom protocol implementation object
    //--------------------------------------------------------------
    boost::shared_ptr<ITransceiver> m_transceiver;
