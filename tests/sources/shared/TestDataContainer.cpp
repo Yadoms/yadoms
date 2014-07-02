@@ -26,6 +26,8 @@ BOOST_AUTO_TEST_CASE(SimpleContainer)
 {
    shared::CDataContainer dc;
 
+   boost::posix_time::ptime actualDatetime = boost::posix_time::second_clock::universal_time();
+
    //ensure en new container is empty
    BOOST_CHECK_EQUAL(dc.empty(), true);
    
@@ -38,6 +40,9 @@ BOOST_AUTO_TEST_CASE(SimpleContainer)
    dc.set<std::string>("StringParameter", "Yadoms is so powerful !");
    dc.set<int>("MySection.SubIntParameter", 123);
    dc.set<std::string>("MySection.SubStringParameter", "Just a string parameter in the sub-section");
+   dc.set<boost::posix_time::ptime>("DateTimeParameter", actualDatetime);
+
+
 
    BOOST_CHECK_EQUAL(dc.get<bool>("BoolParameter"), true);
    BOOST_CHECK_EQUAL(dc.get<double>("DecimalParameter"), 18.4);
@@ -48,6 +53,7 @@ BOOST_AUTO_TEST_CASE(SimpleContainer)
    BOOST_CHECK_EQUAL(dc.get<std::string>("StringParameter"), "Yadoms is so powerful !");
    BOOST_CHECK_EQUAL(dc.get<int>("MySection.SubIntParameter"), 123);
    BOOST_CHECK_EQUAL(dc.get<std::string>("MySection.SubStringParameter"), "Just a string parameter in the sub-section");
+   BOOST_CHECK_EQUAL(dc.get<boost::posix_time::ptime>("DateTimeParameter"), actualDatetime);
 
 
    shared::CDataContainer test;
@@ -100,6 +106,7 @@ BOOST_AUTO_TEST_CASE(Serialization)
       "\"IntParameter\": \"42\","
       "\"Serial port\": \"tty0\","
       "\"StringParameter\": \"Yadoms is so powerful !\","
+      "\"DateTimeParameter\": \"20140702T113500\","
       "\"MySection\": {"
       "\"SubIntParameter\": \"123\","
       "\"SubStringParameter\": \"Just a string parameter in the sub-section\""
@@ -117,6 +124,9 @@ BOOST_AUTO_TEST_CASE(Serialization)
    BOOST_CHECK_EQUAL(cfg.get<std::string>("StringParameter"), "Yadoms is so powerful !");
    BOOST_CHECK_EQUAL(cfg.get<int>("MySection.SubIntParameter"), 123);
    BOOST_CHECK_EQUAL(cfg.get<std::string>("MySection.SubStringParameter"), "Just a string parameter in the sub-section");
+
+   boost::posix_time::ptime expected(boost::gregorian::date(2014, 7, 2), boost::posix_time::hours(11) + boost::posix_time::minutes(35) + boost::posix_time::seconds(0));
+   BOOST_CHECK_EQUAL(cfg.get<boost::posix_time::ptime>("DateTimeParameter"), expected);
 
    //check that serialization match original values
    //just remove space, \n, \t and \r from strings
