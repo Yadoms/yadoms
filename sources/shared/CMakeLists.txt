@@ -51,13 +51,11 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/IManuallyDeviceCreationData.h
    shared/plugin/yadomsApi/IManuallyDeviceCreationTestData.h
 	shared/plugin/yadomsApi/StandardUnits.h
-	shared/plugin/yadomsApi/StandardUnits.cpp
+	shared/plugin/yadomsApi/StandardCapacities.h
+	shared/plugin/yadomsApi/StandardValues.h
+	shared/plugin/yadomsApi/StandardDeclarations.cpp
 	shared/plugin/yadomsApi/StandardCapacity.h
 	shared/plugin/yadomsApi/StandardCapacity.cpp
-	shared/plugin/yadomsApi/StandardCapacities.h
-	shared/plugin/yadomsApi/StandardCapacities.cpp
-	shared/plugin/yadomsApi/StandardValues.h
-	shared/plugin/yadomsApi/StandardValues.cpp
 	shared/plugin/yadomsApi/IYadomsApi.h
 
    shared/plugin/yadomsApi/commands/Curtain.cpp

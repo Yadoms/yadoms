@@ -31,7 +31,8 @@ BOOST_AUTO_TEST_CASE(SimpleContainer)
    
    dc.set<bool>("BoolParameter", true);
    dc.set<double>("DecimalParameter", 18.4);
-   dc.set<std::string>("EnumParameter", "EnumValue1");
+   dc.set<EEnumType>("EnumParameter", kEnumValue2);
+   dc.set<std::string>("EnumAsStringParameter", "EnumValue1");
    dc.set<int>("IntParameter", 42);
    dc.set<std::string>("Serial port", "tty0");
    dc.set<std::string>("StringParameter", "Yadoms is so powerful !");
@@ -40,7 +41,8 @@ BOOST_AUTO_TEST_CASE(SimpleContainer)
 
    BOOST_CHECK_EQUAL(dc.get<bool>("BoolParameter"), true);
    BOOST_CHECK_EQUAL(dc.get<double>("DecimalParameter"), 18.4);
-   BOOST_CHECK_EQUAL(dc.getEnumValue<EEnumType>("EnumParameter", EEnumTypeNames), kEnumValue1);
+   BOOST_CHECK_EQUAL(dc.get<EEnumType>("EnumParameter"), kEnumValue2);
+   BOOST_CHECK_EQUAL(dc.getEnumValue<EEnumType>("EnumAsStringParameter", EEnumTypeNames), kEnumValue1);
    BOOST_CHECK_EQUAL(dc.get<int>("IntParameter"), 42);
    BOOST_CHECK_EQUAL(dc.get<std::string>("Serial port"), "tty0");
    BOOST_CHECK_EQUAL(dc.get<std::string>("StringParameter"), "Yadoms is so powerful !");
@@ -93,7 +95,8 @@ BOOST_AUTO_TEST_CASE(Serialization)
    const std::string defaultConf("{"
       "\"BoolParameter\": \"true\","
       "\"DecimalParameter\": \"18.4\","
-      "\"EnumParameter\": \"EnumValue1\","
+      "\"EnumParameter\": \"12\","
+      "\"EnumAsStringParameter\": \"EnumValue1\","
       "\"IntParameter\": \"42\","
       "\"Serial port\": \"tty0\","
       "\"StringParameter\": \"Yadoms is so powerful !\","
@@ -108,7 +111,8 @@ BOOST_AUTO_TEST_CASE(Serialization)
    BOOST_CHECK_EQUAL(cfg.get<bool>("BoolParameter"), true);
    BOOST_CHECK_EQUAL(cfg.get<double>("DecimalParameter"), 18.4);
    BOOST_CHECK_EQUAL(cfg.get<int>("IntParameter"), 42);
-   BOOST_CHECK_EQUAL(cfg.getEnumValue<EEnumType>("EnumParameter", EEnumTypeNames), kEnumValue1);
+   BOOST_CHECK_EQUAL(cfg.get<EEnumType>("EnumParameter"), kEnumValue2);
+   BOOST_CHECK_EQUAL(cfg.getEnumValue<EEnumType>("EnumAsStringParameter", EEnumTypeNames), kEnumValue1);
    BOOST_CHECK_EQUAL(cfg.get<std::string>("Serial port"), "tty0");
    BOOST_CHECK_EQUAL(cfg.get<std::string>("StringParameter"), "Yadoms is so powerful !");
    BOOST_CHECK_EQUAL(cfg.get<int>("MySection.SubIntParameter"), 123);
