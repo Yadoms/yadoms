@@ -27,7 +27,7 @@ CInformation::CInformation(const boost::filesystem::path& pluginPath)
       packageFile = m_path / "package.json";
       container.deserializeFromFile(packageFile.string());
    }
-   catch (boost::property_tree::json_parser::json_parser_error& e)
+   catch (shared::exception::CException& e)
    {
       throw shared::exception::CInvalidParameter(std::string("Error reading package.json : ") + e.what());   	
    }

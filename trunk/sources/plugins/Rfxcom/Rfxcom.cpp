@@ -35,12 +35,11 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       // Load configuration values (provided by database)
       m_configuration.initializeWith(context->getConfiguration());
 
-      // Create the port instance
-      boost::shared_ptr<IPortLogger> portLogger(CRfxcomFactory::constructPortLogger());
-      m_port = CRfxcomFactory::constructPort(m_configuration, context->getEventHandler(), kEvtPortConnection, kEvtPortDataReceived, portLogger);
-
       // the main loop
       YADOMS_LOG(debug) << "CRfxcom is running...";
+
+      // Create the connection
+      m_transceiver = CRfxcomFactory::constructTransceiver(context, m_configuration, kEvtPortConnection, kEvtPortDataReceived);
 
       while(1)
       {
@@ -88,13 +87,13 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
                // Close connection
-               m_port.reset();
+               m_transceiver.reset();
 
                // Update configuration
                m_configuration.initializeWith(newConfiguration);
 
                // Create new connection
-               m_port = CRfxcomFactory::constructPort(m_configuration, context->getEventHandler(), kEvtPortConnection, kEvtPortDataReceived, portLogger);
+               m_transceiver = CRfxcomFactory::constructTransceiver(context, m_configuration, kEvtPortConnection, kEvtPortDataReceived);
 
                break;
             }
@@ -114,7 +113,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             }
          case kprotocolErrorRetryTimer:
             {
-               m_port = CRfxcomFactory::constructPort(m_configuration, context->getEventHandler(), kEvtPortConnection, kEvtPortDataReceived, portLogger);
+               m_transceiver = CRfxcomFactory::constructTransceiver(context, m_configuration, kEvtPortConnection, kEvtPortDataReceived);
                break;
             }
          default:
@@ -141,14 +140,9 @@ void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> c
    YADOMS_LOG(debug) << "RFXCom is now connected";
    context->recordPluginEvent(yApi::IYadomsApi::kInfo, "RFXCom is now connected");
 
-   BOOST_ASSERT_MSG(!m_transceiver, "RFXCom was already connected");
-   m_transceiver.reset();
-
    try
    {
-      m_transceiver = CRfxcomFactory::constructTransceiver(m_configuration, m_port);
-
-      // Reset the RFXCom state
+      // Reset the RFXCom
       m_transceiver->processReset();
    }
    catch (CProtocolException& e)
@@ -156,13 +150,13 @@ void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> c
       YADOMS_LOG(error) << "Error resetting RFXCom transceiver : " << e.what();
 
       // Stop the communication, and try later
-      m_port.reset();
+      m_transceiver.reset();
       context->getEventHandler().createTimer(kprotocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
    }
    catch (CPortException& e)
    {
       YADOMS_LOG(error) << "Error connecting to RFXCom transceiver : " << e.what();
-      // Unconnection will be notified, we just have to wait...
+      // Disconnection will be notified, we just have to wait...
    }
 }
 
@@ -176,5 +170,5 @@ void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYadomsApi>
 
 void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data)
 {
-   m_transceiver->historize(context, data);
+   m_transceiver->historize(data);
 }

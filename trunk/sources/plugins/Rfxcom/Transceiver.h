@@ -8,6 +8,9 @@
 #include "ISequenceNumberProvider.h"
 #include "IRfxcomConfiguration.h"
 
+// Shortcut to yadomsApi namespace
+namespace yApi = shared::plugin::yadomsApi;
+
 //--------------------------------------------------------------
 /// \brief	This class implement the RFXCom protocol
 //--------------------------------------------------------------
@@ -16,10 +19,12 @@ class CTransceiver : public ITransceiver
 public:
    //--------------------------------------------------------------
    /// \brief	                           Constructor
-   /// \param[in] configuration           Plugin instance configuration (contains the serial port)
-   /// \param[in] port                    Port used to exchange messages
+   /// \param[in] context                 Plugin context
+   /// \param[in] configuration           Plugin configuration
+   /// \param[in] evtPortConnection       Port connection event ID
+   /// \param[in] evtPortDataReceived     Data received on port event ID
    //--------------------------------------------------------------
-   CTransceiver(const IRfxcomConfiguration& configuration, boost::shared_ptr<IPort> port);
+   CTransceiver(boost::shared_ptr<yApi::IYadomsApi> context, const IRfxcomConfiguration& configuration, int evtPortConnection, int evtPortDataReceived);
 
    //--------------------------------------------------------------
    /// \brief	                           Destructor
@@ -29,29 +34,28 @@ public:
    // ITransceiver implementation
    virtual void processReset();
    virtual void send(const std::string& command, const std::string& deviceParameters);
-   virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data) const;
+   virtual void historize(const CByteBuffer& data) const;
    // [END] ITransceiver implementation
 
 protected:
    //--------------------------------------------------------------
-   /// \brief	                     Build the command message for the transceiver
-   /// \param [in] command          Command type
+   /// \brief	                     Reset the RFXCom
    //--------------------------------------------------------------
-   CByteBuffer buildRfxcomCommand(unsigned char command) const;
+   void sendReset();
 
    //--------------------------------------------------------------
-   /// \brief	                     Build the set mode command message for the transceiver
-   /// \param [in] frequency        Frequency to set
-   /// \param [in] configuration    Mode configuration
-   //--------------------------------------------------------------
-   CByteBuffer buildRfxcomSetModeCommand(unsigned char frequency, const IRfxcomConfiguration& configuration) const;
-
-   //--------------------------------------------------------------
-   /// \brief	                     Send a command to RFXCom and check answer (status message)
-   /// \param [in] cmd              The command to send
+   /// \brief	                     Get RFXCom status
    /// \return                      RfxCom status
    //--------------------------------------------------------------
-   CTransceiverStatus sendCommand(const CByteBuffer& cmd);
+   CTransceiverStatus sendCommandGetStatus();
+
+   //--------------------------------------------------------------
+   /// \brief	                     Set RFXCom mode
+   /// \param[in] frequency         RFXCom frequency
+   /// \param[in] configuration     Protocols activations
+   /// \return                      RfxCom status
+   //--------------------------------------------------------------
+   CTransceiverStatus sendCommandSetMode(unsigned char frequency, const IRfxcomConfiguration& configuration);
 
    //--------------------------------------------------------------
    /// \brief	                     Check the acknowledge received from RFXCom
@@ -71,9 +75,29 @@ protected:
 
 private:
    //--------------------------------------------------------------
-   /// \brief  The plugin configuration
+   /// \brief	The plugin context
+   //--------------------------------------------------------------
+   boost::shared_ptr<yApi::IYadomsApi> m_context;
+
+   //--------------------------------------------------------------
+   /// \brief	The plugin configuration
    //--------------------------------------------------------------
    const IRfxcomConfiguration& m_configuration;
+
+   //--------------------------------------------------------------
+   /// \brief	The port connection event ID
+   //--------------------------------------------------------------
+   const int m_evtPortConnection;
+
+   //--------------------------------------------------------------
+   /// \brief	The data received on port event ID
+   //--------------------------------------------------------------
+   const int m_evtPortDataReceived;
+
+   //--------------------------------------------------------------
+   /// \brief	The port logger
+   //--------------------------------------------------------------
+   boost::shared_ptr<IPortLogger> m_portLogger;
 
    //--------------------------------------------------------------
    /// \brief  The communication port

@@ -3,6 +3,7 @@
 #include <shared/Log.h>
 #include <shared/DataContainer.h>
 #include <shared/exception/InvalidParameter.hpp>
+#include "RfxcomFactory.h"
 #include "rfxcomMessages/Lighting1.h"
 #include "rfxcomMessages/Lighting3.h"
 #include "rfxcomMessages/Lighting6.h"
@@ -12,10 +13,14 @@
 #include "PortException.hpp"
 #include "ProtocolException.hpp"
 
-
-CTransceiver::CTransceiver(const IRfxcomConfiguration& configuration, boost::shared_ptr<IPort> port)
-   :m_configuration(configuration), m_port(port), m_seqNumberProvider(new CIncrementSequenceNumber())
+//TODO voir dans package.json les protocoles à acvtiver par défaut
+CTransceiver::CTransceiver(boost::shared_ptr<yApi::IYadomsApi> context, const IRfxcomConfiguration& configuration, int evtPortConnection, int evtPortDataReceived)
+   :m_context(context), m_configuration(configuration), m_evtPortConnection(evtPortConnection), m_evtPortDataReceived(evtPortDataReceived),
+   m_seqNumberProvider(new CIncrementSequenceNumber())
 {
+   // Create the port instance
+   m_portLogger = CRfxcomFactory::constructPortLogger();
+   m_port = CRfxcomFactory::constructPort(m_configuration, m_context->getEventHandler(), m_evtPortConnection, m_evtPortDataReceived, m_portLogger);
 }
 
 CTransceiver::~CTransceiver()
@@ -28,10 +33,12 @@ void CTransceiver::processReset()
    // See the RFXCom SDK specification for more information about this sequence
 
    m_seqNumberProvider->reset();
-   m_port->send(buildRfxcomCommand(cmdRESET));
+   YADOMS_LOG(info) << "Reset the RFXCom...";
+   sendReset();
    boost::this_thread::sleep(boost::posix_time::milliseconds(50));
    m_port->flush();
-   const CTransceiverStatus status = sendCommand(buildRfxcomCommand(cmdSTATUS));
+   YADOMS_LOG(info) << "Get the RFXCom status...";
+   const CTransceiverStatus status = sendCommandGetStatus();
 
    YADOMS_LOG(info) << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware version (" << status.getFirmwareVersion() << ")";
    status.traceEnabledProtocols();
@@ -39,14 +46,15 @@ void CTransceiver::processReset()
    if (status.needConfigurationUpdate(m_configuration))
    {
       // Update active protocols list
-      const CTransceiverStatus newStatus = sendCommand(buildRfxcomSetModeCommand(status.getRfxcomType(), m_configuration));// Don't change the frequency
+      const CTransceiverStatus newStatus = sendCommandSetMode(status.getRfxcomType(), m_configuration);// Don't change the frequency
       if (newStatus.needConfigurationUpdate(m_configuration))
          throw CProtocolException("Error configuring RfxCom, configuration was not taken into account");
    }
 }
 
-CByteBuffer CTransceiver::buildRfxcomCommand(unsigned char command) const
+void CTransceiver::sendReset()
 {
+   // Build request
    RBUF request;
    MEMCLEAR(request.ICMND);   // For better performance, just clear the needed sub-structure of RBUF
 
@@ -54,13 +62,56 @@ CByteBuffer CTransceiver::buildRfxcomCommand(unsigned char command) const
    request.ICMND.packettype = pTypeInterfaceControl;
    request.ICMND.subtype = sTypeInterfaceCommand;
    request.ICMND.seqnbr = m_seqNumberProvider->next();
-   request.ICMND.cmnd = command;
+   request.ICMND.cmnd = cmdRESET;
 
-   return CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
+   // Send and receive
+   m_port->send(CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND)));
+
+   // No answer
 }
 
-CByteBuffer CTransceiver::buildRfxcomSetModeCommand(unsigned char frequency, const IRfxcomConfiguration& configuration) const
+CTransceiverStatus CTransceiver::sendCommandGetStatus()
 {
+   // Build request
+   RBUF request;
+   MEMCLEAR(request.ICMND);   // For better performance, just clear the needed sub-structure of RBUF
+
+   request.ICMND.packetlength = ENCODE_PACKET_LENGTH(ICMND);
+   request.ICMND.packettype = pTypeInterfaceControl;
+   request.ICMND.subtype = sTypeInterfaceCommand;
+   request.ICMND.seqnbr = m_seqNumberProvider->next();
+   request.ICMND.cmnd = cmdSTATUS;
+
+   // Send and receive
+   CByteBuffer answer = m_port->sendAndReceive(CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND)));
+
+   // Check answer
+
+   // - Check message size
+   if (answer.size() != IRESPONSE_size)
+   {
+      throw CProtocolException("Error reading status, invalid message size");
+   }
+
+   const RBUF* rbuf = (const RBUF*)answer.content();
+
+   // - Check message data
+   if (rbuf->IRESPONSE.packetlength != (IRESPONSE_size - 1) ||
+      rbuf->IRESPONSE.packettype != pTypeInterfaceMessage ||
+      rbuf->IRESPONSE.subtype != sTypeInterfaceResponse ||
+      rbuf->IRESPONSE.seqnbr != request.ICMND.seqnbr ||
+      rbuf->IRESPONSE.cmnd != request.ICMND.cmnd)
+   {
+      throw CProtocolException("Error reading status, invalid data received");
+   }
+
+   CTransceiverStatus status(*rbuf);
+   return status;
+}
+
+CTransceiverStatus CTransceiver::sendCommandSetMode(unsigned char frequency, const IRfxcomConfiguration& configuration)
+{
+   // Build request
    RBUF request;
    MEMCLEAR(request.ICMND);   // For better performance, just clear the needed sub-structure of RBUF
 
@@ -100,12 +151,8 @@ CByteBuffer CTransceiver::buildRfxcomSetModeCommand(unsigned char frequency, con
    if (configuration.isARCenabled()       ) request.ICMND.msg5 |= 0x02;
    if (configuration.isX10enabled()       ) request.ICMND.msg5 |= 0x01;
 
-   return CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
-}
-
-CTransceiverStatus CTransceiver::sendCommand(const CByteBuffer& cmd)
-{
-   CByteBuffer answer = m_port->sendAndReceive(cmd);
+   // Send and receive
+   CByteBuffer answer = m_port->sendAndReceive(CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND)));
 
    // Check answer
 
@@ -121,8 +168,8 @@ CTransceiverStatus CTransceiver::sendCommand(const CByteBuffer& cmd)
    if (rbuf->IRESPONSE.packetlength != (IRESPONSE_size - 1) ||
       rbuf->IRESPONSE.packettype != pTypeInterfaceMessage ||
       rbuf->IRESPONSE.subtype != sTypeInterfaceResponse ||
-      rbuf->IRESPONSE.seqnbr != m_seqNumberProvider->last() ||
-      rbuf->IRESPONSE.cmnd != cmdSTATUS)
+      rbuf->IRESPONSE.seqnbr != request.ICMND.seqnbr ||
+      rbuf->IRESPONSE.cmnd != request.ICMND.cmnd)
    {
       throw CProtocolException("Error reading status, invalid data received");
    }
@@ -212,7 +259,7 @@ const CByteBuffer CTransceiver::buildRfxcomMessage(const std::string& command, c
    }
 }
 
-void CTransceiver::historize(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data) const
+void CTransceiver::historize(const CByteBuffer& data) const
 {
    const RBUF * const buf = reinterpret_cast<const RBUF* const>(data.content());
 
@@ -231,5 +278,5 @@ void CTransceiver::historize(boost::shared_ptr<yApi::IYadomsApi> context, const 
          return;
       }
    }
-   sensorMessage->historizeData(context);
+   sensorMessage->historizeData(m_context);
 }
