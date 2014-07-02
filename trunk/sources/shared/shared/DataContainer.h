@@ -551,6 +551,26 @@ namespace shared
          throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
       }
    }
+
+
+   template<>
+   inline boost::posix_time::ptime CDataContainer::getInternal(const std::string& parameterName) const
+   {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+      try
+      {
+         return boost::posix_time::from_iso_string(m_tree.get<std::string>(parameterName));
+      }
+      catch (boost::property_tree::ptree_bad_path& e)
+      {
+         throw exception::CInvalidParameter(parameterName + " : " + e.what());
+      }
+      catch (boost::property_tree::ptree_bad_data& e)
+      {
+         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
+      }
+   }
    
 
    inline void CDataContainer::getObject(const std::string& parameterName, IDataContainable * toFill) const
@@ -648,6 +668,26 @@ namespace shared
       try
       {
          m_tree.add_child(parameterName, value.m_tree);
+      }
+      catch (boost::property_tree::ptree_bad_path& e)
+      {
+         throw exception::CInvalidParameter(parameterName + " : " + e.what());
+      }
+      catch (boost::property_tree::ptree_bad_data& e)
+      {
+         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
+      }
+   }  
+   
+   
+   template<>
+   inline void CDataContainer::setInternal(const std::string& parameterName, const boost::posix_time::ptime & value)
+   {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+      try
+      {
+         m_tree.put(parameterName, boost::posix_time::to_iso_string(value));
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
