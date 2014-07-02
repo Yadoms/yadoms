@@ -117,8 +117,6 @@ namespace shared
       //
       //--------------------------------------------------------------
 
-      template <int> struct dummy { dummy(int) {} };
-
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
       /// \param [in] parameterName    Name of the parameter
@@ -127,10 +125,8 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline T get(const std::string& parameterName, typename boost::disable_if< boost::is_enum< T > >::type* dummy = 0) const;
+      inline T get(const std::string& parameterName) const;
 
-      template<class T>
-      inline T get(const std::string& parameterName, typename boost::enable_if< boost::is_enum< T > >::type* dummy = 0) const;
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter value. If the name is not found the default value is returned
@@ -141,7 +137,7 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline T get(const std::string& parameterName, const T & defaultValue, const void * = NULL) const;
+      inline T get(const std::string& parameterName, const T & defaultValue) const;
 
       //--------------------------------------------------------------
       /// \brief	    Set parameter value
@@ -385,21 +381,74 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Helper structure for get/set with single value type (int, double, class,...)
       //--------------------------------------------------------------
-      template <typename T> struct helper {
-         static T getInternal(const CDataContainer * tree, const std::string& parameterName) { return tree->getInternal<T>(parameterName); }
+      template <typename T, class Enable = void> struct helper {
+         
+         //--------------------------------------------------------------
+         /// \brief	    GET Method for all standard types (int, double, std::string,...)
+         //--------------------------------------------------------------
+         static T getInternal(const CDataContainer * tree, const std::string& parameterName)
+         { 
+            return tree->getInternal<T>(parameterName); 
+         }
+
+         //--------------------------------------------------------------
+         /// \brief	    GET Method for any rype, checking its validity
+         //--------------------------------------------------------------
          static T getInternal(const CDataContainer * tree, const std::string& parameterName, const T & defaultValue)
          {
             if (tree->hasValue(parameterName))
                return tree->getInternal<T>(parameterName);
             return defaultValue;
-         }
+         }         
          
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const T & value) 
+         //--------------------------------------------------------------
+         /// \brief	    SET Method for all standard types (int, double, std::string,...)
+         //--------------------------------------------------------------
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const T & value)
          { 
             tree->setInternal<T>(parameterName, value); 
-         }
-         
+         }  
+        
       };
+
+
+      //--------------------------------------------------------------
+      /// \brief	    Helper structure for get/set with enum
+      //--------------------------------------------------------------
+      template <typename T> struct helper<T, typename boost::enable_if< boost::is_enum< T > >::type >
+      {
+
+         //--------------------------------------------------------------
+         /// \brief	    GET Method for enumeration
+         //--------------------------------------------------------------
+         static T getInternal(const CDataContainer * tree, const std::string& parameterName)
+         {
+            return (T)tree->getInternal<int>(parameterName);
+         }
+
+         //--------------------------------------------------------------
+         /// \brief	    GET Method enumeration, checking its validity
+         //--------------------------------------------------------------
+         static T getInternal(const CDataContainer * tree, const std::string& parameterName, const T & defaultValue)
+         {
+            if (tree->hasValue(parameterName))
+               return (T)tree->getInternal<int>(parameterName);
+            return defaultValue;
+         }
+
+         //--------------------------------------------------------------
+         /// \brief	    SET Method for enumeration
+         //--------------------------------------------------------------
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const T & value)
+         {
+            tree->setInternal<int>(parameterName, (int)value);
+         }
+
+      };
+
+
+
+
 
       //--------------------------------------------------------------
       /// \brief	    Helper structure for get/set with vector of value type (vector<int>, vector<double>, vector<class>,...)
@@ -443,19 +492,14 @@ namespace shared
    ///				-> for template specialization
    //--------------------------------------------------------------
    template<typename T>
-   inline T CDataContainer::get(const std::string& parameterName, typename boost::disable_if< boost::is_enum< T > >::type* dummy) const
+   inline T CDataContainer::get(const std::string& parameterName) const
    {
       return helper<T>::getInternal(this, parameterName);
    }
 
-   template< typename T>
-   inline T CDataContainer::get(const std::string& parameterName, typename boost::enable_if< boost::is_enum< T > >::type* dummy) const
-   {
-      return (T) helper<int>::getInternal(this, parameterName);
-   }
 
    template<typename T>
-   inline T CDataContainer::get(const std::string& parameterName, const T & defaultValue, const void *) const
+   inline T CDataContainer::get(const std::string& parameterName, const T & defaultValue) const
    {
       return helper<T>::getInternal(this, parameterName, defaultValue);
    }
