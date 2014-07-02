@@ -10,7 +10,7 @@
 namespace yApi = shared::plugin::yadomsApi;
 
 CLinuxSystemMemoryLoad::CLinuxSystemMemoryLoad(const std::string & deviceId)
-   :m_deviceId(deviceId), m_memoryLoad(0)
+   :m_deviceId(deviceId), m_memoryLoad(0), m_Capacity("MemoryLoad"), m_Keyword("LinuxMemoryLoad")
 {}
 
 CLinuxSystemMemoryLoad::~CLinuxSystemMemoryLoad()
@@ -21,19 +21,29 @@ const std::string& CLinuxSystemMemoryLoad::getDeviceId() const
    return m_deviceId;
 }
 
+const std::string& CLinuxSystemMemoryLoad::getCapacity() const
+{
+   return m_Capacity;
+}
+
+const std::string& CLinuxSystemMemoryLoad::getKeyword() const
+{
+   return m_Keyword;
+}
+
 void CLinuxSystemMemoryLoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    // Declare the device
    context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
 
    // Declare associated keywords (= values managed by this device)
-   //context->declareKeyword(m_deviceId, "LinuxMemoryLoad"  , "MemoryLoad" , yApi::IYadomsApi::kReadOnly , yApi::IYadomsApi::kDecimal, shared::plugin::yadomsApi::CStandardUnits::Percent);
+   context->declareCustomKeyword(m_deviceId, getCapacity()  , getKeyword() , yApi::kReadOnly , yApi::kDecimal, shared::plugin::yadomsApi::CStandardUnits::Percent);
 }
 
 void CLinuxSystemMemoryLoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
-   context->historizeData(m_deviceId, "LinuxMemoryLoad"  , m_memoryLoad);
+   context->historizeData(m_deviceId, getCapacity()  , m_memoryLoad);
 }
 
 double CLinuxSystemMemoryLoad::getValue()

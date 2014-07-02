@@ -40,5 +40,17 @@ public:
    /// \return     value in pourcentage
    //--------------------------------------------------------------
    virtual double getValue() = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Returns the Capacity String
+   /// \return     Device ID
+   //--------------------------------------------------------------
+   virtual const std::string& getCapacity() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Returns the Keyword String
+   /// \return     Device ID
+   //--------------------------------------------------------------
+   virtual const std::string& getKeyword() const = 0;
 };
 
