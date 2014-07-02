@@ -1,13 +1,13 @@
 {
-   "name": "WindowsSystemInformation",
-   "description": "This plugin provide Windows System information (CPU load, memory load,...)\n",
+   "name": "LinuxSystemInformation",
+   "description": "This plugin provide Linux System information (CPU load, memory load,...)\n",
    "version": "1.0",
    "releaseType": "beta",
-   "author": "JM. BERHAULT",
+   "author": "YADOMS Team",
    "url": "http://sourceforge.net/projects/yadoms/",
    "SupportedPlatforms":
    {
-      "windows": "all"
+      "linux": "all"
    },
    "configurationSchema": ""
 }

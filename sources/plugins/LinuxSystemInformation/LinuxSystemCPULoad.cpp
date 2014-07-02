@@ -5,7 +5,7 @@
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
 CLinuxSystemCPULoad::CLinuxSystemCPULoad(const std::string & deviceId)
-   :m_deviceId(deviceId), m_CPULoad(0)
+   :m_deviceId(deviceId), m_CPULoad(0), m_Capacity("cpuload"), m_Keyword("LinuxCPULoad")
 {
         FILE* file = fopen("/proc/stat", "r");
         fscanf(file, "cpu %Ld %Ld %Ld %Ld", &lastTotalUser, &lastTotalUserLow,
@@ -22,20 +22,30 @@ const std::string& CLinuxSystemCPULoad::getDeviceId() const
    return m_deviceId;
 }
 
+const std::string& CLinuxSystemCPULoad::getCapacity() const
+{
+   return m_Capacity;
+}
+
+const std::string& CLinuxSystemCPULoad::getKeyword() const
+{
+   return m_Keyword;
+}
+
 void CLinuxSystemCPULoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    // Declare the device
    context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
 
    // Declare associated keywords (= values managed by this device)
-   //context->declareKeyword(m_deviceId, "LinuxCPULoad"  , "cpuload", yApi::IYadomsApi::kReadOnly , yApi::IYadomsApi::kDecimal, shared::plugin::yadomsApi::CStandardUnits::Percent);
+   context->declareCustomKeyword(m_deviceId, getKeyword()  , getCapacity(), yApi::kReadOnly , yApi::kDecimal, shared::plugin::yadomsApi::CStandardUnits::Percent);
 }
 
 void CLinuxSystemCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
    
-   context->historizeData(m_deviceId, "LinuxCPULoad"  , m_CPULoad);
+   context->historizeData(m_deviceId, getKeyword()  , m_CPULoad);
 }
 
 double CLinuxSystemCPULoad::getValue()

@@ -45,6 +45,18 @@ public:
    //--------------------------------------------------------------
    virtual double getValue();
 
+   //--------------------------------------------------------------
+   /// \brief	    Returns the Capacity String
+   /// \return     Device ID
+   //--------------------------------------------------------------
+   const std::string& getCapacity() const;
+
+   //--------------------------------------------------------------
+   /// \brief	    Returns the Keyword String
+   /// \return     Device ID
+   //--------------------------------------------------------------
+   const std::string& getKeyword() const;
+
 private:
 
    //--------------------------------------------------------------
@@ -61,5 +73,15 @@ private:
    /// \brief	    Temp variables
    //--------------------------------------------------------------
    unsigned long long lastTotalUser, lastTotalUserLow, lastTotalSys, lastTotalIdle;
+
+   //--------------------------------------------------------------
+   /// \brief	    Capacity string
+   //--------------------------------------------------------------
+   const std::string m_Capacity;
+
+   //--------------------------------------------------------------
+   /// \brief	    Keyword string
+   //--------------------------------------------------------------
+   const std::string m_Keyword;
 
 };
