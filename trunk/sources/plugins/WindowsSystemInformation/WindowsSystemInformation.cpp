@@ -27,7 +27,8 @@ CWindowsSystemInformation::~CWindowsSystemInformation()
 // Event IDs
 enum
 {
-   kEvtTimerSendMessage = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtTimerRefreshCPULoad = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtTimerRefreshDiskAndMemory
 };
 
 void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
@@ -42,13 +43,38 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
       
       CWindowsSystemDisksList     DisksList;
 
+      std::vector<std::string>::const_iterator DisksListIterator;
+      std::vector<std::string> TempList;
+
+      std::vector<CWindowsSystemDiskUsage> DiskUsageList;
+                     
+      TempList = DisksList.getList();
+      int counterDisk = 0;
+
+      for(DisksListIterator=TempList.begin(); DisksListIterator!=TempList.end(); ++DisksListIterator)
+	   {
+         std::ostringstream ssKeyword;
+         std::ostringstream ssName;
+
+         ssKeyword << "WindowsDiskUsage" << counterDisk;
+         ssName << "DiskUsage" << counterDisk;
+         CWindowsSystemDiskUsage DiskUsage(ssName.str(), *DisksListIterator, ssKeyword.str());
+
+         DiskUsage.declareDevice(context);
+         DiskUsageList.push_back(DiskUsage);
+         ++counterDisk;
+      }
+
       CPULoad.declareDevice(context);
       MemoryLoad.declareDevice(context);
       YadomsCPULoad.declareDevice(context);
 
-      // Timer used to send a message periodically
-      context->getEventHandler().createTimer(kEvtTimerSendMessage, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
-
+      // Timer used to read periodically CPU loads
+      context->getEventHandler().createTimer(kEvtTimerRefreshCPULoad      , shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
+      
+      // Timer used to read periodically Disk Usage and Memory Load
+      context->getEventHandler().createTimer(kEvtTimerRefreshDiskAndMemory, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(300));
+      
       // the main loop
       YADOMS_LOG(debug) << "WindowsSystemInformation plugin is running...";
 
@@ -57,15 +83,37 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
          // Wait for an event
          switch(context->getEventHandler().waitForEvents())
          {
-         case kEvtTimerSendMessage:
+         case kEvtTimerRefreshCPULoad:
+            {
+               YADOMS_LOG(debug) << "WindowsSystem plugin :  Read CPU Loads";
+
+                  std::ostringstream ss1;
+                  std::ostringstream ss2;
+
+                  try
+                  {
+                     ss1 << std::fixed << std::setprecision(2) << CPULoad.getValue();
+                     YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  CPU Load : " << ss1.str();
+                     CPULoad.historizeData(context);
+
+                     ss2 << std::fixed << std::setprecision(2) << YadomsCPULoad.getValue();
+                     YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  Yadoms CPU Load : " << ss2.str();
+                  }
+                  catch (boost::system::system_error& e)
+                  {
+                     YADOMS_LOG(error) << "WindowsSystemInformation plugin :  Exception" << e.what();
+                     return;
+                  }
+
+               break;
+            }
+         case kEvtTimerRefreshDiskAndMemory:
             {
                // Timer used here to send a message periodically
 
-               YADOMS_LOG(debug) << "WindowsSystem plugin :  Read a value...";
+               YADOMS_LOG(debug) << "WindowsSystem plugin :  Read Memory and disk Usages";
 
                   std::ostringstream ss;
-                  std::ostringstream ss1;
-                  std::ostringstream ss2;
                   std::ostringstream ss3;
 
                   try
@@ -76,29 +124,13 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
 
                      MemoryLoad.historizeData(context);
 
-                     ss1 << std::fixed << std::setprecision(2) << CPULoad.getValue();
+                     std::vector<CWindowsSystemDiskUsage>::iterator DisksListIterator;
 
-                     YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  CPU Load : " << ss1.str();
-
-                     CPULoad.historizeData(context);
-
-                     ss2 << std::fixed << std::setprecision(2) << YadomsCPULoad.getValue();
-
-                     YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  Yadoms CPU Load : " << ss2.str();
-
-                     std::vector<std::string>::const_iterator DisksListIterator;
-                     std::vector<std::string> TempList;
-                     
-                     TempList = DisksList.getList();
-
-                     for(DisksListIterator=TempList.begin(); DisksListIterator!=TempList.end(); ++DisksListIterator)
-	                  {  
-                        //TODO : Modifier cette déclaration, car les disques ne sont pas historisés pour le moment
-                        CWindowsSystemDiskUsage DiskUsage("DiskUsage", *DisksListIterator);
-
-                        ss3 << std::fixed << std::setprecision(2) << DiskUsage.getValue();
-
-                        YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  Yadoms Disk Usage " << *DisksListIterator << " :" << ss3.str();
+                     for(DisksListIterator=DiskUsageList.begin(); DisksListIterator!=DiskUsageList.end(); ++DisksListIterator)
+	                  { 
+                        ss3 << std::fixed << std::setprecision(2) << (*DisksListIterator).getValue();
+                        (*DisksListIterator).historizeData(context);
+                        YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  Yadoms Disk Usage " << (*DisksListIterator).getDriveName() << " :" << ss3.str();
                      }
                   }
                   catch (boost::system::system_error& e)

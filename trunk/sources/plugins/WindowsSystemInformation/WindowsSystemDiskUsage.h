@@ -15,9 +15,18 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] deviceId    The device ID
-   /// \param[in] deviceId    The drive name ex: C:\
+   /// \param[in] driveName   The drive name ex: C:\
    //--------------------------------------------------------------
    CWindowsSystemDiskUsage(const std::string & deviceId, const std::string & driveName);
+
+   //--------------------------------------------------------------
+   /// \brief	    Constructor
+   /// \param[in] deviceId    The device ID
+   /// \param[in] driveName   The drive name ex: C:\
+   /// \param[in] KeywordName The keyword Name for registration of this sensor
+   //--------------------------------------------------------------
+
+   CWindowsSystemDiskUsage(const std::string & deviceId, const std::string & driveName, const std::string & Keyword);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -59,6 +68,12 @@ public:
    /// \return     Device ID
    //--------------------------------------------------------------
    const std::string& getKeyword() const;
+
+   //--------------------------------------------------------------
+   /// \brief	    Returns the Drive Name
+   /// \return     Drive Name
+   //--------------------------------------------------------------
+   const std::string& getDriveName() const;
 
 private:
 

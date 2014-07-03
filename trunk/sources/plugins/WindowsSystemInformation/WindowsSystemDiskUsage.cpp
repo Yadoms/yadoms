@@ -9,6 +9,11 @@ CWindowsSystemDiskUsage::CWindowsSystemDiskUsage(const std::string & deviceId, c
 {
 }
 
+CWindowsSystemDiskUsage::CWindowsSystemDiskUsage(const std::string & deviceId, const std::string & driveName, const std::string & Keyword)
+   :m_deviceId(deviceId), m_driveName(driveName),m_Keyword(Keyword), m_Capacity("DiskUsage")
+{
+}
+
 CWindowsSystemDiskUsage::~CWindowsSystemDiskUsage()
 {}
 
@@ -25,6 +30,11 @@ const std::string& CWindowsSystemDiskUsage::getCapacity() const
 const std::string& CWindowsSystemDiskUsage::getKeyword() const
 {
    return m_Keyword;
+}
+
+const std::string& CWindowsSystemDiskUsage::getDriveName() const
+{
+   return m_driveName;
 }
 
 void CWindowsSystemDiskUsage::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
