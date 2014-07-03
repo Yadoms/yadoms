@@ -22,27 +22,27 @@ namespace web { namespace rest { namespace service {
       //-----------------------------------------
       ///\brief   get events
       //-----------------------------------------
-      web::rest::json::CJson getEvents(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
+      shared::CDataContainer getEvents(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
       //-----------------------------------------
       ///\brief   get the last event
       //-----------------------------------------
-      web::rest::json::CJson getLastEvent(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
+      shared::CDataContainer getLastEvent(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
       //-----------------------------------------
       ///\brief   get the events from
       //-----------------------------------------
-      web::rest::json::CJson getEventsFrom(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
+      shared::CDataContainer getEventsFrom(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
       //-----------------------------------------
       ///\brief   get the events in a range
       //-----------------------------------------
-      web::rest::json::CJson getEventsRange(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
+      shared::CDataContainer getEventsRange(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
       //-----------------------------------------
       ///\brief   create an event entry
       //-----------------------------------------
-      web::rest::json::CJson addEvent(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
+      shared::CDataContainer addEvent(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;

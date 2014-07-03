@@ -205,7 +205,7 @@ bool CTransceiver::checkAcknowledge(const CByteBuffer& answer)
    return true;
 }
 
-void CTransceiver::send(const std::string& command, const std::string& deviceParameters)
+void CTransceiver::send(const std::string& command, const shared::CDataContainer& deviceParameters)
 {
    try
    {
@@ -222,11 +222,10 @@ void CTransceiver::send(const std::string& command, const std::string& devicePar
    }
 }
 
-const CByteBuffer CTransceiver::buildRfxcomMessage(const std::string& command, const std::string& deviceParameters) const
+const CByteBuffer CTransceiver::buildRfxcomMessage(const std::string& command, const shared::CDataContainer& deviceParametersTree) const
 {
    try
    {
-      shared::CDataContainer deviceParametersTree(deviceParameters);
       unsigned char deviceType = deviceParametersTree.get<unsigned char>("type");
 
       // Create the RFXCom message

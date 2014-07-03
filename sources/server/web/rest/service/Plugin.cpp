@@ -1,11 +1,9 @@
 #include "stdafx.h"
 #include "Plugin.h"
 #include <shared/exception/NotImplemented.hpp>
-#include "web/rest/json/JsonSerializers.h"
-#include "web/rest/json/JsonCollectionSerializer.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "shared/Log.h"
-#include "web/rest/json/JsonResult.h"
+#include "web/rest/Result.h"
 
 namespace web { namespace rest { namespace service {
 
@@ -40,10 +38,10 @@ namespace web { namespace rest { namespace service {
    }
 
 
-   web::rest::json::CJson CPlugin::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPlugin::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       boost::shared_ptr<database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
-      web::rest::json::CJson result;
+      shared::CDataContainer result;
       try
       {
          if(pTransactionalEngine)
@@ -52,16 +50,16 @@ namespace web { namespace rest { namespace service {
       }
       catch(std::exception &ex)
       {
-         result = web::rest::json::CJsonResult::GenerateError(ex);
+         result = web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         result = web::rest::json::CJsonResult::GenerateError("unknown exception plugin rest method");
+         result = web::rest::CResult::GenerateError("unknown exception plugin rest method");
       }
 
       if(pTransactionalEngine)
       {
-         if(web::rest::json::CJsonResult::isSuccess(result))
+         if(web::rest::CResult::isSuccess(result))
             pTransactionalEngine->transactionCommit();
          else
             pTransactionalEngine->transactionRollback();
@@ -70,7 +68,7 @@ namespace web { namespace rest { namespace service {
    }
 
 
-   web::rest::json::CJson CPlugin::getOnePlugin(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPlugin::getOnePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -78,41 +76,42 @@ namespace web { namespace rest { namespace service {
          {
             int instanceId = boost::lexical_cast<int>(parameters[1]);
 
-            web::rest::json::CPluginEntitySerializer hes;
+            //web::rest::json::CPluginEntitySerializer hes;
             boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(instanceId);
-            return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*pluginFound.get()));
+
+            return web::rest::CResult::GenerateSuccess(pluginFound);
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
          }
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in retreiving one plugin instance");
+         return web::rest::CResult::GenerateError("unknown exception in retreiving one plugin instance");
       }
    }
 
-   web::rest::json::CJson CPlugin::getAllPluginsInstance(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPlugin::getAllPluginsInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      web::rest::json::CPluginEntitySerializer hes;
       std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
-      return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CPlugin>::SerializeCollection(hwList, hes, getRestKeyword()));
+      shared::CDataContainer t;
+      t.set(getRestKeyword(), hwList);
+      return web::rest::CResult::GenerateSuccess(t);
    }
 
-   web::rest::json::CJson CPlugin::getAllAvailablePlugins(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPlugin::getAllAvailablePlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
-         web::rest::json::CPluginEntitySerializer hes;
          pluginSystem::CManager::AvalaiblePluginMap pluginList = m_pluginManager->getPluginList();
 
          pluginSystem::CManager::AvalaiblePluginMap::iterator i;
-         web::rest::json::CJson result;
+         shared::CDataContainer result;
          std::vector<shared::CDataContainer> pluginCollection;
          for(i=pluginList.begin(); i!=pluginList.end(); ++i)
          {
@@ -130,62 +129,63 @@ namespace web { namespace rest { namespace service {
          }
 
          result.set< std::vector<shared::CDataContainer> >("plugins", pluginCollection);
-         return web::rest::json::CJsonResult::GenerateSuccess(result);
+         return web::rest::CResult::GenerateSuccess(result);
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in creating a new plugin instance");
+         return web::rest::CResult::GenerateError("unknown exception in creating a new plugin instance");
       }
    }
 
-   web::rest::json::CJson CPlugin::createPlugin(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPlugin::createPlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
-         web::rest::json::CPluginEntitySerializer hes;
-         boost::shared_ptr<database::entities::CPlugin> instanceToAdd = hes.deserialize(requestContent);
-         int idCreated = m_pluginManager->createInstance(*instanceToAdd);
+         database::entities::CPlugin p;
+         p.fillFromContent(requestContent);
+         int idCreated = m_pluginManager->createInstance(p);
 
          boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(idCreated);
-         return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*pluginFound.get()));
+         return web::rest::CResult::GenerateSuccess(pluginFound);
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in creating a new plugin instance");
+         return web::rest::CResult::GenerateError("unknown exception in creating a new plugin instance");
       }
    }
 
-   web::rest::json::CJson CPlugin::updatePlugin(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPlugin::updatePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
-         web::rest::json::CPluginEntitySerializer hes;
-         boost::shared_ptr<database::entities::CPlugin> instanceToUpdate = hes.deserialize(requestContent);
-         m_pluginManager->updateInstance(*instanceToUpdate);
+         database::entities::CPlugin instanceToUpdate;
+         instanceToUpdate.fillFromContent(requestContent);
 
-         boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(instanceToUpdate->Id());
-         return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*pluginFound.get()));
+         m_pluginManager->updateInstance(instanceToUpdate);
+
+         boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(instanceToUpdate.Id());
+         return web::rest::CResult::GenerateSuccess(pluginFound);
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in updating a plugin instance");
+         return web::rest::CResult::GenerateError("unknown exception in updating a plugin instance");
       }
    }
 
 
-   web::rest::json::CJson CPlugin::deletePlugin(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPlugin::deletePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -195,24 +195,24 @@ namespace web { namespace rest { namespace service {
 
             m_dataProvider->getDeviceRequester()->removeAllDeviceForPlugin(instanceId);
             m_pluginManager->deleteInstance(instanceId);
-            return web::rest::json::CJsonResult::GenerateSuccess();
+            return web::rest::CResult::GenerateSuccess();
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
          }
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in deleting one plugin instance");
+         return web::rest::CResult::GenerateError("unknown exception in deleting one plugin instance");
       }
    }
 
-   web::rest::json::CJson CPlugin::deleteAllPlugins(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPlugin::deleteAllPlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
       BOOST_FOREACH(boost::shared_ptr<database::entities::CPlugin> toDelete, hwList)
@@ -220,10 +220,10 @@ namespace web { namespace rest { namespace service {
          m_pluginManager->deleteInstance(toDelete->Id());
       }
 
-      return web::rest::json::CJsonResult::GenerateSuccess();
+      return web::rest::CResult::GenerateSuccess();
    }
 
-   web::rest::json::CJson CPlugin::getInstanceStatus(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)  
+   shared::CDataContainer CPlugin::getInstanceStatus(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)  
    {
       try
       {
@@ -234,31 +234,31 @@ namespace web { namespace rest { namespace service {
             boost::shared_ptr<database::entities::CPlugin> pluginInstanceFound = m_pluginManager->getInstance(instanceId);
             if(pluginInstanceFound)
             {
-               web::rest::json::CJson result;
+               shared::CDataContainer result;
                result.set("running", m_pluginManager->isInstanceRunning(instanceId));
-               return web::rest::json::CJsonResult::GenerateSuccess(result);
+               return web::rest::CResult::GenerateSuccess(result);
             }
             else
             {
-               return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id");
+               return web::rest::CResult::GenerateError("invalid parameter. Can not retreive instance id");
             }
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
          }
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in reading plugin instance status");
+         return web::rest::CResult::GenerateError("unknown exception in reading plugin instance status");
       }
    }
 
-   web::rest::json::CJson CPlugin::startInstance(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPlugin::startInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -274,30 +274,30 @@ namespace web { namespace rest { namespace service {
                //check for instance status
                bool state = m_pluginManager->isInstanceRunning(instanceId);
                if(state)
-                  return web::rest::json::CJsonResult::GenerateSuccess();
-               return web::rest::json::CJsonResult::GenerateError("Fail to start the plugin instance");
+                  return web::rest::CResult::GenerateSuccess();
+               return web::rest::CResult::GenerateError("Fail to start the plugin instance");
             }
             else
             {
-               return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id");
+               return web::rest::CResult::GenerateError("invalid parameter. Can not retreive instance id");
             }
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
          }
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in starting plugin instance");
+         return web::rest::CResult::GenerateError("unknown exception in starting plugin instance");
       }
    }
 
-   web::rest::json::CJson CPlugin::stopInstance(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPlugin::stopInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -313,26 +313,26 @@ namespace web { namespace rest { namespace service {
                //check for instance status
                bool state = m_pluginManager->isInstanceRunning(instanceId);
                if(!state)
-                  return web::rest::json::CJsonResult::GenerateSuccess();
-               return web::rest::json::CJsonResult::GenerateError("Fail to stop the plugin instance");
+                  return web::rest::CResult::GenerateSuccess();
+               return web::rest::CResult::GenerateError("Fail to stop the plugin instance");
             }
             else
             {
-               return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id");
+               return web::rest::CResult::GenerateError("invalid parameter. Can not retreive instance id");
             }
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
          }
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in stopping plugin instance");
+         return web::rest::CResult::GenerateError("unknown exception in stopping plugin instance");
       }
    }
 

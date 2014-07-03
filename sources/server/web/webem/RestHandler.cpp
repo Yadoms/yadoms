@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "RestHandler.h"
 #include <shared/Log.h>
-#include "web/rest/json/JsonResult.h"
-#include "web/rest/json/JsonCollectionSerializer.h"
+#include "web/rest/Result.h"
 
 namespace web { namespace webem {
 
@@ -77,7 +76,7 @@ namespace web { namespace webem {
             parameters = parseUrl(request_path);
 
             //parse content to json format
-            web::rest::json::CJson requestContent;
+            shared::CDataContainer requestContent;
             try
             {
                BOOST_FOREACH(http::server::header headerData, request.headers)
@@ -86,7 +85,7 @@ namespace web { namespace webem {
                   {
                      if(boost::ifind_first(headerData.value, "application/json"))
                      {
-                        requestContent = web::rest::json::CJsonSerializer::deserialize(request.content);                  
+                        requestContent.initializeWith(request.content);                  
                      }
                      else
                      {
@@ -100,27 +99,27 @@ namespace web { namespace webem {
             catch(std::exception &ex)
             {
                YADOMS_LOG(error) << "Fail to read request content as Json format. Exception : " << ex.what();
-               return web::rest::json::CJsonSerializer::serialize(web::rest::json::CJsonResult::GenerateError("Fail to read request content as Json format"));
+               return web::rest::CResult::GenerateError("Fail to read request content as Json format").serialize();
             }
 
             //dispatch url to rest dispatcher
-            web::rest::json::CJson js = m_restDispatcher.dispath(request.method, parameters, requestContent);
-            return web::rest::json::CJsonSerializer::serialize(js);
+            shared::CDataContainer js = m_restDispatcher.dispath(request.method, parameters, requestContent);
+            return js.serialize();
          }
          else
          {
-            return web::rest::json::CJsonSerializer::serialize(web::rest::json::CJsonResult::GenerateError("Rest handler : cannot decode url"));
+            return web::rest::CResult::GenerateError("Rest handler : cannot decode url").serialize();
          }
       }
       catch(std::exception &ex)
       {
          YADOMS_LOG(error) << "An exception occured in treating REST url : " << request_path << std::endl << "Exception : " << ex.what();
-         return web::rest::json::CJsonSerializer::serialize(web::rest::json::CJsonResult::GenerateError(ex));
+         return web::rest::CResult::GenerateError(ex).serialize();
       }
       catch(...)
       {
          YADOMS_LOG(error) << "An unknown exception occured in treating REST url : " << request_path;
-         return web::rest::json::CJsonSerializer::serialize(web::rest::json::CJsonResult::GenerateError("An unknown exception occured in treating REST url : " + request_path));
+         return web::rest::CResult::GenerateError("An unknown exception occured in treating REST url : " + request_path).serialize();
       }
    }
 

@@ -129,7 +129,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
    }
 }
 
-void CRfxcom::onCommand(const std::string& command, const std::string& deviceParameters)
+void CRfxcom::onCommand(const std::string& command, const shared::CDataContainer& deviceParameters)
 {
    if (m_transceiver)
       m_transceiver->send(command, deviceParameters);

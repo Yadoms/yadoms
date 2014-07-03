@@ -1,6 +1,6 @@
 #pragma once
 
-#include "json/Json.h"
+#include <shared/DataContainer.h>
 
 namespace web { namespace rest {
 
@@ -29,17 +29,17 @@ namespace web { namespace rest {
       ///\param [in]    requestContent    request content (put, post or delete request)
       ///\return        the data in Json format
       //-------------------------------------- 
-      web::rest::json::CJson dispath(const std::string & requestType, const std::vector<std::string> & url, const web::rest::json::CJson & requestContent);
+      shared::CDataContainer dispath(const std::string & requestType, const std::vector<std::string> & url, const shared::CDataContainer & requestContent);
 
       //--------------------------------------   
-      ///\brief   Define a function pointer on a method like web::rest::json::CJson readData(const std::vector<std::string> & )
+      ///\brief   Define a function pointer on a method like shared::CDataContainer readData(const std::vector<std::string> & )
       //--------------------------------------  
-      typedef boost::function2<web::rest::json::CJson, const std::vector<std::string> &, const web::rest::json::CJson & > CRestMethodHandler;
+      typedef boost::function2<shared::CDataContainer, const std::vector<std::string> &, const shared::CDataContainer & > CRestMethodHandler;
 
       //--------------------------------------   
-      ///\brief   Define a function pointer on a method like web::rest::json::CJson readData(const std::vector<std::string> & )
+      ///\brief   Define a function pointer on a method like shared::CDataContainer readData(const std::vector<std::string> & )
       //--------------------------------------  
-      typedef boost::function3<web::rest::json::CJson, CRestMethodHandler, const std::vector<std::string> &, const web::rest::json::CJson & > CRestMethodIndirector;
+      typedef boost::function3<shared::CDataContainer, CRestMethodHandler, const std::vector<std::string> &, const shared::CDataContainer & > CRestMethodIndirector;
 
       //--------------------------------------   
       ///\brief         register a rest handler
@@ -140,7 +140,7 @@ namespace web { namespace rest {
       ///\param [in]    urlPattern        the pattern
       ///\return        the data in Json format
       //-------------------------------------- 
-      web::rest::json::CJson callRealMethod(CRestMethodHandler realMethod, CRestMethodIndirector encapsulatedMethod, const std::vector<std::string> & url, const web::rest::json::CJson & urlPattern);
+      shared::CDataContainer callRealMethod(CRestMethodHandler realMethod, CRestMethodIndirector encapsulatedMethod, const std::vector<std::string> & url, const shared::CDataContainer & urlPattern);
 
       //--------------------------------------   
       ///\brief   All the registered handle

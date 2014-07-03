@@ -1,9 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Configuration.h"
 #include <shared/exception/NotImplemented.hpp>
-#include "web/rest/json/JsonSerializers.h"
-#include "web/rest/json/JsonResult.h"
-#include "web/rest/json/JsonCollectionSerializer.h"
+#include "web/rest/Result.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/RestDispatcher.h"
 #include <shared/Log.h>
@@ -42,10 +40,8 @@ namespace web { namespace rest { namespace service {
    }
 
 
-   web::rest::json::CJson CConfiguration::getConfiguration(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CConfiguration::getConfiguration(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      web::rest::json::CConfigurationEntitySerializer hes;
-
       std::string section = "";
       std::string keyname = "";
       if(parameters.size()>1)
@@ -53,58 +49,59 @@ namespace web { namespace rest { namespace service {
       if(parameters.size()>2)
          keyname = parameters[2];
 
-      boost::shared_ptr<database::entities::CConfiguration> widgetFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(section, keyname);
-      return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*widgetFound.get()));
+      boost::shared_ptr<database::entities::CConfiguration> configFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(section, keyname);
+      return web::rest::CResult::GenerateSuccess(configFound);
    }
 
-   web::rest::json::CJson CConfiguration::getSectionConfigurations(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CConfiguration::getSectionConfigurations(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      web::rest::json::CConfigurationEntitySerializer hes;
-
       std::string section = "";
       if(parameters.size()>1)
          section = parameters[1];
 
 
       std::vector< boost::shared_ptr<database::entities::CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations(section);
-      return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CConfiguration>::SerializeCollection(hwList, hes, getRestKeyword()));
+      shared::CDataContainer collection;
+      collection.set(getRestKeyword(), hwList);
+      return web::rest::CResult::GenerateSuccess(collection);
    }
 
-   web::rest::json::CJson CConfiguration::getAllConfigurations(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CConfiguration::getAllConfigurations(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      web::rest::json::CConfigurationEntitySerializer hes;
       std::vector< boost::shared_ptr<database::entities::CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations();
-      return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CConfiguration>::SerializeCollection(hwList, hes, getRestKeyword()));
+      shared::CDataContainer collection;
+      collection.set(getRestKeyword(), hwList);
+      return web::rest::CResult::GenerateSuccess(collection);
    }
 
-   web::rest::json::CJson CConfiguration::createOneConfiguration(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CConfiguration::createOneConfiguration(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       //get data from request content
-      web::rest::json::CConfigurationEntitySerializer hes;
-      boost::shared_ptr<database::entities::CConfiguration> configToCreate = hes.deserialize(requestContent);
+      database::entities::CConfiguration configToCreate;
+      configToCreate.fillFromContent(requestContent);
 
       //check that configuration entry do not already exists
-      boost::shared_ptr<database::entities::CConfiguration> checkExistEntity = m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate->Section(), configToCreate->Name());
+      boost::shared_ptr<database::entities::CConfiguration> checkExistEntity = m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate.Section(), configToCreate.Name());
       if(checkExistEntity.get() != NULL)
-         return web::rest::json::CJsonResult::GenerateError("The entry to create already exists", hes.serialize(*checkExistEntity.get()));
+         return web::rest::CResult::GenerateError("The entry to create already exists");
 
       //update modification date
-      configToCreate->LastModificationDate = boost::posix_time::second_clock::universal_time();
+      configToCreate.LastModificationDate = boost::posix_time::second_clock::universal_time();
 
       //commit changes to database
-      m_dataProvider->getConfigurationRequester()->create(*configToCreate.get());
+      m_dataProvider->getConfigurationRequester()->create(configToCreate);
 
-      boost::shared_ptr<database::entities::CConfiguration> widgetFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate->Section(), configToCreate->Name());
-      return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*widgetFound.get()));
+      boost::shared_ptr<database::entities::CConfiguration> widgetFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate.Section(), configToCreate.Name());
+      return web::rest::CResult::GenerateSuccess(widgetFound);
    }
 
 
-   web::rest::json::CJson CConfiguration::updateOneConfiguration(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CConfiguration::updateOneConfiguration(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
-         web::rest::json::CConfigurationEntitySerializer hes;
-         boost::shared_ptr<database::entities::CConfiguration> configToUpdate = hes.deserialize(requestContent);
+         database::entities::CConfiguration configToUpdate;
+         configToUpdate.fillFromContent(requestContent);
 
          std::string section = "";
          std::string keyname = "";
@@ -114,63 +111,62 @@ namespace web { namespace rest { namespace service {
             keyname = parameters[2];
 
 
-         if((configToUpdate->Section().empty() && configToUpdate->Name().empty()) ||
-            (boost::iequals(configToUpdate->Section(), section) &&  boost::iequals(configToUpdate->Name(), keyname)))
+         if((configToUpdate.Section().empty() && configToUpdate.Name().empty()) ||
+            (boost::iequals(configToUpdate.Section(), section) &&  boost::iequals(configToUpdate.Name(), keyname)))
          {
             //ensure section and name are corretly filled
-            configToUpdate->Section = section;
-            configToUpdate->Name = keyname;
+            configToUpdate.Section = section;
+            configToUpdate.Name = keyname;
             //update modification date
-            configToUpdate->LastModificationDate = boost::posix_time::second_clock::universal_time();
+            configToUpdate.LastModificationDate = boost::posix_time::second_clock::universal_time();
             //commit changes to database
-            m_dataProvider->getConfigurationRequester()->updateConfiguration(*configToUpdate);
-            return web::rest::json::CJsonResult::GenerateSuccess(getConfiguration(parameters, requestContent));
+            m_dataProvider->getConfigurationRequester()->updateConfiguration(configToUpdate);
+            return web::rest::CResult::GenerateSuccess(getConfiguration(parameters, requestContent));
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("section and name in query content do not match to rest url");
+            return web::rest::CResult::GenerateError("section and name in query content do not match to rest url");
          }
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in updating a configuration value");
+         return web::rest::CResult::GenerateError("unknown exception in updating a configuration value");
       }
    }
 
 
 
 
-   web::rest::json::CJson CConfiguration::updateAllConfigurations(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CConfiguration::updateAllConfigurations(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
-         web::rest::json::CConfigurationEntitySerializer hes;
-         std::vector<boost::shared_ptr<database::entities::CConfiguration> > listToUpdate = web::rest::json::CJsonCollectionSerializer<database::entities::CConfiguration>::DeserializeCollection(requestContent, hes, getRestKeyword());
+         std::vector<boost::shared_ptr<database::entities::CConfiguration> > listToUpdate = requestContent.get< std::vector<boost::shared_ptr<database::entities::CConfiguration> > >(getRestKeyword());
 
          BOOST_FOREACH(boost::shared_ptr<database::entities::CConfiguration> pw, listToUpdate)
          {
             m_dataProvider->getConfigurationRequester()->updateConfiguration(*pw);
          }
 
-         return web::rest::json::CJsonResult::GenerateSuccess();
+         return web::rest::CResult::GenerateSuccess();
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in updating all configuration");
+         return web::rest::CResult::GenerateError("unknown exception in updating all configuration");
       }
    }
 
 
 
-   web::rest::json::CJson CConfiguration::deleteOneConfiguration(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CConfiguration::deleteOneConfiguration(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       std::string section = "";
       std::string keyname = "";
@@ -187,7 +183,7 @@ namespace web { namespace rest { namespace service {
          m_dataProvider->getConfigurationRequester()->removeConfiguration(configToRemove);
       }
 
-      return web::rest::json::CJson();
+      return shared::CDataContainer();
    }
 
 

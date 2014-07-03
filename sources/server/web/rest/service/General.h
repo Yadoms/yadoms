@@ -21,8 +21,8 @@ namespace web { namespace rest { namespace service {
       const std::string & getRestKeyword();
 
    public:
-      web::rest::json::CJson getSerialPorts(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
-      web::rest::json::CJson getSystemInformation(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
+      shared::CDataContainer getSerialPorts(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer getSystemInformation(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
    private:
       static std::string m_restKeyword;

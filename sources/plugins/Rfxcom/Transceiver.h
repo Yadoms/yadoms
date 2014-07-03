@@ -33,7 +33,7 @@ public:
 
    // ITransceiver implementation
    virtual void processReset();
-   virtual void send(const std::string& command, const std::string& deviceParameters);
+   virtual void send(const std::string& command, const shared::CDataContainer& deviceParameters);
    virtual void historize(const CByteBuffer& data) const;
    // [END] ITransceiver implementation
 
@@ -71,7 +71,7 @@ protected:
    /// \return                      RFXCom message to send
    /// \throw shared::exception::CInvalidParameter if no corresponding RFXCom message was found (invalid command)
    //--------------------------------------------------------------
-   const CByteBuffer buildRfxcomMessage(const std::string& command, const std::string& deviceParameters) const;
+   const CByteBuffer buildRfxcomMessage(const std::string& command, const shared::CDataContainer& deviceParameters) const;
 
 private:
    //--------------------------------------------------------------

@@ -74,7 +74,7 @@ namespace adapters {
       ((Name)(std::string)(""))
       ((FriendlyName)(std::string)(""))
       ((Model)(std::string)(""))
-	  ((Details)(std::string)(""))
+      ((Details)(shared::CDataContainer)(shared::CDataContainer()))
    )
 
    DECLARE_ADAPTER_IMPLEMENTATION(Keyword,

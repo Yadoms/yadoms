@@ -1,6 +1,5 @@
 #pragma once
 
-#include "web/rest/json/Json.h"
 #include "web/rest/RestDispatcher.h"
 
 namespace web { namespace rest { namespace service {

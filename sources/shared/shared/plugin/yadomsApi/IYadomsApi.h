@@ -88,7 +88,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\return the device details
       ///\throw shared::exception::CEmptyResult if device dosen't exist
       //-----------------------------------------------------
-      virtual const std::string getDeviceDetails(const std::string& device) const = 0;
+      virtual const shared::CDataContainer getDeviceDetails(const std::string& device) const = 0;
 
       //-----------------------------------------------------
       ///\brief Declare a device

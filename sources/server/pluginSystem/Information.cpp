@@ -67,7 +67,10 @@ CInformation::CInformation(const boost::filesystem::path& pluginPath)
       if (m_author.empty())
          throw shared::exception::CInvalidParameter("Error reading package.json : plugin author can not be empty");
 
-	  m_url = container.get<std::string>("url", shared::CStringExtension::EmptyString);   // No check on URL
+      if (container.hasValue("url"))
+         m_url = container.get<std::string>("url");   // No check on URL
+      else
+         m_url = shared::CStringExtension::EmptyString;
    }
    catch (shared::exception::CException & e)
    {

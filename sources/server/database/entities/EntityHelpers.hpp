@@ -68,6 +68,7 @@
 #define ENTITY_COLUMN_NAME   0
 #define ENTITY_COLUMN_TYPE   1
 #define ENTITY_COLUMN_DEFAULT   2
+#define ENTITY_COLUMN_SERIALIZATION   3
 
 //
 /// \brief Macro used to declare the entity class name
@@ -92,13 +93,19 @@
 #define DELCARE_FIELD(className, fieldType, fieldName) \
    CField< fieldType > ENTITY_FIELD(fieldName);
 
-      
+
+#define ENTITY_FIELD_NAME(_seq) BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_NAME, _seq)
+#define ENTITY_FIELD_TYPE(_seq) BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_TYPE, _seq)
+#define ENTITY_FIELD_DEFAULT(_seq) BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_DEFAULT, _seq)
+#define ENTITY_FIELD_SERIALIZATION_IDENTIFIER(_seq) BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_SERIALIZATION, _seq)
+
+
 //
 /// \brief Macro which initialize a field filled status to false (the field is not yet filled)
 //
 #define DECLARE_ENTITY_FILLED_INITIALISER(r, data, idx, elem) \
    BOOST_PP_COMMA_IF(BOOST_PP_NOT_EQUAL(idx,0)) \
-   ENTITY_FIELD(BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_NAME, elem))(BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_DEFAULT, elem))
+   ENTITY_FIELD(ENTITY_FIELD_NAME(elem))(ENTITY_FIELD_DEFAULT(elem))
       
 //
 /// \brief  Macro which initialize all fields state to false
@@ -112,7 +119,7 @@
 /// \brief  Macro which declare one field and its filled status
 //
 #define DECLARE_ENTITY_FIELD(r, _classname, elem) \
-   DELCARE_FIELD(_classname, BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_TYPE, elem), BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_NAME, elem))
+   DELCARE_FIELD(_classname, ENTITY_FIELD_TYPE(elem), ENTITY_FIELD_NAME(elem))
  
 //
 /// \brief  Macro which declare all fields and its filled status
@@ -123,28 +130,7 @@
 
 
 
-   
-//
-/// \brief  Declare a table
-/// \param  name  the table name
-/// \param  _seq  the sequence of columns
-//
-#define DECLARE_ENTITY_CLASS(_classname, _seq)                               \
-   class ENTITY_CLASSNAME(_classname)                                           \
-   {                                                                            \
-      public:                                                                   \
-         ENTITY_CLASSNAME(_classname)()                                         \
-           : DECLARE_ENTITY_FILLED_INITIALISERS(_seq)                           \
-         {                                                                      \
-         }                                                                      \
-         virtual ~ENTITY_CLASSNAME(_classname)()                                \
-         {                                                                      \
-         }                                                                      \
-   public:                                                                      \
-      DECLARE_ENTITY_FIELDS(_classname, _seq)                                   \
-   };
-
-
+ 
 
 
 //
@@ -192,10 +178,7 @@
 
 
 
-#define ENTITY_FIELD_SERIALIZATION_IDENTIFIER(elem)                                    \
- BOOST_PP_STRINGIZE(BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_NAME, elem))
 
-   
 
 //-------------------------------------------------------
 ///\brief   Declare the JSON deserializer ofr one field IMPLEMENTATION
@@ -203,7 +186,7 @@
 //-------------------------------------------------------
 #define DECLARE_ENTITY_FILL_FIELD_CONTENT(r, _classname, elem)                                                                                                    \
     if(initialData.hasValue(ENTITY_FIELD_SERIALIZATION_IDENTIFIER(elem)))                                                                                         \
-      BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_NAME, elem) = initialData.get< BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_TYPE, elem) >(ENTITY_FIELD_SERIALIZATION_IDENTIFIER(elem));
+      ENTITY_FIELD_NAME(elem) = initialData.get< ENTITY_FIELD_TYPE(elem) >(ENTITY_FIELD_SERIALIZATION_IDENTIFIER(elem));
 
 
 
@@ -224,7 +207,7 @@
 ///\brief   Declare the JSON serializer for one field IMPLEMENTATION  when the content is treated as a child
 //-------------------------------------------------------
 #define DECLARE_ENTITY_EXTRACT_FIELD_CONTENT(r, _classname, elem)                                                                                              \
-   containerToFill.set< BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_TYPE, elem) >( ENTITY_FIELD_SERIALIZATION_IDENTIFIER(elem), BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_NAME, elem)());
+   containerToFill.set< ENTITY_FIELD_TYPE(elem) >( ENTITY_FIELD_SERIALIZATION_IDENTIFIER(elem), ENTITY_FIELD_NAME(elem)());
 
 
 //-------------------------------------------------------

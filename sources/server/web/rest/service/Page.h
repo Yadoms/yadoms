@@ -17,22 +17,22 @@ namespace web { namespace rest { namespace service {
       // [END] IRestService implementation
 
       static const std::string & getRestKeyword();
-      web::rest::json::CJson getOnePage(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
-      web::rest::json::CJson getAllPages(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
-      web::rest::json::CJson getPageWidget(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+      shared::CDataContainer getOnePage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer getAllPages(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer getPageWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
-      web::rest::json::CJson addPage(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
-      web::rest::json::CJson updatePage(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
-      web::rest::json::CJson updateAllPages(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
-      web::rest::json::CJson deletePage(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
-      web::rest::json::CJson deleteAllPages(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+      shared::CDataContainer addPage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer updatePage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer updateAllPages(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer deletePage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer deleteAllPages(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
 
-      web::rest::json::CJson addWidgetForPage(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
-      web::rest::json::CJson replaceAllWidgetsForPage(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
-      web::rest::json::CJson deleteAllWidgetsForPage(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+      shared::CDataContainer addWidgetForPage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer replaceAllWidgetsForPage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer deleteAllWidgetsForPage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
-      web::rest::json::CJson transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
+      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;

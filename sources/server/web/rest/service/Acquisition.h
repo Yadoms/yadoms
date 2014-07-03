@@ -22,18 +22,18 @@ namespace web { namespace rest { namespace service {
       //-----------------------------------------
       ///\brief   Get an acquisition from the id
       //-----------------------------------------
-      web::rest::json::CJson getAcquisitionById(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+      shared::CDataContainer getAcquisitionById(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
 
       //-----------------------------------------
       ///\brief   Get the last data of a keyword
       //-----------------------------------------
-      web::rest::json::CJson getKeywordLastData(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+      shared::CDataContainer getKeywordLastData(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
       //-----------------------------------------
       ///\brief   Get the data of a keyword (with optional date filter)
       //-----------------------------------------
-      web::rest::json::CJson getKeywordData(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+      shared::CDataContainer getKeywordData(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
 
       boost::shared_ptr<database::IDataProvider> m_dataProvider;

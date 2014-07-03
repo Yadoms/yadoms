@@ -27,6 +27,12 @@ namespace shared
       m_tree = initialData.m_tree;
    }
 
+   
+   CDataContainer::CDataContainer(const boost::property_tree::ptree & initialTree)
+   {
+      m_tree = initialTree;
+   }
+
    CDataContainer & CDataContainer::operator =(const CDataContainer & rhs)
    {
       initializeWith(rhs);
