@@ -28,7 +28,7 @@ bool CYadomsApiImplementation::deviceExists(const std::string& device) const
    return m_deviceRequester->deviceExists(getPluginId(), device);
 }
 
-const std::string CYadomsApiImplementation::getDeviceDetails(const std::string& device) const
+const shared::CDataContainer CYadomsApiImplementation::getDeviceDetails(const std::string& device) const
 {
    return m_deviceRequester->getDevice(getPluginId(), device)->Details;
 }

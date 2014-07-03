@@ -3,7 +3,7 @@
 
 // Includes needed to compile tested classes
 #include "../../../../sources/shared/shared/DataContainer.h"
-
+#include <shared/Log.h>
 
 BOOST_AUTO_TEST_SUITE(TestDataContainer)
 
@@ -24,6 +24,8 @@ static const shared::CDataContainer::EnumValuesNames EEnumTypeNames = boost::ass
 
 BOOST_AUTO_TEST_CASE(SimpleContainer)
 {
+   YADOMS_LOG(debug) <<"[START] Testing shared::CDataContainer : simple container" ;
+
    shared::CDataContainer dc;
 
    boost::posix_time::ptime actualDatetime = boost::posix_time::second_clock::universal_time();
@@ -31,6 +33,7 @@ BOOST_AUTO_TEST_CASE(SimpleContainer)
    //ensure en new container is empty
    BOOST_CHECK_EQUAL(dc.empty(), true);
    
+   //insert all simple data
    dc.set<bool>("BoolParameter", true);
    dc.set<double>("DecimalParameter", 18.4);
    dc.set<EEnumType>("EnumParameter", kEnumValue2);
@@ -42,8 +45,7 @@ BOOST_AUTO_TEST_CASE(SimpleContainer)
    dc.set<std::string>("MySection.SubStringParameter", "Just a string parameter in the sub-section");
    dc.set<boost::posix_time::ptime>("DateTimeParameter", actualDatetime);
 
-
-
+   //check data are correctly retreived
    BOOST_CHECK_EQUAL(dc.get<bool>("BoolParameter"), true);
    BOOST_CHECK_EQUAL(dc.get<double>("DecimalParameter"), 18.4);
    BOOST_CHECK_EQUAL(dc.get<EEnumType>("EnumParameter"), kEnumValue2);
@@ -54,8 +56,8 @@ BOOST_AUTO_TEST_CASE(SimpleContainer)
    BOOST_CHECK_EQUAL(dc.get<int>("MySection.SubIntParameter"), 123);
    BOOST_CHECK_EQUAL(dc.get<std::string>("MySection.SubStringParameter"), "Just a string parameter in the sub-section");
    BOOST_CHECK_EQUAL(dc.get<boost::posix_time::ptime>("DateTimeParameter"), actualDatetime);
-
-
+   
+   //another test for a sub container
    shared::CDataContainer test;
    test.set<int>("int", 5);
    test.set<double>("double", 4.0);
@@ -65,7 +67,6 @@ BOOST_AUTO_TEST_CASE(SimpleContainer)
    BOOST_CHECK_EQUAL(test.get<double>("double"),4.0);
    BOOST_CHECK_EQUAL(test.get<std::string>("string"), "plouf");
    
-
    shared::CDataContainer subContainer;
    subContainer.set<int>("int4", 6);
    subContainer.set<double>("double1", 8.0);
@@ -74,12 +75,25 @@ BOOST_AUTO_TEST_CASE(SimpleContainer)
    test.set("config1", subContainer);
 
    BOOST_CHECK_EQUAL(test.get<double>("config1.double1"), 8.0);
+
+
+   //check for shared_ptr
+   boost::shared_ptr<std::string> shs(new std::string("un shared ptr"));
+   dc.set("StringSharedPtr", shs);
+
+   boost::shared_ptr<std::string> shs2 = dc.get< boost::shared_ptr<std::string> >("StringSharedPtr");
+   BOOST_CHECK_EQUAL(*(shs.get()) == *(shs2.get()), true);
+
+   YADOMS_LOG(debug) <<"[END] Testing shared::CDataContainer : simple container" ;
 }
 
 BOOST_AUTO_TEST_CASE(CollectionContainer)
 {
+   YADOMS_LOG(debug) <<"[START] Testing shared::CDataContainer : collection container" ;
+
    shared::CDataContainer test;
 
+   //check vector of int
    std::vector<int> vi;
    for (int i = 0; i<10; ++i)
       vi.push_back(i);
@@ -87,17 +101,51 @@ BOOST_AUTO_TEST_CASE(CollectionContainer)
    std::vector<int> vi2 = test.get<std::vector<int>>("vectorint");
    BOOST_CHECK_EQUAL_COLLECTIONS(vi.begin(), vi.end(), vi2.begin(), vi2.end());
 
-
+   //check vector of double
    std::vector<double> vd;
    for (int i = 0; i<10; ++i)
       vd.push_back(i * 3.0);
    test.set< std::vector<double> >("vectordouble", vd);
    std::vector<double> vd2 = test.get< std::vector<double> >("vectordouble");
    BOOST_CHECK_EQUAL_COLLECTIONS(vd.begin(), vd.end(), vd2.begin(), vd2.end());
+
+   //check vector of shared_ptr<int>
+   std::vector< boost::shared_ptr<int> > vish;
+   for (int i = 0; i < 10; ++i)
+      vish.push_back(boost::shared_ptr<int>(new int(i)));
+   test.set("vectorintsh", vish);
+   std::vector< boost::shared_ptr<int> > vish2 = test.get< std::vector< boost::shared_ptr<int> > >("vectorintsh");
+   std::vector< int > vish2bis = test.get< std::vector< int > >("vectorintsh");
+   BOOST_CHECK_EQUAL(vish.size(), vish2.size());
+   for (unsigned int i = 0; i < vish.size(); ++i)
+      BOOST_CHECK_EQUAL(*(vish[i].get()) == *(vish2[i].get()), true);
+
+   BOOST_CHECK_EQUAL(vish.size(), vish2bis.size());
+   for (unsigned int i = 0; i < vish.size(); ++i)
+      BOOST_CHECK_EQUAL(*(vish[i].get()) == vish2bis[i], true);
+
+   //check vector of shared_ptr<double>
+   std::vector< boost::shared_ptr<double> > vdsh;
+   for (unsigned int i = 0; i < 10; ++i)
+      vdsh.push_back(boost::shared_ptr<double>(new double(i*42.0)));
+   test.set("vectordoublesh", vdsh);
+   std::vector< boost::shared_ptr<double> > vdsh2 = test.get< std::vector< boost::shared_ptr<double> > >("vectordoublesh");
+   std::vector< double > vdsh2bis = test.get< std::vector< double > >("vectordoublesh");
+   BOOST_CHECK_EQUAL(vdsh.size(), vdsh2.size());
+   for (unsigned int i = 0; i < vdsh.size(); ++i)
+      BOOST_CHECK_EQUAL(*(vdsh[i].get()) == *(vdsh2[i].get()), true);
+
+   BOOST_CHECK_EQUAL(vdsh.size(), vdsh2bis.size());
+   for (unsigned int i = 0; i < vdsh.size(); ++i)
+      BOOST_CHECK_EQUAL(*(vdsh[i].get()) == vdsh2bis[i], true);
+
+   YADOMS_LOG(debug) <<"[END] Testing shared::CDataContainer : collection container" ;
 }
 
 BOOST_AUTO_TEST_CASE(Serialization)
 {
+   YADOMS_LOG(debug) <<"[START] Testing shared::CDataContainer : serialization" ;
+
    const std::string defaultConf("{"
       "\"BoolParameter\": \"true\","
       "\"DecimalParameter\": \"18.4\","
@@ -137,6 +185,7 @@ BOOST_AUTO_TEST_CASE(Serialization)
    str2.erase(std::remove_if(str2.begin(), str2.end(), boost::is_any_of(" \t\n\r")), str2.end());
 
    BOOST_CHECK_EQUAL(str, str2);
+   YADOMS_LOG(debug) <<"[END] Testing shared::CDataContainer : serialization" ;
 }
 
 
@@ -167,7 +216,23 @@ public:
       m_dValue = initialData.get<double>("Value2");
       m_sValue = initialData.get<std::string>("Value3");
    }
+	
+	bool equals(const CTestClass & rhs)
+	{
+		return m_aIntValue == rhs.m_aIntValue && m_dValue == rhs.m_dValue && m_sValue == rhs.m_sValue;
+	}
 
+	bool operator!=(const CTestClass &rhs)
+	{
+		return !equals(rhs);
+	}
+
+   friend std::ostream& operator << (std::ostream& ostr, CTestClass const& str)
+   {
+      return ostr;
+   }
+
+private:
    int m_aIntValue;
    double m_dValue;
    std::string m_sValue;
@@ -175,14 +240,50 @@ public:
 
 BOOST_AUTO_TEST_CASE(DataContainable)
 {
-   CTestClass obj(1, 42.0, "test de datacontainble");
-   shared::CDataContainer cont;
-   cont.setObject("myobject", &obj);
+   YADOMS_LOG(debug) <<"[START] Testing shared::CDataContainer : shared::IDataContainable" ;
+	//containeur simple de IDataContainable
+	CTestClass obj(1, 42.0, "test de datacontainble");
+	shared::CDataContainer cont;
+	cont.set("myobject", obj);
+	CTestClass result = cont.get<CTestClass>("myobject");
+	BOOST_CHECK_EQUAL(obj.equals(result), true);
 
-   CTestClass result;
-   cont.getObject("myobject", &result);
+	//containeur de boost::shared_ptr<IDataContainable>
+	boost::shared_ptr<CTestClass> sp(new CTestClass(2, 43.0, "chaine1"));
+	shared::CDataContainer cont2;
+	cont2.set("myobject", sp);
+	boost::shared_ptr<CTestClass> result2 = cont2.get< boost::shared_ptr<CTestClass> >("myobject");
+   CTestClass result2bis = cont2.get<CTestClass>("myobject");
+	BOOST_CHECK_EQUAL(result2->equals(*sp.get()), true);
+   BOOST_CHECK_EQUAL(result2bis.equals(*sp.get()), true);
 
-   BOOST_CHECK_EQUAL(obj.m_aIntValue, result.m_aIntValue);
+	//containeur simple de std::vector<IDataContainable>
+	std::vector<CTestClass> vc;
+	for (int i = 0; i < 10; ++i)
+		vc.push_back(CTestClass(i, 42.0 * i, "test de std::vector<IDataContainable>"));
+	shared::CDataContainer contvec;
+	contvec.set("mycollection", vc);
+	std::vector<CTestClass> vc2 = contvec.get< std::vector<CTestClass> >("mycollection");
+   BOOST_CHECK_EQUAL_COLLECTIONS(vc.begin(), vc.end(), vc2.begin(), vc2.end());
+
+   //containeur simple de std::vector< boost::shared_ptr<IDataContainable> >
+   std::vector< boost::shared_ptr<CTestClass> > vcsh;
+   for (int i = 0; i < 10; ++i)
+      vcsh.push_back(boost::shared_ptr<CTestClass>(new CTestClass(i, 42.0 * i, "test de std::vector<IDataContainable>")));
+   shared::CDataContainer contvecsh;
+   contvecsh.set("mycollectionofshared", vcsh);
+   std::vector< boost::shared_ptr<CTestClass> >  vcsh2 = contvecsh.get< std::vector< boost::shared_ptr<CTestClass> > >("mycollectionofshared");
+   std::vector< CTestClass >  vc2bis = contvecsh.get< std::vector< CTestClass > >("mycollectionofshared");
+   BOOST_CHECK_EQUAL(vcsh.size(), vcsh2.size());
+   for (unsigned int i = 0; i < vcsh.size(); ++i)
+      BOOST_CHECK_EQUAL(vcsh[i]->equals(*vcsh2[i].get()), true);
+
+   BOOST_CHECK_EQUAL(vcsh.size(), vc2bis.size());
+   for (unsigned int i = 0; i < vcsh.size(); ++i)
+      BOOST_CHECK_EQUAL(vcsh[i]->equals(vc2bis[i]), true);
+
+   YADOMS_LOG(debug) <<"[END] Testing shared::CDataContainer : shared::IDataContainable" ;
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

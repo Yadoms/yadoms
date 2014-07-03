@@ -33,7 +33,7 @@ protected:
    /// \param [in] command          The received command (JSON string)
    /// \param [in] deviceParameters The device parameters (JSON string)
    //--------------------------------------------------------------
-   void onCommand(const std::string& command, const std::string& deviceParameters);
+   void onCommand(const std::string& command, const shared::CDataContainer & deviceParameters);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the RFXCom becomes connected

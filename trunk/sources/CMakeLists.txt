@@ -201,25 +201,11 @@ set(YADOMS_SRC
 	server/web/WebServerManager.h
 	server/web/WebServerManager.cpp
 	
+	server/web/rest/Result.h
+	server/web/rest/Result.cpp
 	server/web/rest/RestDispatcher.h
 	server/web/rest/RestDispatcher.cpp
 	server/web/rest/RestDispatcherHelpers.hpp
-
-	server/web/rest/json/Json.h
-	server/web/rest/json/JsonUtility.h
-	server/web/rest/json/JsonUtility.cpp
-	server/web/rest/json/JsonCollectionSerializer.h
-	server/web/rest/json/IEntitySerializer.h
-	server/web/rest/json/IEntityDeserializer.h
-	server/web/rest/json/JsonResult.h
-	server/web/rest/json/JsonResult.cpp	
-	server/web/rest/json/JsonDate.h
-	server/web/rest/json/JsonDate.cpp
-	server/web/rest/json/JsonSerializers.h
-	server/web/rest/json/JsonSerializers.cpp
-	server/web/rest/json/JsonGenericSerializer.h
-	server/web/rest/json/JsonGenericSerializer.cpp
-	server/web/rest/json/JsonSerializersHelpers.hpp
 
 	server/web/rest/service/IRestService.h
 	server/web/rest/service/Plugin.h

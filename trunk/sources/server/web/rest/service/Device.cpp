@@ -1,12 +1,8 @@
 #include "stdafx.h"
 #include "Device.h"
 #include <shared/exception/NotImplemented.hpp>
-#include "web/rest/json/JsonSerializers.h"
-#include "web/rest/json/JsonCollectionSerializer.h"
-#include "web/rest/json/JsonResult.h"
+#include "web/rest/Result.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
-#include "web/rest/json/JsonGenericSerializer.h"
-#include "web/rest/json/JsonDate.h"
 
 namespace web { namespace rest { namespace service {
 
@@ -42,29 +38,28 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE",  (m_restKeyword)("*"), CDevice::deleteDevice, CDevice::transactionalMethod);
    }
 
-   web::rest::json::CJson CDevice::getOneDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CDevice::getOneDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       std::string objectId = "";
       if(parameters.size()>1)
          objectId = parameters[1];
 
-      web::rest::json::CDeviceEntitySerializer hes;
       boost::shared_ptr<database::entities::CDevice> deviceFound =  m_dataProvider->getDeviceRequester()->getDevice(boost::lexical_cast<int>(objectId));
-      return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*deviceFound.get()));
+      return web::rest::CResult::GenerateSuccess(deviceFound);
    }
 
-   web::rest::json::CJson CDevice::getAllDevices(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CDevice::getAllDevices(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      web::rest::json::CDeviceEntitySerializer hes;
       std::vector< boost::shared_ptr<database::entities::CDevice> > dvList = m_dataProvider->getDeviceRequester()->getDevices();
-      return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CDevice>::SerializeCollection(dvList, hes, getRestKeyword()));
+      shared::CDataContainer collection;
+      collection.set(getRestKeyword(), dvList);
+      return web::rest::CResult::GenerateSuccess(collection);
    }
 
-   web::rest::json::CJson CDevice::getDevicesWithCapacity(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CDevice::getDevicesWithCapacity(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
-         web::rest::json::CWidgetEntitySerializer hes;
          if(parameters.size()>2)
          {
             database::entities::EKeywordAccessMode cam = database::entities::kNoAccess;
@@ -74,39 +69,38 @@ namespace web { namespace rest { namespace service {
             else if(parameters[2] == "set")
                cam = database::entities::kWrite;
             else
-               return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive capacity access mode in url");
+               return web::rest::CResult::GenerateError("invalid parameter. Can not retreive capacity access mode in url");
 
             //read the capacity name
             std::string capacityName = parameters[3];
 
             //run query
-            web::rest::json::CDeviceEntitySerializer hes;
             std::vector< boost::shared_ptr<database::entities::CDevice> > result = m_dataProvider->getDeviceRequester()->getDeviceWithCapacity(capacityName, cam);
-            return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CDevice>::SerializeCollection(result, hes, getRestKeyword()));
+            shared::CDataContainer collection;
+            collection.set(getRestKeyword(), result);
+            return web::rest::CResult::GenerateSuccess(collection);
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive capacity in url");
+            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive capacity in url");
          }
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in retreiving device with get capacity");
+         return web::rest::CResult::GenerateError("unknown exception in retreiving device with get capacity");
       }
    }
 
-   web::rest::json::CJson CDevice::getDeviceKeywordsForCapacity(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CDevice::getDeviceKeywordsForCapacity(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
-         web::rest::json::CWidgetEntitySerializer hes;
          if(parameters.size()>3)
          {
-
             int deviceId = boost::lexical_cast<int>(parameters[1]);
 
             database::entities::EKeywordAccessMode cam = database::entities::kNoAccess;
@@ -116,36 +110,36 @@ namespace web { namespace rest { namespace service {
             else if(parameters[2] == "set")
                cam = database::entities::kWrite;
             else
-               return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive capacity access mode in url");
+               return web::rest::CResult::GenerateError("invalid parameter. Can not retreive capacity access mode in url");
 
             //read the capacity name
             std::string capacityName = parameters[3];
 
 
-            web::rest::json::CKeywordEntitySerializer hes;
             std::vector< boost::shared_ptr<database::entities::CKeyword> > result = m_dataProvider->getKeywordRequester()->getDeviceKeywordsWithCapacity(deviceId, capacityName, cam);
-            return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CKeyword>::SerializeCollection(result, hes, "keyword"));
+            shared::CDataContainer collection;
+            collection.set("keyword", result);
+            return web::rest::CResult::GenerateSuccess(collection);
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive capacity in url");
+            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive capacity in url");
          }
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in retreiving device with get capacity");
+         return web::rest::CResult::GenerateError("unknown exception in retreiving device with get capacity");
       }
    }
 
-   web::rest::json::CJson CDevice::getDeviceKeywords(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CDevice::getDeviceKeywords(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
-         web::rest::json::CWidgetEntitySerializer hes;
          if(parameters.size()>1)
          {
             int deviceId = boost::lexical_cast<int>(parameters[1]);
@@ -154,30 +148,31 @@ namespace web { namespace rest { namespace service {
             if(deviceInDatabase)
             {
                std::vector<boost::shared_ptr<database::entities::CKeyword> > allKeywordsforDevice = m_dataProvider->getKeywordRequester()->getKeywords(deviceId);
-               web::rest::json::CKeywordEntitySerializer hes;
-               return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CKeyword>::SerializeCollection(allKeywordsforDevice, hes, "keyword"));
+               shared::CDataContainer collection;
+               collection.set("keyword", allKeywordsforDevice);
+               return web::rest::CResult::GenerateSuccess(collection);
             }
             else
             {
-               return web::rest::json::CJsonResult::GenerateError("Fail to retrieve device in database");
+               return web::rest::CResult::GenerateError("Fail to retrieve device in database");
             }
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive capacity in url");
+            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive capacity in url");
          }
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in retreiving device with get capacity");
+         return web::rest::CResult::GenerateError("unknown exception in retreiving device with get capacity");
       }
    }
 
-   web::rest::json::CJson CDevice::sendDeviceCommand(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CDevice::sendDeviceCommand(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -196,57 +191,58 @@ namespace web { namespace rest { namespace service {
             //communication::command::CDeviceCommand command(keywordId, commandData, resultHandler);
 
             //send the command
-            m_messageSender.sendCommandAsync(deviceId, keywordId, web::rest::json::CJsonSerializer::serialize(requestContent));
+            m_messageSender.sendCommandAsync(deviceId, keywordId, requestContent.serialize());
 
             //TODO
-            return web::rest::json::CJsonResult::GenerateSuccess();
+            return web::rest::CResult::GenerateSuccess();
             ////wait for a result
             //communication::command::CResult result = resultHandler->waitForResult(boost::posix_time::milliseconds(2000));
 
             ////reply to rest caller
             //if(result.isSuccess())
-            //   return web::rest::json::CJsonResult::GenerateSuccess();
+            //   return web::rest::CResult::GenerateSuccess();
             //else
-            //   return web::rest::json::CJsonResult::GenerateError(result.getErrorMessage());
+            //   return web::rest::CResult::GenerateError(result.getErrorMessage());
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not device widget id in url");
+            return web::rest::CResult::GenerateError("invalid parameter. Can not device widget id in url");
          }
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in sending command to device");
+         return web::rest::CResult::GenerateError("unknown exception in sending command to device");
       }
    }
 
 
-   web::rest::json::CJson CDevice::createDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CDevice::createDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
-         web::rest::json::CDeviceEntitySerializer des;
-         boost::shared_ptr<database::entities::CDevice> deviceToAdd = des.deserialize(requestContent);
-         boost::shared_ptr<database::entities::CDevice> deviceFound = m_dataProvider->getDeviceRequester()->createDevice(deviceToAdd->PluginId(), deviceToAdd->Name(), deviceToAdd->FriendlyName(), deviceToAdd->Model(), deviceToAdd->Details());
-         return web::rest::json::CJsonResult::GenerateSuccess(des.serialize(*deviceFound.get()));
+         database::entities::CDevice deviceToAdd;
+         deviceToAdd.fillFromContent(requestContent);
+         
+         boost::shared_ptr<database::entities::CDevice> deviceFound = m_dataProvider->getDeviceRequester()->createDevice(deviceToAdd.PluginId(), deviceToAdd.Name(), deviceToAdd.FriendlyName(), deviceToAdd.Model(), deviceToAdd.Details());
+         return web::rest::CResult::GenerateSuccess(deviceFound);
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in creating a device");
+         return web::rest::CResult::GenerateError("unknown exception in creating a device");
       }
    }
 
 
 
-   web::rest::json::CJson CDevice::deleteDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CDevice::deleteDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -258,27 +254,27 @@ namespace web { namespace rest { namespace service {
 
             //remove device in db
             m_dataProvider->getDeviceRequester()->removeDevice(deviceId);
-            return web::rest::json::CJsonResult::GenerateSuccess();
+            return web::rest::CResult::GenerateSuccess();
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive device id in url");
+            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive device id in url");
          }
 
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in reading device data");
+         return web::rest::CResult::GenerateError("unknown exception in reading device data");
       }
    }
 
 
 
-   web::rest::json::CJson CDevice::updateDeviceFriendlyName(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CDevice::updateDeviceFriendlyName(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -288,41 +284,40 @@ namespace web { namespace rest { namespace service {
             //get device id from URL
             int deviceId = boost::lexical_cast<int>(parameters[1]);
 
-            web::rest::json::CDeviceEntitySerializer des;
-            boost::shared_ptr<database::entities::CDevice> deviceToUpdate = des.deserialize(requestContent);
-            if(deviceToUpdate->FriendlyName.isDefined())
+            database::entities::CDevice deviceToUpdate;
+            deviceToUpdate.fillFromContent(requestContent);
+            if(deviceToUpdate.FriendlyName.isDefined())
             {
                //update data in base
-               m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(deviceId, deviceToUpdate->FriendlyName());
+               m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(deviceId, deviceToUpdate.FriendlyName());
 
                //return the device info
-               web::rest::json::CDeviceEntitySerializer hes;
                boost::shared_ptr<database::entities::CDevice> deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
-               return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*deviceFound.get()));
+               return web::rest::CResult::GenerateSuccess(deviceFound);
 
             }
             else
             {
-               return web::rest::json::CJsonResult::GenerateError("invalid request content. could not retreive device friendlyName");
+               return web::rest::CResult::GenerateError("invalid request content. could not retreive device friendlyName");
             }
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive device id in url");
+            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive device id in url");
          }
 
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in updating device friendly name");
+         return web::rest::CResult::GenerateError("unknown exception in updating device friendly name");
       }
    }
 
-   web::rest::json::CJson CDevice::updateKeywordFriendlyName(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CDevice::updateKeywordFriendlyName(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -332,41 +327,41 @@ namespace web { namespace rest { namespace service {
             //get keyword id from URL
             int keywordId = boost::lexical_cast<int>(parameters[2]);
 
-            web::rest::json::CKeywordEntitySerializer des;
-            boost::shared_ptr<database::entities::CKeyword> keywordToUpdate = des.deserialize(requestContent);
-            if(keywordToUpdate->FriendlyName.isDefined())
+            database::entities::CKeyword keywordToUpdate;
+            keywordToUpdate.fillFromContent(requestContent);
+            if(keywordToUpdate.FriendlyName.isDefined())
             {
-               m_dataProvider->getKeywordRequester()->updateKeywordFriendlyName(keywordId, keywordToUpdate->FriendlyName());
-               return web::rest::json::CJsonResult::GenerateSuccess();
+               m_dataProvider->getKeywordRequester()->updateKeywordFriendlyName(keywordId, keywordToUpdate.FriendlyName());
+               return web::rest::CResult::GenerateSuccess();
             }
             else
             {
-               return web::rest::json::CJsonResult::GenerateError("invalid request content. could not retreive keyword friendlyName");
+               return web::rest::CResult::GenerateError("invalid request content. could not retreive keyword friendlyName");
             }
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("invalid parameter. Can not retreive device id in url");
+            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive device id in url");
          }
 
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in updating device friendly name");
+         return web::rest::CResult::GenerateError("unknown exception in updating device friendly name");
       }
    }
 
 
 
 
-   web::rest::json::CJson CDevice::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CDevice::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       boost::shared_ptr<database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
-      web::rest::json::CJson result;
+      shared::CDataContainer result;
       try
       {
          if(pTransactionalEngine)
@@ -375,16 +370,16 @@ namespace web { namespace rest { namespace service {
       }
       catch(std::exception &ex)
       {
-         result = web::rest::json::CJsonResult::GenerateError(ex);
+         result = web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         result = web::rest::json::CJsonResult::GenerateError("unknown exception device rest method");
+         result = web::rest::CResult::GenerateError("unknown exception device rest method");
       }
 
       if(pTransactionalEngine)
       {
-         if(web::rest::json::CJsonResult::isSuccess(result))
+         if(web::rest::CResult::isSuccess(result))
             pTransactionalEngine->transactionCommit();
          else
             pTransactionalEngine->transactionRollback();

@@ -1,11 +1,9 @@
 #include "stdafx.h"
 #include "General.h"
 #include <shared/exception/NotImplemented.hpp>
-#include "web/rest/json/JsonCollectionSerializer.h"
-#include "web/rest/json/JsonDate.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/RestDispatcher.h"
-#include "web/rest/json/JsonResult.h"
+#include "web/rest/Result.h"
 #include <shared/Peripherals.h>
 
 namespace web { namespace rest { namespace service {
@@ -37,7 +35,7 @@ namespace web { namespace rest { namespace service {
    }
 
 
-   web::rest::json::CJson CGeneral::getSerialPorts(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CGeneral::getSerialPorts(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -51,38 +49,38 @@ namespace web { namespace rest { namespace service {
             internalList.push_back(serialPort);
          }
 
-         web::rest::json::CJson result2;
+         shared::CDataContainer result2;
          result2.set< std::vector< shared::CDataContainer > >("serialPorts", internalList);
-         return web::rest::json::CJsonResult::GenerateSuccess(result2);
+         return web::rest::CResult::GenerateSuccess(result2);
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in retreiving all serial ports");
+         return web::rest::CResult::GenerateError("unknown exception in retreiving all serial ports");
       }
    }
    
-   web::rest::json::CJson CGeneral::getSystemInformation(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CGeneral::getSystemInformation(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
-         web::rest::json::CJson result;
+         shared::CDataContainer result;
 
          result.set("runningPlatform", m_systemInformation->getOperatingSystemName());
          result.set("yadomsVersion", m_systemInformation->getSoftwareVersion().toString());
-         result.set("startupTime", web::rest::json::CJsonDate::toString(m_systemInformation->getStartupDateTime()));
-         return web::rest::json::CJsonResult::GenerateSuccess(result);
+         result.set("startupTime", m_systemInformation->getStartupDateTime());
+         return web::rest::CResult::GenerateSuccess(result);
       }
       catch (std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch (...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in retreiving system information");
+         return web::rest::CResult::GenerateError("unknown exception in retreiving system information");
       }
    }
 

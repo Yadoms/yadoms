@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RestDispatcher.h"
-#include "json/JsonResult.h"
+#include "Result.h"
 #include <shared/Log.h>
 
 namespace web { namespace rest {
@@ -101,7 +101,7 @@ namespace web { namespace rest {
    }
 
 
-   web::rest::json::CJson CRestDispatcher::dispath(const std::string & requestType, const std::vector<std::string> & url, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CRestDispatcher::dispath(const std::string & requestType, const std::vector<std::string> & url, const shared::CDataContainer & requestContent)
    {
       //check the te requestType has some functions
       if(m_handledFunctions.find(requestType) != m_handledFunctions.end())
@@ -117,10 +117,10 @@ namespace web { namespace rest {
             }
          }
 
-         return web::rest::json::CJsonResult::GenerateError("This REST url is not handled");
+         return CResult::GenerateError("This REST url is not handled");
       }
       else
-         return web::rest::json::CJsonResult::GenerateError("The type of request : " + requestType + " is not handled");
+         return CResult::GenerateError("The type of request : " + requestType + " is not handled");
    }
 
    const bool CRestDispatcher::match(const std::vector<std::string> & url, const CUrlPattern & urlPattern)
@@ -139,7 +139,7 @@ namespace web { namespace rest {
       return false;
    }
 
-   web::rest::json::CJson CRestDispatcher::callRealMethod(CRestMethodHandler realMethod, CRestMethodIndirector encapsulatedMethod, const std::vector<std::string> & url, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CRestDispatcher::callRealMethod(CRestMethodHandler realMethod, CRestMethodIndirector encapsulatedMethod, const std::vector<std::string> & url, const shared::CDataContainer & requestContent)
    {
       if(encapsulatedMethod != NULL)
          return encapsulatedMethod(realMethod, url, requestContent);

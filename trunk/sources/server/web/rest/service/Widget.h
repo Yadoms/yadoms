@@ -21,16 +21,16 @@ namespace web { namespace rest { namespace service {
       static const std::string & getRestKeyword();
 
    public:
-      web::rest::json::CJson getOneWidget(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
-      web::rest::json::CJson getAllWidgets(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
-      web::rest::json::CJson addWidget(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
-      web::rest::json::CJson deleteOneWidget(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
-      web::rest::json::CJson deleteAllWidgets(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
-      web::rest::json::CJson replaceAllWidgets(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
-      web::rest::json::CJson updateOneWidget(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
-      web::rest::json::CJson findWidgetPackages(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
+      shared::CDataContainer getOneWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer getAllWidgets(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer addWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer deleteOneWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer deleteAllWidgets(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer replaceAllWidgets(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer updateOneWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer findWidgetPackages(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
-      web::rest::json::CJson transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
+      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;
       static std::string m_restKeyword;

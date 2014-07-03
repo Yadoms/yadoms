@@ -1,10 +1,8 @@
 ﻿#include "stdafx.h"
 #include "Page.h"
 #include <shared/exception/NotImplemented.hpp>
-#include "web/rest/json/JsonSerializers.h"
-#include "web/rest/json/JsonCollectionSerializer.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
-#include "web/rest/json/JsonResult.h"
+#include "web/rest/Result.h"
 #include "Widget.h"
 
 namespace web { namespace rest { namespace service {
@@ -44,10 +42,10 @@ namespace web { namespace rest { namespace service {
    }
 
 
-   web::rest::json::CJson CPage::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPage::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       boost::shared_ptr<database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
-      web::rest::json::CJson result;
+      shared::CDataContainer result;
       try
       {
          if(pTransactionalEngine)
@@ -56,16 +54,16 @@ namespace web { namespace rest { namespace service {
       }
       catch(std::exception &ex)
       {
-         result = web::rest::json::CJsonResult::GenerateError(ex);
+         result = web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         result = web::rest::json::CJsonResult::GenerateError("unknown exception widget rest method");
+         result = web::rest::CResult::GenerateError("unknown exception widget rest method");
       }
 
       if(pTransactionalEngine)
       {
-         if(web::rest::json::CJsonResult::isSuccess(result))
+         if(web::rest::CResult::isSuccess(result))
             pTransactionalEngine->transactionCommit();
          else
             pTransactionalEngine->transactionRollback();
@@ -75,66 +73,69 @@ namespace web { namespace rest { namespace service {
 
 
 
-   web::rest::json::CJson CPage::getOnePage(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPage::getOnePage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       if(parameters.size()>1)
       {
          int pageId = boost::lexical_cast<int>(parameters[1]);
-         web::rest::json::CPageEntitySerializer hes;
          boost::shared_ptr<database::entities::CPage> pageFound =  m_dataProvider->getPageRequester()->getPage(pageId);
-         return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*pageFound.get()));
+         return web::rest::CResult::GenerateSuccess(pageFound);
       }
       else
       {
-         return web::rest::json::CJsonResult::GenerateError("Invalid parameter count (need page id in url)");
+         return web::rest::CResult::GenerateError("Invalid parameter count (need page id in url)");
       }
    }
 
-   web::rest::json::CJson CPage::getAllPages(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPage::getAllPages(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      web::rest::json::CPageEntitySerializer hes;
-      std::vector< boost::shared_ptr<database::entities::CPage> > hwList = m_dataProvider->getPageRequester()->getPages();
-      return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CPage>::SerializeCollection(hwList, hes, getRestKeyword()));
+      std::vector< boost::shared_ptr<database::entities::CPage> > pageList = m_dataProvider->getPageRequester()->getPages();
+      shared::CDataContainer collection;
+      collection.set(getRestKeyword(), pageList);
+      return web::rest::CResult::GenerateSuccess(collection);
    }
 
-   web::rest::json::CJson CPage::getPageWidget(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPage::getPageWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       std::string pageId = "";
       if(parameters.size()>1)
       {
          pageId = parameters[1];
 
-         web::rest::json::CWidgetEntitySerializer hes;
          std::vector< boost::shared_ptr<database::entities::CWidget> > widgetList = m_dataProvider->getWidgetRequester()->getWidgetsForPage(boost::lexical_cast<int>(pageId));
-         return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CWidget>::SerializeCollection(widgetList, hes, CWidget::getRestKeyword()));
+         shared::CDataContainer collection;
+         collection.set(getRestKeyword(), widgetList);
+
+         //std::vector< boost::shared_ptr<database::entities::CWidget> > widgetList2 = collection.get< std::vector< boost::shared_ptr<database::entities::CWidget> > >(getRestKeyword());
+         return web::rest::CResult::GenerateSuccess(collection);
       }
       else
       {
-         return web::rest::json::CJsonResult::GenerateError("Invalid parameter count (need page id in url)");
+         return web::rest::CResult::GenerateError("Invalid parameter count (need page id in url)");
       }
    }
 
-   web::rest::json::CJson CPage::addPage(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPage::addPage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
-         web::rest::json::CPageEntitySerializer hes;
-         boost::shared_ptr<database::entities::CPage> pageToAdd = hes.deserialize(requestContent);
-         int idCreated = m_dataProvider->getPageRequester()->addPage(pageToAdd->Name(), pageToAdd->PageOrder());
+         database::entities::CPage pageToAdd;
+         pageToAdd.fillFromContent(requestContent);
+         int idCreated = m_dataProvider->getPageRequester()->addPage(pageToAdd.Name(), pageToAdd.PageOrder());
          boost::shared_ptr<database::entities::CPage> pageFound =  m_dataProvider->getPageRequester()->getPage(idCreated);
-         return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*pageFound.get()));
+         return web::rest::CResult::GenerateSuccess(pageFound);
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in creating a new page");
+         return web::rest::CResult::GenerateError("unknown exception in creating a new page");
       }
    }
 
-   web::rest::json::CJson CPage::updatePage(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPage::updatePage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -142,60 +143,62 @@ namespace web { namespace rest { namespace service {
          {
             int pageId = boost::lexical_cast<int>(parameters[1].c_str());
 
-            web::rest::json::CPageEntitySerializer hes;
-            boost::shared_ptr<database::entities::CPage> pageToReplace = hes.deserialize(requestContent);
-            if(pageToReplace->Id() > 0 && pageId == pageToReplace->Id())
+            database::entities::CPage pageToReplace;
+            pageToReplace.fillFromContent(requestContent);
+
+            if(pageToReplace.Id() > 0 && pageId == pageToReplace.Id())
             {
-               m_dataProvider->getPageRequester()->updatePage(pageToReplace->Id(), pageToReplace->Name(), pageToReplace->PageOrder());
-               return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*m_dataProvider->getPageRequester()->getPage(pageToReplace->Id())));
+               m_dataProvider->getPageRequester()->updatePage(pageToReplace.Id(), pageToReplace.Name(), pageToReplace.PageOrder());
+               return web::rest::CResult::GenerateSuccess(m_dataProvider->getPageRequester()->getPage(pageToReplace.Id()));
             }
             else
             {
-               return web::rest::json::CJsonResult::GenerateError("The page to replace must have a valid id");
+               return web::rest::CResult::GenerateError("The page to replace must have a valid id");
             }
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("Invalid parameter count (need page id in url)");
+            return web::rest::CResult::GenerateError("Invalid parameter count (need page id in url)");
          }
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in replacing a page");
+         return web::rest::CResult::GenerateError("unknown exception in replacing a page");
       }
    }
 
 
 
 
-   web::rest::json::CJson CPage::updateAllPages(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPage::updateAllPages(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
          m_dataProvider->getPageRequester()->removeAllPages();
 
-         web::rest::json::CPageEntitySerializer hes;
-         std::vector<boost::shared_ptr<database::entities::CPage> > pagesToUpdate = web::rest::json::CJsonCollectionSerializer<database::entities::CPage>::DeserializeCollection(requestContent, hes, getRestKeyword());
+         std::vector<boost::shared_ptr<database::entities::CPage> > pagesToUpdate = requestContent.get< std::vector<boost::shared_ptr<database::entities::CPage> > >(getRestKeyword());
          BOOST_FOREACH(boost::shared_ptr<database::entities::CPage> page, pagesToUpdate)
          {
             m_dataProvider->getPageRequester()->addPage(*page);
          }
 
          std::vector<boost::shared_ptr<database::entities::CPage> > allPages = m_dataProvider->getPageRequester()->getPages();
-         return web::rest::json::CJsonResult::GenerateSuccess(web::rest::json::CJsonCollectionSerializer<database::entities::CPage>::SerializeCollection(allPages, hes, getRestKeyword()));
+         shared::CDataContainer collection;
+         collection.set(getRestKeyword(), allPages);
+         return web::rest::CResult::GenerateSuccess(collection);
 
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in updating all pages");
+         return web::rest::CResult::GenerateError("unknown exception in updating all pages");
       }
    }
 
@@ -203,7 +206,7 @@ namespace web { namespace rest { namespace service {
 
 
 
-   web::rest::json::CJson CPage::deletePage(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPage::deletePage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -216,24 +219,24 @@ namespace web { namespace rest { namespace service {
 
             //remove page
             m_dataProvider->getPageRequester()->removePage(pageId);
-            return web::rest::json::CJsonResult::GenerateSuccess();
+            return web::rest::CResult::GenerateSuccess();
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("The page to delete must have an id");
+            return web::rest::CResult::GenerateError("The page to delete must have an id");
          }
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in deleting a page");
+         return web::rest::CResult::GenerateError("unknown exception in deleting a page");
       }
    }
 
-   web::rest::json::CJson CPage::deleteAllPages(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPage::deleteAllPages(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -242,39 +245,39 @@ namespace web { namespace rest { namespace service {
 
          //remove page
          m_dataProvider->getPageRequester()->removeAllPages();
-         return web::rest::json::CJsonResult::GenerateSuccess();
+         return web::rest::CResult::GenerateSuccess();
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in deleting all pages");
+         return web::rest::CResult::GenerateError("unknown exception in deleting all pages");
       }
    }
 
-   web::rest::json::CJson CPage::addWidgetForPage(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPage::addWidgetForPage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
-         web::rest::json::CWidgetEntitySerializer hes;
-         boost::shared_ptr<database::entities::CWidget> widgetToAdd = hes.deserialize(requestContent);
-         int idCreated = m_dataProvider->getWidgetRequester()->addWidget(*widgetToAdd);
+         database::entities::CWidget widgetToAdd;
+         widgetToAdd.fillFromContent(requestContent);
+         int idCreated = m_dataProvider->getWidgetRequester()->addWidget(widgetToAdd);
          boost::shared_ptr<database::entities::CWidget> widgetFound =  m_dataProvider->getWidgetRequester()->getWidget(idCreated);
-         return web::rest::json::CJsonResult::GenerateSuccess(hes.serialize(*widgetFound.get()));
+         return web::rest::CResult::GenerateSuccess(widgetFound);
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in creating a new widget");
+         return web::rest::CResult::GenerateError("unknown exception in creating a new widget");
       }
    }
 
-   web::rest::json::CJson CPage::replaceAllWidgetsForPage(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPage::replaceAllWidgetsForPage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -286,30 +289,29 @@ namespace web { namespace rest { namespace service {
             m_dataProvider->getWidgetRequester()->removeWidgetsInPage(pageId);
 
             //crreate all
-            web::rest::json::CWidgetEntitySerializer hes;
-            std::vector<boost::shared_ptr<database::entities::CWidget> > widgetsToAdd = web::rest::json::CJsonCollectionSerializer<database::entities::CWidget>::DeserializeCollection(requestContent, hes, getRestKeyword());
+            std::vector<boost::shared_ptr<database::entities::CWidget> > widgetsToAdd = requestContent.get< std::vector<boost::shared_ptr<database::entities::CWidget> > >(getRestKeyword());
             BOOST_FOREACH(boost::shared_ptr<database::entities::CWidget> pw, widgetsToAdd)
             {
                m_dataProvider->getWidgetRequester()->addWidget(*pw);
             }
-            return web::rest::json::CJsonResult::GenerateSuccess();
+            return web::rest::CResult::GenerateSuccess();
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("Invalid parameter count (need page id in url)");
+            return web::rest::CResult::GenerateError("Invalid parameter count (need page id in url)");
          }
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in creating a new widget");
+         return web::rest::CResult::GenerateError("unknown exception in creating a new widget");
       }
    }
 
-   web::rest::json::CJson CPage::deleteAllWidgetsForPage(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPage::deleteAllWidgetsForPage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
       {
@@ -318,20 +320,20 @@ namespace web { namespace rest { namespace service {
             int pageId = boost::lexical_cast<int>(parameters[1].c_str());
 
             m_dataProvider->getWidgetRequester()->removeWidgetsInPage(pageId);
-            return web::rest::json::CJsonResult::GenerateSuccess();
+            return web::rest::CResult::GenerateSuccess();
          }
          else
          {
-            return web::rest::json::CJsonResult::GenerateError("Invalid parameter count (need page id in url)");
+            return web::rest::CResult::GenerateError("Invalid parameter count (need page id in url)");
          }
       }
       catch(std::exception &ex)
       {
-         return web::rest::json::CJsonResult::GenerateError(ex);
+         return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::json::CJsonResult::GenerateError("unknown exception in creating a new widget");
+         return web::rest::CResult::GenerateError("unknown exception in creating a new widget");
       }
 
    }

@@ -143,7 +143,7 @@ namespace entities {
       ((Name)(std::string))
       ((FriendlyName)(std::string))
       ((Model)(std::string))
-	  ((Details)(std::string))
+      ((Details)(shared::CDataContainer))
 	  )
 
    DECLARE_ENTITY_CLASS_HEADER(Keyword,

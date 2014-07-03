@@ -18,20 +18,20 @@ namespace web { namespace rest { namespace service {
       // [END] IRestService implementation
 
       const std::string & getRestKeyword();
-      web::rest::json::CJson getOnePlugin(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
-      web::rest::json::CJson getAllPluginsInstance(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
-      web::rest::json::CJson getAllAvailablePlugins(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
-      web::rest::json::CJson createPlugin(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
-      web::rest::json::CJson updatePlugin(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
-      web::rest::json::CJson deletePlugin(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
-      web::rest::json::CJson deleteAllPlugins(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
+      shared::CDataContainer getOnePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer getAllPluginsInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer getAllAvailablePlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer createPlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer updatePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer deletePlugin(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+      shared::CDataContainer deleteAllPlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
-      web::rest::json::CJson getInstanceStatus(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
-      web::rest::json::CJson startInstance(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
-      web::rest::json::CJson stopInstance(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+      shared::CDataContainer getInstanceStatus(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer startInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer stopInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
 
-      web::rest::json::CJson transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
+      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;

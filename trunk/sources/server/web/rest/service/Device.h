@@ -24,57 +24,57 @@ namespace web { namespace rest { namespace service {
       //-----------------------------------------
       ///\brief   get a device
       //-----------------------------------------
-      web::rest::json::CJson getOneDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+      shared::CDataContainer getOneDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
       //-----------------------------------------
       ///\brief   get all devices
       //-----------------------------------------
-      web::rest::json::CJson getAllDevices(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
+      shared::CDataContainer getAllDevices(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
       //-----------------------------------------
       ///\brief   get all devices which supports a capacity
       //-----------------------------------------
-      web::rest::json::CJson getDevicesWithCapacity(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
+      shared::CDataContainer getDevicesWithCapacity(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
       //-----------------------------------------
       ///\brief   get all the keywords which implement a device capacity
       //-----------------------------------------
-      web::rest::json::CJson getDeviceKeywordsForCapacity(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
+      shared::CDataContainer getDeviceKeywordsForCapacity(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
       //-----------------------------------------
       ///\brief   get all the keywords of a device
       //-----------------------------------------
-      web::rest::json::CJson getDeviceKeywords(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);  
+      shared::CDataContainer getDeviceKeywords(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
       //-----------------------------------------
       ///\brief   send a command to a device
       //-----------------------------------------
-      web::rest::json::CJson sendDeviceCommand(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+      shared::CDataContainer sendDeviceCommand(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
       //-----------------------------------------
       ///\brief   create a device in database
       //-----------------------------------------
-      web::rest::json::CJson createDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+      shared::CDataContainer createDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
       //-----------------------------------------
       ///\brief   delete a device in database
       //-----------------------------------------
-      web::rest::json::CJson deleteDevice(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+      shared::CDataContainer deleteDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
       //-----------------------------------------
       ///\brief   update a device friendly name
       //-----------------------------------------
-      web::rest::json::CJson updateDeviceFriendlyName(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+      shared::CDataContainer updateDeviceFriendlyName(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
       //-----------------------------------------
       ///\brief   update a keyword friendly name
       //-----------------------------------------
-      web::rest::json::CJson updateKeywordFriendlyName(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);   
+      shared::CDataContainer updateKeywordFriendlyName(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
    private:
       //-----------------------------------------
       ///\brief   Transactional method used to encapsulate operation in transactions
       //-----------------------------------------
-      web::rest::json::CJson transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
+      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
       //-----------------------------------------
       ///\brief   Data provider

@@ -39,7 +39,7 @@ public:
    // IYadomsApi implementation
    virtual shared::event::CEventHandler & getEventHandler() { return m_defaultEventHandler; }
    virtual bool deviceExists(const std::string& device) const { return m_devices.find(device) != m_devices.end(); }
-   virtual const std::string getDeviceDetails(const std::string& device) const { return m_devices.find(device)->second.m_details; }
+   virtual const shared::CDataContainer getDeviceDetails(const std::string& device) const { return m_devices.find(device)->second.m_details; }
    virtual bool declareDevice(const std::string& device, const std::string& model, const std::string & details) { Device dev = {model, details}; m_devices[device] = dev; return true; }
    virtual bool keywordExists(const std::string& device, const std::string& keyword) const { return false; }
    virtual bool declareCustomKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, yApi::EKeywordAccessMode accessMode, yApi::EKeywordType type, const std::string & units = shared::CStringExtension::EmptyString, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer)

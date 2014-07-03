@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "PluginEventLogger.h"
-#include "web/rest/json/JsonSerializers.h"
-#include "web/rest/json/JsonCollectionSerializer.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "shared/Log.h"
+#include "web/rest/Result.h"
 
 namespace web { namespace rest { namespace service {
 
@@ -28,7 +27,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("*")("*")("*"), CPluginEventLogger::getLogsForPluginNameFromDate);
    }
 
-   web::rest::json::CJson CPluginEventLogger::getLogsForPluginName(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPluginEventLogger::getLogsForPluginName(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       std::string pluginName = "";
       std::string pluginVersion = "";
@@ -41,12 +40,13 @@ namespace web { namespace rest { namespace service {
       if(parameters.size()>3)
          rType = (shared::plugin::information::EReleaseType)atoi(parameters[3].c_str());
 
-      web::rest::json::CPluginEventLoggerEntitySerializer hes;
       std::vector< boost::shared_ptr<database::entities::CPluginEventLogger> > dvList = m_dataProvider->getPluginEventLoggerRequester()->getPluginEvents(pluginName, pluginVersion, rType);
-      return web::rest::json::CJsonCollectionSerializer<database::entities::CPluginEventLogger>::SerializeCollection(dvList, hes, getRestKeyword());
+      shared::CDataContainer collection;
+      collection.set(getRestKeyword(), dvList);
+      return web::rest::CResult::GenerateSuccess(collection);
    }
 
-   web::rest::json::CJson CPluginEventLogger::getLogsForPluginNameFromDate(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent)
+   shared::CDataContainer CPluginEventLogger::getLogsForPluginNameFromDate(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       std::string pluginName = "";
       std::string pluginVersion = "";
@@ -60,11 +60,12 @@ namespace web { namespace rest { namespace service {
       if(parameters.size()>3)
          rType = (shared::plugin::information::EReleaseType)atoi(parameters[3].c_str());
       if(parameters.size()>4)
-         fromDate = web::rest::json::CJsonDate::fromString(parameters[4]);
+         fromDate = boost::posix_time::from_iso_string(parameters[4]);
       
-      web::rest::json::CPluginEventLoggerEntitySerializer hes;
       std::vector< boost::shared_ptr<database::entities::CPluginEventLogger> > dvList = m_dataProvider->getPluginEventLoggerRequester()->getPluginEvents(pluginName, pluginVersion, rType, fromDate);
-      return web::rest::json::CJsonCollectionSerializer<database::entities::CPluginEventLogger>::SerializeCollection(dvList, hes, getRestKeyword());
+      shared::CDataContainer collection;
+      collection.set(getRestKeyword(), dvList);
+      return web::rest::CResult::GenerateSuccess(collection);
    }
 
 

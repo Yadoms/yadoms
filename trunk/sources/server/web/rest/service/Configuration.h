@@ -20,14 +20,14 @@ namespace web { namespace rest { namespace service {
       static const std::string & getRestKeyword();
 
    public:
-      web::rest::json::CJson getConfiguration(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
-      web::rest::json::CJson getSectionConfigurations(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
-      web::rest::json::CJson getAllConfigurations(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
+      shared::CDataContainer getConfiguration(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer getSectionConfigurations(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer getAllConfigurations(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
-      web::rest::json::CJson createOneConfiguration(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
-      web::rest::json::CJson updateOneConfiguration(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
-      web::rest::json::CJson updateAllConfigurations(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
-      web::rest::json::CJson deleteOneConfiguration(const std::vector<std::string> & parameters, const web::rest::json::CJson & requestContent);
+      shared::CDataContainer createOneConfiguration(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer updateOneConfiguration(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer updateAllConfigurations(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer deleteOneConfiguration(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;

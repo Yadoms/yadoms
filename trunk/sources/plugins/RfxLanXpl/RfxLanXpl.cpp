@@ -214,10 +214,7 @@ void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<yApi::IDeviceCommand> com
       if (context->deviceExists(command->getTargetDevice()))
       {
          //get device details
-         std::string deviceDetails = context->getDeviceDetails(command->getTargetDevice());
-         shared::CDataContainer details;
-         details.deserialize(deviceDetails);
-
+         shared::CDataContainer details = context->getDeviceDetails(command->getTargetDevice());
          std::string protocol = details.get<std::string>("writingProtocol");
          std::string source = details.get<std::string>("source");
 
