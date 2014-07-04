@@ -130,7 +130,7 @@ void CSerialPort::flush()
       cancelAsyncRead();
 
 #if !defined(BOOST_WINDOWS) && !defined(__CYGWIN__)
-   ::tcflush(_serialPort.native(), TCIOFLUSH);
+   ::tcflush(m_boostSerialPort.native(), TCIOFLUSH);
 #else
    ::PurgeComm(m_boostSerialPort.native(), PURGE_RXABORT | PURGE_RXCLEAR | PURGE_TXABORT | PURGE_TXCLEAR);
 #endif
