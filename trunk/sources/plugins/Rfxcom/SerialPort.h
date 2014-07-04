@@ -31,6 +31,7 @@ public:
    virtual ~CSerialPort();
 
    // IPort Implementation
+   virtual void setReceiveBufferSize(std::size_t size);
    virtual void start();
    virtual void stop();
    virtual bool isConnected() const;
@@ -55,6 +56,11 @@ public:
 
 protected:
    //--------------------------------------------------------------
+   /// \brief	Check if asynchronous read mode is active
+   //--------------------------------------------------------------
+   bool asyncReadMode() const;
+
+   //--------------------------------------------------------------
    /// \brief	Try to connect asynchronously
    //--------------------------------------------------------------
    void tryConnect();
@@ -69,6 +75,16 @@ protected:
    /// \brief	Wait for something to read on the port
    //--------------------------------------------------------------
    void startRead();
+
+   //--------------------------------------------------------------
+   /// \brief	Stop the asynchronous read on the port
+   //--------------------------------------------------------------
+   void cancelAsyncRead();
+
+   //--------------------------------------------------------------
+   /// \brief	Restart the asynchronous read on the port
+   //--------------------------------------------------------------
+   void restartAsyncRead();
 
    //--------------------------------------------------------------
    /// \brief	                     End of read operation handler
@@ -108,12 +124,17 @@ private:
    //--------------------------------------------------------------
    /// \brief	Read buffer max size
    //--------------------------------------------------------------
-   static const std::size_t ReadBufferMaxSize;
+   std::size_t m_readBufferMaxSize;
 
    //--------------------------------------------------------------
    /// \brief	Read buffer for asynchronous operations
    //--------------------------------------------------------------
    boost::shared_ptr<unsigned char[]> m_asyncReadBuffer;
+
+   //--------------------------------------------------------------
+   /// \brief	Read buffer for synchronous operations
+   //--------------------------------------------------------------
+   boost::shared_ptr<unsigned char[]> m_readBuffer;
 
    //--------------------------------------------------------------
    /// \brief	Connection state event subscription

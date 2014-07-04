@@ -29,5 +29,8 @@ extern const std::size_t LIGHTING6_size;
 extern const std::size_t CURTAIN1_size;
 extern const std::size_t TEMP_size;
 
+// The max size of a message
+extern const std::size_t RFXMESSAGE_maxSize;
+
 // Macro helper to encode length (length = packet size except the packet byte)
 #define ENCODE_PACKET_LENGTH(packet)((BYTE)packet##_size - 1)

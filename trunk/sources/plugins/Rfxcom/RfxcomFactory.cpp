@@ -21,7 +21,6 @@ boost::shared_ptr<IPort> CRfxcomFactory::constructPort(
    port->subscribeConnectionState(eventHandler, evtPortConnectionId);
    port->subscribeReceiveData(eventHandler, evtPortDataReceived);
    port->setLogger(logger);
-   port->start();
 
    return port;
 }

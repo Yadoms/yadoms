@@ -164,6 +164,7 @@ source_group(server\\tools server/tools/*.*)
 
 source_group(plugins plugins/*.*)
 source_group(plugins\\FakePlugin plugins/FakePlugin/*.*)
+source_group(plugins\\Rfxcom plugins/Rfxcom/*.*)
 
 source_group(testCommon testCommon/*.*)
 

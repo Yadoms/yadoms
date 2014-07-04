@@ -13,7 +13,7 @@
 #include "PortException.hpp"
 #include "ProtocolException.hpp"
 
-//TODO voir dans package.json les protocoles à acvtiver par défaut
+
 CTransceiver::CTransceiver(boost::shared_ptr<yApi::IYadomsApi> context, const IRfxcomConfiguration& configuration, int evtPortConnection, int evtPortDataReceived)
    :m_context(context), m_configuration(configuration), m_evtPortConnection(evtPortConnection), m_evtPortDataReceived(evtPortDataReceived),
    m_seqNumberProvider(new CIncrementSequenceNumber())
@@ -21,6 +21,8 @@ CTransceiver::CTransceiver(boost::shared_ptr<yApi::IYadomsApi> context, const IR
    // Create the port instance
    m_portLogger = CRfxcomFactory::constructPortLogger();
    m_port = CRfxcomFactory::constructPort(m_configuration, m_context->getEventHandler(), m_evtPortConnection, m_evtPortDataReceived, m_portLogger);
+   m_port->setReceiveBufferSize(RFXMESSAGE_maxSize);
+   m_port->start();
 }
 
 CTransceiver::~CTransceiver()
