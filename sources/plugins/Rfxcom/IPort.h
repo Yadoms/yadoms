@@ -20,6 +20,12 @@ public:
    virtual ~IPort() {}
 
    //--------------------------------------------------------------
+   /// \brief	Set the receive max buffer size
+   /// \param [in] size  The new buffer size
+   //--------------------------------------------------------------
+   virtual void setReceiveBufferSize(std::size_t size) = 0;
+
+   //--------------------------------------------------------------
    /// \brief	Start the port management (try to connect)
    //--------------------------------------------------------------
    virtual void start() = 0;
