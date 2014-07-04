@@ -13,7 +13,11 @@ enum EEnumType
 {
    kEnumValue1 = 7,
    kEnumValue2 = 12,
-   kEnumValue3
+   kEnumValue3 = 14,
+   kEnumValue4,
+   kEnumValue5,
+   kEnumValue6,
+   kEnumValue7,
 };
 
 static const shared::CDataContainer::EnumValuesNames EEnumTypeNames = boost::assign::map_list_of
@@ -108,6 +112,16 @@ BOOST_AUTO_TEST_CASE(CollectionContainer)
    test.set< std::vector<double> >("vectordouble", vd);
    std::vector<double> vd2 = test.get< std::vector<double> >("vectordouble");
    BOOST_CHECK_EQUAL_COLLECTIONS(vd.begin(), vd.end(), vd2.begin(), vd2.end());
+	
+	//check vector of EEnumType
+	std::vector<EEnumType> ve;
+	ve.push_back(kEnumValue2);
+	ve.push_back(kEnumValue4);
+	ve.push_back(kEnumValue5);
+	ve.push_back(kEnumValue7);
+	test.set("vectorenum", ve);
+	std::vector<EEnumType> ve2 = test.get< std::vector<EEnumType> >("vectorenum");
+	BOOST_CHECK_EQUAL_COLLECTIONS(ve.begin(), ve.end(), ve2.begin(), ve2.end());
 
    //check vector of shared_ptr<int>
    std::vector< boost::shared_ptr<int> > vish;

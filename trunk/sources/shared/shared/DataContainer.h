@@ -493,6 +493,25 @@ namespace shared
       template<class T>
       inline void setValuesInternalIDataContainable(const std::string& parameterName, const std::vector<T> & values);
 
+		//--------------------------------------------------------------
+		/// \brief	    Get parameter values (Enum)
+		/// \param [in] parameterName    Name of the parameter
+		/// \return     The parameter values (Enum)
+		/// \throw      shared::exception::COutOfRange if parameter can not be converted
+		/// \throw      shared::exception::CInvalidParameter if parameter is not found
+		//--------------------------------------------------------------
+		template<class T>
+		inline std::vector<T> getValuesInternalEnum(const std::string& parameterName) const;
+
+
+		//--------------------------------------------------------------
+		/// \brief	    Set parameter values (Enum)
+		/// \param [in] parameterName    Name of the parameter
+		/// \param [in] values           Valuse of the parameter (Enum)
+		//--------------------------------------------------------------
+		template<class T>
+		inline void setValuesInternalEnum(const std::string& parameterName, const std::vector<T> & values);
+
       //--------------------------------------------------------------
       /// \brief	    Get parameter values (std::vector< boost::shared_ptr<T> >)
       /// \param [in] parameterName    Name of the parameter
@@ -676,6 +695,29 @@ namespace shared
          static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector< T > & value)
          {
             tree->setValuesInternalIDataContainable(parameterName, value);
+         }
+      };
+
+      //--------------------------------------------------------------
+      /// \brief	    Helper structure for get/set with vector of Enum
+      //--------------------------------------------------------------
+      template <typename T>
+		struct vectorhelper < T, typename boost::enable_if< boost::is_enum< T > >::type >
+      {
+         //--------------------------------------------------------------
+         /// \brief	    GET Method for std::vector< Enum >
+         //--------------------------------------------------------------
+         static std::vector< T > getInternal(const CDataContainer * tree, const std::string& parameterName)
+         {
+            return tree->getValuesInternalEnum<T>(parameterName);
+         }
+
+         //--------------------------------------------------------------
+         /// \brief	    SET Method for std::vector< Enum >
+         //--------------------------------------------------------------
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector< T > & value)
+         {
+            tree->setValuesInternalEnum(parameterName, value);
          }
       };
 
@@ -940,6 +982,32 @@ namespace shared
    }
 
    template<class T>
+   inline std::vector<T> CDataContainer::getValuesInternalEnum(const std::string& parameterName) const
+   {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+      std::vector<T> result;
+      try
+      {
+         boost::property_tree::ptree child = m_tree.get_child(parameterName);
+
+         boost::property_tree::ptree::const_iterator end = child.end();
+         for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it) {
+            result.push_back((T)it->second.get_value<int>());
+         }
+         return result;
+      }
+      catch (boost::property_tree::ptree_bad_path& e)
+      {
+         throw exception::CInvalidParameter(parameterName + " : " + e.what());
+      }
+      catch (boost::property_tree::ptree_bad_data& e)
+      {
+         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
+      }
+   }
+
+   template<class T>
    inline std::vector< boost::shared_ptr<T> > CDataContainer::getValuesSPInternal(const std::string& parameterName) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
@@ -1164,6 +1232,35 @@ namespace shared
          {
             boost::property_tree::ptree t;
             t.put("", *i);
+            innerData.push_back(std::make_pair("", t));
+         }
+
+         m_tree.add_child(parameterName, innerData);
+      }
+      catch (boost::property_tree::ptree_bad_path& e)
+      {
+         throw exception::CInvalidParameter(parameterName + " : " + e.what());
+      }
+      catch (boost::property_tree::ptree_bad_data& e)
+      {
+         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
+      }
+   }
+
+   template<class T>
+   inline void CDataContainer::setValuesInternalEnum(const std::string& parameterName, const std::vector<T> & values)
+   {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+      try
+      {
+         boost::property_tree::ptree innerData;
+
+         typename std::vector<T>::const_iterator i;
+         for (i = values.begin(); i != values.end(); ++i)
+         {
+            boost::property_tree::ptree t;
+            t.put("", (int)(*i));
             innerData.push_back(std::make_pair("", t));
          }
 
