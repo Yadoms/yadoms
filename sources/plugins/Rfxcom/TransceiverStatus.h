@@ -1,7 +1,6 @@
 #pragma once
 #include "rfxcomMessages/RFXtrxHelpers.h"
-#include "RfxComConfiguration.h"
-//#include "IRfxcomConfiguration.h"
+#include "IRfxcomConfiguration.h"
 
 
 //--------------------------------------------------------------
@@ -12,7 +11,7 @@ class CTransceiverStatus
 public:
    //--------------------------------------------------------------
    /// \brief	                           Constructor
-   /// \param[in] rbuf                    Status received from rfxcom
+   /// \param[in] rbuf                    Status received from Rfxcom
    //--------------------------------------------------------------
    CTransceiverStatus(const RBUF& rbuf);
 
@@ -34,19 +33,19 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                     Get the RfxCom type as string
-   // \return                       A string reprenting the RfxCom type
+   // \return                       A string representing the RfxCom type
    //--------------------------------------------------------------
    const std::string rfxcomTypeToString() const;
 
    //--------------------------------------------------------------
    /// \brief	                     Get the RfxCom type as string
-   // \return                       A string reprenting the RfxCom type
+   // \return                       A string representing the RfxCom type
    //--------------------------------------------------------------
    unsigned char getFirmwareVersion() const;
 
    //--------------------------------------------------------------
    /// \brief	                     Check if RfxCom configuration must be updated (need protocols enabled for example)
-   /// \parame[in] configuration    The configured RfxCom status
+   /// \param[in] configuration     The configured RfxCom status
    /// \return                      true is configuration must be updated
    //--------------------------------------------------------------
    bool needConfigurationUpdate(const IRfxcomConfiguration& configuration) const;
