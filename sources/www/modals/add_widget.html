@@ -131,28 +131,39 @@
        var sizeX = Math.min(maxX, Math.max(defaultX, minX));
        var sizeY  = Math.min(maxY, Math.max(defaultY, minY));
 
-       $.ajax({
-            type: "POST",
-            url: "/rest/widget",
-            data: JSON.stringify({ idPage: currentPage.id, name: packageName, sizeX: sizeX, sizeY: sizeY, positionX:"1", positionY:"1" }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json"
-       })
-       .done(function(data) {
-           //we parse the json answer
-           if (data.result != "true")
-           {
-              notifyError($.t("modals.add-widget.errorDuringCreatingWidget"), JSON.stringify(data));
-              return;
-           }
+       //we create a fake widget to display configuration form
+       var newWidget = new Widget(-1, currentPage.id, packageName, sizeX, sizeY, 1, 1, "");
 
-           notifySuccess($.t("modals.add-widget.widgetSuccessfullyCreated"));
+       newWidget.package = widgetPackages[newWidget.name].packageInformation;
 
-           //we add the widget dynamically
-           var w = new Widget(data.data.id, data.data.idPage, data.data.name, data.data.sizeX, data.data.sizeY, data.data.positionX, data.data.positionY, data.data.configuration);
-           addWidgetToIHM(w);
-       })
-       .fail(function(widgetName) { return function() {notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {"widgetType" : widgetName}))}}(packageName));
+       modals.widgetConfiguration.load(function() {
+
+           configureWidget(newWidget, function () {
+               //if the configuration has been validated we can create the widget
+               $.ajax({
+                   type: "POST",
+                   url: "/rest/widget",
+                   data: JSON.stringify({ idPage: newWidget.idPage, name: newWidget.name, sizeX: newWidget.sizeX, sizeY: newWidget.sizeY, positionX: newWidget.positionX, positionY: newWidget.positionY, configuration: newWidget.configuration }),
+                   contentType: "application/json; charset=utf-8",
+                   dataType: "json"
+               })
+               .done(function(data) {
+                   //we parse the json answer
+                   if (data.result != "true")
+                   {
+                       notifyError($.t("modals.add-widget.errorDuringCreatingWidget"), JSON.stringify(data));
+                       return;
+                   }
+
+                   notifySuccess($.t("modals.add-widget.widgetSuccessfullyCreated"));
+
+                   //we add the widget dynamically
+                   var w = WidgetManager.factory(data.data);
+                   addWidgetToIHM(w);
+               })
+               .fail(function(widgetName) { return function() {notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {"widgetType" : widgetName}))}}(packageName));
+           });
+       });
     });
 
 </script>

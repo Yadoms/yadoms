@@ -102,7 +102,12 @@ function initializeWidgetEvents(widget) {
       var widgetDOMElement = $(e.currentTarget).parents("li.widget");
       var pageId = widgetDOMElement.attr("page-id");
       var widgetId = widgetDOMElement.attr("widget-id");
-      modals.widgetConfiguration.load(function (pageId, widgetId) {return function() {showWidgetConfigurationModal(pageId, widgetId)}}(pageId, widgetId));
+      modals.widgetConfiguration.load(function (pageId, widgetId) { return function() {
+          var widgetToConfigure = WidgetManager.get(pageId, widgetId);
+          configureWidget(widgetToConfigure, function () {
+              WidgetManager.updateToServer(widgetToConfigure);
+          });
+      }}(pageId, widgetId));
    });
 
    //we listen click event on delete click
@@ -384,7 +389,7 @@ function requestWidgetsDone() {
       //we list all kind of widget we have
       var widgetTypes = [];
       $.each(data.data.widget, function(index, value) {
-         var w = new Widget(value.id, value.idPage, value.name, value.sizeX, value.sizeY, value.positionX, value.positionY, value.configuration);
+         var w = WidgetManager.factory(value);
          widgetArrayForLoading.push(w);
          if (widgetTypes.indexOf(value.name) == -1)
             widgetTypes.push(value.name);
