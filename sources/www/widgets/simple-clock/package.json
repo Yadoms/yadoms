@@ -27,6 +27,13 @@
           "regexErrorMessage" : "Must be an ipv4 adress like 192.168.0.12",
            "required" : "false"
        },
+       "password" : {
+            "name" : "Password",
+            "description" : "password to set",
+            "type" : "string",
+            "required" : "true",
+            "encrypted" : "true"
+       },
        "intParameter" : {
           "type" : "int",
           "name" : "int parameter",
