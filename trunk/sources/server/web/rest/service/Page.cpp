@@ -289,7 +289,7 @@ namespace web { namespace rest { namespace service {
             m_dataProvider->getWidgetRequester()->removeWidgetsInPage(pageId);
 
             //crreate all
-            std::vector<boost::shared_ptr<database::entities::CWidget> > widgetsToAdd = requestContent.get< std::vector<boost::shared_ptr<database::entities::CWidget> > >(getRestKeyword());
+            std::vector<boost::shared_ptr<database::entities::CWidget> > widgetsToAdd = requestContent.get< std::vector<boost::shared_ptr<database::entities::CWidget> > >("");
             BOOST_FOREACH(boost::shared_ptr<database::entities::CWidget> pw, widgetsToAdd)
             {
                m_dataProvider->getWidgetRequester()->addWidget(*pw);

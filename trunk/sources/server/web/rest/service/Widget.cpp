@@ -276,7 +276,7 @@ namespace web {
                         }
                      }
                   }
-                  result.set< std::vector<shared::CDataContainer> >("packages", allData);
+                  result.set< std::vector<shared::CDataContainer> >("package", allData);
                   return web::rest::CResult::GenerateSuccess(result);
                }
                else
