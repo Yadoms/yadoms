@@ -67,7 +67,7 @@ function populateDeviceList(handler) {
       else {
           var itemToSelect = 0;
           $.each(data.data.device, function(index, value) {
-             $deviceList.append("<option value=\"" + value.id + "\">" + value.name + "</option>");
+             $deviceList.append("<option value=\"" + value.id + "\">" + decodeURIComponent(value.friendlyName) + "</option>");
              if (value.id == handler.value.deviceId)
                 itemToSelect = index;
           });

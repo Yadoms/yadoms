@@ -98,17 +98,17 @@
    function startStopPlugin(pi) {
       //pi represent the pluginInstance concerned
       return function() {
+         //we deactivate the button until next status will be acquired to prevent flooding
+         getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', true);
          if (pi.lastRunningStatus) {
             //we ask for stop
-            PluginInstanceManager.stop(pi);
+            PluginInstanceManager.stop(pi, function() { getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);});
          }
          else
          {
             //we ask for start
-            PluginInstanceManager.start(pi);
+            PluginInstanceManager.start(pi, function() { getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);});
          }
-         //we deactivate the button until next status will be aquired to prevent flooding
-         getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', true);
       }
    }
 
@@ -157,7 +157,7 @@
       //pi represent the pluginInstance concerned
       return function() {
          //we set autoStart attr to cb value and send it to the server as an update
-         pi.autoStart = $("table#plugin-instance-list").find("tr[plugin-id='" + pi.id + "']").find("input.cb-autoStart").prop("disabled", true).prop("checked");
+         pi.autoStart = getPluginDomRow(pi).find("input.cb-autoStart").prop("disabled", true).prop("checked");
          PluginInstanceManager.updateToServer(pi, function(result) {
             getPluginDomRow(pi).find("input.cb-autoStart").prop("disabled", false).prop("checked", pi.autoStart);
          });
@@ -181,12 +181,10 @@
                      $row.find("button.btn-startStop").addClass("btn-warning").removeClass("btn-success");
                   }
                   else {
-                     $row.find("tr[plugin-id='" + value.id + "']").find("span.label-status").addClass("label-danger").removeClass("label-success").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
-                     $row.find("tr[plugin-id='" + value.id + "']").find("button.btn-startStop").addClass("btn-success").removeClass("btn-warning");
+                     $row.find("span.label-status").addClass("label-danger").removeClass("label-success").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
+                     $row.find("button.btn-startStop").addClass("btn-success").removeClass("btn-warning");
                   }
                }
-               //we re enable the startStop button in case of using it last time
-               $row.find("button.btn-startStop").prop('disabled', false);
             });
          });
       }
