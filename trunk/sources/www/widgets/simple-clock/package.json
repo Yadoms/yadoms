@@ -24,7 +24,8 @@
           "type" : "string",
           "defaultValue" : "default value",
           "regex" : "([0-9]{1,3}\\.){3}[0-9]{1,3}",
-          "regexErrorMessage" : "Must be an ipv4 adress like 192.168.0.12"
+          "regexErrorMessage" : "Must be an ipv4 adress like 192.168.0.12",
+           "required" : "false"
        },
        "intParameter" : {
           "type" : "int",

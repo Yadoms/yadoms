@@ -36,6 +36,12 @@ function StringParameterHandler(i18nContext, paramName, content, currentValue) {
       this.regexErrorMessage = content.regexErrorMessage;
    }
 
+   //we look if the field mustn't be blank
+   if (!isNullOrUndefined(content.required))
+       this.required = parseBool(content.required);
+   else
+       this.required = false;
+
    this.name = content.name;
    this.uuid = createUUID();
    this.paramName = paramName;
@@ -53,8 +59,9 @@ StringParameterHandler.prototype.getDOMObject = function () {
                         "type=\"text\" " +
                         "class=\"form-control enable-validation\" " +
                         "id=\"" + this.uuid + "\" " +
-                        "data-content=\"" + this.description + "\"" +
-                        " ";
+                        "data-content=\"" + this.description + "\" ";
+   if (this.required)
+    input +=            "required ";
    var dataI18n = "data-i18n=\"";
    dataI18n += "[data-content]" + this.i18nContext + this.paramName + ".description";
 
