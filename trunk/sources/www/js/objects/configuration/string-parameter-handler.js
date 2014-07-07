@@ -42,6 +42,12 @@ function StringParameterHandler(i18nContext, paramName, content, currentValue) {
    else
        this.required = false;
 
+   //we look if the text has to be encrypted or not
+   if (!isNullOrUndefined(content.encrypted))
+       this.encrypted = parseBool(content.encrypted);
+   else
+       this.encrypted = false;
+
    this.name = content.name;
    this.uuid = createUUID();
    this.paramName = paramName;
@@ -55,9 +61,14 @@ function StringParameterHandler(i18nContext, paramName, content, currentValue) {
  * @returns {string}
  */
 StringParameterHandler.prototype.getDOMObject = function () {
-   var input = "<input " +
-                        "type=\"text\" " +
-                        "class=\"form-control enable-validation\" " +
+   var input = "<input ";
+
+    if (this.encrypted)
+        input +=        "type=\"password\" ";
+    else
+        input +=        "type=\"text\" ";
+
+    input +=            "class=\"form-control enable-validation\" " +
                         "id=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\" ";
    if (this.required)
@@ -75,7 +86,12 @@ StringParameterHandler.prototype.getDOMObject = function () {
 
    dataI18n += "\"";
 
-   input += " value =\"" + this.value + "\" ";
+   input += " value =\"";
+   if (this.encrypted)
+       input += EncryptionManager.decryptBase64(this.value, EncryptionManager.key);
+   else
+       input += this.value;
+   input +=  "\" ";
    input += dataI18n + " >";
    input += "</input>";
 
@@ -96,6 +112,10 @@ StringParameterHandler.prototype.getParamName = function() {
  * @returns {string}
  */
 StringParameterHandler.prototype.getCurrentConfiguration = function () {
-   this.value = $("input#" + this.uuid).val();
+   var val = $("input#" + this.uuid).val();
+   if (this.encrypted)
+        this.value = EncryptionManager.encryptBase64(val, EncryptionManager.key);
+   else
+        this.value = val;
    return this.value;
 };

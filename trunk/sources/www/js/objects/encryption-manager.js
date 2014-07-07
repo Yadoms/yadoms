@@ -1,8 +1,15 @@
 /**
  * This file contains some methods for encrypting/decrypting strings
  */
- 
-  
+
+/**
+ * Ctor which does nothing because it is used as a static class
+ * @constructor
+ */
+function EncryptionManager(){}
+
+//not possible to have a strong password in js so ...
+EncryptionManager.key = "2m72fgEQ";
 
 /**
  * Encrypt or decrypt a string using XOR algorithm
@@ -10,8 +17,8 @@
  * @param key 				The encryption/decryption key
  * @returns The encrypted/decrypted string
  */
-function xorEncryptDecrypt(stringToEncrypt, key){
-	var output = "";
+EncryptionManager.xorEncryptDecrypt = function(stringToEncrypt, key) {
+    var output = "";
 	for (var i = 0; i < stringToEncrypt.length; i++)
 		output+= String.fromCharCode(stringToEncrypt.charCodeAt(i) ^ key.charCodeAt(i % key.length));
 	return output;
@@ -23,8 +30,8 @@ function xorEncryptDecrypt(stringToEncrypt, key){
  * @param key        The encryption key
  * @return	The encrypted string (base64)
  */
-function encryptBase64(toEncrypt, key) {
-	var cypher = xorEncryptDecrypt(toEncrypt, key);
+EncryptionManager.encryptBase64 = function(toEncrypt, key) {
+	var cypher = EncryptionManager.xorEncryptDecrypt(toEncrypt, key);
 	return btoa(cypher);
 }			
 
@@ -34,6 +41,6 @@ function encryptBase64(toEncrypt, key) {
  * @param key        The decryption key
  * @return	The decrypted string
  */
-function decryptBase64(toDecrypt, key) {
-	return xorEncryptDecrypt(atob(toDecrypt), key);
+EncryptionManager.decryptBase64 = function(toDecrypt, key) {
+	return EncryptionManager.xorEncryptDecrypt(atob(toDecrypt), key);
 }
