@@ -70,7 +70,7 @@
           "name" : "Advanced parameters",
           "description" : "For advanced users only",
           "enableWithCheckBox" : "true",
-          "enableWithCheckBoxDefaultValue" : "false",
+		  "enableWithCheckBoxDefaultValue" : "false",
           "content" : {
              "booleanParameter" : {
                 "type" : "bool",
