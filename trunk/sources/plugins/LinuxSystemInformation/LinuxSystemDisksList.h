@@ -26,6 +26,8 @@ public:
 
 private:
 
+std::vector<std::string> ExecuteCommandAndReturn(const std::string &szCommand);
+
    //--------------------------------------------------------------
    /// \brief	    Memory Load in %
    //--------------------------------------------------------------

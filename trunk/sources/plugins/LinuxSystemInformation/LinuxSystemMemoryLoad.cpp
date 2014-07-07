@@ -5,6 +5,8 @@
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
 #include "sys/types.h"
+//TODO : Temp
+#include <shared/Log.h>
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -48,18 +50,12 @@ void CLinuxSystemMemoryLoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> c
 
 double CLinuxSystemMemoryLoad::getValue()
 {
-//------------------------------------------------------------------
-// TODO : A tester
-//long long totalPhysMem = memInfo.totalram;
-    //Multiply in next statement to avoid int overflow on right hand side...
-//    totalPhysMem *= memInfo.mem_unit;
-
-//long long physMemUsed = memInfo.totalram - memInfo.freeram;
-    //Multiply in next statement to avoid int overflow on right hand side...
-//physMemUsed *= memInfo.mem_unit;
-//------------------------------------------------------------------
-
-   sysinfo (&memInfo);
+   if (sysinfo (&memInfo)!=0)
+   {
+      std::stringstream Message; 
+      Message << "sysinfo failed !"; 
+      throw shared::exception::CException ( Message.str() );
+   }
 
    long long totalVirtualMem = memInfo.totalram;
 
@@ -68,16 +64,12 @@ double CLinuxSystemMemoryLoad::getValue()
 
    long long virtualMemUsed = memInfo.totalram - memInfo.freeram;
 
-   virtualMemUsed += memInfo.totalswap - memInfo.freeswap;
-   virtualMemUsed *= memInfo.mem_unit;
+   YADOMS_LOG(debug) << "Mémoire virtuelle utilisée :" << virtualMemUsed;
+   YADOMS_LOG(debug) << "Mémoire virtuelle totale   :" << totalVirtualMem;
+   
+   //FIXME : Cette méthode renvoie une valeur supérieure à ce que me renvoie le moniteur système d'Ubuntu ... A vérifier. Domoticz donne la meme chose. A vérifier avec une autre fonction mémoire en ligne de commande.
 
-   long long totalPhysMem = memInfo.totalram;
-   totalPhysMem *= memInfo.mem_unit;
-
-   long long physMemUsed = memInfo.totalram - memInfo.freeram;
-   physMemUsed *= memInfo.mem_unit;
-
-   return double((physMemUsed*100)/totalPhysMem);
+   return virtualMemUsed*100/double(totalVirtualMem);
 }
 
 

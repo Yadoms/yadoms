@@ -27,7 +27,8 @@ CLinuxSystemInformation::~CLinuxSystemInformation()
 // Event IDs
 enum
 {
-   kEvtTimerSendMessage = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtTimerRefreshCPULoad =  yApi::IYadomsApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtTimerRefreshDiskAndMemory
 };
 
 void CLinuxSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
@@ -42,13 +43,39 @@ void CLinuxSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> context
       
       CLinuxSystemDisksList     DisksList;
 
+      std::vector<std::string>::const_iterator DisksListIterator;
+      std::vector<std::string> TempList;
+
+      std::list<CLinuxSystemDiskUsage> DiskUsageList;
+                     
+      TempList = DisksList.getList();
+
+      int counterDisk = 0;
+
+      for(DisksListIterator=TempList.begin(); DisksListIterator!=TempList.end(); ++DisksListIterator)
+	   {
+         std::ostringstream ssKeyword;
+         std::ostringstream ssName;
+
+         ssKeyword << "LinuxDiskUsage" << counterDisk;
+         ssName << "DiskUsage" << counterDisk;
+         CLinuxSystemDiskUsage DiskUsage(ssName.str(), *DisksListIterator, ssKeyword.str());
+
+         DiskUsage.declareDevice(context);
+         DiskUsageList.push_back(DiskUsage);
+         ++counterDisk;
+      }
+
       CPULoad.declareDevice(context);
       MemoryLoad.declareDevice(context);
       YadomsCPULoad.declareDevice(context);
 
-      // Timer used to send a message periodically
-      context->getEventHandler().createTimer(kEvtTimerSendMessage, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
-
+      // Timer used to read periodically CPU loads
+      context->getEventHandler().createTimer(kEvtTimerRefreshCPULoad, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
+      
+      // Timer used to read periodically Disk Usage and Memory Load
+      context->getEventHandler().createTimer(kEvtTimerRefreshDiskAndMemory, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
+      
       // the main loop
       YADOMS_LOG(debug) << "LinuxSystemInformation plugin is running...";
 
@@ -57,25 +84,15 @@ void CLinuxSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> context
          // Wait for an event
          switch(context->getEventHandler().waitForEvents())
          {
-         case kEvtTimerSendMessage:
+         case kEvtTimerRefreshCPULoad:
             {
-               // Timer used here to send a message periodically
-
                YADOMS_LOG(debug) << "LinuxSystem plugin :  Read a value...";
 
-                  std::ostringstream ss;
                   std::ostringstream ss1;
                   std::ostringstream ss2;
-                  std::ostringstream ss3;
 
                   try
                   {
-                     ss << std::fixed << std::setprecision(2) << MemoryLoad.getValue();
-
-                     YADOMS_LOG(debug) << "LinuxSystemInformation plugin :  Memory Load : " << ss.str();
-
-                     MemoryLoad.historizeData(context);
-
                      ss1 << std::fixed << std::setprecision(2) << CPULoad.getValue();
 
                      YADOMS_LOG(debug) << "LinuxSystemInformation plugin :  CPU Load : " << ss1.str();
@@ -86,19 +103,38 @@ void CLinuxSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> context
 
                      YADOMS_LOG(debug) << "LinuxSystemInformation plugin :  Yadoms CPU Load : " << ss2.str();
 
-                     std::vector<std::string>::const_iterator DisksListIterator;
-                     std::vector<std::string> TempList;
-                     
-                     TempList = DisksList.getList();
+                  }
+                  catch (boost::system::system_error& e)
+                  {
+                     YADOMS_LOG(error) << "LinuxSystemInformation plugin :  Exception" << e.what();
+                     return;
+                  }
+               }
+               break;
+         case kEvtTimerRefreshDiskAndMemory:
+            {
+               YADOMS_LOG(debug) << "LinuxSystem plugin :  Read a value...";
 
-                     for(DisksListIterator=TempList.begin(); DisksListIterator!=TempList.end(); ++DisksListIterator)
+                  std::ostringstream ss;
+
+                  try
+                  {
+                     ss << std::fixed << std::setprecision(2) << MemoryLoad.getValue();
+
+                     YADOMS_LOG(debug) << "LinuxSystemInformation plugin :  Memory Load : " << ss.str();
+
+                     MemoryLoad.historizeData(context);
+
+                     std::list<CLinuxSystemDiskUsage>::iterator DisksListIterator;
+
+                     for(DisksListIterator=DiskUsageList.begin(); DisksListIterator!=DiskUsageList.end(); ++DisksListIterator)
 	                  {
-                        CLinuxSystemDiskUsage DiskUsage("DiskUsage", *DisksListIterator);
-
-                        ss3 << std::fixed << std::setprecision(2) << DiskUsage.getValue();
-
-                        YADOMS_LOG(debug) << "LinuxSystemInformation plugin :  Yadoms Disk Usage " << *DisksListIterator << " :" << ss3.str();
+                        std::ostringstream ss3;
+                        ss3 << std::fixed << std::setprecision(2) << (*DisksListIterator).getValue();
+                        (*DisksListIterator).historizeData(context);
+                        YADOMS_LOG(debug) << "LinuxSystemInformation plugin :  Yadoms Disk Usage " << (*DisksListIterator).getDriveName() << " :" << ss3.str();
                      }
+
                   }
                   catch (boost::system::system_error& e)
                   {
