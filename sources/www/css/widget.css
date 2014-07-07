@@ -31,3 +31,12 @@
     background-image: url('../img/widgets/widget_battery_3.png');
     background-size: 100%;
 }
+
+/*Standard signal strength widget indicator*/
+.signal-strength-widget {
+    position: absolute;
+    width: 20px;
+    height: 10px;
+    top: 0px;
+    right: 40px;
+}

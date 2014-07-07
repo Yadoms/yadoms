@@ -5,5 +5,8 @@
         </div>
         <div class="unit">°C</div>
         <div class="battery-widget" data-bind="style: { hidden: manageBatteryLevel() == false, 'background-image': 'url(../img/widgets/widget_battery_' + batteryStep() + '.png)'}"></div>
+        <!--<div class="signal-strength-widget" data-bind="style: { hidden: manageSignalStrengthLevel() == false}">
+            <span class="fa fa-signal" data-bind="style: { width: signalStrength()%}">
+        </div>-->
     </div>
 </script>
