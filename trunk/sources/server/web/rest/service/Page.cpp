@@ -104,7 +104,7 @@ namespace web { namespace rest { namespace service {
 
          std::vector< boost::shared_ptr<database::entities::CWidget> > widgetList = m_dataProvider->getWidgetRequester()->getWidgetsForPage(boost::lexical_cast<int>(pageId));
          shared::CDataContainer collection;
-         collection.set(getRestKeyword(), widgetList);
+         collection.set(CWidget::getRestKeyword(), widgetList);
 
          //std::vector< boost::shared_ptr<database::entities::CWidget> > widgetList2 = collection.get< std::vector< boost::shared_ptr<database::entities::CWidget> > >(getRestKeyword());
          return web::rest::CResult::GenerateSuccess(collection);
