@@ -69,7 +69,7 @@ function SwitchViewModel() {
                   notifyError($.t("switch:errorDuringGettingDeviceInformation"), JSON.stringify(data));
                   return;
                }
-               self.switchText(data.data.name);
+               self.switchText(decodeURIComponent(data.data.friendlyName));
             })
             .fail(function() {notifyError($.t("switch:errorDuringGettingDeviceInformation"));});
       }

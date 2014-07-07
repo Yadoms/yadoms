@@ -41,7 +41,7 @@ function SectionParameterHandler(objectToConfigure, i18nContext, paramName, cont
    var self = this;
 
    //we look if the section has a checkbox to enable the section
-   this.enableWithCheckBox = content.enableWithCheckBox;
+   this.enableWithCheckBox = parseBool(content.enableWithCheckBox);
 
    //if the option has been not enabled the default value is false
    if (this.enableWithCheckBox === undefined)
