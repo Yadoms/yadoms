@@ -4,6 +4,7 @@
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <pdh.h>
 
 #pragma comment(lib, "pdh.lib")
 
@@ -13,7 +14,7 @@ CWindowsSystemCPULoad::CWindowsSystemCPULoad(const std::string & deviceId)
    PDH_STATUS Status;
 
    // Create the Query
-   Status = PdhOpenQuery(NULL, NULL, &cpuQuery);
+   Status = PdhOpenQuery(NULL, NULL, &m_cpuQuery);
 
    if (Status != ERROR_SUCCESS) 
    {
@@ -24,7 +25,19 @@ CWindowsSystemCPULoad::CWindowsSystemCPULoad(const std::string & deviceId)
    }
 
    // Add the selected counter to the query
-   Status = PdhAddCounter(cpuQuery, TEXT("\\Processor(_Total)\\% Processor Time") , NULL, &cpuTotal);
+#if (_WIN32_WINDOWS >= 0x0600 || _WIN32_WINNT >= 0x0600 || (defined(NTDDI_VERSION) && NTDDI_VERSION >= NTDDI_VISTA))
+   Status = PdhAddEnglishCounter(m_cpuQuery, TEXT("\\Processor(_Total)\\% Processor Time") , NULL, &m_cpuTotal);
+
+   if (Status != ERROR_SUCCESS) 
+   {
+      std::stringstream Message; 
+      Message << "PdhAddEnglishCounter failed with status:"; 
+      Message << GetLastError();
+      throw shared::exception::CException ( Message.str() );
+   }
+#else
+   //TODO : A compléter pour que cela fonctionne pour d'autres langues -> PdhEnumObjects
+   Status = PdhAddCounter(m_cpuQuery, TEXT("\\Processor(_Total)\\% Processor Time") , NULL, &m_cpuTotal);
 
    if (Status != ERROR_SUCCESS) 
    {
@@ -33,8 +46,9 @@ CWindowsSystemCPULoad::CWindowsSystemCPULoad(const std::string & deviceId)
       Message << GetLastError();
       throw shared::exception::CException ( Message.str() );
    }
+#endif
 
-   Status = PdhCollectQueryData(cpuQuery);
+   Status = PdhCollectQueryData(m_cpuQuery);
    if (Status != ERROR_SUCCESS) 
    {
       std::stringstream Message; 
@@ -48,7 +62,7 @@ CWindowsSystemCPULoad::~CWindowsSystemCPULoad()
 {
    PDH_STATUS Status;
 
-   Status = PdhCloseQuery(cpuQuery);
+   Status = PdhCloseQuery(m_cpuQuery);
    
    if (Status != ERROR_SUCCESS) 
    {
@@ -104,7 +118,7 @@ double CWindowsSystemCPULoad::getValue() /*const*/
    // Note that this value is lost if the counter does not require two
    // values to compute a displayable value.
 
-   Status = PdhCollectQueryData(cpuQuery);
+   Status = PdhCollectQueryData(m_cpuQuery);
    if (Status != ERROR_SUCCESS) 
    {
       std::stringstream Message; 
@@ -113,7 +127,7 @@ double CWindowsSystemCPULoad::getValue() /*const*/
       throw shared::exception::CException ( Message.str() );
    }
 
-   Status = PdhGetFormattedCounterValue(cpuTotal, PDH_FMT_DOUBLE | PDH_FMT_NOCAP100 | PDH_FMT_NOSCALE, &CounterType, &counterVal);
+   Status = PdhGetFormattedCounterValue(m_cpuTotal, PDH_FMT_DOUBLE | PDH_FMT_NOCAP100 | PDH_FMT_NOSCALE, &CounterType, &counterVal);
 
    if (Status != ERROR_SUCCESS) 
    {
