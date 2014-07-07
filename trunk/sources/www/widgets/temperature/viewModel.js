@@ -40,10 +40,14 @@ function TemperatureViewModel() {
    this.batteryStep = ko.observable(3).extend({ numeric: 0 });
    this.manageBatteryLevel = ko.observable(false);
    
+   /*this.manageSignalStrength = ko.observable(false);
+   this.signalStrength = ko.observable(100);*/
+   
    //widget identifier
    this.widget = null;
 
    this.batterylevelKeywordId = undefined;
+   //this.signalStrengthKeywordId = undefined;
    
    /**
     * Initialization method
@@ -58,9 +62,12 @@ function TemperatureViewModel() {
       //by default the battery level is no more managed
       this.batterylevelKeywordId = undefined;
       this.manageBatteryLevel(false);
+	  //this.signalStrengthKeywordId = undefined;
+      //this.manageSignalStrength(false);
       
       var self = this;
-      
+	  if ((!isNullOrUndefinedOrEmpty(this.widget.configuration)) && (!isNullOrUndefinedOrEmpty(this.widget.configuration.device))
+          && (!isNullOrUndefinedOrEmpty(this.widget.configuration.device.deviceId))) {
       $.getJSON("rest/device/" + this.widget.configuration.device.deviceId + "/get/batteryLevel")
             .done(function( data ) {
                //we parse the json answer
@@ -76,7 +83,25 @@ function TemperatureViewModel() {
                   self.batterylevelKeywordId = data.data.keyword[0].id;
                }
             })
-            .fail(function() {notifyError($.t("switch:errorDuringGettingDeviceInformation"));});
+            .fail(function() {notifyError($.t("ERROR"));});
+            
+      /*$.getJSON("rest/device/" + this.widget.configuration.device.deviceId + "/get/rssi")
+            .done(function( data ) {
+               //we parse the json answer
+               if (data.result != "true")
+               {
+                  //TODO : i18n
+                  notifyError($.t("ERROR"), JSON.stringify(data));
+                  return;
+               }
+               if (data.data.keyword.length > 0) {
+                  //the device has the capacity
+                  self.manageSignalStrength(true);
+                  self.signalStrengthKeywordId = data.data.keyword[0].id;
+               }
+            })
+            .fail(function() {notifyError($.t("ERROR"));});*/
+		}
    }
    
    /**
@@ -99,6 +124,11 @@ function TemperatureViewModel() {
                   self.batteryStep(Math.round(data.value / 33.3));
                }
             }
+            /*if (!isNullOrUndefined(self.signalStrengthKeywordId)) {
+               if ((device.deviceId == self.widget.configuration.device.deviceId) && (device.keywordId == self.signalStrengthKeywordId)) {
+                  self.signalStrength(data.value);
+               }
+            }*/
          }
       }
    };

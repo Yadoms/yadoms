@@ -152,3 +152,12 @@ function createUUID() {
 function isNullOrUndefined(object) {
    return ((object === undefined) || (object == null) || (object == "null"));
 }
+
+/**
+ * Check if the object is null or undefined
+ * @param object
+ * @returns {boolean}
+ */
+function isNullOrUndefinedOrEmpty(object) {
+   return (isNullOrUndefined(object) || (object == ""));
+}
