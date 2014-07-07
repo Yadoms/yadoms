@@ -47,7 +47,8 @@ function SwitchViewModel() {
 
    this.configurationChanged = function() {
       //we update the kind observable property
-      if ((isNullOrUndefined(this.widget)) || (isNullOrUndefined(this.widget.configuration)))
+
+      if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
          return;
 
       if (!isNullOrUndefined(this.widget.configuration.kind)) {
@@ -55,11 +56,11 @@ function SwitchViewModel() {
       }
 
       if (!isNullOrUndefined(this.widget.configuration.showDeviceName)) {
-         this.showDeviceName(this.widget.configuration.showDeviceName);
+         this.showDeviceName(parseBool(this.widget.configuration.showDeviceName));
       }
 
       //we ask for device information
-      if (!isNullOrUndefined(this.widget.configuration.device.deviceId)) {
+      if ((!isNullOrUndefined(this.widget.configuration.device)) && (!isNullOrUndefined(this.widget.configuration.device.deviceId))) {
          var self = this;
          $.getJSON("rest/device/" + this.widget.configuration.device.deviceId)
             .done(function( data ) {
