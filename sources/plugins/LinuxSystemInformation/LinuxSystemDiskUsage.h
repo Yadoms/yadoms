@@ -17,7 +17,7 @@ public:
    /// \param[in] deviceId    The device ID
    /// \param[in] deviceId    The drive name ex: C:
    //--------------------------------------------------------------
-   CLinuxSystemDiskUsage(const std::string & deviceId, const std::string & driveName);
+   CLinuxSystemDiskUsage(const std::string & deviceId, const std::string & driveName, const std::string & Keyword);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -28,7 +28,9 @@ public:
    /// \brief	    Returns the sensor device ID
    /// \return     Device ID
    //--------------------------------------------------------------
-   virtual const std::string& getDeviceId() const;
+   const std::string& getDeviceId() const;
+
+   const std::string& getDriveName() const;
 
    //--------------------------------------------------------------
    /// \brief	            Declare the device and its associated keywords
@@ -86,5 +88,8 @@ private:
    /// \brief	    Keyword string
    //--------------------------------------------------------------
    const std::string m_Keyword;
+
+//FIXME : Ecriture à modifier ??
+std::vector<std::string> ExecuteCommandAndReturn(const std::string &szCommand);
 };
 
