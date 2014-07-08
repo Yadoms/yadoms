@@ -48,7 +48,8 @@ void CFakeSensor::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) con
    context->historizeData(m_deviceId, "battery", m_batteryLevel);
    context->historizeData(m_deviceId, "rssi"   , m_rssi        );
 
-   YADOMS_LOG(debug) << "historize " << m_deviceId << ", temp1=" << m_temperature1 << ", temp2=" << m_temperature2 << ", battery=" << m_batteryLevel << ", Rssi=" << m_rssi;
+   //removed log to display only bad tests on console
+   //YADOMS_LOG(debug) << "historize " << m_deviceId << ", temp1=" << m_temperature1 << ", temp2=" << m_temperature2 << ", battery=" << m_batteryLevel << ", Rssi=" << m_rssi;
 }
 
 const std::string& CFakeSensor::getModel()
