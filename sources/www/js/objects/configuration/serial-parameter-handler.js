@@ -55,11 +55,19 @@ function populateSerialPorts(handler) {
       $serialList.empty();
 
       var itemToSelect = 0;
-      $.each(data.data.serialPorts, function(index, value) {
-         $serialList.append("<option value=\"" + value.name + "\">" + value.friendlyName + "</option>");
-         if (value.name == handler.value)
-            itemToSelect = index;
-      });
+
+      //there is no serial port
+      if (data.data.serialPorts.length == 0) {
+          //we add an empty element to make the validation throw an error
+          $serialList.append("<option value=\"\"></option>");
+      }
+      else {
+          $.each(data.data.serialPorts, function(index, value) {
+             $serialList.append("<option value=\"" + value.name + "\">" + value.friendlyName + "</option>");
+             if (value.name == handler.value)
+                itemToSelect = index;
+          });
+      }
 
       //we set the last selected serialPort if it exist anymore
       $serialList.prop('selectedIndex', itemToSelect);
@@ -73,10 +81,10 @@ function populateSerialPorts(handler) {
  */
 SerialParameterHandler.prototype.getDOMObject = function () {
    var input = "<select " +
-                        "class=\"form-control\" " +
+                        "class=\"form-control enable-validation\" " +
                         "id=\"" + this.uuid + "\" " +
-                        "data-content=\"" + this.description + "\"";// +
-                        //"required ";
+                        "data-content=\"" + this.description + "\"" +
+                        "required ";
    var i18nData = " data-i18n=\"";
 
    var self = this;
