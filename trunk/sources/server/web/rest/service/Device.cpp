@@ -29,6 +29,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CDevice::getAllDevices);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CDevice::getOneDevice);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("matchcapacity")("*")("*"), CDevice::getDevicesWithCapacity);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchcapacitytype")("*")("*"), CDevice::getDeviceWithCapacityType);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("*")("*"), CDevice::getDeviceKeywordsForCapacity);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT",  (m_restKeyword)("*"), CDevice::updateDeviceFriendlyName, CDevice::transactionalMethod);
@@ -76,6 +77,36 @@ namespace web { namespace rest { namespace service {
 
             //run query
             std::vector< boost::shared_ptr<database::entities::CDevice> > result = m_dataProvider->getDeviceRequester()->getDeviceWithCapacity(capacityName, cam);
+            shared::CDataContainer collection;
+            collection.set(getRestKeyword(), result);
+            return web::rest::CResult::GenerateSuccess(collection);
+         }
+         else
+         {
+            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive capacity in url");
+         }
+      }
+      catch(std::exception &ex)
+      {
+         return web::rest::CResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return web::rest::CResult::GenerateError("unknown exception in retreiving device with get capacity");
+      }
+   }
+
+   shared::CDataContainer CDevice::getDeviceWithCapacityType(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      try
+      {
+         if(parameters.size()>2)
+         {
+            database::entities::EKeywordAccessMode cam = parameters[2];
+            database::entities::EKeywordDataType typ = parameters[3];
+
+            //run query
+            std::vector< boost::shared_ptr<database::entities::CDevice> > result = m_dataProvider->getDeviceRequester()->getDeviceWithCapacityType(cam, typ);
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), result);
             return web::rest::CResult::GenerateSuccess(collection);

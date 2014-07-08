@@ -52,6 +52,15 @@ namespace database {
       virtual std::vector<boost::shared_ptr<entities::CDevice> > getDeviceWithCapacity(const std::string & capacityName, const database::entities::EKeywordAccessMode capacityAccessMode) const = 0;
 
       //--------------------------------------------------------------
+      /// \brief                          Get the device list which support a capacity type
+      /// \param [in] capacityAccessMode  The capacity access mode
+      /// \param [in] capacityType        The capacity capacityType
+      /// \return                         the device list which support a capacity
+      /// \throw  shared::exception::CEmptyResult if fails
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CDevice> > getDeviceWithCapacityType(const database::entities::EKeywordAccessMode capacityAccessMode, const database::entities::EKeywordDataType capacityType) const = 0;
+
+      //--------------------------------------------------------------
       /// \brief                          Create a device identified by (pluginId and name).
       /// \param [in] pluginId            The pluginId
       /// \param [in] name                The device name (plugin internal name)
