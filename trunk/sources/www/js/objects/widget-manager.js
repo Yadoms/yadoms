@@ -47,8 +47,7 @@ WidgetManager.updateToServer = function(widget, callback) {
         //we parse the json answer
         if (data.result != "true")
         {
-            //TODO : relocate i18n
-            notifyError($.t("modals.configure-widget.errorDuringModifyingWidget"), JSON.stringify(data));
+            notifyError($.t("objects.widgetManager.errorDuringModifyingWidget"), JSON.stringify(data));
             if (!isNullOrUndefined(callback))
                 callback(false);
             return;
@@ -64,7 +63,7 @@ WidgetManager.updateToServer = function(widget, callback) {
         }
         catch (e)
         {
-            notifyWarning("The widget " + widget.name + " has generated an exception during call configurationChanged() method");
+            notifyWarning($.t("objects.widgetManager.exceptionDuringCallConfigurationChanged", {"widgetType" : widget.name}));
             console.warn(e);
             if (!isNullOrUndefined(callback))
                 callback(false);
@@ -73,7 +72,7 @@ WidgetManager.updateToServer = function(widget, callback) {
 
         })
         .fail(function(widgetName) { return function() {
-            notifyError($.t("modals.configure-widget.errorDuringModifyingWidgetNamed", {"widgetType" : widgetName}));
+            notifyError($.t("objects.widgetManager.errorDuringModifyingWidgetNamed", {"widgetType" : widget.name}));
             if (!isNullOrUndefined(callback))
                 callback(false);
         };}(widget.name));
