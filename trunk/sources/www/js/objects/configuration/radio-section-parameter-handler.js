@@ -42,8 +42,8 @@ function RadioSectionParameterHandler(objectToConfigure, i18nContext, paramName,
    //for each key in package
    $.each(content.content, function (key, value) {
       var v = undefined;
-      if ((self.configurationValues.values != null) && (self.configurationValues.values != undefined))
-         v = self.configurationValues.values[key];
+      if ((self.configurationValues.content != null) && (self.configurationValues.content != undefined))
+         v = self.configurationValues.content[key];
 
       var newI18nContext = i18nContext + self.paramName + ".content.";
 
@@ -102,10 +102,10 @@ RadioSectionParameterHandler.prototype.getCurrentConfiguration = function () {
    //we update configurationValues with content of DOM
    var self = this;
    self.configurationValues = {};
-   self.configurationValues.values = {};
+   self.configurationValues.content = {};
    $.each(self.configurationHandlers, function (key, value) {
       var currentConfiguration = value.getCurrentConfiguration();
-      self.configurationValues.values[value.getParamName()] = currentConfiguration;
+      self.configurationValues.content[value.getParamName()] = currentConfiguration;
       if (currentConfiguration.radio) {
          //it's the active section
          self.configurationValues.activeSection = value.getParamName();

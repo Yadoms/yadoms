@@ -30,7 +30,7 @@
       $modalBody.empty();
 
       //we append the text section
-      var nameParameter = new StringParameterHandler("modals.configure-plugin.", "name-configuration", {regex:'.+'}, pluginInstance.name);
+      var nameParameter = new StringParameterHandler("modals.configure-plugin.", "name-configuration", {required:"true"}, pluginInstance.name);
       $modalBody.append(nameParameter.getDOMObject());
 
       //we append classic configuration
