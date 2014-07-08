@@ -40,7 +40,7 @@ namespace task {
       {
          //log event started
          database::entities::CEventLogger entry;
-         entry.Code = database::entities::kStarted;
+         entry.Code = database::entities::ESystemEventCode::kStarted;
          entry.Who = m_pTask->getName();
          m_eventHandler.postEvent(m_systemEventCode, entry);
 
@@ -48,7 +48,7 @@ namespace task {
          m_pTask->doWork(boost::bind(&CInstance::OnTaskProgressUpdated, this, _1));
 
          //log event stopped
-         entry.Code = database::entities::kStopped;
+         entry.Code = database::entities::ESystemEventCode::kStopped;
          m_eventHandler.postEvent(m_systemEventCode, entry);
 
       }
@@ -59,7 +59,7 @@ namespace task {
          YADOMS_LOG(error) << m_pTask->getName() << " didn't catch boost::thread_interrupted.";
 
          database::entities::CEventLogger entry;
-         entry.Code = database::entities::kTaskFailed;
+         entry.Code = database::entities::ESystemEventCode::kTaskFailed;
          entry.Who = m_pTask->getName();
          entry.What = "didn't catch boost::thread_interrupted.";
          m_eventHandler.postEvent(m_systemEventCode, entry);
@@ -70,7 +70,7 @@ namespace task {
          YADOMS_LOG(error) << m_pTask->getName() << " crashed in doWork with exception : " << e.what();
 
          database::entities::CEventLogger entry;
-         entry.Code = database::entities::kTaskFailed;
+         entry.Code = database::entities::ESystemEventCode::kTaskFailed;
          entry.Who = m_pTask->getName();
          entry.What =  (boost::format("Crashed in doWork with exception %1%") % e.what()).str();
          m_eventHandler.postEvent(m_systemEventCode, entry);
@@ -82,7 +82,7 @@ namespace task {
          YADOMS_LOG(error) << m_pTask->getName() << " crashed in doWork with unknown exception.";
 
          database::entities::CEventLogger entry;
-         entry.Code = database::entities::kTaskFailed;
+         entry.Code = database::entities::ESystemEventCode::kTaskFailed;
          entry.Who = m_pTask->getName();
          entry.What =  "Crashed in doWork with unknown exception";
          m_eventHandler.postEvent(m_systemEventCode, entry);

@@ -35,7 +35,7 @@ namespace shared {   namespace plugin {      namespace yadomsApi      {
       return m_type;
    }
 
-   CStandardCapacity::operator std::string() const
+   CStandardCapacity::operator const std::string & () const
    {
       return getName();
    }

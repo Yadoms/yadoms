@@ -24,12 +24,9 @@ namespace adapters {
       ((Value)(std::string)(""))
       ((DefaultValue)(std::string)(""))
       ((Description)(std::string)(""))
-      ((SecurityAccess)(database::entities::ESecurityAccess)(database::entities::kNone)(int))
+      ((SecurityAccess)(database::entities::ESecurityAccess)(database::entities::ESecurityAccess::kNone)(int))
       ((LastModificationDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
    )
-
-
-
 
    DECLARE_ADAPTER_IMPLEMENTATION(Page,
       ((Id)(int)(0))
@@ -55,14 +52,14 @@ namespace adapters {
       ((PluginName)(std::string)(""))
       ((PluginVersion)(std::string)(""))
       ((PluginRelease)(shared::plugin::information::EReleaseType)(shared::plugin::information::kStable)(int))
-      ((EventType)(database::entities::EEventType)(database::entities::kUnload)(int))
+      ((EventType)(database::entities::EEventType)(database::entities::EEventType::kUnload)(int))
       ((Message)(std::string)(""))
    )
 
    DECLARE_ADAPTER_IMPLEMENTATION(EventLogger,
       ((Id)(int)(0))
       ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time()))
-      ((Code)(database::entities::ESystemEventCode)(database::entities::kDefaultCode)(int))
+      ((Code)(database::entities::ESystemEventCode)(database::entities::ESystemEventCode::kDefaultCode)(int))
       ((Who)(std::string)(""))
       ((What)(std::string)(""))
    )
@@ -81,10 +78,10 @@ namespace adapters {
       ((Id)(int)(0))
       ((DeviceId)(int)(0))
       ((CapacityName)(std::string)(""))
-      ((AccessMode)(database::entities::EKeywordAccessMode)(database::entities::kNoAccess)(int))
+      ((AccessMode)(database::entities::EKeywordAccessMode)(database::entities::EKeywordAccessMode::kNoAccess)(int))
       ((Name)(std::string)(""))
       ((FriendlyName)(std::string)(""))
-      ((Type)(database::entities::EKeywordDataType)(database::entities::kString)(int))
+      ((Type)(database::entities::EKeywordDataType)(database::entities::EKeywordDataType::kString)(int))
       ((Units)(std::string)(""))
       ((Details)(shared::CDataContainer)(shared::CDataContainer()))
    )

@@ -143,4 +143,17 @@ namespace shared
       return m_tree.empty();
    }
 
+   void CDataContainer::printToLog() const
+   {
+      printToLog(m_tree);
+   }
+
+   void CDataContainer::printToLog(const boost::property_tree::ptree & pt) const
+   {
+      boost::property_tree::ptree::const_iterator end = pt.end();
+      for (boost::property_tree::ptree::const_iterator it = pt.begin(); it != end; ++it) {
+         YADOMS_LOG(info) << it->first << ": " << it->second.get_value<std::string>() << std::endl;
+         printToLog(it->second);
+      }
+   }
 } // namespace shared

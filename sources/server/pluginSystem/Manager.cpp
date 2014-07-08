@@ -301,7 +301,7 @@ void CManager::signalEvent(const CManagerEvent& event)
             m_pluginDBTable->disableAutoStartForAllPluginInstances(event.getPluginInformation()->getName());
 
             // Log this event in the main event logger
-            m_dataProvider->getEventLoggerRequester()->addEvent(database::entities::kPluginDisabled,
+            m_dataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kPluginDisabled,
                event.getPluginInformation()->getIdentity(),
                "Plugin " + event.getPluginInformation()->getIdentity() + " was evaluated as not safe and will not start automatically anymore.");
          }

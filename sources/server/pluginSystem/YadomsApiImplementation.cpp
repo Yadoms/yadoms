@@ -61,9 +61,9 @@ bool CYadomsApiImplementation::declareCustomKeyword(const std::string& device, c
    keywordEntity.CapacityName = capacity;
    switch(accessMode)
    {
-   case shared::plugin::yadomsApi::kReadWrite: keywordEntity.AccessMode = database::entities::kReadWrite; break;
-   case shared::plugin::yadomsApi::kReadOnly : keywordEntity.AccessMode = database::entities::kRead; break;
-   case shared::plugin::yadomsApi::kWriteOnly: keywordEntity.AccessMode = database::entities::kWrite; break;
+   case shared::plugin::yadomsApi::kGetSet: keywordEntity.AccessMode = database::entities::EKeywordAccessMode::kGetSet; break;
+   case shared::plugin::yadomsApi::kGet: keywordEntity.AccessMode = database::entities::EKeywordAccessMode::kGet; break;
+   case shared::plugin::yadomsApi::kSet: keywordEntity.AccessMode = database::entities::EKeywordAccessMode::kSet; break;
    default:
       BOOST_ASSERT_MSG(false, "Unknown accessMode");
       throw shared::exception::CEmptyResult("Fail to declare keyword : unknown accessMode");
@@ -72,12 +72,11 @@ bool CYadomsApiImplementation::declareCustomKeyword(const std::string& device, c
 
    switch (type)
    {
-   case shared::plugin::yadomsApi::kNoData: keywordEntity.Type = database::entities::kNoData; break;
-   case shared::plugin::yadomsApi::kString: keywordEntity.Type = database::entities::kString; break;
-   case shared::plugin::yadomsApi::kInteger: keywordEntity.Type = database::entities::kInteger; break;
-   case shared::plugin::yadomsApi::kDecimal: keywordEntity.Type = database::entities::kDecimal; break;
-   case shared::plugin::yadomsApi::kBool: keywordEntity.Type = database::entities::kBool; break;
-   case shared::plugin::yadomsApi::kJson: keywordEntity.Type = database::entities::kJson; break;
+   case shared::plugin::yadomsApi::kNoData: keywordEntity.Type = database::entities::EKeywordDataType::kNoData; break;
+   case shared::plugin::yadomsApi::kString: keywordEntity.Type = database::entities::EKeywordDataType::kString; break;
+   case shared::plugin::yadomsApi::kNumeric: keywordEntity.Type = database::entities::EKeywordDataType::kNumeric; break;
+   case shared::plugin::yadomsApi::kBool: keywordEntity.Type = database::entities::EKeywordDataType::kBool; break;
+   case shared::plugin::yadomsApi::kJson: keywordEntity.Type = database::entities::EKeywordDataType::kJson; break;
    default:
       BOOST_ASSERT_MSG(false, "Unknown type");
       throw shared::exception::CEmptyResult("Fail to declare keyword : unknown type");
@@ -148,12 +147,12 @@ void CYadomsApiImplementation::recordPluginEvent(PluginEventSeverity severity, c
    database::entities::EEventType evenType;
    switch(severity)
    {
-   case kError: evenType = database::entities::kError; break;
-   case kInfo: evenType = database::entities::kInfo; break;
+   case kError: evenType = database::entities::EEventType::kError; break;
+   case kInfo: evenType = database::entities::EEventType::kInfo; break;
    default:
       {
          BOOST_ASSERT_MSG(false, "Unkown plugin event severity type");
-         evenType = database::entities::kInfo; // Set a default value
+         evenType = database::entities::EEventType::kInfo; // Set a default value
          break;
       }
    }

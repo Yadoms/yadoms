@@ -16,6 +16,8 @@ set(SHARED_LIB_SRC
 	shared/StringExtension.h
 	shared/StringExtension.cpp	
 	
+	shared/enumeration/IExtendedEnum.h
+	
 	shared/IDataContainable.h
 	shared/DataContainer.h
 	shared/DataContainer.cpp
@@ -56,6 +58,7 @@ set(SHARED_LIB_SRC
 	shared/plugin/yadomsApi/StandardDeclarations.cpp
 	shared/plugin/yadomsApi/StandardCapacity.h
 	shared/plugin/yadomsApi/StandardCapacity.cpp
+	shared/plugin/yadomsApi/KeywordAccessMode.h
 	shared/plugin/yadomsApi/IYadomsApi.h
 
    shared/plugin/yadomsApi/commands/Curtain.cpp
@@ -134,6 +137,7 @@ source_group(platformSpecific\\mac shared/mac/shared/*.*)
 source_group(serialization shared/shared/serialization/*.* )	
 source_group(encryption shared/shared/encryption/*.* )	
 source_group(tools shared/shared/tools/*.* )	
+source_group(enumeration shared/shared/enumeration/*.* )	
 
 
 

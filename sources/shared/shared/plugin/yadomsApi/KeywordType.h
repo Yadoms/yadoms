@@ -9,8 +9,7 @@ namespace shared { namespace plugin { namespace yadomsApi
    {
       kNoData,
       kString,
-      kInteger,
-      kDecimal,
+      kNumeric,
       kBool,
       kJson,
    };
