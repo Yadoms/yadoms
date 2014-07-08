@@ -28,8 +28,6 @@ static const shared::CDataContainer::EnumValuesNames EEnumTypeNames = boost::ass
 
 BOOST_AUTO_TEST_CASE(SimpleContainer)
 {
-   YADOMS_LOG(debug) <<"[START] Testing shared::CDataContainer : simple container" ;
-
    shared::CDataContainer dc;
 
    boost::posix_time::ptime actualDatetime = boost::posix_time::second_clock::universal_time();
@@ -87,14 +85,10 @@ BOOST_AUTO_TEST_CASE(SimpleContainer)
 
    boost::shared_ptr<std::string> shs2 = dc.get< boost::shared_ptr<std::string> >("StringSharedPtr");
    BOOST_CHECK_EQUAL(*(shs.get()) == *(shs2.get()), true);
-
-   YADOMS_LOG(debug) <<"[END] Testing shared::CDataContainer : simple container" ;
 }
 
 BOOST_AUTO_TEST_CASE(CollectionContainer)
 {
-   YADOMS_LOG(debug) <<"[START] Testing shared::CDataContainer : collection container" ;
-
    shared::CDataContainer test;
 
    //check vector of int
@@ -153,12 +147,10 @@ BOOST_AUTO_TEST_CASE(CollectionContainer)
    for (unsigned int i = 0; i < vdsh.size(); ++i)
       BOOST_CHECK_EQUAL(*(vdsh[i].get()) == vdsh2bis[i], true);
 
-   YADOMS_LOG(debug) <<"[END] Testing shared::CDataContainer : collection container" ;
 }
 
 BOOST_AUTO_TEST_CASE(Serialization)
 {
-   YADOMS_LOG(debug) <<"[START] Testing shared::CDataContainer : serialization" ;
 
    const std::string defaultConf("{"
       "\"BoolParameter\": \"true\","
@@ -199,7 +191,6 @@ BOOST_AUTO_TEST_CASE(Serialization)
    str2.erase(std::remove_if(str2.begin(), str2.end(), boost::is_any_of(" \t\n\r")), str2.end());
 
    BOOST_CHECK_EQUAL(str, str2);
-   YADOMS_LOG(debug) <<"[END] Testing shared::CDataContainer : serialization" ;
 }
 
 
@@ -254,7 +245,6 @@ private:
 
 BOOST_AUTO_TEST_CASE(DataContainable)
 {
-   YADOMS_LOG(debug) <<"[START] Testing shared::CDataContainer : shared::IDataContainable" ;
 	//containeur simple de IDataContainable
 	CTestClass obj(1, 42.0, "test de datacontainble");
 	shared::CDataContainer cont;
@@ -295,8 +285,6 @@ BOOST_AUTO_TEST_CASE(DataContainable)
    BOOST_CHECK_EQUAL(vcsh.size(), vc2bis.size());
    for (unsigned int i = 0; i < vcsh.size(); ++i)
       BOOST_CHECK_EQUAL(vcsh[i]->equals(vc2bis[i]), true);
-
-   YADOMS_LOG(debug) <<"[END] Testing shared::CDataContainer : shared::IDataContainable" ;
 
 }
 

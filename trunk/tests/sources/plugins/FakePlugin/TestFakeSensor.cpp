@@ -3,6 +3,7 @@
 
 // Includes needed to compile tested classes
 #include <../../../../sources/shared/shared/plugin/yadomsApi/StandardCapacities.h>
+#include <../../../../sources/shared/shared/plugin/yadomsApi/StandardUnits.h>
 #include "../../../../sources/plugins/FakePlugin/FakeSensor.h"
 
 BOOST_AUTO_TEST_SUITE(TestFakeSensor)
@@ -97,10 +98,10 @@ BOOST_AUTO_TEST_CASE(DeviceDeclaration)
 
    // Check keywords declaration
    BOOST_CHECK_EQUAL(context->getKeywords().size(), (unsigned int)4);
-   ckeckKeyword(context, "temp1", sensorId, yApi::CStandardCapacities::Temperature, yApi::kReadOnly, yApi::kDecimal, shared::CStringExtension::EmptyString);
-   ckeckKeyword(context, "temp2", sensorId, yApi::CStandardCapacities::Temperature, yApi::kReadOnly, yApi::kDecimal, shared::CStringExtension::EmptyString);
-   ckeckKeyword(context, "battery", sensorId, yApi::CStandardCapacities::BatteryLevel, yApi::kReadOnly, yApi::kDecimal, shared::CStringExtension::EmptyString);
-   ckeckKeyword(context, "rssi", sensorId, yApi::CStandardCapacities::Rssi, yApi::kReadOnly, yApi::kDecimal, shared::CStringExtension::EmptyString);
+   ckeckKeyword(context, "temp1", sensorId, yApi::CStandardCapacities::Temperature, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::DegreesCelcius);
+   ckeckKeyword(context, "temp2", sensorId, yApi::CStandardCapacities::Temperature, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::DegreesCelcius);
+   ckeckKeyword(context, "battery", sensorId, yApi::CStandardCapacities::BatteryLevel, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::Percent);
+   ckeckKeyword(context, "rssi", sensorId, yApi::CStandardCapacities::Rssi, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::Percent);
 }
 
 const CDefaultYadomsApiMock::Data& readLastData(boost::shared_ptr<CDefaultYadomsApiMock> context, const std::string& keyword)
