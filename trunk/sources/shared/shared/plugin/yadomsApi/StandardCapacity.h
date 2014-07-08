@@ -50,7 +50,7 @@ namespace shared { namespace plugin { namespace yadomsApi {
       /// \brief		Implicit std::string operator (give the capacity name)
       /// \return 	the capacity name
       //--------------------------------------------------------------
-      operator std::string() const;
+      operator const std::string & () const;
 
    private:
       //--------------------------------------------------------------

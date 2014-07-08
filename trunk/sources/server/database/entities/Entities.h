@@ -4,72 +4,50 @@
 #include <shared/DataContainer.h>
 #include <shared/IDataContainable.h>
 #include "Field.hpp"
+#include <shared/enumeration/IExtendedEnum.h>
+#include "EnumHelpers.hpp"
 
-namespace database { 
-namespace entities {
+namespace database { namespace entities {
 
-   enum ESecurityAccess
-   {
-      kNone = 0, 
-      kAdmin = 1, 
-      kUser = 2  
-   };
+   DECLARE_ENUM_HEADER(SecurityAccess,
+      ((None)(0))
+      ((Admin)(1))
+      ((User)(2))
+   )
 
-   enum EEventType
-   {
-      kUnload = 0, 
-      kLoad = 1, 
-      kCrash = 2,
-      kInfo = 3,
-      kError = 4
-   };
+   DECLARE_ENUM_HEADER(EventType,
+      ((Unload)(0))
+      ((Load)(1))
+      ((Crash)(2))
+      ((Info)(3))
+      ((Error)(4))
+   )
+
+   DECLARE_ENUM_HEADER(SystemEventCode,
+      ((TaskFailed)(-4))
+      ((PluginDisabled)(-3))
+      ((PluginCrash)(-2))
+      ((YadomsCrash)(-1))
+      ((DefaultCode)(0))
+      ((Started)(1))
+      ((Stopped)(2))
+      ((Updated)(3))
+   )
+
+   DECLARE_ENUM_HEADER(KeywordDataType,
+      ((NoData)(0)) 
+      ((String)(1))
+      ((Numeric)(2))
+      ((Bool)(3))
+      ((Json)(4))
+   )
    
-   enum ESystemEventCode
-   {
-      kTaskFailed = -4,
-      kPluginDisabled = -3,
-      kPluginCrash = -2,
-      kYadomsCrash = -1,
-      kDefaultCode = 0,
-      kStarted = 1,
-      kStopped = 2,
-      kUpdated = 3,
-   };
-
-
-   enum EKeywordDataType
-   {
-      kNoData = 0,  //only the command keyword
-      kString = 1,
-      kInteger = 2,
-      kDecimal = 3,
-      kBool = 4,
-      kJson = 5,
-   };
-
-   /*
-      class CPlugin 
-   {
-   public:
-      CPlugin()
-         :Id(0, false), Name("", false), PluginName("", false), Configuration("", false), Enabled("", false)
-      {
-      }
-
-      virtual ~CPlugin()
-      {
-      }
-
-      CField<int> id() { return Id; }
-
-      
-   private:
-      CField<int> Id;
-      CField<std::string> Name;
-      CField<std::string> PluginName;
-      CField<std::string> Configuration;
-      CField<bool> Enabled;
-   };*/
+   DECLARE_ENUM_HEADER(KeywordAccessMode,
+      ((NoAccess)(0))
+      ((Get)(1))
+      ((Set)(2))
+      ((GetSet)(3))
+   )
 
    DECLARE_ENTITY_CLASS_HEADER(Plugin,
       ((Id)(int))
@@ -77,7 +55,7 @@ namespace entities {
       ((Type)(std::string))
       ((Configuration)(shared::CDataContainer))
       ((AutoStart)(bool))
-      )
+   )
 
    DECLARE_ENTITY_CLASS_HEADER(Configuration,
       ((Section)(std::string))
@@ -87,7 +65,7 @@ namespace entities {
       ((Description)(std::string))
       ((SecurityAccess)(database::entities::ESecurityAccess))
       ((LastModificationDate)(boost::posix_time::ptime))
-      )
+   )
 
 
 
@@ -95,7 +73,7 @@ namespace entities {
       ((Id)(int))
       ((Name)(std::string))
       ((PageOrder)(int))
-      )
+   )
 
 
    DECLARE_ENTITY_CLASS_HEADER(Widget,
@@ -107,7 +85,7 @@ namespace entities {
       ((PositionX)(int))
       ((PositionY)(int))
       ((Configuration)(shared::CDataContainer))
-      )
+   )
 
    DECLARE_ENTITY_CLASS_HEADER(PluginEventLogger,
       ((Id)(int))
@@ -128,14 +106,6 @@ namespace entities {
    )
 
 
-   
-   enum EKeywordAccessMode
-   {
-      kNoAccess = 0, 
-      kRead = 1, 
-      kWrite = 2,
-      kReadWrite = 3
-   };
 
    DECLARE_ENTITY_CLASS_HEADER(Device,
       ((Id)(int))
@@ -144,7 +114,7 @@ namespace entities {
       ((FriendlyName)(std::string))
       ((Model)(std::string))
       ((Details)(shared::CDataContainer))
-	  )
+   )
 
    DECLARE_ENTITY_CLASS_HEADER(Keyword,
       ((Id)(int))

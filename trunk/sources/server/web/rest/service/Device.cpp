@@ -62,12 +62,12 @@ namespace web { namespace rest { namespace service {
       {
          if(parameters.size()>2)
          {
-            database::entities::EKeywordAccessMode cam = database::entities::kNoAccess;
+            database::entities::EKeywordAccessMode cam = database::entities::EKeywordAccessMode::kNoAccess;
             //read the capacity mode
             if(parameters[2] == "get")
-               cam = database::entities::kRead;
+               cam = database::entities::EKeywordAccessMode::kGet;
             else if(parameters[2] == "set")
-               cam = database::entities::kWrite;
+               cam = database::entities::EKeywordAccessMode::kSet;
             else
                return web::rest::CResult::GenerateError("invalid parameter. Can not retreive capacity access mode in url");
 
@@ -103,12 +103,12 @@ namespace web { namespace rest { namespace service {
          {
             int deviceId = boost::lexical_cast<int>(parameters[1]);
 
-            database::entities::EKeywordAccessMode cam = database::entities::kNoAccess;
+            database::entities::EKeywordAccessMode cam = database::entities::EKeywordAccessMode::kNoAccess;
             //read the capacity mode
             if(parameters[2] == "get")
-               cam = database::entities::kRead;
+               cam = database::entities::EKeywordAccessMode::kGet;
             else if(parameters[2] == "set")
-               cam = database::entities::kWrite;
+               cam = database::entities::EKeywordAccessMode::kSet;
             else
                return web::rest::CResult::GenerateError("invalid parameter. Can not retreive capacity access mode in url");
 

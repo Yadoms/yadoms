@@ -7,9 +7,9 @@ namespace shared { namespace plugin { namespace yadomsApi
    //-----------------------------------------------------
    enum EKeywordAccessMode
    {
-      kReadWrite,
-      kReadOnly,
-      kWriteOnly
+      kGetSet,
+      kGet,
+      kSet
    };
 
 	

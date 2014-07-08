@@ -6,7 +6,7 @@
 #include "serialization/IDataSerializable.h"
 #include "serialization/IDataFileSerializable.h"
 #include "IDataContainable.h"
-
+#include "enumeration/IExtendedEnum.h"
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_enum.hpp>
 
@@ -335,6 +335,10 @@ namespace shared
       //--------------------------------------------------------------
       bool empty() const;
 
+      //--------------------------------------------------------------
+      /// \brief		Print the content to log
+      //--------------------------------------------------------------
+      void printToLog() const;
 
       //--------------------------------------------------------------
       //
@@ -362,6 +366,7 @@ namespace shared
       // [END] IDataContainable implementation
 
 
+
       //--------------------------------------------------------------
       //
       //
@@ -386,6 +391,11 @@ namespace shared
       //--------------------------------------------------------------
       CDataContainer(const boost::property_tree::ptree & initialTree);
 
+      //--------------------------------------------------------------
+      /// \brief		Print the content to log
+      /// \param [in] tree    The tree to print
+      //--------------------------------------------------------------
+      void printToLog(const boost::property_tree::ptree & tree) const;
 
       //--------------------------------------------------------------
       //
@@ -645,6 +655,29 @@ namespace shared
 
 
 
+      //--------------------------------------------------------------
+      /// \brief	    Helper structure for get/set with an IExtendedEnum object
+      //--------------------------------------------------------------
+      template <typename T>
+      struct helper < T, typename boost::enable_if< boost::is_base_of< shared::enumeration::IExtendedEnum, T > >::type >
+      {
+         //--------------------------------------------------------------
+         /// \brief	    GET Method for IDataContainable object
+         //--------------------------------------------------------------
+         static T getInternal(const CDataContainer * tree, const std::string& parameterName)
+         {
+            return T(tree->getInternal<std::string>(parameterName));
+         }
+
+         //--------------------------------------------------------------
+         /// \brief	    SET Method for IDataContainable object
+         //--------------------------------------------------------------
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const T & value)
+         {
+            tree->setInternal<std::string>(parameterName, (std::string)value);
+         }
+
+      };
 
 
 

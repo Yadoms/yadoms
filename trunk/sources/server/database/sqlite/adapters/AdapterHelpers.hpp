@@ -168,7 +168,7 @@
 ///     -> in case of enum, it returns the enum type
 //-------------------------------------------------------------------
 #define ADAPT_COLUMN_GET_REAL_TYPE(_elem) \
-   BOOST_PP_IF(BOOST_PP_EQUAL(BOOST_PP_SEQ_SIZE(_elem), 4 ), (BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_TYPE, _elem)), BOOST_PP_EMPTY())
+   BOOST_PP_IF(BOOST_PP_EQUAL(BOOST_PP_SEQ_SIZE(_elem), 4 ), BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_TYPE, _elem), BOOST_PP_EMPTY())
 
 //-------------------------------------------------------------------
 /// \brief  Macro which is called for each entity member and provide setter implementation
@@ -180,7 +180,7 @@
       if(sqlite3_column_type(pStatement, nCol) == SQLITE_NULL) \
    	newEntity-> BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem) = BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_DEFAULT, elem); \
       else \
-         newEntity-> BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem) = ADAPT_COLUMN_GET_REAL_TYPE(elem) CSQLite3Extension::extractData< ADAPT_COLUMN_GET_INTERNAL_TYPE(elem) >(pStatement, nCol) ; \
+         newEntity-> BOOST_PP_SEQ_ELEM(ADAPTER_COLUMN_ID, elem) = ADAPT_COLUMN_GET_REAL_TYPE(elem)( CSQLite3Extension::extractData< ADAPT_COLUMN_GET_INTERNAL_TYPE(elem) >(pStatement, nCol) ); \
    }
 
 //-------------------------------------------------------------------

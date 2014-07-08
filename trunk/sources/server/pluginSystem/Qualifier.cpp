@@ -22,7 +22,7 @@ CQualifier::~CQualifier()
 void CQualifier::signalLoad(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation)
 {
    // Insert event in database
-   AddEventToDatabase(pluginInformation, database::entities::kLoad);
+   AddEventToDatabase(pluginInformation, database::entities::EEventType::kLoad);
 
    // Since a new event is recorded, cache of quality indicator is obsolete
    obsoleteQualityIndicatorCache(CIdentityForQualifier(pluginInformation));
@@ -31,7 +31,7 @@ void CQualifier::signalLoad(const boost::shared_ptr<const shared::plugin::inform
 void CQualifier::signalUnload(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation)
 {
    // Insert event in database
-   AddEventToDatabase(pluginInformation, database::entities::kUnload);
+   AddEventToDatabase(pluginInformation, database::entities::EEventType::kUnload);
 
    // Since a new event is recorded, cache of quality indicator is obsolete
    obsoleteQualityIndicatorCache(CIdentityForQualifier(pluginInformation));
@@ -40,7 +40,7 @@ void CQualifier::signalUnload(const boost::shared_ptr<const shared::plugin::info
 void CQualifier::signalCrash(const boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformation, const std::string& reason)
 {
    // Insert event in database
-   AddEventToDatabase(pluginInformation, database::entities::kCrash, reason);
+   AddEventToDatabase(pluginInformation, database::entities::EEventType::kCrash, reason);
 
    // Since a new event is recorded, cache of quality indicator is obsolete
    obsoleteQualityIndicatorCache(CIdentityForQualifier(pluginInformation));
@@ -59,8 +59,8 @@ void CQualifier::AddEventToDatabase(const boost::shared_ptr<const shared::plugin
          reason);
 
       // Only crashes have to be logged in the main event logger table
-      if (eventType == database::entities::kCrash)
-         m_mainLogger->addEvent(database::entities::kPluginCrash, "plugin " + pluginInformation->getIdentity(), reason);
+      if (eventType == database::entities::EEventType::kCrash)
+         m_mainLogger->addEvent(database::entities::ESystemEventCode::kPluginCrash, "plugin " + pluginInformation->getIdentity(), reason);
    }
    catch (shared::exception::CEmptyResult& e)
    {
@@ -116,14 +116,14 @@ int CQualifier::computeQuality(const CIdentityForQualifier& identity) const
    std::vector<boost::shared_ptr<database::entities::CPluginEventLogger> > pluginEvents = m_pluginLogger->getPluginEvents(identity.getName(), identity.getVersion(), identity.getReleaseType(), boost::posix_time::ptime(fromDate));
    for (std::vector<boost::shared_ptr<database::entities::CPluginEventLogger> >::const_iterator it = pluginEvents.begin() ; it != pluginEvents.end() ; ++it)
    {
-      switch((*it)->EventType)
+      switch((*it)->EventType())
       {
-      case database::entities::kLoad:
+      case database::entities::EEventType::kLoad:
          {
             lastLoadTime = (*it)->EventDate();
             break;
          }
-      case database::entities::kUnload:
+      case database::entities::EEventType::kUnload:
          {
             if(lastLoadTime != boost::posix_time::not_a_date_time)
                runningDuration += (*it)->EventDate() - lastLoadTime;
@@ -131,7 +131,7 @@ int CQualifier::computeQuality(const CIdentityForQualifier& identity) const
             lastLoadTime = boost::posix_time::not_a_date_time;
             break;
          }
-      case database::entities::kCrash:
+      case database::entities::EEventType::kCrash:
          {
             crashsNb++;
             break;

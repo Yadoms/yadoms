@@ -18,6 +18,7 @@ namespace shared { namespace plugin { namespace yadomsApi {
       static const CStandardCapacity & Rssi;              // rssi              | percent               | Rssi measure capacity
       static const CStandardCapacity & Switch;            // switch            | none                  | A string state (to read a switch, drive a lamp, etc...). Can be a single on/off switch or a dimmable one
       static const CStandardCapacity & Message;           // message           |                       | A message (contains "from", "to" and "body" fields)
+
    };
 
 } } } // namespace shared::plugin::yadomsApi

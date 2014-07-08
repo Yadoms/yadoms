@@ -42,11 +42,11 @@ namespace xplrules { namespace rfxLanXpl {
       std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
 
       if (msg.getBodyValue("type") == "ninja")
-         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("mertik", "mertik-maxitrol-gas-fire", shared::plugin::yadomsApi::kWriteOnly, shared::plugin::yadomsApi::kString, "", "left, right, up, down, p1, prog_p1, p2, prog_p2, p3, prog_p3, p4, prog_p4, center, prog_center, sweep, prog_sweep")));
+         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("mertik", "mertik-maxitrol-gas-fire", shared::plugin::yadomsApi::kSet, shared::plugin::yadomsApi::kString, "", "left, right, up, down, p1, prog_p1, p2, prog_p2, p3, prog_p3, p4, prog_p4, center, prog_center, sweep, prog_sweep")));
       else if (msg.getBodyValue("type") == "mertik")
-         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("ninja", "Ninja-Robocam", shared::plugin::yadomsApi::kWriteOnly, shared::plugin::yadomsApi::kString, "", "on, off, step_up, step_down, run_up, run_down, stop")));
+         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("ninja", "Ninja-Robocam", shared::plugin::yadomsApi::kSet, shared::plugin::yadomsApi::kString, "", "on, off, step_up, step_down, run_up, run_down, stop")));
       else if (msg.getBodyValue("type") == "output")
-         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("iostate", "digitalio", shared::plugin::yadomsApi::kWriteOnly, shared::plugin::yadomsApi::kString, "", "high, low, toggle")));
+         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("iostate", "digitalio", shared::plugin::yadomsApi::kSet, shared::plugin::yadomsApi::kString, "", "high, low, toggle")));
 
       return keywords;
    }

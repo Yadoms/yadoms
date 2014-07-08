@@ -95,7 +95,7 @@ void CSupervisor::doWork()
 
 
       // Register to event logger started evebt
-      pDataProvider->getEventLoggerRequester()->addEvent(database::entities::kStarted, "yadoms", shared::CStringExtension::EmptyString);
+      pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", shared::CStringExtension::EmptyString);
 
       // Main loop
       YADOMS_LOG(info) << "Supervisor is running...";
@@ -136,19 +136,19 @@ void CSupervisor::doWork()
 
       YADOMS_LOG(info) << "Supervisor is stopped";
 
-      pDataProvider->getEventLoggerRequester()->addEvent(database::entities::kStopped, "yadoms", shared::CStringExtension::EmptyString);
+      pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", shared::CStringExtension::EmptyString);
 
    }
    catch (std::exception& e)
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception " << e.what();
       if(pDataProvider)
-         pDataProvider->getEventLoggerRequester()->addEvent(database::entities::kYadomsCrash, "yadoms",  e.what());
+         pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", e.what());
    }
    catch (...)
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception.";
       if(pDataProvider)
-         pDataProvider->getEventLoggerRequester()->addEvent(database::entities::kYadomsCrash, "yadoms",  "unknwon error");
+         pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", "unknwon error");
    }
 }
