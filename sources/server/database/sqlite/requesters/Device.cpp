@@ -97,6 +97,24 @@ namespace database {  namespace sqlite { namespace requesters {
       return adapter.getResults();
    }
 
+   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacityType(const database::entities::EKeywordAccessMode capacityAccessMode, const database::entities::EKeywordDataType capacityType) const
+   {
+      CQuery subQuery;
+      subQuery. Select(CKeywordTable::getDeviceIdColumnName()).
+                From(CKeywordTable::getTableName()).
+                Where(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, (int)capacityAccessMode).
+                And(CKeywordTable::getTypeColumnName(), CQUERY_OP_EQUAL, (int)capacityType);
+
+      CQuery qSelect;
+      qSelect. Select().
+         From(CDeviceTable::getTableName()).
+         Where(CDeviceTable::getIdColumnName(), CQUERY_OP_IN, subQuery);
+
+      database::sqlite::adapters::CDeviceAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CDevice> >(&adapter, qSelect);
+      return adapter.getResults();
+   }
+
 
    boost::shared_ptr<database::entities::CDevice> CDevice::createDevice(int pluginId, const std::string & name, const std::string & friendlyName, const std::string & model, const shared::CDataContainer & details)
    {

@@ -42,6 +42,11 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer getDeviceKeywordsForCapacity(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
       //-----------------------------------------
+      ///\brief   get all the keywords which match a capacity type
+      //-----------------------------------------
+      shared::CDataContainer getDeviceWithCapacityType(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+
+      //-----------------------------------------
       ///\brief   get all the keywords of a device
       //-----------------------------------------
       shared::CDataContainer getDeviceKeywords(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
