@@ -56,7 +56,7 @@ EnumParameterHandler.prototype.getDOMObject = function () {
    i18nData += "\" ";
    input += i18nData + " >";
 
-   //we iterate through the vlues collection
+   //we iterate through the values collection
    $.each(self.values, function (key, value) {
       input += "<option value=\"" + key + "\" data-i18n=\"" + self.i18nContext + self.paramName + ".values." + key + "\"";
       if (key == self.value)

@@ -64,8 +64,8 @@ function SectionParameterHandler(objectToConfigure, i18nContext, paramName, cont
    //for each key in package
    $.each(content.content, function (key, value) {
       var v = undefined;
-      if ((self.configurationValues !== undefined) && (self.configurationValues != null) && (self.configurationValues.values != null) && (self.configurationValues.values != undefined))
-         v = self.configurationValues.values[key];
+      if ((self.configurationValues !== undefined) && (self.configurationValues != null) && (self.configurationValues.content != null) && (self.configurationValues.content != undefined))
+         v = self.configurationValues.content[key];
 
       var newI18nContext = i18nContext + self.paramName + ".content.";
       var handler = ConfigurationHelper.createParameterHandler(objectToConfigure, newI18nContext, key, value, v);
@@ -184,9 +184,9 @@ SectionParameterHandler.prototype.getCurrentConfiguration = function () {
    //we update configurationValues with content of DOM
    var self = this;
    self.configurationValues = {};
-   self.configurationValues.values = {};
+   self.configurationValues.content = {};
    $.each(self.configurationHandlers, function (key, value) {
-      self.configurationValues.values[value.getParamName()] = value.getCurrentConfiguration();
+      self.configurationValues.content[value.getParamName()] = value.getCurrentConfiguration();
    });
 
    //we get the checkbox value if used
