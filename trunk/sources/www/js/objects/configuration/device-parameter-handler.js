@@ -61,8 +61,8 @@ function populateDeviceList(handler) {
 
       //there is no device that match criteria
       if (data.data.device.length == 0) {
-          //we disable the combo
-          $deviceList.prop('disabled', true);
+          //we add an empty element to make the validation throw an error
+          $deviceList.append("<option value=\"\"></option>");
       }
       else {
           var itemToSelect = 0;
@@ -134,10 +134,10 @@ function populateDeviceList(handler) {
  */
 DeviceParameterHandler.prototype.getDOMObject = function () {
    var input = "<select " +
-                        "class=\"form-control\" " +
+                        "class=\"form-control enable-validation\" " +
                         "id=\"" + this.uuid + "\" " +
-                        "data-content=\"" + this.description + "\"";// +
-                        //"required ";
+                        "data-content=\"" + this.description + "\"" +
+                        "required ";
    var i18nData = " data-i18n=\"";
 
    var self = this;
@@ -145,9 +145,9 @@ DeviceParameterHandler.prototype.getDOMObject = function () {
 
    //i18nData += "\" ";
    input += " >";
-   input += "</select>";
+   input += "<option></option></select>";
 
-   input += "<select class=\"form-control hidden\" id=\"" + self.uuidKeywordList + "\"></seclect>";
+   input += "<select class=\"form-control hidden\" id=\"" + self.uuidKeywordList + "\"></select>";
 
    input += "<div class=\"device-details\">" +
               "" +

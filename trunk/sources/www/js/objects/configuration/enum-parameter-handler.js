@@ -44,7 +44,7 @@ function EnumParameterHandler(i18nContext, paramName, content, currentValue) {
  */
 EnumParameterHandler.prototype.getDOMObject = function () {
    var input = "<select " +
-                        "class=\"form-control\" " +
+                        "class=\"form-control enable-validation\" " +
                         "id=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\"" +
                         "required ";

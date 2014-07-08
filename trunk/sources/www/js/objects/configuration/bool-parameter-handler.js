@@ -45,7 +45,7 @@ BoolParameterHandler.prototype.getDOMObject = function () {
    var input = "<input class=\"enable-validation\" id=\"" + this.uuid + "\" type=\"checkbox\" ";
    if (this.value)
       input +=          "checked ";
-   input +=           ">";
+   input +=           "/>";
 
    return ConfigurationHelper.createControlGroup(self, input, true, "checkbox");
 };
