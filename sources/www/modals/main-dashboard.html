@@ -67,8 +67,7 @@
                        callback();
                  })
                  .fail(function() {
-                    //TODO : i18n
-                    notifyError("Unable to load sub window " + subWindowPath);
+                    notifyError($.t("modals.dashboard.unableToLoadSubWindow", {subWindowPath : subWindowPath}));
                  });
          }
          else {
