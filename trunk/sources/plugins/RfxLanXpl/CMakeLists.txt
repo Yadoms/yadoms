@@ -48,9 +48,6 @@ set(RFXLANXPL_RULES_SOURCES
 	xplrules/rfxLanXpl/SensorBasic.cpp
 	xplrules/rfxLanXpl/X10Basic.h
 	xplrules/rfxLanXpl/X10Basic.cpp
-	xplrules/rfxLanXpl/commands/Field.hpp
-	xplrules/rfxLanXpl/commands/AcBasic.h
-	xplrules/rfxLanXpl/commands/AcBasic.cpp
 )
 
 

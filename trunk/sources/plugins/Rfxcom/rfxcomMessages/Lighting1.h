@@ -3,6 +3,7 @@
 #include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
+#include <shared/DataContainer.h>
 
 namespace yApi = shared::plugin::yadomsApi;
 
@@ -21,7 +22,7 @@ namespace rfxcomMessages
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
-      CLighting1(const std::string& command, const shared::CDataContainer& deviceParameters);
+      CLighting1(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
@@ -58,7 +59,7 @@ namespace rfxcomMessages
       /// \return                         The value known by the protocol
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       //--------------------------------------------------------------
-      static unsigned char toProtocolState(const std::string& yadomsCommand);
+      static unsigned char toProtocolState(const shared::CDataContainer& yadomsCommand);
       
       //--------------------------------------------------------------
       /// \brief	                        Convert protocol value to Yadoms state

@@ -1,5 +1,6 @@
 #pragma once
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
+#include <shared/DataContainer.h>
 #include "Buffer.hpp"
 
 namespace yApi = shared::plugin::yadomsApi;
@@ -25,7 +26,7 @@ public:
    /// \param [in] command          The received command (JSON string)
    /// \param [in] deviceParameters The device parameters (JSON string)
    //--------------------------------------------------------------
-   virtual void send(const std::string& command, const shared::CDataContainer& deviceParameters) = 0;
+   virtual void send(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters) = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Decode RFXCom data and historize to Yadoms

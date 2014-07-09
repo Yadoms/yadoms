@@ -207,7 +207,7 @@ bool CTransceiver::checkAcknowledge(const CByteBuffer& answer)
    return true;
 }
 
-void CTransceiver::send(const std::string& command, const shared::CDataContainer& deviceParameters)
+void CTransceiver::send(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
 {
    try
    {
@@ -224,7 +224,7 @@ void CTransceiver::send(const std::string& command, const shared::CDataContainer
    }
 }
 
-const CByteBuffer CTransceiver::buildRfxcomMessage(const std::string& command, const shared::CDataContainer& deviceParametersTree) const
+const CByteBuffer CTransceiver::buildRfxcomMessage(const shared::CDataContainer& command, const shared::CDataContainer& deviceParametersTree) const
 {
    try
    {
@@ -247,16 +247,17 @@ const CByteBuffer CTransceiver::buildRfxcomMessage(const std::string& command, c
          break;
          //TODO compléter
       default:
-         YADOMS_LOG(error) << "Invalid command \"" << command << "\" : " << " unknown type " << deviceType;
+         YADOMS_LOG(error) << "Invalid command \"" << command.serialize() << "\" : " << " unknown type " << deviceType;
          BOOST_ASSERT_MSG(false, "Invalid command (unknown type)");
-         throw shared::exception::CInvalidParameter(command);
+         throw shared::exception::CInvalidParameter(command.serialize());
          break;
       }
    }
    catch (shared::exception::CException & e)
    {
       BOOST_ASSERT_MSG(false, "Invalid command (parameter doesn't exist)");
-      throw shared::exception::CInvalidParameter("Invalid command \"" + command + "\" : " + e.what());
+      std::string message = (boost::format("Invalid command \"%1%\" : %2%") % command.serialize() % e.what()).str();
+      throw shared::exception::CInvalidParameter(message);
    }
 }
 

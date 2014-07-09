@@ -2,7 +2,8 @@
 #include "AcBasic.h"
 #include <shared/tools/Random.h>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include "commands/AcBasic.h"
+#include <shared/plugin/yadomsApi/commands/Switch.h>
+
 
 namespace xplrules { namespace rfxLanXpl {
 
@@ -66,7 +67,7 @@ namespace xplrules { namespace rfxLanXpl {
 
 
    // ICommandRule implemntation
-   boost::shared_ptr< xplcore::CXplMessage > CAcBasic::createXplCommand(boost::shared_ptr<yApi::IDeviceCommand> & commandData, const std::string & rfxAddress)
+   boost::shared_ptr< xplcore::CXplMessage > CAcBasic::createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand> & commandData, const std::string & rfxAddress)
    {
       ////////////////////////////
       // do some checks
@@ -83,7 +84,7 @@ namespace xplrules { namespace rfxLanXpl {
       }
 
       //read command details (may throw exception if something is wrong)
-      commands::CAcBasic commandDetails(commandData->getBody());
+      shared::plugin::yadomsApi::commands::CSwitch commandDetails(commandData->getBody());
 
       ////////////////////////////
       // create the message
@@ -109,11 +110,11 @@ namespace xplrules { namespace rfxLanXpl {
       newMessage->addToBody(m_keywordUnit, splittedAddress[1]);
 
       //set the command
-      newMessage->addToBody(m_keywordCommand, commandDetails.Command());
+      newMessage->addToBody(m_keywordCommand, commandDetails.getState()().getAsString());
 
       //if there is any other data to send, just add key/value to bidy
-      if (commandDetails.Level.isDefined())
-         newMessage->addToBody(m_keywordLevel, boost::lexical_cast<std::string>(commandDetails.Level()));
+      if (commandDetails.getDimLevel().isDefined())
+         newMessage->addToBody(m_keywordLevel, boost::lexical_cast<std::string>(commandDetails.getDimLevel()()));
 
       return newMessage;
    }

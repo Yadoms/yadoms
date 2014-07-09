@@ -3,6 +3,7 @@
 #include "RfxcomConfiguration.h"
 #include "Transceiver.h"
 #include "IPort.h"
+#include <shared/DataContainer.h>
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -33,7 +34,7 @@ protected:
    /// \param [in] command          The received command (JSON string)
    /// \param [in] deviceParameters The device parameters (JSON string)
    //--------------------------------------------------------------
-   void onCommand(const std::string& command, const shared::CDataContainer & deviceParameters);
+   void onCommand(const shared::CDataContainer& command, const shared::CDataContainer & deviceParameters);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the RFXCom becomes connected

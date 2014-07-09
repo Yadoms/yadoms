@@ -163,9 +163,11 @@ namespace shared { namespace event
             CEvent<DataType> evt = dynamic_cast<CEvent<DataType> & >(*m_lastEvent);
             return evt.getData();
          }
-         catch (std::bad_cast&)
+         catch (std::bad_cast& bc)
          {
-            throw exception::CBadConversion("getEventData", boost::lexical_cast<std::string>(m_lastEvent->getId()));
+            std::string s = "getEventData : ";
+            s += bc.what();
+            throw exception::CBadConversion(s, boost::lexical_cast<std::string>(m_lastEvent->getId()));
          }
       }
 

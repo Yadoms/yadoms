@@ -194,8 +194,6 @@ set(YADOMS_SRC
 	server/database/entities/EntityHelpers.hpp
 	server/database/entities/Entities.h
 	server/database/entities/Entities.cpp
-	server/database/entities/Field.hpp
-	server/database/entities/EnumHelpers.hpp
 	
 	server/web/IWebServer.h
 	server/web/IRestHandler.h

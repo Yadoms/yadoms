@@ -1,32 +1,35 @@
 #pragma once
 #include <shared/Export.h>
-
+#include <shared/DataContainer.h>
+#include <shared/enumeration/EnumHelpers.hpp>
+#include <shared/Field.hpp>
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
+   //-----------------------------------------------------
+   ///\brief                     The switch state
+   //-----------------------------------------------------
+   DECLARE_ENUM_HEADER(State, YADOMS_SHARED_EXPORT,
+   ((Off)(0))
+      ((On)(1))
+      ((Dim)(2))
+      );
+
    //-----------------------------------------------------
    ///\brief The switch command parser
    //-----------------------------------------------------
    class YADOMS_SHARED_EXPORT CSwitch
    {
    public:
-      //-----------------------------------------------------
-      ///\brief                     The switch state
-      //-----------------------------------------------------
-      enum EState
-      {
-         kOff = 0,
-         kOn,
-         kDim
-      };
+
 
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor from formated command
-      ///\param[in] yadomsCommand   Yadoms command, as JSON string
+      ///\param[in] yadomsCommand   Yadoms command container
       ///\throw                     shared::exception::CInvalidParameter if fail to parse command
       //-----------------------------------------------------
-      CSwitch(const std::string& yadomsCommand);
+      CSwitch(const shared::CDataContainer& yadomsCommand);
 
       //-----------------------------------------------------
       ///\brief                     Constructor from raw data
@@ -45,13 +48,13 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       ///\brief                     Get the main switch state
       ///\return                    The main switch state
       //-----------------------------------------------------
-      EState getState() const;
+      const CField<EState> & getState() const;
 
       //-----------------------------------------------------
       ///\brief                     Get the dim level
       ///\return                    The dim level (0-100)
       //-----------------------------------------------------
-      int getDimLevel() const;
+      const CField<int> & getDimLevel() const;
 
       //-----------------------------------------------------
       ///\brief                     Format data to Yadoms format
@@ -63,12 +66,12 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       //-----------------------------------------------------
       ///\brief                     The main state
       //-----------------------------------------------------
-      EState m_state;
+      CField<EState> m_state;
 
       //-----------------------------------------------------
       ///\brief                     The dim level
       //-----------------------------------------------------
-      int m_dimLevel;
+      CField<int> m_dimLevel;
    };
 
 

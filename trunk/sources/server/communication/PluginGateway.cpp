@@ -42,7 +42,7 @@ namespace communication {
       }
    }
 
-   void CPluginGateway::sendCommandAsync(int deviceId, int keywordId, const std::string& body)
+   void CPluginGateway::sendCommandAsync(int deviceId, int keywordId, const shared::CDataContainer& body)
    {
       // Create the command
       boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> command(new pluginSystem::CDeviceCommand(m_dataProvider->getDeviceRequester()->getDevice(deviceId)->Name,
@@ -52,7 +52,7 @@ namespace communication {
       m_pluginManager->postCommand(m_dataProvider->getDeviceRequester()->getDevice(deviceId)->PluginId, command);
 
       // Historize the command
-      m_dataProvider->getAcquisitionRequester()->saveData(keywordId, body);
+      m_dataProvider->getAcquisitionRequester()->saveData(keywordId, body.serialize());
    }
 
    void CPluginGateway::sendManuallyDeviceCreationRequestAsync(int pluginId, const std::string& deviceName, const std::string& keywordName, const std::string& capacity, const std::string& parameters)

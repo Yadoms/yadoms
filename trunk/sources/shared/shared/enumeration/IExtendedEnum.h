@@ -1,11 +1,12 @@
 #pragma once
+#include <shared/Export.h>
 
 namespace shared { namespace enumeration {
 
    //--------------------------------------------------------------
    /// \brief Interface for extended enums (can be parsed/get as strings
    //--------------------------------------------------------------
-   class IExtendedEnum
+   class YADOMS_SHARED_EXPORT IExtendedEnum
    {
    public:
       //--------------------------------------------------------------

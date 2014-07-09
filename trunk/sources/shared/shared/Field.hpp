@@ -1,8 +1,6 @@
 #pragma once
-#include <shared/Log.h>
-#include <shared/DataContainer.h>
 
-namespace xplrules { namespace rfxLanXpl { namespace commands {
+namespace shared {
 
    //----------------------------------
    ///\brief Class wihch handle a field.
@@ -13,34 +11,33 @@ namespace xplrules { namespace rfxLanXpl { namespace commands {
    class CField
    {
    public:
+      //-----------------------------
+      ///\brief Default constructor
+      //-----------------------------
+      CField()
+         :m_defined(false), m_value()
+      {
+      }
 
       //-----------------------------
       ///\brief Constructor. With this signature the field is not yet defined
-      ///\param [in] fieldName   the field name
+      ///\param [in] value the field value
       //-----------------------------
-      CField(const std::string & fieldName)
-         :m_fieldName(fieldName), m_defined(false), m_value()
+      CField(const T & value)
+         :m_defined(false), m_value(value)
       {
       }
 
       //-----------------------------
-      ///\brief Read the field from a propertytree
-      ///\param [in] ptSource   the property tree to read data from
+      ///\brief Constructor. 
+      ///\param [in] value the field value
+      ///\param [in] defined the field filled status
       //-----------------------------
-      void read(shared::CDataContainer & ptSource)
+      CField(const T & value, bool defined)
+         :m_defined(defined), m_value(value)
       {
-         try
-         {
-            m_value = ptSource.get<T>(m_fieldName);
-            m_defined = true;
-         }
-         catch (shared::exception::CException & e)
-         {
-            m_defined = false;
-            YADOMS_LOG(warning) << "Can not read " << m_fieldName << " :" << e.what();
-         }
       }
-
+      
 
       //-----------------------------
       ///\brief Operator () to template type. 
@@ -48,7 +45,7 @@ namespace xplrules { namespace rfxLanXpl { namespace commands {
       ///\example : CField<int> data(12, true);
       ///           int b = data();
       //-----------------------------
-      T const& operator () () const { return m_value; }
+      T const& operator () () const { return m_value; }  
 
       //-----------------------------
       ///\brief Implicit cast operator 
@@ -58,9 +55,9 @@ namespace xplrules { namespace rfxLanXpl { namespace commands {
       //-----------------------------
       operator T() const
       {
-         return m_value;
+          return m_value;
       }
-
+      
       //-----------------------------
       ///\brief Affectation operator (set defined to true)
       ///\return The field (*this)
@@ -83,12 +80,6 @@ namespace xplrules { namespace rfxLanXpl { namespace commands {
       }
 
    private:
-
-      //-----------------------------
-      ///\brief The field name
-      //-----------------------------
-      std::string m_fieldName;
-
       //-----------------------------
       ///\brief The field filled state
       //-----------------------------
@@ -99,9 +90,9 @@ namespace xplrules { namespace rfxLanXpl { namespace commands {
       //-----------------------------
       T m_value;
    };
+   
 
 
-} // namespace commands
-} // namespace rfxLanXpl 
-} // namespace xplrules
+
+} //namespace shared
 

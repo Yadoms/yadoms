@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/Export.h>
-
+#include <shared/DataContainer.h>
+#include <shared/Field.hpp>
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
@@ -12,10 +13,10 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
    public:
       //-----------------------------------------------------
       ///\brief               Constructor
-      ///\param[in] command   Yadoms command, as JSON string
+      ///\param[in] command   Yadoms command container
       ///\throw               shared::exception::CInvalidParameter if fail to parse command
       //-----------------------------------------------------
-      CMessage(const std::string& command);
+      CMessage(const shared::CDataContainer& command);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -26,35 +27,35 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       ///\brief               Get the sender value
       ///\return              The sender value
       //-----------------------------------------------------
-      const std::string& from() const;
+      const CField<std::string>& from() const;
 
       //-----------------------------------------------------
       ///\brief               Get the recipient value
       ///\return              The recipient value
       //-----------------------------------------------------
-      const std::string& to() const;
+      const CField<std::string>& to() const;
 
       //-----------------------------------------------------
       ///\brief               Get the body value
       ///\return              The body value
       //-----------------------------------------------------
-      const std::string& body() const;
+      const CField<std::string>& body() const;
 
    private:
       //-----------------------------------------------------
       ///\brief               The sender value
       //-----------------------------------------------------
-      std::string m_from;
+      CField<std::string> m_from;
 
       //-----------------------------------------------------
       ///\brief               The recipient value
       //-----------------------------------------------------
-      std::string m_to;
+      CField<std::string> m_to;
 
       //-----------------------------------------------------
       ///\brief               The body value
       //-----------------------------------------------------
-      std::string m_body;
+      CField<std::string> m_body;
    };
 
 

@@ -55,7 +55,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          case yApi::IYadomsApi::kEventDeviceCommand:
             {
                // A command was received from Yadoms
-               boost::shared_ptr<yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceCommand> >();
+            boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
                YADOMS_LOG(debug) << "Command received from Yadoms :" << command->toString();
                break;
             }

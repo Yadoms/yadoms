@@ -70,7 +70,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          case yApi::IYadomsApi::kEventDeviceCommand:
          {
             // Command was received from Yadoms
-            boost::shared_ptr<yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceCommand> >();
+            boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
             OnSendDeviceCommand(command, context, xplService);
             break;
          }
@@ -206,7 +206,7 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
 ///\brief Function handler used to send a command to a device
 ///\param [in] The command to send
 //----------------------------------------------
-void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<yApi::IDeviceCommand> command, boost::shared_ptr<yApi::IYadomsApi> context, xplcore::CXplService & xplService)
+void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceCommand> command, boost::shared_ptr<yApi::IYadomsApi> context, xplcore::CXplService & xplService)
 {
    try
    {

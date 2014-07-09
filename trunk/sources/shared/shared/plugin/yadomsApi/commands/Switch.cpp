@@ -1,89 +1,66 @@
 #include "stdafx.h"
 #include "Switch.h"
 #include "../StandardValues.h"
-#include <shared/DataContainer.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
 
-CSwitch::CSwitch(const std::string& command)
-   :m_state(kOff), m_dimLevel(0)
-{
-   try
-   {
-	   shared::CDataContainer yadomsCommandTree(command);
-	   std::string cmdState = yadomsCommandTree.get<std::string>("command");
+   DECLARE_ENUM_IMPLEMENTATION(State,
+      (Off)
+      (On)
+      (Dim)
+   );
 
-      if (cmdState == CStandardValues::Off)
-         m_state = kOff;
-      else if (cmdState == CStandardValues::On)
-         m_state = kOn;
-      else if (cmdState == CStandardValues::Dim)
+   CSwitch::CSwitch(const shared::CDataContainer& command)
+   :m_state(EState::kOff), m_dimLevel(0)
+   {
+      try
       {
-         m_state = kDim;
-		 m_dimLevel = yadomsCommandTree.get<int>("level");
+         m_state = command.get<EState>("command");
+         if (m_state() == EState::kDim)
+            m_dimLevel = command.get<int>("level");
       }
-      else
+      catch (boost::property_tree::ptree_bad_path& e)
       {
-         BOOST_ASSERT_MSG(false, "Wrong switch command value");
-         throw shared::exception::CInvalidParameter("Invalid switch command \"" + command + "\" : value out of range");
+         BOOST_ASSERT_MSG(false, "Invalid switch command");
+         throw shared::exception::CInvalidParameter("Invalid switch command \"" + command.serialize() + "\" : " + e.what());
+      }
+      catch (boost::property_tree::ptree_bad_data& e)
+      {
+         BOOST_ASSERT_MSG(false, "Invalid switch command");
+         throw shared::exception::CInvalidParameter("Invalid switch command \"" + command.serialize() + "\" : " + e.what());
       }
    }
-   catch (boost::property_tree::ptree_bad_path& e)
+
+   CSwitch::CSwitch(EState state, int dimLevel)
+      :m_state(state), m_dimLevel(dimLevel)
    {
-      BOOST_ASSERT_MSG(false, "Invalid switch command");
-      throw shared::exception::CInvalidParameter("Invalid switch command \"" + command + "\" : " + e.what());
    }
-   catch (boost::property_tree::ptree_bad_data& e)
+
+   CSwitch::~CSwitch()
    {
-      BOOST_ASSERT_MSG(false, "Invalid switch command");
-      throw shared::exception::CInvalidParameter("Invalid switch command \"" + command + "\" : " + e.what());
    }
-}
 
-CSwitch::CSwitch(EState state, int dimLevel)
-   :m_state(state), m_dimLevel(dimLevel)
-{
-}
-
-CSwitch::~CSwitch()
-{
-}
-
-CSwitch::EState CSwitch::getState() const
-{
-   return m_state;
-}
-
-int CSwitch::getDimLevel() const
-{
-   return m_dimLevel;
-}
-
-std::string CSwitch::format() const
-{
-   shared::CDataContainer yadomsCommand;
-
-   switch(m_state)
+   const CField<EState> & CSwitch::getState() const
    {
-   case kOff: yadomsCommand.set("command", CStandardValues::Off); break;
-   case kOn: yadomsCommand.set("command", CStandardValues::On); break;
-   case kDim:
-      {
-         yadomsCommand.set("command", CStandardValues::Dim);
+      return m_state;
+   }
+
+   const CField<int> & CSwitch::getDimLevel() const
+   {
+      return m_dimLevel;
+   }
+
+   std::string CSwitch::format() const
+   {
+      shared::CDataContainer yadomsCommand;
+      yadomsCommand.set("command", m_state());
+      if (m_state() == EState::kDim)
          yadomsCommand.set("level", m_dimLevel);
-         break;
-      }
-   default:
-      BOOST_ASSERT_MSG(false, "Invalid state");
-      throw shared::exception::CInvalidParameter("state");
-      break;
+      return yadomsCommand.serialize();
    }
-
-   return yadomsCommand.serialize();
-}
 
 } } } } // namespace shared::plugin::yadomsApi::commands
 

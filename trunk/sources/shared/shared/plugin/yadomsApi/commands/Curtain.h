@@ -1,9 +1,20 @@
 #pragma once
 #include <shared/Export.h>
-
+#include <shared/DataContainer.h>
+#include <shared/enumeration/EnumHelpers.hpp>
+#include <shared/Field.hpp>
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
+   //-----------------------------------------------------
+   ///\brief               The curtain command values
+   //-----------------------------------------------------   
+   DECLARE_ENUM_HEADER(Command, YADOMS_SHARED_EXPORT,
+      ((Stop)(0))
+      ((Open)(1))
+      ((Close)(2))
+   );
+
    //-----------------------------------------------------
    ///\brief The curtain command parser
    //-----------------------------------------------------
@@ -11,22 +22,11 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
    {
    public:
       //-----------------------------------------------------
-      ///\brief               The curtain command values
-      //-----------------------------------------------------
-      enum ECommand
-      {
-         kStop = 0,
-         kOpen,
-         kClose
-      };
-
-   public:
-      //-----------------------------------------------------
       ///\brief                     Constructor from formated command
-      ///\param[in] yadomsCommand   Yadoms command, as JSON string
+      ///\param[in] yadomsCommand   Yadoms command container
       ///\throw                     shared::exception::CInvalidParameter if fail to parse command
       //-----------------------------------------------------
-      CCurtain(const std::string& yadomsCommand);
+      CCurtain(const shared::CDataContainer& yadomsCommand);
 
       //-----------------------------------------------------
       ///\brief                     Constructor from raw data
@@ -44,7 +44,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       ///\brief                     Get the command value
       ///\return                    The command value
       //-----------------------------------------------------
-      ECommand get() const;
+      const CField<ECommand> & get() const;
 
       //-----------------------------------------------------
       ///\brief                     Format data to Yadoms format
@@ -56,7 +56,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       //-----------------------------------------------------
       ///\brief               The command value
       //-----------------------------------------------------
-      ECommand m_value;
+      CField<ECommand> m_value;
    };
 
 
