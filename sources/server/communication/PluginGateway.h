@@ -34,7 +34,7 @@ namespace communication {
 
    public:
       // ISendMessageAsync Implementation
-      virtual void sendCommandAsync(int deviceId, int keywordId, const std::string& body);
+      virtual void sendCommandAsync(int deviceId, int keywordId, const shared::CDataContainer& body);
       virtual void sendManuallyDeviceCreationRequestAsync(int pluginId, const std::string& deviceName, const std::string& keywordName, const std::string& capacity, const std::string& parameters);
       // [END] ISendMessageAsync Implementation
 

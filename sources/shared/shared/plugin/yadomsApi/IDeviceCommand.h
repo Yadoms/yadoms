@@ -1,5 +1,5 @@
 #pragma once
-
+#include <shared/DataContainer.h>
 
 namespace shared { namespace plugin { namespace yadomsApi
 {
@@ -30,7 +30,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\brief               Get the command body
       ///\return              The command body, as JSON string
       //-----------------------------------------------------
-      virtual const std::string& getBody() const = 0;
+      virtual const shared::CDataContainer & getBody() const = 0;
 
       //-----------------------------------------------------
       ///\brief Describe the command as string

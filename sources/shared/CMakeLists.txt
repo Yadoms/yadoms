@@ -17,7 +17,10 @@ set(SHARED_LIB_SRC
 	shared/StringExtension.cpp	
 	
 	shared/enumeration/IExtendedEnum.h
+	shared/enumeration/EnumHelpers.hpp
 	
+	shared/Field.hpp
+
 	shared/IDataContainable.h
 	shared/DataContainer.h
 	shared/DataContainer.cpp
@@ -129,6 +132,7 @@ source_group(exception shared/exception/*.*)
 source_group(plugin shared/shared/plugin/*.* )	
 source_group(plugin\\information shared/shared/plugin/information/*.* )	
 source_group(plugin\\yadomsApi shared/shared/plugin/yadomsApi/*.* )	
+source_group(plugin\\yadomsApi\\commands shared/shared/plugin/yadomsApi/commands/*.* )	
 
 source_group(platformSpecific\\windows shared/windows/shared/*.*)
 source_group(platformSpecific\\linux shared/linux/shared/*.*)

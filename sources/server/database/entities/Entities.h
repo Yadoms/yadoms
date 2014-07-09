@@ -3,12 +3,11 @@
 #include <shared/plugin/information/IInformation.h>
 #include <shared/DataContainer.h>
 #include <shared/IDataContainable.h>
-#include "Field.hpp"
+#include <shared/Field.hpp>
 #include <shared/enumeration/IExtendedEnum.h>
-#include "EnumHelpers.hpp"
+#include <shared/enumeration/EnumHelpers.hpp>
 
 namespace database { namespace entities {
-
    DECLARE_ENUM_HEADER(SecurityAccess,
       ((None)(0))
       ((Admin)(1))

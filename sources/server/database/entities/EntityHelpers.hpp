@@ -54,14 +54,14 @@
 //                      {
 //                	   }
 //                	public: 
-//                      CField< int  > Id;
-//                	   CField< int  > IdPage;
-//                	   CField< std::string  > Name;
-//                	   CField< int  > SizeX;
-//                	   CField< int  > SizeY;
-//                	   CField< int  > PositionX;
-//                	   CField< int  > PositionY;
-//                	   CField< std::string  > Configuration;
+//                      shared::CField< int  > Id;
+//                	   shared::CField< int  > IdPage;
+//                	   shared::CField< std::string  > Name;
+//                	   shared::CField< int  > SizeX;
+//                	   shared::CField< int  > SizeY;
+//                	   shared::CField< int  > PositionX;
+//                	   shared::CField< int  > PositionY;
+//                	   shared::CField< std::string  > Configuration;
 //                };
 //                
 
@@ -91,7 +91,7 @@
 /// \brief Macro used to declare a private field with public getter and setter
 //
 #define DELCARE_FIELD(className, fieldType, fieldName) \
-   CField< fieldType > ENTITY_FIELD(fieldName);
+   shared::CField< fieldType > ENTITY_FIELD(fieldName);
 
 
 #define ENTITY_FIELD_NAME(_seq) BOOST_PP_SEQ_ELEM(ENTITY_COLUMN_NAME, _seq)

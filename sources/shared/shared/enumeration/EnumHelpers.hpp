@@ -35,15 +35,15 @@
 
 
 
-
-
 //
 /// \brief  Declare a table
 /// \param  name  the table name
 /// \param  _seq  the sequence of columns
 //
-#define DECLARE_ENUM_HEADER(_enumName, _seq)													   \
-class ENUM_CLASSNAME(_enumName) : public shared::enumeration::IExtendedEnum         \
+//class _export ENUM_CLASSNAME(_enumName) : public shared::enumeration::IExtendedEnum         \
+
+#define DECLARE_ENUM_HEADER_3(_enumName, _export, _seq)								\
+   class _export ENUM_CLASSNAME(_enumName): public shared::enumeration::IExtendedEnum  \
 	{                                                                                \
 	public:                                                                          \
 		enum domain {																						\
@@ -60,13 +60,19 @@ class ENUM_CLASSNAME(_enumName) : public shared::enumeration::IExtendedEnum     
 		ENUM_CLASSNAME(_enumName) & operator=(int const& obj);								\
 		ENUM_CLASSNAME(_enumName) & operator=(std::string const& obj);						\
 		ENUM_CLASSNAME(_enumName) & operator=(const ENUM_CLASSNAME(_enumName) & obj);	\
-		ENUM_CLASSNAME(_enumName) const& operator() () const;						         \
+		ENUM_CLASSNAME(_enumName) const operator() () const;						         \
 		const std::string & getAsString() const;													\
 		void setFromString(const std::string & val);												\
 	private:																									\
 		domain   m_value;																					\
 		ENUM_DECLARE_STATIC_CONST_NAMES(_seq);														\
-	};																											\
+	};																											
+
+#define DECLARE_ENUM_HEADER_2(_enumName, _seq)	DECLARE_ENUM_HEADER_3(_enumName, , _seq)			
+
+#define DECLARE_ENUM_HEADER(...) \
+  BOOST_PP_CAT(BOOST_PP_OVERLOAD(DECLARE_ENUM_HEADER_,__VA_ARGS__)(__VA_ARGS__),BOOST_PP_EMPTY())
+
 
 
 #define ENUM_DECLARE_GETASSTRING(r, _enumName, elem)									      \
@@ -91,14 +97,16 @@ class ENUM_CLASSNAME(_enumName) : public shared::enumeration::IExtendedEnum     
 
 
 #define ENUM_DECLARE_STATIC_CONST_NAME_IMPL(r, _enumName, elem)								\
-   const std::string ENUM_CLASSNAME(_enumName)::ENUM_EXTRACT_CONST_NAME_IMPL(elem) = BOOST_PP_STRINGIZE(elem);
+   const std::string ENUM_CLASSNAME(_enumName)::ENUM_EXTRACT_CONST_NAME_IMPL(elem) = boost::algorithm::to_lower_copy( std::string(BOOST_PP_STRINGIZE(elem)) );
 
    
 #define ENUM_DECLARE_STATIC_CONST_NAMES_IMPL(_enumName, _seq)													   \
 	BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_STATIC_CONST_NAME_IMPL, _enumName, _seq)     
 
 
-#define DECLARE_ENUM_IMPLEMENTATION(_enumName, _seq)                                                                          \
+
+
+#define DECLARE_ENUM_IMPLEMENTATION_3(_namespace, _enumName, _seq)                                                                          \
    ENUM_DECLARE_STATIC_CONST_NAMES_IMPL(_enumName, _seq)                                                                      \
    ENUM_CLASSNAME(_enumName)::ENUM_CLASSNAME(_enumName)() : m_value( BOOST_PP_CAT(k, BOOST_PP_SEQ_HEAD(_seq)) ) {}            \
    ENUM_CLASSNAME(_enumName)::ENUM_CLASSNAME(_enumName)(domain value) : m_value(value) {}                                     \
@@ -107,7 +115,7 @@ class ENUM_CLASSNAME(_enumName) : public shared::enumeration::IExtendedEnum     
    ENUM_CLASSNAME(_enumName)::~ENUM_CLASSNAME(_enumName)() {}                                                                 \
    ENUM_CLASSNAME(_enumName)::operator int() const { return m_value; }                                                        \
    ENUM_CLASSNAME(_enumName)::operator std::string() const { return getAsString(); }                                          \
-   ENUM_CLASSNAME(_enumName) const& ENUM_CLASSNAME(_enumName)::operator() () const { return m_value; }						      \
+   ENUM_CLASSNAME(_enumName) const ENUM_CLASSNAME(_enumName)::operator() () const { return m_value; }						      \
    ENUM_CLASSNAME(_enumName) & ENUM_CLASSNAME(_enumName)::operator=(int const& obj)                                           \
    {                                                                                                                          \
       m_value = (domain)obj;                                                                                                  \
@@ -138,6 +146,10 @@ class ENUM_CLASSNAME(_enumName) : public shared::enumeration::IExtendedEnum     
 	}
    
    
+#define DECLARE_ENUM_IMPLEMENTATION_2(_enumName, _seq)  DECLARE_ENUM_IMPLEMENTATION_3(, _enumName, _seq)
+
+#define DECLARE_ENUM_IMPLEMENTATION(...) \
+  BOOST_PP_CAT(BOOST_PP_OVERLOAD(DECLARE_ENUM_IMPLEMENTATION_,__VA_ARGS__)(__VA_ARGS__),BOOST_PP_EMPTY())
 
 /*
 class ESecurityAccess

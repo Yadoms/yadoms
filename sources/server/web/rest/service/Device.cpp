@@ -34,7 +34,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT",  (m_restKeyword)("*"), CDevice::updateDeviceFriendlyName, CDevice::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT",  (m_restKeyword)("keyword")("*"), CDevice::updateKeywordFriendlyName, CDevice::transactionalMethod);
-      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST",  (m_restKeyword)("keyword")("*")("command"), CDevice::sendDeviceCommand, CDevice::transactionalMethod);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST",  (m_restKeyword)("keyword")("*")("*"), CDevice::sendDeviceCommand, CDevice::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST",  (m_restKeyword), CDevice::createDevice, CDevice::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE",  (m_restKeyword)("*"), CDevice::deleteDevice, CDevice::transactionalMethod);
    }
@@ -63,15 +63,7 @@ namespace web { namespace rest { namespace service {
       {
          if(parameters.size()>2)
          {
-            database::entities::EKeywordAccessMode cam = database::entities::EKeywordAccessMode::kNoAccess;
-            //read the capacity mode
-            if(parameters[2] == "get")
-               cam = database::entities::EKeywordAccessMode::kGet;
-            else if(parameters[2] == "set")
-               cam = database::entities::EKeywordAccessMode::kSet;
-            else
-               return web::rest::CResult::GenerateError("invalid parameter. Can not retreive capacity access mode in url");
-
+            database::entities::EKeywordAccessMode cam = parameters[2];
             //read the capacity name
             std::string capacityName = parameters[3];
 
@@ -133,17 +125,7 @@ namespace web { namespace rest { namespace service {
          if(parameters.size()>3)
          {
             int deviceId = boost::lexical_cast<int>(parameters[1]);
-
-            database::entities::EKeywordAccessMode cam = database::entities::EKeywordAccessMode::kNoAccess;
-            //read the capacity mode
-            if(parameters[2] == "get")
-               cam = database::entities::EKeywordAccessMode::kGet;
-            else if(parameters[2] == "set")
-               cam = database::entities::EKeywordAccessMode::kSet;
-            else
-               return web::rest::CResult::GenerateError("invalid parameter. Can not retreive capacity access mode in url");
-
-            //read the capacity name
+            database::entities::EKeywordAccessMode cam = parameters[2];
             std::string capacityName = parameters[3];
 
 
@@ -207,11 +189,11 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         if(parameters.size()>2)
+         if(parameters.size()>3)
          {
             //get keyword id from URL
-            int deviceId = boost::lexical_cast<int>(parameters[1]);
-            int keywordId = boost::lexical_cast<int>(parameters[2]);
+            int deviceId = boost::lexical_cast<int>(parameters[2]);
+            int keywordId = boost::lexical_cast<int>(parameters[3]);
 
             //create the command
             //boost::shared_ptr<shared::plugin::yadomsApi::IDeviceCommand> command(new pluginSystem::CDeviceCommand(deviceId, keywordId, requestContent));
@@ -222,7 +204,7 @@ namespace web { namespace rest { namespace service {
             //communication::command::CDeviceCommand command(keywordId, commandData, resultHandler);
 
             //send the command
-            m_messageSender.sendCommandAsync(deviceId, keywordId, requestContent.serialize());
+            m_messageSender.sendCommandAsync(deviceId, keywordId, requestContent);
 
             //TODO
             return web::rest::CResult::GenerateSuccess();

@@ -80,7 +80,7 @@ namespace xplrules { namespace rfxLanXpl {
    // [END] IReadRule implemntation
 
    // ICommandRule implemntation
-   boost::shared_ptr< xplcore::CXplMessage > CX10Basic::createXplCommand(boost::shared_ptr<yApi::IDeviceCommand> & commandData, const std::string & rfxAddress)
+   boost::shared_ptr< xplcore::CXplMessage > CX10Basic::createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand> & commandData, const std::string & rfxAddress)
    {
       ////////////////////////////
       // create the message

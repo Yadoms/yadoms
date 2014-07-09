@@ -2,7 +2,7 @@
 #include "Entities.h"
 
 namespace database { namespace entities {
-
+   
    DECLARE_ENUM_IMPLEMENTATION(SecurityAccess,
       (None)
       (Admin)

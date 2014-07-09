@@ -45,7 +45,7 @@ private:
    ///\param [in] message The xpl message received
    ///\param [in] context The plugin API
    //----------------------------------------------
-   void OnSendDeviceCommand(boost::shared_ptr<yApi::IDeviceCommand> command, boost::shared_ptr<yApi::IYadomsApi> context, xplcore::CXplService & xplService);
+   void OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceCommand> command, boost::shared_ptr<yApi::IYadomsApi> context, xplcore::CXplService & xplService);
 
    //----------------------------------------------
    ///\brief  The device manager

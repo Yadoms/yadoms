@@ -9,7 +9,7 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CCurtain1::CCurtain1(const std::string& command, const shared::CDataContainer& deviceParameters)
+CCurtain1::CCurtain1(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
 {
    m_subType = deviceParameters.get<unsigned char>("subType");
    m_houseCode = deviceParameters.get<unsigned char>("houseCode");
@@ -61,17 +61,17 @@ void CCurtain1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
    context->historizeData(deviceName, "state", toYadomsState(m_state));
 }
 
-unsigned char CCurtain1::toProtocolState(const std::string& yadomsState)
+unsigned char CCurtain1::toProtocolState(const shared::CDataContainer& yadomsState)
 {
    yApi::commands::CCurtain cmd(yadomsState);
-   switch (cmd.get())
+   switch (cmd.get()())
    {
-   case yApi::commands::CCurtain::kOpen: return curtain_sOpen;
-   case yApi::commands::CCurtain::kClose: return curtain_sClose;
-   case yApi::commands::CCurtain::kStop: return curtain_sStop;
+   case yApi::commands::ECommand::kOpen: return curtain_sOpen;
+   case yApi::commands::ECommand::kClose: return curtain_sClose;
+   case yApi::commands::ECommand::kStop: return curtain_sStop;
    default:
       BOOST_ASSERT_MSG(false, "Unsupported value");
-      throw shared::exception::CInvalidParameter(yadomsState);
+      throw shared::exception::CInvalidParameter(yadomsState.serialize());
    }
 }
 
@@ -79,9 +79,9 @@ std::string CCurtain1::toYadomsState(unsigned char protocolState)
 {
    switch(protocolState)
    {
-   case curtain_sOpen: return yApi::commands::CCurtain(yApi::commands::CCurtain::kOpen).format(); break;
-   case curtain_sClose: return yApi::commands::CCurtain(yApi::commands::CCurtain::kClose).format(); break;
-   case curtain_sStop: return yApi::commands::CCurtain(yApi::commands::CCurtain::kStop).format(); break;
+   case curtain_sOpen: return yApi::commands::CCurtain(yApi::commands::ECommand::kOpen).format(); break;
+   case curtain_sClose: return yApi::commands::CCurtain(yApi::commands::ECommand::kClose).format(); break;
+   case curtain_sStop: return yApi::commands::CCurtain(yApi::commands::ECommand::kStop).format(); break;
    default:
       BOOST_ASSERT_MSG(false, "Invalid state");
       throw shared::exception::CInvalidParameter("state");

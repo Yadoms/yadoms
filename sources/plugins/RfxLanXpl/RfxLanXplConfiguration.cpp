@@ -16,5 +16,5 @@ bool CRfxLanXplConfiguration::getStartXplhub() const
 
 std::string CRfxLanXplConfiguration::getHubLocalIp() const
 {
-   return get<std::string>("HubXplSection.values.ipAddress");
+   return get<std::string>("HubXplSection.content.ipAddress");
 }

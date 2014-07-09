@@ -10,7 +10,7 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CLighting6::CLighting6(const std::string& command, const shared::CDataContainer& deviceParameters)
+CLighting6::CLighting6(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
 {
    m_subType = deviceParameters.get<unsigned char>("subType");
    m_id = deviceParameters.get<unsigned short>("id");
@@ -97,22 +97,22 @@ void CLighting6::buildDeviceModel()
    case sTypeBlyss: ssModel << "Blyss"; break;
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }
-
+   
    m_deviceModel = ssModel.str();
 }
 
-unsigned char CLighting6::toProtocolState(const std::string& yadomsState)
+unsigned char CLighting6::toProtocolState(const shared::CDataContainer& yadomsState)
 {
    yApi::commands::CSwitch cmd(yadomsState);
-   return cmd.getState() == yApi::commands::CSwitch::kOff ? light6_sOff : light6_sOn;
+   return cmd.getState()() == yApi::commands::EState::kOff ? light6_sOff : light6_sOn;
 }
 
 std::string CLighting6::toYadomsState(unsigned char protocolState)
 {
    switch(protocolState)
    {
-   case light6_sOn: return yApi::commands::CSwitch(yApi::commands::CSwitch::kOn).format(); break;
-   case light6_sOff: return yApi::commands::CSwitch(yApi::commands::CSwitch::kOff).format(); break;
+   case light6_sOn: return yApi::commands::CSwitch(yApi::commands::EState::kOn).format(); break;
+   case light6_sOff: return yApi::commands::CSwitch(yApi::commands::EState::kOff).format(); break;
    default:
       BOOST_ASSERT_MSG(false, "Invalid state");
       throw shared::exception::CInvalidParameter("state");
