@@ -6,7 +6,7 @@
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
-   DECLARE_ENUM_IMPLEMENTATION_NESTED(CSwitch::, State,
+   DECLARE_ENUM_IMPLEMENTATION_NESTED(CSwitch::EState, EState,
       (Off)
       (On)
       (Dim)

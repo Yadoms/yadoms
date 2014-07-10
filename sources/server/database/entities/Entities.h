@@ -8,13 +8,13 @@
 #include <shared/enumeration/EnumHelpers.hpp>
 
 namespace database { namespace entities {
-   DECLARE_ENUM_HEADER(SecurityAccess,
+   DECLARE_ENUM_HEADER(ESecurityAccess,
       ((None)(0))
       ((Admin)(1))
       ((User)(2))
    )
 
-   DECLARE_ENUM_HEADER(EventType,
+   DECLARE_ENUM_HEADER(EEventType,
       ((Unload)(0))
       ((Load)(1))
       ((Crash)(2))
@@ -22,7 +22,7 @@ namespace database { namespace entities {
       ((Error)(4))
    )
 
-   DECLARE_ENUM_HEADER(SystemEventCode,
+   DECLARE_ENUM_HEADER(ESystemEventCode,
       ((TaskFailed)(-4))
       ((PluginDisabled)(-3))
       ((PluginCrash)(-2))
@@ -33,7 +33,7 @@ namespace database { namespace entities {
       ((Updated)(3))
    )
 
-   DECLARE_ENUM_HEADER(KeywordDataType,
+   DECLARE_ENUM_HEADER(EKeywordDataType,
       ((NoData)(0)) 
       ((String)(1))
       ((Numeric)(2))
@@ -41,7 +41,7 @@ namespace database { namespace entities {
       ((Json)(4))
    )
    
-   DECLARE_ENUM_HEADER(KeywordAccessMode,
+   DECLARE_ENUM_HEADER(EKeywordAccessMode,
       ((NoAccess)(0))
       ((Get)(1))
       ((Set)(2))

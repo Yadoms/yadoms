@@ -3,13 +3,13 @@
 
 namespace database { namespace entities {
    
-   DECLARE_ENUM_IMPLEMENTATION(SecurityAccess,
+   DECLARE_ENUM_IMPLEMENTATION(ESecurityAccess,
       (None)
       (Admin)
       (User)
    )
 
-   DECLARE_ENUM_IMPLEMENTATION(EventType,
+   DECLARE_ENUM_IMPLEMENTATION(EEventType,
       (Unload)
       (Load)
       (Crash)
@@ -17,7 +17,7 @@ namespace database { namespace entities {
       (Error)
    )
 
-   DECLARE_ENUM_IMPLEMENTATION(SystemEventCode,
+   DECLARE_ENUM_IMPLEMENTATION(ESystemEventCode,
       (TaskFailed)
       (PluginDisabled)
       (PluginCrash)
@@ -28,7 +28,7 @@ namespace database { namespace entities {
       (Updated)
    )
 
-   DECLARE_ENUM_IMPLEMENTATION(KeywordDataType,
+   DECLARE_ENUM_IMPLEMENTATION(EKeywordDataType,
       (NoData)
       (String)
       (Numeric)
@@ -36,7 +36,7 @@ namespace database { namespace entities {
       (Json)
    )
 
-   DECLARE_ENUM_IMPLEMENTATION(KeywordAccessMode,
+   DECLARE_ENUM_IMPLEMENTATION(EKeywordAccessMode,
       (NoAccess)
       (Get)
       (Set)

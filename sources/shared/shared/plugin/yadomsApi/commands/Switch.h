@@ -17,7 +17,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       //-----------------------------------------------------
       ///\brief                     The switch state
       //-----------------------------------------------------
-      DECLARE_ENUM_HEADER_SHARED(State, YADOMS_SHARED_EXPORT,
+      DECLARE_ENUM_HEADER_SHARED(EState, YADOMS_SHARED_EXPORT,
          ((Off)(0))
          ((On)(1))
          ((Dim)(2))
