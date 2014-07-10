@@ -180,7 +180,7 @@ namespace web { namespace rest { namespace service {
       {
          m_dataProvider->getPageRequester()->removeAllPages();
 
-         std::vector<boost::shared_ptr<database::entities::CPage> > pagesToUpdate = requestContent.get< std::vector<boost::shared_ptr<database::entities::CPage> > >(getRestKeyword());
+         std::vector<boost::shared_ptr<database::entities::CPage> > pagesToUpdate = requestContent.get< std::vector<boost::shared_ptr<database::entities::CPage> > >("");
          BOOST_FOREACH(boost::shared_ptr<database::entities::CPage> page, pagesToUpdate)
          {
             m_dataProvider->getPageRequester()->addPage(*page);
