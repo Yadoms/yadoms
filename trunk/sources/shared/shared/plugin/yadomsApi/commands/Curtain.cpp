@@ -6,7 +6,7 @@
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
-   DECLARE_ENUM_IMPLEMENTATION_NESTED(CCurtain::, Command,
+   DECLARE_ENUM_IMPLEMENTATION_NESTED(CCurtain::ECommand, ECommand,
       (Stop)
       (Open)
       (Close)

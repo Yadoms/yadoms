@@ -15,7 +15,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       //-----------------------------------------------------
       ///\brief               The curtain command values
       //-----------------------------------------------------   
-      DECLARE_ENUM_HEADER_SHARED(Command, YADOMS_SHARED_EXPORT,
+      DECLARE_ENUM_HEADER_SHARED(ECommand, YADOMS_SHARED_EXPORT,
          ((Stop)(0))
          ((Open)(1))
          ((Close)(2))
