@@ -110,11 +110,11 @@ namespace xplrules { namespace rfxLanXpl {
       newMessage->addToBody(m_keywordUnit, splittedAddress[1]);
 
       //set the command
-      newMessage->addToBody(m_keywordCommand, commandDetails.getState()().getAsString());
+      newMessage->addToBody(m_keywordCommand, commandDetails.State().getAsString());
 
       //if there is any other data to send, just add key/value to bidy
-      if (commandDetails.getDimLevel().isDefined())
-         newMessage->addToBody(m_keywordLevel, boost::lexical_cast<std::string>(commandDetails.getDimLevel()()));
+      if (commandDetails.DimLevel.isDefined())
+         newMessage->addToBody(m_keywordLevel, boost::lexical_cast<std::string>(commandDetails.DimLevel()));
 
       return newMessage;
    }

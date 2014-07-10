@@ -288,4 +288,45 @@ BOOST_AUTO_TEST_CASE(DataContainable)
 
 }
 
+
+
+
+
+BOOST_AUTO_TEST_CASE(Field)
+{
+   shared::CField<int> fi(10);
+   shared::CField<double> fd(12.3);
+   shared::CField<std::string> fs("this is a test");
+   shared::CField<EEnumType> fe(kEnumValue2);
+   shared::CField<CTestClass> fdc(CTestClass(5, 42.0, "test de datacontainble"));
+
+   
+   shared::CDataContainer dc;
+
+   dc.set("FieldInt", fi);
+   dc.set("FieldDouble", fd);
+   dc.set("FieldString", fs);
+   dc.set("FieldEnum", fe);
+   dc.set("FieldDataContainable", fdc);
+
+   //check data are correctly retreived
+   BOOST_CHECK_EQUAL(dc.get<int>("FieldInt"), fi());
+   BOOST_CHECK_EQUAL(dc.get<double>("FieldDouble"), fd());
+   BOOST_CHECK_EQUAL(dc.get<std::string>("FieldString"), fs());
+   BOOST_CHECK_EQUAL(dc.get<EEnumType>("FieldEnum"), fe());
+   BOOST_CHECK_EQUAL(dc.get<CTestClass>("FieldDataContainable").equals(fdc()), true);
+
+   
+
+
+   //vector de field
+   std::vector< shared::CField<int> > vfi;
+   for (int i = 0; i<10; ++i)
+      vfi.push_back(shared::CField<int>(i));
+
+   dc.set("VectorFieldInt", vfi);
+   std::vector<int> vi2 = dc.get<std::vector<int>>("VectorFieldInt");
+   BOOST_CHECK_EQUAL_COLLECTIONS(vfi.begin(), vfi.end(), vi2.begin(), vi2.end());
+}
+
 BOOST_AUTO_TEST_SUITE_END()

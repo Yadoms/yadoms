@@ -99,13 +99,13 @@ void CLighting3::buildDeviceModel()
 unsigned char CLighting3::toProtocolState(const shared::CDataContainer& yadomsState)
 {
    yApi::commands::CSwitch cmd(yadomsState);
-   switch(cmd.getState()())
+   switch(cmd.State())
    {
-   case yApi::commands::EState::kOff: return light3_sOff;
-   case yApi::commands::EState::kOn: return light3_sOn;
-   case yApi::commands::EState::kDim:
+   case yApi::commands::CSwitch::EState::kOff: return light3_sOff;
+   case yApi::commands::CSwitch::EState::kOn: return light3_sOn;
+   case yApi::commands::CSwitch::EState::kDim:
       {
-         switch (cmd.getDimLevel() / 10)  // getDimLevel returns value from 0 to 100
+         switch (cmd.DimLevel() / 10)  // getDimLevel returns value from 0 to 100
          {
          case 0: return light3_sOff;
          case 1: return light3_sLevel1;
@@ -129,17 +129,17 @@ std::string CLighting3::toYadomsState(unsigned char protocolState)
 {
    switch(protocolState)
    {
-   case light3_sOn: return yApi::commands::CSwitch(yApi::commands::EState::kOn).format(); break;
-   case light3_sOff: return yApi::commands::CSwitch(yApi::commands::EState::kOff).format(); break;
-   case light3_sLevel1: return yApi::commands::CSwitch(yApi::commands::EState::kDim, 10).format(); break;
-   case light3_sLevel2: return yApi::commands::CSwitch(yApi::commands::EState::kDim, 20).format(); break;
-   case light3_sLevel3: return yApi::commands::CSwitch(yApi::commands::EState::kDim, 30).format(); break;
-   case light3_sLevel4: return yApi::commands::CSwitch(yApi::commands::EState::kDim, 40).format(); break;
-   case light3_sLevel5: return yApi::commands::CSwitch(yApi::commands::EState::kDim, 50).format(); break;
-   case light3_sLevel6: return yApi::commands::CSwitch(yApi::commands::EState::kDim, 60).format(); break;
-   case light3_sLevel7: return yApi::commands::CSwitch(yApi::commands::EState::kDim, 70).format(); break;
-   case light3_sLevel8: return yApi::commands::CSwitch(yApi::commands::EState::kDim, 80).format(); break;
-   case light3_sLevel9: return yApi::commands::CSwitch(yApi::commands::EState::kDim, 90).format(); break;
+   case light3_sOn: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kOn).format(); break;
+   case light3_sOff: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kOff).format(); break;
+   case light3_sLevel1: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kDim, 10).format(); break;
+   case light3_sLevel2: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kDim, 20).format(); break;
+   case light3_sLevel3: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kDim, 30).format(); break;
+   case light3_sLevel4: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kDim, 40).format(); break;
+   case light3_sLevel5: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kDim, 50).format(); break;
+   case light3_sLevel6: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kDim, 60).format(); break;
+   case light3_sLevel7: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kDim, 70).format(); break;
+   case light3_sLevel8: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kDim, 80).format(); break;
+   case light3_sLevel9: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kDim, 90).format(); break;
    default:
       BOOST_ASSERT_MSG(false, "Invalid state");
       throw shared::exception::CInvalidParameter("state");

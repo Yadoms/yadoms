@@ -9,6 +9,7 @@
 #include "enumeration/IExtendedEnum.h"
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_enum.hpp>
+#include "Field.hpp"
 
 namespace shared
 {
@@ -330,6 +331,20 @@ namespace shared
       CDataContainer & operator=(const std::string &rhs);
 
       //--------------------------------------------------------------
+      /// \brief		Output operator (write the serialized container)
+      /// \param [in] os  The stream to write
+      /// \return   The stream
+      //--------------------------------------------------------------
+      std::ostream& operator<<(std::ostream& os);
+
+      //--------------------------------------------------------------
+      /// \brief		Input operator (read a serialized container)
+      /// \param [in] os  The stream to read
+      /// \return   The stream
+      //--------------------------------------------------------------
+      std::istream& operator>>(std::istream& is);
+
+      //--------------------------------------------------------------
       /// \brief		Check if the container is empty
       /// \return    true if contanier is empty
       //--------------------------------------------------------------
@@ -598,6 +613,29 @@ namespace shared
          static void setInternal(CDataContainer * tree, const std::string& parameterName, const boost::shared_ptr< T > & value)
          {
             helper<T>::setInternal(tree, parameterName, *value.get());
+         }
+      };
+
+      //--------------------------------------------------------------
+      /// \brief	    Helper structure for get/set with CField<T>
+      //--------------------------------------------------------------
+      template <typename T>
+      struct helper < CField< T > >
+      {
+         //--------------------------------------------------------------
+         /// \brief	    GET Method for boost::shared_ptr<T>
+         //--------------------------------------------------------------
+         static CField< T > getInternal(const CDataContainer * tree, const std::string& parameterName)
+         {
+            return CField< T >(helper<T>::getInternal(tree, parameterName));
+         }
+
+         //--------------------------------------------------------------
+         /// \brief	    SET Method for boost::shared_ptr<T>
+         //--------------------------------------------------------------
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const CField< T > & value)
+         {
+            helper<T>::setInternal(tree, parameterName, value());
          }
       };
 

@@ -66,9 +66,9 @@ unsigned char CCurtain1::toProtocolState(const shared::CDataContainer& yadomsSta
    yApi::commands::CCurtain cmd(yadomsState);
    switch (cmd.get()())
    {
-   case yApi::commands::ECommand::kOpen: return curtain_sOpen;
-   case yApi::commands::ECommand::kClose: return curtain_sClose;
-   case yApi::commands::ECommand::kStop: return curtain_sStop;
+   case yApi::commands::CCurtain::ECommand::kOpen: return curtain_sOpen;
+   case yApi::commands::CCurtain::ECommand::kClose: return curtain_sClose;
+   case yApi::commands::CCurtain::ECommand::kStop: return curtain_sStop;
    default:
       BOOST_ASSERT_MSG(false, "Unsupported value");
       throw shared::exception::CInvalidParameter(yadomsState.serialize());
@@ -79,9 +79,9 @@ std::string CCurtain1::toYadomsState(unsigned char protocolState)
 {
    switch(protocolState)
    {
-   case curtain_sOpen: return yApi::commands::CCurtain(yApi::commands::ECommand::kOpen).format(); break;
-   case curtain_sClose: return yApi::commands::CCurtain(yApi::commands::ECommand::kClose).format(); break;
-   case curtain_sStop: return yApi::commands::CCurtain(yApi::commands::ECommand::kStop).format(); break;
+   case curtain_sOpen: return yApi::commands::CCurtain(yApi::commands::CCurtain::ECommand::kOpen).format(); break;
+   case curtain_sClose: return yApi::commands::CCurtain(yApi::commands::CCurtain::ECommand::kClose).format(); break;
+   case curtain_sStop: return yApi::commands::CCurtain(yApi::commands::CCurtain::ECommand::kStop).format(); break;
    default:
       BOOST_ASSERT_MSG(false, "Invalid state");
       throw shared::exception::CInvalidParameter("state");

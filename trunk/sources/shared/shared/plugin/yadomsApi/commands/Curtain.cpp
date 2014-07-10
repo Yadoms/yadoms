@@ -6,12 +6,11 @@
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
-   DECLARE_ENUM_IMPLEMENTATION(Command,
+   DECLARE_ENUM_IMPLEMENTATION_NESTED(CCurtain::, Command,
       (Stop)
       (Open)
       (Close)
-   );
-
+   );  
 
    CCurtain::CCurtain(const shared::CDataContainer& command)
       :m_value(ECommand::kStop)
@@ -36,7 +35,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
    {
    }
 
-   const CField<ECommand> & CCurtain::get() const
+   const CField<CCurtain::ECommand> & CCurtain::get() const
    {
       return m_value;
    }
