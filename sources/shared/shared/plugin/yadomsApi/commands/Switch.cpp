@@ -6,21 +6,20 @@
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
-
-   DECLARE_ENUM_IMPLEMENTATION(State,
+   DECLARE_ENUM_IMPLEMENTATION_NESTED(CSwitch::, State,
       (Off)
       (On)
       (Dim)
    );
-
+   
    CSwitch::CSwitch(const shared::CDataContainer& command)
-   :m_state(EState::kOff), m_dimLevel(0)
+   :State(EState::kOff), DimLevel(0)
    {
       try
       {
-         m_state = command.get<EState>("command");
-         if (m_state() == EState::kDim)
-            m_dimLevel = command.get<int>("level");
+         State = command.get<EState>("command");
+         if (State == EState::kDim)
+            DimLevel = command.get<int>("level");
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
@@ -35,7 +34,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
    }
 
    CSwitch::CSwitch(EState state, int dimLevel)
-      :m_state(state), m_dimLevel(dimLevel)
+      :State(state), DimLevel(dimLevel)
    {
    }
 
@@ -43,22 +42,14 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
    {
    }
 
-   const CField<EState> & CSwitch::getState() const
-   {
-      return m_state;
-   }
-
-   const CField<int> & CSwitch::getDimLevel() const
-   {
-      return m_dimLevel;
-   }
+  
 
    std::string CSwitch::format() const
    {
       shared::CDataContainer yadomsCommand;
-      yadomsCommand.set("command", m_state());
-      if (m_state() == EState::kDim)
-         yadomsCommand.set("level", m_dimLevel);
+      yadomsCommand.set("command", State);
+      if (State == EState::kDim)
+         yadomsCommand.set("level", DimLevel);
       return yadomsCommand.serialize();
    }
 

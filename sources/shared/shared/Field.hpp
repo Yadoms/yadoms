@@ -71,6 +71,15 @@ namespace shared {
       }
 
       //-----------------------------
+      ///\brief operator == with native field type
+      ///\return true if the value is the same as value contained in instance
+      //-----------------------------
+      bool operator==(const T& rhs) const
+      { 
+         return m_value == rhs;
+      }
+
+      //-----------------------------
       ///\brief Check if the field is filled
       ///\return true if the field is filled, or false if not defined
       //-----------------------------

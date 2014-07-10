@@ -7,19 +7,20 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
    //-----------------------------------------------------
-   ///\brief               The curtain command values
-   //-----------------------------------------------------   
-   DECLARE_ENUM_HEADER(Command, YADOMS_SHARED_EXPORT,
-      ((Stop)(0))
-      ((Open)(1))
-      ((Close)(2))
-   );
-
-   //-----------------------------------------------------
    ///\brief The curtain command parser
    //-----------------------------------------------------
    class YADOMS_SHARED_EXPORT CCurtain
    {
+   public:
+      //-----------------------------------------------------
+      ///\brief               The curtain command values
+      //-----------------------------------------------------   
+      DECLARE_ENUM_HEADER_SHARED(Command, YADOMS_SHARED_EXPORT,
+         ((Stop)(0))
+         ((Open)(1))
+         ((Close)(2))
+      );
+
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor from formated command

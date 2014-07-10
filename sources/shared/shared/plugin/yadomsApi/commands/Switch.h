@@ -6,14 +6,7 @@
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
-   //-----------------------------------------------------
-   ///\brief                     The switch state
-   //-----------------------------------------------------
-   DECLARE_ENUM_HEADER(State, YADOMS_SHARED_EXPORT,
-   ((Off)(0))
-      ((On)(1))
-      ((Dim)(2))
-      );
+
 
    //-----------------------------------------------------
    ///\brief The switch command parser
@@ -21,7 +14,14 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
    class YADOMS_SHARED_EXPORT CSwitch
    {
    public:
-
+      //-----------------------------------------------------
+      ///\brief                     The switch state
+      //-----------------------------------------------------
+      DECLARE_ENUM_HEADER_SHARED(State, YADOMS_SHARED_EXPORT,
+         ((Off)(0))
+         ((On)(1))
+         ((Dim)(2))
+      );
 
    public:
       //-----------------------------------------------------
@@ -48,30 +48,19 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       ///\brief                     Get the main switch state
       ///\return                    The main switch state
       //-----------------------------------------------------
-      const CField<EState> & getState() const;
+      CField<EState> State;
 
       //-----------------------------------------------------
       ///\brief                     Get the dim level
       ///\return                    The dim level (0-100)
       //-----------------------------------------------------
-      const CField<int> & getDimLevel() const;
+      CField<int> DimLevel;
 
       //-----------------------------------------------------
       ///\brief                     Format data to Yadoms format
       ///\return                    Formatted data
       //-----------------------------------------------------
       std::string format() const;
-
-   private:
-      //-----------------------------------------------------
-      ///\brief                     The main state
-      //-----------------------------------------------------
-      CField<EState> m_state;
-
-      //-----------------------------------------------------
-      ///\brief                     The dim level
-      //-----------------------------------------------------
-      CField<int> m_dimLevel;
    };
 
 

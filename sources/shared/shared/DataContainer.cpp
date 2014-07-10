@@ -46,6 +46,23 @@ namespace shared
       return *this;
    }
 
+
+
+   std::ostream& CDataContainer::operator<<(std::ostream& os)
+   {
+      os << serialize();
+      return os;
+   }
+
+   std::istream& CDataContainer::operator>>(std::istream& is)
+   {
+      std::string serialized;
+      is >> serialized;
+      deserialize(serialized);
+      return is;
+   }
+
+
    bool CDataContainer::hasValue(const std::string& parameterName) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
