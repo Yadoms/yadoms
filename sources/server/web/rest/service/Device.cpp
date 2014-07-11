@@ -28,6 +28,7 @@ namespace web { namespace rest { namespace service {
    {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CDevice::getAllDevices);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CDevice::getOneDevice);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("keyword")("*"), CDevice::getKeyword);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("matchcapacity")("*")("*"), CDevice::getDevicesWithCapacity);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("matchcapacitytype")("*")("*"), CDevice::getDeviceWithCapacityType);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("*")("*"), CDevice::getDeviceKeywordsForCapacity);
@@ -55,6 +56,32 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer collection;
       collection.set(getRestKeyword(), dvList);
       return web::rest::CResult::GenerateSuccess(collection);
+   }
+
+   shared::CDataContainer CDevice::getKeyword(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      try
+      {
+         if (parameters.size()>=2)
+         {
+            int keywordId = boost::lexical_cast<int>(parameters[2]);
+
+            boost::shared_ptr<database::entities::CKeyword> keyword = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
+            return web::rest::CResult::GenerateSuccess(keyword);
+         }
+         else
+         {
+            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive keyword id in url");
+         }
+      }
+      catch (std::exception &ex)
+      {
+         return web::rest::CResult::GenerateError(ex);
+      }
+      catch (...)
+      {
+         return web::rest::CResult::GenerateError("unknown exception in retreiving keyword");
+      }
    }
 
    shared::CDataContainer CDevice::getDevicesWithCapacity(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
