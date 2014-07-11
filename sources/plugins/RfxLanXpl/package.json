@@ -12,7 +12,7 @@
             "name": "Start Xpl HUB",
             "description": "Start an Xpl hub at plugin startup",
             "enableWithCheckBox": "true",
-            "enableWithCheckBoxDefaultValue": "false",
+            "enableWithCheckBoxDefaultValue": "true",
             "content": {
                 "ipAddress": {
                     "type": "string",
