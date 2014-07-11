@@ -96,14 +96,16 @@
    <script src="js/objects/page.js"></script>
    <script src="js/objects/widget.js"></script>
    <script src="js/objects/widget-package.js"></script>
-   <script src="js/objects/page-container.js"></script>
+   <script src="js/objects/page-manager.js"></script>
    <script src="js/objects/lazy-loader-manager.js"></script>
    <script src="js/objects/plugin-instance.js"></script>
    <script src="js/objects/plugin-instance-manager.js"></script>
    <script src="js/objects/device.js"></script>
    <script src="js/objects/device-manager.js"></script>
    <script src="js/objects/encryption-manager.js"></script>
-  <script src="js/objects/widget-manager.js"></script>
+   <script src="js/objects/widget-manager.js"></script>
+   <script src="js/objects/widget-package-manager.js"></script>
+
 
   
    <script src="libs/jqBootstrapValidation/js/jqBootstrapValidation.js"></script>
@@ -130,7 +132,7 @@
 
    <script src="js/objects/date-time.js"></script>
 
-   <script type="text/javascript" src="libs/noty/js/packaged/jquery.noty.packaged.min.js"></script>
+   <script type="text/javascript" src="libs/noty/js/packaged/jquery.noty.packaged.js"></script>
 
    <div id="templates" class="hidden"></div>
 
@@ -147,20 +149,7 @@
    var UpdateInterval = 1000;
    var UpdateIntervalInOfflineMode = 10000;
 
-
-   /**
-    * Array of pages
-    * @type {PageContainer}
-    */
-   var pageContainer = new PageContainer();
-
    var modals = {};
-
-   /**
-    * Contains all Ctor of all loaded viewModels
-    * @type {Array}
-    */
-   var widgetPackages = [];
 
    /**
     * Formatter used to display date and time
@@ -190,7 +179,6 @@
       i18n.init(option, function() {
          $("html").i18n();
          initializeWidgetEngine();
-         requestPages();
       });
 
       /**

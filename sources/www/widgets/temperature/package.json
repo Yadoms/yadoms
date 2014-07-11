@@ -24,7 +24,7 @@
          "description" : "Device which provide temperature",
          "type" : "device",
          "expectedCapacity" : "temperature",
-         "expectedCapacityAccess" : "get"
+         "expectedKeywordAccess" : "get"
       }
    }
 }

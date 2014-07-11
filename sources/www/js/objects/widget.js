@@ -41,6 +41,9 @@ function Widget(id, idPage, name, sizeX, sizeY, positionX, positionY, configurat
 
    //package information of the current widget type (package.json file)
    this.package = null;
+
+   //indicate if this widget has been fully loaded
+   this.loaded = false;
 }
 
 /**

@@ -22,7 +22,7 @@
 
    function showDeletePageModal(pageId) {
       assert(pageId !== undefined, "Page Id must be defined");
-      pageToDelete = pageContainer.getPage(pageId);
+      pageToDelete = PageManager.getPage(pageId);
       assert(pageToDelete != null, "page Id doesn't exit");
 
       $("div#delete-page-modal").find("div.modal-body").text($.t("modals.delete-page.text", { pageName : pageToDelete.name}));
@@ -58,8 +58,8 @@
          //we delete the page dynamically
          pageToDelete.$tab.remove();
          pageToDelete.$content.remove();
-         pageContainer.pages.splice( $.inArray(pageToDelete, pageContainer.pages), 1);
-         ensureOnePageIsSelected();
+         PageManager.pages.splice( $.inArray(pageToDelete, PageManager.pages), 1);
+         PageManager.ensureOnePageIsSelected();
       })
       .fail(function(pageName) { return function() {notifyError($.t("modals.delete-page.errorDuringDeletingPageNamed", {"pageName" : pageName}));};}(pageToDelete.name))
       .always(function() {

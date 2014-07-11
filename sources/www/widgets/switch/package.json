@@ -24,7 +24,7 @@
          "description" : "Device to emulate",
          "type" : "device",
          "expectedCapacity" : "switch",
-         "expectedCapacityAccess" : "set"
+         "expectedKeywordAccess" : "set"
       },
       "showDeviceName" : {
          "name" : "Show device name",

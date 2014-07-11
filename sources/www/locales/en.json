@@ -29,13 +29,9 @@
       "errors" : {
          "unableToAddWidgetWithoutPage" : "You must have at least one page to add widget",
          "unableToGetEventLog" : "Unable to get event log",
-         "errorDuringRequestingLastEventLog" : "Error during requesting last event log",
          "errorDuringSavingPagePosition" : "Error during saving page position",
          "unableToGetPages" : "Unable to get pages",
-         "unableToGetWidgets" : "Unable to get Widgets",
-         "errorDuringRequestingPages" : "Error during requesting pages",
          "errorDuringRequestingWidgets" : "Error during requesting widgets",
-         "partOfWidgetIsMissing" : "Unable to get part of __widgetName__ widget. Delete all instances ?",
          "errorDuringRequestingNewLogEvents" : "Error during requesting new logs events",
          "youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline" : "You have been disconnected from the server or it has gone offline",
          "errorDuringRequestingDeviceLastData" : "Error during requesting device last data",
@@ -49,7 +45,6 @@
       "add-widget" : {
          "title" : "Add a new widget",
          "getMore" : "Get More widgets",
-         "errorDuringGettingPackages" : "Error during requesting widget packages",
          "errorDuringCreatingWidget" : "Error during creating widget",
          "widgetSuccessfullyCreated" : "Widget successfully created",
          "unableToCreateWidgetOfType" : "Unable to create widget of type __widgetType__"
@@ -58,7 +53,8 @@
          "title" : "Widget configuration",
          "errorDuringGettingDeviceList" : "Error during getting device list",
          "errorDuringGettingDeviceListMatchCapacity" : "Error during getting device list that match capacity __expectedCapacityAccess__ __expectedCapacity__",
-         "errorDuringGettingKeywordsList" : "Error during getting keyword list",
+         "errorDuringGettingDeviceListMatchCapacityType" : "Error during getting device list that match capacity type __expectedCapacityAccess__ __expectedCapacityType__",
+         "errorDuringGettingKeywordList" : "Error during getting keyword list",
          "errorDuringGettingKeywordListMatchCapacity" : "Error during getting keyword list that match capacity __expectedCapacityAccess__ __expectedCapacity__",
          "errorDuringGettingSerialPortList" : "Error during getting serial port list"
       },
@@ -200,9 +196,6 @@
             "maxValueExceeded" : "The value can't be higher than __maxValue__",
             "minValueExceeded" : "The value can't be lower than __minValue__"
          }
-      },
-      "errors" : {
-         "widgetHasGeneratedAnExceptionDuringCallingMethod" : "The widget __widgetName__ has generated an exception calling __methodName__()"
       }
    },
    "objects" : {
@@ -227,7 +220,16 @@
       "widgetManager" : {
          "errorDuringModifyingWidget" : "Error during modifying widget",
          "exceptionDuringCallConfigurationChanged" : "The widget __widgetType__ has generated an exception during call configurationChanged()",
-         "errorDuringModifyingWidgetNamed" : "Error during modifying widget of type __widgetType__"
+         "errorDuringModifyingWidgetNamed" : "Error during modifying widget of type __widgetType__",
+         "unableToGetWidgets" : "Unable to get Widgets",
+         "partOfWidgetIsMissing" : "Unable to get part of __widgetName__ widget. Delete all instances ?",
+         "widgetHasGeneratedAnExceptionDuringCallingMethod" : "The widget __widgetName__ has generated an exception calling __methodName__()"
+      },
+      "widgetPackageManager" : {
+         "errorDuringGettingPackages" : "Error during requesting widget packages"
+      },
+      "pageManager" : {
+         "errorDuringGettingPages" : "Error during requesting pages"
       }
    },
    "eventLogger" : {

@@ -5,10 +5,10 @@
 function WidgetPackage() {
 
    /**
-    * This item is used to indicate if the view has been already downloaded
+    * This item is used to indicate if the view and the viewModel have been already downloaded
     * @type {boolean}
     */
-   this.viewHasBeenDownloaded = false;
+   this.viewAnViewModelHaveBeenDownloaded = false;
 
    /**
     * Use this object to construct an instance of the viewModel
@@ -18,5 +18,5 @@ function WidgetPackage() {
    /**
     * Corresponding to package.json data
     */
-   this.packageInformation;
+   this.packageInformation = null;
 }

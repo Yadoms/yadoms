@@ -23,7 +23,7 @@
       assert(pageId !== undefined, "Page Id must be defined");
       assert(widgetId !== undefined, "Widget Id must be defined");
 
-      var page = pageContainer.getPage(pageId);
+      var page = PageManager.getPage(pageId);
       assert(page != null, "page Id doesn't exit");
       widgetToDelete = page.getWidget(widgetId);
       assert(widgetToDelete != null, "widget Id doesn't exit in the page");
@@ -59,7 +59,7 @@
 
          notifySuccess($.t("modals.delete-widget.widgetSuccessfullyDeleted"));
          //we delete the widget dynamically
-         var page = pageContainer.getPage(widgetToDelete.idPage);
+         var page = PageManager.getPage(widgetToDelete.idPage);
          assert(page != null, "page Id doesn't exit");
 
          page.gridster.remove_widget(widgetToDelete.$gridsterWidget);

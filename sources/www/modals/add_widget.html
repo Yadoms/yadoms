@@ -95,8 +95,8 @@
      */
     $("button#btn-confirm-add-widget").click(function () {
 
-       var currentPage = getCurrentPage();
-       assert(currentPage != null, "A page must be selected");
+       var currentPage = PageManager.getCurrentPage();
+       assert(!isNullOrUndefined(currentPage), "A page must be selected");
 
        //we close the new widget modal
        $("div#new-widget-modal").modal("hide");
@@ -134,7 +134,7 @@
        //we create a fake widget to display configuration form
        var newWidget = new Widget(-1, currentPage.id, packageName, sizeX, sizeY, 1, 1, "");
 
-       newWidget.package = widgetPackages[newWidget.name].packageInformation;
+       newWidget.package = WidgetPackageManager.widgetPackages[newWidget.name].packageInformation;
 
        modals.widgetConfiguration.load(function() {
 
@@ -156,10 +156,10 @@
                    }
 
                    notifySuccess($.t("modals.add-widget.widgetSuccessfullyCreated"));
-
+                     debugger;
                    //we add the widget dynamically
                    var w = WidgetManager.factory(data.data);
-                   addWidgetToIHM(w);
+                   WidgetManager.loadWidgetList([w]);
                })
                .fail(function(widgetName) { return function() {notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {"widgetType" : widgetName}))}}(packageName));
            });
