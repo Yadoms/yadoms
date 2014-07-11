@@ -52,6 +52,11 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer getDeviceKeywords(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
 
       //-----------------------------------------
+      ///\brief   get a keyword
+      //-----------------------------------------
+      shared::CDataContainer getKeyword(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
+
+      //-----------------------------------------
       ///\brief   send a command to a device
       //-----------------------------------------
       shared::CDataContainer sendDeviceCommand(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
