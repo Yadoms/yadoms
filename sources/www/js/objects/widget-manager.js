@@ -80,30 +80,35 @@ WidgetManager.getWidgetOfPageFromServer = function(page, callback) {
       });
 }
 
-WidgetManager.getViewFromServer = function(widget, callback) {
+WidgetManager.getViewFromServerSync = function(widget) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
-   assert(!isNullOrUndefined(callback), "callback must be defined");
 
-   $.get("widgets/" + widget.name + "/view.html")
-      .done(function( data ) {
-         if (!isNullOrUndefined(callback))
-            callback(data);
+   var view = null;
 
-      })
-      .fail( function() {callback(null);} );
+   $.ajax({
+      url:"widgets/" + widget.name + "/view.html",
+      async:   false
+   })
+   .done(function( data ) {
+      view = data;
+   });
+
+   return view;
 }
 
-WidgetManager.getViewModelFromServer = function(widget, callback) {
+WidgetManager.getViewModelFromServerSync = function(widget) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
-   assert(!isNullOrUndefined(callback), "callback must be defined");
 
    widgetViewModelCtor = null;
-   $.getScript("widgets/" + widget.name + "/viewModel.js")
-      .done(function(data, textStatus, jqxhr) {
-            //viewModel.js has been executed and store the viewModel ctor in the global var widgetViewModelCtor
-            callback(widgetViewModelCtor);
-      })
-      .fail(function() {callback(null);});
+   $.ajax({
+      url: "widgets/" + widget.name + "/viewModel.js",
+      dataType: "script",
+      async:   false
+   });
+
+   //if the ajax method works ok the widgetViewModelCtor is set
+
+   return widgetViewModelCtor;
 }
 
 WidgetManager.updateToServer = function(widget, callback) {
@@ -162,74 +167,46 @@ WidgetManager.consolidate = function(widget, widgetPackage) {
 }
 
 
-WidgetManager.loadWidgetList = function(list, pageWhereToAdd) {
-   assert(!isNullOrUndefined(list), "list must be defined");
-   //for each of them we ask to download the full package (view and viewmodel) if it's not already done
-   $.each(list, function(index, widget) {
-      if (WidgetPackageManager.packageExists(widget.name)) {
-         if (!WidgetPackageManager.widgetPackages[widget.name].viewAnViewModelHaveBeenDownloaded) {
-            //we download all needed information and add to the dom all depending widgets
-            //to downloaded only once we immediately set that they have been downloaded
-            WidgetPackageManager.widgetPackages[widget.name].viewAnViewModelHaveBeenDownloaded = true;
+WidgetManager.loadWidget = function(widget, pageWhereToAdd) {
+   assert(!isNullOrUndefined(widget), "widget must be defined");
+   if (WidgetPackageManager.packageExists(widget.name)) {
+      if (!WidgetPackageManager.widgetPackages[widget.name].viewAnViewModelHaveBeenDownloaded) {
+         //we must download all missing informations
+         var view = WidgetManager.getViewFromServerSync(widget);
+         if (!isNullOrUndefined(view)) {
+            //we append the view into the page
+            $("div#templates").append(view);
 
-            WidgetManager.getViewFromServer(widget, function(result) {
-               if (result != null) {
-                  //we append the view into the page
-                  $("div#templates").append(result);
+            //we get i18n data
+            i18n.options.resGetPath = 'widgets/__ns__/locales/__lng__.json';
+            i18n.loadNamespace(widget.name);
 
-                  //we get i18n data
-                  i18n.options.resGetPath = 'widgets/__ns__/locales/__lng__.json';
-                  i18n.loadNamespace(widget.name);
-
-                  //we get script to execute for this widget
-                  WidgetManager.getViewModelFromServer(widget, function(viewModel) {
-                     if (!isNullOrUndefined(viewModel)) {
-                        WidgetPackageManager.widgetPackages[widget.name].viewModelCtor = widgetViewModelCtor;
-
-                        //we have get all needed information to add widgets of this type to dom
-                        //we look for all widgets of this kind
-                        $.each(list, function(index, widgetToAdd) {
-                           if (widget.name == widgetToAdd.name) {
-                              //this widget is of the good type so we can add it to gui
-
-                              WidgetManager.consolidate(widgetToAdd, WidgetPackageManager.widgetPackages[widgetToAdd.name]);
-                              WidgetManager.addToDom(widgetToAdd);
-                              //we add the widget to the collection
-                              pageWhereToAdd.addWidget(widgetToAdd);
-                              //we indicate the widget has been fully loaded
-                              widgetToAdd.loaded = true;
-                           }
-                        });
-
-                        //we look if all widget of the list have been fully loaded
-                        //we get all widget that have not been loaded and if the collection is empty it's finished
-                        var res = $.grep(list, function(item) {
-                           return (item.loaded == false);
-                        });
-                        if (res.length == 0) {
-                           //all widget have been loaded
-                           //we can close the noty if opened
-                           if (!isNullOrUndefined(loadWidgetsNotification)) {
-                              loadWidgetsNotification.close();
-                              loadWidgetsNotification = null;
-                           }
-                        }
-                     }
-                     else {
-                        askForWidgetDelete(widget.name, list, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.name}));
-                     }
-                  });
-               }
-               else {
-                  askForWidgetDelete(widget.name, list, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.name}));
-               }
-            });
+            var viewModel = WidgetManager.getViewModelFromServerSync(widget);
+            if (!isNullOrUndefined(viewModel)) {
+               WidgetPackageManager.widgetPackages[widget.name].viewModelCtor = viewModel;
+               //all job has been done without error
+               WidgetPackageManager.widgetPackages[widget.name].viewAnViewModelHaveBeenDownloaded = true;
+            }
+            else {
+               askForWidgetDelete(widget.name, list, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.name}));
+               return;
+            }
+         }
+         else {
+            askForWidgetDelete(widget.name, list, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.name}));
+            return;
          }
       }
-      else {
-         askForWidgetDelete(widget.name, list, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.name}));
-      }
-   });
+
+      //we finalize the load of the widget
+      WidgetManager.consolidate(widget, WidgetPackageManager.widgetPackages[widget.name]);
+      WidgetManager.addToDom(widget);
+      //we add the widget to the collection
+      pageWhereToAdd.addWidget(widget);
+   }
+   else {
+      askForWidgetDelete(widget.name, list, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.name}));
+   }
 }
 
 WidgetManager.addToDom = function(widget) {
