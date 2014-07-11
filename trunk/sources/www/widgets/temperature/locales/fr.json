@@ -5,6 +5,5 @@
          "name" : "Capteur de temperature",
          "description" : "Capteur qui fournit la température"
       }
-   },
-   "batteryLevel" : "Niveau de batterie :"
+   }
 }

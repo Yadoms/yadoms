@@ -19,7 +19,7 @@ var waitForRealeaseButtonAfterEnteringCustomization = false;
  * @param enable
  */
 function enableGridsterCustomization(enable) {
-   $.each(pageContainer.pages, function (index, value) {
+   $.each(PageManager.pages, function (index, value) {
       if (enable) {
          value.gridster.enable();
          value.gridster.enable_resize();
@@ -84,7 +84,7 @@ function exitCustomization() {
    $("li.widget").removeClass("liWidgetCustomization");
 
    //we save all widgets in each page
-   $.each(pageContainer.pages, function (index, currentPage) {
+   $.each(PageManager.pages, function (index, currentPage) {
       $.each(currentPage.widgets, function (index, currentWidget) {
          //we synchronize gridster information into the widget class
          currentWidget.updateDataFromGridster();
