@@ -3,7 +3,6 @@
  */
 var widgetViewModelCtor = null;
 
-var loadWidgetsNotification = null;
 var loadPagesNotification = null;
 
 var widgetUpdateInterval;
@@ -79,12 +78,19 @@ function initializeWidgetEngine() {
 
 function requestWidgets(page) {
    //we request widgets for the first page
-   loadWidgetsNotification = notifyInformation($.t("mainPage.actions.loadingWidgetsOfPage", {pageName : page.name}));
+   var loadWidgetsNotification = notifyInformation($.t("mainPage.actions.loadingWidgetsOfPage", {pageName : page.name}));
 
    WidgetManager.getWidgetOfPageFromServer(page, function(list) {
       if (list != null) {
          //we've got the list of widget
-         WidgetManager.loadWidgetList(list, page);
+         $.each(list, function(index, widget) {
+            WidgetManager.loadWidget(widget, page);
+         });
+
+         if (!isNullOrUndefined(loadWidgetsNotification)) {
+            loadWidgetsNotification.close();
+            loadWidgetsNotification = null;
+         }
       }
    });
 }
