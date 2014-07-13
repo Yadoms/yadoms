@@ -88,7 +88,11 @@ double CLinuxSystemDiskUsage::getValue()
       {
          if (strstr(dname,m_driveName.c_str())!=NULL)
          {
-             return 100*usedblocks / double(numblock);
+             YADOMS_LOG(debug) << "usedblocks :" << usedblocks;
+             YADOMS_LOG(debug) << "numblock   :" << numblock;
+             m_diskUsage = usedblocks/double(numblock)*100;
+             YADOMS_LOG(debug) << "diskUsage  :" << m_diskUsage;
+             return m_diskUsage;
          }
       }
    }
