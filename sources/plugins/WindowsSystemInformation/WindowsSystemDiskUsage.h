@@ -20,6 +20,11 @@ public:
    CWindowsSystemDiskUsage(const std::string & deviceId, const std::string & driveName);
 
    //--------------------------------------------------------------
+   /// \brief	    Initialize the configuration of variable
+   //--------------------------------------------------------------
+   virtual void Initialize();
+
+   //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] deviceId    The device ID
    /// \param[in] driveName   The drive name ex: C:\

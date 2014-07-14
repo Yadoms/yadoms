@@ -37,6 +37,8 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
    {
       YADOMS_LOG(debug) << "CWindowsSystemInformation is starting...";
 
+	  //declarations
+
       CWindowsSystemMemoryLoad    MemoryLoad   ("MemoryLoad");
       CWindowsSystemCPULoad       CPULoad      ("CPULoad");
       CWindowsSystemYadomsCPULoad YadomsCPULoad("YadomsCPULoad");
@@ -47,7 +49,37 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
       std::vector<std::string> TempList;
 
       std::vector<CWindowsSystemDiskUsage> DiskUsageList;
-                     
+      
+	  try
+	  {
+		  MemoryLoad.Initialize();
+		  MemoryLoad.declareDevice(context);
+	  }
+	  catch (boost::thread_interrupted&)
+	  {
+		  YADOMS_LOG(debug) << "Device Memory is desactivated...";
+	  }
+
+	  try
+	  {
+		  CPULoad.Initialize();
+		  CPULoad.declareDevice(context);
+	  }
+	  catch (boost::thread_interrupted&)
+	  {
+		  YADOMS_LOG(debug) << "Device CPU Load is desactivated...";
+	  }
+
+	  try
+	  {
+		  YadomsCPULoad.Initialize();
+		  YadomsCPULoad.declareDevice(context);
+	  }
+	  catch (boost::thread_interrupted&)
+	  {
+		  YADOMS_LOG(debug) << "Device Yadoms CPU Load is desactivated...";
+	  }
+
       TempList = DisksList.getList();
       int counterDisk = 0;
 
@@ -60,14 +92,18 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
          ssName << "DiskUsage" << counterDisk;
          CWindowsSystemDiskUsage DiskUsage(ssName.str(), *DisksListIterator, ssKeyword.str());
 
-         DiskUsage.declareDevice(context);
-         DiskUsageList.push_back(DiskUsage);
-         ++counterDisk;
+		 try
+		 {
+		    DiskUsage.Initialize();
+			DiskUsage.declareDevice(context);
+            DiskUsageList.push_back(DiskUsage);
+			++counterDisk;
+		 }
+		 catch (boost::thread_interrupted&)
+		 {
+		    YADOMS_LOG(debug) << "One Disk Usage device is desactivated...";
+		 }
       }
-
-      CPULoad.declareDevice(context);
-      MemoryLoad.declareDevice(context);
-      YadomsCPULoad.declareDevice(context);
 
       // Timer used to read periodically CPU loads
       context->getEventHandler().createTimer(kEvtTimerRefreshCPULoad      , shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));

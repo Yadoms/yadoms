@@ -9,6 +9,9 @@ CWindowsSystemDiskUsage::CWindowsSystemDiskUsage(const std::string & deviceId, c
 {
 }
 
+void CWindowsSystemDiskUsage::Initialize()
+{}
+
 CWindowsSystemDiskUsage::CWindowsSystemDiskUsage(const std::string & deviceId, const std::string & driveName, const std::string & Keyword)
    :m_deviceId(deviceId), m_driveName(driveName),m_Keyword(Keyword), m_Capacity("DiskUsage")
 {
@@ -49,6 +52,7 @@ void CWindowsSystemDiskUsage::declareDevice(boost::shared_ptr<yApi::IYadomsApi> 
 void CWindowsSystemDiskUsage::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
+
    context->historizeData(m_deviceId, getKeyword()  , m_diskUsage);
 }
 
