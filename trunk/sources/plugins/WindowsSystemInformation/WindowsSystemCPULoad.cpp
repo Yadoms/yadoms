@@ -10,6 +10,9 @@
 
 CWindowsSystemCPULoad::CWindowsSystemCPULoad(const std::string & deviceId)
    :m_deviceId(deviceId), m_CPULoad(0), m_Capacity("cpuload"), m_Keyword("WindowsCPULoad")
+{}
+
+void CWindowsSystemCPULoad::Initialize()
 {
    PDH_STATUS Status;
 
@@ -21,6 +24,7 @@ CWindowsSystemCPULoad::CWindowsSystemCPULoad(const std::string & deviceId)
       std::stringstream Message; 
       Message << "PdhOpenQuery failed with status:"; 
       Message << GetLastError();
+	  m_InitializeOk = false;
       throw shared::exception::CException ( Message.str() );
    }
 
@@ -33,6 +37,7 @@ CWindowsSystemCPULoad::CWindowsSystemCPULoad(const std::string & deviceId)
       std::stringstream Message; 
       Message << "PdhAddEnglishCounter failed with status:"; 
       Message << GetLastError();
+	  m_InitializeOk = false;
       throw shared::exception::CException ( Message.str() );
    }
 #else
@@ -44,6 +49,7 @@ CWindowsSystemCPULoad::CWindowsSystemCPULoad(const std::string & deviceId)
       std::stringstream Message; 
       Message << "PdhAddCounter failed with status:"; 
       Message << GetLastError();
+	  m_InitializeOk = false;
       throw shared::exception::CException ( Message.str() );
    }
 #endif
@@ -54,23 +60,29 @@ CWindowsSystemCPULoad::CWindowsSystemCPULoad(const std::string & deviceId)
       std::stringstream Message; 
       Message << "PdhCollectQueryData failed with status:"; 
       Message << GetLastError();
+	  m_InitializeOk = false;
       throw shared::exception::CException ( Message.str() );
    }
+
+   m_InitializeOk = true;
 }
 
 CWindowsSystemCPULoad::~CWindowsSystemCPULoad()
 {
    PDH_STATUS Status;
 
-   Status = PdhCloseQuery(m_cpuQuery);
-   
-   if (Status != ERROR_SUCCESS) 
+   if (m_InitializeOk)
    {
-      std::stringstream Message; 
-      Message << "PdhCloseQuery failed with status:"; 
-      Message << GetLastError();
+	   Status = PdhCloseQuery(m_cpuQuery);
+   
+	   if (Status != ERROR_SUCCESS) 
+	   {
+		  std::stringstream Message; 
+		  Message << "PdhCloseQuery failed with status:"; 
+		  Message << GetLastError();
 
-      YADOMS_LOG(debug) << Message.str();
+		  YADOMS_LOG(debug) << Message.str();
+	   }
    }
 }
 
@@ -91,18 +103,22 @@ const std::string& CWindowsSystemCPULoad::getKeyword() const
 
 void CWindowsSystemCPULoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
 {
-   // Declare the device
-   context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
+	if (m_InitializeOk)
+	{
+	   // Declare the device
+	   context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
 
-   // Declare associated keywords (= values managed by this device)
-   context->declareCustomKeyword(m_deviceId, getKeyword(), getCapacity(), yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::Percent);
+	   // Declare associated keywords (= values managed by this device)
+	   context->declareCustomKeyword(m_deviceId, getKeyword(), getCapacity(), yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::Percent);
+	}
 }
 
 void CWindowsSystemCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
    
-   context->historizeData(m_deviceId, getKeyword(), m_CPULoad);
+   if (m_InitializeOk)
+      context->historizeData(m_deviceId, getKeyword(), m_CPULoad);
 }
 
 double CWindowsSystemCPULoad::getValue() /*const*/
@@ -118,28 +134,36 @@ double CWindowsSystemCPULoad::getValue() /*const*/
    // Note that this value is lost if the counter does not require two
    // values to compute a displayable value.
 
-   Status = PdhCollectQueryData(m_cpuQuery);
-   if (Status != ERROR_SUCCESS) 
+   if (m_InitializeOk)
    {
-      std::stringstream Message; 
-      Message << "PdhCollectQueryData failed with status:"; 
-      Message << GetLastError();
-      throw shared::exception::CException ( Message.str() );
+	   Status = PdhCollectQueryData(m_cpuQuery);
+	   if (Status != ERROR_SUCCESS) 
+	   {
+		  std::stringstream Message; 
+		  Message << "PdhCollectQueryData failed with status:"; 
+		  Message << GetLastError();
+		  throw shared::exception::CException ( Message.str() );
+	   }
+
+	   Status = PdhGetFormattedCounterValue(m_cpuTotal, PDH_FMT_DOUBLE | PDH_FMT_NOCAP100 | PDH_FMT_NOSCALE, &CounterType, &counterVal);
+
+	   if (Status != ERROR_SUCCESS) 
+	   {
+		  std::stringstream Message; 
+		  Message << "PdhGetFormattedCounterValue failed with status:"; 
+		  Message << GetLastError();
+		  throw shared::exception::CException ( Message.str() );
+	   }
+
+	   m_CPULoad = counterVal.doubleValue;
+
+	   return counterVal.doubleValue;
    }
-
-   Status = PdhGetFormattedCounterValue(m_cpuTotal, PDH_FMT_DOUBLE | PDH_FMT_NOCAP100 | PDH_FMT_NOSCALE, &CounterType, &counterVal);
-
-   if (Status != ERROR_SUCCESS) 
+   else
    {
-      std::stringstream Message; 
-      Message << "PdhGetFormattedCounterValue failed with status:"; 
-      Message << GetLastError();
-      throw shared::exception::CException ( Message.str() );
+	   YADOMS_LOG(trace) << getDeviceId() << " is desactivated";
+	   return 0;
    }
-
-   m_CPULoad = counterVal.doubleValue;
-
-   return counterVal.doubleValue;
 }
 
 

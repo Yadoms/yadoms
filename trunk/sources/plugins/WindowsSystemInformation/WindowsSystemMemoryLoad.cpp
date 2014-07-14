@@ -8,6 +8,9 @@ CWindowsSystemMemoryLoad::CWindowsSystemMemoryLoad(const std::string & deviceId)
    :m_deviceId(deviceId), m_memoryLoad(0), m_Capacity("MemoryLoad"), m_Keyword("WindowsMemoryLoad")
 {}
 
+void CWindowsSystemMemoryLoad::Initialize()
+{}
+
 CWindowsSystemMemoryLoad::~CWindowsSystemMemoryLoad()
 {}
 
@@ -38,26 +41,27 @@ void CWindowsSystemMemoryLoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi>
 void CWindowsSystemMemoryLoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
+
    context->historizeData(m_deviceId, getKeyword()  , m_memoryLoad);
 }
 
 double CWindowsSystemMemoryLoad::getValue()
 {
-   MEMORYSTATUSEX statex;
+	MEMORYSTATUSEX statex;
 
-   statex.dwLength = sizeof (statex);
+	statex.dwLength = sizeof (statex);
 
-   if (GlobalMemoryStatusEx (&statex))
-      m_memoryLoad = (double(statex.ullTotalPhys - statex.ullAvailPhys)*100 / statex.ullTotalPhys );
-   else
-   {
-      std::stringstream Message;
-      Message << "Fail to read Windows system memory size :";
-      Message << GetLastError();
-      throw shared::exception::CException ( Message.str() );
-   }
+	if (GlobalMemoryStatusEx (&statex))
+		m_memoryLoad = (double(statex.ullTotalPhys - statex.ullAvailPhys)*100 / statex.ullTotalPhys );
+	else
+	{
+		std::stringstream Message;
+		Message << "Fail to read Windows system memory size :";
+		Message << GetLastError();
+		throw shared::exception::CException ( Message.str() );
+	}
 
-   return m_memoryLoad;
+	return m_memoryLoad;
 }
 
 

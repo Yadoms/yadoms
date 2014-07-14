@@ -19,6 +19,11 @@ public:
    CWindowsSystemYadomsCPULoad(const std::string & deviceId);
 
    //--------------------------------------------------------------
+   /// \brief	    Initialize the configuration of variable
+   //--------------------------------------------------------------
+   virtual void Initialize();
+
+   //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CWindowsSystemYadomsCPULoad();
@@ -95,5 +100,10 @@ private:
    /// \brief	    Keyword string
    //--------------------------------------------------------------
    const std::string m_Keyword;
+
+   //--------------------------------------------------------------
+   /// \brief	    Initialization ok
+   //--------------------------------------------------------------
+   bool m_InitializeOk;
 };
 
