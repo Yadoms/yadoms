@@ -46,9 +46,9 @@ IF(RASPBERRYPI)
 	## Always leave these lines to configure plugin correctly
 	## even if FAKE_PLUGIN_INCLDIR or FAKE_PLUGIN_LINK are empty
 	#########################################
-	PLUGIN_SOURCES(RaspBerryPiSystemInformation ${LINUXSYSTEMINFORMATION_PLUGIN_SOURCES})
-	PLUGIN_INCLDIR(RaspBerryPiSystemInformation ${LINUXSYSTEMINFORMATION_PLUGIN_ADDITIONAL_INC_DIR})
-	PLUGIN_LINK   (RaspBerryPiSystemInformation ${LINUXSYSTEMINFORMATION_PLUGIN_ADDITIONAL_LIB})
+	PLUGIN_SOURCES(RaspBerryPiSystemInformation ${RASPBERRYPISYSTEMINFORMATION_PLUGIN_SOURCES})
+	PLUGIN_INCLDIR(RaspBerryPiSystemInformation ${RASPBERRYPISYSTEMINFORMATION_PLUGIN_ADDITIONAL_INC_DIR})
+	PLUGIN_LINK   (RaspBerryPiSystemInformation ${RASPBERRYPISYSTEMINFORMATION_PLUGIN_ADDITIONAL_LIB})
 
 	#########################################
 	## Post-build commands

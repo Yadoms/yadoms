@@ -41,7 +41,7 @@ void CRaspBerryPiSystemMemoryLoad::declareDevice(boost::shared_ptr<yApi::IYadoms
    context->declareCustomKeyword(m_deviceId, getCapacity()  , getKeyword() , yApi::kGet , yApi::kNumeric, shared::plugin::yadomsApi::CStandardUnits::Percent);
 }
 
-void CLinuxSystemMemoryLoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CRaspBerryPiSystemMemoryLoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
    context->historizeData(m_deviceId, getCapacity()  , m_memoryLoad);

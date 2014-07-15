@@ -37,16 +37,16 @@ void CRaspBerryPiSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> c
    {
       YADOMS_LOG(debug) << "CRaspBerryPiSystemInformation is starting...";
 
-      CLinuxSystemMemoryLoad    MemoryLoad   ("MemoryLoad");
-      CLinuxSystemCPULoad       CPULoad      ("CPULoad");
-      CLinuxSystemYadomsCPULoad YadomsCPULoad("YadomsCPULoad");
+      CRaspBerryPiSystemMemoryLoad    MemoryLoad   ("MemoryLoad");
+      CRaspBerryPiSystemCPULoad       CPULoad      ("CPULoad");
+      CRaspBerryPiSystemYadomsCPULoad YadomsCPULoad("YadomsCPULoad");
       
-      CLinuxSystemDisksList     DisksList;
+      CRaspBerryPiSystemDisksList     DisksList;
 
       std::vector<std::string>::const_iterator DisksListIterator;
       std::vector<std::string> TempList;
 
-      std::list<CLinuxSystemDiskUsage> DiskUsageList;
+      std::list<CRaspBerryPiSystemDiskUsage> DiskUsageList;
                      
       TempList = DisksList.getList();
 
@@ -59,7 +59,7 @@ void CRaspBerryPiSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> c
 
          ssKeyword << "RaspBerryPiDiskUsage" << counterDisk;
          ssName << "DiskUsage" << counterDisk;
-         CLinuxSystemDiskUsage DiskUsage(ssName.str(), *DisksListIterator, ssKeyword.str());
+         CRaspBerryPiSystemDiskUsage DiskUsage(ssName.str(), *DisksListIterator, ssKeyword.str());
 
          DiskUsage.declareDevice(context);
          DiskUsageList.push_back(DiskUsage);
@@ -125,7 +125,7 @@ void CRaspBerryPiSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> c
 
                      MemoryLoad.historizeData(context);
 
-                     std::list<CLinuxSystemDiskUsage>::iterator DisksListIterator;
+                     std::list<CRaspBerryPiSystemDiskUsage>::iterator DisksListIterator;
 
                      for(DisksListIterator=DiskUsageList.begin(); DisksListIterator!=DiskUsageList.end(); ++DisksListIterator)
 	                  {
