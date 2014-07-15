@@ -28,6 +28,7 @@ namespace database { namespace sqlite {
 
          // IConfigurationRequester implementation
          virtual void create(database::entities::CConfiguration& configurationToCreate);
+         virtual bool exists(const std::string & section, const std::string & name);
          virtual boost::shared_ptr< database::entities::CConfiguration > getConfiguration(const std::string & section, const std::string & name);
          virtual std::vector< boost::shared_ptr< database::entities::CConfiguration > > getConfigurations(const std::string & section);
          virtual std::vector< boost::shared_ptr< database::entities::CConfiguration > > getConfigurations();
