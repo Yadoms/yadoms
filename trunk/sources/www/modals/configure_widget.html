@@ -25,7 +25,7 @@
 
    function configureWidget(widgetToConfigure, callback) {
       assert(widgetToConfigure !== undefined, "widgetToConfigure must be defined");
-      assert(callback !== undefined, "callback must be defined");
+      assert($.isFunction(callback), "callback must be defined");
 
       var $modalBody = $('div#configure-widget-modal .modal-body');
       $modalBody.empty();

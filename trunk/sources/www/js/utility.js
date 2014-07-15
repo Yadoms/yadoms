@@ -110,8 +110,8 @@ function parseBool(string, defaultValue) {
 function notifyConfirm(message, gravity, confirmCallback, cancelCallback) {
    assert(message != undefined, "Message must be defined");
    assert(gravity != undefined, "Gravity must be defined");
-   assert(confirmCallback != undefined, "confirmCallback must be defined");
-   assert(cancelCallback != undefined, "cancelCallback must be defined");
+   assert($.isFunction(confirmCallback), "confirmCallback must be defined");
+   assert($.isFunction(cancelCallback), "cancelCallback must be defined");
 
    return noty({
       text: message,

@@ -40,7 +40,7 @@ DeviceManager.getAttachedPlugin = function(device, callback) {
          //we save the attachedPlugin into the object
          device.attachedPlugin = PluginManager.factory(data.data);
          
-         if (!isNullOrUndefined(callback))
+         if ($.isFunction(callback))
             callback(result);
 
          return result;
@@ -64,7 +64,7 @@ DeviceManager.deleteFromServer = function(device, callback) {
             return;
          }
 
-         if (!isNullOrUndefined(callback))
+         if ($.isFunction(callback))
             callback();
       })
       .fail(function() {notifyError($.t("objects.deviceManager.errorDeleting", {deviceName : device.friendlyName}));});
@@ -85,7 +85,7 @@ DeviceManager.createVirtual = function(device, callback) {
          {
             notifyError($.t("objects.deviceManager.errorCreating", {deviceName : device.friendlyName}), JSON.stringify(data));
             //launch callback with false as ko result
-            if (!isNullOrUndefined(callback))
+            if ($.isFunction(callback))
                callback(false);
             return;
          }
@@ -97,13 +97,13 @@ DeviceManager.createVirtual = function(device, callback) {
          device.friendlyName = data.data.friendlyName;
          device.model = data.data.model;
 
-         if (!isNullOrUndefined(callback))
+         if ($.isFunction(callback))
             callback(true);
       })
       .fail(function() {
          notifyError($.t("objects.deviceManager.errorCreating", {deviceName : device.friendlyName}));
          //launch callback with false as ko result
-         if (!isNullOrUndefined(callback))
+         if ($.isFunction(callback))
             callback(false);
       });
 };
@@ -123,7 +123,7 @@ DeviceManager.updateToServer = function(device, callback) {
          {
             notifyError($.t("objects.deviceManager.errorUpdating", {deviceName : device.friendlyName}), JSON.stringify(data));
             //launch callback with false as ko result
-            if (!isNullOrUndefined(callback))
+            if ($.isFunction(callback))
                callback(false);
             return;
          }
@@ -132,13 +132,13 @@ DeviceManager.updateToServer = function(device, callback) {
          device = DeviceManager.factory(data.data);
 
          //we call the callback with true as a ok result
-         if (!isNullOrUndefined(callback))
+         if ($.isFunction(callback))
             callback(true);
       })
       .fail(function() {
          notifyError($.t("objects.deviceManager.errorUpdating", {deviceName : device.friendlyName}));
          //launch callback with false as ko result
-         if (!isNullOrUndefined(callback))
+         if ($.isFunction(callback))
             callback(false);
       });
 };

@@ -24,7 +24,7 @@
       assert(kindOfBtn !== undefined, "kindOfBtn must be defined and a value of enum btnKind");
       assert(title !== undefined, "title must be defined. Set to null to use default confirmation title");
       assert(text !== undefined, "text must be defined.");
-      assert(confirmCallBack !== undefined, "confirmCallBack must be defined.");
+      assert($.isFunction(confirmCallBack), "confirmCallBack must be defined.");
 
       //we set title if defined
       if (title != null) {
@@ -52,7 +52,7 @@
       }
 
       //we bind the two callbacks
-      if (!isNullOrUndefined(cancelCallback))
+      if ($.isFunction(cancelCallback))
          $("div#confirmation-modal").find("button.btn-cancel").unbind('click').bind('click', cancelCallback);
 
       $("div#confirmation-modal").find("button.btn-confirm").unbind('click').bind('click', function () {

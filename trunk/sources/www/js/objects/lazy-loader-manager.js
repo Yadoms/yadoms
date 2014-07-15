@@ -23,7 +23,7 @@ function LazyLoaderManager(modalPath) {
  * @param callback
  */
 LazyLoaderManager.prototype.load = function (callback){
-   assert(callback !== undefined, "callback must be defined");
+   assert($.isFunction(callback), "callback must be defined");
    var self = this;
    if (self.modalHasBeenLoaded) {
       //we simply call the callback function

@@ -24,7 +24,7 @@
 <script>
    function configurePluginInstance(pluginInstance, callback) {
       assert(pluginInstance !== undefined, "pluginInstance must be defined");
-      assert(callback !== undefined, "callback must be defined");
+      assert($.isFunction(callback), "callback must be defined");
 
       var $modalBody = $("div#configure-plugin-modal .modal-body");
       $modalBody.empty();

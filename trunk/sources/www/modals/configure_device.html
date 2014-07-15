@@ -24,7 +24,7 @@
 <script>
    function configureDevice(device, callback) {
       assert(device !== undefined, "device must be defined");
-      assert(callback !== undefined, "callback must be defined");
+      assert($.isFunction(callback), "callback must be defined");
 
       var $modalBody = $("div#configure-device-modal .modal-body");
       $modalBody.empty();
