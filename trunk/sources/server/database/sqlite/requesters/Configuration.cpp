@@ -24,12 +24,28 @@ namespace database { namespace sqlite { namespace requesters {
    // IConfigurationRequester implementation
    void CConfiguration::create(database::entities::CConfiguration& configurationToCreate)
    {
+      boost::posix_time::ptime insertDate = boost::posix_time::second_clock::universal_time();
+      if (configurationToCreate.LastModificationDate.isDefined())
+         insertDate = configurationToCreate.LastModificationDate();
+
       CQuery qInsert;
       qInsert. InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName(), CConfigurationTable::getDefaultValueColumnName(), CConfigurationTable::getLastModificationDateColumnName()).
-         Values(configurationToCreate.Section(), configurationToCreate.Name(), configurationToCreate.Value(), configurationToCreate.Description(), configurationToCreate.DefaultValue(), boost::gregorian::day_clock::universal_day());
+         Values(configurationToCreate.Section(), configurationToCreate.Name(), configurationToCreate.Value(), configurationToCreate.Description(), configurationToCreate.DefaultValue(), insertDate);
+//         Values(configurationToCreate.Section(), configurationToCreate.Name(), configurationToCreate.Value(), configurationToCreate.Description(), configurationToCreate.DefaultValue(), boost::gregorian::day_clock::universal_day());
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
    }
+
+   bool CConfiguration::exists(const std::string & section, const std::string & name)
+   {
+      CQuery qSelect;
+      qSelect.SelectCount().
+         From(CConfigurationTable::getTableName()).
+         Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section).
+         And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, name);
+      return (m_databaseRequester->queryCount(qSelect) == 1);
+   }
+
 
    boost::shared_ptr<database::entities::CConfiguration> CConfiguration::getConfiguration(const std::string & section, const std::string & name)
    {

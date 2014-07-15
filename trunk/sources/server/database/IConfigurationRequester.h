@@ -15,6 +15,14 @@ namespace database {
       virtual void create(entities::CConfiguration& configurationToCreate) = 0;
 
       //--------------------------------------------------------------
+      /// \brief      Checkl a a configuration entry already exists
+      /// \param [in] section    the configuration SECTION
+      /// \param [in] name       the configuration NAME
+      /// \return     true if the configuration exists, false other cases
+      //--------------------------------------------------------------
+      virtual bool exists(const std::string & section, const std::string & name) = 0;
+     
+      //--------------------------------------------------------------
       /// \brief      Read a configuration entry
       /// \param [in] section    the configuration SECTION
       /// \param [in] name       the configuration NAME

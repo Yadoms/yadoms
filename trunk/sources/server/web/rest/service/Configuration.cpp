@@ -81,8 +81,7 @@ namespace web { namespace rest { namespace service {
       configToCreate.fillFromContent(requestContent);
 
       //check that configuration entry do not already exists
-      boost::shared_ptr<database::entities::CConfiguration> checkExistEntity = m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate.Section(), configToCreate.Name());
-      if(checkExistEntity.get() != NULL)
+      if (m_dataProvider->getConfigurationRequester()->exists(configToCreate.Section(), configToCreate.Name()))
          return web::rest::CResult::GenerateError("The entry to create already exists");
 
       //update modification date

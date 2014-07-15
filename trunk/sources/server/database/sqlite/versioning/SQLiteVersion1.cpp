@@ -120,6 +120,11 @@
                   CQuery qInsert;
                   qInsert.InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName()).
                      Values( "Database", "Version", 1.0, "Database version");
+                  pRequester->queryStatement(qInsert);              
+                  
+                  //set the developer mode
+                  qInsert.Clear().InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDefaultValueColumnName(), CConfigurationTable::getDescriptionColumnName()).
+                     Values( "system", "developerMode", "false", "false", "Develper mode");
                   pRequester->queryStatement(qInsert);
 
                   //add a default empty page 
