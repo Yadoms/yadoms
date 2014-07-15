@@ -33,7 +33,7 @@
      */
     function askPluginTypes(callback)
     {
-       assert(callback !== undefined, "callback must be defined");
+       assert($.isFunction(callback), "callback must be defined");
        $.getJSON("rest/plugin/")
                .done(requestPluginTypesDone(callback))
                .fail(function() {
@@ -48,7 +48,7 @@
      */
     function requestPluginTypesDone(callback)
     {
-       assert(callback !== undefined, "callback must be defined");
+       assert($.isFunction(callback), "callback must be defined");
        return function( data ) {
           //we parse the json answer
           if (data.result != "true")

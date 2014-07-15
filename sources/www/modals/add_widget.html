@@ -158,7 +158,7 @@
                    notifySuccess($.t("modals.add-widget.widgetSuccessfullyCreated"));
                    //we add the widget dynamically
                    var w = WidgetManager.factory(data.data);
-                   WidgetManager.loadWidget(w);
+                   WidgetManager.loadWidget(w, currentPage);
                })
                .fail(function(widgetName) { return function() {notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {"widgetType" : widgetName}))}}(packageName));
            });

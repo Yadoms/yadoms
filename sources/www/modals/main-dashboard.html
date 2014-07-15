@@ -63,7 +63,7 @@
                     $container.append($data);
                     $container.slideDown(animationDuration);
                     //we call the callback
-                    if (!isNullOrUndefined(callback))
+                    if ($.isFunction(callback))
                        callback();
                  })
                  .fail(function() {
@@ -79,7 +79,7 @@
             $container.append($data);
             $container.slideDown(animationDuration);
             //we call the callback
-            if (!isNullOrUndefined(callback))
+            if ($.isFunction(callback))
                callback();
          }
       });

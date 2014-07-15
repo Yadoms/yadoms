@@ -58,7 +58,7 @@ WidgetManager.getWidgetOfPageFromServer = function(page, callback) {
          if (data.result != "true")
          {
             notifyError($.t("objects.widgetManager.unableToGetWidgets"), JSON.stringify(data));
-            if (!isNullOrUndefined(callback))
+            if ($.isFunction(callback))
                callback(null);
             return null;
          }
@@ -68,13 +68,13 @@ WidgetManager.getWidgetOfPageFromServer = function(page, callback) {
             list.push(WidgetManager.factory(value));
          });
 
-         if (!isNullOrUndefined(callback))
+         if ($.isFunction(callback))
             callback(list);
          return list;
       })
       .fail(function() {
          notifyError($.t("objects.widgetManager.unableToGetWidgets"));
-         if (!isNullOrUndefined(callback))
+         if ($.isFunction(callback))
             callback(null);
          return null;
       });
@@ -126,7 +126,7 @@ WidgetManager.updateToServer = function(widget, callback) {
         if (data.result != "true")
         {
             notifyError($.t("objects.widgetManager.errorDuringModifyingWidget"), JSON.stringify(data));
-            if (!isNullOrUndefined(callback))
+            if ($.isFunction(callback))
                 callback(false);
             return;
         }
@@ -136,14 +136,14 @@ WidgetManager.updateToServer = function(widget, callback) {
         {
             if (widget.viewModel.configurationChanged !== undefined)
                 widget.viewModel.configurationChanged();
-            if (!isNullOrUndefined(callback))
+            if ($.isFunction(callback))
                 callback(true);
         }
         catch (e)
         {
             notifyWarning($.t("objects.widgetManager.exceptionDuringCallConfigurationChanged", {"widgetType" : widget.name}));
             console.warn(e);
-            if (!isNullOrUndefined(callback))
+            if ($.isFunction(callback))
                 callback(false);
             return;
         }
@@ -151,7 +151,7 @@ WidgetManager.updateToServer = function(widget, callback) {
         })
         .fail(function(widgetName) { return function() {
             notifyError($.t("objects.widgetManager.errorDuringModifyingWidgetNamed", {"widgetType" : widget.name}));
-            if (!isNullOrUndefined(callback))
+            if ($.isFunction(callback))
                 callback(false);
         };}(widget.name));
 }
@@ -169,6 +169,7 @@ WidgetManager.consolidate = function(widget, widgetPackage) {
 
 WidgetManager.loadWidget = function(widget, pageWhereToAdd) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
+   assert(!isNullOrUndefined(pageWhereToAdd), "pageWhereToAdd must be defined");
    if (WidgetPackageManager.packageExists(widget.name)) {
       if (!WidgetPackageManager.widgetPackages[widget.name].viewAnViewModelHaveBeenDownloaded) {
          //we must download all missing informations
