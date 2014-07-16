@@ -5,7 +5,9 @@
       "close" : "Close",
       "cancel" : "Cancel",
       "yes" : "Yes",
-      "no" : "No"
+      "no" : "No",
+      "apply" : "Apply",
+      "resetToDefault" : "Reset to default"
    },
    "mainPage" : {
       "menu" : {
@@ -128,7 +130,20 @@
                "title" : "User management"
             },
             "system-configuration" : {
-               "title" : "System configuration"
+               "title" : "System configuration",
+               "configuration-items" : {
+                  "developerMode" : {
+                     "name" : "Developer mode",
+                     "description" : "The developer mode add information in parts of the software to help development of plugins and widgets."
+                  },
+                  "authenticationMethod" : {
+                     "name" : "Authentication method",
+                     "description" : "Choose the authentication method you want to use.",
+                     "values" : {
+                        "none" : "None"
+                     }
+                  }
+               }
             },
             "user-configuration" : {
                "title" : "User configuration"
