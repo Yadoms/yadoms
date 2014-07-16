@@ -104,7 +104,7 @@
 
    $("#btn-dashboard-system-configuration").click(function() {
       clearInterval(periodicDashboardTask);
-      asyncLoad("modals/dashboard/system-configuration.html");
+      asyncLoad("modals/dashboard/system-configuration.html", function() { initializeSystemConfigurationDashboard(); });
       setBtnActive(this.id);
    });
 

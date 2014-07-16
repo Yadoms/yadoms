@@ -1,6 +1,57 @@
 <div id="dashboard-system-configuration">
    <h1 class="page-header" data-i18n="modals.dashboard.sub-windows.system-configuration.title"></h1>
    <form>
-
+      <div class="form-group">
+         <!--configuration will be inserted here-->
+      </div>
+      <div class="modal-footer">
+         <div class="form-actions">
+            <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.resetToDefault"></button>
+            <button type="submit" id="btn-confirm-configure-device" class="btn btn-primary" data-i18n="common.apply"></button>
+         </div>
+      </div>
    </form>
 </div>
+
+<script>
+   function initializeSystemConfigurationDashboard() {
+      var $modalBody = $("div#dashboard-system-configuration .form-group");
+      $modalBody.empty();
+
+      //get current system configuration
+      //TODO
+      var currentConfiguration = {};
+
+      var i18nContext = "modals.dashboard.sub-windows.system-configuration.configuration-items.";
+
+      //we create configuration items
+      //var authenticationMethodParameter = new EnumParameterHandler(i18nContext, "authenticationMethod", {values:{"none" : ""}}, currentConfiguration.authenticationMethod);
+      var developerModeParameter = new BoolParameterHandler(i18nContext, "developerMode", {defaultValue: false}, currentConfiguration.developerMode);
+
+      //and add it to the gui
+      //$modalBody.append(authenticationMethodParameter.getDOMObject());
+      $modalBody.append(developerModeParameter.getDOMObject());
+
+      //we i18n the form
+      $modalBody.i18n();
+
+      //validation form
+      $modalBody.find("input,select,textarea").jqBootstrapValidation({
+         preventSubmit: true,
+         submitError: function($form, event, errors) {
+            console.warn("Unable to validate form: " + errors);
+         },
+         submitSuccess: function($form, event) {
+            event.preventDefault();
+            console.debug("End of system Configuration");
+
+            //we save current configuration
+            //TODO
+         },
+         filter: function() {
+            //we check only control that have class enable-validation and are visible
+            return $(this).is(".enable-validation") && $(this).is(":visible");
+         }
+      });
+   }
+</script>
