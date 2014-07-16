@@ -1,12 +1,12 @@
 <div id="dashboard-system-configuration">
-   <h1 class="page-header" data-i18n="modals.dashboard.sub-windows.system-configuration.title"></h1>
+   <h1 class="page-header"><span class="fa fa-cogs"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.system-configuration.title"></span></h1>
    <form>
       <div class="form-group">
          <!--configuration will be inserted here-->
       </div>
       <div class="modal-footer">
          <div class="form-actions">
-            <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.resetToDefault"></button>
+            <button id="resetSystemConfiguration" type="button" class="btn btn-default" data-i18n="common.resetToDefault"></button>
             <button type="submit" id="btn-confirm-configure-device" class="btn btn-primary" data-i18n="common.apply"></button>
          </div>
       </div>
@@ -19,39 +19,94 @@
       $modalBody.empty();
 
       //get current system configuration
-      //TODO
-      var currentConfiguration = {};
+      SystemConfigurationManager.getAll(function(configuration) {
+         if (!isNullOrUndefined(configuration)) {
 
-      var i18nContext = "modals.dashboard.sub-windows.system-configuration.configuration-items.";
+            var i18nContext = "modals.dashboard.sub-windows.system-configuration.configuration-items.";
 
-      //we create configuration items
-      //var authenticationMethodParameter = new EnumParameterHandler(i18nContext, "authenticationMethod", {values:{"none" : ""}}, currentConfiguration.authenticationMethod);
-      var developerModeParameter = new BoolParameterHandler(i18nContext, "developerMode", {defaultValue: false}, currentConfiguration.developerMode);
+            //we create configuration items
+            //var authenticationMethodParameter = new EnumParameterHandler(i18nContext, "authenticationMethod", {values:{"none" : ""}}, currentConfiguration.authenticationMethod);
+            var developerModeParameter = new BoolParameterHandler(i18nContext, "developerMode", {defaultValue: false}, configuration["developerMode"].value);
 
-      //and add it to the gui
-      //$modalBody.append(authenticationMethodParameter.getDOMObject());
-      $modalBody.append(developerModeParameter.getDOMObject());
+            //and add it to the gui
+            //$modalBody.append(authenticationMethodParameter.getDOMObject());
+            $modalBody.append(developerModeParameter.getDOMObject());
 
-      //we i18n the form
-      $modalBody.i18n();
+            //we i18n the form
+            $modalBody.i18n();
 
-      //validation form
-      $modalBody.find("input,select,textarea").jqBootstrapValidation({
-         preventSubmit: true,
-         submitError: function($form, event, errors) {
-            console.warn("Unable to validate form: " + errors);
-         },
-         submitSuccess: function($form, event) {
-            event.preventDefault();
-            console.debug("End of system Configuration");
+            //validation form
+            $modalBody.find("input,select,textarea").jqBootstrapValidation({
+               preventSubmit: true,
+               submitError: function($form, event, errors) {
+                  console.warn("Unable to validate form: " + errors);
+               },
+               submitSuccess: function($form, event) {
+                  event.preventDefault();
+                  console.debug("End of system Configuration");
 
-            //we save current configuration
-            //TODO
-         },
-         filter: function() {
-            //we check only control that have class enable-validation and are visible
-            return $(this).is(".enable-validation") && $(this).is(":visible");
+                  var errorOccurred = false;
+
+                  //we save current configuration
+                  configuration["developerMode"].value = developerModeParameter.getCurrentConfiguration();
+
+                  if (!SystemConfigurationManager.updateToServerSync(configuration["developerMode"])) {
+                     errorOccurred = true;
+                  }
+
+                  //other system configuration items have to be inserted here
+
+                  if (errorOccurred) {
+                     //an error has occurred during saving
+                     notifyError($.t("modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"));
+                  }
+                  else {
+                     //we show that configuration has been successfully saved
+                     notifySuccess($.t("modals.dashboard.sub-windows.system-configuration.configurationSaved"));
+                  }
+               },
+               filter: function() {
+                  //we check only control that have class enable-validation and are visible
+                  return $(this).is(".enable-validation") && $(this).is(":visible");
+               }
+            });
+
+            $("button#resetSystemConfiguration").unbind('click').bind('click', function() {
+               //we ask for confirmation before resetting all system configuration
+               modals.confirmation.load(function() {
+                  showConfirmModal(btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.system-configuration.confirmResetToDefault"),
+                          function () {
+                             //restore to default has been confirmed
+
+                             var errorOccurred = false;
+
+                             //we get all default values of each parameters on set it as value
+
+                             configuration["developerMode"].value = configuration["developerMode"].default_value;
+                             if (!SystemConfigurationManager.updateToServerSync(configuration["developerMode"])) {
+                                errorOccurred = true;
+                             }
+
+                             //other system configuration items have to be inserted here
+
+                             if (errorOccurred) {
+                                //an error has occurred during saving
+                                notifyError($.t("modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"));
+                             }
+                             else {
+                                //we show that configuration has been successfully saved
+                                notifySuccess($.t("modals.dashboard.sub-windows.system-configuration.defaultConfigurationRestored"));
+                             }
+
+                             //we ask to reload the modal
+                             initializeSystemConfigurationDashboard();
+                          });
+               });
+            });
          }
       });
    }
+
+
+
 </script>

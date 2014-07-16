@@ -143,7 +143,11 @@
                         "none" : "None"
                      }
                   }
-               }
+               },
+               "confirmResetToDefault" : "This operation will restore all default configuration. Continue ?",
+               "configurationSaved" : "System configuration successfully saved",
+               "defaultConfigurationRestored" : "Default configuration restored",
+               "errorDuringSavingConfiguration" : "An error has occurred during saving system configuration"
             },
             "user-configuration" : {
                "title" : "User configuration"
@@ -245,6 +249,10 @@
       },
       "pageManager" : {
          "errorDuringGettingPages" : "Error during requesting pages"
+      },
+      "systemConfigurationManager" : {
+         "errorDuringGettingSystemConfiguration" : "Error during getting system configuration",
+         "errorUpdating" : "An error has occurred updating system configuration"
       }
    },
    "eventLogger" : {
