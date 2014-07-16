@@ -70,11 +70,15 @@ void CLinuxSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> context
       MemoryLoad.declareDevice(context);
       YadomsCPULoad.declareDevice(context);
 
+      // Event to be sent immediately for the first value
+      context->getEventHandler().createTimer(kEvtTimerRefreshCPULoad, shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
       // Timer used to read periodically CPU loads
       context->getEventHandler().createTimer(kEvtTimerRefreshCPULoad, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
       
+      // Event to be sent immediately for the first value
+      context->getEventHandler().createTimer(kEvtTimerRefreshDiskAndMemory, shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
       // Timer used to read periodically Disk Usage and Memory Load
-      context->getEventHandler().createTimer(kEvtTimerRefreshDiskAndMemory, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
+      context->getEventHandler().createTimer(kEvtTimerRefreshDiskAndMemory, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(300));
       
       // the main loop
       YADOMS_LOG(debug) << "LinuxSystemInformation plugin is running...";
