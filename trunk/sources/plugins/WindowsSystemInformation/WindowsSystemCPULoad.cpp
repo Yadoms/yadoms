@@ -8,6 +8,9 @@
 
 #pragma comment(lib, "pdh.lib")
 
+//TODO : Les messages d'erreurs peuvent être obtenus via cela :
+// http://msdn.microsoft.com/en-us/library/aa373046%28VS.85%29.aspx
+
 CWindowsSystemCPULoad::CWindowsSystemCPULoad(const std::string & deviceId)
    :m_deviceId(deviceId), m_CPULoad(0), m_Capacity("cpuload"), m_Keyword("WindowsCPULoad")
 {}
@@ -41,7 +44,7 @@ void CWindowsSystemCPULoad::Initialize()
       throw shared::exception::CException ( Message.str() );
    }
 #else
-   //TODO : A compléter pour que cela fonctionne pour d'autres langues -> PdhEnumObjects
+
    Status = PdhAddCounter(m_cpuQuery, TEXT("\\Processor(_Total)\\% Processor Time") , NULL, &m_cpuTotal);
 
    if (Status != ERROR_SUCCESS) 
