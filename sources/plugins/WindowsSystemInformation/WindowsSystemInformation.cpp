@@ -133,6 +133,8 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
                      CPULoad.historizeData(context);
 
                      ss2 << std::fixed << std::setprecision(2) << YadomsCPULoad.getValue();
+                     YadomsCPULoad.historizeData(context);
+
                      YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  Yadoms CPU Load : " << ss2.str();
                   }
                   catch (boost::system::system_error& e)

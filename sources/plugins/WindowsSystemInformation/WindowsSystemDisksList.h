@@ -19,15 +19,14 @@ public:
    virtual ~CWindowsSystemDisksList();
 
    //--------------------------------------------------------------
-   /// \brief	    Returns read (computed) CPU load
-   /// \return     Temperature in �C
+   /// \brief	    Returns the Drive List
    //--------------------------------------------------------------
    std::vector<std::string>& getList();
 
 private:
 
    //--------------------------------------------------------------
-   /// \brief	    Memory Load in %
+   /// \brief	    Drive List vector
    //--------------------------------------------------------------
    std::vector<std::string> DrivesList;
 };

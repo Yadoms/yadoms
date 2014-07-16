@@ -85,5 +85,7 @@ double CLinuxSystemYadomsCPULoad::getValue()
    lastSysCPU = timeSample.tms_stime;
    lastUserCPU = timeSample.tms_utime;
 
+   m_CPULoad = percent;
+
    return percent;
 }
