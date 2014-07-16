@@ -101,6 +101,8 @@ void CRaspBerryPiSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> c
 
                      ss2 << std::fixed << std::setprecision(2) << YadomsCPULoad.getValue();
 
+                     YadomsCPULoad.historizeData(context);
+
                      YADOMS_LOG(debug) << "RaspBerryPiSystemInformation plugin :  Yadoms CPU Load : " << ss2.str();
 
                   }

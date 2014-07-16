@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <shared/Log.h>
 #include "LinuxSystemCPULoad.h"
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
@@ -45,7 +46,7 @@ void CLinuxSystemCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> cont
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
    
-   context->historizeData(m_deviceId, getKeyword()  , m_CPULoad);
+   context->historizeData(m_deviceId, getKeyword(), m_CPULoad);
 }
 
 double CLinuxSystemCPULoad::getValue()
@@ -78,6 +79,8 @@ double CLinuxSystemCPULoad::getValue()
    lastTotalUserLow = totalUserLow;
    lastTotalSys = totalSys;
    lastTotalIdle = totalIdle;
+
+   m_CPULoad = percent;
 
    return percent;
 }

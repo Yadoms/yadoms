@@ -79,6 +79,8 @@ double CRaspBerryPiSystemCPULoad::getValue()
    lastTotalSys = totalSys;
    lastTotalIdle = totalIdle;
 
+   m_CPULoad = percent;
+
    return percent;
 }
 

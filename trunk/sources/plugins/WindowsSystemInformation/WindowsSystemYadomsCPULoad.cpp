@@ -99,8 +99,10 @@ double CWindowsSystemYadomsCPULoad::getValue()
         lastCPU = now;
         lastUserCPU = user;
         lastSysCPU = sys;
+
+        m_CPULoad = percent * 100;
     
-        return percent * 100;
+        return m_CPULoad;
    }
    else
    {

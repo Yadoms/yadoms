@@ -66,7 +66,9 @@ double CRaspBerryPiSystemMemoryLoad::getValue()
    YADOMS_LOG(debug) << "virtual memory used  :" << virtualMemUsed;
    YADOMS_LOG(debug) << "total virtual memory :" << totalVirtualMem;
 
-   return virtualMemUsed*100/double(totalVirtualMem);
+   m_memoryLoad = virtualMemUsed*100/double(totalVirtualMem);
+
+   return m_memoryLoad;
 }
 
 

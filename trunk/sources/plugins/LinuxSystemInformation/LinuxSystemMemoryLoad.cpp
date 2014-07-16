@@ -69,7 +69,9 @@ double CLinuxSystemMemoryLoad::getValue()
    
    //FIXME : Cette méthode renvoie une valeur supérieure à ce que me renvoie le moniteur système d'Ubuntu ... A vérifier. Domoticz donne la meme chose. A vérifier avec une autre fonction mémoire en ligne de commande.
 
-   return virtualMemUsed*100/double(totalVirtualMem);
+   m_memoryLoad = virtualMemUsed*100/double(totalVirtualMem);
+
+   return m_memoryLoad;
 }
 
 

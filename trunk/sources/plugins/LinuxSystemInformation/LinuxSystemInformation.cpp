@@ -100,6 +100,7 @@ void CLinuxSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> context
                      CPULoad.historizeData(context);
 
                      ss2 << std::fixed << std::setprecision(2) << YadomsCPULoad.getValue();
+                     YadomsCPULoad.historizeData(context);
 
                      YADOMS_LOG(debug) << "LinuxSystemInformation plugin :  Yadoms CPU Load : " << ss2.str();
 
