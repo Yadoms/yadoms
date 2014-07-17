@@ -108,6 +108,14 @@
             "regexErrorMessage" : "The name of the device must contains at least one character"
          }
       },
+      "configure-keyword" : {
+         "title" : "Keyword configuration",
+         "friendlyName-configuration" : {
+            "name" : "Name",
+            "description" : "Friendly name of your keyword",
+            "regexErrorMessage" : "The name of the keyword must contains at least one character"
+         }
+      },
       "qrcode" : {
          "title" : "QR Code de Yadoms",
          "text" : "Here is the QRCode of Yadoms. You can now flash it with your phone to access Yadoms everywhere."
@@ -184,14 +192,21 @@
                "table" : {
                   "name" : "Name",
                   "attachedTo" : "Attached to plugin",
-                  "model" : "model",
+                  "model" : "Model",
                   "actions" : "Actions"
+               },
+               "details" : {
+                  "table" : {
+                     "name" : "Keyword name",
+                     "units" : "Units",
+                     "actions" : "Actions"
+                  }
                },
                "configure" : "Configure the device",
                "delete" : "Delete the device",
                "confirmDeviceDeletion" : "This action will delete the device __deviceName__ and all of its data. Continue anyway ?",
                "errorGettingDeviceList" : "An error has occurred acquiring device list",
-               "errorGettingAttachedPlugin" : "An error has occurred acquiring attached plugin information"
+               "errorGettingDeviceDetailsList" : "An error has occurred acquiring device details list"
             },
             "update" : {
                "title" : "Update"
@@ -229,6 +244,7 @@
       },
       "deviceManager" : {
          "errorGettingAttachedPlugin" : "An error has occurred getting plugin package of device __deviceName__",
+         "errorGettingDeviceDetails" : "An error has occurred getting device details of __deviceName__",
          "errorDeleting" : "An error has occurred deleting __deviceName__",
          "errorCreating" : "An error has occurred creating __deviceName__",
          "errorUpdating" : "An error has occurred updating __deviceName__"
@@ -253,6 +269,9 @@
       "systemConfigurationManager" : {
          "errorDuringGettingSystemConfiguration" : "Error during getting system configuration",
          "errorUpdating" : "An error has occurred updating system configuration"
+      },
+      "generic" : {
+         "errorUpdating" : "An error has occurred updating __objectName__"
       }
    },
    "eventLogger" : {

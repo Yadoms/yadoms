@@ -107,6 +107,8 @@
    <script src="js/objects/widget-package-manager.js"></script>
    <script src="js/objects/system-configuration-manager.js"></script>
    <script src="js/objects/system-configuration-item.js"></script>
+   <script src="js/objects/keyword.js"></script>
+   <script src="js/objects/keyword-manager.js"></script>
 
    <script src="libs/jqBootstrapValidation/js/jqBootstrapValidation.js"></script>
 
@@ -174,6 +176,7 @@
       modals.pluginAdd = new LazyLoaderManager("modals/add_plugin.html");
       modals.pluginConfigure = new LazyLoaderManager("modals/configure_plugin.html");
       modals.deviceConfigure = new LazyLoaderManager("modals/configure_device.html");
+      modals.keywordConfigure = new LazyLoaderManager("modals/configure_keyword.html");
 
       var option = { resGetPath: 'locales/__lng__.json', fallbackLng:"en",useDataAttrOptions: true};
       i18n.init(option, function() {

@@ -21,31 +21,55 @@ DeviceManager.factory = function(json) {
 
 DeviceManager.getAttachedPlugin = function(device, callback) {
    assert(!isNullOrUndefined(device), "device must be defined");
-   //we ask for the status of current pluginInstance
+   //we ask for the status of current device
    $.getJSON("/rest/plugin/" + device.pluginId)
       .done(function(data) {
          //we parse the json answer
-         //the default answer is false
-         var result = false;
          if (data.result != "true")
          {
             notifyError($.t("objects.deviceManager.errorGettingAttachedPlugin", {deviceName : device.friendlyName}), JSON.stringify(data));
             return;
          }
-         if (parseBool(data.data.running))
-         {
-            result = true;
-         }
-         
+
          //we save the attachedPlugin into the object
-         device.attachedPlugin = PluginManager.factory(data.data);
+         device.attachedPlugin = PluginInstanceManager.factory(data.data);
          
          if ($.isFunction(callback))
-            callback(result);
+            callback();
 
-         return result;
       })
       .fail(function() { notifyError($.t("objects.deviceManager.errorGettingAttachedPlugin", {deviceName : device.friendlyName})); });
+};
+
+DeviceManager.getKeywords = function(device, callback) {
+   assert(!isNullOrUndefined(device), "device must be defined");
+
+   if (isNullOrUndefined(device.keywords)) {
+      //we ask for the keywords of current device
+      $.getJSON("/rest/device/" + device.id + "/keyword")
+         .done(function(data) {
+            //we parse the json answer
+            if (data.result != "true")
+            {
+               notifyError($.t("objects.deviceManager.errorGettingDeviceDetails", {deviceName : device.friendlyName}), JSON.stringify(data));
+               return;
+            }
+
+            //we save the keyword list into the object
+            device.keywords = [];
+            $.each(data.data.keyword, function (index, value) {
+               device.keywords.push(KeywordManager.factory(value));
+            });
+
+            if ($.isFunction(callback))
+               callback();
+         })
+         .fail(function() { notifyError($.t("objects.deviceManager.errorGettingDeviceDetails", {deviceName : device.friendlyName})); });
+   }
+   else {
+      //keyword has already been gotten
+      callback();
+   }
 };
 
 DeviceManager.deleteFromServer = function(device, callback) {

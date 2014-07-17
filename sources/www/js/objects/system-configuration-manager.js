@@ -22,6 +22,10 @@ SystemConfigurationManager.factory = function(json) {
       json.default_value, json.description, json.securityAccess, json.last_modification_date);
 };
 
+//Here is the list of items of system configuration
+SystemConfigurationManager.items = {};
+SystemConfigurationManager.items.developerMode = "developerMode";
+
 SystemConfigurationManager.getAll = function(callback) {
    assert($.isFunction(callback), "callback must be defined");
 
