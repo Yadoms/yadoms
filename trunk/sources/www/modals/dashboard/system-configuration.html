@@ -26,7 +26,7 @@
 
             //we create configuration items
             //var authenticationMethodParameter = new EnumParameterHandler(i18nContext, "authenticationMethod", {values:{"none" : ""}}, currentConfiguration.authenticationMethod);
-            var developerModeParameter = new BoolParameterHandler(i18nContext, "developerMode", {defaultValue: false}, configuration["developerMode"].value);
+            var developerModeParameter = new BoolParameterHandler(i18nContext, SystemConfigurationManager.items.developerMode, {defaultValue: false}, configuration[SystemConfigurationManager.items.developerMode].value);
 
             //and add it to the gui
             //$modalBody.append(authenticationMethodParameter.getDOMObject());
@@ -48,9 +48,9 @@
                   var errorOccurred = false;
 
                   //we save current configuration
-                  configuration["developerMode"].value = developerModeParameter.getCurrentConfiguration();
+                  configuration[SystemConfigurationManager.items.developerMode].value = developerModeParameter.getCurrentConfiguration();
 
-                  if (!SystemConfigurationManager.updateToServerSync(configuration["developerMode"])) {
+                  if (!SystemConfigurationManager.updateToServerSync(configuration[SystemConfigurationManager.items.developerMode])) {
                      errorOccurred = true;
                   }
 
@@ -82,8 +82,8 @@
 
                              //we get all default values of each parameters on set it as value
 
-                             configuration["developerMode"].value = configuration["developerMode"].default_value;
-                             if (!SystemConfigurationManager.updateToServerSync(configuration["developerMode"])) {
+                             configuration[SystemConfigurationManager.items.developerMode].value = configuration[SystemConfigurationManager.items.developerMode].default_value;
+                             if (!SystemConfigurationManager.updateToServerSync(configuration[SystemConfigurationManager.items.developerMode])) {
                                 errorOccurred = true;
                              }
 

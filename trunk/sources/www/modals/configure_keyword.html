@@ -1,11 +1,11 @@
 <!--Configure device Modal -->
-<div class="modal fade" id="configure-device-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="configure-keyword-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
            <form class="form-horizontal" novalidate >
               <div class="modal-header">
                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                   <h4 class="modal-title" data-i18n="modals.configure-device.title"></h4>
+                   <h4 class="modal-title" data-i18n="modals.configure-keyword.title"></h4>
               </div>
               <div class="modal-body form-group">
                  <!--configuration will be inserted here-->
@@ -13,7 +13,7 @@
               <div class="modal-footer">
                  <div class="form-actions">
                     <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
-                    <button type="submit" id="btn-confirm-configure-device" class="btn btn-primary" data-i18n="common.ok"></button>
+                    <button type="submit" id="btn-confirm-configure-keyword" class="btn btn-primary" data-i18n="common.ok"></button>
                  </div>
               </div>
            </form>
@@ -22,15 +22,15 @@
 </div>
 
 <script>
-   function showConfigurationDeviceModal(device, callback) {
-      assert(!isNullOrUndefined(device), "device must be defined");
+   function showConfigurationKeywordModal(keyword, callback) {
+      assert(!isNullOrUndefined(keyword), "keyword must be defined");
       assert($.isFunction(callback), "callback must be defined");
 
-      var $modalBody = $("div#configure-device-modal .modal-body");
+      var $modalBody = $("div#configure-keyword-modal .modal-body");
       $modalBody.empty();
 
       //we append the text section
-      var friendlyNameParameter = new StringParameterHandler("modals.configure-device.", "friendlyName-configuration", {regex:'.+'}, device.friendlyName);
+      var friendlyNameParameter = new StringParameterHandler("modals.configure-keyword.", "friendlyName-configuration", {regex:'.+'}, keyword.friendlyName);
       $modalBody.append(friendlyNameParameter.getDOMObject());
 
       //we haven't any other configuration
@@ -46,13 +46,13 @@
          },
          submitSuccess: function($form, event) {
             event.preventDefault();
-            device.friendlyName = friendlyNameParameter.getCurrentConfiguration();
+            keyword.friendlyName = friendlyNameParameter.getCurrentConfiguration();
 
-            console.debug("End of Device Configuration : " + JSON.stringify(device));
+            console.debug("End of Keyword Configuration : " + JSON.stringify(keyword));
 
             $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
             $modalBody.empty();
-            $("div#configure-device-modal").modal("hide");
+            $("div#configure-keyword-modal").modal("hide");
             callback();
          },
          filter: function() {
@@ -62,6 +62,6 @@
       });
 
       //we display the modal
-      $('div#configure-device-modal').modal();
+      $('div#configure-keyword-modal').modal();
    }
 </script>

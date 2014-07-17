@@ -17,6 +17,7 @@ function Device(id, pluginId, name, friendlyName, model) {
    this.friendlyName = friendlyName;
    this.model = model;
    this.attachedPlugin = undefined;
+   this.keywords = undefined;
 }
 
 Device.prototype.toJSON = function () {
