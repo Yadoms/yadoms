@@ -372,7 +372,7 @@ namespace web { namespace rest { namespace service {
             if(keywordToUpdate.FriendlyName.isDefined())
             {
                m_dataProvider->getKeywordRequester()->updateKeywordFriendlyName(keywordId, keywordToUpdate.FriendlyName());
-               return web::rest::CResult::GenerateSuccess();
+               return web::rest::CResult::GenerateSuccess(m_dataProvider->getKeywordRequester()->getKeyword(keywordId));
             }
             else
             {
