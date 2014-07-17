@@ -120,7 +120,8 @@ namespace web { namespace rest { namespace service {
             configToUpdate.LastModificationDate = boost::posix_time::second_clock::universal_time();
             //commit changes to database
             m_dataProvider->getConfigurationRequester()->updateConfiguration(configToUpdate);
-            return web::rest::CResult::GenerateSuccess(getConfiguration(parameters, requestContent));
+
+            return web::rest::CResult::GenerateSuccess(m_dataProvider->getConfigurationRequester()->getConfiguration(section, keyname));
          }
          else
          {

@@ -41,8 +41,10 @@ CLoader::CLoader(int argc, const char* const argv[])
    try
    {
       // Load configuration from command line and complete with config file (second data read don't overwrite first)
+      // allow unregistered options (dont throw, just ignore them)
       po::variables_map vm;
-      po::store(po::parse_command_line(argc, argv, m_optionsDescription, po::command_line_style::default_style ^ po::command_line_style::allow_guessing), vm);
+      po::parsed_options parsed = po::command_line_parser(argc, argv).options(m_optionsDescription).allow_unregistered().run();
+      po::store(parsed, vm);
       if (boost::filesystem::exists(OptionalConfigFile))
          po::store(po::parse_config_file<char>(OptionalConfigFile.c_str(), m_optionsDescription, true), vm);
       po::notify(vm);

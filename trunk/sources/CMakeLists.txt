@@ -133,7 +133,10 @@ add_subdirectory(external-libs)
 set(YADOMS_SRC
 	server/stdafx.cpp
 	server/stdafx.h
-	server/main.cpp
+	
+	server/Application.h
+	server/Application.cpp
+	
 	server/Supervisor.cpp
 	server/Supervisor.h
 	server/System.cpp
@@ -266,6 +269,7 @@ source_group(server\\communication\\command  server/communication/command/*.*)
 
 # Tools
 set(YADOMS_SRC ${YADOMS_SRC}
+	server/tools/tools/IApplication.h
 	server/tools/tools/Version.h
 	server/tools/tools/Version.cpp
 	server/tools/tools/web/Uri.h
@@ -275,23 +279,39 @@ set(YADOMS_SRC ${YADOMS_SRC}
 )
 
 IF(WIN32)
-set(YADOMS_SRC ${YADOMS_SRC}
-	# Add here server/tools/windows/tools/ sources
-	server/tools/windows/tools/OperatingSystem.h
-	server/tools/windows/tools/OperatingSystem.cpp
-)	
+	set(YADOMS_SRC ${YADOMS_SRC}
+		# Add here server/tools/windows/tools/ sources
+		server/tools/windows/tools/ApplicationLoader.h
+		server/tools/windows/tools/ApplicationLoader.cpp		
+		server/tools/windows/tools/service/IApplicationServiceInformation.h
+		server/tools/windows/tools/service/ApplicationService.h
+		server/tools/windows/tools/service/ApplicationService.cpp
+		server/tools/windows/tools/service/ServiceBase.h
+		server/tools/windows/tools/service/ServiceBase.cpp
+		server/tools/windows/tools/service/ServiceInstaller.h
+		server/tools/windows/tools/service/ServiceInstaller.cpp
+		server/tools/windows/tools/service/ServiceInstallerProgramOptions.h
+		server/tools/windows/tools/service/ServiceInstallerProgramOptions.cpp
+		server/tools/windows/tools/service/ThreadPool.h
+		server/tools/windows/tools/OperatingSystem.h
+		server/tools/windows/tools/OperatingSystem.cpp
+	)	
 ELSEIF(APPLE)
-set(YADOMS_SRC ${YADOMS_SRC}
-	# Add here server/tools/mac/tools/ sources
-	server/tools/windows/tools/OperatingSystem.h
-	server/tools/windows/tools/OperatingSystem.cpp
-)	
+	set(YADOMS_SRC ${YADOMS_SRC}
+		# Add here server/tools/mac/tools/ sources
+		server/tools/mac/tools/ApplicationLoader.h
+		server/tools/mac/tools/ApplicationLoader.cpp
+		server/tools/mac/tools/OperatingSystem.h
+		server/tools/mac/tools/OperatingSystem.cpp
+	)	
 ELSE()
-set(YADOMS_SRC ${YADOMS_SRC}
-	# Add here server/tools/linux/tools/ sources
-	server/tools/windows/tools/OperatingSystem.h
-	server/tools/windows/tools/OperatingSystem.cpp
-)	
+	set(YADOMS_SRC ${YADOMS_SRC}
+		# Add here server/tools/linux/tools/ sources
+		server/tools/linux/tools/ApplicationLoader.h
+		server/tools/linux/tools/ApplicationLoader.cpp
+		server/tools/linux/tools/OperatingSystem.h
+		server/tools/linux/tools/OperatingSystem.cpp
+	)	
 ENDIF()
 
 # Define include directories (allow easy includes)
@@ -308,8 +328,54 @@ ENDIF()
 source_group(server\\tools tools/*.*)
 source_group(server\\tools\\web tools/web/*.*)
 source_group(server\\tools\\platformSpecific\\windows server/tools/windows/tools/*.*)
+source_group(server\\tools\\platformSpecific\\windows\\service server/tools/windows/tools/service/*.*)
 source_group(server\\tools\\platformSpecific\\linux server/tools/linux/tools/*.*)
 source_group(server\\tools\\platformSpecific\\mac server/tools/mac/tools/*.*)
+
+
+
+
+# Entry point
+
+IF(WIN32)
+	set(YADOMS_SRC ${YADOMS_SRC}
+		# Add here server/entryPoint/windows/entryPoint/ sources
+		server/entryPoint/windows/entryPoint/main.cpp		
+		server/entryPoint/windows/entryPoint/YadomsServiceInformation.h
+		server/entryPoint/windows/entryPoint/YadomsServiceInformation.cpp		
+	)	
+ELSEIF(APPLE)
+	set(YADOMS_SRC ${YADOMS_SRC}
+		# Add here server/entryPoint/mac/entryPoint/ sources
+		server/entryPoint/mac/entryPoint/main.cpp	
+	)	
+ELSE()
+	set(YADOMS_SRC ${YADOMS_SRC}
+		# Add here server/entryPoint/linux/entryPoint/ sources
+		server/entryPoint/linux/entryPoint/main.cpp	
+	)	
+ENDIF()
+
+# Define include directories (allow easy includes)
+set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/entryPoint)
+
+IF(WIN32)
+	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/entryPoint/windows)
+ELSEIF(APPLE)
+	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/entryPoint/mac)
+ELSE()
+	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/server/entryPoint/linux)
+ENDIF()
+
+source_group(server\\entryPoint\\windows server/entryPoint/windows/entryPoint/*.*)
+source_group(server\\entryPoint\\mac server/entryPoint/mac/entryPoint/*.*)
+source_group(server\\entryPoint\\linux server/entryPoint/linux/entryPoint/*.*)
+
+
+
+
+
+
 
 #Database
 IF(USE_SQLITE_DATABASE)

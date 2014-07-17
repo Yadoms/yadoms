@@ -138,6 +138,9 @@ void CSupervisor::doWork()
 
       pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", shared::CStringExtension::EmptyString);
 
+      //if the application need to notify its stop (mainly in case of service)
+      if (m_callbackAfterStopped)
+         m_callbackAfterStopped();
    }
    catch (std::exception& e)
    {
@@ -152,3 +155,12 @@ void CSupervisor::doWork()
          pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", "unknwon error");
    }
 }
+
+
+void CSupervisor::requestToStop(boost::function<void()> & callbackAfterStopped)
+{
+   m_callbackAfterStopped = callbackAfterStopped;
+   m_EventHandler.postEvent(kStopRequested);
+}
+
+

@@ -1,26 +1,27 @@
 #include "stdafx.h"
-/*
-\file main.cpp
-
-\brief Can use "brief" tag to explicitly generate comments for file documentation.
-
-*/
+#include "Application.h"
 
 #include <iostream>
-#include "Supervisor.h"
+
 #include "startupOptions/Loader.h"
 #include <shared/Log.h>
 
-
-/*
-\brief Main application entry point
-*/
-int main(int argc, char** argv)
+CApplication::CApplication()
 {
-   try
+}
+   
+
+CApplication::~CApplication()
+{
+}
+   
+   
+int CApplication::run(int argc, char ** argv)
+{
+  try
    {
       startupOptions::CLoader startupOptions(argc, argv);
-
+   
       if(startupOptions.getDebugFlag())
          shared::CLog::configure_file_per_thread(startupOptions.getLogLevel());
       else
@@ -42,10 +43,10 @@ int main(int argc, char** argv)
       YADOMS_LOG(info) << "********************************************************************";
 
 
-      CSupervisor supervisor(startupOptions);
+      m_supervisor.reset(new CSupervisor(startupOptions));
 
       // The main job
-      supervisor.doWork();
+      m_supervisor->doWork();
 
       YADOMS_LOG(info) << "Yadoms is stopped ";
    }
@@ -74,3 +75,12 @@ int main(int argc, char** argv)
 
    return 0;
 }
+
+void CApplication::stop(boost::function<void()> & callbackAfterStopped)
+{
+   if (m_supervisor)
+   {
+      m_supervisor->requestToStop(callbackAfterStopped);
+   }
+}
+
