@@ -26,7 +26,7 @@ KeywordManager.updateToServer = function(keyword, callback) {
    assert(!isNullOrUndefined(keyword), "keyword must be defined");
    $.ajax({
       type: "PUT",
-      url: "/rest/device/keyword" + keyword.id,
+      url: "/rest/device/keyword/" + keyword.id,
       data: JSON.stringify(keyword),
       contentType: "application/json; charset=utf-8",
       dataType: "json"

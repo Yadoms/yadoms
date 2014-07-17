@@ -141,7 +141,7 @@ function populateDeviceList(handler) {
 
                    $.each(newList, function(index, value) {
                       //foreach keyword
-                      $cbKeywords.append("<option value=\"" + value.id + "\">" + value.name + "</option>");
+                      $cbKeywords.append("<option value=\"" + value.id + "\">" + decodeURIComponent(value.friendlyName) + "</option>");
 
                       //we restore previously set value only if the deviceId is the same than the last one in the configuration
                       if (handler.value.deviceId == $deviceList.val()) {
