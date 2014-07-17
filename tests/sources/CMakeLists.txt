@@ -92,7 +92,8 @@ set(BOOST_LIBS
 	log 
 	log_setup 
 	program_options
-   unit_test_framework system
+   unit_test_framework 
+	system
 	regex
 )
 
