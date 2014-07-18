@@ -13,13 +13,13 @@ SystemConfigurationManager.factory = function(json) {
    assert(!isNullOrUndefined(json.section), "json.section must be defined");
    assert(!isNullOrUndefined(json.name), "json.name must be defined");
    assert(!isNullOrUndefined(json.value), "json.value must be defined");
-   assert(!isNullOrUndefined(json.default_value), "json.default_value must be defined");
+   assert(!isNullOrUndefined(json.defaultValue), "json.defaultValue must be defined");
    assert(!isNullOrUndefined(json.description), "json.description must be defined");
    assert(!isNullOrUndefined(json.securityAccess), "json.securityAccess must be defined");
-   assert(!isNullOrUndefined(json.last_modification_date), "json.last_modification_date must be defined");
+   assert(!isNullOrUndefined(json.lastModificationDate), "json.lastModificationDate must be defined");
 
    return new SystemConfigurationItem(json.section, json.name, json.value,
-      json.default_value, json.description, json.securityAccess, json.last_modification_date);
+      json.defaultValue, json.description, json.securityAccess, json.lastModificationDate);
 };
 
 //Here is the list of items of system configuration

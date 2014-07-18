@@ -9,15 +9,17 @@
  */
 function DateTimeFormatter(format, timeZone) {
 
-   if (!isNullOrUndefined(DateTimeFormatter))
+   if (!isNullOrUndefined(format))
       this.format = format;
    else
-      this.format = "DD/MM/YYYY HH:mm:ss";
+      this.format = "LLL";
 
    if (!isNullOrUndefined(timeZone))
       this.timeZone = timeZone;
    else
       this.timeZone = "Europe/Paris";
+
+   moment.lang("fr");
 }
 
 /**
