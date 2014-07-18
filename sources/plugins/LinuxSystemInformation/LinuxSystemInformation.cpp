@@ -37,9 +37,9 @@ void CLinuxSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> context
    {
       YADOMS_LOG(debug) << "CLinuxSystemInformation is starting...";
 
-      CLinuxSystemMemoryLoad    MemoryLoad   ("MemoryLoad");
-      CLinuxSystemCPULoad       CPULoad      ("CPULoad");
-      CLinuxSystemYadomsCPULoad YadomsCPULoad("YadomsCPULoad");
+      CLinuxSystemMemoryLoad    MemoryLoad   ("System");
+      CLinuxSystemCPULoad       CPULoad      ("System");
+      CLinuxSystemYadomsCPULoad YadomsCPULoad("System");
       
       CLinuxSystemDisksList     DisksList;
 
@@ -55,11 +55,9 @@ void CLinuxSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> context
       for(DisksListIterator=TempList.begin(); DisksListIterator!=TempList.end(); ++DisksListIterator)
 	   {
          std::ostringstream ssKeyword;
-         std::ostringstream ssName;
 
-         ssKeyword << "LinuxDiskUsage" << counterDisk;
-         ssName << "DiskUsage" << counterDisk;
-         CLinuxSystemDiskUsage DiskUsage(ssName.str(), *DisksListIterator, ssKeyword.str());
+         ssKeyword << "DiskUsage" << counterDisk;
+         CLinuxSystemDiskUsage DiskUsage("System", *DisksListIterator, ssKeyword.str());
 
          DiskUsage.declareDevice(context);
          DiskUsageList.push_back(DiskUsage);

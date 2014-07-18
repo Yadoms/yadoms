@@ -5,10 +5,11 @@
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 #include <pdh.h>
+#include <pdhmsg.h>
 
 #pragma comment(lib, "pdh.lib")
 
-//TODO : Les messages d'erreurs peuvent être obtenus via cela :
+//Error Messages could be obtained with this function:
 // http://msdn.microsoft.com/en-us/library/aa373046%28VS.85%29.aspx
 
 CWindowsSystemCPULoad::CWindowsSystemCPULoad(const std::string & deviceId)
@@ -19,6 +20,17 @@ void CWindowsSystemCPULoad::Initialize()
 {
    PDH_STATUS Status;
 
+   hPdhLibrary = LoadLibrary("pdh.dll");
+
+   if (NULL == hPdhLibrary)
+    {
+       std::stringstream Message;
+       Message << "LoadLibrary failed with status:"; 
+       Message << std::hex << GetLastError();
+       m_InitializeOk = false;
+       throw shared::exception::CException ( Message.str() );
+    }
+
    // Create the Query
    Status = PdhOpenQuery(NULL, NULL, &m_cpuQuery);
 
@@ -26,8 +38,8 @@ void CWindowsSystemCPULoad::Initialize()
    {
       std::stringstream Message; 
       Message << "PdhOpenQuery failed with status:"; 
-      Message << GetLastError();
-	  m_InitializeOk = false;
+      Message << std::hex << GetLastError();
+	   m_InitializeOk = false;
       throw shared::exception::CException ( Message.str() );
    }
 
@@ -39,7 +51,7 @@ void CWindowsSystemCPULoad::Initialize()
    {
       std::stringstream Message; 
       Message << "PdhAddEnglishCounter failed with status:"; 
-      Message << GetLastError();
+      Message << std::hex << GetLastError();
 	  m_InitializeOk = false;
       throw shared::exception::CException ( Message.str() );
    }
@@ -51,7 +63,7 @@ void CWindowsSystemCPULoad::Initialize()
    {
       std::stringstream Message; 
       Message << "PdhAddCounter failed with status:"; 
-      Message << GetLastError();
+      Message << std::hex <<  GetLastError();
 	  m_InitializeOk = false;
       throw shared::exception::CException ( Message.str() );
    }
@@ -62,7 +74,7 @@ void CWindowsSystemCPULoad::Initialize()
    {
       std::stringstream Message; 
       Message << "PdhCollectQueryData failed with status:"; 
-      Message << GetLastError();
+      Message << std::hex << GetLastError();
 	  m_InitializeOk = false;
       throw shared::exception::CException ( Message.str() );
    }
@@ -82,7 +94,7 @@ CWindowsSystemCPULoad::~CWindowsSystemCPULoad()
 	   {
 		  std::stringstream Message; 
 		  Message << "PdhCloseQuery failed with status:"; 
-		  Message << GetLastError();
+		  Message << std::hex << GetLastError();
 
 		  YADOMS_LOG(debug) << Message.str();
 	   }
@@ -144,7 +156,7 @@ double CWindowsSystemCPULoad::getValue() /*const*/
 	   {
 		  std::stringstream Message; 
 		  Message << "PdhCollectQueryData failed with status:"; 
-		  Message << GetLastError();
+		  Message << std::hex << GetLastError();
 		  throw shared::exception::CException ( Message.str() );
 	   }
 
@@ -154,7 +166,7 @@ double CWindowsSystemCPULoad::getValue() /*const*/
 	   {
 		  std::stringstream Message; 
 		  Message << "PdhGetFormattedCounterValue failed with status:"; 
-		  Message << GetLastError();
+		  Message << std::hex << GetLastError();
 		  throw shared::exception::CException ( Message.str() );
 	   }
 
