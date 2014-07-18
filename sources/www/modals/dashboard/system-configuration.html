@@ -28,6 +28,13 @@
             //var authenticationMethodParameter = new EnumParameterHandler(i18nContext, "authenticationMethod", {values:{"none" : ""}}, currentConfiguration.authenticationMethod);
             var developerModeParameter = new BoolParameterHandler(i18nContext, SystemConfigurationManager.items.developerMode, {defaultValue: false}, configuration[SystemConfigurationManager.items.developerMode].value);
 
+            //we create language selection list
+
+
+            //we create timezone selection list
+            //TODO
+            // moment.tz.zones()
+
             //and add it to the gui
             //$modalBody.append(authenticationMethodParameter.getDOMObject());
             $modalBody.append(developerModeParameter.getDOMObject());
@@ -82,7 +89,7 @@
 
                              //we get all default values of each parameters on set it as value
 
-                             configuration[SystemConfigurationManager.items.developerMode].value = configuration[SystemConfigurationManager.items.developerMode].default_value;
+                             configuration[SystemConfigurationManager.items.developerMode].value = configuration[SystemConfigurationManager.items.developerMode].defaultValue;
                              if (!SystemConfigurationManager.updateToServerSync(configuration[SystemConfigurationManager.items.developerMode])) {
                                 errorOccurred = true;
                              }
