@@ -38,11 +38,12 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
       YADOMS_LOG(debug) << "CWindowsSystemInformation is starting...";
 
 	  //declarations
-
-      CWindowsSystemMemoryLoad    MemoryLoad   ("MemoryLoad");
-      CWindowsSystemCPULoad       CPULoad      ("CPULoad");
-      CWindowsSystemYadomsCPULoad YadomsCPULoad("YadomsCPULoad");
       
+      CWindowsSystemMemoryLoad    MemoryLoad   ("System");
+      CWindowsSystemCPULoad       CPULoad      ("System");
+      CWindowsSystemYadomsCPULoad YadomsCPULoad("System");
+
+
       CWindowsSystemDisksList     DisksList;
 
       std::vector<std::string>::const_iterator DisksListIterator;
@@ -86,11 +87,9 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
       for(DisksListIterator=TempList.begin(); DisksListIterator!=TempList.end(); ++DisksListIterator)
 	   {
          std::ostringstream ssKeyword;
-         std::ostringstream ssName;
 
-         ssKeyword << "WindowsDiskUsage" << counterDisk;
-         ssName << "DiskUsage" << counterDisk;
-         CWindowsSystemDiskUsage DiskUsage(ssName.str(), *DisksListIterator, ssKeyword.str());
+         ssKeyword << "DiskUsage" << counterDisk;
+         CWindowsSystemDiskUsage DiskUsage("System", *DisksListIterator, ssKeyword.str());
 
 		 try
 		 {
