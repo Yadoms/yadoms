@@ -59,10 +59,10 @@ namespace database { namespace entities {
       ((Section)(std::string)("")("section"))
       ((Name)(std::string)("")("name"))
       ((Value)(std::string)("")("value"))
-      ((DefaultValue)(std::string)("")("default_value"))
+      ((DefaultValue)(std::string)("")("defaultValue"))
       ((Description)(std::string)("")("description"))
       ((SecurityAccess)(database::entities::ESecurityAccess)(database::entities::ESecurityAccess::kNone)("securityAccess"))
-      ((LastModificationDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time())("last_modification_date"))
+      ((LastModificationDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time())("lastModificationDate"))
       );
 
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(

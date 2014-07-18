@@ -25,13 +25,9 @@ namespace database { namespace sqlite { namespace requesters {
    void CConfiguration::create(database::entities::CConfiguration& configurationToCreate)
    {
       boost::posix_time::ptime insertDate = boost::posix_time::second_clock::universal_time();
-      if (configurationToCreate.LastModificationDate.isDefined())
-         insertDate = configurationToCreate.LastModificationDate();
-
       CQuery qInsert;
       qInsert. InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName(), CConfigurationTable::getDefaultValueColumnName(), CConfigurationTable::getLastModificationDateColumnName()).
          Values(configurationToCreate.Section(), configurationToCreate.Name(), configurationToCreate.Value(), configurationToCreate.Description(), configurationToCreate.DefaultValue(), insertDate);
-//         Values(configurationToCreate.Section(), configurationToCreate.Name(), configurationToCreate.Value(), configurationToCreate.Description(), configurationToCreate.DefaultValue(), boost::gregorian::day_clock::universal_day());
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
    }
@@ -94,10 +90,12 @@ namespace database { namespace sqlite { namespace requesters {
 
    void CConfiguration::updateConfiguration(database::entities::CConfiguration& configurationToUpdate)
    {
+      boost::posix_time::ptime updateDate = boost::posix_time::second_clock::universal_time();
+
       CQuery qUpdate;
       qUpdate. Update(CConfigurationTable::getTableName()).
          Set(CConfigurationTable::getValueColumnName(), configurationToUpdate.Value(),
-         CConfigurationTable::getLastModificationDateColumnName(), configurationToUpdate.LastModificationDate()).
+         CConfigurationTable::getLastModificationDateColumnName(), updateDate).
          Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, configurationToUpdate.Section()).
          And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, configurationToUpdate.Name());
 
