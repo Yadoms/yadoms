@@ -10,10 +10,10 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Configuration, " CREATE TABLE Configuration
                                                       (  section VARCHAR(50) NOT NULL,                            \
                                                          name VARCHAR(50) NOT NULL,                               \
                                                          value TEXT NOT NULL,                                     \
-                                                         default_value TEXT,                                      \
+                                                         defaultValue TEXT,                                      \
                                                          description TEXT,                                        \
-                                                         security_access  INTEGER DEFAULT 0,                      \
-                                                         last_modification_date DATETIME,                         \
+                                                         securityAccess  INTEGER DEFAULT 0,                      \
+                                                         lastModificationDate DATETIME,                         \
                                                          PRIMARY KEY(section,name)                                \
                                                       )")
 
@@ -25,7 +25,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Plugin, "CREATE TABLE Plugin               
                                                    name TEXT NOT NULL,                                            \
                                                    type TEXT NOT NULL,                                            \
                                                    configuration  TEXT,                                           \
-                                                   auto_start  INTEGER DEFAULT 1                                   \
+                                                   autoStart  INTEGER DEFAULT 1                                   \
                                                 )")
 
 

@@ -11,17 +11,17 @@ namespace sqlite {
       ((Name)("name"))
       ((Type)("type"))
       ((Configuration)("configuration"))
-      ((AutoStart)("auto_start"))
+      ((AutoStart)("autoStart"))
    )
 
    DECLARE_TABLE_COLUMN_NAMES(Configuration,  "Configuration",
       ((Section)("section"))
       ((Name)("name"))
       ((Value)("value"))
-      ((DefaultValue)("default_value"))
+      ((DefaultValue)("defaultValue"))
       ((Description)("description"))
-      ((SecurityAccess)("security_access"))
-      ((LastModificationDate)("last_modification_date"))
+      ((SecurityAccess)("securityAccess"))
+      ((LastModificationDate)("lastModificationDate"))
    )
 
 

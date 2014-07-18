@@ -84,9 +84,6 @@ namespace web { namespace rest { namespace service {
       if (m_dataProvider->getConfigurationRequester()->exists(configToCreate.Section(), configToCreate.Name()))
          return web::rest::CResult::GenerateError("The entry to create already exists");
 
-      //update modification date
-      configToCreate.LastModificationDate = boost::posix_time::second_clock::universal_time();
-
       //commit changes to database
       m_dataProvider->getConfigurationRequester()->create(configToCreate);
 
@@ -116,8 +113,6 @@ namespace web { namespace rest { namespace service {
             //ensure section and name are corretly filled
             configToUpdate.Section = section;
             configToUpdate.Name = keyname;
-            //update modification date
-            configToUpdate.LastModificationDate = boost::posix_time::second_clock::universal_time();
             //commit changes to database
             m_dataProvider->getConfigurationRequester()->updateConfiguration(configToUpdate);
 
