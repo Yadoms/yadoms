@@ -20,17 +20,6 @@ void CWindowsSystemCPULoad::Initialize()
 {
    PDH_STATUS Status;
 
-   hPdhLibrary = LoadLibrary("pdh.dll");
-
-   if (NULL == hPdhLibrary)
-    {
-       std::stringstream Message;
-       Message << "LoadLibrary failed with status:"; 
-       Message << std::hex << GetLastError();
-       m_InitializeOk = false;
-       throw shared::exception::CException ( Message.str() );
-    }
-
    // Create the Query
    Status = PdhOpenQuery(NULL, NULL, &m_cpuQuery);
 

@@ -16,7 +16,7 @@
 IMPLEMENT_PLUGIN(CWindowsSystemInformation)
 
 
-CWindowsSystemInformation::CWindowsSystemInformation()
+CWindowsSystemInformation::CWindowsSystemInformation(): m_DeviceName("System")
 {
 }
 
@@ -39,9 +39,9 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
 
 	  //declarations
       
-      CWindowsSystemMemoryLoad    MemoryLoad   ("System");
-      CWindowsSystemCPULoad       CPULoad      ("System");
-      CWindowsSystemYadomsCPULoad YadomsCPULoad("System");
+      CWindowsSystemMemoryLoad    MemoryLoad   (m_DeviceName);
+      CWindowsSystemCPULoad       CPULoad      (m_DeviceName);
+      CWindowsSystemYadomsCPULoad YadomsCPULoad(m_DeviceName);
 
 
       CWindowsSystemDisksList     DisksList;
@@ -89,7 +89,7 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
          std::ostringstream ssKeyword;
 
          ssKeyword << "DiskUsage" << counterDisk;
-         CWindowsSystemDiskUsage DiskUsage("System", *DisksListIterator, ssKeyword.str());
+         CWindowsSystemDiskUsage DiskUsage(m_DeviceName, *DisksListIterator, ssKeyword.str());
 
 		 try
 		 {
