@@ -8,7 +8,7 @@
 #include "RaspBerryPiSystemYadomsCPULoad.h"
 #include "RaspBerryPiSystemDiskUsage.h"
 #include "RaspBerryPiSystemDisksList.h"
-#include "RaspBerryPiTemperatureSensor.h"
+#include "RaspberryPiTemperatureSensor.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
