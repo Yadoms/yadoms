@@ -16,7 +16,7 @@
 IMPLEMENT_PLUGIN(CLinuxSystemInformation)
 
 
-CLinuxSystemInformation::CLinuxSystemInformation()
+CLinuxSystemInformation::CLinuxSystemInformation() : m_DeviceName("System")
 {
 }
 
@@ -37,9 +37,9 @@ void CLinuxSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> context
    {
       YADOMS_LOG(debug) << "CLinuxSystemInformation is starting...";
 
-      CLinuxSystemMemoryLoad    MemoryLoad   ("System");
-      CLinuxSystemCPULoad       CPULoad      ("System");
-      CLinuxSystemYadomsCPULoad YadomsCPULoad("System");
+      CLinuxSystemMemoryLoad    MemoryLoad   (m_DeviceName);
+      CLinuxSystemCPULoad       CPULoad      (m_DeviceName);
+      CLinuxSystemYadomsCPULoad YadomsCPULoad(m_DeviceName);
       
       CLinuxSystemDisksList     DisksList;
 
@@ -57,7 +57,7 @@ void CLinuxSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> context
          std::ostringstream ssKeyword;
 
          ssKeyword << "DiskUsage" << counterDisk;
-         CLinuxSystemDiskUsage DiskUsage("System", *DisksListIterator, ssKeyword.str());
+         CLinuxSystemDiskUsage DiskUsage(m_DeviceName, *DisksListIterator, ssKeyword.str());
 
          DiskUsage.declareDevice(context);
          DiskUsageList.push_back(DiskUsage);

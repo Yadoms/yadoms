@@ -8,6 +8,7 @@
 #include "RaspBerryPiSystemYadomsCPULoad.h"
 #include "RaspBerryPiSystemDiskUsage.h"
 #include "RaspBerryPiSystemDisksList.h"
+#include "RaspBerryPiTemperatureSensor.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -16,7 +17,7 @@
 IMPLEMENT_PLUGIN(CRaspBerryPiSystemInformation)
 
 
-CRaspBerryPiSystemInformation::CRaspBerryPiSystemInformation()
+CRaspBerryPiSystemInformation::CRaspBerryPiSystemInformation() : m_DeviceName("System")
 {
 }
 
@@ -37,10 +38,11 @@ void CRaspBerryPiSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> c
    {
       YADOMS_LOG(debug) << "CRaspBerryPiSystemInformation is starting...";
 
-      CRaspBerryPiSystemMemoryLoad    MemoryLoad   ("System");
-      CRaspBerryPiSystemCPULoad       CPULoad      ("System");
-      CRaspBerryPiSystemYadomsCPULoad YadomsCPULoad("System");
-      
+      CRaspBerryPiSystemMemoryLoad    MemoryLoad     (m_DeviceName);
+      CRaspBerryPiSystemCPULoad       CPULoad        (m_DeviceName);
+      CRaspBerryPiSystemYadomsCPULoad YadomsCPULoad  (m_DeviceName);
+      CRaspberryPITemperatureSensor   TemperatureCPU (m_DeviceName);
+	  
       CRaspBerryPiSystemDisksList     DisksList;
 
       std::vector<std::string>::const_iterator DisksListIterator;
@@ -57,7 +59,7 @@ void CRaspBerryPiSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> c
          std::ostringstream ssKeyword;
 
          ssKeyword << "DiskUsage" << counterDisk;
-         CRaspBerryPiSystemDiskUsage DiskUsage("System", *DisksListIterator, ssKeyword.str());
+         CRaspBerryPiSystemDiskUsage DiskUsage(m_DeviceName, *DisksListIterator, ssKeyword.str());
 
          DiskUsage.declareDevice(context);
          DiskUsageList.push_back(DiskUsage);
@@ -67,6 +69,7 @@ void CRaspBerryPiSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> c
       CPULoad.declareDevice(context);
       MemoryLoad.declareDevice(context);
       YadomsCPULoad.declareDevice(context);
+	  TemperatureCPU.declareDevice(context);
 
       // Event to be sent immediately for the first value
       context->getEventHandler().createTimer(kEvtTimerRefreshCPULoad, shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
@@ -92,21 +95,21 @@ void CRaspBerryPiSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> c
 
                   std::ostringstream ss1;
                   std::ostringstream ss2;
+				  std::ostringstream ss3;
 
                   try
                   {
                      ss1 << std::fixed << std::setprecision(2) << CPULoad.getValue();
-
+                     CPULoad.historizeData(context);
                      YADOMS_LOG(debug) << "RaspBerryPiSystemInformation plugin :  CPU Load : " << ss1.str();
 
-                     CPULoad.historizeData(context);
-
                      ss2 << std::fixed << std::setprecision(2) << YadomsCPULoad.getValue();
-
                      YadomsCPULoad.historizeData(context);
-
                      YADOMS_LOG(debug) << "RaspBerryPiSystemInformation plugin :  Yadoms CPU Load : " << ss2.str();
 
+                     ss2 << std::fixed << std::setprecision(2) << TemperatureCPU.getValue();
+                     TemperatureCPU.historizeData(context);
+                     YADOMS_LOG(debug) << "RaspBerryPiSystemInformation plugin :  CPU Temperature : " << ss2.str() << "°C";					 
                   }
                   catch (boost::system::system_error& e)
                   {
