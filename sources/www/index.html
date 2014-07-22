@@ -91,7 +91,9 @@
    <script src="libs/moment.js/js/moment-with-langs.min.js"></script>
    <script src="libs/moment.js/js/moment-timezone.min.js"></script>
    <script src="libs/moment.js/js/moment-timezone-data.min.js"></script>
+   <script src="libs/jsTimezoneDetect/js/jstz-1.0.4.min.js"></script>
 
+   <script src="js/iso-language-codes.js"></script>
    <script src="js/utility.js"></script>
    <script src="js/objects/page.js"></script>
    <script src="js/objects/widget.js"></script>
@@ -105,15 +107,15 @@
    <script src="js/objects/encryption-manager.js"></script>
    <script src="js/objects/widget-manager.js"></script>
    <script src="js/objects/widget-package-manager.js"></script>
-   <script src="js/objects/system-configuration-manager.js"></script>
-   <script src="js/objects/system-configuration-item.js"></script>
+   <script src="js/objects/configuration-manager.js"></script>
+   <script src="js/objects/configuration-item.js"></script>
    <script src="js/objects/keyword.js"></script>
    <script src="js/objects/keyword-manager.js"></script>
 
    <script src="libs/jqBootstrapValidation/js/jqBootstrapValidation.js"></script>
 
    <script src="js/objects/configuration/configuration-helper.js"></script>
-   <script src="js/objects/configuration/configuration-manager.js"></script>
+   <script src="js/objects/configuration/configuration-control-manager.js"></script>
    <script src="js/objects/configuration/int-parameter-handler.js"></script>
    <script src="js/objects/configuration/decimal-parameter-handler.js"></script>
    <script src="js/objects/configuration/enum-parameter-handler.js"></script>
@@ -126,8 +128,6 @@
 
    <script src="js/objects/event-logger/event-logger.js"></script>
    <script src="js/objects/event-logger/event-logger-helper.js"></script>
-
-
 
    <script src="js/widget-engine.js"></script>
    <script src="js/widget-customization.js"></script>
@@ -151,6 +151,9 @@
    var UpdateInterval = 1000;
    var UpdateIntervalInOfflineMode = 10000;
 
+   var language;
+   var timezone;
+
    var modals = {};
 
    /**
@@ -163,7 +166,6 @@
     * On page loaded
     */
    $(document).ready(function() {
-
       //we define all the modals to lazy load
       modals.widgetAdd = new LazyLoaderManager("modals/add_widget.html");
       modals.widgetConfiguration = new LazyLoaderManager("modals/configure_widget.html");
@@ -178,16 +180,52 @@
       modals.deviceConfigure = new LazyLoaderManager("modals/configure_device.html");
       modals.keywordConfigure = new LazyLoaderManager("modals/configure_keyword.html");
 
-      var option = { resGetPath: 'locales/__lng__.json', fallbackLng:"en",useDataAttrOptions: true};
+      //we start i18n engine
+      var option = { resGetPath: "locales/__lng__.json", fallbackLng:"en",useDataAttrOptions: true};
       i18n.init(option, function() {
          $("html").i18n();
-         initializeWidgetEngine();
+
+         //we get install/wizardRun key to have information if wizard has already been run
+         ConfigurationManager.get(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart,
+            function(result) {
+               var firstStart = true;
+               //we don't need to set default values
+               if ((!isNullOrUndefined(result)) && (!parseBool(result.value)))
+                  firstStart = false;
+
+               if (firstStart) {
+                  //we make the first start configuration
+                  notifyInformation($.t("mainPage.actions.firstRunConfiguration"));
+                  var navigatorLanguage = window.navigator.userLanguage || window.navigator.language;
+                  var navigatorTimezone = jstz.determine().name();
+                  //update configuration with these values
+                  var lng = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.language, navigatorLanguage, "", "language used by default");
+                  if (!isNullOrUndefined(lng)) {
+                     console.info("Language detected : " + navigatorLanguage);
+                     var tz = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.timezone, navigatorTimezone);
+                     if (!isNullOrUndefined(tz)) {
+                        console.info("Timezone detected : " + navigatorTimezone);
+                        //we save the fact that first start configuration has been made
+                        var firstStep = ConfigurationManager.createToServerSync(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart, "false", "true", "First start of Web app has been done");
+                        if (!isNullOrUndefined(firstStep)) {
+                           //we can start app
+                           main();
+                        }
+                     }
+                  }
+               }
+               else {
+                  //we start app normally
+                  main();
+               }
+            }
+         );
       });
 
       /**
-       * Callback of the click on the show qr code button
-       * Make lazy loading of the qrcode modal
-       */
+      * Callback of the click on the show qr code button
+      * Make lazy loading of the qrcode modal
+      */
       $("#btn-show-qrcode").click(function() {
          modals.qrCode.load(function() {$('#qrcode-modal').modal();});
       });
@@ -197,8 +235,8 @@
       });
 
       /**
-       * Exit customization pressed esc key
-       */
+      * Exit customization pressed esc key
+      */
       $(document).keyup(function(e) {
          //escape key
          if (e.keyCode == 27) {
@@ -207,9 +245,21 @@
             }
          }
          return false;
-      });
+         });
    });
-   
+
+   function main() {
+      //we get configuration
+      language = ConfigurationManager.getSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.language).value;
+      timezone = ConfigurationManager.getSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.timezone).value;
+
+      //we set the right language
+      i18n.setLng(language, function() {
+         $("html").i18n();
+         initializeWidgetEngine();
+      });
+   }
+
 	</script>
   </body>
 </html>

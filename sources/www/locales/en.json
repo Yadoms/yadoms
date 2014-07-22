@@ -18,7 +18,8 @@
       },
       "actions" : {
          "loadingPages" : "Loading Pages ...",
-         "loadingWidgetsOfPage" : "Loading widgets of __pageName__ page ..."
+         "loadingWidgetsOfPage" : "Loading widgets of __pageName__ page ...",
+         "firstRunConfiguration" : "First run configuration"
       },
       "customization" : {
          "addNewPage" : "Add a new page",
@@ -37,7 +38,8 @@
          "errorDuringRequestingNewLogEvents" : "Error during requesting new logs events",
          "youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline" : "You have been disconnected from the server or it has gone offline",
          "errorDuringRequestingDeviceLastData" : "Error during requesting device last data",
-         "errorSavingCustomization" : "Error saving customization"
+         "errorSavingCustomization" : "Error saving customization",
+         "errorMakingFirstConfiguration" : "Error making first configuration"
       },
       "notifications" : {
          "connectionToServerHasBeenRestored" : "Connection to server has been restored"
@@ -143,6 +145,10 @@
                   "developerMode" : {
                      "name" : "Developer mode",
                      "description" : "The developer mode add information in parts of the software to help development of plugins and widgets."
+                  },
+                  "language" : {
+                     "name" : "Default Language",
+                     "description" : "Define the language used by default for every users."
                   },
                   "authenticationMethod" : {
                      "name" : "Authentication method",
@@ -266,12 +272,12 @@
       "pageManager" : {
          "errorDuringGettingPages" : "Error during requesting pages"
       },
-      "systemConfigurationManager" : {
-         "errorDuringGettingSystemConfiguration" : "Error during getting system configuration",
-         "errorUpdating" : "An error has occurred updating system configuration"
+      "ConfigurationManager" : {
+         "errorDuringGettingSystemConfiguration" : "Error during getting configuration"
       },
       "generic" : {
-         "errorUpdating" : "An error has occurred updating __objectName__"
+         "errorUpdating" : "An error has occurred updating __objectName__",
+         "errorCreating" : "An error has occurred creating __objectName__"
       }
    },
    "eventLogger" : {
