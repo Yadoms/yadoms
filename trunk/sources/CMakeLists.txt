@@ -274,6 +274,8 @@ set(YADOMS_SRC ${YADOMS_SRC}
 	server/tools/tools/Version.cpp
 	server/tools/tools/web/Uri.h
 	server/tools/tools/web/Uri.cpp
+	server/tools/tools/web/UriSinglePatternValidator.h
+	server/tools/tools/web/UriSinglePatternValidator.cpp
 	server/tools/tools/web/FileDownloader.h
 	server/tools/tools/web/FileDownloader.cpp
 )

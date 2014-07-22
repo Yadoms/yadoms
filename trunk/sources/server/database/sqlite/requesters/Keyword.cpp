@@ -6,9 +6,10 @@
 #include "database/sqlite/adapters/SQLiteDatabaseAdapters.h"
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/exception/InvalidParameter.hpp>
+#include <shared/exception/OutOfRange.hpp>
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
-
+#include "tools/tools/web/UriSinglePatternValidator.h"
 
 namespace database { namespace sqlite { namespace requesters { 
 
@@ -38,6 +39,14 @@ namespace database { namespace sqlite { namespace requesters {
    // IKeywordRequester implementation
    void CKeyword::addKeyword(const database::entities::CKeyword& newKeyword)
    {
+      //validate keyword and capacity names
+      if(!tools::web::CUriSinglePatternValidator::isValid(newKeyword.CapacityName()))
+         throw shared::exception::COutOfRange("The capacity name do not match naming rules");
+      if (!tools::web::CUriSinglePatternValidator::isValid(newKeyword.Name()))
+         throw shared::exception::COutOfRange("The keyword name do not match naming rules");
+      
+
+
       CQuery qSelect;
 
       qSelect. SelectCount().
