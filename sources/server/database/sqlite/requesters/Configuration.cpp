@@ -92,15 +92,22 @@ namespace database { namespace sqlite { namespace requesters {
    {
       boost::posix_time::ptime updateDate = boost::posix_time::second_clock::universal_time();
 
-      CQuery qUpdate;
-      qUpdate. Update(CConfigurationTable::getTableName()).
-         Set(CConfigurationTable::getValueColumnName(), configurationToUpdate.Value(),
-         CConfigurationTable::getLastModificationDateColumnName(), updateDate).
-         Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, configurationToUpdate.Section()).
-         And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, configurationToUpdate.Name());
+      if (exists(configurationToUpdate.Section(), configurationToUpdate.Name()))
+      {
+         CQuery qUpdate;
+         qUpdate.Update(CConfigurationTable::getTableName()).
+            Set(CConfigurationTable::getValueColumnName(), configurationToUpdate.Value(),
+            CConfigurationTable::getLastModificationDateColumnName(), updateDate).
+            Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, configurationToUpdate.Section()).
+            And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, configurationToUpdate.Name());
 
-      if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-         throw shared::exception::CEmptyResult("No lines affected");
+         if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+            throw shared::exception::CEmptyResult("No lines affected");
+      }
+      else
+      {
+         return create(configurationToUpdate);
+      }
    }
 
    void CConfiguration::removeConfiguration(database::entities::CConfiguration& configurationToRemove)

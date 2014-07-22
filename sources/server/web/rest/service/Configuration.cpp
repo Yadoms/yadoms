@@ -147,7 +147,7 @@ namespace web { namespace rest { namespace service {
             m_dataProvider->getConfigurationRequester()->updateConfiguration(*pw);
          }
 
-         return web::rest::CResult::GenerateSuccess();
+         return getAllConfigurations(parameters, requestContent);
       }
       catch(std::exception &ex)
       {
@@ -178,7 +178,7 @@ namespace web { namespace rest { namespace service {
          m_dataProvider->getConfigurationRequester()->removeConfiguration(configToRemove);
       }
 
-      return shared::CDataContainer();
+      return web::rest::CResult::GenerateSuccess();
    }
 
 
