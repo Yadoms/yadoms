@@ -36,8 +36,6 @@ void CRaspBerryPiSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> c
 {
    try
    {
-      YADOMS_LOG(debug) << "CRaspBerryPiSystemInformation is starting...";
-
       CRaspBerryPiSystemMemoryLoad    MemoryLoad     (m_DeviceName);
       CRaspBerryPiSystemCPULoad       CPULoad        (m_DeviceName);
       CRaspBerryPiSystemYadomsCPULoad YadomsCPULoad  (m_DeviceName);
@@ -61,15 +59,15 @@ void CRaspBerryPiSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> c
          ssKeyword << "DiskUsage" << counterDisk;
          CRaspBerryPiSystemDiskUsage DiskUsage(m_DeviceName, *DisksListIterator, ssKeyword.str());
 
-         DiskUsage.declareDevice(context);
+         //DiskUsage.declareDevice(context);
          DiskUsageList.push_back(DiskUsage);
          ++counterDisk;
       }
 
-      CPULoad.declareDevice(context);
-      MemoryLoad.declareDevice(context);
-      YadomsCPULoad.declareDevice(context);
-	  TemperatureCPU.declareDevice(context);
+      //CPULoad.declareDevice(context);
+      //MemoryLoad.declareDevice(context);
+      //YadomsCPULoad.declareDevice(context);
+      //TemperatureCPU.declareDevice(context);
 
       // Event to be sent immediately for the first value
       context->getEventHandler().createTimer(kEvtTimerRefreshCPULoad, shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
@@ -95,7 +93,7 @@ void CRaspBerryPiSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> c
 
                   std::ostringstream ss1;
                   std::ostringstream ss2;
-				  std::ostringstream ss3;
+		  std::ostringstream ss3;
 
                   try
                   {
@@ -107,9 +105,9 @@ void CRaspBerryPiSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> c
                      YadomsCPULoad.historizeData(context);
                      YADOMS_LOG(debug) << "RaspBerryPiSystemInformation plugin :  Yadoms CPU Load : " << ss2.str();
 
-                     ss2 << std::fixed << std::setprecision(2) << TemperatureCPU.getValue();
+                     ss3 << std::fixed << std::setprecision(2) << TemperatureCPU.getValue();
                      TemperatureCPU.historizeData(context);
-                     YADOMS_LOG(debug) << "RaspBerryPiSystemInformation plugin :  CPU Temperature : " << ss2.str() << "°C";					 
+                     YADOMS_LOG(debug) << "RaspBerryPiSystemInformation plugin :  CPU Temperature : " << ss3.str() << "°C";				 
                   }
                   catch (boost::system::system_error& e)
                   {

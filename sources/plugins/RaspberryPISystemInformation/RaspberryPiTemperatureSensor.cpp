@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "RaspberryPITemperatureSensor.h"
+#include "RaspberryPiTemperatureSensor.h"
 #include <shared/Log.h>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 
@@ -30,22 +30,23 @@ const std::string& CRaspberryPITemperatureSensor::getKeyword() const
 
 void CRaspberryPITemperatureSensor::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
 {
+
    // Declare the device
    context->declareDevice(m_deviceId, getModel(), shared::CStringExtension::EmptyString);
 
    // Declare associated keywords (= values managed by this device)
-   context->declareKeyword(m_deviceId, "temp"  , yApi::CStandardCapacities::Temperature , yApi::IYadomsApi::kReadOnly);
+   context->declareKeyword(m_deviceId, "temp1" , yApi::CStandardCapacities::Temperature);
 }
 
 
 void CRaspberryPITemperatureSensor::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
-   context->historizeData(m_deviceId, "temp"  , m_temperature);
+   context->historizeData(m_deviceId, "temp1" , m_temperature);
 }
 
 
-bool CRaspberryPITemperatureSensor::read()
+double CRaspberryPITemperatureSensor::getValue()
 {
    try
    {
@@ -62,7 +63,7 @@ bool CRaspberryPITemperatureSensor::read()
       temperatureFile.close();
 
       m_temperature = atof(readValue.c_str()) / 1000.0;
-      return true;
+      return m_temperature;
    }
    catch(std::exception & ex)
    {
@@ -72,7 +73,7 @@ bool CRaspberryPITemperatureSensor::read()
    {
 	   YADOMS_LOG(error) << "Fail to read RaspberryPI thermal sensor";
    }
-   return false;
+   return 0;
 }
 
 const std::string& CRaspberryPITemperatureSensor::getModel()
