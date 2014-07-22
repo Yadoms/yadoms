@@ -20,6 +20,8 @@ IF(RASPBERRYPI)
 		RaspBerryPiSystemDiskUsage.cpp
 		RaspBerryPiSystemDisksList.h
 		RaspBerryPiSystemDisksList.cpp
+		RaspberryPiTemperatureSensor.cpp
+		RaspberryPiTemperatureSensor.h
 		ILoad.h
 	)
 
