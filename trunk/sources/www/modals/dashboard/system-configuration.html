@@ -19,17 +19,18 @@
       $modalBody.empty();
 
       //get current system configuration
-      SystemConfigurationManager.getAll(function(configuration) {
+      ConfigurationManager.getSection(ConfigurationManager.items.systemSection, function(configuration) {
          if (!isNullOrUndefined(configuration)) {
 
             var i18nContext = "modals.dashboard.sub-windows.system-configuration.configuration-items.";
 
             //we create configuration items
             //var authenticationMethodParameter = new EnumParameterHandler(i18nContext, "authenticationMethod", {values:{"none" : ""}}, currentConfiguration.authenticationMethod);
-            var developerModeParameter = new BoolParameterHandler(i18nContext, SystemConfigurationManager.items.developerMode, {defaultValue: false}, configuration[SystemConfigurationManager.items.developerMode].value);
+            var developerModeParameter = new BoolParameterHandler(i18nContext, ConfigurationManager.items.system.developerMode, {defaultValue: false}, configuration[ConfigurationManager.items.system.developerMode].value);
 
             //we create language selection list
 
+            var languageParameter = new EnumParameterHandler(i18nContext, ConfigurationManager.items.system.language, {"values" : isoLanguageCodes, "defaultValue" : language}, configuration[ConfigurationManager.items.system.language].value)
 
             //we create timezone selection list
             //TODO
@@ -37,6 +38,7 @@
 
             //and add it to the gui
             //$modalBody.append(authenticationMethodParameter.getDOMObject());
+            $modalBody.append(languageParameter.getDOMObject());
             $modalBody.append(developerModeParameter.getDOMObject());
 
             //we i18n the form
@@ -55,10 +57,23 @@
                   var errorOccurred = false;
 
                   //we save current configuration
-                  configuration[SystemConfigurationManager.items.developerMode].value = developerModeParameter.getCurrentConfiguration();
+                  configuration[ConfigurationManager.items.system.developerMode].value = developerModeParameter.getCurrentConfiguration();
 
-                  if (!SystemConfigurationManager.updateToServerSync(configuration[SystemConfigurationManager.items.developerMode])) {
+                  if (!ConfigurationManager.updateToServerSync(configuration[ConfigurationManager.items.system.developerMode])) {
                      errorOccurred = true;
+                  }
+
+                  configuration[ConfigurationManager.items.system.language].value = languageParameter.getCurrentConfiguration();
+
+                  if (!ConfigurationManager.updateToServerSync(configuration[ConfigurationManager.items.system.language])) {
+                     errorOccurred = true;
+                  }
+                  else {
+                     language = configuration[ConfigurationManager.items.system.language].value;
+                     //we change language of i18n
+                     i18n.setLng(language, function() {
+                        $("html").i18n();
+                     });
                   }
 
                   //other system configuration items have to be inserted here
@@ -89,8 +104,13 @@
 
                              //we get all default values of each parameters on set it as value
 
-                             configuration[SystemConfigurationManager.items.developerMode].value = configuration[SystemConfigurationManager.items.developerMode].defaultValue;
-                             if (!SystemConfigurationManager.updateToServerSync(configuration[SystemConfigurationManager.items.developerMode])) {
+                             configuration[ConfigurationManager.items.system.developerMode].value = configuration[ConfigurationManager.items.system.developerMode].defaultValue;
+                             if (!ConfigurationManager.updateToServerSync(configuration[ConfigurationManager.items.system.developerMode])) {
+                                errorOccurred = true;
+                             }
+
+                             configuration[ConfigurationManager.items.system.language].value = configuration[ConfigurationManager.items.system.language].defaultValue;
+                             if (!ConfigurationManager.updateToServerSync(configuration[ConfigurationManager.items.system.language])) {
                                 errorOccurred = true;
                              }
 
