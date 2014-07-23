@@ -153,7 +153,7 @@
                   "timezone" : {
                      "name" : "Timezone",
                      "description" : "Define your timezone."
-                  },
+                  }
                },
                "confirmResetToDefault" : "This operation will restore all default configuration. Continue ?",
                "configurationSaved" : "System configuration successfully saved",
