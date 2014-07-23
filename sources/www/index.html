@@ -159,7 +159,7 @@
     * Formatter used to display date and time
     */
    //TODO : recupere le formattage et le timezone depuis le serveur --> configuration
-   var dateTimeFormatter = new DateTimeFormatter("DD/MM/YYYY HH:mm:ss", systemConfiguration[ConfigurationManager.items.system.timezone].value);
+   var dateTimeFormatter = null;
 
    /**
     * On page loaded
@@ -263,6 +263,9 @@
                        $("html").i18n();
                        initializeWidgetEngine();
                     });
+
+                    //we initialize dateTimeFormatter
+                    dateTimeFormatter = new DateTimeFormatter("DD/MM/YYYY HH:mm:ss", systemConfiguration[ConfigurationManager.items.system.timezone].value);
                  }
               });
    }
