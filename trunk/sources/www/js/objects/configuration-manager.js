@@ -18,8 +18,8 @@ ConfigurationManager.factory = function(json) {
    assert(!isNullOrUndefined(json.securityAccess), "json.securityAccess must be defined");
    assert(!isNullOrUndefined(json.lastModificationDate), "json.lastModificationDate must be defined");
 
-   return new ConfigurationItem(json.section, json.name, json.value,
-      json.defaultValue, json.description, json.securityAccess, json.lastModificationDate);
+   return new ConfigurationItem(json.section, json.name, decodeURIComponent(json.value),
+      decodeURIComponent(json.defaultValue), decodeURIComponent(json.description), json.securityAccess, json.lastModificationDate);
 };
 
 //Here is the list of items of system configuration
@@ -51,8 +51,8 @@ ConfigurationManager.getSection = function(section, callback) {
          var result = [];
 
          $.each(data.data.configuration, function(index, value) {
-            var sci = ConfigurationManager.factory(value);
-            result[sci.name] = sci;
+            var ci = ConfigurationManager.factory(value);
+            result[ci.name] = ci;
          });
 
          callback(result);

@@ -22,23 +22,35 @@
       ConfigurationManager.getSection(ConfigurationManager.items.systemSection, function(configuration) {
          if (!isNullOrUndefined(configuration)) {
 
+            //we update system configuration to be sure to modify the latest version of the configuration
+            systemConfiguration = configuration;
             var i18nContext = "modals.dashboard.sub-windows.system-configuration.configuration-items.";
 
             //we create configuration items
-            //var authenticationMethodParameter = new EnumParameterHandler(i18nContext, "authenticationMethod", {values:{"none" : ""}}, currentConfiguration.authenticationMethod);
-            var developerModeParameter = new BoolParameterHandler(i18nContext, ConfigurationManager.items.system.developerMode, {defaultValue: false}, configuration[ConfigurationManager.items.system.developerMode].value);
+
+            //*************
+            //developerMode
+            var developerModeParameter = new BoolParameterHandler(i18nContext, ConfigurationManager.items.system.developerMode, {defaultValue: systemConfiguration[ConfigurationManager.items.system.developerMode].defaultValue}, systemConfiguration[ConfigurationManager.items.system.developerMode].value);
 
             //we create language selection list
 
-            var languageParameter = new EnumParameterHandler(i18nContext, ConfigurationManager.items.system.language, {"values" : isoLanguageCodes, "defaultValue" : language}, configuration[ConfigurationManager.items.system.language].value)
+            //*************
+            //language
+            var languageParameter = new EnumParameterHandler(i18nContext, ConfigurationManager.items.system.language, {"values" : isoLanguageCodes, "defaultValue" : systemConfiguration[ConfigurationManager.items.system.language].defaultValue}, systemConfiguration[ConfigurationManager.items.system.language].value);
 
             //we create timezone selection list
-            //TODO
-            // moment.tz.zones()
+            var timezones = {};
+            $.each(moment.tz.zones(), function (index, value) {
+               timezones[value.displayName] = value.displayName;
+            });
+
+            var timezoneParameter = new EnumParameterHandler(i18nContext, ConfigurationManager.items.system.timezone, {"values" : timezones, "defaultValue" : systemConfiguration[ConfigurationManager.items.system.timezone].defaultValue}, systemConfiguration[ConfigurationManager.items.system.timezone].value);
+
+            //var advancedSectionParameters = new SectionParameterHandler(i18nContext)
 
             //and add it to the gui
-            //$modalBody.append(authenticationMethodParameter.getDOMObject());
             $modalBody.append(languageParameter.getDOMObject());
+            $modalBody.append(timezoneParameter.getDOMObject());
             $modalBody.append(developerModeParameter.getDOMObject());
 
             //we i18n the form
@@ -57,23 +69,35 @@
                   var errorOccurred = false;
 
                   //we save current configuration
-                  configuration[ConfigurationManager.items.system.developerMode].value = developerModeParameter.getCurrentConfiguration();
 
-                  if (!ConfigurationManager.updateToServerSync(configuration[ConfigurationManager.items.system.developerMode])) {
+                  //*************
+                  //developerMode
+                  systemConfiguration[ConfigurationManager.items.system.developerMode].value = developerModeParameter.getCurrentConfiguration();
+
+                  if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.developerMode])) {
                      errorOccurred = true;
                   }
 
-                  configuration[ConfigurationManager.items.system.language].value = languageParameter.getCurrentConfiguration();
+                  //*************
+                  //language
+                  systemConfiguration[ConfigurationManager.items.system.language].value = languageParameter.getCurrentConfiguration();
 
-                  if (!ConfigurationManager.updateToServerSync(configuration[ConfigurationManager.items.system.language])) {
+                  if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.language])) {
                      errorOccurred = true;
                   }
                   else {
-                     language = configuration[ConfigurationManager.items.system.language].value;
                      //we change language of i18n
-                     i18n.setLng(language, function() {
+                     i18n.setLng(systemConfiguration[ConfigurationManager.items.system.language].value, function() {
                         $("html").i18n();
                      });
+                  }
+
+                  //*************
+                  //timezone
+                  systemConfiguration[ConfigurationManager.items.system.timezone].value = timezoneParameter.getCurrentConfiguration();
+
+                  if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.timezone])) {
+                     errorOccurred = true;
                   }
 
                   //other system configuration items have to be inserted here
@@ -97,37 +121,57 @@
                //we ask for confirmation before resetting all system configuration
                modals.confirmation.load(function() {
                   showConfirmModal(btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.system-configuration.confirmResetToDefault"),
-                          function () {
-                             //restore to default has been confirmed
+                       function () {
+                          //restore to default has been confirmed
 
-                             var errorOccurred = false;
+                          var errorOccurred = false;
 
-                             //we get all default values of each parameters on set it as value
+                          //we get all default values of each parameters on set it as value
 
-                             configuration[ConfigurationManager.items.system.developerMode].value = configuration[ConfigurationManager.items.system.developerMode].defaultValue;
-                             if (!ConfigurationManager.updateToServerSync(configuration[ConfigurationManager.items.system.developerMode])) {
-                                errorOccurred = true;
-                             }
+                          //*************
+                          //developerMode
 
-                             configuration[ConfigurationManager.items.system.language].value = configuration[ConfigurationManager.items.system.language].defaultValue;
-                             if (!ConfigurationManager.updateToServerSync(configuration[ConfigurationManager.items.system.language])) {
-                                errorOccurred = true;
-                             }
+                          systemConfiguration[ConfigurationManager.items.system.developerMode].value = systemConfiguration[ConfigurationManager.items.system.developerMode].defaultValue;
+                          if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.developerMode])) {
+                             errorOccurred = true;
+                          }
 
-                             //other system configuration items have to be inserted here
+                          //*************
+                          //language
 
-                             if (errorOccurred) {
-                                //an error has occurred during saving
-                                notifyError($.t("modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"));
-                             }
-                             else {
-                                //we show that configuration has been successfully saved
-                                notifySuccess($.t("modals.dashboard.sub-windows.system-configuration.defaultConfigurationRestored"));
-                             }
+                          systemConfiguration[ConfigurationManager.items.system.language].value = systemConfiguration[ConfigurationManager.items.system.language].defaultValue;
+                          if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.language])) {
+                             errorOccurred = true;
+                          }
+                          else {
+                             //we change language of i18n
+                             i18n.setLng(systemConfiguration[ConfigurationManager.items.system.language].value, function() {
+                                $("html").i18n();
+                             });
+                          }
 
-                             //we ask to reload the modal
-                             initializeSystemConfigurationDashboard();
-                          });
+                          //*************
+                          //timezone
+
+                          systemConfiguration[ConfigurationManager.items.system.timezone].value = systemConfiguration[ConfigurationManager.items.system.timezone].defaultValue;
+                          if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.timezone])) {
+                             errorOccurred = true;
+                          }
+
+                          //other system configuration items have to be inserted here
+
+                          if (errorOccurred) {
+                             //an error has occurred during saving
+                             notifyError($.t("modals.dashboard.sub-windows.system-configuration.errorDuringSavingConfiguration"));
+                          }
+                          else {
+                             //we show that configuration has been successfully saved
+                             notifySuccess($.t("modals.dashboard.sub-windows.system-configuration.defaultConfigurationRestored"));
+                          }
+
+                          //we ask to reload the modal
+                          initializeSystemConfigurationDashboard();
+                       });
                });
             });
          }

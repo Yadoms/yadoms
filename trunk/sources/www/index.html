@@ -143,6 +143,8 @@
    //base configuration
    $.ajaxSetup({ contentType: "application/json; charset=utf-8"});
 
+   var systemConfiguration = [];
+
    //TODO - Passer les variables suivantes en variable de conf
    var numberOfColumns = 9;
    var gridWidth = 100;
@@ -151,16 +153,13 @@
    var UpdateInterval = 1000;
    var UpdateIntervalInOfflineMode = 10000;
 
-   var language;
-   var timezone;
-
    var modals = {};
 
    /**
     * Formatter used to display date and time
     */
    //TODO : recupere le formattage et le timezone depuis le serveur --> configuration
-   var dateTimeFormatter = new DateTimeFormatter("DD/MM/YYYY HH:mm:ss", "Europe/Paris");
+   var dateTimeFormatter = new DateTimeFormatter("DD/MM/YYYY HH:mm:ss", systemConfiguration[ConfigurationManager.items.system.timezone].value);
 
    /**
     * On page loaded
@@ -185,7 +184,7 @@
       i18n.init(option, function() {
          $("html").i18n();
 
-         //we get install/wizardRun key to have information if wizard has already been run
+         //we get install/firstStart key to have information if firstStart has already been done
          ConfigurationManager.get(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart,
             function(result) {
                var firstStart = true;
@@ -250,14 +249,22 @@
 
    function main() {
       //we get configuration
-      language = ConfigurationManager.getSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.language).value;
-      timezone = ConfigurationManager.getSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.timezone).value;
+      ConfigurationManager.getSection(ConfigurationManager.items.systemSection,
+              function(result) {
+                 if (!isNullOrUndefined(result)) {
+                    systemConfiguration = result;
 
-      //we set the right language
-      i18n.setLng(language, function() {
-         $("html").i18n();
-         initializeWidgetEngine();
-      });
+                    assert(!isNullOrUndefined(systemConfiguration[ConfigurationManager.items.system.language]), "Language has not been defined");
+                    assert(!isNullOrUndefined(systemConfiguration[ConfigurationManager.items.system.timezone]), "timezone has not been defined");
+                    assert(!isNullOrUndefined(systemConfiguration[ConfigurationManager.items.system.developerMode]), "developerMode has not been defined");
+
+                    //we set the right language
+                    i18n.setLng(systemConfiguration[ConfigurationManager.items.system.language].value, function() {
+                       $("html").i18n();
+                       initializeWidgetEngine();
+                    });
+                 }
+              });
    }
 
 	</script>
