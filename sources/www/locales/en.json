@@ -150,13 +150,10 @@
                      "name" : "Default Language",
                      "description" : "Define the language used by default for every users."
                   },
-                  "authenticationMethod" : {
-                     "name" : "Authentication method",
-                     "description" : "Choose the authentication method you want to use.",
-                     "values" : {
-                        "none" : "None"
-                     }
-                  }
+                  "timezone" : {
+                     "name" : "Timezone",
+                     "description" : "Define your timezone."
+                  },
                },
                "confirmResetToDefault" : "This operation will restore all default configuration. Continue ?",
                "configurationSaved" : "System configuration successfully saved",
