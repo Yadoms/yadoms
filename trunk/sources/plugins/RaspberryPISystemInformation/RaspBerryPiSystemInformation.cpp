@@ -59,15 +59,15 @@ void CRaspBerryPiSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> c
          ssKeyword << "DiskUsage" << counterDisk;
          CRaspBerryPiSystemDiskUsage DiskUsage(m_DeviceName, *DisksListIterator, ssKeyword.str());
 
-         //DiskUsage.declareDevice(context);
+         DiskUsage.declareDevice(context);
          DiskUsageList.push_back(DiskUsage);
          ++counterDisk;
       }
 
-      //CPULoad.declareDevice(context);
-      //MemoryLoad.declareDevice(context);
-      //YadomsCPULoad.declareDevice(context);
-      //TemperatureCPU.declareDevice(context);
+      CPULoad.declareDevice(context);
+      MemoryLoad.declareDevice(context);
+      YadomsCPULoad.declareDevice(context);
+      TemperatureCPU.declareDevice(context);
 
       // Event to be sent immediately for the first value
       context->getEventHandler().createTimer(kEvtTimerRefreshCPULoad, shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
