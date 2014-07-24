@@ -17,7 +17,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    The serial port
    //--------------------------------------------------------------
-   std::string CZWaveConfiguration::getSerialPort() const;
+   std::string getSerialPort() const;
 
    //--------------------------------------------------------------
    /// \brief	    Initialize configuration
