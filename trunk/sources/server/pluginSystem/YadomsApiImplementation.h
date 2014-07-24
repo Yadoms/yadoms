@@ -20,6 +20,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief                                    Constructor
       /// \param [in]   pluginInformations         the plugin informations (name, description, version, author...)
+      /// \param [in]   libraryPath                the library path
       /// \param [in]   pluginData                 the plugin data
       /// \param [in]   pluginEventLoggerRequester the plugin event logger requester
       /// \param [in]   deviceRequester            the device requester
@@ -27,6 +28,7 @@ namespace pluginSystem
       /// \param [in]   acquisitionRequester       the acquisition requester
       //-----------------------------------------------------
       CYadomsApiImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
+         const boost::filesystem::path libraryPath,
          const boost::shared_ptr<database::entities::CPlugin> pluginData,
          boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
          boost::shared_ptr<database::IDeviceRequester> deviceRequester,
@@ -53,6 +55,7 @@ namespace pluginSystem
       virtual shared::CDataContainer getConfiguration() const;
       virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message);
       virtual shared::event::CEventHandler & getEventHandler();
+      virtual const boost::filesystem::path getPluginPath() const;
       // [END] IYadomsApi implementation 
       
       //-----------------------------------------------------
@@ -67,6 +70,11 @@ namespace pluginSystem
       boost::shared_ptr<const shared::plugin::information::IInformation> m_informations;
 
       //--------------------------------------------------------------
+      /// \brief			The library path
+      //--------------------------------------------------------------
+      const boost::filesystem::path m_libraryPath;
+
+         //--------------------------------------------------------------
       /// \brief			The database accessor
       //--------------------------------------------------------------
       const boost::shared_ptr<database::entities::CPlugin> m_pluginData;

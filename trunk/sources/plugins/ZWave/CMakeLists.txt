@@ -8,7 +8,12 @@ set(ZWAVE_PLUGIN_SOURCES
 	ZWave.h
 	ZWave.cpp 
 	ZWaveConfiguration.h
-	ZWaveConfiguration.cpp 
+	ZWaveConfiguration.cpp 	
+	IZWaveController.h
+	ZWaveControllerFactory.h
+	ZWaveControllerFactory.cpp 	
+	OpenZWaveController.h
+	OpenZWaveController.cpp 
 	${OPENZWAVE_MAIN_SOURCES}
 )
 
@@ -22,15 +27,26 @@ ENDIF()
 ## Place here all additional include directories
 ## (by default yadoms-shared and boost are included)
 #########################################
-set(ZWAVE_PLUGIN_INCLDIR
+set(ZWAVE_PLUGIN_ADDITIONAL_INC_DIR
+	${OPENZWAVE_INCLUDE_DIRECTORY}
 )
 
 #########################################
 ## Place here all additional libraries to link with
 ## (by default yadoms-shared and boost are included)
 #########################################
-set(ZWAVE_PLUGIN_LINK
+set(ZWAVE_PLUGIN_ADDITIONAL_LIB
+	openzwave
 )
+
+#add platform specific link libs
+if ( WIN32 )
+	set(ZWAVE_PLUGIN_ADDITIONAL_LIB
+		${ZWAVE_PLUGIN_ADDITIONAL_LIB}
+		Setupapi.lib
+	)
+endif()
+
 
 #########################################
 ## Place here all additional compiler flags
@@ -54,3 +70,8 @@ PLUGIN_LINK(ZWave ${ZWAVE_PLUGIN_ADDITIONAL_LIB})
 PLUGIN_POST_BUILD_COPY_FILE(ZWave package.json)
 PLUGIN_POST_BUILD_COPY_FILE(ZWave icon.png)
 PLUGIN_POST_BUILD_COPY_FILE(ZWave locales/fr.json)
+
+#########################################
+## Copy configuration files
+#########################################
+PLUGIN_POST_BUILD_COPY_DIRECTORY(ZWave config)

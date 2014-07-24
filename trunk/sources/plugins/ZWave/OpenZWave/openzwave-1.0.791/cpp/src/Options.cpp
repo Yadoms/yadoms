@@ -86,8 +86,15 @@ Options* Options::Create
 				configPath = SYSCONFDIR;
 #endif
 			} else {
-				Log::Write( LogLevel_Error, "Cannot find a path to the configuration files at %s. Exiting...", configPath.c_str() );
-				exit( 1 );
+            Log::Write(LogLevel_Error, "Cannot find a path to the configuration files at %s. Exiting...", configPath.c_str());
+            {
+               std::string ss;
+               ss += "Cannot find a path to the configuration files at ";
+               ss += configPath;
+               throw std::exception(ss.c_str()); //exit(1)
+            }
+            
+            
 			}
 		}
 		FileOps::Destroy();

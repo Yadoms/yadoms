@@ -1,4 +1,11 @@
 ﻿{
    "description" : "Plugin qui supporte le protocole ZWave",
-   "configurationSchema" : ""		
+   "configurationSchema" : 
+	{
+      "Serial Port":
+      {
+         "name": "Port série",
+         "description": "Le port série connecté au matériel ZWave (stick...)."
+      }	
+	}   
 }
