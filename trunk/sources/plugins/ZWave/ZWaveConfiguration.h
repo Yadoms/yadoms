@@ -22,7 +22,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	    Initialize configuration
    //--------------------------------------------------------------
-   void initializeWith(shared::CDataContainer & container);
+   void initializeWith(shared::CDataContainer container);
 
    //--------------------------------------------------------------
    /// \brief	    Get the library path

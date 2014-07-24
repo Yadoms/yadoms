@@ -71,7 +71,7 @@ void COpenZWaveController::start(CZWaveConfiguration & configuration, shared::ev
    // been queried as well.)
    while (!m_nodesQueried)
    {
-      Sleep(1000);
+      boost::this_thread::sleep(boost::posix_time::milliseconds(200));
    }
 
    if (!m_initFailed)

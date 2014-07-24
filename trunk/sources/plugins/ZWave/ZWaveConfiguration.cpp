@@ -7,7 +7,7 @@ CZWaveConfiguration::~CZWaveConfiguration()
 {
 }
 
-void CZWaveConfiguration::initializeWith(shared::CDataContainer & container)
+void CZWaveConfiguration::initializeWith(shared::CDataContainer container)
 {
    m_container.initializeWith(container);
 }
