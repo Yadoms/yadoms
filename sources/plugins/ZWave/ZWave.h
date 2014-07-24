@@ -2,6 +2,7 @@
 #include <shared/plugin/IPlugin.h>
 #include "ZWaveConfiguration.h"
 
+#include "IZWaveController.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -31,6 +32,11 @@ private:
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
    CZWaveConfiguration m_configuration;
+
+   //--------------------------------------------------------------
+   /// \brief	The ZWave controller
+   //--------------------------------------------------------------
+   boost::shared_ptr<IZWaveController> m_controller;
 };
 
 

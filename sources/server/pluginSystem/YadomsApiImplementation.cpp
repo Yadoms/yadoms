@@ -9,14 +9,16 @@ namespace pluginSystem
 
 CYadomsApiImplementation::CYadomsApiImplementation(
    boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
+   const boost::filesystem::path libraryPath, 
    const boost::shared_ptr<database::entities::CPlugin> pluginData,
    boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
    boost::shared_ptr<database::IDeviceRequester> deviceRequester,
    boost::shared_ptr<database::IKeywordRequester> keywordRequester,
    boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester)
-   :m_informations(pluginInformations), m_pluginData(pluginData), m_pluginEventLoggerRequester(pluginEventLoggerRequester),
+   :m_informations(pluginInformations), m_libraryPath(libraryPath),  m_pluginData(pluginData), m_pluginEventLoggerRequester(pluginEventLoggerRequester),
    m_deviceRequester(deviceRequester), m_keywordRequester(keywordRequester), m_acquisitionRequester(acquisitionRequester)
 {
+
 }
       
 CYadomsApiImplementation::~CYadomsApiImplementation() 
@@ -169,4 +171,9 @@ int CYadomsApiImplementation::getPluginId() const
    return m_pluginData->Id;
 }
 	
+const boost::filesystem::path CYadomsApiImplementation::getPluginPath() const
+{
+   return m_libraryPath;
+}
+
 } // namespace pluginSystem	

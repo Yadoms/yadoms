@@ -19,7 +19,7 @@ CInstance::CInstance(
    shared::event::CEventHandler& supervisor,
    int pluginManagerEventId)
     : CThreadBase(pluginData->Name()), m_pPlugin(plugin), m_qualifier(qualifier), m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId),
-    m_context(new CYadomsApiImplementation(plugin->getInformation(), pluginData, pluginEventLoggerRequester, deviceRequester, keywordRequester, acquisitionRequester))
+    m_context(new CYadomsApiImplementation(plugin->getInformation(), m_pPlugin->getLibraryPath(), pluginData, pluginEventLoggerRequester, deviceRequester, keywordRequester, acquisitionRequester))
 {
 	BOOST_ASSERT(m_pPlugin);
    m_pPluginInstance.reset(m_pPlugin->construct());

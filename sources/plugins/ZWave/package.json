@@ -6,5 +6,13 @@
    "author": "yadoms-team",
    "url": "http://sourceforge.net/projects/yadoms/",
    "SupportedPlatforms": "all",
-   "configurationSchema": ""
+   "configurationSchema": 
+   {
+	  "Serial Port":
+      {
+         "name": "Serial port",
+         "description": "The serial port connected to the ZWave controller (stick,...)",
+         "type": "serialPort"
+      }
+   }
 }

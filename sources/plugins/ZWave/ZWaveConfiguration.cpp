@@ -7,6 +7,25 @@ CZWaveConfiguration::~CZWaveConfiguration()
 {
 }
 
+void CZWaveConfiguration::initializeWith(shared::CDataContainer & container)
+{
+   m_container.initializeWith(container);
+}
 
+
+std::string CZWaveConfiguration::getSerialPort() const
+{
+   return m_container.get<std::string>("Serial Port");
+}
+
+const std::string CZWaveConfiguration::getPath()
+{
+   return m_container.get<std::string>("libraryPath");
+}
+
+void CZWaveConfiguration::setPath(const std::string & path)
+{
+   m_container.set("libraryPath", path);
+}
 
 

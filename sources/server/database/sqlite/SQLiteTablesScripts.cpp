@@ -10,10 +10,10 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Configuration, " CREATE TABLE Configuration
                                                       (  section VARCHAR(50) NOT NULL,                            \
                                                          name VARCHAR(50) NOT NULL,                               \
                                                          value TEXT NOT NULL,                                     \
-                                                         defaultValue TEXT,                                      \
+                                                         defaultValue TEXT,                                       \
                                                          description TEXT,                                        \
-                                                         securityAccess  INTEGER DEFAULT 0,                      \
-                                                         lastModificationDate DATETIME,                         \
+                                                         securityAccess  INTEGER DEFAULT 0,                       \
+                                                         lastModificationDate TEXT,                               \
                                                          PRIMARY KEY(section,name)                                \
                                                       )")
 
@@ -52,7 +52,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Widget, "CREATE TABLE Widget               
 
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(PluginEventLogger,   "CREATE TABLE PluginEventLogger                         \
                                                             (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,     \
-                                                               eventDate  DATETIME NOT NULL,                      \
+                                                               eventDate  TEXT NOT NULL,                          \
                                                                pluginName TEXT NOT NULL,                          \
                                                                pluginVersion TEXT NOT NULL,                       \
                                                                pluginRelease INTEGER,                             \
@@ -64,7 +64,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(PluginEventLogger,   "CREATE TABLE PluginEv
 
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(EventLogger, "CREATE TABLE EventLogger                                       \
                                                             (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,     \
-                                                               date  DATETIME NOT NULL,                           \
+                                                               date  TEXT NOT NULL,                               \
                                                                code INTEGERNOT NULL DEFAULT 0,                    \
                                                                who  TEXT,                                         \
                                                                what TEXT                                          \
@@ -98,7 +98,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Keyword, " CREATE TABLE Keyword            
 
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Acquisition,    "CREATE TABLE Acquisition                                    \
                                                       (  id INTEGER NOT NULL PRIMARY KEY  AUTOINCREMENT,          \
-                                                         date DATETIME NOT NULL,                                  \
+                                                         date TEXT NOT NULL,                                      \
                                                          keywordId INTEGER NOT NULL,                              \
                                                          value TEXT NOT NULL                                      \
                                                          )")                           

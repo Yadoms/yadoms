@@ -26,3 +26,8 @@ MACRO(PLUGIN_POST_BUILD_COPY_FILE _targetName _resource)
    add_custom_command(TARGET ${_targetName} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}>/${_resource})
 ENDMACRO()
+
+MACRO(PLUGIN_POST_BUILD_COPY_DIRECTORY _targetName _resource)
+   add_custom_command(TARGET ${_targetName} POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/${_resource} $<TARGET_FILE_DIR:${_targetName}>/${_resource})
+ENDMACRO()
