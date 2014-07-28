@@ -295,6 +295,8 @@ IF(WIN32)
 		server/tools/windows/tools/service/ServiceInstallerProgramOptions.h
 		server/tools/windows/tools/service/ServiceInstallerProgramOptions.cpp
 		server/tools/windows/tools/service/ThreadPool.h
+		server/tools/windows/tools/ConsoleControlHandler.h
+		server/tools/windows/tools/ConsoleControlHandler.cpp		
 		server/tools/windows/tools/OperatingSystem.h
 		server/tools/windows/tools/OperatingSystem.cpp
 	)	

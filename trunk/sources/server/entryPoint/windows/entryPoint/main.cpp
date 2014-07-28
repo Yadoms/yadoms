@@ -2,6 +2,8 @@
 #include "Application.h"
 #include "tools/ApplicationLoader.h"
 #include "YadomsServiceInformation.h"
+#include "tools/ConsoleControlHandler.h"
+
 
 
 /*
@@ -14,6 +16,9 @@ int main(int argc, char** argv)
       //create the app
       CApplication app;
          
+      //register for console signals
+      tools::CConsoleControlHandler::registerApplication(app);
+
       //create the yadoms service information (windows only)
       entryPoint::CYadomsServiceInformation ysi;
          
