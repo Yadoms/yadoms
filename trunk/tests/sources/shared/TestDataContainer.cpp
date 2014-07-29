@@ -191,6 +191,17 @@ BOOST_AUTO_TEST_CASE(Serialization)
    str2.erase(std::remove_if(str2.begin(), str2.end(), boost::is_any_of(" \t\n\r")), str2.end());
 
    BOOST_CHECK_EQUAL(str, str2);
+
+
+   std::stringstream ss;
+   ss << cfg;
+
+   shared::CDataContainer cfgOut;
+   ss >> cfgOut;
+
+   BOOST_CHECK_EQUAL(cfg.serialize(), cfgOut.serialize());
+
+   //YADOMS_LOG(info) << cfg;
 }
 
 

@@ -48,17 +48,27 @@ namespace shared
 
 
 
-   std::ostream& CDataContainer::operator<<(std::ostream& os)
+   std::ostream& operator<<(std::ostream& os, const CDataContainer & dc)
    {
-      os << serialize();
+      os << dc.serialize();
       return os;
    }
 
-   std::istream& CDataContainer::operator>>(std::istream& is)
+   std::istream& operator>>(std::istream& is, CDataContainer & dc)
    {
-      std::string serialized;
-      is >> serialized;
-      deserialize(serialized);
+      boost::lock_guard<boost::mutex> lock(dc.m_treeMutex);
+
+      dc.m_tree.clear();
+
+      try
+      {
+         boost::property_tree::json_parser::read_json(is, dc.m_tree);
+      }
+      catch (boost::property_tree::json_parser::json_parser_error& e)
+      {
+         throw exception::CInvalidParameter(e.what());
+      }
+
       return is;
    }
 

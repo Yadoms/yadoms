@@ -54,6 +54,7 @@ public:
    virtual const shared::plugin::information::IInformation& getInformation() const { return m_defaultInformation; }
    virtual shared::CDataContainer getConfiguration() const { return m_defaultConfiguration; }
    virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message) {}
+   virtual const boost::filesystem::path getPluginPath() const { return boost::filesystem::initial_path<boost::filesystem::path>(); }
    // [END] IYadomsApi implementation
 
    const std::map<std::string, Device>& getDevices() const { return m_devices; }
