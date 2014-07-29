@@ -25,7 +25,8 @@ namespace tools {
       case CTRL_CLOSE_EVENT:
          if (m_pApplication != NULL)
          {
-            m_pApplication->stop(boost::function<void()>(boost::bind(&CConsoleControlHandler::onAppStopped)));
+            boost::function<void()> callback = boost::bind(&CConsoleControlHandler::onAppStopped);
+            m_pApplication->stop(callback);
             if (WaitForSingleObject(m_hStoppedEvent, INFINITE) != WAIT_OBJECT_0)
             {
                throw GetLastError();

@@ -27,7 +27,7 @@ namespace tools { namespace service {
                                   BOOL fCanStop, 
                                   BOOL fCanShutdown, 
                                   BOOL fCanPauseContinue)
-                                  : CServiceBase(pszServiceName, fCanStop, fCanShutdown, fCanPauseContinue), m_path(path), m_app(app)
+                                  : CServiceBase(pszServiceName, fCanStop, fCanShutdown, fCanPauseContinue), m_path(path), m_app(app), m_serviceName(pszServiceName)
    {
        m_fStopping = FALSE;
        
@@ -83,8 +83,7 @@ namespace tools { namespace service {
       m_argv = lpszArgv;
    
        // Log a service start message to the Application log.
-       WriteEventLogEntry("YadomsService in OnStart", 
-           EVENTLOG_INFORMATION_TYPE);
+      WriteEventLogEntry((char*)(boost::format("%1% is starting") % m_serviceName).str().c_str(),  EVENTLOG_INFORMATION_TYPE);
 
        // Queue the main service function for execution in a worker thread.
        CThreadPool::QueueUserWorkItem(&CApplicationService::ServiceWorkerThread, this);
@@ -121,17 +120,21 @@ namespace tools { namespace service {
    void CApplicationService::OnStop()
    {
        // Log a service stop message to the Application log.
-       WriteEventLogEntry("YadomsService in OnStop", 
-           EVENTLOG_INFORMATION_TYPE);
+      WriteEventLogEntry((char*)(boost::format("%1% is stopping") % m_serviceName).str().c_str(), EVENTLOG_INFORMATION_TYPE);
+
 
        // Indicate that the service is stopping and wait for the finish of the 
        // main service function (ServiceWorkerThread).
-       m_app.stop(boost::function<void()>(boost::bind(&CApplicationService::OnAppStopped, this)));
+       boost::function<void()> callback = boost::bind(&CApplicationService::OnAppStopped, this);
+       m_app.stop(callback);
+
        m_fStopping = TRUE;
        if (WaitForSingleObject(m_hStoppedEvent, INFINITE) != WAIT_OBJECT_0)
        {
+          WriteEventLogEntry((char*)(boost::format("%1% fail to stopped") % m_serviceName).str().c_str(), EVENTLOG_ERROR_TYPE);
            throw GetLastError();
        }
+       WriteEventLogEntry((char*)(boost::format("%1% is stopped") % m_serviceName).str().c_str(), EVENTLOG_INFORMATION_TYPE);
    }
    
 
