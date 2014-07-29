@@ -51,6 +51,7 @@ namespace tools { namespace service {
        int m_argc;
        char ** m_argv;
        IApplication & m_app;
+       std::string m_serviceName;
    };
    
 } //namespace service
