@@ -29,6 +29,6 @@ bool CSmsDialerConfiguration::hasPINCode() const
 
 std::string CSmsDialerConfiguration::getPhonePIN() const
 {
-   return hasPINCode() ? m_data.get<std::string>("PINCode.values.PIN") : shared::CStringExtension::EmptyString;
+   return hasPINCode() ? m_data.get<std::string>("PINCode.content.PIN") : shared::CStringExtension::EmptyString;
 }
 

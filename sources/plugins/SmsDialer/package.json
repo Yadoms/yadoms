@@ -77,7 +77,8 @@
                "name": "PIN",
                "description": "Phone PIN code",
                "type": "string",
-               "regex" : "[0-9]{4}"
+               "regex" : "[0-9]{4}",
+               "encrypted" : "true"
             }      
          }
       }

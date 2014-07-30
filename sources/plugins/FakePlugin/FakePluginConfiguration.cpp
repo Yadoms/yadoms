@@ -38,8 +38,8 @@ void CFakePluginConfiguration::trace()
       YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'EnumParameter' is " << getEnumParameter();
 
       // Parameters in sections
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'MySection.SubIntParameter' is " << get<int>("MySection.values.SubIntParameter");
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'MySection.SubStringParameter' is " << get<std::string>("MySection.values.SubStringParameter");
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'MySection.SubIntParameter' is " << get<int>("MySection.content.SubIntParameter");
+      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'MySection.SubStringParameter' is " << get<std::string>("MySection.content.SubStringParameter");
    }
    catch (const shared::exception::CInvalidParameter& e)
    {

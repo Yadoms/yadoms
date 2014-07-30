@@ -232,14 +232,14 @@ void CSmsDialer::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
    context->declareKeyword(m_phone->getUniqueId(), "sms"  , yApi::CStandardCapacities::Message);
 }
 
-void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& powerRequest)
+void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& powerRequest)
 {
    yApi::commands::CSwitch cmd(powerRequest);
-   BOOST_ASSERT_MSG(cmd.getState() == yApi::commands::CSwitch::kOff || cmd.getState() == yApi::commands::CSwitch::kOn, "Invalid power request");
+   BOOST_ASSERT_MSG(cmd.State == yApi::commands::CSwitch::EState::kOff || cmd.State == yApi::commands::CSwitch::EState::kOn, "Invalid power request");
 
    try
    {
-      m_phone->powerOn(cmd.getState() == yApi::commands::CSwitch::kOn);
+      m_phone->powerOn(cmd.State == yApi::commands::CSwitch::EState::kOn);
       notifyPhonePowerState(context, m_phone->isOn());
    }
    catch (CPhoneException& e)
@@ -248,7 +248,7 @@ void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context
    }
 }
 
-void CSmsDialer::onSendSmsRequest(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& sendSmsRequest)
+void CSmsDialer::onSendSmsRequest(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& sendSmsRequest)
 {
    try
    {
