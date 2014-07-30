@@ -335,14 +335,14 @@ namespace shared
       /// \param [in] os  The stream to write
       /// \return   The stream
       //--------------------------------------------------------------
-      friend std::ostream& operator<<(std::ostream& os, const CDataContainer& dt);
-
+      friend YADOMS_SHARED_EXPORT std::ostream& operator<<(std::ostream& os, const CDataContainer& dt);
+      
       //--------------------------------------------------------------
       /// \brief		Input operator (read a serialized container)
       /// \param [in] os  The stream to read
       /// \return   The stream
       //--------------------------------------------------------------
-      friend std::istream& operator>>(std::istream& is, CDataContainer& dt);
+      friend YADOMS_SHARED_EXPORT std::istream& operator>>(std::istream& is, CDataContainer& dt);
 
       //--------------------------------------------------------------
       /// \brief		Check if the container is empty
@@ -910,7 +910,7 @@ namespace shared
    };
 
 
-
+   
 
 
    //--------------------------------------------------------------

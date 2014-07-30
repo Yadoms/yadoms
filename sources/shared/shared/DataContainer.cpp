@@ -48,13 +48,13 @@ namespace shared
 
 
 
-   std::ostream& operator<<(std::ostream& os, const CDataContainer & dc)
+   std::ostream& operator << (std::ostream& os, const CDataContainer & dc)
    {
       os << dc.serialize();
       return os;
    }
 
-   std::istream& operator>>(std::istream& is, CDataContainer & dc)
+   std::istream& operator >> (std::istream& is, CDataContainer & dc)
    {
       boost::lock_guard<boost::mutex> lock(dc.m_treeMutex);
 
