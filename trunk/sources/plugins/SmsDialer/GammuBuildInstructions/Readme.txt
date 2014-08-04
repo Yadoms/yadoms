@@ -31,10 +31,6 @@ mc smsd-event.mc -r {Your_path_to_gammu}/gammu-1.33.0/gammu-1.33.0/smsd -h {Your
    make
 9 - After Gammu is built, don't forget to set it's path in smsDialer (in your CMakeListsUserConfig.txt file, and set USE_PKGCONFIG to OFF)).
 
-
-1 - Install gammu packages :
-   sudo apt-get install libgammu7 libgammu-dev
-
 ------------------------------------------------
 - RaspberryPi (cross-compilation on Ubuntu)
 
@@ -60,6 +56,6 @@ mc smsd-event.mc -r {Your_path_to_gammu}/gammu-1.33.0/gammu-1.33.0/smsd -h {Your
 - Patch Gammu (to support phone power ON/OFF function)
 
 1 - you have to apply 2 patches (available at https://drive.google.com/folderview?id=0B3dXqBwTbfcAYTVjSmY1MXcxbWc&usp=sharing).
-2 - Apply patches :
+2 - Apply patches (to Gammu root folder) :
    patch < 0001-Add-phone-power-ON-OFF-function.patch
    patch < 0002-Fix-linux-build.patch
