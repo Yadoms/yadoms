@@ -8,10 +8,18 @@ namespace task {
    class ITask
    {
    public:
+
+      enum EStatus
+      {
+         kStarted,
+         kSuccess,
+         kFail
+      };
+
       //---------------------------------
       ///\brief Define a function prototype for updating a task progress
       //---------------------------------
-      typedef boost::function1<void, float> TaskProgressFunc;
+      typedef boost::function2<void, boost::optional< float > , std::string > TaskProgressFunc;
 
       //------------------------------
       ///\brief Get the task name
@@ -22,9 +30,10 @@ namespace task {
       //------------------------------
       ///\brief The task core working method
       ///\param [in] pFunctor : a fucntion pointer to call on task update
+      ///\return : true if the task has been succeeded, false otherwise
       //------------------------------
-      virtual void doWork(TaskProgressFunc pFunctor) = 0;
-   
+      virtual bool doWork(TaskProgressFunc pFunctor) = 0;
+
       //------------------------------
       ///\brief public destructor
       //------------------------------

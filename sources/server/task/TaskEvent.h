@@ -1,37 +1,33 @@
 #pragma once
-#include "task/ITask.h"
 
-namespace task { namespace update {
+namespace task { 
 
    //------------------------------------------
-   ///\brief   Plugin update task. The aim si to update a plugin
+   ///\brief   Finished task container
    //-----------------------------------------
-   class CPlugin : public ITask
+   class CTaskEvent
    {
    public:
+
       //------------------------------------------
       ///\brief   Constructor
       //------------------------------------------
-      CPlugin();
+      CTaskEvent(const std::string & guid);
 
       //------------------------------------------
       ///\brief   Destructor
       //------------------------------------------
-      virtual ~CPlugin();
+      virtual ~CTaskEvent();
 
    public:
-      // ITask implementation
-      virtual const std::string & getName();
-      virtual bool doWork(TaskProgressFunc pFunctor);
-      // ITask implementation
-
+      //------------------------------------------
+      ///\brief   Obtain Guid
+      //------------------------------------------
+      const std::string & getGuid();
+      
    private:
-      //------------------------------------------
-      ///\brief   The task name
-      //------------------------------------------
-      static std::string m_taskName;
-
+      
+      std::string m_guid;
    };
 
-} //namespace update
 } //namespace task

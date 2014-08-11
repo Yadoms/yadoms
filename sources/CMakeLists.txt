@@ -228,12 +228,22 @@ set(YADOMS_SRC
 	server/web/rest/service/General.cpp
 	server/web/rest/service/Acquisition.h
 	server/web/rest/service/Acquisition.cpp
+	server/web/rest/service/Task.h
+	server/web/rest/service/Task.cpp
 	
 	server/task/Scheduler.h
 	server/task/Scheduler.cpp
 	server/task/Instance.h
 	server/task/Instance.cpp
+	server/task/FinishedInstance.h
+	server/task/FinishedInstance.cpp
 	server/task/ITask.h
+	server/task/TaskFactory.h
+	server/task/TaskFactory.cpp
+	server/task/IInstance.h
+	server/task/IUnique.h
+	server/task/TaskEvent.h
+	server/task/TaskEvent.cpp
 	server/task/update/Plugin.h
 	server/task/update/Plugin.cpp
 	server/task/update/Yadoms.h

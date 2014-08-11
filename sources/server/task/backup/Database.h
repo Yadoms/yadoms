@@ -24,14 +24,14 @@ namespace task { namespace backup {
    public:
       // ITask implementation
       virtual const std::string & getName();
-      virtual void doWork(TaskProgressFunc pFunctor);
+      virtual bool doWork(TaskProgressFunc pFunctor);
       // ITask implementation
 
    private:
       //------------------------------------------
       ///\brief   Interal progress handler
       //------------------------------------------
-      void OnProgressionUpdatedInternal(int remaining, int total);
+      void OnProgressionUpdatedInternal(int remaining, int total, const std::string & message = "");
 
       //------------------------------------------
       ///\brief   The task name

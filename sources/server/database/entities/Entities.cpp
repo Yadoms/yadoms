@@ -18,6 +18,7 @@ namespace database { namespace entities {
    )
 
    DECLARE_ENUM_IMPLEMENTATION(ESystemEventCode,
+      (ThreadFailed)
       (TaskFailed)
       (PluginDisabled)
       (PluginCrash)

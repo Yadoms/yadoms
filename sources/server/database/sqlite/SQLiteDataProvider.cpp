@@ -173,7 +173,8 @@ namespace database { namespace sqlite {
                {
                   reporter(
                      sqlite3_backup_remaining(pBackup),
-                     sqlite3_backup_pagecount(pBackup)
+                     sqlite3_backup_pagecount(pBackup),
+                     "Backup in progress"
                      );
                }
                

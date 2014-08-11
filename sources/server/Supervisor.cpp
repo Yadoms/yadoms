@@ -16,6 +16,7 @@
 #include "web/rest/service/PluginEventLogger.h"
 #include "web/rest/service/EventLogger.h"
 #include "web/rest/service/General.h"
+#include "web/rest/service/Task.h"
 #include <shared/ThreadBase.h>
 #include <shared/Peripherals.h>
 #include "tools/web/FileDownloader.h"
@@ -55,7 +56,7 @@ void CSupervisor::doWork()
 
       // Start Task manager
       boost::shared_ptr<task::CScheduler> taskManager = boost::shared_ptr<task::CScheduler>(new task::CScheduler(m_EventHandler, kSystemEvent));
-
+      taskManager->start();
       // Create the Plugin manager
       boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(
          m_startupOptions.getPluginsPath(), pDataProvider, m_EventHandler, kPluginManagerEvent));
@@ -74,8 +75,8 @@ void CSupervisor::doWork()
       const std::string & webServerWidgetPath = m_startupOptions.getWidgetsPath();
 
       boost::shared_ptr<web::IWebServer> webServer(new web::webem::CWebServer(webServerIp, webServerPort, webServerPath, "/rest/"));
-      webServer->configureAlias("widget", webServerWidgetPath);
-      webServer->configureAlias("plugin", m_startupOptions.getPluginsPath());
+      webServer->configureAlias("widgets", webServerWidgetPath);
+      webServer->configureAlias("plugins", m_startupOptions.getPluginsPath());
       boost::shared_ptr<web::IRestHandler> restHanlder = webServer->getRestHandler();
       if(restHanlder.get() != NULL)
       {
@@ -88,6 +89,9 @@ void CSupervisor::doWork()
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLogger(pDataProvider)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CGeneral(systemInformation)));
          restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
+         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CTask(taskManager)));
       }
 
       boost::shared_ptr<web::CWebServerManager> webServerManager(new web::CWebServerManager(webServer));

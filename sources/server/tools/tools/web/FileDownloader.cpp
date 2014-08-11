@@ -88,10 +88,7 @@ namespace tools { namespace web {
                   boost::trim(sContentLength);
                   contentLength = boost::lexical_cast<int>(sContentLength);
                }
-
-               std::cout << header << "\n";
             }
-            std::cout << "\n";
 
             //Process content data
 

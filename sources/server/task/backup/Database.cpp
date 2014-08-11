@@ -1,14 +1,15 @@
 #include "stdafx.h"
-#include "Database.h"
+
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/exception/InvalidParameter.hpp>
-
 #include "server/database/IDataBackup.h"
+#include "task/ITask.h"
 
+#include "Database.h"
 namespace task { namespace backup {
 
-   std::string CDatabase::m_taskName = "backup database task";
+   std::string CDatabase::m_taskName = "system.databaseBackup";
 
    CDatabase::CDatabase(boost::shared_ptr< database::IDataBackup > dataBackupInterface, const std::string & backupLocation)
       :m_dataBackupInterface(dataBackupInterface), m_backupLocation(backupLocation)
@@ -26,13 +27,15 @@ namespace task { namespace backup {
       return m_taskName;
    }
 
-   void CDatabase::OnProgressionUpdatedInternal(int remaining, int total)
+   void CDatabase::OnProgressionUpdatedInternal(int remaining, int total, const std::string & message)
    {
+      float progression = (float)(total - remaining)*(float)100.0 / (float)total;
+
       if(m_reportRealProgress)
-         m_reportRealProgress( (float)(total-remaining)*(float)100.0 / (float)total);
+         m_reportRealProgress(progression, message);
    }
 
-   void CDatabase::doWork(TaskProgressFunc pFunctor)
+   bool CDatabase::doWork(TaskProgressFunc pFunctor)
    {
       try
       {
@@ -42,9 +45,10 @@ namespace task { namespace backup {
 
          YADOMS_LOG(info) << "Backup data to :" << m_backupLocation;
 
-         m_dataBackupInterface->backupData(m_backupLocation, boost::bind(&CDatabase::OnProgressionUpdatedInternal, this, _1, _2));
+         m_dataBackupInterface->backupData(m_backupLocation, boost::bind(&CDatabase::OnProgressionUpdatedInternal, this, _1, _2, _3));
 
          YADOMS_LOG(info) << "End of backup";
+         return true;
       }
       catch(shared::exception::CException & ex)
       {
@@ -54,7 +58,7 @@ namespace task { namespace backup {
       {
          YADOMS_LOG(error) << "Fail to backup database : unknow exception";
       }
-
+      return false;
    }
 
 } //namespace backup

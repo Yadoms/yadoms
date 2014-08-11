@@ -1,12 +1,13 @@
 #pragma once
 #include "task/ITask.h"
+#include "task/IUnique.h"
 
 namespace task { namespace update {
 
    //------------------------------------------
    ///\brief   Plugin update task. The aim si to update a plugin
    //-----------------------------------------
-   class CYadoms : public ITask
+   class CYadoms : public ITask, public IUnique
    {
    public:
       //------------------------------------------
@@ -22,8 +23,10 @@ namespace task { namespace update {
    public:
       // ITask implementation
       virtual const std::string & getName();
-      virtual void doWork(TaskProgressFunc pFunctor);
+      bool doWork(TaskProgressFunc pFunctor);
       // ITask implementation
+
+      void onDownloadReportProgress(const std::string & filename, float progression);
 
    private:
       //------------------------------------------
