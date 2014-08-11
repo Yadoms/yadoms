@@ -23,6 +23,7 @@ namespace database { namespace entities {
    )
 
    DECLARE_ENUM_HEADER(ESystemEventCode,
+      ((ThreadFailed)(-5))
       ((TaskFailed)(-4))
       ((PluginDisabled)(-3))
       ((PluginCrash)(-2))

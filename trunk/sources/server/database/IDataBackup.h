@@ -14,7 +14,7 @@ namespace database {
       //---------------------------------
       ///\brief Define a function prototype for updating the backup progress
       //---------------------------------
-      typedef boost::function2<void, int, int> ProgressFunc;
+      typedef boost::function3<void, int, int, std::string> ProgressFunc;
 
       //---------------------------------
       ///\brief Backup the data provider to a file

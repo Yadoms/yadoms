@@ -75,6 +75,7 @@ set(SHARED_LIB_SRC
 	shared/encryption/Xor.cpp
 	shared/encryption/Base64.h
 	shared/encryption/Base64.cpp
+	shared/encryption/MD5.h
 	
 	shared/tools/Random.h
 )
