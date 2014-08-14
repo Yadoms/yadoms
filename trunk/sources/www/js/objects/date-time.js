@@ -13,13 +13,11 @@ function DateTimeFormatter() {}
  * @param isoDate date to display
  * @returns {string}
  */
-DateTimeFormatter.toString = function (isoDate) {
+DateTimeFormatter.isoDateToString = function (isoDate) {
 
    var format = systemConfiguration[ConfigurationManager.items.system.dateFormatString].value;
    var timeZone = systemConfiguration[ConfigurationManager.items.system.timezone].value;
    var language = systemConfiguration[ConfigurationManager.items.system.language].value;
-
-   moment.lang(language);
 
    var d = moment.utc(isoDate, "YYYYMMDD[T]HHmmss");
    assert(d.isValid(), "Date given " + isoDate + " is not valid");

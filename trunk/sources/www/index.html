@@ -263,6 +263,7 @@
                     //we set the right language
                     i18n.setLng(systemConfiguration[ConfigurationManager.items.system.language].value, function() {
                        $("html").i18n();
+                       moment.lang(systemConfiguration[ConfigurationManager.items.system.language].value);
                        initializeWidgetEngine();
                     });
                  }

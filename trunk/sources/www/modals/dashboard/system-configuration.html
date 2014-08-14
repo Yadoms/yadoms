@@ -95,6 +95,7 @@
                      //we change language of i18n
                      i18n.setLng(systemConfiguration[ConfigurationManager.items.system.language].value, function() {
                         $("html").i18n();
+                        moment.lang(systemConfiguration[ConfigurationManager.items.system.language].value);
                      });
                   }
 
@@ -167,6 +168,7 @@
                              //we change language of i18n
                              i18n.setLng(systemConfiguration[ConfigurationManager.items.system.language].value, function() {
                                 $("html").i18n();
+                                moment.lang(systemConfiguration[ConfigurationManager.items.system.language].value);
                              });
                           }
 
