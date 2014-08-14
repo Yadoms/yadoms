@@ -195,6 +195,9 @@ PluginInstanceManager.downloadPackage = function(pluginInstance, callback) {
          i18n.options.resGetPath = 'plugin/__ns__/locales/__lng__.json';
          i18n.loadNamespace(pluginInstance.type);
 
+         //we restore the resGetPath
+         i18n.options.resGetPath = "locales/__lng__.json";
+
          if ($.isFunction(callback))
             callback();
       })

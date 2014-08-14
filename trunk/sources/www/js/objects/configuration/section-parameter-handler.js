@@ -62,15 +62,17 @@ function SectionParameterHandler(objectToConfigure, i18nContext, paramName, cont
    assert((this.radioButtonSectionName === undefined) || (!this.enableWithCheckBox), "enableWithCheckBox parameter can't be used in section in radioSection");
 
    //for each key in package
-   $.each(content.content, function (key, value) {
-      var v = undefined;
-      if ((self.configurationValues !== undefined) && (self.configurationValues != null) && (self.configurationValues.content != null) && (self.configurationValues.content != undefined))
-         v = self.configurationValues.content[key];
+   if (!isNullOrUndefined(content.content)) {
+      $.each(content.content, function (key, value) {
+         var v = undefined;
+         if ((self.configurationValues !== undefined) && (self.configurationValues != null) && (self.configurationValues.content != null) && (self.configurationValues.content != undefined))
+            v = self.configurationValues.content[key];
 
-      var newI18nContext = i18nContext + self.paramName + ".content.";
-      var handler = ConfigurationHelper.createParameterHandler(objectToConfigure, newI18nContext, key, value, v);
-      self.configurationHandlers.push(handler);
-   });
+         var newI18nContext = i18nContext + self.paramName + ".content.";
+         var handler = ConfigurationHelper.createParameterHandler(objectToConfigure, newI18nContext, key, value, v);
+         self.configurationHandlers.push(handler);
+      });
+   }
 }
 
 /**

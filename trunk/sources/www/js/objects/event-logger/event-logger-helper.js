@@ -45,5 +45,5 @@ EventLoggerHelper.toString = function(event) {
          translation = "eventLogger.taskFailed";
          break;
    }
-   return dateTimeFormatter.toString(event.date) + " : " + $.t(translation, {"who" : event.who, "what" : event.what});
+   return DateTimeFormatter.toString(event.date) + " : " + $.t(translation, {"who" : event.who, "what" : event.what});
 };

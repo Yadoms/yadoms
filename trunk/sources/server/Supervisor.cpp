@@ -75,7 +75,8 @@ void CSupervisor::doWork()
       const std::string & webServerWidgetPath = m_startupOptions.getWidgetsPath();
 
       boost::shared_ptr<web::IWebServer> webServer(new web::webem::CWebServer(webServerIp, webServerPort, webServerPath, "/rest/"));
-      webServer->configureAlias("widgets", webServerWidgetPath);
+      //TODO delete unused alias when widget directory will be no more movable
+      //webServer->configureAlias("widgets", webServerWidgetPath);
       webServer->configureAlias("plugins", m_startupOptions.getPluginsPath());
       boost::shared_ptr<web::IRestHandler> restHanlder = webServer->getRestHandler();
       if(restHanlder.get() != NULL)

@@ -142,10 +142,6 @@
             "system-configuration" : {
                "title" : "System configuration",
                "configuration-items" : {
-                  "developerMode" : {
-                     "name" : "Developer mode",
-                     "description" : "The developer mode add information in parts of the software to help development of plugins and widgets."
-                  },
                   "language" : {
                      "name" : "Default Language",
                      "description" : "Define the language used by default for every users."
@@ -153,6 +149,18 @@
                   "timezone" : {
                      "name" : "Timezone",
                      "description" : "Define your timezone."
+                  },
+                  "advancedParameters" : {
+                     "name" : "Advanced parameters",
+                     "description" : "Define advanced parameters. This section is for advanced users only."
+                  },
+                  "developerMode" : {
+                     "name" : "Developer mode",
+                     "description" : "The developer mode add information in parts of the software to help development of plugins and widgets."
+                  },
+                  "dateFormatString" : {
+                     "name" : "Date Format String",
+                     "description" : "You can change date format string using momnt.js syntax (ie \"LLL\" or \"'MMMM Do YYYY, h:mm:ss a\")"
                   }
                },
                "confirmResetToDefault" : "This operation will restore all default configuration. Continue ?",
@@ -274,7 +282,8 @@
       },
       "generic" : {
          "errorUpdating" : "An error has occurred updating __objectName__",
-         "errorCreating" : "An error has occurred creating __objectName__"
+         "errorCreating" : "An error has occurred creating __objectName__",
+         "errorLoading" : "An error has occurred loading __objectName__"
       }
    },
    "eventLogger" : {

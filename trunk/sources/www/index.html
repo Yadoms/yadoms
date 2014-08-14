@@ -155,13 +155,7 @@
 
    var modals = {};
 
-   /**
-    * Formatter used to display date and time
-    */
-   //TODO : recupere le formattage et le timezone depuis le serveur --> configuration
-   var dateTimeFormatter = null;
-
-   /**
+    /**
     * On page loaded
     */
    $(document).ready(function() {
@@ -182,7 +176,7 @@
       //we start i18n engine
       var option = { resGetPath: "locales/__lng__.json", fallbackLng:"en",useDataAttrOptions: true};
       i18n.init(option, function() {
-         $("html").i18n();
+         //$("html").i18n();
 
          //we get install/firstStart key to have information if firstStart has already been done
          ConfigurationManager.get(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart,
@@ -198,17 +192,29 @@
                   var navigatorLanguage = window.navigator.userLanguage || window.navigator.language;
                   var navigatorTimezone = jstz.determine().name();
                   //update configuration with these values
-                  var lng = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.language, navigatorLanguage, "", "language used by default");
-                  if (!isNullOrUndefined(lng)) {
+                  var item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.language, navigatorLanguage, "", "language used by default");
+                  if (!isNullOrUndefined(item)) {
                      console.info("Language detected : " + navigatorLanguage);
-                     var tz = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.timezone, navigatorTimezone);
-                     if (!isNullOrUndefined(tz)) {
+
+                     item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.timezone, navigatorTimezone);
+                     if (!isNullOrUndefined(item)) {
                         console.info("Timezone detected : " + navigatorTimezone);
-                        //we save the fact that first start configuration has been made
-                        var firstStep = ConfigurationManager.createToServerSync(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart, "false", "true", "First start of Web app has been done");
-                        if (!isNullOrUndefined(firstStep)) {
-                           //we can start app
-                           main();
+
+                        item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.advancedParameters, false);
+                        if (!isNullOrUndefined(item)) {
+                           console.info("Advanced parameters : false");
+
+                           item = ConfigurationManager.createToServerSync(ConfigurationManager.items.systemSection, ConfigurationManager.items.system.dateFormatString, "LLL");
+                           if (!isNullOrUndefined(item)) {
+                              console.info("Date Format String : " + "LLL");
+
+                              //we save the fact that first start configuration has been made
+                              var firstStep = ConfigurationManager.createToServerSync(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart, "false", "true", "First start of Web app has been done");
+                              if (!isNullOrUndefined(firstStep)) {
+                                 //we can start app
+                                 main();
+                              }
+                           }
                         }
                      }
                   }
@@ -254,18 +260,11 @@
                  if (!isNullOrUndefined(result)) {
                     systemConfiguration = result;
 
-                    assert(!isNullOrUndefined(systemConfiguration[ConfigurationManager.items.system.language]), "Language has not been defined");
-                    assert(!isNullOrUndefined(systemConfiguration[ConfigurationManager.items.system.timezone]), "timezone has not been defined");
-                    assert(!isNullOrUndefined(systemConfiguration[ConfigurationManager.items.system.developerMode]), "developerMode has not been defined");
-
                     //we set the right language
                     i18n.setLng(systemConfiguration[ConfigurationManager.items.system.language].value, function() {
                        $("html").i18n();
                        initializeWidgetEngine();
                     });
-
-                    //we initialize dateTimeFormatter
-                    dateTimeFormatter = new DateTimeFormatter("DD/MM/YYYY HH:mm:ss", systemConfiguration[ConfigurationManager.items.system.timezone].value);
                  }
               });
    }
