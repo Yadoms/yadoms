@@ -3,32 +3,25 @@
  */
 
 /**
- * Create the DateTimeFormatter used to parse ISO Date and to display it
- * @param format at moment.js syntax ie "DD/MM/YYYY HH:mm:ss"
+ * Ctor which does nothing because it is used as a static class
  * @constructor
  */
-function DateTimeFormatter(format, timeZone) {
-
-   if (!isNullOrUndefined(format))
-      this.format = format;
-   else
-      this.format = "LLL";
-
-   if (!isNullOrUndefined(timeZone))
-      this.timeZone = timeZone;
-   else
-      this.timeZone = "Europe/Paris";
-
-   moment.lang("fr");
-}
+function DateTimeFormatter() {}
 
 /**
  * Display date given in parameter
  * @param isoDate date to display
  * @returns {string}
  */
-DateTimeFormatter.prototype.toString = function (isoDate) {
+DateTimeFormatter.toString = function (isoDate) {
+
+   var format = systemConfiguration[ConfigurationManager.items.system.dateFormatString].value;
+   var timeZone = systemConfiguration[ConfigurationManager.items.system.timezone].value;
+   var language = systemConfiguration[ConfigurationManager.items.system.language].value;
+
+   moment.lang(language);
+
    var d = moment.utc(isoDate, "YYYYMMDD[T]HHmmss");
    assert(d.isValid(), "Date given " + isoDate + " is not valid");
-   return d.tz(this.timeZone).format(this.format);
+   return d.tz(timeZone).format(format);
 };

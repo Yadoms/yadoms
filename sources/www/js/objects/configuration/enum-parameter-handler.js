@@ -14,21 +14,10 @@ function EnumParameterHandler(i18nContext, paramName, content, currentValue) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
-   assert(content.values !== undefined, "values field must be defined");
-   assert(Object.keys(content.values).length >= 2, "values field must have at least two values");
 
+   //values can be empty
    this.values = content.values;
    this.value = currentValue;
-
-   if ((this.value === undefined) || (this.value == null) || (this.value == "")) {
-      //we set the default value
-      this.value = content.defaultValue;
-   }
-
-   //if it is still not defined we take the first item in the list
-   if ((this.value === undefined) || (this.value == null) || (this.value == "")) {
-      this.value = content.values[0];
-   }
 
    this.name = content.name;
    this.uuid = createUUID();
@@ -43,6 +32,20 @@ function EnumParameterHandler(i18nContext, paramName, content, currentValue) {
  * @returns {string}
  */
 EnumParameterHandler.prototype.getDOMObject = function () {
+   //Now values can't be empty
+   assert(this.values !== undefined, "values field must be defined");
+   assert(Object.keys(this.values).length >= 2, "values field must have at least two values");
+
+   if ((this.value === undefined) || (this.value == null) || (this.value == "")) {
+      //we set the default value
+      this.value = this.content.defaultValue;
+   }
+
+   //if it is still not defined we take the first item in the list
+   if ((this.value === undefined) || (this.value == null) || (this.value == "")) {
+      this.value = this.content.values[0];
+   }
+
    var input = "<select " +
                         "class=\"form-control enable-validation\" " +
                         "id=\"" + this.uuid + "\" " +

@@ -85,7 +85,7 @@
 
       //we async ask for attached plugins
       DeviceManager.getAttachedPlugin(device, function() {
-         var attachedTo = "<img src=\"plugin/" + device.attachedPlugin.type + "/icon.png\" class=\"img-thumbnail plugin-icon\">&nbsp;&nbsp;" +
+         var attachedTo = "<img src=\"plugins/" + device.attachedPlugin.type + "/icon.png\" class=\"img-thumbnail plugin-icon\">&nbsp;&nbsp;" +
                  "<span>" + device.attachedPlugin.type + "</span>";
 
          var $deviceRow = getDeviceDomRow(device);

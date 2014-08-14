@@ -50,7 +50,7 @@ ConfigurationHelper.createControlGroup = function (parameterHandler, controlToIn
  * @returns {*}
  */
 ConfigurationHelper.createParameterHandler = function (objectToConfigure, i18nContext, paramName, content, currentValue) {
-   assert(objectToConfigure !== undefined, "objectToConfigure must contain widget or plugin object");
+   assert(objectToConfigure !== undefined, "objectToConfigure must contain object to configure");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined in " + paramName + " parameter");
    assert(content.type !== undefined, "type field must be found in " + paramName + " parameter");

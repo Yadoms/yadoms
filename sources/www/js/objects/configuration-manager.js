@@ -29,6 +29,8 @@ ConfigurationManager.items.systemSection = "system";
 ConfigurationManager.items.system.developerMode = "developerMode";
 ConfigurationManager.items.system.language = "language";
 ConfigurationManager.items.system.timezone = "timezone";
+ConfigurationManager.items.system.advancedParameters = "advancedParameters";
+ConfigurationManager.items.system.dateFormatString = "dateFormatString";
 
 ConfigurationManager.items.install = {};
 ConfigurationManager.items.installSection = "install";
@@ -151,6 +153,9 @@ ConfigurationManager.createToServerSync = function(section, name, value, default
 
    if (isNullOrUndefined(securityAccess))
       securityAccess = "none";
+
+   if (isNullOrUndefined(defaultValue))
+      defaultValue = value;
 
    var result = null;
    $.ajax({

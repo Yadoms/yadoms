@@ -11,6 +11,7 @@ var OfflineServerNotification = null;
 
 var LastEventLogId = null;
 
+var failGetEventCounter = 0;
 function initializeWidgetEngine() {
 
    /**
@@ -168,6 +169,9 @@ function periodicUpdateTask() {
       dataType:"json",
       timeout: 3000
    }).done(function(data) {
+         //we reset the fail event counter
+         failGetEventCounter = 0;
+
          //if we were offline we go back to online status
          if (!serverIsOnline) {
             serverIsOnline = true;
@@ -210,12 +214,16 @@ function periodicUpdateTask() {
      .fail(function() {
          if (serverIsOnline)
          {
-            //we indicate that server has passed offline
-            serverIsOnline = false;
-            OfflineServerNotification = notifyError($.t("mainPage.errors.youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline"), "", false);
-            //we change the interval period
-            clearInterval(widgetUpdateInterval);
-            widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateIntervalInOfflineMode);
+            failGetEventCounter++;
+            if (failGetEventCounter >= 3) {
+               //we indicate that server has passed offline
+               serverIsOnline = false;
+               OfflineServerNotification = notifyError($.t("mainPage.errors.youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline"), "", false);
+               //we change the interval period
+               clearInterval(widgetUpdateInterval);
+               widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateIntervalInOfflineMode);
+               failGetEventCounter = 0;
+            }
          }
          //if we are again offline there is nothing to do
      });

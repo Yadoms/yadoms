@@ -26,18 +26,12 @@
             systemConfiguration = configuration;
             var i18nContext = "modals.dashboard.sub-windows.system-configuration.configuration-items.";
 
-            //we create configuration items
-
-            //*************
-            //developerMode
-            var developerModeParameter = new BoolParameterHandler(i18nContext, ConfigurationManager.items.system.developerMode, {defaultValue: systemConfiguration[ConfigurationManager.items.system.developerMode].defaultValue}, systemConfiguration[ConfigurationManager.items.system.developerMode].value);
-
-            //we create language selection list
-
             //*************
             //language
             var languageParameter = new EnumParameterHandler(i18nContext, ConfigurationManager.items.system.language, {"values" : isoLanguageCodes, "defaultValue" : systemConfiguration[ConfigurationManager.items.system.language].defaultValue}, systemConfiguration[ConfigurationManager.items.system.language].value);
 
+            //*************
+            //timezone
             //we create timezone selection list
             var timezones = {};
             $.each(moment.tz.zones(), function (index, value) {
@@ -46,12 +40,33 @@
 
             var timezoneParameter = new EnumParameterHandler(i18nContext, ConfigurationManager.items.system.timezone, {"values" : timezones, "defaultValue" : systemConfiguration[ConfigurationManager.items.system.timezone].defaultValue}, systemConfiguration[ConfigurationManager.items.system.timezone].value);
 
-            //var advancedSectionParameters = new SectionParameterHandler(null, i18nContext)
+            //*************
+            //advanced parameters
+            var value = {};
+            value.checkbox = systemConfiguration[ConfigurationManager.items.system.advancedParameters].value;
+            var advancedSectionParameters = new SectionParameterHandler(null, i18nContext,
+                                                   ConfigurationManager.items.system.advancedParameters,
+                                                   {
+                                                      "enableWithCheckBox" : true,
+                                                      "enableWithCheckBoxDefaultValue" : systemConfiguration[ConfigurationManager.items.system.advancedParameters].defaultValue
+                                                   },
+                                                   value);
+
+            //*************
+            //developerMode
+            var developerModeParameter = new BoolParameterHandler(i18nContext, ConfigurationManager.items.system.developerMode, {defaultValue: systemConfiguration[ConfigurationManager.items.system.developerMode].defaultValue}, systemConfiguration[ConfigurationManager.items.system.developerMode].value);
+            advancedSectionParameters.configurationHandlers.push(developerModeParameter);
+
+            //*************
+            //dateFormatString
+            var dateFormatStringParameter = new StringParameterHandler(i18nContext, ConfigurationManager.items.system.dateFormatString, {defaultValue: systemConfiguration[ConfigurationManager.items.system.dateFormatString].defaultValue, "required" : "true"}, systemConfiguration[ConfigurationManager.items.system.dateFormatString].value);
+            advancedSectionParameters.configurationHandlers.push(dateFormatStringParameter);
+
 
             //and add it to the gui
             $modalBody.append(languageParameter.getDOMObject());
             $modalBody.append(timezoneParameter.getDOMObject());
-            $modalBody.append(developerModeParameter.getDOMObject());
+            $modalBody.append(advancedSectionParameters.getDOMObject());
 
             //we i18n the form
             $modalBody.i18n();
@@ -69,15 +84,6 @@
                   var errorOccurred = false;
 
                   //we save current configuration
-
-                  //*************
-                  //developerMode
-                  systemConfiguration[ConfigurationManager.items.system.developerMode].value = developerModeParameter.getCurrentConfiguration();
-
-                  if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.developerMode])) {
-                     errorOccurred = true;
-                  }
-
                   //*************
                   //language
                   systemConfiguration[ConfigurationManager.items.system.language].value = languageParameter.getCurrentConfiguration();
@@ -99,12 +105,31 @@
                   if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.timezone])) {
                      errorOccurred = true;
                   }
-                  else {
-                     //we initialize dateTimeFormatter
-                     dateTimeFormatter = new DateTimeFormatter("DD/MM/YYYY HH:mm:ss", systemConfiguration[ConfigurationManager.items.system.timezone].value);
+
+                  //*************
+                  //advanced parameters
+                  systemConfiguration[ConfigurationManager.items.system.advancedParameters].value = advancedSectionParameters.getCurrentConfiguration().checkbox;
+
+                  if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.advancedParameters])) {
+                     errorOccurred = true;
+                  }
+
+                  //*************
+                  //developerMode
+                  systemConfiguration[ConfigurationManager.items.system.developerMode].value = developerModeParameter.getCurrentConfiguration();
+                  if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.developerMode])) {
+                     errorOccurred = true;
+                  }
+
+                  //*************
+                  //dateFormatString
+                  systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = dateFormatStringParameter.getCurrentConfiguration();
+                  if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.dateFormatString])) {
+                     errorOccurred = true;
                   }
 
                   //other system configuration items have to be inserted here
+                  //...
 
                   if (errorOccurred) {
                      //an error has occurred during saving
@@ -133,16 +158,7 @@
                           //we get all default values of each parameters on set it as value
 
                           //*************
-                          //developerMode
-
-                          systemConfiguration[ConfigurationManager.items.system.developerMode].value = systemConfiguration[ConfigurationManager.items.system.developerMode].defaultValue;
-                          if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.developerMode])) {
-                             errorOccurred = true;
-                          }
-
-                          //*************
                           //language
-
                           systemConfiguration[ConfigurationManager.items.system.language].value = systemConfiguration[ConfigurationManager.items.system.language].defaultValue;
                           if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.language])) {
                              errorOccurred = true;
@@ -156,17 +172,34 @@
 
                           //*************
                           //timezone
-
                           systemConfiguration[ConfigurationManager.items.system.timezone].value = systemConfiguration[ConfigurationManager.items.system.timezone].defaultValue;
                           if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.timezone])) {
                              errorOccurred = true;
                           }
-                          else {
-                             //we initialize dateTimeFormatter
-                             dateTimeFormatter = new DateTimeFormatter("DD/MM/YYYY HH:mm:ss", systemConfiguration[ConfigurationManager.items.system.timezone].value);
+
+                          //*************
+                          //advanced parameters
+                          systemConfiguration[ConfigurationManager.items.system.advancedParameters].value = systemConfiguration[ConfigurationManager.items.system.advancedParameters].defaultValue;
+                          if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.advancedParameters])) {
+                             errorOccurred = true;
+                          }
+
+                          //*************
+                          //developerMode
+                          systemConfiguration[ConfigurationManager.items.system.developerMode].value = systemConfiguration[ConfigurationManager.items.system.developerMode].defaultValue;
+                          if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.developerMode])) {
+                             errorOccurred = true;
+                          }
+
+                          //*************
+                          //dateFormatString
+                          systemConfiguration[ConfigurationManager.items.system.dateFormatString].value = systemConfiguration[ConfigurationManager.items.system.dateFormatString].defaultValue;
+                          if (!ConfigurationManager.updateToServerSync(systemConfiguration[ConfigurationManager.items.system.dateFormatString])) {
+                             errorOccurred = true;
                           }
 
                           //other system configuration items have to be inserted here
+                          //...
 
                           if (errorOccurred) {
                              //an error has occurred during saving

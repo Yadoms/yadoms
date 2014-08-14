@@ -136,33 +136,44 @@
 
        newWidget.package = WidgetPackageManager.widgetPackages[newWidget.name].packageInformation;
 
-       modals.widgetConfiguration.load(function() {
+       //we load configuration window only if the widget has a configuration
+       if (!isNullOrUndefined(newWidget.package.configurationSchema)) {
+          modals.widgetConfiguration.load(function() {
 
-           configureWidget(newWidget, function () {
-               //if the configuration has been validated we can create the widget
-               $.ajax({
-                   type: "POST",
-                   url: "/rest/widget",
-                   data: JSON.stringify({ idPage: newWidget.idPage, name: newWidget.name, sizeX: newWidget.sizeX, sizeY: newWidget.sizeY, positionX: newWidget.positionX, positionY: newWidget.positionY, configuration: newWidget.configuration }),
-                   contentType: "application/json; charset=utf-8",
-                   dataType: "json"
-               })
-               .done(function(data) {
-                   //we parse the json answer
-                   if (data.result != "true")
-                   {
-                       notifyError($.t("modals.add-widget.errorDuringCreatingWidget"), JSON.stringify(data));
-                       return;
-                   }
-
-                   notifySuccess($.t("modals.add-widget.widgetSuccessfullyCreated"));
-                   //we add the widget dynamically
-                   var w = WidgetManager.factory(data.data);
-                   WidgetManager.loadWidget(w, currentPage);
-               })
-               .fail(function(widgetName) { return function() {notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {"widgetType" : widgetName}))}}(packageName));
-           });
-       });
+              configureWidget(newWidget, function () {
+                  //if the configuration has been validated we can create the widget
+                 createWidget(newWidget, currentPage);
+              });
+          });
+       }
+       else {
+          //we directly create the widget
+          createWidget(newWidget, currentPage);
+       }
     });
+
+   function createWidget(newWidget, currentPage) {
+      $.ajax({
+         type: "POST",
+         url: "/rest/widget",
+         data: JSON.stringify({ idPage: newWidget.idPage, name: newWidget.name, sizeX: newWidget.sizeX, sizeY: newWidget.sizeY, positionX: newWidget.positionX, positionY: newWidget.positionY, configuration: newWidget.configuration }),
+         contentType: "application/json; charset=utf-8",
+         dataType: "json"
+      })
+      .done(function(data) {
+         //we parse the json answer
+         if (data.result != "true")
+         {
+            notifyError($.t("modals.add-widget.errorDuringCreatingWidget"), JSON.stringify(data));
+            return;
+         }
+
+         notifySuccess($.t("modals.add-widget.widgetSuccessfullyCreated"));
+         //we add the widget dynamically
+         var w = WidgetManager.factory(data.data);
+         WidgetManager.loadWidget(w, currentPage);
+      })
+      .fail(function(widgetName) { return function() {notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {"widgetType" : widgetName}))}}(newWidget.name));
+   }
 
 </script>

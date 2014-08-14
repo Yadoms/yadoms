@@ -181,6 +181,8 @@ WidgetManager.loadWidget = function(widget, pageWhereToAdd) {
             //we get i18n data
             i18n.options.resGetPath = 'widgets/__ns__/locales/__lng__.json';
             i18n.loadNamespace(widget.name);
+            //we restore the resGetPath
+            i18n.options.resGetPath = "locales/__lng__.json";
 
             var viewModel = WidgetManager.getViewModelFromServerSync(widget);
             if (!isNullOrUndefined(viewModel)) {
