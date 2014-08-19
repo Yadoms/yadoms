@@ -25,10 +25,10 @@ public:
    //--------------------------------------------------------------
    virtual ~CLinuxSystemInformation();
 
-// IPlugin implementation
+   // IPlugin implementation
    virtual void doWork(boost::shared_ptr<yApi::IYadomsApi> context);
-  // [END] IPlugin implementation
-  
- private:
+   // [END] IPlugin implementation
+
+private:
    std::string m_DeviceName;
 };

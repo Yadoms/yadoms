@@ -74,6 +74,7 @@ add_definitions( -DBOOST_SPIRIT_THREADSAFE )
 
 # define all needed boost libraries
 set(BOOST_LIBS 
+    atomic
 	system 
 	filesystem 
 	thread 

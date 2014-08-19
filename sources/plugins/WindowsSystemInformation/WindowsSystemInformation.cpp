@@ -16,7 +16,7 @@
 IMPLEMENT_PLUGIN(CWindowsSystemInformation)
 
 
-CWindowsSystemInformation::CWindowsSystemInformation(): m_DeviceName("System")
+   CWindowsSystemInformation::CWindowsSystemInformation(): m_DeviceName("System")
 {
 }
 
@@ -37,8 +37,8 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
    {
       YADOMS_LOG(debug) << "CWindowsSystemInformation is starting...";
 
-	  //declarations
-      
+      //declarations
+
       CWindowsSystemMemoryLoad    MemoryLoad   (m_DeviceName);
       CWindowsSystemCPULoad       CPULoad      (m_DeviceName);
       CWindowsSystemYadomsCPULoad YadomsCPULoad(m_DeviceName);
@@ -50,70 +50,70 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
       std::vector<std::string> TempList;
 
       std::vector<CWindowsSystemDiskUsage> DiskUsageList;
-      
-	  try
-	  {
-		  MemoryLoad.Initialize();
-		  MemoryLoad.declareDevice(context);
-	  }
-	  catch (boost::thread_interrupted&)
-	  {
-		  YADOMS_LOG(debug) << "Device Memory is desactivated...";
-	  }
 
-	  try
-	  {
-		  CPULoad.Initialize();
-		  CPULoad.declareDevice(context);
-	  }
-	  catch (boost::thread_interrupted&)
-	  {
-		  YADOMS_LOG(debug) << "Device CPU Load is desactivated...";
-	  }
+      try
+      {
+         MemoryLoad.Initialize();
+         MemoryLoad.declareDevice(context);
+      }
+      catch (boost::thread_interrupted&)
+      {
+         YADOMS_LOG(debug) << "Device Memory is desactivated...";
+      }
 
-	  try
-	  {
-		  YadomsCPULoad.Initialize();
-		  YadomsCPULoad.declareDevice(context);
-	  }
-	  catch (boost::thread_interrupted&)
-	  {
-		  YADOMS_LOG(debug) << "Device Yadoms CPU Load is desactivated...";
-	  }
+      try
+      {
+         CPULoad.Initialize();
+         CPULoad.declareDevice(context);
+      }
+      catch (boost::thread_interrupted&)
+      {
+         YADOMS_LOG(debug) << "Device CPU Load is desactivated...";
+      }
+
+      try
+      {
+         YadomsCPULoad.Initialize();
+         YadomsCPULoad.declareDevice(context);
+      }
+      catch (boost::thread_interrupted&)
+      {
+         YADOMS_LOG(debug) << "Device Yadoms CPU Load is desactivated...";
+      }
 
       TempList = DisksList.getList();
       int counterDisk = 0;
 
       for(DisksListIterator=TempList.begin(); DisksListIterator!=TempList.end(); ++DisksListIterator)
-	   {
+      {
          std::ostringstream ssKeyword;
 
          ssKeyword << "DiskUsage" << counterDisk;
          CWindowsSystemDiskUsage DiskUsage(m_DeviceName, *DisksListIterator, ssKeyword.str());
 
-		 try
-		 {
-		    DiskUsage.Initialize();
-			DiskUsage.declareDevice(context);
+         try
+         {
+            DiskUsage.Initialize();
+            DiskUsage.declareDevice(context);
             DiskUsageList.push_back(DiskUsage);
-			++counterDisk;
-		 }
-		 catch (boost::thread_interrupted&)
-		 {
-		    YADOMS_LOG(debug) << "One Disk Usage device is desactivated...";
-		 }
+            ++counterDisk;
+         }
+         catch (boost::thread_interrupted&)
+         {
+            YADOMS_LOG(debug) << "One Disk Usage device is desactivated...";
+         }
       }
 
       // Event to be sent immediately for the first value
       context->getEventHandler().createTimer(kEvtTimerRefreshCPULoad      , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
       // Timer used to read periodically CPU loads
       context->getEventHandler().createTimer(kEvtTimerRefreshCPULoad      , shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
-      
+
       // Event to be sent immediately for the first value
       context->getEventHandler().createTimer(kEvtTimerRefreshDiskAndMemory, shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
       // Timer used to read periodically Disk Usage and Memory Load
       context->getEventHandler().createTimer(kEvtTimerRefreshDiskAndMemory, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(300));
-      
+
       // the main loop
       YADOMS_LOG(debug) << "WindowsSystemInformation plugin is running...";
 
@@ -126,25 +126,25 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
             {
                YADOMS_LOG(debug) << "WindowsSystem plugin :  Read CPU Loads";
 
-                  std::ostringstream ss1;
-                  std::ostringstream ss2;
+               std::ostringstream ss1;
+               std::ostringstream ss2;
 
-                  try
-                  {
-                     ss1 << std::fixed << std::setprecision(2) << CPULoad.getValue();
-                     YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  CPU Load : " << ss1.str();
-                     CPULoad.historizeData(context);
+               try
+               {
+                  ss1 << std::fixed << std::setprecision(2) << CPULoad.getValue();
+                  YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  CPU Load : " << ss1.str();
+                  CPULoad.historizeData(context);
 
-                     ss2 << std::fixed << std::setprecision(2) << YadomsCPULoad.getValue();
-                     YadomsCPULoad.historizeData(context);
+                  ss2 << std::fixed << std::setprecision(2) << YadomsCPULoad.getValue();
+                  YadomsCPULoad.historizeData(context);
 
-                     YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  Yadoms CPU Load : " << ss2.str();
-                  }
-                  catch (boost::system::system_error& e)
-                  {
-                     YADOMS_LOG(error) << "WindowsSystemInformation plugin :  Exception" << e.what();
-                     return;
-                  }
+                  YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  Yadoms CPU Load : " << ss2.str();
+               }
+               catch (boost::system::system_error& e)
+               {
+                  YADOMS_LOG(error) << "WindowsSystemInformation plugin :  Exception" << e.what();
+                  return;
+               }
 
                break;
             }
@@ -152,31 +152,31 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> conte
             {
                YADOMS_LOG(debug) << "WindowsSystem plugin :  Read Memory and disk Usages";
 
-                  std::ostringstream ss;
-                  std::ostringstream ss3;
+               std::ostringstream ss;
+               std::ostringstream ss3;
 
-                  try
-                  {
-                     ss << std::fixed << std::setprecision(2) << MemoryLoad.getValue();
+               try
+               {
+                  ss << std::fixed << std::setprecision(2) << MemoryLoad.getValue();
 
-                     YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  Memory Load : " << ss.str();
+                  YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  Memory Load : " << ss.str();
 
-                     MemoryLoad.historizeData(context);
+                  MemoryLoad.historizeData(context);
 
-                     std::vector<CWindowsSystemDiskUsage>::iterator DisksListIterator;
+                  std::vector<CWindowsSystemDiskUsage>::iterator DisksListIterator;
 
-                     for(DisksListIterator=DiskUsageList.begin(); DisksListIterator!=DiskUsageList.end(); ++DisksListIterator)
-	                  { 
-                        ss3 << std::fixed << std::setprecision(2) << (*DisksListIterator).getValue();
-                        (*DisksListIterator).historizeData(context);
-                        YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  Yadoms Disk Usage " << (*DisksListIterator).getDriveName() << " :" << ss3.str();
-                     }
+                  for(DisksListIterator=DiskUsageList.begin(); DisksListIterator!=DiskUsageList.end(); ++DisksListIterator)
+                  { 
+                     ss3 << std::fixed << std::setprecision(2) << (*DisksListIterator).getValue();
+                     (*DisksListIterator).historizeData(context);
+                     YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  Yadoms Disk Usage " << (*DisksListIterator).getDriveName() << " :" << ss3.str();
                   }
-                  catch (boost::system::system_error& e)
-                  {
-                     YADOMS_LOG(error) << "WindowsSystemInformation plugin :  Exception" << e.what();
-                     return;
-                  }
+               }
+               catch (boost::system::system_error& e)
+               {
+                  YADOMS_LOG(error) << "WindowsSystemInformation plugin :  Exception" << e.what();
+                  return;
+               }
 
                break;
             }

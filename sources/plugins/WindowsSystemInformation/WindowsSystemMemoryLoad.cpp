@@ -47,21 +47,21 @@ void CWindowsSystemMemoryLoad::historizeData(boost::shared_ptr<yApi::IYadomsApi>
 
 double CWindowsSystemMemoryLoad::getValue()
 {
-	MEMORYSTATUSEX statex;
+   MEMORYSTATUSEX statex;
 
-	statex.dwLength = sizeof (statex);
+   statex.dwLength = sizeof (statex);
 
-	if (GlobalMemoryStatusEx (&statex))
-		m_memoryLoad = (double(statex.ullTotalPhys - statex.ullAvailPhys)*100 / statex.ullTotalPhys );
-	else
-	{
-		std::stringstream Message;
-		Message << "Fail to read Windows system memory size :";
-		Message << GetLastError();
-		throw shared::exception::CException ( Message.str() );
-	}
+   if (GlobalMemoryStatusEx (&statex))
+      m_memoryLoad = (double(statex.ullTotalPhys - statex.ullAvailPhys)*100 / statex.ullTotalPhys );
+   else
+   {
+      std::stringstream Message;
+      Message << "Fail to read Windows system memory size :";
+      Message << GetLastError();
+      throw shared::exception::CException ( Message.str() );
+   }
 
-	return m_memoryLoad;
+   return m_memoryLoad;
 }
 
 

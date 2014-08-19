@@ -64,7 +64,7 @@ double CLinuxSystemYadomsCPULoad::getValue()
    struct tms timeSample;
    clock_t now;
    double percent;
-    
+
 
    now = times(&timeSample);
    if (now <= lastCPU || timeSample.tms_stime < lastSysCPU ||
@@ -76,7 +76,7 @@ double CLinuxSystemYadomsCPULoad::getValue()
    else
    {
       percent = (timeSample.tms_stime - lastSysCPU) +
-                (timeSample.tms_utime - lastUserCPU);
+         (timeSample.tms_utime - lastUserCPU);
       percent /= (now - lastCPU);
       percent /= numProcessors;
       percent *= 100;
