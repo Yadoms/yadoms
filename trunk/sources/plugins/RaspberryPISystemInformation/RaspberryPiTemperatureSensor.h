@@ -31,12 +31,12 @@ public:
    //--------------------------------------------------------------
    bool read();
 
-    //--------------------------------------------------------------
+   //--------------------------------------------------------------
    /// \brief	    Returns the sensor device ID
    /// \return     Device ID
    //--------------------------------------------------------------
    virtual const std::string& getDeviceId() const;
-   
+
    //--------------------------------------------------------------
    /// \brief	            Declare the device and its associated keywords
    /// \param[in] context  YadomsApi context to which declare the device
@@ -54,7 +54,7 @@ public:
    /// \return     The list of device capacities
    //--------------------------------------------------------------
    static const std::string& getModel();
-   
+
    //--------------------------------------------------------------
    /// \brief	    Returns read the temperature of the Raspberry CPU
    /// \return     Temperature in °C
@@ -72,7 +72,7 @@ public:
    /// \return     Device ID
    //--------------------------------------------------------------
    const std::string& getKeyword() const;
-   
+
 private:
    //--------------------------------------------------------------
    /// \brief	    Device ID

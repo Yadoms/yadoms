@@ -11,28 +11,28 @@ CWindowsSystemYadomsCPULoad::CWindowsSystemYadomsCPULoad(const std::string & dev
 
 void CWindowsSystemYadomsCPULoad::Initialize()
 {
-        SYSTEM_INFO sysInfo;
-        FILETIME ftime, fsys, fuser;
-    
-        GetSystemInfo(&sysInfo);
-        numProcessors = sysInfo.dwNumberOfProcessors;
-    
-        GetSystemTimeAsFileTime(&ftime);
-        memcpy(&lastCPU, &ftime, sizeof(FILETIME));
-    
-        self = GetCurrentProcess();
-        if (!GetProcessTimes(self, &ftime, &ftime, &fsys, &fuser))
-        {
-            std::stringstream Message;
-            Message << "Fail to retrieve Process Times with the error :";
-            Message << GetLastError();
-			m_InitializeOk = false;
-            throw shared::exception::CException ( Message.str() );
-        }
-        memcpy(&lastSysCPU, &fsys, sizeof(FILETIME));
-        memcpy(&lastUserCPU, &fuser, sizeof(FILETIME));
+   SYSTEM_INFO sysInfo;
+   FILETIME ftime, fsys, fuser;
 
-		m_InitializeOk = true;
+   GetSystemInfo(&sysInfo);
+   numProcessors = sysInfo.dwNumberOfProcessors;
+
+   GetSystemTimeAsFileTime(&ftime);
+   memcpy(&lastCPU, &ftime, sizeof(FILETIME));
+
+   self = GetCurrentProcess();
+   if (!GetProcessTimes(self, &ftime, &ftime, &fsys, &fuser))
+   {
+      std::stringstream Message;
+      Message << "Fail to retrieve Process Times with the error :";
+      Message << GetLastError();
+      m_InitializeOk = false;
+      throw shared::exception::CException ( Message.str() );
+   }
+   memcpy(&lastSysCPU, &fsys, sizeof(FILETIME));
+   memcpy(&lastUserCPU, &fuser, sizeof(FILETIME));
+
+   m_InitializeOk = true;
 }
 
 CWindowsSystemYadomsCPULoad::~CWindowsSystemYadomsCPULoad()
@@ -55,14 +55,14 @@ const std::string& CWindowsSystemYadomsCPULoad::getKeyword() const
 
 void CWindowsSystemYadomsCPULoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
 {
-	if (m_InitializeOk)
-	{
-	   // Declare the device
-	   context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
+   if (m_InitializeOk)
+   {
+      // Declare the device
+      context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
 
-	   // Declare associated keywords (= values managed by this device)
-	   context->declareCustomKeyword(m_deviceId, getKeyword(), getCapacity(), yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::Percent);
-	}
+      // Declare associated keywords (= values managed by this device)
+      context->declareCustomKeyword(m_deviceId, getKeyword(), getCapacity(), yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::Percent);
+   }
 }
 
 void CWindowsSystemYadomsCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
@@ -75,38 +75,38 @@ void CWindowsSystemYadomsCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsA
 
 double CWindowsSystemYadomsCPULoad::getValue()
 {
-        FILETIME ftime, fsys, fuser;
-        unsigned __int64 now, sys, user;
-        double percent;
- 
+   FILETIME ftime, fsys, fuser;
+   unsigned __int64 now, sys, user;
+   double percent;
+
    if (m_InitializeOk)
    {
-        GetSystemTimeAsFileTime(&ftime);
-        memcpy(&now, &ftime, sizeof(FILETIME));
-    
-        if (!GetProcessTimes(self, &ftime, &ftime, &fsys, &fuser))
-        {
-            std::stringstream Message;
-            Message << "Fail to retrieve Process Times with the error :";
-            Message << GetLastError();
-            throw shared::exception::CException ( Message.str() );
-        }
+      GetSystemTimeAsFileTime(&ftime);
+      memcpy(&now, &ftime, sizeof(FILETIME));
 
-        memcpy(&sys, &fsys, sizeof(FILETIME));
-        memcpy(&user, &fuser, sizeof(FILETIME));
-        percent = double((sys-lastSysCPU) + (user - lastUserCPU)) / (now - lastCPU);
-        percent /= numProcessors;
-        lastCPU = now;
-        lastUserCPU = user;
-        lastSysCPU = sys;
+      if (!GetProcessTimes(self, &ftime, &ftime, &fsys, &fuser))
+      {
+         std::stringstream Message;
+         Message << "Fail to retrieve Process Times with the error :";
+         Message << GetLastError();
+         throw shared::exception::CException ( Message.str() );
+      }
 
-        m_CPULoad = percent * 100;
-    
-        return m_CPULoad;
+      memcpy(&sys, &fsys, sizeof(FILETIME));
+      memcpy(&user, &fuser, sizeof(FILETIME));
+      percent = double((sys-lastSysCPU) + (user - lastUserCPU)) / (now - lastCPU);
+      percent /= numProcessors;
+      lastCPU = now;
+      lastUserCPU = user;
+      lastSysCPU = sys;
+
+      m_CPULoad = percent * 100;
+
+      return m_CPULoad;
    }
    else
    {
-	   YADOMS_LOG(trace) << getDeviceId() << " is desactivated";
-	   return 0;
+      YADOMS_LOG(trace) << getDeviceId() << " is desactivated";
+      return 0;
    }
 }

@@ -25,10 +25,10 @@ public:
    //--------------------------------------------------------------
    virtual ~CRaspBerryPiSystemInformation();
 
-// IPlugin implementation
+   // IPlugin implementation
    virtual void doWork(boost::shared_ptr<yApi::IYadomsApi> context);
-  // [END] IPlugin implementation
+   // [END] IPlugin implementation
 
- private:
+private:
    std::string m_DeviceName;
 };

@@ -23,8 +23,8 @@ CRaspBerryPiSystemDisksList::CRaspBerryPiSystemDisksList(void)
       {
          if (strstr(dname,"/dev")!=NULL)
          {
-             DrivesList.push_back( dname );
-             YADOMS_LOG(debug) << "found:" << dname;
+            DrivesList.push_back( dname );
+            YADOMS_LOG(debug) << "found:" << dname;
          }
       }
    }
@@ -49,7 +49,7 @@ std::vector<std::string> CRaspBerryPiSystemDisksList::ExecuteCommandAndReturn(co
       /* Read the output a line at a time - output it. */
       while (fgets(path, sizeof(path)-1, fp) != NULL)
       {
-          ret.push_back(path);
+         ret.push_back(path);
       }
       /* close */
       pclose(fp);

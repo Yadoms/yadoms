@@ -66,7 +66,7 @@ double CLinuxSystemMemoryLoad::getValue()
 
    YADOMS_LOG(debug) << "Mémoire virtuelle utilisée :" << virtualMemUsed;
    YADOMS_LOG(debug) << "Mémoire virtuelle totale   :" << totalVirtualMem;
-   
+
    //FIXME : Cette méthode renvoie une valeur supérieure à ce que me renvoie le moniteur système d'Ubuntu ... A vérifier. Domoticz donne la meme chose. A vérifier avec une autre fonction mémoire en ligne de commande.
 
    m_memoryLoad = virtualMemUsed*100/double(totalVirtualMem);

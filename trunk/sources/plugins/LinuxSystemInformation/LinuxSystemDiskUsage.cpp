@@ -64,7 +64,7 @@ std::vector<std::string> CLinuxSystemDiskUsage::ExecuteCommandAndReturn(const st
       /* Read the output a line at a time - output it. */
       while (fgets(path, sizeof(path)-1, fp) != NULL)
       {
-          ret.push_back(path);
+         ret.push_back(path);
       }
       /* close */
       pclose(fp);
@@ -88,11 +88,11 @@ double CLinuxSystemDiskUsage::getValue()
       {
          if (strstr(dname,m_driveName.c_str())!=NULL)
          {
-             YADOMS_LOG(debug) << "usedblocks :" << usedblocks;
-             YADOMS_LOG(debug) << "numblock   :" << numblock;
-             m_diskUsage = usedblocks/double(numblock)*100;
-             YADOMS_LOG(debug) << "diskUsage  :" << m_diskUsage;
-             return m_diskUsage;
+            YADOMS_LOG(debug) << "usedblocks :" << usedblocks;
+            YADOMS_LOG(debug) << "numblock   :" << numblock;
+            m_diskUsage = usedblocks/double(numblock)*100;
+            YADOMS_LOG(debug) << "diskUsage  :" << m_diskUsage;
+            return m_diskUsage;
          }
       }
    }

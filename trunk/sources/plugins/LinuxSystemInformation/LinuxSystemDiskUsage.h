@@ -89,7 +89,7 @@ private:
    //--------------------------------------------------------------
    const std::string m_Keyword;
 
-//FIXME : Ecriture à modifier ??
-std::vector<std::string> ExecuteCommandAndReturn(const std::string &szCommand);
+   //FIXME : Ecriture à modifier ??
+   std::vector<std::string> ExecuteCommandAndReturn(const std::string &szCommand);
 };
 

@@ -54,11 +54,11 @@ double CRaspberryPITemperatureSensor::getValue()
       std::string readValue;
       while(!temperatureFile.eof())
       {
-    	  getline(temperatureFile, readValue);
-    	  if(!readValue.empty())
-    	  {
-    		  break;
-    	  }
+         getline(temperatureFile, readValue);
+         if(!readValue.empty())
+         {
+            break;
+         }
       }
       temperatureFile.close();
 
@@ -67,11 +67,11 @@ double CRaspberryPITemperatureSensor::getValue()
    }
    catch(std::exception & ex)
    {
-	   YADOMS_LOG(error) << "Fail to read RaspberryPI thermal sensor : " << ex.what();
+      YADOMS_LOG(error) << "Fail to read RaspberryPI thermal sensor : " << ex.what();
    }
    catch(...)
    {
-	   YADOMS_LOG(error) << "Fail to read RaspberryPI thermal sensor";
+      YADOMS_LOG(error) << "Fail to read RaspberryPI thermal sensor";
    }
    return 0;
 }

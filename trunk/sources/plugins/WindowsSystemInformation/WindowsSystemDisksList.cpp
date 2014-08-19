@@ -10,39 +10,39 @@ CWindowsSystemDisksList::CWindowsSystemDisksList(void)
    UINT driveType;
 
    // Find out how big a buffer we need
-    cchBuffer = GetLogicalDriveStrings(0, NULL);
-   
-    driveStrings = (LPSTR)malloc((cchBuffer + 1) * sizeof(TCHAR));
-    driveStringsInit = driveStrings;
+   cchBuffer = GetLogicalDriveStrings(0, NULL);
 
-    if (driveStrings == NULL || cchBuffer == NULL)
-    {
+   driveStrings = (LPSTR)malloc((cchBuffer + 1) * sizeof(TCHAR));
+   driveStringsInit = driveStrings;
+
+   if (driveStrings == NULL || cchBuffer == NULL)
+   {
       std::stringstream Message;
       Message << "Cannot allocate memory for CWindowsSystemDisksList : ";
       Message << GetLastError();
       throw shared::exception::CException ( Message.str() );
-    }
+   }
 
-    // Fetch all drive strings    
-    if (GetLogicalDriveStrings(cchBuffer, driveStrings)==NULL)
-    {
+   // Fetch all drive strings    
+   if (GetLogicalDriveStrings(cchBuffer, driveStrings)==NULL)
+   {
       std::stringstream Message;
       Message << "GetLogicalDriveStrings return an error : ";
       Message << GetLastError();
       throw shared::exception::CException ( Message.str() );
-    }
+   }
 
-    while (*driveStrings)
-    {
-       driveType = GetDriveType(driveStrings);
-       if (driveType == DRIVE_FIXED)
-       {
+   while (*driveStrings)
+   {
+      driveType = GetDriveType(driveStrings);
+      if (driveType == DRIVE_FIXED)
+      {
          DrivesList.push_back( driveStrings );
-       }
-       driveStrings += lstrlen(driveStrings) + 1;
-    }
+      }
+      driveStrings += lstrlen(driveStrings) + 1;
+   }
 
-    free(driveStringsInit);
+   free(driveStringsInit);
 }
 
 CWindowsSystemDisksList::~CWindowsSystemDisksList()
@@ -50,7 +50,7 @@ CWindowsSystemDisksList::~CWindowsSystemDisksList()
 
 std::vector<std::string>& CWindowsSystemDisksList::getList()
 {
-    return DrivesList;
+   return DrivesList;
 }
 
 
