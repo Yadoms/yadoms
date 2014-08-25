@@ -54,7 +54,7 @@
 
    function addPluginInstanceToDom(pi) {
       var actionsBtns = "<div class=\"btn-group\">\n" +
-              "<button type=\"button\" class=\"btn btn-startStop\"><span class=\"glyphicon glyphicon-off\"></span></button>\n" +
+              "<button type=\"button\" class=\"btn btn-startStop\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.startStop\"><span class=\"glyphicon glyphicon-off\"></span></button>\n" +
               "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.configure\"><span class=\"glyphicon glyphicon-cog\"></span></button>\n" +
               "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.delete\"><span class=\"glyphicon glyphicon-trash\"></span></button>\n" +
               "</div>";
@@ -93,6 +93,8 @@
       $pluginInstanceRow.find("button.btn-configure").unbind('click').bind('click', configurePlugin(pi));
       $pluginInstanceRow.find("button.btn-delete").unbind('click').bind('click', deletePlugin(pi));
       $pluginInstanceRow.find("input.cb-autoStart").unbind('change').bind('change', autoStartChange(pi));
+
+      $pluginInstanceRow.i18n();
    }
 
    function startStopPlugin(pi) {

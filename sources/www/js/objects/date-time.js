@@ -8,6 +8,13 @@
  */
 function DateTimeFormatter() {}
 
+DateTimeFormatter.isoDateToDate = function (isoDate) {
+
+   var d = moment.utc(isoDate, "YYYYMMDD[T]HHmmss");
+   assert(d.isValid(), "Date given " + isoDate + " is not valid");
+   return d;
+};
+
 /**
  * Display date given in parameter
  * @param isoDate date to display
@@ -15,11 +22,10 @@ function DateTimeFormatter() {}
  */
 DateTimeFormatter.isoDateToString = function (isoDate) {
 
+   var d = DateTimeFormatter.isoDateToDate(isoDate);
    var format = systemConfiguration[ConfigurationManager.items.system.dateFormatString].value;
    var timeZone = systemConfiguration[ConfigurationManager.items.system.timezone].value;
-   var language = systemConfiguration[ConfigurationManager.items.system.language].value;
+   //var language = systemConfiguration[ConfigurationManager.items.system.language].value;
 
-   var d = moment.utc(isoDate, "YYYYMMDD[T]HHmmss");
-   assert(d.isValid(), "Date given " + isoDate + " is not valid");
    return d.tz(timeZone).format(format);
 };

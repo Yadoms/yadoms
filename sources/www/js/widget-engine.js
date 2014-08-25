@@ -43,7 +43,9 @@ function initializeWidgetEngine() {
       PageManager.getAll(function() {
          if (loadPagesNotification != null) {
             loadPagesNotification.close();
-            //loadPagesNotification = null;
+            if (loadPagesNotification.showing)
+               loadPagesNotification.$bar.dequeue();
+            loadPagesNotification = null;
          }
          //we add all pages to the DOM
          $.each(PageManager.pages, function (index, currentPage) {
@@ -90,6 +92,8 @@ function requestWidgets(page) {
 
          if (!isNullOrUndefined(loadWidgetsNotification)) {
             loadWidgetsNotification.close();
+            if (loadWidgetsNotification.showing)
+               loadWidgetsNotification.$bar.dequeue();
             loadWidgetsNotification = null;
          }
       }
@@ -106,6 +110,8 @@ function askForWidgetDelete(packageName, widgetList, errorMessage) {
          // this = button element
          // $noty = $noty element
          $noty.close();
+         if ($noty.showing)
+            $noty.$bar.dequeue();
 
          //we must retrieve which widgets are concerned by this package and we ask for widget deletion
          var i = widgetList.length - 1;
@@ -136,6 +142,8 @@ function askForWidgetDelete(packageName, widgetList, errorMessage) {
          // this = button element
          // $noty = $noty element
          $noty.close();
+         if ($noty.showing)
+            $noty.$bar.dequeue();
       });
 }
 
@@ -180,6 +188,8 @@ function periodicUpdateTask() {
             //if the errorNotification is always visible we close it
             if (OfflineServerNotification != null) {
                OfflineServerNotification.close();
+               if (OfflineServerNotification.showing)
+                  OfflineServerNotification.$bar.dequeue();
                OfflineServerNotification = null;
             }
             //we change the interval period to the normal one
