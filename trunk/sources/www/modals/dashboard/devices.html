@@ -83,6 +83,8 @@
 
       $deviceRow.unbind('click').bind('click', clickDevice(device));
 
+      $deviceRow.i18n();
+
       //we async ask for attached plugins
       DeviceManager.getAttachedPlugin(device, function() {
          var attachedTo = "<img src=\"plugins/" + device.attachedPlugin.type + "/icon.png\" class=\"img-thumbnail plugin-icon\">&nbsp;&nbsp;" +

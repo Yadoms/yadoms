@@ -14,7 +14,9 @@
          "dashboard" : "Dashboard",
          "checkForUpdate" : "Check for Update",
          "restart" : "Restart",
-         "shutdown" : "Shutdown"
+         "shutdown" : "Shutdown",
+         "charts" : "Display Charts",
+         "customization" : "Enter customization mode"
       },
       "actions" : {
          "loadingPages" : "Loading Pages ...",
@@ -132,9 +134,9 @@
                "platform" : "Platform",
                "softwareVersion" : "Software Version",
                "databaseVersion" : "Database Version",
-               "runningFrom" : "Running from",
-               "networkInterface" : "Network interface",
-               "errorRequestingDatabaseVersion" : "Error requesting Database Version"
+               "startedFrom" : "Started from",
+               "errorRequestingDatabaseVersion" : "Error requesting Database Version",
+               "errorRequestingSystemInformation" : "Error requesting System information"
             },
             "user-management" : {
                "title" : "User management"
@@ -184,8 +186,6 @@
                },
                "enableDisable" : "Enable / Disable the plugin",
                "startStop" : "Start / Stop the plugin",
-               "start" : "Start",
-               "stop" : "Stop",
                "running" : "Running",
                "stopped" : "Stopped",
                "configure" : "Configure the plugin",
