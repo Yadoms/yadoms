@@ -72,13 +72,11 @@ void CSupervisor::doWork()
       const std::string & webServerIp = m_startupOptions.getWebServerIPAddress();
       const std::string webServerPort = boost::lexical_cast<std::string>(m_startupOptions.getWebServerPortNumber());
       const std::string & webServerPath = m_startupOptions.getWebServerInitialPath();
-      const std::string & webServerWidgetPath = m_startupOptions.getWidgetsPath();
-
-      //boost::shared_ptr<web::IWebServer> webServer(new web::webem::CWebServer(webServerIp, webServerPort, webServerPath, "/rest/"));
 
       web::poco::CWebServer webServer(webServerIp, webServerPort, webServerPath, "/rest/");
 
       //TODO delete unused alias when widget directory will be no more movable
+      //const std::string & webServerWidgetPath = m_startupOptions.getWidgetsPath();
       //webServer.configureAlias("widgets", webServerWidgetPath);
       webServer.configureAlias("plugins", m_startupOptions.getPluginsPath());
       webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager)));

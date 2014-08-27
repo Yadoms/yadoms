@@ -37,7 +37,7 @@ namespace web { namespace poco {
       // [END] IWebServer implementation
 
       // Poco::Net::HTTPRequestHandlerFactory implementation
-      Poco::Net::HTTPRequestHandler* CWebServer::createRequestHandler(const Poco::Net::HTTPServerRequest& request);
+      Poco::Net::HTTPRequestHandler* createRequestHandler(const Poco::Net::HTTPServerRequest& request);
       // [END] Poco::Net::HTTPRequestHandlerFactory implementation
 
    private:

@@ -5,7 +5,7 @@ namespace tools {
    class CApplicationLoader
    {
    public:
-      static int run(const IApplication & application, int argc, char ** argv);
+      static int run(IApplication & application, int argc, char ** argv);
       
    };
 
