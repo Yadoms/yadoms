@@ -11,8 +11,8 @@ namespace task {
    ///\brief Constructor
    //------------------------------
    CInstance::CInstance(boost::shared_ptr<ITask> task, shared::event::CEventHandler & eventHandler, const int eventCode, const std::string & guid)
-      : CThreadBase("Task " + task->getName()), m_currentProgression(0.0f), m_task(task), m_eventHandler(eventHandler), m_eventCode(eventCode), 
-      m_guid(guid), m_currentMessage(""), m_currentStatus(ITask::EStatus::kStarted), 
+      : CThreadBase("Task " + task->getName()), m_currentProgression(0.0f), m_currentMessage(""), m_task(task), m_eventHandler(eventHandler), m_eventCode(eventCode), 
+      m_guid(guid), m_currentStatus(ITask::EStatus::kStarted), 
       m_creationDate(boost::posix_time::second_clock::universal_time())
    {
       BOOST_ASSERT(m_task);

@@ -9,7 +9,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/functional/hash.hpp>
-#include <shared/encryption/MD5.h>
+#include <shared/encryption/md5.h>
 
 namespace task { namespace update {
 

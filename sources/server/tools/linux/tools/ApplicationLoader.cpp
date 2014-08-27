@@ -5,7 +5,7 @@
 
 namespace tools {
 
-   int CApplicationLoader::run(const IApplication & application, int argc, char ** argv)
+   int CApplicationLoader::run(IApplication & application, int argc, char ** argv)
    {
       return application.run(argc, argv);
    }
