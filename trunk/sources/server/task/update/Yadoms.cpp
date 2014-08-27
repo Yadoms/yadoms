@@ -92,7 +92,7 @@ namespace task { namespace update {
             }
             
             //we re-read the file and compute the md5 (the md5 can be generated online using ie http://onlinemd5.com/)
-            CMD5 md5Hasher;
+            shared::encryption::CMD5 md5Hasher;
             std::string md5HashCalculated = md5Hasher.digestFile(packageLocalFilePath.string().c_str());
 
             YADOMS_LOG(info) << "MD5 Hash calculated: " << md5HashCalculated;
