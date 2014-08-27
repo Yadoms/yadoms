@@ -1,0 +1,221 @@
+<div id="dashboard-plugins">
+   <h1 class="page-header"><span class="fa fa-rocket"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.plugins.title"></span></h1>
+   <span data-i18n="modals.dashboard.sub-windows.plugins.pluginInstanceListDescription"></span><br>
+   <button id="btn-add-new-plugin" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-rocket"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.plugins.new"></span></button>
+   <table id="plugin-instance-list" class="table table-bordered table-striped dashboard-list">
+      <tr>
+         <td data-i18n="modals.dashboard.sub-windows.plugins.table.name"></td>
+         <td data-i18n="modals.dashboard.sub-windows.plugins.table.type"></td>
+         <td data-i18n="modals.dashboard.sub-windows.plugins.table.status"></td>
+         <td data-i18n="modals.dashboard.sub-windows.plugins.table.launchAtStartup"></td>
+         <td data-i18n="modals.dashboard.sub-windows.plugins.table.actions"></td>
+      </tr>
+      <!-- plugin instance will be listed here-->
+   </table>
+</div>
+<script>
+   var pluginInstanceList = [];
+
+   function initializePluginDashboard() {
+      //we remove all rows except header
+      $("table#plugin-instance-list").find("tr:gt(0)").remove();
+      //we clear pluginInstance array
+      pluginInstanceList = [];
+
+      $("#btn-add-new-plugin").unbind("click").bind("click", addNewPlugin);
+
+      //we dynamically ask for plugins
+      $.getJSON("/rest/plugin/instance")
+         .done(function (data) {
+            //we parse the json answer
+            if (data.result != "true")
+            {
+               notifyError($.t("modals.dashboard.sub-windows.plugins.errorGettingPluginList"), JSON.stringify(data));
+               return;
+            }
+            //foreach result we append a <tr>
+            $.each(data.data.plugin, function(index, value) {
+               var pi = PluginInstanceManager.factory(value);
+               pluginInstanceList.push(pi);
+               addPluginInstanceToDom(pi);
+            });
+
+            //we use the periodic task of the dashboard
+            clearInterval(periodicDashboardTask);
+            periodicDashboardTask = setInterval(periodicDashboardPluginTask, 1000);
+            periodicDashboardPluginTask();
+         })
+         .fail(function() {notifyError($.t("modals.dashboard.sub-windows.plugins.errorGettingPluginList"), JSON.stringify(data));});
+   }
+
+   function getPluginDomRow(pluginInstance) {
+      return $("table#plugin-instance-list").find("tr[plugin-id='" + pluginInstance.id + "']");
+   }
+
+   function addPluginInstanceToDom(pi) {
+      var actionsBtns = "<div class=\"btn-group\">\n" +
+              "<button type=\"button\" class=\"btn btn-startStop\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.startStop\"><span class=\"glyphicon glyphicon-off\"></span></button>\n" +
+              "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.configure\"><span class=\"glyphicon glyphicon-cog\"></span></button>\n" +
+              "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.plugins.delete\"><span class=\"glyphicon glyphicon-trash\"></span></button>\n" +
+              "</div>";
+
+      var autoStartCommand = "<input class=\"cb-autoStart\" type=\"checkbox\">";
+
+      var statusField = "<span class=\"label label-success label-status\"></span>\n";/* +
+              "&nbsp;&nbsp;" +
+              "<button type=\"button\" class=\"btn btn-startStop\"></button>";*/
+
+      var name = "<span>" + pi.name + "</span>";
+
+      var type = "<img src=\"plugins/" + pi.type + "/icon.png\" class=\"img-thumbnail plugin-icon\">&nbsp;&nbsp;" +
+                  "<span>" + pi.type + "</span>";
+
+      //we add it to the DOM
+      var $pluginInstanceList = $("table#plugin-instance-list");
+
+      $pluginInstanceList.append("<tr plugin-id=\"" + pi.id + "\"><td class=\"plugin-name\"></td><td class=\"plugin-type\"></td><td class=\"plugin-status\"></td><td class=\"plugin-autoStart\"></td><td class=\"plugin-actions\"></td></tr>");
+
+      var $pluginInstanceRow = getPluginDomRow(pi);
+      //we fill the data
+      $pluginInstanceRow.find("td.plugin-name").html(name);
+      $pluginInstanceRow.find("td.plugin-type").html(type);
+      $pluginInstanceRow.find("td.plugin-autoStart").html(autoStartCommand);
+      $pluginInstanceRow.find("td.plugin-status").html(statusField);
+
+      //we add actions to the plugin
+      $pluginInstanceRow.find("td.plugin-actions").append(actionsBtns);
+
+      //we set autostart value
+      $pluginInstanceRow.find("input.cb-autoStart").prop("checked", pi.autoStart);
+
+      //we bind event on the different actions
+      $pluginInstanceRow.find("button.btn-startStop").unbind('click').bind('click', startStopPlugin(pi));
+      $pluginInstanceRow.find("button.btn-configure").unbind('click').bind('click', configurePlugin(pi));
+      $pluginInstanceRow.find("button.btn-delete").unbind('click').bind('click', deletePlugin(pi));
+      $pluginInstanceRow.find("input.cb-autoStart").unbind('change').bind('change', autoStartChange(pi));
+
+      $pluginInstanceRow.i18n();
+   }
+
+   function startStopPlugin(pi) {
+      //pi represent the pluginInstance concerned
+      return function() {
+         //we deactivate the button until next status will be acquired to prevent flooding
+         getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', true);
+         if (pi.lastRunningStatus) {
+            //we ask for stop
+            PluginInstanceManager.stop(pi, function() { getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);});
+         }
+         else
+         {
+            //we ask for start
+            PluginInstanceManager.start(pi, function() { getPluginDomRow(pi).find("button.btn-startStop").prop('disabled', false);});
+         }
+      }
+   }
+
+   function configurePlugin(pi) {
+      //pi represent the pluginInstance concerned
+      return function() {
+         //we get package.json
+         PluginInstanceManager.downloadPackage(pi, function() {
+            //we ask for configuration modal async
+            modals.pluginConfigure.load(function() {
+               configurePluginInstance(pi, function() {
+                  PluginInstanceManager.updateToServer(pi, function(result) {
+                     //We update the information that can have changed after the configuration
+                     var $row = getPluginDomRow(pi);
+                     $row.find("td.plugin-name").html(pi.name);
+                  });
+               });
+            });
+         });
+      }
+   }
+
+   function deletePlugin(pi) {
+      //pi represent the pluginInstance concerned
+      return function() {
+         modals.confirmation.load(function() {
+            showConfirmModal(btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.plugins.confirmPluginDeletion", {pluginName:pi.name}),
+            function () {
+               //deletion has been confirmed
+               PluginInstanceManager.deleteFromServer(pi, function() {
+                  //we remove pi from array
+                  var i = pluginInstanceList.indexOf(pi);
+                  if(i != -1) {
+                     pluginInstanceList.splice(i, 1);
+                  }
+
+                  //we remove pi from dom
+                  getPluginDomRow(pi).remove();
+               });
+            });
+         });
+      }
+   }
+
+   function autoStartChange(pi) {
+      //pi represent the pluginInstance concerned
+      return function() {
+         //we set autoStart attr to cb value and send it to the server as an update
+         pi.autoStart = getPluginDomRow(pi).find("input.cb-autoStart").prop("disabled", true).prop("checked");
+         PluginInstanceManager.updateToServer(pi, function(result) {
+            getPluginDomRow(pi).find("input.cb-autoStart").prop("disabled", false).prop("checked", pi.autoStart);
+         });
+      }
+   }
+
+   function periodicDashboardPluginTask() {
+      //periodically we check the status of each plugin
+      if (serverIsOnline) {
+         $.each(pluginInstanceList, function(index, value) {
+            //we ask async for the status
+            PluginInstanceManager.getStatus(value, function (status) {
+               var $row = getPluginDomRow(value);
+               if (status != value.lastRunningStatus) {
+                  var textStatus = "";
+                  var btn;
+                  var label;
+
+                  if(status) {
+                     $row.find("span.label-status").addClass("label-success").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.running"));
+                     $row.find("button.btn-startStop").addClass("btn-warning").removeClass("btn-success");
+                  }
+                  else {
+                     $row.find("span.label-status").addClass("label-danger").removeClass("label-success").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
+                     $row.find("button.btn-startStop").addClass("btn-success").removeClass("btn-warning");
+                  }
+               }
+            });
+         });
+      }
+   }
+
+   function addNewPlugin() {
+      modals.pluginAdd.load(function() {
+         askPluginTypes(function(pluginType) {
+            var pi = new PluginInstance(null, "", pluginType, "", 1);
+            //we get package.json
+            PluginInstanceManager.downloadPackage(pi, function() {
+               //we ask for configuration modal async
+               modals.pluginConfigure.load(function() {
+                  //we launch configureInstance GUI
+                  configurePluginInstance(pi, function() {
+                     //we ask for pluginInstance creation
+                     PluginInstanceManager.createToServer(pi, function(result) {
+                        //if it's okay
+                        if (result) {
+                           notifySuccess($.t("modals.configure-plugin.pluginSuccessfullyCreated"));
+                           addPluginInstanceToDom(pi);
+                           pluginInstanceList.push(pi);
+                        }
+                     });
+                  });
+               });
+            });
+         });
+      });
+   }
+
+</script>

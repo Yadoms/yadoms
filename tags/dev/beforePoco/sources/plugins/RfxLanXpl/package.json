@@ -1,0 +1,28 @@
+{
+    "name": "RfxLAN Xpl",
+    "description": "Plugin which handle RfxLan with Xpl firmware.",
+    "version": "0.1",
+    "releaseType": "beta",
+    "author": "yadoms-team",
+    "url": "http://sourceforge.net/projects/yadoms/",
+    "SupportedPlatforms": "all",
+    "configurationSchema": {
+        "HubXplSection": {
+            "type": "section",
+            "name": "Start Xpl HUB",
+            "description": "Start an Xpl hub at plugin startup",
+            "enableWithCheckBox": "true",
+            "enableWithCheckBoxDefaultValue": "true",
+            "content": {
+                "ipAddress": {
+                    "type": "string",
+                    "name": "Hub local Ip",
+                    "description": "Set the IP Address of the hub",
+                    "defaultValue": "0.0.0.0",
+                    "regex": "([0-9]{1,3}\\.){3}[0-9]{1,3}",
+                    "regexErrorMessage": "Must be an ipv4 address like 192.168.0.12"
+                }
+            }
+        }
+    }
+}
