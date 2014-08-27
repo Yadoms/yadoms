@@ -108,8 +108,31 @@ if(APPLE)
 	set(LIBS ${LIBS} ${IOKIT_LIBRARY})
 endif()
 
+
+
+###############################################
+# POCO
+#
+# POCO_LIBS : define all required poco libraries
+###############################################
+
+SET ( POCO_LIBS
+	CppUnit
+	PocoFoundation
+	PocoNet
+	PocoUtil
+	PocoXML
+)
+
+include(FindPoco.cmake)
+
+IF(NOT ${Poco_FOUND})
+	message(SEND_ERROR "Unable to find the requested POCO libraries")
+ENDIF()
+
+
 # define libraries to link with
-set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})
+set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS})
 
 ##################################################################################################
 ## Internal libraries (SQlite, Webem) completly build from sources
@@ -117,8 +140,8 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})
 
 #Use Sqlite database system
 set(USE_SQLITE_DATABASE TRUE)
-#Use Webem web server
-set(USE_WEBEM_WEBSERVER TRUE)
+#Use Poco web server
+set(USE_POCO_WEBSERVER TRUE)
 
 #include libs (have their own CMakeList.txt)
 add_subdirectory(external-libs)
@@ -201,8 +224,6 @@ set(YADOMS_SRC
 	
 	server/web/IWebServer.h
 	server/web/IRestHandler.h
-	server/web/WebServerManager.h
-	server/web/WebServerManager.cpp
 	
 	server/web/rest/Result.h
 	server/web/rest/Result.cpp
@@ -453,20 +474,21 @@ IF(USE_SQLITE_DATABASE)
 ENDIF()
 
 #Web server
-IF(USE_WEBEM_WEBSERVER)
+IF(USE_POCO_WEBSERVER)
 	set(YADOMS_SRC ${YADOMS_SRC}
-		server/web/webem/WebServer.h
-		server/web/webem/WebServer.cpp
-		server/web/webem/RestHandler.h
-		server/web/webem/RestHandler.cpp
+		server/web/poco/WebServer.h
+		server/web/poco/WebServer.cpp
+		server/web/poco/RestRequestHandler.h
+		server/web/poco/RestRequestHandler.cpp
+		server/web/poco/WebsiteRequestHandler.h
+		server/web/poco/WebsiteRequestHandler.cpp
+		server/web/poco/WebSocketRequestHandler.h
+		server/web/poco/WebSocketRequestHandler.cpp	
+		server/web/poco/MimeType.h
+		server/web/poco/MimeType.cpp	
 	)
 	
-	source_group(server\\web\\webem  server/web/webem/*.*)
-
-	add_definitions( -DWEBSERVER_DONT_USE_ZIP )
-	
-	set(LIBS ${LIBS} webem)
-	set(YADOMS_INCL_DIR ${YADOMS_INCL_DIR} ${WEBEM_INCLUDE_DIRECTORY})
+	source_group(server\\web\\poco  server/web/poco/*.*)
 ENDIF()
 
 #define YADOMS output
@@ -507,7 +529,7 @@ set(YADOMS_INCL_DIR
 	${YADOMS_INCL_DIR}
 	${SHARED_INCL_DIR}
 )
-set_property( TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${BOOST_INCL_DIR})
+set_property( TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${BOOST_INCL_DIR} ${Poco_INCLUDE_DIRS})
 
 ##################################################################################################
 ## Link
@@ -519,6 +541,7 @@ target_link_libraries(yadoms yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 ##################################################################################################
 
 POST_BUILD_COPY_BOOST_LIBRARIES(yadoms)
+POST_BUILD_COPY_POCO(yadoms)
 
 #copy www directory into build directory
 add_custom_command(TARGET yadoms POST_BUILD

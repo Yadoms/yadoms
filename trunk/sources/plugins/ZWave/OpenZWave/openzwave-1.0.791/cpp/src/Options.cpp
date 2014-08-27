@@ -87,7 +87,7 @@ Options* Options::Create
 #endif
 			} else {
             Log::Write(LogLevel_Error, "Cannot find a path to the configuration files at %s. Exiting...", configPath.c_str());
-            throw std::exception(); //exit(1)
+            THROW_OR_EXIT(1);
 			}
 		}
 		FileOps::Destroy();

@@ -24,11 +24,11 @@ namespace web {
       virtual void stop() = 0;
 
 
-      //--------------------------------------
-      ///\brief   Get the REST handler
-      ///\return  A shared ptr to a rest handler. It could be boost::shared_ptr<IRestHandler>(NULL) if the instance do not support REST
-      //--------------------------------------
-      virtual boost::shared_ptr<IRestHandler> getRestHandler() = 0;
+      //-----------------------------------------
+      ///\brief      Register a REST service
+      ///\param [in] restService the REST service to register
+      //-----------------------------------------
+      virtual void registerRestService(boost::shared_ptr<web::rest::service::IRestService> restService) = 0;
 
       //--------------------------------------
       ///\brief   Configure an alias

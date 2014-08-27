@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "OpenZWaveController.h"
 #include <shared/Log.h>
-
+#include "FatalErrorException.h"
 
 
 COpenZWaveController::COpenZWaveController()
@@ -24,94 +24,103 @@ void OnGlobalNotification(OpenZWave::Notification const* _notification, void* _c
       pPlugin->OnNotification(_notification, _context);
 }
 
-void COpenZWaveController::start(CZWaveConfiguration & configuration, shared::event::CEventHandler & handler)
+bool COpenZWaveController::start(CZWaveConfiguration & configuration, shared::event::CEventHandler & handler)
 {
 
-   // Create the OpenZWave Manager.
-   // The first argument is the path to the config files (where the manufacturer_specific.xml file is located
-   // The second argument is the path for saved Z-Wave network state and the log file.  If you leave it NULL 
-   // the log file will appear in the program's working directory.
-   boost::filesystem::path full_path(configuration.getPath());
-   boost::filesystem::path folder = full_path.parent_path();
-   folder /= "config";
-   
-   OpenZWave::Options::Create(folder.string(), "", "");
-   OpenZWave::Options::Get()->AddOptionInt("SaveLogLevel", OpenZWave::LogLevel_Error);
-   OpenZWave::Options::Get()->AddOptionInt("QueueLogLevel", OpenZWave::LogLevel_Error);
-   OpenZWave::Options::Get()->AddOptionInt("DumpTrigger", OpenZWave::LogLevel_Error);
-   OpenZWave::Options::Get()->AddOptionInt("PollInterval", 500);
-   OpenZWave::Options::Get()->AddOptionBool("IntervalBetweenPolls", true);
-   OpenZWave::Options::Get()->AddOptionBool("ValidateValueChanges", true);
-   OpenZWave::Options::Get()->Lock();
-
-
-   OpenZWave::Manager::Create();
-
-   // Add a callback handler to the manager.  The second argument is a context that
-   // is passed to the OnNotification method.  If the OnNotification is a method of
-   // a class, the context would usually be a pointer to that class object, to
-   // avoid the need for the notification handler to be a static.
-   OpenZWave::Manager::Get()->AddWatcher(OnGlobalNotification, this);
-
-   // Add a Z-Wave Driver
-   // Modify this line to set the correct serial port for your PC interface.
-   std::string realSerialPort = (boost::format("\\\\.\\%1%") % configuration.getSerialPort()).str();
-   if (!OpenZWave::Manager::Get()->AddDriver(realSerialPort))
-      throw shared::exception::CException("Fail to open serial port");
-
-
-   // Now we just wait for either the AwakeNodesQueried or AllNodesQueried notification,
-   // then write out the config file.
-   // In a normal app, we would be handling notifications and building a UI for the user.
-
-   // Since the configuration file contains command class information that is only 
-   // known after the nodes on the network are queried, wait until all of the nodes 
-   // on the network have been queried (at least the "listening" ones) before
-   // writing the configuration file.  (Maybe write again after sleeping nodes have
-   // been queried as well.)
-   while (!m_nodesQueried)
+   try
    {
-      boost::this_thread::sleep(boost::posix_time::milliseconds(200));
-   }
+      // Create the OpenZWave Manager.
+      // The first argument is the path to the config files (where the manufacturer_specific.xml file is located
+      // The second argument is the path for saved Z-Wave network state and the log file.  If you leave it NULL 
+      // the log file will appear in the program's working directory.
+      boost::filesystem::path full_path(configuration.getPath());
+      boost::filesystem::path folder = full_path.parent_path();
+      folder /= "config";
 
-   if (!m_initFailed)
-   {
+      OpenZWave::Options::Create(folder.string(), "", "");
+      OpenZWave::Options::Get()->AddOptionInt("SaveLogLevel", OpenZWave::LogLevel_Error);
+      OpenZWave::Options::Get()->AddOptionInt("QueueLogLevel", OpenZWave::LogLevel_Error);
+      OpenZWave::Options::Get()->AddOptionInt("DumpTrigger", OpenZWave::LogLevel_Error);
+      OpenZWave::Options::Get()->AddOptionInt("PollInterval", 500);
+      OpenZWave::Options::Get()->AddOptionBool("IntervalBetweenPolls", true);
+      OpenZWave::Options::Get()->AddOptionBool("ValidateValueChanges", true);
+      OpenZWave::Options::Get()->Lock();
 
-      OpenZWave::Manager::Get()->WriteConfig(m_homeId);
 
-      boost::lock_guard<boost::mutex> lock(m_treeMutex);
-      std::vector<COpenZWaveController::NodeInfo*>::iterator i;
+      OpenZWave::Manager::Create();
 
-      for (i = m_nodes.begin(); i != m_nodes.end(); ++i)
+      // Add a callback handler to the manager.  The second argument is a context that
+      // is passed to the OnNotification method.  If the OnNotification is a method of
+      // a class, the context would usually be a pointer to that class object, to
+      // avoid the need for the notification handler to be a static.
+      OpenZWave::Manager::Get()->AddWatcher(OnGlobalNotification, this);
+
+      // Add a Z-Wave Driver
+      // Modify this line to set the correct serial port for your PC interface.
+      std::string realSerialPort = (boost::format("\\\\.\\%1%") % configuration.getSerialPort()).str();
+      if (!OpenZWave::Manager::Get()->AddDriver(realSerialPort))
+         throw shared::exception::CException("Fail to open serial port");
+
+
+      // Now we just wait for either the AwakeNodesQueried or AllNodesQueried notification,
+      // then write out the config file.
+      // In a normal app, we would be handling notifications and building a UI for the user.
+
+      // Since the configuration file contains command class information that is only 
+      // known after the nodes on the network are queried, wait until all of the nodes 
+      // on the network have been queried (at least the "listening" ones) before
+      // writing the configuration file.  (Maybe write again after sleeping nodes have
+      // been queried as well.)
+      while (!m_nodesQueried)
       {
-         COpenZWaveController::NodeInfo* nodeInfo = *i;
-         std::string sNodeName = OpenZWave::Manager::Get()->GetNodeName(nodeInfo->m_homeId, nodeInfo->m_nodeId);
-         std::string sNodeManufacturer = OpenZWave::Manager::Get()->GetNodeManufacturerName(nodeInfo->m_homeId, nodeInfo->m_nodeId);
-         std::string sNodeProductName = OpenZWave::Manager::Get()->GetNodeProductName(nodeInfo->m_homeId, nodeInfo->m_nodeId);
-         std::string sNodeProductType = OpenZWave::Manager::Get()->GetNodeProductType(nodeInfo->m_homeId, nodeInfo->m_nodeId);
-         std::string sNodeProductId = OpenZWave::Manager::Get()->GetNodeProductId(nodeInfo->m_homeId, nodeInfo->m_nodeId);
-         std::string sNodeLocation = OpenZWave::Manager::Get()->GetNodeLocation(nodeInfo->m_homeId, nodeInfo->m_nodeId);
-         std::string sNodeType = OpenZWave::Manager::Get()->GetNodeType(nodeInfo->m_homeId, nodeInfo->m_nodeId);
-
-         YADOMS_LOG(info) << "Found new zwave node";
-         YADOMS_LOG(info) << "    Name : " << sNodeName;
-         YADOMS_LOG(info) << "    Manufacturer : " << sNodeManufacturer;
-         YADOMS_LOG(info) << "    Product : " << sNodeProductName;
-         YADOMS_LOG(info) << "    ProductId : " << sNodeProductId;
-         YADOMS_LOG(info) << "    ProductType : " << sNodeProductType;
-         YADOMS_LOG(info) << "    Location : " << sNodeLocation;
-         YADOMS_LOG(info) << "    Type : " << sNodeType;
+         boost::this_thread::sleep(boost::posix_time::milliseconds(200));
       }
 
-      /*
-      OpenZWave::Driver::DriverData data;
-      OpenZWave::Manager::Get()->GetDriverStatistics(m_homeId, &data);
-      printf("SOF: %d ACK Waiting: %d Read Aborts: %d Bad Checksums: %d\n", data.m_SOFCnt, data.m_ACKWaiting, data.m_readAborts, data.m_badChecksum);
-      printf("Reads: %d Writes: %d CAN: %d NAK: %d ACK: %d Out of Frame: %d\n", data.m_readCnt, data.m_writeCnt, data.m_CANCnt, data.m_NAKCnt, data.m_ACKCnt, data.m_OOFCnt);
-      printf("Dropped: %d Retries: %d\n", data.m_dropped, data.m_retries);
-      */
-   }
+      if (!m_initFailed)
+      {
 
+         OpenZWave::Manager::Get()->WriteConfig(m_homeId);
+
+         boost::lock_guard<boost::mutex> lock(m_treeMutex);
+         std::vector<COpenZWaveController::NodeInfo*>::iterator i;
+
+         for (i = m_nodes.begin(); i != m_nodes.end(); ++i)
+         {
+            COpenZWaveController::NodeInfo* nodeInfo = *i;
+            std::string sNodeName = OpenZWave::Manager::Get()->GetNodeName(nodeInfo->m_homeId, nodeInfo->m_nodeId);
+            std::string sNodeManufacturer = OpenZWave::Manager::Get()->GetNodeManufacturerName(nodeInfo->m_homeId, nodeInfo->m_nodeId);
+            std::string sNodeProductName = OpenZWave::Manager::Get()->GetNodeProductName(nodeInfo->m_homeId, nodeInfo->m_nodeId);
+            std::string sNodeProductType = OpenZWave::Manager::Get()->GetNodeProductType(nodeInfo->m_homeId, nodeInfo->m_nodeId);
+            std::string sNodeProductId = OpenZWave::Manager::Get()->GetNodeProductId(nodeInfo->m_homeId, nodeInfo->m_nodeId);
+            std::string sNodeLocation = OpenZWave::Manager::Get()->GetNodeLocation(nodeInfo->m_homeId, nodeInfo->m_nodeId);
+            std::string sNodeType = OpenZWave::Manager::Get()->GetNodeType(nodeInfo->m_homeId, nodeInfo->m_nodeId);
+
+            YADOMS_LOG(info) << "Found new zwave node";
+            YADOMS_LOG(info) << "    Name : " << sNodeName;
+            YADOMS_LOG(info) << "    Manufacturer : " << sNodeManufacturer;
+            YADOMS_LOG(info) << "    Product : " << sNodeProductName;
+            YADOMS_LOG(info) << "    ProductId : " << sNodeProductId;
+            YADOMS_LOG(info) << "    ProductType : " << sNodeProductType;
+            YADOMS_LOG(info) << "    Location : " << sNodeLocation;
+            YADOMS_LOG(info) << "    Type : " << sNodeType;
+         }
+
+         /*
+         OpenZWave::Driver::DriverData data;
+         OpenZWave::Manager::Get()->GetDriverStatistics(m_homeId, &data);
+         printf("SOF: %d ACK Waiting: %d Read Aborts: %d Bad Checksums: %d\n", data.m_SOFCnt, data.m_ACKWaiting, data.m_readAborts, data.m_badChecksum);
+         printf("Reads: %d Writes: %d CAN: %d NAK: %d ACK: %d Out of Frame: %d\n", data.m_readCnt, data.m_writeCnt, data.m_CANCnt, data.m_NAKCnt, data.m_ACKCnt, data.m_OOFCnt);
+         printf("Dropped: %d Retries: %d\n", data.m_dropped, data.m_retries);
+         */
+      }
+
+      return true;
+   }
+   catch (OpenZWave::CFatalErrorException & ex)
+   {
+      YADOMS_LOG(fatal) << "Fail to start OpenZWave controller : " << ex.what();
+   }
+   return false;
 }
 
 void COpenZWaveController::stop()

@@ -23,4 +23,10 @@
         <dir name="../sources/plugins"/>
         <dir name="../sources/external-libs/Webem"/>
     </paths>
+    <exclude>
+        <path name="../sources/plugins/ZWave/OpenZWave/openzwave-1.0.791/"/>
+    </exclude>
+    <suppressions>
+        <suppression>unreadVariable:..\sources\server\database\sqlite\SQLiteDatabaseTables.h</suppression>
+    </suppressions>
 </project>

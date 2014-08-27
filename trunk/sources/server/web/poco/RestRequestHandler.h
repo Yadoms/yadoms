@@ -1,49 +1,42 @@
 #pragma once
 
-#include "cWebem.h"
-#include "web/rest/service/IRestService.h"
+#include "Poco/Net/HTTPRequestHandler.h"
+#include "Poco/Net/HTTPServerRequest.h"
+#include "Poco/Net/HTTPServerResponse.h"
 #include "web/IRestHandler.h"
+#include "web/rest/service/IRestService.h"
 #include "web/rest/RestDispatcher.h"
 
-namespace web { namespace webem {
+namespace web { namespace poco {
 
-   //--------------------------------------   
-   ///\brief  Rest Handler which configure and dispatch request to Rest service
-   //-------------------------------------- 
-   class CRestHandler : public IRestHandler
+   class CRestRequestHandler : public Poco::Net::HTTPRequestHandler, public IRestHandler
    {
    public:
       //--------------------------------------   
       ///\brief         Constructor
       ///\param [in]    restBaseKeyword        the keyword for identifies REST request in url
       //--------------------------------------   
-      CRestHandler(const std::string & restBaseKeyword);
+      CRestRequestHandler(const std::string & restBaseKeyword);
 
       //--------------------------------------   
       ///\brief  Destructor
       //--------------------------------------   
-      virtual ~CRestHandler();
+      virtual ~CRestRequestHandler();
+
+      // Poco::Net::HTTPRequestHandler implementation
+      void handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response);
+      // [END] Poco::Net::HTTPRequestHandler implementation
 
       // IRestHandler implementation
-      void registerRestService(boost::shared_ptr<web::rest::service::IRestService> restService);
-      void initialize();
+      virtual void initialize();
+      virtual void registerRestService(boost::shared_ptr<web::rest::service::IRestService> restService);
       // [END] IRestHandler implementation
-
-      //--------------------------------------   
-      ///\brief  Method which handle rest requests
-      //--------------------------------------   
-      std::string manageRestRequests(const http::server::request & request);
 
       //--------------------------------------   
       ///\brief  Obtains the keyword to identify the REST request in url : ex : /rest/
       ///\return the keyword to identify the REST request in url
       //--------------------------------------   
       const std::string & getRestKeyword();
-
-      //--------------------------------------   
-      ///\brief  Method which initialize all rest services
-      //--------------------------------------   
-      void initializeAllRestServices();
 
    private:
       //--------------------------------------   
@@ -53,7 +46,12 @@ namespace web { namespace webem {
       //--------------------------------------
       std::vector<std::string> parseUrl(const std::string & url);
 
-   private:
+      //--------------------------------------   
+      ///\brief  Method which handle rest requests
+      //--------------------------------------   
+      std::string manageRestRequests(Poco::Net::HTTPServerRequest& request);
+
+
       //--------------------------------------   
       ///\brief  The keyword which identifies a rest URL
       //-------------------------------------- 
@@ -70,7 +68,6 @@ namespace web { namespace webem {
       web::rest::CRestDispatcher m_restDispatcher;
    };
 
-
-} //namespace webem
+} //namespace poco
 } //namespace web
 
