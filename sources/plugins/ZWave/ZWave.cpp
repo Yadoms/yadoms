@@ -37,42 +37,48 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       YADOMS_LOG(debug) << "CZWave is running...";
 
       m_controller = CZWaveControllerFactory::Create();
-      m_controller->start(m_configuration, context->getEventHandler());
-      
-      while (1)
+      if (m_controller->start(m_configuration, context->getEventHandler()))
       {
-         // Wait for an event
-         switch (context->getEventHandler().waitForEvents())
+         while (1)
          {
-         case yApi::IYadomsApi::kEventDeviceCommand:
-         {
-            // Command was received from Yadoms
-            boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
-            YADOMS_LOG(debug) << "Command received from Yadoms :" << command->toString();
-            break;
-         }
-         case yApi::IYadomsApi::kEventUpdateConfiguration:
-         {
-            // Configuration was updated
-            shared::CDataContainer newConfiguration = context->getEventHandler().getEventData<shared::CDataContainer>();
-            YADOMS_LOG(debug) << "configuration was updated...";
-            BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+            // Wait for an event
+            switch (context->getEventHandler().waitForEvents())
+            {
+            case yApi::IYadomsApi::kEventDeviceCommand:
+            {
+               // Command was received from Yadoms
+               boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
+               YADOMS_LOG(debug) << "Command received from Yadoms :" << command->toString();
+               break;
+            }
+            case yApi::IYadomsApi::kEventUpdateConfiguration:
+            {
+               // Configuration was updated
+               shared::CDataContainer newConfiguration = context->getEventHandler().getEventData<shared::CDataContainer>();
+               YADOMS_LOG(debug) << "configuration was updated...";
+               BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
-            // Take into account the new configuration
-            // - Restart the plugin if necessary,
-            // - Update some resources,
-            // - etc...
-            m_configuration.initializeWith(newConfiguration);
-            break;
-         }
+               // Take into account the new configuration
+               // - Restart the plugin if necessary,
+               // - Update some resources,
+               // - etc...
+               m_configuration.initializeWith(newConfiguration);
+               break;
+            }
 
-         default:
-         {
-            YADOMS_LOG(error) << "Unknown message id";
-            break;
-         }
-         }
-      };
+            default:
+            {
+               YADOMS_LOG(error) << "Unknown message id";
+               break;
+            }
+            }
+         };
+      }
+      else
+      {
+         YADOMS_LOG(error) << "Cannot start ZWave controller. Plugin ends.";
+      }
+      
    }
    // Plugin must catch this end-of-thread exception to make its cleanup.
    // If no cleanup is necessary, still catch it, or Yadoms will consider

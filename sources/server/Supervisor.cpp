@@ -5,8 +5,8 @@
 #include "database/DatabaseException.hpp"
 #include <shared/Log.h>
 #include <shared/exception/NotSupported.hpp>
-#include "web/webem/WebServer.h"
 #include "web/WebServerManager.h"
+#include "web/poco/WebServer.h"
 #include "web/rest/service/Acquisition.h"
 #include "web/rest/service/Plugin.h"
 #include "web/rest/service/Device.h"
@@ -74,30 +74,27 @@ void CSupervisor::doWork()
       const std::string & webServerPath = m_startupOptions.getWebServerInitialPath();
       const std::string & webServerWidgetPath = m_startupOptions.getWidgetsPath();
 
-      boost::shared_ptr<web::IWebServer> webServer(new web::webem::CWebServer(webServerIp, webServerPort, webServerPath, "/rest/"));
+      //boost::shared_ptr<web::IWebServer> webServer(new web::webem::CWebServer(webServerIp, webServerPort, webServerPath, "/rest/"));
+
+      web::poco::CWebServer webServer(webServerIp, webServerPort, webServerPath, "/rest/");
+
       //TODO delete unused alias when widget directory will be no more movable
-      //webServer->configureAlias("widgets", webServerWidgetPath);
-      webServer->configureAlias("plugins", m_startupOptions.getPluginsPath());
-      boost::shared_ptr<web::IRestHandler> restHanlder = webServer->getRestHandler();
-      if(restHanlder.get() != NULL)
-      {
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDevice(pDataProvider, pluginGateway)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPage(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CWidget(pDataProvider, webServerPath)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfiguration(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLogger(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLogger(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CGeneral(systemInformation)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
-         restHanlder->registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CTask(taskManager)));
-      }
+      //webServer.configureAlias("widgets", webServerWidgetPath);
+      webServer.configureAlias("plugins", m_startupOptions.getPluginsPath());
+      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager)));
+      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDevice(pDataProvider, pluginGateway)));
+      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPage(pDataProvider)));
+      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CWidget(pDataProvider, webServerPath)));
+      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfiguration(pDataProvider)));
+      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLogger(pDataProvider)));
+      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLogger(pDataProvider)));
+      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CGeneral(systemInformation)));
+      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
+      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
+      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
+      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CTask(taskManager)));
 
-      boost::shared_ptr<web::CWebServerManager> webServerManager(new web::CWebServerManager(webServer));
-      webServerManager->start();
-
+      webServer.start();
 
       // Register to event logger started evebt
       pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", shared::CStringExtension::EmptyString);
@@ -136,8 +133,7 @@ void CSupervisor::doWork()
 
 
       //stop web server
-      if(webServerManager.get() != NULL)
-         webServerManager->stop();
+      webServer.stop();
 
       YADOMS_LOG(info) << "Supervisor is stopped";
 

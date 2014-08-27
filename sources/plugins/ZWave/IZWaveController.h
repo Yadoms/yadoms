@@ -18,8 +18,9 @@ public:
    /// \brief	Start the controller
    /// \param [in] 	configuration  the configuration
    /// \param [in] 	handler        the event handler
+   /// \return true if success, false if fails
    //--------------------------------------------------------------
-   virtual void start(CZWaveConfiguration & configuration, shared::event::CEventHandler & handler) = 0;
+   virtual bool start(CZWaveConfiguration & configuration, shared::event::CEventHandler & handler) = 0;
 
    //--------------------------------------------------------------
    /// \brief	Stop the controller

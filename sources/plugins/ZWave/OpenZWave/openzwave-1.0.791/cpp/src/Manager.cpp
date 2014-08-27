@@ -88,7 +88,7 @@ Manager* Manager::Create
 	// Options have not been created and locked.
 	Log::Create( "", false, true, LogLevel_Debug, LogLevel_Debug, LogLevel_None );
 	Log::Write( LogLevel_Error, "Options have not been created and locked. Exiting..." );
-   throw std::exception(); //exit(1)
+    THROW_OR_EXIT(1);
 	return NULL;
 }
 

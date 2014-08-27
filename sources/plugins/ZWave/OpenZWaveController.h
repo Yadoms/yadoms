@@ -29,7 +29,7 @@ public:
    virtual ~COpenZWaveController();
 
    // IZWaveController implementation
-   virtual void start(CZWaveConfiguration & configuration, shared::event::CEventHandler & handler);
+   virtual bool start(CZWaveConfiguration & configuration, shared::event::CEventHandler & handler);
    virtual void stop();
    // [END] IZWaveController implementation
 

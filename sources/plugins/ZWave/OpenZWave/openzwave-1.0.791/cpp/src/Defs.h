@@ -33,7 +33,6 @@
 #include <stdint.h>
 
 
-
 // Compilation export flags
 #if (defined _WINDOWS || defined WIN32 || defined _MSC_VER) && !defined MINGW
 #	if defined OPENZWAVE_MAKEDLL	// Create the dynamic library.
@@ -133,6 +132,14 @@ static inline int version_cmp(struct ozwversion a, struct ozwversion b)
 {
 	return  (a._v == b._v) ? 0 : (a._v > b._v) ? 1 : - 1;
 }
+
+// Exceptions : define OPENZWAVE_USE_EXCEPTIONS in compiler flags to enable exceptions instead of exit function
+#ifdef OPENZWAVE_USE_EXCEPTIONS
+#  include "FatalErrorException.h"
+#  define THROW_OR_EXIT(exitCode)   throw CFatalErrorException(exitCode)
+#else
+#  define THROW_OR_EXIT(exitCode)   exit(exitCode)
+#endif
 
 
 // Declare the OpenZWave namespace
