@@ -1,6 +1,8 @@
 #pragma once
 
 #include "IRestHandler.h"
+#include <Poco/SharedPtr.h>
+#include "IWebServerConfigurator.h"
 
 namespace web {
    //
@@ -25,20 +27,10 @@ namespace web {
 
 
       //-----------------------------------------
-      ///\brief      Register a REST service
-      ///\param [in] restService the REST service to register
+      ///\brief      Get the web server configurator
+      ///\return     An object which permit the webserver configuration
       //-----------------------------------------
-      virtual void registerRestService(boost::shared_ptr<web::rest::service::IRestService> restService) = 0;
-
-      //--------------------------------------
-      ///\brief   Configure an alias
-      ///\param [in]    alias : the alias used (must start and end with /)
-      ///\param [in]    path : the path of the alias file
-      ///
-      /// Example configureAlias("/test/", "c:\\path\\to\\alias\\files\\")
-      ///         -> then http://server:port/test/index.html will take c:\\path\\to\\alias\\files\\index.html
-      //--------------------------------------
-      virtual void configureAlias(const std::string & alias, const std::string & path) = 0;
+      virtual IWebServerConfigurator* getConfigurator() = 0;
    };
 
 } //namespace web

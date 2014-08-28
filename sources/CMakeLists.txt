@@ -223,6 +223,7 @@ set(YADOMS_SRC
 	server/database/entities/Entities.cpp
 	
 	server/web/IWebServer.h
+	server/web/IWebServerConfigurator.h
 	server/web/IRestHandler.h
 	
 	server/web/rest/Result.h
@@ -478,6 +479,8 @@ IF(USE_POCO_WEBSERVER)
 	set(YADOMS_SRC ${YADOMS_SRC}
 		server/web/poco/WebServer.h
 		server/web/poco/WebServer.cpp
+		server/web/poco/HttpRequestHandlerFactory.h
+		server/web/poco/HttpRequestHandlerFactory.cpp
 		server/web/poco/RestRequestHandler.h
 		server/web/poco/RestRequestHandler.cpp
 		server/web/poco/WebsiteRequestHandler.h

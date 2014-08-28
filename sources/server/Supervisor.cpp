@@ -73,24 +73,24 @@ void CSupervisor::doWork()
       const std::string webServerPort = boost::lexical_cast<std::string>(m_startupOptions.getWebServerPortNumber());
       const std::string & webServerPath = m_startupOptions.getWebServerInitialPath();
 
-      web::poco::CWebServer webServer(webServerIp, webServerPort, webServerPath, "/rest/");
+      web::poco::CWebServer webServer(webServerIp, webServerPort, webServerPath, "/rest/", "/ws");
 
       //TODO delete unused alias when widget directory will be no more movable
       //const std::string & webServerWidgetPath = m_startupOptions.getWidgetsPath();
       //webServer.configureAlias("widgets", webServerWidgetPath);
-      webServer.configureAlias("plugins", m_startupOptions.getPluginsPath());
-      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager)));
-      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDevice(pDataProvider, pluginGateway)));
-      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPage(pDataProvider)));
-      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CWidget(pDataProvider, webServerPath)));
-      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfiguration(pDataProvider)));
-      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLogger(pDataProvider)));
-      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLogger(pDataProvider)));
-      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CGeneral(systemInformation)));
-      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
-      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
-      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
-      webServer.registerRestService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CTask(taskManager)));
+      webServer.getConfigurator()->websiteHandlerAddAlias("plugins", m_startupOptions.getPluginsPath());
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDevice(pDataProvider, pluginGateway)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPage(pDataProvider)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CWidget(pDataProvider, webServerPath)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfiguration(pDataProvider)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLogger(pDataProvider)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLogger(pDataProvider)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CGeneral(systemInformation)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CTask(taskManager)));
 
       webServer.start();
 

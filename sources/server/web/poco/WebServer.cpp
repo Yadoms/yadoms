@@ -14,27 +14,34 @@
 #include "Poco/Net/NetException.h"
 #include "MimeType.h"
 
-#include "WebSocketRequestHandler.h"
-#include "RestRequestHandler.h"
-#include "WebsiteRequestHandler.h"
 
 
 namespace web { namespace poco {
 
 
-   CWebServer::CWebServer(	   const std::string & address, const std::string & port, const std::string & doc_root, const std::string & restKeywordBase )
-      :m_configAddress(address), m_configPort(port), m_configDocRoot(doc_root)
+   CWebServer::CWebServer(const std::string & address, const std::string & port, const std::string & doc_root, const std::string & restKeywordBase, const std::string & webSocketKeywordBase)
+      :m_httpRequestHandlerFactory(new CHttpRequestHandlerFactory())
    {
-      m_websiteRequestHandler.reset(new CWebsiteRequestHandler(doc_root));
-      m_restRequestHandler.reset(new CRestRequestHandler(restKeywordBase));
-      m_webSocketRequestHandler.reset(new CWebSocketRequestHandler);
+      //configure the factory
+      m_httpRequestHandlerFactory->websiteHandlerConfigure(doc_root);
+      m_httpRequestHandlerFactory->restHandlerConfigure(restKeywordBase);
+      m_httpRequestHandlerFactory->webSocketConfigure(webSocketKeywordBase);
 
-      // set-up a server socket
-      Poco::Net::ServerSocket svs(boost::lexical_cast<unsigned short>(port));
       // set-up a HTTPServer instance
-      m_embeddedWebServer.reset(new Poco::Net::HTTPServer(this, svs, new Poco::Net::HTTPServerParams));
-
-
+      if (address == "0.0.0.0" || address.empty())
+      {
+         //in case of "0.0.0.0" or empty , then do not use it, just use port, listen on all interfaces
+         Poco::Net::ServerSocket svs(boost::lexical_cast<unsigned short>(port));
+         m_embeddedWebServer.reset(new Poco::Net::HTTPServer(m_httpRequestHandlerFactory, svs, new Poco::Net::HTTPServerParams));
+      }
+      else
+      {
+         //if address is specified, try to use it
+         Poco::Net::SocketAddress sa(address, boost::lexical_cast<unsigned short>(port));
+         Poco::Net::ServerSocket svs(sa);
+         m_embeddedWebServer.reset(new Poco::Net::HTTPServer(m_httpRequestHandlerFactory, svs, new Poco::Net::HTTPServerParams));
+      }
+      
    }
 
    CWebServer::~CWebServer()
@@ -56,39 +63,13 @@ namespace web { namespace poco {
          m_embeddedWebServer->stop();
    }
 
-   void CWebServer::configureAlias(const std::string & alias, const std::string & path)
+   IWebServerConfigurator* CWebServer::getConfigurator()
    {
-      m_alias[alias] = path;
+      return m_httpRequestHandlerFactory.get();
    }
 
-   void CWebServer::registerRestService(boost::shared_ptr<web::rest::service::IRestService> restService)
-   {
-      m_restService.push_back(restService);
-   }
 
-   Poco::Net::HTTPRequestHandler* CWebServer::createRequestHandler(const Poco::Net::HTTPServerRequest& request)
-   {
-      if (request.getURI() == "/ws")
-         return new CWebSocketRequestHandler;
-      else if (boost::istarts_with(request.getURI(), "/rest/"))
-         //return m_restRequestHandler.get();
-      {
-         CRestRequestHandler * p = new CRestRequestHandler("/rest/");
-         std::vector< boost::shared_ptr<web::rest::service::IRestService> >::iterator i;
-         for (i = m_restService.begin(); i != m_restService.end(); ++i)
-            p->registerRestService(*i);
-         p->initialize();
-         return p;
-      }
-      else
-      {
-         CWebsiteRequestHandler * p = new CWebsiteRequestHandler(m_configDocRoot);
-         std::map<std::string, std::string>::iterator i;
-         for (i = m_alias.begin(); i != m_alias.end();++i)
-            p->configureAlias(i->first, i->second);
-         return p;
-      }
-   }
+
 
 } //namespace poco
 } //namespace web
