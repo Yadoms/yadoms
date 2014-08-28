@@ -3,16 +3,14 @@
 #include "web/IWebServer.h"
 #include "web/rest/service/IRestService.h"
 #include "Poco/Net/HTTPServer.h"
-#include "WebSocketRequestHandler.h"
-#include "RestRequestHandler.h"
-#include "WebsiteRequestHandler.h"
+#include "HttpRequestHandlerFactory.h"
 
 namespace web { namespace poco {
 
    //
    //\brief An embedded web server which supports REST api
    //
-   class CWebServer : public IWebServer, public Poco::Net::HTTPRequestHandlerFactory
+   class CWebServer : public IWebServer
    {
    public:
       //
@@ -22,7 +20,7 @@ namespace web { namespace poco {
       //\param[in] doc_root path to folder containing html e.g. "./"
       //\param[in] restKeywordBase the string which identifies a rest url ex: /rest/
       //
-      CWebServer(const std::string & address, const std::string & port, const std::string & doc_root, const std::string & restKeywordBase );
+      CWebServer(const std::string & address, const std::string & port, const std::string & doc_root, const std::string & restKeywordBase, const std::string & webSocketKeywordBase);
 
       //
       //\brief Descturtor
@@ -32,30 +30,14 @@ namespace web { namespace poco {
       // IWebServer implementation
       virtual void start();
       virtual void stop();
-      virtual void registerRestService(boost::shared_ptr<web::rest::service::IRestService> restService);
-      virtual void configureAlias(const std::string & alias, const std::string & path);
+      virtual IWebServerConfigurator* getConfigurator();
       // [END] IWebServer implementation
 
-      // Poco::Net::HTTPRequestHandlerFactory implementation
-      Poco::Net::HTTPRequestHandler* createRequestHandler(const Poco::Net::HTTPServerRequest& request);
-      // [END] Poco::Net::HTTPRequestHandlerFactory implementation
-
    private:
-      std::string m_configAddress;
-      std::string m_configPort;
-      std::string m_configDocRoot;
       boost::shared_ptr<Poco::Net::HTTPServer> m_embeddedWebServer;
 
-      boost::shared_ptr<CWebsiteRequestHandler> m_websiteRequestHandler;
-      boost::shared_ptr<CRestRequestHandler> m_restRequestHandler;
-      boost::shared_ptr<CWebSocketRequestHandler> m_webSocketRequestHandler;
-
-      std::vector< boost::shared_ptr<web::rest::service::IRestService> > m_restService;
-
-      //-------------------------------------
-      ///\brief The aliases (alis, path to file)
-      //-------------------------------------
-      std::map<std::string, std::string> m_alias;
+      //Poco::SharedPtr is needed (not boost::shared_ptr)
+      Poco::SharedPtr<CHttpRequestHandlerFactory> m_httpRequestHandlerFactory;
    };
 
 
