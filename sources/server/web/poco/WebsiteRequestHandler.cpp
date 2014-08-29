@@ -79,7 +79,7 @@ namespace web { namespace poco {
          }
          else
          {
-            response.setStatus(Poco::Net::HTTPResponse::HTTPStatus::HTTP_NOT_FOUND);
+            response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
          }
       }
 } //namespace poco

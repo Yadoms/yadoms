@@ -70,7 +70,7 @@ namespace web {
                   if (boost::ifind_first(request.getContentType(), "application/json"))
                   {
                      std::string content;
-                     content.resize(request.getContentLength());
+                     content.resize((std::string::size_type)(request.getContentLength()));
                      request.stream().read((char*)content.c_str(), request.getContentLength());
                      requestContent.initializeWith(content);
                   }
