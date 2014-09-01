@@ -181,14 +181,20 @@ namespace sqlite {
       return true;
    }
 
+
    bool CSQLiteRequester::createTableIfNotExists(const std::string & tableName, const std::string & tableScript)
    {
-      if(!checkTableExists(tableName))
+      if (!checkTableExists(tableName))
       {
          queryStatement(CQuery::CustomQuery(tableScript, CQuery::kCreate));
          return checkTableExists(tableName);
       }
       return true;
+   }
+
+   void CSQLiteRequester::createIndex(const std::string & tableName, const std::string & indexScript)
+   {
+      queryStatement(CQuery::CustomQuery(indexScript, CQuery::kCreate));
    }
 
 
