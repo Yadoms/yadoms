@@ -116,6 +116,14 @@
                   if(!pRequester->createTableIfNotExists(CAcquisitionTable::getTableName(), CAcquisitionTable::getTableCreationScript()))
                      throw CSQLiteVersionException("Failed to create Acquisition table");
 
+                  //indexes
+                  const std::vector<std::string> indexes = CAcquisitionTable::getIndexesCreationScript();
+                  for (std::vector<std::string>::const_iterator i = indexes.begin(); i != indexes.end(); ++i)
+                  {
+                     pRequester->createIndex(CAcquisitionTable::getTableName(), *i);
+                  }
+
+
                   //set the database version
                   CQuery qInsert;
                   qInsert.InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDescriptionColumnName()).

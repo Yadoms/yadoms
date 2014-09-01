@@ -115,6 +115,11 @@
 //
 #define DECLARE_STATIC_TABLE_CREATION_SCRIPT(_classname, _tableScript) \
    const std::string C##_classname##Table::m_tableCreationScript(_tableScript);
+//
+/// \brief  Declare indexes script static value
+//
+#define DECLARE_STATIC_INDEXES_CREATION_SCRIPT(_classname, _indexSeq) \
+   const std::vector<std::string> C##_classname##Table::m_indexesCreationScript = boost::assign::list_of(_indexSeq);
 
 
 //
@@ -129,11 +134,13 @@ public:\
    virtual BOOST_PP_CAT(~C, BOOST_PP_CAT(name, Table))() {} \
    static const std::string & getTableName() { return m_tableName; } \
    static const std::string & getTableCreationScript() { return m_tableCreationScript; } \
+   static const std::vector<std::string> & getIndexesCreationScript() { return m_indexesCreationScript; } \
    DECLARE_GETTERS(_seq) \
    \
 private:\
    static const std::string m_tableName; \
    static const std::string m_tableCreationScript; \
+   static const std::vector<std::string> m_indexesCreationScript; \
    DECLARE_MEMBERS(_seq) \
 };
 

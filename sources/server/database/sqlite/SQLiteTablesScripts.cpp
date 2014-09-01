@@ -19,7 +19,6 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Configuration, " CREATE TABLE Configuration
 
 
 
-
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Plugin, "CREATE TABLE Plugin                                                 \
                                                 (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                 \
                                                    name TEXT NOT NULL,                                            \
@@ -102,7 +101,12 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Acquisition,    "CREATE TABLE Acquisition  
                                                          keywordId INTEGER NOT NULL,                              \
                                                          value TEXT NOT NULL                                      \
                                                          )")                           
-                                                            
+
+
+
+DECLARE_STATIC_INDEXES_CREATION_SCRIPT(Acquisition, "CREATE INDEX acqByDate ON Acquisition (date, keywordId)" )
+
+
 
       } //namespace sqlite
    } //namespace database 

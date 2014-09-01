@@ -160,7 +160,14 @@ namespace sqlite {
       /// \param [in]   tableScript:  the sql script to create the table
       /// \return	      true if table exists
       //--------------------------------------------------------------
-      bool createTableIfNotExists(const std::string & tableName, const std::string & tableScript);
+      bool createTableIfNotExists(const std::string & tableName, const std::string & tableScript);    
+      
+      //--------------------------------------------------------------
+      /// \Brief	      Create an index if not exists
+      /// \param [in]   tableName:  the table name to create
+      /// \param [in]   indexScript:  the sql script to create the index
+      //--------------------------------------------------------------
+      void createIndex(const std::string & tableName, const std::string & indexScript);
 
    private:
       //--------------------------------------------------------------
