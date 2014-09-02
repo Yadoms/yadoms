@@ -107,7 +107,7 @@ namespace database {  namespace sqlite {  namespace requesters {
       }
    }
 
-   std::vector< boost::tuple<boost::posix_time::ptime, std::string>  > CAcquisition::getKeywordData(int keywordId,  boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+   std::vector< boost::tuple<std::string, std::string>  > CAcquisition::getKeywordData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
    {
       CQuery qSelect;
       qSelect. Select(CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getValueColumnName()).
@@ -125,11 +125,33 @@ namespace database {  namespace sqlite {  namespace requesters {
 
       qSelect.OrderBy(CAcquisitionTable::getDateColumnName());
 
-      database::sqlite::adapters::CMultipleValueAdapter<boost::posix_time::ptime, std::string> mva;
+      database::sqlite::adapters::CMultipleValueAdapter<std::string, std::string> mva;
       m_databaseRequester->queryEntities(&mva, qSelect);
       return mva.getResults();
    }
 
+   std::string CAcquisition::getKeywordRawData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+   {
+      CQuery qSelect;
+      qSelect.Select(CAcquisitionTable::getDateColumnName() + "|| ',' || " + CAcquisitionTable::getValueColumnName()).
+         From(CAcquisitionTable::getTableName()).
+         Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);
+
+      if (!timeFrom.is_not_a_date_time())
+      {
+         qSelect.And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, timeFrom);
+         if (!timeTo.is_not_a_date_time())
+         {
+            qSelect.And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, timeTo);
+         }
+      }
+
+      qSelect.OrderBy(CAcquisitionTable::getDateColumnName());
+
+      database::sqlite::adapters::CRawValueAdapter mva;
+      m_databaseRequester->queryEntities(&mva, qSelect);
+      return mva.getRawResults();
+   }
    // [END] IAcquisitionRequester implementation
 
 

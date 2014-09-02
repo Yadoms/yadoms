@@ -110,23 +110,10 @@ namespace web { namespace rest { namespace service {
             if(parameters.size()>4)
                timeTo = boost::posix_time::from_iso_string(parameters[4]);
 
-
-            std::vector< boost::tuple<boost::posix_time::ptime, std::string> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordData(keywordId, timeFrom, timeTo);
-            std::vector<shared::CDataContainer> objectList;
-            std::vector< boost::tuple<boost::posix_time::ptime, std::string> >::const_iterator i;
-
-            for(i=allData.begin(); i!=allData.end(); ++i)
-            {
-               shared::CDataContainer result;
-               result.set("date", boost::posix_time::to_iso_string(i->get<0>()));
-               result.set("key", i->get<1>());
-               objectList.push_back(result);
-            }
-
-            shared::CDataContainer result;
-            result.set< std::vector<shared::CDataContainer> >("data", objectList);
-            return web::rest::CResult::GenerateSuccess(result);
-
+            //using the raw data format, to optimize treatment
+            //output is "[[dateiso,data],[dateiso,data],....]"
+            std::string raw = m_dataProvider->getAcquisitionRequester()->getKeywordRawData(keywordId, timeFrom, timeTo);
+            return web::rest::CResult::GenerateSuccess(raw);
          }
          else
          {
