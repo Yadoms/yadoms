@@ -2,7 +2,7 @@
 
 #include "web/IWebServer.h"
 #include "web/rest/service/IRestService.h"
-#include "Poco/Net/HTTPServer.h"
+#include <Poco/Net/HTTPServer.h>
 #include "HttpRequestHandlerFactory.h"
 
 namespace web { namespace poco {

@@ -6,7 +6,7 @@
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
 CRaspBerryPiSystemDiskUsage::CRaspBerryPiSystemDiskUsage(const std::string & deviceId, const std::string & driveName, const std::string & Keyword)
-   :m_deviceId(deviceId), m_driveName(driveName), m_Keyword(Keyword), m_Capacity("DiskUsage")
+   :m_deviceId(deviceId), m_driveName(driveName), m_Keyword(Keyword), m_Capacity("DiskUsage"), m_diskUsage(0)
 {
 }
 
@@ -53,7 +53,6 @@ std::vector<std::string> CRaspBerryPiSystemDiskUsage::ExecuteCommandAndReturn(co
    std::vector<std::string> ret;
 
    FILE *fp;
-   char path[1035];
 
    /* Open the command for reading. */
 
@@ -61,6 +60,7 @@ std::vector<std::string> CRaspBerryPiSystemDiskUsage::ExecuteCommandAndReturn(co
 
    if (fp != NULL) 
    {
+      char path[1035];
       /* Read the output a line at a time - output it. */
       while (fgets(path, sizeof(path)-1, fp) != NULL)
       {

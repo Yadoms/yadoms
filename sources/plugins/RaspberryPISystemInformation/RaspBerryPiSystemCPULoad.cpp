@@ -8,7 +8,7 @@ CRaspBerryPiSystemCPULoad::CRaspBerryPiSystemCPULoad(const std::string & deviceI
    :m_deviceId(deviceId), m_CPULoad(0), m_Capacity("cpuload"), m_Keyword("RaspBerryPiCPULoad")
 {
    FILE* file = fopen("/proc/stat", "r");
-   fscanf(file, "cpu %Ld %Ld %Ld %Ld", &lastTotalUser, &lastTotalUserLow,
+   fscanf(file, "cpu %Lu %Lu %Lu %Lu", &lastTotalUser, &lastTotalUserLow,
       &lastTotalSys, &lastTotalIdle);
    fclose(file);
 }
@@ -52,11 +52,11 @@ double CRaspBerryPiSystemCPULoad::getValue()
 {
    //TODO : Keep the last value, if an overflow occured
    double percent;
-   unsigned long long totalUser, totalUserLow, totalSys, totalIdle, total;
+   unsigned long long totalUser, totalUserLow, totalSys, totalIdle;
    FILE* file;
 
    file = fopen("/proc/stat", "r");
-   fscanf(file, "cpu %Ld %Ld %Ld %Ld", &totalUser, &totalUserLow,
+   fscanf(file, "cpu %Lu %Lu %Lu %Lu", &totalUser, &totalUserLow,
       &totalSys, &totalIdle);
    fclose(file);
 
@@ -66,6 +66,7 @@ double CRaspBerryPiSystemCPULoad::getValue()
          percent = -1.0;
    }
    else{
+      unsigned long long total;
       total = (totalUser - lastTotalUser) + (totalUserLow - lastTotalUserLow) +
          (totalSys - lastTotalSys);
       percent = total;

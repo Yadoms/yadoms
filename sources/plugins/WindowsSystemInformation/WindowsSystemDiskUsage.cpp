@@ -5,7 +5,7 @@
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
 CWindowsSystemDiskUsage::CWindowsSystemDiskUsage(const std::string & deviceId, const std::string & driveName)
-   :m_deviceId(deviceId), m_driveName(driveName),m_Keyword("WindowsDiskUsage"), m_Capacity("DiskUsage")
+   :m_deviceId(deviceId), m_driveName(driveName),m_Keyword("WindowsDiskUsage"), m_Capacity("DiskUsage"), m_diskUsage(0)
 {
 }
 
@@ -13,7 +13,7 @@ void CWindowsSystemDiskUsage::Initialize()
 {}
 
 CWindowsSystemDiskUsage::CWindowsSystemDiskUsage(const std::string & deviceId, const std::string & driveName, const std::string & Keyword)
-   :m_deviceId(deviceId), m_driveName(driveName),m_Keyword(Keyword), m_Capacity("DiskUsage")
+   :m_deviceId(deviceId), m_driveName(driveName),m_Keyword(Keyword), m_Capacity("DiskUsage"), m_diskUsage(0)
 {
 }
 

@@ -79,17 +79,17 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Number of total ticks, System ticks, User Ticks
    //--------------------------------------------------------------
-   unsigned __int64 lastCPU, lastSysCPU, lastUserCPU;
+   unsigned __int64 m_lastCPU, m_lastSysCPU, m_lastUserCPU;
 
    //--------------------------------------------------------------
    /// \brief	    Number of processors
    //--------------------------------------------------------------
-   int numProcessors;
+   int m_numProcessors;
 
    //--------------------------------------------------------------
    /// \brief	    Handle of Yadoms
    //--------------------------------------------------------------
-   HANDLE self;
+   HANDLE m_self;
 
    //--------------------------------------------------------------
    /// \brief	    Capacity string

@@ -61,7 +61,7 @@ namespace web { namespace rest { namespace service {
 
       
       std::vector< boost::shared_ptr< task::IInstance > >::iterator it;
-      for (it = taskList.begin(); it != taskList.end(); it++)
+      for (it = taskList.begin(); it != taskList.end(); ++it)
       {
          internalList.push_back(serialize(*it));
       }

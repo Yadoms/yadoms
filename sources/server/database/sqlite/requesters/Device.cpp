@@ -79,7 +79,7 @@ namespace database {  namespace sqlite { namespace requesters {
       return adapter.getResults()[0];
    }
 
-   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacity(const std::string & capacityName, const database::entities::EKeywordAccessMode accessMode) const
+   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacity(const std::string & capacityName, const database::entities::EKeywordAccessMode & accessMode) const
    {
       CQuery subQuery;
       subQuery. Select(CKeywordTable::getDeviceIdColumnName()).
@@ -97,7 +97,7 @@ namespace database {  namespace sqlite { namespace requesters {
       return adapter.getResults();
    }
 
-   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacityType(const database::entities::EKeywordAccessMode capacityAccessMode, const database::entities::EKeywordDataType capacityType) const
+   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacityType(const database::entities::EKeywordAccessMode & capacityAccessMode, const database::entities::EKeywordDataType & capacityType) const
    {
       CQuery subQuery;
       subQuery. Select(CKeywordTable::getDeviceIdColumnName()).

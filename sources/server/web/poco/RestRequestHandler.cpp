@@ -49,7 +49,6 @@ namespace web {
          // Decode url to path.
          std::string request_path = request.getURI();
 
-         std::string answer;
          try
          {
             std::vector<std::string> parameters;
@@ -70,7 +69,7 @@ namespace web {
                   if (boost::ifind_first(request.getContentType(), "application/json"))
                   {
                      std::string content;
-                     content.resize((std::string::size_type)(request.getContentLength()));
+                     content.resize((unsigned int)request.getContentLength());
                      request.stream().read((char*)content.c_str(), request.getContentLength());
                      requestContent.initializeWith(content);
                   }

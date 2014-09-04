@@ -231,6 +231,11 @@ namespace shared { namespace encryption {
      // MAIN FUNCTIONS
      CMD5()
      {
+       for( int i = 0 ; i < 16 ; ++i )
+         digestRaw[i]=0;
+       for( int i = 0 ; i < 33 ; ++i )
+         digestChars[i]=0;
+
        Init() ;
      }
 
@@ -337,14 +342,13 @@ namespace shared { namespace encryption {
 
        FILE *file;
        
-       int len;
-       unsigned char buffer[1024] ;
-
        if( (file = fopen (filename, "rb")) == NULL )
          printf( "%s can't be opened\n", filename ) ;
        else
        {
-         while( (len = fread( buffer, 1, 1024, file )) > 0 )
+         int len;
+         unsigned char buffer[1024] ;
+         while( len = fread( buffer, 1, 1024, file ) )
            Update( buffer, len ) ;
          Final();
 

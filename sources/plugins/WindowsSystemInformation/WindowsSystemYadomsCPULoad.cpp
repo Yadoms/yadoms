@@ -6,7 +6,7 @@
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
 CWindowsSystemYadomsCPULoad::CWindowsSystemYadomsCPULoad(const std::string & deviceId)
-   :m_deviceId(deviceId), m_CPULoad(0), m_Capacity("cpuload"), m_Keyword("YadomsCPULoad")
+   :m_deviceId(deviceId), m_CPULoad(0), m_Capacity("cpuload"), m_Keyword("YadomsCPULoad"), m_lastCPU(0), m_lastSysCPU(0), m_lastUserCPU(0), m_numProcessors(0), m_InitializeOk(false)
 {}
 
 void CWindowsSystemYadomsCPULoad::Initialize()
@@ -15,13 +15,13 @@ void CWindowsSystemYadomsCPULoad::Initialize()
    FILETIME ftime, fsys, fuser;
 
    GetSystemInfo(&sysInfo);
-   numProcessors = sysInfo.dwNumberOfProcessors;
+   m_numProcessors = sysInfo.dwNumberOfProcessors;
 
    GetSystemTimeAsFileTime(&ftime);
-   memcpy(&lastCPU, &ftime, sizeof(FILETIME));
+   memcpy(&m_lastCPU, &ftime, sizeof(FILETIME));
 
-   self = GetCurrentProcess();
-   if (!GetProcessTimes(self, &ftime, &ftime, &fsys, &fuser))
+   m_self = GetCurrentProcess();
+   if (!GetProcessTimes(m_self, &ftime, &ftime, &fsys, &fuser))
    {
       std::stringstream Message;
       Message << "Fail to retrieve Process Times with the error :";
@@ -29,8 +29,8 @@ void CWindowsSystemYadomsCPULoad::Initialize()
       m_InitializeOk = false;
       throw shared::exception::CException ( Message.str() );
    }
-   memcpy(&lastSysCPU, &fsys, sizeof(FILETIME));
-   memcpy(&lastUserCPU, &fuser, sizeof(FILETIME));
+   memcpy(&m_lastSysCPU, &fsys, sizeof(FILETIME));
+   memcpy(&m_lastUserCPU, &fuser, sizeof(FILETIME));
 
    m_InitializeOk = true;
 }
@@ -77,14 +77,13 @@ double CWindowsSystemYadomsCPULoad::getValue()
 {
    FILETIME ftime, fsys, fuser;
    unsigned __int64 now, sys, user;
-   double percent;
 
    if (m_InitializeOk)
    {
       GetSystemTimeAsFileTime(&ftime);
       memcpy(&now, &ftime, sizeof(FILETIME));
 
-      if (!GetProcessTimes(self, &ftime, &ftime, &fsys, &fuser))
+      if (!GetProcessTimes(m_self, &ftime, &ftime, &fsys, &fuser))
       {
          std::stringstream Message;
          Message << "Fail to retrieve Process Times with the error :";
@@ -94,11 +93,11 @@ double CWindowsSystemYadomsCPULoad::getValue()
 
       memcpy(&sys, &fsys, sizeof(FILETIME));
       memcpy(&user, &fuser, sizeof(FILETIME));
-      percent = double((sys-lastSysCPU) + (user - lastUserCPU)) / (now - lastCPU);
-      percent /= numProcessors;
-      lastCPU = now;
-      lastUserCPU = user;
-      lastSysCPU = sys;
+      double percent = double((sys - m_lastSysCPU) + (user - m_lastUserCPU)) / (now - m_lastCPU);
+      percent /= m_numProcessors;
+      m_lastCPU = now;
+      m_lastUserCPU = user;
+      m_lastSysCPU = sys;
 
       m_CPULoad = percent * 100;
 

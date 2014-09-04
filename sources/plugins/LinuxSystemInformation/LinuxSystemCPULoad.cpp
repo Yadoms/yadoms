@@ -9,7 +9,7 @@ CLinuxSystemCPULoad::CLinuxSystemCPULoad(const std::string & deviceId)
    :m_deviceId(deviceId), m_CPULoad(0), m_Capacity("cpuload"), m_Keyword("LinuxCPULoad")
 {
    FILE* file = fopen("/proc/stat", "r");
-   fscanf(file, "cpu %Ld %Ld %Ld %Ld", &lastTotalUser, &lastTotalUserLow,
+   fscanf(file, "cpu %Lu %Lu %Lu %Lu", &lastTotalUser, &lastTotalUserLow,
       &lastTotalSys, &lastTotalIdle);
    fclose(file);
 }
@@ -53,11 +53,11 @@ double CLinuxSystemCPULoad::getValue()
 {
    //TODO : Keep the last value, if an overflow occured
    double percent;
-   unsigned long long totalUser, totalUserLow, totalSys, totalIdle, total;
+   unsigned long long totalUser, totalUserLow, totalSys, totalIdle;
    FILE* file;
 
    file = fopen("/proc/stat", "r");
-   fscanf(file, "cpu %Ld %Ld %Ld %Ld", &totalUser, &totalUserLow,
+   fscanf(file, "cpu %Lu %Lu %Lu %Lu", &totalUser, &totalUserLow,
       &totalSys, &totalIdle);
    fclose(file);
 
@@ -67,7 +67,7 @@ double CLinuxSystemCPULoad::getValue()
          percent = -1.0;
    }
    else{
-      total = (totalUser - lastTotalUser) + (totalUserLow - lastTotalUserLow) +
+      unsigned long long total = (totalUser - lastTotalUser) + (totalUserLow - lastTotalUserLow) +
          (totalSys - lastTotalSys);
       percent = total;
       total += (totalIdle - lastTotalIdle);
