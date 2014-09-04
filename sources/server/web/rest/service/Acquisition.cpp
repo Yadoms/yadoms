@@ -153,20 +153,20 @@ namespace web {
             try
             {
 
-               if (parameters.size() >= 2)
+               if (parameters.size() >= 3)
                {
                   //get device id from URL
-                  int keywordId = boost::lexical_cast<int>(parameters[2]);
+                  int keywordId = boost::lexical_cast<int>(parameters[3]);
 
                   //try to get from and to limits.
                   //as this method is common for three rest url, those variable may keep unfilled
                   boost::posix_time::ptime timeFrom, timeTo;
 
-                  if (parameters.size() > 3)
-                     timeFrom = boost::posix_time::from_iso_string(parameters[3]);
-
                   if (parameters.size() > 4)
-                     timeTo = boost::posix_time::from_iso_string(parameters[4]);
+                     timeFrom = boost::posix_time::from_iso_string(parameters[4]);
+
+                  if (parameters.size() > 5)
+                     timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
                   //using the raw data format, to optimize treatment
                   //output is "[[dateiso,data],[dateiso,data],....]"
