@@ -13,7 +13,7 @@
 // http://msdn.microsoft.com/en-us/library/aa373046%28VS.85%29.aspx
 
 CWindowsSystemCPULoad::CWindowsSystemCPULoad(const std::string & deviceId)
-   :m_deviceId(deviceId), m_CPULoad(0), m_Capacity("cpuload"), m_Keyword("WindowsCPULoad")
+   :m_deviceId(deviceId), m_CPULoad(0), m_Capacity("cpuload"), m_Keyword("WindowsCPULoad"), m_InitializeOk(false)
 {}
 
 void CWindowsSystemCPULoad::Initialize()

@@ -137,7 +137,7 @@ namespace task {
          //the task is unique, we mùst check if it is not already running
 
          RunningTaskInstanceMap::iterator it;
-         for (it = m_runningTasks.begin(); it != m_runningTasks.end(); it++)
+         for (it = m_runningTasks.begin(); it != m_runningTasks.end(); ++it)
          {
             if (boost::iequals(it->second->getName(), taskToRun->getName()))
             {
@@ -181,13 +181,13 @@ namespace task {
       std::vector< boost::shared_ptr< IInstance > > list;
 
       RunningTaskInstanceMap::iterator it;
-      for (it = m_runningTasks.begin(); it != m_runningTasks.end(); it++)
+      for (it = m_runningTasks.begin(); it != m_runningTasks.end(); ++it)
       {
          list.push_back(it->second);
       }
 
       FinishedTaskInstanceMap::iterator it2;
-      for (it2 = m_finishedTasks.begin(); it2 != m_finishedTasks.end(); it2++)
+      for (it2 = m_finishedTasks.begin(); it2 != m_finishedTasks.end(); ++it2)
       {
          list.push_back(it2->second);
       }

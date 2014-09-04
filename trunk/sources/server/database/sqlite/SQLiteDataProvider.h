@@ -61,6 +61,10 @@ namespace sqlite {
       //--------------------------------------------------------------
       void loadRequesters();
       
+      //--------------------------------------------------------------
+      /// \Brief		Configure the SQLite3 engine with some extended functions
+      //--------------------------------------------------------------
+      void registerExtendedFunctions();
    private:
       //--------------------------------------------------------------
       /// \Brief		Plugin requester

@@ -6,14 +6,8 @@
 namespace task { 
 
    CFinishedInstance::CFinishedInstance(const std::string & guid, const std::string & name, ITask::EStatus status, boost::optional< float > progression, const std::string & message, const boost::posix_time::ptime & creationDate)
-      :m_creationDate(creationDate)
+      : m_name(name), m_guid(guid), m_message(message), m_progression(progression), m_status(status), m_creationDate(creationDate)
    {
-      m_guid = guid;
-      m_name = name;
-      m_status = status;
-      m_progression = progression;
-      m_message = message;
-
    }
 
    CFinishedInstance::~CFinishedInstance()

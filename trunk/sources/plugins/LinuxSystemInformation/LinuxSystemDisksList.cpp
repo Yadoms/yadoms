@@ -38,7 +38,6 @@ std::vector<std::string> CLinuxSystemDisksList::ExecuteCommandAndReturn(const st
    std::vector<std::string> ret;
 
    FILE *fp;
-   char path[1035];
 
    /* Open the command for reading. */
 
@@ -46,6 +45,7 @@ std::vector<std::string> CLinuxSystemDisksList::ExecuteCommandAndReturn(const st
 
    if (fp != NULL) 
    {
+      char path[1035];
       /* Read the output a line at a time - output it. */
       while (fgets(path, sizeof(path)-1, fp) != NULL)
       {

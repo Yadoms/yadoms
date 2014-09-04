@@ -55,17 +55,17 @@ namespace database {
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector< boost::tuple<std::string, std::string>  > getKeywordData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string>  > getKeywordData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
-      /// \brief                 Get the data (raw format) : [[date,value],[date,value],...]
+      /// \brief                 Get the data (highchart js format) : [[date,value],[date,value],...]
       /// \param [in] keywordId  keywordId Id
       /// \param [in] timeFrom   The start date (optionnal)
       /// \param [in] timeTo     The end date (optionnal)
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::string getKeywordRawData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
+      virtual std::string getKeywordHighchartData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
       /// \brief       Destructor

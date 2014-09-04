@@ -205,7 +205,7 @@ namespace tools {
             // Tell SCM that the service is started.
             SetServiceStatus(SERVICE_RUNNING);
          }
-         catch (DWORD dwError)
+         catch (const DWORD & dwError)
          {
             // Log the error.
             WriteErrorLogEntry("Service Start", dwError);
@@ -266,7 +266,7 @@ namespace tools {
             // Tell SCM that the service is stopped.
             SetServiceStatus(SERVICE_STOPPED);
          }
-         catch (DWORD dwError)
+         catch (const DWORD & dwError)
          {
             // Log the error.
             WriteErrorLogEntry("Service Stop", dwError);
@@ -321,7 +321,7 @@ namespace tools {
             // Tell SCM that the service is paused.
             SetServiceStatus(SERVICE_PAUSED);
          }
-         catch (DWORD dwError)
+         catch (const DWORD & dwError)
          {
             // Log the error.
             WriteErrorLogEntry("Service Pause", dwError);
@@ -374,7 +374,7 @@ namespace tools {
             // Tell SCM that the service is running.
             SetServiceStatus(SERVICE_RUNNING);
          }
-         catch (DWORD dwError)
+         catch (const DWORD & dwError)
          {
             // Log the error.
             WriteErrorLogEntry("Service Continue", dwError);
@@ -423,7 +423,7 @@ namespace tools {
             // Tell SCM that the service is stopped.
             SetServiceStatus(SERVICE_STOPPED);
          }
-         catch (DWORD dwError)
+         catch (const DWORD & dwError)
          {
             // Log the error.
             WriteErrorLogEntry("Service Shutdown", dwError);
@@ -502,11 +502,11 @@ namespace tools {
       void CServiceBase::WriteEventLogEntry(char* pszMessage, WORD wType)
       {
          HANDLE hEventSource = NULL;
-         char* lpszStrings[2] = { NULL, NULL };
 
          hEventSource = RegisterEventSource(NULL, m_name.c_str());
          if (hEventSource)
          {
+            char* lpszStrings[2] = { NULL, NULL };
             lpszStrings[0] = (char*)m_name.c_str();
             lpszStrings[1] = pszMessage;
 

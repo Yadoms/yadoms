@@ -6,8 +6,8 @@
 namespace task { 
 
    CTaskEvent::CTaskEvent(const std::string & guid)
+      : m_guid(guid)
    {
-      m_guid = guid;
    }
 
    CTaskEvent::~CTaskEvent()

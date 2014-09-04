@@ -34,6 +34,11 @@ namespace web { namespace rest { namespace service {
       ///\brief   Get the data of a keyword (with optional date filter)
       //-----------------------------------------
       shared::CDataContainer getKeywordData(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      
+      //-----------------------------------------
+      ///\brief   Get the data of a keyword (with optional date filter) for highchart treatment (fast queries, optimized for highcharts js)
+      //-----------------------------------------
+      shared::CDataContainer getHighchartKeywordData(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
 
       boost::shared_ptr<database::IDataProvider> m_dataProvider;

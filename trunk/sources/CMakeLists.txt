@@ -454,6 +454,7 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/adapters/GenericAdapter.h
 		server/database/sqlite/adapters/GenericAdapter.cpp
 		server/database/sqlite/adapters/SingleValueAdapter.hpp
+		server/database/sqlite/adapters/HighchartValueAdapter.hpp
 		server/database/sqlite/adapters/MultipleValueAdapter.hpp
 		
 		server/database/sqlite/versioning/ISQLiteVersionUpgrade.h

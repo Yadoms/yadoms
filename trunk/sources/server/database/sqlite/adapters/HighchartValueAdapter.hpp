@@ -1,33 +1,29 @@
 #pragma once
 
 #include "SQLite3Extension.hpp"
-
+#include <shared/exception/NotSupported.hpp>
 
 namespace database { 
 namespace sqlite { 
 namespace adapters { 
 
-
+      //--------------------------------------------------------------
+   ///\Brief		Class which adapt in single string, using a json like ouptut [[data],[data],....]
    //--------------------------------------------------------------
-   ///\Brief		Class which adapt in single column resultset
-   ///\template   TValue : the type of value
-   ///\example    CSingleValueAdapter<int> will provide std::vector<int>
-   //--------------------------------------------------------------
-   template<class TValue>
-   class CSingleValueAdapter: public ISQLiteResultAdapter<TValue>
+   class CHighchartValueAdapter : public ISQLiteResultAdapter<std::string>
    {
    public:
       //--------------------------------------------------------------
       /// \Brief		Constructor
       //--------------------------------------------------------------
-      CSingleValueAdapter()
+      CHighchartValueAdapter()
       {
       }
    
       //--------------------------------------------------------------
       /// \Brief		Destructor
       //--------------------------------------------------------------
-      virtual ~CSingleValueAdapter()
+      virtual ~CHighchartValueAdapter()
       {
       }
    
@@ -37,29 +33,37 @@ namespace adapters {
          int nCols = sqlite3_column_count(pStatement);
          if (nCols == 1) 
          {
+            m_internalValue = "[";
             while (sqlite3_step(pStatement) == SQLITE_ROW) 
             {
-               m_results.push_back(CSQLite3Extension::extractData<TValue>(pStatement, 0));
+               m_internalValue += "[" + CSQLite3Extension::extractData<std::string>(pStatement, 0) + "],";
             }
+            m_internalValue[m_internalValue.size() - 1] = ']';
             return true;
          }
          return false;
       }
 
-      std::vector<TValue> getResults()
+      std::vector<std::string> getResults()
       {
-         return m_results;
-      }
+         //getRawResults should be used
+         throw shared::exception::CNotSupported("CHighchartValueAdapter::getResults");
+      }   
       // [END] ISQLiteResultAdapter implementation
 
+      //--------------------------------------------------------------
+      /// \Brief		Get the result (raw format)
+      /// \return		The result (raw format) using a json like ouptut [[data],[data],....]
+      //--------------------------------------------------------------
+      std::string getRawResults()
+      {
+         return m_internalValue;
+      }
+
    private:
-      //--------------------------------------------------------------
-      /// \Brief		Contains the list of results entities
-      //--------------------------------------------------------------
-       std::vector<TValue> m_results;
+      std::string m_internalValue;
+
    };
-
-
 
 
 } //namespace adapters

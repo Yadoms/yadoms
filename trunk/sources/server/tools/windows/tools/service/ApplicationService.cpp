@@ -27,7 +27,7 @@ namespace tools { namespace service {
                                   BOOL fCanStop, 
                                   BOOL fCanShutdown, 
                                   BOOL fCanPauseContinue)
-                                  : CServiceBase(pszServiceName, fCanStop, fCanShutdown, fCanPauseContinue), m_path(path), m_app(app), m_serviceName(pszServiceName)
+                                  : CServiceBase(pszServiceName, fCanStop, fCanShutdown, fCanPauseContinue), m_path(path), m_app(app), m_serviceName(pszServiceName), m_argc(0), m_argv(NULL)
    {
        m_fStopping = FALSE;
        

@@ -6,6 +6,7 @@
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "database/sqlite/adapters/SQLiteDatabaseAdapters.h"
 #include "database/sqlite/adapters/MultipleValueAdapter.hpp"
+#include "database/sqlite/adapters/HighchartValueAdapter.hpp"
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 
@@ -107,7 +108,7 @@ namespace database {  namespace sqlite {  namespace requesters {
       }
    }
 
-   std::vector< boost::tuple<std::string, std::string>  > CAcquisition::getKeywordData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+   std::vector< boost::tuple<boost::posix_time::ptime, std::string>  > CAcquisition::getKeywordData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
    {
       CQuery qSelect;
       qSelect. Select(CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getValueColumnName()).
@@ -125,15 +126,17 @@ namespace database {  namespace sqlite {  namespace requesters {
 
       qSelect.OrderBy(CAcquisitionTable::getDateColumnName());
 
-      database::sqlite::adapters::CMultipleValueAdapter<std::string, std::string> mva;
+      database::sqlite::adapters::CMultipleValueAdapter<boost::posix_time::ptime, std::string> mva;
       m_databaseRequester->queryEntities(&mva, qSelect);
       return mva.getResults();
    }
 
-   std::string CAcquisition::getKeywordRawData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+   std::string CAcquisition::getKeywordHighchartData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
    {
+      //this query is optimized to get only one field to read
+      //the output data is a single column (without brackets):  ["dateiso",value]
       CQuery qSelect;
-      qSelect.Select(CAcquisitionTable::getDateColumnName() + "|| ',' || " + CAcquisitionTable::getValueColumnName()).
+      qSelect.Clear().Select("(strftime('%s', isodate(date))*1000) ||','|| " + CAcquisitionTable::getValueColumnName()).
          From(CAcquisitionTable::getTableName()).
          Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);
 
@@ -147,8 +150,7 @@ namespace database {  namespace sqlite {  namespace requesters {
       }
 
       qSelect.OrderBy(CAcquisitionTable::getDateColumnName());
-
-      database::sqlite::adapters::CRawValueAdapter mva;
+      database::sqlite::adapters::CHighchartValueAdapter mva;
       m_databaseRequester->queryEntities(&mva, qSelect);
       return mva.getRawResults();
    }
