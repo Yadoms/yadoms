@@ -201,8 +201,16 @@ set(YADOMS_SRC
 	server/startupOptions/IStartupOptions.h
 	server/startupOptions/InvalidOptionException.hpp
   
+	server/notifications/NewAcquisitionNotification.h
+	server/notifications/AsyncNotificationCenter.h
+	server/notifications/AsyncNotificationCenter.cpp
+	
 	server/ApplicationStopHandler.h
 	server/ApplicationStopHandler.cpp
+
+	server/dataAccessLayer/IAcquisitionHistorizer.h
+	server/dataAccessLayer/AcquisitionHistorizer.h
+	server/dataAccessLayer/AcquisitionHistorizer.cpp
 	
 	server/database/IDataProvider.h
 	server/database/IDataBackup.h
@@ -299,6 +307,8 @@ source_group(server\\task\\update  server/task/update/*.*)
 source_group(server\\task\\backup  server/task/backup/*.*)
 source_group(server\\communication  server/communication/*.*)
 source_group(server\\communication\\command  server/communication/command/*.*)
+source_group(server\\notifications  server/notifications/*.*)
+source_group(server\\dataAccessLayer  server/dataAccessLayer/*.*)
 
 # Tools
 set(YADOMS_SRC ${YADOMS_SRC}

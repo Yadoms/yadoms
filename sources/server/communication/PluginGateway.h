@@ -4,7 +4,7 @@
 #include <shared/event/EventHandler.hpp>
 #include "pluginSystem/Manager.h"
 #include "ISendMessageAsync.h"
-
+#include "dataAccessLayer/IAcquisitionHistorizer.h"
 
 namespace communication {
 
@@ -20,7 +20,7 @@ namespace communication {
       ///\param[in] dataProvider    The main data provider (access to database)
       ///\param[in] pluginManager   The plugin manager
       //----------------------------------------------
-      CPluginGateway(boost::shared_ptr<database::IDataProvider> dataProvider, boost::shared_ptr<pluginSystem::CManager> pluginManager);
+      CPluginGateway(boost::shared_ptr<database::IDataProvider> dataProvider, boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer, boost::shared_ptr<pluginSystem::CManager> pluginManager);
 
       //----------------------------------------------
       ///\brief Destructor
@@ -69,6 +69,11 @@ namespace communication {
       ///\brief  The main event handler, used to send/receive data from/to plugins
       //----------------------------------------------
       shared::event::CEventHandler m_mainEventHandler;
+
+      //----------------------------------------------
+      ///\brief  The acquisition historizer
+      //----------------------------------------------
+      boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> m_acquisitionHistorizer;
    };
 
 } //namespace communication

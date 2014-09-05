@@ -14,9 +14,10 @@ CYadomsApiImplementation::CYadomsApiImplementation(
    boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
    boost::shared_ptr<database::IDeviceRequester> deviceRequester,
    boost::shared_ptr<database::IKeywordRequester> keywordRequester,
-   boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester)
+   boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
+   boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer)
    :m_informations(pluginInformations), m_libraryPath(libraryPath),  m_pluginData(pluginData), m_pluginEventLoggerRequester(pluginEventLoggerRequester),
-   m_deviceRequester(deviceRequester), m_keywordRequester(keywordRequester), m_acquisitionRequester(acquisitionRequester)
+   m_deviceRequester(deviceRequester), m_keywordRequester(keywordRequester), m_acquisitionRequester(acquisitionRequester), m_acquisitionHistorizer(acquisitionHistorizer)
 {
 
 }
@@ -111,7 +112,7 @@ void CYadomsApiImplementation::historizeData(const std::string& device, const st
       boost::shared_ptr<database::entities::CDevice> deviceEntity = m_deviceRequester->getDevice(getPluginId(), device);
       boost::shared_ptr<database::entities::CKeyword> keywordEntity = m_keywordRequester->getKeyword(deviceEntity->Id, keyword);
 
-      m_acquisitionRequester->saveData(keywordEntity->Id, value);
+      m_acquisitionHistorizer->saveData(keywordEntity->Id, value);
    }
    catch (shared::exception::CEmptyResult& e)
    {
@@ -133,6 +134,15 @@ void CYadomsApiImplementation::historizeData(const std::string& device, const st
 {
    historizeData(device, keyword, boost::lexical_cast<std::string>(value));
 }  
+
+void CYadomsApiImplementation::historizeData(const std::string& device, const std::string& keyword, double value, int numberOfdigits)
+{
+   std::stringstream formatter;
+   formatter << "%." << numberOfdigits << "f";
+   historizeData(device, keyword, (boost::format(formatter.str()) % value).str());
+}  
+
+
 
 const shared::plugin::information::IInformation& CYadomsApiImplementation::getInformation() const
 {

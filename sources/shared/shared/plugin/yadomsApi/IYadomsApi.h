@@ -180,6 +180,17 @@ namespace shared { namespace plugin { namespace yadomsApi
       virtual void historizeData(const std::string & device, const std::string & keyword, int value) = 0;
       virtual void historizeData(const std::string & device, const std::string & keyword, double value) = 0;
       
+      //-----------------------------------------------------
+      ///\brief Historize a new data (double) and round it with a specified number of digits
+      ///\param    [in]    device             The device name
+      ///\param    [in]    keyword            The value name ("temp1", "temp2", "humidity", "batteryLevel", "rssi"...)
+      ///\param    [in]    value              The capacity value
+      ///\param    [in]    numberOfdigits     The number of digits ("45.12345" with 2 digits => 45.12)
+      ///\throw   shared::exception::CInvalidParameter if the device is not known
+      ///\note Data are all recorded internally as string. The methods which doesn't take string just do a boost::lexical_cast.
+      //-----------------------------------------------------     
+      virtual void historizeData(const std::string & device, const std::string & keyword, double value, int numberOfdigits) = 0;
+      
       
       //----------------------------------------------------------------------------------------------------------------
       //----------------------------------------------------------------------------------------------------------------

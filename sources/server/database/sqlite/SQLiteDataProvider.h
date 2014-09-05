@@ -109,7 +109,7 @@ namespace sqlite {
       //--------------------------------------------------------------
       /// \Brief		Acquisition requester
       //--------------------------------------------------------------
-      boost::shared_ptr<database::sqlite::requesters::CAcquisition> m_acquisitionRequester;
+      boost::shared_ptr<database::sqlite::requesters::CAcquisition> m_acquisitionRequester;   
       
       
       //--------------------------------------------------------------

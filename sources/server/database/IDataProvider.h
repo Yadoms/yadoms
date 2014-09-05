@@ -11,8 +11,10 @@
 #include "IAcquisitionRequester.h"
 #include "ITransactionalProvider.h"
 
-
 namespace database { 
+
+
+
 
    class IDataProvider
    {
@@ -101,7 +103,7 @@ namespace database {
       /// \return 	the Event Logger requester
       /// \throws 		
       //--------------------------------------------------------------  
-      virtual boost::shared_ptr<IEventLoggerRequester> getEventLoggerRequester() = 0;
+      virtual boost::shared_ptr<IEventLoggerRequester> getEventLoggerRequester() = 0;   
    };
 
  

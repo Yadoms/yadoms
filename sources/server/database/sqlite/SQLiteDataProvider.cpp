@@ -14,7 +14,6 @@
 #include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "tools/Version.h"
 
-
 namespace database {
    namespace sqlite {
 
