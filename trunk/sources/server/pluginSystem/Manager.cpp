@@ -18,6 +18,7 @@ namespace pluginSystem
 CManager::CManager(
    const std::string& initialDir,
    boost::shared_ptr<database::IDataProvider> dataProvider,
+   boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
    shared::event::CEventHandler& supervisor,
    int pluginManagerEventId)
    :m_dataProvider(dataProvider), m_pluginDBTable(dataProvider->getPluginRequester()), m_pluginPath(initialDir),
@@ -26,7 +27,7 @@ CManager::CManager(
 #else
    m_qualifier(new CQualifier(dataProvider->getPluginEventLoggerRequester(), dataProvider->getEventLoggerRequester())),
 #endif
-   m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId)
+   m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_acquisitionHistorizer(acquisitionHistorizer)
 {
    BOOST_ASSERT(m_dataProvider);
 }
@@ -343,7 +344,7 @@ void CManager::startInstance(int id)
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
       boost::shared_ptr<CInstance> pluginInstance(new CInstance(
-         plugin, databasePluginInstance, m_dataProvider->getPluginEventLoggerRequester(), m_dataProvider->getDeviceRequester(), m_dataProvider->getKeywordRequester(), m_dataProvider->getAcquisitionRequester(),
+         plugin, databasePluginInstance, m_dataProvider->getPluginEventLoggerRequester(), m_dataProvider->getDeviceRequester(), m_dataProvider->getKeywordRequester(), m_dataProvider->getAcquisitionRequester(), m_acquisitionHistorizer,
          m_qualifier, m_supervisor, m_pluginManagerEventId));
       m_runningInstances[databasePluginInstance->Id()] = pluginInstance;
    }

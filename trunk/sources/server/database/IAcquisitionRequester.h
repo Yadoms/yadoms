@@ -39,6 +39,14 @@ namespace database {
       ///\return     the acquisition
       //-----------------------------------------
       virtual boost::shared_ptr< database::entities::CAcquisition > getAcquisitionById(const int acqId) = 0;   
+
+      //-----------------------------------------
+      ///\brief      Get an acquisition by keywordid and date
+      ///\param [in] keywordId  The keyword id
+      ///\param [in] acqId  The acquisition date/time
+      ///\return     the acquisition
+      //-----------------------------------------
+      virtual boost::shared_ptr< database::entities::CAcquisition > getAcquisitionByKeywordAndDate(const int keywordId, boost::posix_time::ptime time) = 0;
       
       //-----------------------------------------
       ///\brief      Get the last data of a keyword

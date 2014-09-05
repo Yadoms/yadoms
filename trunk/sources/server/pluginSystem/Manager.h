@@ -14,7 +14,7 @@
 #include "database/IEventLoggerRequester.h"
 #include <shared/StringExtension.h>
 #include <shared/event/EventHandler.hpp>
-
+#include "dataAccessLayer/IAcquisitionHistorizer.h"
 
 namespace pluginSystem
 {
@@ -42,6 +42,7 @@ namespace pluginSystem
       CManager(
          const std::string & initialDir,
          boost::shared_ptr<database::IDataProvider> dataProvider,
+         boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
          shared::event::CEventHandler& supervisor,
          int pluginManagerEventId);
 
@@ -252,6 +253,11 @@ namespace pluginSystem
       /// \brief			ID to use to send events to supervisor
       //--------------------------------------------------------------
       const int m_pluginManagerEventId;
+
+      //--------------------------------------------------------------
+      /// \brief			Acquisitions historizer
+      //--------------------------------------------------------------
+      boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> m_acquisitionHistorizer;
    };
 
 } // namespace pluginSystem

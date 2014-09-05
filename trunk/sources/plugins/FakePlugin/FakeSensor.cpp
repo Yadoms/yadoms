@@ -43,8 +43,9 @@ void CFakeSensor::read()
 void CFakeSensor::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
-   context->historizeData(m_deviceId, "temp1"  , m_temperature1);
-   context->historizeData(m_deviceId, "temp2"  , m_temperature2);
+
+   context->historizeData(m_deviceId, "temp1", m_temperature1, 1);
+   context->historizeData(m_deviceId, "temp2", m_temperature2, 1);
    context->historizeData(m_deviceId, "battery", m_batteryLevel);
    context->historizeData(m_deviceId, "rssi"   , m_rssi        );
 

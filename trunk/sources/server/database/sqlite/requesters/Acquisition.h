@@ -32,7 +32,8 @@ namespace database { namespace sqlite {
          virtual void saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime);
          virtual void removeKeywordData(const int keywordId);
          virtual boost::shared_ptr< database::entities::CAcquisition > getAcquisitionById(const int acqId);   
-         virtual boost::shared_ptr< database::entities::CAcquisition > getKeywordLastData(const int keywordId);   
+         virtual boost::shared_ptr< database::entities::CAcquisition > getAcquisitionByKeywordAndDate(const int keywordId, boost::posix_time::ptime time);
+         virtual boost::shared_ptr< database::entities::CAcquisition > getKeywordLastData(const int keywordId);
          virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string>  > getKeywordData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
          virtual std::string getKeywordHighchartData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
          // [END] IAcquisitionRequester implementation

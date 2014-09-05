@@ -9,8 +9,8 @@ namespace communication {
 
    enum { kStartEvent = shared::event::kUserFirstId };
 
-   CPluginGateway::CPluginGateway(boost::shared_ptr<database::IDataProvider> dataProvider, boost::shared_ptr<pluginSystem::CManager> pluginManager)
-      :CThreadBase("PluginGateway"), m_dataProvider(dataProvider), m_pluginManager(pluginManager)
+   CPluginGateway::CPluginGateway(boost::shared_ptr<database::IDataProvider> dataProvider, boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer, boost::shared_ptr<pluginSystem::CManager> pluginManager)
+      :CThreadBase("PluginGateway"), m_dataProvider(dataProvider), m_pluginManager(pluginManager), m_acquisitionHistorizer(acquisitionHistorizer)
    {
    }
 
@@ -52,7 +52,7 @@ namespace communication {
       m_pluginManager->postCommand(m_dataProvider->getDeviceRequester()->getDevice(deviceId)->PluginId, command);
 
       // Historize the command
-      m_dataProvider->getAcquisitionRequester()->saveData(keywordId, body.serialize());
+      m_acquisitionHistorizer->saveData(keywordId, body.serialize());
    }
 
    void CPluginGateway::sendManuallyDeviceCreationRequestAsync(int pluginId, const std::string& deviceName, const std::string& keywordName, const std::string& capacity, const std::string& parameters)

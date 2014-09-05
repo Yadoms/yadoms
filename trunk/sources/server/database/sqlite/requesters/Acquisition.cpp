@@ -86,6 +86,29 @@ namespace database {  namespace sqlite {  namespace requesters {
       }
    }
 
+
+   boost::shared_ptr< database::entities::CAcquisition > CAcquisition::getAcquisitionByKeywordAndDate(const int keywordId, boost::posix_time::ptime time)
+   {
+      CQuery qSelect;
+      qSelect.Select().
+         From(CAcquisitionTable::getTableName()).
+         Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
+         And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_EQUAL, time);
+
+      database::sqlite::adapters::CAcquisitionAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CAcquisition> >(&adapter, qSelect);
+      if (adapter.getResults().size() >= 1)
+      {
+         return adapter.getResults()[0];
+      }
+      else
+      {
+         std::string sEx = (boost::format("Cannot retrieve acquisition for KeywordId=%1% and date=%2%  in database") % keywordId % time).str();
+         throw shared::exception::CEmptyResult(sEx);
+      }
+   }
+
+
    boost::shared_ptr< database::entities::CAcquisition > CAcquisition::getKeywordLastData(const int keywordId)
    {
       CQuery qSelect;
@@ -136,7 +159,7 @@ namespace database {  namespace sqlite {  namespace requesters {
       //this query is optimized to get only one field to read
       //the output data is a single column (without brackets):  ["dateiso",value]
       CQuery qSelect;
-      qSelect.Clear().Select("(strftime('%s', isodate(date))*1000) ||','|| " + CAcquisitionTable::getValueColumnName()).
+      qSelect.Clear().Select("(strftime('%s', isodate(" + CAcquisitionTable::getDateColumnName() + "))*1000) ||','|| " + CAcquisitionTable::getValueColumnName()).
          From(CAcquisitionTable::getTableName()).
          Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);
 

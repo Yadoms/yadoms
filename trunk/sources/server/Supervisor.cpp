@@ -25,6 +25,7 @@
 #include "task/backup/Database.h"
 #include "communication/PluginGateway.h"
 #include "System.h"
+#include "dataAccessLayer/AcquisitionHistorizer.h"
 
 CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
    :m_stopHandler(m_EventHandler, kStopRequested), m_startupOptions(startupOptions)
@@ -54,15 +55,19 @@ void CSupervisor::doWork()
          throw shared::exception::CException("Fail to load database");
       }
 
+      //create the data access layer
+      boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistoriszer(new dataAccessLayer::CAcquisitionHistorizer(pDataProvider->getAcquisitionRequester()));
+
       // Start Task manager
       boost::shared_ptr<task::CScheduler> taskManager = boost::shared_ptr<task::CScheduler>(new task::CScheduler(m_EventHandler, kSystemEvent));
       taskManager->start();
+
       // Create the Plugin manager
       boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(
-         m_startupOptions.getPluginsPath(), pDataProvider, m_EventHandler, kPluginManagerEvent));
+         m_startupOptions.getPluginsPath(), pDataProvider, acquisitionHistoriszer, m_EventHandler, kPluginManagerEvent));
 
       // Start the plugin gateway
-      communication::CPluginGateway pluginGateway(pDataProvider, pluginManager);
+      communication::CPluginGateway pluginGateway(pDataProvider, acquisitionHistoriszer, pluginManager);
       pluginGateway.start();
 
       // Start the plugin manager (start all plugin instances)

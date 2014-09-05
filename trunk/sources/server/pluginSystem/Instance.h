@@ -16,6 +16,7 @@
 #include "database/IDeviceRequester.h"
 #include "database/IKeywordRequester.h"
 #include "database/IAcquisitionRequester.h"
+#include "dataAccessLayer/IAcquisitionHistorizer.h"
 
 namespace pluginSystem
 {
@@ -43,6 +44,7 @@ namespace pluginSystem
          boost::shared_ptr<database::IDeviceRequester> deviceRequester,
          boost::shared_ptr<database::IKeywordRequester> keywordRequester,
          boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
+         boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
          const boost::shared_ptr<IQualifier> qualifier,
          shared::event::CEventHandler& supervisor, int pluginManagerEventId);
 

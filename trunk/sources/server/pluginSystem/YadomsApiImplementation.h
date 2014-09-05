@@ -6,6 +6,7 @@
 #include "database/IDeviceRequester.h"
 #include "database/IKeywordRequester.h"
 #include "database/IAcquisitionRequester.h"
+#include "dataAccessLayer/IAcquisitionHistorizer.h"
 #include "database/entities/Entities.h"
 
 
@@ -33,7 +34,8 @@ namespace pluginSystem
          boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
          boost::shared_ptr<database::IDeviceRequester> deviceRequester,
          boost::shared_ptr<database::IKeywordRequester> keywordRequester,
-         boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester);
+         boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
+         boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer);
       
       //-----------------------------------------------------
       ///\brief Destructor
@@ -51,6 +53,7 @@ namespace pluginSystem
       virtual void historizeData(const std::string& device, const std::string& keyword, bool value);
       virtual void historizeData(const std::string& device, const std::string& keyword, int value);
       virtual void historizeData(const std::string& device, const std::string& keyword, double value);
+      virtual void historizeData(const std::string & device, const std::string & keyword, double value, int numberOfdigits);
       virtual const shared::plugin::information::IInformation& getInformation() const;
       virtual shared::CDataContainer getConfiguration() const;
       virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message);
@@ -98,6 +101,11 @@ namespace pluginSystem
       /// \brief			The Acquisition requester
       //--------------------------------------------------------------
       boost::shared_ptr<database::IAcquisitionRequester> m_acquisitionRequester;
+      
+      //--------------------------------------------------------------
+      /// \brief			The Acquisition historizer
+      //--------------------------------------------------------------
+      boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> m_acquisitionHistorizer;
 
       //--------------------------------------------------------------
       /// \brief			The plugin event handler
