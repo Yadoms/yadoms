@@ -34,3 +34,26 @@ extern const std::size_t RFXMESSAGE_maxSize;
 
 // Macro helper to encode length (length = packet size except the packet byte)
 #define ENCODE_PACKET_LENGTH(packet)((BYTE)packet##_size - 1)
+
+//--------------------------------------------------------------
+/// \brief	                           Basic checks on received message : type, size, sequence number
+/// \param[in] rbuf                    Message received from Rfxcom
+/// \param[in] expectedType            Expected message type (pType) : log and assert if not match
+/// \param[in] expectedSize            Expected message size : log if not match
+/// \param[in] expectedSeqNumber       Expected sequence number : log if not match
+/// \return                            false if one of check fails
+/// \note                              All checks are perform, even if one fails
+//--------------------------------------------------------------
+bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, size_t expectedSize, unsigned char expectedSeqNumber);
+
+//--------------------------------------------------------------
+/// \brief	                           Basic checks on received message, including subType
+/// \param[in] rbuf                    Message received from Rfxcom
+/// \param[in] expectedType            Expected message type (pType) : log and assert if not match
+/// \param[in] expectedSubType         Expected message subtype (sType) : log if not match
+/// \param[in] expectedSize            Expected message size : log if not match
+/// \param[in] expectedSeqNumber       Expected sequence number : log if not match
+/// \return                            false if one of check fails
+/// \note                              All checks are perform, even if one fails
+//--------------------------------------------------------------
+bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, BYTE expectedSubType, size_t expectedSize, unsigned char expectedSeqNumber);

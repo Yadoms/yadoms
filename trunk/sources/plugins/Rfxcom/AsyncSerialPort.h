@@ -1,11 +1,11 @@
 #pragma once
-#include "IPort.h"
+#include "IAsyncPort.h"
 #include "PortSubscription.hpp"
 
 //--------------------------------------------------------------
 /// \brief	This class manage a serial port
 //--------------------------------------------------------------
-class CSerialPort : public IPort
+class CAsyncSerialPort : public IAsyncPort
 {  
 public:
    //--------------------------------------------------------------
@@ -17,7 +17,7 @@ public:
    /// \param[in] stop_bits         Nb of stop bits (see boost::asio::serial_port_base::stop_bits::type for values)
    /// \param[in] flowControl       Flow control (see boost::asio::serial_port_base::flow_control::type for values)
    //--------------------------------------------------------------
-   CSerialPort(
+   CAsyncSerialPort(
       const std::string& port,
       boost::asio::serial_port_base::baud_rate baudrate = boost::asio::serial_port_base::baud_rate(9600),
       boost::asio::serial_port_base::parity parity = boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::none),
@@ -28,9 +28,9 @@ public:
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~CSerialPort();
+   virtual ~CAsyncSerialPort();
 
-   // IPort Implementation
+   // IAsyncPort Implementation
    virtual void setReceiveBufferSize(std::size_t size);
    virtual void start();
    virtual void stop();
@@ -40,8 +40,7 @@ public:
    virtual void setLogger(boost::shared_ptr<IPortLogger> logger);
    virtual void flush();
    virtual void send(const CByteBuffer& buffer);
-   virtual CByteBuffer sendAndReceive(const CByteBuffer& buffer);
-   // [END] IPort Implementation
+   // [END] IAsyncPort Implementation
 
    //--------------------------------------------------------------
    /// \brief	Establish the connection
@@ -55,11 +54,6 @@ public:
    virtual void disconnect();
 
 protected:
-   //--------------------------------------------------------------
-   /// \brief	Check if asynchronous read mode is active
-   //--------------------------------------------------------------
-   bool asyncReadMode() const;
-
    //--------------------------------------------------------------
    /// \brief	Try to connect asynchronously
    //--------------------------------------------------------------
@@ -77,28 +71,11 @@ protected:
    void startRead();
 
    //--------------------------------------------------------------
-   /// \brief	Stop the asynchronous read on the port
-   //--------------------------------------------------------------
-   void cancelAsyncRead();
-
-   //--------------------------------------------------------------
-   /// \brief	Restart the asynchronous read on the port
-   //--------------------------------------------------------------
-   void restartAsyncRead();
-
-   //--------------------------------------------------------------
    /// \brief	                     End of read operation handler
    /// \param[in] error             Result of operation
    /// \param[in] bytesTransferred  Read bytes number
    //--------------------------------------------------------------
    void readCompleted(const boost::system::error_code& error, std::size_t bytesTransferred);
-
-   //--------------------------------------------------------------
-   /// \brief	                     Receive data synchronously
-   /// \return                      Buffer received
-   /// \throw                    CPortException if error
-   //--------------------------------------------------------------
-   CByteBuffer receive();
 
 private:
    //--------------------------------------------------------------
@@ -165,6 +142,11 @@ private:
    /// \brief	Logger to use (can be null to disable log)
    //--------------------------------------------------------------
    boost::shared_ptr<IPortLogger> m_logger;
+
+   //--------------------------------------------------------------
+   /// \brief	Flag when flush is in progress
+   //--------------------------------------------------------------
+   bool m_flushInProgress;
 
 
    //TODO : options à rajouter ?

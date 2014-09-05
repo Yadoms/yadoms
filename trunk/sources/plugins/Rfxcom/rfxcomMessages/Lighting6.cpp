@@ -23,20 +23,16 @@ CLighting6::CLighting6(const shared::CDataContainer& command, const shared::CDat
    buildDeviceModel();
 }
 
-CLighting6::CLighting6(const RBUF& buffer)
+CLighting6::CLighting6(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
-   // Some integrity controls
-   if (buffer.LIGHTING6.packetlength != LIGHTING6_size)
-      throw shared::exception::CInvalidParameter("LIGHTING6 size");
-   if (buffer.LIGHTING6.packettype != pTypeLighting6)
-      throw shared::exception::CInvalidParameter("LIGHTING6 packettype");
+   CheckReceivedMessage(rbuf, pTypeLighting6, LIGHTING6_size, seqNumberProvider->last());
 
-   m_subType = buffer.LIGHTING6.subtype;
-   m_id = buffer.LIGHTING6.id1 | (buffer.LIGHTING6.id2 << 8);
-   m_groupCode = buffer.LIGHTING6.groupcode;
-   m_unitCode = buffer.LIGHTING6.unitcode;
-   m_state = buffer.LIGHTING6.cmnd;
-   m_rssi = buffer.LIGHTING6.rssi * 100 / 0x0F;
+   m_subType = rbuf.LIGHTING6.subtype;
+   m_id = rbuf.LIGHTING6.id1 | (rbuf.LIGHTING6.id2 << 8);
+   m_groupCode = rbuf.LIGHTING6.groupcode;
+   m_unitCode = rbuf.LIGHTING6.unitcode;
+   m_state = rbuf.LIGHTING6.cmnd;
+   m_rssi = rbuf.LIGHTING6.rssi * 100 / 0x0F;
 
    buildDeviceName();
    buildDeviceModel();
@@ -48,24 +44,24 @@ CLighting6::~CLighting6()
 
 const CByteBuffer CLighting6::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
-   RBUF buffer;
-   MEMCLEAR(buffer.LIGHTING6);
+   RBUF rbuf;
+   MEMCLEAR(rbuf.LIGHTING6);
 
-   buffer.LIGHTING6.packetlength = ENCODE_PACKET_LENGTH(LIGHTING6);
-   buffer.LIGHTING6.packettype = pTypeLighting6;
-   buffer.LIGHTING6.subtype = m_subType;
-   buffer.LIGHTING6.seqnbr = seqNumberProvider->next();
-   buffer.LIGHTING6.id1 = (unsigned char)((m_id & 0xFF00) >> 8);
-   buffer.LIGHTING6.id2 = (unsigned char)(m_id & 0xFF);
-   buffer.LIGHTING6.groupcode = m_groupCode;
-   buffer.LIGHTING6.unitcode = m_unitCode;
-   buffer.LIGHTING6.cmnd = m_state;
-   buffer.LIGHTING6.cmndseqnbr = seqNumberProvider->last() % 4;
-   buffer.LIGHTING6.seqnbr2 = 0;
-   buffer.LIGHTING6.rssi = 0;
-   buffer.LIGHTING1.filler = 0;
+   rbuf.LIGHTING6.packetlength = ENCODE_PACKET_LENGTH(LIGHTING6);
+   rbuf.LIGHTING6.packettype = pTypeLighting6;
+   rbuf.LIGHTING6.subtype = m_subType;
+   rbuf.LIGHTING6.seqnbr = seqNumberProvider->next();
+   rbuf.LIGHTING6.id1 = (unsigned char)((m_id & 0xFF00) >> 8);
+   rbuf.LIGHTING6.id2 = (unsigned char)(m_id & 0xFF);
+   rbuf.LIGHTING6.groupcode = m_groupCode;
+   rbuf.LIGHTING6.unitcode = m_unitCode;
+   rbuf.LIGHTING6.cmnd = m_state;
+   rbuf.LIGHTING6.cmndseqnbr = seqNumberProvider->last() % 4;
+   rbuf.LIGHTING6.seqnbr2 = 0;
+   rbuf.LIGHTING6.rssi = 0;
+   rbuf.LIGHTING1.filler = 0;
 
-   return CByteBuffer((BYTE*)&buffer, LIGHTING6_size);
+   return CByteBuffer((BYTE*)&rbuf, LIGHTING6_size);
 }
 
 void CLighting6::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

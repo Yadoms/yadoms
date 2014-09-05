@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IRfxcomConfiguration.h"
-#include "IPort.h"
+#include "IAsyncPort.h"
 #include "IPortLogger.h"
 #include "ITransceiver.h"
 
@@ -25,7 +25,7 @@ public:
    /// \param[in] logger                  The port logger (can be null if no logger is to be used)
    /// \return                            The created port
    //--------------------------------------------------------------
-   static boost::shared_ptr<IPort> constructPort(
+   static boost::shared_ptr<IAsyncPort> constructPort(
       const IRfxcomConfiguration& configuration,
       shared::event::CEventHandler& eventHandler,
       int evtPortConnectionId,
@@ -34,17 +34,9 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                           Create a transceiver instance
-   /// \param[in] context                 Plugin context
-   /// \param[in] configuration           Plugin configuration
-   /// \param[in] evtPortConnection       Port connection event ID
-   /// \param[in] evtPortDataReceived     Data received on port event ID
    /// \return                            The created transceiver
    //--------------------------------------------------------------
-   static boost::shared_ptr<ITransceiver> constructTransceiver(
-      boost::shared_ptr<yApi::IYadomsApi> context,
-      const IRfxcomConfiguration& configuration,
-      int evtPortConnection,
-      int evtPortDataReceived);
+   static boost::shared_ptr<ITransceiver> constructTransceiver();
 
    //--------------------------------------------------------------
    /// \brief	                           Create a port logger instance. This object will log all what is transceived by the port.

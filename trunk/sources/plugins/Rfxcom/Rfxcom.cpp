@@ -13,6 +13,7 @@ IMPLEMENT_PLUGIN(CRfxcom)
 
 //TODO dans package.json, compléter la liste manuallyDeviceCreationConfigurationSchema/type (voir Domoticz "Switch_Type_Desc")
 CRfxcom::CRfxcom()
+   :m_currentState(kNotInitialized)
 {
 }
 
@@ -32,14 +33,19 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    try
    {
+      m_currentState = kNotInitialized;
+
       // Load configuration values (provided by database)
       m_configuration.initializeWith(context->getConfiguration());
 
       // the main loop
       YADOMS_LOG(debug) << "CRfxcom is running...";
 
+      // Create the transceiver
+      m_transceiver = CRfxcomFactory::constructTransceiver();
+
       // Create the connection
-      m_transceiver = CRfxcomFactory::constructTransceiver(context, m_configuration, kEvtPortConnection, kEvtPortDataReceived);
+      createConnection(context->getEventHandler());
 
       while(1)
       {
@@ -87,13 +93,13 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
                // Close connection
-               m_transceiver.reset();
+               destroyConnection();
 
                // Update configuration
                m_configuration.initializeWith(newConfiguration);
 
                // Create new connection
-               m_transceiver = CRfxcomFactory::constructTransceiver(context, m_configuration, kEvtPortConnection, kEvtPortDataReceived);
+               createConnection(context->getEventHandler());
 
                break;
             }
@@ -113,7 +119,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             }
          case kprotocolErrorRetryTimer:
             {
-               m_transceiver = CRfxcomFactory::constructTransceiver(context, m_configuration, kEvtPortConnection, kEvtPortDataReceived);
+               createConnection(context->getEventHandler());
                break;
             }
          default:
@@ -129,10 +135,27 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
    }
 }
 
+void CRfxcom::createConnection(shared::event::CEventHandler& eventHandler)
+{
+   // Create the port instance
+   m_portLogger = CRfxcomFactory::constructPortLogger();
+   m_port = CRfxcomFactory::constructPort(m_configuration, eventHandler, kEvtPortConnection, kEvtPortDataReceived, m_portLogger);
+   m_port->setReceiveBufferSize(RFXMESSAGE_maxSize);
+   m_port->start();
+}
+
+void CRfxcom::destroyConnection()
+{
+   m_port.reset();
+   m_portLogger.reset();
+}
+
 void CRfxcom::onCommand(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
 {
-   if (m_transceiver)
-      m_transceiver->send(command, deviceParameters);
+   if (!m_port || m_currentState != kRfxcomIsRunning)
+      YADOMS_LOG(warning) << "Command not send (RFXCom is not ready) : " << command;
+
+   m_port->send(m_transceiver->buildMessageToDevice(command, deviceParameters));
 }
 
 void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context)
@@ -143,14 +166,15 @@ void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> c
    try
    {
       // Reset the RFXCom
-      m_transceiver->processReset();
+      m_currentState = kResettingRfxcom;
+      initRfxcom();
    }
    catch (CProtocolException& e)
    {
       YADOMS_LOG(error) << "Error resetting RFXCom transceiver : " << e.what();
 
       // Stop the communication, and try later
-      m_transceiver.reset();
+      destroyConnection();
       context->getEventHandler().createTimer(kprotocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
    }
    catch (CPortException& e)
@@ -165,10 +189,88 @@ void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYadomsApi>
    YADOMS_LOG(debug) << "RFXCom connection was lost";
    context->recordPluginEvent(yApi::IYadomsApi::kInfo, "RFXCom connection was lost");
 
-   m_transceiver.reset();
+   destroyConnection();
 }
 
 void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data)
 {
-   m_transceiver->historize(data);
+   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message = m_transceiver->decodeRfxcomMessage(data);
+
+   if (!message)
+   {
+      YADOMS_LOG(warning) << "Unable to decode received message";
+      return;
+   }
+
+   // Decoding is OK, process received message
+   boost::shared_ptr<rfxcomMessages::CTransceiverStatus> statusMessage = boost::dynamic_pointer_cast<rfxcomMessages::CTransceiverStatus>(message);
+   if (!!statusMessage)
+   {
+      processRfxcomStatusMessage(*statusMessage);
+      return;
+   }
+
+   boost::shared_ptr<rfxcomMessages::CAck> ackMessage = boost::dynamic_pointer_cast<rfxcomMessages::CAck>(message);
+   if (!!ackMessage)
+   {
+      processRfxcomAckMessage(*ackMessage);
+      return;
+   }
+
+   // Sensor message, historize all data contained in the message
+   message->historizeData(context);
+}
+
+void CRfxcom::initRfxcom()
+{
+   // Reset the RFXCom.
+   // See the RFXCom SDK specification for more information about this sequence
+
+   // Raz transceiver
+   m_transceiver->reset();
+
+   // Send reset command to the RfxCom
+   YADOMS_LOG(info) << "Reset the RFXCom...";
+   m_port->send(m_transceiver->buildResetCmd());
+   // No answer
+
+   // RFXCom needs some time to recover after reset (see specifications)
+   boost::this_thread::sleep(boost::posix_time::milliseconds(50));
+
+   // Flush receive buffer according to RFXCom specifications
+   m_port->flush();
+
+   // Now get the actual RFXCom configuration to check if reconfiguration is needed
+   YADOMS_LOG(info) << "Get the RFXCom status...";
+   m_currentState = kGettingRfxcomStatus;
+   m_port->send(m_transceiver->buildGetStatusCmd());
+}
+
+void CRfxcom::processRfxcomStatusMessage(const rfxcomMessages::CTransceiverStatus& status) const
+{
+   // The status message can be received after a get status command or a set mode command
+   YADOMS_LOG(info) << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware version (" << status.getFirmwareVersion() << ")";
+   status.traceEnabledProtocols();
+
+   if (status.needConfigurationUpdate(m_configuration))
+   {
+      // Incorrect configuration is only possible while initialization procedure
+      if (m_currentState != kGettingRfxcomStatus)
+         throw CProtocolException("Error configuring RfxCom, configuration was not taken into account");
+
+      // Update active protocols list
+      m_currentState = kSettingRfxcomMode;
+      m_port->send(m_transceiver->buildSetModeCmd(status.getRfxcomType(), m_configuration));// Don't change the RFXCom frequency
+      // Expected reply is also a status message
+   }
+
+   m_currentState = kRfxcomIsRunning;
+}
+
+void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack) const
+{
+   if (ack.isOk())
+      YADOMS_LOG(debug) << "RFXCom acknowledge";
+   else
+      YADOMS_LOG(warning) << "RFXCom Received acknowledge is KO";
 }

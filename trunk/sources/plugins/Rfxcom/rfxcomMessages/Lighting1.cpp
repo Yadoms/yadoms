@@ -22,19 +22,15 @@ CLighting1::CLighting1(const shared::CDataContainer& command, const shared::CDat
    buildDeviceModel();
 }
 
-CLighting1::CLighting1(const RBUF& buffer)
+CLighting1::CLighting1(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
-   // Some integrity controls
-   if (buffer.LIGHTING1.packetlength != LIGHTING1_size)
-      throw shared::exception::CInvalidParameter("LIGHTING1 size");
-   if (buffer.LIGHTING1.packettype != pTypeLighting1)
-      throw shared::exception::CInvalidParameter("LIGHTING1 packettype");
+   CheckReceivedMessage(rbuf, pTypeLighting1, LIGHTING1_size, seqNumberProvider->last());
 
-   m_subType = buffer.LIGHTING1.subtype;
-   m_houseCode = buffer.LIGHTING1.housecode;
-   m_unitCode = buffer.LIGHTING1.unitcode;
-   m_state = buffer.LIGHTING1.cmnd;
-   m_rssi = buffer.LIGHTING1.rssi * 100 / 0x0F;
+   m_subType = rbuf.LIGHTING1.subtype;
+   m_houseCode = rbuf.LIGHTING1.housecode;
+   m_unitCode = rbuf.LIGHTING1.unitcode;
+   m_state = rbuf.LIGHTING1.cmnd;
+   m_rssi = rbuf.LIGHTING1.rssi * 100 / 0x0F;
 
    buildDeviceName();
    buildDeviceModel();
@@ -46,20 +42,20 @@ CLighting1::~CLighting1()
 
 const CByteBuffer CLighting1::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
-   RBUF buffer;
-   MEMCLEAR(buffer.LIGHTING1);
+   RBUF rbuf;
+   MEMCLEAR(rbuf.LIGHTING1);
 
-   buffer.LIGHTING1.packetlength = ENCODE_PACKET_LENGTH(LIGHTING1);
-   buffer.LIGHTING1.packettype = pTypeLighting1;
-   buffer.LIGHTING1.subtype = m_subType;
-   buffer.LIGHTING1.seqnbr = seqNumberProvider->next();
-   buffer.LIGHTING1.housecode = m_houseCode;
-   buffer.LIGHTING1.unitcode = m_unitCode;
-   buffer.LIGHTING1.cmnd = m_state;
-   buffer.LIGHTING1.rssi = 0;
-   buffer.LIGHTING1.filler = 0;
+   rbuf.LIGHTING1.packetlength = ENCODE_PACKET_LENGTH(LIGHTING1);
+   rbuf.LIGHTING1.packettype = pTypeLighting1;
+   rbuf.LIGHTING1.subtype = m_subType;
+   rbuf.LIGHTING1.seqnbr = seqNumberProvider->next();
+   rbuf.LIGHTING1.housecode = m_houseCode;
+   rbuf.LIGHTING1.unitcode = m_unitCode;
+   rbuf.LIGHTING1.cmnd = m_state;
+   rbuf.LIGHTING1.rssi = 0;
+   rbuf.LIGHTING1.filler = 0;
 
-   return CByteBuffer((BYTE*)&buffer, LIGHTING1_size);
+   return CByteBuffer((BYTE*)&rbuf, LIGHTING1_size);
 }
 
 void CLighting1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

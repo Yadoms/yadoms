@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include "SerialPort.h"
+#include "AsyncSerialPort.h"
 #include <shared/Log.h>
+#include <shared/Peripherals.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include "PortException.hpp"
 #include "Buffer.hpp"
@@ -11,9 +12,9 @@
 #endif
 
 
-const boost::posix_time::time_duration CSerialPort::ConnectRetryDelay(boost::posix_time::seconds(30));
+const boost::posix_time::time_duration CAsyncSerialPort::ConnectRetryDelay(boost::posix_time::seconds(30));
 
-CSerialPort::CSerialPort(
+CAsyncSerialPort::CAsyncSerialPort(
    const std::string& port,
    boost::asio::serial_port_base::baud_rate baudrate,
    boost::asio::serial_port_base::parity parity,
@@ -25,33 +26,34 @@ CSerialPort::CSerialPort(
    m_readBufferMaxSize(512),
    m_asyncReadBuffer(new unsigned char[m_readBufferMaxSize]),
    m_readBuffer(new unsigned char[m_readBufferMaxSize]),
-   m_connectRetryTimer(m_ioService)
+   m_connectRetryTimer(m_ioService),
+   m_flushInProgress(false)
 {
 }
 
-CSerialPort::~CSerialPort()
+CAsyncSerialPort::~CAsyncSerialPort()
 {
    stop();
 }
 
-void CSerialPort::setReceiveBufferSize(std::size_t size)
+void CAsyncSerialPort::setReceiveBufferSize(std::size_t size)
 {
    m_readBufferMaxSize = size;
    m_asyncReadBuffer.reset(new unsigned char[m_readBufferMaxSize]);
    m_readBuffer.reset(new unsigned char[m_readBufferMaxSize]);
 }
 
-void CSerialPort::start()
+void CAsyncSerialPort::start()
 {
    if (!!m_asyncThread)
       return;  // Already started
 
    // Try to connect
-   m_ioService.post(boost::bind(&CSerialPort::tryConnect, this));
+   m_ioService.post(boost::bind(&CAsyncSerialPort::tryConnect, this));
    m_asyncThread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &m_ioService)));
 }
 
-void CSerialPort::stop()
+void CAsyncSerialPort::stop()
 {
    if (!m_asyncThread)
       return;  // Already stopped
@@ -63,7 +65,7 @@ void CSerialPort::stop()
    m_asyncThread.reset();
 }
 
-bool CSerialPort::connect()
+bool CAsyncSerialPort::connect()
 {
    // Open the port
    try
@@ -86,7 +88,7 @@ bool CSerialPort::connect()
    return true;
 }
 
-void CSerialPort::disconnect()
+void CAsyncSerialPort::disconnect()
 {
    if (!m_boostSerialPort.is_open())
       return;
@@ -103,72 +105,44 @@ void CSerialPort::disconnect()
    }
 }
 
-bool CSerialPort::isConnected() const
+bool CAsyncSerialPort::isConnected() const
 {
    return m_boostSerialPort.is_open();
 }
 
-void CSerialPort::subscribeConnectionState(shared::event::CEventHandler& forEventHandler, int forId)
+void CAsyncSerialPort::subscribeConnectionState(shared::event::CEventHandler& forEventHandler, int forId)
 {
    m_connectionStateSubscription.subscribe(forEventHandler, forId);
 }
 
-void CSerialPort::subscribeReceiveData(shared::event::CEventHandler& forEventHandler, int forId)
+void CAsyncSerialPort::subscribeReceiveData(shared::event::CEventHandler& forEventHandler, int forId)
 {
    m_receiveDataSubscription.subscribe(forEventHandler, forId);
 }
 
-void CSerialPort::setLogger(boost::shared_ptr<IPortLogger> logger)
+void CAsyncSerialPort::setLogger(boost::shared_ptr<IPortLogger> logger)
 {
    m_logger = logger;
 }
 
-void CSerialPort::flush()
+void CAsyncSerialPort::flush()
 {
-   // Stop listening on the port if asyncrhonous read mode is active
-   if (asyncReadMode())
-      cancelAsyncRead();
+   //TODO ne fonctionne pas
+   return;
 
-#if !defined(BOOST_WINDOWS) && !defined(__CYGWIN__)
-   ::tcflush(m_boostSerialPort.native(), TCIOFLUSH);
-#else
-   ::PurgeComm(m_boostSerialPort.native(), PURGE_RXABORT | PURGE_RXCLEAR | PURGE_TXABORT | PURGE_TXCLEAR);
-#endif
-
-   // Restart listening on the port if asyncrhonous read mode is active
-   if (asyncReadMode())
-      restartAsyncRead();
+   // Flush operation stops reading operation, with is not expected
+   m_flushInProgress = true;
+   shared::CPeripherals::flushSerialPort(m_boostSerialPort);
 }
 
-void CSerialPort::cancelAsyncRead()
-{
-   m_boostSerialPort.cancel();
-
-   // Wait cancellation is effective (no more job in the ioservice)
-   m_asyncThread->join();
-   BOOST_ASSERT_MSG(m_ioService.stopped(), "io_service should be stopped if no more job");
-}
-
-void CSerialPort::restartAsyncRead()
-{
-   startRead();
-   m_asyncThread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &m_ioService)));
-}
-
-void CSerialPort::reconnectTimerHandler(const boost::system::error_code& error)
+void CAsyncSerialPort::reconnectTimerHandler(const boost::system::error_code& error)
 {
    BOOST_ASSERT_MSG(error == 0, "Error code should be 0 here");
 
    tryConnect();
 }
 
-bool CSerialPort::asyncReadMode() const
-{
-   // Asynchronous read mode is active if caller subscribed to receive data event
-   return m_receiveDataSubscription.hasSubscription();
-}
-
-void CSerialPort::tryConnect()
+void CAsyncSerialPort::tryConnect()
 {
    BOOST_ASSERT_MSG(!isConnected(), "Already connected");
 
@@ -176,32 +150,39 @@ void CSerialPort::tryConnect()
    {
       // Fail to reconnect, retry after a certain delay
       m_connectRetryTimer.expires_from_now(ConnectRetryDelay);
-      m_connectRetryTimer.async_wait(boost::bind(&CSerialPort::reconnectTimerHandler, this, boost::asio::placeholders::error));
+      m_connectRetryTimer.async_wait(boost::bind(&CAsyncSerialPort::reconnectTimerHandler, this, boost::asio::placeholders::error));
       return;
    }
 
    // Connected
    m_connectionStateSubscription.notify(true);
 
-   // Start listening on the port if asyncrhonous read mode is active
-   if (asyncReadMode())
+   // Start listening on the port if asynchronous read mode is active
+   if (m_receiveDataSubscription.hasSubscription())
       startRead();
 }
 
-void CSerialPort::startRead()
+void CAsyncSerialPort::startRead()
 {
    // Start an asynchronous read and call readCompleted when it completes or fails 
    m_boostSerialPort.async_read_some(boost::asio::buffer(m_asyncReadBuffer.get(), m_readBufferMaxSize), 
-      boost::bind(&CSerialPort::readCompleted, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+      boost::bind(&CAsyncSerialPort::readCompleted, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 }
 
-void CSerialPort::readCompleted(const boost::system::error_code& error, std::size_t bytesTransferred)
+void CAsyncSerialPort::readCompleted(const boost::system::error_code& error, std::size_t bytesTransferred)
 {
    if (error)
    {
-      // boost::asio::error::operation_aborted is the normal stop
+      // boost::asio::error::operation_aborted is fire when stop is required or flush was called
       if (error == boost::asio::error::operation_aborted)
-         return;
+      {
+         if (!m_flushInProgress)
+            return;     // Normal stop
+
+         // Restart read operation
+         if (m_receiveDataSubscription.hasSubscription())
+            startRead();
+      }
 
       // Error ==> disconnecting
       YADOMS_LOG(error) << "Serial port read error : " << error.message();
@@ -223,7 +204,7 @@ void CSerialPort::readCompleted(const boost::system::error_code& error, std::siz
    startRead();
 }
 
-void CSerialPort::send(const CByteBuffer& buffer)
+void CAsyncSerialPort::send(const CByteBuffer& buffer)
 {
    try
    {
@@ -248,52 +229,3 @@ void CSerialPort::send(const CByteBuffer& buffer)
          e.what());
    }
 }
-
-CByteBuffer CSerialPort::receive()
-{
-   try
-   {
-      std::size_t bytesTransferred = m_boostSerialPort.read_some(boost::asio::buffer(m_readBuffer.get(), m_readBufferMaxSize));
-
-      BOOST_ASSERT_MSG(bytesTransferred != 0, "bytesTransferred should not be 0 at this point");
-
-      CByteBuffer buffer(m_readBuffer.get(), bytesTransferred);
-      if (!!m_logger)
-         m_logger->logReceived(buffer);
-
-      return buffer;
-   }
-   catch (boost::system::system_error& e)
-   {
-      // boost::asio::error::eof is the normal stop
-      if (e.code() != boost::asio::error::eof)
-      {
-         YADOMS_LOG(error) << "Serial port read error : " << e.what();
-         disconnect();
-      }
-
-      m_connectionStateSubscription.notify(false);
-
-      throw CPortException(
-         (e.code() == boost::asio::error::eof) ? CPortException::kConnectionClosed : CPortException::kConnectionError,
-         e.what());
-   }
-}
-
-CByteBuffer CSerialPort::sendAndReceive(const CByteBuffer& buffer)
-{
-   // Stop listening on the port if asyncrhonous read mode is active
-   if (asyncReadMode())
-      cancelAsyncRead();
-
-   send(buffer);
-   CByteBuffer receivedData = receive();
-
-   // Restart listening on the port if asyncrhonous read mode is active
-   if (asyncReadMode())
-      restartAsyncRead();
-
-   return receivedData;
-}
-
-

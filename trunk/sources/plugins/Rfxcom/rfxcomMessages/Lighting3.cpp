@@ -22,19 +22,15 @@ CLighting3::CLighting3(const shared::CDataContainer& command, const shared::CDat
    buildDeviceModel();
 }
 
-CLighting3::CLighting3(const RBUF& buffer)
+CLighting3::CLighting3(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
-   // Some integrity controls
-   if (buffer.LIGHTING3.packetlength != LIGHTING3_size)
-      throw shared::exception::CInvalidParameter("LIGHTING3 size");
-   if (buffer.LIGHTING3.packettype != pTypeLighting3)
-      throw shared::exception::CInvalidParameter("LIGHTING3 packettype");
+   CheckReceivedMessage(rbuf, pTypeLighting3, LIGHTING3_size, seqNumberProvider->last());
 
-   m_subType = buffer.LIGHTING3.subtype;
-   m_system = buffer.LIGHTING3.system;
-   m_channel = buffer.LIGHTING3.channel8_1 & (buffer.LIGHTING3.channel10_9 << 8);
-   m_state = buffer.LIGHTING3.cmnd;
-   m_rssi = buffer.LIGHTING3.rssi * 100 / 0x0F;
+   m_subType = rbuf.LIGHTING3.subtype;
+   m_system = rbuf.LIGHTING3.system;
+   m_channel = rbuf.LIGHTING3.channel8_1 & (rbuf.LIGHTING3.channel10_9 << 8);
+   m_state = rbuf.LIGHTING3.cmnd;
+   m_rssi = rbuf.LIGHTING3.rssi * 100 / 0x0F;
 
    buildDeviceName();
    buildDeviceModel();
@@ -46,21 +42,21 @@ CLighting3::~CLighting3()
 
 const CByteBuffer CLighting3::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
-   RBUF buffer;
-   MEMCLEAR(buffer.LIGHTING3);
+   RBUF rbuf;
+   MEMCLEAR(rbuf.LIGHTING3);
 
-   buffer.LIGHTING3.packetlength = ENCODE_PACKET_LENGTH(LIGHTING3);
-   buffer.LIGHTING3.packettype = pTypeLighting3;
-   buffer.LIGHTING3.subtype = m_subType;
-   buffer.LIGHTING3.seqnbr = seqNumberProvider->next();
-   buffer.LIGHTING3.system = m_system;
-   buffer.LIGHTING3.channel8_1 = (unsigned char)(m_channel & 0xFF);
-   buffer.LIGHTING3.channel10_9 = (unsigned char)((m_channel & 0xFF00) >> 8);
-   buffer.LIGHTING3.cmnd = m_state;
-   buffer.LIGHTING3.rssi = 0;
-   buffer.LIGHTING3.filler = 0;
+   rbuf.LIGHTING3.packetlength = ENCODE_PACKET_LENGTH(LIGHTING3);
+   rbuf.LIGHTING3.packettype = pTypeLighting3;
+   rbuf.LIGHTING3.subtype = m_subType;
+   rbuf.LIGHTING3.seqnbr = seqNumberProvider->next();
+   rbuf.LIGHTING3.system = m_system;
+   rbuf.LIGHTING3.channel8_1 = (unsigned char)(m_channel & 0xFF);
+   rbuf.LIGHTING3.channel10_9 = (unsigned char)((m_channel & 0xFF00) >> 8);
+   rbuf.LIGHTING3.cmnd = m_state;
+   rbuf.LIGHTING3.rssi = 0;
+   rbuf.LIGHTING3.filler = 0;
 
-   return CByteBuffer((BYTE*)&buffer, LIGHTING3_size);
+   return CByteBuffer((BYTE*)&rbuf, LIGHTING3_size);
 }
 
 void CLighting3::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
