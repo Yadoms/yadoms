@@ -2,7 +2,9 @@
 #include <shared/plugin/IPlugin.h>
 #include "RfxcomConfiguration.h"
 #include "Transceiver.h"
-#include "IPort.h"
+#include "IAsyncPort.h"
+#include "rfxcomMessages/Ack.h"
+#include "rfxcomMessages/TransceiverStatus.h"
 #include <shared/DataContainer.h>
 
 // Shortcut to yadomsApi namespace
@@ -55,6 +57,34 @@ protected:
    //--------------------------------------------------------------
    void processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data);
 
+   //--------------------------------------------------------------
+   /// \brief	                     Create the connection to the RFXCom
+   /// \param [in] eventHandler     Event handler to be notified on events on the connection
+   //--------------------------------------------------------------
+   void createConnection(shared::event::CEventHandler& eventHandler);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Create the connection to the RFXCom
+   //--------------------------------------------------------------
+   void destroyConnection();
+
+   //--------------------------------------------------------------
+   /// \brief	                     Initialize the connected RFXCom
+   //--------------------------------------------------------------
+   void initRfxcom();
+
+   //--------------------------------------------------------------
+   /// \brief	                     Process received status message from RFXCom
+   /// \param [in] status           Received status
+   //--------------------------------------------------------------
+   void processRfxcomStatusMessage(const rfxcomMessages::CTransceiverStatus& status) const;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Process received ack message from RFXCom
+   /// \param [in] status           Received acknowledge
+   //--------------------------------------------------------------
+   void processRfxcomAckMessage(const rfxcomMessages::CAck& ack) const;
+
 private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
@@ -65,6 +95,29 @@ private:
    /// \brief	The RFXCom protocol implementation object
    //--------------------------------------------------------------
    boost::shared_ptr<ITransceiver> m_transceiver;
+
+   //--------------------------------------------------------------
+   /// \brief  The communication port
+   //--------------------------------------------------------------
+   boost::shared_ptr<IAsyncPort> m_port;
+
+   //--------------------------------------------------------------
+   /// \brief	The port logger
+   //--------------------------------------------------------------
+   boost::shared_ptr<IPortLogger> m_portLogger;
+
+   //--------------------------------------------------------------
+   /// \brief	The state machine
+   //--------------------------------------------------------------
+   enum EStateMachine
+   {
+      kNotInitialized = 0,    // RFXCom not initialized
+      kResettingRfxcom,       // Resetting RFXCom is in progress
+      kGettingRfxcomStatus,   // Getting the current RFXCom status (active protocols, etc...)
+      kSettingRfxcomMode,     // Update the RFXCom mode (active protocols, etc...)
+      kRfxcomIsRunning        // RFXCom is fully initialized, and is running
+   };
+   mutable EStateMachine m_currentState;
 };
 
 

@@ -6,6 +6,8 @@ include("../YadomsPluginsCommon.cmake")
 ## Place here all the plugin source files
 #########################################
 set(RFXCOM_MESSAGES_SOURCES
+   rfxcomMessages/Ack.h
+   rfxcomMessages/Ack.cpp
    rfxcomMessages/IRfxcomMessage.h
    rfxcomMessages/Lighting1.h
    rfxcomMessages/Lighting1.cpp
@@ -20,14 +22,18 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/RFXtrxHelpers.cpp
    rfxcomMessages/Temp.h
    rfxcomMessages/Temp.cpp
+   rfxcomMessages/TransceiverStatus.h
+   rfxcomMessages/TransceiverStatus.cpp
 )
 
 set(RFXCOM_SOURCES
    stdafx.h
    stdafx.cpp
+   AsyncSerialPort.h
+   AsyncSerialPort.cpp
    Buffer.hpp
    IncrementSequenceNumber.h
-   IPort.h
+   IAsyncPort.h
    IPortLogger.h
    IRfxcomConfiguration.h
    ISequenceNumberProvider.h
@@ -43,13 +49,9 @@ set(RFXCOM_SOURCES
    RfxcomConfiguration.cpp
    RfxcomFactory.h
    RfxcomFactory.cpp
-   SerialPort.h
-   SerialPort.cpp
    PortSubscription.hpp
    Transceiver.h
    Transceiver.cpp
-   TransceiverStatus.h
-   TransceiverStatus.cpp
    ${RFXCOM_MESSAGES_SOURCES}
 )
 

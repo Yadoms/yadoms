@@ -3,8 +3,13 @@
 #include "TransceiverStatus.h"
 
 
-CTransceiverStatus::CTransceiverStatus(const RBUF& rbuf)
+namespace rfxcomMessages
 {
+
+CTransceiverStatus::CTransceiverStatus(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+{
+   CheckReceivedMessage(rbuf, pTypeInterfaceMessage, sTypeInterfaceResponse, IRESPONSE_size, seqNumberProvider->last());
+
    m_rfxcomType = rbuf.IRESPONSE.msg1;
 
    m_firmwareVersion = rbuf.IRESPONSE.msg2;
@@ -38,6 +43,17 @@ CTransceiverStatus::CTransceiverStatus(const RBUF& rbuf)
 
 CTransceiverStatus::~CTransceiverStatus()
 {
+}
+
+const CByteBuffer CTransceiverStatus::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+{
+   BOOST_ASSERT_MSG(false, "Status is a read-only message, should not be encoded");
+   return CByteBuffer();
+}
+
+void CTransceiverStatus::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+{
+   // Nothing to historize
 }
 
 void CTransceiverStatus::traceEnabledProtocols() const
@@ -137,3 +153,5 @@ bool CTransceiverStatus::needConfigurationUpdate(const IRfxcomConfiguration& con
 
    return true;
 }
+
+} // namespace rfxcomMessages

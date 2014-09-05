@@ -31,6 +31,7 @@
 #include <boost/log/common.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/optional.hpp>
+#include <boost/pointer_cast.hpp>
 #include <boost/preprocessor.hpp>
 #include <boost/program_options.hpp>
 #include <boost/property_tree/ptree.hpp>

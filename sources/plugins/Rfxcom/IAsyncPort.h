@@ -5,19 +5,19 @@
 #include "Buffer.hpp"
 
 //--------------------------------------------------------------
-/// \brief	This class manage a communication port
+/// \brief	This class manage a asynchronous communication port
 // After configuring and starting the port management, the
 // caller can be notified when connection is established or lost,
-// data is received (asynchronously).
-// The caller can also send and receive data synchronously.
+// and when data is received, asynchronously.
+// The caller can also send data synchronously.
 //--------------------------------------------------------------
-class IPort
+class IAsyncPort
 {  
 public:
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~IPort() {}
+   virtual ~IAsyncPort() {}
 
    //--------------------------------------------------------------
    /// \brief	Set the receive max buffer size
@@ -79,15 +79,6 @@ public:
    /// \throw                       CPortException if error
    //--------------------------------------------------------------
    virtual void send(const CByteBuffer& buffer) = 0;
-
-   //--------------------------------------------------------------
-   /// \brief	                     Send buffer and receive an answer (synchronously)
-   /// \param [in] buffer           The buffer to send
-   /// \return                      Received buffer
-   /// \throw                       CPortException if error
-   /// \note                        While this exchange, the asynchronous read is suspended, and restored after
-   //--------------------------------------------------------------
-   virtual CByteBuffer sendAndReceive(const CByteBuffer& buffer) = 0;
 };
 
 

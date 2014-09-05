@@ -17,18 +17,14 @@ CCurtain1::CCurtain1(const shared::CDataContainer& command, const shared::CDataC
    m_state = toProtocolState(command);
 }
 
-CCurtain1::CCurtain1(const RBUF& buffer)
+CCurtain1::CCurtain1(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
-   // Some integrity controls
-   if (buffer.CURTAIN1.packetlength != CURTAIN1_size)
-      throw shared::exception::CInvalidParameter("CURTAIN1 size");
-   if (buffer.CURTAIN1.packettype != pTypeCurtain)
-      throw shared::exception::CInvalidParameter("CURTAIN1 packettype");
-
-   m_subType = buffer.CURTAIN1.subtype;
-   m_houseCode = buffer.CURTAIN1.housecode;
-   m_unitCode = buffer.CURTAIN1.unitcode;
-   m_state = buffer.CURTAIN1.cmnd;
+   CheckReceivedMessage(rbuf, pTypeCurtain, CURTAIN1_size, seqNumberProvider->last());
+   
+   m_subType = rbuf.CURTAIN1.subtype;
+   m_houseCode = rbuf.CURTAIN1.housecode;
+   m_unitCode = rbuf.CURTAIN1.unitcode;
+   m_state = rbuf.CURTAIN1.cmnd;
 }
 
 CCurtain1::~CCurtain1()

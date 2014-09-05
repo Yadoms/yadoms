@@ -37,4 +37,9 @@ const boost::shared_ptr<CPeripherals::SerialPortsMap> CPeripherals::getSerialPor
    return serialPorts;
 }
 
+void CPeripherals::flushSerialPort(boost::asio::serial_port& sp)
+{
+   ::tcflush(m_boostSerialPort.native(), TCIOFLUSH);
+}
+
 } // namespace shared

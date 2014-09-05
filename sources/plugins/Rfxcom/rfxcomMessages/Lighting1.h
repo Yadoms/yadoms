@@ -26,11 +26,12 @@ namespace rfxcomMessages
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in] buffer               The received buffer
+      /// \param[in] rbuf                 The received buffer
+      /// \param[in] seqNumberProvider    The sequence number provider
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CLighting1(const RBUF& buffer);
+      CLighting1(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor

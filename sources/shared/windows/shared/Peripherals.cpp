@@ -60,4 +60,9 @@ const boost::shared_ptr<const CPeripherals::SerialPortsMap> CPeripherals::getSer
    return serialPorts;
 }
 
+void CPeripherals::flushSerialPort(boost::asio::serial_port& sp)
+{
+   ::PurgeComm(sp.native(), PURGE_RXABORT | PURGE_RXCLEAR | PURGE_TXABORT | PURGE_TXCLEAR);
+}
+
 } // namespace shared

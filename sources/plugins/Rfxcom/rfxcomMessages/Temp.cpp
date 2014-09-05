@@ -9,25 +9,21 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CTemp::CTemp(const RBUF& buffer)
+CTemp::CTemp(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
-   // Some integrity controls
-   if (buffer.TEMP.packetlength != TEMP_size)
-      throw shared::exception::CInvalidParameter("TEMP size");
-   if (buffer.TEMP.packettype != pTypeTEMP)
-      throw shared::exception::CInvalidParameter("TEMP packettype");
+   CheckReceivedMessage(rbuf, pTypeTEMP, TEMP_size, seqNumberProvider->last());
 
-   m_subType = buffer.TEMP.subtype;
+   m_subType = rbuf.TEMP.subtype;
 
-   m_id = buffer.TEMP.id1 | (buffer.TEMP.id2 << 8);
+   m_id = rbuf.TEMP.id1 | (rbuf.TEMP.id2 << 8);
 
-   m_temperature = (float)((buffer.TEMP.temperatureh << 8) | buffer.TEMP.temperaturel) / 10;
-   if (buffer.TEMP.tempsign)
+   m_temperature = (float)((rbuf.TEMP.temperatureh << 8) | rbuf.TEMP.temperaturel) / 10;
+   if (rbuf.TEMP.tempsign)
       m_temperature = -m_temperature;
 
-   m_batteryLevel = buffer.TEMP.battery_level == 0x09 ? 100 : 0;
+   m_batteryLevel = rbuf.TEMP.battery_level == 0x09 ? 100 : 0;
 
-   m_rssi = buffer.TEMP.rssi * 100 / 0x0F;
+   m_rssi = rbuf.TEMP.rssi * 100 / 0x0F;
 
    buildDeviceName();
    buildDeviceModel();

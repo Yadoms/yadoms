@@ -4,59 +4,35 @@
 #include <shared/DataContainer.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include "RfxcomFactory.h"
+#include "rfxcomMessages/Ack.h"
+#include "rfxcomMessages/Curtain1.h"
 #include "rfxcomMessages/Lighting1.h"
 #include "rfxcomMessages/Lighting3.h"
 #include "rfxcomMessages/Lighting6.h"
-#include "rfxcomMessages/Curtain1.h"
 #include "rfxcomMessages/Temp.h"
+#include "rfxcomMessages/TransceiverStatus.h"
 #include "IncrementSequenceNumber.h"
 #include "PortException.hpp"
 #include "ProtocolException.hpp"
 
 
-CTransceiver::CTransceiver(boost::shared_ptr<yApi::IYadomsApi> context, const IRfxcomConfiguration& configuration, int evtPortConnection, int evtPortDataReceived)
-   :m_context(context), m_configuration(configuration), m_evtPortConnection(evtPortConnection), m_evtPortDataReceived(evtPortDataReceived),
-   m_seqNumberProvider(new CIncrementSequenceNumber())
+CTransceiver::CTransceiver()
+   :m_seqNumberProvider(new CIncrementSequenceNumber())
 {
-   // Create the port instance
-   m_portLogger = CRfxcomFactory::constructPortLogger();
-   m_port = CRfxcomFactory::constructPort(m_configuration, m_context->getEventHandler(), m_evtPortConnection, m_evtPortDataReceived, m_portLogger);
-   m_port->setReceiveBufferSize(RFXMESSAGE_maxSize);
-   m_port->start();
 }
 
 CTransceiver::~CTransceiver()
 {
 }
 
-void CTransceiver::processReset()
+void CTransceiver::reset()
 {
-   // Reset the RFXCom.
-   // See the RFXCom SDK specification for more information about this sequence
-
+   // Raz sequence number
    m_seqNumberProvider->reset();
-   YADOMS_LOG(info) << "Reset the RFXCom...";
-   sendReset();
-   boost::this_thread::sleep(boost::posix_time::milliseconds(50));
-   m_port->flush();
-   YADOMS_LOG(info) << "Get the RFXCom status...";
-   const CTransceiverStatus status = sendCommandGetStatus();
-
-   YADOMS_LOG(info) << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware version (" << status.getFirmwareVersion() << ")";
-   status.traceEnabledProtocols();
-
-   if (status.needConfigurationUpdate(m_configuration))
-   {
-      // Update active protocols list
-      const CTransceiverStatus newStatus = sendCommandSetMode(status.getRfxcomType(), m_configuration);// Don't change the frequency
-      if (newStatus.needConfigurationUpdate(m_configuration))
-         throw CProtocolException("Error configuring RfxCom, configuration was not taken into account");
-   }
 }
 
-void CTransceiver::sendReset()
+const CByteBuffer CTransceiver::buildResetCmd() const
 {
-   // Build request
    RBUF request;
    MEMCLEAR(request.ICMND);   // For better performance, just clear the needed sub-structure of RBUF
 
@@ -66,15 +42,11 @@ void CTransceiver::sendReset()
    request.ICMND.seqnbr = m_seqNumberProvider->next();
    request.ICMND.cmnd = cmdRESET;
 
-   // Send and receive
-   m_port->send(CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND)));
-
-   // No answer
+   return CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
 }
 
-CTransceiverStatus CTransceiver::sendCommandGetStatus()
+const CByteBuffer CTransceiver::buildGetStatusCmd() const
 {
-   // Build request
    RBUF request;
    MEMCLEAR(request.ICMND);   // For better performance, just clear the needed sub-structure of RBUF
 
@@ -84,36 +56,11 @@ CTransceiverStatus CTransceiver::sendCommandGetStatus()
    request.ICMND.seqnbr = m_seqNumberProvider->next();
    request.ICMND.cmnd = cmdSTATUS;
 
-   // Send and receive
-   CByteBuffer answer = m_port->sendAndReceive(CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND)));
-
-   // Check answer
-
-   // - Check message size
-   if (answer.size() != IRESPONSE_size)
-   {
-      throw CProtocolException("Error reading status, invalid message size");
-   }
-
-   const RBUF* rbuf = (const RBUF*)answer.content();
-
-   // - Check message data
-   if (rbuf->IRESPONSE.packetlength != (IRESPONSE_size - 1) ||
-      rbuf->IRESPONSE.packettype != pTypeInterfaceMessage ||
-      rbuf->IRESPONSE.subtype != sTypeInterfaceResponse ||
-      rbuf->IRESPONSE.seqnbr != request.ICMND.seqnbr ||
-      rbuf->IRESPONSE.cmnd != request.ICMND.cmnd)
-   {
-      throw CProtocolException("Error reading status, invalid data received");
-   }
-
-   CTransceiverStatus status(*rbuf);
-   return status;
+   return CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
 }
 
-CTransceiverStatus CTransceiver::sendCommandSetMode(unsigned char frequency, const IRfxcomConfiguration& configuration)
+const CByteBuffer CTransceiver::buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const
 {
-   // Build request
    RBUF request;
    MEMCLEAR(request.ICMND);   // For better performance, just clear the needed sub-structure of RBUF
 
@@ -153,78 +100,10 @@ CTransceiverStatus CTransceiver::sendCommandSetMode(unsigned char frequency, con
    if (configuration.isARCenabled()       ) request.ICMND.msg5 |= 0x02;
    if (configuration.isX10enabled()       ) request.ICMND.msg5 |= 0x01;
 
-   // Send and receive
-   CByteBuffer answer = m_port->sendAndReceive(CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND)));
-
-   // Check answer
-
-   // - Check message size
-   if (answer.size() != IRESPONSE_size)
-   {
-      throw CProtocolException("Error reading status, invalid message size");
-   }
-
-   const RBUF* rbuf = (const RBUF*)answer.content();
-
-   // - Check message data
-   if (rbuf->IRESPONSE.packetlength != (IRESPONSE_size - 1) ||
-      rbuf->IRESPONSE.packettype != pTypeInterfaceMessage ||
-      rbuf->IRESPONSE.subtype != sTypeInterfaceResponse ||
-      rbuf->IRESPONSE.seqnbr != request.ICMND.seqnbr ||
-      rbuf->IRESPONSE.cmnd != request.ICMND.cmnd)
-   {
-      throw CProtocolException("Error reading status, invalid data received");
-   }
-
-   CTransceiverStatus status(*rbuf);
-   return status;
+   return CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
 }
 
-bool CTransceiver::checkAcknowledge(const CByteBuffer& answer)
-{
-   // - Check message size
-   if (answer.size() != RXRESPONSE_size)
-   {
-      YADOMS_LOG(error) << "Error reading status, invalid message size";
-      return false;
-   }
-
-   const RBUF* rbuf = (const RBUF*)answer.content();
-
-   // - Check message data
-   if (rbuf->RXRESPONSE.packetlength != (RXRESPONSE_size - 1) ||
-      rbuf->RXRESPONSE.packettype != pTypeRecXmitMessage ||
-      rbuf->RXRESPONSE.subtype != sTypeTransmitterResponse ||
-      rbuf->RXRESPONSE.seqnbr != m_seqNumberProvider->last() ||
-      rbuf->RXRESPONSE.msg != 0x00)  // Ack OK
-   {
-      YADOMS_LOG(error) << "Error acknowledge, invalid data received";
-      return false;
-   }
-
-   YADOMS_LOG(info) << "RFXCom acknowledge";
-
-   return true;
-}
-
-void CTransceiver::send(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
-{
-   try
-   {
-      // Send message
-      CByteBuffer answer = m_port->sendAndReceive(buildRfxcomMessage(command, deviceParameters));
-
-      // Check acknowledge
-      checkAcknowledge(answer);
-   }
-   catch (shared::exception::CInvalidParameter& e)
-   {
-      YADOMS_LOG(error) << "Error sending command to RFXCom : " << e.what();
-      BOOST_ASSERT_MSG(false, "Error sending command to RFXCom");
-   }
-}
-
-const CByteBuffer CTransceiver::buildRfxcomMessage(const shared::CDataContainer& command, const shared::CDataContainer& deviceParametersTree) const
+const CByteBuffer CTransceiver::buildMessageToDevice(const shared::CDataContainer& command, const shared::CDataContainer& deviceParametersTree) const
 {
    try
    {
@@ -261,24 +140,27 @@ const CByteBuffer CTransceiver::buildRfxcomMessage(const shared::CDataContainer&
    }
 }
 
-void CTransceiver::historize(const CByteBuffer& data) const
+boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMessage(const CByteBuffer& data) const
 {
    const RBUF * const buf = reinterpret_cast<const RBUF* const>(data.content());
 
-   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> sensorMessage;
+   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message;
    switch(buf->RXRESPONSE.packettype)
    {
-   case pTypeLighting1:sensorMessage.reset(new rfxcomMessages::CLighting1(*buf)); break;
-   case pTypeLighting3:sensorMessage.reset(new rfxcomMessages::CLighting3(*buf)); break;
-   case pTypeLighting6:sensorMessage.reset(new rfxcomMessages::CLighting6(*buf)); break;
-   case pTypeCurtain:sensorMessage.reset(new rfxcomMessages::CCurtain1(*buf)); break;
-   case pTypeTEMP:sensorMessage.reset(new rfxcomMessages::CTemp(*buf)); break;
+   case pTypeInterfaceMessage    : message.reset(new rfxcomMessages::CTransceiverStatus(*buf, m_seqNumberProvider)); break;
+   case pTypeRecXmitMessage      : message.reset(new rfxcomMessages::CAck(*buf, m_seqNumberProvider));               break;
+   case pTypeLighting1           : message.reset(new rfxcomMessages::CLighting1(*buf, m_seqNumberProvider));         break;
+   case pTypeLighting3           : message.reset(new rfxcomMessages::CLighting3(*buf, m_seqNumberProvider));         break;
+   case pTypeLighting6           : message.reset(new rfxcomMessages::CLighting6(*buf, m_seqNumberProvider));         break;
+   case pTypeCurtain             : message.reset(new rfxcomMessages::CCurtain1(*buf, m_seqNumberProvider));          break;
+   case pTypeTEMP                : message.reset(new rfxcomMessages::CTemp(*buf, m_seqNumberProvider));              break;
       // TODO à compléter
    default:
       {
          YADOMS_LOG(error) << "Invalid RfxCom message received, unknown packet type " << std::setfill('0') << std::setw(sizeof(unsigned char) * 2) << std::hex << (int)buf->RXRESPONSE.packettype;
-         return;
+         break;
       }
    }
-   sensorMessage->historizeData(m_context);
+
+   return message;
 }
