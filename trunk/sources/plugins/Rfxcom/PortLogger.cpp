@@ -14,12 +14,12 @@ CPortLogger::~CPortLogger()
 
 void CPortLogger::logReceived(const CByteBuffer& data) 
 {
-   YADOMS_LOG(debug) << " " << m_prefix << " <<< " << msgToString(data);
+   YADOMS_LOG(debug) << m_prefix << " <<< Yadoms : " << msgToString(data);
 }
 
 void CPortLogger::logSent(const CByteBuffer& data)
 {
-   YADOMS_LOG(debug) << " " << m_prefix << " >>> " << msgToString(data);
+   YADOMS_LOG(debug) << "Yadoms >>> " << m_prefix << " : " << msgToString(data);
 }
 
 std::string CPortLogger::msgToString(const CByteBuffer& data) const
