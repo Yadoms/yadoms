@@ -241,9 +241,6 @@ void CRfxcom::initRfxcom()
    // Reset the RFXCom.
    // See the RFXCom SDK specification for more information about this sequence
 
-   // Raz transceiver
-   m_transceiver->reset();
-
    // Send reset command to the RfxCom
    YADOMS_LOG(info) << "Reset the RFXCom...";
    m_port->send(m_transceiver->buildResetCmd());
@@ -267,19 +264,27 @@ void CRfxcom::processRfxcomStatusMessage(const rfxcomMessages::CTransceiverStatu
    YADOMS_LOG(info) << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware version (" << status.getFirmwareVersion() << ")";
    status.traceEnabledProtocols();
 
-   if (status.needConfigurationUpdate(m_configuration))
+   if (!status.needConfigurationUpdate(m_configuration))
    {
-      // Incorrect configuration is only possible while initialization procedure
-      if (m_currentState != kGettingRfxcomStatus)
-         throw CProtocolException("Error configuring RfxCom, configuration was not taken into account");
-
-      // Update active protocols list
-      m_currentState = kSettingRfxcomMode;
-      m_port->send(m_transceiver->buildSetModeCmd(status.getRfxcomType(), m_configuration));// Don't change the RFXCom frequency
-      // Expected reply is also a status message
+      m_currentState = kRfxcomIsRunning;
+      return;
    }
 
-   m_currentState = kRfxcomIsRunning;
+   // Incorrect configuration is only possible while initialization procedure
+   if (m_currentState != kGettingRfxcomStatus)
+   {
+      YADOMS_LOG(warning) << "Unable to set configuration as expected, maybe incompatible protocols was selected";
+      //TODO, il serait judicieux de notifier l'IHM ici
+      m_currentState = kRfxcomIsRunning;
+      return;
+   }
+
+   YADOMS_LOG(info) << "Incorrect RFXCom configuration. Updating configuration...";
+
+   // Update active protocols list
+   m_currentState = kSettingRfxcomMode;
+   m_port->send(m_transceiver->buildSetModeCmd(status.getRfxcomType(), m_configuration));// Don't change the RFXCom frequency
+   // Expected reply is also a status message
 }
 
 void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack) const

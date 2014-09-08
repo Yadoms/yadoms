@@ -25,21 +25,18 @@ CTransceiver::~CTransceiver()
 {
 }
 
-void CTransceiver::reset()
+const CByteBuffer CTransceiver::buildResetCmd() const
 {
    // Raz sequence number
    m_seqNumberProvider->reset();
-}
 
-const CByteBuffer CTransceiver::buildResetCmd() const
-{
    RBUF request;
    MEMCLEAR(request.ICMND);   // For better performance, just clear the needed sub-structure of RBUF
 
    request.ICMND.packetlength = ENCODE_PACKET_LENGTH(ICMND);
    request.ICMND.packettype = pTypeInterfaceControl;
    request.ICMND.subtype = sTypeInterfaceCommand;
-   request.ICMND.seqnbr = m_seqNumberProvider->next();
+   request.ICMND.seqnbr = m_seqNumberProvider->last();
    request.ICMND.cmnd = cmdRESET;
 
    return CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
@@ -75,6 +72,8 @@ const CByteBuffer CTransceiver::buildSetModeCmd(unsigned char frequency, const I
 
    // Add protocols activation
    request.ICMND.msg3 = 0;
+   if (configuration.isUNDECODEDenabled() ) request.ICMND.msg3 |= 0x80;
+   if (configuration.isRFU6enabled()      ) request.ICMND.msg3 |= 0x40;
    if (configuration.isSXenabled()        ) request.ICMND.msg3 |= 0x20;
    if (configuration.isRSLenabled()       ) request.ICMND.msg3 |= 0x10;
    if (configuration.isLIGHTING4enabled() ) request.ICMND.msg3 |= 0x08;

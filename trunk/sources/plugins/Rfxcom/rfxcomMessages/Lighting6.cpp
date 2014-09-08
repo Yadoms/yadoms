@@ -25,7 +25,7 @@ CLighting6::CLighting6(const shared::CDataContainer& command, const shared::CDat
 
 CLighting6::CLighting6(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
-   CheckReceivedMessage(rbuf, pTypeLighting6, LIGHTING6_size, seqNumberProvider->last());
+   CheckReceivedMessage(rbuf, pTypeLighting6, LIGHTING6_size, DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.LIGHTING6.subtype;
    m_id = rbuf.LIGHTING6.id1 | (rbuf.LIGHTING6.id2 << 8);
@@ -80,7 +80,7 @@ void CLighting6::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) cons
 void CLighting6::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << m_subType << "." << m_id << "." << m_groupCode << "." << m_unitCode;
+   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_id << "." << (unsigned int)m_groupCode << "." << (unsigned int)m_unitCode;
    m_deviceName = ssdeviceName.str();
 }
 

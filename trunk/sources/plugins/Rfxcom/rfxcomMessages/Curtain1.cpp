@@ -19,7 +19,7 @@ CCurtain1::CCurtain1(const shared::CDataContainer& command, const shared::CDataC
 
 CCurtain1::CCurtain1(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
-   CheckReceivedMessage(rbuf, pTypeCurtain, CURTAIN1_size, seqNumberProvider->last());
+   CheckReceivedMessage(rbuf, pTypeCurtain, CURTAIN1_size, DONT_CHECK_SEQUENCE_NUMBER);
    
    m_subType = rbuf.CURTAIN1.subtype;
    m_houseCode = rbuf.CURTAIN1.housecode;

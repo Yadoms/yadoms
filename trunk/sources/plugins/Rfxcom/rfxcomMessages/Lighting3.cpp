@@ -24,7 +24,7 @@ CLighting3::CLighting3(const shared::CDataContainer& command, const shared::CDat
 
 CLighting3::CLighting3(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
-   CheckReceivedMessage(rbuf, pTypeLighting3, LIGHTING3_size, seqNumberProvider->last());
+   CheckReceivedMessage(rbuf, pTypeLighting3, LIGHTING3_size, DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.LIGHTING3.subtype;
    m_system = rbuf.LIGHTING3.system;
@@ -75,7 +75,7 @@ void CLighting3::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) cons
 void CLighting3::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << m_subType << "." << m_system << "." << m_channel;
+   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_system << "." << (unsigned int)m_channel;
    m_deviceName = ssdeviceName.str();
 }
 

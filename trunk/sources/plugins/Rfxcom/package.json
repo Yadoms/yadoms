@@ -18,7 +18,7 @@
       {
           "type" : "section",
           "name" : "Protocols",
-          "description" : "Supported protocols, see RFXCom manual to configure",
+          "description" : "Supported protocols, see RFXCom manual to configure. Be careful, some protocols are incompatible and must not be selected together.",
           "enableWithCheckBox" : "false",
           "enableWithCheckBoxDefaultValue" : "false",
           "content" :
