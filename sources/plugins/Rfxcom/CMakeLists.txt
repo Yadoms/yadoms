@@ -44,7 +44,9 @@ set(RFXCOM_SOURCES
    PortLogger.h
    PortLogger.cpp
    Rfxcom.h
-   Rfxcom.cpp 
+   Rfxcom.cpp
+   RfxComReceiveBuffer.h
+   RfxComReceiveBuffer.cpp
    RfxcomConfiguration.h
    RfxcomConfiguration.cpp
    RfxcomFactory.h

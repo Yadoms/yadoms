@@ -4,6 +4,8 @@
 #include "../../shared/Log.h"
 #include "Peripherals.h"
 
+#include <termios.h>
+
 namespace shared
 {
 

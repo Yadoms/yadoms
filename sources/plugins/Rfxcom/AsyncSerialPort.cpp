@@ -1,18 +1,10 @@
 #include "stdafx.h"
 #include "AsyncSerialPort.h"
 #include <shared/Log.h>
-#include <shared/Peripherals.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include "PortException.hpp"
 #include "Buffer.hpp"
 
-// Includes for flush function
-#if !defined(BOOST_WINDOWS) && !defined(__CYGWIN__)
-#include "termios.h"
-#endif
-
-
-const boost::posix_time::time_duration CAsyncSerialPort::ConnectRetryDelay(boost::posix_time::seconds(30));
 
 CAsyncSerialPort::CAsyncSerialPort(
    const std::string& port,
@@ -20,14 +12,15 @@ CAsyncSerialPort::CAsyncSerialPort(
    boost::asio::serial_port_base::parity parity,
    boost::asio::serial_port_base::character_size characterSize,
    boost::asio::serial_port_base::stop_bits stop_bits,
-   boost::asio::serial_port_base::flow_control flowControl)
+   boost::asio::serial_port_base::flow_control flowControl,
+   boost::posix_time::time_duration connectRetryDelay)
    :m_boostSerialPort(m_ioService),
    m_port(port), m_baudrate(baudrate), m_parity(parity), m_characterSize(characterSize), m_stop_bits(stop_bits), m_flowControl(flowControl),
    m_readBufferMaxSize(512),
    m_asyncReadBuffer(new unsigned char[m_readBufferMaxSize]),
    m_readBuffer(new unsigned char[m_readBufferMaxSize]),
    m_connectRetryTimer(m_ioService),
-   m_flushInProgress(false)
+   m_connectRetryDelay(connectRetryDelay)
 {
 }
 
@@ -125,16 +118,6 @@ void CAsyncSerialPort::setLogger(boost::shared_ptr<IPortLogger> logger)
    m_logger = logger;
 }
 
-void CAsyncSerialPort::flush()
-{
-   //TODO ne fonctionne pas
-   return;
-
-   // Flush operation stops reading operation, with is not expected
-   m_flushInProgress = true;
-   shared::CPeripherals::flushSerialPort(m_boostSerialPort);
-}
-
 void CAsyncSerialPort::reconnectTimerHandler(const boost::system::error_code& error)
 {
    BOOST_ASSERT_MSG(error == 0, "Error code should be 0 here");
@@ -149,7 +132,7 @@ void CAsyncSerialPort::tryConnect()
    if (!connect())
    {
       // Fail to reconnect, retry after a certain delay
-      m_connectRetryTimer.expires_from_now(ConnectRetryDelay);
+      m_connectRetryTimer.expires_from_now(m_connectRetryDelay);
       m_connectRetryTimer.async_wait(boost::bind(&CAsyncSerialPort::reconnectTimerHandler, this, boost::asio::placeholders::error));
       return;
    }
@@ -173,16 +156,9 @@ void CAsyncSerialPort::readCompleted(const boost::system::error_code& error, std
 {
    if (error)
    {
-      // boost::asio::error::operation_aborted is fire when stop is required or flush was called
+      // boost::asio::error::operation_aborted is fire when stop is required
       if (error == boost::asio::error::operation_aborted)
-      {
-         if (!m_flushInProgress)
-            return;     // Normal stop
-
-         // Restart read operation
-         if (m_receiveDataSubscription.hasSubscription())
-            startRead();
-      }
+         return;     // Normal stop
 
       // Error ==> disconnecting
       YADOMS_LOG(error) << "Serial port read error : " << error.message();

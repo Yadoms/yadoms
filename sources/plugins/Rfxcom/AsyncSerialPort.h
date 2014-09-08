@@ -16,6 +16,7 @@ public:
    /// \param[in] characterSize     Character size (from 5 to 8)
    /// \param[in] stop_bits         Nb of stop bits (see boost::asio::serial_port_base::stop_bits::type for values)
    /// \param[in] flowControl       Flow control (see boost::asio::serial_port_base::flow_control::type for values)
+   /// \param[in] connectRetryDelay Delay between 2 connection retries
    //--------------------------------------------------------------
    CAsyncSerialPort(
       const std::string& port,
@@ -23,7 +24,8 @@ public:
       boost::asio::serial_port_base::parity parity = boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::none),
       boost::asio::serial_port_base::character_size characterSize = boost::asio::serial_port_base::character_size(8),
       boost::asio::serial_port_base::stop_bits stop_bits = boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
-      boost::asio::serial_port_base::flow_control flowControl = boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
+      boost::asio::serial_port_base::flow_control flowControl = boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none),
+      boost::posix_time::time_duration connectRetryDelay = boost::posix_time::seconds(30));
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -38,7 +40,6 @@ public:
    virtual void subscribeConnectionState(shared::event::CEventHandler& forEventHandler, int forId);
    virtual void subscribeReceiveData(shared::event::CEventHandler& forEventHandler, int forId);
    virtual void setLogger(boost::shared_ptr<IPortLogger> logger);
-   virtual void flush();
    virtual void send(const CByteBuffer& buffer);
    // [END] IAsyncPort Implementation
 
@@ -126,7 +127,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	Try to reconnect timer delay
    //--------------------------------------------------------------
-   static const boost::posix_time::time_duration ConnectRetryDelay;
+   const boost::posix_time::time_duration m_connectRetryDelay;
 
    //--------------------------------------------------------------
    /// \brief	Try to reconnect timer delay
@@ -142,16 +143,6 @@ private:
    /// \brief	Logger to use (can be null to disable log)
    //--------------------------------------------------------------
    boost::shared_ptr<IPortLogger> m_logger;
-
-   //--------------------------------------------------------------
-   /// \brief	Flag when flush is in progress
-   //--------------------------------------------------------------
-   bool m_flushInProgress;
-
-
-   //TODO : options à rajouter ?
-   //  - ConnectRetryDelay
-   //  - ReadBufferMaxSize
 };
 
 

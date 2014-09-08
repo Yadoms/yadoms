@@ -1,0 +1,52 @@
+#pragma once
+#include "Buffer.hpp"
+
+//--------------------------------------------------------------
+/// \brief	This class manage the receive buffer from rfxcom
+// Its objective is to agregate cut messages
+//--------------------------------------------------------------
+class CRfxcommReceiveBuffer
+{
+public:
+   //--------------------------------------------------------------
+   /// \brief	                     Constructor
+   //--------------------------------------------------------------
+   CRfxcommReceiveBuffer();
+
+   //--------------------------------------------------------------
+   /// \brief	                     Destructor
+   //--------------------------------------------------------------
+   virtual ~CRfxcommReceiveBuffer();
+
+   //--------------------------------------------------------------
+   /// \brief	                     Clear the receive buffer content
+   //--------------------------------------------------------------
+   void flush();
+
+   //--------------------------------------------------------------
+   /// \brief	                     Reset the receive buffer content
+   /// \return                      true if a message is complete
+   //--------------------------------------------------------------
+   bool isComplete() const;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Append data into buffer
+   /// \param[in] toAppend          Data to append to buffer
+   //--------------------------------------------------------------
+   void append(const CByteBuffer& toAppend);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Get the next message in the receive buffer
+   /// \return                      
+   //--------------------------------------------------------------
+   boost::shared_ptr<CByteBuffer> popNextMessage() const;
+
+private:
+   //--------------------------------------------------------------
+   /// \brief	Buffer content
+   //--------------------------------------------------------------
+   std::vector<unsigned char> m_content;
+
+};
+
+
