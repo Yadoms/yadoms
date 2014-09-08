@@ -34,11 +34,34 @@ namespace web { namespace poco {
             } while (n > 0 || (flags & Poco::Net::WebSocket::FRAME_OP_BITMASK) != Poco::Net::WebSocket::FRAME_OP_CLOSE);
             */
 
+            int flags;
+            char buffer[2048];
+            int n;
+
             do
             {
-               boost::this_thread::sleep(boost::posix_time::milliseconds(500));
-               //check for client activity
-            } while (1);
+               /*
+               {
+                  "type" : "acquisitionFilter",
+                     "data" : [2, 4]
+               }
+               */
+               n = m_socketServer->receiveFrame(buffer, sizeof(buffer), flags);
+               
+               if (n > 0)
+               {
+                  std::string bufferString(buffer);
+                  shared::CDataContainer obj(bufferString);
+
+                  if (obj.get<std::string>("type") == "acquisitionFilter")
+                  {
+                     std::vector<int> filter = obj.get< std::vector<int> >("data");
+                     updateFilters(filter);
+                  }
+               }
+
+               //boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+            } while (n != 0);
          }
          catch (Poco::Net::WebSocketException& exc)
          {
@@ -64,6 +87,12 @@ namespace web { namespace poco {
          
       }
 
+      void CWebSocketRequestHandler::updateFilters(std::vector<int> & newFilters)
+      {
+         m_acquisitionKeywordFilters = newFilters;
+      }
+
+
       void CWebSocketRequestHandler::finalizeServer()
       {
          notifications::CAsyncNotificationCenter::get()->removeObserver(Poco::NObserver<CWebSocketRequestHandler, notifications::CNewAcquisitionNotification>(*this, &CWebSocketRequestHandler::handleNewData));
@@ -71,16 +100,31 @@ namespace web { namespace poco {
 
       void CWebSocketRequestHandler::handleNewData(const Poco::AutoPtr<notifications::CNewAcquisitionNotification> & newAcquisition)
       {
-         Poco::FastMutex::ScopedLock lock(_m);
+         boost::recursive_timed_mutex::scoped_lock lock(m_mutex);
 
-         shared::CDataContainer toSend;
-         toSend.set<std::string>("type", "acquisitionUpdate");
-         toSend.set("data", newAcquisition->getAcquisition());
+         bool isAcquisitionFiltered = !m_acquisitionKeywordFilters.empty(); //if empty, acq is not filtered
+         std::vector<int>::iterator i;
+         for (i = m_acquisitionKeywordFilters.begin(); i != m_acquisitionKeywordFilters.end(); ++i)
+         {
+            if (*i == newAcquisition->getAcquisition()->Id())
+            {
+               isAcquisitionFiltered = false;
+               break;
+            }
+         }
 
-         std::string dataString = toSend.serialize();
-         int sentBytes = m_socketServer->sendFrame(dataString.c_str(), dataString.length(), Poco::Net::WebSocket::FRAME_TEXT);
-         if (sentBytes == 0)
-            finalizeServer();
+         
+         if (!isAcquisitionFiltered)
+         {
+            shared::CDataContainer toSend;
+            toSend.set<std::string>("type", "acquisitionUpdate");
+            toSend.set("data", newAcquisition->getAcquisition());
+
+            std::string dataString = toSend.serialize();
+            int sentBytes = m_socketServer->sendFrame(dataString.c_str(), dataString.length(), Poco::Net::WebSocket::FRAME_TEXT);
+            if (sentBytes == 0)
+               finalizeServer();
+         }
       }
 
 } //namespace poco

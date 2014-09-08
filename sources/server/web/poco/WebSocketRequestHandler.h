@@ -7,7 +7,6 @@
 #include <Poco/SharedPtr.h>
 #include "notifications/NewAcquisitionNotification.h"
 #include <Poco/Net/WebSocket.h>
-#include <Poco/Mutex.h>
 
 namespace web { namespace poco {
 
@@ -19,9 +18,18 @@ namespace web { namespace poco {
    private:
       void handleNewData(const Poco::AutoPtr<notifications::CNewAcquisitionNotification> & notification);
       void finalizeServer();
+      void updateFilters(std::vector<int> & newFilters);
 
       Poco::SharedPtr<Poco::Net::WebSocket> m_socketServer;
-      Poco::FastMutex _m;
+     
+      
+      //--------------------------------------------------------------
+      /// \brief	   Mutex protecting the events queue
+      //--------------------------------------------------------------
+      mutable boost::recursive_timed_mutex m_mutex;
+
+
+      std::vector<int>  m_acquisitionKeywordFilters;
    };
 
 
