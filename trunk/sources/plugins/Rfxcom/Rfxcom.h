@@ -3,9 +3,11 @@
 #include "RfxcomConfiguration.h"
 #include "Transceiver.h"
 #include "IAsyncPort.h"
+#include "RfxComReceiveBuffer.h"
 #include "rfxcomMessages/Ack.h"
 #include "rfxcomMessages/TransceiverStatus.h"
 #include <shared/DataContainer.h>
+#include <shared/event/EventTimer.h>
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -105,6 +107,16 @@ private:
    /// \brief	The port logger
    //--------------------------------------------------------------
    boost::shared_ptr<IPortLogger> m_portLogger;
+
+   //--------------------------------------------------------------
+   /// \brief	The RFXCom receive buffer
+   //--------------------------------------------------------------
+   CRfxcommReceiveBuffer m_receiveBuffer;
+
+   //--------------------------------------------------------------
+   /// \brief	The RFXCom receive buffer clear timeout
+   //--------------------------------------------------------------
+   shared::event::CEventTimer m_receiveBufferClearTimer;
 
    //--------------------------------------------------------------
    /// \brief	The state machine

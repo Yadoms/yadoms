@@ -22,6 +22,7 @@
 #include <IOKit/serial/IOSerialKeys.h>
 #include <IOKit/serial/ioss.h>
 #include <IOKit/IOBSD.h>
+#include <termios.h>
 
 namespace shared
 {

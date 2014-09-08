@@ -68,12 +68,6 @@ public:
    virtual void setLogger(boost::shared_ptr<IPortLogger> logger) = 0;
 
    //--------------------------------------------------------------
-   /// \brief	                     Flush the input buffer
-   /// \note This function flush the input buffer, and erase pending received data events
-   //--------------------------------------------------------------
-   virtual void flush() = 0;
-
-   //--------------------------------------------------------------
    /// \brief	                     Send a buffer on the port (synchronously)
    /// \param [in] buffer           The buffer to send
    /// \throw                       CPortException if error
