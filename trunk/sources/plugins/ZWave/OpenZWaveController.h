@@ -15,7 +15,7 @@
 
 
 
-class COpenZWaveController : IZWaveController
+class COpenZWaveController : public IZWaveController
 {
 public:
    //--------------------------------------------------------------
