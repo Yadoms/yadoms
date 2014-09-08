@@ -160,11 +160,12 @@
    var gridWidth = 100;
    var gridMargin = 5;
    var longPressDelayToEnterInCustomizationMode = 500;
-   var UpdateInterval = 1000;
+   var UpdateInterval = 5000;
+   var UpdateIntervalWithWebSocketDisabled = 1000;
    var UpdateIntervalInOfflineMode = 10000;
 
    var modals = {};
-   var websocket;
+
     /**
     * On page loaded
     */
@@ -274,39 +275,10 @@
                     i18n.setLng(systemConfiguration[ConfigurationManager.items.system.language].value, function() {
                        $("html").i18n();
                        moment.lang(systemConfiguration[ConfigurationManager.items.system.language].value);
-                       /*var ws = new WebSocket("ws://192.168.109.90:8080/ws");
-                       ws.onopen = function()
-                       {
-                          //ws.send("Hello, world!");
-                          console.log("Websocket connected");
-                       };
-                       ws.onmessage = function(evt)
-                       {
-                          var msg = evt.data;
-                          console.log("Message received: " + msg);
-                       };
-                       ws.onclose = function()
-                       {
-                          console.error("WebSocket closed.");
-                       };*/
 
-                       websocket = new WebSocket('ws://' + window.location.host + '/ws');
-                       websocket.onopen = function() {
-                          console.log('open');
-                       };
-                       websocket.onmessage = function(e) {
-                          console.log('message', e.data);
-                          if (!isNullOrUndefined(e)) {
-                             var acq = AcquisitionManager.factory(JSON.parse(e.data).data);
-                             dispatchToWidgets(acq);
-                          }
-                       };
-                       websocket.onclose = function() {
-                          console.log('close');
-                       };
+                       initializeWebSocketEngine();
 
                        initializeWidgetEngine();
-
                     });
                  }
               });

@@ -12,6 +12,44 @@ var OfflineServerNotification = null;
 var LastEventLogId = null;
 
 var failGetEventCounter = 0;
+
+var webSocket = null;
+
+function initializeWebSocketEngine() {
+
+   if (!isNullOrUndefined(webSocket))
+      webSocket.close();
+
+   //we check if websocket are handled
+   if(window.MozWebSocket) {
+      window.WebSocket = window.MozWebSocket;
+   }
+   if(window.WebSocket) {
+      webSocket = new WebSocket('ws://' + window.location.host + '/ws');
+
+      webSocket.onopen = function() {
+         console.debug('Web socket opened');
+      };
+
+      webSocket.onmessage = function(e) {
+         if (!isNullOrUndefined(e)) {
+            var websocketData = JSON.parse(e.data);
+            if (!isNullOrUndefined(websocketData)) {
+               var acq = AcquisitionManager.factory(websocketData.data);
+               dispatchToWidgets(acq);
+            }
+         }
+      };
+
+      webSocket.onclose = function() {
+         console.debug('Web socket closed');
+      };
+   }
+   else {
+      console.debug("Web socket unhandled");
+   }
+}
+
 function initializeWidgetEngine() {
 
    /**
@@ -72,9 +110,13 @@ function initializeWidgetEngine() {
 
                //we can start the periodic update
                serverIsOnline = true;
-               widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
+               if (isNullOrUndefined(webSocket))
+                  widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateIntervalWithWebSocketDisabled);
+               else
+                  widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
+
                //we update widget data
-               updateWidgets();
+               updateWidgetsPolling();
             })
             .fail(function() { notifyError($.t("mainPage.errors.unableToGetEventLog")); });
       });
@@ -159,6 +201,9 @@ function tabClick(pageId) {
    {
       requestWidgets(page);
    }
+
+   //we poll all widget data
+   updateWidgetsPolling();
 }
 
 function periodicUpdateTask() {
@@ -186,7 +231,18 @@ function periodicUpdateTask() {
             }
             //we change the interval period to the normal one
             clearInterval(widgetUpdateInterval);
-            widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
+            if (isNullOrUndefined(webSocket))
+               widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateIntervalWithWebSocketDisabled);
+            else
+               widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
+
+            //we reinitialize the websocket
+            initializeWebSocketEngine();
+
+            //Maybe there is a lot of time between the turn off of the server and the turn on, so we must ask all widget
+            //data to be sure that all information displayed are fresh
+
+            updateWidgetsPolling();
          }
 
          //if there is new messages we display them
@@ -210,9 +266,9 @@ function periodicUpdateTask() {
             LastEventLogId = value.id;
          });
 
-         //we ask for widget's devices
-         //TODO : a faire si les websockets ne sont pas supportés par le navigateur
-         //updateWidgets();
+         //we ask for widget's devices if web sockets are unsupported
+         if (isNullOrUndefined(webSocket))
+            updateWidgetsPolling();
      })
      .fail(function() {
          if (serverIsOnline)
@@ -259,7 +315,7 @@ function dispatchToWidgets(acq) {
    });
 }
 
-function updateWidgets() {
+function updateWidgetsPolling() {
    //we browse each widget instance
    var page = PageManager.getCurrentPage();
    if (page == null)
