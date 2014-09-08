@@ -37,9 +37,9 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                     Get the next message in the receive buffer
-   /// \return                      
+   /// \return                      The next complete message
    //--------------------------------------------------------------
-   boost::shared_ptr<CByteBuffer> popNextMessage() const;
+   boost::shared_ptr<CByteBuffer> popNextMessage();
 
 private:
    //--------------------------------------------------------------

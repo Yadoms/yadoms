@@ -21,7 +21,9 @@ const std::size_t TEMP_size = sizeof(dummyRbufToComputeSizes.TEMP);
 
 const std::size_t RFXMESSAGE_maxSize = sizeof(dummyRbufToComputeSizes);
 
-bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, size_t expectedSize, unsigned char expectedSeqNumber)
+const unsigned int DONT_CHECK_SEQUENCE_NUMBER = UINT_MAX;
+
+bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, size_t expectedSize, unsigned int expectedSeqNumber)
 {
    bool ok = true;
 
@@ -38,7 +40,7 @@ bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, size_t expectedSi
       ok = false;
    }
 
-   if (rbuf.RXRESPONSE.seqnbr != expectedSeqNumber)
+   if (expectedSeqNumber != DONT_CHECK_SEQUENCE_NUMBER && rbuf.RXRESPONSE.seqnbr != expectedSeqNumber)
    {
       YADOMS_LOG(warning) << "Wrong message sequence number, received : " << rbuf.RXRESPONSE.seqnbr << ", expected : " << expectedSeqNumber;
       ok = false;
@@ -47,7 +49,7 @@ bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, size_t expectedSi
    return ok;
 }
 
-bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, BYTE expectedSubType, size_t expectedSize, unsigned char expectedSeqNumber)
+bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, BYTE expectedSubType, size_t expectedSize, unsigned int expectedSeqNumber)
 {
    bool ok = CheckReceivedMessage(rbuf, expectedType, expectedSize, expectedSeqNumber);
 

@@ -26,7 +26,6 @@ public:
    virtual ~CTransceiver();
 
    // ITransceiver implementation
-   virtual void reset();
    virtual const CByteBuffer buildResetCmd() const;
    virtual const CByteBuffer buildGetStatusCmd() const;
    virtual const CByteBuffer buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const;

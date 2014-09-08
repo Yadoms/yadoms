@@ -11,7 +11,7 @@ namespace rfxcomMessages
 
 CTemp::CTemp(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
-   CheckReceivedMessage(rbuf, pTypeTEMP, TEMP_size, seqNumberProvider->last());
+   CheckReceivedMessage(rbuf, pTypeTEMP, TEMP_size, DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.TEMP.subtype;
 
@@ -57,7 +57,7 @@ void CTemp::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 void CTemp::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << m_subType << "." << m_id;
+   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_id;
    m_deviceName = ssdeviceName.str();
 }
 
