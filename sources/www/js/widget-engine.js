@@ -73,6 +73,8 @@ function initializeWidgetEngine() {
                //we can start the periodic update
                serverIsOnline = true;
                widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
+               //we update widget data
+               updateWidgets();
             })
             .fail(function() { notifyError($.t("mainPage.errors.unableToGetEventLog")); });
       });
@@ -100,9 +102,8 @@ function requestWidgets(page) {
    });
 }
 
-function askForWidgetDelete(packageName, widgetList, errorMessage) {
+function askForWidgetDelete(packageName, errorMessage) {
    assert(!isNullOrUndefined(packageName), "packageName must be defined in askForWidgetDelete()");
-   assert(!isNullOrUndefined(widgetList), "widgetList must be defined in askForWidgetDelete()");
    assert(!isNullOrUndefined(errorMessage), "errorMessage must be defined in askForWidgetDelete()");
 
    notifyConfirm(errorMessage, "error",
@@ -113,30 +114,21 @@ function askForWidgetDelete(packageName, widgetList, errorMessage) {
          if ($noty.showing)
             $noty.$bar.dequeue();
 
-         //we must retrieve which widgets are concerned by this package and we ask for widget deletion
-         var i = widgetList.length - 1;
-         while (i >= 0) {
-            var widget = widgetList[i];
-            if (widget.name == packageName) {
-               widgetList.splice(i, 1);
-               //we ask for deletion of the widget
-               $.ajax({
-                  type: "DELETE",
-                  url: "/rest/widget/" + widget.id,
-                  dataType: "json"
-               })
-                  .done(function(data) {
-                     //we parse the json answer
-                     if (data.result != "true")
-                     {
-                        notifyError($.t("modals.delete-widget.errorDuringDeletingWidget"), JSON.stringify(data));
-                        return;
-                     }
-                  })
-                  .fail(function(widgetName) { return function() {notifyError($.t("modals.delete-page.errorDuringDeletingWidgetNamed", {"widgetType" : widgetName}));};}(widget.name));
-            }
-            i--;
-         }
+         //we ask for deletion of the widget
+         $.ajax({
+            type: "DELETE",
+            url: "/rest/widget/" + widget.id,
+            dataType: "json"
+         })
+            .done(function(data) {
+               //we parse the json answer
+               if (data.result != "true")
+               {
+                  notifyError($.t("modals.delete-widget.errorDuringDeletingWidget"), JSON.stringify(data));
+                  return;
+               }
+            })
+            .fail(function(widgetName) { return function() {notifyError($.t("modals.delete-page.errorDuringDeletingWidgetNamed", {"widgetType" : widgetName}));};}(widget.name));
       },
       function($noty) {
          // this = button element
@@ -219,7 +211,8 @@ function periodicUpdateTask() {
          });
 
          //we ask for widget's devices
-         updateWidgets();
+         //TODO : a faire si les websockets ne sont pas supportés par le navigateur
+         //updateWidgets();
      })
      .fail(function() {
          if (serverIsOnline)
@@ -237,6 +230,33 @@ function periodicUpdateTask() {
          }
          //if we are again offline there is nothing to do
      });
+}
+
+function dispatchToWidgets(acq) {
+   assert(!isNullOrUndefined(acq), "data must be defined");
+
+   var page = PageManager.getCurrentPage();
+   if (page == null)
+      return;
+
+   $.each(page.widgets, function(widgetIndex, widget) {
+      //we ask which devices are needed for this widget instance
+      if (!isNullOrUndefined(widget.viewModel.getDevicesToListen)) {
+         var list = widget.viewModel.getDevicesToListen();
+         $.each(list, function(deviceIndex, device) {
+            if (!isNullOrUndefined(device.keywordId)) {
+               //foreach device we ask for last values
+               if (device.keywordId == acq.keywordId) {
+                  console.debug("Dispatch : " + JSON.stringify(acq));
+
+                  //we dispatch the device to the widget if the widget support the method
+                  if (widget.viewModel.dispatch !== undefined)
+                        widget.viewModel.dispatch(device, acq);
+               }
+            }
+         });
+      }
+   });
 }
 
 function updateWidgets() {
@@ -263,9 +283,11 @@ function updateWidgets() {
 
                      console.debug("Dispatch : " + JSON.stringify(data.data));
 
+                     var acq = AcquisitionManager.factory(data.data);
+
                      //we dispatch the device to the widget if the widget support the method
                      if (widget.viewModel.dispatch !== undefined)
-                        widget.viewModel.dispatch(device, data.data);
+                        widget.viewModel.dispatch(device, acq);
                   });
                   //we don't need to manage the fail because the server is online
                   //it happens that server is offline but it will be shown next time by the first check

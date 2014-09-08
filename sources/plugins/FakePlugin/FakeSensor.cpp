@@ -28,12 +28,18 @@ void CFakeSensor::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
 void CFakeSensor::read()
 {
    // Generate a random variation on temperature (+/- 0 to 1.0°)
-   double offset = (m_dist(m_gen) - 10.0) / 10.0; // Random offset, value from -1.0 to 1.0
+   double offset = (int)(m_dist(m_gen) - 10.0) / 10.0; // Random offset, value from -1.0 to 1.0
    m_temperature1 += offset;
 
+   //we keep 2 decimals
+   m_temperature1 = (int)(m_temperature1 * 100) / 100.0;
+
    // Generate a random variation on temperature (+/- 0 to 2.0°)
-   offset = (m_dist(m_gen) - 20.0) / 20.0; // Random offset, value from -2.0 to 2.0
+   offset = (int)(m_dist(m_gen) - 20.0) / 20.0; // Random offset, value from -2.0 to 2.0
    m_temperature2 += offset;
+
+   //we keep 2 decimals
+   m_temperature2 = (int)(m_temperature2 * 100) / 100.0;
 
    // Decrease battery level (min 20%)
    if (m_batteryLevel > 20)

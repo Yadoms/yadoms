@@ -187,12 +187,12 @@ PluginInstanceManager.updateToServer = function(pluginInstance, callback) {
 
 PluginInstanceManager.downloadPackage = function(pluginInstance, callback) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
-   $.getJSON( "plugin/" + pluginInstance.type + "/package.json")
+   $.getJSON( "plugins/" + pluginInstance.type + "/package.json")
       .done(function (data) {
          pluginInstance.package = data;
 
          //we manage i18n
-         i18n.options.resGetPath = 'plugin/__ns__/locales/__lng__.json';
+         i18n.options.resGetPath = 'plugins/__ns__/locales/__lng__.json';
          i18n.loadNamespace(pluginInstance.type);
 
          //we restore the resGetPath

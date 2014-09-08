@@ -93,6 +93,11 @@
    <script src="libs/moment.js/js/moment-timezone-data.min.js"></script>
    <script src="libs/jsTimezoneDetect/js/jstz-1.0.4.min.js"></script>
 
+   <script src="libs/web-socket-js/js/web_socket.js"></script>
+   <!--<script src="libs/web-socket-js/js/swfobject.js"></script>
+   // Set URL of your WebSocketMain.swf here:
+   WEB_SOCKET_SWF_LOCATION = "libs/web-socket-js/swf/WebSocketMain.swf";-->
+
    <script src="js/iso-language-codes.js"></script>
    <script src="js/utility.js"></script>
    <script src="js/objects/page.js"></script>
@@ -111,6 +116,8 @@
    <script src="js/objects/configuration-item.js"></script>
    <script src="js/objects/keyword.js"></script>
    <script src="js/objects/keyword-manager.js"></script>
+   <script src="js/objects/acquisition.js"></script>
+   <script src="js/objects/acquisition-manager.js"></script>
 
    <script src="libs/jqBootstrapValidation/js/jqBootstrapValidation.js"></script>
 
@@ -136,6 +143,9 @@
 
    <script type="text/javascript" src="libs/noty/js/packaged/jquery.noty.packaged.js"></script>
 
+   <script src="libs/highstock/js/highstock.js"></script>
+   <!--<script src="libs/highstock/js/modules/exporting.js"></script>-->
+
    <div id="templates" class="hidden"></div>
 
 	<script type="text/javascript">
@@ -154,7 +164,7 @@
    var UpdateIntervalInOfflineMode = 10000;
 
    var modals = {};
-
+   var websocket;
     /**
     * On page loaded
     */
@@ -264,7 +274,39 @@
                     i18n.setLng(systemConfiguration[ConfigurationManager.items.system.language].value, function() {
                        $("html").i18n();
                        moment.lang(systemConfiguration[ConfigurationManager.items.system.language].value);
+                       /*var ws = new WebSocket("ws://192.168.109.90:8080/ws");
+                       ws.onopen = function()
+                       {
+                          //ws.send("Hello, world!");
+                          console.log("Websocket connected");
+                       };
+                       ws.onmessage = function(evt)
+                       {
+                          var msg = evt.data;
+                          console.log("Message received: " + msg);
+                       };
+                       ws.onclose = function()
+                       {
+                          console.error("WebSocket closed.");
+                       };*/
+
+                       websocket = new WebSocket('ws://' + window.location.host + '/ws');
+                       websocket.onopen = function() {
+                          console.log('open');
+                       };
+                       websocket.onmessage = function(e) {
+                          console.log('message', e.data);
+                          if (!isNullOrUndefined(e)) {
+                             var acq = AcquisitionManager.factory(JSON.parse(e.data).data);
+                             dispatchToWidgets(acq);
+                          }
+                       };
+                       websocket.onclose = function() {
+                          console.log('close');
+                       };
+
                        initializeWidgetEngine();
+
                     });
                  }
               });

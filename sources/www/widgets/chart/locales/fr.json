@@ -1,0 +1,10 @@
+{
+   "description": "Un widget qui permet d'afficher un graphe d'historisation de données",
+   "configurationSchema" : {
+      "device" : {
+         "name" : "Donnée à afficher",
+         "description" : "Sélectionner la données à afficher dans le graphique"
+      }
+   },
+   "errorDuringGettingDeviceData" : "Erreur pendant la recupération de données sur le device"
+}

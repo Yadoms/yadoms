@@ -29,3 +29,7 @@ DateTimeFormatter.isoDateToString = function (isoDate) {
 
    return d.tz(timeZone).format(format);
 };
+
+DateTimeFormatter.dateToIsoDate = function (date) {
+   return moment(date).utc().format("YYYYMMDD[T]HHmmss");
+};

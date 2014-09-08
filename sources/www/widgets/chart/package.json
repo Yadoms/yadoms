@@ -1,0 +1,91 @@
+{
+   "name": "chart",
+   "description": "A widget that provide a chart to display historized data",
+   "version": "0.1",
+   "author": "yadoms team",
+   "url" : "http://www.yadoms.com/wiki/widgets/chart.html",
+   "dimensions": {
+      "min": {
+         "x": 2,
+         "y": 1
+      },
+      "max": {
+         "x": 6,
+         "y": 4
+      },
+      "default": {
+         "x": 3,
+         "y": 2
+      }
+   },
+   "configurationSchema": {
+      "interval" : {
+         "name" : "Interval of the chart",
+         "description" : "Permit to change the interval of all the chart",
+         "type" : "enum",
+         "values" : {
+            "HOUR" : "1 hour",
+            "DAY" : "1 day",
+            "WEEK" : "1 week",
+            "MONTH" : "1 month",
+            "HALF_YEAR" : "6 months",
+            "YEAR" : "1 year"
+         },
+         "defaultValue" : "DAY"
+      },
+      "device1" : {
+         "type" : "section",
+         "name" : "Plot 1",
+         "description" : "This section describe the configuration of plot 1",
+         "content" : {
+            "source" : {
+               "name" : "Data to display",
+               "description" : "Choose the data of a device to display on the chart",
+               "type" : "device",
+               "expectedKeywordType" : "numeric",
+               "expectedKeywordAccess" : "get"
+            },
+            "color" : {
+               "name" : "Color of the plot",
+               "description" : "Permit to change the color of the plot",
+               "type" : "enum",
+               "values" : {
+                  "RED" : "Red",
+                  "GREEN" : "Green",
+                  "BLUE" : "Blue",
+                  "BLACK" : "Black"
+               },
+               "defaultValue" : "BLUE"
+            }
+         }
+      },
+      "device2" : {
+         "type" : "section",
+         "name" : "Plot 2",
+         "description" : "This section describe the configuration of plot 2",
+         "enableWithCheckBox" : "true",
+         "enableWithCheckBoxDefaultValue" : "false",
+         "content" : {
+            "source" : {
+               "name" : "Data to display",
+               "description" : "Choose the data of a device to display on the chart",
+               "type" : "device",
+               "expectedKeywordType" : "numeric",
+               "expectedKeywordAccess" : "get"
+            },
+            "color" : {
+               "name" : "Color of the plot",
+               "description" : "Permit to change the color of the plot",
+               "type" : "enum",
+               "values" : {
+                  "RED" : "Red",
+                  "GREEN" : "Green",
+                  "BLUE" : "Blue",
+                  "BLACK" : "Black"
+               },
+               "defaultValue" : "BLUE"
+            }
+         }
+      }
+   }
+}
