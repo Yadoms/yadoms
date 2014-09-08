@@ -191,12 +191,12 @@ WidgetManager.loadWidget = function(widget, pageWhereToAdd) {
                WidgetPackageManager.widgetPackages[widget.name].viewAnViewModelHaveBeenDownloaded = true;
             }
             else {
-               askForWidgetDelete(widget.name, list, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.name}));
+               askForWidgetDelete(widget.name, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.name}));
                return;
             }
          }
          else {
-            askForWidgetDelete(widget.name, list, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.name}));
+            askForWidgetDelete(widget.name, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.name}));
             return;
          }
       }
@@ -208,7 +208,7 @@ WidgetManager.loadWidget = function(widget, pageWhereToAdd) {
       pageWhereToAdd.addWidget(widget);
    }
    else {
-      askForWidgetDelete(widget.name, list, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.name}));
+      askForWidgetDelete(widget.name, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.name}));
    }
 }
 

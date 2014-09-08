@@ -57,7 +57,7 @@ namespace web { namespace poco {
 
    Poco::Net::HTTPRequestHandler* CHttpRequestHandlerFactory::createRequestHandler(const Poco::Net::HTTPServerRequest& request)
    {
-      if (request.getURI() == m_webSocketKeyword)
+      if (boost::istarts_with(request.getURI(), m_webSocketKeyword))
          return new CWebSocketRequestHandler;
       else if (boost::istarts_with(request.getURI(), m_restKeywordBase))
          //return m_restRequestHandler.get();
