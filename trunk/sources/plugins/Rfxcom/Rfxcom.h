@@ -77,9 +77,10 @@ protected:
 
    //--------------------------------------------------------------
    /// \brief	                     Process received status message from RFXCom
+   /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] status           Received status
    //--------------------------------------------------------------
-   void processRfxcomStatusMessage(const rfxcomMessages::CTransceiverStatus& status) const;
+   void processRfxcomStatusMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status) const;
 
    //--------------------------------------------------------------
    /// \brief	                     Process received ack message from RFXCom
