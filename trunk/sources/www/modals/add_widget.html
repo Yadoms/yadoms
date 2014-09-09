@@ -172,6 +172,9 @@
          //we add the widget dynamically
          var w = WidgetManager.factory(data.data);
          WidgetManager.loadWidget(w, currentPage);
+
+         //we update the filter for the websocket
+         updateWebSocketFilter();
       })
       .fail(function(widgetName) { return function() {notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {"widgetType" : widgetName}))}}(newWidget.name));
    }

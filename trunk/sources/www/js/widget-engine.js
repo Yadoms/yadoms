@@ -140,6 +140,9 @@ function requestWidgets(page) {
                loadWidgetsNotification.$bar.dequeue();
             loadWidgetsNotification = null;
          }
+
+         //we update the filter of the websocket
+         updateWebSocketFilter();
       }
    });
 }
@@ -313,6 +316,32 @@ function dispatchToWidgets(acq) {
          });
       }
    });
+}
+
+function updateWebSocketFilter() {
+   console.log("updateWebSocketFilter()");
+   if (!isNullOrUndefined(webSocket)) {
+      var page = PageManager.getCurrentPage();
+      if (page == null)
+         return;
+
+      var collection = [];
+
+      //we build the collection of keywordId to ask
+      $.each(page.widgets, function(widgetIndex, widget) {
+         //we ask which devices are needed for this widget instance
+         if (!isNullOrUndefined(widget.viewModel.getDevicesToListen)) {
+            var list = widget.viewModel.getDevicesToListen();
+            $.each(list, function(deviceIndex, device) {
+               if (!isNullOrUndefined(device.keywordId)) {
+                  collection.push(device.keywordId);
+               }
+            });
+         }
+      });
+
+      webSocket.send(JSON.stringify({"type" : "acquisitionFilter", "data" : collection}));
+   }
 }
 
 function updateWidgetsPolling() {
