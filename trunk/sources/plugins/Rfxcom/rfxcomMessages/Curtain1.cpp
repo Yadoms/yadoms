@@ -9,12 +9,18 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
+// Message size
+static const std::size_t CURTAIN1_size = sizeof(dummyRbufToComputeSizes.CURTAIN1);
+
 CCurtain1::CCurtain1(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
 {
    m_subType = deviceParameters.get<unsigned char>("subType");
    m_houseCode = deviceParameters.get<unsigned char>("houseCode");
    m_unitCode = deviceParameters.get<unsigned char>("unitCode");
    m_state = toProtocolState(command);
+
+   buildDeviceModel();
+   buildDeviceName();
 }
 
 CCurtain1::CCurtain1(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
@@ -25,6 +31,9 @@ CCurtain1::CCurtain1(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberPr
    m_houseCode = rbuf.CURTAIN1.housecode;
    m_unitCode = rbuf.CURTAIN1.unitcode;
    m_state = rbuf.CURTAIN1.cmnd;
+
+   buildDeviceModel();
+   buildDeviceName();
 }
 
 CCurtain1::~CCurtain1()
@@ -55,6 +64,26 @@ void CCurtain1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
    std::string deviceName(ssdeviceName.str());
 
    context->historizeData(deviceName, "state", toYadomsState(m_state));
+}
+
+void CCurtain1::buildDeviceName()
+{
+   std::ostringstream ssdeviceName;
+   ssdeviceName << m_deviceModel << "." << (char)m_houseCode << "." << (unsigned int)m_unitCode;
+   m_deviceName = ssdeviceName.str();
+}
+
+void CCurtain1::buildDeviceModel()
+{
+   std::ostringstream ssModel;
+
+   switch(m_subType)
+   {
+   case sTypeHarrison: ssModel << "Harrison"; break;
+   default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
+   }
+
+   m_deviceModel = ssModel.str();
 }
 
 unsigned char CCurtain1::toProtocolState(const shared::CDataContainer& yadomsState)

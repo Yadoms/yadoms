@@ -10,6 +10,9 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
+// Message size
+static const std::size_t LIGHTING2_size = sizeof(dummyRbufToComputeSizes.LIGHTING2);
+
 CLighting2::CLighting2(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
 {
    m_subType = deviceParameters.get<unsigned char>("subType");
@@ -19,8 +22,8 @@ CLighting2::CLighting2(const shared::CDataContainer& command, const shared::CDat
    toProtocolState(command, m_state, m_level);
    m_rssi = 0;
 
-   buildDeviceName();
    buildDeviceModel();
+   buildDeviceName();
 }
 
 CLighting2::CLighting2(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
@@ -37,17 +40,18 @@ CLighting2::CLighting2(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumber
       m_houseCode = 0;
       m_id = rbuf.LIGHTING2.id1 << 24 | rbuf.LIGHTING2.id2 << 16 | rbuf.LIGHTING2.id3 << 8 | rbuf.LIGHTING2.id4;
       break;
-   case 0x03 :    // No constant : described in the spec but not in the .h file     // TODO voir si un .h plus récent existe
+   case sTypeKambrook :
       m_houseCode = rbuf.LIGHTING2.id1;
       m_id = rbuf.LIGHTING2.id2 << 16 | rbuf.LIGHTING2.id3 << 8 | rbuf.LIGHTING2.id4;
       break;
    }
    m_unitCode = rbuf.LIGHTING2.unitcode;
    m_state = rbuf.LIGHTING2.cmnd;
+   m_level = rbuf.LIGHTING2.level;
    m_rssi = rbuf.LIGHTING2.rssi * 100 / 0x0F;
 
-   buildDeviceName();
    buildDeviceModel();
+   buildDeviceName();
 }
 
 CLighting2::~CLighting2()
@@ -73,7 +77,7 @@ const CByteBuffer CLighting2::encode(boost::shared_ptr<ISequenceNumberProvider> 
       rbuf.LIGHTING2.id3 = (unsigned char) (0x0F & (m_id >> 8));
       rbuf.LIGHTING2.id4 = (unsigned char) (0x0F & m_id);
       break;
-   case 0x03 :    // No constant : described in the spec but not in the .h file     // TODO voir si un .h plus récent existe
+   case sTypeKambrook :
       rbuf.LIGHTING2.id1 = m_houseCode;
       rbuf.LIGHTING2.id2 = (unsigned char) (0x0F & (m_id >> 16));
       rbuf.LIGHTING2.id3 = (unsigned char) (0x0F & (m_id >> 8));
@@ -97,7 +101,7 @@ void CLighting2::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) cons
       context->declareKeyword(m_deviceName, "rssi", yApi::CStandardCapacities::Rssi);
    }
 
-   context->historizeData(m_deviceName, "state", toYadomsState(m_state));
+   context->historizeData(m_deviceName, "state", toYadomsState(m_state, m_level));
    context->historizeData(m_deviceName, "rssi", m_rssi);
 }
 
@@ -114,17 +118,10 @@ void CLighting2::buildDeviceModel()
 
    switch(m_subType)
    {
-   case sTypeX10        : ssModel << "X10 lighting"; break;
-   case sTypeARC        : ssModel << "ARC"; break;
-   case sTypeAB400D     : ssModel << "ELRO AB400D (Flamingo)"; break;
-   case sTypeWaveman    : ssModel << "Waveman"; break;
-   case sTypeEMW200     : ssModel << "Chacon EMW200"; break;
-   case sTypeIMPULS     : ssModel << "IMPULS"; break;
-   case sTypeRisingSun  : ssModel << "RisingSun"; break;
-   case sTypePhilips    : ssModel << "Philips SBC"; break;
-   case sTypeEnergenie  : ssModel << "Energenie ENER010"; break;
-   case sTypeEnergenie5 : ssModel << "Energenie 5-gang"; break;
-   case sTypeGDR2       : ssModel << "COCO GDR2-2000R"; break;
+   case sTypeAC         : ssModel << "AC"; break;
+   case sTypeHEU        : ssModel << "HomeEasy EU"; break;
+   case sTypeANSLUT     : ssModel << "ANSLUT"; break;
+   case sTypeKambrook   : ssModel << "Kambrook RF3672 (Australia)"; break;
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }
 
@@ -147,16 +144,24 @@ void CLighting2::toProtocolState(const shared::CDataContainer& yadomsState, unsi
    }
 }
 
-std::string CLighting2::toYadomsState(unsigned char protocolState)
+std::string CLighting2::toYadomsState(unsigned char protocolState, unsigned char protocolLevel)
 {
    switch(protocolState)
    {
-   case light1_sOn: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kOn).format(); break;
-   case light1_sOff: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kOff).format(); break;
+   case light2_sOn: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kOn).format(); break;
+   case light2_sOff: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kOff).format(); break;
+   case light2_sSetLevel:
+      {
+         unsigned char level = (unsigned char) (protocolLevel * 100 / 0x0F);   // level needs to be from 0 to 100
+         return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kDim, level).format();
+         break;
+      }
    default:
-      BOOST_ASSERT_MSG(false, "Invalid state");
-      throw shared::exception::CInvalidParameter("state");
-      break;
+      {
+         BOOST_ASSERT_MSG(false, "Invalid state");
+         throw shared::exception::CInvalidParameter("state");
+         break;
+      }
    }
 }
 

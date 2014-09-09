@@ -17,17 +17,9 @@ typedef unsigned char BYTE;
 
 // Structures are defined as it is difficult to get size of each message.
 // Here is an workaround to get size of each message.
-extern const std::size_t ICMND_size;
-extern const std::size_t IRESPONSE_size;
-extern const std::size_t RXRESPONSE_size;
-extern const std::size_t LIGHTING1_size;
-extern const std::size_t LIGHTING2_size;
-extern const std::size_t LIGHTING3_size;
-extern const std::size_t LIGHTING4_size;
-extern const std::size_t LIGHTING5_size;
-extern const std::size_t LIGHTING6_size;
-extern const std::size_t CURTAIN1_size;
-extern const std::size_t TEMP_size;
+extern const RBUF dummyRbufToComputeSizes;
+
+extern const std::size_t ICMND_size;        //TODO déplacer dans les fichiers respectifs
 
 // The max size of a message
 extern const std::size_t RFXMESSAGE_maxSize;

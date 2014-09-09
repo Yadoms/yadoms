@@ -9,6 +9,9 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
+// Message size
+static const std::size_t TEMP_size = sizeof(dummyRbufToComputeSizes.TEMP);
+
 CTemp::CTemp(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
    CheckReceivedMessage(rbuf, pTypeTEMP, TEMP_size, DONT_CHECK_SEQUENCE_NUMBER);
@@ -25,8 +28,8 @@ CTemp::CTemp(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> 
 
    m_rssi = rbuf.TEMP.rssi * 100 / 0x0F;
 
-   buildDeviceName();
    buildDeviceModel();
+   buildDeviceName();
 }
 
 CTemp::~CTemp()

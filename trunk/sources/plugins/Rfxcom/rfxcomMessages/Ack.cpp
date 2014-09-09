@@ -6,6 +6,9 @@
 namespace rfxcomMessages
 {
 
+// Message size
+static const std::size_t RXRESPONSE_size = sizeof(dummyRbufToComputeSizes.RXRESPONSE);
+
 CAck::CAck(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
    CheckReceivedMessage(rbuf, pTypeRecXmitMessage, sTypeTransmitterResponse, RXRESPONSE_size, seqNumberProvider->last());

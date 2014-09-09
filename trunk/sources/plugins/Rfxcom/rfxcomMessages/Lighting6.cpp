@@ -10,6 +10,9 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
+// Message size
+static const std::size_t LIGHTING6_size = sizeof(dummyRbufToComputeSizes.LIGHTING6);
+
 CLighting6::CLighting6(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
 {
    m_subType = deviceParameters.get<unsigned char>("subType");
@@ -19,8 +22,8 @@ CLighting6::CLighting6(const shared::CDataContainer& command, const shared::CDat
    m_state = toProtocolState(command);
    m_rssi = 0;
 
-   buildDeviceName();
    buildDeviceModel();
+   buildDeviceName();
 }
 
 CLighting6::CLighting6(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
@@ -34,8 +37,8 @@ CLighting6::CLighting6(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumber
    m_state = rbuf.LIGHTING6.cmnd;
    m_rssi = rbuf.LIGHTING6.rssi * 100 / 0x0F;
 
-   buildDeviceName();
    buildDeviceModel();
+   buildDeviceName();
 }
 
 CLighting6::~CLighting6()
@@ -80,7 +83,7 @@ void CLighting6::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) cons
 void CLighting6::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_id << "." << (unsigned int)m_groupCode << "." << (unsigned int)m_unitCode;
+   ssdeviceName << m_deviceModel << "." << (unsigned int)m_id << "." << (char)m_groupCode << "." << (unsigned int)m_unitCode;
    m_deviceName = ssdeviceName.str();
 }
 
