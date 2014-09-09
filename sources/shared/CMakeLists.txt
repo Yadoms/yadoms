@@ -38,6 +38,11 @@ set(SHARED_LIB_SRC
 	shared/event/Now.h
 	shared/event/Now.cpp
 
+	shared/notification/NotificationCenter.h
+	shared/notification/NotificationCenter.cpp
+	shared/notification/NotificationObserver.h
+	shared/notification/NotificationObserver.cpp
+
  	shared/exception/BadConversion.hpp
 	shared/exception/EmptyResult.hpp
 	shared/exception/Exception.hpp
@@ -143,6 +148,7 @@ source_group(serialization shared/shared/serialization/*.* )
 source_group(encryption shared/shared/encryption/*.* )	
 source_group(tools shared/shared/tools/*.* )	
 source_group(enumeration shared/shared/enumeration/*.* )	
+source_group(notification shared/shared/notification/*.* )	
 
 
 

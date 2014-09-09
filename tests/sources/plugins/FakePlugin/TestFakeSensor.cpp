@@ -51,6 +51,7 @@ public:
    virtual void historizeData(const std::string & device, const std::string & keyword, bool value) { Data data = {device, keyword, boost::lexical_cast<std::string>(value)}; m_data.push_back(data); }
    virtual void historizeData(const std::string & device, const std::string & keyword, int value) { Data data = {device, keyword, boost::lexical_cast<std::string>(value)}; m_data.push_back(data); }
    virtual void historizeData(const std::string & device, const std::string & keyword, double value) { Data data = {device, keyword, boost::lexical_cast<std::string>(value)}; m_data.push_back(data); }
+   virtual void historizeData(const std::string & device, const std::string & keyword, double value, int precision) { Data data = {device, keyword, boost::lexical_cast<std::string>(value)}; m_data.push_back(data); }
    virtual const shared::plugin::information::IInformation& getInformation() const { return m_defaultInformation; }
    virtual shared::CDataContainer getConfiguration() const { return m_defaultConfiguration; }
    virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message) {}

@@ -145,6 +145,30 @@ namespace shared { namespace event
       }
 
       //--------------------------------------------------------------
+      /// \brief	    Check if the last event is the type
+      /// \template DataType  Type of the data to check
+      /// \return     true if event data is type of DataType
+      /// \throw      exception::CNullReference if no event data is available
+      /// \note       Must be called after waitForEvents
+      //--------------------------------------------------------------
+      template<typename DataType>
+      const bool isEventType() const
+      {
+         if (!m_lastEvent)
+            throw exception::CNullReference("isEventType, no event available");
+
+         try
+         {
+            boost::shared_ptr< CEvent<DataType> > evt = boost::dynamic_pointer_cast<CEvent<DataType>>(m_lastEvent);
+            return evt.get() != NULL;
+         }
+         catch (std::bad_cast& bc)
+         {
+            return false;
+         }      
+      }
+      
+      //--------------------------------------------------------------
       /// \brief	    Get data from last event
       /// \template DataType  Type of the data in the event
       /// \return     Copy of event data
