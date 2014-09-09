@@ -246,6 +246,9 @@ function periodicUpdateTask() {
             //data to be sure that all information displayed are fresh
 
             updateWidgetsPolling();
+
+            //we update the filter of the websockets to receive only wanted data
+            updateWebSocketFilter();
          }
 
          //if there is new messages we display them

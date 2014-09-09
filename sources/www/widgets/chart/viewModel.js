@@ -58,6 +58,8 @@ widgetViewModelCtor =
                selected : 4 // all
             },
 
+            navigator : {enabled:false},
+
             xAxis : {
                ordinal: false,
                events : {
@@ -89,6 +91,7 @@ widgetViewModelCtor =
             var self = this;
             //we compute the date from the configuration
             var dateFrom = "";
+
             switch (this.widget.configuration.interval) {
                case "HOUR" :
                   dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'hours'));
@@ -110,8 +113,11 @@ widgetViewModelCtor =
                   dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'years'));
                   break;
             }
-
-            console.info(Date());
+debugger;
+            /*if ((!isNullOrUndefined(this.widget.configuration.showNavigator)) && (parseBool(this.widget.configuration.showNavigator)))
+               this.chart.navigator.enabled = true;
+            else
+               this.chart.navigator.enabled = false;*/
 
             $.getJSON("rest/acquisition/highcharts/keyword/" + this.widget.configuration.device1.content.source.keywordId + "/" + dateFrom)
                .done(function( data ) {
@@ -122,14 +128,14 @@ widgetViewModelCtor =
                      return;
                   }
 
-                  //debugger;
-                  console.info(Date());
-
                   var acq = JSON.parse(data.data);
 
                   self.chart.hideLoading();
-                  self.chart.addSeries({name:'Device', data:acq});
-                  console.info(Date());
+                  var serie = self.chart.get("Device1")
+                  if (!isNullOrUndefined(serie))
+                     serie.remove();
+
+                  self.chart.addSeries({id:'Device1', data:acq, name:'Fisrt device (TODO)'});
                })
                .fail(function() {notifyError($.t("switch:errorDuringGettingDeviceInformation"));});
          }
@@ -143,9 +149,13 @@ widgetViewModelCtor =
        */
       this.dispatch = function(device, data) {
          var self = this;
-         if (device == this.widget.configuration.device) {
-               //it is the good device
-               //self.command(data.value);
+         if (!isNullOrUndefined(this.widget.configuration.device1)) {
+            if (device == this.widget.configuration.device1.content.source) {
+                  //it is the good device
+               var serie = self.chart.get("Device1")
+               if (!isNullOrUndefined(serie))
+                  this.chart.get("Device1").addPoint([data.date.valueOf(), parseFloat(data.value)]);
+            }
          }
       };
 

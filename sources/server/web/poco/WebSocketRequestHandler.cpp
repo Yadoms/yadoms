@@ -2,12 +2,9 @@
 #include "WebSocketRequestHandler.h"
 
 #include <Poco/Net/NetException.h>
-#include <Poco/NObserver.h>
-
-#include <Poco/Thread.h>
 
 #include "notifications/AsyncNotificationCenter.h"
-#include "shared/Log.h"
+#include <shared/Log.h>
 #include <shared/DataContainer.h>
 #include <shared/notification/NotificationCenter.h>
 

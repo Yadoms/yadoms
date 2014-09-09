@@ -33,6 +33,12 @@
          },
          "defaultValue" : "DAY"
       },
+      "showNavigator" : {
+         "name" : "Show navigator",
+         "description" : "Show the navigator under the chart",
+         "type" : "bool",
+         "defaultValue" : "false"
+      },
       "device1" : {
          "type" : "section",
          "name" : "Plot 1",
