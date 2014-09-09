@@ -10,6 +10,9 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
+// Message size
+static const std::size_t LIGHTING1_size = sizeof(dummyRbufToComputeSizes.LIGHTING1);
+
 CLighting1::CLighting1(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
 {
    m_subType = deviceParameters.get<unsigned char>("subType");
@@ -74,7 +77,7 @@ void CLighting1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) cons
 void CLighting1::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_houseCode << "." << (unsigned int)m_unitCode;
+   ssdeviceName << m_deviceModel << "." << (char)m_houseCode << "." << (unsigned int)m_unitCode;
    m_deviceName = ssdeviceName.str();
 }
 

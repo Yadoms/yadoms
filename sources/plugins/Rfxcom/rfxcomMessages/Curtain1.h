@@ -50,7 +50,17 @@ namespace rfxcomMessages
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       //--------------------------------------------------------------
       static unsigned char toProtocolState(const shared::CDataContainer& yadomsCommand);
-      
+
+      //--------------------------------------------------------------
+      /// \brief	                        Build the device name
+      //--------------------------------------------------------------
+      void buildDeviceName();
+
+      //--------------------------------------------------------------
+      /// \brief	                        Build the sensor model
+      //--------------------------------------------------------------
+      void buildDeviceModel();
+
       //--------------------------------------------------------------
       /// \brief	                        Convert protocol value to Yadoms state
       /// \param[in] protocolState        The value known by the protocol
@@ -79,5 +89,15 @@ namespace rfxcomMessages
       /// \brief	The state
       //--------------------------------------------------------------
       unsigned char m_state;
+
+      //--------------------------------------------------------------
+      /// \brief	The device name
+      //--------------------------------------------------------------
+      std::string m_deviceName;
+
+      //--------------------------------------------------------------
+      /// \brief	The device model
+      //--------------------------------------------------------------
+      std::string m_deviceModel;
    };
 } // namespace rfxcomMessages

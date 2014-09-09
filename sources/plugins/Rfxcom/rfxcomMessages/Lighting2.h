@@ -65,11 +65,12 @@ namespace rfxcomMessages
       
       //--------------------------------------------------------------
       /// \brief	                        Convert protocol value to Yadoms state
-      /// \param[in] protocolState        The value known by the protocol
+      /// \param[in] protocolState        The state known by the protocol
+      /// \param[in] protocolLevel        The level known by the protocol
       /// \return                         The command for Yadoms
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       //--------------------------------------------------------------
-      static std::string toYadomsState(unsigned char protocolState);
+      static std::string toYadomsState(unsigned char protocolState, unsigned char protocolLevel);
 
    private:
       //--------------------------------------------------------------
