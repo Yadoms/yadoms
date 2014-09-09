@@ -11,6 +11,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/IRfxcomMessage.h
    rfxcomMessages/Lighting1.h
    rfxcomMessages/Lighting1.cpp
+   rfxcomMessages/Lighting2.h
+   rfxcomMessages/Lighting2.cpp
    rfxcomMessages/Lighting3.h
    rfxcomMessages/Lighting3.cpp
    rfxcomMessages/Lighting6.h

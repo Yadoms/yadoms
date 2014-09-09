@@ -67,7 +67,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             }
          case yApi::IYadomsApi::kEventManuallyDeviceCreationTest:
             {
-               // Yadoms asks for test device parameters to check if it work before creating it. So just send command, don't declare anything.
+               // Yadoms asks for test device parameters to check if it works before creating it. So just send command, don't declare anything.
                boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> data = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> >();
                YADOMS_LOG(debug) << "Test of device request received :" << data->toString();
 
@@ -220,7 +220,7 @@ void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> cont
       boost::shared_ptr<rfxcomMessages::CTransceiverStatus> statusMessage = boost::dynamic_pointer_cast<rfxcomMessages::CTransceiverStatus>(message);
       if (!!statusMessage)
       {
-         processRfxcomStatusMessage(*statusMessage);
+         processRfxcomStatusMessage(context, *statusMessage);
          return;
       }
 
@@ -258,7 +258,7 @@ void CRfxcom::initRfxcom()
    m_port->send(m_transceiver->buildGetStatusCmd());
 }
 
-void CRfxcom::processRfxcomStatusMessage(const rfxcomMessages::CTransceiverStatus& status) const
+void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status) const
 {
    // The status message can be received after a get status command or a set mode command
    YADOMS_LOG(info) << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware version (" << status.getFirmwareVersion() << ")";
@@ -274,7 +274,7 @@ void CRfxcom::processRfxcomStatusMessage(const rfxcomMessages::CTransceiverStatu
    if (m_currentState != kGettingRfxcomStatus)
    {
       YADOMS_LOG(warning) << "Unable to set configuration as expected, maybe incompatible protocols was selected";
-      //TODO, il serait judicieux de notifier l'IHM ici
+      context->recordPluginEvent(yApi::IYadomsApi::kError, "Unable to set configuration as expected, maybe incompatible protocols was selected");
       m_currentState = kRfxcomIsRunning;
       return;
    }
