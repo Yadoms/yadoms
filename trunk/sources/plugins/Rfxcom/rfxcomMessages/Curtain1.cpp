@@ -9,9 +9,6 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-// Message size
-static const std::size_t CURTAIN1_size = sizeof(dummyRbufToComputeSizes.CURTAIN1);
-
 CCurtain1::CCurtain1(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
 {
    m_subType = deviceParameters.get<unsigned char>("subType");
@@ -25,7 +22,7 @@ CCurtain1::CCurtain1(const shared::CDataContainer& command, const shared::CDataC
 
 CCurtain1::CCurtain1(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
-   CheckReceivedMessage(rbuf, pTypeCurtain, CURTAIN1_size, DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf, pTypeCurtain, GET_RBUF_STRUCT_SIZE(CURTAIN1), DONT_CHECK_SEQUENCE_NUMBER);
    
    m_subType = rbuf.CURTAIN1.subtype;
    m_houseCode = rbuf.CURTAIN1.housecode;
@@ -54,7 +51,7 @@ const CByteBuffer CCurtain1::encode(boost::shared_ptr<ISequenceNumberProvider> s
    buffer.CURTAIN1.cmnd = m_state;
    buffer.CURTAIN1.filler = 0;
 
-   return CByteBuffer((BYTE*)&buffer, CURTAIN1_size);
+   return CByteBuffer((BYTE*)&buffer, GET_RBUF_STRUCT_SIZE(CURTAIN1));
 }
 
 void CCurtain1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

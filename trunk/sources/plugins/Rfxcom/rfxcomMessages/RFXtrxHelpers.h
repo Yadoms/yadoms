@@ -15,17 +15,17 @@ typedef unsigned char BYTE;
 // Use it as : MEMCLEAR(my_RBUF_instance.ICMND);
 #define MEMCLEAR(structure) memset(&structure,0,sizeof(structure));
 
-// Structures are defined as it is difficult to get size of each message.
+// Structures are defined in RFXtrx.h as it is difficult to get size of each message.
 // Here is an workaround to get size of each message.
 extern const RBUF dummyRbufToComputeSizes;
+#define GET_RBUF_STRUCT_SIZE(structName) sizeof(dummyRbufToComputeSizes.structName)
 
-extern const std::size_t ICMND_size;        //TODO déplacer dans les fichiers respectifs
+// Macro helper to encode length (length = packet size except the packet byte)
+#define ENCODE_PACKET_LENGTH(packet)((BYTE)GET_RBUF_STRUCT_SIZE(packet) - 1)
 
 // The max size of a message
 extern const std::size_t RFXMESSAGE_maxSize;
 
-// Macro helper to encode length (length = packet size except the packet byte)
-#define ENCODE_PACKET_LENGTH(packet)((BYTE)packet##_size - 1)
 
 //--------------------------------------------------------------
 /// \brief	                           Basic checks on received message : type, size, sequence number

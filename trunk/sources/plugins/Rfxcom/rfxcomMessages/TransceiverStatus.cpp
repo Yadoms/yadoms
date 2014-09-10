@@ -6,12 +6,9 @@
 namespace rfxcomMessages
 {
 
-// Message size
-static const std::size_t IRESPONSE_size = sizeof(dummyRbufToComputeSizes.IRESPONSE);
-
 CTransceiverStatus::CTransceiverStatus(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
-   CheckReceivedMessage(rbuf, pTypeInterfaceMessage, sTypeInterfaceResponse, IRESPONSE_size, seqNumberProvider->last());
+   CheckReceivedMessage(rbuf, pTypeInterfaceMessage, sTypeInterfaceResponse, GET_RBUF_STRUCT_SIZE(IRESPONSE), seqNumberProvider->last());
 
    m_rfxcomType = rbuf.IRESPONSE.msg1;
 
