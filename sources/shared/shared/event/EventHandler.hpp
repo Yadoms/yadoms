@@ -162,7 +162,7 @@ namespace shared { namespace event
             boost::shared_ptr< CEvent<DataType> > evt = boost::dynamic_pointer_cast<CEvent<DataType>>(m_lastEvent);
             return evt.get() != NULL;
          }
-         catch (std::bad_cast& bc)
+         catch (std::bad_cast&)
          {
             return false;
          }      

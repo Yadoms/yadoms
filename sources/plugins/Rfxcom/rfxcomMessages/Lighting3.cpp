@@ -95,13 +95,13 @@ void CLighting3::buildDeviceModel()
 unsigned char CLighting3::toProtocolState(const shared::CDataContainer& yadomsState)
 {
    yApi::commands::CSwitch cmd(yadomsState);
-   switch(cmd.State())
+   switch(cmd.getState()())
    {
    case yApi::commands::CSwitch::EState::kOff: return light3_sOff;
    case yApi::commands::CSwitch::EState::kOn: return light3_sOn;
    case yApi::commands::CSwitch::EState::kDim:
       {
-         switch (cmd.DimLevel() / 10)  // getDimLevel returns value from 0 to 100
+         switch (cmd.getDimLevel()() / 10)  // getDimLevel returns value from 0 to 100
          {
          case 0: return light3_sOff;
          case 1: return light3_sLevel1;
