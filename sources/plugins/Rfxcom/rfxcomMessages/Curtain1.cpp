@@ -86,7 +86,7 @@ void CCurtain1::buildDeviceModel()
 unsigned char CCurtain1::toProtocolState(const shared::CDataContainer& yadomsState)
 {
    yApi::commands::CCurtain cmd(yadomsState);
-   switch (cmd.get()())
+   switch (cmd.getCommand()())
    {
    case yApi::commands::CCurtain::ECommand::kOpen: return curtain_sOpen;
    case yApi::commands::CCurtain::ECommand::kClose: return curtain_sClose;

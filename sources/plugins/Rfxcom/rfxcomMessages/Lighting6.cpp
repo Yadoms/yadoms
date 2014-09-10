@@ -28,7 +28,7 @@ CLighting6::CLighting6(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumber
    CheckReceivedMessage(rbuf, pTypeLighting6, GET_RBUF_STRUCT_SIZE(LIGHTING6), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.LIGHTING6.subtype;
-   m_id = rbuf.LIGHTING6.id1 | (rbuf.LIGHTING6.id2 << 8);
+   m_id = (rbuf.LIGHTING6.id1 << 8) | rbuf.LIGHTING6.id2;
    m_groupCode = rbuf.LIGHTING6.groupcode;
    m_unitCode = rbuf.LIGHTING6.unitcode;
    m_state = rbuf.LIGHTING6.cmnd;
@@ -80,7 +80,7 @@ void CLighting6::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) cons
 void CLighting6::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << m_deviceModel << "." << (unsigned int)m_id << "." << (char)m_groupCode << "." << (unsigned int)m_unitCode;
+   ssdeviceName << m_deviceModel << "." << (char)m_groupCode << "." << (unsigned int)m_unitCode << "." << (unsigned int)m_id;
    m_deviceName = ssdeviceName.str();
 }
 
@@ -100,7 +100,7 @@ void CLighting6::buildDeviceModel()
 unsigned char CLighting6::toProtocolState(const shared::CDataContainer& yadomsState)
 {
    yApi::commands::CSwitch cmd(yadomsState);
-   return cmd.State == yApi::commands::CSwitch::EState::kOff ? light6_sOff : light6_sOn;
+   return cmd.getState()() == yApi::commands::CSwitch::EState::kOff ? light6_sOff : light6_sOn;
 }
 
 std::string CLighting6::toYadomsState(unsigned char protocolState)

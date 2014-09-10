@@ -129,13 +129,13 @@ void CLighting2::toProtocolState(const shared::CDataContainer& yadomsState, unsi
 {
    yApi::commands::CSwitch cmd(yadomsState);
    level = 0;
-   switch(cmd.State())
+   switch(cmd.getState()())
    {
    case yApi::commands::CSwitch::EState::kOff : state = light2_sOff; break;
    case yApi::commands::CSwitch::EState::kOn  : state = light2_sOn; break;
    case yApi::commands::CSwitch::EState::kDim :
       state = light2_sSetLevel;
-      level = (unsigned char) (cmd.DimLevel() * 0x0F / 100);   // getDimLevel returns value from 0 to 100
+      level = (unsigned char) (cmd.getDimLevel()() * 0x0F / 100);   // getDimLevel returns value from 0 to 100
       break;
    default: throw shared::exception::CInvalidParameter("state");
    }

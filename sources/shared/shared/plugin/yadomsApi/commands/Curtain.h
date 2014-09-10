@@ -45,7 +45,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       ///\brief                     Get the command value
       ///\return                    The command value
       //-----------------------------------------------------
-      const CField<ECommand> & get() const;
+      const CField<ECommand> & getCommand() const;
 
       //-----------------------------------------------------
       ///\brief                     Format data to Yadoms format
@@ -57,7 +57,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       //-----------------------------------------------------
       ///\brief               The command value
       //-----------------------------------------------------
-      CField<ECommand> m_value;
+      CField<ECommand> m_command;
    };
 
 
