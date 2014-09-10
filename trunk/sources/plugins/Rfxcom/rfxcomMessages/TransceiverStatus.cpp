@@ -8,6 +8,7 @@ namespace rfxcomMessages
 
 CTransceiverStatus::CTransceiverStatus(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
+   //TODO gérer les autres sous-types
    CheckReceivedMessage(rbuf, pTypeInterfaceMessage, sTypeInterfaceResponse, GET_RBUF_STRUCT_SIZE(IRESPONSE), seqNumberProvider->last());
 
    m_rfxcomType = rbuf.IRESPONSE.msg1;

@@ -58,7 +58,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          case yApi::IYadomsApi::kEventDeviceCommand:
             {
                // Command received from Yadoms
-               boost::shared_ptr<yApi::IDeviceCommand> command(context->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceCommand> >());
+               boost::shared_ptr<const yApi::IDeviceCommand> command(context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
                YADOMS_LOG(debug) << "Command received :" << command->toString();
 
                onCommand(command->getBody(), context->getDeviceDetails(command->getTargetDevice()));
