@@ -59,7 +59,7 @@ const CByteBuffer CLighting6::encode(boost::shared_ptr<ISequenceNumberProvider> 
    rbuf.LIGHTING6.cmndseqnbr = seqNumberProvider->last() % 4;
    rbuf.LIGHTING6.seqnbr2 = 0;
    rbuf.LIGHTING6.rssi = 0;
-   rbuf.LIGHTING1.filler = 0;
+   rbuf.LIGHTING6.filler = 0;
 
    return CByteBuffer((BYTE*)&rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING6));
 }
@@ -68,7 +68,13 @@ void CLighting6::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) cons
 {
    if (!context->deviceExists(m_deviceName))
    {
-      context->declareDevice(m_deviceName, m_deviceModel);
+      shared::CDataContainer details;//TODO faire partout
+      details.set("type", pTypeLighting6);
+      details.set("subType", m_subType);
+      details.set("id", m_id);
+      details.set("groupCode", m_groupCode);
+      details.set("unitCode", m_unitCode);
+      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
       context->declareKeyword(m_deviceName, "state", yApi::CStandardCapacities::Switch);
       context->declareKeyword(m_deviceName, "rssi", yApi::CStandardCapacities::Rssi);
    }

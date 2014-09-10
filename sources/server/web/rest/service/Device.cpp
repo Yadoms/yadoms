@@ -219,7 +219,7 @@ namespace web { namespace rest { namespace service {
          if(parameters.size()>3)
          {
             //get keyword id from URL
-            int deviceId = boost::lexical_cast<int>(parameters[2]);
+            int deviceId = boost::lexical_cast<int>(parameters[2]);//TODO fonction à corriger
             int keywordId = boost::lexical_cast<int>(parameters[3]);
 
             //create the command

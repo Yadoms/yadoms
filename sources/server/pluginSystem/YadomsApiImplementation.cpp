@@ -163,7 +163,7 @@ void CYadomsApiImplementation::recordPluginEvent(PluginEventSeverity severity, c
    case kInfo: evenType = database::entities::EEventType::kInfo; break;
    default:
       {
-         BOOST_ASSERT_MSG(false, "Unkown plugin event severity type");
+         BOOST_ASSERT_MSG(false, "Unknown plugin event severity type");
          evenType = database::entities::EEventType::kInfo; // Set a default value
          break;
       }

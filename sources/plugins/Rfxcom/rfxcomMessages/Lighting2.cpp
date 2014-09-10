@@ -69,16 +69,16 @@ const CByteBuffer CLighting2::encode(boost::shared_ptr<ISequenceNumberProvider> 
    case sTypeAC :
    case sTypeHEU :
    case sTypeANSLUT :
-      rbuf.LIGHTING2.id1 = (unsigned char) (0x0F & (m_id >> 24));
-      rbuf.LIGHTING2.id2 = (unsigned char) (0x0F & (m_id >> 16));
-      rbuf.LIGHTING2.id3 = (unsigned char) (0x0F & (m_id >> 8));
-      rbuf.LIGHTING2.id4 = (unsigned char) (0x0F & m_id);
+      rbuf.LIGHTING2.id1 = (unsigned char) (0xFF & (m_id >> 24));
+      rbuf.LIGHTING2.id2 = (unsigned char) (0xFF & (m_id >> 16));
+      rbuf.LIGHTING2.id3 = (unsigned char) (0xFF & (m_id >> 8));
+      rbuf.LIGHTING2.id4 = (unsigned char) (0xFF & m_id);
       break;
    case sTypeKambrook :
       rbuf.LIGHTING2.id1 = m_houseCode;
-      rbuf.LIGHTING2.id2 = (unsigned char) (0x0F & (m_id >> 16));
-      rbuf.LIGHTING2.id3 = (unsigned char) (0x0F & (m_id >> 8));
-      rbuf.LIGHTING2.id4 = (unsigned char) (0x0F & m_id);
+      rbuf.LIGHTING2.id2 = (unsigned char) (0xFF & (m_id >> 16));
+      rbuf.LIGHTING2.id3 = (unsigned char) (0xFF & (m_id >> 8));
+      rbuf.LIGHTING2.id4 = (unsigned char) (0xFF & m_id);
       break;
    }
    rbuf.LIGHTING2.unitcode = m_unitCode;
