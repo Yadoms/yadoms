@@ -13,11 +13,11 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
    );  
 
    CCurtain::CCurtain(const shared::CDataContainer& command)
-      :m_value(ECommand::kStop)
+      :m_command(ECommand::kStop)
    {
       try
       {
-         m_value = command.get<ECommand>("cmd");
+         m_command = command.get<ECommand>("cmd");
       }
       catch (shared::exception::CException & e)
       {
@@ -31,19 +31,19 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
    }
 
    CCurtain::CCurtain(ECommand command)
-      :m_value(command)
+      :m_command(command)
    {
    }
 
-   const CField<CCurtain::ECommand> & CCurtain::get() const
+   const CField<CCurtain::ECommand> & CCurtain::getCommand() const
    {
-      return m_value;
+      return m_command;
    }
 
    std::string CCurtain::format() const
    {
       shared::CDataContainer yadomsCommand;
-      yadomsCommand.set("cmd", m_value());
+      yadomsCommand.set("cmd", m_command());
       return yadomsCommand.serialize();
    }
 

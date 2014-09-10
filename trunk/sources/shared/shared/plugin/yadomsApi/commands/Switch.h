@@ -48,19 +48,30 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       ///\brief                     Get the main switch state
       ///\return                    The main switch state
       //-----------------------------------------------------
-      CField<EState> State;
+      const CField<EState> & getState() const;
 
       //-----------------------------------------------------
       ///\brief                     Get the dim level
       ///\return                    The dim level (0-100)
       //-----------------------------------------------------
-      CField<int> DimLevel;
+      const CField<int> & getDimLevel() const;
 
       //-----------------------------------------------------
       ///\brief                     Format data to Yadoms format
       ///\return                    Formatted data
       //-----------------------------------------------------
       std::string format() const;
+
+   private:
+      //-----------------------------------------------------
+      ///\brief                     The main switch state
+      //-----------------------------------------------------
+      CField<EState> m_state;
+
+      //-----------------------------------------------------
+      ///\brief                     The dim level (0-100)
+      //-----------------------------------------------------
+      CField<int> m_dimLevel;
    };
 
 

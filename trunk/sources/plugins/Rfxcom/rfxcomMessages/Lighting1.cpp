@@ -104,7 +104,7 @@ void CLighting1::buildDeviceModel()
 unsigned char CLighting1::toProtocolState(const shared::CDataContainer& yadomsState)
 {
    yApi::commands::CSwitch cmd(yadomsState);
-   return cmd.State == yApi::commands::CSwitch::EState::kOff ? light1_sOff : light1_sOn;
+   return cmd.getState() == yApi::commands::CSwitch::EState::kOff ? light1_sOff : light1_sOn;
 }
 
 std::string CLighting1::toYadomsState(unsigned char protocolState)
