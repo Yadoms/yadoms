@@ -10,9 +10,6 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-// Message size
-static const std::size_t LIGHTING6_size = sizeof(dummyRbufToComputeSizes.LIGHTING6);
-
 CLighting6::CLighting6(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
 {
    m_subType = deviceParameters.get<unsigned char>("subType");
@@ -28,7 +25,7 @@ CLighting6::CLighting6(const shared::CDataContainer& command, const shared::CDat
 
 CLighting6::CLighting6(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
-   CheckReceivedMessage(rbuf, pTypeLighting6, LIGHTING6_size, DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf, pTypeLighting6, GET_RBUF_STRUCT_SIZE(LIGHTING6), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.LIGHTING6.subtype;
    m_id = rbuf.LIGHTING6.id1 | (rbuf.LIGHTING6.id2 << 8);
@@ -64,7 +61,7 @@ const CByteBuffer CLighting6::encode(boost::shared_ptr<ISequenceNumberProvider> 
    rbuf.LIGHTING6.rssi = 0;
    rbuf.LIGHTING1.filler = 0;
 
-   return CByteBuffer((BYTE*)&rbuf, LIGHTING6_size);
+   return CByteBuffer((BYTE*)&rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING6));
 }
 
 void CLighting6::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

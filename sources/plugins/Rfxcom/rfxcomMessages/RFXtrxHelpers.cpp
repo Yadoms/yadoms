@@ -7,7 +7,6 @@
 //--------------------------------------------------------------
 
 const RBUF dummyRbufToComputeSizes = { 0 };
-const std::size_t ICMND_size = sizeof(dummyRbufToComputeSizes.ICMND);
 
 const std::size_t RFXMESSAGE_maxSize = sizeof(dummyRbufToComputeSizes);
 

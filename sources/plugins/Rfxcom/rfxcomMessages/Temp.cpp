@@ -9,12 +9,9 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-// Message size
-static const std::size_t TEMP_size = sizeof(dummyRbufToComputeSizes.TEMP);
-
 CTemp::CTemp(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
-   CheckReceivedMessage(rbuf, pTypeTEMP, TEMP_size, DONT_CHECK_SEQUENCE_NUMBER);
+   CheckReceivedMessage(rbuf, pTypeTEMP, GET_RBUF_STRUCT_SIZE(TEMP), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.TEMP.subtype;
 

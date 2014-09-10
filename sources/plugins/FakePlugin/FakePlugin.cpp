@@ -47,6 +47,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 
       // the main loop
       YADOMS_LOG(debug) << "CFakePlugin is running...";
+      context->recordPluginEvent(yApi::IYadomsApi::kInfo, "started");
       while(1)
       {
          // Wait for an event
@@ -64,6 +65,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                // Configuration was updated
                shared::CDataContainer newConfiguration = context->getEventHandler().getEventData<shared::CDataContainer>();
                YADOMS_LOG(debug) << "configuration was updated...";
+               context->recordPluginEvent(yApi::IYadomsApi::kInfo, "Configuration was updated");
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
                // Take into account the new configuration
@@ -105,4 +107,6 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
    catch (boost::thread_interrupted&)
    {
    }
+
+   context->recordPluginEvent(yApi::IYadomsApi::kInfo, "stopped");
 }
