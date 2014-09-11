@@ -15,16 +15,6 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
    {
    public:
       //-----------------------------------------------------
-      ///\brief                     The switch state
-      //-----------------------------------------------------
-      DECLARE_ENUM_HEADER_SHARED(EState, YADOMS_SHARED_EXPORT,
-         ((Off)(0))
-         ((On)(1))
-         ((Dim)(2))
-      );
-
-   public:
-      //-----------------------------------------------------
       ///\brief                     Constructor from formated command
       ///\param[in] yadomsCommand   Yadoms command container
       ///\throw                     shared::exception::CInvalidParameter if fail to parse command
@@ -33,11 +23,10 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 
       //-----------------------------------------------------
       ///\brief                     Constructor from raw data
-      ///\param[in] command         Yadoms command, as JSON string
-      ///\param[in] dimLevel        dim level (0-100)
+      ///\param[in] dimLevel        switch level (0-100)
       ///\throw                     shared::exception::CInvalidParameter if fail to parse command
       //-----------------------------------------------------
-      CSwitch(EState state, int dimLevel = 0);
+      CSwitch(int dimLevel = 0);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
@@ -45,33 +34,16 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       virtual ~CSwitch();
 
       //-----------------------------------------------------
-      ///\brief                     Get the main switch state
-      ///\return                    The main switch state
+      ///\brief                     Get the switch level
+      ///\return                    The switch level (0-100)
       //-----------------------------------------------------
-      const CField<EState> & getState() const;
-
-      //-----------------------------------------------------
-      ///\brief                     Get the dim level
-      ///\return                    The dim level (0-100)
-      //-----------------------------------------------------
-      const CField<int> & getDimLevel() const;
+      CField<int> SwitchLevel;
 
       //-----------------------------------------------------
       ///\brief                     Format data to Yadoms format
       ///\return                    Formatted data
       //-----------------------------------------------------
       std::string format() const;
-
-   private:
-      //-----------------------------------------------------
-      ///\brief                     The main switch state
-      //-----------------------------------------------------
-      CField<EState> m_state;
-
-      //-----------------------------------------------------
-      ///\brief                     The dim level (0-100)
-      //-----------------------------------------------------
-      CField<int> m_dimLevel;
    };
 
 

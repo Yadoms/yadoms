@@ -1,4 +1,8 @@
 #pragma once
+
+#include "IExtendedEnum.h"
+#include "shared/exception/Exception.hpp"
+#include "shared/exception/OutOfRange.hpp"
 /*
 
 This class contains macros for defining extended macros which add the ability to use string and/or values for enum

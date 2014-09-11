@@ -11,9 +11,9 @@ namespace shared { namespace notification{
       virtual ~CNotificationObserver();
 
       template<class T>
-      void postNotification(const T & notif)
+      void postNotification(int typeOfNotif, const T & notif)
       {
-         m_EventHandler->postEvent(CNotificationCenter::kNotification, notif);
+         m_EventHandler->postEvent(typeOfNotif, notif);
       }
 
       template<class T>

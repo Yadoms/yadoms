@@ -2,11 +2,17 @@
 #include "WebSocketRequestHandler.h"
 
 #include <Poco/Net/NetException.h>
+#include <Poco/Net/WebSocket.h>
 
-#include "notifications/AsyncNotificationCenter.h"
 #include <shared/Log.h>
 #include <shared/DataContainer.h>
 #include <shared/notification/NotificationCenter.h>
+
+#include "notifications/AsyncNotificationCenter.h"
+#include "notifications/NewAcquisitionNotification.h"
+#include "web/ws/FrameFactory.h"
+#include "web/ws/AcquisitionFilterFrame.h"
+#include "web/ws/AcquisitionUpdateFrame.h"
 
 namespace web {
    namespace poco {
@@ -17,31 +23,40 @@ namespace web {
          //them just create a websocket server and wait infinite (until client ends)
          try
          {
-            m_socketServer.assign(new Poco::Net::WebSocket(request, response));
-            //notifications::CAsyncNotificationCenter::get()->addObserver(Poco::NObserver<CWebSocketRequestHandler, notifications::CNewAcquisitionNotification>               (*this, &CWebSocketRequestHandler::handleNewData));
+            Poco::Net::WebSocket socketServer(request, response);
+            std::vector<int> acquisitionKeywordFilters;
+
             notifications::CAsyncNotificationCenter::get()->registerObserver(this);
 
-            while (1)
+            bool clientSeemConnected = true;
+
+            while (clientSeemConnected)
             {
                switch (notifications::CAsyncNotificationCenter::get()->waitForNotifications(this, boost::posix_time::milliseconds(100)))
                {
                case shared::notification::CNotificationCenter::kTimeout:
-                  if (m_socketServer->available() > 0)
+                  //if some data are available, then read them and answer
+                  if (socketServer.available() > 0)
                   {
                      int flags = 0;
                      char buffer[2048];
                      memset(buffer, 0, 2048);
 
-                     int n = m_socketServer->receiveFrame(buffer, sizeof(buffer), flags);
+                     int n = socketServer.receiveFrame(buffer, sizeof(buffer), flags);
                      if (n > 0)
                      {
                         std::string bufferString(buffer);
-                        shared::CDataContainer obj(bufferString);
-
-                        if (obj.get<std::string>("type") == "acquisitionFilter")
+                        boost::shared_ptr<web::ws::CFrameBase> parsedFrame = web::ws::CFrameFactory::tryParse(bufferString);
+                        if (parsedFrame)
                         {
-                           std::vector<int> filter = obj.get< std::vector<int> >("data");
-                           updateFilters(filter);
+                           switch (parsedFrame->getType())
+                           {
+                           case web::ws::CFrameBase::EFrameType::kAcquisitionFilter:
+                              boost::shared_ptr<web::ws::CAcquisitionFilterFrame> parsedFrameAsqFilter = boost::dynamic_pointer_cast<web::ws::CAcquisitionFilterFrame>(parsedFrame);
+                              acquisitionKeywordFilters.clear();
+                              acquisitionKeywordFilters = parsedFrameAsqFilter->getFilter();
+                              break;
+                           }
                         }
                      }
                   }
@@ -49,22 +64,24 @@ namespace web {
                   break;
 
                case shared::notification::CNotificationCenter::kNotification:
+                  //a new notification has arrived
+
+                  //check if notification is a newAcquisition
                   if (notifications::CAsyncNotificationCenter::get()->isNotificationTypeOf<database::entities::CAcquisition>(this))
                   {
                      database::entities::CAcquisition newAcquisition = notifications::CAsyncNotificationCenter::get()->getNotificationData<database::entities::CAcquisition>(this);
-                     if (m_acquisitionKeywordFilters.empty() || 
-                        std::find(m_acquisitionKeywordFilters.begin(), m_acquisitionKeywordFilters.end(), newAcquisition.KeywordId()) != m_acquisitionKeywordFilters.end())
+                     if (acquisitionKeywordFilters.empty() ||
+                        std::find(acquisitionKeywordFilters.begin(), acquisitionKeywordFilters.end(), newAcquisition.KeywordId()) != acquisitionKeywordFilters.end())
                      {
-                        shared::CDataContainer toSend;
-                        toSend.set<std::string>("type", "acquisitionUpdate");
-                        toSend.set("data", newAcquisition);
-
+                        web::ws::CAcquisitionUpdateFrame toSend(newAcquisition);
                         std::string dataString = toSend.serialize();
-                        int sentBytes = m_socketServer->sendFrame(dataString.c_str(), dataString.length(), Poco::Net::WebSocket::FRAME_TEXT);
+                        int sentBytes = socketServer.sendFrame(dataString.c_str(), dataString.length(), Poco::Net::WebSocket::FRAME_TEXT);
                         if (sentBytes == 0)
-                           finalizeServer();
+                           clientSeemConnected = false;
                      }
                   }
+
+                  //this notification is ignored
                   break;
 
                default:
@@ -76,6 +93,7 @@ namespace web {
          }
          catch (Poco::Net::WebSocketException& exc)
          {
+            YADOMS_LOG(error) << "Websocket request handler Poco::Net::WebSocketException";
             switch (exc.code())
             {
             case Poco::Net::WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:
@@ -90,24 +108,18 @@ namespace web {
                break;
             }
          }
+         catch (shared::exception::CException & ex)
+         {
+            YADOMS_LOG(error) << "Websocket request handler exception : " << ex.what();
+         }
          catch (...)
          {
-
+            YADOMS_LOG(error) << "Websocket request handler unknown exception";
          }
 
-
-      }
-
-      void CWebSocketRequestHandler::updateFilters(std::vector<int> & newFilters)
-      {
-         m_acquisitionKeywordFilters = newFilters;
-      }
-
-
-      void CWebSocketRequestHandler::finalizeServer()
-      {
-         //notifications::CAsyncNotificationCenter::get()->removeObserver(Poco::NObserver<CWebSocketRequestHandler, notifications::CNewAcquisitionNotification>(*this, &CWebSocketRequestHandler::handleNewData));
+         //unregister for notifications
          notifications::CAsyncNotificationCenter::get()->unregisterObserver(this);
+
       }
 
 

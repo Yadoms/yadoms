@@ -2,24 +2,16 @@
 #include "Switch.h"
 #include "../StandardValues.h"
 #include <shared/exception/InvalidParameter.hpp>
-
+#include <shared/Log.h>
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
-   DECLARE_ENUM_IMPLEMENTATION_NESTED(CSwitch::EState, EState,
-      (Off)
-      (On)
-      (Dim)
-   );
-   
    CSwitch::CSwitch(const shared::CDataContainer& command)
-   :m_state(EState::kOff), m_dimLevel(0)
+      :SwitchLevel(0)
    {
       try
       {
-         m_state = command.get<EState>("command");
-         if (m_state == EState::kDim)
-            m_dimLevel = command.get<int>("level");
+         SwitchLevel = command.get<int>("command");
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
@@ -33,32 +25,19 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       }
    }
 
-   CSwitch::CSwitch(EState state, int dimLevel)
-      :m_state(state), m_dimLevel(dimLevel)
+   CSwitch::CSwitch(int switchLevel)
+      :SwitchLevel(switchLevel)
    {
    }
 
    CSwitch::~CSwitch()
    {
-   }
-
-   const CField<CSwitch::EState> & CSwitch::getState() const
-   {
-      return m_state;
-   }
-
-   const CField<int> & CSwitch::getDimLevel() const
-   {
-      return m_dimLevel;
-   }
-  
+   }  
 
    std::string CSwitch::format() const
    {
       shared::CDataContainer yadomsCommand;
-      yadomsCommand.set("command", m_state);
-      if (m_state == EState::kDim)
-         yadomsCommand.set("level", m_dimLevel);
+      yadomsCommand.set("command", SwitchLevel);
       return yadomsCommand.serialize();
    }
 

@@ -35,7 +35,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("keyword"), CDevice::getDeviceKeywords);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT",  (m_restKeyword)("*"), CDevice::updateDeviceFriendlyName, CDevice::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT",  (m_restKeyword)("keyword")("*"), CDevice::updateKeywordFriendlyName, CDevice::transactionalMethod);
-      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST",  (m_restKeyword)("keyword")("*")("*"), CDevice::sendDeviceCommand, CDevice::transactionalMethod);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"), CDevice::sendDeviceCommand, CDevice::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST",  (m_restKeyword), CDevice::createDevice, CDevice::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE",  (m_restKeyword)("*"), CDevice::deleteDevice, CDevice::transactionalMethod);
    }
@@ -219,34 +219,27 @@ namespace web { namespace rest { namespace service {
          if(parameters.size()>3)
          {
             //get keyword id from URL
-            int deviceId = boost::lexical_cast<int>(parameters[2]);//TODO fonction à corriger
-            int keywordId = boost::lexical_cast<int>(parameters[3]);
+            int keywordId = boost::lexical_cast<int>(parameters[2]);
 
-            //create the command
-            //boost::shared_ptr<shared::plugin::yadomsApi::IDeviceCommand> command(new pluginSystem::CDeviceCommand(deviceId, keywordId, requestContent));
+            //retreive devideId from keywordId
+            boost::shared_ptr<database::entities::CKeyword> keywordfromDb = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
+            if (keywordfromDb)
+            {
+               int deviceId = m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->DeviceId;
 
-            //create the command
-            //TODO A-t-on besoin d'un retour sur l'envoi d'une commande (l'état du périph doit être mis à jour par historization en principe
-            //boost::shared_ptr<communication::command::CCallback> resultHandler(new communication::command::CCallback);
-            //communication::command::CDeviceCommand command(keywordId, commandData, resultHandler);
+               //send the command
+               m_messageSender.sendCommandAsync(deviceId, keywordId, requestContent);
+               return web::rest::CResult::GenerateSuccess();
+            }
+            else
+            {
+               return web::rest::CResult::GenerateError("invalid parameter. Can not retreive keyword in database");
+            }
 
-            //send the command
-            m_messageSender.sendCommandAsync(deviceId, keywordId, requestContent);
-
-            //TODO
-            return web::rest::CResult::GenerateSuccess();
-            ////wait for a result
-            //communication::command::CResult result = resultHandler->waitForResult(boost::posix_time::milliseconds(2000));
-
-            ////reply to rest caller
-            //if(result.isSuccess())
-            //   return web::rest::CResult::GenerateSuccess();
-            //else
-            //   return web::rest::CResult::GenerateError(result.getErrorMessage());
          }
          else
          {
-            return web::rest::CResult::GenerateError("invalid parameter. Can not device widget id in url");
+            return web::rest::CResult::GenerateError("invalid parameter. Not enough parameters in url");
          }
       }
       catch(std::exception &ex)

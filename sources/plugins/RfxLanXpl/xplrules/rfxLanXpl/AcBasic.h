@@ -3,6 +3,7 @@
 #include "../IRule.h"
 #include "../IReadRule.h"
 #include "../ICommandRule.h"
+#include <shared/enumeration/EnumHelpers.hpp>
 
 namespace xplrules { namespace rfxLanXpl {
 
@@ -32,6 +33,16 @@ namespace xplrules { namespace rfxLanXpl {
       virtual std::string generateVirtualDeviceIdentifier();
       // [END] ICommandRule implemntation
    private:
+      //-----------------------------------------------------
+      ///\brief                     The switch state
+      //-----------------------------------------------------
+      DECLARE_ENUM_HEADER(EState,
+         ((Off)(0))
+         ((On)(1))
+         ((Dim)(2))
+      );
+
+
       static std::string m_keywordAddress;
       static std::string m_keywordUnit;
       static std::string m_keywordCommand;

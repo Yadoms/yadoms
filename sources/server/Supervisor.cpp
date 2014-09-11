@@ -5,7 +5,6 @@
 #include "database/DatabaseException.hpp"
 #include <shared/Log.h>
 #include <shared/exception/NotSupported.hpp>
-#include "web/WebServerManager.h"
 #include "web/poco/WebServer.h"
 #include "web/rest/service/Acquisition.h"
 #include "web/rest/service/Plugin.h"
