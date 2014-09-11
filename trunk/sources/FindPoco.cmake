@@ -50,6 +50,7 @@ FIND_PATH(Poco_INCLUDE_DIR NAMES Foundation/include/Poco/AbstractCache.h PATH_SU
 SET(SUFFIX_FOR_LIBRARY_PATH
  lib
  lib/Linux/i686
+ lib/Linux/ARM
 )
 
 

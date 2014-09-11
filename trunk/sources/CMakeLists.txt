@@ -117,7 +117,6 @@ endif()
 ###############################################
 
 SET ( POCO_LIBS
-	CppUnit
 	PocoFoundation
 	PocoNet
 	PocoUtil
