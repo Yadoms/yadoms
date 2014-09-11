@@ -106,7 +106,7 @@ void CRfy::buildDeviceModel()
 unsigned char CRfy::toProtocolState(const shared::CDataContainer& yadomsState)
 {
    yApi::commands::CCurtain cmd(yadomsState);
-   switch (cmd.getCommand()())
+   switch (cmd.command()())
    {
    case yApi::commands::CCurtain::ECommand::kOpen: return rfy_sUp;
    case yApi::commands::CCurtain::ECommand::kClose: return rfy_sDown;

@@ -235,11 +235,10 @@ void CSmsDialer::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
 void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& powerRequest)
 {
    yApi::commands::CSwitch cmd(powerRequest);
-   BOOST_ASSERT_MSG(cmd.getState() == yApi::commands::CSwitch::EState::kOff || cmd.getState() == yApi::commands::CSwitch::EState::kOn, "Invalid power request");
 
    try
    {
-      m_phone->powerOn(cmd.getState() == yApi::commands::CSwitch::EState::kOn);
+      m_phone->powerOn(cmd.isOn());
       notifyPhonePowerState(context, m_phone->isOn());
    }
    catch (CPhoneException& e)

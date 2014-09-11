@@ -22,7 +22,7 @@ widgetViewModelCtor =
             $.ajax({
                type: "POST",
                url: "/rest/device/keyword/" + this.widget.configuration.device.keywordId + "/command",
-               data: JSON.stringify({ command: newState }),
+               data: JSON.stringify({ level: newState }),
                contentType: "application/json; charset=utf-8",
                dataType: "json"
             })

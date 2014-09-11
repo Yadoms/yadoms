@@ -8,7 +8,7 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
 
-   CMessage::CMessage(const shared::CDataContainer& command)
+CMessage::CMessage(const shared::CDataContainer& command)
 {
    try
    {
