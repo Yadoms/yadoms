@@ -43,7 +43,12 @@ void CTemp::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    if (!context->deviceExists(m_deviceName))
    {
-      context->declareDevice(m_deviceName, m_deviceModel);
+      shared::CDataContainer details;
+      details.set("type", pTypeTEMP);
+      details.set("subType", m_subType);
+      details.set("id", m_id);
+      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+
       context->declareKeyword(m_deviceName, "temperature", yApi::CStandardCapacities::Temperature);
       context->declareKeyword(m_deviceName, "battery", yApi::CStandardCapacities::BatteryLevel);
       context->declareKeyword(m_deviceName, "rssi", yApi::CStandardCapacities::Rssi);

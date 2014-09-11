@@ -68,13 +68,14 @@ void CLighting6::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) cons
 {
    if (!context->deviceExists(m_deviceName))
    {
-      shared::CDataContainer details;//TODO faire partout
+      shared::CDataContainer details;
       details.set("type", pTypeLighting6);
       details.set("subType", m_subType);
       details.set("id", m_id);
       details.set("groupCode", m_groupCode);
       details.set("unitCode", m_unitCode);
       context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+
       context->declareKeyword(m_deviceName, "state", yApi::CStandardCapacities::Switch);
       context->declareKeyword(m_deviceName, "rssi", yApi::CStandardCapacities::Rssi);
    }

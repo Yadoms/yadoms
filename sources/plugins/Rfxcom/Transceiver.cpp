@@ -115,25 +115,25 @@ const CByteBuffer CTransceiver::buildMessageToDevice(const shared::CDataContaine
       switch(deviceType)
       {
       case pTypeLighting1:
-         return rfxcomMessages::CLighting1(command, deviceParametersTree.get<shared::CDataContainer>("content")).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting1(command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
       case pTypeLighting2:
-         return rfxcomMessages::CLighting2(command, deviceParametersTree.get<shared::CDataContainer>("content")).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting2(command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
       case pTypeLighting3:
-         return rfxcomMessages::CLighting3(command, deviceParametersTree.get<shared::CDataContainer>("content")).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting3(command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
       case pTypeLighting4:
-         return rfxcomMessages::CLighting4(command, deviceParametersTree.get<shared::CDataContainer>("content")).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting4(command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
       case pTypeLighting6:
          return rfxcomMessages::CLighting6(command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
       case pTypeCurtain:
-         return rfxcomMessages::CCurtain1(command, deviceParametersTree.get<shared::CDataContainer>("content")).encode(m_seqNumberProvider);
+         return rfxcomMessages::CCurtain1(command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
       case pTypeRFY:
-         return rfxcomMessages::CRfy(command, deviceParametersTree.get<shared::CDataContainer>("content")).encode(m_seqNumberProvider);
+         return rfxcomMessages::CRfy(command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
          //TODO compléter
       default:
