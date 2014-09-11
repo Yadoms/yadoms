@@ -67,7 +67,13 @@ void CRfy::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    if (!context->deviceExists(m_deviceName))
    {
-      context->declareDevice(m_deviceName, m_deviceModel);
+      shared::CDataContainer details;
+      details.set("type", pTypeRFY);
+      details.set("subType", m_subType);
+      details.set("id", m_id);
+      details.set("unitCode", m_unitCode);
+      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+
       context->declareKeyword(m_deviceName, "state", yApi::CStandardCapacities::Switch);
       context->declareKeyword(m_deviceName, "rssi", yApi::CStandardCapacities::Rssi);
    }
