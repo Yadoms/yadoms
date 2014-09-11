@@ -7,6 +7,11 @@
 
 namespace xplrules { namespace rfxLanXpl {
 
+   DECLARE_ENUM_IMPLEMENTATION_NESTED(CAcBasic::EState, EState,
+      (Off)
+      (On)
+      (Dim)
+   );
 
    std::string CAcBasic::m_keywordAddress = "address";
    std::string CAcBasic::m_keywordUnit = "unit";
@@ -39,15 +44,7 @@ namespace xplrules { namespace rfxLanXpl {
    std::vector< boost::shared_ptr<CDeviceKeyword> > CAcBasic::identifyKeywords(xplcore::CXplMessage & msg)
    {
       std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
-
-      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordCommand, yApi::CStandardCapacities::Switch, yApi::kSet, shared::plugin::yadomsApi::kNoData, shared::CStringExtension::EmptyString, m_keywordCommandValues)));
-      
-
-      shared::CDataContainer details;
-      details.set("min", 0);
-      details.set("max", 15);
-      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordLevel, m_keywordLevel, shared::plugin::yadomsApi::kGetSet, shared::plugin::yadomsApi::kNumeric, shared::CStringExtension::EmptyString, details)));
-
+      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordCommand, yApi::CStandardCapacities::Switch, yApi::kSet, shared::plugin::yadomsApi::kNumeric, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString)));
       return keywords;
    }
 
@@ -58,9 +55,29 @@ namespace xplrules { namespace rfxLanXpl {
    MessageContent CAcBasic::extractMessageData(xplcore::CXplMessage & msg)
    {
       MessageContent data;
-      data.insert(std::make_pair(m_keywordCommand, msg.getBodyValue(m_keywordCommand)));
-      if (msg.getBody().find(m_keywordLevel) != msg.getBody().end())
-         data.insert(std::make_pair(m_keywordLevel, msg.getBodyValue(m_keywordLevel)));
+
+      try
+      {
+         EState valFromEquipment;
+         valFromEquipment.setFromString(msg.getBodyValue(m_keywordCommand));
+
+         switch (valFromEquipment)
+         {
+         case EState::kOn:
+            data.insert(std::make_pair(m_keywordCommand, "100"));
+            break;
+         case EState::kOff:
+            data.insert(std::make_pair(m_keywordCommand, "0"));
+            break;
+         case EState::kDim:
+            data.insert(std::make_pair(m_keywordCommand, msg.getBodyValue(m_keywordLevel)));
+            break;
+         }
+      }
+      catch (...)
+      {
+
+      }
       return data;
    }
    // [END] IReadRule implementation
@@ -109,12 +126,26 @@ namespace xplrules { namespace rfxLanXpl {
       newMessage->addToBody(m_keywordAddress, splittedAddress[0]);
       newMessage->addToBody(m_keywordUnit, splittedAddress[1]);
 
-      //set the command
-      newMessage->addToBody(m_keywordCommand, commandDetails.getState()().getAsString());
 
-      //if there is any other data to send, just add key/value to bidy
-      if (commandDetails.getDimLevel().isDefined())
-         newMessage->addToBody(m_keywordLevel, boost::lexical_cast<std::string>(commandDetails.getDimLevel()()));
+      if (commandDetails.SwitchLevel() == 0)
+      {
+         //set the command
+         EState s = EState::kOff;
+         newMessage->addToBody(m_keywordCommand, s);
+      }
+      else if (commandDetails.SwitchLevel() == 100)
+      {
+         //set the command
+         EState s = EState::kOn;
+         newMessage->addToBody(m_keywordCommand, s);
+      }
+      else
+      {
+         //set the command
+         EState s = EState::kDim;
+         newMessage->addToBody(m_keywordCommand, s);
+         newMessage->addToBody(m_keywordLevel, boost::lexical_cast<std::string>(commandDetails.SwitchLevel()));
+      }
 
       return newMessage;
    }

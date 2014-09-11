@@ -261,6 +261,15 @@ set(YADOMS_SRC
 	server/web/rest/service/Task.h
 	server/web/rest/service/Task.cpp
 	
+	server/web/ws/FrameBase.h
+	server/web/ws/FrameBase.cpp
+	server/web/ws/FrameFactory.h
+	server/web/ws/FrameFactory.cpp
+	server/web/ws/AcquisitionFilterFrame.h
+	server/web/ws/AcquisitionFilterFrame.cpp
+	server/web/ws/AcquisitionUpdateFrame.h
+	server/web/ws/AcquisitionUpdateFrame.cpp
+	
 	server/task/Scheduler.h
 	server/task/Scheduler.cpp
 	server/task/Instance.h
@@ -301,6 +310,7 @@ source_group(server\\web  server/web/*.*)
 source_group(server\\web\\rest  server/web/rest/*.*)
 source_group(server\\web\\rest\\json  server/web/rest/json/*.*)
 source_group(server\\web\\rest\\service  server/web/rest/service/*.*)
+source_group(server\\web\\ws  server/web/ws/*.*)
 source_group(server\\task  server/task/*.*)
 source_group(server\\task\\update  server/task/update/*.*)
 source_group(server\\task\\backup  server/task/backup/*.*)

@@ -19,7 +19,7 @@ namespace shared { namespace notification{
       {
          ObserverCollection::iterator i;
          for (i = m_observers.begin(); i != m_observers.end(); ++i)
-            i->second.postNotification(notif);
+            i->second.postNotification(kNotification, notif);
       }
 
       int waitForNotifications(void * observer, const boost::posix_time::time_duration& timeout = boost::date_time::pos_infin);

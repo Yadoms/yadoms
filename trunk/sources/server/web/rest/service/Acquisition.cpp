@@ -170,7 +170,9 @@ namespace web {
 
                   //using the raw data format, to optimize treatment
                   //output is "[[dateiso,data],[dateiso,data],....]"
+                  YADOMS_LOG(debug) << "Reading highchart data...";
                   std::string raw = m_dataProvider->getAcquisitionRequester()->getKeywordHighchartData(keywordId, timeFrom, timeTo);
+                  YADOMS_LOG(debug) << "Reading highchart data... OK";
                   return web::rest::CResult::GenerateSuccess(raw);
                }
                else
