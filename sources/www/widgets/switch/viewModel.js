@@ -6,7 +6,7 @@ widgetViewModelCtor =
     */
       function SwitchViewModel() {
       //observable data
-      this.command = ko.observable("on");
+      this.command = ko.observable(100);
 
       //widget identifier
       this.widget = null;
@@ -87,7 +87,7 @@ widgetViewModelCtor =
          if ((this.widget.configuration !== undefined) && (this.widget.configuration.device !== undefined)) {
             if (device == this.widget.configuration.device) {
                //it is the good device
-               self.command(data.value);
+               self.command(parseInt(data.value));
             }
          }
       };
