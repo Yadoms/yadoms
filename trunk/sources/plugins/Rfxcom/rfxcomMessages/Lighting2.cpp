@@ -136,15 +136,14 @@ void CLighting2::toProtocolState(const shared::CDataContainer& yadomsState, unsi
 {
    yApi::commands::CSwitch cmd(yadomsState);
    level = 0;
-   switch(cmd.getState()())
+   switch(cmd.switchLevel())
    {
-   case yApi::commands::CSwitch::EState::kOff : state = light2_sOff; break;
-   case yApi::commands::CSwitch::EState::kOn  : state = light2_sOn; break;
-   case yApi::commands::CSwitch::EState::kDim :
+   case 0 : state = light2_sOff; break;
+   case 100  : state = light2_sOn; break;
+   default :
       state = light2_sSetLevel;
-      level = (unsigned char) (cmd.getDimLevel()() * 0x0F / 100);   // getDimLevel returns value from 0 to 100
+      level = (unsigned char) (cmd.switchLevel() * 0x0F / 100);   // switchLevel returns value from 0 to 100
       break;
-   default: throw shared::exception::CInvalidParameter("state");
    }
 }
 
@@ -152,12 +151,11 @@ std::string CLighting2::toYadomsState(unsigned char protocolState, unsigned char
 {
    switch(protocolState)
    {
-   case light2_sOn: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kOn).format(); break;
-   case light2_sOff: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kOff).format(); break;
+   case light2_sOn: return yApi::commands::CSwitch(100).format(); break;
+   case light2_sOff: return yApi::commands::CSwitch(0).format(); break;
    case light2_sSetLevel:
       {
-         unsigned char level = (unsigned char) (protocolLevel * 100 / 0x0F);   // level needs to be from 0 to 100
-         return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kDim, level).format();
+         return yApi::commands::CSwitch(protocolLevel * 100 / 0x0F).format(); // level needs to be from 0 to 100
          break;
       }
    default:

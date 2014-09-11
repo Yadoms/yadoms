@@ -107,15 +107,15 @@ void CLighting6::buildDeviceModel()
 unsigned char CLighting6::toProtocolState(const shared::CDataContainer& yadomsState)
 {
    yApi::commands::CSwitch cmd(yadomsState);
-   return cmd.getState()() == yApi::commands::CSwitch::EState::kOff ? light6_sOff : light6_sOn;
+   return cmd.isOn() ? light6_sOn : light6_sOff;
 }
 
-std::string CLighting6::toYadomsState(unsigned char protocolState)
+std::string CLighting6::toYadomsState(unsigned char protocolState)//TODO retourner un I_Command ?
 {
    switch(protocolState)
    {
-   case light6_sOn: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kOn).format(); break;
-   case light6_sOff: return yApi::commands::CSwitch(yApi::commands::CSwitch::EState::kOff).format(); break;
+   case light6_sOn: return yApi::commands::CSwitch(100).format(); break;
+   case light6_sOff: return yApi::commands::CSwitch(0).format(); break;
    default:
       BOOST_ASSERT_MSG(false, "Invalid state");
       throw shared::exception::CInvalidParameter("state");

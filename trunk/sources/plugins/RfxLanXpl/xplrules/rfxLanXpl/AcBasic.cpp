@@ -83,7 +83,7 @@ namespace xplrules { namespace rfxLanXpl {
    // [END] IReadRule implementation
 
 
-   // ICommandRule implemntation
+   // ICommandRule implementation
    boost::shared_ptr< xplcore::CXplMessage > CAcBasic::createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand> & commandData, const std::string & rfxAddress)
    {
       ////////////////////////////
@@ -122,18 +122,18 @@ namespace xplrules { namespace rfxLanXpl {
       //set the ac.basic
       newMessage->setMessageSchemaIdentifier(getProtocol());
 
-      //set the device addesss and unit (parse from argetDevice.Address)
+      //set the device address and unit (parse from argetDevice.Address)
       newMessage->addToBody(m_keywordAddress, splittedAddress[0]);
       newMessage->addToBody(m_keywordUnit, splittedAddress[1]);
 
 
-      if (commandDetails.SwitchLevel() == 0)
+      if (commandDetails.switchLevel() == 0)
       {
          //set the command
          EState s = EState::kOff;
          newMessage->addToBody(m_keywordCommand, s);
       }
-      else if (commandDetails.SwitchLevel() == 100)
+      else if (commandDetails.switchLevel() == 100)
       {
          //set the command
          EState s = EState::kOn;
@@ -144,7 +144,7 @@ namespace xplrules { namespace rfxLanXpl {
          //set the command
          EState s = EState::kDim;
          newMessage->addToBody(m_keywordCommand, s);
-         newMessage->addToBody(m_keywordLevel, boost::lexical_cast<std::string>(commandDetails.SwitchLevel()));
+         newMessage->addToBody(m_keywordLevel, boost::lexical_cast<std::string>(commandDetails.switchLevel()));
       }
 
       return newMessage;
