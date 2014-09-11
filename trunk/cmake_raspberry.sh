@@ -26,7 +26,7 @@ case "$choice" in
 	;;
     c)
 	# cmake for cross compilation
-	cmake   -DCMAKE_YADOMS_PLATFORM=Raspberry ../sources
+	cmake   -DCMAKE_YADOMS_PLATFORM=Raspberry -DCMAKE_CXX_COMPILER=arm-linux-gnueabihf-g++ -DCMAKE_CC_COMPILER=arm-linux-gnueabihf-gcc ../sources
 	;;
 	
     e)
