@@ -159,7 +159,7 @@ namespace shared { namespace event
 
          try
          {
-            boost::shared_ptr< CEvent<DataType> > evt = boost::dynamic_pointer_cast<CEvent<DataType>>(m_lastEvent);
+            boost::shared_ptr< CEvent<DataType> > evt = boost::dynamic_pointer_cast< CEvent<DataType> >(m_lastEvent);
             return evt.get() != NULL;
          }
          catch (std::bad_cast&)
