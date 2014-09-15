@@ -17,28 +17,35 @@ namespace OpenZWave
       // Construction
       //-----------------------------------------------------------------------------
       CFatalErrorException(uint32 exitCode)
-         :std::exception(GetExceptionText(exitCode).c_str()), m_exitCode(exitCode)
+       :m_exitCode(exitCode)
       {
       }
       
-      virtual ~CFatalErrorException()
-      {
-      }
-      
+       //--------------------------------------------------------------
+       /// \brief      Destructor
+       //--------------------------------------------------------------
+       virtual ~CFatalErrorException() throw()
+       {
+       }
+
+       
       //-----------------------------------------------------------------------------
       // Accessor methods 
       //-----------------------------------------------------------------------------
       uint32 GetExitCode() { return m_exitCode; }
    
+       //--------------------------------------------------------------
+       /// \brief	    Build full message explaining exception reason
+       /// \return     message explaining exception reason
+       //--------------------------------------------------------------
+       virtual const char* what() const throw()
+       {
+           std::stringstream ss;
+           ss << m_exitCode;
+           return ss.str().c_str();
+       }
    
    private:
-      static std::string GetExceptionText(uint32 exitCode)
-      {
-         char buf[20];
-         sprintf_s( buf, sizeof(buf), "%d ", exitCode );
-         return std::string(buf);
-      }
-   
       //-----------------------------------------------------------------------------
       // Member variables
       //-----------------------------------------------------------------------------
