@@ -171,7 +171,7 @@ namespace task {
          return m_runningTasks[uniqueId];
       if (m_finishedTasks.find(uniqueId) != m_finishedTasks.end())
          return m_finishedTasks[uniqueId];
-      return NULL;
+      return boost::shared_ptr<IInstance>();
    }
 
    std::vector< boost::shared_ptr< IInstance > > CScheduler::getAllTasks()

@@ -1,4 +1,5 @@
 #pragma once
+#include "../../tools/IApplication.h"
 
 namespace tools {
 
