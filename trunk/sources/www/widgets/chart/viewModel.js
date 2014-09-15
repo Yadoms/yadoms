@@ -26,11 +26,11 @@ widgetViewModelCtor =
             },
 
             title: {
-               text: 'Data Acquisition'
+               text: ''
             },
 
             subtitle: {
-               text: 'Subtitle'
+               text: ''
             },
 
             rangeSelector : {
@@ -72,7 +72,8 @@ widgetViewModelCtor =
          });
 
          this.chart = this.$chart.highcharts();
-         this.chart.showLoading("Loading data ...");
+
+         this.chart.showLoading($.t("chart:loadingData"));
       };
 
       this.resized = function() {
@@ -85,6 +86,26 @@ widgetViewModelCtor =
 
          if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
             return;
+
+         //we update chart title
+         debugger;
+         this.chart.setTitle({text: this.widget.configuration.chartTitle});
+
+         var curve2Active = parseBool(this.widget.configuration.device2.checkbox, false);
+
+         //we create the array of colors
+         var colorArray = [];
+         if ((!isNullOrUndefined(this.widget.configuration.device1)) && (!isNullOrUndefined(this.widget.configuration.device1.content)) && (!isNullOrUndefined(this.widget.configuration.device1.content.color))) {
+            colorArray.push(this.widget.configuration.device1.content.color)
+         }
+
+         if ((!isNullOrUndefined(this.widget.configuration.device2)) && (curve2Active) && (!isNullOrUndefined(this.widget.configuration.device2.content)) && (!isNullOrUndefined(this.widget.configuration.device2.content.color))) {
+            colorArray.push(this.widget.configuration.device2.content.color)
+         }
+
+         this.chart.options.colors = colorArray;
+
+         //todo manage min and max
 
          //we ask for device information
          if (!isNullOrUndefined(this.widget.configuration.device1)) {
@@ -113,31 +134,36 @@ widgetViewModelCtor =
                   dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'years'));
                   break;
             }
-debugger;
-            /*if ((!isNullOrUndefined(this.widget.configuration.showNavigator)) && (parseBool(this.widget.configuration.showNavigator)))
-               this.chart.navigator.enabled = true;
-            else
-               this.chart.navigator.enabled = false;*/
 
-            $.getJSON("rest/acquisition/highcharts/keyword/" + this.widget.configuration.device1.content.source.keywordId + "/" + dateFrom)
-               .done(function( data ) {
-                  //we parse the json answer
-                  if (data.result != "true")
-                  {
-                     notifyError($.t("chart:errorDuringGettingDeviceData"), JSON.stringify(data));
-                     return;
-                  }
+            if ((!isNullOrUndefined(self.widget.configuration.device1)) && (!isNullOrUndefined(self.widget.configuration.device1.content))) {
 
-                  var acq = JSON.parse(data.data);
+               $.getJSON("rest/acquisition/highcharts/keyword/" + this.widget.configuration.device1.content.source.keywordId + "/" + dateFrom)
+                  .done(function( data ) {
+                     //we parse the json answer
+                     if (data.result != "true")
+                     {
+                        notifyError($.t("chart:errorDuringGettingDeviceData"), JSON.stringify(data));
+                        return;
+                     }
 
-                  self.chart.hideLoading();
-                  var serie = self.chart.get("Device1")
-                  if (!isNullOrUndefined(serie))
-                     serie.remove();
+                     var acq = JSON.parse(data.data);
 
-                  self.chart.addSeries({id:'Device1', data:acq, name:'Fisrt device (TODO)'});
-               })
-               .fail(function() {notifyError($.t("switch:errorDuringGettingDeviceInformation"));});
+                     self.chart.hideLoading();
+                     var serie = self.chart.get("Device1");
+                     if (!isNullOrUndefined(serie))
+                        serie.remove();
+
+                     self.chart.addSeries({id:'Device1', data:acq, name:'Fisrt device'});
+
+                     //we ask for device information
+                     DeviceManager.get(self.widget.configuration.device1.content.source.deviceId, function (device) {
+                        var serie = self.chart.get("Device1");
+                        if (!isNullOrUndefined(serie))
+                           self.chart.get("Device1").name = device.friendlyName;
+                     });
+                  })
+                  .fail(function() {notifyError($.t("chart:errorDuringGettingDeviceData"));});
+            }
          }
       };
 
@@ -152,7 +178,7 @@ debugger;
          if (!isNullOrUndefined(this.widget.configuration.device1)) {
             if (device == this.widget.configuration.device1.content.source) {
                   //it is the good device
-               var serie = self.chart.get("Device1")
+               var serie = self.chart.get("Device1");
                if (!isNullOrUndefined(serie))
                   this.chart.get("Device1").addPoint([data.date.valueOf(), parseFloat(data.value)]);
             }

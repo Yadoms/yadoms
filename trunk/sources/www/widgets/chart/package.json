@@ -19,6 +19,13 @@
       }
    },
    "configurationSchema": {
+      "chartTitle" : {
+         "name" : "Title of the chart",
+         "description" : "This text field represent the title of the chart displayed on the page.",
+         "type" : "string",
+         "defaultValue" : "",
+         "required" : "false"
+      },
       "interval" : {
          "name" : "Interval of the chart",
          "description" : "Permit to change the interval of all the chart",
@@ -33,11 +40,28 @@
          },
          "defaultValue" : "DAY"
       },
-      "showNavigator" : {
-         "name" : "Show navigator",
-         "description" : "Show the navigator under the chart",
-         "type" : "bool",
-         "defaultValue" : "false"
+      "customyaxisMinMax" : {
+         "type" : "section",
+         "name" : "Manually set min and max of y axis",
+         "description" : "Enabling this section allow you to set the min and max of your chart. If it is not activated min and max will be computed automatically",
+         "enableWithCheckBox" : "true",
+         "enableWithCheckBoxDefaultValue" : "false",
+         "content" : {
+            "minimumValue" : {
+               "type" : "decimal",
+               "name" : "Minimum Y axis value",
+               "description" : "Set the minimum Y Axis value",
+               "defaultValue" : "0.0",
+               "precision" : "1"
+            },
+            "maximumValue" : {
+               "type" : "decimal",
+               "name" : "Maximum Y axis value",
+               "description" : "Set the maximum Y Axis value",
+               "defaultValue" : "0.0",
+               "precision" : "1"
+            }
+         }
       },
       "device1" : {
          "type" : "section",
@@ -54,14 +78,8 @@
             "color" : {
                "name" : "Color of the plot",
                "description" : "Permit to change the color of the plot",
-               "type" : "enum",
-               "values" : {
-                  "RED" : "Red",
-                  "GREEN" : "Green",
-                  "BLUE" : "Blue",
-                  "BLACK" : "Black"
-               },
-               "defaultValue" : "BLUE"
+               "type" : "string",
+               "defaultValue" : "#0000FF"
             }
          }
       },
@@ -82,14 +100,8 @@
             "color" : {
                "name" : "Color of the plot",
                "description" : "Permit to change the color of the plot",
-               "type" : "enum",
-               "values" : {
-                  "RED" : "Red",
-                  "GREEN" : "Green",
-                  "BLUE" : "Blue",
-                  "BLACK" : "Black"
-               },
-               "defaultValue" : "BLUE"
+               "type" : "string",
+               "defaultValue" : "#FF0000"
             }
          }
       }

@@ -1,3 +1,4 @@
 {
-   "errorDuringGettingDeviceData" : "Error during getting device data"
+   "errorDuringGettingDeviceData" : "Error during getting device data",
+   "loadingData" : "Loading data"
 }
