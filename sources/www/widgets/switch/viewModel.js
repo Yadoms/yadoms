@@ -62,18 +62,11 @@ widgetViewModelCtor =
          //we ask for device information
          if ((!isNullOrUndefined(this.widget.configuration.device)) && (!isNullOrUndefined(this.widget.configuration.device.deviceId))) {
             var self = this;
-            $.getJSON("rest/device/" + this.widget.configuration.device.deviceId)
-               .done(function( data ) {
-                  //we parse the json answer
-                  if (data.result != "true")
-                  {
-                     notifyError($.t("switch:errorDuringGettingDeviceInformation"), JSON.stringify(data));
-                     return;
-                  }
-                  self.switchText(decodeURIComponent(data.data.friendlyName));
-               })
-               .fail(function() {notifyError($.t("switch:errorDuringGettingDeviceInformation"));});
+            DeviceManager.get(this.widget.configuration.device.deviceId, function (device) {
+               self.switchText(decodeURIComponent(device.friendlyName));
+            });
          }
+
       };
 
       /**

@@ -19,6 +19,23 @@ DeviceManager.factory = function(json) {
    return new Device(json.id, json.pluginId, decodeURIComponent(json.name), decodeURIComponent(json.friendlyName), json.model);
 };
 
+DeviceManager.get = function (deviceId, callback) {
+   assert(!isNullOrUndefined(deviceId), "deviceId must be defined");
+   assert($.isFunction(callback), "callback must be a function");
+
+   $.getJSON("rest/device/" + deviceId)
+      .done(function( data ) {
+         //we parse the json answer
+         if (data.result != "true")
+         {
+            notifyError($.t("objects.generic.errorGetting", {objectName : "Device with Id = " + deviceId}), JSON.stringify(data));
+            return;
+         }
+         callback(DeviceManager.factory(data.data));
+      })
+      .fail(function() {notifyError($.t("switch:errorDuringGettingDeviceInformation"));});
+}
+
 DeviceManager.getAttachedPlugin = function(device, callback) {
    assert(!isNullOrUndefined(device), "device must be defined");
    //we ask for the status of current device

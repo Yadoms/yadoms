@@ -6,5 +6,6 @@
          "description" : "Sélectionner la données à afficher dans le graphique"
       }
    },
-   "errorDuringGettingDeviceData" : "Erreur pendant la recupération de données sur le device"
+   "errorDuringGettingDeviceData" : "Erreur pendant la recupération de données sur le device",
+   "loadingData" : "Chargement des données"
 }

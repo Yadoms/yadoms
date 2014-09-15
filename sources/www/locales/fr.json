@@ -115,12 +115,12 @@
     }
   },
   "eventLogger": {
-    "default": "Evènnement inconnu : __what__ généré par $t(system.__who__)",
-    "started": "$t(system.__who__) a démarré",
-    "stopped": "$t(system.__who__) s'est arrêté",
+    "default": "Evènnement inconnu : __what__ généré par $.t(system.__who__)",
+    "started": "$.t(system.__who__) a démarré",
+    "stopped": "$.t(system.__who__) s'est arrêté",
     "yadomsCrashed": "Yadoms à planté",
     "pluginCrashed": "__who__ à planté",
-    "taskFailed": "La tâche $t(system.__who__) a planté"
+    "taskFailed": "La tâche $.t(system.__who__) a planté"
   },
   "system": {
     "yadoms": "yadoms",
