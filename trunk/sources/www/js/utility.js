@@ -94,6 +94,8 @@ function notifyError(message, errorInfo, timeout)
 }
 
 function parseBool(string, defaultValue) {
+   if (isNullOrUndefined(defaultValue))
+      defaultValue = false;
    if (string === undefined)
       return defaultValue;
    if (string == null)
