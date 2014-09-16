@@ -90,13 +90,15 @@ set(BOOST_LIBS
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 set(BOOST_INCL_DIR ${Boost_INCLUDE_DIR} ${BOOST_ROOT})
 
-## thread library (pthread)
+
+## Thread Library
 FIND_PACKAGE(Threads)
 
 ## RT Library
 if(UNIX AND NOT APPLE)
     set(RT_LIBRARY rt)
 endif()
+
 
 ## IOKIT (needed for Mac)
 if(APPLE)
