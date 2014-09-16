@@ -158,6 +158,7 @@ source_group(notification shared/shared/notification/*.* )
 ########################
 add_library(yadoms-shared SHARED  ${SHARED_LIB_SRC})
 add_precompiled_header(yadoms-shared stdafx.h)
+
 target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 
 
