@@ -40,7 +40,7 @@
          },
          "defaultValue" : "DAY"
       },
-      "customyaxisMinMax" : {
+      "customYAxisMinMax" : {
          "type" : "section",
          "name" : "Manually set min and max of y axis",
          "description" : "Enabling this section allow you to set the min and max of your chart. If it is not activated min and max will be computed automatically",

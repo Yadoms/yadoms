@@ -68,6 +68,8 @@ widgetViewModelCtor =
                minRange: 3600 * 1000 // one hour
             },
 
+            yAxis : {},
+
             series : []
          });
 
@@ -82,37 +84,59 @@ widgetViewModelCtor =
       };
 
       this.configurationChanged = function() {
-         //we update the kind observable property
+
+         var self = this;
 
          if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
             return;
 
          //we update chart title
          debugger;
-         this.chart.setTitle({text: this.widget.configuration.chartTitle});
 
-         var curve2Active = parseBool(this.widget.configuration.device2.checkbox, false);
+         try {
+            this.chart.setTitle({text: this.widget.configuration.chartTitle});
+         }
+         catch(err) {}
+
+         var curve2Active = false;
+
+         try {
+            curve2Active = parseBool(this.widget.configuration.device2.checkbox);
+         }
+         catch(err) {}
 
          //we create the array of colors
          var colorArray = [];
-         if ((!isNullOrUndefined(this.widget.configuration.device1)) && (!isNullOrUndefined(this.widget.configuration.device1.content)) && (!isNullOrUndefined(this.widget.configuration.device1.content.color))) {
+
+         try {
             colorArray.push(this.widget.configuration.device1.content.color)
          }
+         catch(err) {}
 
-         if ((!isNullOrUndefined(this.widget.configuration.device2)) && (curve2Active) && (!isNullOrUndefined(this.widget.configuration.device2.content)) && (!isNullOrUndefined(this.widget.configuration.device2.content.color))) {
-            colorArray.push(this.widget.configuration.device2.content.color)
+         if (curve2Active) {
+            try {
+               colorArray.push(this.widget.configuration.device2.content.color)
+            }
+            catch(err) {}
          }
 
          this.chart.options.colors = colorArray;
 
-         //todo manage min and max
+         try {
+            if (!parseBool(this.widget.configuration.customYAxisMinMax.checkbox)) {
+               var min = parseFloat(this.widget.configuration.customYAxisMinMax.content.minimumValue);
+               var max = parseFloat(this.widget.configuration.customYAxisMinMax.content.maximumValue);
+               this.chart.yAxis[0].setExtreme(min, max);
+            }
+         }
+         catch (err) {
+         }
 
          //we ask for device information
-         if (!isNullOrUndefined(this.widget.configuration.device1)) {
-            var self = this;
-            //we compute the date from the configuration
-            var dateFrom = "";
 
+         //we compute the date from the configuration
+         var dateFrom = "";
+         try {
             switch (this.widget.configuration.interval) {
                case "HOUR" :
                   dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'hours'));
@@ -134,36 +158,44 @@ widgetViewModelCtor =
                   dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'years'));
                   break;
             }
+         }
+         catch (err) {
+         }
 
-            if ((!isNullOrUndefined(self.widget.configuration.device1)) && (!isNullOrUndefined(self.widget.configuration.device1.content))) {
+         try {
+            $.getJSON("rest/acquisition/highcharts/keyword/" + this.widget.configuration.device1.content.source.keywordId + "/" + dateFrom)
+               .done(function( data ) {
+                  //we parse the json answer
+                  if (data.result != "true")
+                  {
+                     notifyError($.t("chart:errorDuringGettingDeviceData"), JSON.stringify(data));
+                     return;
+                  }
 
-               $.getJSON("rest/acquisition/highcharts/keyword/" + this.widget.configuration.device1.content.source.keywordId + "/" + dateFrom)
-                  .done(function( data ) {
-                     //we parse the json answer
-                     if (data.result != "true")
-                     {
-                        notifyError($.t("chart:errorDuringGettingDeviceData"), JSON.stringify(data));
-                        return;
-                     }
+                  var acq = JSON.parse(data.data);
 
-                     var acq = JSON.parse(data.data);
+                  self.chart.hideLoading();
+                  var serie = self.chart.get("Device1");
+                  if (!isNullOrUndefined(serie))
+                     serie.remove();
 
-                     self.chart.hideLoading();
-                     var serie = self.chart.get("Device1");
-                     if (!isNullOrUndefined(serie))
-                        serie.remove();
+                  self.chart.addSeries({id:'Device1', data:acq, name:'Fisrt device'});
 
-                     self.chart.addSeries({id:'Device1', data:acq, name:'Fisrt device'});
-
-                     //we ask for device information
+                  //we ask for device information
+                  try {
                      DeviceManager.get(self.widget.configuration.device1.content.source.deviceId, function (device) {
                         var serie = self.chart.get("Device1");
                         if (!isNullOrUndefined(serie))
                            self.chart.get("Device1").name = device.friendlyName;
+                        self.chart.update();
                      });
-                  })
-                  .fail(function() {notifyError($.t("chart:errorDuringGettingDeviceData"));});
-            }
+                  }
+                  catch (err2) {
+                  }
+               })
+               .fail(function() {notifyError($.t("chart:errorDuringGettingDeviceData"));});
+         }
+         catch (err) {
          }
       };
 
@@ -175,21 +207,25 @@ widgetViewModelCtor =
        */
       this.dispatch = function(device, data) {
          var self = this;
-         if (!isNullOrUndefined(this.widget.configuration.device1)) {
+         try {
             if (device == this.widget.configuration.device1.content.source) {
                   //it is the good device
                var serie = self.chart.get("Device1");
-               if (!isNullOrUndefined(serie))
-                  this.chart.get("Device1").addPoint([data.date.valueOf(), parseFloat(data.value)]);
+               this.chart.get("Device1").addPoint([data.date.valueOf(), parseFloat(data.value)]);
             }
+         }
+         catch (err) {
          }
       };
 
       this.getDevicesToListen = function() {
          var result = [];
 
-         if (!isNullOrUndefined(this.widget.configuration.device1))
+         try {
             result.push(this.widget.configuration.device1.content.source);
+         }
+         catch (err) {
+         }
 
          return result;
       };
