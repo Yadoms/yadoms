@@ -37,6 +37,15 @@ private:
    /// \brief	The ZWave controller
    //--------------------------------------------------------------
    boost::shared_ptr<IZWaveController> m_controller;
+
+public:
+
+   enum
+   {
+      kDeclareDevice = yApi::IYadomsApi::kPluginFirstEventId,
+      kUpdateKeyword
+   };
+   
 };
 
 

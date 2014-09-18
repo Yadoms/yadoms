@@ -14,6 +14,8 @@ set(ZWAVE_PLUGIN_SOURCES
 	ZWaveControllerFactory.cpp 	
 	OpenZWaveController.h
 	OpenZWaveController.cpp 
+	OpenZWaveCommandClass.h
+	OpenZWaveCommandClass.cpp 
 	${OPENZWAVE_MAIN_SOURCES}
 )
 
