@@ -38,7 +38,11 @@ namespace adapters {
             {
                m_internalValue += "[" + CSQLite3Extension::extractData<std::string>(pStatement, 0) + "],";
             }
-            m_internalValue[m_internalValue.size() - 1] = ']';
+            //check if any data
+            if (m_internalValue.size()>1)
+               m_internalValue[m_internalValue.size() - 1] = ']'; //replace the last ,
+            else
+               m_internalValue += "]"; //no data, just append closing bracket
             return true;
          }
          return false;
