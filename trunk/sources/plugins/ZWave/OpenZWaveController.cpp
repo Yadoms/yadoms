@@ -7,6 +7,10 @@
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/plugin/yadomsApi/commands/Switch.h>
 #include "command_classes/SwitchBinary.h"
+#include "Options.h"
+#include "Manager.h"
+#include "Notification.h"
+#include "Log.h"
 
 COpenZWaveController::COpenZWaveController()
    :m_homeId(0), m_initFailed(false), m_nodesQueried(false), m_configuration(NULL), m_handler(NULL)
@@ -36,10 +40,10 @@ std::string COpenZWaveController::GenerateDeviceStringID(uint32 homeId, uint8 no
    return sstr.str();
 }
 
-std::string COpenZWaveController::GenerateKeywordStringID(std::string label, uint8 instance)
+std::string COpenZWaveController::GenerateKeywordStringID(const std::string & label, const ECommandClass commandClass)
 {
    std::stringstream sstr;
-   sstr << label << "." << (int)instance;
+   sstr << label << "." << commandClass.getAsString();
    return sstr.str();
 }
 
@@ -110,20 +114,20 @@ bool COpenZWaveController::start()
          OpenZWave::Manager::Get()->WriteConfig(m_homeId);
 
          boost::lock_guard<boost::mutex> lock(m_treeMutex);
-         std::vector<COpenZWaveController::NodeInfo*>::iterator i;
+         NodeListType::iterator i;
 
          for (i = m_nodes.begin(); i != m_nodes.end(); ++i)
          {
-            COpenZWaveController::NodeInfo* nodeInfo = *i;
-            std::string sNodeName = OpenZWave::Manager::Get()->GetNodeName(nodeInfo->m_homeId, nodeInfo->m_nodeId);
-            std::string sNodeManufacturer = OpenZWave::Manager::Get()->GetNodeManufacturerName(nodeInfo->m_homeId, nodeInfo->m_nodeId);
-            std::string sNodeProductName = OpenZWave::Manager::Get()->GetNodeProductName(nodeInfo->m_homeId, nodeInfo->m_nodeId);
-            std::string sNodeProductType = OpenZWave::Manager::Get()->GetNodeProductType(nodeInfo->m_homeId, nodeInfo->m_nodeId);
-            std::string sNodeProductId = OpenZWave::Manager::Get()->GetNodeProductId(nodeInfo->m_homeId, nodeInfo->m_nodeId);
-            std::string sNodeLocation = OpenZWave::Manager::Get()->GetNodeLocation(nodeInfo->m_homeId, nodeInfo->m_nodeId);
-            std::string sNodeType = OpenZWave::Manager::Get()->GetNodeType(nodeInfo->m_homeId, nodeInfo->m_nodeId);
+            boost::shared_ptr<COpenZWaveNode> nodeInfo = *i;
+            std::string sNodeName = OpenZWave::Manager::Get()->GetNodeName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            std::string sNodeManufacturer = OpenZWave::Manager::Get()->GetNodeManufacturerName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            std::string sNodeProductName = OpenZWave::Manager::Get()->GetNodeProductName(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            std::string sNodeProductType = OpenZWave::Manager::Get()->GetNodeProductType(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            std::string sNodeProductId = OpenZWave::Manager::Get()->GetNodeProductId(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            std::string sNodeLocation = OpenZWave::Manager::Get()->GetNodeLocation(nodeInfo->getHomeId(), nodeInfo->getNodeId());
+            std::string sNodeType = OpenZWave::Manager::Get()->GetNodeType(nodeInfo->getHomeId(), nodeInfo->getNodeId());
 
-            std::string id = GenerateDeviceStringID(nodeInfo->m_homeId, nodeInfo->m_nodeId);
+            std::string id = GenerateDeviceStringID(nodeInfo->getHomeId(), nodeInfo->getNodeId());
 
             shared::CDataContainer d;
             d.set("name", id);
@@ -163,60 +167,21 @@ void COpenZWaveController::stop()
 }
 
 
-
-
-
-time_t to_time_t(boost::posix_time::ptime t)
-{
-   boost::posix_time::ptime epoch(boost::gregorian::date(1970, 1, 1));
-   boost::posix_time::time_duration::sec_type x = (t - epoch).total_seconds();
-   return time_t(x);
-}
-
-
-
-
-//-----------------------------------------------------------------------------
-// <GetNodeInfo>
-// Return the NodeInfo object associated with this notification
-//-----------------------------------------------------------------------------
-COpenZWaveController::NodeInfo* COpenZWaveController::GetNodeInfo(OpenZWave::Notification const* _notification)
-{
-   uint32 const homeId = _notification->GetHomeId();
-   uint8 const nodeId = _notification->GetNodeId();
-   return GetNodeInfo(homeId, nodeId);
-}
-
-
-COpenZWaveController::NodeInfo* COpenZWaveController::GetNodeInfo(const int homeId, const int nodeId)
-{
-   for (std::vector<NodeInfo*>::iterator it = m_nodes.begin(); it != m_nodes.end(); ++it)
-   {
-      NodeInfo* nodeInfo = *it;
-      if ((nodeInfo->m_homeId == homeId) && (nodeInfo->m_nodeId == nodeId))
-      {
-         return nodeInfo;
-      }
-   }
-
-   return NULL;
-}
-
-boost::shared_ptr<COpenZWaveController::CZWNode> COpenZWaveController::GetNode(OpenZWave::Notification const* _notification)
+boost::shared_ptr<COpenZWaveNode> COpenZWaveController::GetNode(OpenZWave::Notification const* _notification)
 {
    uint32 const homeId = _notification->GetHomeId();
    uint8 const nodeId = _notification->GetNodeId();
    return GetNode(homeId, nodeId);
 }
 
-boost::shared_ptr<COpenZWaveController::CZWNode> COpenZWaveController::GetNode(const int homeId, const int nodeId)
+boost::shared_ptr<COpenZWaveNode> COpenZWaveController::GetNode(const int homeId, const int nodeId)
 {
-   for (NodeListType::iterator it = m_allNodes.begin(); it != m_allNodes.end(); ++it)
+   for (NodeListType::iterator it = m_nodes.begin(); it != m_nodes.end(); ++it)
    {
       if ((*it)->match(homeId, nodeId))
          return *it;
    }
-   return boost::shared_ptr<COpenZWaveController::CZWNode>();
+   return boost::shared_ptr<COpenZWaveNode>(NULL);
 }
 
 
@@ -231,27 +196,8 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
 
 
    //get all glocbal informations (for all notifications)
-   time_t updateTime = to_time_t(boost::posix_time::second_clock::universal_time());
-
    OpenZWave::ValueID vID = _notification->GetValueID();
    ECommandClass commandClass((int)vID.GetCommandClassId());
-   unsigned char instance;
-   switch (commandClass())
-   {
-   case  ECommandClass::kMultiInstance:
-   case  ECommandClass::kSensorMultilevel:
-   case  ECommandClass::kThermostatSetpoint:
-   case  ECommandClass::kSensorBinary:
-      instance = vID.GetIndex();
-      break;
-   default:
-      instance = vID.GetInstance();
-      break;
-   }
-
-
-
-
 
 
    switch (_notification->GetType())
@@ -259,46 +205,18 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
    case OpenZWave::Notification::Type_ValueAdded:
    {
 
-      boost::shared_ptr<COpenZWaveController::CZWNode> node = GetNode(_notification);
+      boost::shared_ptr<COpenZWaveNode> node = GetNode(_notification);
       if (node)
-      {
          node->registerCapacity(commandClass);
-      }
-
-      //if (NodeInfo* nodeInfo = GetNodeInfo(_notification))
-      //{
-      //   // Add the new value to our list
-      //   nodeInfo->Instances[instance][commandClass].Values.push_back(vID);
-      //   nodeInfo->m_LastSeen = updateTime;
-      //   nodeInfo->Instances[instance][commandClass].m_LastSeen = updateTime;
-      //
-      //   
-      //}
       break;
    }
 
    case OpenZWave::Notification::Type_ValueRemoved:
-   {
-      //if (NodeInfo* nodeInfo = GetNodeInfo(_notification))
-      //{
-      //   // Remove the value from out list
-      //   for (std::list<OpenZWave::ValueID>::iterator it = nodeInfo->Instances[instance][commandClass].Values.begin(); it != nodeInfo->Instances[instance][commandClass].Values.end(); ++it)
-      //   {
-      //      if ((*it) == vID)
-      //      {
-      //         nodeInfo->Instances[instance][commandClass()].Values.erase(it);
-      //         nodeInfo->Instances[instance][commandClass()].m_LastSeen = updateTime;
-      //         nodeInfo->m_LastSeen = updateTime;
-      //         break;
-      //      }
-      //   }
-      //}
       break;
-   }
 
    case OpenZWave::Notification::Type_ValueChanged:
    {
-      boost::shared_ptr<COpenZWaveController::CZWNode> node = GetNode(_notification);
+      boost::shared_ptr<COpenZWaveNode> node = GetNode(_notification);
       if (node)
       {
          OpenZWave::ValueID::ValueType vType = vID.GetType();
@@ -309,12 +227,11 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
             std::string id = GenerateDeviceStringID(node->getHomeId(), node->getNodeId());
             std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
             std::string vUnits = OpenZWave::Manager::Get()->GetValueUnits(vID);
-            std::string keywordId = GenerateKeywordStringID(vLabel, instance);
+            std::string keywordId = GenerateKeywordStringID(vLabel, commandClass);
 
-            node->registerKeyword(commandClass, keywordId, vID);
+            node->registerKeyword(commandClass, vLabel, vID);
 
-            std::string stringvalue;
-            OpenZWave::Manager::Get()->GetValueAsString(vID, &stringvalue);
+            std::string stringvalue = node->getLastKeywordValue(commandClass, vLabel);
 
             shared::CDataContainer d;
             d.set("device", id);
@@ -374,17 +291,6 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
                m_handler->postEvent(CZWave::kUpdateKeyword, d);
          }
       }
-
-
-      // One of the node values has changed
-     // if (m_nodesQueried)
-         if (NodeInfo* nodeInfo = GetNodeInfo(_notification))
-         {
-
-
-         
-
-         }
       break;
    }
 
@@ -400,14 +306,7 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
 
    case OpenZWave::Notification::Type_NodeAdded:
    {
-      m_allNodes.push_back(boost::shared_ptr<CZWNode>(new CZWNode(_notification->GetHomeId(), _notification->GetNodeId())));
-
-      // Add the new node to our list
-      //NodeInfo* nodeInfo = new NodeInfo();
-      //nodeInfo->m_homeId = _notification->GetHomeId();
-      //nodeInfo->m_nodeId = _notification->GetNodeId();
-      //nodeInfo->m_polled = false;
-      //m_nodes.push_back(nodeInfo);
+      m_nodes.push_back( boost::shared_ptr<COpenZWaveNode>( new COpenZWaveNode(_notification->GetHomeId(), _notification->GetNodeId())));
       break;
    }
 
@@ -415,29 +314,14 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
    {
       uint32 const homeId = _notification->GetHomeId();
       uint8 const nodeId = _notification->GetNodeId();
-      for (NodeListType::iterator i = m_allNodes.begin(); i != m_allNodes.end(); ++i)
+      for (NodeListType::iterator i = m_nodes.begin(); i != m_nodes.end(); ++i)
       {
          if ((*i)->match(homeId, nodeId))
          {
-            m_allNodes.erase(i);
+            m_nodes.erase(i);
             break;
          }
       }
-
-
-      // Remove the node from our list
-      //uint32 const homeId = _notification->GetHomeId();
-      //uint8 const nodeId = _notification->GetNodeId();
-      //for (std::vector<NodeInfo*>::iterator it = m_nodes.begin(); it != m_nodes.end(); ++it)
-      //{
-      //   NodeInfo* nodeInfo = *it;
-      //   if ((nodeInfo->m_homeId == homeId) && (nodeInfo->m_nodeId == nodeId))
-      //   {
-      //      m_nodes.erase(it);
-      //      delete nodeInfo;
-      //      break;
-      //   }
-      //}
       break;
    }
 
@@ -488,9 +372,10 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
    }
 
 }
-
+   /*
 bool COpenZWaveController::GetValueByCommandClass(const int homeId, const int nodeID, const int instanceID, const int commandClass, OpenZWave::ValueID &nValue)
 {
+
    COpenZWaveController::NodeInfo *pNode = GetNodeInfo(homeId, nodeID);
    if (!pNode)
       return false;
@@ -506,73 +391,48 @@ bool COpenZWaveController::GetValueByCommandClass(const int homeId, const int no
    }
    return false;
 }
+*/
 
-
-void COpenZWaveController::SendCommand(const std::string & device, const std::string & keyword, const std::string & value)
+void COpenZWaveController::RetreiveOpenZWaveIds(const std::string & device, const std::string & keyword,
+   int & homeId, uint8 & nodeId, std::string & keywordName, ECommandClass & keywordClass)
 {
-   // Must do this inside a critical section to avoid conflicts with the main thread
-   boost::lock_guard<boost::mutex> lock(m_treeMutex);
-
    std::vector<std::string> splittedDevice;
    boost::split(splittedDevice, device, boost::is_any_of("."), boost::token_compress_on);
    if (splittedDevice.size() != 2)
    {
       throw shared::exception::CException("The device id is invalid : not matching pattern : <homeId>-<nodeId> ");
    }
-   int homeId = boost::lexical_cast<int>(splittedDevice[0]);
-   uint8 nodeId = atoi(splittedDevice[1].c_str()); //dont use lexical cast for uint8, becuase it realize a string to char conversion: "2" is transform in '2' = 0x32
+   homeId = boost::lexical_cast<int>(splittedDevice[0]);
+   nodeId = atoi(splittedDevice[1].c_str()); //dont use lexical cast for uint8, becuase it realize a string to char conversion: "2" is transform in '2' = 0x32
 
    std::vector<std::string> splittedKeyword;
    boost::split(splittedKeyword, keyword, boost::is_any_of("."), boost::token_compress_on);
    if (splittedKeyword.size() != 2)
    {
-      throw shared::exception::CException("The keyword id is invalid : not matching pattern : <label>-<instance> ");
+      throw shared::exception::CException("The keyword id is invalid : not matching pattern : <label>-<class> ");
    }
-   std::string label = splittedKeyword[0];
-   uint8 instance = atoi(splittedKeyword[1].c_str()); //dont use lexical cast for uint8, becuase it realize a string to char conversion: "2" is transform in '2' = 0x32
+   keywordName = splittedKeyword[0];
+   keywordClass.setFromString(splittedKeyword[1]);
+
+}
+
+void COpenZWaveController::SendCommand(const std::string & device, const std::string & keyword, const std::string & value)
+{
+   boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+   int homeId;
+   uint8 nodeId;
+   std::string keywordName;
+   ECommandClass keywordClass;
+
+   RetreiveOpenZWaveIds(device, keyword, homeId, nodeId, keywordName, keywordClass);
 
    //TODO : gerer les autres type
-   boost::shared_ptr<COpenZWaveController::CZWNode> node = GetNode(homeId, nodeId);
+   boost::shared_ptr<COpenZWaveNode> node = GetNode(homeId, nodeId);
    if (node)
    {
-      //objectif
-      //node->SendCommand(keyword, value);
-
-
-      OpenZWave::ValueID vID = node->getValueId(ECommandClass::kSwitchBinary, keyword);
-
-      shared::plugin::yadomsApi::commands::CSwitch commandDetails(value); 
-      OpenZWave::Manager::Get()->SetValue(vID, commandDetails.isOn());
-
-      //boost::shared_ptr<OpenZWave::SwitchBinary> sb = boost::dynamic_pointer_cast<OpenZWave::SwitchBinary>((*node)[ECommandClass::kSwitchBinary]->get());
-
-      
-      YADOMS_LOG(info) << "ZWave peripheral command : " << (commandDetails.isOn() ? "On" : "Off");
-      
-      //OpenZWave::ValueBool vb;
-      //vb.Set(commandDetails.isOn());
-
-      
-      //sb->SetValue(vb);
+      node->sendCommand(keywordClass, keywordName, value);
    }
-
-
-   //OpenZWave::ValueID vID(0, 0, OpenZWave::ValueID::ValueGenre_Basic, 0, 0, 0, OpenZWave::ValueID::ValueType_Bool);
-   //GetValueByCommandClass(homeId, nodeId, instance, (uint8)ECommandClass::kSwitchBinary, vID);
-   //
-   ////read command details (may throw exception if something is wrong)
-   //shared::plugin::yadomsApi::commands::CSwitch commandDetails(value);
-   //YADOMS_LOG(info) << "ZWave peripheral command : " << (commandDetails.isOn()?"On":"Off");
-   //OpenZWave::Manager::Get()->SetValue(vID, commandDetails.isOn());
-   //
-   //
-   //OpenZWave::Manager::Get()->RequestAllConfigParams(homeId, nodeId);
-   /*
-   OpenZWave::Manager::Get()->RefreshValue(vID);
-
-   std::string stringvalue;
-   OpenZWave::Manager::Get()->GetValueAsString(vID, &stringvalue);
-   YADOMS_LOG(info) << "ZWave peripheral value : " << stringvalue;*/
 }
 
 
