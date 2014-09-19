@@ -15,7 +15,18 @@ set(ZWAVE_PLUGIN_SOURCES
 	OpenZWaveController.h
 	OpenZWaveController.cpp 
 	OpenZWaveCommandClass.h
-	OpenZWaveCommandClass.cpp 
+	OpenZWaveCommandClass.cpp 	
+	IOpenZWaveNodeKeyword.h
+	OpenZWaveNode.h
+	OpenZWaveNode.cpp 
+	OpenZWaveNodeCapacity.h
+	OpenZWaveNodeCapacity.cpp 
+	OpenZWaveNodeKeywordBase.h
+	OpenZWaveNodeKeywordBase.cpp 
+	OpenZWaveNodeKeywordSwitch.h
+	OpenZWaveNodeKeywordSwitch.cpp 
+	OpenZWaveNodeKeywordFactory.h
+	OpenZWaveNodeKeywordFactory.cpp 
 	${OPENZWAVE_MAIN_SOURCES}
 )
 
