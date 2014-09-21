@@ -3,6 +3,7 @@
 #include "IOpenZWaveNodeKeyword.h"
 #include "Value.h"
 #include "Manager.h"
+#include <shared/exception/OutOfRange.hpp>
 
 //--------------------------------------------------------------
 /// \brief	    Base class for keywords
