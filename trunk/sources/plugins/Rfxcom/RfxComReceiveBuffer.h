@@ -30,6 +30,12 @@ public:
    bool isComplete() const;
 
    //--------------------------------------------------------------
+   /// \brief	                     Check if buffer is empty
+   /// \return                      true if empty
+   //--------------------------------------------------------------
+   bool isEmpty() const;
+
+   //--------------------------------------------------------------
    /// \brief	                     Append data into buffer
    /// \param[in] toAppend          Data to append to buffer
    //--------------------------------------------------------------

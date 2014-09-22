@@ -34,6 +34,13 @@ public:
 
 protected:
    //--------------------------------------------------------------
+   /// \brief	                     Send a message to the RFXCom
+   /// \param [in] buffer           Buffer to send
+   /// \param [in] needAnswer       true if answer is needed. If true, a timeout will occur if no answer is received.
+   //--------------------------------------------------------------
+   void send(const CByteBuffer& buffer, bool needAnswer = false);
+
+   //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] command          The received command (JSON string)
@@ -77,11 +84,17 @@ protected:
    void initRfxcom();
 
    //--------------------------------------------------------------
+   /// \brief	                     Process error (disconnect and retry connect later)
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   //--------------------------------------------------------------
+   void errorProcess(boost::shared_ptr<yApi::IYadomsApi> context);
+
+   //--------------------------------------------------------------
    /// \brief	                     Process received status message from RFXCom
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] status           Received status
    //--------------------------------------------------------------
-   void processRfxcomStatusMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status) const;
+   void processRfxcomStatusMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status);
 
    //--------------------------------------------------------------
    /// \brief	                     Process received ack message from RFXCom
@@ -116,9 +129,14 @@ private:
    CRfxcommReceiveBuffer m_receiveBuffer;
 
    //--------------------------------------------------------------
+   /// \brief	Wait for answer timer
+   //--------------------------------------------------------------
+   boost::shared_ptr<shared::event::CEventTimer> m_waitForAnswerTimer;
+
+   //--------------------------------------------------------------
    /// \brief	The RFXCom receive buffer clear timeout
    //--------------------------------------------------------------
-   shared::event::CEventTimer m_receiveBufferClearTimer;
+   boost::shared_ptr<shared::event::CEventTimer> m_receiveBufferClearTimer;
 
    //--------------------------------------------------------------
    /// \brief	The state machine

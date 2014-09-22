@@ -37,7 +37,6 @@ void CSmsDialer::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 
       // Create the phone instance
       m_phone = CSmsDialerFactory::constructPhone(m_configuration);
-      m_device = m_phone->getUniqueId();
 
       // the main loop
       YADOMS_LOG(debug) << "CSmsDialer is running...";
@@ -140,6 +139,7 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYadomsApi> conte
    m_connectionTimer->stop();
 
    // First, declare device to Yadoms
+   m_device = m_phone->getUniqueId();
    declareDevice(context);
 
    // Next, unlock phone
@@ -169,7 +169,7 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYadomsApi> conte
          case yApi::IYadomsApi::kEventDeviceCommand:
             {
                // Command received
-               boost::shared_ptr<yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceCommand> >();
+               boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
                YADOMS_LOG(debug) << "Command received :" << command->toString();
 
                if (command->getKeyword() == m_powerKeyword.getKeyword())
