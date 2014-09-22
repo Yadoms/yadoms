@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ILoad.h"
+#include "LoadKeyword.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -14,78 +15,29 @@ class CWindowsSystemDiskUsage : public ILoad
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
-   /// \param[in] deviceId    The device ID
+   /// \param[in] device      The device
+   /// \param[in] keywordName The keyword name
    /// \param[in] driveName   The drive name ex: C:\
    //--------------------------------------------------------------
-   CWindowsSystemDiskUsage(const std::string & deviceId, const std::string & driveName);
-
-   //--------------------------------------------------------------
-   /// \brief	    Initialize the configuration of variable
-   //--------------------------------------------------------------
-   virtual void Initialize();
-
-   //--------------------------------------------------------------
-   /// \brief	    Constructor
-   /// \param[in] deviceId    The device ID
-   /// \param[in] driveName   The drive name ex: C:\
-   /// \param[in] KeywordName The keyword Name for registration of this sensor
-   //--------------------------------------------------------------
-
-   CWindowsSystemDiskUsage(const std::string & deviceId, const std::string & driveName, const std::string & Keyword);
+   CWindowsSystemDiskUsage(const std::string & device, const std::string & keywordName, const std::string & driveName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CWindowsSystemDiskUsage();
 
-   //--------------------------------------------------------------
-   /// \brief	    Returns the sensor device ID
-   /// \return     Device ID
-   //--------------------------------------------------------------
-   virtual const std::string& getDeviceId() const;
-
-   //--------------------------------------------------------------
-   /// \brief	            Declare the device and its associated keywords
-   /// \param[in] context  YadomsApi context to which declare the device
-   //--------------------------------------------------------------
-   void declareDevice(boost::shared_ptr<yApi::IYadomsApi> context);
-
-   //--------------------------------------------------------------
-   /// \brief	            Send all sensor data to Yadoms
-   /// \param[in] context  YadomsApi context to which historize data
-   //--------------------------------------------------------------
-   void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
-
-   //--------------------------------------------------------------
-   /// \brief	    Returns read (computed) Disk usage
-   /// \return     Disk Usage in %
-   //--------------------------------------------------------------
-   virtual double getValue();
-
-   //--------------------------------------------------------------
-   /// \brief	    Returns the Capacity String
-   /// \return     Device ID
-   //--------------------------------------------------------------
-   const std::string& getCapacity() const;
-
-   //--------------------------------------------------------------
-   /// \brief	    Returns the Keyword String
-   /// \return     Device ID
-   //--------------------------------------------------------------
-   const std::string& getKeyword() const;
-
-   //--------------------------------------------------------------
-   /// \brief	    Returns the Drive Name
-   /// \return     Drive Name
-   //--------------------------------------------------------------
-   const std::string& getDriveName() const;
+   // ILoad Implementation
+   virtual void declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context);
+   virtual void read();
+   virtual void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
+   // [END] ILoad Implementation
 
 private:
 
    //--------------------------------------------------------------
-   /// \brief	    Device ID
+   /// \brief	    Device
    //--------------------------------------------------------------
-   const std::string m_deviceId;
+   const std::string m_device;
 
    //--------------------------------------------------------------
    /// \brief	    Disk Name
@@ -93,18 +45,8 @@ private:
    const std::string m_driveName;
 
    //--------------------------------------------------------------
-   /// \brief	    Value of the Disk Usage in %
+   /// \brief	    Keyword
    //--------------------------------------------------------------
-   double m_diskUsage;
-
-   //--------------------------------------------------------------
-   /// \brief	    Capacity string
-   //--------------------------------------------------------------
-   const std::string m_Capacity;
-
-   //--------------------------------------------------------------
-   /// \brief	    Keyword string
-   //--------------------------------------------------------------
-   const std::string m_Keyword;
+   CLoadKeyword m_keyword;
 };
 

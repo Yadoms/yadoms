@@ -1,38 +1,50 @@
 #include "stdafx.h"
 #include "Switch.h"
 #include "../StandardValues.h"
+#include "../StandardCapacities.h"
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/Log.h>
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
 
-CSwitch::CSwitch(const shared::CDataContainer& command)
-   :m_switchLevel(0)
-{
-   try
-   {
-      m_switchLevel = NormalizeLevel(command.get<int>("level"));
-   }
-   catch (boost::property_tree::ptree_bad_path& e)
-   {
-      BOOST_ASSERT_MSG(false, "Invalid switch command");
-      throw shared::exception::CInvalidParameter("Invalid switch command \"" + command.serialize() + "\" : " + e.what());
-   }
-   catch (boost::property_tree::ptree_bad_data& e)
-   {
-      BOOST_ASSERT_MSG(false, "Invalid switch command");
-      throw shared::exception::CInvalidParameter("Invalid switch command \"" + command.serialize() + "\" : " + e.what());
-   }
-}
-
-CSwitch::CSwitch(int switchLevel)
-   :m_switchLevel(NormalizeLevel(switchLevel))
+CSwitch::CSwitch(const std::string& keywordName)
+   :m_keywordName(keywordName), m_switchLevel(0)
 {
 }
 
 CSwitch::~CSwitch()
 {
+}
+
+const std::string& CSwitch::getKeyword() const
+{
+   return m_keywordName;
+}
+
+const CStandardCapacity& CSwitch::getCapacity() const
+{
+   return CStandardCapacities::Switch;
+}
+
+void CSwitch::set(const shared::CDataContainer& yadomsCommand)
+{
+   m_switchLevel = NormalizeLevel(yadomsCommand.get<int>("level"));
+}
+
+void CSwitch::set(bool isOn)
+{
+   m_switchLevel = isOn ? 100 : 0;
+}
+
+void CSwitch::set(int switchLevel)
+{
+   m_switchLevel = NormalizeLevel(switchLevel);
+}
+
+const std::string CSwitch::formatValue() const
+{
+   return boost::lexical_cast<std::string>(switchLevel());
 }
 
 int CSwitch::NormalizeLevel(int level)
@@ -44,7 +56,7 @@ int CSwitch::NormalizeLevel(int level)
    return level;
 }
 
-const CField<int>& CSwitch::switchLevel() const
+int CSwitch::switchLevel() const
 {
    return m_switchLevel;
 }
@@ -52,13 +64,6 @@ const CField<int>& CSwitch::switchLevel() const
 bool CSwitch::isOn() const
 {
    return (m_switchLevel >= 50) ? true : false;
-}
-
-std::string CSwitch::format() const
-{
-   shared::CDataContainer yadomsCommand;
-   yadomsCommand.set("level", switchLevel());
-   return yadomsCommand.serialize();
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

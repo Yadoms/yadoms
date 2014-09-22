@@ -6,23 +6,24 @@
 #include "IHistorizable.h"
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
-{   
+{
    //-----------------------------------------------------
-   ///\brief A switch historizable object
+   ///\brief A rssi (signal strength) historizable object
+   ///\note Rssi value is read-only
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CSwitch : public IHistorizable
+   class YADOMS_SHARED_EXPORT CRssi : public IHistorizable
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CSwitch(const std::string& keywordName);
+      CRssi(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CSwitch();
+      virtual ~CRssi();
 
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
@@ -31,44 +32,24 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       // [END] IHistorizable implementation
 
       //-----------------------------------------------------
-      ///\brief                     Set value from Yadoms command
-      ///\param[in] yadomsCommand   Yadoms command container
-      ///\throw                     shared::exception::CInvalidParameter or COutOfRange if fail to parse command
-      //-----------------------------------------------------
-      void set(const shared::CDataContainer& yadomsCommand);
-
-      //-----------------------------------------------------
-      ///\brief                     Set value from on/off state
-      ///\param[in] isOn            switch on/off state (true = on)
-      //-----------------------------------------------------
-      void set(bool isOn);
-
-      //-----------------------------------------------------
       ///\brief                     Set value
-      ///\param[in] dimLevel        switch level (0-100)
-      ///\throw                     shared::exception::CInvalidParameter if fail to parse command
+      ///\param[in] rssi            Rssi (0-100)
       //-----------------------------------------------------
-      void set(int dimLevel);
+      void set(int rssi);
 
       //-----------------------------------------------------
-      ///\brief                     Get the switch level
-      ///\return                    The switch level (0-100)
+      ///\brief                     Get rssi
+      ///\return                    The rssi (0-100)
       //-----------------------------------------------------
-      int switchLevel() const;
-
-      //-----------------------------------------------------
-      ///\brief                     Get the switch on/off state
-      ///\return                    The switch state (considered as ON if switchLevel >= 50)
-      //-----------------------------------------------------
-      bool isOn() const;
+      int rssi() const;
 
    protected:
       //-----------------------------------------------------
-      ///\brief                     Normalize the switch level value
-      ///\param[in] level           Raw switch level
-      ///\return                    The normalized switch level (0-100)
+      ///\brief                     Normalize the value
+      ///\param[in] level           Raw value
+      ///\return                    The normalized value (0-100)
       //-----------------------------------------------------
-      static int NormalizeLevel(int level);
+      static int Normalize(int value);
 
    private:
       //-----------------------------------------------------
@@ -77,9 +58,9 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       const std::string m_keywordName;
 
       //-----------------------------------------------------
-      ///\brief                     The switch level (0-100)
+      ///\brief                     The rssi value (0-100)
       //-----------------------------------------------------
-      int m_switchLevel;
+      int m_rssi;
    };
 
 

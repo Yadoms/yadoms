@@ -3,13 +3,15 @@
 #include <shared/DataContainer.h>
 #include <shared/enumeration/EnumHelpers.hpp>
 #include <shared/Field.hpp>
+#include "IHistorizable.h"
+#include <boost/foreach.hpp>
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
    //-----------------------------------------------------
-   ///\brief The curtain command parser
+   ///\brief A curtain historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CCurtain
+   class YADOMS_SHARED_EXPORT CCurtain : public IHistorizable
    {
    public:
       //-----------------------------------------------------
@@ -23,37 +25,47 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 
    public:
       //-----------------------------------------------------
-      ///\brief                     Constructor from formated command
-      ///\param[in] yadomsCommand   Yadoms command container
-      ///\throw                     shared::exception::CInvalidParameter if fail to parse command
+      ///\brief                     Constructor
+      ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CCurtain(const shared::CDataContainer& yadomsCommand);
-
-      //-----------------------------------------------------
-      ///\brief                     Constructor from raw data
-      ///\param[in] command         Yadoms command, as JSON string
-      ///\throw                     shared::exception::CInvalidParameter if fail to parse command
-      //-----------------------------------------------------
-      CCurtain(ECommand state);
+      CCurtain(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
       virtual ~CCurtain();
 
+      // IHistorizable implementation
+      virtual const std::string& getKeyword() const;
+      virtual const CStandardCapacity& getCapacity() const;
+      virtual const std::string formatValue() const;
+      // [END] IHistorizable implementation
+
+      //-----------------------------------------------------
+      ///\brief                     Set value from Yadoms command
+      ///\param[in] yadomsCommand   Yadoms command container
+      ///\throw                     shared::exception::CInvalidParameter or COutOfRange if fail to parse command
+      //-----------------------------------------------------
+      void set(const shared::CDataContainer& yadomsCommand);
+
+      //-----------------------------------------------------
+      ///\brief                     Set value
+      ///\param[in] command         Curtain command
+      //-----------------------------------------------------
+      void set(ECommand command);
+
       //-----------------------------------------------------
       ///\brief                     Get the command value
       ///\return                    The command value
       //-----------------------------------------------------
-      const CField<ECommand>& command() const;
-
-      //-----------------------------------------------------
-      ///\brief                     Format data to Yadoms format
-      ///\return                    Formatted data
-      //-----------------------------------------------------
-      std::string format() const;
+      const ECommand command() const;
 
    private:
+      //-----------------------------------------------------
+      ///\brief                     The keyword name
+      //-----------------------------------------------------
+      const std::string m_keywordName;
+
       //-----------------------------------------------------
       ///\brief               The command value
       //-----------------------------------------------------

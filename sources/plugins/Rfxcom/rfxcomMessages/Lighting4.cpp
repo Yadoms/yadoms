@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Lighting4.h"
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/commands/Switch.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 // Shortcut to yadomsApi namespace
@@ -10,30 +9,53 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CLighting4::CLighting4(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+CLighting4::CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+   :m_state("state"), m_rssi("rssi")
 {
+   m_state.set(100);
+   m_rssi.set(0);
+
    m_subType = deviceParameters.get<unsigned char>("subType");
    m_id = deviceParameters.get<unsigned int>("id");
-   m_rssi = 0;
 
-   buildDeviceModel();
-   buildDeviceName();
+   Init(context);
 }
 
-CLighting4::CLighting4(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CLighting4::CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+   :m_state("state"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeLighting4, GET_RBUF_STRUCT_SIZE(LIGHTING4), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.LIGHTING4.subtype;
    m_id = rbuf.LIGHTING4.cmd1 << 16 | rbuf.LIGHTING4.cmd2 << 8 | rbuf.LIGHTING4.cmd3;
-   m_rssi = rbuf.LIGHTING4.rssi;
+   m_state.set(100);
+   m_rssi.set(rbuf.LIGHTING4.rssi * 100 / 0x0F);
 
-   buildDeviceModel();
-   buildDeviceName();
+   Init(context);
 }
 
 CLighting4::~CLighting4()
 {
+}
+
+void CLighting4::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   // Build device description
+   buildDeviceModel();
+   buildDeviceName();
+
+   // Create device and keywords if needed
+   if (!context->deviceExists(m_deviceName))
+   {
+      shared::CDataContainer details;
+      details.set("type", pTypeLighting4);
+      details.set("subType", m_subType);
+      details.set("id", m_id);
+      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+
+      context->declareKeyword(m_deviceName, m_state);
+      context->declareKeyword(m_deviceName, m_rssi);
+   }
 }
 
 const CByteBuffer CLighting4::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
@@ -59,20 +81,8 @@ const CByteBuffer CLighting4::encode(boost::shared_ptr<ISequenceNumberProvider> 
 
 void CLighting4::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   if (!context->deviceExists(m_deviceName))
-   {
-      shared::CDataContainer details;
-      details.set("type", pTypeLighting4);
-      details.set("subType", m_subType);
-      details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
-
-      context->declareKeyword(m_deviceName, "cmdId", yApi::CStandardCapacities::Switch);
-      context->declareKeyword(m_deviceName, "rssi", yApi::CStandardCapacities::Rssi);
-   }
-
-   context->historizeData(m_deviceName, "cmdId", boost::lexical_cast<std::string>(m_id));
-   context->historizeData(m_deviceName, "rssi", m_rssi);
+   context->historizeData(m_deviceName, m_state);
+   context->historizeData(m_deviceName, m_rssi);
 }
 
 void CLighting4::buildDeviceName()

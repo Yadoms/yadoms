@@ -3,57 +3,36 @@
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/Log.h>
 
-CWindowsSystemMemoryLoad::CWindowsSystemMemoryLoad(const std::string & deviceId)
-   :m_deviceId(deviceId), m_memoryLoad(0), m_Capacity("MemoryLoad"), m_Keyword("WindowsMemoryLoad")
-{}
-
-void CWindowsSystemMemoryLoad::Initialize()
-{}
+CWindowsSystemMemoryLoad::CWindowsSystemMemoryLoad(const std::string & device)
+   :m_device(device), m_keyword("MemoryLoad")
+{
+}
 
 CWindowsSystemMemoryLoad::~CWindowsSystemMemoryLoad()
-{}
-
-const std::string& CWindowsSystemMemoryLoad::getDeviceId() const
 {
-   return m_deviceId;
 }
 
-const std::string& CWindowsSystemMemoryLoad::getCapacity() const
+void CWindowsSystemMemoryLoad::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
 {
-   return m_Capacity;
-}
-
-const std::string& CWindowsSystemMemoryLoad::getKeyword() const
-{
-   return m_Keyword;
-}
-
-void CWindowsSystemMemoryLoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
-{
-   // Declare the device
-   context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
-
-   // Declare associated keywords (= values managed by this device)
-   context->declareCustomKeyword(m_deviceId, getKeyword(), getCapacity(), yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::Percent);
+   context->declareKeyword(m_device, m_keyword);
 }
 
 void CWindowsSystemMemoryLoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   BOOST_ASSERT_MSG(context, "context must be defined");
+   BOOST_ASSERT_MSG(!!context, "context must be defined");
 
-   context->historizeData(m_deviceId, getKeyword()  , m_memoryLoad);
+   context->historizeData(m_device, m_keyword);
 }
 
-double CWindowsSystemMemoryLoad::getValue()
+void CWindowsSystemMemoryLoad::read()
 {
    MEMORYSTATUSEX statex;
 
    statex.dwLength = sizeof (statex);
 
-   if (GlobalMemoryStatusEx (&statex))
-      m_memoryLoad = (double(statex.ullTotalPhys - statex.ullAvailPhys)*100 / statex.ullTotalPhys );
-   else
+   if (!GlobalMemoryStatusEx (&statex))
    {
       std::stringstream Message;
       Message << "Fail to read Windows system memory size :";
@@ -61,7 +40,8 @@ double CWindowsSystemMemoryLoad::getValue()
       throw shared::exception::CException ( Message.str() );
    }
 
-   return m_memoryLoad;
+   m_keyword.set((float(statex.ullTotalPhys - statex.ullAvailPhys)*100 / statex.ullTotalPhys));
+   YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  Memory Load : " << m_keyword.formatValue();
 }
 
 

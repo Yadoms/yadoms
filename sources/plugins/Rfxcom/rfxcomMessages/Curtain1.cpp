@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Curtain1.h"
-#include <shared/plugin/yadomsApi/commands/Curtain.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 // Shortcut to yadomsApi namespace
@@ -9,32 +8,36 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CCurtain1::CCurtain1(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+   :m_state("state")
 {
+   m_state.set(command);
+
    m_subType = deviceParameters.get<unsigned char>("subType");
    m_houseCode = deviceParameters.get<unsigned char>("houseCode");
    m_unitCode = deviceParameters.get<unsigned char>("unitCode");
-   m_state = toProtocolState(command);
 
-   buildDeviceModel();
-   buildDeviceName();
+   Init(context);
 }
 
-CCurtain1::CCurtain1(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+   :m_state("state")
 {
-   CheckReceivedMessage(rbuf, pTypeCurtain, GET_RBUF_STRUCT_SIZE(CURTAIN1), DONT_CHECK_SEQUENCE_NUMBER);
-   
-   m_subType = rbuf.CURTAIN1.subtype;
-   m_houseCode = rbuf.CURTAIN1.housecode;
-   m_unitCode = rbuf.CURTAIN1.unitcode;
-   m_state = rbuf.CURTAIN1.cmnd;
-
-   buildDeviceModel();
-   buildDeviceName();
+   // Should not be called (transmitter-only device)
+   BOOST_ASSERT_MSG(false, "Constructing CCurtain1 object from received buffer is not possible, Curtain1 is transmitter-only device");
 }
 
 CCurtain1::~CCurtain1()
 {
+}
+
+void CCurtain1::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   // Build device description
+   buildDeviceModel();
+   buildDeviceName();
+
+   // Nothing to declare (transmitter-only device)
 }
 
 const CByteBuffer CCurtain1::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
@@ -48,7 +51,7 @@ const CByteBuffer CCurtain1::encode(boost::shared_ptr<ISequenceNumberProvider> s
    buffer.CURTAIN1.seqnbr = seqNumberProvider->next();
    buffer.CURTAIN1.housecode = m_houseCode;
    buffer.CURTAIN1.unitcode = m_unitCode;
-   buffer.CURTAIN1.cmnd = m_state;
+   buffer.CURTAIN1.cmnd = toProtocolState(m_state);
    buffer.CURTAIN1.filler = 0;
 
    return CByteBuffer((BYTE*)&buffer, GET_RBUF_STRUCT_SIZE(CURTAIN1));
@@ -56,11 +59,7 @@ const CByteBuffer CCurtain1::encode(boost::shared_ptr<ISequenceNumberProvider> s
 
 void CCurtain1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   std::ostringstream ssdeviceName;
-   ssdeviceName << m_subType << "." << m_houseCode << "." << m_unitCode;
-   std::string deviceName(ssdeviceName.str());
-
-   context->historizeData(deviceName, "state", toYadomsState(m_state));
+   // Nothing to historize (transmitter-only device)
 }
 
 void CCurtain1::buildDeviceName()
@@ -83,31 +82,16 @@ void CCurtain1::buildDeviceModel()
    m_deviceModel = ssModel.str();
 }
 
-unsigned char CCurtain1::toProtocolState(const shared::CDataContainer& yadomsState)
+unsigned char CCurtain1::toProtocolState(const yApi::commands::CCurtain& curtainState)
 {
-   yApi::commands::CCurtain cmd(yadomsState);
-   switch (cmd.command()())
+   switch (curtainState.command()())
    {
    case yApi::commands::CCurtain::ECommand::kOpen: return curtain_sOpen;
    case yApi::commands::CCurtain::ECommand::kClose: return curtain_sClose;
    case yApi::commands::CCurtain::ECommand::kStop: return curtain_sStop;
    default:
       BOOST_ASSERT_MSG(false, "Unsupported value");
-      throw shared::exception::CInvalidParameter(yadomsState.serialize());
-   }
-}
-
-std::string CCurtain1::toYadomsState(unsigned char protocolState)
-{
-   switch(protocolState)
-   {
-   case curtain_sOpen: return yApi::commands::CCurtain(yApi::commands::CCurtain::ECommand::kOpen).format(); break;
-   case curtain_sClose: return yApi::commands::CCurtain(yApi::commands::CCurtain::ECommand::kClose).format(); break;
-   case curtain_sStop: return yApi::commands::CCurtain(yApi::commands::CCurtain::ECommand::kStop).format(); break;
-   default:
-      BOOST_ASSERT_MSG(false, "Invalid state");
-      throw shared::exception::CInvalidParameter("state");
-      break;
+      throw shared::exception::CInvalidParameter(curtainState.formatValue());
    }
 }
 

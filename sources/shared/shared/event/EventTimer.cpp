@@ -19,7 +19,7 @@ CEventTimer::~CEventTimer()
 
 void CEventTimer::start(const boost::posix_time::time_duration& period)
 {
-   // Use provided period is available, initialisation period else
+   // Use provided period is available, initialization period else
    if (period == boost::date_time::not_a_date_time && m_period == boost::date_time::not_a_date_time)
       throw shared::exception::CInvalidParameter("no period value was provided to start timer");
    const boost::posix_time::time_duration& periodToUse = (period != boost::date_time::not_a_date_time) ? period : m_period;

@@ -35,10 +35,11 @@ public:
 protected:
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
+   /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] command          The received command (JSON string)
    /// \param [in] deviceParameters The device parameters (JSON string)
    //--------------------------------------------------------------
-   void onCommand(const shared::CDataContainer& command, const shared::CDataContainer & deviceParameters);
+   void onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer & deviceParameters);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the RFXCom becomes connected

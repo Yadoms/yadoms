@@ -10,41 +10,45 @@ DECLARE_ENUM_IMPLEMENTATION_NESTED(CCurtain::ECommand, ECommand,
    (Stop)
    (Open)
    (Close)
-);  
+);
 
-CCurtain::CCurtain(const shared::CDataContainer& command)
-   :m_command(ECommand::kStop)
+CCurtain::CCurtain(const std::string& keywordName)
+   :m_keywordName(keywordName), m_command(ECommand::kStop)
 {
-   try
-   {
-      m_command = command.get<ECommand>("cmd");
-   }
-   catch (shared::exception::CException & e)
-   {
-      BOOST_ASSERT_MSG(false, "Invalid curtain command");
-      throw shared::exception::CInvalidParameter("Invalid curtain command \"" + command.serialize() + "\" : " + e.what());
-   }
 }
 
 CCurtain::~CCurtain()
 {
 }
 
-CCurtain::CCurtain(ECommand command)
-   :m_command(command)
+const std::string& CCurtain::getKeyword() const
 {
+   return m_keywordName;
 }
 
-const CField<CCurtain::ECommand> & CCurtain::command() const
+const CStandardCapacity& CCurtain::getCapacity() const
 {
-   return m_command;
+   return CStandardCapacities::Curtain;
 }
 
-std::string CCurtain::format() const
+void CCurtain::set(const shared::CDataContainer& yadomsCommand)
 {
-   shared::CDataContainer yadomsCommand;
-   yadomsCommand.set("cmd", m_command());
-   return yadomsCommand.serialize();
+   m_command = yadomsCommand.get<ECommand>("cmd");
+}
+
+void CCurtain::set(ECommand command)
+{
+   m_command = command;
+}
+
+const CCurtain::ECommand CCurtain::command() const
+{
+   return m_command();
+}
+
+const std::string CCurtain::formatValue() const
+{
+   return boost::lexical_cast<std::string>(m_command());
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

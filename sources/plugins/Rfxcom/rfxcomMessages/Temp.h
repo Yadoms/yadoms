@@ -16,12 +16,13 @@ namespace rfxcomMessages
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
+      /// \param[in] context              Yadoms APi context
       /// \param[in] rbuf                 The received buffer
       /// \param[in] seqNumberProvider    The sequence number provider
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CTemp(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CTemp(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -34,6 +35,12 @@ namespace rfxcomMessages
       // [END] IRfxcomMessage implementation
       
    protected:
+      //--------------------------------------------------------------
+      /// \brief	Global initialization method
+      /// \param[in] context              Yadoms APi context
+      //--------------------------------------------------------------
+      void Init(boost::shared_ptr<yApi::IYadomsApi> context);
+
       //--------------------------------------------------------------
       /// \brief	                        Build the device name
       //--------------------------------------------------------------
@@ -56,21 +63,6 @@ namespace rfxcomMessages
       unsigned short m_id;
 
       //--------------------------------------------------------------
-      /// \brief	The temperature (°C)
-      //--------------------------------------------------------------
-      float m_temperature;
-
-      //--------------------------------------------------------------
-      /// \brief	The battery level (percent)
-      //--------------------------------------------------------------
-      int m_batteryLevel;
-
-      //--------------------------------------------------------------
-      /// \brief	The RSSI (percent)
-      //--------------------------------------------------------------
-      int m_rssi;
-
-      //--------------------------------------------------------------
       /// \brief	The device name
       //--------------------------------------------------------------
       std::string m_deviceName;
@@ -79,5 +71,20 @@ namespace rfxcomMessages
       /// \brief	The device model
       //--------------------------------------------------------------
       std::string m_deviceModel;
+
+      //--------------------------------------------------------------
+      /// \brief	The temperature (°C)
+      //--------------------------------------------------------------
+      yApi::commands::CTemperature m_temperature;
+
+      //--------------------------------------------------------------
+      /// \brief	The battery level (percent)
+      //--------------------------------------------------------------
+      yApi::commands::CBatteryLevel m_batteryLevel;
+
+      //--------------------------------------------------------------
+      /// \brief	The RSSI (percent)
+      //--------------------------------------------------------------
+      yApi::commands::CRssi m_rssi;
    };
 } // namespace rfxcomMessages

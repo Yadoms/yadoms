@@ -57,6 +57,7 @@ set(SHARED_LIB_SRC
 	
 	shared/plugin/information/IInformation.h
 
+   shared/plugin/yadomsApi/commonIncludes.h
    shared/plugin/yadomsApi/IDeviceCommand.h
    shared/plugin/yadomsApi/IManuallyDeviceCreationData.h
    shared/plugin/yadomsApi/IManuallyDeviceCreationTestData.h
@@ -69,12 +70,22 @@ set(SHARED_LIB_SRC
 	shared/plugin/yadomsApi/KeywordAccessMode.h
 	shared/plugin/yadomsApi/IYadomsApi.h
 
+   shared/plugin/yadomsApi/commands/BatteryLevel.cpp
+   shared/plugin/yadomsApi/commands/BatteryLevel.h
+   shared/plugin/yadomsApi/commands/commands.h
+   shared/plugin/yadomsApi/commands/Counter.cpp
+   shared/plugin/yadomsApi/commands/Counter.h
    shared/plugin/yadomsApi/commands/Curtain.cpp
    shared/plugin/yadomsApi/commands/Curtain.h
+   shared/plugin/yadomsApi/commands/IHistorizable.h
    shared/plugin/yadomsApi/commands/Message.cpp
    shared/plugin/yadomsApi/commands/Message.h
+   shared/plugin/yadomsApi/commands/Rssi.cpp
+   shared/plugin/yadomsApi/commands/Rssi.h
    shared/plugin/yadomsApi/commands/Switch.cpp
    shared/plugin/yadomsApi/commands/Switch.h
+   shared/plugin/yadomsApi/commands/Temperature.cpp
+   shared/plugin/yadomsApi/commands/Temperature.h
    
 	shared/encryption/Xor.h
 	shared/encryption/Xor.cpp

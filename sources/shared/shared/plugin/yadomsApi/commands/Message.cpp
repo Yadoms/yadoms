@@ -8,36 +8,59 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
 
-CMessage::CMessage(const shared::CDataContainer& command)
+CMessage::CMessage(const std::string& keywordName)
+   :m_keywordName(keywordName)
 {
-   try
-   {
-      m_from = command.get<std::string>("to");
-      m_to = command.get<std::string>("from");
-      m_body = command.get<std::string>("body");
-   }
-   catch (shared::exception::CException & e)
-   {
-      BOOST_ASSERT_MSG(false, "Invalid message command");
-      throw shared::exception::CInvalidParameter("Invalid message command \"" + command.serialize() + "\" : " + e.what());
-   }
 }
 
 CMessage::~CMessage()
 {
 }
 
-const CField<std::string>& CMessage::from() const
+const std::string& CMessage::getKeyword() const
+{
+   return m_keywordName;
+}
+
+const CStandardCapacity& CMessage::getCapacity() const
+{
+   return CStandardCapacities::Message;
+}
+
+void CMessage::set(const shared::CDataContainer& yadomsCommand)
+{
+   m_from = yadomsCommand.get<std::string>("to");
+   m_to = yadomsCommand.get<std::string>("from");
+   m_body = yadomsCommand.get<std::string>("body");
+}
+
+void CMessage::set(const std::string& from, const std::string& to, const std::string& body)
+{
+   m_from = from;
+   m_to = to;
+   m_body = body;
+}
+
+const std::string CMessage::formatValue() const
+{
+   shared::CDataContainer yadomsCommand;
+   yadomsCommand.set("to", to());
+   yadomsCommand.set("from", from());
+   yadomsCommand.set("body", body());
+   return yadomsCommand.serialize();
+}
+
+const std::string& CMessage::from() const
 {
    return m_from;
 }
 
-const CField<std::string>& CMessage::to() const
+const std::string& CMessage::to() const
 {
    return m_to;
 }
 
-const CField<std::string>& CMessage::body() const
+const std::string& CMessage::body() const
 {
    return m_body;
 }

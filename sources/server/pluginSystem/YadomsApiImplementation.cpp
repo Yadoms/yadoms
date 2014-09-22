@@ -36,28 +36,27 @@ const shared::CDataContainer CYadomsApiImplementation::getDeviceDetails(const st
    return m_deviceRequester->getDevice(getPluginId(), device)->Details;
 }
 
-bool CYadomsApiImplementation::declareDevice(const std::string& device, const std::string& model, const std::string & details)
+void CYadomsApiImplementation::declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details) const
 {
    if (deviceExists(device))
-      return false;
+      throw shared::exception::CEmptyResult((boost::format("Error declaring device %1% : already exists") % device).str());
 
    m_deviceRequester->createDevice(getPluginId(), device, device, model, details);
-   return true;
 }
 
 bool CYadomsApiImplementation::keywordExists(const std::string& device, const std::string& keyword) const
 {
    if (!deviceExists(device))
-      throw shared::exception::CEmptyResult("Fail to declare keyword : owner device doesn't exist.");
+      throw shared::exception::CEmptyResult("Fail to check if keyword exists : owner device doesn't exist.");
 
    return m_keywordRequester->keywordExists((m_deviceRequester->getDevice(getPluginId(), device))->Id, keyword);
 }
 
-
-bool CYadomsApiImplementation::declareCustomKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::EKeywordType type, const std::string & units, const shared::CDataContainer& details)
+void CYadomsApiImplementation::declareCustomKeyword(const std::string& device, const std::string& keyword,
+   const std::string& capacity, shared::plugin::yadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::EKeywordType type, const std::string & units, const shared::CDataContainer& details)
 {
    if (keywordExists(device, keyword))
-      return false;
+      throw shared::exception::CEmptyResult("Fail to declare keyword : keyword already exists");
 
    database::entities::CKeyword keywordEntity;
    keywordEntity.DeviceId = m_deviceRequester->getDevice(getPluginId(), device)->Id;
@@ -70,7 +69,6 @@ bool CYadomsApiImplementation::declareCustomKeyword(const std::string& device, c
    default:
       BOOST_ASSERT_MSG(false, "Unknown accessMode");
       throw shared::exception::CEmptyResult("Fail to declare keyword : unknown accessMode");
-      break;
    }
 
    switch (type)
@@ -83,66 +81,37 @@ bool CYadomsApiImplementation::declareCustomKeyword(const std::string& device, c
    default:
       BOOST_ASSERT_MSG(false, "Unknown type");
       throw shared::exception::CEmptyResult("Fail to declare keyword : unknown type");
-      break;
    }
 
    keywordEntity.Units = units;
    keywordEntity.Name = keyword;
    keywordEntity.FriendlyName = keyword;
-
-
    keywordEntity.Details = details;
 
    m_keywordRequester->addKeyword(keywordEntity);
-
-   return true;
 }
-      
-bool CYadomsApiImplementation::declareKeyword(const std::string& device, const std::string& keyword, const shared::plugin::yadomsApi::CStandardCapacity & capacity, const shared::CDataContainer& details)
+
+void CYadomsApiImplementation::declareKeyword(const std::string& device, const shared::plugin::yadomsApi::commands::IHistorizable& keyword, const shared::CDataContainer& details)
 {
-   return declareCustomKeyword(device, keyword, capacity.getName(), capacity.getAccessMode(), capacity.getType(), capacity.getUnit(), details);
+   declareCustomKeyword(device, keyword.getKeyword(), keyword.getCapacity().getName(), keyword.getCapacity().getAccessMode(), keyword.getCapacity().getType(), keyword.getCapacity().getUnit(), details);
 }
 
 
 
-void CYadomsApiImplementation::historizeData(const std::string& device, const std::string& keyword, const std::string& value)
+void CYadomsApiImplementation::historizeData(const std::string& device, const shared::plugin::yadomsApi::commands::IHistorizable& data)
 {
    try
    {
       boost::shared_ptr<database::entities::CDevice> deviceEntity = m_deviceRequester->getDevice(getPluginId(), device);
-      boost::shared_ptr<database::entities::CKeyword> keywordEntity = m_keywordRequester->getKeyword(deviceEntity->Id, keyword);
+      boost::shared_ptr<database::entities::CKeyword> keywordEntity = m_keywordRequester->getKeyword(deviceEntity->Id, data.getKeyword());
 
-      m_acquisitionHistorizer->saveData(keywordEntity->Id, value);
+      m_acquisitionHistorizer->saveData(keywordEntity->Id, data.formatValue());
    }
    catch (shared::exception::CEmptyResult& e)
    {
       YADOMS_LOG(error) << "Error historizing data, device or keyword not found : " << e.what();
    }
 }
-
-void CYadomsApiImplementation::historizeData(const std::string& device, const std::string& keyword, bool value)
-{
-   historizeData(device, keyword, boost::lexical_cast<std::string>(value));
-}  
-
-void CYadomsApiImplementation::historizeData(const std::string& device, const std::string& keyword, int value)
-{
-   historizeData(device, keyword, boost::lexical_cast<std::string>(value));
-}  
-
-void CYadomsApiImplementation::historizeData(const std::string& device, const std::string& keyword, double value)
-{
-   historizeData(device, keyword, boost::lexical_cast<std::string>(value));
-}  
-
-void CYadomsApiImplementation::historizeData(const std::string& device, const std::string& keyword, double value, int numberOfdigits)
-{
-   std::stringstream formatter;
-   formatter << "%." << numberOfdigits << "f";
-   historizeData(device, keyword, (boost::format(formatter.str()) % value).str());
-}  
-
-
 
 const shared::plugin::information::IInformation& CYadomsApiImplementation::getInformation() const
 {

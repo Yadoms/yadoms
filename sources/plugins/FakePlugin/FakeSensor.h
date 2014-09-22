@@ -17,9 +17,9 @@ class CFakeSensor
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
-   /// \param[in] deviceId    The device ID
+   /// \param[in] deviceName    The device name
    //--------------------------------------------------------------
-   CFakeSensor(const std::string & deviceId);
+   CFakeSensor(const std::string& deviceName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -27,10 +27,10 @@ public:
    virtual ~CFakeSensor();
 
    //--------------------------------------------------------------
-   /// \brief	            Declare the device and its associated keywords
-   /// \param[in] context  YadomsApi context to which declare the device
+   /// \brief	            Declare keywords associated with this device
+   /// \param[in] context  YadomsApi context
    //--------------------------------------------------------------
-   void declareDevice(boost::shared_ptr<yApi::IYadomsApi> context);
+   void declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context);
 
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
@@ -44,6 +44,12 @@ public:
    void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
 
    //--------------------------------------------------------------
+   /// \brief	    Returns the fake sensor device name
+   /// \return     The device name
+   //--------------------------------------------------------------
+   const std::string& getDeviceName() const;
+
+   //--------------------------------------------------------------
    /// \brief	    Returns the fake sensor model
    /// \return     The list of device capacities
    //--------------------------------------------------------------
@@ -51,25 +57,29 @@ public:
 
 private:
    //--------------------------------------------------------------
-   /// \brief	    Device ID
+   /// \brief	    Device name
    //--------------------------------------------------------------
-   const std::string m_deviceId;
+   const std::string m_deviceName;
 
    //--------------------------------------------------------------
-   /// \brief	    Temperatures in °C
+   /// \brief	The keyword associated with temperature1
    //--------------------------------------------------------------
-   double m_temperature1;
-   double m_temperature2;
+   yApi::commands::CTemperature m_temperature1;
 
    //--------------------------------------------------------------
-   /// \brief	    Battery level (0 to 100%)
+   /// \brief	The keyword associated with temperature1
    //--------------------------------------------------------------
-   int m_batteryLevel;
+   yApi::commands::CTemperature m_temperature2;
 
    //--------------------------------------------------------------
-   /// \brief	    Signal strengh (0 to 100)
+   /// \brief	The keyword associated with battery level
    //--------------------------------------------------------------
-   const int m_rssi;
+   yApi::commands::CBatteryLevel m_batteryLevel;
+
+   //--------------------------------------------------------------
+   /// \brief	The keyword associated with signal strengh
+   //--------------------------------------------------------------
+   yApi::commands::CRssi m_rssi;
 
    //--------------------------------------------------------------
    /// \brief	    Random number generator, used to simulate temperature variations

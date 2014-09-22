@@ -8,6 +8,9 @@ IF(WIN32)
 	set(WINDOWSSYSTEMINFORMATION_PLUGIN_SOURCES
 		stdafx.h
 		stdafx.cpp
+		ILoad.h
+      LoadKeyword.h
+      LoadKeyword.cpp
 		WindowsSystemInformation.h
 		WindowsSystemInformation.cpp 
 		WindowsSystemMemoryLoad.h
@@ -20,7 +23,6 @@ IF(WIN32)
 		WindowsSystemDiskUsage.cpp
 		WindowsSystemDisksList.h
 		WindowsSystemDisksList.cpp
-		ILoad.h
 	)
 
 	#########################################

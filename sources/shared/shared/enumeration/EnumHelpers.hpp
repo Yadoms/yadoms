@@ -203,7 +203,7 @@ This class contains macros for defining extended macros which add the ability to
 #define ENUM_COLUMN_VALUE  1
 
 //
-/// \brief Give the real enum name (appending a E beofre the enumName)
+/// \brief Give the real enum name (appending a E before the enumName)
 //
 #define ENUM_CLASSNAME(_enumName) _enumName
 
@@ -256,7 +256,7 @@ This class contains macros for defining extended macros which add the ability to
 /// \brief Macro used to declare the Enum class header with possibility of export/import from/to a shared library
 /// \param [in] _enumName     The enumeration name : Test : will give "enum ETest {..."
 /// \param [in] _export       The export class specifier (can be __declspec(dllexport/dllimport) for MSVC, or extern "C" for unix systems
-/// \param [in] _seq          The enuemration sequence
+/// \param [in] _seq          The enumeration sequence
 //
 #define DECLARE_ENUM_HEADER_SHARED(_enumName, _export, _seq)								   \
    class _export ENUM_CLASSNAME(_enumName): public shared::enumeration::IExtendedEnum  \
@@ -287,7 +287,7 @@ This class contains macros for defining extended macros which add the ability to
 //
 /// \brief Macro used to declare the Enum class header 
 /// \param [in] _enumName     The enumeration name : Test : will give "enum ETest {..."
-/// \param [in] _seq          The enuemration sequence ((On)(0)) ((Off)(1)) ((Dim)(2))
+/// \param [in] _seq          The enumeration sequence ((On)(0)) ((Off)(1)) ((Dim)(2))
 //
 #define DECLARE_ENUM_HEADER(_enumName, _seq)	DECLARE_ENUM_HEADER_SHARED(_enumName, , _seq)			
 

@@ -40,17 +40,19 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	                     Build a message to device
+   /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] command          The received command (JSON string)
    /// \param [in] deviceParameters The device parameters (JSON string)
    /// \return                      RFXCom message to send
    /// \throw shared::exception::CInvalidParameter if no corresponding RFXCom message was found (invalid command)
    //--------------------------------------------------------------
-   virtual const CByteBuffer buildMessageToDevice(const shared::CDataContainer& command, const shared::CDataContainer& deviceParametersTree) const = 0;
+   virtual const CByteBuffer buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParametersTree) const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Decode RFXCom message
+   /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] data             Data received
    /// \return                      Decoded message, NULL if error when decoding
    //--------------------------------------------------------------
-   virtual boost::shared_ptr<rfxcomMessages::IRfxcomMessage> decodeRfxcomMessage(const CByteBuffer& data) const = 0;
+   virtual boost::shared_ptr<rfxcomMessages::IRfxcomMessage> decodeRfxcomMessage(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data) const = 0;
 };

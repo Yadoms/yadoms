@@ -27,11 +27,13 @@ namespace shared {   namespace plugin {      namespace yadomsApi      {
    const std::string& CStandardValues::Close("close");
    const std::string& CStandardValues::Stop("stop");
    
-   const CStandardCapacity& CStandardCapacities::Temperature = CStandardCapacity("temperature", CStandardUnits::DegreesCelcius, kGet, kNumeric);
    const CStandardCapacity& CStandardCapacities::BatteryLevel = CStandardCapacity("batteryLevel", CStandardUnits::Percent, kGet, kNumeric);
+   const CStandardCapacity& CStandardCapacities::Counter = CStandardCapacity("count", CStandardUnits::NoUnits, kGet, kNumeric);
+   const CStandardCapacity& CStandardCapacities::Curtain = CStandardCapacity("curtain", CStandardUnits::NoUnits, kSet, kNoData);
+   const CStandardCapacity& CStandardCapacities::Message = CStandardCapacity("message", CStandardUnits::NoUnits, kGetSet, kString);
    const CStandardCapacity& CStandardCapacities::Rssi = CStandardCapacity("rssi", CStandardUnits::Percent, kGet, kNumeric);
    const CStandardCapacity& CStandardCapacities::Switch = CStandardCapacity("switch", CStandardUnits::NoUnits, kSet, kNoData);
-   const CStandardCapacity& CStandardCapacities::Message = CStandardCapacity("message", CStandardUnits::NoUnits, kGetSet, kString);
+   const CStandardCapacity& CStandardCapacities::Temperature = CStandardCapacity("temperature", CStandardUnits::DegreesCelcius, kGet, kNumeric);
   
 } } } // namespace shared::plugin::yadomsApi
 

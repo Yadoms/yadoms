@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Lighting2.h"
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/commands/Switch.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 // Shortcut to yadomsApi namespace
@@ -10,20 +9,22 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CLighting2::CLighting2(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+CLighting2::CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+   :m_state("state"), m_rssi("rssi")
 {
+   m_state.set(command);
+   m_rssi.set(0);
+
    m_subType = deviceParameters.get<unsigned char>("subType");
    m_houseCode = deviceParameters.get<unsigned char>("houseCode");
    m_id = deviceParameters.get<unsigned int>("id");
    m_unitCode = deviceParameters.get<unsigned char>("unitCode");
-   toProtocolState(command, m_state, m_level);
-   m_rssi = 0;
 
-   buildDeviceModel();
-   buildDeviceName();
+   Init(context);
 }
 
-CLighting2::CLighting2(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CLighting2::CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+   :m_state("state"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeLighting2, GET_RBUF_STRUCT_SIZE(LIGHTING2), DONT_CHECK_SEQUENCE_NUMBER);
 
@@ -43,16 +44,36 @@ CLighting2::CLighting2(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumber
       break;
    }
    m_unitCode = rbuf.LIGHTING2.unitcode;
-   m_state = rbuf.LIGHTING2.cmnd;
-   m_level = rbuf.LIGHTING2.level;
-   m_rssi = rbuf.LIGHTING2.rssi * 100 / 0x0F;
+   m_state.set(fromProtocolState(rbuf.LIGHTING2.cmnd, rbuf.LIGHTING2.level));
+   m_rssi.set(rbuf.LIGHTING2.rssi * 100 / 0x0F);
 
-   buildDeviceModel();
-   buildDeviceName();
+   Init(context);
 }
 
 CLighting2::~CLighting2()
 {
+}
+
+void CLighting2::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   // Build device description
+   buildDeviceModel();
+   buildDeviceName();
+
+   // Create device and keywords if needed
+   if (!context->deviceExists(m_deviceName))
+   {
+      shared::CDataContainer details;
+      details.set("type", pTypeLighting2);
+      details.set("subType", m_subType);
+      details.set("houseCode", m_houseCode);
+      details.set("id", m_id);
+      details.set("unitCode", m_unitCode);
+      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+
+      context->declareKeyword(m_deviceName, m_state);
+      context->declareKeyword(m_deviceName, m_rssi);
+   }
 }
 
 const CByteBuffer CLighting2::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
@@ -82,7 +103,7 @@ const CByteBuffer CLighting2::encode(boost::shared_ptr<ISequenceNumberProvider> 
       break;
    }
    rbuf.LIGHTING2.unitcode = m_unitCode;
-   rbuf.LIGHTING2.cmnd = m_state;
+   toProtocolState(m_state, rbuf.LIGHTING2.cmnd, rbuf.LIGHTING2.level);
    rbuf.LIGHTING2.rssi = 0;
    rbuf.LIGHTING2.filler = 0;
 
@@ -91,22 +112,8 @@ const CByteBuffer CLighting2::encode(boost::shared_ptr<ISequenceNumberProvider> 
 
 void CLighting2::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   if (!context->deviceExists(m_deviceName))
-   {
-      shared::CDataContainer details;
-      details.set("type", pTypeLighting2);
-      details.set("subType", m_subType);
-      details.set("houseCode", m_houseCode);
-      details.set("id", m_id);
-      details.set("unitCode", m_unitCode);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
-
-      context->declareKeyword(m_deviceName, "state", yApi::CStandardCapacities::Switch);
-      context->declareKeyword(m_deviceName, "rssi", yApi::CStandardCapacities::Rssi);
-   }
-
-   context->historizeData(m_deviceName, "state", toYadomsState(m_state, m_level));
-   context->historizeData(m_deviceName, "rssi", m_rssi);
+   context->historizeData(m_deviceName, m_state);
+   context->historizeData(m_deviceName, m_rssi);
 }
 
 void CLighting2::buildDeviceName()
@@ -132,30 +139,34 @@ void CLighting2::buildDeviceModel()
    m_deviceModel = ssModel.str();
 }
 
-void CLighting2::toProtocolState(const shared::CDataContainer& yadomsState, unsigned char& state, unsigned char& level)
+void CLighting2::toProtocolState(const yApi::commands::CSwitch& switchState, unsigned char& state, unsigned char& level)
 {
-   yApi::commands::CSwitch cmd(yadomsState);
-   level = 0;
-   switch(cmd.switchLevel())
+   switch(switchState.switchLevel())
    {
-   case 0 : state = light2_sOff; break;
-   case 100  : state = light2_sOn; break;
+   case 0 :
+      state = light2_sOff;
+      level = 0;
+      break;
+   case 100 :
+      state = light2_sOn;
+      level = 0;
+      break;
    default :
       state = light2_sSetLevel;
-      level = (unsigned char) (cmd.switchLevel() * 0x0F / 100);   // switchLevel returns value from 0 to 100
+      level = (unsigned char) (switchState.switchLevel() * 0x0F / 100);   // switchLevel returns value from 0 to 100
       break;
    }
 }
 
-std::string CLighting2::toYadomsState(unsigned char protocolState, unsigned char protocolLevel)
+int CLighting2::fromProtocolState(unsigned char protocolState, unsigned char protocolLevel)
 {
    switch(protocolState)
    {
-   case light2_sOn: return yApi::commands::CSwitch(100).format(); break;
-   case light2_sOff: return yApi::commands::CSwitch(0).format(); break;
+   case light2_sOn: return 100;
+   case light2_sOff: return 0;
    case light2_sSetLevel:
       {
-         return yApi::commands::CSwitch(protocolLevel * 100 / 0x0F).format(); // level needs to be from 0 to 100
+         return (protocolLevel * 100 / 0x0F); // level needs to be from 0 to 100
          break;
       }
    default:

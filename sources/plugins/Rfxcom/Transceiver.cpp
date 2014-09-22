@@ -11,6 +11,7 @@
 #include "rfxcomMessages/Lighting3.h"
 #include "rfxcomMessages/Lighting4.h"
 #include "rfxcomMessages/Lighting6.h"
+#include "rfxcomMessages/RFXMeter.h"
 #include "rfxcomMessages/Rfy.h"
 #include "rfxcomMessages/Temp.h"
 #include "rfxcomMessages/TransceiverStatus.h"
@@ -105,7 +106,7 @@ const CByteBuffer CTransceiver::buildSetModeCmd(unsigned char frequency, const I
    return CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
 }
 
-const CByteBuffer CTransceiver::buildMessageToDevice(const shared::CDataContainer& command, const shared::CDataContainer& deviceParametersTree) const
+const CByteBuffer CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParametersTree) const
 {
    try
    {
@@ -115,25 +116,25 @@ const CByteBuffer CTransceiver::buildMessageToDevice(const shared::CDataContaine
       switch(deviceType)
       {
       case pTypeLighting1:
-         return rfxcomMessages::CLighting1(command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting1(context, command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
       case pTypeLighting2:
-         return rfxcomMessages::CLighting2(command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting2(context, command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
       case pTypeLighting3:
-         return rfxcomMessages::CLighting3(command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting3(context, command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
       case pTypeLighting4:
-         return rfxcomMessages::CLighting4(command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting4(context, command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
       case pTypeLighting6:
-         return rfxcomMessages::CLighting6(command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting6(context, command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
       case pTypeCurtain:
-         return rfxcomMessages::CCurtain1(command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CCurtain1(context, command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
       case pTypeRFY:
-         return rfxcomMessages::CRfy(command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CRfy(context, command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
          //TODO compléter
       default:
@@ -151,7 +152,7 @@ const CByteBuffer CTransceiver::buildMessageToDevice(const shared::CDataContaine
    }
 }
 
-boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMessage(const CByteBuffer& data) const
+boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMessage(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data) const
 {
    const RBUF * const buf = reinterpret_cast<const RBUF* const>(data.content());
 
@@ -160,14 +161,15 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    {
    case pTypeInterfaceMessage    : message.reset(new rfxcomMessages::CTransceiverStatus(*buf, m_seqNumberProvider)); break;
    case pTypeRecXmitMessage      : message.reset(new rfxcomMessages::CAck              (*buf, m_seqNumberProvider)); break;
-   case pTypeLighting1           : message.reset(new rfxcomMessages::CLighting1        (*buf, m_seqNumberProvider)); break;
-   case pTypeLighting2           : message.reset(new rfxcomMessages::CLighting2        (*buf, m_seqNumberProvider)); break;
-   case pTypeLighting3           : message.reset(new rfxcomMessages::CLighting3        (*buf, m_seqNumberProvider)); break;
-   case pTypeLighting4           : message.reset(new rfxcomMessages::CLighting4        (*buf, m_seqNumberProvider)); break;
-   case pTypeLighting6           : message.reset(new rfxcomMessages::CLighting6        (*buf, m_seqNumberProvider)); break;
-   case pTypeCurtain             : message.reset(new rfxcomMessages::CCurtain1         (*buf, m_seqNumberProvider)); break;
-   case pTypeRFY                 : message.reset(new rfxcomMessages::CRfy              (*buf, m_seqNumberProvider)); break;
-   case pTypeTEMP                : message.reset(new rfxcomMessages::CTemp             (*buf, m_seqNumberProvider)); break;
+   case pTypeRFXMeter            : message.reset(new rfxcomMessages::CRFXMeter         (context, *buf, m_seqNumberProvider)); break;
+   case pTypeLighting1           : message.reset(new rfxcomMessages::CLighting1        (context, *buf, m_seqNumberProvider)); break;
+   case pTypeLighting2           : message.reset(new rfxcomMessages::CLighting2        (context, *buf, m_seqNumberProvider)); break;
+   case pTypeLighting3           : message.reset(new rfxcomMessages::CLighting3        (context, *buf, m_seqNumberProvider)); break;
+   case pTypeLighting4           : message.reset(new rfxcomMessages::CLighting4        (context, *buf, m_seqNumberProvider)); break;
+   case pTypeLighting6           : message.reset(new rfxcomMessages::CLighting6        (context, *buf, m_seqNumberProvider)); break;
+   case pTypeCurtain             : message.reset(new rfxcomMessages::CCurtain1         (context, *buf, m_seqNumberProvider)); break;
+   case pTypeRFY                 : message.reset(new rfxcomMessages::CRfy              (context, *buf, m_seqNumberProvider)); break;
+   case pTypeTEMP                : message.reset(new rfxcomMessages::CTemp             (context, *buf, m_seqNumberProvider)); break;
       // TODO à compléter
    default:
       {

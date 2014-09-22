@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Lighting3.h"
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/commands/Switch.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 // Shortcut to yadomsApi namespace
@@ -10,34 +9,56 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CLighting3::CLighting3(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+CLighting3::CLighting3(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+   :m_state("state"), m_rssi("rssi")
 {
+   m_state.set(command);
+   m_rssi.set(0);
+
    m_subType = deviceParameters.get<unsigned char>("subType");
    m_system = deviceParameters.get<unsigned char>("system");
    m_channel = deviceParameters.get<unsigned short>("channel");
-   m_state = toProtocolState(command);
-   m_rssi = 0;
 
-   buildDeviceModel();
-   buildDeviceName();
+   Init(context);
 }
 
-CLighting3::CLighting3(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CLighting3::CLighting3(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+   :m_state("state"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeLighting3, GET_RBUF_STRUCT_SIZE(LIGHTING3), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.LIGHTING3.subtype;
    m_system = rbuf.LIGHTING3.system;
    m_channel = rbuf.LIGHTING3.channel8_1 & (rbuf.LIGHTING3.channel10_9 << 8);
-   m_state = rbuf.LIGHTING3.cmnd;
-   m_rssi = rbuf.LIGHTING3.rssi * 100 / 0x0F;
+   m_state.set(fromProtocolState(rbuf.LIGHTING3.cmnd));
+   m_rssi.set(rbuf.LIGHTING2.rssi * 100 / 0x0F);
 
-   buildDeviceModel();
-   buildDeviceName();
+   Init(context);
 }
 
 CLighting3::~CLighting3()
 {
+}
+
+void CLighting3::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   // Build device description
+   buildDeviceModel();
+   buildDeviceName();
+
+   // Create device and keywords if needed
+   if (!context->deviceExists(m_deviceName))
+   {
+      shared::CDataContainer details;
+      details.set("type", pTypeLighting3);
+      details.set("subType", m_subType);
+      details.set("system", m_system);
+      details.set("channel", m_channel);
+      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+
+      context->declareKeyword(m_deviceName, m_state);
+      context->declareKeyword(m_deviceName, m_rssi);
+   }
 }
 
 const CByteBuffer CLighting3::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
@@ -52,7 +73,7 @@ const CByteBuffer CLighting3::encode(boost::shared_ptr<ISequenceNumberProvider> 
    rbuf.LIGHTING3.system = m_system;
    rbuf.LIGHTING3.channel8_1 = (unsigned char)(m_channel & 0xFF);
    rbuf.LIGHTING3.channel10_9 = (unsigned char)((m_channel & 0xFF00) >> 8);
-   rbuf.LIGHTING3.cmnd = m_state;
+   rbuf.LIGHTING3.cmnd = toProtocolState(m_state);
    rbuf.LIGHTING3.rssi = 0;
    rbuf.LIGHTING3.filler = 0;
 
@@ -61,21 +82,8 @@ const CByteBuffer CLighting3::encode(boost::shared_ptr<ISequenceNumberProvider> 
 
 void CLighting3::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   if (!context->deviceExists(m_deviceName))
-   {
-      shared::CDataContainer details;
-      details.set("type", pTypeLighting3);
-      details.set("subType", m_subType);
-      details.set("system", m_system);
-      details.set("channel", m_channel);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
-
-      context->declareKeyword(m_deviceName, "state", yApi::CStandardCapacities::Switch);
-      context->declareKeyword(m_deviceName, "rssi", yApi::CStandardCapacities::Rssi);
-   }
-
-   context->historizeData(m_deviceName, "state", toYadomsState(m_state));
-   context->historizeData(m_deviceName, "rssi", m_rssi);
+   context->historizeData(m_deviceName, m_state);
+   context->historizeData(m_deviceName, m_rssi);
 }
 
 void CLighting3::buildDeviceName()
@@ -98,10 +106,9 @@ void CLighting3::buildDeviceModel()
    m_deviceModel = ssModel.str();
 }
 
-unsigned char CLighting3::toProtocolState(const shared::CDataContainer& yadomsState)
+unsigned char CLighting3::toProtocolState(const yApi::commands::CSwitch& switchState)
 {
-   yApi::commands::CSwitch cmd(yadomsState);
-   switch (cmd.switchLevel() / 10)  // switchLevel returns value from 0 to 100
+   switch (switchState.switchLevel() / 10)  // switchLevel returns value from 0 to 100
    {
    case 0: return light3_sOff;
    case 1: return light3_sLevel1;
@@ -117,21 +124,21 @@ unsigned char CLighting3::toProtocolState(const shared::CDataContainer& yadomsSt
    }
 }
 
-std::string CLighting3::toYadomsState(unsigned char protocolState)
+int CLighting3::fromProtocolState(unsigned char protocolState)
 {
    switch(protocolState)
    {
-   case light3_sOff   : return yApi::commands::CSwitch(0).format(); break;
-   case light3_sLevel1: return yApi::commands::CSwitch(10).format(); break;
-   case light3_sLevel2: return yApi::commands::CSwitch(20).format(); break;
-   case light3_sLevel3: return yApi::commands::CSwitch(30).format(); break;
-   case light3_sLevel4: return yApi::commands::CSwitch(40).format(); break;
-   case light3_sLevel5: return yApi::commands::CSwitch(50).format(); break;
-   case light3_sLevel6: return yApi::commands::CSwitch(60).format(); break;
-   case light3_sLevel7: return yApi::commands::CSwitch(70).format(); break;
-   case light3_sLevel8: return yApi::commands::CSwitch(80).format(); break;
-   case light3_sLevel9: return yApi::commands::CSwitch(90).format(); break;
-   case light3_sOn    : return yApi::commands::CSwitch(100).format(); break;
+   case light3_sOff   : return 0;
+   case light3_sLevel1: return 10;
+   case light3_sLevel2: return 20;
+   case light3_sLevel3: return 30;
+   case light3_sLevel4: return 40;
+   case light3_sLevel5: return 50;
+   case light3_sLevel6: return 60;
+   case light3_sLevel7: return 70;
+   case light3_sLevel8: return 80;
+   case light3_sLevel9: return 90;
+   case light3_sOn    : return 100;
    default:
       BOOST_ASSERT_MSG(false, "Invalid state");
       throw shared::exception::CInvalidParameter("state");
