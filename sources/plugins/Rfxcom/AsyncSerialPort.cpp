@@ -156,7 +156,7 @@ void CAsyncSerialPort::readCompleted(const boost::system::error_code& error, std
 {
    if (error)
    {
-      // boost::asio::error::operation_aborted is fire when stop is required
+      // boost::asio::error::operation_aborted is fired when stop is required
       if (error == boost::asio::error::operation_aborted)
          return;     // Normal stop
 

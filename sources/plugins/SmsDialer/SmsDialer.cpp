@@ -13,6 +13,7 @@ IMPLEMENT_PLUGIN(CSmsDialer)
 
 
 CSmsDialer::CSmsDialer()
+   :m_messageKeyword("message"), m_powerKeyword("power")
 {
 }
 
@@ -36,6 +37,7 @@ void CSmsDialer::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 
       // Create the phone instance
       m_phone = CSmsDialerFactory::constructPhone(m_configuration);
+      m_device = m_phone->getUniqueId();
 
       // the main loop
       YADOMS_LOG(debug) << "CSmsDialer is running...";
@@ -170,10 +172,9 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYadomsApi> conte
                boost::shared_ptr<yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IDeviceCommand> >();
                YADOMS_LOG(debug) << "Command received :" << command->toString();
 
-               const std::string keyword = command->getKeyword();
-               if (keyword == "power")
+               if (command->getKeyword() == m_powerKeyword.getKeyword())
                   onPowerPhoneRequest(context, command->getBody());
-               else if (keyword == "sms")
+               else if (command->getKeyword() == m_messageKeyword.getKeyword())
                   onSendSmsRequest(context, command->getBody());
                else
                   YADOMS_LOG(error) << "Unsupported command received : " << command->toString();
@@ -224,22 +225,27 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYadomsApi> conte
 
 void CSmsDialer::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
 {
+   if (context->deviceExists(m_device))
+      return;
+
    // Declare the device
-   context->declareDevice(m_phone->getUniqueId(), m_phone->getUniqueId(), shared::CStringExtension::EmptyString);
+   context->declareDevice(m_device, m_device);
 
    // Declare associated keywords (= values managed by this device)
-   context->declareKeyword(m_phone->getUniqueId(), "power", yApi::CStandardCapacities::Switch );
-   context->declareKeyword(m_phone->getUniqueId(), "sms"  , yApi::CStandardCapacities::Message);
+   context->declareKeyword(m_device, m_powerKeyword);
+   context->declareKeyword(m_device, m_messageKeyword);
 }
 
 void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& powerRequest)
 {
-   yApi::commands::CSwitch cmd(powerRequest);
-
    try
    {
-      m_phone->powerOn(cmd.isOn());
-      notifyPhonePowerState(context, m_phone->isOn());
+      m_powerKeyword.set(powerRequest);
+      m_phone->powerOn(m_powerKeyword.isOn());
+
+      // Update keyword and historize new state
+      m_powerKeyword.set(m_phone->isOn());
+      context->historizeData(m_device, m_powerKeyword);
    }
    catch (CPhoneException& e)
    {
@@ -251,8 +257,8 @@ void CSmsDialer::onSendSmsRequest(boost::shared_ptr<yApi::IYadomsApi> context, c
 {
    try
    {
-      yApi::commands::CMessage msg(sendSmsRequest);
-      boost::shared_ptr<ISms> sms(new CSms(msg.to(), msg.body()));
+      m_messageKeyword.set(sendSmsRequest);
+      boost::shared_ptr<ISms> sms(new CSms(m_messageKeyword.to(), m_messageKeyword.body()));
       m_phone->send(sms);
       notifyAck(true);
    }
@@ -282,7 +288,8 @@ void CSmsDialer::processIncommingSMS(boost::shared_ptr<yApi::IYadomsApi> context
          YADOMS_LOG(debug) << "SMS received from " << (*it)->getNumber() << " : " << (*it)->getContent();
 
          // Send SMS to Yadoms
-         notifySmsReception(context, *it);
+         m_messageKeyword.set((*it)->getNumber(), shared::CStringExtension::EmptyString, (*it)->getContent());
+         context->historizeData(m_device, m_messageKeyword);
       }
    }
 }
@@ -290,18 +297,4 @@ void CSmsDialer::processIncommingSMS(boost::shared_ptr<yApi::IYadomsApi> context
 void CSmsDialer::notifyAck(bool ok) const
 {
    //TODO
-}
-
-void CSmsDialer::notifyPhonePowerState(boost::shared_ptr<yApi::IYadomsApi> context, bool on) const
-{
-   context->historizeData(m_phone->getUniqueId(), "power", std::string(on ? "on" : "off"));
-}
-
-void CSmsDialer::notifySmsReception(boost::shared_ptr<yApi::IYadomsApi> context, const boost::shared_ptr<ISms>& sms) const
-{
-   shared::CDataContainer smsContent;
-   smsContent.set("from", sms->getNumber());
-   smsContent.set("to", shared::CStringExtension::EmptyString);
-   smsContent.set("body", sms->getContent());
-   context->historizeData(m_phone->getUniqueId(), "sms", smsContent.serialize());
 }
