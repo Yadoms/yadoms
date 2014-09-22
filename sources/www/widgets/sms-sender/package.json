@@ -23,7 +23,7 @@
          "name" : "Phone",
          "description" : "Device used to send SMS",
          "type" : "device",
-         "expectedCapacity" : "sms",
+         "expectedCapacity" : "message",
          "expectedKeywordAccess" : "set"
       }
    }

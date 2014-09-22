@@ -17,15 +17,16 @@ enum
 {
    kEvtPortConnection = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from yApi::IYadomsApi::kPluginFirstEventId
    kEvtPortDataReceived,
-   kprotocolErrorRetryTimer,
-   kreceiveBufferClearTimer,
+   kProtocolErrorRetryTimer,
+   kReceiveBufferClearTimer,
+   kAnswerTimeout,
 };
 
 
 
 //TODO dans package.json, compléter la liste manuallyDeviceCreationConfigurationSchema/type (voir Domoticz "Switch_Type_Desc")
 CRfxcom::CRfxcom()
-   :m_currentState(kNotInitialized), m_receiveBufferClearTimer(kreceiveBufferClearTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(2))
+   :m_currentState(kNotInitialized)
 {
 }
 
@@ -47,6 +48,12 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 
       // Create the transceiver
       m_transceiver = CRfxcomFactory::constructTransceiver();
+
+      m_waitForAnswerTimer = context->getEventHandler().createTimer(kAnswerTimeout, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(5));
+      m_waitForAnswerTimer->stop();
+
+      m_receiveBufferClearTimer = context->getEventHandler().createTimer(kReceiveBufferClearTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(2));
+      m_receiveBufferClearTimer->stop();
 
       // Create the connection
       createConnection(context->getEventHandler());
@@ -113,10 +120,14 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                else
                {
                   // Port is the same, don't destroy connection, just reconfigure RFXCom.
-                  // First get status, to compare with new configuration
+
+                  // Update configuration
+                  m_configuration.initializeWith(newConfigurationData);
+
+                  // Get status, to compare with new configuration
                   YADOMS_LOG(info) << "Get the RFXCom status...";
                   m_currentState = kGettingRfxcomStatus;
-                  m_port->send(m_transceiver->buildGetStatusCmd());
+                  send(m_transceiver->buildGetStatusCmd(), true);
                }
 
                break;
@@ -135,12 +146,18 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                processRfxcomDataReceived(context, context->getEventHandler().getEventData<CByteBuffer>());
                break;
             }
-         case kprotocolErrorRetryTimer:
+         case kAnswerTimeout:
+            {
+               YADOMS_LOG(error) << "No answer received, try to reconnect in a moment...";
+               errorProcess(context);
+               break;
+            }
+         case kProtocolErrorRetryTimer:
             {
                createConnection(context->getEventHandler());
                break;
             }
-         case kreceiveBufferClearTimer:
+         case kReceiveBufferClearTimer:
             {
                m_receiveBuffer.flush();
                break;
@@ -171,6 +188,16 @@ void CRfxcom::destroyConnection()
 {
    m_port.reset();
    m_portLogger.reset();
+
+   m_waitForAnswerTimer->stop();
+   m_receiveBufferClearTimer->stop();
+}
+
+void CRfxcom::send(const CByteBuffer& buffer, bool needAnswer)
+{
+   m_port->send(buffer);
+   if (needAnswer)
+      m_waitForAnswerTimer->start();
 }
 
 void CRfxcom::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
@@ -178,7 +205,7 @@ void CRfxcom::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const share
    if (!m_port || m_currentState != kRfxcomIsRunning)
       YADOMS_LOG(warning) << "Command not send (RFXCom is not ready) : " << command;
 
-   m_port->send(m_transceiver->buildMessageToDevice(context, command, deviceParameters));
+   send(m_transceiver->buildMessageToDevice(context, command, deviceParameters));
 }
 
 void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context)
@@ -197,14 +224,19 @@ void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> c
       YADOMS_LOG(error) << "Error resetting RFXCom transceiver : " << e.what();
 
       // Stop the communication, and try later
-      destroyConnection();
-      context->getEventHandler().createTimer(kprotocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
+      errorProcess(context);
    }
    catch (CPortException& e)
    {
       YADOMS_LOG(error) << "Error connecting to RFXCom transceiver : " << e.what();
       // Disconnection will be notified, we just have to wait...
    }
+}
+
+void CRfxcom::errorProcess(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   destroyConnection();
+   context->getEventHandler().createTimer(kProtocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
 
 void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context)
@@ -218,18 +250,23 @@ void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYadomsApi>
 void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data)
 {
    m_receiveBuffer.append(data);
-   m_receiveBufferClearTimer.start();
+   m_receiveBufferClearTimer->start();
 
    // Buffer can contain more than one message
    while (m_receiveBuffer.isComplete())
    {
       boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message = m_transceiver->decodeRfxcomMessage(context, *m_receiveBuffer.popNextMessage());
+      if (m_receiveBuffer.isEmpty())
+         m_receiveBufferClearTimer->stop();
 
       if (!message)
       {
          YADOMS_LOG(warning) << "Unable to decode received message";
          return;
       }
+
+      // Message was recognized, stop timeout
+      m_waitForAnswerTimer->stop();
 
       // Decoding is OK, process received message
       boost::shared_ptr<rfxcomMessages::CTransceiverStatus> statusMessage = boost::dynamic_pointer_cast<rfxcomMessages::CTransceiverStatus>(message);
@@ -258,7 +295,7 @@ void CRfxcom::initRfxcom()
 
    // Send reset command to the RfxCom
    YADOMS_LOG(info) << "Reset the RFXCom...";
-   m_port->send(m_transceiver->buildResetCmd());
+   send(m_transceiver->buildResetCmd());
    // No answer
 
    // RFXCom needs some time to recover after reset (see specifications)
@@ -270,10 +307,10 @@ void CRfxcom::initRfxcom()
    // Now get the actual RFXCom configuration to check if reconfiguration is needed
    YADOMS_LOG(info) << "Get the RFXCom status...";
    m_currentState = kGettingRfxcomStatus;
-   m_port->send(m_transceiver->buildGetStatusCmd());
+   send(m_transceiver->buildGetStatusCmd(), true);
 }
 
-void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status) const
+void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status)
 {
    // The status message can be received after a get status command or a set mode command
    YADOMS_LOG(info) << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware version (" << status.getFirmwareVersion() << ")";
@@ -288,7 +325,7 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYadomsApi> con
    // Incorrect configuration is only possible while initialization procedure
    if (m_currentState != kGettingRfxcomStatus)
    {
-      YADOMS_LOG(warning) << "Unable to set configuration as expected, maybe incompatible protocols was selected";
+      YADOMS_LOG(warning) << "Unable to set configuration as expected, maybe incompatible protocols were selected";
       context->recordPluginEvent(yApi::IYadomsApi::kError, "Unable to set configuration as expected, maybe incompatible protocols was selected");
       m_currentState = kRfxcomIsRunning;
       return;
@@ -298,7 +335,7 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYadomsApi> con
 
    // Update active protocols list
    m_currentState = kSettingRfxcomMode;
-   m_port->send(m_transceiver->buildSetModeCmd(status.getRfxcomType(), m_configuration));// Don't change the RFXCom frequency
+   send(m_transceiver->buildSetModeCmd(status.getRfxcomType(), m_configuration), true);// Don't change the RFXCom frequency
    // Expected reply is also a status message
 }
 

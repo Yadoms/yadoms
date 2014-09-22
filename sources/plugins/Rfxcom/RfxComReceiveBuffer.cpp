@@ -31,6 +31,11 @@ bool CRfxcommReceiveBuffer::isComplete() const
    return true;
 }
 
+bool CRfxcommReceiveBuffer::isEmpty() const
+{
+   return m_content.empty();
+}
+
 void CRfxcommReceiveBuffer::append(const CByteBuffer& toAppend)
 {
    for (size_t idx = 0 ; idx < toAppend.size() ; ++ idx)
