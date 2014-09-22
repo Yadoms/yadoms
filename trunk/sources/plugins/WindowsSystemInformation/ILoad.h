@@ -15,47 +15,23 @@ public:
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~ILoad() {};
+   virtual ~ILoad() {}
 
    //--------------------------------------------------------------
-   /// \brief	    Initialize the configuration of variable
+   /// \brief	            Declare the keywords
+   /// \param[in] context  YadomsApi context
    //--------------------------------------------------------------
-   virtual void Initialize() = 0;
+   virtual void declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context) = 0;
 
    //--------------------------------------------------------------
-   /// \brief	    Returns the sensor device ID
-   /// \return     Device ID
+   /// \brief	    Read actual value
    //--------------------------------------------------------------
-   virtual const std::string& getDeviceId() const = 0;
-
-   //--------------------------------------------------------------
-   /// \brief	            Declare the device and its associated keywords
-   /// \param[in] context  YadomsApi context to which declare the device
-   //--------------------------------------------------------------
-   virtual void declareDevice(boost::shared_ptr<yApi::IYadomsApi> context) = 0;
+   virtual void read() = 0;
 
    //--------------------------------------------------------------
    /// \brief	            Send all sensor data to Yadoms
    /// \param[in] context  YadomsApi context to which historize data
    //--------------------------------------------------------------
    virtual void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const = 0;
-
-   //--------------------------------------------------------------
-   /// \brief	    Returns read (computed) load value
-   /// \return     value in pourcentage
-   //--------------------------------------------------------------
-   virtual double getValue() = 0;
-
-   //--------------------------------------------------------------
-   /// \brief	    Returns the Capacity String
-   /// \return     Device ID
-   //--------------------------------------------------------------
-   virtual const std::string& getCapacity() const = 0;
-
-   //--------------------------------------------------------------
-   /// \brief	    Returns the Keyword String
-   /// \return     Device ID
-   //--------------------------------------------------------------
-   virtual const std::string& getKeyword() const = 0;
 };
 

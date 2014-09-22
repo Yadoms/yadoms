@@ -2,12 +2,12 @@
 #include "WindowsSystemYadomsCPULoad.h"
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/StandardUnits.h>
 
-CWindowsSystemYadomsCPULoad::CWindowsSystemYadomsCPULoad(const std::string & deviceId)
-   :m_deviceId(deviceId), m_CPULoad(0), m_Capacity("cpuload"), m_Keyword("YadomsCPULoad"), m_lastCPU(0), m_lastSysCPU(0), m_lastUserCPU(0), m_numProcessors(0), m_InitializeOk(false)
-{}
+CWindowsSystemYadomsCPULoad::CWindowsSystemYadomsCPULoad(const std::string & device)
+   :m_device(device), m_keyword("YadomsCPULoad"), m_lastCPU(0), m_lastSysCPU(0), m_lastUserCPU(0), m_numProcessors(0), m_InitializeOk(false)
+{
+   Initialize();
+}
 
 void CWindowsSystemYadomsCPULoad::Initialize()
 {
@@ -36,32 +36,15 @@ void CWindowsSystemYadomsCPULoad::Initialize()
 }
 
 CWindowsSystemYadomsCPULoad::~CWindowsSystemYadomsCPULoad()
-{}
-
-const std::string& CWindowsSystemYadomsCPULoad::getDeviceId() const
 {
-   return m_deviceId;
 }
 
-const std::string& CWindowsSystemYadomsCPULoad::getCapacity() const
-{
-   return m_Capacity;
-}
-
-const std::string& CWindowsSystemYadomsCPULoad::getKeyword() const
-{
-   return m_Keyword;
-}
-
-void CWindowsSystemYadomsCPULoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
+void CWindowsSystemYadomsCPULoad::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    if (m_InitializeOk)
    {
-      // Declare the device
-      context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
-
       // Declare associated keywords (= values managed by this device)
-      context->declareCustomKeyword(m_deviceId, getKeyword(), getCapacity(), yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::Percent);
+      context->declareKeyword(m_device, m_keyword);
    }
 }
 
@@ -70,10 +53,12 @@ void CWindowsSystemYadomsCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsA
    BOOST_ASSERT_MSG(context, "context must be defined");
 
    if (m_InitializeOk)
-      context->historizeData(m_deviceId, getKeyword()  , m_CPULoad);
+   {
+      context->historizeData(m_device, m_keyword);
+   }
 }
 
-double CWindowsSystemYadomsCPULoad::getValue()
+void CWindowsSystemYadomsCPULoad::read()
 {
    FILETIME ftime, fsys, fuser;
    unsigned __int64 now, sys, user;
@@ -99,13 +84,11 @@ double CWindowsSystemYadomsCPULoad::getValue()
       m_lastUserCPU = user;
       m_lastSysCPU = sys;
 
-      m_CPULoad = percent * 100;
-
-      return m_CPULoad;
+      m_keyword.set((float)(percent * 100));
+      YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  Yadoms CPU Load : " << m_keyword.formatValue();
    }
    else
    {
-      YADOMS_LOG(trace) << getDeviceId() << " is desactivated";
-      return 0;
+      YADOMS_LOG(trace) << m_device << " is desactivated";
    }
 }

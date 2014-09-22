@@ -2,7 +2,6 @@
 #include "FakePlugin.h"
 #include <shared/plugin/ImplementationHelper.h>
 #include <shared/Log.h>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include "FakeSensor.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
@@ -38,9 +37,17 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       CFakeSensor fakeSensor1("fakeSensor1");
       CFakeSensor fakeSensor2("fakeSensor2");
       
-      // Declare these sensors to Yadoms
-      fakeSensor1.declareDevice(context);
-      fakeSensor2.declareDevice(context);
+      // Declare these sensors to Yadoms (devices and associated keywords)
+      if (!context->deviceExists(fakeSensor1.getDeviceName()))
+      {
+         context->declareDevice(fakeSensor1.getDeviceName(), fakeSensor1.getModel());
+         fakeSensor1.declareKeywords(context);
+      }
+      if (!context->deviceExists(fakeSensor2.getDeviceName()))
+      {
+         context->declareDevice(fakeSensor2.getDeviceName(), fakeSensor2.getModel());
+         fakeSensor2.declareKeywords(context);
+      }
 
       // Timer used to send fake sensor states periodically
       context->getEventHandler().createTimer(kSendTemperatureTimerEventId, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
@@ -99,7 +106,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                break;
             }
          }
-      };
+      }
    }
    // Plugin must catch this end-of-thread exception to make its cleanup.
    // If no cleanup is necessary, still catch it, or Yadoms will consider

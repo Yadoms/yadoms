@@ -12,9 +12,11 @@
 //Error Messages could be obtained with this function:
 // http://msdn.microsoft.com/en-us/library/aa373046%28VS.85%29.aspx
 
-CWindowsSystemCPULoad::CWindowsSystemCPULoad(const std::string & deviceId)
-   :m_deviceId(deviceId), m_CPULoad(0), m_Capacity("cpuload"), m_Keyword("WindowsCPULoad"), m_InitializeOk(false)
-{}
+CWindowsSystemCPULoad::CWindowsSystemCPULoad(const std::string & device)
+   :m_device(device), m_keyword("CPULoad"), m_InitializeOk(false)
+{
+   Initialize();
+}
 
 void CWindowsSystemCPULoad::Initialize()
 {
@@ -90,42 +92,24 @@ CWindowsSystemCPULoad::~CWindowsSystemCPULoad()
    }
 }
 
-const std::string& CWindowsSystemCPULoad::getDeviceId() const
-{
-   return m_deviceId;
-}
-
-const std::string& CWindowsSystemCPULoad::getCapacity() const
-{
-   return m_Capacity;
-}
-
-const std::string& CWindowsSystemCPULoad::getKeyword() const
-{
-   return m_Keyword;
-}
-
-void CWindowsSystemCPULoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
+void CWindowsSystemCPULoad::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    if (m_InitializeOk)
    {
-      // Declare the device
-      context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
-
       // Declare associated keywords (= values managed by this device)
-      context->declareCustomKeyword(m_deviceId, getKeyword(), getCapacity(), yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::Percent);
+      context->declareKeyword(m_device, m_keyword);
    }
 }
 
 void CWindowsSystemCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   BOOST_ASSERT_MSG(context, "context must be defined");
+   BOOST_ASSERT_MSG(!!context, "context must be defined");
 
    if (m_InitializeOk)
-      context->historizeData(m_deviceId, getKeyword(), m_CPULoad);
+      context->historizeData(m_device, m_keyword);
 }
 
-double CWindowsSystemCPULoad::getValue() /*const*/
+void CWindowsSystemCPULoad::read()
 {
    PDH_FMT_COUNTERVALUE counterVal;
    PDH_STATUS Status;
@@ -159,14 +143,12 @@ double CWindowsSystemCPULoad::getValue() /*const*/
          throw shared::exception::CException ( Message.str() );
       }
 
-      m_CPULoad = counterVal.doubleValue;
-
-      return counterVal.doubleValue;
+      m_keyword.set((float)counterVal.doubleValue);
+      YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  CPU Load : " << m_keyword.formatValue();
    }
    else
    {
-      YADOMS_LOG(trace) << getDeviceId() << " is desactivated";
-      return 0;
+      YADOMS_LOG(trace) << m_device << " is desactivated";
    }
 }
 

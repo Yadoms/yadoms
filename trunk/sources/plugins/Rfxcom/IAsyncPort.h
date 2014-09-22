@@ -9,6 +9,8 @@
 // After configuring and starting the port management, the
 // caller can be notified when connection is established or lost,
 // and when data is received, asynchronously.
+// Note the data reception is done as soon as data is available,
+// so messages can be divided in several parts.
 // The caller can also send data synchronously.
 //--------------------------------------------------------------
 class IAsyncPort

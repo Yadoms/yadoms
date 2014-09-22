@@ -5,24 +5,25 @@
 #include <shared/Field.hpp>
 #include "IHistorizable.h"
 
+//TODO renommer les commandes (en historizableObjects)
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {   
    //-----------------------------------------------------
-   ///\brief A switch historizable object
+   ///\brief A temperature historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CSwitch : public IHistorizable
+   class YADOMS_SHARED_EXPORT CCounter : public IHistorizable
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CSwitch(const std::string& keywordName);
+      CCounter(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CSwitch();
+      virtual ~CCounter();
 
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
@@ -39,36 +40,15 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 
       //-----------------------------------------------------
       ///\brief                     Set value from on/off state
-      ///\param[in] isOn            switch on/off state (true = on)
+      ///\param[in] count           Count value
       //-----------------------------------------------------
-      void set(bool isOn);
+      void set(unsigned int count);
 
       //-----------------------------------------------------
-      ///\brief                     Set value
-      ///\param[in] dimLevel        switch level (0-100)
-      ///\throw                     shared::exception::CInvalidParameter if fail to parse command
+      ///\brief                     Get the temperature value
+      ///\return                    The count value
       //-----------------------------------------------------
-      void set(int dimLevel);
-
-      //-----------------------------------------------------
-      ///\brief                     Get the switch level
-      ///\return                    The switch level (0-100)
-      //-----------------------------------------------------
-      int switchLevel() const;
-
-      //-----------------------------------------------------
-      ///\brief                     Get the switch on/off state
-      ///\return                    The switch state (considered as ON if switchLevel >= 50)
-      //-----------------------------------------------------
-      bool isOn() const;
-
-   protected:
-      //-----------------------------------------------------
-      ///\brief                     Normalize the switch level value
-      ///\param[in] level           Raw switch level
-      ///\return                    The normalized switch level (0-100)
-      //-----------------------------------------------------
-      static int NormalizeLevel(int level);
+      unsigned int count() const;
 
    private:
       //-----------------------------------------------------
@@ -77,9 +57,9 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       const std::string m_keywordName;
 
       //-----------------------------------------------------
-      ///\brief                     The switch level (0-100)
+      ///\brief                     The count value
       //-----------------------------------------------------
-      int m_switchLevel;
+      unsigned int m_count;
    };
 
 

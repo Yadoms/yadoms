@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Lighting1.h"
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/commands/Switch.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 // Shortcut to yadomsApi namespace
@@ -10,34 +9,56 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CLighting1::CLighting1(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+CLighting1::CLighting1(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+   :m_state("state"), m_rssi("rssi")
 {
+   m_state.set(command);
+   m_rssi.set(0);
+
    m_subType = deviceParameters.get<unsigned char>("subType");
    m_houseCode = deviceParameters.get<unsigned char>("houseCode");
    m_unitCode = deviceParameters.get<unsigned char>("unitCode");
-   m_state = toProtocolState(command);
-   m_rssi = 0;
-
-   buildDeviceName();
-   buildDeviceModel();
+ 
+   Init(context);
 }
 
-CLighting1::CLighting1(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CLighting1::CLighting1(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+   :m_state("state"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeLighting1, GET_RBUF_STRUCT_SIZE(LIGHTING1), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.LIGHTING1.subtype;
    m_houseCode = rbuf.LIGHTING1.housecode;
    m_unitCode = rbuf.LIGHTING1.unitcode;
-   m_state = rbuf.LIGHTING1.cmnd;
-   m_rssi = rbuf.LIGHTING1.rssi * 100 / 0x0F;
+   m_state.set(fromProtocolState(rbuf.LIGHTING1.cmnd));
+   m_rssi.set(rbuf.LIGHTING1.rssi * 100 / 0x0F);
 
-   buildDeviceName();
-   buildDeviceModel();
+   Init(context);
 }
 
 CLighting1::~CLighting1()
 {
+}
+
+void CLighting1::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   // Build device description
+   buildDeviceModel();
+   buildDeviceName();
+
+   // Create device and keywords if needed
+   if (!context->deviceExists(m_deviceName))
+   {
+      shared::CDataContainer details;
+      details.set("type", pTypeLighting1);
+      details.set("subType", m_subType);
+      details.set("houseCode", m_houseCode);
+      details.set("unitCode", m_unitCode);
+      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+
+      context->declareKeyword(m_deviceName, m_state);
+      context->declareKeyword(m_deviceName, m_rssi);
+   }
 }
 
 const CByteBuffer CLighting1::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
@@ -51,7 +72,7 @@ const CByteBuffer CLighting1::encode(boost::shared_ptr<ISequenceNumberProvider> 
    rbuf.LIGHTING1.seqnbr = seqNumberProvider->next();
    rbuf.LIGHTING1.housecode = m_houseCode;
    rbuf.LIGHTING1.unitcode = m_unitCode;
-   rbuf.LIGHTING1.cmnd = m_state;
+   rbuf.LIGHTING1.cmnd = toProtocolState(m_state);
    rbuf.LIGHTING1.rssi = 0;
    rbuf.LIGHTING1.filler = 0;
 
@@ -60,21 +81,8 @@ const CByteBuffer CLighting1::encode(boost::shared_ptr<ISequenceNumberProvider> 
 
 void CLighting1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   if (!context->deviceExists(m_deviceName))
-   {
-      shared::CDataContainer details;
-      details.set("type", pTypeLighting1);
-      details.set("subType", m_subType);
-      details.set("houseCode", m_houseCode);
-      details.set("unitCode", m_unitCode);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
-
-      context->declareKeyword(m_deviceName, "state", yApi::CStandardCapacities::Switch);
-      context->declareKeyword(m_deviceName, "rssi", yApi::CStandardCapacities::Rssi);
-   }
-
-   context->historizeData(m_deviceName, "state", toYadomsState(m_state));
-   context->historizeData(m_deviceName, "rssi", m_rssi);
+   context->historizeData(m_deviceName, m_state);
+   context->historizeData(m_deviceName, m_rssi);
 }
 
 void CLighting1::buildDeviceName()
@@ -107,22 +115,20 @@ void CLighting1::buildDeviceModel()
    m_deviceModel = ssModel.str();
 }
 
-unsigned char CLighting1::toProtocolState(const shared::CDataContainer& yadomsState)
+unsigned char CLighting1::toProtocolState(const yApi::commands::CSwitch& switchState)
 {
-   yApi::commands::CSwitch cmd(yadomsState);
-   return cmd.isOn() ? light1_sOn : light1_sOff;
+   return switchState.isOn() ? light1_sOn : light1_sOff;
 }
 
-std::string CLighting1::toYadomsState(unsigned char protocolState)
+bool CLighting1::fromProtocolState(unsigned char protocolState)
 {
    switch(protocolState)
    {
-   case light1_sOn: return yApi::commands::CSwitch(100).format(); break;
-   case light1_sOff: return yApi::commands::CSwitch(0).format(); break;
+   case light1_sOn: return true;
+   case light1_sOff: return false;
    default:
       BOOST_ASSERT_MSG(false, "Invalid state");
       throw shared::exception::CInvalidParameter("state");
-      break;
    }
 }
 

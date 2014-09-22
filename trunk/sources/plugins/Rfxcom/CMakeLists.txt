@@ -24,6 +24,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/RFXtrx.h
    rfxcomMessages/RFXtrxHelpers.h
    rfxcomMessages/RFXtrxHelpers.cpp
+   rfxcomMessages/RFXMeter.h
+   rfxcomMessages/RFXMeter.cpp
    rfxcomMessages/Rfy.h
    rfxcomMessages/Rfy.cpp
    rfxcomMessages/Temp.h

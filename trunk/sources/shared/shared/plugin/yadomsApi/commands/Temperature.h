@@ -8,21 +8,21 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {   
    //-----------------------------------------------------
-   ///\brief A switch historizable object
+   ///\brief A temperature historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CSwitch : public IHistorizable
+   class YADOMS_SHARED_EXPORT CTemperature : public IHistorizable
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CSwitch(const std::string& keywordName);
+      CTemperature(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CSwitch();
+      virtual ~CTemperature();
 
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
@@ -39,36 +39,15 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 
       //-----------------------------------------------------
       ///\brief                     Set value from on/off state
-      ///\param[in] isOn            switch on/off state (true = on)
+      ///\param[in] temperature     temperature value (degres)
       //-----------------------------------------------------
-      void set(bool isOn);
+      void set(double temperature);
 
       //-----------------------------------------------------
-      ///\brief                     Set value
-      ///\param[in] dimLevel        switch level (0-100)
-      ///\throw                     shared::exception::CInvalidParameter if fail to parse command
+      ///\brief                     Get the temperature value
+      ///\return                    The temperature value (degres)
       //-----------------------------------------------------
-      void set(int dimLevel);
-
-      //-----------------------------------------------------
-      ///\brief                     Get the switch level
-      ///\return                    The switch level (0-100)
-      //-----------------------------------------------------
-      int switchLevel() const;
-
-      //-----------------------------------------------------
-      ///\brief                     Get the switch on/off state
-      ///\return                    The switch state (considered as ON if switchLevel >= 50)
-      //-----------------------------------------------------
-      bool isOn() const;
-
-   protected:
-      //-----------------------------------------------------
-      ///\brief                     Normalize the switch level value
-      ///\param[in] level           Raw switch level
-      ///\return                    The normalized switch level (0-100)
-      //-----------------------------------------------------
-      static int NormalizeLevel(int level);
+      double temperature() const;
 
    private:
       //-----------------------------------------------------
@@ -77,9 +56,9 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       const std::string m_keywordName;
 
       //-----------------------------------------------------
-      ///\brief                     The switch level (0-100)
+      ///\brief                     The temperature value (degres)
       //-----------------------------------------------------
-      int m_switchLevel;
+      double m_temperature;
    };
 
 

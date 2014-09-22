@@ -9,6 +9,9 @@
 #include <shared/plugin/yadomsApi/StandardCapacity.h>
 #include <shared/plugin/yadomsApi/KeywordAccessMode.h>
 #include <shared/plugin/yadomsApi/KeywordType.h>
+#include "commands/IHistorizable.h"
+#include "commands/commands.h"
+
 
 namespace shared { namespace plugin { namespace yadomsApi
 {
@@ -91,31 +94,31 @@ namespace shared { namespace plugin { namespace yadomsApi
       virtual const shared::CDataContainer getDeviceDetails(const std::string& device) const = 0;
 
       //-----------------------------------------------------
-      ///\brief Declare a device
-      ///\param    [in]    device             The device name
+      ///\brief Declare new device to Yadoms
+      ///\param    [in]    device            The device name
       ///\param    [in]    model              The device model or description (ex : "Oregon Scientific CN185")
-      ///\param    [in]    details            A free string used by plugin
-      ///\return true if the device has been successfully created, false if already exist
-      ///\throw shared::exception::CEmptyResult if creation failed
-      //-----------------------------------------------------   
-	  virtual bool declareDevice(const std::string& device, const std::string& model, const std::string & details = shared::CStringExtension::EmptyString) = 0;
+      ///\param    [in]    details           Device details
+      ///\throw shared::exception::CEmptyResult if device already exist
+      //-----------------------------------------------------
+      virtual void declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) const = 0;
+
       
-      
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //--
-      //-- Keywords
-      //--
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
-      //----------------------------------------------------------------------------------------------------------------
+
+      ////----------------------------------------------------------------------------------------------------------------
+      ////----------------------------------------------------------------------------------------------------------------
+      ////----------------------------------------------------------------------------------------------------------------
+      ////----------------------------------------------------------------------------------------------------------------
+      ////----------------------------------------------------------------------------------------------------------------
+      ////----------------------------------------------------------------------------------------------------------------
+      ////--
+      ////-- Keywords
+      ////--
+      ////----------------------------------------------------------------------------------------------------------------
+      ////----------------------------------------------------------------------------------------------------------------
+      ////----------------------------------------------------------------------------------------------------------------
+      ////----------------------------------------------------------------------------------------------------------------
+      ////----------------------------------------------------------------------------------------------------------------
+      ////----------------------------------------------------------------------------------------------------------------
 
 
       //-----------------------------------------------------
@@ -127,29 +130,15 @@ namespace shared { namespace plugin { namespace yadomsApi
       virtual bool keywordExists(const std::string& device, const std::string& keyword) const = 0;
 
       //-----------------------------------------------------
-      ///\brief Declare a custom keyword
-      ///\param    [in]    device             The device name owner of the keyword
-      ///\param    [in]    keyword            The keyword name
-      ///\param    [in]    capacity           The capacity name (see yApi::CStandardCapacities for standard capacities, or use your own)
-      ///\param    [in]    accessMode         The keyword access
-      ///\param    [in]    type               The keyword type
-      ///\param    [in]    units              The keyword units
-      ///\param    [in]    details            The keyword details (JSON string, optional. Can be used to declare specific properties like min/max values)
-      ///\return true if the keyword has been successfully created, false if already exist
-      ///\throw shared::exception::CEmptyResult if creation failed
-      //-----------------------------------------------------   
-      virtual bool declareCustomKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, EKeywordAccessMode accessMode, EKeywordType type, const std::string & units = shared::CStringExtension::EmptyString, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) = 0;
-      
-      //-----------------------------------------------------
       ///\brief Declare a standard keyword
       ///\param    [in]    device             The device name owner of the keyword
-      ///\param    [in]    keyword            The keyword name
-      ///\param    [in]    capacity           The capacity name (see yApi::CStandardCapacities for standard capacities, or use your own)
+      ///\param    [in]    keyword            The keyword
       ///\param    [in]    details            The keyword details (JSON string, optional. Can be used to declare specific properties like min/max values)
-      ///\return true if the keyword has been successfully created, false if already exist
-      ///\throw shared::exception::CEmptyResult if creation failed
+      ///\throw shared::exception::CEmptyResult if keyword already exist
       //-----------------------------------------------------   
-      virtual bool declareKeyword(const std::string& device, const std::string& keyword, const CStandardCapacity & capacity, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) = 0;
+      virtual void declareKeyword(const std::string& device, const commands::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) = 0;
+
+
 
       //----------------------------------------------------------------------------------------------------------------
       //----------------------------------------------------------------------------------------------------------------
@@ -168,30 +157,13 @@ namespace shared { namespace plugin { namespace yadomsApi
       //----------------------------------------------------------------------------------------------------------------
 
       //-----------------------------------------------------
-      ///\brief Historize a new data values
-      ///\param    [in]    device             The device name
-      ///\param    [in]    keyword            The value name ("temp1", "temp2", "humidity", "batteryLevel", "rssi"...)
-      ///\param    [in]    value              The capacity value
-      ///\throw   shared::exception::CInvalidParameter if the device is not known
-      ///\note Data are all recorded internally as string. The methods which doesn't take string just do a boost::lexical_cast.
+      ///\brief Historize a new data
+      ///\param    [in]    device            The device name
+      ///\param    [in]    data              The historizable data
       //-----------------------------------------------------     
-      virtual void historizeData(const std::string & device, const std::string & keyword, const std::string & value) = 0;
-      virtual void historizeData(const std::string & device, const std::string & keyword, bool value) = 0;
-      virtual void historizeData(const std::string & device, const std::string & keyword, int value) = 0;
-      virtual void historizeData(const std::string & device, const std::string & keyword, double value) = 0;
-      
-      //-----------------------------------------------------
-      ///\brief Historize a new data (double) and round it with a specified number of digits
-      ///\param    [in]    device             The device name
-      ///\param    [in]    keyword            The value name ("temp1", "temp2", "humidity", "batteryLevel", "rssi"...)
-      ///\param    [in]    value              The capacity value
-      ///\param    [in]    numberOfdigits     The number of digits ("45.12345" with 2 digits => 45.12)
-      ///\throw   shared::exception::CInvalidParameter if the device is not known
-      ///\note Data are all recorded internally as string. The methods which doesn't take string just do a boost::lexical_cast.
-      //-----------------------------------------------------     
-      virtual void historizeData(const std::string & device, const std::string & keyword, double value, int numberOfdigits) = 0;
-      
-      
+      virtual void historizeData(const std::string& device, const commands::IHistorizable& data) = 0;
+
+
       //----------------------------------------------------------------------------------------------------------------
       //----------------------------------------------------------------------------------------------------------------
       //----------------------------------------------------------------------------------------------------------------

@@ -3,28 +3,17 @@
 #include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
-#include <shared/DataContainer.h>
 
 namespace yApi = shared::plugin::yadomsApi;
 
 namespace rfxcomMessages
 {
    //--------------------------------------------------------------
-   /// \brief	The Lightning4 protocol support
+   /// \brief	The RFXMeter protocol support (reception only)
    //--------------------------------------------------------------
-   class CLighting4 : public IRfxcomMessage
+   class CRFXMeter : public IRfxcomMessage
    {
    public:
-      //--------------------------------------------------------------
-      /// \brief	                        Constructor
-      /// \param[in] context              Yadoms APi context
-      /// \param[in] command              The command
-      /// \param[in] deviceParameters     The device parameters
-      /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
-      /// \note                           Use this constructor for command (to build RFXCom message)
-      //--------------------------------------------------------------
-      CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters);
-
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       /// \param[in] context              Yadoms APi context
@@ -33,18 +22,18 @@ namespace rfxcomMessages
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CRFXMeter(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CLighting4();
+      virtual ~CRFXMeter();
 
       // IRfxcomMessage implementation
       virtual const CByteBuffer encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
       virtual void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
       // [END] IRfxcomMessage implementation
-
+      
    protected:
       //--------------------------------------------------------------
       /// \brief	Global initialization method
@@ -71,7 +60,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The device id
       //--------------------------------------------------------------
-      unsigned int m_id;
+      unsigned short m_id;
 
       //--------------------------------------------------------------
       /// \brief	The device name
@@ -84,12 +73,12 @@ namespace rfxcomMessages
       std::string m_deviceModel;
 
       //--------------------------------------------------------------
-      /// \brief	The keyword associated with state
+      /// \brief	The counter
       //--------------------------------------------------------------
-      yApi::commands::CSwitch m_state;
+      yApi::commands::CCounter m_counter;
 
       //--------------------------------------------------------------
-      /// \brief	The keyword associated with rssi
+      /// \brief	The RSSI (percent)
       //--------------------------------------------------------------
       yApi::commands::CRssi m_rssi;
    };

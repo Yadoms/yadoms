@@ -30,5 +30,5 @@ public:
    // [END] IPlugin implementation
 
 private:
-   std::string m_DeviceName;
+   std::string m_deviceName;
 };

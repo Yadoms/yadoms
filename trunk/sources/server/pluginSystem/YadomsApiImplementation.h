@@ -45,15 +45,10 @@ namespace pluginSystem
       // IYadomsApi implementation 
       virtual bool deviceExists(const std::string& device) const;
       virtual const shared::CDataContainer getDeviceDetails(const std::string& device) const;
-      virtual bool declareDevice(const std::string& device, const std::string& model, const std::string& details);
+      virtual void declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) const;
       virtual bool keywordExists(const std::string& device, const std::string& keyword) const;
-      virtual bool declareCustomKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, shared::plugin::yadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::EKeywordType type, const std::string & units = shared::CStringExtension::EmptyString, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
-      virtual bool declareKeyword(const std::string& device, const std::string& keyword, const shared::plugin::yadomsApi::CStandardCapacity & capacity, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
-      virtual void historizeData(const std::string& device, const std::string& keyword, const std::string& value);
-      virtual void historizeData(const std::string& device, const std::string& keyword, bool value);
-      virtual void historizeData(const std::string& device, const std::string& keyword, int value);
-      virtual void historizeData(const std::string& device, const std::string& keyword, double value);
-      virtual void historizeData(const std::string & device, const std::string & keyword, double value, int numberOfdigits);
+      virtual void declareKeyword(const std::string& device, const shared::plugin::yadomsApi::commands::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
+      virtual void historizeData(const std::string& device, const shared::plugin::yadomsApi::commands::IHistorizable& data);
       virtual const shared::plugin::information::IInformation& getInformation() const;
       virtual shared::CDataContainer getConfiguration() const;
       virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message);
@@ -65,6 +60,23 @@ namespace pluginSystem
       ///\brief Get the plugin instance ID
       //-----------------------------------------------------
       virtual int getPluginId() const;
+
+   protected:
+      //-----------------------------------------------------
+      ///\brief Declare a custom keyword
+      ///\param    [in]    device             The device name owner of the keyword
+      ///\param    [in]    keyword            The keyword name
+      ///\param    [in]    capacity           The capacity name (see yApi::CStandardCapacities for standard capacities, or use your own)
+      ///\param    [in]    accessMode         The keyword access
+      ///\param    [in]    type               The keyword type
+      ///\param    [in]    units              The keyword units
+      ///\param    [in]    details            The keyword details (JSON string, optional. Can be used to declare specific properties like min/max values)
+      ///\throw shared::exception::CEmptyResult if creation failed
+      //-----------------------------------------------------   
+      virtual void declareCustomKeyword(const std::string& device, const std::string& keyword, const std::string& capacity,
+         shared::plugin::yadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::EKeywordType type,
+         const std::string & units = shared::CStringExtension::EmptyString,
+         const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
 
    private:
       //--------------------------------------------------------------

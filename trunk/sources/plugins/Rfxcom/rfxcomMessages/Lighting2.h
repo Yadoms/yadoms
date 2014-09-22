@@ -17,21 +17,23 @@ namespace rfxcomMessages
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
+      /// \param[in] context              Yadoms APi context
       /// \param[in] command              The command
       /// \param[in] deviceParameters     The device parameters
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
-      CLighting2(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters);
+      CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
+      /// \param[in] context              Yadoms APi context
       /// \param[in] rbuf                 The received buffer
       /// \param[in] seqNumberProvider    The sequence number provider
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CLighting2(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -45,6 +47,12 @@ namespace rfxcomMessages
 
    protected:
       //--------------------------------------------------------------
+      /// \brief	Global initialization method
+      /// \param[in] context              Yadoms APi context
+      //--------------------------------------------------------------
+      void Init(boost::shared_ptr<yApi::IYadomsApi> context);
+
+      //--------------------------------------------------------------
       /// \brief	                        Build the device name
       //--------------------------------------------------------------
       void buildDeviceName();
@@ -56,21 +64,21 @@ namespace rfxcomMessages
 
       //--------------------------------------------------------------
       /// \brief	                        Convert Yadoms command to protocol value
-      /// \param[in] yadomsCommand        The command from Yadoms
+      /// \param[in] switch               The switch state Yadoms
       /// \param[out] state               The state known by the protocol
       /// \param[out] level               The level known by the protocol (if state is light2_sSetLevel)
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       //--------------------------------------------------------------
-      static void toProtocolState(const shared::CDataContainer& yadomsCommand, unsigned char& state, unsigned char& level);
+      static void toProtocolState(const yApi::commands::CSwitch& switchState, unsigned char& state, unsigned char& level);
       
       //--------------------------------------------------------------
       /// \brief	                        Convert protocol value to Yadoms state
       /// \param[in] protocolState        The state known by the protocol
       /// \param[in] protocolLevel        The level known by the protocol
-      /// \return                         The command for Yadoms
+      /// \return                         The level for Yadoms (0-100)
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       //--------------------------------------------------------------
-      static std::string toYadomsState(unsigned char protocolState, unsigned char protocolLevel);
+      static int fromProtocolState(unsigned char protocolState, unsigned char protocolLevel);
 
    private:
       //--------------------------------------------------------------
@@ -94,21 +102,6 @@ namespace rfxcomMessages
       unsigned char m_unitCode;
 
       //--------------------------------------------------------------
-      /// \brief	The state
-      //--------------------------------------------------------------
-      unsigned char m_state;
-
-      //--------------------------------------------------------------
-      /// \brief	The dim level
-      //--------------------------------------------------------------
-      unsigned char m_level;
-
-      //--------------------------------------------------------------
-      /// \brief	The RSSI (received messages only)
-      //--------------------------------------------------------------
-      unsigned char m_rssi;
-
-      //--------------------------------------------------------------
       /// \brief	The device name
       //--------------------------------------------------------------
       std::string m_deviceName;
@@ -117,5 +110,15 @@ namespace rfxcomMessages
       /// \brief	The device model
       //--------------------------------------------------------------
       std::string m_deviceModel;
+
+      //--------------------------------------------------------------
+      /// \brief	The keyword associated with state
+      //--------------------------------------------------------------
+      yApi::commands::CSwitch m_state;
+
+      //--------------------------------------------------------------
+      /// \brief	The keyword associated with rssi
+      //--------------------------------------------------------------
+      yApi::commands::CRssi m_rssi;
    };
 } // namespace rfxcomMessages

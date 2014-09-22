@@ -9,7 +9,8 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CTemp::CTemp(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CTemp::CTemp(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+   :m_temperature("temperature"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeTEMP, GET_RBUF_STRUCT_SIZE(TEMP), DONT_CHECK_SEQUENCE_NUMBER);
 
@@ -17,20 +18,41 @@ CTemp::CTemp(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> 
 
    m_id = rbuf.TEMP.id1 | (rbuf.TEMP.id2 << 8);
 
-   m_temperature = (float)((rbuf.TEMP.temperatureh << 8) | rbuf.TEMP.temperaturel) / 10;
+   double temperature = (double)((rbuf.TEMP.temperatureh << 8) | rbuf.TEMP.temperaturel) / 10;
    if (rbuf.TEMP.tempsign)
-      m_temperature = -m_temperature;
+      temperature = -temperature;
+   m_temperature.set(temperature);
 
-   m_batteryLevel = rbuf.TEMP.battery_level == 0x09 ? 100 : 0;
+   m_batteryLevel.set(rbuf.TEMP.battery_level == 0x09 ? 100 : 0);
 
-   m_rssi = rbuf.TEMP.rssi * 100 / 0x0F;
+   m_rssi.set(rbuf.TEMP.rssi * 100 / 0x0F);
 
-   buildDeviceModel();
-   buildDeviceName();
+   Init(context);
 }
 
 CTemp::~CTemp()
 {
+}
+
+void CTemp::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   // Build device description
+   buildDeviceModel();
+   buildDeviceName();
+
+   // Create device and keywords if needed
+   if (!context->deviceExists(m_deviceName))
+   {
+      shared::CDataContainer details;
+      details.set("type", pTypeTEMP);
+      details.set("subType", m_subType);
+      details.set("id", m_id);
+      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+
+      context->declareKeyword(m_deviceName, m_temperature);
+      context->declareKeyword(m_deviceName, m_batteryLevel);
+      context->declareKeyword(m_deviceName, m_rssi);
+   }
 }
 
 const CByteBuffer CTemp::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
@@ -41,22 +63,9 @@ const CByteBuffer CTemp::encode(boost::shared_ptr<ISequenceNumberProvider> seqNu
 
 void CTemp::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   if (!context->deviceExists(m_deviceName))
-   {
-      shared::CDataContainer details;
-      details.set("type", pTypeTEMP);
-      details.set("subType", m_subType);
-      details.set("id", m_id);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
-
-      context->declareKeyword(m_deviceName, "temperature", yApi::CStandardCapacities::Temperature);
-      context->declareKeyword(m_deviceName, "battery", yApi::CStandardCapacities::BatteryLevel);
-      context->declareKeyword(m_deviceName, "rssi", yApi::CStandardCapacities::Rssi);
-   }
-
-   context->historizeData(m_deviceName, "temperature", m_temperature);
-   context->historizeData(m_deviceName, "battery", m_batteryLevel);
-   context->historizeData(m_deviceName, "rssi", m_rssi);
+   context->historizeData(m_deviceName, m_temperature);
+   context->historizeData(m_deviceName, m_batteryLevel);
+   context->historizeData(m_deviceName, m_rssi);
 }
 
 void CTemp::buildDeviceName()

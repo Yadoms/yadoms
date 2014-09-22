@@ -2,27 +2,26 @@
 #include <shared/Export.h>
 #include <shared/DataContainer.h>
 #include <shared/enumeration/EnumHelpers.hpp>
-#include <shared/Field.hpp>
 #include "IHistorizable.h"
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {   
    //-----------------------------------------------------
-   ///\brief A switch historizable object
+   ///\brief A temperature historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CSwitch : public IHistorizable
+   class YADOMS_SHARED_EXPORT CBatteryLevel : public IHistorizable
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CSwitch(const std::string& keywordName);
+      CBatteryLevel(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CSwitch();
+      virtual ~CBatteryLevel();
 
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
@@ -38,37 +37,16 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       void set(const shared::CDataContainer& yadomsCommand);
 
       //-----------------------------------------------------
-      ///\brief                     Set value from on/off state
-      ///\param[in] isOn            switch on/off state (true = on)
+      ///\brief                     Set the battery level
+      ///\param[in] batteryLevel    Battery level (0-100)
       //-----------------------------------------------------
-      void set(bool isOn);
+      void set(int batteryLevel);
 
       //-----------------------------------------------------
-      ///\brief                     Set value
-      ///\param[in] dimLevel        switch level (0-100)
-      ///\throw                     shared::exception::CInvalidParameter if fail to parse command
+      ///\brief                     Get the battery level
+      ///\return                    The battery level (0-100)
       //-----------------------------------------------------
-      void set(int dimLevel);
-
-      //-----------------------------------------------------
-      ///\brief                     Get the switch level
-      ///\return                    The switch level (0-100)
-      //-----------------------------------------------------
-      int switchLevel() const;
-
-      //-----------------------------------------------------
-      ///\brief                     Get the switch on/off state
-      ///\return                    The switch state (considered as ON if switchLevel >= 50)
-      //-----------------------------------------------------
-      bool isOn() const;
-
-   protected:
-      //-----------------------------------------------------
-      ///\brief                     Normalize the switch level value
-      ///\param[in] level           Raw switch level
-      ///\return                    The normalized switch level (0-100)
-      //-----------------------------------------------------
-      static int NormalizeLevel(int level);
+      int batteryLevel() const;
 
    private:
       //-----------------------------------------------------
@@ -77,9 +55,9 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       const std::string m_keywordName;
 
       //-----------------------------------------------------
-      ///\brief                     The switch level (0-100)
+      ///\brief                     The battery level (0-100)
       //-----------------------------------------------------
-      int m_switchLevel;
+      int m_batteryLevel;
    };
 
 

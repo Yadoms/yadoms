@@ -10,34 +10,36 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CRfy::CRfy(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+CRfy::CRfy(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+   :m_state("state")
 {
+   m_state.set(command);
+
    m_subType = deviceParameters.get<unsigned char>("subType");
    m_id = deviceParameters.get<unsigned int>("id");
    m_unitCode = deviceParameters.get<unsigned char>("unitCode");
-   m_state = toProtocolState(command);
-   m_rssi = 0;
 
-   buildDeviceModel();
-   buildDeviceName();
+   Init(context);
 }
 
-CRfy::CRfy(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CRfy::CRfy(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+   :m_state("state")
 {
-   CheckReceivedMessage(rbuf, pTypeRFY, GET_RBUF_STRUCT_SIZE(RFY), DONT_CHECK_SEQUENCE_NUMBER);
-
-   m_subType = rbuf.RFY.subtype;
-   m_id = (rbuf.RFY.id1 << 16) | (rbuf.RFY.id2 << 8) | rbuf.RFY.id3;
-   m_unitCode = rbuf.RFY.unitcode;
-   m_state = rbuf.RFY.cmnd;
-   m_rssi = rbuf.RFY.rssi * 100 / 0x0F;
-
-   buildDeviceModel();
-   buildDeviceName();
+   // Should not be called (transmitter-only device)
+   BOOST_ASSERT_MSG(false, "Constructing CRfy object from received buffer is not possible, CRfy is transmitter-only device");
 }
 
 CRfy::~CRfy()
 {
+}
+
+void CRfy::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   // Build device description
+   buildDeviceModel();
+   buildDeviceName();
+
+   // Nothing to declare (transmitter-only device)
 }
 
 const CByteBuffer CRfy::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
@@ -53,7 +55,7 @@ const CByteBuffer CRfy::encode(boost::shared_ptr<ISequenceNumberProvider> seqNum
    rbuf.RFY.id2 = (unsigned char)((m_id & 0xFF00) >> 8);
    rbuf.RFY.id3 = (unsigned char)(m_id & 0xFF);
    rbuf.RFY.unitcode = m_unitCode;
-   rbuf.RFY.cmnd = m_state;
+   rbuf.RFY.cmnd = toProtocolState(m_state);
    rbuf.RFY.rfu1 = 0;
    rbuf.RFY.rfu2 = 0;
    rbuf.RFY.rfu3 = 0;
@@ -65,27 +67,13 @@ const CByteBuffer CRfy::encode(boost::shared_ptr<ISequenceNumberProvider> seqNum
 
 void CRfy::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   if (!context->deviceExists(m_deviceName))
-   {
-      shared::CDataContainer details;
-      details.set("type", pTypeRFY);
-      details.set("subType", m_subType);
-      details.set("id", m_id);
-      details.set("unitCode", m_unitCode);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
-
-      context->declareKeyword(m_deviceName, "state", yApi::CStandardCapacities::Switch);
-      context->declareKeyword(m_deviceName, "rssi", yApi::CStandardCapacities::Rssi);
-   }
-
-   context->historizeData(m_deviceName, "state", toYadomsState(m_state));
-   context->historizeData(m_deviceName, "rssi", m_rssi);
+   // Nothing to historize (transmitter-only device)
 }
 
 void CRfy::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << m_deviceModel << "." << (unsigned int)m_unitCode << "." << (unsigned int)m_id;
+   ssdeviceName << m_deviceModel << "." << (unsigned int)m_id << "." << (unsigned int)m_unitCode;
    m_deviceName = ssdeviceName.str();
 }
 
@@ -103,31 +91,16 @@ void CRfy::buildDeviceModel()
    m_deviceModel = ssModel.str();
 }
 
-unsigned char CRfy::toProtocolState(const shared::CDataContainer& yadomsState)
+unsigned char CRfy::toProtocolState(const yApi::commands::CCurtain& curtainState)
 {
-   yApi::commands::CCurtain cmd(yadomsState);
-   switch (cmd.command()())
+   switch (curtainState.command()())
    {
    case yApi::commands::CCurtain::ECommand::kOpen: return rfy_sUp;
    case yApi::commands::CCurtain::ECommand::kClose: return rfy_sDown;
    case yApi::commands::CCurtain::ECommand::kStop: return rfy_sStop;
    default:
       BOOST_ASSERT_MSG(false, "Unsupported value");
-      throw shared::exception::CInvalidParameter(yadomsState.serialize());
-   }
-}
-
-std::string CRfy::toYadomsState(unsigned char protocolState)
-{
-   switch(protocolState)
-   {
-   case rfy_sUp: return yApi::commands::CCurtain(yApi::commands::CCurtain::ECommand::kOpen).format(); break;
-   case rfy_sDown: return yApi::commands::CCurtain(yApi::commands::CCurtain::ECommand::kClose).format(); break;
-   case rfy_sStop: return yApi::commands::CCurtain(yApi::commands::CCurtain::ECommand::kStop).format(); break;
-   default:
-      BOOST_ASSERT_MSG(false, "Invalid state");
-      throw shared::exception::CInvalidParameter("state");
-      break;
+      throw shared::exception::CInvalidParameter(curtainState.formatValue());
    }
 }
 

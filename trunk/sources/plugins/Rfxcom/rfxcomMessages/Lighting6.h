@@ -16,21 +16,23 @@ namespace rfxcomMessages
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
+      /// \param[in] context              Yadoms APi context
       /// \param[in] command              The command
       /// \param[in] deviceParameters     The device parameters
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
-      CLighting6(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters);
+      CLighting6(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
+      /// \param[in] context              Yadoms APi context
       /// \param[in] rbuf                 The received buffer
       /// \param[in] seqNumberProvider    The sequence number provider
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CLighting6(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CLighting6(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -44,6 +46,12 @@ namespace rfxcomMessages
       
    protected:
       //--------------------------------------------------------------
+      /// \brief	Global initialization method
+      /// \param[in] context              Yadoms APi context
+      //--------------------------------------------------------------
+      void Init(boost::shared_ptr<yApi::IYadomsApi> context);
+
+      //--------------------------------------------------------------
       /// \brief	                        Build the device name
       //--------------------------------------------------------------
       void buildDeviceName();
@@ -54,20 +62,19 @@ namespace rfxcomMessages
       void buildDeviceModel();
 
       //--------------------------------------------------------------
-      /// \brief	                        Convert Yadoms command to protocol value
-      /// \param[in] yadomsCommand        The command from Yadoms
+      /// \brief	                        Convert Yadoms state command to protocol value
+      /// \param[in] switchState          The state from Yadoms
       /// \return                         The value known by the protocol
-      /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       //--------------------------------------------------------------
-      static unsigned char toProtocolState(const shared::CDataContainer& yadomsCommand);
+      static unsigned char toProtocolState(const yApi::commands::CSwitch& switchState);
       
       //--------------------------------------------------------------
       /// \brief	                        Convert protocol value to Yadoms state
       /// \param[in] protocolState        The value known by the protocol
-      /// \return                         The command for Yadoms
-      /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
+      /// \return                         The Yadoms compliant value
+      /// \throw                          shared::exception::CInvalidParameter if fails to interpret command
       //--------------------------------------------------------------
-      static std::string toYadomsState(unsigned char protocolState);
+      static bool fromProtocolState(unsigned char protocolState);
 
    private:
       //--------------------------------------------------------------
@@ -91,16 +98,6 @@ namespace rfxcomMessages
       unsigned short m_id;
 
       //--------------------------------------------------------------
-      /// \brief	The state
-      //--------------------------------------------------------------
-      unsigned char m_state;
-
-      //--------------------------------------------------------------
-      /// \brief	The RSSI (received messages only)
-      //--------------------------------------------------------------
-      unsigned char m_rssi;
-
-      //--------------------------------------------------------------
       /// \brief	The device name
       //--------------------------------------------------------------
       std::string m_deviceName;
@@ -109,5 +106,15 @@ namespace rfxcomMessages
       /// \brief	The device model
       //--------------------------------------------------------------
       std::string m_deviceModel;
+
+      //--------------------------------------------------------------
+      /// \brief	The keyword associated with state
+      //--------------------------------------------------------------
+      yApi::commands::CSwitch m_state;
+
+      //--------------------------------------------------------------
+      /// \brief	The keyword associated with rssi
+      //--------------------------------------------------------------
+      yApi::commands::CRssi m_rssi;
    };
 } // namespace rfxcomMessages

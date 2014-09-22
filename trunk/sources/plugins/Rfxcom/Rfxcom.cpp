@@ -7,6 +7,7 @@
 #include "RfxcomFactory.h"
 #include "ProtocolException.hpp"
 #include "PortException.hpp"
+#include <shared/plugin/yadomsApi/commands/Switch.h>
 
 IMPLEMENT_PLUGIN(CRfxcom)
 
@@ -61,7 +62,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                boost::shared_ptr<const yApi::IDeviceCommand> command(context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
                YADOMS_LOG(debug) << "Command received :" << command->toString();
 
-               onCommand(command->getBody(), context->getDeviceDetails(command->getTargetDevice()));
+               onCommand(context, command->getBody(), context->getDeviceDetails(command->getTargetDevice()));
 
                break;
             }
@@ -71,7 +72,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> data = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> >();
                YADOMS_LOG(debug) << "Test of device request received :" << data->toString();
 
-               onCommand(data->getCommand()->getBody(), data->getDeviceParameters());
+               onCommand(context, data->getCommand()->getBody(), data->getDeviceParameters());
 
                break;
             }
@@ -84,7 +85,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                // Declare the device
                context->declareDevice(data->getDevice(), shared::CStringExtension::EmptyString, data->getParameters());
                // Declare associated keywords (= values managed by this device)
-               context->declareKeyword(data->getDevice(), data->getKeyword(), yApi::CStandardCapacities::Switch/* TODO en attendant de récupérer de data->getCapacity()*/);
+               context->declareKeyword(data->getDevice(), yApi::commands::CSwitch(data->getKeyword()));
 
                break;
             }
@@ -95,6 +96,8 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                YADOMS_LOG(debug) << "Configuration was updated...";
                BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
+               //TODO : ne détruire la connexion que si le port COM a changé
+               //TODO en cas de destruction de la connexion, voir pourquoi une réouverture immédiate échoue
                // Close connection
                destroyConnection();
 
@@ -158,12 +161,12 @@ void CRfxcom::destroyConnection()
    m_portLogger.reset();
 }
 
-void CRfxcom::onCommand(const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+void CRfxcom::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
 {
    if (!m_port || m_currentState != kRfxcomIsRunning)
       YADOMS_LOG(warning) << "Command not send (RFXCom is not ready) : " << command;
 
-   m_port->send(m_transceiver->buildMessageToDevice(command, deviceParameters));
+   m_port->send(m_transceiver->buildMessageToDevice(context, command, deviceParameters));
 }
 
 void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context)
@@ -208,7 +211,7 @@ void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> cont
    // Buffer can contain more than one message
    while (m_receiveBuffer.isComplete())
    {
-      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message = m_transceiver->decodeRfxcomMessage(*m_receiveBuffer.popNextMessage());
+      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message = m_transceiver->decodeRfxcomMessage(context, *m_receiveBuffer.popNextMessage());
 
       if (!message)
       {

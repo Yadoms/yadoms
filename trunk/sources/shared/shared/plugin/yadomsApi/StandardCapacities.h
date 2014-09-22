@@ -11,13 +11,15 @@ namespace shared { namespace plugin { namespace yadomsApi {
    {
    public:
       //--------------------------------------------------------------
-      /// \brief		Standard capacities
+      /// \brief		Standard capacities (please keep in alphabetical order)
       //--------------------------------------------------------------
-      static const CStandardCapacity & Temperature;       // temperature       | degrees Celcius       | Temperature
       static const CStandardCapacity & BatteryLevel;      // batteryLevel      | percent               | Battery level capacity
-      static const CStandardCapacity & Rssi;              // rssi              | percent               | Rssi measure capacity
-      static const CStandardCapacity & Switch;            // switch            | none                  | A string state (to read a switch, drive a lamp, etc...). Can be a single on/off switch or a dimmable one
+      static const CStandardCapacity & Counter;           // count             | none                  | Generic counter
+      static const CStandardCapacity & Curtain;           // curtain           | none                  | Curtain command "on", "off", "stop"
       static const CStandardCapacity & Message;           // message           |                       | A message (contains "from", "to" and "body" fields)
+      static const CStandardCapacity & Rssi;              // rssi              | percent               | Rssi measure capacity
+      static const CStandardCapacity & Switch;            // switch            | none                  | A value from 0-100 (0 is off, 100 is on)
+      static const CStandardCapacity & Temperature;       // temperature       | degrees Celcius       | Temperature
 
    };
 

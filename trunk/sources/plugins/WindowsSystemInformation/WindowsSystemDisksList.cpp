@@ -3,7 +3,7 @@
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 
-CWindowsSystemDisksList::CWindowsSystemDisksList(void)
+CWindowsSystemDisksList::CWindowsSystemDisksList()
 {
    DWORD cchBuffer;
    LPSTR driveStrings, driveStringsInit;

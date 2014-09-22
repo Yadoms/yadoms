@@ -1,61 +1,84 @@
 #pragma once
 #include <shared/Export.h>
 #include <shared/DataContainer.h>
-#include <shared/Field.hpp>
+#include "IHistorizable.h"
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
    //-----------------------------------------------------
-   ///\brief The message command parser
+   ///\brief A message historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CMessage
+   class YADOMS_SHARED_EXPORT CMessage : public IHistorizable
    {
    public:
       //-----------------------------------------------------
-      ///\brief               Constructor
-      ///\param[in] command   Yadoms command container
-      ///\throw               shared::exception::CInvalidParameter if fail to parse command
+      ///\brief                     Constructor
+      ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CMessage(const shared::CDataContainer& command);
+      CMessage(const std::string& keywordName);
 
       //-----------------------------------------------------
-      ///\brief               Destructor
+      ///\brief                     Destructor
       //-----------------------------------------------------
       virtual ~CMessage();
+
+      // IHistorizable implementation
+      virtual const std::string& getKeyword() const;
+      virtual const CStandardCapacity& getCapacity() const;
+      virtual const std::string formatValue() const;
+      // [END] IHistorizable implementation;
+
+      //-----------------------------------------------------
+      ///\brief                     Set value from Yadoms command
+      ///\param[in] yadomsCommand   Yadoms command container
+      ///\throw                     shared::exception::CInvalidParameter or COutOfRange if fail to parse command
+      //-----------------------------------------------------
+      void set(const shared::CDataContainer& yadomsCommand);
+
+      //-----------------------------------------------------
+      ///\brief                     Set value from on/off state
+      ///\param[in] isOn            switch on/off state (true = on)
+      //-----------------------------------------------------
+      void set(const std::string& from, const std::string& to, const std::string& body);
 
       //-----------------------------------------------------
       ///\brief               Get the sender value
       ///\return              The sender value
       //-----------------------------------------------------
-      const CField<std::string>& from() const;
+      const std::string& from() const;
 
       //-----------------------------------------------------
       ///\brief               Get the recipient value
       ///\return              The recipient value
       //-----------------------------------------------------
-      const CField<std::string>& to() const;
+      const std::string& to() const;
 
       //-----------------------------------------------------
       ///\brief               Get the body value
       ///\return              The body value
       //-----------------------------------------------------
-      const CField<std::string>& body() const;
+      const std::string& body() const;
 
    private:
       //-----------------------------------------------------
+      ///\brief                     The keyword name
+      //-----------------------------------------------------
+      const std::string m_keywordName;
+
+      //-----------------------------------------------------
       ///\brief               The sender value
       //-----------------------------------------------------
-      CField<std::string> m_from;
+      std::string m_from;
 
       //-----------------------------------------------------
       ///\brief               The recipient value
       //-----------------------------------------------------
-      CField<std::string> m_to;
+      std::string m_to;
 
       //-----------------------------------------------------
       ///\brief               The body value
       //-----------------------------------------------------
-      CField<std::string> m_body;
+      std::string m_body;
    };
 
 
