@@ -244,7 +244,6 @@ function periodicUpdateTask() {
 
             //Maybe there is a lot of time between the turn off of the server and the turn on, so we must ask all widget
             //data to be sure that all information displayed are fresh
-
             updateWidgetsPolling();
 
             //we update the filter of the websockets to receive only wanted data
@@ -355,32 +354,36 @@ function updateWidgetsPolling() {
 
    $.each(page.widgets, function(widgetIndex, widget) {
       //we ask which devices are needed for this widget instance
-      if (!isNullOrUndefined(widget.viewModel.getDevicesToListen)) {
-         var list = widget.viewModel.getDevicesToListen();
-         $.each(list, function(deviceIndex, device) {
-            if ((!isNullOrUndefined(device.deviceId)) && (!isNullOrUndefined(device.keywordId))) {
-               //foreach device we ask for last values
-               $.getJSON("/rest/acquisition/keyword/" + device.keywordId  + "/lastdata")
-                  .done(function(data) {
-                     //we parse the json answer
-                     if (data.result != "true")
-                     {
-                        notifyError($.t("mainPage.errors.errorDuringRequestingDeviceLastData"), JSON.stringify(data));
-                        return;
-                     }
-
-                     console.debug("Dispatch : " + JSON.stringify(data.data));
-
-                     var acq = AcquisitionManager.factory(data.data);
-
-                     //we dispatch the device to the widget if the widget support the method
-                     if (widget.viewModel.dispatch !== undefined)
-                        widget.viewModel.dispatch(device, acq);
-                  });
-                  //we don't need to manage the fail because the server is online
-                  //it happens that server is offline but it will be shown next time by the first check
-            }
-         });
-      }
+      updateWidgetPolling(widget);
    });
+}
+
+function updateWidgetPolling(widget) {
+   if (!isNullOrUndefined(widget.viewModel.getDevicesToListen)) {
+      var list = widget.viewModel.getDevicesToListen();
+      $.each(list, function(deviceIndex, device) {
+         if ((!isNullOrUndefined(device.deviceId)) && (!isNullOrUndefined(device.keywordId))) {
+            //foreach device we ask for last values
+            $.getJSON("/rest/acquisition/keyword/" + device.keywordId  + "/lastdata")
+               .done(function(data) {
+                  //we parse the json answer
+                  if (data.result != "true")
+                  {
+                     notifyError($.t("mainPage.errors.errorDuringRequestingDeviceLastData"), JSON.stringify(data));
+                     return;
+                  }
+
+                  console.debug("Dispatch : " + JSON.stringify(data.data));
+
+                  var acq = AcquisitionManager.factory(data.data);
+
+                  //we dispatch the device to the widget if the widget support the method
+                  if (widget.viewModel.dispatch !== undefined)
+                     widget.viewModel.dispatch(device, acq);
+               });
+            //we don't need to manage the fail because the server is online
+            //it happens that server is offline but it will be shown next time by the first check
+         }
+      });
+   }
 }
