@@ -36,7 +36,7 @@ widgetViewModelCtor =
 function NumericDisplayViewModel() {
    //observable data
    this.text = ko.observable("");
-   this.data = ko.observable(10).extend({ numeric: 1 });
+   this.data = ko.observable(0).extend({ numeric: 1 });
    this.unit = ko.observable("");
 
    //widget identifier

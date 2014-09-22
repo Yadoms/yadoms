@@ -136,6 +136,9 @@ WidgetManager.updateToServer = function(widget, callback) {
         {
             if (widget.viewModel.configurationChanged !== undefined)
                 widget.viewModel.configurationChanged();
+            //we ask for a refresh of widget data
+            updateWidgetPolling(widget);
+
             if ($.isFunction(callback))
                 callback(true);
         }
@@ -306,6 +309,9 @@ WidgetManager.addToDom = function(widget) {
    });
 
    widget.$div.i18n();
+
+   //we ask for widget refresh data
+   updateWidgetPolling(widget);
 }
 
 /**
