@@ -71,21 +71,12 @@ protected:
    //--------------------------------------------------------------
    void notifyAck(bool ok) const;
 
-   //--------------------------------------------------------------
-   /// \brief	                     Send the phone power state to Yadoms
-   /// \param [in] context          Plugin execution context (Yadoms API)
-   /// \param [in] on               true if power is on
-   //--------------------------------------------------------------
-   void notifyPhonePowerState(boost::shared_ptr<yApi::IYadomsApi> context, bool on) const;
-
-   //--------------------------------------------------------------
-   /// \brief	                     Send the received SMS to Yadoms
-   /// \param [in] context          Plugin execution context (Yadoms API)
-   /// \param [in] sms              sms to transmit to Yadoms
-   //--------------------------------------------------------------
-   void notifySmsReception(boost::shared_ptr<yApi::IYadomsApi> context, const boost::shared_ptr<ISms>& sms) const;
-
 private:
+   //--------------------------------------------------------------
+   /// \brief	The device name
+   //--------------------------------------------------------------
+   std::string m_device;
+
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
@@ -105,6 +96,16 @@ private:
    /// \brief	Timer to poll for incomming SMS
    //--------------------------------------------------------------
    boost::shared_ptr<shared::event::CEventTimer> m_incommingSmsPollTimer;
+
+   //--------------------------------------------------------------
+   /// \brief	    Message historization object
+   //--------------------------------------------------------------
+   yApi::commands::CMessage m_messageKeyword;
+
+   //--------------------------------------------------------------
+   /// \brief	    Power historization object
+   //--------------------------------------------------------------
+   yApi::commands::CSwitch m_powerKeyword;
 };
 
 

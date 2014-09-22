@@ -92,20 +92,32 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          case yApi::IYadomsApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
-               shared::CDataContainer newConfiguration = context->getEventHandler().getEventData<shared::CDataContainer>();
+               shared::CDataContainer newConfigurationData = context->getEventHandler().getEventData<shared::CDataContainer>();
                YADOMS_LOG(debug) << "Configuration was updated...";
-               BOOST_ASSERT(!newConfiguration.empty());  // newConfigurationValues shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+               BOOST_ASSERT(!newConfigurationData.empty());  // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
 
-               //TODO : ne détruire la connexion que si le port COM a changé
-               //TODO en cas de destruction de la connexion, voir pourquoi une réouverture immédiate échoue
                // Close connection
-               destroyConnection();
+               CRfxcomConfiguration newConfiguration;
+               newConfiguration.initializeWith(newConfigurationData);
+               if (newConfiguration.getSerialPort() != m_configuration.getSerialPort())
+               {
+                  // Port has changed, destroy and recreate connection
+                  destroyConnection();
 
-               // Update configuration
-               m_configuration.initializeWith(newConfiguration);
+                  // Update configuration
+                  m_configuration.initializeWith(newConfigurationData);
 
-               // Create new connection
-               createConnection(context->getEventHandler());
+                  // Create new connection
+                  createConnection(context->getEventHandler());
+               }
+               else
+               {
+                  // Port is the same, don't destroy connection, just reconfigure RFXCom.
+                  // First get status, to compare with new configuration
+                  YADOMS_LOG(info) << "Get the RFXCom status...";
+                  m_currentState = kGettingRfxcomStatus;
+                  m_port->send(m_transceiver->buildGetStatusCmd());
+               }
 
                break;
             }
