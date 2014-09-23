@@ -19,7 +19,7 @@ namespace xplrules { namespace rfxLanXpl {
 
       // IRule implementation
       virtual const CDeviceIdentifier getDeviceAddressFromMessage(xplcore::CXplMessage & msg);
-      virtual std::vector< boost::shared_ptr<CDeviceKeyword> > identifyKeywords(xplcore::CXplMessage & msg);
+      virtual KeywordList identifyKeywords(xplcore::CXplMessage & msg);
       // [END] IRule implementation
      
       // ICommandRule implemntation

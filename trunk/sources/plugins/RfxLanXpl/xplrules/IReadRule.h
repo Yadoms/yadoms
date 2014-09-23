@@ -4,7 +4,10 @@
 
 namespace xplrules {
 
-   typedef std::map<std::string, std::string> MessageContent;
+   //------------------------------------
+   ///\brief   Type for message content (list of historizable data)
+   //------------------------------------
+   typedef std::vector< boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable > > MessageContent;
 
    //------------------------------------
    ///\brief   Interface for rules which allow reading data from xpl

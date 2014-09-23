@@ -35,8 +35,6 @@ set(RFXLANXPL_RULES_SOURCES
 	xplrules/IDeviceManager.h
 	xplrules/DeviceIdentifier.h
 	xplrules/DeviceIdentifier.cpp
-	xplrules/DeviceKeyword.h
-	xplrules/DeviceKeyword.cpp
 	xplrules/RuleInstanceManager.hpp
 	xplrules/rfxLanXpl/DeviceManager.h
 	xplrules/rfxLanXpl/DeviceManager.cpp

@@ -49,9 +49,9 @@ namespace xplrules { namespace rfxLanXpl {
    }
 
   
-   std::vector< boost::shared_ptr<CDeviceKeyword> > CX10Basic::identifyKeywords(xplcore::CXplMessage & msg)
+   KeywordList CX10Basic::identifyKeywords(xplcore::CXplMessage & msg)
    {
-      std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
+      KeywordList keywords;
 
       /*keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("command", "command", shared::plugin::yadomsApi::IYadomsApi::kGetSet, "{ values : [on,off,dim,bright,all_lights_on,all_lights_off] }")));
       keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("protocol", "protocol", shared::plugin::yadomsApi::IYadomsApi::kGetSet, "{ values : [arc,flamingo,koppla,waveman,harrison,he105,rts10] }")));
@@ -70,11 +70,14 @@ namespace xplrules { namespace rfxLanXpl {
    MessageContent CX10Basic::extractMessageData(xplcore::CXplMessage & msg)
    {
       MessageContent data;
+
+      /* TODO
       data.insert(std::make_pair("command", msg.getBodyValue("command")));
       if (msg.getBody().find("level") != msg.getBody().end())
          data.insert(std::make_pair("level", msg.getBodyValue("level")));
       if (msg.getBody().find("protocol") != msg.getBody().end())
          data.insert(std::make_pair("protocol", msg.getBodyValue("protocol")));
+         */
       return data;
    }
    // [END] IReadRule implemntation

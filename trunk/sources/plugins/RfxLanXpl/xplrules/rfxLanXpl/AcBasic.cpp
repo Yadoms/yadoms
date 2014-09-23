@@ -41,10 +41,10 @@ namespace xplrules { namespace rfxLanXpl {
       return CDeviceIdentifier(deviceId, commercialName, m_protocol, m_protocol);
    }
 
-   std::vector< boost::shared_ptr<CDeviceKeyword> > CAcBasic::identifyKeywords(xplcore::CXplMessage & msg)
+   KeywordList CAcBasic::identifyKeywords(xplcore::CXplMessage & msg)
    {
-      std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
-      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordCommand, yApi::CStandardCapacities::Switch, yApi::kSet, shared::plugin::yadomsApi::kNumeric, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString)));
+      KeywordList keywords;
+      keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new shared::plugin::yadomsApi::commands::CSwitch(m_keywordCommand)));
       return keywords;
    }
 
@@ -55,29 +55,31 @@ namespace xplrules { namespace rfxLanXpl {
    MessageContent CAcBasic::extractMessageData(xplcore::CXplMessage & msg)
    {
       MessageContent data;
-
       try
       {
          EState valFromEquipment;
          valFromEquipment.setFromString(msg.getBodyValue(m_keywordCommand));
-
+         
+         boost::shared_ptr<shared::plugin::yadomsApi::commands::CSwitch> sw(new shared::plugin::yadomsApi::commands::CSwitch(m_keywordCommand));
          switch (valFromEquipment)
          {
          case EState::kOn:
-            data.insert(std::make_pair(m_keywordCommand, "100"));
+            sw->set(true);
             break;
          case EState::kOff:
-            data.insert(std::make_pair(m_keywordCommand, "0"));
+            sw->set(false);
             break;
          case EState::kDim:
-            data.insert(std::make_pair(m_keywordCommand, msg.getBodyValue(m_keywordLevel)));
+            sw->set(boost::lexical_cast<int>(msg.getBodyValue(m_keywordLevel)));
             break;
          }
+         data.push_back(sw);
       }
       catch (...)
       {
 
       }
+      
       return data;
    }
    // [END] IReadRule implementation
@@ -101,7 +103,7 @@ namespace xplrules { namespace rfxLanXpl {
       }
 
       //read command details (may throw exception if something is wrong)
-      shared::plugin::yadomsApi::commands::CSwitch commandDetails(commandData->getBody());
+      shared::plugin::yadomsApi::commands::CSwitch commandDetails(commandData->getBody().serialize());
 
       ////////////////////////////
       // create the message
