@@ -11,44 +11,26 @@
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
 
-CLinuxSystemMemoryLoad::CLinuxSystemMemoryLoad(const std::string & deviceId)
-   :m_deviceId(deviceId), m_memoryLoad(0), m_Capacity("MemoryLoad"), m_Keyword("LinuxMemoryLoad")
+CLinuxSystemMemoryLoad::CLinuxSystemMemoryLoad(const std::string & device)
+   :m_device(device), m_keyword("MemoryLoad")
 {}
 
 CLinuxSystemMemoryLoad::~CLinuxSystemMemoryLoad()
 {}
 
-const std::string& CLinuxSystemMemoryLoad::getDeviceId() const
+void CLinuxSystemMemoryLoad::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
 {
-   return m_deviceId;
-}
-
-const std::string& CLinuxSystemMemoryLoad::getCapacity() const
-{
-   return m_Capacity;
-}
-
-const std::string& CLinuxSystemMemoryLoad::getKeyword() const
-{
-   return m_Keyword;
-}
-
-void CLinuxSystemMemoryLoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
-{
-   // Declare the device
-   context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
-
-   // Declare associated keywords (= values managed by this device)
-   context->declareCustomKeyword(m_deviceId, getCapacity()  , getKeyword() , yApi::kGet , yApi::kNumeric, shared::plugin::yadomsApi::CStandardUnits::Percent);
+   context->declareKeyword(m_device, m_keyword);
 }
 
 void CLinuxSystemMemoryLoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   BOOST_ASSERT_MSG(context, "context must be defined");
-   context->historizeData(m_deviceId, getCapacity()  , m_memoryLoad);
+   BOOST_ASSERT_MSG(!!context, "context must be defined");
+
+   context->historizeData(m_device, m_keyword);
 }
 
-double CLinuxSystemMemoryLoad::getValue()
+void CLinuxSystemMemoryLoad::read()
 {
    if (sysinfo (&memInfo)!=0)
    {
@@ -69,9 +51,9 @@ double CLinuxSystemMemoryLoad::getValue()
 
    //FIXME : Cette méthode renvoie une valeur supérieure à ce que me renvoie le moniteur système d'Ubuntu ... A vérifier. Domoticz donne la meme chose. A vérifier avec une autre fonction mémoire en ligne de commande.
 
-   m_memoryLoad = virtualMemUsed*100/double(totalVirtualMem);
+   m_keyword.set( virtualMemUsed*100/double(totalVirtualMem));
 
-   return m_memoryLoad;
+   YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  Memory Load : " << m_keyword.formatValue();
 }
 
 

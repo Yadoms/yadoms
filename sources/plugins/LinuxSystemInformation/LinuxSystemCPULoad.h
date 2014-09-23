@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ILoad.h"
+#include "LoadKeyword.h"
 #include <string>
 
 //--------------------------------------------------------------
@@ -12,62 +13,33 @@ class CLinuxSystemCPULoad : public ILoad
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
-   /// \param[in] deviceId    The device ID
+   /// \param[in] deviceId    The device
    //--------------------------------------------------------------
-   CLinuxSystemCPULoad(const std::string & deviceId);
+   CLinuxSystemCPULoad(const std::string & device);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~CLinuxSystemCPULoad();
 
-   //--------------------------------------------------------------
-   /// \brief	    Returns the sensor device ID
-   /// \return     Device ID
-   //--------------------------------------------------------------
-   virtual const std::string& getDeviceId() const;
+   // ILoad Implementation
+   virtual void declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context);
+   virtual void read();
+   virtual void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
+   // [END] ILoad Implementation
 
+protected:
    //--------------------------------------------------------------
-   /// \brief	            Declare the device and its associated keywords
-   /// \param[in] context  YadomsApi context to which declare the device
+   /// \brief	    Initialization
    //--------------------------------------------------------------
-   void declareDevice(boost::shared_ptr<yApi::IYadomsApi> context);
-
-   //--------------------------------------------------------------
-   /// \brief	            Send all sensor data to Yadoms
-   /// \param[in] context  YadomsApi context to which historize data
-   //--------------------------------------------------------------
-   void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
-
-   //--------------------------------------------------------------
-   /// \brief	    Returns read (computed) CPU load
-   /// \return     CPU Load in %
-   //--------------------------------------------------------------
-   virtual double getValue();
-
-   //--------------------------------------------------------------
-   /// \brief	    Returns the Capacity String
-   /// \return     Device ID
-   //--------------------------------------------------------------
-   const std::string& getCapacity() const;
-
-   //--------------------------------------------------------------
-   /// \brief	    Returns the Keyword String
-   /// \return     Device ID
-   //--------------------------------------------------------------
-   const std::string& getKeyword() const;
-
+   void Initialize();
+   
 private:
 
    //--------------------------------------------------------------
-   /// \brief	    Device ID
+   /// \brief	    Device
    //--------------------------------------------------------------
-   const std::string m_deviceId;
-
-   //--------------------------------------------------------------
-   /// \brief	    CPU Load in %
-   //--------------------------------------------------------------
-   double m_CPULoad;
+   const std::string m_device;
 
    //--------------------------------------------------------------
    /// \brief	    Temp variables
@@ -75,13 +47,7 @@ private:
    unsigned long long lastTotalUser, lastTotalUserLow, lastTotalSys, lastTotalIdle;
 
    //--------------------------------------------------------------
-   /// \brief	    Capacity string
+   /// \brief	    Keyword
    //--------------------------------------------------------------
-   const std::string m_Capacity;
-
-   //--------------------------------------------------------------
-   /// \brief	    Keyword string
-   //--------------------------------------------------------------
-   const std::string m_Keyword;
-
+   CLoadKeyword m_keyword;   
 };
