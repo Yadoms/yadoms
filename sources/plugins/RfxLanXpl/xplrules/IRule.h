@@ -2,9 +2,15 @@
 
 #include "../xplcore/XplMessage.h"
 #include "DeviceIdentifier.h"
-#include "DeviceKeyword.h"
+#include <shared/plugin/yadomsApi/commands/IHistorizable.h>
 
 namespace xplrules {
+
+   //------------------------------------
+   ///\brief   Type for a list of keywords
+   //------------------------------------
+   typedef std::vector< boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable > > KeywordList;
+     
 
    //------------------------------------
    ///\brief   A rule is an interface between devices and yadoms.
@@ -34,7 +40,7 @@ namespace xplrules {
       ///\param [in] msg the message from which extract the keyword data
       ///\return the keywords data contained in message
       //------------------------------------
-      virtual std::vector< boost::shared_ptr<CDeviceKeyword> > identifyKeywords(xplcore::CXplMessage & msg) = 0;
+      virtual KeywordList identifyKeywords(xplcore::CXplMessage & msg) = 0;
    };
 
 

@@ -217,6 +217,8 @@ namespace xplrules { namespace rfxLanXpl {
    MessageContent CSensorBasic::extractMessageData(xplcore::CXplMessage & msg)
    {
       MessageContent data;
+
+      /* TODO
       data.insert(std::make_pair(msg.getBodyValue(m_keywordType), msg.getBodyValue(m_keywordCurrent)));
 
       if(msg.getBody().find(m_keywordDescription) != msg.getBody().end())
@@ -224,15 +226,15 @@ namespace xplrules { namespace rfxLanXpl {
 
       if(msg.getBody().find(m_keywordForecast) != msg.getBody().end())
          data.insert(std::make_pair(m_keywordForecast, msg.getBodyValue(m_keywordForecast)));
-
+         */
       return data;
    }
 
-   std::vector< boost::shared_ptr<CDeviceKeyword> > CSensorBasic::identifyKeywords(xplcore::CXplMessage & msg)
+   KeywordList CSensorBasic::identifyKeywords(xplcore::CXplMessage & msg)
    {
-      std::vector< boost::shared_ptr<CDeviceKeyword> > keywords;
+      KeywordList keywords;
       
-
+      /* TODO
       //COMMON
       std::string units = "";
       if(msg.getBody().find(m_keywordUnits) != msg.getBody().end())
@@ -352,7 +354,7 @@ namespace xplrules { namespace rfxLanXpl {
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(msg.getBodyValue(m_keywordType), msg.getBodyValue(m_keywordType), yApi::kGet, yApi::kNumeric, units, details)));
          }
          
-      }
+      }*/
 
       return keywords;
    }

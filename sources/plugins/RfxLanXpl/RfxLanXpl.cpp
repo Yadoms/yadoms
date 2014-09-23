@@ -156,10 +156,10 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
             }
 
             //create message keywords in database
-            std::vector< boost::shared_ptr<xplrules::CDeviceKeyword> > allKeywords = rule->identifyKeywords(xplMessage);
-            for (std::vector< boost::shared_ptr<xplrules::CDeviceKeyword> >::iterator keyword = allKeywords.begin(); keyword != allKeywords.end(); ++keyword)
+            std::vector< boost::shared_ptr<shared::plugin::yadomsApi::commands::IHistorizable> > allKeywords = rule->identifyKeywords(xplMessage);
+            for (std::vector< boost::shared_ptr<shared::plugin::yadomsApi::commands::IHistorizable> >::iterator keyword = allKeywords.begin(); keyword != allKeywords.end(); ++keyword)
             {
-               context->declareCustomKeyword(deviceAddress.getId(), (*keyword)->getName(), (*keyword)->getCapacity(), (*keyword)->getAccessMode(), (*keyword)->getType(), (*keyword)->getUnits(), (*keyword)->getDetails());
+               context->declareKeyword(deviceAddress.getId(), *(keyword->get()));
             }
 
 
@@ -171,11 +171,11 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
 
                //create message to insert in database
                xplrules::MessageContent data = readRule->extractMessageData(xplMessage);
-
+               
                xplrules::MessageContent::iterator i;
                for (i = data.begin(); i != data.end(); ++i)
                {
-                  context->historizeData(deviceAddress.getId(), i->first, i->second);
+                  context->historizeData(deviceAddress.getId(), *(i->get()));
                }
             }
 
