@@ -27,6 +27,7 @@ set(ZWAVE_PLUGIN_SOURCES
 	OpenZWaveNodeKeywordSwitch.cpp 
 	OpenZWaveNodeKeywordFactory.h
 	OpenZWaveNodeKeywordFactory.cpp 
+	KeywordContainer.h
 	${OPENZWAVE_MAIN_SOURCES}
 )
 

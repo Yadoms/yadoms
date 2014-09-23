@@ -2,22 +2,20 @@
 #include "OpenZWaveNodeKeywordSwitch.h"
 #include <shared/plugin/yadomsApi/commands/Switch.h>
 
-COpenZWaveNodeKeywordSwitch::COpenZWaveNodeKeywordSwitch(OpenZWave::ValueID & valueId)
-   :COpenZWaveNodeKeywordBase(valueId)
+COpenZWaveNodeKeywordSwitch::COpenZWaveNodeKeywordSwitch(const std::string & keyword, OpenZWave::ValueID & valueId)
+   :COpenZWaveNodeKeywordBase(valueId), m_switch(keyword)
 {
 }
 
 bool COpenZWaveNodeKeywordSwitch::sendCommand(const std::string & commandData)
 {
-   shared::plugin::yadomsApi::commands::CSwitch commandDetails(commandData); 
-   return realSendCommand<bool>(commandDetails.isOn());
+   m_switch.set(commandData);
+   return realSendCommand<bool>(m_switch.isOn());
 }
 
-std::string COpenZWaveNodeKeywordSwitch::getLastKeywordValue()
+const shared::plugin::yadomsApi::commands::IHistorizable & COpenZWaveNodeKeywordSwitch::getLastKeywordValue()
 {
    //m_valueId.
-   bool switchState = extractLastValue<bool>();
-
-   shared::plugin::yadomsApi::commands::CSwitch sw(switchState ? 100 : 0);
-   return sw.format();
+   m_switch.set(extractLastValue<bool>());
+   return m_switch;
 }

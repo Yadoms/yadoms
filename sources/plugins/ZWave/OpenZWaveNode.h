@@ -59,11 +59,11 @@ public:
    bool sendCommand(ECommandClass classIdentifier, const std::string & keyword, const std::string & commandData);
 
    //--------------------------------------------------------------
-   /// \brief	      get the last value of a keyword (as string)
+   /// \brief	      get the last value of a keyword
    /// \param [in]   classIdentifier   The class identifier for the keyword
    /// \param [in]   keyword           The keyword name
    //--------------------------------------------------------------   
-   std::string getLastKeywordValue(ECommandClass classIdentifier, const std::string & keyword);
+   const shared::plugin::yadomsApi::commands::IHistorizable & getLastKeywordValue(ECommandClass classIdentifier, const std::string & keyword);
 
    //--------------------------------------------------------------
    /// \brief	      Check if this node match to a pair [home,node]

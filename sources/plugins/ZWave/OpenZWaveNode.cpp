@@ -49,7 +49,7 @@ bool COpenZWaveNode::sendCommand(ECommandClass classIdentifier, const std::strin
    return m_nodeCapacities[classIdentifier]->sendCommand(keyword, commandData);
 }
 
-std::string COpenZWaveNode::getLastKeywordValue(ECommandClass classIdentifier, const std::string & keyword)
+const shared::plugin::yadomsApi::commands::IHistorizable & COpenZWaveNode::getLastKeywordValue(ECommandClass classIdentifier, const std::string & keyword)
 {
    if (m_nodeCapacities.find(classIdentifier) == m_nodeCapacities.end())
       throw shared::exception::CException("The capacity is not registered for this zwave node");

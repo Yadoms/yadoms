@@ -51,10 +51,10 @@ public:
    bool sendCommand(const std::string & keyword, const std::string & commandData);
 
    //--------------------------------------------------------------
-   /// \brief	      get the last value of a keyword (as string)
+   /// \brief	      get the last value of a keyword
    /// \param [in]   keyword           The keyword name
    //--------------------------------------------------------------   
-   std::string getLastKeywordValue(const std::string & keyword);
+   const shared::plugin::yadomsApi::commands::IHistorizable & getLastKeywordValue(const std::string & keyword);
 
 private:
    //--------------------------------------------------------------
