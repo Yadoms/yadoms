@@ -39,9 +39,7 @@ void CBatteryLevel::set(int batteryLevel)
 
 const std::string CBatteryLevel::formatValue() const
 {
-   shared::CDataContainer yadomsCommand;
-   yadomsCommand.set("batteryLevel", batteryLevel());
-   return yadomsCommand.serialize();
+   return boost::lexical_cast<std::string>(batteryLevel());
 }
 
 int CBatteryLevel::batteryLevel() const
