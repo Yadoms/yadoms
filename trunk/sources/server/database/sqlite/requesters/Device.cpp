@@ -99,10 +99,27 @@ namespace database {  namespace sqlite { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacityType(const database::entities::EKeywordAccessMode & capacityAccessMode, const database::entities::EKeywordDataType & capacityType) const
    {
+
+      std::stringstream whereClause;
+      switch (capacityAccessMode())
+      {
+         case database::entities::EKeywordAccessMode::kGet:
+         case database::entities::EKeywordAccessMode::kSet:
+            whereClause << "(" << CKeywordTable::getAccessModeColumnName() << CQUERY_OP_EQUAL << (int)capacityAccessMode();
+            whereClause << " OR ";
+            whereClause << CKeywordTable::getAccessModeColumnName() << CQUERY_OP_EQUAL << (int)database::entities::EKeywordAccessMode::kGetSet << ")";
+            break;
+
+         case database::entities::EKeywordAccessMode::kGetSet:
+         case database::entities::EKeywordAccessMode::kNoAccess:
+            whereClause << CKeywordTable::getAccessModeColumnName() << CQUERY_OP_EQUAL << (int)capacityAccessMode();
+
+      }
+
       CQuery subQuery;
       subQuery. Select(CKeywordTable::getDeviceIdColumnName()).
                 From(CKeywordTable::getTableName()).
-                Where(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, (int)capacityAccessMode).
+                Where(whereClause.str()).
                 And(CKeywordTable::getTypeColumnName(), CQUERY_OP_EQUAL, (int)capacityType);
 
       CQuery qSelect;

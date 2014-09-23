@@ -79,6 +79,7 @@ function NumericDisplayViewModel() {
     */
    this.dispatch = function(device, data) {
       var self = this;
+
       if (device == self.widget.configuration.device) {
          //it is the good device
          self.data(data.value);

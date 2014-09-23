@@ -15,12 +15,18 @@ widgetViewModelCtor =
        */
       this.initialize = function(widget) {
          this.widget = widget;
-
+debugger;
          var self = this;
          // create the chart
          this.$chart = self.widget.$gridsterWidget.find("div.chartWidgetContainer");
-         this.$chart.highcharts('StockChart', {
 
+         this.$chart.highcharts('StockChart', {
+            chart: {
+               renderTo: 'chartWidgetContainer',
+               type: 'line',
+               marginRight: 130,
+               marginBottom: 25
+            },
             navigator : {
                adaptToUpdatedData: false
             },
@@ -62,13 +68,15 @@ widgetViewModelCtor =
 
             xAxis : {
                ordinal: false,
-               events : {
+               /*events : {
                   //afterSetExtremes : afterSetExtremes
-               },
+               },*/
                minRange: 3600 * 1000 // one hour
             },
 
-            yAxis : {},
+            yAxis : {
+               minRange: 1
+            },
 
             series : []
          });
@@ -123,7 +131,7 @@ widgetViewModelCtor =
          this.chart.options.colors = colorArray;
 
          try {
-            if (!parseBool(this.widget.configuration.customYAxisMinMax.checkbox)) {
+            if (parseBool(this.widget.configuration.customYAxisMinMax.checkbox)) {
                var min = parseFloat(this.widget.configuration.customYAxisMinMax.content.minimumValue);
                var max = parseFloat(this.widget.configuration.customYAxisMinMax.content.maximumValue);
                this.chart.yAxis[0].setExtreme(min, max);
@@ -187,7 +195,7 @@ widgetViewModelCtor =
                         var serie = self.chart.get("Device1");
                         if (!isNullOrUndefined(serie))
                            self.chart.get("Device1").name = device.friendlyName;
-                        self.chart.update();
+                        self.chart.redraw();
                      });
                   }
                   catch (err2) {
