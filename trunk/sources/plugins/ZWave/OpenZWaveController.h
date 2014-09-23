@@ -57,7 +57,7 @@ private:
    /// \param     commandClass	   the command class
    /// \return	   the keyword id
    //--------------------------------------------------------------
-   std::string GenerateKeywordStringID(const std::string & label, const ECommandClass commandClass);
+   std::string GenerateKeywordStringID(const std::string & label, const ECommandClass & commandClass);
 
    
    //--------------------------------------------------------------

@@ -167,13 +167,11 @@ int CLighting2::fromProtocolState(unsigned char protocolState, unsigned char pro
    case light2_sSetLevel:
       {
          return (protocolLevel * 100 / 0x0F); // level needs to be from 0 to 100
-         break;
       }
    default:
       {
          BOOST_ASSERT_MSG(false, "Invalid state");
          throw shared::exception::CInvalidParameter("state");
-         break;
       }
    }
 }

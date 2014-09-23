@@ -39,7 +39,9 @@ void CTemperature::set(double temperature)
 
 const std::string CTemperature::formatValue() const
 {
-   return boost::lexical_cast<std::string>(temperature());
+   shared::CDataContainer yadomsCommand;
+   yadomsCommand.set("temperature", temperature());
+   return yadomsCommand.serialize();
 }
 
 double CTemperature::temperature() const

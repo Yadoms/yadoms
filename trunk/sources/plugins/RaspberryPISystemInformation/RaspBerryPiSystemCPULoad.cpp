@@ -8,7 +8,7 @@ CRaspBerryPiSystemCPULoad::CRaspBerryPiSystemCPULoad(const std::string & deviceI
    :m_deviceId(deviceId), m_CPULoad(0), m_Capacity("cpuload"), m_Keyword("RaspBerryPiCPULoad")
 {
    FILE* file = fopen("/proc/stat", "r");
-   fscanf(file, "cpu %Lu %Lu %Lu %Lu", &lastTotalUser, &lastTotalUserLow,
+   fscanf(file, "cpu %20Lu %20Lu %20Lu %20Lu", &lastTotalUser, &lastTotalUserLow,
       &lastTotalSys, &lastTotalIdle);
    fclose(file);
 }
@@ -56,7 +56,7 @@ double CRaspBerryPiSystemCPULoad::getValue()
    FILE* file;
 
    file = fopen("/proc/stat", "r");
-   fscanf(file, "cpu %Lu %Lu %Lu %Lu", &totalUser, &totalUserLow,
+   fscanf(file, "cpu %20Lu %20Lu %20Lu %20Lu", &totalUser, &totalUserLow,
       &totalSys, &totalIdle);
    fclose(file);
 
