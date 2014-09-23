@@ -5,47 +5,25 @@
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
-CLinuxSystemDiskUsage::CLinuxSystemDiskUsage(const std::string & deviceId, const std::string & driveName, const std::string & Keyword)
-   :m_deviceId(deviceId), m_driveName(driveName), m_Keyword(Keyword), m_Capacity("DiskUsage"), m_diskUsage(0)
+CLinuxSystemDiskUsage::CLinuxSystemDiskUsage(const std::string & device, const std::string & driveName, const std::string & keywordName)
+   :m_device(device), m_driveName(driveName), m_keyword(keywordName)
 {
 }
 
 CLinuxSystemDiskUsage::~CLinuxSystemDiskUsage()
 {}
 
-const std::string& CLinuxSystemDiskUsage::getDeviceId() const
+void CLinuxSystemDiskUsage::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
 {
-   return m_deviceId;
-}
-
-const std::string& CLinuxSystemDiskUsage::getCapacity() const
-{
-   return m_Capacity;
-}
-
-const std::string& CLinuxSystemDiskUsage::getKeyword() const
-{
-   return m_Keyword;
-}
-
-const std::string& CLinuxSystemDiskUsage::getDriveName() const
-{
-   return m_driveName;
-}
-
-void CLinuxSystemDiskUsage::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
-{
-   // Declare the device
-   context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
-
    // Declare associated keywords (= values managed by this device)
-   context->declareCustomKeyword(m_deviceId, getKeyword(), getCapacity(), yApi::kGet , yApi::kNumeric, shared::plugin::yadomsApi::CStandardUnits::Percent);
+   context->declareKeyword(m_device, m_keyword);
 }
 
 void CLinuxSystemDiskUsage::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
-   context->historizeData(m_deviceId, getKeyword()  , m_diskUsage);
+
+   context->historizeData(m_device, m_keyword);
 }
 
 std::vector<std::string> CLinuxSystemDiskUsage::ExecuteCommandAndReturn(const std::string &szCommand)
@@ -72,7 +50,7 @@ std::vector<std::string> CLinuxSystemDiskUsage::ExecuteCommandAndReturn(const st
    return ret;
 }
 
-double CLinuxSystemDiskUsage::getValue()
+void CLinuxSystemDiskUsage::read()
 {
    std::vector<std::string> _rlines=ExecuteCommandAndReturn("df");
    std::vector<std::string>::const_iterator iteratorCommandDF;
@@ -83,16 +61,16 @@ double CLinuxSystemDiskUsage::getValue()
       char suse[30];
       char smountpoint[300];
       long numblock, usedblocks, availblocks;
-      int ret=sscanf((*iteratorCommandDF).c_str(), "%199s\t%20ld\t%20ld\t%20ld\t%29s\t%299s\n", dname, &numblock, &usedblocks, &availblocks, suse, smountpoint);
+      int ret=sscanf((*iteratorCommandDF).c_str(), "%s\t%ld\t%ld\t%ld\t%s\t%s\n", dname, &numblock, &usedblocks, &availblocks, suse, smountpoint);
       if (ret==6) // TODO : Comprendre pourquoi 6
       {
          if (strstr(dname,m_driveName.c_str())!=NULL)
          {
-            YADOMS_LOG(debug) << "usedblocks :" << usedblocks;
-            YADOMS_LOG(debug) << "numblock   :" << numblock;
-            m_diskUsage = usedblocks/double(numblock)*100;
-            YADOMS_LOG(debug) << "diskUsage  :" << m_diskUsage;
-            return m_diskUsage;
+            //YADOMS_LOG(debug) << "usedblocks :" << usedblocks;
+            //YADOMS_LOG(debug) << "numblock   :" << numblock;
+            m_keyword.set (usedblocks/double(numblock)*100);
+            //YADOMS_LOG(debug) << "diskUsage  :" << m_keyword.formatValue();
+			YADOMS_LOG(debug) << "LinuxSystemDiskUsage plugin :  " << m_driveName << " Disk Usage : " << m_keyword.formatValue();
          }
       }
    }

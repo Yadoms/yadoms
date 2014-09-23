@@ -5,11 +5,11 @@
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
-CLinuxSystemCPULoad::CLinuxSystemCPULoad(const std::string & deviceId)
-   :m_deviceId(deviceId), m_CPULoad(0), m_Capacity("cpuload"), m_Keyword("LinuxCPULoad")
+CLinuxSystemCPULoad::CLinuxSystemCPULoad(const std::string & device)
+   :m_device(device), m_keyword("LinuxCPULoad")
 {
    FILE* file = fopen("/proc/stat", "r");
-   fscanf(file, "cpu %20Lu %20Lu %20Lu %20Lu", &lastTotalUser, &lastTotalUserLow,
+   fscanf(file, "cpu %Lu %Lu %Lu %Lu", &lastTotalUser, &lastTotalUserLow,
       &lastTotalSys, &lastTotalIdle);
    fclose(file);
 }
@@ -18,38 +18,20 @@ CLinuxSystemCPULoad::~CLinuxSystemCPULoad()
 {
 }
 
-const std::string& CLinuxSystemCPULoad::getDeviceId() const
+void CLinuxSystemCPULoad::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
 {
-   return m_deviceId;
-}
-
-const std::string& CLinuxSystemCPULoad::getCapacity() const
-{
-   return m_Capacity;
-}
-
-const std::string& CLinuxSystemCPULoad::getKeyword() const
-{
-   return m_Keyword;
-}
-
-void CLinuxSystemCPULoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
-{
-   // Declare the device
-   context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
-
    // Declare associated keywords (= values managed by this device)
-   context->declareCustomKeyword(m_deviceId, getKeyword()  , getCapacity(), yApi::kGet , yApi::kNumeric, shared::plugin::yadomsApi::CStandardUnits::Percent);
+   context->declareKeyword(m_device, m_keyword);
 }
 
 void CLinuxSystemCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   BOOST_ASSERT_MSG(context, "context must be defined");
+   BOOST_ASSERT_MSG(!!context, "context must be defined");
 
-   context->historizeData(m_deviceId, getKeyword(), m_CPULoad);
+   context->historizeData(m_device, m_keyword);
 }
 
-double CLinuxSystemCPULoad::getValue()
+void CLinuxSystemCPULoad::read()
 {
    //TODO : Keep the last value, if an overflow occured
    double percent;
@@ -57,7 +39,7 @@ double CLinuxSystemCPULoad::getValue()
    FILE* file;
 
    file = fopen("/proc/stat", "r");
-   fscanf(file, "cpu %20Lu %20Lu %20Lu %20Lu", &totalUser, &totalUserLow,
+   fscanf(file, "cpu %Lu %Lu %Lu %Lu", &totalUser, &totalUserLow,
       &totalSys, &totalIdle);
    fclose(file);
 
@@ -80,9 +62,8 @@ double CLinuxSystemCPULoad::getValue()
    lastTotalSys = totalSys;
    lastTotalIdle = totalIdle;
 
-   m_CPULoad = percent;
-
-   return percent;
+   m_keyword.set (percent);
+   YADOMS_LOG(debug) << "WindowsSystemInformation plugin :  CPU Load : " << m_keyword.formatValue();
 }
 
 

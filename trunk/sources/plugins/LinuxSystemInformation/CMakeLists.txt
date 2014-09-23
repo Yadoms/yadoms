@@ -20,6 +20,8 @@ IF(UNIX AND NOT APPLE AND NOT RASPBERRYPI)
 		LinuxSystemDiskUsage.cpp
 		LinuxSystemDisksList.h
 		LinuxSystemDisksList.cpp
+                LoadKeyword.cpp
+                LoadKeyword.h
 		ILoad.h
 	)
 
