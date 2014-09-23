@@ -5,7 +5,7 @@
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/exception/Exception.hpp>
 #include "ZWaveControllerFactory.h"
-
+#include "KeywordContainer.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -97,23 +97,15 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                try
                {
 
-                  shared::CDataContainer keywordData = context->getEventHandler().getEventData<shared::CDataContainer>();
+                  boost::shared_ptr<CKeywordContainer> keywordData  = context->getEventHandler().getEventData< boost::shared_ptr<CKeywordContainer> >();
 
-                  std::string deviceId = keywordData.get<std::string>("device");
-                  std::string keywordId = keywordData.get<std::string>("keyword");
-
-                  std::string value = keywordData.get<std::string>("value");
-
+                  std::string deviceId = keywordData->getDeviceId();
+                  std::string keywordId = keywordData->getKeyword().getKeyword();
 
                   if (!context->keywordExists(deviceId, keywordId))
-                  {
-                     std::string units = keywordData.get<std::string>("units");
-                     std::string capacity = keywordData.get<std::string>("capacity");
-                     shared::plugin::yadomsApi::EKeywordType type = keywordData.get<shared::plugin::yadomsApi::EKeywordType>("type");
-                     shared::plugin::yadomsApi::EKeywordAccessMode access = keywordData.get<shared::plugin::yadomsApi::EKeywordAccessMode>("access");
-                     context->declareCustomKeyword(deviceId, keywordId, capacity, access, type, units);
-                  }
-                  context->historizeData(deviceId, keywordId, value);
+                     context->declareKeyword(deviceId, keywordData->getKeyword());
+
+                  context->historizeData(deviceId, keywordData->getKeyword());
                }
                catch (shared::exception::CException & ex)
                {

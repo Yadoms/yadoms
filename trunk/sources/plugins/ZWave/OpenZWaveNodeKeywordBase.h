@@ -24,7 +24,7 @@ public:
    
    // IOpenZWaveKeyword implementation
    virtual bool sendCommand(const std::string & commandData) = 0;
-   virtual std::string getLastKeywordValue() = 0;
+   virtual const shared::plugin::yadomsApi::commands::IHistorizable & getLastKeywordValue() = 0;
    // [END] IOpenZWaveKeyword implementation
       
 protected:

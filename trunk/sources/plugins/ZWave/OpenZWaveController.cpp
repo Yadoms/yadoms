@@ -11,6 +11,7 @@
 #include "Manager.h"
 #include "Notification.h"
 #include "Log.h"
+#include "KeywordContainer.h"
 
 COpenZWaveController::COpenZWaveController()
    :m_homeId(0), m_initFailed(false), m_nodesQueried(false), m_configuration(NULL), m_handler(NULL)
@@ -231,7 +232,11 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
 
             node->registerKeyword(commandClass, vLabel, vID);
 
+            boost::shared_ptr<CKeywordContainer> d(new CKeywordContainer(id, node->getLastKeywordValue(commandClass, vLabel)));
+            /*
             std::string stringvalue = node->getLastKeywordValue(commandClass, vLabel);
+
+
 
             shared::CDataContainer d;
             d.set("device", id);
@@ -286,7 +291,7 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
                break;
             }
 
-
+            */
             if (m_handler != NULL)
                m_handler->postEvent(CZWave::kUpdateKeyword, d);
          }
