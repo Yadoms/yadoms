@@ -44,11 +44,11 @@ function ClockViewModel() {
    * Callback for a resized event
    */
    this.resized = function() {
-      if (this.widget.$gridsterWidget.width() <= 200) {
+      if (this.widget.width() <= 200) {
          this.dateFontSize("1.0em");
          this.timeFontSize("2.7em");
       }
-      else if (this.widget.$gridsterWidget.width() <= 300) {
+      else if (this.widget.width() <= 300) {
          this.dateFontSize("1.0em");
          this.timeFontSize("5.0em");
       }

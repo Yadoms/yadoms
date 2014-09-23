@@ -1,5 +1,14 @@
-.chartWidgetContainer {
+.chartWidget {
     width: 100%;
+    height: 100%;
     text-align: center;
     margin: auto;
+}
+
+.chartWidgetContainer {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    margin: auto;
+    position:absolute;
 }
