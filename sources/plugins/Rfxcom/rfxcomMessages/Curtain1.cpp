@@ -21,7 +21,7 @@ CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYadomsApi> context, const shared::
 }
 
 CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_state("state")
+   :m_state("state"), m_subType(0), m_houseCode(0), m_unitCode(0)
 {
    // Should not be called (transmitter-only device)
    BOOST_ASSERT_MSG(false, "Constructing CCurtain1 object from received buffer is not possible, Curtain1 is transmitter-only device");

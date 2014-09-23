@@ -18,7 +18,7 @@ CLinuxSystemDisksList::CLinuxSystemDisksList(void)
       char suse[30];
       char smountpoint[300];
       long numblock, usedblocks, availblocks;
-      int ret=sscanf((*iteratorCommandDF).c_str(), "%s\t%ld\t%ld\t%ld\t%s\t%s\n", dname, &numblock, &usedblocks, &availblocks, suse, smountpoint);
+      int ret=sscanf((*iteratorCommandDF).c_str(), "%199s\t%20ld\t%20ld\t%20ld\t%29s\t%299s\n", dname, &numblock, &usedblocks, &availblocks, suse, smountpoint);
       if (ret==6) // TODO : Comprendre pourquoi 6
       {
          if (strstr(dname,"/dev")!=NULL)

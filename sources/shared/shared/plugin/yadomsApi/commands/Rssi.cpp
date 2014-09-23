@@ -34,7 +34,9 @@ void CRssi::set(int rssi)
 
 const std::string CRssi::formatValue() const
 {
-   return boost::lexical_cast<std::string>(rssi());
+   shared::CDataContainer yadomsCommand;
+   yadomsCommand.set("rssi", rssi());
+   return yadomsCommand.serialize();
 }
 
 int CRssi::Normalize(int rssi)
