@@ -3,7 +3,7 @@
 #include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
-#include <shared/plugin/yadomsApi/commands/Counter.h>
+
 
 namespace yApi = shared::plugin::yadomsApi;
 
