@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SmsDialerConfiguration.h"
 #include <shared/StringExtension.h>
+#include <shared/encryption/Xor.h>
 
 
 CSmsDialerConfiguration::~CSmsDialerConfiguration()
@@ -29,6 +30,10 @@ bool CSmsDialerConfiguration::hasPINCode() const
 
 std::string CSmsDialerConfiguration::getPhonePIN() const
 {
-   return hasPINCode() ? m_data.get<std::string>("PINCode.content.PIN") : shared::CStringExtension::EmptyString;
+   if (!hasPINCode())
+      return shared::CStringExtension::EmptyString;
+
+   // Uncrypt PIN code
+   return shared::encryption::CXor::decryptBase64(m_data.get<std::string>("PINCode.content.PIN"), "2m72fgEQ");
 }
 
