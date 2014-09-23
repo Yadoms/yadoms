@@ -69,3 +69,13 @@ Widget.prototype.updateDataFromGridster = function() {
    this.positionX = this.$gridsterWidget.data("col");
    this.positionY = this.$gridsterWidget.data("row");
 };
+
+Widget.prototype.height = function () {
+   this.updateDataFromGridster();
+   return this.sizeY * gridWidth + (this.sizeY - 1) * (gridMargin * 2);
+};
+
+Widget.prototype.width = function () {
+   this.updateDataFromGridster();
+   return this.sizeX * gridWidth + (this.sizeX - 1) * (gridMargin * 2);
+};

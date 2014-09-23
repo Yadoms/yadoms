@@ -22,10 +22,7 @@ debugger;
 
          this.$chart.highcharts('StockChart', {
             chart: {
-               renderTo: 'chartWidgetContainer',
-               type: 'line',
-               marginRight: 130,
-               marginBottom: 25
+               marginTop: 10
             },
             navigator : {
                adaptToUpdatedData: false
@@ -87,8 +84,11 @@ debugger;
       };
 
       this.resized = function() {
-         if (!isNullOrUndefined(this.chart))
+
+         if (!isNullOrUndefined(this.chart)) {
+            this.chart.setSize(this.widget.width(), this.widget.height(), false);
             $(window).trigger("resize");
+         }
       };
 
       this.configurationChanged = function() {
@@ -134,7 +134,11 @@ debugger;
             if (parseBool(this.widget.configuration.customYAxisMinMax.checkbox)) {
                var min = parseFloat(this.widget.configuration.customYAxisMinMax.content.minimumValue);
                var max = parseFloat(this.widget.configuration.customYAxisMinMax.content.maximumValue);
-               this.chart.yAxis[0].setExtreme(min, max);
+               this.chart.yAxis[0].setExtremes(min, max);
+            }
+            else {
+               //we cancel previous extremes
+               this.chart.yAxis[0].setExtremes(null, null);
             }
          }
          catch (err) {
@@ -205,6 +209,7 @@ debugger;
          }
          catch (err) {
          }
+
       };
 
       /**
