@@ -1,6 +1,8 @@
 #pragma once
 
 #include <shared/DataContainer.h>
+#include <shared/enumeration/IExtendedEnum.h>
+#include <shared/Field.hpp>
 
 namespace database { 
 namespace sqlite { 
@@ -104,13 +106,80 @@ namespace sqlite {
    };
 
 
+   //--------------------------------------------------------------
+   /// \brief	    Helper structure for get/set with single value type (int, double, std::string,...)
+   //--------------------------------------------------------------
+   template <typename T, class Enable = void>
+   struct helper
+   {
+      //--------------------------------------------------------------
+      /// \brief	    GET Method for all standard types (int, double, std::string,...)
+      //--------------------------------------------------------------
+      static const std::string getAsString(const T & anyValue)
+      {
+         return boost::lexical_cast<std::string>(anyValue);
+      }
+
+   };
+
+
+   //--------------------------------------------------------------
+   /// \brief	    Helper structure for get/set with an IExtendedEnum object
+   //--------------------------------------------------------------
+   template <typename T>
+   struct helper < T, typename boost::enable_if< boost::is_base_of< shared::enumeration::IExtendedEnum, T > >::type >
+   {
+      //--------------------------------------------------------------
+      /// \brief	    GET Method for IExtendedEnum object
+      //--------------------------------------------------------------
+      static const std::string getAsString(const T & anyValue)
+      {
+         return anyValue.getAsString();
+      }
+   };
+
+
+   //--------------------------------------------------------------
+   /// \brief	    Helper structure for get/set with boost::shared_ptr
+   //--------------------------------------------------------------
+   template <typename T>
+   struct helper < boost::shared_ptr< T > >
+   {
+      //--------------------------------------------------------------
+      /// \brief	    GET Method for boost::shared_ptr<T>
+      //--------------------------------------------------------------
+      static const std::string getAsString(const boost::shared_ptr< T > & anyValue)
+      {
+         return helper<T>::getAsString(*anyValue.get());
+      }
+   };
+
+   //--------------------------------------------------------------
+   /// \brief	    Helper structure for get/set with CField<T>
+   //--------------------------------------------------------------
+   template <typename T>
+   struct helper < shared::CField< T > >
+   {
+      //--------------------------------------------------------------
+      /// \brief	    GET Method for shared::CField< T >
+      //--------------------------------------------------------------
+      static const std::string getAsString(const boost::shared_ptr< T > & anyValue)
+      {
+         return helper<T>::getAsString(anyValue());
+      }
+   };
+
+
+
+
    template<class T>
    inline CQueryValue::CQueryValue(const T & anyValue, bool secure)
    {
+      std::string value =  helper<T>::getAsString(anyValue);
       if (secure)
-         initialize("'" + boost::lexical_cast<std::string>(anyValue)+"'");
+         initialize("'" + value + "'");
       else
-         initialize(boost::lexical_cast<std::string>(anyValue));
+         initialize(value);
    }
 
    template<>

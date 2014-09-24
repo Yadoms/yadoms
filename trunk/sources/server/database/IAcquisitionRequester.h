@@ -24,6 +24,17 @@ namespace database {
       //--------------------------------------------------------------
       virtual void saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime) = 0;
 
+      //--------------------------------------------------------------
+      /// \brief           Save a new data into base
+      /// \param [in]      type        The summary data type
+      /// \param [in]      keywordId   The keyword id
+      /// \param [in]      dataTime    The datetime of the data
+      /// \param [in]      mean        The mean value
+      /// \param [in]      min         The min value
+      /// \param [in]      mx          The max value
+      //--------------------------------------------------------------
+      virtual void saveSummaryData(const database::entities::EAcquisitionSummaryType type, const int keywordId, boost::posix_time::ptime & dataTime, double mean, double min, double max) = 0;
+
 
       //--------------------------------------------------------------
       /// \brief           Remove all data associated to a keyword
@@ -75,6 +86,29 @@ namespace database {
       //--------------------------------------------------------------
       virtual std::string getKeywordHighchartData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
 
+      
+      //--------------------------------------------------------------
+      /// \brief                 Get the summary data (highchart js format) : [[date,value],[date,value],...] by day (one value per day)
+      /// \param [in] keywordId  keywordId Id
+      /// \param [in] timeFrom   The start date (optionnal)
+      /// \param [in] timeTo     The end date (optionnal)
+      /// \return                Map of data : (date, value). One value per day
+      /// \throw                 CInvalidParameter if deviceId is unknown
+      //--------------------------------------------------------------
+      virtual std::string getKeywordHighchartDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief                 Get the summary data (highchart js format) : [[date,value],[date,value],...] by hour (one value per hour)
+      /// \param [in] keywordId  keywordId Id
+      /// \param [in] timeFrom   The start date (optionnal)
+      /// \param [in] timeTo     The end date (optionnal)
+      /// \return                Map of data : (date, value). One value per hour
+      /// \throw                 CInvalidParameter if deviceId is unknown
+      //--------------------------------------------------------------
+      virtual std::string getKeywordHighchartDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
+
+
+      
       //--------------------------------------------------------------
       /// \brief       Destructor
       //--------------------------------------------------------------

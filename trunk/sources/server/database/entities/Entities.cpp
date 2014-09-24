@@ -17,6 +17,12 @@ namespace database { namespace entities {
       (Error)
    )
 
+   DECLARE_ENUM_IMPLEMENTATION(EAcquisitionSummaryType,
+      (Hour)
+      (Day)
+   )
+
+
    DECLARE_ENUM_IMPLEMENTATION(ESystemEventCode,
       (ThreadFailed)
       (TaskFailed)
