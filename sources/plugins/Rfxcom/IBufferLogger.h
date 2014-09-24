@@ -2,27 +2,34 @@
 #include "Buffer.hpp"
 
 //--------------------------------------------------------------
-/// \brief	This class manage a communication port logger
+/// \brief	This interface manage a raw buffer logger
 //--------------------------------------------------------------
-class IPortLogger
+class IBufferLogger
 {  
 public:
    //--------------------------------------------------------------
    /// \brief	            Destructor
    //--------------------------------------------------------------
-   virtual ~IPortLogger() {}
+   virtual ~IBufferLogger() {}
 
    //--------------------------------------------------------------
-   /// \brief	            Log recieved data
+   /// \brief	            Log buffer as recieved data
    /// \param[in] log      Buffer to log
    //--------------------------------------------------------------
    virtual void logReceived(const CByteBuffer& data) = 0;
 
    //--------------------------------------------------------------
-   /// \brief	            Log sent data
+   /// \brief	            Log buffer as sent data
    /// \param[in] log      Buffer to log
    //--------------------------------------------------------------
    virtual void logSent(const CByteBuffer& data) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	            Adapt a buffer to be loggable
+   /// \param [in] data    data
+   /// \return             Formatted buffer
+   //--------------------------------------------------------------
+   virtual std::string msgToString(const CByteBuffer& data) const = 0;
 };
 
 

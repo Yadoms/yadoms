@@ -6,6 +6,7 @@
 #include "RfxComReceiveBuffer.h"
 #include "rfxcomMessages/Ack.h"
 #include "rfxcomMessages/TransceiverStatus.h"
+#include "BufferLogger.h"
 #include <shared/DataContainer.h>
 #include <shared/event/EventTimer.h>
 
@@ -119,24 +120,14 @@ private:
    boost::shared_ptr<IAsyncPort> m_port;
 
    //--------------------------------------------------------------
-   /// \brief	The port logger
+   /// \brief  The communication port
    //--------------------------------------------------------------
-   boost::shared_ptr<IPortLogger> m_portLogger;
-
-   //--------------------------------------------------------------
-   /// \brief	The RFXCom receive buffer
-   //--------------------------------------------------------------
-   CRfxcommReceiveBuffer m_receiveBuffer;
+   CBufferLogger m_logger;
 
    //--------------------------------------------------------------
    /// \brief	Wait for answer timer
    //--------------------------------------------------------------
    boost::shared_ptr<shared::event::CEventTimer> m_waitForAnswerTimer;
-
-   //--------------------------------------------------------------
-   /// \brief	The RFXCom receive buffer clear timeout
-   //--------------------------------------------------------------
-   boost::shared_ptr<shared::event::CEventTimer> m_receiveBufferClearTimer;
 
    //--------------------------------------------------------------
    /// \brief	The state machine

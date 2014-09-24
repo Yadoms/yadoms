@@ -8,6 +8,7 @@
 
 CAsyncSerialPort::CAsyncSerialPort(
    const std::string& port,
+   boost::shared_ptr<IReceiveBufferHandler> receiveBufferHandler,
    boost::asio::serial_port_base::baud_rate baudrate,
    boost::asio::serial_port_base::parity parity,
    boost::asio::serial_port_base::character_size characterSize,
@@ -15,13 +16,16 @@ CAsyncSerialPort::CAsyncSerialPort(
    boost::asio::serial_port_base::flow_control flowControl,
    boost::posix_time::time_duration connectRetryDelay)
    :m_boostSerialPort(m_ioService),
-   m_port(port), m_baudrate(baudrate), m_parity(parity), m_characterSize(characterSize), m_stop_bits(stop_bits), m_flowControl(flowControl),
+   m_port(port),
+   m_receiveBufferHandler(receiveBufferHandler),
+   m_baudrate(baudrate), m_parity(parity), m_characterSize(characterSize), m_stop_bits(stop_bits), m_flowControl(flowControl),
    m_readBufferMaxSize(512),
    m_asyncReadBuffer(new unsigned char[m_readBufferMaxSize]),
    m_readBuffer(new unsigned char[m_readBufferMaxSize]),
    m_connectRetryTimer(m_ioService),
    m_connectRetryDelay(connectRetryDelay)
 {
+   BOOST_ASSERT_MSG(!!receiveBufferHandler, "A receive buffer handler must be specified");
 }
 
 CAsyncSerialPort::~CAsyncSerialPort()
@@ -108,14 +112,9 @@ void CAsyncSerialPort::subscribeConnectionState(shared::event::CEventHandler& fo
    m_connectionStateSubscription.subscribe(forEventHandler, forId);
 }
 
-void CAsyncSerialPort::subscribeReceiveData(shared::event::CEventHandler& forEventHandler, int forId)
+void CAsyncSerialPort::flush()
 {
-   m_receiveDataSubscription.subscribe(forEventHandler, forId);
-}
-
-void CAsyncSerialPort::setLogger(boost::shared_ptr<IPortLogger> logger)
-{
-   m_logger = logger;
+   m_receiveBufferHandler->flush();
 }
 
 void CAsyncSerialPort::reconnectTimerHandler(const boost::system::error_code& error)
@@ -140,9 +139,8 @@ void CAsyncSerialPort::tryConnect()
    // Connected
    m_connectionStateSubscription.notify(true);
 
-   // Start listening on the port if asynchronous read mode is active
-   if (m_receiveDataSubscription.hasSubscription())
-      startRead();
+   // Start listening on the port
+   startRead();
 }
 
 void CAsyncSerialPort::startRead()
@@ -170,11 +168,7 @@ void CAsyncSerialPort::readCompleted(const boost::system::error_code& error, std
    // Read OK
    CByteBuffer buffer(m_asyncReadBuffer.get(), bytesTransferred);
 
-   if (!!m_logger)
-      m_logger->logReceived(buffer);
-
-   // Send data
-   m_receiveDataSubscription.notify(buffer);
+   m_receiveBufferHandler->push(buffer);
 
    // Restart read
    startRead();
@@ -184,9 +178,6 @@ void CAsyncSerialPort::send(const CByteBuffer& buffer)
 {
    try
    {
-      if (!!m_logger)
-         m_logger->logSent(buffer);
-
       m_boostSerialPort.write_some(boost::asio::const_buffers_1(buffer.content(), buffer.size()));
    }
    catch (boost::system::system_error& e)

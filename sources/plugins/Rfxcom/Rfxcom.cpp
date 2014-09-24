@@ -18,7 +18,6 @@ enum
    kEvtPortConnection = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from yApi::IYadomsApi::kPluginFirstEventId
    kEvtPortDataReceived,
    kProtocolErrorRetryTimer,
-   kReceiveBufferClearTimer,
    kAnswerTimeout,
 };
 
@@ -51,9 +50,6 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 
       m_waitForAnswerTimer = context->getEventHandler().createTimer(kAnswerTimeout, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(5));
       m_waitForAnswerTimer->stop();
-
-      m_receiveBufferClearTimer = context->getEventHandler().createTimer(kReceiveBufferClearTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(2));
-      m_receiveBufferClearTimer->stop();
 
       // Create the connection
       createConnection(context->getEventHandler());
@@ -143,7 +139,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             }
          case kEvtPortDataReceived:
             {
-               processRfxcomDataReceived(context, context->getEventHandler().getEventData<CByteBuffer>());
+               processRfxcomDataReceived(context, context->getEventHandler().getEventData<const CByteBuffer>());
                break;
             }
          case kAnswerTimeout:
@@ -155,11 +151,6 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          case kProtocolErrorRetryTimer:
             {
                createConnection(context->getEventHandler());
-               break;
-            }
-         case kReceiveBufferClearTimer:
-            {
-               m_receiveBuffer.flush();
                break;
             }
          default:
@@ -178,8 +169,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 void CRfxcom::createConnection(shared::event::CEventHandler& eventHandler)
 {
    // Create the port instance
-   m_portLogger = CRfxcomFactory::constructPortLogger();
-   m_port = CRfxcomFactory::constructPort(m_configuration, eventHandler, kEvtPortConnection, kEvtPortDataReceived, m_portLogger);
+   m_port = CRfxcomFactory::constructPort(m_configuration, eventHandler, kEvtPortConnection, kEvtPortDataReceived);
    m_port->setReceiveBufferSize(RFXMESSAGE_maxSize);
    m_port->start();
 }
@@ -187,14 +177,13 @@ void CRfxcom::createConnection(shared::event::CEventHandler& eventHandler)
 void CRfxcom::destroyConnection()
 {
    m_port.reset();
-   m_portLogger.reset();
 
    m_waitForAnswerTimer->stop();
-   m_receiveBufferClearTimer->stop();
 }
 
 void CRfxcom::send(const CByteBuffer& buffer, bool needAnswer)
 {
+   m_logger.logSent(buffer);
    m_port->send(buffer);
    if (needAnswer)
       m_waitForAnswerTimer->start();
@@ -249,43 +238,36 @@ void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYadomsApi>
 
 void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data)
 {
-   m_receiveBuffer.append(data);
-   m_receiveBufferClearTimer->start();
+   m_logger.logReceived(data);
 
-   // Buffer can contain more than one message
-   while (m_receiveBuffer.isComplete())
+   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message = m_transceiver->decodeRfxcomMessage(context, data);
+
+   if (!message)
    {
-      boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message = m_transceiver->decodeRfxcomMessage(context, *m_receiveBuffer.popNextMessage());
-      if (m_receiveBuffer.isEmpty())
-         m_receiveBufferClearTimer->stop();
-
-      if (!message)
-      {
-         YADOMS_LOG(warning) << "Unable to decode received message";
-         return;
-      }
-
-      // Message was recognized, stop timeout
-      m_waitForAnswerTimer->stop();
-
-      // Decoding is OK, process received message
-      boost::shared_ptr<rfxcomMessages::CTransceiverStatus> statusMessage = boost::dynamic_pointer_cast<rfxcomMessages::CTransceiverStatus>(message);
-      if (!!statusMessage)
-      {
-         processRfxcomStatusMessage(context, *statusMessage);
-         return;
-      }
-
-      boost::shared_ptr<rfxcomMessages::CAck> ackMessage = boost::dynamic_pointer_cast<rfxcomMessages::CAck>(message);
-      if (!!ackMessage)
-      {
-         processRfxcomAckMessage(*ackMessage);
-         return;
-      }
-
-      // Sensor message, historize all data contained in the message
-      message->historizeData(context);
+      YADOMS_LOG(warning) << "Unable to decode received message";
+      return;
    }
+
+   // Message was recognized, stop timeout
+   m_waitForAnswerTimer->stop();
+
+   // Decoding is OK, process received message
+   boost::shared_ptr<rfxcomMessages::CTransceiverStatus> statusMessage = boost::dynamic_pointer_cast<rfxcomMessages::CTransceiverStatus>(message);
+   if (!!statusMessage)
+   {
+      processRfxcomStatusMessage(context, *statusMessage);
+      return;
+   }
+
+   boost::shared_ptr<rfxcomMessages::CAck> ackMessage = boost::dynamic_pointer_cast<rfxcomMessages::CAck>(message);
+   if (!!ackMessage)
+   {
+      processRfxcomAckMessage(*ackMessage);
+      return;
+   }
+
+   // Sensor message, historize all data contained in the message
+   message->historizeData(context);
 }
 
 void CRfxcom::initRfxcom()
@@ -302,7 +284,7 @@ void CRfxcom::initRfxcom()
    boost::this_thread::sleep(boost::posix_time::milliseconds(50));
 
    // Flush receive buffer according to RFXCom specifications
-   m_receiveBuffer.flush();
+   m_port->flush();
 
    // Now get the actual RFXCom configuration to check if reconfiguration is needed
    YADOMS_LOG(info) << "Get the RFXCom status...";
