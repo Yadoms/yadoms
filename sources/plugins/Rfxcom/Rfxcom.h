@@ -91,11 +91,25 @@ protected:
    void errorProcess(boost::shared_ptr<yApi::IYadomsApi> context);
 
    //--------------------------------------------------------------
-   /// \brief	                     Process received status message from RFXCom
+   /// \brief	                     Process received response to command from RFXCom
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] status           Received status
+   //--------------------------------------------------------------
+   void processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Process status message from RFXCom
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] status           Received status
    //--------------------------------------------------------------
    void processRfxcomStatusMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Process wrong command response from RFXCom
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] status           Received status
+   //--------------------------------------------------------------
+   void processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status);
 
    //--------------------------------------------------------------
    /// \brief	                     Process received ack message from RFXCom

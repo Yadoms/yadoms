@@ -3,16 +3,15 @@
 #include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
-#include <shared/DataContainer.h>
 
 namespace yApi = shared::plugin::yadomsApi;
 
 namespace rfxcomMessages
 {
    //--------------------------------------------------------------
-   /// \brief	The Lightning4 protocol support
+   /// \brief	The Fan protocol support
    //--------------------------------------------------------------
-   class CLighting4 : public IRfxcomMessage
+   class CFan : public IRfxcomMessage
    {
    public:
       //--------------------------------------------------------------
@@ -23,7 +22,7 @@ namespace rfxcomMessages
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
-      CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters);
+      CFan(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
@@ -33,18 +32,18 @@ namespace rfxcomMessages
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CFan(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CLighting4();
+      virtual ~CFan();
 
       // IRfxcomMessage implementation
       virtual const CByteBuffer encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
       virtual void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
       // [END] IRfxcomMessage implementation
-
+      
    protected:
       //--------------------------------------------------------------
       /// \brief	Global initialization method
@@ -62,6 +61,13 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       void buildDeviceModel();
 
+      //--------------------------------------------------------------
+      /// \brief	                        Convert Yadoms command to protocol value
+      /// \return                         The value known by the protocol
+      /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
+      //--------------------------------------------------------------
+      unsigned char toProtocolState() const;
+
    private:
       //--------------------------------------------------------------
       /// \brief	The device sub-type
@@ -74,6 +80,11 @@ namespace rfxcomMessages
       unsigned int m_id;
 
       //--------------------------------------------------------------
+      /// \brief	Flag for light command (true) or fan command (false)
+      //--------------------------------------------------------------
+      bool m_lightCmd;
+
+      //--------------------------------------------------------------
       /// \brief	The device name
       //--------------------------------------------------------------
       std::string m_deviceName;
@@ -84,13 +95,9 @@ namespace rfxcomMessages
       std::string m_deviceModel;
 
       //--------------------------------------------------------------
-      /// \brief	The keyword associated with state
+      /// \brief	The keyword associated with fan or light (depending on m_lightCmd)
+      /// \note If fan command, 0 = speed down, 100 = speed up
       //--------------------------------------------------------------
-      yApi::commands::CSwitch m_state; //TODO pas sûr du type d'objet, en discussion
-
-      //--------------------------------------------------------------
-      /// \brief	The keyword associated with rssi
-      //--------------------------------------------------------------
-      yApi::commands::CRssi m_rssi;
+      yApi::commands::CSwitch m_state;
    };
 } // namespace rfxcomMessages

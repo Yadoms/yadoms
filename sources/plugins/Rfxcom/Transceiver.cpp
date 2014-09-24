@@ -5,7 +5,9 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include "RfxcomFactory.h"
 #include "rfxcomMessages/Ack.h"
+#include "rfxcomMessages/Chime.h"
 #include "rfxcomMessages/Curtain1.h"
+#include "rfxcomMessages/Fan.h"
 #include "rfxcomMessages/Lighting1.h"
 #include "rfxcomMessages/Lighting2.h"
 #include "rfxcomMessages/Lighting3.h"
@@ -130,8 +132,14 @@ const CByteBuffer CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYa
       case pTypeLighting6:
          return rfxcomMessages::CLighting6(context, command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
+      case pTypeChime:
+         return rfxcomMessages::CChime(context, command, deviceParametersTree).encode(m_seqNumberProvider);
+         break;
       case pTypeCurtain:
          return rfxcomMessages::CCurtain1(context, command, deviceParametersTree).encode(m_seqNumberProvider);
+         break;
+      case pTypeFan:
+         return rfxcomMessages::CFan(context, command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
       case pTypeRFY:
          return rfxcomMessages::CRfy(context, command, deviceParametersTree).encode(m_seqNumberProvider);
@@ -167,7 +175,9 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    case pTypeLighting3           : message.reset(new rfxcomMessages::CLighting3        (context, *buf, m_seqNumberProvider)); break;
    case pTypeLighting4           : message.reset(new rfxcomMessages::CLighting4        (context, *buf, m_seqNumberProvider)); break;
    case pTypeLighting6           : message.reset(new rfxcomMessages::CLighting6        (context, *buf, m_seqNumberProvider)); break;
+   case pTypeChime               : message.reset(new rfxcomMessages::CChime            (context, *buf, m_seqNumberProvider)); break;
    case pTypeCurtain             : message.reset(new rfxcomMessages::CCurtain1         (context, *buf, m_seqNumberProvider)); break;
+   case pTypeFan                 : message.reset(new rfxcomMessages::CFan              (context, *buf, m_seqNumberProvider)); break;
    case pTypeRFY                 : message.reset(new rfxcomMessages::CRfy              (context, *buf, m_seqNumberProvider)); break;
    case pTypeTEMP                : message.reset(new rfxcomMessages::CTemp             (context, *buf, m_seqNumberProvider)); break;
       // TODO à compléter

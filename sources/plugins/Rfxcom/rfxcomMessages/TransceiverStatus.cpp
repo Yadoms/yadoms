@@ -8,8 +8,19 @@ namespace rfxcomMessages
 
 CTransceiverStatus::CTransceiverStatus(const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
 {
-   //TODO gérer les autres sous-types
    CheckReceivedMessage(rbuf, pTypeInterfaceMessage, sTypeInterfaceResponse, GET_RBUF_STRUCT_SIZE(IRESPONSE), seqNumberProvider->last());
+
+   switch (rbuf.IRESPONSE.subtype)
+   {
+   case sTypeInterfaceResponse      : m_statusType = kStatus;                     break;
+   case sTypeUnknownRFYremote       : m_statusType = kUnknownRfyRemote;           break;
+   case sTypeExtError               : m_statusType = kNoExtendedHardwarePresent;  break;
+   case sTypeRFYremoteList          : m_statusType = kListRfyMode;                break;
+   case sTypeInterfaceWrongCommand  : m_statusType = kWrongCommand;               break;
+   default:
+      YADOMS_LOG(error) << "Unknown status subtype value : " << rbuf.IRESPONSE.subtype;
+      break;
+   }
 
    m_rfxcomType = rbuf.IRESPONSE.msg1;
 
@@ -87,6 +98,11 @@ void CTransceiverStatus::traceEnabledProtocols() const
    if (m_OREGONenabled    ) YADOMS_LOG(info) << "   - Oregon Scientific";
    if (m_ATIenabled       ) YADOMS_LOG(info) << "   - ATI";
    if (m_VISONICenabled   ) YADOMS_LOG(info) << "   - Visonic";
+}
+
+CTransceiverStatus::EStatusType CTransceiverStatus::getStatusType() const
+{
+   return m_statusType;
 }
 
 unsigned char CTransceiverStatus::getRfxcomType() const

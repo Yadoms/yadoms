@@ -8,7 +8,13 @@ include("../YadomsPluginsCommon.cmake")
 set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Ack.h
    rfxcomMessages/Ack.cpp
+   rfxcomMessages/Chime.h
+   rfxcomMessages/Chime.cpp
+   rfxcomMessages/Curtain1.h
+   rfxcomMessages/Curtain1.cpp
    rfxcomMessages/IRfxcomMessage.h
+   rfxcomMessages/Fan.h
+   rfxcomMessages/Fan.cpp
    rfxcomMessages/Lighting1.h
    rfxcomMessages/Lighting1.cpp
    rfxcomMessages/Lighting2.h
@@ -19,8 +25,6 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Lighting4.cpp
    rfxcomMessages/Lighting6.h
    rfxcomMessages/Lighting6.cpp
-   rfxcomMessages/Curtain1.h
-   rfxcomMessages/Curtain1.cpp
    rfxcomMessages/RFXtrx.h
    rfxcomMessages/RFXtrxHelpers.h
    rfxcomMessages/RFXtrxHelpers.cpp
@@ -52,7 +56,6 @@ set(RFXCOM_SOURCES
    NullSequenceNumber.h
    PortException.hpp
    ProtocolException.hpp
-   PortSubscription.hpp
    Rfxcom.h
    Rfxcom.cpp
    RfxComReceiveBufferHandler.h
