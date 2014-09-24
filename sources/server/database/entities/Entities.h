@@ -20,6 +20,11 @@ namespace database { namespace entities {
       ((Crash)(2))
       ((Info)(3))
       ((Error)(4))
+   )   
+   
+   DECLARE_ENUM_HEADER(EAcquisitionSummaryType,
+      ((Hour)(0))
+      ((Day)(1))
    )
 
    DECLARE_ENUM_HEADER(ESystemEventCode,

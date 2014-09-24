@@ -10,6 +10,18 @@ namespace shared { namespace enumeration {
    {
    public:
       //--------------------------------------------------------------
+      /// \brief Get the enum value as its string representation
+      /// \return the enum value as string
+      //--------------------------------------------------------------
+      virtual const std::string & getAsString() const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief Set the enum value from its string representation
+      /// \param [in]   val   the string which will be parsed as the enum
+      //--------------------------------------------------------------
+      virtual void setFromString(const std::string & val) = 0;
+
+      //--------------------------------------------------------------
       /// \brief Virtual destructor
       //--------------------------------------------------------------
       virtual ~IExtendedEnum() 

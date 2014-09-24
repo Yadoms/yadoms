@@ -91,6 +91,16 @@ namespace sqlite {
       (Value)
    )   
 
+   DECLARE_TABLE(AcquisitionSummary,
+      (Id)
+      (Type)
+      (Date)
+      (KeywordId)
+      (Mean)
+      (Min)
+      (Max)
+   )   
+
 
 } //namespace sqlite
 } //namespace database 

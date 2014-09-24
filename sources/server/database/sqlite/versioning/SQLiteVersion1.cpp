@@ -38,7 +38,8 @@
                      !pRequester->checkTableExists(CWidgetTable::getTableName()) ||
                      !pRequester->checkTableExists(CPluginEventLoggerTable::getTableName()) ||
                      !pRequester->checkTableExists(CEventLoggerTable::getTableName()) ||
-                     !pRequester->checkTableExists(CAcquisitionTable::getTableName()))
+                     !pRequester->checkTableExists(CAcquisitionTable::getTableName()) ||
+                     !pRequester->checkTableExists(CAcquisitionSummaryTable::getTableName())       )
                   {
                      //at least one table is missing
                      bNeedToCreateOrUpgrade = true;
@@ -95,6 +96,8 @@
                      throw CSQLiteVersionException("Failed to delete EventLogger table");
                   if(!pRequester->dropTableIfExists(CAcquisitionTable::getTableName()))
                      throw CSQLiteVersionException("Failed to delete Acquisition table");
+                  if(!pRequester->dropTableIfExists(CAcquisitionSummaryTable::getTableName()))
+                     throw CSQLiteVersionException("Failed to delete AcquisitionSummary table");
 
                   //create tables
                   if(!pRequester->createTableIfNotExists(CConfigurationTable::getTableName(), CConfigurationTable::getTableCreationScript()))
@@ -115,6 +118,8 @@
                      throw CSQLiteVersionException("Failed to create EventLogger table");
                   if(!pRequester->createTableIfNotExists(CAcquisitionTable::getTableName(), CAcquisitionTable::getTableCreationScript()))
                      throw CSQLiteVersionException("Failed to create Acquisition table");
+                  if (!pRequester->createTableIfNotExists(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTableCreationScript()))
+                     throw CSQLiteVersionException("Failed to create AcquisitionSummary table");
 
                   //indexes
                   const std::vector<std::string> indexes = CAcquisitionTable::getIndexesCreationScript();
