@@ -1,17 +1,20 @@
 #pragma once
 
 #include "shared/event/EventHandler.hpp"
-#include "IPortLogger.h"
+#include "IBufferLogger.h"
 #include "Buffer.hpp"
 
 //--------------------------------------------------------------
-/// \brief	This class manage a asynchronous communication port
-// After configuring and starting the port management, the
-// caller can be notified when connection is established or lost,
-// and when data is received, asynchronously.
-// Note the data reception is done as soon as data is available,
-// so messages can be divided in several parts.
-// The caller can also send data synchronously.
+/// \brief	This interface manage a asynchronous communication port.
+///
+/// An implementation of this interface is responsible to manage the
+/// connection (auto-retry when connection fails), and the
+/// communication (synchronous send, asynchronous receive)
+///
+/// It uses CEventHandler to :
+/// - notify for connect/disconnect events (optional)
+/// - notify for data received (optional)
+///
 //--------------------------------------------------------------
 class IAsyncPort
 {  
@@ -54,27 +57,16 @@ public:
    virtual void subscribeConnectionState(shared::event::CEventHandler& forEventHandler, int forId) = 0;
 
    //--------------------------------------------------------------
-   /// \brief	                     Subscribe/Unsubscribe to the data receive events
-   /// \param [in] forEventHandler  The event handler to notify for these events
-   /// \param [in] forId            The event id to send for these events (set kNoEvent to unsubscribe)
-   /// \throw shared::exception::CInvalidParameter if try to subscribe on event for which a subscription already exists (user must unsubscribe first)
-   /// \note The raised event contains the read data as string
-   /// \note Must be called before start
-   //--------------------------------------------------------------
-   virtual void subscribeReceiveData(shared::event::CEventHandler& forEventHandler, int forId) = 0;
-
-   //--------------------------------------------------------------
-   /// \brief	                     Set the logger
-   /// \param [in] logger           Logger to used (can be null is not log is expected)
-   //--------------------------------------------------------------
-   virtual void setLogger(boost::shared_ptr<IPortLogger> logger) = 0;
-
-   //--------------------------------------------------------------
    /// \brief	                     Send a buffer on the port (synchronously)
    /// \param [in] buffer           The buffer to send
    /// \throw                       CPortException if error
    //--------------------------------------------------------------
    virtual void send(const CByteBuffer& buffer) = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Flush the receive buffer
+   //--------------------------------------------------------------
+   virtual void flush() = 0;
 };
 
 

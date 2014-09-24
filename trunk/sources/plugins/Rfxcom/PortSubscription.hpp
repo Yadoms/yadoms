@@ -7,7 +7,7 @@
 /// \brief	This class manage a subscription for events on communication port
 //--------------------------------------------------------------
 template<class DataType>
-class CPortSubscription
+class CPortSubscription//TODO encore utile ? Y'a pas plus simple ?
 {  
 public:
    //--------------------------------------------------------------

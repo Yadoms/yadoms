@@ -40,26 +40,27 @@ set(RFXCOM_SOURCES
    AsyncSerialPort.h
    AsyncSerialPort.cpp
    Buffer.hpp
+   BufferLogger.h
+   BufferLogger.cpp
+   IReceiveBufferHandler.h
    IncrementSequenceNumber.h
    IAsyncPort.h
-   IPortLogger.h
+   IBufferLogger.h
    IRfxcomConfiguration.h
    ISequenceNumberProvider.h
    ITransceiver.h
    NullSequenceNumber.h
    PortException.hpp
    ProtocolException.hpp
-   PortLogger.h
-   PortLogger.cpp
+   PortSubscription.hpp
    Rfxcom.h
    Rfxcom.cpp
-   RfxComReceiveBuffer.h
-   RfxComReceiveBuffer.cpp
+   RfxComReceiveBufferHandler.h
+   RfxComReceiveBufferHandler.cpp
    RfxcomConfiguration.h
    RfxcomConfiguration.cpp
    RfxcomFactory.h
    RfxcomFactory.cpp
-   PortSubscription.hpp
    Transceiver.h
    Transceiver.cpp
    ${RFXCOM_MESSAGES_SOURCES}

@@ -1,6 +1,7 @@
 #pragma once
 #include "IAsyncPort.h"
 #include "PortSubscription.hpp"
+#include "IReceiveBufferHandler.h"
 
 //--------------------------------------------------------------
 /// \brief	This class manage a serial port
@@ -10,16 +11,18 @@ class CAsyncSerialPort : public IAsyncPort
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
-   /// \param[in] port              Serial port name
-   /// \param[in] baudrate          Baudrate (in bauds)
-   /// \param[in] parity            Parity (see boost::asio::serial_port_base::parity::type for values)
-   /// \param[in] characterSize     Character size (from 5 to 8)
-   /// \param[in] stop_bits         Nb of stop bits (see boost::asio::serial_port_base::stop_bits::type for values)
-   /// \param[in] flowControl       Flow control (see boost::asio::serial_port_base::flow_control::type for values)
-   /// \param[in] connectRetryDelay Delay between 2 connection retries
+   /// \param[in] port                 Serial port name
+   /// \param[in] receiveBufferHandler The receive buffer handler
+   /// \param[in] baudrate             Baudrate (in bauds)
+   /// \param[in] parity               Parity (see boost::asio::serial_port_base::parity::type for values)
+   /// \param[in] characterSize        Character size (from 5 to 8)
+   /// \param[in] stop_bits            Nb of stop bits (see boost::asio::serial_port_base::stop_bits::type for values)
+   /// \param[in] flowControl          Flow control (see boost::asio::serial_port_base::flow_control::type for values)
+   /// \param[in] connectRetryDelay    Delay between 2 connection retries
    //--------------------------------------------------------------
    CAsyncSerialPort(
       const std::string& port,
+      boost::shared_ptr<IReceiveBufferHandler> receiveBufferHandler,
       boost::asio::serial_port_base::baud_rate baudrate = boost::asio::serial_port_base::baud_rate(9600),
       boost::asio::serial_port_base::parity parity = boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::none),
       boost::asio::serial_port_base::character_size characterSize = boost::asio::serial_port_base::character_size(8),
@@ -38,9 +41,8 @@ public:
    virtual void stop();
    virtual bool isConnected() const;
    virtual void subscribeConnectionState(shared::event::CEventHandler& forEventHandler, int forId);
-   virtual void subscribeReceiveData(shared::event::CEventHandler& forEventHandler, int forId);
-   virtual void setLogger(boost::shared_ptr<IPortLogger> logger);
    virtual void send(const CByteBuffer& buffer);
+   virtual void flush();
    // [END] IAsyncPort Implementation
 
    //--------------------------------------------------------------
@@ -120,9 +122,9 @@ private:
    CPortSubscription<bool> m_connectionStateSubscription;
 
    //--------------------------------------------------------------
-   /// \brief	Data receive event subscription
+   /// \brief	The receive buffer handler
    //--------------------------------------------------------------
-   CPortSubscription<CByteBuffer> m_receiveDataSubscription;
+   boost::shared_ptr<IReceiveBufferHandler> m_receiveBufferHandler;
 
    //--------------------------------------------------------------
    /// \brief	Try to reconnect timer delay
@@ -138,11 +140,6 @@ private:
    /// \brief	Thread for asynchronous operations
    //--------------------------------------------------------------
    boost::shared_ptr<boost::thread> m_asyncThread;
-
-   //--------------------------------------------------------------
-   /// \brief	Logger to use (can be null to disable log)
-   //--------------------------------------------------------------
-   boost::shared_ptr<IPortLogger> m_logger;
 };
 
 

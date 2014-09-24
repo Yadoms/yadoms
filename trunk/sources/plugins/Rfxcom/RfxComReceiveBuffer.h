@@ -1,6 +1,6 @@
 #pragma once
 #include "Buffer.hpp"
-
+//TODO fichiers (.h/.cpp) à virer
 //--------------------------------------------------------------
 /// \brief	This class manage the receive buffer from rfxcom
 // Its objective is to agregate cut messages
