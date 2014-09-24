@@ -183,6 +183,9 @@ void CRfxcom::destroyConnection()
 
 void CRfxcom::send(const CByteBuffer& buffer, bool needAnswer)
 {
+   if (!m_port)
+      return;
+
    m_logger.logSent(buffer);
    m_port->send(buffer);
    if (needAnswer)
@@ -255,7 +258,7 @@ void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> cont
    boost::shared_ptr<rfxcomMessages::CTransceiverStatus> statusMessage = boost::dynamic_pointer_cast<rfxcomMessages::CTransceiverStatus>(message);
    if (!!statusMessage)
    {
-      processRfxcomStatusMessage(context, *statusMessage);
+      processRfxcomCommandResponseMessage(context, *statusMessage);
       return;
    }
 
@@ -292,9 +295,21 @@ void CRfxcom::initRfxcom()
    send(m_transceiver->buildGetStatusCmd(), true);
 }
 
-void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status)
+void CRfxcom::processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status)
 {
    // The status message can be received after a get status command or a set mode command
+   switch(status.getStatusType())
+   {
+   case rfxcomMessages::CTransceiverStatus::kStatus: processRfxcomStatusMessage(context, status); break;
+   case rfxcomMessages::CTransceiverStatus::kWrongCommand: processRfxcomWrongCommandMessage(context, status); break;
+   default:
+      YADOMS_LOG(warning) << "Status message (" << status.getStatusType() << ") not yet supported";
+      break;
+   }
+}
+
+void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status)
+{
    YADOMS_LOG(info) << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware version (" << status.getFirmwareVersion() << ")";
    status.traceEnabledProtocols();
 
@@ -319,6 +334,11 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYadomsApi> con
    m_currentState = kSettingRfxcomMode;
    send(m_transceiver->buildSetModeCmd(status.getRfxcomType(), m_configuration), true);// Don't change the RFXCom frequency
    // Expected reply is also a status message
+}
+
+void CRfxcom::processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status)
+{
+   YADOMS_LOG(info) << "RFXCom wrong command response";
 }
 
 void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack) const

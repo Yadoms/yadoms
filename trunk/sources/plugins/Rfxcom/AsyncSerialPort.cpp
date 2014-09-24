@@ -109,7 +109,8 @@ bool CAsyncSerialPort::isConnected() const
 
 void CAsyncSerialPort::subscribeConnectionState(shared::event::CEventHandler& forEventHandler, int forId)
 {
-   m_connectionStateSubscription.subscribe(forEventHandler, forId);
+   m_connectStateEventHandler = &forEventHandler;
+   m_connectStateEventId = forId;
 }
 
 void CAsyncSerialPort::flush()
@@ -137,7 +138,7 @@ void CAsyncSerialPort::tryConnect()
    }
 
    // Connected
-   m_connectionStateSubscription.notify(true);
+   notifyEventHandler(true);
 
    // Start listening on the port
    startRead();
@@ -161,7 +162,7 @@ void CAsyncSerialPort::readCompleted(const boost::system::error_code& error, std
       // Error ==> disconnecting
       YADOMS_LOG(error) << "Serial port read error : " << error.message();
       disconnect();
-      m_connectionStateSubscription.notify(false);
+      notifyEventHandler(false);
       return;
    }
 
@@ -189,10 +190,16 @@ void CAsyncSerialPort::send(const CByteBuffer& buffer)
          disconnect();
       }
 
-      m_connectionStateSubscription.notify(false);
+      notifyEventHandler(false);
 
       throw CPortException(
          (e.code() == boost::asio::error::eof) ? CPortException::kConnectionClosed : CPortException::kConnectionError,
          e.what());
    }
+}
+
+void CAsyncSerialPort::notifyEventHandler(bool isConnected)
+{
+   if (m_connectStateEventHandler)
+      m_connectStateEventHandler->postEvent<bool>(m_connectStateEventId, isConnected);
 }

@@ -10,9 +10,9 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
    //--------------------------------------------------------------
-   /// \brief	The Lightning4 protocol support
+   /// \brief	The Chime protocol support
    //--------------------------------------------------------------
-   class CLighting4 : public IRfxcomMessage
+   class CChime : public IRfxcomMessage
    {
    public:
       //--------------------------------------------------------------
@@ -23,7 +23,7 @@ namespace rfxcomMessages
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
-      CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters);
+      CChime(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
@@ -33,12 +33,12 @@ namespace rfxcomMessages
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CChime(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CLighting4();
+      virtual ~CChime();
 
       // IRfxcomMessage implementation
       virtual const CByteBuffer encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
@@ -87,6 +87,18 @@ namespace rfxcomMessages
       /// \brief	The keyword associated with state
       //--------------------------------------------------------------
       yApi::commands::CSwitch m_state; //TODO pas sûr du type d'objet, en discussion
+
+      //--------------------------------------------------------------
+      /// \brief	The sound to play (non-historizable)
+      //--------------------------------------------------------------
+      enum
+      {
+         kTubular3Notes,
+         kBigBen,
+         kTubular2Notes,
+         kSolo,
+         kDefaultSound = kTubular3Notes
+      } m_sound;
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with rssi

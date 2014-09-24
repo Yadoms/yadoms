@@ -1,6 +1,5 @@
 #pragma once
 #include "IAsyncPort.h"
-#include "PortSubscription.hpp"
 #include "IReceiveBufferHandler.h"
 
 //--------------------------------------------------------------
@@ -80,6 +79,12 @@ protected:
    //--------------------------------------------------------------
    void readCompleted(const boost::system::error_code& error, std::size_t bytesTransferred);
 
+   //--------------------------------------------------------------
+   /// \brief	                     Notify the event handler for connection event
+   /// \param[in] isConnected       Connection state
+   //--------------------------------------------------------------
+   void notifyEventHandler(bool isConnected);
+
 private:
    //--------------------------------------------------------------
    /// \brief	boost:asio service
@@ -117,9 +122,14 @@ private:
    boost::shared_ptr<unsigned char[]> m_readBuffer;
 
    //--------------------------------------------------------------
-   /// \brief	Connection state event subscription
+   /// \brief	The event handler to notify for connection events   
    //--------------------------------------------------------------
-   CPortSubscription<bool> m_connectionStateSubscription;
+   shared::event::CEventHandler* m_connectStateEventHandler;
+
+   //--------------------------------------------------------------
+   /// \brief	The event id to notify for connection events  
+   //--------------------------------------------------------------
+   int m_connectStateEventId;
 
    //--------------------------------------------------------------
    /// \brief	The receive buffer handler

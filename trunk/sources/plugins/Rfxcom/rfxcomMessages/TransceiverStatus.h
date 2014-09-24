@@ -9,7 +9,20 @@ namespace rfxcomMessages
    /// \brief	This class manage the RFXCom status
    //--------------------------------------------------------------
    class CTransceiverStatus : public IRfxcomMessage
-   {  
+   {
+   public:
+      //--------------------------------------------------------------
+      /// \brief  The status type
+      //--------------------------------------------------------------
+      enum  EStatusType
+      {
+         kStatus,                      /// Response on a mode command
+         kUnknownRfyRemote,            /// Unknown RFY remote
+         kNoExtendedHardwarePresent,   /// No extended hardware present
+         kListRfyMode,                 /// List RFY remotes
+         kWrongCommand                 /// Wrong command received from the application
+      };
+
    public:
       //--------------------------------------------------------------
       /// \brief	                           Constructor
@@ -32,6 +45,12 @@ namespace rfxcomMessages
       /// \brief	                     Trace the RFXCom configured protocols
       //--------------------------------------------------------------
       void traceEnabledProtocols() const;
+
+      //--------------------------------------------------------------
+      /// \brief	                     Get the status type (= message subType)
+      // \return                       The status type
+      //--------------------------------------------------------------
+      EStatusType getStatusType() const;
 
       //--------------------------------------------------------------
       /// \brief	                     Get the RfxCom type
@@ -59,6 +78,11 @@ namespace rfxcomMessages
       bool needConfigurationUpdate(const IRfxcomConfiguration& configuration) const;
 
    private:
+      //--------------------------------------------------------------
+      /// \brief  The status type
+      //--------------------------------------------------------------
+      EStatusType m_statusType;
+
       //--------------------------------------------------------------
       /// \brief  The RFXCom type
       //--------------------------------------------------------------
