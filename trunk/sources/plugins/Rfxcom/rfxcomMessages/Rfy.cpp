@@ -42,7 +42,7 @@ void CRfy::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    // Nothing to declare (transmitter-only device)
 }
 
-const CByteBuffer CRfy::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+const shared::communication::CByteBuffer CRfy::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
    RBUF rbuf;
    MEMCLEAR(rbuf.RFY);
@@ -62,7 +62,7 @@ const CByteBuffer CRfy::encode(boost::shared_ptr<ISequenceNumberProvider> seqNum
    rbuf.RFY.rssi = 0;
    rbuf.LIGHTING1.filler = 0;
 
-   return CByteBuffer((BYTE*)&rbuf, GET_RBUF_STRUCT_SIZE(RFY));
+   return shared::communication::CByteBuffer((BYTE*)&rbuf, GET_RBUF_STRUCT_SIZE(RFY));
 }
 
 void CRfy::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

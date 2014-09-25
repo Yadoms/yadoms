@@ -2,11 +2,10 @@
 #include <shared/plugin/IPlugin.h>
 #include "RfxcomConfiguration.h"
 #include "Transceiver.h"
-#include "IAsyncPort.h"
-#include "RfxComReceiveBuffer.h"
+#include <shared/communication/IAsyncPort.h>
 #include "rfxcomMessages/Ack.h"
 #include "rfxcomMessages/TransceiverStatus.h"
-#include "BufferLogger.h"
+#include <shared/communication/BufferLogger.h>
 #include <shared/DataContainer.h>
 #include <shared/event/EventTimer.h>
 
@@ -39,7 +38,7 @@ protected:
    /// \param [in] buffer           Buffer to send
    /// \param [in] needAnswer       true if answer is needed. If true, a timeout will occur if no answer is received.
    //--------------------------------------------------------------
-   void send(const CByteBuffer& buffer, bool needAnswer = false);
+   void send(const shared::communication::CByteBuffer& buffer, bool needAnswer = false);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
@@ -66,7 +65,7 @@ protected:
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] data             Data received
    //--------------------------------------------------------------
-   void processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data);
+   void processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const shared::communication::CByteBuffer& data);
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the RFXCom
@@ -131,12 +130,12 @@ private:
    //--------------------------------------------------------------
    /// \brief  The communication port
    //--------------------------------------------------------------
-   boost::shared_ptr<IAsyncPort> m_port;
+   boost::shared_ptr<shared::communication::IAsyncPort> m_port;
 
    //--------------------------------------------------------------
    /// \brief  The communication port
    //--------------------------------------------------------------
-   CBufferLogger m_logger;
+   shared::communication::CBufferLogger m_logger;
 
    //--------------------------------------------------------------
    /// \brief	Wait for answer timer

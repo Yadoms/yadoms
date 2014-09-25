@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/event/EventHandler.hpp>
-#include "IReceiveBufferHandler.h"
-#include "Buffer.hpp"
+#include <shared/communication/IReceiveBufferHandler.h>
+#include <shared/communication/Buffer.hpp>
 
 //--------------------------------------------------------------
 /// \brief	Receive buffer handler for RFXCom
@@ -9,7 +9,7 @@
 /// This class manages the Rfxcom receive buffer.
 /// A message is considered complete from its content (see protocol specification)
 //--------------------------------------------------------------
-class CRfxcomReceiveBufferHandler : public IReceiveBufferHandler
+class CRfxcomReceiveBufferHandler : public shared::communication::IReceiveBufferHandler
 {  
 public:
    //--------------------------------------------------------------
@@ -25,7 +25,7 @@ public:
    virtual ~CRfxcomReceiveBufferHandler();
 
    // IReceiveBufferHandler implementation
-   virtual void push(const CByteBuffer& buffer);
+   virtual void push(const shared::communication::CByteBuffer& buffer);
    virtual void flush();
    // [END] IReceiveBufferHandler implementation
 
@@ -40,13 +40,13 @@ protected:
    /// \brief	                     Pop the next message from the receive buffer
    /// \return                      The next complete message
    //--------------------------------------------------------------
-   boost::shared_ptr<const CByteBuffer> popNextMessage();
+   boost::shared_ptr<const shared::communication::CByteBuffer> popNextMessage();
 
    //--------------------------------------------------------------
    /// \brief	                     Send a message to the target event handler
    /// \param[in] buffer            Buffer to send
    //--------------------------------------------------------------
-   void notifyEventHandler(boost::shared_ptr<const CByteBuffer> buffer);
+   void notifyEventHandler(boost::shared_ptr<const shared::communication::CByteBuffer> buffer);
 
 private:
    //--------------------------------------------------------------

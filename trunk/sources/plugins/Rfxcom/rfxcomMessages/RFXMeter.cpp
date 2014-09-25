@@ -50,10 +50,10 @@ void CRFXMeter::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    }
 }
 
-const CByteBuffer CRFXMeter::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+const shared::communication::CByteBuffer CRFXMeter::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
    // Nothing to do (message type is read-only)
-   return CByteBuffer();
+   return shared::communication::CByteBuffer();
 }
 
 void CRFXMeter::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

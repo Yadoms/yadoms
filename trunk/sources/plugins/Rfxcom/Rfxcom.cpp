@@ -6,7 +6,7 @@
 #include <shared/exception/EmptyResult.hpp>
 #include "RfxcomFactory.h"
 #include "ProtocolException.hpp"
-#include "PortException.hpp"
+#include <shared/communication/PortException.hpp>
 #include <shared/plugin/yadomsApi/commands/Switch.h>
 
 IMPLEMENT_PLUGIN(CRfxcom)
@@ -139,7 +139,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             }
          case kEvtPortDataReceived:
             {
-               processRfxcomDataReceived(context, context->getEventHandler().getEventData<const CByteBuffer>());
+               processRfxcomDataReceived(context, context->getEventHandler().getEventData<const shared::communication::CByteBuffer>());
                break;
             }
          case kAnswerTimeout:
@@ -170,7 +170,7 @@ void CRfxcom::createConnection(shared::event::CEventHandler& eventHandler)
 {
    // Create the port instance
    m_port = CRfxcomFactory::constructPort(m_configuration, eventHandler, kEvtPortConnection, kEvtPortDataReceived);
-   m_port->setReceiveBufferSize(RFXMESSAGE_maxSize);
+   m_port->setReceiveBufferMaxSize(RFXMESSAGE_maxSize);
    m_port->start();
 }
 
@@ -181,7 +181,7 @@ void CRfxcom::destroyConnection()
    m_waitForAnswerTimer->stop();
 }
 
-void CRfxcom::send(const CByteBuffer& buffer, bool needAnswer)
+void CRfxcom::send(const shared::communication::CByteBuffer& buffer, bool needAnswer)
 {
    if (!m_port)
       return;
@@ -218,7 +218,7 @@ void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> c
       // Stop the communication, and try later
       errorProcess(context);
    }
-   catch (CPortException& e)
+   catch (shared::communication::CPortException& e)
    {
       YADOMS_LOG(error) << "Error connecting to RFXCom transceiver : " << e.what();
       // Disconnection will be notified, we just have to wait...
@@ -239,7 +239,7 @@ void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYadomsApi>
    destroyConnection();
 }
 
-void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data)
+void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const shared::communication::CByteBuffer& data)
 {
    m_logger.logReceived(data);
 

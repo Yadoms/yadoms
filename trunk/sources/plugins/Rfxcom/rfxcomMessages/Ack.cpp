@@ -17,10 +17,10 @@ CAck::~CAck()
 {
 }
 
-const CByteBuffer CAck::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+const shared::communication::CByteBuffer CAck::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
    BOOST_ASSERT_MSG(false, "Ack is a read-only message, should not be encoded");
-   return CByteBuffer();
+   return shared::communication::CByteBuffer();
 }
 
 void CAck::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

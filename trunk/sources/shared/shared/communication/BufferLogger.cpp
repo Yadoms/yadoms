@@ -2,6 +2,7 @@
 #include "BufferLogger.h"
 #include <shared/Log.h>
 
+namespace shared { namespace communication {
 
 CBufferLogger::CBufferLogger()
 {
@@ -30,3 +31,4 @@ std::string CBufferLogger::msgToString(const CByteBuffer& data) const
    return ss.str();
 }
 
+} } // namespace shared::communication

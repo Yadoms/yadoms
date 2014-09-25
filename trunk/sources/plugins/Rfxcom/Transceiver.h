@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ITransceiver.h"
-#include "IAsyncPort.h"
+#include <shared/communication/IAsyncPort.h>
 #include "rfxcomMessages/IRfxcomMessage.h"
 #include "rfxcomMessages/RFXtrxHelpers.h"
 #include "ISequenceNumberProvider.h"
@@ -26,11 +26,11 @@ public:
    virtual ~CTransceiver();
 
    // ITransceiver implementation
-   virtual const CByteBuffer buildResetCmd() const;
-   virtual const CByteBuffer buildGetStatusCmd() const;
-   virtual const CByteBuffer buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const;
-   virtual const CByteBuffer buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParametersTree) const;
-   virtual boost::shared_ptr<rfxcomMessages::IRfxcomMessage> decodeRfxcomMessage(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data) const;
+   virtual const shared::communication::CByteBuffer buildResetCmd() const;
+   virtual const shared::communication::CByteBuffer buildGetStatusCmd() const;
+   virtual const shared::communication::CByteBuffer buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const;
+   virtual const shared::communication::CByteBuffer buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParametersTree) const;
+   virtual boost::shared_ptr<rfxcomMessages::IRfxcomMessage> decodeRfxcomMessage(boost::shared_ptr<yApi::IYadomsApi> context, const shared::communication::CByteBuffer& data) const;
    // [END] ITransceiver implementation
    
 private:
