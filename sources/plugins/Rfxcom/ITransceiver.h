@@ -2,7 +2,7 @@
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
 #include <shared/DataContainer.h>
 #include "IRfxcomConfiguration.h"
-#include "Buffer.hpp"
+#include <shared/communication/Buffer.hpp>
 #include "rfxcomMessages/IRfxcomMessage.h"
 
 namespace yApi = shared::plugin::yadomsApi;
@@ -22,13 +22,13 @@ public:
    /// \brief	                     Build the RFXCom reset command
    /// \return                      Buffer containing the command
    //--------------------------------------------------------------
-   virtual const CByteBuffer buildResetCmd() const = 0;
+   virtual const shared::communication::CByteBuffer buildResetCmd() const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Build the RFXCom get status command
    /// \return                      Buffer containing the command
    //--------------------------------------------------------------
-   virtual const CByteBuffer buildGetStatusCmd() const = 0;
+   virtual const shared::communication::CByteBuffer buildGetStatusCmd() const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Build the RFXCom set mode command
@@ -36,7 +36,7 @@ public:
    /// \param[in] configuration     Protocols activations
    /// \return                      Buffer containing the command
    //--------------------------------------------------------------
-   virtual const CByteBuffer buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const = 0;
+   virtual const shared::communication::CByteBuffer buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Build a message to device
@@ -46,7 +46,7 @@ public:
    /// \return                      RFXCom message to send
    /// \throw shared::exception::CInvalidParameter if no corresponding RFXCom message was found (invalid command)
    //--------------------------------------------------------------
-   virtual const CByteBuffer buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParametersTree) const = 0;
+   virtual const shared::communication::CByteBuffer buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParametersTree) const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Decode RFXCom message
@@ -54,5 +54,5 @@ public:
    /// \param [in] data             Data received
    /// \return                      Decoded message, NULL if error when decoding
    //--------------------------------------------------------------
-   virtual boost::shared_ptr<rfxcomMessages::IRfxcomMessage> decodeRfxcomMessage(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data) const = 0;
+   virtual boost::shared_ptr<rfxcomMessages::IRfxcomMessage> decodeRfxcomMessage(boost::shared_ptr<yApi::IYadomsApi> context, const shared::communication::CByteBuffer& data) const = 0;
 };

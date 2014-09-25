@@ -57,10 +57,10 @@ CTransceiverStatus::~CTransceiverStatus()
 {
 }
 
-const CByteBuffer CTransceiverStatus::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+const shared::communication::CByteBuffer CTransceiverStatus::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
    BOOST_ASSERT_MSG(false, "Status is a read-only message, should not be encoded");
-   return CByteBuffer();
+   return shared::communication::CByteBuffer();
 }
 
 void CTransceiverStatus::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

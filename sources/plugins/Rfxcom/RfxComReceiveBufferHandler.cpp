@@ -11,7 +11,7 @@ CRfxcomReceiveBufferHandler::~CRfxcomReceiveBufferHandler()
 {
 }
 
-void CRfxcomReceiveBufferHandler::push(const CByteBuffer& buffer)
+void CRfxcomReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffer)
 {
    for (size_t idx = 0 ; idx < buffer.size() ; ++ idx)
       m_content.push_back(buffer.content()[idx]);
@@ -41,7 +41,7 @@ bool CRfxcomReceiveBufferHandler::isComplete() const
    return true;
 }
 
-boost::shared_ptr<const CByteBuffer> CRfxcomReceiveBufferHandler::popNextMessage()
+boost::shared_ptr<const shared::communication::CByteBuffer> CRfxcomReceiveBufferHandler::popNextMessage()
 {
    BOOST_ASSERT_MSG(isComplete(), "CRfxcomReceiveBufferHandler : Can not pop not completed message. Call isComplete to check if a message is available");
 
@@ -53,7 +53,7 @@ boost::shared_ptr<const CByteBuffer> CRfxcomReceiveBufferHandler::popNextMessage
    for (size_t idx = 0 ; idx < extractedMessageSize ; ++ idx)
       extractedMessage[idx] = m_content[idx];
 
-   boost::shared_ptr<const CByteBuffer> nextMessage(new CByteBuffer(extractedMessage.get(), extractedMessageSize));
+   boost::shared_ptr<const shared::communication::CByteBuffer> nextMessage(new shared::communication::CByteBuffer(extractedMessage.get(), extractedMessageSize));
 
    // Delete extracted data
    m_content.erase(m_content.begin(), m_content.begin() + extractedMessageSize);
@@ -61,7 +61,7 @@ boost::shared_ptr<const CByteBuffer> CRfxcomReceiveBufferHandler::popNextMessage
    return nextMessage;
 }
 
-void CRfxcomReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<const CByteBuffer> buffer)
+void CRfxcomReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<const shared::communication::CByteBuffer> buffer)
 {
-   m_receiveDataEventHandler.postEvent<const CByteBuffer>(m_receiveDataEventId, *buffer);
+   m_receiveDataEventHandler.postEvent<const shared::communication::CByteBuffer>(m_receiveDataEventId, *buffer);
 }

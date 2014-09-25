@@ -55,10 +55,10 @@ void CTemp::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    }
 }
 
-const CByteBuffer CTemp::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+const shared::communication::CByteBuffer CTemp::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
    // Nothing to do (message type is read-only)
-   return CByteBuffer();
+   return shared::communication::CByteBuffer();
 }
 
 void CTemp::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

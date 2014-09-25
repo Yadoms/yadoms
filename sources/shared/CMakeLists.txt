@@ -16,17 +16,31 @@ set(SHARED_LIB_SRC
 	shared/StringExtension.h
 	shared/StringExtension.cpp	
 	
-	shared/enumeration/IExtendedEnum.h
-	shared/enumeration/EnumHelpers.hpp
-	
 	shared/Field.hpp
 
 	shared/IDataContainable.h
 	shared/DataContainer.h
 	shared/DataContainer.cpp
-	shared/serialization/IDataSerializable.h
-	shared/serialization/IDataFileSerializable.h
+   
+   shared/communication/AsyncSerialPort.h
+   shared/communication/AsyncSerialPort.cpp
+   shared/communication/Buffer.hpp
+   shared/communication/BufferLogger.h
+   shared/communication/BufferLogger.cpp
+   shared/communication/IAsyncPort.h
+   shared/communication/IBufferLogger.h
+   shared/communication/IReceiveBufferHandler.h
+   shared/communication/PortException.hpp
   
+	shared/encryption/Xor.h
+	shared/encryption/Xor.cpp
+	shared/encryption/Base64.h
+	shared/encryption/Base64.cpp
+	shared/encryption/md5.h
+	
+	shared/enumeration/IExtendedEnum.h
+	shared/enumeration/EnumHelpers.hpp
+	
 	shared/event/Event.hpp
 	shared/event/EventBase.hpp
 	shared/event/EventHandler.hpp
@@ -37,11 +51,6 @@ set(SHARED_LIB_SRC
 	shared/event/ITimeEvent.h
 	shared/event/Now.h
 	shared/event/Now.cpp
-
-	shared/notification/NotificationCenter.h
-	shared/notification/NotificationCenter.cpp
-	shared/notification/NotificationObserver.h
-	shared/notification/NotificationObserver.cpp
 
  	shared/exception/BadConversion.hpp
 	shared/exception/EmptyResult.hpp
@@ -87,12 +96,14 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/commands/Temperature.cpp
    shared/plugin/yadomsApi/commands/Temperature.h
    
-	shared/encryption/Xor.h
-	shared/encryption/Xor.cpp
-	shared/encryption/Base64.h
-	shared/encryption/Base64.cpp
-	shared/encryption/md5.h
-	
+	shared/notification/NotificationCenter.h
+	shared/notification/NotificationCenter.cpp
+	shared/notification/NotificationObserver.h
+	shared/notification/NotificationObserver.cpp
+
+	shared/serialization/IDataSerializable.h
+	shared/serialization/IDataFileSerializable.h
+   
 	shared/tools/Random.h
 )
 
@@ -142,24 +153,23 @@ set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/linux)
 ENDIF()
 
 # Define project folders
+source_group(communication shared/communication/*.*)
+source_group(encryption shared/shared/encryption/*.* )	
+source_group(enumeration shared/shared/enumeration/*.* )	
 source_group(event shared/event/*.*)
-
 source_group(exception shared/exception/*.*)
-
 source_group(plugin shared/shared/plugin/*.* )	
 source_group(plugin\\information shared/shared/plugin/information/*.* )	
 source_group(plugin\\yadomsApi shared/shared/plugin/yadomsApi/*.* )	
 source_group(plugin\\yadomsApi\\commands shared/shared/plugin/yadomsApi/commands/*.* )	
+source_group(notification shared/shared/notification/*.* )	
+source_group(serialization shared/shared/serialization/*.* )	
+source_group(tools shared/shared/tools/*.* )	
 
 source_group(platformSpecific\\windows shared/windows/shared/*.*)
 source_group(platformSpecific\\linux shared/linux/shared/*.*)
 source_group(platformSpecific\\mac shared/mac/shared/*.*)
 
-source_group(serialization shared/shared/serialization/*.* )	
-source_group(encryption shared/shared/encryption/*.* )	
-source_group(tools shared/shared/tools/*.* )	
-source_group(enumeration shared/shared/enumeration/*.* )	
-source_group(notification shared/shared/notification/*.* )	
 
 
 

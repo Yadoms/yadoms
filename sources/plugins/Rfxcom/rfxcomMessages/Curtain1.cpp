@@ -40,7 +40,7 @@ void CCurtain1::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    // Nothing to declare (transmitter-only device)
 }
 
-const CByteBuffer CCurtain1::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+const shared::communication::CByteBuffer CCurtain1::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
    RBUF buffer;
    MEMCLEAR(buffer.CURTAIN1);
@@ -54,7 +54,7 @@ const CByteBuffer CCurtain1::encode(boost::shared_ptr<ISequenceNumberProvider> s
    buffer.CURTAIN1.cmnd = toProtocolState(m_state);
    buffer.CURTAIN1.filler = 0;
 
-   return CByteBuffer((BYTE*)&buffer, GET_RBUF_STRUCT_SIZE(CURTAIN1));
+   return shared::communication::CByteBuffer((BYTE*)&buffer, GET_RBUF_STRUCT_SIZE(CURTAIN1));
 }
 
 void CCurtain1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

@@ -41,20 +41,11 @@ set(RFXCOM_MESSAGES_SOURCES
 set(RFXCOM_SOURCES
    stdafx.h
    stdafx.cpp
-   AsyncSerialPort.h
-   AsyncSerialPort.cpp
-   Buffer.hpp
-   BufferLogger.h
-   BufferLogger.cpp
-   IReceiveBufferHandler.h
    IncrementSequenceNumber.h
-   IAsyncPort.h
-   IBufferLogger.h
    IRfxcomConfiguration.h
    ISequenceNumberProvider.h
    ITransceiver.h
    NullSequenceNumber.h
-   PortException.hpp
    ProtocolException.hpp
    Rfxcom.h
    Rfxcom.cpp

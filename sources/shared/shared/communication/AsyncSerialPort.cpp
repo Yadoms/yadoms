@@ -5,10 +5,10 @@
 #include "PortException.hpp"
 #include "Buffer.hpp"
 
+namespace shared { namespace communication {
 
 CAsyncSerialPort::CAsyncSerialPort(
    const std::string& port,
-   boost::shared_ptr<IReceiveBufferHandler> receiveBufferHandler,
    boost::asio::serial_port_base::baud_rate baudrate,
    boost::asio::serial_port_base::parity parity,
    boost::asio::serial_port_base::character_size characterSize,
@@ -17,7 +17,6 @@ CAsyncSerialPort::CAsyncSerialPort(
    boost::posix_time::time_duration connectRetryDelay)
    :m_boostSerialPort(m_ioService),
    m_port(port),
-   m_receiveBufferHandler(receiveBufferHandler),
    m_baudrate(baudrate), m_parity(parity), m_characterSize(characterSize), m_stop_bits(stop_bits), m_flowControl(flowControl),
    m_readBufferMaxSize(512),
    m_asyncReadBuffer(new unsigned char[m_readBufferMaxSize]),
@@ -25,7 +24,6 @@ CAsyncSerialPort::CAsyncSerialPort(
    m_connectRetryTimer(m_ioService),
    m_connectRetryDelay(connectRetryDelay)
 {
-   BOOST_ASSERT_MSG(!!receiveBufferHandler, "A receive buffer handler must be specified");
 }
 
 CAsyncSerialPort::~CAsyncSerialPort()
@@ -33,7 +31,7 @@ CAsyncSerialPort::~CAsyncSerialPort()
    stop();
 }
 
-void CAsyncSerialPort::setReceiveBufferSize(std::size_t size)
+void CAsyncSerialPort::setReceiveBufferMaxSize(std::size_t size)
 {
    m_readBufferMaxSize = size;
    m_asyncReadBuffer.reset(new unsigned char[m_readBufferMaxSize]);
@@ -107,15 +105,21 @@ bool CAsyncSerialPort::isConnected() const
    return m_boostSerialPort.is_open();
 }
 
-void CAsyncSerialPort::subscribeConnectionState(shared::event::CEventHandler& forEventHandler, int forId)
+void CAsyncSerialPort::subscribeForConnectionEvents(event::CEventHandler& forEventHandler, int forId)
 {
    m_connectStateEventHandler = &forEventHandler;
    m_connectStateEventId = forId;
 }
 
+void CAsyncSerialPort::setReceiveBufferHandler(boost::shared_ptr<IReceiveBufferHandler> handler)
+{
+   m_receiveBufferHandler = handler;
+}
+
 void CAsyncSerialPort::flush()
 {
-   m_receiveBufferHandler->flush();
+   if (!!m_receiveBufferHandler)
+      m_receiveBufferHandler->flush();
 }
 
 void CAsyncSerialPort::reconnectTimerHandler(const boost::system::error_code& error)
@@ -169,7 +173,8 @@ void CAsyncSerialPort::readCompleted(const boost::system::error_code& error, std
    // Read OK
    CByteBuffer buffer(m_asyncReadBuffer.get(), bytesTransferred);
 
-   m_receiveBufferHandler->push(buffer);
+   if (!!m_receiveBufferHandler)
+      m_receiveBufferHandler->push(buffer);
 
    // Restart read
    startRead();
@@ -203,3 +208,5 @@ void CAsyncSerialPort::notifyEventHandler(bool isConnected)
    if (m_connectStateEventHandler)
       m_connectStateEventHandler->postEvent<bool>(m_connectStateEventId, isConnected);
 }
+
+} } // namespace shared::communication

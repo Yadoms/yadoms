@@ -31,7 +31,7 @@ namespace rfxcomMessages
       virtual ~CRFXMeter();
 
       // IRfxcomMessage implementation
-      virtual const CByteBuffer encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
+      virtual const shared::communication::CByteBuffer encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
       virtual void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
       // [END] IRfxcomMessage implementation
       

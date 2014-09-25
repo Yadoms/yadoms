@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IRfxcomConfiguration.h"
-#include "IAsyncPort.h"
+#include <shared/communication/IAsyncPort.h>
 #include "ITransceiver.h"
 
 //--------------------------------------------------------------
@@ -23,7 +23,7 @@ public:
    /// \param[in] evtPortDataReceived     The event id raised on data receive events
    /// \return                            The created port
    //--------------------------------------------------------------
-   static boost::shared_ptr<IAsyncPort> constructPort(
+   static boost::shared_ptr<shared::communication::IAsyncPort> constructPort(
       const IRfxcomConfiguration& configuration,
       shared::event::CEventHandler& eventHandler,
       int evtPortConnectionId,

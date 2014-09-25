@@ -1,8 +1,8 @@
 #pragma once
 
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
+#include <shared/communication/Buffer.hpp>
 #include "../ISequenceNumberProvider.h"
-#include "../Buffer.hpp"
 
 namespace yApi = shared::plugin::yadomsApi;
 
@@ -24,7 +24,7 @@ namespace rfxcomMessages
       /// \param[in] seqNumberProvider    The sequence number provider
       /// \return                         Buffer
       //--------------------------------------------------------------
-      virtual const CByteBuffer encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const = 0;
+      virtual const shared::communication::CByteBuffer encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Historize message data to Yadoms

@@ -40,7 +40,7 @@ void CFan::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    // Nothing to declare (transmitter-only device)
 }
 
-const CByteBuffer CFan::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+const shared::communication::CByteBuffer CFan::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
    RBUF buffer;
    MEMCLEAR(buffer.FAN);
@@ -54,7 +54,7 @@ const CByteBuffer CFan::encode(boost::shared_ptr<ISequenceNumberProvider> seqNum
    buffer.FAN.cmnd = toProtocolState();
    buffer.FAN.filler = 0;
 
-   return CByteBuffer((BYTE*)&buffer, GET_RBUF_STRUCT_SIZE(FAN));
+   return shared::communication::CByteBuffer((BYTE*)&buffer, GET_RBUF_STRUCT_SIZE(FAN));
 }
 
 void CFan::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

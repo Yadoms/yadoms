@@ -18,7 +18,7 @@
 #include "rfxcomMessages/Temp.h"
 #include "rfxcomMessages/TransceiverStatus.h"
 #include "IncrementSequenceNumber.h"
-#include "PortException.hpp"
+#include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
 
 
@@ -31,7 +31,7 @@ CTransceiver::~CTransceiver()
 {
 }
 
-const CByteBuffer CTransceiver::buildResetCmd() const
+const shared::communication::CByteBuffer CTransceiver::buildResetCmd() const
 {
    // Raz sequence number
    m_seqNumberProvider->reset();
@@ -45,10 +45,10 @@ const CByteBuffer CTransceiver::buildResetCmd() const
    request.ICMND.seqnbr = m_seqNumberProvider->last();
    request.ICMND.cmnd = cmdRESET;
 
-   return CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
+   return shared::communication::CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
 }
 
-const CByteBuffer CTransceiver::buildGetStatusCmd() const
+const shared::communication::CByteBuffer CTransceiver::buildGetStatusCmd() const
 {
    RBUF request;
    MEMCLEAR(request.ICMND);   // For better performance, just clear the needed sub-structure of RBUF
@@ -59,10 +59,10 @@ const CByteBuffer CTransceiver::buildGetStatusCmd() const
    request.ICMND.seqnbr = m_seqNumberProvider->next();
    request.ICMND.cmnd = cmdSTATUS;
 
-   return CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
+   return shared::communication::CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
 }
 
-const CByteBuffer CTransceiver::buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const
+const shared::communication::CByteBuffer CTransceiver::buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const
 {
    RBUF request;
    MEMCLEAR(request.ICMND);   // For better performance, just clear the needed sub-structure of RBUF
@@ -105,10 +105,10 @@ const CByteBuffer CTransceiver::buildSetModeCmd(unsigned char frequency, const I
    if (configuration.isARCenabled()       ) request.ICMND.msg5 |= 0x02;
    if (configuration.isX10enabled()       ) request.ICMND.msg5 |= 0x01;
 
-   return CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
+   return shared::communication::CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
 }
 
-const CByteBuffer CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParametersTree) const
+const shared::communication::CByteBuffer CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParametersTree) const
 {
    try
    {
@@ -160,7 +160,7 @@ const CByteBuffer CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYa
    }
 }
 
-boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMessage(boost::shared_ptr<yApi::IYadomsApi> context, const CByteBuffer& data) const
+boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMessage(boost::shared_ptr<yApi::IYadomsApi> context, const shared::communication::CByteBuffer& data) const
 {
    const RBUF * const buf = reinterpret_cast<const RBUF* const>(data.content());
 
