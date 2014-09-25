@@ -25,7 +25,7 @@ namespace database {
       virtual void saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime) = 0;
 
       //--------------------------------------------------------------
-      /// \brief           Save a new data into base
+      /// \brief           Save a new summary data into base
       /// \param [in]      type        The summary data type
       /// \param [in]      keywordId   The keyword id
       /// \param [in]      dataTime    The datetime of the data
@@ -34,7 +34,6 @@ namespace database {
       /// \param [in]      mx          The max value
       //--------------------------------------------------------------
       virtual void saveSummaryData(const database::entities::EAcquisitionSummaryType type, const int keywordId, boost::posix_time::ptime & dataTime, double mean, double min, double max) = 0;
-
 
       //--------------------------------------------------------------
       /// \brief           Remove all data associated to a keyword

@@ -9,6 +9,13 @@ namespace web { namespace ws {
       m_internalContainer.set(CFrameBase::m_dataFieldName, content);
    }
    
+
+   CAcquisitionUpdateFrame::CAcquisitionUpdateFrame(const boost::shared_ptr<database::entities::CAcquisition> & content)
+      :CFrameBase(CFrameBase::EFrameType::kAcquisitionUpdate)
+   {
+      m_internalContainer.set(CFrameBase::m_dataFieldName, *content.get());
+   }
+   
    CAcquisitionUpdateFrame::~CAcquisitionUpdateFrame()
    {
 

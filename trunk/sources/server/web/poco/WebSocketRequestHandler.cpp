@@ -67,11 +67,11 @@ namespace web {
                   //a new notification has arrived
 
                   //check if notification is a newAcquisition
-                  if (notifications::CAsyncNotificationCenter::get()->isNotificationTypeOf<database::entities::CAcquisition>(this))
+                  if (notifications::CAsyncNotificationCenter::get()->isNotificationTypeOf< boost::shared_ptr<database::entities::CAcquisition> >(this))
                   {
-                     database::entities::CAcquisition newAcquisition = notifications::CAsyncNotificationCenter::get()->getNotificationData<database::entities::CAcquisition>(this);
+                     boost::shared_ptr<database::entities::CAcquisition> newAcquisition = notifications::CAsyncNotificationCenter::get()->getNotificationData< boost::shared_ptr<database::entities::CAcquisition> >(this);
                      if (acquisitionKeywordFilters.empty() ||
-                        std::find(acquisitionKeywordFilters.begin(), acquisitionKeywordFilters.end(), newAcquisition.KeywordId()) != acquisitionKeywordFilters.end())
+                        std::find(acquisitionKeywordFilters.begin(), acquisitionKeywordFilters.end(), newAcquisition->KeywordId()) != acquisitionKeywordFilters.end())
                      {
                         web::ws::CAcquisitionUpdateFrame toSend(newAcquisition);
                         std::string dataString = toSend.serialize();
