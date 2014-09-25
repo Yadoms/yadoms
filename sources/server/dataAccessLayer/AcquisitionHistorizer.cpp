@@ -24,8 +24,7 @@ namespace dataAccessLayer {
          try
          {
             boost::shared_ptr< database::entities::CAcquisition > acq = m_acquisitionRequester->getAcquisitionByKeywordAndDate(keywordId, dataTime);
-//            notifications::CAsyncNotificationCenter::get()->postNotificationAsync(new notifications::CNewAcquisitionNotification(acq));
-            notifications::CAsyncNotificationCenter::get()->postNotification(*acq.get());
+            notifications::CAsyncNotificationCenter::get()->postNotification(acq);
          }
          catch (shared::exception::CException & ex)
          {

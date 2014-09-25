@@ -18,6 +18,12 @@ namespace web { namespace ws {
       CAcquisitionUpdateFrame(const database::entities::CAcquisition & content);
 
       //-----------------------------
+      ///\brief Constructor
+      ///\param [in]    content     The acquisition to send to GUI (shared_ptr)
+      //-----------------------------
+      CAcquisitionUpdateFrame(const boost::shared_ptr<database::entities::CAcquisition> & content);
+
+      //-----------------------------
       ///\brief Destructor
       //-----------------------------
       virtual ~CAcquisitionUpdateFrame();
