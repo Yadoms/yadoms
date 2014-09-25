@@ -12,7 +12,7 @@ DECLARE_ENUM_IMPLEMENTATION_CUSTOM(EDigitalIoCommand,
    ((Toggle)("toggle"))
 );
 
-const shared::plugin::yadomsApi::CStandardCapacity& RfxLanDigitalIoCapacity = shared::plugin::yadomsApi::CStandardCapacity("digitalio", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kSet, shared::plugin::yadomsApi::EKeywordType::kNoData);
+const shared::plugin::yadomsApi::CStandardCapacity& RfxLanDigitalIoCapacity = shared::plugin::yadomsApi::CStandardCapacity("digitalio", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::kSet, shared::plugin::yadomsApi::kNoData);
 
    
 CDigitalIo::CDigitalIo(const std::string& keywordName)
