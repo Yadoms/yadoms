@@ -17,7 +17,7 @@ public:
    /// \param [in]   nodeId            The node id
    /// \param [in]   classIdentifier   The class identifier (=capacity from OpenZWave library)
    //--------------------------------------------------------------
-   COpenZWaveNodeCapacity(const int homeId, const int nodeId, const ECommandClass & classIdentifier);
+   COpenZWaveNodeCapacity(const uint32 homeId, const uint8 nodeId, const ECommandClass & classIdentifier);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

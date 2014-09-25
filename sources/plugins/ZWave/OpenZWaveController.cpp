@@ -408,7 +408,7 @@ void COpenZWaveController::RetreiveOpenZWaveIds(const std::string & device, cons
       throw shared::exception::CException("The device id is invalid : not matching pattern : <homeId>-<nodeId> ");
    }
    homeId = boost::lexical_cast<int>(splittedDevice[0]);
-   nodeId = atoi(splittedDevice[1].c_str()); //dont use lexical cast for uint8, becuase it realize a string to char conversion: "2" is transform in '2' = 0x32
+   nodeId = static_cast<uint8>(atoi(splittedDevice[1].c_str())); //dont use lexical cast for uint8, because it realize a string to char conversion: "2" is transform in '2' = 0x32
 
    std::vector<std::string> splittedKeyword;
    boost::split(splittedKeyword, keyword, boost::is_any_of("."), boost::token_compress_on);

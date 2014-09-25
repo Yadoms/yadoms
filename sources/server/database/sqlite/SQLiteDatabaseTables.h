@@ -85,18 +85,16 @@ namespace sqlite {
    )
 
    DECLARE_TABLE(Acquisition,
-      (Id)
       (Date)
       (KeywordId)
       (Value)
    )   
 
    DECLARE_TABLE(AcquisitionSummary,
-      (Id)
       (Type)
       (Date)
       (KeywordId)
-      (Mean)
+      (Avg)
       (Min)
       (Max)
    )   

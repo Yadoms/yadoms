@@ -71,28 +71,6 @@ namespace database {  namespace sqlite {  namespace requesters {
       }
    }
 
-
-   boost::shared_ptr< database::entities::CAcquisition > CAcquisition::getAcquisitionById(const int acqId)
-   {
-      CQuery qSelect;
-      qSelect. Select().
-         From(CAcquisitionTable::getTableName()).
-         Where(CAcquisitionTable::getIdColumnName() , CQUERY_OP_EQUAL, acqId);
-
-      database::sqlite::adapters::CAcquisitionAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CAcquisition> >(&adapter, qSelect);
-      if(adapter.getResults().size() >= 1)
-      {
-         return adapter.getResults()[0];
-      }
-      else
-      {
-         std::string sEx = (boost::format("Cannot retrieve Acquisition Id=%1% in database") % acqId).str(); 
-         throw shared::exception::CEmptyResult(sEx);
-      }
-   }
-
-
    boost::shared_ptr< database::entities::CAcquisition > CAcquisition::getAcquisitionByKeywordAndDate(const int keywordId, boost::posix_time::ptime time)
    {
       CQuery qSelect;
@@ -184,12 +162,12 @@ namespace database {  namespace sqlite {  namespace requesters {
       return mva.getRawResults();
    }
 
-   std::string CAcquisition::getKeywordHighchartDataByDay(const database::entities::EAcquisitionSummaryType & type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+   std::string CAcquisition::getKeywordHighchartDataByType(const database::entities::EAcquisitionSummaryType & type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
    {
       //this query is optimized to get only one field to read
       //the output data is a single column (without brackets):  ["dateiso",value]
       CQuery qSelect;
-      qSelect.Clear().Select("(strftime('%s', isodate(" + CAcquisitionSummaryTable::getDateColumnName() + "))*1000) ||','|| " + CAcquisitionSummaryTable::getMeanColumnName()).
+      qSelect.Clear().Select("(strftime('%s', isodate(" + CAcquisitionSummaryTable::getDateColumnName() + "))*1000) ||','|| " + CAcquisitionSummaryTable::getAvgColumnName()).
          From(CAcquisitionSummaryTable::getTableName()).
          Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
          And(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, type);
@@ -213,24 +191,65 @@ namespace database {  namespace sqlite {  namespace requesters {
 
    std::string CAcquisition::getKeywordHighchartDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
    {
-      return getKeywordHighchartDataByDay(database::entities::EAcquisitionSummaryType::kDay, keywordId, timeFrom, timeTo);
+      return getKeywordHighchartDataByType(database::entities::EAcquisitionSummaryType::kDay, keywordId, timeFrom, timeTo);
    }
 
    std::string CAcquisition::getKeywordHighchartDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
    {
-      return getKeywordHighchartDataByDay(database::entities::EAcquisitionSummaryType::kHour, keywordId, timeFrom, timeTo);
+      return getKeywordHighchartDataByType(database::entities::EAcquisitionSummaryType::kHour, keywordId, timeFrom, timeTo);
    }
 
-   void CAcquisition::saveSummaryData(const database::entities::EAcquisitionSummaryType type, const int keywordId, boost::posix_time::ptime & dataTime, double mean, double min, double max)
+   void CAcquisition::saveSummaryData(const int keywordId, boost::posix_time::ptime & dataTime)
    {
+      /* 
+      INSERT OR REPLACE INTO AcquisitionSummary (type, date, keywordId, mean, min, max)
+      SELECT "Hour", "startDate", 38, avg(cast(value as real)), min(cast(value as real)), max(cast(value as real))
+      FROM Acquisition acq
+      where acq.keywordId = 38
+      and acq.date>= "startDate"
+      and acq.date<= "endDate"
+      
+      */
+
       if (m_databaseHandler->getKeywordRequester()->getKeyword(keywordId))
       {
+         //just compute good dates
+         //hourDate : is the start of the hour (current day) => minutes and seconds set to 0
+         //hourDateEnd : is the end of the hour (current day) => minutes and seconds set to 59
+         //dayDate : is the start of the day : current day, with hour, minte and second set to 0
+         //dayDateEnd : is the end of the day : current day, with hour set to 23, minutes and seconds at 59
+         tm pt_tm = boost::posix_time::to_tm(dataTime);
+         boost::posix_time::ptime hourDate(dataTime.date(), boost::posix_time::hours(pt_tm.tm_hour));
+         boost::posix_time::ptime hourDateEnd(dataTime.date(), boost::posix_time::hours(pt_tm.tm_hour) + boost::posix_time::minutes(59) + boost::posix_time::seconds(59));
+         boost::posix_time::ptime dayDate(dataTime.date());
+         boost::posix_time::ptime dayDateEnd(dataTime.date(), boost::posix_time::hours(23) + boost::posix_time::minutes(59) + boost::posix_time::seconds(59));
+
+         //set a variable for the type : hour
+         database::entities::EAcquisitionSummaryType curType = database::entities::EAcquisitionSummaryType::kHour;
          CQuery q;
-         q.InsertInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(), CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getMeanColumnName(), CAcquisitionSummaryTable::getMinColumnName(), CAcquisitionSummaryTable::getMaxColumnName()).
-            Values(type, keywordId, dataTime, keywordId, mean, min, max);
+         q.InsertOrReplaceInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(), CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(), CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(), CAcquisitionSummaryTable::getMaxColumnName()).
+            Select(CQueryValue(curType.getAsString()).str(), CQueryValue(hourDate).str(), CQueryValue(keywordId).str(), "avg(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "min(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "max(cast(" + CAcquisitionTable::getValueColumnName() + " as real))").
+            From(CAcquisitionTable::getTableName() + " as acq").
+            Where("acq." + CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
+            And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, hourDate).
+            And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, hourDateEnd);
 
          if (m_databaseRequester->queryStatement(q) <= 0)
-            throw shared::exception::CEmptyResult("Fail to insert new summary data");
+            throw shared::exception::CEmptyResult("Fail to insert new summary hour data");
+
+         //set a variable for the type : day
+         curType = database::entities::EAcquisitionSummaryType::kDay;
+         q.Clear().
+          InsertOrReplaceInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(), CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(), CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(), CAcquisitionSummaryTable::getMaxColumnName()).
+          Select(CQueryValue(curType.getAsString()).str(), CQueryValue(dayDate).str(), CQueryValue(keywordId).str(), "avg(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "min(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "max(cast(" + CAcquisitionTable::getValueColumnName() + " as real))").
+          From(CAcquisitionTable::getTableName() + " as acq").
+          Where("acq." + CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
+          And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, dayDate).
+          And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, dayDateEnd);
+
+         if (m_databaseRequester->queryStatement(q) <= 0)
+            throw shared::exception::CEmptyResult("Fail to insert new summary day data");
+
       }
       else
       {

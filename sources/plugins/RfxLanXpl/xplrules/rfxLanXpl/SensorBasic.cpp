@@ -2,6 +2,8 @@
 #include "SensorBasic.h"
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yadomsApi/commands/commands.h>
+
 #include "ControlBasic.h"
 
 namespace xplrules { namespace rfxLanXpl {
@@ -218,6 +220,23 @@ namespace xplrules { namespace rfxLanXpl {
    {
       MessageContent data;
 
+
+      if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeBattery))
+      {
+         boost::shared_ptr< shared::plugin::yadomsApi::commands::CBatteryLevel > battLvl(new shared::plugin::yadomsApi::commands::CBatteryLevel(m_keywordTypeBattery));
+         battLvl->set(boost::lexical_cast<int>(msg.getBodyValue(m_keywordCurrent)));
+         data.push_back(battLvl);
+      }
+
+      if (isOregonDevice(msg))
+      {
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeTemp))
+         {
+            boost::shared_ptr< shared::plugin::yadomsApi::commands::CTemperature > temp(new shared::plugin::yadomsApi::commands::CTemperature(m_keywordTypeTemp));
+            temp->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
+            data.push_back(temp);
+         }
+      }
       /* TODO
       data.insert(std::make_pair(msg.getBodyValue(m_keywordType), msg.getBodyValue(m_keywordCurrent)));
 
@@ -234,74 +253,70 @@ namespace xplrules { namespace rfxLanXpl {
    {
       KeywordList keywords;
       
-      /* TODO
-      //COMMON
-      std::string units = "";
-      if(msg.getBody().find(m_keywordUnits) != msg.getBody().end())
-         units = msg.getBodyValue(m_keywordUnits);
-
-      shared::CDataContainer details;
-
-      if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeBattery))
+      if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeBattery))
       {
-         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeBattery, yApi::CStandardCapacities::BatteryLevel, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::Percent, shared::CStringExtension::EmptyString)));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new shared::plugin::yadomsApi::commands::CBatteryLevel(m_keywordTypeBattery)));
       }
-
+         /*
       //DIGIMAX
-      if(boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceDigimax))
+      if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceDigimax))
       {
-         if(msg.getBodyValue(m_keywordType) == m_keywordTypeDemand)
+
+         if (msg.getBodyValue(m_keywordType) == m_keywordTypeDemand)
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeDemand, m_keywordTypeDemand, yApi::kGet, yApi::kString, shared::CStringExtension::EmptyString, m_keywordTypeDemandValues)));
-      
+
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeTemp)
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeTemp, yApi::CStandardCapacities::Temperature, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::DegreesCelcius, details)));
 
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeSetpoint)
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeSetpoint, m_keywordTypeSetpoint, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::DegreesCelcius, details)));
+            
       }
 
 
       //RFXSENSOR
-      if(boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxSensor))
+      if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxSensor))
       {
-         if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeVoltage))
+
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeVoltage))
          {
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeVoltage, m_keywordTypeVoltage, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::Volt, details)));
          }
 
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeTemp)
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeTemp, yApi::CStandardCapacities::Temperature, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::DegreesCelcius, details)));
+
       }
 
       //RFXMETER
-      if(boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxMeter) && boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeCount))
+      if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxMeter) && boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeCount))
       {
          keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeCount, m_keywordTypeCount, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::NoUnits, details)));
       }
 
       //RFXLAN IO
-      if(boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxLanIo))
+      if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxLanIo))
       {
          keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeInput, m_keywordTypeInput, yApi::kGet, yApi::kString, yApi::CStandardUnits::NoUnits, m_keywordTypeIoValues)));
       }
 
       //Mertik
-      if(boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordHex) && boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeMertik))
+      if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordHex) && boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeMertik))
       {
          keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeMertik, m_keywordTypeMertik, yApi::kGet, yApi::kString, yApi::CStandardUnits::NoUnits, m_keywordTypeMertikValues)));
       }
-
+      */
 
       //Oregon
-      if(isOregonDevice(msg))
+      if (isOregonDevice(msg))
       {
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeTemp))
          {
-            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeTemp, yApi::CStandardCapacities::Temperature, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::DegreesCelcius, details)));
-
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new shared::plugin::yadomsApi::commands::CTemperature(m_keywordTypeTemp)));
          }
 
-         if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeHumidity))
+         /*
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeHumidity))
          {
             details.set("min", 0);
             details.set("max", 100);
@@ -309,17 +324,17 @@ namespace xplrules { namespace rfxLanXpl {
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordDescription, m_keywordDescription, yApi::kGet, yApi::kString, yApi::CStandardUnits::NoUnits, m_keywordTypeHumidityValues)));
          }
 
-         if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeStatus))
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeStatus))
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeStatus, m_keywordTypeStatus, yApi::kGet, yApi::kString, yApi::CStandardUnits::NoUnits, m_keywordTypeHumidityValues)));
 
 
-         if(boost::iequals(msg.getBodyValue(m_keywordType),  m_keywordTypeRainRate) ||
-            boost::iequals(msg.getBodyValue(m_keywordType),  m_keywordTypeRainTotal) ||
-            boost::iequals(msg.getBodyValue(m_keywordType),  m_keywordTypeGust) ||
-            boost::iequals(msg.getBodyValue(m_keywordType),  m_keywordTypeAverageSpeed) ||
-            boost::iequals(msg.getBodyValue(m_keywordType),  m_keywordTypeWeight) ||
-            boost::iequals(msg.getBodyValue(m_keywordType),  m_keywordTypePower) ||
-            boost::iequals(msg.getBodyValue(m_keywordType),  m_keywordTypeEnergy))
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeRainRate) ||
+            boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeRainTotal) ||
+            boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeGust) ||
+            boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeAverageSpeed) ||
+            boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeWeight) ||
+            boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypePower) ||
+            boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeEnergy))
          {
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(msg.getBodyValue(m_keywordType), msg.getBodyValue(m_keywordType), yApi::kGet, yApi::kNumeric, units, details)));
          }
@@ -330,7 +345,7 @@ namespace xplrules { namespace rfxLanXpl {
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordForecast, m_keywordForecast, yApi::kGet, yApi::kString, yApi::CStandardUnits::NoUnits, m_keywordTypeForecastValues)));
          }
 
-         if(boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeDirection))
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeDirection))
          {
             details.set("min", 0);
             details.set("max", 359);
@@ -345,16 +360,17 @@ namespace xplrules { namespace rfxLanXpl {
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordDescription, m_keywordDescription, yApi::kGet, yApi::kString, yApi::CStandardUnits::NoUnits, m_keywordTypeUvDescriptionValues)));
          }
 
-         if( (boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec1) ||
-              boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec2) ||
-              boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec3) ||
-              boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec4)) && 
-              boost::iequals(msg.getBodyValue(m_keywordType), m_keywordCurrent))
+         if ((boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec1) ||
+            boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec2) ||
+            boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec3) ||
+            boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec4)) &&
+            boost::iequals(msg.getBodyValue(m_keywordType), m_keywordCurrent))
          {
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(msg.getBodyValue(m_keywordType), msg.getBodyValue(m_keywordType), yApi::kGet, yApi::kNumeric, units, details)));
          }
-         
-      }*/
+         */
+      }
+
 
       return keywords;
    }

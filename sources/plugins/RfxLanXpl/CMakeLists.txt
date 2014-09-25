@@ -46,6 +46,13 @@ set(RFXLANXPL_RULES_SOURCES
 	xplrules/rfxLanXpl/SensorBasic.cpp
 	xplrules/rfxLanXpl/X10Basic.h
 	xplrules/rfxLanXpl/X10Basic.cpp
+	xplrules/rfxLanXpl/data/HistorizableEnum.h
+	xplrules/rfxLanXpl/data/Mertik.h
+	xplrules/rfxLanXpl/data/Mertik.cpp
+	xplrules/rfxLanXpl/data/Ninja.h
+	xplrules/rfxLanXpl/data/Ninja.cpp
+	xplrules/rfxLanXpl/data/DigitalIo.h
+	xplrules/rfxLanXpl/data/DigitalIo.cpp
 )
 
 
@@ -64,7 +71,7 @@ set(RFXLANXPL_PLUGIN_SOURCES
 source_group(xplcore xplcore/*.*)
 source_group(xplrules xplrules/*.*)
 source_group(xplrules\\rfxLanXpl xplrules/rfxLanXpl/*.*)
-source_group(xplrules\\rfxLanXpl\\commands xplrules/rfxLanXpl/commands/*.*)
+source_group(xplrules\\rfxLanXpl\\data xplrules/rfxLanXpl/data/*.*)
 
 
 #########################################

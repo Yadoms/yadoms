@@ -96,24 +96,23 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Keyword, " CREATE TABLE Keyword            
 
 
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(Acquisition,    "CREATE TABLE Acquisition                                    \
-                                                      (  id INTEGER NOT NULL PRIMARY KEY  AUTOINCREMENT,          \
-                                                         date TEXT NOT NULL,                                      \
+                                                      (  date TEXT NOT NULL,                                      \
                                                          keywordId INTEGER NOT NULL,                              \
-                                                         value TEXT NOT NULL                                      \
-                                                         )")                           
+                                                         value TEXT NOT NULL,                                     \
+                                                         PRIMARY KEY (date, keywordId)                            \
+                                                      )")
 
-DECLARE_STATIC_TABLE_CREATION_SCRIPT(AcquisitionSummary,    "CREATE TABLE AcquisitionSummary                                    \
-                                                            (  id INTEGER NOT NULL PRIMARY KEY  AUTOINCREMENT,    \
-                                                               type TEXT NOT NULL,                                \
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(AcquisitionSummary,    "CREATE TABLE AcquisitionSummary                      \
+                                                            (  type TEXT NOT NULL,                                \
                                                                date TEXT NOT NULL,                                \
                                                                keywordId INTEGER NOT NULL,                        \
-                                                               meanValue REAL NOT NULL,                           \
+                                                               avgValue REAL NOT NULL,                            \
                                                                minValue REAL NOT NULL,                            \
-                                                               maxValue REAL NOT NULL                             \
+                                                               maxValue REAL NOT NULL,                            \
+                                                               PRIMARY KEY (type, date, keywordId)                \
                                                                )")                           
 
 DECLARE_STATIC_INDEXES_CREATION_SCRIPT(Acquisition, "CREATE INDEX acqByDate ON Acquisition (date, keywordId)" )
-DECLARE_STATIC_INDEXES_CREATION_SCRIPT(AcquisitionSummary, "CREATE INDEX acqSummaryByDate ON AcquisitionSummary (type, date, keywordId)")
 
 
 

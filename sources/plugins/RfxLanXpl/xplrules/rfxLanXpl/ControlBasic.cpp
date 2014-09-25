@@ -2,6 +2,9 @@
 #include "ControlBasic.h"
 #include <shared/tools/Random.h>
 #include "SensorBasic.h"
+#include "data/Mertik.h"
+#include "data/Ninja.h"
+#include "data/DigitalIo.h"
 
 namespace xplrules { namespace rfxLanXpl {
 
@@ -40,15 +43,12 @@ namespace xplrules { namespace rfxLanXpl {
    KeywordList CControlBasic::identifyKeywords(xplcore::CXplMessage & msg)
    {
       KeywordList keywords;
-
-      /* TODO 
-      if (msg.getBodyValue("type") == "ninja")
-         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("mertik", "mertik-maxitrol-gas-fire", shared::plugin::yadomsApi::kSet, shared::plugin::yadomsApi::kString, "", "left, right, up, down, p1, prog_p1, p2, prog_p2, p3, prog_p3, p4, prog_p4, center, prog_center, sweep, prog_sweep")));
-      else if (msg.getBodyValue("type") == "mertik")
-         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("ninja", "Ninja-Robocam", shared::plugin::yadomsApi::kSet, shared::plugin::yadomsApi::kString, "", "on, off, step_up, step_down, run_up, run_down, stop")));
+      if (msg.getBodyValue("type") == "mertik")
+         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new data::CMertick("mertik")));
+      else if (msg.getBodyValue("type") == "ninja")
+         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new data::CNinja("ninja")));
       else if (msg.getBodyValue("type") == "output")
-         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("iostate", "digitalio", shared::plugin::yadomsApi::kSet, shared::plugin::yadomsApi::kString, "", "high, low, toggle")));
-      */
+         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new data::CDigitalIo("digitalio")));
       return keywords;
    }
    // [END] IRule implementation

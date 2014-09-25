@@ -34,40 +34,12 @@ namespace web {
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("highcharts")("keyword")("*"), CAcquisition::getHighchartKeywordData); //get all keyword data (fast queries, optimized for highcharts js)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("highcharts")("keyword")("*")("*"), CAcquisition::getHighchartKeywordData); //get keyword data from date (fast queries, optimized for highcharts js)
             REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("highcharts")("keyword")("*")("*")("*"), CAcquisition::getHighchartKeywordData); //get keyword data between two dates (fast queries, optimized for highcharts js)
-            REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CAcquisition::getAcquisitionById);
          }
 
          const std::string & CAcquisition::getRestKeyword()
          {
             return m_restKeyword;
          }
-
-         shared::CDataContainer CAcquisition::getAcquisitionById(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
-         {
-            try
-            {
-               if (parameters.size() > 1)
-               {
-                  int acqId = boost::lexical_cast<int>(parameters[1]);
-                  boost::shared_ptr<database::entities::CAcquisition> acq = m_dataProvider->getAcquisitionRequester()->getAcquisitionById(acqId);
-                  return web::rest::CResult::GenerateSuccess(acq);
-               }
-               else
-               {
-                  return web::rest::CResult::GenerateError("invalid parameter. Can not retreive acquisitionId in url");
-               }
-            }
-            catch (std::exception &ex)
-            {
-               return web::rest::CResult::GenerateError(ex);
-            }
-            catch (...)
-            {
-               return web::rest::CResult::GenerateError("unknown exception in retreiving one acquisition");
-            }
-         }
-
-
 
          shared::CDataContainer CAcquisition::getKeywordLastData(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
          {
