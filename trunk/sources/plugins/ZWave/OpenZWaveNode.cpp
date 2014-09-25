@@ -10,7 +10,7 @@ COpenZWaveNode::COpenZWaveNode()
    throw shared::exception::CException("Should not happen");
 }
 
-COpenZWaveNode::COpenZWaveNode(const int homeId, const int nodeId)
+COpenZWaveNode::COpenZWaveNode(const uint32 homeId, const uint8 nodeId)
    :m_homeId(homeId), m_nodeId(nodeId)
 {
 }
@@ -57,7 +57,7 @@ const shared::plugin::yadomsApi::commands::IHistorizable & COpenZWaveNode::getLa
 }
 
 
-const bool COpenZWaveNode::match(const int homeId, const int nodeId)
+const bool COpenZWaveNode::match(const uint32 homeId, const uint8 nodeId)
 {
    return m_homeId == homeId && m_nodeId == nodeId;
 }

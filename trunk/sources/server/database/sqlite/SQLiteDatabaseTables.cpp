@@ -86,18 +86,16 @@ namespace sqlite {
    )
 
    DECLARE_TABLE_COLUMN_NAMES(Acquisition, "Acquisition",
-      ((Id)("id"))
       ((Date)("date"))
       ((KeywordId)("keywordId"))
       ((Value)("value"))
    )
 
    DECLARE_TABLE_COLUMN_NAMES(AcquisitionSummary, "AcquisitionSummary",
-      ((Id)("id"))
       ((Type)("type"))
       ((Date)("date"))
       ((KeywordId)("keywordId"))
-      ((Mean)("meanValue"))
+      ((Avg)("avgValue"))
       ((Min)("minValue"))
       ((Max)("maxValue"))
    )

@@ -20,12 +20,6 @@ namespace web { namespace rest { namespace service {
 
    private:
       //-----------------------------------------
-      ///\brief   Get an acquisition from the id
-      //-----------------------------------------
-      shared::CDataContainer getAcquisitionById(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
-
-
-      //-----------------------------------------
       ///\brief   Get the last data of a keyword
       //-----------------------------------------
       shared::CDataContainer getKeywordLastData(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   

@@ -26,14 +26,10 @@ namespace database {
 
       //--------------------------------------------------------------
       /// \brief           Save a new summary data into base
-      /// \param [in]      type        The summary data type
       /// \param [in]      keywordId   The keyword id
       /// \param [in]      dataTime    The datetime of the data
-      /// \param [in]      mean        The mean value
-      /// \param [in]      min         The min value
-      /// \param [in]      mx          The max value
       //--------------------------------------------------------------
-      virtual void saveSummaryData(const database::entities::EAcquisitionSummaryType type, const int keywordId, boost::posix_time::ptime & dataTime, double mean, double min, double max) = 0;
+      virtual void saveSummaryData(const int keywordId, boost::posix_time::ptime & dataTime) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove all data associated to a keyword
@@ -42,13 +38,6 @@ namespace database {
       virtual void removeKeywordData(const int keywordId) = 0;
 
       
-
-      //-----------------------------------------
-      ///\brief      Get an acquisition by id
-      ///\param [in] acqId  The acquisition id
-      ///\return     the acquisition
-      //-----------------------------------------
-      virtual boost::shared_ptr< database::entities::CAcquisition > getAcquisitionById(const int acqId) = 0;   
 
       //-----------------------------------------
       ///\brief      Get an acquisition by keywordid and date

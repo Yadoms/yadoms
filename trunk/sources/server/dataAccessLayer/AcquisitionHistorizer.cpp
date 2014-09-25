@@ -5,8 +5,8 @@
 
 namespace dataAccessLayer {
 
-      CAcquisitionHistorizer::CAcquisitionHistorizer(boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester)
-         :m_acquisitionRequester(acquisitionRequester)
+   CAcquisitionHistorizer::CAcquisitionHistorizer(boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester)
+      :m_acquisitionRequester(acquisitionRequester)
       {
       }
 
@@ -20,7 +20,7 @@ namespace dataAccessLayer {
       void CAcquisitionHistorizer::saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime)
       {
          m_acquisitionRequester->saveData(keywordId, data, dataTime);
-
+         m_acquisitionRequester->saveSummaryData(keywordId, dataTime);
          try
          {
             boost::shared_ptr< database::entities::CAcquisition > acq = m_acquisitionRequester->getAcquisitionByKeywordAndDate(keywordId, dataTime);
@@ -31,5 +31,6 @@ namespace dataAccessLayer {
             YADOMS_LOG(error) << "Fail to retreive new acquisition : " << ex.what();
          }
       }
+
 
 } //namespace dataAccessLayer 

@@ -13,6 +13,8 @@ namespace dataAccessLayer {
       virtual void saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime);
 
    private:
+
+   private:
       boost::shared_ptr<database::IAcquisitionRequester> m_acquisitionRequester;
    };
  

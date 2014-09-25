@@ -22,7 +22,7 @@ public:
    /// \param [in]   homeId   The home id
    /// \param [in]   nodeId   The node id
    //--------------------------------------------------------------
-   COpenZWaveNode(const int homeId, const int nodeId);
+   COpenZWaveNode(const uint32 homeId, const uint8 nodeId);
    
    //--------------------------------------------------------------
    /// \brief	    Destructor
@@ -71,7 +71,7 @@ public:
    /// \param [in]   nodeId   The node id
    /// \return       true if current node as the same homeId and nodeId
    //--------------------------------------------------------------     
-   const bool match(const int homeId, const int nodeId);
+   const bool match(const uint32 homeId, const uint8 nodeId);
    
    //--------------------------------------------------------------
    /// \brief	      Get the homeId
