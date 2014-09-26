@@ -15,6 +15,20 @@
          "description" : "The connection type to the RFXCom/RFXLan",
          "content" :
          {
+            "SerialPort" :
+            {
+               "type" : "section",
+               "name" : "Serial port",
+               "description" : "The virtual serial port connected to the RFXCom",
+               "content" :
+               {
+                  "serialPort" :
+                  {
+                  "type" : "serialPort",
+                  "name" : "Select serial port"
+                  }
+               }
+            },
             "Network" :
             {
                "type" : "section",
@@ -26,7 +40,7 @@
                   {
                   "type" : "string",
                   "name" : "Address",
-                  "description" : "The IP Address or DNS name of the RFXLan",
+                  "description" : "IP Address or DNS name",
                   "defaultValue" : "rfxlan"
                   },
                   "port":
@@ -37,57 +51,42 @@
                      "defaultValue" : "10001"
                   }
                }
-            },
-            "SerialPort" :
-            {
-               "type" : "section",
-               "name" : "Serial port",
-               "description" : "The virtual serial port connected to the RFXCom",
-               "content" :
-               {
-                  "serialPort" :
-                  {
-                  "type" : "string",
-                  "name" : "Serial port",
-                  "description" : "The virtual serial port connected to the RFXCom"
-                  }
-               }
             }
          }
       },
       "Protocols":
       {
           "type" : "section",
-          "name" : "Protocols",
-          "description" : "Supported protocols, see RFXCom manual to configure. Be careful, some protocols are incompatible and must not be selected together.",
+          "name" : "Protocols to listen",
+          "description" : "Supported protocols to listen, see RFXCom manual to configure. Be careful, some protocols are incompatible and must not be selected together.",
           "enableWithCheckBox" : "false",
           "enableWithCheckBoxDefaultValue" : "false",
           "content" :
           {
-             "AE Blyss" : { "type" : "bool", "name" : "AE Blyss", "description" : "AE Blyss (Castorama)", "defaultValue" : "false" },
-             "Rubicson" : { "type" : "bool", "name" : "Rubicson", "description" : "Rubicson", "defaultValue" : "false" },
-             "FineOffset/Viking" : { "type" : "bool", "name" : "FineOffset/Viking", "description" : "FineOffset/Viking", "defaultValue" : "false" },
-             "Lighting4" : { "type" : "bool", "name" : "Lighting4", "description" : "Lighting4", "defaultValue" : "false" },
-             "RSL" : { "type" : "bool", "name" : "RSL", "description" : "RSL", "defaultValue" : "false" },
-             "Byron SX" : { "type" : "bool", "name" : "Byron SX", "description" : "Byron SX", "defaultValue" : "false" },
-             "RFU" : { "type" : "bool", "name" : "RFU", "description" : "RFU", "defaultValue" : "false" },
-             "undecoded messages" : { "type" : "bool", "name" : "undecoded messages", "description" : "undecoded messages", "defaultValue" : "false" },
-             "Mertik" : { "type" : "bool", "name" : "Mertik", "description" : "Mertik", "defaultValue" : "false" },
-             "AD LightwaveRF" : { "type" : "bool", "name" : "AD LightwaveRF", "description" : "AD LightwaveRF", "defaultValue" : "false" },
-             "Hideki/UPM" : { "type" : "bool", "name" : "Hideki/UPM", "description" : "Hideki/UPM", "defaultValue" : "true" },
-             "La Crosse" : { "type" : "bool", "name" : "La Crosse", "description" : "La Crosse", "defaultValue" : "true" },
-             "FS20" : { "type" : "bool", "name" : "FS20", "description" : "FS20", "defaultValue" : "false" },
-             "ProGuard" : { "type" : "bool", "name" : "ProGuard", "description" : "ProGuard", "defaultValue" : "false" },
-             "BlindsT0" : { "type" : "bool", "name" : "BlindsT0", "description" : "BlindsT0", "defaultValue" : "false" },
-             "BlindsT1" : { "type" : "bool", "name" : "BlindsT1", "description" : "BlindsT1", "defaultValue" : "false" },
-             "X10" : { "type" : "bool", "name" : "X10", "description" : "X10", "defaultValue" : "true" },
-             "ARC" : { "type" : "bool", "name" : "ARC", "description" : "ARC", "defaultValue" : "true" },
-             "AC" : { "type" : "bool", "name" : "AC", "description" : "AC", "defaultValue" : "true" },
-             "HomeEasy EU" : { "type" : "bool", "name" : "HomeEasy EU", "description" : "HomeEasy EU", "defaultValue" : "true" },
-             "Meiantech" : { "type" : "bool", "name" : "Meiantech", "description" : "Meiantech", "defaultValue" : "false" },
-             "Oregon Scientific" : { "type" : "bool", "name" : "Oregon Scientific", "description" : "Oregon Scientific", "defaultValue" : "true" },
-             "ATI" : { "type" : "bool", "name" : "ATI", "description" : "ATI", "defaultValue" : "false" },
-             "Visonic" : { "type" : "bool", "name" : "Visonic", "description" : "Visonic", "defaultValue" : "false" }
+             "AE Blyss" : { "type" : "bool", "name" : "AE Blyss", "defaultValue" : "false" },
+             "Rubicson" : { "type" : "bool", "name" : "Rubicson", "defaultValue" : "false" },
+             "FineOffset/Viking" : { "type" : "bool", "name" : "FineOffset/Viking", "defaultValue" : "false" },
+             "Lighting4" : { "type" : "bool", "name" : "Lighting4", "defaultValue" : "false" },
+             "RSL" : { "type" : "bool", "name" : "RSL", "defaultValue" : "false" },
+             "Byron SX" : { "type" : "bool", "name" : "Byron SX", "defaultValue" : "false" },
+             "RFU" : { "type" : "bool", "name" : "RFU", "defaultValue" : "false" },
+             "undecoded messages" : { "type" : "bool", "name" : "undecoded messages", "defaultValue" : "false" },
+             "Mertik" : { "type" : "bool", "name" : "Mertik", "defaultValue" : "false" },
+             "AD LightwaveRF" : { "type" : "bool", "name" : "AD LightwaveRF", "defaultValue" : "false" },
+             "Hideki/UPM" : { "type" : "bool", "name" : "Hideki/UPM", "defaultValue" : "true" },
+             "La Crosse" : { "type" : "bool", "name" : "La Crosse", "defaultValue" : "true" },
+             "FS20" : { "type" : "bool", "name" : "FS20", "defaultValue" : "false" },
+             "ProGuard" : { "type" : "bool", "name" : "ProGuard", "defaultValue" : "false" },
+             "BlindsT0" : { "type" : "bool", "name" : "BlindsT0", "defaultValue" : "false" },
+             "BlindsT1" : { "type" : "bool", "name" : "BlindsT1", "defaultValue" : "false" },
+             "X10" : { "type" : "bool", "name" : "X10", "defaultValue" : "true" },
+             "ARC" : { "type" : "bool", "name" : "ARC", "defaultValue" : "true" },
+             "AC" : { "type" : "bool", "name" : "AC", "defaultValue" : "true" },
+             "HomeEasy EU" : { "type" : "bool", "name" : "HomeEasy EU", "defaultValue" : "true" },
+             "Meiantech" : { "type" : "bool", "name" : "Meiantech", "defaultValue" : "false" },
+             "Oregon Scientific" : { "type" : "bool", "name" : "Oregon Scientific", "defaultValue" : "true" },
+             "ATI" : { "type" : "bool", "name" : "ATI", "defaultValue" : "false" },
+             "Visonic" : { "type" : "bool", "name" : "Visonic", "defaultValue" : "false" }
           }
        }
    },

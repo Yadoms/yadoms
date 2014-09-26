@@ -10,9 +10,24 @@ void CRfxcomConfiguration::initializeWith(const shared::CDataContainer &data)
    m_data.initializeWith(data);
 }
 
+bool CRfxcomConfiguration::comIsEthernet() const
+{
+   return m_data.get<bool>("Communication.content.Network.radio", false);
+}
+
+std::string CRfxcomConfiguration::getEthernetAddress() const
+{
+   return m_data.get<std::string>("Communication.content.Network.content.ipAddress");
+}
+
+std::string CRfxcomConfiguration::getEthernetPort() const
+{
+   return m_data.get<std::string>("Communication.content.Network.content.port");
+}
+
 std::string CRfxcomConfiguration::getSerialPort() const
 {
-   return m_data.get<std::string>("Serial Port");
+   return m_data.get<std::string>("Communication.content.SerialPort.content.serialPort");
 }
 
 bool CRfxcomConfiguration::isAEenabled        () const { return m_data.get<bool>("Protocols.content.AE Blyss", false); }
