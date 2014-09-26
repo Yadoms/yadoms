@@ -16,6 +16,9 @@ public:
 
    // IRfxcomConfiguration implementation
    virtual void initializeWith(const shared::CDataContainer &data);
+   virtual bool comIsEthernet() const;
+   virtual std::string getEthernetAddress() const;
+   virtual std::string getEthernetPort() const;
    virtual std::string getSerialPort() const;
    virtual bool isAEenabled        () const;
    virtual bool isRUBICSONenabled  () const;

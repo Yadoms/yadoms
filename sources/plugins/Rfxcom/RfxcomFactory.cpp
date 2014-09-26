@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "RfxcomFactory.h"
 #include <shared/communication/AsyncSerialPort.h>
+#include <shared/communication/AsyncTcpClient.h>
 #include "Transceiver.h"
 #include "RfxComReceiveBufferHandler.h"
 
@@ -16,9 +17,19 @@ boost::shared_ptr<shared::communication::IAsyncPort> CRfxcomFactory::constructPo
    int evtPortConnectionId,
    int evtPortDataReceived)
 {
-   boost::shared_ptr<shared::communication::IAsyncPort> port(new shared::communication::CAsyncSerialPort(
-      configuration.getSerialPort(),
-      boost::asio::serial_port_base::baud_rate(38400)));
+   boost::shared_ptr<shared::communication::IAsyncPort> port;
+   if (configuration.comIsEthernet())
+   {
+      port.reset(new shared::communication::CAsyncTcpClient(
+         configuration.getEthernetAddress(),
+         configuration.getEthernetPort()));
+   }
+   else
+   {
+      port.reset(new shared::communication::CAsyncSerialPort(
+         configuration.getSerialPort(),
+         boost::asio::serial_port_base::baud_rate(38400)));
+   }
 
    port->subscribeForConnectionEvents(eventHandler, evtPortConnectionId);
 

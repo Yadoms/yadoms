@@ -2,10 +2,75 @@
    "description": "Support du module radio RFXCom (voir http://rfxcom.com/)",
    "configurationSchema":
    {
-      "Serial Port":
+      "Communication":
       {
-         "name": "Port série",
-         "description": "Le port série virtuel connecté au RFXCom."
+         "name" : "Communication",
+         "description" : "Type de connexion au RFXCom/RFXLan",
+         "content" :
+         {
+            "SerialPort":
+            {
+               "name": "Port série",
+               "description": "Le port série virtuel connecté au RFXCom",
+               "content" :
+               {
+                  "SerialPort":
+                  {
+                     "name" : "Sélectionner un port série"
+                  }
+               }
+            },
+            "Network":
+            {
+               "name": "Réseau",
+               "description": "La connexion réseau au RFXLan",
+               "content" :
+               {
+                  "ipAddress" :
+                  {
+                     "name" : "Adresse",
+                     "description" : "Adresse IP ou nom DNS"
+                  },
+                  "port":
+                  {
+                     "name" : "Port TCP",
+                     "description" : "Le port TCP"
+                  }
+               }
+            }
+         }
+      },
+      "Protocols":
+      {
+          "name" : "Protocoles en écoute",
+          "description" : "Protocoles à écouter, voir le manuel d'utilisation du RFXCom manual. Attention, certains protocols ne sont pas compatible entre eux, et ne doivent pas être activés simultanément.",
+          "content" :
+          {
+             "AE Blyss" : { "name" : "AE Blyss (Castorama)" },
+             "Rubicson" : { "name" : "Rubicson" },
+             "FineOffset/Viking" : { "name" : "FineOffset/Viking" },
+             "Lighting4" : { "name" : "Lighting4" },
+             "RSL" : { "name" : "RSL" },
+             "Byron SX" : { "name" : "Byron SX" },
+             "RFU" : { "name" : "RFU" },
+             "undecoded messages" : { "name" : "undecoded messages" },
+             "Mertik" : { "name" : "Mertik" },
+             "AD LightwaveRF" : { "name" : "AD LightwaveRF" },
+             "Hideki/UPM" : { "name" : "Hideki/UPM" },
+             "La Crosse" : { "name" : "La Crosse" },
+             "FS20" : { "name" : "FS20" },
+             "ProGuard" : { "name" : "ProGuard" },
+             "BlindsT0" : { "name" : "BlindsT0" },
+             "BlindsT1" : { "name" : "BlindsT1" },
+             "X10" : { "name" : "X10" },
+             "ARC" : { "name" : "ARC" },
+             "AC" : { "name" : "AC" },
+             "HomeEasy EU" : { "name" : "HomeEasy EU" },
+             "Meiantech" : { "name" : "Meiantech" },
+             "Oregon Scientific" : { "name" : "Oregon Scientific" },
+             "ATI" : { "name" : "ATI" },
+             "Visonic" : { "name" : "Visonic" }
+          }
       }
    },
    "manuallyDeviceCreationConfigurationSchema":

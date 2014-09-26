@@ -19,7 +19,26 @@ public:
    virtual void initializeWith(const shared::CDataContainer &data) = 0;
 
    //--------------------------------------------------------------
+   /// \brief	    Check if connection is configured as Ethernet
+   /// \return     true if Ethernet, false if serial port
+   //--------------------------------------------------------------
+   virtual bool comIsEthernet() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Get the RFXLan server address (IP address or DNS name)
+   /// \return     The IP address or DNS name of the RFXLan server
+   //--------------------------------------------------------------
+   virtual std::string getEthernetAddress() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Get the RFXLan server TCP port number
+   /// \return     The TCP port
+   //--------------------------------------------------------------
+   virtual std::string getEthernetPort() const = 0;
+
+   //--------------------------------------------------------------
    /// \brief	    Virtual serial port connected to the rfxcom
+   /// \return     The serial port name (system-dependent)
    //--------------------------------------------------------------
    virtual std::string getSerialPort() const = 0;
 
