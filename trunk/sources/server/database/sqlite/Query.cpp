@@ -120,6 +120,17 @@ namespace database {
          return WhereInternal("WHERE ", field, op, subQuery);
       }   
 
+		CQuery & CQuery::WhereParenthesis(const std::string & field, const std::string & op, const CQueryValue & value)
+		{
+			return WhereInternal("WHERE (", field, op, value);
+		}
+
+
+		CQuery & CQuery::WhereParenthesis(const std::string & field, const std::string & op, CQuery & subQuery)
+		{
+			return WhereInternal("WHERE (", field, op, subQuery);
+		}
+
       CQuery & CQuery::And(const std::string & condition) 
       {
          return WhereInternal("AND ", condition);
@@ -133,6 +144,16 @@ namespace database {
       CQuery & CQuery::And(const std::string & field, const std::string & op, CQuery & subQuery) 
       {
          return WhereInternal("AND ", field, op, subQuery);
+      }    
+		
+		CQuery & CQuery::AndParenthesis(const std::string & field, const std::string & op, const CQueryValue & value)
+      {
+         return WhereInternal("AND (", field, op, value);
+      } 
+
+		CQuery & CQuery::AndParenthesis(const std::string & field, const std::string & op, CQuery & subQuery)
+      {
+         return WhereInternal("AND (", field, op, subQuery);
       }     
 
       CQuery & CQuery::Or(const std::string & condition) 
@@ -149,6 +170,23 @@ namespace database {
       {
          return WhereInternal("OR ", field, op, subQuery);
       }   
+
+		CQuery & CQuery::OrParenthesis(const std::string & field, const std::string & op, const CQueryValue & value)
+      {
+         return WhereInternal("OR (", field, op, value);
+      } 
+
+		CQuery & CQuery::OrParenthesis(const std::string & field, const std::string & op, CQuery & subQuery)
+      {
+         return WhereInternal("OR (", field, op, subQuery);
+      }   
+
+		CQuery & CQuery::EndParenthesis()
+		{
+			std::ostringstream ss;
+			ss << " ) ";
+			return Append(ss);
+		}
 
 
       CQuery & CQuery::OrderBy( const std::string & field1, const std::string & way1, 

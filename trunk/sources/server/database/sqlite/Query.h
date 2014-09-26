@@ -153,7 +153,28 @@ namespace database { namespace sqlite {
       /// \param  value    the subquery
       /// \return          A reference to itself to allow method chaining
       //    
-      CQuery & Where(const std::string & field, const std::string & op, CQuery & subQuery);
+      CQuery & Where(const std::string & field, const std::string & op, CQuery & subQuery);     
+		
+		//
+      /// \brief           Append the where clause with a start parenthesis
+      ///                  Where("id", "=", "12")
+      /// \param  field    the field name
+      /// \param  op       the operator
+      /// \param  value    the value
+      /// \return          A reference to itself to allow method chaining
+      //     
+		CQuery & WhereParenthesis(const std::string & field, const std::string & op, const CQueryValue & value);
+
+      //
+      /// \brief           Append the where clause with a subquery  with a start parenthesis
+      ///                  CQuery q2 = ... ; //SELECT id FROM table WHERE...
+      ///                  Where("id", "in", q2)
+      /// \param  field    the field name
+      /// \param  op       the operator
+      /// \param  value    the subquery
+      /// \return          A reference to itself to allow method chaining
+      //    
+		CQuery & WhereParenthesis(const std::string & field, const std::string & op, CQuery & subQuery);
 
       //
       /// \brief           Append the AND clause
@@ -181,7 +202,28 @@ namespace database { namespace sqlite {
       /// \param  value    the subquery
       /// \return          A reference to itself to allow method chaining
       //    
-      CQuery & And(const std::string & field, const std::string & op, CQuery & subQuery);
+      CQuery & And(const std::string & field, const std::string & op, CQuery & subQuery); 
+		
+		//
+      /// \brief           Append the And clause with a start parenthesis
+      ///                  And("id", "=", "12")
+      /// \param  field    the field name
+      /// \param  op       the operator
+      /// \param  value    the value
+      /// \return          A reference to itself to allow method chaining
+      //     
+		CQuery & AndParenthesis(const std::string & field, const std::string & op, const CQueryValue & value);
+
+      //
+      /// \brief           Append the AND clause with a subquery with a start parenthesis
+      ///                  CQuery q2 = ... ; //SELECT id FROM table WHERE...
+      ///                  AND("id", "in", q2)
+      /// \param  field    the field name
+      /// \param  op       the operator
+      /// \param  value    the subquery
+      /// \return          A reference to itself to allow method chaining
+      //    
+		CQuery & AndParenthesis(const std::string & field, const std::string & op, CQuery & subQuery);
 
       //
       /// \brief           Append the OR clause
@@ -209,7 +251,34 @@ namespace database { namespace sqlite {
       /// \param  value    the subquery
       /// \return          A reference to itself to allow method chaining
       //       
-      CQuery & Or(const std::string & field, const std::string & op, CQuery & subQuery);
+      CQuery & Or(const std::string & field, const std::string & op, CQuery & subQuery);  
+		
+		//
+      /// \brief           Append the Or clause  with a start parenthesis
+      ///                  Or("id", "=", "12")
+      /// \param  field    the field name
+      /// \param  op       the operator
+      /// \param  value    the value
+      /// \return          A reference to itself to allow method chaining
+      //        
+		CQuery & OrParenthesis(const std::string & field, const std::string & op, const CQueryValue & value);
+
+      //
+      /// \brief           Append the OR clause with a subquery  with a start parenthesis
+      ///                  CQuery q2 = ... ; //SELECT id FROM table WHERE...
+      ///                  OR("id", "in", q2)
+      /// \param  field    the field name
+      /// \param  op       the operator
+      /// \param  value    the subquery
+      /// \return          A reference to itself to allow method chaining
+      //       
+		CQuery & OrParenthesis(const std::string & field, const std::string & op, CQuery & subQuery);
+
+		//
+		/// \brief           Append  a closing parenthesis
+		/// \return          A reference to itself to allow method chaining
+		//       
+		CQuery & EndParenthesis();
 
       //
       /// \brief           Append 'ORDER BY field1 [way1][,field2 [way2]]'

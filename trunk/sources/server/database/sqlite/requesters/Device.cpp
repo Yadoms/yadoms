@@ -85,7 +85,7 @@ namespace database {  namespace sqlite { namespace requesters {
       subQuery. Select(CKeywordTable::getDeviceIdColumnName()).
                 From(CKeywordTable::getTableName()).
                 Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, capacityName).
-                And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, (int)accessMode);
+                And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, accessMode);
 
       CQuery qSelect;
       qSelect. Select().
@@ -99,28 +99,26 @@ namespace database {  namespace sqlite { namespace requesters {
 
    std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacityType(const database::entities::EKeywordAccessMode & capacityAccessMode, const database::entities::EKeywordDataType & capacityType) const
    {
+		CQuery subQuery;
+		subQuery.Select(CKeywordTable::getDeviceIdColumnName()).
+			From(CKeywordTable::getTableName());
 
-      std::stringstream whereClause;
       switch (capacityAccessMode())
       {
          case database::entities::EKeywordAccessMode::kGet:
          case database::entities::EKeywordAccessMode::kSet:
-            whereClause << "(" << CKeywordTable::getAccessModeColumnName() << CQUERY_OP_EQUAL << (int)capacityAccessMode();
-            whereClause << " OR ";
-            whereClause << CKeywordTable::getAccessModeColumnName() << CQUERY_OP_EQUAL << (int)database::entities::EKeywordAccessMode::kGetSet << ")";
+				subQuery.WhereParenthesis(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, capacityAccessMode).
+							Or(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, database::entities::EKeywordAccessMode(database::entities::EKeywordAccessMode::kGetSet).getAsString()).
+							EndParenthesis();
             break;
 
          case database::entities::EKeywordAccessMode::kGetSet:
          case database::entities::EKeywordAccessMode::kNoAccess:
-            whereClause << CKeywordTable::getAccessModeColumnName() << CQUERY_OP_EQUAL << (int)capacityAccessMode();
-
+				subQuery.Where(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, capacityAccessMode);
+				break;
       }
 
-      CQuery subQuery;
-      subQuery. Select(CKeywordTable::getDeviceIdColumnName()).
-                From(CKeywordTable::getTableName()).
-                Where(whereClause.str()).
-                And(CKeywordTable::getTypeColumnName(), CQUERY_OP_EQUAL, (int)capacityType);
+      subQuery. And(CKeywordTable::getTypeColumnName(), CQUERY_OP_EQUAL, capacityType);
 
       CQuery qSelect;
       qSelect. Select().
