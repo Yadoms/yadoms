@@ -161,7 +161,7 @@ namespace database { namespace sqlite { namespace requesters {
          From(CKeywordTable::getTableName()).
          Where(CKeywordTable::getDeviceIdColumnName(), CQUERY_OP_EQUAL, deviceId).
          And(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, capacityName).
-         And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, (int)accessMode);
+         And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, accessMode);
 
       m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CKeyword> >(&adapter, qSelect);
       return adapter.getResults();
