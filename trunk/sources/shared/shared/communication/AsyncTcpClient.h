@@ -8,32 +8,24 @@ namespace shared { namespace communication {
    //--------------------------------------------------------------
    /// \brief	This class manage a serial port
    //--------------------------------------------------------------
-   class YADOMS_SHARED_EXPORT CAsyncSerialPort : public IAsyncPort
+   class YADOMS_SHARED_EXPORT CAsyncTcpClient : public IAsyncPort
    {  
    public:
       //--------------------------------------------------------------
       /// \brief	Constructor
-      /// \param[in] port                 Serial port name
-      /// \param[in] baudrate             Baudrate (in bauds)
-      /// \param[in] parity               Parity (see boost::asio::serial_port_base::parity::type for values)
-      /// \param[in] characterSize        Character size (from 5 to 8)
-      /// \param[in] stop_bits            Nb of stop bits (see boost::asio::serial_port_base::stop_bits::type for values)
-      /// \param[in] flowControl          Flow control (see boost::asio::serial_port_base::flow_control::type for values)
+      /// \param[in] serverAddress        Server IP address or DNS name
+      /// \param[in] serverPort           Server portNumber
       /// \param[in] connectRetryDelay    Delay between 2 connection retries
       //--------------------------------------------------------------
-      CAsyncSerialPort(
-         const std::string& port,
-         boost::asio::serial_port_base::baud_rate baudrate = boost::asio::serial_port_base::baud_rate(9600),
-         boost::asio::serial_port_base::parity parity = boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::none),
-         boost::asio::serial_port_base::character_size characterSize = boost::asio::serial_port_base::character_size(8),
-         boost::asio::serial_port_base::stop_bits stop_bits = boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one),
-         boost::asio::serial_port_base::flow_control flowControl = boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none),
+      CAsyncTcpClient(
+         const std::string& serverAddress,
+         const std::string& serverPort,
          boost::posix_time::time_duration connectRetryDelay = boost::posix_time::seconds(30));
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CAsyncSerialPort();
+      virtual ~CAsyncTcpClient();
 
       // IAsyncPort Implementation
       virtual void setReceiveBufferMaxSize(std::size_t size);
@@ -47,21 +39,30 @@ namespace shared { namespace communication {
       // [END] IAsyncPort Implementation
 
    protected:
-      //--------------------------------------------------------------
-      /// \brief	Establish the connection
-      /// \return true if connected, false else
-      //--------------------------------------------------------------
-      virtual bool connect();
 
       //--------------------------------------------------------------
       /// \brief	Close the connection
       //--------------------------------------------------------------
-      virtual void disconnect();
+      virtual void disconnect();//TODO virer
 
       //--------------------------------------------------------------
       /// \brief	Try to connect asynchronously
       //--------------------------------------------------------------
       void tryConnect();
+
+      //--------------------------------------------------------------
+      /// \brief	                     Handler called after end point was resolved
+      /// \param[in] error             Error code (should be 0)
+      /// \param[in] iterator          Selected end point
+      //--------------------------------------------------------------
+      void handleEndPointResolve(const boost::system::error_code& error, boost::asio::ip::tcp::resolver::iterator iterator);
+
+      //--------------------------------------------------------------
+      /// \brief	                     Handler called when after connect
+      /// \param[in] error             Error code (should be 0)
+      //--------------------------------------------------------------
+      void handleTryConnect(const boost::system::error_code& error);
+
 
       //--------------------------------------------------------------
       /// \brief	                     Handler called when connect retry timer expires
@@ -94,19 +95,19 @@ namespace shared { namespace communication {
       boost::asio::io_service m_ioService;
 
       //--------------------------------------------------------------
-      /// \brief	The boost serial port
+      /// \brief	The boost socket port
       //--------------------------------------------------------------
-      boost::asio::serial_port m_boostSerialPort;
+      boost::asio::ip::tcp::socket m_boostSocket;
 
       //--------------------------------------------------------------
-      /// \brief	Serial port configuration
+      /// \brief	The server address resolver
       //--------------------------------------------------------------
-      std::string m_port;
-      boost::asio::serial_port_base::baud_rate m_baudrate;
-      boost::asio::serial_port_base::parity m_parity;
-      boost::asio::serial_port_base::character_size m_characterSize;
-      boost::asio::serial_port_base::stop_bits m_stop_bits;
-      boost::asio::serial_port_base::flow_control m_flowControl;
+      boost::asio::ip::tcp::resolver m_serverAdressResolver;
+
+      //--------------------------------------------------------------
+      /// \brief	The server address resolver query
+      //--------------------------------------------------------------
+      boost::asio::ip::tcp::resolver::query m_serverAdressResolverQuery;
 
       //--------------------------------------------------------------
       /// \brief	Read buffer max size

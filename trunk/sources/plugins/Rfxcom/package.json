@@ -8,11 +8,52 @@
    "SupportedPlatforms": "all",
    "configurationSchema":
    {
-      "Serial Port":
+      "Communication":
       {
-         "name": "Serial port",
-         "description": "The virtual serial port connected to the RFXCom",
-         "type": "serialPort"
+         "type" : "radioSection",
+         "name" : "Communication",
+         "description" : "The connection type to the RFXCom/RFXLan",
+         "content" :
+         {
+            "Network" :
+            {
+               "type" : "section",
+               "name" : "Network",
+               "description" : "The network connection to the RFXLan",
+               "content" :
+               {
+                  "ipAddress" :
+                  {
+                  "type" : "string",
+                  "name" : "Address",
+                  "description" : "The IP Address or DNS name of the RFXLan",
+                  "defaultValue" : "rfxlan"
+                  },
+                  "port":
+                  {
+                     "type" : "int",
+                     "name" : "TCP port",
+                     "description" : "The TCP port",
+                     "defaultValue" : "10001"
+                  }
+               }
+            },
+            "SerialPort" :
+            {
+               "type" : "section",
+               "name" : "Serial port",
+               "description" : "The virtual serial port connected to the RFXCom",
+               "content" :
+               {
+                  "serialPort" :
+                  {
+                  "type" : "string",
+                  "name" : "Serial port",
+                  "description" : "The virtual serial port connected to the RFXCom"
+                  }
+               }
+            }
+         }
       },
       "Protocols":
       {

@@ -24,6 +24,8 @@ set(SHARED_LIB_SRC
    
    shared/communication/AsyncSerialPort.h
    shared/communication/AsyncSerialPort.cpp
+   shared/communication/AsyncTcpClient.h
+   shared/communication/AsyncTcpClient.cpp
    shared/communication/Buffer.hpp
    shared/communication/BufferLogger.h
    shared/communication/BufferLogger.cpp
