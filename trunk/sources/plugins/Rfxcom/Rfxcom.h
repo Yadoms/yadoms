@@ -116,6 +116,14 @@ protected:
    //--------------------------------------------------------------
    void processRfxcomAckMessage(const rfxcomMessages::CAck& ack) const;
 
+   //--------------------------------------------------------------
+   /// \brief	                     Check if connections are the same between the 2 configurations
+   /// \param [in] conf1            First configuration to compare
+   /// \param [in] conf2            Second configuration to compare
+   /// \return                      true is connection data are all the same in the both configurations
+   //--------------------------------------------------------------
+   bool connectionsAreEqual(const CRfxcomConfiguration& conf1, const CRfxcomConfiguration& conf2) const;
+
 private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration

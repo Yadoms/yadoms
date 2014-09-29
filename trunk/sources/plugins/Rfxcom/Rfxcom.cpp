@@ -102,7 +102,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                // Close connection
                CRfxcomConfiguration newConfiguration;
                newConfiguration.initializeWith(newConfigurationData);
-               if (newConfiguration.getSerialPort() != m_configuration.getSerialPort())
+               if (!connectionsAreEqual(m_configuration, newConfiguration))
                {
                   // Port has changed, destroy and recreate connection
                   destroyConnection();
@@ -179,6 +179,17 @@ void CRfxcom::destroyConnection()
    m_port.reset();
 
    m_waitForAnswerTimer->stop();
+}
+
+bool CRfxcom::connectionsAreEqual(const CRfxcomConfiguration& conf1, const CRfxcomConfiguration& conf2) const
+{
+   if (conf1.comIsEthernet() != conf2.comIsEthernet())
+      return false;
+
+   if (conf1.comIsEthernet())
+      return (conf1.getEthernetAddress() == conf2.getEthernetAddress() && conf1.getEthernetPort() == conf2.getEthernetPort());
+   else
+      return (conf1.getSerialPort() == conf2.getSerialPort());
 }
 
 void CRfxcom::send(const shared::communication::CByteBuffer& buffer, bool needAnswer)

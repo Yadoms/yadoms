@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "RfxcomFactory.h"
+#include <shared/Log.h>
 #include <shared/communication/AsyncSerialPort.h>
 #include <shared/communication/AsyncTcpClient.h>
 #include "Transceiver.h"
@@ -20,12 +21,14 @@ boost::shared_ptr<shared::communication::IAsyncPort> CRfxcomFactory::constructPo
    boost::shared_ptr<shared::communication::IAsyncPort> port;
    if (configuration.comIsEthernet())
    {
+      YADOMS_LOG(info) << "Connecting RFXCom on network at " << configuration.getEthernetAddress() << ", port " << configuration.getEthernetPort() << "...";
       port.reset(new shared::communication::CAsyncTcpClient(
          configuration.getEthernetAddress(),
          configuration.getEthernetPort()));
    }
    else
    {
+      YADOMS_LOG(info) << "Connecting RFXCom on serial port " << configuration.getSerialPort() << "...";
       port.reset(new shared::communication::CAsyncSerialPort(
          configuration.getSerialPort(),
          boost::asio::serial_port_base::baud_rate(38400)));
