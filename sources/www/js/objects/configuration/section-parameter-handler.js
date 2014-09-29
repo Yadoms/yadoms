@@ -198,7 +198,7 @@ SectionParameterHandler.prototype.getCurrentConfiguration = function () {
 
    //we get the radioButton value if used
    if (this.radioButtonSectionName) {
-      self.configurationValues.radio = parseBool($("input#" + this.selectorUuid + ":checked").val(), false);
+      self.configurationValues.radio = ($("input#" + this.selectorUuid + ":checked").val() == 'on');
    }
 
    return self.configurationValues;
