@@ -260,12 +260,18 @@ function periodicUpdateTask() {
 
          $.each(data.data.EventLogger, function(index, value) {
             var eventLogger = new EventLogger(value.id, value.date, value.code, value.who, value.what);
-            if (eventLogger.code > 0) {
-               notifyInformation(EventLoggerHelper.toString(eventLogger));
+            var gravity;
+            //the gravity of the noty depend on the code
+            if ((eventLogger.code == "started") || (eventLogger.code == "stopped") || (eventLogger.code == "updated")) {
+               gravity = "information";
             }
             else {
-               notifyError(EventLoggerHelper.toString(eventLogger), value.what, false);
+               gravity = "error";
             }
+
+            var translation = "eventLogger." + event.code;
+            notify(DateTimeFormatter.isoDateToString(event.date) + " " +
+                   $.t(translation, {"who" : event.who, "what" : event.what}), gravity);
 
             //we update the lastEvent Id Read
             LastEventLogId = value.id;
@@ -287,6 +293,8 @@ function periodicUpdateTask() {
                clearInterval(widgetUpdateInterval);
                widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateIntervalInOfflineMode);
                failGetEventCounter = 0;
+               //we close the dashboard if shown
+               $('#main-dashboard-modal').modal('hide');
             }
          }
          //if we are again offline there is nothing to do

@@ -247,7 +247,12 @@
       });
 
       $("#btn-show-dashboard").click(function() {
-         modals.mainDashboard.load(function() {$('#main-dashboard-modal').modal();});
+         modals.mainDashboard.load(function() {
+            $('#main-dashboard-modal').modal();
+            $('#main-dashboard-modal').off('hidden.bs.modal').on('hidden.bs.modal', function () {
+               clearInterval(periodicDashboardTask);
+            });
+         });
       });
 
       /**
