@@ -1,5 +1,6 @@
 {
-   "errorDuringSendingCommand" : "Error during sending command",
-   "errorDuringGettingDeviceInformation" : "Error during getting device information"
-
+    "name": "switch",
+    "description": "A widget that provide buttons to make actions",
+    "errorDuringSendingCommand" : "Error during sending command",
+    "errorDuringGettingDeviceInformation" : "Error during getting device information"
 }

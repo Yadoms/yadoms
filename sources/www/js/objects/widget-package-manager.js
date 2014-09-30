@@ -16,10 +16,17 @@ WidgetPackageManager.widgetPackages = [];
 
 WidgetPackageManager.factory = function(json) {
    assert(!isNullOrUndefined(json), "json must be defined");
-   assert(!isNullOrUndefined(json.name), "json.name must be defined");
+   assert(!isNullOrUndefined(json.type), "json.type must be defined");
 
    var wp = new WidgetPackage();
    wp.packageInformation = json;
+
+   //we get i18n data
+   i18n.options.resGetPath = 'widgets/__ns__/locales/__lng__.json';
+   i18n.loadNamespace(json.type);
+   //we restore the resGetPath
+   i18n.options.resGetPath = "locales/__lng__.json";
+
    return wp;
 };
 
@@ -36,7 +43,7 @@ WidgetPackageManager.getAll = function(callback) {
          WidgetPackageManager.widgetPackages = [];
 
          $.each(data.data.package, function(index, value) {
-            WidgetPackageManager.widgetPackages[value.name] = WidgetPackageManager.factory(value);
+             WidgetPackageManager.widgetPackages[value.type] = WidgetPackageManager.factory(value);
          });
          if ($.isFunction(callback))
             callback();

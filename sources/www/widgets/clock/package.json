@@ -1,6 +1,5 @@
 {
-    "name": "clock",
-    "description": "A fully resizable clock",
+    "type": "clock",
     "version": "0.1",
     "author": "yadoms team",
     "dimensions": {

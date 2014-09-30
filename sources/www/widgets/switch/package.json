@@ -1,6 +1,5 @@
 {
-   "name": "switch",
-   "description": "A widget that provide buttons to make actions",
+   "type": "switch",
    "version": "0.1",
    "author": "yadoms team",
    "url" : "http://www.yadoms.com/wiki/widgets/switch.html",

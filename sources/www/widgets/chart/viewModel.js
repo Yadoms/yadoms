@@ -15,7 +15,7 @@ widgetViewModelCtor =
        */
       this.initialize = function(widget) {
          this.widget = widget;
-debugger;
+
          var self = this;
          // create the chart
          this.$chart = self.widget.$gridsterWidget.find("div.chartWidgetContainer");
@@ -99,8 +99,6 @@ debugger;
             return;
 
          //we update chart title
-         debugger;
-
          try {
             this.chart.setTitle({text: this.widget.configuration.chartTitle});
          }

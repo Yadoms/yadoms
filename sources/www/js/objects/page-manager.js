@@ -121,7 +121,7 @@ PageManager.addToDom = function (page) {
             }
             catch (e)
             {
-               notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.name, methodName : 'resized'}));
+               notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.type, methodName : 'resized'}));
                console.warn(e);
             }
          },
@@ -134,7 +134,7 @@ PageManager.addToDom = function (page) {
             }
             catch (e)
             {
-               notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.name, methodName : 'resized'}));
+               notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.type, methodName : 'resized'}));
                console.warn(e);
             }
          }

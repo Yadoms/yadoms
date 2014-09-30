@@ -1,4 +1,5 @@
 {
+   "name": "sms sender",
    "description": "Widget which send SMS",
    "configurationSchema" : {
       "device" : {
