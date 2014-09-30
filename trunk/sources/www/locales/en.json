@@ -7,7 +7,9 @@
       "yes" : "Yes",
       "no" : "No",
       "apply" : "Apply",
-      "resetToDefault" : "Reset to default"
+      "add" : "Add",
+      "resetToDefault" : "Reset to default",
+      "goBack" : "Go Back"
    },
    "mainPage" : {
       "menu" : {
@@ -53,7 +55,10 @@
          "getMore" : "Get More widgets",
          "errorDuringCreatingWidget" : "Error during creating widget",
          "widgetSuccessfullyCreated" : "Widget successfully created",
-         "unableToCreateWidgetOfType" : "Unable to create widget of type __widgetType__"
+         "unableToCreateWidgetOfType" : "Unable to create widget of type __widgetType__",
+         "descriptionHeader" : "Description:",
+         "versionHeader" : "Version:",
+         "authorHeader" : "Author:"
       },
       "configure-widget" : {
          "title" : "Widget configuration",

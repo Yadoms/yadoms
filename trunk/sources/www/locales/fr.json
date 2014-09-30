@@ -5,7 +5,11 @@
       "close" : "Fermer",
       "cancel" : "Annuler",
       "yes" : "Oui",
-      "no" : "Non"
+      "no" : "Non",
+      "apply" : "Appliquer",
+      "add" : "Ajouter",
+      "resetToDefault" : "Restaurer les valeurs par défaut",
+      "goBack" : "Retour"
    },
    "mainPage": {
     "menu": {

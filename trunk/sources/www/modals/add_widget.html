@@ -9,26 +9,52 @@
                 <h4 class="modal-title" id="myModalLabel" data-i18n="modals.add-widget.title">Add a new Widget</h4>
             </div>
             <div class="modal-body">
-                <div id="new-widget-carousel" class="carousel slide">
-
-                    <!-- Wrapper for slides -->
-                    <div class="carousel-inner">
-                        <!-- widgets types will be inserted here -->
+                <div id="add-widget-details" widget-type="">
+                    <div class="row header">
+                       <div class="col-md-4 cell">
+                           <img class/>
+                       </div>
+                       <div class="col-md-4 cell">
+                          <h1><span class="widget-name"></span></h1>
+                       </div>
+                       <div class="col-md-4 cell">
+                          <div class="btn-group btn-group-lg pull-right">
+                             <button id="btn-close-details" type="button" class="btn btn-default">
+                                <i class="fa fa-reply"></i>
+                             </button>
+                             <button id="btn-confirm-add-widget" type="button" class="btn btn-success">
+                                <i class="fa fa-plus"></i>
+                             </button>
+                          </div>
+                       </div>
                     </div>
-
-                    <!-- Controls -->
-                    <a class="left carousel-control" href="#new-widget-carousel" data-slide="prev">
-                        <span class="icon-prev"></span>
-                    </a>
-                    <a class="right carousel-control" href="#new-widget-carousel" data-slide="next">
-                        <span class="icon-next"></span>
-                    </a>
+                    <div  class="row">
+                       <div class="table-responsive">
+                          <table class="table">
+                             <tr>
+                                <td class="header-info" data-i18n="modals.add-widget.descriptionHeader"></td>
+                                <td class="detail-info widget-description"></td>
+                             </tr>
+                             <tr>
+                                <td class="header-info" data-i18n="modals.add-widget.versionHeader"></td>
+                                <td class="detail-info widget-version"></td>
+                             </tr>
+                             <tr>
+                                <td class="header-info" data-i18n="modals.add-widget.authorHeader"></td>
+                                <td class="detail-info widget-author"></td>
+                             </tr>
+                          </table>
+                       </div>
+                    </div>
+                </div>
+                <div id="add-widget-list">
+                    <ul id="ul-add-widget">
+                    </ul>
                 </div>
             </div>
             <div class="modal-footer">
                 <button id="btn-get-more-widget" type="button" class="btn btn-primary pull-left" data-i18n="modals.add-widget.getMore">Get more widget</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel">Cancel</button>
-                <button id="btn-confirm-add-widget" type="button" class="btn btn-primary" data-i18n="common.ok">Add new</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.close">Close</button>
             </div>
         </div>
     </div>
@@ -36,16 +62,12 @@
 
 <script>
 
-    var packages = [];
-
     /**
      * Ask for widget packages to the REST server
      */
     function askWidgetPackages()
     {
-       $.getJSON("rest/widget/package")
-               .done(requestWidgetsTypeDone())
-               .fail(function() {notifyError($.t("modals.add-widget.errorDuringGettingPackages"));});
+        WidgetPackageManager.getAll(requestWidgetsTypeDone);
     }
 
     /**
@@ -54,41 +76,59 @@
      */
     function requestWidgetsTypeDone()
     {
-       return function( data ) {
-          //we parse the json answer
-          if (data.result != "true")
-          {
-             notifyError($.t("modals.add-widget.errorDuringGettingPackages"), JSON.stringify(data));
-             return;
-          }
-          $("div#new-widget-carousel > div.carousel-inner > div").remove();
-          //noinspection JSUnusedLocalSymbols
-          $.each(data.data.package, function(index, value) {
-             //foreach widget-type
-             packages[value.name] = value;
+        //if the details is visible, we must hide it
+        var $detailsDiv = $("div#add-widget-details");
+        $detailsDiv.hide();
+
+        $("ul#ul-add-widget").empty();
+        for(var index in WidgetPackageManager.widgetPackages) {
+             var value = WidgetPackageManager.widgetPackages[index].packageInformation;
              //carousel item creation
-             var i18ncontext = value.name + ":";
-             $("div#new-widget-carousel > div.carousel-inner").append(
-                     "<div class=\"item\" package=\"" + value.name + "\" >" +
-                             "<img class=\"carousel-widget-preview\" src=\"/widgets/" + value.name + "/preview.png\">" +
-                             "<div class=\"carousel-caption\" data-i18n=\"" + i18ncontext + "description\">" +
-                                 value.description +
-                             "</div>" +
-                     "</div>"
+            var i18ncontext = value.type + ":";
+             $("ul#ul-add-widget").append(
+                "<li>" +
+                    "<button type=\"button\" class=\"btn-select-widget btn btn-default\" widget-type=\"" + value.type + "\">" +
+                        "<div class=\"widget-preview\" ><img src=\"/widgets/" + value.type + "/preview.png\"></div>" +
+                        "<span class=\"widget-name\" data-i18n=\"" + i18ncontext + "name\"></span>" +
+                    "</button>" +
+                "</li>"
              );
-          });
+        }
 
-          $("div#new-widget-carousel").i18n();
+        $("button.btn-select-widget").unbind().bind('click', function (e) {
+            var type = $(e.currentTarget).attr("widget-type");
+            if (!isNullOrUndefined(type)) {
+                var value = WidgetPackageManager.widgetPackages[type].packageInformation;
+                if (!isNullOrUndefined(value)) {
+                    //we show more details about the widget
+                    var $detailsDiv = $("div#add-widget-details");
+                    $detailsDiv.attr("widget-type", type);
 
-          //we activate first item of carousel
-          $("div#new-widget-carousel div.item").first().addClass("active");
+                    //we fill the details div
+                    $detailsDiv.find("img").attr("src", "/widgets/" + value.type + "/preview.png");
+                    $detailsDiv.find("span.widget-name").text($.t(type + ":name"));
+                    $detailsDiv.find("td.widget-description").text($.t(type + ":description"));
+                    $detailsDiv.find("td.widget-version").text(value.version);
+                    $detailsDiv.find("td.widget-author").text(value.author);
 
-          $('div.carousel').carousel('pause');
+                    $detailsDiv.fadeIn();
+                }
+            }
+        });
 
-          //we display the modal
-          $('div#new-widget-modal').modal();
-       };
+        $("ul#ul-add-widget").i18n();
+
+        //we display the modal
+        $('div#new-widget-modal').modal();
     }
+
+    /**
+     * Callback to the click of the button to return to the list of widgets
+     */
+    $("button#btn-close-details").click(function () {
+       var $detailsDiv = $("div#add-widget-details");
+       $detailsDiv.fadeOut();
+    });
 
     /**
      * Callback to the click of the button to confirm an add of a new widget
@@ -101,31 +141,36 @@
        //we close the new widget modal
        $("div#new-widget-modal").modal("hide");
 
-       var packageName = $('div#new-widget-carousel div.active').attr("package");
+       var $detailsDiv = $("div#add-widget-details");
+
+       var packageName = $detailsDiv.attr("widget-type");
 
        //we get default size of the widget
        var minX = 1;
        var minY = 1;
-       if (packages[packageName].dimensions.min !== undefined)
+
+       var packageInformation = WidgetPackageManager.widgetPackages[packageName].packageInformation;
+
+       if (packageInformation.dimensions.min !== undefined)
        {
-          minX = packages[packageName].dimensions.min.x;
-          minY = packages[packageName].dimensions.min.y;
+          minX = packageInformation.dimensions.min.x;
+          minY = packageInformation.dimensions.min.y;
        }
 
        var maxX = Infinity;
        var maxY = Infinity;
-       if (packages[packageName].dimensions.max !== undefined)
+       if (packageInformation.dimensions.max !== undefined)
        {
-          maxX = packages[packageName].dimensions.max.x;
-          maxY = packages[packageName].dimensions.max.y;
+          maxX = packageInformation.dimensions.max.x;
+          maxY = packageInformation.dimensions.max.y;
        }
 
        var defaultX = 1;
        var defaultY = 1;
-       if (packages[packageName].dimensions.default !== undefined)
+       if (packageInformation.dimensions.default !== undefined)
        {
-          defaultX = packages[packageName].dimensions.default.x;
-          defaultY = packages[packageName].dimensions.default.y;
+          defaultX = packageInformation.dimensions.default.x;
+          defaultY = packageInformation.dimensions.default.y;
        }
 
        var sizeX = Math.min(maxX, Math.max(defaultX, minX));
@@ -134,7 +179,7 @@
        //we create a fake widget to display configuration form
        var newWidget = new Widget(-1, currentPage.id, packageName, sizeX, sizeY, 1, 1, "");
 
-       newWidget.package = WidgetPackageManager.widgetPackages[newWidget.name].packageInformation;
+       newWidget.package = packageInformation;
 
        //we load configuration window only if the widget has a configuration
        if (!isNullOrUndefined(newWidget.package.configurationSchema)) {
@@ -156,7 +201,7 @@
       $.ajax({
          type: "POST",
          url: "/rest/widget",
-         data: JSON.stringify({ idPage: newWidget.idPage, name: newWidget.name, sizeX: newWidget.sizeX, sizeY: newWidget.sizeY, positionX: newWidget.positionX, positionY: newWidget.positionY, configuration: newWidget.configuration }),
+         data: JSON.stringify({ idPage: newWidget.idPage, name: newWidget.type, sizeX: newWidget.sizeX, sizeY: newWidget.sizeY, positionX: newWidget.positionX, positionY: newWidget.positionY, configuration: newWidget.configuration }),
          contentType: "application/json; charset=utf-8",
          dataType: "json"
       })
@@ -176,7 +221,7 @@
          //we update the filter for the websocket
          updateWebSocketFilter();
       })
-      .fail(function(widgetName) { return function() {notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {"widgetType" : widgetName}))}}(newWidget.name));
+      .fail(function(widgetType) { return function() {notifyError($.t("modals.add-widget.unableToCreateWidgetOfType", {"widgetType" : widgetType}))}}(newWidget.type));
    }
 
 </script>

@@ -31,7 +31,7 @@
       $modalBody.empty();
       $('div#configure-widget-modal form').unbind("submit");
       
-      var configMgr = new ConfigurationControlManager(widgetToConfigure, widgetToConfigure.name, $modalBody);
+      var configMgr = new ConfigurationControlManager(widgetToConfigure, widgetToConfigure.type, $modalBody);
 
       //i18n
       $modalBody.i18n();

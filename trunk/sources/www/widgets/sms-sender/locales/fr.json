@@ -1,4 +1,5 @@
 {
+   "name": "envoi de sms",
    "description": "Un widget qui permet d'envoyer des SMS",
    "configurationSchema" : {
       "device" : {

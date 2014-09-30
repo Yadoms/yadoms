@@ -1,4 +1,6 @@
 {
-   "errorDuringGettingDeviceData" : "Error during getting device data",
-   "loadingData" : "Loading data"
+    "name" : "chart",
+    "description": "A widget that provide a chart to display historized data",
+    "errorDuringGettingDeviceData" : "Error during getting device data",
+    "loadingData" : "Loading data"
 }

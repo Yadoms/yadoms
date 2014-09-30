@@ -1,4 +1,5 @@
 {
+   "name": "interrupteur",
    "description": "Un widget tout simple qui permet de gerer les interrupteurs",
    "configurationSchema" : {
       "device" : {

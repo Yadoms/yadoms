@@ -1,3 +1,4 @@
 {
-   "description": "Une horloge redimensionnable"
+    "name": "horloge",
+    "description": "Une horloge redimensionnable"
 }

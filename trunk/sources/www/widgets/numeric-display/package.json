@@ -1,6 +1,5 @@
 {
-   "name": "numeric-display",
-   "description": "A simple widget that display a numeric value of a device",
+   "type": "numeric-display",
    "version": "0.1",
    "author": "yadoms team",
    "url" : "http://www.yadoms.com/wiki/widgets/numeric-display.html",

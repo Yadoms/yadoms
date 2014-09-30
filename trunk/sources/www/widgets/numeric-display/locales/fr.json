@@ -1,4 +1,5 @@
 {
+   "name": "afficheur numérique",
    "description": "Un widget tout simple qui affiche une valeur numérique d'un périphérique",
    "configurationSchema" : {
       "device" : {

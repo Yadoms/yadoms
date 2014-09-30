@@ -1,4 +1,5 @@
 {
+   "name" : "graphique",
    "description": "Un widget qui permet d'afficher un graphe d'historisation de données",
    "configurationSchema" : {
       "device" : {

@@ -86,7 +86,7 @@ WidgetManager.getViewFromServerSync = function(widget) {
    var view = null;
 
    $.ajax({
-      url:"widgets/" + widget.name + "/view.html",
+      url:"widgets/" + widget.type + "/view.html",
       async:   false
    })
    .done(function( data ) {
@@ -101,7 +101,7 @@ WidgetManager.getViewModelFromServerSync = function(widget) {
 
    widgetViewModelCtor = null;
    $.ajax({
-      url: "widgets/" + widget.name + "/viewModel.js",
+      url: "widgets/" + widget.type + "/viewModel.js",
       dataType: "script",
       async:   false
    });
@@ -144,7 +144,7 @@ WidgetManager.updateToServer = function(widget, callback) {
         }
         catch (e)
         {
-            notifyWarning($.t("objects.widgetManager.exceptionDuringCallConfigurationChanged", {"widgetType" : widget.name}));
+            notifyWarning($.t("objects.widgetManager.exceptionDuringCallConfigurationChanged", {"widgetType" : widget.type}));
             console.warn(e);
             if ($.isFunction(callback))
                 callback(false);
@@ -152,11 +152,11 @@ WidgetManager.updateToServer = function(widget, callback) {
         }
 
         })
-        .fail(function(widgetName) { return function() {
-            notifyError($.t("objects.widgetManager.errorDuringModifyingWidgetNamed", {"widgetType" : widget.name}));
+        .fail(function(widgetType) { return function() {
+            notifyError($.t("objects.widgetManager.errorDuringModifyingWidgetNamed", {"widgetType" : widget.type}));
             if ($.isFunction(callback))
                 callback(false);
-        };}(widget.name));
+        };}(widget.type));
 }
 
 WidgetManager.consolidate = function(widget, widgetPackage) {
@@ -173,45 +173,39 @@ WidgetManager.consolidate = function(widget, widgetPackage) {
 WidgetManager.loadWidget = function(widget, pageWhereToAdd) {
    assert(!isNullOrUndefined(widget), "widget must be defined");
    assert(!isNullOrUndefined(pageWhereToAdd), "pageWhereToAdd must be defined");
-   if (WidgetPackageManager.packageExists(widget.name)) {
-      if (!WidgetPackageManager.widgetPackages[widget.name].viewAnViewModelHaveBeenDownloaded) {
+   if (WidgetPackageManager.packageExists(widget.type)) {
+      if (!WidgetPackageManager.widgetPackages[widget.type].viewAnViewModelHaveBeenDownloaded) {
          //we must download all missing informations
          var view = WidgetManager.getViewFromServerSync(widget);
          if (!isNullOrUndefined(view)) {
             //we append the view into the page
             $("div#templates").append(view);
 
-            //we get i18n data
-            i18n.options.resGetPath = 'widgets/__ns__/locales/__lng__.json';
-            i18n.loadNamespace(widget.name);
-            //we restore the resGetPath
-            i18n.options.resGetPath = "locales/__lng__.json";
-
             var viewModel = WidgetManager.getViewModelFromServerSync(widget);
             if (!isNullOrUndefined(viewModel)) {
-               WidgetPackageManager.widgetPackages[widget.name].viewModelCtor = viewModel;
+               WidgetPackageManager.widgetPackages[widget.type].viewModelCtor = viewModel;
                //all job has been done without error
-               WidgetPackageManager.widgetPackages[widget.name].viewAnViewModelHaveBeenDownloaded = true;
+               WidgetPackageManager.widgetPackages[widget.type].viewAnViewModelHaveBeenDownloaded = true;
             }
             else {
-               askForWidgetDelete(widget.name, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.name}));
+               askForWidgetDelete(widget.type, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.type}));
                return;
             }
          }
          else {
-            askForWidgetDelete(widget.name, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.name}));
+            askForWidgetDelete(widget.type, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.type}));
             return;
          }
       }
 
       //we finalize the load of the widget
-      WidgetManager.consolidate(widget, WidgetPackageManager.widgetPackages[widget.name]);
+      WidgetManager.consolidate(widget, WidgetPackageManager.widgetPackages[widget.type]);
       WidgetManager.addToDom(widget);
       //we add the widget to the collection
       pageWhereToAdd.addWidget(widget);
    }
    else {
-      askForWidgetDelete(widget.name, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.name}));
+      askForWidgetDelete(widget.type, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.type}));
    }
 }
 
@@ -258,7 +252,7 @@ WidgetManager.addToDom = function(widget) {
    }
    catch (e)
    {
-      notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.name, methodName : 'initialize'}));
+      notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.type, methodName : 'initialize'}));
       console.warn(e);
    }
 
@@ -270,7 +264,7 @@ WidgetManager.addToDom = function(widget) {
    }
    catch (e)
    {
-      notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.name, methodName : 'configurationChanged'}));
+      notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.type, methodName : 'configurationChanged'}));
       console.warn(e);
    }
 
@@ -283,7 +277,7 @@ WidgetManager.addToDom = function(widget) {
    }
    catch (e)
    {
-      notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.name, methodName : 'resized'}));
+      notifyWarning($.t("widgets.errors.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.type, methodName : 'resized'}));
       console.warn(e);
    }
 
@@ -334,7 +328,7 @@ WidgetManager.createGridsterWidget = function(widget) {
 
    domWidget +=    "<span class=\"btn-delete-widget\"><i class=\"glyphicon glyphicon-trash\"></i></span>\n" +
       "</div>\n" +
-      "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + widget.name + "-template' }\"/>\n" +
+      "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + widget.type + "-template' }\"/>\n" +
       "</li>\n"
 
    var item = page.gridster.add_widget(domWidget, widget.sizeX, widget.sizeY, widget.positionX, widget.positionY);
