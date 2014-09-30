@@ -17,7 +17,7 @@
 IMPLEMENT_PLUGIN(CRaspBerryPiSystemInformation)
 
 
-   CRaspBerryPiSystemInformation::CRaspBerryPiSystemInformation() : m_DeviceName("System")
+   CRaspBerryPiSystemInformation::CRaspBerryPiSystemInformation() : m_deviceName("System")
 {
 }
 
@@ -36,38 +36,39 @@ void CRaspBerryPiSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> c
 {
    try
    {
-      CRaspBerryPiSystemMemoryLoad    MemoryLoad     (m_DeviceName);
-      CRaspBerryPiSystemCPULoad       CPULoad        (m_DeviceName);
-      CRaspBerryPiSystemYadomsCPULoad YadomsCPULoad  (m_DeviceName);
-      CRaspberryPITemperatureSensor   TemperatureCPU (m_DeviceName);
+
+      YADOMS_LOG(debug) << "CRaspBerryPiSystemInformation is starting...";
+
+      CRaspBerryPiSystemMemoryLoad    MemoryLoad     (m_deviceName);
+      CRaspBerryPiSystemCPULoad       CPULoad        (m_deviceName);
+      CRaspBerryPiSystemYadomsCPULoad YadomsCPULoad  (m_deviceName);
+      CRaspberryPiTemperatureSensor   TemperatureCPU (m_deviceName);
 
       CRaspBerryPiSystemDisksList     DisksList;
 
-      std::vector<std::string>::const_iterator DisksListIterator;
-      std::vector<std::string> TempList;
+      // Device and keywords declaration, if needed
+      if (!context->deviceExists(m_deviceName))
+      {
+         context->declareDevice(m_deviceName, "System memory load");
+         MemoryLoad.declareKeywords(context);
+         CPULoad.declareKeywords(context);
+         YadomsCPULoad.declareKeywords(context);
+      }	  
 
+      std::vector<std::string> TempList;
       std::list<CRaspBerryPiSystemDiskUsage> DiskUsageList;
 
       TempList = DisksList.getList();
 
-      int counterDisk = 0;
-
-      for(DisksListIterator=TempList.begin(); DisksListIterator!=TempList.end(); ++DisksListIterator)
+      for(std::vector<std::string>::const_iterator disksListIterator = TempList.begin(); disksListIterator != TempList.end(); ++ disksListIterator)
       {
-         std::ostringstream ssKeyword;
-
-         ssKeyword << "DiskUsage" << counterDisk;
-         CRaspBerryPiSystemDiskUsage DiskUsage(m_DeviceName, *DisksListIterator, ssKeyword.str());
-
-         DiskUsage.declareDevice(context);
+         std::string diskKeywordName = disksListIterator->substr(5, 4) + "_DiskUsage";
+         YADOMS_LOG(debug) << "Disk Name:" << diskKeywordName;
+         CRaspBerryPiSystemDiskUsage DiskUsage(m_deviceName, *disksListIterator, diskKeywordName);
          DiskUsageList.push_back(DiskUsage);
-         ++counterDisk;
+         if (!context->keywordExists(m_deviceName, diskKeywordName))
+            DiskUsage.declareKeywords(context);
       }
-
-      CPULoad.declareDevice(context);
-      MemoryLoad.declareDevice(context);
-      YadomsCPULoad.declareDevice(context);
-      TemperatureCPU.declareDevice(context);
 
       // Event to be sent immediately for the first value
       context->getEventHandler().createTimer(kEvtTimerRefreshCPULoad, shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
@@ -89,66 +90,31 @@ void CRaspBerryPiSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> c
          {
          case kEvtTimerRefreshCPULoad:
             {
-               YADOMS_LOG(debug) << "RaspBerryPiSystem plugin :  Read a value...";
+               YADOMS_LOG(debug) << "RaspBerryPiSystem plugin :  Read CPU Loads";
 
-               std::ostringstream ss1;
-               std::ostringstream ss2;
-               std::ostringstream ss3;
+               CPULoad.read();
+               YadomsCPULoad.read();
+               TemperatureCPU.read();
 
-               try
-               {
-                  ss1 << std::fixed << std::setprecision(2) << CPULoad.getValue();
-                  CPULoad.historizeData(context);
-                  YADOMS_LOG(debug) << "RaspBerryPiSystemInformation plugin :  CPU Load : " << ss1.str();
-
-                  ss2 << std::fixed << std::setprecision(2) << YadomsCPULoad.getValue();
-                  YadomsCPULoad.historizeData(context);
-                  YADOMS_LOG(debug) << "RaspBerryPiSystemInformation plugin :  Yadoms CPU Load : " << ss2.str();
-
-                  ss3 << std::fixed << std::setprecision(2) << TemperatureCPU.getValue();
-                  TemperatureCPU.historizeData(context);
-                  YADOMS_LOG(debug) << "RaspBerryPiSystemInformation plugin :  CPU Temperature : " << ss3.str() << "°C";				 
-               }
-               catch (boost::system::system_error& e)
-               {
-                  YADOMS_LOG(error) << "RaspBerryPiSystemInformation plugin :  Exception" << e.what();
-                  return;
-               }
+               CPULoad.historizeData(context);
+               YadomsCPULoad.historizeData(context);
+               TemperatureCPU.historizeData(context);
             }
             break;
          case kEvtTimerRefreshDiskAndMemory:
             {
-               YADOMS_LOG(debug) << "RaspBerryPiSystem plugin :  Read a value...";
+               YADOMS_LOG(debug) << "RaspBerryPiSystem plugin :  Read Memory and disk Usages";
 
-               std::ostringstream ss;
+               MemoryLoad.read();
+               MemoryLoad.historizeData(context);
 
-               try
+               for(std::list<CRaspBerryPiSystemDiskUsage>::iterator disksListIterator=DiskUsageList.begin(); disksListIterator!=DiskUsageList.end(); ++disksListIterator)
                {
-                  ss << std::fixed << std::setprecision(2) << MemoryLoad.getValue();
-
-                  YADOMS_LOG(debug) << "RaspBerryPiSystemInformation plugin :  Memory Load : " << ss.str();
-
-                  MemoryLoad.historizeData(context);
-
-                  std::list<CRaspBerryPiSystemDiskUsage>::iterator DisksListIterator;
-
-                  for(DisksListIterator=DiskUsageList.begin(); DisksListIterator!=DiskUsageList.end(); ++DisksListIterator)
-                  {
-                     std::ostringstream ss3;
-                     ss3 << std::fixed << std::setprecision(2) << (*DisksListIterator).getValue();
-                     (*DisksListIterator).historizeData(context);
-                     YADOMS_LOG(debug) << "RaspBerryPiSystemInformation plugin :  Yadoms Disk Usage " << (*DisksListIterator).getDriveName() << " :" << ss3.str();
-                  }
-
+                  disksListIterator->read();
+                  disksListIterator->historizeData(context);
                }
-               catch (boost::system::system_error& e)
-               {
-                  YADOMS_LOG(error) << "RaspBerryPiSystemInformation plugin :  Exception" << e.what();
-                  return;
-               }
-
-               break;
             }
+             break;
          default:
             {
                YADOMS_LOG(error) << "Unknown message id";

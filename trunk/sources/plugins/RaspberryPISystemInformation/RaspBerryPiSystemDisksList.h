@@ -1,8 +1,8 @@
 #pragma once
 
 //--------------------------------------------------------------
-/// \brief  Disk list of the RaspBerryPi System
-/// \note   return the list of availables disks with RaspBerryPi Operating System
+/// \brief	CPU Load of the Raspberry Pi System
+/// \note   return the list of availables disks with Raspberry Pi Operating System
 //--------------------------------------------------------------
 class CRaspBerryPiSystemDisksList
 {
@@ -19,7 +19,8 @@ public:
    virtual ~CRaspBerryPiSystemDisksList();
 
    //--------------------------------------------------------------
-   /// \brief	    Returns a list of disks
+   /// \brief	    Returns read (computed) CPU load
+   /// \return     Temperature in �C
    //--------------------------------------------------------------
    std::vector<std::string>& getList();
 
@@ -28,7 +29,7 @@ private:
    std::vector<std::string> ExecuteCommandAndReturn(const std::string &szCommand);
 
    //--------------------------------------------------------------
-   /// \brief	    Disk List
+   /// \brief	    Memory Load in %
    //--------------------------------------------------------------
    std::vector<std::string> DrivesList;
 };

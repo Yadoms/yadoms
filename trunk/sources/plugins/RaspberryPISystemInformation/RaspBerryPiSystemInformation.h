@@ -11,6 +11,7 @@ namespace yApi = shared::plugin::yadomsApi;
 /// \note   - The CPU load od the RaspBerryPi System
 /// \note   - The CPU load of Yadoms application
 /// \note   - Disks Usages of all fixed disks (HDD)
+/// \note   - The temperature of the CPU of the Raspberry
 //--------------------------------------------------------------
 class CRaspBerryPiSystemInformation : public shared::plugin::IPlugin
 {
@@ -30,5 +31,5 @@ public:
    // [END] IPlugin implementation
 
 private:
-   std::string m_DeviceName;
+   std::string m_deviceName;
 };

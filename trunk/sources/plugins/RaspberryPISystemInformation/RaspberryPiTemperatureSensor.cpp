@@ -4,49 +4,30 @@
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 
 
-CRaspberryPITemperatureSensor::CRaspberryPITemperatureSensor(const std::string & deviceId)
-   :m_deviceId(deviceId), m_temperature(25.0)
+CRaspberryPiTemperatureSensor::CRaspberryPiTemperatureSensor(const std::string & deviceId)
+   :m_device(deviceId), m_keyword("Temp")
 {
 }
 
-CRaspberryPITemperatureSensor::~CRaspberryPITemperatureSensor()
+CRaspberryPiTemperatureSensor::~CRaspberryPiTemperatureSensor()
 {
 }
 
-const std::string& CRaspberryPITemperatureSensor::getDeviceId() const
+void CRaspberryPiTemperatureSensor::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
 {
-   return m_deviceId;
-}
-
-const std::string& CRaspberryPITemperatureSensor::getCapacity() const
-{
-   return m_Capacity;
-}
-
-const std::string& CRaspberryPITemperatureSensor::getKeyword() const
-{
-   return m_Keyword;
-}
-
-void CRaspberryPITemperatureSensor::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
-{
-
-   // Declare the device
-   context->declareDevice(m_deviceId, getModel(), shared::CStringExtension::EmptyString);
-
    // Declare associated keywords (= values managed by this device)
-   context->declareKeyword(m_deviceId, "temp1" , yApi::CStandardCapacities::Temperature);
+   context->declareKeyword(m_device, m_keyword);
 }
 
-
-void CRaspberryPITemperatureSensor::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CRaspberryPiTemperatureSensor::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
-   context->historizeData(m_deviceId, "temp1" , m_temperature);
+
+   context->historizeData(m_device, m_keyword);
 }
 
 
-double CRaspberryPITemperatureSensor::getValue()
+void CRaspberryPiTemperatureSensor::read()
 {
    try
    {
@@ -62,8 +43,7 @@ double CRaspberryPITemperatureSensor::getValue()
       }
       temperatureFile.close();
 
-      m_temperature = atof(readValue.c_str()) / 1000.0;
-      return m_temperature;
+      m_keyword.set( atof(readValue.c_str()) / 1000.0 );
    }
    catch(std::exception & ex)
    {
@@ -75,11 +55,4 @@ double CRaspberryPITemperatureSensor::getValue()
    }
    return 0;
 }
-
-const std::string& CRaspberryPITemperatureSensor::getModel()
-{
-   static const std::string model("RaspberryPI temperature sensor");
-   return model;
-}
-
 
