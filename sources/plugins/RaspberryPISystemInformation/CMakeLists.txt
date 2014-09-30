@@ -1,4 +1,4 @@
-IF(RASPBERRYPI)
+IF(CC_RPI_GCC)
 	# include common plugin definitions
 	include("../YadomsPluginsCommon.cmake")
 
@@ -8,6 +8,8 @@ IF(RASPBERRYPI)
 	set(RASPBERRYPISYSTEMINFORMATION_PLUGIN_SOURCES
 		stdafx.h
 		stdafx.cpp
+                LoadKeyword.h
+                LoadKeyword.cpp
 		RaspBerryPiSystemInformation.h
 		RaspBerryPiSystemInformation.cpp 
 		RaspBerryPiSystemMemoryLoad.h

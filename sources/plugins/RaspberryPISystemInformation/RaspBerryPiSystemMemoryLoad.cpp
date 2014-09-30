@@ -10,44 +10,26 @@
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
 
-CRaspBerryPiSystemMemoryLoad::CRaspBerryPiSystemMemoryLoad(const std::string & deviceId)
-   :m_deviceId(deviceId), m_memoryLoad(0), m_Capacity("MemoryLoad"), m_Keyword("RaspBerryPiMemoryLoad")
+CRaspBerryPiSystemMemoryLoad::CRaspBerryPiSystemMemoryLoad(const std::string & device)
+   :m_device(device), m_keyword("MemoryLoad")
 {}
 
 CRaspBerryPiSystemMemoryLoad::~CRaspBerryPiSystemMemoryLoad()
 {}
 
-const std::string& CRaspBerryPiSystemMemoryLoad::getDeviceId() const
+void CRaspBerryPiSystemMemoryLoad::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
 {
-   return m_deviceId;
-}
-
-const std::string& CRaspBerryPiSystemMemoryLoad::getCapacity() const
-{
-   return m_Capacity;
-}
-
-const std::string& CRaspBerryPiSystemMemoryLoad::getKeyword() const
-{
-   return m_Keyword;
-}
-
-void CRaspBerryPiSystemMemoryLoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
-{
-   // Declare the device
-   context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
-
-   // Declare associated keywords (= values managed by this device)
-   context->declareCustomKeyword(m_deviceId, getCapacity()  , getKeyword() , yApi::kGet , yApi::kNumeric, shared::plugin::yadomsApi::CStandardUnits::Percent);
+   context->declareKeyword(m_device, m_keyword);
 }
 
 void CRaspBerryPiSystemMemoryLoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   BOOST_ASSERT_MSG(context, "context must be defined");
-   context->historizeData(m_deviceId, getCapacity()  , m_memoryLoad);
+   BOOST_ASSERT_MSG(!!context, "context must be defined");
+
+   context->historizeData(m_device, m_keyword);
 }
 
-double CRaspBerryPiSystemMemoryLoad::getValue()
+void CRaspBerryPiSystemMemoryLoad::read()
 {
    if (sysinfo (&memInfo)!=0)
    {
@@ -63,12 +45,14 @@ double CRaspBerryPiSystemMemoryLoad::getValue()
 
    long long virtualMemUsed = memInfo.totalram - memInfo.freeram;
 
-   YADOMS_LOG(debug) << "virtual memory used  :" << virtualMemUsed;
-   YADOMS_LOG(debug) << "total virtual memory :" << totalVirtualMem;
+   YADOMS_LOG(debug) << "Mémoire virtuelle utilisée :" << virtualMemUsed;
+   YADOMS_LOG(debug) << "Mémoire virtuelle totale   :" << totalVirtualMem;
 
-   m_memoryLoad = virtualMemUsed*100/double(totalVirtualMem);
+   //FIXME : Cette méthode renvoie une valeur supérieure à ce que me renvoie le moniteur système d'Ubuntu ... A vérifier. Domoticz donne la meme chose. A vérifier avec une autre fonction mémoire en ligne de commande.
 
-   return m_memoryLoad;
+   m_keyword.set( virtualMemUsed*100/double(totalVirtualMem));
+
+   YADOMS_LOG(debug) << "RaspBerryPiInformation plugin :  Memory Load : " << m_keyword.formatValue();
 }
 
 

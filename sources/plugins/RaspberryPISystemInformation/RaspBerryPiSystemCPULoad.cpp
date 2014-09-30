@@ -1,14 +1,15 @@
 #include "stdafx.h"
+#include <shared/Log.h>
 #include "RaspBerryPiSystemCPULoad.h"
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
-CRaspBerryPiSystemCPULoad::CRaspBerryPiSystemCPULoad(const std::string & deviceId)
-   :m_deviceId(deviceId), m_CPULoad(0), m_Capacity("cpuload"), m_Keyword("RaspBerryPiCPULoad")
+CRaspBerryPiSystemCPULoad::CRaspBerryPiSystemCPULoad(const std::string & device)
+   :m_device(device), m_keyword("RaspBerryPiCPULoad")
 {
    FILE* file = fopen("/proc/stat", "r");
-   fscanf(file, "cpu %20Lu %20Lu %20Lu %20Lu", &lastTotalUser, &lastTotalUserLow,
+   fscanf(file, "cpu %Lu %Lu %Lu %Lu", &lastTotalUser, &lastTotalUserLow,
       &lastTotalSys, &lastTotalIdle);
    fclose(file);
 }
@@ -17,46 +18,28 @@ CRaspBerryPiSystemCPULoad::~CRaspBerryPiSystemCPULoad()
 {
 }
 
-const std::string& CRaspBerryPiSystemCPULoad::getDeviceId() const
+void CRaspBerryPiSystemCPULoad::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
 {
-   return m_deviceId;
-}
-
-const std::string& CRaspBerryPiSystemCPULoad::getCapacity() const
-{
-   return m_Capacity;
-}
-
-const std::string& CRaspBerryPiSystemCPULoad::getKeyword() const
-{
-   return m_Keyword;
-}
-
-void CRaspBerryPiSystemCPULoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
-{
-   // Declare the device
-   context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
-
    // Declare associated keywords (= values managed by this device)
-   context->declareCustomKeyword(m_deviceId, getKeyword()  , getCapacity(), yApi::kGet , yApi::kNumeric, shared::plugin::yadomsApi::CStandardUnits::Percent);
+   context->declareKeyword(m_device, m_keyword);
 }
 
 void CRaspBerryPiSystemCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   BOOST_ASSERT_MSG(context, "context must be defined");
+   BOOST_ASSERT_MSG(!!context, "context must be defined");
 
-   context->historizeData(m_deviceId, getKeyword()  , m_CPULoad);
+   context->historizeData(m_device, m_keyword);
 }
 
-double CRaspBerryPiSystemCPULoad::getValue()
+void CRaspBerryPiSystemCPULoad::read()
 {
    //TODO : Keep the last value, if an overflow occured
-   double percent;
+   float percent;
    unsigned long long totalUser, totalUserLow, totalSys, totalIdle;
    FILE* file;
 
    file = fopen("/proc/stat", "r");
-   fscanf(file, "cpu %20Lu %20Lu %20Lu %20Lu", &totalUser, &totalUserLow,
+   fscanf(file, "cpu %Lu %Lu %Lu %Lu", &totalUser, &totalUserLow,
       &totalSys, &totalIdle);
    fclose(file);
 
@@ -66,8 +49,7 @@ double CRaspBerryPiSystemCPULoad::getValue()
          percent = -1.0;
    }
    else{
-      unsigned long long total;
-      total = (totalUser - lastTotalUser) + (totalUserLow - lastTotalUserLow) +
+      unsigned long long total = (totalUser - lastTotalUser) + (totalUserLow - lastTotalUserLow) +
          (totalSys - lastTotalSys);
       percent = total;
       total += (totalIdle - lastTotalIdle);
@@ -80,9 +62,8 @@ double CRaspBerryPiSystemCPULoad::getValue()
    lastTotalSys = totalSys;
    lastTotalIdle = totalIdle;
 
-   m_CPULoad = percent;
-
-   return percent;
+   m_keyword.set (percent);
+   YADOMS_LOG(debug) << "RaspBerryPiSystemInformation plugin :  CPU Load : " << m_keyword.formatValue();
 }
 
 

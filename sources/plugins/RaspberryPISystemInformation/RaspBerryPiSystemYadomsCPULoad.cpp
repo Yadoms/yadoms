@@ -1,11 +1,12 @@
 #include "stdafx.h"
+#include <shared/Log.h>
 #include "RaspBerryPiSystemYadomsCPULoad.h"
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
-CRaspBerryPiSystemYadomsCPULoad::CRaspBerryPiSystemYadomsCPULoad(const std::string & deviceId)
-   :m_deviceId(deviceId), m_CPULoad(0), m_Keyword("YadomsCPULoad"), m_Capacity("cpuload")
+CRaspBerryPiSystemYadomsCPULoad::CRaspBerryPiSystemYadomsCPULoad(const std::string & device)
+   :m_device(device), m_keyword("YadomsCPULoad")
 {
    FILE* file;
    struct tms timeSample;
@@ -29,41 +30,24 @@ CRaspBerryPiSystemYadomsCPULoad::CRaspBerryPiSystemYadomsCPULoad(const std::stri
 CRaspBerryPiSystemYadomsCPULoad::~CRaspBerryPiSystemYadomsCPULoad()
 {}
 
-const std::string& CRaspBerryPiSystemYadomsCPULoad::getDeviceId() const
+void CRaspBerryPiSystemYadomsCPULoad::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
 {
-   return m_deviceId;
-}
-
-const std::string& CRaspBerryPiSystemYadomsCPULoad::getCapacity() const
-{
-   return m_Capacity;
-}
-
-const std::string& CRaspBerryPiSystemYadomsCPULoad::getKeyword() const
-{
-   return m_Keyword;
-}
-
-void CRaspBerryPiSystemYadomsCPULoad::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
-{
-   // Declare the device
-   context->declareDevice(m_deviceId, shared::CStringExtension::EmptyString, shared::CStringExtension::EmptyString);
-
    // Declare associated keywords (= values managed by this device)
-   context->declareCustomKeyword(m_deviceId, getKeyword()  , getCapacity() , yApi::kGet , yApi::kNumeric, shared::plugin::yadomsApi::CStandardUnits::Percent);
+   context->declareKeyword(m_device, m_keyword);
 }
 
 void CRaspBerryPiSystemYadomsCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
-   context->historizeData(m_deviceId, getKeyword()  , m_CPULoad);
+
+   context->historizeData(m_device, m_keyword);
 }
 
-double CRaspBerryPiSystemYadomsCPULoad::getValue()
+void CRaspBerryPiSystemYadomsCPULoad::read()
 {
    struct tms timeSample;
    clock_t now;
-   double percent;
+   float percent;
 
 
    now = times(&timeSample);
@@ -85,7 +69,7 @@ double CRaspBerryPiSystemYadomsCPULoad::getValue()
    lastSysCPU = timeSample.tms_stime;
    lastUserCPU = timeSample.tms_utime;
 
-   m_CPULoad = percent;
+   m_keyword.set( percent );
 
-   return percent;
+   YADOMS_LOG(debug) << "RaspBerryPiInformation plugin :  Yadoms CPU Load : " << m_keyword.formatValue();
 }
