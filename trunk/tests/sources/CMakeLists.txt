@@ -152,6 +152,7 @@ add_subdirectory(server)
 
 source_group(shared shared/*.*)
 source_group(shared\\event shared/event/*.*)
+source_group(shared\\communication shared/communication/*.*)
 source_group(shared\\exception shared/exception/*.*)
 source_group(shared\\plugin shared/plugin/*.*)
 source_group(shared\\plugin\\configuration shared/plugin/configuration/*.*)

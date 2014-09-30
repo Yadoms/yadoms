@@ -11,8 +11,8 @@
 
 BOOST_AUTO_TEST_SUITE(TestEvent)
 
-   // Event IDs
-   enum
+// Event IDs
+enum
 {
    FirstMessage = shared::event::kUserFirstId,   // Always start from shared::event::kUserFirstId
    Message1,

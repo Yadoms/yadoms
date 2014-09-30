@@ -100,7 +100,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\param    [in]    details           Device details
       ///\throw shared::exception::CEmptyResult if device already exist
       //-----------------------------------------------------
-      virtual void declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) const = 0;
+      virtual void declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) = 0;
 
       
 

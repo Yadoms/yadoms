@@ -29,6 +29,10 @@ set(SHARED_LIB_SRC
    shared/communication/Buffer.hpp
    shared/communication/BufferLogger.h
    shared/communication/BufferLogger.cpp
+   shared/communication/EOFReceiveBufferHandler.h
+   shared/communication/EOFReceiveBufferHandler.cpp
+   shared/communication/FixedSizeReceiveBufferHandler.h
+   shared/communication/FixedSizeReceiveBufferHandler.cpp
    shared/communication/IAsyncPort.h
    shared/communication/IBufferLogger.h
    shared/communication/IReceiveBufferHandler.h

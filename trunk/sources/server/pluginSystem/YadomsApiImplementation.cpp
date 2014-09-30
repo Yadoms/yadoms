@@ -36,7 +36,7 @@ const shared::CDataContainer CYadomsApiImplementation::getDeviceDetails(const st
    return m_deviceRequester->getDevice(getPluginId(), device)->Details;
 }
 
-void CYadomsApiImplementation::declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details) const
+void CYadomsApiImplementation::declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details)
 {
    if (deviceExists(device))
       throw shared::exception::CEmptyResult((boost::format("Error declaring device %1% : already exists") % device).str());
