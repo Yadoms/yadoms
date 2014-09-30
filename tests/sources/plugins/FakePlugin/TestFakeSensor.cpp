@@ -32,26 +32,22 @@ namespace yApi = shared::plugin::yadomsApi;
 class CDefaultYadomsApiMock : public yApi::IYadomsApi
 {
 public:
-   struct Device { std::string m_model; std::string m_details; };
-   struct Keyword { std::string m_device; std::string m_capacity; yApi::EKeywordAccessMode m_accessMode; yApi::EKeywordType m_type; std::string m_units; shared::CDataContainer m_details; };
-   struct Data { std::string m_device; std::string m_keyword; std::string m_value; };
+   struct Device { std::string m_model; shared::CDataContainer m_details; };
+   struct Keyword { std::string m_device; std::string m_keyword; std::string m_capacity; shared::CDataContainer m_details; };
+   struct Data { std::string m_device; std::string m_keyword; std::string m_capacity; std::string m_value; };
 public:
    virtual ~CDefaultYadomsApiMock() {}
    // IYadomsApi implementation
    virtual shared::event::CEventHandler & getEventHandler() { return m_defaultEventHandler; }
    virtual bool deviceExists(const std::string& device) const { return m_devices.find(device) != m_devices.end(); }
    virtual const shared::CDataContainer getDeviceDetails(const std::string& device) const { return m_devices.find(device)->second.m_details; }
-   virtual bool declareDevice(const std::string& device, const std::string& model, const std::string & details) { Device dev = {model, details}; m_devices[device] = dev; return true; }
+   virtual void declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer)
+   { Device dev = {model, details}; m_devices[device] = dev; }
    virtual bool keywordExists(const std::string& device, const std::string& keyword) const { return false; }
-   virtual bool declareCustomKeyword(const std::string& device, const std::string& keyword, const std::string& capacity, yApi::EKeywordAccessMode accessMode, yApi::EKeywordType type, const std::string & units = shared::CStringExtension::EmptyString, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer)
-   { Keyword kw = { device, capacity, accessMode, type, units, details }; m_keywords[keyword] = kw; return true; }
-   virtual bool declareKeyword(const std::string& device, const std::string& keyword, const yApi::CStandardCapacity & capacity, const shared::CDataContainer& details)
-   { Keyword kw = { device, capacity.getName(), capacity.getAccessMode(), capacity.getType(), capacity.getUnit(), details }; m_keywords[keyword] = kw; return true; }
-   virtual void historizeData(const std::string & device, const std::string & keyword, const std::string & value) { Data data = {device, keyword, value}; m_data.push_back(data); }
-   virtual void historizeData(const std::string & device, const std::string & keyword, bool value) { Data data = {device, keyword, boost::lexical_cast<std::string>(value)}; m_data.push_back(data); }
-   virtual void historizeData(const std::string & device, const std::string & keyword, int value) { Data data = {device, keyword, boost::lexical_cast<std::string>(value)}; m_data.push_back(data); }
-   virtual void historizeData(const std::string & device, const std::string & keyword, double value) { Data data = {device, keyword, boost::lexical_cast<std::string>(value)}; m_data.push_back(data); }
-   virtual void historizeData(const std::string & device, const std::string & keyword, double value, int precision) { Data data = {device, keyword, boost::lexical_cast<std::string>(value)}; m_data.push_back(data); }
+   virtual void declareKeyword(const std::string& device, const yApi::commands::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer)
+   { Keyword kw = { device, keyword.getKeyword(), keyword.getCapacity(), details }; m_keywords[keyword.getKeyword()] = kw; }
+   virtual void historizeData(const std::string& device, const yApi::commands::IHistorizable& keyword)
+   { Data data = {device, keyword.getKeyword(), keyword.getCapacity(), keyword.formatValue() }; m_data.push_back(data); }
    virtual const shared::plugin::information::IInformation& getInformation() const { return m_defaultInformation; }
    virtual shared::CDataContainer getConfiguration() const { return m_defaultConfiguration; }
    virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message) {}
@@ -70,21 +66,16 @@ protected:
    std::vector<Data> m_data;
 };
 
-void ckeckKeyword(boost::shared_ptr<CDefaultYadomsApiMock> context, const std::string& keyword, const std::string& device, const std::string& capacity, yApi::EKeywordAccessMode accessMode,
-   yApi::EKeywordType type, const std::string& units)
+void ckeckKeyword(boost::shared_ptr<CDefaultYadomsApiMock> context, const std::string& keyword, const std::string& device, const yApi::CStandardCapacity& capacity)
 {
    std::map<std::string, CDefaultYadomsApiMock::Keyword>::const_iterator itKw = context->getKeywords().find(keyword);
    if (itKw == context->getKeywords().end())
-      BOOST_ERROR(keyword + "keyword not found");
+      BOOST_ERROR(keyword + " keyword not found");
 
    CDefaultYadomsApiMock::Keyword kw = itKw->second;
 
    BOOST_CHECK_EQUAL(kw.m_device, device);
-   BOOST_CHECK_EQUAL(kw.m_capacity, capacity);
-   BOOST_CHECK_EQUAL(kw.m_accessMode, accessMode);
-   BOOST_CHECK_EQUAL(kw.m_type, type);
-   BOOST_CHECK_EQUAL(kw.m_units, units);
-   BOOST_CHECK_EQUAL(kw.m_details.empty(), true);
+   BOOST_CHECK_EQUAL(kw.m_capacity, capacity.getName());
 }
 
 BOOST_AUTO_TEST_CASE(DeviceDeclaration)
@@ -92,18 +83,14 @@ BOOST_AUTO_TEST_CASE(DeviceDeclaration)
    CFakeSensor sensor(sensorId);
    boost::shared_ptr<CDefaultYadomsApiMock> context(new CDefaultYadomsApiMock);
 
-   sensor.declareDevice(context);
-
-   // Check device declaration
-   BOOST_CHECK_EQUAL(context->deviceExists(sensorId), true);
-   BOOST_CHECK_EQUAL(context->getDevices().size(), (unsigned int)1);
+   sensor.declareKeywords(context);
 
    // Check keywords declaration
    BOOST_CHECK_EQUAL(context->getKeywords().size(), (unsigned int)4);
-   ckeckKeyword(context, "temp1", sensorId, yApi::CStandardCapacities::Temperature, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::DegreesCelcius);
-   ckeckKeyword(context, "temp2", sensorId, yApi::CStandardCapacities::Temperature, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::DegreesCelcius);
-   ckeckKeyword(context, "battery", sensorId, yApi::CStandardCapacities::BatteryLevel, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::Percent);
-   ckeckKeyword(context, "rssi", sensorId, yApi::CStandardCapacities::Rssi, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::Percent);
+   ckeckKeyword(context, "temp1", sensorId, yApi::CStandardCapacities::Temperature);
+   ckeckKeyword(context, "temp2", sensorId, yApi::CStandardCapacities::Temperature);
+   ckeckKeyword(context, "Battery", sensorId, yApi::CStandardCapacities::BatteryLevel);
+   ckeckKeyword(context, "rssi", sensorId, yApi::CStandardCapacities::Rssi);
 }
 
 const CDefaultYadomsApiMock::Data& readLastData(boost::shared_ptr<CDefaultYadomsApiMock> context, const std::string& keyword)
@@ -137,8 +124,8 @@ BOOST_AUTO_TEST_CASE(Historization)
    BOOST_CHECK_EQUAL(boost::lexical_cast<double>(readLastData(context, "temp1").m_value), 25.0);
    BOOST_CHECK_EQUAL(readLastData(context, "temp2").m_device, sensorId);
    BOOST_CHECK_EQUAL(boost::lexical_cast<double>(readLastData(context, "temp2").m_value), 10.0);
-   BOOST_CHECK_EQUAL(readLastData(context, "battery").m_device, sensorId);
-   BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "battery").m_value), 100);
+   BOOST_CHECK_EQUAL(readLastData(context, "Battery").m_device, sensorId);
+   BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "Battery").m_value), 100);
    BOOST_CHECK_EQUAL(readLastData(context, "rssi").m_device, sensorId);
    BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "rssi").m_value), 50);
 
@@ -152,8 +139,8 @@ BOOST_AUTO_TEST_CASE(Historization)
    BOOST_CHECK_EQUAL(readLastData(context, "temp2").m_device, sensorId);
    BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(context, "temp2").m_value), 9.0);
    BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(context, "temp2").m_value), 11.0);
-   BOOST_CHECK_EQUAL(readLastData(context, "battery").m_device, sensorId);
-   BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "battery").m_value), 99);
+   BOOST_CHECK_EQUAL(readLastData(context, "Battery").m_device, sensorId);
+   BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "Battery").m_value), 99);
    BOOST_CHECK_EQUAL(readLastData(context, "rssi").m_device, sensorId);
    BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "rssi").m_value), 50);
 }
@@ -169,9 +156,9 @@ BOOST_AUTO_TEST_CASE(BatteryDecrease)
    {
       sensor.historizeData(context);
       if (i >=20 )
-         BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "battery").m_value), (int)i);
+         BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "Battery").m_value), (int)i);
       else
-         BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "battery").m_value), (int)20);
+         BOOST_CHECK_EQUAL(boost::lexical_cast<int>(readLastData(context, "Battery").m_value), (int)20);
       sensor.read();
    }
 }
