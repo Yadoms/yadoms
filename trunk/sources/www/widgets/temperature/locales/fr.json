@@ -1,9 +1,0 @@
-{
-   "description": "Un widget tout simple qui affiche la temperature",
-   "configurationSchema" : {
-      "device" : {
-         "name" : "Capteur de temperature",
-         "description" : "Capteur qui fournit la température"
-      }
-   }
-}
