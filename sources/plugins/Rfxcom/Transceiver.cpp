@@ -8,6 +8,7 @@
 #include "rfxcomMessages/Chime.h"
 #include "rfxcomMessages/Curtain1.h"
 #include "rfxcomMessages/Fan.h"
+#include "rfxcomMessages/Humidity.h"
 #include "rfxcomMessages/Lighting1.h"
 #include "rfxcomMessages/Lighting2.h"
 #include "rfxcomMessages/Lighting3.h"
@@ -180,6 +181,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    case pTypeFan                 : message.reset(new rfxcomMessages::CFan              (context, *buf, m_seqNumberProvider)); break;
    case pTypeRFY                 : message.reset(new rfxcomMessages::CRfy              (context, *buf, m_seqNumberProvider)); break;
    case pTypeTEMP                : message.reset(new rfxcomMessages::CTemp             (context, *buf, m_seqNumberProvider)); break;
+   case pTypeHUM                 : message.reset(new rfxcomMessages::CHumidity         (context, *buf, m_seqNumberProvider)); break;
       // TODO à compléter
    default:
       {

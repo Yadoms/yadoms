@@ -6,4 +6,4 @@
 #include "Rssi.h"
 #include "Switch.h"
 #include "Temperature.h"
-
+#include "Humidity.h"

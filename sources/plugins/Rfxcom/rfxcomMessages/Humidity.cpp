@@ -1,0 +1,89 @@
+#include "stdafx.h"
+#include "Humidity.h"
+#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/exception/InvalidParameter.hpp>
+
+// Shortcut to yadomsApi namespace
+namespace yApi = shared::plugin::yadomsApi;
+
+namespace rfxcomMessages
+{
+
+CHumidity::CHumidity(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+   :m_humidity("humidity"), m_batteryLevel("battery"), m_rssi("rssi")
+{
+   CheckReceivedMessage(rbuf, pTypeHUM, GET_RBUF_STRUCT_SIZE(HUM), DONT_CHECK_SEQUENCE_NUMBER);
+
+   m_subType = rbuf.HUM.subtype;
+
+   m_id = rbuf.HUM.id1 | (rbuf.HUM.id2 << 8);
+
+   m_humidity.set(rbuf.HUM.humidity);
+
+   m_batteryLevel.set(rbuf.HUM.battery_level == 0x09 ? 100 : 0);
+
+   m_rssi.set(rbuf.HUM.rssi * 100 / 0x0F);
+
+   Init(context);
+}
+
+CHumidity::~CHumidity()
+{
+}
+
+void CHumidity::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   // Build device description
+   buildDeviceModel();
+   buildDeviceName();
+
+   // Create device and keywords if needed
+   if (!context->deviceExists(m_deviceName))
+   {
+      shared::CDataContainer details;
+      details.set("type", pTypeHUM);
+      details.set("subType", m_subType);
+      details.set("id", m_id);
+      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+
+      context->declareKeyword(m_deviceName, m_humidity);
+      context->declareKeyword(m_deviceName, m_batteryLevel);
+      context->declareKeyword(m_deviceName, m_rssi);
+   }
+}
+
+const shared::communication::CByteBuffer CHumidity::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+{
+   // Nothing to do (message type is read-only)
+   return shared::communication::CByteBuffer();
+}
+
+void CHumidity::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+{
+   context->historizeData(m_deviceName, m_humidity);
+   context->historizeData(m_deviceName, m_batteryLevel);
+   context->historizeData(m_deviceName, m_rssi);
+}
+
+void CHumidity::buildDeviceName()
+{
+   std::ostringstream ssdeviceName;
+   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_id;
+   m_deviceName = ssdeviceName.str();
+}
+
+void CHumidity::buildDeviceModel()
+{
+   std::ostringstream ssModel;
+
+   switch(m_subType)
+   {
+   case sTypeHUM1: ssModel << "LaCrosse TX3"; break;
+   case sTypeHUM2: ssModel << "LaCrosse WS2300"; break;
+   default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
+   }
+
+   m_deviceModel = ssModel.str();
+}
+
+} // namespace rfxcomMessages

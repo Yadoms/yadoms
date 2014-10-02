@@ -92,6 +92,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/commands/Counter.h
    shared/plugin/yadomsApi/commands/Curtain.cpp
    shared/plugin/yadomsApi/commands/Curtain.h
+   shared/plugin/yadomsApi/commands/Humidity.cpp
+   shared/plugin/yadomsApi/commands/Humidity.h
    shared/plugin/yadomsApi/commands/IHistorizable.h
    shared/plugin/yadomsApi/commands/Message.cpp
    shared/plugin/yadomsApi/commands/Message.h
