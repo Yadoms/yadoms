@@ -8,21 +8,21 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {   
    //-----------------------------------------------------
-   ///\brief A temperature historizable object
+   ///\brief A humidity historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CTemperature : public IHistorizable
+   class YADOMS_SHARED_EXPORT CHumidity : public IHistorizable
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CTemperature(const std::string& keywordName);
+      CHumidity(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CTemperature();
+      virtual ~CHumidity();
 
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
@@ -39,15 +39,23 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 
       //-----------------------------------------------------
       ///\brief                     Set value
-      ///\param[in] temperature     temperature value (degres)
+      ///\param[in] humidity        humidity value (%)
       //-----------------------------------------------------
-      void set(double temperature);
+      void set(int humidity);
 
       //-----------------------------------------------------
       ///\brief                     Get value
-      ///\return                    The temperature value (degres)
+      ///\return                    The humidity value (%)
       //-----------------------------------------------------
-      double temperature() const;
+      int humidity() const;
+
+   protected:
+      //-----------------------------------------------------
+      ///\brief                     Normalize the humidity value
+      ///\param[in] value           Raw value
+      ///\return                    The normalized humidity (0-100)
+      //-----------------------------------------------------
+      static int Normalize(int value);
 
    private:
       //-----------------------------------------------------
@@ -56,9 +64,9 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       const std::string m_keywordName;
 
       //-----------------------------------------------------
-      ///\brief                     The temperature value (degres)
+      ///\brief                     The humidity value (%)
       //-----------------------------------------------------
-      double m_temperature;
+      int m_humidity;
    };
 
 

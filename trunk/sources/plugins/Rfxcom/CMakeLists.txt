@@ -15,6 +15,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/IRfxcomMessage.h
    rfxcomMessages/Fan.h
    rfxcomMessages/Fan.cpp
+   rfxcomMessages/Humidity.h
+   rfxcomMessages/Humidity.cpp
    rfxcomMessages/Lighting1.h
    rfxcomMessages/Lighting1.cpp
    rfxcomMessages/Lighting2.h
