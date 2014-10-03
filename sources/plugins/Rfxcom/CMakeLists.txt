@@ -8,6 +8,8 @@ include("../YadomsPluginsCommon.cmake")
 set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Ack.h
    rfxcomMessages/Ack.cpp
+   rfxcomMessages/Barometric.h
+   rfxcomMessages/Barometric.cpp
    rfxcomMessages/Chime.h
    rfxcomMessages/Chime.cpp
    rfxcomMessages/Curtain1.h
@@ -38,6 +40,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Temp.cpp
    rfxcomMessages/TempHumidity.h
    rfxcomMessages/TempHumidity.cpp
+   rfxcomMessages/TempHumidityBarometric.h
+   rfxcomMessages/TempHumidityBarometric.cpp
    rfxcomMessages/TransceiverStatus.h
    rfxcomMessages/TransceiverStatus.cpp
 )
