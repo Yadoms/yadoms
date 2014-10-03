@@ -5,9 +5,12 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include "RfxcomFactory.h"
 #include "rfxcomMessages/Ack.h"
+#include "rfxcomMessages/Barometric.h"
 #include "rfxcomMessages/Chime.h"
+#include "rfxcomMessages/Current.h"
 #include "rfxcomMessages/Curtain1.h"
 #include "rfxcomMessages/Fan.h"
+#include "rfxcomMessages/Energy.h"
 #include "rfxcomMessages/Humidity.h"
 #include "rfxcomMessages/Lighting1.h"
 #include "rfxcomMessages/Lighting2.h"
@@ -17,6 +20,8 @@
 #include "rfxcomMessages/RFXMeter.h"
 #include "rfxcomMessages/Rfy.h"
 #include "rfxcomMessages/Temp.h"
+#include "rfxcomMessages/TempHumidity.h"
+#include "rfxcomMessages/TempHumidityBarometric.h"
 #include "rfxcomMessages/TransceiverStatus.h"
 #include "IncrementSequenceNumber.h"
 #include <shared/communication/PortException.hpp>
@@ -168,20 +173,25 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message;
    switch(buf->RXRESPONSE.packettype)
    {
-   case pTypeInterfaceMessage    : message.reset(new rfxcomMessages::CTransceiverStatus(*buf, m_seqNumberProvider)); break;
-   case pTypeRecXmitMessage      : message.reset(new rfxcomMessages::CAck              (*buf, m_seqNumberProvider)); break;
-   case pTypeRFXMeter            : message.reset(new rfxcomMessages::CRFXMeter         (context, *buf, m_seqNumberProvider)); break;
-   case pTypeLighting1           : message.reset(new rfxcomMessages::CLighting1        (context, *buf, m_seqNumberProvider)); break;
-   case pTypeLighting2           : message.reset(new rfxcomMessages::CLighting2        (context, *buf, m_seqNumberProvider)); break;
-   case pTypeLighting3           : message.reset(new rfxcomMessages::CLighting3        (context, *buf, m_seqNumberProvider)); break;
-   case pTypeLighting4           : message.reset(new rfxcomMessages::CLighting4        (context, *buf, m_seqNumberProvider)); break;
-   case pTypeLighting6           : message.reset(new rfxcomMessages::CLighting6        (context, *buf, m_seqNumberProvider)); break;
-   case pTypeChime               : message.reset(new rfxcomMessages::CChime            (context, *buf, m_seqNumberProvider)); break;
-   case pTypeCurtain             : message.reset(new rfxcomMessages::CCurtain1         (context, *buf, m_seqNumberProvider)); break;
-   case pTypeFan                 : message.reset(new rfxcomMessages::CFan              (context, *buf, m_seqNumberProvider)); break;
-   case pTypeRFY                 : message.reset(new rfxcomMessages::CRfy              (context, *buf, m_seqNumberProvider)); break;
-   case pTypeTEMP                : message.reset(new rfxcomMessages::CTemp             (context, *buf, m_seqNumberProvider)); break;
-   case pTypeHUM                 : message.reset(new rfxcomMessages::CHumidity         (context, *buf, m_seqNumberProvider)); break;
+   case pTypeInterfaceMessage    : message.reset(new rfxcomMessages::CTransceiverStatus      (*buf, m_seqNumberProvider)); break;
+   case pTypeRecXmitMessage      : message.reset(new rfxcomMessages::CAck                    (*buf, m_seqNumberProvider)); break;
+   case pTypeRFXMeter            : message.reset(new rfxcomMessages::CRFXMeter               (context, *buf, m_seqNumberProvider)); break;
+   case pTypeLighting1           : message.reset(new rfxcomMessages::CLighting1              (context, *buf, m_seqNumberProvider)); break;
+   case pTypeLighting2           : message.reset(new rfxcomMessages::CLighting2              (context, *buf, m_seqNumberProvider)); break;
+   case pTypeLighting3           : message.reset(new rfxcomMessages::CLighting3              (context, *buf, m_seqNumberProvider)); break;
+   case pTypeLighting4           : message.reset(new rfxcomMessages::CLighting4              (context, *buf, m_seqNumberProvider)); break;
+   case pTypeLighting6           : message.reset(new rfxcomMessages::CLighting6              (context, *buf, m_seqNumberProvider)); break;
+   case pTypeChime               : message.reset(new rfxcomMessages::CChime                  (context, *buf, m_seqNumberProvider)); break;
+   case pTypeCurtain             : message.reset(new rfxcomMessages::CCurtain1               (context, *buf, m_seqNumberProvider)); break;
+   case pTypeFan                 : message.reset(new rfxcomMessages::CFan                    (context, *buf, m_seqNumberProvider)); break;
+   case pTypeRFY                 : message.reset(new rfxcomMessages::CRfy                    (context, *buf, m_seqNumberProvider)); break;
+   case pTypeTEMP                : message.reset(new rfxcomMessages::CTemp                   (context, *buf, m_seqNumberProvider)); break;
+   case pTypeHUM                 : message.reset(new rfxcomMessages::CHumidity               (context, *buf, m_seqNumberProvider)); break;
+   case pTypeTEMP_HUM            : message.reset(new rfxcomMessages::CTempHumidity           (context, *buf, m_seqNumberProvider)); break;
+   case pTypeBARO                : message.reset(new rfxcomMessages::CBarometric             (context, *buf, m_seqNumberProvider)); break;
+   case pTypeTEMP_HUM_BARO       : message.reset(new rfxcomMessages::CTempHumidityBarometric (context, *buf, m_seqNumberProvider)); break;
+   case pTypeCURRENT             : message.reset(new rfxcomMessages::CCurrent                (context, *buf, m_seqNumberProvider)); break;
+   case pTypeENERGY              : message.reset(new rfxcomMessages::CEnergy                 (context, *buf, m_seqNumberProvider)); break;
       // TODO à compléter
    default:
       {

@@ -12,11 +12,15 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Barometric.cpp
    rfxcomMessages/Chime.h
    rfxcomMessages/Chime.cpp
+   rfxcomMessages/Current.h
+   rfxcomMessages/Current.cpp
    rfxcomMessages/Curtain1.h
    rfxcomMessages/Curtain1.cpp
    rfxcomMessages/IRfxcomMessage.h
    rfxcomMessages/Fan.h
    rfxcomMessages/Fan.cpp
+   rfxcomMessages/Energy.h
+   rfxcomMessages/Energy.cpp
    rfxcomMessages/Humidity.h
    rfxcomMessages/Humidity.cpp
    rfxcomMessages/Lighting1.h

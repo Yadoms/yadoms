@@ -90,13 +90,19 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/commands/commands.h
    shared/plugin/yadomsApi/commands/Counter.cpp
    shared/plugin/yadomsApi/commands/Counter.h
+   shared/plugin/yadomsApi/commands/Current.cpp
+   shared/plugin/yadomsApi/commands/Current.h
    shared/plugin/yadomsApi/commands/Curtain.cpp
    shared/plugin/yadomsApi/commands/Curtain.h
+   shared/plugin/yadomsApi/commands/Energy.cpp
+   shared/plugin/yadomsApi/commands/Energy.h
    shared/plugin/yadomsApi/commands/Humidity.cpp
    shared/plugin/yadomsApi/commands/Humidity.h
    shared/plugin/yadomsApi/commands/IHistorizable.h
    shared/plugin/yadomsApi/commands/Message.cpp
    shared/plugin/yadomsApi/commands/Message.h
+   shared/plugin/yadomsApi/commands/Power.cpp
+   shared/plugin/yadomsApi/commands/Power.h
    shared/plugin/yadomsApi/commands/Pressure.cpp
    shared/plugin/yadomsApi/commands/Pressure.h
    shared/plugin/yadomsApi/commands/Rssi.cpp
