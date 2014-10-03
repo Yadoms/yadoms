@@ -48,6 +48,14 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       //-----------------------------------------------------
       int batteryLevel() const;
 
+   protected:
+      //-----------------------------------------------------
+      ///\brief                     Normalize the humidity value
+      ///\param[in] value           Raw value
+      ///\return                    The normalized humidity (0-100)
+      //-----------------------------------------------------
+      static int Normalize(int value);
+
    private:
       //-----------------------------------------------------
       ///\brief                     The keyword name

@@ -36,6 +36,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Rfy.cpp
    rfxcomMessages/Temp.h
    rfxcomMessages/Temp.cpp
+   rfxcomMessages/TempHumidity.h
+   rfxcomMessages/TempHumidity.cpp
    rfxcomMessages/TransceiverStatus.h
    rfxcomMessages/TransceiverStatus.cpp
 )

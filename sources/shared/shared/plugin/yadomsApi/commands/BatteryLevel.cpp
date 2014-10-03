@@ -29,17 +29,26 @@ const CStandardCapacity& CBatteryLevel::getCapacity() const
 
 void CBatteryLevel::set(const shared::CDataContainer& yadomsCommand)
 {
-   m_batteryLevel = yadomsCommand.get<int>("batteryLevel");
+   m_batteryLevel = Normalize(yadomsCommand.get<int>("batteryLevel"));
 }
 
 void CBatteryLevel::set(int batteryLevel)
 {
-   m_batteryLevel = batteryLevel;
+   m_batteryLevel = Normalize(batteryLevel);
 }
 
 const std::string CBatteryLevel::formatValue() const
 {
    return boost::lexical_cast<std::string>(batteryLevel());
+}
+
+int CBatteryLevel::Normalize(int value)
+{
+   if (value > 100)
+      return 100;
+   if (value < 0)
+      return 0;
+   return value;
 }
 
 int CBatteryLevel::batteryLevel() const
