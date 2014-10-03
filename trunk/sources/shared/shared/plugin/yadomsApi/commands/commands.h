@@ -3,6 +3,7 @@
 #include "Counter.h"
 #include "Curtain.h"
 #include "Message.h"
+#include "Pressure.h"
 #include "Rssi.h"
 #include "Switch.h"
 #include "Temperature.h"

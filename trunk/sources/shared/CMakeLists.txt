@@ -97,6 +97,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/commands/IHistorizable.h
    shared/plugin/yadomsApi/commands/Message.cpp
    shared/plugin/yadomsApi/commands/Message.h
+   shared/plugin/yadomsApi/commands/Pressure.cpp
+   shared/plugin/yadomsApi/commands/Pressure.h
    shared/plugin/yadomsApi/commands/Rssi.cpp
    shared/plugin/yadomsApi/commands/Rssi.h
    shared/plugin/yadomsApi/commands/Switch.cpp
