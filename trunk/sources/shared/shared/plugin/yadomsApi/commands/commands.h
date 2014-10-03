@@ -1,8 +1,11 @@
 #pragma once
 #include "BatteryLevel.h"
 #include "Counter.h"
+#include "Current.h"
 #include "Curtain.h"
+#include "Energy.h"
 #include "Message.h"
+#include "Power.h"
 #include "Pressure.h"
 #include "Rssi.h"
 #include "Switch.h"
