@@ -27,6 +27,8 @@ WidgetPackageManager.factory = function(json) {
    //we restore the resGetPath
    i18n.options.resGetPath = "locales/__lng__.json";
 
+   wp.viewAnViewModelHaveBeenDownloaded = false;
+
    return wp;
 };
 
@@ -43,7 +45,11 @@ WidgetPackageManager.getAll = function(callback) {
          WidgetPackageManager.widgetPackages = [];
 
          $.each(data.data.package, function(index, value) {
-             WidgetPackageManager.widgetPackages[value.type] = WidgetPackageManager.factory(value);
+            try {
+               WidgetPackageManager.widgetPackages[value.type] = WidgetPackageManager.factory(value);
+            } catch (err) {
+               notifyError($.t("objects.widgetPackageManager.incorrectPackage"), value);
+            }
          });
          if ($.isFunction(callback))
             callback();

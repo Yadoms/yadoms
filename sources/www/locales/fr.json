@@ -132,5 +132,9 @@
     "backup": "Sauvegarde de base de données",
     "pluginUpdate": "Mise à jour de plugin",
     "yadomsUpdate": "Mise à jour de yadoms"
-  }
+  },
+  "initialization" : {
+      "homePage" : "Accueil"
+  },
+  "inProgress" : "Development in progress ..."
 }

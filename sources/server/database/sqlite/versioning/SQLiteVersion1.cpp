@@ -137,11 +137,11 @@
                   
                   //set the developer mode
                   qInsert.Clear().InsertInto(CConfigurationTable::getTableName(), CConfigurationTable::getSectionColumnName(), CConfigurationTable::getNameColumnName(), CConfigurationTable::getValueColumnName(), CConfigurationTable::getDefaultValueColumnName(), CConfigurationTable::getDescriptionColumnName()).
-                     Values( "system", "developerMode", "false", "false", "Develper mode");
+                     Values( "system", "developerMode", "false", "false", "Developer mode");
                   pRequester->queryStatement(qInsert);
 
                   //add a default empty page 
-                  pRequester->queryStatement(CQuery().InsertInto(CPageTable::getTableName(), CPageTable::getNameColumnName(), CPageTable::getPageOrderColumnName()).Values("", 1));
+                  //pRequester->queryStatement(CQuery().InsertInto(CPageTable::getTableName(), CPageTable::getNameColumnName(), CPageTable::getPageOrderColumnName()).Values("", 1));
 
                   //commit transaction
                   pRequester->transactionCommit();

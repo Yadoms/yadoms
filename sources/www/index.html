@@ -221,8 +221,18 @@
                               //we save the fact that first start configuration has been made
                               var firstStep = ConfigurationManager.createToServerSync(ConfigurationManager.items.installSection, ConfigurationManager.items.install.firstStart, "false", "true", "First start of Web app has been done");
                               if (!isNullOrUndefined(firstStep)) {
-                                 //we can start app
-                                 main();
+                                 //we check for page. If there is no page, we create a new one automatically
+                                 PageManager.getAll(function() {
+                                    if (PageManager.pages.length == 0) {
+                                       console.info("Creating a default page");
+                                       PageManager.createPage($.t("initialization.homePage"), 0, function(p) {
+                                          PageManager.ensureOnePageIsSelected();
+                                       });
+                                    }
+                                    //we can start app
+                                    main();
+                                 });
+
                               }
                            }
                         }

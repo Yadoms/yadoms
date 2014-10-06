@@ -84,16 +84,18 @@
         $("ul#ul-add-widget").empty();
         for(var index in WidgetPackageManager.widgetPackages) {
              var value = WidgetPackageManager.widgetPackages[index].packageInformation;
-             //carousel item creation
-            var i18ncontext = value.type + ":";
-             $("ul#ul-add-widget").append(
-                "<li>" +
-                    "<button type=\"button\" class=\"btn-select-widget btn btn-default\" widget-type=\"" + value.type + "\">" +
-                        "<div class=\"widget-preview\" ><img src=\"/widgets/" + value.type + "/preview.png\"></div>" +
-                        "<span class=\"widget-name\" data-i18n=\"" + i18ncontext + "name\"></span>" +
-                    "</button>" +
-                "</li>"
-             );
+             //if the widget begin with dev-, it's a developper widget use only
+             if (!value.type.startsWith("dev-")) {
+                var i18ncontext = value.type + ":";
+                $("ul#ul-add-widget").append(
+                   "<li>" +
+                       "<button type=\"button\" class=\"btn-select-widget btn btn-default\" widget-type=\"" + value.type + "\">" +
+                           "<div class=\"widget-preview\" ><img src=\"/widgets/" + value.type + "/preview.png\"></div>" +
+                           "<span class=\"widget-name\" data-i18n=\"" + i18ncontext + "name\"></span>" +
+                       "</button>" +
+                   "</li>"
+                );
+             }
         }
 
         $("button.btn-select-widget").unbind().bind('click', function (e) {
@@ -152,27 +154,27 @@
 
        var packageInformation = WidgetPackageManager.widgetPackages[packageName].packageInformation;
 
-       if (packageInformation.dimensions.min !== undefined)
-       {
+       try {
           minX = packageInformation.dimensions.min.x;
           minY = packageInformation.dimensions.min.y;
        }
+       catch(err) {}
 
        var maxX = Infinity;
        var maxY = Infinity;
-       if (packageInformation.dimensions.max !== undefined)
-       {
+       try {
           maxX = packageInformation.dimensions.max.x;
           maxY = packageInformation.dimensions.max.y;
        }
+       catch(err) {}
 
        var defaultX = 1;
        var defaultY = 1;
-       if (packageInformation.dimensions.default !== undefined)
-       {
+       try {
           defaultX = packageInformation.dimensions.default.x;
           defaultY = packageInformation.dimensions.default.y;
        }
+       catch(err) {}
 
        var sizeX = Math.min(maxX, Math.max(defaultX, minX));
        var sizeY  = Math.min(maxY, Math.max(defaultY, minY));

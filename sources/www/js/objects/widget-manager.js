@@ -8,6 +8,8 @@
  */
 function WidgetManager(){}
 
+WidgetManager.DeactivatedWidgetPackageName = "dev-deactivated-widget";
+
 WidgetManager.factory = function(json) {
    assert(!isNullOrUndefined(json), "json must be defined");
    assert(!isNullOrUndefined(json.id), "json.id must be defined");
@@ -175,7 +177,7 @@ WidgetManager.loadWidget = function(widget, pageWhereToAdd) {
    assert(!isNullOrUndefined(pageWhereToAdd), "pageWhereToAdd must be defined");
    if (WidgetPackageManager.packageExists(widget.type)) {
       if (!WidgetPackageManager.widgetPackages[widget.type].viewAnViewModelHaveBeenDownloaded) {
-         //we must download all missing informations
+         //we must download all missing information
          var view = WidgetManager.getViewFromServerSync(widget);
          if (!isNullOrUndefined(view)) {
             //we append the view into the page
@@ -188,12 +190,12 @@ WidgetManager.loadWidget = function(widget, pageWhereToAdd) {
                WidgetPackageManager.widgetPackages[widget.type].viewAnViewModelHaveBeenDownloaded = true;
             }
             else {
-               askForWidgetDelete(widget.type, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.type}));
+               WidgetManager.loadAsDowngraded(widget, pageWhereToAdd);
                return;
             }
          }
          else {
-            askForWidgetDelete(widget.type, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.type}));
+            WidgetManager.loadAsDowngraded(widget, pageWhereToAdd);
             return;
          }
       }
@@ -205,7 +207,52 @@ WidgetManager.loadWidget = function(widget, pageWhereToAdd) {
       pageWhereToAdd.addWidget(widget);
    }
    else {
-      askForWidgetDelete(widget.type, $.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.type}));
+      WidgetManager.loadAsDowngraded(widget, pageWhereToAdd);
+   }
+}
+
+WidgetManager.loadAsDowngraded = function(widget, pageWhereToAdd) {
+   assert(!isNullOrUndefined(widget), "widget must be defined");
+   assert(!isNullOrUndefined(pageWhereToAdd), "pageWhereToAdd must be defined");
+
+   notifyWarning($.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : widget.type}));
+   //we set downgraded widget info to this widget.
+
+   var deactivatedWidget = {};
+   deactivatedWidget.type = WidgetManager.DeactivatedWidgetPackageName;
+
+   if (WidgetPackageManager.packageExists(deactivatedWidget.type)) {
+      if (!WidgetPackageManager.widgetPackages[deactivatedWidget.type].viewAnViewModelHaveBeenDownloaded) {
+         //we must download all missing information
+         var view = WidgetManager.getViewFromServerSync(deactivatedWidget);
+         if (!isNullOrUndefined(view)) {
+            //we append the view into the page
+            $("div#templates").append(view);
+
+            var viewModel = WidgetManager.getViewModelFromServerSync(deactivatedWidget);
+            if (!isNullOrUndefined(viewModel)) {
+               WidgetPackageManager.widgetPackages[deactivatedWidget.type].viewModelCtor = viewModel;
+               //all job has been done without error
+               WidgetPackageManager.widgetPackages[deactivatedWidget.type].viewAnViewModelHaveBeenDownloaded = true;
+            }
+            else {
+               notifyError($.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : deactivatedWidget.type}));
+               return;
+            }
+         }
+         else {
+            notifyError($.t("objects.widgetManager.partOfWidgetIsMissing", {widgetName : deactivatedWidget.type}));
+            return;
+         }
+      }
+
+      //we finalize the load of the widget in downgraded mode
+      widget.requiredType = widget.type;
+      widget.downgraded = true;
+      WidgetManager.consolidate(widget, WidgetPackageManager.widgetPackages[deactivatedWidget.type]);
+      WidgetManager.addToDom(widget);
+      //we add the widget to the collection
+      pageWhereToAdd.addWidget(widget);
    }
 }
 
@@ -229,7 +276,7 @@ WidgetManager.addToDom = function(widget) {
    //we apply binding to the view
    ko.applyBindings(widget.viewModel, widget.$div[0]);
    //we add minimum dimension constraint to the gridster widget
-   if (widget.package.dimensions.min !== undefined)
+   if ((!isNullOrUndefined(widget.package.dimensions)) && (!isNullOrUndefined(widget.package.dimensions.min)))
    {
       //min dimension is set
       assert((widget.package.dimensions.min.x !== undefined) && (widget.package.dimensions.min.y !== undefined), "You can't set only one axis of the widget minimum dimension");
@@ -237,9 +284,9 @@ WidgetManager.addToDom = function(widget) {
       widget.$gridsterWidget.data('coords').grid.min_size_y = widget.package.dimensions.min.y;
    }
 
-   if (widget.package.dimensions.max !== undefined)
+   if ((!isNullOrUndefined(widget.package.dimensions)) && (!isNullOrUndefined(widget.package.dimensions.max)))
    {
-      //min dimension is set
+      //max dimension is set
       assert((widget.package.dimensions.max.x !== undefined) && (widget.package.dimensions.max.y !== undefined), "You can't set only one axis of the widget maximum dimension");
       page.gridster.set_widget_max_size(widget.$gridsterWidget, [widget.package.dimensions.max.x, widget.package.dimensions.max.y]);
    }
@@ -326,9 +373,14 @@ WidgetManager.createGridsterWidget = function(widget) {
       domWidget += "<span class=\"btn-configure-widget\"><i class=\"glyphicon glyphicon-cog\"></i></span>\n";
    }
 
+   var type = widget.type;
+   if (!isNullOrUndefined(widget.downgraded)) {
+      type = "dev-deactivated-widget";
+   }
+
    domWidget +=    "<span class=\"btn-delete-widget\"><i class=\"glyphicon glyphicon-trash\"></i></span>\n" +
       "</div>\n" +
-      "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + widget.type + "-template' }\"/>\n" +
+      "<div id=\"widget-" + widget.id + "\" class=\"widgetDiv\" data-bind=\"template: { name: '" + type + "-template' }\"/>\n" +
       "</li>\n"
 
    var item = page.gridster.add_widget(domWidget, widget.sizeX, widget.sizeY, widget.positionX, widget.positionY);
