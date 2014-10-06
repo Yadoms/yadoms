@@ -14,6 +14,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Chime.cpp
    rfxcomMessages/Current.h
    rfxcomMessages/Current.cpp
+   rfxcomMessages/CurrentEnergy.h
+   rfxcomMessages/CurrentEnergy.cpp
    rfxcomMessages/Curtain1.h
    rfxcomMessages/Curtain1.cpp
    rfxcomMessages/IRfxcomMessage.h
