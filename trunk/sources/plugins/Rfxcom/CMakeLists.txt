@@ -35,11 +35,15 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Lighting4.cpp
    rfxcomMessages/Lighting6.h
    rfxcomMessages/Lighting6.cpp
+   rfxcomMessages/Power.h
+   rfxcomMessages/Power.cpp
    rfxcomMessages/RFXtrx.h
    rfxcomMessages/RFXtrxHelpers.h
    rfxcomMessages/RFXtrxHelpers.cpp
    rfxcomMessages/RFXMeter.h
    rfxcomMessages/RFXMeter.cpp
+   rfxcomMessages/RFXSensor.h
+   rfxcomMessages/RFXSensor.cpp
    rfxcomMessages/Rfy.h
    rfxcomMessages/Rfy.cpp
    rfxcomMessages/Temp.h
@@ -50,6 +54,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/TempHumidityBarometric.cpp
    rfxcomMessages/TransceiverStatus.h
    rfxcomMessages/TransceiverStatus.cpp
+   rfxcomMessages/Weight.h
+   rfxcomMessages/Weight.cpp
 )
 
 set(RFXCOM_SOURCES

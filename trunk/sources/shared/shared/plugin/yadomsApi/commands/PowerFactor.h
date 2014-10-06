@@ -2,27 +2,26 @@
 #include <shared/Export.h>
 #include <shared/DataContainer.h>
 #include <shared/enumeration/EnumHelpers.hpp>
-#include <shared/Field.hpp>
 #include "IHistorizable.h"
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {   
    //-----------------------------------------------------
-   ///\brief A energy historizable object
+   ///\brief A power factor historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CEnergy : public IHistorizable
+   class YADOMS_SHARED_EXPORT CPowerFactor : public IHistorizable
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CEnergy(const std::string& keywordName);
+      CPowerFactor(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CEnergy();
+      virtual ~CPowerFactor();
 
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
@@ -39,15 +38,23 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 
       //-----------------------------------------------------
       ///\brief                     Set value
-      ///\param[in] energy          Energy value (Wh)
+      ///\param[in] powerFactor     Power factor (-1 to 1)
       //-----------------------------------------------------
-      void set(double energy);
+      void set(double powerFactor);
 
       //-----------------------------------------------------
       ///\brief                     Get value
-      ///\return                    The energy value (Wh)
+      ///\return                    The power factor (-1 to 1)
       //-----------------------------------------------------
-      double energy() const;
+      double powerFactor() const;
+
+   protected:
+      //-----------------------------------------------------
+      ///\brief                     Normalize the value
+      ///\param[in] value           Raw value
+      ///\return                    The normalized value (-1 to 1)
+      //-----------------------------------------------------
+      static double Normalize(double value);
 
    private:
       //-----------------------------------------------------
@@ -56,9 +63,9 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       const std::string m_keywordName;
 
       //-----------------------------------------------------
-      ///\brief                     The energy value (Wh)
+      ///\brief                     The power factor (-1 to 1)
       //-----------------------------------------------------
-      double m_energy;
+      double m_powerFactor;
    };
 
 

@@ -16,6 +16,7 @@ namespace shared {   namespace plugin {      namespace yadomsApi      {
    const std::string& CStandardUnits::DegreesCelcius("°C");
    const std::string& CStandardUnits::DegreesFarenheit("°F");
    const std::string& CStandardUnits::hectoPascal("hPa");
+   const std::string& CStandardUnits::Hertz("Hz");
    const std::string& CStandardUnits::Kg("Kg");
    const std::string& CStandardUnits::Meter("m");
    const std::string& CStandardUnits::Percent("%");
@@ -35,6 +36,7 @@ namespace shared {   namespace plugin {      namespace yadomsApi      {
    const CStandardCapacity& CStandardCapacities::Current = CStandardCapacity("current", CStandardUnits::Ampere, kGet, kNumeric);
    const CStandardCapacity& CStandardCapacities::Curtain = CStandardCapacity("curtain", CStandardUnits::NoUnits, kSet, kNoData);
    const CStandardCapacity& CStandardCapacities::Energy = CStandardCapacity("energy", CStandardUnits::WattPerHour, kGet, kNumeric);
+   const CStandardCapacity& CStandardCapacities::Frequency = CStandardCapacity("frequency", CStandardUnits::Hertz, kGet, kNumeric);
    const CStandardCapacity& CStandardCapacities::Humidity = CStandardCapacity("humidity", CStandardUnits::Percent, kGet, kNumeric);
    const CStandardCapacity& CStandardCapacities::Message = CStandardCapacity("message", CStandardUnits::NoUnits, kGetSet, kString);
    const CStandardCapacity& CStandardCapacities::Power = CStandardCapacity("power", CStandardUnits::Watt, kGet, kNumeric);
@@ -42,6 +44,8 @@ namespace shared {   namespace plugin {      namespace yadomsApi      {
    const CStandardCapacity& CStandardCapacities::Rssi = CStandardCapacity("rssi", CStandardUnits::Percent, kGet, kNumeric);
    const CStandardCapacity& CStandardCapacities::Switch = CStandardCapacity("switch", CStandardUnits::NoUnits, kSet, kNoData);
    const CStandardCapacity& CStandardCapacities::Temperature = CStandardCapacity("temperature", CStandardUnits::DegreesCelcius, kGet, kNumeric);
+   const CStandardCapacity& CStandardCapacities::Voltage = CStandardCapacity("voltage", CStandardUnits::Volt, kGet, kNumeric);
+   const CStandardCapacity& CStandardCapacities::Weight = CStandardCapacity("weight", CStandardUnits::Kg, kGet, kNumeric);
   
 } } } // namespace shared::plugin::yadomsApi
 

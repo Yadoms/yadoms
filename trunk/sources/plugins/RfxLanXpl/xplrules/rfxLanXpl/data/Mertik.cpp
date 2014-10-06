@@ -25,7 +25,7 @@ DECLARE_ENUM_IMPLEMENTATION_CUSTOM(EMertikCommand,
    ((ProgSweep)("prog_sweep"))
 );
 
-const shared::plugin::yadomsApi::CStandardCapacity& MertikCapacity = shared::plugin::yadomsApi::CStandardCapacity("mertik", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kSet, shared::plugin::yadomsApi::EKeywordType::kNoData);
+const shared::plugin::yadomsApi::CStandardCapacity& MertikCapacity = shared::plugin::yadomsApi::CStandardCapacity("mertik", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::kSet, shared::plugin::yadomsApi::kNoData);
 
    
 CMertick::CMertick(const std::string& keywordName)

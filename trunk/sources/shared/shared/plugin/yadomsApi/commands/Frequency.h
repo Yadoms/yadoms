@@ -2,27 +2,26 @@
 #include <shared/Export.h>
 #include <shared/DataContainer.h>
 #include <shared/enumeration/EnumHelpers.hpp>
-#include <shared/Field.hpp>
 #include "IHistorizable.h"
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {   
    //-----------------------------------------------------
-   ///\brief A energy historizable object
+   ///\brief A frequency historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CEnergy : public IHistorizable
+   class YADOMS_SHARED_EXPORT CFrequency : public IHistorizable
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CEnergy(const std::string& keywordName);
+      CFrequency(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CEnergy();
+      virtual ~CFrequency();
 
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
@@ -39,15 +38,15 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 
       //-----------------------------------------------------
       ///\brief                     Set value
-      ///\param[in] energy          Energy value (Wh)
+      ///\param[in] frequency       Frequency value (Hz)
       //-----------------------------------------------------
-      void set(double energy);
+      void set(double frequency);
 
       //-----------------------------------------------------
       ///\brief                     Get value
-      ///\return                    The energy value (Wh)
+      ///\return                    The frequency value (Hz)
       //-----------------------------------------------------
-      double energy() const;
+      double frequency() const;
 
    private:
       //-----------------------------------------------------
@@ -56,9 +55,9 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       const std::string m_keywordName;
 
       //-----------------------------------------------------
-      ///\brief                     The energy value (Wh)
+      ///\brief                     The frequency value (Hz)
       //-----------------------------------------------------
-      double m_energy;
+      double m_frequency;
    };
 
 
