@@ -140,9 +140,6 @@
                      Values( "system", "developerMode", "false", "false", "Developer mode");
                   pRequester->queryStatement(qInsert);
 
-                  //add a default empty page 
-                  //pRequester->queryStatement(CQuery().InsertInto(CPageTable::getTableName(), CPageTable::getNameColumnName(), CPageTable::getPageOrderColumnName()).Values("", 1));
-
                   //commit transaction
                   pRequester->transactionCommit();
                }
