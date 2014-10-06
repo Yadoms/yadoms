@@ -8,6 +8,7 @@
 #include "rfxcomMessages/Barometric.h"
 #include "rfxcomMessages/Chime.h"
 #include "rfxcomMessages/Current.h"
+#include "rfxcomMessages/CurrentEnergy.h"
 #include "rfxcomMessages/Curtain1.h"
 #include "rfxcomMessages/Fan.h"
 #include "rfxcomMessages/Energy.h"
@@ -17,12 +18,15 @@
 #include "rfxcomMessages/Lighting3.h"
 #include "rfxcomMessages/Lighting4.h"
 #include "rfxcomMessages/Lighting6.h"
+#include "rfxcomMessages/Power.h"
 #include "rfxcomMessages/RFXMeter.h"
+#include "rfxcomMessages/RFXSensor.h"
 #include "rfxcomMessages/Rfy.h"
 #include "rfxcomMessages/Temp.h"
 #include "rfxcomMessages/TempHumidity.h"
 #include "rfxcomMessages/TempHumidityBarometric.h"
 #include "rfxcomMessages/TransceiverStatus.h"
+#include "rfxcomMessages/Weight.h"
 #include "IncrementSequenceNumber.h"
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
@@ -192,6 +196,10 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    case pTypeTEMP_HUM_BARO       : message.reset(new rfxcomMessages::CTempHumidityBarometric (context, *buf, m_seqNumberProvider)); break;
    case pTypeCURRENT             : message.reset(new rfxcomMessages::CCurrent                (context, *buf, m_seqNumberProvider)); break;
    case pTypeENERGY              : message.reset(new rfxcomMessages::CEnergy                 (context, *buf, m_seqNumberProvider)); break;
+   case pTypeCURRENTENERGY       : message.reset(new rfxcomMessages::CCurrentEnergy          (context, *buf, m_seqNumberProvider)); break;
+   case pTypePOWER               : message.reset(new rfxcomMessages::CPower                  (context, *buf, m_seqNumberProvider)); break;
+   case pTypeWEIGHT              : message.reset(new rfxcomMessages::CWeight                 (context, *buf, m_seqNumberProvider)); break;
+   case pTypeRFXSensor           : message.reset(new rfxcomMessages::CRFXSensor              (context, *buf, m_seqNumberProvider)); break;
       // TODO à compléter
    default:
       {

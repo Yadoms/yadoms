@@ -96,6 +96,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/commands/Curtain.h
    shared/plugin/yadomsApi/commands/Energy.cpp
    shared/plugin/yadomsApi/commands/Energy.h
+   shared/plugin/yadomsApi/commands/Frequency.cpp
+   shared/plugin/yadomsApi/commands/Frequency.h
    shared/plugin/yadomsApi/commands/Humidity.cpp
    shared/plugin/yadomsApi/commands/Humidity.h
    shared/plugin/yadomsApi/commands/IHistorizable.h
@@ -103,6 +105,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/commands/Message.h
    shared/plugin/yadomsApi/commands/Power.cpp
    shared/plugin/yadomsApi/commands/Power.h
+   shared/plugin/yadomsApi/commands/PowerFactor.cpp
+   shared/plugin/yadomsApi/commands/PowerFactor.h
    shared/plugin/yadomsApi/commands/Pressure.cpp
    shared/plugin/yadomsApi/commands/Pressure.h
    shared/plugin/yadomsApi/commands/Rssi.cpp
@@ -111,6 +115,10 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/commands/Switch.h
    shared/plugin/yadomsApi/commands/Temperature.cpp
    shared/plugin/yadomsApi/commands/Temperature.h
+   shared/plugin/yadomsApi/commands/Voltage.cpp
+   shared/plugin/yadomsApi/commands/Voltage.h
+   shared/plugin/yadomsApi/commands/Weight.cpp
+   shared/plugin/yadomsApi/commands/Weight.h
    
 	shared/notification/NotificationCenter.h
 	shared/notification/NotificationCenter.cpp

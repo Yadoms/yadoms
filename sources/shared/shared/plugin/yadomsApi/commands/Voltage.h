@@ -8,21 +8,21 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {   
    //-----------------------------------------------------
-   ///\brief A energy historizable object
+   ///\brief A voltage historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CEnergy : public IHistorizable
+   class YADOMS_SHARED_EXPORT CVoltage : public IHistorizable
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CEnergy(const std::string& keywordName);
+      CVoltage(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CEnergy();
+      virtual ~CVoltage();
 
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
@@ -39,15 +39,15 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 
       //-----------------------------------------------------
       ///\brief                     Set value
-      ///\param[in] energy          Energy value (Wh)
+      ///\param[in] voltage         Voltage value (V)
       //-----------------------------------------------------
-      void set(double energy);
+      void set(double voltage);
 
       //-----------------------------------------------------
       ///\brief                     Get value
-      ///\return                    The energy value (Wh)
+      ///\return                    The voltage value (V)
       //-----------------------------------------------------
-      double energy() const;
+      double voltage() const;
 
    private:
       //-----------------------------------------------------
@@ -56,9 +56,9 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       const std::string m_keywordName;
 
       //-----------------------------------------------------
-      ///\brief                     The energy value (Wh)
+      ///\brief                     The voltage value (V)
       //-----------------------------------------------------
-      double m_energy;
+      double m_voltage;
    };
 
 

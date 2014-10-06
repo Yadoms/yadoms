@@ -18,6 +18,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       static const std::string& DegreesCelcius;    // °C
       static const std::string& DegreesFarenheit;  // °F
       static const std::string& hectoPascal;       // hPa
+      static const std::string& Hertz;             // Hz
       static const std::string& Kg;                // kg
       static const std::string& Meter;             // m
       static const std::string& Percent;           // %

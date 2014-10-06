@@ -2,27 +2,26 @@
 #include <shared/Export.h>
 #include <shared/DataContainer.h>
 #include <shared/enumeration/EnumHelpers.hpp>
-#include <shared/Field.hpp>
 #include "IHistorizable.h"
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {   
    //-----------------------------------------------------
-   ///\brief A energy historizable object
+   ///\brief A weight historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CEnergy : public IHistorizable
+   class YADOMS_SHARED_EXPORT CWeight : public IHistorizable
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CEnergy(const std::string& keywordName);
+      CWeight(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CEnergy();
+      virtual ~CWeight();
 
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
@@ -39,15 +38,15 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 
       //-----------------------------------------------------
       ///\brief                     Set value
-      ///\param[in] energy          Energy value (Wh)
+      ///\param[in] frequency       Weight value (Kg)
       //-----------------------------------------------------
-      void set(double energy);
+      void set(double weight);
 
       //-----------------------------------------------------
       ///\brief                     Get value
-      ///\return                    The energy value (Wh)
+      ///\return                    The weight value (Kg)
       //-----------------------------------------------------
-      double energy() const;
+      double weight() const;
 
    private:
       //-----------------------------------------------------
@@ -56,9 +55,9 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       const std::string m_keywordName;
 
       //-----------------------------------------------------
-      ///\brief                     The energy value (Wh)
+      ///\brief                     The weight value (Kg)
       //-----------------------------------------------------
-      double m_energy;
+      double m_weight;
    };
 
 
