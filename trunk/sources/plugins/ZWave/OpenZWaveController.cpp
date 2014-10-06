@@ -12,6 +12,7 @@
 #include "Notification.h"
 #include "Log.h"
 #include "KeywordContainer.h"
+#include "tools/SerialPortHelper.h"
 
 COpenZWaveController::COpenZWaveController()
    :m_homeId(0), m_initFailed(false), m_nodesQueried(false), m_configuration(NULL), m_handler(NULL)
@@ -90,7 +91,7 @@ bool COpenZWaveController::start()
 
       // Add a Z-Wave Driver
       // Modify this line to set the correct serial port for your PC interface.
-      std::string realSerialPort = (boost::format("\\\\.\\%1%") % m_configuration->getSerialPort()).str();
+      std::string realSerialPort = tools::CSerialPortHelper::formatSerialPort(m_configuration->getSerialPort());
       if (!OpenZWave::Manager::Get()->AddDriver(realSerialPort))
          throw shared::exception::CException("Fail to open serial port");
 
