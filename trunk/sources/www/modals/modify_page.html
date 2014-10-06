@@ -98,27 +98,7 @@
          //we increment the pageOrder for the new page
          lastPageOrder++;
 
-         $.ajax({
-            type: "POST",
-            url: "/rest/page/",
-            data: JSON.stringify({ name: encodeURIComponent(newPageName), pageOrder: lastPageOrder }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json"
-         })
-         .done(function(data) {
-           //we parse the json answer
-           if (data.result != "true")
-           {
-              notifyError($.t("modals.modify-page.errorDuringCreatingPage"), JSON.stringify(data));
-              return;
-           }
-
-           //we add the page dynamically
-           var p = new Page(data.data.id, decodeURIComponent(data.data.name), data.data.pageOrder);
-           PageManager.addPage(p);
-           PageManager.addToDom(p);
-         })
-         .fail(function(pageName) { return function() {$.t("modals.delete-page.errorDuringCreatingPageNamed", {"pageName" : pageName});};}(newPageName));
+         PageManager.createPage(newPageName, lastPageOrder);
       }
    });
 

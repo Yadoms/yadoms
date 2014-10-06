@@ -273,10 +273,11 @@
          "exceptionDuringCallConfigurationChanged" : "The widget __widgetType__ has generated an exception during call configurationChanged()",
          "errorDuringModifyingWidgetNamed" : "Error during modifying widget of type __widgetType__",
          "unableToGetWidgets" : "Unable to get Widgets",
-         "partOfWidgetIsMissing" : "Unable to get part of __widgetName__ widget. Delete all instances ?",
+         "partOfWidgetIsMissing" : "Unable to get part of __widgetName__ widget. Widgets of this type have been deactivated.",
          "widgetHasGeneratedAnExceptionDuringCallingMethod" : "The widget __widgetName__ has generated an exception calling __methodName__()"
       },
       "widgetPackageManager" : {
+         "incorrectPackage" : "Incorrect package",
          "errorDuringGettingPackages" : "Error during requesting widget packages"
       },
       "pageManager" : {
@@ -306,6 +307,9 @@
       "databaseBackup" : "Database backup",
       "pluginUpdate" : "Plugin update",
       "yadomsUpdate" : "Yadoms update"
+   },
+   "initialization" : {
+      "homePage" : "Home Page"
    },
    "inProgress" : "Development in progress ..."
 }

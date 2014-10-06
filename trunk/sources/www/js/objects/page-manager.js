@@ -35,12 +35,15 @@ PageManager.getAll = function(callback) {
          //we add it to the page list
          PageManager.pages = [];
 
-         //we sort page by pageOrder
-         data.data.page.sort(function(a, b) { return a.pageOrder > b.pageOrder; });
+         if (!isNullOrUndefinedOrEmpty(data.data.page)) {
+            //we sort page by pageOrder
+            data.data.page.sort(function(a, b) { return a.pageOrder > b.pageOrder; });
 
-         $.each(data.data.page, function(index, value) {
-            PageManager.addPage(PageManager.factory(value));
-         });
+            $.each(data.data.page, function(index, value) {
+               PageManager.addPage(PageManager.factory(value));
+            });
+         }
+
          if ($.isFunction(callback))
             callback();
       })
@@ -60,6 +63,39 @@ PageManager.getPage = function(pageId) {
    if (res.length != 1)
       return null;
    return res[0];
+};
+
+
+PageManager.createPage = function(pageName, pageOrder, callback) {
+   assert(!isNullOrUndefined(pageName), "pageName must be defined");
+   assert(!isNullOrUndefined(pageOrder), "pageOrder must be defined");
+
+   $.ajax({
+      type: "POST",
+      url: "/rest/page/",
+      data: JSON.stringify({ name: encodeURIComponent(pageName), pageOrder: pageOrder }),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json"
+   })
+      .done(function(data) {
+         //we parse the json answer
+         if (data.result != "true")
+         {
+            notifyError($.t("objects.generic.errorCreating", {objectName : pageName}), JSON.stringify(data));
+            return;
+         }
+
+         //we add the page dynamically
+         var p = PageManager.factory(data.data);
+         //we add the page to the list
+         PageManager.addPage(p);
+         //and to the DOM
+         PageManager.addToDom(p);
+
+         if ($.isFunction(callback))
+            callback(p)
+      })
+      .fail(function() {notifyError($.t("objects.generic.errorCreating", {objectName : pageName}));});
 };
 
 PageManager.addPage = function(page) {
