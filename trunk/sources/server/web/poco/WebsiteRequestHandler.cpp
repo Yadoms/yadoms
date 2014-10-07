@@ -27,6 +27,32 @@ namespace web { namespace poco {
          m_alias[realAlias] = realDocumentsPath;
       }
 
+      bool CWebsiteRequestHandler::readAndSendFile(std::string & fullpath, Poco::Net::HTTPServerResponse& response)
+      {
+         // Determine the file extension.
+         std::size_t last_slash_pos = fullpath.find_last_of("/");
+         std::size_t last_dot_pos = fullpath.find_last_of(".");
+         std::string extension;
+         if (last_dot_pos != std::string::npos && last_dot_pos > last_slash_pos)
+         {
+            extension = fullpath.substr(last_dot_pos + 1);
+         }
+
+
+         std::ifstream is(fullpath.c_str(), std::ios::in | std::ios::binary);
+         if (is)
+         {
+            response.setChunkedTransferEncoding(true);
+            response.setContentType(CMimeType::extension_to_type(extension));
+            std::ostream& ostr = response.send();
+            char buf[512];
+            while (is.read(buf, sizeof(buf)).gcount() > 0)
+               ostr.write(buf, (unsigned int)is.gcount());
+            return true;
+         }
+         return false;
+      }
+
       void CWebsiteRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
       {
          std::string uri = request.getURI();
@@ -40,16 +66,6 @@ namespace web { namespace poco {
          if (uri[uri.size() - 1] == '/')
          {
             uri += "index.html";
-         }
-
-
-         // Determine the file extension.
-         std::size_t last_slash_pos = uri.find_last_of("/");
-         std::size_t last_dot_pos = uri.find_last_of(".");
-         std::string extension;
-         if (last_dot_pos != std::string::npos && last_dot_pos > last_slash_pos)
-         {
-            extension = uri.substr(last_dot_pos + 1);
          }
 
          // Open the file to send back.
@@ -67,33 +83,32 @@ namespace web { namespace poco {
             }
          }
          
+         //try to send file
          std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
-         if (is)
+         if (!readAndSendFile(full_path, response))
          {
-            response.setChunkedTransferEncoding(true);
-            response.setContentType(CMimeType::extension_to_type(extension));
-            std::ostream& ostr = response.send();
-            char buf[512];
-            while (is.read(buf, sizeof(buf)).gcount() > 0)
-               ostr.write(buf, (unsigned int)is.gcount());
-         }
-         else
-         {
-            response.setStatusAndReason(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
-            response.setContentType("text/html");
-            response.setChunkedTransferEncoding(false);
+            //the file is not found, try to send 404.html file
+            std::string html404 = m_documentRoot + "404.html";
+            if (!readAndSendFile(html404, response))
+            {
+               //the 404.html has not been found, just return a 404 hard coded message
+               response.setStatusAndReason(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
+               response.setContentType("text/html");
+               response.setChunkedTransferEncoding(false);
 
-            std::stringstream resp_body;
-            resp_body << "<html><head><title>404 Not Found</title>";
-            resp_body << "</head>";
-            resp_body << "<body><p style=\"font-size: 24;\">Yadoms Web Service</p>";
-            resp_body << "<p style=\"font-size: 24;\"><H1>Not Found</H1></p><p style=\"font-size: 24;\">";
-            resp_body << "The requested URL " << request.getURI() << " was not found.";
-            resp_body << "</p></body></html>";
-            response.setContentLength(resp_body.str().length());
-            std::ostream& ostr = response.send();
-            ostr << resp_body.str();
+               std::stringstream resp_body;
+               resp_body << "<html><head><title>404 Not Found</title>";
+               resp_body << "</head>";
+               resp_body << "<body><p style=\"font-size: 24;\">Yadoms Web Service</p>";
+               resp_body << "<p style=\"font-size: 24;\"><H1>Not Found</H1></p><p style=\"font-size: 24;\">";
+               resp_body << "The requested URL " << request.getURI() << " was not found.";
+               resp_body << "</p></body></html>";
+               response.setContentLength(resp_body.str().length());
+               std::ostream& ostr = response.send();
+               ostr << resp_body.str();
+            }
          }
+         
       }
 } //namespace poco
 } //namespace web

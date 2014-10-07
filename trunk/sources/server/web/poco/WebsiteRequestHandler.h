@@ -30,6 +30,14 @@ namespace web { namespace poco {
 
    private:
       //-------------------------------------
+      ///\brief Read and send file as request answer
+      ///\param [in]    fullpath          The file path
+      ///\param [in]    response          The http response
+      ///\return true if file is found and sent, else false
+      //-------------------------------------
+      bool readAndSendFile(std::string & fullpath, Poco::Net::HTTPServerResponse& response);
+
+      //-------------------------------------
       ///\brief The base files path
       //-------------------------------------
       std::string m_documentRoot;
