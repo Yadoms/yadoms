@@ -79,7 +79,20 @@ namespace web { namespace poco {
          }
          else
          {
-            response.setStatus(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
+            response.setStatusAndReason(Poco::Net::HTTPResponse::HTTP_NOT_FOUND);
+            response.setContentType("text/html");
+            response.setChunkedTransferEncoding(false);
+
+            std::stringstream resp_body;
+            resp_body << "<html><head><title>404 Not Found</title>";
+            resp_body << "</head>";
+            resp_body << "<body><p style=\"font-size: 24;\">Yadoms Web Service</p>";
+            resp_body << "<p style=\"font-size: 24;\"><H1>Not Found</H1></p><p style=\"font-size: 24;\">";
+            resp_body << "The requested URL " << request.getURI() << " was not found.";
+            resp_body << "</p></body></html>";
+            response.setContentLength(resp_body.str().length());
+            std::ostream& ostr = response.send();
+            ostr << resp_body.str();
          }
       }
 } //namespace poco
