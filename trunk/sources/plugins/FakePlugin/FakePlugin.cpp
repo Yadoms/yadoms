@@ -3,6 +3,7 @@
 #include <shared/plugin/ImplementationHelper.h>
 #include <shared/Log.h>
 #include "FakeSensor.h"
+#include "FakeCounter.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -36,6 +37,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       // Create 2 fake sensors
       CFakeSensor fakeSensor1("fakeSensor1");
       CFakeSensor fakeSensor2("fakeSensor2");
+      CFakeCounter fakeCounter("fakeCounter");
       
       // Declare these sensors to Yadoms (devices and associated keywords)
       if (!context->deviceExists(fakeSensor1.getDeviceName()))
@@ -47,6 +49,11 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       {
          context->declareDevice(fakeSensor2.getDeviceName(), fakeSensor2.getModel());
          fakeSensor2.declareKeywords(context);
+      }
+      if (!context->deviceExists(fakeCounter.getDeviceName()))
+      {
+         context->declareDevice(fakeCounter.getDeviceName(), fakeCounter.getModel());
+         fakeCounter.declareKeywords(context);
       }
 
       // Timer used to send fake sensor states periodically
@@ -95,6 +102,8 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                fakeSensor1.historizeData(context);
                fakeSensor2.read();
                fakeSensor2.historizeData(context);
+               fakeCounter.read();
+               fakeCounter.historizeData(context);
 
                YADOMS_LOG(debug) << "Send the periodically sensors state...";
 

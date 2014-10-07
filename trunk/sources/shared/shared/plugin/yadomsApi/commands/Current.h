@@ -27,7 +27,8 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
       virtual const CStandardCapacity& getCapacity() const;
-      virtual const std::string formatValue() const;
+      virtual const std::string formatValue(const std::string& currentValue = CStringExtension::EmptyString) const;
+      virtual EMeasureType getMeasureType() const;
       // [END] IHistorizable implementation
 
       //-----------------------------------------------------

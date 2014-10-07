@@ -37,7 +37,7 @@ void CCurrent::set(double current)
    m_current = current;
 }
 
-const std::string CCurrent::formatValue() const
+const std::string CCurrent::formatValue(const std::string& currentValue) const
 {
    return boost::lexical_cast<std::string>(current());
 }
@@ -45,6 +45,11 @@ const std::string CCurrent::formatValue() const
 double CCurrent::current() const
 {
    return m_current;
+}
+
+IHistorizable::EMeasureType CCurrent::getMeasureType() const
+{
+   return kAbsolute;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

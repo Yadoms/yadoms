@@ -37,7 +37,7 @@ void CHumidity::set(int humidity)
    m_humidity = Normalize(humidity);
 }
 
-const std::string CHumidity::formatValue() const
+const std::string CHumidity::formatValue(const std::string& currentValue) const
 {
    return boost::lexical_cast<std::string>(humidity());
 }
@@ -54,6 +54,11 @@ int CHumidity::Normalize(int value)
 int CHumidity::humidity() const
 {
    return m_humidity;
+}
+
+IHistorizable::EMeasureType CHumidity::getMeasureType() const
+{
+   return kAbsolute;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

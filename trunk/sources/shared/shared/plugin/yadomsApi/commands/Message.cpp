@@ -41,7 +41,7 @@ void CMessage::set(const std::string& from, const std::string& to, const std::st
    m_body = body;
 }
 
-const std::string CMessage::formatValue() const
+const std::string CMessage::formatValue(const std::string& currentValue) const
 {
    shared::CDataContainer yadomsCommand;
    yadomsCommand.set("to", to());
@@ -63,6 +63,11 @@ const std::string& CMessage::to() const
 const std::string& CMessage::body() const
 {
    return m_body;
+}
+
+IHistorizable::EMeasureType CMessage::getMeasureType() const
+{
+   return kAbsolute;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

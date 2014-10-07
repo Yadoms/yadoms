@@ -37,7 +37,7 @@ void CFrequency::set(double frequency)
    m_frequency = frequency;
 }
 
-const std::string CFrequency::formatValue() const
+const std::string CFrequency::formatValue(const std::string& currentValue) const
 {
    return boost::lexical_cast<std::string>(frequency());
 }
@@ -45,6 +45,11 @@ const std::string CFrequency::formatValue() const
 double CFrequency::frequency() const
 {
    return m_frequency;
+}
+
+IHistorizable::EMeasureType CFrequency::getMeasureType() const
+{
+   return kAbsolute;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

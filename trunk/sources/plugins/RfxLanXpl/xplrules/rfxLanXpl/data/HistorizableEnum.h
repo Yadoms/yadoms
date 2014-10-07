@@ -53,9 +53,14 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
          return m_capacity;
       }
       
-      virtual const std::string formatValue() const
+      virtual const std::string formatValue(const std::string& currentValue = shared::CStringExtension::EmptyString) const
       {
          return m_value.getAsString();
+      }
+
+      virtual EMeasureType getMeasureType() const
+      {
+         return kAbsolute;
       }
       // [END] IHistorizable implementation   
    

@@ -51,6 +51,7 @@ namespace database {
       ///\brief      Get the last data of a keyword
       ///\param [in] keywordId  The keyword id
       ///\return     the last acquisition for the keyword
+      ///\throw      CEmptyResult if no data is available
       //-----------------------------------------
       virtual boost::shared_ptr< database::entities::CAcquisition > getKeywordLastData(const int keywordId) = 0;   
 

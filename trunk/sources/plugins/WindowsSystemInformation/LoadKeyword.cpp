@@ -28,11 +28,16 @@ void CLoadKeyword::set(float load)
    m_load = load;
 }
 
-const std::string CLoadKeyword::formatValue() const
+const std::string CLoadKeyword::formatValue(const std::string& currentValue) const
 {
    std::ostringstream ss;
    ss << std::fixed << std::setprecision(2) << load();
    return ss.str();
+}
+
+yApi::commands::IHistorizable::EMeasureType CLoadKeyword::getMeasureType() const
+{
+   return kAbsolute;
 }
 
 float CLoadKeyword::load() const

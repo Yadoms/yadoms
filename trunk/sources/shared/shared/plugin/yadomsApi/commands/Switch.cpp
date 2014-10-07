@@ -42,7 +42,7 @@ void CSwitch::set(int switchLevel)
    m_switchLevel = NormalizeLevel(switchLevel);
 }
 
-const std::string CSwitch::formatValue() const
+const std::string CSwitch::formatValue(const std::string& currentValue) const
 {
    return boost::lexical_cast<std::string>(switchLevel());
 }
@@ -64,6 +64,11 @@ int CSwitch::switchLevel() const
 bool CSwitch::isOn() const
 {
    return (m_switchLevel >= 50) ? true : false;
+}
+
+IHistorizable::EMeasureType CSwitch::getMeasureType() const
+{
+   return kAbsolute;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

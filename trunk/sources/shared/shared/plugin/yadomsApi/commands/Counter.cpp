@@ -8,8 +8,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
 
-CCounter::CCounter(const std::string& keywordName)
-   :m_keywordName(keywordName), m_count(0)
+CCounter::CCounter(const std::string& keywordName, bool isIncrement)
+   :m_keywordName(keywordName), m_count(0), m_measureType(isIncrement ? kIncrement : kTotalizer)
 {
 }
 
@@ -37,14 +37,19 @@ void CCounter::set(unsigned int count)
    m_count = count;
 }
 
-const std::string CCounter::formatValue() const
+const std::string CCounter::formatValue(const std::string& currentValue) const
 {
-   return boost::lexical_cast<std::string>(count());
+   return boost::lexical_cast<std::string>((m_measureType == IHistorizable::kIncrement && !currentValue.empty()) ? count() + boost::lexical_cast<unsigned int>(currentValue) : count());
 }
 
 unsigned int CCounter::count() const
 {
    return m_count;
+}
+
+IHistorizable::EMeasureType CCounter::getMeasureType() const
+{
+   return m_measureType;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

@@ -25,7 +25,8 @@ public:
    // IHistorizable implementation
    virtual const std::string& getKeyword() const;
    virtual const yApi::CStandardCapacity& getCapacity() const;
-   virtual const std::string formatValue() const;
+   virtual const std::string formatValue(const std::string& currentValue = shared::CStringExtension::EmptyString) const;
+   virtual EMeasureType getMeasureType() const;
    // [END] IHistorizable implementation
 
    //-----------------------------------------------------
