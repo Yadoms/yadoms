@@ -49,7 +49,15 @@
       "connectionToServerHasBeenRestored": "la connexion au serveur a été rétablie"
     }
   },
-  "modals": {
+   "404Page" : {
+      "title" : "Page introuvable - Erreur 404",
+      "line1" : "Désolé, mais la page que vous recherchez n'a pas été trouvée. Vérifiez s'il n'y a pas d'erreur dans l'URL.",
+      "line2" : "Vous allez être automatiquement redirigé vers la page d'accueil de Yadoms dans __count__ seconde ou appuyez sur le bouton ci-dessous.",
+      "line2_plural" : "Vous allez être automatiquement redirigé vers la page d'accueil de Yadoms dans __count__ secondes ou appuyez sur le bouton ci-dessous.",
+      "goingToHome" : "Retour à l'accueil ...",
+      "takeMeHome" : "Retourner à l'accueil"
+   },
+   "modals": {
     "add-widget": {
       "title": "Ajouter un nouveau widget",
       "getMore": "Obtenir des widgets",

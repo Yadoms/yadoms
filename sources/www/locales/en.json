@@ -49,6 +49,14 @@
          "connectionToServerHasBeenRestored" : "Connection to server has been restored"
       }
    },
+   "404Page" : {
+      "title" : "Page Not Found - Error 404",
+      "line1" : "Sorry, but the page you are looking for has not been found. Try checking URL for errors.",
+      "line2" : "You will be automatically redirected to Yadoms home page in __count__ second or press button below.",
+      "line2_plural" : "You will be automatically redirected to Yadoms home page in __count__ seconds or press button below.",
+      "goingToHome" : "Going to home ...",
+      "takeMeHome" : "Take Me Home"
+   },
    "modals" : {
       "add-widget" : {
          "title" : "Add a new widget",
