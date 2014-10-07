@@ -19,6 +19,9 @@ namespace dataAccessLayer {
 
       void CAcquisitionHistorizer::saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime)
       {
+         // Data measured is increment, so value must be added to current value
+
+
          m_acquisitionRequester->saveData(keywordId, data, dataTime);
          m_acquisitionRequester->saveSummaryData(keywordId, dataTime);
          try

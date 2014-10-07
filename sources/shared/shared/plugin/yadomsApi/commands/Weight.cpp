@@ -37,7 +37,7 @@ void CWeight::set(double weight)
    m_weight = weight;
 }
 
-const std::string CWeight::formatValue() const
+const std::string CWeight::formatValue(const std::string& currentValue) const
 {
    return boost::lexical_cast<std::string>(weight());
 }
@@ -45,6 +45,11 @@ const std::string CWeight::formatValue() const
 double CWeight::weight() const
 {
    return m_weight;
+}
+
+IHistorizable::EMeasureType CWeight::getMeasureType() const
+{
+   return kAbsolute;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

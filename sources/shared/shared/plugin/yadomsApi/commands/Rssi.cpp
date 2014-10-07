@@ -32,7 +32,7 @@ void CRssi::set(int rssi)
    m_rssi = Normalize(rssi);
 }
 
-const std::string CRssi::formatValue() const
+const std::string CRssi::formatValue(const std::string& currentValue) const
 {
    return boost::lexical_cast<std::string>(rssi());
 }
@@ -49,6 +49,11 @@ int CRssi::Normalize(int rssi)
 int CRssi::rssi() const
 {
    return m_rssi;
+}
+
+IHistorizable::EMeasureType CRssi::getMeasureType() const
+{
+   return kAbsolute;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

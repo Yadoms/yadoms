@@ -37,7 +37,7 @@ void CPressure::set(int pressure)
    m_pressure = pressure;
 }
 
-const std::string CPressure::formatValue() const
+const std::string CPressure::formatValue(const std::string& currentValue) const
 {
    return boost::lexical_cast<std::string>(pressure());
 }
@@ -45,6 +45,11 @@ const std::string CPressure::formatValue() const
 int CPressure::pressure() const
 {
    return m_pressure;
+}
+
+IHistorizable::EMeasureType CPressure::getMeasureType() const
+{
+   return kAbsolute;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

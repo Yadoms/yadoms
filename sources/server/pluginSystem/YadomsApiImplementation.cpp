@@ -105,7 +105,25 @@ void CYadomsApiImplementation::historizeData(const std::string& device, const sh
       boost::shared_ptr<database::entities::CDevice> deviceEntity = m_deviceRequester->getDevice(getPluginId(), device);
       boost::shared_ptr<database::entities::CKeyword> keywordEntity = m_keywordRequester->getKeyword(deviceEntity->Id, data.getKeyword());
 
-      m_acquisitionHistorizer->saveData(keywordEntity->Id, data.formatValue());
+      if (data.getMeasureType() == shared::plugin::yadomsApi::commands::IHistorizable::kIncrement)
+      {
+         // Data measured is increment, so value must be added to current value
+         std::string currentValue;
+         try
+         {
+            currentValue = m_acquisitionRequester->getKeywordLastData(keywordEntity->Id)->Value;
+         }
+         catch (shared::exception::CEmptyResult&)
+         {
+            // No acquisition is available, it will be the first value for this keyword. Let currentValue empty.
+         }
+         m_acquisitionHistorizer->saveData(keywordEntity->Id, data.formatValue(currentValue));
+      }
+      else
+      {
+         // For othre measure types, saveData as provided
+         m_acquisitionHistorizer->saveData(keywordEntity->Id, data.formatValue());
+      }
    }
    catch (shared::exception::CEmptyResult& e)
    {

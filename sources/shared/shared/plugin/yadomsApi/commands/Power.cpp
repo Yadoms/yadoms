@@ -37,7 +37,7 @@ void CPower::set(double power)
    m_power = power;
 }
 
-const std::string CPower::formatValue() const
+const std::string CPower::formatValue(const std::string& currentValue) const
 {
    return boost::lexical_cast<std::string>(power());
 }
@@ -45,6 +45,11 @@ const std::string CPower::formatValue() const
 double CPower::power() const
 {
    return m_power;
+}
+
+IHistorizable::EMeasureType CPower::getMeasureType() const
+{
+   return kAbsolute;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

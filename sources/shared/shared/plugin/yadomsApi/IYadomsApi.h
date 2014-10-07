@@ -230,11 +230,11 @@ namespace shared { namespace plugin { namespace yadomsApi
       //-----------------------------------------------------
       ///\brief The plugin event record level
       //-----------------------------------------------------      
-      typedef enum
+      enum PluginEventSeverity
       {
          kInfo,
          kError,
-      }PluginEventSeverity;
+      };
       
       //-----------------------------------------------------
       ///\brief Record a plugin major event (recorded in Yadoms database)

@@ -37,7 +37,7 @@ void CTemperature::set(double temperature)
    m_temperature = temperature;
 }
 
-const std::string CTemperature::formatValue() const
+const std::string CTemperature::formatValue(const std::string& currentValue) const
 {
    return boost::lexical_cast<std::string>(temperature());
 }
@@ -45,6 +45,11 @@ const std::string CTemperature::formatValue() const
 double CTemperature::temperature() const
 {
    return m_temperature;
+}
+
+IHistorizable::EMeasureType CTemperature::getMeasureType() const
+{
+   return kAbsolute;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

@@ -13,9 +13,9 @@ namespace shared { namespace event
    //--------------------------------------------------------------
    enum
    {
-      kNoEvent = -2,       // No event in the queue
-      kTimeout = -1,       // Timeout
-      kUserFirstId = 0     // Base of user-defined IDs
+      kNoEvent = -2,       ///< No event in the queue
+      kTimeout = -1,       ///< Timeout
+      kUserFirstId = 0     ///< Base of user-defined IDs
    };
 
    //--------------------------------------------------------------

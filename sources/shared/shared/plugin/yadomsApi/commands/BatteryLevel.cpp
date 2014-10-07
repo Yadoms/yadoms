@@ -37,7 +37,7 @@ void CBatteryLevel::set(int batteryLevel)
    m_batteryLevel = Normalize(batteryLevel);
 }
 
-const std::string CBatteryLevel::formatValue() const
+const std::string CBatteryLevel::formatValue(const std::string& currentValue) const
 {
    return boost::lexical_cast<std::string>(batteryLevel());
 }
@@ -54,6 +54,11 @@ int CBatteryLevel::Normalize(int value)
 int CBatteryLevel::batteryLevel() const
 {
    return m_batteryLevel;
+}
+
+IHistorizable::EMeasureType CBatteryLevel::getMeasureType() const
+{
+   return kAbsolute;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

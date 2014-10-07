@@ -37,7 +37,7 @@ void CVoltage::set(double voltage)
    m_voltage = voltage;
 }
 
-const std::string CVoltage::formatValue() const
+const std::string CVoltage::formatValue(const std::string& currentValue) const
 {
    return boost::lexical_cast<std::string>(voltage());
 }
@@ -45,6 +45,11 @@ const std::string CVoltage::formatValue() const
 double CVoltage::voltage() const
 {
    return m_voltage;
+}
+
+IHistorizable::EMeasureType CVoltage::getMeasureType() const
+{
+   return kAbsolute;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

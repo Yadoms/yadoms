@@ -46,9 +46,14 @@ const CCurtain::ECommand CCurtain::command() const
    return m_command();
 }
 
-const std::string CCurtain::formatValue() const
+const std::string CCurtain::formatValue(const std::string& currentValue) const
 {
    return boost::lexical_cast<std::string>(m_command());
+}
+
+IHistorizable::EMeasureType CCurtain::getMeasureType() const
+{
+   return kAbsolute;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

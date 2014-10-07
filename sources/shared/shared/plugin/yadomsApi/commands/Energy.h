@@ -16,8 +16,9 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
+      ///\param[in] isIncrement     true if data is increment (must be added to current database value) or totalizer
       //-----------------------------------------------------
-      CEnergy(const std::string& keywordName);
+      CEnergy(const std::string& keywordName, bool isIncrement = false);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
@@ -27,7 +28,8 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
       virtual const CStandardCapacity& getCapacity() const;
-      virtual const std::string formatValue() const;
+      virtual const std::string formatValue(const std::string& currentValue = CStringExtension::EmptyString) const;
+      virtual EMeasureType getMeasureType() const;
       // [END] IHistorizable implementation
 
       //-----------------------------------------------------
@@ -59,6 +61,11 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       ///\brief                     The energy value (Wh)
       //-----------------------------------------------------
       double m_energy;
+
+      //-----------------------------------------------------
+      ///\brief                     The measure type
+      //-----------------------------------------------------
+      EMeasureType m_measureType;
    };
 
 
