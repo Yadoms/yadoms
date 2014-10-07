@@ -88,7 +88,7 @@ namespace web { namespace poco {
          if (!readAndSendFile(full_path, response))
          {
             //the file is not found, try to send 404.html file
-            std::string html404 = m_documentRoot + "404.html";
+            std::string html404 = m_documentRoot + "/404.html";
             if (!readAndSendFile(html404, response))
             {
                //the 404.html has not been found, just return a 404 hard coded message

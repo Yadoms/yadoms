@@ -101,9 +101,13 @@ DecimalParameterHandler.prototype.getParamName = function() {
  */
 DecimalParameterHandler.prototype.getCurrentConfiguration = function () {
    //we allow "," and "."
-   var v = $("input#" + this.uuid).val().replace(',', '.');
-   this.value = parseFloat(v);
-   if (!isNaN(this.precision))
-      this.value = this.value.toFixed(this.precision);
-   return this.value;
+   var $dom = $("input#" + this.uuid);
+   if ((!isNullOrUndefined($dom)) && (!isNullOrUndefined($dom.val()))) {
+      var v = $dom.val().replace(',', '.');
+      this.value = parseFloat(v);
+      if (!isNaN(this.precision))
+         this.value = this.value.toFixed(this.precision);
+      return this.value;
+   }
+   return null;
 };
