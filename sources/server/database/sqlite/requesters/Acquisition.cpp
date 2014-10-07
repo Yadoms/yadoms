@@ -138,6 +138,57 @@ namespace database {  namespace sqlite {  namespace requesters {
       return mva.getResults();
    }
 
+
+
+   std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string, std::string> > CAcquisition::getKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+   {
+      return getKeywordSummaryDataByType(database::entities::EAcquisitionSummaryType::kDay, keywordId, timeFrom, timeTo);
+   }
+
+
+
+   std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string, std::string> > CAcquisition::getKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+   {
+      return getKeywordSummaryDataByType(database::entities::EAcquisitionSummaryType::kHour, keywordId, timeFrom, timeTo);
+   }
+
+
+
+
+   std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string, std::string>  > CAcquisition::getKeywordSummaryDataByType(const database::entities::EAcquisitionSummaryType & type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+   {
+      CQuery qSelect;
+      qSelect.Clear().Select(CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(), CAcquisitionSummaryTable::getMaxColumnName()).
+         From(CAcquisitionSummaryTable::getTableName()).
+         Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
+         And(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, type);
+
+      if (!timeFrom.is_not_a_date_time())
+      {
+         qSelect.And(CAcquisitionSummaryTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, timeFrom);
+         if (!timeTo.is_not_a_date_time())
+         {
+            qSelect.And(CAcquisitionSummaryTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, timeTo);
+         }
+      }
+
+      qSelect.OrderBy(CAcquisitionSummaryTable::getDateColumnName());
+
+      if (type == database::entities::EAcquisitionSummaryType::kDay)
+         qSelect.Limit(2000); //more than 5 years
+      else
+         qSelect.Limit(200); // more than 8 days
+
+      database::sqlite::adapters::CMultipleValueAdapter<boost::posix_time::ptime, std::string, std::string, std::string> mva;
+      m_databaseRequester->queryEntities(&mva, qSelect);
+      return mva.getResults();
+   }
+
+
+
+
+
+
    std::string CAcquisition::getKeywordHighchartData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
    {
       //this query is optimized to get only one field to read
