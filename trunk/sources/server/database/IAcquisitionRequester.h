@@ -63,7 +63,27 @@ namespace database {
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
       virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string>  > getKeywordData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
-
+      
+      //--------------------------------------------------------------
+      /// \brief                 Get the data  by day (avg, min, max per day)
+      /// \param [in] keywordId  keywordId Id
+      /// \param [in] timeFrom   The start date (optionnal)
+      /// \param [in] timeTo     The end date (optionnal)
+      /// \return                Map of data : (date, value)
+      /// \throw                 CInvalidParameter if deviceId is unknown
+      //--------------------------------------------------------------
+      virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string, std::string> > getKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
+      
+      //--------------------------------------------------------------
+      /// \brief                 Get the data  by hour (avg, min, max per hour)
+      /// \param [in] keywordId  keywordId Id
+      /// \param [in] timeFrom   The start date (optionnal)
+      /// \param [in] timeTo     The end date (optionnal)
+      /// \return                Map of data : (date, value)
+      /// \throw                 CInvalidParameter if deviceId is unknown
+      //--------------------------------------------------------------
+      virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string, std::string> > getKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
+      
       //--------------------------------------------------------------
       /// \brief                 Get the data (highchart js format) : [[date,value],[date,value],...]
       /// \param [in] keywordId  keywordId Id
