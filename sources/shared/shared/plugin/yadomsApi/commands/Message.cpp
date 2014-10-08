@@ -41,7 +41,7 @@ void CMessage::set(const std::string& from, const std::string& to, const std::st
    m_body = body;
 }
 
-const std::string CMessage::formatValue(const std::string& currentValue) const
+const std::string CMessage::formatValue() const
 {
    shared::CDataContainer yadomsCommand;
    yadomsCommand.set("to", to());

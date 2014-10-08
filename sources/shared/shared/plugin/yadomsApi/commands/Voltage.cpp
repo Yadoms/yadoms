@@ -8,8 +8,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
 
-CVoltage::CVoltage(const std::string& keywordName)
-   :m_keywordName(keywordName), m_voltage(0.0)
+CVoltage::CVoltage(const std::string& keywordName, EMeasureType measureType)
+   :m_keywordName(keywordName), m_voltage(0.0), m_measureType(measureType)
 {
 }
 
@@ -37,7 +37,7 @@ void CVoltage::set(double voltage)
    m_voltage = voltage;
 }
 
-const std::string CVoltage::formatValue(const std::string& currentValue) const
+const std::string CVoltage::formatValue() const
 {
    return boost::lexical_cast<std::string>(voltage());
 }
@@ -49,7 +49,7 @@ double CVoltage::voltage() const
 
 IHistorizable::EMeasureType CVoltage::getMeasureType() const
 {
-   return kAbsolute;
+   return m_measureType;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

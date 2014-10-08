@@ -8,8 +8,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
 
-CFrequency::CFrequency(const std::string& keywordName)
-   :m_keywordName(keywordName), m_frequency(0.0)
+CFrequency::CFrequency(const std::string& keywordName, EMeasureType measureType)
+   :m_keywordName(keywordName), m_frequency(0.0), m_measureType(measureType)
 {
 }
 
@@ -37,7 +37,7 @@ void CFrequency::set(double frequency)
    m_frequency = frequency;
 }
 
-const std::string CFrequency::formatValue(const std::string& currentValue) const
+const std::string CFrequency::formatValue() const
 {
    return boost::lexical_cast<std::string>(frequency());
 }
@@ -49,7 +49,7 @@ double CFrequency::frequency() const
 
 IHistorizable::EMeasureType CFrequency::getMeasureType() const
 {
-   return kAbsolute;
+   return m_measureType;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

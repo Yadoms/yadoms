@@ -52,7 +52,7 @@ namespace communication {
       m_pluginManager->postCommand(m_dataProvider->getDeviceRequester()->getDevice(deviceId)->PluginId, command);
 
       // Historize the command
-      m_acquisitionHistorizer->saveData(keywordId, body.serialize());
+      m_acquisitionHistorizer->saveData(keywordId, command->getHistorizableObject());
    }
 
    void CPluginGateway::sendManuallyDeviceCreationRequestAsync(int pluginId, const std::string& deviceName, const std::string& keywordName, const std::string& capacity, const std::string& parameters)

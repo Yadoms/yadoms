@@ -10,20 +10,22 @@ namespace dataAccessLayer {
       {
       }
 
-      void CAcquisitionHistorizer::saveData(const int keywordId, const std::string & data)
+      void CAcquisitionHistorizer::saveData(const int keywordId, const shared::plugin::yadomsApi::commands::IHistorizable & data)
       {
          //use ptime as variable, because saveData needs a reference
          boost::posix_time::ptime currentDate = boost::posix_time::second_clock::universal_time();
          saveData(keywordId, data, currentDate);
       }
 
-      void CAcquisitionHistorizer::saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime)
+      void CAcquisitionHistorizer::saveData(const int keywordId, const shared::plugin::yadomsApi::commands::IHistorizable & data, boost::posix_time::ptime & dataTime)
       {
-         // Data measured is increment, so value must be added to current value
+         if(data.getMeasureType() == shared::plugin::yadomsApi::commands::IHistorizable::kIncrement)
+            m_acquisitionRequester->incrementData(keywordId, data.formatValue(), dataTime);
+         else
+            m_acquisitionRequester->saveData(keywordId, data.formatValue(), dataTime);
 
-
-         m_acquisitionRequester->saveData(keywordId, data, dataTime);
          m_acquisitionRequester->saveSummaryData(keywordId, dataTime);
+
          try
          {
             boost::shared_ptr< database::entities::CAcquisition > acq = m_acquisitionRequester->getAcquisitionByKeywordAndDate(keywordId, dataTime);

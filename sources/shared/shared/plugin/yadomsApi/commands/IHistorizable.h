@@ -2,7 +2,7 @@
 #include "../StandardCapacities.h"
 #include "../../../StringExtension.h"
 
-namespace shared { namespace plugin { namespace yadomsApi { namespace commands
+namespace shared { namespace plugin { namespace yadomsApi { namespace commands//TODO renommer commands
 {
    //-----------------------------------------------------
    ///\brief The API used for the commands on device
@@ -18,7 +18,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       {
          kAbsolute = 0,    ///< Absolute data, like temperature, humidity
          kIncrement,       ///< Say Yadoms that value must be added to current value. Ex : pulse counters (water, energy counters...)
-         kTotalizer        ///< the current value is a total value (like some energy power)
+         kCumulative       ///< the current value is a total value (like some energy power)
       };
 
    public:
@@ -41,10 +41,9 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 
       //-----------------------------------------------------
       ///\brief                     Format value to Yadoms format
-      ///\param[in] currentValue    Current value (used for kIncrement measures)
       ///\return                    Formatted data
       //-----------------------------------------------------
-      virtual const std::string formatValue(const std::string& currentValue = CStringExtension::EmptyString) const = 0;
+      virtual const std::string formatValue() const = 0;
 
       //-----------------------------------------------------
       ///\brief                     The measure type

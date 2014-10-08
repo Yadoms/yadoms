@@ -46,7 +46,7 @@ const CCurtain::ECommand CCurtain::command() const
    return m_command();
 }
 
-const std::string CCurtain::formatValue(const std::string& currentValue) const
+const std::string CCurtain::formatValue() const
 {
    return boost::lexical_cast<std::string>(m_command());
 }

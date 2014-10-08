@@ -53,7 +53,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
          return m_capacity;
       }
       
-      virtual const std::string formatValue(const std::string& currentValue = shared::CStringExtension::EmptyString) const
+      virtual const std::string formatValue() const
       {
          return m_value.getAsString();
       }

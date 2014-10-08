@@ -8,8 +8,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
 
-CPressure::CPressure(const std::string& keywordName)
-   :m_keywordName(keywordName), m_pressure(0)
+CPressure::CPressure(const std::string& keywordName, EMeasureType measureType)
+   :m_keywordName(keywordName), m_pressure(0), m_measureType(measureType)
 {
 }
 
@@ -37,7 +37,7 @@ void CPressure::set(int pressure)
    m_pressure = pressure;
 }
 
-const std::string CPressure::formatValue(const std::string& currentValue) const
+const std::string CPressure::formatValue() const
 {
    return boost::lexical_cast<std::string>(pressure());
 }
@@ -49,7 +49,7 @@ int CPressure::pressure() const
 
 IHistorizable::EMeasureType CPressure::getMeasureType() const
 {
-   return kAbsolute;
+   return m_measureType;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

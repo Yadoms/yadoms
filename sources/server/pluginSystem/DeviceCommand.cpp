@@ -4,8 +4,8 @@
 namespace pluginSystem
 {
 
-   CDeviceCommand::CDeviceCommand(const std::string& targetDevice, const std::string& keyword, const shared::CDataContainer& body)
-   :m_targetDevice(targetDevice), m_keyword(keyword), m_body(body)
+CDeviceCommand::CDeviceCommand(const std::string& targetDevice, const std::string& keyword, const shared::CDataContainer& body)
+   :m_targetDevice(targetDevice), m_keyword(keyword), m_body(body), m_historizableObject(keyword, body.serialize())
 {
 }
       
@@ -33,6 +33,11 @@ const std::string CDeviceCommand::toString() const
    std::stringstream str;
    str << m_targetDevice << " = " << m_body.serialize();
    return str.str();
+}
+
+const shared::plugin::yadomsApi::commands::IHistorizable& CDeviceCommand::getHistorizableObject() const
+{
+   return m_historizableObject;
 }
 
 } // namespace pluginSystem	

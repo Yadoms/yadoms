@@ -8,8 +8,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
 
-CTemperature::CTemperature(const std::string& keywordName)
-   :m_keywordName(keywordName), m_temperature(0.0)
+CTemperature::CTemperature(const std::string& keywordName, EMeasureType measureType)
+   :m_keywordName(keywordName), m_temperature(0.0), m_measureType(measureType)
 {
 }
 
@@ -37,7 +37,7 @@ void CTemperature::set(double temperature)
    m_temperature = temperature;
 }
 
-const std::string CTemperature::formatValue(const std::string& currentValue) const
+const std::string CTemperature::formatValue() const
 {
    return boost::lexical_cast<std::string>(temperature());
 }
@@ -49,7 +49,7 @@ double CTemperature::temperature() const
 
 IHistorizable::EMeasureType CTemperature::getMeasureType() const
 {
-   return kAbsolute;
+   return m_measureType;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

@@ -28,7 +28,7 @@ void CLoadKeyword::set(float load)
    m_load = load;
 }
 
-const std::string CLoadKeyword::formatValue(const std::string& currentValue) const
+const std::string CLoadKeyword::formatValue() const
 {
    std::ostringstream ss;
    ss << std::fixed << std::setprecision(2) << load();
