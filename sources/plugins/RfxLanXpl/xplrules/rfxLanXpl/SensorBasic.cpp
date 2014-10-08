@@ -3,6 +3,9 @@
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 #include <shared/plugin/yadomsApi/commands/commands.h>
+#include "data/DigimaxDemand.h"
+#include "data/DigitalIoStatus.h"
+#include "data/MertikStatus.h"
 
 #include "ControlBasic.h"
 
@@ -228,6 +231,77 @@ namespace xplrules { namespace rfxLanXpl {
          data.push_back(battLvl);
       }
 
+      //DIGIMAX
+      if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceDigimax))
+      {
+
+         if (msg.getBodyValue(m_keywordType) == m_keywordTypeDemand)
+         {
+            boost::shared_ptr< data::CDigimaxDemand > digimaxDemand(new data::CDigimaxDemand(m_keywordTypeDemand));
+            digimaxDemand->set(data::EDigimaxDemand::parse(msg.getBodyValue(m_keywordCurrent)));
+            data.push_back(digimaxDemand);
+         }
+
+         if (msg.getBodyValue(m_keywordType) == m_keywordTypeTemp)
+         {
+            boost::shared_ptr< shared::plugin::yadomsApi::commands::CTemperature > digimaxTemp(new shared::plugin::yadomsApi::commands::CTemperature(m_keywordTypeTemp));
+            digimaxTemp->set(msg.getBodyValue(m_keywordCurrent));
+            data.push_back(digimaxTemp);
+         }
+
+         if (msg.getBodyValue(m_keywordType) == m_keywordTypeSetpoint)
+         {
+            boost::shared_ptr< shared::plugin::yadomsApi::commands::CTemperature > digimaxSetPoint(new shared::plugin::yadomsApi::commands::CTemperature(m_keywordTypeSetpoint));
+            digimaxSetPoint->set(msg.getBodyValue(m_keywordCurrent));
+            data.push_back(digimaxSetPoint);
+         }
+
+      }
+
+      //RFXSENSOR
+      if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxSensor))
+      {
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeVoltage))
+         {
+            boost::shared_ptr< shared::plugin::yadomsApi::commands::CVoltage > volt(new shared::plugin::yadomsApi::commands::CVoltage(m_keywordTypeVoltage));
+            volt->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
+            data.push_back(volt);
+         }
+            
+         if (msg.getBodyValue(m_keywordType) == m_keywordTypeTemp)
+         {
+            boost::shared_ptr< shared::plugin::yadomsApi::commands::CTemperature > temp(new shared::plugin::yadomsApi::commands::CTemperature(m_keywordTypeTemp));
+            temp->set(msg.getBodyValue(m_keywordCurrent));
+            data.push_back(temp);
+         }
+      }
+
+      //RFXMETER
+      if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxMeter) && boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeCount))
+      {
+         boost::shared_ptr< shared::plugin::yadomsApi::commands::CCounter > temp(new shared::plugin::yadomsApi::commands::CCounter(m_keywordTypeCount));
+         temp->set(boost::lexical_cast<int>(msg.getBodyValue(m_keywordCurrent)));
+         data.push_back(temp);
+
+      }
+
+      //RFXLAN IO
+      if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxLanIo))
+      {
+         boost::shared_ptr< data::CDigitalIoStatus > digitalLine(new data::CDigitalIoStatus(m_keywordTypeDemand));
+         digitalLine->set(data::EDigitalIoStatus::parse(msg.getBodyValue(m_keywordCurrent)));
+         data.push_back(digitalLine);
+      }
+
+      //Mertik
+      if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordHex) && boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeMertik))
+      {
+         boost::shared_ptr< data::CMertickStatus > mertikStatus(new data::CMertickStatus(m_keywordTypeDemand));
+         mertikStatus->set(data::EMertikStatus::parse(msg.getBodyValue(m_keywordCurrent)));
+         data.push_back(mertikStatus);
+      }
+
+      //Oregon
       if (isOregonDevice(msg))
       {
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeTemp))
@@ -249,6 +323,15 @@ namespace xplrules { namespace rfxLanXpl {
       return data;
    }
 
+
+
+
+
+
+
+
+
+
    KeywordList CSensorBasic::identifyKeywords(xplcore::CXplMessage & msg)
    {
       KeywordList keywords;
@@ -257,55 +340,51 @@ namespace xplrules { namespace rfxLanXpl {
       {
          keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new shared::plugin::yadomsApi::commands::CBatteryLevel(m_keywordTypeBattery)));
       }
-         /*
+         
       //DIGIMAX
       if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceDigimax))
       {
 
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeDemand)
-            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeDemand, m_keywordTypeDemand, yApi::kGet, yApi::kString, shared::CStringExtension::EmptyString, m_keywordTypeDemandValues)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new data::CDigimaxDemand(m_keywordTypeDemand)));
 
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeTemp)
-            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeTemp, yApi::CStandardCapacities::Temperature, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::DegreesCelcius, details)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new shared::plugin::yadomsApi::commands::CTemperature(m_keywordTypeTemp)));
 
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeSetpoint)
-            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeSetpoint, m_keywordTypeSetpoint, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::DegreesCelcius, details)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new shared::plugin::yadomsApi::commands::CTemperature(m_keywordTypeSetpoint)));
             
       }
+
 
 
       //RFXSENSOR
       if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxSensor))
       {
-
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeVoltage))
-         {
-            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeVoltage, m_keywordTypeVoltage, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::Volt, details)));
-         }
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new shared::plugin::yadomsApi::commands::CVoltage(m_keywordTypeVoltage)));
 
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeTemp)
-            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeTemp, yApi::CStandardCapacities::Temperature, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::DegreesCelcius, details)));
-
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new shared::plugin::yadomsApi::commands::CTemperature(m_keywordTypeVoltage)));
       }
 
       //RFXMETER
       if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxMeter) && boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeCount))
       {
-         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeCount, m_keywordTypeCount, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::NoUnits, details)));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new shared::plugin::yadomsApi::commands::CCounter(m_keywordTypeCount)));
       }
 
       //RFXLAN IO
       if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxLanIo))
       {
-         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeInput, m_keywordTypeInput, yApi::kGet, yApi::kString, yApi::CStandardUnits::NoUnits, m_keywordTypeIoValues)));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new data::CDigitalIoStatus(m_keywordTypeInput)));
       }
 
       //Mertik
       if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordHex) && boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeMertik))
       {
-         keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeMertik, m_keywordTypeMertik, yApi::kGet, yApi::kString, yApi::CStandardUnits::NoUnits, m_keywordTypeMertikValues)));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new data::CMertickStatus(m_keywordTypeMertik)));
       }
-      */
 
       //Oregon
       if (isOregonDevice(msg))

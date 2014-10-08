@@ -47,12 +47,18 @@ set(RFXLANXPL_RULES_SOURCES
 	xplrules/rfxLanXpl/X10Basic.h
 	xplrules/rfxLanXpl/X10Basic.cpp
 	xplrules/rfxLanXpl/data/HistorizableEnum.h
-	xplrules/rfxLanXpl/data/Mertik.h
-	xplrules/rfxLanXpl/data/Mertik.cpp
+	xplrules/rfxLanXpl/data/MertikCommand.h
+	xplrules/rfxLanXpl/data/MertikCommand.cpp
+	xplrules/rfxLanXpl/data/MertikStatus.h
+	xplrules/rfxLanXpl/data/MertikStatus.cpp
 	xplrules/rfxLanXpl/data/Ninja.h
 	xplrules/rfxLanXpl/data/Ninja.cpp
-	xplrules/rfxLanXpl/data/DigitalIo.h
-	xplrules/rfxLanXpl/data/DigitalIo.cpp
+	xplrules/rfxLanXpl/data/DigitalIoCommand.h
+	xplrules/rfxLanXpl/data/DigitalIoCommand.cpp	
+	xplrules/rfxLanXpl/data/DigitalIoStatus.h
+	xplrules/rfxLanXpl/data/DigitalIoStatus.cpp	
+	xplrules/rfxLanXpl/data/DigimaxDemand.h
+	xplrules/rfxLanXpl/data/DigimaxDemand.cpp
 )
 
 

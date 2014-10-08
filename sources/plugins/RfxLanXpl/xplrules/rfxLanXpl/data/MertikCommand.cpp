@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Mertik.h"
+#include "MertikCommand.h"
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/Log.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
@@ -25,15 +25,15 @@ DECLARE_ENUM_IMPLEMENTATION_CUSTOM(EMertikCommand,
    ((ProgSweep)("prog_sweep"))
 );
 
-const shared::plugin::yadomsApi::CStandardCapacity& MertikCapacity = shared::plugin::yadomsApi::CStandardCapacity("mertik", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::kSet, shared::plugin::yadomsApi::kNoData);
+const shared::plugin::yadomsApi::CStandardCapacity& MertikCommandCapacity = shared::plugin::yadomsApi::CStandardCapacity("mertik", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::kSet, shared::plugin::yadomsApi::kNoData);
 
    
-CMertick::CMertick(const std::string& keywordName)
-   :CHistorizableEnum<EMertikCommand>(keywordName, MertikCapacity, "command")
+CMertickCommand::CMertickCommand(const std::string& keywordName)
+   :CHistorizableEnum<EMertikCommand>(keywordName, MertikCommandCapacity, "command")
 {
 }
 
-CMertick::~CMertick()
+CMertickCommand::~CMertickCommand()
 {
 }
 

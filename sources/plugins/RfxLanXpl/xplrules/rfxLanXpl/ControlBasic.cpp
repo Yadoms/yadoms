@@ -2,9 +2,9 @@
 #include "ControlBasic.h"
 #include <shared/tools/Random.h>
 #include "SensorBasic.h"
-#include "data/Mertik.h"
+#include "data/MertikCommand.h"
 #include "data/Ninja.h"
-#include "data/DigitalIo.h"
+#include "data/DigitalIoCommand.h"
 
 namespace xplrules { namespace rfxLanXpl {
 
@@ -44,11 +44,11 @@ namespace xplrules { namespace rfxLanXpl {
    {
       KeywordList keywords;
       if (msg.getBodyValue("type") == "mertik")
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new data::CMertick("mertik")));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new data::CMertickCommand("mertik")));
       else if (msg.getBodyValue("type") == "ninja")
          keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new data::CNinja("ninja")));
       else if (msg.getBodyValue("type") == "output")
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new data::CDigitalIo("digitalio")));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new data::CDigitalIoCommand("digitalio")));
       return keywords;
    }
    // [END] IRule implementation
