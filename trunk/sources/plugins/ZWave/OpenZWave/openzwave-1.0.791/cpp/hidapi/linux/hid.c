@@ -41,7 +41,7 @@
 #include <linux/hidraw.h>
 #include <linux/version.h>
 #include <linux/input.h>
-#include <libudev.h>
+//#include <libudev.h>
 
 #include "hidapi.h"
 
@@ -384,7 +384,8 @@ struct hid_device_info  HID_API_EXPORT *hid_enumerate(unsigned short vendor_id, 
 	devices = udev_enumerate_get_list_entry(enumerate);
 	/* For each item, see if it matches the vid/pid, and if so
 	   create a udev_device record for it */
-	udev_list_entry_foreach(dev_list_entry, devices) {
+	//udev_list_entry_foreach(dev_list_entry, devices) 
+         {
 		const char *sysfs_path;
 		const char *dev_path;
 		const char *str;

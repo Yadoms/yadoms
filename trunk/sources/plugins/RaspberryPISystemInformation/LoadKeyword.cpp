@@ -40,3 +40,7 @@ float CLoadKeyword::load() const
    return m_load;
 }
 
+yApi::commands::IHistorizable::EMeasureType CLoadKeyword::getMeasureType() const
+{
+   return kAbsolute;
+}
