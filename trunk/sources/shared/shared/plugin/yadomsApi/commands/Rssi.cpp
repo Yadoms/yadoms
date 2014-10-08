@@ -8,8 +8,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
 
-CRssi::CRssi(const std::string& keywordName)
-   :m_keywordName(keywordName), m_rssi(0)
+CRssi::CRssi(const std::string& keywordName, EMeasureType measureType)
+   :m_keywordName(keywordName), m_rssi(0), m_measureType(measureType)
 {
 }
 
@@ -32,7 +32,7 @@ void CRssi::set(int rssi)
    m_rssi = Normalize(rssi);
 }
 
-const std::string CRssi::formatValue(const std::string& currentValue) const
+const std::string CRssi::formatValue() const
 {
    return boost::lexical_cast<std::string>(rssi());
 }
@@ -53,7 +53,7 @@ int CRssi::rssi() const
 
 IHistorizable::EMeasureType CRssi::getMeasureType() const
 {
-   return kAbsolute;
+   return m_measureType;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

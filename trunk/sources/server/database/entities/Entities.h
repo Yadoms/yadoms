@@ -132,6 +132,7 @@ namespace database { namespace entities {
       ((Units)(std::string))
       ((Details)(shared::CDataContainer))
    )
+   //TODO : ajouter colonne Measure
 
    DECLARE_ENTITY_CLASS_HEADER(Acquisition,
       ((Id)(int))

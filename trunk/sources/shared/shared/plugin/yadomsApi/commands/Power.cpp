@@ -8,8 +8,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
 
-CPower::CPower(const std::string& keywordName)
-   :m_keywordName(keywordName), m_power(0.0)
+CPower::CPower(const std::string& keywordName, EMeasureType measureType)
+   :m_keywordName(keywordName), m_power(0.0), m_measureType(measureType)
 {
 }
 
@@ -37,7 +37,7 @@ void CPower::set(double power)
    m_power = power;
 }
 
-const std::string CPower::formatValue(const std::string& currentValue) const
+const std::string CPower::formatValue() const
 {
    return boost::lexical_cast<std::string>(power());
 }
@@ -49,7 +49,7 @@ double CPower::power() const
 
 IHistorizable::EMeasureType CPower::getMeasureType() const
 {
-   return kAbsolute;
+   return m_measureType;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

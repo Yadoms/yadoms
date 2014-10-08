@@ -28,8 +28,8 @@ namespace database { namespace sqlite {
          virtual ~CAcquisition();
 
          // IAcquisitionRequester implementation
-         virtual void saveData(const int keywordId, const std::string & data);
          virtual void saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime);
+         virtual void incrementData(const int keywordId, const std::string & increment, boost::posix_time::ptime & dataTime);
          virtual void saveSummaryData(const int keywordId, boost::posix_time::ptime & dataTime);
          virtual void removeKeywordData(const int keywordId);
          virtual boost::shared_ptr< database::entities::CAcquisition > getAcquisitionByKeywordAndDate(const int keywordId, boost::posix_time::ptime time);

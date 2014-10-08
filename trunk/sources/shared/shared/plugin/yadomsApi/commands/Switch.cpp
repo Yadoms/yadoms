@@ -8,8 +8,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
 
-CSwitch::CSwitch(const std::string& keywordName)
-   :m_keywordName(keywordName), m_switchLevel(0)
+CSwitch::CSwitch(const std::string& keywordName, EMeasureType measureType)
+   :m_keywordName(keywordName), m_switchLevel(0), m_measureType(measureType)
 {
 }
 
@@ -42,7 +42,7 @@ void CSwitch::set(int switchLevel)
    m_switchLevel = NormalizeLevel(switchLevel);
 }
 
-const std::string CSwitch::formatValue(const std::string& currentValue) const
+const std::string CSwitch::formatValue() const
 {
    return boost::lexical_cast<std::string>(switchLevel());
 }
@@ -68,7 +68,7 @@ bool CSwitch::isOn() const
 
 IHistorizable::EMeasureType CSwitch::getMeasureType() const
 {
-   return kAbsolute;
+   return m_measureType;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

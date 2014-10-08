@@ -8,8 +8,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
 
-CWeight::CWeight(const std::string& keywordName)
-   :m_keywordName(keywordName), m_weight(0.0)
+CWeight::CWeight(const std::string& keywordName, EMeasureType measureType)
+   :m_keywordName(keywordName), m_weight(0.0), m_measureType(measureType)
 {
 }
 
@@ -37,7 +37,7 @@ void CWeight::set(double weight)
    m_weight = weight;
 }
 
-const std::string CWeight::formatValue(const std::string& currentValue) const
+const std::string CWeight::formatValue() const
 {
    return boost::lexical_cast<std::string>(weight());
 }
@@ -49,7 +49,7 @@ double CWeight::weight() const
 
 IHistorizable::EMeasureType CWeight::getMeasureType() const
 {
-   return kAbsolute;
+   return m_measureType;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

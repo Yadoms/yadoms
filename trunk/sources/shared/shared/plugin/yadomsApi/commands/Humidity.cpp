@@ -8,8 +8,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
 
-CHumidity::CHumidity(const std::string& keywordName)
-   :m_keywordName(keywordName), m_humidity(0)
+CHumidity::CHumidity(const std::string& keywordName, EMeasureType measureType)
+   :m_keywordName(keywordName), m_humidity(0), m_measureType(measureType)
 {
 }
 
@@ -37,7 +37,7 @@ void CHumidity::set(int humidity)
    m_humidity = Normalize(humidity);
 }
 
-const std::string CHumidity::formatValue(const std::string& currentValue) const
+const std::string CHumidity::formatValue() const
 {
    return boost::lexical_cast<std::string>(humidity());
 }
@@ -58,7 +58,7 @@ int CHumidity::humidity() const
 
 IHistorizable::EMeasureType CHumidity::getMeasureType() const
 {
-   return kAbsolute;
+   return m_measureType;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

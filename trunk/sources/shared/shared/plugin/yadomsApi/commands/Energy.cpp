@@ -8,8 +8,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
 
-CEnergy::CEnergy(const std::string& keywordName, bool isIncrement)
-   :m_keywordName(keywordName), m_energy(0.0), m_measureType(isIncrement ? kIncrement : kTotalizer)
+CEnergy::CEnergy(const std::string& keywordName, EMeasureType measureType)
+   :m_keywordName(keywordName), m_energy(0.0), m_measureType(measureType)
 {
 }
 
@@ -37,9 +37,9 @@ void CEnergy::set(double energy)
    m_energy = energy;
 }
 
-const std::string CEnergy::formatValue(const std::string& currentValue) const
+const std::string CEnergy::formatValue() const
 {
-   return boost::lexical_cast<std::string>((m_measureType == IHistorizable::kIncrement && !currentValue.empty()) ? energy() + boost::lexical_cast<double>(currentValue) : energy());
+   return boost::lexical_cast<std::string>(energy());
 }
 
 double CEnergy::energy() const

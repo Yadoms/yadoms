@@ -26,14 +26,6 @@ namespace database {  namespace sqlite {  namespace requesters {
 
 
    // IAcquisitionRequester implementation
-   void CAcquisition::saveData(const int keywordId, const std::string & data)
-   {
-      //use ptime as variable, because saveData needs a reference
-      boost::posix_time::ptime currentDate = boost::posix_time::second_clock::universal_time();
-      saveData(keywordId, data, currentDate);
-   }
-
-
    void CAcquisition::saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime)
    {
       if(m_databaseHandler->getKeywordRequester()->getKeyword(keywordId))
@@ -49,6 +41,28 @@ namespace database {  namespace sqlite {  namespace requesters {
       {
          throw shared::exception::CEmptyResult("The keyword do not exists, cannot add data");
       }
+   }
+
+   void CAcquisition::incrementData(const int keywordId, const std::string & increment, boost::posix_time::ptime & dataTime)
+   {
+      boost::shared_ptr<database::entities::CKeyword> keywordEntity = m_databaseHandler->getKeywordRequester()->getKeyword(keywordId);
+
+      if(!keywordEntity)
+         throw shared::exception::CEmptyResult("The keyword do not exists, cannot increment data");
+
+      if (keywordEntity->Type() != database::entities::EKeywordDataType::kNumeric)
+         throw shared::exception::CEmptyResult("The keyword is not numeric, cannot increment data");
+
+      CQuery q;
+      q.InsertOrReplaceInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
+         Select(CQueryValue(dataTime).str(), CQueryValue(keywordId).str(), "acq." + CAcquisitionTable::getValueColumnName() + " + " + increment).
+         From(CAcquisitionTable::getTableName() + " as acq").
+         Where("acq." + CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
+         OrderBy("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_ORDER_DESC).
+         Limit(1);
+
+      if(m_databaseRequester->queryStatement(q) <= 0)
+         throw shared::exception::CEmptyResult("Fail to insert new data");
    }
 
    void CAcquisition::removeKeywordData(const int keywordId)

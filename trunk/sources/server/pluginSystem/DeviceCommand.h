@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/plugin/yadomsApi/IDeviceCommand.h>
-
+#include "CommandHistorizer.h"
 
 namespace pluginSystem
 {
@@ -28,6 +28,7 @@ namespace pluginSystem
       virtual const std::string& getKeyword() const;
       virtual const shared::CDataContainer& getBody() const;
       virtual const std::string toString() const;
+      virtual const shared::plugin::yadomsApi::commands::IHistorizable& getHistorizableObject() const;
       // [END] IDeviceCommand implementation
 
    private:
@@ -45,6 +46,11 @@ namespace pluginSystem
       ///\brief               Command body
       //-----------------------------------------------------
       shared::CDataContainer m_body;
+
+      //-----------------------------------------------------
+      ///\brief               Historizable object
+      //-----------------------------------------------------
+      CCommandHistorizer m_historizableObject;
    };  
 } // namespace pluginSystem	
 	

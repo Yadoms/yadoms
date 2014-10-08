@@ -8,8 +8,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
 
-CBatteryLevel::CBatteryLevel(const std::string& keywordName)
-   :m_keywordName(keywordName), m_batteryLevel(0)
+CBatteryLevel::CBatteryLevel(const std::string& keywordName, EMeasureType measureType)
+   :m_keywordName(keywordName), m_batteryLevel(0), m_measureType(measureType)
 {
 }
 
@@ -37,7 +37,7 @@ void CBatteryLevel::set(int batteryLevel)
    m_batteryLevel = Normalize(batteryLevel);
 }
 
-const std::string CBatteryLevel::formatValue(const std::string& currentValue) const
+const std::string CBatteryLevel::formatValue() const
 {
    return boost::lexical_cast<std::string>(batteryLevel());
 }
@@ -58,7 +58,7 @@ int CBatteryLevel::batteryLevel() const
 
 IHistorizable::EMeasureType CBatteryLevel::getMeasureType() const
 {
-   return kAbsolute;
+   return m_measureType;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

@@ -8,8 +8,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace commands
 {
 
-CCurrent::CCurrent(const std::string& keywordName)
-   :m_keywordName(keywordName), m_current(0.0)
+CCurrent::CCurrent(const std::string& keywordName, EMeasureType measureType)
+   :m_keywordName(keywordName), m_current(0.0), m_measureType(measureType)
 {
 }
 
@@ -37,7 +37,7 @@ void CCurrent::set(double current)
    m_current = current;
 }
 
-const std::string CCurrent::formatValue(const std::string& currentValue) const
+const std::string CCurrent::formatValue() const
 {
    return boost::lexical_cast<std::string>(current());
 }
@@ -49,7 +49,7 @@ double CCurrent::current() const
 
 IHistorizable::EMeasureType CCurrent::getMeasureType() const
 {
-   return kAbsolute;
+   return m_measureType;
 }
 
 } } } } // namespace shared::plugin::yadomsApi::commands

@@ -167,124 +167,126 @@ set(YADOMS_SRC
 	server/System.cpp
 	server/System.h
   
+   server/pluginSystem/CommandHistorizer.cpp
+   server/pluginSystem/CommandHistorizer.h
    server/pluginSystem/DeviceCommand.cpp
    server/pluginSystem/DeviceCommand.h
-   server/pluginSystem/ManuallyDeviceCreationData.cpp
-   server/pluginSystem/ManuallyDeviceCreationData.h
-   server/pluginSystem/ManuallyDeviceCreationTestData.cpp
-   server/pluginSystem/ManuallyDeviceCreationTestData.h
 	server/pluginSystem/DummyQualifier.h
 	server/pluginSystem/DummyQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.cpp
 	server/pluginSystem/IdentityForQualifier.h
 	server/pluginSystem/Information.cpp
 	server/pluginSystem/Information.h
-	server/pluginSystem/Qualifier.h
-	server/pluginSystem/Qualifier.cpp
+	server/pluginSystem/Instance.h
+	server/pluginSystem/Instance.cpp
+	server/pluginSystem/IQualifier.h
+	server/pluginSystem/InvalidPluginException.hpp
+	server/pluginSystem/Factory.h
+	server/pluginSystem/Factory.cpp
 	server/pluginSystem/Manager.h
 	server/pluginSystem/Manager.cpp
 	server/pluginSystem/ManagerEvent.h
-	server/pluginSystem/Instance.h
-	server/pluginSystem/Instance.cpp
-	server/pluginSystem/Factory.h
-	server/pluginSystem/Factory.cpp
-	server/pluginSystem/IQualifier.h
-	server/pluginSystem/InvalidPluginException.hpp
+   server/pluginSystem/ManuallyDeviceCreationData.cpp
+   server/pluginSystem/ManuallyDeviceCreationData.h
+   server/pluginSystem/ManuallyDeviceCreationTestData.cpp
+   server/pluginSystem/ManuallyDeviceCreationTestData.h
+	server/pluginSystem/Qualifier.h
+	server/pluginSystem/Qualifier.cpp
    server/pluginSystem/YadomsApiImplementation.h
    server/pluginSystem/YadomsApiImplementation.cpp
   
-	server/startupOptions/MustExistPathOption.hpp
-	server/startupOptions/ValidIpAddressOption.hpp
+	server/startupOptions/InvalidOptionException.hpp
+	server/startupOptions/IStartupOptions.h
 	server/startupOptions/LoaderCustomValidators.hpp
 	server/startupOptions/Loader.h
 	server/startupOptions/Loader.cpp
 	server/startupOptions/LoaderException.hpp
-	server/startupOptions/IStartupOptions.h
-	server/startupOptions/InvalidOptionException.hpp
+	server/startupOptions/MustExistPathOption.hpp
+	server/startupOptions/ValidIpAddressOption.hpp
   
-	server/notifications/NewAcquisitionNotification.h
 	server/notifications/AsyncNotificationCenter.h
 	server/notifications/AsyncNotificationCenter.cpp
+	server/notifications/NewAcquisitionNotification.h
 	
 	server/ApplicationStopHandler.h
 	server/ApplicationStopHandler.cpp
 
-	server/dataAccessLayer/IAcquisitionHistorizer.h
 	server/dataAccessLayer/AcquisitionHistorizer.h
 	server/dataAccessLayer/AcquisitionHistorizer.cpp
+	server/dataAccessLayer/IAcquisitionHistorizer.h
 	
+	server/database/DatabaseException.hpp
+	server/database/IConfigurationRequester.h
+	server/database/IAcquisitionRequester.h
 	server/database/IDataProvider.h
 	server/database/IDataBackup.h
-	server/database/ITransactionalProvider.h
-	server/database/IPluginRequester.h
-	server/database/IConfigurationRequester.h
 	server/database/IDeviceRequester.h
+	server/database/IEventLoggerRequester.h
 	server/database/IKeywordRequester.h
 	server/database/IPageRequester.h
-	server/database/IWidgetRequester.h
 	server/database/IPluginEventLoggerRequester.h
-	server/database/IEventLoggerRequester.h
-	server/database/IAcquisitionRequester.h
-	server/database/DatabaseException.hpp
+	server/database/IPluginRequester.h
+	server/database/ITransactionalProvider.h
+	server/database/IWidgetRequester.h
 
-	server/database/entities/EntityHelpers.hpp
 	server/database/entities/Entities.h
 	server/database/entities/Entities.cpp
+	server/database/entities/EntityHelpers.hpp
 	
+	server/web/IRestHandler.h
 	server/web/IWebServer.h
 	server/web/IWebServerConfigurator.h
-	server/web/IRestHandler.h
 	
-	server/web/rest/Result.h
-	server/web/rest/Result.cpp
 	server/web/rest/RestDispatcher.h
 	server/web/rest/RestDispatcher.cpp
 	server/web/rest/RestDispatcherHelpers.hpp
+	server/web/rest/Result.h
+	server/web/rest/Result.cpp
 
-	server/web/rest/service/IRestService.h
-	server/web/rest/service/Plugin.h
-	server/web/rest/service/Plugin.cpp
-	server/web/rest/service/Device.h
-	server/web/rest/service/Device.cpp
-	server/web/rest/service/Page.h
-	server/web/rest/service/Page.cpp
-	server/web/rest/service/Widget.h
-	server/web/rest/service/Widget.cpp
+	server/web/rest/service/Acquisition.h
+	server/web/rest/service/Acquisition.cpp
 	server/web/rest/service/Configuration.h
 	server/web/rest/service/Configuration.cpp
-	server/web/rest/service/PluginEventLogger.h
-	server/web/rest/service/PluginEventLogger.cpp
+	server/web/rest/service/Device.h
+	server/web/rest/service/Device.cpp
 	server/web/rest/service/EventLogger.h
 	server/web/rest/service/EventLogger.cpp
 	server/web/rest/service/General.h
 	server/web/rest/service/General.cpp
-	server/web/rest/service/Acquisition.h
-	server/web/rest/service/Acquisition.cpp
+	server/web/rest/service/IRestService.h
+	server/web/rest/service/Page.h
+	server/web/rest/service/Page.cpp
+	server/web/rest/service/Plugin.h
+	server/web/rest/service/Plugin.cpp
+	server/web/rest/service/PluginEventLogger.h
+	server/web/rest/service/PluginEventLogger.cpp
 	server/web/rest/service/Task.h
 	server/web/rest/service/Task.cpp
+	server/web/rest/service/Widget.h
+	server/web/rest/service/Widget.cpp
 	
-	server/web/ws/FrameBase.h
-	server/web/ws/FrameBase.cpp
-	server/web/ws/FrameFactory.h
-	server/web/ws/FrameFactory.cpp
 	server/web/ws/AcquisitionFilterFrame.h
 	server/web/ws/AcquisitionFilterFrame.cpp
 	server/web/ws/AcquisitionUpdateFrame.h
 	server/web/ws/AcquisitionUpdateFrame.cpp
+	server/web/ws/FrameBase.h
+	server/web/ws/FrameBase.cpp
+	server/web/ws/FrameFactory.h
+	server/web/ws/FrameFactory.cpp
 	
-	server/task/Scheduler.h
-	server/task/Scheduler.cpp
-	server/task/Instance.h
-	server/task/Instance.cpp
 	server/task/FinishedInstance.h
 	server/task/FinishedInstance.cpp
-	server/task/ITask.h
-	server/task/TaskFactory.h
-	server/task/TaskFactory.cpp
 	server/task/IInstance.h
+	server/task/Instance.h
+	server/task/Instance.cpp
+	server/task/ITask.h
 	server/task/IUnique.h
+	server/task/Scheduler.h
+	server/task/Scheduler.cpp
 	server/task/TaskEvent.h
 	server/task/TaskEvent.cpp
+	server/task/TaskFactory.h
+	server/task/TaskFactory.cpp
 	server/task/update/Plugin.h
 	server/task/update/Plugin.cpp
 	server/task/update/Yadoms.h
@@ -292,46 +294,46 @@ set(YADOMS_SRC
 	server/task/backup/Database.h
 	server/task/backup/Database.cpp
 
+	server/communication/ISendMessageAsync.h
  	server/communication/PluginGateway.h
  	server/communication/PluginGateway.cpp	
-	server/communication/ISendMessageAsync.h
-	server/communication/command/Result.h
-	server/communication/command/Result.cpp	
 	server/communication/command/Callback.h
 	server/communication/command/Callback.cpp	
+	server/communication/command/Result.h
+	server/communication/command/Result.cpp	
 
 )
 
 # Project folders
 source_group(server server/*.*)
+source_group(server\\dataAccessLayer  server/dataAccessLayer/*.*)
+source_group(server\\communication  server/communication/*.*)
+source_group(server\\communication\\command  server/communication/command/*.*)
+source_group(server\\notifications  server/notifications/*.*)
 source_group(server\\pluginSystem server/pluginSystem/*.* )
 source_group(server\\database  server/database/*.*)
-source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
+source_group(server\\startupOptions  server/startupOptions/*.*)
+source_group(server\\task  server/task/*.*)
+source_group(server\\task\\update  server/task/update/*.*)
+source_group(server\\task\\backup  server/task/backup/*.*)
 source_group(server\\web  server/web/*.*)
 source_group(server\\web\\rest  server/web/rest/*.*)
 source_group(server\\web\\rest\\json  server/web/rest/json/*.*)
 source_group(server\\web\\rest\\service  server/web/rest/service/*.*)
 source_group(server\\web\\ws  server/web/ws/*.*)
-source_group(server\\task  server/task/*.*)
-source_group(server\\task\\update  server/task/update/*.*)
-source_group(server\\task\\backup  server/task/backup/*.*)
-source_group(server\\communication  server/communication/*.*)
-source_group(server\\communication\\command  server/communication/command/*.*)
-source_group(server\\notifications  server/notifications/*.*)
-source_group(server\\dataAccessLayer  server/dataAccessLayer/*.*)
 
 # Tools
 set(YADOMS_SRC ${YADOMS_SRC}
 	server/tools/tools/IApplication.h
 	server/tools/tools/Version.h
 	server/tools/tools/Version.cpp
+	server/tools/tools/web/FileDownloader.h
+	server/tools/tools/web/FileDownloader.cpp
 	server/tools/tools/web/Uri.h
 	server/tools/tools/web/Uri.cpp
 	server/tools/tools/web/UriSinglePatternValidator.h
 	server/tools/tools/web/UriSinglePatternValidator.cpp
-	server/tools/tools/web/FileDownloader.h
-	server/tools/tools/web/FileDownloader.cpp
 )
 
 IF(WIN32)
@@ -339,16 +341,16 @@ IF(WIN32)
 		# Add here server/tools/windows/tools/ sources
 		server/tools/windows/tools/ApplicationLoader.h
 		server/tools/windows/tools/ApplicationLoader.cpp		
+		server/tools/windows/tools/ConsoleControlHandler.h
+		server/tools/windows/tools/ConsoleControlHandler.cpp		
+		server/tools/windows/tools/OperatingSystem.h
+		server/tools/windows/tools/OperatingSystem.cpp
 		server/tools/windows/tools/service/IApplicationServiceInformation.h
 		server/tools/windows/tools/service/ApplicationService.h
 		server/tools/windows/tools/service/ApplicationService.cpp
 		server/tools/windows/tools/service/ServiceBase.h
 		server/tools/windows/tools/service/ServiceBase.cpp
 		server/tools/windows/tools/service/ThreadPool.h
-		server/tools/windows/tools/ConsoleControlHandler.h
-		server/tools/windows/tools/ConsoleControlHandler.cpp		
-		server/tools/windows/tools/OperatingSystem.h
-		server/tools/windows/tools/OperatingSystem.cpp
 	)	
 ELSEIF(APPLE)
 	set(YADOMS_SRC ${YADOMS_SRC}

@@ -17,8 +17,9 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
+      ///\param[in] measureType     The measure type (normally kAbsolute)
       //-----------------------------------------------------
-      CRssi(const std::string& keywordName);
+      CRssi(const std::string& keywordName, EMeasureType measureType = kAbsolute);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
@@ -28,7 +29,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
       virtual const CStandardCapacity& getCapacity() const;
-      virtual const std::string formatValue(const std::string& currentValue = CStringExtension::EmptyString) const;
+      virtual const std::string formatValue() const;
       virtual EMeasureType getMeasureType() const;
       // [END] IHistorizable implementation
 
@@ -62,6 +63,11 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace commands
       ///\brief                     The rssi value (0-100)
       //-----------------------------------------------------
       int m_rssi;
+
+      //-----------------------------------------------------
+      ///\brief                     The measure type
+      //-----------------------------------------------------
+      EMeasureType m_measureType;
    };
 
 
