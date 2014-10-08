@@ -146,26 +146,33 @@ widgetViewModelCtor =
 
          //we compute the date from the configuration
          var dateFrom = "";
+         var prefixUri = "";
          try {
             switch (this.widget.configuration.interval) {
                case "HOUR" :
                   dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'hours'));
+                  //we request all data
                   break;
                default:
                case "DAY" :
                   dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'days'));
+                  //we request hour summary data
                   break;
                case "WEEK" :
                   dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'weeks'));
+                  //we request hour summary data
                   break;
                case "MONTH" :
                   dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'months'));
+                  //we request day summary data
                   break;
                case "HALF_YEAR" :
                   dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(6, 'months'));
+                  //we request day summary data
                   break;
                case "YEAR" :
                   dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'years'));
+                  //we request day summary data
                   break;
             }
          }

@@ -95,6 +95,10 @@ ConfigurationHelper.createParameterHandler = function (objectToConfigure, i18nCo
          return new SerialParameterHandler(i18nContext, paramName, content, currentValue);
          break;
 
+      case "color" :
+         return new ColorParameterHandler(i18nContext, paramName, content, currentValue);
+         break;
+
       default :
          throw Error("type " + content.type + " of parameter " + paramName + " is unsupported");
          break;
