@@ -77,7 +77,7 @@
             "color" : {
                "name" : "Color of the plot",
                "description" : "Permit to change the color of the plot",
-               "type" : "string",
+               "type" : "color",
                "defaultValue" : "#0000FF"
             }
          }
