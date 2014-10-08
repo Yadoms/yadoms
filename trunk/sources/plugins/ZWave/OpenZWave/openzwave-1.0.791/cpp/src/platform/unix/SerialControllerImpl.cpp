@@ -34,7 +34,7 @@
 #include "Log.h"
 
 #ifdef __linux__
-//#include <libudev.h>
+#include <libudev.h>
 #endif
 
 using namespace OpenZWave;
