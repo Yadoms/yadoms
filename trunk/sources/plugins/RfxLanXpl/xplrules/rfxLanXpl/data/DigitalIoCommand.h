@@ -17,19 +17,19 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
    //-----------------------------------------------------
    ///\brief A RfxLan digital io historizable object
    //-----------------------------------------------------
-   class CDigitalIo : public CHistorizableEnum<EDigitalIoCommand>
+   class CDigitalIoCommand : public CHistorizableEnum<EDigitalIoCommand>
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
       //-----------------------------------------------------
-      CDigitalIo(const std::string& keywordName);
+      CDigitalIoCommand(const std::string& keywordName);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CDigitalIo();
+      virtual ~CDigitalIoCommand();
 
    };
 
