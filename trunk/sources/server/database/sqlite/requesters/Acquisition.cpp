@@ -261,46 +261,53 @@ namespace database {  namespace sqlite {  namespace requesters {
       and acq.date<= "endDate"
       
       */
+      boost::shared_ptr<database::entities::CKeyword> keyword = m_databaseHandler->getKeywordRequester()->getKeyword(keywordId);
 
-      if (m_databaseHandler->getKeywordRequester()->getKeyword(keywordId))
+      if (keyword)
       {
-         //just compute good dates
-         //hourDate : is the start of the hour (current day) => minutes and seconds set to 0
-         //hourDateEnd : is the end of the hour (current day) => minutes and seconds set to 59
-         //dayDate : is the start of the day : current day, with hour, minte and second set to 0
-         //dayDateEnd : is the end of the day : current day, with hour set to 23, minutes and seconds at 59
-         tm pt_tm = boost::posix_time::to_tm(dataTime);
-         boost::posix_time::ptime hourDate(dataTime.date(), boost::posix_time::hours(pt_tm.tm_hour));
-         boost::posix_time::ptime hourDateEnd(dataTime.date(), boost::posix_time::hours(pt_tm.tm_hour) + boost::posix_time::minutes(59) + boost::posix_time::seconds(59));
-         boost::posix_time::ptime dayDate(dataTime.date());
-         boost::posix_time::ptime dayDateEnd(dataTime.date(), boost::posix_time::hours(23) + boost::posix_time::minutes(59) + boost::posix_time::seconds(59));
+         if (keyword->Type() == database::entities::EKeywordDataType::kNumeric)
+         {
+            //just compute good dates
+            //hourDate : is the start of the hour (current day) => minutes and seconds set to 0
+            //hourDateEnd : is the end of the hour (current day) => minutes and seconds set to 59
+            //dayDate : is the start of the day : current day, with hour, minte and second set to 0
+            //dayDateEnd : is the end of the day : current day, with hour set to 23, minutes and seconds at 59
+            tm pt_tm = boost::posix_time::to_tm(dataTime);
+            boost::posix_time::ptime hourDate(dataTime.date(), boost::posix_time::hours(pt_tm.tm_hour));
+            boost::posix_time::ptime hourDateEnd(dataTime.date(), boost::posix_time::hours(pt_tm.tm_hour) + boost::posix_time::minutes(59) + boost::posix_time::seconds(59));
+            boost::posix_time::ptime dayDate(dataTime.date());
+            boost::posix_time::ptime dayDateEnd(dataTime.date(), boost::posix_time::hours(23) + boost::posix_time::minutes(59) + boost::posix_time::seconds(59));
 
-         //set a variable for the type : hour
-         database::entities::EAcquisitionSummaryType curType = database::entities::EAcquisitionSummaryType::kHour;
-         CQuery q;
-         q.InsertOrReplaceInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(), CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(), CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(), CAcquisitionSummaryTable::getMaxColumnName()).
-            Select(CQueryValue(curType.getAsString()).str(), CQueryValue(hourDate).str(), CQueryValue(keywordId).str(), "avg(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "min(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "max(cast(" + CAcquisitionTable::getValueColumnName() + " as real))").
-            From(CAcquisitionTable::getTableName() + " as acq").
-            Where("acq." + CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
-            And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, hourDate).
-            And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, hourDateEnd);
+            //set a variable for the type : hour
+            database::entities::EAcquisitionSummaryType curType = database::entities::EAcquisitionSummaryType::kHour;
+            CQuery q;
+            q.InsertOrReplaceInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(), CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(), CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(), CAcquisitionSummaryTable::getMaxColumnName()).
+               Select(CQueryValue(curType.getAsString()).str(), CQueryValue(hourDate).str(), CQueryValue(keywordId).str(), "avg(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "min(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "max(cast(" + CAcquisitionTable::getValueColumnName() + " as real))").
+               From(CAcquisitionTable::getTableName() + " as acq").
+               Where("acq." + CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
+               And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, hourDate).
+               And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, hourDateEnd);
 
-         if (m_databaseRequester->queryStatement(q) <= 0)
-            throw shared::exception::CEmptyResult("Fail to insert new summary hour data");
+            if (m_databaseRequester->queryStatement(q) <= 0)
+               throw shared::exception::CEmptyResult("Fail to insert new summary hour data");
 
-         //set a variable for the type : day
-         curType = database::entities::EAcquisitionSummaryType::kDay;
-         q.Clear().
-          InsertOrReplaceInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(), CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(), CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(), CAcquisitionSummaryTable::getMaxColumnName()).
-          Select(CQueryValue(curType.getAsString()).str(), CQueryValue(dayDate).str(), CQueryValue(keywordId).str(), "avg(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "min(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "max(cast(" + CAcquisitionTable::getValueColumnName() + " as real))").
-          From(CAcquisitionTable::getTableName() + " as acq").
-          Where("acq." + CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
-          And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, dayDate).
-          And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, dayDateEnd);
+            //set a variable for the type : day
+            curType = database::entities::EAcquisitionSummaryType::kDay;
+            q.Clear().
+               InsertOrReplaceInto(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTypeColumnName(), CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getKeywordIdColumnName(), CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(), CAcquisitionSummaryTable::getMaxColumnName()).
+               Select(CQueryValue(curType.getAsString()).str(), CQueryValue(dayDate).str(), CQueryValue(keywordId).str(), "avg(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "min(cast(" + CAcquisitionTable::getValueColumnName() + " as real))", "max(cast(" + CAcquisitionTable::getValueColumnName() + " as real))").
+               From(CAcquisitionTable::getTableName() + " as acq").
+               Where("acq." + CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
+               And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_SUP_EQUAL, dayDate).
+               And("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_OP_INF_EQUAL, dayDateEnd);
 
-         if (m_databaseRequester->queryStatement(q) <= 0)
-            throw shared::exception::CEmptyResult("Fail to insert new summary day data");
-
+            if (m_databaseRequester->queryStatement(q) <= 0)
+               throw shared::exception::CEmptyResult("Fail to insert new summary day data");
+         }
+         else
+         {
+            //keyword is not numeric, no data to avg, min and max !
+         }
       }
       else
       {
