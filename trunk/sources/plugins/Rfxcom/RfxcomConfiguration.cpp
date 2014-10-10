@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "RfxcomConfiguration.h"
+#include <shared/StringExtension.h>
 
 CRfxcomConfiguration::~CRfxcomConfiguration()
 {
@@ -12,22 +13,22 @@ void CRfxcomConfiguration::initializeWith(const shared::CDataContainer &data)
 
 bool CRfxcomConfiguration::comIsEthernet() const
 {
-   return m_data.get<bool>("Communication.content.Network.radio", false);
+   return false;
 }
 
 std::string CRfxcomConfiguration::getEthernetAddress() const
 {
-   return m_data.get<std::string>("Communication.content.Network.content.ipAddress");
+   return shared::CStringExtension::EmptyString;
 }
 
 std::string CRfxcomConfiguration::getEthernetPort() const
 {
-   return m_data.get<std::string>("Communication.content.Network.content.port");
+   return shared::CStringExtension::EmptyString;
 }
 
 std::string CRfxcomConfiguration::getSerialPort() const
 {
-   return m_data.get<std::string>("Communication.content.SerialPort.content.serialPort");
+   return m_data.get<std::string>("SerialPort");
 }
 
 bool CRfxcomConfiguration::isAEenabled        () const { return m_data.get<bool>("Protocols.content.AE Blyss", false); }
