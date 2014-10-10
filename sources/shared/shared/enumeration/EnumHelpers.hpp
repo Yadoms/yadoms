@@ -88,6 +88,7 @@ This class contains macros for defining extended macros which add the ability to
       ECommand const operator() () const;
       const std::string & getAsString() const;
       void setFromString(const std::string & val);
+      static ECommand parse(const std::string & val);
    private: 
       domain m_value;
       static const std::string StopString;
@@ -189,6 +190,12 @@ This class contains macros for defining extended macros which add the ability to
          throw shared::exception::COutOfRange(val);
    }
   
+   ECommand parse(const std::string & val)
+   {
+      ECommand local;                                                                                                       \
+      local.setFromString(val);                                                                                                              \
+      return local;   
+   }
 
 
   //////////////////////////////////////////
@@ -307,6 +314,7 @@ This class contains macros for defining extended macros which add the ability to
 		ENUM_CLASSNAME(_enumName) const operator() () const;						            \
 		const std::string & getAsString() const;													   \
 		void setFromString(const std::string & val);												   \
+      static ENUM_CLASSNAME(_enumName) parse(const std::string & val);                 \
 	private:																									   \
 		domain   m_value;																					   \
 		ENUM_DECLARE_STATIC_CONST_NAMES(_seq);														   \
@@ -400,44 +408,50 @@ This class contains macros for defining extended macros which add the ability to
 /// \param [in] __enumName       	The namespace to use without full qualified name : EMyEnum
 /// \param [in] _seq          The enumeration sequence ((Off)("Eteint")) ((On)("Allume")) ((Dim)("reglable"))
 //
-#define DECLARE_ENUM_IMPLEMENTATION_CUSTOM_NESTED(_fullClassifiedEnumName, _enumName, _seq)                                                                          \
-   ENUM_DECLARE_STATIC_CONST_CUSTOMNAMES_IMPL(_fullClassifiedEnumName, _seq)                                                                      \
-   _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)() : m_value( BOOST_PP_CAT(k, ENUM_EXTRACT_NAME_RAW(BOOST_PP_SEQ_HEAD(_seq)) ) ) {}            \
-   _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)(domain value) : m_value(value) {}                                     \
-   _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)(const std::string & valueAsString) { setFromString(valueAsString); }  \
-   _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)(const int valueAsInt) : m_value((domain)valueAsInt) { }               \
-   _fullClassifiedEnumName::~ENUM_CLASSNAME(_enumName)() {}                                                                 \
-   _fullClassifiedEnumName::operator int() const { return m_value; }                                                        \
-   _fullClassifiedEnumName::operator std::string() const { return getAsString(); }                                          \
-   _fullClassifiedEnumName const _fullClassifiedEnumName::operator() () const { return m_value; }						      \
-   _fullClassifiedEnumName & _fullClassifiedEnumName::operator=(int const& obj)                                           \
-      {                                                                                                                          \
-      m_value = (domain)obj;                                                                                                  \
-      return *this;                                                                                                           \
-      }                                                                                                                          \
-   _fullClassifiedEnumName & _fullClassifiedEnumName::operator=(const ENUM_CLASSNAME(_enumName) & obj)                    \
-      {                                                                                                                          \
-      m_value = obj.m_value;                                                                                                  \
-      return *this;                                                                                                           \
-      }                                                                                                                          \
-   _fullClassifiedEnumName & _fullClassifiedEnumName::operator=(std::string const& obj)                                   \
-      {                                                                                                                          \
-      setFromString(obj);                                                                                                     \
-      return *this;                                                                                                           \
-      }                                                                                                                          \
-   const std::string & _fullClassifiedEnumName::getAsString() const                                                         \
-   	{                                                                                                                          \
-		switch (m_value)                                                                                                        \
-      		{                                                                                                                       \
-		ENUM_DECLARE_GETASSTRING_CUSTOM_IMPL(_seq)                                                                                     \
-		default: throw shared::exception::COutOfRange("Invalid enum value");                                                    \
-      		}                                                                                                                       \
-   	}                                                                                                                          \
-	void _fullClassifiedEnumName::setFromString(const std::string & val)                                                     \
-   	{                                                                                                                          \
-		ENUM_DECLARE_SETFROMSTRING_CUSTOM_IMPL(_seq)                                                                                   \
-      throw shared::exception::COutOfRange(val);                                                                              \
-   	}
+#define DECLARE_ENUM_IMPLEMENTATION_CUSTOM_NESTED(_fullClassifiedEnumName, _enumName, _seq)                                                     \
+   ENUM_DECLARE_STATIC_CONST_CUSTOMNAMES_IMPL(_fullClassifiedEnumName, _seq)                                                                    \
+   _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)() : m_value( BOOST_PP_CAT(k, ENUM_EXTRACT_NAME_RAW(BOOST_PP_SEQ_HEAD(_seq)) ) ) {}        \
+   _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)(domain value) : m_value(value) {}                                                         \
+   _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)(const std::string & valueAsString) { setFromString(valueAsString); }                      \
+   _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)(const int valueAsInt) : m_value((domain)valueAsInt) { }                                   \
+   _fullClassifiedEnumName::~ENUM_CLASSNAME(_enumName)() {}                                                                                     \
+   _fullClassifiedEnumName::operator int() const { return m_value; }                                                                            \
+   _fullClassifiedEnumName::operator std::string() const { return getAsString(); }                                                              \
+   _fullClassifiedEnumName const _fullClassifiedEnumName::operator() () const { return m_value; }						                              \
+   _fullClassifiedEnumName & _fullClassifiedEnumName::operator=(int const& obj)                                                                 \
+      {                                                                                                                                         \
+      m_value = (domain)obj;                                                                                                                    \
+      return *this;                                                                                                                             \
+      }                                                                                                                                         \
+   _fullClassifiedEnumName & _fullClassifiedEnumName::operator=(const ENUM_CLASSNAME(_enumName) & obj)                                          \
+      {                                                                                                                                         \
+      m_value = obj.m_value;                                                                                                                    \
+      return *this;                                                                                                                             \
+      }                                                                                                                                         \
+   _fullClassifiedEnumName & _fullClassifiedEnumName::operator=(std::string const& obj)                                                         \
+      {                                                                                                                                         \
+      setFromString(obj);                                                                                                                       \
+      return *this;                                                                                                                             \
+      }                                                                                                                                         \
+   const std::string & _fullClassifiedEnumName::getAsString() const                                                                             \
+   	{                                                                                                                                         \
+		switch (m_value)                                                                                                                          \
+      		{                                                                                                                                   \
+		ENUM_DECLARE_GETASSTRING_CUSTOM_IMPL(_seq)                                                                                                \
+		default: throw shared::exception::COutOfRange("Invalid enum value");                                                                      \
+      		}                                                                                                                                   \
+   	}                                                                                                                                         \
+	void _fullClassifiedEnumName::setFromString(const std::string & val)                                                                         \
+   	{                                                                                                                                         \
+		ENUM_DECLARE_SETFROMSTRING_CUSTOM_IMPL(_seq)                                                                                              \
+      throw shared::exception::COutOfRange(val);                                                                                                \
+   	}                                                                                                                                         \
+   _fullClassifiedEnumName _fullClassifiedEnumName::parse(const std::string & val)                                                              \
+      {                                                                                                                                         \
+         ENUM_CLASSNAME(_enumName) local;                                                                                                       \
+         local.setFromString(val);                                                                                                              \
+         return local;                                                                                                                          \
+      }
 
 
 
@@ -447,32 +461,32 @@ This class contains macros for defining extended macros which add the ability to
 /// \param [in] __enumName       	The namespace to use without full qualified name : EMyEnum
 /// \param [in] _seq          The enumeration sequence (Off)(On)(Dim)
 //
-#define DECLARE_ENUM_IMPLEMENTATION_NESTED(_fullClassifiedEnumName, _enumName, _seq)                                                                          \
-   ENUM_DECLARE_STATIC_CONST_NAMES_IMPL(_fullClassifiedEnumName, _seq)                                                                      \
-   _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)() : m_value( BOOST_PP_CAT(k, BOOST_PP_SEQ_HEAD(_seq)) ) {}            \
-   _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)(domain value) : m_value(value) {}                                     \
-   _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)(const std::string & valueAsString) { setFromString(valueAsString); }  \
-   _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)(const int valueAsInt) : m_value((domain)valueAsInt) { }               \
-   _fullClassifiedEnumName::~ENUM_CLASSNAME(_enumName)() {}                                                                 \
-   _fullClassifiedEnumName::operator int() const { return m_value; }                                                        \
-   _fullClassifiedEnumName::operator std::string() const { return getAsString(); }                                          \
-   _fullClassifiedEnumName const _fullClassifiedEnumName::operator() () const { return m_value; }						      \
-   _fullClassifiedEnumName & _fullClassifiedEnumName::operator=(int const& obj)                                           \
+#define DECLARE_ENUM_IMPLEMENTATION_NESTED(_fullClassifiedEnumName, _enumName, _seq)                                          \
+   ENUM_DECLARE_STATIC_CONST_NAMES_IMPL(_fullClassifiedEnumName, _seq)                                                        \
+   _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)() : m_value( BOOST_PP_CAT(k, BOOST_PP_SEQ_HEAD(_seq)) ) {}              \
+   _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)(domain value) : m_value(value) {}                                       \
+   _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)(const std::string & valueAsString) { setFromString(valueAsString); }    \
+   _fullClassifiedEnumName::ENUM_CLASSNAME(_enumName)(const int valueAsInt) : m_value((domain)valueAsInt) { }                 \
+   _fullClassifiedEnumName::~ENUM_CLASSNAME(_enumName)() {}                                                                   \
+   _fullClassifiedEnumName::operator int() const { return m_value; }                                                          \
+   _fullClassifiedEnumName::operator std::string() const { return getAsString(); }                                            \
+   _fullClassifiedEnumName const _fullClassifiedEnumName::operator() () const { return m_value; }						            \
+   _fullClassifiedEnumName & _fullClassifiedEnumName::operator=(int const& obj)                                               \
    {                                                                                                                          \
       m_value = (domain)obj;                                                                                                  \
       return *this;                                                                                                           \
    }                                                                                                                          \
-   _fullClassifiedEnumName & _fullClassifiedEnumName::operator=(const ENUM_CLASSNAME(_enumName) & obj)                    \
+   _fullClassifiedEnumName & _fullClassifiedEnumName::operator=(const ENUM_CLASSNAME(_enumName) & obj)                        \
    {                                                                                                                          \
       m_value = obj.m_value;                                                                                                  \
       return *this;                                                                                                           \
    }                                                                                                                          \
-   _fullClassifiedEnumName & _fullClassifiedEnumName::operator=(std::string const& obj)                                   \
+   _fullClassifiedEnumName & _fullClassifiedEnumName::operator=(std::string const& obj)                                       \
    {                                                                                                                          \
       setFromString(obj);                                                                                                     \
       return *this;                                                                                                           \
    }                                                                                                                          \
-   const std::string & _fullClassifiedEnumName::getAsString() const                                                         \
+   const std::string & _fullClassifiedEnumName::getAsString() const                                                           \
 	{                                                                                                                          \
 		switch (m_value)                                                                                                        \
 		{                                                                                                                       \
@@ -480,12 +494,18 @@ This class contains macros for defining extended macros which add the ability to
 		default: throw shared::exception::COutOfRange("Invalid enum value");                                                    \
 		}                                                                                                                       \
 	}                                                                                                                          \
-	void _fullClassifiedEnumName::setFromString(const std::string & val)                                                     \
+	void _fullClassifiedEnumName::setFromString(const std::string & val)                                                       \
 	{                                                                                                                          \
 		ENUM_DECLARE_SETFROMSTRING_IMPL(_seq)                                                                                   \
       throw shared::exception::COutOfRange(val);                                                                              \
-	}
-   
+	}                                                                                                                          \
+   _fullClassifiedEnumName _fullClassifiedEnumName::parse(const std::string & val)                                            \
+   {                                                                                                                          \
+   ENUM_CLASSNAME(_enumName) local;                                                                                           \
+   local.setFromString(val);                                                                                                  \
+   return local;                                                                                                              \
+   }
+
 
 //
 /// \brief Macro used to declare the Enum class implementation
