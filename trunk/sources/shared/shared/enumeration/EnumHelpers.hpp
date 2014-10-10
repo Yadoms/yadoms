@@ -89,6 +89,8 @@ This class contains macros for defining extended macros which add the ability to
       const std::string & getAsString() const;
       void setFromString(const std::string & val);
       static ECommand parse(const std::string & val);
+      static bool exists(const std::string & stringValue);                             
+      static bool exists(const int intValue);                                          
    private: 
       domain m_value;
       static const std::string StopString;
@@ -197,6 +199,32 @@ This class contains macros for defining extended macros which add the ability to
       return local;   
    }
 
+   bool exists(const std::string & val)
+   {
+      bool exist = false;
+      
+      if (boost::iequals(val, StopString)) 
+         exist = true;
+      else if (boost::iequals(val, OpenString)) 
+         exist = true;
+      else if (boost::iequals(val, CloseString)) 
+         exist = true;
+      else   
+         exist = false;
+   }
+   
+   bool exists(const int val)
+   {
+      switch (val) 
+      {
+      case kStop: 
+      case kOpen: 
+      case kClose: 
+         return true;
+      default: 
+         return false;
+      }
+   }
 
   //////////////////////////////////////////
   //The implementation part for nested
@@ -315,6 +343,8 @@ This class contains macros for defining extended macros which add the ability to
 		const std::string & getAsString() const;													   \
 		void setFromString(const std::string & val);												   \
       static ENUM_CLASSNAME(_enumName) parse(const std::string & val);                 \
+      static bool isDefined(const std::string & stringValue);                          \
+      static bool isDefined(const int intValue);                                       \
 	private:																									   \
 		domain   m_value;																					   \
 		ENUM_DECLARE_STATIC_CONST_NAMES(_seq);														   \
@@ -368,7 +398,7 @@ This class contains macros for defining extended macros which add the ability to
 //
 /// \brief Macro used to declare the implementation of SetFromString method for one case
 //
-#define ENUM_DECLARE_SETFROMSTRING_CUSTOM(r, _enumName, elem)									      \
+#define ENUM_DECLARE_SETFROMSTRING_CUSTOM(r, _enumName, elem)									                        \
    if (boost::iequals(val, ENUM_EXTRACT_CONST_NAME_IMPL(ENUM_EXTRACT_NAME_RAW(elem))))                        \
       m_value = ENUM_EXTRACT_NAME_IMPL(ENUM_EXTRACT_NAME_RAW(elem));                                          \
    else                                                                                
@@ -378,6 +408,65 @@ This class contains macros for defining extended macros which add the ability to
 /// \brief Macro used to declare the implementation of SetFromString method
 //
 #define ENUM_DECLARE_SETFROMSTRING_CUSTOM_IMPL(_seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_SETFROMSTRING_CUSTOM, _, _seq)     
+
+
+
+
+
+
+//
+/// \brief Macro used to declare the implementation of exists(int) method for one case
+//
+#define ENUM_DECLARE_ISDEFINED_INT(r, _enumName, elem)	case ENUM_EXTRACT_NAME_IMPL(elem):  
+  
+
+//
+/// \brief Macro used to declare the implementation of exists(int) method
+//
+#define ENUM_DECLARE_ISDEFINED_INT_IMPL(_seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ISDEFINED_INT, _, _seq)     
+
+//
+/// \brief Macro used to declare the implementation of exists(int) method for one case
+//
+#define ENUM_DECLARE_ISDEFINED_INT_CUSTOM(r, _enumName, elem)	case ENUM_EXTRACT_NAME_IMPL( ENUM_EXTRACT_NAME_RAW(elem) ): 
+  
+
+//
+/// \brief Macro used to declare the implementation of exists(int) method
+//
+#define ENUM_DECLARE_ISDEFINED_INT_CUSTOM_IMPL(_seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ISDEFINED_INT_CUSTOM, _, _seq)     
+
+
+
+
+
+//
+/// \brief Macro used to declare the implementation of exists(string) method for one case
+//
+#define ENUM_DECLARE_ISDEFINED_STRING(r, _enumName, elem)	                                                   \
+   if (boost::iequals(val, ENUM_EXTRACT_CONST_NAME_IMPL(elem)))                                                \
+      return true;                                                                                             \
+   else                                                                                     
+  
+
+//
+/// \brief Macro used to declare the implementation of exists(string) method
+//
+#define ENUM_DECLARE_ISDEFINED_STRING_IMPL(_seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ISDEFINED_STRING, _, _seq)     
+
+//
+/// \brief Macro used to declare the implementation of exists(string) method for one case
+//
+#define ENUM_DECLARE_ISDEFINED_STRING_CUSTOM(r, _enumName, elem)	                                             \
+   if (boost::iequals(val, ENUM_EXTRACT_CONST_NAME_IMPL(ENUM_EXTRACT_NAME_RAW(elem))))                         \
+      return true;                                                                                             \
+   else                                                                                
+
+
+//
+/// \brief Macro used to declare the implementation of exists(string) method
+//
+#define ENUM_DECLARE_ISDEFINED_STRING_CUSTOM_IMPL(_seq) BOOST_PP_SEQ_FOR_EACH(ENUM_DECLARE_ISDEFINED_STRING_CUSTOM, _, _seq)     
 
 
 //
@@ -451,9 +540,22 @@ This class contains macros for defining extended macros which add the ability to
          ENUM_CLASSNAME(_enumName) local;                                                                                                       \
          local.setFromString(val);                                                                                                              \
          return local;                                                                                                                          \
-      }
-
-
+      }                                                                                                                                         \
+   bool _fullClassifiedEnumName::isDefined(const std::string & val)                                                                             \
+   {                                                                                                                                            \
+      ENUM_DECLARE_ISDEFINED_STRING_CUSTOM_IMPL(_seq)                                                                                               \
+      return false;                                                                                                                             \
+   }                                                                                                                                            \
+   bool _fullClassifiedEnumName::isDefined(const int val)                                                                                       \
+   {                                                                                                                                            \
+      switch (val)                                                                                                                              \
+      {                                                                                                                                         \
+         ENUM_DECLARE_ISDEFINED_INT_CUSTOM_IMPL(_seq)                                                                                               \
+            return true;                                                                                                                        \
+         default: return false;                                                                                                                 \
+      }                                                                                                                                         \
+   }        
+      
 
 //
 /// \brief Macro used to declare the Enum class implementation with possibility of defining it as a nested class
@@ -504,8 +606,21 @@ This class contains macros for defining extended macros which add the ability to
    ENUM_CLASSNAME(_enumName) local;                                                                                           \
    local.setFromString(val);                                                                                                  \
    return local;                                                                                                              \
-   }
-
+   }                                                                                                                          \
+   bool _fullClassifiedEnumName::isDefined(const std::string & val)                                                           \
+   {                                                                                                                          \
+      ENUM_DECLARE_ISDEFINED_STRING_IMPL(_seq)                                                                                    \
+      return false;                                                                                                           \
+   }                                                                                                                          \
+   bool _fullClassifiedEnumName::isDefined(const int val)                                                                     \
+   {                                                                                                                          \
+      switch (val)                                                                                                            \
+      {                                                                                                                       \
+         ENUM_DECLARE_ISDEFINED_INT_IMPL(_seq)                                                                                    \
+            return true;                                                                                                      \
+         default: return false;                                                                                               \
+      }                                                                                                                       \
+   }      
 
 //
 /// \brief Macro used to declare the Enum class implementation
