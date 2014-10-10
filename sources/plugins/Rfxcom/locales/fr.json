@@ -2,43 +2,10 @@
    "description": "Support du module radio RFXCom (voir http://rfxcom.com/)",
    "configurationSchema":
    {
-      "Communication":
+      "SerialPort":
       {
-         "name" : "Communication",
-         "description" : "Type de connexion au RFXCom/RFXLan",
-         "content" :
-         {
-            "SerialPort":
-            {
-               "name": "Port série",
-               "description": "Le port série virtuel connecté au RFXCom",
-               "content" :
-               {
-                  "SerialPort":
-                  {
-                     "name" : "Sélectionner un port série"
-                  }
-               }
-            },
-            "Network":
-            {
-               "name": "Réseau",
-               "description": "La connexion réseau au RFXLan",
-               "content" :
-               {
-                  "ipAddress" :
-                  {
-                     "name" : "Adresse",
-                     "description" : "Adresse IP ou nom DNS"
-                  },
-                  "port":
-                  {
-                     "name" : "Port TCP",
-                     "description" : "Le port TCP"
-                  }
-               }
-            }
-         }
+         "name": "Port série",
+         "description": "Le port série virtuel connecté au RFXCom"
       },
       "Protocols":
       {

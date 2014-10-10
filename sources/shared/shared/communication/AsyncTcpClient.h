@@ -3,6 +3,7 @@
 #include "IAsyncPort.h"
 #include "IReceiveBufferHandler.h"
 
+//TODO since not needed for the moment, this class was not tested.
 namespace shared { namespace communication {
 
    //--------------------------------------------------------------
@@ -43,7 +44,7 @@ namespace shared { namespace communication {
       //--------------------------------------------------------------
       /// \brief	Close the connection
       //--------------------------------------------------------------
-      virtual void disconnect();//TODO virer
+      virtual void disconnect();
 
       //--------------------------------------------------------------
       /// \brief	Try to connect asynchronously
