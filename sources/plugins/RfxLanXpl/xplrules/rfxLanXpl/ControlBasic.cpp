@@ -44,11 +44,11 @@ namespace xplrules { namespace rfxLanXpl {
    {
       KeywordList keywords;
       if (msg.getBodyValue("type") == "mertik")
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new data::CMertickCommand("mertik")));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CMertickCommand("mertik")));
       else if (msg.getBodyValue("type") == "ninja")
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new data::CNinja("ninja")));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CNinja("ninja")));
       else if (msg.getBodyValue("type") == "output")
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable >(new data::CDigitalIoCommand("digitalio")));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CDigitalIoCommand("digitalio")));
       return keywords;
    }
    // [END] IRule implementation
@@ -76,7 +76,7 @@ namespace xplrules { namespace rfxLanXpl {
       }
 
       //read command details (may throw exception if something is wrong)
-      //commands::CAcBasic commandDetails(commandData->getBody());
+      //historization::CAcBasic commandDetails(commandData->getBody());
 
       ////////////////////////////
       // create the message

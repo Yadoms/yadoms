@@ -2,14 +2,14 @@
 
 #include "../xplcore/XplMessage.h"
 #include "DeviceIdentifier.h"
-#include <shared/plugin/yadomsApi/commands/IHistorizable.h>
+#include <shared/plugin/yadomsApi/historization/IHistorizable.h>
 
 namespace xplrules {
 
    //------------------------------------
    ///\brief   Type for a list of keywords
    //------------------------------------
-   typedef std::vector< boost::shared_ptr< shared::plugin::yadomsApi::commands::IHistorizable > > KeywordList;
+   typedef std::vector< boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable > > KeywordList;
      
 
    //------------------------------------

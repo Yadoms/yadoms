@@ -7,7 +7,7 @@
 #include "RfxcomFactory.h"
 #include "ProtocolException.hpp"
 #include <shared/communication/PortException.hpp>
-#include <shared/plugin/yadomsApi/commands/Switch.h>
+#include <shared/plugin/yadomsApi/historization/Switch.h>
 
 IMPLEMENT_PLUGIN(CRfxcom)
 
@@ -88,7 +88,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                // Declare the device
                context->declareDevice(data->getDevice(), shared::CStringExtension::EmptyString, data->getParameters());
                // Declare associated keywords (= values managed by this device)
-               context->declareKeyword(data->getDevice(), yApi::commands::CSwitch(data->getKeyword()));
+               context->declareKeyword(data->getDevice(), yApi::historization::CSwitch(data->getKeyword()));
 
                break;
             }

@@ -156,8 +156,8 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
             }
 
             //create message keywords in database
-            std::vector< boost::shared_ptr<shared::plugin::yadomsApi::commands::IHistorizable> > allKeywords = rule->identifyKeywords(xplMessage);
-            for (std::vector< boost::shared_ptr<shared::plugin::yadomsApi::commands::IHistorizable> >::iterator keyword = allKeywords.begin(); keyword != allKeywords.end(); ++keyword)
+            std::vector< boost::shared_ptr<shared::plugin::yadomsApi::historization::IHistorizable> > allKeywords = rule->identifyKeywords(xplMessage);
+            for (std::vector< boost::shared_ptr<shared::plugin::yadomsApi::historization::IHistorizable> >::iterator keyword = allKeywords.begin(); keyword != allKeywords.end(); ++keyword)
             {
                if(!context->keywordExists(deviceAddress.getId(), keyword->get()->getKeyword()))
                   context->declareKeyword(deviceAddress.getId(), *(keyword->get()));

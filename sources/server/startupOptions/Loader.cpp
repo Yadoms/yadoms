@@ -52,6 +52,10 @@ CLoader::CLoader(int argc, const char* const argv[])
       if (vm.count("help"))
          throw CLoaderException(m_optionsDescription);
    }
+   catch(po::ambiguous_option& e)
+   {
+      throw CLoaderException(m_optionsDescription, e.what());
+   }
    catch(po::unknown_option& e)
    {
       throw CLoaderException(m_optionsDescription, e.what());

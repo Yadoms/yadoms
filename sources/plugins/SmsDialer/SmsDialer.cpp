@@ -2,8 +2,8 @@
 #include "SmsDialer.h"
 #include <shared/Log.h>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/commands/Switch.h>
-#include <shared/plugin/yadomsApi/commands/Message.h>
+#include <shared/plugin/yadomsApi/historization/Switch.h>
+#include <shared/plugin/yadomsApi/historization/Message.h>
 #include "SmsDialerFactory.h"
 #include "PhoneException.hpp"
 #include "Sms.h"

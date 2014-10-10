@@ -69,7 +69,7 @@ namespace rfxcomMessages
       /// \param[out] level               The level known by the protocol (if state is light2_sSetLevel)
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       //--------------------------------------------------------------
-      static void toProtocolState(const yApi::commands::CSwitch& switchState, unsigned char& state, unsigned char& level);
+      static void toProtocolState(const yApi::historization::CSwitch& switchState, unsigned char& state, unsigned char& level);
       
       //--------------------------------------------------------------
       /// \brief	                        Convert protocol value to Yadoms state
@@ -114,11 +114,11 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keyword associated with state
       //--------------------------------------------------------------
-      yApi::commands::CSwitch m_state;
+      yApi::historization::CSwitch m_state;
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with rssi
       //--------------------------------------------------------------
-      yApi::commands::CRssi m_rssi;
+      yApi::historization::CRssi m_rssi;
    };
 } // namespace rfxcomMessages

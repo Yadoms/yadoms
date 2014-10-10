@@ -82,6 +82,7 @@ namespace sqlite {
       ((FriendlyName)("friendlyName"))
       ((Type)("type"))
       ((Units)("units"))
+      ((Measure)("measure"))
       ((Details)("details"))
    )
 

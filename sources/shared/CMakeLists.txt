@@ -76,49 +76,54 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/IDeviceCommand.h
    shared/plugin/yadomsApi/IManuallyDeviceCreationData.h
    shared/plugin/yadomsApi/IManuallyDeviceCreationTestData.h
+	shared/plugin/yadomsApi/KeywordAccessMode.h
+	shared/plugin/yadomsApi/KeywordAccessMode.cpp
+	shared/plugin/yadomsApi/KeywordDataType.h
+	shared/plugin/yadomsApi/KeywordDataType.cpp
 	shared/plugin/yadomsApi/StandardUnits.h
 	shared/plugin/yadomsApi/StandardCapacities.h
 	shared/plugin/yadomsApi/StandardValues.h
 	shared/plugin/yadomsApi/StandardDeclarations.cpp
 	shared/plugin/yadomsApi/StandardCapacity.h
 	shared/plugin/yadomsApi/StandardCapacity.cpp
-	shared/plugin/yadomsApi/KeywordAccessMode.h
 	shared/plugin/yadomsApi/IYadomsApi.h
 
-   shared/plugin/yadomsApi/commands/BatteryLevel.cpp
-   shared/plugin/yadomsApi/commands/BatteryLevel.h
-   shared/plugin/yadomsApi/commands/commands.h
-   shared/plugin/yadomsApi/commands/Counter.cpp
-   shared/plugin/yadomsApi/commands/Counter.h
-   shared/plugin/yadomsApi/commands/Current.cpp
-   shared/plugin/yadomsApi/commands/Current.h
-   shared/plugin/yadomsApi/commands/Curtain.cpp
-   shared/plugin/yadomsApi/commands/Curtain.h
-   shared/plugin/yadomsApi/commands/Energy.cpp
-   shared/plugin/yadomsApi/commands/Energy.h
-   shared/plugin/yadomsApi/commands/Frequency.cpp
-   shared/plugin/yadomsApi/commands/Frequency.h
-   shared/plugin/yadomsApi/commands/Humidity.cpp
-   shared/plugin/yadomsApi/commands/Humidity.h
-   shared/plugin/yadomsApi/commands/IHistorizable.h
-   shared/plugin/yadomsApi/commands/Message.cpp
-   shared/plugin/yadomsApi/commands/Message.h
-   shared/plugin/yadomsApi/commands/Power.cpp
-   shared/plugin/yadomsApi/commands/Power.h
-   shared/plugin/yadomsApi/commands/PowerFactor.cpp
-   shared/plugin/yadomsApi/commands/PowerFactor.h
-   shared/plugin/yadomsApi/commands/Pressure.cpp
-   shared/plugin/yadomsApi/commands/Pressure.h
-   shared/plugin/yadomsApi/commands/Rssi.cpp
-   shared/plugin/yadomsApi/commands/Rssi.h
-   shared/plugin/yadomsApi/commands/Switch.cpp
-   shared/plugin/yadomsApi/commands/Switch.h
-   shared/plugin/yadomsApi/commands/Temperature.cpp
-   shared/plugin/yadomsApi/commands/Temperature.h
-   shared/plugin/yadomsApi/commands/Voltage.cpp
-   shared/plugin/yadomsApi/commands/Voltage.h
-   shared/plugin/yadomsApi/commands/Weight.cpp
-   shared/plugin/yadomsApi/commands/Weight.h
+   shared/plugin/yadomsApi/historization/BatteryLevel.cpp
+   shared/plugin/yadomsApi/historization/BatteryLevel.h
+   shared/plugin/yadomsApi/historization/Historizers.h
+   shared/plugin/yadomsApi/historization/Counter.cpp
+   shared/plugin/yadomsApi/historization/Counter.h
+   shared/plugin/yadomsApi/historization/Current.cpp
+   shared/plugin/yadomsApi/historization/Current.h
+   shared/plugin/yadomsApi/historization/Curtain.cpp
+   shared/plugin/yadomsApi/historization/Curtain.h
+   shared/plugin/yadomsApi/historization/Energy.cpp
+   shared/plugin/yadomsApi/historization/Energy.h
+   shared/plugin/yadomsApi/historization/Frequency.cpp
+   shared/plugin/yadomsApi/historization/Frequency.h
+   shared/plugin/yadomsApi/historization/Humidity.cpp
+   shared/plugin/yadomsApi/historization/Humidity.h
+   shared/plugin/yadomsApi/historization/IHistorizable.h
+   shared/plugin/yadomsApi/historization/Message.cpp
+   shared/plugin/yadomsApi/historization/Message.h
+   shared/plugin/yadomsApi/historization/MeasureType.cpp
+   shared/plugin/yadomsApi/historization/MeasureType.h
+   shared/plugin/yadomsApi/historization/Power.cpp
+   shared/plugin/yadomsApi/historization/Power.h
+   shared/plugin/yadomsApi/historization/PowerFactor.cpp
+   shared/plugin/yadomsApi/historization/PowerFactor.h
+   shared/plugin/yadomsApi/historization/Pressure.cpp
+   shared/plugin/yadomsApi/historization/Pressure.h
+   shared/plugin/yadomsApi/historization/Rssi.cpp
+   shared/plugin/yadomsApi/historization/Rssi.h
+   shared/plugin/yadomsApi/historization/Switch.cpp
+   shared/plugin/yadomsApi/historization/Switch.h
+   shared/plugin/yadomsApi/historization/Temperature.cpp
+   shared/plugin/yadomsApi/historization/Temperature.h
+   shared/plugin/yadomsApi/historization/Voltage.cpp
+   shared/plugin/yadomsApi/historization/Voltage.h
+   shared/plugin/yadomsApi/historization/Weight.cpp
+   shared/plugin/yadomsApi/historization/Weight.h
    
 	shared/notification/NotificationCenter.h
 	shared/notification/NotificationCenter.cpp
@@ -185,7 +190,7 @@ source_group(exception shared/exception/*.*)
 source_group(plugin shared/shared/plugin/*.* )	
 source_group(plugin\\information shared/shared/plugin/information/*.* )	
 source_group(plugin\\yadomsApi shared/shared/plugin/yadomsApi/*.* )	
-source_group(plugin\\yadomsApi\\commands shared/shared/plugin/yadomsApi/commands/*.* )	
+source_group(plugin\\yadomsApi\\historization shared/shared/plugin/yadomsApi/historization/*.* )	
 source_group(notification shared/shared/notification/*.* )	
 source_group(serialization shared/shared/serialization/*.* )	
 source_group(tools shared/shared/tools/*.* )	

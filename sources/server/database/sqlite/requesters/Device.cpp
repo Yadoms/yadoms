@@ -79,7 +79,7 @@ namespace database {  namespace sqlite { namespace requesters {
       return adapter.getResults()[0];
    }
 
-   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacity(const std::string & capacityName, const database::entities::EKeywordAccessMode & accessMode) const
+   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacity(const std::string & capacityName, const shared::plugin::yadomsApi::EKeywordAccessMode & accessMode) const
    {
       CQuery subQuery;
       subQuery. Select(CKeywordTable::getDeviceIdColumnName()).
@@ -97,7 +97,7 @@ namespace database {  namespace sqlite { namespace requesters {
       return adapter.getResults();
    }
 
-   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacityType(const database::entities::EKeywordAccessMode & capacityAccessMode, const database::entities::EKeywordDataType & capacityType) const
+   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacityType(const shared::plugin::yadomsApi::EKeywordAccessMode & capacityAccessMode, const shared::plugin::yadomsApi::EKeywordDataType & capacityType) const
    {
 		CQuery subQuery;
 		subQuery.Select(CKeywordTable::getDeviceIdColumnName()).
@@ -105,15 +105,15 @@ namespace database {  namespace sqlite { namespace requesters {
 
       switch (capacityAccessMode())
       {
-         case database::entities::EKeywordAccessMode::kGet:
-         case database::entities::EKeywordAccessMode::kSet:
+         case shared::plugin::yadomsApi::EKeywordAccessMode::kGet:
+         case shared::plugin::yadomsApi::EKeywordAccessMode::kSet:
 				subQuery.WhereParenthesis(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, capacityAccessMode).
-							Or(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, database::entities::EKeywordAccessMode(database::entities::EKeywordAccessMode::kGetSet).getAsString()).
+							Or(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, shared::plugin::yadomsApi::EKeywordAccessMode(shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet).getAsString()).
 							EndParenthesis();
             break;
 
-         case database::entities::EKeywordAccessMode::kGetSet:
-         case database::entities::EKeywordAccessMode::kNoAccess:
+         case shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet:
+         case shared::plugin::yadomsApi::EKeywordAccessMode::kNoAccess:
 				subQuery.Where(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, capacityAccessMode);
 				break;
       }

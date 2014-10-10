@@ -54,7 +54,7 @@ public:
    /// \brief	      get the last value of a keyword
    /// \param [in]   keyword           The keyword name
    //--------------------------------------------------------------   
-   const shared::plugin::yadomsApi::commands::IHistorizable & getLastKeywordValue(const std::string & keyword);
+   const shared::plugin::yadomsApi::historization::IHistorizable & getLastKeywordValue(const std::string & keyword);
 
 private:
    //--------------------------------------------------------------

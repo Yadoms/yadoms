@@ -64,12 +64,12 @@ private:
    //--------------------------------------------------------------
    /// \brief	The keyword associated with incremental counter
    //--------------------------------------------------------------
-   yApi::commands::CCounter m_incrementCount;
+   yApi::historization::CCounter m_incrementCount;
 
    //--------------------------------------------------------------
    /// \brief	The keyword associated with total counter
    //--------------------------------------------------------------
-   yApi::commands::CCounter m_totalCount;
+   yApi::historization::CCounter m_totalCount;
 
    //--------------------------------------------------------------
    /// \brief	    Random number generator, used to simulate increments

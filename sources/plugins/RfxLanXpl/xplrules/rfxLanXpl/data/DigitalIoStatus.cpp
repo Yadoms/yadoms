@@ -11,7 +11,7 @@ DECLARE_ENUM_IMPLEMENTATION_CUSTOM(EDigitalIoStatus,
    ((Low)("low"))
 );
 
-const shared::plugin::yadomsApi::CStandardCapacity& RfxLanDigitalIoStatusCapacity = shared::plugin::yadomsApi::CStandardCapacity("digitalio", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::kGet, shared::plugin::yadomsApi::kNoData);
+const shared::plugin::yadomsApi::CStandardCapacity& RfxLanDigitalIoStatusCapacity = shared::plugin::yadomsApi::CStandardCapacity("digitalio", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kGet, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
 
    
 CDigitalIoStatus::CDigitalIoStatus(const std::string& keywordName)

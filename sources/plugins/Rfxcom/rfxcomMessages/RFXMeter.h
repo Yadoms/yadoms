@@ -76,11 +76,11 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The counter
       //--------------------------------------------------------------
-      yApi::commands::CCounter m_counter;
+      yApi::historization::CCounter m_counter;
 
       //--------------------------------------------------------------
       /// \brief	The RSSI (percent)
       //--------------------------------------------------------------
-      yApi::commands::CRssi m_rssi;
+      yApi::historization::CRssi m_rssi;
    };
 } // namespace rfxcomMessages

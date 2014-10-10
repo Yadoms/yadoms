@@ -28,7 +28,7 @@ namespace pluginSystem
       virtual const std::string& getKeyword() const;
       virtual const shared::CDataContainer& getBody() const;
       virtual const std::string toString() const;
-      virtual const shared::plugin::yadomsApi::commands::IHistorizable& getHistorizableObject() const;
+      virtual const shared::plugin::yadomsApi::historization::IHistorizable& getHistorizableObject() const;
       // [END] IDeviceCommand implementation
 
    private:

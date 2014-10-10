@@ -75,36 +75,36 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The voltage (V)
       //--------------------------------------------------------------
-      yApi::commands::CVoltage m_voltage;
+      yApi::historization::CVoltage m_voltage;
 
       //--------------------------------------------------------------
       /// \brief	The current (A)
       //--------------------------------------------------------------
-      yApi::commands::CCurrent m_current;
+      yApi::historization::CCurrent m_current;
 
       //--------------------------------------------------------------
       /// \brief	The instant power (W)
       //--------------------------------------------------------------
-      yApi::commands::CPower m_instantPower;
+      yApi::historization::CPower m_instantPower;
 
       //--------------------------------------------------------------
       /// \brief	The total power (Wh)
       //--------------------------------------------------------------
-      yApi::commands::CPower m_totalPower;
+      yApi::historization::CPower m_totalPower;
 
       //--------------------------------------------------------------
       /// \brief	The power factor (-1 to 1)
       //--------------------------------------------------------------
-      yApi::commands::CPowerFactor m_powerFactor;
+      yApi::historization::CPowerFactor m_powerFactor;
 
       //--------------------------------------------------------------
       /// \brief	The frequency (Hz)
       //--------------------------------------------------------------
-      yApi::commands::CFrequency m_frequency;
+      yApi::historization::CFrequency m_frequency;
 
       //--------------------------------------------------------------
       /// \brief	The RSSI (percent)
       //--------------------------------------------------------------
-      yApi::commands::CRssi m_rssi;
+      yApi::historization::CRssi m_rssi;
    };
 } // namespace rfxcomMessages

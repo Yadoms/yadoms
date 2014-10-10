@@ -52,8 +52,9 @@ bool CYadomsApiImplementation::keywordExists(const std::string& device, const st
    return m_keywordRequester->keywordExists((m_deviceRequester->getDevice(getPluginId(), device))->Id, keyword);
 }
 
-void CYadomsApiImplementation::declareCustomKeyword(const std::string& device, const std::string& keyword,
-   const std::string& capacity, shared::plugin::yadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::EKeywordType type, const std::string & units, const shared::CDataContainer& details)
+void CYadomsApiImplementation::declareCustomKeyword(const std::string& device, const std::string& keyword, const std::string& capacity,
+   const shared::plugin::yadomsApi::EKeywordAccessMode& accessMode, const shared::plugin::yadomsApi::EKeywordDataType& type, const std::string & units,
+   const shared::plugin::yadomsApi::historization::EMeasureType & measure, const shared::CDataContainer& details)
 {
    if (keywordExists(device, keyword))
       throw shared::exception::CEmptyResult("Fail to declare keyword : keyword already exists");
@@ -61,44 +62,25 @@ void CYadomsApiImplementation::declareCustomKeyword(const std::string& device, c
    database::entities::CKeyword keywordEntity;
    keywordEntity.DeviceId = m_deviceRequester->getDevice(getPluginId(), device)->Id;
    keywordEntity.CapacityName = capacity;
-   switch(accessMode)
-   {
-   case shared::plugin::yadomsApi::kGetSet: keywordEntity.AccessMode = database::entities::EKeywordAccessMode::kGetSet; break;
-   case shared::plugin::yadomsApi::kGet: keywordEntity.AccessMode = database::entities::EKeywordAccessMode::kGet; break;
-   case shared::plugin::yadomsApi::kSet: keywordEntity.AccessMode = database::entities::EKeywordAccessMode::kSet; break;
-   default:
-      BOOST_ASSERT_MSG(false, "Unknown accessMode");
-      throw shared::exception::CEmptyResult("Fail to declare keyword : unknown accessMode");
-   }
-
-   switch (type)
-   {
-   case shared::plugin::yadomsApi::kNoData: keywordEntity.Type = database::entities::EKeywordDataType::kNoData; break;
-   case shared::plugin::yadomsApi::kString: keywordEntity.Type = database::entities::EKeywordDataType::kString; break;
-   case shared::plugin::yadomsApi::kNumeric: keywordEntity.Type = database::entities::EKeywordDataType::kNumeric; break;
-   case shared::plugin::yadomsApi::kBool: keywordEntity.Type = database::entities::EKeywordDataType::kBool; break;
-   case shared::plugin::yadomsApi::kJson: keywordEntity.Type = database::entities::EKeywordDataType::kJson; break;
-   default:
-      BOOST_ASSERT_MSG(false, "Unknown type");
-      throw shared::exception::CEmptyResult("Fail to declare keyword : unknown type");
-   }
-
+   keywordEntity.AccessMode = accessMode;
+   keywordEntity.Type = type;
    keywordEntity.Units = units;
    keywordEntity.Name = keyword;
    keywordEntity.FriendlyName = keyword;
+   keywordEntity.Measure = measure;
    keywordEntity.Details = details;
 
    m_keywordRequester->addKeyword(keywordEntity);
 }
 
-void CYadomsApiImplementation::declareKeyword(const std::string& device, const shared::plugin::yadomsApi::commands::IHistorizable& keyword, const shared::CDataContainer& details)
+void CYadomsApiImplementation::declareKeyword(const std::string& device, const shared::plugin::yadomsApi::historization::IHistorizable& keyword, const shared::CDataContainer& details)
 {
-   declareCustomKeyword(device, keyword.getKeyword(), keyword.getCapacity().getName(), keyword.getCapacity().getAccessMode(), keyword.getCapacity().getType(), keyword.getCapacity().getUnit(), details);
+   declareCustomKeyword(device, keyword.getKeyword(), keyword.getCapacity().getName(), keyword.getCapacity().getAccessMode(), keyword.getCapacity().getType(), keyword.getCapacity().getUnit(), keyword.getMeasureType(), details);
 }
 
 
 
-void CYadomsApiImplementation::historizeData(const std::string& device, const shared::plugin::yadomsApi::commands::IHistorizable& data)
+void CYadomsApiImplementation::historizeData(const std::string& device, const shared::plugin::yadomsApi::historization::IHistorizable& data)
 {
    try
    {

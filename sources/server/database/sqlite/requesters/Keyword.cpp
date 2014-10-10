@@ -59,8 +59,8 @@ namespace database { namespace sqlite { namespace requesters {
       {
          //create the database entry with needed fields
          CQuery qInsert;
-         qInsert.InsertInto(CKeywordTable::getTableName(), CKeywordTable::getDeviceIdColumnName(), CKeywordTable::getCapacityNameColumnName(), CKeywordTable::getAccessModeColumnName(), CKeywordTable::getNameColumnName(), CKeywordTable::getTypeColumnName()).
-            Values(newKeyword.DeviceId(), newKeyword.CapacityName(), newKeyword.AccessMode(), newKeyword.Name(), newKeyword.Type());
+         qInsert.InsertInto(CKeywordTable::getTableName(), CKeywordTable::getDeviceIdColumnName(), CKeywordTable::getCapacityNameColumnName(), CKeywordTable::getAccessModeColumnName(), CKeywordTable::getNameColumnName(), CKeywordTable::getTypeColumnName(), CKeywordTable::getMeasureColumnName()).
+            Values(newKeyword.DeviceId(), newKeyword.CapacityName(), newKeyword.AccessMode(), newKeyword.Name(), newKeyword.Type(), newKeyword.Measure());
 
          if(m_databaseRequester->queryStatement(qInsert) <= 0)
             throw shared::exception::CEmptyResult("Fail to insert keyword into table");
@@ -153,7 +153,7 @@ namespace database { namespace sqlite { namespace requesters {
    }
 
 
-   std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeyword::getDeviceKeywordsWithCapacity(int deviceId, const std::string & capacityName, const database::entities::EKeywordAccessMode & accessMode) const
+   std::vector<boost::shared_ptr<database::entities::CKeyword> > CKeyword::getDeviceKeywordsWithCapacity(int deviceId, const std::string & capacityName, const shared::plugin::yadomsApi::EKeywordAccessMode & accessMode) const
    {
       database::sqlite::adapters::CKeywordAdapter adapter;
       CQuery qSelect;

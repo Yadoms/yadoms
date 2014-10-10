@@ -19,7 +19,7 @@ const std::string& CLoadKeyword::getKeyword() const
 
 const yApi::CStandardCapacity& CLoadKeyword::getCapacity() const
 {
-   static const yApi::CStandardCapacity LoadCapacity("load", yApi::CStandardUnits::Percent, yApi::kGet, yApi::kNumeric);
+   static const yApi::CStandardCapacity LoadCapacity("load", yApi::CStandardUnits::Percent, yApi::EKeywordAccessMode::kGet, yApi::EKeywordDataType::kNumeric);
    return LoadCapacity;
 }
 
@@ -35,9 +35,10 @@ const std::string CLoadKeyword::formatValue() const
    return ss.str();
 }
 
-yApi::commands::IHistorizable::EMeasureType CLoadKeyword::getMeasureType() const
+const yApi::historization::EMeasureType& CLoadKeyword::getMeasureType() const
 {
-   return kAbsolute;
+   static const yApi::historization::EMeasureType MeasureType(yApi::historization::EMeasureType::kAbsolute);
+   return MeasureType;
 }
 
 float CLoadKeyword::load() const

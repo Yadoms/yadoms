@@ -22,7 +22,7 @@ namespace pluginSystem
    const shared::plugin::yadomsApi::CStandardCapacity& CCommandHistorizer::getCapacity() const
    {
       static const shared::plugin::yadomsApi::CStandardCapacity NoCapacity("command", shared::plugin::yadomsApi::CStandardUnits::NoUnits,
-         shared::plugin::yadomsApi::kSet, shared::plugin::yadomsApi::kString);
+         shared::plugin::yadomsApi::EKeywordAccessMode::kSet, shared::plugin::yadomsApi::EKeywordDataType::kString);
       return NoCapacity;
    }
 
@@ -31,9 +31,10 @@ namespace pluginSystem
       return m_value;
    }
 
-   shared::plugin::yadomsApi::commands::IHistorizable::EMeasureType CCommandHistorizer::getMeasureType() const
+   const shared::plugin::yadomsApi::historization::EMeasureType& CCommandHistorizer::getMeasureType() const
    {
-      return kAbsolute;
+      static const shared::plugin::yadomsApi::historization::EMeasureType MeasureType(shared::plugin::yadomsApi::historization::EMeasureType::kAbsolute);
+      return MeasureType;
    }
 
 } // namespace pluginSystem	
