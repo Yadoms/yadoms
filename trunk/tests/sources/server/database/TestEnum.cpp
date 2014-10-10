@@ -63,8 +63,24 @@ BOOST_AUTO_TEST_CASE(Enums)
    BOOST_CHECK_EQUAL(testhelper<database::entities::ESecurityAccess>::checkGoodType(), true);
    BOOST_CHECK_EQUAL(testhelper<EClassicEnum>::checkGoodType(), false);
 
-   
+   //check for method exist(int)
+   BOOST_CHECK(database::entities::ESecurityAccess::isDefined(0));
+   BOOST_CHECK(database::entities::ESecurityAccess::isDefined(1));
+   BOOST_CHECK(database::entities::ESecurityAccess::isDefined(2));
+   BOOST_CHECK(!database::entities::ESecurityAccess::isDefined(-1));
+   BOOST_CHECK(!database::entities::ESecurityAccess::isDefined(3));
 
+   //check for method exist(std::string)
+   BOOST_CHECK(database::entities::ESecurityAccess::isDefined("none"));
+   BOOST_CHECK(database::entities::ESecurityAccess::isDefined("Admin"));
+   BOOST_CHECK(database::entities::ESecurityAccess::isDefined("User"));
+   BOOST_CHECK(!database::entities::ESecurityAccess::isDefined("plouf"));
+   BOOST_CHECK(!database::entities::ESecurityAccess::isDefined("noneaaa"));
+
+   //check for method parse(std::string)
+   BOOST_CHECK(database::entities::ESecurityAccess::parse("none") == database::entities::ESecurityAccess::kNone);
+   BOOST_CHECK(database::entities::ESecurityAccess::parse("Admin") == database::entities::ESecurityAccess::kAdmin);
+   BOOST_CHECK(database::entities::ESecurityAccess::parse("User") == database::entities::ESecurityAccess::kUser);
 }
 
 
