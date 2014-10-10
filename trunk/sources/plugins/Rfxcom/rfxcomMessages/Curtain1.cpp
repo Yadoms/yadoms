@@ -82,13 +82,13 @@ void CCurtain1::buildDeviceModel()
    m_deviceModel = ssModel.str();
 }
 
-unsigned char CCurtain1::toProtocolState(const yApi::commands::CCurtain& curtainState)
+unsigned char CCurtain1::toProtocolState(const yApi::historization::CCurtain& curtainState)
 {
    switch (curtainState.command()())
    {
-   case yApi::commands::CCurtain::ECommand::kOpen: return curtain_sOpen;
-   case yApi::commands::CCurtain::ECommand::kClose: return curtain_sClose;
-   case yApi::commands::CCurtain::ECommand::kStop: return curtain_sStop;
+   case yApi::historization::CCurtain::ECommand::kOpen: return curtain_sOpen;
+   case yApi::historization::CCurtain::ECommand::kClose: return curtain_sClose;
+   case yApi::historization::CCurtain::ECommand::kStop: return curtain_sStop;
    default:
       BOOST_ASSERT_MSG(false, "Unsupported value");
       throw shared::exception::CInvalidParameter(curtainState.formatValue());

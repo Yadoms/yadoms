@@ -91,6 +91,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Keyword, " CREATE TABLE Keyword            
                                                    friendlyName TEXT,                                             \
                                                    type TEXT NOT NULL,                                            \
                                                    units TEXT,                                                    \
+                                                   measure TEXT NOT NULL,                                         \
                                                    details TEXT                                                   \
                                                 )")                                                               
 

@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/plugin/yadomsApi/commands/IHistorizable.h>
+#include <shared/plugin/yadomsApi/historization/IHistorizable.h>
 
 namespace dataAccessLayer {
 
@@ -15,7 +15,7 @@ namespace dataAccessLayer {
       /// \param [in]      keywordId   The keyword id
       /// \param [in]      data        The data
       //--------------------------------------------------------------
-      virtual void saveData(const int keywordId, const shared::plugin::yadomsApi::commands::IHistorizable & data) = 0;
+      virtual void saveData(const int keywordId, const shared::plugin::yadomsApi::historization::IHistorizable & data) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Save a new data into base
@@ -23,7 +23,7 @@ namespace dataAccessLayer {
       /// \param [in]      data        The data
       /// \param [in]      dataTime    The datetime of the data
       //--------------------------------------------------------------
-      virtual void saveData(const int keywordId, const shared::plugin::yadomsApi::commands::IHistorizable & data, boost::posix_time::ptime & dataTime) = 0;
+      virtual void saveData(const int keywordId, const shared::plugin::yadomsApi::historization::IHistorizable & data, boost::posix_time::ptime & dataTime) = 0;
    };
  
 } //namespace dataAccessLayer 

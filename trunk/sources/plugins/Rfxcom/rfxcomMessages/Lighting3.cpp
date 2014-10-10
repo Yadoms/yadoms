@@ -106,7 +106,7 @@ void CLighting3::buildDeviceModel()
    m_deviceModel = ssModel.str();
 }
 
-unsigned char CLighting3::toProtocolState(const yApi::commands::CSwitch& switchState)
+unsigned char CLighting3::toProtocolState(const yApi::historization::CSwitch& switchState)
 {
    switch (switchState.switchLevel() / 10)  // switchLevel returns value from 0 to 100
    {

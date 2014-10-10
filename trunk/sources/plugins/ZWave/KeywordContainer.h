@@ -1,6 +1,6 @@
 #pragma once
 
-#include <shared/plugin/yadomsApi/commands/IHistorizable.h>
+#include <shared/plugin/yadomsApi/historization/IHistorizable.h>
 
 //--------------------------------------------------------------
 /// \brief     Class used to encapsulate a keyword
@@ -20,7 +20,7 @@ public:
    /// \param [in]   deviceId   The device id
    /// \param [in]   keyword    The keyword
    //--------------------------------------------------------------
-   CKeywordContainer(const std::string & deviceId, const yApi::commands::IHistorizable & keyword)
+   CKeywordContainer(const std::string & deviceId, const yApi::historization::IHistorizable & keyword)
       :m_deviceId(deviceId), m_keyword(keyword)
    {
    }
@@ -36,7 +36,7 @@ public:
    /// \brief	      Get the keyword
    /// \return       The keyword
    //--------------------------------------------------------------   
-   const yApi::commands::IHistorizable & getKeyword() const { return m_keyword; } 
+   const yApi::historization::IHistorizable & getKeyword() const { return m_keyword; } 
    
    //--------------------------------------------------------------
    /// \brief	      Get the device id
@@ -54,7 +54,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	      The keyword
    //--------------------------------------------------------------      
-   const yApi::commands::IHistorizable &	m_keyword;
+   const yApi::historization::IHistorizable &	m_keyword;
 };
 
 

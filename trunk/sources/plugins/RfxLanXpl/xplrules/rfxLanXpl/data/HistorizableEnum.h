@@ -1,13 +1,13 @@
 #pragma once
 
-#include <shared/plugin/yadomsApi/commands/IHistorizable.h>
+#include <shared/plugin/yadomsApi/historization/IHistorizable.h>
 #include <shared/DataContainer.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
 
    template<class TEnum>
-   class CHistorizableEnum : public shared::plugin::yadomsApi::commands::IHistorizable
+   class CHistorizableEnum : public shared::plugin::yadomsApi::historization::IHistorizable
    {
    protected:
       //-----------------------------------------------------
@@ -58,9 +58,10 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
          return m_value.getAsString();
       }
 
-      virtual EMeasureType getMeasureType() const
+      virtual const shared::plugin::yadomsApi::historization::EMeasureType& getMeasureType() const
       {
-         return kAbsolute;
+         static const shared::plugin::yadomsApi::historization::EMeasureType MeasureType(shared::plugin::yadomsApi::historization::EMeasureType::kAbsolute);
+         return MeasureType;
       }
       // [END] IHistorizable implementation   
    

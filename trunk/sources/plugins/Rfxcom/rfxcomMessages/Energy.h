@@ -75,21 +75,21 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The instant power (W)
       //--------------------------------------------------------------
-      yApi::commands::CPower m_instantPower;
+      yApi::historization::CPower m_instantPower;
 
       //--------------------------------------------------------------
       /// \brief	The total power (Wh)
       //--------------------------------------------------------------
-      yApi::commands::CEnergy m_totalPower;
+      yApi::historization::CEnergy m_totalPower;
 
       //--------------------------------------------------------------
       /// \brief	The battery level (percent)
       //--------------------------------------------------------------
-      yApi::commands::CBatteryLevel m_batteryLevel;
+      yApi::historization::CBatteryLevel m_batteryLevel;
 
       //--------------------------------------------------------------
       /// \brief	The RSSI (percent)
       //--------------------------------------------------------------
-      yApi::commands::CRssi m_rssi;
+      yApi::historization::CRssi m_rssi;
    };
 } // namespace rfxcomMessages

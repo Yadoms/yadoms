@@ -6,7 +6,7 @@ namespace pluginSystem
    //-----------------------------------------------------
    ///\brief The command generic historizer
    //-----------------------------------------------------
-   class CCommandHistorizer : public shared::plugin::yadomsApi::commands::IHistorizable
+   class CCommandHistorizer : public shared::plugin::yadomsApi::historization::IHistorizable
    {
    public:
       //-----------------------------------------------------
@@ -24,7 +24,7 @@ namespace pluginSystem
       virtual const std::string& getKeyword() const;
       virtual const shared::plugin::yadomsApi::CStandardCapacity& getCapacity() const;
       virtual const std::string formatValue() const;
-      virtual EMeasureType getMeasureType() const;
+      virtual const shared::plugin::yadomsApi::historization::EMeasureType& getMeasureType() const;
       // [END] IHistorizable implementation
 
    private:

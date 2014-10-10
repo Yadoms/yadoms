@@ -75,16 +75,16 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The humidity (%)
       //--------------------------------------------------------------
-      yApi::commands::CHumidity m_humidity;
+      yApi::historization::CHumidity m_humidity;
 
       //--------------------------------------------------------------
       /// \brief	The battery level (percent)
       //--------------------------------------------------------------
-      yApi::commands::CBatteryLevel m_batteryLevel;
+      yApi::historization::CBatteryLevel m_batteryLevel;
 
       //--------------------------------------------------------------
       /// \brief	The RSSI (percent)
       //--------------------------------------------------------------
-      yApi::commands::CRssi m_rssi;
+      yApi::historization::CRssi m_rssi;
    };
 } // namespace rfxcomMessages

@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/Export.h>
 #include <shared/plugin/yadomsApi/KeywordAccessMode.h>
-#include <shared/plugin/yadomsApi/KeywordType.h>
+#include <shared/plugin/yadomsApi/KeywordDataType.h>
 
 namespace shared { namespace plugin { namespace yadomsApi {
 
@@ -18,7 +18,7 @@ namespace shared { namespace plugin { namespace yadomsApi {
       /// \param [in] accessMode    the capacity access mode
       /// \param [in] type          the capacity type
       //--------------------------------------------------------------
-      CStandardCapacity(const std::string & name, const std::string & unit, const EKeywordAccessMode accessMode, const EKeywordType type);
+      CStandardCapacity(const std::string& name, const std::string& unit, const EKeywordAccessMode& accessMode, const EKeywordDataType& type);
 
       //--------------------------------------------------------------
       /// \brief		Destructor
@@ -39,12 +39,12 @@ namespace shared { namespace plugin { namespace yadomsApi {
       /// \brief		get the capacity access mode
       /// \return 	the capacity access mode
       //--------------------------------------------------------------
-      const EKeywordAccessMode getAccessMode() const;
+      const EKeywordAccessMode& getAccessMode() const;
       //--------------------------------------------------------------
       /// \brief		get the capacity type
       /// \return 	the capacity type
       //--------------------------------------------------------------
-      const EKeywordType getType() const;
+      const EKeywordDataType& getType() const;
 
       //--------------------------------------------------------------
       /// \brief		Implicit std::string operator (give the capacity name)
@@ -68,7 +68,7 @@ namespace shared { namespace plugin { namespace yadomsApi {
       //--------------------------------------------------------------
       /// \brief		the capacity type
       //--------------------------------------------------------------
-      EKeywordType m_type;
+      EKeywordDataType m_type;
    };
 
 } } } // namespace shared::plugin::yadomsApi

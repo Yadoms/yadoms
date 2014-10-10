@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/DataContainer.h>
-#include <shared/plugin/yadomsApi/commands/IHistorizable.h>
+#include <shared/plugin/yadomsApi/historization/IHistorizable.h>
 
 namespace shared { namespace plugin { namespace yadomsApi
 {
@@ -43,7 +43,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\brief               Get the historizable object
       ///\return              The historizable object associated with this command
       //-----------------------------------------------------
-      virtual const commands::IHistorizable& getHistorizableObject() const = 0;
+      virtual const historization::IHistorizable& getHistorizableObject() const = 0;
 
 };
 	

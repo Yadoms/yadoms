@@ -75,29 +75,29 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The current (A), for the 3 channels
       //--------------------------------------------------------------
-      yApi::commands::CCurrent m_current1;
-      yApi::commands::CCurrent m_current2;
-      yApi::commands::CCurrent m_current3;
+      yApi::historization::CCurrent m_current1;
+      yApi::historization::CCurrent m_current2;
+      yApi::historization::CCurrent m_current3;
 
       //--------------------------------------------------------------
       /// \brief	The instant power (W)
       //--------------------------------------------------------------
-      yApi::commands::CPower m_instantPower;
+      yApi::historization::CPower m_instantPower;
 
       //--------------------------------------------------------------
       /// \brief	The total power (Wh)
       //--------------------------------------------------------------
       bool m_totalPowerAvailable;
-      yApi::commands::CEnergy m_totalPower;
+      yApi::historization::CEnergy m_totalPower;
 
       //--------------------------------------------------------------
       /// \brief	The battery level (percent)
       //--------------------------------------------------------------
-      yApi::commands::CBatteryLevel m_batteryLevel;
+      yApi::historization::CBatteryLevel m_batteryLevel;
 
       //--------------------------------------------------------------
       /// \brief	The RSSI (percent)
       //--------------------------------------------------------------
-      yApi::commands::CRssi m_rssi;
+      yApi::historization::CRssi m_rssi;
    };
 } // namespace rfxcomMessages

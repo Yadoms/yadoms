@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Rfy.h"
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/commands/Curtain.h>
+#include <shared/plugin/yadomsApi/historization/Curtain.h>
 #include <shared/exception/InvalidParameter.hpp>
 
 // Shortcut to yadomsApi namespace
@@ -91,13 +91,13 @@ void CRfy::buildDeviceModel()
    m_deviceModel = ssModel.str();
 }
 
-unsigned char CRfy::toProtocolState(const yApi::commands::CCurtain& curtainState)
+unsigned char CRfy::toProtocolState(const yApi::historization::CCurtain& curtainState)
 {
    switch (curtainState.command()())
    {
-   case yApi::commands::CCurtain::ECommand::kOpen: return rfy_sUp;
-   case yApi::commands::CCurtain::ECommand::kClose: return rfy_sDown;
-   case yApi::commands::CCurtain::ECommand::kStop: return rfy_sStop;
+   case yApi::historization::CCurtain::ECommand::kOpen: return rfy_sUp;
+   case yApi::historization::CCurtain::ECommand::kClose: return rfy_sDown;
+   case yApi::historization::CCurtain::ECommand::kStop: return rfy_sStop;
    default:
       BOOST_ASSERT_MSG(false, "Unsupported value");
       throw shared::exception::CInvalidParameter(curtainState.formatValue());

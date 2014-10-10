@@ -31,7 +31,7 @@ namespace database {  namespace sqlite {  namespace requesters {
       if(m_databaseHandler->getKeywordRequester()->getKeyword(keywordId))
       {
          CQuery q;
-         q.InsertInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
+         q.InsertOrReplaceInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
             Values(dataTime, keywordId, data);
 
          if(m_databaseRequester->queryStatement(q) <= 0)
@@ -50,7 +50,7 @@ namespace database {  namespace sqlite {  namespace requesters {
       if(!keywordEntity)
          throw shared::exception::CEmptyResult("The keyword do not exists, cannot increment data");
 
-      if (keywordEntity->Type() != database::entities::EKeywordDataType::kNumeric)
+      if (keywordEntity->Type() != shared::plugin::yadomsApi::EKeywordDataType::kNumeric)
          throw shared::exception::CEmptyResult("The keyword is not numeric, cannot increment data");
 
       CQuery q;
@@ -59,7 +59,7 @@ namespace database {  namespace sqlite {  namespace requesters {
          From(CAcquisitionTable::getTableName() + " as acq").
          Where("acq." + CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
          OrderBy("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_ORDER_DESC).
-         Limit(1);
+         Limit(1);//TODO revoir requête... Merci à toi, Ô grand Jean-Michel, gourou SQL (ça rime en plus) !
 
       if(m_databaseRequester->queryStatement(q) <= 0)
          throw shared::exception::CEmptyResult("Fail to insert new data");
@@ -279,7 +279,7 @@ namespace database {  namespace sqlite {  namespace requesters {
 
       if (keyword)
       {
-         if (keyword->Type() == database::entities::EKeywordDataType::kNumeric)
+         if (keyword->Type() == shared::plugin::yadomsApi::EKeywordDataType::kNumeric)
          {
             //just compute good dates
             //hourDate : is the start of the hour (current day) => minutes and seconds set to 0

@@ -127,12 +127,32 @@ BOOST_AUTO_TEST_CASE(Different_Port_port_Initialisation)
 
 //--------------------------------------------------------------
 /// \brief	    Test startupOptions::CLoader with an argument error : --por
-/// \result         Error : Raise an Exception
+/// \result         No Error, syntax accepted since no ambiguity with other option - port number change
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Different_Port_por_Initialisation)
+{
+   const char *argv[] = {"./TestLoader","--por","2000"};
+
+   startupOptions::CLoader StartupOptions (3, argv);
+
+   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
+   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)2000);
+   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
+   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
+   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test startupOptions::CLoader with an argument error : --webServer
+/// \result         Error : Raise an Exception (ambigous webServerIp or webServerPath ?)
 //--------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Port_Initialisation_Error1)
 {
-   const char *argv[] = {"./TestLoader","--por","2000"};
+   const char *argv[] = {"./TestLoader", "--webServer", "192.168.1.1"};
 
    BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderException);
 }
@@ -168,18 +188,6 @@ BOOST_AUTO_TEST_CASE(Different_Database_databaseFile_Initialisation)
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
-}
-
-//--------------------------------------------------------------
-/// \brief	    Test startupOptions::CLoader with the faulty argument --database
-/// \result         Error : Raise an Exception
-//--------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(Different_Database_databaseFile_Error1)
-{
-   const char *argv[] = {"./TestLoader","--database","toto.db3"};
-
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderException);
 }
 
 //--------------------------------------------------------------
@@ -336,14 +344,22 @@ BOOST_AUTO_TEST_CASE(Unknow_Log_l_Error1)
 
 //--------------------------------------------------------------
 /// \brief	    Test startupOptions::CLoader with a faulty argument entry
-/// \result         Raise an exception
+/// \result         No Error - option is ignored
 //--------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(Unknow_option_Error2)
+BOOST_AUTO_TEST_CASE(Unknow_option_NoError)
 {
    const char *argv[] = {"./TestLoader","-a","info"};
 
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderException);
+   startupOptions::CLoader StartupOptions (3, argv);
+
+   BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), boost::log::trivial::info);
+   BOOST_CHECK_EQUAL(StartupOptions.getWebServerPortNumber(), (unsigned int)8080);
+   BOOST_CHECK_EQUAL(StartupOptions.getDatabaseFile(), "yadoms.db3");
+   BOOST_CHECK_EQUAL(StartupOptions.getPluginsPath(),"plugins");
+   BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
+   BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
+   BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
 }
 
 //--------------------------------------------------------------

@@ -64,22 +64,22 @@ private:
    //--------------------------------------------------------------
    /// \brief	The keyword associated with temperature1
    //--------------------------------------------------------------
-   yApi::commands::CTemperature m_temperature1;
+   yApi::historization::CTemperature m_temperature1;
 
    //--------------------------------------------------------------
    /// \brief	The keyword associated with temperature1
    //--------------------------------------------------------------
-   yApi::commands::CTemperature m_temperature2;
+   yApi::historization::CTemperature m_temperature2;
 
    //--------------------------------------------------------------
    /// \brief	The keyword associated with battery level
    //--------------------------------------------------------------
-   yApi::commands::CBatteryLevel m_batteryLevel;
+   yApi::historization::CBatteryLevel m_batteryLevel;
 
    //--------------------------------------------------------------
    /// \brief	The keyword associated with signal strengh
    //--------------------------------------------------------------
-   yApi::commands::CRssi m_rssi;
+   yApi::historization::CRssi m_rssi;
 
    //--------------------------------------------------------------
    /// \brief	    Random number generator, used to simulate temperature variations

@@ -75,16 +75,16 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The pressure (hPa)
       //--------------------------------------------------------------
-      yApi::commands::CPressure m_pressure;
+      yApi::historization::CPressure m_pressure;
 
       //--------------------------------------------------------------
       /// \brief	The battery level (percent)
       //--------------------------------------------------------------
-      yApi::commands::CBatteryLevel m_batteryLevel;
+      yApi::historization::CBatteryLevel m_batteryLevel;
 
       //--------------------------------------------------------------
       /// \brief	The RSSI (percent)
       //--------------------------------------------------------------
-      yApi::commands::CRssi m_rssi;
+      yApi::historization::CRssi m_rssi;
    };
 } // namespace rfxcomMessages

@@ -5,7 +5,7 @@
 #include <shared/Log.h>
 
 CFakeCounter::CFakeCounter(const std::string& deviceName)
-   :m_deviceName(deviceName), m_incrementCount("incrementCount", yApi::commands::IHistorizable::kIncrement),
+   :m_deviceName(deviceName), m_incrementCount("incrementCount", yApi::historization::EMeasureType::kIncrement),
    m_totalCount("totalCounter"), m_dist(0, 15)
 {
    m_totalCount.set(0);

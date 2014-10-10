@@ -47,8 +47,8 @@ namespace pluginSystem
       virtual const shared::CDataContainer getDeviceDetails(const std::string& device) const;
       virtual void declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
       virtual bool keywordExists(const std::string& device, const std::string& keyword) const;
-      virtual void declareKeyword(const std::string& device, const shared::plugin::yadomsApi::commands::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
-      virtual void historizeData(const std::string& device, const shared::plugin::yadomsApi::commands::IHistorizable& data);
+      virtual void declareKeyword(const std::string& device, const shared::plugin::yadomsApi::historization::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
+      virtual void historizeData(const std::string& device, const shared::plugin::yadomsApi::historization::IHistorizable& data);
       virtual const shared::plugin::information::IInformation& getInformation() const;
       virtual shared::CDataContainer getConfiguration() const;
       virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message);
@@ -70,12 +70,14 @@ namespace pluginSystem
       ///\param    [in]    accessMode         The keyword access
       ///\param    [in]    type               The keyword type
       ///\param    [in]    units              The keyword units
+      ///\param    [in]    measure            The measure type
       ///\param    [in]    details            The keyword details (JSON string, optional. Can be used to declare specific properties like min/max values)
       ///\throw shared::exception::CEmptyResult if creation failed
       //-----------------------------------------------------   
       virtual void declareCustomKeyword(const std::string& device, const std::string& keyword, const std::string& capacity,
-         shared::plugin::yadomsApi::EKeywordAccessMode accessMode, shared::plugin::yadomsApi::EKeywordType type,
+         const shared::plugin::yadomsApi::EKeywordAccessMode& accessMode, const shared::plugin::yadomsApi::EKeywordDataType& type,
          const std::string & units = shared::CStringExtension::EmptyString,
+         const shared::plugin::yadomsApi::historization::EMeasureType & measure = shared::plugin::yadomsApi::historization::EMeasureType::kAbsolute,
          const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
 
    private:

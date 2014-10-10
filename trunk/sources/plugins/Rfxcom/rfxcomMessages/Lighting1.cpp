@@ -115,7 +115,7 @@ void CLighting1::buildDeviceModel()
    m_deviceModel = ssModel.str();
 }
 
-unsigned char CLighting1::toProtocolState(const yApi::commands::CSwitch& switchState)
+unsigned char CLighting1::toProtocolState(const yApi::historization::CSwitch& switchState)
 {
    return switchState.isOn() ? light1_sOn : light1_sOff;
 }

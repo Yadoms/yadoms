@@ -139,7 +139,7 @@ void CLighting2::buildDeviceModel()
    m_deviceModel = ssModel.str();
 }
 
-void CLighting2::toProtocolState(const yApi::commands::CSwitch& switchState, unsigned char& state, unsigned char& level)
+void CLighting2::toProtocolState(const yApi::historization::CSwitch& switchState, unsigned char& state, unsigned char& level)
 {
    switch(switchState.switchLevel())
    {

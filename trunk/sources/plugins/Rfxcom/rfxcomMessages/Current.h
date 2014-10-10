@@ -75,18 +75,18 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The current (A), for the 3 channels
       //--------------------------------------------------------------
-      yApi::commands::CCurrent m_current1;
-      yApi::commands::CCurrent m_current2;
-      yApi::commands::CCurrent m_current3;
+      yApi::historization::CCurrent m_current1;
+      yApi::historization::CCurrent m_current2;
+      yApi::historization::CCurrent m_current3;
 
       //--------------------------------------------------------------
       /// \brief	The battery level (percent)
       //--------------------------------------------------------------
-      yApi::commands::CBatteryLevel m_batteryLevel;
+      yApi::historization::CBatteryLevel m_batteryLevel;
 
       //--------------------------------------------------------------
       /// \brief	The RSSI (percent)
       //--------------------------------------------------------------
-      yApi::commands::CRssi m_rssi;
+      yApi::historization::CRssi m_rssi;
    };
 } // namespace rfxcomMessages

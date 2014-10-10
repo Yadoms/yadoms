@@ -5,7 +5,7 @@
 #include "ZWave.h"
 #include "OpenZWaveCommandClass.h"
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/commands/Switch.h>
+#include <shared/plugin/yadomsApi/historization/Switch.h>
 #include "command_classes/SwitchBinary.h"
 #include "Options.h"
 #include "Manager.h"
@@ -247,18 +247,18 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
             switch (vType)
             {
             case OpenZWave::ValueID::ValueType_Bool:
-               d.set("type", shared::plugin::yadomsApi::EKeywordType::kBool);
+               d.set("type", shared::plugin::yadomsApi::EKeywordDataType::kBool);
                break;
 
             case OpenZWave::ValueID::ValueType_Byte:
             case OpenZWave::ValueID::ValueType_Decimal:
             case OpenZWave::ValueID::ValueType_Int:
             case OpenZWave::ValueID::ValueType_Short:
-               d.set("type", shared::plugin::yadomsApi::EKeywordType::kNumeric);
+               d.set("type", shared::plugin::yadomsApi::EKeywordDataType::kNumeric);
                break;
 
             default:
-               d.set("type", shared::plugin::yadomsApi::EKeywordType::kString);
+               d.set("type", shared::plugin::yadomsApi::EKeywordDataType::kString);
                break;
             }
 

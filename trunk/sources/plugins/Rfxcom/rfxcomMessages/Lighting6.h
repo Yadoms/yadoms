@@ -66,7 +66,7 @@ namespace rfxcomMessages
       /// \param[in] switchState          The state from Yadoms
       /// \return                         The value known by the protocol
       //--------------------------------------------------------------
-      static unsigned char toProtocolState(const yApi::commands::CSwitch& switchState);
+      static unsigned char toProtocolState(const yApi::historization::CSwitch& switchState);
       
       //--------------------------------------------------------------
       /// \brief	                        Convert protocol value to Yadoms state
@@ -110,11 +110,11 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keyword associated with state
       //--------------------------------------------------------------
-      yApi::commands::CSwitch m_state;
+      yApi::historization::CSwitch m_state;
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with rssi
       //--------------------------------------------------------------
-      yApi::commands::CRssi m_rssi;
+      yApi::historization::CRssi m_rssi;
    };
 } // namespace rfxcomMessages

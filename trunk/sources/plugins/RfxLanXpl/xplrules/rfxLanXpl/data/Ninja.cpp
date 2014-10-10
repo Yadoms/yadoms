@@ -18,7 +18,7 @@ DECLARE_ENUM_IMPLEMENTATION_CUSTOM(ENinjaCommand,
 );
 
 
-const shared::plugin::yadomsApi::CStandardCapacity& NinjaCapacity = shared::plugin::yadomsApi::CStandardCapacity("ninja", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::kSet, shared::plugin::yadomsApi::kNoData);
+const shared::plugin::yadomsApi::CStandardCapacity& NinjaCapacity = shared::plugin::yadomsApi::CStandardCapacity("ninja", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kSet, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
 
    
 CNinja::CNinja(const std::string& keywordName)

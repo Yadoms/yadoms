@@ -81,24 +81,24 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The temperature (°C)
       //--------------------------------------------------------------
-      yApi::commands::CTemperature m_temperature;
+      yApi::historization::CTemperature m_temperature;
       bool m_temperatureAvailable;
 
       //--------------------------------------------------------------
       /// \brief	The A/D voltage (V)
       //--------------------------------------------------------------
-      yApi::commands::CVoltage m_adVoltage;
+      yApi::historization::CVoltage m_adVoltage;
       bool m_adVoltageAvailable;
 
       //--------------------------------------------------------------
       /// \brief	The voltage (V)
       //--------------------------------------------------------------
-      yApi::commands::CVoltage m_voltage;
+      yApi::historization::CVoltage m_voltage;
       bool m_voltageAvailable;
 
       //--------------------------------------------------------------
       /// \brief	The RSSI (percent)
       //--------------------------------------------------------------
-      yApi::commands::CRssi m_rssi;
+      yApi::historization::CRssi m_rssi;
    };
 } // namespace rfxcomMessages

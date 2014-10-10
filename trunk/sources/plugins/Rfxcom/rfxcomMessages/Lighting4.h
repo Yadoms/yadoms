@@ -86,11 +86,11 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keyword associated with state
       //--------------------------------------------------------------
-      yApi::commands::CSwitch m_state; //TODO pas sûr du type d'objet, en discussion
+      yApi::historization::CSwitch m_state; //TODO pas sûr du type d'objet, en discussion
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with rssi
       //--------------------------------------------------------------
-      yApi::commands::CRssi m_rssi;
+      yApi::historization::CRssi m_rssi;
    };
 } // namespace rfxcomMessages

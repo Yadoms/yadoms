@@ -8,9 +8,8 @@
 #include "IManuallyDeviceCreationTestData.h"
 #include <shared/plugin/yadomsApi/StandardCapacity.h>
 #include <shared/plugin/yadomsApi/KeywordAccessMode.h>
-#include <shared/plugin/yadomsApi/KeywordType.h>
-#include "commands/IHistorizable.h"
-#include "commands/commands.h"
+#include <shared/plugin/yadomsApi/KeywordDataType.h>
+#include "historization/Historizers.h"
 
 
 namespace shared { namespace plugin { namespace yadomsApi
@@ -136,7 +135,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\param    [in]    details            The keyword details (JSON string, optional. Can be used to declare specific properties like min/max values)
       ///\throw shared::exception::CEmptyResult if keyword already exist
       //-----------------------------------------------------   
-      virtual void declareKeyword(const std::string& device, const commands::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) = 0;
+      virtual void declareKeyword(const std::string& device, const historization::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer) = 0;
 
 
 
@@ -161,7 +160,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\param    [in]    device            The device name
       ///\param    [in]    data              The historizable data
       //-----------------------------------------------------     
-      virtual void historizeData(const std::string& device, const commands::IHistorizable& data) = 0;
+      virtual void historizeData(const std::string& device, const historization::IHistorizable& data) = 0;
 
 
       //----------------------------------------------------------------------------------------------------------------

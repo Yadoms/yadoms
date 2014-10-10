@@ -44,9 +44,9 @@ public:
    virtual void declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer)
    { Device dev = {model, details}; m_devices[device] = dev; }
    virtual bool keywordExists(const std::string& device, const std::string& keyword) const { return false; }
-   virtual void declareKeyword(const std::string& device, const yApi::commands::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer)
+   virtual void declareKeyword(const std::string& device, const yApi::historization::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer)
    { Keyword kw = { device, keyword.getKeyword(), keyword.getCapacity(), details }; m_keywords[keyword.getKeyword()] = kw; }
-   virtual void historizeData(const std::string& device, const yApi::commands::IHistorizable& keyword)
+   virtual void historizeData(const std::string& device, const yApi::historization::IHistorizable& keyword)
    { Data data = {device, keyword.getKeyword(), keyword.getCapacity(), keyword.formatValue() }; m_data.push_back(data); }
    virtual const shared::plugin::information::IInformation& getInformation() const { return m_defaultInformation; }
    virtual shared::CDataContainer getConfiguration() const { return m_defaultConfiguration; }

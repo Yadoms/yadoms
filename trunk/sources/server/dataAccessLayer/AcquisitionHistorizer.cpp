@@ -10,16 +10,16 @@ namespace dataAccessLayer {
       {
       }
 
-      void CAcquisitionHistorizer::saveData(const int keywordId, const shared::plugin::yadomsApi::commands::IHistorizable & data)
+      void CAcquisitionHistorizer::saveData(const int keywordId, const shared::plugin::yadomsApi::historization::IHistorizable & data)
       {
          //use ptime as variable, because saveData needs a reference
          boost::posix_time::ptime currentDate = boost::posix_time::second_clock::universal_time();
          saveData(keywordId, data, currentDate);
       }
 
-      void CAcquisitionHistorizer::saveData(const int keywordId, const shared::plugin::yadomsApi::commands::IHistorizable & data, boost::posix_time::ptime & dataTime)
+      void CAcquisitionHistorizer::saveData(const int keywordId, const shared::plugin::yadomsApi::historization::IHistorizable & data, boost::posix_time::ptime & dataTime)
       {
-         if(data.getMeasureType() == shared::plugin::yadomsApi::commands::IHistorizable::kIncrement)
+         if(data.getMeasureType() == shared::plugin::yadomsApi::historization::EMeasureType::kIncrement)
             m_acquisitionRequester->incrementData(keywordId, data.formatValue(), dataTime);
          else
             m_acquisitionRequester->saveData(keywordId, data.formatValue(), dataTime);

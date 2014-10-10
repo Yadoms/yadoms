@@ -100,12 +100,12 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Message historization object
    //--------------------------------------------------------------
-   yApi::commands::CMessage m_messageKeyword;
+   yApi::historization::CMessage m_messageKeyword;
 
    //--------------------------------------------------------------
    /// \brief	    Power historization object
    //--------------------------------------------------------------
-   yApi::commands::CSwitch m_powerKeyword;
+   yApi::historization::CSwitch m_powerKeyword;
 };
 
 

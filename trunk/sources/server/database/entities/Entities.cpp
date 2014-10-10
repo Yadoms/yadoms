@@ -35,21 +35,6 @@ namespace database { namespace entities {
       (Updated)
    )
 
-   DECLARE_ENUM_IMPLEMENTATION(EKeywordDataType,
-      (NoData)
-      (String)
-      (Numeric)
-      (Bool)
-      (Json)
-   )
-
-   DECLARE_ENUM_IMPLEMENTATION(EKeywordAccessMode,
-      (NoAccess)
-      (Get)
-      (Set)
-      (GetSet)
-   )
-
 
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(
    Plugin,
@@ -92,8 +77,9 @@ namespace database { namespace entities {
       ((Configuration)(shared::CDataContainer)(shared::CDataContainer())("configuration"))
       );
 
-   DECLARE_ENTITY_CLASS_IMPLEMENTATION(PluginEventLogger,
-   ((Id)(int)(0)("id"))
+   DECLARE_ENTITY_CLASS_IMPLEMENTATION(
+   PluginEventLogger,
+      ((Id)(int)(0)("id"))
       ((EventDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time())("eventDate"))
       ((PluginName)(std::string)("")("pluginName"))
       ((PluginVersion)(std::string)("")("pluginVersion"))
@@ -127,11 +113,12 @@ namespace database { namespace entities {
       ((Id)(int)(0)("id"))
       ((DeviceId)(int)(0)("deviceId"))
       ((CapacityName)(std::string)("")("capacityName"))
-      ((AccessMode)(database::entities::EKeywordAccessMode)(database::entities::EKeywordAccessMode::kNoAccess)("accessMode"))
+      ((AccessMode)(shared::plugin::yadomsApi::EKeywordAccessMode)(shared::plugin::yadomsApi::EKeywordAccessMode::kNoAccess)("accessMode"))
       ((Name)(std::string)("")("name"))
       ((FriendlyName)(std::string)("")("friendlyName"))
-      ((Type)(database::entities::EKeywordDataType)(database::entities::EKeywordDataType::kString)("type"))
+      ((Type)(shared::plugin::yadomsApi::EKeywordDataType)(shared::plugin::yadomsApi::EKeywordDataType::kString)("type"))
       ((Units)(std::string)("")("units"))
+      ((Measure)(shared::plugin::yadomsApi::historization::EMeasureType)(shared::plugin::yadomsApi::historization::EMeasureType::kAbsolute)("measure"))
       ((Details)(shared::CDataContainer)(shared::CDataContainer())("details"))
       );
 

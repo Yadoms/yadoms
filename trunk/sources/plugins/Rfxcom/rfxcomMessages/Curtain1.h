@@ -67,7 +67,7 @@ namespace rfxcomMessages
       /// \return                         The value known by the protocol
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       //--------------------------------------------------------------
-      static unsigned char toProtocolState(const yApi::commands::CCurtain& curtainState);
+      static unsigned char toProtocolState(const yApi::historization::CCurtain& curtainState);
 
    private:
       //--------------------------------------------------------------
@@ -98,6 +98,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keyword associated with state
       //--------------------------------------------------------------
-      yApi::commands::CCurtain m_state;
+      yApi::historization::CCurtain m_state;
    };
 } // namespace rfxcomMessages

@@ -6,6 +6,7 @@
 #include <shared/Field.hpp>
 #include <shared/enumeration/IExtendedEnum.h>
 #include <shared/enumeration/EnumHelpers.hpp>
+#include <shared/plugin/yadomsApi/historization/IHistorizable.h>
 
 namespace database { namespace entities {
    DECLARE_ENUM_HEADER(ESecurityAccess,
@@ -37,21 +38,6 @@ namespace database { namespace entities {
       ((Started)(1))
       ((Stopped)(2))
       ((Updated)(3))
-   )
-
-   DECLARE_ENUM_HEADER(EKeywordDataType,
-      ((NoData)(0)) 
-      ((String)(1))
-      ((Numeric)(2))
-      ((Bool)(3))
-      ((Json)(4))
-   )
-   
-   DECLARE_ENUM_HEADER(EKeywordAccessMode,
-      ((NoAccess)(0))
-      ((Get)(1))
-      ((Set)(2))
-      ((GetSet)(3))
    )
 
    DECLARE_ENTITY_CLASS_HEADER(Plugin,
@@ -125,14 +111,14 @@ namespace database { namespace entities {
       ((Id)(int))
       ((DeviceId)(int))
       ((CapacityName)(std::string))
-      ((AccessMode)(database::entities::EKeywordAccessMode))
+      ((AccessMode)(shared::plugin::yadomsApi::EKeywordAccessMode))
       ((Name)(std::string))
       ((FriendlyName)(std::string))
-      ((Type)(database::entities::EKeywordDataType))
+      ((Type)(shared::plugin::yadomsApi::EKeywordDataType))
       ((Units)(std::string))
+      ((Measure)(shared::plugin::yadomsApi::historization::EMeasureType))
       ((Details)(shared::CDataContainer))
    )
-   //TODO : ajouter colonne Measure
 
    DECLARE_ENTITY_CLASS_HEADER(Acquisition,
       ((Id)(int))

@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/plugin/yadomsApi/StandardCapacity.h>
-#include <shared/plugin/yadomsApi/commands/IHistorizable.h>
+#include <shared/plugin/yadomsApi/historization/IHistorizable.h>
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -8,7 +8,7 @@ namespace yApi = shared::plugin::yadomsApi;
 //-----------------------------------------------------
 ///\brief A temperature historizable object
 //-----------------------------------------------------
-class CLoadKeyword : public yApi::commands::IHistorizable
+class CLoadKeyword : public yApi::historization::IHistorizable
 {
 public:
    //-----------------------------------------------------
@@ -26,7 +26,7 @@ public:
    virtual const std::string& getKeyword() const;
    virtual const yApi::CStandardCapacity& getCapacity() const;
    virtual const std::string formatValue() const;
-   virtual EMeasureType getMeasureType() const;
+   virtual const yApi::historization::EMeasureType& getMeasureType() const;
    // [END] IHistorizable implementation
 
    //-----------------------------------------------------

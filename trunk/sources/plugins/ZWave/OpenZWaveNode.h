@@ -63,7 +63,7 @@ public:
    /// \param [in]   classIdentifier   The class identifier for the keyword
    /// \param [in]   keyword           The keyword name
    //--------------------------------------------------------------   
-   const shared::plugin::yadomsApi::commands::IHistorizable & getLastKeywordValue(ECommandClass classIdentifier, const std::string & keyword);
+   const shared::plugin::yadomsApi::historization::IHistorizable & getLastKeywordValue(ECommandClass classIdentifier, const std::string & keyword);
 
    //--------------------------------------------------------------
    /// \brief	      Check if this node match to a pair [home,node]
