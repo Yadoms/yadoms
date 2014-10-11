@@ -6,6 +6,9 @@
 #include "data/DigimaxDemand.h"
 #include "data/DigitalIoStatus.h"
 #include "data/MertikStatus.h"
+#include "data/Forecast.h"
+#include "data/HumidityDescription.h"
+#include "data/UvDescription.h"
 
 #include "ControlBasic.h"
 
@@ -304,12 +307,46 @@ namespace xplrules { namespace rfxLanXpl {
       //Oregon
       if (isOregonDevice(msg))
       {
+         //Temperature
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeTemp))
          {
             boost::shared_ptr< shared::plugin::yadomsApi::historization::CTemperature > temp(new shared::plugin::yadomsApi::historization::CTemperature(m_keywordTypeTemp));
             temp->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
             data.push_back(temp);
          }
+
+         //Humidity
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeHumidity))
+         {
+            boost::shared_ptr< shared::plugin::yadomsApi::historization::CHumidity > humidity(new shared::plugin::yadomsApi::historization::CHumidity(m_keywordTypeHumidity));
+            humidity->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
+            data.push_back(humidity);
+
+            boost::shared_ptr< data::CHumidityDescription > humidityDescription(new data::CHumidityDescription(m_keywordDescription));
+            humidityDescription->set(data::EHumidityDescription::parse(msg.getBodyValue(m_keywordCurrent)));
+            data.push_back(humidityDescription);
+         }
+
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeStatus))
+         {
+            boost::shared_ptr< data::CHumidityDescription > humidityDescription(new data::CHumidityDescription(m_keywordTypeStatus));
+            humidityDescription->set(data::EHumidityDescription::parse(msg.getBodyValue(m_keywordCurrent)));
+            data.push_back(humidityDescription);
+         }
+
+         //Pressure
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypePressure))
+         {
+            boost::shared_ptr< shared::plugin::yadomsApi::historization::CPressure > pressure(new shared::plugin::yadomsApi::historization::CPressure(m_keywordTypePressure));
+            pressure->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
+            data.push_back(pressure);
+
+
+            boost::shared_ptr< data::CForecast > forecast(new data::CForecast(m_keywordForecast));
+            forecast->set(data::EForecast::parse(msg.getBodyValue(m_keywordCurrent)));
+            data.push_back(forecast);
+         }
+
       }
       /* TODO
       data.insert(std::make_pair(msg.getBodyValue(m_keywordType), msg.getBodyValue(m_keywordCurrent)));
@@ -389,23 +426,31 @@ namespace xplrules { namespace rfxLanXpl {
       //Oregon
       if (isOregonDevice(msg))
       {
+         //Temperature
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeTemp))
          {
             keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CTemperature(m_keywordTypeTemp)));
          }
 
-         /*
+         //Humidity
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeHumidity))
          {
-            details.set("min", 0);
-            details.set("max", 100);
-            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeHumidity, m_keywordTypeHumidity, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::Percent, details)));
-            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordDescription, m_keywordDescription, yApi::kGet, yApi::kString, yApi::CStandardUnits::NoUnits, m_keywordTypeHumidityValues)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CHumidity(m_keywordTypeHumidity)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CHumidityDescription(m_keywordDescription)));
          }
 
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeStatus))
-            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeStatus, m_keywordTypeStatus, yApi::kGet, yApi::kString, yApi::CStandardUnits::NoUnits, m_keywordTypeHumidityValues)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CHumidityDescription(m_keywordTypeStatus)));
 
+         //Pressure
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypePressure))
+         {
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CPressure(m_keywordTypePressure)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CForecast(m_keywordForecast)));
+         }
+
+
+         /*
 
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeRainRate) ||
             boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeRainTotal) ||
@@ -416,12 +461,6 @@ namespace xplrules { namespace rfxLanXpl {
             boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeEnergy))
          {
             keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(msg.getBodyValue(m_keywordType), msg.getBodyValue(m_keywordType), yApi::kGet, yApi::kNumeric, units, details)));
-         }
-
-         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypePressure))
-         {
-            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypePressure, m_keywordTypePressure, yApi::kGet, yApi::kNumeric, units, details)));
-            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordForecast, m_keywordForecast, yApi::kGet, yApi::kString, yApi::CStandardUnits::NoUnits, m_keywordTypeForecastValues)));
          }
 
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeDirection))

@@ -54,6 +54,7 @@ void COpenZWaveController::configure(CZWaveConfiguration * configuration, shared
 {
    BOOST_ASSERT(configuration != NULL);
    BOOST_ASSERT(handler != NULL);
+   boost::lock_guard<boost::mutex> lock(m_treeMutex);
    m_configuration = configuration;
    m_handler = handler;
 }
@@ -90,10 +91,32 @@ bool COpenZWaveController::start()
       OpenZWave::Manager::Get()->AddWatcher(OnGlobalNotification, this);
 
       // Add a Z-Wave Driver
-      // Modify this line to set the correct serial port for your PC interface.
-      std::string realSerialPort = tools::CSerialPortHelper::formatSerialPort(m_configuration->getSerialPort());
-      if (!OpenZWave::Manager::Get()->AddDriver(realSerialPort))
-         throw shared::exception::CException("Fail to open serial port");
+      
+      //this part wait infinitely for serial port open success (configuration can be changed by another thread)
+      bool serialPortOpened = false;
+      while (!serialPortOpened)
+      {
+         //lock access to configuration
+         boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+         //get the serial port address (do access to m_configuration to take external changes into account)
+         std::string realSerialPort  = tools::CSerialPortHelper::formatSerialPort(m_configuration->getSerialPort());
+
+         //open the port
+         if (OpenZWave::Manager::Get()->AddDriver(realSerialPort))
+         {
+            //ok
+            serialPortOpened = true;
+         }
+         else
+         {
+            //fail to open : then unlock mutex to allow configuration to be changed, then wait 1 sec
+            YADOMS_LOG(warning) << "Fail to open serial port : " << m_configuration->getSerialPort() << " port address : " << realSerialPort;
+            m_treeMutex.unlock();
+            boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
+         }
+      }
+         
 
 
       // Now we just wait for either the AwakeNodesQueried or AllNodesQueried notification,
