@@ -101,7 +101,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Acquisition,    "CREATE TABLE Acquisition  
                                                          keywordId INTEGER NOT NULL,                              \
                                                          value TEXT NOT NULL,                                     \
                                                          PRIMARY KEY (date, keywordId)                            \
-                                                      )")
+                                                      )WITHOUT ROWID")
 
 DECLARE_STATIC_TABLE_CREATION_SCRIPT(AcquisitionSummary,    "CREATE TABLE AcquisitionSummary                      \
                                                             (  type TEXT NOT NULL,                                \
@@ -111,9 +111,8 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(AcquisitionSummary,    "CREATE TABLE Acquis
                                                                minValue REAL NOT NULL,                            \
                                                                maxValue REAL NOT NULL,                            \
                                                                PRIMARY KEY (type, date, keywordId)                \
-                                                               )")                           
+                                                               )WITHOUT ROWID")                           
 
-DECLARE_STATIC_INDEXES_CREATION_SCRIPT(Acquisition, "CREATE INDEX acqByDate ON Acquisition (date, keywordId)" )
 
 
 

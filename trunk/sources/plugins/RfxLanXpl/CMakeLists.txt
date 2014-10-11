@@ -59,6 +59,12 @@ set(RFXLANXPL_RULES_SOURCES
 	xplrules/rfxLanXpl/data/DigitalIoStatus.cpp	
 	xplrules/rfxLanXpl/data/DigimaxDemand.h
 	xplrules/rfxLanXpl/data/DigimaxDemand.cpp
+	xplrules/rfxLanXpl/data/HumidityDescription.h
+	xplrules/rfxLanXpl/data/HumidityDescription.cpp
+	xplrules/rfxLanXpl/data/UvDescription.h
+	xplrules/rfxLanXpl/data/UvDescription.cpp
+	xplrules/rfxLanXpl/data/Forecast.h
+	xplrules/rfxLanXpl/data/Forecast.cpp
 )
 
 

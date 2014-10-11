@@ -121,13 +121,6 @@
                   if (!pRequester->createTableIfNotExists(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTableCreationScript()))
                      throw CSQLiteVersionException("Failed to create AcquisitionSummary table");
 
-                  //indexes
-                  const std::vector<std::string> indexes = CAcquisitionTable::getIndexesCreationScript();
-                  for (std::vector<std::string>::const_iterator i = indexes.begin(); i != indexes.end(); ++i)
-                  {
-                     pRequester->createIndex(CAcquisitionTable::getTableName(), *i);
-                  }
-
 
                   //set the database version
                   CQuery qInsert;
