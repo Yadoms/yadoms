@@ -15,7 +15,7 @@ var failGetEventCounter = 0;
 
 var webSocket = null;
 
-function initializeWebSocketEngine() {
+function initializeWebSocketEngine(callback) {
 
    if (!isNullOrUndefined(webSocket))
       webSocket.close();
@@ -29,6 +29,8 @@ function initializeWebSocketEngine() {
 
       webSocket.onopen = function() {
          console.debug('Web socket opened');
+         if ($.isFunction(callback))
+         callback();
       };
 
       webSocket.onmessage = function(e) {
@@ -243,14 +245,16 @@ function periodicUpdateTask() {
                widgetUpdateInterval = setInterval(periodicUpdateTask, UpdateInterval);
 
             //we reinitialize the websocket
-            initializeWebSocketEngine();
+            initializeWebSocketEngine(function() {
+               //web socket opened
 
-            //Maybe there is a lot of time between the turn off of the server and the turn on, so we must ask all widget
-            //data to be sure that all information displayed are fresh
-            updateWidgetsPolling();
+               //Maybe there is a lot of time between the turn off of the server and the turn on, so we must ask all widget
+               //data to be sure that all information displayed are fresh
+               updateWidgetsPolling();
 
-            //we update the filter of the websockets to receive only wanted data
-            updateWebSocketFilter();
+               //we update the filter of the websockets to receive only wanted data
+               updateWebSocketFilter();
+            });
          }
 
          //if there is new messages we display them

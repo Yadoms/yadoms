@@ -295,9 +295,10 @@
                        $("html").i18n();
                        moment.lang(systemConfiguration[ConfigurationManager.items.system.language].value);
 
-                       initializeWebSocketEngine();
-
-                       initializeWidgetEngine();
+                       initializeWebSocketEngine(function () {
+                          //web socket opened
+                          initializeWidgetEngine();
+                       });
                     });
                  }
               });
