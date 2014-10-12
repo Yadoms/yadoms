@@ -87,10 +87,6 @@ PageManager.createPage = function(pageName, pageOrder, callback) {
 
          //we add the page dynamically
          var p = PageManager.factory(data.data);
-         //we add the page to the list
-         PageManager.addPage(p);
-         //and to the DOM
-         PageManager.addToDom(p);
 
          if ($.isFunction(callback))
             callback(p)
