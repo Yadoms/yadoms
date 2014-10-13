@@ -21,6 +21,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       static const std::string& Hertz;             // Hz
       static const std::string& Kg;                // kg
       static const std::string& Meter;             // m
+      static const std::string& Millimeter;        // mm
       static const std::string& Percent;           // %
       static const std::string& Volt;              // V
       static const std::string& Watt;              // W

@@ -114,6 +114,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/historization/PowerFactor.h
    shared/plugin/yadomsApi/historization/Pressure.cpp
    shared/plugin/yadomsApi/historization/Pressure.h
+   shared/plugin/yadomsApi/historization/Rain.cpp
+   shared/plugin/yadomsApi/historization/Rain.h
    shared/plugin/yadomsApi/historization/Rssi.cpp
    shared/plugin/yadomsApi/historization/Rssi.h
    shared/plugin/yadomsApi/historization/Switch.cpp

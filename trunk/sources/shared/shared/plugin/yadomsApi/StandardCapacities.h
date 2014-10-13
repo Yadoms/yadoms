@@ -23,6 +23,7 @@ namespace shared { namespace plugin { namespace yadomsApi {
       static const CStandardCapacity & Message;           // message           |                       | A message (contains "from", "to" and "body" fields)
       static const CStandardCapacity & Power;             // power             | Watt                  | Power
       static const CStandardCapacity & Pressure;          // pressure          | hPa                   | Pressure
+      static const CStandardCapacity & Rain;              // rain              | mm                    | Rain counter
       static const CStandardCapacity & Rssi;              // rssi              | percent               | Rssi measure capacity
       static const CStandardCapacity & Switch;            // switch            | none                  | A value from 0-100 (0 is off, 100 is on)
       static const CStandardCapacity & Temperature;       // temperature       | degrees Celcius       | Temperature
