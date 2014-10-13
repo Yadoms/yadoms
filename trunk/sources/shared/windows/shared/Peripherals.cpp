@@ -40,14 +40,15 @@ const boost::shared_ptr<const CPeripherals::SerialPortsMap> CPeripherals::getSer
    {
       if (dataType == REG_SZ)
       {
-         std::string portName((char*)mountPoint);
+         // Assure compatibility with serial port numbers > 9
+         std::string portName((boost::format("\\\\.\\%1%") % (char*)mountPoint).str());
 
          //ex
          //portname : COM1
          //serialPortName : \Device\Serial0
          //=> friendlyName : COM1 (\Device\Serial0)
-         std::string sFriendlyName((boost::format("%1% (%2%)") % portName % serialPortName).str()); 
-         (*serialPorts)[portName] = sFriendlyName;
+         std::string friendlyName((boost::format("%1% (%2%)") % (char*)mountPoint % serialPortName).str()); 
+         (*serialPorts)[portName] = friendlyName;
       }
 
       // Increment index of key, and reset string length for next iteration
@@ -58,11 +59,6 @@ const boost::shared_ptr<const CPeripherals::SerialPortsMap> CPeripherals::getSer
 
    RegCloseKey(serialcommKey);
    return serialPorts;
-}
-
-void CPeripherals::flushSerialPort(boost::asio::serial_port& sp)
-{
-   ::PurgeComm(sp.native(), PURGE_RXABORT | PURGE_RXCLEAR | PURGE_TXABORT | PURGE_TXCLEAR);
 }
 
 } // namespace shared

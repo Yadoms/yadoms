@@ -12,7 +12,6 @@
 #include "Notification.h"
 #include "Log.h"
 #include "KeywordContainer.h"
-#include "tools/SerialPortHelper.h"
 
 COpenZWaveController::COpenZWaveController()
    :m_homeId(0), m_initFailed(false), m_nodesQueried(false), m_configuration(NULL), m_handler(NULL)
@@ -99,11 +98,8 @@ bool COpenZWaveController::start()
          //lock access to configuration
          boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-         //get the serial port address (do access to m_configuration to take external changes into account)
-         std::string realSerialPort  = tools::CSerialPortHelper::formatSerialPort(m_configuration->getSerialPort());
-
          //open the port
-         if (OpenZWave::Manager::Get()->AddDriver(realSerialPort))
+         if (OpenZWave::Manager::Get()->AddDriver(m_configuration->getSerialPort()))
          {
             //ok
             serialPortOpened = true;
@@ -111,7 +107,7 @@ bool COpenZWaveController::start()
          else
          {
             //fail to open : then unlock mutex to allow configuration to be changed, then wait 1 sec
-            YADOMS_LOG(warning) << "Fail to open serial port : " << m_configuration->getSerialPort() << " port address : " << realSerialPort;
+            YADOMS_LOG(warning) << "Fail to open serial port : " << m_configuration->getSerialPort() << " port address : " << m_configuration->getSerialPort();
             m_treeMutex.unlock();
             boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
          }
