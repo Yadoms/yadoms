@@ -10,6 +10,7 @@
 #include "Power.h"
 #include "PowerFactor.h"
 #include "Pressure.h"
+#include "Rain.h"
 #include "Rssi.h"
 #include "Switch.h"
 #include "Temperature.h"

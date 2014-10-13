@@ -37,6 +37,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Lighting6.cpp
    rfxcomMessages/Power.h
    rfxcomMessages/Power.cpp
+   rfxcomMessages/Rain.h
+   rfxcomMessages/Rain.cpp
    rfxcomMessages/RFXtrx.h
    rfxcomMessages/RFXtrxHelpers.h
    rfxcomMessages/RFXtrxHelpers.cpp
