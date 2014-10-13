@@ -68,7 +68,7 @@ namespace rfxcomMessages
       /// \brief	                     Get the RfxCom type as string
       // \return                       A string representing the RfxCom type
       //--------------------------------------------------------------
-      unsigned char getFirmwareVersion() const;
+      unsigned int getFirmwareVersion() const;
 
       //--------------------------------------------------------------
       /// \brief	                     Check if RfxCom configuration must be updated (need protocols enabled for example)

@@ -37,41 +37,12 @@ IF(MSVC OR XCODE)
 ENDIF()
 
 
-#Append platform specific files
-IF(WIN32)
-set(ZWAVE_PLUGIN_SOURCES	
-	${ZWAVE_PLUGIN_SOURCES}
-	tools/windows/tools/SerialPortHelper.h
-	tools/windows/tools/SerialPortHelper.cpp
-)	
-set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tools/windows)
-
-ELSEIF(APPLE)
-set(ZWAVE_PLUGIN_SOURCES	
-	${ZWAVE_PLUGIN_SOURCES}
-	tools/mac/tools/SerialPortHelper.h
-	tools/mac/tools/SerialPortHelper.cpp
-)	
-set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tools/mac)
-
-ELSE()
-set(ZWAVE_PLUGIN_SOURCES	
-	${ZWAVE_PLUGIN_SOURCES}
-	tools/linux/tools/SerialPortHelper.h
-	tools/linux/tools/SerialPortHelper.cpp
-)	
-set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tools/linux)
-
-ENDIF()
-
-
 #########################################
 ## Place here all additional include directories
 ## (by default yadoms-shared and boost are included)
 #########################################
 set(ZWAVE_PLUGIN_ADDITIONAL_INC_DIR
 	${OPENZWAVE_INCLUDE_DIRECTORY}
-	${PLATFORM_SPECIFIC_INCL_DIR}
 )
 
 #########################################

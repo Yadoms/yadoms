@@ -133,7 +133,7 @@ const std::string CTransceiverStatus::rfxcomTypeToString() const
    return itRfxcomTypes->second;
 }
 
-unsigned char CTransceiverStatus::getFirmwareVersion() const
+unsigned int CTransceiverStatus::getFirmwareVersion() const
 {
    return m_firmwareVersion;
 }

@@ -30,18 +30,14 @@ const boost::shared_ptr<CPeripherals::SerialPortsMap> CPeripherals::getSerialPor
       {
          if (boost::filesystem::is_directory(*dirIter) && boost::filesystem::exists(*dirIter / "device"))
          {
-            std::string portName((*dirIter).path().leaf().string());
-            (*serialPorts)[portName]=portName;
+            std::string friendlyName((*dirIter).path().leaf().string());            // friendlyName is something like "tty0"
+            std::string portName((boost::format("/dev/%1%") % friendlyName).str()); // portName is "/dev/tty0"
+            (*serialPorts)[portName]=friendlyName;
          }
       }
    }
 
    return serialPorts;
-}
-
-void CPeripherals::flushSerialPort(boost::asio::serial_port& sp)
-{
-   ::tcflush(sp.native(), TCIOFLUSH);
 }
 
 } // namespace shared
