@@ -23,9 +23,8 @@ CTemp::CTemp(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boos
       temperature = -temperature;
    m_temperature.set(temperature);
 
-   m_batteryLevel.set(rbuf.TEMP.battery_level == 0x09 ? 100 : 0);
-
-   m_rssi.set(rbuf.TEMP.rssi * 100 / 0x0F);
+   m_batteryLevel.set(NormalizeBatteryLevel(rbuf.TEMP.battery_level));
+   m_rssi.set(NormalizeRssiLevel(rbuf.TEMP.rssi));
 
    Init(context);
 }

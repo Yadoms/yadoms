@@ -31,7 +31,7 @@ CLighting3::CLighting3(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& 
    m_system = rbuf.LIGHTING3.system;
    m_channel = rbuf.LIGHTING3.channel8_1 & (rbuf.LIGHTING3.channel10_9 << 8);
    m_state.set(fromProtocolState(rbuf.LIGHTING3.cmnd));
-   m_rssi.set(rbuf.LIGHTING2.rssi * 100 / 0x0F);
+   m_rssi.set(NormalizeRssiLevel(rbuf.LIGHTING2.rssi));
 
    Init(context);
 }

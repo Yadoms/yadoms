@@ -66,7 +66,7 @@ CChime::CChime(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, bo
       break;
    }
 
-   m_rssi.set(rbuf.CHIME.rssi * 100 / 0x0F);
+   m_rssi.set(NormalizeRssiLevel(rbuf.CHIME.rssi));
 
    Init(context);
 }

@@ -22,9 +22,8 @@ CCurrent::CCurrent(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf
    m_current2.set(rbuf.CURRENT.ch2h << 8 | rbuf.CURRENT.ch2l);
    m_current3.set(rbuf.CURRENT.ch3h << 8 | rbuf.CURRENT.ch3l);
 
-   m_batteryLevel.set(rbuf.CURRENT.battery_level == 0x09 ? 100 : 0);
-
-   m_rssi.set(rbuf.CURRENT.rssi * 100 / 0x0F);
+   m_batteryLevel.set(NormalizeBatteryLevel(rbuf.CURRENT.battery_level));
+   m_rssi.set(NormalizeRssiLevel(rbuf.CURRENT.rssi));
 
    Init(context);
 }

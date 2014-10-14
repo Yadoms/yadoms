@@ -31,9 +31,8 @@ CCurrentEnergy::CCurrentEnergy(boost::shared_ptr<yApi::IYadomsApi> context, cons
       m_totalPower.set(totalPower / 223.666);
    }
 
-   m_batteryLevel.set(rbuf.CURRENT_ENERGY.battery_level == 0x09 ? 100 : 0);
-
-   m_rssi.set(rbuf.CURRENT_ENERGY.rssi * 100 / 0x0F);
+   m_batteryLevel.set(NormalizeBatteryLevel(rbuf.CURRENT_ENERGY.battery_level));
+   m_rssi.set(NormalizeRssiLevel(rbuf.CURRENT_ENERGY.rssi));
 
    Init(context);
 }

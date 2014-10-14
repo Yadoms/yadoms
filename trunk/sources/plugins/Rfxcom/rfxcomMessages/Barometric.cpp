@@ -20,9 +20,8 @@ CBarometric::CBarometric(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF
 
    m_pressure.set(rbuf.BARO.baro1 << 8 | (rbuf.BARO.baro2));
 
-   m_batteryLevel.set(rbuf.BARO.battery_level == 0x09 ? 100 : 0);
-
-   m_rssi.set(rbuf.BARO.rssi * 100 / 0x0F);
+   m_batteryLevel.set(NormalizeBatteryLevel(rbuf.BARO.battery_level));
+   m_rssi.set(NormalizeRssiLevel(rbuf.BARO.rssi));
 
    Init(context);
 }

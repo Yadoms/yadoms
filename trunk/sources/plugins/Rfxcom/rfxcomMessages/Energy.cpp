@@ -25,9 +25,8 @@ CEnergy::CEnergy(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, 
    totalPower += rbuf.ENERGY.total1 * 2 ^ 40;
    m_totalPower.set(totalPower / 223.666);
 
-   m_batteryLevel.set(rbuf.ENERGY.battery_level == 0x09 ? 100 : 0);
-
-   m_rssi.set(rbuf.ENERGY.rssi * 100 / 0x0F);
+   m_batteryLevel.set(NormalizeBatteryLevel(rbuf.ENERGY.battery_level));
+   m_rssi.set(NormalizeRssiLevel(rbuf.ENERGY.rssi));
 
    Init(context);
 }
