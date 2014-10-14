@@ -15,12 +15,14 @@ namespace shared { namespace plugin { namespace yadomsApi
       //--------------------------------------------------------------
       static const std::string& NoUnits;
       static const std::string& Ampere;            // A
+      static const std::string& Degrees;           // °
       static const std::string& DegreesCelcius;    // °C
       static const std::string& DegreesFarenheit;  // °F
       static const std::string& hectoPascal;       // hPa
       static const std::string& Hertz;             // Hz
       static const std::string& Kg;                // kg
       static const std::string& Meter;             // m
+      static const std::string& MetersPerSecond;   // m/s
       static const std::string& Millimeter;        // mm
       static const std::string& Percent;           // %
       static const std::string& Volt;              // V

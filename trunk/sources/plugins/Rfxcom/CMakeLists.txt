@@ -58,6 +58,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/TransceiverStatus.cpp
    rfxcomMessages/Weight.h
    rfxcomMessages/Weight.cpp
+   rfxcomMessages/Wind.h
+   rfxcomMessages/Wind.cpp
 )
 
 set(RFXCOM_SOURCES

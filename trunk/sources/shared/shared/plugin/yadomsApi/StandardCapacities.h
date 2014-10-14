@@ -17,6 +17,7 @@ namespace shared { namespace plugin { namespace yadomsApi {
       static const CStandardCapacity & Counter;           // count             | none                  | Generic counter
       static const CStandardCapacity & Current;           // current           | Ampere                | Current measure
       static const CStandardCapacity & Curtain;           // curtain           | none                  | Curtain command "on", "off", "stop"
+      static const CStandardCapacity & Direction;         // direction         | degrees               | Direction (for compass, wind direction)
       static const CStandardCapacity & Energy;            // energy            | Watt/hour             | Energy measure
       static const CStandardCapacity & Frequency;         // frequency         | Hertz                 | Frequency
       static const CStandardCapacity & Humidity;          // humidity          | percent               | Humidity
@@ -25,6 +26,7 @@ namespace shared { namespace plugin { namespace yadomsApi {
       static const CStandardCapacity & Pressure;          // pressure          | hPa                   | Pressure
       static const CStandardCapacity & Rain;              // rain              | mm                    | Rain counter
       static const CStandardCapacity & Rssi;              // rssi              | percent               | Rssi measure capacity
+      static const CStandardCapacity & Speed;             // speed             | m/s                   | A speed value, in m/s
       static const CStandardCapacity & Switch;            // switch            | none                  | A value from 0-100 (0 is off, 100 is on)
       static const CStandardCapacity & Temperature;       // temperature       | degrees Celcius       | Temperature
       static const CStandardCapacity & Voltage;           // voltage           | Volt                  | Voltage
