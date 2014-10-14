@@ -126,6 +126,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/historization/Switch.h
    shared/plugin/yadomsApi/historization/Temperature.cpp
    shared/plugin/yadomsApi/historization/Temperature.h
+   shared/plugin/yadomsApi/historization/Uv.cpp
+   shared/plugin/yadomsApi/historization/Uv.h
    shared/plugin/yadomsApi/historization/Voltage.cpp
    shared/plugin/yadomsApi/historization/Voltage.h
    shared/plugin/yadomsApi/historization/Weight.cpp

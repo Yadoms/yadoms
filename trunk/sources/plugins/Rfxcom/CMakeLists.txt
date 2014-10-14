@@ -56,6 +56,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/TempHumidityBarometric.cpp
    rfxcomMessages/TransceiverStatus.h
    rfxcomMessages/TransceiverStatus.cpp
+   rfxcomMessages/UV.h
+   rfxcomMessages/UV.cpp
    rfxcomMessages/Weight.h
    rfxcomMessages/Weight.cpp
    rfxcomMessages/Wind.h
