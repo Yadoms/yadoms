@@ -27,6 +27,8 @@ set(SHARED_LIB_SRC
    shared/communication/AsyncTcpClient.h
    shared/communication/AsyncTcpClient.cpp
    shared/communication/Buffer.hpp
+   shared/communication/AsciiBufferLogger.h
+   shared/communication/AsciiBufferLogger.cpp
    shared/communication/BufferLogger.h
    shared/communication/BufferLogger.cpp
    shared/communication/EOFReceiveBufferHandler.h

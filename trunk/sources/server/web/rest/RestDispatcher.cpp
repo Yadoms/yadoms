@@ -52,7 +52,7 @@ namespace web { namespace rest {
 
          if(getPattern()[i] != "*" && right.getPattern()[i] != "*")
          {
-            //none of them have a wildcard, see next caracter
+            //none of them have a wildcard, see next character
          } 
          else if(getPattern()[i] != "*" && right.getPattern()[i] == "*")
          {

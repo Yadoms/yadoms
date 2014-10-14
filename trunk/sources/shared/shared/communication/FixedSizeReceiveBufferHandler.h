@@ -2,6 +2,7 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/communication/IReceiveBufferHandler.h>
 #include <shared/communication/Buffer.hpp>
+#include <shared/Log.h>
 
 namespace shared { namespace communication {
 
@@ -11,7 +12,7 @@ namespace shared { namespace communication {
    /// This class implements a IReceiveBufferHandler for fixeds size messages.
    /// A message is then considered complete when its size is the construct-time given size
    //--------------------------------------------------------------
-   class CFixedSizeReceiveBufferHandler : public IReceiveBufferHandler
+   class YADOMS_SHARED_EXPORT CFixedSizeReceiveBufferHandler : public IReceiveBufferHandler
    {  
    public:
       //--------------------------------------------------------------
