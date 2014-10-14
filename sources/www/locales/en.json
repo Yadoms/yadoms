@@ -61,6 +61,8 @@
       "add-widget" : {
          "title" : "Add a new widget",
          "getMore" : "Get More widgets",
+         "add" : "Add",
+         "goBack" : "Go back",
          "errorDuringCreatingWidget" : "Error during creating widget",
          "widgetSuccessfullyCreated" : "Widget successfully created",
          "unableToCreateWidgetOfType" : "Unable to create widget of type __widgetType__",
