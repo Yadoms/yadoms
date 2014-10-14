@@ -18,14 +18,10 @@
                           <h1><span class="widget-name"></span></h1>
                        </div>
                        <div class="col-md-4 cell">
-                          <div class="btn-group btn-group-lg pull-right">
-                             <button id="btn-close-details" type="button" class="btn btn-default">
-                                <i class="fa fa-reply"></i>
-                             </button>
-                             <button id="btn-confirm-add-widget" type="button" class="btn btn-success">
-                                <i class="fa fa-plus"></i>
-                             </button>
-                          </div>
+                          <button id="btn-confirm-add-widget" type="button" class="btn btn-success">
+                                <i class="fa fa-plus"></i>&nbsp;
+                                <span data-i18n="modals.add-widget.add"/>
+                          </button>
                        </div>
                     </div>
                     <div  class="row">
@@ -53,7 +49,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="btn-get-more-widget" type="button" class="btn btn-primary pull-left" data-i18n="modals.add-widget.getMore">Get more widget</button>
+                <button id="btn-get-more-widget" type="button" class="btn btn-primary pull-left" data-i18n="modals.add-widget.getMore"></button>
+                <button id="btn-close-details" type="button" class="btn btn-default pull-left hidden"><i class="fa fa-reply"></i>&nbsp;<span data-i18n="modals.add-widget.goBack"></span></button>
                 <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.close">Close</button>
             </div>
         </div>
@@ -80,6 +77,9 @@
         var $detailsDiv = $("div#add-widget-details");
         $detailsDiv.hide();
 
+       //we replace the "go back" button by the "Get more" one
+       $("button#btn-get-more-widget").removeClass("hidden");
+       $("button#btn-close-details").addClass("hidden");
 
         $("ul#ul-add-widget").empty();
         for(var index in WidgetPackageManager.widgetPackages) {
@@ -103,6 +103,10 @@
             if (!isNullOrUndefined(type)) {
                 var value = WidgetPackageManager.widgetPackages[type].packageInformation;
                 if (!isNullOrUndefined(value)) {
+                    //we replace the "Get more" button by the "go back" one
+                    $("button#btn-get-more-widget").addClass("hidden");
+                    $("button#btn-close-details").removeClass("hidden");
+
                     //we show more details about the widget
                     var $detailsDiv = $("div#add-widget-details");
                     $detailsDiv.attr("widget-type", type);
@@ -131,6 +135,9 @@
     $("button#btn-close-details").click(function () {
        var $detailsDiv = $("div#add-widget-details");
        $detailsDiv.fadeOut();
+       //we replace the "go back" button by the "Get more" one
+       $("button#btn-get-more-widget").removeClass("hidden");
+       $("button#btn-close-details").addClass("hidden");
     });
 
     /**
@@ -140,6 +147,10 @@
 
        var currentPage = PageManager.getCurrentPage();
        assert(!isNullOrUndefined(currentPage), "A page must be selected");
+
+       //we replace the "go back" button by the "Get more" one for next display
+       $("button#btn-get-more-widget").removeClass("hidden");
+       $("button#btn-close-details").addClass("hidden");
 
        //we close the new widget modal
        $("div#new-widget-modal").modal("hide");
@@ -216,7 +227,7 @@
             return;
          }
 
-         notifySuccess($.t("modals.add-widget.widgetSuccessfullyCreated"));
+         //notifySuccess($.t("modals.add-widget.widgetSuccessfullyCreated"));
          //we add the widget dynamically
          var w = WidgetManager.factory(data.data);
          WidgetManager.loadWidget(w, currentPage);

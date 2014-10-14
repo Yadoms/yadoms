@@ -64,10 +64,10 @@ Widget.prototype.toJSON = function () {
  * Synchronize data from grister object and properties of the class
  */
 Widget.prototype.updateDataFromGridster = function() {
-   this.sizeX = this.$gridsterWidget.data("coords").grid.size_x;
-   this.sizeY = this.$gridsterWidget.data("coords").grid.size_y;
-   this.positionX = this.$gridsterWidget.data("col");
-   this.positionY = this.$gridsterWidget.data("row");
+   this.sizeX = this.$gridsterWidget.coords().grid.size_x;
+   this.sizeY = this.$gridsterWidget.coords().grid.size_y;
+   this.positionX = this.$gridsterWidget.coords().grid.col;
+   this.positionY = this.$gridsterWidget.coords().grid.row;
 };
 
 Widget.prototype.height = function () {

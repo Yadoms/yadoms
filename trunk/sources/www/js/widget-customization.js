@@ -19,16 +19,33 @@ var waitForRealeaseButtonAfterEnteringCustomization = false;
  * @param enable
  */
 function enableGridsterCustomization(enable) {
-   $.each(PageManager.pages, function (index, value) {
+   $.each(PageManager.pages, function (index, page) {
       if (enable) {
-         value.gridster.enable();
-         value.gridster.enable_resize();
+         page.gridster.enable();
+         page.gridster.enable_resize();
+
+         //after foreach widget we hide handle on widget that are not resizable
+         $.each(page.widgets, function (wIndex, widget) {
+            try {
+               if ((widget.package.dimensions.min.x == widget.package.dimensions.max.x) &&
+                  (widget.package.dimensions.min.y == widget.package.dimensions.max.y)) {
+                  //the widget is not resizable
+                  widget.$gridsterWidget.find("span.gs-resize-handle").addClass("hidden");
+               }
+            }
+            catch (err) {
+            }
+
+         });
       }
       else {
-         value.gridster.disable();
-         value.gridster.disable_resize();
+         page.gridster.disable();
+         page.gridster.disable_resize();
       }
    });
+
+
+
 }
 
 /**

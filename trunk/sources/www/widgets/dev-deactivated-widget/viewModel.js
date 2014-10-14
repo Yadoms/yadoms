@@ -29,7 +29,7 @@ function DevDeactivatedWidgetViewModel() {
     * Callback for a resized event
     */
    this.resized = function() {
-      if (this.widget.$gridsterWidget.width() <= 200) {
+      if (this.widget.width() <= 200) {
          this.widget.$gridsterWidget.find("div.deactivatedWidget span").css("font-size", "1em");
       }
       else
