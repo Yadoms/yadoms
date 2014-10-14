@@ -33,7 +33,7 @@ CLighting6::CLighting6(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& 
    m_groupCode = rbuf.LIGHTING6.groupcode;
    m_unitCode = rbuf.LIGHTING6.unitcode;
    m_state.set(fromProtocolState(rbuf.LIGHTING6.cmnd));
-   m_rssi.set(rbuf.LIGHTING6.rssi * 100 / 0x0F);
+   m_rssi.set(NormalizeRssiLevel(rbuf.LIGHTING6.rssi));
 
    Init(context);
 }

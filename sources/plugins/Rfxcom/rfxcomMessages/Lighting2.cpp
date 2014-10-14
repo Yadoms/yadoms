@@ -45,7 +45,7 @@ CLighting2::CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& 
    }
    m_unitCode = rbuf.LIGHTING2.unitcode;
    m_state.set(fromProtocolState(rbuf.LIGHTING2.cmnd, rbuf.LIGHTING2.level));
-   m_rssi.set(rbuf.LIGHTING2.rssi * 100 / 0x0F);
+   m_rssi.set(NormalizeRssiLevel(rbuf.LIGHTING2.rssi));
 
    Init(context);
 }

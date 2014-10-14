@@ -29,7 +29,7 @@ CLighting4::CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& 
    m_subType = rbuf.LIGHTING4.subtype;
    m_id = rbuf.LIGHTING4.cmd1 << 16 | rbuf.LIGHTING4.cmd2 << 8 | rbuf.LIGHTING4.cmd3;
    m_state.set(100);
-   m_rssi.set(rbuf.LIGHTING4.rssi * 100 / 0x0F);
+   m_rssi.set(NormalizeRssiLevel(rbuf.LIGHTING4.rssi));
 
    Init(context);
 }

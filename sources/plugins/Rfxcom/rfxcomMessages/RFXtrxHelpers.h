@@ -50,3 +50,17 @@ bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, size_t expectedSi
 /// \note                              All checks are perform, even if one fails
 //--------------------------------------------------------------
 bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, BYTE expectedSubType, size_t expectedSize, unsigned int expectedSeqNumber);
+
+//--------------------------------------------------------------
+/// \brief	                           Normalize battery level
+/// \param[in] fromRfxcom              Battery level, as encoded in RFXCom messages
+/// \return                            Battery level in %
+//--------------------------------------------------------------
+int NormalizeBatteryLevel(unsigned char fromRfxcom);
+
+//--------------------------------------------------------------
+/// \brief	                           Normalize rssi level
+/// \param[in] fromRfxcom              Rssi level, as encoded in RFXCom messages
+/// \return                            Rssi level in %
+//--------------------------------------------------------------
+int NormalizeRssiLevel(unsigned char fromRfxcom);

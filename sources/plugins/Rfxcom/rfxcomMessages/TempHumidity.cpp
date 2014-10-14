@@ -25,10 +25,8 @@ CTempHumidity::CTempHumidity(boost::shared_ptr<yApi::IYadomsApi> context, const 
 
    m_humidity.set(rbuf.TEMP_HUM.humidity);
 
-   int batteryLevel = (rbuf.TEMP_HUM.battery_level + 1) * 10;
-   m_batteryLevel.set( batteryLevel == 10 ? 0 : batteryLevel );  // 10% = empty ==> force it to 0%
-
-   m_rssi.set(rbuf.TEMP_HUM.rssi * 100 / 0x0F);
+   m_batteryLevel.set(NormalizeBatteryLevel(rbuf.TEMP_HUM.battery_level));
+   m_rssi.set(NormalizeRssiLevel(rbuf.TEMP_HUM.rssi));
 
    Init(context);
 }

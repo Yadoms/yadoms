@@ -20,9 +20,8 @@ CWeight::CWeight(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, 
 
    m_weight.set( (rbuf.WEIGHT.weighthigh << 8 | rbuf.WEIGHT.weightlow) / 10 );
 
-   m_batteryLevel.set(rbuf.WEIGHT.filler == 0x09 ? 100 : 0); // In SDK specification battery_level is at filler location
-
-   m_rssi.set(rbuf.WEIGHT.rssi * 100 / 0x0F);
+   m_batteryLevel.set(NormalizeBatteryLevel(rbuf.WEIGHT.filler)); // In SDK specification battery_level is at filler location
+   m_rssi.set(NormalizeRssiLevel(rbuf.WEIGHT.rssi));
 
    Init(context);
 }

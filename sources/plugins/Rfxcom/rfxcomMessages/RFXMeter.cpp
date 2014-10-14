@@ -21,7 +21,7 @@ CRFXMeter::CRFXMeter(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rb
 
    m_counter.set(rbuf.RFXMETER.count4 | (rbuf.RFXMETER.count3 << 8) | (rbuf.RFXMETER.count2 << 16) | (rbuf.RFXMETER.count1 << 24));
 
-   m_rssi.set(rbuf.RFXMETER.rssi * 100 / 0x0F);
+   m_rssi.set(NormalizeRssiLevel(rbuf.RFXMETER.rssi));
 
    Init(context);
 }

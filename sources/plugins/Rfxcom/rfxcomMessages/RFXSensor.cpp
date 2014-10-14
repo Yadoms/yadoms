@@ -54,7 +54,7 @@ CRFXSensor::CRFXSensor(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& 
       }
    }
 
-   m_rssi.set(rbuf.RFXSENSOR.rssi * 100 / 0x0F);
+   m_rssi.set(NormalizeRssiLevel(rbuf.RFXSENSOR.rssi));
 
    Init(context);
 }

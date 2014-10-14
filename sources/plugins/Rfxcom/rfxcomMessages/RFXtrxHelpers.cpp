@@ -51,3 +51,14 @@ bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, BYTE expectedSubT
 
    return ok;
 }
+
+int NormalizeBatteryLevel(unsigned char fromRfxcom)
+{
+   int batteryLevel = (fromRfxcom + 1) * 10;
+   return (batteryLevel == 10 ? 0 : batteryLevel);  // 10% = empty ==> force it to 0%
+}
+
+int NormalizeRssiLevel(unsigned char fromRfxcom)
+{
+   return (fromRfxcom * 100 / 0x0F);
+}

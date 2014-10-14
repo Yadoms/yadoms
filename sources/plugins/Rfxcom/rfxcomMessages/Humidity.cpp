@@ -20,9 +20,8 @@ CHumidity::CHumidity(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rb
 
    m_humidity.set(rbuf.HUM.humidity);
 
-   m_batteryLevel.set(rbuf.HUM.battery_level == 0x09 ? 100 : 0);
-
-   m_rssi.set(rbuf.HUM.rssi * 100 / 0x0F);
+   m_batteryLevel.set(NormalizeBatteryLevel(rbuf.HUM.battery_level));
+   m_rssi.set(NormalizeRssiLevel(rbuf.HUM.rssi));
 
    Init(context);
 }

@@ -27,9 +27,8 @@ CTempHumidityBarometric::CTempHumidityBarometric(boost::shared_ptr<yApi::IYadoms
 
    m_pressure.set(rbuf.TEMP_HUM_BARO.baroh << 8 | (rbuf.TEMP_HUM_BARO.barol));
 
-   m_batteryLevel.set(rbuf.TEMP_HUM_BARO.battery_level == 0x09 ? 100 : 0);
-
-   m_rssi.set(rbuf.TEMP_HUM_BARO.rssi * 100 / 0x0F);
+   m_batteryLevel.set(NormalizeBatteryLevel(rbuf.TEMP_HUM_BARO.battery_level));
+   m_rssi.set(NormalizeRssiLevel(rbuf.TEMP_HUM_BARO.rssi));
 
    Init(context);
 }

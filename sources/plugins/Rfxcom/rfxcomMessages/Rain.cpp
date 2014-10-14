@@ -38,10 +38,8 @@ CRain::CRain(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boos
       break;
    }
 
-   int batteryLevel = (rbuf.RAIN.battery_level + 1) * 10;
-   m_batteryLevel.set( batteryLevel == 10 ? 0 : batteryLevel );  // 10% = empty ==> force it to 0%
-
-   m_rssi.set(rbuf.RAIN.rssi * 100 / 0x0F);
+   m_batteryLevel.set(NormalizeBatteryLevel(rbuf.RAIN.battery_level));
+   m_rssi.set(NormalizeRssiLevel(rbuf.RAIN.rssi));
 
    Init(context);
 }

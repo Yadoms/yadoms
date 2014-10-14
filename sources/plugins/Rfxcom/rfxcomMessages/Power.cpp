@@ -30,7 +30,7 @@ CPower::CPower(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, bo
 
    m_frequency.set(rbuf.POWER.freq);
 
-   m_rssi.set(rbuf.POWER.rssi * 100 / 0x0F);
+   m_rssi.set(NormalizeRssiLevel(rbuf.POWER.rssi));
 
    Init(context);
 }
