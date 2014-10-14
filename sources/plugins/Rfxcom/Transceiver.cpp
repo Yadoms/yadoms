@@ -28,6 +28,7 @@
 #include "rfxcomMessages/TempHumidityBarometric.h"
 #include "rfxcomMessages/TransceiverStatus.h"
 #include "rfxcomMessages/Weight.h"
+#include "rfxcomMessages/Wind.h"
 #include "IncrementSequenceNumber.h"
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
@@ -196,6 +197,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    case pTypeBARO                : message.reset(new rfxcomMessages::CBarometric             (context, *buf, m_seqNumberProvider)); break;
    case pTypeTEMP_HUM_BARO       : message.reset(new rfxcomMessages::CTempHumidityBarometric (context, *buf, m_seqNumberProvider)); break;
    case pTypeRAIN                : message.reset(new rfxcomMessages::CRain                   (context, *buf, m_seqNumberProvider)); break;
+   case pTypeWIND                : message.reset(new rfxcomMessages::CWind                   (context, *buf, m_seqNumberProvider)); break;
    case pTypeCURRENT             : message.reset(new rfxcomMessages::CCurrent                (context, *buf, m_seqNumberProvider)); break;
    case pTypeENERGY              : message.reset(new rfxcomMessages::CEnergy                 (context, *buf, m_seqNumberProvider)); break;
    case pTypeCURRENTENERGY       : message.reset(new rfxcomMessages::CCurrentEnergy          (context, *buf, m_seqNumberProvider)); break;

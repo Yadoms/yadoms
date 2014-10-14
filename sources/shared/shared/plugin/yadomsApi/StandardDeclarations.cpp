@@ -13,12 +13,14 @@ namespace shared {   namespace plugin {      namespace yadomsApi      {
 
    const std::string& CStandardUnits::NoUnits(shared::CStringExtension::EmptyString);
    const std::string& CStandardUnits::Ampere("A");
+   const std::string& CStandardUnits::Degrees("°");
    const std::string& CStandardUnits::DegreesCelcius("°C");
    const std::string& CStandardUnits::DegreesFarenheit("°F");
    const std::string& CStandardUnits::hectoPascal("hPa");
    const std::string& CStandardUnits::Hertz("Hz");
    const std::string& CStandardUnits::Kg("Kg");
    const std::string& CStandardUnits::Meter("m");
+   const std::string& CStandardUnits::MetersPerSecond("m/s");
    const std::string& CStandardUnits::Millimeter("mm");
    const std::string& CStandardUnits::Percent("%");
    const std::string& CStandardUnits::Volt("V");
@@ -36,6 +38,7 @@ namespace shared {   namespace plugin {      namespace yadomsApi      {
    const CStandardCapacity& CStandardCapacities::Counter = CStandardCapacity("count", CStandardUnits::NoUnits, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Current = CStandardCapacity("current", CStandardUnits::Ampere, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Curtain = CStandardCapacity("curtain", CStandardUnits::NoUnits, EKeywordAccessMode::kSet, EKeywordDataType::kNoData);
+   const CStandardCapacity& CStandardCapacities::Direction = CStandardCapacity("direction", CStandardUnits::Degrees, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Energy = CStandardCapacity("energy", CStandardUnits::WattPerHour, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Frequency = CStandardCapacity("frequency", CStandardUnits::Hertz, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Humidity = CStandardCapacity("humidity", CStandardUnits::Percent, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
@@ -44,6 +47,7 @@ namespace shared {   namespace plugin {      namespace yadomsApi      {
    const CStandardCapacity& CStandardCapacities::Pressure = CStandardCapacity("pressure", CStandardUnits::hectoPascal, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Rain = CStandardCapacity("rain", CStandardUnits::Millimeter, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Rssi = CStandardCapacity("rssi", CStandardUnits::Percent, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Speed = CStandardCapacity("speed", CStandardUnits::MetersPerSecond, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Switch = CStandardCapacity("switch", CStandardUnits::NoUnits, EKeywordAccessMode::kSet, EKeywordDataType::kNoData);
    const CStandardCapacity& CStandardCapacities::Temperature = CStandardCapacity("temperature", CStandardUnits::DegreesCelcius, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Voltage = CStandardCapacity("voltage", CStandardUnits::Volt, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
