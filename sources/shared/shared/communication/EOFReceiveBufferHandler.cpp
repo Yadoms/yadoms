@@ -4,8 +4,8 @@
 
 namespace shared { namespace communication {
 
-CEOFReceiveBufferHandler::CEOFReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler, int receiveDataEventId, char eofCaracter)
-   :m_receiveDataEventHandler(receiveDataEventHandler), m_receiveDataEventId(receiveDataEventId), m_eofCaracter(eofCaracter)
+CEOFReceiveBufferHandler::CEOFReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler, int receiveDataEventId, char eofCharacter)
+   :m_receiveDataEventHandler(receiveDataEventHandler), m_receiveDataEventId(receiveDataEventId), m_eofCharacter(eofCharacter)
 {
 }
 
@@ -19,7 +19,7 @@ void CEOFReceiveBufferHandler::push(const CByteBuffer& buffer)
    {
       unsigned char receivedByte = buffer.content()[idx];
       m_content.push_back(receivedByte);
-      if (receivedByte == m_eofCaracter)
+      if (receivedByte == m_eofCharacter)
          notifyEventHandler(popNextMessage());
    }
 }

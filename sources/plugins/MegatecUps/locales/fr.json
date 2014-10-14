@@ -1,0 +1,29 @@
+﻿{
+   "description": "Support des onduleurs communiquant en protocole Megatec",
+   "configurationSchema":
+   {
+      "SerialPort":
+      {
+         "name": "Port série",
+         "description": "Le port série (virtuel) connecté au RFXCom"
+      },
+      "UpsBeep" :
+      {
+         "name" : "Bip onduleur",
+         "description" : "Cette option permet d'activer/désactiver l'alarme sonore de l'onduleur lors d'une perte secteur"
+      },
+      "PowerLossFilter" :
+      {
+         "name" : "Filtre de perte secteur",
+         "description" : "Le plugin peut retarder la notification de Yadoms lors de la détection d'une coupure secteur. Cette option permet de filtrer les coupures secteur de courte durée.",
+         "content" :
+         {
+            "Delay" :
+            {
+               "name" : "Délai",
+               "description" : "Le délai (en secondes) avant de notifier Yadoms de la perte secteur"
+            }
+         }
+      }
+   }
+}

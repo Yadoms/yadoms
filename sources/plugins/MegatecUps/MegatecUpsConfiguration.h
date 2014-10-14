@@ -1,0 +1,30 @@
+#pragma once
+
+#include "IMegatecUpsConfiguration.h"
+
+
+//--------------------------------------------------------------
+/// \brief	Configuration of the plugin
+//--------------------------------------------------------------
+class CMegatecUpsConfiguration : public IMegatecUpsConfiguration
+{
+public:
+   //--------------------------------------------------------------
+   /// \brief	    Destructor
+   //--------------------------------------------------------------
+   virtual ~CMegatecUpsConfiguration();
+
+   // IMegatecUpsConfiguration implementation
+   virtual void initializeWith(const shared::CDataContainer &data);
+   virtual std::string getSerialPort() const;
+   virtual bool upsBeepEnable() const;
+   virtual unsigned int powerLossFilterDelay() const;
+   // [END] IMegatecUpsConfiguration implementation
+
+private:
+   //--------------------------------------------------------------
+   /// \brief	    Configuration raw data
+   //--------------------------------------------------------------
+   shared::CDataContainer m_data;
+};
+

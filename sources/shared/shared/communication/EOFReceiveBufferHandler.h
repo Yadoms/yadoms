@@ -2,25 +2,26 @@
 #include <shared/event/EventHandler.hpp>
 #include <shared/communication/IReceiveBufferHandler.h>
 #include <shared/communication/Buffer.hpp>
+#include <shared/Log.h>
 
 namespace shared { namespace communication {
 
    //--------------------------------------------------------------
-   /// \brief	Receive buffer handler for messages ending with a special caracter
+   /// \brief	Receive buffer handler for messages ending with a special character
    ///
-   /// This class implements a IReceiveBufferHandler for messages with a special End-Of-Frame caracter
-   /// A message is then considered complete when the End-Of-Frame caracter is received
+   /// This class implements a IReceiveBufferHandler for messages with a special End-Of-Frame character
+   /// A message is then considered complete when the End-Of-Frame character is received
    //--------------------------------------------------------------
-   class CEOFReceiveBufferHandler : public IReceiveBufferHandler
+   class YADOMS_SHARED_EXPORT CEOFReceiveBufferHandler : public IReceiveBufferHandler
    {  
    public:
       //--------------------------------------------------------------
       /// \brief	                           Constructor
       /// \param[in] receiveDataEventHandler The event handler to notify for received data event
       /// \param[in] receiveDataEventId      The event id to notify for received data event
-      /// \param[in] eofCaracter             The expected End-Of-Frame caracter
+      /// \param[in] eofCharacter            The expected End-Of-Frame character
       //--------------------------------------------------------------
-      CEOFReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler, int receiveDataEventId, char eofCaracter);
+      CEOFReceiveBufferHandler(shared::event::CEventHandler& receiveDataEventHandler, int receiveDataEventId, char eofCharacter);
 
       //--------------------------------------------------------------
       /// \brief	                           Destructor
@@ -62,9 +63,9 @@ namespace shared { namespace communication {
       int m_receiveDataEventId;
 
       //--------------------------------------------------------------
-      /// \brief	The expected end-of-frame caracter
+      /// \brief	The expected end-of-frame character
       //--------------------------------------------------------------
-      const char m_eofCaracter;
+      const char m_eofCharacter;
    };
 
 } } // namespace shared::communication
