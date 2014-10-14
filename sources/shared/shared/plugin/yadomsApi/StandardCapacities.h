@@ -13,6 +13,8 @@ namespace shared { namespace plugin { namespace yadomsApi {
       //--------------------------------------------------------------
       /// \brief		Standard capacities (please keep in alphabetical order)
       //--------------------------------------------------------------
+      //                                                    capacity name      |        unit           |          description
+      //                                                  ----------------------------------------------------------------------------------------------
       static const CStandardCapacity & BatteryLevel;      // batteryLevel      | percent               | Battery level capacity
       static const CStandardCapacity & Counter;           // count             | none                  | Generic counter
       static const CStandardCapacity & Current;           // current           | Ampere                | Current measure
@@ -29,6 +31,7 @@ namespace shared { namespace plugin { namespace yadomsApi {
       static const CStandardCapacity & Speed;             // speed             | m/s                   | A speed value, in m/s
       static const CStandardCapacity & Switch;            // switch            | none                  | A value from 0-100 (0 is off, 100 is on)
       static const CStandardCapacity & Temperature;       // temperature       | degrees Celcius       | Temperature
+      static const CStandardCapacity & Uv;                // uv                | uv                    | UV index
       static const CStandardCapacity & Voltage;           // voltage           | Volt                  | Voltage
       static const CStandardCapacity & Weight;            // weight            | Kg                    | Weight
    };

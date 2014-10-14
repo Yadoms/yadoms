@@ -16,5 +16,6 @@
 #include "Speed.h"
 #include "Switch.h"
 #include "Temperature.h"
+#include "Uv.h"
 #include "Voltage.h"
 #include "Weight.h"
