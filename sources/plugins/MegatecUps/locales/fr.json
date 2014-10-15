@@ -12,18 +12,49 @@
          "name" : "Bip onduleur",
          "description" : "Cette option permet d'activer/désactiver l'alarme sonore de l'onduleur lors d'une perte secteur"
       },
-      "PowerLossFilter" :
-      {
-         "name" : "Filtre de perte secteur",
-         "description" : "Le plugin peut retarder la notification de Yadoms lors de la détection d'une coupure secteur. Cette option permet de filtrer les coupures secteur de courte durée.",
-         "content" :
-         {
-            "Delay" :
-            {
-               "name" : "Délai",
-               "description" : "Le délai (en secondes) avant de notifier Yadoms de la perte secteur"
-            }
-         }
-      }
+     "PowerFailureManagement" :
+     {
+        "name" : "Gestion de la coupure secteur",
+        "description" : "Cette option permet de configurer la méthode de notification de Yadoms lors de la détection d'une coupure secteur",
+        "content" :
+        {
+           "Immediately" :
+           {
+              "name" : "Immédiatement",
+              "description" : "Yadoms sera immédiatement notifié lors de la détection d'une coupure secteur"
+           },
+           "Filter" :
+           {
+              "name" : "Filtré",
+              "description" : "Le plugin peut retarder la notification de Yadoms lors de la détection d'une coupure secteur. Cette option est utile pour filtrer de courtes coupures.",
+              "content" :
+              {
+                 "Delay" :
+                 {
+                    "name" : "Délai de notification (en secondes)",
+                    "description" : "Délai avant de notifier Yadoms lors d'une détection de coupure secteur"
+                 }
+              }
+           },
+           "LowBattery" :
+           {
+              "name" : "Batterie faible",
+              "description" : "Le plugin peut notifier Yadoms seulement lorsque l'onduleur signale que la batterie est presque vide. Cette option est utile pour maintenir l'alimentation de la charge aussi longtemps que possible."
+           },
+           "RemainingBattery" :
+           {
+              "name" : "Autonomie restante",
+              "description" : "Le plugin peut notifier Yadoms lorsque la batterie passe sous un seuil",
+              "content" :
+              {
+                 "Threshold" :
+                 {
+                    "name" : "Seuil (%)",
+                    "description" : "Le plugin notifiera Yadoms lorsque la batterie passera sous ce seuil"
+                 }
+              }
+           }
+        }
+     }
    }
 }

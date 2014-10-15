@@ -199,7 +199,7 @@ namespace shared { namespace event
       /// \brief	    Create timer associated with this event handler
       /// \param[in] timerEventId   Id of the timer event
       /// \param[in] periodic       Periodic or one-shot timer
-      /// \param[in] period         Timer period. If provided, timer starts immediatley, else user must call start method
+      /// \param[in] period         Timer period. If provided, timer starts immediately, else user must call start method
       /// \return     the created timer (see note)
       /// \note       Usually, caller don't need to get the timer object as it is owned (and will be destroyed) by the event handler.
       //              Keep a reference on the timer object can be useful if you want to re-use it or differ start. In this case,

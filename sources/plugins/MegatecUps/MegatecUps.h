@@ -154,6 +154,19 @@ protected:
    //--------------------------------------------------------------
    void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
 
+   //--------------------------------------------------------------
+   /// \brief	                     process AC power status
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] acPowerActive    AC power current status
+   //--------------------------------------------------------------
+   void processAcPowerStatus(boost::shared_ptr<yApi::IYadomsApi> context, bool acPowerActive);
+
+   //--------------------------------------------------------------
+   /// \brief	                     notify Yadoms for current power state
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   //--------------------------------------------------------------
+   void notifyPowerState(boost::shared_ptr<yApi::IYadomsApi> context);
+
 private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
@@ -179,6 +192,11 @@ private:
    /// \brief	The delay between 2 UPS status request
    //--------------------------------------------------------------
    boost::shared_ptr<shared::event::CEventTimer> m_upsStatusRequestTimer;
+
+   //--------------------------------------------------------------
+   /// \brief	The delay before notify Yadoms when AC power is lost
+   //--------------------------------------------------------------
+   boost::shared_ptr<shared::event::CEventTimer> m_filterTimer;
 
    //--------------------------------------------------------------
    /// \brief	The input voltage (V)
@@ -216,9 +234,19 @@ private:
    yApi::historization::CTemperature m_temperature;
 
    //--------------------------------------------------------------
+   /// \brief	The AC power state
+   //--------------------------------------------------------------
+   yApi::historization::CSwitch m_acPowerHistorizer;
+
+   //--------------------------------------------------------------
    /// \brief	The device name
    //--------------------------------------------------------------
    static const std::string DeviceName;
+
+   //--------------------------------------------------------------
+   /// \brief	AC power status
+   //--------------------------------------------------------------
+   bool m_acPowerActive;
 };
 
 
