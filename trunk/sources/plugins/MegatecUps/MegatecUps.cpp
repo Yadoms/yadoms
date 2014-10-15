@@ -6,10 +6,9 @@
 #include "MegatecUpsFactory.h"
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
-//TODO gérer l'arrêt du système et de l'ups
-//TODO ajouter gestion du délay d'arrêt
-//TODO le timeout de non réception n'a pas l'air de marcher
+//TODO gérer l'arrêt de l'ups
 //TODO traduction de l'interface de conf ne marche pas
+//TODO gérer toute la conf
 
 IMPLEMENT_PLUGIN(CMegatecUps)
 
@@ -22,10 +21,11 @@ enum
    kProtocolErrorRetryTimer,
    kAnswerTimeout,
    kUpsStatusRequestDelay,
+   kPowerFailureNotificationDelay,
 };
 
 
-#define CMD_SIZE(cmd) (sizeof(cmd)/sizeof(cmd[0]))
+#define CMD_SIZE(cmd) (sizeof(cmd)/sizeof(cmd[0]) - 1)
 
 const std::string CMegatecUps::DeviceName("UPS");
 
@@ -33,7 +33,8 @@ const std::string CMegatecUps::DeviceName("UPS");
 CMegatecUps::CMegatecUps():
    m_inputVoltage("inputVoltage"), m_inputfaultVoltage("inputfaultVoltage"), m_outputVoltage("outputVoltage"),
    m_outputCurrent("outputCurrent"), m_inputFrequency("inputFrequency"), m_batteryVoltage("batteryVoltage"),
-   m_temperature("temperature")
+   m_temperature("temperature"), m_acPowerHistorizer("acPowerActive"),
+   m_acPowerActive(true)
 {
 }
 
@@ -55,6 +56,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       m_waitForAnswerTimer->stop();
       m_upsStatusRequestTimer = context->getEventHandler().createTimer(kUpsStatusRequestDelay, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(10));
       m_upsStatusRequestTimer->stop();
+      m_filterTimer = context->getEventHandler().createTimer(kPowerFailureNotificationDelay);
 
       // Create the connection
       createConnection(context->getEventHandler());
@@ -84,21 +86,18 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                // Close connection
                CMegatecUpsConfiguration newConfiguration;
                newConfiguration.initializeWith(newConfigurationData);
-               if (!connectionsAreEqual(m_configuration, newConfiguration))
-               {
-                  // Port has changed, destroy and recreate connection
+
+               // If port has changed, destroy and recreate connection
+               bool needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration);
+               
+               if (needToReconnect)
                   destroyConnection();
 
-                  // Update configuration
-                  m_configuration.initializeWith(newConfigurationData);
+               // Update configuration
+               m_configuration.initializeWith(newConfigurationData);
 
-                  // Create new connection
+               if (needToReconnect)
                   createConnection(context->getEventHandler());
-               }
-               else
-               {
-                  // Port is the same, don't destroy connection, so nothing to do...
-               }
 
                break;
             }
@@ -130,7 +129,12 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          case kUpsStatusRequestDelay:
             {
                // Ask for status
-               send(buildGetStatusCmd());
+               send(buildGetStatusCmd(), true);
+               break;
+            }
+         case kPowerFailureNotificationDelay:
+            {
+               notifyPowerState(context);
                break;
             }
          case kProtocolErrorRetryTimer:
@@ -198,7 +202,7 @@ void CMegatecUps::processConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> con
    try
    {
       // Ask for UPS informations
-      send(buildGetInformationCmd());
+      send(buildGetInformationCmd(), true);
    }
    catch (CProtocolException& e)
    {
@@ -268,14 +272,14 @@ void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYadomsApi> contex
                processReceivedInformation(context, tokens);
 
                // Now ask for rating informations
-               send(buildGetRatingInformationCmd());
+               send(buildGetRatingInformationCmd(), true);
             }
             else if (tokenCount == 4)
             {
                processReceivedRatingInformation(tokens);
 
                // Now ask for status
-               send(buildGetStatusCmd());
+               send(buildGetStatusCmd(), true);
             }
             else
                throw CProtocolException("invalid information message");
@@ -356,6 +360,9 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYadomsApi> cont
    if (beeperOn != m_configuration.upsBeepEnable())
       send(buildToggleBeepCmd());
 
+   //TODO voir comment on trouve l'info perte secteur sur le distri
+   processAcPowerStatus(context, bypassActive);
+
    // Wait for next status request
    m_upsStatusRequestTimer->start();
 }
@@ -422,6 +429,7 @@ void CMegatecUps::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context, con
       context->declareKeyword(DeviceName, m_inputFrequency);
       context->declareKeyword(DeviceName, m_batteryVoltage);
       context->declareKeyword(DeviceName, m_temperature);
+      context->declareKeyword(DeviceName, m_acPowerHistorizer);
    }
 }
 
@@ -434,4 +442,33 @@ void CMegatecUps::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) con
    context->historizeData(DeviceName, m_inputFrequency);
    context->historizeData(DeviceName, m_batteryVoltage);
    context->historizeData(DeviceName, m_temperature);
+}
+
+void CMegatecUps::processAcPowerStatus(boost::shared_ptr<yApi::IYadomsApi> context, bool acPowerActive)
+{
+   if (acPowerActive != m_acPowerActive)
+   {
+      m_acPowerActive = acPowerActive;
+
+      if (m_acPowerActive)
+      {
+         // AC power returns
+         m_filterTimer->stop();
+         notifyPowerState(context);
+      }
+      else
+      {
+         // AC power was lost
+         if (m_configuration.powerLossFilterDelay() != 0)
+            m_filterTimer->start(boost::posix_time::seconds(m_configuration.powerLossFilterDelay()));
+         else
+            notifyPowerState(context);
+      }
+   }
+}
+
+void CMegatecUps::notifyPowerState(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   m_acPowerHistorizer.set(m_acPowerActive);
+   context->historizeData(DeviceName, m_acPowerHistorizer);
 }

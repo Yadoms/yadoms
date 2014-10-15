@@ -8,37 +8,73 @@
    "SupportedPlatforms": "all",
    "configurationSchema":
    {
-      "SerialPort" :
-      {
-         "type" : "serialPort",
-         "name" : "Serial port",
-         "description" : "The (virtual) serial port connected to the UPS"
-      },
-      "UpsBeep" :
-      {
-         "type" : "bool",
-         "name" : "UPS beep",
-         "description" : "Use this option to enable/disable UPS alarm when AC power is lost",
-         "defaultValue" : "true"
-      },
-      "PowerLossFilter" :
-      {
-         "type" : "section",
-         "name" : "Power loss filter",
-         "description" : "The plugin can delay the notification of Yadoms when AC power is lost. It's useful to filter some short power cuts.",
-         "enableWithCheckBox" : "true",
-         "enableWithCheckBoxDefaultValue" : "false",
-         "content" :
-         {
-            "Delay" :
-            {
-               "type" : "int",
-               "name" : "Power loss delay",
-               "description" : "The delay (seconds) before notify Yadoms, after power loss detection",
-               "defaultValue" : "60",
-               "minimumValue" : "30"
-            }
-         }
-      }
+     "SerialPort" :
+     {
+        "type" : "serialPort",
+        "name" : "Serial port",
+        "description" : "The (virtual) serial port connected to the UPS"
+     },
+     "UpsBeep" :
+     {
+        "type" : "bool",
+        "name" : "UPS beep",
+        "description" : "Use this option to enable/disable UPS alarm when AC power is lost",
+        "defaultValue" : "true"
+     },
+     "PowerFailureManagement" :
+     {
+        "type" : "radioSection",
+        "name" : "Management of AC power failure",
+        "description" : "This option specify how the plugin will notify Yadoms when AC power fails",
+        "content" :
+        {
+           "Immediately" :
+           {
+              "type" : "section",
+              "name" : "Immediately",
+              "description" : "Yadoms is immediately notified when AC power failure is detected"
+           },
+           "Filter" :
+           {
+              "type" : "section",
+              "name" : "Filtered",
+              "description" : "The plugin can delay the notification of Yadoms when AC power is lost. It's useful to filter some short power cuts.",
+              "content" :
+              {
+                 "Delay" :
+                 {
+                    "type" : "int",
+                    "name" : "Power loss delay (seconds)",
+                    "description" : "The delay before notify Yadoms, after power loss detection",
+                    "defaultValue" : "60",
+                    "minimumValue" : "30"
+                 }
+              }
+           },
+           "LowBattery" :
+           {
+              "type" : "section",
+              "name" : "Low battery",
+              "description" : "The plugin can notify Yadoms only when UPS signals that battery is low. It's useful to maintain system alive as much as possible."
+           },
+           "RemainingBattery" :
+           {
+              "type" : "section",
+              "name" : "Remaining battery",
+              "description" : "The plugin can notify Yadoms when UPS battery comes under a predefined threshold",
+              "content" :
+              {
+                 "Threshold" :
+                 {
+                    "type" : "int",
+                    "name" : "Threshold (%)",
+                    "description" : "When battery comes under this value, the plugin will notify Yadoms that power was lost",
+                    "defaultValue" : "50",
+                    "minimumValue" : "15"
+                 }
+              }
+           }
+        }
+     }
    }
 }
