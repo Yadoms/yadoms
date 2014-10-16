@@ -58,5 +58,17 @@ public:
    /// \return     remaining battery threshold (%)
    //--------------------------------------------------------------
    virtual unsigned int powerFailureRemainingBatteryThreshold() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Get the output shutdown delay
+   /// \return     Output shutdown delay (minutes)
+   //--------------------------------------------------------------
+   virtual double outuputShutdownDelay() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Get the output restore delay
+   /// \return     Output restore delay (minutes)
+   //--------------------------------------------------------------
+   virtual double outuputRestoreDelay() const = 0;
 };
 

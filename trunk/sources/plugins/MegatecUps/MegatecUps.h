@@ -114,6 +114,18 @@ protected:
    const shared::communication::CByteBuffer buildToggleBeepCmd() const;
 
    //--------------------------------------------------------------
+   /// \brief	                     Build the 'Shutdown' command
+   /// \return                      Buffer containing the command
+   //--------------------------------------------------------------
+   const shared::communication::CByteBuffer buildShtudownCmd() const;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Build the 'Cancel shutdown' command
+   /// \return                      Buffer containing the command
+   //--------------------------------------------------------------
+   const shared::communication::CByteBuffer buildCancelShtudownCmd() const;
+
+   //--------------------------------------------------------------
    /// \brief	                     Process received status from UPS
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] tokens           Separated fields (input voltage, input fault voltage, output voltage, etc...)
@@ -251,7 +263,12 @@ private:
    //--------------------------------------------------------------
    /// \brief	The AC power state
    //--------------------------------------------------------------
-   yApi::historization::CSwitch m_acPowerHistorizer;
+   yApi::historization::CSwitch m_acPowerHistorizer;       //TODO à mettre en kGet-only
+
+   //--------------------------------------------------------------
+   /// \brief	The shutdown device
+   //--------------------------------------------------------------
+   yApi::historization::CSwitch m_upsShutdown;
 
    //--------------------------------------------------------------
    /// \brief	The device name
@@ -269,9 +286,14 @@ private:
    bool m_lowBatteryFlag;
 
    //--------------------------------------------------------------
-   /// \brief	Flag indicating the low battery state (from measured vbattery voltage)
+   /// \brief	Flag indicating the low battery state (from measured battery voltage)
    //--------------------------------------------------------------
    bool m_lowBatteryByLevelFlag;
+
+   //--------------------------------------------------------------
+   /// \brief	The battery nominal voltage (V)
+   //--------------------------------------------------------------
+   double m_batteryNominalVoltage;
 };
 
 
