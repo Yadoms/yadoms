@@ -194,6 +194,12 @@ set(YADOMS_SRC
 	server/pluginSystem/Qualifier.cpp
    server/pluginSystem/YadomsApiImplementation.h
    server/pluginSystem/YadomsApiImplementation.cpp
+	server/pluginSystem/internalPlugin/System.h
+	server/pluginSystem/internalPlugin/System.cpp
+	server/pluginSystem/internalPlugin/RestartCommand.h
+	server/pluginSystem/internalPlugin/RestartCommand.cpp
+	server/pluginSystem/internalPlugin/ShutdownCommand.h
+	server/pluginSystem/internalPlugin/ShutdownCommand.cpp
   
 	server/startupOptions/InvalidOptionException.hpp
 	server/startupOptions/IStartupOptions.h
@@ -311,6 +317,7 @@ source_group(server\\communication  server/communication/*.*)
 source_group(server\\communication\\command  server/communication/command/*.*)
 source_group(server\\notifications  server/notifications/*.*)
 source_group(server\\pluginSystem server/pluginSystem/*.* )
+source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPlugin/*.* )
 source_group(server\\database  server/database/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\startupOptions  server/startupOptions/*.*)

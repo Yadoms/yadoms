@@ -90,6 +90,8 @@ set(SHARED_LIB_SRC
 	shared/plugin/yadomsApi/StandardCapacity.cpp
 	shared/plugin/yadomsApi/IYadomsApi.h
 
+   shared/plugin/yadomsApi/historization/IHistorizable.h
+   shared/plugin/yadomsApi/historization/HistorizableType.hpp
    shared/plugin/yadomsApi/historization/BatteryLevel.cpp
    shared/plugin/yadomsApi/historization/BatteryLevel.h
    shared/plugin/yadomsApi/historization/Historizers.h
@@ -107,7 +109,6 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/historization/Frequency.h
    shared/plugin/yadomsApi/historization/Humidity.cpp
    shared/plugin/yadomsApi/historization/Humidity.h
-   shared/plugin/yadomsApi/historization/IHistorizable.h
    shared/plugin/yadomsApi/historization/Message.cpp
    shared/plugin/yadomsApi/historization/Message.h
    shared/plugin/yadomsApi/historization/MeasureType.cpp
