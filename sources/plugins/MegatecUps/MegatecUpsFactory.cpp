@@ -24,7 +24,7 @@ boost::shared_ptr<shared::communication::IAsyncPort> CMegatecUpsFactory::constru
    port->subscribeForConnectionEvents(eventHandler, evtPortConnectionId);
 
    boost::shared_ptr<shared::communication::IReceiveBufferHandler> receiveBufferHandler(
-      new shared::communication::CEOFReceiveBufferHandler(eventHandler, evtPortDataReceived, MEGATEC_EOF[0]));
+      new shared::communication::CEOFReceiveBufferHandler(eventHandler, evtPortDataReceived, MEGATEC_EOF));
    port->setReceiveBufferHandler(receiveBufferHandler);
 
    return port;

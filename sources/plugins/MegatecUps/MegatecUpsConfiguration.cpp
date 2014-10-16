@@ -8,7 +8,6 @@ CMegatecUpsConfiguration::~CMegatecUpsConfiguration()
 void CMegatecUpsConfiguration::initializeWith(const shared::CDataContainer &data)
 {
    m_data.initializeWith(data);
-   std::string s = m_data.serialize();
 }
 
 std::string CMegatecUpsConfiguration::getSerialPort() const
@@ -45,4 +44,14 @@ unsigned int CMegatecUpsConfiguration::powerFailureRemainingBatteryThreshold() c
 {
    BOOST_ASSERT_MSG(powerFailureManagement() == IMegatecUpsConfiguration::kRemainingBattery, "Wrong powerFailureManagement choice");
    return m_data.get<unsigned int>("PowerFailureManagement.content.RemainingBattery.content.Threshold");
+}
+
+double CMegatecUpsConfiguration::outuputShutdownDelay() const
+{
+   return m_data.get<double>("UpsShutdownTimers.content.ShutdownDelay");
+}
+
+double CMegatecUpsConfiguration::outuputRestoreDelay() const
+{
+   return m_data.get<double>("UpsShutdownTimers.content.RestoreDelay");
 }

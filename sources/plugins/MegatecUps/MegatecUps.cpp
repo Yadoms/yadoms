@@ -6,9 +6,6 @@
 #include "MegatecUpsFactory.h"
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
-//TODO gérer l'arrêt de l'ups
-//TODO traduction de l'interface de conf ne marche pas
-//TODO gérer toute la conf
 
 IMPLEMENT_PLUGIN(CMegatecUps)
 
@@ -25,16 +22,24 @@ enum
 };
 
 
-#define CMD_SIZE(cmd) (sizeof(cmd)/sizeof(cmd[0]) - 1)
-
 const std::string CMegatecUps::DeviceName("UPS");
+
+
+// Declare the decimal separator for the Megatec protocol (to not depend on locale)
+class CMegatecDecimalSeparator : public std::numpunct<char>
+{
+protected:
+   char do_decimal_point() const { return '.'; }
+};
+static const std::locale ProtocolFloatFormatingLocale(std::locale(), new CMegatecDecimalSeparator());
+
 
 
 CMegatecUps::CMegatecUps():
    m_inputVoltage("inputVoltage"), m_inputfaultVoltage("inputfaultVoltage"), m_outputVoltage("outputVoltage"),
    m_outputCurrent("outputCurrent"), m_inputFrequency("inputFrequency"), m_batteryVoltage("batteryVoltage"),
-   m_temperature("temperature"), m_acPowerHistorizer("acPowerActive"),
-   m_acPowerActive(true), m_lowBatteryFlag(false), m_lowBatteryByLevelFlag(false)
+   m_temperature("temperature"), m_acPowerHistorizer("acPowerActive"), m_upsShutdown("UPS Shutdown"),
+   m_acPowerActive(true), m_lowBatteryFlag(false), m_lowBatteryByLevelFlag(false), m_batteryNominalVoltage(0.0)
 {
 }
 
@@ -191,8 +196,8 @@ void CMegatecUps::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const s
    if (!m_port)
       YADOMS_LOG(warning) << "Command not send (UPS is not ready) : " << command;
 
-   //TODO
-   //send(m_transceiver->buildMessageToDevice(context, command, deviceParameters));
+   m_upsShutdown.set(command);
+   send(m_upsShutdown.isOn() ? buildShtudownCmd() : buildCancelShtudownCmd());
 }
 
 void CMegatecUps::processConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context)
@@ -244,7 +249,8 @@ void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYadomsApi> contex
       {
       case '(':      // Status
          {
-            boost::char_separator<char> sep("( " MEGATEC_EOF);
+            char sepArray[] = { '(', ' ', MEGATEC_EOF, 0 };
+            boost::char_separator<char> sep(sepArray);
             boost::tokenizer<boost::char_separator<char> > tokens(message, sep);
 
             // Count tokens
@@ -260,7 +266,8 @@ void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYadomsApi> contex
          }
       case '#':      // Information or rating information
          {
-            boost::char_separator<char> sep("# " MEGATEC_EOF);
+            char sepArray[] = { '#', ' ', MEGATEC_EOF, 0 };
+            boost::char_separator<char> sep(sepArray);
             boost::tokenizer<boost::char_separator<char> > tokens(message, sep);
 
             // Count tokens
@@ -301,26 +308,48 @@ void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYadomsApi> contex
 
 const shared::communication::CByteBuffer CMegatecUps::buildGetInformationCmd() const
 {
-   static const unsigned char cmd[] = "I" MEGATEC_EOF;
-   return shared::communication::CByteBuffer(cmd, CMD_SIZE(cmd));
+   std::ostringstream cmd;
+   cmd << 'I' << MEGATEC_EOF;
+   return shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size());
 }
 
 const shared::communication::CByteBuffer CMegatecUps::buildGetRatingInformationCmd() const
 {
-   static const unsigned char cmd[] = "F" MEGATEC_EOF;
-   return shared::communication::CByteBuffer(cmd, CMD_SIZE(cmd));
+   std::ostringstream cmd;
+   cmd << 'F' << MEGATEC_EOF;
+   return shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size());
 }
 
 const shared::communication::CByteBuffer CMegatecUps::buildGetStatusCmd() const
 {
-   static const unsigned char cmd[] = "Q1" MEGATEC_EOF;
-   return shared::communication::CByteBuffer(cmd, CMD_SIZE(cmd));
+   std::ostringstream cmd;
+   cmd << "Q1" << MEGATEC_EOF;
+   return shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size());
 }
 
 const shared::communication::CByteBuffer CMegatecUps::buildToggleBeepCmd() const
 {
-   static const unsigned char cmd[] = "Q" MEGATEC_EOF;
-   return shared::communication::CByteBuffer(cmd, CMD_SIZE(cmd));
+   std::ostringstream cmd;
+   cmd << 'Q' << MEGATEC_EOF;
+   return shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size());
+}
+
+const shared::communication::CByteBuffer CMegatecUps::buildShtudownCmd() const
+{
+   std::ostringstream cmd;
+   cmd.imbue(ProtocolFloatFormatingLocale);
+   cmd << 'S' << std::setprecision(1) << m_configuration.outuputShutdownDelay();
+   cmd << 'R' << std::setw(5) << std::setfill('0') << m_configuration.outuputRestoreDelay();
+   cmd << MEGATEC_EOF;
+
+   return shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size());
+}
+
+const shared::communication::CByteBuffer CMegatecUps::buildCancelShtudownCmd() const
+{
+   std::ostringstream cmd;
+   cmd << 'C' << MEGATEC_EOF;
+   return shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size());
 }
 
 void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYadomsApi> context, const boost::tokenizer<boost::char_separator<char> >& tokens)
@@ -334,7 +363,6 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYadomsApi> cont
    m_batteryVoltage.set    (upsStr2Double(*itToken)); ++itToken;
    m_temperature.set       (upsStr2Double(*itToken)); ++itToken;
    
-   // TODO voir ce qu'on fait du status
    const std::string& status = *itToken;
    if (status.size() != 8)
       throw CProtocolException("Invalid status size");
@@ -350,12 +378,20 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYadomsApi> cont
    historizeData(context);
 
    YADOMS_LOG(debug) << "UPS rating informations : inputVoltage=" << m_inputVoltage.voltage() <<
-      ", inputfaultVoltage=" << m_inputfaultVoltage.voltage() <<
-      ", outputVoltage=" << m_outputVoltage.voltage() <<
-      ", outputCurrent=" << m_outputCurrent.current() <<
-      ", inputFrequency=" << m_inputFrequency.frequency() <<
-      ", batteryVoltage=" << m_batteryVoltage.voltage() <<
-      ", temperature=" << m_temperature.temperature();
+      ", inputfaultVoltage="  << m_inputfaultVoltage.voltage() <<
+      ", outputVoltage="      << m_outputVoltage.voltage() <<
+      ", outputCurrent="      << m_outputCurrent.current() <<
+      ", inputFrequency="     << m_inputFrequency.frequency() <<
+      ", batteryVoltage="     << m_batteryVoltage.voltage() <<
+      ", temperature="        << m_temperature.temperature();
+   YADOMS_LOG(debug) << "UPS status : utilityFail=" << (utilityFail ? "YES" : "NO") <<
+      ", batteryLow="         << (batteryLow ? "YES" : "NO") <<
+      ", bypassActive="       << (bypassActive ? "YES" : "NO") <<
+      ", upsFailed="          << (upsFailed ? "YES" : "NO") <<
+      ", upsIsStandby="       << (upsIsStandby ? "YES" : "NO") <<
+      ", testInProgress="     << (testInProgress ? "YES" : "NO") <<
+      ", shutdownActive="     << (shutdownActive ? "YES" : "NO") <<
+      ", beeperOn="           << (beeperOn ? "YES" : "NO");
 
    // Toggle beep if not in expected state
    if (beeperOn != m_configuration.upsBeepEnable())
@@ -391,30 +427,24 @@ void CMegatecUps::processReceivedRatingInformation(const boost::tokenizer<boost:
    ++itToken;
    double ratingCurrent = upsStr2Double(*itToken);
    ++itToken;
-   double batteryVoltage = upsStr2Double(*itToken);
+   m_batteryNominalVoltage = upsStr2Double(*itToken);
    ++itToken;
    double frequency = upsStr2Double(*itToken);
 
-   YADOMS_LOG(debug) << "UPS rating informations : voltage=" << ratingVoltage << ", current=" << ratingCurrent << ", batteryVoltage=" << batteryVoltage << ", frequency=" << frequency;
+   YADOMS_LOG(debug) << "UPS rating informations : voltage=" << ratingVoltage << ", current=" << ratingCurrent << ", batteryVoltage=" << m_batteryNominalVoltage << ", frequency=" << frequency;
 }
 
 double CMegatecUps::upsStr2Double(const std::string& str)
 {
-   boost::char_separator<char> sep(".");
-   boost::tokenizer<boost::char_separator<char> > tokens(str, sep);
-   boost::tokenizer<boost::char_separator<char>>::const_iterator itToken = tokens.begin();
-   double integerPart = boost::lexical_cast<double>(*itToken);
-   ++itToken;
-   if (itToken == tokens.end())
-      return integerPart;
-
-   size_t fractionalSize = itToken->size();
-   double fractionalPart = boost::lexical_cast<double>(*itToken);
-
-   for (size_t i=0 ; i < fractionalSize ; ++i)
-      fractionalPart /= 10;
-
-   return integerPart + fractionalPart;
+   double number;
+   std::istringstream convert(str);
+   convert.imbue(ProtocolFloatFormatingLocale);
+   if (!(convert >> number))
+   {
+      YADOMS_LOG(warning) << "Unable to decode number \"" << str << "\"";
+      number = 0.0;
+   }
+   return number;
 }
 
 void CMegatecUps::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& model) const
@@ -431,6 +461,7 @@ void CMegatecUps::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context, con
       context->declareKeyword(DeviceName, m_batteryVoltage);
       context->declareKeyword(DeviceName, m_temperature);
       context->declareKeyword(DeviceName, m_acPowerHistorizer);
+      context->declareKeyword(DeviceName, m_upsShutdown);
    }
 }
 
@@ -505,6 +536,9 @@ void CMegatecUps::getLowBatteryByLevelFlagState(bool& flag) const
 
 unsigned int CMegatecUps::getBatteryLevel() const
 {
+   if (m_batteryNominalVoltage == 0.0)
+      return 100; // Nominal voltage is not initialized
+
    //TODO convertir en %
    return m_batteryVoltage.voltage();
 }
