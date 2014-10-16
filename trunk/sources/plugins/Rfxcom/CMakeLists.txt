@@ -21,6 +21,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/IRfxcomMessage.h
    rfxcomMessages/Fan.h
    rfxcomMessages/Fan.cpp
+   rfxcomMessages/FS20.h
+   rfxcomMessages/FS20.cpp
    rfxcomMessages/Energy.h
    rfxcomMessages/Energy.cpp
    rfxcomMessages/Humidity.h

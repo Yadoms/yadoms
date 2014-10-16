@@ -12,6 +12,7 @@
 #include "rfxcomMessages/Curtain1.h"
 #include "rfxcomMessages/Fan.h"
 #include "rfxcomMessages/Energy.h"
+#include "rfxcomMessages/FS20.h"
 #include "rfxcomMessages/Humidity.h"
 #include "rfxcomMessages/Lighting1.h"
 #include "rfxcomMessages/Lighting2.h"
@@ -157,6 +158,9 @@ const shared::communication::CByteBuffer CTransceiver::buildMessageToDevice(boos
       case pTypeRFY:
          return rfxcomMessages::CRfy(context, command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
+      case pTypeFS20:
+         return rfxcomMessages::CFS20(context, command, deviceParametersTree).encode(m_seqNumberProvider);
+         break;
          //TODO compléter
       default:
          YADOMS_LOG(error) << "Invalid command \"" << command.serialize() << "\" : " << " unknown type " << deviceType;
@@ -206,6 +210,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    case pTypePOWER               : message.reset(new rfxcomMessages::CPower                  (context, *buf, m_seqNumberProvider)); break;
    case pTypeWEIGHT              : message.reset(new rfxcomMessages::CWeight                 (context, *buf, m_seqNumberProvider)); break;
    case pTypeRFXSensor           : message.reset(new rfxcomMessages::CRFXSensor              (context, *buf, m_seqNumberProvider)); break;
+   case pTypeFS20                : message.reset(new rfxcomMessages::CFS20                   (context, *buf, m_seqNumberProvider)); break;
       // TODO à compléter
    default:
       {
