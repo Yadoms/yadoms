@@ -8,6 +8,17 @@ class IMegatecUpsConfiguration
 {
 public:
    //--------------------------------------------------------------
+   /// \brief	    Power failure management choice
+   //--------------------------------------------------------------
+   enum EPowerFailureManagement
+   {
+      kNotifyImmediately = 0,    ///< Notify immediately Yadoms when AC power failure is detected
+      kFilter,                   ///< Notify Yadoms when AC power failure is detected for a certain time
+      kLowBattery,               ///< Notify Yadoms when AC power failure is detected and battery becomes low
+      kRemainingBattery          ///< Notify Yadoms when AC power failure is detected and battery comes under a threshold
+   };
+
+   //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
    virtual ~IMegatecUpsConfiguration() {}
@@ -31,9 +42,21 @@ public:
    virtual bool upsBeepEnable() const = 0;
 
    //--------------------------------------------------------------
-   /// \brief	    Get the power loss filter delay
+   /// \brief	    Get the power failure management choice
+   /// \return     Power failure management choice
+   //--------------------------------------------------------------
+   virtual EPowerFailureManagement powerFailureManagement() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Get the power failure filter delay
    /// \return     Delay (seconds), 0 means no filter
    //--------------------------------------------------------------
-   virtual unsigned int powerLossFilterDelay() const = 0;
+   virtual unsigned int powerFailureFilterDelay() const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	    Get the power failure remaining battery threshold
+   /// \return     remaining battery threshold (%)
+   //--------------------------------------------------------------
+   virtual unsigned int powerFailureRemainingBatteryThreshold() const = 0;
 };
 

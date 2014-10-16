@@ -8,6 +8,7 @@ CMegatecUpsConfiguration::~CMegatecUpsConfiguration()
 void CMegatecUpsConfiguration::initializeWith(const shared::CDataContainer &data)
 {
    m_data.initializeWith(data);
+   std::string s = m_data.serialize();
 }
 
 std::string CMegatecUpsConfiguration::getSerialPort() const
@@ -20,10 +21,28 @@ bool CMegatecUpsConfiguration::upsBeepEnable() const
    return m_data.get<bool>("UpsBeep");
 }
 
-unsigned int CMegatecUpsConfiguration::powerLossFilterDelay() const
+IMegatecUpsConfiguration::EPowerFailureManagement CMegatecUpsConfiguration::powerFailureManagement() const
 {
-   if (!m_data.get<bool>("PowerLossFilter.checkbox"))
-      return 0;
+   if (!m_data.get<bool>("PowerFailureManagement.content.Immediately.radio"))
+      return IMegatecUpsConfiguration::kNotifyImmediately;
+   else if (!m_data.get<bool>("PowerFailureManagement.content.Filter.radio"))
+      return IMegatecUpsConfiguration::kFilter;
+   else if (!m_data.get<bool>("PowerFailureManagement.content.LowBattery.radio"))
+      return IMegatecUpsConfiguration::kLowBattery;
+   else if (!m_data.get<bool>("PowerFailureManagement.content.RemainingBattery.radio"))
+      return IMegatecUpsConfiguration::kRemainingBattery;
+   else
+      throw shared::exception::CInvalidParameter("PowerFailureManagement");
+}
 
-   return m_data.get<unsigned int>("PowerLossFilter.content.Delay");
+unsigned int CMegatecUpsConfiguration::powerFailureFilterDelay() const
+{
+   BOOST_ASSERT_MSG(powerFailureManagement() == IMegatecUpsConfiguration::kFilter, "Wrong powerFailureManagement choice");
+   return m_data.get<unsigned int>("PowerFailureManagement.content.Filter.content.Delay");
+}
+
+unsigned int CMegatecUpsConfiguration::powerFailureRemainingBatteryThreshold() const
+{
+   BOOST_ASSERT_MSG(powerFailureManagement() == IMegatecUpsConfiguration::kRemainingBattery, "Wrong powerFailureManagement choice");
+   return m_data.get<unsigned int>("PowerFailureManagement.content.RemainingBattery.content.Threshold");
 }
