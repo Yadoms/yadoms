@@ -26,10 +26,6 @@
             "EnumValue3" : "Ma troisième valeur"
          }
       },
-      "Serial Port" : {
-         "name" : "Un port série",
-         "description" : "Type spécifique pour définir un port série. Yadoms fournira à l'utilisateur la liste des ports série du système."
-      },
       "MySection" : {
          "name" : "Une section",
          "description" : "Exemple d'utilisation d'une section de configuration.",
