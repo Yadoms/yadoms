@@ -34,7 +34,7 @@ CMegatecUps::CMegatecUps():
    m_inputVoltage("inputVoltage"), m_inputfaultVoltage("inputfaultVoltage"), m_outputVoltage("outputVoltage"),
    m_outputCurrent("outputCurrent"), m_inputFrequency("inputFrequency"), m_batteryVoltage("batteryVoltage"),
    m_temperature("temperature"), m_acPowerHistorizer("acPowerActive"),
-   m_acPowerActive(true)
+   m_acPowerActive(true), m_lowBatteryFlag(false), m_lowBatteryByLevelFlag(false)
 {
 }
 
@@ -134,7 +134,8 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             }
          case kPowerFailureNotificationDelay:
             {
-               notifyPowerState(context);
+               if(m_configuration.powerFailureManagement() == IMegatecUpsConfiguration::kFilter)
+                  notifyPowerState(context, false);
                break;
             }
          case kProtocolErrorRetryTimer:
@@ -360,8 +361,8 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYadomsApi> cont
    if (beeperOn != m_configuration.upsBeepEnable())
       send(buildToggleBeepCmd());
 
-   //TODO voir comment on trouve l'info perte secteur sur le distri
-   processAcPowerStatus(context, bypassActive);
+   // Process AC power status
+   processAcPowerStatus(context, utilityFail, batteryLow);
 
    // Wait for next status request
    m_upsStatusRequestTimer->start();
@@ -444,31 +445,66 @@ void CMegatecUps::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) con
    context->historizeData(DeviceName, m_temperature);
 }
 
-void CMegatecUps::processAcPowerStatus(boost::shared_ptr<yApi::IYadomsApi> context, bool acPowerActive)
+void CMegatecUps::processAcPowerStatus(boost::shared_ptr<yApi::IYadomsApi> context, bool acPowerActive, bool lowBatteryFlag)
 {
-   if (acPowerActive != m_acPowerActive)
+   switch(m_configuration.powerFailureManagement())
    {
-      m_acPowerActive = acPowerActive;
-
-      if (m_acPowerActive)
+   case IMegatecUpsConfiguration::kNotifyImmediately:
       {
-         // AC power returns
-         m_filterTimer->stop();
-         notifyPowerState(context);
+         if (acPowerActive != m_acPowerActive)
+            notifyPowerState(context, acPowerActive);
+         m_acPowerActive = acPowerActive;
+         break;
       }
-      else
+   case IMegatecUpsConfiguration::kFilter:
       {
-         // AC power was lost
-         if (m_configuration.powerLossFilterDelay() != 0)
-            m_filterTimer->start(boost::posix_time::seconds(m_configuration.powerLossFilterDelay()));
-         else
-            notifyPowerState(context);
+         if (acPowerActive != m_acPowerActive && !acPowerActive)
+            m_filterTimer->start(boost::posix_time::seconds(m_configuration.powerFailureFilterDelay()));
+         m_acPowerActive = acPowerActive;
+         break;
+      }
+   case IMegatecUpsConfiguration::kLowBattery:
+      {
+         // No mater if AC power is OK or not
+         if (lowBatteryFlag != m_lowBatteryFlag)
+            notifyPowerState(context, !lowBatteryFlag);
+         m_lowBatteryFlag = lowBatteryFlag;
+         break;
+      }
+   case IMegatecUpsConfiguration::kRemainingBattery:
+      {
+         // No mater if AC power is OK or not
+         bool oldLowBatteryByLevelFlag = m_lowBatteryByLevelFlag;
+         getLowBatteryByLevelFlagState(m_lowBatteryByLevelFlag);
+         if (m_lowBatteryByLevelFlag != oldLowBatteryByLevelFlag)
+            notifyPowerState(context, m_lowBatteryByLevelFlag);
+         break;
+      }
+   default:
+      {
+         BOOST_ASSERT_MSG(false, "Unsupported powerFailureManagement value");
+         break;
       }
    }
 }
 
-void CMegatecUps::notifyPowerState(boost::shared_ptr<yApi::IYadomsApi> context)
+void CMegatecUps::notifyPowerState(boost::shared_ptr<yApi::IYadomsApi> context, bool powerState)
 {
-   m_acPowerHistorizer.set(m_acPowerActive);
+   m_acPowerHistorizer.set(powerState);
    context->historizeData(DeviceName, m_acPowerHistorizer);
+}
+
+void CMegatecUps::getLowBatteryByLevelFlagState(bool& flag) const
+{
+   if (getBatteryLevel() < m_configuration.powerFailureRemainingBatteryThreshold())
+      flag = true;   // Battery becomes low
+   else if (getBatteryLevel() > m_configuration.powerFailureRemainingBatteryThreshold())
+      flag = false;  // Battery exited low state
+   // else (batteryLevel == threshold) ==> Flag not changed (make a kind of hysteresis)
+}
+
+unsigned int CMegatecUps::getBatteryLevel() const
+{
+   //TODO convertir en %
+   return m_batteryVoltage.voltage();
 }

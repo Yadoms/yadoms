@@ -18,7 +18,9 @@ public:
    virtual void initializeWith(const shared::CDataContainer &data);
    virtual std::string getSerialPort() const;
    virtual bool upsBeepEnable() const;
-   virtual unsigned int powerLossFilterDelay() const;
+   virtual EPowerFailureManagement powerFailureManagement() const;
+   virtual unsigned int powerFailureFilterDelay() const;
+   virtual unsigned int powerFailureRemainingBatteryThreshold() const;
    // [END] IMegatecUpsConfiguration implementation
 
 private:

@@ -158,14 +158,29 @@ protected:
    /// \brief	                     process AC power status
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] acPowerActive    AC power current status
+   /// \param [in] lowBatteryFlag   Low battery flag
    //--------------------------------------------------------------
-   void processAcPowerStatus(boost::shared_ptr<yApi::IYadomsApi> context, bool acPowerActive);
+   void processAcPowerStatus(boost::shared_ptr<yApi::IYadomsApi> context, bool acPowerActive, bool lowBatteryFlag);
 
    //--------------------------------------------------------------
    /// \brief	                     notify Yadoms for current power state
    /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] powerState       The power state to send to Yadoms
    //--------------------------------------------------------------
-   void notifyPowerState(boost::shared_ptr<yApi::IYadomsApi> context);
+   void notifyPowerState(boost::shared_ptr<yApi::IYadomsApi> context, bool powerState);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Evaluate the state of the low battery flag, by measured battery voltage
+   /// \param [out] flag            Flag to be evaluated, can be true, false, or unchanged
+   //--------------------------------------------------------------
+   void getLowBatteryByLevelFlagState(bool& flag) const;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Get the battery level (%) from measure battery voltage
+   /// \return                      Battery level (%)
+   //--------------------------------------------------------------
+   unsigned int getBatteryLevel() const;
+
 
 private:
    //--------------------------------------------------------------
@@ -247,6 +262,16 @@ private:
    /// \brief	AC power status
    //--------------------------------------------------------------
    bool m_acPowerActive;
+
+   //--------------------------------------------------------------
+   /// \brief	Flag indicating the low battery state (as signaled by UPS itself)
+   //--------------------------------------------------------------
+   bool m_lowBatteryFlag;
+
+   //--------------------------------------------------------------
+   /// \brief	Flag indicating the low battery state (from measured vbattery voltage)
+   //--------------------------------------------------------------
+   bool m_lowBatteryByLevelFlag;
 };
 
 
