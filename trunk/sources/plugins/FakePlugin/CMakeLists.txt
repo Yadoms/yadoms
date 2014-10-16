@@ -15,6 +15,8 @@ set(FAKE_PLUGIN_SOURCES
 	FakeCounter.cpp 
 	FakeSensor.h
 	FakeSensor.cpp 
+	FakeSwitch.h
+	FakeSwitch.cpp 
 )
 
 #########################################

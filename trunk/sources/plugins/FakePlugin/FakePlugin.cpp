@@ -4,6 +4,7 @@
 #include <shared/Log.h>
 #include "FakeSensor.h"
 #include "FakeCounter.h"
+#include "FakeSwitch.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -38,6 +39,8 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       CFakeSensor fakeSensor1("fakeSensor1");
       CFakeSensor fakeSensor2("fakeSensor2");
       CFakeCounter fakeCounter("fakeCounter");
+      CFakeSwitch fakeOnOffSwitch("fakeOnOffSwitch");
+      CFakeSwitch fakeDimmableSwitch("fakeDimmableSwitch", true);
       
       // Declare these sensors to Yadoms (devices and associated keywords)
       if (!context->deviceExists(fakeSensor1.getDeviceName()))
@@ -54,6 +57,16 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       {
          context->declareDevice(fakeCounter.getDeviceName(), fakeCounter.getModel());
          fakeCounter.declareKeywords(context);
+      }
+      if (!context->deviceExists(fakeOnOffSwitch.getDeviceName()))
+      {
+         context->declareDevice(fakeOnOffSwitch.getDeviceName(), fakeOnOffSwitch.getModel());
+         fakeOnOffSwitch.declareKeywords(context);
+      }
+      if (!context->deviceExists(fakeDimmableSwitch.getDeviceName()))
+      {
+         context->declareDevice(fakeDimmableSwitch.getDeviceName(), fakeDimmableSwitch.getModel());
+         fakeDimmableSwitch.declareKeywords(context);
       }
 
       // Timer used to send fake sensor states periodically
@@ -104,6 +117,10 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                fakeSensor2.historizeData(context);
                fakeCounter.read();
                fakeCounter.historizeData(context);
+               fakeOnOffSwitch.read();
+               fakeOnOffSwitch.historizeData(context);
+               fakeDimmableSwitch.read();
+               fakeDimmableSwitch.historizeData(context);
 
                YADOMS_LOG(debug) << "Send the periodically sensors state...";
 

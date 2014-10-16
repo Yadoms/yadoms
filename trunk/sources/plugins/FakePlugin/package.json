@@ -49,12 +49,6 @@
          },
          "defaultValue": "EnumValue2"
       },
-      "Serial port":
-      {
-         "name": "A serial port",
-         "description": "Specific serial port parameter. Yadoms will populate available values with system serial ports.",
-         "type": "serialPort"
-      },
       "MySection":
       {
          "name": "A section",

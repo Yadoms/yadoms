@@ -7,11 +7,6 @@ CFakePluginConfiguration::~CFakePluginConfiguration()
 {
 }
 
-std::string CFakePluginConfiguration::getSerialPort() const
-{
-   return get<std::string>("Serial port");
-}
-
 EEnumType CFakePluginConfiguration::getEnumParameter() const
 {
    // Enum type, declare keys labels
@@ -28,7 +23,6 @@ void CFakePluginConfiguration::trace()
    try
    {
       // Get simple parameters
-      YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'Serial port' is " << getSerialPort();
       YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'StringParameter' is " << get<std::string>("StringParameter");
       YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'BoolParameter' is " << get<bool>("BoolParameter");
       YADOMS_LOG(debug) << "CFakePlugin::doWork, parameter 'DecimalParameter' is " << get<double>("DecimalParameter");
