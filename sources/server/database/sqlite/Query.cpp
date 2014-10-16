@@ -105,6 +105,32 @@ namespace database {
          return Append(ss); 
       }
 
+		//
+		/// \brief           Append 'From subquery'
+		/// \param  subquery   the subquery
+		/// \return          A reference to itself to allow method chaining
+		//   
+		CQuery & CQuery::From(const CQuery & subquery)
+		{
+			std::ostringstream ss;
+			ss << " FROM " << subquery.str();
+			ss << " ";
+			return Append(ss);
+		}
+
+		//
+		/// \brief           Append 'From (subquery)'
+		/// \param  subquery   the subquery
+		/// \return          A reference to itself to allow method chaining
+		//   
+		CQuery & CQuery::FromParenthesis(const CQuery & subquery)
+		{
+			std::ostringstream ss;
+			ss << " FROM (" << subquery.str() << ")";
+			ss << " ";
+			return Append(ss);
+		}
+
       CQuery & CQuery::Where(const std::string & condition) 
       {
          return WhereInternal("WHERE ", condition);
@@ -365,6 +391,21 @@ namespace database {
       }
 
 
+		CQuery & CQuery::Union()
+		{
+			std::ostringstream ss;
+			ss << " UNION " ;
+			return Append(ss);
+		}
+
+  
+		CQuery & CQuery::UnionAll()
+		{
+			std::ostringstream ss;
+			ss << " UNION ALL ";
+			return Append(ss);
+
+		}
 
 
       const std::string & CQuery::str() const

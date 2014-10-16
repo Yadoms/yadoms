@@ -53,15 +53,33 @@ namespace database {  namespace sqlite {  namespace requesters {
       if (keywordEntity->Type() != shared::plugin::yadomsApi::EKeywordDataType::kNumeric)
          throw shared::exception::CEmptyResult("The keyword is not numeric, cannot increment data");
 
-      CQuery q;
-      q.InsertOrReplaceInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
-         Select(CQueryValue(dataTime).str(), CQueryValue(keywordId).str(), "acq." + CAcquisitionTable::getValueColumnName() + " + " + increment).
-         From(CAcquisitionTable::getTableName() + " as acq").
-         Where("acq." + CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
-         OrderBy("acq." + CAcquisitionTable::getDateColumnName(), CQUERY_ORDER_DESC).
-         Limit(1);//TODO revoir requête... Merci à toi, Ô grand Jean-Michel, gourou SQL (ça rime en plus) !
+		/*
+		
+				insert or replace into Acquisition (date, keywordId, value)
+				select dateInsertion, a.keywordId, a.value + 5
+				from (
+						select date, keywordId, value 
+						from Acquisition
+						where keywordId = 888
+						union all
+						select 0 as date, 888 as keywordId, 0 as value 
+						limit 1) a
+		
+		*/
+		CQuery subquery;
+		subquery.Select(CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getValueColumnName()).
+			From(CAcquisitionTable::getTableName()).
+			Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
+			UnionAll().
+			Select("0 as " + CAcquisitionTable::getDateColumnName(), "0 as " + CAcquisitionTable::getValueColumnName()).
+			Limit(1);
 
-      if(m_databaseRequester->queryStatement(q) <= 0)
+		CQuery mainQuery;
+		mainQuery.InsertOrReplaceInto(CAcquisitionTable::getTableName(), CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getKeywordIdColumnName(), CAcquisitionTable::getValueColumnName()).
+			Select(CQueryValue(dataTime).str(), CQueryValue(keywordId).str(), "acq." + CAcquisitionTable::getValueColumnName() + " + " + increment).
+			FromParenthesis(subquery).Append("acq");
+
+		if (m_databaseRequester->queryStatement(mainQuery) <= 0)
          throw shared::exception::CEmptyResult("Fail to insert new data");
    }
 
