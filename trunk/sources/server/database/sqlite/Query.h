@@ -127,6 +127,20 @@ namespace database { namespace sqlite {
       //   
       CQuery & From(const std::string & table1, const std::string & table2 = EMPTY_STR, const std::string & table3 = EMPTY_STR, const std::string & table4 = EMPTY_STR, const std::string & table5 = EMPTY_STR, const std::string & table6 = EMPTY_STR, const std::string & table7 = EMPTY_STR, const std::string & table8 = EMPTY_STR, const std::string & table9 = EMPTY_STR, const std::string & table10 = EMPTY_STR) ;
 
+		//
+      /// \brief           Append 'From subquery'
+      /// \param  subquery   the subquery
+      /// \return          A reference to itself to allow method chaining
+      //   
+		CQuery & From(const CQuery & subquery);
+
+		//
+      /// \brief           Append 'From (subquery)'
+      /// \param  subquery   the subquery
+      /// \return          A reference to itself to allow method chaining
+      //   
+		CQuery & FromParenthesis(const CQuery & subquery);
+
       //
       /// \brief           Append the where clause
       /// \param  condition the where condition
@@ -471,6 +485,18 @@ namespace database { namespace sqlite {
       /// \return             A reference to itself to allow method chaining
       //   
       CQuery & Append(CQuery & queryPart);
+
+      //
+      /// \brief              append union
+      /// \return             A reference to itself to allow method chaining
+      //   
+      CQuery & Union();
+
+      //
+      /// \brief              append union all
+      /// \return             A reference to itself to allow method chaining
+      //   
+      CQuery & UnionAll();
 
       //
       /// \brief    get the full query
