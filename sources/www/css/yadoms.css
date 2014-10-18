@@ -61,7 +61,7 @@ body {
    width: 20px;
    height: 20px;
    top: -10px;
-   right:30px;
+   right:35px;
    position: absolute;
    background-color: #428bca;
    color: white;
@@ -75,7 +75,7 @@ body {
    width: 20px;
    height: 20px;
    top: -10px;
-   right: 5px;
+   right: 10px;
    position: absolute;
    background-color: #428bca;
    color: white;
@@ -190,6 +190,11 @@ body {
 
 .configuration-control {
     vertical-align:middle;
+}
+
+.iconpicker > i {
+    width: 14px;
+    height: 14px;
 }
 
 /*Dashboard*/

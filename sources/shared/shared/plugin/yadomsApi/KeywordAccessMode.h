@@ -11,8 +11,7 @@ namespace shared { namespace plugin { namespace yadomsApi
    DECLARE_ENUM_HEADER_SHARED(EKeywordAccessMode, YADOMS_SHARED_EXPORT,
       ((NoAccess)(0))
       ((Get)(1))
-      ((Set)(2))
-      ((GetSet)(3))
+      ((GetSet)(2))
    )
 	
 } } } // namespace shared::plugin::yadomsApi	

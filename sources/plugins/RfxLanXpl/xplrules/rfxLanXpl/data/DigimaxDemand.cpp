@@ -14,7 +14,7 @@ DECLARE_ENUM_IMPLEMENTATION_CUSTOM(EDigimaxDemand,
 );
 
 
-const shared::plugin::yadomsApi::CStandardCapacity& DigimaxDemandCapacity = shared::plugin::yadomsApi::CStandardCapacity("digimax_demand", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kSet, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+const shared::plugin::yadomsApi::CStandardCapacity& DigimaxDemandCapacity = shared::plugin::yadomsApi::CStandardCapacity("digimax_demand", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
 
    
 CDigimaxDemand::CDigimaxDemand(const std::string& keywordName)

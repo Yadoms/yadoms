@@ -10,7 +10,7 @@ namespace pluginSystem {   namespace internalPlugin {
       ((ShutdowSystem)("shutdowSystem"))
    );
 
-   const shared::plugin::yadomsApi::CStandardCapacity& ShutdownCapacity = shared::plugin::yadomsApi::CStandardCapacity("shutdown", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kSet, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+   const shared::plugin::yadomsApi::CStandardCapacity& ShutdownCapacity = shared::plugin::yadomsApi::CStandardCapacity("shutdown", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
 
    
    CShutdownCommand::CShutdownCommand(const std::string& keywordName)

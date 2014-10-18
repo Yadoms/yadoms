@@ -70,12 +70,12 @@ function SmsSenderViewModel() {
                //we parse the json answer
                if (data.result != "true")
                {
-                  notifyError($.t("sms-sender:errorDuringGettingDeviceInformation"), JSON.stringify(data));
+                  notifyError($.t("widgets.errors.errorDuringGettingDeviceInformation"), JSON.stringify(data));
                   return;
                }
                self.smsSenderText(data.data.name);
             })
-            .fail(function() {notifyError($.t("sms-sender:errorDuringGettingDeviceInformation"));});
+            .fail(function() {notifyError($.t("widgets.errors.errorDuringGettingDeviceInformation"));});
       }
    };
 

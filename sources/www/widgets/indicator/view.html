@@ -1,0 +1,11 @@
+<script type="text/html" id="indicator-template">
+   <link href="widgets/indicator/widget.css" rel="stylesheet">
+   <div class="strut"></div>
+   <div class="indicatorWidget" >
+      <span class="indicatorWidgetText" data-bind="text: indicatorText, css: { hidden: showDeviceName() == false}"></span>
+      <br>
+      <div class="btn-group-vertical btn-toggle hidden" data-bind="css: { hidden: kind() != 'digital'}" >
+         <a href="#" class="btn btn-lg btn-primary active" data-bind="css: { 'btn-primary': command() == 100, 'btn-default': command() != 100 }"><span class="glyphicon glyphicon-bell"></span></a>
+      </div>
+   </div>
+</script>
