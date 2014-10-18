@@ -8,5 +8,13 @@
       }
    },
    "errorDuringGettingDeviceData" : "Erreur pendant la recupération de données sur le device",
-   "loadingData" : "Chargement des données"
+   "loadingData" : "Chargement des données",
+   "navigator" : {
+      "1h" : "1h",
+      "1d" : "1j",
+      "1w" : "1s",
+      "1m" : "1m",
+      "6m" : "6m",
+      "1y" : "1a"
+   }
 }

@@ -5,9 +5,8 @@ namespace shared { namespace plugin { namespace yadomsApi
 {
 
 DECLARE_ENUM_IMPLEMENTATION(EKeywordAccessMode,
-(NoAccess)
+   (NoAccess)
    (Get)
-   (Set)
    (GetSet)
 )
 	

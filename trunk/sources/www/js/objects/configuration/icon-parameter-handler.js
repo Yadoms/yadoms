@@ -10,18 +10,18 @@
  * @param currentValue
  * @constructor
  */
-function ColorParameterHandler(i18nContext, paramName, content, currentValue) {
+function IconParameterHandler(i18nContext, paramName, content, currentValue) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
 
-   //we set the current value of the default value or #000000
+   //we set the current value of the default value or '' (no icon)
    if ((currentValue !== undefined) && (currentValue != null))
       this.value = currentValue;
    else if ((content.defaultValue !== undefined) && (content.defaultValue != null))
       this.value = content.defaultValue;
    else
-      this.value = "#000000";
+      this.value = "";
 
    this.name = content.name;
    this.uuid = createUUID();
@@ -35,17 +35,15 @@ function ColorParameterHandler(i18nContext, paramName, content, currentValue) {
  * Get the DOM Object to insert
  * @returns {string}
  */
-ColorParameterHandler.prototype.getDOMObject = function () {
-   var input = "<div class=\"input-group\" id=\"" + this.uuid + "\" >" +
-                  "<input type=\"text\"" +
-                     "class=\"form-control enable-validation\" " +
-                     "data-content=\"" + this.description + "\" " +
-                     "value =\"" + this.value + "\" " +
-                     "data-i18n=\"[data-content]" + this.i18nContext + this.paramName + ".description" + "\" />" +
-                  "<span class=\"input-group-addon\"><i></i></span>" +
+IconParameterHandler.prototype.getDOMObject = function () {
+   var input = "<div class=\"input-group\" >" +
+                  "<button class=\"btn btn-default\" data-iconset=\"glyphicon\" role=\"iconpicker\" " +
+                     "id=\"" + this.uuid + "\"" +
+                     "data-icon=\"" + this.value + "\" data-rows=\"3\" data-cols=\"6\" >" +
+                  "</button>" +
                "</div>" +
       "<script>" +
-         "\t$(\"div#" + this.uuid + "\").colorpicker();\n" +
+         "\t$(\"button#" + this.uuid + "\").iconpicker();\n" +
       "</script>";
 
    var self = this;
@@ -56,7 +54,7 @@ ColorParameterHandler.prototype.getDOMObject = function () {
  * Get the param name
  * @returns {string}
  */
-ColorParameterHandler.prototype.getParamName = function() {
+IconParameterHandler.prototype.getParamName = function() {
   return this.paramName;
 };
 
@@ -64,8 +62,8 @@ ColorParameterHandler.prototype.getParamName = function() {
  * Get the current configuration in the form
  * @returns {string}
  */
-ColorParameterHandler.prototype.getCurrentConfiguration = function () {
-   var val = $("div#" + this.uuid + " > input").val();
+IconParameterHandler.prototype.getCurrentConfiguration = function () {
+   var val = $("button#" + this.uuid + " > input").val();
    this.value = val;
    return this.value;
 };

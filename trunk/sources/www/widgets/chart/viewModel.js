@@ -9,6 +9,8 @@ widgetViewModelCtor =
       //widget identifier
       this.widget = null;
 
+      this.refreshingData = false;;
+
       /**
        * Initialization method
        * @param widget widget class object
@@ -25,11 +27,16 @@ widgetViewModelCtor =
                marginTop: 10
             },
             navigator : {
-               adaptToUpdatedData: false
+               adaptToUpdatedData: false,
+               enabled : false
             },
 
             title: {
                text: ''
+            },
+
+            scrollbar : {
+               enabled : false
             },
 
             subtitle: {
@@ -40,34 +47,38 @@ widgetViewModelCtor =
                buttons: [{
                   type: 'hour',
                   count: 1,
-                  text: '1h'
+                  text: $.t("chart:navigator.1h")
                }, {
                   type: 'day',
                   count: 1,
-                  text: '1d'
+                  text: $.t("chart:navigator.1d")
+               }, {
+                  type: 'week',
+                  count: 1,
+                  text: $.t("chart:navigator.1w")
                }, {
                   type: 'month',
                   count: 1,
-                  text: '1m'
+                  text: $.t("chart:navigator.1m")
+               }, {
+                  type: 'month',
+                  count: 6,
+                  text: $.t("chart:navigator.6m")
                }, {
                   type: 'year',
                   count: 1,
-                  text: '1y'
-               }, {
-                  type: 'all',
-                  text: 'All'
+                  text: $.t("chart:navigator.1y")
                }],
-               inputEnabled: false, // it supports only days
-               selected : 4 // all
+               enabled : true,
+               allButtonsEnabled: true,
+               inputEnabled: false
+               //selected : 4
             },
 
-            navigator : {enabled:false},
-
             xAxis : {
-               ordinal: false,
-               /*events : {
-                  //afterSetExtremes : afterSetExtremes
-               },*/
+               //ordinal: false,
+               events : {
+               },
                minRange: 3600 * 1000 // one hour
             },
 
@@ -75,10 +86,24 @@ widgetViewModelCtor =
                minRange: 1
             },
 
+            plotOptions : {
+              series : {
+                 connectNulls: false
+              }
+            },
+
             series : []
          });
 
          this.chart = this.$chart.highcharts();
+debugger;
+         var btns = this.$chart.find(".highcharts-button");
+         btns[0].unbind("click").bind("click", this.navigatorBtnClick("HOUR"));
+         btns[1].unbind("click").bind("click", this.navigatorBtnClick("DAY"));
+         btns[2].unbind("click").bind("click", this.navigatorBtnClick("WEEK"));
+         btns[3].unbind("click").bind("click", this.navigatorBtnClick("MONTH"));
+         btns[4].unbind("click").bind("click", this.navigatorBtnClick("HALF_YEAR"));
+         btns[5].unbind("click").bind("click", this.navigatorBtnClick("YEAR"));
 
          this.chart.showLoading($.t("chart:loadingData"));
       };
@@ -143,79 +168,134 @@ widgetViewModelCtor =
          }
 
          //we ask for device information
+         this.refreshData(this.widget.configuration.interval, moment());
 
-         //we compute the date from the configuration
-         var dateFrom = "";
-         var prefixUri = "";
+         //we ask for device information
          try {
-            switch (this.widget.configuration.interval) {
-               case "HOUR" :
-                  dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'hours'));
-                  //we request all data
-                  break;
-               default:
-               case "DAY" :
-                  dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'days'));
-                  //we request hour summary data
-                  break;
-               case "WEEK" :
-                  dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'weeks'));
-                  //we request hour summary data
-                  break;
-               case "MONTH" :
-                  dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'months'));
-                  //we request day summary data
-                  break;
-               case "HALF_YEAR" :
-                  dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(6, 'months'));
-                  //we request day summary data
-                  break;
-               case "YEAR" :
-                  dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'years'));
-                  //we request day summary data
-                  break;
+            DeviceManager.get(self.widget.configuration.device1.content.source.deviceId, function (device) {
+               var serie = self.chart.get("Device1");
+               if (!isNullOrUndefined(serie))
+                  self.chart.get("Device1").name = device.friendlyName;
+               self.chart.redraw();
+            });
+         }
+         catch (err2) {
+         }
+      };
+
+      this.navigatorBtnClick = function(interval) {
+         return function (e) {
+            //TODO marquer l'activation
+            debugger;
+            self.chart.showLoading($.t("chart:loadingData"));
+            self.refreshData(interval);
+         }
+      }
+
+      this.refreshData = function(interval) {
+         var self = this;
+
+         try {
+            if (!self.refreshingData) {
+               self.refreshingData = true;
+               //we compute the date from the configuration
+               var dateFrom = "";
+               var prefixUri = "";
+               var timeBetweenTwoConsecutiveValues;
+
+               switch (interval) {
+                  case "HOUR" :
+                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'hours'));
+                     //we request all data
+                     timeBetweenTwoConsecutiveValues = undefined;
+                     break;
+                  default:
+                  case "DAY" :
+                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'days'));
+                     //we request hour summary data
+                     prefixUri = "/hour";
+                     timeBetweenTwoConsecutiveValues = 1000 * 3600;
+                     break;
+                  case "WEEK" :
+                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'weeks'));
+                     //we request hour summary data
+                     prefixUri = "/hour";
+                     timeBetweenTwoConsecutiveValues = 1000 * 3600;
+                     break;
+                  case "MONTH" :
+                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'months'));
+                     //we request day summary data
+                     prefixUri = "/day";
+                     timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
+                     break;
+                  case "HALF_YEAR" :
+                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(6, 'months'));
+                     //we request day summary data
+                     prefixUri = "/day";
+                     timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
+                     break;
+                  case "YEAR" :
+                     dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'years'));
+                     //we request day summary data
+                     prefixUri = "/day";
+                     timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
+                     break;
+               }
+
+               $.getJSON("rest/acquisition/keyword/" + this.widget.configuration.device1.content.source.keywordId + prefixUri + "/" + dateFrom)
+                  .done(function( data ) {
+                     //we parse the json answer
+                     if (data.result != "true")
+                     {
+                        notifyError($.t("chart:errorDuringGettingDeviceData"), JSON.stringify(data));
+                        return;
+                     }
+
+                     self.chart.hideLoading();
+                     var serie = self.chart.get("Device1");
+                     if (!isNullOrUndefined(serie))
+                        serie.remove();
+
+                     //we make the serie
+                     var plot = [];
+                     var lastDate;
+                     var d;
+                     $.each(data.data.data, function(index, value) {
+                        lastDate = d;
+                        d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
+                        var v;
+                        if (!isNullOrUndefined(value.avg)) {
+                           v = parseFloat(value.avg);
+                        }
+                        else if (!isNullOrUndefined(value.key)) {
+                           v = parseFloat(value.key);
+                        }
+                        else {
+                           throw Error("Unable to parse answer");
+                        }
+
+                        //we manage the missing data
+                        if ((lastDate != undefined) && (timeBetweenTwoConsecutiveValues != undefined) &&
+                           (lastDate + timeBetweenTwoConsecutiveValues < d)) {
+                           //plot.push(null);
+                           plot.push([lastDate + 1, null]);
+                        }
+
+                        plot.push([d, v]);
+                     });
+
+                     self.chart.addSeries({id:'Device1', data:plot, name:'First device', marker : { enabled : false, radius : 3}});
+                     self.refreshingData = false;
+                  })
+                  .fail(function() {notifyError($.t("chart:errorDuringGettingDeviceData"));});
+
             }
          }
          catch (err) {
+            console.error(err.message);
+            self.refreshingData = false;
          }
-
-         try {
-            $.getJSON("rest/acquisition/highcharts/keyword/" + this.widget.configuration.device1.content.source.keywordId + "/" + dateFrom)
-               .done(function( data ) {
-                  //we parse the json answer
-                  if (data.result != "true")
-                  {
-                     notifyError($.t("chart:errorDuringGettingDeviceData"), JSON.stringify(data));
-                     return;
-                  }
-
-                  var acq = JSON.parse(data.data);
-
-                  self.chart.hideLoading();
-                  var serie = self.chart.get("Device1");
-                  if (!isNullOrUndefined(serie))
-                     serie.remove();
-
-                  self.chart.addSeries({id:'Device1', data:acq, name:'Fisrt device'});
-
-                  //we ask for device information
-                  try {
-                     DeviceManager.get(self.widget.configuration.device1.content.source.deviceId, function (device) {
-                        var serie = self.chart.get("Device1");
-                        if (!isNullOrUndefined(serie))
-                           self.chart.get("Device1").name = device.friendlyName;
-                        self.chart.redraw();
-                     });
-                  }
-                  catch (err2) {
-                  }
-               })
-               .fail(function() {notifyError($.t("chart:errorDuringGettingDeviceData"));});
-         }
-         catch (err) {
-         }
-
-      };
+      }
 
       /**
        * Dispatch the data to the viewModel

@@ -82,10 +82,15 @@ namespace database {  namespace sqlite { namespace requesters {
    std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacity(const std::string & capacityName, const shared::plugin::yadomsApi::EKeywordAccessMode & accessMode) const
    {
       CQuery subQuery;
-      subQuery. Select(CKeywordTable::getDeviceIdColumnName()).
-                From(CKeywordTable::getTableName()).
-                Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, capacityName).
-                And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, accessMode);
+      subQuery.Select(CKeywordTable::getDeviceIdColumnName()).
+         From(CKeywordTable::getTableName()).
+         Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, capacityName);
+
+      if (accessMode() == shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+      {
+         //we add a constraint on accessmode
+         subQuery.And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, accessMode);
+      }
 
       CQuery qSelect;
       qSelect. Select().
@@ -101,24 +106,14 @@ namespace database {  namespace sqlite { namespace requesters {
    {
 		CQuery subQuery;
 		subQuery.Select(CKeywordTable::getDeviceIdColumnName()).
-			From(CKeywordTable::getTableName());
+			From(CKeywordTable::getTableName()).
+         Where(CKeywordTable::getTypeColumnName(), CQUERY_OP_EQUAL, capacityType);
 
-      switch (capacityAccessMode())
+      if (capacityAccessMode() == shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
       {
-         case shared::plugin::yadomsApi::EKeywordAccessMode::kGet:
-         case shared::plugin::yadomsApi::EKeywordAccessMode::kSet:
-				subQuery.WhereParenthesis(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, capacityAccessMode).
-							Or(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, shared::plugin::yadomsApi::EKeywordAccessMode(shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet).getAsString()).
-							EndParenthesis();
-            break;
-
-         case shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet:
-         case shared::plugin::yadomsApi::EKeywordAccessMode::kNoAccess:
-				subQuery.Where(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, capacityAccessMode);
-				break;
+         //we add a constraint on accessmode
+         subQuery.And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, capacityAccessMode);
       }
-
-      subQuery. And(CKeywordTable::getTypeColumnName(), CQUERY_OP_EQUAL, capacityType);
 
       CQuery qSelect;
       qSelect. Select().

@@ -38,7 +38,7 @@ namespace shared {   namespace plugin {      namespace yadomsApi      {
    const CStandardCapacity& CStandardCapacities::BatteryLevel = CStandardCapacity("batteryLevel", CStandardUnits::Percent, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Counter = CStandardCapacity("count", CStandardUnits::NoUnits, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Current = CStandardCapacity("current", CStandardUnits::Ampere, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Curtain = CStandardCapacity("curtain", CStandardUnits::NoUnits, EKeywordAccessMode::kSet, EKeywordDataType::kNoData);
+   const CStandardCapacity& CStandardCapacities::Curtain = CStandardCapacity("curtain", CStandardUnits::NoUnits, EKeywordAccessMode::kGetSet, EKeywordDataType::kNoData);
    const CStandardCapacity& CStandardCapacities::Direction = CStandardCapacity("direction", CStandardUnits::Degrees, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Energy = CStandardCapacity("energy", CStandardUnits::WattPerHour, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Frequency = CStandardCapacity("frequency", CStandardUnits::Hertz, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);

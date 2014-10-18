@@ -22,7 +22,7 @@ namespace pluginSystem
    const shared::plugin::yadomsApi::CStandardCapacity& CCommandHistorizer::getCapacity() const
    {
       static const shared::plugin::yadomsApi::CStandardCapacity NoCapacity("command", shared::plugin::yadomsApi::CStandardUnits::NoUnits,
-         shared::plugin::yadomsApi::EKeywordAccessMode::kSet, shared::plugin::yadomsApi::EKeywordDataType::kString);
+         shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet, shared::plugin::yadomsApi::EKeywordDataType::kString);
       return NoCapacity;
    }
 
