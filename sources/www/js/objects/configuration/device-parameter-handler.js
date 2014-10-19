@@ -110,7 +110,8 @@ function populateDeviceList(handler) {
                    var newList = [];
 
                    $.each(data2.data.keyword, function(index, value) {
-                       if (value.accessMode.toLowerCase() == handler.expectedKeywordAccess.toLowerCase()) {
+                      //we add the keyword only if access mode is at least the same than expected
+                      if ((handler.expectedKeywordAccess.toLowerCase() != "getset") || (value.accessMode.toLowerCase() != "get")) {
                           if (handler.lookupMethod == "name") {
                              //we lookup by capacity name
                              if (value.capacityName.toLowerCase() == handler.expectedCapacity.toLowerCase()) {

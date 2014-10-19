@@ -5,8 +5,12 @@ widgetViewModelCtor =
     * @constructor
     */
       function IndicatorViewModel() {
+
       //observable data
       this.command = ko.observable(100);
+
+      //observable data
+      this.icon = ko.observable("");
 
       //widget identifier
       this.widget = null;
@@ -34,6 +38,11 @@ widgetViewModelCtor =
          }
          catch(err) {}
 
+         try {
+            this.icon("glyphicon " + this.widget.configuration.icon);
+         }
+         catch(err) {}
+
          //we ask for device information
          try {
             var self = this;
@@ -55,6 +64,7 @@ widgetViewModelCtor =
          try {
             if (device == this.widget.configuration.device) {
                //it is the good device
+
                self.command(parseInt(data.value));
             }
          }
