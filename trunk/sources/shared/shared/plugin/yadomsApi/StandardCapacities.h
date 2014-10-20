@@ -27,8 +27,10 @@ namespace shared { namespace plugin { namespace yadomsApi {
       static const CStandardCapacity & Power;             // power             | Watt                  | Power
       static const CStandardCapacity & Pressure;          // pressure          | hPa                   | Pressure
       static const CStandardCapacity & Rain;              // rain              | mm                    | Rain counter
+      static const CStandardCapacity & Restart;           // restart           |                       | Command to restart something (system, real devices,...)
       static const CStandardCapacity & Rssi;              // rssi              | percent               | Rssi measure capacity
-      static const CStandardCapacity & Speed;             // speed             | m/s                   | A speed value, in m/s
+		static const CStandardCapacity & Shutdown;          // shutdown          |                       | Command to shutdown something (system, real devices,...)
+		static const CStandardCapacity & Speed;             // speed             | m/s                   | A speed value, in m/s
       static const CStandardCapacity & Switch;            // switch            | none                  | A value from 0-100 (0 is off, 100 is on)
       static const CStandardCapacity & Temperature;       // temperature       | degrees Celcius       | Temperature
       static const CStandardCapacity & Uv;                // uv                | uv                    | UV index

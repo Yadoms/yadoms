@@ -47,13 +47,15 @@ namespace shared {   namespace plugin {      namespace yadomsApi      {
    const CStandardCapacity& CStandardCapacities::Power = CStandardCapacity("power", CStandardUnits::Watt, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Pressure = CStandardCapacity("pressure", CStandardUnits::hectoPascal, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Rain = CStandardCapacity("rain", CStandardUnits::Millimeter, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Rssi = CStandardCapacity("rssi", CStandardUnits::Percent, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Speed = CStandardCapacity("speed", CStandardUnits::MetersPerSecond, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
+	const CStandardCapacity& CStandardCapacities::Restart = CStandardCapacity("restart", CStandardUnits::NoUnits, EKeywordAccessMode::kGetSet, EKeywordDataType::kNoData);
+	const CStandardCapacity& CStandardCapacities::Rssi = CStandardCapacity("rssi", CStandardUnits::Percent, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
+	const CStandardCapacity& CStandardCapacities::Shutdown = CStandardCapacity("shutdown", CStandardUnits::NoUnits, EKeywordAccessMode::kGetSet, EKeywordDataType::kNoData);
+	const CStandardCapacity& CStandardCapacities::Speed = CStandardCapacity("speed", CStandardUnits::MetersPerSecond, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Switch = CStandardCapacity("switch", CStandardUnits::Percent, EKeywordAccessMode::kGetSet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Temperature = CStandardCapacity("temperature", CStandardUnits::DegreesCelcius, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Uv = CStandardCapacity("uv", CStandardUnits::Uv, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Voltage = CStandardCapacity("voltage", CStandardUnits::Volt, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Weight = CStandardCapacity("weight", CStandardUnits::Kg, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-  
+
 } } } // namespace shared::plugin::yadomsApi
 

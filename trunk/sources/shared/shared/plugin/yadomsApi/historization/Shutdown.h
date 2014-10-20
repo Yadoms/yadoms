@@ -1,38 +1,35 @@
 #pragma once
-
-#include <shared/plugin/yadomsApi/historization/HistorizableType.hpp>
+#include <shared/Export.h>
+#include "HistorizableType.hpp"
 #include <shared/enumeration/EnumHelpers.hpp>
 
-namespace pluginSystem {   namespace internalPlugin {
+namespace shared { namespace plugin { namespace yadomsApi { namespace historization {
 
 
       //-----------------------------------------------------
-      ///\brief               The restart command values
+      ///\brief               The shutdown command values
       //-----------------------------------------------------   
-      DECLARE_ENUM_HEADER(ERestartCommand,
-         ((RestartSystem)(0))
+		DECLARE_ENUM_HEADER_SHARED(EShutdownCommand, YADOMS_SHARED_EXPORT,
+         ((Shutdown)(0))
       );
 
       //-----------------------------------------------------
       ///\brief A shutdown command historizable object
       //-----------------------------------------------------
-      class CRestartCommand : public shared::plugin::yadomsApi::historization::CHistorizableType<ERestartCommand>
+		class YADOMS_SHARED_EXPORT CShutdown : public CHistorizableType<EShutdownCommand>
       {
       public:
          //-----------------------------------------------------
          ///\brief                     Constructor
          ///\param[in] keywordName     Yadoms keyword name
          //-----------------------------------------------------
-         CRestartCommand(const std::string& keywordName);
+         CShutdown(const std::string& keywordName);
 
          //-----------------------------------------------------
          ///\brief                     Destructor
          //-----------------------------------------------------
-         virtual ~CRestartCommand();
+         virtual ~CShutdown();
 
       };
 
-   }
-} // namespace pluginSystem::internalPlugin
-
-
+ } } } } //namespace shared::plugin::yadomsApi::historization
