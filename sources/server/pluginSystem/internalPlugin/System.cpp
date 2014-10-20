@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "System.h"
 #include <shared/plugin/ImplementationHelper.h>
 #include <shared/Log.h>
@@ -28,13 +28,20 @@ namespace pluginSystem {
          // the main loop
          YADOMS_LOG(debug) << "System is running...";
 
-         //D�clare all device/keywords
+         //D?clare all device/keywords
          CShutdownCommand keywordShutdown("shutdown");
          CRestartCommand keywordRestart("restart");
 
-         context->declareDevice("system", "yadoms system");
-         context->declareKeyword("system", keywordShutdown);
-         context->declareKeyword("system", keywordRestart);
+         //création du device system si necessaire
+         if (!context->deviceExists("system"))
+            context->declareDevice("system", "yadoms system");
+
+         //création des keyword si necessaire
+         if (!context->keywordExists("system", keywordShutdown.getKeyword()))
+            context->declareKeyword("system", keywordShutdown);
+
+         if (!context->keywordExists("system", keywordRestart.getKeyword()))
+            context->declareKeyword("system", keywordRestart);
 
          while (1)
          {

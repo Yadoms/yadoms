@@ -182,7 +182,10 @@ set(YADOMS_SRC
 	server/pluginSystem/IQualifier.h
 	server/pluginSystem/InvalidPluginException.hpp
 	server/pluginSystem/Factory.h
-	server/pluginSystem/Factory.cpp
+	server/pluginSystem/InternalPluginFactory.h
+	server/pluginSystem/InternalPluginFactory.cpp
+	server/pluginSystem/ExternalPluginFactory.h
+	server/pluginSystem/ExternalPluginFactory.cpp
 	server/pluginSystem/Manager.h
 	server/pluginSystem/Manager.cpp
 	server/pluginSystem/ManagerEvent.h
@@ -196,6 +199,8 @@ set(YADOMS_SRC
    server/pluginSystem/YadomsApiImplementation.cpp
 	server/pluginSystem/internalPlugin/System.h
 	server/pluginSystem/internalPlugin/System.cpp
+	server/pluginSystem/internalPlugin/Information.h
+	server/pluginSystem/internalPlugin/Information.cpp
 	server/pluginSystem/internalPlugin/RestartCommand.h
 	server/pluginSystem/internalPlugin/RestartCommand.cpp
 	server/pluginSystem/internalPlugin/ShutdownCommand.h
