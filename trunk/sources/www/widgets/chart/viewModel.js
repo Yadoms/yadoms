@@ -43,38 +43,6 @@ widgetViewModelCtor =
                text: ''
             },
 
-            rangeSelector : {
-               buttons: [{
-                  type: 'hour',
-                  count: 1,
-                  text: $.t("chart:navigator.1h")
-               }, {
-                  type: 'day',
-                  count: 1,
-                  text: $.t("chart:navigator.1d")
-               }, {
-                  type: 'week',
-                  count: 1,
-                  text: $.t("chart:navigator.1w")
-               }, {
-                  type: 'month',
-                  count: 1,
-                  text: $.t("chart:navigator.1m")
-               }, {
-                  type: 'month',
-                  count: 6,
-                  text: $.t("chart:navigator.6m")
-               }, {
-                  type: 'year',
-                  count: 1,
-                  text: $.t("chart:navigator.1y")
-               }],
-               enabled : true,
-               allButtonsEnabled: true,
-               inputEnabled: false
-               //selected : 4
-            },
-
             xAxis : {
                //ordinal: false,
                events : {
@@ -96,14 +64,17 @@ widgetViewModelCtor =
          });
 
          this.chart = this.$chart.highcharts();
-debugger;
-         var btns = this.$chart.find(".highcharts-button");
-         btns[0].unbind("click").bind("click", this.navigatorBtnClick("HOUR"));
-         btns[1].unbind("click").bind("click", this.navigatorBtnClick("DAY"));
-         btns[2].unbind("click").bind("click", this.navigatorBtnClick("WEEK"));
-         btns[3].unbind("click").bind("click", this.navigatorBtnClick("MONTH"));
-         btns[4].unbind("click").bind("click", this.navigatorBtnClick("HALF_YEAR"));
-         btns[5].unbind("click").bind("click", this.navigatorBtnClick("YEAR"));
+
+         var btns = self.widget.$gridsterWidget.find(".nav-btn");
+
+         $.each(btns, function (index, btn) {
+            $(btn).unbind("click").bind("click", self.navigatorBtnClick($(btn).attr("level")));
+
+            //we ensure that the configured interval is selected
+            if ($(btn).attr("level") == self.widget.configuration.interval) {
+               $(btn).addClass("btn-primary");
+            }
+         });
 
          this.chart.showLoading($.t("chart:loadingData"));
       };
@@ -184,13 +155,16 @@ debugger;
       };
 
       this.navigatorBtnClick = function(interval) {
+         var self = this;
          return function (e) {
-            //TODO marquer l'activation
-            debugger;
+            //we manage activation
+            self.widget.$gridsterWidget.find(".nav-btn[level!='" + interval + "']").addClass("btn-default").removeClass("btn-primary");
+            self.widget.$gridsterWidget.find(".nav-btn[level='" + interval + "']").addClass("btn-primary").removeClass("btn-default");
+
             self.chart.showLoading($.t("chart:loadingData"));
             self.refreshData(interval);
-         }
-      }
+         };
+      };
 
       this.refreshData = function(interval) {
          var self = this;
@@ -284,7 +258,8 @@ debugger;
                         plot.push([d, v]);
                      });
 
-                     self.chart.addSeries({id:'Device1', data:plot, name:'First device', marker : { enabled : false, radius : 3}});
+                     //marker of points is enable when there is less than 50 points on the line
+                     self.chart.addSeries({id:'Device1', data:plot, name:'First device', marker : { enabled : (plot.length < 50), radius : 3}});
                      self.refreshingData = false;
                   })
                   .fail(function() {notifyError($.t("chart:errorDuringGettingDeviceData"));});
@@ -295,7 +270,7 @@ debugger;
             console.error(err.message);
             self.refreshingData = false;
          }
-      }
+      };
 
       /**
        * Dispatch the data to the viewModel
