@@ -4,8 +4,8 @@
 #include <shared/Log.h>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/exception/Exception.hpp>
-#include "ShutdownCommand.h"
-#include "RestartCommand.h"
+#include <shared/plugin/yadomsApi/historization/Historizers.h>
+
 
 namespace pluginSystem {
    namespace internalPlugin {
@@ -29,8 +29,8 @@ namespace pluginSystem {
          YADOMS_LOG(debug) << "System is running...";
 
          //D?clare all device/keywords
-         CShutdownCommand keywordShutdown("shutdown");
-         CRestartCommand keywordRestart("restart");
+			yApi::historization::CShutdown keywordShutdown("shutdown");
+			yApi::historization::CRestart keywordRestart("restart");
 
          //création du device system si necessaire
          if (!context->deviceExists("system"))

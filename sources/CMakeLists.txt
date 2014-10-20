@@ -201,10 +201,6 @@ set(YADOMS_SRC
 	server/pluginSystem/internalPlugin/System.cpp
 	server/pluginSystem/internalPlugin/Information.h
 	server/pluginSystem/internalPlugin/Information.cpp
-	server/pluginSystem/internalPlugin/RestartCommand.h
-	server/pluginSystem/internalPlugin/RestartCommand.cpp
-	server/pluginSystem/internalPlugin/ShutdownCommand.h
-	server/pluginSystem/internalPlugin/ShutdownCommand.cpp
   
 	server/startupOptions/InvalidOptionException.hpp
 	server/startupOptions/IStartupOptions.h
