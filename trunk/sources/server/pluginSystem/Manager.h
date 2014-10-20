@@ -185,7 +185,7 @@ namespace pluginSystem
       /// \return       Loaded plugin
       /// \throw        CInvalidPluginException if plugin is not available
       //--------------------------------------------------------------
-      boost::shared_ptr<CFactory> loadPlugin(const std::string& pluginName);
+      boost::shared_ptr<IFactory> loadPlugin(const std::string& pluginName);
 
       //--------------------------------------------------------------
       /// \brief			Try to unload a plugin if no more used
@@ -201,6 +201,9 @@ namespace pluginSystem
       //--------------------------------------------------------------
       boost::filesystem::path toPath(const std::string& pluginName) const;
 
+      void startInternalPlugin();
+      void stopInternalPlugin();
+
    private:
       //--------------------------------------------------------------
       /// \brief			The plugin manager mutex
@@ -215,7 +218,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			Map of all found factories (key are plugin file names)
       //--------------------------------------------------------------
-      typedef std::map<std::string, boost::shared_ptr<CFactory> > PluginMap;
+      typedef std::map<std::string, boost::shared_ptr<IFactory> > PluginMap;
       PluginMap m_loadedPlugins;
 
       //--------------------------------------------------------------

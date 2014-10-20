@@ -1,5 +1,6 @@
 #pragma once
 #include <shared/plugin/IPlugin.h>
+#include <shared/plugin/information/IInformation.h>
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -25,6 +26,7 @@ namespace pluginSystem { namespace internalPlugin {
          // IPlugin implementation
          virtual void doWork(boost::shared_ptr<yApi::IYadomsApi> context);
          // [END] IPlugin implementation
+
       };
 
 

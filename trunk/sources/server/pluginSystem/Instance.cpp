@@ -9,7 +9,7 @@ namespace pluginSystem
 {
 
 CInstance::CInstance(
-   const boost::shared_ptr<const CFactory> plugin,
+   const boost::shared_ptr<const IFactory> plugin,
    const boost::shared_ptr<database::entities::CPlugin> pluginData,
    boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
    boost::shared_ptr<database::IDeviceRequester> deviceRequester,

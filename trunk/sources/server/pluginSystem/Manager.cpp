@@ -11,6 +11,8 @@
 #include <shared/exception/NotSupported.hpp>
 #include <shared/exception/EmptyResult.hpp>
 
+#include "ExternalPluginFactory.h"
+#include "InternalPluginFactory.h"
 
 namespace pluginSystem
 {
@@ -51,6 +53,9 @@ void CManager::start()
       if (databasePluginInstance->AutoStart())
          startInstance(databasePluginInstance->Id());
    }
+
+   //start the internal plugin
+   startInternalPlugin();
 }
 
 void CManager::stop()
@@ -58,11 +63,13 @@ void CManager::stop()
    boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
 
    YADOMS_LOG(info) << "pluginSystem::CManager stop plugins...";
+   stopInternalPlugin();
 
    while (!m_runningInstances.empty())
       stopInstance(m_runningInstances.begin()->first);
 
    YADOMS_LOG(info) << "pluginSystem::CManager all plugins are stopped";
+
 }
 
 std::vector<boost::filesystem::path> CManager::findPluginDirectories()
@@ -95,7 +102,7 @@ std::vector<boost::filesystem::path> CManager::findPluginDirectories()
    return plugins;
 }
 
-boost::shared_ptr<CFactory> CManager::loadPlugin(const std::string& pluginName)
+boost::shared_ptr<IFactory> CManager::loadPlugin(const std::string& pluginName)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
 
@@ -109,7 +116,7 @@ boost::shared_ptr<CFactory> CManager::loadPlugin(const std::string& pluginName)
       throw CInvalidPluginException(pluginName);   // Invalid plugin
 
    // Load the plugin
-   boost::shared_ptr<CFactory> pNewFactory (new CFactory(toPath(pluginName)));
+   boost::shared_ptr<IFactory> pNewFactory(new CExternalPluginFactory(toPath(pluginName)));
    m_loadedPlugins[pluginName] = pNewFactory;
 
    // Signal qualifier that a plugin was loaded
@@ -163,7 +170,7 @@ void CManager::buildAvailablePluginList()
          if (m_loadedPlugins.find(pluginName) != m_loadedPlugins.end())
             m_availablePlugins[pluginName] = m_loadedPlugins[pluginName]->getInformation();
          else
-            m_availablePlugins[pluginName] = CFactory::getInformation(toPath(pluginName));
+            m_availablePlugins[pluginName] = CExternalPluginFactory::getInformation(toPath(pluginName));
 
          YADOMS_LOG(info) << "Plugin " << pluginName << " successfully loaded";
       }
@@ -339,7 +346,7 @@ void CManager::startInstance(int id)
       boost::shared_ptr<database::entities::CPlugin> databasePluginInstance(m_pluginDBTable->getInstance(id));
 
       // Load the plugin
-      boost::shared_ptr<CFactory> plugin(loadPlugin(databasePluginInstance->Type()));
+      boost::shared_ptr<IFactory> plugin(loadPlugin(databasePluginInstance->Type()));
 
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
@@ -374,6 +381,58 @@ void CManager::stopInstance(int id)
 
    // Try to unload associated plugin (if no more used)
    unloadPlugin(pluginName);
+}
+
+
+void CManager::startInternalPlugin()
+{
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
+   if (m_runningInstances.find(0) != m_runningInstances.end())
+      return;     // Already started ==> nothing more to do
+
+   try
+   {
+      // Get instance informations from database
+      boost::shared_ptr<database::entities::CPlugin> fakeDatabasePluginInstance(new database::entities::CPlugin());
+      fakeDatabasePluginInstance->Id = 0;
+      fakeDatabasePluginInstance->AutoStart = true;
+      fakeDatabasePluginInstance->Name = "system";
+      fakeDatabasePluginInstance->Type = "system";
+
+      // Load the plugin
+      boost::shared_ptr<IFactory> plugin(new CInternalPluginFactory());
+
+      // Create instance
+      BOOST_ASSERT(plugin); // Plugin not loaded
+      boost::shared_ptr<CInstance> pluginInstance(new CInstance(
+         plugin, fakeDatabasePluginInstance, m_dataProvider->getPluginEventLoggerRequester(), m_dataProvider->getDeviceRequester(), m_dataProvider->getKeywordRequester(), m_dataProvider->getAcquisitionRequester(), m_acquisitionHistorizer,
+         m_qualifier, m_supervisor, m_pluginManagerEventId));
+      m_runningInstances[fakeDatabasePluginInstance->Id()] = pluginInstance;
+   }
+   catch (shared::exception::CEmptyResult& e)
+   {
+      YADOMS_LOG(error) << "startInternalPlugin : unable to find internal plugin : " << e.what();
+      return;
+   }
+   catch (CInvalidPluginException& e)
+   {
+      YADOMS_LOG(error) << "startInternalPlugin : " << e.what();
+   }
+}
+
+void CManager::stopInternalPlugin()
+{
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
+   if (m_runningInstances.find(0) == m_runningInstances.end())
+      return;     // Already stopped ==> nothing more to do
+
+   // Get the associated plugin name to unload it after instance being deleted
+   std::string pluginName = m_runningInstances[0]->getPluginName();
+
+   // Remove (=stop) instance
+   m_runningInstances.erase(0);
 }
 
 bool CManager::isInstanceRunning(int id) const
