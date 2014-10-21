@@ -41,7 +41,7 @@ private:
    //-----------------------------------------------------------------------------
    /// \brief	Return the NodeInfo object matching homeId and nodeId
    //-----------------------------------------------------------------------------   
-   boost::shared_ptr<COpenZWaveNode> GetNode(const int homeId, const int nodeId);
+   boost::shared_ptr<COpenZWaveNode> GetNode(const int homeId, const uint8 nodeId);
 
    //--------------------------------------------------------------
    /// \brief	   Generate the deviceId from homeId&nodeId

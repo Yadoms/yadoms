@@ -195,7 +195,7 @@ boost::shared_ptr<COpenZWaveNode> COpenZWaveController::GetNode(OpenZWave::Notif
    return GetNode(homeId, nodeId);
 }
 
-boost::shared_ptr<COpenZWaveNode> COpenZWaveController::GetNode(const int homeId, const int nodeId)
+boost::shared_ptr<COpenZWaveNode> COpenZWaveController::GetNode(const int homeId, const uint8 nodeId)
 {
    for (NodeListType::iterator it = m_nodes.begin(); it != m_nodes.end(); ++it)
    {
