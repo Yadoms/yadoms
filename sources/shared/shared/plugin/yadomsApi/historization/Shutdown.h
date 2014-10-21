@@ -1,6 +1,6 @@
 #pragma once
 #include <shared/Export.h>
-#include "HistorizableType.hpp"
+#include "SingleHistorizableData.hpp"
 #include <shared/enumeration/EnumHelpers.hpp>
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization {
@@ -16,7 +16,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       //-----------------------------------------------------
       ///\brief A shutdown command historizable object
       //-----------------------------------------------------
-		class YADOMS_SHARED_EXPORT CShutdown : public CHistorizableType<EShutdownCommand>
+		class YADOMS_SHARED_EXPORT CShutdown : public CSingleHistorizableData<EShutdownCommand>
       {
       public:
          //-----------------------------------------------------

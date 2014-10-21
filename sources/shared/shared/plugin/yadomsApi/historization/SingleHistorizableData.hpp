@@ -5,9 +5,11 @@
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {
-
+   //-----------------------------------------------------
+   ///\brief     Template class which can be used to declare a single data IHistorizable value
+   //-----------------------------------------------------
    template<class T>
-   class CHistorizableType : public shared::plugin::yadomsApi::historization::IHistorizable
+   class CSingleHistorizableData : public shared::plugin::yadomsApi::historization::IHistorizable
    {
    protected:
       //-----------------------------------------------------
@@ -16,8 +18,8 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       ///\param[in] capacity           the capacity
       ///\param[in] yadomsIdentifier   the identifier used by yadoms in DataContainer
       //-----------------------------------------------------
-      CHistorizableType(const std::string& keywordName, const shared::plugin::yadomsApi::CStandardCapacity& capacity, const std::string & yadomsIdentifier)
-      :m_keywordName(keywordName), m_capacity(capacity), m_yadomsIdentifier(yadomsIdentifier)
+      CSingleHistorizableData(const std::string& keywordName, const shared::plugin::yadomsApi::CStandardCapacity& capacity, const std::string & yadomsIdentifier, const shared::plugin::yadomsApi::historization::EMeasureType measureType = shared::plugin::yadomsApi::historization::EMeasureType::kAbsolute)
+         :m_keywordName(keywordName), m_capacity(capacity), m_yadomsIdentifier(yadomsIdentifier), m_measureType(measureType)
       {
       }      
       
@@ -28,8 +30,8 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       ///\param[in] yadomsIdentifier   the identifier used by yadoms in DataContainer
       ///\param[in] initialValue       the initial value
       //-----------------------------------------------------
-      CHistorizableType(const std::string& keywordName, const shared::plugin::yadomsApi::CStandardCapacity& capacity, const std::string & yadomsIdentifier, const T initialValue)
-      :m_keywordName(keywordName), m_capacity(capacity), m_yadomsIdentifier(yadomsIdentifier), m_value(initialValue)
+      CSingleHistorizableData(const std::string& keywordName, const shared::plugin::yadomsApi::CStandardCapacity& capacity, const std::string & yadomsIdentifier, const T initialValue, const shared::plugin::yadomsApi::historization::EMeasureType measureType = shared::plugin::yadomsApi::historization::EMeasureType::kAbsolute)
+         :m_keywordName(keywordName), m_capacity(capacity), m_yadomsIdentifier(yadomsIdentifier), m_value(initialValue), m_measureType(measureType)
       {
       }
 
@@ -37,7 +39,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CHistorizableType()
+      virtual ~CSingleHistorizableData()
       {
 
       }
@@ -55,13 +57,12 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       
       virtual const std::string formatValue() const
       {
-         return m_value.getAsString();
+         return boost::lexical_cast<std::string>(m_value);
       }
 
       virtual const shared::plugin::yadomsApi::historization::EMeasureType& getMeasureType() const
       {
-         static const shared::plugin::yadomsApi::historization::EMeasureType MeasureType(shared::plugin::yadomsApi::historization::EMeasureType::kAbsolute);
-         return MeasureType;
+         return m_measureType;
       }
       // [END] IHistorizable implementation   
    
@@ -73,7 +74,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       //-----------------------------------------------------
       virtual void set(const shared::CDataContainer& yadomsCommand)
       {
-         m_value = yadomsCommand.get<T>(m_yadomsIdentifier);
+         m_value = Normalize(yadomsCommand.get<T>(m_yadomsIdentifier));
       }
 
       //-----------------------------------------------------
@@ -82,7 +83,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       //-----------------------------------------------------
       virtual void set(T value)
       {
-         m_value = value;
+         m_value = Normalize(value);
       }
 
       //-----------------------------------------------------
@@ -93,6 +94,38 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       {
          return m_value;
       }
+
+
+      //-----------------------------------------------------
+      ///\brief                     Implicit operator
+      ///\return                    The value
+      //-----------------------------------------------------
+      operator T() const
+      {
+         return get();
+      }
+
+      //-----------------------------------------------------
+      ///\brief                     Explicit operator
+      ///\return                    The value
+      //-----------------------------------------------------
+      T const operator() () const
+      {
+         return get();
+      }
+
+
+   protected:
+      //-----------------------------------------------------
+      ///\brief                     Normalize the value
+      ///\param[in] value           Raw value
+      ///\return                    The normalized value
+      //-----------------------------------------------------
+      virtual T Normalize(T value)
+      {
+         return value;
+      }
+
 
       
    private:
@@ -116,6 +149,10 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       //-----------------------------------------------------      
       const shared::plugin::yadomsApi::CStandardCapacity & m_capacity;
    
+      //-----------------------------------------------------
+      ///\brief               The measure type
+      //-----------------------------------------------------     
+      const shared::plugin::yadomsApi::historization::EMeasureType m_measureType;
    };
 
 

@@ -28,7 +28,7 @@ void CFakeCounter::read()
    m_incrementCount.set(m_dist(m_gen));
 
    // Generate a random increment (0 to 15)
-   m_totalCount.set(m_totalCount.count() + m_dist(m_gen));
+   m_totalCount.set(m_totalCount.get() + m_dist(m_gen));
 }
 
 void CFakeCounter::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

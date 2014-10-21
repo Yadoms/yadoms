@@ -3,14 +3,14 @@
 #include <shared/DataContainer.h>
 #include <shared/enumeration/EnumHelpers.hpp>
 #include <shared/Field.hpp>
-#include "IHistorizable.h"
+#include "SingleHistorizableData.hpp"
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {   
    //-----------------------------------------------------
    ///\brief A humidity historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CHumidity : public IHistorizable
+   class YADOMS_SHARED_EXPORT CHumidity : public CSingleHistorizableData<double>
    {
    public:
       //-----------------------------------------------------
@@ -25,55 +25,13 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       //-----------------------------------------------------
       virtual ~CHumidity();
 
-      // IHistorizable implementation
-      virtual const std::string& getKeyword() const;
-      virtual const CStandardCapacity& getCapacity() const;
-      virtual const std::string formatValue() const;
-      virtual const EMeasureType& getMeasureType() const;
-      // [END] IHistorizable implementation
-
-      //-----------------------------------------------------
-      ///\brief                     Set value from Yadoms command
-      ///\param[in] yadomsCommand   Yadoms command container
-      ///\throw                     shared::exception::CInvalidParameter or COutOfRange if fail to parse command
-      //-----------------------------------------------------
-      void set(const shared::CDataContainer& yadomsCommand);
-
-      //-----------------------------------------------------
-      ///\brief                     Set value
-      ///\param[in] humidity        humidity value (%)
-      //-----------------------------------------------------
-      void set(int humidity);
-
-      //-----------------------------------------------------
-      ///\brief                     Get value
-      ///\return                    The humidity value (%)
-      //-----------------------------------------------------
-      int humidity() const;
-
    protected:
       //-----------------------------------------------------
-      ///\brief                     Normalize the humidity value
+      ///\brief                     Normalize the humidity [0; 100]
       ///\param[in] value           Raw value
-      ///\return                    The normalized humidity (0-100)
+      ///\return                    The normalized value [0; 100]
       //-----------------------------------------------------
-      static int Normalize(int value);
-
-   private:
-      //-----------------------------------------------------
-      ///\brief                     The keyword name
-      //-----------------------------------------------------
-      const std::string m_keywordName;
-
-      //-----------------------------------------------------
-      ///\brief                     The humidity value (%)
-      //-----------------------------------------------------
-      int m_humidity;
-
-      //-----------------------------------------------------
-      ///\brief                     The measure type
-      //-----------------------------------------------------
-      const EMeasureType m_measureType;
+      virtual double Normalize(double value);
    };
 
 

@@ -1,16 +1,13 @@
 #pragma once
 #include <shared/Export.h>
-#include <shared/DataContainer.h>
-#include <shared/enumeration/EnumHelpers.hpp>
-#include <shared/Field.hpp>
-#include "IHistorizable.h"
+#include "SingleHistorizableData.hpp"
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {   
    //-----------------------------------------------------
    ///\brief A energy historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CEnergy : public IHistorizable
+   class YADOMS_SHARED_EXPORT CEnergy : public CSingleHistorizableData<double>
    {
    public:
       //-----------------------------------------------------
@@ -24,48 +21,6 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       ///\brief                     Destructor
       //-----------------------------------------------------
       virtual ~CEnergy();
-
-      // IHistorizable implementation
-      virtual const std::string& getKeyword() const;
-      virtual const CStandardCapacity& getCapacity() const;
-      virtual const std::string formatValue() const;
-      virtual const EMeasureType& getMeasureType() const;
-      // [END] IHistorizable implementation
-
-      //-----------------------------------------------------
-      ///\brief                     Set value from Yadoms command
-      ///\param[in] yadomsCommand   Yadoms command container
-      ///\throw                     shared::exception::CInvalidParameter or COutOfRange if fail to parse command
-      //-----------------------------------------------------
-      void set(const shared::CDataContainer& yadomsCommand);
-
-      //-----------------------------------------------------
-      ///\brief                     Set value
-      ///\param[in] energy          Energy value (Wh)
-      //-----------------------------------------------------
-      void set(double energy);
-
-      //-----------------------------------------------------
-      ///\brief                     Get value
-      ///\return                    The energy value (Wh)
-      //-----------------------------------------------------
-      double energy() const;
-
-   private:
-      //-----------------------------------------------------
-      ///\brief                     The keyword name
-      //-----------------------------------------------------
-      const std::string m_keywordName;
-
-      //-----------------------------------------------------
-      ///\brief                     The energy value (Wh)
-      //-----------------------------------------------------
-      double m_energy;
-
-      //-----------------------------------------------------
-      ///\brief                     The measure type
-      //-----------------------------------------------------
-      const EMeasureType m_measureType;
    };
 
 

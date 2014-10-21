@@ -1,6 +1,5 @@
 #pragma once
 #include "../StandardCapacities.h"
-#include "../../../StringExtension.h"
 #include "MeasureType.h"
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
