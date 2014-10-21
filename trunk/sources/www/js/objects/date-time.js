@@ -25,7 +25,24 @@ DateTimeFormatter.isoDateToString = function (isoDate) {
    var d = DateTimeFormatter.isoDateToDate(isoDate);
    var format = systemConfiguration[ConfigurationManager.items.system.dateFormatString].value;
    var timeZone = systemConfiguration[ConfigurationManager.items.system.timezone].value;
-   //var language = systemConfiguration[ConfigurationManager.items.system.language].value;
+
+   return d.tz(timeZone).format(format);
+};
+
+/**
+ * Display date given in parameter
+ * @param isoDate date to display
+ * @returns {string}
+ */
+DateTimeFormatter.dateToString = function (date, optionnalFormat) {
+
+   var d = moment.utc(date);
+   assert(d.isValid(), "Date given " + date + " is not valid");
+   var format = optionnalFormat;
+   if (!format)
+      format = systemConfiguration[ConfigurationManager.items.system.dateFormatString].value;
+
+   var timeZone = systemConfiguration[ConfigurationManager.items.system.timezone].value;
 
    return d.tz(timeZone).format(format);
 };

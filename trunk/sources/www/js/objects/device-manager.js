@@ -33,7 +33,7 @@ DeviceManager.get = function (deviceId, callback) {
          }
          callback(DeviceManager.factory(data.data));
       })
-      .fail(function() {notifyError($.t("switch:errorDuringGettingDeviceInformation"));});
+      .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "Device with Id = " + deviceId}));});
 }
 
 DeviceManager.getAttachedPlugin = function(device, callback) {

@@ -57,18 +57,9 @@ function NumericDisplayViewModel() {
       var self = this;
 
       //we get the unit of the kewyord
-      $.getJSON("rest/device/keyword/" + self.widget.configuration.device.keywordId)
-         .done(function( data ) {
-            //we parse the json answer
-            if (data.result != "true")
-            {
-               //TODO : i18n
-               notifyError($.t("ERROR"), JSON.stringify(data));
-               return;
-            }
-            self.unit(data.data.units);
-         })
-         .fail(function() {notifyError($.t("ERROR"));});
+      KeywordManager.get(self.widget.configuration.device.keywordId, function(keyword) {
+         self.unit(keyword.units);
+      });
    }
    
    /**

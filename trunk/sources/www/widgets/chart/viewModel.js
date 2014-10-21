@@ -9,7 +9,7 @@ widgetViewModelCtor =
       //widget identifier
       this.widget = null;
 
-      this.refreshingData = false;;
+      this.refreshingData = false;
 
       /**
        * Initialization method
@@ -31,6 +31,10 @@ widgetViewModelCtor =
                enabled : false
             },
 
+            rangeSelector : {
+               enabled : false
+            },
+
             title: {
                text: ''
             },
@@ -44,14 +48,33 @@ widgetViewModelCtor =
             },
 
             xAxis : {
-               //ordinal: false,
+               ordinal: false, //axis is linear
                events : {
                },
-               minRange: 3600 * 1000 // one hour
+               labels : {
+                  formatter : function () {
+                     if (this.chart.interval) {
+                        switch (this.chart.interval) {
+                           default:
+                           case "HOUR" :
+                           case "DAY" :
+                              return DateTimeFormatter.dateToString(this.value, "LT");
+                              break;
+                           case "WEEK" :
+                           case "MONTH" :
+                           case "HALF_YEAR" :
+                           case "YEAR" :
+                              return DateTimeFormatter.dateToString(this.value, "L");
+                              break;
+                        }
+                     }
+                     return DateTimeFormatter.dateToString(this.value);
+                  }
+               }
             },
 
             yAxis : {
-               minRange: 1
+               //minRange: 1
             },
 
             plotOptions : {
@@ -60,23 +83,24 @@ widgetViewModelCtor =
               }
             },
 
+            tooltip : {
+               useHTML: true,
+               enabled : true,
+               formatter : function () {
+                  var s = "<b>" + DateTimeFormatter.dateToString(this.x, "llll") + "</b>";
+
+                  $.each(this.points, function () {
+                     s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
+                           this.series.name + " : " + this.y + " " + this.series.units;
+                  });
+                  return s;
+               }
+            },
+
             series : []
          });
 
          this.chart = this.$chart.highcharts();
-
-         var btns = self.widget.$gridsterWidget.find(".nav-btn");
-
-         $.each(btns, function (index, btn) {
-            $(btn).unbind("click").bind("click", self.navigatorBtnClick($(btn).attr("level")));
-
-            //we ensure that the configured interval is selected
-            if ($(btn).attr("level") == self.widget.configuration.interval) {
-               $(btn).addClass("btn-primary");
-            }
-         });
-
-         this.chart.showLoading($.t("chart:loadingData"));
       };
 
       this.resized = function() {
@@ -126,6 +150,7 @@ widgetViewModelCtor =
 
          try {
             if (parseBool(this.widget.configuration.customYAxisMinMax.checkbox)) {
+               debugger;
                var min = parseFloat(this.widget.configuration.customYAxisMinMax.content.minimumValue);
                var max = parseFloat(this.widget.configuration.customYAxisMinMax.content.maximumValue);
                this.chart.yAxis[0].setExtremes(min, max);
@@ -138,20 +163,19 @@ widgetViewModelCtor =
          catch (err) {
          }
 
-         //we ask for device information
-         this.refreshData(this.widget.configuration.interval, moment());
+         var btns = self.widget.$gridsterWidget.find(".nav-btn");
+
+         $.each(btns, function (index, btn) {
+            $(btn).unbind("click").bind("click", self.navigatorBtnClick($(btn).attr("level")));
+
+            //we ensure that the configured interval is selected
+            if ($(btn).attr("level") == self.widget.configuration.interval) {
+               $(btn).addClass("btn-primary");
+            }
+         });
 
          //we ask for device information
-         try {
-            DeviceManager.get(self.widget.configuration.device1.content.source.deviceId, function (device) {
-               var serie = self.chart.get("Device1");
-               if (!isNullOrUndefined(serie))
-                  self.chart.get("Device1").name = device.friendlyName;
-               self.chart.redraw();
-            });
-         }
-         catch (err2) {
-         }
+         this.refreshData(this.widget.configuration.interval, moment());
       };
 
       this.navigatorBtnClick = function(interval) {
@@ -161,7 +185,6 @@ widgetViewModelCtor =
             self.widget.$gridsterWidget.find(".nav-btn[level!='" + interval + "']").addClass("btn-default").removeClass("btn-primary");
             self.widget.$gridsterWidget.find(".nav-btn[level='" + interval + "']").addClass("btn-primary").removeClass("btn-default");
 
-            self.chart.showLoading($.t("chart:loadingData"));
             self.refreshData(interval);
          };
       };
@@ -171,6 +194,7 @@ widgetViewModelCtor =
 
          try {
             if (!self.refreshingData) {
+               this.chart.showLoading($.t("chart:loadingData"));
                self.refreshingData = true;
                //we compute the date from the configuration
                var dateFrom = "";
@@ -226,9 +250,16 @@ widgetViewModelCtor =
                      }
 
                      self.chart.hideLoading();
-                     var serie = self.chart.get("Device1");
-                     if (!isNullOrUndefined(serie))
-                        serie.remove();
+
+                     //we save interval in the chart
+                     self.chart.interval = interval;
+
+                     //we remove last serie
+                     if (self.serie1UUID) {
+                        var serie = self.chart.get(self.serie1UUID);
+                        if (!isNullOrUndefined(serie))
+                           serie.remove();
+                     }
 
                      //we make the serie
                      var plot = [];
@@ -251,19 +282,31 @@ widgetViewModelCtor =
                         //we manage the missing data
                         if ((lastDate != undefined) && (timeBetweenTwoConsecutiveValues != undefined) &&
                            (lastDate + timeBetweenTwoConsecutiveValues < d)) {
-                           //plot.push(null);
                            plot.push([lastDate + 1, null]);
                         }
 
                         plot.push([d, v]);
                      });
 
+                     self.serie1UUID = createUUID();
+
                      //marker of points is enable when there is less than 50 points on the line
-                     self.chart.addSeries({id:'Device1', data:plot, name:'First device', marker : { enabled : (plot.length < 50), radius : 3}});
+                     self.chart.addSeries({id:self.serie1UUID,
+                                           data:plot, name:"First Device", marker : { enabled : (plot.length < 50), radius : 3, symbol: "circle"}});
+                     self.chart.zoomOut();
                      self.refreshingData = false;
+
+                     //we get the unit of the keyword
+                     KeywordManager.get(self.widget.configuration.device1.content.source.keywordId, function(keyword) {
+                        var serie = self.chart.get(self.serie1UUID);
+                        //we save the unit in the serie
+                        if (serie) {
+                           serie.units = keyword.units;
+                           serie.name = keyword.friendlyName;
+                        }
+                     });
                   })
                   .fail(function() {notifyError($.t("chart:errorDuringGettingDeviceData"));});
-
             }
          }
          catch (err) {
@@ -282,9 +325,8 @@ widgetViewModelCtor =
          var self = this;
          try {
             if (device == this.widget.configuration.device1.content.source) {
-                  //it is the good device
-               var serie = self.chart.get("Device1");
-               this.chart.get("Device1").addPoint([data.date.valueOf(), parseFloat(data.value)]);
+               //it is the good device
+               self.chart.get(self.serie1UUID).addPoint([data.date.valueOf(), parseFloat(data.value)]);
             }
          }
          catch (err) {
