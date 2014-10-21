@@ -30,12 +30,17 @@ namespace shared { namespace notification{
 
       int waitForNotifications(const boost::posix_time::time_duration& timeout = boost::date_time::pos_infin);
 
+      bool isWaiting() const;
    private:
       //-----------------------------------------------------------------------------
       /// \brief		                     The event handler
       //-----------------------------------------------------------------------------
       boost::shared_ptr<shared::event::CEventHandler> m_EventHandler;
 
+      //-----------------------------------------------------------------------------
+      /// \brief		                     Indicate if this observer is already waiting for event
+      //-----------------------------------------------------------------------------
+      bool m_isWaiting;
    };
 
 

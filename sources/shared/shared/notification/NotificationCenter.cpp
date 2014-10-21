@@ -27,7 +27,10 @@ namespace shared {   namespace notification{
    {
       if (m_observers.find(observer) != m_observers.end())
       {
-         return m_observers[observer].waitForNotifications(timeout);
+         if (!m_observers[observer].isWaiting())
+            return m_observers[observer].waitForNotifications(timeout);
+         else
+            throw shared::exception::CException("Observer is already waiting for events");
       }
       else
          throw shared::exception::CNullReference("Cannot find observer");
