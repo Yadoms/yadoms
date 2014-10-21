@@ -46,17 +46,17 @@
          "enableWithCheckBox" : "true",
          "enableWithCheckBoxDefaultValue" : "false",
          "content" : {
-            "minimumValue" : {
-               "type" : "decimal",
-               "name" : "Minimum Y axis value",
-               "description" : "Set the minimum Y Axis value",
-               "defaultValue" : "0.0",
-               "precision" : "1"
-            },
             "maximumValue" : {
                "type" : "decimal",
                "name" : "Maximum Y axis value",
                "description" : "Set the maximum Y Axis value",
+               "defaultValue" : "0.0",
+               "precision" : "1"
+            },
+            "minimumValue" : {
+               "type" : "decimal",
+               "name" : "Minimum Y axis value",
+               "description" : "Set the minimum Y Axis value",
                "defaultValue" : "0.0",
                "precision" : "1"
             }
