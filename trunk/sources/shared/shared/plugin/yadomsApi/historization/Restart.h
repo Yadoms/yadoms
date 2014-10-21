@@ -1,12 +1,11 @@
 #pragma once
 #include <shared/Export.h>
-#include "HistorizableType.hpp"
+#include "SingleHistorizableData.hpp"
 #include <shared/enumeration/EnumHelpers.hpp>
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization {
 
-
-
+   
       //-----------------------------------------------------
       ///\brief               The restart command values
       //-----------------------------------------------------   
@@ -17,7 +16,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       //-----------------------------------------------------
       ///\brief A shutdown command historizable object
       //-----------------------------------------------------
-		class YADOMS_SHARED_EXPORT CRestart : public CHistorizableType<ERestartCommand>
+		class YADOMS_SHARED_EXPORT CRestart : public CSingleHistorizableData<ERestartCommand>
       {
       public:
          //-----------------------------------------------------

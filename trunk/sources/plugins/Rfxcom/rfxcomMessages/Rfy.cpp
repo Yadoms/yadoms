@@ -93,11 +93,11 @@ void CRfy::buildDeviceModel()
 
 unsigned char CRfy::toProtocolState(const yApi::historization::CCurtain& curtainState)
 {
-   switch (curtainState.command()())
+   switch (curtainState.get()())
    {
-   case yApi::historization::CCurtain::ECommand::kOpen: return rfy_sUp;
-   case yApi::historization::CCurtain::ECommand::kClose: return rfy_sDown;
-   case yApi::historization::CCurtain::ECommand::kStop: return rfy_sStop;
+   case yApi::historization::ECurtainCommand::kOpen: return rfy_sUp;
+   case yApi::historization::ECurtainCommand::kClose: return rfy_sDown;
+   case yApi::historization::ECurtainCommand::kStop: return rfy_sStop;
    default:
       BOOST_ASSERT_MSG(false, "Unsupported value");
       throw shared::exception::CInvalidParameter(curtainState.formatValue());

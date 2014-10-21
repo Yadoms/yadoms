@@ -30,21 +30,21 @@ void CFakeSensor::read()
 {
    // Generate a random variation on temperature (+/- 0 to 1.0°)
    double offset = (int)(m_dist(m_gen) - 10.0) / 10.0; // Random offset, value from -1.0 to 1.0
-   double temperature = m_temperature1.temperature() + offset;
+   double temperature = m_temperature1() + offset;
 
    //we keep 2 decimals
    m_temperature1.set((int)(temperature * 100) / 100.0);
 
    // Generate a random variation on temperature (+/- 0 to 2.0°)
    offset = (int)(m_dist(m_gen) - 20.0) / 20.0; // Random offset, value from -2.0 to 2.0
-   temperature = m_temperature2.temperature() + offset;
+   temperature = m_temperature2() + offset;
 
    //we keep 2 decimals
    m_temperature2.set((int)(temperature * 100) / 100.0);
 
    // Decrease battery level (min 20%)
-   if (m_batteryLevel.batteryLevel() > 20)
-      m_batteryLevel.set(m_batteryLevel.batteryLevel() - 1);
+   if (m_batteryLevel() > 20)
+      m_batteryLevel.set(m_batteryLevel() - 1);
 }
 
 void CFakeSensor::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

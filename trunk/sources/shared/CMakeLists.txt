@@ -91,7 +91,7 @@ set(SHARED_LIB_SRC
 	shared/plugin/yadomsApi/IYadomsApi.h
 
    shared/plugin/yadomsApi/historization/IHistorizable.h
-   shared/plugin/yadomsApi/historization/HistorizableType.hpp
+   shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp
    shared/plugin/yadomsApi/historization/BatteryLevel.cpp
    shared/plugin/yadomsApi/historization/BatteryLevel.h
    shared/plugin/yadomsApi/historization/Historizers.h

@@ -1,15 +1,13 @@
 #pragma once
 #include <shared/Export.h>
-#include <shared/DataContainer.h>
-#include <shared/enumeration/EnumHelpers.hpp>
-#include "IHistorizable.h"
+#include "SingleHistorizableData.hpp"
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {   
    //-----------------------------------------------------
    ///\brief A weight historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CWeight : public IHistorizable
+   class YADOMS_SHARED_EXPORT CWeight : public CSingleHistorizableData<double>
    {
    public:
       //-----------------------------------------------------
@@ -23,48 +21,6 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       ///\brief                     Destructor
       //-----------------------------------------------------
       virtual ~CWeight();
-
-      // IHistorizable implementation
-      virtual const std::string& getKeyword() const;
-      virtual const CStandardCapacity& getCapacity() const;
-      virtual const std::string formatValue() const;
-      virtual const EMeasureType& getMeasureType() const;
-      // [END] IHistorizable implementation
-
-      //-----------------------------------------------------
-      ///\brief                     Set value from Yadoms command
-      ///\param[in] yadomsCommand   Yadoms command container
-      ///\throw                     shared::exception::CInvalidParameter or COutOfRange if fail to parse command
-      //-----------------------------------------------------
-      void set(const shared::CDataContainer& yadomsCommand);
-
-      //-----------------------------------------------------
-      ///\brief                     Set value
-      ///\param[in] frequency       Weight value (Kg)
-      //-----------------------------------------------------
-      void set(double weight);
-
-      //-----------------------------------------------------
-      ///\brief                     Get value
-      ///\return                    The weight value (Kg)
-      //-----------------------------------------------------
-      double weight() const;
-
-   private:
-      //-----------------------------------------------------
-      ///\brief                     The keyword name
-      //-----------------------------------------------------
-      const std::string m_keywordName;
-
-      //-----------------------------------------------------
-      ///\brief                     The weight value (Kg)
-      //-----------------------------------------------------
-      double m_weight;
-
-      //-----------------------------------------------------
-      ///\brief                     The measure type
-      //-----------------------------------------------------
-      const EMeasureType m_measureType;
    };
 
 

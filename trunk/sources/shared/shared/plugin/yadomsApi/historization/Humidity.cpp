@@ -8,58 +8,25 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {
 
-CHumidity::CHumidity(const std::string& keywordName, const EMeasureType& measureType)
-   :m_keywordName(keywordName), m_humidity(0), m_measureType(measureType)
-{
-}
+   CHumidity::CHumidity(const std::string& keywordName, const EMeasureType& measureType)
+      :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Humidity, "humidity", 0, measureType)
+   {
+   }
 
-CHumidity::~CHumidity()
-{
-}
+   CHumidity::~CHumidity()
+   {
+   }
 
-const std::string& CHumidity::getKeyword() const
-{
-   return m_keywordName;
-}
 
-const CStandardCapacity& CHumidity::getCapacity() const
-{
-   return CStandardCapacities::Humidity;
-}
+   double CHumidity::Normalize(double value)
+   {
+      if (value > 100)
+         return 100.0;
+      if (value < 0)
+         return 0.0;
+      return value;
+   }
 
-void CHumidity::set(const shared::CDataContainer& yadomsCommand)
-{
-   m_humidity = Normalize(yadomsCommand.get<int>("humidity"));
-}
-
-void CHumidity::set(int humidity)
-{
-   m_humidity = Normalize(humidity);
-}
-
-const std::string CHumidity::formatValue() const
-{
-   return boost::lexical_cast<std::string>(humidity());
-}
-
-int CHumidity::Normalize(int value)
-{
-   if (value > 100)
-      return 100;
-   if (value < 0)
-      return 0;
-   return value;
-}
-
-int CHumidity::humidity() const
-{
-   return m_humidity;
-}
-
-const EMeasureType& CHumidity::getMeasureType() const
-{
-   return m_measureType;
-}
 
 } } } } // namespace shared::plugin::yadomsApi::historization
 

@@ -13,7 +13,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
 
 
    CRestart::CRestart(const std::string& keywordName)
-		:CHistorizableType<ERestartCommand>(keywordName, shared::plugin::yadomsApi::CStandardCapacities::Restart, "command")
+		:CSingleHistorizableData<ERestartCommand>(keywordName, shared::plugin::yadomsApi::CStandardCapacities::Restart, "command")
    {
    }
 

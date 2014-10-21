@@ -377,13 +377,13 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYadomsApi> cont
 
    historizeData(context);
 
-   YADOMS_LOG(debug) << "UPS rating informations : inputVoltage=" << m_inputVoltage.voltage() <<
-      ", inputfaultVoltage="  << m_inputfaultVoltage.voltage() <<
-      ", outputVoltage="      << m_outputVoltage.voltage() <<
-      ", outputCurrent="      << m_outputCurrent.current() <<
-      ", inputFrequency="     << m_inputFrequency.frequency() <<
-      ", batteryVoltage="     << m_batteryVoltage.voltage() <<
-      ", temperature="        << m_temperature.temperature();
+   YADOMS_LOG(debug) << "UPS rating informations : inputVoltage=" << m_inputVoltage.get() <<
+      ", inputfaultVoltage="  << m_inputfaultVoltage.get() <<
+      ", outputVoltage="      << m_outputVoltage.get() <<
+      ", outputCurrent="      << m_outputCurrent.get() <<
+      ", inputFrequency="     << m_inputFrequency.get() <<
+      ", batteryVoltage="     << m_batteryVoltage.get() <<
+      ", temperature="        << m_temperature.get();
    YADOMS_LOG(debug) << "UPS status : utilityFail=" << (utilityFail ? "YES" : "NO") <<
       ", batteryLow="         << (batteryLow ? "YES" : "NO") <<
       ", bypassActive="       << (bypassActive ? "YES" : "NO") <<
@@ -540,5 +540,5 @@ unsigned int CMegatecUps::getBatteryLevel() const
       return 100; // Nominal voltage is not initialized
 
    //TODO convertir en %
-   return m_batteryVoltage.voltage();
+   return m_batteryVoltage;
 }
