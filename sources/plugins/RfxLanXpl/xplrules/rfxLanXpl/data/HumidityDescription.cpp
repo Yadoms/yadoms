@@ -1,16 +1,14 @@
 #include "stdafx.h"
 #include "HumidityDescription.h"
-#include <shared/exception/InvalidParameter.hpp>
-#include <shared/Log.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
-DECLARE_ENUM_IMPLEMENTATION_CUSTOM(EHumidityDescription,
-   ((Normal)("normal"))
-   ((Confort)("confort"))
-   ((Dry)("dry"))
-   ((Wet)("wet"))
+DECLARE_ENUM_IMPLEMENTATION(EHumidityDescription,
+   ((Normal))
+   ((Confort))
+   ((Dry))
+   ((Wet))
 );
 
 
@@ -18,7 +16,7 @@ DECLARE_ENUM_IMPLEMENTATION_CUSTOM(EHumidityDescription,
 
    
 CHumidityDescription::CHumidityDescription(const std::string& keywordName)
-   :CHistorizableEnum<EHumidityDescription>(keywordName, HumidityDescriptionCapacity, "command")
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EHumidityDescription>(keywordName, HumidityDescriptionCapacity, "command")
 {
 }
 

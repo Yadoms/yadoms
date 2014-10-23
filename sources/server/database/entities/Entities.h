@@ -10,22 +10,22 @@
 
 namespace database { namespace entities {
    DECLARE_ENUM_HEADER(ESecurityAccess,
-      ((None)(0))
-      ((Admin)(1))
-      ((User)(2))
+      ((None))
+      ((Admin))
+      ((User))
    )
 
    DECLARE_ENUM_HEADER(EEventType,
-      ((Unload)(0))
-      ((Load)(1))
-      ((Crash)(2))
-      ((Info)(3))
-      ((Error)(4))
+      ((Unload))
+      ((Load))
+      ((Crash))
+      ((Info))
+      ((Error))
    )   
    
    DECLARE_ENUM_HEADER(EAcquisitionSummaryType,
-      ((Hour)(0))
-      ((Day)(1))
+      ((Hour))
+      ((Day))
    )
 
    DECLARE_ENUM_HEADER(ESystemEventCode,

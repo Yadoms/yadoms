@@ -9,9 +9,9 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
    ///\brief               The curtain command values
    //-----------------------------------------------------   
    DECLARE_ENUM_HEADER_SHARED(ECurtainCommand, YADOMS_SHARED_EXPORT,
-      ((Stop)(0))
-      ((Open)(1))
-      ((Close)(2))
+      ((Stop))
+      ((Open))
+      ((Close))
    );
 
 

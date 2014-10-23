@@ -7,8 +7,8 @@
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization {
 
-   DECLARE_ENUM_IMPLEMENTATION_CUSTOM(EShutdownCommand,
-      ((Shutdown)("shutdown"))
+   DECLARE_ENUM_IMPLEMENTATION(EShutdownCommand,
+      ((Shutdown))
    );
 
 

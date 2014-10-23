@@ -32,16 +32,17 @@ namespace xplrules { namespace rfxLanXpl {
       virtual boost::shared_ptr< xplcore::CXplMessage > createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand> & commandData, const std::string & rfxAddress);
       virtual std::string generateVirtualDeviceIdentifier();
       // [END] ICommandRule implemntation
-   private:
+
       //-----------------------------------------------------
       ///\brief                     The switch state
       //-----------------------------------------------------
       DECLARE_ENUM_HEADER(EState,
-         ((Off)(0))
-         ((On)(1))
-         ((Dim)(2))
+         ((Off))
+         ((On))
+         ((Dim))
       );
 
+   private:
 
       static std::string m_keywordAddress;
       static std::string m_keywordUnit;

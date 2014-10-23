@@ -30,10 +30,17 @@ public:
 };
 
 
+
+
+
+
+
+
 void ThreadNotificationListener(shared::notification::CNotificationCenter * center, int * notifReceivedCount)
 {
    try
    {
+      
       bool receiveNotificationEnd = false;
       center->registerObserver(notifReceivedCount);
 

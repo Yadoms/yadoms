@@ -4,36 +4,37 @@
 namespace database { namespace entities {
    
    DECLARE_ENUM_IMPLEMENTATION(ESecurityAccess,
-      (None)
-      (Admin)
-      (User)
+      ((None))
+      ((Admin))
+      ((User))
    )
 
    DECLARE_ENUM_IMPLEMENTATION(EEventType,
-      (Unload)
-      (Load)
-      (Crash)
-      (Info)
-      (Error)
+      ((Unload))
+      ((Load))
+      ((Crash))
+      ((Info))
+      ((Error))
    )
 
    DECLARE_ENUM_IMPLEMENTATION(EAcquisitionSummaryType,
-      (Hour)
-      (Day)
+      ((Hour))
+      ((Day))
    )
 
 
    DECLARE_ENUM_IMPLEMENTATION(ESystemEventCode,
-      (ThreadFailed)
-      (TaskFailed)
-      (PluginDisabled)
-      (PluginCrash)
-      (YadomsCrash)
-      (DefaultCode)
-      (Started)
-      (Stopped)
-      (Updated)
+      ((ThreadFailed))
+      ((TaskFailed))
+      ((PluginDisabled))
+      ((PluginCrash))
+      ((YadomsCrash))
+      ((DefaultCode))
+      ((Started))
+      ((Stopped))
+      ((Updated))
    )
+
 
 
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(

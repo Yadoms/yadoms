@@ -86,9 +86,9 @@ unsigned char CCurtain1::toProtocolState(const yApi::historization::CCurtain& cu
 {
    switch (curtainState.get()())
    {
-   case yApi::historization::ECurtainCommand::kOpen: return curtain_sOpen;
-   case yApi::historization::ECurtainCommand::kClose: return curtain_sClose;
-   case yApi::historization::ECurtainCommand::kStop: return curtain_sStop;
+   case yApi::historization::ECurtainCommand::kOpenValue: return curtain_sOpen;
+   case yApi::historization::ECurtainCommand::kCloseValue: return curtain_sClose;
+   case yApi::historization::ECurtainCommand::kStopValue: return curtain_sStop;
    default:
       BOOST_ASSERT_MSG(false, "Unsupported value");
       throw shared::exception::CInvalidParameter(curtainState.formatValue());

@@ -6,13 +6,13 @@
 
 
 namespace xplrules { namespace rfxLanXpl {
-
+   
    DECLARE_ENUM_IMPLEMENTATION_NESTED(CAcBasic::EState, EState,
-      (Off)
-      (On)
-      (Dim)
+      ((Off))
+      ((On))
+      ((Dim))
    );
-
+      
    std::string CAcBasic::m_keywordAddress = "address";
    std::string CAcBasic::m_keywordUnit = "unit";
    std::string CAcBasic::m_keywordCommand = "command";
@@ -57,19 +57,18 @@ namespace xplrules { namespace rfxLanXpl {
       MessageContent data;
       try
       {
-         EState valFromEquipment;
-         valFromEquipment.setFromString(msg.getBodyValue(m_keywordCommand));
-         
+         EState valFromEquipment(msg.getBodyValue(m_keywordCommand));
+        
          boost::shared_ptr<shared::plugin::yadomsApi::historization::CSwitch> sw(new shared::plugin::yadomsApi::historization::CSwitch(m_keywordCommand));
          switch (valFromEquipment)
          {
-         case EState::kOn:
+         case EState::kOnValue:
             sw->set(true);
             break;
-         case EState::kOff:
+         case EState::kOffValue:
             sw->set(false);
             break;
-         case EState::kDim:
+         case EState::kDimValue:
             sw->set(boost::lexical_cast<int>(msg.getBodyValue(m_keywordLevel)));
             break;
          }

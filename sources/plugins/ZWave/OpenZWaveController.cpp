@@ -44,7 +44,7 @@ std::string COpenZWaveController::GenerateDeviceStringID(uint32 homeId, uint8 no
 std::string COpenZWaveController::GenerateKeywordStringID(const std::string & label, const ECommandClass & commandClass)
 {
    std::stringstream sstr;
-   sstr << label << "." << commandClass.getAsString();
+   sstr << label << "." << commandClass.toString();
    return sstr.str();
 }
 
@@ -437,7 +437,7 @@ void COpenZWaveController::RetreiveOpenZWaveIds(const std::string & device, cons
       throw shared::exception::CException("The keyword id is invalid : not matching pattern : <label>-<class> ");
    }
    keywordName = splittedKeyword[0];
-   keywordClass.setFromString(splittedKeyword[1]);
+   keywordClass.fromString(splittedKeyword[1]);
 
 }
 

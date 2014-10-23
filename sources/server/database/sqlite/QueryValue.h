@@ -134,7 +134,7 @@ namespace sqlite {
       //--------------------------------------------------------------
       static const std::string getAsString(const T & anyValue)
       {
-         return anyValue.getAsString();
+         return anyValue.toString();
       }
    };
 

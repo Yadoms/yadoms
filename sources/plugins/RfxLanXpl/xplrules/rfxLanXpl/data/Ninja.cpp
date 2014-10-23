@@ -1,12 +1,10 @@
 #include "stdafx.h"
 #include "Ninja.h"
-#include <shared/exception/InvalidParameter.hpp>
-#include <shared/Log.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
-DECLARE_ENUM_IMPLEMENTATION_CUSTOM(ENinjaCommand,
+DECLARE_ENUM_IMPLEMENTATION(ENinjaCommand,
       ((On)("on"))
       ((Off)("off"))
       ((StepUp)("step_up"))
@@ -14,7 +12,6 @@ DECLARE_ENUM_IMPLEMENTATION_CUSTOM(ENinjaCommand,
       ((RunUp)("run_up"))
       ((RunDown)("run_down"))
       ((Stop)("stop"))
-
 );
 
 
@@ -22,7 +19,7 @@ const shared::plugin::yadomsApi::CStandardCapacity& NinjaCapacity = shared::plug
 
    
 CNinja::CNinja(const std::string& keywordName)
-   :CHistorizableEnum<ENinjaCommand>(keywordName, NinjaCapacity, "command")
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ENinjaCommand>(keywordName, NinjaCapacity, "command")
 {
 }
 

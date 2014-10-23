@@ -1,6 +1,6 @@
 #pragma once
 
-#include "HistorizableEnum.h"
+#include <shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp>
 #include <shared/enumeration/EnumHelpers.hpp>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
@@ -9,16 +9,16 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
    ///\brief               The ninja-robocam command values
    //-----------------------------------------------------   
    DECLARE_ENUM_HEADER(EHumidityDescription,
-      ((Normal)(0))
-      ((Confort)(1))
-      ((Dry)(2))
-      ((Wet)(3))
+      ((Normal))
+      ((Confort))
+      ((Dry))
+      ((Wet))
    );
 
    //-----------------------------------------------------
    ///\brief A Ninja historizable object
    //-----------------------------------------------------
-   class CHumidityDescription : public CHistorizableEnum<EHumidityDescription>
+   class CHumidityDescription : public shared::plugin::yadomsApi::historization::CSingleHistorizableData<EHumidityDescription>
    {
    public:
       //-----------------------------------------------------

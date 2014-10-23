@@ -1,6 +1,6 @@
 #pragma once
 
-#include "HistorizableEnum.h"
+#include <shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp>
 #include <shared/enumeration/EnumHelpers.hpp>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
@@ -9,15 +9,15 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
    ///\brief               The RfxLan digital io command values
    //-----------------------------------------------------   
    DECLARE_ENUM_HEADER(EDigitalIoCommand,
-      ((High)(0))
-      ((Low)(1))
-      ((Toggle)(2))
+      ((High))
+      ((Low))
+      ((Toggle))
    );
 
    //-----------------------------------------------------
    ///\brief A RfxLan digital io historizable object
    //-----------------------------------------------------
-   class CDigitalIoCommand : public CHistorizableEnum<EDigitalIoCommand>
+   class CDigitalIoCommand : public shared::plugin::yadomsApi::historization::CSingleHistorizableData<EDigitalIoCommand>
    {
    public:
       //-----------------------------------------------------

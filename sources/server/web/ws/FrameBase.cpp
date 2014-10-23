@@ -7,8 +7,8 @@ namespace web { namespace ws {
    const std::string CFrameBase::m_dataFieldName = "data";
 
    DECLARE_ENUM_IMPLEMENTATION_NESTED(CFrameBase::EFrameType, EFrameType,
-      (AcquisitionFilter)
-      (AcquisitionUpdate)
+      ((AcquisitionFilter))
+      ((AcquisitionUpdate))
    );
 
 

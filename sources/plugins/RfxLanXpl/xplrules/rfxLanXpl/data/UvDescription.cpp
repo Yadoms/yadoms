@@ -1,12 +1,10 @@
 #include "stdafx.h"
 #include "UvDescription.h"
-#include <shared/exception/InvalidParameter.hpp>
-#include <shared/Log.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
-DECLARE_ENUM_IMPLEMENTATION_CUSTOM(EUvDescription,
+DECLARE_ENUM_IMPLEMENTATION(EUvDescription,
    ((Low)("low"))
    ((Medium)("medium"))
    ((High)("high"))
@@ -18,7 +16,7 @@ DECLARE_ENUM_IMPLEMENTATION_CUSTOM(EUvDescription,
 
    
 CUvDescription::CUvDescription(const std::string& keywordName)
-   :CHistorizableEnum<EUvDescription>(keywordName, UvDescriptionCapacity, "command")
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EUvDescription>(keywordName, UvDescriptionCapacity, "command")
 {
 }
 

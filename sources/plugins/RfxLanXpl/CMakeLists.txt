@@ -46,7 +46,6 @@ set(RFXLANXPL_RULES_SOURCES
 	xplrules/rfxLanXpl/SensorBasic.cpp
 	xplrules/rfxLanXpl/X10Basic.h
 	xplrules/rfxLanXpl/X10Basic.cpp
-	xplrules/rfxLanXpl/data/HistorizableEnum.h
 	xplrules/rfxLanXpl/data/MertikCommand.h
 	xplrules/rfxLanXpl/data/MertikCommand.cpp
 	xplrules/rfxLanXpl/data/MertikStatus.h

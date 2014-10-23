@@ -1,6 +1,6 @@
 #pragma once
 
-#include "HistorizableEnum.h"
+#include <shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp>
 #include <shared/enumeration/EnumHelpers.hpp>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
@@ -9,17 +9,17 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
    ///\brief               The ninja-robocam command values
    //-----------------------------------------------------   
    DECLARE_ENUM_HEADER(EUvDescription,
-      ((Low)(0))
-      ((Medium)(1))
-      ((High)(2))
-      ((VeryHigh)(3))
-      ((Dangerous)(4))
+      ((Low))
+      ((Medium))
+      ((High))
+      ((VeryHigh))
+      ((Dangerous))
    );
 
    //-----------------------------------------------------
    ///\brief A Ninja historizable object
    //-----------------------------------------------------
-   class CUvDescription : public CHistorizableEnum<EUvDescription>
+   class CUvDescription : public shared::plugin::yadomsApi::historization::CSingleHistorizableData<EUvDescription>
    {
    public:
       //-----------------------------------------------------

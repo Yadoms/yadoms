@@ -51,7 +51,7 @@ namespace web {
                         {
                            switch (parsedFrame->getType())
                            {
-                           case web::ws::CFrameBase::EFrameType::kAcquisitionFilter:
+                           case web::ws::CFrameBase::EFrameType::kAcquisitionFilterValue:
                               boost::shared_ptr<web::ws::CAcquisitionFilterFrame> parsedFrameAsqFilter = boost::dynamic_pointer_cast<web::ws::CAcquisitionFilterFrame>(parsedFrame);
                               acquisitionKeywordFilters.clear();
                               acquisitionKeywordFilters = parsedFrameAsqFilter->getFilter();

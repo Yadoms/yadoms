@@ -1,6 +1,6 @@
 #pragma once
 
-#include "HistorizableEnum.h"
+#include <shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp>
 #include <shared/enumeration/EnumHelpers.hpp>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
@@ -9,16 +9,16 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
    ///\brief               The Digimax demand
    //-----------------------------------------------------   
    DECLARE_ENUM_HEADER(EDigimaxDemand,
-      ((HeaterOn)(0))
-      ((HeaterOff)(1))
-      ((CoolingOn)(2))
-      ((CoolingOff)(3))
+      ((HeaterOn))
+      ((HeaterOff))
+      ((CoolingOn))
+      ((CoolingOff))
    );
 
    //-----------------------------------------------------
    ///\brief A RfxLan digital io historizable object
    //-----------------------------------------------------
-   class CDigimaxDemand : public CHistorizableEnum<EDigimaxDemand>
+   class CDigimaxDemand : public shared::plugin::yadomsApi::historization::CSingleHistorizableData<EDigimaxDemand>
    {
    public:
       //-----------------------------------------------------

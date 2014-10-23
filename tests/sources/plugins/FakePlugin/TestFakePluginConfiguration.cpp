@@ -17,7 +17,8 @@ BOOST_AUTO_TEST_CASE(ReadFakePluginDefaultConfiguration)
    CFakePluginConfiguration cfg;
    cfg.initializeWith(defaultConf);
 
-   BOOST_CHECK_EQUAL(cfg.getSerialPort(), "tty0");
+   //TODO : la ligne suivante a été supprimée car la méethode n'existe plus. voir ce qu'il faut faire pour réécrire cette ligne
+   //BOOST_CHECK_EQUAL(cfg.getSerialPort(), "tty0");
    BOOST_CHECK_EQUAL(cfg.getEnumParameter(), (EEnumType)kEnumValue1);
 }
 

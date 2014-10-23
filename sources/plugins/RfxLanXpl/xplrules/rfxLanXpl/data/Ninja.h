@@ -1,7 +1,7 @@
 #pragma once
 
-#include "HistorizableEnum.h"
 #include <shared/enumeration/EnumHelpers.hpp>
+#include <shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
@@ -9,19 +9,19 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
    ///\brief               The ninja-robocam command values
    //-----------------------------------------------------   
    DECLARE_ENUM_HEADER(ENinjaCommand,
-      ((On)(0))
-      ((Off)(1))
-      ((StepUp)(2))
-      ((StepDown)(3))
-      ((RunUp)(4))
-      ((RunDown)(5))
-      ((Stop)(6))
+      ((On))
+      ((Off))
+      ((StepUp))
+      ((StepDown))
+      ((RunUp))
+      ((RunDown))
+      ((Stop))
    );
 
    //-----------------------------------------------------
    ///\brief A Ninja historizable object
    //-----------------------------------------------------
-   class CNinja : public CHistorizableEnum<ENinjaCommand>
+   class CNinja : public shared::plugin::yadomsApi::historization::CSingleHistorizableData<ENinjaCommand>
    {
    public:
       //-----------------------------------------------------
