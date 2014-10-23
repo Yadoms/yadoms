@@ -10,7 +10,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       ///\brief               The restart command values
       //-----------------------------------------------------   
 		DECLARE_ENUM_HEADER_SHARED(ERestartCommand, YADOMS_SHARED_EXPORT,
-         ((Restart)(0))
+         ((Restart))
       );
 
       //-----------------------------------------------------

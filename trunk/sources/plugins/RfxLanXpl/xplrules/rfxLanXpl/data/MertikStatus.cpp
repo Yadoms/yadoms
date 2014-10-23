@@ -1,12 +1,10 @@
 #include "stdafx.h"
 #include "MertikStatus.h"
-#include <shared/exception/InvalidParameter.hpp>
-#include <shared/Log.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
-DECLARE_ENUM_IMPLEMENTATION_CUSTOM(EMertikStatus,
+DECLARE_ENUM_IMPLEMENTATION(EMertikStatus,
    ((On)("on"))
    ((Off)("off"))
    ((StepUp)("step_up"))
@@ -20,7 +18,7 @@ const shared::plugin::yadomsApi::CStandardCapacity& MertikStatusCapacity = share
 
    
 CMertickStatus::CMertickStatus(const std::string& keywordName)
-   :CHistorizableEnum<EMertikStatus>(keywordName, MertikStatusCapacity, "status")
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EMertikStatus>(keywordName, MertikStatusCapacity, "status")
 {
 }
 

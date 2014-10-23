@@ -118,12 +118,12 @@ int CQualifier::computeQuality(const CIdentityForQualifier& identity) const
    {
       switch((*it)->EventType())
       {
-      case database::entities::EEventType::kLoad:
+      case database::entities::EEventType::kLoadValue:
          {
             lastLoadTime = (*it)->EventDate();
             break;
          }
-      case database::entities::EEventType::kUnload:
+      case database::entities::EEventType::kUnloadValue:
          {
             if(lastLoadTime != boost::posix_time::not_a_date_time)
                runningDuration += (*it)->EventDate() - lastLoadTime;
@@ -131,7 +131,7 @@ int CQualifier::computeQuality(const CIdentityForQualifier& identity) const
             lastLoadTime = boost::posix_time::not_a_date_time;
             break;
          }
-      case database::entities::EEventType::kCrash:
+      case database::entities::EEventType::kCrashValue:
          {
             crashsNb++;
             break;

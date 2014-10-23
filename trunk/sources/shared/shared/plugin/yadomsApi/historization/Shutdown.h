@@ -10,7 +10,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       ///\brief               The shutdown command values
       //-----------------------------------------------------   
 		DECLARE_ENUM_HEADER_SHARED(EShutdownCommand, YADOMS_SHARED_EXPORT,
-         ((Shutdown)(0))
+         ((Shutdown))
       );
 
       //-----------------------------------------------------

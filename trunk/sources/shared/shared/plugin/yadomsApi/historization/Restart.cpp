@@ -7,8 +7,8 @@
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization {
 
-   DECLARE_ENUM_IMPLEMENTATION_CUSTOM(ERestartCommand,
-      ((Restart)("restart"))
+   DECLARE_ENUM_IMPLEMENTATION(ERestartCommand,
+      ((Restart))
    );
 
 

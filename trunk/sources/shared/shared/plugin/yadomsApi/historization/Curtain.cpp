@@ -6,9 +6,9 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {
    DECLARE_ENUM_IMPLEMENTATION(ECurtainCommand,
-      (Stop)
-      (Open)
-      (Close)
+      ((Stop))
+      ((Open))
+      ((Close))
    );
 
    CCurtain::CCurtain(const std::string& keywordName)

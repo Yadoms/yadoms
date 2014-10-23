@@ -29,6 +29,7 @@
 #include <boost/iostreams/stream.hpp>
 #include <boost/iostreams/device/array.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/preprocessor.hpp>
 #include <boost/random/independent_bits.hpp>
 #include <boost/regex.hpp>
 #include <boost/shared_ptr.hpp>

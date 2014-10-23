@@ -20,8 +20,8 @@ namespace web {   namespace ws {
          ///\brief Enumeration for all frame type
          //-----------------------------
          DECLARE_ENUM_HEADER(EFrameType,
-            ((AcquisitionFilter)(0))
-            ((AcquisitionUpdate)(1))
+            ((AcquisitionFilter))
+            ((AcquisitionUpdate))
          );
 
       protected:

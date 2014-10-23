@@ -3,13 +3,12 @@
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {
-
    DECLARE_ENUM_IMPLEMENTATION(EMeasureType,
-      (Absolute)
-      (Increment)
-      (Cumulative)
+      ((Absolute))
+      ((Increment))
+      ((Cumulative))
    )
-	
+
 } } } } // namespace shared::plugin::yadomsApi::historization
 	
 	

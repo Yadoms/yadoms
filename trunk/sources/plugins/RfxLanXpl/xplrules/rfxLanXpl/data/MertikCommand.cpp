@@ -1,12 +1,10 @@
 #include "stdafx.h"
 #include "MertikCommand.h"
-#include <shared/exception/InvalidParameter.hpp>
-#include <shared/Log.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
-DECLARE_ENUM_IMPLEMENTATION_CUSTOM(EMertikCommand,
+DECLARE_ENUM_IMPLEMENTATION(EMertikCommand,
    ((Left)("left"))
    ((Right)("right"))
    ((Up)("up"))
@@ -29,7 +27,7 @@ const shared::plugin::yadomsApi::CStandardCapacity& MertikCommandCapacity = shar
 
    
 CMertickCommand::CMertickCommand(const std::string& keywordName)
-   :CHistorizableEnum<EMertikCommand>(keywordName, MertikCommandCapacity, "command")
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EMertikCommand>(keywordName, MertikCommandCapacity, "command")
 {
 }
 

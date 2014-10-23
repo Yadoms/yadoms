@@ -1,12 +1,10 @@
 #include "stdafx.h"
 #include "Forecast.h"
-#include <shared/exception/InvalidParameter.hpp>
-#include <shared/Log.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
-DECLARE_ENUM_IMPLEMENTATION_CUSTOM(EForecast,
+DECLARE_ENUM_IMPLEMENTATION(EForecast,
    ((Sunny)("sunny"))
    ((PartlyCloudy)("partly cloudy"))
    ((Cloudy)("cloudy"))
@@ -14,11 +12,11 @@ DECLARE_ENUM_IMPLEMENTATION_CUSTOM(EForecast,
 );
 
 
-   const shared::plugin::yadomsApi::CStandardCapacity& ForecastCapacity = shared::plugin::yadomsApi::CStandardCapacity("forecast", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kGet, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+const shared::plugin::yadomsApi::CStandardCapacity& ForecastCapacity = shared::plugin::yadomsApi::CStandardCapacity("forecast", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kGet, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
 
    
 CForecast::CForecast(const std::string& keywordName)
-   :CHistorizableEnum<EForecast>(keywordName, ForecastCapacity, "command")
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EForecast>(keywordName, ForecastCapacity, "command")
 {
 }
 

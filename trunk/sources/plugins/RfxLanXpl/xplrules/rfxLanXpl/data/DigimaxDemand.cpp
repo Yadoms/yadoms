@@ -1,12 +1,10 @@
 #include "stdafx.h"
 #include "DigimaxDemand.h"
-#include <shared/exception/InvalidParameter.hpp>
-#include <shared/Log.h>
 #include <shared/plugin/yadomsApi/StandardUnits.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
-DECLARE_ENUM_IMPLEMENTATION_CUSTOM(EDigimaxDemand,
+DECLARE_ENUM_IMPLEMENTATION(EDigimaxDemand,
    ((HeaterOn)("heater_on"))
    ((HeaterOff)("heater_off"))
    ((CoolingOn)("cooling_on"))
@@ -18,7 +16,7 @@ const shared::plugin::yadomsApi::CStandardCapacity& DigimaxDemandCapacity = shar
 
    
 CDigimaxDemand::CDigimaxDemand(const std::string& keywordName)
-   :CHistorizableEnum<EDigimaxDemand>(keywordName, DigimaxDemandCapacity, "command")
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EDigimaxDemand>(keywordName, DigimaxDemandCapacity, "command")
 {
 }
 

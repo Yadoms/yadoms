@@ -1,7 +1,7 @@
 #pragma once
 
-#include "HistorizableEnum.h"
 #include <shared/enumeration/EnumHelpers.hpp>
+#include <shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
@@ -9,28 +9,28 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
    ///\brief               The mertik command values
    //-----------------------------------------------------   
    DECLARE_ENUM_HEADER(EMertikCommand,
-      ((Left)(0))
-      ((Right)(1))
-      ((Up)(2))
-      ((Down)(3))
-      ((P1)(4))
-      ((ProgP1)(5))
-      ((P2)(6))
-      ((ProgP2)(7))
-      ((P3)(8))
-      ((ProgP3)(9))
-      ((P4)(10))
-      ((ProgP4)(11))
-      ((Center)(12))
-      ((ProgCenter)(13))
-      ((Sweep)(14))
-      ((ProgSweep)(15))
+      ((Left))
+      ((Right))
+      ((Up))
+      ((Down))
+      ((P1))
+      ((ProgP1))
+      ((P2))
+      ((ProgP2))
+      ((P3))
+      ((ProgP3))
+      ((P4))
+      ((ProgP4))
+      ((Center))
+      ((ProgCenter))
+      ((Sweep))
+      ((ProgSweep))
    );
 
    //-----------------------------------------------------
    ///\brief A mertick historizable object
    //-----------------------------------------------------
-   class CMertickCommand : public CHistorizableEnum<EMertikCommand>
+   class CMertickCommand : public shared::plugin::yadomsApi::historization::CSingleHistorizableData<EMertikCommand>
    {
    public:
       //-----------------------------------------------------
