@@ -74,7 +74,7 @@ namespace database {
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string, std::string> > getKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > getKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
       
       //--------------------------------------------------------------
       /// \brief                 Get the data  by hour (avg, min, max per hour)
@@ -84,7 +84,7 @@ namespace database {
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string, std::string> > getKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > getKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
       
       //--------------------------------------------------------------
       /// \brief                 Get the data (highchart js format) : [[date,value],[date,value],...]

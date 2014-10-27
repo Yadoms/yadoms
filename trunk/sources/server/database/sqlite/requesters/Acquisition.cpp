@@ -157,14 +157,14 @@ namespace database {  namespace sqlite {  namespace requesters {
 
 
 
-   std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string, std::string> > CAcquisition::getKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+   std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > CAcquisition::getKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
    {
       return getKeywordSummaryDataByType(database::entities::EAcquisitionSummaryType::kDay, keywordId, timeFrom, timeTo);
    }
 
 
 
-   std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string, std::string> > CAcquisition::getKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+   std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > CAcquisition::getKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
    {
       return getKeywordSummaryDataByType(database::entities::EAcquisitionSummaryType::kHour, keywordId, timeFrom, timeTo);
    }
@@ -172,10 +172,10 @@ namespace database {  namespace sqlite {  namespace requesters {
 
 
 
-   std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string, std::string>  > CAcquisition::getKeywordSummaryDataByType(const database::entities::EAcquisitionSummaryType & type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+   std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary>  > CAcquisition::getKeywordSummaryDataByType(const database::entities::EAcquisitionSummaryType & type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
    {
       CQuery qSelect;
-      qSelect.Clear().Select(CAcquisitionSummaryTable::getDateColumnName(), CAcquisitionSummaryTable::getAvgColumnName(), CAcquisitionSummaryTable::getMinColumnName(), CAcquisitionSummaryTable::getMaxColumnName()).
+      qSelect.Select().
          From(CAcquisitionSummaryTable::getTableName()).
          Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
          And(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, type);
@@ -196,9 +196,10 @@ namespace database {  namespace sqlite {  namespace requesters {
       else
          qSelect.Limit(200); // more than 8 days
 
-      database::sqlite::adapters::CMultipleValueAdapter<boost::posix_time::ptime, std::string, std::string, std::string> mva;
-      m_databaseRequester->queryEntities(&mva, qSelect);
-      return mva.getResults();
+
+      database::sqlite::adapters::CAcquisitionSummaryAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CAcquisitionSummary> >(&adapter, qSelect);
+      return adapter.getResults();
    }
 
 
@@ -211,7 +212,7 @@ namespace database {  namespace sqlite {  namespace requesters {
       //this query is optimized to get only one field to read
       //the output data is a single column (without brackets):  ["dateiso",value]
       CQuery qSelect;
-      qSelect.Clear().Select("(strftime('%s', isodate(" + CAcquisitionTable::getDateColumnName() + "))*1000) ||','|| " + CAcquisitionTable::getValueColumnName()).
+      qSelect.Select("(strftime('%s', isodate(" + CAcquisitionTable::getDateColumnName() + "))*1000) ||','|| " + CAcquisitionTable::getValueColumnName()).
          From(CAcquisitionTable::getTableName()).
          Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);
 
@@ -235,7 +236,7 @@ namespace database {  namespace sqlite {  namespace requesters {
       //this query is optimized to get only one field to read
       //the output data is a single column (without brackets):  ["dateiso",value]
       CQuery qSelect;
-      qSelect.Clear().Select("(strftime('%s', isodate(" + CAcquisitionSummaryTable::getDateColumnName() + "))*1000) ||','|| " + CAcquisitionSummaryTable::getAvgColumnName()).
+      qSelect.Select("(strftime('%s', isodate(" + CAcquisitionSummaryTable::getDateColumnName() + "))*1000) ||','|| " + CAcquisitionSummaryTable::getAvgColumnName()).
          From(CAcquisitionSummaryTable::getTableName()).
          Where(CAcquisitionSummaryTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId).
          And(CAcquisitionSummaryTable::getTypeColumnName(), CQUERY_OP_EQUAL, type);

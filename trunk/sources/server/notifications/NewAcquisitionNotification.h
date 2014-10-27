@@ -13,11 +13,12 @@ namespace notifications {
 
       //-----------------------------
       ///\brief Constructor
-      ///\param [in]  keywordId   The keyword id which have a new data
-      ///\param [in]  value       The value
+      ///\param [in]  acquisition   The acquisition data
+      ///\param [in]  day           The dayly summary data
+      ///\param [in]  jour          The hourly dummary data
       //-----------------------------
-      CNewAcquisitionNotification(boost::shared_ptr< database::entities::CAcquisition > acquisition)
-         :m_acquisition(acquisition)
+      CNewAcquisitionNotification(boost::shared_ptr< database::entities::CAcquisition > acquisition, boost::shared_ptr< database::entities::CAcquisitionSummary > day = NULL, boost::shared_ptr< database::entities::CAcquisitionSummary > hour = NULL)
+         :m_acquisition(acquisition), m_daySummary(day), m_hourSummary(hour)
       {
       }
 
@@ -29,16 +30,38 @@ namespace notifications {
       }
 
       //-----------------------------
-      ///\brief Get the keyword id
-      ///\return  the keyword id
+      ///\brief Get the raw acquisition
+      ///\return  the raw acquisition
       //-----------------------------
       boost::shared_ptr< database::entities::CAcquisition > getAcquisition() const { return m_acquisition; }
 
+      //-----------------------------
+      ///\brief Get the day summary data
+      ///\return  the day summary data
+      //-----------------------------
+      boost::shared_ptr< database::entities::CAcquisitionSummary > getSummaryDay() const { return m_daySummary; }
+
+      //-----------------------------
+      ///\brief Get the hour summary data
+      ///\return  the hour summary data
+      //-----------------------------
+      boost::shared_ptr< database::entities::CAcquisitionSummary > getSummaryHour() const { return m_hourSummary; }
+
    private:
       //-----------------------------
-      ///\brief The keyword id
+      ///\brief The raw acqusition
       //-----------------------------
       boost::shared_ptr< database::entities::CAcquisition > m_acquisition;
+
+      //-----------------------------
+      ///\brief The day summary data
+      //-----------------------------
+      boost::shared_ptr< database::entities::CAcquisitionSummary > m_daySummary;
+
+      //-----------------------------
+      ///\brief The hour summary data
+      //-----------------------------
+      boost::shared_ptr< database::entities::CAcquisitionSummary > m_hourSummary;
    };
 
 } //namespace notifications 

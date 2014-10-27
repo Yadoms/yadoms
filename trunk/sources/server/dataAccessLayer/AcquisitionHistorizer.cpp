@@ -19,6 +19,7 @@ namespace dataAccessLayer {
 
       void CAcquisitionHistorizer::saveData(const int keywordId, const shared::plugin::yadomsApi::historization::IHistorizable & data, boost::posix_time::ptime & dataTime)
       {
+         //save data
          if(data.getMeasureType() == shared::plugin::yadomsApi::historization::EMeasureType::kIncrement)
             m_acquisitionRequester->incrementData(keywordId, data.formatValue(), dataTime);
          else
@@ -26,10 +27,30 @@ namespace dataAccessLayer {
 
          m_acquisitionRequester->saveSummaryData(keywordId, dataTime);
 
+         //post notification
          try
          {
+            //get inserted raw data, and store it into container
             boost::shared_ptr< database::entities::CAcquisition > acq = m_acquisitionRequester->getAcquisitionByKeywordAndDate(keywordId, dataTime);
-            notifications::CAsyncNotificationCenter::get()->postNotification(acq);
+
+            boost::shared_ptr< database::entities::CAcquisitionSummary > acqDay;
+            std::vector< boost::shared_ptr< database::entities::CAcquisitionSummary > > dayData = m_acquisitionRequester->getKeywordDataByDay(keywordId, dataTime, dataTime);
+            if (dayData.size() > 0)
+            {
+               acqDay = dayData[0];
+            }
+
+            boost::shared_ptr< database::entities::CAcquisitionSummary > acqHour;
+            std::vector< boost::shared_ptr< database::entities::CAcquisitionSummary > > hourData = m_acquisitionRequester->getKeywordDataByHour(keywordId, dataTime, dataTime);
+            if (hourData.size() > 0)
+            {
+               acqHour = hourData[0];
+            }
+
+            //construct notification container
+            boost::shared_ptr< notifications::CNewAcquisitionNotification > notificationData(new notifications::CNewAcquisitionNotification(acq, acqDay, acqHour));
+
+            notifications::CAsyncNotificationCenter::get()->postNotification(notificationData);
          }
          catch (shared::exception::CException & ex)
          {

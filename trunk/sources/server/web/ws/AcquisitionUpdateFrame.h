@@ -2,6 +2,8 @@
 
 #include "FrameBase.h"
 #include "database/entities/Entities.h"
+#include "notifications/NewAcquisitionNotification.h"
+
 
 namespace web { namespace ws {
 
@@ -21,12 +23,26 @@ namespace web { namespace ws {
       ///\brief Constructor
       ///\param [in]    content     The acquisition to send to GUI (shared_ptr)
       //-----------------------------
-      CAcquisitionUpdateFrame(const boost::shared_ptr<database::entities::CAcquisition> & content);
+      CAcquisitionUpdateFrame(boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData);
 
       //-----------------------------
       ///\brief Destructor
       //-----------------------------
       virtual ~CAcquisitionUpdateFrame();
+
+   protected:
+      //-----------------------------
+      ///\bruef The acquisition field name
+      //-----------------------------
+      static const std::string m_acquition;
+      //-----------------------------
+      ///\bruef The acquisition SUMMARY DAY field name
+      //-----------------------------
+      static const std::string m_acquitionDay;
+      //-----------------------------
+      ///\bruef The acquisition SUMMARY HOUR name
+      //-----------------------------
+      static const std::string m_acquitionHour;
    };
 
 } //namespace ws
