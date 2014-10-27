@@ -35,8 +35,8 @@ namespace database { namespace sqlite {
          virtual boost::shared_ptr< database::entities::CAcquisition > getAcquisitionByKeywordAndDate(const int keywordId, boost::posix_time::ptime time);
          virtual boost::shared_ptr< database::entities::CAcquisition > getKeywordLastData(const int keywordId);
          virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string>  > getKeywordData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
-         virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string, std::string> > getKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
-         virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string, std::string> > getKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
+         virtual std::vector< boost::shared_ptr< database::entities::CAcquisitionSummary > > getKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
+         virtual std::vector< boost::shared_ptr< database::entities::CAcquisitionSummary > > getKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
          virtual std::string getKeywordHighchartData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
          virtual std::string getKeywordHighchartDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
          virtual std::string getKeywordHighchartDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
@@ -48,10 +48,10 @@ namespace database { namespace sqlite {
          /// \param [in] keywordId     keywordId Id
          /// \param [in] timeFrom      The start date (optionnal)
          /// \param [in] timeTo        The end date (optionnal)
-         /// \return                   Map of data : (date, avg, min, max)
+         /// \return                   CAcquisitionSummary data
          /// \throw                    CInvalidParameter if deviceId is unknown
          //--------------------------------------------------------------
-         std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string, std::string> > getKeywordSummaryDataByType(const database::entities::EAcquisitionSummaryType & type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
+         std::vector< boost::shared_ptr< database::entities::CAcquisitionSummary > > getKeywordSummaryDataByType(const database::entities::EAcquisitionSummaryType & type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo);
 
          //--------------------------------------------------------------
          /// \brief                    Get the summary data (highchart js format) : [[date,value],[date,value],...] by acquisition type

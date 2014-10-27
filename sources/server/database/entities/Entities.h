@@ -121,11 +121,25 @@ namespace database { namespace entities {
    )
 
    DECLARE_ENTITY_CLASS_HEADER(Acquisition,
-      ((Id)(int))
       ((Date)(boost::posix_time::ptime))
       ((KeywordId)(int))
       ((Value)(std::string))
    )
+
+
+   DECLARE_ENTITY_CLASS_HEADER(AcquisitionSummary,
+      ((Type)(database::entities::EAcquisitionSummaryType))
+      ((Date)(boost::posix_time::ptime))
+      ((KeywordId)(int))
+      ((Avg)(std::string))
+      ((Min)(std::string))
+      ((Max)(std::string))
+   )
+
+
+
+
+
 
 
 

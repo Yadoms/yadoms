@@ -23,7 +23,8 @@ namespace adapters {
    DECLARE_ADAPTER_HEADER(Device)
    DECLARE_ADAPTER_HEADER(Keyword)
    DECLARE_ADAPTER_HEADER(Acquisition)
-   
+   DECLARE_ADAPTER_HEADER(AcquisitionSummary)
+  
 } //namespace adapters
 } //namespace sqlite
 } //namespace database 

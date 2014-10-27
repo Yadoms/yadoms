@@ -154,22 +154,9 @@ namespace web {
                   if (parameters.size() > 5)
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
-                  std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string, std::string> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByDay(keywordId, timeFrom, timeTo);
-                  std::vector<shared::CDataContainer> objectList;
-                  std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string, std::string> >::const_iterator i;
-
-                  for (i = allData.begin(); i != allData.end(); ++i)
-                  {
-                     shared::CDataContainer result;
-                     result.set("date", boost::posix_time::to_iso_string(i->get<0>()));
-                     result.set("avg", i->get<1>());
-                     result.set("min", i->get<2>());
-                     result.set("max", i->get<3>());
-                     objectList.push_back(result);
-                  }
-
+                  std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByDay(keywordId, timeFrom, timeTo);
                   shared::CDataContainer result;
-                  result.set< std::vector<shared::CDataContainer> >("data", objectList);
+                  result.set("data", allData);
                   return web::rest::CResult::GenerateSuccess(result);
                }
                else
@@ -208,22 +195,9 @@ namespace web {
                   if (parameters.size() > 5)
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
-                  std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string, std::string> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByHour(keywordId, timeFrom, timeTo);
-                  std::vector<shared::CDataContainer> objectList;
-                  std::vector< boost::tuple<boost::posix_time::ptime, std::string, std::string, std::string> >::const_iterator i;
-
-                  for (i = allData.begin(); i != allData.end(); ++i)
-                  {
-                     shared::CDataContainer result;
-                     result.set("date", boost::posix_time::to_iso_string(i->get<0>()));
-                     result.set("avg", i->get<1>());
-                     result.set("min", i->get<2>());
-                     result.set("max", i->get<3>());
-                     objectList.push_back(result);
-                  }
-
+                  std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByHour(keywordId, timeFrom, timeTo);
                   shared::CDataContainer result;
-                  result.set< std::vector<shared::CDataContainer> >("data", objectList);
+                  result.set("data", allData);
                   return web::rest::CResult::GenerateSuccess(result);
                }
                else

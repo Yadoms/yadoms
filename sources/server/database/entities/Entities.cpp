@@ -16,7 +16,7 @@ namespace database { namespace entities {
       ((Info))
       ((Error))
    )
-
+   
    DECLARE_ENUM_IMPLEMENTATION(EAcquisitionSummaryType,
       ((Hour))
       ((Day))
@@ -124,13 +124,22 @@ namespace database { namespace entities {
       );
 
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(
-   Acquisition,
-      ((Id)(int)(0)("id"))
+      Acquisition,
       ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time())("date"))
       ((KeywordId)(int)(0)("keywordId"))
       ((Value)(std::string)("")("value"))
       );
 
+     
+   DECLARE_ENTITY_CLASS_IMPLEMENTATION(
+      AcquisitionSummary,
+      ((Type)(database::entities::EAcquisitionSummaryType)(database::entities::EAcquisitionSummaryType::kHour)("type"))
+      ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time())("date"))
+      ((KeywordId)(int)(0)("keywordId"))
+      ((Avg)(std::string)("")("avg"))
+      ((Min)(std::string)("")("min"))
+      ((Max)(std::string)("")("max"))
+   );
 
 
 } //namespace entities
