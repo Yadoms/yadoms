@@ -6,9 +6,8 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
 {
 
    CPowerFactor::CPowerFactor(const std::string& keywordName, const EMeasureType& measureType)
-      :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Frequency, "powerFactor", 0.0, measureType)
+      :CSingleHistorizableData<double>(keywordName, CStandardCapacities::PowerFactor, "powerFactor", 0.0, measureType)
    {
-      //TODO : Seb, est-ce une capactié de type fréquence ?
    }
 
    CPowerFactor::~CPowerFactor()

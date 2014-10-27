@@ -45,6 +45,7 @@ namespace shared {   namespace plugin {      namespace yadomsApi      {
    const CStandardCapacity& CStandardCapacities::Humidity = CStandardCapacity("humidity", CStandardUnits::Percent, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Message = CStandardCapacity("message", CStandardUnits::NoUnits, EKeywordAccessMode::kGetSet, EKeywordDataType::kString);
    const CStandardCapacity& CStandardCapacities::Power = CStandardCapacity("power", CStandardUnits::Watt, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::PowerFactor = CStandardCapacity("powerFactor", CStandardUnits::NoUnits, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Pressure = CStandardCapacity("pressure", CStandardUnits::hectoPascal, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Rain = CStandardCapacity("rain", CStandardUnits::Millimeter, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
 	const CStandardCapacity& CStandardCapacities::Restart = CStandardCapacity("restart", CStandardUnits::NoUnits, EKeywordAccessMode::kGetSet, EKeywordDataType::kNoData);
