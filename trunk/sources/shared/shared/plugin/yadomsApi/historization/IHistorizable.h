@@ -1,5 +1,6 @@
 #pragma once
 #include "../StandardCapacities.h"
+#include "../KeywordAccessMode.h"
 #include "MeasureType.h"
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
@@ -26,6 +27,12 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       ///\return                    The capacity
       //-----------------------------------------------------
       virtual const CStandardCapacity& getCapacity() const = 0;
+
+      //-----------------------------------------------------
+      ///\brief                     Get the capacity of the historizable object
+      ///\return                    The capacity
+      //-----------------------------------------------------
+      virtual const EKeywordAccessMode& getAccessMode() const = 0;
 
       //-----------------------------------------------------
       ///\brief                     Format value to Yadoms format

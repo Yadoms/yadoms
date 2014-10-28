@@ -12,11 +12,11 @@ DECLARE_ENUM_IMPLEMENTATION(EHumidityDescription,
 );
 
 
-   const shared::plugin::yadomsApi::CStandardCapacity& HumidityDescriptionCapacity = shared::plugin::yadomsApi::CStandardCapacity("humidityDescription", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kGet, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+   const shared::plugin::yadomsApi::CStandardCapacity& HumidityDescriptionCapacity = shared::plugin::yadomsApi::CStandardCapacity("humidityDescription", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
 
    
 CHumidityDescription::CHumidityDescription(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EHumidityDescription>(keywordName, HumidityDescriptionCapacity, "command")
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EHumidityDescription>(keywordName, HumidityDescriptionCapacity, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGet)
 {
 }
 

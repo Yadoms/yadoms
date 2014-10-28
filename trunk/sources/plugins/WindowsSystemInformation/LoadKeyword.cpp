@@ -19,8 +19,13 @@ const std::string& CLoadKeyword::getKeyword() const
 
 const yApi::CStandardCapacity& CLoadKeyword::getCapacity() const
 {
-   static const yApi::CStandardCapacity LoadCapacity("load", yApi::CStandardUnits::Percent, yApi::EKeywordAccessMode::kGet, yApi::EKeywordDataType::kNumeric);
+   static const yApi::CStandardCapacity LoadCapacity("load", yApi::CStandardUnits::Percent, yApi::EKeywordDataType::kNumeric);
    return LoadCapacity;
+}
+
+const yApi::EKeywordAccessMode& CLoadKeyword::getAccessMode() const
+{
+   return yApi::EKeywordAccessMode::kGet;
 }
 
 void CLoadKeyword::set(float load)

@@ -13,7 +13,7 @@ IMPLEMENT_PLUGIN(CSmsDialer)
 
 
 CSmsDialer::CSmsDialer()
-   :m_messageKeyword("message"), m_powerKeyword("power")
+   :m_messageKeyword("message", yApi::EKeywordAccessMode::kGetSet), m_powerKeyword("power")
 {
 }
 

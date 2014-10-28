@@ -10,11 +10,11 @@ DECLARE_ENUM_IMPLEMENTATION(EDigitalIoCommand,
    ((Toggle))
 );
 
-const shared::plugin::yadomsApi::CStandardCapacity& RfxLanDigitalIoCommandCapacity = shared::plugin::yadomsApi::CStandardCapacity("digitalio", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+const shared::plugin::yadomsApi::CStandardCapacity& RfxLanDigitalIoCommandCapacity = shared::plugin::yadomsApi::CStandardCapacity("digitalio", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
 
    
 CDigitalIoCommand::CDigitalIoCommand(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EDigitalIoCommand>(keywordName, RfxLanDigitalIoCommandCapacity, "command")
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EDigitalIoCommand>(keywordName, RfxLanDigitalIoCommandCapacity, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
 {
 }
 

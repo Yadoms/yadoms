@@ -8,8 +8,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {
 
-CSpeed::CSpeed(const std::string& keywordName, const EMeasureType& measureType)
-   :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Speed, "speed", 0.0, measureType)
+CSpeed::CSpeed(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
+   :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Speed, "speed", accessMode, 0.0, measureType)
 {
 }
 

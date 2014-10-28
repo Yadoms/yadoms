@@ -12,11 +12,11 @@ DECLARE_ENUM_IMPLEMENTATION(EForecast,
 );
 
 
-const shared::plugin::yadomsApi::CStandardCapacity& ForecastCapacity = shared::plugin::yadomsApi::CStandardCapacity("forecast", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kGet, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+const shared::plugin::yadomsApi::CStandardCapacity& ForecastCapacity = shared::plugin::yadomsApi::CStandardCapacity("forecast", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
 
    
 CForecast::CForecast(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EForecast>(keywordName, ForecastCapacity, "command")
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EForecast>(keywordName, ForecastCapacity, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGet)
 {
 }
 

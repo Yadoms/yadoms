@@ -5,8 +5,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {
 
-   CFrequency::CFrequency(const std::string& keywordName, const EMeasureType& measureType)
-      :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Frequency, "frequency", 0.0, measureType)
+   CFrequency::CFrequency(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
+      :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Frequency, "frequency", accessMode, 0.0, measureType)
    {
    }
 

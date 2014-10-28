@@ -5,7 +5,7 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {
 
-CPressure::CPressure(const std::string& keywordName, const EMeasureType& measureType)
+CPressure::CPressure(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
    :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Pressure, "pressure", 0, measureType)
 {
 }

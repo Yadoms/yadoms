@@ -6,7 +6,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
 {
 
    CBatteryLevel::CBatteryLevel(const std::string& keywordName, const EMeasureType& measureType)
-      :CSingleHistorizableData<int>(keywordName, CStandardCapacities::BatteryLevel, "batteryLevel", 0, measureType)
+      :CSingleHistorizableData<int>(keywordName, CStandardCapacities::BatteryLevel, "batteryLevel", EKeywordAccessMode::kGet, 0, measureType)
    {
    }
 

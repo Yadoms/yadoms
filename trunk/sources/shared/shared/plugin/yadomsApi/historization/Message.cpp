@@ -8,8 +8,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {
 
-CMessage::CMessage(const std::string& keywordName)
-   :m_keywordName(keywordName)
+CMessage::CMessage(const std::string& keywordName, const EKeywordAccessMode& accessMode)
+   :m_keywordName(keywordName), m_accessMode(accessMode)
 {
 }
 
@@ -25,6 +25,11 @@ const std::string& CMessage::getKeyword() const
 const CStandardCapacity& CMessage::getCapacity() const
 {
    return CStandardCapacities::Message;
+}
+
+const EKeywordAccessMode& CMessage::getAccessMode() const
+{
+   return m_accessMode;
 }
 
 void CMessage::set(const shared::CDataContainer& yadomsCommand)

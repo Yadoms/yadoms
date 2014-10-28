@@ -75,7 +75,7 @@ void CYadomsApiImplementation::declareCustomKeyword(const std::string& device, c
 
 void CYadomsApiImplementation::declareKeyword(const std::string& device, const shared::plugin::yadomsApi::historization::IHistorizable& keyword, const shared::CDataContainer& details)
 {
-   declareCustomKeyword(device, keyword.getKeyword(), keyword.getCapacity().getName(), keyword.getCapacity().getAccessMode(), keyword.getCapacity().getType(), keyword.getCapacity().getUnit(), keyword.getMeasureType(), details);
+   declareCustomKeyword(device, keyword.getKeyword(), keyword.getCapacity().getName(), keyword.getAccessMode(), keyword.getCapacity().getType(), keyword.getCapacity().getUnit(), keyword.getMeasureType(), details);
 }
 
 

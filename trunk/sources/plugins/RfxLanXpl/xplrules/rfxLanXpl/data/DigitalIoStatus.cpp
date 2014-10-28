@@ -9,11 +9,11 @@ DECLARE_ENUM_IMPLEMENTATION(EDigitalIoStatus,
    ((Low))
 );
 
-const shared::plugin::yadomsApi::CStandardCapacity& RfxLanDigitalIoStatusCapacity = shared::plugin::yadomsApi::CStandardCapacity("digitalio", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kGet, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+const shared::plugin::yadomsApi::CStandardCapacity& RfxLanDigitalIoStatusCapacity = shared::plugin::yadomsApi::CStandardCapacity("digitalio", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
 
    
 CDigitalIoStatus::CDigitalIoStatus(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EDigitalIoStatus>(keywordName, RfxLanDigitalIoStatusCapacity, "status")
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EDigitalIoStatus>(keywordName, RfxLanDigitalIoStatusCapacity, "status", shared::plugin::yadomsApi::EKeywordAccessMode::kGet)
 {
 }
 

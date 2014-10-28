@@ -12,11 +12,11 @@ DECLARE_ENUM_IMPLEMENTATION(EDigimaxDemand,
 );
 
 
-const shared::plugin::yadomsApi::CStandardCapacity& DigimaxDemandCapacity = shared::plugin::yadomsApi::CStandardCapacity("digimax_demand", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+const shared::plugin::yadomsApi::CStandardCapacity& DigimaxDemandCapacity = shared::plugin::yadomsApi::CStandardCapacity("digimax_demand", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
 
    
 CDigimaxDemand::CDigimaxDemand(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EDigimaxDemand>(keywordName, DigimaxDemandCapacity, "command")
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EDigimaxDemand>(keywordName, DigimaxDemandCapacity, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
 {
 }
 

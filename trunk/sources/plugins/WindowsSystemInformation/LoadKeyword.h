@@ -25,6 +25,7 @@ public:
    // IHistorizable implementation
    virtual const std::string& getKeyword() const;
    virtual const yApi::CStandardCapacity& getCapacity() const;
+   virtual const yApi::EKeywordAccessMode& getAccessMode() const;
    virtual const std::string formatValue() const;
    virtual const yApi::historization::EMeasureType& getMeasureType() const;
    // [END] IHistorizable implementation
