@@ -37,7 +37,7 @@ function initializeWebSocketEngine(callback) {
          if (!isNullOrUndefined(e)) {
             var websocketData = JSON.parse(e.data);
             if (!isNullOrUndefined(websocketData)) {
-               var acq = AcquisitionManager.factory(websocketData.data);
+               var acq = AcquisitionManager.factory(websocketData.data.acquisition);
                dispatchToWidgets(acq);
             }
          }
