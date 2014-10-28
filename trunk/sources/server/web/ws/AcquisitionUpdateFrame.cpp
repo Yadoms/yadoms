@@ -23,7 +23,7 @@ namespace web { namespace ws {
       if (notificationData->getSummaryDay())
          local.set(m_acquitionDay, notificationData->getSummaryDay());
       if (notificationData->getSummaryHour())
-         local.set(m_acquitionDay, notificationData->getSummaryHour());
+         local.set(m_acquitionHour, notificationData->getSummaryHour());
 
       m_internalContainer.set(CFrameBase::m_dataFieldName, local);
    }

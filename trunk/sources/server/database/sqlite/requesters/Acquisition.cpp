@@ -26,7 +26,7 @@ namespace database {  namespace sqlite {  namespace requesters {
 
 
    // IAcquisitionRequester implementation
-   void CAcquisition::saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime)
+   boost::shared_ptr< database::entities::CAcquisition > CAcquisition::saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime)
    {
       if(m_databaseHandler->getKeywordRequester()->getKeyword(keywordId))
       {
@@ -36,6 +36,8 @@ namespace database {  namespace sqlite {  namespace requesters {
 
          if(m_databaseRequester->queryStatement(q) <= 0)
             throw shared::exception::CEmptyResult("Fail to insert new data");
+
+         return getAcquisitionByKeywordAndDate(keywordId, dataTime);
       }
       else
       {
@@ -43,7 +45,7 @@ namespace database {  namespace sqlite {  namespace requesters {
       }
    }
 
-   void CAcquisition::incrementData(const int keywordId, const std::string & increment, boost::posix_time::ptime & dataTime)
+   boost::shared_ptr< database::entities::CAcquisition > CAcquisition::incrementData(const int keywordId, const std::string & increment, boost::posix_time::ptime & dataTime)
    {
       boost::shared_ptr<database::entities::CKeyword> keywordEntity = m_databaseHandler->getKeywordRequester()->getKeyword(keywordId);
 
@@ -66,6 +68,9 @@ namespace database {  namespace sqlite {  namespace requesters {
 
       if (m_databaseRequester->queryStatement(q) <= 0)
          throw shared::exception::CEmptyResult("Fail to insert new incremental data");
+
+      return getAcquisitionByKeywordAndDate(keywordId, dataTime);
+
    }
 
    void CAcquisition::removeKeywordData(const int keywordId)
@@ -268,7 +273,7 @@ namespace database {  namespace sqlite {  namespace requesters {
       return getKeywordHighchartDataByType(database::entities::EAcquisitionSummaryType::kHour, keywordId, timeFrom, timeTo);
    }
 
-   void CAcquisition::saveSummaryData(const int keywordId, boost::posix_time::ptime & dataTime)
+   database::IAcquisitionRequester::LastSummaryData CAcquisition::saveSummaryData(const int keywordId, boost::posix_time::ptime & dataTime)
    {
       /* 
       INSERT OR REPLACE INTO AcquisitionSummary (type, date, keywordId, mean, min, max)
@@ -321,10 +326,28 @@ namespace database {  namespace sqlite {  namespace requesters {
 
             if (m_databaseRequester->queryStatement(q) <= 0)
                throw shared::exception::CEmptyResult("Fail to insert new summary day data");
+
+            //get the last inserted values
+            boost::shared_ptr< database::entities::CAcquisitionSummary > acqDay;
+            std::vector< boost::shared_ptr< database::entities::CAcquisitionSummary > > dayData = getKeywordDataByDay(keywordId, dayDate, dayDate);
+            if (dayData.size() > 0)
+            {
+               acqDay = dayData[0];
+            }
+
+            boost::shared_ptr< database::entities::CAcquisitionSummary > acqHour;
+            std::vector< boost::shared_ptr< database::entities::CAcquisitionSummary > > hourData = getKeywordDataByHour(keywordId, hourDate, hourDate);
+            if (hourData.size() > 0)
+            {
+               acqHour = hourData[0];
+            }
+            return boost::make_tuple(acqDay, acqHour);
+
          }
          else
          {
             //keyword is not numeric, no data to avg, min and max !
+            return boost::make_tuple(boost::shared_ptr< database::entities::CAcquisitionSummary >(), boost::shared_ptr< database::entities::CAcquisitionSummary >());
          }
       }
       else
