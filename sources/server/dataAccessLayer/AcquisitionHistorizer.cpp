@@ -19,37 +19,20 @@ namespace dataAccessLayer {
 
       void CAcquisitionHistorizer::saveData(const int keywordId, const shared::plugin::yadomsApi::historization::IHistorizable & data, boost::posix_time::ptime & dataTime)
       {
+         boost::shared_ptr< database::entities::CAcquisition > acq;
+
          //save data
          if(data.getMeasureType() == shared::plugin::yadomsApi::historization::EMeasureType::kIncrement)
-            m_acquisitionRequester->incrementData(keywordId, data.formatValue(), dataTime);
+            acq = m_acquisitionRequester->incrementData(keywordId, data.formatValue(), dataTime);
          else
-            m_acquisitionRequester->saveData(keywordId, data.formatValue(), dataTime);
+            acq = m_acquisitionRequester->saveData(keywordId, data.formatValue(), dataTime);
 
-         m_acquisitionRequester->saveSummaryData(keywordId, dataTime);
+         database::IAcquisitionRequester::LastSummaryData summaryData = m_acquisitionRequester->saveSummaryData(keywordId, dataTime);
 
          //post notification
          try
          {
-            //get inserted raw data, and store it into container
-            boost::shared_ptr< database::entities::CAcquisition > acq = m_acquisitionRequester->getAcquisitionByKeywordAndDate(keywordId, dataTime);
-
-            boost::shared_ptr< database::entities::CAcquisitionSummary > acqDay;
-            std::vector< boost::shared_ptr< database::entities::CAcquisitionSummary > > dayData = m_acquisitionRequester->getKeywordDataByDay(keywordId, dataTime, dataTime);
-            if (dayData.size() > 0)
-            {
-               acqDay = dayData[0];
-            }
-
-            boost::shared_ptr< database::entities::CAcquisitionSummary > acqHour;
-            std::vector< boost::shared_ptr< database::entities::CAcquisitionSummary > > hourData = m_acquisitionRequester->getKeywordDataByHour(keywordId, dataTime, dataTime);
-            if (hourData.size() > 0)
-            {
-               acqHour = hourData[0];
-            }
-
-            //construct notification container
-            boost::shared_ptr< notifications::CNewAcquisitionNotification > notificationData(new notifications::CNewAcquisitionNotification(acq, acqDay, acqHour));
-
+            boost::shared_ptr< notifications::CNewAcquisitionNotification > notificationData(new notifications::CNewAcquisitionNotification(acq, summaryData.get<0>(), summaryData.get<1>()));
             notifications::CAsyncNotificationCenter::get()->postNotification(notificationData);
          }
          catch (shared::exception::CException & ex)

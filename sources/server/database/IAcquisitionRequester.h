@@ -14,23 +14,33 @@ namespace database {
       /// \param [in]      keywordId   The keyword id
       /// \param [in]      data        The data
       /// \param [in]      dataTime    The datetime of the data
+      /// \return          The inserted acquisition
       //--------------------------------------------------------------
-      virtual void saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime) = 0;
+      virtual boost::shared_ptr< database::entities::CAcquisition > saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Increment a data into base
       /// \param [in]      keywordId   The keyword id
       /// \param [in]      increment   The increment value
       /// \param [in]      dataTime    The datetime of the data
+      /// \return          The inserted acquisition
       //--------------------------------------------------------------
-      virtual void incrementData(const int keywordId, const std::string & increment, boost::posix_time::ptime & dataTime) = 0;
+      virtual boost::shared_ptr< database::entities::CAcquisition > incrementData(const int keywordId, const std::string & increment, boost::posix_time::ptime & dataTime) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief     Container for summary data
+      ///            first is summary on Day
+      ///            second is summary on Hour
+      //--------------------------------------------------------------
+      typedef boost::tuple< boost::shared_ptr< database::entities::CAcquisitionSummary >, boost::shared_ptr< database::entities::CAcquisitionSummary > > LastSummaryData;
 
       //--------------------------------------------------------------
       /// \brief           Save a new summary data into base
       /// \param [in]      keywordId   The keyword id
       /// \param [in]      dataTime    The datetime of the data
+      /// \return          The inserted acquisition summary (day, hour)
       //--------------------------------------------------------------
-      virtual void saveSummaryData(const int keywordId, boost::posix_time::ptime & dataTime) = 0;
+      virtual LastSummaryData saveSummaryData(const int keywordId, boost::posix_time::ptime & dataTime) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove all data associated to a keyword
