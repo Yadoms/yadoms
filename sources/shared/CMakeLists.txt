@@ -121,6 +121,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/historization/Pressure.h
    shared/plugin/yadomsApi/historization/Rain.cpp
    shared/plugin/yadomsApi/historization/Rain.h
+   shared/plugin/yadomsApi/historization/RainRate.cpp
+   shared/plugin/yadomsApi/historization/RainRate.h
    shared/plugin/yadomsApi/historization/Restart.cpp
    shared/plugin/yadomsApi/historization/Restart.h
    shared/plugin/yadomsApi/historization/Rssi.cpp

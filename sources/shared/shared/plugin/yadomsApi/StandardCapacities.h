@@ -28,6 +28,7 @@ namespace shared { namespace plugin { namespace yadomsApi {
       static const CStandardCapacity & PowerFactor;       // powerFactor       |  -                    | Power factor (-1 to 1)
       static const CStandardCapacity & Pressure;          // pressure          | hPa                   | Pressure
       static const CStandardCapacity & Rain;              // rain              | mm                    | Rain counter
+      static const CStandardCapacity & RainRate;          // rain rate         | mm/s                  | Rain rate
       static const CStandardCapacity & Restart;           // restart           |  -                    | Command to restart something (system, real devices,...)
       static const CStandardCapacity & Rssi;              // rssi              | percent               | Rssi measure capacity
 		static const CStandardCapacity & Shutdown;          // shutdown          |  -                    | Command to shutdown something (system, real devices,...)
