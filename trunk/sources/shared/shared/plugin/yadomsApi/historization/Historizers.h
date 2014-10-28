@@ -12,6 +12,7 @@
 #include "PowerFactor.h"
 #include "Pressure.h"
 #include "Rain.h"
+#include "RainRate.h"
 #include "Restart.h"
 #include "Rssi.h"
 #include "Speed.h"

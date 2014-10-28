@@ -323,7 +323,7 @@ namespace xplrules { namespace rfxLanXpl {
             data.push_back(humidity);
 
             boost::shared_ptr< data::CHumidityDescription > humidityDescription(new data::CHumidityDescription(m_keywordDescription));
-            humidityDescription->set(data::EHumidityDescription::parse(msg.getBodyValue(m_keywordCurrent)));
+            humidityDescription->set(data::EHumidityDescription::parse(msg.getBodyValue(m_keywordDescription)));
             data.push_back(humidityDescription);
          }
 
@@ -343,20 +343,100 @@ namespace xplrules { namespace rfxLanXpl {
 
 
             boost::shared_ptr< data::CForecast > forecast(new data::CForecast(m_keywordForecast));
-            forecast->set(data::EForecast::parse(msg.getBodyValue(m_keywordCurrent)));
+            forecast->set(data::EForecast::parse(msg.getBodyValue(m_keywordForecast)));
             data.push_back(forecast);
          }
+         
+         //Power
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypePower))
+         {
+            boost::shared_ptr< shared::plugin::yadomsApi::historization::CPower > power(new shared::plugin::yadomsApi::historization::CPower(m_keywordTypePower));
+            power->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)) * 1000.0); //in xpl messgae data is in kWh, convert to Wh
+            data.push_back(power);
+         }
 
+         //Weight
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeWeight))
+         {
+            boost::shared_ptr< shared::plugin::yadomsApi::historization::CWeight > weight(new shared::plugin::yadomsApi::historization::CWeight(m_keywordTypeWeight));
+            weight->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent))); 
+            data.push_back(weight);
+         }
+
+         //Energy
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeEnergy))
+         {
+            boost::shared_ptr< shared::plugin::yadomsApi::historization::CEnergy > energy(new shared::plugin::yadomsApi::historization::CEnergy(m_keywordTypeEnergy));
+            energy->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)) * 1000.0); //in xpl messgae data is in kW, convert to W
+            data.push_back(energy);
+         }
+         
+         //Rain total
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeRainTotal))
+         {
+            boost::shared_ptr< shared::plugin::yadomsApi::historization::CRain > rain(new shared::plugin::yadomsApi::historization::CRain(m_keywordTypeRainTotal));
+            rain->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent))); 
+            data.push_back(rain);
+         }
+
+         //Rain rate
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeRainRate))
+         {
+            boost::shared_ptr< shared::plugin::yadomsApi::historization::CRainRate > rainrate(new shared::plugin::yadomsApi::historization::CRainRate(m_keywordTypeRainRate));
+            rainrate->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
+            data.push_back(rainrate);
+         }
+         
+
+         //Gust
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeGust))
+         {
+            boost::shared_ptr< shared::plugin::yadomsApi::historization::CSpeed > gust(new shared::plugin::yadomsApi::historization::CSpeed(m_keywordTypeGust));
+            gust->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
+            data.push_back(gust);
+         }
+
+         //Average speed
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeAverageSpeed))
+         {
+            boost::shared_ptr< shared::plugin::yadomsApi::historization::CSpeed > gust(new shared::plugin::yadomsApi::historization::CSpeed(m_keywordTypeAverageSpeed));
+            gust->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
+            data.push_back(gust);
+         }
+
+         //Direction
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeDirection))
+         {
+            boost::shared_ptr< shared::plugin::yadomsApi::historization::CDirection > direction(new shared::plugin::yadomsApi::historization::CDirection(m_keywordTypeDirection));
+            direction->set(boost::lexical_cast<int>(msg.getBodyValue(m_keywordCurrent)));
+            data.push_back(direction);
+         }
+
+         //UV
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeUv))
+         {
+            boost::shared_ptr< shared::plugin::yadomsApi::historization::CUv > uv(new shared::plugin::yadomsApi::historization::CUv(m_keywordTypeUv));
+            uv->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
+            data.push_back(uv);
+
+            boost::shared_ptr< data::CUvDescription > uvdescription(new data::CUvDescription(m_keywordDescription));
+            uvdescription->set(data::EUvDescription::parse(msg.getBodyValue(m_keywordDescription)));
+            data.push_back(uvdescription);
+         }
+
+         //Current
+         if ((boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec1) ||
+            boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec2) ||
+            boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec3) ||
+            boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec4)) &&
+            boost::iequals(msg.getBodyValue(m_keywordType), m_keywordCurrent))
+         {
+            boost::shared_ptr< shared::plugin::yadomsApi::historization::CCurrent > current(new shared::plugin::yadomsApi::historization::CCurrent(m_keywordCurrent));
+            current->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
+            data.push_back(current);
+         }
       }
-      /* TODO
-      data.insert(std::make_pair(msg.getBodyValue(m_keywordType), msg.getBodyValue(m_keywordCurrent)));
 
-      if(msg.getBody().find(m_keywordDescription) != msg.getBody().end())
-         data.insert(std::make_pair(m_keywordDescription, msg.getBodyValue(m_keywordDescription)));
-
-      if(msg.getBody().find(m_keywordForecast) != msg.getBody().end())
-         data.insert(std::make_pair(m_keywordForecast, msg.getBodyValue(m_keywordForecast)));
-         */
       return data;
    }
 
@@ -450,43 +530,56 @@ namespace xplrules { namespace rfxLanXpl {
          }
 
 
-         /*
 
-         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeRainRate) ||
-            boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeRainTotal) ||
-            boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeGust) ||
-            boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeAverageSpeed) ||
-            boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeWeight) ||
-            boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypePower) ||
-            boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeEnergy))
-         {
-            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(msg.getBodyValue(m_keywordType), msg.getBodyValue(m_keywordType), yApi::kGet, yApi::kNumeric, units, details)));
-         }
+         //Power
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypePower))
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CPower(m_keywordTypePower)));
 
+         //Weight
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeWeight))
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CWeight(m_keywordTypeWeight)));
+
+         //Energy
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeEnergy))
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CEnergy(m_keywordTypeEnergy)));
+
+         //Rain total
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeRainTotal))
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CRain(m_keywordTypeRainTotal)));
+
+         //Rain rate
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeRainRate))
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CRainRate(m_keywordTypeRainRate)));
+
+         //Gust
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeGust))
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CSpeed(m_keywordTypeGust)));
+
+         //Average speed
+         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeAverageSpeed))
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CSpeed(m_keywordTypeAverageSpeed)));
+
+         //Direction
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeDirection))
-         {
-            details.set("min", 0);
-            details.set("max", 359);
-            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeDirection, m_keywordTypeDirection, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::NoUnits, details)));
-         }
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CDirection(m_keywordTypeDirection)));
 
+         //UV
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeUv))
          {
-            details.set("min", 0);
-            details.set("max", 12);
-            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordTypeUv, m_keywordTypeUv, yApi::kGet, yApi::kNumeric, yApi::CStandardUnits::NoUnits, details)));
-            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(m_keywordDescription, m_keywordDescription, yApi::kGet, yApi::kString, yApi::CStandardUnits::NoUnits, m_keywordTypeUvDescriptionValues)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CUv(m_keywordTypeUv)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CUvDescription(m_keywordDescription)));
          }
 
+         //Current
          if ((boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec1) ||
             boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec2) ||
             boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec3) ||
             boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec4)) &&
             boost::iequals(msg.getBodyValue(m_keywordType), m_keywordCurrent))
          {
-            keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword(msg.getBodyValue(m_keywordType), msg.getBodyValue(m_keywordType), yApi::kGet, yApi::kNumeric, units, details)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CCurrent(m_keywordCurrent)));
          }
-         */
+
       }
 
 
