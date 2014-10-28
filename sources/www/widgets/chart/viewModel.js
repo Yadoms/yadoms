@@ -88,10 +88,11 @@ widgetViewModelCtor =
                enabled : true,
                formatter : function () {
                   var s = "<b>" + DateTimeFormatter.dateToString(this.x, "llll") + "</b>";
-
                   $.each(this.points, function () {
-                     s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
-                           this.series.name + " : " + this.y + " " + this.series.units;
+                     if (!this.series.hideInLegend) {
+                        s += "<br/><i style=\"color: " + this.series.color + ";\" class=\"fa fa-circle\"></i>&nbsp;" +
+                              this.series.name + " : " + this.y + " " + this.series.units;
+                     }
                   });
                   return s;
                }
@@ -132,7 +133,7 @@ widgetViewModelCtor =
          catch(err) {}
 
          //we create the array of colors
-         var colorArray = [];
+         /*var colorArray = [];
 
          try {
             colorArray.push(this.widget.configuration.device1.content.color)
@@ -147,22 +148,7 @@ widgetViewModelCtor =
          }
 
          this.chart.options.colors = colorArray;
-
-         try {
-            if (parseBool(this.widget.configuration.customYAxisMinMax.checkbox)) {
-               debugger;
-               var min = parseFloat(this.widget.configuration.customYAxisMinMax.content.minimumValue);
-               var max = parseFloat(this.widget.configuration.customYAxisMinMax.content.maximumValue);
-               this.chart.yAxis[0].setExtremes(min, max);
-            }
-            else {
-               //we cancel previous extremes
-               this.chart.yAxis[0].setExtremes(null, null);
-            }
-         }
-         catch (err) {
-         }
-
+*/
          var btns = self.widget.$gridsterWidget.find(".nav-btn");
 
          $.each(btns, function (index, btn) {
@@ -192,20 +178,25 @@ widgetViewModelCtor =
       this.refreshData = function(interval) {
          var self = this;
 
+         console.log("step 1 " + moment().format("HH:mm:ss'SSS"));
+
          try {
             if (!self.refreshingData) {
                this.chart.showLoading($.t("chart:loadingData"));
                self.refreshingData = true;
                //we compute the date from the configuration
                var dateFrom = "";
+               var dateTo = DateTimeFormatter.dateToIsoDate(moment());
                var prefixUri = "";
                var timeBetweenTwoConsecutiveValues;
+               var isSummaryData;
 
                switch (interval) {
                   case "HOUR" :
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'hours'));
                      //we request all data
                      timeBetweenTwoConsecutiveValues = undefined;
+                     isSummaryData = false;
                      break;
                   default:
                   case "DAY" :
@@ -213,34 +204,39 @@ widgetViewModelCtor =
                      //we request hour summary data
                      prefixUri = "/hour";
                      timeBetweenTwoConsecutiveValues = 1000 * 3600;
+                     isSummaryData = true;
                      break;
                   case "WEEK" :
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'weeks'));
                      //we request hour summary data
                      prefixUri = "/hour";
                      timeBetweenTwoConsecutiveValues = 1000 * 3600;
+                     isSummaryData = true;
                      break;
                   case "MONTH" :
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'months'));
                      //we request day summary data
                      prefixUri = "/day";
                      timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
+                     isSummaryData = true;
                      break;
                   case "HALF_YEAR" :
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(6, 'months'));
                      //we request day summary data
                      prefixUri = "/day";
                      timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
+                     isSummaryData = true;
                      break;
                   case "YEAR" :
                      dateFrom = DateTimeFormatter.dateToIsoDate(moment().subtract(1, 'years'));
                      //we request day summary data
                      prefixUri = "/day";
                      timeBetweenTwoConsecutiveValues = 1000 * 3600 * 24;
+                     isSummaryData = true;
                      break;
                }
-
-               $.getJSON("rest/acquisition/keyword/" + this.widget.configuration.device1.content.source.keywordId + prefixUri + "/" + dateFrom)
+               console.log("step 2 " + moment().format("HH:mm:ss'SSS"));
+               $.getJSON("rest/acquisition/keyword/" + this.widget.configuration.device1.content.source.keywordId + prefixUri + "/" + dateFrom + "/" + dateTo)
                   .done(function( data ) {
                      //we parse the json answer
                      if (data.result != "true")
@@ -248,52 +244,131 @@ widgetViewModelCtor =
                         notifyError($.t("chart:errorDuringGettingDeviceData"), JSON.stringify(data));
                         return;
                      }
-
+                     console.log("step 3 " + moment().format("HH:mm:ss'SSS"));
                      self.chart.hideLoading();
 
                      //we save interval in the chart
                      self.chart.interval = interval;
 
-                     //we remove last serie
+                     //we remove last series
                      if (self.serie1UUID) {
                         var serie = self.chart.get(self.serie1UUID);
                         if (!isNullOrUndefined(serie))
                            serie.remove();
                      }
 
+                     if (self.rangeSerie1UUID) {
+                        var serie = self.chart.get(self.rangeSerie1UUID);
+                        if (!isNullOrUndefined(serie))
+                           serie.remove();
+                     }
+
                      //we make the serie
                      var plot = [];
+
                      var lastDate;
                      var d;
-                     $.each(data.data.data, function(index, value) {
-                        lastDate = d;
-                        d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
-                        var v;
-                        if (!isNullOrUndefined(value.avg)) {
-                           v = parseFloat(value.avg);
-                        }
-                        else if (!isNullOrUndefined(value.key)) {
-                           v = parseFloat(value.key);
-                        }
-                        else {
-                           throw Error("Unable to parse answer");
-                        }
 
-                        //we manage the missing data
-                        if ((lastDate != undefined) && (timeBetweenTwoConsecutiveValues != undefined) &&
-                           (lastDate + timeBetweenTwoConsecutiveValues < d)) {
-                           plot.push([lastDate + 1, null]);
-                        }
+                     if (!isSummaryData) {
+                        console.log("step 4 " + moment().format("HH:mm:ss'SSS"));
+                        //data comes from acquisition table
+                        $.each(data.data.data, function(index, value) {
+                           lastDate = d;
+                           d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
+                           var v;
+                           if (!isNullOrUndefined(value.key)) {
+                              v = parseFloat(value.key);
+                           }
+                           else {
+                              throw Error("Unable to parse answer");
+                           }
 
-                        plot.push([d, v]);
-                     });
+                           //we manage the missing data
+                           if ((lastDate != undefined) && (timeBetweenTwoConsecutiveValues != undefined) &&
+                              (lastDate + timeBetweenTwoConsecutiveValues < d)) {
+                              plot.push([lastDate + 1, null]);
+                           }
+
+                           plot.push([d, v]);
+                        });
+                     }
+                     else {
+                        //it is summarized data so we can get min and max curve
+                        var range = [];
+                        var vMin;
+                        var vMax;
+
+                        $.each(data.data.data, function(index, value) {
+                           lastDate = d;
+                           d = DateTimeFormatter.isoDateToDate(value.date)._d.getTime();
+                           var v;
+                           if (!isNullOrUndefined(value.avg)) {
+                              v = parseFloat(value.avg);
+                              vMin = parseFloat(value.min);
+                              vMax = parseFloat(value.max);
+                           }
+                           else {
+                              throw Error("Unable to parse answer");
+                           }
+
+                           //we manage the missing data
+                           if ((lastDate != undefined) && (timeBetweenTwoConsecutiveValues != undefined) &&
+                              (lastDate + timeBetweenTwoConsecutiveValues < d)) {
+                              plot.push([lastDate + 1, null]);
+                              //range.push([lastDate + 1, null, null]);
+                           }
+
+                           plot.push([d, v]);
+                           range.push([d, vMin, vMax]);
+                        });
+                     }
+                     console.log("step 5 " + moment().format("HH:mm:ss'SSS"));
+                     var color;
+                     try {
+                        color = self.widget.configuration.device1.content.color;
+                     }
+                     catch(err) {}
 
                      self.serie1UUID = createUUID();
 
                      //marker of points is enable when there is less than 50 points on the line
                      self.chart.addSeries({id:self.serie1UUID,
-                                           data:plot, name:"First Device", marker : { enabled : (plot.length < 50), radius : 3, symbol: "circle"}});
-                     self.chart.zoomOut();
+                                           data:plot, name:"First Device", marker : { enabled : (plot.length < 50), radius : 3, symbol: "circle"}, color: color});
+                     console.log("step 6 " + moment().format("HH:mm:ss'SSS"));
+                     //we add min and max series
+                     if (isSummaryData) {
+                        //TODO gerer la conf
+                        if (true) {
+
+                           self.rangeSerie1UUID = createUUID();
+                           self.chart.addSeries({id:self.rangeSerie1UUID, type: 'arearange', lineWidth: 0, fillOpacity: 0.3, zIndex: 0,
+                                          data:range, color : color});
+
+                           //we add attribute to hide it in legend
+                           var serie = self.chart.get(self.rangeSerie1UUID);
+                           serie.hideInLegend = true;
+                           console.log("step 7 " + moment().format("HH:mm:ss'SSS"));
+                        }
+                     }
+
+                     try {
+                        if (parseBool(self.widget.configuration.customYAxisMinMax.checkbox)) {
+                           //we manage min and max scale y axis
+                           var min = parseFloat(self.widget.configuration.customYAxisMinMax.content.minimumValue);
+                           var max = parseFloat(self.widget.configuration.customYAxisMinMax.content.maximumValue);
+                           self.chart.yAxis[0].setExtremes(min, max);
+                        }
+                        else {
+                           //we cancel previous extremes
+                           self.chart.yAxis[0].setExtremes(null, null);
+                        }
+                     }
+                     catch (err) {
+                     }
+
+                     console.log("step 8 " + moment().format("HH:mm:ss'SSS"));
+                     //self.chart.zoomOut();
+
                      self.refreshingData = false;
 
                      //we get the unit of the keyword
@@ -305,6 +380,8 @@ widgetViewModelCtor =
                            serie.name = keyword.friendlyName;
                         }
                      });
+
+                     console.log("step 9 " + moment().format("HH:mm:ss'SSS"));
                   })
                   .fail(function() {notifyError($.t("chart:errorDuringGettingDeviceData"));});
             }
