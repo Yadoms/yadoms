@@ -6,6 +6,7 @@
 #include "MegatecUpsFactory.h"
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
+//TODO ajouter support USB ?
 
 IMPLEMENT_PLUGIN(CMegatecUps)
 

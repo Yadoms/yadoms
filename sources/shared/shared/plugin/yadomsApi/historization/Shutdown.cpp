@@ -14,7 +14,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
 
    
    CShutdown::CShutdown(const std::string& keywordName)
-		:CSingleHistorizableData<EShutdownCommand>(keywordName, shared::plugin::yadomsApi::CStandardCapacities::Shutdown, "command")
+		:CSingleHistorizableData<EShutdownCommand>(keywordName, shared::plugin::yadomsApi::CStandardCapacities::Shutdown, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
    {
    }
 

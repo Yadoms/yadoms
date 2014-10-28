@@ -5,8 +5,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {
 
-   CCounter::CCounter(const std::string& keywordName, const EMeasureType& measureType)
-      :CSingleHistorizableData<int>(keywordName, CStandardCapacities::Counter, "count", 0, measureType)
+   CCounter::CCounter(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
+      :CSingleHistorizableData<int>(keywordName, CStandardCapacities::Counter, "count", accessMode, 0, measureType)
    {
    }
 

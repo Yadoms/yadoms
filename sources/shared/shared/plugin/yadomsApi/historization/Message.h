@@ -14,8 +14,9 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
+      ///\param[in] accessMode      Access mode
       //-----------------------------------------------------
-      CMessage(const std::string& keywordName);
+      CMessage(const std::string& keywordName, const EKeywordAccessMode& accessMode);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
@@ -25,6 +26,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
       virtual const CStandardCapacity& getCapacity() const;
+      virtual const EKeywordAccessMode& getAccessMode() const;
       virtual const std::string formatValue() const;
       virtual const EMeasureType& getMeasureType() const;
       // [END] IHistorizable implementation;
@@ -65,6 +67,11 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       ///\brief                     The keyword name
       //-----------------------------------------------------
       const std::string m_keywordName;
+
+      //-----------------------------------------------------
+      ///\brief                     The access mode
+      //-----------------------------------------------------
+      const EKeywordAccessMode& m_accessMode;
 
       //-----------------------------------------------------
       ///\brief               The sender value

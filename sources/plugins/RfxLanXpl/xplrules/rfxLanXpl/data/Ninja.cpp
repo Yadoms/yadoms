@@ -15,11 +15,11 @@ DECLARE_ENUM_IMPLEMENTATION(ENinjaCommand,
 );
 
 
-const shared::plugin::yadomsApi::CStandardCapacity& NinjaCapacity = shared::plugin::yadomsApi::CStandardCapacity("ninja", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+const shared::plugin::yadomsApi::CStandardCapacity& NinjaCapacity = shared::plugin::yadomsApi::CStandardCapacity("ninja", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
 
    
 CNinja::CNinja(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ENinjaCommand>(keywordName, NinjaCapacity, "command")
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ENinjaCommand>(keywordName, NinjaCapacity, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
 {
 }
 

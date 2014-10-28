@@ -6,8 +6,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {
 
-CPower::CPower(const std::string& keywordName, const EMeasureType& measureType)
-   :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Power, "power", 0.0, measureType)
+CPower::CPower(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
+   :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Power, "power", accessMode, 0.0, measureType)
 {
 }
 

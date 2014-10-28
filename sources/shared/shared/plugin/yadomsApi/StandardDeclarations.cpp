@@ -4,7 +4,7 @@
 #include "StandardValues.h"
 #include "shared/StringExtension.h"
 
-namespace shared {   namespace plugin {      namespace yadomsApi      {
+namespace shared { namespace plugin { namespace yadomsApi {
 
    //----------------------------------------------------
    /// \brief This file merge the static declarations of variables
@@ -35,28 +35,28 @@ namespace shared {   namespace plugin {      namespace yadomsApi      {
    const std::string& CStandardValues::Close("close");
    const std::string& CStandardValues::Stop("stop");
    
-   const CStandardCapacity& CStandardCapacities::BatteryLevel = CStandardCapacity("batteryLevel", CStandardUnits::Percent, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Counter = CStandardCapacity("count", CStandardUnits::NoUnits, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Current = CStandardCapacity("current", CStandardUnits::Ampere, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Curtain = CStandardCapacity("curtain", CStandardUnits::NoUnits, EKeywordAccessMode::kGetSet, EKeywordDataType::kNoData);
-   const CStandardCapacity& CStandardCapacities::Direction = CStandardCapacity("direction", CStandardUnits::Degrees, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Energy = CStandardCapacity("energy", CStandardUnits::WattPerHour, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Frequency = CStandardCapacity("frequency", CStandardUnits::Hertz, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Humidity = CStandardCapacity("humidity", CStandardUnits::Percent, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Message = CStandardCapacity("message", CStandardUnits::NoUnits, EKeywordAccessMode::kGetSet, EKeywordDataType::kString);
-   const CStandardCapacity& CStandardCapacities::Power = CStandardCapacity("power", CStandardUnits::Watt, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::PowerFactor = CStandardCapacity("powerFactor", CStandardUnits::NoUnits, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Pressure = CStandardCapacity("pressure", CStandardUnits::hectoPascal, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Rain = CStandardCapacity("rain", CStandardUnits::Millimeter, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-	const CStandardCapacity& CStandardCapacities::Restart = CStandardCapacity("restart", CStandardUnits::NoUnits, EKeywordAccessMode::kGetSet, EKeywordDataType::kNoData);
-	const CStandardCapacity& CStandardCapacities::Rssi = CStandardCapacity("rssi", CStandardUnits::Percent, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-	const CStandardCapacity& CStandardCapacities::Shutdown = CStandardCapacity("shutdown", CStandardUnits::NoUnits, EKeywordAccessMode::kGetSet, EKeywordDataType::kNoData);
-	const CStandardCapacity& CStandardCapacities::Speed = CStandardCapacity("speed", CStandardUnits::MetersPerSecond, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Switch = CStandardCapacity("switch", CStandardUnits::Percent, EKeywordAccessMode::kGetSet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Temperature = CStandardCapacity("temperature", CStandardUnits::DegreesCelcius, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Uv = CStandardCapacity("uv", CStandardUnits::Uv, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Voltage = CStandardCapacity("voltage", CStandardUnits::Volt, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Weight = CStandardCapacity("weight", CStandardUnits::Kg, EKeywordAccessMode::kGet, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::BatteryLevel = CStandardCapacity("batteryLevel", CStandardUnits::Percent, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Counter = CStandardCapacity("count", CStandardUnits::NoUnits, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Current = CStandardCapacity("current", CStandardUnits::Ampere, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Curtain = CStandardCapacity("curtain", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
+   const CStandardCapacity& CStandardCapacities::Direction = CStandardCapacity("direction", CStandardUnits::Degrees, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Energy = CStandardCapacity("energy", CStandardUnits::WattPerHour, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Frequency = CStandardCapacity("frequency", CStandardUnits::Hertz, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Humidity = CStandardCapacity("humidity", CStandardUnits::Percent, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Message = CStandardCapacity("message", CStandardUnits::NoUnits, EKeywordDataType::kString);
+   const CStandardCapacity& CStandardCapacities::Power = CStandardCapacity("power", CStandardUnits::Watt, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::PowerFactor = CStandardCapacity("powerFactor", CStandardUnits::NoUnits, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Pressure = CStandardCapacity("pressure", CStandardUnits::hectoPascal, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Rain = CStandardCapacity("rain", CStandardUnits::Millimeter, EKeywordDataType::kNumeric);
+	const CStandardCapacity& CStandardCapacities::Restart = CStandardCapacity("restart", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
+	const CStandardCapacity& CStandardCapacities::Rssi = CStandardCapacity("rssi", CStandardUnits::Percent, EKeywordDataType::kNumeric);
+	const CStandardCapacity& CStandardCapacities::Shutdown = CStandardCapacity("shutdown", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
+	const CStandardCapacity& CStandardCapacities::Speed = CStandardCapacity("speed", CStandardUnits::MetersPerSecond, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Switch = CStandardCapacity("switch", CStandardUnits::Percent, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Temperature = CStandardCapacity("temperature", CStandardUnits::DegreesCelcius, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Uv = CStandardCapacity("uv", CStandardUnits::Uv, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Voltage = CStandardCapacity("voltage", CStandardUnits::Volt, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Weight = CStandardCapacity("weight", CStandardUnits::Kg, EKeywordDataType::kNumeric);
 
 } } } // namespace shared::plugin::yadomsApi
 

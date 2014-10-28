@@ -14,11 +14,11 @@ DECLARE_ENUM_IMPLEMENTATION(EMertikStatus,
    ((Stop)("stop"))
 );
 
-const shared::plugin::yadomsApi::CStandardCapacity& MertikStatusCapacity = shared::plugin::yadomsApi::CStandardCapacity("mertik", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kGet, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+const shared::plugin::yadomsApi::CStandardCapacity& MertikStatusCapacity = shared::plugin::yadomsApi::CStandardCapacity("mertik", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
 
    
 CMertickStatus::CMertickStatus(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EMertikStatus>(keywordName, MertikStatusCapacity, "status")
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EMertikStatus>(keywordName, MertikStatusCapacity, "status", shared::plugin::yadomsApi::EKeywordAccessMode::kGet)
 {
 }
 

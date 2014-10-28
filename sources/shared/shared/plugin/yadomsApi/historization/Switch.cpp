@@ -8,8 +8,8 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {
 
-CSwitch::CSwitch(const std::string& keywordName, const EMeasureType& measureType)
-   :m_keywordName(keywordName), m_switchLevel(0), m_measureType(measureType)
+CSwitch::CSwitch(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
+   :m_keywordName(keywordName), m_switchLevel(0), m_accessMode (accessMode), m_measureType(measureType)
 {
 }
 
@@ -25,6 +25,11 @@ const std::string& CSwitch::getKeyword() const
 const CStandardCapacity& CSwitch::getCapacity() const
 {
    return CStandardCapacities::Switch;
+}
+
+const EKeywordAccessMode& CSwitch::getAccessMode() const
+{
+   return m_accessMode;
 }
 
 void CSwitch::set(const shared::CDataContainer& yadomsCommand)

@@ -16,9 +16,10 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
+      ///\param[in] accessMode      The access mode
       ///\param[in] measureType     The measure type (normally kAbsolute)
       //-----------------------------------------------------
-      CSwitch(const std::string& keywordName, const EMeasureType& measureType = EMeasureType::kAbsolute);
+      CSwitch(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet, const EMeasureType& measureType = EMeasureType::kAbsolute);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
@@ -28,6 +29,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
       virtual const CStandardCapacity& getCapacity() const;
+      virtual const EKeywordAccessMode& getAccessMode() const;
       virtual const std::string formatValue() const;
       virtual const EMeasureType& getMeasureType() const;
       // [END] IHistorizable implementation
@@ -87,6 +89,11 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       ///\brief                     The measure type
       //-----------------------------------------------------
       const EMeasureType m_measureType;
+
+      //-----------------------------------------------------
+      ///\brief                     The access mode
+      //-----------------------------------------------------
+      const EKeywordAccessMode& m_accessMode;
    };
 
 

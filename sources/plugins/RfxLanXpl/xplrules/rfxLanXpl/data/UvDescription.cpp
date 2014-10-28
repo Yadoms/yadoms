@@ -12,11 +12,11 @@ DECLARE_ENUM_IMPLEMENTATION(EUvDescription,
    ((Dangerous)("dangerous"))
 );
 
-   const shared::plugin::yadomsApi::CStandardCapacity& UvDescriptionCapacity = shared::plugin::yadomsApi::CStandardCapacity("UvDescription", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordAccessMode::kGet, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+const shared::plugin::yadomsApi::CStandardCapacity& UvDescriptionCapacity = shared::plugin::yadomsApi::CStandardCapacity("UvDescription", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
 
    
 CUvDescription::CUvDescription(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EUvDescription>(keywordName, UvDescriptionCapacity, "command")
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EUvDescription>(keywordName, UvDescriptionCapacity, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGet)
 {
 }
 

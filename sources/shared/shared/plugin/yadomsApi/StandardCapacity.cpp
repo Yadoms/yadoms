@@ -4,8 +4,8 @@
 
 namespace shared { namespace plugin { namespace yadomsApi {
 
-CStandardCapacity::CStandardCapacity(const std::string& name, const std::string& unit, const EKeywordAccessMode& accessMode, const EKeywordDataType& type)
-   :m_name(name), m_unit(unit), m_accessMode(accessMode), m_type(type)
+CStandardCapacity::CStandardCapacity(const std::string& name, const std::string& unit, const EKeywordDataType& type)
+   :m_name(name), m_unit(unit), m_type(type)
 {
 
 }
@@ -23,11 +23,6 @@ const std::string & CStandardCapacity::getName() const
 const std::string & CStandardCapacity::getUnit() const
 {
    return m_unit;
-}
-
-const EKeywordAccessMode& CStandardCapacity::getAccessMode() const
-{
-   return m_accessMode;
 }
 
 const EKeywordDataType& CStandardCapacity::getType() const
