@@ -66,11 +66,11 @@
               {
                  "Threshold" :
                  {
-                    "type" : "int",
-                    "name" : "Threshold (%)",
-                    "description" : "When battery comes under this value, the plugin will notify Yadoms that power was lost",
-                    "defaultValue" : "50",
-                    "minimumValue" : "15"
+                    "type" : "decimal",
+                    "name" : "Threshold (Volts)",
+                    "description" : "When battery comes under this value, the plugin will notify Yadoms that power was lost. Be careful using this method, because a too low threshold can damage the battery. Adapt this value against the battery type, and its nominal voltage.",
+                    "defaultValue" : "12",
+                    "minimumValue" : "10"
                  }
               }
            }

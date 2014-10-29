@@ -7,7 +7,9 @@
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
 //TODO ajouter support USB ?
-
+//TODO tester redémarrage si l'accès au port est refusé (déjà ouvert par ailleurs)
+//TODO acPowerActive n'a pas l'air de fonctionner...
+//TODO le shutdown non plus...
 IMPLEMENT_PLUGIN(CMegatecUps)
 
 
@@ -39,8 +41,9 @@ static const std::locale ProtocolFloatFormatingLocale(std::locale(), new CMegate
 CMegatecUps::CMegatecUps():
    m_inputVoltage("inputVoltage"), m_inputfaultVoltage("inputfaultVoltage"), m_outputVoltage("outputVoltage"),
    m_outputCurrent("outputCurrent"), m_inputFrequency("inputFrequency"), m_batteryVoltage("batteryVoltage"),
-   m_temperature("temperature"), m_acPowerHistorizer("acPowerActive"), m_upsShutdown("UPS Shutdown"),
-   m_acPowerActive(true), m_lowBatteryFlag(false), m_lowBatteryByLevelFlag(false), m_batteryNominalVoltage(0.0)
+   m_temperature("temperature"), m_acPowerHistorizer("acPowerActive"), m_upsShutdown("UpsShutdown"),
+   m_acPowerActive(true), m_lowBatteryFlag(false), m_lowBatteryByLevelFlag(false), m_batteryNominalVoltage(0.0),
+   m_protocolErrorCounter(0), m_answerIsRequired(true)
 {
 }
 
@@ -58,7 +61,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       // the main loop
       YADOMS_LOG(debug) << "CMegatecUps is running...";
 
-      m_waitForAnswerTimer = context->getEventHandler().createTimer(kAnswerTimeout, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(5));
+      m_waitForAnswerTimer = context->getEventHandler().createTimer(kAnswerTimeout, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(2));
       m_waitForAnswerTimer->stop();
       m_upsStatusRequestTimer = context->getEventHandler().createTimer(kUpsStatusRequestDelay, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(10));
       m_upsStatusRequestTimer->stop();
@@ -128,14 +131,14 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             }
          case kAnswerTimeout:
             {
-               YADOMS_LOG(error) << "No answer received, try to reconnect in a moment...";
-               errorProcess(context);
+               YADOMS_LOG(error) << "No answer received from UPS (timeout)";
+               protocolErrorProcess(context);
                break;
             }
          case kUpsStatusRequestDelay:
             {
                // Ask for status
-               send(buildGetStatusCmd(), true);
+               sendGetStatusCmd();
                break;
             }
          case kPowerFailureNotificationDelay:
@@ -181,13 +184,15 @@ bool CMegatecUps::connectionsAreEqual(const CMegatecUpsConfiguration& conf1, con
    return (conf1.getSerialPort() == conf2.getSerialPort());
 }
 
-void CMegatecUps::send(const shared::communication::CByteBuffer& buffer, bool needAnswer)
+void CMegatecUps::send(const shared::communication::CByteBuffer& buffer, bool needAnswer, bool answerIsRequired)
 {
    if (!m_port)
       return;
 
    m_logger.logSent(buffer);
    m_port->send(buffer);
+   m_lastSentBuffer = buffer;
+   m_answerIsRequired = answerIsRequired;
    if (needAnswer)
       m_waitForAnswerTimer->start();
 }
@@ -198,25 +203,27 @@ void CMegatecUps::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const s
       YADOMS_LOG(warning) << "Command not send (UPS is not ready) : " << command;
 
    m_upsShutdown.set(command);
-   send(m_upsShutdown.isOn() ? buildShtudownCmd() : buildCancelShtudownCmd());
+   if (m_upsShutdown.isOn())
+      sendShtudownCmd();
+   else
+      sendCancelShtudownCmd();
 }
 
 void CMegatecUps::processConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    YADOMS_LOG(debug) << "UPS is now connected";
    context->recordPluginEvent(yApi::IYadomsApi::kInfo, "UPS is now connected");
+   //boost::this_thread::sleep(boost::posix_time::milliseconds(5000));//TODO virer
 
    try
    {
       // Ask for UPS informations
-      send(buildGetInformationCmd(), true);
+      sendGetInformationCmd();
    }
    catch (CProtocolException& e)
    {
-      YADOMS_LOG(error) << "Error resetting UPS : " << e.what();
-
-      // Stop the communication, and try later
-      errorProcess(context);
+      YADOMS_LOG(error) << "Protocol error : " << e.what();
+      protocolErrorProcess(context);
    }
    catch (shared::communication::CPortException& e)
    {
@@ -225,8 +232,33 @@ void CMegatecUps::processConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> con
    }
 }
 
-void CMegatecUps::errorProcess(boost::shared_ptr<yApi::IYadomsApi> context)
+void CMegatecUps::protocolErrorProcess(boost::shared_ptr<yApi::IYadomsApi> context)
 {
+   ++m_protocolErrorCounter;
+   if (m_protocolErrorCounter < 3)
+   {
+      send(m_lastSentBuffer, true, m_answerIsRequired);
+      return;
+   }
+
+   // Already 3 tries, and still no answer...
+   if (!m_answerIsRequired)
+   {
+      // The no-answer for the last command can be omitted.
+      // This is done for some UPS not supporting identification 'I' command (not responding to)
+      if (m_lastSentBuffer.content()[0] == 'I')
+      {
+         // Declare the device with default string
+         declareDevice(context, "noname UPS");
+
+         // Now ask for rating informations
+         sendGetRatingInformationCmd();
+
+         return;
+      }
+   }
+
+   // Retry full connection
    destroyConnection();
    context->getEventHandler().createTimer(kProtocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
@@ -281,14 +313,14 @@ void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYadomsApi> contex
                processReceivedInformation(context, tokens);
 
                // Now ask for rating informations
-               send(buildGetRatingInformationCmd(), true);
+               sendGetRatingInformationCmd();
             }
             else if (tokenCount == 4)
             {
                processReceivedRatingInformation(tokens);
 
                // Now ask for status
-               send(buildGetStatusCmd(), true);
+               sendGetStatusCmd();
             }
             else
                throw CProtocolException("invalid information message");
@@ -307,35 +339,39 @@ void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYadomsApi> contex
    }
 }
 
-const shared::communication::CByteBuffer CMegatecUps::buildGetInformationCmd() const
+void CMegatecUps::sendGetInformationCmd()
 {
    std::ostringstream cmd;
    cmd << 'I' << MEGATEC_EOF;
-   return shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size());
+   m_protocolErrorCounter = 0;
+   send(shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size()), true, false);
 }
 
-const shared::communication::CByteBuffer CMegatecUps::buildGetRatingInformationCmd() const
+void CMegatecUps::sendGetRatingInformationCmd()
 {
    std::ostringstream cmd;
    cmd << 'F' << MEGATEC_EOF;
-   return shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size());
+   m_protocolErrorCounter = 0;
+   send(shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size()), true);
 }
 
-const shared::communication::CByteBuffer CMegatecUps::buildGetStatusCmd() const
+void CMegatecUps::sendGetStatusCmd()
 {
    std::ostringstream cmd;
    cmd << "Q1" << MEGATEC_EOF;
-   return shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size());
+   m_protocolErrorCounter = 0;
+   send(shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size()), true);
 }
 
-const shared::communication::CByteBuffer CMegatecUps::buildToggleBeepCmd() const
+void CMegatecUps::sendToggleBeepCmd()
 {
    std::ostringstream cmd;
    cmd << 'Q' << MEGATEC_EOF;
-   return shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size());
+   m_protocolErrorCounter = 0;
+   send(shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size()));
 }
 
-const shared::communication::CByteBuffer CMegatecUps::buildShtudownCmd() const
+void CMegatecUps::sendShtudownCmd()
 {
    std::ostringstream cmd;
    cmd.imbue(ProtocolFloatFormatingLocale);
@@ -343,14 +379,16 @@ const shared::communication::CByteBuffer CMegatecUps::buildShtudownCmd() const
    cmd << 'R' << std::setw(5) << std::setfill('0') << m_configuration.outuputRestoreDelay();
    cmd << MEGATEC_EOF;
 
-   return shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size());
+   m_protocolErrorCounter = 0;
+   send(shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size()));
 }
 
-const shared::communication::CByteBuffer CMegatecUps::buildCancelShtudownCmd() const
+void CMegatecUps::sendCancelShtudownCmd()
 {
    std::ostringstream cmd;
    cmd << 'C' << MEGATEC_EOF;
-   return shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size());
+   m_protocolErrorCounter = 0;
+   send(shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size()));
 }
 
 void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYadomsApi> context, const boost::tokenizer<boost::char_separator<char> >& tokens)
@@ -396,7 +434,7 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYadomsApi> cont
 
    // Toggle beep if not in expected state
    if (beeperOn != m_configuration.upsBeepEnable())
-      send(buildToggleBeepCmd());
+      sendToggleBeepCmd();
 
    // Process AC power status
    processAcPowerStatus(context, utilityFail, batteryLow);
@@ -528,18 +566,6 @@ void CMegatecUps::notifyPowerState(boost::shared_ptr<yApi::IYadomsApi> context, 
 
 void CMegatecUps::getLowBatteryByLevelFlagState(bool& flag) const
 {
-   if (getBatteryLevel() < m_configuration.powerFailureRemainingBatteryThreshold())
-      flag = true;   // Battery becomes low
-   else if (getBatteryLevel() > m_configuration.powerFailureRemainingBatteryThreshold())
-      flag = false;  // Battery exited low state
-   // else (batteryLevel == threshold) ==> Flag not changed (make a kind of hysteresis)
+   flag = (m_batteryVoltage < m_configuration.powerFailureRemainingBatteryThreshold());
 }
 
-unsigned int CMegatecUps::getBatteryLevel() const
-{
-   if (m_batteryNominalVoltage == 0.0)
-      return 100; // Nominal voltage is not initialized
-
-   //TODO convertir en %
-   return m_batteryVoltage;
-}

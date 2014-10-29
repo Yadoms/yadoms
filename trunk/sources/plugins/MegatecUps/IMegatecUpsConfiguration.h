@@ -55,9 +55,9 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	    Get the power failure remaining battery threshold
-   /// \return     remaining battery threshold (%)
+   /// \return     remaining battery voltage threshold (V)
    //--------------------------------------------------------------
-   virtual unsigned int powerFailureRemainingBatteryThreshold() const = 0;
+   virtual double powerFailureRemainingBatteryThreshold() const = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Get the output shutdown delay

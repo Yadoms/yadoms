@@ -40,10 +40,10 @@ unsigned int CMegatecUpsConfiguration::powerFailureFilterDelay() const
    return m_data.get<unsigned int>("PowerFailureManagement.content.Filter.content.Delay");
 }
 
-unsigned int CMegatecUpsConfiguration::powerFailureRemainingBatteryThreshold() const
+double CMegatecUpsConfiguration::powerFailureRemainingBatteryThreshold() const
 {
    BOOST_ASSERT_MSG(powerFailureManagement() == IMegatecUpsConfiguration::kRemainingBattery, "Wrong powerFailureManagement choice");
-   return m_data.get<unsigned int>("PowerFailureManagement.content.RemainingBattery.content.Threshold");
+   return m_data.get<double>("PowerFailureManagement.content.RemainingBattery.content.Threshold");
 }
 
 double CMegatecUpsConfiguration::outuputShutdownDelay() const
