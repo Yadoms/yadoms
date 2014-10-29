@@ -20,7 +20,7 @@ public:
    virtual bool upsBeepEnable() const;
    virtual EPowerFailureManagement powerFailureManagement() const;
    virtual unsigned int powerFailureFilterDelay() const;
-   virtual unsigned int powerFailureRemainingBatteryThreshold() const;
+   virtual double powerFailureRemainingBatteryThreshold() const;
    virtual double outuputShutdownDelay() const;
    virtual double outuputRestoreDelay() const;
    // [END] IMegatecUpsConfiguration implementation

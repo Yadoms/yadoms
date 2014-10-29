@@ -34,8 +34,9 @@ protected:
    /// \brief	                     Send a message to the UPS
    /// \param [in] buffer           Buffer to send
    /// \param [in] needAnswer       true if answer is needed. If true, a timeout will occur if no answer is received.
+   /// \param [in] answerIsRequired true if answer is required (Used for some UPS, not supporting all commands)
    //--------------------------------------------------------------
-   void send(const shared::communication::CByteBuffer& buffer, bool needAnswer = false);
+   void send(const shared::communication::CByteBuffer& buffer, bool needAnswer = false, bool answerIsRequired = true);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
@@ -76,10 +77,10 @@ protected:
    void destroyConnection();
 
    //--------------------------------------------------------------
-   /// \brief	                     Process error (disconnect and retry connect later)
+   /// \brief	                     Protocol error processing (retry last command)
    /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void errorProcess(boost::shared_ptr<yApi::IYadomsApi> context);
+   void protocolErrorProcess(boost::shared_ptr<yApi::IYadomsApi> context);
 
    //--------------------------------------------------------------
    /// \brief	                     Check if connections are the same between the 2 configurations
@@ -90,40 +91,34 @@ protected:
    bool connectionsAreEqual(const CMegatecUpsConfiguration& conf1, const CMegatecUpsConfiguration& conf2) const;
 
    //--------------------------------------------------------------
-   /// \brief	                     Build the 'Get Information' command
-   /// \return                      Buffer containing the command
+   /// \brief	                     Send the 'Get Information' command
    //--------------------------------------------------------------
-   const shared::communication::CByteBuffer buildGetInformationCmd() const;
+   void sendGetInformationCmd();
 
    //--------------------------------------------------------------
-   /// \brief	                     Build the 'Get rating Information' command
-   /// \return                      Buffer containing the command
+   /// \brief	                     Send the 'Get rating Information' command
    //--------------------------------------------------------------
-   const shared::communication::CByteBuffer buildGetRatingInformationCmd() const;
+   void sendGetRatingInformationCmd();
 
    //--------------------------------------------------------------
-   /// \brief	                     Build the 'Get status' command
-   /// \return                      Buffer containing the command
+   /// \brief	                     Send the 'Get status' command
    //--------------------------------------------------------------
-   const shared::communication::CByteBuffer buildGetStatusCmd() const;
+   void sendGetStatusCmd();
 
    //--------------------------------------------------------------
-   /// \brief	                     Build the 'Toggle beep' command
-   /// \return                      Buffer containing the command
+   /// \brief	                     Send the 'Toggle beep' command
    //--------------------------------------------------------------
-   const shared::communication::CByteBuffer buildToggleBeepCmd() const;
+   void sendToggleBeepCmd();
 
    //--------------------------------------------------------------
-   /// \brief	                     Build the 'Shutdown' command
-   /// \return                      Buffer containing the command
+   /// \brief	                     Send the 'Shutdown' command
    //--------------------------------------------------------------
-   const shared::communication::CByteBuffer buildShtudownCmd() const;
+   void sendShtudownCmd();
 
    //--------------------------------------------------------------
-   /// \brief	                     Build the 'Cancel shutdown' command
-   /// \return                      Buffer containing the command
+   /// \brief	                     Send the 'Cancel shutdown' command
    //--------------------------------------------------------------
-   const shared::communication::CByteBuffer buildCancelShtudownCmd() const;
+   void sendCancelShtudownCmd();
 
    //--------------------------------------------------------------
    /// \brief	                     Process received status from UPS
@@ -187,13 +182,6 @@ protected:
    //--------------------------------------------------------------
    void getLowBatteryByLevelFlagState(bool& flag) const;
 
-   //--------------------------------------------------------------
-   /// \brief	                     Get the battery level (%) from measure battery voltage
-   /// \return                      Battery level (%)
-   //--------------------------------------------------------------
-   unsigned int getBatteryLevel() const;
-
-
 private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
@@ -224,6 +212,22 @@ private:
    /// \brief	The delay before notify Yadoms when AC power is lost
    //--------------------------------------------------------------
    boost::shared_ptr<shared::event::CEventTimer> m_filterTimer;
+
+   //--------------------------------------------------------------
+   /// \brief	The communication error retry counter
+   //--------------------------------------------------------------
+   unsigned int m_protocolErrorCounter;
+
+   //--------------------------------------------------------------
+   /// \brief	The last sent buffer (used for retries)
+   //--------------------------------------------------------------
+   shared::communication::CByteBuffer m_lastSentBuffer;
+
+   //--------------------------------------------------------------
+   /// \brief	Flag if the answer for the last sent command can be omitted
+   /// (some UPS don't support all commands, like identification 'I' command)
+   //--------------------------------------------------------------
+   bool m_answerIsRequired;
 
    //--------------------------------------------------------------
    /// \brief	The input voltage (V)

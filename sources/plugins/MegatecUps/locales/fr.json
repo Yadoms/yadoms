@@ -49,8 +49,8 @@
               {
                  "Threshold" :
                  {
-                    "name" : "Seuil (%)",
-                    "description" : "Le plugin notifiera Yadoms lorsque la batterie passera sous ce seuil"
+                    "name" : "Seuil (Volts)",
+                    "description" : "Le plugin notifiera Yadoms lorsque la batterie passera sous ce seuil. Attention, un seuil trop bas peut endommager la batterie (décharge profonde). Adapter cette valeur au type de batterie et à sa tension nominale."
                  }
               }
            }
