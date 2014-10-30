@@ -125,7 +125,8 @@ namespace web { namespace rest { namespace service {
             thisPluginData.set("releaseType", i->second->getReleaseType());
             thisPluginData.set("url", i->second->getUrl());
             thisPluginData.set("version", i->second->getVersion());
-
+            thisPluginData.set("supportManuallyCreatedDevice", i->second->getSupportManuallyCreatedDevice());
+            
             pluginCollection.push_back(thisPluginData);
          }
 

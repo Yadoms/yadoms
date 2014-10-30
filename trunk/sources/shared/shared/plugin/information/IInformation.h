@@ -77,5 +77,12 @@ namespace shared { namespace plugin { namespace information
       /// \return     all plugin informations
       //--------------------------------------------------------------
       virtual std::string toString() const = 0;
+
+
+      //--------------------------------------------------------------
+      /// \brief	    indicates if the plugin supports manually created devices
+      /// \return     true if the plugin supports manually created devices
+      //--------------------------------------------------------------
+      virtual const bool getSupportManuallyCreatedDevice() const = 0;
    };
 } } } // namespace shared::plugin::information

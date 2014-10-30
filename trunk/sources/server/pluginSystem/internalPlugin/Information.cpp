@@ -66,4 +66,8 @@ namespace pluginSystem {   namespace internalPlugin {
       return formatedInformations.str();
    }
 
+   const bool CInformation::getSupportManuallyCreatedDevice() const
+   {
+      return false;
+   }
 }} // namespace pluginSystem::internalPlugin
