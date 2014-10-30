@@ -32,7 +32,13 @@
             "description": "Type of the device",
             "type": "radioSection",
             "content": {
-                "x10": {
+                "fake": {
+					"type": "section",
+                    "name": "fake",
+					"content" : {
+					}
+				},
+				"x10": {
                     "type": "section",
                     "name": "x10",
                     "description": "X10",
