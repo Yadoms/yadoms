@@ -36,7 +36,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT",  (m_restKeyword)("*"), CDevice::updateDeviceFriendlyName, CDevice::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT",  (m_restKeyword)("keyword")("*"), CDevice::updateKeywordFriendlyName, CDevice::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("keyword")("*")("command"), CDevice::sendDeviceCommand, CDevice::transactionalMethod);
-      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST",  (m_restKeyword), CDevice::createDevice, CDevice::transactionalMethod);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST",  (m_restKeyword)("*"), CDevice::createDevice, CDevice::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE",  (m_restKeyword)("*"), CDevice::deleteDevice, CDevice::transactionalMethod);
    }
 
@@ -257,19 +257,27 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         database::entities::CDevice deviceToAdd;
-         deviceToAdd.fillFromContent(requestContent);
-         
-         boost::shared_ptr<database::entities::CDevice> deviceFound = m_dataProvider->getDeviceRequester()->createDevice(deviceToAdd.PluginId(), deviceToAdd.Name(), deviceToAdd.FriendlyName(), deviceToAdd.Model(), deviceToAdd.Details());
-         return web::rest::CResult::GenerateSuccess(deviceFound);
+         if (parameters.size() >= 2)
+         {
+            int pluginId = boost::lexical_cast<int>(parameters[1]);
+
+            
+            //on transmet directement la demande auprès du pluginManager
+            m_messageSender.sendManuallyDeviceCreationRequestAsync(pluginId, requestContent.get<std::string>("deviceName"), requestContent);
+            return web::rest::CResult::GenerateSuccess();
+         }
+         else
+         {
+            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive keyword id in url");
+         }
       }
-      catch(std::exception &ex)
+      catch (std::exception &ex)
       {
          return web::rest::CResult::GenerateError(ex);
       }
-      catch(...)
+      catch (...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in creating a device");
+         return web::rest::CResult::GenerateError("unknown exception in retreiving keyword");
       }
    }
 

@@ -28,11 +28,9 @@ namespace communication {
       ///\brief                     Send a manually device creation request to a plugin
       ///\param [in] pluginId       Plugin Id on which to create device
       ///\param [in] deviceName     Device name
-      ///\param [in] keywordName    Keyword name
-      ///\param [in] capacity       The capacity used for this device
-      ///\param [in] parameters     Device parameters
+      ///\param [in] configuration  Device configuration
       //----------------------------------------------
-      virtual void sendManuallyDeviceCreationRequestAsync(int pluginId, const std::string& deviceName, const std::string& keywordName, const std::string& capacity, const std::string& parameters) = 0;
+      virtual void sendManuallyDeviceCreationRequestAsync(int pluginId, const std::string& deviceName, const shared::CDataContainer & configuration) = 0;
    };
 
 } //namespace communication
