@@ -221,3 +221,50 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
 
    return message;
 }
+
+bool CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> context, const boost::shared_ptr<yApi::IManuallyDeviceCreationData> data) const
+{
+   try
+   {
+      if (data->getConfiguration().get<bool>("type.content.x10.radio"))
+         rfxcomMessages::CLighting1 msg(context, sTypeX10, data->getConfiguration().get<shared::CDataContainer>("type.content.x10.content"));
+      else if (data->getConfiguration().get<bool>("type.content.arc.radio"))
+         rfxcomMessages::CLighting1 msg(context, sTypeARC, data->getConfiguration().get<shared::CDataContainer>("type.content.arc.content"));
+      else if (data->getConfiguration().get<bool>("type.content.ab400d.radio"))
+         rfxcomMessages::CLighting1 msg(context, sTypeAB400D, data->getConfiguration().get<shared::CDataContainer>("type.content.ab400d.content"));
+      else if (data->getConfiguration().get<bool>("type.content.waveman.radio"))
+         rfxcomMessages::CLighting1 msg(context, sTypeWaveman, data->getConfiguration().get<shared::CDataContainer>("type.content.waveman.content"));
+      else if (data->getConfiguration().get<bool>("type.content.emw200.radio"))
+         rfxcomMessages::CLighting1 msg(context, sTypeEMW200, data->getConfiguration().get<shared::CDataContainer>("type.content.emw200.content"));
+      else if (data->getConfiguration().get<bool>("type.content.impuls.radio"))
+         rfxcomMessages::CLighting1 msg(context, sTypeIMPULS, data->getConfiguration().get<shared::CDataContainer>("type.content.impuls.content"));
+      else if (data->getConfiguration().get<bool>("type.content.risingSun.radio"))
+         rfxcomMessages::CLighting1 msg(context, sTypeRisingSun, data->getConfiguration().get<shared::CDataContainer>("type.content.risingSun.content"));
+      else if (data->getConfiguration().get<bool>("type.content.philips.radio"))
+         rfxcomMessages::CLighting1 msg(context, sTypePhilips, data->getConfiguration().get<shared::CDataContainer>("type.content.philips.content"));
+      else if (data->getConfiguration().get<bool>("type.content.energenie.radio"))
+         rfxcomMessages::CLighting1 msg(context, sTypeEnergenie, data->getConfiguration().get<shared::CDataContainer>("type.content.energenie.content"));
+      else if (data->getConfiguration().get<bool>("type.content.energenie5.radio"))
+         rfxcomMessages::CLighting1 msg(context, sTypeEnergenie5, data->getConfiguration().get<shared::CDataContainer>("type.content.energenie5.content"));
+      else if (data->getConfiguration().get<bool>("type.content.gdr2.radio"))
+         rfxcomMessages::CLighting1 msg(context, sTypeGDR2, data->getConfiguration().get<shared::CDataContainer>("type.content.gdr2.content"));
+
+      else if (data->getConfiguration().get<bool>("type.content.blyss.radio"))
+         rfxcomMessages::CLighting6 msg(context, sTypeBlyss, data->getConfiguration().get<shared::CDataContainer>("type.content.blyss.content"));
+
+      else
+         throw shared::exception::CInvalidParameter("Unknown device type");
+   }
+   catch(shared::exception::CInvalidParameter& e)
+   {
+      YADOMS_LOG(error) << "Fail to create device manually, invalid parameter " << e.what();
+      return false;
+   }
+   catch(shared::exception::COutOfRange& e)
+   {
+      YADOMS_LOG(error) << "Fail to create device manually, out of range " << e.what();
+      return false;
+   }
+
+   return true;
+}

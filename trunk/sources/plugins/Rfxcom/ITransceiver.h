@@ -55,4 +55,12 @@ public:
    /// \return                      Decoded message, NULL if error when decoding
    //--------------------------------------------------------------
    virtual boost::shared_ptr<rfxcomMessages::IRfxcomMessage> decodeRfxcomMessage(boost::shared_ptr<yApi::IYadomsApi> context, const shared::communication::CByteBuffer& data) const = 0;
+
+   //--------------------------------------------------------------
+   /// \brief	                     Process the manually device reaction request
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] data             Device manually creation data
+   /// \return                      true if success
+   //--------------------------------------------------------------
+   virtual bool createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> context, const boost::shared_ptr<yApi::IManuallyDeviceCreationData> data) const = 0;
 };

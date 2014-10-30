@@ -22,6 +22,37 @@ CLighting1::CLighting1(boost::shared_ptr<yApi::IYadomsApi> context, const shared
    Init(context);
 }
 
+CLighting1::CLighting1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+   :m_state("state"), m_rssi("rssi")
+{
+   m_state.set(false);
+   m_rssi.set(0);
+
+   m_subType = subType;
+   switch(m_subType)
+   {
+   case sTypeX10        :
+   case sTypeARC        :
+   case sTypeAB400D     :
+   case sTypeWaveman    :
+   case sTypeEMW200     :
+   case sTypeIMPULS     :
+   case sTypeRisingSun  :
+   case sTypePhilips    :
+   case sTypeEnergenie  :
+   case sTypeEnergenie5 :
+   case sTypeGDR2       :
+      break;
+   default:
+      throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
+   }
+
+   m_houseCode = boost::lexical_cast<unsigned char>(manuallyDeviceCreationConfiguration.get<std::string>("houseCode")[0]);
+   m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
+
+   Init(context);
+}
+
 CLighting1::CLighting1(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_state("state"), m_rssi("rssi")
 {

@@ -85,40 +85,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                boost::shared_ptr<yApi::IManuallyDeviceCreationData> data = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationData> >();
 
                YADOMS_LOG(debug) << "Manually device creation request received for device :" << data->getDeviceName();
-
-               //TODO mettre tout ça ailleurs
-               try
-               {
-                  if (data->getConfiguration().get<bool>("type.content.x10.radio"))
-                  {
-                     //TODO
-                  }
-                  else if (data->getConfiguration().get<bool>("type.content.blyss.radio"))
-                  {
-                     int id1 = data->getConfiguration().get<int>("type.content.blyss.content.id1");
-                     int id2 = data->getConfiguration().get<int>("type.content.blyss.content.id2");
-                     int groupCode = data->getConfiguration().get<int>("type.content.blyss.content.groupCode");
-                     int unitCode = data->getConfiguration().get<int>("type.content.blyss.content.unitCode");
-                     //TODO instancier un lighting6
-                  }
-                  //TODO
-                     //if (!context->deviceExists(data->getDeviceName()))
-                     //{
-                     //   // Declare the device
-                     //   context->declareDevice(data->getDeviceName(), shared::CStringExtension::EmptyString, data->getConfiguration());
-
-                     //   // Declare associated keywords (= values managed by this device)
-                     //   context->declareKeyword(data->getDeviceName(), yApi::historization::CSwitch("switch"));
-                     //}
-               }
-               catch(shared::exception::CInvalidParameter& e)
-               {
-                  YADOMS_LOG(error) << "Fail to create device manually, invalid parameter " << e.what();
-               }
-               catch(shared::exception::COutOfRange& e)
-               {
-                  YADOMS_LOG(error) << "Fail to create device manually, out of range " << e.what();
-               }
+               m_transceiver->createDeviceManually(context, data);
                
                break;
             }
