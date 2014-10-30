@@ -1,5 +1,6 @@
 #pragma once
 #include <shared/plugin/yadomsApi/IManuallyDeviceCreationData.h>
+#include <shared/DataContainer.h>
 
 
 namespace pluginSystem
@@ -11,13 +12,11 @@ namespace pluginSystem
    {
    public:
       //-----------------------------------------------------
-      ///\brief                  Constructor
-      ///\param[in] device       The device to create
-      ///\param[in] keyword      The keyword to create
-      ///\param[in] capacity     The capacity used for this device
-      ///\param[in] parameters   The parameters of the device (JSON string)
+      ///\brief                        Constructor
+      ///\param[in] deviceName         The device name to create
+      ///\param[in] configuration      The creation configuration of the device 
       //-----------------------------------------------------
-      CManuallyDeviceCreationData(const std::string& device, const std::string& keyword, const std::string& capacity, const std::string& parameters);
+      CManuallyDeviceCreationData(const std::string& deviceName, const shared::CDataContainer & configuration);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -25,33 +24,20 @@ namespace pluginSystem
       virtual ~CManuallyDeviceCreationData();
 
       // IManuallyDeviceCreationData implementation
-      virtual const std::string& getDevice() const;
-      virtual const std::string& getKeyword() const;
-      virtual const std::string& getCapacity() const;
-      virtual const std::string& getParameters() const;
-      virtual const std::string toString() const;
+      virtual const std::string& getDeviceName() const;
+      virtual const shared::CDataContainer & getConfiguration() const;
       // [END] IManuallyDeviceCreationData implementation
 
    private:
       //-----------------------------------------------------
       ///\brief               Device
       //-----------------------------------------------------
-      std::string m_device;
+      std::string m_deviceName;
 
       //-----------------------------------------------------
-      ///\brief               Keyword
+      ///\brief               Device creation parameters
       //-----------------------------------------------------
-      std::string m_keyword;
-
-      //-----------------------------------------------------
-      ///\brief               The capacity used for this device
-      //-----------------------------------------------------
-      std::string m_capacity;
-
-      //-----------------------------------------------------
-      ///\brief               Device parameters (JSON string)
-      //-----------------------------------------------------
-      std::string m_parameters;
+      shared::CDataContainer m_configuration;
    };  
 } // namespace pluginSystem	
 	

@@ -55,10 +55,10 @@ namespace communication {
       m_acquisitionHistorizer->saveData(keywordId, command->getHistorizableObject());
    }
 
-   void CPluginGateway::sendManuallyDeviceCreationRequestAsync(int pluginId, const std::string& deviceName, const std::string& keywordName, const std::string& capacity, const std::string& parameters)
+   void CPluginGateway::sendManuallyDeviceCreationRequestAsync(int pluginId, const std::string& deviceName, const shared::CDataContainer & configuration)
    {
       // Create the request
-      boost::shared_ptr<const shared::plugin::yadomsApi::IManuallyDeviceCreationData> request(new pluginSystem::CManuallyDeviceCreationData(deviceName, keywordName, capacity, parameters));
+      boost::shared_ptr<const shared::plugin::yadomsApi::IManuallyDeviceCreationData> request(new pluginSystem::CManuallyDeviceCreationData(deviceName, configuration));
 
       // Dispatch command to the right plugin
       m_pluginManager->postManuallyDeviceCreationRequest(pluginId, request);

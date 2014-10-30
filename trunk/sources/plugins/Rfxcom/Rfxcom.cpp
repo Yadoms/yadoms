@@ -83,13 +83,16 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             {
                // Yadoms asks for device creation
                boost::shared_ptr<yApi::IManuallyDeviceCreationData> data = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationData> >();
+
+               //TODO : modifier les lignes suivantes
+               /*
                YADOMS_LOG(debug) << "Manually device creation request received :" << data->toString();
 
                // Declare the device
-               context->declareDevice(data->getDevice(), shared::CStringExtension::EmptyString, data->getParameters());
+               context->declareDevice(data->getDeviceName(), shared::CStringExtension::EmptyString, data->getParameters());
                // Declare associated keywords (= values managed by this device)
-               context->declareKeyword(data->getDevice(), yApi::historization::CSwitch(data->getKeyword()));
-
+               context->declareKeyword(data->getDeviceName(), yApi::historization::CSwitch(data->getKeyword()));
+               */
                break;
             }
          case yApi::IYadomsApi::kEventUpdateConfiguration:
