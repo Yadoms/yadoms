@@ -13,26 +13,26 @@ namespace xplrules {
    {
    }
 
-   const std::string & CDeviceIdentifier::getId()
+   const std::string & CDeviceIdentifier::getId() const 
    {
       return m_id;
    }
 
 
-   const std::string & CDeviceIdentifier::getCommercialName()
+   const std::string & CDeviceIdentifier::getCommercialName() const
    {
       if(m_commercialName.empty())
          return m_id;
       return m_commercialName;
    }
 
-   const xplcore::CXplMessageSchemaIdentifier & CDeviceIdentifier::getReadingXplProtocol()
+   const xplcore::CXplMessageSchemaIdentifier & CDeviceIdentifier::getReadingXplProtocol() const
    {
       return m_xplProtocolReading;
    }
 
  
-   const xplcore::CXplMessageSchemaIdentifier & CDeviceIdentifier::getWritingXplProtocol()
+   const xplcore::CXplMessageSchemaIdentifier & CDeviceIdentifier::getWritingXplProtocol() const
    {
       return m_xplProtocolWriting;
 

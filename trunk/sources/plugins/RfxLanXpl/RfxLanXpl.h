@@ -48,6 +48,13 @@ private:
    void OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceCommand> command, boost::shared_ptr<yApi::IYadomsApi> context, xplcore::CXplService & xplService);
 
    //----------------------------------------------
+   ///\brief Function handler use to create a device from a user configuration
+   ///\param [in] configuration  the device configuration
+   ///\param [in] context The plugin API
+   //----------------------------------------------
+   void OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCreationData> configuration, boost::shared_ptr<yApi::IYadomsApi> context);
+
+   //----------------------------------------------
    ///\brief  The device manager
    //----------------------------------------------
    boost::shared_ptr<xplrules::IDeviceManager>   m_deviceManager;

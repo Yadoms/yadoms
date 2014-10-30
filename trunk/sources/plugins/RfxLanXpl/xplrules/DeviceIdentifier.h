@@ -28,26 +28,26 @@ namespace xplrules {
       ///\brief Get the device identifier
       ///\return the device identifier
       //------------------------------------
-      const std::string & getId();
+      const std::string & getId() const;
 
       //------------------------------------
       ///\brief Get the device commercial name
       /// If the commercial name is not defined, it retuens the device identifier
       ///\return the commercial name, or device identifier if commercial one is not defined
       //------------------------------------
-      const std::string & getCommercialName();
+      const std::string & getCommercialName() const;
 
       //------------------------------------
       ///\brief Get the xpl protocol used for reading data
       ///\return the xpl protocol
       //------------------------------------
-      const xplcore::CXplMessageSchemaIdentifier & getReadingXplProtocol();
+      const xplcore::CXplMessageSchemaIdentifier & getReadingXplProtocol() const;
 
       //------------------------------------
       ///\brief Get the xpl protocol used for sending command
       ///\return the xpl protocol
       //------------------------------------
-      const xplcore::CXplMessageSchemaIdentifier & getWritingXplProtocol();
+      const xplcore::CXplMessageSchemaIdentifier & getWritingXplProtocol() const;
    private:
       //------------------------------------
       ///\brief The device identifier
