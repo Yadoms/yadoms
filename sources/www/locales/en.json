@@ -110,6 +110,11 @@
          "pluginType" : "Plugin type",
          "errorDuringGettingPluginTypes" : "Error during requesting plugin types"
       },
+      "add-manually-device" : {
+         "title" : "Add a new virtual device",
+         "pluginType" : "Plugin type",
+         "errorDuringGettingPluginTypes" : "Error during requesting plugin types"
+      },
       "configure-plugin" : {
          "title" : "Plugin configuration",
          "name-configuration" : {
@@ -214,7 +219,7 @@
             "devices" : {
                "title" : "Devices",
                "deviceListDescription" : "Here is the list of all devices. You can manage your devices from here.",
-               "new" : "Create a new virtual device",
+               "new" : "Create a new device",
                "table" : {
                   "name" : "Name",
                   "attachedTo" : "Attached to plugin",

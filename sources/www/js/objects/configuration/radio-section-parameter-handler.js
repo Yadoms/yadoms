@@ -4,21 +4,18 @@
 
 /**
  * Create a radio section parameter handler
- * @param objectToConfigure
  * @param i18nContext
  * @param paramName
  * @param content
  * @param currentValue
  * @constructor
  */
-function RadioSectionParameterHandler(objectToConfigure, i18nContext, paramName, content, currentValue) {
-   assert(objectToConfigure !== undefined, "objectToConfigure must contain widget or plugin object");
+function RadioSectionParameterHandler(i18nContext, paramName, content, currentValue) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
    assert(Object.keys(content.content).length >= 2, "You must have at least two sub sections into a radioSection");
 
-   this.objectToConfigure = objectToConfigure;
    this.configurationHandlers = [];
    this.configurationValues = currentValue;
    this.name = content.name;
@@ -53,7 +50,7 @@ function RadioSectionParameterHandler(objectToConfigure, i18nContext, paramName,
       var radioActive = false;
       if (self.configurationValues.activeSection == key)
          radioActive = true;
-      var handler = new SectionParameterHandler(self.objectToConfigure, newI18nContext, key, value, v, self.radioGroupUuid, radioActive);
+      var handler = new SectionParameterHandler(newI18nContext, key, value, v, self.radioGroupUuid, radioActive);
       self.configurationHandlers.push(handler);
    });
 }

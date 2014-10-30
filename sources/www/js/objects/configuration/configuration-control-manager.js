@@ -4,18 +4,19 @@
 
 /**
  * Creates an instance of LazyLoaderManager
- * @param objectToConfigure
  * @param $domContainer
  * @constructor
  */
-function ConfigurationControlManager(objectToConfigure, i18nNamespace, $domContainer) {
-   assert(objectToConfigure !== undefined, "objectToConfigure must contain widget or plugin object");
+function ConfigurationControlManager(configurationSchema, currentconfiguration, i18nNamespace, $domContainer) {
+   assert(configurationSchema !== undefined, "configurationSchema must contain widget or plugin object");
    assert(i18nNamespace !== undefined, "i18nNamespace must contain widget or plugin object");
    assert($domContainer !== undefined, "$domContainer must be defined");
 
-   this.objectToConfigure = objectToConfigure;
-   this.configurationSchema = objectToConfigure.package.configurationSchema;
-   this.configurationValues = objectToConfigure.configuration;
+   if (!currentconfiguration)
+      currentconfiguration = {};
+
+   this.configurationSchema = configurationSchema;
+   this.configurationValues = currentconfiguration;
    this.configurationHandlers = [];
 
    var self = this;
@@ -26,7 +27,7 @@ function ConfigurationControlManager(objectToConfigure, i18nNamespace, $domConta
    //for each key in package
    $.each(self.configurationSchema, function (key, value) {
       var currentValue = self.configurationValues[key];
-      var handler = ConfigurationHelper.createParameterHandler(self.objectToConfigure, i18nContext, key, value, currentValue);
+      var handler = ConfigurationHelper.createParameterHandler(i18nContext, key, value, currentValue);
       self.configurationHandlers.push(handler);
    });
 

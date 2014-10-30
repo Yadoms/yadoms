@@ -17,30 +17,35 @@
    var deviceList = [];
 
    function initializeDeviceDashboard() {
+      $("#btn-add-new-device").unbind("click").bind("click", addNewDevice);
+
+      refreshDeviceList();
+   }
+
+   function refreshDeviceList() {
       //we remove all rows except header
       $("table#device-list").find("tr:gt(0)").remove();
+
       //we clear pluginInstance array
       deviceList = [];
 
-      $("#btn-add-new-device").unbind("click").bind("click", addNewDevice);
-
       //we dynamically ask for devices
       $.getJSON("/rest/device")
-         .done(function (data) {
-            //we parse the json answer
-            if (data.result != "true")
-            {
-               notifyError($.t("modals.dashboard.sub-windows.devices.errorGettingDeviceList"), JSON.stringify(data));
-               return;
-            }
-            //foreach result we append a <tr>
-            $.each(data.data.device, function(index, value) {
-               var dev = DeviceManager.factory(value);
-               deviceList.push(dev);
-               addDeviceToDom(dev);
-            });
-         })
-         .fail(function() {notifyError($.t("modals.dashboard.sub-windows.devices.errorGettingDeviceList"), JSON.stringify(data));});
+           .done(function (data) {
+              //we parse the json answer
+              if (data.result != "true")
+              {
+                 notifyError($.t("modals.dashboard.sub-windows.devices.errorGettingDeviceList"), JSON.stringify(data));
+                 return;
+              }
+              //foreach result we append a <tr>
+              $.each(data.data.device, function(index, value) {
+                 var dev = DeviceManager.factory(value);
+                 deviceList.push(dev);
+                 addDeviceToDom(dev);
+              });
+           })
+           .fail(function() {notifyError($.t("modals.dashboard.sub-windows.devices.errorGettingDeviceList"), JSON.stringify(data));});
    }
 
    function getDeviceDomRow(device) {
@@ -212,7 +217,44 @@
    }
 
    function addNewDevice() {
-      //TODO
+      modals.deviceAddManually.load(function() {
+         askPluginTypesForManuallyDeviceCreation(function(pluginType) {
+            var pi = new PluginInstance(null, "", pluginType, "", 1);
+            //we get package.json
+            PluginInstanceManager.downloadPackage(pi, function() {
+               //we ask for configuration modal async
+               modals.deviceConfigureManually.load(function() {
+                  //we launch configureInstance GUI
+                  showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceConfiguration) {
+                     //we ask for manually device creation
+                     $.ajax({
+                        type: "POST",
+                        url: "/rest/plugin/" + pi.id + "/createDevice",
+                        data: JSON.stringify({ name: newDeviceName, configuration: newDeviceConfiguration}),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json"
+                     })
+                       .done(function(data) {
+                          //we parse the json answer
+                          if (data.result != "true")
+                          {
+                             //TODO : i18n
+                             notifyError($.t("objects.pluginInstance.errorCreating", {pluginName : pluginInstance.name}), JSON.stringify(data));
+                             return;
+                          }
+                          //we launch a refresh of the device list
+                          refreshDeviceList();
+
+                       })
+                       .fail(function() {
+                          //TODO : i18n
+                          notifyError($.t("objects.pluginInstance.errorCreating", {pluginName : pluginInstance.name}));
+                       });
+                  });
+               });
+            });
+         });
+      });
    }
    
 </script>

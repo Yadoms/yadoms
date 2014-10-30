@@ -34,7 +34,7 @@
       $modalBody.append(nameParameter.getDOMObject());
 
       //we append classic configuration
-      var configMgr = new ConfigurationControlManager(pluginInstance, pluginInstance.type, $modalBody);
+      var configMgr = new ConfigurationControlManager(pluginInstance.package.configurationSchema, pluginInstance.configuration, pluginInstance.type, $modalBody);
 
       //i18n
       $modalBody.i18n();
