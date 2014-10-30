@@ -393,7 +393,7 @@ void CManager::startInternalPlugin()
 
    try
    {
-      // Get instance informations from database
+      // Internal plugin is not recorded in database, so make fake database value for this plugin
       boost::shared_ptr<database::entities::CPlugin> fakeDatabasePluginInstance(new database::entities::CPlugin());
       fakeDatabasePluginInstance->Id = 0;
       fakeDatabasePluginInstance->AutoStart = true;

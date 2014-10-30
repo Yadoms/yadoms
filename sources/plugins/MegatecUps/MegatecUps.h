@@ -267,7 +267,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The AC power state
    //--------------------------------------------------------------
-   yApi::historization::CSwitch m_acPowerHistorizer;       //TODO à mettre en kGet-only
+   yApi::historization::CSwitch m_acPowerHistorizer;
 
    //--------------------------------------------------------------
    /// \brief	The shutdown device

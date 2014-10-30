@@ -172,12 +172,12 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYadomsApi> conte
                boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
                YADOMS_LOG(debug) << "Command received :" << command->toString();
 
-               if (command->getKeyword() == m_powerKeyword.getKeyword())
+               if (boost::iequals(command->getKeyword(), m_powerKeyword.getKeyword()))
                   onPowerPhoneRequest(context, command->getBody());
-               else if (command->getKeyword() == m_messageKeyword.getKeyword())
+               else if (boost::iequals(command->getKeyword(), m_messageKeyword.getKeyword()))
                   onSendSmsRequest(context, command->getBody());
                else
-                  YADOMS_LOG(error) << "Unsupported command received : " << command->toString();
+                  YADOMS_LOG(warning) << "Received command for unknown keyword from Yadoms : " << command->toString();
 
                break;
             }

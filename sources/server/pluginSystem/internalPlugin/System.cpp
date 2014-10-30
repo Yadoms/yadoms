@@ -5,6 +5,7 @@
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yadomsApi/historization/Historizers.h>
+#include <tools/OperatingSystem.h>
 
 
 namespace pluginSystem {
@@ -28,15 +29,15 @@ namespace pluginSystem {
          // the main loop
          YADOMS_LOG(debug) << "System is running...";
 
-         //D?clare all device/keywords
-			yApi::historization::CShutdown keywordShutdown("shutdown");
-			yApi::historization::CRestart keywordRestart("restart");
+         // Declare all device/keywords
+			yApi::historization::CEvent keywordShutdown("shutdown");
+			yApi::historization::CEvent keywordRestart("restart");
 
-         //création du device system si necessaire
+         // Device creation if needed
          if (!context->deviceExists("system"))
             context->declareDevice("system", "yadoms system");
 
-         //création des keyword si necessaire
+         // Keywords creation if needed
          if (!context->keywordExists("system", keywordShutdown.getKeyword()))
             context->declareKeyword("system", keywordShutdown);
 
@@ -54,11 +55,19 @@ namespace pluginSystem {
                   boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
 
                   if (boost::iequals(command->getKeyword(), keywordShutdown.getKeyword()))
+                  {
                      YADOMS_LOG(info) << "Shutdown the system";
+                     tools::COperatingSystem::shutdown(false);//TODO c'est pas ici qu'il faut faire ça (il faut lever un flag pour arrêter l'appli proprement et appeler l'arrêt du système juste avant de quitter le main)
+                  }
                   else if (boost::iequals(command->getKeyword(), keywordRestart.getKeyword()))
+                  {
                      YADOMS_LOG(info) << "Restart the system";
+                     tools::COperatingSystem::shutdown(true);//TODO c'est pas ici qu'il faut faire ça (il faut lever un flag pour arrêter l'appli proprement et appeler l'arrêt du système juste avant de quitter le main)
+                  }
                   else
-                     YADOMS_LOG(info) << "unknown keyword";
+                  {
+                     YADOMS_LOG(warning) << "Received command for unknown keyword from Yadoms : " << command->toString();
+                  }
                   break;
                }
                default:
