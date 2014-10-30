@@ -43,7 +43,6 @@ namespace xplrules {
       virtual KeywordList identifyKeywords(xplcore::CXplMessage & msg) = 0;
    };
 
-
 } //namespace xplrules
 
 

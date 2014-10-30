@@ -3,10 +3,10 @@
 #include "../IRule.h"
 #include "../IReadRule.h"
 #include "../ICommandRule.h"
-
+#include "../ISupportManuallyDeviceCreationRule.h"
 namespace xplrules { namespace rfxLanXpl {
 
-   class CX10Basic : public IRule, public IReadRule, public ICommandRule
+   class CX10Basic : public IRule, public IReadRule, public ICommandRule, public ISupportManuallyDeviceCreationRule
    {
    public:
       CX10Basic();
@@ -31,6 +31,11 @@ namespace xplrules { namespace rfxLanXpl {
       virtual boost::shared_ptr< xplcore::CXplMessage > createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand> & commandData, const std::string & rfxAddress);
       virtual std::string generateVirtualDeviceIdentifier();
       // [END] ICommandRule implemntation
+     
+      // ISupportManuallyDeviceCreationRule implementation
+      virtual const CDeviceContainer generateDeviceParameters(boost::shared_ptr<yApi::IManuallyDeviceCreationData> configuration);
+      // [END] ISupportManuallyDeviceCreationRule implementation   
+   
    private:
       static xplcore::CXplMessageSchemaIdentifier m_protocol;
    };

@@ -10,6 +10,8 @@
 #include "xplrules/IReadRule.h"
 #include "xplrules/ICommandRule.h"
 #include "xplrules/rfxLanXpl/DeviceManager.h"
+#include "xplrules/ISupportManuallyDeviceCreationRule.h"
+#include "xplrules/DeviceContainer.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -87,7 +89,13 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             m_configuration.initializeWith(newConfiguration);
             break;
          }
-
+         case yApi::IYadomsApi::kEventManuallyDeviceCreation:
+         {
+            // Yadoms asks for device creation
+            boost::shared_ptr<yApi::IManuallyDeviceCreationData> data = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationData> >();
+            OnCreateDeviceRequest(data, context);
+            break;
+         }
          case kXplMessageReceived:
          {
             // Xpl message was received
@@ -268,6 +276,72 @@ void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceComman
    catch (std::exception &ex)
    {
       std::string errorMessage = (boost::format("xpl plugin fail to send message : %1%") % ex.what()).str();
+      YADOMS_LOG(error) << errorMessage;
+   }
+}
+
+
+void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCreationData> configuration, boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   try
+   {
+      YADOMS_LOG(trace) << "Create device request";
+
+      const shared::CDataContainer & deviceCfg = configuration->getConfiguration();
+
+      const std::string & typeOfDevice = deviceCfg.get<std::string>("type");
+
+      std::string internalProtocol;
+      if (boost::istarts_with(typeOfDevice, "x10"))
+         internalProtocol = "x10.basic";
+
+      
+      boost::shared_ptr<xplrules::IRule> rule = m_deviceManager->identifyRule(internalProtocol, m_instanceManager);
+      if (rule)
+      {
+         //check if the rule handle reading
+         boost::shared_ptr<xplrules::ISupportManuallyDeviceCreationRule> deviceCreationRule = boost::dynamic_pointer_cast<xplrules::ISupportManuallyDeviceCreationRule>(rule);
+
+         if (deviceCreationRule)
+         {
+            //retreeive device identifier
+            xplrules::CDeviceContainer deviceContainer = deviceCreationRule->generateDeviceParameters(configuration);
+            const xplrules::CDeviceIdentifier & deviceAddress = deviceContainer.getDeviceIdentifier();
+            if (!context->deviceExists(deviceAddress.getId()))
+            {
+               shared::CDataContainer details;
+               details.set("readingProtocol", deviceAddress.getReadingXplProtocol().toString());
+               details.set("writingProtocol", deviceAddress.getWritingXplProtocol().toString());
+               details.set("source", std::string("yadomssource!"));
+               context->declareDevice(deviceAddress.getId(), deviceAddress.getCommercialName(), details.serialize());
+            }
+
+            //create message keywords in database
+            for (std::vector< boost::shared_ptr<shared::plugin::yadomsApi::historization::IHistorizable> >::const_iterator keyword = deviceContainer.getKeywords().begin(); keyword != deviceContainer.getKeywords().end(); ++keyword)
+            {
+               if (!context->keywordExists(deviceAddress.getId(), keyword->get()->getKeyword()))
+                  context->declareKeyword(deviceAddress.getId(), *(keyword->get()));
+            }
+
+         }
+         else
+         {
+            std::string errorMessage = (boost::format("The protocol %1% do not support device creation") % internalProtocol).str();
+            YADOMS_LOG(error) << errorMessage;
+         }
+      }
+      else
+      {
+         std::string errorMessage = (boost::format("Unsupported protocol = %1%") % typeOfDevice).str();
+         YADOMS_LOG(error) << errorMessage;
+      }
+
+
+
+   }
+   catch (std::exception &ex)
+   {
+      std::string errorMessage = (boost::format("xpl plugin fail to create device : %1%") % ex.what()).str();
       YADOMS_LOG(error) << errorMessage;
    }
 }

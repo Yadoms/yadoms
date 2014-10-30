@@ -30,11 +30,14 @@ set(RFXLANXPL_RULES_SOURCES
 	xplrules/IRule.h
 	xplrules/IReadRule.h
 	xplrules/ICommandRule.h
+	xplrules/ISupportManuallyDeviceCreationRule.h
 	xplrules/IProtocol.h
 	xplrules/Protocol.h
 	xplrules/IDeviceManager.h
 	xplrules/DeviceIdentifier.h
 	xplrules/DeviceIdentifier.cpp
+	xplrules/DeviceContainer.h
+	xplrules/DeviceContainer.cpp
 	xplrules/RuleInstanceManager.hpp
 	xplrules/rfxLanXpl/DeviceManager.h
 	xplrules/rfxLanXpl/DeviceManager.cpp
