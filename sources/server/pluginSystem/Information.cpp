@@ -71,6 +71,12 @@ CInformation::CInformation(const boost::filesystem::path& pluginPath)
          m_url = container.get<std::string>("url");   // No check on URL
       else
          m_url = shared::CStringExtension::EmptyString;
+
+
+      if (container.hasValue("supportManuallyDeviceCreation"))
+         m_supportManuallyCreatedDevice = container.get<bool>("supportManuallyDeviceCreation");  
+      else
+         m_supportManuallyCreatedDevice = false;
    }
    catch (shared::exception::CException & e)
    {
@@ -139,6 +145,11 @@ std::string CInformation::toString() const
    formatedInformations << " (" << m_url << ")";
 
    return formatedInformations.str();
+}
+
+const bool CInformation::getSupportManuallyCreatedDevice() const
+{
+   return m_supportManuallyCreatedDevice;
 }
 
 } // namespace pluginSystem

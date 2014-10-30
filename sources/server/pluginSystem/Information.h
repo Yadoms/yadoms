@@ -28,6 +28,7 @@ namespace pluginSystem
       virtual const std::string& getUrl() const;
       virtual std::string toString() const;
       virtual std::string getIdentity() const;
+      virtual const bool getSupportManuallyCreatedDevice() const;
       // [END] shared::plugin::IInformation implementation
 
       //--------------------------------------------------------------
@@ -76,6 +77,11 @@ namespace pluginSystem
       /// \brief	    Plugin path
       //--------------------------------------------------------------
       const boost::filesystem::path m_path;
+
+      //--------------------------------------------------------------
+      /// \brief	    true if the plugin support manually created devices
+      //--------------------------------------------------------------
+      bool m_supportManuallyCreatedDevice;
    };
 
 } // namespace pluginSystem
