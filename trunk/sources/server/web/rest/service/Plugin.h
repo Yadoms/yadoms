@@ -3,13 +3,14 @@
 #include "IRestService.h"
 #include "database/IDataProvider.h"
 #include "pluginSystem/Manager.h"
+#include "communication/ISendMessageAsync.h"
 
 namespace web { namespace rest { namespace service {
 
    class CPlugin : public IRestService
    {
    public:
-      CPlugin(boost::shared_ptr<database::IDataProvider> dataProvider, boost::shared_ptr<pluginSystem::CManager> pluginManager);
+      CPlugin(boost::shared_ptr<database::IDataProvider> dataProvider, boost::shared_ptr<pluginSystem::CManager> pluginManager, communication::ISendMessageAsync & messageSender);
       virtual ~CPlugin();
 
    public:
@@ -30,6 +31,7 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer startInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
       shared::CDataContainer stopInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
+      shared::CDataContainer createDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
       shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
@@ -37,6 +39,11 @@ namespace web { namespace rest { namespace service {
       boost::shared_ptr<database::IDataProvider> m_dataProvider;
       boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
       std::string m_restKeyword;
+
+      //-----------------------------------------
+      ///\brief   The send message interface
+      //-----------------------------------------
+      communication::ISendMessageAsync & m_messageSender;
    };
 
 

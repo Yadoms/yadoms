@@ -7,8 +7,8 @@
 
 namespace web { namespace rest { namespace service {
 
-   CPlugin::CPlugin(boost::shared_ptr<database::IDataProvider> dataProvider, boost::shared_ptr<pluginSystem::CManager> pluginManager)
-      :m_dataProvider(dataProvider), m_pluginManager(pluginManager), m_restKeyword("plugin")
+   CPlugin::CPlugin(boost::shared_ptr<database::IDataProvider> dataProvider, boost::shared_ptr<pluginSystem::CManager> pluginManager, communication::ISendMessageAsync & messageSender)
+      :m_dataProvider(dataProvider), m_pluginManager(pluginManager), m_restKeyword("plugin"), m_messageSender(messageSender)
    {
    }
 
@@ -32,6 +32,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT",  (m_restKeyword)("*")("stop"), CPlugin::stopInstance);
 
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPlugin::createPlugin, CPlugin::transactionalMethod);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CPlugin::updatePlugin, CPlugin::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword), CPlugin::deleteAllPlugins, CPlugin::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CPlugin::deletePlugin, CPlugin::transactionalMethod);
@@ -336,6 +337,33 @@ namespace web { namespace rest { namespace service {
       }
    }
 
+   shared::CDataContainer CPlugin::createDevice(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      try
+      {
+         if (parameters.size() >= 2)
+         {
+            int pluginId = boost::lexical_cast<int>(parameters[1]);
+
+
+            //on transmet directement la demande auprès du pluginManager
+            m_messageSender.sendManuallyDeviceCreationRequestAsync(pluginId, requestContent.get<std::string>("deviceName"), requestContent);
+            return web::rest::CResult::GenerateSuccess();
+         }
+         else
+         {
+            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive keyword id in url");
+         }
+      }
+      catch (std::exception &ex)
+      {
+         return web::rest::CResult::GenerateError(ex);
+      }
+      catch (...)
+      {
+         return web::rest::CResult::GenerateError("unknown exception in retreiving keyword");
+      }
+   }
 
 
 } //namespace service
