@@ -4,7 +4,6 @@
 
 /**
  * Create a section parameter handler
- * @param objectToConfigure
  * @param i18nContext
  * @param paramName
  * @param content
@@ -13,8 +12,7 @@
  * @param radioSectionActive
  * @constructor
  */
-function SectionParameterHandler(objectToConfigure, i18nContext, paramName, content, currentValue, radioButtonSectionName, radioSectionActive) {
-   assert(objectToConfigure !== undefined, "objectToConfigure must contain widget or plugin object");
+function SectionParameterHandler(i18nContext, paramName, content, currentValue, radioButtonSectionName, radioSectionActive) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
@@ -69,7 +67,7 @@ function SectionParameterHandler(objectToConfigure, i18nContext, paramName, cont
             v = self.configurationValues.content[key];
 
          var newI18nContext = i18nContext + self.paramName + ".content.";
-         var handler = ConfigurationHelper.createParameterHandler(objectToConfigure, newI18nContext, key, value, v);
+         var handler = ConfigurationHelper.createParameterHandler(newI18nContext, key, value, v);
          self.configurationHandlers.push(handler);
       });
    }

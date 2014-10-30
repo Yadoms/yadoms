@@ -36,16 +36,18 @@ function DeviceParameterHandler(i18nContext, paramName, content, currentValue) {
 
    var self = this;
 
+   var $deviceList = $("select#" + this.uuid);
+   $deviceList.empty();
+
    if (isNullOrUndefined(content.expectedCapacity)) {
       //we look for a type
       this.expectedKeywordType = content.expectedKeywordType;
       this.lookupMethod = "type";
 
-      //we async ask for keyword list of the device
+      //we async ask for device list that support expectedKeyword
       $.getJSON("/rest/device/matchcapacitytype/" + self.expectedKeywordAccess + "/" + self.expectedKeywordType)
          .done(populateDeviceList(self))
          .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacityType", {expectedKeywordAccess : self.expectedKeywordAccess, expectedKeywordType : self.expectedKeywordType}));});
-
    }
    else
    {
@@ -53,11 +55,95 @@ function DeviceParameterHandler(i18nContext, paramName, content, currentValue) {
       this.expectedCapacity = content.expectedCapacity;
       this.lookupMethod = "name";
 
-      //we async ask for device list that support expectedKeyword
-      $.getJSON("/rest/device/matchcapacity/" + self.expectedKeywordAccess + "/" + self.expectedCapacity)
-         .done(populateDeviceList(self))
-         .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacity", {expectedKeywordAccess : self.expectedKeywordAccess, expectedCapacity : self.expectedCapacity}));});
+      if (Array.isArray(content.expectedCapacity)) {
+         //we have a list of capacities
+         //we async ask for keyword list of the device for each capacity
+         $.each(content.expectedCapacity, function (index, capacity) {
+            $.getJSON("/rest/device/matchcapacity/" + self.expectedKeywordAccess + "/" + capacity)
+               .done(populateDeviceList(self))
+               .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacity", {expectedKeywordAccess : self.expectedKeywordAccess, expectedCapacity : self.expectedCapacity}));});
+         });
+      }
+      else {
+         //we have only one capacity
+         $.getJSON("/rest/device/matchcapacity/" + self.expectedKeywordAccess + "/" + self.expectedCapacity)
+            .done(populateDeviceList(self))
+            .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacity", {expectedKeywordAccess : self.expectedKeywordAccess, expectedCapacity : self.expectedCapacity}));});
+      }
    }
+
+   //we listen for the changed value to get all keywords that match to the capacity name or the capacity type
+   $deviceList.change(function(handler) {
+      return function() {
+         //until we have no answer the combo will be disabled
+         $deviceList.prop('disabled', true);
+         //we ask for all keywords of the device and we will pick just those we need
+         $.getJSON("/rest/device/" + $("select#" + handler.uuid).val() + "/keyword")
+            .done(function(data2) {
+               //we parse the json answer
+               if (data2.result != "true")
+               {
+                  notifyError($.t("modals.configure-widget.errorDuringGettingKeywordList"), JSON.stringify(data));
+                  return;
+               }
+
+               var $cbKeywords = $("select#" + handler.uuidKeywordList);
+               $cbKeywords.empty();
+
+               var newList = [];
+
+               $.each(data2.data.keyword, function(index, value) {
+                  //we add the keyword only if access mode is at least the same than expected
+                  if ((handler.expectedKeywordAccess.toLowerCase() != "getset") || (value.accessMode.toLowerCase() != "get")) {
+                     if (handler.lookupMethod == "name") {
+                        //we lookup by capacity name
+                        if (value.capacityName.toLowerCase() == handler.expectedCapacity.toLowerCase()) {
+                           //this keyword interest us we push it into the list
+                           newList.push(value);
+                        }
+                     }
+                     else {
+                        //we lookup by capacity type
+                        if (value.type.toLowerCase() == handler.expectedKeywordType.toLowerCase()) {
+                           //this keyword interest us we push it into the list
+                           newList.push(value);
+                        }
+                     }
+                  }
+               });
+
+               //if there is only one item in the list we hide else it's visible
+               if (newList.length > 1) {
+                  $cbKeywords.removeClass("hidden");
+               }
+               else {
+                  $cbKeywords.addClass("hidden");
+               }
+
+               //we append each keywords in the list
+               var keywordToSelect = 0;
+
+               $.each(newList, function(index, value) {
+                  //foreach keyword
+                  $cbKeywords.append("<option value=\"" + value.id + "\">" + decodeURIComponent(value.friendlyName) + "</option>");
+
+                  //we restore previously set value only if the deviceId is the same than the last one in the configuration
+                  if (handler.value.deviceId == $deviceList.val()) {
+                     if (value.id == handler.value.keywordId)
+                        keywordToSelect = index;
+                  }
+               });
+
+               //we select the last selected or the first one
+               $cbKeywords.prop('selectedIndex', keywordToSelect);
+            })
+            .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingKeywordList"));})
+            .always(function() {
+               //we re-enable the device combo
+               $deviceList.prop('disabled', false);
+            });
+      }
+   }(self));
 }
 
 /**
@@ -75,7 +161,6 @@ function populateDeviceList(handler) {
       }
 
       var $deviceList = $("select#" + handler.uuid);
-      $deviceList.empty();
 
       //there is no device that match criteria
       if (data.data.device.length == 0) {
@@ -83,86 +168,18 @@ function populateDeviceList(handler) {
           $deviceList.append("<option value=\"\"></option>");
       }
       else {
-          var itemToSelect = 0;
+          var itemToSelect = -1;
           $.each(data.data.device, function(index, value) {
              $deviceList.append("<option value=\"" + value.id + "\">" + decodeURIComponent(value.friendlyName) + "</option>");
+             //if the new element is those that we are looking for we save the position in the list
              if (value.id == handler.value.deviceId)
-                itemToSelect = index;
-          });
-
-          //we listen for the changed value to get all keywords that match to the capacity name or the capacity type
-          $deviceList.change(function() {
-             //until we have no answer the combo will be disabled
-             $deviceList.prop('disabled', true);
-             //we ask for all keywords of the device and we will pick just those we need
-             $.getJSON("/rest/device/" + $("select#" + handler.uuid).val() + "/keyword")
-                .done(function(data2) {
-                   //we parse the json answer
-                   if (data2.result != "true")
-                   {
-                      notifyError($.t("modals.configure-widget.errorDuringGettingKeywordList"), JSON.stringify(data));
-                      return;
-                   }
-
-                   var $cbKeywords = $("select#" + handler.uuidKeywordList);
-                   $cbKeywords.empty();
-
-                   var newList = [];
-
-                   $.each(data2.data.keyword, function(index, value) {
-                      //we add the keyword only if access mode is at least the same than expected
-                      if ((handler.expectedKeywordAccess.toLowerCase() != "getset") || (value.accessMode.toLowerCase() != "get")) {
-                          if (handler.lookupMethod == "name") {
-                             //we lookup by capacity name
-                             if (value.capacityName.toLowerCase() == handler.expectedCapacity.toLowerCase()) {
-                                //this keyword interest us we push it into the list
-                                newList.push(value);
-                             }
-                          }
-                          else {
-                              //we lookup by capacity type
-                             if (value.type.toLowerCase() == handler.expectedKeywordType.toLowerCase()) {
-                                //this keyword interest us we push it into the list
-                                newList.push(value);
-                             }
-                          }
-                       }
-                   });
-
-                   //if there is only one item in the list we hide else it's visible
-                   if (newList.length > 1) {
-                      $cbKeywords.removeClass("hidden");
-                   }
-                   else {
-                      $cbKeywords.addClass("hidden");
-                   }
-
-                   //we append each keywords in the list
-                   var keywordToSelect = 0;
-
-                   $.each(newList, function(index, value) {
-                      //foreach keyword
-                      $cbKeywords.append("<option value=\"" + value.id + "\">" + decodeURIComponent(value.friendlyName) + "</option>");
-
-                      //we restore previously set value only if the deviceId is the same than the last one in the configuration
-                      if (handler.value.deviceId == $deviceList.val()) {
-                         if (value.id == handler.value.keywordId)
-                            keywordToSelect = index;
-                      }
-                   });
-
-                   //we select the last selected or the first one
-                   $cbKeywords.prop('selectedIndex', keywordToSelect);
-                })
-                .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingKeywordList"));})
-                .always(function() {
-                   //we re-enable the device combo
-                   $deviceList.prop('disabled', false);
-                });
+                itemToSelect = $deviceList.find("option").length;
           });
 
           //we set the last selected device if it exist anymore
-          $deviceList.prop('selectedIndex', itemToSelect);
+          if (itemToSelect != -1)
+            $deviceList.prop('selectedIndex', itemToSelect);
+
           $deviceList.change();
       }
    };

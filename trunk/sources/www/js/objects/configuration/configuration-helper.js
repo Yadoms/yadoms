@@ -42,21 +42,17 @@ ConfigurationHelper.createControlGroup = function (parameterHandler, controlToIn
 
 /**
  * Factory of parameter Handler
- * @param objectToConfigure
- * @param i18nContext
+  * @param i18nContext
  * @param paramName
  * @param content
  * @param currentValue
  * @returns {*}
  */
-ConfigurationHelper.createParameterHandler = function (objectToConfigure, i18nContext, paramName, content, currentValue) {
-   assert(objectToConfigure !== undefined, "objectToConfigure must contain object to configure");
+ConfigurationHelper.createParameterHandler = function (i18nContext, paramName, content, currentValue) {
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined in " + paramName + " parameter");
    assert(content.type !== undefined, "type field must be found in " + paramName + " parameter");
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n " + paramName + " parameter");
-
-   //objectToConfigure will be use later ton check special types (ie: serialPort only for plugins and not for widgets)
 
    switch (content.type.toLowerCase()) {
       case "int" :
@@ -80,11 +76,11 @@ ConfigurationHelper.createParameterHandler = function (objectToConfigure, i18nCo
          break;
 
       case "section" :
-         return new SectionParameterHandler(objectToConfigure, i18nContext, paramName, content, currentValue, undefined, undefined);
+         return new SectionParameterHandler(i18nContext, paramName, content, currentValue, undefined, undefined);
          break;
 
       case "radiosection" :
-         return new RadioSectionParameterHandler(objectToConfigure, i18nContext, paramName, content, currentValue);
+         return new RadioSectionParameterHandler(i18nContext, paramName, content, currentValue);
          break;
 
       case "device" :
