@@ -41,7 +41,7 @@ static const std::locale ProtocolFloatFormatingLocale(std::locale(), new CMegate
 CMegatecUps::CMegatecUps():
    m_inputVoltage("inputVoltage"), m_inputfaultVoltage("inputfaultVoltage"), m_outputVoltage("outputVoltage"),
    m_outputCurrent("outputCurrent"), m_inputFrequency("inputFrequency"), m_batteryVoltage("batteryVoltage"),
-   m_temperature("temperature"), m_acPowerHistorizer("acPowerActive"), m_upsShutdown("UpsShutdown"),
+   m_temperature("temperature"), m_acPowerHistorizer("acPowerActive", yApi::EKeywordAccessMode::kGet), m_upsShutdown("UpsShutdown"),
    m_acPowerActive(true), m_lowBatteryFlag(false), m_lowBatteryByLevelFlag(false), m_batteryNominalVoltage(0.0),
    m_protocolErrorCounter(0), m_answerIsRequired(true)
 {
@@ -81,7 +81,10 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                boost::shared_ptr<const yApi::IDeviceCommand> command(context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
                YADOMS_LOG(debug) << "Command received :" << command->toString();
 
-               onCommand(context, command->getBody(), context->getDeviceDetails(command->getTargetDevice()));
+               if (boost::iequals(command->getKeyword(), m_upsShutdown.getKeyword()))
+                  onCommand(context, command->getBody(), context->getDeviceDetails(command->getTargetDevice()));
+               else
+                  YADOMS_LOG(warning) << "Received command for unknown keyword from Yadoms : " << command->toString();
 
                break;
             }

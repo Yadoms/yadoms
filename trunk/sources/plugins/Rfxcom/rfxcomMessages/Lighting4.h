@@ -84,9 +84,9 @@ namespace rfxcomMessages
       std::string m_deviceModel;
 
       //--------------------------------------------------------------
-      /// \brief	The keyword associated with state
+      /// \brief	The keyword
       //--------------------------------------------------------------
-      yApi::historization::CSwitch m_state; //TODO pas sûr du type d'objet, en discussion
+      yApi::historization::CEvent m_keyword;
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with rssi

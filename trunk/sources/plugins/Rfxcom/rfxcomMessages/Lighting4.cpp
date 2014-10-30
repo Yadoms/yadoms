@@ -10,9 +10,8 @@ namespace rfxcomMessages
 {
 
 CLighting4::CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
-   :m_state("state"), m_rssi("rssi")
+   :m_keyword("id"), m_rssi("rssi")
 {
-   m_state.set(100);
    m_rssi.set(0);
 
    m_subType = deviceParameters.get<unsigned char>("subType");
@@ -22,13 +21,12 @@ CLighting4::CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const shared
 }
 
 CLighting4::CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_state("state"), m_rssi("rssi")
+   :m_keyword("id"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeLighting4, GET_RBUF_STRUCT_SIZE(LIGHTING4), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.LIGHTING4.subtype;
    m_id = rbuf.LIGHTING4.cmd1 << 16 | rbuf.LIGHTING4.cmd2 << 8 | rbuf.LIGHTING4.cmd3;
-   m_state.set(100);
    m_rssi.set(NormalizeRssiLevel(rbuf.LIGHTING4.rssi));
 
    Init(context);
@@ -53,7 +51,7 @@ void CLighting4::Init(boost::shared_ptr<yApi::IYadomsApi> context)
       details.set("id", m_id);
       context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
 
-      context->declareKeyword(m_deviceName, m_state);
+      context->declareKeyword(m_deviceName, m_keyword);
       context->declareKeyword(m_deviceName, m_rssi);
    }
 }
@@ -81,7 +79,7 @@ const shared::communication::CByteBuffer CLighting4::encode(boost::shared_ptr<IS
 
 void CLighting4::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   context->historizeData(m_deviceName, m_state);
+   context->historizeData(m_deviceName, m_keyword);
    context->historizeData(m_deviceName, m_rssi);
 }
 

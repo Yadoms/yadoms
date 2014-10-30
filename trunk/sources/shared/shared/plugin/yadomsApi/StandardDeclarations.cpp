@@ -42,6 +42,7 @@ namespace shared { namespace plugin { namespace yadomsApi {
    const CStandardCapacity& CStandardCapacities::Curtain = CStandardCapacity("curtain", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
    const CStandardCapacity& CStandardCapacities::Direction = CStandardCapacity("direction", CStandardUnits::Degrees, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Energy = CStandardCapacity("energy", CStandardUnits::WattPerHour, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Event = CStandardCapacity("event", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
    const CStandardCapacity& CStandardCapacities::Frequency = CStandardCapacity("frequency", CStandardUnits::Hertz, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Humidity = CStandardCapacity("humidity", CStandardUnits::Percent, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Message = CStandardCapacity("message", CStandardUnits::NoUnits, EKeywordDataType::kString);
@@ -50,9 +51,7 @@ namespace shared { namespace plugin { namespace yadomsApi {
    const CStandardCapacity& CStandardCapacities::Pressure = CStandardCapacity("pressure", CStandardUnits::hectoPascal, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Rain = CStandardCapacity("rain", CStandardUnits::Millimeter, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::RainRate = CStandardCapacity("rainrate", CStandardUnits::MillimeterPerSecond, EKeywordDataType::kNumeric);
-	const CStandardCapacity& CStandardCapacities::Restart = CStandardCapacity("restart", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
 	const CStandardCapacity& CStandardCapacities::Rssi = CStandardCapacity("rssi", CStandardUnits::Percent, EKeywordDataType::kNumeric);
-	const CStandardCapacity& CStandardCapacities::Shutdown = CStandardCapacity("shutdown", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
 	const CStandardCapacity& CStandardCapacities::Speed = CStandardCapacity("speed", CStandardUnits::MetersPerSecond, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Switch = CStandardCapacity("switch", CStandardUnits::Percent, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Temperature = CStandardCapacity("temperature", CStandardUnits::DegreesCelcius, EKeywordDataType::kNumeric);

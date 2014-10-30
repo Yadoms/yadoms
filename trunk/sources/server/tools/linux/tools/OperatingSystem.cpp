@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "OperatingSystem.h"
+#include <unistd.h>
+#include <sys/reboot.h>
 
 namespace tools {
 
@@ -8,6 +10,12 @@ namespace tools {
    const std::string & COperatingSystem::getName()
    {
       return m_name;
+   }
+
+   bool COperatingSystem::shutdown(bool andRestart)
+   {
+      sync();
+      reboot(andRestart ? RB_AUTOBOOT : RB_POWER_OFF);
    }
    
 } //namespace tools

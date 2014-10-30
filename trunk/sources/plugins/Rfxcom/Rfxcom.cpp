@@ -84,15 +84,42 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                // Yadoms asks for device creation
                boost::shared_ptr<yApi::IManuallyDeviceCreationData> data = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationData> >();
 
-               //TODO : modifier les lignes suivantes
-               /*
-               YADOMS_LOG(debug) << "Manually device creation request received :" << data->toString();
+               YADOMS_LOG(debug) << "Manually device creation request received for device :" << data->getDeviceName();
 
-               // Declare the device
-               context->declareDevice(data->getDeviceName(), shared::CStringExtension::EmptyString, data->getParameters());
-               // Declare associated keywords (= values managed by this device)
-               context->declareKeyword(data->getDeviceName(), yApi::historization::CSwitch(data->getKeyword()));
-               */
+               //TODO mettre tout ça ailleurs
+               try
+               {
+                  if (data->getConfiguration().get<bool>("type.content.x10.radio"))
+                  {
+                     //TODO
+                  }
+                  else if (data->getConfiguration().get<bool>("type.content.blyss.radio"))
+                  {
+                     int id1 = data->getConfiguration().get<int>("type.content.blyss.content.id1");
+                     int id2 = data->getConfiguration().get<int>("type.content.blyss.content.id2");
+                     int groupCode = data->getConfiguration().get<int>("type.content.blyss.content.groupCode");
+                     int unitCode = data->getConfiguration().get<int>("type.content.blyss.content.unitCode");
+                     //TODO instancier un lighting6
+                  }
+                  //TODO
+                     //if (!context->deviceExists(data->getDeviceName()))
+                     //{
+                     //   // Declare the device
+                     //   context->declareDevice(data->getDeviceName(), shared::CStringExtension::EmptyString, data->getConfiguration());
+
+                     //   // Declare associated keywords (= values managed by this device)
+                     //   context->declareKeyword(data->getDeviceName(), yApi::historization::CSwitch("switch"));
+                     //}
+               }
+               catch(shared::exception::CInvalidParameter& e)
+               {
+                  YADOMS_LOG(error) << "Fail to create device manually, invalid parameter " << e.what();
+               }
+               catch(shared::exception::COutOfRange& e)
+               {
+                  YADOMS_LOG(error) << "Fail to create device manually, out of range " << e.what();
+               }
+               
                break;
             }
          case yApi::IYadomsApi::kEventUpdateConfiguration:
@@ -209,7 +236,7 @@ void CRfxcom::send(const shared::communication::CByteBuffer& buffer, bool needAn
 void CRfxcom::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
 {
    if (!m_port || m_currentState != kRfxcomIsRunning)
-      YADOMS_LOG(warning) << "Command not send (RFXCom is not ready) : " << command;
+      YADOMS_LOG(warning) << "Command not sent (RFXCom is not ready) : " << command;
 
    send(m_transceiver->buildMessageToDevice(context, command, deviceParameters));
 }

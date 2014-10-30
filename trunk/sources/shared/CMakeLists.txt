@@ -105,6 +105,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/historization/Direction.h
    shared/plugin/yadomsApi/historization/Energy.cpp
    shared/plugin/yadomsApi/historization/Energy.h
+   shared/plugin/yadomsApi/historization/Event.cpp
+   shared/plugin/yadomsApi/historization/Event.h
    shared/plugin/yadomsApi/historization/Frequency.cpp
    shared/plugin/yadomsApi/historization/Frequency.h
    shared/plugin/yadomsApi/historization/Humidity.cpp
@@ -123,14 +125,10 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/historization/Rain.h
    shared/plugin/yadomsApi/historization/RainRate.cpp
    shared/plugin/yadomsApi/historization/RainRate.h
-   shared/plugin/yadomsApi/historization/Restart.cpp
-   shared/plugin/yadomsApi/historization/Restart.h
    shared/plugin/yadomsApi/historization/Rssi.cpp
    shared/plugin/yadomsApi/historization/Rssi.h
    shared/plugin/yadomsApi/historization/Speed.cpp
    shared/plugin/yadomsApi/historization/Speed.h
-   shared/plugin/yadomsApi/historization/Shutdown.cpp
-   shared/plugin/yadomsApi/historization/Shutdown.h
    shared/plugin/yadomsApi/historization/Switch.cpp
    shared/plugin/yadomsApi/historization/Switch.h
    shared/plugin/yadomsApi/historization/Temperature.cpp
