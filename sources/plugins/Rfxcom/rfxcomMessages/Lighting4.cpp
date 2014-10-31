@@ -10,7 +10,7 @@ namespace rfxcomMessages
 {
 
 CLighting4::CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
-   :m_keyword("id"), m_rssi("rssi")
+   :m_keyword("event"), m_rssi("rssi")
 {
    m_rssi.set(0);
 

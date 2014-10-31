@@ -11,9 +11,8 @@ namespace rfxcomMessages
 {
 
 CChime::CChime(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
-   :m_state("state"), m_rssi("rssi")
+   :m_keyword("event"), m_rssi("rssi")
 {
-   m_state.set(100);
    m_rssi.set(0);
 
    m_subType = deviceParameters.get<unsigned char>("subType");
@@ -34,13 +33,12 @@ CChime::CChime(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataC
 }
 
 CChime::CChime(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_state("state"), m_rssi("rssi")
+   :m_keyword("event"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeChime, GET_RBUF_STRUCT_SIZE(CHIME), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.CHIME.subtype;
    m_id = rbuf.CHIME.id1 << 8 | rbuf.CHIME.id2;
-   m_state.set(100);
 
    switch(rbuf.CHIME.sound)
    {
@@ -90,7 +88,7 @@ void CChime::Init(boost::shared_ptr<yApi::IYadomsApi> context)
       details.set("id", m_id);
       context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
 
-      context->declareKeyword(m_deviceName, m_state);
+      context->declareKeyword(m_deviceName, m_keyword);
       context->declareKeyword(m_deviceName, m_rssi);
    }
 }
@@ -124,7 +122,7 @@ const shared::communication::CByteBuffer CChime::encode(boost::shared_ptr<ISeque
 
 void CChime::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   context->historizeData(m_deviceName, m_state);
+   context->historizeData(m_deviceName, m_keyword);
    context->historizeData(m_deviceName, m_rssi);
 }
 

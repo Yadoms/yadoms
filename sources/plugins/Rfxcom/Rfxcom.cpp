@@ -23,7 +23,6 @@ enum
 
 
 
-//TODO dans package.json, compléter la liste manuallyDeviceCreationConfigurationSchema/type (voir Domoticz "Switch_Type_Desc")
 CRfxcom::CRfxcom()
    :m_currentState(kNotInitialized)
 {
