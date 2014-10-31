@@ -92,7 +92,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          case yApi::IYadomsApi::kEventManuallyDeviceCreation:
          {
             // Yadoms asks for device creation
-            boost::shared_ptr<yApi::IManuallyDeviceCreationData> data = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationData> >();
+            boost::shared_ptr<const yApi::IManuallyDeviceCreationData> data = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IManuallyDeviceCreationData> >();
             OnCreateDeviceRequest(data, context);
             break;
          }
@@ -281,13 +281,15 @@ void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceComman
 }
 
 
-void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCreationData> configuration, boost::shared_ptr<yApi::IYadomsApi> context)
+void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<const yApi::IManuallyDeviceCreationData> configuration, boost::shared_ptr<yApi::IYadomsApi> context)
 {
    try
    {
       YADOMS_LOG(trace) << "Create device request";
 
       const shared::CDataContainer & deviceCfg = configuration->getConfiguration();
+
+      deviceCfg.printToLog();
 
       const std::string & typeOfDevice = deviceCfg.get<std::string>("type");
 
@@ -300,7 +302,7 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
       if (rule)
       {
          //check if the rule handle reading
-         boost::shared_ptr<xplrules::ISupportManuallyDeviceCreationRule> deviceCreationRule = boost::dynamic_pointer_cast<xplrules::ISupportManuallyDeviceCreationRule>(rule);
+         boost::shared_ptr<const xplrules::ISupportManuallyDeviceCreationRule> deviceCreationRule = boost::dynamic_pointer_cast<const xplrules::ISupportManuallyDeviceCreationRule>(rule);
 
          if (deviceCreationRule)
          {
