@@ -18,6 +18,7 @@
 #include "rfxcomMessages/Lighting2.h"
 #include "rfxcomMessages/Lighting3.h"
 #include "rfxcomMessages/Lighting4.h"
+#include "rfxcomMessages/Lighting5.h"
 #include "rfxcomMessages/Lighting6.h"
 #include "rfxcomMessages/Power.h"
 #include "rfxcomMessages/Rain.h"
@@ -269,6 +270,22 @@ bool CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> cont
       // Lighting4
       else if (data->getConfiguration().get<bool>("type.content.pt2262.radio"))
          rfxcomMessages::CLighting4 msg(context, sTypePT2262, data->getConfiguration().get<shared::CDataContainer>("type.content.pt2262.content"));
+
+      // Lighting5
+      else if (data->getConfiguration().get<bool>("type.content.lightwaveRf.radio"))
+         rfxcomMessages::CLighting4 msg(context, sTypeLightwaveRF, data->getConfiguration().get<shared::CDataContainer>("type.content.lightwaveRf.content"));
+      else if (data->getConfiguration().get<bool>("type.content.emw100.radio"))
+         rfxcomMessages::CLighting4 msg(context, sTypeEMW100, data->getConfiguration().get<shared::CDataContainer>("type.content.emw100.content"));
+      else if (data->getConfiguration().get<bool>("type.content.bbsb.radio"))
+         rfxcomMessages::CLighting4 msg(context, sTypeBBSB, data->getConfiguration().get<shared::CDataContainer>("type.content.bbsb.content"));
+      else if (data->getConfiguration().get<bool>("type.content.mdRemote.radio"))
+         rfxcomMessages::CLighting4 msg(context, sTypeMDREMOTE, data->getConfiguration().get<shared::CDataContainer>("type.content.mdRemote.content"));
+      else if (data->getConfiguration().get<bool>("type.content.rsl.radio"))
+         rfxcomMessages::CLighting4 msg(context, sTypeRSL, data->getConfiguration().get<shared::CDataContainer>("type.content.rsl.content"));
+      else if (data->getConfiguration().get<bool>("type.content.livolo.radio"))
+         rfxcomMessages::CLighting4 msg(context, sTypeLivolo, data->getConfiguration().get<shared::CDataContainer>("type.content.livolo.content"));
+      else if (data->getConfiguration().get<bool>("type.content.trc02.radio"))
+         rfxcomMessages::CLighting4 msg(context, sTypeTRC02, data->getConfiguration().get<shared::CDataContainer>("type.content.trc02.content"));
 
       // Lighting6
       else if (data->getConfiguration().get<bool>("type.content.blyss.radio"))

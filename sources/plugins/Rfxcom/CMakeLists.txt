@@ -35,6 +35,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Lighting3.cpp
    rfxcomMessages/Lighting4.h
    rfxcomMessages/Lighting4.cpp
+   rfxcomMessages/Lighting5.h
+   rfxcomMessages/Lighting5.cpp
    rfxcomMessages/Lighting6.h
    rfxcomMessages/Lighting6.cpp
    rfxcomMessages/Power.h
