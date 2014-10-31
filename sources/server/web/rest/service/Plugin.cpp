@@ -26,6 +26,7 @@ namespace web { namespace rest { namespace service {
    {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CPlugin::getAllAvailablePlugins);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance"), CPlugin::getAllPluginsInstance);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance")("handleManuallyDeviceCreation"), CPlugin::getAllPluginsInstanceForManualDeviceCreation);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CPlugin::getOnePlugin);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("status"), CPlugin::getInstanceStatus);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT",  (m_restKeyword)("*")("start"), CPlugin::startInstance);
@@ -103,6 +104,35 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer t;
       t.set(getRestKeyword(), hwList);
       return web::rest::CResult::GenerateSuccess(t);
+   }
+
+   shared::CDataContainer CPlugin::getAllPluginsInstanceForManualDeviceCreation(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      std::vector< boost::shared_ptr<database::entities::CPlugin> > result;
+
+      //liste de toutes les instances
+      std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
+      
+      //search for manuallyCreatedDevice
+      pluginSystem::CManager::AvalaiblePluginMap pluginList = m_pluginManager->getPluginList();
+
+      
+      for (std::vector< boost::shared_ptr<database::entities::CPlugin> >::iterator currentInstance = hwList.begin(); currentInstance != hwList.end(); ++currentInstance)
+      {
+         pluginSystem::CManager::AvalaiblePluginMap::iterator matchingInfo = pluginList.find((*currentInstance)->Type);
+         if (matchingInfo != pluginList.end())
+         {
+            if (matchingInfo->second->getSupportManuallyCreatedDevice())
+               result.push_back(*currentInstance);
+         }
+      }
+
+      //send result
+      shared::CDataContainer t;
+      t.set(getRestKeyword(), result);
+      return web::rest::CResult::GenerateSuccess(t);
+
+
    }
 
    shared::CDataContainer CPlugin::getAllAvailablePlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
@@ -346,10 +376,16 @@ namespace web { namespace rest { namespace service {
          {
             int pluginId = boost::lexical_cast<int>(parameters[1]);
 
-
-            //on transmet directement la demande auprès du pluginManager
-            m_messageSender.sendManuallyDeviceCreationRequestAsync(pluginId, requestContent.get<std::string>("deviceName"), requestContent);
-            return web::rest::CResult::GenerateSuccess();
+            if (!requestContent.hasValue("name") || !requestContent.hasValue("configuration"))
+            {
+               return web::rest::CResult::GenerateError("invalid request content. There must be a name and a configuration field");
+            }
+            else
+            {
+               //on transmet directement la demande auprès du pluginManager
+               m_messageSender.sendManuallyDeviceCreationRequestAsync(pluginId, requestContent.get<std::string>("name"), requestContent.get<shared::CDataContainer>("configuration"));
+               return web::rest::CResult::GenerateSuccess();
+            }
          }
          else
          {

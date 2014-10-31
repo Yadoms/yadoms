@@ -218,8 +218,7 @@
 
    function addNewDevice() {
       modals.deviceAddManually.load(function() {
-         askPluginTypesForManuallyDeviceCreation(function(pluginType) {
-            var pi = new PluginInstance(null, "", pluginType, "", 1);
+         askPluginTypesForManuallyDeviceCreation(function(pi) {
             //we get package.json
             PluginInstanceManager.downloadPackage(pi, function() {
                //we ask for configuration modal async
