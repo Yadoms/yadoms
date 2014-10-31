@@ -63,14 +63,13 @@
             "x10":
             {
                "type": "section",
-               "name": "X10",
-               "description": "X10 lighting",
+               "name": "X10 (X10 lighting)",
                "content":
                {
                   "houseCode":
                   {
                      "name": "House Code",
-                     "description": "The house code",
+                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
@@ -78,7 +77,7 @@
                   "unitCode":
                   {
                      "name": "Unit Code",
-                     "description": "The unit code",
+                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -89,13 +88,12 @@
             {
                "type": "section",
                "name": "ARC",
-               "description": "ARC",
                "content":
                {
                   "houseCode":
                   {
                      "name": "House Code",
-                     "description": "The house code",
+                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
@@ -103,7 +101,7 @@
                   "unitCode":
                   {
                      "name": "Unit Code",
-                     "description": "The unit code",
+                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -113,14 +111,13 @@
             "ab400d":
             {
                "type": "section",
-               "name": "AB400D",
-               "description": "ELRO AB400D (Flamingo)",
+               "name": "ELRO AB400D (Flamingo)",
                "content":
                {
                   "houseCode":
                   {
                      "name": "House Code",
-                     "description": "The house code",
+                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
@@ -128,7 +125,7 @@
                   "unitCode":
                   {
                      "name": "Unit Code",
-                     "description": "The unit code",
+                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -139,13 +136,12 @@
             {
                "type": "section",
                "name": "Waveman",
-               "description": "Waveman",
                "content":
                {
                   "houseCode":
                   {
                      "name": "House Code",
-                     "description": "The house code",
+                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
@@ -153,7 +149,7 @@
                   "unitCode":
                   {
                      "name": "Unit Code",
-                     "description": "The unit code",
+                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -163,14 +159,13 @@
             "emw200":
             {
                "type": "section",
-               "name": "EMW200",
-               "description": "Chacon EMW200",
+               "name": "Chacon EMW200",
                "content":
                {
                   "houseCode":
                   {
                      "name": "House Code",
-                     "description": "The house code",
+                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
@@ -178,7 +173,7 @@
                   "unitCode":
                   {
                      "name": "Unit Code",
-                     "description": "The unit code",
+                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -189,13 +184,12 @@
             {
                "type": "section",
                "name": "IMPULS",
-               "description": "IMPULS",
                "content":
                {
                   "houseCode":
                   {
                      "name": "House Code",
-                     "description": "The house code",
+                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
@@ -203,7 +197,7 @@
                   "unitCode":
                   {
                      "name": "Unit Code",
-                     "description": "The unit code",
+                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -214,13 +208,12 @@
             {
                "type": "section",
                "name": "RisingSun",
-               "description": "RisingSun",
                "content":
                {
                   "houseCode":
                   {
                      "name": "House Code",
-                     "description": "The house code",
+                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
@@ -228,7 +221,7 @@
                   "unitCode":
                   {
                      "name": "Unit Code",
-                     "description": "The unit code",
+                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -238,14 +231,13 @@
             "philips":
             {
                "type": "section",
-               "name": "Philips",
-               "description": "Philips SBC",
+               "name": "Philips SBC",
                "content":
                {
                   "houseCode":
                   {
                      "name": "House Code",
-                     "description": "The house code",
+                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
@@ -253,7 +245,7 @@
                   "unitCode":
                   {
                      "name": "Unit Code",
-                     "description": "The unit code",
+                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -264,13 +256,12 @@
             {
                "type": "section",
                "name": "Energenie ENER010",
-               "description": "Energenie ENER010",
                "content":
                {
                   "houseCode":
                   {
                      "name": "House Code",
-                     "description": "The house code",
+                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
@@ -278,7 +269,7 @@
                   "unitCode":
                   {
                      "name": "Unit Code",
-                     "description": "The unit code",
+                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -289,13 +280,12 @@
             {
                "type": "section",
                "name": "Energenie 5-gang",
-               "description": "Energenie 5-gang",
                "content":
                {
                   "houseCode":
                   {
                      "name": "House Code",
-                     "description": "The house code",
+                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
@@ -303,7 +293,7 @@
                   "unitCode":
                   {
                      "name": "Unit Code",
-                     "description": "The unit code",
+                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -313,14 +303,13 @@
             "gdr2":
             {
                "type": "section",
-               "name": "GDR2",
-               "description": "COCO GDR2-2000R",
+               "name": "COCO GDR2-2000R",
                "content":
                {
                   "houseCode":
                   {
                      "name": "House Code",
-                     "description": "The house code",
+                     "description": "The house code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
@@ -328,7 +317,7 @@
                   "unitCode":
                   {
                      "name": "Unit Code",
-                     "description": "The unit code",
+                     "description": "The unit code (1-16)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "16"
@@ -338,14 +327,13 @@
             "blyss":
             {
                "type": "section",
-               "name": "blyss",
-               "description": "Blyss",
+               "name": "Blyss",
                "content":
                {
                   "id":
                   {
                      "name": "ID",
-                     "description": "The device ID",
+                     "description": "The device ID (0-65535)",
                      "type": "int",
                      "minimumValue": "0",
                      "maximumValue": "65535"
@@ -353,7 +341,7 @@
                   "groupCode":
                   {
                      "name": "Group Code",
-                     "description": "The Blyss group code",
+                     "description": "The Blyss group code (A-P)",
                      "type": "string",
                      "regex" : "[A-P]",
                      "defaultValue": "A"
@@ -361,7 +349,7 @@
                   "unitCode":
                   {
                      "name": "Unit Code",
-                     "description": "The Blyss unit code",
+                     "description": "The Blyss unit code (1-5)",
                      "type": "int",
                      "minimumValue": "1",
                      "maximumValue": "5"
