@@ -52,7 +52,7 @@ private:
    ///\param [in] configuration  the device configuration
    ///\param [in] context The plugin API
    //----------------------------------------------
-   void OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCreationData> configuration, boost::shared_ptr<yApi::IYadomsApi> context);
+   void OnCreateDeviceRequest(boost::shared_ptr<const yApi::IManuallyDeviceCreationData> configuration, boost::shared_ptr<yApi::IYadomsApi> context);
 
    //----------------------------------------------
    ///\brief  The device manager
