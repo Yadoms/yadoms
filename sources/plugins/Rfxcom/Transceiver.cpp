@@ -252,6 +252,8 @@ bool CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> cont
       else if (data->getConfiguration().get<bool>("type.content.blyss.radio"))
          rfxcomMessages::CLighting6 msg(context, sTypeBlyss, data->getConfiguration().get<shared::CDataContainer>("type.content.blyss.content"));
 
+      // TODO à compléter
+
       else
          throw shared::exception::CInvalidParameter("Unknown device type");
    }

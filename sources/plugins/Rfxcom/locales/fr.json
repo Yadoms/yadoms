@@ -50,222 +50,210 @@
          {
             "x10":
             {
-               "name": "X10",
-               "description": "X10 lighting",
+               "name": "X10 lighting",
                "content":
                {
                   "houseCode":
                   {
                      "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment"
+                     "description": "L'identifiant du bâtiment (A-P)"
                   },
                   "unitCode":
                   {
                      "name": "Equipement",
-                     "description": "L'identifiant de l'équipement"
+                     "description": "L'identifiant de l'équipement (1-16)"
                   }               
                }
             },
             "arc":
             {
                "name": "ARC",
-               "description": "ARC",
                "content":
                {
                   "houseCode":
                   {
                      "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment"
+                     "description": "L'identifiant du bâtiment (A-P)"
                   },
                   "unitCode":
                   {
                      "name": "Equipement",
-                     "description": "L'identifiant de l'équipement"
+                     "description": "L'identifiant de l'équipement (1-16)"
                   }               
                }
             },
             "ab400d":
             {
-               "name": "AB400D",
-               "description": "ELRO AB400D (Flamingo)",
+               "name": "ELRO AB400D (Flamingo)",
                "content":
                {
                   "houseCode":
                   {
                      "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment"
+                     "description": "L'identifiant du bâtiment (A-P)"
                   },
                   "unitCode":
                   {
                      "name": "Equipement",
-                     "description": "L'identifiant de l'équipement"
+                     "description": "L'identifiant de l'équipement (1-16)"
                   }               
                }
             },
             "waveman":
             {
                "name": "Waveman",
-               "description": "Waveman",
                "content":
                {
                   "houseCode":
                   {
                      "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment"
+                     "description": "L'identifiant du bâtiment (A-P)"
                   },
                   "unitCode":
                   {
                      "name": "Equipement",
-                     "description": "L'identifiant de l'équipement"
+                     "description": "L'identifiant de l'équipement (1-16)"
                   }               
                }
             },
             "emw200":
             {
-               "name": "EMW200",
-               "description": "Chacon EMW200",
+               "name": "Chacon EMW200",
                "content":
                {
                   "houseCode":
                   {
                      "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment"
+                     "description": "L'identifiant du bâtiment (A-P)"
                   },
                   "unitCode":
                   {
                      "name": "Equipement",
-                     "description": "L'identifiant de l'équipement"
+                     "description": "L'identifiant de l'équipement (1-16)"
                   }               
                }
             },
             "impuls":
             {
                "name": "IMPULS",
-               "description": "IMPULS",
                "content":
                {
                   "houseCode":
                   {
                      "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment"
+                     "description": "L'identifiant du bâtiment (A-P)"
                   },
                   "unitCode":
                   {
                      "name": "Equipement",
-                     "description": "L'identifiant de l'équipement"
+                     "description": "L'identifiant de l'équipement (1-16)"
                   }               
                }
             },
             "risingSun":
             {
                "name": "RisingSun",
-               "description": "RisingSun",
                "content":
                {
                   "houseCode":
                   {
                      "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment"
+                     "description": "L'identifiant du bâtiment (A-P)"
                   },
                   "unitCode":
                   {
                      "name": "Equipement",
-                     "description": "L'identifiant de l'équipement"
+                     "description": "L'identifiant de l'équipement (1-16)"
                   }               
                }
             },
             "philips":
             {
-               "name": "Philips",
-               "description": "Philips SBC",
+               "name": "Philips SBC",
                "content":
                {
                   "houseCode":
                   {
                      "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment"
+                     "description": "L'identifiant du bâtiment (A-P)"
                   },
                   "unitCode":
                   {
                      "name": "Equipement",
-                     "description": "L'identifiant de l'équipement"
+                     "description": "L'identifiant de l'équipement (1-16)"
                   }               
                }
             },
             "energenie":
             {
                "name": "Energenie ENER010",
-               "description": "Energenie ENER010",
                "content":
                {
                   "houseCode":
                   {
                      "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment"
+                     "description": "L'identifiant du bâtiment (A-P)"
                   },
                   "unitCode":
                   {
                      "name": "Equipement",
-                     "description": "L'identifiant de l'équipement"
+                     "description": "L'identifiant de l'équipement (1-16)"
                   }               
                }
             },
             "energenie5":
             {
                "name": "Energenie 5-gang",
-               "description": "Energenie 5-gang",
                "content":
                {
                   "houseCode":
                   {
                      "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment"
+                     "description": "L'identifiant du bâtiment (A-P)"
                   },
                   "unitCode":
                   {
                      "name": "Equipement",
-                     "description": "L'identifiant de l'équipement"
+                     "description": "L'identifiant de l'équipement (1-16)"
                   }               
                }
             },
             "gdr2":
             {
-               "name": "GDR2",
-               "description": "COCO GDR2-2000R",
+               "name": "COCO GDR2-2000R",
                "content":
                {
                   "houseCode":
                   {
                      "name": "Bâtiment",
-                     "description": "L'identifiant du bâtiment"
+                     "description": "L'identifiant du bâtiment (A-P)"
                   },
                   "unitCode":
                   {
                      "name": "Equipement",
-                     "description": "L'identifiant de l'équipement"
+                     "description": "L'identifiant de l'équipement (1-16)"
                   }               
                }
             },        
             "blyss":
             {
-               "name": "blyss",
-               "description": "Blyss",
+               "name": "Blyss",
                "content":
                {
                   "id":
                   {
                      "name": "ID",
-                     "description": "L'identifiant de l'équipement"
+                     "description": "L'identifiant de l'équipement (0-65535)"
                   },
                   "groupCode":
                   {
                      "name": "Group Code",
-                     "description": "L'identifiant du groupe de l'équipement"
+                     "description": "L'identifiant du groupe de l'équipement (A-P)"
                   },
                   "unitCode":
                   {
                      "name": "Unit Code",
-                     "description": "L'identifiant de la fonction de l'équipement"
+                     "description": "L'identifiant de la fonction de l'équipement (1-5)"
                   }               
                }
             }
