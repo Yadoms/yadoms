@@ -6,10 +6,8 @@
 #include "MegatecUpsFactory.h"
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
-//TODO ajouter support USB ?
 //TODO tester redémarrage si l'accès au port est refusé (déjà ouvert par ailleurs)
-//TODO acPowerActive n'a pas l'air de fonctionner...
-//TODO le shutdown non plus...
+//TODO Pb avec commande de shutdown (le "0" avant le point décimal...)
 IMPLEMENT_PLUGIN(CMegatecUps)
 
 
@@ -43,7 +41,7 @@ CMegatecUps::CMegatecUps():
    m_outputCurrent("outputCurrent"), m_inputFrequency("inputFrequency"), m_batteryVoltage("batteryVoltage"),
    m_temperature("temperature"), m_acPowerHistorizer("acPowerActive", yApi::EKeywordAccessMode::kGet), m_upsShutdown("UpsShutdown"),
    m_acPowerActive(true), m_lowBatteryFlag(false), m_lowBatteryByLevelFlag(false), m_batteryNominalVoltage(0.0),
-   m_protocolErrorCounter(0), m_answerIsRequired(true)
+   m_protocolErrorCounter(0), m_answerIsRequired(true), m_firstNotification(true)
 {
 }
 
@@ -330,7 +328,18 @@ void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYadomsApi> contex
             break;
          }
       default:
-         throw CProtocolException((boost::format("invalid start byte : %1%") % message[0]).str());
+         {
+            // Maybe some dummy data are at beginning of the string, try to remove them
+            size_t messageStartPos = message.find_first_of ("(#");
+            if (messageStartPos == std::string::npos)
+            {
+               // None of starting characters found, the message is definitively bad...
+               throw CProtocolException((boost::format("invalid start byte : %1%") % message[0]).str());
+            }
+
+            // Remove bad part of the message, and retry
+            processDataReceived(context, message.substr(messageStartPos, message.length() - messageStartPos));
+         }
       }
 
       // Message was recognized, stop timeout
@@ -378,8 +387,15 @@ void CMegatecUps::sendShtudownCmd()
 {
    std::ostringstream cmd;
    cmd.imbue(ProtocolFloatFormatingLocale);
-   cmd << 'S' << std::setprecision(1) << m_configuration.outuputShutdownDelay();
-   cmd << 'R' << std::setw(5) << std::setfill('0') << m_configuration.outuputRestoreDelay();
+
+   cmd << 'S';
+   if (m_configuration.outuputShutdownDelay() < 1)
+      cmd << std::setw(2) << std::setprecision(1) << std::fixed << m_configuration.outuputShutdownDelay();  // Number <1 should be at format ".2", ".3"
+   else
+      cmd << std::setw(2) << std::setfill('0') << m_configuration.outuputShutdownDelay();// Number >=1 should be at format "01", "02", "10"
+
+   cmd << 'R' << std::setw(4) << std::setprecision(0) << std::setfill('0') << m_configuration.outuputRestoreDelay();
+
    cmd << MEGATEC_EOF;
 
    m_protocolErrorCounter = 0;
@@ -440,7 +456,7 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYadomsApi> cont
       sendToggleBeepCmd();
 
    // Process AC power status
-   processAcPowerStatus(context, utilityFail, batteryLow);
+   processAcPowerStatus(context, !utilityFail, batteryLow);
 
    // Wait for next status request
    m_upsStatusRequestTimer->start();
@@ -524,13 +540,15 @@ void CMegatecUps::processAcPowerStatus(boost::shared_ptr<yApi::IYadomsApi> conte
    {
    case IMegatecUpsConfiguration::kNotifyImmediately:
       {
-         if (acPowerActive != m_acPowerActive)
+         if (m_firstNotification || (acPowerActive != m_acPowerActive))
             notifyPowerState(context, acPowerActive);
          m_acPowerActive = acPowerActive;
          break;
       }
    case IMegatecUpsConfiguration::kFilter:
       {
+         if (m_firstNotification)
+            notifyPowerState(context, acPowerActive);
          if (acPowerActive != m_acPowerActive && !acPowerActive)
             m_filterTimer->start(boost::posix_time::seconds(m_configuration.powerFailureFilterDelay()));
          m_acPowerActive = acPowerActive;
@@ -539,7 +557,7 @@ void CMegatecUps::processAcPowerStatus(boost::shared_ptr<yApi::IYadomsApi> conte
    case IMegatecUpsConfiguration::kLowBattery:
       {
          // No mater if AC power is OK or not
-         if (lowBatteryFlag != m_lowBatteryFlag)
+         if (m_firstNotification || (lowBatteryFlag != m_lowBatteryFlag))
             notifyPowerState(context, !lowBatteryFlag);
          m_lowBatteryFlag = lowBatteryFlag;
          break;
@@ -549,7 +567,7 @@ void CMegatecUps::processAcPowerStatus(boost::shared_ptr<yApi::IYadomsApi> conte
          // No mater if AC power is OK or not
          bool oldLowBatteryByLevelFlag = m_lowBatteryByLevelFlag;
          getLowBatteryByLevelFlagState(m_lowBatteryByLevelFlag);
-         if (m_lowBatteryByLevelFlag != oldLowBatteryByLevelFlag)
+         if (m_firstNotification || (m_lowBatteryByLevelFlag != oldLowBatteryByLevelFlag))
             notifyPowerState(context, m_lowBatteryByLevelFlag);
          break;
       }
@@ -559,6 +577,7 @@ void CMegatecUps::processAcPowerStatus(boost::shared_ptr<yApi::IYadomsApi> conte
          break;
       }
    }
+   m_firstNotification = false;
 }
 
 void CMegatecUps::notifyPowerState(boost::shared_ptr<yApi::IYadomsApi> context, bool powerState)

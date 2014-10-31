@@ -270,6 +270,11 @@ private:
    yApi::historization::CSwitch m_acPowerHistorizer;
 
    //--------------------------------------------------------------
+   /// \brief	First notification flag
+   //--------------------------------------------------------------
+   bool m_firstNotification;
+
+   //--------------------------------------------------------------
    /// \brief	The shutdown device
    //--------------------------------------------------------------
    yApi::historization::CSwitch m_upsShutdown;
