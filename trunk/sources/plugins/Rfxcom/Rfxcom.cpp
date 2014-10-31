@@ -71,7 +71,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          case yApi::IYadomsApi::kEventManuallyDeviceCreationTest:
             {
                // Yadoms asks for test device parameters to check if it works before creating it. So just send command, don't declare anything.
-               boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> data = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> >();
+               boost::shared_ptr<const yApi::IManuallyDeviceCreationTestData> data = context->getEventHandler().getEventData<const boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> >();
                YADOMS_LOG(debug) << "Test of device request received :" << data->toString();
 
                onCommand(context, data->getCommand()->getBody(), data->getDeviceParameters());
@@ -81,7 +81,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          case yApi::IYadomsApi::kEventManuallyDeviceCreation:
             {
                // Yadoms asks for device creation
-               boost::shared_ptr<yApi::IManuallyDeviceCreationData> data = context->getEventHandler().getEventData<boost::shared_ptr<yApi::IManuallyDeviceCreationData> >();
+               boost::shared_ptr<const yApi::IManuallyDeviceCreationData> data = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IManuallyDeviceCreationData> >();
 
                YADOMS_LOG(debug) << "Manually device creation request received for device :" << data->getDeviceName();
                m_transceiver->createDeviceManually(context, data);

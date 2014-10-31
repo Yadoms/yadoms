@@ -35,6 +35,8 @@
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
 
+//TODO : voir nouvelle version de spec 'RFXtrx SSDF.pdf', pleins de nouveaux sous-types sont disponibles
+//TODO Indiquer la version de spec utilisée, et compatibilité firmware RFXCom
 
 CTransceiver::CTransceiver()
    :m_seqNumberProvider(new CIncrementSequenceNumber())
@@ -222,7 +224,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    return message;
 }
 
-bool CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> context, const boost::shared_ptr<yApi::IManuallyDeviceCreationData> data) const
+bool CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IManuallyDeviceCreationData> data) const
 {
    try
    {
@@ -251,14 +253,22 @@ bool CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> cont
          rfxcomMessages::CLighting1 msg(context, sTypeGDR2, data->getConfiguration().get<shared::CDataContainer>("type.content.gdr2.content"));
 
       // Lighting2
-      if      (data->getConfiguration().get<bool>("type.content.ac.radio"))
+      else if (data->getConfiguration().get<bool>("type.content.ac.radio"))
          rfxcomMessages::CLighting2 msg(context, sTypeX10, data->getConfiguration().get<shared::CDataContainer>("type.content.ac.content"));
-      else if (data->getConfiguration().get<bool>("type.content.homeEasyEu.radio"))
-         rfxcomMessages::CLighting2 msg(context, sTypeARC, data->getConfiguration().get<shared::CDataContainer>("type.content.homeEasyEu.content"));
+      else if (data->getConfiguration().get<bool>("type.content.homeEasyEU.radio"))
+         rfxcomMessages::CLighting2 msg(context, sTypeARC, data->getConfiguration().get<shared::CDataContainer>("type.content.homeEasyEU.content"));
       else if (data->getConfiguration().get<bool>("type.content.anslut.radio"))
          rfxcomMessages::CLighting2 msg(context, sTypeARC, data->getConfiguration().get<shared::CDataContainer>("type.content.anslut.content"));
       else if (data->getConfiguration().get<bool>("type.content.kambrookRf3672.radio"))
          rfxcomMessages::CLighting2 msg(context, sTypeARC, data->getConfiguration().get<shared::CDataContainer>("type.content.KambrookRf3672.content"));
+
+      // Lighting3
+      else if (data->getConfiguration().get<bool>("type.content.koppla.radio"))
+         rfxcomMessages::CLighting3 msg(context, sTypeKoppla, data->getConfiguration().get<shared::CDataContainer>("type.content.koppla.content"));
+
+      // Lighting4
+      else if (data->getConfiguration().get<bool>("type.content.pt2262.radio"))
+         rfxcomMessages::CLighting4 msg(context, sTypePT2262, data->getConfiguration().get<shared::CDataContainer>("type.content.pt2262.content"));
 
       // Lighting6
       else if (data->getConfiguration().get<bool>("type.content.blyss.radio"))
@@ -271,12 +281,14 @@ bool CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> cont
    }
    catch(shared::exception::CInvalidParameter& e)
    {
-      YADOMS_LOG(error) << "Fail to create device manually, invalid parameter " << e.what();
+      YADOMS_LOG(error) << "Fail to create device manually, invalid parameter : " << e.what();
+      YADOMS_LOG(error) << "data : " << data->getConfiguration().get<shared::CDataContainer>("type.content").serialize();
       return false;
    }
    catch(shared::exception::COutOfRange& e)
    {
-      YADOMS_LOG(error) << "Fail to create device manually, out of range " << e.what();
+      YADOMS_LOG(error) << "Fail to create device manually, out of range : " << e.what();
+      YADOMS_LOG(error) << "data : " << data->getConfiguration().get<shared::CDataContainer>("type.content").serialize();
       return false;
    }
 

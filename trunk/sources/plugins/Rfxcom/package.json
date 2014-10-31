@@ -422,6 +422,199 @@
                }
             },
 
+            "koppla":
+            {
+               "type": "section",
+               "name": "Ikea Koppla",
+               "content":
+               {
+                  "system":
+                  {
+                     "name": "System",
+                     "description": "System code (1-16)",
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "16"
+                  },
+                  "channel":
+                  {
+                     "name": "Channel",
+                     "description": "Channel (0-1023)",
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "1023"
+                  }            
+               }
+            },
+
+            "pt2262":
+            {
+               "type": "section",
+               "name": "PT2262 (many remote controls)",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (0-16777215)",
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "16777215"
+                  }         
+               }
+            },
+
+            "lightwaveRf":
+            {
+               "type": "section",
+               "name": "LightwaveRF (Siemens AD protocol)",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-16777215)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "16777215"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-16)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "16"
+                  }               
+               }
+            },
+      
+            "emw100":
+            {
+               "type": "section",
+               "name": "EMW100 GAO/Everflourish",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-16383)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "16383"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-4)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "4"
+                  }               
+               }
+            },
+            
+            "bbsb":
+            {
+               "type": "section",
+               "name": "BBSB new types",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-524287)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "524287"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-6)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "6"
+                  }               
+               }
+            },
+            
+            "mdRemote":
+            {
+               "type": "section",
+               "name": "MDREMOTE LED dimmer",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-65535)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "65535"
+                  }              
+               }
+            },
+            
+            "rsl":
+            {
+               "type": "section",
+               "name": "Conrad RSL2",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-16777215)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "16777215"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-16)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "16"
+                  }               
+               }
+            },
+            
+            "livolo":
+            {
+               "type": "section",
+               "name": "Livolo",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-65535)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "65535"
+                  }              
+               }
+            },
+            
+            "trc02":
+            {
+               "type": "section",
+               "name": "TRC02",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-16777215)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "16777215"
+                  }              
+               }
+            },
+            
             "blyss":
             {
                "type": "section",

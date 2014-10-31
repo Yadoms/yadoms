@@ -47,7 +47,7 @@ CLighting1::CLighting1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned cha
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
    }
 
-   m_houseCode = manuallyDeviceCreationConfiguration.get<unsigned char>("houseCode");
+   m_houseCode = (unsigned char) manuallyDeviceCreationConfiguration.get<char>("houseCode");
    m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
    Init(context);

@@ -34,7 +34,7 @@ CLighting6::CLighting6(boost::shared_ptr<yApi::IYadomsApi> context, unsigned cha
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
 
    m_id = manuallyDeviceCreationConfiguration.get<short>("id");
-   m_groupCode = manuallyDeviceCreationConfiguration.get<unsigned char>("groupCode");
+   m_groupCode = (unsigned char) manuallyDeviceCreationConfiguration.get<char>("groupCode");
    m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
    Init(context);
