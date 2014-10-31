@@ -90,7 +90,7 @@
               "description" : "After receiving command from Yadoms, UPS will wait this delay before shutting down its output. It's useful to let system stop properly.",
               "defaultValue" : ".3",
               "minimumValue" : ".2",
-              "maximumValue" : "10",
+              "maximumValue" : "9",
               "precision" : "1"
            },
            "RestoreDelay" :
