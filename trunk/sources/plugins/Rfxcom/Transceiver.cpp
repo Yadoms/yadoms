@@ -6,6 +6,7 @@
 #include "RfxcomFactory.h"
 #include "rfxcomMessages/Ack.h"
 #include "rfxcomMessages/Barometric.h"
+#include "rfxcomMessages/Blinds1.h"
 #include "rfxcomMessages/Chime.h"
 #include "rfxcomMessages/Current.h"
 #include "rfxcomMessages/CurrentEnergy.h"
@@ -146,6 +147,9 @@ const shared::communication::CByteBuffer CTransceiver::buildMessageToDevice(boos
       case pTypeLighting4:
          return rfxcomMessages::CLighting4(context, command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
+      case pTypeLighting5:
+         return rfxcomMessages::CLighting5(context, command, deviceParametersTree).encode(m_seqNumberProvider);
+         break;
       case pTypeLighting6:
          return rfxcomMessages::CLighting6(context, command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
@@ -157,6 +161,9 @@ const shared::communication::CByteBuffer CTransceiver::buildMessageToDevice(boos
          break;
       case pTypeFan:
          return rfxcomMessages::CFan(context, command, deviceParametersTree).encode(m_seqNumberProvider);
+         break;
+      case pTypeBlinds:
+         return rfxcomMessages::CBlinds1(context, command, deviceParametersTree).encode(m_seqNumberProvider);
          break;
       case pTypeRFY:
          return rfxcomMessages::CRfy(context, command, deviceParametersTree).encode(m_seqNumberProvider);
@@ -194,10 +201,12 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    case pTypeLighting2           : message.reset(new rfxcomMessages::CLighting2              (context, *buf, m_seqNumberProvider)); break;
    case pTypeLighting3           : message.reset(new rfxcomMessages::CLighting3              (context, *buf, m_seqNumberProvider)); break;
    case pTypeLighting4           : message.reset(new rfxcomMessages::CLighting4              (context, *buf, m_seqNumberProvider)); break;
+   case pTypeLighting5           : message.reset(new rfxcomMessages::CLighting5              (context, *buf, m_seqNumberProvider)); break;
    case pTypeLighting6           : message.reset(new rfxcomMessages::CLighting6              (context, *buf, m_seqNumberProvider)); break;
    case pTypeChime               : message.reset(new rfxcomMessages::CChime                  (context, *buf, m_seqNumberProvider)); break;
-   case pTypeCurtain             : message.reset(new rfxcomMessages::CCurtain1               (context, *buf, m_seqNumberProvider)); break;
    case pTypeFan                 : message.reset(new rfxcomMessages::CFan                    (context, *buf, m_seqNumberProvider)); break;
+   case pTypeCurtain             : message.reset(new rfxcomMessages::CCurtain1               (context, *buf, m_seqNumberProvider)); break;
+   case pTypeBlinds              : message.reset(new rfxcomMessages::CBlinds1                (context, *buf, m_seqNumberProvider)); break;
    case pTypeRFY                 : message.reset(new rfxcomMessages::CRfy                    (context, *buf, m_seqNumberProvider)); break;
    case pTypeTEMP                : message.reset(new rfxcomMessages::CTemp                   (context, *buf, m_seqNumberProvider)); break;
    case pTypeHUM                 : message.reset(new rfxcomMessages::CHumidity               (context, *buf, m_seqNumberProvider)); break;
@@ -273,23 +282,41 @@ bool CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> cont
 
       // Lighting5
       else if (data->getConfiguration().get<bool>("type.content.lightwaveRf.radio"))
-         rfxcomMessages::CLighting4 msg(context, sTypeLightwaveRF, data->getConfiguration().get<shared::CDataContainer>("type.content.lightwaveRf.content"));
+         rfxcomMessages::CLighting5 msg(context, sTypeLightwaveRF, data->getConfiguration().get<shared::CDataContainer>("type.content.lightwaveRf.content"));
       else if (data->getConfiguration().get<bool>("type.content.emw100.radio"))
-         rfxcomMessages::CLighting4 msg(context, sTypeEMW100, data->getConfiguration().get<shared::CDataContainer>("type.content.emw100.content"));
+         rfxcomMessages::CLighting5 msg(context, sTypeEMW100, data->getConfiguration().get<shared::CDataContainer>("type.content.emw100.content"));
       else if (data->getConfiguration().get<bool>("type.content.bbsb.radio"))
-         rfxcomMessages::CLighting4 msg(context, sTypeBBSB, data->getConfiguration().get<shared::CDataContainer>("type.content.bbsb.content"));
+         rfxcomMessages::CLighting5 msg(context, sTypeBBSB, data->getConfiguration().get<shared::CDataContainer>("type.content.bbsb.content"));
       else if (data->getConfiguration().get<bool>("type.content.mdRemote.radio"))
-         rfxcomMessages::CLighting4 msg(context, sTypeMDREMOTE, data->getConfiguration().get<shared::CDataContainer>("type.content.mdRemote.content"));
+         rfxcomMessages::CLighting5 msg(context, sTypeMDREMOTE, data->getConfiguration().get<shared::CDataContainer>("type.content.mdRemote.content"));
       else if (data->getConfiguration().get<bool>("type.content.rsl.radio"))
-         rfxcomMessages::CLighting4 msg(context, sTypeRSL, data->getConfiguration().get<shared::CDataContainer>("type.content.rsl.content"));
+         rfxcomMessages::CLighting5 msg(context, sTypeRSL, data->getConfiguration().get<shared::CDataContainer>("type.content.rsl.content"));
       else if (data->getConfiguration().get<bool>("type.content.livolo.radio"))
-         rfxcomMessages::CLighting4 msg(context, sTypeLivolo, data->getConfiguration().get<shared::CDataContainer>("type.content.livolo.content"));
+         rfxcomMessages::CLighting5 msg(context, sTypeLivolo, data->getConfiguration().get<shared::CDataContainer>("type.content.livolo.content"));
       else if (data->getConfiguration().get<bool>("type.content.trc02.radio"))
-         rfxcomMessages::CLighting4 msg(context, sTypeTRC02, data->getConfiguration().get<shared::CDataContainer>("type.content.trc02.content"));
+         rfxcomMessages::CLighting5 msg(context, sTypeTRC02, data->getConfiguration().get<shared::CDataContainer>("type.content.trc02.content"));
 
       // Lighting6
       else if (data->getConfiguration().get<bool>("type.content.blyss.radio"))
          rfxcomMessages::CLighting6 msg(context, sTypeBlyss, data->getConfiguration().get<shared::CDataContainer>("type.content.blyss.content"));
+
+      // Blinds1
+      else if (data->getConfiguration().get<bool>("type.content.rollerTrolHastaNew.radio"))
+         rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT0, data->getConfiguration().get<shared::CDataContainer>("type.content.rollerTrolHastaNew.content"));
+      else if (data->getConfiguration().get<bool>("type.content.hastaOld.radio"))
+         rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT1, data->getConfiguration().get<shared::CDataContainer>("type.content.hastaOld.content"));
+      else if (data->getConfiguration().get<bool>("type.content.aOkRf01.radio"))
+         rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT2, data->getConfiguration().get<shared::CDataContainer>("type.content.aOkRf01.content"));
+      else if (data->getConfiguration().get<bool>("type.content.aOkAc114.radio"))
+         rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT3, data->getConfiguration().get<shared::CDataContainer>("type.content.aOkAc114.content"));
+      else if (data->getConfiguration().get<bool>("type.content.raex.radio"))
+         rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT4, data->getConfiguration().get<shared::CDataContainer>("type.content.raex.content"));
+      else if (data->getConfiguration().get<bool>("type.content.mediaMount.radio"))
+         rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT5, data->getConfiguration().get<shared::CDataContainer>("type.content.mediaMount.content"));
+      else if (data->getConfiguration().get<bool>("type.content.dc106.radio"))
+         rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT6, data->getConfiguration().get<shared::CDataContainer>("type.content.dc106.content"));
+      else if (data->getConfiguration().get<bool>("type.content.forest.radio"))
+         rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT7, data->getConfiguration().get<shared::CDataContainer>("type.content.forest.content"));
 
       // TODO à compléter (voir Domoticz "Switch_Type_Desc")
 
