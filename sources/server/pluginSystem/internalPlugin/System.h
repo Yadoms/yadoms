@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/plugin/IPlugin.h>
 #include <shared/plugin/information/IInformation.h>
+#include "IApplicationStopHandler.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -15,8 +16,9 @@ namespace pluginSystem { namespace internalPlugin {
       public:
          //--------------------------------------------------------------
          /// \brief	Constructor
+         /// \param [in]   applicationStopHandler  The object used to request application stop
          //--------------------------------------------------------------
-         CSystem();
+         CSystem(IApplicationStopHandler& applicationStopHandler);
 
          //--------------------------------------------------------------
          /// \brief	Destructor
@@ -27,6 +29,11 @@ namespace pluginSystem { namespace internalPlugin {
          virtual void doWork(boost::shared_ptr<yApi::IYadomsApi> context);
          // [END] IPlugin implementation
 
+      private:
+         //--------------------------------------------------------------
+         /// \brief			The object used to request application stop
+         //--------------------------------------------------------------
+         IApplicationStopHandler& m_applicationStopHandler;
       };
 
 

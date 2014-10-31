@@ -22,14 +22,16 @@ CManager::CManager(
    boost::shared_ptr<database::IDataProvider> dataProvider,
    boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
    shared::event::CEventHandler& supervisor,
-   int pluginManagerEventId)
+   int pluginManagerEventId,
+   IApplicationStopHandler& applicationStopHandler)
    :m_dataProvider(dataProvider), m_pluginDBTable(dataProvider->getPluginRequester()), m_pluginPath(initialDir),
 #ifdef _DEBUG
    m_qualifier(new CDummyQualifier()),
 #else
    m_qualifier(new CQualifier(dataProvider->getPluginEventLoggerRequester(), dataProvider->getEventLoggerRequester())),
 #endif
-   m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_acquisitionHistorizer(acquisitionHistorizer)
+   m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_acquisitionHistorizer(acquisitionHistorizer),
+   m_applicationStopHandler(applicationStopHandler)
 {
    BOOST_ASSERT(m_dataProvider);
 }
@@ -401,7 +403,7 @@ void CManager::startInternalPlugin()
       fakeDatabasePluginInstance->Type = "system";
 
       // Load the plugin
-      boost::shared_ptr<IFactory> plugin(new CInternalPluginFactory());
+      boost::shared_ptr<IFactory> plugin(new CInternalPluginFactory(m_applicationStopHandler));
 
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded

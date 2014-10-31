@@ -63,7 +63,7 @@ void CSupervisor::doWork()
 
       // Create the Plugin manager
       boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(
-         m_startupOptions.getPluginsPath(), pDataProvider, acquisitionHistoriszer, m_EventHandler, kPluginManagerEvent));
+         m_startupOptions.getPluginsPath(), pDataProvider, acquisitionHistoriszer, m_EventHandler, kPluginManagerEvent, m_stopHandler));
 
       // Start the plugin gateway
       communication::CPluginGateway pluginGateway(pDataProvider, acquisitionHistoriszer, pluginManager);
@@ -159,11 +159,13 @@ void CSupervisor::doWork()
    }
 }
 
-
 void CSupervisor::requestToStop(boost::function<void()> & callbackAfterStopped)
 {
    m_callbackAfterStopped = callbackAfterStopped;
    m_EventHandler.postEvent(kStopRequested);
 }
 
-
+IApplicationStopHandler::EStopMode CSupervisor::stopMode() const
+{
+   return m_stopHandler.stopMode();
+}

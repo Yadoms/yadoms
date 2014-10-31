@@ -5,6 +5,7 @@
 
 #include "startupOptions/Loader.h"
 #include <shared/Log.h>
+#include <tools/OperatingSystem.h>
 
 CApplication::CApplication()
 {
@@ -13,6 +14,13 @@ CApplication::CApplication()
 
 CApplication::~CApplication()
 {
+   //TODO tester l'arrêt/reboot du système
+   switch(m_supervisor->stopMode())
+   {
+   case IApplicationStopHandler::kStopSystem: tools::COperatingSystem::shutdown(false); break;
+   case IApplicationStopHandler::kRestartSystem: tools::COperatingSystem::shutdown(true); break;
+   default: break;
+   }
 }
    
    

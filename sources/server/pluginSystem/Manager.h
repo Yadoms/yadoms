@@ -15,6 +15,7 @@
 #include <shared/StringExtension.h>
 #include <shared/event/EventHandler.hpp>
 #include "dataAccessLayer/IAcquisitionHistorizer.h"
+#include "IApplicationStopHandler.h"
 
 namespace pluginSystem
 {
@@ -38,13 +39,15 @@ namespace pluginSystem
       /// \param [in]   dataProvider            Database link
       /// \param [in]   supervisor     the supervisor event handler
       /// \param [in]   pluginManagerEventId    The ID to use to send events to supervisor
+      /// \param [in]   applicationStopHandler  The object used to request application stop
       //--------------------------------------------------------------
       CManager(
          const std::string & initialDir,
          boost::shared_ptr<database::IDataProvider> dataProvider,
          boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
          shared::event::CEventHandler& supervisor,
-         int pluginManagerEventId);
+         int pluginManagerEventId,
+         IApplicationStopHandler& applicationStopHandler);
 
       //--------------------------------------------------------------
       /// \brief			Initialization, used for the 2-steps construction
@@ -261,6 +264,11 @@ namespace pluginSystem
       /// \brief			Acquisitions historizer
       //--------------------------------------------------------------
       boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> m_acquisitionHistorizer;
+
+      //--------------------------------------------------------------
+      /// \brief			The object used to request application stop
+      //--------------------------------------------------------------
+      IApplicationStopHandler& m_applicationStopHandler;
    };
 
 } // namespace pluginSystem
