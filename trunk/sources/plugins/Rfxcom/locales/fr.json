@@ -235,6 +235,76 @@
                   }               
                }
             },        
+
+            "ac":
+            {
+               "name": "AC",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-67108863)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "L'identifiant de la fonction de l'équipement (1-16)"
+                  }               
+               }
+            },        
+            "homeEasyEU":
+            {
+               "name": "HomeEasy EU",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-67108863)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "L'identifiant de la fonction de l'équipement (1-16)"
+                  }               
+               }
+            },
+            "anslut":
+            {
+               "name": "ANSLUT",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-67108863)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "L'identifiant de la fonction de l'équipement (1-16)"
+                  }               
+               }
+            },
+            "kambrookRf3672":
+            {
+               "name": "Kambrook RF3672 (Australia)",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-16777215)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "L'identifiant de la fonction de l'équipement (1-5)"
+                  }               
+               }
+            },
+
             "blyss":
             {
                "name": "Blyss",

@@ -324,6 +324,104 @@
                   }               
                }
             },        
+
+            "ac":
+            {
+               "type": "section",
+               "name": "AC",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-67108863)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "67108863"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-16)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "16"
+                  }               
+               }
+            },        
+            "homeEasyEU":
+            {
+               "type": "section",
+               "name": "HomeEasy EU",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-67108863)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "67108863"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-16)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "16"
+                  }               
+               }
+            },
+            "anslut":
+            {
+               "type": "section",
+               "name": "ANSLUT",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-67108863)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "67108863"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-16)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "16"
+                  }               
+               }
+            },
+            "kambrookRf3672":
+            {
+               "type": "section",
+               "name": "Kambrook RF3672 (Australia)",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-16777215)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "16777215"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-5)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "5"
+                  }               
+               }
+            },
+
             "blyss":
             {
                "type": "section",
