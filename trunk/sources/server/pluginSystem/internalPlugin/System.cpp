@@ -5,13 +5,13 @@
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yadomsApi/historization/Historizers.h>
-#include <tools/OperatingSystem.h>
 
 
 namespace pluginSystem {
    namespace internalPlugin {
 
-   CSystem::CSystem()
+   CSystem::CSystem(IApplicationStopHandler& applicationStopHandler)
+      :m_applicationStopHandler(applicationStopHandler)
    {
    }
 
@@ -57,12 +57,12 @@ namespace pluginSystem {
                   if (boost::iequals(command->getKeyword(), keywordShutdown.getKeyword()))
                   {
                      YADOMS_LOG(info) << "Shutdown the system";
-                     tools::COperatingSystem::shutdown(false);//TODO c'est pas ici qu'il faut faire ça (il faut lever un flag pour arrêter l'appli proprement et appeler l'arrêt du système juste avant de quitter le main)
+                     m_applicationStopHandler.requestToStop(IApplicationStopHandler::kStopSystem);
                   }
                   else if (boost::iequals(command->getKeyword(), keywordRestart.getKeyword()))
                   {
                      YADOMS_LOG(info) << "Restart the system";
-                     tools::COperatingSystem::shutdown(true);//TODO c'est pas ici qu'il faut faire ça (il faut lever un flag pour arrêter l'appli proprement et appeler l'arrêt du système juste avant de quitter le main)
+                     m_applicationStopHandler.requestToStop(IApplicationStopHandler::kRestartSystem);
                   }
                   else
                   {

@@ -162,6 +162,10 @@ set(YADOMS_SRC
 	server/Application.h
 	server/Application.cpp
 	
+  	server/ApplicationStopHandler.h
+	server/ApplicationStopHandler.cpp
+  	server/IApplicationStopHandler.h
+
 	server/Supervisor.cpp
 	server/Supervisor.h
 	server/System.cpp
@@ -215,9 +219,6 @@ set(YADOMS_SRC
 	server/notifications/AsyncNotificationCenter.cpp
 	server/notifications/NewAcquisitionNotification.h
 	
-	server/ApplicationStopHandler.h
-	server/ApplicationStopHandler.cpp
-
 	server/dataAccessLayer/AcquisitionHistorizer.h
 	server/dataAccessLayer/AcquisitionHistorizer.cpp
 	server/dataAccessLayer/IAcquisitionHistorizer.h

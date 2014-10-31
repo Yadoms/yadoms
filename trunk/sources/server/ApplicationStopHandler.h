@@ -5,11 +5,12 @@
 
 #include <csignal>
 #include <shared/event/EventHandler.hpp>
+#include "IApplicationStopHandler.h"
 
 //-----------------------------------------------------------------------------
 /// \class              Application stop handler
 //-----------------------------------------------------------------------------
-class CApplicationStopHandler
+class CApplicationStopHandler : public IApplicationStopHandler
 {
 public:
    //-----------------------------------------------------------------------------
@@ -23,6 +24,16 @@ public:
    /// \brief		                     Destructor
    //-----------------------------------------------------------------------------
    ~CApplicationStopHandler();
+
+   //-----------------------------------------------------------------------------
+   /// \brief		                     Returns the stop mode
+   /// \return                         Stop mode (only significative after request to stop)
+   //-----------------------------------------------------------------------------
+   EStopMode stopMode() const;
+
+   // IApplicationStopHandler implementation
+   virtual void requestToStop(EStopMode stopMode);
+   // [END] IApplicationStopHandler implementation
 
 private:
    //-----------------------------------------------------------------------------
@@ -46,6 +57,11 @@ private:
    /// \brief		                     Event ID to send when stop occurs
    //-----------------------------------------------------------------------------
    int m_eventId;
+
+   //-----------------------------------------------------------------------------
+   /// \brief		                     The requested stop mode
+   //-----------------------------------------------------------------------------
+   EStopMode m_stopMode;
 
    //-----------------------------------------------------------------------------
    /// \brief		                     The thread waiting for system signals

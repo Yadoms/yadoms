@@ -9,6 +9,7 @@
 #include <shared/plugin/IPlugin.h>
 #include <shared/plugin/information/IInformation.h>
 #include "InvalidPluginException.hpp"
+#include "IApplicationStopHandler.h"
 
 namespace pluginSystem
 {
@@ -22,10 +23,10 @@ namespace pluginSystem
    public:
       //--------------------------------------------------------------
       /// \brief	Constructor
-      /// \param [in] libraryPath: the plugin path
+      /// \param [in]   applicationStopHandler  The object used to request application stop
       /// \throw      CInvalidPluginException if plugin is not recognized
       //--------------------------------------------------------------
-      CInternalPluginFactory();
+      CInternalPluginFactory(IApplicationStopHandler& applicationStopHandler);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -40,6 +41,11 @@ namespace pluginSystem
 
    private:
       boost::filesystem::path m_libraryPath;
+
+      //--------------------------------------------------------------
+      /// \brief			The object used to request application stop
+      //--------------------------------------------------------------
+      IApplicationStopHandler& m_applicationStopHandler;
    };
 
 } // namespace pluginSystem

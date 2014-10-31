@@ -7,8 +7,8 @@
 
 namespace pluginSystem
 {
-   CInternalPluginFactory::CInternalPluginFactory()
-      :m_libraryPath("internalPlugin/yadoms.plugin")
+   CInternalPluginFactory::CInternalPluginFactory(IApplicationStopHandler& applicationStopHandler)
+      :m_libraryPath("internalPlugin/yadoms.plugin"), m_applicationStopHandler(applicationStopHandler)
    {
    }
 
@@ -19,7 +19,7 @@ namespace pluginSystem
 
    shared::plugin::IPlugin* CInternalPluginFactory::construct() const
    {
-      return new internalPlugin::CSystem();
+      return new internalPlugin::CSystem(m_applicationStopHandler);
    }
 
    const boost::filesystem::path& CInternalPluginFactory::getLibraryPath() const
