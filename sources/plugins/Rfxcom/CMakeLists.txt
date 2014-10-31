@@ -10,6 +10,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Ack.cpp
    rfxcomMessages/Barometric.h
    rfxcomMessages/Barometric.cpp
+   rfxcomMessages/Blinds1.h
+   rfxcomMessages/Blinds1.cpp
    rfxcomMessages/Chime.h
    rfxcomMessages/Chime.cpp
    rfxcomMessages/Current.h
