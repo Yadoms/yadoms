@@ -226,7 +226,8 @@ bool CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> cont
 {
    try
    {
-      if (data->getConfiguration().get<bool>("type.content.x10.radio"))
+      // Lighting1
+      if      (data->getConfiguration().get<bool>("type.content.x10.radio"))
          rfxcomMessages::CLighting1 msg(context, sTypeX10, data->getConfiguration().get<shared::CDataContainer>("type.content.x10.content"));
       else if (data->getConfiguration().get<bool>("type.content.arc.radio"))
          rfxcomMessages::CLighting1 msg(context, sTypeARC, data->getConfiguration().get<shared::CDataContainer>("type.content.arc.content"));
@@ -249,6 +250,17 @@ bool CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> cont
       else if (data->getConfiguration().get<bool>("type.content.gdr2.radio"))
          rfxcomMessages::CLighting1 msg(context, sTypeGDR2, data->getConfiguration().get<shared::CDataContainer>("type.content.gdr2.content"));
 
+      // Lighting2
+      if      (data->getConfiguration().get<bool>("type.content.ac.radio"))
+         rfxcomMessages::CLighting2 msg(context, sTypeX10, data->getConfiguration().get<shared::CDataContainer>("type.content.ac.content"));
+      else if (data->getConfiguration().get<bool>("type.content.homeEasyEu.radio"))
+         rfxcomMessages::CLighting2 msg(context, sTypeARC, data->getConfiguration().get<shared::CDataContainer>("type.content.homeEasyEu.content"));
+      else if (data->getConfiguration().get<bool>("type.content.anslut.radio"))
+         rfxcomMessages::CLighting2 msg(context, sTypeARC, data->getConfiguration().get<shared::CDataContainer>("type.content.anslut.content"));
+      else if (data->getConfiguration().get<bool>("type.content.kambrookRf3672.radio"))
+         rfxcomMessages::CLighting2 msg(context, sTypeARC, data->getConfiguration().get<shared::CDataContainer>("type.content.KambrookRf3672.content"));
+
+      // Lighting6
       else if (data->getConfiguration().get<bool>("type.content.blyss.radio"))
          rfxcomMessages::CLighting6 msg(context, sTypeBlyss, data->getConfiguration().get<shared::CDataContainer>("type.content.blyss.content"));
 
