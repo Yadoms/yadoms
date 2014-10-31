@@ -144,7 +144,7 @@ void CLighting2::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) cons
 void CLighting2::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_houseCode << "." << (unsigned int)m_unitCode;
+   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_houseCode << "." << (unsigned int)m_id << "." << (unsigned int)m_unitCode;
    m_deviceName = ssdeviceName.str();
 }
 

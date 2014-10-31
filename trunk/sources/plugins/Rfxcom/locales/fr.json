@@ -353,7 +353,6 @@
                   }               
                }
             },
-      
             "emw100":
             {
                "name": "EMW100 GAO/Everflourish",
@@ -371,7 +370,6 @@
                   }               
                }
             },
-            
             "bbsb":
             {
                "name": "BBSB new types",
@@ -389,7 +387,6 @@
                   }               
                }
             },
-            
             "mdRemote":
             {
                "name": "MDREMOTE LED dimmer",
@@ -402,7 +399,6 @@
                   }              
                }
             },
-            
             "rsl":
             {
                "name": "Conrad RSL2",
@@ -420,7 +416,6 @@
                   }               
                }
             },
-            
             "livolo":
             {
                "name": "Livolo",
@@ -433,7 +428,6 @@
                   }              
                }
             },
-            
             "trc02":
             {
                "name": "TRC02",

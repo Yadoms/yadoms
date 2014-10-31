@@ -487,8 +487,7 @@
                      "maximumValue": "16"
                   }               
                }
-            },
-      
+            },      
             "emw100":
             {
                "type": "section",
@@ -512,8 +511,7 @@
                      "maximumValue": "4"
                   }               
                }
-            },
-            
+            },            
             "bbsb":
             {
                "type": "section",
@@ -537,8 +535,7 @@
                      "maximumValue": "6"
                   }               
                }
-            },
-            
+            },            
             "mdRemote":
             {
                "type": "section",
@@ -554,8 +551,7 @@
                      "maximumValue": "65535"
                   }              
                }
-            },
-            
+            },            
             "rsl":
             {
                "type": "section",
@@ -579,8 +575,7 @@
                      "maximumValue": "16"
                   }               
                }
-            },
-            
+            },            
             "livolo":
             {
                "type": "section",
@@ -596,8 +591,7 @@
                      "maximumValue": "65535"
                   }              
                }
-            },
-            
+            },            
             "trc02":
             {
                "type": "section",
