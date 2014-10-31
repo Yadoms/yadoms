@@ -62,5 +62,5 @@ public:
    /// \param [in] data             Device manually creation data
    /// \return                      true if success
    //--------------------------------------------------------------
-   virtual bool createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> context, const boost::shared_ptr<yApi::IManuallyDeviceCreationData> data) const = 0;
+   virtual bool createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IManuallyDeviceCreationData> data) const = 0;
 };

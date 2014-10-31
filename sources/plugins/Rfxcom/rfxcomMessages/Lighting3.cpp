@@ -22,6 +22,22 @@ CLighting3::CLighting3(boost::shared_ptr<yApi::IYadomsApi> context, const shared
    Init(context);
 }
 
+CLighting3::CLighting3(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+   :m_state("state"), m_rssi("rssi")
+{
+   m_state.set(false);
+   m_rssi.set(0);
+
+   m_subType = subType;
+   if (m_subType != sTypeKoppla)
+      throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
+
+   m_system = manuallyDeviceCreationConfiguration.get<unsigned char>("system");
+   m_channel = manuallyDeviceCreationConfiguration.get<unsigned short>("channel");
+
+   Init(context);
+}
+
 CLighting3::CLighting3(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_state("state"), m_rssi("rssi")
 {

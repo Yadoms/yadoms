@@ -248,7 +248,7 @@
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
+                     "name": "Unité",
                      "description": "L'identifiant de la fonction de l'équipement (1-16)"
                   }               
                }
@@ -265,7 +265,7 @@
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
+                     "name": "Unité",
                      "description": "L'identifiant de la fonction de l'équipement (1-16)"
                   }               
                }
@@ -282,7 +282,7 @@
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
+                     "name": "Unité",
                      "description": "L'identifiant de la fonction de l'équipement (1-16)"
                   }               
                }
@@ -299,12 +299,154 @@
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
+                     "name": "Unité",
                      "description": "L'identifiant de la fonction de l'équipement (1-5)"
                   }               
                }
             },
 
+            "koppla":
+            {
+               "name": "Ikea Koppla",
+               "content":
+               {
+                  "system":
+                  {
+                     "name": "Système",
+                     "description": "Code système (1-16)"
+                  },
+                  "channel":
+                  {
+                     "name": "Canal",
+                     "description": "Canal (0-1023)"
+                  }              
+               }
+            },
+
+            "pt2262":
+            {
+               "name": "PT2262 (télécommandes)",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (0-16777215)"
+                  }         
+               }
+            },
+            
+            "lightwaveRf":
+            {
+               "name": "LightwaveRF (prtocole Siemens AD)",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-16777215)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unité",
+                     "description": "L'identifiant de la fonction de l'équipement (1-16)"
+                  }               
+               }
+            },
+      
+            "emw100":
+            {
+               "name": "EMW100 GAO/Everflourish",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-16383)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unité",
+                     "description": "L'identifiant de la fonction de l'équipement (1-4)"
+                  }               
+               }
+            },
+            
+            "bbsb":
+            {
+               "name": "BBSB new types",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-524287)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unité",
+                     "description": "L'identifiant de la fonction de l'équipement (1-6)"
+                  }               
+               }
+            },
+            
+            "mdRemote":
+            {
+               "name": "MDREMOTE LED dimmer",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-65535)"
+                  }              
+               }
+            },
+            
+            "rsl":
+            {
+               "name": "Conrad RSL2",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-16777215)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unité",
+                     "description": "L'identifiant de la fonction de l'équipement (1-16)"
+                  }               
+               }
+            },
+            
+            "livolo":
+            {
+               "name": "Livolo",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-65535)"
+                  }              
+               }
+            },
+            
+            "trc02":
+            {
+               "name": "TRC02",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-16777215)"
+                  }              
+               }
+            },
+            
             "blyss":
             {
                "name": "Blyss",
@@ -317,12 +459,12 @@
                   },
                   "groupCode":
                   {
-                     "name": "Group Code",
+                     "name": "Groupe",
                      "description": "L'identifiant du groupe de l'équipement (A-P)"
                   },
                   "unitCode":
                   {
-                     "name": "Unit Code",
+                     "name": "Unité",
                      "description": "L'identifiant de la fonction de l'équipement (1-5)"
                   }               
                }

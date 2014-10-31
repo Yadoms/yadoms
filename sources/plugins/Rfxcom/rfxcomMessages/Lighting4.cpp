@@ -20,6 +20,20 @@ CLighting4::CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const shared
    Init(context);
 }
 
+CLighting4::CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+   :m_keyword("event"), m_rssi("rssi")
+{
+   m_rssi.set(0);
+
+   m_subType = subType;
+   if (m_subType != sTypePT2262)
+      throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
+
+   m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
+
+   Init(context);
+}
+
 CLighting4::CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_keyword("id"), m_rssi("rssi")
 {
