@@ -101,12 +101,19 @@
       "name-configuration" : {
          "name" : "Nom",
          "description" : "Nom personnalisable du plugin",
-         "regexErrorMessage" : "Le nom du plugin doit contenir au minimum 1 caactère"
+         "regexErrorMessage" : "Le nom du plugin doit contenir au minimum 1 caractère"
       },
       "errorDuringCreatingPlugin" : "Erreur pendant la création du plugin",
       "pluginSuccessfullyCreated" : "Plugin créé avec succès",
       "errorDuringModifyingPlugin" : "Erreur pendant la modification du plugin"
     },
+	"configure-manually-device-modal" : {
+         "friendlyName-configuration" : {
+            "name" : "Nom",
+            "description" : "Nom personnalisable du device",
+            "regexErrorMessage" : "Le nom du device doit contenir au minimum 1 caractère"
+         }	
+	},
     "qrcode": {
       "title": "QR Code de Yadoms",
       "text": "Voici le QRCode de Yadoms. Vous pouvez le flasher avec votre téléphone pour accéder à Yadoms de partout."

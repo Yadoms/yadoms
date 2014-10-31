@@ -33,7 +33,7 @@
     function askPluginTypesForManuallyDeviceCreation(callback)
     {
        assert($.isFunction(callback), "callback must be defined");
-       $.getJSON("rest/plugin/")
+       $.getJSON("rest/plugin/instance/handleManuallyDeviceCreation")
                .done(requestPluginTypesDoneForManuallyDeviceCreation(callback))
                .fail(function() {
                   notifyError($.t("modals.add-plugin.errorDuringGettingPluginTypes"));
@@ -59,12 +59,9 @@
 
           $("select#pluginTypeList").empty();
 
-          $.each(data.data.plugins, function(index, value) {
+          $.each(data.data.plugin, function(index, value) {
              //foreach plugin-type
-             //we add it to the list only if if support manually device creation
-             //TODO : restaurer une fois le supportManuallyDeviceCreation rajouté dans les champs standrd d'un plugin type
-             //if (value.supportManuallyDeviceCreation)
-               $("select#pluginTypeList").append("<option>" + value.name + "</option>");
+               $("select#pluginTypeList").append("<option value=\""+ value.id + "\">" + value.name + "</option>");
           });
 
           //event click on add plugin button
@@ -72,9 +69,14 @@
              //we close the new widget modal
              $("div#new-manually-device-modal").modal("hide");
 
-             var pluginType = $("select#pluginTypeList").val();
+			 //we get the plugin instance id chosen
+             var pluginId = $("select#pluginTypeList").val();
+			 
+			 //from the id, retreive the plugin instance
+			 var instance = $.grep(data.data.plugin, function(e){ return e.id == pluginId; });
 
-             callback(pluginType);
+			 //send found instance
+             callback(instance[0]);
           });
 
           //we display the modal

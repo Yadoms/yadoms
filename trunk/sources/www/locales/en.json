@@ -140,6 +140,13 @@
             "regexErrorMessage" : "The name of the keyword must contains at least one character"
          }
       },
+  	  "configure-manually-device-modal" : {
+         "friendlyName-configuration" : {
+            "name" : "Name",
+            "description" : "Friendly name of your device",
+            "regexErrorMessage" : "The name of the device must contains at least one character"
+         }		 
+	  },
       "qrcode" : {
          "title" : "QR Code de Yadoms",
          "text" : "Here is the QRCode of Yadoms. You can now flash it with your phone to access Yadoms everywhere."
