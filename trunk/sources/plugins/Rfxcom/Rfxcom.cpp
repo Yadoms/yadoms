@@ -7,7 +7,7 @@
 #include "RfxcomFactory.h"
 #include "ProtocolException.hpp"
 #include <shared/communication/PortException.hpp>
-#include <shared/plugin/yadomsApi/historization/Switch.h>
+#include <shared/plugin/yadomsApi/historization/Dimmable.h>
 
 IMPLEMENT_PLUGIN(CRfxcom)
 

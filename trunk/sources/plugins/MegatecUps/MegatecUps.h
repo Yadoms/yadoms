@@ -267,7 +267,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The AC power state
    //--------------------------------------------------------------
-   yApi::historization::CSwitch m_acPowerHistorizer;
+   yApi::historization::CDimmable m_acPowerHistorizer;
 
    //--------------------------------------------------------------
    /// \brief	First notification flag
@@ -277,7 +277,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The shutdown device
    //--------------------------------------------------------------
-   yApi::historization::CSwitch m_upsShutdown;
+   yApi::historization::CDimmable m_upsShutdown;
 
    //--------------------------------------------------------------
    /// \brief	The device name

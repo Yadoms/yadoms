@@ -5,7 +5,7 @@
 #include "ZWave.h"
 #include "OpenZWaveCommandClass.h"
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/historization/Switch.h>
+#include <shared/plugin/yadomsApi/historization/Dimmable.h>
 #include "command_classes/SwitchBinary.h"
 #include "Options.h"
 #include "Manager.h"

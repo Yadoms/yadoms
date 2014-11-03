@@ -7,7 +7,6 @@
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
 //TODO tester redémarrage si l'accès au port est refusé (déjà ouvert par ailleurs)
-//TODO Pb avec commande de shutdown (le "0" avant le point décimal...)
 IMPLEMENT_PLUGIN(CMegatecUps)
 
 
@@ -390,7 +389,15 @@ void CMegatecUps::sendShtudownCmd()
 
    cmd << 'S';
    if (m_configuration.outuputShutdownDelay() < 1)
-      cmd << std::setw(2) << std::setprecision(1) << std::fixed << m_configuration.outuputShutdownDelay();  // Number <1 should be at format ".2", ".3"
+   {
+      // Number <1 should be at format ".2", ".3"
+
+      // No easy solution to format a decimal number without the '0' before the '.'
+      std::ostringstream value;
+      value << std::setw(2) << std::setprecision(1) << std::fixed << m_configuration.outuputShutdownDelay();
+      std::string sValue = value.str();
+      cmd << sValue.substr(1, sValue.size()-1);
+   }
    else
       cmd << std::setw(2) << std::setfill('0') << m_configuration.outuputShutdownDelay();// Number >=1 should be at format "01", "02", "10"
 

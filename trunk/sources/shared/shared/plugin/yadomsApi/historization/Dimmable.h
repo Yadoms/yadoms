@@ -8,9 +8,9 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {   
    //-----------------------------------------------------
-   ///\brief A switch historizable object
+   ///\brief A dimmable switch historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CSwitch : public IHistorizable
+   class YADOMS_SHARED_EXPORT CDimmable : public IHistorizable
    {
    public:
       //-----------------------------------------------------
@@ -19,12 +19,12 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       ///\param[in] accessMode      The access mode
       ///\param[in] measureType     The measure type (normally kAbsolute)
       //-----------------------------------------------------
-      CSwitch(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet, const EMeasureType& measureType = EMeasureType::kAbsolute);
+      CDimmable(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet, const EMeasureType& measureType = EMeasureType::kAbsolute);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CSwitch();
+      virtual ~CDimmable();
 
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;

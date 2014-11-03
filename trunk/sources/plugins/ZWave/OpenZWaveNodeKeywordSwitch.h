@@ -1,7 +1,7 @@
 #pragma once
 
 #include "OpenZWaveNodeKeywordBase.h"
-#include <shared/plugin/yadomsApi/historization/Switch.h>
+#include <shared/plugin/yadomsApi/historization/Dimmable.h>
 
 class COpenZWaveNodeKeywordSwitch : public COpenZWaveNodeKeywordBase
 {
@@ -20,5 +20,5 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Switch value handler
    //--------------------------------------------------------------
-   shared::plugin::yadomsApi::historization::CSwitch m_switch;
+   shared::plugin::yadomsApi::historization::CDimmable m_switch;
 };

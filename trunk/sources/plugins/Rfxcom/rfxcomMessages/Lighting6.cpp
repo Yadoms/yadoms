@@ -130,7 +130,7 @@ void CLighting6::buildDeviceModel()
    m_deviceModel = ssModel.str();
 }
 
-unsigned char CLighting6::toProtocolState(const yApi::historization::CSwitch& switchState)
+unsigned char CLighting6::toProtocolState(const yApi::historization::CDimmable& switchState)
 {
    return switchState.isOn() ? light6_sOn : light6_sOff;
 }
