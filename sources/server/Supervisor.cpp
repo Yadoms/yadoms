@@ -31,7 +31,6 @@ CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
 {
 }
 
-
 CSupervisor::~CSupervisor()
 {
 }
