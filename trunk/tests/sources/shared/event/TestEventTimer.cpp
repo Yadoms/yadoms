@@ -146,13 +146,13 @@ BOOST_AUTO_TEST_CASE(NominalEventHandler1TimerPeriodic)
 
 //--------------------------------------------------------------
 /// \brief	    Test timer with CEventHandler
-/// \result     No Error : 10 periodic timers, test 50 occurences of each. Check time between execution and the average of the periodic time between the 50 executions.
+/// \result     No Error : 10 periodic timers, test 50 occurrences of each. Check time between execution and the average of the periodic time between the 50 executions.
 //--------------------------------------------------------------
 BOOST_AUTO_TEST_CASE(NominalEventHandler10TimerPeriodic)
 {
    shared::event::CEventHandler evtHandler;
-   const boost::posix_time::time_duration tolerance    = boost::posix_time::millisec(70);
-   const boost::posix_time::time_duration AvgTolerance = boost::posix_time::millisec(2);
+   const boost::posix_time::time_duration tolerance    = boost::posix_time::millisec(200);
+   const boost::posix_time::time_duration AvgTolerance = boost::posix_time::millisec(20);
    boost::posix_time::ptime TimeReport[2][10];
    const int evtId1 = 1, evtId2 = 2, evtId3 = 3, evtId4 = 4, evtId5 = 5, evtId6 = 6, evtId7 = 7, evtId8 = 8, evtId9 = 9, evtId10 = 10;
    int Counter = 0, IndCounter[10];
@@ -169,7 +169,7 @@ BOOST_AUTO_TEST_CASE(NominalEventHandler10TimerPeriodic)
    boost::posix_time::ptime evtId9TimePoint  = boost::date_time::not_a_date_time;
    boost::posix_time::ptime evtId10TimePoint = boost::date_time::not_a_date_time;
 
-   //Initialisation and creation of timers
+   //Initialization and creation of timers
    for (Counter = 0;Counter < 10;Counter++)
    {
       evtHandler.createTimer(evtId1+Counter, shared::event::CEventTimer::kPeriodic, boost::posix_time::milliseconds(300 + 30*Counter));
