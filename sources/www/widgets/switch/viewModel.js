@@ -47,7 +47,7 @@ widgetViewModelCtor =
 
       this.configurationChanged = function() {
          //we update the kind observable property
-
+debugger;
          if ((isNullOrUndefined(this.widget)) || (isNullOrUndefinedOrEmpty(this.widget.configuration)))
             return;
 
@@ -66,7 +66,6 @@ widgetViewModelCtor =
                self.switchText(decodeURIComponent(device.friendlyName));
             });
          }
-
       };
 
       /**

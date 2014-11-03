@@ -22,7 +22,7 @@
          "name" : "Switch device",
          "description" : "Device to emulate",
          "type" : "device",
-         "expectedCapacity" : ["switch", "dimmableSwitch"],
+         "expectedCapacity" : ["switch", "dimmable"],
          "expectedKeywordAccess" : "getset"
       },
       "showDeviceName" : {

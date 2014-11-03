@@ -4,12 +4,12 @@
  * Creates an instance of Page
  * @constructor
  */
-function PluginInstance(id, name, type, configuration, autoStart) {
-   assert(id !== undefined, "id of a pluginInstance must be defined");
-   assert(name !== undefined, "name of a pluginInstance must be defined");
-   assert(type !== undefined, "type of a pluginInstance must be defined");
-   assert(configuration !== undefined, "configuration of a pluginInstance must be defined");
-   assert(autoStart !== undefined, "autoStart of a pluginInstance must be defined");
+function PluginInstance(id, name, type, configuration, autoStart, category) {
+   assert(!isNullOrUndefined(name), "name of a pluginInstance must be defined");
+   assert(!isNullOrUndefined(type), "type of a pluginInstance must be defined");
+   assert(!isNullOrUndefined(configuration), "configuration of a pluginInstance must be defined");
+   assert(!isNullOrUndefined(autoStart), "autoStart of a pluginInstance must be defined");
+   assert(!isNullOrUndefined(category), "category of a pluginInstance must be defined");
 
    this.id = id;
    this.name = name;
@@ -17,6 +17,7 @@ function PluginInstance(id, name, type, configuration, autoStart) {
    this.configuration = configuration;
    this.autoStart = autoStart;
    this.lastRunningStatus = null;
+   this.category = category;
 }
 
 /**
@@ -29,6 +30,7 @@ PluginInstance.prototype.toJSON = function () {
       name: encodeURIComponent(this.name),
       type: this.type,
       configuration: this.configuration,
-      autoStart: this.autoStart
+      autoStart: this.autoStart,
+      category: this.category
    };
 };

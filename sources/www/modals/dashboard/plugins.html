@@ -37,7 +37,10 @@
             $.each(data.data.plugin, function(index, value) {
                var pi = PluginInstanceManager.factory(value);
                pluginInstanceList.push(pi);
-               addPluginInstanceToDom(pi);
+               //we don't show system plugins to user
+               if (pi.category != PluginInstanceManager.systemCategory) {
+                  addPluginInstanceToDom(pi);
+               }
             });
 
             //we use the periodic task of the dashboard
@@ -195,7 +198,7 @@
    function addNewPlugin() {
       modals.pluginAdd.load(function() {
          askPluginTypes(function(pluginType) {
-            var pi = new PluginInstance(null, "", pluginType, "", 1);
+            var pi = new PluginInstance(null, "", pluginType, "", 1, "user");
             //we get package.json
             PluginInstanceManager.downloadPackage(pi, function() {
                //we ask for configuration modal async

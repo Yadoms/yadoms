@@ -37,8 +37,17 @@ function initializeWebSocketEngine(callback) {
          if (!isNullOrUndefined(e)) {
             var websocketData = JSON.parse(e.data);
             if (!isNullOrUndefined(websocketData)) {
-               var acq = AcquisitionManager.factory(websocketData.data.acquisition);
-               dispatchToWidgets(acq);
+               switch (websocketData.type.toLowerCase()) {
+                  case "acquisitionupdate":
+                     var acq = AcquisitionManager.factory(websocketData.data.acquisition);
+                     dispatchToWidgets(acq);
+                     break;
+                  case "devicenew":
+                     debugger;
+                     break;
+               }
+
+
             }
          }
       };
