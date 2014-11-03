@@ -229,6 +229,10 @@ body {
    white-space: pre;
 }
 
+.table tbody>tr>td.vert-align{
+    vertical-align: middle;
+}
+
 .plugin-icon {
    max-height: 50px;
 }
