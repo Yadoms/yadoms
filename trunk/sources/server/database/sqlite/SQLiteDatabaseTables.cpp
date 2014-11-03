@@ -12,6 +12,7 @@ namespace sqlite {
       ((Type)("type"))
       ((Configuration)("configuration"))
       ((AutoStart)("autoStart"))
+      ((Category)("category"))
    )
 
    DECLARE_TABLE_COLUMN_NAMES(Configuration,  "Configuration",

@@ -21,6 +21,11 @@ namespace database { namespace entities {
       ((Crash))
       ((Info))
       ((Error))
+   )    
+   
+   DECLARE_ENUM_HEADER(EPluginCategory,
+      ((System))
+      ((User))
    )   
    
    DECLARE_ENUM_HEADER(EAcquisitionSummaryType,
@@ -46,6 +51,7 @@ namespace database { namespace entities {
       ((Type)(std::string))
       ((Configuration)(shared::CDataContainer))
       ((AutoStart)(bool))
+      ((Category)(database::entities::EPluginCategory))
    )
 
    DECLARE_ENTITY_CLASS_HEADER(Configuration,

@@ -133,6 +133,11 @@
                      Values( "system", "developerMode", "false", "false", "Developer mode");
                   pRequester->queryStatement(qInsert);
 
+                  //system plugin
+                  qInsert.Clear().InsertInto(CPluginTable::getTableName(), CPluginTable::getNameColumnName(), CPluginTable::getTypeColumnName(), CPluginTable::getAutoStartColumnName(), CPluginTable::getCategoryColumnName()).
+                     Values("System", "System", true, database::entities::EPluginCategory::kSystem);
+                  pRequester->queryStatement(qInsert);
+
                   //commit transaction
                   pRequester->transactionCommit();
                }

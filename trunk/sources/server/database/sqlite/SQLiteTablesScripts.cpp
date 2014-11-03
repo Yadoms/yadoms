@@ -12,7 +12,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Configuration, " CREATE TABLE Configuration
                                                          value TEXT NOT NULL,                                     \
                                                          defaultValue TEXT,                                       \
                                                          description TEXT,                                        \
-                                                         securityAccess  TEXT DEFAULT \"none\",                       \
+                                                         securityAccess  TEXT DEFAULT \"none\",                   \
                                                          lastModificationDate TEXT,                               \
                                                          PRIMARY KEY(section,name)                                \
                                                       )")
@@ -24,7 +24,8 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Plugin, "CREATE TABLE Plugin               
                                                    name TEXT NOT NULL,                                            \
                                                    type TEXT NOT NULL,                                            \
                                                    configuration  TEXT,                                           \
-                                                   autoStart  INTEGER DEFAULT 1                                   \
+                                                   autoStart  INTEGER DEFAULT 1,                                  \
+                                                   category TEXT NOT NULL DEFAULT \"user\"                        \
                                                 )")
 
 

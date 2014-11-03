@@ -13,7 +13,8 @@ namespace database {   namespace sqlite {  namespace adapters {
       ((Type)(std::string)(""))
       ((Configuration)(shared::CDataContainer)(shared::CDataContainer()))
       ((AutoStart)(bool)(true))
-   );
+      ((Category)(database::entities::EPluginCategory)(database::entities::EPluginCategory::kUser)(std::string))
+      );
 
    DECLARE_ADAPTER_IMPLEMENTATION(Configuration,
       ((Section)(std::string)(""))

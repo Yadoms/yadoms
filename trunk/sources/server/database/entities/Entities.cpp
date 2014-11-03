@@ -16,6 +16,11 @@ namespace database { namespace entities {
       ((Info))
       ((Error))
    )
+
+   DECLARE_ENUM_IMPLEMENTATION(EPluginCategory,
+      ((System))
+      ((User))
+   )
    
    DECLARE_ENUM_IMPLEMENTATION(EAcquisitionSummaryType,
       ((Hour))
@@ -44,6 +49,7 @@ namespace database { namespace entities {
       ((Type)(std::string)("")("type"))
       ((Configuration)(shared::CDataContainer)(shared::CDataContainer())("configuration"))
       ((AutoStart)(bool)(true)("autoStart"))
+      ((Category)(database::entities::EPluginCategory)(database::entities::EPluginCategory::kSystem)("category"))
       );
 
 
