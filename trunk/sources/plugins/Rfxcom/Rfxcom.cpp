@@ -86,37 +86,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             }
          case yApi::IYadomsApi::kEventUpdateConfiguration:
             {
-               // Configuration was updated
-               shared::CDataContainer newConfigurationData = context->getEventHandler().getEventData<shared::CDataContainer>();
-               YADOMS_LOG(debug) << "Configuration was updated...";
-               BOOST_ASSERT(!newConfigurationData.empty());  // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
-
-               // Close connection
-               CRfxcomConfiguration newConfiguration;
-               newConfiguration.initializeWith(newConfigurationData);
-               if (!connectionsAreEqual(m_configuration, newConfiguration))
-               {
-                  // Port has changed, destroy and recreate connection
-                  destroyConnection();
-
-                  // Update configuration
-                  m_configuration.initializeWith(newConfigurationData);
-
-                  // Create new connection
-                  createConnection(context->getEventHandler());
-               }
-               else
-               {
-                  // Port is the same, don't destroy connection, just reconfigure RFXCom.
-
-                  // Update configuration
-                  m_configuration.initializeWith(newConfigurationData);
-
-                  // Get status, to compare with new configuration
-                  YADOMS_LOG(info) << "Get the RFXCom status...";
-                  m_currentState = kGettingRfxcomStatus;
-                  send(m_transceiver->buildGetStatusCmd(), true);
-               }
+               onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
 
                break;
             }
@@ -206,6 +176,47 @@ void CRfxcom::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, boost::shar
    }
 
    send(m_transceiver->buildMessageToDevice(context, command));
+}
+
+void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& newConfigurationData)
+{
+   // Configuration was updated
+   YADOMS_LOG(debug) << "Configuration was updated...";
+   BOOST_ASSERT(!newConfigurationData.empty());  // newConfigurationData shouldn't be empty, or kEventUpdateConfiguration shouldn't be generated
+
+   // If plugin instance is not running, just update configuration
+   if (!m_port)
+   {
+      // Update configuration
+      m_configuration.initializeWith(newConfigurationData);
+      return;
+   }
+
+   // Plugin instance is running, close connection only if connection parameters was changed
+   CRfxcomConfiguration newConfiguration;
+   newConfiguration.initializeWith(newConfigurationData);
+   if (connectionsAreEqual(m_configuration, newConfiguration))
+   {
+      // Port is the same, don't destroy connection, just reconfigure RFXCom.
+
+      // Update configuration
+      m_configuration.initializeWith(newConfigurationData);
+
+      // Get status, to compare with new configuration
+      YADOMS_LOG(info) << "Get the RFXCom status...";
+      m_currentState = kGettingRfxcomStatus;
+      send(m_transceiver->buildGetStatusCmd(), true);
+      return;
+   }
+
+   // Port has changed, destroy and recreate connection
+   destroyConnection();
+
+   // Update configuration
+   m_configuration.initializeWith(newConfigurationData);
+
+   // Create new connection
+   createConnection(context->getEventHandler());
 }
 
 void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context)

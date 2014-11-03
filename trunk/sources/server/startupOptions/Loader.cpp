@@ -20,13 +20,13 @@ void CLoader::buildOptionsDescription()
       ("webServerIp,i", po::value<CValidIpAddressOption>(&m_webServerIPAddress)->default_value(CValidIpAddressOption("0.0.0.0")),
       "use a specific web server ip address. Use 0.0.0.0 to accepts connections via all interfaces. ")
       ("webServerPath,w", po::value<CMustExistPathOption>(&m_webServerInitialPath)->default_value(CMustExistPathOption("www")),
-      "use a specific web server initial folder")
+      "use a specific path for web server")
       ("logLevel,l", po::value<boost::log::trivial::severity_level>(&m_logLevel)->default_value(boost::log::trivial::info),
       "set log level, accepted values are : trace, debug, info, warning, error, fatal")
       ("databaseFile,D", po::value<std::string>(&m_databaseFile)->default_value("yadoms.db3"),
       "use a specific dataBase file")
       ("pluginsPath,P", po::value<CMustExistPathOption>(&m_PluginsPath)->default_value(CMustExistPathOption("plugins")),
-      "use a specific path to plugins")
+      "use a specific path for plugins")
       ("widgetsPath,W", po::value<CMustExistPathOption>(&m_widgetsPath)->default_value(CMustExistPathOption("widgets")),
       "use a specific path to widgets path")
       ("debug", po::bool_switch(&m_debugFlag)->default_value(false), "activate the debug mode (log files are separated by thread)")

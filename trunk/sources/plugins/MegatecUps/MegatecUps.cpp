@@ -6,7 +6,7 @@
 #include "MegatecUpsFactory.h"
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
-//TODO tester redémarrage si l'accès au port est refusé (déjà ouvert par ailleurs)
+
 IMPLEMENT_PLUGIN(CMegatecUps)
 
 
@@ -96,8 +96,8 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                CMegatecUpsConfiguration newConfiguration;
                newConfiguration.initializeWith(newConfigurationData);
 
-               // If port has changed, destroy and recreate connection
-               bool needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration);
+               // If port has changed, destroy and recreate connection (if any)
+               bool needToReconnect = !connectionsAreEqual(m_configuration, newConfiguration) && !!m_port;
                
                if (needToReconnect)
                   destroyConnection();
@@ -213,7 +213,6 @@ void CMegatecUps::processConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> con
 {
    YADOMS_LOG(debug) << "UPS is now connected";
    context->recordPluginEvent(yApi::IYadomsApi::kInfo, "UPS is now connected");
-   //boost::this_thread::sleep(boost::posix_time::milliseconds(5000));//TODO virer
 
    try
    {

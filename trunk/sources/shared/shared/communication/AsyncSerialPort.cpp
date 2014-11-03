@@ -44,7 +44,7 @@ void CAsyncSerialPort::start()
       return;  // Already started
 
    // Try to connect
-   m_ioService.post(boost::bind(&CAsyncSerialPort::tryConnect, this));
+   tryConnect();
    m_asyncThread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &m_ioService)));
 }
 

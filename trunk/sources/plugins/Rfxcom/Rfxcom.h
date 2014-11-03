@@ -48,6 +48,13 @@ protected:
    void onCommand(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command);
 
    //--------------------------------------------------------------
+   /// \brief	                     Process a configuration update
+   /// \param [in] context          Plugin execution context (Yadoms API)
+   /// \param [in] newConfigurationData The new configuration data
+   //--------------------------------------------------------------
+   void onUpdateConfiguration(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& newConfigurationData);
+
+   //--------------------------------------------------------------
    /// \brief	                     Called when the RFXCom becomes connected
    /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
