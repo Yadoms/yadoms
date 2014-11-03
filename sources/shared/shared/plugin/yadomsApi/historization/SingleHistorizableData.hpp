@@ -144,6 +144,11 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       const std::string m_keywordName;         
       
       //-----------------------------------------------------
+      ///\brief               The capacity
+      //-----------------------------------------------------      
+      const shared::plugin::yadomsApi::CStandardCapacity & m_capacity;
+
+      //-----------------------------------------------------
       ///\brief                     The yadoms identifier in datacontainer
       //-----------------------------------------------------
       const std::string m_yadomsIdentifier;
@@ -152,21 +157,16 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       ///\brief               The command value
       //-----------------------------------------------------
       T m_value;
-      
-      //-----------------------------------------------------
-      ///\brief               The capacity
-      //-----------------------------------------------------      
-      const shared::plugin::yadomsApi::CStandardCapacity & m_capacity;
-   
-      //-----------------------------------------------------
-      ///\brief               The measure type
-      //-----------------------------------------------------     
-      const shared::plugin::yadomsApi::historization::EMeasureType m_measureType;
 
       //-----------------------------------------------------
       ///\brief               The access mode
       //-----------------------------------------------------
       const shared::plugin::yadomsApi::EKeywordAccessMode& m_accessMode;
+
+      //-----------------------------------------------------
+      ///\brief               The measure type
+      //-----------------------------------------------------     
+      const shared::plugin::yadomsApi::historization::EMeasureType m_measureType;
    };
 
 
