@@ -13,6 +13,7 @@ namespace sqlite {
       (Type)
       (Configuration)
       (AutoStart)
+      (Category)
    )
 
    DECLARE_TABLE(Configuration,
