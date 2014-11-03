@@ -80,7 +80,7 @@
       //we add it to the DOM
       var $deviceList = $("table#device-list");
       
-      $deviceList.append("<tr device-id=\"" + device.id + "\" class=\"device\"><td class=\"device-friendlyName\"></td><td class=\"device-attachedTo\"></td><td class=\"device-model\"></td><td class=\"device-actions\"></td></tr>");
+      $deviceList.append("<tr device-id=\"" + device.id + "\" class=\"device\"><td class=\"device-friendlyName vert-align\"></td><td class=\"device-attachedTo vert-align\"></td><td class=\"device-model vert-align\"></td><td class=\"device-actions vert-align\"></td></tr>");
 
       var $deviceRow = getDeviceDomRow(device);
       //we fill the data
@@ -100,6 +100,7 @@
 
       //we async ask for attached plugins
       DeviceManager.getAttachedPlugin(device, function() {
+         var $deviceRow = getDeviceDomRow(device);
          var iconName;
          if (device.attachedPlugin.category != PluginInstanceManager.systemCategory) {
             iconName = "plugins/" + device.attachedPlugin.type + "/icon.png";
@@ -107,12 +108,14 @@
          else {
             //we use application logo
             iconName = "img/icon_256.png";
+            //we prevent from editing or renaming system devices
+            $deviceRow.find("button.btn-configure").addClass("disabled");
+            $deviceRow.find("button.btn-delete").addClass("disabled");
          }
 
          var attachedTo = "<img src=\"" + iconName + "\" class=\"img-thumbnail plugin-icon\">&nbsp;&nbsp;" +
                  "<span>" + device.attachedPlugin.type + "</span>";
 
-         var $deviceRow = getDeviceDomRow(device);
          $deviceRow.find("td.device-attachedTo").html(attachedTo);
       });
    }
