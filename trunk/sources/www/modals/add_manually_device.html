@@ -9,7 +9,7 @@
             <div class="modal-body">
                <form>
                   <div class="form-group">
-                     <label for="pluginTypeList" data-i18n="modals.add-manually-device.pluginType"></label>
+                     <label for="pluginTypeList" data-i18n="modals.add-manually-device.attachedPlugin"></label>
                      <select id="pluginTypeList" class="form-control">
                      </select>
                   </div>
@@ -33,35 +33,15 @@
     function askPluginTypesForManuallyDeviceCreation(callback)
     {
        assert($.isFunction(callback), "callback must be defined");
-       $.getJSON("rest/plugin/instance/handleManuallyDeviceCreation")
-               .done(requestPluginTypesDoneForManuallyDeviceCreation(callback))
-               .fail(function() {
-                  notifyError($.t("modals.add-plugin.errorDuringGettingPluginTypes"));
-                  callback(null);
-               });
-    }
 
-    /**
-     * Callback of the request plugin types
-     * @returns {Function}
-     */
-    function requestPluginTypesDoneForManuallyDeviceCreation(callback)
-    {
-       assert($.isFunction(callback), "callback must be defined");
-       return function( data ) {
-          //we parse the json answer
-          if (data.result != "true")
-          {
-             notifyError($.t("modals.add-plugin.errorDuringGettingPluginTypes"), JSON.stringify(data));
-             callback(null);
-             return;
-          }
+       PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation(function(list) {
 
           $("select#pluginTypeList").empty();
 
-          $.each(data.data.plugin, function(index, value) {
-             //foreach plugin-type
-               $("select#pluginTypeList").append("<option value=\""+ value.id + "\">" + value.name + "</option>");
+          $.each(list, function(index, value) {
+             var pi = PluginInstanceManager.factory(value);
+             //foreach plugin-instance
+             $("select#pluginTypeList").append("<option value=\""+ pi.id + "\">" + pi.name + "</option>");
           });
 
           //event click on add plugin button
@@ -69,19 +49,19 @@
              //we close the new widget modal
              $("div#new-manually-device-modal").modal("hide");
 
-			 //we get the plugin instance id chosen
+             //we get the plugin instance id chosen
              var pluginId = $("select#pluginTypeList").val();
-			 
-			 //from the id, retreive the plugin instance
-			 var instance = $.grep(data.data.plugin, function(e){ return e.id == pluginId; });
 
-			 //send found instance
+             //from the id, retreive the plugin instance
+             var instance = $.grep(list, function(e){ return e.id == pluginId; });
+
+             //send found instance
              callback(instance[0]);
           });
 
           //we display the modal
           $('div#new-manually-device-modal').modal();
-       };
+       });
     }
 
 </script>

@@ -1,7 +1,7 @@
 <div id="dashboard-devices">
    <h1 class="page-header"><span class="fa fa-tasks"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.title"></span></h1>
    <span data-i18n="modals.dashboard.sub-windows.devices.deviceListDescription"></span><br>
-   <button id="btn-add-new-device" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-rocket"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.new"></span></button>
+   <button id="btn-add-new-device" type="button" class="btn btn-success dashboard-btn-new disabled"><span class="fa fa-tasks"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.new"></span></button>
    <table id="device-list" class="table table-bordered table-striped dashboard-list">
       <tr>
          <td data-i18n="modals.dashboard.sub-windows.devices.table.name" class="col-md-2"></td>
@@ -17,7 +17,15 @@
    var deviceList = [];
 
    function initializeDeviceDashboard() {
-      $("#btn-add-new-device").unbind("click").bind("click", addNewDevice);
+
+      //we check if there is at least one plugin instantiated that handle manual creation
+      PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation(function(list) {
+         if (list.length > 0) {
+            //there is at least one plugin instance that handle this button
+            $("#btn-add-new-device").removeClass("disabled");
+            $("#btn-add-new-device").unbind("click").bind("click", addNewDevice);
+         }
+      });
 
       refreshDeviceList();
    }
@@ -92,7 +100,16 @@
 
       //we async ask for attached plugins
       DeviceManager.getAttachedPlugin(device, function() {
-         var attachedTo = "<img src=\"plugins/" + device.attachedPlugin.type + "/icon.png\" class=\"img-thumbnail plugin-icon\">&nbsp;&nbsp;" +
+         var iconName;
+         if (device.attachedPlugin.category != PluginInstanceManager.systemCategory) {
+            iconName = "plugins/" + device.attachedPlugin.type + "/icon.png";
+         }
+         else {
+            //we use application logo
+            iconName = "img/icon_256.png";
+         }
+
+         var attachedTo = "<img src=\"" + iconName + "\" class=\"img-thumbnail plugin-icon\">&nbsp;&nbsp;" +
                  "<span>" + device.attachedPlugin.type + "</span>";
 
          var $deviceRow = getDeviceDomRow(device);
@@ -226,29 +243,9 @@
                   //we launch configureInstance GUI
                   showConfigurationManuallyDeviceModal(pi, function (newDeviceName, newDeviceConfiguration) {
                      //we ask for manually device creation
-                     $.ajax({
-                        type: "POST",
-                        url: "/rest/plugin/" + pi.id + "/createDevice",
-                        data: JSON.stringify({ name: newDeviceName, configuration: newDeviceConfiguration}),
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "json"
-                     })
-                       .done(function(data) {
-                          //we parse the json answer
-                          if (data.result != "true")
-                          {
-                             //TODO : i18n
-                             notifyError($.t("objects.pluginInstance.errorCreating", {pluginName : pluginInstance.name}), JSON.stringify(data));
-                             return;
-                          }
-                          //we launch a refresh of the device list
-                          refreshDeviceList();
-
-                       })
-                       .fail(function() {
-                          //TODO : i18n
-                          notifyError($.t("objects.pluginInstance.errorCreating", {pluginName : pluginInstance.name}));
-                       });
+                     PluginInstanceManager.createManuallyDevice(pi, newDeviceName, newDeviceConfiguration, function() {
+                        refreshDeviceList();
+                     });
                   });
                });
             });

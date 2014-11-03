@@ -32,8 +32,7 @@
       $modalBody.empty();
 
       //we append the text section
-	  //TODO : 
-      var friendlyNameParameter = new StringParameterHandler("modals.configure-manually-device-modal.", "friendlyName-configuration", {required:"true"}, "");
+      var friendlyNameParameter = new StringParameterHandler("modals.configure-manually-device.", "friendlyName-configuration", {required:"true"}, "");
       $modalBody.append(friendlyNameParameter.getDOMObject());
 
       //we append classic configuration

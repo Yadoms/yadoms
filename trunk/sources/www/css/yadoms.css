@@ -28,6 +28,12 @@ body {
     width: 100%;
 }
 
+.application-logo {
+    max-height: 50px;
+    margin-right: 10px;
+    margin-top: 2px;
+}
+
 #pageMenu {
     float:  none;
     margin-top: 10px;

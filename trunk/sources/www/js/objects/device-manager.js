@@ -38,7 +38,6 @@ DeviceManager.get = function (deviceId, callback) {
 
 DeviceManager.getAttachedPlugin = function(device, callback) {
    assert(!isNullOrUndefined(device), "device must be defined");
-   //we ask for the status of current device
    $.getJSON("/rest/plugin/" + device.pluginId)
       .done(function(data) {
          //we parse the json answer
@@ -50,7 +49,7 @@ DeviceManager.getAttachedPlugin = function(device, callback) {
 
          //we save the attachedPlugin into the object
          device.attachedPlugin = PluginInstanceManager.factory(data.data);
-         
+
          if ($.isFunction(callback))
             callback();
 
@@ -109,44 +108,6 @@ DeviceManager.deleteFromServer = function(device, callback) {
             callback();
       })
       .fail(function() {notifyError($.t("objects.deviceManager.errorDeleting", {deviceName : device.friendlyName}));});
-};
-
-DeviceManager.createVirtual = function(device, callback) {
-   assert(!isNullOrUndefined(device), "device must be defined");
-   $.ajax({
-      type: "POST",
-      url: "/rest/device",
-      data: JSON.stringify({ pluginId: device.pluginId, name: device.name, friendlyName: device.friendlyName, model: device.model}),
-      contentType: "application/json; charset=utf-8",
-      dataType: "json"
-   })
-      .done(function(data) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("objects.deviceManager.errorCreating", {deviceName : device.friendlyName}), JSON.stringify(data));
-            //launch callback with false as ko result
-            if ($.isFunction(callback))
-               callback(false);
-            return;
-         }
-
-         //we update our information from the server
-         device.id = data.data.id;
-         device.pluginId = data.data.pluginId;
-         device.name = data.data.name;
-         device.friendlyName = data.data.friendlyName;
-         device.model = data.data.model;
-
-         if ($.isFunction(callback))
-            callback(true);
-      })
-      .fail(function() {
-         notifyError($.t("objects.deviceManager.errorCreating", {deviceName : device.friendlyName}));
-         //launch callback with false as ko result
-         if ($.isFunction(callback))
-            callback(false);
-      });
 };
 
 DeviceManager.updateToServer = function(device, callback) {
