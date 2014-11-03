@@ -393,12 +393,14 @@ void CManager::startInternalPlugin()
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
 
-   if (m_runningInstances.find(0) != m_runningInstances.end())
-      return;     // Already started ==> nothing more to do
 
    try
    {
       boost::shared_ptr<database::entities::CPlugin> databasePluginInstance(m_pluginDBTable->getSystemInstance());
+
+      if (m_runningInstances.find(databasePluginInstance->Id()) != m_runningInstances.end())
+         return;     // Already started ==> nothing more to do
+
 
       // Load the plugin
       boost::shared_ptr<IFactory> plugin(new CInternalPluginFactory(m_applicationStopHandler));
@@ -425,14 +427,18 @@ void CManager::stopInternalPlugin()
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
 
-   if (m_runningInstances.find(0) == m_runningInstances.end())
-      return;     // Already stopped ==> nothing more to do
+   //get the plugin info from db
+   boost::shared_ptr<database::entities::CPlugin> databasePluginInstance(m_pluginDBTable->getSystemInstance());
+
+   // Already stopped ==> nothing more to do
+   if (m_runningInstances.find(databasePluginInstance->Id()) == m_runningInstances.end())
+      return;    
 
    // Get the associated plugin name to unload it after instance being deleted
-   std::string pluginName = m_runningInstances[0]->getPluginName();
+   std::string pluginName = m_runningInstances[databasePluginInstance->Id()]->getPluginName();
 
    // Remove (=stop) instance
-   m_runningInstances.erase(0);
+   m_runningInstances.erase(databasePluginInstance->Id());
 }
 
 bool CManager::isInstanceRunning(int id) const
