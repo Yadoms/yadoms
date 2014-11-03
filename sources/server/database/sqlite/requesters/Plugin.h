@@ -32,6 +32,7 @@ namespace database { namespace sqlite {
          virtual int addInstance(const database::entities::CPlugin& newPlugin);
          virtual void removeInstance(int pluginId);
          virtual boost::shared_ptr<database::entities::CPlugin> getInstance(int pluginId);
+         virtual boost::shared_ptr<entities::CPlugin> getSystemInstance();
          virtual std::vector<boost::shared_ptr<database::entities::CPlugin> > getInstances();
          virtual void updateInstance(const database::entities::CPlugin& newPlugin);
          virtual void disableAutoStartForAllPluginInstances(const std::string& pluginName);

@@ -7,6 +7,7 @@
 #include "database/IKeywordRequester.h"
 #include "database/IAcquisitionRequester.h"
 #include "dataAccessLayer/IAcquisitionHistorizer.h"
+#include "dataAccessLayer/IDeviceManager.h"
 #include "database/entities/Entities.h"
 
 
@@ -24,7 +25,7 @@ namespace pluginSystem
       /// \param [in]   libraryPath                the library path
       /// \param [in]   pluginData                 the plugin data
       /// \param [in]   pluginEventLoggerRequester the plugin event logger requester
-      /// \param [in]   deviceRequester            the device requester
+      /// \param [in]   deviceManager            the device manager
       /// \param [in]   keywordRequester           the keyword requester
       /// \param [in]   acquisitionRequester       the acquisition requester
       //-----------------------------------------------------
@@ -32,7 +33,7 @@ namespace pluginSystem
          const boost::filesystem::path libraryPath,
          const boost::shared_ptr<database::entities::CPlugin> pluginData,
          boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
-         boost::shared_ptr<database::IDeviceRequester> deviceRequester,
+         boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
          boost::shared_ptr<database::IKeywordRequester> keywordRequester,
          boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
          boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer);
@@ -104,7 +105,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			The device requester
       //--------------------------------------------------------------
-      boost::shared_ptr<database::IDeviceRequester> m_deviceRequester;
+      boost::shared_ptr<dataAccessLayer::IDeviceManager> m_deviceManager;
 
       //--------------------------------------------------------------
       /// \brief			The keyword requester

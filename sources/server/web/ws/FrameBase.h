@@ -22,6 +22,7 @@ namespace web {   namespace ws {
          DECLARE_ENUM_HEADER(EFrameType,
             ((AcquisitionFilter))
             ((AcquisitionUpdate))
+            ((DeviceNew))
          );
 
       protected:

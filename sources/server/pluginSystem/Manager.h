@@ -14,7 +14,7 @@
 #include "database/IEventLoggerRequester.h"
 #include <shared/StringExtension.h>
 #include <shared/event/EventHandler.hpp>
-#include "dataAccessLayer/IAcquisitionHistorizer.h"
+#include "dataAccessLayer/IDataAccessLayer.h"
 #include "IApplicationStopHandler.h"
 
 namespace pluginSystem
@@ -44,7 +44,7 @@ namespace pluginSystem
       CManager(
          const std::string & initialDir,
          boost::shared_ptr<database::IDataProvider> dataProvider,
-         boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
+         boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
          shared::event::CEventHandler& supervisor,
          int pluginManagerEventId,
          IApplicationStopHandler& applicationStopHandler);
@@ -89,11 +89,11 @@ namespace pluginSystem
       int createInstance(const database::entities::CPlugin& data);
     
       //--------------------------------------------------------------
-      /// \brief           Delete a plugin instance
-      /// \param [in] id   Instance Id
-      /// \throw           CInvalidParameter if instance id is unknown fails
+      /// \brief                          Delete a plugin instance
+      /// \param [in] instanceToDelete    Instance to delete
+      /// \throw                          CInvalidParameter if instance id is unknown fails
       //--------------------------------------------------------------
-      void deleteInstance(int id);
+      void deleteInstance(boost::shared_ptr<database::entities::CPlugin> instanceToDelete);
 
       //--------------------------------------------------------------
       /// \brief           Get the plugin instances list
@@ -261,9 +261,9 @@ namespace pluginSystem
       const int m_pluginManagerEventId;
 
       //--------------------------------------------------------------
-      /// \brief			Acquisitions historizer
+      /// \brief			Data access layer
       //--------------------------------------------------------------
-      boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> m_acquisitionHistorizer;
+      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> m_dataAccessLayer;
 
       //--------------------------------------------------------------
       /// \brief			The object used to request application stop

@@ -17,6 +17,7 @@
 #include "database/IKeywordRequester.h"
 #include "database/IAcquisitionRequester.h"
 #include "dataAccessLayer/IAcquisitionHistorizer.h"
+#include "dataAccessLayer/IDeviceManager.h"
 
 namespace pluginSystem
 {
@@ -41,7 +42,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       CInstance(const boost::shared_ptr<const IFactory> plugin, const boost::shared_ptr<database::entities::CPlugin> pluginData,
          boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
-         boost::shared_ptr<database::IDeviceRequester> deviceRequester,
+         boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
          boost::shared_ptr<database::IKeywordRequester> keywordRequester,
          boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
          boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,

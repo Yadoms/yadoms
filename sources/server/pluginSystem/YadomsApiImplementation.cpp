@@ -12,12 +12,12 @@ CYadomsApiImplementation::CYadomsApiImplementation(
    const boost::filesystem::path libraryPath, 
    const boost::shared_ptr<database::entities::CPlugin> pluginData,
    boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
-   boost::shared_ptr<database::IDeviceRequester> deviceRequester,
+   boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
    boost::shared_ptr<database::IKeywordRequester> keywordRequester,
    boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
    boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer)
    :m_informations(pluginInformations), m_libraryPath(libraryPath),  m_pluginData(pluginData), m_pluginEventLoggerRequester(pluginEventLoggerRequester),
-   m_deviceRequester(deviceRequester), m_keywordRequester(keywordRequester), m_acquisitionRequester(acquisitionRequester), m_acquisitionHistorizer(acquisitionHistorizer)
+   m_deviceManager(deviceManager), m_keywordRequester(keywordRequester), m_acquisitionRequester(acquisitionRequester), m_acquisitionHistorizer(acquisitionHistorizer)
 {
 
 }
@@ -28,12 +28,12 @@ CYadomsApiImplementation::~CYadomsApiImplementation()
 
 bool CYadomsApiImplementation::deviceExists(const std::string& device) const
 {
-   return m_deviceRequester->deviceExists(getPluginId(), device);
+   return m_deviceManager->deviceExists(getPluginId(), device);
 }
 
 const shared::CDataContainer CYadomsApiImplementation::getDeviceDetails(const std::string& device) const
 {
-   return m_deviceRequester->getDevice(getPluginId(), device)->Details;
+   return m_deviceManager->getDevice(getPluginId(), device)->Details;
 }
 
 void CYadomsApiImplementation::declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details)
@@ -41,7 +41,7 @@ void CYadomsApiImplementation::declareDevice(const std::string& device, const st
    if (deviceExists(device))
       throw shared::exception::CEmptyResult((boost::format("Error declaring device %1% : already exists") % device).str());
 
-   m_deviceRequester->createDevice(getPluginId(), device, device, model, details);
+   m_deviceManager->createDevice(getPluginId(), device, device, model, details);
 }
 
 bool CYadomsApiImplementation::keywordExists(const std::string& device, const std::string& keyword) const
@@ -49,7 +49,7 @@ bool CYadomsApiImplementation::keywordExists(const std::string& device, const st
    if (!deviceExists(device))
       throw shared::exception::CEmptyResult("Fail to check if keyword exists : owner device doesn't exist.");
 
-   return m_keywordRequester->keywordExists((m_deviceRequester->getDevice(getPluginId(), device))->Id, keyword);
+   return m_keywordRequester->keywordExists((m_deviceManager->getDevice(getPluginId(), device))->Id, keyword);
 }
 
 void CYadomsApiImplementation::declareCustomKeyword(const std::string& device, const std::string& keyword, const std::string& capacity,
@@ -60,7 +60,7 @@ void CYadomsApiImplementation::declareCustomKeyword(const std::string& device, c
       throw shared::exception::CEmptyResult("Fail to declare keyword : keyword already exists");
 
    database::entities::CKeyword keywordEntity;
-   keywordEntity.DeviceId = m_deviceRequester->getDevice(getPluginId(), device)->Id;
+   keywordEntity.DeviceId = m_deviceManager->getDevice(getPluginId(), device)->Id;
    keywordEntity.CapacityName = capacity;
    keywordEntity.AccessMode = accessMode;
    keywordEntity.Type = type;
@@ -84,7 +84,7 @@ void CYadomsApiImplementation::historizeData(const std::string& device, const sh
 {
    try
    {
-      boost::shared_ptr<database::entities::CDevice> deviceEntity = m_deviceRequester->getDevice(getPluginId(), device);
+      boost::shared_ptr<database::entities::CDevice> deviceEntity = m_deviceManager->getDevice(getPluginId(), device);
       boost::shared_ptr<database::entities::CKeyword> keywordEntity = m_keywordRequester->getKeyword(deviceEntity->Id, data.getKeyword());
       m_acquisitionHistorizer->saveData(keywordEntity->Id, data);
    }
