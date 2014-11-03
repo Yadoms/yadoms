@@ -218,10 +218,17 @@ set(YADOMS_SRC
 	server/notifications/AsyncNotificationCenter.h
 	server/notifications/AsyncNotificationCenter.cpp
 	server/notifications/NewAcquisitionNotification.h
+	server/notifications/NewDeviceNotification.h
 	
+	server/dataAccessLayer/DataAccessLayer.h
+	server/dataAccessLayer/DataAccessLayer.cpp
+	server/dataAccessLayer/IDataAccessLayer.h
 	server/dataAccessLayer/AcquisitionHistorizer.h
 	server/dataAccessLayer/AcquisitionHistorizer.cpp
 	server/dataAccessLayer/IAcquisitionHistorizer.h
+	server/dataAccessLayer/DeviceManager.h
+	server/dataAccessLayer/DeviceManager.cpp
+	server/dataAccessLayer/IDeviceManager.h
 	
 	server/database/DatabaseException.hpp
 	server/database/IConfigurationRequester.h
@@ -277,6 +284,8 @@ set(YADOMS_SRC
 	server/web/ws/AcquisitionFilterFrame.cpp
 	server/web/ws/AcquisitionUpdateFrame.h
 	server/web/ws/AcquisitionUpdateFrame.cpp
+	server/web/ws/NewDeviceFrame.h
+	server/web/ws/NewDeviceFrame.cpp
 	server/web/ws/FrameBase.h
 	server/web/ws/FrameBase.cpp
 	server/web/ws/FrameFactory.h

@@ -24,7 +24,7 @@
 #include "task/backup/Database.h"
 #include "communication/PluginGateway.h"
 #include "System.h"
-#include "dataAccessLayer/AcquisitionHistorizer.h"
+#include "dataAccessLayer/DataAccessLayer.h"
 
 CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
    :m_stopHandler(m_EventHandler, kStopRequested), m_startupOptions(startupOptions)
@@ -55,7 +55,7 @@ void CSupervisor::doWork()
       }
 
       //create the data access layer
-      boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistoriszer(new dataAccessLayer::CAcquisitionHistorizer(pDataProvider->getAcquisitionRequester()));
+      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal(new dataAccessLayer::CDataAccessLayer(pDataProvider));
 
       // Start Task manager
       boost::shared_ptr<task::CScheduler> taskManager = boost::shared_ptr<task::CScheduler>(new task::CScheduler(m_EventHandler, kSystemEvent));
@@ -63,10 +63,10 @@ void CSupervisor::doWork()
 
       // Create the Plugin manager
       boost::shared_ptr<pluginSystem::CManager> pluginManager(new pluginSystem::CManager(
-         m_startupOptions.getPluginsPath(), pDataProvider, acquisitionHistoriszer, m_EventHandler, kPluginManagerEvent, m_stopHandler));
+         m_startupOptions.getPluginsPath(), pDataProvider, dal, m_EventHandler, kPluginManagerEvent, m_stopHandler));
 
       // Start the plugin gateway
-      communication::CPluginGateway pluginGateway(pDataProvider, acquisitionHistoriszer, pluginManager);
+      communication::CPluginGateway pluginGateway(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager);
       pluginGateway.start();
 
       // Start the plugin manager (start all plugin instances)

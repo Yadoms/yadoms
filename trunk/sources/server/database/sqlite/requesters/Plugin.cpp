@@ -70,6 +70,26 @@ namespace database { namespace sqlite { namespace requesters {
       return adapter.getResults().at(0);
    }
 
+   boost::shared_ptr<entities::CPlugin> CPlugin::getSystemInstance()
+   {
+      database::sqlite::adapters::CPluginAdapter adapter;
+
+      CQuery qSelect;
+
+      qSelect.Select().
+         From(CPluginTable::getTableName()).
+         Where(CPluginTable::getCategoryColumnName(), CQUERY_OP_EQUAL, database::entities::EPluginCategory::kSystem);
+
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CPlugin> >(&adapter, qSelect);
+      if (adapter.getResults().empty())
+      {
+         // Plugin not found
+         throw shared::exception::CEmptyResult("System plugin not found in database");
+      }
+      return adapter.getResults().at(0);
+   }
+
+
    std::vector<boost::shared_ptr<database::entities::CPlugin> > CPlugin::getInstances()
    {
       database::sqlite::adapters::CPluginAdapter adapter;

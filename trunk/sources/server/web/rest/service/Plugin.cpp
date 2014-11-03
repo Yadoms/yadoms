@@ -226,7 +226,7 @@ namespace web { namespace rest { namespace service {
             int instanceId = boost::lexical_cast<int>(parameters[1]);
 
             m_dataProvider->getDeviceRequester()->removeAllDeviceForPlugin(instanceId);
-            m_pluginManager->deleteInstance(instanceId);
+            m_pluginManager->deleteInstance(m_pluginManager->getInstance(instanceId));
             return web::rest::CResult::GenerateSuccess();
          }
          else
@@ -249,7 +249,7 @@ namespace web { namespace rest { namespace service {
       std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
       BOOST_FOREACH(boost::shared_ptr<database::entities::CPlugin> toDelete, hwList)
       {
-         m_pluginManager->deleteInstance(toDelete->Id());
+         m_pluginManager->deleteInstance(toDelete);
       }
 
       return web::rest::CResult::GenerateSuccess();

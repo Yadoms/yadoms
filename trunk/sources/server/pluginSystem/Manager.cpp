@@ -20,7 +20,7 @@ namespace pluginSystem
 CManager::CManager(
    const std::string& initialDir,
    boost::shared_ptr<database::IDataProvider> dataProvider,
-   boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
+   boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
    shared::event::CEventHandler& supervisor,
    int pluginManagerEventId,
    IApplicationStopHandler& applicationStopHandler)
@@ -30,8 +30,7 @@ CManager::CManager(
 #else
    m_qualifier(new CQualifier(dataProvider->getPluginEventLoggerRequester(), dataProvider->getEventLoggerRequester())),
 #endif
-   m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_acquisitionHistorizer(acquisitionHistorizer),
-   m_applicationStopHandler(applicationStopHandler)
+   m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId), m_dataAccessLayer(dataAccessLayer), m_applicationStopHandler(applicationStopHandler)
 {
    BOOST_ASSERT(m_dataProvider);
 }
@@ -52,8 +51,9 @@ void CManager::start()
    std::vector<boost::shared_ptr<database::entities::CPlugin> > databasePluginInstances = m_pluginDBTable->getInstances();
    BOOST_FOREACH(boost::shared_ptr<database::entities::CPlugin> databasePluginInstance, databasePluginInstances)
    {
-      if (databasePluginInstance->AutoStart())
-         startInstance(databasePluginInstance->Id());
+      if (databasePluginInstance->Category() != database::entities::EPluginCategory::kSystem)
+         if (databasePluginInstance->AutoStart())
+            startInstance(databasePluginInstance->Id());
    }
 
    //start the internal plugin
@@ -222,22 +222,25 @@ int CManager::createInstance(const database::entities::CPlugin& data)
    return instanceId;
 }
 
-void CManager::deleteInstance(int id)
+void CManager::deleteInstance(boost::shared_ptr<database::entities::CPlugin> instanceToDelete)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
 
    try
    {
-      // First step, disable and stop instance
-      stopInstance(id);
+      if (instanceToDelete->Category() != database::entities::EPluginCategory::kSystem)
+      {
+         // First step, disable and stop instance
+         stopInstance(instanceToDelete->Id());
 
-      // Next, delete in database
-      m_pluginDBTable->removeInstance(id);
+         // Next, delete in database
+         m_pluginDBTable->removeInstance(instanceToDelete->Id());
+      }
    }
    catch (shared::exception::CException& e)
    {
-      YADOMS_LOG(error) << "Unable to delete plugin instance (" << id << ") : " << e.what();
-      throw shared::exception::CInvalidParameter(boost::lexical_cast<std::string>(id));
+      YADOMS_LOG(error) << "Unable to delete plugin instance (" << instanceToDelete->Id() << ") : " << e.what();
+      throw shared::exception::CInvalidParameter(boost::lexical_cast<std::string>(instanceToDelete->Id()));
    }
 }
 
@@ -353,7 +356,7 @@ void CManager::startInstance(int id)
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
       boost::shared_ptr<CInstance> pluginInstance(new CInstance(
-         plugin, databasePluginInstance, m_dataProvider->getPluginEventLoggerRequester(), m_dataProvider->getDeviceRequester(), m_dataProvider->getKeywordRequester(), m_dataProvider->getAcquisitionRequester(), m_acquisitionHistorizer,
+         plugin, databasePluginInstance, m_dataProvider->getPluginEventLoggerRequester(), m_dataAccessLayer->getDeviceManager(), m_dataProvider->getKeywordRequester(), m_dataProvider->getAcquisitionRequester(), m_dataAccessLayer->getAcquisitionHistorizer(),
          m_qualifier, m_supervisor, m_pluginManagerEventId));
       m_runningInstances[databasePluginInstance->Id()] = pluginInstance;
    }
@@ -395,12 +398,7 @@ void CManager::startInternalPlugin()
 
    try
    {
-      // Internal plugin is not recorded in database, so make fake database value for this plugin
-      boost::shared_ptr<database::entities::CPlugin> fakeDatabasePluginInstance(new database::entities::CPlugin());
-      fakeDatabasePluginInstance->Id = 0;
-      fakeDatabasePluginInstance->AutoStart = true;
-      fakeDatabasePluginInstance->Name = "system";
-      fakeDatabasePluginInstance->Type = "system";
+      boost::shared_ptr<database::entities::CPlugin> databasePluginInstance(m_pluginDBTable->getSystemInstance());
 
       // Load the plugin
       boost::shared_ptr<IFactory> plugin(new CInternalPluginFactory(m_applicationStopHandler));
@@ -408,9 +406,9 @@ void CManager::startInternalPlugin()
       // Create instance
       BOOST_ASSERT(plugin); // Plugin not loaded
       boost::shared_ptr<CInstance> pluginInstance(new CInstance(
-         plugin, fakeDatabasePluginInstance, m_dataProvider->getPluginEventLoggerRequester(), m_dataProvider->getDeviceRequester(), m_dataProvider->getKeywordRequester(), m_dataProvider->getAcquisitionRequester(), m_acquisitionHistorizer,
+         plugin, databasePluginInstance, m_dataProvider->getPluginEventLoggerRequester(), m_dataAccessLayer->getDeviceManager(), m_dataProvider->getKeywordRequester(), m_dataProvider->getAcquisitionRequester(), m_dataAccessLayer->getAcquisitionHistorizer(),
          m_qualifier, m_supervisor, m_pluginManagerEventId));
-      m_runningInstances[fakeDatabasePluginInstance->Id()] = pluginInstance;
+      m_runningInstances[databasePluginInstance->Id()] = pluginInstance;
    }
    catch (shared::exception::CEmptyResult& e)
    {

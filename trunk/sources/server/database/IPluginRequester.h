@@ -22,7 +22,14 @@ namespace database {
       /// \return          Plugin instance informations
       /// \throw           shared::exception::CEmptyResult if pluginId is unknown
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CPlugin> getInstance(int pluginId) = 0;
+      virtual boost::shared_ptr<entities::CPlugin> getInstance(int pluginId) = 0;    
+      
+      //--------------------------------------------------------------
+      /// \brief           Get SYSTEM plugin instance informations
+      /// \return          Plugin instance informations
+      /// \throw           shared::exception::CEmptyResult if pluginId is unknown
+      //--------------------------------------------------------------
+      virtual boost::shared_ptr<entities::CPlugin> getSystemInstance() = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all plugin instances

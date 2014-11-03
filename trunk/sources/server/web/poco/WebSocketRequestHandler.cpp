@@ -13,6 +13,7 @@
 #include "web/ws/FrameFactory.h"
 #include "web/ws/AcquisitionFilterFrame.h"
 #include "web/ws/AcquisitionUpdateFrame.h"
+#include "web/ws/NewDeviceFrame.h"
 
 namespace web {
    namespace poco {
@@ -64,7 +65,10 @@ namespace web {
                   break;
 
                case shared::notification::CNotificationCenter::kNotification:
+               {
                   //a new notification has arrived
+                  bool somethingToSend = false;
+                  std::string dataString;
 
                   //check if notification is a newAcquisition
                   if (notifications::CAsyncNotificationCenter::get()->isNotificationTypeOf< boost::shared_ptr<notifications::CNewAcquisitionNotification> >(this))
@@ -74,15 +78,32 @@ namespace web {
                         std::find(acquisitionKeywordFilters.begin(), acquisitionKeywordFilters.end(), newAcquisition->getAcquisition()->KeywordId()) != acquisitionKeywordFilters.end())
                      {
                         web::ws::CAcquisitionUpdateFrame toSend(newAcquisition);
-                        std::string dataString = toSend.serialize();
-                        int sentBytes = socketServer.sendFrame(dataString.c_str(), dataString.length(), Poco::Net::WebSocket::FRAME_TEXT);
-                        if (sentBytes == 0)
-                           clientSeemConnected = false;
+                        dataString = toSend.serialize();
+                        somethingToSend = true;
                      }
+                  }
+
+                  //check if notification is a newDevice
+                  if (notifications::CAsyncNotificationCenter::get()->isNotificationTypeOf< boost::shared_ptr<notifications::CNewDeviceNotification> >(this))
+                  {
+                     boost::shared_ptr<notifications::CNewDeviceNotification> newDevice = notifications::CAsyncNotificationCenter::get()->getNotificationData< boost::shared_ptr<notifications::CNewDeviceNotification> >(this);
+
+                     web::ws::CNewDeviceFrame toSend(newDevice);
+                     std::string dataString = toSend.serialize();
+                     somethingToSend = true;
+                  }
+
+                  //notifiy client
+                  if (somethingToSend)
+                  {
+                     int sentBytes = socketServer.sendFrame(dataString.c_str(), dataString.length(), Poco::Net::WebSocket::FRAME_TEXT);
+                     if (sentBytes == 0)
+                        clientSeemConnected = false;
                   }
 
                   //this notification is ignored
                   break;
+               }
 
                default:
                   YADOMS_LOG(error) << "Unknown message id";
