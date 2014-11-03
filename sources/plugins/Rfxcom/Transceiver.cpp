@@ -126,63 +126,64 @@ const shared::communication::CByteBuffer CTransceiver::buildSetModeCmd(unsigned 
    return shared::communication::CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
 }
 
-const shared::communication::CByteBuffer CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParametersTree) const
+const shared::communication::CByteBuffer CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const
 {
    try
    {
-      unsigned char deviceType = deviceParametersTree.get<unsigned char>("type");
+      const shared::CDataContainer& deviceDetails = context->getDeviceDetails(command->getTargetDevice());
+      unsigned char deviceType = deviceDetails.get<unsigned char>("type");
 
       // Create the RFXCom message
       switch(deviceType)
       {
       case pTypeLighting1:
-         return rfxcomMessages::CLighting1(context, command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
       case pTypeLighting2:
-         return rfxcomMessages::CLighting2(context, command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting2(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
       case pTypeLighting3:
-         return rfxcomMessages::CLighting3(context, command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting3(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
       case pTypeLighting4:
-         return rfxcomMessages::CLighting4(context, command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting4(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
       case pTypeLighting5:
-         return rfxcomMessages::CLighting5(context, command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting5(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
       case pTypeLighting6:
-         return rfxcomMessages::CLighting6(context, command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CLighting6(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
       case pTypeChime:
-         return rfxcomMessages::CChime(context, command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CChime(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
       case pTypeCurtain:
-         return rfxcomMessages::CCurtain1(context, command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CCurtain1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
       case pTypeFan:
-         return rfxcomMessages::CFan(context, command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CFan(context, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
       case pTypeBlinds:
-         return rfxcomMessages::CBlinds1(context, command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CBlinds1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
       case pTypeRFY:
-         return rfxcomMessages::CRfy(context, command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CRfy(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
       case pTypeFS20:
-         return rfxcomMessages::CFS20(context, command, deviceParametersTree).encode(m_seqNumberProvider);
+         return rfxcomMessages::CFS20(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
          //TODO compléter
       default:
-         YADOMS_LOG(error) << "Invalid command \"" << command.serialize() << "\" : " << " unknown type " << deviceType;
+         YADOMS_LOG(error) << "Invalid command \"" << command->getBody().serialize() << "\" : " << " unknown type " << deviceType;
          BOOST_ASSERT_MSG(false, "Invalid command (unknown type)");
-         throw shared::exception::CInvalidParameter(command.serialize());
+         throw shared::exception::CInvalidParameter(command->getBody().serialize());
          break;
       }
    }
    catch (shared::exception::CException & e)
    {
       BOOST_ASSERT_MSG(false, "Invalid command (parameter doesn't exist)");
-      std::string message = (boost::format("Invalid command \"%1%\" : %2%") % command.serialize() % e.what()).str();
+      std::string message = (boost::format("Invalid command \"%1%\" : %2%") % command->getBody().serialize() % e.what()).str();
       throw shared::exception::CInvalidParameter(message);
    }
 }

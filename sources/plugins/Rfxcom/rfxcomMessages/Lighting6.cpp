@@ -9,16 +9,16 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CLighting6::CLighting6(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+CLighting6::CLighting6(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceDetails)
    :m_state("state"), m_rssi("rssi")
 {
    m_state.set(command);
    m_rssi.set(0);
 
-   m_subType = deviceParameters.get<unsigned char>("subType");
-   m_id = deviceParameters.get<unsigned short>("id");
-   m_groupCode = deviceParameters.get<unsigned char>("groupCode");
-   m_unitCode = deviceParameters.get<unsigned char>("unitCode");
+   m_subType = deviceDetails.get<unsigned char>("subType");
+   m_id = deviceDetails.get<unsigned short>("id");
+   m_groupCode = deviceDetails.get<unsigned char>("groupCode");
+   m_unitCode = deviceDetails.get<unsigned char>("unitCode");
 
    Init(context);
 }
@@ -130,9 +130,9 @@ void CLighting6::buildDeviceModel()
    m_deviceModel = ssModel.str();
 }
 
-unsigned char CLighting6::toProtocolState(const yApi::historization::CDimmable& switchState)
+unsigned char CLighting6::toProtocolState(const yApi::historization::CSwitch& switchState)
 {
-   return switchState.isOn() ? light6_sOn : light6_sOff;
+   return switchState.get() ? light6_sOn : light6_sOff;
 }
 
 bool CLighting6::fromProtocolState(unsigned char protocolState)

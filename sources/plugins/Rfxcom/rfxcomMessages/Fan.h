@@ -17,12 +17,13 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       /// \param[in] context              Yadoms APi context
+      /// \param[in] keyword              Keyword concerned by the command
       /// \param[in] command              The command
-      /// \param[in] deviceParameters     The device parameters
+      /// \param[in] deviceDetails        The device parameters
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
-      CFan(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters);
+      CFan(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& keyword, const shared::CDataContainer& command, const shared::CDataContainer& deviceDetails);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
@@ -95,9 +96,13 @@ namespace rfxcomMessages
       std::string m_deviceModel;
 
       //--------------------------------------------------------------
-      /// \brief	The keyword associated with fan or light (depending on m_lightCmd)
-      /// \note If fan command, 0 = speed down, 100 = speed up
+      /// \brief	The keyword associated with light
       //--------------------------------------------------------------
-      yApi::historization::CDimmable m_state;
+      yApi::historization::CSwitch m_light;
+
+      //--------------------------------------------------------------
+      /// \brief	The keyword associated with fan (off = speed down, on = speed up)
+      //--------------------------------------------------------------
+      yApi::historization::CSwitch m_fan;
    };
 } // namespace rfxcomMessages

@@ -19,7 +19,7 @@ CRain::CRain(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boos
 
    m_id = rbuf.RAIN.id1 | (rbuf.RAIN.id2 << 8);
 
-   m_rain.reset(new yApi::historization::CRain("rain", yApi::EKeywordAccessMode::kGet, (m_subType == sTypeRAIN6) ? (yApi::historization::EMeasureType::kIncrement) : (yApi::historization::EMeasureType::kCumulative)));
+   m_rain.reset(new yApi::historization::CRain("rain", (m_subType == sTypeRAIN6) ? (yApi::historization::EMeasureType::kIncrement) : (yApi::historization::EMeasureType::kCumulative)));
 
    switch(m_subType)
    {

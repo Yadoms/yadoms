@@ -41,12 +41,11 @@ public:
    //--------------------------------------------------------------
    /// \brief	                     Build a message to device
    /// \param [in] context          Plugin execution context (Yadoms API)
-   /// \param [in] command          The received command (JSON string)
-   /// \param [in] deviceParameters The device parameters (JSON string)
+   /// \param [in] command          The received command
    /// \return                      RFXCom message to send
    /// \throw shared::exception::CInvalidParameter if no corresponding RFXCom message was found (invalid command)
    //--------------------------------------------------------------
-   virtual const shared::communication::CByteBuffer buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParametersTree) const = 0;
+   virtual const shared::communication::CByteBuffer buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Decode RFXCom message

@@ -25,16 +25,16 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CFS20::CFS20(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+CFS20::CFS20(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceDetails)
    :m_state("state"), m_rssi("rssi")
 {
    m_state.set(command);
    m_rssi.set(0);
 
-   m_subType = deviceParameters.get<unsigned char>("subType");
-   m_houseCode = deviceParameters.get<std::string>("houseCode");
-   m_groupAddress = deviceParameters.get<std::string>("groupAddress");
-   m_subAddress = deviceParameters.get<std::string>("subAddress");
+   m_subType = deviceDetails.get<unsigned char>("subType");
+   m_houseCode = deviceDetails.get<std::string>("houseCode");
+   m_groupAddress = deviceDetails.get<std::string>("groupAddress");
+   m_subAddress = deviceDetails.get<std::string>("subAddress");
 
    Init(context);
 }
@@ -86,13 +86,13 @@ CFS20::CFS20(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boos
    case sTypeFHT8V:
       {
          const unsigned int cmd = rbuf.FS20.cmd1 & 0x0F;
-         const unsigned int value = rbuf.FS20.cmd2;
+         const unsigned int level = rbuf.FS20.cmd2;
          switch(cmd)
          {
          case FHT8V_SYNCRHONISE_NOW:
          case FHT8V_OPEN_VALVE_AT_LEVEL:
          case FHT8V_DECALCIFICATION_CYCLE:
-            m_state.set((int)(value * 100 / 255));
+            m_state.set((int)(level * 100 / 255));
             break;
          case FHT8V_OPEN_VALVE:
             m_state.set(true);

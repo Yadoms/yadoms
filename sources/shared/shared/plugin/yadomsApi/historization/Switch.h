@@ -1,27 +1,26 @@
 #pragma once
 #include <shared/Export.h>
-#include "SingleHistorizableData.hpp"
-
+#include <shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp>
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {   
    //-----------------------------------------------------
-   ///\brief A rain historizable object
+   ///\brief A switch historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CRain : public CSingleHistorizableData<double>
+   class YADOMS_SHARED_EXPORT CSwitch : public CSingleHistorizableData<bool>
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
-      ///\param[in] measureType     The measure type (normally kCumulative)
+      ///\param[in] accessMode      The access mode
       //-----------------------------------------------------
-      CRain(const std::string& keywordName, const EMeasureType& measureType = EMeasureType::kCumulative);
+      CSwitch(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGetSet);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CRain();
+      virtual ~CSwitch();
    };
 
 

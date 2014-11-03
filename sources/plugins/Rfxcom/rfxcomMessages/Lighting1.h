@@ -19,11 +19,11 @@ namespace rfxcomMessages
       /// \brief	                        Constructor
       /// \param[in] context              Yadoms APi context
       /// \param[in] command              The command
-      /// \param[in] deviceParameters     The device parameters
+      /// \param[in] deviceDetails        The device parameters
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
-      CLighting1(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters);
+      CLighting1(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceDetails);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
@@ -77,7 +77,7 @@ namespace rfxcomMessages
       /// \param[in] switchState          The state from Yadoms
       /// \return                         The value known by the protocol
       //--------------------------------------------------------------
-      static unsigned char toProtocolState(const yApi::historization::CDimmable& switchState);
+      static unsigned char toProtocolState(const yApi::historization::CSwitch& switchState);
 
       //--------------------------------------------------------------
       /// \brief	                        Convert protocol value to Yadoms state
@@ -116,7 +116,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keyword associated with state
       //--------------------------------------------------------------
-      yApi::historization::CDimmable m_state;
+      yApi::historization::CSwitch m_state;
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with rssi

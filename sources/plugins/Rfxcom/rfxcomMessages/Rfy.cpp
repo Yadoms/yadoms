@@ -10,14 +10,14 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CRfy::CRfy(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+CRfy::CRfy(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceDetails)
    :m_state("state")
 {
    m_state.set(command);
 
-   m_subType = deviceParameters.get<unsigned char>("subType");
-   m_id = deviceParameters.get<unsigned int>("id");
-   m_unitCode = deviceParameters.get<unsigned char>("unitCode");
+   m_subType = deviceDetails.get<unsigned char>("subType");
+   m_id = deviceDetails.get<unsigned int>("id");
+   m_unitCode = deviceDetails.get<unsigned char>("unitCode");
 
    Init(context);
 }
@@ -39,7 +39,18 @@ void CRfy::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    buildDeviceModel();
    buildDeviceName();
 
-   // Nothing to declare (transmitter-only device)
+   // Create device and keywords if needed
+   if (!context->deviceExists(m_deviceName))
+   {
+      shared::CDataContainer details;
+      details.set("type", pTypeRFY);
+      details.set("subType", m_subType);
+      details.set("id", m_id);
+      details.set("unitCode", m_unitCode);
+      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+
+      context->declareKeyword(m_deviceName, m_state);
+   }
 }
 
 const shared::communication::CByteBuffer CRfy::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
