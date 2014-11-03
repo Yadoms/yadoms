@@ -117,7 +117,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keyword associated with state
       //--------------------------------------------------------------
-      yApi::historization::CSwitch m_state;
+      yApi::historization::CDimmable m_state;
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with rssi

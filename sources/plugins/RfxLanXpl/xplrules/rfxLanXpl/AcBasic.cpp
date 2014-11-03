@@ -2,7 +2,7 @@
 #include "AcBasic.h"
 #include <shared/tools/Random.h>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/historization/Switch.h>
+#include <shared/plugin/yadomsApi/historization/Dimmable.h>
 
 
 namespace xplrules { namespace rfxLanXpl {
@@ -44,7 +44,7 @@ namespace xplrules { namespace rfxLanXpl {
    KeywordList CAcBasic::identifyKeywords(xplcore::CXplMessage & msg)
    {
       KeywordList keywords;
-      keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CSwitch(m_keywordCommand)));
+      keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CDimmable(m_keywordCommand)));
       return keywords;
    }
 
@@ -59,7 +59,7 @@ namespace xplrules { namespace rfxLanXpl {
       {
          EState valFromEquipment(msg.getBodyValue(m_keywordCommand));
         
-         boost::shared_ptr<shared::plugin::yadomsApi::historization::CSwitch> sw(new shared::plugin::yadomsApi::historization::CSwitch(m_keywordCommand));
+         boost::shared_ptr<shared::plugin::yadomsApi::historization::CDimmable> sw(new shared::plugin::yadomsApi::historization::CDimmable(m_keywordCommand));
          switch (valFromEquipment)
          {
          case EState::kOnValue:
@@ -102,7 +102,7 @@ namespace xplrules { namespace rfxLanXpl {
       }
 
       //read command details (may throw exception if something is wrong)
-      shared::plugin::yadomsApi::historization::CSwitch commandDetails(commandData->getBody().serialize());
+      shared::plugin::yadomsApi::historization::CDimmable commandDetails(commandData->getBody().serialize());
 
       ////////////////////////////
       // create the message

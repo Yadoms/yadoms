@@ -70,7 +70,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The keyword associated with the switch
    //--------------------------------------------------------------
-   yApi::historization::CSwitch m_switch;
+   yApi::historization::CDimmable m_switch;
 
    //--------------------------------------------------------------
    /// \brief	    Random number generator, used to simulate increments

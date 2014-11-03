@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "OpenZWaveNodeKeywordSwitch.h"
-#include <shared/plugin/yadomsApi/historization/Switch.h>
+#include <shared/plugin/yadomsApi/historization/Dimmable.h>
 
 COpenZWaveNodeKeywordSwitch::COpenZWaveNodeKeywordSwitch(const std::string & keyword, OpenZWave::ValueID & valueId)
    :COpenZWaveNodeKeywordBase(valueId), m_switch(keyword)

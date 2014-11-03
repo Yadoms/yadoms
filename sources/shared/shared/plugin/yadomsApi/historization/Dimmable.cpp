@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Switch.h"
+#include "Dimmable.h"
 #include "../StandardValues.h"
 #include "../StandardCapacities.h"
 #include <shared/exception/InvalidParameter.hpp>
@@ -8,51 +8,51 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {
 
-CSwitch::CSwitch(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
+CDimmable::CDimmable(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
    :m_keywordName(keywordName), m_switchLevel(0), m_accessMode (accessMode), m_measureType(measureType)
 {
 }
 
-CSwitch::~CSwitch()
+CDimmable::~CDimmable()
 {
 }
 
-const std::string& CSwitch::getKeyword() const
+const std::string& CDimmable::getKeyword() const
 {
    return m_keywordName;
 }
 
-const CStandardCapacity& CSwitch::getCapacity() const
+const CStandardCapacity& CDimmable::getCapacity() const
 {
-   return CStandardCapacities::Switch;
+   return CStandardCapacities::Dimmable;
 }
 
-const EKeywordAccessMode& CSwitch::getAccessMode() const
+const EKeywordAccessMode& CDimmable::getAccessMode() const
 {
    return m_accessMode;
 }
 
-void CSwitch::set(const shared::CDataContainer& yadomsCommand)
+void CDimmable::set(const shared::CDataContainer& yadomsCommand)
 {
    m_switchLevel = NormalizeLevel(yadomsCommand.get<int>("level"));
 }
 
-void CSwitch::set(bool isOn)
+void CDimmable::set(bool isOn)
 {
    m_switchLevel = isOn ? 100 : 0;
 }
 
-void CSwitch::set(int switchLevel)
+void CDimmable::set(int switchLevel)
 {
    m_switchLevel = NormalizeLevel(switchLevel);
 }
 
-const std::string CSwitch::formatValue() const
+const std::string CDimmable::formatValue() const
 {
    return boost::lexical_cast<std::string>(switchLevel());
 }
 
-int CSwitch::NormalizeLevel(int level)
+int CDimmable::NormalizeLevel(int level)
 {
    if (level > 100)
       return 100;
@@ -61,17 +61,17 @@ int CSwitch::NormalizeLevel(int level)
    return level;
 }
 
-int CSwitch::switchLevel() const
+int CDimmable::switchLevel() const
 {
    return m_switchLevel;
 }
 
-bool CSwitch::isOn() const
+bool CDimmable::isOn() const
 {
    return (m_switchLevel >= 50) ? true : false;
 }
 
-const EMeasureType& CSwitch::getMeasureType() const
+const EMeasureType& CDimmable::getMeasureType() const
 {
    return m_measureType;
 }

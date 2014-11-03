@@ -105,7 +105,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Power historization object
    //--------------------------------------------------------------
-   yApi::historization::CSwitch m_powerKeyword;
+   yApi::historization::CDimmable m_powerKeyword;
 };
 
 

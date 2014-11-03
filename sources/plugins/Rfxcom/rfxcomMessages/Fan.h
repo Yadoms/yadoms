@@ -98,6 +98,6 @@ namespace rfxcomMessages
       /// \brief	The keyword associated with fan or light (depending on m_lightCmd)
       /// \note If fan command, 0 = speed down, 100 = speed up
       //--------------------------------------------------------------
-      yApi::historization::CSwitch m_state;
+      yApi::historization::CDimmable m_state;
    };
 } // namespace rfxcomMessages

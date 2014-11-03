@@ -40,6 +40,7 @@ namespace shared { namespace plugin { namespace yadomsApi {
    const CStandardCapacity& CStandardCapacities::Counter = CStandardCapacity("count", CStandardUnits::NoUnits, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Current = CStandardCapacity("current", CStandardUnits::Ampere, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Curtain = CStandardCapacity("curtain", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
+   const CStandardCapacity& CStandardCapacities::Dimmable = CStandardCapacity("dimmable", CStandardUnits::Percent, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Direction = CStandardCapacity("direction", CStandardUnits::Degrees, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Energy = CStandardCapacity("energy", CStandardUnits::WattPerHour, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Event = CStandardCapacity("event", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
@@ -53,7 +54,7 @@ namespace shared { namespace plugin { namespace yadomsApi {
    const CStandardCapacity& CStandardCapacities::RainRate = CStandardCapacity("rainrate", CStandardUnits::MillimeterPerSecond, EKeywordDataType::kNumeric);
 	const CStandardCapacity& CStandardCapacities::Rssi = CStandardCapacity("rssi", CStandardUnits::Percent, EKeywordDataType::kNumeric);
 	const CStandardCapacity& CStandardCapacities::Speed = CStandardCapacity("speed", CStandardUnits::MetersPerSecond, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Switch = CStandardCapacity("switch", CStandardUnits::Percent, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Switch = CStandardCapacity("switch", CStandardUnits::NoUnits, EKeywordDataType::kBool);
    const CStandardCapacity& CStandardCapacities::Temperature = CStandardCapacity("temperature", CStandardUnits::DegreesCelcius, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Uv = CStandardCapacity("uv", CStandardUnits::Uv, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Voltage = CStandardCapacity("voltage", CStandardUnits::Volt, EKeywordDataType::kNumeric);
