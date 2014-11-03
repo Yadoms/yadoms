@@ -5,8 +5,12 @@
 #include <shared/Log.h>
 
 CFakeSwitch::CFakeSwitch(const std::string& deviceName, bool isDimmable)
-   :m_deviceName(deviceName), m_isDimmable(isDimmable), m_switch("Switch"), m_dist(0, 100)
+   :m_deviceName(deviceName), m_isDimmable(isDimmable), m_dist(0, 100)
 {
+   if (m_isDimmable)
+      m_dimmableSwitch.reset(new yApi::historization::CDimmable("DimmableSwitch", yApi::EKeywordAccessMode::kGet));
+   else
+      m_switch.reset(new yApi::historization::CSwitch("Switch", yApi::EKeywordAccessMode::kGet));
 }
 
 CFakeSwitch::~CFakeSwitch()
@@ -16,7 +20,10 @@ CFakeSwitch::~CFakeSwitch()
 void CFakeSwitch::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    // Declare associated keywords (= values managed by this device)
-   context->declareKeyword(m_deviceName, m_switch);
+   if (m_isDimmable)
+      context->declareKeyword(m_deviceName, *m_dimmableSwitch);
+   else
+      context->declareKeyword(m_deviceName, *m_switch);
 }
 
 void CFakeSwitch::read()
@@ -24,12 +31,12 @@ void CFakeSwitch::read()
    if (m_isDimmable)
    {
       // Generate a random value (0 to 100)
-      m_switch.set(m_dist(m_gen));
+      m_dimmableSwitch->set(m_dist(m_gen));
    }
    else
    {
       // Toggle switch
-      m_switch.set(m_switch.isOn() ? false : true);
+      m_switch->set(m_switch->get() ? false : true);
    }
 }
 
@@ -37,7 +44,10 @@ void CFakeSwitch::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) con
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
 
-   context->historizeData(m_deviceName, m_switch);
+   if (m_isDimmable)
+      context->historizeData(m_deviceName, *m_dimmableSwitch);
+   else
+      context->historizeData(m_deviceName, *m_switch);
 }
 
 const std::string& CFakeSwitch::getDeviceName() const

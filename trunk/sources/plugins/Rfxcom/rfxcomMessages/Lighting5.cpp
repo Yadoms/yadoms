@@ -9,15 +9,15 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CLighting5::CLighting5(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+CLighting5::CLighting5(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceDetails)
    :m_state("state"), m_rssi("rssi")
 {
    m_state.set(command);
    m_rssi.set(0);
 
-   m_subType = deviceParameters.get<unsigned char>("subType");
-   m_id = deviceParameters.get<unsigned int>("id");
-   m_unitCode = deviceParameters.get<unsigned char>("unitCode");
+   m_subType = deviceDetails.get<unsigned char>("subType");
+   m_id = deviceDetails.get<unsigned int>("id");
+   m_unitCode = deviceDetails.get<unsigned char>("unitCode");
  
    Init(context);
 }

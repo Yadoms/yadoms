@@ -62,9 +62,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             {
                // Command received from Yadoms
                boost::shared_ptr<const yApi::IDeviceCommand> command(context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
-               YADOMS_LOG(debug) << "Command received :" << command->toString();
-
-               onCommand(context, command->getBody(), context->getDeviceDetails(command->getTargetDevice()));
+               onCommand(context, command);
 
                break;
             }
@@ -72,9 +70,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             {
                // Yadoms asks for test device parameters to check if it works before creating it. So just send command, don't declare anything.
                boost::shared_ptr<const yApi::IManuallyDeviceCreationTestData> data = context->getEventHandler().getEventData<const boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> >();
-               YADOMS_LOG(debug) << "Test of device request received :" << data->toString();
-
-               onCommand(context, data->getCommand()->getBody(), data->getDeviceParameters());
+               onCommand(context, data->getCommand());
 
                break;
             }
@@ -199,12 +195,17 @@ void CRfxcom::send(const shared::communication::CByteBuffer& buffer, bool needAn
       m_waitForAnswerTimer->start();
 }
 
-void CRfxcom::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+void CRfxcom::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
-   if (!m_port || m_currentState != kRfxcomIsRunning)
-      YADOMS_LOG(warning) << "Command not sent (RFXCom is not ready) : " << command;
+   YADOMS_LOG(debug) << "Command received :" << command->toString();
 
-   send(m_transceiver->buildMessageToDevice(context, command, deviceParameters));
+   if (!m_port || m_currentState != kRfxcomIsRunning)
+   {
+      YADOMS_LOG(warning) << "Command not sent (RFXCom is not ready) : " << command;
+      return;
+   }
+
+   send(m_transceiver->buildMessageToDevice(context, command));
 }
 
 void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context)

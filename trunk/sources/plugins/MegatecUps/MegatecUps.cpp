@@ -79,7 +79,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                YADOMS_LOG(debug) << "Command received :" << command->toString();
 
                if (boost::iequals(command->getKeyword(), m_upsShutdown.getKeyword()))
-                  onCommand(context, command->getBody(), context->getDeviceDetails(command->getTargetDevice()));
+                  onCommand(context, command->getBody());
                else
                   YADOMS_LOG(warning) << "Received command for unknown keyword from Yadoms : " << command->toString();
 
@@ -197,13 +197,13 @@ void CMegatecUps::send(const shared::communication::CByteBuffer& buffer, bool ne
       m_waitForAnswerTimer->start();
 }
 
-void CMegatecUps::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+void CMegatecUps::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command)
 {
    if (!m_port)
       YADOMS_LOG(warning) << "Command not send (UPS is not ready) : " << command;
 
    m_upsShutdown.set(command);
-   if (m_upsShutdown.isOn())
+   if (m_upsShutdown.get())
       sendShtudownCmd();
    else
       sendCancelShtudownCmd();

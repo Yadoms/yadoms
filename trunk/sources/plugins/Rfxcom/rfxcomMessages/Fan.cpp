@@ -8,20 +8,30 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CFan::CFan(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
-   :m_state("state")
+CFan::CFan(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& keyword, const shared::CDataContainer& command, const shared::CDataContainer& deviceDetails)
+   :m_light("light"), m_fan("fan")
 {
-   m_state.set(command);
+   if (boost::iequals(keyword, m_light.getKeyword()))
+   {
+      m_light.set(command);
+      m_lightCmd = true;
+   }
+   else if (boost::iequals(keyword, m_fan.getKeyword()))
+   {
+      m_fan.set(command);
+      m_lightCmd = false;
+   }
+   else
+      throw shared::exception::CInvalidParameter(keyword);
 
-   m_lightCmd = deviceParameters.get<bool>("light");
-   m_subType = deviceParameters.get<unsigned char>("subType");
-   m_id = deviceParameters.get<unsigned int>("id");
+   m_subType = deviceDetails.get<unsigned char>("subType");
+   m_id = deviceDetails.get<unsigned int>("id");
 
    Init(context);
 }
 
 CFan::CFan(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_state("state"), m_lightCmd(false), m_subType(0), m_id(0)
+   :m_light("light"), m_fan("fan"), m_lightCmd(false), m_subType(0), m_id(0)
 {
    // Should not be called (transmitter-only device)
    BOOST_ASSERT_MSG(false, "Constructing CFan object from received buffer is not possible, Cfan is transmitter-only device");
@@ -37,7 +47,18 @@ void CFan::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    buildDeviceModel();
    buildDeviceName();
 
-   // Nothing to declare (transmitter-only device)
+   // Create device and keywords if needed
+   if (!context->deviceExists(m_deviceName))
+   {
+      shared::CDataContainer details;
+      details.set("type", pTypeFan);
+      details.set("subType", m_subType);
+      details.set("id", m_id);
+      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+
+      context->declareKeyword(m_deviceName, m_light);
+      context->declareKeyword(m_deviceName, m_fan);
+   }
 }
 
 const shared::communication::CByteBuffer CFan::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
@@ -85,9 +106,9 @@ void CFan::buildDeviceModel()
 unsigned char CFan::toProtocolState() const
 {
    if (m_lightCmd)
-      return m_state.isOn() ? fan_sLight : 0x00;
+      return m_light.get() ? fan_sLight : 0x00;
    else
-      return m_state.isOn() ? fan_sPlus : fan_sMin;
+      return m_fan.get() ? fan_sPlus : fan_sMin;
 }
 
 } // namespace rfxcomMessages

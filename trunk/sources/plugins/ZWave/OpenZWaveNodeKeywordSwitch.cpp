@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "OpenZWaveNodeKeywordSwitch.h"
-#include <shared/plugin/yadomsApi/historization/Dimmable.h>
 
 COpenZWaveNodeKeywordSwitch::COpenZWaveNodeKeywordSwitch(const std::string & keyword, OpenZWave::ValueID & valueId)
    :COpenZWaveNodeKeywordBase(valueId), m_switch(keyword)
@@ -10,7 +9,7 @@ COpenZWaveNodeKeywordSwitch::COpenZWaveNodeKeywordSwitch(const std::string & key
 bool COpenZWaveNodeKeywordSwitch::sendCommand(const std::string & commandData)
 {
    m_switch.set(commandData);
-   return realSendCommand<bool>(m_switch.isOn());
+   return realSendCommand<bool>(m_switch.get());
 }
 
 const shared::plugin::yadomsApi::historization::IHistorizable & COpenZWaveNodeKeywordSwitch::getLastKeywordValue()

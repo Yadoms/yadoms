@@ -131,6 +131,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/historization/Rssi.h
    shared/plugin/yadomsApi/historization/Speed.cpp
    shared/plugin/yadomsApi/historization/Speed.h
+   shared/plugin/yadomsApi/historization/Switch.cpp
+   shared/plugin/yadomsApi/historization/Switch.h
    shared/plugin/yadomsApi/historization/Temperature.cpp
    shared/plugin/yadomsApi/historization/Temperature.h
    shared/plugin/yadomsApi/historization/Uv.cpp

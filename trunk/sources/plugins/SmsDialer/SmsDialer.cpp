@@ -241,7 +241,7 @@ void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context
    try
    {
       m_powerKeyword.set(powerRequest);
-      m_phone->powerOn(m_powerKeyword.isOn());
+      m_phone->powerOn(m_powerKeyword.get());
 
       // Update keyword and historize new state
       m_powerKeyword.set(m_phone->isOn());

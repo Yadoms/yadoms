@@ -9,15 +9,15 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CLighting1::CLighting1(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters)
+CLighting1::CLighting1(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceDetails)
    :m_state("state"), m_rssi("rssi")
 {
    m_state.set(command);
    m_rssi.set(0);
 
-   m_subType = deviceParameters.get<unsigned char>("subType");
-   m_houseCode = deviceParameters.get<unsigned char>("houseCode");
-   m_unitCode = deviceParameters.get<unsigned char>("unitCode");
+   m_subType = deviceDetails.get<unsigned char>("subType");
+   m_houseCode = deviceDetails.get<unsigned char>("houseCode");
+   m_unitCode = deviceDetails.get<unsigned char>("unitCode");
  
    Init(context);
 }
@@ -146,17 +146,23 @@ void CLighting1::buildDeviceModel()
    m_deviceModel = ssModel.str();
 }
 
-unsigned char CLighting1::toProtocolState(const yApi::historization::CDimmable& switchState)
+unsigned char CLighting1::toProtocolState(const yApi::historization::CSwitch& switchState)
 {
-   return switchState.isOn() ? light1_sOn : light1_sOff;
+   return switchState.get() ? light1_sOn : light1_sOff;
 }
 
 bool CLighting1::fromProtocolState(unsigned char protocolState)
 {
    switch(protocolState)
    {
-   case light1_sOn: return true;
-   case light1_sOff: return false;
+   case light1_sOn:
+   case light1_sAllOn:
+      return true;
+
+   case light1_sOff:
+   case light1_sAllOff:
+      return false;
+
    default:
       BOOST_ASSERT_MSG(false, "Invalid state");
       throw shared::exception::CInvalidParameter("state");

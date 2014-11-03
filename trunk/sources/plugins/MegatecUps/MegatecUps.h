@@ -42,9 +42,8 @@ protected:
    /// \brief	                     Process a command received from Yadoms
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] command          The received command (JSON string)
-   /// \param [in] deviceParameters The device parameters (JSON string)
    //--------------------------------------------------------------
-   void onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer & deviceParameters);
+   void onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the UPS becomes connected
@@ -267,7 +266,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The AC power state
    //--------------------------------------------------------------
-   yApi::historization::CDimmable m_acPowerHistorizer;
+   yApi::historization::CSwitch m_acPowerHistorizer;
 
    //--------------------------------------------------------------
    /// \brief	First notification flag
@@ -277,7 +276,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	The shutdown device
    //--------------------------------------------------------------
-   yApi::historization::CDimmable m_upsShutdown;
+   yApi::historization::CSwitch m_upsShutdown;
 
    //--------------------------------------------------------------
    /// \brief	The device name

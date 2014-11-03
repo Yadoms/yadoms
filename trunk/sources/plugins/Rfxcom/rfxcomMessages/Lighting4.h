@@ -19,11 +19,11 @@ namespace rfxcomMessages
       /// \brief	                        Constructor
       /// \param[in] context              Yadoms APi context
       /// \param[in] command              The command
-      /// \param[in] deviceParameters     The device parameters
+      /// \param[in] deviceDetails        The device parameters
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
-      CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters);
+      CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceDetails);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor

@@ -19,11 +19,11 @@ namespace rfxcomMessages
       /// \brief	                        Constructor
       /// \param[in] context              Yadoms APi context
       /// \param[in] command              The command
-      /// \param[in] deviceParameters     The device parameters
+      /// \param[in] deviceDetails        The device parameters
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
-      CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceParameters);
+      CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceDetails);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
@@ -79,7 +79,24 @@ namespace rfxcomMessages
       /// \param[out] level               The level known by the protocol (if state is light2_sSetLevel)
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       //--------------------------------------------------------------
+      static void toProtocolState(const yApi::historization::CSwitch& switchState, unsigned char& state, unsigned char& level);
+
+      //--------------------------------------------------------------
+      /// \brief	                        Convert Yadoms command to protocol value
+      /// \param[in] switch               The switch state Yadoms
+      /// \param[out] state               The state known by the protocol
+      /// \param[out] level               The level known by the protocol (if state is light2_sSetLevel)
+      /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
+      //--------------------------------------------------------------
       static void toProtocolState(const yApi::historization::CDimmable& switchState, unsigned char& state, unsigned char& level);
+
+      //--------------------------------------------------------------
+      /// \brief	                        Convert protocol value to Yadoms state
+      /// \param[in] protocolState        The state known by the protocol
+      /// \return                         The level for Yadoms
+      /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
+      //--------------------------------------------------------------
+      static bool fromProtocolOnOffState(unsigned char protocolState);
       
       //--------------------------------------------------------------
       /// \brief	                        Convert protocol value to Yadoms state
@@ -88,7 +105,7 @@ namespace rfxcomMessages
       /// \return                         The level for Yadoms (0-100)
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       //--------------------------------------------------------------
-      static int fromProtocolState(unsigned char protocolState, unsigned char protocolLevel);
+      static int fromProtocolDimmableState(unsigned char protocolState, unsigned char protocolLevel);
 
    private:
       //--------------------------------------------------------------
@@ -124,7 +141,8 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	The keyword associated with state
       //--------------------------------------------------------------
-      yApi::historization::CDimmable m_state;
+      yApi::historization::CDimmable m_dimmable;
+      yApi::historization::CSwitch m_switch;
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with rssi
