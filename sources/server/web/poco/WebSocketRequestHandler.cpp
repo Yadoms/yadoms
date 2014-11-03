@@ -89,7 +89,7 @@ namespace web {
                      boost::shared_ptr<notifications::CNewDeviceNotification> newDevice = notifications::CAsyncNotificationCenter::get()->getNotificationData< boost::shared_ptr<notifications::CNewDeviceNotification> >(this);
 
                      web::ws::CNewDeviceFrame toSend(newDevice);
-                     std::string dataString = toSend.serialize();
+                     dataString = toSend.serialize();
                      somethingToSend = true;
                   }
 
