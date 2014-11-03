@@ -52,19 +52,6 @@ namespace xplrules { namespace rfxLanXpl {
    KeywordList CX10Basic::identifyKeywords(xplcore::CXplMessage & msg)
    {
       KeywordList keywords;
-
-      /*
-      keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new CDeviceKeyword("command", "command", shared::plugin::yadomsApi::IYadomsApi::kGetSet, "{ values : [on,off,dim,bright,all_lights_on,all_lights_off] }")));
-
-      keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CBatteryLevel(m_keywordTypeBattery)));
-
-      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("protocol", "protocol", shared::plugin::yadomsApi::IYadomsApi::kGetSet, "{ values : [arc,flamingo,koppla,waveman,harrison,he105,rts10] }")));
-      
-      shared::CDataContainer details;
-      details.put("min", 0);
-      details.put("max", 100);
-      keywords.push_back(boost::shared_ptr<CDeviceKeyword>(new CDeviceKeyword("level", "level", shared::plugin::yadomsApi::IYadomsApi::kGetSet, details)));
-      */
       return keywords;
    }
    // [END] IRule implemntation
@@ -74,25 +61,6 @@ namespace xplrules { namespace rfxLanXpl {
    MessageContent CX10Basic::extractMessageData(xplcore::CXplMessage & msg)
    {
       MessageContent data;
-
-      //received messages
-/*      if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxSensor))
-      {
-         if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeVoltage))
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CVoltage(m_keywordTypeVoltage)));
-
-         if (msg.getBodyValue(m_keywordType) == m_keywordTypeTemp)
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CTemperature(m_keywordTypeVoltage)));
-      }
-
-      */
-      /* TODO
-      data.insert(std::make_pair("command", msg.getBodyValue("command")));
-      if (msg.getBody().find("level") != msg.getBody().end())
-         data.insert(std::make_pair("level", msg.getBodyValue("level")));
-      if (msg.getBody().find("protocol") != msg.getBody().end())
-         data.insert(std::make_pair("protocol", msg.getBodyValue("protocol")));
-         */
       return data;
    }
    // [END] IReadRule implemntation
