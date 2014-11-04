@@ -2,10 +2,9 @@
 #include "Lighting5.h"
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
-#include "Lighting5LightwaveRfKeyword.h"
-#include "Lighting5MdRemoteKeyword.h"
-#include "Lighting5OnOffKeyword.h"
-//TODO support à minima : il faudrait gérer l'éclairage led coloré mieux que ça (créer historizer et tout)
+#include "Lighting5LightwaveRf.h"
+#include "Lighting5MdRemote.h"
+#include "Lighting5OnOff.h"
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
 
@@ -22,7 +21,7 @@ CLighting5::CLighting5(boost::shared_ptr<yApi::IYadomsApi> context, const shared
    m_unitCode = deviceDetails.get<unsigned char>("unitCode");
  
    Init(context);
-   m_keyword->set(command);
+   m_subTypeManager->set(command);
 }
 
 CLighting5::CLighting5(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
@@ -36,7 +35,7 @@ CLighting5::CLighting5(boost::shared_ptr<yApi::IYadomsApi> context, unsigned cha
    m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
    Init(context);
-   m_keyword->default();
+   m_subTypeManager->default();
 }
 
 CLighting5::CLighting5(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
@@ -47,7 +46,7 @@ CLighting5::CLighting5(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& 
    m_subType = rbuf.LIGHTING5.subtype;
    m_id = rbuf.LIGHTING5.id1 << 16 | rbuf.LIGHTING5.id2 << 8 | rbuf.LIGHTING5.id3;
    m_unitCode = rbuf.LIGHTING5.unitcode;
-   m_keyword->setFromProtocolState(rbuf.LIGHTING5.cmnd, rbuf.LIGHTING5.level);
+   m_subTypeManager->setFromProtocolState(rbuf.LIGHTING5.cmnd, rbuf.LIGHTING5.level);
    m_rssi.set(NormalizeRssiLevel(rbuf.LIGHTING5.rssi));
 
    Init(context);
@@ -61,19 +60,18 @@ void CLighting5::Init(boost::shared_ptr<yApi::IYadomsApi> context)
 {
    switch(m_subType)
    {
-   case sTypeLightwaveRF : m_keyword.reset(new CLighting5LightwaveRfKeyword()); break;
-   case sTypeEMW100      : m_keyword.reset(new CLighting5OnOffKeyword("EMW100 GAO/Everflourish")); break;
-   case sTypeBBSB        : m_keyword.reset(new CLighting5OnOffKeyword("BBSB new types")); break;
-   case sTypeRSL         : m_keyword.reset(new CLighting5OnOffKeyword("Conrad RSL2")); break;
-   case sTypeMDREMOTE    : m_keyword.reset(new CLighting5MdRemoteKeyword()); break;
-   case sTypeLivolo      : m_keyword.reset(new CLighting5OnOffKeyword("Livolo")); break; // Limited support of Livolo (just ON/OFF), as we can't now exact type of module
-   case sTypeTRC02       : m_keyword.reset(new CLighting5OnOffKeyword("RGB TRC02")); break;
+   case sTypeLightwaveRF : m_subTypeManager.reset(new CLighting5LightwaveRfKeyword()); break;
+   case sTypeEMW100      : m_subTypeManager.reset(new CLighting5OnOffKeyword("EMW100 GAO/Everflourish")); break;
+   case sTypeBBSB        : m_subTypeManager.reset(new CLighting5OnOffKeyword("BBSB new types")); break;
+   case sTypeRSL         : m_subTypeManager.reset(new CLighting5OnOffKeyword("Conrad RSL2")); break;
+   case sTypeMDREMOTE    : m_subTypeManager.reset(new CLighting5MdRemoteKeyword()); break;
+   case sTypeLivolo      : m_subTypeManager.reset(new CLighting5OnOffKeyword("Livolo")); break; // Limited support of Livolo (just ON/OFF), as we can't now exact type of module
+   case sTypeTRC02       : m_subTypeManager.reset(new CLighting5OnOffKeyword("RGB TRC02")); break;
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
    }
 
    // Build device description
-   buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
@@ -84,9 +82,9 @@ void CLighting5::Init(boost::shared_ptr<yApi::IYadomsApi> context)
       details.set("subType", m_subType);
       details.set("id", m_id);
       details.set("unitCode", m_unitCode);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+      context->declareDevice(m_deviceName, m_subTypeManager->getModel(), details.serialize());
 
-      m_keyword->declare(context, m_deviceName);
+      m_subTypeManager->declare(context, m_deviceName);
       context->declareKeyword(m_deviceName, m_rssi);
    }
 }
@@ -104,7 +102,7 @@ const shared::communication::CByteBuffer CLighting5::encode(boost::shared_ptr<IS
    rbuf.LIGHTING5.id2 = (unsigned char) (0xFF & (m_id >> 8));
    rbuf.LIGHTING5.id3 = (unsigned char) (0xFF & m_id);
    rbuf.LIGHTING5.unitcode = m_unitCode;
-   m_keyword->toProtocolState(rbuf.LIGHTING5.cmnd, rbuf.LIGHTING5.level);
+   m_subTypeManager->toProtocolState(rbuf.LIGHTING5.cmnd, rbuf.LIGHTING5.level);
    rbuf.LIGHTING5.rssi = 0;
    rbuf.LIGHTING5.filler = 0;
 
@@ -113,20 +111,15 @@ const shared::communication::CByteBuffer CLighting5::encode(boost::shared_ptr<IS
 
 void CLighting5::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   m_keyword->historize(context, m_deviceName);
+   m_subTypeManager->historize(context, m_deviceName);
    context->historizeData(m_deviceName, m_rssi);
 }
 
 void CLighting5::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << m_deviceModel << "." << (unsigned int)m_id << "." << (unsigned int)m_unitCode;
+   ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_id << "." << (unsigned int)m_unitCode;
    m_deviceName = ssdeviceName.str();
-}
-
-void CLighting5::buildDeviceModel()
-{
-   m_deviceModel = m_keyword->getModel();
 }
 
 } // namespace rfxcomMessages

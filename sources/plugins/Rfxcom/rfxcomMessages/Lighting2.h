@@ -4,6 +4,7 @@
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
 #include <shared/DataContainer.h>
+#include "ILighting2Subtype.h"
 
 namespace yApi = shared::plugin::yadomsApi;
 
@@ -67,46 +68,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       void buildDeviceName();
 
-      //--------------------------------------------------------------
-      /// \brief	                        Build the sensor model
-      //--------------------------------------------------------------
-      void buildDeviceModel();
-
-      //--------------------------------------------------------------
-      /// \brief	                        Convert Yadoms command to protocol value
-      /// \param[in] switch               The switch state Yadoms
-      /// \param[out] state               The state known by the protocol
-      /// \param[out] level               The level known by the protocol (if state is light2_sSetLevel)
-      /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
-      //--------------------------------------------------------------
-      static void toProtocolState(const yApi::historization::CSwitch& switchState, unsigned char& state, unsigned char& level);
-
-      //--------------------------------------------------------------
-      /// \brief	                        Convert Yadoms command to protocol value
-      /// \param[in] switch               The switch state Yadoms
-      /// \param[out] state               The state known by the protocol
-      /// \param[out] level               The level known by the protocol (if state is light2_sSetLevel)
-      /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
-      //--------------------------------------------------------------
-      static void toProtocolState(const yApi::historization::CDimmable& switchState, unsigned char& state, unsigned char& level);
-
-      //--------------------------------------------------------------
-      /// \brief	                        Convert protocol value to Yadoms state
-      /// \param[in] protocolState        The state known by the protocol
-      /// \return                         The level for Yadoms
-      /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
-      //--------------------------------------------------------------
-      static bool fromProtocolOnOffState(unsigned char protocolState);
-      
-      //--------------------------------------------------------------
-      /// \brief	                        Convert protocol value to Yadoms state
-      /// \param[in] protocolState        The state known by the protocol
-      /// \param[in] protocolLevel        The level known by the protocol
-      /// \return                         The level for Yadoms (0-100)
-      /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
-      //--------------------------------------------------------------
-      static int fromProtocolDimmableState(unsigned char protocolState, unsigned char protocolLevel);
-
    private:
       //--------------------------------------------------------------
       /// \brief	The device sub-type
@@ -134,15 +95,9 @@ namespace rfxcomMessages
       std::string m_deviceName;
 
       //--------------------------------------------------------------
-      /// \brief	The device model
+      /// \brief	The sub-type management
       //--------------------------------------------------------------
-      std::string m_deviceModel;
-
-      //--------------------------------------------------------------
-      /// \brief	The keyword associated with state
-      //--------------------------------------------------------------
-      yApi::historization::CDimmable m_dimmable;
-      yApi::historization::CSwitch m_switch;
+      boost::shared_ptr<ILighting2Subtype> m_subTypeManager;
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with rssi

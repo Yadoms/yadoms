@@ -2,7 +2,8 @@
 #include "Lighting2.h"
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
-
+#include "Lighting2Dimmable.h"
+#include "Lighting2OnOff.h"
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
 
@@ -10,7 +11,7 @@ namespace rfxcomMessages
 {
 
 CLighting2::CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceDetails)
-   :m_dimmable("state"), m_switch("state"), m_rssi("rssi")
+   :m_rssi("rssi")
 {
    m_rssi.set(0);
 
@@ -19,72 +20,33 @@ CLighting2::CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, const shared
    m_id = deviceDetails.get<unsigned int>("id");
    m_unitCode = deviceDetails.get<unsigned char>("unitCode");
 
-   switch(m_subType)
-   {
-   case sTypeAC         :
-   case sTypeHEU        :
-   case sTypeANSLUT     :
-      m_dimmable.set(command);
-      break;
-   case sTypeKambrook   :
-      m_switch.set(command);
-      break;
-   default:
-      throw shared::exception::CInvalidParameter("subType");
-   }
-
    Init(context);
+   m_subTypeManager->set(command);
 }
 
 CLighting2::CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-   :m_dimmable("state"), m_switch("state"), m_rssi("rssi")
+   :m_rssi("rssi")
 {
    m_rssi.set(0);
 
    m_subType = subType;
-   switch(m_subType)
-   {
-   case sTypeAC         :
-   case sTypeHEU        :
-   case sTypeANSLUT     :
-      m_dimmable.set(false);
-      break;
-   case sTypeKambrook   :
-      m_switch.set(false);
-      break;
-   default:
-      throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
-   }
 
    m_houseCode = manuallyDeviceCreationConfiguration.get<unsigned char>("houseCode");
    m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
    m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
    Init(context);
+   m_subTypeManager->default();
 }
 
 CLighting2::CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_dimmable("state"), m_switch("state"), m_rssi("rssi")
+   :m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeLighting2, GET_RBUF_STRUCT_SIZE(LIGHTING2), DONT_CHECK_SEQUENCE_NUMBER);
 
    m_subType = rbuf.LIGHTING2.subtype;
-
-   switch (m_subType)
-   {
-   case sTypeAC :
-   case sTypeHEU :
-   case sTypeANSLUT :
-      m_houseCode = 0;
-      m_id = rbuf.LIGHTING2.id1 << 24 | rbuf.LIGHTING2.id2 << 16 | rbuf.LIGHTING2.id3 << 8 | rbuf.LIGHTING2.id4;
-      m_dimmable.set(fromProtocolDimmableState(rbuf.LIGHTING2.cmnd, rbuf.LIGHTING2.level));
-      break;
-   case sTypeKambrook :
-      m_houseCode = rbuf.LIGHTING2.id1;
-      m_id = rbuf.LIGHTING2.id2 << 16 | rbuf.LIGHTING2.id3 << 8 | rbuf.LIGHTING2.id4;
-      m_switch.set(fromProtocolOnOffState(rbuf.LIGHTING2.cmnd));
-      break;
-   }
+   m_subTypeManager->idFromProtocol(rbuf.LIGHTING2.id1, rbuf.LIGHTING2.id2, rbuf.LIGHTING2.id3, rbuf.LIGHTING2.id4, m_houseCode, m_id);
+   m_subTypeManager->setFromProtocolState(rbuf.LIGHTING2.cmnd, rbuf.LIGHTING2.level);
    m_unitCode = rbuf.LIGHTING2.unitcode;
    m_rssi.set(NormalizeRssiLevel(rbuf.LIGHTING2.rssi));
 
@@ -97,8 +59,17 @@ CLighting2::~CLighting2()
 
 void CLighting2::Init(boost::shared_ptr<yApi::IYadomsApi> context)
 {
+   switch(m_subType)
+   {
+   case sTypeAC : m_subTypeManager.reset(new CLighting2Dimmable("AC")); break;
+   case sTypeHEU : m_subTypeManager.reset(new CLighting2Dimmable("HomeEasy EU")); break;
+   case sTypeANSLUT : m_subTypeManager.reset(new CLighting2Dimmable("ANSLUT")); break;
+   case sTypeKambrook : m_subTypeManager.reset(new CLighting2OnOff("Kambrook RF3672 (Australia)")); break;
+   default:
+      throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
+   }
+
    // Build device description
-   buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
@@ -110,23 +81,9 @@ void CLighting2::Init(boost::shared_ptr<yApi::IYadomsApi> context)
       details.set("houseCode", m_houseCode);
       details.set("id", m_id);
       details.set("unitCode", m_unitCode);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+      context->declareDevice(m_deviceName, m_subTypeManager->getModel(), details.serialize());
 
-      switch(m_subType)
-      {
-      case sTypeAC         :
-      case sTypeHEU        :
-      case sTypeANSLUT     :
-         context->declareKeyword(m_deviceName, m_dimmable);
-         break;
-      case sTypeKambrook   :
-         context->declareKeyword(m_deviceName, m_switch);
-         break;
-      default:
-         BOOST_ASSERT_MSG(false, "subType is not supported");
-         break;
-      }
-
+      m_subTypeManager->declare(context, m_deviceName);
       context->declareKeyword(m_deviceName, m_rssi);
    }
 }
@@ -140,25 +97,8 @@ const shared::communication::CByteBuffer CLighting2::encode(boost::shared_ptr<IS
    rbuf.LIGHTING2.packettype = pTypeLighting2;
    rbuf.LIGHTING2.subtype = m_subType;
    rbuf.LIGHTING2.seqnbr = seqNumberProvider->next();
-   switch (m_subType)
-   {
-   case sTypeAC :
-   case sTypeHEU :
-   case sTypeANSLUT :
-      rbuf.LIGHTING2.id1 = (unsigned char) (0xFF & (m_id >> 24));
-      rbuf.LIGHTING2.id2 = (unsigned char) (0xFF & (m_id >> 16));
-      rbuf.LIGHTING2.id3 = (unsigned char) (0xFF & (m_id >> 8));
-      rbuf.LIGHTING2.id4 = (unsigned char) (0xFF & m_id);
-      toProtocolState(m_dimmable, rbuf.LIGHTING2.cmnd, rbuf.LIGHTING2.level);
-      break;
-   case sTypeKambrook :
-      rbuf.LIGHTING2.id1 = m_houseCode;
-      rbuf.LIGHTING2.id2 = (unsigned char) (0xFF & (m_id >> 16));
-      rbuf.LIGHTING2.id3 = (unsigned char) (0xFF & (m_id >> 8));
-      rbuf.LIGHTING2.id4 = (unsigned char) (0xFF & m_id);
-      toProtocolState(m_switch, rbuf.LIGHTING2.cmnd, rbuf.LIGHTING2.level);
-      break;
-   }
+   m_subTypeManager->idToProtocol(m_houseCode, m_id, rbuf.LIGHTING2.id1, rbuf.LIGHTING2.id2, rbuf.LIGHTING2.id3, rbuf.LIGHTING2.id4);
+   m_subTypeManager->toProtocolState(rbuf.LIGHTING2.cmnd, rbuf.LIGHTING2.level);
    rbuf.LIGHTING2.unitcode = m_unitCode;
    rbuf.LIGHTING2.rssi = 0;
    rbuf.LIGHTING2.filler = 0;
@@ -168,20 +108,8 @@ const shared::communication::CByteBuffer CLighting2::encode(boost::shared_ptr<IS
 
 void CLighting2::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   switch(m_subType)
-   {
-   case sTypeAC         :
-   case sTypeHEU        :
-   case sTypeANSLUT     :
-      context->historizeData(m_deviceName, m_dimmable);
-      break;
-   case sTypeKambrook   :
-      context->historizeData(m_deviceName, m_switch);
-      break;
-   default:
-      BOOST_ASSERT_MSG(false, "subType is not supported");
-      break;
-   }
+   m_subTypeManager->historize(context, m_deviceName);
+   context->historizeData(m_deviceName, m_rssi);
 }
 
 void CLighting2::buildDeviceName()
@@ -189,79 +117,6 @@ void CLighting2::buildDeviceName()
    std::ostringstream ssdeviceName;
    ssdeviceName << (unsigned int)m_subType << "." << (unsigned int)m_houseCode << "." << (unsigned int)m_id << "." << (unsigned int)m_unitCode;
    m_deviceName = ssdeviceName.str();
-}
-
-void CLighting2::buildDeviceModel()
-{
-   std::ostringstream ssModel;
-
-   switch(m_subType)
-   {
-   case sTypeAC         : ssModel << "AC"; break;
-   case sTypeHEU        : ssModel << "HomeEasy EU"; break;
-   case sTypeANSLUT     : ssModel << "ANSLUT"; break;
-   case sTypeKambrook   : ssModel << "Kambrook RF3672 (Australia)"; break;
-   default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
-   }
-
-   m_deviceModel = ssModel.str();
-}
-
-void CLighting2::toProtocolState(const yApi::historization::CSwitch& switchState, unsigned char& state, unsigned char& level)
-{
-   state = switchState.get() ? light2_sOn : light2_sOff;
-   level = 0;
-}
-
-void CLighting2::toProtocolState(const yApi::historization::CDimmable& switchState, unsigned char& state, unsigned char& level)
-{
-   switch(switchState.switchLevel())
-   {
-   case 0 :
-      state = light2_sOff;
-      level = 0;
-      break;
-   case 100 :
-      state = light2_sOn;
-      level = 0;
-      break;
-   default :
-      state = light2_sSetLevel;
-      level = (unsigned char) (switchState.switchLevel() * 0x0F / 100);   // switchLevel returns value from 0 to 100
-      break;
-   }
-}
-
-bool CLighting2::fromProtocolOnOffState(unsigned char protocolState)
-{
-   switch(protocolState)
-   {
-   case light2_sOn: return true;
-   case light2_sOff: return false;
-   default:
-      {
-         BOOST_ASSERT_MSG(false, "Invalid state");
-         throw shared::exception::CInvalidParameter("state");
-      }
-   }
-}
-
-int CLighting2::fromProtocolDimmableState(unsigned char protocolState, unsigned char protocolLevel)
-{
-   switch(protocolState)
-   {
-   case light2_sOn: return 100;
-   case light2_sOff: return 0;
-   case light2_sSetLevel:
-      {
-         return (protocolLevel * 100 / 0x0F); // level needs to be from 0 to 100
-      }
-   default:
-      {
-         BOOST_ASSERT_MSG(false, "Invalid state");
-         throw shared::exception::CInvalidParameter("state");
-      }
-   }
 }
 
 } // namespace rfxcomMessages

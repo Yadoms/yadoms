@@ -29,23 +29,28 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Energy.cpp
    rfxcomMessages/Humidity.h
    rfxcomMessages/Humidity.cpp
-   rfxcomMessages/ILighting5Keyword.h
+   rfxcomMessages/ILighting2Subtype.h
+   rfxcomMessages/ILighting5Subtype.h
    rfxcomMessages/Lighting1.h
    rfxcomMessages/Lighting1.cpp
    rfxcomMessages/Lighting2.h
    rfxcomMessages/Lighting2.cpp
+   rfxcomMessages/Lighting2Dimmable.h
+   rfxcomMessages/Lighting2Dimmable.cpp
+   rfxcomMessages/Lighting2OnOff.h
+   rfxcomMessages/Lighting2OnOff.cpp
    rfxcomMessages/Lighting3.h
    rfxcomMessages/Lighting3.cpp
    rfxcomMessages/Lighting4.h
    rfxcomMessages/Lighting4.cpp
    rfxcomMessages/Lighting5.h
    rfxcomMessages/Lighting5.cpp
-   rfxcomMessages/Lighting5LightwaveRfKeyword.h
-   rfxcomMessages/Lighting5LightwaveRfKeyword.cpp
-   rfxcomMessages/Lighting5MdRemoteKeyword.h
-   rfxcomMessages/Lighting5MdRemoteKeyword.cpp
-   rfxcomMessages/Lighting5OnOffKeyword.h
-   rfxcomMessages/Lighting5OnOffKeyword.cpp
+   rfxcomMessages/Lighting5LightwaveRf.h
+   rfxcomMessages/Lighting5LightwaveRf.cpp
+   rfxcomMessages/Lighting5MdRemote.h
+   rfxcomMessages/Lighting5MdRemote.cpp
+   rfxcomMessages/Lighting5OnOff.h
+   rfxcomMessages/Lighting5OnOff.cpp
    rfxcomMessages/Lighting6.h
    rfxcomMessages/Lighting6.cpp
    rfxcomMessages/Power.h

@@ -12,7 +12,7 @@ namespace rfxcomMessages
    //--------------------------------------------------------------
    /// \brief	The Lightning5 keyword interface
    //--------------------------------------------------------------
-   class ILighting5Keyword
+   class ILighting5Subtype
    {
    public:
       //--------------------------------------------------------------
