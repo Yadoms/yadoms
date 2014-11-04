@@ -301,6 +301,18 @@ bool CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> cont
       else if (data->getConfiguration().get<bool>("type.content.blyss.radio"))
          rfxcomMessages::CLighting6 msg(context, sTypeBlyss, data->getConfiguration().get<shared::CDataContainer>("type.content.blyss.content"));
 
+      // Chime
+      else if (data->getConfiguration().get<bool>("type.content.byronSx.radio"))
+         rfxcomMessages::CChime msg(context, sTypeByronSX, data->getConfiguration().get<shared::CDataContainer>("type.content.byronSx.content"));
+
+      // Fan
+      else if (data->getConfiguration().get<bool>("type.content.siemensSf01.radio"))
+         rfxcomMessages::CFan msg(context, sTypeSiemensSF01, data->getConfiguration().get<shared::CDataContainer>("type.content.siemensSf01.content"));
+
+      // Curtain1
+      else if (data->getConfiguration().get<bool>("type.content.harrisonCurtain.radio"))
+         rfxcomMessages::CCurtain1 msg(context, sTypeHarrison, data->getConfiguration().get<shared::CDataContainer>("type.content.harrisonCurtain.content"));
+
       // Blinds1
       else if (data->getConfiguration().get<bool>("type.content.rollerTrolHastaNew.radio"))
          rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT0, data->getConfiguration().get<shared::CDataContainer>("type.content.rollerTrolHastaNew.content"));
@@ -319,7 +331,21 @@ bool CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> cont
       else if (data->getConfiguration().get<bool>("type.content.forest.radio"))
          rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT7, data->getConfiguration().get<shared::CDataContainer>("type.content.forest.content"));
 
-      // TODO à compléter (voir Domoticz "Switch_Type_Desc")
+      // Rfy
+      else if (data->getConfiguration().get<bool>("type.content.rfy.radio"))
+         rfxcomMessages::CRfy msg(context, sTypeRFY, data->getConfiguration().get<shared::CDataContainer>("type.content.rfy.content"));
+      else if (data->getConfiguration().get<bool>("type.content.rfyExt.radio"))
+         rfxcomMessages::CRfy msg(context, sTypeRFYext, data->getConfiguration().get<shared::CDataContainer>("type.content.rfyExt.content"));
+
+      // FS20
+      else if (data->getConfiguration().get<bool>("type.content.fs20.radio"))
+         rfxcomMessages::CFS20 msg(context, sTypeFS20, data->getConfiguration().get<shared::CDataContainer>("type.content.fs20.content"));
+      else if (data->getConfiguration().get<bool>("type.content.fht8v.radio"))
+         rfxcomMessages::CFS20 msg(context, sTypeFHT8V, data->getConfiguration().get<shared::CDataContainer>("type.content.fht8v.content"));
+      else if (data->getConfiguration().get<bool>("type.content.fht80.radio"))
+         rfxcomMessages::CFS20 msg(context, sTypeFHT80, data->getConfiguration().get<shared::CDataContainer>("type.content.fht80.content"));
+
+      // TODO à compléter
 
       else
          throw shared::exception::CInvalidParameter("Unknown device type");

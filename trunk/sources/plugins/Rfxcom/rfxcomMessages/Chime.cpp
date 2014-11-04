@@ -32,6 +32,20 @@ CChime::CChime(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataC
    Init(context);
 }
 
+CChime::CChime(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+   :m_keyword("event"), m_rssi("rssi")
+{
+   m_rssi.set(0);
+
+   m_subType = subType;
+   if (m_subType != sTypeByronSX)
+      throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
+
+   m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
+
+   Init(context);
+}
+
 CChime::CChime(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_keyword("event"), m_rssi("rssi")
 {

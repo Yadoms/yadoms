@@ -39,6 +39,30 @@ CFS20::CFS20(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataCon
    Init(context);
 }
 
+CFS20::CFS20(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+   :m_state("state"), m_rssi("rssi")
+{
+   m_state.set(0);
+   m_rssi.set(0);
+
+   m_subType = subType;
+   switch(m_subType)
+   {
+   case sTypeFS20   :
+   case sTypeFHT8V  :
+   case sTypeFHT80  :
+      break;
+   default:
+      throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
+   }
+
+   m_houseCode = manuallyDeviceCreationConfiguration.get<std::string>("houseCode");
+   m_groupAddress = manuallyDeviceCreationConfiguration.get<std::string>("groupAddress");
+   m_subAddress = manuallyDeviceCreationConfiguration.get<std::string>("subAddress");
+
+   Init(context);
+}
+
 CFS20::CFS20(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_state("state"), m_rssi("rssi")
 {
