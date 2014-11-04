@@ -61,7 +61,7 @@ void CFan::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    }
 }
 
-const shared::communication::CByteBuffer CFan::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CFan::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
    RBUF buffer;
    MEMCLEAR(buffer.FAN);
@@ -75,7 +75,7 @@ const shared::communication::CByteBuffer CFan::encode(boost::shared_ptr<ISequenc
    buffer.FAN.cmnd = toProtocolState();
    buffer.FAN.filler = 0;
 
-   return shared::communication::CByteBuffer((BYTE*)&buffer, GET_RBUF_STRUCT_SIZE(FAN));
+   return toBufferQueue(buffer, GET_RBUF_STRUCT_SIZE(FAN));
 }
 
 void CFan::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

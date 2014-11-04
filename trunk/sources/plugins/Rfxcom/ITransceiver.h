@@ -42,10 +42,10 @@ public:
    /// \brief	                     Build a message to device
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] command          The received command
-   /// \return                      RFXCom message to send
+   /// \return                      RFXCom command to send (can be constitued of several messages)
    /// \throw shared::exception::CInvalidParameter if no corresponding RFXCom message was found (invalid command)
    //--------------------------------------------------------------
-   virtual const shared::communication::CByteBuffer buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const = 0;
+   virtual boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Decode RFXCom message

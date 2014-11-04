@@ -77,7 +77,7 @@ void CLighting3::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    }
 }
 
-const shared::communication::CByteBuffer CLighting3::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CLighting3::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
    RBUF rbuf;
    MEMCLEAR(rbuf.LIGHTING3);
@@ -93,7 +93,7 @@ const shared::communication::CByteBuffer CLighting3::encode(boost::shared_ptr<IS
    rbuf.LIGHTING3.rssi = 0;
    rbuf.LIGHTING3.filler = 0;
 
-   return shared::communication::CByteBuffer((BYTE*)&rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING3));
+   return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING3));
 }
 
 void CLighting3::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

@@ -10,37 +10,42 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CLighting5OnOffKeyword::CLighting5OnOffKeyword(const std::string& model)
+CLighting5OnOff::CLighting5OnOff(const std::string& model)
    :m_keyword("state"), m_model(model)
 {
 }
 
-std::string CLighting5OnOffKeyword::getModel() const
+std::string CLighting5OnOff::getModel() const
 {
    return m_model;
 }
 
-void CLighting5OnOffKeyword::declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CLighting5OnOff::declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
 {
    context->declareKeyword(deviceName, m_keyword);
 }
 
-void CLighting5OnOffKeyword::historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CLighting5OnOff::historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
 {
    context->historizeData(deviceName, m_keyword);
 }
 
-void CLighting5OnOffKeyword::set(const shared::CDataContainer& yadomsCommand)
+void CLighting5OnOff::set(const shared::CDataContainer& yadomsCommand)
 {
    m_keyword.set(yadomsCommand);
 }
 
-void CLighting5OnOffKeyword::default()
+void CLighting5OnOff::default()
 {
    m_keyword.set(false);
 }
 
-void CLighting5OnOffKeyword::setFromProtocolState(unsigned char cmdByte, unsigned char /*levelByte*/)
+size_t CLighting5OnOff::getMessageNb() const
+{
+   return 1;
+}
+
+void CLighting5OnOff::setFromProtocolState(unsigned char cmdByte, unsigned char /*levelByte*/)
 {
    switch (cmdByte)
    {
@@ -58,7 +63,7 @@ void CLighting5OnOffKeyword::setFromProtocolState(unsigned char cmdByte, unsigne
    }
 }
 
-void CLighting5OnOffKeyword::toProtocolState(unsigned char& cmdByte, unsigned char& levelByte) const
+void CLighting5OnOff::toProtocolState(size_t /*idxMessage*/, unsigned char& cmdByte, unsigned char& levelByte) const
 {
    levelByte = 0;
    cmdByte = m_keyword.get() ? 0x01 : 0x00;

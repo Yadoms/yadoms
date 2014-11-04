@@ -50,10 +50,10 @@ void CRFXMeter::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    }
 }
 
-const shared::communication::CByteBuffer CRFXMeter::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CRFXMeter::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
-   // Nothing to do (message type is read-only)
-   return shared::communication::CByteBuffer();
+   BOOST_ASSERT_MSG(false, "RFXMeter is a read-only message, can not be encoded");
+   throw shared::exception::CInvalidParameter("RFXMeter is a read-only message, can not be encoded");
 }
 
 void CRFXMeter::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

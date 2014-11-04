@@ -17,10 +17,10 @@ CAck::~CAck()
 {
 }
 
-const shared::communication::CByteBuffer CAck::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CAck::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
-   BOOST_ASSERT_MSG(false, "Ack is a read-only message, should not be encoded");
-   return shared::communication::CByteBuffer();
+   BOOST_ASSERT_MSG(false, "Ack is a read-only message, can not be encoded");
+   throw shared::exception::CInvalidParameter("Ack is a read-only message, can not be encoded");
 }
 
 void CAck::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

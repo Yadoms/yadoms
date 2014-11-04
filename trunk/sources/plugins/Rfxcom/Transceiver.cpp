@@ -126,7 +126,7 @@ const shared::communication::CByteBuffer CTransceiver::buildSetModeCmd(unsigned 
    return shared::communication::CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
 }
 
-const shared::communication::CByteBuffer CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const
+boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const
 {
    try
    {

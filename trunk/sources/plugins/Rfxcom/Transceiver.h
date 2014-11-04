@@ -29,7 +29,7 @@ public:
    virtual const shared::communication::CByteBuffer buildResetCmd() const;
    virtual const shared::communication::CByteBuffer buildGetStatusCmd() const;
    virtual const shared::communication::CByteBuffer buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const;
-   virtual const shared::communication::CByteBuffer buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const;
+   virtual boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const;
    virtual boost::shared_ptr<rfxcomMessages::IRfxcomMessage> decodeRfxcomMessage(boost::shared_ptr<yApi::IYadomsApi> context, const shared::communication::CByteBuffer& data) const;
    virtual bool createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IManuallyDeviceCreationData> data) const;
    // [END] ITransceiver implementation

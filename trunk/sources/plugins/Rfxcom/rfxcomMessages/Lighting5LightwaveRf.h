@@ -25,8 +25,9 @@ namespace rfxcomMessages
       virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
       virtual void set(const shared::CDataContainer& yadomsCommand);
       virtual void default();
+      virtual size_t getMessageNb() const;
       virtual void setFromProtocolState(unsigned char cmdByte, unsigned char levelByte);
-      virtual void toProtocolState(unsigned char& cmdByte, unsigned char& levelByte) const;
+      virtual void toProtocolState(size_t idxMessage, unsigned char& cmdByte, unsigned char& levelByte) const;
       // [END] ILighting5Subtype implementation
 
    private:

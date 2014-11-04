@@ -20,11 +20,11 @@ namespace rfxcomMessages
       virtual ~IRfxcomMessage() {}
 
       //--------------------------------------------------------------
-      /// \brief	                        Encode message for serial link
+      /// \brief	                        Encode messages for serial link
       /// \param[in] seqNumberProvider    The sequence number provider
-      /// \return                         Buffer
+      /// \return                         Buffers (a command can be parted in several messages)
       //--------------------------------------------------------------
-      virtual const shared::communication::CByteBuffer encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const = 0;
+      virtual boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Historize message data to Yadoms

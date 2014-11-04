@@ -1,5 +1,7 @@
 #pragma once
 
+#include <shared/communication/Buffer.hpp>
+
 //--------------------------------------------------------------
 /// \brief	This file provides helpers to use RFXtrx.h file (provided by RFXCom)
 //--------------------------------------------------------------
@@ -50,6 +52,14 @@ bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, size_t expectedSi
 /// \note                              All checks are perform, even if one fails
 //--------------------------------------------------------------
 bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, BYTE expectedSubType, size_t expectedSize, unsigned int expectedSeqNumber);
+
+//--------------------------------------------------------------
+/// \brief	                           Make a buffer queue from one buffer
+/// \param[in] buffer                  Buffer to send
+/// \param[in] subStructureSize        RBUF Substructure size
+/// \return                            Buffer queue containing only one buffer
+//--------------------------------------------------------------
+boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > toBufferQueue(const RBUF& buffer, std::size_t subStructureSize);
 
 //--------------------------------------------------------------
 /// \brief	                           Normalize battery level
