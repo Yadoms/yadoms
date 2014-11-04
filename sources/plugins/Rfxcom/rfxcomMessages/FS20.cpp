@@ -162,7 +162,7 @@ void CFS20::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    }
 }
 
-const shared::communication::CByteBuffer CFS20::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CFS20::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
    RBUF rbuf;
    MEMCLEAR(rbuf.FS20);
@@ -178,7 +178,7 @@ const shared::communication::CByteBuffer CFS20::encode(boost::shared_ptr<ISequen
         !regex_match(m_subAddress   , boost::regex("[1-4]{2}")) )
    {
       YADOMS_LOG(warning) << "FS20 encoding : invalid house code(" << m_houseCode << "), group adress(" << m_groupAddress << ") or sub-address (" << m_subAddress << ")";
-      return shared::communication::CByteBuffer();
+      throw shared::exception::CInvalidParameter("FS20 houseCode");
    }
    rbuf.FS20.hc1 =
       ((m_houseCode[0] - '1') << 6) |
@@ -250,14 +250,14 @@ const shared::communication::CByteBuffer CFS20::encode(boost::shared_ptr<ISequen
       {
          // Note sTypeFHT80 is read-only
          YADOMS_LOG(warning) << "FS20 invalid received message (unknown subType " << m_subType << ")";
-         return shared::communication::CByteBuffer();
+         throw shared::exception::CInvalidParameter("FS20 subType");
       }
    }
 
    rbuf.FS20.rssi = 0;
    rbuf.FS20.filler = 0;
 
-   return shared::communication::CByteBuffer((BYTE*)&rbuf, GET_RBUF_STRUCT_SIZE(FS20));
+   return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(FS20));
 }
 
 void CFS20::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

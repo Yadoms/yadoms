@@ -3,6 +3,7 @@
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include "Lighting5LightwaveRf.h"
+#include "Lighting5Livolo.h"
 #include "Lighting5MdRemote.h"
 #include "Lighting5OnOff.h"
 // Shortcut to yadomsApi namespace
@@ -61,12 +62,12 @@ void CLighting5::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    switch(m_subType)
    {
    case sTypeLightwaveRF : m_subTypeManager.reset(new CLighting5LightwaveRfKeyword()); break;
-   case sTypeEMW100      : m_subTypeManager.reset(new CLighting5OnOffKeyword("EMW100 GAO/Everflourish")); break;
-   case sTypeBBSB        : m_subTypeManager.reset(new CLighting5OnOffKeyword("BBSB new types")); break;
-   case sTypeRSL         : m_subTypeManager.reset(new CLighting5OnOffKeyword("Conrad RSL2")); break;
+   case sTypeEMW100      : m_subTypeManager.reset(new CLighting5OnOff("EMW100 GAO/Everflourish")); break;
+   case sTypeBBSB        : m_subTypeManager.reset(new CLighting5OnOff("BBSB new types")); break;
+   case sTypeRSL         : m_subTypeManager.reset(new CLighting5OnOff("Conrad RSL2")); break;
    case sTypeMDREMOTE    : m_subTypeManager.reset(new CLighting5MdRemoteKeyword()); break;
-   case sTypeLivolo      : m_subTypeManager.reset(new CLighting5OnOffKeyword("Livolo")); break; // Limited support of Livolo (just ON/OFF), as we can't now exact type of module
-   case sTypeTRC02       : m_subTypeManager.reset(new CLighting5OnOffKeyword("RGB TRC02")); break;
+   case sTypeLivolo      : m_subTypeManager.reset(new CLighting5Livolo()); break; // Limited support of Livolo (just ON/OFF), as we can't now exact type of module
+   case sTypeTRC02       : m_subTypeManager.reset(new CLighting5OnOff("RGB TRC02")); break;
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
    }
@@ -89,7 +90,7 @@ void CLighting5::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    }
 }
 
-const shared::communication::CByteBuffer CLighting5::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CLighting5::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
    RBUF rbuf;
    MEMCLEAR(rbuf.LIGHTING5);
@@ -102,11 +103,17 @@ const shared::communication::CByteBuffer CLighting5::encode(boost::shared_ptr<IS
    rbuf.LIGHTING5.id2 = (unsigned char) (0xFF & (m_id >> 8));
    rbuf.LIGHTING5.id3 = (unsigned char) (0xFF & m_id);
    rbuf.LIGHTING5.unitcode = m_unitCode;
-   m_subTypeManager->toProtocolState(rbuf.LIGHTING5.cmnd, rbuf.LIGHTING5.level);
    rbuf.LIGHTING5.rssi = 0;
    rbuf.LIGHTING5.filler = 0;
 
-   return shared::communication::CByteBuffer((BYTE*)&rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING5));
+   // Some sub-protocols need several messages
+   boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > buffers(new std::queue<const shared::communication::CByteBuffer>);
+   for (size_t idxMessage = 0 ; idxMessage < m_subTypeManager->getMessageNb() ; ++ idxMessage)
+   {
+      m_subTypeManager->toProtocolState(idxMessage, rbuf.LIGHTING5.cmnd, rbuf.LIGHTING5.level);
+      buffers->push(shared::communication::CByteBuffer((BYTE*)&rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING5)));
+   }
+   return buffers;
 }
 
 void CLighting5::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const

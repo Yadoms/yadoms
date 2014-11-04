@@ -47,6 +47,12 @@ namespace rfxcomMessages
       virtual void default() = 0;
 
       //--------------------------------------------------------------
+      /// \brief	                        Get the number of messages needed to perform command
+      /// \return                         Number of messages
+      //--------------------------------------------------------------
+      virtual size_t getMessageNb() const = 0;
+
+      //--------------------------------------------------------------
       /// \brief	                        Set keyword state from protocol data
       /// \param[in] cmdByte              The cmd byte
       /// \param[in] levelByte            The level byte
@@ -55,10 +61,11 @@ namespace rfxcomMessages
 
       //--------------------------------------------------------------
       /// \brief	                        Get protocol data from keyword state
+      /// \param[in] idxMessage           Message index
       /// \param[out] cmdByte             The cmd byte
       /// \param[out] levelByte           The level byte
       //--------------------------------------------------------------
-      virtual void toProtocolState(unsigned char& cmdByte, unsigned char& levelByte) const = 0;
+      virtual void toProtocolState(size_t idxMessage, unsigned char& cmdByte, unsigned char& levelByte) const = 0;
    };
 
 } // namespace rfxcomMessages

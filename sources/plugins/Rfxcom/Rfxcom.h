@@ -41,6 +41,12 @@ protected:
    void send(const shared::communication::CByteBuffer& buffer, bool needAnswer = false);
 
    //--------------------------------------------------------------
+   /// \brief	                     Send several messages to the RFXCom
+   /// \param [in] buffers          Buffers to send
+   //--------------------------------------------------------------
+   void send(boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > buffers);
+
+   //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] command          The received command

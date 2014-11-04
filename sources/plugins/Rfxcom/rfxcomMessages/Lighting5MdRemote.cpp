@@ -40,6 +40,11 @@ void CLighting5MdRemoteKeyword::default()
    m_keyword.set(0);
 }
 
+size_t CLighting5MdRemoteKeyword::getMessageNb() const
+{
+   return 1;
+}
+
 void CLighting5MdRemoteKeyword::setFromProtocolState(unsigned char cmdByte, unsigned char levelByte)
 {
    switch (cmdByte)
@@ -62,7 +67,7 @@ void CLighting5MdRemoteKeyword::setFromProtocolState(unsigned char cmdByte, unsi
    }
 }
 
-void CLighting5MdRemoteKeyword::toProtocolState(unsigned char& cmdByte, unsigned char& levelByte) const
+void CLighting5MdRemoteKeyword::toProtocolState(size_t /*idxMessage*/, unsigned char& cmdByte, unsigned char& levelByte) const
 {
    levelByte = 0;
    if      (m_keyword.switchLevel() ==   0) cmdByte = 0x00; // Off

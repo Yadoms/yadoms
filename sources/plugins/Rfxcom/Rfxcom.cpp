@@ -165,6 +165,19 @@ void CRfxcom::send(const shared::communication::CByteBuffer& buffer, bool needAn
       m_waitForAnswerTimer->start();
 }
 
+void CRfxcom::send(boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > buffers)
+{
+   if (!m_port)
+      return;
+
+   // Send all messages
+   while (!buffers->empty())
+   {
+      send(buffers->front(), false);
+      buffers->pop();
+   }
+}
+
 void CRfxcom::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
    YADOMS_LOG(debug) << "Command received :" << command->toString();

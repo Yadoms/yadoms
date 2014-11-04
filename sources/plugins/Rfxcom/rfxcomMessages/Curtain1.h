@@ -40,7 +40,7 @@ namespace rfxcomMessages
       virtual ~CCurtain1();
 
       // IRfxcomMessage implementation
-      virtual const shared::communication::CByteBuffer encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
+      virtual boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
       virtual void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
       // [END] IRfxcomMessage implementation
       

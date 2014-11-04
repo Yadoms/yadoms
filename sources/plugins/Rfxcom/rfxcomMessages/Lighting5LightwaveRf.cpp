@@ -40,6 +40,11 @@ void CLighting5LightwaveRfKeyword::default()
    m_keyword.set(0);
 }
 
+size_t CLighting5LightwaveRfKeyword::getMessageNb() const
+{
+   return 1;
+}
+
 void CLighting5LightwaveRfKeyword::setFromProtocolState(unsigned char cmdByte, unsigned char levelByte)
 {
    switch (cmdByte)
@@ -58,7 +63,7 @@ void CLighting5LightwaveRfKeyword::setFromProtocolState(unsigned char cmdByte, u
    }
 }
 
-void CLighting5LightwaveRfKeyword::toProtocolState(unsigned char& cmdByte, unsigned char& levelByte) const
+void CLighting5LightwaveRfKeyword::toProtocolState(size_t /*idxMessage*/, unsigned char& cmdByte, unsigned char& levelByte) const
 {
    if      (m_keyword.switchLevel() ==   0) { cmdByte = 0x00; levelByte = 0; }
    else if (m_keyword.switchLevel() == 100) { cmdByte = 0x01; levelByte = 0; }

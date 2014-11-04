@@ -11,14 +11,13 @@ namespace rfxcomMessages
    //--------------------------------------------------------------
    /// \brief	The Lighting5 On/off keyword
    //--------------------------------------------------------------
-   class CLighting5OnOff : public ILighting5Subtype
+   class CLighting5Livolo : public ILighting5Subtype
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in] model                The device model
       //--------------------------------------------------------------
-      CLighting5OnOff(const std::string& model);
+      CLighting5Livolo();
 
       // ILighting5Subtype implementation
       virtual std::string getModel() const;
@@ -32,11 +31,6 @@ namespace rfxcomMessages
       // [END] ILighting5Subtype implementation
 
    private:
-      //--------------------------------------------------------------
-      /// \brief	                        The device model
-      //--------------------------------------------------------------
-      const std::string& m_model;
-
       //--------------------------------------------------------------
       /// \brief	                        The keyword
       //--------------------------------------------------------------

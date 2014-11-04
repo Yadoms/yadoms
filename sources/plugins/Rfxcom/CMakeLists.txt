@@ -47,6 +47,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Lighting5.cpp
    rfxcomMessages/Lighting5LightwaveRf.h
    rfxcomMessages/Lighting5LightwaveRf.cpp
+   rfxcomMessages/Lighting5Livolo.h
+   rfxcomMessages/Lighting5Livolo.cpp
    rfxcomMessages/Lighting5MdRemote.h
    rfxcomMessages/Lighting5MdRemote.cpp
    rfxcomMessages/Lighting5OnOff.h

@@ -38,6 +38,13 @@ bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, size_t expectedSi
    return ok;
 }
 
+boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > toBufferQueue(const RBUF& buffer, std::size_t subStructureSize)
+{
+   boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > buffers(new std::queue<const shared::communication::CByteBuffer>);
+   buffers->push(shared::communication::CByteBuffer((BYTE*)&buffer, subStructureSize));
+   return buffers;
+}
+
 bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, BYTE expectedSubType, size_t expectedSize, unsigned int expectedSeqNumber)
 {
    bool ok = CheckReceivedMessage(rbuf, expectedType, expectedSize, expectedSeqNumber);

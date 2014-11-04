@@ -93,7 +93,7 @@ void CBlinds1::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    }
 }
 
-const shared::communication::CByteBuffer CBlinds1::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CBlinds1::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
    RBUF buffer;
    MEMCLEAR(buffer.BLINDS1);
@@ -111,7 +111,7 @@ const shared::communication::CByteBuffer CBlinds1::encode(boost::shared_ptr<ISeq
    buffer.BLINDS1.rssi = 0;
    buffer.BLINDS1.filler = 0;
 
-   return shared::communication::CByteBuffer((BYTE*)&buffer, GET_RBUF_STRUCT_SIZE(BLINDS1));
+   return toBufferQueue(buffer, GET_RBUF_STRUCT_SIZE(BLINDS1));
 }
 
 void CBlinds1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
