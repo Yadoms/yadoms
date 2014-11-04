@@ -4,11 +4,13 @@
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
 #include <shared/DataContainer.h>
+#include "ILighting5Keyword.h"
 
 namespace yApi = shared::plugin::yadomsApi;
 
 namespace rfxcomMessages
 {
+
    //--------------------------------------------------------------
    /// \brief	The Lightning5 protocol support
    //--------------------------------------------------------------
@@ -72,22 +74,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       void buildDeviceModel();
 
-      //--------------------------------------------------------------
-      /// \brief	                        Convert Yadoms state command to protocol value
-      /// \param[out] protocolCmnd        The command known by the protocol
-      /// \param[out] protocolLevel       The level known by the protocol
-      //--------------------------------------------------------------
-      void toProtocolState(unsigned char& protocolCmnd, unsigned char& protocolLevel) const;
-
-      //--------------------------------------------------------------
-      /// \brief	                        Convert protocol value to Yadoms state
-      /// \param[in] protocolCmnd         The command known by the protocol
-      /// \param[in] protocolLevel        The level known by the protocol
-      /// \return                         The Yadoms compliant value
-      /// \throw                          shared::exception::CInvalidParameter if fails to interpret command
-      //--------------------------------------------------------------
-      int fromProtocolState(unsigned char protocolCmnd, unsigned char protocolLevel) const;
-
    private:
       //--------------------------------------------------------------
       /// \brief	The device sub-type
@@ -115,9 +101,9 @@ namespace rfxcomMessages
       std::string m_deviceModel;
 
       //--------------------------------------------------------------
-      /// \brief	The keyword associated with state
+      /// \brief	The keyword(s) associated with state
       //--------------------------------------------------------------
-      yApi::historization::CDimmable m_state;
+      boost::shared_ptr<ILighting5Keyword> m_keyword;
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with rssi

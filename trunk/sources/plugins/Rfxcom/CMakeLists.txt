@@ -29,6 +29,7 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Energy.cpp
    rfxcomMessages/Humidity.h
    rfxcomMessages/Humidity.cpp
+   rfxcomMessages/ILighting5Keyword.h
    rfxcomMessages/Lighting1.h
    rfxcomMessages/Lighting1.cpp
    rfxcomMessages/Lighting2.h
@@ -39,6 +40,12 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Lighting4.cpp
    rfxcomMessages/Lighting5.h
    rfxcomMessages/Lighting5.cpp
+   rfxcomMessages/Lighting5LightwaveRfKeyword.h
+   rfxcomMessages/Lighting5LightwaveRfKeyword.cpp
+   rfxcomMessages/Lighting5MdRemoteKeyword.h
+   rfxcomMessages/Lighting5MdRemoteKeyword.cpp
+   rfxcomMessages/Lighting5OnOffKeyword.h
+   rfxcomMessages/Lighting5OnOffKeyword.cpp
    rfxcomMessages/Lighting6.h
    rfxcomMessages/Lighting6.cpp
    rfxcomMessages/Power.h
