@@ -27,6 +27,16 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       /// \param[in] context              Yadoms APi context
+      /// \param[in] subType              Device subType
+      /// \param[in] manuallyDeviceCreationConfiguration The device concfiguration
+      /// \throw                          shared::exception::CInvalidParameter or shared::exception::COutOfRange if fail to interpret configuration
+      /// \note                           Use this constructor for manually device creation
+      //--------------------------------------------------------------
+      CRfy(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration);
+
+      //--------------------------------------------------------------
+      /// \brief	                        Constructor
+      /// \param[in] context              Yadoms APi context
       /// \param[in] rbuf                 The received buffer
       /// \param[in] seqNumberProvider    The sequence number provider
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)

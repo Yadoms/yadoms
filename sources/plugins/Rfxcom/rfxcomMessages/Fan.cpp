@@ -30,6 +30,21 @@ CFan::CFan(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& keywo
    Init(context);
 }
 
+CFan::CFan(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+   :m_light("light"), m_fan("fan")
+{
+   m_light.set(false);
+   m_fan.set(false);
+
+   m_subType = subType;
+   if (m_subType != sTypeSiemensSF01)
+      throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
+
+   m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
+
+   Init(context);
+}
+
 CFan::CFan(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_light("light"), m_fan("fan"), m_lightCmd(false), m_subType(0), m_id(0)
 {

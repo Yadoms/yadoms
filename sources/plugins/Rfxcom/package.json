@@ -642,6 +642,65 @@
                }
             },
 
+            "byronSx":
+            {
+               "type": "section",
+               "name": "Byron SX",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (0-65535)",
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "65535"
+                  }              
+               }
+            },
+            
+            "siemensSf01":
+            {
+               "type": "section",
+               "name": "Siemens SF01 (LF959RA50/LF259RB50/LF959RB50 extractor hood)",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (0-32767)",
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "32767"
+                  }              
+               }
+            },
+            
+            "harrisonCurtain":
+            {
+               "type": "section",
+               "name": "Harrison Curtain",
+               "content":
+               {
+                  "houseCode":
+                  {
+                     "name": "House Code",
+                     "description": "The house code (A-P)",
+                     "type": "string",
+                     "regex" : "[A-P]",
+                     "defaultValue": "A"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-16)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "16"
+                  }            
+               }
+            },
+            
             "rollerTrolHastaNew":
             {
                "type": "section",
@@ -801,7 +860,153 @@
                      "maximumValue": "15"
                   }             
                }
-            }            
+            },
+            
+            "rfy":
+            {
+               "type": "section",
+               "name": "RFY",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-1048575)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "1048575"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-4)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "4"
+                  }             
+               }
+            },
+            "rfyExt":
+            {
+               "type": "section",
+               "name": "RFY ext",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-1048575)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "1048575"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (0-15)",
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "15"
+                  }             
+               }
+            },
+            
+            "fs20":
+            {
+               "type": "section",
+               "name": "FS20",
+               "content":
+               {
+                  "houseCode":
+                  {
+                     "name": "House Code",
+                     "description": "The house code (8 numbers from 1-4 : 11111111 to 44444444)",
+                     "type": "string",
+                     "regex" : "[1-4]{8}",
+                     "defaultValue": "11111111"
+                  },
+                  "groupAddress":
+                  {
+                     "name": "Group address",
+                     "description": "The group address (2 numbers from 1-4 : 11 to 44)",
+                     "type": "string",
+                     "regex" : "[1-4]{2}",
+                     "defaultValue": "11"
+                  },
+                  "subAddress":
+                  {
+                     "name": "Sub address",
+                     "description": "The sub-address (2 numbers from 1-4 : 11 to 44)",
+                     "type": "string",
+                     "regex" : "[1-4]{2}",
+                     "defaultValue": "11"
+                  }             
+               }
+            },
+            "fht8v":
+            {
+               "type": "section",
+               "name": "FHT8V valve",
+               "content":
+               {
+                  "houseCode":
+                  {
+                     "name": "House Code",
+                     "description": "The house code (8 numbers from 1-4 : 11111111 to 44444444)",
+                     "type": "string",
+                     "regex" : "[1-4]{8}",
+                     "defaultValue": "11111111"
+                  },
+                  "groupAddress":
+                  {
+                     "name": "Group address",
+                     "description": "The group address (2 numbers from 1-4 : 11 to 44)",
+                     "type": "string",
+                     "regex" : "[1-4]{2}",
+                     "defaultValue": "11"
+                  },
+                  "subAddress":
+                  {
+                     "name": "Sub address",
+                     "description": "The sub-address (2 numbers from 1-4 : 11 to 44)",
+                     "type": "string",
+                     "regex" : "[1-4]{2}",
+                     "defaultValue": "11"
+                  }                        
+               }
+            },
+            "fht80":
+            {
+               "type": "section",
+               "name": "FHT80 door/window sensor",
+               "content":
+               {
+                  "houseCode":
+                  {
+                     "name": "House Code",
+                     "description": "The house code (8 numbers from 1-4 : 11111111 to 44444444)",
+                     "type": "string",
+                     "regex" : "[1-4]{8}",
+                     "defaultValue": "11111111"
+                  },
+                  "groupAddress":
+                  {
+                     "name": "Group address",
+                     "description": "The group address (2 numbers from 1-4 : 11 to 44)",
+                     "type": "string",
+                     "regex" : "[1-4]{2}",
+                     "defaultValue": "11"
+                  },
+                  "subAddress":
+                  {
+                     "name": "Sub address",
+                     "description": "The sub-address (2 numbers from 1-4 : 11 to 44)",
+                     "type": "string",
+                     "regex" : "[1-4]{2}",
+                     "defaultValue": "11"
+                  }                         
+               }
+            }
          }
       }
    }

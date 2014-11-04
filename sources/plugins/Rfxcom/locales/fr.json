@@ -464,6 +464,51 @@
                }
             },
             
+            "byronSx":
+            {
+               "name": "Byron SX",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (0-65535)"
+                  }              
+               }
+            },
+                        
+            "siemensSf01":
+            {
+               "name": "Siemens SF01 (hotte aspirante LF959RA50/LF259RB50/LF959RB50)",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (0-32767)"
+                  }              
+               }
+            },
+            
+            "harrisonCurtain":
+            {
+               "type": "section",
+               "name": "Harrison Curtain",
+               "content":
+               {
+                  "houseCode":
+                  {
+                     "name": "Bâtiment",
+                     "description": "L'identifiant du bâtiment (A-P)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Equipement",
+                     "description": "L'identifiant de l'équipement (1-16)"
+                  }              
+               }
+            },
+            
             "rollerTrolHastaNew":
             {
                "name": "RollerTrol, Hasta new",
@@ -579,7 +624,109 @@
                      "description": "L'identifiant de la fonction de l'équipement (1-15)"
                   }             
                }
-            } 
+            },
+            
+            "rfy":
+            {
+               "name": "RFY",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (0-1048575)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unité",
+                     "description": "L'identifiant de la fonction de l'équipement (1-4)"
+                  }             
+               }
+            },
+            "rfyExt":
+            {
+               "name": "RFY ext",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (0-1048575)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unité",
+                     "description": "L'identifiant de la fonction de l'équipement (0-15)"
+                  }             
+               }
+            },
+            
+            "fs20":
+            {
+               "name": "FS20",
+               "content":
+               {
+                  "houseCode":
+                  {
+                     "name": "Bâtiment",
+                     "description": "L'identifiant du bâtiment (8 chiffres de 1 à 4 : 11111111 à 44444444)"
+                  },
+                  "groupAddress":
+                  {
+                     "name": "Adresse du groupe",
+                     "description": "L'adresse du groupe (2 chiffres de 1 à 4 : 11 à 44)"
+                  },
+                  "subAddress":
+                  {
+                     "name": "Sous-adresse",
+                     "description": "La sous-adresse (2 chiffres de 1 à 4 : 11 à 44)"
+                  }             
+               }
+            },
+            "fht8v":
+            {
+               "name": "Vanne FHT8V",
+               "content":
+               {
+                  "houseCode":
+                  {
+                     "name": "Bâtiment",
+                     "description": "L'identifiant du bâtiment (8 chiffres de 1 à 4 : 11111111 à 44444444)"
+                  },
+                  "groupAddress":
+                  {
+                     "name": "Adresse du groupe",
+                     "description": "L'adresse du groupe (2 chiffres de 1 à 4 : 11 à 44)"
+                  },
+                  "subAddress":
+                  {
+                     "name": "Sous-adresse",
+                     "description": "La sous-adresse (2 chiffres de 1 à 4 : 11 à 44)"
+                  }                        
+               }
+            },
+            "fht80":
+            {
+               "name": "capteur d'ouverture FHT80",
+               "content":
+               {
+                  "houseCode":
+                  {
+                     "name": "Bâtiment",
+                     "description": "L'identifiant du bâtiment (8 chiffres de 1 à 4 : 11111111 à 44444444)"
+                  },
+                  "groupAddress":
+                  {
+                     "name": "Adresse du groupe",
+                     "description": "L'adresse du groupe (2 chiffres de 1 à 4 : 11 à 44)"
+                  },
+                  "subAddress":
+                  {
+                     "name": "Sous-adresse",
+                     "description": "La sous-adresse (2 chiffres de 1 à 4 : 11 à 44)"
+                  }                        
+               }
+            }
          }
       }
    }

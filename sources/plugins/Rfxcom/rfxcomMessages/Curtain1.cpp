@@ -20,6 +20,21 @@ CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYadomsApi> context, const shared::
    Init(context);
 }
 
+CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+   :m_state("state"), m_subType(0), m_houseCode(0), m_unitCode(0)
+{
+   m_state.set(yApi::historization::ECurtainCommand::kStopValue);
+
+   m_subType = subType;
+   if (m_subType != sTypeHarrison)
+      throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
+
+   m_houseCode = (unsigned char) manuallyDeviceCreationConfiguration.get<char>("houseCode");
+   m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
+
+   Init(context);
+}
+
 CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_state("state"), m_subType(0), m_houseCode(0), m_unitCode(0)
 {
