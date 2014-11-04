@@ -4,7 +4,7 @@
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
 #include <shared/DataContainer.h>
-#include "ILighting5Keyword.h"
+#include "ILighting5Subtype.h"
 
 namespace yApi = shared::plugin::yadomsApi;
 
@@ -69,11 +69,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       void buildDeviceName();
 
-      //--------------------------------------------------------------
-      /// \brief	                        Build the sensor model
-      //--------------------------------------------------------------
-      void buildDeviceModel();
-
    private:
       //--------------------------------------------------------------
       /// \brief	The device sub-type
@@ -96,14 +91,9 @@ namespace rfxcomMessages
       std::string m_deviceName;
 
       //--------------------------------------------------------------
-      /// \brief	The device model
+      /// \brief	The sub-type management
       //--------------------------------------------------------------
-      std::string m_deviceModel;
-
-      //--------------------------------------------------------------
-      /// \brief	The keyword(s) associated with state
-      //--------------------------------------------------------------
-      boost::shared_ptr<ILighting5Keyword> m_keyword;
+      boost::shared_ptr<ILighting5Subtype> m_subTypeManager;
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with rssi

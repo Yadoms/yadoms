@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Lighting5OnOffKeyword.h"
+#include "Lighting5OnOff.h"
 #include "RFXtrxHelpers.h"
 
 #include <shared/plugin/yadomsApi/StandardCapacities.h>

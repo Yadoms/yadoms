@@ -2,33 +2,35 @@
 
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
 #include <shared/DataContainer.h>
-#include "ILighting5Keyword.h"
+#include "ILighting2Subtype.h"
 
 namespace yApi = shared::plugin::yadomsApi;
 
 namespace rfxcomMessages
 {
    //--------------------------------------------------------------
-   /// \brief	The Lightning5 On/off keyword
+   /// \brief	The Lighting2 On/off keyword
    //--------------------------------------------------------------
-   class CLighting5OnOffKeyword : public ILighting5Keyword
+   class CLighting2OnOff : public ILighting2Subtype
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       /// \param[in] model                The device model
       //--------------------------------------------------------------
-      CLighting5OnOffKeyword(const std::string& model);
+      CLighting2OnOff(const std::string& model);
 
-      // ILighting5Keyword implementation
+      // ILighting2Subtype implementation
       virtual std::string getModel() const;
       virtual void declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
       virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
       virtual void set(const shared::CDataContainer& yadomsCommand);
       virtual void default();
-      virtual void setFromProtocolState(unsigned char cmdByte, unsigned char /*levelByte*/);
+      virtual void idFromProtocol(unsigned char id1Byte, unsigned char id2Byte, unsigned char id3Byte, unsigned char id4Byte, unsigned char& houseCode, unsigned int& id) const;
+      virtual void idToProtocol(unsigned char houseCode, unsigned int id, unsigned char& id1Byte, unsigned char& id2Byte, unsigned char& id3Byte, unsigned char& id4Byte) const;
+      virtual void setFromProtocolState(unsigned char cmdByte, unsigned char levelByte);
       virtual void toProtocolState(unsigned char& cmdByte, unsigned char& levelByte) const;
-      // [END] ILighting5Keyword implementation
+      // [END] ILighting2Subtype implementation
 
    private:
       //--------------------------------------------------------------

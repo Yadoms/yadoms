@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Lighting5MdRemoteKeyword.h"
+#include "Lighting5MdRemote.h"
 #include "RFXtrxHelpers.h"
 
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
