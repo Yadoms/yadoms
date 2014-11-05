@@ -22,8 +22,8 @@ CWind::CWind(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boos
 
    m_windDirection.set(rbuf.WIND.directionl | (rbuf.WIND.directionh << 8));
    if (m_subType != sTypeWIND5)
-      m_windAverageSpeed.set( (rbuf.WIND.av_speedl | (rbuf.WIND.av_speedh << 8)) / 10);
-   m_windMaxSpeed.set( (rbuf.WIND.gustl | (rbuf.WIND.gusth << 8)) / 10);
+      m_windAverageSpeed.set( (rbuf.WIND.av_speedl | (rbuf.WIND.av_speedh << 8)) / 10.0);
+   m_windMaxSpeed.set( (rbuf.WIND.gustl | (rbuf.WIND.gusth << 8)) / 10.0);
 
    if (m_subType == sTypeWIND4)
    {
