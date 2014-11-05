@@ -18,8 +18,9 @@ CBbq::CBbq(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost:
 
    m_id = rbuf.BBQ.id1 | (rbuf.BBQ.id2 << 8);
 
-   m_foodTemperature.set(NormalizeTemperature(rbuf.BBQ.sensor1h, rbuf.BBQ.sensor1l));
-   m_bbqTemperature.set(NormalizeTemperature(rbuf.BBQ.sensor2h, rbuf.BBQ.sensor2l));
+   // Don't use NormalizeTemperature, as temperature is given in °C, not in °C/10
+   m_foodTemperature.set((double)((rbuf.BBQ.sensor1h << 8) | rbuf.BBQ.sensor1l));
+   m_bbqTemperature.set((double)((rbuf.BBQ.sensor2h << 8) | rbuf.BBQ.sensor2l));
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.BBQ.battery_level));
    m_rssi.set(NormalizeRssiLevel(rbuf.BBQ.rssi));
 

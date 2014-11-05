@@ -87,6 +87,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/TempHumidity.cpp
    rfxcomMessages/TempHumidityBarometric.h
    rfxcomMessages/TempHumidityBarometric.cpp
+   rfxcomMessages/TempRain.h
+   rfxcomMessages/TempRain.cpp
    rfxcomMessages/TransceiverStatus.h
    rfxcomMessages/TransceiverStatus.cpp
    rfxcomMessages/UV.h

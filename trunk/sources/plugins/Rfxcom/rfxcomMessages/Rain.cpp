@@ -28,7 +28,7 @@ CRain::CRain(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boos
    case sTypeRAIN3:
    case sTypeRAIN4:
    case sTypeRAIN5:
-      m_rain->set(((rbuf.RAIN.raintotal1 << 16) | (rbuf.RAIN.raintotal2 << 8) | rbuf.RAIN.raintotal3) / 10);
+      m_rain->set(((rbuf.RAIN.raintotal1 << 16) | (rbuf.RAIN.raintotal2 << 8) | rbuf.RAIN.raintotal3) / 10.0);
       break;
    case sTypeRAIN6:
       m_rain->set(rbuf.RAIN.raintotal3 * 0.266);

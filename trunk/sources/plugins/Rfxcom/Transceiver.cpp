@@ -29,6 +29,7 @@
 #include "rfxcomMessages/Rfy.h"
 #include "rfxcomMessages/Security1.h"
 #include "rfxcomMessages/Temp.h"
+#include "rfxcomMessages/TempRain.h"
 #include "rfxcomMessages/TempHumidity.h"
 #include "rfxcomMessages/TempHumidityBarometric.h"
 #include "rfxcomMessages/Thermostat1.h"
@@ -222,6 +223,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    case pTypeCurtain             : message.reset(new rfxcomMessages::CCurtain1               (context, *buf, m_seqNumberProvider)); break;
    case pTypeBlinds              : message.reset(new rfxcomMessages::CBlinds1                (context, *buf, m_seqNumberProvider)); break;
    case pTypeRFY                 : message.reset(new rfxcomMessages::CRfy                    (context, *buf, m_seqNumberProvider)); break;
+   case pTypeTEMP_RAIN           : message.reset(new rfxcomMessages::CTempRain               (context, *buf, m_seqNumberProvider)); break;
    case pTypeTEMP                : message.reset(new rfxcomMessages::CTemp                   (context, *buf, m_seqNumberProvider)); break;
    case pTypeHUM                 : message.reset(new rfxcomMessages::CHumidity               (context, *buf, m_seqNumberProvider)); break;
    case pTypeTEMP_HUM            : message.reset(new rfxcomMessages::CTempHumidity           (context, *buf, m_seqNumberProvider)); break;
