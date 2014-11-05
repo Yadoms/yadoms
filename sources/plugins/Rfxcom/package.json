@@ -911,6 +911,89 @@
                }
             },
             
+            "x10SecurityR":
+            {
+               "type": "section",
+               "name": "X10 security remote",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (0-65535)",
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "65535"
+                  }           
+               }
+            },
+            
+            "digimax":
+            {
+               "type": "section",
+               "name": "Digimax, TLX7506",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (0-65535)",
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "65535"
+                  }           
+               }
+            },            
+            "digimaxShort":
+            {
+               "type": "section",
+               "name": "Digimax short (no set point)",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (0-65535)",
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "65535"
+                  }           
+               }
+            },
+            
+            "he105":
+            {
+               "type": "section",
+               "name": "HE105",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (0-31)",
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "31"
+                  }               
+               }
+            },            
+            "rts10":
+            {
+               "type": "section",
+               "name": "RTS10, RFS10, TLX1206",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (0-255)",
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "255"
+                  }               
+               }
+            },            
+            
             "fs20":
             {
                "type": "section",

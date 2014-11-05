@@ -661,6 +661,71 @@
                }
             },
             
+            "x10SecurityR":
+            {
+               "type": "section",
+               "name": "X10-security, télécommande",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (0-65535)"
+                  }           
+               }
+            },
+            
+            "digimax":
+            {
+               "name": "Digimax, TLX7506",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (0-65535)"
+                  }           
+               }
+            },            
+            "digimaxShort":
+            {
+               "type": "section",
+               "name": "Digimax short (no set point)",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (0-65535)"
+                  }           
+               }
+            },
+            
+            "he105":
+            {
+               "name": "HE105",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "name": "Equipement",
+                     "description": "L'identifiant de l'équipement (0-31)"
+                  }               
+               }
+            },            
+            "rts10":
+            {
+               "name": "RTS10, RFS10, TLX1206",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "name": "Equipement",
+                     "description": "L'identifiant de l'équipement (0-255)"
+                  }               
+               }
+            },  
+            
             "fs20":
             {
                "name": "FS20",
