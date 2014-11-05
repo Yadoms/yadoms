@@ -107,7 +107,7 @@ PageManager.addToDom = function (page) {
    var tabIdAsText = "tab-" + page.id;
    //pill creation
 
-   var container  = $("div#pageMenu").find("ul").append(
+   /*var container  = $("div#pageMenu").find("ul").append(
       "<li class=\"tabPagePills\" page-id=\"" + page.id + "\">" +
          "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" +
          "<span>" + page.name + "</span>" +
@@ -118,9 +118,21 @@ PageManager.addToDom = function (page) {
          "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\" data-i18n=\"[title]mainPage.customization.delete\"><i class=\"glyphicon glyphicon-trash\"></i></button>" +
          "</div>" +
          "</a>" +
-         "</li>");
+         "</li>");*/
 
-   page.$tab = container.find("li[page-id=\"" + page.id + "\"]");
+   var container  =  $("<li class=\"tabPagePills\" page-id=\"" + page.id + "\">" +
+         "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" +
+         "<span>" + page.name + "</span>" +
+         "<div class=\"pageCustomizationToolbar btn-group btn-group-sm customization-item pull-right hidden\">" +
+         "<button type=\"button\" class=\"btn btn-default move-left-page\" title=\"Move to left\" data-i18n=\"[title]mainPage.customization.moveToLeft\"><i class=\"glyphicon glyphicon-arrow-left\"></i></button>" +
+         "<button type=\"button\" class=\"btn btn-default move-right-page\" title=\"Move to right\" data-i18n=\"[title]mainPage.customization.moveToRight\"><i class=\"glyphicon glyphicon-arrow-right\"></i></button>" +
+         "<button type=\"button\" class=\"btn btn-default rename-page\" title=\"Rename\" data-i18n=\"[title]mainPage.customization.rename\"><i class=\"glyphicon glyphicon-pencil\"></i></button>" +
+         "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\" data-i18n=\"[title]mainPage.customization.delete\"><i class=\"glyphicon glyphicon-trash\"></i></button>" +
+         "</div>" +
+         "</a>" +
+         "</li>").insertBefore($("li#btn-add-page"));
+
+   page.$tab = $(".page-tabs").find("li[page-id=\"" + page.id + "\"]");
 
    //i18n of page tab
    page.$tab.i18n();
