@@ -27,8 +27,8 @@ CWind::CWind(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boos
 
    if (m_subType == sTypeWIND4)
    {
-      m_temperature.set(NormalizeTemperature(rbuf.WIND.temperatureh, rbuf.WIND.temperaturel, rbuf.WIND.tempsign));
-      m_chillTemperature.set(NormalizeTemperature(rbuf.WIND.chillh, rbuf.WIND.chilll, rbuf.WIND.chillsign));
+      m_temperature.set(NormalizeTemperature(rbuf.WIND.temperatureh, rbuf.WIND.temperaturel, rbuf.WIND.tempsign == 1));
+      m_chillTemperature.set(NormalizeTemperature(rbuf.WIND.chillh, rbuf.WIND.chilll, rbuf.WIND.chillsign == 1));
    }
 
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.WIND.battery_level));

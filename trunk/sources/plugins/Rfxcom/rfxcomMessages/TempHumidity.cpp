@@ -18,7 +18,7 @@ CTempHumidity::CTempHumidity(boost::shared_ptr<yApi::IYadomsApi> context, const 
 
    m_id = rbuf.TEMP_HUM.id1 | (rbuf.TEMP_HUM.id2 << 8);
 
-   m_temperature.set(NormalizeTemperature(rbuf.TEMP_HUM.temperatureh, rbuf.TEMP_HUM.temperaturel, rbuf.TEMP_HUM.tempsign));
+   m_temperature.set(NormalizeTemperature(rbuf.TEMP_HUM.temperatureh, rbuf.TEMP_HUM.temperaturel, rbuf.TEMP_HUM.tempsign == 1));
    m_humidity.set(rbuf.TEMP_HUM.humidity);
 
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.TEMP_HUM.battery_level));

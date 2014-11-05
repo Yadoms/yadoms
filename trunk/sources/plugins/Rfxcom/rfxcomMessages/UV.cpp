@@ -21,7 +21,7 @@ CUV::CUV(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::s
 
    m_uv.set(rbuf.UV.uv / 10);
    if (m_subType == sTypeUV3)
-      m_temperature.set(NormalizeTemperature(rbuf.UV.temperatureh, rbuf.UV.temperaturel, rbuf.UV.tempsign));
+      m_temperature.set(NormalizeTemperature(rbuf.UV.temperatureh, rbuf.UV.temperaturel, rbuf.UV.tempsign == 1));
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.UV.battery_level));
    m_rssi.set(NormalizeRssiLevel(rbuf.UV.rssi));
 
