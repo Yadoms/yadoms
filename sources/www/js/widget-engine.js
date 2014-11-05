@@ -157,47 +157,7 @@ function requestWidgets(page) {
       }
    });
 }
-/*
-function askForWidgetDelete(packageName, errorMessage) {
-   assert(!isNullOrUndefined(packageName), "packageName must be defined in askForWidgetDelete()");
-   assert(!isNullOrUndefined(errorMessage), "errorMessage must be defined in askForWidgetDelete()");
 
-   notifyConfirm(errorMessage, "error",
-      function($noty) {
-         // this = button element
-         // $noty = $noty element
-         $noty.close();
-         if ($noty.showing)
-            $noty.$bar.dequeue();
-
-         //we look for all widget of that type
-
-
-         //we ask for deletion of the widget
-         $.ajax({
-            type: "DELETE",
-            url: "/rest/widget/" + widget.id,
-            dataType: "json"
-         })
-            .done(function(data) {
-               //we parse the json answer
-               if (data.result != "true")
-               {
-                  notifyError($.t("modals.delete-widget.errorDuringDeletingWidget"), JSON.stringify(data));
-                  return;
-               }
-            })
-            .fail(function(widgetName) { return function() {notifyError($.t("modals.delete-page.errorDuringDeletingWidgetNamed", {"widgetType" : widgetName}));};}(widget.type));
-      },
-      function($noty) {
-         // this = button element
-         // $noty = $noty element
-         $noty.close();
-         if ($noty.showing)
-            $noty.$bar.dequeue();
-      });
-}
-*/
 /**
  * Occurs when user click on a tab
  * @param pageId tab id clicked

@@ -120,8 +120,14 @@ body {
 
 }
 
+#btn-add-page {
+    width: 0.0001%;
+}
+
 #btn-add-page a {
-    width: 50px;
+    border: 0px;
+    margin-left: 1px;
+    background-color:inherit;
 }
 
 .pageCustomizationToolbar {

@@ -5,8 +5,8 @@
    <table id="device-list" class="table table-bordered table-striped dashboard-list">
       <tr>
          <td data-i18n="modals.dashboard.sub-windows.devices.table.name" class="col-md-2"></td>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.attachedTo" class="col-md-1"></td>
-         <td data-i18n="modals.dashboard.sub-windows.devices.table.model" class="long-text col-md-3"></td>
+         <td data-i18n="modals.dashboard.sub-windows.devices.table.attachedTo" class="col-md-2"></td>
+         <td data-i18n="modals.dashboard.sub-windows.devices.table.model" class="long-text col-md-2"></td>
          <td data-i18n="modals.dashboard.sub-windows.devices.table.actions" class="col-md-2"></td>
       </tr>
       <!-- devices will be listed here-->
@@ -74,13 +74,13 @@
               "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.devices.delete\"><span class=\"glyphicon glyphicon-trash\"></span></button>\n" +
               "</div>";
 
-      var friendlyName = "<span>" + decodeURIComponent(device.friendlyName) + "</span>";
+      var friendlyName = "<span class=\"glyphicon glyphicon-chevron-down deploy\">&nbsp;&nbsp;<span>" + decodeURIComponent(device.friendlyName) + "</span>";
       var model = "<span>" + device.model + "</span>";
 
       //we add it to the DOM
       var $deviceList = $("table#device-list");
       
-      $deviceList.append("<tr device-id=\"" + device.id + "\" class=\"device\"><td class=\"device-friendlyName vert-align\"></td><td class=\"device-attachedTo vert-align\"></td><td class=\"device-model vert-align\"></td><td class=\"device-actions vert-align\"></td></tr>");
+      $deviceList.append("<tr device-id=\"" + device.id + "\" class=\"device\"><td class=\"device-friendlyName vert-align text-left\"></td><td class=\"device-attachedTo vert-align\"></td><td class=\"device-model vert-align\"></td><td class=\"device-actions vert-align\"></td></tr>");
 
       var $deviceRow = getDeviceDomRow(device);
       //we fill the data
@@ -173,7 +173,9 @@
 
          //we look if this device is already selected
          if (!$deviceRow.hasClass(selectedClass)) {
+            $deviceRow.siblings(".device").find("span.deploy").removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
             //we select the line
+            $deviceRow.find("span.deploy").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
             $deviceRow.addClass(selectedClass).siblings(".device").removeClass(selectedClass);
 
             //we create device details table
@@ -197,7 +199,7 @@
                        "</div>";
 
                $.each(device.keywords, function (index, keyword) {
-                  $deviceDetailsTable.append("<tr keyword-id=\"" + keyword.id + "\"><td class=\"keyword-friendlyName\"></td><td class=\"keyword-units\"></td><td class=\"keyword-actions\"></td></tr>");
+                  $deviceDetailsTable.append("<tr keyword-id=\"" + keyword.id + "\"><td class=\"keyword-friendlyName vert-align\"></td><td class=\"keyword-units vert-align\"></td><td class=\"keyword-actions vert-align\"></td></tr>");
                   var $keywordRow = getKeywordDomRow(keyword);
                   //we fill the data
                   var friendlyName = "<span>" + decodeURIComponent(keyword.friendlyName) + "</span>";
@@ -209,13 +211,20 @@
                   //we add actions to the keyword
                   $keywordRow.find("td.keyword-actions").append(actionsBtns);
 
-                  //we bind event on the different actions
-                  $keywordRow.find("button.btn-configure").unbind('click').bind('click', configureKeyword(keyword));
+                  //we prevent from renaming keywords on system devices
+                  if ((!isNullOrUndefined(device.attachedPlugin)) && (device.attachedPlugin.category == PluginInstanceManager.systemCategory)) {
+                     $keywordRow.find("button.btn-configure").addClass("disabled");
+                  }
+                  else {
+                     //we bind event on the different actions
+                     $keywordRow.find("button.btn-configure").unbind('click').bind('click', configureKeyword(keyword));
+                  }
                });
             });
          }
          else {
             $deviceRow.removeClass(selectedClass);
+            $deviceRow.find("span.deploy").removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
          }
       }
    }
