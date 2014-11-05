@@ -18,7 +18,7 @@ CTemp::CTemp(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boos
 
    m_id = rbuf.TEMP.id1 | (rbuf.TEMP.id2 << 8);
 
-   m_temperature.set(NormalizeTemperature(rbuf.TEMP.temperatureh, rbuf.TEMP.temperaturel, rbuf.TEMP.tempsign));
+   m_temperature.set(NormalizeTemperature(rbuf.TEMP.temperatureh, rbuf.TEMP.temperaturel, rbuf.TEMP.tempsign == 1));
    m_batteryLevel.set(NormalizeBatteryLevel(rbuf.TEMP.battery_level));
    m_rssi.set(NormalizeRssiLevel(rbuf.TEMP.rssi));
 

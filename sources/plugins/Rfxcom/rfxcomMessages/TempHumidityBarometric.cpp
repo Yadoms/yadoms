@@ -18,7 +18,7 @@ CTempHumidityBarometric::CTempHumidityBarometric(boost::shared_ptr<yApi::IYadoms
 
    m_id = rbuf.TEMP_HUM_BARO.id1 | (rbuf.TEMP_HUM_BARO.id2 << 8);
 
-   m_temperature.set(NormalizeTemperature(rbuf.TEMP_HUM_BARO.temperatureh, rbuf.TEMP_HUM_BARO.temperaturel, rbuf.TEMP_HUM_BARO.tempsign));
+   m_temperature.set(NormalizeTemperature(rbuf.TEMP_HUM_BARO.temperatureh, rbuf.TEMP_HUM_BARO.temperaturel, rbuf.TEMP_HUM_BARO.tempsign == 1));
    m_humidity.set(rbuf.TEMP_HUM_BARO.humidity);
 
    m_pressure.set(rbuf.TEMP_HUM_BARO.baroh << 8 | (rbuf.TEMP_HUM_BARO.barol));

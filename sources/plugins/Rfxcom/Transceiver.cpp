@@ -7,6 +7,7 @@
 #include "rfxcomMessages/Ack.h"
 #include "rfxcomMessages/Barometric.h"
 #include "rfxcomMessages/Blinds1.h"
+#include "rfxcomMessages/Bbq.h"
 #include "rfxcomMessages/Chime.h"
 #include "rfxcomMessages/Current.h"
 #include "rfxcomMessages/CurrentEnergy.h"
@@ -238,6 +239,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    case pTypeSecurity1           : message.reset(new rfxcomMessages::CSecurity1              (context, *buf, m_seqNumberProvider)); break;
    case pTypeThermostat1         : message.reset(new rfxcomMessages::CThermostat1            (context, *buf, m_seqNumberProvider)); break;
    case pTypeThermostat2         : message.reset(new rfxcomMessages::CThermostat2            (context, *buf, m_seqNumberProvider)); break;
+   case pTypeBBQ                 : message.reset(new rfxcomMessages::CBbq                    (context, *buf, m_seqNumberProvider)); break;
    case pTypeFS20                : message.reset(new rfxcomMessages::CFS20                   (context, *buf, m_seqNumberProvider)); break;
       // TODO à compléter
    default:

@@ -1,0 +1,89 @@
+#include "stdafx.h"
+#include "Bbq.h"
+#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/exception/InvalidParameter.hpp>
+
+// Shortcut to yadomsApi namespace
+namespace yApi = shared::plugin::yadomsApi;
+
+namespace rfxcomMessages
+{
+
+CBbq::CBbq(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+   :m_foodTemperature("food"), m_bbqTemperature("bbq"), m_batteryLevel("battery"), m_rssi("rssi")
+{
+   CheckReceivedMessage(rbuf, pTypeBBQ, GET_RBUF_STRUCT_SIZE(BBQ), DONT_CHECK_SEQUENCE_NUMBER);
+
+   m_subType = rbuf.BBQ.subtype;
+
+   m_id = rbuf.BBQ.id1 | (rbuf.BBQ.id2 << 8);
+
+   m_foodTemperature.set(NormalizeTemperature(rbuf.BBQ.sensor1h, rbuf.BBQ.sensor1l));
+   m_bbqTemperature.set(NormalizeTemperature(rbuf.BBQ.sensor2h, rbuf.BBQ.sensor2l));
+   m_batteryLevel.set(NormalizeBatteryLevel(rbuf.BBQ.battery_level));
+   m_rssi.set(NormalizeRssiLevel(rbuf.BBQ.rssi));
+
+   Init(context);
+}
+
+CBbq::~CBbq()
+{
+}
+
+void CBbq::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   // Build device description
+   buildDeviceModel();
+   buildDeviceName();
+
+   // Create device and keywords if needed
+   if (!context->deviceExists(m_deviceName))
+   {
+      shared::CDataContainer details;
+      details.set("type", pTypeBBQ);
+      details.set("subType", m_subType);
+      details.set("id", m_id);
+      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+
+      context->declareKeyword(m_deviceName, m_foodTemperature);
+      context->declareKeyword(m_deviceName, m_bbqTemperature);
+      context->declareKeyword(m_deviceName, m_batteryLevel);
+      context->declareKeyword(m_deviceName, m_rssi);
+   }
+}
+
+boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CBbq::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+{
+   BOOST_ASSERT_MSG(false, "Temp is a read-only message, can not be encoded");
+   throw shared::exception::CInvalidParameter("Temp is a read-only message, can not be encoded");
+}
+
+void CBbq::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+{
+   context->historizeData(m_deviceName, m_foodTemperature);
+   context->historizeData(m_deviceName, m_bbqTemperature);
+   context->historizeData(m_deviceName, m_batteryLevel);
+   context->historizeData(m_deviceName, m_rssi);
+}
+
+void CBbq::buildDeviceName()
+{
+   std::ostringstream ssdeviceName;
+   ssdeviceName << (unsigned int)m_subType << "." << m_id;
+   m_deviceName = ssdeviceName.str();
+}
+
+void CBbq::buildDeviceModel()
+{
+   std::ostringstream ssModel;
+
+   switch(m_subType)
+   {
+   case sTypeBBQ1: ssModel << "Maverick ET-732"; break;
+   default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
+   }
+
+   m_deviceModel = ssModel.str();
+}
+
+} // namespace rfxcomMessages

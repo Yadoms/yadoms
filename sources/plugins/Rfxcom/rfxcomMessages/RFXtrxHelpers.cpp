@@ -70,8 +70,8 @@ int NormalizeRssiLevel(unsigned char fromRfxcom)
    return (fromRfxcom * 100 / 0x0F);
 }
 
-double NormalizeTemperature(unsigned char fromRfxcomTemperatureHigh, unsigned char fromRfxcomTemperatureLow, unsigned char fromRfxcomTemperatureSign)
+double NormalizeTemperature(unsigned char fromRfxcomTemperatureHigh, unsigned char fromRfxcomTemperatureLow, bool negative)
 {
    double temperature = (double)((fromRfxcomTemperatureHigh << 8) | fromRfxcomTemperatureLow) / 10;
-   return (fromRfxcomTemperatureSign ? -temperature : temperature);
+   return (negative ? -temperature : temperature);
 }
