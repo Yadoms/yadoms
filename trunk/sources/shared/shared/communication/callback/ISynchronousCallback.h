@@ -21,7 +21,7 @@ namespace shared { namespace communication { namespace callback
       ///\brief Answer the callback with success
       ///\param [in] result : The callback result
       //----------------------------------------------      
-      virtual void sendSuccess(TCallbackResult & result) = 0;
+      virtual void sendSuccess(const TCallbackResult & result) = 0;
 
       //----------------------------------------------
       ///\brief Answer the callback with an error

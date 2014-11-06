@@ -79,6 +79,11 @@ void CCurrentEnergy::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) 
    context->historizeData(m_deviceName, m_rssi);
 }
 
+const std::string& CCurrentEnergy::getDeviceName() const
+{
+   return m_deviceName;
+}                     
+
 void CCurrentEnergy::buildDeviceName()
 {
    std::ostringstream ssdeviceName;

@@ -106,6 +106,7 @@ set(RFXCOM_SOURCES
    IRfxcomConfiguration.h
    ISequenceNumberProvider.h
    ITransceiver.h
+   ManuallyDeviceCreationException.hpp
    NullSequenceNumber.h
    ProtocolException.hpp
    Rfxcom.h

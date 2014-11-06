@@ -39,7 +39,7 @@ namespace communication { namespace callback {
       }
 
       // shared::communication::callback::ICallbackRequest implementation
-      virtual void sendSuccess(TCallbackResult & result)
+      virtual void sendSuccess(const TCallbackResult & result)
       {
          m_realCallback.sendSuccess(result);
          m_bResultSent = true;

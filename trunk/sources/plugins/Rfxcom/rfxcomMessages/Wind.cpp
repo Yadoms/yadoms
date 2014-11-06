@@ -95,6 +95,11 @@ void CWind::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
    }
 }
 
+const std::string& CWind::getDeviceName() const
+{
+   return m_deviceName;
+}                     
+
 void CWind::buildDeviceName()
 {
    std::ostringstream ssdeviceName;

@@ -64,6 +64,11 @@ void CWeight::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
    context->historizeData(m_deviceName, m_rssi);
 }
 
+const std::string& CWeight::getDeviceName() const
+{
+   return m_deviceName;
+}                     
+
 void CWeight::buildDeviceName()
 {
    std::ostringstream ssdeviceName;

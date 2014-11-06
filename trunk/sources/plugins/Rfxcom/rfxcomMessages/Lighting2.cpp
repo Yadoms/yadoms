@@ -112,6 +112,11 @@ void CLighting2::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) cons
    context->historizeData(m_deviceName, m_rssi);
 }
 
+const std::string& CLighting2::getDeviceName() const
+{
+   return m_deviceName;
+}                     
+
 void CLighting2::buildDeviceName()
 {
    std::ostringstream ssdeviceName;

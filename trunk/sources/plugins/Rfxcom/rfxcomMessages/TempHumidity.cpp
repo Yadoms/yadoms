@@ -67,6 +67,11 @@ void CTempHumidity::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) c
    context->historizeData(m_deviceName, m_rssi);
 }
 
+const std::string& CTempHumidity::getDeviceName() const
+{
+   return m_deviceName;
+}                     
+
 void CTempHumidity::buildDeviceName()
 {
    std::ostringstream ssdeviceName;

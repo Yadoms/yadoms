@@ -31,5 +31,11 @@ namespace rfxcomMessages
       /// \param[in] context              Yadoms APi context
       //--------------------------------------------------------------
       virtual void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	                        Returns the device name
+      /// \return                         Device name
+      //--------------------------------------------------------------
+      virtual const std::string& getDeviceName() const = 0;
    };
 }

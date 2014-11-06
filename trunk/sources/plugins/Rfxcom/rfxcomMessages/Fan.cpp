@@ -98,6 +98,11 @@ void CFan::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
    // Nothing to historize (transmitter-only device)
 }
 
+const std::string& CFan::getDeviceName() const
+{
+   return m_deviceName;
+}                     
+
 void CFan::buildDeviceName()
 {
    std::ostringstream ssdeviceName;

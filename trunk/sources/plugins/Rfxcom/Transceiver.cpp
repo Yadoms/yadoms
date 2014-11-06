@@ -41,6 +41,7 @@
 #include "IncrementSequenceNumber.h"
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
+#include "ManuallyDeviceCreationException.hpp"
 
 //TODO : voir nouvelle version de spec 'RFXtrx SSDF.pdf', pleins de nouveaux sous-types sont disponibles
 //TODO Indiquer la version de spec utilisée, et compatibilité firmware RFXCom
@@ -254,131 +255,132 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    return message;
 }
 
-bool CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IManuallyDeviceCreationData> data) const
+const std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> context, const yApi::IManuallyDeviceCreationData& data) const
 {
+   boost::shared_ptr<rfxcomMessages::IRfxcomMessage> msg;
    try
    {
       // Lighting1
-      if      (data->getConfiguration().get<bool>("type.content.x10.radio"))
-         rfxcomMessages::CLighting1 msg(context, sTypeX10, data->getConfiguration().get<shared::CDataContainer>("type.content.x10.content"));
-      else if (data->getConfiguration().get<bool>("type.content.arc.radio"))
-         rfxcomMessages::CLighting1 msg(context, sTypeARC, data->getConfiguration().get<shared::CDataContainer>("type.content.arc.content"));
-      else if (data->getConfiguration().get<bool>("type.content.ab400d.radio"))
-         rfxcomMessages::CLighting1 msg(context, sTypeAB400D, data->getConfiguration().get<shared::CDataContainer>("type.content.ab400d.content"));
-      else if (data->getConfiguration().get<bool>("type.content.waveman.radio"))
-         rfxcomMessages::CLighting1 msg(context, sTypeWaveman, data->getConfiguration().get<shared::CDataContainer>("type.content.waveman.content"));
-      else if (data->getConfiguration().get<bool>("type.content.emw200.radio"))
-         rfxcomMessages::CLighting1 msg(context, sTypeEMW200, data->getConfiguration().get<shared::CDataContainer>("type.content.emw200.content"));
-      else if (data->getConfiguration().get<bool>("type.content.impuls.radio"))
-         rfxcomMessages::CLighting1 msg(context, sTypeIMPULS, data->getConfiguration().get<shared::CDataContainer>("type.content.impuls.content"));
-      else if (data->getConfiguration().get<bool>("type.content.risingSun.radio"))
-         rfxcomMessages::CLighting1 msg(context, sTypeRisingSun, data->getConfiguration().get<shared::CDataContainer>("type.content.risingSun.content"));
-      else if (data->getConfiguration().get<bool>("type.content.philips.radio"))
-         rfxcomMessages::CLighting1 msg(context, sTypePhilips, data->getConfiguration().get<shared::CDataContainer>("type.content.philips.content"));
-      else if (data->getConfiguration().get<bool>("type.content.energenie.radio"))
-         rfxcomMessages::CLighting1 msg(context, sTypeEnergenie, data->getConfiguration().get<shared::CDataContainer>("type.content.energenie.content"));
-      else if (data->getConfiguration().get<bool>("type.content.energenie5.radio"))
-         rfxcomMessages::CLighting1 msg(context, sTypeEnergenie5, data->getConfiguration().get<shared::CDataContainer>("type.content.energenie5.content"));
-      else if (data->getConfiguration().get<bool>("type.content.gdr2.radio"))
-         rfxcomMessages::CLighting1 msg(context, sTypeGDR2, data->getConfiguration().get<shared::CDataContainer>("type.content.gdr2.content"));
+      if      (data.getConfiguration().get<bool>("type.content.x10.radio"))
+         msg.reset(new rfxcomMessages::CLighting1(context, sTypeX10, data.getConfiguration().get<shared::CDataContainer>("type.content.x10.content")));
+      else if (data.getConfiguration().get<bool>("type.content.arc.radio"))
+         msg.reset(new rfxcomMessages::CLighting1(context, sTypeARC, data.getConfiguration().get<shared::CDataContainer>("type.content.arc.content")));
+      else if (data.getConfiguration().get<bool>("type.content.ab400d.radio"))
+         msg.reset(new rfxcomMessages::CLighting1(context, sTypeAB400D, data.getConfiguration().get<shared::CDataContainer>("type.content.ab400d.content")));
+      else if (data.getConfiguration().get<bool>("type.content.waveman.radio"))
+         msg.reset(new rfxcomMessages::CLighting1(context, sTypeWaveman, data.getConfiguration().get<shared::CDataContainer>("type.content.waveman.content")));
+      else if (data.getConfiguration().get<bool>("type.content.emw200.radio"))
+         msg.reset(new rfxcomMessages::CLighting1(context, sTypeEMW200, data.getConfiguration().get<shared::CDataContainer>("type.content.emw200.content")));
+      else if (data.getConfiguration().get<bool>("type.content.impuls.radio"))
+         msg.reset(new rfxcomMessages::CLighting1(context, sTypeIMPULS, data.getConfiguration().get<shared::CDataContainer>("type.content.impuls.content")));
+      else if (data.getConfiguration().get<bool>("type.content.risingSun.radio"))
+         msg.reset(new rfxcomMessages::CLighting1(context, sTypeRisingSun, data.getConfiguration().get<shared::CDataContainer>("type.content.risingSun.content")));
+      else if (data.getConfiguration().get<bool>("type.content.philips.radio"))
+         msg.reset(new rfxcomMessages::CLighting1(context, sTypePhilips, data.getConfiguration().get<shared::CDataContainer>("type.content.philips.content")));
+      else if (data.getConfiguration().get<bool>("type.content.energenie.radio"))
+         msg.reset(new rfxcomMessages::CLighting1(context, sTypeEnergenie, data.getConfiguration().get<shared::CDataContainer>("type.content.energenie.content")));
+      else if (data.getConfiguration().get<bool>("type.content.energenie5.radio"))
+         msg.reset(new rfxcomMessages::CLighting1(context, sTypeEnergenie5, data.getConfiguration().get<shared::CDataContainer>("type.content.energenie5.content")));
+      else if (data.getConfiguration().get<bool>("type.content.gdr2.radio"))
+         msg.reset(new rfxcomMessages::CLighting1(context, sTypeGDR2, data.getConfiguration().get<shared::CDataContainer>("type.content.gdr2.content")));
 
       // Lighting2
-      else if (data->getConfiguration().get<bool>("type.content.ac.radio"))
-         rfxcomMessages::CLighting2 msg(context, sTypeX10, data->getConfiguration().get<shared::CDataContainer>("type.content.ac.content"));
-      else if (data->getConfiguration().get<bool>("type.content.homeEasyEU.radio"))
-         rfxcomMessages::CLighting2 msg(context, sTypeARC, data->getConfiguration().get<shared::CDataContainer>("type.content.homeEasyEU.content"));
-      else if (data->getConfiguration().get<bool>("type.content.anslut.radio"))
-         rfxcomMessages::CLighting2 msg(context, sTypeARC, data->getConfiguration().get<shared::CDataContainer>("type.content.anslut.content"));
-      else if (data->getConfiguration().get<bool>("type.content.kambrookRf3672.radio"))
-         rfxcomMessages::CLighting2 msg(context, sTypeARC, data->getConfiguration().get<shared::CDataContainer>("type.content.KambrookRf3672.content"));
+      else if (data.getConfiguration().get<bool>("type.content.ac.radio"))
+         msg.reset(new rfxcomMessages::CLighting2(context, sTypeX10, data.getConfiguration().get<shared::CDataContainer>("type.content.ac.content")));
+      else if (data.getConfiguration().get<bool>("type.content.homeEasyEU.radio"))
+         msg.reset(new rfxcomMessages::CLighting2(context, sTypeARC, data.getConfiguration().get<shared::CDataContainer>("type.content.homeEasyEU.content")));
+      else if (data.getConfiguration().get<bool>("type.content.anslut.radio"))
+         msg.reset(new rfxcomMessages::CLighting2(context, sTypeARC, data.getConfiguration().get<shared::CDataContainer>("type.content.anslut.content")));
+      else if (data.getConfiguration().get<bool>("type.content.kambrookRf3672.radio"))
+         msg.reset(new rfxcomMessages::CLighting2(context, sTypeARC, data.getConfiguration().get<shared::CDataContainer>("type.content.KambrookRf3672.content")));
 
       // Lighting3
-      else if (data->getConfiguration().get<bool>("type.content.koppla.radio"))
-         rfxcomMessages::CLighting3 msg(context, sTypeKoppla, data->getConfiguration().get<shared::CDataContainer>("type.content.koppla.content"));
+      else if (data.getConfiguration().get<bool>("type.content.koppla.radio"))
+         msg.reset(new rfxcomMessages::CLighting3(context, sTypeKoppla, data.getConfiguration().get<shared::CDataContainer>("type.content.koppla.content")));
 
       // Lighting4
-      else if (data->getConfiguration().get<bool>("type.content.pt2262.radio"))
-         rfxcomMessages::CLighting4 msg(context, sTypePT2262, data->getConfiguration().get<shared::CDataContainer>("type.content.pt2262.content"));
+      else if (data.getConfiguration().get<bool>("type.content.pt2262.radio"))
+         msg.reset(new rfxcomMessages::CLighting4(context, sTypePT2262, data.getConfiguration().get<shared::CDataContainer>("type.content.pt2262.content")));
 
       // Lighting5
-      else if (data->getConfiguration().get<bool>("type.content.lightwaveRf.radio"))
-         rfxcomMessages::CLighting5 msg(context, sTypeLightwaveRF, data->getConfiguration().get<shared::CDataContainer>("type.content.lightwaveRf.content"));
-      else if (data->getConfiguration().get<bool>("type.content.emw100.radio"))
-         rfxcomMessages::CLighting5 msg(context, sTypeEMW100, data->getConfiguration().get<shared::CDataContainer>("type.content.emw100.content"));
-      else if (data->getConfiguration().get<bool>("type.content.bbsb.radio"))
-         rfxcomMessages::CLighting5 msg(context, sTypeBBSB, data->getConfiguration().get<shared::CDataContainer>("type.content.bbsb.content"));
-      else if (data->getConfiguration().get<bool>("type.content.mdRemote.radio"))
-         rfxcomMessages::CLighting5 msg(context, sTypeMDREMOTE, data->getConfiguration().get<shared::CDataContainer>("type.content.mdRemote.content"));
-      else if (data->getConfiguration().get<bool>("type.content.rsl.radio"))
-         rfxcomMessages::CLighting5 msg(context, sTypeRSL, data->getConfiguration().get<shared::CDataContainer>("type.content.rsl.content"));
-      else if (data->getConfiguration().get<bool>("type.content.livolo.radio"))
-         rfxcomMessages::CLighting5 msg(context, sTypeLivolo, data->getConfiguration().get<shared::CDataContainer>("type.content.livolo.content"));
-      else if (data->getConfiguration().get<bool>("type.content.trc02.radio"))
-         rfxcomMessages::CLighting5 msg(context, sTypeTRC02, data->getConfiguration().get<shared::CDataContainer>("type.content.trc02.content"));
+      else if (data.getConfiguration().get<bool>("type.content.lightwaveRf.radio"))
+         msg.reset(new rfxcomMessages::CLighting5(context, sTypeLightwaveRF, data.getConfiguration().get<shared::CDataContainer>("type.content.lightwaveRf.content")));
+      else if (data.getConfiguration().get<bool>("type.content.emw100.radio"))
+         msg.reset(new rfxcomMessages::CLighting5(context, sTypeEMW100, data.getConfiguration().get<shared::CDataContainer>("type.content.emw100.content")));
+      else if (data.getConfiguration().get<bool>("type.content.bbsb.radio"))
+         msg.reset(new rfxcomMessages::CLighting5(context, sTypeBBSB, data.getConfiguration().get<shared::CDataContainer>("type.content.bbsb.content")));
+      else if (data.getConfiguration().get<bool>("type.content.mdRemote.radio"))
+         msg.reset(new rfxcomMessages::CLighting5(context, sTypeMDREMOTE, data.getConfiguration().get<shared::CDataContainer>("type.content.mdRemote.content")));
+      else if (data.getConfiguration().get<bool>("type.content.rsl.radio"))
+         msg.reset(new rfxcomMessages::CLighting5(context, sTypeRSL, data.getConfiguration().get<shared::CDataContainer>("type.content.rsl.content")));
+      else if (data.getConfiguration().get<bool>("type.content.livolo.radio"))
+         msg.reset(new rfxcomMessages::CLighting5(context, sTypeLivolo, data.getConfiguration().get<shared::CDataContainer>("type.content.livolo.content")));
+      else if (data.getConfiguration().get<bool>("type.content.trc02.radio"))
+         msg.reset(new rfxcomMessages::CLighting5(context, sTypeTRC02, data.getConfiguration().get<shared::CDataContainer>("type.content.trc02.content")));
 
       // Lighting6
-      else if (data->getConfiguration().get<bool>("type.content.blyss.radio"))
-         rfxcomMessages::CLighting6 msg(context, sTypeBlyss, data->getConfiguration().get<shared::CDataContainer>("type.content.blyss.content"));
+      else if (data.getConfiguration().get<bool>("type.content.blyss.radio"))
+         msg.reset(new rfxcomMessages::CLighting6(context, sTypeBlyss, data.getConfiguration().get<shared::CDataContainer>("type.content.blyss.content")));
 
       // Chime
-      else if (data->getConfiguration().get<bool>("type.content.byronSx.radio"))
-         rfxcomMessages::CChime msg(context, sTypeByronSX, data->getConfiguration().get<shared::CDataContainer>("type.content.byronSx.content"));
+      else if (data.getConfiguration().get<bool>("type.content.byronSx.radio"))
+         msg.reset(new rfxcomMessages::CChime(context, sTypeByronSX, data.getConfiguration().get<shared::CDataContainer>("type.content.byronSx.content")));
 
       // Fan
-      else if (data->getConfiguration().get<bool>("type.content.siemensSf01.radio"))
-         rfxcomMessages::CFan msg(context, sTypeSiemensSF01, data->getConfiguration().get<shared::CDataContainer>("type.content.siemensSf01.content"));
+      else if (data.getConfiguration().get<bool>("type.content.siemensSf01.radio"))
+         msg.reset(new rfxcomMessages::CFan(context, sTypeSiemensSF01, data.getConfiguration().get<shared::CDataContainer>("type.content.siemensSf01.content")));
 
       // Curtain1
-      else if (data->getConfiguration().get<bool>("type.content.harrisonCurtain.radio"))
-         rfxcomMessages::CCurtain1 msg(context, sTypeHarrison, data->getConfiguration().get<shared::CDataContainer>("type.content.harrisonCurtain.content"));
+      else if (data.getConfiguration().get<bool>("type.content.harrisonCurtain.radio"))
+         msg.reset(new rfxcomMessages::CCurtain1(context, sTypeHarrison, data.getConfiguration().get<shared::CDataContainer>("type.content.harrisonCurtain.content")));
 
       // Blinds1
-      else if (data->getConfiguration().get<bool>("type.content.rollerTrolHastaNew.radio"))
-         rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT0, data->getConfiguration().get<shared::CDataContainer>("type.content.rollerTrolHastaNew.content"));
-      else if (data->getConfiguration().get<bool>("type.content.hastaOld.radio"))
-         rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT1, data->getConfiguration().get<shared::CDataContainer>("type.content.hastaOld.content"));
-      else if (data->getConfiguration().get<bool>("type.content.aOkRf01.radio"))
-         rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT2, data->getConfiguration().get<shared::CDataContainer>("type.content.aOkRf01.content"));
-      else if (data->getConfiguration().get<bool>("type.content.aOkAc114.radio"))
-         rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT3, data->getConfiguration().get<shared::CDataContainer>("type.content.aOkAc114.content"));
-      else if (data->getConfiguration().get<bool>("type.content.raex.radio"))
-         rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT4, data->getConfiguration().get<shared::CDataContainer>("type.content.raex.content"));
-      else if (data->getConfiguration().get<bool>("type.content.mediaMount.radio"))
-         rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT5, data->getConfiguration().get<shared::CDataContainer>("type.content.mediaMount.content"));
-      else if (data->getConfiguration().get<bool>("type.content.dc106.radio"))
-         rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT6, data->getConfiguration().get<shared::CDataContainer>("type.content.dc106.content"));
-      else if (data->getConfiguration().get<bool>("type.content.forest.radio"))
-         rfxcomMessages::CBlinds1 msg(context, sTypeBlindsT7, data->getConfiguration().get<shared::CDataContainer>("type.content.forest.content"));
+      else if (data.getConfiguration().get<bool>("type.content.rollerTrolHastaNew.radio"))
+         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT0, data.getConfiguration().get<shared::CDataContainer>("type.content.rollerTrolHastaNew.content")));
+      else if (data.getConfiguration().get<bool>("type.content.hastaOld.radio"))
+         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT1, data.getConfiguration().get<shared::CDataContainer>("type.content.hastaOld.content")));
+      else if (data.getConfiguration().get<bool>("type.content.aOkRf01.radio"))
+         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT2, data.getConfiguration().get<shared::CDataContainer>("type.content.aOkRf01.content")));
+      else if (data.getConfiguration().get<bool>("type.content.aOkAc114.radio"))
+         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT3, data.getConfiguration().get<shared::CDataContainer>("type.content.aOkAc114.content")));
+      else if (data.getConfiguration().get<bool>("type.content.raex.radio"))
+         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT4, data.getConfiguration().get<shared::CDataContainer>("type.content.raex.content")));
+      else if (data.getConfiguration().get<bool>("type.content.mediaMount.radio"))
+         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT5, data.getConfiguration().get<shared::CDataContainer>("type.content.mediaMount.content")));
+      else if (data.getConfiguration().get<bool>("type.content.dc106.radio"))
+         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT6, data.getConfiguration().get<shared::CDataContainer>("type.content.dc106.content")));
+      else if (data.getConfiguration().get<bool>("type.content.forest.radio"))
+         msg.reset(new rfxcomMessages::CBlinds1(context, sTypeBlindsT7, data.getConfiguration().get<shared::CDataContainer>("type.content.forest.content")));
 
       // Rfy
-      else if (data->getConfiguration().get<bool>("type.content.rfy.radio"))
-         rfxcomMessages::CRfy msg(context, sTypeRFY, data->getConfiguration().get<shared::CDataContainer>("type.content.rfy.content"));
-      else if (data->getConfiguration().get<bool>("type.content.rfyExt.radio"))
-         rfxcomMessages::CRfy msg(context, sTypeRFYext, data->getConfiguration().get<shared::CDataContainer>("type.content.rfyExt.content"));
+      else if (data.getConfiguration().get<bool>("type.content.rfy.radio"))
+         msg.reset(new rfxcomMessages::CRfy(context, sTypeRFY, data.getConfiguration().get<shared::CDataContainer>("type.content.rfy.content")));
+      else if (data.getConfiguration().get<bool>("type.content.rfyExt.radio"))
+         msg.reset(new rfxcomMessages::CRfy(context, sTypeRFYext, data.getConfiguration().get<shared::CDataContainer>("type.content.rfyExt.content")));
 
       // Security1
-      else if (data->getConfiguration().get<bool>("type.content.x10SecurityR.radio"))
-         rfxcomMessages::CSecurity1 msg(context, sTypeSecX10R, data->getConfiguration().get<shared::CDataContainer>("type.content.x10SecurityR.content"));
+      else if (data.getConfiguration().get<bool>("type.content.x10SecurityR.radio"))
+         msg.reset(new rfxcomMessages::CSecurity1(context, sTypeSecX10R, data.getConfiguration().get<shared::CDataContainer>("type.content.x10SecurityR.content")));
 
       // Thermostat1
-      else if (data->getConfiguration().get<bool>("type.content.digimax.radio"))
-         rfxcomMessages::CSecurity1 msg(context, sTypeDigimax, data->getConfiguration().get<shared::CDataContainer>("type.content.digimax.content"));
-      else if (data->getConfiguration().get<bool>("type.content.digimaxShort.radio"))
-         rfxcomMessages::CSecurity1 msg(context, sTypeDigimaxShort, data->getConfiguration().get<shared::CDataContainer>("type.content.digimaxShort.content"));
+      else if (data.getConfiguration().get<bool>("type.content.digimax.radio"))
+         msg.reset(new rfxcomMessages::CSecurity1(context, sTypeDigimax, data.getConfiguration().get<shared::CDataContainer>("type.content.digimax.content")));
+      else if (data.getConfiguration().get<bool>("type.content.digimaxShort.radio"))
+         msg.reset(new rfxcomMessages::CSecurity1(context, sTypeDigimaxShort, data.getConfiguration().get<shared::CDataContainer>("type.content.digimaxShort.content")));
 
       // Thermostat2
-      else if (data->getConfiguration().get<bool>("type.content.he105.radio"))
-         rfxcomMessages::CSecurity1 msg(context, sTypeHE105, data->getConfiguration().get<shared::CDataContainer>("type.content.he105.content"));
-      else if (data->getConfiguration().get<bool>("type.content.rts10.radio"))
-         rfxcomMessages::CSecurity1 msg(context, sTypeRTS10, data->getConfiguration().get<shared::CDataContainer>("type.content.rts10.content"));
+      else if (data.getConfiguration().get<bool>("type.content.he105.radio"))
+         msg.reset(new rfxcomMessages::CSecurity1(context, sTypeHE105, data.getConfiguration().get<shared::CDataContainer>("type.content.he105.content")));
+      else if (data.getConfiguration().get<bool>("type.content.rts10.radio"))
+         msg.reset(new rfxcomMessages::CSecurity1(context, sTypeRTS10, data.getConfiguration().get<shared::CDataContainer>("type.content.rts10.content")));
 
       // FS20
-      else if (data->getConfiguration().get<bool>("type.content.fs20.radio"))
-         rfxcomMessages::CFS20 msg(context, sTypeFS20, data->getConfiguration().get<shared::CDataContainer>("type.content.fs20.content"));
-      else if (data->getConfiguration().get<bool>("type.content.fht8v.radio"))
-         rfxcomMessages::CFS20 msg(context, sTypeFHT8V, data->getConfiguration().get<shared::CDataContainer>("type.content.fht8v.content"));
-      else if (data->getConfiguration().get<bool>("type.content.fht80.radio"))
-         rfxcomMessages::CFS20 msg(context, sTypeFHT80, data->getConfiguration().get<shared::CDataContainer>("type.content.fht80.content"));
+      else if (data.getConfiguration().get<bool>("type.content.fs20.radio"))
+         msg.reset(new rfxcomMessages::CFS20(context, sTypeFS20, data.getConfiguration().get<shared::CDataContainer>("type.content.fs20.content")));
+      else if (data.getConfiguration().get<bool>("type.content.fht8v.radio"))
+         msg.reset(new rfxcomMessages::CFS20(context, sTypeFHT8V, data.getConfiguration().get<shared::CDataContainer>("type.content.fht8v.content")));
+      else if (data.getConfiguration().get<bool>("type.content.fht80.radio"))
+         msg.reset(new rfxcomMessages::CFS20(context, sTypeFHT80, data.getConfiguration().get<shared::CDataContainer>("type.content.fht80.content")));
 
       // TODO à compléter
 
@@ -388,15 +390,15 @@ bool CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> cont
    catch(shared::exception::CInvalidParameter& e)
    {
       YADOMS_LOG(error) << "Fail to create device manually, invalid parameter : " << e.what();
-      YADOMS_LOG(error) << "data : " << data->getConfiguration().get<shared::CDataContainer>("type.content").serialize();
-      return false;
+      YADOMS_LOG(error) << "data : " << data.getConfiguration().get<shared::CDataContainer>("type.content").serialize();
+      throw CManuallyDeviceCreationException("invalid parameter");
    }
    catch(shared::exception::COutOfRange& e)
    {
       YADOMS_LOG(error) << "Fail to create device manually, out of range : " << e.what();
-      YADOMS_LOG(error) << "data : " << data->getConfiguration().get<shared::CDataContainer>("type.content").serialize();
-      return false;
+      YADOMS_LOG(error) << "data : " << data.getConfiguration().get<shared::CDataContainer>("type.content").serialize();
+      throw CManuallyDeviceCreationException("out of range");
    }
 
-   return true;
+   return msg->getDeviceName();
 }
