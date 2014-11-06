@@ -1,5 +1,7 @@
 #pragma once
 
+#include <shared/communication/callback/ISynchronousCallback.h>
+#include <shared/plugin/yadomsApi/IManuallyDeviceCreationData.h>
 
 namespace communication {
 
@@ -25,12 +27,12 @@ namespace communication {
       virtual void sendCommandAsync(int deviceId, int keywordId, const shared::CDataContainer & body) = 0;
 
       //----------------------------------------------
-      ///\brief                     Send a manually device creation request to a plugin
+      ///\brief                     Send a manually device creation request to a plugin with a mandatory callback
       ///\param [in] pluginId       Plugin Id on which to create device
-      ///\param [in] deviceName     Device name
-      ///\param [in] configuration  Device configuration
+      ///\param [in] data           Reference to manually device creation data
+      ///\param [in] callback       The callback
       //----------------------------------------------
-      virtual void sendManuallyDeviceCreationRequestAsync(int pluginId, const std::string& deviceName, const shared::CDataContainer & configuration) = 0;
+      virtual void sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yadomsApi::IManuallyDeviceCreationData & data, shared::communication::callback::ISynchronousCallback<std::string> & callback) = 0;
    };
 
 } //namespace communication

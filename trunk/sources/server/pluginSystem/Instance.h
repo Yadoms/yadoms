@@ -7,6 +7,7 @@
 
 #include <shared/ThreadBase.h>
 #include <shared/event/EventHandler.hpp>
+#include <shared/plugin/yadomsApi/ManuallyDeviceCreationRequest.h>
 #include "Factory.h"
 #include "ManagerEvent.h"
 #include "IQualifier.h"
@@ -18,6 +19,7 @@
 #include "database/IAcquisitionRequester.h"
 #include "dataAccessLayer/IAcquisitionHistorizer.h"
 #include "dataAccessLayer/IDeviceManager.h"
+#include <shared/plugin/yadomsApi/ManuallyDeviceCreationRequest.h>
 
 namespace pluginSystem
 {
@@ -62,9 +64,10 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief			            Post a manually device creation request to the plugin
-      /// \param  data              Request data
+      /// \param  request           Request data
       //--------------------------------------------------------------
-      virtual void postManuallyDeviceCreationRequest(boost::shared_ptr<const shared::plugin::yadomsApi::IManuallyDeviceCreationData> data) const;
+      virtual void postManuallyDeviceCreationRequest(shared::plugin::yadomsApi::CManuallyDeviceCreationRequest & request) const;
+
 
       //--------------------------------------------------------------
       /// \brief			            Notify the plugin about its configuration changed

@@ -89,10 +89,11 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             m_configuration.initializeWith(newConfiguration);
             break;
          }
+
          case yApi::IYadomsApi::kEventManuallyDeviceCreation:
          {
             // Yadoms asks for device creation
-            boost::shared_ptr<const yApi::IManuallyDeviceCreationData> data = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IManuallyDeviceCreationData> >();
+            yApi::CManuallyDeviceCreationRequest data = context->getEventHandler().getEventData< yApi::CManuallyDeviceCreationRequest >();
             OnCreateDeviceRequest(data, context);
             break;
          }
@@ -281,16 +282,19 @@ void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceComman
 }
 
 
-void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<const yApi::IManuallyDeviceCreationData> configuration, boost::shared_ptr<yApi::IYadomsApi> context)
+void CRfxLanXpl::OnCreateDeviceRequest(yApi::CManuallyDeviceCreationRequest data, boost::shared_ptr<yApi::IYadomsApi> context)
 {
    try
    {
-      YADOMS_LOG(trace) << "Create device request";
+      YADOMS_LOG(info) << "Create device request";
 
-      const shared::CDataContainer & deviceCfg = configuration->getConfiguration();
+      const shared::CDataContainer & deviceCfg = data->getData().getConfiguration();
 
-      deviceCfg.printToLog();
+      YADOMS_LOG(info) << deviceCfg.serialize();
 
+      //std::string a("abcdefg");
+      data->sendError("invalid configuration");
+      /*
       const std::string & typeOfDevice = deviceCfg.get<std::string>("type");
 
       std::string internalProtocol;
@@ -307,7 +311,7 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<const yApi::IManuallyDe
          if (deviceCreationRule)
          {
             //retreeive device identifier
-            xplrules::CDeviceContainer deviceContainer = deviceCreationRule->generateDeviceParameters(configuration);
+            xplrules::CDeviceContainer deviceContainer = deviceCreationRule->generateDeviceParameters(eventData->getData());
             const xplrules::CDeviceIdentifier & deviceAddress = deviceContainer.getDeviceIdentifier();
             if (!context->deviceExists(deviceAddress.getId()))
             {
@@ -337,7 +341,7 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<const yApi::IManuallyDe
          std::string errorMessage = (boost::format("Unsupported protocol = %1%") % typeOfDevice).str();
          YADOMS_LOG(error) << errorMessage;
       }
-
+      */
 
 
    }

@@ -39,7 +39,9 @@ set(SHARED_LIB_SRC
    shared/communication/IBufferLogger.h
    shared/communication/IReceiveBufferHandler.h
    shared/communication/PortException.hpp
-  
+   	shared/communication/callback/ICallbackRequest.h
+ 	shared/communication/callback/ISynchronousCallback.h
+	
 	shared/encryption/Xor.h
 	shared/encryption/Xor.cpp
 	shared/encryption/Base64.h
@@ -89,6 +91,7 @@ set(SHARED_LIB_SRC
 	shared/plugin/yadomsApi/StandardCapacity.h
 	shared/plugin/yadomsApi/StandardCapacity.cpp
 	shared/plugin/yadomsApi/IYadomsApi.h
+	shared/plugin/yadomsApi/ManuallyDeviceCreationRequest.h
 
    shared/plugin/yadomsApi/historization/IHistorizable.h
    shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp
@@ -200,6 +203,7 @@ ENDIF()
 
 # Define project folders
 source_group(communication shared/communication/*.*)
+source_group(communication//callback shared/communication/callback/*.*)
 source_group(encryption shared/shared/encryption/*.* )	
 source_group(enumeration shared/shared/enumeration/*.* )	
 source_group(event shared/event/*.*)

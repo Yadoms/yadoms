@@ -37,6 +37,12 @@
                     "name": "ac",
                     "description": "AC Basic",
                     "content": {
+						"deviceAddress" : {
+							"type" : "string",
+							"name" : "Device address",
+							"description" : "Set the device address",
+							"required" : "true"
+						}					
 					}					
 				},
                 "x10": {

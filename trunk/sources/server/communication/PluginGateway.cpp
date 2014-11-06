@@ -3,6 +3,7 @@
 #include <shared/Log.h>
 #include "pluginSystem/DeviceCommand.h"
 #include "pluginSystem/ManuallyDeviceCreationData.h"
+#include "communication/callback/CallbackRequest.h"
 
 namespace communication {
 
@@ -55,10 +56,11 @@ namespace communication {
       m_acquisitionHistorizer->saveData(keywordId, command->getHistorizableObject());
    }
 
-   void CPluginGateway::sendManuallyDeviceCreationRequestAsync(int pluginId, const std::string& deviceName, const shared::CDataContainer & configuration)
+   void CPluginGateway::sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yadomsApi::IManuallyDeviceCreationData & data, shared::communication::callback::ISynchronousCallback<std::string> & callback)
    {
       // Create the request
-      boost::shared_ptr<const shared::plugin::yadomsApi::IManuallyDeviceCreationData> request(new pluginSystem::CManuallyDeviceCreationData(deviceName, configuration));
+      //can not use "new shared::plugin::yadomsApi::CManuallyDeviceCreationRequest"
+      shared::plugin::yadomsApi::CManuallyDeviceCreationRequest request(new communication::callback::CCallbackRequest<shared::plugin::yadomsApi::IManuallyDeviceCreationData, std::string>(data, callback));
 
       // Dispatch command to the right plugin
       m_pluginManager->postManuallyDeviceCreationRequest(pluginId, request);

@@ -22,7 +22,6 @@ namespace pluginSystem
    {
       return m_configuration;
    }
-
-
+  
 
 } // namespace pluginSystem	
