@@ -67,6 +67,11 @@ void CBbq::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
    context->historizeData(m_deviceName, m_rssi);
 }
 
+const std::string& CBbq::getDeviceName() const
+{
+   return m_deviceName;
+}                     
+
 void CBbq::buildDeviceName()
 {
    std::ostringstream ssdeviceName;

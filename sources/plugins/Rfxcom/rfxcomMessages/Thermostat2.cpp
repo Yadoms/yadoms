@@ -103,6 +103,11 @@ void CThermostat2::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) co
    context->historizeData(m_deviceName, m_rssi);
 }
 
+const std::string& CThermostat2::getDeviceName() const
+{
+   return m_deviceName;
+}                     
+
 void CThermostat2::buildDeviceName()
 {
    std::ostringstream ssdeviceName;

@@ -121,6 +121,11 @@ void CBlinds1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
    context->historizeData(m_deviceName, m_rssi);
 }
 
+const std::string& CBlinds1::getDeviceName() const
+{
+   return m_deviceName;
+}                     
+
 void CBlinds1::buildDeviceName()
 {
    std::ostringstream ssdeviceName;

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <shared/Log.h>
 #include "TransceiverStatus.h"
+#include <shared/StringExtension.h>
 
 
 namespace rfxcomMessages
@@ -67,6 +68,11 @@ void CTransceiverStatus::historizeData(boost::shared_ptr<yApi::IYadomsApi> conte
 {
    // Nothing to historize
 }
+
+const std::string& CTransceiverStatus::getDeviceName() const
+{
+   return shared::CStringExtension::EmptyString;
+} 
 
 void CTransceiverStatus::traceEnabledProtocols() const
 {

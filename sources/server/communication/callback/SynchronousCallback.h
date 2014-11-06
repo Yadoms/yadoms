@@ -60,7 +60,7 @@ namespace communication { namespace callback
       }
 
       // ISynchronousCallback implementation
-      virtual void sendSuccess(TCallbackResult & result)
+      virtual void sendSuccess(const TCallbackResult & result)
       {
          m_result.Success = true;
          m_result.ErrorMessage = "";

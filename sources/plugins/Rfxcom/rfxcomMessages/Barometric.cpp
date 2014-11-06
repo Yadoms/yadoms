@@ -64,6 +64,11 @@ void CBarometric::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) con
    context->historizeData(m_deviceName, m_rssi);
 }
 
+const std::string& CBarometric::getDeviceName() const
+{
+   return m_deviceName;
+}                     
+
 void CBarometric::buildDeviceName()
 {
    std::ostringstream ssdeviceName;

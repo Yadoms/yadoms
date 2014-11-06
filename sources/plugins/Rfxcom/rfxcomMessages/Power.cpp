@@ -81,6 +81,11 @@ void CPower::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
    context->historizeData(m_deviceName, m_rssi);
 }
 
+const std::string& CPower::getDeviceName() const
+{
+   return m_deviceName;
+}                     
+
 void CPower::buildDeviceName()
 {
    std::ostringstream ssdeviceName;

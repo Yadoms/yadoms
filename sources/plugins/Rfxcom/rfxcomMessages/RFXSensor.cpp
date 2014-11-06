@@ -114,6 +114,11 @@ void CRFXSensor::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) cons
    }
 }
 
+const std::string& CRFXSensor::getDeviceName() const
+{
+   return m_deviceName;
+}                     
+
 void CRFXSensor::buildDeviceName()
 {
    std::ostringstream ssdeviceName;

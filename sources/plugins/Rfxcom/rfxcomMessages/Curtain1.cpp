@@ -88,6 +88,11 @@ void CCurtain1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
    // Nothing to historize (transmitter-only device)
 }
 
+const std::string& CCurtain1::getDeviceName() const
+{
+   return m_deviceName;
+}                     
+
 void CCurtain1::buildDeviceName()
 {
    std::ostringstream ssdeviceName;

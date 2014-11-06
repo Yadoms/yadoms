@@ -102,6 +102,11 @@ void CRfy::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
    // Nothing to historize (transmitter-only device)
 }
 
+const std::string& CRfy::getDeviceName() const
+{
+   return m_deviceName;
+}                     
+
 void CRfy::buildDeviceName()
 {
    std::ostringstream ssdeviceName;

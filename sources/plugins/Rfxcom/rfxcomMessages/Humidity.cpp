@@ -64,6 +64,11 @@ void CHumidity::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
    context->historizeData(m_deviceName, m_rssi);
 }
 
+const std::string& CHumidity::getDeviceName() const
+{
+   return m_deviceName;
+}                     
+
 void CHumidity::buildDeviceName()
 {
    std::ostringstream ssdeviceName;

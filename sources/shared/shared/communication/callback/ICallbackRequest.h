@@ -21,7 +21,7 @@ namespace shared { namespace communication { namespace callback
       }
 
       // ISynchronousCallback implementation
-      virtual void sendSuccess(TCallbackResult & result) = 0;
+      virtual void sendSuccess(const TCallbackResult & result) = 0;
       virtual void sendError(const std::string & errorMessage) = 0;
       // [END] - ISynchronousCallback implementation
 

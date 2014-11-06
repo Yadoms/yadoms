@@ -18,6 +18,7 @@ namespace shared { namespace communication {
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
+      /// \param[in]  code                Connection error code
       /// \param[in]  message             Exception message
       //--------------------------------------------------------------
       CPortException(ECode code, const std::string& message)

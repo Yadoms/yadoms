@@ -59,7 +59,8 @@ public:
    /// \brief	                     Process the manually device reaction request
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] data             Device manually creation data
-   /// \return                      true if success
+   /// \return                      Name of the created device
+   /// \throw CManuallyDeviceCreationError   If error creating device
    //--------------------------------------------------------------
-   virtual bool createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IManuallyDeviceCreationData> data) const = 0;
+   virtual const std::string createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> context, const yApi::IManuallyDeviceCreationData& data) const = 0;
 };

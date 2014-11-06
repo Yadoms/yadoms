@@ -67,6 +67,11 @@ void CRFXMeter::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
    context->historizeData(m_deviceName, m_rssi);
 }
 
+const std::string& CRFXMeter::getDeviceName() const
+{
+   return m_deviceName;
+}                     
+
 void CRFXMeter::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
