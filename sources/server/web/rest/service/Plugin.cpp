@@ -4,6 +4,9 @@
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "shared/Log.h"
 #include "web/rest/Result.h"
+#include "pluginSystem/ManuallyDeviceCreationData.h"
+#include <shared/plugin/yadomsApi/ManuallyDeviceCreationRequest.h>
+#include "communication/callback/SynchronousCallback.h"
 
 namespace web { namespace rest { namespace service {
 
@@ -382,9 +385,49 @@ namespace web { namespace rest { namespace service {
             }
             else
             {
-               //on transmet directement la demande auprès du pluginManager
-               m_messageSender.sendManuallyDeviceCreationRequestAsync(pluginId, requestContent.get<std::string>("name"), requestContent.get<shared::CDataContainer>("configuration"));
-               return web::rest::CResult::GenerateSuccess();
+               try
+               {
+                  //create a callback (allow waiting for result)              
+                  communication::callback::CSynchronousCallback<std::string> cb;
+
+                  //create the data container to send to plugin
+                  pluginSystem::CManuallyDeviceCreationData data(requestContent.get<std::string>("name"), requestContent.get<shared::CDataContainer>("configuration"));
+
+                  //send request to plugin
+                  m_messageSender.sendManuallyDeviceCreationRequest(pluginId, data, cb);
+
+                  //wait for result
+                  //communication::callback::CSynchronousCallback< std::string >::CSynchronousResult res = cb.waitForResult();
+                  switch (cb.waitForResult())
+                  {
+                  case communication::callback::CSynchronousCallback< std::string >::kResult:
+                     {
+                        communication::callback::CSynchronousCallback< std::string >::CSynchronousResult res = cb.getCallbackResult();
+
+                        if (res.Success)
+                        {
+                           boost::shared_ptr<database::entities::CDevice> createdDevice = m_dataProvider->getDeviceRequester()->getDevice(pluginId, res.Result);
+                           return web::rest::CResult::GenerateSuccess(createdDevice);
+                        }
+                        else
+                        {
+                           //the plugin failed to create the device
+                           return web::rest::CResult::GenerateError(res.ErrorMessage);
+                        }
+                        break;
+                     }
+                  case shared::event::kTimeout :
+                     return web::rest::CResult::GenerateError("The plugin did not respond");
+                     
+
+                  default:
+                     return web::rest::CResult::GenerateError("Unkown plugin result");
+                  }
+               }
+               catch (shared::exception::CException & ex)
+               {
+                  return web::rest::CResult::GenerateError(ex);
+               }
             }
          }
          else

@@ -458,7 +458,8 @@ void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yadom
    instance->postCommand(command);
 }
 
-void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<const shared::plugin::yadomsApi::IManuallyDeviceCreationData> data)
+
+void CManager::postManuallyDeviceCreationRequest(int id, shared::plugin::yadomsApi::CManuallyDeviceCreationRequest & request)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
 
@@ -466,7 +467,7 @@ void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<const
       return;     // Instance is stopped, nothing to do
 
    boost::shared_ptr<CInstance> instance(m_runningInstances.find(id)->second);
-   instance->postManuallyDeviceCreationRequest(data);
+   instance->postManuallyDeviceCreationRequest(request);
 }
 
 } // namespace pluginSystem

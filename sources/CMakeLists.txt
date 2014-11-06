@@ -162,10 +162,6 @@ set(YADOMS_SRC
 	server/Application.h
 	server/Application.cpp
 	
-  	server/ApplicationStopHandler.h
-	server/ApplicationStopHandler.cpp
-  	server/IApplicationStopHandler.h
-
 	server/Supervisor.cpp
 	server/Supervisor.h
 	server/System.cpp
@@ -220,6 +216,9 @@ set(YADOMS_SRC
 	server/notifications/NewAcquisitionNotification.h
 	server/notifications/NewDeviceNotification.h
 	
+	server/ApplicationStopHandler.h
+	server/ApplicationStopHandler.cpp
+
 	server/dataAccessLayer/DataAccessLayer.h
 	server/dataAccessLayer/DataAccessLayer.cpp
 	server/dataAccessLayer/IDataAccessLayer.h
@@ -314,10 +313,9 @@ set(YADOMS_SRC
 	server/communication/ISendMessageAsync.h
  	server/communication/PluginGateway.h
  	server/communication/PluginGateway.cpp	
-	server/communication/command/Callback.h
-	server/communication/command/Callback.cpp	
-	server/communication/command/Result.h
-	server/communication/command/Result.cpp	
+ 	server/communication/callback/CallbackRequest.h
+ 	server/communication/callback/SynchronousCallback.h
+ 	server/communication/callback/CallbackException.hpp
 
 )
 
@@ -325,7 +323,7 @@ set(YADOMS_SRC
 source_group(server server/*.*)
 source_group(server\\dataAccessLayer  server/dataAccessLayer/*.*)
 source_group(server\\communication  server/communication/*.*)
-source_group(server\\communication\\command  server/communication/command/*.*)
+source_group(server\\communication\\callback  server/communication/callback/*.*)
 source_group(server\\notifications  server/notifications/*.*)
 source_group(server\\pluginSystem server/pluginSystem/*.* )
 source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPlugin/*.* )

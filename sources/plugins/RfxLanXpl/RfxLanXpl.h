@@ -4,6 +4,8 @@
 #include "xplcore/XplMessage.h"
 #include "xplcore/XplService.h"
 #include "xplrules/IDeviceManager.h"
+#include <shared/plugin/yadomsApi/ManuallyDeviceCreationRequest.h>
+
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -52,7 +54,7 @@ private:
    ///\param [in] configuration  the device configuration
    ///\param [in] context The plugin API
    //----------------------------------------------
-   void OnCreateDeviceRequest(boost::shared_ptr<const yApi::IManuallyDeviceCreationData> configuration, boost::shared_ptr<yApi::IYadomsApi> context);
+   void OnCreateDeviceRequest(yApi::CManuallyDeviceCreationRequest data, boost::shared_ptr<yApi::IYadomsApi> context);
 
    //----------------------------------------------
    ///\brief  The device manager
