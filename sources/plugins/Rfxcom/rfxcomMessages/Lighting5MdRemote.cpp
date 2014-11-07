@@ -51,14 +51,19 @@ void CLighting5MdRemoteKeyword::setFromProtocolState(unsigned char cmdByte, unsi
    {
    case 0x00 :                // Power
       m_keyword.set(0);
+       break;
    case 0x01 :                // Light
       m_keyword.set(100);
+       break;
    case 0x04 :                // 100%
       m_keyword.set(100);
+       break;
    case 0x05 :                // 50%
       m_keyword.set(50);
+       break;
    case 0x06 :                // 25%
       m_keyword.set(25);
+       break;
    default:
       {
          BOOST_ASSERT_MSG(false, "Invalid state");

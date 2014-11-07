@@ -48,6 +48,7 @@ namespace pluginSystem
       virtual const shared::CDataContainer getDeviceDetails(const std::string& device) const;
       virtual void declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
       virtual bool keywordExists(const std::string& device, const std::string& keyword) const;
+      virtual bool keywordExists(const std::string& device, const shared::plugin::yadomsApi::historization::IHistorizable& keyword) const;
       virtual void declareKeyword(const std::string& device, const shared::plugin::yadomsApi::historization::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
       virtual void historizeData(const std::string& device, const shared::plugin::yadomsApi::historization::IHistorizable& data);
       virtual const shared::plugin::information::IInformation& getInformation() const;

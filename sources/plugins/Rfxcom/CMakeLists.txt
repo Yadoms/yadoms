@@ -33,6 +33,7 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Humidity.cpp
    rfxcomMessages/ILighting2Subtype.h
    rfxcomMessages/ILighting5Subtype.h
+   rfxcomMessages/ISecurity1Subtype.h
    rfxcomMessages/IThermostat1Subtype.h
    rfxcomMessages/Lighting1.h
    rfxcomMessages/Lighting1.cpp
@@ -73,6 +74,16 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Rfy.cpp
    rfxcomMessages/Security1.h
    rfxcomMessages/Security1.cpp
+   rfxcomMessages/Security1KD101_SA30.h
+   rfxcomMessages/Security1KD101_SA30.cpp
+   rfxcomMessages/Security1PowerCodeSensor.h
+   rfxcomMessages/Security1PowerCodeSensor.cpp
+   rfxcomMessages/Security1X10.h
+   rfxcomMessages/Security1X10.cpp
+   rfxcomMessages/Security1X10M.h
+   rfxcomMessages/Security1X10M.cpp
+   rfxcomMessages/Security1X10R.h
+   rfxcomMessages/Security1X10R.cpp
    rfxcomMessages/Thermostat1.h
    rfxcomMessages/Thermostat1.cpp
    rfxcomMessages/Thermostat2.h

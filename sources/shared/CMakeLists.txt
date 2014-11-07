@@ -95,6 +95,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp
    shared/plugin/yadomsApi/historization/BatteryLevel.cpp
    shared/plugin/yadomsApi/historization/BatteryLevel.h
+   shared/plugin/yadomsApi/historization/ArmingAlarm.cpp
+   shared/plugin/yadomsApi/historization/ArmingAlarm.h
    shared/plugin/yadomsApi/historization/Historizers.h
    shared/plugin/yadomsApi/historization/Counter.cpp
    shared/plugin/yadomsApi/historization/Counter.h

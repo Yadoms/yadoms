@@ -30,7 +30,7 @@ void CAck::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 
 const std::string& CAck::getDeviceName() const
 {
-   throw shared::exception::CNotImplemented("rfxcomMessages::CAck::getDeviceName");
+   return shared::CStringExtension::EmptyString;
 }
 
 } // namespace rfxcomMessages

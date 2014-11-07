@@ -54,9 +54,11 @@ void CLighting5Livolo::setFromProtocolState(unsigned char cmdByte, unsigned char
    case 0x00 :                // Off
    case 0x02 :                // Group Off
       m_keyword.set(false);
+       break;
    case 0x01 :                // On
    case 0x03 :                // Group On
       m_keyword.set(true);
+       break;
    default:
       {
          BOOST_ASSERT_MSG(false, "Invalid state");

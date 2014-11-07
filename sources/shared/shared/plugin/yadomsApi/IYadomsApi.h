@@ -129,6 +129,14 @@ namespace shared { namespace plugin { namespace yadomsApi
       virtual bool keywordExists(const std::string& device, const std::string& keyword) const = 0;
 
       //-----------------------------------------------------
+      ///\brief Check if a keyword already exists for the device
+      ///\param    [in]    device             The device name owner of the keyword
+      ///\param    [in]    keyword            The keyword name
+      ///\return true if the keyword exists, false if not
+      //-----------------------------------------------------
+      virtual bool keywordExists(const std::string& device, const historization::IHistorizable& keyword) const = 0;
+
+      //-----------------------------------------------------
       ///\brief Declare a standard keyword
       ///\param    [in]    device             The device name owner of the keyword
       ///\param    [in]    keyword            The keyword

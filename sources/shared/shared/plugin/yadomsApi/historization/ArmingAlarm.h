@@ -1,34 +1,37 @@
 #pragma once
 #include <shared/Export.h>
+#include <shared/enumeration/EnumHelpers.hpp>
 #include "SingleHistorizableData.hpp"
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {   
+
    //-----------------------------------------------------
-   ///\brief A battery level historizable object
+   ///\brief               The alarm arming status
+   //-----------------------------------------------------   
+   DECLARE_ENUM_HEADER_SHARED(EArmingAlarmStatus, YADOMS_SHARED_EXPORT,
+      ((Disarmed))
+      ((ArmedAtHome))
+      ((ArmedAway))
+      );
+
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CBatteryLevel : public CSingleHistorizableData<int>
+   ///\brief A arming alarm status historizable object
+   //-----------------------------------------------------
+   class YADOMS_SHARED_EXPORT CArmingAlarm : public CSingleHistorizableData<EArmingAlarmStatus>
    {
    public:
       //-----------------------------------------------------
       ///\brief                     Constructor
       ///\param[in] keywordName     Yadoms keyword name
-      ///\param[in] measureType     The measure type (normally kAbsolute)
+      ///\param[in] accessMode      The access mode
       //-----------------------------------------------------
-      CBatteryLevel(const std::string& keywordName, const EMeasureType& measureType = EMeasureType::kAbsolute);
+      CArmingAlarm(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CBatteryLevel();
-
-   protected:
-      //-----------------------------------------------------
-      ///\brief                     Normalize the humidity [0; 100]
-      ///\param[in] value           Raw value
-      ///\return                    The normalized value [0; 100]
-      //-----------------------------------------------------
-      virtual int Normalize(int value);
+      virtual ~CArmingAlarm();
    };
 
 
