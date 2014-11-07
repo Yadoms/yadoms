@@ -1,8 +1,8 @@
 #pragma once
 #include "ISynchronousCallback.h"
 
-namespace shared { namespace communication { namespace callback
-{
+namespace communication { namespace callback {
+
    //--------------------------------------------------------------
    /// \brief	Interface for CallbackRequest
    /// \template  TEventData        the type of data provided
@@ -33,4 +33,4 @@ namespace shared { namespace communication { namespace callback
    };
 
 
-} } } // namespace shared::communication::callback
+} } // namespace communication::callback

@@ -201,6 +201,8 @@ set(YADOMS_SRC
 	server/pluginSystem/internalPlugin/System.cpp
 	server/pluginSystem/internalPlugin/Information.h
 	server/pluginSystem/internalPlugin/Information.cpp
+	server/pluginSystem/ManuallyDeviceCreationRequest.h
+	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
   
 	server/startupOptions/InvalidOptionException.hpp
 	server/startupOptions/IStartupOptions.h
@@ -316,7 +318,8 @@ set(YADOMS_SRC
  	server/communication/callback/CallbackRequest.h
  	server/communication/callback/SynchronousCallback.h
  	server/communication/callback/CallbackException.hpp
-
+   	server/communication/callback/ICallbackRequest.h
+ 	server/communication/callback/ISynchronousCallback.h
 )
 
 # Project folders

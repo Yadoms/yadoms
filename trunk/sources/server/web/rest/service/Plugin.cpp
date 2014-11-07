@@ -5,7 +5,7 @@
 #include "shared/Log.h"
 #include "web/rest/Result.h"
 #include "pluginSystem/ManuallyDeviceCreationData.h"
-#include <shared/plugin/yadomsApi/ManuallyDeviceCreationRequest.h>
+#include "communication/callback/CallbackRequest.h"
 #include "communication/callback/SynchronousCallback.h"
 
 namespace web { namespace rest { namespace service {

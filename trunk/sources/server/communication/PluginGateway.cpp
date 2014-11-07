@@ -3,6 +3,7 @@
 #include <shared/Log.h>
 #include "pluginSystem/DeviceCommand.h"
 #include "pluginSystem/ManuallyDeviceCreationData.h"
+#include "pluginSystem/ManuallyDeviceCreationRequest.h"
 #include "communication/callback/CallbackRequest.h"
 
 namespace communication {
@@ -56,14 +57,15 @@ namespace communication {
       m_acquisitionHistorizer->saveData(keywordId, command->getHistorizableObject());
    }
 
-   void CPluginGateway::sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yadomsApi::IManuallyDeviceCreationData & data, shared::communication::callback::ISynchronousCallback<std::string> & callback)
+   void CPluginGateway::sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yadomsApi::IManuallyDeviceCreationData & data, communication::callback::ISynchronousCallback<std::string> & callback)
    {
       // Create the request
       //can not use "new shared::plugin::yadomsApi::CManuallyDeviceCreationRequest"
-      shared::plugin::yadomsApi::CManuallyDeviceCreationRequest request(new communication::callback::CCallbackRequest<shared::plugin::yadomsApi::IManuallyDeviceCreationData, std::string>(data, callback));
+      boost::shared_ptr<pluginSystem::CManuallyDeviceCreationRequest> request(new pluginSystem::CManuallyDeviceCreationRequest(data, callback));
 
+      
       // Dispatch command to the right plugin
-      m_pluginManager->postManuallyDeviceCreationRequest(pluginId, request);
+      m_pluginManager->postManuallyDeviceCreationRequest(pluginId, boost::dynamic_pointer_cast<shared::plugin::yadomsApi::IManuallyDeviceCreationRequest>(request));
    }
 
    //TODO ajouter sendManuallyDeviceCreationTestRequestAsync

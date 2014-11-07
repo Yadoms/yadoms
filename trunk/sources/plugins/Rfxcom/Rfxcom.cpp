@@ -2,7 +2,7 @@
 #include "Rfxcom.h"
 #include <shared/plugin/ImplementationHelper.h>
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/ManuallyDeviceCreationRequest.h>
+#include <shared/plugin/yadomsApi/IManuallyDeviceCreationRequest.h>
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 #include "RfxcomFactory.h"
@@ -79,7 +79,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          case yApi::IYadomsApi::kEventManuallyDeviceCreation:
             {
                // Yadoms asks for device creation
-               yApi::CManuallyDeviceCreationRequest request = context->getEventHandler().getEventData<yApi::CManuallyDeviceCreationRequest>();
+               boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> request = context->getEventHandler().getEventData< boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
                YADOMS_LOG(debug) << "Manually device creation request received for device :" << request->getData().getDeviceName();
                try
                {

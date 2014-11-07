@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/communication/callback/ICallbackRequest.h>
+#include "ICallbackRequest.h"
 #include "CallbackException.hpp"
 
 namespace communication { namespace callback {
@@ -10,7 +10,7 @@ namespace communication { namespace callback {
    ///\template TCallbackResult  Type of callback result object
    //----------------------------------------------
    template<class TEventData, class TCallbackResult>
-   class CCallbackRequest : public shared::communication::callback::ICallbackRequest<TEventData, TCallbackResult>
+   class CCallbackRequest : public ICallbackRequest<TEventData, TCallbackResult>
    {
    public:
       //----------------------------------------------
@@ -18,7 +18,7 @@ namespace communication { namespace callback {
       ///\template data          The data
       ///\template realCallback  The callback
       //----------------------------------------------
-      CCallbackRequest(const TEventData & data, shared::communication::callback::ISynchronousCallback< TCallbackResult > & realCallback)
+      CCallbackRequest(const TEventData & data, ISynchronousCallback< TCallbackResult > & realCallback)
          :m_bResultSent(false), m_realCallback(realCallback), m_data(data)
       {
       }
@@ -68,7 +68,7 @@ namespace communication { namespace callback {
       //----------------------------------------------
       ///\brief The inner callback
       //----------------------------------------------
-      shared::communication::callback::ISynchronousCallback< TCallbackResult > & m_realCallback;
+      ISynchronousCallback< TCallbackResult > & m_realCallback;
 
       //----------------------------------------------
       ///\brief The data
