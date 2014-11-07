@@ -5,7 +5,7 @@
 #include "pluginSystem/Manager.h"
 #include "ISendMessageAsync.h"
 #include "dataAccessLayer/IAcquisitionHistorizer.h"
-#include <shared/communication/callback/ISynchronousCallback.h>
+#include "callback/ISynchronousCallback.h"
 
 namespace communication {
 
@@ -36,7 +36,7 @@ namespace communication {
    public:
       // ISendMessageAsync Implementation
       virtual void sendCommandAsync(int deviceId, int keywordId, const shared::CDataContainer& body);
-      virtual void sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yadomsApi::IManuallyDeviceCreationData & data, shared::communication::callback::ISynchronousCallback<std::string> & callback);
+      virtual void sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yadomsApi::IManuallyDeviceCreationData & data, communication::callback::ISynchronousCallback<std::string> & callback);
       // [END] ISendMessageAsync Implementation
 
    private:

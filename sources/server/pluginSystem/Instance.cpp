@@ -90,11 +90,11 @@ void CInstance::postCommand(boost::shared_ptr<const shared::plugin::yadomsApi::I
    m_context->getEventHandler().postEvent<boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> >(shared::plugin::yadomsApi::IYadomsApi::kEventDeviceCommand, command);
 }
 
-void CInstance::postManuallyDeviceCreationRequest(shared::plugin::yadomsApi::CManuallyDeviceCreationRequest & request) const
+void CInstance::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yadomsApi::IManuallyDeviceCreationRequest> & request) const
 {
    BOOST_ASSERT(m_context);
    // Post event to the plugin
-   m_context->getEventHandler().postEvent< shared::plugin::yadomsApi::CManuallyDeviceCreationRequest >(shared::plugin::yadomsApi::IYadomsApi::kEventManuallyDeviceCreation, request);
+   m_context->getEventHandler().postEvent< boost::shared_ptr<shared::plugin::yadomsApi::IManuallyDeviceCreationRequest> >(shared::plugin::yadomsApi::IYadomsApi::kEventManuallyDeviceCreation, request);
 }
 
 void CInstance::updateConfiguration(const shared::CDataContainer & newConfiguration) const

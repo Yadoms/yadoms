@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/communication/callback/ISynchronousCallback.h>
+#include "ISynchronousCallback.h"
 #include <shared/event/EventHandler.hpp>
 #include <shared/Field.hpp>
 
@@ -9,7 +9,7 @@ namespace communication { namespace callback
    ///\brief Callback class for sending command results
    //----------------------------------------------
    template<class TCallbackResult>
-   class CSynchronousCallback : protected shared::event::CEventHandler, public shared::communication::callback::ISynchronousCallback<TCallbackResult>
+   class CSynchronousCallback : protected shared::event::CEventHandler, public ISynchronousCallback<TCallbackResult>
    {
    public:
       //----------------------------------------------

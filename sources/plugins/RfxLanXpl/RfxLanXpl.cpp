@@ -93,7 +93,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          case yApi::IYadomsApi::kEventManuallyDeviceCreation:
          {
             // Yadoms asks for device creation
-            yApi::CManuallyDeviceCreationRequest data = context->getEventHandler().getEventData< yApi::CManuallyDeviceCreationRequest >();
+            boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> data = context->getEventHandler().getEventData< boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
             OnCreateDeviceRequest(data, context);
             break;
          }
@@ -282,7 +282,7 @@ void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceComman
 }
 
 
-void CRfxLanXpl::OnCreateDeviceRequest(yApi::CManuallyDeviceCreationRequest data, boost::shared_ptr<yApi::IYadomsApi> context)
+void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> data, boost::shared_ptr<yApi::IYadomsApi> context)
 {
    try
    {

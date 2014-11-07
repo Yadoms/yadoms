@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <shared/Log.h>
 #include "Ack.h"
-
+#include <shared/exception/NotImplemented.hpp>
 
 namespace rfxcomMessages
 {
@@ -26,6 +26,11 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CAck::e
 void CAck::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
    // Nothing to historize
+}
+
+const std::string& CAck::getDeviceName() const
+{
+   throw shared::exception::CNotImplemented("rfxcomMessages::CAck::getDeviceName");
 }
 
 } // namespace rfxcomMessages

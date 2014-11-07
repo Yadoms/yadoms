@@ -1,7 +1,7 @@
 #pragma once
 
-namespace shared { namespace communication { namespace callback
-{
+namespace communication { namespace callback {
+
    //--------------------------------------------------------------
    /// \brief	Interface for SynchronousCallback
    /// \template  TCallbackResult   the type of object excpected in callback answer 
@@ -30,5 +30,5 @@ namespace shared { namespace communication { namespace callback
       virtual void sendError(const std::string & errorMessage) = 0;
    };
 
-} } } // namespace shared::communication::callback
 
+} } // namespace communication::callback
