@@ -1,4 +1,5 @@
 #pragma once
+#include "ArmingAlarm.h"
 #include "BatteryLevel.h"
 #include "Counter.h"
 #include "Current.h"

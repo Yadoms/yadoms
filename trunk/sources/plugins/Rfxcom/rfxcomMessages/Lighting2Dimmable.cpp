@@ -58,11 +58,12 @@ void CLighting2Dimmable::setFromProtocolState(unsigned char cmdByte, unsigned ch
 {
    switch(cmdByte)
    {
-   case light2_sOn: m_keyword.set(100);
-   case light2_sOff: m_keyword.set(0);
+   case light2_sOn: m_keyword.set(100); break;
+   case light2_sOff: m_keyword.set(0); break;
    case light2_sSetLevel:
       {
          m_keyword.set(levelByte * 100 / 0x0F); // level needs to be from 0 to 100
+          break;
       }
    default:
       {

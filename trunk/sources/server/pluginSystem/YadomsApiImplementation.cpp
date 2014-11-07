@@ -52,6 +52,11 @@ bool CYadomsApiImplementation::keywordExists(const std::string& device, const st
    return m_keywordRequester->keywordExists((m_deviceManager->getDevice(getPluginId(), device))->Id, keyword);
 }
 
+bool CYadomsApiImplementation::keywordExists(const std::string& device, const shared::plugin::yadomsApi::historization::IHistorizable& keyword) const
+{
+   return keywordExists(device, keyword.getKeyword());
+}
+
 void CYadomsApiImplementation::declareCustomKeyword(const std::string& device, const std::string& keyword, const std::string& capacity,
    const shared::plugin::yadomsApi::EKeywordAccessMode& accessMode, const shared::plugin::yadomsApi::EKeywordDataType& type, const std::string & units,
    const shared::plugin::yadomsApi::historization::EMeasureType & measure, const shared::CDataContainer& details)

@@ -176,7 +176,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CTransc
          return rfxcomMessages::CRfy(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
       case pTypeSecurity1:
-         return rfxcomMessages::CSecurity1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         return rfxcomMessages::CSecurity1(context, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
       case pTypeThermostat1:
          return rfxcomMessages::CThermostat1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);

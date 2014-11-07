@@ -12,7 +12,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
    );
 
    CCurtain::CCurtain(const std::string& keywordName)
-      :CSingleHistorizableData<ECurtainCommand>(keywordName, CStandardCapacities::Curtain, "cmd", EKeywordAccessMode::kGet, ECurtainCommand(ECurtainCommand::kStop))
+      :CSingleHistorizableData<ECurtainCommand>(keywordName, CStandardCapacities::Curtain, "cmd", EKeywordAccessMode::kGet, ECurtainCommand::kStop)
    {
    }
 

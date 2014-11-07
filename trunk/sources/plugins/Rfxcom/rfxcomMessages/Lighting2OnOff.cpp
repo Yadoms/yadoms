@@ -58,8 +58,8 @@ void CLighting2OnOff::setFromProtocolState(unsigned char cmdByte, unsigned char 
 {
    switch(cmdByte)
    {
-   case light2_sOn: m_keyword.set(true);
-   case light2_sOff: m_keyword.set(false);
+   case light2_sOn: m_keyword.set(true); break;
+   case light2_sOff: m_keyword.set(false); break;
    default:
       {
          BOOST_ASSERT_MSG(false, "Invalid state");

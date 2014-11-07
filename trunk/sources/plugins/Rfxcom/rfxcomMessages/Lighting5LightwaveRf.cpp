@@ -51,10 +51,13 @@ void CLighting5LightwaveRfKeyword::setFromProtocolState(unsigned char cmdByte, u
    {
    case 0x00 :                // Off
       m_keyword.set(0);
+       break;
    case 0x01 :                // On
       m_keyword.set(100);
+       break;
    case 0x10 :                // Set level
       m_keyword.set(levelByte * 100 / 0x1F);
+       break;
    default:
       {
          BOOST_ASSERT_MSG(false, "Invalid state");

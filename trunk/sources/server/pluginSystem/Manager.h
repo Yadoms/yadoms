@@ -167,6 +167,7 @@ namespace pluginSystem
       /// \param [in] request    Request data
       //--------------------------------------------------------------
       void postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yadomsApi::IManuallyDeviceCreationRequest> & request);
+
    private:
       //--------------------------------------------------------------
       /// \brief        Returns all plugin directories installed

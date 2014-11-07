@@ -15,6 +15,7 @@ namespace shared { namespace plugin { namespace yadomsApi {
       //--------------------------------------------------------------
       //                                                    capacity name      |        unit           |          description
       //                                                  ----------------------------------------------------------------------------------------------
+      static const CStandardCapacity & ArmingAlarm;       // armingAlarm       | -                     | Alarme arming status (disarmed, armedAtHome, armedAway...)
       static const CStandardCapacity & BatteryLevel;      // batteryLevel      | percent               | Battery level capacity
       static const CStandardCapacity & Counter;           // count             |  -                    | Generic counter
       static const CStandardCapacity & Current;           // current           | Ampere                | Current measure
