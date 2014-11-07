@@ -7,10 +7,8 @@
 #include "Security1X10R.h"
 #include "Security1KD101_SA30.h"
 #include "Security1PowerCodeSensor.h"
-//TODO à finir
-//#include "Security1PowerMotion.h"
-//#include "Security1CodeSecure.h"
-//#include "Security1Meiantech.h"
+#include "Security1PowerCodeMotion.h"
+#include "Security1Meiantech.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -68,13 +66,10 @@ void CSecurity1::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    case CSecurity1X10M::rfxValue : m_subTypeManager.reset(new CSecurity1X10M()); break;
    case CSecurity1X10R::rfxValue : m_subTypeManager.reset(new CSecurity1X10R()); break;
    case CSecurity1KD101_SA30::rfxValueKD101 : m_subTypeManager.reset(new CSecurity1KD101_SA30("KD101")); break;
-      //TODO à finir
-   case CSecurity1X10PowerCodeSensor::rfxValuePowercodeSensor : m_subTypeManager.reset(new CSecurity1X10PowerCodeSensor(false)); break;
-   case CSecurity1X10PowerCodeSensor::rfxValuePowercodeSensorAux : m_subTypeManager.reset(new CSecurity1X10PowerCodeSensor(true)); break;
-   //case CSecurity1PowerMotion::rfxValue : m_subTypeManager.reset(new CSecurity1PowerMotion()); break;
-   //case CSecurity1CodeSecure::rfxValue : m_subTypeManager.reset(new CSecurity1CodeSecure()); break;
-   //case CSecurity1PowercodeAux::rfxValue : m_subTypeManager.reset(new CSecurity1PowercodeAux()); break;
-   //case CSecurity1Meiantech::rfxValue : m_subTypeManager.reset(new CSecurity1Meiantech()); break;
+   case CSecurity1PowerCodeSensor::rfxValuePowercodeSensor : m_subTypeManager.reset(new CSecurity1PowerCodeSensor(false)); break;
+   case CSecurity1PowerCodeSensor::rfxValuePowercodeSensorAux : m_subTypeManager.reset(new CSecurity1PowerCodeSensor(true)); break;
+   case CSecurity1PowerCodeMotion::rfxValue : m_subTypeManager.reset(new CSecurity1PowerCodeMotion()); break;
+   case CSecurity1Meiantech::rfxValue : m_subTypeManager.reset(new CSecurity1Meiantech()); break;
    case CSecurity1KD101_SA30::rfxValueSA30 : m_subTypeManager.reset(new CSecurity1KD101_SA30("SA30")); break;
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");

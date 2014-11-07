@@ -9,22 +9,21 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
    //--------------------------------------------------------------
-   /// \brief	The Security1 PowerCode sensor subtype
+   /// \brief	The Scurity1 Meiantech subtype
    //--------------------------------------------------------------
-   class CSecurity1PowerCodeSensor : public ISecurity1Subtype
+   class CSecurity1Meiantech : public ISecurity1Subtype
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                        The RFXCom subtype value
       //--------------------------------------------------------------
-      enum { rfxValuePowercodeSensor = sTypePowercodeSensor, rfxValuePowercodeSensorAux = sTypePowercodeAux };
+      enum { rfxValue = sTypeMeiantech };
 
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in] secondaryContact     Secondary contact
       //--------------------------------------------------------------
-      CSecurity1PowerCodeSensor(bool secondaryContact);
+      CSecurity1Meiantech();
 
       // ISecurity1Subtype implementation
       virtual std::string getModel() const;
@@ -40,8 +39,13 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        The keywords
       //--------------------------------------------------------------
-      yApi::historization::CSwitch m_alarm;
-      yApi::historization::CSwitch m_tamper;
+      yApi::historization::CSwitch m_panic;
+      yApi::historization::CArmingAlarm m_armAlarm;
+
+      //--------------------------------------------------------------
+      /// \brief	                        Status byte buffering
+      //--------------------------------------------------------------
+      unsigned char m_statusByte;
    };
 
 } // namespace rfxcomMessages
