@@ -60,12 +60,10 @@ namespace communication {
    void CPluginGateway::sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yadomsApi::IManuallyDeviceCreationData & data, communication::callback::ISynchronousCallback<std::string> & callback)
    {
       // Create the request
-      //can not use "new shared::plugin::yadomsApi::CManuallyDeviceCreationRequest"
-      boost::shared_ptr<pluginSystem::CManuallyDeviceCreationRequest> request(new pluginSystem::CManuallyDeviceCreationRequest(data, callback));
-
+      boost::shared_ptr<shared::plugin::yadomsApi::IManuallyDeviceCreationRequest> request(new pluginSystem::CManuallyDeviceCreationRequest(data, callback));
       
       // Dispatch command to the right plugin
-      m_pluginManager->postManuallyDeviceCreationRequest(pluginId, boost::dynamic_pointer_cast<shared::plugin::yadomsApi::IManuallyDeviceCreationRequest>(request));
+      m_pluginManager->postManuallyDeviceCreationRequest(pluginId, request);
    }
 
    //TODO ajouter sendManuallyDeviceCreationTestRequestAsync
