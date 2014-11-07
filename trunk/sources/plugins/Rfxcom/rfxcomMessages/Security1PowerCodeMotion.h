@@ -9,22 +9,21 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
    //--------------------------------------------------------------
-   /// \brief	The Security1 PowerCode sensor subtype
+   /// \brief	The Security1 PowerCode motion sensor subtype
    //--------------------------------------------------------------
-   class CSecurity1PowerCodeSensor : public ISecurity1Subtype
+   class CSecurity1PowerCodeMotion : public ISecurity1Subtype
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                        The RFXCom subtype value
       //--------------------------------------------------------------
-      enum { rfxValuePowercodeSensor = sTypePowercodeSensor, rfxValuePowercodeSensorAux = sTypePowercodeAux };
+      enum { rfxValue = sTypePowercodeMotion };
 
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
-      /// \param[in] secondaryContact     Secondary contact
       //--------------------------------------------------------------
-      CSecurity1PowerCodeSensor(bool secondaryContact);
+      CSecurity1PowerCodeMotion();
 
       // ISecurity1Subtype implementation
       virtual std::string getModel() const;

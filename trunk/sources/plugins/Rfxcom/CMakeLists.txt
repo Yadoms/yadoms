@@ -76,8 +76,12 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Security1.cpp
    rfxcomMessages/Security1KD101_SA30.h
    rfxcomMessages/Security1KD101_SA30.cpp
+   rfxcomMessages/Security1Meiantech.h
+   rfxcomMessages/Security1Meiantech.cpp
    rfxcomMessages/Security1PowerCodeSensor.h
    rfxcomMessages/Security1PowerCodeSensor.cpp
+   rfxcomMessages/Security1PowerCodeMotion.h
+   rfxcomMessages/Security1PowerCodeMotion.cpp
    rfxcomMessages/Security1X10.h
    rfxcomMessages/Security1X10.cpp
    rfxcomMessages/Security1X10M.h
