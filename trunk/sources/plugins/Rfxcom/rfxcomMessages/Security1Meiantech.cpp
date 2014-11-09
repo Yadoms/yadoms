@@ -11,10 +11,16 @@ namespace rfxcomMessages
 {
 
 CSecurity1Meiantech::CSecurity1Meiantech()
-   :m_statusByte(0), m_panic("panic"), m_armAlarm("armAlarm")
+   :m_panic("panic"), m_statusByte(0), m_armAlarm("armAlarm")
 {
 }
 
+   
+   CSecurity1Meiantech::~CSecurity1Meiantech()
+   {
+   }
+   
+   
 std::string CSecurity1Meiantech::getModel() const
 {
    return "Meiantech";
@@ -53,7 +59,7 @@ void CSecurity1Meiantech::set(const std::string& keyword, const shared::CDataCon
    }
 }
 
-void CSecurity1Meiantech::default()
+void CSecurity1Meiantech::reset()
 {
    m_statusByte = 0;
    m_panic.set(false);

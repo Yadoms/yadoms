@@ -21,8 +21,9 @@ CAsyncSerialPort::CAsyncSerialPort(
    m_readBufferMaxSize(512),
    m_asyncReadBuffer(new unsigned char[m_readBufferMaxSize]),
    m_readBuffer(new unsigned char[m_readBufferMaxSize]),
-   m_connectRetryTimer(m_ioService),
-   m_connectRetryDelay(connectRetryDelay)
+   m_connectRetryDelay(connectRetryDelay),
+   m_connectRetryTimer(m_ioService)
+
 {
 }
 

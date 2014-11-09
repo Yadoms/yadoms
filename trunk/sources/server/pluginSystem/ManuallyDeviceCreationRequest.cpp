@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ManuallyDeviceCreationRequest.h"
-#include "communication\callback\CallbackRequest.h"
+#include "communication/callback/CallbackRequest.h"
 
 namespace pluginSystem
 {

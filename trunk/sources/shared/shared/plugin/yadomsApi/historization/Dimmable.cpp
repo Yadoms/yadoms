@@ -9,7 +9,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
 {
 
 CDimmable::CDimmable(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
-   :m_keywordName(keywordName), m_switchLevel(0), m_accessMode (accessMode), m_measureType(measureType)
+   :m_keywordName(keywordName), m_switchLevel(0), m_measureType(measureType), m_accessMode (accessMode)
 {
 }
 

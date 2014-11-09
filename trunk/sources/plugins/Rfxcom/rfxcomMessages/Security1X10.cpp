@@ -14,7 +14,9 @@ CSecurity1X10::CSecurity1X10()
    :m_alarm("alarm", yApi::EKeywordAccessMode::kGet), m_tamper("tamper", yApi::EKeywordAccessMode::kGet)
 {
 }
-
+   CSecurity1X10::~CSecurity1X10()
+   {
+   }
 std::string CSecurity1X10::getModel() const
 {
    return "X10 security door/window sensor";
@@ -39,7 +41,7 @@ void CSecurity1X10::set(const std::string& /*keyword*/, const shared::CDataConta
     // Get-only keywords
 }
 
-void CSecurity1X10::default()
+void CSecurity1X10::reset()
 {
    m_alarm.set(false);
    m_tamper.set(false);

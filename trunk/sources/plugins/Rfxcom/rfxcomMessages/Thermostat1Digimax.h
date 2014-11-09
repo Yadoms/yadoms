@@ -18,13 +18,17 @@ namespace rfxcomMessages
       /// \brief	                        Constructor
       //--------------------------------------------------------------
       CThermostat1Digimax();
-
+      //--------------------------------------------------------------
+      /// \brief	Destructor
+      //--------------------------------------------------------------
+      virtual ~CThermostat1Digimax();
+      
       // ILighting2Subtype implementation
       virtual std::string getModel() const;
       virtual void declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
       virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
       virtual void set(const shared::CDataContainer& yadomsCommand);
-      virtual void default();
+      virtual void reset();
       virtual void setFromProtocolState(const RBUF& thermostat1Rbuf);
       virtual void toProtocolState(RBUF& thermostat1Rbuf) const;
       // [END] ILighting2Subtype implementation

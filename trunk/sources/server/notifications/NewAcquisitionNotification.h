@@ -17,7 +17,7 @@ namespace notifications {
       ///\param [in]  day           The dayly summary data
       ///\param [in]  jour          The hourly dummary data
       //-----------------------------
-      CNewAcquisitionNotification(boost::shared_ptr< database::entities::CAcquisition > acquisition, boost::shared_ptr< database::entities::CAcquisitionSummary > day = NULL, boost::shared_ptr< database::entities::CAcquisitionSummary > hour = NULL)
+      CNewAcquisitionNotification(boost::shared_ptr< database::entities::CAcquisition > acquisition, boost::shared_ptr< database::entities::CAcquisitionSummary > day = boost::shared_ptr< database::entities::CAcquisitionSummary >(), boost::shared_ptr< database::entities::CAcquisitionSummary > hour = boost::shared_ptr< database::entities::CAcquisitionSummary > ())
          :m_acquisition(acquisition), m_daySummary(day), m_hourSummary(hour)
       {
       }

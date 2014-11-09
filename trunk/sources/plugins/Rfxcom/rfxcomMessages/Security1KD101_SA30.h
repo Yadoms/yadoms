@@ -25,13 +25,17 @@ namespace rfxcomMessages
       /// \param[in] model                The device model
       //--------------------------------------------------------------
       CSecurity1KD101_SA30(const std::string& model);
-
+      //--------------------------------------------------------------
+      /// \brief	Destructor
+      //--------------------------------------------------------------
+      virtual ~CSecurity1KD101_SA30();
+      
       // ISecurity1Subtype implementation
       virtual std::string getModel() const;
       virtual void declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
       virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
       virtual void set(const std::string& keyword, const shared::CDataContainer& yadomsCommand);
-      virtual void default();
+      virtual void reset();
       virtual void setFromProtocolState(unsigned char statusByte);
       virtual unsigned char toProtocolState() const;
       // [END] ISecurity1Subtype implementation

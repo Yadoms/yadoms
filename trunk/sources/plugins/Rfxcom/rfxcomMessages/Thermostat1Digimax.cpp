@@ -15,6 +15,10 @@ CThermostat1Digimax::CThermostat1Digimax()
 {
 }
 
+CThermostat1Digimax::~CThermostat1Digimax()
+{
+}
+   
 std::string CThermostat1Digimax::getModel() const
 {
    return "Digimax TLX7506";
@@ -38,7 +42,7 @@ void CThermostat1Digimax::set(const shared::CDataContainer& yadomsCommand)
    m_setPoint.set(yadomsCommand);
 }
 
-void CThermostat1Digimax::default()
+void CThermostat1Digimax::reset()
 {
    m_currentTemperature.set(0.0);
    m_setPoint.set(0.0);

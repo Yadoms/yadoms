@@ -15,6 +15,10 @@ CLighting5Livolo::CLighting5Livolo()
 {
 }
 
+    CLighting5Livolo::~CLighting5Livolo()
+    {
+    }
+
 std::string CLighting5Livolo::getModel() const
 {
    return "Livolo";
@@ -35,7 +39,7 @@ void CLighting5Livolo::set(const shared::CDataContainer& yadomsCommand)
    m_keyword.set(yadomsCommand);
 }
 
-void CLighting5Livolo::default()
+void CLighting5Livolo::reset()
 {
    m_keyword.set(false);
 }

@@ -20,12 +20,18 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       CLighting2Dimmable(const std::string& model);
 
+       //--------------------------------------------------------------
+       /// \brief	Destructor
+       //--------------------------------------------------------------
+       virtual ~CLighting2Dimmable();
+       
+       
       // ILighting2Subtype implementation
       virtual std::string getModel() const;
       virtual void declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
       virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
       virtual void set(const shared::CDataContainer& yadomsCommand);
-      virtual void default();
+      virtual void reset();
       virtual void idFromProtocol(unsigned char id1Byte, unsigned char id2Byte, unsigned char id3Byte, unsigned char id4Byte, unsigned char& houseCode, unsigned int& id) const;
       virtual void idToProtocol(unsigned char houseCode, unsigned int id, unsigned char& id1Byte, unsigned char& id2Byte, unsigned char& id3Byte, unsigned char& id4Byte) const;
       virtual void setFromProtocolState(unsigned char cmdByte, unsigned char levelByte);

@@ -36,7 +36,7 @@ CLighting5::CLighting5(boost::shared_ptr<yApi::IYadomsApi> context, unsigned cha
    m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
    Init(context);
-   m_subTypeManager->default();
+   m_subTypeManager->reset();
 }
 
 CLighting5::CLighting5(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)

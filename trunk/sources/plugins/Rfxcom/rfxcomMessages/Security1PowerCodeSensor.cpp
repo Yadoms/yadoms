@@ -15,7 +15,11 @@ CSecurity1PowerCodeSensor::CSecurity1PowerCodeSensor(bool secondaryContact)
    m_tamper(secondaryContact ? "tamper1" : "tamper2" , yApi::EKeywordAccessMode::kGet)
 {
 }
-
+   
+   CSecurity1PowerCodeSensor::~CSecurity1PowerCodeSensor()
+   {
+   }
+   
 std::string CSecurity1PowerCodeSensor::getModel() const
 {
    return "Visonic PowerCode door/window sensor";
@@ -40,7 +44,7 @@ void CSecurity1PowerCodeSensor::set(const std::string& /*keyword*/, const shared
     // Get-only keywords
 }
 
-void CSecurity1PowerCodeSensor::default()
+void CSecurity1PowerCodeSensor::reset()
 {
    m_alarm.set(false);
    m_tamper.set(false);

@@ -38,7 +38,7 @@ CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned cha
    m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
 
    Init(context);
-   m_subTypeManager->default();
+   m_subTypeManager->reset();
 }
 
 CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)

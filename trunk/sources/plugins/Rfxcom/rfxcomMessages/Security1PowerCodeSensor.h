@@ -25,13 +25,17 @@ namespace rfxcomMessages
       /// \param[in] secondaryContact     Secondary contact
       //--------------------------------------------------------------
       CSecurity1PowerCodeSensor(bool secondaryContact);
-
+      //--------------------------------------------------------------
+      /// \brief	Destructor
+      //--------------------------------------------------------------
+      virtual ~CSecurity1PowerCodeSensor();
+      
       // ISecurity1Subtype implementation
       virtual std::string getModel() const;
       virtual void declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
       virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
       virtual void set(const std::string& keyword, const shared::CDataContainer& yadomsCommand);
-      virtual void default();
+      virtual void reset();
       virtual void setFromProtocolState(unsigned char statusByte);
       virtual unsigned char toProtocolState() const;
       // [END] ISecurity1Subtype implementation

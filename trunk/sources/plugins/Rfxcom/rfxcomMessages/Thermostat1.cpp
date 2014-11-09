@@ -32,7 +32,7 @@ CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned
    m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
 
    Init(context);
-   m_subTypeManager->default();
+   m_subTypeManager->reset();
 }
 
 CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)

@@ -202,7 +202,7 @@ boost::shared_ptr<COpenZWaveNode> COpenZWaveController::GetNode(const int homeId
       if ((*it)->match(homeId, nodeId))
          return *it;
    }
-   return boost::shared_ptr<COpenZWaveNode>(NULL);
+   return boost::shared_ptr<COpenZWaveNode>();
 }
 
 
