@@ -16,6 +16,10 @@ CSecurity1PowerCodeMotion::CSecurity1PowerCodeMotion()
 {
 }
 
+   CSecurity1PowerCodeMotion::~CSecurity1PowerCodeMotion()
+   {
+   }
+   
 std::string CSecurity1PowerCodeMotion::getModel() const
 {
    return "Visonic PowerCode motion sensor";
@@ -40,7 +44,7 @@ void CSecurity1PowerCodeMotion::set(const std::string& /*keyword*/, const shared
     // Get-only keywords
 }
 
-void CSecurity1PowerCodeMotion::default()
+void CSecurity1PowerCodeMotion::reset()
 {
    m_alarm.set(false);
    m_tamper.set(false);

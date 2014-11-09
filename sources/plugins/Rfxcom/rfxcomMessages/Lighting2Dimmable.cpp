@@ -11,10 +11,14 @@ namespace rfxcomMessages
 {
 
 CLighting2Dimmable::CLighting2Dimmable(const std::string& model)
-   :m_keyword("state"), m_model(model)
+   :m_model(model), m_keyword("state")
 {
 }
 
+CLighting2Dimmable::~CLighting2Dimmable()
+{
+}
+    
 std::string CLighting2Dimmable::getModel() const
 {
    return m_model;
@@ -35,7 +39,7 @@ void CLighting2Dimmable::set(const shared::CDataContainer& yadomsCommand)
    m_keyword.set(yadomsCommand);
 }
 
-void CLighting2Dimmable::default()
+void CLighting2Dimmable::reset()
 {
    m_keyword.set(0);
 }

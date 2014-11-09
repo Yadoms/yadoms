@@ -39,8 +39,8 @@ CMegatecUps::CMegatecUps():
    m_inputVoltage("inputVoltage"), m_inputfaultVoltage("inputfaultVoltage"), m_outputVoltage("outputVoltage"),
    m_outputCurrent("outputCurrent"), m_inputFrequency("inputFrequency"), m_batteryVoltage("batteryVoltage"),
    m_temperature("temperature"), m_acPowerHistorizer("acPowerActive", yApi::EKeywordAccessMode::kGet), m_upsShutdown("UpsShutdown"),
-   m_acPowerActive(true), m_lowBatteryFlag(false), m_lowBatteryByLevelFlag(false), m_batteryNominalVoltage(0.0),
-   m_protocolErrorCounter(0), m_answerIsRequired(true), m_firstNotification(true)
+   m_acPowerActive(true), m_lowBatteryFlag(false), m_lowBatteryByLevelFlag(false),
+   m_protocolErrorCounter(0), m_batteryNominalVoltage(0.0), m_answerIsRequired(true), m_firstNotification(true)
 {
 }
 
@@ -418,7 +418,7 @@ void CMegatecUps::sendCancelShtudownCmd()
 
 void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYadomsApi> context, const boost::tokenizer<boost::char_separator<char> >& tokens)
 {
-   boost::tokenizer<boost::char_separator<char>>::const_iterator itToken = tokens.begin();
+   boost::tokenizer< boost::char_separator<char> >::const_iterator itToken = tokens.begin();
    m_inputVoltage.set      (upsStr2Double(*itToken)); ++itToken;
    m_inputfaultVoltage.set (upsStr2Double(*itToken)); ++itToken;
    m_outputVoltage.set     (upsStr2Double(*itToken)); ++itToken;
@@ -470,7 +470,7 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYadomsApi> cont
 
 void CMegatecUps::processReceivedInformation(boost::shared_ptr<yApi::IYadomsApi> context, const boost::tokenizer<boost::char_separator<char> >& tokens)
 {
-   boost::tokenizer<boost::char_separator<char>>::const_iterator itToken = tokens.begin();
+   boost::tokenizer<boost::char_separator<char> >::const_iterator itToken = tokens.begin();
    std::string company(*itToken); ++itToken;
    std::string model  (*itToken); ++itToken;
    std::string version(*itToken);
@@ -486,7 +486,7 @@ void CMegatecUps::processReceivedInformation(boost::shared_ptr<yApi::IYadomsApi>
 
 void CMegatecUps::processReceivedRatingInformation(const boost::tokenizer<boost::char_separator<char> >& tokens)
 {
-   boost::tokenizer<boost::char_separator<char>>::const_iterator itToken = tokens.begin();
+   boost::tokenizer<boost::char_separator<char> >::const_iterator itToken = tokens.begin();
    double ratingVoltage = upsStr2Double(*itToken);
    ++itToken;
    double ratingCurrent = upsStr2Double(*itToken);

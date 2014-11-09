@@ -11,10 +11,14 @@ namespace rfxcomMessages
 {
 
 CLighting5OnOff::CLighting5OnOff(const std::string& model)
-   :m_keyword("state"), m_model(model)
+   :m_model(model), m_keyword("state")
 {
 }
-
+    
+    CLighting5OnOff::~CLighting5OnOff()
+    {
+    }
+    
 std::string CLighting5OnOff::getModel() const
 {
    return m_model;
@@ -35,7 +39,7 @@ void CLighting5OnOff::set(const shared::CDataContainer& yadomsCommand)
    m_keyword.set(yadomsCommand);
 }
 
-void CLighting5OnOff::default()
+void CLighting5OnOff::reset()
 {
    m_keyword.set(false);
 }

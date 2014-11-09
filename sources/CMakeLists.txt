@@ -107,7 +107,11 @@ if(APPLE)
 	if(NOT IOKIT_FOUND)
 		message(SEND_ERROR "Unable to find the requested IOKit libraries")
 	endif()
-	set(LIBS ${LIBS} ${IOKIT_LIBRARY})
+
+	if(NOT CARBON_FOUND)
+		message(SEND_ERROR "Unable to find the requested Carbon libraries")
+	endif()
+	set(LIBS ${LIBS} ${IOKIT_LIBRARY} ${CARBON_LIBRARY})
 endif()
 
 

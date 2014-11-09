@@ -20,12 +20,17 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       CLighting5OnOff(const std::string& model);
 
+      //--------------------------------------------------------------
+      /// \brief	Destructor
+      //--------------------------------------------------------------
+      virtual ~CLighting5OnOff();
+       
       // ILighting5Subtype implementation
       virtual std::string getModel() const;
       virtual void declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
       virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
       virtual void set(const shared::CDataContainer& yadomsCommand);
-      virtual void default();
+      virtual void reset();
       virtual size_t getMessageNb() const;
       virtual void setFromProtocolState(unsigned char cmdByte, unsigned char levelByte);
       virtual void toProtocolState(size_t idxMessage, unsigned char& cmdByte, unsigned char& levelByte) const;

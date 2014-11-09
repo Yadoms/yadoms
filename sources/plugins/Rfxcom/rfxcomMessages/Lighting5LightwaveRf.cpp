@@ -15,6 +15,10 @@ CLighting5LightwaveRfKeyword::CLighting5LightwaveRfKeyword()
 {
 }
 
+CLighting5LightwaveRfKeyword::~CLighting5LightwaveRfKeyword()
+{
+}
+    
 std::string CLighting5LightwaveRfKeyword::getModel() const
 {
    return "LightwaveRF, Siemens (AD protocol)";
@@ -35,7 +39,7 @@ void CLighting5LightwaveRfKeyword::set(const shared::CDataContainer& yadomsComma
    m_keyword.set(yadomsCommand);
 }
 
-void CLighting5LightwaveRfKeyword::default()
+void CLighting5LightwaveRfKeyword::reset()
 {
    m_keyword.set(0);
 }

@@ -15,6 +15,10 @@ CThermostat1DigimaxShort::CThermostat1DigimaxShort()
 {
 }
 
+CThermostat1DigimaxShort::~CThermostat1DigimaxShort()
+{
+}
+   
 std::string CThermostat1DigimaxShort::getModel() const
 {
    return "Digimax short (no set point)";
@@ -34,7 +38,7 @@ void CThermostat1DigimaxShort::set(const shared::CDataContainer& yadomsCommand)
 {
 }
 
-void CThermostat1DigimaxShort::default()
+void CThermostat1DigimaxShort::reset()
 {
    m_currentTemperature.set(0.0);
 }

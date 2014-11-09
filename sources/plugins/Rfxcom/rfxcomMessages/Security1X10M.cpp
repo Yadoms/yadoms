@@ -14,7 +14,11 @@ CSecurity1X10M::CSecurity1X10M()
    :m_alarm("alarm", yApi::EKeywordAccessMode::kGet), m_tamper("tamper", yApi::EKeywordAccessMode::kGet)
 {
 }
-
+   
+   CSecurity1X10M::~CSecurity1X10M()
+   {
+   }
+   
 std::string CSecurity1X10M::getModel() const
 {
    return "X10 security motion sensor";
@@ -39,7 +43,7 @@ void CSecurity1X10M::set(const std::string& /*keyword*/, const shared::CDataCont
    // Get-only keywords
 }
 
-void CSecurity1X10M::default()
+void CSecurity1X10M::reset()
 {
    m_alarm.set(false);
    m_tamper.set(false);

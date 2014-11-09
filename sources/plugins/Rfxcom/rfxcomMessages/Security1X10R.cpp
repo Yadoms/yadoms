@@ -15,6 +15,11 @@ CSecurity1X10R::CSecurity1X10R()
 {
 }
 
+
+CSecurity1X10R::~CSecurity1X10R()
+{
+}
+   
 std::string CSecurity1X10R::getModel() const
 {
    return "X10 security remote";
@@ -67,7 +72,7 @@ void CSecurity1X10R::set(const std::string& keyword, const shared::CDataContaine
    }
 }
 
-void CSecurity1X10R::default()
+void CSecurity1X10R::reset()
 {
    m_statusByte = 0;
    m_panic.set(false);

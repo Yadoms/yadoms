@@ -11,10 +11,14 @@ namespace rfxcomMessages
 {
 
 CSecurity1KD101_SA30::CSecurity1KD101_SA30(const std::string& model)
-   :m_alarm("alarm", yApi::EKeywordAccessMode::kGet), m_model(model)
+   :m_model(model), m_alarm("alarm", yApi::EKeywordAccessMode::kGet)
 {
 }
 
+CSecurity1KD101_SA30::~CSecurity1KD101_SA30()
+{
+}
+   
 std::string CSecurity1KD101_SA30::getModel() const
 {
    return m_model;
@@ -36,7 +40,7 @@ void CSecurity1KD101_SA30::set(const std::string& /*keyword*/, const shared::CDa
     // Get-only keywords
 }
 
-void CSecurity1KD101_SA30::default()
+void CSecurity1KD101_SA30::reset()
 {
    m_alarm.set(false);
 }

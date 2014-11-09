@@ -44,7 +44,7 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from default value
       //--------------------------------------------------------------
-      virtual void default() = 0;
+      virtual void reset() = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Get the number of messages needed to perform command

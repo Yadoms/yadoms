@@ -46,7 +46,7 @@ CFan::CFan(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, c
 }
 
 CFan::CFan(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_light("light"), m_fan("fan"), m_lightCmd(false), m_subType(0), m_id(0)
+   :m_subType(0), m_id(0), m_lightCmd(false), m_light("light"), m_fan("fan")
 {
    // Should not be called (transmitter-only device)
    BOOST_ASSERT_MSG(false, "Constructing CFan object from received buffer is not possible, Cfan is transmitter-only device");

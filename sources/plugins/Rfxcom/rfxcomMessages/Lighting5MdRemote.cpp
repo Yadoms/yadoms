@@ -14,7 +14,10 @@ CLighting5MdRemoteKeyword::CLighting5MdRemoteKeyword()
    :m_keyword("state")
 {
 }
-
+    CLighting5MdRemoteKeyword::~CLighting5MdRemoteKeyword()
+    {
+    }
+    
 std::string CLighting5MdRemoteKeyword::getModel() const
 {
    return "MDREMOTE LED dimmer";
@@ -35,7 +38,7 @@ void CLighting5MdRemoteKeyword::set(const shared::CDataContainer& yadomsCommand)
    m_keyword.set(yadomsCommand);
 }
 
-void CLighting5MdRemoteKeyword::default()
+void CLighting5MdRemoteKeyword::reset()
 {
    m_keyword.set(0);
 }
