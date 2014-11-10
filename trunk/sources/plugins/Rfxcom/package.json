@@ -1089,6 +1089,39 @@
                      "defaultValue": "11"
                   }                         
                }
+            },
+           
+            "g6rH4t1":
+            {
+               "type": "section",
+               "name": "Mertik G6R-H4T1",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (0-255)",
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "255"
+                  }               
+               }
+            },
+            "g6rH4tb":
+            {
+               "type": "section",
+               "name": "Mertik G6R-H4TB / G6-H4T / G6R-H4T21-Z22",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (0-262143)",
+                     "type": "int",
+                     "minimumValue": "0",
+                     "maximumValue": "262143"
+                  }               
+               }
             }
          }
       }

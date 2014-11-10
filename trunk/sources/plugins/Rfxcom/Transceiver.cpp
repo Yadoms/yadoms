@@ -34,6 +34,7 @@
 #include "rfxcomMessages/TempHumidityBarometric.h"
 #include "rfxcomMessages/Thermostat1.h"
 #include "rfxcomMessages/Thermostat2.h"
+#include "rfxcomMessages/Thermostat3.h"
 #include "rfxcomMessages/TransceiverStatus.h"
 #include "rfxcomMessages/UV.h"
 #include "rfxcomMessages/Weight.h"
@@ -184,6 +185,9 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CTransc
       case pTypeThermostat2:
          return rfxcomMessages::CThermostat2(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
+      case pTypeThermostat3:
+         return rfxcomMessages::CThermostat3(context, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         break;
       case pTypeFS20:
          return rfxcomMessages::CFS20(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
@@ -242,6 +246,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    case pTypeSecurity1           : message.reset(new rfxcomMessages::CSecurity1              (context, *buf, m_seqNumberProvider)); break;
    case pTypeThermostat1         : message.reset(new rfxcomMessages::CThermostat1            (context, *buf, m_seqNumberProvider)); break;
    case pTypeThermostat2         : message.reset(new rfxcomMessages::CThermostat2            (context, *buf, m_seqNumberProvider)); break;
+   case pTypeThermostat3         : message.reset(new rfxcomMessages::CThermostat3            (context, *buf, m_seqNumberProvider)); break;
    case pTypeBBQ                 : message.reset(new rfxcomMessages::CBbq                    (context, *buf, m_seqNumberProvider)); break;
    case pTypeFS20                : message.reset(new rfxcomMessages::CFS20                   (context, *buf, m_seqNumberProvider)); break;
       // TODO à compléter
@@ -364,15 +369,21 @@ const std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYa
 
       // Thermostat1
       else if (data.getConfiguration().get<bool>("type.content.digimax.radio"))
-         msg.reset(new rfxcomMessages::CSecurity1(context, sTypeDigimax, data.getConfiguration().get<shared::CDataContainer>("type.content.digimax.content")));
+         msg.reset(new rfxcomMessages::CThermostat1(context, sTypeDigimax, data.getConfiguration().get<shared::CDataContainer>("type.content.digimax.content")));
       else if (data.getConfiguration().get<bool>("type.content.digimaxShort.radio"))
-         msg.reset(new rfxcomMessages::CSecurity1(context, sTypeDigimaxShort, data.getConfiguration().get<shared::CDataContainer>("type.content.digimaxShort.content")));
+         msg.reset(new rfxcomMessages::CThermostat1(context, sTypeDigimaxShort, data.getConfiguration().get<shared::CDataContainer>("type.content.digimaxShort.content")));
 
       // Thermostat2
       else if (data.getConfiguration().get<bool>("type.content.he105.radio"))
-         msg.reset(new rfxcomMessages::CSecurity1(context, sTypeHE105, data.getConfiguration().get<shared::CDataContainer>("type.content.he105.content")));
+         msg.reset(new rfxcomMessages::CThermostat2(context, sTypeHE105, data.getConfiguration().get<shared::CDataContainer>("type.content.he105.content")));
       else if (data.getConfiguration().get<bool>("type.content.rts10.radio"))
-         msg.reset(new rfxcomMessages::CSecurity1(context, sTypeRTS10, data.getConfiguration().get<shared::CDataContainer>("type.content.rts10.content")));
+         msg.reset(new rfxcomMessages::CThermostat2(context, sTypeRTS10, data.getConfiguration().get<shared::CDataContainer>("type.content.rts10.content")));
+
+      // Thermostat3
+      else if (data.getConfiguration().get<bool>("type.content.g6rH4t1.radio"))
+         msg.reset(new rfxcomMessages::CThermostat3(context, sTypeMertikG6RH4T1, data.getConfiguration().get<shared::CDataContainer>("type.content.g6rH4t1.content")));
+      else if (data.getConfiguration().get<bool>("type.content.g6rH4tb.radio"))
+         msg.reset(new rfxcomMessages::CThermostat3(context, sTypeMertikG6RH4TB, data.getConfiguration().get<shared::CDataContainer>("type.content.g6rH4tb.content")));
 
       // FS20
       else if (data.getConfiguration().get<bool>("type.content.fs20.radio"))

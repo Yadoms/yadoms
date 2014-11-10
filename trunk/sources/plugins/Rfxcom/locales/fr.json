@@ -791,6 +791,31 @@
                      "description": "La sous-adresse (2 chiffres de 1 à 4 : 11 à 44)"
                   }                        
                }
+            },
+            
+            "g6rH4t1":
+            {
+               "name": "Mertik G6R-H4T1",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "name": "Equipement",
+                     "description": "L'identifiant de l'équipement (0-255)"
+                  }               
+               }
+            },
+            "g6rH4tb":
+            {
+               "name": "Mertik G6R-H4TB / G6-H4T / G6R-H4T21-Z22",
+               "content":
+               {
+                  "unitCode":
+                  {
+                     "name": "Equipement",
+                     "description": "L'identifiant de l'équipement (0-262143)"
+                  }               
+               }
             }
          }
       }
