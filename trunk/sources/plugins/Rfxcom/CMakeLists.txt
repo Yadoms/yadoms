@@ -14,6 +14,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Bbq.cpp
    rfxcomMessages/Blinds1.h
    rfxcomMessages/Blinds1.cpp
+   rfxcomMessages/Camera1.h
+   rfxcomMessages/Camera1.cpp
    rfxcomMessages/Chime.h
    rfxcomMessages/Chime.cpp
    rfxcomMessages/Current.h

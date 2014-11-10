@@ -240,7 +240,8 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
       boost::shared_ptr<COpenZWaveNode> node = GetNode(_notification);
       if (node)
       {
-         OpenZWave::ValueID::ValueType vType = vID.GetType();
+//TODO code en commentaire à conserver ?
+//         OpenZWave::ValueID::ValueType vType = vID.GetType();
          OpenZWave::ValueID::ValueGenre vGenre = vID.GetGenre();
 
          if (vGenre == OpenZWave::ValueID::ValueGenre_User)
