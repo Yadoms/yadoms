@@ -25,6 +25,7 @@
 #include "rfxcomMessages/Lighting6.h"
 #include "rfxcomMessages/Power.h"
 #include "rfxcomMessages/Rain.h"
+#include "rfxcomMessages/Remote.h"
 #include "rfxcomMessages/RFXMeter.h"
 #include "rfxcomMessages/RFXSensor.h"
 #include "rfxcomMessages/Rfy.h"
@@ -183,6 +184,9 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CTransc
       case pTypeCamera:
          return rfxcomMessages::CCamera1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
+      case pTypeRemote:
+         return rfxcomMessages::CRemote(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         break;
       case pTypeThermostat1:
          return rfxcomMessages::CThermostat1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
@@ -249,6 +253,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    case pTypeRFXSensor           : message.reset(new rfxcomMessages::CRFXSensor              (context, *buf, m_seqNumberProvider)); break;
    case pTypeSecurity1           : message.reset(new rfxcomMessages::CSecurity1              (context, *buf, m_seqNumberProvider)); break;
    case pTypeCamera              : message.reset(new rfxcomMessages::CCamera1                (context, *buf, m_seqNumberProvider)); break;
+   case pTypeRemote              : message.reset(new rfxcomMessages::CRemote                 (context, *buf, m_seqNumberProvider)); break;
    case pTypeThermostat1         : message.reset(new rfxcomMessages::CThermostat1            (context, *buf, m_seqNumberProvider)); break;
    case pTypeThermostat2         : message.reset(new rfxcomMessages::CThermostat2            (context, *buf, m_seqNumberProvider)); break;
    case pTypeThermostat3         : message.reset(new rfxcomMessages::CThermostat3            (context, *buf, m_seqNumberProvider)); break;
@@ -375,6 +380,18 @@ const std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYa
       // Camera1
       else if (data.getConfiguration().get<bool>("type.content.cameraX10Ninja.radio"))
          msg.reset(new rfxcomMessages::CCamera1(context, sTypeNinja, data.getConfiguration().get<shared::CDataContainer>("type.content.cameraX10Ninja.content")));
+
+      // Remote
+      else if (data.getConfiguration().get<bool>("type.content.atiRemoteWonder.radio"))
+         msg.reset(new rfxcomMessages::CRemote(context, sTypeATI, data.getConfiguration().get<shared::CDataContainer>("type.content.atiRemoteWonder.content")));
+      else if (data.getConfiguration().get<bool>("type.content.atiRemoteWonderPlus.radio"))
+         msg.reset(new rfxcomMessages::CRemote(context, sTypeATIplus, data.getConfiguration().get<shared::CDataContainer>("type.content.atiRemoteWonderPlus.content")));
+      else if (data.getConfiguration().get<bool>("type.content.medionRemote.radio"))
+         msg.reset(new rfxcomMessages::CRemote(context, sTypeMedion, data.getConfiguration().get<shared::CDataContainer>("type.content.medionRemote.content")));
+      else if (data.getConfiguration().get<bool>("type.content.x10PcRemote.radio"))
+         msg.reset(new rfxcomMessages::CRemote(context, sTypePCremote, data.getConfiguration().get<shared::CDataContainer>("type.content.x10PcRemote.content")));
+      else if (data.getConfiguration().get<bool>("type.content.atiRemoteWonder2.radio"))
+         msg.reset(new rfxcomMessages::CRemote(context, sTypeATIrw2, data.getConfiguration().get<shared::CDataContainer>("type.content.atiRemoteWonder2.content")));
 
       // Thermostat1
       else if (data.getConfiguration().get<bool>("type.content.digimax.radio"))
