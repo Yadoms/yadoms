@@ -27,7 +27,7 @@
       },
       "device" : {
          "name" : "Data to display",
-         "description" : "Select the data that you wan to display",
+         "description" : "Select the data that you want to display",
          "type" : "device",
          "expectedKeywordType" : "numeric",
          "expectedKeywordAccess" : "get"

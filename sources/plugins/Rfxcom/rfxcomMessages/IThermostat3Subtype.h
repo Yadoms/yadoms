@@ -10,9 +10,9 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
    //--------------------------------------------------------------
-   /// \brief	The Thermostat1 subtype interface
+   /// \brief	The Thermostat3 subtype interface
    //--------------------------------------------------------------
-   class IThermostat1Subtype
+   class IThermostat3Subtype
    {
    public:
       //--------------------------------------------------------------
@@ -37,9 +37,10 @@ namespace rfxcomMessages
 
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from Yadoms command
+      /// \param[in] keyword              Keyword concerned by the command
       /// \param[in] yadomsCommand        The command from Yadoms
       //--------------------------------------------------------------
-      virtual void set(const shared::CDataContainer& yadomsCommand) = 0;
+      virtual void set(const std::string& keyword, const shared::CDataContainer& yadomsCommand) = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from default value
@@ -48,15 +49,15 @@ namespace rfxcomMessages
 
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from protocol data
-      /// \param[in] thermostat1Rbuf      The buffer from RFXCom
+      /// \param[in] cmd                  Command
       //--------------------------------------------------------------
-      virtual void setFromProtocolState(const RBUF& thermostat1Rbuf) = 0;
+      virtual void setFromProtocolState(unsigned char cmd) = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Get protocol data from keyword state
-      /// \param[out] thermostat1Rbuf     The being prepared buffer for RFXCom
+      /// \param[out] cmd                 Command
       //--------------------------------------------------------------
-      virtual void toProtocolState(RBUF& thermostat1Rbuf) const = 0;
+      virtual void toProtocolState(unsigned char& cmd) const = 0;
    };
 
 } // namespace rfxcomMessages

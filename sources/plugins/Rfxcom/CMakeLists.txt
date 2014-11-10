@@ -92,6 +92,12 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Thermostat1.cpp
    rfxcomMessages/Thermostat2.h
    rfxcomMessages/Thermostat2.cpp
+   rfxcomMessages/Thermostat3.h
+   rfxcomMessages/Thermostat3.cpp
+   rfxcomMessages/Thermostat3MertikG6RH4T1.h
+   rfxcomMessages/Thermostat3MertikG6RH4T1.cpp
+   rfxcomMessages/Thermostat3MertikG6RH4TB.h
+   rfxcomMessages/Thermostat3MertikG6RH4TB.cpp
    rfxcomMessages/Thermostat1Digimax.h
    rfxcomMessages/Thermostat1Digimax.cpp
    rfxcomMessages/Thermostat1DigimaxShort.h
