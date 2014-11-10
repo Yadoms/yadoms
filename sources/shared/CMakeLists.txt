@@ -98,6 +98,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/historization/ArmingAlarm.cpp
    shared/plugin/yadomsApi/historization/ArmingAlarm.h
    shared/plugin/yadomsApi/historization/Historizers.h
+   shared/plugin/yadomsApi/historization/CameraMove.cpp
+   shared/plugin/yadomsApi/historization/CameraMove.h
    shared/plugin/yadomsApi/historization/Counter.cpp
    shared/plugin/yadomsApi/historization/Counter.h
    shared/plugin/yadomsApi/historization/Current.cpp

@@ -1122,6 +1122,23 @@
                      "maximumValue": "262143"
                   }               
                }
+            },
+            
+            "cameraX10Ninja":
+            {
+               "type": "section",
+               "name": "Camera X10 Ninja",
+               "content":
+               {
+                  "houseCode":
+                  {
+                     "name": "House Code",
+                     "description": "The house code (A-P)",
+                     "type": "string",
+                     "regex" : "[A-P]",
+                     "defaultValue": "A"
+                  }              
+               }
             }
          }
       }

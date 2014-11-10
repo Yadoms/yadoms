@@ -8,6 +8,7 @@
 #include "rfxcomMessages/Barometric.h"
 #include "rfxcomMessages/Blinds1.h"
 #include "rfxcomMessages/Bbq.h"
+#include "rfxcomMessages/Camera1.h"
 #include "rfxcomMessages/Chime.h"
 #include "rfxcomMessages/Current.h"
 #include "rfxcomMessages/CurrentEnergy.h"
@@ -179,6 +180,9 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CTransc
       case pTypeSecurity1:
          return rfxcomMessages::CSecurity1(context, command->getKeyword(), command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
+      case pTypeCamera:
+         return rfxcomMessages::CCamera1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
+         break;
       case pTypeThermostat1:
          return rfxcomMessages::CThermostat1(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
@@ -244,6 +248,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    case pTypeWEIGHT              : message.reset(new rfxcomMessages::CWeight                 (context, *buf, m_seqNumberProvider)); break;
    case pTypeRFXSensor           : message.reset(new rfxcomMessages::CRFXSensor              (context, *buf, m_seqNumberProvider)); break;
    case pTypeSecurity1           : message.reset(new rfxcomMessages::CSecurity1              (context, *buf, m_seqNumberProvider)); break;
+   case pTypeCamera              : message.reset(new rfxcomMessages::CCamera1                (context, *buf, m_seqNumberProvider)); break;
    case pTypeThermostat1         : message.reset(new rfxcomMessages::CThermostat1            (context, *buf, m_seqNumberProvider)); break;
    case pTypeThermostat2         : message.reset(new rfxcomMessages::CThermostat2            (context, *buf, m_seqNumberProvider)); break;
    case pTypeThermostat3         : message.reset(new rfxcomMessages::CThermostat3            (context, *buf, m_seqNumberProvider)); break;
@@ -366,6 +371,10 @@ const std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYa
       // Security1
       else if (data.getConfiguration().get<bool>("type.content.x10SecurityR.radio"))
          msg.reset(new rfxcomMessages::CSecurity1(context, sTypeSecX10R, data.getConfiguration().get<shared::CDataContainer>("type.content.x10SecurityR.content")));
+
+      // Camera1
+      else if (data.getConfiguration().get<bool>("type.content.cameraX10Ninja.radio"))
+         msg.reset(new rfxcomMessages::CCamera1(context, sTypeNinja, data.getConfiguration().get<shared::CDataContainer>("type.content.cameraX10Ninja.content")));
 
       // Thermostat1
       else if (data.getConfiguration().get<bool>("type.content.digimax.radio"))

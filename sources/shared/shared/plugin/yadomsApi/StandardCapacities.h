@@ -17,6 +17,7 @@ namespace shared { namespace plugin { namespace yadomsApi {
       //                                                  ----------------------------------------------------------------------------------------------
       static const CStandardCapacity & ArmingAlarm;       // armingAlarm       | -                     | Alarme arming status (disarmed, armedAtHome, armedAway...)
       static const CStandardCapacity & BatteryLevel;      // batteryLevel      | percent               | Battery level capacity
+      static const CStandardCapacity & CameraMove;        // cameraMove        |  -                    | Camera movements
       static const CStandardCapacity & Counter;           // count             |  -                    | Generic counter
       static const CStandardCapacity & Current;           // current           | Ampere                | Current measure
       static const CStandardCapacity & Curtain;           // curtain           | none                  | Curtain command "on", "off", "stop"

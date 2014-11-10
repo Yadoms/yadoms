@@ -8,7 +8,7 @@
 #include "OpenZWaveNodeKeywordFactory.h"
 
 COpenZWaveNodeCapacity::COpenZWaveNodeCapacity(const uint32 homeId, const uint8 nodeId, const ECommandClass & classIdentifier)
-   :m_classIdentifier(classIdentifier), m_class(OpenZWave::CommandClasses::CreateCommandClass(classIdentifier, homeId, nodeId))
+   :m_classIdentifier(classIdentifier), m_class(OpenZWave::CommandClasses::CreateCommandClass((uint8)classIdentifier.toInteger(), homeId, nodeId))
 {
    
 }

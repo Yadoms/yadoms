@@ -816,6 +816,19 @@
                      "description": "L'identifiant de l'équipement (0-262143)"
                   }               
                }
+            },
+            
+            "cameraX10Ninja":
+            {
+               "name": "Camera X10 Ninja",
+               "content":
+               {
+                  "houseCode":
+                  {
+                     "name": "Bâtiment",
+                     "description": "L'identifiant du bâtiment (A-P)"
+                  }              
+               }
             }
          }
       }
