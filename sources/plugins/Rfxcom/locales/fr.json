@@ -518,6 +518,18 @@
                   }              
                }
             },
+            "byronMp001":
+            {
+               "name": "Byron MP001",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (positions des interrupteurs DIP 0=OFF, 1=ON : 000000 à 111111)"
+                  }              
+               }
+            },
                         
             "siemensSf01":
             {

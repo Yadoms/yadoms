@@ -714,6 +714,22 @@
                   }              
                }
             },
+            "byronMp001":
+            {
+               "type": "section",
+               "name": "Byron MP001",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (DIP switches positions 0=OFF, 1=ON : 000000 to 111111)",
+                     "type": "string",
+                     "regex" : "[0-1]{6}",
+                     "defaultValue": "000000"
+                  }              
+               }
+            },
             
             "siemensSf01":
             {

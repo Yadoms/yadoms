@@ -10,15 +10,15 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
    //--------------------------------------------------------------
-   /// \brief	The Thermostat1 subtype interface
+   /// \brief	The Thermostat3 subtype interface
    //--------------------------------------------------------------
-   class IThermostat1Subtype
+   class IChimeSubtype
    {
    public:
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~IThermostat1Subtype() {}
+      virtual ~IChimeSubtype() {}
 
       //--------------------------------------------------------------
       /// \brief	                        Get device model
@@ -43,8 +43,9 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from Yadoms command
       /// \param[in] yadomsCommand        The command from Yadoms
+      /// \param[in] deviceDetails        Device details
       //--------------------------------------------------------------
-      virtual void set(const shared::CDataContainer& yadomsCommand) = 0;
+      virtual void set(const shared::CDataContainer& yadomsCommand, const shared::CDataContainer& deviceDetails) = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from default value
@@ -52,16 +53,33 @@ namespace rfxcomMessages
       virtual void reset() = 0;
 
       //--------------------------------------------------------------
-      /// \brief	                        Set keyword state from protocol data
-      /// \param[in] thermostat1Rbuf      The buffer from RFXCom
+      /// \brief	                        Get ID from protocol data
+      /// \param[in] id1                  ID1 byte
+      /// \param[in] id2                  ID2 byte
+      /// \param[in] sound                Sound byte, also used as ID3 in some cases
       //--------------------------------------------------------------
-      virtual void setFromProtocolState(const RBUF& thermostat1Rbuf) = 0;
+      virtual unsigned int idFromProtocol(unsigned char id1, unsigned char id2, unsigned char sound) = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Get protocol data from keyword state
-      /// \param[out] thermostat1Rbuf     The being prepared buffer for RFXCom
+      /// \param[in] id                   ID
+      /// \param[out] id1                 ID1 byte
+      /// \param[out] id2                 ID2 byte
+      /// \param[out] sound               Sound byte, also used as ID3 in some cases
       //--------------------------------------------------------------
-      virtual void toProtocolState(RBUF& thermostat1Rbuf) const = 0;
+      virtual void idToProtocol(unsigned int id, unsigned char& id1, unsigned char& id2, unsigned char& sound) const = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	                        Set keyword state from protocol data
+      /// \param[in] cmd                  Command
+      //--------------------------------------------------------------
+      virtual void setFromProtocolState(unsigned char cmd) = 0;
+
+      //--------------------------------------------------------------
+      /// \brief	                        Get protocol data from keyword state
+      /// \param[out] sound               Sound byte, if not used as ID3
+      //--------------------------------------------------------------
+      virtual void toProtocolState(unsigned char& sound) const = 0;
    };
 
 } // namespace rfxcomMessages

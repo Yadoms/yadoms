@@ -19,6 +19,10 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Chime.h
    rfxcomMessages/Chime.cpp
    rfxcomMessages/Current.h
+   rfxcomMessages/ChimeByronSx.h
+   rfxcomMessages/ChimeByronSx.cpp
+   rfxcomMessages/ChimeByronMp001.h
+   rfxcomMessages/ChimeByronMp001.cpp
    rfxcomMessages/Current.cpp
    rfxcomMessages/CurrentEnergy.h
    rfxcomMessages/CurrentEnergy.cpp
@@ -33,6 +37,7 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Energy.cpp
    rfxcomMessages/Humidity.h
    rfxcomMessages/Humidity.cpp
+   rfxcomMessages/IChimeSubtype.h
    rfxcomMessages/ILighting2Subtype.h
    rfxcomMessages/ILighting5Subtype.h
    rfxcomMessages/ISecurity1Subtype.h
