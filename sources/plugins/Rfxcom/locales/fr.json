@@ -430,7 +430,7 @@
             },
             "trc02":
             {
-               "name": "TRC02",
+               "name": "TRC02 (2 batt)",
                "content":
                {
                   "id":
@@ -438,6 +438,48 @@
                      "name": "ID",
                      "description": "L'identifiant de l'équipement (1-16777215)"
                   }              
+               }
+            },
+            "aoke":
+            {
+               "name": "Relais Aoke",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-65535)"
+                  }              
+               }
+            },
+            "trc02_2":
+            {
+               "type": "section",
+               "name": "TRC02 (3 batt)",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-32767)"
+                  }              
+               }
+            },
+            "eurodomest":
+            {
+               "name": "Eurodomest",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de l'équipement (1-524287)"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unité",
+                     "description": "L'identifiant de la fonction de l'équipement (1-4)"
+                  }               
                }
             },
             

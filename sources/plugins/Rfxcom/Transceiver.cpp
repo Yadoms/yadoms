@@ -338,6 +338,12 @@ const std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYa
          msg.reset(new rfxcomMessages::CLighting5(context, sTypeLivolo, data.getConfiguration().get<shared::CDataContainer>("type.content.livolo.content")));
       else if (data.getConfiguration().get<bool>("type.content.trc02.radio"))
          msg.reset(new rfxcomMessages::CLighting5(context, sTypeTRC02, data.getConfiguration().get<shared::CDataContainer>("type.content.trc02.content")));
+      else if (data.getConfiguration().get<bool>("type.content.aoke.radio"))
+         msg.reset(new rfxcomMessages::CLighting5(context, sTypeAoke, data.getConfiguration().get<shared::CDataContainer>("type.content.aoke.content")));
+      else if (data.getConfiguration().get<bool>("type.content.trc02_2.radio"))
+         msg.reset(new rfxcomMessages::CLighting5(context, sTypeTRC02_2, data.getConfiguration().get<shared::CDataContainer>("type.content.trc02_2.content")));
+      else if (data.getConfiguration().get<bool>("type.content.eurodomest.radio"))
+         msg.reset(new rfxcomMessages::CLighting5(context, sTypeEurodomest, data.getConfiguration().get<shared::CDataContainer>("type.content.eurodomest.content")));
 
       // Lighting6
       else if (data.getConfiguration().get<bool>("type.content.blyss.radio"))

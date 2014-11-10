@@ -595,7 +595,7 @@
             "trc02":
             {
                "type": "section",
-               "name": "TRC02",
+               "name": "TRC02 (2 batt)",
                "content":
                {
                   "id":
@@ -606,6 +606,62 @@
                      "minimumValue": "1",
                      "maximumValue": "16777215"
                   }              
+               }
+            },
+            "aoke":
+            {
+               "type": "section",
+               "name": "Aoke Relay",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-65535)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "65535"
+                  }             
+               }
+            },
+            "trc02_2":
+            {
+               "type": "section",
+               "name": "TRC02 (3 batt)",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-32767)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "32767"
+                  }              
+               }
+            },
+            "eurodomest":
+            {
+               "type": "section",
+               "name": "Eurodomest",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "The device ID (1-524287)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "524287"
+                  },
+                  "unitCode":
+                  {
+                     "name": "Unit Code",
+                     "description": "The unit code (1-4)",
+                     "type": "int",
+                     "minimumValue": "1",
+                     "maximumValue": "4"
+                  }               
                }
             },
             
