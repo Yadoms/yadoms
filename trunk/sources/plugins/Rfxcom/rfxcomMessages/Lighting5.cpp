@@ -67,7 +67,10 @@ void CLighting5::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    case sTypeRSL         : m_subTypeManager.reset(new CLighting5OnOff("Conrad RSL2")); break;
    case sTypeMDREMOTE    : m_subTypeManager.reset(new CLighting5MdRemoteKeyword()); break;
    case sTypeLivolo      : m_subTypeManager.reset(new CLighting5Livolo()); break; // Limited support of Livolo (just ON/OFF), as we can't now exact type of module
-   case sTypeTRC02       : m_subTypeManager.reset(new CLighting5OnOff("RGB TRC02")); break;
+   case sTypeTRC02       : m_subTypeManager.reset(new CLighting5OnOff("RGB TRC02 (2 batt)")); break;
+   case sTypeAoke        : m_subTypeManager.reset(new CLighting5OnOff("Aoke Relay")); break;
+   case sTypeTRC02_2     : m_subTypeManager.reset(new CLighting5OnOff("RGB TRC02 (3 batt)")); break;
+   case sTypeEurodomest  : m_subTypeManager.reset(new CLighting5OnOff("Eurodomest")); break;
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
    }
