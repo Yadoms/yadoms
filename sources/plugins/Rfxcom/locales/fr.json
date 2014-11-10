@@ -829,6 +829,75 @@
                      "description": "L'identifiant du bâtiment (A-P)"
                   }              
                }
+            },
+            
+            "atiRemoteWonder":
+            {
+               "name": "ATI Remote Wonder",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de la télécommande (1-255)"
+                  },            
+                  "cmd":
+                  {
+                     "name": "Commande",
+                     "description": "L'identifiant de la commande (0-255)"
+                  }            
+               }
+            },
+            "atiRemoteWonderPlus":
+            {
+               "name": "ATI Remote Wonder Plus",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de la télécommande (1-255)"
+                  },            
+                  "cmd":
+                  {
+                     "name": "Commande",
+                     "description": "L'identifiant de la commande (0-255)"
+                  }            
+               }
+            },
+            "medionRemote":
+            {
+               "name": "Medion Remote",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de la télécommande (1-255)"
+                  },            
+                  "cmd":
+                  {
+                     "name": "Commande",
+                     "description": "L'identifiant de la commande (0-255)"
+                  }            
+               }
+            },
+            "x10PcRemote":
+            {
+               "name": "X10 PC Remote",
+               "content":
+               {
+                  "id":
+                  {
+                     "name": "ID",
+                     "description": "L'identifiant de la télécommande (1-255)"
+                  },            
+                  "cmd":
+                  {
+                     "name": "Commande",
+                     "description": "L'identifiant de la commande (0-255)"
+                  }            
+               }
             }
          }
       }
