@@ -4,6 +4,7 @@
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
 #include <shared/DataContainer.h>
+#include "IChimeSubtype.h"
 
 namespace yApi = shared::plugin::yadomsApi;
 
@@ -68,11 +69,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       void buildDeviceName();
 
-      //--------------------------------------------------------------
-      /// \brief	                        Build the sensor model
-      //--------------------------------------------------------------
-      void buildDeviceModel();
-
    private:
       //--------------------------------------------------------------
       /// \brief	The device sub-type
@@ -90,26 +86,9 @@ namespace rfxcomMessages
       std::string m_deviceName;
 
       //--------------------------------------------------------------
-      /// \brief	The device model
+      /// \brief	The sub-type management
       //--------------------------------------------------------------
-      std::string m_deviceModel;
-
-      //--------------------------------------------------------------
-      /// \brief	The keyword
-      //--------------------------------------------------------------
-      yApi::historization::CEvent m_keyword;
-
-      //--------------------------------------------------------------
-      /// \brief	The sound to play (non-historizable)
-      //--------------------------------------------------------------
-      enum
-      {
-         kTubular3Notes,
-         kBigBen,
-         kTubular2Notes,
-         kSolo,
-         kDefaultSound = kTubular3Notes
-      } m_sound;
+      boost::shared_ptr<IChimeSubtype> m_subTypeManager;
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with rssi

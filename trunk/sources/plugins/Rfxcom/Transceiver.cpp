@@ -52,8 +52,8 @@
 // RFXCOM implementation
 // =======================================================================
 // This RFXCom support was developped for :
-// - Sepcifications "RFXtrx SDK.pdf" : Version 6.21b June 12, 2014
-// - RFXtrx.h : version 6.24
+// - Sepcifications "RFXtrx SDK.pdf" : Version 6.26 October 9, 2014
+// - RFXtrx.h : version 6.26
 // =======================================================================
 //
 
@@ -352,6 +352,8 @@ const std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYa
       // Chime
       else if (data.getConfiguration().get<bool>("type.content.byronSx.radio"))
          msg.reset(new rfxcomMessages::CChime(context, sTypeByronSX, data.getConfiguration().get<shared::CDataContainer>("type.content.byronSx.content")));
+      else if (data.getConfiguration().get<bool>("type.content.byronMp001.radio"))
+         msg.reset(new rfxcomMessages::CChime(context, sTypeByronMP001, data.getConfiguration().get<shared::CDataContainer>("type.content.byronMp001.content")));
 
       // Fan
       else if (data.getConfiguration().get<bool>("type.content.siemensSf01.radio"))

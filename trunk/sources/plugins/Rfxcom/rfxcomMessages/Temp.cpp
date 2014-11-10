@@ -91,6 +91,7 @@ void CTemp::buildDeviceModel()
    case sTypeTEMP8: ssModel << "La Crosse WS2300"; break;
    case sTypeTEMP9: ssModel << "Rubicson"; break;
    case sTypeTEMP10: ssModel << "TFA 30.3133"; break;
+   case sTypeTEMP11: ssModel << "WT0122"; break;
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }
 
