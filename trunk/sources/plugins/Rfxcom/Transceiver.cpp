@@ -47,7 +47,15 @@
 #include "ManuallyDeviceCreationException.hpp"
 
 //TODO : voir nouvelle version de spec 'RFXtrx SSDF.pdf', pleins de nouveaux sous-types sont disponibles
-//TODO Indiquer la version de spec utilisée, et compatibilité firmware RFXCom
+//
+// =======================================================================
+// RFXCOM implementation
+// =======================================================================
+// This RFXCom support was developped for :
+// - Sepcifications "RFXtrx SDK.pdf" : Version 6.21b June 12, 2014
+// - RFXtrx.h : version 6.24
+// =======================================================================
+//
 
 CTransceiver::CTransceiver()
    :m_seqNumberProvider(new CIncrementSequenceNumber())
@@ -199,7 +207,6 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CTransc
       case pTypeFS20:
          return rfxcomMessages::CFS20(context, command->getBody(), deviceDetails).encode(m_seqNumberProvider);
          break;
-         //TODO compléter
       default:
          YADOMS_LOG(error) << "Invalid command \"" << command->getBody().serialize() << "\" : " << " unknown type " << deviceType;
          BOOST_ASSERT_MSG(false, "Invalid command (unknown type)");
@@ -259,7 +266,6 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    case pTypeThermostat3         : message.reset(new rfxcomMessages::CThermostat3            (context, *buf, m_seqNumberProvider)); break;
    case pTypeBBQ                 : message.reset(new rfxcomMessages::CBbq                    (context, *buf, m_seqNumberProvider)); break;
    case pTypeFS20                : message.reset(new rfxcomMessages::CFS20                   (context, *buf, m_seqNumberProvider)); break;
-      // TODO à compléter
    default:
       {
          YADOMS_LOG(error) << "Invalid RfxCom message received, unknown packet type " << std::setfill('0') << std::setw(sizeof(unsigned char) * 2) << std::hex << (int)buf->RXRESPONSE.packettype;
@@ -418,8 +424,6 @@ const std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYa
          msg.reset(new rfxcomMessages::CFS20(context, sTypeFHT8V, data.getConfiguration().get<shared::CDataContainer>("type.content.fht8v.content")));
       else if (data.getConfiguration().get<bool>("type.content.fht80.radio"))
          msg.reset(new rfxcomMessages::CFS20(context, sTypeFHT80, data.getConfiguration().get<shared::CDataContainer>("type.content.fht80.content")));
-
-      // TODO à compléter
 
       else
          throw shared::exception::CInvalidParameter("Unknown device type");
