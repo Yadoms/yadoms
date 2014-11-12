@@ -142,7 +142,7 @@ void CBlinds1::buildDeviceModel()
    case sTypeBlindsT0: ssModel << "RollerTrol, Hasta new"; break;
    case sTypeBlindsT1: ssModel << "Hasta old"; break;
    case sTypeBlindsT2: ssModel << "A-OK RF01"; break;
-   case sTypeBlindsT3: ssModel << "A-OK AC114"; break;
+   case sTypeBlindsT3: ssModel << "A-OK AC114/AC123"; break;
    case sTypeBlindsT4: ssModel << "RAEX YR1326"; break;
    case sTypeBlindsT5: ssModel << "Media Mount"; break;
    case sTypeBlindsT6: ssModel << "DC106, YOOHA, Rohrmotor24 RMF"; break;
