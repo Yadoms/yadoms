@@ -89,7 +89,7 @@ void CTempHumidityBarometric::buildDeviceModel()
 
    switch(m_subType)
    {
-   case sTypeTHB1: ssModel << "BTHR918"; break;
+   case sTypeTHB1: ssModel << "BTHR918, BTHGN129"; break;
    case sTypeTHB2: ssModel << "BTHR918N, BTHR968"; break;
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }

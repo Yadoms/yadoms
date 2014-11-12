@@ -97,6 +97,7 @@ void CTempHumidity::buildDeviceModel()
    case sTypeTH10: ssModel << "Rubicson"; break;
    case sTypeTH11: ssModel << "EW109"; break;
    case sTypeTH12: ssModel << "Imagintronix"; break;
+   case sTypeTH13: ssModel << "Alecto WS1700 and compatibles"; break;
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }
 
