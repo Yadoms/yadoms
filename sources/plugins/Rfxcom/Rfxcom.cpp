@@ -114,7 +114,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             }
          case kAnswerTimeout:
             {
-               YADOMS_LOG(error) << "No answer received, try to reconnect in a moment...";
+               YADOMS_LOG(error) << "No answer received, try to reconnect in a while...";
                errorProcess(context);
                break;
             }
