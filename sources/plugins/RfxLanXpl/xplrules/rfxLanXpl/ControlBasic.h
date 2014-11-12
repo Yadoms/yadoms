@@ -2,6 +2,8 @@
 
 #include "../IRule.h"
 #include "../ICommandRule.h"
+#include <shared/enumeration/EnumHelpers.hpp>
+
 
 namespace xplrules { namespace rfxLanXpl {
 
@@ -23,11 +25,21 @@ namespace xplrules { namespace rfxLanXpl {
       // [END] IRule implementation
      
       // ICommandRule implemntation
-      virtual boost::shared_ptr< xplcore::CXplMessage > createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand> & commandData, const std::string & rfxAddress);
+      virtual boost::shared_ptr< xplcore::CXplMessage > createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand> & commandData, const std::string & rfxAddress, const shared::CDataContainer & innerDetails);
       virtual std::string generateVirtualDeviceIdentifier();
       // [END] ICommandRule implemntation
    private:
+      DECLARE_ENUM_HEADER(EType,
+         ((Ninja))
+         ((Mertik))
+         ((Output))
+      );
+
       static xplcore::CXplMessageSchemaIdentifier m_protocol;
+
+      static std::string m_keywordCurrent;
+      static std::string m_keywordType;
+      static std::string m_keywordDevice;
    };
    
 } //namespace rfxLanXpl

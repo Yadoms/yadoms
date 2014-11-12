@@ -29,7 +29,7 @@ namespace xplrules { namespace rfxLanXpl {
       // [END] IReadRule implemntation
 
       // ICommandRule implemntation
-      virtual boost::shared_ptr< xplcore::CXplMessage > createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand> & commandData, const std::string & rfxAddress);
+      virtual boost::shared_ptr< xplcore::CXplMessage > createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand> & commandData, const std::string & rfxAddress, const shared::CDataContainer & innerDetails);
       virtual std::string generateVirtualDeviceIdentifier();
       // [END] ICommandRule implemntation
 

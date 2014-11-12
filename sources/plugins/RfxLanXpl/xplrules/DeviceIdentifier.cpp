@@ -4,8 +4,8 @@
 namespace xplrules {
 
 
-   CDeviceIdentifier::CDeviceIdentifier(const std::string & id, const std::string & commercialName, const xplcore::CXplMessageSchemaIdentifier & readingProtocol, const xplcore::CXplMessageSchemaIdentifier & writingProtocol)
-      :m_id(id), m_commercialName(commercialName), m_xplProtocolReading(readingProtocol), m_xplProtocolWriting(writingProtocol)
+   CDeviceIdentifier::CDeviceIdentifier(const std::string & id, const std::string & commercialName, const xplcore::CXplMessageSchemaIdentifier & readingProtocol, const xplcore::CXplMessageSchemaIdentifier & writingProtocol, const shared::CDataContainer & innerDetails)
+      :m_id(id), m_commercialName(commercialName), m_xplProtocolReading(readingProtocol), m_xplProtocolWriting(writingProtocol), m_innerDetails(innerDetails)
    {
    }
 
@@ -13,7 +13,8 @@ namespace xplrules {
    {
    }
 
-   const std::string & CDeviceIdentifier::getId() const 
+
+   const std::string & CDeviceIdentifier::getId() const
    {
       return m_id;
    }
@@ -35,9 +36,12 @@ namespace xplrules {
    const xplcore::CXplMessageSchemaIdentifier & CDeviceIdentifier::getWritingXplProtocol() const
    {
       return m_xplProtocolWriting;
-
    }
 
+   const shared::CDataContainer & CDeviceIdentifier::getInnerDetails() const
+   {
+      return m_innerDetails;
+   }
 } //namespace xplrules
 
 
