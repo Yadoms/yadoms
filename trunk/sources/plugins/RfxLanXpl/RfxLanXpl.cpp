@@ -154,12 +154,13 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
          {
             //retreeive device identifier
             xplrules::CDeviceIdentifier deviceAddress = rule->getDeviceAddressFromMessage(xplMessage);
-
+            
             if (!context->deviceExists(deviceAddress.getId()))
             {
                shared::CDataContainer details;
                details.set("readingProtocol", deviceAddress.getReadingXplProtocol().toString());
                details.set("writingProtocol", deviceAddress.getWritingXplProtocol().toString());
+               details.set("innerDetails", deviceAddress.getInnerDetails());
                details.set("source", realSource);
                context->declareDevice(deviceAddress.getId(), deviceAddress.getCommercialName(), details.serialize());
             }
@@ -227,6 +228,7 @@ void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceComman
          shared::CDataContainer details = context->getDeviceDetails(command->getTargetDevice());
          std::string protocol = details.get<std::string>("writingProtocol");
          std::string source = details.get<std::string>("source");
+         shared::CDataContainer innerDetails = details.get<shared::CDataContainer>("innerDetails");
 
          if (m_deviceManager->isHandled(source))
          {
@@ -239,7 +241,7 @@ void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceComman
 
                if (commandRule)
                {
-                  boost::shared_ptr< xplcore::CXplMessage > messageToSend = commandRule->createXplCommand(command, source);
+                  boost::shared_ptr< xplcore::CXplMessage > messageToSend = commandRule->createXplCommand(command, source, innerDetails);
                   if (messageToSend)
                   {
                      messageToSend->setSource(xplService.getActor());

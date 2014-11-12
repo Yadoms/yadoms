@@ -10,6 +10,16 @@ namespace xplrules { namespace rfxLanXpl {
 
    xplcore::CXplMessageSchemaIdentifier  CControlBasic::m_protocol = xplcore::CXplMessageSchemaIdentifier::parse("control.basic");
 
+   std::string CControlBasic::m_keywordCurrent = "current";
+   std::string CControlBasic::m_keywordType = "type";
+   std::string CControlBasic::m_keywordDevice = "device";
+
+   DECLARE_ENUM_IMPLEMENTATION_NESTED(CControlBasic::EType, EType,
+      ((Ninja))
+      ((Mertik))
+      ((Output))
+   );
+
    CControlBasic::CControlBasic()
    {
    }
@@ -26,29 +36,44 @@ namespace xplrules { namespace rfxLanXpl {
    
    const CDeviceIdentifier CControlBasic::getDeviceAddressFromMessage(xplcore::CXplMessage & msg)
    {
-      std::string commercialName = msg.getBodyValue("device");
+      std::string commercialName = msg.getBodyValue(m_keywordDevice);
 
-      if (msg.getBodyValue("type") == "ninja")
+      EType type = msg.getBodyValue(m_keywordType);
+      switch (type)
+      {
+      case EType::kNinjaValue:
          commercialName = "X10 Ninja/Robocam";
-
-      if (msg.getBodyValue("type") == "mertik")
+         break;
+      case EType::kMertikValue:
          commercialName = "Mertik";
-
-      if (msg.getBodyValue("type") == "output")
+         break;
+      case EType::kOutputValue:
          commercialName = "RFXLAN I/O line";
+         break;
+      }
 
-      return CDeviceIdentifier(msg.getBodyValue("device"), commercialName, CSensorBasic::getProtocol(), m_protocol);
+      shared::CDataContainer innerDetails;
+      innerDetails.set("type", type);
+      return CDeviceIdentifier(msg.getBodyValue(m_keywordDevice), commercialName, CSensorBasic::getProtocol(), m_protocol, innerDetails);
    }
 
    KeywordList CControlBasic::identifyKeywords(xplcore::CXplMessage & msg)
    {
       KeywordList keywords;
-      if (msg.getBodyValue("type") == "mertik")
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CMertickCommand("mertik")));
-      else if (msg.getBodyValue("type") == "ninja")
+      
+      EType type = msg.getBodyValue(m_keywordType);
+      switch (type)
+      {
+      case EType::kNinjaValue:
          keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CNinja("ninja")));
-      else if (msg.getBodyValue("type") == "output")
+         break;
+      case EType::kMertikValue:
+         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CMertickCommand("mertik")));
+         break;
+      case EType::kOutputValue:
          keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CDigitalIoCommand("digitalio")));
+         break;
+      }
       return keywords;
    }
    // [END] IRule implementation
@@ -57,30 +82,15 @@ namespace xplrules { namespace rfxLanXpl {
 
 
    // ICommandRule implemntation
-   boost::shared_ptr< xplcore::CXplMessage > CControlBasic::createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand> & commandData, const std::string & rfxAddress)
+   boost::shared_ptr< xplcore::CXplMessage > CControlBasic::createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand> & commandData, const std::string & rfxAddress, const shared::CDataContainer & innerDetails)
    {
-      boost::shared_ptr< xplcore::CXplMessage > newMessage(new xplcore::CXplMessage());
-
-      ////////////////////////////
-      // do some checks
-      ////////////////////////////
-      /*
-      //check the device address is valid
-      std::string address = commandData->getTargetDevice();
-      std::vector<std::string> splittedAddress;
-      boost::split(splittedAddress, address, boost::is_any_of("-"), boost::token_compress_on);
-
-      if (splittedAddress.size() != 2)
-      {
-         throw shared::exception::CException("ac.basic protocol needs a device address matching pattern : <address>-<unit> ");
-      }
-
-      //read command details (may throw exception if something is wrong)
-      //historization::CAcBasic commandDetails(commandData->getBody());
-
       ////////////////////////////
       // create the message
       ////////////////////////////
+
+      //check the device address is valid
+      std::string device = commandData->getTargetDevice();
+
 
       //create the message
       boost::shared_ptr< xplcore::CXplMessage > newMessage(new xplcore::CXplMessage());
@@ -97,17 +107,39 @@ namespace xplrules { namespace rfxLanXpl {
       //set the ac.basic
       newMessage->setMessageSchemaIdentifier(getProtocol());
 
-      //set the device addesss and unit (parse from argetDevice.Address)
-      newMessage->addToBody(m_keywordAddress, splittedAddress[0]);
-      newMessage->addToBody(m_keywordUnit, splittedAddress[1]);
+      //set the device address and unit (parse from argetDevice.Address)
+      newMessage->addToBody(m_keywordDevice, device);
 
-      //set the command
-      newMessage->addToBody(m_keywordCommand, commandDetails.Command());
+      EType type = innerDetails.get<EType>("type");
+      switch (type)
+      {
+         case EType::kMertikValue:
+         {
+            data::CMertickCommand command("mertik");
+            command.set(commandData->getBody());
+            newMessage->addToBody(m_keywordType, type.toString());
+            newMessage->addToBody(m_keywordCurrent, command.get().toString());
+         }
+         break;
 
-      //if there is any other data to send, just add key/value to bidy
-      if (commandDetails.Level.isDefined())
-         newMessage->addToBody(m_keywordLevel, boost::lexical_cast<std::string>(commandDetails.Level()));
-      */
+         case EType::kNinjaValue:
+         {
+            data::CNinja command("ninja");
+            command.set(commandData->getBody());
+            newMessage->addToBody(m_keywordType, type.toString());
+            newMessage->addToBody(m_keywordCurrent, command.get().toString());
+         }
+
+         case EType::kOutputValue:
+         {
+            data::CDigitalIoCommand command("digitalio");
+            command.set(commandData->getBody());
+            newMessage->addToBody(m_keywordType, type.toString());
+            newMessage->addToBody(m_keywordCurrent, command.get().toString());
+         }
+         break;
+
+      }
       return newMessage;
    }
 

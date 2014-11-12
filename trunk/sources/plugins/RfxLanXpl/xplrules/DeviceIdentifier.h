@@ -1,5 +1,6 @@
 #pragma once
 #include "../xplcore/XplMessageSchemaIdentifier.h"
+#include <shared/DataContainer.h>
 
 namespace xplrules {
 
@@ -17,7 +18,7 @@ namespace xplrules {
       ///\param [in] readingProtocol   The xpl protocol used to read data
       ///\param [in] writingProtocol   The xpl protocol used to send command
       //------------------------------------
-      CDeviceIdentifier(const std::string & id, const std::string & commercialName, const xplcore::CXplMessageSchemaIdentifier & readingProtocol, const xplcore::CXplMessageSchemaIdentifier & writingProtocol);
+      CDeviceIdentifier(const std::string & id, const std::string & commercialName, const xplcore::CXplMessageSchemaIdentifier & readingProtocol, const xplcore::CXplMessageSchemaIdentifier & writingProtocol, const shared::CDataContainer & innerDetails = shared::CDataContainer::EmptyContainer);
 
       //------------------------------------
       ///\brief Destructor
@@ -48,6 +49,12 @@ namespace xplrules {
       ///\return the xpl protocol
       //------------------------------------
       const xplcore::CXplMessageSchemaIdentifier & getWritingXplProtocol() const;
+
+      //------------------------------------
+      ///\brief Get the xpl protocol specific details
+      ///\return the xpl protocol specific details
+      //------------------------------------
+      const shared::CDataContainer & getInnerDetails() const;
    private:
       //------------------------------------
       ///\brief The device identifier
@@ -68,6 +75,11 @@ namespace xplrules {
       ///\brief the xpl protocol used for sending command
       //------------------------------------
       xplcore::CXplMessageSchemaIdentifier m_xplProtocolWriting;
+
+      //------------------------------------
+      ///\brief Somme more data which are protocol specific
+      //------------------------------------
+      shared::CDataContainer m_innerDetails;
    };
 
 
