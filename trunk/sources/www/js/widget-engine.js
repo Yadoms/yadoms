@@ -71,20 +71,6 @@ function initializeWidgetEngine() {
       createOrUpdatePage();
    });
 
-   /**
-    * Callback of the click on the add widget button
-    * Make lazy loading of the add widget modal
-    */
-   $("#btn-add-widget").click(function() {
-      //we make something only if there is some pages
-      if (PageManager.pages.length == 0) {
-         notifyError($.t("mainPage.errors.unableToAddWidgetWithoutPage"));
-         return;
-      }
-
-      modals.widgetAdd.load(function() {askWidgetPackages();});
-   });
-
    //we ask all widgets packages
    WidgetPackageManager.getAll(function() {
       //we show notification

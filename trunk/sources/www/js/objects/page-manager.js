@@ -124,11 +124,15 @@ PageManager.addToDom = function (page) {
          "<a href=\"#" + tabIdAsText + "\" data-toggle=\"tab\">" +
          "<span>" + page.name + "</span>" +
          "<div class=\"pageCustomizationToolbar btn-group btn-group-sm customization-item pull-right hidden\">" +
+         "<button type=\"button\" class=\"btn btn-default add-widget\" data-i18n=\"[title]mainPage.customization.addNewWidget\"><i class=\"fa fa-puzzle-piece\"></i></button>" +
          "<button type=\"button\" class=\"btn btn-default move-left-page\" title=\"Move to left\" data-i18n=\"[title]mainPage.customization.moveToLeft\"><i class=\"glyphicon glyphicon-arrow-left\"></i></button>" +
          "<button type=\"button\" class=\"btn btn-default move-right-page\" title=\"Move to right\" data-i18n=\"[title]mainPage.customization.moveToRight\"><i class=\"glyphicon glyphicon-arrow-right\"></i></button>" +
          "<button type=\"button\" class=\"btn btn-default rename-page\" title=\"Rename\" data-i18n=\"[title]mainPage.customization.rename\"><i class=\"glyphicon glyphicon-pencil\"></i></button>" +
          "<button type=\"button\" class=\"btn btn-default delete-page\" title=\"Delete\" data-i18n=\"[title]mainPage.customization.delete\"><i class=\"glyphicon glyphicon-trash\"></i></button>" +
          "</div>" +
+         //"<div class=\"pageCustomizationToolbar customization-item pull-right hidden\">" +
+         //   "<a href=\"#\" class=\"active\" id=\"\" data-i18n=\"[title]mainPage.menu.customization\"><i class=\"fa fa-wrench\"></i></a>" +
+         //"</div>" +
          "</a>" +
          "</li>").insertBefore($("li#btn-add-page"));
 
@@ -201,6 +205,11 @@ PageManager.addToDom = function (page) {
    //we listen click event on tab click
    page.$tab.find("a").bind('click', function (e) {
       return tabClick($(e.currentTarget).parent().attr("page-id")); } );
+
+   //we listen click event on add new widget
+   page.$tab.find('button.add-widget').bind('click', function (e) {
+      modals.widgetAdd.load(function() {askWidgetPackages();});
+   } );
 
    //we listen click event on rename click
    page.$tab.find('button.rename-page').bind('click', function (e) {
