@@ -294,7 +294,7 @@ void CSmsDialer::processIncommingSMS(boost::shared_ptr<yApi::IYadomsApi> context
    }
 }
 
-void CSmsDialer::notifyAck(bool ok) const
+void CSmsDialer::notifyAck(bool /*ok*/) const
 {
-   //TODO
+   // Command acknowledges are not actually supported (see https://trello.com/c/Yd8N8v3J)
 }

@@ -46,7 +46,6 @@
 #include "ProtocolException.hpp"
 #include "ManuallyDeviceCreationException.hpp"
 
-//TODO : voir nouvelle version de spec 'RFXtrx SSDF.pdf', pleins de nouveaux sous-types sont disponibles
 //
 // =======================================================================
 // RFXCOM implementation
