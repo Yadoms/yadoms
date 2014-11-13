@@ -157,11 +157,12 @@ SectionParameterHandler.prototype.applyScript = function () {
       $("#" + self.selectorUuid).change(function () {
          if ($("input#" + self.selectorUuid + ":checked").val() == "on") {
             //we hide all sections-content in the radioSection\n" +
-            var radioSections = $("input#" + self.selectorUuid).parents("div.configuration-radio-section").find("div.section-content");
+            debugger;
+			var radioSections = $("div#" + self.radioButtonSectionName + " > div.toggle-btn-grp > div.configuration-section > div.section-content");
             radioSections.addClass("hidden");
             radioSections.removeClass("has-warning");
             radioSections.find("input,select,textarea").removeClass("enable-validation");
-            //we show current"
+            //we show current
             $("div#" + self.uuid).removeClass("hidden").removeClass("has-warning");
             $("div#" + self.uuid).find("input,select,textarea").addClass("enable-validation");
          }
