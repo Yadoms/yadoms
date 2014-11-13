@@ -34,6 +34,9 @@
       //we append the text section
       var friendlyNameParameter = new StringParameterHandler("modals.configure-manually-device.", "friendlyName-configuration", {required:"true"}, "");
       $modalBody.append(friendlyNameParameter.getDOMObject());
+      //we finish friendlyNameParameter instantiation
+      if ($.isFunction(friendlyNameParameter.applyScript))
+         friendlyNameParameter.applyScript();
 
       //we append classic configuration
       var configMgr = new ConfigurationControlManager(configurationSchema, undefined, pluginInstance.type, $modalBody);

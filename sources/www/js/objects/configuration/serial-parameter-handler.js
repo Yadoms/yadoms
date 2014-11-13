@@ -28,13 +28,6 @@ function SerialParameterHandler(i18nContext, paramName, content, currentValue) {
    this.description = isNullOrUndefined(content.description)?"":content.description;
    this.i18nContext = i18nContext;
    this.content = content;
-
-   var self = this;
-   
-   //we async ask for serial port list
-   $.getJSON("/rest/general/serialport")
-      .done(populateSerialPorts(self))
-      .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingSerialPortList"));});
 }
 
 /**
@@ -96,6 +89,20 @@ SerialParameterHandler.prototype.getDOMObject = function () {
 
    return ConfigurationHelper.createControlGroup(self, input);
 };
+
+/**
+ * Apply script after DOM object has been added to the page
+ * @returns {}
+ */
+SerialParameterHandler.prototype.applyScript = function () {
+
+   var self = this;
+
+   //we async ask for serial port list
+   $.getJSON("/rest/general/serialport")
+      .done(populateSerialPorts(self))
+      .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingSerialPortList"));});
+}
 
 /**
  * Get the param name

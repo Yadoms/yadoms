@@ -41,14 +41,19 @@ IconParameterHandler.prototype.getDOMObject = function () {
                      "id=\"" + this.uuid + "\"" +
                      "data-icon=\"" + this.value + "\" data-rows=\"3\" data-cols=\"6\" >" +
                   "</button>" +
-               "</div>" +
-      "<script>" +
-         "\t$(\"button#" + this.uuid + "\").iconpicker();\n" +
-      "</script>";
+               "</div>";
 
    var self = this;
    return ConfigurationHelper.createControlGroup(self, input);
 };
+
+/**
+ * Apply script after DOM object has been added to the page
+ * @returns {}
+ */
+IconParameterHandler.prototype.applyScript = function () {
+   $("button#" + this.uuid).iconpicker();
+}
 
 /**
  * Get the param name

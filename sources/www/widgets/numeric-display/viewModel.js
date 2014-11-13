@@ -51,7 +51,6 @@ function NumericDisplayViewModel() {
    };
 
    this.configurationChanged = function() {
-
       this.text(this.widget.configuration.text);
 
       var self = this;

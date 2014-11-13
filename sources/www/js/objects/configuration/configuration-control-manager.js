@@ -32,6 +32,8 @@ function ConfigurationControlManager(configurationSchema, currentconfiguration, 
    });
 
    $domContainer.append(this.getDOMObject());
+   //after appending the dom object we can call the applyScript method to finish control instantiation
+   this.applyScript();
 }
 
 /**
@@ -48,6 +50,18 @@ ConfigurationControlManager.prototype.getDOMObject = function () {
    result += "";
    return result;
 };
+
+/**
+ * Apply script after DOM object has been added to the page
+ * @returns {}
+ */
+ConfigurationControlManager.prototype.applyScript = function () {
+   //we apply script in each children
+   $.each(this.configurationHandlers, function (key, value) {
+      if ($.isFunction(value.applyScript))
+         value.applyScript();
+   });
+}
 
 /**
  * Get the current configuration in the form
