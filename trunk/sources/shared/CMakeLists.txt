@@ -106,6 +106,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/historization/Current.h
    shared/plugin/yadomsApi/historization/Curtain.cpp
    shared/plugin/yadomsApi/historization/Curtain.h
+   shared/plugin/yadomsApi/historization/DateTime.cpp
+   shared/plugin/yadomsApi/historization/DateTime.h
    shared/plugin/yadomsApi/historization/Dimmable.cpp
    shared/plugin/yadomsApi/historization/Dimmable.h
    shared/plugin/yadomsApi/historization/Direction.cpp

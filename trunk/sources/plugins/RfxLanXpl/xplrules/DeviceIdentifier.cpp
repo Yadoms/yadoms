@@ -13,7 +13,6 @@ namespace xplrules {
    {
    }
 
-
    const std::string & CDeviceIdentifier::getId() const
    {
       return m_id;

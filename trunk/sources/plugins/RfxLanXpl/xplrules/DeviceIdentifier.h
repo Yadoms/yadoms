@@ -55,6 +55,7 @@ namespace xplrules {
       ///\return the xpl protocol specific details
       //------------------------------------
       const shared::CDataContainer & getInnerDetails() const;
+
    private:
       //------------------------------------
       ///\brief The device identifier

@@ -1,0 +1,135 @@
+#pragma once
+
+#include <shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp>
+#include <shared/enumeration/EnumHelpers.hpp>
+#include <shared/Field.hpp>
+
+namespace xplrules { namespace rfxLanXpl { namespace data {
+
+   //-----------------------------------------------------
+   ///\brief A log message historizable object
+   //-----------------------------------------------------
+   class CSecurity : public shared::plugin::yadomsApi::historization::IHistorizable
+   {
+   public:
+      DECLARE_ENUM_HEADER(ECommands,
+         ((Alert))
+         ((Normal))
+         ((Motion))
+         ((Light))
+         ((Dark))
+         ((ArmHome))
+         ((ArmAway))
+         ((Disarm))
+         ((Panic))
+         ((LightsOn))
+         ((LightsOff))
+      )    
+      
+      
+      //-----------------------------------------------------
+      ///\brief                     Constructor
+      ///\param[in] keywordName     Yadoms keyword name
+      ///\param[in] accessMode      Access mode
+      //-----------------------------------------------------
+      CSecurity(const std::string& keywordName, const shared::plugin::yadomsApi::EKeywordAccessMode& accessMode);
+
+      //-----------------------------------------------------
+      ///\brief                     Destructor
+      //-----------------------------------------------------
+      virtual ~CSecurity();
+
+      // IHistorizable implementation
+      virtual const std::string& getKeyword() const;
+      virtual const shared::plugin::yadomsApi::CStandardCapacity& getCapacity() const;
+      virtual const shared::plugin::yadomsApi::EKeywordAccessMode& getAccessMode() const;
+      virtual const std::string formatValue() const;
+      virtual const shared::plugin::yadomsApi::historization::EMeasureType& getMeasureType() const;
+      // [END] IHistorizable implementation;
+
+      //-----------------------------------------------------
+      ///\brief                     Set value from Yadoms command
+      ///\param[in] yadomsCommand   Yadoms command container
+      ///\throw                     shared::exception::CInvalidParameter or COutOfRange if fail to parse command
+      //-----------------------------------------------------
+      void set(const shared::CDataContainer& yadomsCommand);
+
+      //-----------------------------------------------------
+      ///\brief                     Set command
+      //-----------------------------------------------------
+      void setCommand(const std::string& command);
+
+      //-----------------------------------------------------
+      ///\brief                     Set tamper state
+      //-----------------------------------------------------
+      void setTampered(const bool tampered);
+
+      //-----------------------------------------------------
+      ///\brief                     Set low battery state
+      //-----------------------------------------------------
+      void setLowBattery(const bool lowBattery);
+      
+      //-----------------------------------------------------
+      ///\brief                     Set the delay
+      //-----------------------------------------------------
+      void setDelay(const int delay);
+
+      //-----------------------------------------------------
+      ///\brief               Get the security command
+      ///\return              The security command
+      //-----------------------------------------------------
+      const ECommands& getCommand() const;
+
+      //-----------------------------------------------------
+      ///\brief               Get the tampered state
+      ///\return              The tampered state
+      //-----------------------------------------------------
+      const shared::CField<bool> & isTampered() const;
+
+      //-----------------------------------------------------
+      ///\brief               Get the low battery state
+      ///\return              The low battery state
+      //-----------------------------------------------------
+      const shared::CField<bool> &  isLowBattery() const;
+      
+      //-----------------------------------------------------
+      ///\brief               Get the delay
+      ///\return              The delay
+      //-----------------------------------------------------
+      const shared::CField<int> & getDelay() const;
+
+   private:
+      //-----------------------------------------------------
+      ///\brief                     The keyword name
+      //-----------------------------------------------------
+      const std::string m_keywordName;
+
+      //-----------------------------------------------------
+      ///\brief                     The access mode
+      //-----------------------------------------------------
+      const shared::plugin::yadomsApi::EKeywordAccessMode& m_accessMode;
+
+      //-----------------------------------------------------
+      ///\brief               The security command
+      //-----------------------------------------------------
+      ECommands m_command;
+
+      //-----------------------------------------------------
+      ///\brief               The tamper state
+      //-----------------------------------------------------
+      shared::CField<bool> m_tamper;
+
+      //-----------------------------------------------------
+      ///\brief               The low-battery state
+      //-----------------------------------------------------
+      shared::CField<bool> m_lowBattery;
+
+      //-----------------------------------------------------
+      ///\brief               The delay
+      //-----------------------------------------------------
+      shared::CField<int> m_delay;
+   };
+
+
+} } } // namespace xplrules::rfxLanXpl::data
+

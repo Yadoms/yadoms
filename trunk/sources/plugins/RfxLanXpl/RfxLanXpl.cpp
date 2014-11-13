@@ -169,10 +169,9 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
             std::vector< boost::shared_ptr<shared::plugin::yadomsApi::historization::IHistorizable> > allKeywords = rule->identifyKeywords(xplMessage);
             for (std::vector< boost::shared_ptr<shared::plugin::yadomsApi::historization::IHistorizable> >::iterator keyword = allKeywords.begin(); keyword != allKeywords.end(); ++keyword)
             {
-               if(!context->keywordExists(deviceAddress.getId(), keyword->get()->getKeyword()))
+               if (!context->keywordExists(deviceAddress.getId(), keyword->get()->getKeyword()))
                   context->declareKeyword(deviceAddress.getId(), *(keyword->get()));
             }
-
 
             //check if the rule handle reading
             boost::shared_ptr<xplrules::IReadRule> readRule = boost::dynamic_pointer_cast<xplrules::IReadRule>(rule);
