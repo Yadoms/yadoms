@@ -32,6 +32,9 @@
       //we append the text section
       var friendlyNameParameter = new StringParameterHandler("modals.configure-keyword.", "friendlyName-configuration", {regex:'.+'}, keyword.friendlyName);
       $modalBody.append(friendlyNameParameter.getDOMObject());
+      //we finish friendlyNameParameter instantiation
+      if ($.isFunction(friendlyNameParameter.applyScript))
+         friendlyNameParameter.applyScript();
 
       //we haven't any other configuration
 

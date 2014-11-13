@@ -44,7 +44,7 @@
             //advanced parameters
             var value = {};
             value.checkbox = systemConfiguration[ConfigurationManager.items.system.advancedParameters].value;
-            var advancedSectionParameters = new SectionParameterHandler(null, i18nContext,
+            var advancedSectionParameters = new SectionParameterHandler(i18nContext,
                                                    ConfigurationManager.items.system.advancedParameters,
                                                    {
                                                       "enableWithCheckBox" : true,
@@ -67,6 +67,14 @@
             $modalBody.append(languageParameter.getDOMObject());
             $modalBody.append(timezoneParameter.getDOMObject());
             $modalBody.append(advancedSectionParameters.getDOMObject());
+
+            //we finish controls instantiation
+            if ($.isFunction(languageParameter.applyScript))
+               languageParameter.applyScript();
+            if ($.isFunction(timezoneParameter.applyScript))
+               timezoneParameter.applyScript();
+            if ($.isFunction(advancedSectionParameters.applyScript))
+               advancedSectionParameters.applyScript();
 
             //we i18n the form
             $modalBody.i18n();

@@ -92,6 +92,18 @@ RadioSectionParameterHandler.prototype.getParamName = function() {
 };
 
 /**
+ * Apply script after DOM object has been added to the page
+ * @returns {}
+ */
+RadioSectionParameterHandler.prototype.applyScript = function () {
+   //we apply script in each children
+   $.each(this.configurationHandlers, function (key, value) {
+      if ($.isFunction(value.applyScript))
+         value.applyScript();
+   });
+}
+
+/**
  * Get the current configuration in the form
  * @returns {object}
  */

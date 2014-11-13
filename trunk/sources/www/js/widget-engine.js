@@ -43,7 +43,6 @@ function initializeWebSocketEngine(callback) {
                      dispatchToWidgets(acq);
                      break;
                   case "devicenew":
-                     debugger;
                      break;
                }
 

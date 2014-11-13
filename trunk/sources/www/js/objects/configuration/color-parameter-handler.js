@@ -43,14 +43,19 @@ ColorParameterHandler.prototype.getDOMObject = function () {
                      "value =\"" + this.value + "\" " +
                      "data-i18n=\"[data-content]" + this.i18nContext + this.paramName + ".description" + "\" />" +
                   "<span class=\"input-group-addon\"><i></i></span>" +
-               "</div>" +
-      "<script>" +
-         "\t$(\"div#" + this.uuid + "\").colorpicker();\n" +
-      "</script>";
+               "</div>";
 
    var self = this;
    return ConfigurationHelper.createControlGroup(self, input);
 };
+
+/**
+ * Apply script after DOM object has been added to the page
+ * @returns {}
+ */
+ColorParameterHandler.prototype.applyScript = function () {
+   $(this.uuid).colorpicker();
+}
 
 /**
  * Get the param name

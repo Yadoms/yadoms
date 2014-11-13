@@ -32,6 +32,9 @@
       //we append the text section
       var nameParameter = new StringParameterHandler("modals.configure-plugin.", "name-configuration", {required:"true"}, pluginInstance.name);
       $modalBody.append(nameParameter.getDOMObject());
+      //we finish friendlyNameParameter instantiation
+      if ($.isFunction(nameParameter.applyScript))
+         nameParameter.applyScript();
 
       //we append classic configuration
       var configMgr = new ConfigurationControlManager(pluginInstance.package.configurationSchema, pluginInstance.configuration, pluginInstance.type, $modalBody);

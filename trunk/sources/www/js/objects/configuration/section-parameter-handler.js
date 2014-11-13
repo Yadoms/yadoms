@@ -101,46 +101,12 @@ SectionParameterHandler.prototype.getDOMObject = function () {
    input +=                "<span data-i18n=\"" + this.i18nContext + this.paramName + ".name\" >" +
                               this.name +
                            "</span>";
-   if (this.enableWithCheckBox) {
-      input +=          "</label>" +
-                     "</div>" +
-                     "<script>\n" +
-                        "$(\"#" + this.selectorUuid + "\").change(function () {\n" +
-                           "if ($(\"#" + this.selectorUuid + "\").prop(\"checked\")) {\n" +
-                              "\t$(\"div#" + this.uuid + "\").removeClass(\"hidden\");\n" +
-                              "\t$(\"div#" + this.uuid + "\").removeClass(\"has-warning\");\n" +
-                              "\t$(\"div#" + this.uuid + "\").find(\"input,select,textarea\").addClass(\"enable-validation\");\n" +
-                           "}\n" +
-                           "else {\n" +
-                              "\t$(\"div#" + this.uuid + "\").addClass(\"hidden\");\n" +
-                              "\t$(\"div#" + this.uuid + "\").removeClass(\"has-warning\");\n" +
-                              "\t$(\"div#" + this.uuid + "\").find(\"input,select,textarea\").removeClass(\"enable-validation\");\n" +
-                           "}\n" +
-                        "});\n" +
-                     "</script>";
-   }
 
-   //if it's included in a radioSection
-   if (this.radioButtonSectionName) {
+   //if it's included in a radioSection or in a checkbox section
+   if ((this.enableWithCheckBox) || (this.radioButtonSectionName)) {
       input +=          "</label>" +
-                     "</div>" +
-                     "<script>\n" +
-                        "$(\"#" + this.selectorUuid + "\").change(function () {\n" +
-                           "if ($(\"input#" + this.selectorUuid + ":checked\").val() == \"on\") {\n" +
-                              "\t//we hide all sections-content in the radioSection\n" +
-                              "\tvar radioSections = $(\"input#" + this.selectorUuid + "\").parents(\"div.configuration-radio-section\").find(\"div.section-content\");\n" +
-                              "\tradioSections.addClass(\"hidden\");\n" +
-                              "\tradioSections.removeClass(\"has-warning\");\n" +
-                              "\tradioSections.find(\"input,select,textarea\").removeClass(\"enable-validation\");\n" +
-                              "\t//we show current\n" +
-                              "\t$(\"div#" + this.uuid + "\").removeClass(\"hidden\");\n" +
-                              "\t$(\"div#" + this.uuid + "\").removeClass(\"has-warning\");\n" +
-                              "\t$(\"div#" + this.uuid + "\").find(\"input,select,textarea\").addClass(\"enable-validation\");\n" +
-                           "}\n" +
-                        "});\n" +
-                     "</script>";
+                     "</div>";
    }
-
    input +=       "</div>" +
                   "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.paramName + ".description\" >" +
                      this.description +
@@ -167,6 +133,47 @@ SectionParameterHandler.prototype.getDOMObject = function () {
 
    return input;
 };
+
+/**
+ * Apply script after DOM object has been added to the page
+ * @returns {}
+ */
+SectionParameterHandler.prototype.applyScript = function () {
+   var self = this;
+   if (self.enableWithCheckBox) {
+      $("#" + self.selectorUuid).change(function () {
+         if ($("#" + self.selectorUuid).prop("checked")) {
+            $("div#" + self.uuid).removeClass("hidden").removeClass("has-warning");
+            $("div#" + self.uuid).find("input,select,textarea").addClass("enable-validation");
+         }
+         else {
+            $("div#" + self.uuid).addClass("hidden").removeClass("has-warning");
+            $("div#" + self.uuid).find("input,select,textarea").removeClass("enable-validation");
+         }
+      });
+   }
+
+   if (self.radioButtonSectionName) {
+      $("#" + self.selectorUuid).change(function () {
+         if ($("input#" + self.selectorUuid + ":checked").val() == "on") {
+            //we hide all sections-content in the radioSection\n" +
+            var radioSections = $("input#" + self.selectorUuid).parents("div.configuration-radio-section").find("div.section-content");
+            radioSections.addClass("hidden");
+            radioSections.removeClass("has-warning");
+            radioSections.find("input,select,textarea").removeClass("enable-validation");
+            //we show current"
+            $("div#" + self.uuid).removeClass("hidden").removeClass("has-warning");
+            $("div#" + self.uuid).find("input,select,textarea").addClass("enable-validation");
+         }
+      });
+   }
+
+   //we apply script in each children
+   $.each(self.configurationHandlers, function (key, value) {
+      if ($.isFunction(value.applyScript))
+         value.applyScript();
+   });
+}
 
 /**
  * Get the param name
