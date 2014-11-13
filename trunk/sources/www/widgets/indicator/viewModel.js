@@ -7,7 +7,7 @@ widgetViewModelCtor =
       function IndicatorViewModel() {
 
       //observable data
-      this.command = ko.observable(100);
+      this.command = ko.observable("1");
 
       //observable data
       this.icon = ko.observable("");
