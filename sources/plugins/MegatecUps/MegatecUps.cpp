@@ -131,7 +131,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             }
          case kAnswerTimeout:
             {
-               YADOMS_LOG(error) << "No answer received from UPS (timeout)";
+               YADOMS_LOG(warning) << "No answer received from UPS (timeout)";
                protocolErrorProcess(context);
                break;
             }
@@ -441,7 +441,7 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYadomsApi> cont
 
    historizeData(context);
 
-   YADOMS_LOG(debug) << "UPS rating informations : inputVoltage=" << m_inputVoltage.get() <<
+   YADOMS_LOG(debug) << "UPS current informations : inputVoltage=" << m_inputVoltage.get() <<
       ", inputfaultVoltage="  << m_inputfaultVoltage.get() <<
       ", outputVoltage="      << m_outputVoltage.get() <<
       ", outputCurrent="      << m_outputCurrent.get() <<
@@ -526,6 +526,9 @@ void CMegatecUps::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context, con
       context->declareKeyword(DeviceName, m_temperature);
       context->declareKeyword(DeviceName, m_acPowerHistorizer);
       context->declareKeyword(DeviceName, m_upsShutdown);
+
+      // Force a first historization to let Yadoms know the shutdown state
+      context->historizeData(DeviceName, m_upsShutdown);
    }
 }
 

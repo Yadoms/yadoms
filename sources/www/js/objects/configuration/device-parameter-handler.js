@@ -122,17 +122,37 @@ DeviceParameterHandler.prototype.applyScript = function () {
                   //we add the keyword only if access mode is at least the same than expected
                   if ((handler.expectedKeywordAccess.toLowerCase() != "getset") || (value.accessMode.toLowerCase() != "get")) {
                      if (handler.lookupMethod == "name") {
-                        //we lookup by capacity name
-                        if (value.capacityName.toLowerCase() == handler.expectedCapacity.toLowerCase()) {
-                           //this keyword interest us we push it into the list
-                           newList.push(value);
+                        //we lookup by capacity name (configuration should have several capacities)
+                        if (Array.isArray(handler.expectedCapacity)) {
+                           $.each(handler.expectedCapacity, function(indexHandlerCapacity, handlerCapacity) {
+                              if (value.capacityName.toLowerCase() == handlerCapacity.toLowerCase()) {
+                                 //this keyword interest us we push it into the list
+                                 newList.push(value);
+                              }
+                           });
+                        }
+                        else {
+                           if (value.capacityName.toLowerCase() == handler.expectedCapacity.toLowerCase()) {
+                              //this keyword interest us we push it into the list
+                              newList.push(value);
+                           }
                         }
                      }
                      else {
-                        //we lookup by capacity type
-                        if (value.type.toLowerCase() == handler.expectedKeywordType.toLowerCase()) {
-                           //this keyword interest us we push it into the list
-                           newList.push(value);
+                        //we lookup by capacity type (configuration should have several types)
+                        if (Array.isArray(handler.expectedKeywordType)) {
+                           $.each(handler.expectedKeywordType, function(indexHandlerKwType, handlerKwType) {
+                              if (value.type.toLowerCase() == handlerKwType.toLowerCase()) {
+                                 //this keyword interest us we push it into the list
+                                 newList.push(value);
+                              }
+                           });
+                        }
+                        else {
+                           if (value.type.toLowerCase() == handler.expectedKeywordType.toLowerCase()) {
+                              //this keyword interest us we push it into the list
+                              newList.push(value);
+                           }
                         }
                      }
                   }

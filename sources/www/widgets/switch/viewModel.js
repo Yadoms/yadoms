@@ -6,7 +6,7 @@ widgetViewModelCtor =
     */
       function SwitchViewModel() {
       //observable data
-      this.command = ko.observable(100);
+      this.command = ko.observable(1);
 
       //widget identifier
       this.widget = null;
@@ -14,15 +14,24 @@ widgetViewModelCtor =
       this.kind = ko.observable("simple");
 
       this.switchText = ko.observable("");
+      
+      this.capacity = null;
 
       this.showDeviceName = ko.observable(true);
 
       this.commandClick = function(newState) {
-         if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device))) {
+         if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device)) && (!isNullOrUndefined(this.capacity))) {
+            var cmd = null;
+            if (this.capacity == "switch") {
+               cmd = JSON.stringify({ state: newState })
+            }
+            else {
+               cmd = JSON.stringify({ level: (newState == 1 ? 100 : 0) })
+            }
             $.ajax({
                type: "POST",
                url: "/rest/device/keyword/" + this.widget.configuration.device.keywordId + "/command",
-               data: JSON.stringify({ level: newState }),
+               data: cmd,
                contentType: "application/json; charset=utf-8",
                dataType: "json"
             })
@@ -64,6 +73,10 @@ widgetViewModelCtor =
             var self = this;
             DeviceManager.get(this.widget.configuration.device.deviceId, function (device) {
                self.switchText(decodeURIComponent(device.friendlyName));
+            });
+            // Get the capacity of the keyword
+            KeywordManager.get(this.widget.configuration.device.keywordId, function(keyword) {
+               self.capacity = keyword.capacityName;
             });
          }
       };
