@@ -42,6 +42,7 @@ namespace shared { namespace plugin { namespace yadomsApi {
    const CStandardCapacity& CStandardCapacities::Counter = CStandardCapacity("count", CStandardUnits::NoUnits, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Current = CStandardCapacity("current", CStandardUnits::Ampere, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Curtain = CStandardCapacity("curtain", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
+   const CStandardCapacity& CStandardCapacities::DateTime = CStandardCapacity("datetime", CStandardUnits::NoUnits, EKeywordDataType::kString);
    const CStandardCapacity& CStandardCapacities::Dimmable = CStandardCapacity("dimmable", CStandardUnits::Percent, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Direction = CStandardCapacity("direction", CStandardUnits::Degrees, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Energy = CStandardCapacity("energy", CStandardUnits::WattPerHour, EKeywordDataType::kNumeric);

@@ -21,6 +21,7 @@ namespace shared { namespace plugin { namespace yadomsApi {
       static const CStandardCapacity & Counter;           // count             |  -                    | Generic counter
       static const CStandardCapacity & Current;           // current           | Ampere                | Current measure
       static const CStandardCapacity & Curtain;           // curtain           | none                  | Curtain command "on", "off", "stop"
+      static const CStandardCapacity & DateTime;          // datetime          | none                  | a date time 
       static const CStandardCapacity & Dimmable;          // dimmable          | none                  | A value from 0-100 (0 is off, 100 is on)
       static const CStandardCapacity & Direction;         // direction         | degrees               | Direction (for compass, wind direction)
       static const CStandardCapacity & Energy;            // energy            | Watt/hour             | Energy measure

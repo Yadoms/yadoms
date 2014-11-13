@@ -43,12 +43,21 @@ set(RFXLANXPL_RULES_SOURCES
 	xplrules/rfxLanXpl/DeviceManager.cpp
 	xplrules/rfxLanXpl/AcBasic.h
 	xplrules/rfxLanXpl/AcBasic.cpp
+	xplrules/rfxLanXpl/DateTimeBasic.h
+	xplrules/rfxLanXpl/DateTimeBasic.cpp
 	xplrules/rfxLanXpl/ControlBasic.h
 	xplrules/rfxLanXpl/ControlBasic.cpp
+	xplrules/rfxLanXpl/LogBasic.h
+	xplrules/rfxLanXpl/LogBasic.cpp
+	xplrules/rfxLanXpl/RemoteBasic.h
+	xplrules/rfxLanXpl/RemoteBasic.cpp
 	xplrules/rfxLanXpl/SensorBasic.h
 	xplrules/rfxLanXpl/SensorBasic.cpp
 	xplrules/rfxLanXpl/X10Basic.h
 	xplrules/rfxLanXpl/X10Basic.cpp
+	xplrules/rfxLanXpl/X10Security.h
+	xplrules/rfxLanXpl/X10Security.cpp	
+
 	xplrules/rfxLanXpl/data/MertikCommand.h
 	xplrules/rfxLanXpl/data/MertikCommand.cpp
 	xplrules/rfxLanXpl/data/MertikStatus.h
@@ -67,6 +76,18 @@ set(RFXLANXPL_RULES_SOURCES
 	xplrules/rfxLanXpl/data/UvDescription.cpp
 	xplrules/rfxLanXpl/data/Forecast.h
 	xplrules/rfxLanXpl/data/Forecast.cpp
+	xplrules/rfxLanXpl/data/Log.h
+	xplrules/rfxLanXpl/data/Log.cpp
+	xplrules/rfxLanXpl/data/Security.h
+	xplrules/rfxLanXpl/data/Security.cpp
+	xplrules/rfxLanXpl/data/RemotePC.h
+	xplrules/rfxLanXpl/data/RemotePC.cpp
+	xplrules/rfxLanXpl/data/RemoteAtiWonder.h
+	xplrules/rfxLanXpl/data/RemoteAtiWonder.cpp
+	xplrules/rfxLanXpl/data/RemoteAtiWonderPlus.h
+	xplrules/rfxLanXpl/data/RemoteAtiWonderPlus.cpp
+	xplrules/rfxLanXpl/data/RemoteMedion.h
+	xplrules/rfxLanXpl/data/RemoteMedion.cpp
 )
 
 

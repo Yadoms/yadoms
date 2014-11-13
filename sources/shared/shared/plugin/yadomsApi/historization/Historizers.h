@@ -5,6 +5,7 @@
 #include "Counter.h"
 #include "Current.h"
 #include "Curtain.h"
+#include "DateTime.h"
 #include "Dimmable.h"
 #include "Direction.h"
 #include "Energy.h"

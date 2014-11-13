@@ -3,6 +3,10 @@
 #include "AcBasic.h"
 #include "SensorBasic.h"
 #include "X10Basic.h"
+#include "X10Security.h"
+#include "LogBasic.h"
+#include "RemoteBasic.h"
+#include "DateTimeBasic.h"
 #include "../Protocol.h"
 #include "../../xplcore/XplConstants.h"
 #include <shared/exception/Exception.hpp>
@@ -14,6 +18,10 @@ namespace xplrules { namespace rfxLanXpl {
       m_handledProtocols.push_back(boost::shared_ptr< xplrules::IProtocol >(new CProtocol<CAcBasic>(CAcBasic::getProtocol())));
       m_handledProtocols.push_back(boost::shared_ptr< xplrules::IProtocol >(new CProtocol<CSensorBasic>(CSensorBasic::getProtocol())));
       m_handledProtocols.push_back(boost::shared_ptr< xplrules::IProtocol >(new CProtocol<CX10Basic>(CX10Basic::getProtocol())));
+      m_handledProtocols.push_back(boost::shared_ptr< xplrules::IProtocol >(new CProtocol<CLogBasic>(CLogBasic::getProtocol())));
+      m_handledProtocols.push_back(boost::shared_ptr< xplrules::IProtocol >(new CProtocol<CX10Security>(CX10Security::getProtocol())));
+      m_handledProtocols.push_back(boost::shared_ptr< xplrules::IProtocol >(new CProtocol<CRemoteBasic>(CRemoteBasic::getProtocol())));
+      m_handledProtocols.push_back(boost::shared_ptr< xplrules::IProtocol >(new CProtocol<CDateTimeBasic>(CDateTimeBasic::getProtocol())));
    }
 
    CDeviceManager::~CDeviceManager()
