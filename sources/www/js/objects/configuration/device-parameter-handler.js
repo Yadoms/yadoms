@@ -64,12 +64,8 @@ function populateDeviceList(handler) {
       }
       var $deviceList = $("select#" + handler.uuid);
 
-      //there is no device that match criteria
-      if (data.data.device.length == 0) {
-          //we add an empty element to make the validation throw an error
-          $deviceList.append("<option value=\"\"></option>");
-      }
-      else {
+      //A device matches criteria
+      if (data.data.device.length != 0) {
           var itemToSelect = -1;
           $.each(data.data.device, function(index, value) {
              //we add device only if it is not already in the list
