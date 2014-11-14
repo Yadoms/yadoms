@@ -31,7 +31,7 @@ CLighting2::CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, unsigned cha
 
    m_subType = subType;
 
-   m_houseCode = manuallyDeviceCreationConfiguration.get<unsigned char>("houseCode");
+   m_houseCode = manuallyDeviceCreationConfiguration.get<unsigned char>("houseCode", 0);
    m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
    m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 

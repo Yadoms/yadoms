@@ -92,7 +92,8 @@ widgetViewModelCtor =
          if ((this.widget.configuration !== undefined) && (this.widget.configuration.device !== undefined)) {
             if (device == this.widget.configuration.device) {
                //it is the good device
-               self.command(parseInt(data.value));
+               // Adapt for dimmable or switch capacities
+               self.command(parseInt(data.value) != 0 ? "1" : "0");
             }
          }
       };
