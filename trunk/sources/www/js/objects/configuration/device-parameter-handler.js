@@ -195,10 +195,21 @@ DeviceParameterHandler.prototype.applyScript = function () {
    if (self.lookupMethod == "type") {
       //we look for a type
 
-      //we async ask for device list that support a type
-      $.getJSON("/rest/device/matchcapacitytype/" + self.expectedKeywordAccess + "/" + self.expectedKeywordType)
-         .done(populateDeviceList(self))
-         .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacityType", {expectedKeywordAccess : self.expectedKeywordAccess, expectedKeywordType : self.expectedKeywordType}));});
+      if (Array.isArray(self.expectedKeywordType)) {
+         //we have a list of types
+         //we async ask for device list that support a type
+         $.each(self.expectedKeywordType, function (index, type) {
+            $.getJSON("/rest/device/matchcapacitytype/" + self.expectedKeywordAccess + "/" + type)
+               .done(populateDeviceList(self))
+               .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacityType", {expectedKeywordAccess : self.expectedKeywordAccess, expectedKeywordType : type}));});
+         });
+      }
+      else {
+         //we async ask for device list that support a type
+         $.getJSON("/rest/device/matchcapacitytype/" + self.expectedKeywordAccess + "/" + self.expectedKeywordType)
+            .done(populateDeviceList(self))
+            .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacityType", {expectedKeywordAccess : self.expectedKeywordAccess, expectedKeywordType : self.expectedKeywordType}));});
+      }
    }
    else
    {
