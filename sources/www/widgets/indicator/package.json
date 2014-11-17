@@ -22,7 +22,7 @@
          "name" : "Switch device",
          "description" : "Device to show",
          "type" : "device",
-         "expectedCapacity" : "switch",
+         "expectedCapacity" : ["switch", "dimmable"],
          "expectedKeywordAccess" : "get"
       },
       "showDeviceName" : {
