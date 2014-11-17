@@ -17,10 +17,10 @@ CChime::CChime(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataC
 {
    m_rssi.set(0);
 
-   m_subType = deviceDetails.get<unsigned char>("subType");
+   createSubType(deviceDetails.get<unsigned char>("subType"));
    m_id = deviceDetails.get<unsigned int>("id");
 
-   Init(context);
+   declare(context);
    m_subTypeManager->set(command, deviceDetails);
 }
 
@@ -29,9 +29,10 @@ CChime::CChime(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subTyp
 {
    m_rssi.set(0);
 
+   createSubType(subType);
    m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
 
-   Init(context);
+   declare(context);
    m_subTypeManager->reset();
 }
 
@@ -40,20 +41,21 @@ CChime::CChime(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, bo
 {
    CheckReceivedMessage(rbuf, pTypeChime, GET_RBUF_STRUCT_SIZE(CHIME), DONT_CHECK_SEQUENCE_NUMBER);
 
-   m_subType = rbuf.CHIME.subtype;
+   createSubType(rbuf.CHIME.subtype);
    m_id = m_subTypeManager->idFromProtocol(rbuf.CHIME.id1, rbuf.CHIME.id2, rbuf.CHIME.sound);
    m_subTypeManager->setFromProtocolState(rbuf.CHIME.sound);
    m_rssi.set(NormalizeRssiLevel(rbuf.CHIME.rssi));
 
-   Init(context);
+   declare(context);
 }
 
 CChime::~CChime()
 {
 }
 
-void CChime::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CChime::createSubType(unsigned char subType)
 {
+   m_subType = subType;
    switch(m_subType)
    {
    case sTypeByronSX : m_subTypeManager.reset(new CChimeByronSx()); break;
@@ -61,6 +63,11 @@ void CChime::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
    }
+}
+
+void CChime::declare(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   BOOST_ASSERT_MSG(!!m_subTypeManager, "m_subTypeManager must be initialized");
 
    // Build device description
    buildDeviceName();

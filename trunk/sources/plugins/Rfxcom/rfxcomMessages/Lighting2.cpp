@@ -15,12 +15,12 @@ CLighting2::CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, const shared
 {
    m_rssi.set(0);
 
-   m_subType = deviceDetails.get<unsigned char>("subType");
+   createSubType(deviceDetails.get<unsigned char>("subType"));
    m_houseCode = deviceDetails.get<unsigned char>("houseCode");
    m_id = deviceDetails.get<unsigned int>("id");
    m_unitCode = deviceDetails.get<unsigned char>("unitCode");
 
-   Init(context);
+   declare(context);
    m_subTypeManager->set(command);
 }
 
@@ -29,13 +29,13 @@ CLighting2::CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, unsigned cha
 {
    m_rssi.set(0);
 
-   m_subType = subType;
+   createSubType(subType);
 
    m_houseCode = manuallyDeviceCreationConfiguration.get<unsigned char>("houseCode", 0);
    m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
    m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
-   Init(context);
+   declare(context);
    m_subTypeManager->reset();
 }
 
@@ -44,21 +44,22 @@ CLighting2::CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& 
 {
    CheckReceivedMessage(rbuf, pTypeLighting2, GET_RBUF_STRUCT_SIZE(LIGHTING2), DONT_CHECK_SEQUENCE_NUMBER);
 
-   m_subType = rbuf.LIGHTING2.subtype;
+   createSubType(rbuf.LIGHTING2.subtype);
    m_subTypeManager->idFromProtocol(rbuf.LIGHTING2.id1, rbuf.LIGHTING2.id2, rbuf.LIGHTING2.id3, rbuf.LIGHTING2.id4, m_houseCode, m_id);
    m_subTypeManager->setFromProtocolState(rbuf.LIGHTING2.cmnd, rbuf.LIGHTING2.level);
    m_unitCode = rbuf.LIGHTING2.unitcode;
    m_rssi.set(NormalizeRssiLevel(rbuf.LIGHTING2.rssi));
 
-   Init(context);
+   declare(context);
 }
 
 CLighting2::~CLighting2()
 {
 }
 
-void CLighting2::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CLighting2::createSubType(unsigned char subType)
 {
+   m_subType = subType;
    switch(m_subType)
    {
    case sTypeAC : m_subTypeManager.reset(new CLighting2Dimmable("AC")); break;
@@ -68,6 +69,11 @@ void CLighting2::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
    }
+}
+
+void CLighting2::declare(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   BOOST_ASSERT_MSG(!!m_subTypeManager, "m_subTypeManager must be initialized");
 
    // Build device description
    buildDeviceName();

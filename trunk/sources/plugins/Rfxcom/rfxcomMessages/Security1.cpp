@@ -21,10 +21,10 @@ CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYadomsApi> context, const std::s
 {
    m_rssi.set(0);
 
-   m_subType = deviceDetails.get<unsigned char>("subType");
+   createSubType(deviceDetails.get<unsigned char>("subType"));
    m_id = deviceDetails.get<unsigned int>("id");
 
-   Init(context);
+   declare(context);
    m_subTypeManager->set(keyword, command);
 }
 
@@ -33,11 +33,10 @@ CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned cha
 {
    m_rssi.set(0);
 
-   m_subType = subType;
-
+   createSubType(subType);
    m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
 
-   Init(context);
+   declare(context);
    m_subTypeManager->reset();
 }
 
@@ -46,20 +45,21 @@ CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& 
 {
    CheckReceivedMessage(rbuf, pTypeSecurity1, GET_RBUF_STRUCT_SIZE(SECURITY1), DONT_CHECK_SEQUENCE_NUMBER);
 
-   m_subType = rbuf.SECURITY1.subtype;
+   createSubType(rbuf.SECURITY1.subtype);
    m_id = (rbuf.SECURITY1.id1 << 8) | rbuf.SECURITY1.id2;
    m_subTypeManager->setFromProtocolState(rbuf.SECURITY1.status);
    m_rssi.set(NormalizeRssiLevel(rbuf.SECURITY1.rssi));
 
-   Init(context);
+   declare(context);
 }
 
 CSecurity1::~CSecurity1()
 {
 }
 
-void CSecurity1::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CSecurity1::createSubType(unsigned char subType)
 {
+   m_subType = subType;
    switch(m_subType)
    {
    case CSecurity1X10::rfxValue : m_subTypeManager.reset(new CSecurity1X10()); break;
@@ -74,6 +74,11 @@ void CSecurity1::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
    }
+}
+
+void CSecurity1::declare(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   BOOST_ASSERT_MSG(!!m_subTypeManager, "m_subTypeManager must be initialized");
 
    // Build device description
    buildDeviceName();

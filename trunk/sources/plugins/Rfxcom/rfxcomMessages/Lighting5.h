@@ -60,15 +60,21 @@ namespace rfxcomMessages
 
    protected:
       //--------------------------------------------------------------
-      /// \brief	Global initialization method
-      /// \param[in] context              Yadoms APi context
+      /// \brief	Set and create the subtype
+      /// \param[in] subType              Device subType
       //--------------------------------------------------------------
-      void Init(boost::shared_ptr<yApi::IYadomsApi> context);
+      void createSubType(unsigned char subType);
 
       //--------------------------------------------------------------
       /// \brief	                        Build the device name
       //--------------------------------------------------------------
       void buildDeviceName();
+
+      //--------------------------------------------------------------
+      /// \brief	Declare the device
+      /// \param[in] context              Yadoms APi context
+      //--------------------------------------------------------------
+      void declare(boost::shared_ptr<yApi::IYadomsApi> context);
 
    private:
       //--------------------------------------------------------------

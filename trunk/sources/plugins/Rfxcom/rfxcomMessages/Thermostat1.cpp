@@ -15,10 +15,10 @@ CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYadomsApi> context, const sh
 {
    m_rssi.set(0);
 
-   m_subType = deviceDetails.get<unsigned char>("subType");
+   createSubType(deviceDetails.get<unsigned char>("subType"));
    m_id = deviceDetails.get<unsigned int>("id");
 
-   Init(context);
+   declare(context);
    m_subTypeManager->set(command);
 }
 
@@ -27,11 +27,11 @@ CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned
 {
    m_rssi.set(0);
 
-   m_subType = subType;
+   createSubType(subType);
 
    m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
 
-   Init(context);
+   declare(context);
    m_subTypeManager->reset();
 }
 
@@ -40,20 +40,21 @@ CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYadomsApi> context, const RB
 {
    CheckReceivedMessage(rbuf, pTypeThermostat1, GET_RBUF_STRUCT_SIZE(THERMOSTAT1), DONT_CHECK_SEQUENCE_NUMBER);
 
-   m_subType = rbuf.THERMOSTAT1.subtype;
+   createSubType(rbuf.THERMOSTAT1.subtype);
    m_id = rbuf.THERMOSTAT1.id1 << 8 | rbuf.THERMOSTAT1.id2;
    m_subTypeManager->setFromProtocolState(rbuf);
    m_rssi.set(NormalizeRssiLevel(rbuf.THERMOSTAT1.rssi));
 
-   Init(context);
+   declare(context);
 }
 
 CThermostat1::~CThermostat1()
 {
 }
 
-void CThermostat1::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CThermostat1::createSubType(unsigned char subType)
 {
+   m_subType = subType;
    switch(m_subType)
    {
    case sTypeAC : m_subTypeManager.reset(new CThermostat1Digimax()); break;
@@ -61,6 +62,11 @@ void CThermostat1::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
    }
+}
+
+void CThermostat1::declare(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   BOOST_ASSERT_MSG(!!m_subTypeManager, "m_subTypeManager must be initialized");
 
    // Build device description
    buildDeviceName();
