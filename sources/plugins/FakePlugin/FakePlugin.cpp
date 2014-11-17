@@ -23,7 +23,7 @@ CFakePlugin::~CFakePlugin()
 // Event IDs
 enum
 {
-   kSendTemperatureTimerEventId = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from yApi::IYadomsApi::kPluginFirstEventId
+   kSendSensorsStateTimerEventId = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from yApi::IYadomsApi::kPluginFirstEventId
 };
 
 void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
@@ -70,7 +70,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       }
 
       // Timer used to send fake sensor states periodically
-      context->getEventHandler().createTimer(kSendTemperatureTimerEventId, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
+      context->getEventHandler().createTimer(kSendSensorsStateTimerEventId, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
 
       // the main loop
       YADOMS_LOG(debug) << "CFakePlugin is running...";
@@ -106,9 +106,9 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 
                break;
             }
-         case kSendTemperatureTimerEventId:
+         case kSendSensorsStateTimerEventId:
             {
-               // Timer used here to send the temperature to Yadoms periodically
+               // Timer used here to send sensors state to Yadoms periodically
 
                // Read sensor value and send data to Yadoms (temperatures, battery level, Rssi measure...)
                fakeSensor1.read();

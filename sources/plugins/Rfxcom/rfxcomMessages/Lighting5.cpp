@@ -17,11 +17,11 @@ CLighting5::CLighting5(boost::shared_ptr<yApi::IYadomsApi> context, const shared
 {
    m_rssi.set(0);
 
-   m_subType = deviceDetails.get<unsigned char>("subType");
+   createSubType(deviceDetails.get<unsigned char>("subType"));
    m_id = deviceDetails.get<unsigned int>("id");
    m_unitCode = deviceDetails.get<unsigned char>("unitCode");
  
-   Init(context);
+   declare(context);
    m_subTypeManager->set(command);
 }
 
@@ -30,12 +30,12 @@ CLighting5::CLighting5(boost::shared_ptr<yApi::IYadomsApi> context, unsigned cha
 {
    m_rssi.set(0);
 
-   m_subType = subType;
+   createSubType(subType);
 
    m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
    m_unitCode = manuallyDeviceCreationConfiguration.get<unsigned char>("unitCode");
 
-   Init(context);
+   declare(context);
    m_subTypeManager->reset();
 }
 
@@ -44,21 +44,22 @@ CLighting5::CLighting5(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& 
 {
    CheckReceivedMessage(rbuf, pTypeLighting5, GET_RBUF_STRUCT_SIZE(LIGHTING5), DONT_CHECK_SEQUENCE_NUMBER);
 
-   m_subType = rbuf.LIGHTING5.subtype;
+   createSubType(rbuf.LIGHTING5.subtype);
    m_id = rbuf.LIGHTING5.id1 << 16 | rbuf.LIGHTING5.id2 << 8 | rbuf.LIGHTING5.id3;
    m_unitCode = rbuf.LIGHTING5.unitcode;
    m_subTypeManager->setFromProtocolState(rbuf.LIGHTING5.cmnd, rbuf.LIGHTING5.level);
    m_rssi.set(NormalizeRssiLevel(rbuf.LIGHTING5.rssi));
 
-   Init(context);
+   declare(context);
 }
 
 CLighting5::~CLighting5()
 {
 }
 
-void CLighting5::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CLighting5::createSubType(unsigned char subType)
 {
+   m_subType = subType;
    switch(m_subType)
    {
    case sTypeLightwaveRF : m_subTypeManager.reset(new CLighting5LightwaveRfKeyword()); break;
@@ -74,6 +75,11 @@ void CLighting5::Init(boost::shared_ptr<yApi::IYadomsApi> context)
    default:
       throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
    }
+}
+
+void CLighting5::declare(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   BOOST_ASSERT_MSG(!!m_subTypeManager, "m_subTypeManager must be initialized");
 
    // Build device description
    buildDeviceName();
