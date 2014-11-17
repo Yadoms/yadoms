@@ -7,13 +7,15 @@ widgetViewModelCtor =
       function IndicatorViewModel() {
 
       //observable data
-      this.command = ko.observable("1");
+      this.command = ko.observable(1);
 
       //observable data
       this.icon = ko.observable("");
 
       //widget identifier
       this.widget = null;
+      
+      this.capacity = null;
 
       //kind will be available with analog devices
       this.kind = ko.observable("digital");
@@ -49,6 +51,10 @@ widgetViewModelCtor =
             DeviceManager.get(this.widget.configuration.device.deviceId, function (device) {
                   self.indicatorText(decodeURIComponent(device.friendlyName));
             });
+            // Get the capacity of the keyword
+            KeywordManager.get(this.widget.configuration.device.keywordId, function(keyword) {
+               self.capacity = keyword.capacityName;
+            });
          }
          catch(err) {}
       };
@@ -64,8 +70,8 @@ widgetViewModelCtor =
          try {
             if (device == this.widget.configuration.device) {
                //it is the good device
-
-               self.command(parseInt(data.value));
+               // Adapt for dimmable or switch capacities
+               self.command(parseInt(data.value) != 0 ? "1" : "0");
             }
          }
          catch (err) {}
