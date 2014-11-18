@@ -40,6 +40,7 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/IChimeSubtype.h
    rfxcomMessages/ILighting2Subtype.h
    rfxcomMessages/ILighting5Subtype.h
+   rfxcomMessages/IRemoteSubtype.h
    rfxcomMessages/ISecurity1Subtype.h
    rfxcomMessages/IThermostat1Subtype.h
    rfxcomMessages/Lighting1.h
@@ -70,6 +71,9 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Power.cpp
    rfxcomMessages/Remote.h
    rfxcomMessages/Remote.cpp
+   rfxcomMessages/RemoteAtiWonder2.h
+   rfxcomMessages/RemoteAtiWonder2.cpp
+   rfxcomMessages/RemoteStandard.hpp
    rfxcomMessages/Rain.h
    rfxcomMessages/Rain.cpp
    rfxcomMessages/RFXtrx.h
@@ -129,6 +133,23 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/Wind.cpp
 )
 
+set(SPECIFIC_HISTORIZERS_SOURCES
+   rfxcomMessages/specificHistorizers/RemoteAtiWonderHistorizer.h
+   rfxcomMessages/specificHistorizers/RemoteAtiWonderHistorizer.cpp
+   rfxcomMessages/specificHistorizers/RemoteAtiWonder2Capacity.h
+   rfxcomMessages/specificHistorizers/RemoteAtiWonder2Capacity.cpp
+   rfxcomMessages/specificHistorizers/RemoteAtiWonder2CmdHistorizer.h
+   rfxcomMessages/specificHistorizers/RemoteAtiWonder2CmdHistorizer.cpp
+   rfxcomMessages/specificHistorizers/RemoteAtiWonder2CmdTypeHistorizer.h
+   rfxcomMessages/specificHistorizers/RemoteAtiWonder2CmdTypeHistorizer.cpp
+   rfxcomMessages/specificHistorizers/RemoteAtiWonderPlusHistorizer.h
+   rfxcomMessages/specificHistorizers/RemoteAtiWonderPlusHistorizer.cpp
+   rfxcomMessages/specificHistorizers/RemoteMedionHistorizer.h
+   rfxcomMessages/specificHistorizers/RemoteMedionHistorizer.cpp
+   rfxcomMessages/specificHistorizers/RemotePCHistorizer.h
+   rfxcomMessages/specificHistorizers/RemotePCHistorizer.cpp
+)
+
 set(RFXCOM_SOURCES
    stdafx.h
    stdafx.cpp
@@ -149,10 +170,12 @@ set(RFXCOM_SOURCES
    RfxcomFactory.cpp
    Transceiver.h
    Transceiver.cpp
+   ${SPECIFIC_HISTORIZERS_SOURCES}
    ${RFXCOM_MESSAGES_SOURCES}
 )
 
 source_group(rfxcomMessages rfxcomMessages/*.*)
+source_group(rfxcomMessages\\specificHistorizers rfxcomMessages/specificHistorizers/*.*)
 
 #########################################
 ## Place here all additional include directories
