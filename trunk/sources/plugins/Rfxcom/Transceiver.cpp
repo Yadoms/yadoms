@@ -394,18 +394,6 @@ const std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYa
       else if (data.getConfiguration().get<bool>("type.content.cameraX10Ninja.radio"))
          msg.reset(new rfxcomMessages::CCamera1(context, sTypeNinja, data.getConfiguration().get<shared::CDataContainer>("type.content.cameraX10Ninja.content")));
 
-      // Remote
-      else if (data.getConfiguration().get<bool>("type.content.atiRemoteWonder.radio"))
-         msg.reset(new rfxcomMessages::CRemote(context, sTypeATI, data.getConfiguration().get<shared::CDataContainer>("type.content.atiRemoteWonder.content")));
-      else if (data.getConfiguration().get<bool>("type.content.atiRemoteWonderPlus.radio"))
-         msg.reset(new rfxcomMessages::CRemote(context, sTypeATIplus, data.getConfiguration().get<shared::CDataContainer>("type.content.atiRemoteWonderPlus.content")));
-      else if (data.getConfiguration().get<bool>("type.content.medionRemote.radio"))
-         msg.reset(new rfxcomMessages::CRemote(context, sTypeMedion, data.getConfiguration().get<shared::CDataContainer>("type.content.medionRemote.content")));
-      else if (data.getConfiguration().get<bool>("type.content.x10PcRemote.radio"))
-         msg.reset(new rfxcomMessages::CRemote(context, sTypePCremote, data.getConfiguration().get<shared::CDataContainer>("type.content.x10PcRemote.content")));
-      else if (data.getConfiguration().get<bool>("type.content.atiRemoteWonder2.radio"))
-         msg.reset(new rfxcomMessages::CRemote(context, sTypeATIrw2, data.getConfiguration().get<shared::CDataContainer>("type.content.atiRemoteWonder2.content")));
-
       // Thermostat1
       else if (data.getConfiguration().get<bool>("type.content.digimax.radio"))
          msg.reset(new rfxcomMessages::CThermostat1(context, sTypeDigimax, data.getConfiguration().get<shared::CDataContainer>("type.content.digimax.content")));

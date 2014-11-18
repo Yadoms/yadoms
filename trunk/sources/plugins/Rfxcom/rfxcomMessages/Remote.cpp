@@ -3,6 +3,12 @@
 #include <shared/plugin/yadomsApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/Log.h>
+#include "RemoteStandard.hpp"
+#include "RemoteAtiWonder2.h"
+#include "specificHistorizers/RemoteAtiWonderHistorizer.h"
+#include "specificHistorizers/RemoteAtiWonderPlusHistorizer.h"
+#include "specificHistorizers/RemoteMedionHistorizer.h"
+#include "specificHistorizers/RemotePCHistorizer.h"
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -11,66 +17,55 @@ namespace rfxcomMessages
 {
 
 CRemote::CRemote(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceDetails)
-   :m_keyword("command"), m_rssi("rssi")
+   :m_rssi("rssi")
 {
    m_rssi.set(0);
 
-   m_subType = deviceDetails.get<unsigned char>("subType");
+   createSubType(deviceDetails.get<unsigned char>("subType"));
    m_id = deviceDetails.get<unsigned int>("id");
-   m_cmndType = deviceDetails.get<unsigned int>("commandType");
-   m_cmnd = deviceDetails.get<unsigned int>("command");
 
-   Init(context);
-}
-
-CRemote::CRemote(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-   :m_keyword("command"), m_rssi("rssi")
-{
-   m_rssi.set(0);
-
-   m_subType = subType;
-   switch(m_subType)
-   {
-   case sTypeATI         :
-   case sTypeATIplus     :
-   case sTypeMedion      :
-   case sTypePCremote    :
-   case sTypeATIrw2      :
-      break;
-   default:
-      throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
-   }
-
-   m_id = manuallyDeviceCreationConfiguration.get<unsigned int>("id");
-   m_cmndType = manuallyDeviceCreationConfiguration.get<unsigned int>("commandType");
-   m_cmnd = manuallyDeviceCreationConfiguration.get<unsigned int>("command");
-
-   Init(context);
+   declare(context);
+   m_subTypeManager->set(command);
 }
 
 CRemote::CRemote(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_keyword("command"), m_rssi("rssi")
+   :m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeRemote, GET_RBUF_STRUCT_SIZE(REMOTE), DONT_CHECK_SEQUENCE_NUMBER);
 
-   m_subType = rbuf.REMOTE.subtype;
+   createSubType(rbuf.REMOTE.subtype);
    m_id = rbuf.REMOTE.id;
-   m_cmndType = rbuf.REMOTE.cmndtype;
-   m_cmnd = rbuf.REMOTE.cmnd;
+   m_subTypeManager->setFromProtocolState(rbuf);
 
    m_rssi.set(NormalizeRssiLevel(rbuf.REMOTE.rssi));
 
-   Init(context);
+   declare(context);
 }
 
 CRemote::~CRemote()
 {
 }
 
-void CRemote::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CRemote::createSubType(unsigned char subType)
 {
+   m_subType = subType;
+   switch(m_subType)
+   {
+   case sTypeATI : m_subTypeManager.reset(new CRemoteStandard<specificHistorizers::CRemoteAtiWonderHistorizer>("ATI Remote Wonder")); break;
+   case sTypeATIplus : m_subTypeManager.reset(new CRemoteStandard<specificHistorizers::CRemoteAtiWonderPlusHistorizer>("ATI Remote Wonder Plus")); break;
+   case sTypeMedion : m_subTypeManager.reset(new CRemoteStandard<specificHistorizers::CRemoteMedionHistorizer>("Medion Remote")); break;
+   case sTypePCremote : m_subTypeManager.reset(new CRemoteStandard<specificHistorizers::CRemotePCHistorizer>("X10 PC Remote")); break;
+   case sTypeATIrw2 : m_subTypeManager.reset(new CRemoteAtiWonder2()); break;
+   default:
+      throw shared::exception::COutOfRange("Manually device creation : subType is not supported");
+   }
+}
+
+void CRemote::declare(boost::shared_ptr<yApi::IYadomsApi> context)
+{
+   BOOST_ASSERT_MSG(!!m_subTypeManager, "m_subTypeManager must be initialized");
+
    // Build device description
-   buildDeviceModel();
    buildDeviceName();
 
    // Create device and keywords if needed
@@ -80,13 +75,12 @@ void CRemote::Init(boost::shared_ptr<yApi::IYadomsApi> context)
       details.set("type", pTypeRemote);
       details.set("subType", m_subType);
       details.set("id", m_id);
-      details.set("commandType", m_cmndType);
-      details.set("command", m_cmnd);
-      context->declareDevice(m_deviceName, m_deviceModel, details.serialize());
+      context->declareDevice(m_deviceName, m_subTypeManager->getModel(), details.serialize());
 
-      context->declareKeyword(m_deviceName, m_keyword);
       context->declareKeyword(m_deviceName, m_rssi);
    }
+
+   m_subTypeManager->declare(context, m_deviceName);
 }
 
 boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CRemote::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
@@ -99,8 +93,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CRemote
    rbuf.REMOTE.subtype = m_subType;
    rbuf.REMOTE.seqnbr = seqNumberProvider->next();
    rbuf.REMOTE.id = (BYTE)m_id;
-   rbuf.REMOTE.cmndtype = (BYTE)m_cmndType;
-   rbuf.REMOTE.cmnd = (BYTE)m_cmnd;
+   m_subTypeManager->toProtocolState(rbuf);
    rbuf.REMOTE.rssi = 0;
 
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(REMOTE));
@@ -108,7 +101,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CRemote
 
 void CRemote::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
 {
-   context->historizeData(m_deviceName, m_keyword);
+   m_subTypeManager->historize(context, m_deviceName);
    context->historizeData(m_deviceName, m_rssi);
 }
 
@@ -120,25 +113,8 @@ const std::string& CRemote::getDeviceName() const
 void CRemote::buildDeviceName()
 {
    std::ostringstream ssdeviceName;
-   ssdeviceName << (unsigned int)m_subType << "." << m_id << "." << m_cmndType << "." << m_cmnd;
+   ssdeviceName << (unsigned int)m_subType << "." << m_id;
    m_deviceName = ssdeviceName.str();
-}
-
-void CRemote::buildDeviceModel()
-{
-   std::ostringstream ssModel;
-
-   switch(m_subType)
-   {
-   case sTypeATI         : ssModel << "ATI Remote Wonder"; break;
-   case sTypeATIplus     : ssModel << "ATI Remote Wonder Plus"; break;
-   case sTypeMedion      : ssModel << "Medion Remote"; break;
-   case sTypePCremote    : ssModel << "X10 PC Remote"; break;
-   case sTypeATIrw2      : ssModel << "ATI Remote Wonder II"; break;
-   default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
-   }
-
-   m_deviceModel = ssModel.str();
 }
 
 } // namespace rfxcomMessages

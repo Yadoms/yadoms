@@ -4,6 +4,7 @@
 #include "RFXtrxHelpers.h"
 #include <shared/plugin/yadomsApi/IYadomsApi.h>
 #include <shared/DataContainer.h>
+#include "IRemoteSubtype.h"
 
 namespace yApi = shared::plugin::yadomsApi;
 
@@ -28,16 +29,6 @@ namespace rfxcomMessages
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       /// \param[in] context              Yadoms APi context
-      /// \param[in] subType              Device subType
-      /// \param[in] manuallyDeviceCreationConfiguration The device concfiguration
-      /// \throw                          shared::exception::CInvalidParameter or shared::exception::COutOfRange if fail to interpret configuration
-      /// \note                           Use this constructor for manually device creation
-      //--------------------------------------------------------------
-      CRemote(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration);
-
-      //--------------------------------------------------------------
-      /// \brief	                        Constructor
-      /// \param[in] context              Yadoms APi context
       /// \param[in] rbuf                 The received buffer
       /// \param[in] seqNumberProvider    The sequence number provider
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
@@ -58,10 +49,10 @@ namespace rfxcomMessages
 
    protected:
       //--------------------------------------------------------------
-      /// \brief	Global initialization method
-      /// \param[in] context              Yadoms APi context
+      /// \brief	Set and create the subtype
+      /// \param[in] subType              Device subType
       //--------------------------------------------------------------
-      void Init(boost::shared_ptr<yApi::IYadomsApi> context);
+      void createSubType(unsigned char subType);
 
       //--------------------------------------------------------------
       /// \brief	                        Build the device name
@@ -69,9 +60,10 @@ namespace rfxcomMessages
       void buildDeviceName();
 
       //--------------------------------------------------------------
-      /// \brief	                        Build the sensor model
+      /// \brief	Declare the device
+      /// \param[in] context              Yadoms APi context
       //--------------------------------------------------------------
-      void buildDeviceModel();
+      void declare(boost::shared_ptr<yApi::IYadomsApi> context);
 
    private:
       //--------------------------------------------------------------
@@ -85,29 +77,14 @@ namespace rfxcomMessages
       unsigned int m_id;
 
       //--------------------------------------------------------------
-      /// \brief	The command type
-      //--------------------------------------------------------------
-      unsigned int m_cmndType;
-
-      //--------------------------------------------------------------
-      /// \brief	The command
-      //--------------------------------------------------------------
-      unsigned int m_cmnd;
-
-      //--------------------------------------------------------------
       /// \brief	The device name
       //--------------------------------------------------------------
       std::string m_deviceName;
 
       //--------------------------------------------------------------
-      /// \brief	The device model
+      /// \brief	The sub-type management
       //--------------------------------------------------------------
-      std::string m_deviceModel;
-
-      //--------------------------------------------------------------
-      /// \brief	The keyword
-      //--------------------------------------------------------------
-      yApi::historization::CEvent m_keyword;
+      boost::shared_ptr<IRemoteSubtype> m_subTypeManager;
 
       //--------------------------------------------------------------
       /// \brief	The keyword associated with rssi
