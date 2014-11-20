@@ -5,6 +5,7 @@
 #include "shared/Log.h"
 #include "web/rest/Result.h"
 #include "pluginSystem/ManuallyDeviceCreationData.h"
+#include "pluginSystem/CustomQueryData.h"
 #include "communication/callback/CallbackRequest.h"
 #include "communication/callback/SynchronousCallback.h"
 
@@ -32,6 +33,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance")("handleManuallyDeviceCreation"), CPlugin::getAllPluginsInstanceForManualDeviceCreation);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CPlugin::getOnePlugin);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("status"), CPlugin::getInstanceStatus);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("customQuery")("*"), CPlugin::customQuery);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT",  (m_restKeyword)("*")("start"), CPlugin::startInstance);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT",  (m_restKeyword)("*")("stop"), CPlugin::stopInstance);
 
@@ -453,6 +455,76 @@ namespace web { namespace rest { namespace service {
       }
    }
 
+	shared::CDataContainer CPlugin::customQuery(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+	{
+		try
+		{
+			if (parameters.size() >= 3)
+			{
+				int pluginId = boost::lexical_cast<int>(parameters[1]);
+
+				std::string query = parameters[3];
+				try
+				{
+					//create a callback (allow waiting for result)              
+					communication::callback::CSynchronousCallback< std::vector<std::string> > cb;
+
+					//create the data container to send to plugin
+					pluginSystem::CCustomQueryData data(query);
+
+					//send request to plugin
+					m_messageSender.sendCustomQueryRequest(pluginId, data, cb);
+
+					//wait for result
+					//communication::callback::CSynchronousCallback< std::string >::CSynchronousResult res = cb.waitForResult();
+					switch (cb.waitForResult())
+					{
+					case communication::callback::CSynchronousCallback< std::vector<std::string> >::kResult:
+					{
+						communication::callback::CSynchronousCallback< std::vector<std::string> >::CSynchronousResult res = cb.getCallbackResult();
+
+						if (res.Success)
+						{
+							//std::vector<std::string>
+							shared::CDataContainer result;
+							result.set(query, res.Result);
+							return web::rest::CResult::GenerateSuccess(result);
+						}
+						else
+						{
+							//the plugin failed to create the device
+							return web::rest::CResult::GenerateError(res.ErrorMessage);
+						}
+						break;
+					}
+					case shared::event::kTimeout:
+						return web::rest::CResult::GenerateError("The plugin did not respond");
+
+
+					default:
+						return web::rest::CResult::GenerateError("Unkown plugin result");
+					}
+				}
+				catch (shared::exception::CException & ex)
+				{
+					return web::rest::CResult::GenerateError(ex);
+				}
+				
+			}
+			else
+			{
+				return web::rest::CResult::GenerateError("invalid parameter. Can not retreive plugin id in url");
+			}
+		}
+		catch (std::exception &ex)
+		{
+			return web::rest::CResult::GenerateError(ex);
+		}
+		catch (...)
+		{
+			return web::rest::CResult::GenerateError("unknown exception in executing custom query");
+		}
+	}
 
 } //namespace service
 } //namespace rest

@@ -51,6 +51,7 @@ namespace shared { namespace plugin { namespace yadomsApi
          kEventDeviceCommand,                                     // Yadoms send a command to a device managed by this plugin
          kEventManuallyDeviceCreationTest,                        // Yadoms ask the plugin to test a device with provided parameters, before to create it
          kEventManuallyDeviceCreation,                            // Yadoms ask the plugin to create a device
+         kCustomQuery,															// Yadoms ask the plugin a custom query
          kPluginFirstEventId                                      // The next usable event ID for the plugin code
       };
 
