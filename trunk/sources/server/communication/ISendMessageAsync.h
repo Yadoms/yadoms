@@ -2,6 +2,7 @@
 
 #include "callback/ISynchronousCallback.h"
 #include <shared/plugin/yadomsApi/IManuallyDeviceCreationData.h>
+#include <shared/plugin/yadomsApi/ICustomQueryData.h>
 
 namespace communication {
 
@@ -33,6 +34,14 @@ namespace communication {
       ///\param [in] callback       The callback
       //----------------------------------------------
       virtual void sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yadomsApi::IManuallyDeviceCreationData & data, communication::callback::ISynchronousCallback<std::string> & callback) = 0;
+
+		//----------------------------------------------
+      ///\brief                     Send a custom query request to a plugin with a mandatory callback
+      ///\param [in] pluginId       Plugin Id on which to create device
+      ///\param [in] data           Reference to the custom query data
+      ///\param [in] callback       The callback
+      //----------------------------------------------
+		virtual void sendCustomQueryRequest(int pluginId, const shared::plugin::yadomsApi::ICustomQueryData & data, communication::callback::ISynchronousCallback< std::vector<std::string> > & callback) = 0;
    };
 
 } //namespace communication

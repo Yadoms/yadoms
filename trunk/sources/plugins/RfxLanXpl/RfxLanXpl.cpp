@@ -99,6 +99,14 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             OnCreateDeviceRequest(data, context);
             break;
          }         
+          
+			case yApi::IYadomsApi::kCustomQuery:
+         {
+            // Yadoms asks for device creation
+				boost::shared_ptr<yApi::ICustomQueryListRequest> data = context->getEventHandler().getEventData< boost::shared_ptr<yApi::ICustomQueryListRequest> >();
+            OnCustomQueryRequest(data, context);
+            break;
+         }         
          
          case kXplMessageReceived:
          {
@@ -366,4 +374,38 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
       data->sendError(errorMessage);
       YADOMS_LOG(error) << errorMessage;
    }
+}
+
+
+void CRfxLanXpl::OnCustomQueryRequest(boost::shared_ptr<yApi::ICustomQueryListRequest> data, boost::shared_ptr<yApi::IYadomsApi> context)
+{
+	try
+	{
+		YADOMS_LOG(info) << "Custom query request";
+
+
+		if (data->getData().getQuery() == "RfxLanList")
+		{
+			//send created device
+			std::vector<std::string> allRfxLans;
+
+			allRfxLans.push_back("rfxlan-test1");
+			allRfxLans.push_back("rfxlan-test2");
+			allRfxLans.push_back("rfxlan-test3");
+
+			data->sendSuccess(allRfxLans);
+		}
+		else
+		{
+			std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
+			data->sendError(errorMessage);
+			YADOMS_LOG(error) << errorMessage;
+		}
+	}
+	catch (std::exception &ex)
+	{
+		std::string errorMessage = (boost::format("xpl plugin fail to create device : %1%") % ex.what()).str();
+		data->sendError(errorMessage);
+		YADOMS_LOG(error) << errorMessage;
+	}
 }

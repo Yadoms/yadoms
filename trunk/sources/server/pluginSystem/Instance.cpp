@@ -97,6 +97,13 @@ void CInstance::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plug
    m_context->getEventHandler().postEvent< boost::shared_ptr<shared::plugin::yadomsApi::IManuallyDeviceCreationRequest> >(shared::plugin::yadomsApi::IYadomsApi::kEventManuallyDeviceCreation, request);
 }
 
+void CInstance::postCustomQueryRequest(boost::shared_ptr<shared::plugin::yadomsApi::ICustomQueryListRequest> & request) const
+{
+	BOOST_ASSERT(m_context);
+	// Post event to the plugin
+	m_context->getEventHandler().postEvent< boost::shared_ptr<shared::plugin::yadomsApi::ICustomQueryListRequest> >(shared::plugin::yadomsApi::IYadomsApi::kCustomQuery, request);
+}
+
 void CInstance::updateConfiguration(const shared::CDataContainer & newConfiguration) const
 {
    BOOST_ASSERT(m_context);

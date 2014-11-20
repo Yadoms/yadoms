@@ -470,4 +470,15 @@ void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<share
    instance->postManuallyDeviceCreationRequest(request);
 }
 
+void CManager::postCustomQueryRequest(int id, boost::shared_ptr<shared::plugin::yadomsApi::ICustomQueryListRequest> & request)
+{
+   boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
+
+   if (!isInstanceRunning(id))
+      return;     // Instance is stopped, nothing to do
+
+   boost::shared_ptr<CInstance> instance(m_runningInstances.find(id)->second);
+	instance->postCustomQueryRequest(request);
+}
+
 } // namespace pluginSystem

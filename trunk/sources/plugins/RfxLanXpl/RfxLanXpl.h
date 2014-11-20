@@ -5,6 +5,7 @@
 #include "xplcore/XplService.h"
 #include "xplrules/IDeviceManager.h"
 #include <shared/plugin/yadomsApi/IManuallyDeviceCreationRequest.h>
+#include <shared/plugin/yadomsApi/ICustomQueryListRequest.h>
 
 
 // Shortcut to yadomsApi namespace
@@ -55,6 +56,13 @@ private:
    ///\param [in] context The plugin API
    //----------------------------------------------
    void OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> data, boost::shared_ptr<yApi::IYadomsApi> context);
+
+	//----------------------------------------------
+   ///\brief Function handler use to answer custom queries
+   ///\param [in] data  the custom query data
+   ///\param [in] context The plugin API
+   //----------------------------------------------
+	void OnCustomQueryRequest(boost::shared_ptr<yApi::ICustomQueryListRequest> data, boost::shared_ptr<yApi::IYadomsApi> context);
 
    //----------------------------------------------
    ///\brief  The device manager

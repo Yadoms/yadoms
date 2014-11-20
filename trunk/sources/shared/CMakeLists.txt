@@ -76,9 +76,11 @@ set(SHARED_LIB_SRC
 
    shared/plugin/yadomsApi/commonIncludes.h
    shared/plugin/yadomsApi/IDeviceCommand.h
-   shared/plugin/yadomsApi/IManuallyDeviceCreationData.h
+	shared/plugin/yadomsApi/IManuallyDeviceCreationData.h
 	shared/plugin/yadomsApi/IManuallyDeviceCreationRequest.h
-   shared/plugin/yadomsApi/IManuallyDeviceCreationTestData.h
+	shared/plugin/yadomsApi/ICustomQueryData.h
+	shared/plugin/yadomsApi/ICustomQueryListRequest.h
+	shared/plugin/yadomsApi/IManuallyDeviceCreationTestData.h
 	shared/plugin/yadomsApi/KeywordAccessMode.h
 	shared/plugin/yadomsApi/KeywordAccessMode.cpp
 	shared/plugin/yadomsApi/KeywordDataType.h

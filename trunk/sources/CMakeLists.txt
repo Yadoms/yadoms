@@ -195,6 +195,10 @@ set(YADOMS_SRC
 	server/pluginSystem/ManagerEvent.h
    server/pluginSystem/ManuallyDeviceCreationData.cpp
    server/pluginSystem/ManuallyDeviceCreationData.h
+   server/pluginSystem/CustomQueryData.cpp
+   server/pluginSystem/CustomQueryData.h
+   server/pluginSystem/CustomQueryListRequest.cpp
+   server/pluginSystem/CustomQueryListRequest.h
    server/pluginSystem/ManuallyDeviceCreationTestData.cpp
    server/pluginSystem/ManuallyDeviceCreationTestData.h
 	server/pluginSystem/Qualifier.h
