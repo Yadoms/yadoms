@@ -406,7 +406,15 @@ namespace web { namespace rest { namespace service {
 
                         if (res.Success)
                         {
+                           //find created device
                            boost::shared_ptr<database::entities::CDevice> createdDevice = m_dataProvider->getDeviceRequester()->getDevice(pluginId, res.Result);
+
+                           //update friendly name
+                           m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(createdDevice->Id(), requestContent.get<std::string>("name"));
+
+                           //get device with friendly name updated
+                           createdDevice = m_dataProvider->getDeviceRequester()->getDevice(pluginId, res.Result);
+
                            return web::rest::CResult::GenerateSuccess(createdDevice);
                         }
                         else

@@ -3,11 +3,12 @@
 #include "../IRule.h"
 #include "../IReadRule.h"
 #include "../ICommandRule.h"
+#include "../ISupportManuallyDeviceCreationRule.h"
 #include <shared/enumeration/EnumHelpers.hpp>
 
 namespace xplrules { namespace rfxLanXpl {
 
-   class CAcBasic : public IRule, public IReadRule, public ICommandRule
+   class CAcBasic : public IRule, public IReadRule, public ICommandRule, public ISupportManuallyDeviceCreationRule
    {
    public:
       CAcBasic();
@@ -32,6 +33,10 @@ namespace xplrules { namespace rfxLanXpl {
       virtual boost::shared_ptr< xplcore::CXplMessage > createXplCommand(boost::shared_ptr<const yApi::IDeviceCommand> & commandData, const std::string & rfxAddress, const shared::CDataContainer & innerDetails);
       virtual std::string generateVirtualDeviceIdentifier();
       // [END] ICommandRule implemntation
+
+      // ISupportManuallyDeviceCreationRule implementation
+      virtual const CDeviceContainer generateDeviceParameters(shared::CDataContainer & configuration) const;
+      // [END] ISupportManuallyDeviceCreationRule implementation  
 
       //-----------------------------------------------------
       ///\brief                     The switch state

@@ -46,43 +46,53 @@ namespace xplrules { namespace rfxLanXpl {
       return m_protocol;
    }
 
+   std::string CX10Basic::getDeviceCommercialName(const EProtocol & protocol) const
+   {
+      std::string commercialName;
+      switch (protocol)
+      {
+      case EProtocol::kArcValue:
+         commercialName = "KlikAanKlikUit, Chacon, HomeEasy, DomiaLite, Domia, ByeByeStandBy, ELRO AB600, NEXA Proove Intertechno Duwi";
+         break;
+
+      case EProtocol::kFlamingoValue:
+         commercialName = "Flamingo";
+         break;
+
+      case EProtocol::kKopplaValue:
+         commercialName = "Ikea Koppla";
+         break;
+
+      case EProtocol::kHe105Value:
+         commercialName = "HomeEasy";
+         break;
+
+      case EProtocol::kRts10Value:
+         commercialName = "Digimax";
+         break;
+
+      case EProtocol::kHarrisonValue:
+         commercialName = "Harrison";
+         break;
+      }
+      return commercialName;
+   }
+
+
    const CDeviceIdentifier CX10Basic::getDeviceAddressFromMessage(xplcore::CXplMessage & msg)
    {
       std::string commercialName = msg.getBodyValue(m_keywordDevice);
 
-      
+     
       EProtocol protocol = EProtocol::kX10;
 
       if (msg.getBody().find(m_keywordProtocol) != msg.getBody().end())
       {
          protocol = msg.getBodyValue(m_keywordProtocol);
 
-         switch (protocol)
-         {
-         case EProtocol::kArcValue:
-            commercialName = "KlikAanKlikUit, Chacon, HomeEasy, DomiaLite, Domia, ByeByeStandBy, ELRO AB600, NEXA Proove Intertechno Duwi";
-            break;
-
-         case EProtocol::kFlamingoValue:
-            commercialName = "Flamingo";
-            break;
-
-         case EProtocol::kKopplaValue:
-            commercialName = "Ikea Koppla";
-            break;
-
-         case EProtocol::kHe105Value:
-            commercialName = "HomeEasy";
-            break;
-
-         case EProtocol::kRts10Value:
-            commercialName = "Digimax";
-            break;
-
-         case EProtocol::kHarrisonValue:
-            commercialName = "Harrison";
-            break;
-         }
+         std::string commercialNameFromProtocol = getDeviceCommercialName(protocol);
+         if (!commercialNameFromProtocol.empty())
+            commercialName = commercialNameFromProtocol;
       }
 
       shared::CDataContainer innerDetails;
@@ -321,75 +331,61 @@ namespace xplrules { namespace rfxLanXpl {
    // [END] ICommandRule implemntation
 
 
-   const CDeviceContainer CX10Basic::generateDeviceParameters(boost::shared_ptr<const yApi::IManuallyDeviceCreationData> configuration) const
+   const CDeviceContainer CX10Basic::generateDeviceParameters(shared::CDataContainer & configuration) const
    {
-      throw shared::exception::CException("fail to generate a device from user configuration.");
-   }
-
-   /*
-   
-   // ICommandRule implemntation
-   boost::shared_ptr< xplcore::CXplMessage > CX10Basic::createXplCommand(database::entities::CDevice & targetDevice, command::CDeviceCommand & deviceCommand)
-   {
-      ////////////////////////////
-      // do some checks
-      ////////////////////////////
-
-      //check the device is valid
-      std::string device = targetDevice.Address;
-
-      //check the command value
-      communication::command::CDeviceCommand::CommandData content = deviceCommand.getCommandData();
-      if(content.find("command") == content.end())
-      {
-         throw shared::exception::CException("message.sms protocol needs a parameter 'command' ");
-      }
-
-      if(content.find("device") == content.end() && content.find("house") == content.end())
-      {
-         throw shared::exception::CException("message.sms protocol needs a parameter 'device' or 'house' ");
-      }
-
-
-      ////////////////////////////
-      // create the message
-      ////////////////////////////
-
-      //create the message
-      boost::shared_ptr< xplcore::CXplMessage > newMessage(new xplcore::CXplMessage());
-
-      //the AC.BSACI XplMessage if a xpl-trig
-      newMessage->setTypeIdentifier(xplcore::CXplMessage::kXplCommand);
-
-      //set hop to 1
-      newMessage->setHop(1);
-
-      //set the target (rfxcom-lan-<hax mac address>)
-      newMessage->setTarget(xplcore::CXplActor::parse(targetDevice.HardwareIdentifier()));
-
-      //set the ac.basic
-      newMessage->setMessageSchemaIdentifier(xplcore::CXplMessageSchemaIdentifier("x10", "basic"));
-
-      //set the device addesss and unit (parse from argetDevice.Address)
-      newMessage->addToBody("device", content["device"]);
+      std::string chosenProtocol = configuration.get<std::string>("Protocol.activeSection");
       
-      //set the command
-      newMessage->addToBody("command", content["command"]);
+      std::string deviceId = configuration.get<std::string>("Protocol.content." + chosenProtocol + ".content.HouseCode") + configuration.get<std::string>("Protocol.content." + chosenProtocol + ".content.UnitCode");
 
-      //set the level if specified
-      if(content.find("level") != content.end())
-      {
-         newMessage->addToBody("level", content["level"]);
-      }
 
-      //set the protocol if specified
-      if(content.find("protocol") != content.end())
+      
+      EProtocol p = EProtocol::kX10;
+
+      if (boost::istarts_with(chosenProtocol, "proto_arc"))
+         p = EProtocol::kArc;
+      else if (boost::istarts_with(chosenProtocol, "proto_flamingo"))
+         p = EProtocol::kFlamingo;
+      else if (boost::istarts_with(chosenProtocol, "proto_koppla"))
+         p = EProtocol::kKoppla;
+      else if (boost::istarts_with(chosenProtocol, "proto_waveman"))
+         p = EProtocol::kWaveman;
+      else if (boost::istarts_with(chosenProtocol, "proto_harrison"))
+         p = EProtocol::kHarrison;
+      else if (boost::istarts_with(chosenProtocol, "proto_he105"))
+         p = EProtocol::kHe105;
+      else if (boost::istarts_with(chosenProtocol, "proto_rts10"))
+         p = EProtocol::kRts10;
+      else
+         throw shared::exception::CNotSupported("The procotol " + chosenProtocol + " is not supported");
+
+      std::string commercialName = getDeviceCommercialName(p);
+      if (commercialName.empty())
+         commercialName = deviceId;
+
+      shared::CDataContainer innerDetails;
+      innerDetails.set("x10protocol", p);
+
+      xplrules::CDeviceIdentifier device(deviceId, commercialName, m_protocol, m_protocol, innerDetails);
+
+      CDeviceContainer dc(device);
+
+      switch (p)
       {
-         newMessage->addToBody("protocol", content["protocol"]);
+      case EProtocol::kKopplaValue:
+         dc.addKeyword(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CDimmable(m_keywordCommand)));
+         break;
+
+      case EProtocol::kHarrisonValue:
+         dc.addKeyword(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CCurtain(m_keywordCommand)));
+         break;
+
+      default:
+         dc.addKeyword(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CSwitch(m_keywordCommand)));
+         break;
       }
-      return newMessage;
+      return dc;
    }
-   */
+
 
 
 } //namespace rfxLanXpl

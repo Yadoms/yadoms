@@ -161,5 +161,19 @@ namespace xplrules { namespace rfxLanXpl {
 
 
 
+   const CDeviceContainer CAcBasic::generateDeviceParameters(shared::CDataContainer & configuration) const
+   {
+      std::string deviceId = configuration.get<std::string>("deviceAddress");
+      std::string commercialName = "ANSLUT, Chacon, DI.O, KlikAanKlikUit, NEXA, Proove, Intertechno, Düwi, HomeEasy UK/EU";
+      
+      xplrules::CDeviceIdentifier device(deviceId, commercialName, m_protocol, m_protocol);
+
+      CDeviceContainer dc(device);
+      dc.addKeyword(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CDimmable(m_keywordCommand)));
+      return dc;
+   }
+
+
+
 } //namespace rfxLanXpl
 } //namespace xplrules
