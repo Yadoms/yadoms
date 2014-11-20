@@ -154,14 +154,6 @@ DeviceParameterHandler.prototype.applyScript = function () {
                   }
                });
 
-               //if there is only one item in the list we hide else it's visible
-               if (newList.length > 1) {
-                  $cbKeywords.removeClass("hidden");
-               }
-               else {
-                  $cbKeywords.addClass("hidden");
-               }
-
                //we append each keywords in the list
                var keywordToSelect = 0;
 
@@ -247,7 +239,7 @@ DeviceParameterHandler.prototype.getDOMObject = function () {
    input += " >";
    input += "</select>";
 
-   input += "<select class=\"form-control hidden\" id=\"" + self.uuidKeywordList + "\"></select>";
+   input += "<select class=\"form-control\" id=\"" + self.uuidKeywordList + "\"></select>";
 
    input += "<div class=\"device-details\">" +
               "" +

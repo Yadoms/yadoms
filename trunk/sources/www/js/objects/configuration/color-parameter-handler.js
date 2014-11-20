@@ -54,7 +54,7 @@ ColorParameterHandler.prototype.getDOMObject = function () {
  * @returns {}
  */
 ColorParameterHandler.prototype.applyScript = function () {
-   $(this.uuid).colorpicker();
+   $("div#" + this.uuid).colorpicker();
 }
 
 /**
