@@ -35,7 +35,7 @@ namespace xplrules { namespace rfxLanXpl {
       // [END] ICommandRule implemntation
      
       // ISupportManuallyDeviceCreationRule implementation
-      virtual const CDeviceContainer generateDeviceParameters(boost::shared_ptr<const yApi::IManuallyDeviceCreationData> configuration) const;
+      virtual const CDeviceContainer generateDeviceParameters(shared::CDataContainer & configuration) const;
       // [END] ISupportManuallyDeviceCreationRule implementation   
    
    private:
@@ -58,6 +58,14 @@ namespace xplrules { namespace rfxLanXpl {
          ((AllLightsOn))
          ((AllLightsOff))
       )
+
+   private:
+      //------------------------------------
+      ///\brief Provide the device comercial name from its protocol
+      ///\return the device commercial name
+      //------------------------------------
+      std::string getDeviceCommercialName(const CX10Basic::EProtocol & protocol) const;
+
 
       static xplcore::CXplMessageSchemaIdentifier m_protocol;
       static std::string m_keywordCommand;

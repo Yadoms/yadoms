@@ -60,6 +60,8 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       {
          hub.reset(new xplcore::CXplHub(m_configuration.getHubLocalIp()));
          hub->start();
+
+         
       }
 
       // the main loop
@@ -96,7 +98,8 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> data = context->getEventHandler().getEventData< boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
             OnCreateDeviceRequest(data, context);
             break;
-         }
+         }         
+         
          case kXplMessageReceived:
          {
             // Xpl message was received
@@ -227,7 +230,10 @@ void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceComman
          shared::CDataContainer details = context->getDeviceDetails(command->getTargetDevice());
          std::string protocol = details.get<std::string>("writingProtocol");
          std::string source = details.get<std::string>("source");
-         shared::CDataContainer innerDetails = details.get<shared::CDataContainer>("innerDetails");
+
+         shared::CDataContainer innerDetails = shared::CDataContainer::EmptyContainer;
+         if(details.hasValue("innerDetails"))
+            innerDetails = details.get<shared::CDataContainer>("innerDetails");
 
          if (m_deviceManager->isHandled(source))
          {
@@ -294,13 +300,17 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
       YADOMS_LOG(info) << deviceCfg.serialize();
 
       //std::string a("abcdefg");
-      data->sendError("invalid configuration");
-      /*
-      const std::string & typeOfDevice = deviceCfg.get<std::string>("type");
+      //data->sendError("invalid configuration");
 
+      
+      std::string chosenDeviceType = data->getData().getConfiguration().get<std::string>("type.activeSection");
       std::string internalProtocol;
-      if (boost::istarts_with(typeOfDevice, "x10"))
+      if (boost::istarts_with(chosenDeviceType, "x10"))
          internalProtocol = "x10.basic";
+      if (boost::istarts_with(chosenDeviceType, "ac"))
+         internalProtocol = "ac.basic";
+
+      shared::CDataContainer innerContent = data->getData().getConfiguration().get<shared::CDataContainer>("type.content." + chosenDeviceType + ".content");
 
       
       boost::shared_ptr<xplrules::IRule> rule = m_deviceManager->identifyRule(internalProtocol, m_instanceManager);
@@ -312,7 +322,7 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
          if (deviceCreationRule)
          {
             //retreeive device identifier
-            xplrules::CDeviceContainer deviceContainer = deviceCreationRule->generateDeviceParameters(eventData->getData());
+            xplrules::CDeviceContainer deviceContainer = deviceCreationRule->generateDeviceParameters(innerContent);
             const xplrules::CDeviceIdentifier & deviceAddress = deviceContainer.getDeviceIdentifier();
             if (!context->deviceExists(deviceAddress.getId()))
             {
@@ -330,25 +340,30 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
                   context->declareKeyword(deviceAddress.getId(), *(keyword->get()));
             }
 
+            //send created device
+            data->sendSuccess(deviceAddress.getId());
          }
          else
          {
             std::string errorMessage = (boost::format("The protocol %1% do not support device creation") % internalProtocol).str();
+            data->sendError(errorMessage);
             YADOMS_LOG(error) << errorMessage;
          }
       }
       else
       {
-         std::string errorMessage = (boost::format("Unsupported protocol = %1%") % typeOfDevice).str();
+         std::string errorMessage = (boost::format("Unsupported protocol = %1%") % chosenDeviceType).str();
+         data->sendError(errorMessage);
          YADOMS_LOG(error) << errorMessage;
       }
-      */
+      
 
 
    }
    catch (std::exception &ex)
    {
       std::string errorMessage = (boost::format("xpl plugin fail to create device : %1%") % ex.what()).str();
+      data->sendError(errorMessage);
       YADOMS_LOG(error) << errorMessage;
    }
 }

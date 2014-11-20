@@ -35,7 +35,7 @@ namespace xplrules { namespace rfxLanXpl {
       // [END] ICommandRule implemntation
      
       // ISupportManuallyDeviceCreationRule implementation
-      virtual const CDeviceContainer generateDeviceParameters(boost::shared_ptr<const yApi::IManuallyDeviceCreationData> configuration) const;
+      virtual const CDeviceContainer generateDeviceParameters(shared::CDataContainer & configuration) const;
       // [END] ISupportManuallyDeviceCreationRule implementation   
    
    private:
