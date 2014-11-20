@@ -69,7 +69,7 @@ widgetViewModelCtor =
          var self = this;
          try {
             if (device == this.widget.configuration.device) {
-               //it is the good device
+               //it is the right device
                // Adapt for dimmable or switch capacities
                self.command(parseInt(data.value) != 0 ? "1" : "0");
             }

@@ -99,6 +99,10 @@ ConfigurationHelper.createParameterHandler = function (i18nContext, paramName, c
          return new IconParameterHandler(i18nContext, paramName, content, currentValue);
          break;
 
+      case "list" :
+         return new ListParameterHandler(i18nContext, paramName, content, currentValue);
+         break;
+
       default :
          throw Error("type " + content.type + " of parameter " + paramName + " is unsupported");
          break;
