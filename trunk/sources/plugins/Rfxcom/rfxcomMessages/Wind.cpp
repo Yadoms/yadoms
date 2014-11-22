@@ -118,7 +118,7 @@ void CWind::buildDeviceModel()
    case sTypeWIND3: ssModel << "STR918,WGR918"; break;
    case sTypeWIND4: ssModel << "TFA"; break;
    case sTypeWIND5: ssModel << "UPM"; break;
-   case sTypeWIND6: ssModel << "WS2300"; break;
+   case sTypeWIND6: ssModel << "La Crosse WS2300"; break;
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }
 
