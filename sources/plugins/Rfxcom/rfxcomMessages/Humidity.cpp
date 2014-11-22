@@ -82,8 +82,8 @@ void CHumidity::buildDeviceModel()
 
    switch(m_subType)
    {
-   case sTypeHUM1: ssModel << "LaCrosse TX3"; break;
-   case sTypeHUM2: ssModel << "LaCrosse WS2300"; break;
+   case sTypeHUM1: ssModel << "La Crosse TX3"; break;
+   case sTypeHUM2: ssModel << "La Crosse WS2300"; break;
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }
 

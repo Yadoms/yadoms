@@ -104,7 +104,7 @@ void CRain::buildDeviceModel()
    case sTypeRAIN2: ssModel << "PCR800"; break;
    case sTypeRAIN3: ssModel << "TFA"; break;
    case sTypeRAIN4: ssModel << "UPM"; break;
-   case sTypeRAIN5: ssModel << "WS2300"; break;
+   case sTypeRAIN5: ssModel << "La Crosse WS2300"; break;
    case sTypeRAIN6: ssModel << "TX5"; break;
    default: ssModel << boost::lexical_cast<std::string>(m_subType); break;
    }
