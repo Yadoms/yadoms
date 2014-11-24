@@ -4,8 +4,8 @@
 #include "pluginSystem/DeviceCommand.h"
 #include "pluginSystem/ManuallyDeviceCreationData.h"
 #include "pluginSystem/ManuallyDeviceCreationRequest.h"
-#include "pluginSystem/CustomQueryData.h"
-#include "pluginSystem/CustomQueryListRequest.h"
+#include "pluginSystem/BindingQueryData.h"
+#include "pluginSystem/BindingQueryRequest.h"
 #include "communication/callback/CallbackRequest.h"
 
 namespace communication {
@@ -68,13 +68,13 @@ namespace communication {
       m_pluginManager->postManuallyDeviceCreationRequest(pluginId, request);
    }
 
-	void CPluginGateway::sendCustomQueryRequest(int pluginId, const shared::plugin::yadomsApi::ICustomQueryData & data, communication::callback::ISynchronousCallback< std::vector<std::string> > & callback)
+   void CPluginGateway::sendBindingQueryRequest(int pluginId, const shared::plugin::yadomsApi::IBindingQueryData & data, communication::callback::ISynchronousCallback< std::vector<std::string> > & callback)
 	{
 		// Create the request
-		boost::shared_ptr<shared::plugin::yadomsApi::ICustomQueryListRequest> request(new pluginSystem::CCustomQueryListRequest(data, callback));
+      boost::shared_ptr<shared::plugin::yadomsApi::IBindingQueryRequest> request(new pluginSystem::CBindingQueryRequest(data, callback));
 
 		// Dispatch command to the right plugin
-		m_pluginManager->postCustomQueryRequest(pluginId, request);
+		m_pluginManager->postBindingQueryRequest(pluginId, request);
 	}
 
 

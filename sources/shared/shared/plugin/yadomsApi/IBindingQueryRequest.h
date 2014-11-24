@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ICustomQueryData.h"
+#include "IBindingQueryData.h"
 
 namespace shared { namespace plugin { namespace yadomsApi
 {
@@ -8,21 +8,21 @@ namespace shared { namespace plugin { namespace yadomsApi
    //-----------------------------------------------------
    ///\brief Interface for a custom query which return a list of string
    //-----------------------------------------------------
-   class ICustomQueryListRequest 
+   class IBindingQueryRequest 
    {
    public:
      
       //-----------------------------------------------------
       ///\brief Destructor
       //-----------------------------------------------------
-      virtual ~ICustomQueryListRequest()
+      virtual ~IBindingQueryRequest()
       {
       }
    
       //-----------------------------------------------------
       ///\brief Get the request data
       //-----------------------------------------------------
-      virtual const ICustomQueryData& getData() = 0;
+      virtual const IBindingQueryData& getData() = 0;
 
       //-----------------------------------------------------
       ///\brief Answer the request with success, providing the result

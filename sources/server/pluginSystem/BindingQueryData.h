@@ -1,24 +1,24 @@
 #pragma once
-#include <shared/plugin/yadomsApi/ICustomQueryData.h>
+#include <shared/plugin/yadomsApi/IBindingQueryData.h>
 
 namespace pluginSystem
 {
    //-----------------------------------------------------
-   ///\brief The IDeviceCommand implementation
+   ///\brief The IBindingQueryData implementation
    //-----------------------------------------------------
-   class CCustomQueryData : public shared::plugin::yadomsApi::ICustomQueryData
+   class CBindingQueryData : public shared::plugin::yadomsApi::IBindingQueryData
    {
    public:
       //-----------------------------------------------------
       ///\brief                        Constructor
       ///\param[in] query              The query
       //-----------------------------------------------------
-      CCustomQueryData(const std::string& query);
+      CBindingQueryData(const std::string& query);
 
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~CCustomQueryData();
+      virtual ~CBindingQueryData();
 
       // IManuallyDeviceCreationData implementation
       virtual const std::string& getQuery() const;
