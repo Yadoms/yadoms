@@ -112,17 +112,17 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 
                // Read sensor value and send data to Yadoms (temperatures, battery level, Rssi measure...)
                fakeSensor1.read();
-               fakeSensor1.historizeData(context);
                fakeSensor2.read();
-               fakeSensor2.historizeData(context);
                fakeCounter.read();
-               fakeCounter.historizeData(context);
                fakeOnOffSwitch.read();
-               fakeOnOffSwitch.historizeData(context);
                fakeDimmableSwitch.read();
-               fakeDimmableSwitch.historizeData(context);
 
                YADOMS_LOG(debug) << "Send the periodically sensors state...";
+               fakeSensor1.historizeData(context);
+               fakeSensor2.historizeData(context);
+               fakeCounter.historizeData(context);
+               fakeOnOffSwitch.historizeData(context);
+               fakeDimmableSwitch.historizeData(context);
 
                break;
             }
