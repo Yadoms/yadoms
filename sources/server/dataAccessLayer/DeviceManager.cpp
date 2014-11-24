@@ -5,8 +5,8 @@
 
 namespace dataAccessLayer {
 
-      CDeviceManager::CDeviceManager(boost::shared_ptr< database::IDeviceRequester > deviceRequester)
-         :m_deviceRequester(deviceRequester)
+      CDeviceManager::CDeviceManager(boost::shared_ptr< database::IDeviceRequester > deviceRequester, boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter)
+         :m_deviceRequester(deviceRequester), m_notificationCenter(notificationCenter)
       {
       }
    
@@ -53,7 +53,7 @@ namespace dataAccessLayer {
          try
          {
             boost::shared_ptr< notifications::CNewDeviceNotification > notificationData(new notifications::CNewDeviceNotification(result));
-            notifications::CAsyncNotificationCenter::get()->postNotification(notificationData);
+            m_notificationCenter->postNotification(notificationData);
          }
          catch (shared::exception::CException & ex)
          {

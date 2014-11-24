@@ -25,9 +25,14 @@ namespace shared { namespace event
    {  
    public:
       CEventHandler() {}
-
       virtual ~CEventHandler() {}
 
+   private:
+      // Avoid copy
+      CEventHandler(const CEventHandler&);
+      const CEventHandler& operator=(const CEventHandler&);
+
+   public:
       //--------------------------------------------------------------
       /// \brief	    Send empty event (without data)
       /// \param[in] id Event id
@@ -58,7 +63,7 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       bool empty() const
       {
-         boost::recursive_timed_mutex::scoped_lock lock(m_eventsQueueMutex);
+         boost::recursive_mutex::scoped_lock lock(m_eventsQueueMutex);
          return m_eventsQueue.empty();
       }
 
@@ -84,7 +89,7 @@ namespace shared { namespace event
          // If time events are elapsed, must post corresponding event to the queue
          signalElapsedTimeEvents();
 
-         boost::recursive_timed_mutex::scoped_lock lock(m_eventsQueueMutex);
+         boost::recursive_mutex::scoped_lock lock(m_eventsQueueMutex);
 
          // Don't wait if event is already present
          if (!m_eventsQueue.empty())
@@ -105,11 +110,11 @@ namespace shared { namespace event
          else
          {
             // Have time event or timeout
-            const boost::shared_ptr<ITimeEvent>* closerTimeEvent = getNextTimeEventStopPoint();
-            if (closerTimeEvent && (*closerTimeEvent) && ((*closerTimeEvent)->getNextStopPoint() < (now() + timeout)) )
+            boost::shared_ptr<ITimeEvent> closerTimeEvent = getNextTimeEventStopPoint();
+            if (!!closerTimeEvent && (closerTimeEvent->getNextStopPoint() < (now() + timeout)) )
             {
                // Next stop point will be the closer time event
-               if (!m_condition.timed_wait(lock, (*closerTimeEvent)->getNextStopPoint() - now()))
+               if (!m_condition.timed_wait(lock, closerTimeEvent->getNextStopPoint() - now()))
                {
                   // No event ==> Signal time event
                   signalTimeEvent(closerTimeEvent);
@@ -234,7 +239,7 @@ namespace shared { namespace event
       }
 
 
-   protected:
+   private:
       //--------------------------------------------------------------
       /// \brief	    Send an event
       /// \param[in] event event to send
@@ -253,7 +258,7 @@ namespace shared { namespace event
       {
          BOOST_ASSERT(event->getId() >= kUserFirstId);
 
-         boost::recursive_timed_mutex::scoped_lock lock(m_eventsQueueMutex);
+         boost::recursive_mutex::scoped_lock lock(m_eventsQueueMutex);
          m_eventsQueue.push(event);
       }
 
@@ -263,7 +268,8 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       int popEvent()
       {
-         boost::recursive_timed_mutex::scoped_lock lock(m_eventsQueueMutex);
+         boost::recursive_mutex::scoped_lock lock(m_eventsQueueMutex);
+         BOOST_ASSERT(!m_eventsQueue.empty());
          m_lastEvent = m_eventsQueue.front();
          m_eventsQueue.pop();
          return m_lastEvent->getId();
@@ -274,14 +280,14 @@ namespace shared { namespace event
       ///            This function compute the next event to arrive, between registred time events
       /// \return    The next time event (null pointer if none)
       //--------------------------------------------------------------
-      const boost::shared_ptr<ITimeEvent>* getNextTimeEventStopPoint() const
+      boost::shared_ptr<ITimeEvent> getNextTimeEventStopPoint() const
       {
          if (m_timeEvents.empty())
             return NULL;
 
          // Find the closer time event
          boost::posix_time::ptime lower = boost::posix_time::max_date_time;
-         const boost::shared_ptr<ITimeEvent>* nextTimeEvent = NULL;
+         boost::shared_ptr<ITimeEvent> nextTimeEvent;
          for (TimeEventList::const_iterator it = m_timeEvents.begin() ;
             it != m_timeEvents.end() ; ++it)
          {
@@ -291,7 +297,7 @@ namespace shared { namespace event
                if (nextStopPoint < lower)
                {
                   lower = nextStopPoint;
-                  nextTimeEvent = &(*it);
+                  nextTimeEvent = *it;
                }
             }
          }
@@ -330,7 +336,7 @@ namespace shared { namespace event
          {
             boost::posix_time::ptime nextStopPoint = (*it)->getNextStopPoint();
             if (nextStopPoint != boost::date_time::not_a_date_time && nextStopPoint < now())
-               signalTimeEvent(&(*it));   // Elapsed time point, signal it
+               signalTimeEvent(*it);   // Elapsed time point, signal it
          }
       }
 
@@ -338,13 +344,13 @@ namespace shared { namespace event
       /// \brief	            Signal that time event elapsed
       /// \param[in] timeEvent    Time event to signal
       //--------------------------------------------------------------
-      void signalTimeEvent(const boost::shared_ptr<ITimeEvent>* timeEvent)
+      void signalTimeEvent(boost::shared_ptr<ITimeEvent> timeEvent)
       {
-         BOOST_ASSERT(timeEvent);
+         BOOST_ASSERT(!!timeEvent);
 
-         boost::shared_ptr<CEventBase> evt(new CEventBase((*timeEvent)->getId()));
+         boost::shared_ptr<CEventBase> evt(new CEventBase(timeEvent->getId()));
          pushEvent(evt);
-         (*timeEvent)->reset();
+         timeEvent->reset();
       }
 
       //--------------------------------------------------------------
@@ -384,7 +390,7 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       /// \brief	   Mutex protecting the events queue
       //--------------------------------------------------------------
-      mutable boost::recursive_timed_mutex m_eventsQueueMutex;
+      mutable boost::recursive_mutex m_eventsQueueMutex;
 
       //--------------------------------------------------------------
       /// \brief	   Condition variable signaling an event arrives

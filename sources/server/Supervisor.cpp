@@ -25,6 +25,7 @@
 #include "communication/PluginGateway.h"
 #include "System.h"
 #include "dataAccessLayer/DataAccessLayer.h"
+#include <shared/notification/NotificationCenter.h>
 
 CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
    :m_stopHandler(m_EventHandler, kStopRequested), m_startupOptions(startupOptions)
@@ -46,6 +47,9 @@ void CSupervisor::doWork()
       //create the system information
       boost::shared_ptr<CSystem> systemInformation(new CSystem());
 
+      //create the notification center
+      boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter);
+
       //start database system
       pDataProvider.reset(new database::sqlite::CSQLiteDataProvider(m_startupOptions.getDatabaseFile()));
       if (!pDataProvider->load())
@@ -54,7 +58,7 @@ void CSupervisor::doWork()
       }
 
       //create the data access layer
-      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal(new dataAccessLayer::CDataAccessLayer(pDataProvider));
+      boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal(new dataAccessLayer::CDataAccessLayer(pDataProvider, notificationCenter));
 
       // Start Task manager
       boost::shared_ptr<task::CScheduler> taskManager = boost::shared_ptr<task::CScheduler>(new task::CScheduler(m_EventHandler, kSystemEvent));
@@ -76,7 +80,7 @@ void CSupervisor::doWork()
       const std::string webServerPort = boost::lexical_cast<std::string>(m_startupOptions.getWebServerPortNumber());
       const std::string & webServerPath = m_startupOptions.getWebServerInitialPath();
 
-      web::poco::CWebServer webServer(webServerIp, webServerPort, webServerPath, "/rest/", "/ws");
+      web::poco::CWebServer webServer(webServerIp, webServerPort, webServerPath, "/rest/", "/ws", notificationCenter);
 
       //TODO delete unused alias when widget directory will be no more movable
       //const std::string & webServerWidgetPath = m_startupOptions.getWidgetsPath();

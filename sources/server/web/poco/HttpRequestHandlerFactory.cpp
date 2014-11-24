@@ -22,7 +22,8 @@
 namespace web { namespace poco {
 
 
-   CHttpRequestHandlerFactory::CHttpRequestHandlerFactory()
+   CHttpRequestHandlerFactory::CHttpRequestHandlerFactory(boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter)
+      :m_notificationCenter(notificationCenter)
    {
    }
 
@@ -58,7 +59,7 @@ namespace web { namespace poco {
    Poco::Net::HTTPRequestHandler* CHttpRequestHandlerFactory::createRequestHandler(const Poco::Net::HTTPServerRequest& request)
    {
       if (boost::istarts_with(request.getURI(), m_webSocketKeyword))
-         return new CWebSocketRequestHandler;
+         return new CWebSocketRequestHandler(m_notificationCenter);
       else if (boost::istarts_with(request.getURI(), m_restKeywordBase))
          //return m_restRequestHandler.get();
       {

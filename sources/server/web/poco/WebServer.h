@@ -20,7 +20,7 @@ namespace web { namespace poco {
       //\param[in] doc_root path to folder containing html e.g. "./"
       //\param[in] restKeywordBase the string which identifies a rest url ex: /rest/
       //
-      CWebServer(const std::string & address, const std::string & port, const std::string & doc_root, const std::string & restKeywordBase, const std::string & webSocketKeywordBase);
+      CWebServer(const std::string & address, const std::string & port, const std::string & doc_root, const std::string & restKeywordBase, const std::string & webSocketKeywordBase, boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter);
 
       //
       //\brief Descturtor
