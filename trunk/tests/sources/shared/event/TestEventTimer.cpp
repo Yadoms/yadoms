@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE(NominalEventHandler1TimerPeriodic)
             TimePoint = shared::event::now();
 
             if (evtId1TimePoint != boost::date_time::not_a_date_time)
-               BOOST_REQUIRE_EQUAL(isTimeClose(evtId1TimePoint + period, TimePoint, boost::posix_time::millisec(50)),true);
+               BOOST_REQUIRE_EQUAL(isTimeClose(evtId1TimePoint + period, TimePoint, boost::posix_time::millisec(100)),true);
             Counter++;
             break;
          }

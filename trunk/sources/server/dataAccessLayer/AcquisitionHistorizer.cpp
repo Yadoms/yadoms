@@ -5,8 +5,9 @@
 
 namespace dataAccessLayer {
 
-   CAcquisitionHistorizer::CAcquisitionHistorizer(boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester)
-      :m_acquisitionRequester(acquisitionRequester)
+   CAcquisitionHistorizer::CAcquisitionHistorizer(boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
+      boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter)
+      :m_acquisitionRequester(acquisitionRequester), m_notificationCenter(notificationCenter)
       {
       }
 
@@ -33,7 +34,7 @@ namespace dataAccessLayer {
          try
          {
             boost::shared_ptr< notifications::CNewAcquisitionNotification > notificationData(new notifications::CNewAcquisitionNotification(acq, summaryData.get<0>(), summaryData.get<1>()));
-            notifications::CAsyncNotificationCenter::get()->postNotification(notificationData);
+            m_notificationCenter->postNotification(notificationData);
          }
          catch (shared::exception::CException & ex)
          {

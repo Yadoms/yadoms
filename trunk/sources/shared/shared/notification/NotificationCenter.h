@@ -2,7 +2,7 @@
 #include <shared/Export.h>
 #include "NotificationObserver.h"
 
-namespace shared { namespace notification{
+namespace shared { namespace notification {
 
    class YADOMS_SHARED_EXPORT CNotificationCenter
    {
@@ -11,36 +11,38 @@ namespace shared { namespace notification{
 
       virtual ~CNotificationCenter();
       
-      void registerObserver(void * observer);
-      void unregisterObserver(void * observer);
+      void registerObserver(void * observerKey);
+      void unregisterObserver(void * observerKey);
 
       template<class T>
       void postNotification(const T & notif)
       {
          ObserverCollection::iterator i;
          for (i = m_observers.begin(); i != m_observers.end(); ++i)
-            i->second.postNotification(kNotification, notif);
+            i->second->postNotification(kNotification, notif);
       }
 
-      int waitForNotifications(void * observer, const boost::posix_time::time_duration& timeout = boost::date_time::pos_infin);
+      int waitForNotifications(void * observerKey, const boost::posix_time::time_duration& timeout = boost::date_time::pos_infin);
 
       template<class T>
-      bool isNotificationTypeOf(void * observer)
+      bool isNotificationTypeOf(void * observerKey)
       {
-         if (m_observers.find(observer) != m_observers.end())
+         ObserverCollection::iterator itObserver = m_observers.find(observerKey);
+         if (itObserver != m_observers.end())
          {
-            return m_observers[observer].isNotificationTypeOf<T>();
+            return itObserver->second->isNotificationTypeOf<T>();
          }
          else
             throw shared::exception::CNullReference("Cannot find observer");
       }
 
       template<class T> 
-      T getNotificationData(void * observer)
+      T getNotificationData(void * observerKey)
       {
-         if (m_observers.find(observer) != m_observers.end())
+         ObserverCollection::iterator itObserver = m_observers.find(observerKey);
+         if (itObserver != m_observers.end())
          {
-            return m_observers[observer].getNotificationData<T>();
+            return itObserver->second->getNotificationData<T>();
          }
          else
             throw shared::exception::CNullReference("Cannot find observer");
@@ -48,12 +50,12 @@ namespace shared { namespace notification{
 
       enum
       {
-         kTimeout = shared::event::kTimeout,
          kNotification = shared::event::kUserFirstId,
+         kPolling,
       };
 
    private:
-      typedef std::map<void*, CNotificationObserver> ObserverCollection;
+      typedef std::map<void*, boost::shared_ptr<CNotificationObserver> > ObserverCollection;
       ObserverCollection m_observers;
    };
 

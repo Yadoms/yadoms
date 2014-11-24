@@ -10,37 +10,38 @@ namespace shared { namespace notification{
       CNotificationObserver();
       virtual ~CNotificationObserver();
 
+   private:
+      // Avoid copy
+      CNotificationObserver(const CNotificationObserver&);
+      const CNotificationObserver& operator=(const CNotificationObserver&);
+
+   public:
+
       template<class T>
       void postNotification(int typeOfNotif, const T & notif)
       {
-         m_EventHandler->postEvent(typeOfNotif, notif);
+         m_eventHandler.postEvent<T>(typeOfNotif, notif);
       }
 
       template<class T>
       T getNotificationData()
       {
-         return m_EventHandler->getEventData<T>();
+         return m_eventHandler.getEventData<T>();
       }
 
       template<class T>
       bool isNotificationTypeOf()
       {
-         return m_EventHandler->isEventType<T>();
+         return m_eventHandler.isEventType<T>();
       }
 
-      int waitForNotifications(const boost::posix_time::time_duration& timeout = boost::date_time::pos_infin);
+      int waitForNotifications(const boost::posix_time::time_duration& timeout = boost::date_time::pos_infin, const int pollingEvent = shared::event::kNoEvent);
 
-      bool isWaiting() const;
    private:
       //-----------------------------------------------------------------------------
       /// \brief		                     The event handler
       //-----------------------------------------------------------------------------
-      boost::shared_ptr<shared::event::CEventHandler> m_EventHandler;
-
-      //-----------------------------------------------------------------------------
-      /// \brief		                     Indicate if this observer is already waiting for event
-      //-----------------------------------------------------------------------------
-      bool m_isWaiting;
+      shared::event::CEventHandler m_eventHandler;
    };
 
 
