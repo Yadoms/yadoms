@@ -3,15 +3,15 @@
 #include "IRestService.h"
 #include "database/IDataProvider.h"
 #include "web/rest/RestDispatcher.h"
-#include "System.h"
+#include "SystemInformation.h"
 
 namespace web { namespace rest { namespace service {
 
-   class CGeneral : public IRestService
+   class CSystem : public IRestService
    {
    public:
-      CGeneral(boost::shared_ptr<CSystem> systemInformation);
-      virtual ~CGeneral();
+      CSystem(boost::shared_ptr<CSystemInformation> systemInformation);
+      virtual ~CSystem();
 
    public:
       // IRestService implementation
@@ -21,13 +21,16 @@ namespace web { namespace rest { namespace service {
       const std::string & getRestKeyword();
 
    public:
-      shared::CDataContainer getSerialPorts(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer getBinding(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
       shared::CDataContainer getSystemInformation(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+
+   private:
+      shared::CDataContainer getSerialPorts();
 
    private:
       static std::string m_restKeyword;
 
-      boost::shared_ptr<CSystem> m_systemInformation;
+      boost::shared_ptr<CSystemInformation> m_systemInformation;
    };
 
 

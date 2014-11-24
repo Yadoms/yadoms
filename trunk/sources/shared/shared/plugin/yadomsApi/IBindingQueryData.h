@@ -5,15 +5,15 @@
 namespace shared { namespace plugin { namespace yadomsApi
 {
    //-----------------------------------------------------
-   ///\brief The API used for custom query
+   ///\brief The API used for binding query
    //-----------------------------------------------------
-   class ICustomQueryData
+   class IBindingQueryData
    {
    public:
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~ICustomQueryData() {}
+      virtual ~IBindingQueryData() {}
 
       //-----------------------------------------------------
       ///\brief               Get the query

@@ -8,7 +8,7 @@
 #include <shared/ThreadBase.h>
 #include <shared/event/EventHandler.hpp>
 #include <shared/plugin/yadomsApi/IManuallyDeviceCreationRequest.h>
-#include <shared/plugin/yadomsApi/ICustomQueryListRequest.h>
+#include <shared/plugin/yadomsApi/IBindingQueryRequest.h>
 #include "Factory.h"
 #include "ManagerEvent.h"
 #include "IQualifier.h"
@@ -72,7 +72,7 @@ namespace pluginSystem
 		/// \brief                 Post a custom query request to a plugin
 		/// \param [in] request    Request data
 		//--------------------------------------------------------------
-		virtual void postCustomQueryRequest(boost::shared_ptr<shared::plugin::yadomsApi::ICustomQueryListRequest> & request) const;
+      virtual void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yadomsApi::IBindingQueryRequest> & request) const;
 
       //--------------------------------------------------------------
       /// \brief			            Notify the plugin about its configuration changed

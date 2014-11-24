@@ -14,7 +14,7 @@
 #include "web/rest/service/Configuration.h"
 #include "web/rest/service/PluginEventLogger.h"
 #include "web/rest/service/EventLogger.h"
-#include "web/rest/service/General.h"
+#include "web/rest/service/System.h"
 #include "web/rest/service/Task.h"
 #include <shared/ThreadBase.h>
 #include <shared/Peripherals.h>
@@ -23,7 +23,7 @@
 #include "task/update/Plugin.h"
 #include "task/backup/Database.h"
 #include "communication/PluginGateway.h"
-#include "System.h"
+#include "SystemInformation.h"
 #include "dataAccessLayer/DataAccessLayer.h"
 #include <shared/notification/NotificationCenter.h>
 
@@ -45,7 +45,7 @@ void CSupervisor::doWork()
    try
    {
       //create the system information
-      boost::shared_ptr<CSystem> systemInformation(new CSystem());
+      boost::shared_ptr<CSystemInformation> systemInformation(new CSystemInformation());
 
       //create the notification center
       boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter);
@@ -93,7 +93,7 @@ void CSupervisor::doWork()
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfiguration(pDataProvider)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLogger(pDataProvider)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLogger(pDataProvider)));
-      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CGeneral(systemInformation)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CSystem(systemInformation)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));

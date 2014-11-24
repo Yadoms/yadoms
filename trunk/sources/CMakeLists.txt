@@ -168,8 +168,8 @@ set(YADOMS_SRC
 	
 	server/Supervisor.cpp
 	server/Supervisor.h
-	server/System.cpp
-	server/System.h
+	server/SystemInformation.cpp
+	server/SystemInformation.h
   
    server/pluginSystem/CommandHistorizer.cpp
    server/pluginSystem/CommandHistorizer.h
@@ -195,10 +195,10 @@ set(YADOMS_SRC
 	server/pluginSystem/ManagerEvent.h
    server/pluginSystem/ManuallyDeviceCreationData.cpp
    server/pluginSystem/ManuallyDeviceCreationData.h
-   server/pluginSystem/CustomQueryData.cpp
-   server/pluginSystem/CustomQueryData.h
-   server/pluginSystem/CustomQueryListRequest.cpp
-   server/pluginSystem/CustomQueryListRequest.h
+   server/pluginSystem/BindingQueryData.cpp
+   server/pluginSystem/BindingQueryData.h
+   server/pluginSystem/BindingQueryRequest.cpp
+   server/pluginSystem/BindingQueryRequest.h
    server/pluginSystem/ManuallyDeviceCreationTestData.cpp
    server/pluginSystem/ManuallyDeviceCreationTestData.h
 	server/pluginSystem/Qualifier.h
@@ -275,8 +275,8 @@ set(YADOMS_SRC
 	server/web/rest/service/Device.cpp
 	server/web/rest/service/EventLogger.h
 	server/web/rest/service/EventLogger.cpp
-	server/web/rest/service/General.h
-	server/web/rest/service/General.cpp
+	server/web/rest/service/System.h
+	server/web/rest/service/System.cpp
 	server/web/rest/service/IRestService.h
 	server/web/rest/service/Page.h
 	server/web/rest/service/Page.cpp

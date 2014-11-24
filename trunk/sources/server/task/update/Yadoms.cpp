@@ -4,7 +4,7 @@
 #include "server/tools/tools/web/FileDownloader.h"
 #include <shared/DataContainer.h>
 #include "tools/Version.h"
-#include "System.h"
+#include "SystemInformation.h"
 //TODO passer les includes de boost dans stdafx
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>

@@ -16,7 +16,7 @@
 #include <shared/event/EventHandler.hpp>
 #include "dataAccessLayer/IDataAccessLayer.h"
 #include "IApplicationStopHandler.h"
-#include <shared/plugin/yadomsApi/ICustomQueryListRequest.h>
+#include <shared/plugin/yadomsApi/IBindingQueryRequest.h>
 
 namespace pluginSystem
 {
@@ -170,11 +170,11 @@ namespace pluginSystem
       void postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yadomsApi::IManuallyDeviceCreationRequest> & request);
 
       //--------------------------------------------------------------
-      /// \brief                 Post a custom query request to a plugin
+      /// \brief                 Post a binding query request to a plugin
       /// \param [in] id         Plugin instance Id
       /// \param [in] request    Request data
       //--------------------------------------------------------------
-		void postCustomQueryRequest(int id, boost::shared_ptr<shared::plugin::yadomsApi::ICustomQueryListRequest> & request);
+      void postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin::yadomsApi::IBindingQueryRequest> & request);
 
    private:
       //--------------------------------------------------------------

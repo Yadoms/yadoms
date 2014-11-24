@@ -5,7 +5,7 @@
 #include "shared/Log.h"
 #include "web/rest/Result.h"
 #include "pluginSystem/ManuallyDeviceCreationData.h"
-#include "pluginSystem/CustomQueryData.h"
+#include "pluginSystem/BindingQueryData.h"
 #include "communication/callback/CallbackRequest.h"
 #include "communication/callback/SynchronousCallback.h"
 
@@ -31,11 +31,11 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword), CPlugin::getAllAvailablePlugins);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance"), CPlugin::getAllPluginsInstance);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance")("handleManuallyDeviceCreation"), CPlugin::getAllPluginsInstanceForManualDeviceCreation);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*"), CPlugin::getOnePlugin);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("status"), CPlugin::getInstanceStatus);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET",  (m_restKeyword)("*")("customQuery")("*"), CPlugin::customQuery);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT",  (m_restKeyword)("*")("start"), CPlugin::startInstance);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT",  (m_restKeyword)("*")("stop"), CPlugin::stopInstance);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPlugin::getOnePlugin);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("status"), CPlugin::getInstanceStatus);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("binding")("*"), CPlugin::getBinding);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("start"), CPlugin::startInstance);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("stop"), CPlugin::stopInstance);
 
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CPlugin::createPlugin, CPlugin::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createDevice"), CPlugin::createDevice, CPlugin::transactionalMethod);
@@ -455,7 +455,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-	shared::CDataContainer CPlugin::customQuery(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CPlugin::getBinding(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
 	{
 		try
 		{
@@ -470,10 +470,10 @@ namespace web { namespace rest { namespace service {
 					communication::callback::CSynchronousCallback< std::vector<std::string> > cb;
 
 					//create the data container to send to plugin
-					pluginSystem::CCustomQueryData data(query);
+					pluginSystem::CBindingQueryData data(query);
 
 					//send request to plugin
-					m_messageSender.sendCustomQueryRequest(pluginId, data, cb);
+					m_messageSender.sendBindingQueryRequest(pluginId, data, cb);
 
 					//wait for result
 					//communication::callback::CSynchronousCallback< std::string >::CSynchronousResult res = cb.waitForResult();
@@ -522,7 +522,7 @@ namespace web { namespace rest { namespace service {
 		}
 		catch (...)
 		{
-			return web::rest::CResult::GenerateError("unknown exception in executing custom query");
+			return web::rest::CResult::GenerateError("unknown exception in executing binding query");
 		}
 	}
 

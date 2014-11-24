@@ -100,11 +100,11 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             break;
          }         
           
-			case yApi::IYadomsApi::kCustomQuery:
+			case yApi::IYadomsApi::kBindingQuery:
          {
             // Yadoms asks for device creation
-				boost::shared_ptr<yApi::ICustomQueryListRequest> data = context->getEventHandler().getEventData< boost::shared_ptr<yApi::ICustomQueryListRequest> >();
-            OnCustomQueryRequest(data, context);
+            boost::shared_ptr<yApi::IBindingQueryRequest> data = context->getEventHandler().getEventData< boost::shared_ptr<yApi::IBindingQueryRequest> >();
+            OnBindingQueryRequest(data, context);
             break;
          }         
          
@@ -377,7 +377,7 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
 }
 
 
-void CRfxLanXpl::OnCustomQueryRequest(boost::shared_ptr<yApi::ICustomQueryListRequest> data, boost::shared_ptr<yApi::IYadomsApi> context)
+void CRfxLanXpl::OnBindingQueryRequest(boost::shared_ptr<yApi::IBindingQueryRequest> data, boost::shared_ptr<yApi::IYadomsApi> context)
 {
 	try
 	{

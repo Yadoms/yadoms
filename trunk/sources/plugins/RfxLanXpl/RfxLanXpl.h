@@ -5,7 +5,7 @@
 #include "xplcore/XplService.h"
 #include "xplrules/IDeviceManager.h"
 #include <shared/plugin/yadomsApi/IManuallyDeviceCreationRequest.h>
-#include <shared/plugin/yadomsApi/ICustomQueryListRequest.h>
+#include <shared/plugin/yadomsApi/IBindingQueryRequest.h>
 
 
 // Shortcut to yadomsApi namespace
@@ -62,7 +62,7 @@ private:
    ///\param [in] data  the custom query data
    ///\param [in] context The plugin API
    //----------------------------------------------
-	void OnCustomQueryRequest(boost::shared_ptr<yApi::ICustomQueryListRequest> data, boost::shared_ptr<yApi::IYadomsApi> context);
+   void OnBindingQueryRequest(boost::shared_ptr<yApi::IBindingQueryRequest> data, boost::shared_ptr<yApi::IYadomsApi> context);
 
    //----------------------------------------------
    ///\brief  The device manager
