@@ -28,6 +28,8 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/CurrentEnergy.cpp
    rfxcomMessages/Curtain1.h
    rfxcomMessages/Curtain1.cpp
+   rfxcomMessages/DateTime.h
+   rfxcomMessages/DateTime.cpp
    rfxcomMessages/IRfxcomMessage.h
    rfxcomMessages/Fan.h
    rfxcomMessages/Fan.cpp
