@@ -41,7 +41,7 @@ namespace web { namespace rest { namespace service {
          std::string query = parameters[2];
 
          if (boost::iequals(query, "SerialPorts"))
-            return getSerialPorts();
+            return getSerialPorts(query);
          else
             return web::rest::CResult::GenerateError("unsupported binding query : " + query);
       }
@@ -49,7 +49,7 @@ namespace web { namespace rest { namespace service {
       return web::rest::CResult::GenerateError("Cannot retreive url parameters");
    }
 
-   shared::CDataContainer CSystem::getSerialPorts()
+   shared::CDataContainer CSystem::getSerialPorts(const std::string & query)
    {
       try
       {
@@ -64,7 +64,7 @@ namespace web { namespace rest { namespace service {
          }
 
          shared::CDataContainer result2;
-         result2.set< std::vector< shared::CDataContainer > >("SerialPorts", internalList);
+         result2.set< std::vector< shared::CDataContainer > >(query, internalList);
          return web::rest::CResult::GenerateSuccess(result2);
       }
       catch(std::exception &ex)
