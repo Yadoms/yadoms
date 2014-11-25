@@ -17,7 +17,7 @@ namespace shared
       /// \param [in]	bRethrowDoWorkExceptions : if true, all exception catch by thsi class are rethrown, if false nothing else is done with exception
       /// \return    	void
       //--------------------------------------------------------------
-      CThreadBase(const std::string & threadName = "", const bool bRethrowDoWorkExceptions = false);
+      CThreadBase(const std::string & threadName, const bool bRethrowDoWorkExceptions = false);
 
       //--------------------------------------------------------------
       /// \brief			Destructor

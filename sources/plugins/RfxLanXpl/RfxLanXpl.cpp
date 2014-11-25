@@ -389,12 +389,35 @@ void CRfxLanXpl::OnBindingQueryRequest(boost::shared_ptr<yApi::IBindingQueryRequ
 			//send created device
 			std::vector<std::string> allRfxLans;
 
-			allRfxLans.push_back("rfxlan-test1");
-			allRfxLans.push_back("rfxlan-test2");
-			allRfxLans.push_back("rfxlan-test3");
+         shared::CDataContainer result;
+         result.set("rfxlan-test1", "rfxlan-test1");
+         result.set("rfxlan-test2", "rfxlan-test2");
+         result.set("rfxlan-test3", "rfxlan-test3");
 
-			data->sendSuccess(allRfxLans);
+         data->sendSuccess(result);
 		}
+      else if (data->getData().getQuery() == "test")
+      {
+         shared::CDataContainer ev;
+         ev.set(std::string("HOUR"), "1 hour");
+         ev.set("DAY", "1 day");
+         ev.set("WEEK", "1 week");
+         ev.set("MONTH", "1 month");
+         ev.set("HALF_YEAR", "6 months");
+         ev.set("YEAR", "1 year");
+
+         shared::CDataContainer en;
+         en.set("name", "Interval of the chart");
+         en.set("description", "Permit to change the interval of all the chart");
+         en.set("type", "enum");
+         en.set("values", ev);
+         en.set("defaultValue", "DAY");
+
+         shared::CDataContainer result;
+         result.set("interval", en);
+
+         data->sendSuccess(result);
+      }
 		else
 		{
 			std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();

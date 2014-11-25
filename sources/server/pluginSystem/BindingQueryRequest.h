@@ -3,6 +3,7 @@
 #include "communication/callback/ISynchronousCallback.h"
 #include "communication/callback/ICallbackRequest.h"
 #include <shared/plugin/yadomsApi/IBindingQueryRequest.h>
+#include <shared/DataContainer.h>
 
 namespace pluginSystem
 {
@@ -17,7 +18,7 @@ namespace pluginSystem
       ///\brief Constructor
       ///\param [in]  data       The data container
       //-----------------------------------------------------
-      CBindingQueryRequest(const shared::plugin::yadomsApi::IBindingQueryData & data, communication::callback::ISynchronousCallback< std::vector<std::string> > & callback);
+      CBindingQueryRequest(const shared::plugin::yadomsApi::IBindingQueryData & data, communication::callback::ISynchronousCallback< shared::CDataContainer > & callback);
 
       //-----------------------------------------------------
       ///\brief Destructor
@@ -26,7 +27,7 @@ namespace pluginSystem
    
       // IBindingQueryRequest implementation
       const shared::plugin::yadomsApi::IBindingQueryData& getData();
-      void sendSuccess(const std::vector<std::string>& newDeviceName);
+      void sendSuccess(const shared::CDataContainer& newDeviceName);
       void sendError(const std::string& errorMessage);
       // [END] - IBindingQueryRequest implementation
 
@@ -34,7 +35,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief Internal data
       //-----------------------------------------------------
-      boost::shared_ptr< communication::callback::ICallbackRequest<shared::plugin::yadomsApi::IBindingQueryData, std::vector<std::string> > > m_requestPtr;
+      boost::shared_ptr< communication::callback::ICallbackRequest<shared::plugin::yadomsApi::IBindingQueryData, shared::CDataContainer > > m_requestPtr;
    };   
    
 } // namespace pluginSystem

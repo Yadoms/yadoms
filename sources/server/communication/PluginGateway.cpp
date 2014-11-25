@@ -68,7 +68,7 @@ namespace communication {
       m_pluginManager->postManuallyDeviceCreationRequest(pluginId, request);
    }
 
-   void CPluginGateway::sendBindingQueryRequest(int pluginId, const shared::plugin::yadomsApi::IBindingQueryData & data, communication::callback::ISynchronousCallback< std::vector<std::string> > & callback)
+   void CPluginGateway::sendBindingQueryRequest(int pluginId, const shared::plugin::yadomsApi::IBindingQueryData & data, communication::callback::ISynchronousCallback< shared::CDataContainer > & callback)
 	{
 		// Create the request
       boost::shared_ptr<shared::plugin::yadomsApi::IBindingQueryRequest> request(new pluginSystem::CBindingQueryRequest(data, callback));

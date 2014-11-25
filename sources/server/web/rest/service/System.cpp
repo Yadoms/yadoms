@@ -55,16 +55,13 @@ namespace web { namespace rest { namespace service {
       {
          std::vector< shared::CDataContainer > internalList;
          const boost::shared_ptr<const shared::CPeripherals::SerialPortsMap> map = shared::CPeripherals::getSerialPorts();
-         for(shared::CPeripherals::SerialPortsMap::const_iterator i = map->begin(); i != map->end(); ++i)
-         {
-            shared::CDataContainer serialPort;
-            serialPort.set("key", i->first);
-            serialPort.set("value", i->second);
-            internalList.push_back(serialPort);
-         }
 
          shared::CDataContainer result2;
-         result2.set< std::vector< shared::CDataContainer > >(query, internalList);
+         for(shared::CPeripherals::SerialPortsMap::const_iterator i = map->begin(); i != map->end(); ++i)
+         {
+            result2.set(i->first, i->second, 0x00); //in case of key contains a dot, just ensure the full key is taken into account
+         }
+
          return web::rest::CResult::GenerateSuccess(result2);
       }
       catch(std::exception &ex)

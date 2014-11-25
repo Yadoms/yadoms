@@ -467,7 +467,7 @@ namespace web { namespace rest { namespace service {
 				try
 				{
 					//create a callback (allow waiting for result)              
-					communication::callback::CSynchronousCallback< std::vector<std::string> > cb;
+               communication::callback::CSynchronousCallback< shared::CDataContainer > cb;
 
 					//create the data container to send to plugin
 					pluginSystem::CBindingQueryData data(query);
@@ -479,9 +479,9 @@ namespace web { namespace rest { namespace service {
 					//communication::callback::CSynchronousCallback< std::string >::CSynchronousResult res = cb.waitForResult();
 					switch (cb.waitForResult())
 					{
-					case communication::callback::CSynchronousCallback< std::vector<std::string> >::kResult:
+               case communication::callback::CSynchronousCallback< shared::CDataContainer >::kResult:
 					{
-						communication::callback::CSynchronousCallback< std::vector<std::string> >::CSynchronousResult res = cb.getCallbackResult();
+                  communication::callback::CSynchronousCallback< shared::CDataContainer >::CSynchronousResult res = cb.getCallbackResult();
 
 						if (res.Success)
 						{
