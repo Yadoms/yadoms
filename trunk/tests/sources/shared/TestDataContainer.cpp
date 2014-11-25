@@ -340,4 +340,27 @@ BOOST_AUTO_TEST_CASE(Field)
    BOOST_CHECK_EQUAL_COLLECTIONS(vfi.begin(), vfi.end(), vi2.begin(), vi2.end());
 }
 
+
+
+BOOST_AUTO_TEST_CASE(Path)
+{
+   shared::CField<int> fi(10);
+
+   //standard path separator using '.'
+   shared::CDataContainer dc;
+   dc.set("secA.secB.valC", fi);
+   BOOST_CHECK_EQUAL(dc.get<int>("secA.secB.valC"), fi());
+   BOOST_CHECK_EQUAL(dc.get<shared::CDataContainer>("secA").get<shared::CDataContainer>("secB").get<int>("valC"), fi());
+
+   //no path using separator 0x00
+   dc.set("secD.secE.valC", fi, 0x00);
+   BOOST_CHECK_EQUAL(dc.get<int>("secD.secE.valC", 0x00), fi());
+   BOOST_CHECK_EQUAL(dc.hasValue("secD.secE.valC"), false);
+   BOOST_CHECK_THROW(dc.get<int>("secD.secE.valC"), std::exception);
+   BOOST_CHECK_THROW(dc.get<shared::CDataContainer>("secD"), std::exception);
+
+   dc.printToLog();
+
+}
+
 BOOST_AUTO_TEST_SUITE_END()
