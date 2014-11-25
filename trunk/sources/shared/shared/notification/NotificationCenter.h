@@ -11,7 +11,7 @@ namespace shared { namespace notification {
 
       virtual ~CNotificationCenter();
       
-      void registerObserver(void * observerKey);
+      boost::shared_ptr<CNotificationObserver> registerObserver(void * observerKey);
       void unregisterObserver(void * observerKey);
 
       template<class T>
@@ -52,6 +52,7 @@ namespace shared { namespace notification {
       {
          kNotification = shared::event::kUserFirstId,
          kPolling,
+         kUserFirstId
       };
 
    private:

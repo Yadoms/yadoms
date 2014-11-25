@@ -13,10 +13,11 @@ namespace shared { namespace notification {
 
    }
    
-   void CNotificationCenter::registerObserver(void * observerKey)
+   boost::shared_ptr<CNotificationObserver> CNotificationCenter::registerObserver(void * observerKey)
    {
       boost::shared_ptr<CNotificationObserver> observer(new CNotificationObserver());
       m_observers.insert(std::make_pair(observerKey, observer));
+      return observer;
    }
 
    void CNotificationCenter::unregisterObserver(void * observerKey)
