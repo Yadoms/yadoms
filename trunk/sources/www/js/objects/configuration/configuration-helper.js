@@ -87,10 +87,6 @@ ConfigurationHelper.createParameterHandler = function (i18nContext, paramName, c
          return new DeviceParameterHandler(i18nContext, paramName, content, currentValue);
          break;
 
-      case "serialport" :
-         return new SerialParameterHandler(i18nContext, paramName, content, currentValue);
-         break;
-
       case "color" :
          return new ColorParameterHandler(i18nContext, paramName, content, currentValue);
          break;
