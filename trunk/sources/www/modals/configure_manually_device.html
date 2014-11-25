@@ -26,7 +26,7 @@
       assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
       assert($.isFunction(callback), "callback must be defined");
 
-      var configurationSchema = pluginInstance.package.manuallyDeviceCreationConfigurationSchema;
+      var configurationSchema = pluginInstance.getBindedManuallyDeviceCreationConfigurationSchema();
 
       var $modalBody = $("div#configure-manually-device-modal .modal-body");
       $modalBody.empty();

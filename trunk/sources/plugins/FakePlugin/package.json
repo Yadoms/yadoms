@@ -71,6 +71,13 @@
                "defaultValue": "Sub-sections make configuration very powerful !"
             }
          }
+      },
+	  "DynamicSection":
+      {
+         "name": "A dynamic section",
+         "description": "Example of section filled by 'test' method fo the plugin using binding.",
+         "type" : "section",
+         "content": {"__Binding__" : {"type" : "plugin", "query" : "test"}}
       }
    }
 }

@@ -281,7 +281,8 @@
          "errorDeleting" : "An error has occurred deleting __pluginName__",
          "errorGettingPackage" : "An error has occurred get package of __pluginName__",
          "errorUpdating" : "An error has occurred updating __pluginName__",
-         "errorGettingManuallyDeviceCreation" : "An error has occurred getting plugin instance that handle manually device creation"
+         "errorGettingManuallyDeviceCreation" : "An error has occurred getting plugin instance that handle manually device creation",
+         "errorApplyingBinding" : "An error has occurred applying binding"
       },
       "deviceManager" : {
          "errorGettingAttachedPlugin" : "An error has occurred getting plugin package of device __deviceName__",

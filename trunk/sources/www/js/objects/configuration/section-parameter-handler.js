@@ -157,8 +157,7 @@ SectionParameterHandler.prototype.applyScript = function () {
       $("#" + self.selectorUuid).change(function () {
          if ($("input#" + self.selectorUuid + ":checked").val() == "on") {
             //we hide all sections-content in the radioSection\n" +
-            debugger;
-			var radioSections = $("div#" + self.radioButtonSectionName + " > div.toggle-btn-grp > div.configuration-section > div.section-content");
+			   var radioSections = $("div#" + self.radioButtonSectionName + " > div.toggle-btn-grp > div.configuration-section > div.section-content");
             radioSections.addClass("hidden");
             radioSections.removeClass("has-warning");
             radioSections.find("input,select,textarea").removeClass("enable-validation");

@@ -8,12 +8,13 @@
    "SupportedPlatforms": "all",
    "configurationSchema":
    {
-     "SerialPort" :
-     {
-        "type" : "serialPort",
-        "name" : "Serial port",
-        "description" : "The (virtual) serial port connected to the UPS"
-     },
+	 "SerialPort" :
+      {
+         "type" : "enum",
+         "name" : "Serial port",
+         "description" : "The (virtual) serial port connected to the UPS",
+		 "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
+      },
      "UpsBeep" :
      {
         "type" : "bool",

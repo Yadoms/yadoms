@@ -10,9 +10,10 @@
    {
       "SerialPort" :
       {
-         "type" : "serialPort",
+         "type" : "enum",
          "name" : "Serial port",
-         "description" : "The virtual serial port connected to the RFXCom"
+         "description" : "The virtual serial port connected to the RFXCom",
+		 "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
       },
       "Protocols":
       {

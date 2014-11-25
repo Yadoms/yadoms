@@ -214,6 +214,7 @@ PluginInstanceManager.downloadPackage = function(pluginInstance, callback) {
    if (pluginInstance.category != PluginInstanceManager.systemCategory) {
       $.getJSON( "plugins/" + pluginInstance.type + "/package.json")
          .done(function (data) {
+
             pluginInstance.package = data;
 
             //we manage i18n

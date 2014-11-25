@@ -34,7 +34,6 @@ function EnumParameterHandler(i18nContext, paramName, content, currentValue) {
 EnumParameterHandler.prototype.getDOMObject = function () {
    //Now values can't be empty
    assert(this.values !== undefined, "values field must be defined");
-   assert(Object.keys(this.values).length >= 2, "values field must have at least two values");
 
    if ((this.value === undefined) || (this.value == null) || (this.value == "")) {
       //we set the default value
