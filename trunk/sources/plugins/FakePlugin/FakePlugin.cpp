@@ -5,6 +5,7 @@
 #include "FakeSensor.h"
 #include "FakeCounter.h"
 #include "FakeSwitch.h"
+#include <shared/plugin/yadomsApi/IBindingQueryRequest.h>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -126,6 +127,41 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 
                break;
             }
+
+         case yApi::IYadomsApi::kBindingQuery:
+         {
+            // Yadoms asks for device creation
+            boost::shared_ptr<yApi::IBindingQueryRequest> data = context->getEventHandler().getEventData< boost::shared_ptr<yApi::IBindingQueryRequest> >();
+            if (data->getData().getQuery() == "test")
+            {
+               shared::CDataContainer ev;
+               ev.set(std::string("HOUR"), "1 hour");
+               ev.set("DAY", "1 day");
+               ev.set("WEEK", "1 week");
+               ev.set("MONTH", "1 month");
+               ev.set("HALF_YEAR", "6 months");
+               ev.set("YEAR", "1 year");
+
+               shared::CDataContainer en;
+               en.set("name", "Interval of the chart");
+               en.set("description", "Permit to change the interval of all the chart");
+               en.set("type", "enum");
+               en.set("values", ev);
+               en.set("defaultValue", "DAY");
+
+               shared::CDataContainer result;
+               result.set("interval", en);
+
+               data->sendSuccess(result);
+            }
+            else
+            {
+               std::string errorMessage = (boost::format("unknown query : %1%") % data->getData().getQuery()).str();
+               data->sendError(errorMessage);
+               YADOMS_LOG(error) << errorMessage;
+            }
+            break;
+         }
          default:
             {
                YADOMS_LOG(error) << "Unknown ou unsupported message id " << context->getEventHandler().getEventId();
