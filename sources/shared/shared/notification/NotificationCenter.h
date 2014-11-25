@@ -51,7 +51,6 @@ namespace shared { namespace notification {
       enum
       {
          kNotification = shared::event::kUserFirstId,
-         kPolling,
          kUserFirstId
       };
 

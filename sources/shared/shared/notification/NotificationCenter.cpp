@@ -31,7 +31,7 @@ namespace shared { namespace notification {
       if (itObserver == m_observers.end())
          throw shared::exception::CNullReference("Cannot find observer");
 
-      return itObserver->second->waitForNotifications(timeout, kPolling);
+      return itObserver->second->waitForNotifications(timeout);
    }
 
 
