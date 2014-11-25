@@ -36,8 +36,11 @@
       if ($.isFunction(nameParameter.applyScript))
          nameParameter.applyScript();
 
+      //we apply binding on configuration if necessary
+      var bindedConfigurationSchema = pluginInstance.getBindedPackageConfigurationSchema();
+
       //we append classic configuration
-      var configMgr = new ConfigurationControlManager(pluginInstance.package.configurationSchema, pluginInstance.configuration, pluginInstance.type, $modalBody);
+      var configMgr = new ConfigurationControlManager(bindedConfigurationSchema, pluginInstance.configuration, pluginInstance.type, $modalBody);
 
       //i18n
       $modalBody.i18n();

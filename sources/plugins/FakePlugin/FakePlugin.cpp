@@ -130,12 +130,12 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 
          case yApi::IYadomsApi::kBindingQuery:
          {
-            // Yadoms asks for device creation
+            // Yadoms ask for a binding query 
             boost::shared_ptr<yApi::IBindingQueryRequest> data = context->getEventHandler().getEventData< boost::shared_ptr<yApi::IBindingQueryRequest> >();
             if (data->getData().getQuery() == "test")
             {
                shared::CDataContainer ev;
-               ev.set(std::string("HOUR"), "1 hour");
+               ev.set("HOUR", "1 hour");
                ev.set("DAY", "1 day");
                ev.set("WEEK", "1 week");
                ev.set("MONTH", "1 month");

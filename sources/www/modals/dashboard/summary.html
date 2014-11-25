@@ -43,7 +43,7 @@
       })
       .fail(function() { notifyError($.t("dashboard.sub-windows.summary.errorRequestingDatabaseVersion")); });
 
-   $.getJSON("rest/general/system")
+   $.getJSON("rest/system/information")
       .done(function(data) {
 
          //we parse the json answer
