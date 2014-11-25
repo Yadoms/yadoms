@@ -73,11 +73,11 @@ namespace shared
    }
 
 
-   bool CDataContainer::hasValue(const std::string& parameterName) const
+   bool CDataContainer::hasValue(const std::string& parameterName, const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      boost::optional<const boost::property_tree::ptree&> value = m_tree.get_child_optional(parameterName);
+      boost::optional<const boost::property_tree::ptree&> value = m_tree.get_child_optional(generatePath(parameterName, pathChar));
       return !!value;
    }
 
@@ -172,15 +172,53 @@ namespace shared
 
    void CDataContainer::printToLog() const
    {
-      printToLog(m_tree);
+      YADOMS_LOG(info) << "| TREE START";
+      printToLog(m_tree, 0);
+      YADOMS_LOG(info) << "| TREE END";
    }
 
-   void CDataContainer::printToLog(const boost::property_tree::ptree & pt) const
+   void CDataContainer::printToLog(const boost::property_tree::ptree & pt, const int deep) const
    {
       boost::property_tree::ptree::const_iterator end = pt.end();
-      for (boost::property_tree::ptree::const_iterator it = pt.begin(); it != end; ++it) {
-         YADOMS_LOG(info) << it->first << ": " << it->second.get_value<std::string>() << std::endl;
-         printToLog(it->second);
+
+      std::string prefix = "|-";
+      for (int i = 0; i < deep; ++i)
+         prefix += "---";
+      for (boost::property_tree::ptree::const_iterator it = pt.begin(); it != end; ++it) 
+      {
+         YADOMS_LOG(info) << prefix << it->first << ": " << it->second.get_value<std::string>() << std::endl;
+         printToLog(it->second, deep+1);
       }
    }
+
+   boost::property_tree::ptree::path_type CDataContainer::generatePath(const std::string & parameterName, const char pathChar) const
+   {
+      return boost::property_tree::ptree::path_type(parameterName, pathChar);
+   }
+
+   void CDataContainer::set(const char* parameterName, const char* value, const char pathChar)
+   {
+      std::string strParamName(parameterName);
+      std::string strValue(value);
+      set<std::string>(strParamName, strValue, pathChar);
+   }
+
+   void CDataContainer::set(const std::string & parameterName, const char* value, const char pathChar)
+   {
+      std::string strValue(value);
+      set<std::string>(parameterName, strValue, pathChar);
+   }
+
+   const char* CDataContainer::get(const char* parameterName, const char pathChar)
+   {
+      std::string strParamName(parameterName);
+      return get<std::string>(strParamName, pathChar).c_str();
+   }
+
+   const char* CDataContainer::get(const std::string & parameterName, const char pathChar)
+   {
+      return get<std::string>(parameterName, pathChar).c_str();
+   }
+
+
 } // namespace shared

@@ -219,7 +219,7 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline T get(const std::string& parameterName) const;
+      inline T get(const std::string& parameterName, const char pathChar = '.') const;
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter value. If the name is not found the default value is returned
@@ -230,7 +230,7 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline T get(const std::string& parameterName, const T & defaultValue) const;
+      inline T get(const std::string& parameterName, const T & defaultValue, const char pathChar = '.') const;
 
       //--------------------------------------------------------------
       /// \brief	    Set parameter value
@@ -238,7 +238,59 @@ namespace shared
       /// \param [in] value            Value of the parameter
       //--------------------------------------------------------------
       template<class T>
-      inline void set(const std::string& parameterName, const T & value);
+      inline void set(const std::string& parameterName, const T & value, const char pathChar = '.');
+      
+      //--------------------------------------------------------------
+      /// \brief	    Set parameter value
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] value            Value of the parameter
+      //--------------------------------------------------------------
+      template<class T>
+      inline void set(const char* parameterName, const T & value, const char pathChar = '.');
+
+
+      //--------------------------------------------------------------
+      //
+      //
+      //
+      // "Specializations" of get/set method 
+      //  for char* (cannot be managed as template specialization easily)
+      //
+      //
+      //
+      //--------------------------------------------------------------
+
+      //--------------------------------------------------------------
+      /// \brief	    Set parameter value
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] value            Value of the parameter
+      //--------------------------------------------------------------
+      inline void set(const std::string & parameterName, const char* value, const char pathChar = '.');
+
+      //--------------------------------------------------------------
+      /// \brief	    Set parameter value
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] value            Value of the parameter
+      //--------------------------------------------------------------
+      inline void set(const char* parameterName, const char* value, const char pathChar = '.');
+
+      //--------------------------------------------------------------
+      /// \brief	    Get parameter value
+      /// \param [in] parameterName    Name of the parameter
+      /// \return     The parameter value
+      /// \throw      shared::exception::COutOfRange if parameter can not be converted
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
+      //--------------------------------------------------------------
+      inline const char* get(const std::string & parameterName, const char pathChar = '.');
+
+      //--------------------------------------------------------------
+      /// \brief	    Get parameter value
+      /// \param [in] parameterName    Name of the parameter
+      /// \return     The parameter value
+      /// \throw      shared::exception::COutOfRange if parameter can not be converted
+      /// \throw      shared::exception::CInvalidParameter if parameter is not found
+      //--------------------------------------------------------------
+      inline const char* get(const char* parameterName, const char pathChar = '.');
 
       //--------------------------------------------------------------
       //
@@ -264,7 +316,7 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<typename EnumType>
-      EnumType getEnumValue(const std::string& parameterName, const EnumValuesNames& valuesNames) const;
+      EnumType getEnumValue(const std::string& parameterName, const EnumValuesNames& valuesNames, const char pathChar = '.') const;
 
 
       //--------------------------------------------------------------
@@ -297,9 +349,10 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Check if parameter value is present
       /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       /// \return     true if parameter found
       //--------------------------------------------------------------
-      bool hasValue(const std::string& parameterName) const;
+      bool hasValue(const std::string& parameterName, const char pathChar = '.') const;
 
 
       //--------------------------------------------------------------
@@ -409,8 +462,9 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief		Print the content to log
       /// \param [in] tree    The tree to print
+      /// \param [in] tree    The current tree deep
       //--------------------------------------------------------------
-      void printToLog(const boost::property_tree::ptree & tree) const;
+      void printToLog(const boost::property_tree::ptree & tree, const int deep) const;
 
       //--------------------------------------------------------------
       //
@@ -425,136 +479,150 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
       /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       /// \return     The parameter value
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline T getInternal(const std::string& parameterName) const;
+      inline T getInternal(const std::string& parameterName, const char pathChar) const;
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter value (T is IDataContainable)
       /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       /// \return     The parameter value (T is IDataContainable)
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline T getInternalIDataContainable(const std::string& parameterName) const;
+      inline T getInternalIDataContainable(const std::string& parameterName, const char pathChar) const;
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter values
       /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       /// \return     The parameter values
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline std::vector<T> getValuesInternal(const std::string& parameterName) const;
+      inline std::vector<T> getValuesInternal(const std::string& parameterName, const char pathChar) const;
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter values (T is IDataContainable)
       /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       /// \return     The parameter values (T is IDataContainable)
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline std::vector<T> getValuesInternalIDataContainable(const std::string& parameterName) const;
+      inline std::vector<T> getValuesInternalIDataContainable(const std::string& parameterName, const char pathChar) const;
 
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter values (boost::shared_ptr<T>)
       /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       /// \return     The parameter values (boost::shared_ptr<T>)
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline std::vector< boost::shared_ptr<T> > getValuesSPInternal(const std::string& parameterName) const;
+      inline std::vector< boost::shared_ptr<T> > getValuesSPInternal(const std::string& parameterName, const char pathChar) const;
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter values (boost::shared_ptr<T> and T is IDataContainable)
       /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       /// \return     The parameter values (boost::shared_ptr<T> and T is IDataContainable)
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline std::vector< boost::shared_ptr<T> > getValuesSPIDataContainableInternal(const std::string& parameterName) const;
+      inline std::vector< boost::shared_ptr<T> > getValuesSPIDataContainableInternal(const std::string& parameterName, const char pathChar) const;
 
 
       //--------------------------------------------------------------
       /// \brief	    Set parameter value
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
+      /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       //--------------------------------------------------------------
       template<class T>
-      inline void setInternal(const std::string& parameterName, const T & value);
+      inline void setInternal(const std::string& parameterName, const T & value, const char pathChar);
 
       //--------------------------------------------------------------
       /// \brief	    Set parameter value (T is IDataContainable)
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter (T is IDataContainable)
+      /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       //--------------------------------------------------------------
       template<class T>
-      inline void setInternalIDataContainable(const std::string& parameterName, const T & value);
+      inline void setInternalIDataContainable(const std::string& parameterName, const T & value, const char pathChar);
       
       //--------------------------------------------------------------
       /// \brief	    Set parameter values
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] values           Valuse of the parameter
+      /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       //--------------------------------------------------------------
       template<class T>
-      inline void setValuesInternal(const std::string& parameterName, const std::vector<T> & values);
+      inline void setValuesInternal(const std::string& parameterName, const std::vector<T> & values, const char pathChar);
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter values (IDataContainable)
       /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       /// \return     The parameter values (IDataContainable)
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline void setValuesInternalIDataContainable(const std::string& parameterName, const std::vector<T> & values);
+      inline void setValuesInternalIDataContainable(const std::string& parameterName, const std::vector<T> & values, const char pathChar);
 
 		//--------------------------------------------------------------
 		/// \brief	    Get parameter values (Enum)
 		/// \param [in] parameterName    Name of the parameter
-		/// \return     The parameter values (Enum)
+      /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
+      /// \return     The parameter values (Enum)
 		/// \throw      shared::exception::COutOfRange if parameter can not be converted
 		/// \throw      shared::exception::CInvalidParameter if parameter is not found
 		//--------------------------------------------------------------
 		template<class T>
-		inline std::vector<T> getValuesInternalEnum(const std::string& parameterName) const;
+      inline std::vector<T> getValuesInternalEnum(const std::string& parameterName, const char pathChar) const;
 
 
 		//--------------------------------------------------------------
 		/// \brief	    Set parameter values (Enum)
 		/// \param [in] parameterName    Name of the parameter
 		/// \param [in] values           Valuse of the parameter (Enum)
-		//--------------------------------------------------------------
+      /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
+      //--------------------------------------------------------------
 		template<class T>
-		inline void setValuesInternalEnum(const std::string& parameterName, const std::vector<T> & values);
+      inline void setValuesInternalEnum(const std::string& parameterName, const std::vector<T> & values, const char pathChar);
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter values (std::vector< boost::shared_ptr<T> >)
       /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       /// \return     The parameter values (std::vector< boost::shared_ptr<T> >)
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline void setValuesSPInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<T> > & values);
+      inline void setValuesSPInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<T> > & values, const char pathChar);
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter values (std::vector< boost::shared_ptr<IDataContainable> >)
       /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The character used for path separator (default is '.' : standard path, can be 0x00 to disable path, or any char '/', ... )
       /// \return     The parameter values (std::vector< boost::shared_ptr<IDataContainable> >)
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      inline void setValuesSPIDataContainableInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<IDataContainable> > & values);
+      inline void setValuesSPIDataContainableInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<IDataContainable> > & values, const char pathChar);
 
       //--------------------------------------------------------------
       //
@@ -576,17 +644,17 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    GET Method for all standard types (int, double, std::string,...)
          //--------------------------------------------------------------
-         static T getInternal(const CDataContainer * tree, const std::string& parameterName)
+         static T getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
-            return tree->getInternal<T>(parameterName);
+            return tree->getInternal<T>(parameterName, pathChar);
          }
 
          //--------------------------------------------------------------
          /// \brief	    SET Method for all standard types (int, double, std::string,...)
          //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const T & value)
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const T & value, const char pathChar)
          {
-            tree->setInternal<T>(parameterName, value);
+            tree->setInternal<T>(parameterName, value, pathChar);
          }
 
       };
@@ -602,17 +670,17 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    GET Method for boost::shared_ptr<T>
          //--------------------------------------------------------------
-         static boost::shared_ptr< T > getInternal(const CDataContainer * tree, const std::string& parameterName)
+         static boost::shared_ptr< T > getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
-            return boost::make_shared<T>(helper<T>::getInternal(tree, parameterName));
+            return boost::make_shared<T>(helper<T>::getInternal(tree, parameterName, pathChar));
          }
 
          //--------------------------------------------------------------
          /// \brief	    SET Method for boost::shared_ptr<T>
          //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const boost::shared_ptr< T > & value)
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const boost::shared_ptr< T > & value, const char pathChar)
          {
-            helper<T>::setInternal(tree, parameterName, *value.get());
+            helper<T>::setInternal(tree, parameterName, *value.get(), pathChar);
          }
       };
 
@@ -625,17 +693,17 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    GET Method for boost::shared_ptr<T>
          //--------------------------------------------------------------
-         static CField< T > getInternal(const CDataContainer * tree, const std::string& parameterName)
+         static CField< T > getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
-            return CField< T >(helper<T>::getInternal(tree, parameterName));
+            return CField< T >(helper<T>::getInternal(tree, parameterName, pathChar));
          }
 
          //--------------------------------------------------------------
          /// \brief	    SET Method for boost::shared_ptr<T>
          //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const CField< T > & value)
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const CField< T > & value, const char pathChar)
          {
-            helper<T>::setInternal(tree, parameterName, value());
+            helper<T>::setInternal(tree, parameterName, value(), pathChar);
          }
       };
 
@@ -650,17 +718,17 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    GET Method for IDataContainable object
          //--------------------------------------------------------------
-         static T getInternal(const CDataContainer * tree, const std::string& parameterName)
+         static T getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
-            return tree->getInternalIDataContainable<T>(parameterName);
+            return tree->getInternalIDataContainable<T>(parameterName, pathChar);
          }
 
          //--------------------------------------------------------------
          /// \brief	    SET Method for IDataContainable object
          //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const T & value)
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const T & value, const char pathChar)
          {
-            tree->setInternalIDataContainable<T>(parameterName, value);
+            tree->setInternalIDataContainable<T>(parameterName, value, pathChar);
          }
 
       };
@@ -676,17 +744,17 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    GET Method for enumeration
          //--------------------------------------------------------------
-         static T getInternal(const CDataContainer * tree, const std::string& parameterName)
+         static T getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
-            return (T)tree->getInternal<int>(parameterName);
+            return (T)tree->getInternal<int>(parameterName, pathChar);
          }
 
          //--------------------------------------------------------------
          /// \brief	    SET Method for enumeration
          //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const T & value)
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const T & value, const char pathChar)
          {
-            tree->setInternal<int>(parameterName, (int)value);
+            tree->setInternal<int>(parameterName, (int)value, pathChar);
          }
 
       };
@@ -702,17 +770,17 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    GET Method for IDataContainable object
          //--------------------------------------------------------------
-         static T getInternal(const CDataContainer * tree, const std::string& parameterName)
+         static T getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
-            return T(tree->getInternal<std::string>(parameterName));
+            return T(tree->getInternal<std::string>(parameterName, pathChar));
          }
 
          //--------------------------------------------------------------
          /// \brief	    SET Method for IDataContainable object
          //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const T & value)
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const T & value, const char pathChar)
          {
-            tree->setInternal<std::string>(parameterName, (std::string)value);
+            tree->setInternal<std::string>(parameterName, (std::string)value, pathChar);
          }
 
       };
@@ -732,17 +800,17 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    GET Method for std::vector< T >
          //--------------------------------------------------------------
-         static std::vector< T > getInternal(const CDataContainer * tree, const std::string& parameterName)
+         static std::vector< T > getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
-            return tree->getValuesInternal<T>(parameterName);
+            return tree->getValuesInternal<T>(parameterName, pathChar);
          }
 
          //--------------------------------------------------------------
          /// \brief	    SET Method for std::vector< T >
          //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector< T > & value)
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector< T > & value, const char pathChar)
          {
-            tree->setValuesInternal(parameterName, value);
+            tree->setValuesInternal(parameterName, value, pathChar);
          }
       };
 
@@ -755,17 +823,17 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    GET Method for std::vector< IDataContainable >
          //--------------------------------------------------------------
-         static std::vector< T > getInternal(const CDataContainer * tree, const std::string& parameterName)
+         static std::vector< T > getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
-            return tree->getValuesInternalIDataContainable<T>(parameterName);
+            return tree->getValuesInternalIDataContainable<T>(parameterName, pathChar);
          }
 
          //--------------------------------------------------------------
          /// \brief	    SET Method for std::vector< IDataContainable >
          //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector< T > & value)
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector< T > & value, const char pathChar)
          {
-            tree->setValuesInternalIDataContainable(parameterName, value);
+            tree->setValuesInternalIDataContainable(parameterName, value, pathChar);
          }
       };
 
@@ -778,17 +846,17 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    GET Method for std::vector< Enum >
          //--------------------------------------------------------------
-         static std::vector< T > getInternal(const CDataContainer * tree, const std::string& parameterName)
+         static std::vector< T > getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
-            return tree->getValuesInternalEnum<T>(parameterName);
+            return tree->getValuesInternalEnum<T>(parameterName, pathChar);
          }
 
          //--------------------------------------------------------------
          /// \brief	    SET Method for std::vector< Enum >
          //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector< T > & value)
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector< T > & value, const char pathChar)
          {
-            tree->setValuesInternalEnum(parameterName, value);
+            tree->setValuesInternalEnum(parameterName, value, pathChar);
          }
       };
 
@@ -802,17 +870,17 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    GET Method for std::vector< T >
          //--------------------------------------------------------------
-         static std::vector<T> getInternal(const CDataContainer * tree, const std::string& parameterName)
+         static std::vector<T> getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
-            return vectorhelper<T>::getInternal(tree, parameterName);
+            return vectorhelper<T>::getInternal(tree, parameterName, pathChar);
          }
 
          //--------------------------------------------------------------
          /// \brief	    SET Method for std::vector< T >
          //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector<T> & value)
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector<T> & value, const char pathChar)
          {
-            vectorhelper<T>::setInternal(tree, parameterName, value);
+            vectorhelper<T>::setInternal(tree, parameterName, value, pathChar);
          }
       };
 
@@ -830,17 +898,17 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    GET Method for std::vector< boost::shared_ptr<T> >
          //--------------------------------------------------------------
-         static std::vector< boost::shared_ptr<T> > getInternal(const CDataContainer * tree, const std::string& parameterName)
+         static std::vector< boost::shared_ptr<T> > getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
-            return tree->getValuesSPInternal<T>(parameterName);
+            return tree->getValuesSPInternal<T>(parameterName, pathChar);
          }
 
          //--------------------------------------------------------------
          /// \brief	    SET Method for std::vector< boost::shared_ptr<T> >
          //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector<  boost::shared_ptr<T> > & value)
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector<  boost::shared_ptr<T> > & value, const char pathChar)
          {
-            tree->setValuesSPInternal(parameterName, value);
+            tree->setValuesSPInternal(parameterName, value, pathChar);
          }
       };
 
@@ -853,21 +921,21 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    GET Method for std::vector< boost::shared_ptr<IDataContainable> >
          //--------------------------------------------------------------
-         static std::vector< boost::shared_ptr<T> > getInternal(const CDataContainer * tree, const std::string& parameterName)
+         static std::vector< boost::shared_ptr<T> > getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
-            return tree->getValuesSPIDataContainableInternal<T>(parameterName);
+            return tree->getValuesSPIDataContainableInternal<T>(parameterName, pathChar);
          }
 
          //--------------------------------------------------------------
          /// \brief	    SET Method for std::vector< boost::shared_ptr<IDataContainable> >
          //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector<  boost::shared_ptr<T> > & value)
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector<  boost::shared_ptr<T> > & value, const char pathChar)
          {
             std::vector<  boost::shared_ptr<IDataContainable> > compatibleVector;
             typename std::vector<  boost::shared_ptr<T> >::const_iterator i;
             for (i = value.begin(); i != value.end(); ++i)
                compatibleVector.push_back(boost::dynamic_pointer_cast<IDataContainable>(*i));
-            tree->setValuesSPIDataContainableInternal(parameterName, compatibleVector);
+            tree->setValuesSPIDataContainableInternal(parameterName, compatibleVector, pathChar);
          }
       };
 
@@ -880,22 +948,29 @@ namespace shared
          //--------------------------------------------------------------
          /// \brief	    GET Method for std::vector< boost::shared_ptr<T> >
          //--------------------------------------------------------------
-         static std::vector< boost::shared_ptr<T> > getInternal(const CDataContainer * tree, const std::string& parameterName)
+         static std::vector< boost::shared_ptr<T> > getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
          {
-            return vhelper<T>::getInternal(tree, parameterName);
+            return vhelper<T>::getInternal(tree, parameterName, pathChar);
          }
 
          //--------------------------------------------------------------
          /// \brief	    SET Method for std::vector< boost::shared_ptr<T> >
          //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector< boost::shared_ptr<T> > & value)
+         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector< boost::shared_ptr<T> > & value, const char pathChar)
          {
-            vhelper<T>::setInternal(tree, parameterName, value);
+            vhelper<T>::setInternal(tree, parameterName, value, pathChar);
          }
 
       };
 
-
+   private:
+      //--------------------------------------------------------------
+      /// \brief	   Generate the right property path
+      /// \param [in]	   parameterName     The full parameter name
+      /// \param [in]	   pathChar          The character which is interpreted as path separator
+      /// \return the path
+      //--------------------------------------------------------------
+      boost::property_tree::ptree::path_type generatePath(const std::string & parameterName, const char pathChar) const;
 
    private:
       //--------------------------------------------------------------
@@ -921,36 +996,74 @@ namespace shared
    ///				-> for template specialization
    //--------------------------------------------------------------
    template<typename T>
-   inline T CDataContainer::get(const std::string& parameterName) const
+   inline T CDataContainer::get(const std::string& parameterName, const char pathChar) const
    {
-      return helper<T>::getInternal(this, parameterName);
+      return helper<T>::getInternal(this, parameterName, pathChar);
+   }
+
+   template<>
+   inline char* CDataContainer::get(const std::string& parameterName, const char pathChar) const
+   {
+      return (char*)(get<std::string>(parameterName, pathChar).c_str());
    }
 
 
    template<typename T>
-   inline T CDataContainer::get(const std::string& parameterName, const T & defaultValue) const
+   inline T CDataContainer::get(const std::string& parameterName, const T & defaultValue, const char pathChar) const
    {
       if (hasValue(parameterName))
-         return helper<T>::getInternal(this, parameterName);
+         return helper<T>::getInternal(this, parameterName, pathChar);
       return defaultValue;
    }
 
+
+   template<class T>
+   inline void CDataContainer::set(const char* parameterName, const T & value, const char pathChar)
+   {
+      std::string strParamName(parameterName);
+      set<T>(strParamName, value, pathChar);
+   }
+
+
+
+
    template<typename T>
-   inline void CDataContainer::set(const std::string& parameterName, const T & value)
+   inline void CDataContainer::set(const std::string& parameterName, const T & value, const char pathChar)
    {
-      helper<T>::setInternal(this, parameterName, value);
+      helper<T>::setInternal(this, parameterName, value, pathChar);
    }
 
 
 
    template<class T>
-   inline T CDataContainer::getInternal(const std::string& parameterName) const
+   inline T CDataContainer::getInternal(const std::string& parameterName, const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       try
       {
-         return m_tree.get<T>(parameterName);
+         return m_tree.get<T>(generatePath(parameterName, pathChar));
+      }
+      catch (boost::property_tree::ptree_bad_path& e)
+      {
+         throw exception::CInvalidParameter(parameterName + " : " + e.what());
+      }
+      catch (boost::property_tree::ptree_bad_data& e)
+      {
+         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
+      }
+   } 
+   
+
+
+   template<>
+   inline CDataContainer CDataContainer::getInternal(const std::string& parameterName, const char pathChar) const
+   {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+      try
+      {
+         return CDataContainer(m_tree.get_child(generatePath(parameterName, pathChar)));
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
@@ -962,34 +1075,15 @@ namespace shared
       }
    }
 
+
    template<>
-   inline CDataContainer CDataContainer::getInternal(const std::string& parameterName) const
+   inline boost::posix_time::ptime CDataContainer::getInternal(const std::string& parameterName, const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       try
       {
-         return CDataContainer(m_tree.get_child(parameterName));
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
-   }
-
-
-   template<>
-   inline boost::posix_time::ptime CDataContainer::getInternal(const std::string& parameterName) const
-   {
-      boost::lock_guard<boost::mutex> lock(m_treeMutex);
-
-      try
-      {
-         return boost::posix_time::from_iso_string(m_tree.get<std::string>(parameterName));
+         return boost::posix_time::from_iso_string(m_tree.get<std::string>(generatePath(parameterName, pathChar)));
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
@@ -1002,11 +1096,11 @@ namespace shared
    }
 
    template<class T>
-   inline T CDataContainer::getInternalIDataContainable(const std::string& parameterName) const
+   inline T CDataContainer::getInternalIDataContainable(const std::string& parameterName, const char pathChar) const
    {
       try
       {
-         CDataContainer t2 = getInternal<CDataContainer>(parameterName);
+         CDataContainer t2 = getInternal<CDataContainer>(parameterName, pathChar);
          T obj;
          obj.fillFromContent(t2);
          return obj;
@@ -1027,14 +1121,14 @@ namespace shared
 
 
    template<class T>
-   inline std::vector<T> CDataContainer::getValuesInternal(const std::string& parameterName) const
+   inline std::vector<T> CDataContainer::getValuesInternal(const std::string& parameterName, const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector<T> result;
       try
       {
-         boost::property_tree::ptree child = m_tree.get_child(parameterName);
+         boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
 
          boost::property_tree::ptree::const_iterator end = child.end();
          for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it) {
@@ -1053,14 +1147,14 @@ namespace shared
    }
 
    template<class T>
-   inline std::vector<T> CDataContainer::getValuesInternalEnum(const std::string& parameterName) const
+   inline std::vector<T> CDataContainer::getValuesInternalEnum(const std::string& parameterName, const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector<T> result;
       try
       {
-         boost::property_tree::ptree child = m_tree.get_child(parameterName);
+         boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
 
          boost::property_tree::ptree::const_iterator end = child.end();
          for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it) {
@@ -1079,14 +1173,14 @@ namespace shared
    }
 
    template<class T>
-   inline std::vector< boost::shared_ptr<T> > CDataContainer::getValuesSPInternal(const std::string& parameterName) const
+   inline std::vector< boost::shared_ptr<T> > CDataContainer::getValuesSPInternal(const std::string& parameterName, const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector< boost::shared_ptr<T> > result;
       try
       {
-         boost::property_tree::ptree child = m_tree.get_child(parameterName);
+         boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
 
          boost::property_tree::ptree::const_iterator end = child.end();
          for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it)
@@ -1107,14 +1201,14 @@ namespace shared
    }
 
    template<class T>
-   inline std::vector< boost::shared_ptr<T> > CDataContainer::getValuesSPIDataContainableInternal(const std::string& parameterName) const
+   inline std::vector< boost::shared_ptr<T> > CDataContainer::getValuesSPIDataContainableInternal(const std::string& parameterName, const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector< boost::shared_ptr<T> > result;
       try
       {
-         boost::property_tree::ptree child = m_tree.get_child(parameterName);
+         boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
 
          boost::property_tree::ptree::const_iterator end = child.end();
          for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it)
@@ -1137,14 +1231,14 @@ namespace shared
 
 
    template<>
-   inline std::vector< boost::shared_ptr<IDataContainable> > CDataContainer::getValuesSPInternal(const std::string& parameterName) const
+   inline std::vector< boost::shared_ptr<IDataContainable> > CDataContainer::getValuesSPInternal(const std::string& parameterName, const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector<boost::shared_ptr<IDataContainable> > result;
       try
       {
-         boost::property_tree::ptree child = m_tree.get_child(parameterName);
+         boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
 
          boost::property_tree::ptree::const_iterator end = child.end();
          for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it)
@@ -1167,14 +1261,14 @@ namespace shared
 
 
    template<class T>
-   inline std::vector<T> CDataContainer::getValuesInternalIDataContainable(const std::string& parameterName) const
+   inline std::vector<T> CDataContainer::getValuesInternalIDataContainable(const std::string& parameterName, const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       std::vector<T> result;
       try
       {
-         boost::property_tree::ptree child = m_tree.get_child(parameterName);
+         boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
 
          boost::property_tree::ptree::const_iterator end = child.end();
          for (boost::property_tree::ptree::const_iterator it = child.begin(); it != end; ++it)
@@ -1205,13 +1299,13 @@ namespace shared
 
 
    template<class T>
-   inline void CDataContainer::setInternal(const std::string& parameterName, const T & value)
+   inline void CDataContainer::setInternal(const std::string& parameterName, const T & value, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       try
       {
-         m_tree.put(parameterName, value);
+         m_tree.put(generatePath(parameterName, pathChar), value);
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
@@ -1224,7 +1318,7 @@ namespace shared
    }
 
    template<class T>
-   inline void CDataContainer::setInternalIDataContainable(const std::string& parameterName, const T & value)
+   inline void CDataContainer::setInternalIDataContainable(const std::string& parameterName, const T & value, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -1232,7 +1326,7 @@ namespace shared
       {
          CDataContainer subTree;
          value.extractContent(subTree);
-         m_tree.add_child(parameterName, subTree.m_tree);
+         m_tree.add_child(generatePath(parameterName, pathChar), subTree.m_tree);
 
       }
       catch (boost::property_tree::ptree_bad_path& e)
@@ -1248,13 +1342,13 @@ namespace shared
 
 
    template<>
-   inline void CDataContainer::setInternal(const std::string& parameterName, const CDataContainer & value)
+   inline void CDataContainer::setInternal(const std::string& parameterName, const CDataContainer & value, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       try
       {
-         m_tree.add_child(parameterName, value.m_tree);
+         m_tree.add_child(generatePath(parameterName, pathChar), value.m_tree);
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
@@ -1268,13 +1362,13 @@ namespace shared
 
 
    template<>
-   inline void CDataContainer::setInternal(const std::string& parameterName, const boost::posix_time::ptime & value)
+   inline void CDataContainer::setInternal(const std::string& parameterName, const boost::posix_time::ptime & value, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       try
       {
-         m_tree.put(parameterName, boost::posix_time::to_iso_string(value));
+         m_tree.put(generatePath(parameterName, pathChar), boost::posix_time::to_iso_string(value));
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
@@ -1285,12 +1379,13 @@ namespace shared
          throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
       }
    }
+
 
 
 
 
    template<class T>
-   inline void CDataContainer::setValuesInternal(const std::string& parameterName, const std::vector<T> & values)
+   inline void CDataContainer::setValuesInternal(const std::string& parameterName, const std::vector<T> & values, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -1306,7 +1401,7 @@ namespace shared
             innerData.push_back(std::make_pair("", t));
          }
 
-         m_tree.add_child(parameterName, innerData);
+         m_tree.add_child(generatePath(parameterName, pathChar), innerData);
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
@@ -1319,7 +1414,7 @@ namespace shared
    }
 
    template<class T>
-   inline void CDataContainer::setValuesInternalEnum(const std::string& parameterName, const std::vector<T> & values)
+   inline void CDataContainer::setValuesInternalEnum(const std::string& parameterName, const std::vector<T> & values, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -1335,7 +1430,7 @@ namespace shared
             innerData.push_back(std::make_pair("", t));
          }
 
-         m_tree.add_child(parameterName, innerData);
+         m_tree.add_child(generatePath(parameterName, pathChar), innerData);
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
@@ -1348,7 +1443,7 @@ namespace shared
    }
 
    template<class T>
-   inline void CDataContainer::setValuesInternalIDataContainable(const std::string& parameterName, const std::vector<T> & values)
+   inline void CDataContainer::setValuesInternalIDataContainable(const std::string& parameterName, const std::vector<T> & values, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -1364,7 +1459,7 @@ namespace shared
             innerData.push_back(std::make_pair("", t.m_tree));
          }
 
-         m_tree.add_child(parameterName, innerData);
+         m_tree.add_child(generatePath(parameterName, pathChar), innerData);
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
@@ -1379,7 +1474,7 @@ namespace shared
 
 
    template<class T>
-   inline void CDataContainer::setValuesSPInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<T> > & values)
+   inline void CDataContainer::setValuesSPInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<T> > & values, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -1395,7 +1490,7 @@ namespace shared
             innerData.push_back(std::make_pair("", t));
          }
 
-         m_tree.add_child(parameterName, innerData);
+         m_tree.add_child(generatePath(parameterName, pathChar), innerData);
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
@@ -1407,7 +1502,7 @@ namespace shared
       }
    }
 
-   inline void CDataContainer::setValuesSPIDataContainableInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<IDataContainable> > & values)
+   inline void CDataContainer::setValuesSPIDataContainableInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<IDataContainable> > & values, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -1423,7 +1518,7 @@ namespace shared
             innerData.push_back(std::make_pair("", t.m_tree));
          }
 
-         m_tree.add_child(parameterName, innerData);
+         m_tree.add_child(generatePath(parameterName, pathChar), innerData);
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
@@ -1437,7 +1532,7 @@ namespace shared
 
 
    template<>
-   inline void CDataContainer::setValuesInternal(const std::string& parameterName, const std::vector<CDataContainer> & values)
+   inline void CDataContainer::setValuesInternal(const std::string& parameterName, const std::vector<CDataContainer> & values, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -1451,7 +1546,7 @@ namespace shared
             innerData.push_back(std::make_pair("", i->m_tree));
          }
 
-         m_tree.add_child(parameterName, innerData);
+         m_tree.add_child(generatePath(parameterName, pathChar), innerData);
       }
       catch (boost::property_tree::ptree_bad_path& e)
       {
@@ -1466,9 +1561,9 @@ namespace shared
 
 
    template<typename EnumType>
-   EnumType CDataContainer::getEnumValue(const std::string& parameterName, const EnumValuesNames& valuesNames) const
+   EnumType CDataContainer::getEnumValue(const std::string& parameterName, const EnumValuesNames& valuesNames, const char pathChar) const
    {
-      std::string stringValue = get<std::string>(parameterName);
+      std::string stringValue = get<std::string>(parameterName, pathChar);
       EnumValuesNames::const_iterator it = valuesNames.find(stringValue);
       if (it != valuesNames.end())
          return (EnumType)(it->second);

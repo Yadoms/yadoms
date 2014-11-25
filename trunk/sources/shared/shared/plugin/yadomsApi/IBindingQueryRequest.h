@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IBindingQueryData.h"
+#include <shared/DataContainer.h>
 
 namespace shared { namespace plugin { namespace yadomsApi
 {
@@ -28,7 +29,7 @@ namespace shared { namespace plugin { namespace yadomsApi
       ///\brief Answer the request with success, providing the result
       ///\param [in] result  The query result
       //-----------------------------------------------------
-      virtual void sendSuccess(const std::vector<std::string> & result) = 0;
+      virtual void sendSuccess(const shared::CDataContainer & result) = 0;
 
       //-----------------------------------------------------
       ///\brief Answer the request with error
