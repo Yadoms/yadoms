@@ -485,10 +485,7 @@ namespace web { namespace rest { namespace service {
 
 						if (res.Success)
 						{
-							//std::vector<std::string>
-							shared::CDataContainer result;
-							result.set(query, res.Result);
-							return web::rest::CResult::GenerateSuccess(result);
+                     return web::rest::CResult::GenerateSuccess(res.Result);
 						}
 						else
 						{

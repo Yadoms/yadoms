@@ -222,17 +222,6 @@ namespace shared
       inline T get(const std::string& parameterName, const char pathChar = '.') const;
 
       //--------------------------------------------------------------
-      /// \brief	    Get parameter value. If the name is not found the default value is returned
-      /// \param [in] parameterName    Name of the parameter
-      /// \param [in] defaultValue     Default value
-      /// \return     The parameter value
-      /// \throw      shared::exception::COutOfRange if parameter can not be converted
-      /// \throw      shared::exception::CInvalidParameter if parameter is not found
-      //--------------------------------------------------------------
-      template<class T>
-      inline T get(const std::string& parameterName, const T & defaultValue, const char pathChar = '.') const;
-
-      //--------------------------------------------------------------
       /// \brief	    Set parameter value
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
@@ -1006,16 +995,6 @@ namespace shared
    {
       return (char*)(get<std::string>(parameterName, pathChar).c_str());
    }
-
-
-   template<typename T>
-   inline T CDataContainer::get(const std::string& parameterName, const T & defaultValue, const char pathChar) const
-   {
-      if (hasValue(parameterName))
-         return helper<T>::getInternal(this, parameterName, pathChar);
-      return defaultValue;
-   }
-
 
    template<class T>
    inline void CDataContainer::set(const char* parameterName, const T & value, const char pathChar)

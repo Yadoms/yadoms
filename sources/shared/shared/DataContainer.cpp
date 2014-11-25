@@ -186,7 +186,7 @@ namespace shared
          prefix += "---";
       for (boost::property_tree::ptree::const_iterator it = pt.begin(); it != end; ++it) 
       {
-         YADOMS_LOG(info) << prefix << it->first << ": " << it->second.get_value<std::string>() << std::endl;
+         YADOMS_LOG(info) << prefix << it->first << ": " << it->second.get_value<std::string>();
          printToLog(it->second, deep+1);
       }
    }
