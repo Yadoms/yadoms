@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "WebSocketRequestHandler.h"
 
-#include <Poco/Net/NetException.h>
-#include <Poco/Net/WebSocket.h>
-
 #include <shared/Log.h>
 #include <shared/DataContainer.h>
 #include <shared/notification/NotificationCenter.h>
@@ -14,6 +11,8 @@
 #include "web/ws/AcquisitionFilterFrame.h"
 #include "web/ws/AcquisitionUpdateFrame.h"
 #include "web/ws/NewDeviceFrame.h"
+
+#include "WebSocketClient.h"
 
 namespace web { namespace poco {
 
@@ -26,50 +25,43 @@ CWebSocketRequestHandler::~CWebSocketRequestHandler()
 {
 }
 
+
 void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
 {
    //for each request (each time a new ws connexion is made
    //then just create a websocket server and wait infinite (until client ends)
    try
    {
-      Poco::Net::WebSocket socketServer(request, response);
       std::vector<int> acquisitionKeywordFilters;
 
-      m_notificationCenter->registerObserver(this);
+      boost::shared_ptr< shared::notification::CNotificationObserver> observer = m_notificationCenter->registerObserver(this);
+      
+      const int kNotifFromWsClient = shared::notification::CNotificationCenter::kUserFirstId;
+      CWebSocketClient client(request, response, observer, kNotifFromWsClient);
 
       bool clientSeemConnected = true;
 
       while (clientSeemConnected)
       {
-         switch (m_notificationCenter->waitForNotifications(this, boost::posix_time::milliseconds(100)))
+         switch (m_notificationCenter->waitForNotifications(this))
          {
-         case shared::notification::CNotificationCenter::kPolling:
-            //if some data are available, then read them and answer
-            if (socketServer.available() > 0)
+         case kNotifFromWsClient:
+         {
+            boost::shared_ptr<web::ws::CFrameBase> parsedFrame = m_notificationCenter->getNotificationData< boost::shared_ptr<web::ws::CFrameBase> >(this);
+            if (parsedFrame)
             {
-               int flags = 0;
-               char buffer[2048] = { 0 };
-
-               int n = socketServer.receiveFrame(buffer, sizeof(buffer), flags);
-               if (n > 0)
+               switch (parsedFrame->getType())
                {
-                  std::string bufferString(buffer);
-                  boost::shared_ptr<web::ws::CFrameBase> parsedFrame = web::ws::CFrameFactory::tryParse(bufferString);
-                  if (parsedFrame)
-                  {
-                     switch (parsedFrame->getType())
-                     {
-                     case web::ws::CFrameBase::EFrameType::kAcquisitionFilterValue:
-                        boost::shared_ptr<web::ws::CAcquisitionFilterFrame> parsedFrameAsqFilter = boost::dynamic_pointer_cast<web::ws::CAcquisitionFilterFrame>(parsedFrame);
-                        acquisitionKeywordFilters.clear();
-                        acquisitionKeywordFilters = parsedFrameAsqFilter->getFilter();
-                        break;
-                     }
-                  }
+               case web::ws::CFrameBase::EFrameType::kAcquisitionFilterValue:
+                  boost::shared_ptr<web::ws::CAcquisitionFilterFrame> parsedFrameAsqFilter = boost::dynamic_pointer_cast<web::ws::CAcquisitionFilterFrame>(parsedFrame);
+                  acquisitionKeywordFilters.clear();
+                  acquisitionKeywordFilters = parsedFrameAsqFilter->getFilter();
+                  break;
                }
             }
 
             break;
+         }
 
          case shared::notification::CNotificationCenter::kNotification:
          {
@@ -103,7 +95,7 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
             //notifiy client
             if (somethingToSend)
             {
-               int sentBytes = socketServer.sendFrame(dataString.c_str(), dataString.length(), Poco::Net::WebSocket::FRAME_TEXT);
+               int sentBytes = client.sendFrame(dataString.c_str(), dataString.length(), Poco::Net::WebSocket::FRAME_TEXT);
                if (sentBytes == 0)
                   clientSeemConnected = false;
             }
@@ -114,27 +106,10 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
 
          default:
             YADOMS_LOG(error) << "Unknown message id";
-            BOOST_ASSERT(false);
+            //BOOST_ASSERT(false);
             break;
          }
       } //while
-   }
-   catch (Poco::Net::WebSocketException& exc)
-   {
-      YADOMS_LOG(error) << "Websocket request handler Poco::Net::WebSocketException";
-      switch (exc.code())
-      {
-      case Poco::Net::WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:
-         response.set("Sec-WebSocket-Version", Poco::Net::WebSocket::WEBSOCKET_VERSION);
-         // fallthrough
-      case Poco::Net::WebSocket::WS_ERR_NO_HANDSHAKE:
-      case Poco::Net::WebSocket::WS_ERR_HANDSHAKE_NO_VERSION:
-      case Poco::Net::WebSocket::WS_ERR_HANDSHAKE_NO_KEY:
-         response.setStatusAndReason(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
-         response.setContentLength(0);
-         response.send();
-         break;
-      }
    }
    catch (shared::exception::CException & ex)
    {
