@@ -14,14 +14,34 @@
             "enableWithCheckBox": "true",
             "enableWithCheckBoxDefaultValue": "true",
             "content": {
-                "ipAddress": {
-                    "type": "string",
-                    "name": "Hub local Ip",
-                    "description": "Set the IP Address of the hub",
-                    "defaultValue": "0.0.0.0",
-                    "regex": "([0-9]{1,3}\\.){3}[0-9]{1,3}",
-                    "regexErrorMessage": "Must be an ipv4 address like 192.168.0.12"
-                }
+				"networkInterfaces" : {
+		            "name": "Network interface",
+					"description": "Choose the network interface",
+					"type": "radioSection",
+					"content": {
+						"all": {
+							"type": "section",
+							"name": "All network interfaces",
+							"description": "Communicate on every  network interfaces"
+							"content": {
+							}					
+						},
+						"one": {
+							"type": "section",
+							"name": "One network interface",
+							"description": "Communicate on one network interface",
+							"content": {
+								"networkInterface" :
+								{
+									"type" : "enum",
+									"name" : "Network interface",
+									"description" : "The network interface connected to the RFXLanXpl",
+									"values" : {"__Binding__" : {"type" : "system", "query" : "networkInterfaces"}}
+								}
+							}					
+						}
+					}
+				}
             }
         }
     },

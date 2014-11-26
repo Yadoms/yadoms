@@ -78,6 +78,11 @@ namespace xplcore
       return CXplMessageSchemaIdentifier(CXplHelper::HeartbeatClassID, CXplHelper::HeartbeatAppTypeId);
    }
 
+   CXplMessageSchemaIdentifier CXplMessageSchemaIdentifier::createHeartbeatRequestMessageSchemaIdentifer()
+   {
+      return CXplMessageSchemaIdentifier(CXplHelper::HeartbeatClassID, CXplHelper::HeartbeatRequestTypeId);
+   }
+
    bool CXplMessageSchemaIdentifier::isHeartbeatMessageSchemaIdentifier(const CXplMessageSchemaIdentifier & msi)
    {
       return (msi.getClassId() == CXplHelper::HeartbeatClassID);

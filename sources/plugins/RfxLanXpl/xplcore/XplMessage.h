@@ -163,6 +163,12 @@ namespace xplcore
       //--------------------------------------------------------------
       static CXplMessage parse(const std::string & rawMessage);
 
+      //--------------------------------------------------------------
+      /// \brief	    Create a heartbeat request message
+      /// \param [in] source : the source
+      //--------------------------------------------------------------
+      static CXplMessage createHeartbeatRequest(const CXplActor & source);
+
    private:
       ETypeIdentifier m_typeIdentifier;
       int m_hop;

@@ -5,6 +5,7 @@
 #include "web/rest/RestDispatcher.h"
 #include "web/rest/Result.h"
 #include <shared/Peripherals.h>
+#include <Poco/Net/NetworkInterface.h>
 
 namespace web { namespace rest { namespace service {
 
@@ -41,7 +42,9 @@ namespace web { namespace rest { namespace service {
          std::string query = parameters[2];
 
          if (boost::iequals(query, "SerialPorts"))
-            return getSerialPorts(query);
+            return getSerialPorts();
+         else if (boost::iequals(query, "NetworkInterfaces"))
+            return getNetworkInterfaces();
          else
             return web::rest::CResult::GenerateError("unsupported binding query : " + query);
       }
@@ -49,7 +52,7 @@ namespace web { namespace rest { namespace service {
       return web::rest::CResult::GenerateError("Cannot retreive url parameters");
    }
 
-   shared::CDataContainer CSystem::getSerialPorts(const std::string & query)
+   shared::CDataContainer CSystem::getSerialPorts()
    {
       try
       {
@@ -69,6 +72,28 @@ namespace web { namespace rest { namespace service {
          return web::rest::CResult::GenerateError(ex);
       }
       catch(...)
+      {
+         return web::rest::CResult::GenerateError("unknown exception in retreiving all serial ports");
+      }
+   }
+
+   shared::CDataContainer CSystem::getNetworkInterfaces()
+   {
+      try
+      {
+         shared::CDataContainer result;
+         Poco::Net::NetworkInterface::NetworkInterfaceList netlist = Poco::Net::NetworkInterface::list();
+         for (Poco::Net::NetworkInterface::NetworkInterfaceList::iterator nit = netlist.begin(); nit != netlist.end(); ++nit)
+         {
+            result.set(nit->address().toString(), (boost::format("%1% (%2%)") % nit->displayName() % nit->address().toString()).str(), 0x00); //in case of key contains a dot, just ensure the full key is taken into account
+         }
+         return web::rest::CResult::GenerateSuccess(result);
+      }
+      catch (std::exception &ex)
+      {
+         return web::rest::CResult::GenerateError(ex);
+      }
+      catch (...)
       {
          return web::rest::CResult::GenerateError("unknown exception in retreiving all serial ports");
       }
