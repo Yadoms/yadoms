@@ -24,8 +24,8 @@ namespace xplcore
    CXplService::CXplService(
       const std::string & deviceId,
       const std::string & instanceId,
-      boost::asio::io_service * externalIOService)
-      : m_manageIoService(externalIOService == NULL)
+      boost::asio::io_service * externalIOService, shared::event::CEventHandler * pHubFoundEventHandler, int hubFoundEventCode)
+      : m_manageIoService(externalIOService == NULL), m_pHubFoundEventHandler(pHubFoundEventHandler), m_hubFoundEventCode(hubFoundEventCode)
    {
       if(m_manageIoService)
          m_ioService = new boost::asio::io_service();
@@ -41,8 +41,9 @@ namespace xplcore
       initializeConnector();
    }
 
-   CXplService::CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId, const std::string & localIPOfTheInterfaceToUse, boost::asio::io_service * externalIOService)
-      : m_manageIoService(externalIOService == NULL)
+   CXplService::CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId, const std::string & localIPOfTheInterfaceToUse, 
+      boost::asio::io_service * externalIOService, shared::event::CEventHandler * pHubFoundEventHandler, int hubFoundEventCode)
+      : m_manageIoService(externalIOService == NULL), m_pHubFoundEventHandler(pHubFoundEventHandler), m_hubFoundEventCode(hubFoundEventCode)
    {
       if(m_manageIoService)
          m_ioService = new boost::asio::io_service();
@@ -215,6 +216,9 @@ namespace xplcore
                         {
                            YADOMS_LOG(info) << "Hub found";
                            m_hubHasBeenFound = true;
+
+                           if (m_pHubFoundEventHandler != NULL)
+                              m_pHubFoundEventHandler->postEvent(m_hubFoundEventCode);
                         }
                         else
                         {
@@ -476,8 +480,6 @@ namespace xplcore
    {
       m_filteringSystem.clear();
    }
-
-
 
 
 

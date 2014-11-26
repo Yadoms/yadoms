@@ -33,6 +33,7 @@ CRfxLanXpl::~CRfxLanXpl()
 enum
 {
    kXplMessageReceived = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from yApi::IYadomsApi::kPluginFirstEventId
+   kXplHubFound,
 };
 
 void print(shared::CDataContainer const& pt)
@@ -52,7 +53,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       m_configuration.initializeWith(context->getConfiguration());
 
       //start ioservice
-      xplcore::CXplService xplService(m_xpl_gateway_id, "1", NULL);
+      xplcore::CXplService xplService(m_xpl_gateway_id, "1", NULL, &context->getEventHandler(), kXplHubFound);
       xplService.subscribeForAllMessages(&context->getEventHandler(), kXplMessageReceived);
 
       //manage xpl hub
@@ -60,8 +61,6 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       {
          hub.reset(new xplcore::CXplHub(m_configuration.getHubLocalIp()));
          hub->start();
-
-         
       }
 
       // the main loop
@@ -69,7 +68,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       while (1)
       {
          // Wait for an event
-         switch (context->getEventHandler().waitForEvents())
+         switch (context->getEventHandler().waitForEvents(boost::posix_time::minutes(10)))
          {
          case yApi::IYadomsApi::kEventDeviceCommand:
          {
@@ -115,6 +114,14 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             OnXplMessageReceived(xplMessage, context);
             break;
          }
+
+         case kXplHubFound:
+         case shared::event::kTimeout:
+         {
+            //when hub is found, or every 10 minutes, refresh rfxlan list
+            StartPeripheralListing(xplService);
+            break;
+         }
          default:
          {
             YADOMS_LOG(error) << "Unknown message id";
@@ -139,6 +146,12 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 }
 
 
+void CRfxLanXpl::StartPeripheralListing(xplcore::CXplService & xplService)
+{
+   //send a hbeat.request to list all available rfxlan
+   m_connectedRfxLans.clear();
+   xplService.sendMessage(xplcore::CXplMessage::createHeartbeatRequest(xplService.getActor()));
+}
 
 
 //----------------------------------------------
@@ -159,6 +172,9 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
 
       if (m_deviceManager->isHandled(realSource))
       {
+         //list les passerelles xpl (rfxlan)
+         if (std::find(m_connectedRfxLans.begin(), m_connectedRfxLans.end(), realSource) == m_connectedRfxLans.end())
+            m_connectedRfxLans.push_back(realSource);
 
          boost::shared_ptr<xplrules::IRule> rule = m_deviceManager->identifyRule(xplMessage.getMessageSchemaIdentifier().toString(), m_instanceManager);
          if (rule.get() != NULL)
@@ -390,9 +406,9 @@ void CRfxLanXpl::OnBindingQueryRequest(boost::shared_ptr<yApi::IBindingQueryRequ
 			std::vector<std::string> allRfxLans;
 
          shared::CDataContainer result;
-         result.set("rfxlan-test1", "rfxlan-test1");
-         result.set("rfxlan-test2", "rfxlan-test2");
-         result.set("rfxlan-test3", "rfxlan-test3");
+
+         for (std::vector<std::string>::iterator i = m_connectedRfxLans.begin(); i != m_connectedRfxLans.end(); ++i)
+            result.set(*i, *i, 0);
 
          data->sendSuccess(result);
 		}

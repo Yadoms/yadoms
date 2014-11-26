@@ -341,4 +341,12 @@ CXplMessage CXplMessage::parse(const std::string & rawMessage)
    return msg;
 }
 
+
+CXplMessage CXplMessage::createHeartbeatRequest(const CXplActor & source)
+{
+   CXplMessage msg(kXplCommand, source, xplcore::CXplActor::createBroadcastActor(), xplcore::CXplMessageSchemaIdentifier::createHeartbeatRequestMessageSchemaIdentifer());
+   msg.addToBody("command", "request");
+   return msg;
+}
+
 } // namespace xplcore

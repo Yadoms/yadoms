@@ -22,7 +22,7 @@ namespace xplcore
       /// \note         Using this constructor implies that vendor Id will be CXplConstants::getYadomsVendorId
       //--------------------------------------------------------------
       CXplService(const std::string & deviceId, const std::string & instanceId,
-         boost::asio::io_service * externalIOService = NULL);
+         boost::asio::io_service * externalIOService = NULL, shared::event::CEventHandler * pHubFoundEventHandler = NULL, int hubFoundEventCode = 0);
 
       //--------------------------------------------------------------
       /// \brief			Ctor
@@ -33,7 +33,7 @@ namespace xplcore
       /// \param [in]   externalIOService : a pointer to an external ioservice. if NULL a new ioservice is created
       //--------------------------------------------------------------
       CXplService(const std::string & vendorId, const std::string & deviceId, const std::string & instanceId,
-         const std::string & localIPOfTheInterfaceToUse = shared::CStringExtension::EmptyString, boost::asio::io_service * externalIOService = NULL);   
+         const std::string & localIPOfTheInterfaceToUse = shared::CStringExtension::EmptyString, boost::asio::io_service * externalIOService = NULL, shared::event::CEventHandler * pHubFoundEventHandler = NULL, int hubFoundEventCode = 0);
 
       //--------------------------------------------------------------
       /// \brief			Dtor
@@ -106,11 +106,6 @@ namespace xplcore
       //--------------------------------------------------------------
       void clearAllSubscriptions();
 
-
-
-
-
-
    private:
       void initializeConnector();
       void heartbeatSequence(const boost::system::error_code& error);
@@ -155,6 +150,8 @@ namespace xplcore
       //--------------------------------------------------------------
       bool m_manageIoService;
 
+      shared::event::CEventHandler * m_pHubFoundEventHandler;
+      int m_hubFoundEventCode;
 
       //--------------------------------------------------------------
       /// \brief Class container for a message filter
@@ -229,6 +226,8 @@ namespace xplcore
       /// \param [in]   message : The message to notify
       //--------------------------------------------------------------
       void notifySubscribers(CXplMessage & msg);
+
+
    };
 
 } // namespace xplcore

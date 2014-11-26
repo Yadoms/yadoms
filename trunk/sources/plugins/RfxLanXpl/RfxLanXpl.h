@@ -64,6 +64,13 @@ private:
    //----------------------------------------------
    void OnBindingQueryRequest(boost::shared_ptr<yApi::IBindingQueryRequest> data, boost::shared_ptr<yApi::IYadomsApi> context);
 
+
+   //----------------------------------------------
+   ///\brief Function that start a peripheral listing (send hbeat.request)
+   ///\param [in] xplService  the xpl service
+   //----------------------------------------------
+   void StartPeripheralListing(xplcore::CXplService & xplService);
+
    //----------------------------------------------
    ///\brief  The device manager
    //----------------------------------------------
@@ -84,6 +91,11 @@ private:
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
    CRfxLanXplConfiguration m_configuration;
+
+   //--------------------------------------------------------------
+   /// \brief	The list of all rfxlan which have been connected once
+   //--------------------------------------------------------------
+   std::vector<std::string> m_connectedRfxLans;
 };
 
 

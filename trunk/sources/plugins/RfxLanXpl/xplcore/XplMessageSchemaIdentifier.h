@@ -74,6 +74,11 @@ namespace xplcore
       /// \return     the Message Schema Identifier 
       //--------------------------------------------------------------
       static CXplMessageSchemaIdentifier createHeartbeatAppMessageSchemaIdentifer();
+      //--------------------------------------------------------------
+      /// \brief	    Create a Message Schema Identifier for heartbeat.request
+      /// \return     the Message Schema Identifier 
+      //--------------------------------------------------------------
+      static CXplMessageSchemaIdentifier createHeartbeatRequestMessageSchemaIdentifer();
 
       //--------------------------------------------------------------
       /// \brief	    Permit to know if a Message Schema Identifier is an heartbeat
