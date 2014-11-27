@@ -124,11 +124,14 @@ namespace web { namespace rest { namespace service {
       
       for (std::vector< boost::shared_ptr<database::entities::CPlugin> >::iterator currentInstance = hwList.begin(); currentInstance != hwList.end(); ++currentInstance)
       {
-         pluginSystem::CManager::AvalaiblePluginMap::iterator matchingInfo = pluginList.find((*currentInstance)->Type);
-         if (matchingInfo != pluginList.end())
+         if (m_pluginManager->isInstanceRunning(currentInstance->get()->Id))
          {
-            if (matchingInfo->second->getSupportManuallyCreatedDevice())
-               result.push_back(*currentInstance);
+            pluginSystem::CManager::AvalaiblePluginMap::iterator matchingInfo = pluginList.find((*currentInstance)->Type);
+            if (matchingInfo != pluginList.end())
+            {
+               if (matchingInfo->second->getSupportManuallyCreatedDevice())
+                  result.push_back(*currentInstance);
+            }
          }
       }
 
