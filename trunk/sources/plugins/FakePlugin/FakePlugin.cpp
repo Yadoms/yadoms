@@ -6,6 +6,9 @@
 #include "FakeCounter.h"
 #include "FakeSwitch.h"
 #include <shared/plugin/yadomsApi/IBindingQueryRequest.h>
+#include <shared/plugin/yadomsApi/IManuallyDeviceCreationRequest.h>
+#include <shared/tools/Random.h>
+#include <boost/random/independent_bits.hpp>
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -139,6 +142,31 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 
                break;
             }
+
+         case yApi::IYadomsApi::kEventManuallyDeviceCreation:
+         {
+            boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> data = context->getEventHandler().getEventData< boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
+            try
+            {
+               // Yadoms asks for device creation
+               std::string sni = data->getData().getConfiguration().get<std::string>("networkInterface");
+               std::string dyn = data->getData().getConfiguration().get<std::string>("dynamicSection.content.interval");
+
+               std::string devId = (boost::format("%1%_%2%_0x%3$08X") % sni % dyn % shared::tools::CRandom::generateRandomNumber<26>(false)).str();
+               context->declareDevice(devId, "FakeDevice_" + devId, data->getData().getConfiguration().serialize());
+
+               yApi::historization::CSwitch manualSwitch("manualSwitch");
+               context->declareKeyword(devId, manualSwitch);
+
+               data->sendSuccess(devId);
+
+            }
+            catch (std::exception &ex)
+            {
+               data->sendError(ex.what());
+            }
+            break;
+         }
 
          case yApi::IYadomsApi::kBindingQuery:
          {

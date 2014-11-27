@@ -71,13 +71,23 @@
                "defaultValue": "Sub-sections make configuration very powerful !"
             }
          }
-      },
-	  "DynamicSection":
-      {
-         "name": "A dynamic section",
-         "description": "Example of section filled by 'test' method fo the plugin using binding.",
-         "type" : "section",
-         "content": {"__Binding__" : {"type" : "plugin", "query" : "test"}}
       }
+   },
+   "supportManuallyDeviceCreation": "true",
+   "manuallyDeviceCreationConfigurationSchema": {
+	"networkInterface" :
+	{
+		"type" : "enum",
+		"name" : "Network interface",
+		"description" : "The network interface connected to the RFXLanXpl",
+		"values" : {"__Binding__" : {"type" : "system", "query" : "networkInterfaces"}}
+	},
+	"dynamicSection":
+	{
+		"name": "A dynamic section",
+		"description": "Example of section filled by 'test' method from the plugin using binding.",
+		"type" : "section",
+		"content": {"__Binding__" : {"type" : "plugin", "query" : "test"}}
+	}
    }
 }
