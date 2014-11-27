@@ -16,7 +16,7 @@ const shared::plugin::yadomsApi::CStandardCapacity& UvDescriptionCapacity = shar
 
    
 CUvDescription::CUvDescription(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EUvDescription>(keywordName, UvDescriptionCapacity, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGet)
+   :CSingleHistorizableData<EUvDescription>(keywordName, UvDescriptionCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGet)
 {
 }
 

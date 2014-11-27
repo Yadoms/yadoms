@@ -30,7 +30,7 @@ void CChimeByronMp001::historize(boost::shared_ptr<yApi::IYadomsApi> context, co
    context->historizeData(deviceName, m_event);
 }
 
-void CChimeByronMp001::set(const shared::CDataContainer& /*yadomsCommand*/, const shared::CDataContainer& /*deviceDetails*/)
+void CChimeByronMp001::set(const std::string& /*yadomsCommand*/, const shared::CDataContainer& /*deviceDetails*/)
 {
 }
 

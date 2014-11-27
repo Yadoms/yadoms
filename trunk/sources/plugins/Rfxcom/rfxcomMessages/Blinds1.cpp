@@ -8,7 +8,7 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceDetails)
+CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_state("state"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    m_state.set(command);
@@ -25,7 +25,7 @@ CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CD
 CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_state("state"), m_batteryLevel("battery"), m_rssi("rssi")
 {
-   m_state.set(false);
+   m_state.set(yApi::historization::ECurtainCommand::kStopValue);
    m_batteryLevel.set(100);
    m_rssi.set(0);
 

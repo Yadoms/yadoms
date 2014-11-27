@@ -14,7 +14,7 @@ const shared::plugin::yadomsApi::CStandardCapacity& RfxLanDigitalIoCommandCapaci
 
    
 CDigitalIoCommand::CDigitalIoCommand(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EDigitalIoCommand>(keywordName, RfxLanDigitalIoCommandCapacity, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+   :CSingleHistorizableData<EDigitalIoCommand>(keywordName, RfxLanDigitalIoCommandCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
 {
 }
 

@@ -48,7 +48,7 @@ namespace rfxcomMessages
          context->historizeData(deviceName, m_keyword);
       }
 
-      virtual void set(const shared::CDataContainer& yadomsCommand)
+      virtual void set(const std::string& yadomsCommand)
       {
          m_keyword.set(yadomsCommand);
       }

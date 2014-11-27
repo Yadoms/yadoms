@@ -236,7 +236,7 @@ void CSmsDialer::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
    context->declareKeyword(m_device, m_messageKeyword);
 }
 
-void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& powerRequest)
+void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& powerRequest)
 {
    try
    {
@@ -253,7 +253,7 @@ void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context
    }
 }
 
-void CSmsDialer::onSendSmsRequest(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& sendSmsRequest)
+void CSmsDialer::onSendSmsRequest(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& sendSmsRequest)
 {
    try
    {

@@ -101,38 +101,37 @@ namespace shared { namespace event
             // No wait
             return kNoEvent;
          }
-         else if (!hasRunningTimeEvents() && timeout == boost::date_time::pos_infin)
+         
+         if (!hasRunningTimeEvents() && timeout == boost::date_time::pos_infin)
          {
             // Wait infinite for event
             m_condition.wait(lock);
             return popEvent();
          }
+         
+         // Have time event or timeout
+         boost::shared_ptr<ITimeEvent> closerTimeEvent = getNextTimeEventStopPoint();
+         if (!!closerTimeEvent && (closerTimeEvent->getNextStopPoint() < (now() + timeout)) )
+         {
+            // Next stop point will be the closer time event
+            if (!m_condition.timed_wait(lock, closerTimeEvent->getNextStopPoint() - now()))
+            {
+               // No event ==> Signal time event
+               signalTimeEvent(closerTimeEvent);
+            }
+         }
          else
          {
-            // Have time event or timeout
-            boost::shared_ptr<ITimeEvent> closerTimeEvent = getNextTimeEventStopPoint();
-            if (!!closerTimeEvent && (closerTimeEvent->getNextStopPoint() < (now() + timeout)) )
+            // Next stop point will be the normal timeout
+            if (!m_condition.timed_wait(lock, timeout))
             {
-               // Next stop point will be the closer time event
-               if (!m_condition.timed_wait(lock, closerTimeEvent->getNextStopPoint() - now()))
-               {
-                  // No event ==> Signal time event
-                  signalTimeEvent(closerTimeEvent);
-               }
+               // No event ==> timeout
+               return kTimeout;
             }
-            else
-            {
-               // Next stop point will be the normal timeout
-               if (!m_condition.timed_wait(lock, timeout))
-               {
-                  // No event ==> timeout
-                  return kTimeout;
-               }
-            }
-            
-            // Event occurs during wait or time event was signaled
-            return popEvent();
          }
+            
+         // Event occurs during wait or time event was signaled
+         return popEvent();
       }
 
       //--------------------------------------------------------------
@@ -157,7 +156,7 @@ namespace shared { namespace event
       /// \note       Must be called after waitForEvents
       //--------------------------------------------------------------
       template<typename DataType>
-      const bool isEventType() const
+      bool isEventType() const
       {
          if (!m_lastEvent)
             throw exception::CNullReference("isEventType, no event available");
@@ -182,7 +181,7 @@ namespace shared { namespace event
       /// \note       Must be called after waitForEvents
       //--------------------------------------------------------------
       template<typename DataType>
-      const DataType getEventData() const
+      DataType getEventData() const
       {
          if (!m_lastEvent)
             throw exception::CNullReference("getEventData, no event available");
@@ -246,6 +245,7 @@ namespace shared { namespace event
       //--------------------------------------------------------------
       void postEvent(boost::shared_ptr<CEventBase> & event)
       {
+         boost::recursive_mutex::scoped_lock lock(m_eventsQueueMutex);
          pushEvent(event);
          m_condition.notify_one();
       }

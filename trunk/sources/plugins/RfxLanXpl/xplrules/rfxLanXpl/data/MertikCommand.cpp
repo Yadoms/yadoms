@@ -27,7 +27,7 @@ const shared::plugin::yadomsApi::CStandardCapacity& MertikCommandCapacity = shar
 
    
 CMertickCommand::CMertickCommand(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EMertikCommand>(keywordName, MertikCommandCapacity, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EMertikCommand>(keywordName, MertikCommandCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
 {
 }
 

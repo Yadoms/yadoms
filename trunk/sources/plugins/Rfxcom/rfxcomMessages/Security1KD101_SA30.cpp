@@ -35,7 +35,7 @@ void CSecurity1KD101_SA30::historize(boost::shared_ptr<yApi::IYadomsApi> context
    context->historizeData(deviceName, m_alarm);
 }
 
-void CSecurity1KD101_SA30::set(const std::string& /*keyword*/, const shared::CDataContainer& /*yadomsCommand*/)
+void CSecurity1KD101_SA30::set(const std::string& /*keyword*/, const std::string& /*yadomsCommand*/)
 {
     // Get-only keywords
 }

@@ -19,8 +19,9 @@ public:
    /// \brief	    Constructor
    /// \param[in] deviceName    The device name
    /// \param[in] isDimmable    ON/OFF switch if false, dimmable switch if true
+   /// \param[in] isSettable    get/set acces if true, get-only if false
    //--------------------------------------------------------------
-   CFakeSwitch(const std::string& deviceName, bool isDimmable = false);
+   CFakeSwitch(const std::string& deviceName, bool isDimmable, bool isSettable);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor

@@ -16,7 +16,7 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& keyword, const shared::CDataContainer& command, const shared::CDataContainer& deviceDetails)
+CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_rssi("rssi")
 {
    m_rssi.set(0);

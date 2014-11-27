@@ -59,7 +59,7 @@ namespace web { namespace rest { namespace service {
       //-----------------------------------------
       ///\brief   send a command to a device
       //-----------------------------------------
-      shared::CDataContainer sendDeviceCommand(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
+      shared::CDataContainer sendDeviceCommand(const std::vector<std::string> & parameters, const std::string & requestContent);   
 
       //-----------------------------------------
       ///\brief   delete a device in database
@@ -79,7 +79,7 @@ namespace web { namespace rest { namespace service {
       //-----------------------------------------
       ///\brief   Transactional method used to encapsulate operation in transactions
       //-----------------------------------------
-      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent);
 
       //-----------------------------------------
       ///\brief   Data provider

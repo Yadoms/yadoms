@@ -23,7 +23,7 @@ namespace rfxcomMessages
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
-      CFan(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& keyword, const shared::CDataContainer& command, const shared::CDataContainer& deviceDetails);
+      CFan(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor

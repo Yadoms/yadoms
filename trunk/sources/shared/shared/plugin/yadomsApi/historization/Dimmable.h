@@ -36,10 +36,10 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
 
       //-----------------------------------------------------
       ///\brief                     Set value from Yadoms command
-      ///\param[in] yadomsCommand   Yadoms command container
+      ///\param[in] yadomsCommand   Yadoms command
       ///\throw                     shared::exception::CInvalidParameter or COutOfRange if fail to parse command
       //-----------------------------------------------------
-      void set(const shared::CDataContainer& yadomsCommand);
+      void set(const std::string& yadomsCommand);
 
       //-----------------------------------------------------
       ///\brief                     Set value from on/off state

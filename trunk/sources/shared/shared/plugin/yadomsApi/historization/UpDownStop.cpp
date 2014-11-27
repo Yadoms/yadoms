@@ -12,7 +12,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
    );
 
    CUpDownStop::CUpDownStop(const std::string& keywordName, const EKeywordAccessMode& accessMode)
-      :CSingleHistorizableData<EUpDownStopCommand>(keywordName, CStandardCapacities::UpDownStop, "cmd", accessMode, EUpDownStopCommand::kStop)
+      :CSingleHistorizableData<EUpDownStopCommand>(keywordName, CStandardCapacities::UpDownStop, accessMode, EUpDownStopCommand::kStop)
    {
    }
 

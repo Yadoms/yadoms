@@ -19,7 +19,7 @@ const shared::plugin::yadomsApi::CStandardCapacity& NinjaCapacity = shared::plug
 
    
 CNinja::CNinja(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ENinjaCommand>(keywordName, NinjaCapacity, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ENinjaCommand>(keywordName, NinjaCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
 {
 }
 

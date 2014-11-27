@@ -40,7 +40,7 @@ namespace rfxcomMessages
       /// \param[in] keyword              Keyword concerned by the command
       /// \param[in] yadomsCommand        The command from Yadoms
       //--------------------------------------------------------------
-      virtual void set(const std::string& keyword, const shared::CDataContainer& yadomsCommand) = 0;
+      virtual void set(const std::string& keyword, const std::string& yadomsCommand) = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from default value

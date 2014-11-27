@@ -16,7 +16,7 @@ namespace pluginSystem
       ///\param[in] keyword      The target keyword (ex "dim")
       ///\param[in] body         The details of the command (value)
       //-----------------------------------------------------
-      CDeviceCommand(const std::string& targetDevice, const std::string& keyword, const shared::CDataContainer & body);
+      CDeviceCommand(const std::string& targetDevice, const std::string& keyword, const std::string & body);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -26,7 +26,7 @@ namespace pluginSystem
       // IDeviceCommand implementation
       virtual const std::string& getTargetDevice() const;
       virtual const std::string& getKeyword() const;
-      virtual const shared::CDataContainer& getBody() const;
+      virtual const std::string& getBody() const;
       virtual const std::string toString() const;
       virtual const shared::plugin::yadomsApi::historization::IHistorizable& getHistorizableObject() const;
       // [END] IDeviceCommand implementation
@@ -45,7 +45,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief               Command body
       //-----------------------------------------------------
-      shared::CDataContainer m_body;
+      std::string m_body;
 
       //-----------------------------------------------------
       ///\brief               Historizable object

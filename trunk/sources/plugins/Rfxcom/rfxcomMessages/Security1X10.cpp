@@ -36,7 +36,7 @@ void CSecurity1X10::historize(boost::shared_ptr<yApi::IYadomsApi> context, const
    context->historizeData(deviceName, m_tamper);
 }
 
-void CSecurity1X10::set(const std::string& /*keyword*/, const shared::CDataContainer& /*yadomsCommand*/)
+void CSecurity1X10::set(const std::string& /*keyword*/, const std::string& /*yadomsCommand*/)
 {
     // Get-only keywords
 }

@@ -4,13 +4,13 @@
 #include <shared/StringExtension.h>
 #include <shared/Log.h>
 
-CFakeSwitch::CFakeSwitch(const std::string& deviceName, bool isDimmable)
+CFakeSwitch::CFakeSwitch(const std::string& deviceName, bool isDimmable, bool isSettable)
    :m_deviceName(deviceName), m_isDimmable(isDimmable), m_dist(0, 100)
 {
    if (m_isDimmable)
-      m_dimmableSwitch.reset(new yApi::historization::CDimmable("DimmableSwitch", yApi::EKeywordAccessMode::kGet));
+      m_dimmableSwitch.reset(new yApi::historization::CDimmable("DimmableSwitch", isSettable ? yApi::EKeywordAccessMode::kGetSet : yApi::EKeywordAccessMode::kGet));
    else
-      m_switch.reset(new yApi::historization::CSwitch("Switch", yApi::EKeywordAccessMode::kGet));
+      m_switch.reset(new yApi::historization::CSwitch("Switch", isSettable ? yApi::EKeywordAccessMode::kGetSet : yApi::EKeywordAccessMode::kGet));
 }
 
 CFakeSwitch::~CFakeSwitch()

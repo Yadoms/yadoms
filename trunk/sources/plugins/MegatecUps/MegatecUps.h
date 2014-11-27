@@ -41,9 +41,9 @@ protected:
    //--------------------------------------------------------------
    /// \brief	                     Process a command received from Yadoms
    /// \param [in] context          Plugin execution context (Yadoms API)
-   /// \param [in] command          The received command (JSON string)
+   /// \param [in] command          The received command
    //--------------------------------------------------------------
-   void onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command);
+   void onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the UPS becomes connected

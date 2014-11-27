@@ -34,7 +34,7 @@ void CLighting2OnOff::historize(boost::shared_ptr<yApi::IYadomsApi> context, con
    context->historizeData(deviceName, m_keyword);
 }
 
-void CLighting2OnOff::set(const shared::CDataContainer& yadomsCommand)
+void CLighting2OnOff::set(const std::string& yadomsCommand)
 {
    m_keyword.set(yadomsCommand);
 }

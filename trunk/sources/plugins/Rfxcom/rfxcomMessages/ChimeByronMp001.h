@@ -23,7 +23,7 @@ namespace rfxcomMessages
       virtual std::string getModel() const;
       virtual void declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
       virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
-      virtual void set(const shared::CDataContainer& yadomsCommand, const shared::CDataContainer& deviceDetails);
+      virtual void set(const std::string& yadomsCommand, const shared::CDataContainer& deviceDetails);
       virtual void reset();
       virtual unsigned int idFromProtocol(unsigned char id1, unsigned char id2, unsigned char sound);
       virtual void idToProtocol(unsigned int id, unsigned char& id1, unsigned char& id2, unsigned char& sound) const;

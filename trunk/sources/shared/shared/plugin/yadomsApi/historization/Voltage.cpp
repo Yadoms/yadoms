@@ -6,7 +6,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
 {
 
    CVoltage::CVoltage(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
-      :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Voltage, "voltage", accessMode, 0.0, measureType)
+      :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Voltage, accessMode, 0.0, measureType)
    {
    }
 

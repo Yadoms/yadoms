@@ -8,7 +8,7 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CFan::CFan(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& keyword, const shared::CDataContainer& command, const shared::CDataContainer& deviceDetails)
+CFan::CFan(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_light("light"), m_fan("fan")
 {
    if (boost::iequals(keyword, m_light.getKeyword()))

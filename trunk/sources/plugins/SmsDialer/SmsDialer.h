@@ -50,14 +50,14 @@ protected:
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] powerRequest     Details of the request
    //--------------------------------------------------------------
-   void onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& powerRequest);
+   void onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& powerRequest);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a sending message request
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] sendSmsRequest   Details of the request
    //--------------------------------------------------------------
-   void onSendSmsRequest(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& sendSmsRequest);
+   void onSendSmsRequest(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& sendSmsRequest);
 
    //--------------------------------------------------------------
    /// \brief	                     Check if incoming SMS and process it

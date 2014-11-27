@@ -6,7 +6,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
 {
 
    CPowerFactor::CPowerFactor(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
-      :CSingleHistorizableData<double>(keywordName, CStandardCapacities::PowerFactor, "powerFactor", accessMode, 0.0, measureType)
+      :CSingleHistorizableData<double>(keywordName, CStandardCapacities::PowerFactor, accessMode, 0.0, measureType)
    {
    }
 

@@ -23,16 +23,16 @@ widgetViewModelCtor =
          if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device)) && (!isNullOrUndefined(this.capacity))) {
             var cmd = null;
             if (this.capacity == "switch") {
-               cmd = JSON.stringify({ state: newState })
+               cmd = newState;
             }
             else {
-               cmd = JSON.stringify({ level: (newState == 1 ? 100 : 0) })
+               cmd = newState == 1 ? 100 : 0;
             }
             $.ajax({
                type: "POST",
                url: "/rest/device/keyword/" + this.widget.configuration.device.keywordId + "/command",
-               data: cmd,
-               contentType: "application/json; charset=utf-8",
+               data: cmd.toString(),
+               contentType: "application/text; charset=utf-8",
                dataType: "json"
             })
                .done(function(data) {

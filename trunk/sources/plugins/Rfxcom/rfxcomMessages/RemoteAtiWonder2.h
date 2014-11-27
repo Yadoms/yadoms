@@ -30,7 +30,7 @@ namespace rfxcomMessages
       virtual const std::string& getModel() const;
       virtual void declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
       virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
-      virtual void set(const shared::CDataContainer& yadomsCommand);
+      virtual void set(const std::string& yadomsCommand);
       virtual void setFromProtocolState(const RBUF& remoteRbuf);
       virtual void toProtocolState(RBUF& remoteRbuf) const;
       // [END] IRemoteSubtype implementation

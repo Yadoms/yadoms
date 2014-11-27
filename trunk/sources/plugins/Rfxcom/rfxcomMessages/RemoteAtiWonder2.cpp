@@ -35,7 +35,7 @@ void CRemoteAtiWonder2::historize(boost::shared_ptr<yApi::IYadomsApi> context, c
    context->historizeData(deviceName, m_keywordCmndtype);
 }
 
-void CRemoteAtiWonder2::set(const shared::CDataContainer& yadomsCommand)
+void CRemoteAtiWonder2::set(const std::string& yadomsCommand)
 {
    m_keywordCmnd.set(yadomsCommand);
    m_keywordCmndtype.set(yadomsCommand);

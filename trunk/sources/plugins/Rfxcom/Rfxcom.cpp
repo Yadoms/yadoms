@@ -158,8 +158,8 @@ bool CRfxcom::connectionsAreEqual(const CRfxcomConfiguration& conf1, const CRfxc
 
    if (conf1.comIsEthernet())
       return (conf1.getEthernetAddress() == conf2.getEthernetAddress() && conf1.getEthernetPort() == conf2.getEthernetPort());
-   else
-      return (conf1.getSerialPort() == conf2.getSerialPort());
+
+   return (conf1.getSerialPort() == conf2.getSerialPort());
 }
 
 void CRfxcom::send(const shared::communication::CByteBuffer& buffer, bool needAnswer)
@@ -192,7 +192,7 @@ void CRfxcom::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, boost::shar
 
    if (!m_port || m_currentState != kRfxcomIsRunning)
    {
-      YADOMS_LOG(warning) << "Command not sent (RFXCom is not ready) : " << command;
+      YADOMS_LOG(warning) << "Command not sent (RFXCom is not ready) : " << command->toString();
       return;
    }
 

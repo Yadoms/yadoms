@@ -61,7 +61,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
 
    
    CRemotePC::CRemotePC(const std::string& keywordName)
-      :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ERemotePCCodes>(keywordName, RemotePCCapacity, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+      :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ERemotePCCodes>(keywordName, RemotePCCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
    {
    }
 

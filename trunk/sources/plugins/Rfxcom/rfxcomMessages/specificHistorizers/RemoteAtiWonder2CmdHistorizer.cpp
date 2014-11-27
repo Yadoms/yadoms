@@ -68,7 +68,7 @@ namespace rfxcomMessages { namespace specificHistorizers {
    
    
    CRemoteAtiWonder2CmdHistorizer::CRemoteAtiWonder2CmdHistorizer(const std::string& keywordName)
-      :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ERemoteAtiWonder2Codes>(keywordName, RemoteAtiWonder2Capacity, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+      :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ERemoteAtiWonder2Codes>(keywordName, RemoteAtiWonder2Capacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
    {
    }
 

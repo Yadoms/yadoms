@@ -25,7 +25,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
    );
 
    CCameraMove::CCameraMove(const std::string& keywordName, const EKeywordAccessMode& accessMode)
-      :CSingleHistorizableData<ECameraMoveCommand>(keywordName, CStandardCapacities::CameraMove, "cmd", accessMode, ECameraMoveCommand::kCenterPosition)
+      :CSingleHistorizableData<ECameraMoveCommand>(keywordName, CStandardCapacities::CameraMove, accessMode, ECameraMoveCommand::kCenterPosition)
    {
    }
 
