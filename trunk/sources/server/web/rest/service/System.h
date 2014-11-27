@@ -26,7 +26,7 @@ namespace web { namespace rest { namespace service {
 
    private:
       shared::CDataContainer getSerialPorts();
-      shared::CDataContainer getNetworkInterfaces();
+      shared::CDataContainer getNetworkInterfaces(bool includeLoopback);
 
    private:
       static std::string m_restKeyword;

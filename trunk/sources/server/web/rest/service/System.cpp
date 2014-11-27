@@ -44,7 +44,9 @@ namespace web { namespace rest { namespace service {
          if (boost::iequals(query, "SerialPorts"))
             return getSerialPorts();
          else if (boost::iequals(query, "NetworkInterfaces"))
-            return getNetworkInterfaces();
+            return getNetworkInterfaces(true);
+         else if (boost::iequals(query, "NetworkInterfacesWithoutLoopback"))
+            return getNetworkInterfaces(false);
          else
             return web::rest::CResult::GenerateError("unsupported binding query : " + query);
       }
@@ -77,7 +79,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CSystem::getNetworkInterfaces()
+   shared::CDataContainer CSystem::getNetworkInterfaces(bool includeLoopback)
    {
       try
       {
@@ -85,7 +87,8 @@ namespace web { namespace rest { namespace service {
          Poco::Net::NetworkInterface::NetworkInterfaceList netlist = Poco::Net::NetworkInterface::list();
          for (Poco::Net::NetworkInterface::NetworkInterfaceList::iterator nit = netlist.begin(); nit != netlist.end(); ++nit)
          {
-            result.set(nit->address().toString(), (boost::format("%1% (%2%)") % nit->displayName() % nit->address().toString()).str(), 0x00); //in case of key contains a dot, just ensure the full key is taken into account
+            if (includeLoopback || (!includeLoopback && !nit->address().isLoopback()))
+               result.set(nit->address().toString(), (boost::format("%1% (%2%)") % nit->displayName() % nit->address().toString()).str(), 0x00); //in case of key contains a dot, just ensure the full key is taken into account
          }
          return web::rest::CResult::GenerateSuccess(result);
       }
