@@ -17,25 +17,17 @@ namespace xplcore
    {
       YADOMS_LOG_CONFIGURE(getName());
 
-      //if ip is specified, then just retreive localEndpoint
-      CXplHelper::getEndPointFromInterfaceIp(localIPOfTheInterfaceToUse, m_localEndPoint);
-      //we set the listening port
-      m_localEndPoint.port(CXplHelper::XplProtocolPort);
-
       //we configure the socket to listen every interface. (do not specify listening endpoint, because it do not work on linux for broadcast messages)
       m_socket.open(boost::asio::ip::udp::v4());
       m_socket.set_option(boost::asio::ip::udp::socket::reuse_address(true));
       m_socket.set_option(boost::asio::socket_base::broadcast(true));
       m_socket.bind(boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::any(), CXplHelper::XplProtocolPort));
 
-      //log Hub information
-      YADOMS_LOG(info) << "Xpl Hub is starting";
-      YADOMS_LOG(info) << "Xpl Hub Listening on port : " << CXplHelper::XplProtocolPort;
-      if(!m_localEndPoint.address().is_unspecified())
-         YADOMS_LOG(info) << "Xpl Hub filtering ip : " << m_localEndPoint.address().to_string();
-
       //create the broadcast remote endpoint 
       m_remoteEndPoint = boost::asio::ip::udp::endpoint(boost::asio::ip::address_v4::broadcast(), CXplHelper::XplProtocolPort);
+
+      //set filter
+      updateHubFilter(localIPOfTheInterfaceToUse);
 
       runCheckApplicationLifeCycleTimeout();
       m_stopRequested = false;
@@ -70,6 +62,37 @@ namespace xplcore
       return true;
    }
 
+   void CXplHub::updateHubFilter(const std::string & localIPOfTheInterfaceToUse)
+   {
+      //take the mutex
+      boost::lock_guard<boost::mutex> lock(m_configurationMutex);
+
+      //if ip is specified, then just retreive localEndpoint
+      CXplHelper::getEndPointFromInterfaceIp(localIPOfTheInterfaceToUse, m_localEndPoint);
+      //we set the listening port
+      m_localEndPoint.port(CXplHelper::XplProtocolPort);
+
+      //log Hub information
+      YADOMS_LOG(info) << "Xpl Hub is starting";
+      YADOMS_LOG(info) << "Xpl Hub Listening on port : " << CXplHelper::XplProtocolPort;
+      if (!m_localEndPoint.address().is_unspecified())
+         YADOMS_LOG(info) << "Xpl Hub filtering ip : " << m_localEndPoint.address().to_string();
+
+   }
+
+   //--------------------------------------------------------------
+   /// \brief	   Check if a message is filtered
+   //--------------------------------------------------------------
+   bool CXplHub::isFiltered(CXplMessage & msg)
+   {
+      bool isFiltered = false;
+      //take the mutex
+      boost::lock_guard<boost::mutex> lock(m_configurationMutex);
+      if (!m_localEndPoint.address().is_unspecified() && m_localEndPoint.address().to_string() != msg.getBodyValue("remote-ip"))
+         isFiltered = true;
+      return isFiltered;
+   }
+
    void CXplHub::handleReceive(const boost::system::error_code& error,
       std::size_t bytes_transferred)
    {
@@ -101,11 +124,7 @@ namespace xplcore
                if (CXplHelper::getEndPointFromInterfaceIp(msg.getBodyValue("remote-ip"), remoteEndpoint))
                {
                   //check if the filter is applied
-                  bool isFiltered = false;
-                  if(!m_localEndPoint.address().is_unspecified() && m_localEndPoint.address().to_string() != msg.getBodyValue("remote-ip"))
-                     isFiltered = true;
-
-                  if(!isFiltered)
+                  if (!isFiltered(msg))
                   {
                      YADOMS_LOG(debug) << "Heartbeat message";
                      //we check if we already known this periph

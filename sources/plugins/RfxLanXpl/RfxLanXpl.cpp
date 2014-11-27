@@ -43,7 +43,7 @@ void print(shared::CDataContainer const& pt)
 
 void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 {
-   boost::shared_ptr<xplcore::CXplHub> hub;
+   
    try
    {
 
@@ -59,8 +59,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       //manage xpl hub
       if (m_configuration.getStartXplhub())
       {
-         hub.reset(new xplcore::CXplHub(m_configuration.getHubLocalIp()));
-         hub->start();
+         startHub(m_configuration.getHubLocalIp());
       }
 
       // the main loop
@@ -82,6 +81,34 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             // Configuration was updated
             shared::CDataContainer newConfiguration = context->getEventHandler().getEventData<shared::CDataContainer>();
             YADOMS_LOG(debug) << "configuration was updated...";
+
+            //read new conf and
+            CRfxLanXplConfiguration newConf;
+            newConf.initializeWith(newConfiguration);
+
+            if (m_configuration.getStartXplhub() != newConf.getStartXplhub())
+            {
+               //the start hub changes
+               if (newConf.getStartXplhub())
+               {
+                  //start a new hub
+                  startHub(newConf.getHubLocalIp());
+               }
+               else
+               {
+                  //stop hub
+                  stopHub();
+               }
+            }
+            else
+            {
+               if (!boost::iequals(m_configuration.getHubLocalIp(), newConf.getHubLocalIp()))
+               {
+                  //the filter chages, just update hub
+                  if (m_hub)
+                     m_hub->updateHubFilter(newConf.getHubLocalIp());
+               }
+            }
 
             // Take into account the new configuration
             // - Restart the plugin if necessary,
@@ -141,10 +168,25 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       YADOMS_LOG(fatal) << "The XPL plugin fails. Unknown expcetion : " << ex.what();
    }
 
-   if (hub)
-      hub->stop();
+   //ensure hub is stopped
+   stopHub();
 }
 
+void CRfxLanXpl::startHub(const std::string & hubFilterConfiguration)
+{
+   //stop it if running
+   stopHub();
+
+   //new one !
+   m_hub.reset(new xplcore::CXplHub(hubFilterConfiguration));
+   m_hub->start();
+}
+
+void CRfxLanXpl::stopHub()
+{
+   if (m_hub)
+      m_hub->stop();
+}
 
 void CRfxLanXpl::StartPeripheralListing(xplcore::CXplService & xplService)
 {
