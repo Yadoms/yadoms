@@ -18,7 +18,6 @@ function ListParameterHandler(i18nContext, paramName, content, currentValue) {
    assert(content !== undefined, "content must be defined");
    assert(content.item !== undefined, "content.content must be defined");
 
-
    this.items = [];
    this.configurationValues = currentValue;
    this.name = content.name;
