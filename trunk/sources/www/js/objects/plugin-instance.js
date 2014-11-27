@@ -38,18 +38,20 @@ PluginInstance.prototype.toJSON = function () {
 PluginInstance.prototype.getBindedPackageConfigurationSchema = function() {
    if (!isNullOrUndefined(this.package)) {
       var tmp = this.package.configurationSchema;
-      return this.applyBindingPrivate(tmp);
+      return this.applyBindingPrivate(tmp, ["system"]);
    }
 }
 
 PluginInstance.prototype.getBindedManuallyDeviceCreationConfigurationSchema = function() {
    if (!isNullOrUndefined(this.package)) {
       var tmp = this.package.manuallyDeviceCreationConfigurationSchema;
-      return this.applyBindingPrivate(tmp);
+      return this.applyBindingPrivate(tmp, ["plugin", "system"]);
    }
 }
 
-PluginInstance.prototype.applyBindingPrivate = function(item) {
+PluginInstance.prototype.applyBindingPrivate = function(item, allowedTypes) {
+   assert(!isNullOrUndefined(item), "item must be defined");
+   assert(!isNullOrUndefined(allowedTypes), "allowedTypes must be defined");
    var self = this;
    for (var key in item) {
       console.log("parcours de " + key);
@@ -58,7 +60,9 @@ PluginInstance.prototype.applyBindingPrivate = function(item) {
          if (!isNullOrUndefined(item[key].__Binding__)) {
             //we've got binding
             assert(!isNullOrUndefined(item[key].__Binding__.type), "type must be defined in binding");
-            assert((item[key].__Binding__.type.toLowerCase() == "system") || (item[key].__Binding__.type.toLowerCase() == "plugin") , "type must be defined to 'system' or 'plugin' in binding");
+            //is the binding type is allowed
+
+            assert ($.inArray(item[key].__Binding__.type.toLowerCase(), allowedTypes) != -1, "Binding of type " + item[key].__Binding__.type + " is not allowed here");
             assert(!isNullOrUndefined(item[key].__Binding__.query), "query must be defined in binding");
 
             var destList = {};
@@ -109,7 +113,7 @@ PluginInstance.prototype.applyBindingPrivate = function(item) {
             }
          }
          else {
-            item[key] = this.applyBindingPrivate(item[key]);
+            item[key] = this.applyBindingPrivate(item[key], allowedTypes);
          }
       }
    }
