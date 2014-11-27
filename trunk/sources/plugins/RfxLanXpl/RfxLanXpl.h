@@ -3,6 +3,7 @@
 #include "RfxLanXplConfiguration.h"
 #include "xplcore/XplMessage.h"
 #include "xplcore/XplService.h"
+#include "xplcore/XplHub.h"
 #include "xplrules/IDeviceManager.h"
 #include <shared/plugin/yadomsApi/IManuallyDeviceCreationRequest.h>
 #include <shared/plugin/yadomsApi/IBindingQueryRequest.h>
@@ -71,6 +72,18 @@ private:
    //----------------------------------------------
    void StartPeripheralListing(xplcore::CXplService & xplService);
 
+
+   //----------------------------------------------
+   ///\brief Function that start the hub
+   ///\param [in] hubFilterConfiguration  the hub configuration
+   //----------------------------------------------
+   void startHub(const std::string & hubFilterConfiguration); 
+   
+   //----------------------------------------------
+   ///\brief Function that stop the hub
+   //----------------------------------------------
+   void stopHub();
+
    //----------------------------------------------
    ///\brief  The device manager
    //----------------------------------------------
@@ -96,6 +109,8 @@ private:
    /// \brief	The list of all rfxlan which have been connected once
    //--------------------------------------------------------------
    std::vector<std::string> m_connectedRfxLans;
+
+   boost::shared_ptr<xplcore::CXplHub> m_hub;
 };
 
 

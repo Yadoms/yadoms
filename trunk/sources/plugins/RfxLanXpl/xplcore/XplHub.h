@@ -18,6 +18,19 @@ namespace xplcore
       virtual bool stop();
       // {END] CThreadBase override
 
+      //----------------------------------
+      ///\brief   Update the filtering ips
+      ///\param [in]   localIPOfTheInterfaceToUse  The ip to filter
+      //----------------------------------
+      void updateHubFilter(const std::string & localIPOfTheInterfaceToUse);
+
+   private:
+      //--------------------------------------------------------------
+      /// \brief	   Check if a message is filtered
+      //--------------------------------------------------------------
+      bool isFiltered(CXplMessage & msg);
+
+
    private:
       void doWork();
       void startReceive();
@@ -45,6 +58,12 @@ namespace xplcore
       bool m_stopRequested;
 
       static const int ApplicationLifeCycleTimeout = 60; //seconds
-   };
 
+      //--------------------------------------------------------------
+      /// \brief	   Mutex protecting the configuration content
+      //--------------------------------------------------------------
+      mutable boost::mutex m_configurationMutex;
+
+   };
+   
 } // namespace xplcore
