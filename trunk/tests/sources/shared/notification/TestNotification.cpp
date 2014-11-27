@@ -73,11 +73,11 @@ void ThreadNotificationListener(shared::notification::CNotificationCenter * cent
             break;
          }
 
-         //case shared::notification::CNotificationCenter::kPolling:
-         //{
-         //   receiveNotificationEnd = true;
-         //   break;
-         //}
+         case shared::event::kTimeout:
+         {
+            receiveNotificationEnd = true;
+            break;
+         }
 
          default:
             break;
@@ -188,14 +188,15 @@ BOOST_AUTO_TEST_CASE(Notification_1ClientNPosters)
             }
             break;
          }
-      //case shared::notification::CNotificationCenter::kPolling:
-      //   {
-      //      // Check if all posters finished their job
-      //      allPostersAreOff = true;
-      //      for (size_t i = 0 ; allPostersAreOff && i < nbPosters ; ++i)
-      //         if (!posters[i]->timed_join(boost::posix_time::milliseconds(0))) allPostersAreOff = false;
-      //      break;
-      //   }
+
+      case shared::event::kTimeout:
+         {
+            // Check if all posters finished their job
+            allPostersAreOff = true;
+            for (size_t i = 0 ; allPostersAreOff && i < nbPosters ; ++i)
+               if (!posters[i]->timed_join(boost::posix_time::milliseconds(0))) allPostersAreOff = false;
+            break;
+         }
 
       default:
          BOOST_FAIL("Unexpected waitForNotifications return code");
