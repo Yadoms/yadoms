@@ -34,7 +34,7 @@ void CThermostat3MertikG6RH4TB::historize(boost::shared_ptr<yApi::IYadomsApi> co
    context->historizeData(deviceName, m_UpDown);
 }
 
-void CThermostat3MertikG6RH4TB::set(const std::string& keyword, const shared::CDataContainer& yadomsCommand)
+void CThermostat3MertikG6RH4TB::set(const std::string& keyword, const std::string& yadomsCommand)
 {
    if (boost::iequals(keyword, m_onOff.getKeyword()))
    {

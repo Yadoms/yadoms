@@ -45,6 +45,7 @@ set(RFXCOM_MESSAGES_SOURCES
    rfxcomMessages/IRemoteSubtype.h
    rfxcomMessages/ISecurity1Subtype.h
    rfxcomMessages/IThermostat1Subtype.h
+   rfxcomMessages/IThermostat3Subtype.h
    rfxcomMessages/Lighting1.h
    rfxcomMessages/Lighting1.cpp
    rfxcomMessages/Lighting2.h

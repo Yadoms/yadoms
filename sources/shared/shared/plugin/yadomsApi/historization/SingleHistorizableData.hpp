@@ -1,10 +1,36 @@
 #pragma once
 
 #include <shared/plugin/yadomsApi/historization/IHistorizable.h>
-#include <shared/DataContainer.h>
+
+//TODO vérifier si includes suivants tous utiles
+#include <shared/enumeration/IExtendedEnum.h>
+#include <boost/utility/enable_if.hpp>
+#include <boost/type_traits/is_enum.hpp>
+#include <boost/type_traits/is_base_of.hpp>
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {
+
+   //TODO mettre ça ailleurs (factoriser avec CDataContainer ?)
+   template <typename T, class Enable = void>
+   struct helper
+   {
+      static T getInternal(const std::string& value)
+      {
+         return boost::lexical_cast<T>(value);
+      }
+   };
+
+   template <typename T>
+   struct helper<T, typename boost::enable_if<boost::is_base_of<shared::enumeration::IExtendedEnum, T > >::type >
+   {
+      static T getInternal(const std::string& value)
+      {
+         return T(value);
+      }
+   };
+
+
    //-----------------------------------------------------
    ///\brief     Template class which can be used to declare a single data IHistorizable value
    //-----------------------------------------------------
@@ -16,12 +42,11 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       ///\brief                        Constructor
       ///\param[in] keywordName        the keyword name
       ///\param[in] capacity           the capacity
-      ///\param[in] yadomsIdentifier   the identifier used by yadoms in DataContainer
       ///\param[in] accessMode         The access mode
       ///\param[in] measureType        The measure type
       //-----------------------------------------------------
-      CSingleHistorizableData(const std::string& keywordName, const CStandardCapacity& capacity, const std::string & yadomsIdentifier, const EKeywordAccessMode& accessMode, const EMeasureType measureType = EMeasureType::kAbsolute)
-         :m_keywordName(keywordName), m_capacity(capacity), m_yadomsIdentifier(yadomsIdentifier), m_accessMode(accessMode), m_measureType(measureType)
+      CSingleHistorizableData(const std::string& keywordName, const CStandardCapacity& capacity, const EKeywordAccessMode& accessMode, const EMeasureType measureType = EMeasureType::kAbsolute)
+         :m_keywordName(keywordName), m_capacity(capacity), m_accessMode(accessMode), m_measureType(measureType)
       {
       }      
       
@@ -29,13 +54,12 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       ///\brief                        Constructor
       ///\param[in] keywordName        the keyword name
       ///\param[in] capacity           the capacity
-      ///\param[in] yadomsIdentifier   the identifier used by yadoms in DataContainer
       ///\param[in] accessMode         The access mode
       ///\param[in] initialValue       the initial value
       ///\param[in] measureType        The measure type
       //-----------------------------------------------------
-      CSingleHistorizableData(const std::string& keywordName, const CStandardCapacity& capacity, const std::string & yadomsIdentifier, const EKeywordAccessMode& accessMode, const T initialValue, const EMeasureType measureType = EMeasureType::kAbsolute)
-         :m_keywordName(keywordName), m_capacity(capacity), m_yadomsIdentifier(yadomsIdentifier), m_value(initialValue), m_accessMode(accessMode), m_measureType(measureType)
+      CSingleHistorizableData(const std::string& keywordName, const CStandardCapacity& capacity, const EKeywordAccessMode& accessMode, const T initialValue, const EMeasureType measureType = EMeasureType::kAbsolute)
+         :m_keywordName(keywordName), m_capacity(capacity), m_value(initialValue), m_accessMode(accessMode), m_measureType(measureType)
       {
       }
 
@@ -78,12 +102,12 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
    
       //-----------------------------------------------------
       ///\brief                     Set value from Yadoms command
-      ///\param[in] yadomsCommand   Yadoms command container
+      ///\param[in] yadomsCommand   Yadoms command
       ///\throw                     shared::exception::CInvalidParameter or COutOfRange if fail to parse command
       //-----------------------------------------------------
-      virtual void set(const CDataContainer& yadomsCommand)
+      virtual void set(const std::string& yadomsCommand)
       {
-         m_value = Normalize(yadomsCommand.get<T>(m_yadomsIdentifier));
+         m_value = Normalize(helper<T>::getInternal(yadomsCommand));
       }
 
       //-----------------------------------------------------
@@ -147,11 +171,6 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       ///\brief               The capacity
       //-----------------------------------------------------      
       const CStandardCapacity & m_capacity;
-
-      //-----------------------------------------------------
-      ///\brief                     The yadoms identifier in datacontainer
-      //-----------------------------------------------------
-      const std::string m_yadomsIdentifier;
 
       //-----------------------------------------------------
       ///\brief               The command value

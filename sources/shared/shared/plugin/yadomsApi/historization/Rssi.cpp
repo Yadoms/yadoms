@@ -7,7 +7,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
 {
 
    CRssi::CRssi(const std::string& keywordName, const EMeasureType& measureType)
-      :CSingleHistorizableData<int>(keywordName, CStandardCapacities::Rssi, "rssi", EKeywordAccessMode::kGet, 0, measureType)
+      :CSingleHistorizableData<int>(keywordName, CStandardCapacities::Rssi, EKeywordAccessMode::kGet, 0, measureType)
    {
    }
 

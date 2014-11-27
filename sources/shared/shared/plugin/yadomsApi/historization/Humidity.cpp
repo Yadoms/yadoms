@@ -9,7 +9,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
 {
 
    CHumidity::CHumidity(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
-      :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Humidity, "humidity", accessMode, 0, measureType)
+      :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Humidity, accessMode, 0, measureType)
    {
    }
 

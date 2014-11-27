@@ -6,7 +6,7 @@
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {
    CSwitch::CSwitch(const std::string& keywordName, const EKeywordAccessMode& accessMode)
-      :CSingleHistorizableData<bool>(keywordName, CStandardCapacities::Switch, "state", accessMode, false, EMeasureType::kAbsolute)
+      :CSingleHistorizableData<bool>(keywordName, CStandardCapacities::Switch, accessMode, false, EMeasureType::kAbsolute)
    {
    }
 

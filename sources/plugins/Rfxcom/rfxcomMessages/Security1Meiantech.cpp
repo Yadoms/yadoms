@@ -40,7 +40,7 @@ void CSecurity1Meiantech::historize(boost::shared_ptr<yApi::IYadomsApi> context,
    context->historizeData(deviceName, m_armAlarm);
 }
 
-void CSecurity1Meiantech::set(const std::string& keyword, const shared::CDataContainer& yadomsCommand)
+void CSecurity1Meiantech::set(const std::string& keyword, const std::string& yadomsCommand)
 {
    if (boost::iequals(keyword, m_panic.getKeyword()))
    {

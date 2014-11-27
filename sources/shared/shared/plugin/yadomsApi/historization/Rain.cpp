@@ -7,7 +7,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
 {
 
    CRain::CRain(const std::string& keywordName, const EMeasureType& measureType)
-      :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Rain, "rain", EKeywordAccessMode::kGet, 0.0, measureType)
+      :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Rain, EKeywordAccessMode::kGet, 0.0, measureType)
    {
    }
 

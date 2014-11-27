@@ -59,35 +59,15 @@ namespace web {
             //parse url to parameters
             parameters = parseUrl(request_path);
 
-            //parse content to json format
-            shared::CDataContainer requestContent;
-
-            try
+            std::string content;
+            if (request.hasContentLength())
             {
-               if (request.hasContentLength())
-               {
-                  if (boost::ifind_first(request.getContentType(), "application/json"))
-                  {
-                     std::string content;
-                     content.resize((unsigned int)request.getContentLength());
-                     request.stream().read((char*)content.c_str(), request.getContentLength());
-                     requestContent.initializeWith(content);
-                  }
-                  else
-                  {
-                     YADOMS_LOG(warning) << "Ignore content because its format is not supported";
-                  }
-               }
-            }
-            catch (std::exception &ex)
-            {
-               YADOMS_LOG(error) << "Fail to read request content as Json format. Exception : " << ex.what();
-
-               return web::rest::CResult::GenerateError("Fail to read request content as Json format").serialize();
+               content.resize((unsigned int)request.getContentLength());
+               request.stream().read((char*)content.c_str(), request.getContentLength());
             }
 
             //dispatch url to rest dispatcher
-            shared::CDataContainer js = m_restDispatcher.dispath(request.getMethod(), parameters, requestContent);
+            shared::CDataContainer js = m_restDispatcher.dispath(request.getMethod(), parameters, content);
             return js.serialize();
          }
 

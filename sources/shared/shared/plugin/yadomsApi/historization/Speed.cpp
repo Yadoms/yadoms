@@ -9,7 +9,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
 {
 
 CSpeed::CSpeed(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
-   :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Speed, "speed", accessMode, 0.0, measureType)
+   :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Speed, accessMode, 0.0, measureType)
 {
 }
 

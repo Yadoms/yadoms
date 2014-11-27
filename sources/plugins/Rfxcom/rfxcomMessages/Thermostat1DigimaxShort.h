@@ -27,7 +27,7 @@ namespace rfxcomMessages
       virtual std::string getModel() const;
       virtual void declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
       virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
-      virtual void set(const shared::CDataContainer& yadomsCommand);
+      virtual void set(const std::string& yadomsCommand);
       virtual void reset();
       virtual void setFromProtocolState(const RBUF& thermostat1Rbuf);
       virtual void toProtocolState(RBUF& thermostat1Rbuf) const;

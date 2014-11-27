@@ -82,7 +82,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
 
    
    CRemoteAtiWonderPlus::CRemoteAtiWonderPlus(const std::string& keywordName)
-      :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ERemoteAtiWonderPlusCodes>(keywordName, RemoteAtiWonderPlusCapacity, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+      :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ERemoteAtiWonderPlusCodes>(keywordName, RemoteAtiWonderPlusCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
    {
    }
 

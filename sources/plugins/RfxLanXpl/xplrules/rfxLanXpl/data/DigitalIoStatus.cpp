@@ -13,7 +13,7 @@ const shared::plugin::yadomsApi::CStandardCapacity& RfxLanDigitalIoStatusCapacit
 
    
 CDigitalIoStatus::CDigitalIoStatus(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EDigitalIoStatus>(keywordName, RfxLanDigitalIoStatusCapacity, "status", shared::plugin::yadomsApi::EKeywordAccessMode::kGet)
+   :CSingleHistorizableData<EDigitalIoStatus>(keywordName, RfxLanDigitalIoStatusCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGet)
 {
 }
 

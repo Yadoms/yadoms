@@ -32,9 +32,9 @@ const EKeywordAccessMode& CDimmable::getAccessMode() const
    return m_accessMode;
 }
 
-void CDimmable::set(const shared::CDataContainer& yadomsCommand)
+void CDimmable::set(const std::string& yadomsCommand)
 {
-   m_switchLevel = NormalizeLevel(yadomsCommand.get<int>("level"));
+   m_switchLevel = NormalizeLevel(boost::lexical_cast<int>(yadomsCommand));
 }
 
 void CDimmable::set(bool isOn)

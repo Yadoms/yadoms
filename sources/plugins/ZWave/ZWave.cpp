@@ -53,7 +53,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                YADOMS_LOG(debug) << "Command received from Yadoms :" << command->toString();
                try
                {
-                  m_controller->SendCommand(command->getTargetDevice(), command->getKeyword(), command->getBody().serialize());
+                  m_controller->SendCommand(command->getTargetDevice(), command->getKeyword(), command->getBody());
                }
                catch (shared::exception::CException & ex)
                {

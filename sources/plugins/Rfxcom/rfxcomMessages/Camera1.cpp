@@ -9,7 +9,7 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CCamera1::CCamera1(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command, const shared::CDataContainer& deviceDetails)
+CCamera1::CCamera1(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_camera("camera"), m_rssi("rssi")
 {
    m_camera.set(command);

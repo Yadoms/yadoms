@@ -34,7 +34,7 @@ void CLighting5Livolo::historize(boost::shared_ptr<yApi::IYadomsApi> context, co
    context->historizeData(deviceName, m_keyword);
 }
 
-void CLighting5Livolo::set(const shared::CDataContainer& yadomsCommand)
+void CLighting5Livolo::set(const std::string& yadomsCommand)
 {
    m_keyword.set(yadomsCommand);
 }

@@ -34,7 +34,7 @@ void CLighting5LightwaveRfKeyword::historize(boost::shared_ptr<yApi::IYadomsApi>
    context->historizeData(deviceName, m_keyword);
 }
 
-void CLighting5LightwaveRfKeyword::set(const shared::CDataContainer& yadomsCommand)
+void CLighting5LightwaveRfKeyword::set(const std::string& yadomsCommand)
 {
    m_keyword.set(yadomsCommand);
 }

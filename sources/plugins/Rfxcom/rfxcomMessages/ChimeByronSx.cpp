@@ -30,7 +30,7 @@ void CChimeByronSx::historize(boost::shared_ptr<yApi::IYadomsApi> context, const
    context->historizeData(deviceName, m_event);
 }
 
-void CChimeByronSx::set(const shared::CDataContainer& /*yadomsCommand*/, const shared::CDataContainer& deviceDetails)
+void CChimeByronSx::set(const std::string& /*yadomsCommand*/, const shared::CDataContainer& deviceDetails)
 {
    std::string sound = deviceDetails.get<std::string>("sound");
    if     (sound == "Tubular 3 Notes") m_sound = kTubular3Notes;

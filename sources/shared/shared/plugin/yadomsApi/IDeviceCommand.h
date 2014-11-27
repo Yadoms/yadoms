@@ -29,9 +29,9 @@ namespace shared { namespace plugin { namespace yadomsApi
 
       //-----------------------------------------------------
       ///\brief               Get the command body
-      ///\return              The command body, as JSON string
+      ///\return              The command body, as string
       //-----------------------------------------------------
-      virtual const shared::CDataContainer & getBody() const = 0;
+      virtual const std::string & getBody() const = 0;
 
       //-----------------------------------------------------
       ///\brief Describe the command as string

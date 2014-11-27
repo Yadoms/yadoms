@@ -16,7 +16,7 @@ const shared::plugin::yadomsApi::CStandardCapacity& ForecastCapacity = shared::p
 
    
 CForecast::CForecast(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EForecast>(keywordName, ForecastCapacity, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGet)
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EForecast>(keywordName, ForecastCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGet)
 {
 }
 

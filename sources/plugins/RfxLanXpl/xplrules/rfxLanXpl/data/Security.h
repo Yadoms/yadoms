@@ -52,7 +52,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       ///\param[in] yadomsCommand   Yadoms command container
       ///\throw                     shared::exception::CInvalidParameter or COutOfRange if fail to parse command
       //-----------------------------------------------------
-      void set(const shared::CDataContainer& yadomsCommand);
+      void set(const std::string& yadomsCommand);
 
       //-----------------------------------------------------
       ///\brief                     Set command

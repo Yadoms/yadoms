@@ -18,7 +18,7 @@ const shared::plugin::yadomsApi::CStandardCapacity& MertikStatusCapacity = share
 
    
 CMertickStatus::CMertickStatus(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EMertikStatus>(keywordName, MertikStatusCapacity, "status", shared::plugin::yadomsApi::EKeywordAccessMode::kGet)
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EMertikStatus>(keywordName, MertikStatusCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGet)
 {
 }
 

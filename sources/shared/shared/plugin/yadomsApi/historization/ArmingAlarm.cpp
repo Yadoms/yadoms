@@ -12,7 +12,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
       );
 
    CArmingAlarm::CArmingAlarm(const std::string& keywordName, const EKeywordAccessMode& accessMode)
-      :CSingleHistorizableData<EArmingAlarmStatus>(keywordName, CStandardCapacities::ArmingAlarm, "armingAlarm", accessMode, EArmingAlarmStatus::kDisarmed, EMeasureType::kAbsolute)
+      :CSingleHistorizableData<EArmingAlarmStatus>(keywordName, CStandardCapacities::ArmingAlarm, accessMode, EArmingAlarmStatus::kDisarmed, EMeasureType::kAbsolute)
    {
    }
 

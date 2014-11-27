@@ -102,7 +102,7 @@ namespace xplrules { namespace rfxLanXpl {
       }
 
       //read command details (may throw exception if something is wrong)
-      shared::plugin::yadomsApi::historization::CDimmable commandDetails(commandData->getBody().serialize());
+      shared::plugin::yadomsApi::historization::CDimmable commandDetails(commandData->getBody());
 
       ////////////////////////////
       // create the message

@@ -197,7 +197,7 @@ void CMegatecUps::send(const shared::communication::CByteBuffer& buffer, bool ne
       m_waitForAnswerTimer->start();
 }
 
-void CMegatecUps::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& command)
+void CMegatecUps::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command)
 {
    if (!m_port)
       YADOMS_LOG(warning) << "Command not send (UPS is not ready) : " << command;

@@ -32,11 +32,12 @@ const EKeywordAccessMode& CMessage::getAccessMode() const
    return m_accessMode;
 }
 
-void CMessage::set(const shared::CDataContainer& yadomsCommand)
+void CMessage::set(const std::string& yadomsCommand)
 {
-   m_from = yadomsCommand.get<std::string>("to");
-   m_to = yadomsCommand.get<std::string>("from");
-   m_body = yadomsCommand.get<std::string>("body");
+   shared::CDataContainer command(yadomsCommand);
+   m_from = command.get<std::string>("to");
+   m_to = command.get<std::string>("from");
+   m_body = command.get<std::string>("body");
 }
 
 void CMessage::set(const std::string& from, const std::string& to, const std::string& body)

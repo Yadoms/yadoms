@@ -80,7 +80,7 @@ namespace rfxcomMessages { namespace specificHistorizers {
 
    
    CRemoteMedionHistorizer::CRemoteMedionHistorizer(const std::string& keywordName)
-      :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ERemoteMedionCodes>(keywordName, RemoteMedionCapacity, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+      :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ERemoteMedionCodes>(keywordName, RemoteMedionCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
    {
    }
 

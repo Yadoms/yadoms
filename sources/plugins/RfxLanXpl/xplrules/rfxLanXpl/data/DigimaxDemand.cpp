@@ -16,7 +16,7 @@ const shared::plugin::yadomsApi::CStandardCapacity& DigimaxDemandCapacity = shar
 
    
 CDigimaxDemand::CDigimaxDemand(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EDigimaxDemand>(keywordName, DigimaxDemandCapacity, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+   :CSingleHistorizableData<EDigimaxDemand>(keywordName, DigimaxDemandCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
 {
 }
 

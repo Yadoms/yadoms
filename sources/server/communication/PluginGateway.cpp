@@ -46,7 +46,7 @@ namespace communication {
       }
    }
 
-   void CPluginGateway::sendCommandAsync(int deviceId, int keywordId, const shared::CDataContainer& body)
+   void CPluginGateway::sendCommandAsync(int deviceId, int keywordId, const std::string& body)
    {
       // Create the command
       boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> command(new pluginSystem::CDeviceCommand(m_dataProvider->getDeviceRequester()->getDevice(deviceId)->Name,

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Security.h"
 #include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/DataContainer.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
@@ -45,18 +46,19 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
    }
 
    
-   void CSecurity::set(const shared::CDataContainer& yadomsCommand)
+   void CSecurity::set(const std::string& yadomsCommand)
    {
-      m_command = yadomsCommand.get<ECommands>("command");
+      shared::CDataContainer command(yadomsCommand);
+      m_command = command.get<ECommands>("command");
       
-      if(yadomsCommand.hasValue("tamper"))
-         m_tamper = yadomsCommand.get<bool>("tamper");
+      if(command.hasValue("tamper"))
+         m_tamper = command.get<bool>("tamper");
 
-      if(yadomsCommand.hasValue("lowBattery"))
-         m_lowBattery = yadomsCommand.get<bool>("lowBattery");
+      if(command.hasValue("lowBattery"))
+         m_lowBattery = command.get<bool>("lowBattery");
 
-      if(yadomsCommand.hasValue("delay"))
-         m_delay = yadomsCommand.get<int>("delay");
+      if(command.hasValue("delay"))
+         m_delay = command.get<int>("delay");
    }
    
    const std::string CSecurity::formatValue() const

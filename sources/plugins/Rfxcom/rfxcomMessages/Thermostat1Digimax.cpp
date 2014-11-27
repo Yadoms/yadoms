@@ -36,7 +36,7 @@ void CThermostat1Digimax::historize(boost::shared_ptr<yApi::IYadomsApi> context,
    context->historizeData(deviceName, m_setPoint);
 }
 
-void CThermostat1Digimax::set(const shared::CDataContainer& yadomsCommand)
+void CThermostat1Digimax::set(const std::string& yadomsCommand)
 {
    m_currentTemperature.set(0.0);
    m_setPoint.set(yadomsCommand);

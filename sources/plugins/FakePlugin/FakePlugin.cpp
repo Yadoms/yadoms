@@ -40,8 +40,10 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       CFakeSensor fakeSensor1("fakeSensor1");
       CFakeSensor fakeSensor2("fakeSensor2");
       CFakeCounter fakeCounter("fakeCounter");
-      CFakeSwitch fakeOnOffSwitch("fakeOnOffSwitch");
-      CFakeSwitch fakeDimmableSwitch("fakeDimmableSwitch", true);
+      CFakeSwitch fakeOnOffReadOnlySwitch("fakeOnOffReadOnlySwitch", false, false);
+      CFakeSwitch fakeOnOffReadWriteSwitch("fakeOnOffReadWriteSwitch", false, true);
+      CFakeSwitch fakeDimmableReadOnlySwitch("fakeDimmableReadOnlySwitch", true, false);
+      CFakeSwitch fakeDimmableReadWriteSwitch("fakeDimmableReadWriteSwitch", true, true);
       
       // Declare these sensors to Yadoms (devices and associated keywords)
       if (!context->deviceExists(fakeSensor1.getDeviceName()))
@@ -59,15 +61,25 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          context->declareDevice(fakeCounter.getDeviceName(), fakeCounter.getModel());
          fakeCounter.declareKeywords(context);
       }
-      if (!context->deviceExists(fakeOnOffSwitch.getDeviceName()))
+      if (!context->deviceExists(fakeOnOffReadOnlySwitch.getDeviceName()))
       {
-         context->declareDevice(fakeOnOffSwitch.getDeviceName(), fakeOnOffSwitch.getModel());
-         fakeOnOffSwitch.declareKeywords(context);
+         context->declareDevice(fakeOnOffReadOnlySwitch.getDeviceName(), fakeOnOffReadOnlySwitch.getModel());
+         fakeOnOffReadOnlySwitch.declareKeywords(context);
       }
-      if (!context->deviceExists(fakeDimmableSwitch.getDeviceName()))
+      if (!context->deviceExists(fakeOnOffReadWriteSwitch.getDeviceName()))
       {
-         context->declareDevice(fakeDimmableSwitch.getDeviceName(), fakeDimmableSwitch.getModel());
-         fakeDimmableSwitch.declareKeywords(context);
+         context->declareDevice(fakeOnOffReadWriteSwitch.getDeviceName(), fakeOnOffReadWriteSwitch.getModel());
+         fakeOnOffReadWriteSwitch.declareKeywords(context);
+      }
+      if (!context->deviceExists(fakeDimmableReadOnlySwitch.getDeviceName()))
+      {
+         context->declareDevice(fakeDimmableReadOnlySwitch.getDeviceName(), fakeDimmableReadOnlySwitch.getModel());
+         fakeDimmableReadOnlySwitch.declareKeywords(context);
+      }
+      if (!context->deviceExists(fakeDimmableReadWriteSwitch.getDeviceName()))
+      {
+         context->declareDevice(fakeDimmableReadWriteSwitch.getDeviceName(), fakeDimmableReadWriteSwitch.getModel());
+         fakeDimmableReadWriteSwitch.declareKeywords(context);
       }
 
       // Timer used to send fake sensor states periodically
@@ -115,15 +127,15 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                fakeSensor1.read();
                fakeSensor2.read();
                fakeCounter.read();
-               fakeOnOffSwitch.read();
-               fakeDimmableSwitch.read();
+               fakeOnOffReadOnlySwitch.read();
+               fakeDimmableReadOnlySwitch.read();
 
                YADOMS_LOG(debug) << "Send the periodically sensors state...";
                fakeSensor1.historizeData(context);
                fakeSensor2.historizeData(context);
                fakeCounter.historizeData(context);
-               fakeOnOffSwitch.historizeData(context);
-               fakeDimmableSwitch.historizeData(context);
+               fakeOnOffReadOnlySwitch.historizeData(context);
+               fakeDimmableReadOnlySwitch.historizeData(context);
 
                break;
             }

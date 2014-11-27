@@ -32,8 +32,7 @@ namespace shared { namespace notification {
          {
             return itObserver->second->isNotificationTypeOf<T>();
          }
-         else
-            throw shared::exception::CNullReference("Cannot find observer");
+         throw exception::CNullReference("Cannot find observer");
       }
 
       template<class T> 
@@ -44,13 +43,13 @@ namespace shared { namespace notification {
          {
             return itObserver->second->getNotificationData<T>();
          }
-         else
-            throw shared::exception::CNullReference("Cannot find observer");
+         
+         throw exception::CNullReference("Cannot find observer");
       }
 
       enum
       {
-         kNotification = shared::event::kUserFirstId,
+         kNotification = event::kUserFirstId,
          kUserFirstId
       };
 

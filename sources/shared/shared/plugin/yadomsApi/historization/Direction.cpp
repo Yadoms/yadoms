@@ -6,7 +6,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
 {
 
 CDirection::CDirection(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
-   :CSingleHistorizableData<int>(keywordName, CStandardCapacities::Direction, "direction", accessMode, 0, measureType)
+   :CSingleHistorizableData<int>(keywordName, CStandardCapacities::Direction, accessMode, 0, measureType)
 {
 }
 

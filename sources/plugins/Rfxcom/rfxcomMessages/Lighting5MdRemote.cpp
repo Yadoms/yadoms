@@ -33,7 +33,7 @@ void CLighting5MdRemoteKeyword::historize(boost::shared_ptr<yApi::IYadomsApi> co
    context->historizeData(deviceName, m_keyword);
 }
 
-void CLighting5MdRemoteKeyword::set(const shared::CDataContainer& yadomsCommand)
+void CLighting5MdRemoteKeyword::set(const std::string& yadomsCommand)
 {
    m_keyword.set(yadomsCommand);
 }

@@ -32,7 +32,7 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer replaceAllWidgetsForPage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
       shared::CDataContainer deleteAllWidgetsForPage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);   
 
-      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent);
 
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;

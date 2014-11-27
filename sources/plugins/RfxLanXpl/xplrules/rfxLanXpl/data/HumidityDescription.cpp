@@ -16,7 +16,7 @@ DECLARE_ENUM_IMPLEMENTATION(EHumidityDescription,
 
    
 CHumidityDescription::CHumidityDescription(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EHumidityDescription>(keywordName, HumidityDescriptionCapacity, "command", shared::plugin::yadomsApi::EKeywordAccessMode::kGet)
+   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EHumidityDescription>(keywordName, HumidityDescriptionCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGet)
 {
 }
 

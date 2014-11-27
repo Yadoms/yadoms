@@ -211,7 +211,7 @@ namespace web { namespace rest { namespace service {
       }
    }
 
-   shared::CDataContainer CDevice::sendDeviceCommand(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CDevice::sendDeviceCommand(const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       try
       {
@@ -370,7 +370,7 @@ namespace web { namespace rest { namespace service {
 
 
 
-   shared::CDataContainer CDevice::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   shared::CDataContainer CDevice::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
    {
       boost::shared_ptr<database::ITransactionalProvider> pTransactionalEngine = m_dataProvider->getTransactionalEngine();
       shared::CDataContainer result;

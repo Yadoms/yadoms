@@ -30,7 +30,7 @@ namespace web { namespace rest { namespace service {
       shared::CDataContainer updateOneWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
       shared::CDataContainer findWidgetPackages(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
 
-      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent);
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;
       static std::string m_restKeyword;

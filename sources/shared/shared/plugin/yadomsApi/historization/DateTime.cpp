@@ -6,7 +6,7 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
 {
 
    CDateTime::CDateTime(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
-      :CSingleHistorizableData<boost::posix_time::ptime>(keywordName, CStandardCapacities::DateTime, "datetime", accessMode, boost::posix_time::second_clock::universal_time(), measureType)
+      :CSingleHistorizableData<boost::posix_time::ptime>(keywordName, CStandardCapacities::DateTime, accessMode, boost::posix_time::second_clock::universal_time(), measureType)
    {
    }
 
