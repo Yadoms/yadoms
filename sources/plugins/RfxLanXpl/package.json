@@ -22,7 +22,7 @@
 						"all": {
 							"type": "section",
 							"name": "All network interfaces",
-							"description": "Communicate on every  network interfaces"
+							"description": "Communicate on every network interfaces",
 							"content": {
 							}					
 						},
