@@ -5,11 +5,27 @@
             "name": "Démarrer un hub Xpl",
             "description": "Démarre un hub Xpl au lancement du plugin",
             "content": {
-                "ipAddress": {
-                    "name": "IP locale du Hub",
-                    "description": "Défini l'adresse IP locale du hub",
-                    "regexErrorMessage": "L'adresse IP doit être de type IPv4. Par exemple : 192.168.0.12"
-                }
+				"networkInterfaces" : {
+		            "name": "Interfaces réseau",
+					"description": "Choix de l'interface réseau",
+					"content": {
+						"all": {
+							"name": "Toutes les interfaces réseau",
+							"description": "Le plugin peut communiquer via toutes les interfaces réseau disponibles"
+						},
+						"one": {
+							"name": "One network interface",
+							"description": "Une seule interface réseau",
+							"content": {
+								"networkInterface" :
+								{
+									"name" : "Interface réseau",
+									"description" : "L'interface réseau connectée au RFXLanXpl"
+								}
+							}					
+						}
+					}
+				}
             }
         }
     }
