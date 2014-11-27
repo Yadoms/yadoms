@@ -20,7 +20,7 @@
       //we remove all rows except header
       $("table#plugin-instance-list").find("tr:gt(0)").remove();
       //we clear pluginInstance array
-      pluginInstanceList = [];
+      var pluginInstanceList = [];
 
       $("#btn-add-new-plugin").unbind("click").bind("click", addNewPlugin);
 

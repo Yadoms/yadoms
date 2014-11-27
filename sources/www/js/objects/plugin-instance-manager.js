@@ -243,7 +243,16 @@ PluginInstanceManager.getPluginInstanceHandleManuallyDeviceCreation = function(c
             notifyError($.t("objects.pluginInstance.errorGettingManuallyDeviceCreation"), JSON.stringify(data));
             return;
          }
-         callback(data.data.plugin);
+         var pluginInstanceList = [];
+         
+         $.each(data.data.plugin, function(index, value) {
+            var pi = PluginInstanceManager.factory(value);
+            //we don't show system plugins to user
+            if (pi.category != PluginInstanceManager.systemCategory) {
+               pluginInstanceList.push(pi);
+            }
+         });
+         callback(pluginInstanceList);
       })
       .fail(function() {
          notifyError($.t("modals.pluginInstance.errorGettingManuallyDeviceCreation"));
