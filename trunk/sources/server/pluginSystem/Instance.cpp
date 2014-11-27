@@ -49,12 +49,10 @@ void CInstance::doWork()
          // Normal stop
          return;
       }
-      else
-      {
-         // Plugin has stopped without stop requested
-         YADOMS_LOG(error) << getName() << " has stopped itself.";
-         m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin stopped itself");
-      }
+
+      // Plugin has stopped without stop requested
+      YADOMS_LOG(error) << getName() << " has stopped itself.";
+      m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin stopped itself");
    }
    catch (boost::thread_interrupted&)
    {
@@ -111,7 +109,7 @@ void CInstance::updateConfiguration(const shared::CDataContainer & newConfigurat
    m_context->getEventHandler().postEvent<shared::CDataContainer>(shared::plugin::yadomsApi::IYadomsApi::kEventUpdateConfiguration, newConfiguration);
 }
 
-const std::string CInstance::getPluginName() const
+std::string CInstance::getPluginName() const
 {
    return m_pPlugin->getLibraryPath().stem().string();
 }
