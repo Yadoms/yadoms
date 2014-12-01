@@ -14,7 +14,6 @@ CApplication::CApplication()
 
 CApplication::~CApplication()
 {
-   //TODO tester l'arrêt/reboot du système
    if (!!m_supervisor)
    {
       switch(m_supervisor->stopMode())
