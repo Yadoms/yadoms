@@ -214,12 +214,23 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
       /// \param [in] parameterName    Name of the parameter
+      /// \param [in] pathChar         The path spearator to use (default is '.')
       /// \return     The parameter value
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       template<class T>
-      inline T get(const std::string& parameterName, const char pathChar = '.') const;
+      inline T get(const std::string& parameterName, const char pathChar = '.') const; 
+      
+      //--------------------------------------------------------------
+      /// \brief	    Get parameter value
+      /// \param [in] parameterName    Name of the parameter
+      /// \param [in] defaultValue     The default value in case the parameter do not exists
+      /// \param [in] pathChar         The path spearator to use (default is '.')
+      /// \return     The parameter value, or the default value if parameter not found
+      //--------------------------------------------------------------
+      template<class T>
+      inline T getWithDefault(const std::string& parameterName, const T & defaultValue, const char pathChar = '.') const;
 
       //--------------------------------------------------------------
       /// \brief	    Set parameter value
@@ -995,6 +1006,16 @@ namespace shared
    {
       return (char*)(get<std::string>(parameterName, pathChar).c_str());
    }
+
+
+   template<class T>
+   inline T CDataContainer::getWithDefault(const std::string& parameterName, const T & defaultValue, const char pathChar) const
+   {
+      if (!hasValue(parameterName, pathChar))
+         return defaultValue;
+      return get<T>(parameterName, pathChar);
+   }
+
 
    template<class T>
    inline void CDataContainer::set(const char* parameterName, const T & value, const char pathChar)
