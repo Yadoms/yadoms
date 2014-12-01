@@ -122,6 +122,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yadomsApi/historization/Frequency.h
    shared/plugin/yadomsApi/historization/Humidity.cpp
    shared/plugin/yadomsApi/historization/Humidity.h
+   shared/plugin/yadomsApi/historization/Load.cpp
+   shared/plugin/yadomsApi/historization/Load.h
    shared/plugin/yadomsApi/historization/Message.cpp
    shared/plugin/yadomsApi/historization/Message.h
    shared/plugin/yadomsApi/historization/MeasureType.cpp

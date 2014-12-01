@@ -1,8 +1,9 @@
 #pragma once
 
 #include "ILoad.h"
-#include "LoadKeyword.h"
+#include <shared/plugin/yadomsApi/IYadomsApi.h>
 #include <pdh.h>
+
 
 //--------------------------------------------------------------
 /// \brief	CPU Load of the Windows System
@@ -53,7 +54,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keyword
    //--------------------------------------------------------------
-   CLoadKeyword m_keyword;
+   yApi::historization::CLoad m_keyword;
 
    //--------------------------------------------------------------
    /// \brief	    Initialization ok

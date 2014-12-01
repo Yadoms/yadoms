@@ -1,7 +1,8 @@
 #pragma once
 
 #include "ILoad.h"
-#include "LoadKeyword.h"
+#include <shared/plugin/yadomsApi/IYadomsApi.h>
+
 
 // Shortcut to yadomsApi namespace
 namespace yApi = shared::plugin::yadomsApi;
@@ -39,6 +40,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keyword
    //--------------------------------------------------------------
-   CLoadKeyword m_keyword;
+   yApi::historization::CLoad m_keyword;
 };
 

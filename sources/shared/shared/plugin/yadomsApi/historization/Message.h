@@ -1,6 +1,5 @@
 #pragma once
 #include <shared/Export.h>
-#include <shared/DataContainer.h>
 #include "IHistorizable.h"
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization

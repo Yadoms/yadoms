@@ -3,7 +3,6 @@
 #include "MegatecUpsConfiguration.h"
 #include <shared/communication/IAsyncPort.h>
 #include <shared/communication/AsciiBufferLogger.h>
-#include <shared/DataContainer.h>
 #include <shared/event/EventTimer.h>
 
 // Shortcut to yadomsApi namespace
@@ -244,9 +243,9 @@ private:
    yApi::historization::CVoltage m_outputVoltage;
 
    //--------------------------------------------------------------
-   /// \brief	The output current (A)
+   /// \brief	The output load (%)
    //--------------------------------------------------------------
-   yApi::historization::CCurrent m_outputCurrent;
+   yApi::historization::CLoad m_outputLoad;
 
    //--------------------------------------------------------------
    /// \brief	The input frequency (Hz)
