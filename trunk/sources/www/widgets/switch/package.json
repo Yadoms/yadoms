@@ -22,7 +22,7 @@
          "name" : "Switch device",
          "description" : "Device to emulate",
          "type" : "device",
-         "expectedCapacity" : ["switch", "dimmable"],
+         "expectedCapacity" : ["switch", "dimmable", "event"],
          "expectedKeywordAccess" : "getset"
       },
       "showDeviceName" : {
@@ -32,14 +32,32 @@
          "defaultValue" : "true"
       },
       "kind" : {
-         "type" : "enum",
+         "type" : "radioSection",
          "name" : "Kind of switch",
-         "description" : "Define the kind of switch is defined. Permit to change interactions in function of the kind of switch",
-         "defaultValue" : "simple",
-         "values" : {
-            "simple" : "simple",
-            "blind" : "blind",
-            "ringbell" : "ring bell"
+         "description" : "Select the kind of switch to be used. Permit to change interactions in function of the kind of switch.",
+         "content" : {
+            "horizontalInverter" : {
+               "type" : "section",
+               "name" : "Horizontal inverter",
+               "description" : "A horizontal dual-buttons 1/0 switch"
+            },
+            "verticalInverter" : {
+               "type" : "section",
+               "name" : "Vertical inverter",
+               "description" : "A vertical dual-buttons 1/0 switch"
+            },
+            "pushButton" : {
+               "type" : "section",
+               "name" : "Push button",
+               "description" : "A simple push button (only able to send ON events)",
+               "content" : {
+                  "icon" : {
+                     "name" : "Button icon",
+                     "description" : "Choose the icon to display in the button",
+                     "type" : "icon"
+                  }
+               }
+            }
          }
       }
    }
