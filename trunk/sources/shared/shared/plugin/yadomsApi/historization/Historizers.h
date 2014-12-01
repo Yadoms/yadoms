@@ -12,6 +12,7 @@
 #include "Event.h"
 #include "Frequency.h"
 #include "Humidity.h"
+#include "Load.h"
 #include "Message.h"
 #include "Power.h"
 #include "PowerFactor.h"

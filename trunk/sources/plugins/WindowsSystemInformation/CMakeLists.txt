@@ -9,8 +9,6 @@ IF(WIN32)
 		stdafx.h
 		stdafx.cpp
 		ILoad.h
-      LoadKeyword.h
-      LoadKeyword.cpp
 		WindowsSystemInformation.h
 		WindowsSystemInformation.cpp 
 		WindowsSystemMemoryLoad.h

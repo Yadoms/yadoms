@@ -71,7 +71,7 @@ namespace web {
                   return web::rest::CResult::GenerateError("invalid parameter. Can not retreive acquisitionId in url");
                }
             }
-            catch (shared::exception::CEmptyResult & noData)
+            catch (shared::exception::CEmptyResult & /*noData*/)
             {
                //if no data just return success
                return web::rest::CResult::GenerateSuccess();

@@ -7,7 +7,7 @@ namespace yApi = shared::plugin::yadomsApi;
 
 //--------------------------------------------------------------
 /// \brief	Interface Load definition
-/// \note   return the load in pourcentage of a value
+/// \note   return the load in percentage of a value
 //--------------------------------------------------------------
 class ILoad
 {

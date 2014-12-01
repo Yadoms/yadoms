@@ -37,7 +37,7 @@ static const std::locale ProtocolFloatFormatingLocale(std::locale(), new CMegate
 
 CMegatecUps::CMegatecUps():
    m_inputVoltage("inputVoltage"), m_inputfaultVoltage("inputfaultVoltage"), m_outputVoltage("outputVoltage"),
-   m_outputCurrent("outputCurrent"), m_inputFrequency("inputFrequency"), m_batteryVoltage("batteryVoltage"),
+   m_outputLoad("outputLoad"), m_inputFrequency("inputFrequency"), m_batteryVoltage("batteryVoltage"),
    m_temperature("temperature"), m_acPowerHistorizer("acPowerActive", yApi::EKeywordAccessMode::kGet), m_upsShutdown("UpsShutdown"),
    m_acPowerActive(true), m_lowBatteryFlag(false), m_lowBatteryByLevelFlag(false),
    m_protocolErrorCounter(0), m_batteryNominalVoltage(0.0), m_answerIsRequired(true), m_firstNotification(true)
@@ -422,7 +422,7 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYadomsApi> cont
    m_inputVoltage.set      (upsStr2Double(*itToken)); ++itToken;
    m_inputfaultVoltage.set (upsStr2Double(*itToken)); ++itToken;
    m_outputVoltage.set     (upsStr2Double(*itToken)); ++itToken;
-   m_outputCurrent.set     (upsStr2Double(*itToken)); ++itToken;
+   m_outputLoad.set        (upsStr2Double(*itToken)); ++itToken;
    m_inputFrequency.set    (upsStr2Double(*itToken)); ++itToken;
    m_batteryVoltage.set    (upsStr2Double(*itToken)); ++itToken;
    m_temperature.set       (upsStr2Double(*itToken)); ++itToken;
@@ -444,7 +444,7 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYadomsApi> cont
    YADOMS_LOG(debug) << "UPS current informations : inputVoltage=" << m_inputVoltage.get() <<
       ", inputfaultVoltage="  << m_inputfaultVoltage.get() <<
       ", outputVoltage="      << m_outputVoltage.get() <<
-      ", outputCurrent="      << m_outputCurrent.get() <<
+      ", m_outputLoad="       << m_outputLoad.get() <<
       ", inputFrequency="     << m_inputFrequency.get() <<
       ", batteryVoltage="     << m_batteryVoltage.get() <<
       ", temperature="        << m_temperature.get();
@@ -520,7 +520,7 @@ void CMegatecUps::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context, con
       context->declareKeyword(DeviceName, m_inputVoltage);
       context->declareKeyword(DeviceName, m_inputfaultVoltage);
       context->declareKeyword(DeviceName, m_outputVoltage);
-      context->declareKeyword(DeviceName, m_outputCurrent);
+      context->declareKeyword(DeviceName, m_outputLoad);
       context->declareKeyword(DeviceName, m_inputFrequency);
       context->declareKeyword(DeviceName, m_batteryVoltage);
       context->declareKeyword(DeviceName, m_temperature);
@@ -537,7 +537,7 @@ void CMegatecUps::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) con
    context->historizeData(DeviceName, m_inputVoltage);
    context->historizeData(DeviceName, m_inputfaultVoltage);
    context->historizeData(DeviceName, m_outputVoltage);
-   context->historizeData(DeviceName, m_outputCurrent);
+   context->historizeData(DeviceName, m_outputLoad);
    context->historizeData(DeviceName, m_inputFrequency);
    context->historizeData(DeviceName, m_batteryVoltage);
    context->historizeData(DeviceName, m_temperature);
