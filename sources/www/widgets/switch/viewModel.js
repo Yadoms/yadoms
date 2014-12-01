@@ -12,6 +12,7 @@ widgetViewModelCtor =
       this.widget = null;
 
       this.kind = ko.observable("simple");
+      this.icon = ko.observable("");
 
       this.switchText = ko.observable("");
       
@@ -22,11 +23,10 @@ widgetViewModelCtor =
       this.commandClick = function(newState) {
          if ((!isNullOrUndefined(this.widget.configuration)) && (!isNullOrUndefined(this.widget.configuration.device)) && (!isNullOrUndefined(this.capacity))) {
             var cmd = null;
-            if (this.capacity == "switch") {
-               cmd = newState;
-            }
-            else {
-               cmd = newState == 1 ? 100 : 0;
+            switch (this.capacity) {
+               case "dimmable": cmd = newState == 1 ? 100 : 0; break;
+               case "event": cmd = 1; break;
+               default: cmd = newState; break;
             }
             $.ajax({
                type: "POST",
@@ -61,7 +61,10 @@ widgetViewModelCtor =
             return;
 
          if (!isNullOrUndefined(this.widget.configuration.kind)) {
-            this.kind(this.widget.configuration.kind);
+            this.kind(this.widget.configuration.kind.activeSection);
+            if (this.widget.configuration.kind.content.pushButton.radio) {
+               this.icon("glyphicon " + this.widget.configuration.kind.content.pushButton.content.icon);
+            }
          }
 
          if (!isNullOrUndefined(this.widget.configuration.showDeviceName)) {
@@ -92,8 +95,11 @@ widgetViewModelCtor =
          if ((this.widget.configuration !== undefined) && (this.widget.configuration.device !== undefined)) {
             if (device == this.widget.configuration.device) {
                //it is the good device
-               // Adapt for dimmable or switch capacities
-               self.command(parseInt(data.value) != 0 ? "1" : "0");
+               if (this.capacity == "event")
+                  self.command(0);
+               else
+                  // Adapt for dimmable or switch capacities
+                  self.command(parseInt(data.value) != 0 ? "1" : "0");
             }
          }
       };
