@@ -102,7 +102,8 @@ namespace xplrules { namespace rfxLanXpl {
       }
 
       //read command details (may throw exception if something is wrong)
-      shared::plugin::yadomsApi::historization::CDimmable commandDetails(commandData->getBody());
+      shared::plugin::yadomsApi::historization::CDimmable commandDetails("command");
+      commandDetails.set(commandData->getBody());
 
       ////////////////////////////
       // create the message
@@ -118,8 +119,8 @@ namespace xplrules { namespace rfxLanXpl {
       newMessage->setHop(1);
 
       //set the target (rfxcom-lan-<hax mac address>)
-      newMessage->setTarget(xplcore::CXplActor::parse(rfxAddress));
-
+      //newMessage->setTarget(xplcore::CXplActor::parse(rfxAddress));
+      newMessage->setTarget(xplcore::CXplActor::createBroadcastActor());
       //set the ac.basic
       newMessage->setMessageSchemaIdentifier(getProtocol());
 
