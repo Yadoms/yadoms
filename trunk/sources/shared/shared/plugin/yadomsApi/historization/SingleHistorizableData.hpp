@@ -2,16 +2,13 @@
 
 #include <shared/plugin/yadomsApi/historization/IHistorizable.h>
 
-//TODO vérifier si includes suivants tous utiles
 #include <shared/enumeration/IExtendedEnum.h>
-#include <boost/utility/enable_if.hpp>
-#include <boost/type_traits/is_enum.hpp>
-#include <boost/type_traits/is_base_of.hpp>
 
 namespace shared { namespace plugin { namespace yadomsApi { namespace historization
 {
-
-   //TODO mettre ça ailleurs (factoriser avec CDataContainer ?)
+   //-----------------------------------------------------
+   ///\brief     Helpers to uniformise access to simple value and enum values
+   //-----------------------------------------------------
    template <typename T, class Enable = void>
    struct helper
    {
@@ -20,16 +17,14 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
          return boost::lexical_cast<T>(value);
       }
    };
-
    template <typename T>
-   struct helper<T, typename boost::enable_if<boost::is_base_of<shared::enumeration::IExtendedEnum, T > >::type >
+   struct helper<T, typename boost::enable_if<boost::is_base_of<enumeration::IExtendedEnum, T > >::type >
    {
       static T getInternal(const std::string& value)
       {
          return T(value);
       }
    };
-
 
    //-----------------------------------------------------
    ///\brief     Template class which can be used to declare a single data IHistorizable value
