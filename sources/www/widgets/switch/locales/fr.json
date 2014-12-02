@@ -1,11 +1,39 @@
 {
    "name": "interrupteur",
-   "description": "Un widget tout simple qui permet de gerer les interrupteurs",
+   "description": "Un widget émulant un interrupteur",
+   "errorDuringSendingCommand" : "Erreur pendant l'envoi de la commande",
    "configurationSchema" : {
       "device" : {
          "name" : "Périphérique interrupteur",
-         "description" : "Périphérique à émuler"
+         "description" : "Périphérique à piloter"
+      },
+      "showDeviceName" : {
+         "name" : "Affichage du nom",
+         "description" : "Permet l'affichage du nom du widget"
+      },
+      "kind" : {
+         "name" : "Type d'interrupteur",
+         "description" : "Sélection du type d'interrupteur. Le type d'interrupteur influe sur le mode de fonctionnement du périphérique piloté.",
+         "content" : {
+            "horizontalInverter" : {
+               "name" : "Inverseur horizontal",
+               "description" : "Deux boutons (Marche/Arrêt) présentés horizontalement"
+            },
+            "verticalInverter" : {
+               "name" : "Inverseur vertical",
+               "description" : "Deux boutons (Marche/Arrêt) présentés verticalement"
+            },
+            "pushButton" : {
+               "name" : "Poussoir",
+               "description" : "Un bouton poussoir (envoi des événements ON)",
+               "content" : {
+                  "icon" : {
+                     "name" : "Icône",
+                     "description" : "Choisissez un icône à afficher dans le bouton"
+                  }
+               }
+            }
+         }
       }
-   },
-   "errorDuringSendingCommand" : "Erreur pendant l'envoi de la commande"
+   }   
 }
