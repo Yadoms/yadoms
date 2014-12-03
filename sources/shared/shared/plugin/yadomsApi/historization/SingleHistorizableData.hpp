@@ -25,6 +25,14 @@ namespace shared { namespace plugin { namespace yadomsApi { namespace historizat
          return T(value);
       }
    };
+   template <typename T>
+   struct helper<T, typename boost::enable_if<boost::is_base_of<boost::posix_time::ptime, T > >::type >
+   {
+      static T getInternal(const std::string& value)
+      {
+         return T(boost::posix_time::from_iso_string(value));
+      }
+   };
 
    //-----------------------------------------------------
    ///\brief     Template class which can be used to declare a single data IHistorizable value
