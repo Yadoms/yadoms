@@ -7,43 +7,20 @@
     "url": "http://sourceforge.net/projects/yadoms/",
     "SupportedPlatforms": "all",
     "configurationSchema": {
-        "HubXplSection": {
-            "type": "section",
-            "name": "Start Xpl HUB",
-            "description": "Start an Xpl hub at plugin startup",
-            "enableWithCheckBox": "true",
-            "enableWithCheckBoxDefaultValue": "true",
-            "content": {
-				"networkInterfaces" : {
-		            "name": "Network interface",
-					"description": "Choose the network interface",
-					"type": "radioSection",
-					"content": {
-						"all": {
-							"type": "section",
-							"name": "All network interfaces",
-							"description": "Communicate on every network interfaces",
-							"content": {
-							}					
-						},
-						"one": {
-							"type": "section",
-							"name": "One network interface",
-							"description": "Communicate on one network interface",
-							"content": {
-								"networkInterface" :
-								{
-									"type" : "enum",
-									"name" : "Network interface",
-									"description" : "The network interface connected to the RFXLanXpl",
-									"values" : {"__Binding__" : {"type" : "system", "query" : "networkInterfaces"}}
-								}
-							}					
-						}
-					}
-				}
-            }
-        }
+		"networkInterface" :
+		{
+			"type" : "enum",
+			"name" : "Network interface",
+			"description" : "The network interface connected to the RFXLanXpl",
+			"values" : {"__Binding__" : {"type" : "system", "query" : "NetworkInterfacesWithoutLoopback"}}
+		},
+		"XplHub":
+		{
+			"name": "Start Xpl HUB",
+			"description": "Start an Xpl hub at plugin startup",
+			"type": "bool",
+			"defaultValue": "true"
+		}
     },
     "supportManuallyDeviceCreation": "true",
     "manuallyDeviceCreationConfigurationSchema": {

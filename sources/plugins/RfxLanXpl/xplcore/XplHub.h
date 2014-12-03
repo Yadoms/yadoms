@@ -2,7 +2,9 @@
 
 #include "XplHubConnectedPeripheral.h"
 #include <shared/ThreadBase.h>
-
+#include <Poco/Net/DatagramSocket.h>
+#include <Poco/SharedPtr.h>
+#include <Poco/Timer.h>
 
 namespace xplcore
 {
@@ -15,55 +17,60 @@ namespace xplcore
       virtual ~CXplHub();
 
       // CThreadBase override
-      virtual bool stop();
+      virtual void doWork();
       // {END] CThreadBase override
 
-      //----------------------------------
-      ///\brief   Update the filtering ips
-      ///\param [in]   localIPOfTheInterfaceToUse  The ip to filter
-      //----------------------------------
-      void updateHubFilter(const std::string & localIPOfTheInterfaceToUse);
-
    private:
       //--------------------------------------------------------------
-      /// \brief	   Check if a message is filtered
+      /// \brief			Prepare an application life cycle
       //--------------------------------------------------------------
-      bool isFiltered(CXplMessage & msg);
-
-
-   private:
-      void doWork();
-      void startReceive();
-      void handleReceive(const boost::system::error_code& error, std::size_t bytes_transferred);
-
-      void ioServiceRunner();
-
       void runCheckApplicationLifeCycleTimeout();
 
+      //--------------------------------------------------------------
+      /// \brief			Check an application life cycle
+      //--------------------------------------------------------------
       void checkApplicationLifeCycle();
 
-      boost::asio::io_service m_ioService;
+      //--------------------------------------------------------------
+      /// \brief			Treat an xpl message received
+      /// \param [in]   msg      The message
+      /// \param [in]   sender   The sender
+      //--------------------------------------------------------------
+      void onXplMessageReceived(CXplMessage & msg, Poco::Net::SocketAddress & sender);
+      //--------------------------------------------------------------
+      /// \brief			Treat a received heartbeat message
+      /// \param [in]   msg      The message
+      /// \param [in]   sender   The sender
+      //--------------------------------------------------------------
+      void manageReceivedHeartbeatMessage(CXplMessage & hbeatMessage, Poco::Net::SocketAddress & sender);
 
-      boost::asio::ip::udp::endpoint m_localEndPoint;
-      boost::asio::ip::udp::endpoint m_remoteEndPoint;
+      //--------------------------------------------------------------
+      /// \brief			Broadcast a message to all discovered peripherals
+      /// \param [in]   message : The message to send
+      //--------------------------------------------------------------
+      void broadcastMessage(CXplMessage & hbeatMessage);
 
-      boost::asio::ip::udp::socket m_socket;
-      boost::array<char, 1024> m_receiveBuffer;
 
-      //map of discovered periph (port number, last time seen)
+
+      //--------------------------------------------------------------
+      /// \brief			Discovered peripherals
+      //--------------------------------------------------------------
       std::vector<boost::shared_ptr<CXplHubConnectedPeripheral> > m_discoveredPeripherals;
 
-      boost::asio::deadline_timer m_timer;
+      //--------------------------------------------------------------
+      /// \brief			The next heartbeat time
+      //--------------------------------------------------------------
+      boost::posix_time::ptime m_nextHeartbeatTime;
 
-      bool m_stopRequested;
+      //--------------------------------------------------------------
+      /// \brief			The listening socket
+      //--------------------------------------------------------------
+      Poco::Net::DatagramSocket m_socket;
 
+      //--------------------------------------------------------------
+      /// \brief			The application life cycle timeout (60 seconds)
+      //--------------------------------------------------------------      
       static const int ApplicationLifeCycleTimeout = 60; //seconds
-
-      //--------------------------------------------------------------
-      /// \brief	   Mutex protecting the configuration content
-      //--------------------------------------------------------------
-      mutable boost::mutex m_configurationMutex;
-
    };
-   
+
 } // namespace xplcore

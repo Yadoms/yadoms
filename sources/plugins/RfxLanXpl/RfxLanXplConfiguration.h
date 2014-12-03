@@ -1,6 +1,7 @@
 #pragma once
 
 #include <shared/DataContainer.h>
+#include <Poco/Net/NetworkInterface.h>
 
 
 //--------------------------------------------------------------
@@ -21,8 +22,8 @@ public:
    bool getStartXplhub() const;
 
    //--------------------------------------------------------------
-   /// \brief	    Get the xpl hub local ip to use
+   /// \brief	    Get the xpl network interface to use
    //--------------------------------------------------------------
-   std::string getHubLocalIp() const;
+   Poco::Net::NetworkInterface getXplNetworkInterface() const;
 };
 

@@ -3,65 +3,63 @@
 #include "XplMessage.h"
 #include "XplHelper.h"
 #include "XplException.h"
+#include <shared/Log.h>
+#include <Poco/Net/NetworkInterface.h>
 
 namespace xplcore
 {
 
-CXplHubConnectedPeripheral::CXplHubConnectedPeripheral(boost::asio::io_service & io_service, std::string ip, unsigned short portNumber, int interval) 
-   :  m_portNumber(portNumber), m_interval(interval), m_ip(ip), m_socket(io_service), m_lastTimeSeen(boost::posix_time::second_clock::universal_time())
-{
-   m_socket.open(boost::asio::ip::udp::v4());
-   m_socket.set_option(boost::asio::ip::udp::socket::reuse_address(true));
-   m_socket.set_option(boost::asio::socket_base::broadcast(true));
-   boost::asio::ip::udp::endpoint localEndPoint;
-   if (!CXplHelper::getEndPointFromInterfaceIp(m_ip, localEndPoint))
+
+   CXplHubConnectedPeripheral::CXplHubConnectedPeripheral(Poco::Net::SocketAddress & sender, unsigned short portNumber, int interval, const std::string & debugName)
+      : m_portNumber(portNumber), m_interval(interval), m_lastTimeSeen(boost::posix_time::second_clock::universal_time()), m_debugName(debugName)
    {
-      //If we havn't found the given ip, error
-      throw CXplException("Unable to find given ip : " + m_ip);
+      m_socket.setReuseAddress(true);
+      m_socket.setBroadcast(true);
+      //m_socket.bind(Poco::Net::SocketAddress(sender.host(), portNumber));
+      m_socket.connect(Poco::Net::SocketAddress(sender.host(), portNumber));
+      YADOMS_LOG(debug) << "Peripheral " << debugName << " found @" << sender.host().toString();
    }
-   m_socket.bind(localEndPoint);
 
-   m_remoteEndPoint = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(m_ip), m_portNumber);
-}
+   CXplHubConnectedPeripheral::~CXplHubConnectedPeripheral()
+   {
+      m_socket.close();
+   }
 
-CXplHubConnectedPeripheral::~CXplHubConnectedPeripheral()
-{
-   m_socket.close();
-}
+   int CXplHubConnectedPeripheral::getPortNumber() const
+   {
+      return m_portNumber;
+   }
 
-int CXplHubConnectedPeripheral::getPortNumber() const
-{
-   return m_portNumber;
-}
+   int CXplHubConnectedPeripheral::getInterval() const
+   {
+      return m_interval;
+   }
 
-int CXplHubConnectedPeripheral::getInterval() const
-{
-   return m_interval;
-}
+   void CXplHubConnectedPeripheral::setInterval(int interval)
+   {
+      m_interval = interval;
+   }
 
-void CXplHubConnectedPeripheral::setInterval(int interval)
-{
-   m_interval = interval;
-}
+   boost::posix_time::ptime CXplHubConnectedPeripheral::getLastTimeSeen() const
+   {
+      return m_lastTimeSeen;
+   }
 
-boost::posix_time::ptime CXplHubConnectedPeripheral::getLastTimeSeen() const
-{
-   return m_lastTimeSeen;
-}
+   void CXplHubConnectedPeripheral::updateLastTimeSeenFromNow()
+   {
+      m_lastTimeSeen = boost::posix_time::second_clock::universal_time();
+   }
 
-void CXplHubConnectedPeripheral::updateLastTimeSeenFromNow()
-{
-   m_lastTimeSeen = boost::posix_time::second_clock::universal_time();
-}
+   void CXplHubConnectedPeripheral::updateLastTimeSeen(boost::posix_time::ptime time)
+   {
+      m_lastTimeSeen = time;
+   }
 
-void CXplHubConnectedPeripheral::updateLastTimeSeen(boost::posix_time::ptime time)
-{
-   m_lastTimeSeen = time;
-}
-
-void CXplHubConnectedPeripheral::sendMessage(const CXplMessage & message)
-{
-   m_socket.send_to(boost::asio::buffer(message.toString()), m_remoteEndPoint);
-}
+   void CXplHubConnectedPeripheral::sendMessage(const CXplMessage & message)
+   {
+      //boost::asio::buffer buf(message.toString());
+      std::string buf = message.toString();
+      m_socket.sendBytes(buf.c_str(), buf.size());
+   }
 
 } // namespace xplcore

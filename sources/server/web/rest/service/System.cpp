@@ -88,7 +88,7 @@ namespace web { namespace rest { namespace service {
          for (Poco::Net::NetworkInterface::NetworkInterfaceList::iterator nit = netlist.begin(); nit != netlist.end(); ++nit)
          {
             if (includeLoopback || (!includeLoopback && !nit->address().isLoopback()))
-               result.set(nit->address().toString(), (boost::format("%1% (%2%)") % nit->displayName() % nit->address().toString()).str(), 0x00); //in case of key contains a dot, just ensure the full key is taken into account
+               result.set(nit->name(), (boost::format("%1% (%2%)") % nit->displayName() % nit->address().toString()).str(), 0x00); //in case of key contains a dot, just ensure the full key is taken into account
          }
          return web::rest::CResult::GenerateSuccess(result);
       }
