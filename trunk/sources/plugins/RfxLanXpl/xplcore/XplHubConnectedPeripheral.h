@@ -1,6 +1,8 @@
 #pragma once
 
 #include "XplMessage.h"
+#include <Poco/Net/DatagramSocket.h>
+#include <Poco/Net/SocketAddress.h>
 
 namespace xplcore
 {
@@ -14,7 +16,7 @@ namespace xplcore
       /// \param [in]   portNumber : The port number of the peripheral
       /// \param [in]   interval : The interval in minutes of hbeat is sent
       //--------------------------------------------------------------
-      CXplHubConnectedPeripheral(boost::asio::io_service & io_service,  std::string ip, unsigned short portNumber, int interval);
+      CXplHubConnectedPeripheral(Poco::Net::SocketAddress & sender, unsigned short portNumber, int interval, const std::string & debugName);
 
       //--------------------------------------------------------------
       /// \brief			Dtor 
@@ -65,10 +67,9 @@ namespace xplcore
    private:
       unsigned short m_portNumber;
       int m_interval;
-      std::string m_ip;
-      boost::asio::ip::udp::socket m_socket;
       boost::posix_time::ptime m_lastTimeSeen;
-      boost::asio::ip::udp::endpoint m_remoteEndPoint;
+      Poco::Net::DatagramSocket m_socket;
+      std::string m_debugName;
    };
 
 } // namespace xplcore

@@ -53,13 +53,14 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
       m_configuration.initializeWith(context->getConfiguration());
 
       //start ioservice
-      xplcore::CXplService xplService(m_xpl_gateway_id, "1", NULL, &context->getEventHandler(), kXplHubFound);
+
+      xplcore::CXplService xplService(m_configuration.getXplNetworkInterface(), m_xpl_gateway_id, "1", &context->getEventHandler(), kXplHubFound);
       xplService.subscribeForAllMessages(&context->getEventHandler(), kXplMessageReceived);
 
       //manage xpl hub
       if (m_configuration.getStartXplhub())
       {
-         startHub(m_configuration.getHubLocalIp());
+         startHub(m_configuration.getXplNetworkInterface().address().toString());
       }
 
       // the main loop
@@ -92,7 +93,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                if (newConf.getStartXplhub())
                {
                   //start a new hub
-                  startHub(newConf.getHubLocalIp());
+                  startHub(newConf.getXplNetworkInterface().address().toString());
                }
                else
                {
@@ -102,12 +103,12 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             }
             else
             {
-               if (!boost::iequals(m_configuration.getHubLocalIp(), newConf.getHubLocalIp()))
-               {
-                  //the filter chages, just update hub
-                  if (m_hub)
-                     m_hub->updateHubFilter(newConf.getHubLocalIp());
-               }
+               //if (!boost::iequals(m_configuration.getHubLocalIp(), newConf.getHubLocalIp()))
+               //{
+               //   //the filter chages, just update hub
+               //   if (m_hub)
+               //      m_hub->updateHubFilter(newConf.getHubLocalIp());
+               //}
             }
 
             // Take into account the new configuration
@@ -205,6 +206,8 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
    try
    {
       YADOMS_LOG(trace) << "Xpl Message received : " << xplMessage.toString();
+
+      //YADOMS_LOG(info) << "Reveived" << std::endl << xplMessage.toString();
 
       std::string realSource = xplMessage.getSource().toString();
       //if incomming message has been sent from me, use target has real source
@@ -316,6 +319,8 @@ void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceComman
                   if (messageToSend)
                   {
                      messageToSend->setSource(xplService.getActor());
+
+                     //YADOMS_LOG(info) << "Sent" << std::endl << messageToSend->toString();
                      xplService.sendMessage(*messageToSend.get());
                   }
                   else

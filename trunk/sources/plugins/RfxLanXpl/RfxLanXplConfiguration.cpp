@@ -11,23 +11,30 @@ CRfxLanXplConfiguration::~CRfxLanXplConfiguration()
 
 bool CRfxLanXplConfiguration::getStartXplhub() const
 {
-   return get<bool>("HubXplSection.checkbox");
+   return get<bool>("XplHub");
 }
 
-std::string CRfxLanXplConfiguration::getHubLocalIp() const
+Poco::Net::NetworkInterface CRfxLanXplConfiguration::getXplNetworkInterface() const
 {
    try
    {
-      std::string chosenNetwork = get<std::string>("HubXplSection.content.networkInterfaces.activeSection");
-      if (boost::iequals(chosenNetwork, "one"))
-         return get<std::string>("HubXplSection.content.networkInterfaces.content.one.networkInterface");
+      std::string interfaceName = get<std::string>("networkInterface");
+      return Poco::Net::NetworkInterface::forName(interfaceName);
    }
    catch (std::exception & ex)
    {
       YADOMS_LOG(error) << "Fail to get hub local ip " << ex.what();
    }
 
-   //in case of exception, or all netowkr chosen, return 0.0.0.0
-   return "0.0.0.0";
+   //in case of exception, or bad network interface
+   //initialize result with the first non loopback iface
+   Poco::Net::NetworkInterface::NetworkInterfaceList netlist = Poco::Net::NetworkInterface::list();
+   for (Poco::Net::NetworkInterface::NetworkInterfaceList::iterator i = netlist.begin(); i != netlist.end(); ++i)
+   {
+      if (!i->address().isLoopback())
+      {
+         return *i;
+      }
+   }
 
 }

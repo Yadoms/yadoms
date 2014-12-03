@@ -18,10 +18,14 @@ set(RFXLANXPL_CORE_SOURCES
 	xplcore/XplMessage.h
 	xplcore/XplMessageFactory.cpp
 	xplcore/XplMessageFactory.h
+	xplcore/XplMessageFilter.cpp
+	xplcore/XplMessageFilter.h
 	xplcore/XplMessageSchemaIdentifier.cpp
 	xplcore/XplMessageSchemaIdentifier.h
 	xplcore/XplService.cpp
 	xplcore/XplService.h
+	xplcore/XplServiceTask.cpp
+	xplcore/XplServiceTask.h
 	xplcore/XplHubConnectedPeripheral.cpp
 	xplcore/XplHubConnectedPeripheral.h 
 )
