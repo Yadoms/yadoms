@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include "RFXMeter.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/Log.h>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CRFXMeter::CRFXMeter(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CRFXMeter::CRFXMeter(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_counter("counter"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeRFXMeter, GET_RBUF_STRUCT_SIZE(RFXMETER), DONT_CHECK_SEQUENCE_NUMBER);
@@ -30,7 +30,7 @@ CRFXMeter::~CRFXMeter()
 {
 }
 
-void CRFXMeter::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CRFXMeter::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -56,7 +56,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CRFXMet
    throw shared::exception::CInvalidParameter("RFXMeter is a read-only message, can not be encoded");
 }
 
-void CRFXMeter::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CRFXMeter::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    if (m_subType != sTypeRFXMeterCount)
    {

@@ -23,7 +23,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CAck::e
    throw shared::exception::CInvalidParameter("Ack is a read-only message, can not be encoded");
 }
 
-void CAck::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CAck::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    // Nothing to historize
 }

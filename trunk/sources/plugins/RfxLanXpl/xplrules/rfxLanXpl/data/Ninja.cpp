@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Ninja.h"
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
@@ -15,11 +15,11 @@ DECLARE_ENUM_IMPLEMENTATION(ENinjaCommand,
 );
 
 
-const shared::plugin::yadomsApi::CStandardCapacity& NinjaCapacity = shared::plugin::yadomsApi::CStandardCapacity("ninja", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+const shared::plugin::yPluginApi::CStandardCapacity& NinjaCapacity = shared::plugin::yPluginApi::CStandardCapacity("ninja", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
    
 CNinja::CNinja(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ENinjaCommand>(keywordName, NinjaCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+   :shared::plugin::yPluginApi::historization::CSingleHistorizableData<ENinjaCommand>(keywordName, NinjaCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
 {
 }
 

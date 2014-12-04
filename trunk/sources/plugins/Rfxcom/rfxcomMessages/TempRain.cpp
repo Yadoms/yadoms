@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "TempRain.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CTempRain::CTempRain(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CTempRain::CTempRain(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_temperature("temperature"), m_rain("rain", yApi::historization::EMeasureType::kCumulative), m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeTEMP_RAIN, GET_RBUF_STRUCT_SIZE(TEMP_RAIN), DONT_CHECK_SEQUENCE_NUMBER);
@@ -30,7 +30,7 @@ CTempRain::~CTempRain()
 {
 }
 
-void CTempRain::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CTempRain::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -58,7 +58,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CTempRa
    throw shared::exception::CInvalidParameter("Temp is a read-only message, can not be encoded");
 }
 
-void CTempRain::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CTempRain::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_deviceName, m_temperature);
    context->historizeData(m_deviceName, m_rain);

@@ -203,8 +203,8 @@ set(YADOMS_SRC
    server/pluginSystem/ManuallyDeviceCreationTestData.h
 	server/pluginSystem/Qualifier.h
 	server/pluginSystem/Qualifier.cpp
-   server/pluginSystem/YadomsApiImplementation.h
-   server/pluginSystem/YadomsApiImplementation.cpp
+   server/pluginSystem/yPluginApiImplementation.h
+   server/pluginSystem/yPluginApiImplementation.cpp
 	server/pluginSystem/internalPlugin/System.h
 	server/pluginSystem/internalPlugin/System.cpp
 	server/pluginSystem/internalPlugin/Information.h

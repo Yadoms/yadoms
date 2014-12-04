@@ -12,13 +12,13 @@ CWindowsSystemDiskUsage::~CWindowsSystemDiskUsage()
 {
 }
 
-void CWindowsSystemDiskUsage::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
+void CWindowsSystemDiskUsage::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Declare associated keywords (= values managed by this device)
    context->declareKeyword(m_device, m_keyword);
 }
 
-void CWindowsSystemDiskUsage::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CWindowsSystemDiskUsage::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
 

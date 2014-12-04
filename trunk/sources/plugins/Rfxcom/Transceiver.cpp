@@ -143,7 +143,7 @@ const shared::communication::CByteBuffer CTransceiver::buildSetModeCmd(unsigned 
    return shared::communication::CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
 }
 
-boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const
+boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const
 {
    try
    {
@@ -222,7 +222,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CTransc
    }
 }
 
-boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMessage(boost::shared_ptr<yApi::IYadomsApi> context, const shared::communication::CByteBuffer& data) const
+boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMessage(boost::shared_ptr<yApi::IYPluginApi> context, const shared::communication::CByteBuffer& data) const
 {
    const RBUF * const buf = reinterpret_cast<const RBUF* const>(data.content());
 
@@ -277,7 +277,7 @@ boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMess
    return message;
 }
 
-const std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> context, const yApi::IManuallyDeviceCreationData& data) const
+const std::string CTransceiver::createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> context, const yApi::IManuallyDeviceCreationData& data) const
 {
    boost::shared_ptr<rfxcomMessages::IRfxcomMessage> msg;
    try

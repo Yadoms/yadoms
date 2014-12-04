@@ -4,8 +4,8 @@
 
 #include "IZWaveController.h"
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	This class is the ZWave plugin entry point
@@ -24,7 +24,7 @@ public:
    virtual ~CZWave();
 
    // IPlugin implementation
-   virtual void doWork(boost::shared_ptr<yApi::IYadomsApi> context);
+   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
    // [END] IPlugin implementation
 
 private:
@@ -42,7 +42,7 @@ public:
 
    enum
    {
-      kDeclareDevice = yApi::IYadomsApi::kPluginFirstEventId,
+      kDeclareDevice = yApi::IYPluginApi::kPluginFirstEventId,
       kUpdateKeyword
    };
    

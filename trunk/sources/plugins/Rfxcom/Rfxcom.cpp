@@ -1,14 +1,14 @@
 #include "stdafx.h"
 #include "Rfxcom.h"
 #include <shared/plugin/ImplementationHelper.h>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/IManuallyDeviceCreationRequest.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/Log.h>
 #include <shared/exception/EmptyResult.hpp>
 #include "RfxcomFactory.h"
 #include "ProtocolException.hpp"
 #include <shared/communication/PortException.hpp>
-#include <shared/plugin/yadomsApi/historization/Dimmable.h>
+#include <shared/plugin/yPluginApi/historization/Dimmable.h>
 #include "ManuallyDeviceCreationException.hpp"
 
 IMPLEMENT_PLUGIN(CRfxcom)
@@ -17,7 +17,7 @@ IMPLEMENT_PLUGIN(CRfxcom)
 // Event IDs
 enum
 {
-   kEvtPortConnection = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from yApi::IYadomsApi::kPluginFirstEventId
+   kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from yApi::IYPluginApi::kPluginFirstEventId
    kEvtPortDataReceived,
    kProtocolErrorRetryTimer,
    kAnswerTimeout,
@@ -34,7 +34,7 @@ CRfxcom::~CRfxcom()
 {
 }
 
-void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
+void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    try
    {
@@ -60,7 +60,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          // Wait for an event
          switch(context->getEventHandler().waitForEvents())
          {
-         case yApi::IYadomsApi::kEventDeviceCommand:
+         case yApi::IYPluginApi::kEventDeviceCommand:
             {
                // Command received from Yadoms
                boost::shared_ptr<const yApi::IDeviceCommand> command(context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
@@ -68,7 +68,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 
                break;
             }
-         case yApi::IYadomsApi::kEventManuallyDeviceCreationTest:
+         case yApi::IYPluginApi::kEventManuallyDeviceCreationTest:
             {
                // Yadoms asks for test device parameters to check if it works before creating it. So just send command, don't declare anything.
                boost::shared_ptr<const yApi::IManuallyDeviceCreationTestData> data = context->getEventHandler().getEventData<const boost::shared_ptr<yApi::IManuallyDeviceCreationTestData> >();
@@ -76,7 +76,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 
                break;
             }
-         case yApi::IYadomsApi::kEventManuallyDeviceCreation:
+         case yApi::IYPluginApi::kEventManuallyDeviceCreation:
             {
                // Yadoms asks for device creation
                boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> request = context->getEventHandler().getEventData< boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
@@ -92,7 +92,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
                
                break;
             }
-         case yApi::IYadomsApi::kEventUpdateConfiguration:
+         case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
 
@@ -186,7 +186,7 @@ void CRfxcom::send(boost::shared_ptr<std::queue<const shared::communication::CBy
    }
 }
 
-void CRfxcom::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command)
+void CRfxcom::onCommand(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command)
 {
    YADOMS_LOG(debug) << "Command received :" << command->toString();
 
@@ -199,7 +199,7 @@ void CRfxcom::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, boost::shar
    send(m_transceiver->buildMessageToDevice(context, command));
 }
 
-void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& newConfigurationData)
+void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData)
 {
    // Configuration was updated
    YADOMS_LOG(debug) << "Configuration was updated...";
@@ -240,10 +240,10 @@ void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYadomsApi> context,
    createConnection(context->getEventHandler());
 }
 
-void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context)
+void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    YADOMS_LOG(debug) << "RFXCom is now connected";
-   context->recordPluginEvent(yApi::IYadomsApi::kInfo, "RFXCom is now connected");
+   context->recordPluginEvent(yApi::IYPluginApi::kInfo, "RFXCom is now connected");
 
    try
    {
@@ -265,21 +265,21 @@ void CRfxcom::processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> c
    }
 }
 
-void CRfxcom::errorProcess(boost::shared_ptr<yApi::IYadomsApi> context)
+void CRfxcom::errorProcess(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    destroyConnection();
    context->getEventHandler().createTimer(kProtocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
 
-void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context)
+void CRfxcom::processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    YADOMS_LOG(debug) << "RFXCom connection was lost";
-   context->recordPluginEvent(yApi::IYadomsApi::kInfo, "RFXCom connection was lost");
+   context->recordPluginEvent(yApi::IYPluginApi::kInfo, "RFXCom connection was lost");
 
    destroyConnection();
 }
 
-void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const shared::communication::CByteBuffer& data)
+void CRfxcom::processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> context, const shared::communication::CByteBuffer& data)
 {
    m_logger.logReceived(data);
 
@@ -335,7 +335,7 @@ void CRfxcom::initRfxcom()
    send(m_transceiver->buildGetStatusCmd(), true);
 }
 
-void CRfxcom::processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status)
+void CRfxcom::processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status)
 {
    // The status message can be received after a get status command or a set mode command
    switch(status.getStatusType())
@@ -348,7 +348,7 @@ void CRfxcom::processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYadom
    }
 }
 
-void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status)
+void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status)
 {
    YADOMS_LOG(info) << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware version (" << status.getFirmwareVersion() << ")";
    status.traceEnabledProtocols();
@@ -363,7 +363,7 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYadomsApi> con
    if (m_currentState != kGettingRfxcomStatus)
    {
       YADOMS_LOG(warning) << "Unable to set configuration as expected, maybe incompatible protocols were selected";
-      context->recordPluginEvent(yApi::IYadomsApi::kError, "Unable to set configuration as expected, maybe incompatible protocols was selected");
+      context->recordPluginEvent(yApi::IYPluginApi::kError, "Unable to set configuration as expected, maybe incompatible protocols was selected");
       m_currentState = kRfxcomIsRunning;
       return;
    }
@@ -376,7 +376,7 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYadomsApi> con
    // Expected reply is also a status message
 }
 
-void CRfxcom::processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status)
+void CRfxcom::processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status)
 {
    YADOMS_LOG(info) << "RFXCom wrong command response";
 }

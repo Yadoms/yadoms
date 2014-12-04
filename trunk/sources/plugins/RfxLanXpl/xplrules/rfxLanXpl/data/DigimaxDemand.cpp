@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DigimaxDemand.h"
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
@@ -12,11 +12,11 @@ DECLARE_ENUM_IMPLEMENTATION(EDigimaxDemand,
 );
 
 
-const shared::plugin::yadomsApi::CStandardCapacity& DigimaxDemandCapacity = shared::plugin::yadomsApi::CStandardCapacity("digimax_demand", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+const shared::plugin::yPluginApi::CStandardCapacity& DigimaxDemandCapacity = shared::plugin::yPluginApi::CStandardCapacity("digimax_demand", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
    
 CDigimaxDemand::CDigimaxDemand(const std::string& keywordName)
-   :CSingleHistorizableData<EDigimaxDemand>(keywordName, DigimaxDemandCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+   :CSingleHistorizableData<EDigimaxDemand>(keywordName, DigimaxDemandCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
 {
 }
 

@@ -27,11 +27,11 @@ CWindowsSystemInformation::~CWindowsSystemInformation()
 // Event IDs
 enum
 {
-   kEvtTimerRefreshCPULoad = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtTimerRefreshCPULoad = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
    kEvtTimerRefreshDiskAndMemory
 };
 
-void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
+void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    try
    {

@@ -2,9 +2,9 @@
 #include "System.h"
 #include <shared/plugin/ImplementationHelper.h>
 #include <shared/Log.h>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/Exception.hpp>
-#include <shared/plugin/yadomsApi/historization/Historizers.h>
+#include <shared/plugin/yPluginApi/historization/Historizers.h>
 
 
 namespace pluginSystem {
@@ -20,7 +20,7 @@ namespace pluginSystem {
    }
 
 
-   void CSystem::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
+   void CSystem::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    {
       try
       {
@@ -49,7 +49,7 @@ namespace pluginSystem {
             // Wait for an event
             switch (context->getEventHandler().waitForEvents())
             {
-               case yApi::IYadomsApi::kEventDeviceCommand:
+               case yApi::IYPluginApi::kEventDeviceCommand:
                {
                   // Command was received from Yadoms
                   boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();

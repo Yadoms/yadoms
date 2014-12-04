@@ -2,9 +2,9 @@
 
 #include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
-#include <shared/plugin/yadomsApi/IYadomsApi.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
@@ -22,7 +22,7 @@ namespace rfxcomMessages
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CCurrent(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CCurrent(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -31,7 +31,7 @@ namespace rfxcomMessages
 
       // IRfxcomMessage implementation
       virtual boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
-      virtual void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
+      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
       virtual const std::string& getDeviceName() const;
       // [END] IRfxcomMessage implementation
       
@@ -40,7 +40,7 @@ namespace rfxcomMessages
       /// \brief	Global initialization method
       /// \param[in] context              Yadoms APi context
       //--------------------------------------------------------------
-      void Init(boost::shared_ptr<yApi::IYadomsApi> context);
+      void Init(boost::shared_ptr<yApi::IYPluginApi> context);
 
       //--------------------------------------------------------------
       /// \brief	                        Build the device name

@@ -3,8 +3,8 @@
 #include "ILoad.h"
 #include "LoadKeyword.h"
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	Disk Usage for a drive for the Linux System
@@ -27,9 +27,9 @@ public:
    virtual ~CLinuxSystemDiskUsage();
 
    // ILoad Implementation
-   virtual void declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context);
+   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context);
    virtual void read();
-   virtual void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
+   virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
    // [END] ILoad Implementation
 
 private:

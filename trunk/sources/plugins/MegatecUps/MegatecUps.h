@@ -5,8 +5,8 @@
 #include <shared/communication/AsciiBufferLogger.h>
 #include <shared/event/EventTimer.h>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	This plugin supports Megatec UPS (see http://www.networkupstools.org/protocols/megatec.html)
@@ -25,7 +25,7 @@ public:
    virtual ~CMegatecUps();
 
    // IPlugin implementation
-   virtual void doWork(boost::shared_ptr<yApi::IYadomsApi> context);
+   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
    // [END] IPlugin implementation
 
 protected:
@@ -42,26 +42,26 @@ protected:
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] command          The received command
    //--------------------------------------------------------------
-   void onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command);
+   void onCommand(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the UPS becomes connected
    /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void processConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context);
+   void processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the UPS becomes unconnected
    /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void processUnConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context);
+   void processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the data are received from the UPS
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] message          Message received
    //--------------------------------------------------------------
-   void processDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& message);
+   void processDataReceived(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& message);
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the UPS
@@ -78,7 +78,7 @@ protected:
    /// \brief	                     Protocol error processing (retry last command)
    /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void protocolErrorProcess(boost::shared_ptr<yApi::IYadomsApi> context);
+   void protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> context);
 
    //--------------------------------------------------------------
    /// \brief	                     Check if connections are the same between the 2 configurations
@@ -123,14 +123,14 @@ protected:
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] tokens           Separated fields (input voltage, input fault voltage, output voltage, etc...)
    //--------------------------------------------------------------
-   void processReceivedStatus(boost::shared_ptr<yApi::IYadomsApi> context, const boost::tokenizer<boost::char_separator<char> >& tokens);
+   void processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> context, const boost::tokenizer<boost::char_separator<char> >& tokens);
 
    //--------------------------------------------------------------
    /// \brief	                     Process received information from UPS
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] tokens           Separated fields (company name, UPS model, version)
    //--------------------------------------------------------------
-   void processReceivedInformation(boost::shared_ptr<yApi::IYadomsApi> context, const boost::tokenizer<boost::char_separator<char> >& tokens);
+   void processReceivedInformation(boost::shared_ptr<yApi::IYPluginApi> context, const boost::tokenizer<boost::char_separator<char> >& tokens);
 
    //--------------------------------------------------------------
    /// \brief	                     Process received rating information from UPS
@@ -151,13 +151,13 @@ protected:
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] model            The UPS model
    //--------------------------------------------------------------
-   void declareDevice(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& model) const;
+   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& model) const;
 
    //--------------------------------------------------------------
    /// \brief	                     declare device (and associated keywords)
    /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
+   void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
 
    //--------------------------------------------------------------
    /// \brief	                     process AC power status
@@ -165,14 +165,14 @@ protected:
    /// \param [in] acPowerActive    AC power current status
    /// \param [in] lowBatteryFlag   Low battery flag
    //--------------------------------------------------------------
-   void processAcPowerStatus(boost::shared_ptr<yApi::IYadomsApi> context, bool acPowerActive, bool lowBatteryFlag);
+   void processAcPowerStatus(boost::shared_ptr<yApi::IYPluginApi> context, bool acPowerActive, bool lowBatteryFlag);
 
    //--------------------------------------------------------------
    /// \brief	                     notify Yadoms for current power state
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] powerState       The power state to send to Yadoms
    //--------------------------------------------------------------
-   void notifyPowerState(boost::shared_ptr<yApi::IYadomsApi> context, bool powerState);
+   void notifyPowerState(boost::shared_ptr<yApi::IYPluginApi> context, bool powerState);
 
    //--------------------------------------------------------------
    /// \brief	                     Evaluate the state of the low battery flag, by measured battery voltage

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MertikCommand.h"
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
@@ -23,11 +23,11 @@ DECLARE_ENUM_IMPLEMENTATION(EMertikCommand,
    ((ProgSweep)("prog_sweep"))
 );
 
-const shared::plugin::yadomsApi::CStandardCapacity& MertikCommandCapacity = shared::plugin::yadomsApi::CStandardCapacity("mertik", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+const shared::plugin::yPluginApi::CStandardCapacity& MertikCommandCapacity = shared::plugin::yPluginApi::CStandardCapacity("mertik", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
    
 CMertickCommand::CMertickCommand(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EMertikCommand>(keywordName, MertikCommandCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+   :shared::plugin::yPluginApi::historization::CSingleHistorizableData<EMertikCommand>(keywordName, MertikCommandCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
 {
 }
 

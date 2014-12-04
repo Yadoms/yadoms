@@ -2,7 +2,7 @@
 #include "ZWave.h"
 #include <shared/plugin/ImplementationHelper.h>
 #include <shared/Log.h>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/Exception.hpp>
 #include "ZWaveControllerFactory.h"
 #include "KeywordContainer.h"
@@ -22,7 +22,7 @@ CZWave::~CZWave()
 }
 
 
-void CZWave::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
+void CZWave::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    try
    {
@@ -45,7 +45,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             // Wait for an event
             switch (context->getEventHandler().waitForEvents())
             {
-            case yApi::IYadomsApi::kEventDeviceCommand:
+            case yApi::IYPluginApi::kEventDeviceCommand:
             {
                // Command was received from Yadoms
                boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
@@ -62,7 +62,7 @@ void CZWave::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 
                break;
             }
-            case yApi::IYadomsApi::kEventUpdateConfiguration:
+            case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
                shared::CDataContainer newConfiguration = context->getEventHandler().getEventData<shared::CDataContainer>();

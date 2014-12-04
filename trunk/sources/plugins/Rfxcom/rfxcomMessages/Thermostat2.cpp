@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "Thermostat2.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_state("state"), m_rssi("rssi")
 {
    m_state.set(command);
@@ -21,7 +21,7 @@ CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYadomsApi> context, const st
    Init(context);
 }
 
-CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_state("state"), m_rssi("rssi")
 {
    m_state.set(false);
@@ -42,7 +42,7 @@ CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYadomsApi> context, unsigned
    Init(context);
 }
 
-CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CThermostat2::CThermostat2(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_state("state"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeThermostat2, GET_RBUF_STRUCT_SIZE(THERMOSTAT2), DONT_CHECK_SEQUENCE_NUMBER);
@@ -59,7 +59,7 @@ CThermostat2::~CThermostat2()
 {
 }
 
-void CThermostat2::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CThermostat2::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -97,7 +97,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CThermo
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(THERMOSTAT2));
 }
 
-void CThermostat2::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CThermostat2::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_deviceName, m_state);
    context->historizeData(m_deviceName, m_rssi);

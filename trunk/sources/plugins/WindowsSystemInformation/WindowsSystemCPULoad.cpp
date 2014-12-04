@@ -2,8 +2,8 @@
 #include "WindowsSystemCPULoad.h"
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 #include <pdh.h>
 #include <pdhmsg.h>
 
@@ -92,7 +92,7 @@ CWindowsSystemCPULoad::~CWindowsSystemCPULoad()
    }
 }
 
-void CWindowsSystemCPULoad::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
+void CWindowsSystemCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    if (m_InitializeOk)
    {
@@ -101,7 +101,7 @@ void CWindowsSystemCPULoad::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> 
    }
 }
 
-void CWindowsSystemCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CWindowsSystemCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    BOOST_ASSERT_MSG(!!context, "context must be defined");
 

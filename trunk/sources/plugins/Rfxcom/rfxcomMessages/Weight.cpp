@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "Weight.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CWeight::CWeight(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CWeight::CWeight(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_weight("weight"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeWEIGHT, GET_RBUF_STRUCT_SIZE(WEIGHT), DONT_CHECK_SEQUENCE_NUMBER);
@@ -30,7 +30,7 @@ CWeight::~CWeight()
 {
 }
 
-void CWeight::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CWeight::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -57,7 +57,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CWeight
    throw shared::exception::CInvalidParameter("Weight is a read-only message, can not be encoded");
 }
 
-void CWeight::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CWeight::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_deviceName, m_weight);
    context->historizeData(m_deviceName, m_batteryLevel);

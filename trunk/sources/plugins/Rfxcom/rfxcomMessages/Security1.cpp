@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Security1.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include "Security1X10.h"
 #include "Security1X10M.h"
@@ -10,13 +10,13 @@
 #include "Security1PowerCodeMotion.h"
 #include "Security1Meiantech.h"
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails)
+CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_rssi("rssi")
 {
    m_rssi.set(0);
@@ -28,7 +28,7 @@ CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYadomsApi> context, const std::s
    m_subTypeManager->set(keyword, command);
 }
 
-CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_rssi("rssi")
 {
    m_rssi.set(0);
@@ -40,7 +40,7 @@ CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned cha
    m_subTypeManager->reset();
 }
 
-CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CSecurity1::CSecurity1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeSecurity1, GET_RBUF_STRUCT_SIZE(SECURITY1), DONT_CHECK_SEQUENCE_NUMBER);
@@ -76,7 +76,7 @@ void CSecurity1::createSubType(unsigned char subType)
    }
 }
 
-void CSecurity1::declare(boost::shared_ptr<yApi::IYadomsApi> context)
+void CSecurity1::declare(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    BOOST_ASSERT_MSG(!!m_subTypeManager, "m_subTypeManager must be initialized");
 
@@ -116,7 +116,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CSecuri
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(SECURITY1));
 }
 
-void CSecurity1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CSecurity1::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    m_subTypeManager->historize(context, m_deviceName);
    context->historizeData(m_deviceName, m_rssi);

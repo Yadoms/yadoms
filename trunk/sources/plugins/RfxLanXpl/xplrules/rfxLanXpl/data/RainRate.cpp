@@ -2,12 +2,12 @@
 #include "RainRate.h"
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/Log.h>
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
 
-const shared::plugin::yadomsApi::CStandardCapacity& RainRateCapacity = shared::plugin::yadomsApi::CStandardCapacity("RainRate", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::kGet, shared::plugin::yadomsApi::kNumeric);
+const shared::plugin::yPluginApi::CStandardCapacity& RainRateCapacity = shared::plugin::yPluginApi::CStandardCapacity("RainRate", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::kGet, shared::plugin::yPluginApi::kNumeric);
 
    
 CRainRate::CRainRate(const std::string& keywordName)

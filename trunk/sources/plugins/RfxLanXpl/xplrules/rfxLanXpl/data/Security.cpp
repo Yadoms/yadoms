@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Security.h"
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 #include <shared/DataContainer.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
@@ -19,9 +19,9 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       ((LightsOff))
    )
 
-   const shared::plugin::yadomsApi::CStandardCapacity& SecurityCapacity = shared::plugin::yadomsApi::CStandardCapacity("security", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+   const shared::plugin::yPluginApi::CStandardCapacity& SecurityCapacity = shared::plugin::yPluginApi::CStandardCapacity("security", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
-   CSecurity::CSecurity(const std::string& keywordName, const shared::plugin::yadomsApi::EKeywordAccessMode& accessMode)
+   CSecurity::CSecurity(const std::string& keywordName, const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode)
       :m_keywordName(keywordName), m_accessMode(accessMode)
    {
    }
@@ -35,12 +35,12 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       return m_keywordName;
    }
 
-   const shared::plugin::yadomsApi::CStandardCapacity& CSecurity::getCapacity() const
+   const shared::plugin::yPluginApi::CStandardCapacity& CSecurity::getCapacity() const
    {
       return SecurityCapacity;
    }
 
-   const shared::plugin::yadomsApi::EKeywordAccessMode& CSecurity::getAccessMode() const
+   const shared::plugin::yPluginApi::EKeywordAccessMode& CSecurity::getAccessMode() const
    {
       return m_accessMode;
    }
@@ -61,7 +61,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
          m_delay = command.get<int>("delay");
    }
    
-   const std::string CSecurity::formatValue() const
+   std::string CSecurity::formatValue() const
    {
       shared::CDataContainer yadomsCommand;
       yadomsCommand.set("command", m_command);
@@ -121,9 +121,9 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
    
 
 
-   const shared::plugin::yadomsApi::historization::EMeasureType& CSecurity::getMeasureType() const
+   const shared::plugin::yPluginApi::historization::EMeasureType& CSecurity::getMeasureType() const
    {
-      static const shared::plugin::yadomsApi::historization::EMeasureType MeasureType(shared::plugin::yadomsApi::historization::EMeasureType::kAbsolute);
+      static const shared::plugin::yPluginApi::historization::EMeasureType MeasureType(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute);
       return MeasureType;
    }
 

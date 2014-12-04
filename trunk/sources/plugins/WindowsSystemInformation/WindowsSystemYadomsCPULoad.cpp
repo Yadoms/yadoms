@@ -39,7 +39,7 @@ CWindowsSystemYadomsCPULoad::~CWindowsSystemYadomsCPULoad()
 {
 }
 
-void CWindowsSystemYadomsCPULoad::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
+void CWindowsSystemYadomsCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    if (m_InitializeOk)
    {
@@ -48,7 +48,7 @@ void CWindowsSystemYadomsCPULoad::declareKeywords(boost::shared_ptr<yApi::IYadom
    }
 }
 
-void CWindowsSystemYadomsCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CWindowsSystemYadomsCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
 

@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include "Rfy.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/historization/Curtain.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/historization/Curtain.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CRfy::CRfy(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_state("state")
 {
    m_state.set(command);
@@ -22,7 +22,7 @@ CRfy::CRfy(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& comma
    Init(context);
 }
 
-CRfy::CRfy(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_state("state")
 {
    m_state.set(yApi::historization::ECurtainCommand::kStopValue);
@@ -43,7 +43,7 @@ CRfy::CRfy(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, c
    Init(context);
 }
 
-CRfy::CRfy(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CRfy::CRfy(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_subType(0), m_unitCode(0), m_id(0), m_state("state")
 {
    // Should not be called (transmitter-only device)
@@ -54,7 +54,7 @@ CRfy::~CRfy()
 {
 }
 
-void CRfy::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CRfy::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -97,7 +97,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CRfy::e
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(RFY));
 }
 
-void CRfy::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CRfy::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    // Nothing to historize (transmitter-only device)
 }

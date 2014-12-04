@@ -10,7 +10,7 @@ CFakePluginConfiguration::~CFakePluginConfiguration()
 EEnumType CFakePluginConfiguration::getEnumParameter() const
 {
    // Enum type, declare keys labels
-   static const shared::CDataContainer::EnumValuesNames EEnumTypeNames = boost::assign::map_list_of
+   static const EnumValuesNames EEnumTypeNames = boost::assign::map_list_of
       ("EnumValue1", kEnumValue1)
       ("EnumValue2", kEnumValue2)
       ("EnumValue3", kEnumValue3);

@@ -2,10 +2,10 @@
 #include "Security1X10R.h"
 #include "RFXtrxHelpers.h"
 
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
@@ -25,7 +25,7 @@ std::string CSecurity1X10R::getModel() const
    return "X10 security remote";
 }
 
-void CSecurity1X10R::declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CSecurity1X10R::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    if (!context->keywordExists(deviceName, m_panic))
       context->declareKeyword(deviceName, m_panic);
@@ -37,7 +37,7 @@ void CSecurity1X10R::declare(boost::shared_ptr<yApi::IYadomsApi> context, const 
       context->declareKeyword(deviceName, m_light2);
 }
 
-void CSecurity1X10R::historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CSecurity1X10R::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    context->historizeData(deviceName, m_panic);
    context->historizeData(deviceName, m_armAlarm);

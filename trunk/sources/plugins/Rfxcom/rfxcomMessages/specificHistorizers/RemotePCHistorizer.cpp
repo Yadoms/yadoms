@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RemotePCHistorizer.h"
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 namespace rfxcomMessages { namespace specificHistorizers {
 
@@ -57,11 +57,11 @@ namespace rfxcomMessages { namespace specificHistorizers {
 
    );
    
-   const shared::plugin::yadomsApi::CStandardCapacity& RemotePCCapacity = shared::plugin::yadomsApi::CStandardCapacity("RemotePC", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+   const shared::plugin::yPluginApi::CStandardCapacity& RemotePCCapacity = shared::plugin::yPluginApi::CStandardCapacity("RemotePC", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
    
    CRemotePCHistorizer::CRemotePCHistorizer(const std::string& keywordName)
-      :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ERemotePCCodes>(keywordName, RemotePCCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+      :shared::plugin::yPluginApi::historization::CSingleHistorizableData<ERemotePCCodes>(keywordName, RemotePCCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
    {
    }
 

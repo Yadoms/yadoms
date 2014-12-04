@@ -1,6 +1,6 @@
 #pragma once
 #include "../xplcore/XplMessageSchemaIdentifier.h"
-#include <shared/plugin/yadomsApi/historization/IHistorizable.h>
+#include <shared/plugin/yPluginApi/historization/IHistorizable.h>
 #include "DeviceIdentifier.h"
 
 namespace xplrules {
@@ -26,13 +26,13 @@ namespace xplrules {
       ///\brief Add a keyword to the device
       ///\param [in] keyword  The keyword to add
       //------------------------------------
-      void addKeyword(boost::shared_ptr<shared::plugin::yadomsApi::historization::IHistorizable> keyword);
+      void addKeyword(boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> keyword);
      
       //------------------------------------
       ///\brief Get the keywords
       ///\return the keywords
       //------------------------------------
-      const std::vector< boost::shared_ptr<shared::plugin::yadomsApi::historization::IHistorizable> > & getKeywords() const;
+      const std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & getKeywords() const;
      
       //------------------------------------
       ///\brief Get the device identifier
@@ -49,7 +49,7 @@ namespace xplrules {
       //------------------------------------
       ///\brief The device keywords
       //------------------------------------
-      std::vector< boost::shared_ptr<shared::plugin::yadomsApi::historization::IHistorizable> > m_keywords;
+      std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > m_keywords;
    };
 
 

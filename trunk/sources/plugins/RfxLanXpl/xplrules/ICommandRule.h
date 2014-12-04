@@ -1,9 +1,9 @@
 #pragma once
 
-#include <shared/plugin/yadomsApi/IYadomsApi.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace xplrules {
 

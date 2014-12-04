@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include "Rain.h"
 #include <shared/Log.h>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CRain::CRain(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CRain::CRain(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeRAIN, GET_RBUF_STRUCT_SIZE(RAIN), DONT_CHECK_SEQUENCE_NUMBER);
@@ -48,7 +48,7 @@ CRain::~CRain()
 {
 }
 
-void CRain::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CRain::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -75,7 +75,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CRain::
    throw shared::exception::CInvalidParameter("Rain is a read-only message, can not be encoded");
 }
 
-void CRain::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CRain::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_deviceName, *m_rain);
    context->historizeData(m_deviceName, m_batteryLevel);

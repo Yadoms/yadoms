@@ -2,11 +2,11 @@
 
 #include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
-#include <shared/plugin/yadomsApi/IYadomsApi.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
 #include "ILighting2Subtype.h"
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
@@ -24,7 +24,7 @@ namespace rfxcomMessages
       /// \throw                          shared::exception::CInvalidParameter if fail to interpret command
       /// \note                           Use this constructor for command (to build RFXCom message)
       //--------------------------------------------------------------
-      CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command, const shared::CDataContainer& deviceDetails);
+      CLighting2(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
@@ -34,7 +34,7 @@ namespace rfxcomMessages
       /// \throw                          shared::exception::CInvalidParameter or shared::exception::COutOfRange if fail to interpret configuration
       /// \note                           Use this constructor for manually device creation
       //--------------------------------------------------------------
-      CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration);
+      CLighting2(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration);
 
       //--------------------------------------------------------------
       /// \brief	                        Constructor
@@ -44,7 +44,7 @@ namespace rfxcomMessages
       /// \note                           Use this constructor for received messages (to historize received data to Yadoms)
       /// \throw                          shared::exception::CInvalidParameter
       //--------------------------------------------------------------
-      CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
+      CLighting2(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -53,7 +53,7 @@ namespace rfxcomMessages
 
       // IRfxcomMessage implementation
       virtual boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const;
-      virtual void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
+      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
       virtual const std::string& getDeviceName() const;
       // [END] IRfxcomMessage implementation
 
@@ -73,7 +73,7 @@ namespace rfxcomMessages
       /// \brief	Declare the device
       /// \param[in] context              Yadoms APi context
       //--------------------------------------------------------------
-      void declare(boost::shared_ptr<yApi::IYadomsApi> context);
+      void declare(boost::shared_ptr<yApi::IYPluginApi> context);
 
    private:
       //--------------------------------------------------------------

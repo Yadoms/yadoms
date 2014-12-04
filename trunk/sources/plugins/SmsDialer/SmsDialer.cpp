@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "SmsDialer.h"
 #include <shared/Log.h>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/historization/Dimmable.h>
-#include <shared/plugin/yadomsApi/historization/Message.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/historization/Dimmable.h>
+#include <shared/plugin/yPluginApi/historization/Message.h>
 #include "SmsDialerFactory.h"
 #include "PhoneException.hpp"
 #include "Sms.h"
@@ -24,11 +24,11 @@ CSmsDialer::~CSmsDialer()
 // Event IDs
 enum
 {
-   kEvtTimerTryToConnectToPhone = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from yApi::IYadomsApi::kPluginFirstEventId
+   kEvtTimerTryToConnectToPhone = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from yApi::IYPluginApi::kPluginFirstEventId
    kEvtTimerCheckForIncommingSms
 };
 
-void CSmsDialer::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
+void CSmsDialer::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    try
    {
@@ -68,10 +68,10 @@ void CSmsDialer::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
    }
 }
 
-void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYadomsApi> context)
+void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    YADOMS_LOG(info) << "Phone is not connected"  << std::endl;
-   context->recordPluginEvent(yApi::IYadomsApi::kInfo, "Phone is not connected");
+   context->recordPluginEvent(yApi::IYPluginApi::kInfo, "Phone is not connected");
 
    m_incommingSmsPollTimer->stop();
    m_connectionTimer->start();
@@ -83,13 +83,13 @@ void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYadomsApi> co
          // Wait for an event
          switch(context->getEventHandler().waitForEvents())
          {
-         case yApi::IYadomsApi::kEventDeviceCommand:
+         case yApi::IYPluginApi::kEventDeviceCommand:
             {
                // Ignore all commands
                YADOMS_LOG(warning) << "Not able to process received the command (phone not connected)";
                break;
             }
-         case yApi::IYadomsApi::kEventUpdateConfiguration:
+         case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
                std::string newConfiguration = context->getEventHandler().getEventData<std::string>();
@@ -131,10 +131,10 @@ void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYadomsApi> co
    }
 }
 
-void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYadomsApi> context)
+void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    YADOMS_LOG(info) << "Phone is connected"  << std::endl;
-   context->recordPluginEvent(yApi::IYadomsApi::kInfo, "Phone is connected");
+   context->recordPluginEvent(yApi::IYPluginApi::kInfo, "Phone is connected");
 
    m_connectionTimer->stop();
 
@@ -166,7 +166,7 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYadomsApi> conte
          // Wait for an event
          switch(context->getEventHandler().waitForEvents())
          {
-         case yApi::IYadomsApi::kEventDeviceCommand:
+         case yApi::IYPluginApi::kEventDeviceCommand:
             {
                // Command received
                boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
@@ -181,7 +181,7 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYadomsApi> conte
 
                break;
             }
-         case yApi::IYadomsApi::kEventUpdateConfiguration:
+         case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
                std::string newConfiguration = context->getEventHandler().getEventData<std::string>();
@@ -223,7 +223,7 @@ void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYadomsApi> conte
    }
 }
 
-void CSmsDialer::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
+void CSmsDialer::declareDevice(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    if (context->deviceExists(m_device))
       return;
@@ -236,7 +236,7 @@ void CSmsDialer::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context)
    context->declareKeyword(m_device, m_messageKeyword);
 }
 
-void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& powerRequest)
+void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& powerRequest)
 {
    try
    {
@@ -253,7 +253,7 @@ void CSmsDialer::onPowerPhoneRequest(boost::shared_ptr<yApi::IYadomsApi> context
    }
 }
 
-void CSmsDialer::onSendSmsRequest(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& sendSmsRequest)
+void CSmsDialer::onSendSmsRequest(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& sendSmsRequest)
 {
    try
    {
@@ -276,7 +276,7 @@ void CSmsDialer::onSendSmsRequest(boost::shared_ptr<yApi::IYadomsApi> context, c
    }
 }
 
-void CSmsDialer::processIncommingSMS(boost::shared_ptr<yApi::IYadomsApi> context)
+void CSmsDialer::processIncommingSMS(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Check if incoming SMS
    boost::shared_ptr<std::vector<boost::shared_ptr<ISms> > > incommingSms = m_phone->getIncomingSMS();

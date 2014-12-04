@@ -2,7 +2,7 @@
 
 #include "communication/callback/ISynchronousCallback.h"
 #include "communication/callback/ICallbackRequest.h"
-#include <shared/plugin/yadomsApi/IManuallyDeviceCreationRequest.h>
+#include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 
 namespace pluginSystem
 {
@@ -10,14 +10,14 @@ namespace pluginSystem
    ///\brief Class which handle ManuallyDeviceCreationRequest
    ///       It provides data; and answers method 
    //-----------------------------------------------------
-   class CManuallyDeviceCreationRequest  : public shared::plugin::yadomsApi::IManuallyDeviceCreationRequest
+   class CManuallyDeviceCreationRequest  : public shared::plugin::yPluginApi::IManuallyDeviceCreationRequest
    {
    public:
       //-----------------------------------------------------
       ///\brief Constructor
       ///\param [in]  data       The data container
       //-----------------------------------------------------
-      CManuallyDeviceCreationRequest(const shared::plugin::yadomsApi::IManuallyDeviceCreationData & data, communication::callback::ISynchronousCallback<std::string> & callback);
+      CManuallyDeviceCreationRequest(const shared::plugin::yPluginApi::IManuallyDeviceCreationData & data, communication::callback::ISynchronousCallback<std::string> & callback);
 
       //-----------------------------------------------------
       ///\brief Destructor
@@ -27,7 +27,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief Get the request data
       //-----------------------------------------------------
-      const shared::plugin::yadomsApi::IManuallyDeviceCreationData& getData();
+      const shared::plugin::yPluginApi::IManuallyDeviceCreationData& getData();
 
       //-----------------------------------------------------
       ///\brief Answer the request with success, providing device name
@@ -45,7 +45,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief Internal data
       //-----------------------------------------------------
-      boost::shared_ptr< communication::callback::ICallbackRequest<shared::plugin::yadomsApi::IManuallyDeviceCreationData, std::string> > m_requestPtr;
+      boost::shared_ptr< communication::callback::ICallbackRequest<shared::plugin::yPluginApi::IManuallyDeviceCreationData, std::string> > m_requestPtr;
    };   
    
 } // namespace pluginSystem

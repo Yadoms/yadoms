@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/plugin/yadomsApi/IManuallyDeviceCreationTestData.h>
+#include <shared/plugin/yPluginApi/IManuallyDeviceCreationTestData.h>
 
 
 namespace pluginSystem
@@ -7,7 +7,7 @@ namespace pluginSystem
    //-----------------------------------------------------
    ///\brief The IDeviceCommand implementation
    //-----------------------------------------------------
-   class CManuallyDeviceCreationTestData : public shared::plugin::yadomsApi::IManuallyDeviceCreationTestData
+   class CManuallyDeviceCreationTestData : public shared::plugin::yPluginApi::IManuallyDeviceCreationTestData
    {
    public:
       //-----------------------------------------------------
@@ -15,7 +15,7 @@ namespace pluginSystem
       ///\param[in] device       The command to send
       ///\param[in] parameters   The parameters of the device (JSON string)
       //-----------------------------------------------------
-      CManuallyDeviceCreationTestData(boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> command, const std::string& parameters);
+      CManuallyDeviceCreationTestData(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command, const std::string& parameters);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -23,7 +23,7 @@ namespace pluginSystem
       virtual ~CManuallyDeviceCreationTestData();
 
       // IManuallyDeviceCreationTestData implementation
-      virtual boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> getCommand() const;
+      virtual boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> getCommand() const;
       virtual const std::string& getDeviceParameters() const;
       virtual const std::string toString() const;
       // [END] IManuallyDeviceCreationTestData implementation
@@ -32,7 +32,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       ///\brief               Command
       //-----------------------------------------------------
-      boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> m_command;
+      boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> m_command;
 
       //-----------------------------------------------------
       ///\brief               Device parameters (JSON string)

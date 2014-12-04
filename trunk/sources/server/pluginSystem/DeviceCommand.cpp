@@ -35,7 +35,7 @@ const std::string CDeviceCommand::toString() const
    return str.str();
 }
 
-const shared::plugin::yadomsApi::historization::IHistorizable& CDeviceCommand::getHistorizableObject() const
+const shared::plugin::yPluginApi::historization::IHistorizable& CDeviceCommand::getHistorizableObject() const
 {
    return m_historizableObject;
 }

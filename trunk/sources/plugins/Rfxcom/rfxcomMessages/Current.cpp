@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "Current.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CCurrent::CCurrent(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CCurrent::CCurrent(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_current1("channel_1"), m_current2("channel_2"), m_current3("channel_3"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeCURRENT, GET_RBUF_STRUCT_SIZE(CURRENT), DONT_CHECK_SEQUENCE_NUMBER);
@@ -32,7 +32,7 @@ CCurrent::~CCurrent()
 {
 }
 
-void CCurrent::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CCurrent::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -61,7 +61,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CCurren
    throw shared::exception::CInvalidParameter("Current is a read-only message, can not be encoded");
 }
 
-void CCurrent::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CCurrent::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_deviceName, m_current1);
    context->historizeData(m_deviceName, m_current2);

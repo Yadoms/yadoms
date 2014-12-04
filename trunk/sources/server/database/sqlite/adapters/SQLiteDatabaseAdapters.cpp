@@ -76,12 +76,12 @@ namespace database {   namespace sqlite {  namespace adapters {
       ((Id)(int)(0))
       ((DeviceId)(int)(0))
       ((CapacityName)(std::string)(""))
-      ((AccessMode)(shared::plugin::yadomsApi::EKeywordAccessMode)(shared::plugin::yadomsApi::EKeywordAccessMode::kNoAccess)(std::string))
+      ((AccessMode)(shared::plugin::yPluginApi::EKeywordAccessMode)(shared::plugin::yPluginApi::EKeywordAccessMode::kNoAccess)(std::string))
       ((Name)(std::string)(""))
       ((FriendlyName)(std::string)(""))
-      ((Type)(shared::plugin::yadomsApi::EKeywordDataType)(shared::plugin::yadomsApi::EKeywordDataType::kString)(std::string))
+      ((Type)(shared::plugin::yPluginApi::EKeywordDataType)(shared::plugin::yPluginApi::EKeywordDataType::kString)(std::string))
       ((Units)(std::string)(""))
-      ((Measure)(shared::plugin::yadomsApi::historization::EMeasureType)(shared::plugin::yadomsApi::historization::EMeasureType::kAbsolute)(std::string))
+      ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType)(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)(std::string))
       ((Details)(shared::CDataContainer)(shared::CDataContainer()))
    );
 

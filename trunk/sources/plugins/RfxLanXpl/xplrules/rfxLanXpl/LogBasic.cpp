@@ -35,7 +35,7 @@ namespace xplrules { namespace rfxLanXpl {
    KeywordList CLogBasic::identifyKeywords(xplcore::CXplMessage & msg)
    {
       KeywordList keywords;
-      keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CLog("log", shared::plugin::yadomsApi::EKeywordAccessMode::kGet)));
+      keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CLog("log", shared::plugin::yPluginApi::EKeywordAccessMode::kGet)));
       return keywords;
    }
    // [END] IRule implemntation
@@ -46,7 +46,7 @@ namespace xplrules { namespace rfxLanXpl {
    {
       MessageContent data;
 
-      boost::shared_ptr< data::CLog > log(new data::CLog("log", shared::plugin::yadomsApi::EKeywordAccessMode::kGet));
+      boost::shared_ptr< data::CLog > log(new data::CLog("log", shared::plugin::yPluginApi::EKeywordAccessMode::kGet));
       
       std::string code;
       if (msg.getBody().find(m_keywordCode) != msg.getBody().end())

@@ -34,12 +34,12 @@ namespace dataAccessLayer {
          return m_deviceRequester->getDevice(pluginId, name);
       }    
 
-      std::vector<boost::shared_ptr<database::entities::CDevice> > CDeviceManager::getDeviceWithCapacity(const std::string & capacityName, const shared::plugin::yadomsApi::EKeywordAccessMode & capacityAccessMode) const
+      std::vector<boost::shared_ptr<database::entities::CDevice> > CDeviceManager::getDeviceWithCapacity(const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & capacityAccessMode) const
       {
          return m_deviceRequester->getDeviceWithCapacity(capacityName, capacityAccessMode);
       }    
 
-      std::vector<boost::shared_ptr<database::entities::CDevice> > CDeviceManager::getDeviceWithCapacityType(const shared::plugin::yadomsApi::EKeywordAccessMode & capacityAccessMode, const shared::plugin::yadomsApi::EKeywordDataType & capacityType) const
+      std::vector<boost::shared_ptr<database::entities::CDevice> > CDeviceManager::getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode & capacityAccessMode, const shared::plugin::yPluginApi::EKeywordDataType & capacityType) const
       {
          return m_deviceRequester->getDeviceWithCapacityType(capacityAccessMode, capacityType);
       }    

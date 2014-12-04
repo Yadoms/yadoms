@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "Lighting4.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CLighting4::CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_keyword("event"), m_rssi("rssi")
 {
    m_rssi.set(0);
@@ -20,7 +20,7 @@ CLighting4::CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const std::s
    Init(context);
 }
 
-CLighting4::CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_keyword("event"), m_rssi("rssi")
 {
    m_rssi.set(0);
@@ -34,7 +34,7 @@ CLighting4::CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, unsigned cha
    Init(context);
 }
 
-CLighting4::CLighting4(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CLighting4::CLighting4(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_keyword("id"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeLighting4, GET_RBUF_STRUCT_SIZE(LIGHTING4), DONT_CHECK_SEQUENCE_NUMBER);
@@ -50,7 +50,7 @@ CLighting4::~CLighting4()
 {
 }
 
-void CLighting4::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CLighting4::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -91,7 +91,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CLighti
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING4));
 }
 
-void CLighting4::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CLighting4::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_deviceName, m_keyword);
    context->historizeData(m_deviceName, m_rssi);

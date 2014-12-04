@@ -2,7 +2,7 @@
 #include "RfxLanXpl.h"
 #include <shared/plugin/ImplementationHelper.h>
 #include <shared/Log.h>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/Exception.hpp>
 #include "xplcore/XplService.h"
 #include "xplcore/XplHub.h"
@@ -32,7 +32,7 @@ CRfxLanXpl::~CRfxLanXpl()
 // Event IDs
 enum
 {
-   kXplMessageReceived = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from yApi::IYadomsApi::kPluginFirstEventId
+   kXplMessageReceived = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from yApi::IYPluginApi::kPluginFirstEventId
    kXplHubFound,
 };
 
@@ -41,7 +41,7 @@ void print(shared::CDataContainer const& pt)
    YADOMS_LOG(debug) << pt.serialize();
 }
 
-void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
+void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    
    try
@@ -70,14 +70,14 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          // Wait for an event
          switch (context->getEventHandler().waitForEvents(boost::posix_time::minutes(10)))
          {
-         case yApi::IYadomsApi::kEventDeviceCommand:
+         case yApi::IYPluginApi::kEventDeviceCommand:
          {
             // Command was received from Yadoms
             boost::shared_ptr<const yApi::IDeviceCommand> command = context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >();
             OnSendDeviceCommand(command, context, xplService);
             break;
          }
-         case yApi::IYadomsApi::kEventUpdateConfiguration:
+         case yApi::IYPluginApi::kEventUpdateConfiguration:
          {
             // Configuration was updated
             shared::CDataContainer newConfiguration = context->getEventHandler().getEventData<shared::CDataContainer>();
@@ -119,7 +119,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             break;
          }
 
-         case yApi::IYadomsApi::kEventManuallyDeviceCreation:
+         case yApi::IYPluginApi::kEventManuallyDeviceCreation:
          {
             // Yadoms asks for device creation
             boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> data = context->getEventHandler().getEventData< boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
@@ -127,7 +127,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
             break;
          }         
           
-			case yApi::IYadomsApi::kBindingQuery:
+			case yApi::IYPluginApi::kBindingQuery:
          {
             // Yadoms asks for device creation
             boost::shared_ptr<yApi::IBindingQueryRequest> data = context->getEventHandler().getEventData< boost::shared_ptr<yApi::IBindingQueryRequest> >();
@@ -201,7 +201,7 @@ void CRfxLanXpl::StartPeripheralListing(xplcore::CXplService & xplService)
 ///\brief Function handler when receiving XplMessage
 ///\param [in] The xpl message received
 //----------------------------------------------
-void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::shared_ptr<yApi::IYadomsApi> context)
+void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::shared_ptr<yApi::IYPluginApi> context)
 {
    try
    {
@@ -238,8 +238,8 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
             }
 
             //create message keywords in database
-            std::vector< boost::shared_ptr<shared::plugin::yadomsApi::historization::IHistorizable> > allKeywords = rule->identifyKeywords(xplMessage);
-            for (std::vector< boost::shared_ptr<shared::plugin::yadomsApi::historization::IHistorizable> >::iterator keyword = allKeywords.begin(); keyword != allKeywords.end(); ++keyword)
+            std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > allKeywords = rule->identifyKeywords(xplMessage);
+            for (std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> >::iterator keyword = allKeywords.begin(); keyword != allKeywords.end(); ++keyword)
             {
                if (!context->keywordExists(deviceAddress.getId(), keyword->get()->getKeyword()))
                   context->declareKeyword(deviceAddress.getId(), *(keyword->get()));
@@ -288,7 +288,7 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
 ///\brief Function handler used to send a command to a device
 ///\param [in] The command to send
 //----------------------------------------------
-void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceCommand> command, boost::shared_ptr<yApi::IYadomsApi> context, xplcore::CXplService & xplService)
+void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceCommand> command, boost::shared_ptr<yApi::IYPluginApi> context, xplcore::CXplService & xplService)
 {
    try
    {
@@ -360,7 +360,7 @@ void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceComman
 }
 
 
-void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> data, boost::shared_ptr<yApi::IYadomsApi> context)
+void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> data, boost::shared_ptr<yApi::IYPluginApi> context)
 {
    try
    {
@@ -405,7 +405,7 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
             }
 
             //create message keywords in database
-            for (std::vector< boost::shared_ptr<shared::plugin::yadomsApi::historization::IHistorizable> >::const_iterator keyword = deviceContainer.getKeywords().begin(); keyword != deviceContainer.getKeywords().end(); ++keyword)
+            for (std::vector< boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> >::const_iterator keyword = deviceContainer.getKeywords().begin(); keyword != deviceContainer.getKeywords().end(); ++keyword)
             {
                if (!context->keywordExists(deviceAddress.getId(), keyword->get()->getKeyword()))
                   context->declareKeyword(deviceAddress.getId(), *(keyword->get()));
@@ -440,7 +440,7 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
 }
 
 
-void CRfxLanXpl::OnBindingQueryRequest(boost::shared_ptr<yApi::IBindingQueryRequest> data, boost::shared_ptr<yApi::IYadomsApi> context)
+void CRfxLanXpl::OnBindingQueryRequest(boost::shared_ptr<yApi::IBindingQueryRequest> data, boost::shared_ptr<yApi::IYPluginApi> context)
 {
 	try
 	{

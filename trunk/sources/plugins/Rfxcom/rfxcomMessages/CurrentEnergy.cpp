@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "CurrentEnergy.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CCurrentEnergy::CCurrentEnergy(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CCurrentEnergy::CCurrentEnergy(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_current1("channel_1"), m_current2("channel_2"), m_current3("channel_3"), m_instantPower("instant"), m_totalPowerAvailable(false), m_totalPower("total"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeCURRENTENERGY, GET_RBUF_STRUCT_SIZE(CURRENT_ENERGY), DONT_CHECK_SEQUENCE_NUMBER);
@@ -41,7 +41,7 @@ CCurrentEnergy::~CCurrentEnergy()
 {
 }
 
-void CCurrentEnergy::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CCurrentEnergy::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -70,7 +70,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CCurren
    throw shared::exception::CInvalidParameter("CurrentEnergy is a read-only message, can not be encoded");
 }
 
-void CCurrentEnergy::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CCurrentEnergy::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_deviceName, m_instantPower);
    if (m_totalPowerAvailable)

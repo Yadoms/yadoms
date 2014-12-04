@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "FakeSensor.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/StringExtension.h>
 #include <shared/Log.h>
 
@@ -17,7 +17,7 @@ CFakeSensor::~CFakeSensor()
 {
 }
 
-void CFakeSensor::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
+void CFakeSensor::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Declare associated keywords (= values managed by this device)
    context->declareKeyword(m_deviceName, m_temperature1);
@@ -29,25 +29,25 @@ void CFakeSensor::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
 void CFakeSensor::read()
 {
    // Generate a random variation on temperature (+/- 0 to 1.0°)
-   double offset = (int)(m_dist(m_gen) - 10.0) / 10.0; // Random offset, value from -1.0 to 1.0
+   double offset = static_cast<int>(m_dist(m_gen) - 10.0) / 10.0; // Random offset, value from -1.0 to 1.0
    double temperature = m_temperature1() + offset;
 
    //we keep 2 decimals
-   m_temperature1.set((int)(temperature * 100) / 100.0);
+   m_temperature1.set(static_cast<int>(temperature * 100) / 100.0);
 
    // Generate a random variation on temperature (+/- 0 to 2.0°)
-   offset = (int)(m_dist(m_gen) - 20.0) / 20.0; // Random offset, value from -2.0 to 2.0
+   offset = static_cast<int>(m_dist(m_gen) - 20.0) / 20.0; // Random offset, value from -2.0 to 2.0
    temperature = m_temperature2() + offset;
 
    //we keep 2 decimals
-   m_temperature2.set((int)(temperature * 100) / 100.0);
+   m_temperature2.set(static_cast<int>(temperature * 100) / 100.0);
 
    // Decrease battery level (min 20%)
    if (m_batteryLevel() > 20)
       m_batteryLevel.set(m_batteryLevel() - 1);
 }
 
-void CFakeSensor::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CFakeSensor::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
 

@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "Barometric.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CBarometric::CBarometric(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CBarometric::CBarometric(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_pressure("pressure"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeBARO, GET_RBUF_STRUCT_SIZE(BARO), DONT_CHECK_SEQUENCE_NUMBER);
@@ -30,7 +30,7 @@ CBarometric::~CBarometric()
 {
 }
 
-void CBarometric::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CBarometric::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -57,7 +57,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CBarome
    throw shared::exception::CInvalidParameter("Barometric is a read-only message, can not be encoded");
 }
 
-void CBarometric::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CBarometric::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_deviceName, m_pressure);
    context->historizeData(m_deviceName, m_batteryLevel);

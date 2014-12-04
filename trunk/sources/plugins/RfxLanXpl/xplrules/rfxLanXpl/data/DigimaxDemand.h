@@ -1,6 +1,6 @@
 #pragma once
 
-#include <shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp>
+#include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 #include <shared/enumeration/EnumHelpers.hpp>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
@@ -18,7 +18,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
    //-----------------------------------------------------
    ///\brief A RfxLan digital io historizable object
    //-----------------------------------------------------
-   class CDigimaxDemand : public shared::plugin::yadomsApi::historization::CSingleHistorizableData<EDigimaxDemand>
+   class CDigimaxDemand : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EDigimaxDemand>
    {
    public:
       //-----------------------------------------------------

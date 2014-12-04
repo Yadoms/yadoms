@@ -2,13 +2,13 @@
 #include "Blinds1.h"
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_state("state"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    m_state.set(command);
@@ -22,7 +22,7 @@ CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYadomsApi> context, const std::strin
    Init(context);
 }
 
-CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_state("state"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    m_state.set(yApi::historization::ECurtainCommand::kStopValue);
@@ -51,7 +51,7 @@ CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char su
    Init(context);
 }
 
-CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CBlinds1::CBlinds1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_state("state"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeBlinds, GET_RBUF_STRUCT_SIZE(BLINDS1), DONT_CHECK_SEQUENCE_NUMBER);
@@ -70,7 +70,7 @@ CBlinds1::~CBlinds1()
 {
 }
 
-void CBlinds1::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CBlinds1::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -114,7 +114,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CBlinds
    return toBufferQueue(buffer, GET_RBUF_STRUCT_SIZE(BLINDS1));
 }
 
-void CBlinds1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CBlinds1::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_deviceName, m_state);
    context->historizeData(m_deviceName, m_batteryLevel);

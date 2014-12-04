@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "LinuxSystemMemoryLoad.h"
 #include <shared/exception/Exception.hpp>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 #include "sys/types.h"
 //TODO : Temp
 #include <shared/Log.h>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 CLinuxSystemMemoryLoad::CLinuxSystemMemoryLoad(const std::string & device)
    :m_device(device), m_keyword("MemoryLoad")
@@ -18,12 +18,12 @@ CLinuxSystemMemoryLoad::CLinuxSystemMemoryLoad(const std::string & device)
 CLinuxSystemMemoryLoad::~CLinuxSystemMemoryLoad()
 {}
 
-void CLinuxSystemMemoryLoad::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
+void CLinuxSystemMemoryLoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    context->declareKeyword(m_device, m_keyword);
 }
 
-void CLinuxSystemMemoryLoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CLinuxSystemMemoryLoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    BOOST_ASSERT_MSG(!!context, "context must be defined");
 

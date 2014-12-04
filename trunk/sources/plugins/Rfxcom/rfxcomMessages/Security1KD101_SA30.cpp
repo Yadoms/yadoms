@@ -2,10 +2,10 @@
 #include "Security1KD101_SA30.h"
 #include "RFXtrxHelpers.h"
 
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
@@ -24,13 +24,13 @@ std::string CSecurity1KD101_SA30::getModel() const
    return m_model;
 }
 
-void CSecurity1KD101_SA30::declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CSecurity1KD101_SA30::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    if (!context->keywordExists(deviceName, m_alarm))
       context->declareKeyword(deviceName, m_alarm);
 }
 
-void CSecurity1KD101_SA30::historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CSecurity1KD101_SA30::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    context->historizeData(deviceName, m_alarm);
 }

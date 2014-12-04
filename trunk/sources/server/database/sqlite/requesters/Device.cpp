@@ -79,14 +79,14 @@ namespace database {  namespace sqlite { namespace requesters {
       return adapter.getResults()[0];
    }
 
-   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacity(const std::string & capacityName, const shared::plugin::yadomsApi::EKeywordAccessMode & accessMode) const
+   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacity(const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & accessMode) const
    {
       CQuery subQuery;
       subQuery.Select(CKeywordTable::getDeviceIdColumnName()).
          From(CKeywordTable::getTableName()).
          Where(CKeywordTable::getCapacityNameColumnName(), CQUERY_OP_EQUAL, capacityName);
 
-      if (accessMode() == shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+      if (accessMode() == shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
       {
          //we add a constraint on accessmode
          subQuery.And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, accessMode);
@@ -102,14 +102,14 @@ namespace database {  namespace sqlite { namespace requesters {
       return adapter.getResults();
    }
 
-   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacityType(const shared::plugin::yadomsApi::EKeywordAccessMode & capacityAccessMode, const shared::plugin::yadomsApi::EKeywordDataType & capacityType) const
+   std::vector<boost::shared_ptr<entities::CDevice> > CDevice::getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode & capacityAccessMode, const shared::plugin::yPluginApi::EKeywordDataType & capacityType) const
    {
 		CQuery subQuery;
 		subQuery.Select(CKeywordTable::getDeviceIdColumnName()).
 			From(CKeywordTable::getTableName()).
          Where(CKeywordTable::getTypeColumnName(), CQUERY_OP_EQUAL, capacityType);
 
-      if (capacityAccessMode() == shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+      if (capacityAccessMode() == shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
       {
          //we add a constraint on accessmode
          subQuery.And(CKeywordTable::getAccessModeColumnName(), CQUERY_OP_EQUAL, capacityAccessMode);

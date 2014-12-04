@@ -1,10 +1,10 @@
 #pragma once
 
-#include <shared/plugin/yadomsApi/IYadomsApi.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
 #include "ILighting2Subtype.h"
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
@@ -27,8 +27,8 @@ namespace rfxcomMessages
        
       // ILighting2Subtype implementation
       virtual std::string getModel() const;
-      virtual void declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
-      virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
+      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const;
+      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const;
       virtual void set(const std::string& yadomsCommand);
       virtual void reset();
       virtual void idFromProtocol(unsigned char id1Byte, unsigned char id2Byte, unsigned char id3Byte, unsigned char id4Byte, unsigned char& houseCode, unsigned int& id) const;

@@ -2,10 +2,10 @@
 #include "Lighting5MdRemote.h"
 #include "RFXtrxHelpers.h"
 
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
@@ -23,12 +23,12 @@ std::string CLighting5MdRemoteKeyword::getModel() const
    return "MDREMOTE LED dimmer";
 }
 
-void CLighting5MdRemoteKeyword::declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CLighting5MdRemoteKeyword::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    context->declareKeyword(deviceName, m_keyword);
 }
 
-void CLighting5MdRemoteKeyword::historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CLighting5MdRemoteKeyword::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    context->historizeData(deviceName, m_keyword);
 }

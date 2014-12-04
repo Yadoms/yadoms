@@ -16,7 +16,7 @@
 #include <shared/event/EventHandler.hpp>
 #include "dataAccessLayer/IDataAccessLayer.h"
 #include "IApplicationStopHandler.h"
-#include <shared/plugin/yadomsApi/IBindingQueryRequest.h>
+#include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 
 namespace pluginSystem
 {
@@ -160,21 +160,21 @@ namespace pluginSystem
       /// \param [in] id         Plugin instance Id
       /// \param [in] command    The command to post
       //--------------------------------------------------------------
-      void postCommand(int id, boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> command);
+      void postCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command);
 
       //--------------------------------------------------------------
       /// \brief                 Post a manually device creation request to a plugin
       /// \param [in] id         Plugin instance Id
       /// \param [in] request    Request data
       //--------------------------------------------------------------
-      void postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yadomsApi::IManuallyDeviceCreationRequest> & request);
+      void postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> & request);
 
       //--------------------------------------------------------------
       /// \brief                 Post a binding query request to a plugin
       /// \param [in] id         Plugin instance Id
       /// \param [in] request    Request data
       //--------------------------------------------------------------
-      void postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin::yadomsApi::IBindingQueryRequest> & request);
+      void postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request);
 
    private:
       //--------------------------------------------------------------

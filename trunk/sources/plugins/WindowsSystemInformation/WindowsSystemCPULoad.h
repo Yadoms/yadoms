@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ILoad.h"
-#include <shared/plugin/yadomsApi/IYadomsApi.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <pdh.h>
 
 
@@ -24,9 +24,9 @@ public:
    virtual ~CWindowsSystemCPULoad();
 
    // ILoad Implementation
-   virtual void declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context);
+   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context);
    virtual void read();
-   virtual void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
+   virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
    // [END] ILoad Implementation
 
 protected:

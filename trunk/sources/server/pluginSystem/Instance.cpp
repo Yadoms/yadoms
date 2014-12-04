@@ -20,7 +20,7 @@ CInstance::CInstance(
    shared::event::CEventHandler& supervisor,
    int pluginManagerEventId)
     : CThreadBase(pluginData->Name()), m_pPlugin(plugin), m_qualifier(qualifier), m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId),
-    m_context(new CYadomsApiImplementation(plugin->getInformation(), m_pPlugin->getLibraryPath(), pluginData, pluginEventLoggerRequester, deviceManager, keywordRequester, acquisitionRequester, acquisitionHistorizer))
+    m_context(new CYPluginApiImplementation(plugin->getInformation(), m_pPlugin->getLibraryPath(), pluginData, pluginEventLoggerRequester, deviceManager, keywordRequester, acquisitionRequester, acquisitionHistorizer))
 {
 	BOOST_ASSERT(m_pPlugin);
    m_pPluginInstance.reset(m_pPlugin->construct());
@@ -81,32 +81,32 @@ void CInstance::doWork()
    m_supervisor.postEvent<CManagerEvent>(m_pluginManagerEventId, event);
 }
 
-void CInstance::postCommand(boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> command) const
+void CInstance::postCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const
 {
    BOOST_ASSERT(m_context);
    // Post event to the plugin
-   m_context->getEventHandler().postEvent<boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> >(shared::plugin::yadomsApi::IYadomsApi::kEventDeviceCommand, command);
+   m_context->getEventHandler().postEvent<boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> >(shared::plugin::yPluginApi::IYPluginApi::kEventDeviceCommand, command);
 }
 
-void CInstance::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yadomsApi::IManuallyDeviceCreationRequest> & request) const
+void CInstance::postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> & request) const
 {
    BOOST_ASSERT(m_context);
    // Post event to the plugin
-   m_context->getEventHandler().postEvent< boost::shared_ptr<shared::plugin::yadomsApi::IManuallyDeviceCreationRequest> >(shared::plugin::yadomsApi::IYadomsApi::kEventManuallyDeviceCreation, request);
+   m_context->getEventHandler().postEvent< boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> >(shared::plugin::yPluginApi::IYPluginApi::kEventManuallyDeviceCreation, request);
 }
 
-void CInstance::postBindingQueryRequest(boost::shared_ptr<shared::plugin::yadomsApi::IBindingQueryRequest> & request) const
+void CInstance::postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request) const
 {
 	BOOST_ASSERT(m_context);
 	// Post event to the plugin
-   m_context->getEventHandler().postEvent< boost::shared_ptr<shared::plugin::yadomsApi::IBindingQueryRequest> >(shared::plugin::yadomsApi::IYadomsApi::kBindingQuery, request);
+   m_context->getEventHandler().postEvent< boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> >(shared::plugin::yPluginApi::IYPluginApi::kBindingQuery, request);
 }
 
 void CInstance::updateConfiguration(const shared::CDataContainer & newConfiguration) const
 {
    BOOST_ASSERT(m_context);
    // Post event to the plugin
-   m_context->getEventHandler().postEvent<shared::CDataContainer>(shared::plugin::yadomsApi::IYadomsApi::kEventUpdateConfiguration, newConfiguration);
+   m_context->getEventHandler().postEvent<shared::CDataContainer>(shared::plugin::yPluginApi::IYPluginApi::kEventUpdateConfiguration, newConfiguration);
 }
 
 std::string CInstance::getPluginName() const

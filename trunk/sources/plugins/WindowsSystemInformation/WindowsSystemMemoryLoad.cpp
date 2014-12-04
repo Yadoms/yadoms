@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "WindowsSystemMemoryLoad.h"
 #include <shared/exception/Exception.hpp>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 #include <shared/Log.h>
 
 CWindowsSystemMemoryLoad::CWindowsSystemMemoryLoad(const std::string & device)
@@ -14,12 +14,12 @@ CWindowsSystemMemoryLoad::~CWindowsSystemMemoryLoad()
 {
 }
 
-void CWindowsSystemMemoryLoad::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
+void CWindowsSystemMemoryLoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    context->declareKeyword(m_device, m_keyword);
 }
 
-void CWindowsSystemMemoryLoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CWindowsSystemMemoryLoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    BOOST_ASSERT_MSG(!!context, "context must be defined");
 

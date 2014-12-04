@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "RaspberryPiTemperatureSensor.h"
 #include <shared/Log.h>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 
 
 CRaspberryPiTemperatureSensor::CRaspberryPiTemperatureSensor(const std::string & deviceId)
@@ -13,13 +13,13 @@ CRaspberryPiTemperatureSensor::~CRaspberryPiTemperatureSensor()
 {
 }
 
-void CRaspberryPiTemperatureSensor::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
+void CRaspberryPiTemperatureSensor::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Declare associated keywords (= values managed by this device)
    context->declareKeyword(m_device, m_keyword);
 }
 
-void CRaspberryPiTemperatureSensor::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CRaspberryPiTemperatureSensor::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
 

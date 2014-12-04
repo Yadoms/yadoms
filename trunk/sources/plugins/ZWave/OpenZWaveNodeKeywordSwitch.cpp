@@ -12,7 +12,7 @@ bool COpenZWaveNodeKeywordSwitch::sendCommand(const std::string & commandData)
    return realSendCommand<bool>(m_switch.get());
 }
 
-const shared::plugin::yadomsApi::historization::IHistorizable & COpenZWaveNodeKeywordSwitch::getLastKeywordValue()
+const shared::plugin::yPluginApi::historization::IHistorizable & COpenZWaveNodeKeywordSwitch::getLastKeywordValue()
 {
    //m_valueId.
    m_switch.set(extractLastValue<bool>());

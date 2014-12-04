@@ -65,13 +65,13 @@ namespace xplrules { namespace rfxLanXpl {
       switch (type)
       {
       case EType::kNinjaValue:
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CNinja("ninja")));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CNinja("ninja")));
          break;
       case EType::kMertikValue:
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CMertickCommand("mertik")));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CMertickCommand("mertik")));
          break;
       case EType::kOutputValue:
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CDigitalIoCommand("digitalio")));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CDigitalIoCommand("digitalio")));
          break;
       }
       return keywords;

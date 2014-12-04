@@ -4,7 +4,7 @@
 namespace pluginSystem
 {
 
-CManuallyDeviceCreationTestData::CManuallyDeviceCreationTestData(boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> command, const std::string& parameters)
+CManuallyDeviceCreationTestData::CManuallyDeviceCreationTestData(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command, const std::string& parameters)
    :m_command(command), m_parameters(parameters)
 {
 }
@@ -13,7 +13,7 @@ CManuallyDeviceCreationTestData::~CManuallyDeviceCreationTestData()
 {
 }
 
-boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> CManuallyDeviceCreationTestData::getCommand() const
+boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> CManuallyDeviceCreationTestData::getCommand() const
 {
    return m_command;
 }

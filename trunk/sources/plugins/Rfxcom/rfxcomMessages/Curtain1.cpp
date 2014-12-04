@@ -2,13 +2,13 @@
 #include "Curtain1.h"
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_state("state")
 {
    m_state.set(command);
@@ -20,7 +20,7 @@ CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYadomsApi> context, const std::str
    Init(context);
 }
 
-CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_state("state"), m_subType(0), m_houseCode(0), m_unitCode(0)
 {
    m_state.set(yApi::historization::ECurtainCommand::kStopValue);
@@ -35,7 +35,7 @@ CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char 
    Init(context);
 }
 
-CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_state("state"), m_subType(0), m_houseCode(0), m_unitCode(0)
 {
    // Should not be called (transmitter-only device)
@@ -46,7 +46,7 @@ CCurtain1::~CCurtain1()
 {
 }
 
-void CCurtain1::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CCurtain1::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -83,7 +83,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CCurtai
    return toBufferQueue(buffer, GET_RBUF_STRUCT_SIZE(CURTAIN1));
 }
 
-void CCurtain1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CCurtain1::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    // Nothing to historize (transmitter-only device)
 }

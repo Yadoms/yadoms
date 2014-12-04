@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "FakeCounter.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/StringExtension.h>
 #include <shared/Log.h>
 
@@ -15,7 +15,7 @@ CFakeCounter::~CFakeCounter()
 {
 }
 
-void CFakeCounter::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
+void CFakeCounter::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Declare associated keywords (= values managed by this device)
    context->declareKeyword(m_deviceName, m_incrementCount);
@@ -31,7 +31,7 @@ void CFakeCounter::read()
    m_totalCount.set(m_totalCount.get() + m_dist(m_gen));
 }
 
-void CFakeCounter::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CFakeCounter::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
 

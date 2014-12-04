@@ -49,7 +49,7 @@ namespace communication {
    void CPluginGateway::sendCommandAsync(int deviceId, int keywordId, const std::string& body)
    {
       // Create the command
-      boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> command(new pluginSystem::CDeviceCommand(m_dataProvider->getDeviceRequester()->getDevice(deviceId)->Name,
+      boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command(new pluginSystem::CDeviceCommand(m_dataProvider->getDeviceRequester()->getDevice(deviceId)->Name,
          m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->Name, body));
 
       // Dispatch command to the right plugin
@@ -59,19 +59,19 @@ namespace communication {
       m_acquisitionHistorizer->saveData(keywordId, command->getHistorizableObject());
    }
 
-   void CPluginGateway::sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yadomsApi::IManuallyDeviceCreationData & data, communication::callback::ISynchronousCallback<std::string> & callback)
+   void CPluginGateway::sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yPluginApi::IManuallyDeviceCreationData & data, communication::callback::ISynchronousCallback<std::string> & callback)
    {
       // Create the request
-      boost::shared_ptr<shared::plugin::yadomsApi::IManuallyDeviceCreationRequest> request(new pluginSystem::CManuallyDeviceCreationRequest(data, callback));
+      boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> request(new pluginSystem::CManuallyDeviceCreationRequest(data, callback));
       
       // Dispatch command to the right plugin
       m_pluginManager->postManuallyDeviceCreationRequest(pluginId, request);
    }
 
-   void CPluginGateway::sendBindingQueryRequest(int pluginId, const shared::plugin::yadomsApi::IBindingQueryData & data, communication::callback::ISynchronousCallback< shared::CDataContainer > & callback)
+   void CPluginGateway::sendBindingQueryRequest(int pluginId, const shared::plugin::yPluginApi::IBindingQueryData & data, communication::callback::ISynchronousCallback< shared::CDataContainer > & callback)
 	{
 		// Create the request
-      boost::shared_ptr<shared::plugin::yadomsApi::IBindingQueryRequest> request(new pluginSystem::CBindingQueryRequest(data, callback));
+      boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> request(new pluginSystem::CBindingQueryRequest(data, callback));
 
 		// Dispatch command to the right plugin
 		m_pluginManager->postBindingQueryRequest(pluginId, request);

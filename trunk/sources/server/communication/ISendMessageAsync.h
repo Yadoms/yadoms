@@ -1,8 +1,8 @@
 #pragma once
 
 #include "callback/ISynchronousCallback.h"
-#include <shared/plugin/yadomsApi/IManuallyDeviceCreationData.h>
-#include <shared/plugin/yadomsApi/IBindingQueryData.h>
+#include <shared/plugin/yPluginApi/IManuallyDeviceCreationData.h>
+#include <shared/plugin/yPluginApi/IBindingQueryData.h>
 #include <shared/DataContainer.h>
 
 namespace communication {
@@ -34,7 +34,7 @@ namespace communication {
       ///\param [in] data           Reference to manually device creation data
       ///\param [in] callback       The callback
       //----------------------------------------------
-      virtual void sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yadomsApi::IManuallyDeviceCreationData & data, communication::callback::ISynchronousCallback<std::string> & callback) = 0;
+      virtual void sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yPluginApi::IManuallyDeviceCreationData & data, communication::callback::ISynchronousCallback<std::string> & callback) = 0;
 
 		//----------------------------------------------
       ///\brief                     Send a binding query request to a plugin with a mandatory callback
@@ -42,7 +42,7 @@ namespace communication {
       ///\param [in] data           Reference to the binding query data
       ///\param [in] callback       The callback
       //----------------------------------------------
-      virtual void sendBindingQueryRequest(int pluginId, const shared::plugin::yadomsApi::IBindingQueryData & data, communication::callback::ISynchronousCallback< shared::CDataContainer > & callback) = 0;
+      virtual void sendBindingQueryRequest(int pluginId, const shared::plugin::yPluginApi::IBindingQueryData & data, communication::callback::ISynchronousCallback< shared::CDataContainer > & callback) = 0;
    };
 
 } //namespace communication

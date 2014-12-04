@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "Camera1.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CCamera1::CCamera1(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_camera("camera"), m_rssi("rssi")
 {
    m_camera.set(command);
@@ -21,7 +21,7 @@ CCamera1::CCamera1(boost::shared_ptr<yApi::IYadomsApi> context, const std::strin
    Init(context);
 }
 
-CCamera1::CCamera1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_camera("camera"), m_rssi("rssi")
 {
    m_camera.set(yApi::historization::ECameraMoveCommand::kCenterPositionValue);
@@ -36,7 +36,7 @@ CCamera1::CCamera1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char su
    Init(context);
 }
 
-CCamera1::CCamera1(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CCamera1::CCamera1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_camera("camera"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeCamera, GET_RBUF_STRUCT_SIZE(CAMERA1), DONT_CHECK_SEQUENCE_NUMBER);
@@ -53,7 +53,7 @@ CCamera1::~CCamera1()
 {
 }
 
-void CCamera1::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CCamera1::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -91,7 +91,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CCamera
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(CAMERA1));
 }
 
-void CCamera1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CCamera1::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_deviceName, m_camera);
    context->historizeData(m_deviceName, m_rssi);

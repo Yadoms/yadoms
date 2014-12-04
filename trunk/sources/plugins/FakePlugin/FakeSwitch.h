@@ -2,9 +2,9 @@
 
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
-#include <shared/plugin/yadomsApi/IYadomsApi.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	Fake switch
@@ -30,9 +30,9 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	            Declare keywords associated with this device
-   /// \param[in] context  YadomsApi context
+   /// \param[in] context  yPluginApi context
    //--------------------------------------------------------------
-   void declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context);
+   void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context);
 
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)
@@ -41,9 +41,9 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	            Send all sensor data to Yadoms
-   /// \param[in] context  YadomsApi context to which historize data
+   /// \param[in] context  yPluginApi context to which historize data
    //--------------------------------------------------------------
-   void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
+   void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
 
    //--------------------------------------------------------------
    /// \brief	    Returns the fake switch device name
