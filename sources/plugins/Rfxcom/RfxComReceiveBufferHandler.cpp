@@ -14,7 +14,7 @@ CRfxcomReceiveBufferHandler::~CRfxcomReceiveBufferHandler()
 void CRfxcomReceiveBufferHandler::push(const shared::communication::CByteBuffer& buffer)
 {
    for (size_t idx = 0 ; idx < buffer.size() ; ++ idx)
-      m_content.push_back(buffer.content()[idx]);
+      m_content.push_back(buffer[idx]);
 
    if (isComplete())
       notifyEventHandler(popNextMessage());
@@ -49,16 +49,14 @@ boost::shared_ptr<const shared::communication::CByteBuffer> CRfxcomReceiveBuffer
    // (see RFXCom specifications). This value counts all bytes except itself.
    // So the message size is this value + 1.
    const size_t extractedMessageSize = m_content[0] + 1;
-   boost::shared_ptr<unsigned char[]> extractedMessage(new unsigned char[extractedMessageSize]);
+   boost::shared_ptr<shared::communication::CByteBuffer> extractedMessage(new shared::communication::CByteBuffer(extractedMessageSize));
    for (size_t idx = 0 ; idx < extractedMessageSize ; ++ idx)
-      extractedMessage[idx] = m_content[idx];
-
-   boost::shared_ptr<const shared::communication::CByteBuffer> nextMessage(new shared::communication::CByteBuffer(extractedMessage.get(), extractedMessageSize));
+      (*extractedMessage)[idx] = m_content[idx];
 
    // Delete extracted data
    m_content.erase(m_content.begin(), m_content.begin() + extractedMessageSize);
 
-   return nextMessage;
+   return extractedMessage;
 }
 
 void CRfxcomReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<const shared::communication::CByteBuffer> buffer)

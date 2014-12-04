@@ -27,7 +27,7 @@ std::string CAsciiBufferLogger::msgToString(const CByteBuffer& data) const
    std::ostringstream ss;
    for (size_t idx = 0 ; idx < data.size() ; ++ idx)
    {
-      char c = data.content()[idx];
+      char c = data[idx];
       switch(c)
       {
       case 0x00 : ss << "<nul>"; break;

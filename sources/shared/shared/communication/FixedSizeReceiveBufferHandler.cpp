@@ -17,7 +17,7 @@ CFixedSizeReceiveBufferHandler::~CFixedSizeReceiveBufferHandler()
 void CFixedSizeReceiveBufferHandler::push(const CByteBuffer& buffer)
 {
    for (size_t idx = 0 ; idx < buffer.size() ; ++ idx)
-      m_content.push_back(buffer.content()[idx]);
+      m_content.push_back(buffer[idx]);
 
    if (isComplete())
       notifyEventHandler(popNextMessage());
@@ -44,16 +44,14 @@ boost::shared_ptr<const CByteBuffer> CFixedSizeReceiveBufferHandler::popNextMess
 {
    BOOST_ASSERT_MSG(isComplete(), "CFixedSizeReceiveBufferHandler : Can not pop not completed message. Call isComplete to check if a message is available");
 
-   boost::shared_ptr<unsigned char[]> extractedMessage(new unsigned char[m_messageSize]);
+   boost::shared_ptr<CByteBuffer> extractedMessage(new CByteBuffer(m_messageSize));
    for (size_t idx = 0 ; idx < m_messageSize ; ++ idx)
-      extractedMessage[idx] = m_content[idx];
-
-   boost::shared_ptr<const CByteBuffer> nextMessage(new CByteBuffer(extractedMessage.get(), m_messageSize));
+      (*extractedMessage)[idx] = m_content[idx];
 
    // Delete extracted data
    m_content.erase(m_content.begin(), m_content.begin() + m_messageSize);
 
-   return nextMessage;
+   return extractedMessage;
 }
 
 void CFixedSizeReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<const CByteBuffer> buffer)

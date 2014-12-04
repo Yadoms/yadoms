@@ -120,7 +120,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CLighti
    for (size_t idxMessage = 0 ; idxMessage < m_subTypeManager->getMessageNb() ; ++ idxMessage)
    {
       m_subTypeManager->toProtocolState(idxMessage, rbuf.LIGHTING5.cmnd, rbuf.LIGHTING5.level);
-      buffers->push(shared::communication::CByteBuffer((BYTE*)&rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING5)));
+      buffers->push(toBuffer(rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING5)));
    }
    return buffers;
 }

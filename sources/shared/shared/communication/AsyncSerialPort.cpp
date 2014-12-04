@@ -18,12 +18,9 @@ CAsyncSerialPort::CAsyncSerialPort(
    :m_boostSerialPort(m_ioService),
    m_port(port),
    m_baudrate(baudrate), m_parity(parity), m_characterSize(characterSize), m_stop_bits(stop_bits), m_flowControl(flowControl),
-   m_readBufferMaxSize(512),
-   m_asyncReadBuffer(new unsigned char[m_readBufferMaxSize]),
-   m_readBuffer(new unsigned char[m_readBufferMaxSize]),
+   m_asyncReadBuffer(512),
    m_connectRetryDelay(connectRetryDelay),
    m_connectRetryTimer(m_ioService)
-
 {
 }
 
@@ -34,9 +31,7 @@ CAsyncSerialPort::~CAsyncSerialPort()
 
 void CAsyncSerialPort::setReceiveBufferMaxSize(std::size_t size)
 {
-   m_readBufferMaxSize = size;
-   m_asyncReadBuffer.reset(new unsigned char[m_readBufferMaxSize]);
-   m_readBuffer.reset(new unsigned char[m_readBufferMaxSize]);
+   m_asyncReadBuffer.resize(size);
 }
 
 void CAsyncSerialPort::start()
@@ -152,7 +147,7 @@ void CAsyncSerialPort::tryConnect()
 void CAsyncSerialPort::startRead()
 {
    // Start an asynchronous read and call readCompleted when it completes or fails 
-   m_boostSerialPort.async_read_some(boost::asio::buffer(m_asyncReadBuffer.get(), m_readBufferMaxSize), 
+   m_boostSerialPort.async_read_some(boost::asio::buffer(m_asyncReadBuffer.begin(), m_asyncReadBuffer.size()),
       boost::bind(&CAsyncSerialPort::readCompleted, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 }
 
@@ -172,7 +167,8 @@ void CAsyncSerialPort::readCompleted(const boost::system::error_code& error, std
    }
 
    // Read OK
-   CByteBuffer buffer(m_asyncReadBuffer.get(), bytesTransferred);
+   CByteBuffer buffer(bytesTransferred);
+   memcpy(buffer.begin(), m_asyncReadBuffer.begin(), bytesTransferred);
 
    if (!!m_receiveBufferHandler)
       m_receiveBufferHandler->push(buffer);
@@ -185,7 +181,7 @@ void CAsyncSerialPort::send(const CByteBuffer& buffer)
 {
    try
    {
-      m_boostSerialPort.write_some(boost::asio::const_buffers_1(buffer.content(), buffer.size()));
+      m_boostSerialPort.write_some(boost::asio::const_buffers_1(buffer.begin(), buffer.size()));
    }
    catch (boost::system::system_error& e)
    {

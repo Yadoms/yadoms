@@ -30,7 +30,15 @@ public:
 
 protected:
    //--------------------------------------------------------------
-   /// \brief	                     Send a message to the UPS
+   /// \brief	                     Send a ASCII message to the UPS
+   /// \param [in] message          message to send
+   /// \param [in] needAnswer       true if answer is needed. If true, a timeout will occur if no answer is received.
+   /// \param [in] answerIsRequired true if answer is required (Used for some UPS, not supporting all commands)
+   //--------------------------------------------------------------
+   void send(const std::string& message, bool needAnswer = false, bool answerIsRequired = true);
+
+   //--------------------------------------------------------------
+   /// \brief	                     Send a buffer to the UPS
    /// \param [in] buffer           Buffer to send
    /// \param [in] needAnswer       true if answer is needed. If true, a timeout will occur if no answer is received.
    /// \param [in] answerIsRequired true if answer is required (Used for some UPS, not supporting all commands)

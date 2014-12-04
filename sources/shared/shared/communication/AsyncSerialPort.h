@@ -109,19 +109,9 @@ namespace shared { namespace communication {
       boost::asio::serial_port_base::flow_control m_flowControl;
 
       //--------------------------------------------------------------
-      /// \brief	Read buffer max size
-      //--------------------------------------------------------------
-      std::size_t m_readBufferMaxSize;
-
-      //--------------------------------------------------------------
       /// \brief	Read buffer for asynchronous operations
       //--------------------------------------------------------------
-      boost::shared_ptr<unsigned char[]> m_asyncReadBuffer;
-
-      //--------------------------------------------------------------
-      /// \brief	Read buffer for synchronous operations
-      //--------------------------------------------------------------
-      boost::shared_ptr<unsigned char[]> m_readBuffer;
+      CByteBuffer m_asyncReadBuffer;
 
       //--------------------------------------------------------------
       /// \brief	The event handler to notify for connection events   
