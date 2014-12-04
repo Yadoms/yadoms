@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ILoad.h"
-#include "LoadKeyword.h"
 
 //--------------------------------------------------------------
 /// \brief	Disk Usage for a drive for the RaspBerryPi System
@@ -44,7 +43,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keyword
    //--------------------------------------------------------------
-   CLoadKeyword m_keyword;
+   yApi::historization::CLoad m_keyword;
 
    //FIXME : Ecriture à modifier ??
    std::vector<std::string> ExecuteCommandAndReturn(const std::string &szCommand);
