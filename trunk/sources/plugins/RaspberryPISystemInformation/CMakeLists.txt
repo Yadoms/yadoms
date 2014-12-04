@@ -8,8 +8,6 @@ IF(CC_RPI_GCC)
 	set(RASPBERRYPISYSTEMINFORMATION_PLUGIN_SOURCES
 		stdafx.h
 		stdafx.cpp
-                LoadKeyword.h
-                LoadKeyword.cpp
 		RaspBerryPiSystemInformation.h
 		RaspBerryPiSystemInformation.cpp 
 		RaspBerryPiSystemMemoryLoad.h

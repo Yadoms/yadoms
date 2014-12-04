@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ILoad.h"
-#include "LoadKeyword.h"
 #include "sys/times.h"
 #include "sys/vtimes.h"
 
@@ -42,7 +41,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keyword string
    //--------------------------------------------------------------
-   CLoadKeyword m_keyword;
+   yApi::historization::CLoad m_keyword;
 
    //--------------------------------------------------------------
    /// \brief	    Number of total ticks, System ticks, User Ticks
