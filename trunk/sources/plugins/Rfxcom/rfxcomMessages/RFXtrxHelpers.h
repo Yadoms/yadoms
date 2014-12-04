@@ -54,12 +54,20 @@ bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, size_t expectedSi
 bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, BYTE expectedSubType, size_t expectedSize, unsigned int expectedSeqNumber);
 
 //--------------------------------------------------------------
+/// \brief	                           Make a send buffer from RBUF structure
+/// \param[in] rbuf                    RBUF structure pointer
+/// \param[in] subStructureSize        RBUF Substructure size
+/// \return                            Buffer
+//--------------------------------------------------------------
+const shared::communication::CByteBuffer toBuffer(const RBUF& rbuf, std::size_t subStructureSize);
+
+//--------------------------------------------------------------
 /// \brief	                           Make a buffer queue from one buffer
-/// \param[in] buffer                  Buffer to send
+/// \param[in] rbuf                    RBUF structure pointer
 /// \param[in] subStructureSize        RBUF Substructure size
 /// \return                            Buffer queue containing only one buffer
 //--------------------------------------------------------------
-boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > toBufferQueue(const RBUF& buffer, std::size_t subStructureSize);
+boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > toBufferQueue(const RBUF& rbuf, std::size_t subStructureSize);
 
 //--------------------------------------------------------------
 /// \brief	                           Normalize battery level

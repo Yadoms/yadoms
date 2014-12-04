@@ -80,7 +80,7 @@ const shared::communication::CByteBuffer CTransceiver::buildResetCmd() const
    request.ICMND.seqnbr = m_seqNumberProvider->last();
    request.ICMND.cmnd = cmdRESET;
 
-   return shared::communication::CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
+   return toBuffer(request, GET_RBUF_STRUCT_SIZE(ICMND));
 }
 
 const shared::communication::CByteBuffer CTransceiver::buildGetStatusCmd() const
@@ -94,7 +94,7 @@ const shared::communication::CByteBuffer CTransceiver::buildGetStatusCmd() const
    request.ICMND.seqnbr = m_seqNumberProvider->next();
    request.ICMND.cmnd = cmdSTATUS;
 
-   return shared::communication::CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
+   return toBuffer(request, GET_RBUF_STRUCT_SIZE(ICMND));
 }
 
 const shared::communication::CByteBuffer CTransceiver::buildSetModeCmd(unsigned char frequency, const IRfxcomConfiguration& configuration) const
@@ -140,7 +140,7 @@ const shared::communication::CByteBuffer CTransceiver::buildSetModeCmd(unsigned 
    if (configuration.isARCenabled()       ) request.ICMND.msg5 |= 0x02;
    if (configuration.isX10enabled()       ) request.ICMND.msg5 |= 0x01;
 
-   return shared::communication::CByteBuffer((BYTE*)&request.ICMND, sizeof(request.ICMND));
+   return toBuffer(request, GET_RBUF_STRUCT_SIZE(ICMND));
 }
 
 boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CTransceiver::buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const
@@ -224,7 +224,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CTransc
 
 boost::shared_ptr<rfxcomMessages::IRfxcomMessage> CTransceiver::decodeRfxcomMessage(boost::shared_ptr<yApi::IYPluginApi> context, const shared::communication::CByteBuffer& data) const
 {
-   const RBUF * const buf = reinterpret_cast<const RBUF* const>(data.content());
+   const RBUF * const buf = reinterpret_cast<const RBUF* const>(data.begin());
 
    boost::shared_ptr<rfxcomMessages::IRfxcomMessage> message;
    switch(buf->RXRESPONSE.packettype)

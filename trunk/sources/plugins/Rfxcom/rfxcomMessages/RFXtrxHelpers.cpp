@@ -38,10 +38,17 @@ bool CheckReceivedMessage(const RBUF& rbuf, BYTE expectedType, size_t expectedSi
    return ok;
 }
 
-boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > toBufferQueue(const RBUF& buffer, std::size_t subStructureSize)
+const shared::communication::CByteBuffer toBuffer(const RBUF& rbuf, std::size_t subStructureSize)
+{
+   shared::communication::CByteBuffer buffer(subStructureSize);
+   memcpy(buffer.begin(), &rbuf, subStructureSize);
+   return buffer;
+}
+
+boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > toBufferQueue(const RBUF& rbuf, std::size_t subStructureSize)
 {
    boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > buffers(new std::queue<const shared::communication::CByteBuffer>);
-   buffers->push(shared::communication::CByteBuffer((BYTE*)&buffer, subStructureSize));
+   buffers->push(toBuffer(rbuf, subStructureSize));
    return buffers;
 }
 

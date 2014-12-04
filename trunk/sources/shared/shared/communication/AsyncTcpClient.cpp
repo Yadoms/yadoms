@@ -14,9 +14,7 @@ CAsyncTcpClient::CAsyncTcpClient(
    :m_boostSocket(m_ioService),
    m_serverAdressResolver(m_ioService),
    m_serverAdressResolverQuery(serverAddress, serverPort),
-   m_readBufferMaxSize(512),
-   m_asyncReadBuffer(new unsigned char[m_readBufferMaxSize]),
-   m_readBuffer(new unsigned char[m_readBufferMaxSize]),
+   m_asyncReadBuffer(512),
    m_connectRetryDelay(connectRetryDelay),
    m_connectRetryTimer(m_ioService)
 {
@@ -29,9 +27,7 @@ CAsyncTcpClient::~CAsyncTcpClient()
 
 void CAsyncTcpClient::setReceiveBufferMaxSize(std::size_t size)
 {
-   m_readBufferMaxSize = size;
-   m_asyncReadBuffer.reset(new unsigned char[m_readBufferMaxSize]);
-   m_readBuffer.reset(new unsigned char[m_readBufferMaxSize]);
+   m_asyncReadBuffer.resize(size);
 }
 
 void CAsyncTcpClient::start()
@@ -145,7 +141,7 @@ void CAsyncTcpClient::handleTryConnect(const boost::system::error_code& error)
 void CAsyncTcpClient::startRead()
 {
    // Start an asynchronous read and call readCompleted when it completes or fails 
-   m_boostSocket.async_read_some(boost::asio::buffer(m_asyncReadBuffer.get(), m_readBufferMaxSize), 
+   m_boostSocket.async_read_some(boost::asio::buffer(m_asyncReadBuffer.begin(), m_asyncReadBuffer.size()),
       boost::bind(&CAsyncTcpClient::readCompleted, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 }
 
@@ -165,7 +161,8 @@ void CAsyncTcpClient::readCompleted(const boost::system::error_code& error, std:
    }
 
    // Read OK
-   CByteBuffer buffer(m_asyncReadBuffer.get(), bytesTransferred);
+   CByteBuffer buffer(bytesTransferred);
+   memcpy(buffer.begin(), m_asyncReadBuffer.begin(), bytesTransferred);
 
    if (!!m_receiveBufferHandler)
       m_receiveBufferHandler->push(buffer);
@@ -178,7 +175,7 @@ void CAsyncTcpClient::send(const CByteBuffer& buffer)
 {
    try
    {
-      m_boostSocket.write_some(boost::asio::const_buffers_1(buffer.content(), buffer.size()));
+      m_boostSocket.write_some(boost::asio::const_buffers_1(buffer.begin(), buffer.size()));
    }
    catch (boost::system::system_error& e)
    {

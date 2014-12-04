@@ -17,7 +17,7 @@ void CEOFReceiveBufferHandler::push(const CByteBuffer& buffer)
 {
    for (size_t idx = 0 ; idx < buffer.size() ; ++ idx)
    {
-      unsigned char receivedByte = buffer.content()[idx];
+      unsigned char receivedByte = buffer[idx];
       m_content.push_back(receivedByte);
       if (receivedByte == m_eofCharacter)
          notifyEventHandler(popNextMessage());
@@ -31,15 +31,13 @@ void CEOFReceiveBufferHandler::flush()
 
 boost::shared_ptr<const CByteBuffer> CEOFReceiveBufferHandler::popNextMessage()
 {
-   boost::shared_ptr<unsigned char[]> extractedMessage(new unsigned char[m_content.size()]);
+   boost::shared_ptr<CByteBuffer> extractedMessage(new CByteBuffer(m_content.size()));
    for (size_t idx = 0 ; idx < m_content.size() ; ++ idx)
-      extractedMessage[idx] = m_content[idx];
-
-   boost::shared_ptr<const CByteBuffer> nextMessage(new CByteBuffer(extractedMessage.get(), m_content.size()));
+      (*extractedMessage)[idx] = m_content[idx];
 
    m_content.clear();
 
-   return nextMessage;
+   return extractedMessage;
 }
 
 void CEOFReceiveBufferHandler::notifyEventHandler(boost::shared_ptr<const CByteBuffer> buffer)

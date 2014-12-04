@@ -1,37 +1,47 @@
 #pragma once
 
+#include <Poco/Buffer.h>
+
 namespace shared { namespace communication {
 
    //--------------------------------------------------------------
    /// \brief	This class manage a raw data buffer
-   // The class owns the buffer content
-   // template DataType is the type of data content in the buffer
+   // It's the copyable version of Poco::Buffer
+   // template T is the type of data contained in the buffer
+   /// \note Can not inherite from Poco::Buffer because Poco::Buffer dtor is not virtual
    //--------------------------------------------------------------
-   template <typename DataType>
+   template<class T>
    class CBuffer
    {
    public:
       //--------------------------------------------------------------
-      /// \brief	                     The data type stored in the buffer
+      /// \brief	                     Empty buffer constructor
+      /// \param[in] size              Buffer size
       //--------------------------------------------------------------
-      typedef DataType value_type;
-
-   public:
-      //--------------------------------------------------------------
-      /// \brief	                     Constructor
-      //--------------------------------------------------------------
-      CBuffer()
+      CBuffer(std::size_t size) :
+         m_buffer(size)
       {
       }
 
       //--------------------------------------------------------------
-      /// \brief	                     Constructor
+      /// \brief	                     Copy constructor (copy all the buffer, with its content)
+      /// \param[in] src               Source buffer
       //--------------------------------------------------------------
-      CBuffer(const DataType* content, std::size_t size)
-         :m_size(size)
+      CBuffer(const CBuffer& src)
+         :m_buffer(src.size())
       {
-         m_content.reset(new DataType[m_size]);
-         memcpy(m_content.get(), content, sizeof(DataType) * m_size);
+         memcpy(m_buffer.begin(), src.begin(), m_buffer.size() * sizeof(T));
+      }
+
+      //--------------------------------------------------------------
+      /// \brief	                     Copy constructor (copy all the buffer, with its content)
+      /// \param[in] src               Source buffer
+      //--------------------------------------------------------------
+      CBuffer& operator = (const CBuffer& src)
+      {
+         m_buffer.resize(src.size(), false);
+         memcpy(m_buffer.begin(), src.begin(), m_buffer.size() * sizeof(T));
+         return *this;
       }
 
       //--------------------------------------------------------------
@@ -42,36 +52,89 @@ namespace shared { namespace communication {
       }
 
       //--------------------------------------------------------------
+      /// \brief	                     Resize the buffer
+      /// \param[in] newSize           The new buffer size
+      /// \param[in] preserveContent   Copy the content to the new buffer
+      //--------------------------------------------------------------
+      void resize(std::size_t newSize, bool preserveContent = true)
+      {
+         m_buffer.resize(newSize, preserveContent);
+      }
+
+      //--------------------------------------------------------------
       /// \brief	                     Get the buffer size
       /// \return                      The buffer size (in nb of elements)
       //--------------------------------------------------------------
       std::size_t size() const
       {
-         return m_size;
+         return m_buffer.size();
       }
 
       //--------------------------------------------------------------
-      /// \brief	                     Get the buffer content
-      /// \return                      The buffer content
+      /// \brief	                     Get the first buffer element
+      /// \return                      Returns a pointer to the beginning of the buffer
       //--------------------------------------------------------------
-      const DataType* content() const
+      T* begin()
       {
-         return m_content.get();
+         return m_buffer.begin();
+      }
+
+      //--------------------------------------------------------------
+      /// \brief	                     Get the first buffer element
+      /// \return                      Returns a pointer to the beginning of the buffer
+      //--------------------------------------------------------------
+      const T* begin() const
+      {
+         return m_buffer.begin();
+      }
+
+      //--------------------------------------------------------------
+      /// \brief	                     Get the end of the buffer (after last element)
+      /// \return                      Returns a pointer to the end of the buffer
+      //--------------------------------------------------------------
+      T* end()
+      {
+         return m_buffer.end();
+      }
+
+      //--------------------------------------------------------------
+      /// \brief	                     Get the end of the buffer (after last element)
+      /// \return                      Returns a pointer to the end of the buffer
+      //--------------------------------------------------------------
+      const T* end() const
+      {
+         return m_buffer.end();
+      }
+
+      //--------------------------------------------------------------
+      /// \brief	                     Get an element
+      /// \return                      The element at specified index
+      //--------------------------------------------------------------
+      T& operator [] (std::size_t index)
+      {
+         return m_buffer[index];
+      }
+
+      //--------------------------------------------------------------
+      /// \brief	                     Get an element
+      /// \return                      The element at specified index
+      //--------------------------------------------------------------
+      const T& operator [] (std::size_t index) const
+      {
+         return m_buffer[index];
       }
 
    private:
       //--------------------------------------------------------------
-      /// \brief	Buffer size
+      /// \brief	                     The original Poco buffer
       //--------------------------------------------------------------
-      std::size_t m_size;
-
-      //--------------------------------------------------------------
-      /// \brief	Buffer content
-      //--------------------------------------------------------------
-      boost::shared_ptr<DataType[]> m_content;
-
+      Poco::Buffer<T> m_buffer;
    };
 
+
+   //--------------------------------------------------------------
+   /// \brief	A buffer of bytes
+   //--------------------------------------------------------------
    typedef CBuffer<unsigned char> CByteBuffer;
 
 } } // namespace shared::communication

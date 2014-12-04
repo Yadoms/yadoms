@@ -40,7 +40,8 @@ CMegatecUps::CMegatecUps():
    m_outputLoad("outputLoad"), m_inputFrequency("inputFrequency"), m_batteryVoltage("batteryVoltage"),
    m_temperature("temperature"), m_acPowerHistorizer("acPowerActive", yApi::EKeywordAccessMode::kGet), m_upsShutdown("UpsShutdown"),
    m_acPowerActive(true), m_lowBatteryFlag(false), m_lowBatteryByLevelFlag(false),
-   m_protocolErrorCounter(0), m_batteryNominalVoltage(0.0), m_answerIsRequired(true), m_firstNotification(true)
+   m_protocolErrorCounter(0), m_batteryNominalVoltage(0.0), m_answerIsRequired(true), m_firstNotification(true),
+   m_lastSentBuffer(1)
 {
 }
 
@@ -125,7 +126,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                m_logger.logReceived(buffer);
 
                // Message are in ASCII format
-               std::string message((const char*)(buffer.content()), buffer.size());
+               std::string message((const char*)(buffer.begin()), buffer.size());
                processDataReceived(context, message);
                break;
             }
@@ -184,6 +185,13 @@ bool CMegatecUps::connectionsAreEqual(const CMegatecUpsConfiguration& conf1, con
    return (conf1.getSerialPort() == conf2.getSerialPort());
 }
 
+void CMegatecUps::send(const std::string& message, bool needAnswer, bool answerIsRequired)
+{
+   shared::communication::CByteBuffer buffer(message.size());
+   memcpy(buffer.begin(), message.c_str(), message.size());
+   send(buffer, needAnswer, answerIsRequired);
+}
+
 void CMegatecUps::send(const shared::communication::CByteBuffer& buffer, bool needAnswer, bool answerIsRequired)
 {
    if (!m_port)
@@ -191,7 +199,9 @@ void CMegatecUps::send(const shared::communication::CByteBuffer& buffer, bool ne
 
    m_logger.logSent(buffer);
    m_port->send(buffer);
-   m_lastSentBuffer = buffer;
+   // Cache the buffer only if not already sending last buffer
+   if (&m_lastSentBuffer != &buffer)
+      m_lastSentBuffer = buffer;
    m_answerIsRequired = answerIsRequired;
    if (needAnswer)
       m_waitForAnswerTimer->start();
@@ -245,7 +255,7 @@ void CMegatecUps::protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> cont
    {
       // The no-answer for the last command can be omitted.
       // This is done for some UPS not supporting identification 'I' command (not responding to)
-      if (m_lastSentBuffer.content()[0] == 'I')
+      if (m_lastSentBuffer[0] == 'I')
       {
          // Declare the device with default string
          declareDevice(context, "noname UPS");
@@ -354,7 +364,7 @@ void CMegatecUps::sendGetInformationCmd()
    std::ostringstream cmd;
    cmd << 'I' << MEGATEC_EOF;
    m_protocolErrorCounter = 0;
-   send(shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size()), true, false);
+   send(cmd.str(), true, false);
 }
 
 void CMegatecUps::sendGetRatingInformationCmd()
@@ -362,7 +372,7 @@ void CMegatecUps::sendGetRatingInformationCmd()
    std::ostringstream cmd;
    cmd << 'F' << MEGATEC_EOF;
    m_protocolErrorCounter = 0;
-   send(shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size()), true);
+   send(cmd.str(), true);
 }
 
 void CMegatecUps::sendGetStatusCmd()
@@ -370,7 +380,7 @@ void CMegatecUps::sendGetStatusCmd()
    std::ostringstream cmd;
    cmd << "Q1" << MEGATEC_EOF;
    m_protocolErrorCounter = 0;
-   send(shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size()), true);
+   send(cmd.str(), true);
 }
 
 void CMegatecUps::sendToggleBeepCmd()
@@ -378,7 +388,7 @@ void CMegatecUps::sendToggleBeepCmd()
    std::ostringstream cmd;
    cmd << 'Q' << MEGATEC_EOF;
    m_protocolErrorCounter = 0;
-   send(shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size()));
+   send(cmd.str());
 }
 
 void CMegatecUps::sendShtudownCmd()
@@ -405,7 +415,7 @@ void CMegatecUps::sendShtudownCmd()
    cmd << MEGATEC_EOF;
 
    m_protocolErrorCounter = 0;
-   send(shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size()));
+   send(cmd.str());
 }
 
 void CMegatecUps::sendCancelShtudownCmd()
@@ -413,7 +423,7 @@ void CMegatecUps::sendCancelShtudownCmd()
    std::ostringstream cmd;
    cmd << 'C' << MEGATEC_EOF;
    m_protocolErrorCounter = 0;
-   send(shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size()));
+   send(cmd.str());
 }
 
 void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> context, const boost::tokenizer<boost::char_separator<char> >& tokens)
