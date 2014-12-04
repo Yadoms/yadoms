@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include "UV.h"
 #include <shared/Log.h>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CUV::CUV(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CUV::CUV(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_uv("uv"), m_temperature("temperature"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeUV, GET_RBUF_STRUCT_SIZE(UV), DONT_CHECK_SEQUENCE_NUMBER);
@@ -32,7 +32,7 @@ CUV::~CUV()
 {
 }
 
-void CUV::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CUV::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -62,7 +62,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CUV::en
    throw shared::exception::CInvalidParameter("UV is a read-only message, can not be encoded");
 }
 
-void CUV::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CUV::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    if (m_subType == sTypeUV3)
       context->historizeData(m_deviceName, m_temperature);

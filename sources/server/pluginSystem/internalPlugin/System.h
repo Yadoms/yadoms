@@ -3,8 +3,8 @@
 #include <shared/plugin/information/IInformation.h>
 #include "IApplicationStopHandler.h"
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace pluginSystem { namespace internalPlugin {
 
@@ -26,7 +26,7 @@ namespace pluginSystem { namespace internalPlugin {
          virtual ~CSystem();
 
          // IPlugin implementation
-         virtual void doWork(boost::shared_ptr<yApi::IYadomsApi> context);
+         virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
          // [END] IPlugin implementation
 
       private:

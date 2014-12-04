@@ -5,9 +5,6 @@
 #include "sys/times.h"
 #include "sys/vtimes.h"
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
-
 //--------------------------------------------------------------
 /// \brief	CPU Load of the Yadoms Process
 /// \note   return the CPU load of the Yadoms Process under Linux Operating System
@@ -27,9 +24,9 @@ public:
    virtual ~CLinuxSystemYadomsCPULoad();
 
    // ILoad Implementation
-   virtual void declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context);
+   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context);
    virtual void read();
-   virtual void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
+   virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
    // [END] ILoad Implementation
    
 private:

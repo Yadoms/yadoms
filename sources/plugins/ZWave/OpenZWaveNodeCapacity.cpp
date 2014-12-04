@@ -34,7 +34,7 @@ bool COpenZWaveNodeCapacity::sendCommand(const std::string & keyword, const std:
    return m_keywords[keyword]->sendCommand(commandData);
 }
 
-const shared::plugin::yadomsApi::historization::IHistorizable & COpenZWaveNodeCapacity::getLastKeywordValue(const std::string & keyword)
+const shared::plugin::yPluginApi::historization::IHistorizable & COpenZWaveNodeCapacity::getLastKeywordValue(const std::string & keyword)
 {
    if (m_keywords.find(keyword) == m_keywords.end())
       throw shared::exception::CException("The keyword is not registered for this capacity");

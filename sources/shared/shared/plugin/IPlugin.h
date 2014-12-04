@@ -1,6 +1,6 @@
 #pragma once
 
-#include "yadomsApi/IYadomsApi.h"
+#include "yPluginApi/IYPluginApi.h"
 
 
 namespace shared { namespace plugin
@@ -22,7 +22,7 @@ namespace shared { namespace plugin
       //                      Be careful to put some sleeps to prevent using too much system resources.
       //                      Use boost::this_thread::sleep as a watch stop point (a point where thread is able to stop).
       //--------------------------------------------------------------
-      virtual void doWork(boost::shared_ptr<shared::plugin::yadomsApi::IYadomsApi> context) = 0;
+      virtual void doWork(boost::shared_ptr<yPluginApi::IYPluginApi> context) = 0;
    };
 
 } } // namespace shared::plugin

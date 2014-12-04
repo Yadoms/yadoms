@@ -1,6 +1,6 @@
 #pragma once
 
-#include <shared/plugin/yadomsApi/historization/IHistorizable.h>
+#include <shared/plugin/yPluginApi/historization/IHistorizable.h>
 
 //--------------------------------------------------------------
 /// \brief     Class used to encapsulate a keyword

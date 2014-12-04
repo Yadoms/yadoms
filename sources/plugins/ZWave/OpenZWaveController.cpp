@@ -4,8 +4,8 @@
 #include "FatalErrorException.h"
 #include "ZWave.h"
 #include "OpenZWaveCommandClass.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/historization/Dimmable.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/historization/Dimmable.h>
 #include "command_classes/SwitchBinary.h"
 #include "Options.h"
 #include "Manager.h"
@@ -267,18 +267,18 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
             switch (vType)
             {
             case OpenZWave::ValueID::ValueType_Bool:
-               d.set("type", shared::plugin::yadomsApi::EKeywordDataType::kBool);
+               d.set("type", shared::plugin::yPluginApi::EKeywordDataType::kBool);
                break;
 
             case OpenZWave::ValueID::ValueType_Byte:
             case OpenZWave::ValueID::ValueType_Decimal:
             case OpenZWave::ValueID::ValueType_Int:
             case OpenZWave::ValueID::ValueType_Short:
-               d.set("type", shared::plugin::yadomsApi::EKeywordDataType::kNumeric);
+               d.set("type", shared::plugin::yPluginApi::EKeywordDataType::kNumeric);
                break;
 
             default:
-               d.set("type", shared::plugin::yadomsApi::EKeywordDataType::kString);
+               d.set("type", shared::plugin::yPluginApi::EKeywordDataType::kString);
                break;
             }
 
@@ -293,22 +293,22 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
             case ECommandClass::kSwitchToggleBinary:
             case ECommandClass::kSwitchToggleMultilevel:
                d.set("capacity", yApi::CStandardCapacities::Switch.getName());
-               d.set("access", shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet);
+               d.set("access", shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet);
                break;
 
             case ECommandClass::kSensorBinary:
                d.set("capacity", yApi::CStandardCapacities::Switch.getName());
-               d.set("access", shared::plugin::yadomsApi::EKeywordAccessMode::kGet);
+               d.set("access", shared::plugin::yPluginApi::EKeywordAccessMode::kGet);
                break;
 
             case ECommandClass::kBattery:
                d.set("capacity", yApi::CStandardCapacities::BatteryLevel.getName());
-               d.set("access", shared::plugin::yadomsApi::EKeywordAccessMode::kGet);
+               d.set("access", shared::plugin::yPluginApi::EKeywordAccessMode::kGet);
                break;
 
             default:
                d.set("capacity", commandClass.getAsString());
-               d.set("access", shared::plugin::yadomsApi::EKeywordAccessMode::kGet);
+               d.set("access", shared::plugin::yPluginApi::EKeywordAccessMode::kGet);
                break;
             }
 

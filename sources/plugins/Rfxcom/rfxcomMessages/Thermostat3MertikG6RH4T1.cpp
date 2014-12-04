@@ -2,10 +2,10 @@
 #include "Thermostat3MertikG6RH4T1.h"
 #include "RFXtrxHelpers.h"
 
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
@@ -20,14 +20,14 @@ std::string CThermostat3MertikG6RH4T1::getModel() const
    return "Mertik G6R-H4T1";
 }
 
-void CThermostat3MertikG6RH4T1::declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CThermostat3MertikG6RH4T1::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    context->declareKeyword(deviceName, m_onOff);
    context->declareKeyword(deviceName, m_UpDown);
    context->declareKeyword(deviceName, m_RunUpDown);
 }
 
-void CThermostat3MertikG6RH4T1::historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CThermostat3MertikG6RH4T1::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    context->historizeData(deviceName, m_onOff);
    context->historizeData(deviceName, m_UpDown);

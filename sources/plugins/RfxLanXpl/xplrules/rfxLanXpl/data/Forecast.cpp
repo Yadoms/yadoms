@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Forecast.h"
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
@@ -12,11 +12,11 @@ DECLARE_ENUM_IMPLEMENTATION(EForecast,
 );
 
 
-const shared::plugin::yadomsApi::CStandardCapacity& ForecastCapacity = shared::plugin::yadomsApi::CStandardCapacity("forecast", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+const shared::plugin::yPluginApi::CStandardCapacity& ForecastCapacity = shared::plugin::yPluginApi::CStandardCapacity("forecast", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
    
 CForecast::CForecast(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EForecast>(keywordName, ForecastCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGet)
+   :shared::plugin::yPluginApi::historization::CSingleHistorizableData<EForecast>(keywordName, ForecastCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
 {
 }
 

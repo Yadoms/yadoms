@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "HumidityDescription.h"
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
@@ -12,11 +12,11 @@ DECLARE_ENUM_IMPLEMENTATION(EHumidityDescription,
 );
 
 
-   const shared::plugin::yadomsApi::CStandardCapacity& HumidityDescriptionCapacity = shared::plugin::yadomsApi::CStandardCapacity("humidityDescription", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+   const shared::plugin::yPluginApi::CStandardCapacity& HumidityDescriptionCapacity = shared::plugin::yPluginApi::CStandardCapacity("humidityDescription", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
    
 CHumidityDescription::CHumidityDescription(const std::string& keywordName)
-   :shared::plugin::yadomsApi::historization::CSingleHistorizableData<EHumidityDescription>(keywordName, HumidityDescriptionCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGet)
+   :shared::plugin::yPluginApi::historization::CSingleHistorizableData<EHumidityDescription>(keywordName, HumidityDescriptionCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
 {
 }
 

@@ -2,8 +2,8 @@
 #include <shared/Log.h>
 #include "LinuxSystemCPULoad.h"
 #include <shared/exception/Exception.hpp>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 CLinuxSystemCPULoad::CLinuxSystemCPULoad(const std::string & device)
    :m_device(device), m_keyword("LinuxCPULoad")
@@ -18,13 +18,13 @@ CLinuxSystemCPULoad::~CLinuxSystemCPULoad()
 {
 }
 
-void CLinuxSystemCPULoad::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
+void CLinuxSystemCPULoad::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Declare associated keywords (= values managed by this device)
    context->declareKeyword(m_device, m_keyword);
 }
 
-void CLinuxSystemCPULoad::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CLinuxSystemCPULoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    BOOST_ASSERT_MSG(!!context, "context must be defined");
 

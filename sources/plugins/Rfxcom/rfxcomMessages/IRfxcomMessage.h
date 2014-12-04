@@ -1,10 +1,10 @@
 #pragma once
 
-#include <shared/plugin/yadomsApi/IYadomsApi.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/communication/Buffer.hpp>
 #include "../ISequenceNumberProvider.h"
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
@@ -30,7 +30,7 @@ namespace rfxcomMessages
       /// \brief	                        Historize message data to Yadoms
       /// \param[in] context              Yadoms APi context
       //--------------------------------------------------------------
-      virtual void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const = 0;
+      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Returns the device name

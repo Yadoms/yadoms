@@ -1,4 +1,4 @@
 #pragma once
 
-// Common includes (STL, Boost...) required by YadomsApi
-#include <shared/plugin/yadomsApi/commonIncludes.h>
+// Common includes (STL, Boost...) required by yPluginApi
+#include <shared/plugin/yPluginApi/commonIncludes.h>

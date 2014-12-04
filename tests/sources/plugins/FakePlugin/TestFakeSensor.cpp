@@ -2,8 +2,8 @@
 #include <boost/test/unit_test.hpp>
 
 // Includes needed to compile tested classes
-#include <../../../../sources/shared/shared/plugin/yadomsApi/StandardCapacities.h>
-#include <../../../../sources/shared/shared/plugin/yadomsApi/StandardUnits.h>
+#include <../../../../sources/shared/shared/plugin/yPluginApi/StandardCapacities.h>
+#include <../../../../sources/shared/shared/plugin/yPluginApi/StandardUnits.h>
 #include "../../../../sources/plugins/FakePlugin/FakeSensor.h"
 
 BOOST_AUTO_TEST_SUITE(TestFakeSensor)
@@ -28,17 +28,17 @@ public:
    // [END] shared::plugin::IInformation implementation
 };
 
-// Moke IYadomsApi
-namespace yApi = shared::plugin::yadomsApi;
-class CDefaultYadomsApiMock : public yApi::IYadomsApi
+// Moke IYPluginApi
+namespace yApi = shared::plugin::yPluginApi;
+class CDefaultYPluginApiMock : public yApi::IYPluginApi
 {
 public:
    struct Device { std::string m_model; shared::CDataContainer m_details; };
    struct Keyword { std::string m_device; std::string m_keyword; std::string m_capacity; shared::CDataContainer m_details; };
    struct Data { std::string m_device; std::string m_keyword; std::string m_capacity; std::string m_value; };
 public:
-   virtual ~CDefaultYadomsApiMock() {}
-   // IYadomsApi implementation
+   virtual ~CDefaultYPluginApiMock() {}
+   // IYPluginApi implementation
    virtual shared::event::CEventHandler & getEventHandler() { return m_defaultEventHandler; }
    virtual bool deviceExists(const std::string& device) const { return m_devices.find(device) != m_devices.end(); }
    virtual const shared::CDataContainer getDeviceDetails(const std::string& device) const { return m_devices.find(device)->second.m_details; }
@@ -54,7 +54,7 @@ public:
    virtual shared::CDataContainer getConfiguration() const { return m_defaultConfiguration; }
    virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message) {}
    virtual const boost::filesystem::path getPluginPath() const { return boost::filesystem::initial_path<boost::filesystem::path>(); }
-   // [END] IYadomsApi implementation
+   // [END] IYPluginApi implementation
 
    const std::map<std::string, Device>& getDevices() const { return m_devices; }
    const std::map<std::string, Keyword>& getKeywords() const { return m_keywords; }
@@ -68,13 +68,13 @@ protected:
    std::vector<Data> m_data;
 };
 
-void ckeckKeyword(boost::shared_ptr<CDefaultYadomsApiMock> context, const std::string& keyword, const std::string& device, const yApi::CStandardCapacity& capacity)
+void ckeckKeyword(boost::shared_ptr<CDefaultYPluginApiMock> context, const std::string& keyword, const std::string& device, const yApi::CStandardCapacity& capacity)
 {
-   std::map<std::string, CDefaultYadomsApiMock::Keyword>::const_iterator itKw = context->getKeywords().find(keyword);
+   std::map<std::string, CDefaultYPluginApiMock::Keyword>::const_iterator itKw = context->getKeywords().find(keyword);
    if (itKw == context->getKeywords().end())
       BOOST_ERROR(keyword + " keyword not found");
 
-   CDefaultYadomsApiMock::Keyword kw = itKw->second;
+   CDefaultYPluginApiMock::Keyword kw = itKw->second;
 
    BOOST_CHECK_EQUAL(kw.m_device, device);
    BOOST_CHECK_EQUAL(kw.m_capacity, capacity.getName());
@@ -83,7 +83,7 @@ void ckeckKeyword(boost::shared_ptr<CDefaultYadomsApiMock> context, const std::s
 BOOST_AUTO_TEST_CASE(DeviceDeclaration)
 {
    CFakeSensor sensor(sensorId);
-   boost::shared_ptr<CDefaultYadomsApiMock> context(new CDefaultYadomsApiMock);
+   boost::shared_ptr<CDefaultYPluginApiMock> context(new CDefaultYPluginApiMock);
 
    sensor.declareKeywords(context);
 
@@ -95,16 +95,16 @@ BOOST_AUTO_TEST_CASE(DeviceDeclaration)
    ckeckKeyword(context, "rssi", sensorId, yApi::CStandardCapacities::Rssi);
 }
 
-const CDefaultYadomsApiMock::Data& readLastData(boost::shared_ptr<CDefaultYadomsApiMock> context, const std::string& keyword)
+const CDefaultYPluginApiMock::Data& readLastData(boost::shared_ptr<CDefaultYPluginApiMock> context, const std::string& keyword)
 {
-   static CDefaultYadomsApiMock::Data noData;
+   static CDefaultYPluginApiMock::Data noData;
    if (context->getData().empty())
    {
       BOOST_FAIL("data not found");
       return noData;
    }
 
-   for (std::vector<CDefaultYadomsApiMock::Data>::const_reverse_iterator itData = context->getData().rbegin() ; itData != context->getData().rend() ; ++itData)
+   for (std::vector<CDefaultYPluginApiMock::Data>::const_reverse_iterator itData = context->getData().rbegin() ; itData != context->getData().rend() ; ++itData)
    {
       if (itData->m_keyword == keyword)
          return *itData;
@@ -117,7 +117,7 @@ const CDefaultYadomsApiMock::Data& readLastData(boost::shared_ptr<CDefaultYadoms
 BOOST_AUTO_TEST_CASE(Historization)
 {
    CFakeSensor sensor(sensorId);
-   boost::shared_ptr<CDefaultYadomsApiMock> context(new CDefaultYadomsApiMock);
+   boost::shared_ptr<CDefaultYPluginApiMock> context(new CDefaultYPluginApiMock);
 
    sensor.historizeData(context);
 
@@ -150,7 +150,7 @@ BOOST_AUTO_TEST_CASE(Historization)
 BOOST_AUTO_TEST_CASE(BatteryDecrease)
 {
    CFakeSensor sensor(sensorId);
-   boost::shared_ptr<CDefaultYadomsApiMock> context(new CDefaultYadomsApiMock);
+   boost::shared_ptr<CDefaultYPluginApiMock> context(new CDefaultYPluginApiMock);
 
    // Decrease from 100 at each read
    // Stop decrease at 20%
@@ -168,7 +168,7 @@ BOOST_AUTO_TEST_CASE(BatteryDecrease)
 BOOST_AUTO_TEST_CASE(TemperatureVariations)
 {
    CFakeSensor sensor(sensorId);
-   boost::shared_ptr<CDefaultYadomsApiMock> context(new CDefaultYadomsApiMock);
+   boost::shared_ptr<CDefaultYPluginApiMock> context(new CDefaultYPluginApiMock);
 
    // Loop of 100 tests
    // Temperature variation must be +/- 1° from previous value

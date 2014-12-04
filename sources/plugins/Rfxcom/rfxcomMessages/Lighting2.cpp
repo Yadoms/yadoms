@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include "Lighting2.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include "Lighting2Dimmable.h"
 #include "Lighting2OnOff.h"
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CLighting2::CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_rssi("rssi")
 {
    m_rssi.set(0);
@@ -24,7 +24,7 @@ CLighting2::CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, const std::s
    m_subTypeManager->set(command);
 }
 
-CLighting2::CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_rssi("rssi")
 {
    m_rssi.set(0);
@@ -39,7 +39,7 @@ CLighting2::CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, unsigned cha
    m_subTypeManager->reset();
 }
 
-CLighting2::CLighting2(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CLighting2::CLighting2(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeLighting2, GET_RBUF_STRUCT_SIZE(LIGHTING2), DONT_CHECK_SEQUENCE_NUMBER);
@@ -71,7 +71,7 @@ void CLighting2::createSubType(unsigned char subType)
    }
 }
 
-void CLighting2::declare(boost::shared_ptr<yApi::IYadomsApi> context)
+void CLighting2::declare(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    BOOST_ASSERT_MSG(!!m_subTypeManager, "m_subTypeManager must be initialized");
 
@@ -112,7 +112,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CLighti
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(LIGHTING2));
 }
 
-void CLighting2::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CLighting2::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    m_subTypeManager->historize(context, m_deviceName);
    context->historizeData(m_deviceName, m_rssi);

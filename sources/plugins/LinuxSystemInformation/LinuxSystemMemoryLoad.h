@@ -4,9 +4,6 @@
 #include "LoadKeyword.h"
 #include "sys/sysinfo.h"
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
-
 //--------------------------------------------------------------
 /// \brief	Memory Load of the Linux System
 /// \note   return the memory load for Linux Operating System
@@ -26,9 +23,9 @@ public:
    virtual ~CLinuxSystemMemoryLoad();
 
    // ILoad Implementation
-   virtual void declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context);
+   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context);
    virtual void read();
-   virtual void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const;
+   virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
    // [END] ILoad Implementation
 
 private:

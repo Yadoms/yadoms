@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RemoteMedionHistorizer.h"
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 namespace rfxcomMessages { namespace specificHistorizers {
 
@@ -76,11 +76,11 @@ namespace rfxcomMessages { namespace specificHistorizers {
       ((XEnd))
    );
    
-   const shared::plugin::yadomsApi::CStandardCapacity& RemoteMedionCapacity = shared::plugin::yadomsApi::CStandardCapacity("RemoteMedion", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+   const shared::plugin::yPluginApi::CStandardCapacity& RemoteMedionCapacity = shared::plugin::yPluginApi::CStandardCapacity("RemoteMedion", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
    
    CRemoteMedionHistorizer::CRemoteMedionHistorizer(const std::string& keywordName)
-      :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ERemoteMedionCodes>(keywordName, RemoteMedionCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+      :shared::plugin::yPluginApi::historization::CSingleHistorizableData<ERemoteMedionCodes>(keywordName, RemoteMedionCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
    {
    }
 

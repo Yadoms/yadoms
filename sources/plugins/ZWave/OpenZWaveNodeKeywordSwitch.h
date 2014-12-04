@@ -1,7 +1,7 @@
 #pragma once
 
 #include "OpenZWaveNodeKeywordBase.h"
-#include <shared/plugin/yadomsApi/historization/Switch.h>
+#include <shared/plugin/yPluginApi/historization/Switch.h>
 
 class COpenZWaveNodeKeywordSwitch : public COpenZWaveNodeKeywordBase
 {
@@ -13,12 +13,12 @@ public:
    
    // IOpenZWaveKeyword implementation
    virtual bool sendCommand(const std::string & commandData);
-   virtual const shared::plugin::yadomsApi::historization::IHistorizable & getLastKeywordValue();
+   virtual const shared::plugin::yPluginApi::historization::IHistorizable & getLastKeywordValue();
    // [END] IOpenZWaveKeyword implementation
 
 private:
    //--------------------------------------------------------------
    /// \brief	    Switch value handler
    //--------------------------------------------------------------
-   shared::plugin::yadomsApi::historization::CSwitch m_switch;
+   shared::plugin::yPluginApi::historization::CSwitch m_switch;
 };

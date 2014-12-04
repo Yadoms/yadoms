@@ -64,7 +64,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CTransc
    throw shared::exception::CInvalidParameter("Status is a read-only message, can not be encoded");
 }
 
-void CTransceiverStatus::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CTransceiverStatus::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    // Nothing to historize
 }

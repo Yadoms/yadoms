@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Remote.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/Log.h>
 #include "RemoteStandard.hpp"
@@ -10,13 +10,13 @@
 #include "specificHistorizers/RemoteMedionHistorizer.h"
 #include "specificHistorizers/RemotePCHistorizer.h"
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CRemote::CRemote(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_rssi("rssi")
 {
    m_rssi.set(0);
@@ -28,7 +28,7 @@ CRemote::CRemote(boost::shared_ptr<yApi::IYadomsApi> context, const std::string&
    m_subTypeManager->set(command);
 }
 
-CRemote::CRemote(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CRemote::CRemote(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeRemote, GET_RBUF_STRUCT_SIZE(REMOTE), DONT_CHECK_SEQUENCE_NUMBER);
@@ -61,7 +61,7 @@ void CRemote::createSubType(unsigned char subType)
    }
 }
 
-void CRemote::declare(boost::shared_ptr<yApi::IYadomsApi> context)
+void CRemote::declare(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    BOOST_ASSERT_MSG(!!m_subTypeManager, "m_subTypeManager must be initialized");
 
@@ -99,7 +99,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CRemote
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(REMOTE));
 }
 
-void CRemote::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CRemote::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    m_subTypeManager->historize(context, m_deviceName);
    context->historizeData(m_deviceName, m_rssi);

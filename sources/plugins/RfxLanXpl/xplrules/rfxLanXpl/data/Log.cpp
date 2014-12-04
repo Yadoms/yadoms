@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Log.h"
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
@@ -10,10 +10,10 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       ((Err))
    );
 
-   const shared::plugin::yadomsApi::CStandardCapacity& LogCapacity = shared::plugin::yadomsApi::CStandardCapacity("Log", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kString);
+   const shared::plugin::yPluginApi::CStandardCapacity& LogCapacity = shared::plugin::yPluginApi::CStandardCapacity("Log", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kString);
 
 
-   CLog::CLog(const std::string& keywordName, const shared::plugin::yadomsApi::EKeywordAccessMode& accessMode)
+   CLog::CLog(const std::string& keywordName, const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode)
       :m_keywordName(keywordName), m_accessMode(accessMode)
    {
    }
@@ -27,12 +27,12 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       return m_keywordName;
    }
 
-   const shared::plugin::yadomsApi::CStandardCapacity& CLog::getCapacity() const
+   const shared::plugin::yPluginApi::CStandardCapacity& CLog::getCapacity() const
    {
       return LogCapacity;
    }
 
-   const shared::plugin::yadomsApi::EKeywordAccessMode& CLog::getAccessMode() const
+   const shared::plugin::yPluginApi::EKeywordAccessMode& CLog::getAccessMode() const
    {
       return m_accessMode;
    }
@@ -51,7 +51,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       m_code = code;
    }
 
-   const std::string CLog::formatValue() const
+   std::string CLog::formatValue() const
    {
       shared::CDataContainer yadomsCommand;
       yadomsCommand.set("level", getLevel());
@@ -76,9 +76,9 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
    }
 
 
-   const shared::plugin::yadomsApi::historization::EMeasureType& CLog::getMeasureType() const
+   const shared::plugin::yPluginApi::historization::EMeasureType& CLog::getMeasureType() const
    {
-      static const shared::plugin::yadomsApi::historization::EMeasureType MeasureType(shared::plugin::yadomsApi::historization::EMeasureType::kAbsolute);
+      static const shared::plugin::yPluginApi::historization::EMeasureType MeasureType(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute);
       return MeasureType;
    }
 

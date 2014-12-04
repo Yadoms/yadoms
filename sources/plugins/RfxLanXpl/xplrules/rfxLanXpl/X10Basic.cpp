@@ -116,15 +116,15 @@ namespace xplrules { namespace rfxLanXpl {
       switch (protocol)
       {
       case EProtocol::kKopplaValue:
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CDimmable(m_keywordCommand)));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CDimmable(m_keywordCommand)));
          break;
 
       case EProtocol::kHarrisonValue:
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CCurtain(m_keywordCommand)));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CCurtain(m_keywordCommand)));
          break;
 
       default:
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CSwitch(m_keywordCommand)));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CSwitch(m_keywordCommand)));
          break;
       }
       return keywords;
@@ -151,7 +151,7 @@ namespace xplrules { namespace rfxLanXpl {
       {
          case EProtocol::kKopplaValue:
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CDimmable > swDimmableData(new shared::plugin::yadomsApi::historization::CDimmable(m_keywordCommand));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CDimmable > swDimmableData(new shared::plugin::yPluginApi::historization::CDimmable(m_keywordCommand));
             switch (command)
             {
             case ECommands::kOnValue:
@@ -179,18 +179,18 @@ namespace xplrules { namespace rfxLanXpl {
 
          case EProtocol::kHarrisonValue:
          {
-         boost::shared_ptr< shared::plugin::yadomsApi::historization::CCurtain > curtain(new shared::plugin::yadomsApi::historization::CCurtain(m_keywordCommand));
+         boost::shared_ptr< shared::plugin::yPluginApi::historization::CCurtain > curtain(new shared::plugin::yPluginApi::historization::CCurtain(m_keywordCommand));
             switch (command)
             {
             case ECommands::kOnValue:
-               curtain->set(shared::plugin::yadomsApi::historization::ECurtainCommand::kOpen);
+               curtain->set(shared::plugin::yPluginApi::historization::ECurtainCommand::kOpen);
                break;
             case ECommands::kOffValue:
-               curtain->set(shared::plugin::yadomsApi::historization::ECurtainCommand::kClose);
+               curtain->set(shared::plugin::yPluginApi::historization::ECurtainCommand::kClose);
                break;
             case ECommands::kDimValue:
             case ECommands::kBrightValue:
-               curtain->set(shared::plugin::yadomsApi::historization::ECurtainCommand::kStop);
+               curtain->set(shared::plugin::yPluginApi::historization::ECurtainCommand::kStop);
                break;
             default:
                throw shared::exception::CNotSupported(command.toString());
@@ -201,7 +201,7 @@ namespace xplrules { namespace rfxLanXpl {
 
          default:
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CSwitch > swData(new shared::plugin::yadomsApi::historization::CSwitch(m_keywordCommand));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CSwitch > swData(new shared::plugin::yPluginApi::historization::CSwitch(m_keywordCommand));
             switch (command)
             {
             case ECommands::kOnValue:
@@ -260,7 +260,7 @@ namespace xplrules { namespace rfxLanXpl {
       {
          case EProtocol::kKopplaValue:
          {
-            shared::plugin::yadomsApi::historization::CDimmable swDimmableCommand(m_keywordCommand);
+            shared::plugin::yPluginApi::historization::CDimmable swDimmableCommand(m_keywordCommand);
             swDimmableCommand.set(commandData->getBody());
 
             newMessage->addToBody(m_keywordProtocol, EProtocol::kKoppla.toString());
@@ -278,19 +278,19 @@ namespace xplrules { namespace rfxLanXpl {
 
          case EProtocol::kHarrisonValue:
          {
-            shared::plugin::yadomsApi::historization::CCurtain curtainCommand(m_keywordCommand);
+            shared::plugin::yPluginApi::historization::CCurtain curtainCommand(m_keywordCommand);
             curtainCommand.set(commandData->getBody());
 
             newMessage->addToBody(m_keywordProtocol, EProtocol::kHarrison.toString());
             switch (curtainCommand.get())
             {
-            case shared::plugin::yadomsApi::historization::ECurtainCommand::kOpenValue:
+            case shared::plugin::yPluginApi::historization::ECurtainCommand::kOpenValue:
                newMessage->addToBody(m_keywordCommand, ECommands::kOn.toString());
                break;
-            case shared::plugin::yadomsApi::historization::ECurtainCommand::kCloseValue:
+            case shared::plugin::yPluginApi::historization::ECurtainCommand::kCloseValue:
                newMessage->addToBody(m_keywordCommand, ECommands::kOff.toString());
                break;
-            case shared::plugin::yadomsApi::historization::ECurtainCommand::kStopValue:
+            case shared::plugin::yPluginApi::historization::ECurtainCommand::kStopValue:
                newMessage->addToBody(m_keywordCommand, ECommands::kDim.toString());
                break;
             }
@@ -300,7 +300,7 @@ namespace xplrules { namespace rfxLanXpl {
          case EProtocol::kX10Value:
          {
             //in case of x10 protocol, do not add protocol name in xpl message
-            shared::plugin::yadomsApi::historization::CSwitch swCommand(m_keywordCommand); 
+            shared::plugin::yPluginApi::historization::CSwitch swCommand(m_keywordCommand); 
             swCommand.set(commandData->getBody());
             if (swCommand.get())
                newMessage->addToBody(m_keywordCommand, ECommands::kOn.toString());
@@ -311,7 +311,7 @@ namespace xplrules { namespace rfxLanXpl {
 
          default:
          {
-            shared::plugin::yadomsApi::historization::CSwitch swCommand(m_keywordCommand);
+            shared::plugin::yPluginApi::historization::CSwitch swCommand(m_keywordCommand);
             swCommand.set(commandData->getBody());
             newMessage->addToBody(m_keywordProtocol, protocol.toString());
             if (swCommand.get())
@@ -372,15 +372,15 @@ namespace xplrules { namespace rfxLanXpl {
       switch (p)
       {
       case EProtocol::kKopplaValue:
-         dc.addKeyword(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CDimmable(m_keywordCommand)));
+         dc.addKeyword(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CDimmable(m_keywordCommand)));
          break;
 
       case EProtocol::kHarrisonValue:
-         dc.addKeyword(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CCurtain(m_keywordCommand)));
+         dc.addKeyword(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CCurtain(m_keywordCommand)));
          break;
 
       default:
-         dc.addKeyword(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CSwitch(m_keywordCommand)));
+         dc.addKeyword(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CSwitch(m_keywordCommand)));
          break;
       }
       return dc;

@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include "Wind.h"
 #include <shared/Log.h>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CWind::CWind(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CWind::CWind(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_windDirection("windDirection"), m_windAverageSpeed("windAverageSpeed"), m_windMaxSpeed("windMaxSpeed"), m_temperature("temperature"),
    m_chillTemperature("chillTemperature"), m_batteryLevel("battery"), m_rssi("rssi")
 {
@@ -41,7 +41,7 @@ CWind::~CWind()
 {
 }
 
-void CWind::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CWind::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -78,7 +78,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CWind::
    throw shared::exception::CInvalidParameter("Wind is a read-only message, can not be encoded");
 }
 
-void CWind::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CWind::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_deviceName, m_windDirection);
    context->historizeData(m_deviceName, m_windMaxSpeed);

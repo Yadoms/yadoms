@@ -2,10 +2,10 @@
 #include "Thermostat1Digimax.h"
 #include "RFXtrxHelpers.h"
 
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
@@ -24,13 +24,13 @@ std::string CThermostat1Digimax::getModel() const
    return "Digimax TLX7506";
 }
 
-void CThermostat1Digimax::declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CThermostat1Digimax::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    context->declareKeyword(deviceName, m_currentTemperature);
    context->declareKeyword(deviceName, m_setPoint);
 }
 
-void CThermostat1Digimax::historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CThermostat1Digimax::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    context->historizeData(deviceName, m_currentTemperature);
    context->historizeData(deviceName, m_setPoint);

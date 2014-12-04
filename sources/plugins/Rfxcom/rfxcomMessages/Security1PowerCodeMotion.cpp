@@ -2,10 +2,10 @@
 #include "Security1PowerCodeMotion.h"
 #include "RFXtrxHelpers.h"
 
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
@@ -25,7 +25,7 @@ std::string CSecurity1PowerCodeMotion::getModel() const
    return "Visonic PowerCode motion sensor";
 }
 
-void CSecurity1PowerCodeMotion::declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CSecurity1PowerCodeMotion::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    if (!context->keywordExists(deviceName, m_alarm))
       context->declareKeyword(deviceName, m_alarm);
@@ -33,7 +33,7 @@ void CSecurity1PowerCodeMotion::declare(boost::shared_ptr<yApi::IYadomsApi> cont
       context->declareKeyword(deviceName, m_tamper);
 }
 
-void CSecurity1PowerCodeMotion::historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CSecurity1PowerCodeMotion::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    context->historizeData(deviceName, m_alarm);
    context->historizeData(deviceName, m_tamper);

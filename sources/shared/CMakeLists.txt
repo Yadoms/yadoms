@@ -74,86 +74,86 @@ set(SHARED_LIB_SRC
 	
 	shared/plugin/information/IInformation.h
 
-   shared/plugin/yadomsApi/commonIncludes.h
-   shared/plugin/yadomsApi/IDeviceCommand.h
-	shared/plugin/yadomsApi/IManuallyDeviceCreationData.h
-	shared/plugin/yadomsApi/IManuallyDeviceCreationRequest.h
-	shared/plugin/yadomsApi/IBindingQueryData.h
-	shared/plugin/yadomsApi/IBindingQueryRequest.h
-	shared/plugin/yadomsApi/IManuallyDeviceCreationTestData.h
-	shared/plugin/yadomsApi/KeywordAccessMode.h
-	shared/plugin/yadomsApi/KeywordAccessMode.cpp
-	shared/plugin/yadomsApi/KeywordDataType.h
-	shared/plugin/yadomsApi/KeywordDataType.cpp
-	shared/plugin/yadomsApi/StandardUnits.h
-	shared/plugin/yadomsApi/StandardCapacities.h
-	shared/plugin/yadomsApi/StandardValues.h
-	shared/plugin/yadomsApi/StandardDeclarations.cpp
-	shared/plugin/yadomsApi/StandardCapacity.h
-	shared/plugin/yadomsApi/StandardCapacity.cpp
-	shared/plugin/yadomsApi/IYadomsApi.h
+   shared/plugin/yPluginApi/commonIncludes.h
+   shared/plugin/yPluginApi/IDeviceCommand.h
+	shared/plugin/yPluginApi/IManuallyDeviceCreationData.h
+	shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h
+	shared/plugin/yPluginApi/IBindingQueryData.h
+	shared/plugin/yPluginApi/IBindingQueryRequest.h
+	shared/plugin/yPluginApi/IManuallyDeviceCreationTestData.h
+	shared/plugin/yPluginApi/KeywordAccessMode.h
+	shared/plugin/yPluginApi/KeywordAccessMode.cpp
+	shared/plugin/yPluginApi/KeywordDataType.h
+	shared/plugin/yPluginApi/KeywordDataType.cpp
+	shared/plugin/yPluginApi/StandardUnits.h
+	shared/plugin/yPluginApi/StandardCapacities.h
+	shared/plugin/yPluginApi/StandardValues.h
+	shared/plugin/yPluginApi/StandardDeclarations.cpp
+	shared/plugin/yPluginApi/StandardCapacity.h
+	shared/plugin/yPluginApi/StandardCapacity.cpp
+	shared/plugin/yPluginApi/IYPluginApi.h
 
-   shared/plugin/yadomsApi/historization/IHistorizable.h
-   shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp
-   shared/plugin/yadomsApi/historization/BatteryLevel.cpp
-   shared/plugin/yadomsApi/historization/BatteryLevel.h
-   shared/plugin/yadomsApi/historization/ArmingAlarm.cpp
-   shared/plugin/yadomsApi/historization/ArmingAlarm.h
-   shared/plugin/yadomsApi/historization/Historizers.h
-   shared/plugin/yadomsApi/historization/CameraMove.cpp
-   shared/plugin/yadomsApi/historization/CameraMove.h
-   shared/plugin/yadomsApi/historization/Counter.cpp
-   shared/plugin/yadomsApi/historization/Counter.h
-   shared/plugin/yadomsApi/historization/Current.cpp
-   shared/plugin/yadomsApi/historization/Current.h
-   shared/plugin/yadomsApi/historization/Curtain.cpp
-   shared/plugin/yadomsApi/historization/Curtain.h
-   shared/plugin/yadomsApi/historization/DateTime.cpp
-   shared/plugin/yadomsApi/historization/DateTime.h
-   shared/plugin/yadomsApi/historization/Dimmable.cpp
-   shared/plugin/yadomsApi/historization/Dimmable.h
-   shared/plugin/yadomsApi/historization/Direction.cpp
-   shared/plugin/yadomsApi/historization/Direction.h
-   shared/plugin/yadomsApi/historization/Energy.cpp
-   shared/plugin/yadomsApi/historization/Energy.h
-   shared/plugin/yadomsApi/historization/Event.cpp
-   shared/plugin/yadomsApi/historization/Event.h
-   shared/plugin/yadomsApi/historization/Frequency.cpp
-   shared/plugin/yadomsApi/historization/Frequency.h
-   shared/plugin/yadomsApi/historization/Humidity.cpp
-   shared/plugin/yadomsApi/historization/Humidity.h
-   shared/plugin/yadomsApi/historization/Load.cpp
-   shared/plugin/yadomsApi/historization/Load.h
-   shared/plugin/yadomsApi/historization/Message.cpp
-   shared/plugin/yadomsApi/historization/Message.h
-   shared/plugin/yadomsApi/historization/MeasureType.cpp
-   shared/plugin/yadomsApi/historization/MeasureType.h
-   shared/plugin/yadomsApi/historization/Power.cpp
-   shared/plugin/yadomsApi/historization/Power.h
-   shared/plugin/yadomsApi/historization/PowerFactor.cpp
-   shared/plugin/yadomsApi/historization/PowerFactor.h
-   shared/plugin/yadomsApi/historization/Pressure.cpp
-   shared/plugin/yadomsApi/historization/Pressure.h
-   shared/plugin/yadomsApi/historization/Rain.cpp
-   shared/plugin/yadomsApi/historization/Rain.h
-   shared/plugin/yadomsApi/historization/RainRate.cpp
-   shared/plugin/yadomsApi/historization/RainRate.h
-   shared/plugin/yadomsApi/historization/Rssi.cpp
-   shared/plugin/yadomsApi/historization/Rssi.h
-   shared/plugin/yadomsApi/historization/Speed.cpp
-   shared/plugin/yadomsApi/historization/Speed.h
-   shared/plugin/yadomsApi/historization/Switch.cpp
-   shared/plugin/yadomsApi/historization/Switch.h
-   shared/plugin/yadomsApi/historization/Temperature.cpp
-   shared/plugin/yadomsApi/historization/Temperature.h
-   shared/plugin/yadomsApi/historization/UpDownStop.cpp
-   shared/plugin/yadomsApi/historization/UpDownStop.h
-   shared/plugin/yadomsApi/historization/Uv.cpp
-   shared/plugin/yadomsApi/historization/Uv.h
-   shared/plugin/yadomsApi/historization/Voltage.cpp
-   shared/plugin/yadomsApi/historization/Voltage.h
-   shared/plugin/yadomsApi/historization/Weight.cpp
-   shared/plugin/yadomsApi/historization/Weight.h
+   shared/plugin/yPluginApi/historization/IHistorizable.h
+   shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp
+   shared/plugin/yPluginApi/historization/BatteryLevel.cpp
+   shared/plugin/yPluginApi/historization/BatteryLevel.h
+   shared/plugin/yPluginApi/historization/ArmingAlarm.cpp
+   shared/plugin/yPluginApi/historization/ArmingAlarm.h
+   shared/plugin/yPluginApi/historization/Historizers.h
+   shared/plugin/yPluginApi/historization/CameraMove.cpp
+   shared/plugin/yPluginApi/historization/CameraMove.h
+   shared/plugin/yPluginApi/historization/Counter.cpp
+   shared/plugin/yPluginApi/historization/Counter.h
+   shared/plugin/yPluginApi/historization/Current.cpp
+   shared/plugin/yPluginApi/historization/Current.h
+   shared/plugin/yPluginApi/historization/Curtain.cpp
+   shared/plugin/yPluginApi/historization/Curtain.h
+   shared/plugin/yPluginApi/historization/DateTime.cpp
+   shared/plugin/yPluginApi/historization/DateTime.h
+   shared/plugin/yPluginApi/historization/Dimmable.cpp
+   shared/plugin/yPluginApi/historization/Dimmable.h
+   shared/plugin/yPluginApi/historization/Direction.cpp
+   shared/plugin/yPluginApi/historization/Direction.h
+   shared/plugin/yPluginApi/historization/Energy.cpp
+   shared/plugin/yPluginApi/historization/Energy.h
+   shared/plugin/yPluginApi/historization/Event.cpp
+   shared/plugin/yPluginApi/historization/Event.h
+   shared/plugin/yPluginApi/historization/Frequency.cpp
+   shared/plugin/yPluginApi/historization/Frequency.h
+   shared/plugin/yPluginApi/historization/Humidity.cpp
+   shared/plugin/yPluginApi/historization/Humidity.h
+   shared/plugin/yPluginApi/historization/Load.cpp
+   shared/plugin/yPluginApi/historization/Load.h
+   shared/plugin/yPluginApi/historization/Message.cpp
+   shared/plugin/yPluginApi/historization/Message.h
+   shared/plugin/yPluginApi/historization/MeasureType.cpp
+   shared/plugin/yPluginApi/historization/MeasureType.h
+   shared/plugin/yPluginApi/historization/Power.cpp
+   shared/plugin/yPluginApi/historization/Power.h
+   shared/plugin/yPluginApi/historization/PowerFactor.cpp
+   shared/plugin/yPluginApi/historization/PowerFactor.h
+   shared/plugin/yPluginApi/historization/Pressure.cpp
+   shared/plugin/yPluginApi/historization/Pressure.h
+   shared/plugin/yPluginApi/historization/Rain.cpp
+   shared/plugin/yPluginApi/historization/Rain.h
+   shared/plugin/yPluginApi/historization/RainRate.cpp
+   shared/plugin/yPluginApi/historization/RainRate.h
+   shared/plugin/yPluginApi/historization/Rssi.cpp
+   shared/plugin/yPluginApi/historization/Rssi.h
+   shared/plugin/yPluginApi/historization/Speed.cpp
+   shared/plugin/yPluginApi/historization/Speed.h
+   shared/plugin/yPluginApi/historization/Switch.cpp
+   shared/plugin/yPluginApi/historization/Switch.h
+   shared/plugin/yPluginApi/historization/Temperature.cpp
+   shared/plugin/yPluginApi/historization/Temperature.h
+   shared/plugin/yPluginApi/historization/UpDownStop.cpp
+   shared/plugin/yPluginApi/historization/UpDownStop.h
+   shared/plugin/yPluginApi/historization/Uv.cpp
+   shared/plugin/yPluginApi/historization/Uv.h
+   shared/plugin/yPluginApi/historization/Voltage.cpp
+   shared/plugin/yPluginApi/historization/Voltage.h
+   shared/plugin/yPluginApi/historization/Weight.cpp
+   shared/plugin/yPluginApi/historization/Weight.h
    
 	shared/notification/NotificationCenter.h
 	shared/notification/NotificationCenter.cpp
@@ -219,8 +219,8 @@ source_group(event shared/event/*.*)
 source_group(exception shared/exception/*.*)
 source_group(plugin shared/shared/plugin/*.* )	
 source_group(plugin\\information shared/shared/plugin/information/*.* )	
-source_group(plugin\\yadomsApi shared/shared/plugin/yadomsApi/*.* )	
-source_group(plugin\\yadomsApi\\historization shared/shared/plugin/yadomsApi/historization/*.* )	
+source_group(plugin\\yPluginApi shared/shared/plugin/yPluginApi/*.* )	
+source_group(plugin\\yPluginApi\\historization shared/shared/plugin/yPluginApi/historization/*.* )	
 source_group(notification shared/shared/notification/*.* )	
 source_group(serialization shared/shared/serialization/*.* )	
 source_group(tools shared/shared/tools/*.* )	

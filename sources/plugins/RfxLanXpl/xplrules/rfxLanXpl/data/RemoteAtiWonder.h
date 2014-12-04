@@ -1,6 +1,6 @@
 #pragma once
 
-#include <shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp>
+#include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 #include <shared/enumeration/EnumHelpers.hpp>
 
 
@@ -86,7 +86,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
    //-----------------------------------------------------
    ///\brief A remote pc code historizable object
    //-----------------------------------------------------
-   class CRemoteAtiWonder : public shared::plugin::yadomsApi::historization::CSingleHistorizableData<ERemoteAtiWonderCodes>
+   class CRemoteAtiWonder : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<ERemoteAtiWonderCodes>
    {
    public:
       //-----------------------------------------------------

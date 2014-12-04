@@ -447,7 +447,7 @@ bool CManager::isInstanceRunning(int id) const
    return m_runningInstances.find(id) != m_runningInstances.end();
 }
 
-void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> command)
+void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
 
@@ -459,7 +459,7 @@ void CManager::postCommand(int id, boost::shared_ptr<const shared::plugin::yadom
 }
 
 
-void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yadomsApi::IManuallyDeviceCreationRequest> & request)
+void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> & request)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
 
@@ -470,7 +470,7 @@ void CManager::postManuallyDeviceCreationRequest(int id, boost::shared_ptr<share
    instance->postManuallyDeviceCreationRequest(request);
 }
 
-void CManager::postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin::yadomsApi::IBindingQueryRequest> & request)
+void CManager::postBindingQueryRequest(int id, boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
 

@@ -1,11 +1,11 @@
 #pragma once
-#include <shared/plugin/yadomsApi/IYadomsApi.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
 #include "IRfxcomConfiguration.h"
 #include <shared/communication/Buffer.hpp>
 #include "rfxcomMessages/IRfxcomMessage.h"
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	The RFXCom protocol interface
@@ -45,7 +45,7 @@ public:
    /// \return                      RFXCom command to send (can be constitued of several messages)
    /// \throw shared::exception::CInvalidParameter if no corresponding RFXCom message was found (invalid command)
    //--------------------------------------------------------------
-   virtual boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > buildMessageToDevice(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const = 0;
+   virtual boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Decode RFXCom message
@@ -53,7 +53,7 @@ public:
    /// \param [in] data             Data received
    /// \return                      Decoded message, NULL if error when decoding
    //--------------------------------------------------------------
-   virtual boost::shared_ptr<rfxcomMessages::IRfxcomMessage> decodeRfxcomMessage(boost::shared_ptr<yApi::IYadomsApi> context, const shared::communication::CByteBuffer& data) const = 0;
+   virtual boost::shared_ptr<rfxcomMessages::IRfxcomMessage> decodeRfxcomMessage(boost::shared_ptr<yApi::IYPluginApi> context, const shared::communication::CByteBuffer& data) const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Process the manually device reaction request
@@ -62,5 +62,5 @@ public:
    /// \return                      Name of the created device
    /// \throw CManuallyDeviceCreationError   If error creating device
    //--------------------------------------------------------------
-   virtual const std::string createDeviceManually(boost::shared_ptr<yApi::IYadomsApi> context, const yApi::IManuallyDeviceCreationData& data) const = 0;
+   virtual const std::string createDeviceManually(boost::shared_ptr<yApi::IYPluginApi> context, const yApi::IManuallyDeviceCreationData& data) const = 0;
 };

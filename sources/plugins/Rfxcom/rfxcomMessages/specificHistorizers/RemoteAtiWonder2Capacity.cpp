@@ -4,7 +4,7 @@
 namespace rfxcomMessages { namespace specificHistorizers {
 
    
-const shared::plugin::yadomsApi::CStandardCapacity& RemoteAtiWonder2Capacity = shared::plugin::yadomsApi::CStandardCapacity("RemoteAtiWonderII", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+const shared::plugin::yPluginApi::CStandardCapacity& RemoteAtiWonder2Capacity = shared::plugin::yPluginApi::CStandardCapacity("RemoteAtiWonderII", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
 
 } } // namespace rfxcomMessages::specificHistorizers

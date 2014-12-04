@@ -1,12 +1,12 @@
 #pragma once
 
-#include <shared/plugin/yadomsApi/IYadomsApi.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
 #include "IRemoteSubtype.h"
 #include "specificHistorizers/RemoteAtiWonder2CmdHistorizer.h"
 #include "specificHistorizers/RemoteAtiWonder2CmdTypeHistorizer.h"
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
@@ -28,8 +28,8 @@ namespace rfxcomMessages
 
       // IRemoteSubtype implementation
       virtual const std::string& getModel() const;
-      virtual void declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
-      virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const;
+      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const;
+      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const;
       virtual void set(const std::string& yadomsCommand);
       virtual void setFromProtocolState(const RBUF& remoteRbuf);
       virtual void toProtocolState(RBUF& remoteRbuf) const;

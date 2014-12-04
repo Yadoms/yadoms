@@ -4,8 +4,8 @@
 
 namespace pluginSystem
 {
-   CManuallyDeviceCreationRequest::CManuallyDeviceCreationRequest(const shared::plugin::yadomsApi::IManuallyDeviceCreationData & data, communication::callback::ISynchronousCallback<std::string> & callback)
-      :m_requestPtr(new communication::callback::CCallbackRequest<shared::plugin::yadomsApi::IManuallyDeviceCreationData, std::string>(data, callback))
+   CManuallyDeviceCreationRequest::CManuallyDeviceCreationRequest(const shared::plugin::yPluginApi::IManuallyDeviceCreationData & data, communication::callback::ISynchronousCallback<std::string> & callback)
+      :m_requestPtr(new communication::callback::CCallbackRequest<shared::plugin::yPluginApi::IManuallyDeviceCreationData, std::string>(data, callback))
    {
    }
       
@@ -13,7 +13,7 @@ namespace pluginSystem
    {
    }
    
-   const shared::plugin::yadomsApi::IManuallyDeviceCreationData& CManuallyDeviceCreationRequest::getData()
+   const shared::plugin::yPluginApi::IManuallyDeviceCreationData& CManuallyDeviceCreationRequest::getData()
    { 
       return m_requestPtr->getData(); 
    }

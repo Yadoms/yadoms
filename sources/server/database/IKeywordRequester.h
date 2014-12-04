@@ -54,7 +54,7 @@ namespace database {
       /// \param [in]      capacityAccessMode   the capacity acces mode
       /// \return          List of registered keywords
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getDeviceKeywordsWithCapacity(int deviceId, const std::string & capacityName, const shared::plugin::yadomsApi::EKeywordAccessMode & capacityAccessMode) const = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getDeviceKeywordsWithCapacity(int deviceId, const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & capacityAccessMode) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove a keyword

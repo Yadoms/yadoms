@@ -1,12 +1,12 @@
 #pragma once
-#include <shared/plugin/yadomsApi/IDeviceCommand.h>
+#include <shared/plugin/yPluginApi/IDeviceCommand.h>
 
 namespace pluginSystem
 {
    //-----------------------------------------------------
    ///\brief The command generic historizer
    //-----------------------------------------------------
-   class CCommandHistorizer : public shared::plugin::yadomsApi::historization::IHistorizable
+   class CCommandHistorizer : public shared::plugin::yPluginApi::historization::IHistorizable
    {
    public:
       //-----------------------------------------------------
@@ -22,10 +22,10 @@ namespace pluginSystem
 
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
-      virtual const shared::plugin::yadomsApi::CStandardCapacity& getCapacity() const;
-      virtual const shared::plugin::yadomsApi::EKeywordAccessMode& getAccessMode() const;
-      virtual const std::string formatValue() const;
-      virtual const shared::plugin::yadomsApi::historization::EMeasureType& getMeasureType() const;
+      virtual const shared::plugin::yPluginApi::CStandardCapacity& getCapacity() const;
+      virtual const shared::plugin::yPluginApi::EKeywordAccessMode& getAccessMode() const;
+      virtual std::string formatValue() const;
+      virtual const shared::plugin::yPluginApi::historization::EMeasureType& getMeasureType() const;
       // [END] IHistorizable implementation
 
    private:

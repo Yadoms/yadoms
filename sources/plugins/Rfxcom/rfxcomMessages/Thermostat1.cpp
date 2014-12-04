@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include "Thermostat1.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include "Thermostat1Digimax.h"
 #include "Thermostat1DigimaxShort.h"
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_rssi("rssi")
 {
    m_rssi.set(0);
@@ -22,7 +22,7 @@ CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYadomsApi> context, const st
    m_subTypeManager->set(command);
 }
 
-CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_rssi("rssi")
 {
    m_rssi.set(0);
@@ -35,7 +35,7 @@ CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYadomsApi> context, unsigned
    m_subTypeManager->reset();
 }
 
-CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CThermostat1::CThermostat1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeThermostat1, GET_RBUF_STRUCT_SIZE(THERMOSTAT1), DONT_CHECK_SEQUENCE_NUMBER);
@@ -64,7 +64,7 @@ void CThermostat1::createSubType(unsigned char subType)
    }
 }
 
-void CThermostat1::declare(boost::shared_ptr<yApi::IYadomsApi> context)
+void CThermostat1::declare(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    BOOST_ASSERT_MSG(!!m_subTypeManager, "m_subTypeManager must be initialized");
 
@@ -103,7 +103,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CThermo
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(THERMOSTAT1));
 }
 
-void CThermostat1::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CThermostat1::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    m_subTypeManager->historize(context, m_deviceName);
    context->historizeData(m_deviceName, m_rssi);

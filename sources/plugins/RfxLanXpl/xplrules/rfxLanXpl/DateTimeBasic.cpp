@@ -3,7 +3,7 @@
 #include <shared/tools/Random.h>
 #include <shared/exception/NotSupported.hpp>
 #include "data/Log.h"
-#include <shared/plugin/yadomsApi/historization/Historizers.h>
+#include <shared/plugin/yPluginApi/historization/Historizers.h>
 
 namespace xplrules { namespace rfxLanXpl {
 
@@ -34,7 +34,7 @@ namespace xplrules { namespace rfxLanXpl {
    KeywordList CDateTimeBasic::identifyKeywords(xplcore::CXplMessage & msg)
    {
       KeywordList keywords;
-      keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CDateTime(m_keywordDateTime, shared::plugin::yadomsApi::EKeywordAccessMode::kGet)));
+      keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CDateTime(m_keywordDateTime, shared::plugin::yPluginApi::EKeywordAccessMode::kGet)));
       return keywords;
    }
    // [END] IRule implemntation
@@ -45,7 +45,7 @@ namespace xplrules { namespace rfxLanXpl {
    {
       MessageContent data;
 
-      boost::shared_ptr< shared::plugin::yadomsApi::historization::CDateTime > datetime(new shared::plugin::yadomsApi::historization::CDateTime(m_keywordDateTime, shared::plugin::yadomsApi::EKeywordAccessMode::kGet));
+      boost::shared_ptr< shared::plugin::yPluginApi::historization::CDateTime > datetime(new shared::plugin::yPluginApi::historization::CDateTime(m_keywordDateTime, shared::plugin::yPluginApi::EKeywordAccessMode::kGet));
 
       //get value from message
       std::string s = msg.getBodyValue(m_keywordDateTime);

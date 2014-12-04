@@ -89,7 +89,7 @@ namespace web { namespace rest { namespace service {
       {
          if(parameters.size()>2)
          {
-            shared::plugin::yadomsApi::EKeywordAccessMode cam(parameters[2]);
+            shared::plugin::yPluginApi::EKeywordAccessMode cam(parameters[2]);
             //read the capacity name
             std::string capacityName = parameters[3];
 
@@ -120,8 +120,8 @@ namespace web { namespace rest { namespace service {
       {
          if(parameters.size()>2)
          {
-            shared::plugin::yadomsApi::EKeywordAccessMode cam(parameters[2]);
-            shared::plugin::yadomsApi::EKeywordDataType typ = parameters[3];
+            shared::plugin::yPluginApi::EKeywordAccessMode cam(parameters[2]);
+            shared::plugin::yPluginApi::EKeywordDataType typ = parameters[3];
 
             //run query
             std::vector< boost::shared_ptr<database::entities::CDevice> > result = m_dataProvider->getDeviceRequester()->getDeviceWithCapacityType(cam, typ);
@@ -151,7 +151,7 @@ namespace web { namespace rest { namespace service {
          if(parameters.size()>3)
          {
             int deviceId = boost::lexical_cast<int>(parameters[1]);
-            shared::plugin::yadomsApi::EKeywordAccessMode cam(parameters[2]);
+            shared::plugin::yPluginApi::EKeywordAccessMode cam(parameters[2]);
             std::string capacityName = parameters[3];
 
 

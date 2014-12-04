@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "Power.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CPower::CPower(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CPower::CPower(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_voltage("voltage"), m_instantPower("instant"), m_current("current"), m_totalPower("total"), m_powerFactor("powerFactor"), m_frequency("frequency"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypePOWER, GET_RBUF_STRUCT_SIZE(POWER), DONT_CHECK_SEQUENCE_NUMBER);
@@ -39,7 +39,7 @@ CPower::~CPower()
 {
 }
 
-void CPower::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CPower::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -70,7 +70,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CPower:
    throw shared::exception::CInvalidParameter("Power is a read-only message, can not be encoded");
 }
 
-void CPower::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CPower::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_deviceName, m_voltage);
    context->historizeData(m_deviceName, m_current);

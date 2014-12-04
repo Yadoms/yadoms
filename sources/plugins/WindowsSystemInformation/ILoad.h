@@ -1,9 +1,9 @@
 #pragma once
 
-#include <shared/plugin/yadomsApi/IYadomsApi.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	Interface Load definition
@@ -19,9 +19,9 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	            Declare the keywords
-   /// \param[in] context  YadomsApi context
+   /// \param[in] context  yPluginApi context
    //--------------------------------------------------------------
-   virtual void declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context) = 0;
+   virtual void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context) = 0;
 
    //--------------------------------------------------------------
    /// \brief	    Read actual value
@@ -30,8 +30,8 @@ public:
 
    //--------------------------------------------------------------
    /// \brief	            Send all sensor data to Yadoms
-   /// \param[in] context  YadomsApi context to which historize data
+   /// \param[in] context  yPluginApi context to which historize data
    //--------------------------------------------------------------
-   virtual void historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const = 0;
+   virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const = 0;
 };
 

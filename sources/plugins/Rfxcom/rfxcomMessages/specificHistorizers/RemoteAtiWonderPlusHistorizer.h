@@ -1,6 +1,6 @@
 #pragma once
 
-#include <shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp>
+#include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 #include <shared/enumeration/EnumHelpers.hpp>
 
 
@@ -88,7 +88,7 @@ namespace rfxcomMessages { namespace specificHistorizers {
    //-----------------------------------------------------
    ///\brief A remote pc code historizable object
    //-----------------------------------------------------
-   class CRemoteAtiWonderPlusHistorizer : public shared::plugin::yadomsApi::historization::CSingleHistorizableData<ERemoteAtiWonderPlusCodes>
+   class CRemoteAtiWonderPlusHistorizer : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<ERemoteAtiWonderPlusCodes>
    {
    public:
       //-----------------------------------------------------

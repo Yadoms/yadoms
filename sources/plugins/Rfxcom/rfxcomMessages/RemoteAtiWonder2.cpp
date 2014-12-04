@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "RemoteAtiWonder2.h"
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
@@ -21,7 +21,7 @@ const std::string& CRemoteAtiWonder2::getModel() const
    return model;
 }
 
-void CRemoteAtiWonder2::declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CRemoteAtiWonder2::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    if (!context->keywordExists(deviceName, m_keywordCmnd))
       context->declareKeyword(deviceName, m_keywordCmnd);
@@ -29,7 +29,7 @@ void CRemoteAtiWonder2::declare(boost::shared_ptr<yApi::IYadomsApi> context, con
       context->declareKeyword(deviceName, m_keywordCmndtype);
 }
 
-void CRemoteAtiWonder2::historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CRemoteAtiWonder2::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    context->historizeData(deviceName, m_keywordCmnd);
    context->historizeData(deviceName, m_keywordCmndtype);

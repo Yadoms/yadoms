@@ -1,7 +1,7 @@
 #pragma once
 
 #include <shared/enumeration/EnumHelpers.hpp>
-#include <shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp>
+#include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
@@ -21,7 +21,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
    //-----------------------------------------------------
    ///\brief A Ninja historizable object
    //-----------------------------------------------------
-   class CNinja : public shared::plugin::yadomsApi::historization::CSingleHistorizableData<ENinjaCommand>
+   class CNinja : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<ENinjaCommand>
    {
    public:
       //-----------------------------------------------------

@@ -6,7 +6,7 @@
 #include <shared/Field.hpp>
 #include <shared/enumeration/IExtendedEnum.h>
 #include <shared/enumeration/EnumHelpers.hpp>
-#include <shared/plugin/yadomsApi/historization/IHistorizable.h>
+#include <shared/plugin/yPluginApi/historization/IHistorizable.h>
 
 namespace database { namespace entities {
    DECLARE_ENUM_HEADER(ESecurityAccess,
@@ -117,12 +117,12 @@ namespace database { namespace entities {
       ((Id)(int))
       ((DeviceId)(int))
       ((CapacityName)(std::string))
-      ((AccessMode)(shared::plugin::yadomsApi::EKeywordAccessMode))
+      ((AccessMode)(shared::plugin::yPluginApi::EKeywordAccessMode))
       ((Name)(std::string))
       ((FriendlyName)(std::string))
-      ((Type)(shared::plugin::yadomsApi::EKeywordDataType))
+      ((Type)(shared::plugin::yPluginApi::EKeywordDataType))
       ((Units)(std::string))
-      ((Measure)(shared::plugin::yadomsApi::historization::EMeasureType))
+      ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType))
       ((Details)(shared::CDataContainer))
    )
 

@@ -2,10 +2,10 @@
 #include "Thermostat1DigimaxShort.h"
 #include "RFXtrxHelpers.h"
 
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
@@ -24,12 +24,12 @@ std::string CThermostat1DigimaxShort::getModel() const
    return "Digimax short (no set point)";
 }
 
-void CThermostat1DigimaxShort::declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CThermostat1DigimaxShort::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    context->declareKeyword(deviceName, m_currentTemperature);
 }
 
-void CThermostat1DigimaxShort::historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CThermostat1DigimaxShort::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    context->historizeData(deviceName, m_currentTemperature);
 }

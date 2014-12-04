@@ -1,18 +1,18 @@
 #include "stdafx.h"
 #include "Chime.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/Log.h>
 #include "ChimeByronSx.h"
 #include "ChimeByronMp001.h"
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CChime::CChime(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CChime::CChime(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_rssi("rssi")
 {
    m_rssi.set(0);
@@ -24,7 +24,7 @@ CChime::CChime(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& c
    m_subTypeManager->set(command, deviceDetails);
 }
 
-CChime::CChime(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CChime::CChime(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_rssi("rssi")
 {
    m_rssi.set(0);
@@ -36,7 +36,7 @@ CChime::CChime(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subTyp
    m_subTypeManager->reset();
 }
 
-CChime::CChime(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CChime::CChime(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeChime, GET_RBUF_STRUCT_SIZE(CHIME), DONT_CHECK_SEQUENCE_NUMBER);
@@ -65,7 +65,7 @@ void CChime::createSubType(unsigned char subType)
    }
 }
 
-void CChime::declare(boost::shared_ptr<yApi::IYadomsApi> context)
+void CChime::declare(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    BOOST_ASSERT_MSG(!!m_subTypeManager, "m_subTypeManager must be initialized");
 
@@ -103,7 +103,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CChime:
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(CHIME));
 }
 
-void CChime::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CChime::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    m_subTypeManager->historize(context, m_deviceName);
    context->historizeData(m_deviceName, m_rssi);

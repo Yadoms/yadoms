@@ -2,7 +2,7 @@
 
 #include "DeviceIdentifier.h"
 #include "DeviceContainer.h"
-#include <shared/plugin/yadomsApi/IManuallyDeviceCreationData.h>
+#include <shared/plugin/yPluginApi/IManuallyDeviceCreationData.h>
 
 namespace xplrules {
 

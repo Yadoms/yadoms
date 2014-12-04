@@ -2,10 +2,10 @@
 #include "ChimeByronMp001.h"
 #include "RFXtrxHelpers.h"
 #include <shared/Log.h>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
@@ -20,12 +20,12 @@ std::string CChimeByronMp001::getModel() const
    return "Byron MP001";
 }
 
-void CChimeByronMp001::declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CChimeByronMp001::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    context->declareKeyword(deviceName, m_event);
 }
 
-void CChimeByronMp001::historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CChimeByronMp001::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    context->historizeData(deviceName, m_event);
 }

@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "SensorBasic.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/StandardUnits.h>
-#include <shared/plugin/yadomsApi/historization/Historizers.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/historization/Historizers.h>
 #include "data/DigimaxDemand.h"
 #include "data/DigitalIoStatus.h"
 #include "data/MertikStatus.h"
@@ -229,7 +229,7 @@ namespace xplrules { namespace rfxLanXpl {
 
       if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeBattery))
       {
-         boost::shared_ptr< shared::plugin::yadomsApi::historization::CBatteryLevel > battLvl(new shared::plugin::yadomsApi::historization::CBatteryLevel(m_keywordTypeBattery));
+         boost::shared_ptr< shared::plugin::yPluginApi::historization::CBatteryLevel > battLvl(new shared::plugin::yPluginApi::historization::CBatteryLevel(m_keywordTypeBattery));
          battLvl->set(boost::lexical_cast<int>(msg.getBodyValue(m_keywordCurrent)));
          data.push_back(battLvl);
       }
@@ -247,14 +247,14 @@ namespace xplrules { namespace rfxLanXpl {
 
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeTemp)
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CTemperature > digimaxTemp(new shared::plugin::yadomsApi::historization::CTemperature(m_keywordTypeTemp));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CTemperature > digimaxTemp(new shared::plugin::yPluginApi::historization::CTemperature(m_keywordTypeTemp));
             digimaxTemp->set(msg.getBodyValue(m_keywordCurrent));
             data.push_back(digimaxTemp);
          }
 
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeSetpoint)
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CTemperature > digimaxSetPoint(new shared::plugin::yadomsApi::historization::CTemperature(m_keywordTypeSetpoint));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CTemperature > digimaxSetPoint(new shared::plugin::yPluginApi::historization::CTemperature(m_keywordTypeSetpoint));
             digimaxSetPoint->set(msg.getBodyValue(m_keywordCurrent));
             data.push_back(digimaxSetPoint);
          }
@@ -266,14 +266,14 @@ namespace xplrules { namespace rfxLanXpl {
       {
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeVoltage))
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CVoltage > volt(new shared::plugin::yadomsApi::historization::CVoltage(m_keywordTypeVoltage));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CVoltage > volt(new shared::plugin::yPluginApi::historization::CVoltage(m_keywordTypeVoltage));
             volt->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
             data.push_back(volt);
          }
             
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeTemp)
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CTemperature > temp(new shared::plugin::yadomsApi::historization::CTemperature(m_keywordTypeTemp));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CTemperature > temp(new shared::plugin::yPluginApi::historization::CTemperature(m_keywordTypeTemp));
             temp->set(msg.getBodyValue(m_keywordCurrent));
             data.push_back(temp);
          }
@@ -282,7 +282,7 @@ namespace xplrules { namespace rfxLanXpl {
       //RFXMETER
       if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxMeter) && boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeCount))
       {
-         boost::shared_ptr< shared::plugin::yadomsApi::historization::CCounter > temp(new shared::plugin::yadomsApi::historization::CCounter(m_keywordTypeCount));
+         boost::shared_ptr< shared::plugin::yPluginApi::historization::CCounter > temp(new shared::plugin::yPluginApi::historization::CCounter(m_keywordTypeCount));
          temp->set(boost::lexical_cast<int>(msg.getBodyValue(m_keywordCurrent)));
          data.push_back(temp);
 
@@ -310,7 +310,7 @@ namespace xplrules { namespace rfxLanXpl {
          //Temperature
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeTemp))
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CTemperature > temp(new shared::plugin::yadomsApi::historization::CTemperature(m_keywordTypeTemp));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CTemperature > temp(new shared::plugin::yPluginApi::historization::CTemperature(m_keywordTypeTemp));
             temp->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
             data.push_back(temp);
          }
@@ -318,7 +318,7 @@ namespace xplrules { namespace rfxLanXpl {
          //Humidity
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeHumidity))
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CHumidity > humidity(new shared::plugin::yadomsApi::historization::CHumidity(m_keywordTypeHumidity));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CHumidity > humidity(new shared::plugin::yPluginApi::historization::CHumidity(m_keywordTypeHumidity));
             humidity->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
             data.push_back(humidity);
 
@@ -337,7 +337,7 @@ namespace xplrules { namespace rfxLanXpl {
          //Pressure
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypePressure))
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CPressure > pressure(new shared::plugin::yadomsApi::historization::CPressure(m_keywordTypePressure));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CPressure > pressure(new shared::plugin::yPluginApi::historization::CPressure(m_keywordTypePressure));
             pressure->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
             data.push_back(pressure);
 
@@ -350,7 +350,7 @@ namespace xplrules { namespace rfxLanXpl {
          //Power
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypePower))
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CPower > power(new shared::plugin::yadomsApi::historization::CPower(m_keywordTypePower));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CPower > power(new shared::plugin::yPluginApi::historization::CPower(m_keywordTypePower));
             power->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)) * 1000.0); //in xpl messgae data is in kWh, convert to Wh
             data.push_back(power);
          }
@@ -358,7 +358,7 @@ namespace xplrules { namespace rfxLanXpl {
          //Weight
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeWeight))
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CWeight > weight(new shared::plugin::yadomsApi::historization::CWeight(m_keywordTypeWeight));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CWeight > weight(new shared::plugin::yPluginApi::historization::CWeight(m_keywordTypeWeight));
             weight->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent))); 
             data.push_back(weight);
          }
@@ -366,7 +366,7 @@ namespace xplrules { namespace rfxLanXpl {
          //Energy
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeEnergy))
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CEnergy > energy(new shared::plugin::yadomsApi::historization::CEnergy(m_keywordTypeEnergy));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CEnergy > energy(new shared::plugin::yPluginApi::historization::CEnergy(m_keywordTypeEnergy));
             energy->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)) * 1000.0); //in xpl messgae data is in kW, convert to W
             data.push_back(energy);
          }
@@ -374,7 +374,7 @@ namespace xplrules { namespace rfxLanXpl {
          //Rain total
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeRainTotal))
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CRain > rain(new shared::plugin::yadomsApi::historization::CRain(m_keywordTypeRainTotal));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CRain > rain(new shared::plugin::yPluginApi::historization::CRain(m_keywordTypeRainTotal));
             rain->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent))); 
             data.push_back(rain);
          }
@@ -382,7 +382,7 @@ namespace xplrules { namespace rfxLanXpl {
          //Rain rate
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeRainRate))
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CRainRate > rainrate(new shared::plugin::yadomsApi::historization::CRainRate(m_keywordTypeRainRate));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CRainRate > rainrate(new shared::plugin::yPluginApi::historization::CRainRate(m_keywordTypeRainRate));
             rainrate->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
             data.push_back(rainrate);
          }
@@ -391,7 +391,7 @@ namespace xplrules { namespace rfxLanXpl {
          //Gust
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeGust))
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CSpeed > gust(new shared::plugin::yadomsApi::historization::CSpeed(m_keywordTypeGust));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CSpeed > gust(new shared::plugin::yPluginApi::historization::CSpeed(m_keywordTypeGust));
             gust->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
             data.push_back(gust);
          }
@@ -399,7 +399,7 @@ namespace xplrules { namespace rfxLanXpl {
          //Average speed
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeAverageSpeed))
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CSpeed > gust(new shared::plugin::yadomsApi::historization::CSpeed(m_keywordTypeAverageSpeed));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CSpeed > gust(new shared::plugin::yPluginApi::historization::CSpeed(m_keywordTypeAverageSpeed));
             gust->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
             data.push_back(gust);
          }
@@ -407,7 +407,7 @@ namespace xplrules { namespace rfxLanXpl {
          //Direction
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeDirection))
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CDirection > direction(new shared::plugin::yadomsApi::historization::CDirection(m_keywordTypeDirection));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CDirection > direction(new shared::plugin::yPluginApi::historization::CDirection(m_keywordTypeDirection));
             direction->set(boost::lexical_cast<int>(msg.getBodyValue(m_keywordCurrent)));
             data.push_back(direction);
          }
@@ -415,7 +415,7 @@ namespace xplrules { namespace rfxLanXpl {
          //UV
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeUv))
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CUv > uv(new shared::plugin::yadomsApi::historization::CUv(m_keywordTypeUv));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CUv > uv(new shared::plugin::yPluginApi::historization::CUv(m_keywordTypeUv));
             uv->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
             data.push_back(uv);
 
@@ -431,7 +431,7 @@ namespace xplrules { namespace rfxLanXpl {
             boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec4)) &&
             boost::iequals(msg.getBodyValue(m_keywordType), m_keywordCurrent))
          {
-            boost::shared_ptr< shared::plugin::yadomsApi::historization::CCurrent > current(new shared::plugin::yadomsApi::historization::CCurrent(m_keywordCurrent));
+            boost::shared_ptr< shared::plugin::yPluginApi::historization::CCurrent > current(new shared::plugin::yPluginApi::historization::CCurrent(m_keywordCurrent));
             current->set(boost::lexical_cast<double>(msg.getBodyValue(m_keywordCurrent)));
             data.push_back(current);
          }
@@ -455,7 +455,7 @@ namespace xplrules { namespace rfxLanXpl {
       
       if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeBattery))
       {
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CBatteryLevel(m_keywordTypeBattery)));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CBatteryLevel(m_keywordTypeBattery)));
       }
          
       //DIGIMAX
@@ -463,13 +463,13 @@ namespace xplrules { namespace rfxLanXpl {
       {
 
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeDemand)
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CDigimaxDemand(m_keywordTypeDemand)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CDigimaxDemand(m_keywordTypeDemand)));
 
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeTemp)
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CTemperature(m_keywordTypeTemp)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CTemperature(m_keywordTypeTemp)));
 
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeSetpoint)
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CTemperature(m_keywordTypeSetpoint)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CTemperature(m_keywordTypeSetpoint)));
             
       }
 
@@ -479,28 +479,28 @@ namespace xplrules { namespace rfxLanXpl {
       if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxSensor))
       {
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeVoltage))
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CVoltage(m_keywordTypeVoltage)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CVoltage(m_keywordTypeVoltage)));
 
          if (msg.getBodyValue(m_keywordType) == m_keywordTypeTemp)
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CTemperature(m_keywordTypeVoltage)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CTemperature(m_keywordTypeVoltage)));
       }
 
       //RFXMETER
       if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxMeter) && boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeCount))
       {
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CCounter(m_keywordTypeCount)));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CCounter(m_keywordTypeCount)));
       }
 
       //RFXLAN IO
       if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordDeviceRfxLanIo))
       {
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CDigitalIoStatus(m_keywordTypeInput)));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CDigitalIoStatus(m_keywordTypeInput)));
       }
 
       //Mertik
       if (boost::starts_with(msg.getBodyValue(m_keywordDevice), m_keywordHex) && boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeMertik))
       {
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CMertickStatus(m_keywordTypeMertik)));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CMertickStatus(m_keywordTypeMertik)));
       }
 
       //Oregon
@@ -509,65 +509,65 @@ namespace xplrules { namespace rfxLanXpl {
          //Temperature
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeTemp))
          {
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CTemperature(m_keywordTypeTemp)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CTemperature(m_keywordTypeTemp)));
          }
 
          //Humidity
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeHumidity))
          {
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CHumidity(m_keywordTypeHumidity)));
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CHumidityDescription(m_keywordDescription)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CHumidity(m_keywordTypeHumidity)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CHumidityDescription(m_keywordDescription)));
          }
 
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeStatus))
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CHumidityDescription(m_keywordTypeStatus)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CHumidityDescription(m_keywordTypeStatus)));
 
          //Pressure
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypePressure))
          {
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CPressure(m_keywordTypePressure)));
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CForecast(m_keywordForecast)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CPressure(m_keywordTypePressure)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CForecast(m_keywordForecast)));
          }
 
 
 
          //Power
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypePower))
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CPower(m_keywordTypePower)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CPower(m_keywordTypePower)));
 
          //Weight
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeWeight))
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CWeight(m_keywordTypeWeight)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CWeight(m_keywordTypeWeight)));
 
          //Energy
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeEnergy))
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CEnergy(m_keywordTypeEnergy)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CEnergy(m_keywordTypeEnergy)));
 
          //Rain total
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeRainTotal))
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CRain(m_keywordTypeRainTotal)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CRain(m_keywordTypeRainTotal)));
 
          //Rain rate
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeRainRate))
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CRainRate(m_keywordTypeRainRate)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CRainRate(m_keywordTypeRainRate)));
 
          //Gust
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeGust))
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CSpeed(m_keywordTypeGust)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CSpeed(m_keywordTypeGust)));
 
          //Average speed
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeAverageSpeed))
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CSpeed(m_keywordTypeAverageSpeed)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CSpeed(m_keywordTypeAverageSpeed)));
 
          //Direction
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeDirection))
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CDirection(m_keywordTypeDirection)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CDirection(m_keywordTypeDirection)));
 
          //UV
          if (boost::iequals(msg.getBodyValue(m_keywordType), m_keywordTypeUv))
          {
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CUv(m_keywordTypeUv)));
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CUvDescription(m_keywordDescription)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CUv(m_keywordTypeUv)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CUvDescription(m_keywordDescription)));
          }
 
          //Current
@@ -577,7 +577,7 @@ namespace xplrules { namespace rfxLanXpl {
             boost::iequals(msg.getBodyValue(m_keywordDevice), m_keywordDeviceOregonElec4)) &&
             boost::iequals(msg.getBodyValue(m_keywordType), m_keywordCurrent))
          {
-            keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new shared::plugin::yadomsApi::historization::CCurrent(m_keywordCurrent)));
+            keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new shared::plugin::yPluginApi::historization::CCurrent(m_keywordCurrent)));
          }
 
       }

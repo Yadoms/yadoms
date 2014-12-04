@@ -1,6 +1,6 @@
 #pragma once
 
-#include <shared/plugin/yadomsApi/historization/IHistorizable.h>
+#include <shared/plugin/yPluginApi/historization/IHistorizable.h>
 
 //--------------------------------------------------------------
 /// \brief	    Interface for keywords
@@ -25,6 +25,6 @@ public:
    //--------------------------------------------------------------
    /// \brief	      get the last value of a keyword (as string)
    //--------------------------------------------------------------   
-   virtual const shared::plugin::yadomsApi::historization::IHistorizable & getLastKeywordValue() = 0;
+   virtual const shared::plugin::yPluginApi::historization::IHistorizable & getLastKeywordValue() = 0;
 };
 

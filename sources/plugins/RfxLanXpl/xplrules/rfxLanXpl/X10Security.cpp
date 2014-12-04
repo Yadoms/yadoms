@@ -53,7 +53,7 @@ namespace xplrules { namespace rfxLanXpl {
    KeywordList CX10Security::identifyKeywords(xplcore::CXplMessage & msg)
    {
       KeywordList keywords;
-      keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CSecurity("security", shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)));
+      keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CSecurity("security", shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)));
       return keywords;
    }
    // [END] IRule implemntation
@@ -64,7 +64,7 @@ namespace xplrules { namespace rfxLanXpl {
    {
       MessageContent data;
 
-      boost::shared_ptr< data::CSecurity > security(new data::CSecurity("security", shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet));
+      boost::shared_ptr< data::CSecurity > security(new data::CSecurity("security", shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet));
 
       security->setCommand(msg.getBodyValue(m_keywordCommand));
 
@@ -89,7 +89,7 @@ namespace xplrules { namespace rfxLanXpl {
       ////////////////////////////
       // Parse command data
       ////////////////////////////
-      data::CSecurity securityCommand("security", shared::plugin::yadomsApi::EKeywordAccessMode::kGet);
+      data::CSecurity securityCommand("security", shared::plugin::yPluginApi::EKeywordAccessMode::kGet);
       securityCommand.set(commandData->getBody());
 
       //do some checks

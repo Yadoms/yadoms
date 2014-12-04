@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "FS20.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/Log.h>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 
 #define FHT8V_SYNCRHONISE_NOW          0x0
@@ -25,7 +25,7 @@ namespace yApi = shared::plugin::yadomsApi;
 namespace rfxcomMessages
 {
 
-CFS20::CFS20(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
+CFS20::CFS20(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_state("state"), m_rssi("rssi")
 {
    m_state.set(command);
@@ -39,7 +39,7 @@ CFS20::CFS20(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& com
    Init(context);
 }
 
-CFS20::CFS20(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CFS20::CFS20(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_state("state"), m_rssi("rssi")
 {
    m_state.set(0);
@@ -63,7 +63,7 @@ CFS20::CFS20(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType,
    Init(context);
 }
 
-CFS20::CFS20(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CFS20::CFS20(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_state("state"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeFS20, GET_RBUF_STRUCT_SIZE(FS20), DONT_CHECK_SEQUENCE_NUMBER);
@@ -163,7 +163,7 @@ CFS20::~CFS20()
 {
 }
 
-void CFS20::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CFS20::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -284,7 +284,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CFS20::
    return toBufferQueue(rbuf, GET_RBUF_STRUCT_SIZE(FS20));
 }
 
-void CFS20::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CFS20::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_deviceName, m_state);
    context->historizeData(m_deviceName, m_rssi);

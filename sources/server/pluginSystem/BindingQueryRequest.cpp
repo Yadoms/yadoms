@@ -4,8 +4,8 @@
 
 namespace pluginSystem
 {
-   CBindingQueryRequest::CBindingQueryRequest(const shared::plugin::yadomsApi::IBindingQueryData & data, communication::callback::ISynchronousCallback< shared::CDataContainer > & callback)
-      :m_requestPtr(new communication::callback::CCallbackRequest<shared::plugin::yadomsApi::IBindingQueryData, shared::CDataContainer >(data, callback))
+   CBindingQueryRequest::CBindingQueryRequest(const shared::plugin::yPluginApi::IBindingQueryData & data, communication::callback::ISynchronousCallback< shared::CDataContainer > & callback)
+      :m_requestPtr(new communication::callback::CCallbackRequest<shared::plugin::yPluginApi::IBindingQueryData, shared::CDataContainer >(data, callback))
    {
    }
       
@@ -13,7 +13,7 @@ namespace pluginSystem
    {
    }
    
-   const shared::plugin::yadomsApi::IBindingQueryData& CBindingQueryRequest::getData()
+   const shared::plugin::yPluginApi::IBindingQueryData& CBindingQueryRequest::getData()
    { 
       return m_requestPtr->getData(); 
    }

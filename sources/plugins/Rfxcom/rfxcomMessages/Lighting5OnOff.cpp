@@ -2,10 +2,10 @@
 #include "Lighting5OnOff.h"
 #include "RFXtrxHelpers.h"
 
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
@@ -24,12 +24,12 @@ std::string CLighting5OnOff::getModel() const
    return m_model;
 }
 
-void CLighting5OnOff::declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CLighting5OnOff::declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    context->declareKeyword(deviceName, m_keyword);
 }
 
-void CLighting5OnOff::historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+void CLighting5OnOff::historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
 {
    context->historizeData(deviceName, m_keyword);
 }

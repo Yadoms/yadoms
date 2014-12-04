@@ -10,8 +10,8 @@ namespace dataAccessLayer {
    public:
       CAcquisitionHistorizer(boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester, boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter);
 
-      virtual void saveData(const int keywordId, const shared::plugin::yadomsApi::historization::IHistorizable & data);
-      virtual void saveData(const int keywordId, const shared::plugin::yadomsApi::historization::IHistorizable & data, boost::posix_time::ptime & dataTime);
+      virtual void saveData(const int keywordId, const shared::plugin::yPluginApi::historization::IHistorizable & data);
+      virtual void saveData(const int keywordId, const shared::plugin::yPluginApi::historization::IHistorizable & data, boost::posix_time::ptime & dataTime);
 
    private:
 

@@ -52,7 +52,7 @@ namespace database {  namespace sqlite {  namespace requesters {
       if(!keywordEntity)
          throw shared::exception::CEmptyResult("The keyword do not exists, cannot increment data");
 
-      if (keywordEntity->Type() != shared::plugin::yadomsApi::EKeywordDataType::kNumeric)
+      if (keywordEntity->Type() != shared::plugin::yPluginApi::EKeywordDataType::kNumeric)
          throw shared::exception::CEmptyResult("The keyword is not numeric, cannot increment data");
 
       CQuery qLastKeywordValue;
@@ -288,7 +288,7 @@ namespace database {  namespace sqlite {  namespace requesters {
 
       if (keyword)
       {
-         if (keyword->Type() == shared::plugin::yadomsApi::EKeywordDataType::kNumeric)
+         if (keyword->Type() == shared::plugin::yPluginApi::EKeywordDataType::kNumeric)
          {
             //just compute good dates
             //hourDate : is the start of the hour (current day) => minutes and seconds set to 0

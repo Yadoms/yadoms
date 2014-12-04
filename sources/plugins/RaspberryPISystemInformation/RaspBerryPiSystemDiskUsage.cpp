@@ -2,8 +2,8 @@
 #include "RaspBerryPiSystemDiskUsage.h"
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 CRaspBerryPiSystemDiskUsage::CRaspBerryPiSystemDiskUsage(const std::string & device, const std::string & driveName, const std::string & keywordName)
    :m_device(device), m_driveName(driveName), m_keyword(keywordName)
@@ -13,13 +13,13 @@ CRaspBerryPiSystemDiskUsage::CRaspBerryPiSystemDiskUsage(const std::string & dev
 CRaspBerryPiSystemDiskUsage::~CRaspBerryPiSystemDiskUsage()
 {}
 
-void CRaspBerryPiSystemDiskUsage::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
+void CRaspBerryPiSystemDiskUsage::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Declare associated keywords (= values managed by this device)
    context->declareKeyword(m_device, m_keyword);
 }
 
-void CRaspBerryPiSystemDiskUsage::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CRaspBerryPiSystemDiskUsage::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
 

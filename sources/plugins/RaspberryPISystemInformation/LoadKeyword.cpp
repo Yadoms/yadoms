@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "LoadKeyword.h"
-#include <shared/plugin/yadomsApi/StandardCapacity.h>
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardCapacity.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 CLoadKeyword::CLoadKeyword(const std::string& keywordName)
    :m_keywordName(keywordName), m_load(0.0)

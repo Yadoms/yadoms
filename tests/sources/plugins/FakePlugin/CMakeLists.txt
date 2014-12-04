@@ -1,40 +1,40 @@
 
 IF(NOT DISABLE_TEST_FAKEPLUGIN)
    ADD_YADOMS_SOURCES(
-      shared/shared/plugin/yadomsApi/IYadomsApi.h
-      shared/shared/plugin/yadomsApi/historization/BatteryLevel.cpp
-      shared/shared/plugin/yadomsApi/historization/BatteryLevel.h
-      shared/shared/plugin/yadomsApi/historization/Historizers.h
-      shared/shared/plugin/yadomsApi/historization/Counter.cpp
-      shared/shared/plugin/yadomsApi/historization/Counter.h
-      shared/shared/plugin/yadomsApi/historization/Curtain.cpp
-      shared/shared/plugin/yadomsApi/historization/Curtain.h
-      shared/shared/plugin/yadomsApi/historization/IHistorizable.h
-      shared/shared/plugin/yadomsApi/historization/Message.cpp
-      shared/shared/plugin/yadomsApi/historization/Message.h
-      shared/shared/plugin/yadomsApi/historization/Rssi.cpp
-      shared/shared/plugin/yadomsApi/historization/Rssi.h
-      shared/shared/plugin/yadomsApi/historization/Switch.cpp
-      shared/shared/plugin/yadomsApi/historization/Switch.h
-      shared/shared/plugin/yadomsApi/historization/Temperature.cpp
-      shared/shared/plugin/yadomsApi/historization/Temperature.h
+      shared/shared/plugin/yPluginApi/IYPluginApi.h
+      shared/shared/plugin/yPluginApi/historization/BatteryLevel.cpp
+      shared/shared/plugin/yPluginApi/historization/BatteryLevel.h
+      shared/shared/plugin/yPluginApi/historization/Historizers.h
+      shared/shared/plugin/yPluginApi/historization/Counter.cpp
+      shared/shared/plugin/yPluginApi/historization/Counter.h
+      shared/shared/plugin/yPluginApi/historization/Curtain.cpp
+      shared/shared/plugin/yPluginApi/historization/Curtain.h
+      shared/shared/plugin/yPluginApi/historization/IHistorizable.h
+      shared/shared/plugin/yPluginApi/historization/Message.cpp
+      shared/shared/plugin/yPluginApi/historization/Message.h
+      shared/shared/plugin/yPluginApi/historization/Rssi.cpp
+      shared/shared/plugin/yPluginApi/historization/Rssi.h
+      shared/shared/plugin/yPluginApi/historization/Switch.cpp
+      shared/shared/plugin/yPluginApi/historization/Switch.h
+      shared/shared/plugin/yPluginApi/historization/Temperature.cpp
+      shared/shared/plugin/yPluginApi/historization/Temperature.h
    
       shared/shared/DataContainer.h
       shared/shared/DataContainer.cpp
       shared/shared/StringExtension.h
       shared/shared/StringExtension.cpp
-      shared/shared/plugin/yadomsApi/KeywordAccessMode.h
-      shared/shared/plugin/yadomsApi/KeywordAccessMode.cpp
-      shared/shared/plugin/yadomsApi/KeywordDataType.h
-      shared/shared/plugin/yadomsApi/KeywordDataType.cpp
-		shared/shared/plugin/yadomsApi/StandardUnits.h
-		shared/shared/plugin/yadomsApi/StandardCapacities.h
-		shared/shared/plugin/yadomsApi/StandardValues.h
-		shared/shared/plugin/yadomsApi/StandardDeclarations.cpp
-		shared/shared/plugin/yadomsApi/StandardCapacity.h
-		shared/shared/plugin/yadomsApi/StandardCapacity.cpp
-      shared/shared/plugin/yadomsApi/historization/MeasureType.h
-      shared/shared/plugin/yadomsApi/historization/MeasureType.cpp
+      shared/shared/plugin/yPluginApi/KeywordAccessMode.h
+      shared/shared/plugin/yPluginApi/KeywordAccessMode.cpp
+      shared/shared/plugin/yPluginApi/KeywordDataType.h
+      shared/shared/plugin/yPluginApi/KeywordDataType.cpp
+		shared/shared/plugin/yPluginApi/StandardUnits.h
+		shared/shared/plugin/yPluginApi/StandardCapacities.h
+		shared/shared/plugin/yPluginApi/StandardValues.h
+		shared/shared/plugin/yPluginApi/StandardDeclarations.cpp
+		shared/shared/plugin/yPluginApi/StandardCapacity.h
+		shared/shared/plugin/yPluginApi/StandardCapacity.cpp
+      shared/shared/plugin/yPluginApi/historization/MeasureType.h
+      shared/shared/plugin/yPluginApi/historization/MeasureType.cpp
       plugins/FakePlugin/FakeSensor.h
       plugins/FakePlugin/FakeSensor.cpp)
    ADD_SOURCES(TestFakeSensor.cpp)

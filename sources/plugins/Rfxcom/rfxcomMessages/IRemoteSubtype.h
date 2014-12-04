@@ -2,10 +2,10 @@
 
 #include "IRfxcomMessage.h"
 #include "RFXtrxHelpers.h"
-#include <shared/plugin/yadomsApi/IYadomsApi.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
@@ -31,14 +31,14 @@ namespace rfxcomMessages
       /// \param[in] context              Yadoms APi context
       /// \param[in] command              The device name associated to keyword
       //--------------------------------------------------------------
-      virtual void declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const = 0;
+      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Historize data
       /// \param[in] context              Yadoms APi context
       /// \param[in] command              The device name associated to keyword
       //--------------------------------------------------------------
-      virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const = 0;
+      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const = 0;
 
       //--------------------------------------------------------------
       /// \brief	                        Set keyword state from Yadoms command

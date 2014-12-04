@@ -7,12 +7,12 @@
 
 #include <shared/ThreadBase.h>
 #include <shared/event/EventHandler.hpp>
-#include <shared/plugin/yadomsApi/IManuallyDeviceCreationRequest.h>
-#include <shared/plugin/yadomsApi/IBindingQueryRequest.h>
+#include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
+#include <shared/plugin/yPluginApi/IBindingQueryRequest.h>
 #include "Factory.h"
 #include "ManagerEvent.h"
 #include "IQualifier.h"
-#include "YadomsApiImplementation.h"
+#include "yPluginApiImplementation.h"
 #include "database/entities/Entities.h"
 #include "database/IPluginEventLoggerRequester.h"
 #include "database/IDeviceRequester.h"
@@ -60,19 +60,19 @@ namespace pluginSystem
       /// \brief			            Post a command to the plugin
       /// \param  command           Command to post
       //--------------------------------------------------------------
-      virtual void postCommand(boost::shared_ptr<const shared::plugin::yadomsApi::IDeviceCommand> command) const;
+      virtual void postCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const;
 
       //--------------------------------------------------------------
       /// \brief			            Post a manually device creation request to the plugin
       /// \param  request           Request data
       //--------------------------------------------------------------
-      virtual void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yadomsApi::IManuallyDeviceCreationRequest> & request) const;
+      virtual void postManuallyDeviceCreationRequest(boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest> & request) const;
 
 		//--------------------------------------------------------------
 		/// \brief                 Post a custom query request to a plugin
 		/// \param [in] request    Request data
 		//--------------------------------------------------------------
-      virtual void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yadomsApi::IBindingQueryRequest> & request) const;
+      virtual void postBindingQueryRequest(boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest> & request) const;
 
       //--------------------------------------------------------------
       /// \brief			            Notify the plugin about its configuration changed
@@ -118,9 +118,9 @@ namespace pluginSystem
       const int m_pluginManagerEventId;
 
       //--------------------------------------------------------------
-      /// \brief			Plugin context (Yadoms API)
+      /// \brief			Plugin context (Yadoms plugin API)
       //--------------------------------------------------------------
-      boost::shared_ptr<CYadomsApiImplementation> m_context;
+      boost::shared_ptr<CYPluginApiImplementation> m_context;
    };
 
 } // namespace pluginSystem

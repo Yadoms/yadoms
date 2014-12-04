@@ -1,12 +1,12 @@
 #pragma once
-#include <shared/plugin/yadomsApi/IBindingQueryData.h>
+#include <shared/plugin/yPluginApi/IBindingQueryData.h>
 
 namespace pluginSystem
 {
    //-----------------------------------------------------
    ///\brief The IBindingQueryData implementation
    //-----------------------------------------------------
-   class CBindingQueryData : public shared::plugin::yadomsApi::IBindingQueryData
+   class CBindingQueryData : public shared::plugin::yPluginApi::IBindingQueryData
    {
    public:
       //-----------------------------------------------------

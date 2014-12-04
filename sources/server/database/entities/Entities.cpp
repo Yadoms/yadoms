@@ -120,12 +120,12 @@ namespace database { namespace entities {
       ((Id)(int)(0)("id"))
       ((DeviceId)(int)(0)("deviceId"))
       ((CapacityName)(std::string)("")("capacityName"))
-      ((AccessMode)(shared::plugin::yadomsApi::EKeywordAccessMode)(shared::plugin::yadomsApi::EKeywordAccessMode::kNoAccess)("accessMode"))
+      ((AccessMode)(shared::plugin::yPluginApi::EKeywordAccessMode)(shared::plugin::yPluginApi::EKeywordAccessMode::kNoAccess)("accessMode"))
       ((Name)(std::string)("")("name"))
       ((FriendlyName)(std::string)("")("friendlyName"))
-      ((Type)(shared::plugin::yadomsApi::EKeywordDataType)(shared::plugin::yadomsApi::EKeywordDataType::kString)("type"))
+      ((Type)(shared::plugin::yPluginApi::EKeywordDataType)(shared::plugin::yPluginApi::EKeywordDataType::kString)("type"))
       ((Units)(std::string)("")("units"))
-      ((Measure)(shared::plugin::yadomsApi::historization::EMeasureType)(shared::plugin::yadomsApi::historization::EMeasureType::kAbsolute)("measure"))
+      ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType)(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)("measure"))
       ((Details)(shared::CDataContainer)(shared::CDataContainer())("details"))
       );
 

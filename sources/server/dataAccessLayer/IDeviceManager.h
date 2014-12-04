@@ -45,7 +45,7 @@ namespace dataAccessLayer {
       /// \return                         the device list which support a capacity
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDeviceWithCapacity(const std::string & capacityName, const shared::plugin::yadomsApi::EKeywordAccessMode & capacityAccessMode) const = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDeviceWithCapacity(const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & capacityAccessMode) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Get the device list which support a capacity type
@@ -54,7 +54,7 @@ namespace dataAccessLayer {
       /// \return                         the device list which support a capacity
       /// \throw  shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDeviceWithCapacityType(const shared::plugin::yadomsApi::EKeywordAccessMode & capacityAccessMode, const shared::plugin::yadomsApi::EKeywordDataType & capacityType) const = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CDevice> > getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode & capacityAccessMode, const shared::plugin::yPluginApi::EKeywordDataType & capacityType) const = 0;
 
       //--------------------------------------------------------------
       /// \brief                          Create a device identified by (pluginId and name).

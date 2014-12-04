@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/plugin/yadomsApi/IDeviceCommand.h>
+#include <shared/plugin/yPluginApi/IDeviceCommand.h>
 #include "CommandHistorizer.h"
 
 namespace pluginSystem
@@ -7,7 +7,7 @@ namespace pluginSystem
    //-----------------------------------------------------
    ///\brief The IDeviceCommand implementation
    //-----------------------------------------------------
-   class CDeviceCommand : public shared::plugin::yadomsApi::IDeviceCommand
+   class CDeviceCommand : public shared::plugin::yPluginApi::IDeviceCommand
    {
    public:
       //-----------------------------------------------------
@@ -28,7 +28,7 @@ namespace pluginSystem
       virtual const std::string& getKeyword() const;
       virtual const std::string& getBody() const;
       virtual const std::string toString() const;
-      virtual const shared::plugin::yadomsApi::historization::IHistorizable& getHistorizableObject() const;
+      virtual const shared::plugin::yPluginApi::historization::IHistorizable& getHistorizableObject() const;
       // [END] IDeviceCommand implementation
 
    private:

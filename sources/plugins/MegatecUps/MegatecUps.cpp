@@ -2,7 +2,7 @@
 #include "MegatecUps.h"
 #include <shared/Log.h>
 #include <shared/plugin/ImplementationHelper.h>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include "MegatecUpsFactory.h"
 #include <shared/communication/PortException.hpp>
 #include "ProtocolException.hpp"
@@ -13,7 +13,7 @@ IMPLEMENT_PLUGIN(CMegatecUps)
 // Event IDs
 enum
 {
-   kEvtPortConnection = yApi::IYadomsApi::kPluginFirstEventId,   // Always start from yApi::IYadomsApi::kPluginFirstEventId
+   kEvtPortConnection = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from yApi::IYPluginApi::kPluginFirstEventId
    kEvtPortDataReceived,
    kProtocolErrorRetryTimer,
    kAnswerTimeout,
@@ -48,7 +48,7 @@ CMegatecUps::~CMegatecUps()
 {
 }
 
-void CMegatecUps::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
+void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    try
    {
@@ -72,7 +72,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
          // Wait for an event
          switch(context->getEventHandler().waitForEvents())
          {
-         case yApi::IYadomsApi::kEventDeviceCommand:
+         case yApi::IYPluginApi::kEventDeviceCommand:
             {
                // Command received from Yadoms
                boost::shared_ptr<const yApi::IDeviceCommand> command(context->getEventHandler().getEventData<boost::shared_ptr<const yApi::IDeviceCommand> >());
@@ -85,7 +85,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
 
                break;
             }
-         case yApi::IYadomsApi::kEventUpdateConfiguration:
+         case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                // Configuration was updated
                shared::CDataContainer newConfigurationData = context->getEventHandler().getEventData<shared::CDataContainer>();
@@ -197,7 +197,7 @@ void CMegatecUps::send(const shared::communication::CByteBuffer& buffer, bool ne
       m_waitForAnswerTimer->start();
 }
 
-void CMegatecUps::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& command)
+void CMegatecUps::onCommand(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& command)
 {
    if (!m_port)
       YADOMS_LOG(warning) << "Command not send (UPS is not ready) : " << command;
@@ -209,10 +209,10 @@ void CMegatecUps::onCommand(boost::shared_ptr<yApi::IYadomsApi> context, const s
       sendCancelShtudownCmd();
 }
 
-void CMegatecUps::processConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context)
+void CMegatecUps::processConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    YADOMS_LOG(debug) << "UPS is now connected";
-   context->recordPluginEvent(yApi::IYadomsApi::kInfo, "UPS is now connected");
+   context->recordPluginEvent(yApi::IYPluginApi::kInfo, "UPS is now connected");
 
    try
    {
@@ -231,7 +231,7 @@ void CMegatecUps::processConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> con
    }
 }
 
-void CMegatecUps::protocolErrorProcess(boost::shared_ptr<yApi::IYadomsApi> context)
+void CMegatecUps::protocolErrorProcess(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    ++m_protocolErrorCounter;
    if (m_protocolErrorCounter < 3)
@@ -262,15 +262,15 @@ void CMegatecUps::protocolErrorProcess(boost::shared_ptr<yApi::IYadomsApi> conte
    context->getEventHandler().createTimer(kProtocolErrorRetryTimer, shared::event::CEventTimer::kOneShot, boost::posix_time::seconds(30));
 }
 
-void CMegatecUps::processUnConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context)
+void CMegatecUps::processUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    YADOMS_LOG(debug) << "UPS connection was lost";
-   context->recordPluginEvent(yApi::IYadomsApi::kInfo, "UPS connection was lost");
+   context->recordPluginEvent(yApi::IYPluginApi::kInfo, "UPS connection was lost");
 
    destroyConnection();
 }
 
-void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& message)
+void CMegatecUps::processDataReceived(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& message)
 {
    try
    {
@@ -416,7 +416,7 @@ void CMegatecUps::sendCancelShtudownCmd()
    send(shared::communication::CByteBuffer((unsigned char*) cmd.str().c_str(), cmd.str().size()));
 }
 
-void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYadomsApi> context, const boost::tokenizer<boost::char_separator<char> >& tokens)
+void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYPluginApi> context, const boost::tokenizer<boost::char_separator<char> >& tokens)
 {
    boost::tokenizer< boost::char_separator<char> >::const_iterator itToken = tokens.begin();
    m_inputVoltage.set      (upsStr2Double(*itToken)); ++itToken;
@@ -468,7 +468,7 @@ void CMegatecUps::processReceivedStatus(boost::shared_ptr<yApi::IYadomsApi> cont
    m_upsStatusRequestTimer->start();
 }
 
-void CMegatecUps::processReceivedInformation(boost::shared_ptr<yApi::IYadomsApi> context, const boost::tokenizer<boost::char_separator<char> >& tokens)
+void CMegatecUps::processReceivedInformation(boost::shared_ptr<yApi::IYPluginApi> context, const boost::tokenizer<boost::char_separator<char> >& tokens)
 {
    boost::tokenizer<boost::char_separator<char> >::const_iterator itToken = tokens.begin();
    std::string company(*itToken); ++itToken;
@@ -511,7 +511,7 @@ double CMegatecUps::upsStr2Double(const std::string& str)
    return number;
 }
 
-void CMegatecUps::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& model) const
+void CMegatecUps::declareDevice(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& model) const
 {
    if (!context->deviceExists(DeviceName))
    {
@@ -532,7 +532,7 @@ void CMegatecUps::declareDevice(boost::shared_ptr<yApi::IYadomsApi> context, con
    }
 }
 
-void CMegatecUps::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CMegatecUps::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(DeviceName, m_inputVoltage);
    context->historizeData(DeviceName, m_inputfaultVoltage);
@@ -543,7 +543,7 @@ void CMegatecUps::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) con
    context->historizeData(DeviceName, m_temperature);
 }
 
-void CMegatecUps::processAcPowerStatus(boost::shared_ptr<yApi::IYadomsApi> context, bool acPowerActive, bool lowBatteryFlag)
+void CMegatecUps::processAcPowerStatus(boost::shared_ptr<yApi::IYPluginApi> context, bool acPowerActive, bool lowBatteryFlag)
 {
    switch(m_configuration.powerFailureManagement())
    {
@@ -589,7 +589,7 @@ void CMegatecUps::processAcPowerStatus(boost::shared_ptr<yApi::IYadomsApi> conte
    m_firstNotification = false;
 }
 
-void CMegatecUps::notifyPowerState(boost::shared_ptr<yApi::IYadomsApi> context, bool powerState)
+void CMegatecUps::notifyPowerState(boost::shared_ptr<yApi::IYPluginApi> context, bool powerState)
 {
    m_acPowerHistorizer.set(powerState);
    context->historizeData(DeviceName, m_acPowerHistorizer);

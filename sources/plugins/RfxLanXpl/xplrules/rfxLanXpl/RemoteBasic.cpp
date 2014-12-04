@@ -58,13 +58,13 @@ namespace xplrules { namespace rfxLanXpl {
 
       std::string fullDevice = msg.getBodyValue(m_keywordDevice);
       if (boost::istarts_with(fullDevice, ERemoteType::kPC.toString()))
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CRemotePC("pcremote")));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CRemotePC("pcremote")));
       else if (boost::istarts_with(fullDevice, ERemoteType::kMedion.toString()))
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CRemoteMedion("medionremote")));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CRemoteMedion("medionremote")));
       else if (boost::istarts_with(fullDevice, ERemoteType::kAtiPlus.toString()))
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CRemoteAtiWonderPlus("atiplusremote")));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CRemoteAtiWonderPlus("atiplusremote")));
       else if (boost::istarts_with(fullDevice, ERemoteType::kAti.toString()))
-         keywords.push_back(boost::shared_ptr< shared::plugin::yadomsApi::historization::IHistorizable >(new data::CRemoteAtiWonder("atiremote")));
+         keywords.push_back(boost::shared_ptr< shared::plugin::yPluginApi::historization::IHistorizable >(new data::CRemoteAtiWonder("atiremote")));
 
       return keywords;
    }

@@ -2,13 +2,13 @@
 #include "Fan.h"
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CFan::CFan(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails)
+CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails)
    :m_light("light"), m_fan("fan")
 {
    if (boost::iequals(keyword, m_light.getKeyword()))
@@ -30,7 +30,7 @@ CFan::CFan(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& keywo
    Init(context);
 }
 
-CFan::CFan(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
+CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
    :m_light("light"), m_fan("fan")
 {
    m_light.set(false);
@@ -45,7 +45,7 @@ CFan::CFan(boost::shared_ptr<yApi::IYadomsApi> context, unsigned char subType, c
    Init(context);
 }
 
-CFan::CFan(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_subType(0), m_id(0), m_lightCmd(false), m_light("light"), m_fan("fan")
 {
    // Should not be called (transmitter-only device)
@@ -56,7 +56,7 @@ CFan::~CFan()
 {
 }
 
-void CFan::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CFan::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -93,7 +93,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CFan::e
    return toBufferQueue(buffer, GET_RBUF_STRUCT_SIZE(FAN));
 }
 
-void CFan::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CFan::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    // Nothing to historize (transmitter-only device)
 }

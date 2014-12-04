@@ -9,8 +9,8 @@
 #include <shared/DataContainer.h>
 #include <shared/event/EventTimer.h>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	This plugin support the RFXCom module (see http://rfxcom.com/)
@@ -29,7 +29,7 @@ public:
    virtual ~CRfxcom();
 
    // IPlugin implementation
-   virtual void doWork(boost::shared_ptr<yApi::IYadomsApi> context);
+   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
    // [END] IPlugin implementation
 
 protected:
@@ -51,33 +51,33 @@ protected:
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] command          The received command
    //--------------------------------------------------------------
-   void onCommand(boost::shared_ptr<yApi::IYadomsApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command);
+   void onCommand(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command);
 
    //--------------------------------------------------------------
    /// \brief	                     Process a configuration update
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] newConfigurationData The new configuration data
    //--------------------------------------------------------------
-   void onUpdateConfiguration(boost::shared_ptr<yApi::IYadomsApi> context, const shared::CDataContainer& newConfigurationData);
+   void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the RFXCom becomes connected
    /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context);
+   void processRfxcomConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the RFXCom becomes unconnected
    /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYadomsApi> context);
+   void processRfxcomUnConnectionEvent(boost::shared_ptr<yApi::IYPluginApi> context);
 
    //--------------------------------------------------------------
    /// \brief	                     Called when the data are received by the RFXCom
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] data             Data received
    //--------------------------------------------------------------
-   void processRfxcomDataReceived(boost::shared_ptr<yApi::IYadomsApi> context, const shared::communication::CByteBuffer& data);
+   void processRfxcomDataReceived(boost::shared_ptr<yApi::IYPluginApi> context, const shared::communication::CByteBuffer& data);
 
    //--------------------------------------------------------------
    /// \brief	                     Create the connection to the RFXCom
@@ -99,28 +99,28 @@ protected:
    /// \brief	                     Process error (disconnect and retry connect later)
    /// \param [in] context          Plugin execution context (Yadoms API)
    //--------------------------------------------------------------
-   void errorProcess(boost::shared_ptr<yApi::IYadomsApi> context);
+   void errorProcess(boost::shared_ptr<yApi::IYPluginApi> context);
 
    //--------------------------------------------------------------
    /// \brief	                     Process received response to command from RFXCom
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] status           Received status
    //--------------------------------------------------------------
-   void processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status);
+   void processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status);
 
    //--------------------------------------------------------------
    /// \brief	                     Process status message from RFXCom
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] status           Received status
    //--------------------------------------------------------------
-   void processRfxcomStatusMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status);
+   void processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status);
 
    //--------------------------------------------------------------
    /// \brief	                     Process wrong command response from RFXCom
    /// \param [in] context          Plugin execution context (Yadoms API)
    /// \param [in] status           Received status
    //--------------------------------------------------------------
-   void processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYadomsApi> context, const rfxcomMessages::CTransceiverStatus& status);
+   void processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status);
 
    //--------------------------------------------------------------
    /// \brief	                     Process received ack message from RFXCom

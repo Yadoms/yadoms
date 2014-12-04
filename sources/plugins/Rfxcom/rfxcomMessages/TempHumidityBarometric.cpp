@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "TempHumidityBarometric.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CTempHumidityBarometric::CTempHumidityBarometric(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CTempHumidityBarometric::CTempHumidityBarometric(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_temperature("temperature"), m_humidity("humidity"), m_pressure("pressure"), m_batteryLevel("battery"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeTEMP_HUM_BARO, GET_RBUF_STRUCT_SIZE(TEMP_HUM_BARO), DONT_CHECK_SEQUENCE_NUMBER);
@@ -33,7 +33,7 @@ CTempHumidityBarometric::~CTempHumidityBarometric()
 {
 }
 
-void CTempHumidityBarometric::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CTempHumidityBarometric::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -62,7 +62,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CTempHu
    throw shared::exception::CInvalidParameter("TempHumidityBarometric is a read-only message, can not be encoded");
 }
 
-void CTempHumidityBarometric::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CTempHumidityBarometric::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_deviceName, m_temperature);
    context->historizeData(m_deviceName, m_humidity);

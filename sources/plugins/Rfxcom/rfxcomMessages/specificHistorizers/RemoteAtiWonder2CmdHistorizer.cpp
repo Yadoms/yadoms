@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RemoteAtiWonder2CmdHistorizer.h"
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 #include "RemoteAtiWonder2Capacity.h"
 
 namespace rfxcomMessages { namespace specificHistorizers {
@@ -68,7 +68,7 @@ namespace rfxcomMessages { namespace specificHistorizers {
    
    
    CRemoteAtiWonder2CmdHistorizer::CRemoteAtiWonder2CmdHistorizer(const std::string& keywordName)
-      :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ERemoteAtiWonder2Codes>(keywordName, RemoteAtiWonder2Capacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+      :shared::plugin::yPluginApi::historization::CSingleHistorizableData<ERemoteAtiWonder2Codes>(keywordName, RemoteAtiWonder2Capacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
    {
    }
 

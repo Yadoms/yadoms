@@ -1,6 +1,6 @@
 #pragma once
 
-#include <shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp>
+#include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 #include <shared/enumeration/EnumHelpers.hpp>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
@@ -21,7 +21,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
    //-----------------------------------------------------
    ///\brief A mertick historizable object
    //-----------------------------------------------------
-   class CMertickStatus : public shared::plugin::yadomsApi::historization::CSingleHistorizableData<EMertikStatus>
+   class CMertickStatus : public shared::plugin::yPluginApi::historization::CSingleHistorizableData<EMertikStatus>
    {
    public:
       //-----------------------------------------------------

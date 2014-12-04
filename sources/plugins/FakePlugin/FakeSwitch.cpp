@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "FakeSwitch.h"
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/StringExtension.h>
 #include <shared/Log.h>
 
@@ -17,7 +17,7 @@ CFakeSwitch::~CFakeSwitch()
 {
 }
 
-void CFakeSwitch::declareKeywords(boost::shared_ptr<yApi::IYadomsApi> context)
+void CFakeSwitch::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Declare associated keywords (= values managed by this device)
    if (m_isDimmable)
@@ -40,7 +40,7 @@ void CFakeSwitch::read()
    }
 }
 
-void CFakeSwitch::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CFakeSwitch::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    BOOST_ASSERT_MSG(context, "context must be defined");
 

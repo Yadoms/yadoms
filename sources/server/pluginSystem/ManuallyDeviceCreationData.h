@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/plugin/yadomsApi/IManuallyDeviceCreationData.h>
+#include <shared/plugin/yPluginApi/IManuallyDeviceCreationData.h>
 #include <shared/DataContainer.h>
 
 
@@ -8,7 +8,7 @@ namespace pluginSystem
    //-----------------------------------------------------
    ///\brief The IDeviceCommand implementation
    //-----------------------------------------------------
-   class CManuallyDeviceCreationData : public shared::plugin::yadomsApi::IManuallyDeviceCreationData
+   class CManuallyDeviceCreationData : public shared::plugin::yPluginApi::IManuallyDeviceCreationData
    {
    public:
       //-----------------------------------------------------

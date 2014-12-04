@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include "RFXSensor.h"
 #include <shared/Log.h>
-#include <shared/plugin/yadomsApi/StandardCapacities.h>
+#include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/exception/InvalidParameter.hpp>
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
 
-CRFXSensor::CRFXSensor(boost::shared_ptr<yApi::IYadomsApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
+CRFXSensor::CRFXSensor(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
    :m_temperature("temperature"), m_temperatureAvailable(false), m_adVoltage("adVoltage"), m_adVoltageAvailable(false), m_voltage("voltage"), m_voltageAvailable(false), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypeRFXSensor, GET_RBUF_STRUCT_SIZE(RFXSENSOR), DONT_CHECK_SEQUENCE_NUMBER);
@@ -63,7 +63,7 @@ CRFXSensor::~CRFXSensor()
 {
 }
 
-void CRFXSensor::Init(boost::shared_ptr<yApi::IYadomsApi> context)
+void CRFXSensor::Init(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    // Build device description
    buildDeviceModel();
@@ -97,7 +97,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CRFXSen
    throw shared::exception::CInvalidParameter("RFXSensor is a read-only message, can not be encoded");
 }
 
-void CRFXSensor::historizeData(boost::shared_ptr<yApi::IYadomsApi> context) const
+void CRFXSensor::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    if (m_temperatureAvailable || m_adVoltageAvailable || m_voltageAvailable)
    {

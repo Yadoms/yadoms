@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RemoteAtiWonderPlusHistorizer.h"
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 namespace rfxcomMessages { namespace specificHistorizers {
 
@@ -78,11 +78,11 @@ namespace rfxcomMessages { namespace specificHistorizers {
       ((XEnd))
    );
    
-   const shared::plugin::yadomsApi::CStandardCapacity& RemoteAtiWonderPlusCapacity = shared::plugin::yadomsApi::CStandardCapacity("RemoteAtiWonderPlus", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+   const shared::plugin::yPluginApi::CStandardCapacity& RemoteAtiWonderPlusCapacity = shared::plugin::yPluginApi::CStandardCapacity("RemoteAtiWonderPlus", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
    
    CRemoteAtiWonderPlusHistorizer::CRemoteAtiWonderPlusHistorizer(const std::string& keywordName)
-      :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ERemoteAtiWonderPlusCodes>(keywordName, RemoteAtiWonderPlusCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+      :shared::plugin::yPluginApi::historization::CSingleHistorizableData<ERemoteAtiWonderPlusCodes>(keywordName, RemoteAtiWonderPlusCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
    {
    }
 

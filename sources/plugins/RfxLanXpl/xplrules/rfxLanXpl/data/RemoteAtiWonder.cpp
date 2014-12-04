@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RemoteAtiWonder.h"
-#include <shared/plugin/yadomsApi/StandardUnits.h>
+#include <shared/plugin/yPluginApi/StandardUnits.h>
 
 namespace xplrules { namespace rfxLanXpl { namespace data {
 
@@ -76,11 +76,11 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       ((XEnd))
 );
    
-   const shared::plugin::yadomsApi::CStandardCapacity& RemoteAtiWonderCapacity = shared::plugin::yadomsApi::CStandardCapacity("RemoteAtiWonder", shared::plugin::yadomsApi::CStandardUnits::NoUnits, shared::plugin::yadomsApi::EKeywordDataType::kNoData);
+   const shared::plugin::yPluginApi::CStandardCapacity& RemoteAtiWonderCapacity = shared::plugin::yPluginApi::CStandardCapacity("RemoteAtiWonder", shared::plugin::yPluginApi::CStandardUnits::NoUnits, shared::plugin::yPluginApi::EKeywordDataType::kNoData);
 
    
    CRemoteAtiWonder::CRemoteAtiWonder(const std::string& keywordName)
-      :shared::plugin::yadomsApi::historization::CSingleHistorizableData<ERemoteAtiWonderCodes>(keywordName, RemoteAtiWonderCapacity, shared::plugin::yadomsApi::EKeywordAccessMode::kGetSet)
+      :shared::plugin::yPluginApi::historization::CSingleHistorizableData<ERemoteAtiWonderCodes>(keywordName, RemoteAtiWonderCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
    {
    }
 

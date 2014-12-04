@@ -1,10 +1,10 @@
 #pragma once
 
-#include <shared/plugin/yadomsApi/IYadomsApi.h>
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include <shared/DataContainer.h>
 #include "IRemoteSubtype.h"
 
-namespace yApi = shared::plugin::yadomsApi;
+namespace yApi = shared::plugin::yPluginApi;
 
 namespace rfxcomMessages
 {
@@ -37,13 +37,13 @@ namespace rfxcomMessages
          return m_model;
       }
 
-      virtual void declare(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+      virtual void declare(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
       {
          if (!context->keywordExists(deviceName, m_keyword))
             context->declareKeyword(deviceName, m_keyword);
       }
 
-      virtual void historize(boost::shared_ptr<yApi::IYadomsApi> context, const std::string& deviceName) const
+      virtual void historize(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& deviceName) const
       {
          context->historizeData(deviceName, m_keyword);
       }

@@ -27,11 +27,11 @@ CLinuxSystemInformation::~CLinuxSystemInformation()
 // Event IDs
 enum
 {
-   kEvtTimerRefreshCPULoad =  yApi::IYadomsApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtTimerRefreshCPULoad =  yApi::IYPluginApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
    kEvtTimerRefreshDiskAndMemory
 };
 
-void CLinuxSystemInformation::doWork(boost::shared_ptr<yApi::IYadomsApi> context)
+void CLinuxSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    try
    {

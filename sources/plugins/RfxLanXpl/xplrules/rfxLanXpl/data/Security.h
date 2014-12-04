@@ -1,6 +1,6 @@
 #pragma once
 
-#include <shared/plugin/yadomsApi/historization/SingleHistorizableData.hpp>
+#include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 #include <shared/enumeration/EnumHelpers.hpp>
 #include <shared/Field.hpp>
 
@@ -9,7 +9,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
    //-----------------------------------------------------
    ///\brief A log message historizable object
    //-----------------------------------------------------
-   class CSecurity : public shared::plugin::yadomsApi::historization::IHistorizable
+   class CSecurity : public shared::plugin::yPluginApi::historization::IHistorizable
    {
    public:
       DECLARE_ENUM_HEADER(ECommands,
@@ -32,7 +32,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       ///\param[in] keywordName     Yadoms keyword name
       ///\param[in] accessMode      Access mode
       //-----------------------------------------------------
-      CSecurity(const std::string& keywordName, const shared::plugin::yadomsApi::EKeywordAccessMode& accessMode);
+      CSecurity(const std::string& keywordName, const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
@@ -41,10 +41,10 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
 
       // IHistorizable implementation
       virtual const std::string& getKeyword() const;
-      virtual const shared::plugin::yadomsApi::CStandardCapacity& getCapacity() const;
-      virtual const shared::plugin::yadomsApi::EKeywordAccessMode& getAccessMode() const;
-      virtual const std::string formatValue() const;
-      virtual const shared::plugin::yadomsApi::historization::EMeasureType& getMeasureType() const;
+      virtual const shared::plugin::yPluginApi::CStandardCapacity& getCapacity() const;
+      virtual const shared::plugin::yPluginApi::EKeywordAccessMode& getAccessMode() const;
+      virtual std::string formatValue() const;
+      virtual const shared::plugin::yPluginApi::historization::EMeasureType& getMeasureType() const;
       // [END] IHistorizable implementation;
 
       //-----------------------------------------------------
@@ -107,7 +107,7 @@ namespace xplrules { namespace rfxLanXpl { namespace data {
       //-----------------------------------------------------
       ///\brief                     The access mode
       //-----------------------------------------------------
-      const shared::plugin::yadomsApi::EKeywordAccessMode& m_accessMode;
+      const shared::plugin::yPluginApi::EKeywordAccessMode& m_accessMode;
 
       //-----------------------------------------------------
       ///\brief               The security command

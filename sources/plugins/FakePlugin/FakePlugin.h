@@ -2,8 +2,8 @@
 #include <shared/plugin/IPlugin.h>
 #include "FakePluginConfiguration.h"
 
-// Shortcut to yadomsApi namespace
-namespace yApi = shared::plugin::yadomsApi;
+// Shortcut to yPluginApi namespace
+namespace yApi = shared::plugin::yPluginApi;
 
 //--------------------------------------------------------------
 /// \brief	This class is a simple plugin example
@@ -26,7 +26,7 @@ public:
    virtual ~CFakePlugin();
 
    // IPlugin implementation
-   virtual void doWork(boost::shared_ptr<yApi::IYadomsApi> context);
+   virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
   // [END] IPlugin implementation
 
 private:
