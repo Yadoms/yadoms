@@ -39,7 +39,8 @@
                      !pRequester->checkTableExists(CPluginEventLoggerTable::getTableName()) ||
                      !pRequester->checkTableExists(CEventLoggerTable::getTableName()) ||
                      !pRequester->checkTableExists(CAcquisitionTable::getTableName()) ||
-                     !pRequester->checkTableExists(CAcquisitionSummaryTable::getTableName())       )
+                     !pRequester->checkTableExists(CAcquisitionSummaryTable::getTableName()) ||
+                     !pRequester->checkTableExists(CAutomationScriptTable::getTableName()) )
                   {
                      //at least one table is missing
                      bNeedToCreateOrUpgrade = true;
@@ -98,6 +99,8 @@
                      throw CSQLiteVersionException("Failed to delete Acquisition table");
                   if(!pRequester->dropTableIfExists(CAcquisitionSummaryTable::getTableName()))
                      throw CSQLiteVersionException("Failed to delete AcquisitionSummary table");
+                  if (!pRequester->dropTableIfExists(CAutomationScriptTable::getTableName()))
+                     throw CSQLiteVersionException("Failed to delete AutomationScript table");
 
                   //create tables
                   if(!pRequester->createTableIfNotExists(CConfigurationTable::getTableName(), CConfigurationTable::getTableCreationScript()))
@@ -120,6 +123,8 @@
                      throw CSQLiteVersionException("Failed to create Acquisition table");
                   if (!pRequester->createTableIfNotExists(CAcquisitionSummaryTable::getTableName(), CAcquisitionSummaryTable::getTableCreationScript()))
                      throw CSQLiteVersionException("Failed to create AcquisitionSummary table");
+                  if (!pRequester->createTableIfNotExists(CAutomationScriptTable::getTableName(), CAutomationScriptTable::getTableCreationScript()))
+                     throw CSQLiteVersionException("Failed to create AutomationScript table");
 
 
                   //set the database version

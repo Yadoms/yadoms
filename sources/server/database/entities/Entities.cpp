@@ -148,5 +148,24 @@ namespace database { namespace entities {
    );
 
 
+   DECLARE_ENTITY_CLASS_IMPLEMENTATION(
+      AutomationScript,
+      ((Id)(int)(0)("id"))
+      ((Name)(std::string)("")("name"))
+      ((Description)(std::string)("")("description"))
+      ((Triggers)(shared::CDataContainer)(shared::CDataContainer())("triggers"))
+      ((Actions)(shared::CDataContainer)(shared::CDataContainer())("actions"))
+   );
+
+
+//   DECLARE_ENTITY_CLASS_IMPLEMENTATION(
+//      Contact,
+//      ((Id)(int)(0)("id"))
+//      ((Identity)(shared::CDataContainer)(shared::CDataContainer())("identity"))
+//      ((Information)(shared::CDataContainer)(shared::CDataContainer())("information"))
+//   );
+
+
+
 } //namespace entities
 } //namespace database

@@ -102,6 +102,23 @@ namespace sqlite {
       ((Max)("maxValue"))
    )
 
+
+   DECLARE_TABLE_COLUMN_NAMES(AutomationScript, "AutomationScript",
+      ((Id)("id"))
+      ((Name)("name"))
+      ((Description)("description"))
+      ((Triggers)("triggers"))
+      ((Actions)("actions"))
+   )
+
+
+//   DECLARE_TABLE_COLUMN_NAMES(Contact, "Contact",
+//      ((Id)("id"))
+//      ((Identity)("identity"))
+//      ((Information)("information"))
+//   )
+
+
 } //namespace sqlite
 } //namespace database 
 

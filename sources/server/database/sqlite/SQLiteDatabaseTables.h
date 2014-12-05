@@ -101,6 +101,20 @@ namespace sqlite {
       (Max)
    )   
 
+   DECLARE_TABLE(AutomationScript,
+      (Id)
+      (Name)
+      (Description)
+      (Triggers)
+      (Actions)
+   )   
+
+//   DECLARE_TABLE(Contact,
+//      (Id)
+//      (Identity)
+//      (Information)
+//   )   
+
 
 } //namespace sqlite
 } //namespace database 
