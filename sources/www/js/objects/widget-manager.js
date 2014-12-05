@@ -136,8 +136,8 @@ WidgetManager.updateToServer = function(widget, callback) {
         //we notify that configuration has changed
         try
         {
-            if (widget.viewModel.configurationChanged !== undefined)
-                widget.viewModel.configurationChanged();
+            WidgetManager.updateWidgetConfiguration(widget);
+
             //we ask for a refresh of widget data
             updateWidgetPolling(widget);
 
@@ -159,6 +159,20 @@ WidgetManager.updateToServer = function(widget, callback) {
             if ($.isFunction(callback))
                 callback(false);
         };}(widget.type));
+}
+
+WidgetManager.updateWidgetConfiguration = function(widget) {
+   try
+   {
+       // Update widget specific tvalues
+      if (!isNullOrUndefined(widget.viewModel.configurationChanged))
+         widget.viewModel.configurationChanged();
+   }
+   catch (e)
+   {
+      notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.type, methodName : 'configurationChanged'}));
+      console.warn(e);
+   }
 }
 
 WidgetManager.consolidate = function(widget, widgetPackage) {
@@ -304,16 +318,7 @@ WidgetManager.addToDom = function(widget) {
    }
 
    //we notify that configuration has changed
-   try
-   {
-      if (widget.viewModel.configurationChanged !== undefined)
-         widget.viewModel.configurationChanged();
-   }
-   catch (e)
-   {
-      notifyWarning($.t("objects.widgetManager.widgetHasGeneratedAnExceptionDuringCallingMethod", {widgetName : widget.type, methodName : 'configurationChanged'}));
-      console.warn(e);
-   }
+   WidgetManager.updateWidgetConfiguration(widget);
 
    //we notify that widget has been resized
    try
