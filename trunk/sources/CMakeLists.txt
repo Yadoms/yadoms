@@ -221,8 +221,6 @@ set(YADOMS_SRC
 	server/startupOptions/MustExistPathOption.hpp
 	server/startupOptions/ValidIpAddressOption.hpp
   
-	server/notifications/AsyncNotificationCenter.h
-	server/notifications/AsyncNotificationCenter.cpp
 	server/notifications/NewAcquisitionNotification.h
 	server/notifications/NewDeviceNotification.h
 	

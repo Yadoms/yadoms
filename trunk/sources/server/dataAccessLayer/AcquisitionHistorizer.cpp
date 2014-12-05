@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "AcquisitionHistorizer.h"
-#include "notifications/AsyncNotificationCenter.h"
 #include "notifications/NewAcquisitionNotification.h"
 
 namespace dataAccessLayer {

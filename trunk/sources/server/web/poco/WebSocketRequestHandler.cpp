@@ -5,7 +5,6 @@
 #include <shared/DataContainer.h>
 #include <shared/notification/NotificationCenter.h>
 
-#include "notifications/AsyncNotificationCenter.h"
 #include "notifications/NewAcquisitionNotification.h"
 #include "web/ws/FrameFactory.h"
 #include "web/ws/AcquisitionFilterFrame.h"
