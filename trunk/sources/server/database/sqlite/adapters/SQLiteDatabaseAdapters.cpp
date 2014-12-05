@@ -101,6 +101,21 @@ namespace database {   namespace sqlite {  namespace adapters {
       ((Max)(std::string)(""))
    )
 
+
+   DECLARE_ADAPTER_IMPLEMENTATION(AutomationScript,
+      ((Id)(int)(0))
+      ((Name)(std::string)(""))
+      ((Description)(std::string)(""))
+      ((Triggers)(shared::CDataContainer)(shared::CDataContainer()))
+      ((Actions)(shared::CDataContainer)(shared::CDataContainer()))
+   );
+
+//   DECLARE_ADAPTER_IMPLEMENTATION(Contact,
+//      ((Id)(int)(0))
+//      ((Identity)(shared::CDataContainer)(shared::CDataContainer()))
+//      ((Information)(shared::CDataContainer)(shared::CDataContainer()))
+//   );
+
 } //namespace adapters
 } //namespace sqlite
 } //namespace database 

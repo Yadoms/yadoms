@@ -143,8 +143,20 @@ namespace database { namespace entities {
    )
 
 
+   DECLARE_ENTITY_CLASS_HEADER(AutomationScript,
+      ((Id)(int))
+      ((Name)(std::string))
+      ((Description)(std::string))
+      ((Triggers)(shared::CDataContainer))
+      ((Actions)(shared::CDataContainer))
+   )
 
 
+//   DECLARE_ENTITY_CLASS_HEADER(Contact,
+//      ((Id)(int))
+//      ((Identity)(shared::CDataContainer))
+//      ((Information)(shared::CDataContainer))
+//   )
 
 
 

@@ -120,7 +120,7 @@ namespace xplrules { namespace rfxLanXpl {
 
       //set the target (rfxcom-lan-<hax mac address>)
       newMessage->setTarget(xplcore::CXplActor::parse(rfxAddress));
-      //newMessage->setTarget(xplcore::CXplActor::createBroadcastActor());
+      
       //set the ac.basic
       newMessage->setMessageSchemaIdentifier(getProtocol());
 

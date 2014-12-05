@@ -24,6 +24,8 @@ namespace adapters {
    DECLARE_ADAPTER_HEADER(Keyword)
    DECLARE_ADAPTER_HEADER(Acquisition)
    DECLARE_ADAPTER_HEADER(AcquisitionSummary)
+   DECLARE_ADAPTER_HEADER(AutomationScript)
+//   DECLARE_ADAPTER_HEADER(Contact)
   
 } //namespace adapters
 } //namespace sqlite
