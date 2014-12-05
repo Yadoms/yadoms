@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DeviceManager.h"
-#include "notifications/AsyncNotificationCenter.h"
 #include "notifications/NewDeviceNotification.h"
 
 namespace dataAccessLayer {
