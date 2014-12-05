@@ -61,7 +61,7 @@ namespace rfxcomMessages { namespace specificHistorizers {
 
    
    CRemotePCHistorizer::CRemotePCHistorizer(const std::string& keywordName)
-      :shared::plugin::yPluginApi::historization::CSingleHistorizableData<ERemotePCCodes>(keywordName, RemotePCCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
+      :CSingleHistorizableData<ERemotePCCodes>(keywordName, RemotePCCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
    {
    }
 

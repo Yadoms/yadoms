@@ -23,15 +23,14 @@ bool CMegatecUpsConfiguration::upsBeepEnable() const
 IMegatecUpsConfiguration::EPowerFailureManagement CMegatecUpsConfiguration::powerFailureManagement() const
 {
    if (m_data.get<bool>("PowerFailureManagement.content.Immediately.radio"))
-      return IMegatecUpsConfiguration::kNotifyImmediately;
-   else if (m_data.get<bool>("PowerFailureManagement.content.Filter.radio"))
-      return IMegatecUpsConfiguration::kFilter;
-   else if (m_data.get<bool>("PowerFailureManagement.content.LowBattery.radio"))
-      return IMegatecUpsConfiguration::kLowBattery;
-   else if (m_data.get<bool>("PowerFailureManagement.content.RemainingBattery.radio"))
-      return IMegatecUpsConfiguration::kRemainingBattery;
-   else
-      throw shared::exception::CInvalidParameter("PowerFailureManagement");
+      return kNotifyImmediately;
+   if (m_data.get<bool>("PowerFailureManagement.content.Filter.radio"))
+      return kFilter;
+   if (m_data.get<bool>("PowerFailureManagement.content.LowBattery.radio"))
+      return kLowBattery;
+   if (m_data.get<bool>("PowerFailureManagement.content.RemainingBattery.radio"))
+      return kRemainingBattery;
+   throw shared::exception::CInvalidParameter("PowerFailureManagement");
 }
 
 unsigned int CMegatecUpsConfiguration::powerFailureFilterDelay() const

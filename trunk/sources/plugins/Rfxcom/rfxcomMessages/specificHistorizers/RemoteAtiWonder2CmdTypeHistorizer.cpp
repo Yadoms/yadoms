@@ -15,7 +15,7 @@ namespace rfxcomMessages { namespace specificHistorizers {
    
 
    CRemoteAtiWonder2CmdTypeHistorizer::CRemoteAtiWonder2CmdTypeHistorizer(const std::string& keywordName)
-      :shared::plugin::yPluginApi::historization::CSingleHistorizableData<ERemoteAtiWonder2TypesCodes>(keywordName, RemoteAtiWonder2Capacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
+      :CSingleHistorizableData<ERemoteAtiWonder2TypesCodes>(keywordName, RemoteAtiWonder2Capacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
    {
    }
 

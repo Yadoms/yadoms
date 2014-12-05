@@ -80,7 +80,7 @@ namespace rfxcomMessages { namespace specificHistorizers {
 
    
    CRemoteAtiWonderHistorizer::CRemoteAtiWonderHistorizer(const std::string& keywordName)
-      :shared::plugin::yPluginApi::historization::CSingleHistorizableData<ERemoteAtiWonderCodes>(keywordName, RemoteAtiWonderCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
+      :CSingleHistorizableData<ERemoteAtiWonderCodes>(keywordName, RemoteAtiWonderCapacity, shared::plugin::yPluginApi::EKeywordAccessMode::kGetSet)
    {
    }
 
