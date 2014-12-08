@@ -35,13 +35,12 @@ static const std::locale ProtocolFloatFormatingLocale(std::locale(), new CMegate
 
 
 
-CMegatecUps::CMegatecUps():
+CMegatecUps::CMegatecUps()
+   :m_protocolErrorCounter(0), m_lastSentBuffer(1), m_answerIsRequired(true), m_firstNotification(true),
+   m_acPowerActive(true), m_lowBatteryFlag(false), m_lowBatteryByLevelFlag(false), m_batteryNominalVoltage(0.0),
    m_inputVoltage("inputVoltage"), m_inputfaultVoltage("inputfaultVoltage"), m_outputVoltage("outputVoltage"),
    m_outputLoad("outputLoad"), m_inputFrequency("inputFrequency"), m_batteryVoltage("batteryVoltage"),
-   m_temperature("temperature"), m_acPowerHistorizer("acPowerActive", yApi::EKeywordAccessMode::kGet), m_upsShutdown("UpsShutdown"),
-   m_acPowerActive(true), m_lowBatteryFlag(false), m_lowBatteryByLevelFlag(false),
-   m_protocolErrorCounter(0), m_batteryNominalVoltage(0.0), m_answerIsRequired(true), m_firstNotification(true),
-   m_lastSentBuffer(1)
+   m_temperature("temperature"), m_acPowerHistorizer("acPowerActive", yApi::EKeywordAccessMode::kGet), m_upsShutdown("UpsShutdown")
 {
 }
 

@@ -236,6 +236,36 @@ private:
    bool m_answerIsRequired;
 
    //--------------------------------------------------------------
+   /// \brief	First notification flag
+   //--------------------------------------------------------------
+   bool m_firstNotification;
+
+   //--------------------------------------------------------------
+   /// \brief	The device name
+   //--------------------------------------------------------------
+   static const std::string DeviceName;
+
+   //--------------------------------------------------------------
+   /// \brief	AC power status
+   //--------------------------------------------------------------
+   bool m_acPowerActive;
+
+   //--------------------------------------------------------------
+   /// \brief	Flag indicating the low battery state (as signaled by UPS itself)
+   //--------------------------------------------------------------
+   bool m_lowBatteryFlag;
+
+   //--------------------------------------------------------------
+   /// \brief	Flag indicating the low battery state (from measured battery voltage)
+   //--------------------------------------------------------------
+   bool m_lowBatteryByLevelFlag;
+
+   //--------------------------------------------------------------
+   /// \brief	The battery nominal voltage (V)
+   //--------------------------------------------------------------
+   double m_batteryNominalVoltage;
+
+   //--------------------------------------------------------------
    /// \brief	The input voltage (V)
    //--------------------------------------------------------------
    yApi::historization::CVoltage m_inputVoltage;
@@ -276,39 +306,9 @@ private:
    yApi::historization::CSwitch m_acPowerHistorizer;
 
    //--------------------------------------------------------------
-   /// \brief	First notification flag
-   //--------------------------------------------------------------
-   bool m_firstNotification;
-
-   //--------------------------------------------------------------
    /// \brief	The shutdown device
    //--------------------------------------------------------------
    yApi::historization::CSwitch m_upsShutdown;
-
-   //--------------------------------------------------------------
-   /// \brief	The device name
-   //--------------------------------------------------------------
-   static const std::string DeviceName;
-
-   //--------------------------------------------------------------
-   /// \brief	AC power status
-   //--------------------------------------------------------------
-   bool m_acPowerActive;
-
-   //--------------------------------------------------------------
-   /// \brief	Flag indicating the low battery state (as signaled by UPS itself)
-   //--------------------------------------------------------------
-   bool m_lowBatteryFlag;
-
-   //--------------------------------------------------------------
-   /// \brief	Flag indicating the low battery state (from measured battery voltage)
-   //--------------------------------------------------------------
-   bool m_lowBatteryByLevelFlag;
-
-   //--------------------------------------------------------------
-   /// \brief	The battery nominal voltage (V)
-   //--------------------------------------------------------------
-   double m_batteryNominalVoltage;
 };
 
 

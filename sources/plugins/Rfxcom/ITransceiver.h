@@ -45,7 +45,7 @@ public:
    /// \return                      RFXCom command to send (can be constitued of several messages)
    /// \throw shared::exception::CInvalidParameter if no corresponding RFXCom message was found (invalid command)
    //--------------------------------------------------------------
-   virtual boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const = 0;
+   virtual boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buildMessageToDevice(boost::shared_ptr<yApi::IYPluginApi> context, boost::shared_ptr<const yApi::IDeviceCommand> command) const = 0;
 
    //--------------------------------------------------------------
    /// \brief	                     Decode RFXCom message

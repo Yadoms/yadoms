@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ILoad.h"
-#include "LoadKeyword.h"
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
@@ -47,7 +46,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keyword
    //--------------------------------------------------------------
-   CLoadKeyword m_keyword;
+   yApi::historization::CLoad m_keyword;
 
    //FIXME : Ecriture à modifier ??
    std::vector<std::string> ExecuteCommandAndReturn(const std::string &szCommand);
