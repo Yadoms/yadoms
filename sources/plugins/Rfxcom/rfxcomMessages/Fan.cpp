@@ -76,7 +76,7 @@ void CFan::Init(boost::shared_ptr<yApi::IYPluginApi> context)
    }
 }
 
-boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CFan::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CFan::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
    RBUF buffer;
    MEMCLEAR(buffer.FAN);

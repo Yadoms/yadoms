@@ -77,7 +77,7 @@ void CLighting3::Init(boost::shared_ptr<yApi::IYPluginApi> context)
    }
 }
 
-boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CLighting3::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CLighting3::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
    RBUF rbuf;
    MEMCLEAR(rbuf.LIGHTING3);
