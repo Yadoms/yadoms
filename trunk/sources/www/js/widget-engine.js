@@ -247,7 +247,7 @@ function periodicUpdateTask() {
          {
             failGetEventCounter++;
             if (failGetEventCounter >= 3) {
-               //we indicate that server has passed offline
+               //we indicate that *server has passed offline
                serverIsOnline = false;
                OfflineServerNotification = notifyError($.t("mainPage.errors.youHaveBeenDisconnectedFromTheServerOrItHasGoneOffline"), "", false);
                //we change the interval period
