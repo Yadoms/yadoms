@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ILoad.h"
-#include "LoadKeyword.h"
 #include <string>
 
 //--------------------------------------------------------------
@@ -49,5 +48,5 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keyword
    //--------------------------------------------------------------
-   CLoadKeyword m_keyword;   
+   yApi::historization::CLoad m_keyword;
 };

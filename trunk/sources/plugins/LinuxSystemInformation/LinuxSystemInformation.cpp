@@ -16,7 +16,7 @@
 IMPLEMENT_PLUGIN(CLinuxSystemInformation)
 
 
-   CLinuxSystemInformation::CLinuxSystemInformation() : m_deviceName("System")
+CLinuxSystemInformation::CLinuxSystemInformation() : m_deviceName("System")
 {
 }
 

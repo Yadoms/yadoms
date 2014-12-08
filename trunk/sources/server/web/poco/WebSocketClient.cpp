@@ -8,7 +8,7 @@ namespace web { namespace poco {
 
 
    CWebSocketClient::CWebSocketClient(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response, boost::shared_ptr<shared::notification::CNotificationObserver> observer, const int observerEvent)
-      :CThreadBase("WebSocketClient"),  m_socket(request, response), m_observer(observer), m_observerEvent(observerEvent), m_response(response)
+      :CThreadBase("WebSocketClient"), m_observer(observer), m_observerEvent(observerEvent), m_socket(request, response), m_response(response)
    {
 
    }

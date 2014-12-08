@@ -54,7 +54,8 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
       //start ioservice
 
-      xplcore::CXplService xplService(m_configuration.getXplNetworkInterface(), m_xpl_gateway_id, "1", &context->getEventHandler(), kXplHubFound);
+      Poco::Net::NetworkInterface interface = m_configuration.getXplNetworkInterface();
+      xplcore::CXplService xplService(interface, m_xpl_gateway_id, "1", &context->getEventHandler(), kXplHubFound);
       xplService.subscribeForAllMessages(&context->getEventHandler(), kXplMessageReceived);
 
       //manage xpl hub

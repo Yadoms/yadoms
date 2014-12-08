@@ -173,7 +173,7 @@ void CRfxcom::send(const shared::communication::CByteBuffer& buffer, bool needAn
       m_waitForAnswerTimer->start();
 }
 
-void CRfxcom::send(boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > buffers)
+void CRfxcom::send(boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buffers)
 {
    if (!m_port)
       return;
