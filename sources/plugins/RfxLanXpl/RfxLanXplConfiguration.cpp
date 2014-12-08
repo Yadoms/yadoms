@@ -36,5 +36,6 @@ Poco::Net::NetworkInterface CRfxLanXplConfiguration::getXplNetworkInterface() co
          return *i;
       }
    }
-
+   
+   return Poco::Net::NetworkInterface();
 }
