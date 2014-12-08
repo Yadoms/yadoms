@@ -15,7 +15,7 @@ namespace tools {
    bool COperatingSystem::shutdown(bool andRestart)
    {
       sync();
-      reboot(andRestart ? RB_AUTOBOOT : RB_POWER_OFF);
+      return (reboot(andRestart ? RB_AUTOBOOT : RB_POWER_OFF) == 0);
    }
    
 } //namespace tools
