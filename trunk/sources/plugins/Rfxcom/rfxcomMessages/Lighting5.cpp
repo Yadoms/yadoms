@@ -116,7 +116,7 @@ boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CLighting5::e
    rbuf.LIGHTING5.filler = 0;
 
    // Some sub-protocols need several messages
-   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buffers(new std::queue<const shared::communication::CByteBuffer>);
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buffers(new std::queue<shared::communication::CByteBuffer>);
    for (size_t idxMessage = 0 ; idxMessage < m_subTypeManager->getMessageNb() ; ++ idxMessage)
    {
       m_subTypeManager->toProtocolState(idxMessage, rbuf.LIGHTING5.cmnd, rbuf.LIGHTING5.level);
