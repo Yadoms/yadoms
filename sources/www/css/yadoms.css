@@ -168,6 +168,10 @@ body {
     float: left;
 }
 
+#configure-widget-modal > .modal-dialog {
+    width: 800px;
+}
+
 .configuration-section {
     padding: 15px;
     margin: 15px;

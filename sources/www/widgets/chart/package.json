@@ -62,6 +62,20 @@
             }
          }
       },
+      "devices" : {
+         "type" : "list",
+         "name" : "Devices",
+         "description" : "List of plotted devices",
+         "nbItemsMin" : "2",
+         "nbItemsMax" : "10",
+         "allowDuplication" : "true",
+         "item" : {
+            "name" : "Color of the plot",
+            "description" : "Permit to change the color of the plot",
+            "type" : "color",
+            "defaultValue" : "#0000FF"
+         }
+      },
       "device1" : {
          "type" : "section",
          "name" : "Plot 1",
