@@ -99,7 +99,7 @@ void CLighting5::declare(boost::shared_ptr<yApi::IYPluginApi> context)
    }
 }
 
-boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CLighting5::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CLighting5::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
    RBUF rbuf;
    MEMCLEAR(rbuf.LIGHTING5);
@@ -116,7 +116,7 @@ boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CLighti
    rbuf.LIGHTING5.filler = 0;
 
    // Some sub-protocols need several messages
-   boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > buffers(new std::queue<const shared::communication::CByteBuffer>);
+   boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > buffers(new std::queue<const shared::communication::CByteBuffer>);
    for (size_t idxMessage = 0 ; idxMessage < m_subTypeManager->getMessageNb() ; ++ idxMessage)
    {
       m_subTypeManager->toProtocolState(idxMessage, rbuf.LIGHTING5.cmnd, rbuf.LIGHTING5.level);

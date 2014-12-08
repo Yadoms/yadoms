@@ -67,7 +67,7 @@ const shared::communication::CByteBuffer toBuffer(const RBUF& rbuf, std::size_t 
 /// \param[in] subStructureSize        RBUF Substructure size
 /// \return                            Buffer queue containing only one buffer
 //--------------------------------------------------------------
-boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > toBufferQueue(const RBUF& rbuf, std::size_t subStructureSize);
+boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > toBufferQueue(const RBUF& rbuf, std::size_t subStructureSize);
 
 //--------------------------------------------------------------
 /// \brief	                           Normalize battery level

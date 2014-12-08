@@ -99,7 +99,7 @@ void CSecurity1::declare(boost::shared_ptr<yApi::IYPluginApi> context)
    m_subTypeManager->declare(context, m_deviceName);
 }
 
-boost::shared_ptr<std::queue<const shared::communication::CByteBuffer> > CSecurity1::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
+boost::shared_ptr<std::queue<shared::communication::CByteBuffer> > CSecurity1::encode(boost::shared_ptr<ISequenceNumberProvider> seqNumberProvider) const
 {
    RBUF rbuf;
    MEMCLEAR(rbuf.SECURITY1);
