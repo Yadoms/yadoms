@@ -26,6 +26,7 @@
 #include "SystemInformation.h"
 #include "dataAccessLayer/DataAccessLayer.h"
 #include <shared/notification/NotificationCenter.h>
+#include <server/job/Manager.h>
 
 CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
    :m_stopHandler(m_EventHandler, kStopRequested), m_startupOptions(startupOptions)
@@ -61,7 +62,7 @@ void CSupervisor::doWork()
       boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal(new dataAccessLayer::CDataAccessLayer(pDataProvider, notificationCenter));
 
       // Start Task manager
-      boost::shared_ptr<task::CScheduler> taskManager = boost::shared_ptr<task::CScheduler>(new task::CScheduler(m_EventHandler, kSystemEvent));
+      boost::shared_ptr<task::CScheduler> taskManager(new task::CScheduler(m_EventHandler, kSystemEvent));
       taskManager->start();
 
       // Create the Plugin manager
@@ -69,11 +70,15 @@ void CSupervisor::doWork()
          m_startupOptions.getPluginsPath(), pDataProvider, dal, m_EventHandler, kPluginManagerEvent, m_stopHandler));
 
       // Start the plugin gateway
-      communication::CPluginGateway pluginGateway(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager);
-      pluginGateway.start();
+      boost::shared_ptr<communication::CPluginGateway> pluginGateway(new communication::CPluginGateway(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager));
+      pluginGateway->start();
 
       // Start the plugin manager (start all plugin instances)
       pluginManager->start();
+
+      // Start Jobs manager
+      boost::shared_ptr<job::IManager> jobsManager(new job::CManager(pDataProvider->getJobRequester(), pluginGateway));
+      jobsManager->start();
 
       // Start Web server
       const std::string & webServerIp = m_startupOptions.getWebServerIPAddress();
@@ -86,8 +91,8 @@ void CSupervisor::doWork()
       //const std::string & webServerWidgetPath = m_startupOptions.getWidgetsPath();
       //webServer.configureAlias("widgets", webServerWidgetPath);
       webServer.getConfigurator()->websiteHandlerAddAlias("plugins", m_startupOptions.getPluginsPath());
-      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager, pluginGateway)));
-      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDevice(pDataProvider, pluginGateway)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager, *pluginGateway)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDevice(pDataProvider, *pluginGateway)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPage(pDataProvider)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CWidget(pDataProvider, webServerPath)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfiguration(pDataProvider)));
@@ -101,7 +106,7 @@ void CSupervisor::doWork()
 
       webServer.start();
 
-      // Register to event logger started evebt
+      // Register to event logger started event
       pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", shared::CStringExtension::EmptyString);
 
       // Main loop
@@ -132,10 +137,11 @@ void CSupervisor::doWork()
 
       YADOMS_LOG(info) << "Supervisor is stopping...";
 
+      jobsManager->stop();
+
       //stop all plugins
       if(pluginManager.get() != NULL)
          pluginManager->stop();
-
 
       //stop web server
       webServer.stop();

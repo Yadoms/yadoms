@@ -143,12 +143,13 @@ namespace database { namespace entities {
    )
 
 
-   DECLARE_ENTITY_CLASS_HEADER(AutomationScript,
+   DECLARE_ENTITY_CLASS_HEADER(Job,
       ((Id)(int))
       ((Name)(std::string))
       ((Description)(std::string))
       ((Triggers)(shared::CDataContainer))
       ((Actions)(shared::CDataContainer))
+      ((Enable)(bool))
    )
 
 

@@ -29,7 +29,7 @@ namespace task {
    {
       //we ask to all instance to stop before stopping current thread
       //TODO : iterer la liste pour demander l'arret
-      shared::CThreadBase::requestToStop();
+      CThreadBase::requestToStop();
    }
 
    void CScheduler::doWork()
@@ -134,7 +134,7 @@ namespace task {
       //we check if the task is IUnique
       if (boost::dynamic_pointer_cast<IUnique>(taskToRun) != NULL)
       {
-         //the task is unique, we mùst check if it is not already running
+         //the task is unique, we must check if it is not already running
 
          RunningTaskInstanceMap::iterator it;
          for (it = m_runningTasks.begin(); it != m_runningTasks.end(); ++it)

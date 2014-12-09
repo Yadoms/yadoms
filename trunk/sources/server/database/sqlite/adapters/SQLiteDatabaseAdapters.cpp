@@ -102,12 +102,13 @@ namespace database {   namespace sqlite {  namespace adapters {
    )
 
 
-   DECLARE_ADAPTER_IMPLEMENTATION(AutomationScript,
+   DECLARE_ADAPTER_IMPLEMENTATION(Job,
       ((Id)(int)(0))
       ((Name)(std::string)(""))
       ((Description)(std::string)(""))
       ((Triggers)(shared::CDataContainer)(shared::CDataContainer()))
       ((Actions)(shared::CDataContainer)(shared::CDataContainer()))
+      ((Enable)(bool)(true))
    );
 
 //   DECLARE_ADAPTER_IMPLEMENTATION(Contact,

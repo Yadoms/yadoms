@@ -25,11 +25,11 @@ namespace task { namespace backup {
       // ITask implementation
       virtual const std::string & getName();
       virtual bool doWork(TaskProgressFunc pFunctor);
-      // ITask implementation
+      // [END] ITask implementation
 
    private:
       //------------------------------------------
-      ///\brief   Interal progress handler
+      ///\brief   Internal progress handler
       //------------------------------------------
       void OnProgressionUpdatedInternal(int remaining, int total, const std::string & message = "");
 
@@ -49,7 +49,7 @@ namespace task { namespace backup {
       const std::string m_backupLocation;
 
       //------------------------------------------
-      ///\brief   The function pointer for reporting prgression
+      ///\brief   The function pointer for reporting progression
       //------------------------------------------
       TaskProgressFunc m_reportRealProgress;
    };

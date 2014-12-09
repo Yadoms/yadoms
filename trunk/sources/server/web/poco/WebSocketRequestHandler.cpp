@@ -33,9 +33,9 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
    {
       std::vector<int> acquisitionKeywordFilters;
 
-      boost::shared_ptr< shared::notification::CNotificationObserver> observer = m_notificationCenter->registerObserver(this);
+      boost::shared_ptr<shared::notification::CNotificationObserver> observer = m_notificationCenter->registerObserver(this);
       
-      const int kNotifFromWsClient = shared::notification::CNotificationCenter::kUserFirstId;
+      enum { kNotifFromWsClient = shared::notification::CNotificationCenter::kUserFirstId };
       CWebSocketClient client(request, response, observer, kNotifFromWsClient);
 
       bool clientSeemConnected = true;
@@ -46,13 +46,13 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
          {
          case kNotifFromWsClient:
          {
-            boost::shared_ptr<web::ws::CFrameBase> parsedFrame = m_notificationCenter->getNotificationData< boost::shared_ptr<web::ws::CFrameBase> >(this);
+            boost::shared_ptr<ws::CFrameBase> parsedFrame = m_notificationCenter->getNotificationData< boost::shared_ptr<ws::CFrameBase> >(this);
             if (parsedFrame)
             {
                switch (parsedFrame->getType())
                {
-               case web::ws::CFrameBase::EFrameType::kAcquisitionFilterValue:
-                  boost::shared_ptr<web::ws::CAcquisitionFilterFrame> parsedFrameAsqFilter = boost::dynamic_pointer_cast<web::ws::CAcquisitionFilterFrame>(parsedFrame);
+               case ws::CFrameBase::EFrameType::kAcquisitionFilterValue:
+                  boost::shared_ptr<ws::CAcquisitionFilterFrame> parsedFrameAsqFilter = boost::dynamic_pointer_cast<ws::CAcquisitionFilterFrame>(parsedFrame);
                   acquisitionKeywordFilters.clear();
                   acquisitionKeywordFilters = parsedFrameAsqFilter->getFilter();
                   break;
@@ -73,9 +73,9 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
             {
                boost::shared_ptr<notifications::CNewAcquisitionNotification> newAcquisition = m_notificationCenter->getNotificationData< boost::shared_ptr<notifications::CNewAcquisitionNotification> >(this);
                if (acquisitionKeywordFilters.empty() ||
-                  std::find(acquisitionKeywordFilters.begin(), acquisitionKeywordFilters.end(), newAcquisition->getAcquisition()->KeywordId()) != acquisitionKeywordFilters.end())
+                  find(acquisitionKeywordFilters.begin(), acquisitionKeywordFilters.end(), newAcquisition->getAcquisition()->KeywordId()) != acquisitionKeywordFilters.end())
                {
-                  web::ws::CAcquisitionUpdateFrame toSend(newAcquisition);
+                  ws::CAcquisitionUpdateFrame toSend(newAcquisition);
                   dataString = toSend.serialize();
                   somethingToSend = true;
                }
@@ -86,7 +86,7 @@ void CWebSocketRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& reque
             {
                boost::shared_ptr<notifications::CNewDeviceNotification> newDevice = m_notificationCenter->getNotificationData< boost::shared_ptr<notifications::CNewDeviceNotification> >(this);
 
-               web::ws::CNewDeviceFrame toSend(newDevice);
+               ws::CNewDeviceFrame toSend(newDevice);
                dataString = toSend.serialize();
                somethingToSend = true;
             }

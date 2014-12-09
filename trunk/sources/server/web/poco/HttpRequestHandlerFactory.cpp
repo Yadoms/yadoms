@@ -46,7 +46,7 @@ namespace web { namespace poco {
       m_restKeywordBase = restKeywordBase;
    }
 
-   void CHttpRequestHandlerFactory::restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService> restService)
+   void CHttpRequestHandlerFactory::restHandlerRegisterService(boost::shared_ptr<rest::service::IRestService> restService)
    {
       m_restService.push_back(restService);
    }
@@ -60,26 +60,23 @@ namespace web { namespace poco {
    {
       if (boost::istarts_with(request.getURI(), m_webSocketKeyword))
          return new CWebSocketRequestHandler(m_notificationCenter);
-      else if (boost::istarts_with(request.getURI(), m_restKeywordBase))
-         //return m_restRequestHandler.get();
+
+      if (boost::istarts_with(request.getURI(), m_restKeywordBase))
       {
          CRestRequestHandler * p = new CRestRequestHandler(m_restKeywordBase);
-         std::vector< boost::shared_ptr<web::rest::service::IRestService> >::iterator i;
+         std::vector< boost::shared_ptr<rest::service::IRestService> >::iterator i;
          for (i = m_restService.begin(); i != m_restService.end(); ++i)
             p->registerRestService(*i);
          p->initialize();
          return p;
       }
-      else
-      {
-         CWebsiteRequestHandler * p = new CWebsiteRequestHandler(m_configDocRoot);
-         std::map<std::string, std::string>::iterator i;
-         for (i = m_alias.begin(); i != m_alias.end();++i)
-            p->configureAlias(i->first, i->second);
-         return p;
-      }
+      
+      CWebsiteRequestHandler * p = new CWebsiteRequestHandler(m_configDocRoot);
+      std::map<std::string, std::string>::iterator i;
+      for (i = m_alias.begin(); i != m_alias.end();++i)
+         p->configureAlias(i->first, i->second);
+      return p;
    }
-
-} //namespace poco
+   } //namespace poco
 } //namespace web
 
