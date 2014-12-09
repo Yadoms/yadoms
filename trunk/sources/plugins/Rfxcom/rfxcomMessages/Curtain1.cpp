@@ -21,7 +21,7 @@ CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, const std::st
 }
 
 CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-   :m_state("state"), m_subType(0), m_houseCode(0), m_unitCode(0)
+   :m_subType(0), m_houseCode(0), m_unitCode(0), m_state("state")
 {
    m_state.set(yApi::historization::ECurtainCommand::kStopValue);
 
@@ -36,7 +36,7 @@ CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char
 }
 
 CCurtain1::CCurtain1(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_state("state"), m_subType(0), m_houseCode(0), m_unitCode(0)
+   :m_subType(0), m_houseCode(0), m_unitCode(0), m_state("state")
 {
    // Should not be called (transmitter-only device)
    BOOST_ASSERT_MSG(false, "Constructing Curtain1 object from received buffer is not possible, Curtain1 is transmitter-only device");

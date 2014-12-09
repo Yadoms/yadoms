@@ -33,6 +33,11 @@ namespace rfxcomMessages
 
    private:
       //--------------------------------------------------------------
+      /// \brief	                        The keywords
+      //--------------------------------------------------------------
+      yApi::historization::CEvent m_event;
+      
+      //--------------------------------------------------------------
       /// \brief	The sound to play (non-historizable)
       //--------------------------------------------------------------
       enum
@@ -43,11 +48,6 @@ namespace rfxcomMessages
          kSolo,
          kDefaultSound = kTubular3Notes
       } m_sound;
-
-      //--------------------------------------------------------------
-      /// \brief	                        The keywords
-      //--------------------------------------------------------------
-      yApi::historization::CEvent m_event;
    };
 
 } // namespace rfxcomMessages

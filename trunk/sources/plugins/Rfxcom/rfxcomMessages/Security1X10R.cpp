@@ -11,7 +11,7 @@ namespace rfxcomMessages
 {
 
 CSecurity1X10R::CSecurity1X10R()
-   :m_statusByte(0), m_panic("panic"), m_armAlarm("armAlarm"), m_light1("light1"), m_light2("light2")
+   :m_panic("panic"), m_armAlarm("armAlarm"), m_light1("light1"), m_light2("light2"), m_statusByte(0)
 {
 }
 

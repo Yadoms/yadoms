@@ -10,7 +10,7 @@ namespace rfxcomMessages
 {
 
 CPower::CPower(boost::shared_ptr<yApi::IYPluginApi> context, const RBUF& rbuf, boost::shared_ptr<const ISequenceNumberProvider> seqNumberProvider)
-   :m_voltage("voltage"), m_instantPower("instant"), m_current("current"), m_totalPower("total"), m_powerFactor("powerFactor"), m_frequency("frequency"), m_rssi("rssi")
+   :m_voltage("voltage"), m_current("current"), m_instantPower("instant"), m_totalPower("total"), m_powerFactor("powerFactor"), m_frequency("frequency"), m_rssi("rssi")
 {
    CheckReceivedMessage(rbuf, pTypePOWER, GET_RBUF_STRUCT_SIZE(POWER), DONT_CHECK_SEQUENCE_NUMBER);
 
