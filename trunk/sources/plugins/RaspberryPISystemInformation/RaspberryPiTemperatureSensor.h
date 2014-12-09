@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ILoad.h"
-#include "LoadKeyword.h"
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 // Shortcut to yPluginApi namespace
@@ -42,6 +41,6 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Keyword string
    //--------------------------------------------------------------
-   CLoadKeyword m_keyword;
+   yApi::historization::CTemperature m_keyword;
 };
 

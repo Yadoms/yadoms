@@ -53,6 +53,5 @@ void CRaspberryPiTemperatureSensor::read()
    {
       YADOMS_LOG(error) << "Fail to read RaspberryPI thermal sensor";
    }
-   return 0;
 }
 
