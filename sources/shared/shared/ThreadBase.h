@@ -14,26 +14,24 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief		Constructor
       /// \param [in]	threadName : the thread name
-      /// \param [in]	bRethrowDoWorkExceptions : if true, all exception catch by thsi class are rethrown, if false nothing else is done with exception
-      /// \return    	void
+      /// \param [in]	bRethrowDoWorkExceptions : if true, all exception catch by this class are rethrown, if false nothing else is done with exception
+      /// \note : doesn't start the thread, you need to call start
       //--------------------------------------------------------------
       CThreadBase(const std::string & threadName, const bool bRethrowDoWorkExceptions = false);
 
       //--------------------------------------------------------------
       /// \brief			Destructor
-      /// \return    	void
       //--------------------------------------------------------------
       virtual ~CThreadBase(void);
 
    public:
       //--------------------------------------------------------------
       /// \brief			Start the thread
-      /// \return    	void
       //--------------------------------------------------------------
       virtual void start();
+
       //--------------------------------------------------------------
       /// \brief			Ask the thread to stop and returns (non blocking)
-      /// \return    	void
       //--------------------------------------------------------------
       virtual void requestToStop();
 

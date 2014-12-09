@@ -117,13 +117,14 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(AcquisitionSummary,    "CREATE TABLE Acquis
 
 
 
-DECLARE_STATIC_TABLE_CREATION_SCRIPT(AutomationScript, "CREATE TABLE AutomationScript                             \
-                                                            (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,     \
-                                                               name TEXT NOT NULL,                                \
-                                                               description TEXT,                                  \
-                                                               triggers TEXT,                                     \
-                                                               actions TEXT)")                           
-
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(Job, "CREATE TABLE Job                                                       \
+                                          (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                       \
+                                             name TEXT NOT NULL,                                                  \
+                                             description TEXT,                                                    \
+                                             triggers TEXT,                                                       \
+                                             actions TEXT,                                                        \
+                                             enable INTEGER DEFAULT 1)")                           
+   
 
 //DECLARE_STATIC_TABLE_CREATION_SCRIPT(Contact,               "CREATE TABLE Contact                                 \
 //                                                            (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,     \

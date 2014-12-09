@@ -76,7 +76,7 @@ namespace database {
                      Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_EQUAL, "Database").
                      And(CConfigurationTable::getNameColumnName(), CQUERY_OP_EQUAL, "Version");
 
-                  database::sqlite::adapters::CSingleValueAdapter<std::string> adapter;
+                  adapters::CSingleValueAdapter<std::string> adapter;
                   m_databaseRequester->queryEntities<std::string>(&adapter, qVersion);
                   std::vector<std::string> results = adapter.getResults();
 
@@ -95,7 +95,7 @@ namespace database {
                   YADOMS_LOG(warning) << "Fail to get version of database : Unkonown exception";
                }
 
-               database::sqlite::versioning::CSQLiteVersionUpgraderFactory::GetUpgrader()->checkForUpgrade(m_databaseRequester, currentVersion);
+               versioning::CSQLiteVersionUpgraderFactory::GetUpgrader()->checkForUpgrade(m_databaseRequester, currentVersion);
 
                //create entities requester (high level querier)
                loadRequesters();
@@ -105,7 +105,7 @@ namespace database {
 
             }
          }
-         catch (database::sqlite::versioning::CSQLiteVersionException & exc)
+         catch (versioning::CSQLiteVersionException & exc)
          {
             YADOMS_LOG(error) << "Fail to load database (upgrade error) : " << std::endl << exc.what();
             if (m_pDatabaseHandler != NULL)
@@ -129,14 +129,13 @@ namespace database {
          {
             case SQLITE_TEXT: 
             {
-               std::string sVal = (char*)(sqlite3_value_text(argv[0]));
+               std::string sVal = reinterpret_cast<const char*>(sqlite3_value_text(argv[0]));
                sVal.insert(13, ":");
                sVal.insert(11, ":");
                sVal.insert(6, "-");
                sVal.insert(4, "-");
                
-               char *buf = NULL;
-               buf = (char *)malloc(sizeof(char)*(sVal.size()));
+               char *buf = static_cast<char *>(malloc(sizeof(char)*(sVal.size())));
                memcpy(buf, sVal.c_str(), sVal.size());
                sqlite3_result_text(context, buf, sVal.size(), free);
                break;
@@ -162,20 +161,21 @@ namespace database {
 
       void CSQLiteDataProvider::loadRequesters()
       {
-         m_pluginRequester.reset(new database::sqlite::requesters::CPlugin(this, m_databaseRequester));
-         m_configurationRequester.reset(new database::sqlite::requesters::CConfiguration(this, m_databaseRequester));
-         m_deviceRequester.reset(new database::sqlite::requesters::CDevice(this, m_databaseRequester));
-         m_keywordRequester.reset(new database::sqlite::requesters::CKeyword(this, m_databaseRequester));
-         m_pageRequester.reset(new database::sqlite::requesters::CPage(this, m_databaseRequester));
-         m_widgetRequester.reset(new database::sqlite::requesters::CWidget(this, m_databaseRequester));
-         m_pluginEventLoggerRequester.reset(new database::sqlite::requesters::CPluginEventLogger(this, m_databaseRequester));
-         m_eventLoggerRequester.reset(new database::sqlite::requesters::CEventLogger(this, m_databaseRequester));
-         m_acquisitionRequester.reset(new database::sqlite::requesters::CAcquisition(this, m_databaseRequester));
+         m_pluginRequester.reset(new requesters::CPlugin(this, m_databaseRequester));
+         m_configurationRequester.reset(new requesters::CConfiguration(this, m_databaseRequester));
+         m_deviceRequester.reset(new requesters::CDevice(this, m_databaseRequester));
+         m_keywordRequester.reset(new requesters::CKeyword(this, m_databaseRequester));
+         m_pageRequester.reset(new requesters::CPage(this, m_databaseRequester));
+         m_widgetRequester.reset(new requesters::CWidget(this, m_databaseRequester));
+         m_pluginEventLoggerRequester.reset(new requesters::CPluginEventLogger(this, m_databaseRequester));
+         m_eventLoggerRequester.reset(new requesters::CEventLogger(this, m_databaseRequester));
+         m_acquisitionRequester.reset(new requesters::CAcquisition(this, m_databaseRequester));
+         m_jobRequester.reset(new requesters::CJob(this, m_databaseRequester));
       }
 
 
 
-      boost::shared_ptr<database::ITransactionalProvider> CSQLiteDataProvider::getTransactionalEngine()
+      boost::shared_ptr<ITransactionalProvider> CSQLiteDataProvider::getTransactionalEngine()
       {
          if (!m_databaseRequester->transactionIsAlreadyCreated())
             return m_databaseRequester;

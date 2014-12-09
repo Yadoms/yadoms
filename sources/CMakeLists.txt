@@ -244,6 +244,7 @@ set(YADOMS_SRC
 	server/database/IDataBackup.h
 	server/database/IDeviceRequester.h
 	server/database/IEventLoggerRequester.h
+	server/database/IJobRequester.h
 	server/database/IKeywordRequester.h
 	server/database/IPageRequester.h
 	server/database/IPluginEventLoggerRequester.h
@@ -254,7 +255,26 @@ set(YADOMS_SRC
 	server/database/entities/Entities.h
 	server/database/entities/Entities.cpp
 	server/database/entities/EntityHelpers.hpp
-	
+
+	server/job/Action.h
+	server/job/Action.cpp
+	server/job/ActionList.h
+	server/job/ActionList.cpp
+	server/job/Condition.h
+	server/job/Condition.cpp
+	server/job/IAction.h
+	server/job/IActionList.h
+	server/job/ICondition.h
+	server/job/IJob.h
+	server/job/IJobThreadHandler.h
+	server/job/Job.h
+	server/job/Job.cpp
+	server/job/JobThread.h
+	server/job/JobThread.cpp
+	server/job/Manager.h
+	server/job/Manager.cpp
+	server/job/IManager.h
+   
 	server/web/IRestHandler.h
 	server/web/IWebServer.h
 	server/web/IWebServerConfigurator.h
@@ -324,7 +344,7 @@ set(YADOMS_SRC
  	server/communication/callback/CallbackRequest.h
  	server/communication/callback/SynchronousCallback.h
  	server/communication/callback/CallbackException.hpp
-   	server/communication/callback/ICallbackRequest.h
+   server/communication/callback/ICallbackRequest.h
  	server/communication/callback/ISynchronousCallback.h
 )
 
@@ -338,6 +358,7 @@ source_group(server\\pluginSystem server/pluginSystem/*.* )
 source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPlugin/*.* )
 source_group(server\\database  server/database/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
+source_group(server\\job  server/job/*.*)
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\task  server/task/*.*)
 source_group(server\\task\\update  server/task/update/*.*)
@@ -483,6 +504,8 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/requesters/Keyword.cpp
 		server/database/sqlite/requesters/Device.h
 		server/database/sqlite/requesters/Device.cpp		
+		server/database/sqlite/requesters/Job.h
+		server/database/sqlite/requesters/Job.cpp		
 		server/database/sqlite/requesters/Page.h
 		server/database/sqlite/requesters/Page.cpp		
 		server/database/sqlite/requesters/Widget.h

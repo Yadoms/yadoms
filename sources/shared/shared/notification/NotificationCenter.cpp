@@ -29,7 +29,7 @@ namespace shared { namespace notification {
    {
       ObserverCollection::iterator itObserver = m_observers.find(observerKey);
       if (itObserver == m_observers.end())
-         throw shared::exception::CNullReference("Cannot find observer");
+         throw exception::CNullReference("Cannot find observer");
 
       return itObserver->second->waitForNotifications(timeout);
    }

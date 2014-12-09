@@ -149,12 +149,13 @@ namespace database { namespace entities {
 
 
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(
-      AutomationScript,
+      Job,
       ((Id)(int)(0)("id"))
       ((Name)(std::string)("")("name"))
       ((Description)(std::string)("")("description"))
       ((Triggers)(shared::CDataContainer)(shared::CDataContainer())("triggers"))
       ((Actions)(shared::CDataContainer)(shared::CDataContainer())("actions"))
+      ((Enable)(bool)(true)("enable"))
    );
 
 

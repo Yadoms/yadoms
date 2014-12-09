@@ -8,6 +8,7 @@
 #include "IEventLoggerRequester.h"
 #include "IWidgetRequester.h"
 #include "IPluginEventLoggerRequester.h"
+#include "IJobRequester.h"
 #include "IAcquisitionRequester.h"
 #include "ITransactionalProvider.h"
 
@@ -104,6 +105,13 @@ namespace database {
       /// \throws 		
       //--------------------------------------------------------------  
       virtual boost::shared_ptr<IEventLoggerRequester> getEventLoggerRequester() = 0;   
+      
+      //--------------------------------------------------------------
+      /// \Brief		get the Job requester
+      /// \return 	the Job requester
+      /// \throws 		
+      //--------------------------------------------------------------  
+      virtual boost::shared_ptr<IJobRequester> getJobRequester() = 0;
    };
 
  

@@ -103,12 +103,13 @@ namespace sqlite {
    )
 
 
-   DECLARE_TABLE_COLUMN_NAMES(AutomationScript, "AutomationScript",
+   DECLARE_TABLE_COLUMN_NAMES(Job, "Job",
       ((Id)("id"))
       ((Name)("name"))
       ((Description)("description"))
       ((Triggers)("triggers"))
       ((Actions)("actions"))
+      ((Enable)("enable"))
    )
 
 

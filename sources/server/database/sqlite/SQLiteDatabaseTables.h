@@ -101,12 +101,13 @@ namespace sqlite {
       (Max)
    )   
 
-   DECLARE_TABLE(AutomationScript,
+   DECLARE_TABLE(Job,
       (Id)
       (Name)
       (Description)
       (Triggers)
       (Actions)
+      (Enable)
    )   
 
 //   DECLARE_TABLE(Contact,
