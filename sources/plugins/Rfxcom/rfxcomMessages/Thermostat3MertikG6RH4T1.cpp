@@ -11,7 +11,7 @@ namespace rfxcomMessages
 {
 
 CThermostat3MertikG6RH4T1::CThermostat3MertikG6RH4T1()
-   :m_statusByte(0), m_onOff("onOff"), m_UpDown("upDown", yApi::EKeywordAccessMode::kGetSet), m_RunUpDown("runUpDown", yApi::EKeywordAccessMode::kGetSet)
+   :m_onOff("onOff"), m_UpDown("upDown", yApi::EKeywordAccessMode::kGetSet), m_RunUpDown("runUpDown", yApi::EKeywordAccessMode::kGetSet), m_statusByte(0)
 {
 }
 

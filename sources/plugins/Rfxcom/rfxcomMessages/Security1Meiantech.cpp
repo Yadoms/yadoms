@@ -11,7 +11,7 @@ namespace rfxcomMessages
 {
 
 CSecurity1Meiantech::CSecurity1Meiantech()
-   :m_panic("panic"), m_statusByte(0), m_armAlarm("armAlarm")
+   :m_panic("panic"), m_armAlarm("armAlarm"), m_statusByte(0)
 {
 }
 
