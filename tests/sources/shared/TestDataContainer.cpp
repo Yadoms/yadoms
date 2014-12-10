@@ -170,8 +170,6 @@ BOOST_AUTO_TEST_CASE(CollectionContainer)
 
    conditions.set("and", allconditions);
 
-   conditions.serializeToFile("c:\\test.json");
-   
    //do checks
    std::vector< shared::CDataContainer > getAllCond = conditions.get< std::vector< shared::CDataContainer > >("and");
 
