@@ -119,8 +119,28 @@ if(APPLE)
 	set(LIBS ${LIBS} ${IOKIT_LIBRARY})
 endif()
 
+###############################################
+# POCO
+#
+# POCO_LIBS : define all required poco libraries
+###############################################
+
+SET ( POCO_LIBS
+	PocoFoundation
+	PocoNet
+	PocoUtil
+	PocoXML
+)
+
+include(${YADOMS_PATH}/FindPoco.cmake)
+
+IF(NOT ${Poco_FOUND})
+	message(SEND_ERROR "Unable to find the requested POCO libraries")
+ENDIF()
+
+
 # define libraries to link with
-set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY})
+set(LIBS ${LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY} ${Poco_FOUND_LIBS})
 
 
 ##################################################################################################
@@ -181,7 +201,7 @@ add_precompiled_header(yadomsTests stdafx.h)
 ##################################################################################################
 ## Include directories
 ##################################################################################################
-include_directories(${BOOST_INCL_DIR} . mock ${YADOMS_PATH}/shared ${YADOMS_PATH}/server/tools)
+include_directories(${BOOST_INCL_DIR} . mock ${YADOMS_PATH}/shared ${YADOMS_PATH}/server/tools ${Poco_INCLUDE_DIRS})
 IF(WIN32)
    include_directories(${YADOMS_PATH}/server/tools/windows)
 ELSEIF(APPLE)
@@ -199,3 +219,4 @@ target_link_libraries(yadomsTests ${LIBS} ${CMAKE_DL_LIBS})
 
 
 POST_BUILD_COPY_BOOST_LIBRARIES(yadomsTests)
+POST_BUILD_COPY_POCO(yadomsTests)
