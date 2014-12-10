@@ -147,6 +147,45 @@ BOOST_AUTO_TEST_CASE(CollectionContainer)
    for (unsigned int i = 0; i < vdsh.size(); ++i)
       BOOST_CHECK_EQUAL(*(vdsh[i].get()) == vdsh2bis[i], true);
 
+   //check vector of CDataContainer
+
+   shared::CDataContainer cond1;
+   cond1.set("is.keyword", 8);
+   cond1.set("is.expectedValue", 32);
+
+   shared::CDataContainer cond2;
+   cond2.set("is.keyword", 9);
+   cond2.set("is.expectedValue", 34);
+
+   shared::CDataContainer cond3;
+   cond3.set("is.keyword", 10);
+   cond3.set("is.expectedValue", 99);
+   
+   shared::CDataContainer conditions;
+
+   std::vector< shared::CDataContainer >  allconditions;
+   allconditions.push_back(cond1);
+   allconditions.push_back(cond2);
+   allconditions.push_back(cond3);
+
+   conditions.set("and", allconditions);
+
+   conditions.serializeToFile("c:\\test.json");
+   
+   //do checks
+   std::vector< shared::CDataContainer > getAllCond = conditions.get< std::vector< shared::CDataContainer > >("and");
+
+   BOOST_CHECK_EQUAL(getAllCond.size(), 3);
+
+   shared::CDataContainer getCond1 = getAllCond[0];
+   shared::CDataContainer getCond2 = getAllCond[1];
+   shared::CDataContainer getCond3 = getAllCond[2];
+
+   BOOST_CHECK_EQUAL(cond1, getCond1);
+   BOOST_CHECK_EQUAL(cond2, getCond2);
+   BOOST_CHECK_EQUAL(cond3, getCond3);
+
+   BOOST_CHECK_EQUAL_COLLECTIONS(allconditions.begin(), allconditions.end(), getAllCond.begin(), getAllCond.end());
 }
 
 BOOST_AUTO_TEST_CASE(Serialization)

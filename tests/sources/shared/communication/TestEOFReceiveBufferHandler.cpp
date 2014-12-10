@@ -13,7 +13,7 @@ static bool buffersAreEqual(const shared::communication::CByteBuffer& buf1, cons
    if (buf1.size() != buf2.size())
       return false;
 
-   if (memcmp(buf1.content(), buf2.content(), buf1.size()))
+   if (memcmp(buf1.begin(), buf2.begin(), buf1.size()))
       return false;
 
    return true;

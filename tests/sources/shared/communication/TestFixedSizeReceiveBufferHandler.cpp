@@ -13,7 +13,7 @@ static bool buffersAreEqual(const shared::communication::CByteBuffer& buf1, cons
    if (buf1.size() != buf2.size())
       return false;
 
-   if (memcmp(buf1.content(), buf2.content(), buf1.size()))
+   if (memcmp(buf1.begin(), buf2.begin(), buf1.size()))
       return false;
 
    return true;
@@ -22,8 +22,8 @@ static bool buffersAreEqual(const shared::communication::CByteBuffer& buf1, cons
 static const shared::communication::CByteBuffer concatBuffers(const shared::communication::CByteBuffer& buf1, const shared::communication::CByteBuffer& buf2)
 {
    unsigned char* fullContent = new unsigned char[buf1.size() + buf2.size()];
-   memcpy (fullContent, buf1.content(), buf1.size());
-   memcpy (fullContent + buf1.size(), buf2.content(), buf2.size());
+   memcpy(fullContent, buf1.begin(), buf1.size());
+   memcpy(fullContent + buf1.size(), buf2.begin(), buf2.size());
    const shared::communication::CByteBuffer buf(fullContent, buf1.size() + buf2.size());
    delete[] fullContent;
    return buf;
@@ -90,7 +90,12 @@ BOOST_AUTO_TEST_CASE(GreaterSizeFrom2Parts)
    buffer.push(sentBuffer2);
 
    // Expected buffer = sentBuffer1 + sentBuffer2 - 2 bytes
-   shared::communication::CByteBuffer expectedBuffer(concatBuffers(sentBuffer1, shared::communication::CByteBuffer(tab2, sizeof(tab2) - 2)));
+   shared::communication::CByteBuffer b2(sizeof(tab2) - 2);
+   memcpy(b2.begin(), tab2, sizeof(tab2) - 2);
+
+   shared::communication::CByteBuffer b3 = concatBuffers(sentBuffer1, b2);
+   shared::communication::CByteBuffer expectedBuffer(b3.size());
+   memcpy(expectedBuffer.begin(), b3.begin(), b3.size());
 
    // EventHandler should now be notified
    BOOST_CHECK_EQUAL(evtHandler.waitForEvents(boost::date_time::min_date_time), kEvtId);
