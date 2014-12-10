@@ -92,6 +92,13 @@ namespace shared
    ///               std::vector< boost::shared_ptr<int> > vish2 = test.get< std::vector< boost::shared_ptr<int> > >("vectorintsh");
    ///               std::vector< int > vi2 = test.get< std::vector< int > >("vectorintsh");
    ///            
+   ///             6. std::vector< shared::CDataContainer >
+   ///               
+   ///               std::vector< shared::CDataContainer > vcd;
+   ///               ....
+   ///               test.set("containers", vcd);
+   ///               std::vector< shared::CDataContainer > vcd2 = test.get< std::vector< shared::CDataContainer > >("containers");
+   ///            
    ///
    ///         B. Enhanced usage (IDataContainable)
    ///            This is an interface which allow any class to be get/set in this container.
@@ -265,14 +272,14 @@ namespace shared
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
       //--------------------------------------------------------------
-      inline void set(const std::string & parameterName, const char* value, const char pathChar = '.');
+      void set(const std::string & parameterName, const char* value, const char pathChar = '.');
 
       //--------------------------------------------------------------
       /// \brief	    Set parameter value
       /// \param [in] parameterName    Name of the parameter
       /// \param [in] value            Value of the parameter
       //--------------------------------------------------------------
-      inline void set(const char* parameterName, const char* value, const char pathChar = '.');
+      void set(const char* parameterName, const char* value, const char pathChar = '.');
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
@@ -281,7 +288,7 @@ namespace shared
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      inline const char* get(const std::string & parameterName, const char pathChar = '.');
+      const char* get(const std::string & parameterName, const char pathChar = '.');
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter value
@@ -290,7 +297,7 @@ namespace shared
       /// \throw      shared::exception::COutOfRange if parameter can not be converted
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
-      inline const char* get(const char* parameterName, const char pathChar = '.');
+      const char* get(const char* parameterName, const char pathChar = '.');
 
       //--------------------------------------------------------------
       //
