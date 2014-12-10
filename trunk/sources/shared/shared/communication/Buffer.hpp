@@ -24,7 +24,8 @@ namespace shared { namespace communication {
       }
 
       //--------------------------------------------------------------
-      /// \brief	                     Empty buffer constructor
+      /// \brief	                     Contructor with data copy (copy the parameter in content)
+      /// \param[in] buffer            A raw buffer 
       /// \param[in] size              Buffer size
       //--------------------------------------------------------------
       CBuffer(T * buffer, std::size_t size) :
