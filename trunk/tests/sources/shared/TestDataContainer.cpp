@@ -151,7 +151,7 @@ BOOST_AUTO_TEST_CASE(CollectionContainer)
 
    shared::CDataContainer cond1;
    cond1.set("is.keyword", 8);
-   cond1.set("is.expectedValue", 32);
+   cond1.set("is.expectedValue", "32");
 
    shared::CDataContainer cond2;
    cond2.set("is.keyword", 9);
@@ -159,7 +159,7 @@ BOOST_AUTO_TEST_CASE(CollectionContainer)
 
    shared::CDataContainer cond3;
    cond3.set("is.keyword", 10);
-   cond3.set("is.expectedValue", 99);
+   cond3.set("is.expectedValue", ve);
    
    shared::CDataContainer conditions;
 
@@ -173,7 +173,7 @@ BOOST_AUTO_TEST_CASE(CollectionContainer)
    //do checks
    std::vector< shared::CDataContainer > getAllCond = conditions.get< std::vector< shared::CDataContainer > >("and");
 
-   BOOST_CHECK_EQUAL(getAllCond.size(), 3);
+   BOOST_CHECK_EQUAL(allconditions.size(), getAllCond.size());
 
    shared::CDataContainer getCond1 = getAllCond[0];
    shared::CDataContainer getCond2 = getAllCond[1];
