@@ -1146,6 +1146,35 @@ namespace shared
       }
    }
 
+
+   template<>
+   inline std::vector< shared::CDataContainer > CDataContainer::getValuesInternal(const std::string& parameterName, const char pathChar) const
+   {
+      boost::lock_guard<boost::mutex> lock(m_treeMutex);
+
+      std::vector< shared::CDataContainer > result;
+      try
+      {
+         boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
+
+         for (boost::property_tree::ptree::const_iterator it = child.begin(); it != child.end(); ++it)
+         {
+            result.push_back(shared::CDataContainer(it->second));
+         }
+         return result;
+      }
+      catch (boost::property_tree::ptree_bad_path& e)
+      {
+         throw exception::CInvalidParameter(parameterName + " : " + e.what());
+      }
+      catch (boost::property_tree::ptree_bad_data& e)
+      {
+         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
+      }
+   }
+
+
+
    template<class T>
    inline std::vector<T> CDataContainer::getValuesInternalEnum(const std::string& parameterName, const char pathChar) const
    {
@@ -1228,6 +1257,8 @@ namespace shared
          throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
       }
    }
+
+
 
 
    template<>
