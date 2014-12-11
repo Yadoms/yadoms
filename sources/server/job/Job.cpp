@@ -1,13 +1,14 @@
 #include "stdafx.h"
 #include "Job.h"
-#include "Condition.h"
+#include "condition/ConditionFactory.h"
 #include "ActionList.h"
 
 namespace job
 {
 
-CJob::CJob(int id, const std::string& name, const shared::CDataContainer& triggers, const shared::CDataContainer& actions, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway)
-   :m_name(name), m_id(id), m_condition(new CCondition(triggers)), m_actions(new CActionList(actions, pluginGateway))
+CJob::CJob(int id, const std::string& name, const shared::CDataContainer& triggers, const shared::CDataContainer& actions, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+   boost::shared_ptr<condition::IConditionFactory> conditionFactory)
+   :m_name(name), m_id(id), m_condition(conditionFactory->createCondition(triggers)), m_actions(new CActionList(actions, pluginGateway))
 {
 }
 

@@ -1,8 +1,11 @@
 #pragma once
 #include "IManager.h"
 #include "IJob.h"
+#include "condition/IConditionFactory.h"
 #include "database/IJobRequester.h"
 #include "../communication/ISendMessageAsync.h"
+#include <shared/notification/NotificationCenter.h>
+#include "INotificationObserverForJobsManager.h"
 
 namespace job
 {
@@ -15,9 +18,11 @@ namespace job
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] dbRequester  Database requester
-      ///\param[in] pluginGateway plugin access to do actions on plugins
+      ///\param[in] pluginGateway Plugin access to do actions on plugins
+      ///\param[in] notificationCenter Notification center, used to get notified on keyword state changes
       //-----------------------------------------------------
-      CManager(boost::shared_ptr<database::IJobRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway);
+      CManager(boost::shared_ptr<database::IJobRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+         boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -39,6 +44,21 @@ namespace job
       ///\brief               The job data accessor
       //-----------------------------------------------------
       boost::shared_ptr<database::IJobRequester> m_dbRequester;
+
+      //-----------------------------------------------------
+      ///\brief               The condition factory
+      //-----------------------------------------------------
+      boost::shared_ptr<condition::IConditionFactory> m_conditionFactory;
+
+      //-----------------------------------------------------
+      ///\brief               The notification center
+      //-----------------------------------------------------
+      boost::shared_ptr<shared::notification::CNotificationCenter> m_notificationCenter;
+
+      //-----------------------------------------------------
+      ///\brief               The condition factory
+      //-----------------------------------------------------
+      boost::shared_ptr<INotificationObserverForJobsManager> m_notificationObserver;
 
       //-----------------------------------------------------
       ///\brief               The jobs list

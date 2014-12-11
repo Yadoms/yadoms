@@ -1,34 +1,31 @@
 #pragma once
-#include "ICondition.h"
+#include "IConditionFactory.h"
 #include <shared/shared/DataContainer.h>
 
-namespace job
+namespace job { namespace condition
 {
    //-----------------------------------------------------
-   ///\brief A job
+   ///\brief The condition factory
    //-----------------------------------------------------
-   class CCondition : public ICondition
+   class CConditionFactory : public IConditionFactory
    {
    public:
       //-----------------------------------------------------
       ///\brief               Constructor
-      ///\param[in] configuration Condition configuration
       //-----------------------------------------------------
-      CCondition(const shared::CDataContainer& configuration);
+      CConditionFactory();
 
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~CCondition();
+      virtual ~CConditionFactory();
 
    protected:
-      // ICondition Implementation
-      virtual void wait() const;
-      // [END] ICondition Implementation
-
-   private:
+      // IConditionFactory Implementation
+      virtual boost::shared_ptr<ICondition> createCondition(const shared::CDataContainer& configuration) const;
+      // [END] IConditionFactory Implementation
    };
 	
-} // namespace job	
+} } // namespace job::condition	
 	
 	
