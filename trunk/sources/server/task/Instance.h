@@ -16,7 +16,7 @@ namespace task {
       //------------------------------
       ///\brief Constructor
       //------------------------------
-      CInstance(boost::shared_ptr<ITask> task, shared::event::CEventHandler & eventHandler, const int eventCode, const std::string & guid);
+      CInstance(boost::shared_ptr<ITask> task, boost::shared_ptr<shared::event::CEventHandler> eventHandler, const int eventCode, const std::string & guid);
       
       //------------------------------
       ///\brief public destructor
@@ -91,7 +91,7 @@ namespace task {
       //------------------------------------------
       ///\brief   A reference to the main event handler (to report start and stop status)
       //------------------------------------------
-      shared::event::CEventHandler & m_eventHandler;
+      boost::shared_ptr<shared::event::CEventHandler> m_eventHandler;
 
       //------------------------------------------
       ///\brief   The event identifier for event handler

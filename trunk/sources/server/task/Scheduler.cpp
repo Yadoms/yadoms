@@ -13,7 +13,7 @@
 namespace task {
 
    CScheduler::CScheduler(boost::shared_ptr<shared::event::CEventHandler> eventHandler, const int systemEventCode)
-      : CThreadBase("Task_Scheduler"), m_eventHandler(eventHandler), m_systemEventCode(systemEventCode)
+      : CThreadBase("Task_Scheduler"), m_eventHandler(eventHandler), m_taskEventHandler(new shared::event::CEventHandler), m_systemEventCode(systemEventCode)
    {
    }
 
@@ -39,11 +39,11 @@ namespace task {
       {
          try
          {
-            switch (m_taskEventHandler.waitForEvents())
+            switch (m_taskEventHandler->waitForEvents())
             {
             case kTaskEvent:
             {
-               CTaskEvent evt = m_taskEventHandler.getEventData<CTaskEvent>();
+               CTaskEvent evt = m_taskEventHandler->getEventData<CTaskEvent>();
                if (m_runningTasks.find(evt.getGuid()) == m_runningTasks.end())
                {
                   //we have received an event from a task that is already finished

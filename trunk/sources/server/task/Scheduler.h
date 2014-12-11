@@ -86,7 +86,7 @@ namespace task {
       //------------------------------------------
       ///\brief   A reference to the local task event handler (to report start and stop status of a task)
       //------------------------------------------
-      shared::event::CEventHandler m_taskEventHandler;
+      boost::shared_ptr<shared::event::CEventHandler> m_taskEventHandler;
 
       //------------------------------------------
       ///\brief   The event code used to notify
