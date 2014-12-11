@@ -10,7 +10,7 @@ namespace task {
    //------------------------------
    ///\brief Constructor
    //------------------------------
-   CInstance::CInstance(boost::shared_ptr<ITask> task, shared::event::CEventHandler & eventHandler, const int eventCode, const std::string & guid)
+   CInstance::CInstance(boost::shared_ptr<ITask> task, boost::shared_ptr<shared::event::CEventHandler> eventHandler, const int eventCode, const std::string & guid)
       : CThreadBase("Task " + task->getName()), m_currentProgression(0.0f), m_currentMessage(""), m_task(task), m_eventHandler(eventHandler), m_eventCode(eventCode), 
       m_guid(guid), m_currentStatus(ITask::kStarted), 
       m_creationDate(boost::posix_time::second_clock::universal_time())
@@ -80,7 +80,7 @@ namespace task {
       {
          //task event started
          m_currentStatus = ITask::kStarted;
-         m_eventHandler.postEvent(m_eventCode, CTaskEvent(m_guid));
+         m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
 
          // Execute task code
          if (m_task->doWork(boost::bind(&CInstance::OnTaskProgressUpdated, this, _1, _2)))
@@ -93,7 +93,7 @@ namespace task {
          }
          
          //task event stopped
-         m_eventHandler.postEvent(m_eventCode, CTaskEvent(m_guid));
+         m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
 
       }
       catch (boost::thread_interrupted&)
@@ -103,7 +103,7 @@ namespace task {
          YADOMS_LOG(error) << m_task->getName() << " didn't catch boost::thread_interrupted.";
          m_currentStatus = ITask::kFail;
          m_currentMessage = "thread_interrupted not catched";
-         m_eventHandler.postEvent(m_eventCode, CTaskEvent(m_guid));
+         m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
       }
       catch (std::exception& e)
       {
@@ -111,7 +111,7 @@ namespace task {
          YADOMS_LOG(error) << m_task->getName() << " crashed in doWork with exception : " << e.what();
          m_currentStatus = ITask::kFail;
          m_currentMessage = e.what();
-         m_eventHandler.postEvent(m_eventCode, CTaskEvent(m_guid));
+         m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
 
       }
       catch (...)
@@ -120,7 +120,7 @@ namespace task {
          YADOMS_LOG(error) << m_task->getName() << " crashed in doWork with unknown exception.";
          m_currentStatus = ITask::kFail;
          m_currentMessage = "unknown exception not catched";
-         m_eventHandler.postEvent(m_eventCode, CTaskEvent(m_guid));
+         m_eventHandler->postEvent(m_eventCode, CTaskEvent(m_guid));
       }
    }
    
