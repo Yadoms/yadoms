@@ -96,7 +96,7 @@ IF(UNIX AND NOT WIN32)
 ENDIF(UNIX AND NOT WIN32)
 
 #check eclispe debug options
-if(DEBUG_WITH_ECLIPSE)
+if(DEBUG_WITH_GCC)
 	add_definitions(-DDEBUG)
 	add_definitions("-g")
 endif()
