@@ -28,6 +28,18 @@ function ListParameterHandler(i18nContext, paramName, content, currentValue) {
    this.uuid = createUUID();
    this.addBtnUuid = createUUID();
    this.selectorUuid = createUUID();
+   //the checkbox for validation
+   this.cbUuid = createUUID();
+
+   this.nbItemsMin = parseFloat(content.nbItemsMin);
+   if (!isNaN(this.nbItemsMin)) {
+      //a number of max item can't be lower than min number of items
+      this.nbItemsMax = Math.max(parseFloat(content.nbItemsMax), this.nbItemsMin);
+   }
+   else {
+      this.nbItemsMax = parseFloat(content.nbItemsMax);
+   }
+   this.allowDuplication = parseBool(content.allowDuplication);
 
    var self = this;
 
@@ -77,14 +89,28 @@ ListParameterHandler.prototype.getDOMObject = function () {
 
 ListParameterHandler.prototype.createItemLine = function(item) {
    //div container of one item
+   var i18nData = " data-i18n=\"";
+
+   i18nData += "[data-validation-maxchecked-message]configuration.validationForm.maxNumberItemsAllowed";
+   i18nData += ";[data-validation-minchecked-messagee]configuration.validationForm.minNumberItemsRequired";
+
    var itemLine = "<div class=\"list-item-line\">" +
                       "<div class=\"col-md-10\" >" +
                            item.getDOMObject() +
                       "</div>" +
                       "<div class=\"col-md-2\" >" +
-                         "<div class=\"btn-group\" role=\"group\">" +
-                            "<button class=\"btn btn-primary btn-duplicate\" type=\"button\"><span><i class=\"fa fa-files-o\"></i></span></button>" +
-                            "<button class=\"btn btn-danger btn-remove\" type=\"button\"><span><i class=\"fa fa-trash-o\"></i></span></button>" +
+                         "<input type=\"checkbox\" class=\"hidden\" name=\"" + this.cbUuid + "\" ";
+   if (!isNaN(this.nbItemsMin))
+               itemLine += "data-validation-minchecked-minchecked=\"" + this.nbItemsMin + "\" ";
+   if (!isNaN(this.nbItemsMax))
+               itemLine += "data-validation-maxchecked-maxchecked=\"" + this.nbItemsMax + "\" "
+   itemLine +=           "/>" +
+                         "<div class=\"btn-group\" role=\"group\">";
+
+   if (this.allowDuplication)
+      itemLine +=           "<button class=\"btn btn-primary btn-duplicate\" type=\"button\"><span><i class=\"fa fa-files-o\"></i></span></button>";
+
+   itemLine +=              "<button class=\"btn btn-danger btn-remove\" type=\"button\"><span><i class=\"fa fa-trash-o\"></i></span></button>" +
                          "</div>" +
                       "</div>" +
                    "</div>";
@@ -96,7 +122,6 @@ ListParameterHandler.prototype.createItemLine = function(item) {
  * @returns {}
  */
 ListParameterHandler.prototype.applyScript = function () {
-
    var self = this;
 
    $("button#" + self.addBtnUuid).unbind("click").bind("click", function() {
@@ -171,8 +196,6 @@ ListParameterHandler.prototype.duplicateLine = function() {
 
       if ($.isFunction(item.applyScript))
          item.applyScript();
-
-      //TODO : duplicate $container[0]
    };
 };
 

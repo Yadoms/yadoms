@@ -260,15 +260,15 @@
          "title" : "Confirmation"
       }
    },
-   "widgets" : {
-      "configuration" : {
-         "validationForm" : {
-            "incorrectValue" : "Incorrect value",
-            "onlyIntegerNumberAllowed" : "Only integer number are allowed",
-            "onlyNumberAllowed" : "Only numbers are allowed",
-            "maxValueExceeded" : "The value can't be higher than __maxValue__",
-            "minValueExceeded" : "The value can't be lower than __minValue__"
-         }
+   "configuration" : {
+      "validationForm" : {
+         "incorrectValue" : "Incorrect value",
+         "onlyIntegerNumberAllowed" : "Only integer number are allowed",
+         "onlyNumberAllowed" : "Only numbers are allowed",
+         "maxValueExceeded" : "The value can't be higher than __maxValue__",
+         "minValueExceeded" : "The value can't be lower than __minValue__",
+         "minNumberItemsRequired" : "the list must have at least __minValue__ items",
+         "maxNumberItemsAllowed" : "the list can't have more than __maxValue__ items"
       }
    },
    "objects" : {
