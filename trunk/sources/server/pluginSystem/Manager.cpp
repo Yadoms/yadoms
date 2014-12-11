@@ -21,7 +21,7 @@ CManager::CManager(
    const std::string& initialDir,
    boost::shared_ptr<database::IDataProvider> dataProvider,
    boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer,
-   shared::event::CEventHandler& supervisor,
+   boost::shared_ptr<shared::event::CEventHandler> supervisor,
    int pluginManagerEventId,
    IApplicationStopHandler& applicationStopHandler)
    :m_dataProvider(dataProvider), m_pluginDBTable(dataProvider->getPluginRequester()), m_pluginPath(initialDir),

@@ -18,7 +18,7 @@ public:
    /// \param[in] targetEventHandler   Event handler to notify
    /// \param[in] eventId              Event ID to send when stop occurs
    //-----------------------------------------------------------------------------
-   CApplicationStopHandler(shared::event::CEventHandler& targetEventHandler, int eventId);
+   CApplicationStopHandler(boost::shared_ptr<shared::event::CEventHandler> targetEventHandler, int eventId);
 
    //-----------------------------------------------------------------------------
    /// \brief		                     Destructor
@@ -51,7 +51,7 @@ private:
    //-----------------------------------------------------------------------------
    /// \brief		                     Event handler to notify
    //-----------------------------------------------------------------------------
-   shared::event::CEventHandler& m_targetEventHandler;
+   boost::shared_ptr<shared::event::CEventHandler> m_targetEventHandler;
 
    //-----------------------------------------------------------------------------
    /// \brief		                     Event ID to send when stop occurs

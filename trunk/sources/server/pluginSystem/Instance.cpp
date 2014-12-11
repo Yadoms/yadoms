@@ -17,7 +17,7 @@ CInstance::CInstance(
    boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
    boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
    const boost::shared_ptr<IQualifier> qualifier,
-   shared::event::CEventHandler& supervisor,
+   boost::shared_ptr<shared::event::CEventHandler> supervisor,
    int pluginManagerEventId)
     : CThreadBase(pluginData->Name()), m_pPlugin(plugin), m_qualifier(qualifier), m_supervisor(supervisor), m_pluginManagerEventId(pluginManagerEventId),
     m_context(new CYPluginApiImplementation(plugin->getInformation(), m_pPlugin->getLibraryPath(), pluginData, pluginEventLoggerRequester, deviceManager, keywordRequester, acquisitionRequester, acquisitionHistorizer))
@@ -78,7 +78,7 @@ void CInstance::doWork()
    
    // Signal the abnormal stop
    CManagerEvent event(CManagerEvent::kPluginInstanceAbnormalStopped, m_context->getPluginId(), m_pPlugin->getInformation(), isStopping());
-   m_supervisor.postEvent<CManagerEvent>(m_pluginManagerEventId, event);
+   m_supervisor->postEvent<CManagerEvent>(m_pluginManagerEventId, event);
 }
 
 void CInstance::postCommand(boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command) const

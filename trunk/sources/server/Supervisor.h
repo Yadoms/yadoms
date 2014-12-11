@@ -51,7 +51,7 @@ private:
    //-----------------------------------------------------------------------------
    /// \brief		                     The supervisor event handler
    //-----------------------------------------------------------------------------
-   shared::event::CEventHandler m_EventHandler;
+   boost::shared_ptr<shared::event::CEventHandler> m_EventHandler;
 
    //-----------------------------------------------------------------------------
    /// \brief		                     The stop handler

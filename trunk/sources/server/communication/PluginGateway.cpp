@@ -14,36 +14,12 @@ namespace communication {
    enum { kStartEvent = shared::event::kUserFirstId };
 
    CPluginGateway::CPluginGateway(boost::shared_ptr<database::IDataProvider> dataProvider, boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer, boost::shared_ptr<pluginSystem::CManager> pluginManager)
-      :CThreadBase("PluginGateway"), m_dataProvider(dataProvider), m_pluginManager(pluginManager), m_acquisitionHistorizer(acquisitionHistorizer)
+      :m_dataProvider(dataProvider), m_pluginManager(pluginManager), m_acquisitionHistorizer(acquisitionHistorizer)
    {
    }
 
    CPluginGateway::~CPluginGateway()
    {
-   }
-
-   void CPluginGateway::start()
-   {
-      CThreadBase::start();
-
-      waitForstarted();
-   }
-
-   void CPluginGateway::waitForstarted()
-   {
-      switch (m_startEventHandler.waitForEvents(boost::posix_time::seconds(10)))
-      {
-      case kStartEvent: // Gateway started
-         return;
-      case shared::event::kTimeout:
-         BOOST_ASSERT_MSG(false, "Unable to start plugin gateway");
-         throw shared::exception::CException("Unable to start plugin gateway");
-         break;
-      default:
-         BOOST_ASSERT_MSG(false, "Plugin gateway : unknown event");
-         throw shared::exception::CException("Plugin gateway : unknown event");
-         break;
-      }
    }
 
    void CPluginGateway::sendCommandAsync(int deviceId, int keywordId, const std::string& body)
@@ -76,47 +52,5 @@ namespace communication {
 		// Dispatch command to the right plugin
 		m_pluginManager->postBindingQueryRequest(pluginId, request);
 	}
-
-
-   void CPluginGateway::doWork()
-   {
-      try
-      {
-         YADOMS_LOG_CONFIGURE("PluginGateway");
-         YADOMS_LOG(debug) << "PluginGateway is starting...";
-
-         // Signal that gateway is fully started
-         m_startEventHandler.postEvent(kStartEvent);
-
-         while(1)
-         {
-            // Wait for an event
-            switch(m_mainEventHandler.waitForEvents())
-            {
-            case shared::event::kNoEvent:
-               YADOMS_LOG(warning) << "CPluginGateway::doWork, unknown event received";
-               //do nothing
-               break;
-
-            default:
-               YADOMS_LOG(error) << "CPluginGateway : Unknown message id";
-               break;
-            }
-         };
-      }
-      catch (boost::thread_interrupted&)
-      {
-         YADOMS_LOG(info) << "CPluginGateway is stopping..."  << std::endl;
-      }
-      catch(...)
-      {
-      }
-   }
-
-
-
-
-
-
 
 } //namespace communication
