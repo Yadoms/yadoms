@@ -181,6 +181,7 @@ source_group(shared\\serialization shared/serialization/*.*)
 source_group(shared\\xpl shared/xpl/*.*)
 
 source_group(server server/*.*)
+source_group(server\\job server/job/*.*)
 source_group(server\\startupOptions server/startupOptions/*.*)
 source_group(server\\tools server/tools/*.*)
 

@@ -1,25 +1,24 @@
 #pragma once
-#include <shared/shared/DataContainer.h>
 
-namespace job
+namespace job { namespace condition
 {
    //-----------------------------------------------------
-   ///\brief An action
+   ///\brief The condition interface
    //-----------------------------------------------------
-   class IAction
+   class ICondition
    {
    public:
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~IAction() {}
+      virtual ~ICondition() {}
 
       //-----------------------------------------------------
-      ///\brief               Do the action
+      ///\brief               Wait for condition is met
       //-----------------------------------------------------
-      virtual void doAction() const = 0;
+      virtual void wait() const = 0;
    };
 	
-} // namespace job	
+} } // namespace job::condition
 	
 	

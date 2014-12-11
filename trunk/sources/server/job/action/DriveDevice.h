@@ -2,12 +2,12 @@
 #include "IAction.h"
 #include <server/communication/ISendMessageAsync.h>
 
-namespace job
+namespace job { namespace action
 {
    //-----------------------------------------------------
-   ///\brief A job
+   ///\brief A action for changing state of a device
    //-----------------------------------------------------
-   class CAction : public IAction
+   class CDeviceDrive : public IAction
    {
    public:
       //-----------------------------------------------------
@@ -15,12 +15,12 @@ namespace job
       ///\param[in] configuration Action configuration
       ///\param[in] pluginGateway Plugin gateway
       //-----------------------------------------------------
-      CAction(const shared::CDataContainer& configuration, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway);
+      CDeviceDrive(const shared::CDataContainer& configuration, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway);
 
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~CAction();
+      virtual ~CDeviceDrive();
 
    protected:
       // IAction Implementation
@@ -49,6 +49,6 @@ namespace job
       std::string m_valueToSet;
    };
 	
-} // namespace job	
+} } // namespace job::action
 	
 	

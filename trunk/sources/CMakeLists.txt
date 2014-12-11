@@ -256,24 +256,39 @@ set(YADOMS_SRC
 	server/database/entities/Entities.cpp
 	server/database/entities/EntityHelpers.hpp
 
-	server/job/Action.h
-	server/job/Action.cpp
 	server/job/ActionList.h
 	server/job/ActionList.cpp
-	server/job/Condition.h
-	server/job/Condition.cpp
-	server/job/IAction.h
 	server/job/IActionList.h
-	server/job/ICondition.h
 	server/job/IJob.h
 	server/job/IJobThreadHandler.h
+	server/job/IManager.h
+	server/job/INotificationObserverForJobsManager.h
 	server/job/Job.h
 	server/job/Job.cpp
 	server/job/JobThread.h
 	server/job/JobThread.cpp
 	server/job/Manager.h
 	server/job/Manager.cpp
-	server/job/IManager.h
+	server/job/NotificationObserverForJobsManager.h
+	server/job/NotificationObserverForJobsManager.cpp
+
+	server/job/action/DriveDevice.h
+	server/job/action/DriveDevice.cpp
+	server/job/action/IAction.h
+	server/job/action/RunScript.h
+	server/job/action/RunScript.cpp
+
+	server/job/condition/And.h
+	server/job/condition/And.cpp
+	server/job/condition/ConditionFactory.h
+	server/job/condition/ConditionFactory.cpp
+	server/job/condition/Empty.h
+	server/job/condition/Empty.cpp
+	server/job/condition/Is.h
+	server/job/condition/Is.cpp
+	server/job/condition/ICondition.h
+	server/job/condition/IKeywordNotifier.h
+	server/job/condition/IConditionFactory.h
    
 	server/web/IRestHandler.h
 	server/web/IWebServer.h
@@ -359,6 +374,8 @@ source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPl
 source_group(server\\database  server/database/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\job  server/job/*.*)
+source_group(server\\job\\action  server/job/action/*.*)
+source_group(server\\job\\condition  server/job/condition/*.*)
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\task  server/task/*.*)
 source_group(server\\task\\update  server/task/update/*.*)

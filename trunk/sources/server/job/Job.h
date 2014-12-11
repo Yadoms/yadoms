@@ -2,7 +2,8 @@
 #include "IJob.h"
 #include <shared/shared/DataContainer.h>
 #include "JobThread.h"
-#include "ICondition.h"
+#include "condition/ICondition.h"
+#include "condition/IConditionFactory.h"
 #include "IActionList.h"
 #include "../communication/ISendMessageAsync.h"
 
@@ -21,8 +22,10 @@ namespace job
       ///\param[in] triggers  Trigger condition
       ///\param[in] actions   List of actions
       ///\param[in] pluginGateway plugin access to do actions on plugins
+      ///\param[in] conditionFactory the condition factory
       //-----------------------------------------------------
-      CJob(int id, const std::string& name, const shared::CDataContainer& triggers, const shared::CDataContainer& actions, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway);
+      CJob(int id, const std::string& name, const shared::CDataContainer& triggers, const shared::CDataContainer& actions, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+         boost::shared_ptr<condition::IConditionFactory> conditionFactory);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -58,7 +61,7 @@ namespace job
       //-----------------------------------------------------
       ///\brief               The condition to wait
       //-----------------------------------------------------
-      boost::shared_ptr<ICondition> m_condition;
+      boost::shared_ptr<condition::ICondition> m_condition;
 
       //-----------------------------------------------------
       ///\brief               The actions to do

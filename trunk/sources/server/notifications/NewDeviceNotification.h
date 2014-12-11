@@ -1,7 +1,7 @@
 #pragma once
 #include <Poco/Notification.h>
 #include <shared/Log.h>
-#include "database/entities/Entities.h"
+#include "../database/entities/Entities.h"
 namespace notifications {
 
    //-----------------------------

@@ -2,7 +2,7 @@
 #include "IActionList.h"
 #include <shared/shared/DataContainer.h>
 #include <server/communication/ISendMessageAsync.h>
-#include <server/job/IAction.h>
+#include <server/job/action/IAction.h>
 
 namespace job
 {
@@ -33,7 +33,7 @@ namespace job
       //-----------------------------------------------------
       ///\brief               The actions to do
       //-----------------------------------------------------
-      std::vector<boost::shared_ptr<IAction> > m_actions;
+      std::vector<boost::shared_ptr<action::IAction> > m_actions;
    };
 	
 } // namespace job	
