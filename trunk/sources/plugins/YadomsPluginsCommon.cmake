@@ -20,6 +20,24 @@ ENDMACRO()
 
 MACRO(PLUGIN_LINK _targetName)
 	target_link_libraries(${_targetName} yadoms-shared ${LIBS} ${CMAKE_DL_LIBS} ${ARGN})
+	
+		
+	if(COTIRE_USE)
+		set_target_properties(${_targetName} PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
+		
+		if(COTIRE_USE_UNITY)
+			set_target_properties(${_targetName} PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
+		else()
+			set_target_properties(${_targetName} PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
+		endif()
+		
+		cotire(${_targetName})
+		
+		if(COTIRE_USE_UNITY)
+			target_link_libraries(${_targetName}_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS} ${ARGN})
+		endif()	
+	endif()	
+	
 ENDMACRO()
 
 MACRO(PLUGIN_POST_BUILD_COPY_FILE _targetName _resource)

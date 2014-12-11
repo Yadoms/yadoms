@@ -243,7 +243,7 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
 //TODO code en commentaire à conserver ?
 //         OpenZWave::ValueID::ValueType vType = vID.GetType();
          OpenZWave::ValueID::ValueGenre vGenre = vID.GetGenre();
-
+         
          if (vGenre == OpenZWave::ValueID::ValueGenre_User)
          {
             std::string id = GenerateDeviceStringID(node->getHomeId(), node->getNodeId());

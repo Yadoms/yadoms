@@ -21,11 +21,16 @@ cmake_minimum_required (VERSION 2.8.9)
 # First checks (compilers versions...)
 include(preChecks.cmake)
 
-# Precompiled headers
-include(PrecompiledHeader.cmake)
-
 # User specific configuration
 include(CMakeListsUserConfig.txt OPTIONAL)
+
+# Cotire 
+if(COTIRE_USE)
+	include(cotire.cmake)
+else()
+	include(PrecompiledHeader.cmake)
+endif()
+
 
 # Windows specific macro
 if(WIN32)
@@ -587,8 +592,12 @@ ENDIF()
 
 #define YADOMS output
 add_executable(yadoms ${YADOMS_SRC})
-add_precompiled_header(yadoms stdafx.h)
 
+if(COTIRE_USE)
+	#nothing to do
+else()
+	add_precompiled_header(yadoms stdafx.h)
+endif()
 
 ##################################################################################################
 ## yadoms-shared
@@ -623,12 +632,42 @@ set(YADOMS_INCL_DIR
 	${YADOMS_INCL_DIR}
 	${SHARED_INCL_DIR}
 )
-set_property( TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_INCL_DIR} ${BOOST_INCL_DIR} ${Poco_INCLUDE_DIRS})
+
+set(YADOMS_ALL_INCL_DIR
+	${YADOMS_INCL_DIR} 
+	${BOOST_INCL_DIR} 
+	${Poco_INCLUDE_DIRS}
+)
+
+set_property( TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 
 ##################################################################################################
 ## Link
 ##################################################################################################
 target_link_libraries(yadoms yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
+
+if(COTIRE_USE)
+	set_target_properties(yadoms PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "server/stdafx.h")
+	
+	if(COTIRE_USE_UNITY)
+		set_target_properties(yadoms PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
+	else()
+		set_target_properties(yadoms PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
+	endif()
+	
+	cotire(yadoms)
+	
+	if(COTIRE_USE_UNITY)
+		target_link_libraries(yadoms_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS})
+		set_property( TARGET yadoms_unity PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
+	endif()	
+else()
+
+endif()
+
+
+
+
 
 ##################################################################################################
 ## Post build commands

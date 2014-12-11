@@ -5,7 +5,7 @@
 //
 #pragma once
 
-#include <shared/DynamicLibrary.hpp>
+
 #include <shared/plugin/IPlugin.h>
 #include <shared/plugin/information/IInformation.h>
 #include "InvalidPluginException.hpp"

@@ -3,7 +3,7 @@
 #include "Instance.h"
 #include <shared/plugin/IPlugin.h>
 #include <shared/plugin/information/IInformation.h>
-
+#include <shared/Log.h>
 
 namespace pluginSystem
 {

@@ -18,4 +18,7 @@
 set(DEBUG_WITH_GCC OFF)
 
 
-
+#activate use of cotire
+SET(COTIRE_USE ON)
+#activate use of cotire unity mode (COTIRE_USE must be set to ON to use COTIRE_USE_UNITY)
+SET(COTIRE_USE_UNITY OFF)

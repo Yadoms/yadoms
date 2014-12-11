@@ -237,14 +237,39 @@ source_group(platformSpecific\\mac shared/mac/shared/*.*)
 ## Output
 ########################
 add_library(yadoms-shared SHARED  ${SHARED_LIB_SRC})
-add_precompiled_header(yadoms-shared stdafx.h)
 
 target_link_libraries(yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
+
+if(COTIRE_USE)
+	set_target_properties(yadoms-shared PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "stdafx.h")
+	
+	if(COTIRE_USE_UNITY)
+		set_target_properties(yadoms-shared PROPERTIES COTIRE_ADD_UNITY_BUILD TRUE)
+	else()
+		set_target_properties(yadoms-shared PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
+	endif()
+	
+	cotire(yadoms-shared)
+	
+	if(COTIRE_USE_UNITY)
+		target_link_libraries(yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS})
+	endif()	
+else()
+	add_precompiled_header(yadoms-shared stdafx.h)
+endif()
+
 
 
 ########################
 ## Dependencies
 ########################
 set_property( TARGET yadoms-shared PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS})
+if(COTIRE_USE)
+	if(COTIRE_USE_UNITY)
+		set_property( TARGET yadoms-shared_unity PROPERTY INCLUDE_DIRECTORIES ${BOOST_INCL_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${PLATFORM_SPECIFIC_INCL_DIR}  ${Poco_INCLUDE_DIRS})
+	endif()	
+endif()	
+
+
 
 
