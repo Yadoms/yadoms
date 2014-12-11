@@ -18,6 +18,7 @@ namespace xplcore
 
       // CThreadBase override
       virtual void doWork();
+      virtual bool stop();
       // {END] CThreadBase override
 
    private:
@@ -66,6 +67,8 @@ namespace xplcore
       /// \brief			The listening socket
       //--------------------------------------------------------------
       Poco::Net::DatagramSocket m_socket;
+
+      bool m_stopHubRequested;
 
       //--------------------------------------------------------------
       /// \brief			The application life cycle timeout (60 seconds)

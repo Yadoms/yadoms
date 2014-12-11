@@ -21,7 +21,7 @@ namespace xplcore
 {
 
    CXplHub::CXplHub(const std::string & localIPOfTheInterfaceToUse)
-      : CThreadBase("XplHub"), m_socket(Poco::Net::SocketAddress(Poco::Net::IPAddress(localIPOfTheInterfaceToUse), CXplHelper::XplProtocolPort))
+      : CThreadBase("XplHub"), m_socket(Poco::Net::SocketAddress(Poco::Net::IPAddress(), CXplHelper::XplProtocolPort)), m_stopHubRequested(false)
    {
       YADOMS_LOG_CONFIGURE(getName());
       m_socket.setBroadcast(true);
@@ -34,15 +34,24 @@ namespace xplcore
       stop();
    }
 
-
+   bool CXplHub::stop()
+   {
+YADOMS_LOG(info) << "Xpl Hub is stopping";
+      m_stopHubRequested = true;
+      return CThreadBase::stop();
+   }
 
    void CXplHub::doWork()
    {
       try
       {
          YADOMS_LOG_CONFIGURE(getName());
+
+      YADOMS_LOG(info) << "Xpl Hub dowork";
+
+      YADOMS_LOG(info) << "Xpl Hub reset timeout";
          runCheckApplicationLifeCycleTimeout();
-         while (!isStopping()) //we don't need locking here - connected is just a boolean
+         while (!m_stopHubRequested) //we don't need locking here - connected is just a boolean
          {
 
             if (boost::posix_time::second_clock::universal_time() > m_nextHeartbeatTime)
@@ -67,6 +76,7 @@ namespace xplcore
                   continue;
                }
 
+      YADOMS_LOG(info) << "Xpl Hub data received";
                // Create an XplMsg object from the received data
                std::string data;
                std::copy(receiveBuffer.begin(), receiveBuffer.begin() + bytesRead, std::back_inserter(data));
@@ -74,6 +84,11 @@ namespace xplcore
                CXplMessage msg = CXplMessage::parse(data);
                onXplMessageReceived(msg, sender);
             }
+
+            boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+	    if(m_stopHubRequested)
+	        YADOMS_LOG(info) << "Xpl Hub dowork is stopping";
+
          }
       }
       catch (boost::thread_interrupted&)
@@ -83,6 +98,7 @@ namespace xplcore
       {
          YADOMS_LOG(fatal) << "The XPL hub fails. Unknown expcetion : " << ex.what();
       }
+      YADOMS_LOG(info) << "Xpl Hub ends";
    }
 
 

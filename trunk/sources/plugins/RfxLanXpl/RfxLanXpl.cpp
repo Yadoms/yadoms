@@ -43,19 +43,24 @@ void print(shared::CDataContainer const& pt)
 
 void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 {
-   
+
    try
    {
+      YADOMS_LOG(debug) << "################ RfxLanXpl : PRINT CONFIG";
 
       print(context->getConfiguration());
 
       // Load configuration values (provided by database)
+      YADOMS_LOG(debug) << "################ RfxLanXpl : SET CONFIG";
       m_configuration.initializeWith(context->getConfiguration());
 
       //start ioservice
-
+      YADOMS_LOG(debug) << "################ RfxLanXpl : NETWORK IFACE";
       Poco::Net::NetworkInterface interface = m_configuration.getXplNetworkInterface();
+
+      YADOMS_LOG(debug) << "RfxLanXpl : create xpl service";
       xplcore::CXplService xplService(interface, m_xpl_gateway_id, "1", &context->getEventHandler(), kXplHubFound);
+      YADOMS_LOG(debug) << "RfxLanXpl : subscribe for xpl messages";
       xplService.subscribeForAllMessages(&context->getEventHandler(), kXplMessageReceived);
 
       //manage xpl hub
@@ -126,16 +131,16 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> data = context->getEventHandler().getEventData< boost::shared_ptr<yApi::IManuallyDeviceCreationRequest> >();
             OnCreateDeviceRequest(data, context);
             break;
-         }         
-          
+         }
+
 			case yApi::IYPluginApi::kBindingQuery:
          {
             // Yadoms asks for device creation
             boost::shared_ptr<yApi::IBindingQueryRequest> data = context->getEventHandler().getEventData< boost::shared_ptr<yApi::IBindingQueryRequest> >();
             OnBindingQueryRequest(data, context);
             break;
-         }         
-         
+         }
+
          case kXplMessageReceived:
          {
             // Xpl message was received
@@ -170,6 +175,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       YADOMS_LOG(fatal) << "The XPL plugin fails. Unknown expcetion : " << ex.what();
    }
 
+   YADOMS_LOG(info) << "XPL plugin is now stopping";
    //ensure hub is stopped
    stopHub();
 }
@@ -227,7 +233,7 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
          {
             //retreeive device identifier
             xplrules::CDeviceIdentifier deviceAddress = rule->getDeviceAddressFromMessage(xplMessage);
-            
+
             if (!context->deviceExists(deviceAddress.getId()))
             {
                shared::CDataContainer details;
@@ -254,7 +260,7 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
 
                //create message to insert in database
                xplrules::MessageContent data = readRule->extractMessageData(xplMessage);
-               
+
                xplrules::MessageContent::iterator i;
                for (i = data.begin(); i != data.end(); ++i)
                {
@@ -374,7 +380,7 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
       //std::string a("abcdefg");
       //data->sendError("invalid configuration");
 
-      
+
       std::string chosenDeviceType = data->getData().getConfiguration().get<std::string>("type.activeSection");
       std::string internalProtocol;
       if (boost::istarts_with(chosenDeviceType, "x10"))
@@ -384,7 +390,7 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
 
       shared::CDataContainer innerContent = data->getData().getConfiguration().get<shared::CDataContainer>("type.content." + chosenDeviceType + ".content");
 
-      
+
       boost::shared_ptr<xplrules::IRule> rule = m_deviceManager->identifyRule(internalProtocol, m_instanceManager);
       if (rule)
       {
@@ -428,7 +434,7 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
          data->sendError(errorMessage);
          YADOMS_LOG(error) << errorMessage;
       }
-      
+
 
 
    }
