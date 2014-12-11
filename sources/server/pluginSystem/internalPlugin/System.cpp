@@ -81,6 +81,7 @@ namespace pluginSystem {
       // as a plugin failure.
       catch (boost::thread_interrupted&)
       {
+         YADOMS_LOG(info) << "Thread is stopping...";
       }
       catch (shared::exception::CException & ex)
       {

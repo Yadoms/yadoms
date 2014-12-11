@@ -29,7 +29,7 @@
 #include <server/job/Manager.h>
 
 CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
-   :m_stopHandler(m_EventHandler, kStopRequested), m_startupOptions(startupOptions)
+   :m_EventHandler(new shared::event::CEventHandler), m_stopHandler(m_EventHandler, kStopRequested), m_startupOptions(startupOptions)
 {
 }
 
@@ -71,7 +71,6 @@ void CSupervisor::doWork()
 
       // Start the plugin gateway
       boost::shared_ptr<communication::CPluginGateway> pluginGateway(new communication::CPluginGateway(pDataProvider, dal->getAcquisitionHistorizer(), pluginManager));
-      pluginGateway->start();
 
       // Start the plugin manager (start all plugin instances)
       pluginManager->start();
@@ -114,18 +113,18 @@ void CSupervisor::doWork()
       bool running = true;
       while(running)
       {
-         switch(m_EventHandler.waitForEvents())
+         switch(m_EventHandler->waitForEvents())
          {
          case kStopRequested:
             running = false;
             break;
 
          case kPluginManagerEvent:
-            pluginManager->signalEvent(m_EventHandler.getEventData<pluginSystem::CManagerEvent>());
+            pluginManager->signalEvent(m_EventHandler->getEventData<pluginSystem::CManagerEvent>());
             break;
 
          case kSystemEvent:
-            pDataProvider->getEventLoggerRequester()->addEvent(m_EventHandler.getEventData<database::entities::CEventLogger>());
+            pDataProvider->getEventLoggerRequester()->addEvent(m_EventHandler->getEventData<database::entities::CEventLogger>());
             break;
 
          default:
@@ -171,7 +170,7 @@ void CSupervisor::doWork()
 void CSupervisor::requestToStop(boost::function<void()> & callbackAfterStopped)
 {
    m_callbackAfterStopped = callbackAfterStopped;
-   m_EventHandler.postEvent(kStopRequested);
+   m_EventHandler->postEvent(kStopRequested);
 }
 
 IApplicationStopHandler::EStopMode CSupervisor::stopMode() const

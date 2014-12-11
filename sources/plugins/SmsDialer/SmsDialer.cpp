@@ -65,6 +65,7 @@ void CSmsDialer::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    }
    catch (boost::thread_interrupted&)
    {
+      YADOMS_LOG(info) << "Thread is stopping...";
    }
 }
 

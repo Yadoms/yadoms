@@ -215,6 +215,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    // as a plugin failure.
    catch (boost::thread_interrupted&)
    {
+      YADOMS_LOG(info) << "Thread is stopping...";
    }
 
    context->recordPluginEvent(yApi::IYPluginApi::kInfo, "stopped");

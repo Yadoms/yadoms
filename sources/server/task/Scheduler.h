@@ -16,7 +16,7 @@ namespace task {
       //------------------------------
       ///\brief Constructor
       //------------------------------
-      CScheduler(shared::event::CEventHandler & eventHandler, const int systemEventCode);
+      CScheduler(boost::shared_ptr<shared::event::CEventHandler> eventHandler, const int systemEventCode);
       
       //------------------------------
       ///\brief public destructor
@@ -81,7 +81,7 @@ namespace task {
       //------------------------------------------
       ///\brief   A reference to the main event handler (to report start and stop status)
       //------------------------------------------
-      shared::event::CEventHandler & m_eventHandler;
+      boost::shared_ptr<shared::event::CEventHandler> m_eventHandler;
       
       //------------------------------------------
       ///\brief   A reference to the local task event handler (to report start and stop status of a task)

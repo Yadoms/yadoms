@@ -12,7 +12,7 @@
 
 namespace task {
 
-   CScheduler::CScheduler(shared::event::CEventHandler & eventHandler, const int systemEventCode)
+   CScheduler::CScheduler(boost::shared_ptr<shared::event::CEventHandler> eventHandler, const int systemEventCode)
       : CThreadBase("Task_Scheduler"), m_eventHandler(eventHandler), m_systemEventCode(systemEventCode)
    {
    }
@@ -61,7 +61,7 @@ namespace task {
                      database::entities::CEventLogger entry;
                      entry.Code = database::entities::ESystemEventCode::kStarted;
                      entry.Who = m_runningTasks[i->getGuid()]->getTask()->getName();
-                     m_eventHandler.postEvent(m_systemEventCode, entry);
+                     m_eventHandler->postEvent(m_systemEventCode, entry);
                      break;
                   }
 
@@ -99,7 +99,7 @@ namespace task {
          }
          catch (boost::thread_interrupted&)
          {
-            YADOMS_LOG(info) << "task scheduler exception";
+            YADOMS_LOG(info) << "Thread is stopping...";
          }
          catch (std::exception& e)
          {
@@ -109,7 +109,7 @@ namespace task {
             entry.Code = database::entities::ESystemEventCode::kThreadFailed;
             entry.Who = "taskScheduler";
             entry.What = (boost::format("Crashed in doWork with exception %1%") % e.what()).str();
-            m_eventHandler.postEvent(m_systemEventCode, entry);
+            m_eventHandler->postEvent(m_systemEventCode, entry);
          }
          catch (...)
          {
@@ -119,7 +119,7 @@ namespace task {
             entry.Code = database::entities::ESystemEventCode::kThreadFailed;
             entry.Who = "taskScheduler";
             entry.What = "crash with unknown exception.";
-            m_eventHandler.postEvent(m_systemEventCode, entry);
+            m_eventHandler->postEvent(m_systemEventCode, entry);
          }
       }
    }

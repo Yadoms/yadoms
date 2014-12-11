@@ -97,8 +97,7 @@ void CThreadBase::doWorkInternal()
    } 
    catch(boost::thread_interrupted&)
    {
-      // Thread is stopped
-      
+      // Thread is stopped      
    }
    catch(std::exception &)
    {

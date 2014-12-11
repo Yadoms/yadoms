@@ -49,7 +49,8 @@ namespace pluginSystem
          boost::shared_ptr<database::IAcquisitionRequester> acquisitionRequester,
          boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
          const boost::shared_ptr<IQualifier> qualifier,
-         shared::event::CEventHandler& supervisor, int pluginManagerEventId);
+         boost::shared_ptr<shared::event::CEventHandler> supervisor,
+         int pluginManagerEventId);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -110,7 +111,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief			The supervisor event handler
       //--------------------------------------------------------------
-      shared::event::CEventHandler& m_supervisor;
+      boost::shared_ptr<shared::event::CEventHandler> m_supervisor;
 
       //--------------------------------------------------------------
       /// \brief			ID to use to send events to supervisor
