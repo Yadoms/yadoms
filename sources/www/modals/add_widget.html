@@ -85,7 +85,7 @@
         for(var index in WidgetPackageManager.widgetPackages) {
              var value = WidgetPackageManager.widgetPackages[index].packageInformation;
              //if the widget begin with dev-, it's a developper widget use only
-             if (!value.type.startsWith("dev-")) {
+             if ((value) && (!value.type.startsWith("dev-"))) {
                 var i18ncontext = value.type + ":";
                 $("ul#ul-add-widget").append(
                    "<li>" +

@@ -63,17 +63,17 @@ DecimalParameterHandler.prototype.getDOMObject = function () {
    var i18nData = " data-i18n=\"";
 
    i18nData += "[data-content]" + this.i18nContext + this.paramName + ".description";
-   i18nData += ";[data-validation-required-message]widgets.configuration.validationForm.incorrectValue";
-   i18nData += ";[data-validation-pattern-message]widgets.configuration.validationForm.onlyNumberAllowed";
+   i18nData += ";[data-validation-required-message]configuration.validationForm.incorrectValue";
+   i18nData += ";[data-validation-pattern-message]configuration.validationForm.onlyNumberAllowed";
 
    if (!isNaN(this.maxValue)) {
       input += "max=\"" + this.maxValue + "\" ";
-      i18nData += ";[data-validation-max-message]widgets.configuration.validationForm.maxValueExceeded";
+      i18nData += ";[data-validation-max-message]configuration.validationForm.maxValueExceeded";
       i18nOptions["maxValue"] = this.maxValue;
    }
    if (!isNaN(this.minValue)) {
       input += "min=\"" + this.minValue + "\" ";
-      i18nData += ";[data-validation-min-message]widgets.configuration.validationForm.minValueExceeded";
+      i18nData += ";[data-validation-min-message]configuration.validationForm.minValueExceeded";
       i18nOptions["minValue"] = this.minValue;
    }
 
