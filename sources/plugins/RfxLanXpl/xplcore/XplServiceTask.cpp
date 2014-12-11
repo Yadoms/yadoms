@@ -50,9 +50,7 @@ namespace xplcore
    }
 
 
-
-
-   void CXplServiceTask::runTask()   {
+      void CXplServiceTask::runTask()   {
       try
       {
          YADOMS_LOG_CONFIGURE(m_source.toString());
