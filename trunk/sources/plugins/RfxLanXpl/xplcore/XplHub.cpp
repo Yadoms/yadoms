@@ -26,7 +26,6 @@ namespace xplcore
       YADOMS_LOG_CONFIGURE(getName());
       m_socket.setBroadcast(true);
       m_socket.setReuseAddress(true);
-      YADOMS_LOG(info) << "Xpl Hub is starting";
    }
 
    CXplHub::~CXplHub()
@@ -36,9 +35,8 @@ namespace xplcore
 
    bool CXplHub::stop()
    {
-YADOMS_LOG(info) << "Xpl Hub is stopping";
       m_stopHubRequested = true;
-      return CThreadBase::stop();
+      return true;
    }
 
    void CXplHub::doWork()
@@ -47,9 +45,6 @@ YADOMS_LOG(info) << "Xpl Hub is stopping";
       {
          YADOMS_LOG_CONFIGURE(getName());
 
-      YADOMS_LOG(info) << "Xpl Hub dowork";
-
-      YADOMS_LOG(info) << "Xpl Hub reset timeout";
          runCheckApplicationLifeCycleTimeout();
          while (!m_stopHubRequested) //we don't need locking here - connected is just a boolean
          {
@@ -76,7 +71,6 @@ YADOMS_LOG(info) << "Xpl Hub is stopping";
                   continue;
                }
 
-      YADOMS_LOG(info) << "Xpl Hub data received";
                // Create an XplMsg object from the received data
                std::string data;
                std::copy(receiveBuffer.begin(), receiveBuffer.begin() + bytesRead, std::back_inserter(data));
@@ -85,10 +79,7 @@ YADOMS_LOG(info) << "Xpl Hub is stopping";
                onXplMessageReceived(msg, sender);
             }
 
-            boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-	    if(m_stopHubRequested)
-	        YADOMS_LOG(info) << "Xpl Hub dowork is stopping";
-
+            boost::this_thread::sleep(boost::posix_time::milliseconds(100)); //allow thread interrupt
          }
       }
       catch (boost::thread_interrupted&)

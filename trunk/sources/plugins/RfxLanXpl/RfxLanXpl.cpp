@@ -43,7 +43,7 @@ void print(shared::CDataContainer const& pt)
 
 void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 {
-
+   
    try
    {
       YADOMS_LOG(debug) << "################ RfxLanXpl : PRINT CONFIG";
@@ -64,9 +64,10 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       xplService.subscribeForAllMessages(&context->getEventHandler(), kXplMessageReceived);
 
       //manage xpl hub
+      xplcore::CXplHub hub(m_configuration.getXplNetworkInterface().address().toString());
       if (m_configuration.getStartXplhub())
       {
-         startHub(m_configuration.getXplNetworkInterface().address().toString());
+         startHub(hub, "");
       }
 
       // the main loop
@@ -99,12 +100,12 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                if (newConf.getStartXplhub())
                {
                   //start a new hub
-                  startHub(newConf.getXplNetworkInterface().address().toString());
+                  startHub(hub, newConf.getXplNetworkInterface().address().toString());
                }
                else
                {
                   //stop hub
-                  stopHub();
+                  stopHub(hub);
                }
             }
             else
@@ -177,23 +178,19 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
    YADOMS_LOG(info) << "XPL plugin is now stopping";
    //ensure hub is stopped
-   stopHub();
+//   stopHub(hub);
 }
 
-void CRfxLanXpl::startHub(const std::string & hubFilterConfiguration)
+void CRfxLanXpl::startHub(xplcore::CXplHub & hub, const std::string & hubFilterConfiguration)
 {
-   //stop it if running
-   stopHub();
-
    //new one !
-   m_hub.reset(new xplcore::CXplHub(hubFilterConfiguration));
-   m_hub->start();
+   //hub.reset(new xplcore::CXplHub(hubFilterConfiguration));
+   hub.start();
 }
 
-void CRfxLanXpl::stopHub()
+void CRfxLanXpl::stopHub(xplcore::CXplHub & hub)
 {
-   if (m_hub)
-      m_hub->stop();
+   hub.stop();
 }
 
 void CRfxLanXpl::StartPeripheralListing(xplcore::CXplService & xplService)

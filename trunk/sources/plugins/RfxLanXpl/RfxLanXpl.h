@@ -75,14 +75,16 @@ private:
 
    //----------------------------------------------
    ///\brief Function that start the hub
+   ///\param [in] hub                     the hub to start
    ///\param [in] hubFilterConfiguration  the hub configuration
    //----------------------------------------------
-   void startHub(const std::string & hubFilterConfiguration); 
+   void startHub(xplcore::CXplHub & hub, const std::string & hubFilterConfiguration);
    
    //----------------------------------------------
    ///\brief Function that stop the hub
+   ///\param [in] hub   the hub to stop
    //----------------------------------------------
-   void stopHub();
+   void stopHub(xplcore::CXplHub & hub);
 
    //----------------------------------------------
    ///\brief  The device manager
@@ -110,7 +112,6 @@ private:
    //--------------------------------------------------------------
    std::vector<std::string> m_connectedRfxLans;
 
-   boost::shared_ptr<xplcore::CXplHub> m_hub;
 };
 
 
