@@ -1,5 +1,6 @@
 #pragma once
 #include "tools/IApplication.h"
+#include <shared/event/EventHandler.hpp>
 
 namespace tools {
 
@@ -35,9 +36,17 @@ namespace tools {
       static tools::IApplication * m_pApplication;
 
       //-----------------------------
-      ///\brief   Event for waiting application to close
+      ///\brief   Event handler
       //-----------------------------  
-      static HANDLE m_hStoppedEvent;
+      static shared::event::CEventHandler m_eventHandler;
+
+      //-----------------------------
+      ///\brief   Event for waiting application to close
+      //-----------------------------
+      enum
+      {
+         kAppEnd = shared::event::kUserFirstId
+      };
    };
    
 

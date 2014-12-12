@@ -1,15 +1,17 @@
 #include "stdafx.h"
 #include "ConsoleControlHandler.h"
 #include <windows.h> 
+#include <shared/Log.h>
 
 namespace tools {
 
+   shared::event::CEventHandler CConsoleControlHandler::m_eventHandler;
+
    tools::IApplication * CConsoleControlHandler::m_pApplication = NULL;
-   HANDLE CConsoleControlHandler::m_hStoppedEvent = NULL;
+   
 
    void CConsoleControlHandler::registerApplication(tools::IApplication & app)
    {
-      m_hStoppedEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
       m_pApplication = &app;
       SetConsoleCtrlHandler((PHANDLER_ROUTINE)CConsoleControlHandler::ctrlHandler, TRUE);
    }
@@ -27,11 +29,20 @@ namespace tools {
          {
             boost::function<void()> callback = boost::bind(&CConsoleControlHandler::onAppStopped);
             m_pApplication->stop(callback);
-            if (WaitForSingleObject(m_hStoppedEvent, INFINITE) != WAIT_OBJECT_0)
+
+            switch (m_eventHandler.waitForEvents())
             {
-               throw GetLastError();
+            case kAppEnd:
+               //the app end normally
+               return TRUE;
+               break;
+
+            default:
+               YADOMS_LOG(error) << "Fail to wait the app end event";
+               return FALSE;
+               break;
             }
-            return(TRUE);
+            
          }
          return FALSE;        
 
@@ -56,7 +67,7 @@ namespace tools {
 
    void CConsoleControlHandler::onAppStopped()
    {
-      SetEvent(m_hStoppedEvent);
+      m_eventHandler.postEvent(kAppEnd);
    }
 
 
