@@ -14,6 +14,8 @@
 #include "ExternalPluginFactory.h"
 #include "InternalPluginFactory.h"
 
+#include <shared/Log.h>
+
 namespace pluginSystem
 {
 
