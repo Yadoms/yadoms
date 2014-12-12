@@ -3,6 +3,7 @@
 #include "pluginSystem/Information.h"
 #include <shared/StringExtension.h>
 #include <shared/exception/Exception.hpp>
+#include <shared/Log.h>
 
 namespace pluginSystem
 {
