@@ -19,6 +19,8 @@
 #include "stdafx.h"
 #include "ApplicationService.h"
 #include "ThreadPool.h"
+#include <Windows.h>
+#include <shared/Log.h>
 
 namespace tools { namespace service {
 
@@ -30,25 +32,11 @@ namespace tools { namespace service {
                                   : CServiceBase(pszServiceName, fCanStop, fCanShutdown, fCanPauseContinue), m_path(path), m_app(app), m_serviceName(pszServiceName), m_argc(0), m_argv(NULL)
    {
        m_fStopping = FALSE;
-       
-
-       // Create a manual-reset event that is not signaled at first to indicate 
-       // the stopped signal of the service.
-       m_hStoppedEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-       if (m_hStoppedEvent == NULL)
-       {
-           throw GetLastError();
-       }
    }
 
 
    CApplicationService::~CApplicationService(void)
    {
-       if (m_hStoppedEvent)
-       {
-           CloseHandle(m_hStoppedEvent);
-           m_hStoppedEvent = NULL;
-       }
    }
 
 
@@ -98,8 +86,7 @@ namespace tools { namespace service {
    //
    void CApplicationService::ServiceWorkerThread(void)
    {
-      SetCurrentDirectory(m_path.string().c_str());
-
+      boost::filesystem::current_path(m_path.string().c_str());
       m_app.run(m_argc, m_argv);
 
    }
@@ -129,18 +116,35 @@ namespace tools { namespace service {
        m_app.stop(callback);
 
        m_fStopping = TRUE;
-       if (WaitForSingleObject(m_hStoppedEvent, INFINITE) != WAIT_OBJECT_0)
+
+       switch (m_eventHandler.waitForEvents())
        {
-          WriteEventLogEntry((char*)(boost::format("%1% fail to stopped") % m_serviceName).str().c_str(), EVENTLOG_ERROR_TYPE);
-           throw GetLastError();
+       case kAppEnd:
+          //the app end normally
+         {
+            std::string msg = (boost::format("%1% is stopped") % m_serviceName).str();
+            WriteEventLogEntry((char*)msg.c_str(), EVENTLOG_INFORMATION_TYPE);
+            YADOMS_LOG(info) << msg;
+            break;
+         }
+
+       default:
+          {
+             std::string msg = (boost::format("%1% fail to stopped") % m_serviceName).str();
+             WriteEventLogEntry((char*)msg.c_str(), EVENTLOG_ERROR_TYPE);
+             YADOMS_LOG(error) << msg;
+             break;
+          }
        }
-       WriteEventLogEntry((char*)(boost::format("%1% is stopped") % m_serviceName).str().c_str(), EVENTLOG_INFORMATION_TYPE);
+
+
    }
    
 
    void CApplicationService::OnAppStopped()
    {
-      SetEvent(m_hStoppedEvent);
+      m_eventHandler.postEvent(kAppEnd);
+
    }
 } //namespace service
 } //namespace tools

@@ -170,7 +170,8 @@ set(SHARED_LIB_SRC
 IF(WIN32)
 set(SHARED_LIB_SRC	
 	${SHARED_LIB_SRC}
-	windows/shared/DynamicLibrary.hpp
+	windows/shared/DynamicLibrary.h
+	windows/shared/DynamicLibrary.cpp
 	windows/shared/Export.h
    windows/shared/FileSystemExtension.h
 	windows/shared/FileSystemExtension.cpp
@@ -184,7 +185,8 @@ set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/windows)
 ELSEIF(APPLE)
 set(SHARED_LIB_SRC	
 	${SHARED_LIB_SRC}
-	mac/shared/DynamicLibrary.hpp
+	mac/shared/DynamicLibrary.h
+	mac/shared/DynamicLibrary.cpp
 	mac/shared/Export.h
    mac/shared/FileSystemExtension.h
 	mac/shared/FileSystemExtension.cpp
@@ -198,7 +200,8 @@ set(PLATFORM_SPECIFIC_INCL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mac)
 ELSE()
 set(SHARED_LIB_SRC	
 	${SHARED_LIB_SRC}
-	linux/shared/DynamicLibrary.hpp
+	linux/shared/DynamicLibrary.h
+	linux/shared/DynamicLibrary.cpp
 	linux/shared/Export.h
    linux/shared/FileSystemExtension.h
 	linux/shared/FileSystemExtension.cpp

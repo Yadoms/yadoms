@@ -20,6 +20,7 @@
 #pragma once
 #include "ServiceBase.h"
 #include "tools/IApplication.h"
+#include <shared/event/EventHandler.hpp>
 
 namespace tools { namespace service {
 
@@ -45,7 +46,19 @@ namespace tools { namespace service {
    private:
       void OnAppStopped();
        BOOL m_fStopping;
-       HANDLE m_hStoppedEvent;
+       
+       //-----------------------------
+       ///\brief   Event handler
+       //-----------------------------  
+       shared::event::CEventHandler m_eventHandler;
+
+       //-----------------------------
+       ///\brief   Event for waiting application to close
+       //-----------------------------
+       enum
+       {
+          kAppEnd = shared::event::kUserFirstId
+       };
 
        boost::filesystem::path m_path;
        int m_argc;

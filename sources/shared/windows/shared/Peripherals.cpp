@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "DynamicLibrary.hpp"
+#include "DynamicLibrary.h"
 #include "../../shared/exception/Exception.hpp"
 #include "../../shared/Log.h"
 #include "Peripherals.h"

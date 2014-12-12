@@ -6,7 +6,7 @@
 #else
 #include "Qualifier.h"
 #endif
-#include <shared/DynamicLibrary.hpp>
+#include <shared/DynamicLibrary.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/exception/NotSupported.hpp>
 #include <shared/exception/EmptyResult.hpp>
