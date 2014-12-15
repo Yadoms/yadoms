@@ -646,6 +646,22 @@ set_property( TARGET yadoms PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 ##################################################################################################
 target_link_libraries(yadoms yadoms-shared ${LIBS} ${CMAKE_DL_LIBS})
 
+##################################################################################################
+## Post build commands
+##################################################################################################
+
+POST_BUILD_COPY_BOOST_LIBRARIES(yadoms)
+POST_BUILD_COPY_POCO(yadoms)
+
+#copy www directory into build directory
+add_custom_command(TARGET yadoms POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                       ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
+		
+
+##################################################################################################
+## COTIRE
+##################################################################################################
 if(COTIRE_USE)
 	set_target_properties(yadoms PROPERTIES COTIRE_CXX_PREFIX_HEADER_INIT "server/stdafx.h")
 	
@@ -661,24 +677,5 @@ if(COTIRE_USE)
 		target_link_libraries(yadoms_unity yadoms-shared_unity ${LIBS} ${CMAKE_DL_LIBS})
 		set_property( TARGET yadoms_unity PROPERTY INCLUDE_DIRECTORIES ${YADOMS_ALL_INCL_DIR})
 	endif()	
-else()
-
 endif()
-
-
-
-
-
-##################################################################################################
-## Post build commands
-##################################################################################################
-
-POST_BUILD_COPY_BOOST_LIBRARIES(yadoms)
-POST_BUILD_COPY_POCO(yadoms)
-
-#copy www directory into build directory
-add_custom_command(TARGET yadoms POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-                       ${CMAKE_SOURCE_DIR}/www $<TARGET_FILE_DIR:yadoms>/www/)
-		
-
+      
