@@ -136,6 +136,7 @@ void CSupervisor::doWork()
 
       YADOMS_LOG(info) << "Supervisor is stopping...";
 
+      //stop the jobs
       jobsManager->stop();
 
       //stop all plugins
