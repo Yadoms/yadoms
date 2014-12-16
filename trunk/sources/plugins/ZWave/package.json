@@ -8,11 +8,12 @@
    "SupportedPlatforms": "all",
    "configurationSchema": 
    {
-	  "Serial Port":
+      "Serial Port" :
       {
-         "name": "Serial port",
-         "description": "The serial port connected to the ZWave controller (stick,...)",
-         "type": "serialPort"
-      }
+         "type" : "enum",
+         "name" : "Serial port",
+         "description" : "The serial port connected to the ZWave controller (stick,...)",
+		 "values" : {"__Binding__" : {"type" : "system", "query" : "serialPorts"}}
+      } 
    }
 }
