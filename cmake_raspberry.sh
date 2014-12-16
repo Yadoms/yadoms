@@ -22,7 +22,7 @@ case "$choice" in
 
     p)
 	# cmake for makefile
-	cmake -DCMAKE_YADOMS_PLATFORM=Raspberry -DCMAKE_CXX_COMPILER=g++-4.7 -DCMAKE_CC_COMPILER=gcc-4.7 ../sources
+	cmake -DCMAKE_YADOMS_PLATFORM=Raspberry -DCMAKE_CXX_COMPILER=g++-4.8 -DCMAKE_CC_COMPILER=gcc-4.8 ../sources
 	;;
 
     c)
