@@ -285,7 +285,6 @@ void InitReceiverCounter()
 /// \brief	    Test Events with 1 event sent - 1 Sender / 1 Receiver
 /// \result         No Error
 //--------------------------------------------------------------
-
 BOOST_AUTO_TEST_CASE(Event_1_Frame)
 {
    int nbOfFrames = 1;
@@ -569,6 +568,53 @@ BOOST_AUTO_TEST_CASE(Event_100_Frame_With_Data_Very_Loaded_Reception)
    BOOST_CHECK_EQUAL(ReceiverMessage1Counter    , nbOfFrames);
    BOOST_CHECK_EQUAL(ReceiverTimeoutCounter     , 0);
    BOOST_CHECK_EQUAL(ReceiverDefaultCounter     , 0);
+}
+
+//--------------------------------------------------------------
+/// \brief	    Shutdown test with 100 events sent simultaneously by 10 Senders / 1 Receiver
+/// \result         No Error
+//--------------------------------------------------------------
+void ShutdownWhenStillSending_SenderThread(boost::shared_ptr<shared::event::CEventHandler> eventHandler, int nbMessages)
+{
+   for (int counter = 0; counter < nbMessages; counter++)
+      eventHandler->postEvent(Message1);
+}
+BOOST_AUTO_TEST_CASE(ShutdownWhenStillSending)
+{
+   const int nbOfSenderThread = 10;
+   boost::shared_ptr<boost::thread> senderThreads[nbOfSenderThread];
+   int nbOfFramesSend = 100;
+   boost::shared_ptr<shared::event::CEventHandler> eventHandler(new shared::event::CEventHandler);
+
+   // Create threads
+   for (int indexThread = 0; indexThread < nbOfSenderThread; indexThread++)
+      senderThreads[indexThread].reset(new boost::thread(ShutdownWhenStillSending_SenderThread, eventHandler, nbOfFramesSend));
+
+   // Receive in this thread
+   // Normally, we should receive nbOfSenderThread * nbOfFramesSend
+   // But the aim of the test is to stop reception when events still arrives, so stop before end
+   int countReceivedFrames = 0;
+   for (int indexThread = 0; indexThread < (nbOfSenderThread * nbOfFramesSend) - 150; indexThread++)
+   {
+      switch (eventHandler->waitForEvents(boost::posix_time::milliseconds(5000)))
+      {
+      case Message1:
+         ++countReceivedFrames;
+         break;
+      default:
+         BOOST_CHECK(false);
+         break;
+      }
+   }
+
+   // Delete event handler here
+   eventHandler.reset();
+
+   // Wait end of threads
+   for (int indexThread = 0; indexThread < nbOfSenderThread; indexThread++)
+      senderThreads[indexThread]->join();
+
+   BOOST_CHECK_EQUAL(countReceivedFrames, (nbOfSenderThread * nbOfFramesSend) - 150);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -47,21 +47,21 @@ BOOST_AUTO_TEST_CASE(ByteBufferCopy)
    // Check buffer content
    unsigned char sameTab[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g'};
    BOOST_CHECK_EQUAL(buffer.size(), sizeof(sameTab));                         // Check size
-   BOOST_CHECK_EQUAL(memcmp(buffer.begin(), sameTab, sizeof(sameTab)), 0);  // Check content
+   BOOST_CHECK_EQUAL(memcmp(buffer.begin(), sameTab, sizeof(sameTab)), 0);    // Check content
 
    // Pass buffer by reference
    passBufferByRef(buffer);
 
    {
       shared::communication::CByteBuffer buffer2 = buffer;
-      BOOST_CHECK_EQUAL(buffer2.begin(), buffer.begin());                     // Ensure that data were not-copied (just ref-count inceremented)
-      BOOST_CHECK_EQUAL(buffer2.size(), sizeof(sameTab));                         // Check size
-      BOOST_CHECK_EQUAL(memcmp(buffer2.begin(), sameTab, sizeof(sameTab)), 0);  // Check content
+      BOOST_CHECK(buffer2.begin() != buffer.begin());                         // Ensure that data were copied
+      BOOST_CHECK_EQUAL(buffer2.size(), sizeof(sameTab));                     // Check size
+      BOOST_CHECK(!memcmp(buffer2.begin(), sameTab, sizeof(sameTab)));        // Check content
    }
 
    // buffer2 is now deleted, ensure that data were not lost
    BOOST_CHECK_EQUAL(buffer.size(), sizeof(sameTab));                         // Check size
-   BOOST_CHECK_EQUAL(memcmp(buffer.begin(), sameTab, sizeof(sameTab)), 0);  // Check content
+   BOOST_CHECK_EQUAL(memcmp(buffer.begin(), sameTab, sizeof(sameTab)), 0);    // Check content
 }
 
 BOOST_AUTO_TEST_CASE(ByteBufferCopy2)
