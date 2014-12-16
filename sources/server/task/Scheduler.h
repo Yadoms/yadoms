@@ -44,12 +44,6 @@ namespace task {
       //--------------------------------------------------------------
       std::vector< boost::shared_ptr< IInstance > > getAllTasks();
 
-      //--------------------------------------------------------------
-      /// \brief			Ask the thread to stop and returns (non blocking)
-      /// \return    	void
-      //--------------------------------------------------------------
-      virtual void requestToStop();
-
    protected:
       //--------------------------------------------------------------
       /// \brief			The main scheduler work

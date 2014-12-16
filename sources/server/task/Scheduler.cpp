@@ -19,17 +19,7 @@ namespace task {
 
    CScheduler::~CScheduler()
    {
-   }
-   
-   //--------------------------------------------------------------
-   /// \brief			Ask the thread to stop and returns (non blocking)
-   /// \return    	void
-   //--------------------------------------------------------------
-   void CScheduler::requestToStop()
-   {
-      //we ask to all instance to stop before stopping current thread
-      //TODO : iterer la liste pour demander l'arret
-      CThreadBase::requestToStop();
+      stop();
    }
 
    void CScheduler::doWork()
@@ -99,7 +89,10 @@ namespace task {
          }
          catch (boost::thread_interrupted&)
          {
-            YADOMS_LOG(info) << "Thread is stopping...";
+            YADOMS_LOG(info) << "Thread is stopping, stop all tasks...";
+            RunningTaskInstanceMap::iterator it;
+            for (it = m_runningTasks.begin(); it != m_runningTasks.end(); ++it)
+               it->second->stop();
          }
          catch (std::exception& e)
          {
