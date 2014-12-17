@@ -1,14 +1,17 @@
 #include "stdafx.h"
 #include "Job.h"
-#include "condition/ConditionFactory.h"
+#include "condition/ConditionRoot.h"
 #include "ActionList.h"
+#include "INotificationObserverForJobsManager.h"
 
 namespace job
 {
 
-CJob::CJob(int id, const std::string& name, const shared::CDataContainer& triggers, const shared::CDataContainer& actions, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-   boost::shared_ptr<condition::IConditionFactory> conditionFactory)
-   :m_name(name), m_id(id), m_condition(conditionFactory->createCondition(triggers)), m_actions(new CActionList(actions, pluginGateway))
+CJob::CJob(boost::shared_ptr<database::entities::CJob> jobData,
+   boost::shared_ptr<INotificationObserverForJobsManager> notificationObserver,
+   boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+   condition::IConditionFactory& conditionFactory)
+   :m_name(jobData->Name()), m_id(jobData->Id()), m_condition(new condition::CConditionRoot(jobData->Triggers(), notificationObserver, conditionFactory)), m_actions(new CActionList(jobData->Actions(), pluginGateway))
 {
 }
 

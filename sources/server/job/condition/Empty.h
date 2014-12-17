@@ -22,10 +22,8 @@ namespace job { namespace condition
 
    protected:
       // ICondition Implementation
-      virtual void wait() const;
+      virtual bool eval() const;
       // [END] ICondition Implementation
-
-   private:
    };
 	
 } } // namespace job::condition	

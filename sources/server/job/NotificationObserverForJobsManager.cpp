@@ -30,14 +30,14 @@ void CNotificationObserverForJobsManager::doWork()
          if (m_notificationCenter->isNotificationTypeOf< boost::shared_ptr<notifications::CNewAcquisitionNotification> >(&m_NotificationObserver))
          {
             boost::shared_ptr<notifications::CNewAcquisitionNotification> newAcquisition = m_notificationCenter->getNotificationData< boost::shared_ptr<notifications::CNewAcquisitionNotification> >(&m_NotificationObserver);
-            GlobalNotifierMap::const_iterator notifierListIt = m_notifiers.find(newAcquisition->getAcquisition()->KeywordId);
+            GlobalNotifierMap::iterator notifierListIt = m_notifiers.find(newAcquisition->getAcquisition()->KeywordId);
             if (notifierListIt != m_notifiers.end())
             {
                // This keyword ID is listen, notify all listeners
                boost::shared_ptr<NotifierList> notifierList(notifierListIt->second);
-               for (NotifierList::const_iterator notifierIt = notifierList->begin(); notifierIt != notifierList->end(); ++notifierIt)
+               for (NotifierList::iterator notifierIt = notifierList->begin(); notifierIt != notifierList->end(); ++notifierIt)
                {
-                  (*notifierIt)->onNotify();                  
+                  (*notifierIt)->onKeywordStateChange(newAcquisition->getAcquisition()->Value);                  
                }
             }            
          }
@@ -49,7 +49,7 @@ void CNotificationObserverForJobsManager::doWork()
    }
 }
 
-void CNotificationObserverForJobsManager::registerKeyword(boost::shared_ptr<const condition::IKeywordNotifier> keywordNotifier)
+void CNotificationObserverForJobsManager::registerKeywordUpdater(boost::shared_ptr<condition::IKeywordUpdater> keywordNotifier)
 {
    //TODO ajouter un mutex là-dessus
    boost::shared_ptr<NotifierList>& notifierList = m_notifiers[keywordNotifier->getKeywordId()];
@@ -58,7 +58,7 @@ void CNotificationObserverForJobsManager::registerKeyword(boost::shared_ptr<cons
    notifierList->insert(keywordNotifier);
 }
 
-void CNotificationObserverForJobsManager::unregisterKeyword(boost::shared_ptr<const condition::IKeywordNotifier> keywordNotifier)
+void CNotificationObserverForJobsManager::unregisterKeywordUpdater(boost::shared_ptr<condition::IKeywordUpdater> keywordNotifier)
 {
    // Get the list of notifiers for this keywordId
    GlobalNotifierMap::const_iterator notifierListIt = m_notifiers.find(keywordNotifier->getKeywordId());

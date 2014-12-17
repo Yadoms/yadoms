@@ -2,10 +2,12 @@
 #include "IJob.h"
 #include <shared/shared/DataContainer.h>
 #include "JobThread.h"
-#include "condition/ICondition.h"
+#include "condition/IConditionRoot.h"
 #include "condition/IConditionFactory.h"
 #include "IActionList.h"
 #include "../communication/ISendMessageAsync.h"
+#include "../database/sqlite/requesters/Job.h"
+#include "INotificationObserverForJobsManager.h"
 
 namespace job
 {
@@ -17,15 +19,15 @@ namespace job
    public:
       //-----------------------------------------------------
       ///\brief               Constructor
-      ///\param[in] id        Job ID
-      ///\param[in] name      Job name
-      ///\param[in] triggers  Trigger condition
-      ///\param[in] actions   List of actions
+      ///\param[in] jobData   Job data (ID, name, conditions, actions...)
+      ///\param[in] notificationObserver  The notification observer
       ///\param[in] pluginGateway plugin access to do actions on plugins
       ///\param[in] conditionFactory the condition factory
       //-----------------------------------------------------
-      CJob(int id, const std::string& name, const shared::CDataContainer& triggers, const shared::CDataContainer& actions, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-         boost::shared_ptr<condition::IConditionFactory> conditionFactory);
+      CJob(boost::shared_ptr<database::entities::CJob> jobData,
+         boost::shared_ptr<INotificationObserverForJobsManager> notificationObserver,
+         boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+         condition::IConditionFactory& conditionFactory);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -61,7 +63,7 @@ namespace job
       //-----------------------------------------------------
       ///\brief               The condition to wait
       //-----------------------------------------------------
-      boost::shared_ptr<condition::ICondition> m_condition;
+      boost::shared_ptr<condition::IConditionRoot> m_condition;
 
       //-----------------------------------------------------
       ///\brief               The actions to do

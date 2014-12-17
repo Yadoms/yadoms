@@ -23,8 +23,8 @@ namespace job
       virtual ~CNotificationObserverForJobsManager();
 
       // INotificationObserverForJobsManager Implementation
-      virtual void registerKeyword(boost::shared_ptr<const condition::IKeywordNotifier> keywordNotifier);
-      virtual void unregisterKeyword(boost::shared_ptr<const condition::IKeywordNotifier> keywordNotifier);
+      virtual void registerKeywordUpdater(boost::shared_ptr<condition::IKeywordUpdater> keywordNotifier);
+      virtual void unregisterKeywordUpdater(boost::shared_ptr<condition::IKeywordUpdater> keywordNotifier);
       // [END] INotificationObserverForJobsManager Implementation
 
    protected:
@@ -46,7 +46,7 @@ namespace job
       //-----------------------------------------------------
       ///\brief               The list of listen keywords, sorted by keywordId
       //-----------------------------------------------------
-      typedef std::set<boost::shared_ptr<const condition::IKeywordNotifier> > NotifierList; // List of notifiers for a keyword
+      typedef std::set<boost::shared_ptr<condition::IKeywordUpdater> > NotifierList; // List of notifiers for a keyword
       typedef std::map<int, boost::shared_ptr<NotifierList> > GlobalNotifierMap; // List of notifiers for all keywords (key is the keywordId)
       GlobalNotifierMap m_notifiers;
    };

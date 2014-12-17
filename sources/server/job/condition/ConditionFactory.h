@@ -22,7 +22,7 @@ namespace job { namespace condition
 
    protected:
       // IConditionFactory Implementation
-      virtual boost::shared_ptr<ICondition> createCondition(const shared::CDataContainer& configuration) const;
+      virtual boost::shared_ptr<ICondition> createCondition(const shared::CDataContainer& configuration, IConditionRoot& conditionRoot, boost::shared_ptr<INotificationObserverForJobsManager> notificationObserver) const;
       // [END] IConditionFactory Implementation
    };
 	
