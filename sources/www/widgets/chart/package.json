@@ -26,8 +26,8 @@
          "required" : "false"
       },
       "interval" : {
-         "name" : "Interval of the chart",
-         "description" : "Permit to change the interval of all the chart",
+         "name" : "Default interval of the chart",
+         "description" : "Permit to change the first displayed interval of the chart",
          "type" : "enum",
          "values" : {
             "HOUR" : "1 hour",
@@ -66,55 +66,33 @@
          "type" : "list",
          "name" : "Devices",
          "description" : "List of plotted devices",
-         "nbItemsMin" : "2",
-         "nbItemsMax" : "10",
+         "nbItemsMin" : "1",
+         "nbItemsMax" : "5",
          "allowDuplication" : "true",
          "item" : {
-            "name" : "Color of the plot",
-            "description" : "Permit to change the color of the plot",
-            "type" : "color",
-            "defaultValue" : "#0000FF"
-         }
-      },
-      "device1" : {
-         "type" : "section",
-         "name" : "Plot 1",
-         "description" : "This section describe the configuration of plot 1",
-         "content" : {
-            "source" : {
-               "name" : "Data to display",
-               "description" : "Choose the data of a device to display on the chart",
-               "type" : "device",
-               "expectedKeywordType" : "numeric",
-               "expectedKeywordAccess" : "get"
-            },
-            "color" : {
-               "name" : "Color of the plot",
-               "description" : "Permit to change the color of the plot",
-               "type" : "color",
-               "defaultValue" : "#0000FF"
-            }
-         }
-      },
-      "device2" : {
-         "type" : "section",
-         "name" : "Plot 2",
-         "description" : "This section describe the configuration of plot 2",
-         "enableWithCheckBox" : "true",
-         "enableWithCheckBoxDefaultValue" : "false",
-         "content" : {
-            "source" : {
-               "name" : "Data to display",
-               "description" : "Choose the data of a device to display on the chart",
-               "type" : "device",
-               "expectedKeywordType" : "numeric",
-               "expectedKeywordAccess" : "get"
-            },
-            "color" : {
-               "name" : "Color of the plot",
-               "description" : "Permit to change the color of the plot",
-               "type" : "string",
-               "defaultValue" : "#FF0000"
+            "type" : "section",
+            "name" : "Plot",
+            "description" : "This section describe the configuration of a plot",
+            "content" : {
+               "source" : {
+                  "name" : "Data to display",
+                  "description" : "Choose the data of a device to display on the chart",
+                  "type" : "device",
+                  "expectedKeywordType" : "numeric",
+                  "expectedKeywordAccess" : "get"
+               },
+               "color" : {
+                  "name" : "Color of the plot",
+                  "description" : "Permit to change the color of the plot",
+                  "type" : "color",
+                  "defaultValue" : "#0000FF"
+               },
+               "rangeArea" : {
+                  "type" : "bool",
+                  "name" : "Show range of the value",
+                  "description" : "It allows you to show the range min max of the value during the period. It is visible only on period upper than hour",
+                  "defaultValue" : "false"
+               }
             }
          }
       }

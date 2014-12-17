@@ -213,6 +213,20 @@ body {
     height: 14px;
 }
 
+.list-item-line > .col-md-11 {
+    padding: 0px;
+}
+
+.list-item-line > .col-md-11 > .control-group {
+    margin : 0px;
+}
+
+.list-parameter-handler-validation-textbox {
+    height: 0px;
+    padding: 0px;
+    border: 0px;
+}
+
 /*Dashboard*/
 
 .dashboard-btn-new {

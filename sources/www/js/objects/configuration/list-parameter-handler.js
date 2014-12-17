@@ -29,7 +29,7 @@ function ListParameterHandler(i18nContext, paramName, content, currentValue) {
    this.addBtnUuid = createUUID();
    this.selectorUuid = createUUID();
    //the checkbox for validation
-   this.cbUuid = createUUID();
+   this.itemNumberTextBoxUuid = createUUID();
 
    this.nbItemsMin = parseFloat(content.nbItemsMin);
    if (!isNaN(this.nbItemsMin)) {
@@ -60,8 +60,14 @@ function ListParameterHandler(i18nContext, paramName, content, currentValue) {
  */
 ListParameterHandler.prototype.getDOMObject = function () {
 
+   //we create the header of the control group with a 0px height textbox to set the number of items
+   //this textbox is used to make form validation
+
+   var i18nData = " data-i18n=\"";
+   var i18nOptions = {};
+
    var self = this;
-   var input = "<div class=\"control-group configuration-section well\" >" +
+   var input = "<div id=\"" + this.uuid + "\" class=\"control-group configuration-section well\" >" +
                   "<div class=\"configuration-header\" >";
 
    input +=                "<span data-i18n=\"" + this.i18nContext + this.paramName + ".name\" >" +
@@ -73,7 +79,27 @@ ListParameterHandler.prototype.getDOMObject = function () {
                   "<div class=\"configuration-description\" data-i18n=\"" + this.i18nContext + this.paramName + ".description\" >" +
                      this.description +
                   "</div>" +
-                  "<div id=\"" + this.uuid + "\" class=\"well control-group list-item-container\">";
+                  "<div class=\"controls\" style=\"height: 0px\">" +
+                     "<input type=\"number\" id=\"" + this.itemNumberTextBoxUuid + "\" class=\"enable-validation list-parameter-handler-validation-textbox\" ";
+
+   if (!isNaN(this.nbItemsMin)) {
+      input +=          "min=\"" + this.nbItemsMin + "\" ";
+      i18nOptions["minValue"] = this.nbItemsMin;
+   }
+
+   if (!isNaN(this.nbItemsMax)) {
+      input +=          "max=\"" + this.nbItemsMax + "\" ";
+      i18nOptions["maxValue"] = this.nbItemsMax;
+   }
+
+   input +=             "data-i18n=\"" +
+                            "[data-validation-max-message]configuration.validationForm.maxNumberItemsAllowed;" +
+                            "[data-validation-min-message]configuration.validationForm.minNumberItemsRequired" +
+                        "\"" +
+                        "data-i18n-options=\'" + JSON.stringify(i18nOptions) + "\' />" +
+                  "</div>" +
+                  "<p class=\"help-block\"></p>" +
+                  "<div class=\"well control-group list-item-container\">";
 
    //we append each param in the section
    $.each(this.items, function (key, value) {
@@ -89,24 +115,12 @@ ListParameterHandler.prototype.getDOMObject = function () {
 
 ListParameterHandler.prototype.createItemLine = function(item) {
    //div container of one item
-   var i18nData = " data-i18n=\"";
-
-   i18nData += "[data-validation-maxchecked-message]configuration.validationForm.maxNumberItemsAllowed";
-   i18nData += ";[data-validation-minchecked-messagee]configuration.validationForm.minNumberItemsRequired";
-
    var itemLine = "<div class=\"list-item-line\">" +
-                      "<div class=\"col-md-10\" >" +
+                      "<div class=\"col-md-11\" >" +
                            item.getDOMObject() +
                       "</div>" +
-                      "<div class=\"col-md-2\" >" +
-                         "<input type=\"checkbox\" class=\"hidden\" name=\"" + this.cbUuid + "\" ";
-   if (!isNaN(this.nbItemsMin))
-               itemLine += "data-validation-minchecked-minchecked=\"" + this.nbItemsMin + "\" ";
-   if (!isNaN(this.nbItemsMax))
-               itemLine += "data-validation-maxchecked-maxchecked=\"" + this.nbItemsMax + "\" "
-   itemLine +=           "/>" +
-                         "<div class=\"btn-group\" role=\"group\">";
-
+                      "<div class=\"col-md-1\" >" +
+                         "<div class=\"btn-group-vertical\" role=\"group\">";
    if (this.allowDuplication)
       itemLine +=           "<button class=\"btn btn-primary btn-duplicate\" type=\"button\"><span><i class=\"fa fa-files-o\"></i></span></button>";
 
@@ -115,6 +129,12 @@ ListParameterHandler.prototype.createItemLine = function(item) {
                       "</div>" +
                    "</div>";
    return itemLine;
+}
+
+ListParameterHandler.prototype.updateItemNumberVerificator = function() {
+   //we get the number of item in the list and set it into a textbox to ensure form validation
+   var count = $("div#" + this.uuid).find("div.list-item-line").length;
+   $("input#" + this.itemNumberTextBoxUuid).val(count);
 }
 
 /**
@@ -129,19 +149,27 @@ ListParameterHandler.prototype.applyScript = function () {
       var item = ConfigurationHelper.createParameterHandler(newI18nContext, self.paramName, self.content.item, "");
       self.items.push(item);
       var itemLine = self.createItemLine(item);
-      $("div#" + self.uuid).append(itemLine);
-      $("div#" + self.uuid).i18n();
+      $("div#" + self.uuid).find("div.list-item-container").append(itemLine);
+      $("div#" + self.uuid).find("div.list-item-container").i18n();
+      //we add it to the form validation
+      $("div#" + self.uuid).find("div.list-item-container").last().find("input,select,textarea").jqBootstrapValidation();
 
       //we manage event binding
       $("div#" + self.uuid).find("button.btn-duplicate").unbind('click').bind('click', self.duplicateLine());
       $("div#" + self.uuid).find("button.btn-remove").unbind('click').bind('click', self.deleteLine());
 
+      self.updateItemNumberVerificator();
+
       if ($.isFunction(item.applyScript))
          item.applyScript();
+
    });
 
    $("div#" + self.uuid).find("button.btn-duplicate").unbind('click').bind('click', self.duplicateLine());
    $("div#" + self.uuid).find("button.btn-remove").unbind('click').bind('click', self.deleteLine());
+
+   //we update the number of item in the textbox for the verification
+   self.updateItemNumberVerificator();
 
    //we apply script in each children
    $.each(self.items, function (key, value) {
@@ -189,10 +217,14 @@ ListParameterHandler.prototype.duplicateLine = function() {
 
       $(itemLine).insertAfter($container);
       $("div#" + self.uuid).i18n();
+      //we add it to the form validation
+      $("div#" + self.uuid).find("div.list-item-container").last().find("input,select,textarea").jqBootstrapValidation();
 
       //we manage event binding
       $("div#" + self.uuid).find("button.btn-duplicate").unbind('click').bind('click', self.duplicateLine());
       $("div#" + self.uuid).find("button.btn-remove").unbind('click').bind('click', self.deleteLine());
+
+      self.updateItemNumberVerificator();
 
       if ($.isFunction(item.applyScript))
          item.applyScript();
@@ -213,6 +245,8 @@ ListParameterHandler.prototype.deleteLine = function() {
       self.items.splice(i, 1);
       //we delete it from the DOM
       $container[0].remove();
+
+      self.updateItemNumberVerificator();
    };
 };
 
