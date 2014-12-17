@@ -3,21 +3,25 @@
 namespace job { namespace condition
 {
    //-----------------------------------------------------
-   ///\brief The condition interface
+   ///\brief The root condition interface
    //-----------------------------------------------------
-   class ICondition
+   class IConditionRoot
    {
    public:
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~ICondition() {}
+      virtual ~IConditionRoot() {}
 
       //-----------------------------------------------------
-      ///\brief               Evaluate the condition
-      ///\return              Return the evaluation result
+      ///\brief               Evaluate the condition, unlock wait if condition becomes true
       //-----------------------------------------------------
-      virtual bool eval() const = 0;
+      virtual void eval() = 0;
+
+      //-----------------------------------------------------
+      ///\brief               Wait for condition is met
+      //-----------------------------------------------------
+      virtual void wait() = 0;
    };
 	
 } } // namespace job::condition

@@ -15,8 +15,10 @@ namespace job { namespace condition
       ///\brief               Constructor
       ///\param[in] operands Operands configuration
       ///\param[in] conditionFactory The condition factory
+      ///\param[in] conditionRoot The condition root to notify when changes arrives on a keyword of the condition
+      ///\param[in] notificationObserver  The notification observer
       //-----------------------------------------------------
-      CAnd(const std::vector<shared::CDataContainer>& operands, const IConditionFactory& conditionFactory);
+      CAnd(const std::vector<shared::CDataContainer>& operands, const IConditionFactory& conditionFactory, IConditionRoot& conditionRoot, boost::shared_ptr<INotificationObserverForJobsManager> notificationObserver);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -25,14 +27,15 @@ namespace job { namespace condition
 
    protected:
       // ICondition Implementation
-      virtual void wait() const;
+      virtual bool eval() const;
       // [END] ICondition Implementation
 
    private:
       //-----------------------------------------------------
       ///\brief               The operand conditions
       //-----------------------------------------------------
-      std::vector<boost::shared_ptr<condition::ICondition> > m_operands;
+      typedef std::vector<boost::shared_ptr<ICondition> > Operands;
+      Operands m_operands;
    };
 	
 } } // namespace job::condition	

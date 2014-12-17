@@ -3,15 +3,15 @@
 namespace job { namespace condition
 {
    //-----------------------------------------------------
-   ///\brief The keyword notifier interface
+   ///\brief Interface of notification when a keyword changes state
    //-----------------------------------------------------
-   class IKeywordNotifier
+   class IKeywordUpdater
    {
    public:
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~IKeywordNotifier() {}
+      virtual ~IKeywordUpdater() {}
 
       //-----------------------------------------------------
       ///\brief               Get the keyword ID
@@ -20,8 +20,9 @@ namespace job { namespace condition
 
       //-----------------------------------------------------
       ///\brief               Called when keyword state changes
+      ///\param[in] state     new keyword state //TODO revoir le typage de l'état, ou au moins son traitement
       //-----------------------------------------------------
-      virtual void onNotify() const = 0;
+      virtual void onKeywordStateChange(const std::string& state) = 0;
    };
 	
 } } // namespace job::condition

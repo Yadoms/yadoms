@@ -287,12 +287,15 @@ set(YADOMS_SRC
 	server/job/condition/And.cpp
 	server/job/condition/ConditionFactory.h
 	server/job/condition/ConditionFactory.cpp
+	server/job/condition/ConditionRoot.h
+	server/job/condition/ConditionRoot.cpp
 	server/job/condition/Empty.h
 	server/job/condition/Empty.cpp
 	server/job/condition/Is.h
 	server/job/condition/Is.cpp
 	server/job/condition/ICondition.h
-	server/job/condition/IKeywordNotifier.h
+	server/job/condition/IConditionRoot.h
+	server/job/condition/IKeywordUpdater.h
 	server/job/condition/IConditionFactory.h
    
 	server/web/IRestHandler.h

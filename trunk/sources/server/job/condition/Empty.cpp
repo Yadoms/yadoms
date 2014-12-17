@@ -12,9 +12,9 @@ CEmpty::~CEmpty()
 {         
 }
 
-void CEmpty::wait() const
+bool CEmpty::eval() const
 {
-   // No wait for this kind of condition
+   return true;
 }
 
 } } // namespace job::condition	

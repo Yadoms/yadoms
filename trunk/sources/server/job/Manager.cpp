@@ -29,8 +29,7 @@ void CManager::start()
    std::vector<boost::shared_ptr<database::entities::CJob> > jobs = m_dbRequester->getJobs();
    for (std::vector<boost::shared_ptr<database::entities::CJob> >::const_iterator it = jobs.begin(); it != jobs.end(); ++it)
    {
-      boost::shared_ptr<database::entities::CJob> jobData = *it;
-      boost::shared_ptr<IJob> newJob(new CJob(jobData->Id(), jobData->Name(), jobData->Triggers(), jobData->Actions(), m_pluginGateway, m_conditionFactory));
+      boost::shared_ptr<IJob> newJob(new CJob(*it, m_notificationObserver, m_pluginGateway, *m_conditionFactory));
       m_jobs.push_back(newJob);
    }
 

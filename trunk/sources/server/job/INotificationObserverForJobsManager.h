@@ -1,5 +1,5 @@
 #pragma once
-#include "condition/IKeywordNotifier.h"
+#include "condition/IKeywordUpdater.h"
 
 namespace job
 {
@@ -16,15 +16,15 @@ namespace job
 
       //-----------------------------------------------------
       ///\brief               Register keyword
-      ///\param[in] keywordNotifier Keyword notifier to register
+      ///\param[in] keywordUpdater Keyword updater to register
       //-----------------------------------------------------
-      virtual void registerKeyword(boost::shared_ptr<const condition::IKeywordNotifier> keywordNotifier) = 0;
+      virtual void registerKeywordUpdater(boost::shared_ptr<condition::IKeywordUpdater> keywordUpdater) = 0;
 
       //-----------------------------------------------------
       ///\brief               Unregister keyword
-      ///\param[in] keywordNotifier Keyword notifier to unregister
+      ///\param[in] keywordUpdater Keyword updater to unregister
       //-----------------------------------------------------
-      virtual void unregisterKeyword(boost::shared_ptr<const condition::IKeywordNotifier> keywordNotifier) = 0;
+      virtual void unregisterKeywordUpdater(boost::shared_ptr<condition::IKeywordUpdater> keywordUpdater) = 0;
    };
 	
 } // namespace job	
