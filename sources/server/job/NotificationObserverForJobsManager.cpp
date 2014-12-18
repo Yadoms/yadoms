@@ -40,6 +40,8 @@ void CNotificationObserverForJobsManager::notifyListeners(boost::shared_ptr<noti
 {
    // For this keyword ID, notify each listeners, and each root condition (but just one time)
 
+   boost::recursive_mutex::scoped_lock lock(m_listenersMutex);
+
    std::queue<boost::shared_ptr<condition::IConditionRootUpdater> > m_rootConditionsQueue;
    std::set<boost::shared_ptr<condition::IConditionRootUpdater> > m_rootConditionsSet; // Used to disable duplicates
 
@@ -67,20 +69,22 @@ void CNotificationObserverForJobsManager::notifyListeners(boost::shared_ptr<noti
 
 void CNotificationObserverForJobsManager::registerKeywordUpdater(boost::shared_ptr<condition::IKeywordUpdater> keywordNotifier, boost::shared_ptr<condition::IConditionRootUpdater> conditionRootNotifier)
 {
+   boost::recursive_mutex::scoped_lock lock(m_listenersMutex);
+
    m_listeners.insert(std::pair<int, KeywordUpdater>(keywordNotifier->getKeywordId(), KeywordUpdater(keywordNotifier, conditionRootNotifier)));
 }
 
 void CNotificationObserverForJobsManager::unregisterKeywordUpdater(boost::shared_ptr<condition::IKeywordUpdater> keywordNotifier)
 {
+   boost::recursive_mutex::scoped_lock lock(m_listenersMutex);
+
    // Unregister the specified keyword updater, ands its associated root condition
-   int keywordIdSearched = keywordNotifier->getKeywordId();
-   for (KeywordUpdaterList::iterator listener = m_listeners.begin() ; listener != m_listeners.end() ; ++listener)
+   for (KeywordUpdaterList::iterator listener = m_listeners.begin(); listener != m_listeners.end(); ++listener)
    {
-      // The second test should be enough but add first test for optimisation
-      if(listener->first == keywordIdSearched && listener->second.first == keywordNotifier)
+      if (listener->second.first == keywordNotifier)
       {
-         // Iterator is now the item we looked for. Remove it now.
          m_listeners.erase(listener);
+         break;
       }
    }
 }
