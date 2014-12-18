@@ -1,6 +1,6 @@
 #pragma once
 #include "ICondition.h"
-#include <shared/shared/DataContainer.h>
+#include <shared/DataContainer.h>
 #include "../INotificationObserverForJobsManager.h"
 #include "IConditionRoot.h"
 #include "IKeywordUpdater.h"

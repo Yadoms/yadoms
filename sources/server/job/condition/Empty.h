@@ -1,6 +1,6 @@
 #pragma once
 #include "ICondition.h"
-#include <shared/shared/DataContainer.h>
+#include <shared/DataContainer.h>
 
 namespace job { namespace condition
 {
