@@ -1,27 +1,22 @@
 #pragma once
-#include <shared/shared/DataContainer.h>
-#include "ICondition.h"
-#include "../INotificationObserverForJobsManager.h"
-#include "IConditionRoot.h"
 
 namespace job { namespace condition
 {
    //-----------------------------------------------------
-   ///\brief The condition factory interface
+   ///\brief The root condition interface
    //-----------------------------------------------------
-   class IConditionFactory
+   class IConditionRootUpdater
    {
    public:
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~IConditionFactory() {}
+      virtual ~IConditionRootUpdater() {}
 
       //-----------------------------------------------------
-      ///\brief               Create a condition or sub-condition
-      ///\param[in] configuration Condition configuration node
+      ///\brief               Called when keyword state changes
       //-----------------------------------------------------
-      virtual boost::shared_ptr<ICondition> createCondition(const shared::CDataContainer& configuration) const = 0;
+      virtual void onKeywordStateChange() = 0;
    };
 	
 } } // namespace job::condition

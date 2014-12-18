@@ -11,12 +11,18 @@ CJob::CJob(boost::shared_ptr<database::entities::CJob> jobData,
    boost::shared_ptr<INotificationObserverForJobsManager> notificationObserver,
    boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
    condition::IConditionFactory& conditionFactory)
-   :m_name(jobData->Name()), m_id(jobData->Id()), m_condition(new condition::CConditionRoot(jobData->Triggers(), notificationObserver, conditionFactory)), m_actions(new CActionList(jobData->Actions(), pluginGateway))
+   :m_name(jobData->Name()),
+   m_id(jobData->Id()),
+   m_condition(new condition::CConditionRoot(jobData->Triggers(), conditionFactory)),
+   m_actions(new CActionList(jobData->Actions(), pluginGateway)),
+   m_notificationObserver(notificationObserver)
 {
+   m_condition->registerToNotificationCenter(m_notificationObserver);
 }
 
 CJob::~CJob()
 {         
+   m_condition->unregisterFromNotificationCenter(m_notificationObserver);
 }
 
 void CJob::start()

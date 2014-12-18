@@ -56,7 +56,7 @@ namespace job
       boost::shared_ptr<shared::notification::CNotificationCenter> m_notificationCenter;
 
       //-----------------------------------------------------
-      ///\brief               The condition factory
+      ///\brief               The notification observer
       //-----------------------------------------------------
       boost::shared_ptr<INotificationObserverForJobsManager> m_notificationObserver;
 

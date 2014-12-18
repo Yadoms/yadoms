@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "NotificationObserverForJobsManager.h"
 #include <shared/Log.h>
-#include "../notifications/NewAcquisitionNotification.h"
 
 namespace job
 {
@@ -28,19 +27,7 @@ void CNotificationObserverForJobsManager::doWork()
       case shared::notification::CNotificationCenter::kNotification:
          // Filter only newAcquisition notifications
          if (m_notificationCenter->isNotificationTypeOf< boost::shared_ptr<notifications::CNewAcquisitionNotification> >(&m_NotificationObserver))
-         {
-            boost::shared_ptr<notifications::CNewAcquisitionNotification> newAcquisition = m_notificationCenter->getNotificationData< boost::shared_ptr<notifications::CNewAcquisitionNotification> >(&m_NotificationObserver);
-            GlobalNotifierMap::iterator notifierListIt = m_notifiers.find(newAcquisition->getAcquisition()->KeywordId);
-            if (notifierListIt != m_notifiers.end())
-            {
-               // This keyword ID is listen, notify all listeners
-               boost::shared_ptr<NotifierList> notifierList(notifierListIt->second);
-               for (NotifierList::iterator notifierIt = notifierList->begin(); notifierIt != notifierList->end(); ++notifierIt)
-               {
-                  (*notifierIt)->onKeywordStateChange(newAcquisition->getAcquisition()->Value);                  
-               }
-            }            
-         }
+            notifyListeners(m_notificationCenter->getNotificationData< boost::shared_ptr<notifications::CNewAcquisitionNotification> >(&m_NotificationObserver));
          break;
       default:
          YADOMS_LOG(error) << "Unexpected notification code";
@@ -49,30 +36,48 @@ void CNotificationObserverForJobsManager::doWork()
    }
 }
 
-void CNotificationObserverForJobsManager::registerKeywordUpdater(boost::shared_ptr<condition::IKeywordUpdater> keywordNotifier)
+void CNotificationObserverForJobsManager::notifyListeners(boost::shared_ptr<notifications::CNewAcquisitionNotification> newAcquisition)
 {
-   //TODO ajouter un mutex là-dessus
-   boost::shared_ptr<NotifierList>& notifierList = m_notifiers[keywordNotifier->getKeywordId()];
-   if (!notifierList.get())
-      notifierList.reset(new NotifierList);
-   notifierList->insert(keywordNotifier);
+   // For this keyword ID, notify each listeners, and each root condition (but just one time)
+
+   std::set<boost::shared_ptr<condition::IConditionRootUpdater> > m_rootConditionsToNotify;
+
+   std::pair<KeywordUpdaterList::iterator, KeywordUpdaterList::iterator> range = m_listeners.equal_range(newAcquisition->getAcquisition()->KeywordId);
+   for (KeywordUpdaterList::iterator listener = range.first ; listener != range.second; ++listener)
+   {
+      KeywordUpdater& keywordUpdater = listener->second;
+
+      // Notify keyword
+      keywordUpdater.first->onKeywordStateChange(newAcquisition->getAcquisition()->Value);
+      m_rootConditionsToNotify.insert(keywordUpdater.second);
+   }
+
+   // Now notify root conditions
+   for (std::set<boost::shared_ptr<condition::IConditionRootUpdater> >::iterator condition = m_rootConditionsToNotify.begin();
+      condition != m_rootConditionsToNotify.end() ; ++ condition)
+  {
+      (*condition)->onKeywordStateChange();
+   }
+}
+
+void CNotificationObserverForJobsManager::registerKeywordUpdater(boost::shared_ptr<condition::IKeywordUpdater> keywordNotifier, boost::shared_ptr<condition::IConditionRootUpdater> conditionRootNotifier)
+{
+   m_listeners.insert(std::pair<int, KeywordUpdater>(keywordNotifier->getKeywordId(), KeywordUpdater(keywordNotifier, conditionRootNotifier)));
 }
 
 void CNotificationObserverForJobsManager::unregisterKeywordUpdater(boost::shared_ptr<condition::IKeywordUpdater> keywordNotifier)
 {
-   // Get the list of notifiers for this keywordId
-   GlobalNotifierMap::const_iterator notifierListIt = m_notifiers.find(keywordNotifier->getKeywordId());
-   BOOST_ASSERT_MSG(notifierListIt == m_notifiers.end(), "Keyword notifier was not registered");
-
-   // Remove notifier from the list
-   boost::shared_ptr<NotifierList> notifierList(notifierListIt->second);
-   BOOST_ASSERT_MSG(notifierList->find(keywordNotifier) == notifierList->end(), "Keyword notifier was not registered for this keyword ID");
-
-   notifierList->erase(keywordNotifier);
-
-   // Remove the list if empty
-   if (notifierList->empty())
-      m_notifiers.erase(notifierListIt);
+   // Unregister the specified keyword updater, ands its associated root condition
+   int keywordIdSearched = keywordNotifier->getKeywordId();
+   for (KeywordUpdaterList::iterator listener = m_listeners.begin() ; listener != m_listeners.end() ; ++listener)
+   {
+      // The second test should be enough but add first test for optimisation
+      if(listener->first == keywordIdSearched && listener->second.first == keywordNotifier)
+      {
+         // Iterator is now the item we looked for. Remove it now.
+         m_listeners.erase(listener);
+      }
+   }
 }
 
 

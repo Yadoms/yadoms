@@ -12,18 +12,35 @@
 
 BOOST_AUTO_TEST_SUITE(TestNotificationObserverForJobsManager)
 
-class CKeywordNotifierMoke : public job::condition::IKeywordNotifier
+enum
+{
+   kKeywordNotifierMokeEvent = shared::event::kUserFirstId,
+   kConditionRootMokeEvent
+};
+
+class CKeywordUpdaterMoke : public job::condition::IKeywordUpdater, public boost::enable_shared_from_this<CKeywordUpdaterMoke>
 {
 public:
-   enum { kKeywordNotifierMokeEvent = shared::event::kUserFirstId } ;
-   CKeywordNotifierMoke(int keywordId, shared::event::CEventHandler& eventHandler) : m_keywordId(keywordId), m_eventHandler(eventHandler) {}
-   virtual ~CKeywordNotifierMoke() {}
+   CKeywordUpdaterMoke(int keywordId, shared::event::CEventHandler& eventHandler) : m_keywordId(keywordId), m_eventHandler(eventHandler) {}
+   virtual ~CKeywordUpdaterMoke() {}
    virtual int getKeywordId() const { return m_keywordId; }
-   virtual void onNotify() const { m_eventHandler.postEvent<int>(kKeywordNotifierMokeEvent, m_keywordId); }
+   virtual void onKeywordStateChange(const std::string& /*state*/) { m_eventHandler.postEvent<boost::shared_ptr<CKeywordUpdaterMoke> >(kKeywordNotifierMokeEvent, shared_from_this()); }
 private:
    const int m_keywordId;
    shared::event::CEventHandler& m_eventHandler;
 };
+
+
+class CConditionRootUpdaterMoke : public job::condition::IConditionRootUpdater, public boost::enable_shared_from_this<CConditionRootUpdaterMoke>
+{
+public:
+   CConditionRootUpdaterMoke(shared::event::CEventHandler& eventHandler) : m_eventHandler(eventHandler) {}
+   virtual ~CConditionRootUpdaterMoke() {}
+   virtual void onKeywordStateChange() { m_eventHandler.postEvent<boost::shared_ptr<CConditionRootUpdaterMoke> >(kConditionRootMokeEvent, shared_from_this()); }
+private:
+   shared::event::CEventHandler& m_eventHandler;
+};
+
 
 //--------------------------------------------------------------
 /// \brief	    Nominal case
@@ -34,49 +51,254 @@ BOOST_AUTO_TEST_CASE(Nominal)
    shared::event::CEventHandler eventHandler;
    job::CNotificationObserverForJobsManager observer(notificationCenter);
 
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw3(new CKeywordNotifierMoke(3, eventHandler));
-   observer.registerKeyword(kw3);
+   const int keywordId = 3;
+
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw3(new CKeywordUpdaterMoke(keywordId, eventHandler));
+   boost::shared_ptr<job::condition::IConditionRootUpdater> conditionRootNotifier(new CConditionRootUpdaterMoke(eventHandler));
+   observer.registerKeywordUpdater(kw3, conditionRootNotifier);
 
    // Send notification to notification center
    boost::shared_ptr<database::entities::CAcquisition> acq(new database::entities::CAcquisition);
-   acq->KeywordId = kw3->getKeywordId();
+   acq->KeywordId = keywordId;
    boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData(new notifications::CNewAcquisitionNotification(acq));
    notificationCenter->postNotification(notificationData);
 
-   // Notification should be received by keyword notifier, then transmit to our eventHandler
-   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), CKeywordNotifierMoke::kKeywordNotifierMokeEvent);
-   BOOST_CHECK_EQUAL(eventHandler.getEventData<int>(), kw3->getKeywordId());
+   // Notification should be received by keyword and root condition notifiers, then transmit to our eventHandler
+   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kKeywordNotifierMokeEvent);
+   BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CKeywordUpdaterMoke> >(), kw3);
+
+   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kConditionRootMokeEvent);
+   BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CConditionRootUpdaterMoke> >(), conditionRootNotifier);
 
    // No more event
    BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout);
 }
 
 //--------------------------------------------------------------
-/// \brief	    Several registers of same notifier
+/// \brief	    1 condition, several keywords
+/// \note keywordID used : 3, 4 (2 times), 5, 8, 9
+/// All keyword updaters should be notified
+/// The condition should be notified only once
 //--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(SeveralRegistersOfSameNotifier)
+BOOST_AUTO_TEST_CASE(OneConditionSeveralKeywords)
 {
    boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter());
    shared::event::CEventHandler eventHandler;
    job::CNotificationObserverForJobsManager observer(notificationCenter);
 
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw3(new CKeywordNotifierMoke(3, eventHandler));
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw3bis = kw3;
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw3bister = kw3bis;
-   observer.registerKeyword(kw3);
-   observer.registerKeyword(kw3bis);
-   observer.registerKeyword(kw3bister);
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw3(new CKeywordUpdaterMoke(3, eventHandler));
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw5(new CKeywordUpdaterMoke(5, eventHandler));
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw4_1(new CKeywordUpdaterMoke(4, eventHandler));
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw8(new CKeywordUpdaterMoke(8, eventHandler));
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw4_2(new CKeywordUpdaterMoke(4, eventHandler));
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw9(new CKeywordUpdaterMoke(9, eventHandler));
+   boost::shared_ptr<job::condition::IConditionRootUpdater> conditionRootNotifier(new CConditionRootUpdaterMoke(eventHandler));
+   observer.registerKeywordUpdater(kw3, conditionRootNotifier);
+   observer.registerKeywordUpdater(kw5, conditionRootNotifier);
+   observer.registerKeywordUpdater(kw4_1, conditionRootNotifier);
+   observer.registerKeywordUpdater(kw8, conditionRootNotifier);
+   observer.registerKeywordUpdater(kw4_2, conditionRootNotifier);
+   observer.registerKeywordUpdater(kw9, conditionRootNotifier);
 
-   // Send notification to notification center
+   // Send notification to notification center ==> 1 acquisition on kw#3
    boost::shared_ptr<database::entities::CAcquisition> acq(new database::entities::CAcquisition);
-   acq->KeywordId = kw3->getKeywordId();
+   acq->KeywordId = 3;
    boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData(new notifications::CNewAcquisitionNotification(acq));
    notificationCenter->postNotification(notificationData);
 
-   // Notification should be received by keyword notifier, then transmit to our eventHandler
-   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), CKeywordNotifierMoke::kKeywordNotifierMokeEvent);
-   BOOST_CHECK_EQUAL(eventHandler.getEventData<int>(), kw3->getKeywordId());
+   // Notification should be received by keyword and root condition notifiers, then transmit to our eventHandler
+   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kKeywordNotifierMokeEvent);
+   BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CKeywordUpdaterMoke> >(), kw3);
 
+   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kConditionRootMokeEvent);
+   BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CConditionRootUpdaterMoke> >(), conditionRootNotifier);
+
+   // No more event
+   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout);
+
+   // Send notification to notification center ==> 1 acquisition on kw#4
+   acq->KeywordId = 4;
+   notificationData.reset(new notifications::CNewAcquisitionNotification(acq));
+   notificationCenter->postNotification(notificationData);
+
+   // Notification should be received by keyword and root condition notifiers, then transmit to our eventHandler
+   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kKeywordNotifierMokeEvent);
+   BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CKeywordUpdaterMoke> >(), kw4_1);
+   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kKeywordNotifierMokeEvent);
+   BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CKeywordUpdaterMoke> >(), kw4_2);
+
+   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kConditionRootMokeEvent);
+   BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CConditionRootUpdaterMoke> >(), conditionRootNotifier);
+
+   // No more event
+   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout);
+}
+
+//--------------------------------------------------------------
+/// \brief	    1 condition, several keywords, several acquisition on same keywords
+/// \note keywordID used : 3, 4 (2 times), 5, 8, 9
+/// All keyword updaters should be notified
+/// The condition should be notified only once
+/// - 5 acquisitions on kw#3
+/// - 3 acquisitions on kw#4
+//--------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(OneConditionSeveralKeywordsSeveralAcquisistions)
+{
+   boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter());
+   shared::event::CEventHandler eventHandler;
+   job::CNotificationObserverForJobsManager observer(notificationCenter);
+
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw3(new CKeywordUpdaterMoke(3, eventHandler));
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw5(new CKeywordUpdaterMoke(5, eventHandler));
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw4_1(new CKeywordUpdaterMoke(4, eventHandler));
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw8(new CKeywordUpdaterMoke(8, eventHandler));
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw4_2(new CKeywordUpdaterMoke(4, eventHandler));
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw9(new CKeywordUpdaterMoke(9, eventHandler));
+   boost::shared_ptr<job::condition::IConditionRootUpdater> conditionRootNotifier(new CConditionRootUpdaterMoke(eventHandler));
+   observer.registerKeywordUpdater(kw3, conditionRootNotifier);
+   observer.registerKeywordUpdater(kw5, conditionRootNotifier);
+   observer.registerKeywordUpdater(kw4_1, conditionRootNotifier);
+   observer.registerKeywordUpdater(kw8, conditionRootNotifier);
+   observer.registerKeywordUpdater(kw4_2, conditionRootNotifier);
+   observer.registerKeywordUpdater(kw9, conditionRootNotifier);
+
+   // Send notifications to notification center ==> 5 acquisitions on kw#3
+   boost::shared_ptr<database::entities::CAcquisition> acq(new database::entities::CAcquisition);
+   acq->KeywordId = 3;
+   boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData(new notifications::CNewAcquisitionNotification(acq));
+   for (int i = 0 ; i < 5 ; ++i)
+      notificationCenter->postNotification(notificationData);
+
+   // Notifications should be received by keyword and root condition notifiers, then transmit to our eventHandler
+   for (int i = 0 ; i < 5 ; ++i)
+   {
+      BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kKeywordNotifierMokeEvent);
+      BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CKeywordUpdaterMoke> >(), kw3);
+
+      BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kConditionRootMokeEvent);
+      BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CConditionRootUpdaterMoke> >(), conditionRootNotifier);
+   }
+   // No more event
+   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout);
+
+   // Send notifications to notification center ==> 3 acquisitions on kw#4
+   acq->KeywordId = 4;
+   notificationData.reset(new notifications::CNewAcquisitionNotification(acq));
+   for (int i = 0 ; i < 3 ; ++i)
+      notificationCenter->postNotification(notificationData);
+
+   // Notifications should be received by keyword and root condition notifiers, then transmit to our eventHandler
+   for (int i = 0 ; i < 3 ; ++i)
+   {
+      BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kKeywordNotifierMokeEvent);
+      BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CKeywordUpdaterMoke> >(), kw4_1);
+      BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kKeywordNotifierMokeEvent);
+      BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CKeywordUpdaterMoke> >(), kw4_2);
+
+      BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kConditionRootMokeEvent);
+      BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CConditionRootUpdaterMoke> >(), conditionRootNotifier);
+   }
+
+   // No more event
+   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout);
+}
+
+//--------------------------------------------------------------
+/// \brief	    several conditions, several keywords, several acquisition on same keywords
+/// \note Conditions depends on :
+/// - condition1 : kw#3, kw#5
+/// - condition2 : kw#4 (2 times), kw#8
+/// - condition3 : kw#4, kw#9
+/// All keyword updaters should be notified
+/// Each condition should be notified only once
+/// - 5 acquisitions on kw#3
+/// - 3 acquisitions on kw#4
+//--------------------------------------------------------------
+BOOST_AUTO_TEST_CASE(SeveralConditionSeveralKeywordsSeveralAcquisistions)
+{
+   boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter());
+   shared::event::CEventHandler eventHandler;
+   job::CNotificationObserverForJobsManager observer(notificationCenter);
+
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw3(new CKeywordUpdaterMoke(3, eventHandler));
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw5(new CKeywordUpdaterMoke(5, eventHandler));
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw4_1(new CKeywordUpdaterMoke(4, eventHandler));
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw8(new CKeywordUpdaterMoke(8, eventHandler));
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw4_2(new CKeywordUpdaterMoke(4, eventHandler));
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw4_3(new CKeywordUpdaterMoke(4, eventHandler));
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw9(new CKeywordUpdaterMoke(9, eventHandler));
+   boost::shared_ptr<job::condition::IConditionRootUpdater> condition1(new CConditionRootUpdaterMoke(eventHandler));
+   boost::shared_ptr<job::condition::IConditionRootUpdater> condition2(new CConditionRootUpdaterMoke(eventHandler));
+   boost::shared_ptr<job::condition::IConditionRootUpdater> condition3(new CConditionRootUpdaterMoke(eventHandler));
+   /// condition1 depends on kw#3, kw#5
+   observer.registerKeywordUpdater(kw3, condition1);
+   observer.registerKeywordUpdater(kw5, condition1);
+   /// condition2 depends on kw#4 (2 times), kw#8
+   observer.registerKeywordUpdater(kw4_1, condition2);
+   observer.registerKeywordUpdater(kw4_2, condition2);
+   observer.registerKeywordUpdater(kw8, condition2);
+   /// condition3 depends on kw#4, kw#9
+   observer.registerKeywordUpdater(kw4_3, condition3);
+   observer.registerKeywordUpdater(kw9, condition3);
+
+   // Send notifications to notification center ==> 5 acquisitions on kw#3
+   boost::shared_ptr<database::entities::CAcquisition> acq(new database::entities::CAcquisition);
+   acq->KeywordId = 3;
+   boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData(new notifications::CNewAcquisitionNotification(acq));
+   for (int i = 0 ; i < 5 ; ++i)
+      notificationCenter->postNotification(notificationData);
+
+   // Notifications should be received by keyword and root condition notifiers, then transmit to our eventHandler
+   for (int i = 0 ; i < 5 ; ++i)
+   {
+      BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kKeywordNotifierMokeEvent);
+      BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CKeywordUpdaterMoke> >(), kw3);
+
+      BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kConditionRootMokeEvent);
+      BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CConditionRootUpdaterMoke> >(), condition1);
+   }
+   // No more event
+   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout);
+
+   // Send notifications to notification center ==> 3 acquisitions on kw#4
+   acq->KeywordId = 4;
+   notificationData.reset(new notifications::CNewAcquisitionNotification(acq));
+   for (int i = 0 ; i < 3 ; ++i)
+      notificationCenter->postNotification(notificationData);
+
+   // Notifications should be received by keyword and root condition notifiers, then transmit to our eventHandler
+   for (int i = 0 ; i < 3 ; ++i)
+   {
+      BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kKeywordNotifierMokeEvent);
+      BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CKeywordUpdaterMoke> >(), kw4_1);
+      BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kKeywordNotifierMokeEvent);
+      BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CKeywordUpdaterMoke> >(), kw4_2);
+      BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kKeywordNotifierMokeEvent);
+      BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CKeywordUpdaterMoke> >(), kw4_3);
+
+      BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kConditionRootMokeEvent);
+      BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CConditionRootUpdaterMoke> >(), condition2);
+      BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kConditionRootMokeEvent);
+      BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CConditionRootUpdaterMoke> >(), condition3);
+   }
+   // No more event
+   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout);
+
+   // Send notifications to notification center ==> 18 acquisitions on kw#9
+   acq->KeywordId = 9;
+   notificationData.reset(new notifications::CNewAcquisitionNotification(acq));
+   for (int i = 0 ; i < 18 ; ++i)
+      notificationCenter->postNotification(notificationData);
+
+   // Notifications should be received by keyword and root condition notifiers, then transmit to our eventHandler
+   for (int i = 0 ; i < 18 ; ++i)
+   {
+      BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kKeywordNotifierMokeEvent);
+      BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CKeywordUpdaterMoke> >(), kw9);
+
+      BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), kConditionRootMokeEvent);
+      BOOST_CHECK_EQUAL(eventHandler.getEventData<boost::shared_ptr<CConditionRootUpdaterMoke> >(), condition3);
+   }
    // No more event
    BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout);
 }
@@ -90,12 +312,11 @@ BOOST_AUTO_TEST_CASE(BadNotificationType)
    shared::event::CEventHandler eventHandler;
    job::CNotificationObserverForJobsManager observer(notificationCenter);
 
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw3(new CKeywordNotifierMoke(3, eventHandler));
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw3bis = kw3;
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw3bister = kw3bis;
-   observer.registerKeyword(kw3);
-   observer.registerKeyword(kw3bis);
-   observer.registerKeyword(kw3bister);
+   const int keywordId = 3;
+
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw3(new CKeywordUpdaterMoke(keywordId, eventHandler));
+   boost::shared_ptr<job::condition::IConditionRootUpdater> conditionRootNotifier(new CConditionRootUpdaterMoke(eventHandler));
+   observer.registerKeywordUpdater(kw3, conditionRootNotifier);
 
    // Send "new device" notification to notification center (should be filtered)
    boost::shared_ptr<database::entities::CDevice> newDevice(new database::entities::CDevice);
@@ -105,253 +326,5 @@ BOOST_AUTO_TEST_CASE(BadNotificationType)
    // No notification should be received
    BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout);
 }
-
-//--------------------------------------------------------------
-/// \brief	    Several notifications, one observer
-//--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(SeveralNotificationsOneObserver)
-{
-   boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter());
-   shared::event::CEventHandler eventHandler;
-   job::CNotificationObserverForJobsManager observer(notificationCenter);
-
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw3(new CKeywordNotifierMoke(3, eventHandler));
-   observer.registerKeyword(kw3);
-
-   // Send notification to notification center
-   boost::shared_ptr<database::entities::CAcquisition> acq(new database::entities::CAcquisition);
-   acq->KeywordId = kw3->getKeywordId();
-   boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData(new notifications::CNewAcquisitionNotification(acq));
-   notificationCenter->postNotification(notificationData);
-   notificationCenter->postNotification(notificationData);
-   notificationCenter->postNotification(notificationData);
-
-   // Notification should be received by keyword notifier, then transmit to our eventHandler
-   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), CKeywordNotifierMoke::kKeywordNotifierMokeEvent);
-   BOOST_CHECK_EQUAL(eventHandler.getEventData<int>(), kw3->getKeywordId());
-   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), CKeywordNotifierMoke::kKeywordNotifierMokeEvent);
-   BOOST_CHECK_EQUAL(eventHandler.getEventData<int>(), kw3->getKeywordId());
-   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), CKeywordNotifierMoke::kKeywordNotifierMokeEvent);
-   BOOST_CHECK_EQUAL(eventHandler.getEventData<int>(), kw3->getKeywordId());
-
-   // No more event
-   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout);
-}
-
-//--------------------------------------------------------------
-/// \brief	    Several keywords, one observer
-//--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(SeveralKeywordsOneObserver)
-{
-   boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter());
-   shared::event::CEventHandler eventHandler;
-   job::CNotificationObserverForJobsManager observer(notificationCenter);
-
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw3(new CKeywordNotifierMoke(3, eventHandler)); observer.registerKeyword(kw3);
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw8(new CKeywordNotifierMoke(8, eventHandler)); observer.registerKeyword(kw8);
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw15(new CKeywordNotifierMoke(15, eventHandler)); observer.registerKeyword(kw15);
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw21(new CKeywordNotifierMoke(21, eventHandler)); observer.registerKeyword(kw21);
-
-   // Send notifications to notification center
-   boost::shared_ptr<database::entities::CAcquisition> acq(new database::entities::CAcquisition);
-   acq->KeywordId = kw3->getKeywordId();
-   boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData(new notifications::CNewAcquisitionNotification(acq));
-   notificationCenter->postNotification(notificationData);
-
-   boost::shared_ptr<database::entities::CAcquisition> acq2(new database::entities::CAcquisition);
-   acq2->KeywordId = kw8->getKeywordId();
-   boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData2(new notifications::CNewAcquisitionNotification(acq2));
-   notificationCenter->postNotification(notificationData2);
-
-   boost::shared_ptr<database::entities::CAcquisition> acq3(new database::entities::CAcquisition);
-   acq3->KeywordId = kw15->getKeywordId();
-   boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData3(new notifications::CNewAcquisitionNotification(acq3));
-   notificationCenter->postNotification(notificationData3);
-
-   boost::shared_ptr<database::entities::CAcquisition> acq4(new database::entities::CAcquisition);
-   acq4->KeywordId = kw21->getKeywordId();
-   boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData4(new notifications::CNewAcquisitionNotification(acq4));
-   notificationCenter->postNotification(notificationData4);
-
-   // Notifications should be received on the same keyword notifier, then transmit to our eventHandler
-   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), CKeywordNotifierMoke::kKeywordNotifierMokeEvent);
-   BOOST_CHECK_EQUAL(eventHandler.getEventData<int>(), kw3->getKeywordId());
-   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), CKeywordNotifierMoke::kKeywordNotifierMokeEvent);
-   BOOST_CHECK_EQUAL(eventHandler.getEventData<int>(), kw8->getKeywordId());
-   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), CKeywordNotifierMoke::kKeywordNotifierMokeEvent);
-   BOOST_CHECK_EQUAL(eventHandler.getEventData<int>(), kw15->getKeywordId());
-   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), CKeywordNotifierMoke::kKeywordNotifierMokeEvent);
-   BOOST_CHECK_EQUAL(eventHandler.getEventData<int>(), kw21->getKeywordId());
-
-   // No more event
-   BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout);
-}
-
-//--------------------------------------------------------------
-/// \brief	    One keyword Id, several observers
-//--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(OneKeywordSeveralObservers)
-{
-   boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter());
-   shared::event::CEventHandler eventHandler1, eventHandler2, eventHandler3;
-   job::CNotificationObserverForJobsManager observer1(notificationCenter);
-   job::CNotificationObserverForJobsManager observer2(notificationCenter);
-   job::CNotificationObserverForJobsManager observer3(notificationCenter);
-
-   const int keywordId = 25;
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw1(new CKeywordNotifierMoke(keywordId, eventHandler1)); observer1.registerKeyword(kw1);
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw2(new CKeywordNotifierMoke(keywordId, eventHandler2)); observer2.registerKeyword(kw2);
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw3(new CKeywordNotifierMoke(keywordId, eventHandler3)); observer3.registerKeyword(kw3);
-
-   // Send notification on the keywordId to notification center
-   boost::shared_ptr<database::entities::CAcquisition> acq(new database::entities::CAcquisition);
-   acq->KeywordId = keywordId;
-   boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData(new notifications::CNewAcquisitionNotification(acq));
-   notificationCenter->postNotification(notificationData);
-
-   // Notification should be received by keyword notifier, then transmit to each eventHandler
-   BOOST_CHECK_EQUAL(eventHandler1.waitForEvents(boost::posix_time::milliseconds(500)), CKeywordNotifierMoke::kKeywordNotifierMokeEvent);
-   BOOST_CHECK_EQUAL(eventHandler1.getEventData<int>(), keywordId);
-   BOOST_CHECK_EQUAL(eventHandler1.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout); // No more event
-   BOOST_CHECK_EQUAL(eventHandler2.waitForEvents(boost::posix_time::milliseconds(500)), CKeywordNotifierMoke::kKeywordNotifierMokeEvent);
-   BOOST_CHECK_EQUAL(eventHandler2.getEventData<int>(), keywordId);
-   BOOST_CHECK_EQUAL(eventHandler2.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout); // No more event
-   BOOST_CHECK_EQUAL(eventHandler3.waitForEvents(boost::posix_time::milliseconds(500)), CKeywordNotifierMoke::kKeywordNotifierMokeEvent);
-   BOOST_CHECK_EQUAL(eventHandler3.getEventData<int>(), keywordId);
-   BOOST_CHECK_EQUAL(eventHandler3.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout); // No more event
-}
-
-//--------------------------------------------------------------
-/// \brief	    Several keywords, several observers, several notifications
-/// \note 3 keywordID are used : 25, 37, 72
-/// 3 observers :
-/// - observerA is listening the 3 keywordID
-/// - observerB is listening keywordID 25 and 72
-/// - observerC is listening keywordID 37
-/// Then notifications are sent :
-/// - 2 notifications on keywordId 25
-/// - 1 notifications on keywordId 37
-/// - 4 notifications on keywordId 72
-//--------------------------------------------------------------
-BOOST_AUTO_TEST_CASE(SeveralKeywordsSeveralObserversSeveralNotifications)
-{
-   boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter());
-   // Use a eventHandler for each keywordNotifier to be sure that notification is received by the correct keywordNotifier
-   shared::event::CEventHandler eventHandler1, eventHandler2, eventHandler3;
-   job::CNotificationObserverForJobsManager observerA(notificationCenter);
-   job::CNotificationObserverForJobsManager observerB(notificationCenter);
-   job::CNotificationObserverForJobsManager observerC(notificationCenter);
-
-   // The 3 keywordID : 25, 37, 72
-   const int keywordId1 = 25, keywordId2 = 37, keywordId3 = 72;
-   // observerA is listening keywordID 25, 37, 72
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw1_1(new CKeywordNotifierMoke(keywordId1, eventHandler1)); observerA.registerKeyword(kw1_1);
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw1_2(new CKeywordNotifierMoke(keywordId2, eventHandler1)); observerA.registerKeyword(kw1_2);
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw1_3(new CKeywordNotifierMoke(keywordId3, eventHandler1)); observerA.registerKeyword(kw1_3);
-   // observerB is listening keywordID 25 and 72
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw2_1(new CKeywordNotifierMoke(keywordId1, eventHandler2)); observerB.registerKeyword(kw2_1);
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw2_2(new CKeywordNotifierMoke(keywordId3, eventHandler2)); observerB.registerKeyword(kw2_2);
-   // observerC is listening keywordID 37
-   boost::shared_ptr<job::condition::IKeywordNotifier> kw3_1(new CKeywordNotifierMoke(keywordId2, eventHandler3)); observerC.registerKeyword(kw3_1);
-
-   // Send notifications to notification center
-   // - 2 notifications on keywordId1(25)
-   boost::shared_ptr<database::entities::CAcquisition> acq1_1(new database::entities::CAcquisition);
-   acq1_1->KeywordId = keywordId1;
-   boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData1_1(new notifications::CNewAcquisitionNotification(acq1_1));
-   notificationCenter->postNotification(notificationData1_1);
-   boost::shared_ptr<database::entities::CAcquisition> acq1_2(new database::entities::CAcquisition);
-   acq1_2->KeywordId = keywordId1;
-   boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData1_2(new notifications::CNewAcquisitionNotification(acq1_2));
-   notificationCenter->postNotification(notificationData1_2);
-   // - 1 notification on keywordId2(37)
-   boost::shared_ptr<database::entities::CAcquisition> acq2(new database::entities::CAcquisition);
-   acq2->KeywordId = keywordId2;
-   boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData2(new notifications::CNewAcquisitionNotification(acq2));
-   notificationCenter->postNotification(notificationData2);
-   // - 4 notifications on keywordId3(72)
-   boost::shared_ptr<database::entities::CAcquisition> acq3_1(new database::entities::CAcquisition);
-   acq3_1->KeywordId = keywordId3;
-   boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData3_1(new notifications::CNewAcquisitionNotification(acq3_1));
-   notificationCenter->postNotification(notificationData3_1);
-   boost::shared_ptr<database::entities::CAcquisition> acq3_2(new database::entities::CAcquisition);
-   acq3_2->KeywordId = keywordId3;
-   boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData3_2(new notifications::CNewAcquisitionNotification(acq3_2));
-   notificationCenter->postNotification(notificationData3_2);
-   boost::shared_ptr<database::entities::CAcquisition> acq3_3(new database::entities::CAcquisition);
-   acq3_3->KeywordId = keywordId3;
-   boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData3_3(new notifications::CNewAcquisitionNotification(acq3_3));
-   notificationCenter->postNotification(notificationData3_3);
-   boost::shared_ptr<database::entities::CAcquisition> acq3_4(new database::entities::CAcquisition);
-   acq3_4->KeywordId = keywordId3;
-   boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData3_4(new notifications::CNewAcquisitionNotification(acq3_4));
-   notificationCenter->postNotification(notificationData3_4);
-
-   // Notifications should be received by keyword notifier, then transmit to each eventHandler
-   // - observerA(eventHandler1) should receive :
-   //   - 2 notifications on keywordId1(25)
-   //   - 1 notification on keywordId2(37)
-   //   - 4 notifications on keywordId3(72)
-   {
-      std::map<int /*keywordId*/, int/*notificationCount*/> notificationsReceived;
-      for (int notificationCount = 0 ; notificationCount < (2+1+4) ; ++notificationCount)
-      {
-         BOOST_CHECK_EQUAL(eventHandler1.waitForEvents(boost::posix_time::milliseconds(500)), CKeywordNotifierMoke::kKeywordNotifierMokeEvent);
-         int receivedKeywordId = eventHandler1.getEventData<int>();
-         if (notificationsReceived.find(receivedKeywordId) == notificationsReceived.end())
-            notificationsReceived[eventHandler1.getEventData<int>()] = 1;
-         else
-            notificationsReceived[eventHandler1.getEventData<int>()] ++;
-      }
-      BOOST_CHECK_EQUAL(eventHandler1.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout); // No more event
-      BOOST_CHECK(notificationsReceived.find(25) != notificationsReceived.end());
-      BOOST_CHECK_EQUAL(notificationsReceived[25], 2);
-      BOOST_CHECK(notificationsReceived.find(37) != notificationsReceived.end());
-      BOOST_CHECK_EQUAL(notificationsReceived[37], 1);
-      BOOST_CHECK(notificationsReceived.find(72) != notificationsReceived.end());
-      BOOST_CHECK_EQUAL(notificationsReceived[72], 4);
-   }
-   // - observerB(eventHandler2) should receive :
-   //   - 2 notifications on keywordId1(25)
-   //   - 4 notifications on keywordId3(72)
-   {
-      std::map<int /*keywordId*/, int/*notificationCount*/> notificationsReceived;
-      for (int notificationCount = 0 ; notificationCount < (2+4) ; ++notificationCount)
-      {
-         BOOST_CHECK_EQUAL(eventHandler2.waitForEvents(boost::posix_time::milliseconds(500)), CKeywordNotifierMoke::kKeywordNotifierMokeEvent);
-         int receivedKeywordId = eventHandler2.getEventData<int>();
-         if (notificationsReceived.find(receivedKeywordId) == notificationsReceived.end())
-            notificationsReceived[eventHandler2.getEventData<int>()] = 1;
-         else
-            notificationsReceived[eventHandler2.getEventData<int>()] ++;
-      }
-      BOOST_CHECK_EQUAL(eventHandler2.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout); // No more event
-      BOOST_CHECK(notificationsReceived.find(25) != notificationsReceived.end());
-      BOOST_CHECK_EQUAL(notificationsReceived[25], 2);
-      BOOST_CHECK(notificationsReceived.find(37) == notificationsReceived.end());
-      BOOST_CHECK(notificationsReceived.find(72) != notificationsReceived.end());
-      BOOST_CHECK_EQUAL(notificationsReceived[72], 4);
-   }
-   // - observerC(eventHandler3) should receive :
-   //   - 1 notification on keywordId2(37)
-   {
-      std::map<int /*keywordId*/, int/*notificationCount*/> notificationsReceived;
-      for (int notificationCount = 0 ; notificationCount < 1 ; ++notificationCount)
-      {
-         BOOST_CHECK_EQUAL(eventHandler3.waitForEvents(boost::posix_time::milliseconds(500)), CKeywordNotifierMoke::kKeywordNotifierMokeEvent);
-         int receivedKeywordId = eventHandler3.getEventData<int>();
-         if (notificationsReceived.find(receivedKeywordId) == notificationsReceived.end())
-            notificationsReceived[eventHandler3.getEventData<int>()] = 1;
-         else
-            notificationsReceived[eventHandler3.getEventData<int>()] ++;
-      }
-      BOOST_CHECK_EQUAL(eventHandler3.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout); // No more event
-      BOOST_CHECK(notificationsReceived.find(25) == notificationsReceived.end());
-      BOOST_CHECK(notificationsReceived.find(37) != notificationsReceived.end());
-      BOOST_CHECK_EQUAL(notificationsReceived[37], 1);
-      BOOST_CHECK(notificationsReceived.find(72) == notificationsReceived.end());
-   }
-}
-
 
 BOOST_AUTO_TEST_SUITE_END()
