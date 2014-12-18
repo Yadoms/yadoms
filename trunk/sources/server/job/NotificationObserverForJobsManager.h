@@ -52,12 +52,14 @@ namespace job
       //-----------------------------------------------------
       ///\brief               The list of listen keywords, sorted by keywordId
       //-----------------------------------------------------
-      //TODO à virer typedef std::set<boost::shared_ptr<condition::IKeywordUpdater> > NotifierList; // List of notifiers for a keyword
-      //TODO à virer typedef std::map<int, boost::shared_ptr<NotifierList> > GlobalNotifierMap; // List of notifiers for all keywords (key is the keywordId)
-      //TODO ajouter un mutex là-dessus
       typedef std::pair<boost::shared_ptr<condition::IKeywordUpdater>, boost::shared_ptr<condition::IConditionRootUpdater> > KeywordUpdater;
       typedef std::multimap<int, KeywordUpdater> KeywordUpdaterList;
       KeywordUpdaterList m_listeners;
+
+      //--------------------------------------------------------------
+      /// \brief	   Mutex protecting the keyword list
+      //--------------------------------------------------------------
+      mutable boost::recursive_mutex m_listenersMutex;
    };
 	
 } // namespace job	

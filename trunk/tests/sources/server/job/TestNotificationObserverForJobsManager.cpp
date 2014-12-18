@@ -327,4 +327,102 @@ BOOST_AUTO_TEST_CASE(BadNotificationType)
    BOOST_CHECK_EQUAL(eventHandler.waitForEvents(boost::posix_time::milliseconds(500)), shared::event::kTimeout);
 }
 
+//--------------------------------------------------------------
+/// \brief	    Thread safety
+//--------------------------------------------------------------
+void ThreadSafety_SenderThread(boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter, int count)
+{
+   // Send notifications to notification center ==> 5 acquisitions on kw#3
+   boost::shared_ptr<database::entities::CAcquisition> acq1(new database::entities::CAcquisition);
+   acq1->KeywordId = 3;
+   boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData1(new notifications::CNewAcquisitionNotification(acq1));
+   boost::shared_ptr<database::entities::CAcquisition> acq2(new database::entities::CAcquisition);
+   acq2->KeywordId = 8;
+   boost::shared_ptr<notifications::CNewAcquisitionNotification> notificationData2(new notifications::CNewAcquisitionNotification(acq2));
+   for (int i = 0; i < count; ++i)
+   {
+      notificationCenter->postNotification(notificationData1);
+      notificationCenter->postNotification(notificationData2);
+   }
+}
+BOOST_AUTO_TEST_CASE(ThreadSafetyRegister)
+{
+   boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter());
+   shared::event::CEventHandler eventHandler;
+   job::CNotificationObserverForJobsManager observer(notificationCenter);
+
+   boost::thread(ThreadSafety_SenderThread, notificationCenter, 1000);
+   boost::this_thread::sleep(boost::posix_time::milliseconds(0));
+
+   // Register 100 times kW3 for the same condition
+   boost::shared_ptr<job::condition::IConditionRootUpdater> conditionRootNotifier(new CConditionRootUpdaterMoke(eventHandler));
+   for (int i = 0; i < 100; ++i)
+   {
+      boost::shared_ptr<job::condition::IKeywordUpdater> kw3(new CKeywordUpdaterMoke(3, eventHandler));
+      observer.registerKeywordUpdater(kw3, conditionRootNotifier);
+   }
+
+   // As you can't know how many event will be received, empty queue
+   while (eventHandler.waitForEvents(boost::posix_time::milliseconds(500)) != shared::event::kTimeout);
+
+   // Now we have to check the registration count of keyword (expected 100) and condition (expected 1) by sending just one message
+   boost::thread(ThreadSafety_SenderThread, notificationCenter, 1);
+   bool end = false;
+   int keywordRegisterCount = 0, conditionRegisterCount = 0;
+   do
+   {
+      switch (eventHandler.waitForEvents(boost::posix_time::milliseconds(500)))
+      {
+      case kKeywordNotifierMokeEvent: ++keywordRegisterCount; break;
+      case kConditionRootMokeEvent: ++conditionRegisterCount; break;
+      case shared::event::kTimeout: end = true; break;
+      }
+   } while (!end);
+
+   // Check counts
+   BOOST_CHECK_EQUAL(keywordRegisterCount, 100);
+   BOOST_CHECK_EQUAL(conditionRegisterCount, 1);
+}
+BOOST_AUTO_TEST_CASE(ThreadSafetyUnregister)
+{
+   boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter());
+   shared::event::CEventHandler eventHandler;
+   job::CNotificationObserverForJobsManager observer(notificationCenter);
+
+   // Register 200 times kW3 for the same condition
+   boost::shared_ptr<job::condition::IKeywordUpdater> kw3(new CKeywordUpdaterMoke(3, eventHandler));
+   boost::shared_ptr<job::condition::IConditionRootUpdater> conditionRootNotifier(new CConditionRootUpdaterMoke(eventHandler));
+   for (int i = 0; i < 200; ++i)
+      observer.registerKeywordUpdater(kw3, conditionRootNotifier);
+
+   // Start sending 1000 events
+   boost::thread(ThreadSafety_SenderThread, notificationCenter, 1000);
+   boost::this_thread::sleep(boost::posix_time::milliseconds(0));
+
+   // Unregister 100 times kW3 for the same condition
+   for (int i = 0; i < 100; ++i)
+      observer.unregisterKeywordUpdater(kw3);
+
+   // As you can't know how many event will be received, empty queue
+   while (eventHandler.waitForEvents(boost::posix_time::milliseconds(500)) != shared::event::kTimeout);
+
+   // Now we have to check the registration count of keyword (expected 100) and condition (expected 1) by sending just one message
+   boost::thread(ThreadSafety_SenderThread, notificationCenter, 1);
+   bool end = false;
+   int keywordRegisterCount = 0, conditionRegisterCount = 0;
+   do
+   {
+      switch (eventHandler.waitForEvents(boost::posix_time::milliseconds(500)))
+      {
+      case kKeywordNotifierMokeEvent: ++keywordRegisterCount; break;
+      case kConditionRootMokeEvent: ++conditionRegisterCount; break;
+      case shared::event::kTimeout: end = true; break;
+      }
+   } while (!end);
+
+   // Check counts
+   BOOST_CHECK_EQUAL(keywordRegisterCount, 100);
+   BOOST_CHECK_EQUAL(conditionRegisterCount, 1);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
