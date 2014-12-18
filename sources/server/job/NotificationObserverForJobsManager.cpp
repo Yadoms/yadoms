@@ -40,7 +40,8 @@ void CNotificationObserverForJobsManager::notifyListeners(boost::shared_ptr<noti
 {
    // For this keyword ID, notify each listeners, and each root condition (but just one time)
 
-   std::set<boost::shared_ptr<condition::IConditionRootUpdater> > m_rootConditionsToNotify;
+   std::queue<boost::shared_ptr<condition::IConditionRootUpdater> > m_rootConditionsQueue;
+   std::set<boost::shared_ptr<condition::IConditionRootUpdater> > m_rootConditionsSet; // Used to disable duplicates
 
    std::pair<KeywordUpdaterList::iterator, KeywordUpdaterList::iterator> range = m_listeners.equal_range(newAcquisition->getAcquisition()->KeywordId);
    for (KeywordUpdaterList::iterator listener = range.first ; listener != range.second; ++listener)
@@ -49,14 +50,18 @@ void CNotificationObserverForJobsManager::notifyListeners(boost::shared_ptr<noti
 
       // Notify keyword
       keywordUpdater.first->onKeywordStateChange(newAcquisition->getAcquisition()->Value);
-      m_rootConditionsToNotify.insert(keywordUpdater.second);
+      if (m_rootConditionsSet.find(keywordUpdater.second) == m_rootConditionsSet.end())
+      {
+         m_rootConditionsQueue.push(keywordUpdater.second);
+         m_rootConditionsSet.insert(keywordUpdater.second);
+      }
    }
 
    // Now notify root conditions
-   for (std::set<boost::shared_ptr<condition::IConditionRootUpdater> >::iterator condition = m_rootConditionsToNotify.begin();
-      condition != m_rootConditionsToNotify.end() ; ++ condition)
-  {
-      (*condition)->onKeywordStateChange();
+   while (!m_rootConditionsQueue.empty())
+   {
+      m_rootConditionsQueue.front()->onKeywordStateChange();
+      m_rootConditionsQueue.pop();
    }
 }
 
