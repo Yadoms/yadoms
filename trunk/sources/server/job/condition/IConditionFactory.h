@@ -1,5 +1,5 @@
 #pragma once
-#include <shared/shared/DataContainer.h>
+#include <shared/DataContainer.h>
 #include "ICondition.h"
 #include "../INotificationObserverForJobsManager.h"
 #include "IConditionRoot.h"

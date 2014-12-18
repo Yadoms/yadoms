@@ -1,5 +1,5 @@
 #pragma once
-#include <server/job/INotificationObserverForJobsManager.h>
+#include "../INotificationObserverForJobsManager.h"
 
 namespace job { namespace condition
 {
