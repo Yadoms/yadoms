@@ -295,6 +295,7 @@ set(YADOMS_SRC
 	server/job/condition/Is.cpp
 	server/job/condition/ICondition.h
 	server/job/condition/IConditionRoot.h
+	server/job/condition/IConditionRootUpdater.h
 	server/job/condition/IKeywordUpdater.h
 	server/job/condition/IConditionFactory.h
    

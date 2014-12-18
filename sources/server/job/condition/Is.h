@@ -16,10 +16,8 @@ namespace job { namespace condition
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] configuration Condition configuration node
-      ///\param[in] conditionRoot The condition root to notify when changes arrives on the keyword
-      ///\param[in] notificationObserver  The notification observer
       //-----------------------------------------------------
-      CIs(const shared::CDataContainer& configuration, IConditionRoot& conditionRoot, boost::shared_ptr<INotificationObserverForJobsManager> notificationObserver);//TODO vérfier si tous les paramètres sont encore utiles
+      CIs(const shared::CDataContainer& configuration);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -29,6 +27,8 @@ namespace job { namespace condition
    protected:
       // ICondition Implementation
       virtual bool eval() const;
+      virtual void registerToNotificationCenter(boost::shared_ptr<INotificationObserverForJobsManager> notificationObserver, boost::shared_ptr<IConditionRootUpdater> conditionRootNotifier);
+      virtual void unregisterFromNotificationCenter(boost::shared_ptr<INotificationObserverForJobsManager> notificationObserver);
       // [END] ICondition Implementation
 
       // IKeywordUpdater Implementation
@@ -51,11 +51,6 @@ namespace job { namespace condition
       ///\brief               Expected state
       //-----------------------------------------------------
       const std::string m_expectedState;
-
-      //-----------------------------------------------------
-      ///\brief               The notification observer to register with
-      //-----------------------------------------------------
-      boost::shared_ptr<INotificationObserverForJobsManager> m_notificationObserver;
    };
 	
 } } // namespace job::condition	

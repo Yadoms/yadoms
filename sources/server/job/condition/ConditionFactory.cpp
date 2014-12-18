@@ -16,7 +16,7 @@ CConditionFactory::~CConditionFactory()
 {         
 }
 
-boost::shared_ptr<ICondition> CConditionFactory::createCondition(const shared::CDataContainer& configuration, IConditionRoot& conditionRoot, boost::shared_ptr<INotificationObserverForJobsManager> notificationObserver) const
+boost::shared_ptr<ICondition> CConditionFactory::createCondition(const shared::CDataContainer& configuration) const
 {
    boost::shared_ptr<ICondition> condition;
 
@@ -28,13 +28,11 @@ boost::shared_ptr<ICondition> CConditionFactory::createCondition(const shared::C
       }
       else if (configuration.hasValue("is"))
       {
-         boost::shared_ptr<CIs> newCondition(new CIs(configuration.get<shared::CDataContainer>("is"), conditionRoot, notificationObserver));
-         notificationObserver->registerKeywordUpdater(newCondition);
-         condition = newCondition;
+         condition.reset(new CIs(configuration.get<shared::CDataContainer>("is")));
       }
       else if (configuration.hasValue("and"))
       {
-         condition.reset(new CAnd(configuration.get<std::vector<shared::CDataContainer> >("and"), *this, conditionRoot, notificationObserver));
+         condition.reset(new CAnd(configuration.get<std::vector<shared::CDataContainer> >("and"), *this));
       }
       // TODO add other conditions here
 

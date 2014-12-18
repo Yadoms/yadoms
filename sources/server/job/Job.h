@@ -69,6 +69,11 @@ namespace job
       ///\brief               The actions to do
       //-----------------------------------------------------
       boost::shared_ptr<IActionList> m_actions;
+
+      //-----------------------------------------------------
+      ///\brief               The notification observer
+      //-----------------------------------------------------
+      boost::shared_ptr<INotificationObserverForJobsManager> m_notificationObserver;
    };
 	
 } // namespace job	

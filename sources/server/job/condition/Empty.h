@@ -23,6 +23,8 @@ namespace job { namespace condition
    protected:
       // ICondition Implementation
       virtual bool eval() const;
+      virtual void registerToNotificationCenter(boost::shared_ptr<INotificationObserverForJobsManager> notificationObserver, boost::shared_ptr<IConditionRootUpdater> conditionRootNotifier);
+      virtual void unregisterFromNotificationCenter(boost::shared_ptr<INotificationObserverForJobsManager> notificationObserver);
       // [END] ICondition Implementation
    };
 	

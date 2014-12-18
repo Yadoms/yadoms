@@ -4,21 +4,29 @@
 namespace job { namespace condition
 {
 
-CIs::CIs(const shared::CDataContainer& configuration, IConditionRoot& conditionRoot, boost::shared_ptr<INotificationObserverForJobsManager> notificationObserver)
-   :m_keywordId(configuration.get<int>("keywordId")), m_expectedState(configuration.get<std::string>("expectedState")),
-   m_notificationObserver(notificationObserver)
+CIs::CIs(const shared::CDataContainer& configuration)
+   :m_keywordId(configuration.get<int>("keywordId")), m_expectedState(configuration.get<std::string>("expectedState"))
 {
    //TODO initialiser m_state
 }
 
 CIs::~CIs()
 {
-   m_notificationObserver->unregisterKeywordUpdater(shared_from_this());
 }
 
 bool CIs::eval() const
 {
    return m_state == m_expectedState;
+}
+
+void CIs::registerToNotificationCenter(boost::shared_ptr<INotificationObserverForJobsManager> notificationObserver, boost::shared_ptr<IConditionRootUpdater> conditionRootNotifier)
+{
+   notificationObserver->registerKeywordUpdater(shared_from_this(), conditionRootNotifier);
+}
+
+void CIs::unregisterFromNotificationCenter(boost::shared_ptr<INotificationObserverForJobsManager> notificationObserver)
+{
+   notificationObserver->unregisterKeywordUpdater(shared_from_this());
 }
 
 int CIs::getKeywordId() const
