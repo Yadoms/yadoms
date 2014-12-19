@@ -48,10 +48,15 @@ namespace pluginSystem
 
    private:
       //--------------------------------------------------------------
+      /// \brief	Warning remove (clang)    
+      ///         Explicitly tells the compiler that CExternalPluginFactory::load do not attend to override shared::CDynamicLibrary::load
+      //--------------------------------------------------------------
+      using shared::CDynamicLibrary::load;
+      
+      //--------------------------------------------------------------
       /// \brief	    Load a plugin file
       /// \throw      CInvalidPluginException if plugin is not recognized
       //-------------------------------------------------------------
-      using shared::CDynamicLibrary::load;
       void load();
     
       //--------------------------------------------------------------
