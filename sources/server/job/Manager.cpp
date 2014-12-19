@@ -4,6 +4,7 @@
 #include "Job.h"
 #include "condition/ConditionFactory.h"
 #include "NotificationObserverForJobsManager.h"
+#include <shared/exception/EmptyResult.hpp>
 
 namespace job
 {
@@ -32,9 +33,28 @@ void CManager::start()
    std::vector<boost::shared_ptr<database::entities::CJob> > jobs = m_dbRequester->getJobs();
    for (std::vector<boost::shared_ptr<database::entities::CJob> >::const_iterator it = jobs.begin(); it != jobs.end(); ++it)
    {
-      boost::shared_ptr<IJob> newJob(new CJob(*it, m_notificationObserver, m_pluginGateway, *m_conditionFactory));
-      m_jobs.push_back(newJob);
+      if ((*it)->Enable)
+         createJob(*it);
    }
+
+   //TODO à supprimer, pour test
+   boost::shared_ptr<database::entities::CJob> jobData(new database::entities::CJob);
+   jobData->Id = 1;
+   jobData->Name = "testJob";
+   jobData->Description = "test";
+   jobData->Enable = true;
+   jobData->Triggers = std::string("{ \"and\" : [ { \"is\" : { \"keywordId\" : \"31\", \"expectedState\" : \"1\" } }, { \"is\" : { \"keywordId\" : \"32\", \"expectedState\" : \"0\" } } ] }");
+   jobData->Actions = std::string("{ \"actions\" : [ { \"type\" : \"command\", \"deviceId\" : \"6\", \"keywordId\" : \"14\", \"value\" : \"1\" } ] }");
+   createJob(jobData);
+   boost::shared_ptr<database::entities::CJob> jobData2(new database::entities::CJob);
+   jobData2->Id = 2;
+   jobData2->Name = "testJob2";
+   jobData2->Description = "test2";
+   jobData2->Enable = true;
+   jobData2->Triggers = std::string("{ \"and\" : [ { \"is\" : { \"keywordId\" : \"31\", \"expectedState\" : \"0\" } }, { \"is\" : { \"keywordId\" : \"32\", \"expectedState\" : \"1\" } } ] }");
+   jobData2->Actions = std::string("{ \"actions\" : [ { \"type\" : \"command\", \"deviceId\" : \"6\", \"keywordId\" : \"14\", \"value\" : \"0\" } ] }");
+   createJob(jobData2);
+   //\TODO à supprimer, pour test
 
    // Start all jobs
    for (std::vector<boost::shared_ptr<IJob> >::const_iterator it = m_jobs.begin(); it != m_jobs.end(); ++it)
@@ -56,6 +76,27 @@ void CManager::stop()
 
    // Unregister notification observer
    m_notificationObserver.reset();
+}
+
+void CManager::createJob(boost::shared_ptr<database::entities::CJob> jobData)
+{
+   try
+   {
+      boost::shared_ptr<IJob> newJob(new CJob(jobData, m_notificationObserver, m_pluginGateway, *m_conditionFactory));
+      m_jobs.push_back(newJob);
+   }
+   catch(shared::exception::CEmptyResult& e)
+   {
+      YADOMS_LOG(error) << "Invalid job \"" << jobData->Name() << "\" condition configuration, element not found in database : " << e.what();
+   }
+   catch(shared::exception::CInvalidParameter& e)
+   {
+      YADOMS_LOG(error) << "Invalid job \"" << jobData->Name() << "\" condition configuration, invalid parameter : " << e.what();
+   }
+   catch(shared::exception::COutOfRange& e)
+   {
+      YADOMS_LOG(error) << "Invalid job \"" << jobData->Name() << "\" condition configuration, out of range : " << e.what();
+   }
 }
 
 } // namespace job	

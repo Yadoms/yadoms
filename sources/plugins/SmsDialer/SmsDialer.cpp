@@ -65,13 +65,13 @@ void CSmsDialer::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    }
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(info) << "Thread is stopping...";
+      YADOMS_LOG(information) << "Thread is stopping...";
    }
 }
 
 void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> context)
 {
-   YADOMS_LOG(info) << "Phone is not connected"  << std::endl;
+   YADOMS_LOG(information) << "Phone is not connected"  << std::endl;
    context->recordPluginEvent(yApi::IYPluginApi::kInfo, "Phone is not connected");
 
    m_incommingSmsPollTimer->stop();
@@ -134,7 +134,7 @@ void CSmsDialer::processNotConnectedState(boost::shared_ptr<yApi::IYPluginApi> c
 
 void CSmsDialer::processConnectedState(boost::shared_ptr<yApi::IYPluginApi> context)
 {
-   YADOMS_LOG(info) << "Phone is connected"  << std::endl;
+   YADOMS_LOG(information) << "Phone is connected"  << std::endl;
    context->recordPluginEvent(yApi::IYPluginApi::kInfo, "Phone is connected");
 
    m_connectionTimer->stop();
@@ -285,7 +285,7 @@ void CSmsDialer::processIncommingSMS(boost::shared_ptr<yApi::IYPluginApi> contex
    {
       for (std::vector<boost::shared_ptr<ISms> >::const_iterator it = incommingSms->begin() ; it != incommingSms->end() ; ++it)
       {
-         YADOMS_LOG(info) << "SMS received";
+         YADOMS_LOG(information) << "SMS received";
          YADOMS_LOG(debug) << "SMS received from " << (*it)->getNumber() << " : " << (*it)->getContent();
 
          // Send SMS to Yadoms

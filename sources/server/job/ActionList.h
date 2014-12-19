@@ -28,6 +28,13 @@ namespace job
       // IActionList Implementation
       virtual void doAll();
       // [END] IActionList Implementation
+      
+      //-----------------------------------------------------
+      ///\brief               Create an action
+      ///\param[in] configuration Action configuration
+      ///\param[in] pluginGateway Plugin gateway
+      //-----------------------------------------------------
+      void createAction(const shared::CDataContainer& configuration, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway);
 
    private:
       //-----------------------------------------------------

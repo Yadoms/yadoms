@@ -18,6 +18,7 @@ namespace job { namespace condition
       ///\brief               Constructor
       ///\param[in] configuration Condition configuration node
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
+      ///\throw shared::exception::CEmptyResult if associated keyword is not found
       //-----------------------------------------------------
       CIs(const shared::CDataContainer& configuration, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester);
 

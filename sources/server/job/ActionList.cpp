@@ -2,22 +2,44 @@
 #include "ActionList.h"
 #include "action/DriveDevice.h"
 #include "action/RunScript.h"
+#include <shared/Log.h>
 
 namespace job
 {
 
 CActionList::CActionList(const shared::CDataContainer& configuration, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway)
 {
+   const std::vector<shared::CDataContainer>& configurationActions = configuration.get<std::vector<shared::CDataContainer> >("actions");
+
    // Build the actions list
-   //TODO : en dur en attendant une conf
-   boost::shared_ptr<action::IAction> newDriveDeviceAction(new action::CDeviceDrive(shared::CDataContainer(), pluginGateway));
-   m_actions.push_back(newDriveDeviceAction);
-   boost::shared_ptr<action::IAction> newRunScriptAction(new action::CRunScript(shared::CDataContainer(), pluginGateway));
-   m_actions.push_back(newRunScriptAction);
+   for (std::vector<shared::CDataContainer>::const_iterator it = configurationActions.begin(); it != configurationActions.end(); ++it)
+      createAction(*it, pluginGateway);
 }
 
 CActionList::~CActionList()
 {         
+}
+
+void CActionList::createAction(const shared::CDataContainer& configuration, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway)
+{
+   boost::shared_ptr<action::IAction> action;
+
+   const std::string& type = configuration.get<std::string>("type");
+   if (type == "command")
+   {
+      action.reset(new action::CDeviceDrive(configuration, pluginGateway));
+   }
+
+   // TODO add other actions here
+
+   if (!action)
+   {
+      YADOMS_LOG(error) << "Invalid job condition configuration : " << configuration.serialize();
+      YADOMS_LOG(error) << "data : " << configuration.serialize();
+      return;
+   }
+
+   m_actions.push_back(action);
 }
 
 void CActionList::doAll()
