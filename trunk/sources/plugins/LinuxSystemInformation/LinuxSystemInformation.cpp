@@ -127,7 +127,7 @@ void CLinuxSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> contex
    // as a plugin failure.
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(info) << "LinuxSystemInformation is stopping..."  << std::endl;
+      YADOMS_LOG(information) << "LinuxSystemInformation is stopping..."  << std::endl;
    }
 }
 

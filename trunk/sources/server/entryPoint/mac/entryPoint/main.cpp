@@ -11,7 +11,6 @@ int main(int argc, char** argv)
    try
    {
       CApplication app;
-      app.configure(argc, argv);
       return tools::CApplicationLoader::run(app, argc, argv);
     }
    catch(...)
