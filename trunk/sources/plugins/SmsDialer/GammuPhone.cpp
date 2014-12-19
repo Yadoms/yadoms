@@ -44,7 +44,7 @@ bool CGammuPhone::connect()
    m_phoneId.append(" (").append(readValue).append(") ");
    m_phoneId.append(model->number);
 
-   YADOMS_LOG(info) << "Phone found : " << m_phoneId;
+   YADOMS_LOG(information) << "Phone found : " << m_phoneId;
 
    return true;
 }
@@ -102,7 +102,7 @@ void CGammuPhone::send(boost::shared_ptr<ISms> sms)
    if (!isConnected())
       throw CPhoneException("Phone must be connected to send SMS");
 
-   YADOMS_LOG(info) << "Send SMS to number " << sms->getNumber() << " \"" << sms->getContent() << "\"";
+   YADOMS_LOG(information) << "Send SMS to number " << sms->getNumber() << " \"" << sms->getContent() << "\"";
    
    // Fill in SMS info structure which will be used to generate messages.
    GSM_MultiPartSMSInfo SMSInfo;
@@ -166,7 +166,7 @@ void CGammuPhone::send(boost::shared_ptr<ISms> sms)
    }
 
    // Message sent OK
-   YADOMS_LOG(info) << "SMS sent successfully";
+   YADOMS_LOG(information) << "SMS sent successfully";
    return;
 }
 

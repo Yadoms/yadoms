@@ -36,6 +36,13 @@ namespace job
       virtual void stop();
       // [END] IManager Implementation
 
+   protected:
+      //-----------------------------------------------------
+      ///\brief               Create a job from configured job data
+      ///\param[in] jobData   The job data
+      //-----------------------------------------------------
+      void createJob(boost::shared_ptr<database::entities::CJob> jobData);
+
    private:
       //-----------------------------------------------------
       ///\brief               The plugin access (to send commands to plugins)
