@@ -1,19 +1,15 @@
 #include "stdafx.h"
 #include "Job.h"
-#include <shared/exception/NotImplemented.hpp>
-#include <shared/exception/InvalidParameter.hpp>
 #include "database/sqlite/SQLiteDataProvider.h"
-#include "database/sqlite/adapters/SingleValueAdapter.hpp"
 #include "database/sqlite/adapters/SQLiteDatabaseAdapters.h"
-#include <shared/exception/EmptyResult.hpp>
 #include "database/sqlite/SQLiteDatabaseTables.h"
 #include "database/sqlite/Query.h"
 
 
 namespace database { namespace sqlite { namespace requesters { 
 
-   CJob::CJob(CSQLiteDataProvider * databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
-      :m_databaseHandler(databaseHandler), m_databaseRequester(databaseRequester)
+   CJob::CJob(boost::shared_ptr<CSQLiteRequester> & databaseRequester)
+      :m_databaseRequester(databaseRequester)
    {
    }
 

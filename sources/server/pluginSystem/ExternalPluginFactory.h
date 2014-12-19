@@ -51,6 +51,7 @@ namespace pluginSystem
       /// \brief	    Load a plugin file
       /// \throw      CInvalidPluginException if plugin is not recognized
       //-------------------------------------------------------------
+      using shared::CDynamicLibrary::load;
       void load();
     
       //--------------------------------------------------------------

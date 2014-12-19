@@ -19,7 +19,7 @@ namespace database { namespace sqlite {
          /// \Brief		   Constructor
          /// \param [in]	pDatabaseHandler: the database handler
          //--------------------------------------------------------------
-         CEventLogger(CSQLiteDataProvider * databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester);
+         CEventLogger(boost::shared_ptr<CSQLiteRequester> & databaseRequester);
 
          //--------------------------------------------------------------
          /// \Brief		   Destructor
@@ -36,11 +36,6 @@ namespace database { namespace sqlite {
          // [END] IEventLoggerRequester implementation
 
       private:
-         //--------------------------------------------------------------
-         /// \Brief		   Pointer to SQLiteDatabseHandler
-         //--------------------------------------------------------------
-         CSQLiteDataProvider * m_databaseHandler;
-
          //--------------------------------------------------------------
          /// \Brief		   Reference to SQLiteRequester
          //--------------------------------------------------------------

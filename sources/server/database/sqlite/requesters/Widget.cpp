@@ -11,8 +11,8 @@
 
 namespace database { namespace sqlite { namespace requesters { 
 
-   CWidget::CWidget(CSQLiteDataProvider * databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
-      :m_databaseHandler(databaseHandler), m_databaseRequester(databaseRequester)
+   CWidget::CWidget(boost::shared_ptr<CSQLiteRequester> & databaseRequester)
+      :m_databaseRequester(databaseRequester)
    {
    }
 

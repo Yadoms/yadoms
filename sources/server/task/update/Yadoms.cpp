@@ -5,11 +5,9 @@
 #include <shared/DataContainer.h>
 #include "tools/Version.h"
 #include "SystemInformation.h"
-//TODO passer les includes de boost dans stdafx
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
 #include <boost/functional/hash.hpp>
 #include <shared/encryption/md5.h>
+#include <fstream>
 
 namespace task { namespace update {
 
@@ -77,7 +75,7 @@ namespace task { namespace update {
             
             boost::filesystem::path packageLocalFilePath = tempFolder / fileToDownload;
 
-            std::ofstream packageFile(packageLocalFilePath.string().c_str(), std::ios::binary);
+            std::ofstream packageFile(packageLocalFilePath.string(), std::ios::binary);
 
             tools::web::CFileDownloader::downloadFile(baseUrl + "/" + platform + "/" + fileToDownload,
                packageFile,
