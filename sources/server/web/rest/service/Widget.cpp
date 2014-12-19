@@ -4,6 +4,7 @@
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/RestDispatcher.h"
 #include "web/rest/Result.h"
+#include <fstream>
 
 namespace web {
    namespace rest {
@@ -266,10 +267,7 @@ namespace web {
 
                         if (boost::filesystem::exists(packageFileP) && boost::filesystem::is_regular_file(packageFileP))
                         {
-                           std::ifstream ifs;
-                           ifs.open(packageFile.c_str(), std::ios::in);
-
-
+                           std::ifstream ifs(packageFile.c_str(), std::ios::in);
                            std::stringstream ss;
                            ss << ifs.rdbuf();
                            allData.push_back(shared::CDataContainer(ss.str()));

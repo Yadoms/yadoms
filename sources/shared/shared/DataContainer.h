@@ -10,7 +10,7 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_enum.hpp>
 #include "Field.hpp"
-
+#include <boost/make_shared.hpp>
 namespace shared
 {
    //--------------------------------------------------------------

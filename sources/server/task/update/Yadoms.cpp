@@ -77,7 +77,7 @@ namespace task { namespace update {
             
             boost::filesystem::path packageLocalFilePath = tempFolder / fileToDownload;
 
-            std::ofstream packageFile(packageLocalFilePath.string(), std::ofstream::binary);
+            std::ofstream packageFile(packageLocalFilePath.string().c_str(), std::ios::binary);
 
             tools::web::CFileDownloader::downloadFile(baseUrl + "/" + platform + "/" + fileToDownload,
                packageFile,
