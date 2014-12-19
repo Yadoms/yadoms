@@ -283,7 +283,7 @@ namespace shared { namespace event
       boost::shared_ptr<ITimeEvent> getNextTimeEventStopPoint() const
       {
          if (m_timeEvents.empty())
-            return NULL;
+            return boost::shared_ptr<ITimeEvent>();
 
          // Find the closer time event
          boost::posix_time::ptime lower = boost::posix_time::max_date_time;
