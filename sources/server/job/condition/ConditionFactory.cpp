@@ -8,7 +8,8 @@
 namespace job { namespace condition
 {
 
-CConditionFactory::CConditionFactory()
+CConditionFactory::CConditionFactory(boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester)
+   :m_dbAcquisitionRequester(dbAcquisitionRequester)
 {
 }
 
@@ -28,7 +29,7 @@ boost::shared_ptr<ICondition> CConditionFactory::createCondition(const shared::C
       }
       else if (configuration.hasValue("is"))
       {
-         condition.reset(new CIs(configuration.get<shared::CDataContainer>("is")));
+         condition.reset(new CIs(configuration.get<shared::CDataContainer>("is"), m_dbAcquisitionRequester));
       }
       else if (configuration.hasValue("and"))
       {

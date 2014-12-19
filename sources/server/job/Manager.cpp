@@ -9,8 +9,11 @@ namespace job
 {
 
 CManager::CManager(boost::shared_ptr<database::IJobRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-   boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter)
-   :m_pluginGateway(pluginGateway), m_dbRequester(dbRequester), m_conditionFactory(new condition::CConditionFactory), m_notificationCenter(notificationCenter)
+   boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester)
+   :m_pluginGateway(pluginGateway),
+   m_dbRequester(dbRequester),
+   m_conditionFactory(new condition::CConditionFactory(dbAcquisitionRequester)),
+   m_notificationCenter(notificationCenter)
 {        
 }
 
