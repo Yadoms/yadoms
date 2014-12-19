@@ -13,10 +13,9 @@
 
 namespace database { namespace sqlite { namespace requesters { 
 
-   CKeyword::CKeyword(CSQLiteDataProvider * databaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
-      :m_databaseHandler(databaseHandler), m_databaseRequester(databaseRequester)
+   CKeyword::CKeyword(boost::shared_ptr<CSQLiteRequester> & databaseRequester)
+      :m_databaseRequester(databaseRequester)
    {
-      BOOST_ASSERT(m_databaseHandler != NULL);
    }
 
    CKeyword::~CKeyword()

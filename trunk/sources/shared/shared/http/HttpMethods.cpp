@@ -19,7 +19,7 @@ namespace shared
          Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
          Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_GET, uri.getPath());
 
-         std::ostream& os = session.sendRequest(request);
+         session.sendRequest(request);
 
          Poco::Net::HTTPResponse response;
          std::istream& rs = session.receiveResponse(response);

@@ -5,9 +5,9 @@
 namespace logConfiguration
 {
    CLogConfigurationImpl::CLogConfigurationImpl()
-      :m_patternFormatter(new Poco::PatternFormatter),
-      m_consoleChannel(new Poco::ConsoleChannel),
+   :  m_consoleChannel(new Poco::ConsoleChannel),
       m_fileChannel(new Poco::FileChannel()),
+      m_patternFormatter(new Poco::PatternFormatter),
       m_splitterChannel(new Poco::SplitterChannel)
    {
 

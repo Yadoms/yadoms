@@ -4,6 +4,7 @@
 #include <Poco/Net/HTTPServerResponse.h>
 #include "MimeType.h"
 
+
 namespace web { namespace poco {
 
       CWebsiteRequestHandler::CWebsiteRequestHandler(const std::string & documentRoot)
