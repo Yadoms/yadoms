@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Configuration.h"
 #include <shared/exception/NotImplemented.hpp>
+#include <shared/exception/EmptyResult.hpp>
 #include "web/rest/Result.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "web/rest/RestDispatcher.h"
@@ -49,8 +50,16 @@ namespace web { namespace rest { namespace service {
       if(parameters.size()>2)
          keyname = parameters[2];
 
-      boost::shared_ptr<database::entities::CConfiguration> configFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(section, keyname);
-      return web::rest::CResult::GenerateSuccess(configFound);
+      try
+      {
+         boost::shared_ptr<database::entities::CConfiguration> configFound = m_dataProvider->getConfigurationRequester()->getConfiguration(section, keyname);
+         return web::rest::CResult::GenerateSuccess(configFound);
+      }
+      catch (shared::exception::CEmptyResult & emptyResult)
+      {
+         return web::rest::CResult::GenerateError((boost::format("[Section = %1% ; Name = %2%] not found.") % section % keyname).str());
+      }
+
    }
 
    shared::CDataContainer CConfiguration::getSectionConfigurations(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
@@ -142,9 +151,9 @@ namespace web { namespace rest { namespace service {
       {
          std::vector<boost::shared_ptr<database::entities::CConfiguration> > listToUpdate = requestContent.get< std::vector<boost::shared_ptr<database::entities::CConfiguration> > >(getRestKeyword());
 
-         BOOST_FOREACH(boost::shared_ptr<database::entities::CConfiguration> pw, listToUpdate)
+         for (std::vector<boost::shared_ptr<database::entities::CConfiguration> >::iterator i = listToUpdate.begin(); i != listToUpdate.end(); ++i)
          {
-            m_dataProvider->getConfigurationRequester()->updateConfiguration(*pw);
+            m_dataProvider->getConfigurationRequester()->updateConfiguration(*i->get());
          }
 
          return getAllConfigurations(parameters, requestContent);
