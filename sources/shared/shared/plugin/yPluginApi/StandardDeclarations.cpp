@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "StandardCapacities.h"
 #include "StandardUnits.h"
 #include "StandardValues.h"
@@ -13,9 +13,9 @@ namespace shared { namespace plugin { namespace yPluginApi {
 
    const std::string& CStandardUnits::NoUnits(CStringExtension::EmptyString);
    const std::string& CStandardUnits::Ampere("A");
-   const std::string& CStandardUnits::Degrees("°");
-   const std::string& CStandardUnits::DegreesCelcius("°C");
-   const std::string& CStandardUnits::DegreesFarenheit("°F");
+   const std::string& CStandardUnits::Degrees("Â°");
+   const std::string& CStandardUnits::DegreesCelcius("Â°C");
+   const std::string& CStandardUnits::DegreesFarenheit("Â°F");
    const std::string& CStandardUnits::hectoPascal("hPa");
    const std::string& CStandardUnits::Hertz("Hz");
    const std::string& CStandardUnits::Kg("Kg");
