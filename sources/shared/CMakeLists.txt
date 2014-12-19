@@ -9,6 +9,10 @@ set(SHARED_LIB_SRC
 
  	shared/Log.h
 	shared/Log.cpp
+	
+   shared/logInternal/ILogStream.h
+   shared/logInternal/LogStreamEnhanced.h
+	shared/logInternal/LogStreamEnhanced.cpp	
 
 	shared/ThreadBase.cpp
 	shared/ThreadBase.h
@@ -167,6 +171,7 @@ set(SHARED_LIB_SRC
 	shared/serialization/IDataFileSerializable.h
    
 	shared/tools/Random.h
+	shared/tools/Random.cpp
 )
 
 #Append platform specific files
@@ -224,6 +229,7 @@ source_group(enumeration shared/shared/enumeration/*.* )
 source_group(event shared/event/*.*)
 source_group(exception shared/exception/*.*)
 source_group(http shared/http/*.*)
+source_group(logInternal shared/logInternal/*.*)
 source_group(plugin shared/shared/plugin/*.* )	
 source_group(plugin\\information shared/shared/plugin/information/*.* )	
 source_group(plugin\\yPluginApi shared/shared/plugin/yPluginApi/*.* )	

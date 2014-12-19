@@ -34,7 +34,7 @@ bool CThreadBase::stop()
    if (!m_thread)
       return true;   // Already stopped
 
-   YADOMS_LOG(info) << "Stopping thread " << getName();
+   YADOMS_LOG(information) << "Stopping thread " << getName();
 
    // Request to stop and wait
    requestToStop();

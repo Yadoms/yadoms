@@ -17,11 +17,11 @@ namespace tools
       //split on slash or anti slash
       boost::split(allDigits, stringVersion, boost::is_any_of(".,"), boost::algorithm::token_compress_on);
 
-      BOOST_FOREACH(std::string versionDigit, allDigits)
+      for (std::vector<std::string>::iterator i = allDigits.begin(); i != allDigits.end(); ++i)
       {
          try
          {
-            m_versionInfo.push_back(boost::lexical_cast<int>(versionDigit));
+            m_versionInfo.push_back(boost::lexical_cast<int>(*i));
          }
          catch (boost::bad_lexical_cast &)
          {
@@ -151,12 +151,12 @@ namespace tools
    {
       std::string versionAsString;
 
-      BOOST_FOREACH(int digit, m_versionInfo)
+      for (std::vector<int>::const_iterator i = m_versionInfo.begin(); i != m_versionInfo.end(); ++i)
       {
          //insert a point if there is already a digit
          if (!versionAsString.empty())
             versionAsString += ".";
-         versionAsString += boost::lexical_cast<std::string>(digit);
+         versionAsString += boost::lexical_cast<std::string>(*i);
       }
 
       return versionAsString;

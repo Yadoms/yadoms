@@ -85,8 +85,6 @@ set(BOOST_LIBS
 	thread 
 	date_time 
 	chrono 
-	log 
-	log_setup 
 	program_options
 	regex
 )
@@ -176,6 +174,11 @@ set(YADOMS_SRC
 	server/SystemInformation.cpp
 	server/SystemInformation.h
   
+   server/logConfiguration/LogConfiguration.h
+   server/logConfiguration/LogConfiguration.cpp   
+   server/logConfiguration/LogConfigurationImpl.h
+   server/logConfiguration/LogConfigurationImpl.cpp
+   
    server/pluginSystem/CommandHistorizer.cpp
    server/pluginSystem/CommandHistorizer.h
    server/pluginSystem/DeviceCommand.cpp
@@ -382,6 +385,7 @@ source_group(server\\pluginSystem server/pluginSystem/*.* )
 source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPlugin/*.* )
 source_group(server\\database  server/database/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
+source_group(server\\logConfiguration  server/logConfiguration/*.*)
 source_group(server\\job  server/job/*.*)
 source_group(server\\job\\action  server/job/action/*.*)
 source_group(server\\job\\condition  server/job/condition/*.*)

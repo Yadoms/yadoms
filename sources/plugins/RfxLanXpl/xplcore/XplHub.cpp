@@ -89,7 +89,7 @@ namespace xplcore
       {
          YADOMS_LOG(fatal) << "The XPL hub fails. Unknown expcetion : " << ex.what();
       }
-      YADOMS_LOG(info) << "Xpl Hub ends";
+      YADOMS_LOG(information) << "Xpl Hub ends";
    }
 
 
@@ -172,11 +172,11 @@ namespace xplcore
 
    void CXplHub::broadcastMessage(CXplMessage & msg)
    {
-      BOOST_FOREACH(boost::shared_ptr<CXplHubConnectedPeripheral> peripheral, m_discoveredPeripherals)
+      for (std::vector<boost::shared_ptr<CXplHubConnectedPeripheral> >::iterator i = m_discoveredPeripherals.begin(); i != m_discoveredPeripherals.end(); ++i)
       {
          try
          {
-            peripheral->sendMessage(msg);
+            (*i)->sendMessage(msg);
          }
          catch (Poco::Net::NetException & netex)
          {

@@ -1,6 +1,7 @@
 #pragma once
 #include "tools/IApplication.h"
 #include "Supervisor.h"
+#include "startupOptions/IStartupOptions.h"
 
 //-----------------------------
 ///\brief Yadoms application
@@ -19,9 +20,11 @@ public:
    virtual ~CApplication();
    
    // tools::IApplication implementation
-   virtual int run(int argc, char ** argv); 
+   virtual void configure(int argc, char ** argv);
+   virtual int run(); 
    virtual void stop(boost::function<void()> & callbackAfterStopped);
    // [END] tools::IApplication implementation
 private:
    boost::shared_ptr<CSupervisor> m_supervisor;
+   boost::shared_ptr<startupOptions::IStartupOptions> m_startupOptions;
 };

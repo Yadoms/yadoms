@@ -1,9 +1,18 @@
 #include "stdafx.h"
+
 #include "DynamicLibrary.h"
 #include <boost/function.hpp>
 #include <boost/log/trivial.hpp>
 #include "../../shared/Log.h"
 #include <Windows.h>
+
+#ifndef LoadLibrary
+   #ifdef UNICODE
+   #define LoadLibrary  LoadLibraryW
+   #else
+   #define LoadLibrary  LoadLibraryA
+   #endif // !UNICODE
+#endif
 
 namespace shared
 {
@@ -41,7 +50,7 @@ namespace shared
          return NULL;
       }
 
-      return GetProcAddress(m_libraryHandle, funcName.c_str());	
+      return GetProcAddress((HMODULE)m_libraryHandle, funcName.c_str());
    }
 
    bool CDynamicLibrary::load(const std::string& libraryFile)
@@ -62,7 +71,7 @@ namespace shared
    {
       if(m_libraryHandle != NULL)
       {
-         FreeLibrary(m_libraryHandle);
+         FreeLibrary((HMODULE)m_libraryHandle);
          m_libraryHandle = NULL;
       }
    }

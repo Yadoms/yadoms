@@ -58,18 +58,18 @@ namespace tools {
       if (error == noErr)
       {
          if (andRestart)
-            YADOMS_LOG(info) << "System will restart...";
+            YADOMS_LOG(information) << "System will restart...";
          else
-            YADOMS_LOG(info) << "System will shutdown...";
+            YADOMS_LOG(information) << "System will shutdown...";
 
          return true;
       }
       else
       {
          if (andRestart)
-            YADOMS_LOG(info) << "System fails to restart...";
+            YADOMS_LOG(information) << "System fails to restart...";
          else
-            YADOMS_LOG(info) << "System fails to shutdown...";
+            YADOMS_LOG(information) << "System fails to shutdown...";
 
          return false;
       }

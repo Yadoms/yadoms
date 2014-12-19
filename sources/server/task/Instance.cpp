@@ -67,9 +67,9 @@ namespace task {
       m_currentProgression = progression;
       m_currentMessage = message;
       if (m_currentProgression)
-         YADOMS_LOG(info) << m_task->getName() << " report progression " << m_currentProgression.get() << " with message " << m_currentMessage;
+         YADOMS_LOG(information) << m_task->getName() << " report progression " << m_currentProgression.get() << " with message " << m_currentMessage;
       else
-         YADOMS_LOG(info) << m_task->getName() << " report progression none with message " << m_currentMessage;
+         YADOMS_LOG(information) << m_task->getName() << " report progression none with message " << m_currentMessage;
    }
    void CInstance::doWork()
    {

@@ -199,9 +199,9 @@ namespace web {
 
                std::vector<boost::shared_ptr<database::entities::CWidget> > widgetsToAdd = requestContent.get<std::vector<boost::shared_ptr<database::entities::CWidget> > >(getRestKeyword());
 
-               BOOST_FOREACH(boost::shared_ptr<database::entities::CWidget> pw, widgetsToAdd)
+               for (std::vector<boost::shared_ptr<database::entities::CWidget> >::iterator i = widgetsToAdd.begin(); i != widgetsToAdd.end(); ++i)
                {
-                  m_dataProvider->getWidgetRequester()->addWidget(*pw);
+                  m_dataProvider->getWidgetRequester()->addWidget(*i->get());
                }
 
                return web::rest::CResult::GenerateSuccess();

@@ -11,7 +11,7 @@ namespace tools { namespace web {
 
    void CFileDownloader::reportProgressToLog(const std::string & info, float progression)
    {
-      YADOMS_LOG(info) << "Downloading " << info << " : " << boost::format("%11.0f") %  progression << " %";
+      YADOMS_LOG(information) << "Downloading " << info << " : " << boost::format("%11.0f") %  progression << " %";
    }
 
    int CFileDownloader::downloadFile(const CUri & uri, std::ostream & output, ProgressFunc reporter)

@@ -255,9 +255,10 @@ namespace web { namespace rest { namespace service {
    shared::CDataContainer CPlugin::deleteAllPlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
-      BOOST_FOREACH(boost::shared_ptr<database::entities::CPlugin> toDelete, hwList)
+      
+      for (std::vector<boost::shared_ptr<database::entities::CPlugin> >::iterator i = hwList.begin(); i != hwList.end(); ++i)
       {
-         m_pluginManager->deleteInstance(toDelete);
+         m_pluginManager->deleteInstance(*i);
       }
 
       return web::rest::CResult::GenerateSuccess();

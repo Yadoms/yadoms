@@ -3,6 +3,7 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/StringExtension.h>
 #include <shared/DataContainer.h>
+#include <boost/regex.hpp>
 
 namespace pluginSystem
 {

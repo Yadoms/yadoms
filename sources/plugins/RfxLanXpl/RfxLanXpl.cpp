@@ -176,7 +176,7 @@ void CRfxLanXpl::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       YADOMS_LOG(fatal) << "The XPL plugin fails. Unknown expcetion : " << ex.what();
    }
 
-   YADOMS_LOG(info) << "XPL plugin is now stopping";
+   YADOMS_LOG(information) << "XPL plugin is now stopping";
    //ensure hub is stopped
 //   stopHub(hub);
 }
@@ -211,7 +211,7 @@ void CRfxLanXpl::OnXplMessageReceived(xplcore::CXplMessage & xplMessage, boost::
    {
       YADOMS_LOG(trace) << "Xpl Message received : " << xplMessage.toString();
 
-      //YADOMS_LOG(info) << "Reveived" << std::endl << xplMessage.toString();
+      //YADOMS_LOG(information) << "Reveived" << std::endl << xplMessage.toString();
 
       std::string realSource = xplMessage.getSource().toString();
       //if incomming message has been sent from me, use target has real source
@@ -324,7 +324,7 @@ void CRfxLanXpl::OnSendDeviceCommand(boost::shared_ptr<const yApi::IDeviceComman
                   {
                      messageToSend->setSource(xplService.getActor());
 
-                     //YADOMS_LOG(info) << "Sent" << std::endl << messageToSend->toString();
+                     //YADOMS_LOG(information) << "Sent" << std::endl << messageToSend->toString();
                      xplService.sendMessage(*messageToSend.get());
                   }
                   else
@@ -368,11 +368,11 @@ void CRfxLanXpl::OnCreateDeviceRequest(boost::shared_ptr<yApi::IManuallyDeviceCr
 {
    try
    {
-      YADOMS_LOG(info) << "Create device request";
+      YADOMS_LOG(information) << "Create device request";
 
       const shared::CDataContainer & deviceCfg = data->getData().getConfiguration();
 
-      YADOMS_LOG(info) << deviceCfg.serialize();
+      YADOMS_LOG(information) << deviceCfg.serialize();
 
       //std::string a("abcdefg");
       //data->sendError("invalid configuration");
@@ -448,7 +448,7 @@ void CRfxLanXpl::OnBindingQueryRequest(boost::shared_ptr<yApi::IBindingQueryRequ
 {
 	try
 	{
-		YADOMS_LOG(info) << "Custom query request";
+      YADOMS_LOG(information) << "Custom query request";
 
 
 		if (data->getData().getQuery() == "RfxLanList")

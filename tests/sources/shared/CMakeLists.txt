@@ -2,7 +2,12 @@
 IF(NOT DISABLE_TEST_DATACONTAINER)
    ADD_YADOMS_SOURCES(
       shared/shared/DataContainer.h
-      shared/shared/DataContainer.cpp)
+      shared/shared/DataContainer.cpp
+      shared/shared/Log.h
+      shared/shared/Log.cpp
+      shared/shared/logInternal/LogStreamEnhanced.h
+      shared/shared/logInternal/LogStreamEnhanced.cpp
+   )
    ADD_SOURCES(TestDataContainer.cpp)
    
 ENDIF()

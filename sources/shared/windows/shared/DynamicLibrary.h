@@ -1,5 +1,5 @@
 #pragma once
-#include <Windows.h>
+
 #include <shared/Export.h>
 
 namespace shared
@@ -58,7 +58,7 @@ namespace shared
       //-------------------------------------------------------------
       /// \brief	    The library handle
       //-------------------------------------------------------------
-      HMODULE m_libraryHandle;
+      void* m_libraryHandle;
    };
 
 } // namespace shared

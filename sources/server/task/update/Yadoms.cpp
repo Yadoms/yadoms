@@ -30,7 +30,7 @@ namespace task { namespace update {
 
    void CYadoms::onDownloadReportProgress(const std::string & filename, float progression)
    {
-      YADOMS_LOG(info) << "Downloading " << filename << ": " << progression << "%";
+      YADOMS_LOG(information) << "Downloading " << filename << ": " << progression << "%";
    }
 
    bool CYadoms::doWork(TaskProgressFunc pFunctor)
@@ -95,7 +95,7 @@ namespace task { namespace update {
             shared::encryption::CMD5 md5Hasher;
             std::string md5HashCalculated = md5Hasher.digestFile(packageLocalFilePath.string().c_str());
 
-            YADOMS_LOG(info) << "MD5 Hash calculated: " << md5HashCalculated;
+            YADOMS_LOG(information) << "MD5 Hash calculated: " << md5HashCalculated;
             
             std::string md5HashExcpected = lv.get<std::string>("yadoms.information.md5Hash");
 

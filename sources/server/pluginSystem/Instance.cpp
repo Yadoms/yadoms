@@ -74,7 +74,7 @@ void CInstance::doWork()
       m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin crashed in doWork with unknown exception");
    }
 
-   YADOMS_LOG(info) << m_context->getInformation().getName() << " is stopped";
+   YADOMS_LOG(information) << m_context->getInformation().getName() << " is stopped";
    
    // Signal the abnormal stop
    CManagerEvent event(CManagerEvent::kPluginInstanceAbnormalStopped, m_context->getPluginId(), m_pPlugin->getInformation(), isStopping());

@@ -22,6 +22,9 @@ int main(int argc, char** argv)
       //create the yadoms service information (windows only)
       entryPoint::CYadomsServiceInformation ysi;
          
+      //configure application with command line parameters
+      app.configure(argc, argv);
+
       //run the application (as service with install/remove feature , or as console app)
       return tools::CApplicationLoader::run(app, ysi, argc, argv);
    }

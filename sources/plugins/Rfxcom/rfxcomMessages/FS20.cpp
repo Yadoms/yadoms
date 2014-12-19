@@ -4,6 +4,8 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/Log.h>
 
+#include <boost/regex.hpp>
+
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 

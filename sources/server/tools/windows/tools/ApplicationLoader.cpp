@@ -16,9 +16,9 @@ namespace tools {
       {
          if (GetLastError() == ERROR_FAILED_SERVICE_CONTROLLER_CONNECT)
          {
-            YADOMS_LOG(info) << "Running Yadoms as console application";
+            YADOMS_LOG(information) << "Running Yadoms as console application";
             //running from console, just start application without service behavior
-            return application.run(argc, argv);
+            return application.run();
          }
          else
          {

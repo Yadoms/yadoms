@@ -50,7 +50,7 @@ void CExternalPluginFactory::load()
    }
 
    // Log loaded plugin
-   YADOMS_LOG(info) << "Plugin loaded : " << getInformation()->toString();
+   YADOMS_LOG(information) << "Plugin loaded : " << getInformation()->toString();
 }
 
 void CExternalPluginFactory::unload()

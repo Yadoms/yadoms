@@ -3,6 +3,7 @@
 #include <shared/StringExtension.h>
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
+#include <boost/regex.hpp>
 
 namespace tools { namespace web { 
 

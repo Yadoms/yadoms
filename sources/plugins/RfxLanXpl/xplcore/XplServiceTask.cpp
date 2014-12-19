@@ -54,7 +54,7 @@ namespace xplcore
       try
       {
          YADOMS_LOG_CONFIGURE(m_source.toString());
-         YADOMS_LOG(info) << "XplServiceTask : run";
+         YADOMS_LOG(information) << "XplServiceTask : run";
          
          runHeartbeatSequenceIn(HeartbeatFrequencyDuringInitialDiscoveryPhase);
 
@@ -224,7 +224,7 @@ namespace xplcore
          {
             if ((!m_hubHasBeenFound) && (m_localEndPoint.host().toString() == hbeatMessage.getBodyValue("remote-ip")) && (sender.port() == port))
             {
-               YADOMS_LOG(info) << "Hub found on network : " << m_localEndPoint.host().toString();
+               YADOMS_LOG(information) << "Hub found on network : " << m_localEndPoint.host().toString();
                m_hubHasBeenFound = true;
 
                if (m_pHubFoundEventHandler != NULL)
@@ -296,22 +296,22 @@ namespace xplcore
    {
       bool atLeastOneNotificationSend = false;
 
-      BOOST_FOREACH(FilterConfiguration subscriber, m_filteringSystem)
+      for (std::vector< FilterConfiguration >::iterator i = m_filteringSystem.begin(); i != m_filteringSystem.end(); ++i)
       {
-         boost::shared_ptr< CXplMessageFilter > filter = subscriber.get<0>();
+         boost::shared_ptr< CXplMessageFilter > filter = i->get<0>();
          if (filter && filter->match(msg))
          {
-            shared::event::CEventHandler * pEventHandler = subscriber.get<1>();
+            shared::event::CEventHandler * pEventHandler = i->get<1>();
             if (pEventHandler)
             {
                //send notification
-               pEventHandler->postEvent<CXplMessage>(subscriber.get<2>(), boost::ref(msg));
+               pEventHandler->postEvent<CXplMessage>(i->get<2>(), boost::ref(msg));
 
                //
                atLeastOneNotificationSend = true;
 
                //check for notification chaining
-               bool continueNotificationChaining = subscriber.get<3>();
+               bool continueNotificationChaining = i->get<3>();
 
                //if do not continue chaing, just break the foreach
                if (!continueNotificationChaining)

@@ -152,7 +152,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                std::string sni = data->getData().getConfiguration().get<std::string>("networkInterface");
                std::string dyn = data->getData().getConfiguration().get<std::string>("dynamicSection.content.interval");
 
-               std::string devId = (boost::format("%1%_%2%_0x%3$08X") % sni % dyn % shared::tools::CRandom::generateRandomNumber<26>(false)).str();
+               std::string devId = (boost::format("%1%_%2%_0x%3$08X") % sni % dyn % shared::tools::CRandom::generate(1, pow(2,26)-1)).str();
                context->declareDevice(devId, "FakeDevice_" + devId, data->getData().getConfiguration().serialize());
 
                yApi::historization::CSwitch manualSwitch("manualSwitch");
@@ -215,7 +215,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    // as a plugin failure.
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(info) << "Thread is stopping...";
+      YADOMS_LOG(information) << "Thread is stopping...";
    }
 
    context->recordPluginEvent(yApi::IYPluginApi::kInfo, "stopped");

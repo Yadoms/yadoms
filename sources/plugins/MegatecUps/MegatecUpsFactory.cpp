@@ -16,7 +16,7 @@ boost::shared_ptr<shared::communication::IAsyncPort> CMegatecUpsFactory::constru
    int evtPortConnectionId,
    int evtPortDataReceived)
 {
-   YADOMS_LOG(info) << "Connecting UPS on serial port " << configuration.getSerialPort() << "...";
+   YADOMS_LOG(information) << "Connecting UPS on serial port " << configuration.getSerialPort() << "...";
    boost::shared_ptr<shared::communication::IAsyncPort> port(new shared::communication::CAsyncSerialPort(
       configuration.getSerialPort(),
       boost::asio::serial_port_base::baud_rate(2400),

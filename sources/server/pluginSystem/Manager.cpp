@@ -51,11 +51,12 @@ void CManager::start()
 
    // Create and start plugin instances from database
    std::vector<boost::shared_ptr<database::entities::CPlugin> > databasePluginInstances = m_pluginDBTable->getInstances();
-   BOOST_FOREACH(boost::shared_ptr<database::entities::CPlugin> databasePluginInstance, databasePluginInstances)
+   
+   for (std::vector<boost::shared_ptr<database::entities::CPlugin> >::iterator databasePluginInstanceIterator = databasePluginInstances.begin(); databasePluginInstanceIterator != databasePluginInstances.end(); ++databasePluginInstanceIterator)
    {
-      if (databasePluginInstance->Category() != database::entities::EPluginCategory::kSystem)
-         if (databasePluginInstance->AutoStart())
-            startInstance(databasePluginInstance->Id());
+      if ((*databasePluginInstanceIterator)->Category() != database::entities::EPluginCategory::kSystem)
+         if ((*databasePluginInstanceIterator)->AutoStart())
+            startInstance((*databasePluginInstanceIterator)->Id());
    }
 
    //start the internal plugin
@@ -66,13 +67,13 @@ void CManager::stop()
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
 
-   YADOMS_LOG(info) << "pluginSystem::CManager stop plugins...";
+   YADOMS_LOG(information) << "pluginSystem::CManager stop plugins...";
    stopInternalPlugin();
 
    while (!m_runningInstances.empty())
       stopInstance(m_runningInstances.begin()->first);
 
-   YADOMS_LOG(info) << "pluginSystem::CManager all plugins are stopped";
+   YADOMS_LOG(information) << "pluginSystem::CManager all plugins are stopped";
 
 }
 
@@ -176,7 +177,7 @@ void CManager::buildAvailablePluginList()
          else
             m_availablePlugins[pluginName] = CExternalPluginFactory::getInformation(toPath(pluginName));
 
-         YADOMS_LOG(info) << "Plugin " << pluginName << " successfully loaded";
+         YADOMS_LOG(information) << "Plugin " << pluginName << " successfully loaded";
       }
       catch (CInvalidPluginException& e)
       {

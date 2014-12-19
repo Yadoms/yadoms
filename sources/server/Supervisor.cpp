@@ -40,7 +40,7 @@ CSupervisor::~CSupervisor()
 void CSupervisor::doWork()
 {
    YADOMS_LOG_CONFIGURE("Supervisor");
-   YADOMS_LOG(info) << "Supervisor is starting";   
+   YADOMS_LOG(information) << "Supervisor is starting";   
 
    boost::shared_ptr<database::IDataProvider> pDataProvider;
    try
@@ -109,7 +109,7 @@ void CSupervisor::doWork()
       pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", shared::CStringExtension::EmptyString);
 
       // Main loop
-      YADOMS_LOG(info) << "Supervisor is running...";
+      YADOMS_LOG(information) << "Supervisor is running...";
       bool running = true;
       while(running)
       {
@@ -134,7 +134,7 @@ void CSupervisor::doWork()
          }
       }
 
-      YADOMS_LOG(info) << "Supervisor is stopping...";
+      YADOMS_LOG(information) << "Supervisor is stopping...";
 
       //stop the jobs
       jobsManager->stop();
@@ -146,7 +146,7 @@ void CSupervisor::doWork()
       //stop web server
       webServer.stop();
 
-      YADOMS_LOG(info) << "Supervisor is stopped";
+      YADOMS_LOG(information) << "Supervisor is stopped";
 
       pDataProvider->getEventLoggerRequester()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", shared::CStringExtension::EmptyString);
 

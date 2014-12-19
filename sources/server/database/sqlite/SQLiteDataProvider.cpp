@@ -34,7 +34,7 @@ namespace database {
       // IDatabaseProvider implementation
       bool CSQLiteDataProvider::load()
       {
-         YADOMS_LOG(info) << "Load database";
+         YADOMS_LOG(information) << "Load database";
 
          bool result = false;
 
@@ -42,8 +42,8 @@ namespace database {
          {
             if (!boost::filesystem::exists(m_dbFile.c_str()))
             {
-               YADOMS_LOG(info) << "Database file is not found : " << m_dbFile;
-               YADOMS_LOG(info) << "Yadoms will create a blank one";
+               YADOMS_LOG(information) << "Database file is not found : " << m_dbFile;
+               YADOMS_LOG(information) << "Yadoms will create a blank one";
             }
 
             int rc = sqlite3_open(m_dbFile.c_str(), &m_pDatabaseHandler);
@@ -63,7 +63,7 @@ namespace database {
                m_databaseRequester.reset(new CSQLiteRequester(m_pDatabaseHandler));
 
                //check for update
-               YADOMS_LOG(info) << "Check for database update...";
+               YADOMS_LOG(information) << "Check for database update...";
 
                //get the database version
                tools::CVersion currentVersion;
@@ -100,7 +100,7 @@ namespace database {
                //create entities requester (high level querier)
                loadRequesters();
 
-               YADOMS_LOG(info) << "Load database with success";
+               YADOMS_LOG(information) << "Load database with success";
                result = true;
 
             }
