@@ -7,6 +7,9 @@ namespace tools {
 
    int CApplicationLoader::run(IApplication & application, service::IApplicationServiceInformation & info, int argc, char ** argv)
    {
+      //configure application with command line parameters
+      application.configure(argc, argv);
+
       //find the working dir (= path to exe)
       boost::filesystem::path full_path(boost::filesystem::initial_path<boost::filesystem::path>());
       full_path = boost::filesystem::system_complete(boost::filesystem::path(argv[0]));
