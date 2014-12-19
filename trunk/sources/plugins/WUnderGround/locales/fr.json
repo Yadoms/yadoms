@@ -1,0 +1,12 @@
+﻿{
+   "description": "SURTEC - Solutions de sécurité - (http://www.surtec.tm.fr/accueil). Ce plugin fonctionne avec un équipement spécial, contacter Mr JM BERHAULT pour celui-ci",
+   "configurationSchema":
+   {
+      "SerialPort" :
+      {
+         "name" : "Port Série",
+         "description" : "Le port série sur lequel est connecté le lecteur SURTEC"
+      }   
+   }
+}
+
