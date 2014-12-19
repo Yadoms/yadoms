@@ -9,9 +9,7 @@
 #include <vector>
 
 //include only needed files
-
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 #include <boost/assert.hpp>
