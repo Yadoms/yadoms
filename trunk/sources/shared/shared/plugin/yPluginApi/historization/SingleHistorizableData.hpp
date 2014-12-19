@@ -48,7 +48,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] accessMode         The access mode
       ///\param[in] measureType        The measure type
       //-----------------------------------------------------
-      CSingleHistorizableData(const std::string& keywordName, const CStandardCapacity& capacity, const EKeywordAccessMode& accessMode, const EMeasureType measureType = EMeasureType::kAbsolute)
+      CSingleHistorizableData(const std::string& keywordName, const CStandardCapacity& capacity, const EKeywordAccessMode& accessMode, const EMeasureType& measureType = EMeasureType::kAbsolute)
          :m_keywordName(keywordName), m_capacity(capacity), m_accessMode(accessMode), m_measureType(measureType)
       {
       }      
@@ -61,7 +61,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] initialValue       the initial value
       ///\param[in] measureType        The measure type
       //-----------------------------------------------------
-      CSingleHistorizableData(const std::string& keywordName, const CStandardCapacity& capacity, const EKeywordAccessMode& accessMode, const T initialValue, const EMeasureType measureType = EMeasureType::kAbsolute)
+      CSingleHistorizableData(const std::string& keywordName, const CStandardCapacity& capacity, const EKeywordAccessMode& accessMode, const T initialValue, const EMeasureType& measureType = EMeasureType::kAbsolute)
          :m_keywordName(keywordName), m_capacity(capacity), m_value(initialValue), m_accessMode(accessMode), m_measureType(measureType)
       {
       }

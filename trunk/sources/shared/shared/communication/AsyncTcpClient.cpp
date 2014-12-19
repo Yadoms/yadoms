@@ -15,6 +15,8 @@ CAsyncTcpClient::CAsyncTcpClient(
    m_serverAdressResolver(m_ioService),
    m_serverAdressResolverQuery(serverAddress, serverPort),
    m_asyncReadBuffer(512),
+   m_connectStateEventHandler(nullptr),
+   m_connectStateEventId(event::kNoEvent),
    m_connectRetryDelay(connectRetryDelay),
    m_connectRetryTimer(m_ioService)
 {

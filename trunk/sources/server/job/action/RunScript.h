@@ -13,9 +13,8 @@ namespace job { namespace action
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] configuration Action configuration
-      ///\param[in] pluginGateway Plugin gateway
       //-----------------------------------------------------
-      CRunScript(const shared::CDataContainer& configuration, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway);
+      CRunScript(const shared::CDataContainer& configuration);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -29,14 +28,9 @@ namespace job { namespace action
 
    private:
       //-----------------------------------------------------
-      ///\brief               The plugin gateway
+      ///\brief               The script path
       //-----------------------------------------------------
-      boost::shared_ptr<communication::ISendMessageAsync> m_pluginGateway;
-
-      //-----------------------------------------------------
-      ///\brief               Script path
-      //-----------------------------------------------------
-      std::string m_scriptPath;
+      const std::string& m_scriptPath;
    };
 	
 } } // namespace job::action

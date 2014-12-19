@@ -4,11 +4,9 @@
 namespace job { namespace action
 {
 
-CRunScript::CRunScript(const shared::CDataContainer& configuration, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway)
-   :m_pluginGateway(pluginGateway), m_scriptPath("myScript")//TODO valeur en dur
+CRunScript::CRunScript(const shared::CDataContainer& configuration)
+   :m_scriptPath(configuration.get<std::string>("scriptPath"))
 {
-   // Read configuration
-   //TODO
 }
 
 CRunScript::~CRunScript()

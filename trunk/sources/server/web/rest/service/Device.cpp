@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Device.h"
+#include <shared/exception/EmptyResult.hpp>
 #include <shared/exception/NotImplemented.hpp>
 #include "web/rest/Result.h"
 #include "web/rest/RestDispatcherHelpers.hpp"
@@ -220,21 +221,15 @@ namespace web { namespace rest { namespace service {
             //get keyword id from URL
             int keywordId = boost::lexical_cast<int>(parameters[2]);
 
-            //retreive devideId from keywordId
-            boost::shared_ptr<database::entities::CKeyword> keywordfromDb = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
-            if (keywordfromDb)
+            try
             {
-               int deviceId = m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->DeviceId;
-
-               //send the command
-               m_messageSender.sendCommandAsync(deviceId, keywordId, requestContent);
+               m_messageSender.sendCommandAsync(keywordId, requestContent);
                return web::rest::CResult::GenerateSuccess();
             }
-            else
+            catch (shared::exception::CEmptyResult&)
             {
                return web::rest::CResult::GenerateError("invalid parameter. Can not retreive keyword in database");
             }
-
          }
          else
          {

@@ -55,7 +55,7 @@ namespace web { namespace rest { namespace service {
          boost::shared_ptr<database::entities::CConfiguration> configFound = m_dataProvider->getConfigurationRequester()->getConfiguration(section, keyname);
          return web::rest::CResult::GenerateSuccess(configFound);
       }
-      catch (shared::exception::CEmptyResult & emptyResult)
+      catch (shared::exception::CEmptyResult & /*emptyResult*/)
       {
          return web::rest::CResult::GenerateError((boost::format("[Section = %1% ; Name = %2%] not found.") % section % keyname).str());
       }

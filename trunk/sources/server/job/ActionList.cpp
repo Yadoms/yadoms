@@ -29,8 +29,10 @@ void CActionList::createAction(const shared::CDataContainer& configuration, boos
    {
       action.reset(new action::CDeviceDrive(configuration, pluginGateway));
    }
-
-   // TODO add other actions here
+   else if (type == "runScript")
+   {
+      action.reset(new action::CRunScript(configuration));
+   }
 
    if (!action)
    {

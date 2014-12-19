@@ -435,10 +435,7 @@ void CManager::stopInternalPlugin()
 
    // Already stopped ==> nothing more to do
    if (m_runningInstances.find(databasePluginInstance->Id()) == m_runningInstances.end())
-      return;    
-
-   // Get the associated plugin name to unload it after instance being deleted
-   std::string pluginName = m_runningInstances[databasePluginInstance->Id()]->getPluginName();
+      return;
 
    // Remove (=stop) instance
    m_runningInstances.erase(databasePluginInstance->Id());
