@@ -238,7 +238,7 @@ BOOST_AUTO_TEST_CASE(Serialization)
 
    BOOST_CHECK_EQUAL(cfg.serialize(), cfgOut.serialize());
 
-   //YADOMS_LOG(info) << cfg;
+   //YADOMS_LOG(information) << cfg;
 }
 
 
