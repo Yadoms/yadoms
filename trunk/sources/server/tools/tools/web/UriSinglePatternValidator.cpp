@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "UriSinglePatternValidator.h"
+#include <boost/regex.hpp>
 
-namespace tools { namespace web { 
+namespace tools {
+   namespace web {
 
 
       bool CUriSinglePatternValidator::isValid(const std::string & uriPart)
@@ -13,5 +15,5 @@ namespace tools { namespace web {
       }
 
 
-} //namespace web
+   } //namespace web
 } //namespace tools

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "DataContainer.h"
 #include "Log.h"
+#include <boost/property_tree/json_parser.hpp>
+
 
 namespace shared
 {
@@ -172,9 +174,9 @@ namespace shared
 
    void CDataContainer::printToLog() const
    {
-      YADOMS_LOG(info) << "| TREE START";
+      YADOMS_LOG(information) << "| TREE START";
       printToLog(m_tree, 0);
-      YADOMS_LOG(info) << "| TREE END";
+      YADOMS_LOG(information) << "| TREE END";
    }
 
    void CDataContainer::printToLog(const boost::property_tree::ptree & pt, const int deep) const
@@ -186,7 +188,7 @@ namespace shared
          prefix += "---";
       for (boost::property_tree::ptree::const_iterator it = pt.begin(); it != end; ++it) 
       {
-         YADOMS_LOG(info) << prefix << it->first << ": " << it->second.get_value<std::string>();
+         YADOMS_LOG(information) << prefix << it->first << ": " << it->second.get_value<std::string>();
          printToLog(it->second, deep+1);
       }
    }

@@ -181,9 +181,9 @@ namespace web { namespace rest { namespace service {
          m_dataProvider->getPageRequester()->removeAllPages();
 
          std::vector<boost::shared_ptr<database::entities::CPage> > pagesToUpdate = requestContent.get< std::vector<boost::shared_ptr<database::entities::CPage> > >("");
-         BOOST_FOREACH(boost::shared_ptr<database::entities::CPage> page, pagesToUpdate)
+         for (std::vector<boost::shared_ptr<database::entities::CPage> >::iterator i = pagesToUpdate.begin(); i != pagesToUpdate.end(); ++i)
          {
-            m_dataProvider->getPageRequester()->addPage(*page);
+            m_dataProvider->getPageRequester()->addPage(*i->get());
          }
 
          std::vector<boost::shared_ptr<database::entities::CPage> > allPages = m_dataProvider->getPageRequester()->getPages();
@@ -290,9 +290,10 @@ namespace web { namespace rest { namespace service {
 
             //crreate all
             std::vector<boost::shared_ptr<database::entities::CWidget> > widgetsToAdd = requestContent.get< std::vector<boost::shared_ptr<database::entities::CWidget> > >("");
-            BOOST_FOREACH(boost::shared_ptr<database::entities::CWidget> pw, widgetsToAdd)
+
+            for (std::vector<boost::shared_ptr<database::entities::CWidget> >::iterator i = widgetsToAdd.begin(); i != widgetsToAdd.end(); ++i)
             {
-               m_dataProvider->getWidgetRequester()->addWidget(*pw);
+               m_dataProvider->getWidgetRequester()->addWidget(*i->get());
             }
             return web::rest::CResult::GenerateSuccess();
          }

@@ -162,7 +162,7 @@ void CMegatecUps::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    }
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(info) << "Thread is stopping...";
+      YADOMS_LOG(information) << "Thread is stopping...";
    }
 }
 
@@ -485,10 +485,10 @@ void CMegatecUps::processReceivedInformation(boost::shared_ptr<yApi::IYPluginApi
    std::string model  (*itToken); ++itToken;
    std::string version(*itToken);
 
-   YADOMS_LOG(info) << "UPS Informations :";
-   YADOMS_LOG(info) << "   - company : " << company;
-   YADOMS_LOG(info) << "   - model   : " << model;
-   YADOMS_LOG(info) << "   - version : " << version;
+   YADOMS_LOG(information) << "UPS Informations :";
+   YADOMS_LOG(information) << "   - company : " << company;
+   YADOMS_LOG(information) << "   - model   : " << model;
+   YADOMS_LOG(information) << "   - version : " << version;
 
    // Declare device/keywords if necessary
    declareDevice(context, company + std::string(" ") + model + std::string(" ") + version);

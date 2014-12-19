@@ -9,6 +9,7 @@
 #include <shared/Log.h>
 
 #include "Scheduler.h"
+#include <Poco/UUIDGenerator.h>
 
 namespace task {
 
@@ -89,7 +90,7 @@ namespace task {
          }
          catch (boost::thread_interrupted&)
          {
-            YADOMS_LOG(info) << "Thread is stopping, stop all tasks...";
+            YADOMS_LOG(information) << "Thread is stopping, stop all tasks...";
             RunningTaskInstanceMap::iterator it;
             for (it = m_runningTasks.begin(); it != m_runningTasks.end(); ++it)
                it->second->stop();
@@ -149,8 +150,7 @@ namespace task {
       }
 
       //the task is not unique or does not exist in the list, so we can create another
-      boost::uuids::uuid u = boost::uuids::random_generator()();
-      uniqueId = boost::uuids::to_string(u);
+      uniqueId = Poco::UUIDGenerator::defaultGenerator().createRandom().toString();
       
       m_runningTasks.insert(std::make_pair(uniqueId, boost::shared_ptr<CInstance>(new CInstance(taskToRun, m_taskEventHandler, kTaskEvent, uniqueId))));
       return true;

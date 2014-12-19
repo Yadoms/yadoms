@@ -89,8 +89,6 @@ set(BOOST_LIBS
 	thread 
 	date_time 
 	chrono 
-	log 
-	log_setup 
 	program_options
    unit_test_framework 
 	system

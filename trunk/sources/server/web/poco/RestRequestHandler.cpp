@@ -101,10 +101,10 @@ namespace web {
 
       void CRestRequestHandler::initialize()
       {
-         BOOST_FOREACH(boost::shared_ptr<web::rest::service::IRestService> restService, m_restService)
+         for (std::vector<boost::shared_ptr<web::rest::service::IRestService> >::iterator i = m_restService.begin(); i != m_restService.end(); ++i)
          {
-            if (restService.get() != NULL)
-               restService->configureDispatcher(m_restDispatcher);
+            if (i->get() != NULL)
+               (*i)->configureDispatcher(m_restDispatcher);
          }
       }
 

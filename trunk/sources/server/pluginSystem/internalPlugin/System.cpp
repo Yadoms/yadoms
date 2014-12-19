@@ -56,12 +56,12 @@ namespace pluginSystem {
 
                   if (boost::iequals(command->getKeyword(), keywordShutdown.getKeyword()))
                   {
-                     YADOMS_LOG(info) << "Shutdown the system";
+                     YADOMS_LOG(information) << "Shutdown the system";
                      m_applicationStopHandler.requestToStop(IApplicationStopHandler::kStopSystem);
                   }
                   else if (boost::iequals(command->getKeyword(), keywordRestart.getKeyword()))
                   {
-                     YADOMS_LOG(info) << "Restart the system";
+                     YADOMS_LOG(information) << "Restart the system";
                      m_applicationStopHandler.requestToStop(IApplicationStopHandler::kRestartSystem);
                   }
                   else
@@ -81,7 +81,7 @@ namespace pluginSystem {
       // as a plugin failure.
       catch (boost::thread_interrupted&)
       {
-         YADOMS_LOG(info) << "Thread is stopping...";
+         YADOMS_LOG(information) << "Thread is stopping...";
       }
       catch (shared::exception::CException & ex)
       {

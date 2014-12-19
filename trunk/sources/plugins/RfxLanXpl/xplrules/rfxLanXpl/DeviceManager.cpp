@@ -39,10 +39,10 @@ namespace xplrules { namespace rfxLanXpl {
 
    boost::shared_ptr<IRule> CDeviceManager::identifyRule(const std::string & protocolName, CRuleInstanceManager & instanceManager)
    {
-      BOOST_FOREACH(boost::shared_ptr< xplrules::IProtocol > handledProtocols, m_handledProtocols)
+      for (Protocols::iterator i = m_handledProtocols.begin(); i != m_handledProtocols.end(); ++i)
       {
-         if(handledProtocols && boost::iequals(protocolName, handledProtocols->getProtocolIdentifier()))
-            return handledProtocols->createRuleInstance(instanceManager);
+         if ((*i) && boost::iequals(protocolName, (*i)->getProtocolIdentifier()))
+            return (*i)->createRuleInstance(instanceManager);
       }
 
       //not handled by RfxLanXpl or using standard rule
@@ -59,10 +59,10 @@ namespace xplrules { namespace rfxLanXpl {
    {
       std::vector<std::string> result;
 
-      BOOST_FOREACH(boost::shared_ptr< xplrules::IProtocol > handledProtocols, m_handledProtocols)
+      for (Protocols::iterator i = m_handledProtocols.begin(); i != m_handledProtocols.end(); ++i)
       {
-         if(handledProtocols)
-            result.push_back(handledProtocols->getProtocolIdentifier());
+         if (*i)
+            result.push_back((*i)->getProtocolIdentifier());
       }
 
       return result;

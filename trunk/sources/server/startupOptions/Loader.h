@@ -35,7 +35,7 @@ namespace startupOptions
 
       //--------------------------------------------------------------
       // IStartupOptions implementation (see IStartupOptions declaration for details)
-      virtual boost::log::trivial::severity_level getLogLevel() const
+      virtual const std::string & getLogLevel() const
          { return m_logLevel; }
       virtual unsigned int getWebServerPortNumber() const
          { return m_webServerPortNumber; }
@@ -68,7 +68,7 @@ namespace startupOptions
       boost::program_options::options_description m_optionsDescription;
 
       // Options data
-      boost::log::trivial::severity_level m_logLevel;
+      std::string m_logLevel;
       unsigned int m_webServerPortNumber;
       CValidIpAddressOption m_webServerIPAddress;
       CMustExistPathOption m_webServerInitialPath;

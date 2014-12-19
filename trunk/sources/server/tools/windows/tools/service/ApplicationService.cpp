@@ -70,6 +70,8 @@ namespace tools { namespace service {
       m_argc = dwArgc;
       m_argv = lpszArgv;
    
+      m_app.configure(m_argc, m_argv);
+
        // Log a service start message to the Application log.
       WriteEventLogEntry((char*)(boost::format("%1% is starting") % m_serviceName).str().c_str(),  EVENTLOG_INFORMATION_TYPE);
 
@@ -87,7 +89,7 @@ namespace tools { namespace service {
    void CApplicationService::ServiceWorkerThread(void)
    {
       boost::filesystem::current_path(m_path.string().c_str());
-      m_app.run(m_argc, m_argv);
+      m_app.run();
 
    }
 
@@ -124,7 +126,7 @@ namespace tools { namespace service {
          {
             std::string msg = (boost::format("%1% is stopped") % m_serviceName).str();
             WriteEventLogEntry((char*)msg.c_str(), EVENTLOG_INFORMATION_TYPE);
-            YADOMS_LOG(info) << msg;
+            YADOMS_LOG(information) << msg;
             break;
          }
 

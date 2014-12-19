@@ -41,13 +41,13 @@ namespace task { namespace backup {
       {
          m_reportRealProgress = pFunctor;
 
-         YADOMS_LOG(info) << "Start backup...";
+         YADOMS_LOG(information) << "Start backup...";
 
-         YADOMS_LOG(info) << "Backup data to :" << m_backupLocation;
+         YADOMS_LOG(information) << "Backup data to :" << m_backupLocation;
 
          m_dataBackupInterface->backupData(m_backupLocation, boost::bind(&CDatabase::OnProgressionUpdatedInternal, this, _1, _2, _3));
 
-         YADOMS_LOG(info) << "End of backup";
+         YADOMS_LOG(information) << "End of backup";
          return true;
       }
       catch(shared::exception::CException & ex)

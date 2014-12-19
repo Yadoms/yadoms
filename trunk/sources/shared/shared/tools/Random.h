@@ -1,47 +1,37 @@
 #pragma once
+#include <shared/Export.h>
 
 namespace shared { namespace tools {
 
    //---------------------------------------------
    ///\brief Class which simplify random generation
    //---------------------------------------------
-   class CRandom
+   class YADOMS_SHARED_EXPORT CRandom
    {
    public:
-
       //---------------------------------------------
-      ///\brief Generate a random number using a number of random bits (from 1 to 32)
-      ///\param [in] zeroAllowed If true the value 0 may be returns, else never
-      ///\return a random integer ni the range [0; (2^NbBits) -1]
+      ///\brief Generate a random number between min and max (included)
+      ///\param [in] min  The minimum value (included)
+      ///\param [in] max  The maximum value (included)
+      ///\return a random integer ni the range [min; max]
       ///\template NbBits the number of independent bits in random generator
       //---------------------------------------------
-      template<size_t NbBits>
-      static unsigned int generateRandomNumber(bool zeroAllowed)
-      {
-         BOOST_ASSERT(NbBits > 0);
-         BOOST_ASSERT(NbBits <= 32);
-
-         boost::random::independent_bits_engine<boost::random::mt19937, NbBits, boost::uint32_t> genbits((unsigned int)time(0));
-         boost::random::uniform_int_distribution<> m_dist(zeroAllowed?0:1, ((int)pow(2.0,(int)NbBits))-1);
-         return m_dist(genbits); 
-      }      
-
-
-   private:
-      //---------------------------------------------
-      ///\brief Constructor
-      //---------------------------------------------
-      CRandom()
-      {
-      }
+      static unsigned int generate(int min, int max);
 
       //---------------------------------------------
-      ///\brief Destructor
+      ///\brief Generate a random number between 0 and max (included)
+      ///\param [in] max  The maximum value (included)
+      ///\return a random integer ni the range [0; max]
+      ///\template NbBits the number of independent bits in random generator
       //---------------------------------------------
-      virtual ~CRandom()
-      {
-      }
-
+      static unsigned int generate(int max);    
+      
+      //---------------------------------------------
+      ///\brief Generate a random number between 0 and 2^32
+      ///\return a random integer ni the range [0; 2^32]
+      ///\template NbBits the number of independent bits in random generator
+      //---------------------------------------------
+      static unsigned int generate();
    };
 
 } // namespace tools 

@@ -24,7 +24,7 @@ namespace task { namespace update {
    bool CPlugin::doWork(TaskProgressFunc pFunctor)
    {
 
-      YADOMS_LOG(info) << "Start updating plugin...";
+      YADOMS_LOG(information) << "Start updating plugin...";
 
       for(int i=1; i<=10; ++i)
       {
@@ -32,7 +32,7 @@ namespace task { namespace update {
          pFunctor(i*10.0f, "");
       }
 
-      YADOMS_LOG(info) << "End of updating plugin";
+      YADOMS_LOG(information) << "End of updating plugin";
       return true;
    }
 

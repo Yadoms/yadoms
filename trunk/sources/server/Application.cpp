@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "Application.h"
-
-#include <iostream>
-
+#include "logConfiguration/LogConfiguration.h"
 #include "startupOptions/Loader.h"
 #include <shared/Log.h>
 #include <tools/OperatingSystem.h>
@@ -25,40 +23,41 @@ CApplication::~CApplication()
    }
 }
    
-   
-int CApplication::run(int argc, char ** argv)
+void CApplication::configure(int argc, char ** argv)
+{
+   m_startupOptions.reset(new startupOptions::CLoader(argc, argv));
+
+   logConfiguration::CLogConfiguration::configure(m_startupOptions->getLogLevel());
+}
+
+int CApplication::run()
 {
   try
    {
-      startupOptions::CLoader startupOptions(argc, argv);
-   
-      if(startupOptions.getDebugFlag())
-         shared::CLog::configure_file_per_thread(startupOptions.getLogLevel());
-      else
-         shared::CLog::configure_one_rolling_file(startupOptions.getLogLevel());
 
       YADOMS_LOG_CONFIGURE("Main");
 
-      YADOMS_LOG(info) << "********************************************************************";
-      YADOMS_LOG(info) << "Yadoms is starting";
-      YADOMS_LOG(info) << "********************************************************************";
-      YADOMS_LOG(info) << "Startup options :";
-      YADOMS_LOG(info) << "\tlog level = " << startupOptions.getLogLevel();
-      YADOMS_LOG(info) << "\tWeb server port number = " << startupOptions.getWebServerPortNumber();
-      YADOMS_LOG(info) << "\tWeb server ip = " << startupOptions.getWebServerIPAddress();
-      YADOMS_LOG(info) << "\tWeb server path = " << startupOptions.getWebServerInitialPath();
-      YADOMS_LOG(info) << "\tdb path = " << startupOptions.getDatabaseFile();
-      YADOMS_LOG(info) << "\tplugins path = " << startupOptions.getPluginsPath();
-      YADOMS_LOG(info) << "\twidgets path = " << startupOptions.getWidgetsPath();
-      YADOMS_LOG(info) << "********************************************************************";
+      YADOMS_LOG(information) << "********************************************************************";
+      YADOMS_LOG(information) << "Yadoms is starting";
+      YADOMS_LOG(information) << "********************************************************************";
+      YADOMS_LOG(information) << "Startup options :";
+      YADOMS_LOG(information) << "\tlog level = " << m_startupOptions->getLogLevel();
+      YADOMS_LOG(information) << "\tWeb server port number = " << m_startupOptions->getWebServerPortNumber();
+      YADOMS_LOG(information) << "\tWeb server ip = " << m_startupOptions->getWebServerIPAddress();
+      YADOMS_LOG(information) << "\tWeb server path = " << m_startupOptions->getWebServerInitialPath();
+      YADOMS_LOG(information) << "\tdb path = " << m_startupOptions->getDatabaseFile();
+      YADOMS_LOG(information) << "\tplugins path = " << m_startupOptions->getPluginsPath();
+      YADOMS_LOG(information) << "\twidgets path = " << m_startupOptions->getWidgetsPath();
+      YADOMS_LOG(information) << "********************************************************************";
 
+      startupOptions::IStartupOptions & opt = *m_startupOptions.get();
 
-      m_supervisor.reset(new CSupervisor(startupOptions));
+      m_supervisor.reset(new CSupervisor(opt));
 
       // The main job
       m_supervisor->doWork();
 
-      YADOMS_LOG(info) << "Yadoms is stopped ";
+      YADOMS_LOG(information) << "Yadoms is stopped ";
    }
    catch(startupOptions::CLoaderException& e)
    {
@@ -69,7 +68,7 @@ int CApplication::run(int argc, char ** argv)
       else
       {
          // Help was invoked, just print to console
-         YADOMS_LOG(info) << e.what();
+         YADOMS_LOG(information) << e.what();
       }
    }
    catch(...)
@@ -79,9 +78,6 @@ int CApplication::run(int argc, char ** argv)
       YADOMS_LOG(fatal) << "An unhandled exception occurred. Yadoms is now stopped";
       BOOST_ASSERT_MSG(false, "Yadoms exited with error, see console for details");
    }
-
-   //flush the log before exit
-   boost::log::core::get()->flush();
 
    return 0;
 }

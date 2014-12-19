@@ -9,12 +9,19 @@ namespace tools
    {
    public:
       //-----------------------------
+      ///\brief Configure the application
+      ///\param [in ] argc    The number of arguments
+      ///\param [in ] argv    The arguments
+      //-----------------------------   
+      virtual void configure(int argc, char ** argv) = 0;
+
+      //-----------------------------
       ///\brief Run the application (blocking)
       ///\param [in ] argc    The number of arguments
       ///\param [in ] argv    The arguments
       ///\return The application return code
       //-----------------------------   
-      virtual int run(int argc, char ** argv) = 0;
+      virtual int run() = 0;
 
       //-----------------------------
       ///\brief Stop the application

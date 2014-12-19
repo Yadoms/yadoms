@@ -133,7 +133,7 @@ void CRfxcom::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    }
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(info) << "Thread is stopping...";
+      YADOMS_LOG(information) << "Thread is stopping...";
    }
 }
 
@@ -225,7 +225,7 @@ void CRfxcom::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context
       m_configuration.initializeWith(newConfigurationData);
 
       // Get status, to compare with new configuration
-      YADOMS_LOG(info) << "Get the RFXCom status...";
+      YADOMS_LOG(information) << "Get the RFXCom status...";
       m_currentState = kGettingRfxcomStatus;
       send(m_transceiver->buildGetStatusCmd(), true);
       return;
@@ -320,7 +320,7 @@ void CRfxcom::initRfxcom()
    // See the RFXCom SDK specification for more information about this sequence
 
    // Send reset command to the RfxCom
-   YADOMS_LOG(info) << "Reset the RFXCom...";
+   YADOMS_LOG(information) << "Reset the RFXCom...";
    send(m_transceiver->buildResetCmd());
    // No answer
 
@@ -331,7 +331,7 @@ void CRfxcom::initRfxcom()
    m_port->flush();
 
    // Now get the actual RFXCom configuration to check if reconfiguration is needed
-   YADOMS_LOG(info) << "Get the RFXCom status...";
+   YADOMS_LOG(information) << "Get the RFXCom status...";
    m_currentState = kGettingRfxcomStatus;
    send(m_transceiver->buildGetStatusCmd(), true);
 }
@@ -351,7 +351,7 @@ void CRfxcom::processRfxcomCommandResponseMessage(boost::shared_ptr<yApi::IYPlug
 
 void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status)
 {
-   YADOMS_LOG(info) << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware version (" << status.getFirmwareVersion() << ")";
+   YADOMS_LOG(information) << "RFXCom status, type (" << status.rfxcomTypeToString() << "), firmware version (" << status.getFirmwareVersion() << ")";
    status.traceEnabledProtocols();
 
    if (!status.needConfigurationUpdate(m_configuration))
@@ -369,7 +369,7 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> co
       return;
    }
 
-   YADOMS_LOG(info) << "Incorrect RFXCom configuration. Updating configuration...";
+   YADOMS_LOG(information) << "Incorrect RFXCom configuration. Updating configuration...";
 
    // Update active protocols list
    m_currentState = kSettingRfxcomMode;
@@ -379,7 +379,7 @@ void CRfxcom::processRfxcomStatusMessage(boost::shared_ptr<yApi::IYPluginApi> co
 
 void CRfxcom::processRfxcomWrongCommandMessage(boost::shared_ptr<yApi::IYPluginApi> context, const rfxcomMessages::CTransceiverStatus& status)
 {
-   YADOMS_LOG(info) << "RFXCom wrong command response";
+   YADOMS_LOG(information) << "RFXCom wrong command response";
 }
 
 void CRfxcom::processRfxcomAckMessage(const rfxcomMessages::CAck& ack) const

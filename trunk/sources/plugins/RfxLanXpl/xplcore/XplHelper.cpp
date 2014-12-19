@@ -5,7 +5,8 @@
 #include <shared/exception/BadConversion.hpp>
 #include <shared/exception/NotImplemented.hpp>
 #include <iostream>
-#include  <shared/Log.h>
+#include <shared/Log.h>
+#include <boost/regex.hpp>
 
 namespace xplcore
 {
@@ -102,11 +103,11 @@ boost::asio::ip::udp::endpoint CXplHelper::getFirstIPV4AddressEndPoint()
    std::vector<boost::asio::ip::address> ips = shared::CNetworkHelper::getLocalIps();
    
    //we look for the first IP which is not loopback
-   BOOST_FOREACH (boost::asio::ip::address addr, ips)
+   for (std::vector<boost::asio::ip::address>::iterator i = ips.begin(); i != ips.end(); ++i)
    {
-      if(!addr.is_loopback())
+      if(!i->is_loopback())
       {
-         return boost::asio::ip::udp::endpoint(addr, 0);
+         return boost::asio::ip::udp::endpoint(*i, 0);
       }
    }
       
@@ -119,11 +120,11 @@ bool CXplHelper::getEndPointFromInterfaceIp(const std::string & localIPOfTheInte
 {
    std::vector<boost::asio::ip::address> ips = shared::CNetworkHelper::getLocalIps();
    
-   BOOST_FOREACH (boost::asio::ip::address addr, ips)
+   for (std::vector<boost::asio::ip::address>::iterator i = ips.begin(); i != ips.end(); ++i)
    {
-      if(addr.to_string() == localIPOfTheInterfaceToUse)
+      if(i->to_string() == localIPOfTheInterfaceToUse)
       {
-         result = boost::asio::ip::udp::endpoint(addr, XplProtocolPort);
+         result = boost::asio::ip::udp::endpoint(*i, XplProtocolPort);
          return true;
       }
    }

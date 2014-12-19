@@ -21,7 +21,7 @@ void CLoader::buildOptionsDescription()
       "use a specific web server ip address. Use 0.0.0.0 to accepts connections via all interfaces. ")
       ("webServerPath,w", po::value<CMustExistPathOption>(&m_webServerInitialPath)->default_value(CMustExistPathOption("www")),
       "use a specific path for web server")
-      ("logLevel,l", po::value<boost::log::trivial::severity_level>(&m_logLevel)->default_value(boost::log::trivial::info),
+      ("logLevel,l", po::value<std::string>(&m_logLevel)->default_value("information"),
       "set log level, accepted values are : trace, debug, info, warning, error, fatal")
       ("databaseFile,D", po::value<std::string>(&m_databaseFile)->default_value("yadoms.db3"),
       "use a specific dataBase file")

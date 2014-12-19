@@ -76,34 +76,34 @@ const std::string& CTransceiverStatus::getDeviceName() const
 
 void CTransceiverStatus::traceEnabledProtocols() const
 {
-   YADOMS_LOG(info) << "RFXCom configured protocols :";
+   YADOMS_LOG(information) << "RFXCom configured protocols :";
 
-   if (m_AEenabled        ) YADOMS_LOG(info) << "   - AE Blyss";
-   if (m_RUBICSONenabled  ) YADOMS_LOG(info) << "   - Rubicson";
-   if (m_FINEOFFSETenabled) YADOMS_LOG(info) << "   - FineOffset/Viking";
-   if (m_LIGHTING4enabled ) YADOMS_LOG(info) << "   - Lighting4";
-   if (m_RSLenabled       ) YADOMS_LOG(info) << "   - RSL";
-   if (m_SXenabled        ) YADOMS_LOG(info) << "   - Byron SX";
-   if (m_RFU6enabled      ) YADOMS_LOG(info) << "   - RFU";
-   if (m_UNDECODEDenabled ) YADOMS_LOG(info) << "   - undecoded messages";
+   if (m_AEenabled        ) YADOMS_LOG(information) << "   - AE Blyss";
+   if (m_RUBICSONenabled  ) YADOMS_LOG(information) << "   - Rubicson";
+   if (m_FINEOFFSETenabled) YADOMS_LOG(information) << "   - FineOffset/Viking";
+   if (m_LIGHTING4enabled ) YADOMS_LOG(information) << "   - Lighting4";
+   if (m_RSLenabled       ) YADOMS_LOG(information) << "   - RSL";
+   if (m_SXenabled        ) YADOMS_LOG(information) << "   - Byron SX";
+   if (m_RFU6enabled      ) YADOMS_LOG(information) << "   - RFU";
+   if (m_UNDECODEDenabled ) YADOMS_LOG(information) << "   - undecoded messages";
 
-   if (m_MERTIKenabled    ) YADOMS_LOG(info) << "   - Mertik";
-   if (m_LWRFenabled      ) YADOMS_LOG(info) << "   - AD LightwaveRF";
-   if (m_HIDEKIenabled    ) YADOMS_LOG(info) << "   - Hideki/UPM";
-   if (m_LACROSSEenabled  ) YADOMS_LOG(info) << "   - La Crosse";
-   if (m_FS20enabled      ) YADOMS_LOG(info) << "   - FS20";
-   if (m_PROGUARDenabled  ) YADOMS_LOG(info) << "   - ProGuard";
-   if (m_BLINDST0enabled  ) YADOMS_LOG(info) << "   - BlindsT0";
-   if (m_BLINDST1enabled  ) YADOMS_LOG(info) << "   - BlindsT1";
+   if (m_MERTIKenabled    ) YADOMS_LOG(information) << "   - Mertik";
+   if (m_LWRFenabled      ) YADOMS_LOG(information) << "   - AD LightwaveRF";
+   if (m_HIDEKIenabled    ) YADOMS_LOG(information) << "   - Hideki/UPM";
+   if (m_LACROSSEenabled  ) YADOMS_LOG(information) << "   - La Crosse";
+   if (m_FS20enabled      ) YADOMS_LOG(information) << "   - FS20";
+   if (m_PROGUARDenabled  ) YADOMS_LOG(information) << "   - ProGuard";
+   if (m_BLINDST0enabled  ) YADOMS_LOG(information) << "   - BlindsT0";
+   if (m_BLINDST1enabled  ) YADOMS_LOG(information) << "   - BlindsT1";
 
-   if (m_X10enabled       ) YADOMS_LOG(info) << "   - X10";
-   if (m_ARCenabled       ) YADOMS_LOG(info) << "   - ARC";
-   if (m_ACenabled        ) YADOMS_LOG(info) << "   - AC";
-   if (m_HEEUenabled      ) YADOMS_LOG(info) << "   - HomeEasy EU";
-   if (m_MEIANTECHenabled ) YADOMS_LOG(info) << "   - Meiantech";
-   if (m_OREGONenabled    ) YADOMS_LOG(info) << "   - Oregon Scientific";
-   if (m_ATIenabled       ) YADOMS_LOG(info) << "   - ATI";
-   if (m_VISONICenabled   ) YADOMS_LOG(info) << "   - Visonic";
+   if (m_X10enabled       ) YADOMS_LOG(information) << "   - X10";
+   if (m_ARCenabled       ) YADOMS_LOG(information) << "   - ARC";
+   if (m_ACenabled        ) YADOMS_LOG(information) << "   - AC";
+   if (m_HEEUenabled      ) YADOMS_LOG(information) << "   - HomeEasy EU";
+   if (m_MEIANTECHenabled ) YADOMS_LOG(information) << "   - Meiantech";
+   if (m_OREGONenabled    ) YADOMS_LOG(information) << "   - Oregon Scientific";
+   if (m_ATIenabled       ) YADOMS_LOG(information) << "   - ATI";
+   if (m_VISONICenabled   ) YADOMS_LOG(information) << "   - Visonic";
 }
 
 CTransceiverStatus::EStatusType CTransceiverStatus::getStatusType() const

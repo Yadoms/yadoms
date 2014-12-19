@@ -126,7 +126,7 @@ void CWindowsSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> cont
    // as a plugin failure.
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(info) << "WindowsSystemInformation is stopping..."  << std::endl;
+      YADOMS_LOG(information) << "WindowsSystemInformation is stopping..."  << std::endl;
    }
 }
 
