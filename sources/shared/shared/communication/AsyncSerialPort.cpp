@@ -19,6 +19,8 @@ CAsyncSerialPort::CAsyncSerialPort(
    m_port(port),
    m_baudrate(baudrate), m_parity(parity), m_characterSize(characterSize), m_stop_bits(stop_bits), m_flowControl(flowControl),
    m_asyncReadBuffer(512),
+   m_connectStateEventHandler(nullptr),
+   m_connectStateEventId(event::kNoEvent),
    m_connectRetryDelay(connectRetryDelay),
    m_connectRetryTimer(m_ioService)
 {

@@ -25,9 +25,14 @@ mc smsd-event.mc -r {Your_path_to_gammu}/smsd -h {Your_path_to_gammu}/smsd
 - Linux (Ubuntu) : don't install gammu package, build it from sources (because it needs patch)
 
 1 - Download the Gammu library (see above)
-2 - build Gammu :
+2 - Go to gammu folder, create target dir :
+   mkdir build
+   cd build
+3 - Build makefile :
+   cmake .. -DBUILD_SHARED_LIBS=ON
+4 - build Gammu :
    make
-3 - After Gammu is built, don't forget to set it's path in smsDialer (in your CMakeListsUserConfig.txt file, and set USE_PKGCONFIG to OFF)).
+5 - After Gammu is built, don't forget to set it's path in smsDialer (in your CMakeListsUserConfig.txt file, and set USE_PKGCONFIG to OFF)).
 
 ------------------------------------------------
 - RaspberryPi (cross-compilation on Ubuntu)

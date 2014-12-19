@@ -34,11 +34,6 @@ namespace job { namespace action
       boost::shared_ptr<communication::ISendMessageAsync> m_pluginGateway;
 
       //-----------------------------------------------------
-      ///\brief               Device ID
-      //-----------------------------------------------------
-      const int m_deviceId;
-
-      //-----------------------------------------------------
       ///\brief               Keyword ID
       //-----------------------------------------------------
       const int m_keywordId;

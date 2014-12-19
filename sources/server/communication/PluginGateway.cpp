@@ -22,8 +22,11 @@ namespace communication {
    {
    }
 
-   void CPluginGateway::sendCommandAsync(int deviceId, int keywordId, const std::string& body)
+   void CPluginGateway::sendCommandAsync(int keywordId, const std::string& body)
    {
+      // Find the device ID associated to keyword
+      int deviceId = m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->DeviceId;
+
       // Create the command
       boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand> command(new pluginSystem::CDeviceCommand(m_dataProvider->getDeviceRequester()->getDevice(deviceId)->Name,
          m_dataProvider->getKeywordRequester()->getKeyword(keywordId)->Name, body));

@@ -33,7 +33,6 @@ boost::shared_ptr<ICondition> CConditionFactory::createCondition(const shared::C
    {
       condition.reset(new CAnd(configuration.get<std::vector<shared::CDataContainer> >("and"), *this));
    }
-   // TODO add other conditions here
 
    if (!condition)
    {

@@ -28,7 +28,7 @@ namespace communication {
 
    public:
       // ISendMessageAsync Implementation
-      virtual void sendCommandAsync(int deviceId, int keywordId, const std::string& body);
+      virtual void sendCommandAsync(int keywordId, const std::string & body);
       virtual void sendManuallyDeviceCreationRequest(int pluginId, const shared::plugin::yPluginApi::IManuallyDeviceCreationData & data, communication::callback::ISynchronousCallback<std::string> & callback);
       virtual void sendBindingQueryRequest(int pluginId, const shared::plugin::yPluginApi::IBindingQueryData & data, communication::callback::ISynchronousCallback< shared::CDataContainer > & callback);
       // [END] ISendMessageAsync Implementation

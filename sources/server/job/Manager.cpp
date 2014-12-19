@@ -38,22 +38,22 @@ void CManager::start()
    }
 
    //TODO à supprimer, pour test
-   boost::shared_ptr<database::entities::CJob> jobData(new database::entities::CJob);
-   jobData->Id = 1;
-   jobData->Name = "testJob";
-   jobData->Description = "test";
-   jobData->Enable = true;
-   jobData->Triggers = std::string("{ \"and\" : [ { \"is\" : { \"keywordId\" : \"31\", \"expectedState\" : \"1\" } }, { \"is\" : { \"keywordId\" : \"32\", \"expectedState\" : \"0\" } } ] }");
-   jobData->Actions = std::string("{ \"actions\" : [ { \"type\" : \"command\", \"deviceId\" : \"6\", \"keywordId\" : \"14\", \"value\" : \"1\" } ] }");
-   createJob(jobData);
-   boost::shared_ptr<database::entities::CJob> jobData2(new database::entities::CJob);
-   jobData2->Id = 2;
-   jobData2->Name = "testJob2";
-   jobData2->Description = "test2";
-   jobData2->Enable = true;
-   jobData2->Triggers = std::string("{ \"and\" : [ { \"is\" : { \"keywordId\" : \"31\", \"expectedState\" : \"0\" } }, { \"is\" : { \"keywordId\" : \"32\", \"expectedState\" : \"1\" } } ] }");
-   jobData2->Actions = std::string("{ \"actions\" : [ { \"type\" : \"command\", \"deviceId\" : \"6\", \"keywordId\" : \"14\", \"value\" : \"0\" } ] }");
-   createJob(jobData2);
+   //boost::shared_ptr<database::entities::CJob> jobData(new database::entities::CJob);
+   //jobData->Id = 1;
+   //jobData->Name = "testJob";
+   //jobData->Description = "test";
+   //jobData->Enable = true;
+   //jobData->Triggers = std::string("{ \"and\" : [ { \"is\" : { \"keywordId\" : \"31\", \"expectedState\" : \"1\" } }, { \"is\" : { \"keywordId\" : \"32\", \"expectedState\" : \"0\" } } ] }");
+   //jobData->Actions = std::string("{ \"actions\" : [ { \"type\" : \"command\", \"deviceId\" : \"6\", \"keywordId\" : \"14\", \"value\" : \"1\" } ] }");
+   //createJob(jobData);
+   //boost::shared_ptr<database::entities::CJob> jobData2(new database::entities::CJob);
+   //jobData2->Id = 2;
+   //jobData2->Name = "testJob2";
+   //jobData2->Description = "test2";
+   //jobData2->Enable = true;
+   //jobData2->Triggers = std::string("{ \"and\" : [ { \"is\" : { \"keywordId\" : \"31\", \"expectedState\" : \"0\" } }, { \"is\" : { \"keywordId\" : \"32\", \"expectedState\" : \"1\" } } ] }");
+   //jobData2->Actions = std::string("{ \"actions\" : [ { \"type\" : \"command\", \"deviceId\" : \"6\", \"keywordId\" : \"14\", \"value\" : \"0\" } ] }");
+   //createJob(jobData2);
    //\TODO à supprimer, pour test
 
    // Start all jobs

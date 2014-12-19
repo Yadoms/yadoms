@@ -11,6 +11,3 @@ IF(NOT DISABLE_TEST_JOB)
    
 ENDIF()
 
-add_subdirectory(condition)
-
-set (YADOMS_TESTS_SRC ${YADOMS_TESTS_SRC} PARENT_SCOPE)

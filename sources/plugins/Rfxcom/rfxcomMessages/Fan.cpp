@@ -9,7 +9,7 @@ namespace rfxcomMessages
 {
 
 CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& keyword, const std::string& command, const shared::CDataContainer& deviceDetails)
-   :m_light("light"), m_fan("fan")
+   :m_lightCmd(false), m_light("light"), m_fan("fan")
 {
    if (boost::iequals(keyword, m_light.getKeyword()))
    {

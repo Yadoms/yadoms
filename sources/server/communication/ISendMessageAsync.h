@@ -22,11 +22,10 @@ namespace communication {
 
       //----------------------------------------------
       ///\brief                     Send a command
-      ///\param [in] deviceId       Target device Id
       ///\param [in] keywordId      Target keyword Id
       ///\param [in] body           The command body to send
       //----------------------------------------------
-      virtual void sendCommandAsync(int deviceId, int keywordId, const std::string & body) = 0;
+      virtual void sendCommandAsync(int keywordId, const std::string & body) = 0;
 
       //----------------------------------------------
       ///\brief                     Send a manually device creation request to a plugin with a mandatory callback

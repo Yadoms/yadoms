@@ -43,7 +43,7 @@ namespace job { namespace condition
       //-----------------------------------------------------
       ///\brief               Keyword ID
       //-----------------------------------------------------
-      const int m_keywordId;//TODO à conserver ?
+      const int m_keywordId;
 
       //-----------------------------------------------------
       ///\brief               Current state
