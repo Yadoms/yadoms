@@ -4,10 +4,11 @@
 namespace job { namespace condition
 {
 
-CIs::CIs(const shared::CDataContainer& configuration)
-   :m_keywordId(configuration.get<int>("keywordId")), m_expectedState(configuration.get<std::string>("expectedState"))
+CIs::CIs(const shared::CDataContainer& configuration, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester)
+   :m_keywordId(configuration.get<int>("keywordId")),
+   m_expectedState(configuration.get<std::string>("expectedState")),
+   m_state(dbAcquisitionRequester->getKeywordLastData(m_keywordId)->Value)
 {
-   //TODO initialiser m_state
 }
 
 CIs::~CIs()

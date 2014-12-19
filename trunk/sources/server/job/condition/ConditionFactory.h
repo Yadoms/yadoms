@@ -1,6 +1,7 @@
 #pragma once
 #include "IConditionFactory.h"
 #include <shared/DataContainer.h>
+#include "../../database/IAcquisitionRequester.h"
 
 namespace job { namespace condition
 {
@@ -12,8 +13,9 @@ namespace job { namespace condition
    public:
       //-----------------------------------------------------
       ///\brief               Constructor
+      ///\param[in] dbAcquisitionRequester  Database acquisition requester
       //-----------------------------------------------------
-      CConditionFactory();
+      CConditionFactory(boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -24,6 +26,11 @@ namespace job { namespace condition
       // IConditionFactory Implementation
       virtual boost::shared_ptr<ICondition> createCondition(const shared::CDataContainer& configuration) const;
       // [END] IConditionFactory Implementation
+
+      //-----------------------------------------------------
+      ///\brief               Database acquisition requester
+      //-----------------------------------------------------
+      boost::shared_ptr<database::IAcquisitionRequester> m_dbAcquisitionRequester;
    };
 	
 } } // namespace job::condition	

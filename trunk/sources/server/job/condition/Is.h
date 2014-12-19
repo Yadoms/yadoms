@@ -4,6 +4,7 @@
 #include "../INotificationObserverForJobsManager.h"
 #include "IConditionRoot.h"
 #include "IKeywordUpdater.h"
+#include "../../database/IAcquisitionRequester.h"
 
 namespace job { namespace condition
 {
@@ -16,8 +17,9 @@ namespace job { namespace condition
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] configuration Condition configuration node
+      ///\param[in] dbAcquisitionRequester  Database acquisition requester
       //-----------------------------------------------------
-      CIs(const shared::CDataContainer& configuration);
+      CIs(const shared::CDataContainer& configuration, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester);
 
       //-----------------------------------------------------
       ///\brief               Destructor

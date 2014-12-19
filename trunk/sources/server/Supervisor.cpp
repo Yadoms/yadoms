@@ -76,7 +76,7 @@ void CSupervisor::doWork()
       pluginManager->start();
 
       // Start Jobs manager
-      boost::shared_ptr<job::IManager> jobsManager(new job::CManager(pDataProvider->getJobRequester(), pluginGateway, notificationCenter));
+      boost::shared_ptr<job::IManager> jobsManager(new job::CManager(pDataProvider->getJobRequester(), pluginGateway, notificationCenter, pDataProvider->getAcquisitionRequester()));
       jobsManager->start();
 
       // Start Web server
