@@ -32,9 +32,7 @@ namespace shared
                {
                   content.resize((unsigned int)response.getContentLength());
                   rs.read((char*)content.c_str(), response.getContentLength());
-
-                  shared::CDataContainer dc(content);
-                  dc.printToLog();
+						return shared::CDataContainer(content);
                }
                else
                {
