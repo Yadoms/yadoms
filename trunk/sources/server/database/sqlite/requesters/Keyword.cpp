@@ -13,8 +13,8 @@
 
 namespace database { namespace sqlite { namespace requesters { 
 
-   CKeyword::CKeyword(boost::shared_ptr<CSQLiteRequester> & databaseRequester)
-      :m_databaseRequester(databaseRequester)
+	CKeyword::CKeyword(CSQLiteDataProvider * pDatabaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester)
+		:m_databaseHandler(pDatabaseHandler), m_databaseRequester(databaseRequester)
    {
    }
 

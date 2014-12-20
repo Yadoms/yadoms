@@ -164,7 +164,7 @@ namespace database {
          m_pluginRequester.reset(new requesters::CPlugin( m_databaseRequester));
          m_configurationRequester.reset(new requesters::CConfiguration( m_databaseRequester));
          m_deviceRequester.reset(new requesters::CDevice( m_databaseRequester));
-         m_keywordRequester.reset(new requesters::CKeyword(m_databaseRequester));
+			m_keywordRequester.reset(new requesters::CKeyword(this, m_databaseRequester));
          m_pageRequester.reset(new requesters::CPage( m_databaseRequester));
          m_widgetRequester.reset(new requesters::CWidget( m_databaseRequester));
          m_pluginEventLoggerRequester.reset(new requesters::CPluginEventLogger( m_databaseRequester));

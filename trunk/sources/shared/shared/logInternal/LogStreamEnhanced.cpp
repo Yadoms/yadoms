@@ -18,11 +18,16 @@ namespace shared {
 
       CLogStreamEnhanced::~CLogStreamEnhanced()
       {
-         Poco::Message msg;
-         msg.setText(m_buffer.str());
-         msg.setPriority(m_currentPriority);
-         msg.setThread(shared::CLog::getCurrentThreadName());
-         m_internalLogger.log(msg);
+			//check logger priority
+			//recommended to create Message only ofr propagated message (performance issue)
+			if (m_internalLogger.is(m_currentPriority))
+			{
+				Poco::Message msg;
+				msg.setText(m_buffer.str());
+				msg.setPriority(m_currentPriority);
+				msg.setThread(shared::CLog::getCurrentThreadName());
+				m_internalLogger.log(msg);
+			}
       }
 
       std::ostream& CLogStreamEnhanced::stream(Poco::Message::Priority priority)

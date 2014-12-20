@@ -248,8 +248,8 @@ void COpenZWaveController::OnNotification(OpenZWave::Notification const* _notifi
          {
             std::string id = GenerateDeviceStringID(node->getHomeId(), node->getNodeId());
             std::string vLabel = OpenZWave::Manager::Get()->GetValueLabel(vID);
-            std::string vUnits = OpenZWave::Manager::Get()->GetValueUnits(vID);
-            std::string keywordId = GenerateKeywordStringID(vLabel, commandClass);
+            //std::string vUnits = OpenZWave::Manager::Get()->GetValueUnits(vID);
+            //std::string keywordId = GenerateKeywordStringID(vLabel, commandClass);
 
             node->registerKeyword(commandClass, vLabel, vID);
 

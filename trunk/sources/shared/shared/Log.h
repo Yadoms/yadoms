@@ -11,7 +11,7 @@ namespace shared
    //--------------------------------------------------------------
    /// \brief	    Log a message (stream way)
    //--------------------------------------------------------------
-   #define YADOMS_LOG(lvl) if(!shared::CLog::logger().lvl()) {} else shared::CLog::logStream()->lvl()
+   #define YADOMS_LOG(lvl) shared::CLog::logStream()->lvl()
 
    //--------------------------------------------------------------
    /// \brief	    Configure the logger by settings the current thread name

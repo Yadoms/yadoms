@@ -85,7 +85,6 @@ namespace web { namespace poco {
          }
          
          //try to send file
-         std::ifstream is(full_path.c_str(), std::ios::in | std::ios::binary);
          if (!readAndSendFile(full_path, response))
          {
             //the file is not found, try to send 404.html file

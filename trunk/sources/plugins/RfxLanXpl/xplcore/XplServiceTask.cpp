@@ -50,7 +50,8 @@ namespace xplcore
    }
 
 
-      void CXplServiceTask::runTask()   {
+      void CXplServiceTask::runTask()
+   {
       try
       {
          YADOMS_LOG_CONFIGURE(m_source.toString());
@@ -108,7 +109,7 @@ namespace xplcore
       //(take the ip from the interface and get an used port between 49152 and 65535 according to xpl documentation)
       boost::random::mt19937 gen;
       boost::random::uniform_int_distribution<> dist(49152, 65535);
-      m_localEndPoint = Poco::Net::SocketAddress(networkInterface.address(), dist(gen));
+      m_localEndPoint = Poco::Net::SocketAddress(networkInterface.address(), (Poco::UInt16)dist(gen)); //cast allowed because value is in [49152, 65535]
 
       //the remote interface is just a broadcast one on xpl port
       m_remoteEndPoint = Poco::Net::SocketAddress(Poco::Net::IPAddress::broadcast(), CXplHelper::XplProtocolPort);

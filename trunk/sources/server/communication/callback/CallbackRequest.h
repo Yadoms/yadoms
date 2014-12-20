@@ -1,6 +1,7 @@
 #pragma once
 #include "ICallbackRequest.h"
 #include "CallbackException.hpp"
+#include <shared/Log.h>
 
 namespace communication { namespace callback {
 
@@ -33,8 +34,9 @@ namespace communication { namespace callback {
             //notify the waiting objet
             m_realCallback.sendError("The target did not answer the callback");
 
-            //generate an exception in target: -> it must be fixed
-            throw CCallbackException("A callback must be called !!");
+            //generate a log message in target: -> it must be fixed
+            //not throw exception (never throw in destructors)
+            YADOMS_LOG(error) << "The callback MUST be called !";
          }
       }
 
