@@ -1,12 +1,17 @@
 ﻿{
-   "description": "SURTEC - Solutions de sécurité - (http://www.surtec.tm.fr/accueil). Ce plugin fonctionne avec un équipement spécial, contacter Mr JM BERHAULT pour celui-ci",
+   "description": "Le plugin Wunderground reçoit des informations météo de la ville sélectionnée",
    "configurationSchema":
    {
-      "SerialPort" :
+      "APIKey":
       {
-         "name" : "Port Série",
-         "description" : "Le port série sur lequel est connecté le lecteur SURTEC"
-      }   
+         "name": "API Key",
+         "description": "La clé API reçue par le site web pour la connection"
+      },
+      "Localisation":
+      {
+         "name": "Localisation",
+         "description": "Le nom de votre ville"
+      }
    }
 }
 
