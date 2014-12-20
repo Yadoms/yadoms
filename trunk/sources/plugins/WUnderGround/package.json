@@ -1,6 +1,6 @@
 {
    "name": "Wunderground",
-   "description": "Wunderground module to received forecast messages from the web site",
+   "description": "Wunderground plugin received meteo information for the selected city from the web site",
    "version": "0.1",
    "releaseType": "beta",
    "author": "Yadoms team",
@@ -12,13 +12,13 @@
       "APIKey":
       {
          "name": "API Key",
-         "description": "the API key reveiced from the web site",
+         "description": "the API key received from the web site",
          "type": "string"
       },
       "Localisation":
       {
          "name": "Localisation",
-         "description": "Your City Name",
+         "description": "Your city name",
          "type": "string"
       }
    }
