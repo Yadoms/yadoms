@@ -30,7 +30,7 @@ namespace job { namespace action
       //-----------------------------------------------------
       ///\brief               The script path
       //-----------------------------------------------------
-      const std::string& m_scriptPath;
+      const std::string m_scriptPath;
    };
 	
 } } // namespace job::action

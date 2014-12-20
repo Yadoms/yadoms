@@ -454,10 +454,7 @@ void CRfxLanXpl::OnBindingQueryRequest(boost::shared_ptr<yApi::IBindingQueryRequ
 		if (data->getData().getQuery() == "RfxLanList")
 		{
 			//send created device
-			std::vector<std::string> allRfxLans;
-
          shared::CDataContainer result;
-
          for (std::vector<std::string>::iterator i = m_connectedRfxLans.begin(); i != m_connectedRfxLans.end(); ++i)
             result.set(*i, *i, 0);
 

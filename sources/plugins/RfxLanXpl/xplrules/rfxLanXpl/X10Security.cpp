@@ -135,7 +135,7 @@ namespace xplrules { namespace rfxLanXpl {
 
    std::string CX10Security::generateVirtualDeviceIdentifier()
    {
-      return (boost::format("%1%") % shared::tools::CRandom::generate(1, pow(2.0, 32) - 1)).str();
+      return (boost::format("%1%") % shared::tools::CRandom::generate()).str();
    }
    // [END] ICommandRule implemntation
 

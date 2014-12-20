@@ -58,7 +58,6 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         std::vector< shared::CDataContainer > internalList;
          const boost::shared_ptr<const shared::CPeripherals::SerialPortsMap> map = shared::CPeripherals::getSerialPorts();
 
          shared::CDataContainer result2;

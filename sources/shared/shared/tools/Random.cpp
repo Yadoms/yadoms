@@ -18,11 +18,19 @@ namespace shared {
          return generate(0, max);
       }  
       
-      unsigned int CRandom::generate()
+		unsigned int CRandom::generate(bool includeZero)
       {
          boost::random::mt19937 gen;
          boost::random::uniform_int_distribution<> dist;
-         return dist(gen);
+			if (includeZero)
+				return dist(gen);
+			else
+			{
+				unsigned int nonzero = dist(gen);
+				while (nonzero == 0)
+					nonzero = dist(gen);
+				return nonzero;
+			}
       }
 
    } // namespace tools 

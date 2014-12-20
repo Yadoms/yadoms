@@ -20,7 +20,7 @@ namespace database { namespace sqlite {
          /// \Brief		   Constructor
          /// \param [in]	pDatabaseHandler: the database handler
          //--------------------------------------------------------------
-         CKeyword(boost::shared_ptr<CSQLiteRequester> & databaseRequester);
+         CKeyword(CSQLiteDataProvider * pDatabaseHandler, boost::shared_ptr<CSQLiteRequester> & databaseRequester);
 
          //--------------------------------------------------------------
          /// \Brief		   Destructor

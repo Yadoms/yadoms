@@ -20,7 +20,7 @@ namespace tools {
       AppleEvent eventReply = {typeNull, NULL};
       AppleEvent appleEventToSend = {typeNull, NULL};
 
-      OSStatus error = noErr;
+      OSStatus error ;
 
       error = AECreateDesc(typeProcessSerialNumber, &kPSNOfSystemProcess, 
          sizeof(kPSNOfSystemProcess), &targetDesc);

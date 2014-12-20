@@ -31,7 +31,7 @@ CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> context, const std::string& keyw
 }
 
 CFan::CFan(boost::shared_ptr<yApi::IYPluginApi> context, unsigned char subType, const shared::CDataContainer& manuallyDeviceCreationConfiguration)
-   :m_light("light"), m_fan("fan")
+   :m_light("light"), m_fan("fan"), m_lightCmd(false)
 {
    m_light.set(false);
    m_fan.set(false);
