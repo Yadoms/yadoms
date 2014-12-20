@@ -29,10 +29,16 @@ namespace shared { namespace tools {
       //---------------------------------------------
       ///\brief Generate a random number between 0 and 2^32
 		///\param [in] includeZero  If true zero as return value is allowed
-		///\return a random integer ni the range [0; 2^32]
-      ///\template NbBits the number of independent bits in random generator
+		///\return a random integer ni the range [ (0 or 1) ; 2^32]
       //---------------------------------------------
       static unsigned int generate(bool includeZero = false);
+
+		//---------------------------------------------
+		///\brief Generate a random number between 0 and 2^n (generate for n bits)
+		///\param [in] n  The power of 2
+		///\return a random integer ni the range [ (0 or 1) ; 2^n]
+		//---------------------------------------------
+		static unsigned int generateNbBits(int n, bool includeZero = false);
    };
 
 } // namespace tools 
