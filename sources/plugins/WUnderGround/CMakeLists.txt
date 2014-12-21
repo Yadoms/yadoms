@@ -16,7 +16,12 @@ set(WUNDERGROUND_SOURCES
    WUConfiguration.h
    stdafx.h
    stdafx.cpp
+   Keywords/ICapacities.h
+   Keywords/Temp.h
+   Keywords/Temp.cpp
 )
+
+source_group(Keywords Keywords/*.*)
 
 #########################################
 ## Place here all additional include directories

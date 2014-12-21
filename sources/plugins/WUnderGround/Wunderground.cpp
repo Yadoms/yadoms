@@ -3,6 +3,7 @@
 #include <shared/Log.h>
 #include <shared/event/EventTimer.h>
 #include <shared/plugin/ImplementationHelper.h>
+#include "ForecastReceiver.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -11,7 +12,7 @@
 IMPLEMENT_PLUGIN(CWunderground)
 
 
-   CWunderground::CWunderground(): m_deviceName("Wunderground")
+CWunderground::CWunderground(): m_deviceName("Wunderground")
 {
 }
 
@@ -35,9 +36,21 @@ void CWunderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       m_configuration.initializeWith(context->getConfiguration());
 
       m_APIKey = m_configuration.getAPIKey();
-      std::cout << m_APIKey << std::endl;
       m_Localisation = m_configuration.getLocalisation();
-      std::cout << m_Localisation << std::endl;
+
+	  // Event to be sent immediately for the first value
+      context->getEventHandler().createTimer(kEvtTimerRefreshForecast      , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
+      // Timer used to read periodically CPU loads
+      context->getEventHandler().createTimer(kEvtTimerRefreshForecast      , shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
+
+	   if (!context->deviceExists(m_deviceName))
+	   {
+		  std::string m_URL = "www.wunderground.com/";
+
+		  context->declareDevice(m_deviceName, m_URL);
+	   }
+
+	  CForecastReceiver m_ForecastRequester( context, m_deviceName, m_APIKey, m_Localisation );
 
       // the main loop
       YADOMS_LOG(debug) << "WUnderground plugin is running...";
@@ -50,12 +63,17 @@ void CWunderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
          case kEvtTimerRefreshForecast:
             {
                YADOMS_LOG(debug) << "WUnderground : Refresh Forecast";
-               //TODO : Read elements here
+
+			   m_ForecastRequester.Request( context );
+			   m_ForecastRequester.Parse  ( context );
+
                break;
             }
          case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
+
+			   m_ForecastRequester.OnUpdate ( m_deviceName, m_APIKey, m_Localisation );
 
                break;
             }

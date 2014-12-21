@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IWUConfiguration.h"
-
+#include <shared/DataContainer.h>
 
 //--------------------------------------------------------------
 /// \brief	Configuration of the plugin

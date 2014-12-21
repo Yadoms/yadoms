@@ -32,6 +32,9 @@ public:
    void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData);
 
 private:
+   //--------------------------------------------------------------
+   /// \brief	The plugin Name
+   //--------------------------------------------------------------
    std::string m_deviceName;
 
    //--------------------------------------------------------------
@@ -39,7 +42,13 @@ private:
    //--------------------------------------------------------------
    CWUConfiguration m_configuration;
 
+   //--------------------------------------------------------------
+   /// \brief	The API Key
+   //--------------------------------------------------------------
    std::string m_APIKey;
 
+   //--------------------------------------------------------------
+   /// \brief	The Localisation
+   //--------------------------------------------------------------
    std::string m_Localisation;
 };
