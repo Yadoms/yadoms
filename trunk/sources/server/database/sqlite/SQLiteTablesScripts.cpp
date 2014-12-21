@@ -126,10 +126,23 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Job, "CREATE TABLE Job                     
                                              enable INTEGER DEFAULT 1)")                           
    
 
-//DECLARE_STATIC_TABLE_CREATION_SCRIPT(Contact,               "CREATE TABLE Contact                                 \
-//                                                            (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,     \
-//                                                               identity TEXT NOT NULL,                            \
-//                                                               information TEXT)")                           
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(Recipient,            "CREATE TABLE Recipient                                \
+                                                            (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,     \
+                                                               firstName TEXT NOT NULL,                           \
+                                                               lastName TEXT)")
+
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(Field,						"CREATE TABLE Field												\
+                                                            (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,     \
+                                                               name TEXT NOT NULL,											\
+                                                               category TEXT,													\
+                                                               verificationRegex TEXT )")
+
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(RecipientFields,       "CREATE TABLE RecipientFields									\
+                                                            (  IdRecipient INTEGER NOT NULL,								\
+                                                               IdField INTEGER NOT NULL,									\
+                                                               value TEXT)")
+
+
 
 
 

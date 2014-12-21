@@ -113,11 +113,28 @@ namespace sqlite {
    )
 
 
-//   DECLARE_TABLE_COLUMN_NAMES(Contact, "Contact",
-//      ((Id)("id"))
-//      ((Identity)("identity"))
-//      ((Information)("information"))
-//   )
+	DECLARE_TABLE_COLUMN_NAMES(Recipient, "Recipient",
+	   ((Id)("id"))
+		((FirstName)("firstName"))
+		((LastName)("lastName"))
+	)
+
+	DECLARE_TABLE_COLUMN_NAMES(Field, "Field",
+	   ((Id)("id"))
+		((Name)("name"))
+		((Category)("category"))
+		((VerificationRegex)("verificationRegex"))
+	)
+
+
+	DECLARE_TABLE_COLUMN_NAMES(RecipientFields, "RecipientFields",
+		((IdRecipient)("idRecipient"))
+		((IdField)("idField"))
+		((Value)("value"))
+	)
+
+
+
 
 
 } //namespace sqlite

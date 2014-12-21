@@ -153,11 +153,21 @@ namespace database { namespace entities {
    )
 
 
-//   DECLARE_ENTITY_CLASS_HEADER(Contact,
-//      ((Id)(int))
-//      ((Identity)(shared::CDataContainer))
-//      ((Information)(shared::CDataContainer))
-//   )
+	DECLARE_ENTITY_CLASS_HEADER(Field,
+		((Id)(int))
+		((Name)(std::string))
+		((Category)(std::string))
+		((VerificationRegex)(std::string))
+		((Value)(std::string))
+	)
+
+
+	DECLARE_ENTITY_CLASS_HEADER(Recipient,
+	   ((Id)(int))
+		((FirstName)(std::string))
+		((LastName)(std::string))
+		((RecipientFields)(std::vector<database::entities::CField>))
+	)
 
 
 

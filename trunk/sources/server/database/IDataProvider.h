@@ -9,6 +9,7 @@
 #include "IWidgetRequester.h"
 #include "IPluginEventLoggerRequester.h"
 #include "IJobRequester.h"
+#include "IRecipientRequester.h"
 #include "IAcquisitionRequester.h"
 #include "ITransactionalProvider.h"
 
@@ -111,7 +112,14 @@ namespace database {
       /// \return 	the Job requester
       /// \throws 		
       //--------------------------------------------------------------  
-      virtual boost::shared_ptr<IJobRequester> getJobRequester() = 0;
+      virtual boost::shared_ptr<IJobRequester> getJobRequester() = 0;     
+      
+      //--------------------------------------------------------------
+      /// \Brief		get the Recipient requester
+      /// \return 	the Recipient requester
+      /// \throws 		
+      //--------------------------------------------------------------  
+      virtual boost::shared_ptr<IRecipientRequester> getRecipientRequester() = 0;
    };
 
  

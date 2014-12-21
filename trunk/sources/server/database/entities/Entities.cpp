@@ -159,13 +159,22 @@ namespace database { namespace entities {
    );
 
 
-//   DECLARE_ENTITY_CLASS_IMPLEMENTATION(
-//      Contact,
-//      ((Id)(int)(0)("id"))
-//      ((Identity)(shared::CDataContainer)(shared::CDataContainer())("identity"))
-//      ((Information)(shared::CDataContainer)(shared::CDataContainer())("information"))
-//   );
-
+	DECLARE_ENTITY_CLASS_IMPLEMENTATION(
+		Recipient,
+		((Id)(int)(0)("id"))
+		((FirstName)(std::string)("")("firstName"))
+		((LastName)(std::string)("")("lastName"))
+		((RecipientFields)(std::vector<database::entities::CField>)(std::vector<database::entities::CField>())("fields"))
+	);
+		
+	DECLARE_ENTITY_CLASS_IMPLEMENTATION(
+		Field,
+		((Id)(int)(0)("id"))
+		((Name)(std::string)("")("name"))
+		((Category)(std::string)("")("category"))
+		((VerificationRegex)(std::string)("")("verificationRegex"))
+		((Value)(std::string)("")("value"))
+	);
 
 
 } //namespace entities

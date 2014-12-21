@@ -171,6 +171,7 @@ namespace database {
          m_eventLoggerRequester.reset(new requesters::CEventLogger( m_databaseRequester));
          m_acquisitionRequester.reset(new requesters::CAcquisition(this, m_databaseRequester));
          m_jobRequester.reset(new requesters::CJob(m_databaseRequester));
+         m_recipientRequester.reset(new requesters::CRecipient(m_databaseRequester));
       }
 
 

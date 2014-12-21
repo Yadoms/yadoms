@@ -256,6 +256,7 @@ set(YADOMS_SRC
 	server/database/IPageRequester.h
 	server/database/IPluginEventLoggerRequester.h
 	server/database/IPluginRequester.h
+	server/database/IRecipientRequester.h
 	server/database/ITransactionalProvider.h
 	server/database/IWidgetRequester.h
 
@@ -537,6 +538,8 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/requesters/Job.cpp		
 		server/database/sqlite/requesters/Page.h
 		server/database/sqlite/requesters/Page.cpp		
+		server/database/sqlite/requesters/Recipient.h
+		server/database/sqlite/requesters/Recipient.cpp		
 		server/database/sqlite/requesters/Widget.h
 		server/database/sqlite/requesters/Widget.cpp		
 		server/database/sqlite/requesters/PluginEventLogger.h

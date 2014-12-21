@@ -25,6 +25,8 @@ namespace adapters {
    DECLARE_ADAPTER_HEADER(Acquisition)
    DECLARE_ADAPTER_HEADER(AcquisitionSummary)
    DECLARE_ADAPTER_HEADER(Job)
+	DECLARE_ADAPTER_HEADER(Recipient)
+	DECLARE_ADAPTER_HEADER(Field)
 //   DECLARE_ADAPTER_HEADER(Contact)
   
 } //namespace adapters
