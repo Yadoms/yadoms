@@ -40,7 +40,7 @@ void CWunderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 
 	  // Event to be sent immediately for the first value
       context->getEventHandler().createTimer(kEvtTimerRefreshForecast      , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
-      // Timer used to read periodically CPU loads
+      // Timer used to read periodically the Weather information
       context->getEventHandler().createTimer(kEvtTimerRefreshForecast      , shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
 
 	   if (!context->deviceExists(m_deviceName))
@@ -74,7 +74,9 @@ void CWunderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
 
 			   m_ForecastRequester.OnUpdate ( m_deviceName, m_APIKey, m_Localisation );
-
+			   
+			   m_ForecastRequester.Request( context );
+			   m_ForecastRequester.Parse  ( context );
                break;
             }
 
