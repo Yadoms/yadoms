@@ -21,6 +21,8 @@ set(WUNDERGROUND_SOURCES
    Keywords/Temp.cpp
    Keywords/Barometric.h
    Keywords/Barometric.cpp
+   Keywords/UV.h
+   Keywords/UV.cpp   
 )
 
 source_group(Keywords Keywords/*.*)
