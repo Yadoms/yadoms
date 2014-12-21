@@ -6,7 +6,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 {
 
 CPressure::CPressure(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
-   :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Pressure, 0, measureType)
+   :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Pressure, EKeywordAccessMode::kGet, 0, measureType)
 {
 }
 
