@@ -16,9 +16,11 @@ set(WUNDERGROUND_SOURCES
    WUConfiguration.h
    stdafx.h
    stdafx.cpp
-   Keywords/ICapacities.h
+   Keywords/IKeyword.h
    Keywords/Temp.h
    Keywords/Temp.cpp
+   Keywords/Barometric.h
+   Keywords/Barometric.cpp
 )
 
 source_group(Keywords Keywords/*.*)
