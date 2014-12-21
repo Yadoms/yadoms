@@ -110,11 +110,24 @@ namespace sqlite {
       (Enable)
    )   
 
-//   DECLARE_TABLE(Contact,
-//      (Id)
-//      (Identity)
-//      (Information)
-//   )   
+	DECLARE_TABLE(Recipient,
+	   (Id)
+		(FirstName)
+		(LastName)
+	)   
+
+	DECLARE_TABLE(Field,
+	   (Id)
+		(Name)
+		(Category)
+		(VerificationRegex)
+	)   
+
+	DECLARE_TABLE(RecipientFields,
+	   (IdRecipient)
+		(IdField)
+		(Value)
+	)   
 
 
 } //namespace sqlite

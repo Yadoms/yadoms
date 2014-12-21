@@ -111,11 +111,22 @@ namespace database {   namespace sqlite {  namespace adapters {
       ((Enable)(bool)(true))
    );
 
-//   DECLARE_ADAPTER_IMPLEMENTATION(Contact,
-//      ((Id)(int)(0))
-//      ((Identity)(shared::CDataContainer)(shared::CDataContainer()))
-//      ((Information)(shared::CDataContainer)(shared::CDataContainer()))
-//   );
+
+
+	DECLARE_ADAPTER_IMPLEMENTATION(Recipient,
+		((Id)(int)(0))
+		((FirstName)(std::string)(""))
+		((LastName)(std::string)(""))
+	);
+
+		DECLARE_ADAPTER_IMPLEMENTATION(Field,
+		((Id)(int)(0))
+		((Name)(std::string)(""))
+		((Category)(std::string)(""))
+		((VerificationRegex)(std::string)(""))
+	);
+
+
 
 } //namespace adapters
 } //namespace sqlite

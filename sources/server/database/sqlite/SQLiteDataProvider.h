@@ -12,6 +12,7 @@
 #include "requesters/PluginEventLogger.h"
 #include "requesters/EventLogger.h"
 #include "requesters/Acquisition.h"
+#include "requesters/Recipient.h"
 #include "SQLiteRequester.h"
 #include "sqlite3.h"
 
@@ -51,6 +52,7 @@ namespace sqlite {
       boost::shared_ptr<IEventLoggerRequester> getEventLoggerRequester() { return m_eventLoggerRequester; }
       boost::shared_ptr<IAcquisitionRequester> getAcquisitionRequester() { return m_acquisitionRequester; }
       boost::shared_ptr<IJobRequester> getJobRequester() { return m_jobRequester; }
+      boost::shared_ptr<IRecipientRequester> getRecipientRequester() { return m_recipientRequester; }
       // [END] IDatabaseProvider implementation
 
       // IDataBackup implementation
@@ -115,9 +117,14 @@ namespace sqlite {
       boost::shared_ptr<requesters::CAcquisition> m_acquisitionRequester;   
       
       //--------------------------------------------------------------
-      /// \Brief		Acquisition requester
+      /// \Brief		Job requester
       //--------------------------------------------------------------
-      boost::shared_ptr<requesters::CJob> m_jobRequester;   
+      boost::shared_ptr<requesters::CJob> m_jobRequester;       
+      
+      //--------------------------------------------------------------
+      /// \Brief		Recipient requester
+      //--------------------------------------------------------------
+      boost::shared_ptr<requesters::CRecipient> m_recipientRequester;   
       
       
       //--------------------------------------------------------------

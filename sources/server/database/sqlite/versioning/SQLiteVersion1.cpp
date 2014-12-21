@@ -40,7 +40,10 @@
                      !pRequester->checkTableExists(CEventLoggerTable::getTableName()) ||
                      !pRequester->checkTableExists(CAcquisitionTable::getTableName()) ||
                      !pRequester->checkTableExists(CAcquisitionSummaryTable::getTableName()) ||
-                     !pRequester->checkTableExists(CJobTable::getTableName()) )
+                     !pRequester->checkTableExists(CJobTable::getTableName()) || 
+                     !pRequester->checkTableExists(CRecipientTable::getTableName()) || 
+                     !pRequester->checkTableExists(CFieldTable::getTableName()) || 
+                     !pRequester->checkTableExists(CRecipientFieldsTable::getTableName()))
                   {
                      //at least one table is missing
                      bNeedToCreateOrUpgrade = true;
@@ -101,6 +104,12 @@
                      throw CSQLiteVersionException("Failed to delete AcquisitionSummary table");
                   if (!pRequester->dropTableIfExists(CJobTable::getTableName()))
                      throw CSQLiteVersionException("Failed to delete Job table");
+                  if (!pRequester->dropTableIfExists(CRecipientTable::getTableName()))
+                     throw CSQLiteVersionException("Failed to delete Recipient table");
+                  if (!pRequester->dropTableIfExists(CFieldTable::getTableName()))
+                     throw CSQLiteVersionException("Failed to delete Field table");
+                  if (!pRequester->dropTableIfExists(CRecipientFieldsTable::getTableName()))
+                     throw CSQLiteVersionException("Failed to delete RecipientFields table");
 
                   //create tables
                   if(!pRequester->createTableIfNotExists(CConfigurationTable::getTableName(), CConfigurationTable::getTableCreationScript()))
@@ -125,6 +134,12 @@
                      throw CSQLiteVersionException("Failed to create AcquisitionSummary table");
                   if (!pRequester->createTableIfNotExists(CJobTable::getTableName(), CJobTable::getTableCreationScript()))
                      throw CSQLiteVersionException("Failed to create Job table");
+						if (!pRequester->createTableIfNotExists(CRecipientTable::getTableName(), CRecipientTable::getTableCreationScript()))
+                     throw CSQLiteVersionException("Failed to create Recipient table");
+						if (!pRequester->createTableIfNotExists(CFieldTable::getTableName(), CFieldTable::getTableCreationScript()))
+                     throw CSQLiteVersionException("Failed to create Field table");
+						if (!pRequester->createTableIfNotExists(CRecipientFieldsTable::getTableName(), CRecipientFieldsTable::getTableCreationScript()))
+                     throw CSQLiteVersionException("Failed to create RecipientFields table");
 
 
                   //set the database version
