@@ -28,7 +28,6 @@ public:
    /// \brief	    Get the Localisation from the configuration
    /// \return     The Localisation String
    //--------------------------------------------------------------
-
    virtual std::string getLocalisation() const = 0;
 };
 
