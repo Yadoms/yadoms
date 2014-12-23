@@ -4,6 +4,8 @@
 #include "Empty.h"
 #include "Is.h"
 #include "And.h"
+#include "Not.h"
+#include "Or.h"
 
 namespace job { namespace condition
 {
@@ -32,6 +34,14 @@ boost::shared_ptr<ICondition> CConditionFactory::createCondition(const shared::C
    else if (configuration.hasValue("and"))
    {
       condition.reset(new CAnd(configuration.get<std::vector<shared::CDataContainer> >("and"), *this));
+   }
+   else if (configuration.hasValue("or"))
+   {
+      condition.reset(new COr(configuration.get<std::vector<shared::CDataContainer> >("or"), *this));
+   }
+   else if (configuration.hasValue("not"))
+   {
+      condition.reset(new CNot(configuration.get<shared::CDataContainer>("not"), *this));
    }
 
    if (!condition)

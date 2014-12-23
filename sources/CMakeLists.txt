@@ -285,9 +285,15 @@ set(YADOMS_SRC
 	server/job/action/IAction.h
 	server/job/action/RunScript.h
 	server/job/action/RunScript.cpp
+	server/job/action/Wait.h
+	server/job/action/Wait.cpp
 
 	server/job/condition/And.h
 	server/job/condition/And.cpp
+	server/job/condition/Not.h
+	server/job/condition/Not.cpp
+	server/job/condition/Or.h
+	server/job/condition/Or.cpp
 	server/job/condition/ConditionFactory.h
 	server/job/condition/ConditionFactory.cpp
 	server/job/condition/ConditionRoot.h

@@ -2,6 +2,7 @@
 #include "ActionList.h"
 #include "action/DriveDevice.h"
 #include "action/RunScript.h"
+#include "action/Wait.h"
 #include <shared/Log.h>
 
 namespace job
@@ -32,6 +33,10 @@ void CActionList::createAction(const shared::CDataContainer& configuration, boos
    else if (type == "runScript")
    {
       action.reset(new action::CRunScript(configuration));
+   }
+   else if (type == "wait")
+   {
+      action.reset(new action::CWait(configuration));
    }
 
    if (!action)
