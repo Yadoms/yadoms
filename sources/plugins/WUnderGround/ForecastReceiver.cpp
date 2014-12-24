@@ -4,14 +4,14 @@
 #include <shared/exception/Exception.hpp>
 
 CForecastReceiver::CForecastReceiver(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string APIKey, std::string Localisation): 
-    m_Temp_C   ( context, PluginName, "temperature_C", "C" ),
-    m_Temp_F   ( context, PluginName, "temperature_F", "F" ),
-	m_Windchill_C ( context, PluginName, "Windchill_C", "C" ),
-	m_Windchill_F ( context, PluginName, "Windchill_F", "F" ),
-	m_DewPoint_C ( context, PluginName, "DewPoint_C", "C" ),
-	m_DewPoint_F ( context, PluginName, "DewPoint_F", "F" ),
+    m_Temp   ( context, PluginName, "temperature", "C" ),
+	m_Windchill ( context, PluginName, "Windchill", "C" ),
+	m_DewPoint ( context, PluginName, "DewPoint", "C" ),
 	m_Pressure ( context, PluginName ),
-	m_UV       ( context, PluginName )
+	m_UV       ( context, PluginName ),
+	m_Visibility( context, PluginName),
+	m_Rain_1hr  ( context, PluginName, "Rain_1hr"),
+	m_Rain_today( context, PluginName, "Rain_today")
 {
 	m_APIKey = APIKey;
 	m_Localisation = Localisation;
@@ -48,22 +48,22 @@ void CForecastReceiver::Parse( boost::shared_ptr<yApi::IYPluginApi> context )
 {
 	try
 	{
-	   m_Temp_C.GetValue        ( m_data.get<double>( "current_observation.temp_c" ) );
-	   m_Temp_C.historizeData   ( context );
-	   m_Temp_F.GetValue        ( m_data.get<double>( "current_observation.temp_f" ) );
-	   m_Temp_F.historizeData   ( context );
+	   m_Temp.GetValue        ( m_data.get<double>( "current_observation.temp_c" ) );
+	   m_Temp.historizeData   ( context );
 	   m_Pressure.GetValue      ( m_data.get<double>( "current_observation.pressure_mb" ) );
 	   m_Pressure.historizeData ( context );
-	   m_Windchill_C.GetValue      ( m_data.get<double>( "current_observation.windchill_c" ) );
-	   m_Windchill_C.historizeData ( context );
-	   m_Windchill_F.GetValue      ( m_data.get<double>( "current_observation.windchill_f" ) );
-	   m_Windchill_F.historizeData ( context );
-	   m_DewPoint_C.GetValue      ( m_data.get<double>( "current_observation.dewpoint_c" ) );
-	   m_DewPoint_C.historizeData ( context );
-	   m_DewPoint_F.GetValue      ( m_data.get<double>( "current_observation.dewpoint_f" ) );
-	   m_DewPoint_F.historizeData ( context );
+	   m_Windchill.GetValue      ( m_data.get<double>( "current_observation.windchill_c" ) );
+	   m_Windchill.historizeData ( context );
+	   m_DewPoint.GetValue      ( m_data.get<double>( "current_observation.dewpoint_c" ) );
+	   m_DewPoint.historizeData ( context );
 	   m_UV.GetValue              ( m_data.get<double>( "current_observation.UV" ) );
 	   m_UV.historizeData         ( context );
+	   m_Visibility.GetValue     ( m_data.get<double>( "current_observation.visibility_km" ) * 1000 );
+	   m_Visibility.historizeData         ( context );
+	   m_Rain_1hr.GetValue     ( m_data.get<double>( "current_observation.precip_today_metric" ) );
+	   m_Rain_1hr.historizeData         ( context );
+	   m_Rain_today.GetValue     ( m_data.get<double>( "current_observation.precip_1hr_metric" ) );
+	   m_Rain_today.historizeData         ( context );
 	}
 	catch (boost::thread_interrupted&)
 	{

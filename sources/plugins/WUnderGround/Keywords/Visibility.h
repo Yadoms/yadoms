@@ -8,9 +8,9 @@ namespace yApi = shared::plugin::yPluginApi;
 namespace WUCapacities
 {
    //--------------------------------------------------------------
-   /// \brief	The UV Keyword
+   /// \brief	The Visibility Keyword
    //--------------------------------------------------------------
-   class CUV : public IKeyword::IKeyword
+   class CVisibility : public IKeyword::IKeyword
    {
    public:
       //--------------------------------------------------------------
@@ -19,14 +19,14 @@ namespace WUCapacities
       /// \param[in] PluginName           The name of the plugin
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
-      CUV(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName);
+      CVisibility(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName);
 
 	  void GetValue(double temp);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CUV();
+      virtual ~CVisibility();
 
       // IKeyword implementation
 	  virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
@@ -44,6 +44,6 @@ namespace WUCapacities
       //--------------------------------------------------------------
       /// \brief	The UV index
       //--------------------------------------------------------------
-      yApi::historization::CDirection m_uv;
+      yApi::historization::CLength m_visibility;
    };
 } // namespace WUCapacities

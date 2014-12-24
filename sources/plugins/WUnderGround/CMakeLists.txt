@@ -17,12 +17,16 @@ set(WUNDERGROUND_SOURCES
    stdafx.h
    stdafx.cpp
    Keywords/IKeyword.h
-   Keywords/Temp.h
-   Keywords/Temp.cpp
    Keywords/Barometric.h
    Keywords/Barometric.cpp
+   Keywords/Rain.h
+   Keywords/Rain.cpp
+   Keywords/Temp.h
+   Keywords/Temp.cpp   
    Keywords/UV.h
    Keywords/UV.cpp   
+   Keywords/Visibility.h
+   Keywords/Visibility.cpp     
 )
 
 source_group(Keywords Keywords/*.*)

@@ -26,7 +26,7 @@ CUV::~CUV()
 
 void CUV::GetValue(double temp)
 {
-   m_uv.set(temp);
+   m_uv.set( (int) temp);
 }
 
 void CUV::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const

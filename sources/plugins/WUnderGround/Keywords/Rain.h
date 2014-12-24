@@ -10,7 +10,7 @@ namespace WUCapacities
    //--------------------------------------------------------------
    /// \brief	The UV Keyword
    //--------------------------------------------------------------
-   class CUV : public IKeyword::IKeyword
+   class CRain : public IKeyword::IKeyword
    {
    public:
       //--------------------------------------------------------------
@@ -19,14 +19,14 @@ namespace WUCapacities
       /// \param[in] PluginName           The name of the plugin
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
-      CUV(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName);
+      CRain(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName);
 
 	  void GetValue(double temp);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CUV();
+      virtual ~CRain();
 
       // IKeyword implementation
 	  virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
@@ -44,6 +44,6 @@ namespace WUCapacities
       //--------------------------------------------------------------
       /// \brief	The UV index
       //--------------------------------------------------------------
-      yApi::historization::CDirection m_uv;
+      yApi::historization::CRain m_rain;
    };
 } // namespace WUCapacities
