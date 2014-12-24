@@ -121,6 +121,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Dimmable.h
    shared/plugin/yPluginApi/historization/Direction.cpp
    shared/plugin/yPluginApi/historization/Direction.h
+   shared/plugin/yPluginApi/historization/Distance.cpp
+   shared/plugin/yPluginApi/historization/Distance.h      
    shared/plugin/yPluginApi/historization/Energy.cpp
    shared/plugin/yPluginApi/historization/Energy.h
    shared/plugin/yPluginApi/historization/Event.cpp
@@ -129,8 +131,6 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Frequency.h
    shared/plugin/yPluginApi/historization/Humidity.cpp
    shared/plugin/yPluginApi/historization/Humidity.h
-   shared/plugin/yPluginApi/historization/Length.cpp
-   shared/plugin/yPluginApi/historization/Length.h   
    shared/plugin/yPluginApi/historization/Load.cpp
    shared/plugin/yPluginApi/historization/Load.h
    shared/plugin/yPluginApi/historization/Message.cpp

@@ -5,9 +5,9 @@
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
    //-----------------------------------------------------
-   ///\brief A length (meter) historizable object
+   ///\brief A distance (meter) historizable object
    //-----------------------------------------------------
-   class YADOMS_SHARED_EXPORT CLength : public CSingleHistorizableData < double >
+   class YADOMS_SHARED_EXPORT CDistance : public CSingleHistorizableData < double >
    {
    public:
       //-----------------------------------------------------
@@ -15,12 +15,12 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] keywordName     Yadoms keyword name
       ///\param[in] accessMode      Access mode
       //-----------------------------------------------------
-      CLength(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet);
+      CDistance(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet);
 
       //-----------------------------------------------------
       ///\brief                     Destructor
       //-----------------------------------------------------
-      virtual ~CLength();
+      virtual ~CDistance();
    };
 
 } } } } // namespace shared::plugin::yPluginApi::historization
