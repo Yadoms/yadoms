@@ -28,6 +28,7 @@ namespace shared { namespace plugin { namespace yPluginApi {
       static const CStandardCapacity & Event;             // event             |  -                    | Just an event (no associated data)
       static const CStandardCapacity & Frequency;         // frequency         | Hertz                 | Frequency
       static const CStandardCapacity & Humidity;          // humidity          | percent               | Humidity
+	  static const CStandardCapacity & Length;            // length            | meter                 | A distance, in meter
       static const CStandardCapacity & Load;              // load              | percent               | Load (%)
       static const CStandardCapacity & Message;           // message           |  -                    | A message (contains "from", "to" and "body" fields)
       static const CStandardCapacity & Power;             // power             | Watt                  | Power
@@ -36,7 +37,7 @@ namespace shared { namespace plugin { namespace yPluginApi {
       static const CStandardCapacity & Rain;              // rain              | mm                    | Rain counter
       static const CStandardCapacity & RainRate;          // rain rate         | mm/s                  | Rain rate
       static const CStandardCapacity & Rssi;              // rssi              | percent               | Rssi measure capacity
-		static const CStandardCapacity & Speed;             // speed             | m/s                   | A speed value, in m/s
+      static const CStandardCapacity & Speed;             // speed             | m/s                   | A speed value, in m/s
       static const CStandardCapacity & Switch;            // switch            | none                  | A on/off value
       static const CStandardCapacity & Temperature;       // temperature       | degrees Celcius       | Temperature
       static const CStandardCapacity & UpDownStop;        // upDownStop        | -                     | Used for device accepting orders Up, Down Stop
