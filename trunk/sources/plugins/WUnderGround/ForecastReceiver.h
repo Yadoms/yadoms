@@ -5,6 +5,8 @@
 #include "Keywords/Temp.h"
 #include "Keywords/Barometric.h"
 #include "Keywords/UV.h"
+#include "Keywords/Visibility.h"
+#include "Keywords/Rain.h"
 #include "IWUConfiguration.h"
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -85,32 +87,17 @@ private:
    //--------------------------------------------------------------
    /// \brief	    The local temperature in Celcius
    //--------------------------------------------------------------
-   WUCapacities::CTemp m_Temp_C;
-
-   //--------------------------------------------------------------
-   /// \brief	    The local temperature in Fahrenheit
-   //--------------------------------------------------------------
-   WUCapacities::CTemp m_Temp_F;
+   WUCapacities::CTemp m_Temp;
 
    //--------------------------------------------------------------
    /// \brief	    The Windchill temperature in Celcius
    //--------------------------------------------------------------
-   WUCapacities::CTemp m_Windchill_C;
-
-   //--------------------------------------------------------------
-   /// \brief	    The Windchill temperature in Fahrenheit
-   //--------------------------------------------------------------
-   WUCapacities::CTemp m_Windchill_F;
+   WUCapacities::CTemp m_Windchill;
 
    //--------------------------------------------------------------
    /// \brief	    The DewPoint temperature in Celcius
    //--------------------------------------------------------------
-   WUCapacities::CTemp m_DewPoint_C;
-
-   //--------------------------------------------------------------
-   /// \brief	    The DewPoint temperature in Fahrenheit
-   //--------------------------------------------------------------
-   WUCapacities::CTemp m_DewPoint_F;
+   WUCapacities::CTemp m_DewPoint;
 
    //--------------------------------------------------------------
    /// \brief	    The pressure
@@ -121,5 +108,20 @@ private:
    /// \brief	    The UV exposure
    //--------------------------------------------------------------
    WUCapacities::CUV m_UV;
+
+   //--------------------------------------------------------------
+   /// \brief	    The Visibility distance
+   //--------------------------------------------------------------
+   WUCapacities::CVisibility m_Visibility;
+
+   //--------------------------------------------------------------
+   /// \brief	    The Rain in 1hr
+   //--------------------------------------------------------------
+   WUCapacities::CRain m_Rain_1hr;
+
+   //--------------------------------------------------------------
+   /// \brief	    The Rain in one day
+   //--------------------------------------------------------------
+   WUCapacities::CRain m_Rain_today;
 };
 
