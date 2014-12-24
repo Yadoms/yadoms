@@ -7,6 +7,7 @@
 #include "Keywords/UV.h"
 #include "Keywords/Visibility.h"
 #include "Keywords/Rain.h"
+#include "Keywords/Humidity.h"
 #include "IWUConfiguration.h"
 
 namespace yApi = shared::plugin::yPluginApi;
@@ -123,5 +124,10 @@ private:
    /// \brief	    The Rain in one day
    //--------------------------------------------------------------
    WUCapacities::CRain m_Rain_today;
+
+   //--------------------------------------------------------------
+   /// \brief	    The Humidity
+   //--------------------------------------------------------------
+   WUCapacities::CHumidity m_Humidity;
 };
 
