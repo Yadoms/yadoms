@@ -9,6 +9,18 @@
 namespace job { namespace condition
 {
    //-----------------------------------------------------
+   ///\brief               Available operators
+   //-----------------------------------------------------
+   DECLARE_ENUM_HEADER(EOperators,
+      ((Equal))
+      ((Different))
+      ((Lower))
+      ((LowerOrEqual))
+      ((Greater))
+      ((GreaterOrEqual))
+   )
+      
+   //-----------------------------------------------------
    ///\brief The IS operator
    //-----------------------------------------------------
    class CIs : public ICondition, public IKeywordUpdater, public boost::enable_shared_from_this<CIs>
@@ -39,6 +51,11 @@ namespace job { namespace condition
       virtual void onKeywordStateChange(const std::string& state);
       // [END] IKeywordUpdater Implementation
 
+      //-----------------------------------------------------
+      ///\brief               Convert value to double to perform '<' or '>' comparaisons
+      //-----------------------------------------------------
+      static double toDouble(const std::string& value);
+
    private:
       //-----------------------------------------------------
       ///\brief               Keyword ID
@@ -46,14 +63,19 @@ namespace job { namespace condition
       const int m_keywordId;
 
       //-----------------------------------------------------
-      ///\brief               Current state
+      ///\brief               Operator
       //-----------------------------------------------------
-      std::string m_state;
+      const EOperators m_operator;
 
       //-----------------------------------------------------
-      ///\brief               Expected state
+      ///\brief               Current value
       //-----------------------------------------------------
-      const std::string m_expectedState;
+      std::string m_value;
+
+      //-----------------------------------------------------
+      ///\brief               Expected value
+      //-----------------------------------------------------
+      const std::string m_expectedValue;
    };
 	
 } } // namespace job::condition	
