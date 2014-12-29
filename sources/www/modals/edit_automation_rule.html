@@ -1,0 +1,62 @@
+<!--Edit automation Rule Modal -->
+<div class="modal fade" id="edit-automation-rule-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+           <form class="form-horizontal" novalidate >
+              <div class="modal-header">
+                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                   <h4 class="modal-title" data-i18n="modals.edit-automation-rule.title"></h4>
+              </div>
+              <div class="modal-body form-group">
+                 <!--configuration will be inserted here-->
+              </div>
+              <div class="modal-footer">
+                 <div class="form-actions">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
+                    <button type="submit" id="btn-confirm-configure-keyword" class="btn btn-primary" data-i18n="common.ok"></button>
+                 </div>
+              </div>
+           </form>
+        </div>
+    </div>
+</div>
+
+<script>
+   function showEditionAutomationRule(rule, callback) {
+      assert(!isNullOrUndefined(rule), "rule must be defined");
+      assert($.isFunction(callback), "callback must be defined");
+
+      var $modalBody = $("div#edit-automation-rule-modal .modal-body");
+      $modalBody.empty();
+
+
+      //i18n
+      $modalBody.i18n();
+
+      //validation form
+      $modalBody.find("input,select,textarea").jqBootstrapValidation({
+         preventSubmit: true,
+         submitError: function($form, event, errors) {
+            console.warn("Unable to validate form: " + errors);
+         },
+         submitSuccess: function($form, event) {
+            event.preventDefault();
+
+
+            console.debug("End of Automation Rule edition : " + JSON.stringify(rule));
+
+            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
+            $modalBody.empty();
+            $("div#edit-automation-rule-modal").modal("hide");
+            callback();
+         },
+         filter: function() {
+            //we check only control that have class enable-validation and are visible
+            return $(this).is(".enable-validation") && $(this).is(":visible");
+         }
+      });
+
+      //we display the modal
+      $('div#edit-automation-rule-modal').modal();
+   }
+</script>

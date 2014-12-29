@@ -128,6 +128,8 @@
    <script src="js/objects/keyword-manager.js"></script>
    <script src="js/objects/acquisition.js"></script>
    <script src="js/objects/acquisition-manager.js"></script>
+   <script src="js/objects/automation/automation-rule.js"></script>
+   <script src="js/objects/automation/automation-rule-manager.js"></script>
 
    <script src="libs/jqBootstrapValidation/js/jqBootstrapValidation.js"></script>
 
@@ -200,6 +202,7 @@
       modals.keywordConfigure = new LazyLoaderManager("modals/configure_keyword.html");
       modals.deviceAddManually = new LazyLoaderManager("modals/add_manually_device.html");
       modals.deviceConfigureManually = new LazyLoaderManager("modals/configure_manually_device.html");
+      modals.automationRuleEdit = new LazyLoaderManager("modals/edit_automation_rule.html");
 
       //we start i18n engine
       var option = { resGetPath: "locales/__lng__.json", fallbackLng:"en", useDataAttrOptions: true};
