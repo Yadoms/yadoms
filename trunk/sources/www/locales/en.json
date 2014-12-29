@@ -148,6 +148,9 @@
             "regexErrorMessage" : "The name of the device must contains at least one character"
          }		 
 	  },
+      "edit-automation-rule" : {
+        "title" : "Automation rule edition"
+      },
       "qrcode" : {
          "title" : "QR Code de Yadoms",
          "text" : "Here is the QRCode of Yadoms. You can now flash it with your phone to access Yadoms everywhere."
@@ -247,6 +250,24 @@
                "errorGettingDeviceList" : "An error has occurred acquiring device list",
                "errorGettingDeviceDetailsList" : "An error has occurred acquiring device details list"
             },
+            "automation-center" : {
+               "title" : "Automation center",
+               "description" : "You can create or modify your automatisation rules of Yadoms",
+               "new" : "Create a new rule",
+               "table" : {
+                  "enabled" : "Enabled",
+                  "name" : "Name",
+                  "description" : "Description",
+                  "triggers" : "Triggers",
+                  "trigerredActions" : "Triggered Actions",
+                  "actions" : "Actions"
+               },
+               "enableDisable" : "Enable / Disable the rule",
+               "edit" : "Edit the rule",
+               "delete" : "Delete the rule",
+               "confirmDeletion" : "This action will delete the rule __name__. Continue anyway ?",
+               "ruleSuccessfullyCreated" : "Rule successfully created"
+            },
             "update" : {
                "title" : "Update"
             },
@@ -315,6 +336,7 @@
       },
       "generic" : {
          "errorUpdating" : "An error has occurred updating __objectName__",
+         "errorDeleting" : "An error has occurred deleting __objectName__",
          "errorCreating" : "An error has occurred creating __objectName__",
          "errorLoading" : "An error has occurred loading __objectName__",
          "errorGetting" : "An error has occurred getting __objectName__"
