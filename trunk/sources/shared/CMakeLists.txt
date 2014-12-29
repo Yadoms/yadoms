@@ -162,6 +162,8 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Voltage.cpp
    shared/plugin/yPluginApi/historization/Voltage.h
    shared/plugin/yPluginApi/historization/Weight.cpp
+   shared/plugin/yPluginApi/historization/WeatherCondition.h
+   shared/plugin/yPluginApi/historization/WeatherCondition.cpp
    shared/plugin/yPluginApi/historization/Weight.h
    
 	shared/notification/NotificationCenter.h

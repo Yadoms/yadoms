@@ -9,18 +9,18 @@ namespace yApi = shared::plugin::yPluginApi;
 /// \brief	This class is the Weather Underground plugin
 /// \note   This plugin send periodically forecast information from a Web Site were The user is indentified
 //--------------------------------------------------------------
-class CWunderground : public shared::plugin::IPlugin
+class CWeatherUnderground : public shared::plugin::IPlugin
 {
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    //--------------------------------------------------------------
-   CWunderground();
+   CWeatherUnderground();
 
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~CWunderground();
+   virtual ~CWeatherUnderground();
 
    // IPlugin implementation
    virtual void doWork(boost::shared_ptr<yApi::IYPluginApi> context);
@@ -28,6 +28,8 @@ public:
 
    //--------------------------------------------------------------
    /// \brief Update the configuration of the plugin after a change
+   /// \param[in] context               pointer to the API
+   /// \param[in] newConfigurationData  The new configuration of the module
    //--------------------------------------------------------------
    void onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData);
 
@@ -41,14 +43,4 @@ private:
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
    CWUConfiguration m_configuration;
-
-   //--------------------------------------------------------------
-   /// \brief	The API Key
-   //--------------------------------------------------------------
-   std::string m_APIKey;
-
-   //--------------------------------------------------------------
-   /// \brief	The Localisation
-   //--------------------------------------------------------------
-   std::string m_Localisation;
 };

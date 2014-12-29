@@ -6,11 +6,8 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-namespace WUCapacities
-{
-
-CVisibility::CVisibility(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName)
-   :m_visibility("Visibility")
+CVisibility::CVisibility(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
+   :m_visibility( KeyWordName )
 {
 	m_PluginName = PluginName;
 
@@ -24,9 +21,10 @@ CVisibility::~CVisibility()
 {
 }
 
-void CVisibility::GetValue(double temp)
+void CVisibility::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {
-   m_visibility.set(temp);
+	// x 1000 -> The visibility from the web site is in kilometer
+	m_visibility.set(ValueContainer.get<double>( filter ) * 1000 );
 }
 
 void CVisibility::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
@@ -38,4 +36,3 @@ void CVisibility::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) co
 {
    context->historizeData(m_PluginName, m_visibility);
 }
-} // namespace WUCapacities

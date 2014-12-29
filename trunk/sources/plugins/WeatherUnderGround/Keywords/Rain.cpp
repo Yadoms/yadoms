@@ -6,9 +6,6 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-namespace WUCapacities
-{
-
 CRain::CRain(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
    :m_rain( KeyWordName )
 {
@@ -24,9 +21,9 @@ CRain::~CRain()
 {
 }
 
-void CRain::GetValue(double temp)
+void CRain::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {
-   m_rain.set(temp);
+	m_rain.set(ValueContainer.get<double>( filter ));
 }
 
 void CRain::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
@@ -38,4 +35,3 @@ void CRain::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_PluginName, m_rain);
 }
-} // namespace WUCapacities

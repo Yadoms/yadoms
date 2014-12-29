@@ -5,10 +5,7 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-namespace WUCapacities
-{
-
-CTemp::CTemp(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName ,std::string KeyWordName, std::string Unit)
+CTemp::CTemp(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName ,std::string KeyWordName)
    :m_temperature( KeyWordName )
 {
 	m_PluginName = PluginName;
@@ -28,13 +25,12 @@ void CTemp::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) cons
 	context->declareKeyword(m_PluginName, m_temperature);
 }
 
-void CTemp::GetValue(double temp)
+void CTemp::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {
-   m_temperature.set(temp);
+	m_temperature.set(ValueContainer.get<double>( filter ));
 }
 
 void CTemp::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_PluginName, m_temperature);
 }
-} // namespace WUCapacities

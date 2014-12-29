@@ -5,64 +5,54 @@
 
 namespace yApi = shared::plugin::yPluginApi;
 
-namespace WUCapacities
-{
    //--------------------------------------------------------------
-   /// \brief	The Barometric protocol support (reception only)
+   /// \brief	The Weather Condition
    //--------------------------------------------------------------
-   class CBarometric : public IKeyword::IKeyword
+   class CWeatherIcon : public IKeyword
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                      Constructor
       /// \param[in] context              Yadoms APi context
+      /// \param[in] PluginName           The name of the plugin
+	  /// \param[in] KeyWordName          The keyword name
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
-      CBarometric(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName);
+      CWeatherIcon(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName);
+
+      //--------------------------------------------------------------
+      /// \brief	                      Set the value from the container
+      /// \param[in] ValueContainer       The container where the value is stored
+	  /// \param[in] filter               The name of the information into the container
+      /// \note                           Use this constructor initialising the keyword for this plugin
+      //--------------------------------------------------------------
+	  void SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CBarometric();
+      virtual ~CWeatherIcon();
 
-	  void GetValue(double temp);
-      // ICapacities implementation
+      // IKeyword implementation
 	  virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
       virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
-      //virtual const std::string& getDeviceName() const;
-      // [END] ICapacities implementation
+      // [END] IKeyword implementation
       
    protected:
-      //--------------------------------------------------------------
-      /// \brief	Global initialization method
-      /// \param[in] context              Yadoms APi context
-      //--------------------------------------------------------------
-      //void Init(boost::shared_ptr<yApi::IYPluginApi> context);
-
-      //--------------------------------------------------------------
-      /// \brief	                        Build the device name
-      //--------------------------------------------------------------
-      //void buildDeviceName();
 
    private:
-      //--------------------------------------------------------------
-      /// \brief	The device sub-type
-      //--------------------------------------------------------------
-      unsigned char m_subType;
-
       //--------------------------------------------------------------
       /// \brief	The device name
       //--------------------------------------------------------------
       std::string m_PluginName;
 
       //--------------------------------------------------------------
-      /// \brief	The device model
+      /// \brief	The UV index
       //--------------------------------------------------------------
-      std::string m_deviceModel;
+      yApi::historization::CWeatherCondition m_weathercondition;
 
       //--------------------------------------------------------------
-      /// \brief	The pressure (hPa)
+      /// \brief	The map of returned icons from the web site
       //--------------------------------------------------------------
-      yApi::historization::CPressure m_pressure;
+	  typedef std::map<std::string, unsigned int> EnumValuesNames;
    };
-} // namespace WUCapacities

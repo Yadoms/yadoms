@@ -5,28 +5,33 @@
 
 namespace yApi = shared::plugin::yPluginApi;
 
-namespace WUCapacities
-{
    //--------------------------------------------------------------
    /// \brief	The UV Keyword
    //--------------------------------------------------------------
-   class CUV : public IKeyword::IKeyword
+   class CHumidity : public IKeyword
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                      Constructor
       /// \param[in] context              Yadoms APi context
       /// \param[in] PluginName           The name of the plugin
+	  /// \param[in] KeyWordName          The keyword name
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
-      CUV(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName);
+      CHumidity(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName);
 
-	  void GetValue(double temp);
+      //--------------------------------------------------------------
+      /// \brief	                      Set the value from the container
+      /// \param[in] ValueContainer       The container where the value is stored
+	  /// \param[in] filter               The name of the information into the container
+      /// \note                           Use this constructor initialising the keyword for this plugin
+      //--------------------------------------------------------------
+	  void SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CUV();
+      virtual ~CHumidity();
 
       // IKeyword implementation
 	  virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
@@ -44,6 +49,5 @@ namespace WUCapacities
       //--------------------------------------------------------------
       /// \brief	The UV index
       //--------------------------------------------------------------
-      yApi::historization::CDirection m_uv;
+      yApi::historization::CHumidity m_humidity;
    };
-} // namespace WUCapacities

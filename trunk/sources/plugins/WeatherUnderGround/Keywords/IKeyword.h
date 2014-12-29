@@ -4,8 +4,6 @@
 
 namespace yApi = shared::plugin::yPluginApi;
 
-namespace IKeyword
-{
    //--------------------------------------------------------------
    /// \brief	The KeyWord Interface interface
    //--------------------------------------------------------------
@@ -25,4 +23,3 @@ namespace IKeyword
       //--------------------------------------------------------------
       virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const = 0;
    };
-}

@@ -1,22 +1,21 @@
 #include "stdafx.h"
-#include "Wunderground.h"
+#include "WeatherUnderground.h"
 #include <shared/Log.h>
 #include <shared/event/EventTimer.h>
 #include <shared/plugin/ImplementationHelper.h>
-#include "ForecastReceiver.h"
+#include "WeatherConditions.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
 // This macro also defines the static PluginInformations value that can be used by plugin to get information values
 
-IMPLEMENT_PLUGIN(CWunderground)
+IMPLEMENT_PLUGIN(CWeatherUnderground)
 
 
-CWunderground::CWunderground(): m_deviceName("Wunderground")
-{
-}
+CWeatherUnderground::CWeatherUnderground(): m_deviceName("WeatherUnderground")
+{}
 
-CWunderground::~CWunderground()
+CWeatherUnderground::~CWeatherUnderground()
 {
 }
 
@@ -26,17 +25,14 @@ enum
    kEvtTimerRefreshForecast = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
 };
 
-void CWunderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
+void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 {
    try
    {
-      YADOMS_LOG(debug) << "CWunderground is starting...";
+      YADOMS_LOG(debug) << "CWeatherUnderground is starting...";
 
       // Load configuration values (provided by database)
       m_configuration.initializeWith(context->getConfiguration());
-
-      m_APIKey = m_configuration.getAPIKey();
-      m_Localisation = m_configuration.getLocalisation();
 
 	  // Event to be sent immediately for the first value
       context->getEventHandler().createTimer(kEvtTimerRefreshForecast      , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
@@ -50,10 +46,10 @@ void CWunderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 		  context->declareDevice(m_deviceName, m_URL);
 	   }
 
-	  CForecastReceiver m_ForecastRequester( context, m_deviceName, m_APIKey, m_Localisation );
+	  CWeatherConditions m_WeatherConditionsRequester( context, m_configuration);
 
       // the main loop
-      YADOMS_LOG(debug) << "WUnderground plugin is running...";
+      YADOMS_LOG(debug) << "CWeatherUnderground plugin is running...";
 
       while(1)
       {
@@ -62,10 +58,10 @@ void CWunderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
          {
          case kEvtTimerRefreshForecast:
             {
-               YADOMS_LOG(debug) << "WUnderground : Refresh Forecast";
+               YADOMS_LOG(debug) << "CWeatherUnderground : Refresh Weather Conditions";
 
-			   m_ForecastRequester.Request( context );
-			   m_ForecastRequester.Parse  ( context );
+			   m_WeatherConditionsRequester.Request( context );
+			   m_WeatherConditionsRequester.Parse  ( context, m_configuration, m_deviceName );
 
                break;
             }
@@ -73,10 +69,10 @@ void CWunderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             {
                onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
 
-			   m_ForecastRequester.OnUpdate ( m_deviceName, m_APIKey, m_Localisation );
+			   m_WeatherConditionsRequester.OnUpdate ( m_configuration );
 			   
-			   m_ForecastRequester.Request( context );
-			   m_ForecastRequester.Parse  ( context );
+			   m_WeatherConditionsRequester.Request( context );
+			   m_WeatherConditionsRequester.Parse  ( context, m_configuration, m_deviceName );
                break;
             }
 
@@ -93,11 +89,11 @@ void CWunderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
    // as a plugin failure.
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(information) << "CWunderground is stopping..."  << std::endl;
+      YADOMS_LOG(information) << "CWeatherUnderground is stopping..."  << std::endl;
    }
 }
 
-void CWunderground::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData)
+void CWeatherUnderground::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> context, const shared::CDataContainer& newConfigurationData)
 {
    // Configuration was updated
    YADOMS_LOG(debug) << "Configuration was updated...";
@@ -105,7 +101,4 @@ void CWunderground::onUpdateConfiguration(boost::shared_ptr<yApi::IYPluginApi> c
 
    // Update configuration
    m_configuration.initializeWith(newConfigurationData);
-
-   m_APIKey = m_configuration.getAPIKey();
-   m_Localisation = m_configuration.getLocalisation();
 }

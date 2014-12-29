@@ -1,0 +1,119 @@
+﻿{
+   "description": "Le plugin Wunderground reçoit des informations météo de la ville sélectionnée",
+   "configurationSchema":
+   {
+      "APIKey":
+      {
+         "name": "API Key",
+         "description": "La clé API reçue par le site web pour la connection"
+      },
+      "Localisation":
+      {
+         "name": "Localisation",
+         "description": "Le nom de votre ville"
+      },
+      "MySection":
+      {
+         "name": "Information à recevoir",
+         "description": "Les informations désirées peuvent être sélectionnées ci-dessous :",
+         "type" : "section",
+         "content":
+         {	  
+		  "Temperature":
+		  {
+			 "name": "Température",
+			 "description": "",
+			 "type": "bool",
+			 "defaultValue": "true"
+		  },
+		  "DewPoint":
+		  {
+			 "name": "Point de rosée",
+			 "description": "",
+			 "type": "bool",
+			 "defaultValue": "false"
+		  },
+		  "Pressure":
+		  {
+			 "name": "Pression atmosphérique",
+			 "description": "",
+			 "type": "bool",
+			 "defaultValue": "true"
+		  },
+		  "Humidity":
+		  {
+			 "name": "Humidité",
+			 "description": "",
+			 "type": "bool",
+			 "defaultValue": "true"
+		  },
+		  "Visibility":
+		  {
+			 "name": "Visibilité",
+			 "description": "",
+			 "type": "bool",
+			 "defaultValue": "false"
+		  },
+		  "UV":
+		  {
+			 "name": "UV",
+			 "description": "",
+			 "type": "bool",
+			 "defaultValue": "false"
+		  },
+		  "Rain1h":
+		  {
+			 "name": "Pluie en 1 heure",
+			 "description": "",
+			 "type": "bool",
+			 "defaultValue": "false"
+		  },
+		  "RainDay":
+		  {
+			 "name": "Pluie dans la journée",
+			 "description": "",
+			 "type": "bool",
+			 "defaultValue": "true"
+		  },
+		  "WeatherConditionIcon":
+		  {
+			 "name": "L'icone de condition météorologique du lieu",
+			 "description": "",
+			 "type": "bool",
+			 "defaultValue": "false"
+		  },		  
+		  "WindInformation":
+		  {
+			 "name": "Information concernant le vent à recevoir",
+			 "description": "Les informations peuvent être sélectionnées ci-dessous:",
+			 "type" : "section",
+			 "content":	
+              {			 
+				  "Wind":
+				  {
+					 "name": "Vent",
+					 "description": "Direction, Vitesse moyenne et vitesse maximum",
+					 "type": "bool",
+					 "defaultValue": "true"
+				  },
+				  "WindChill":
+				  {
+					 "name": "Refroidissement éolien",
+					 "description": "Le refroidissement éolien est la température apparente ressentie sur la peau exposée, Celle-ci est dépendant de la température de l'air et de la vitesse du vent.",
+					 "type": "bool",
+					 "defaultValue": "false"
+				  },
+				  "Feelslike":
+				  {
+					 "name": "Température ressentie",
+					 "description": "La température ressentie est la température apparente basée sur la température réelle, la vitesse du vent et l'humidité",
+					 "type": "bool",
+					 "defaultValue": "false"
+				  }				  
+			  }
+		  }
+		  }		  
+      }	  
+   }
+}
+

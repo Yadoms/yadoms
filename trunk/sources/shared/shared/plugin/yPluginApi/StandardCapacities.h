@@ -43,6 +43,7 @@ namespace shared { namespace plugin { namespace yPluginApi {
       static const CStandardCapacity & UpDownStop;        // upDownStop        | -                     | Used for device accepting orders Up, Down Stop
       static const CStandardCapacity & Uv;                // uv                | uv                    | UV index
       static const CStandardCapacity & Voltage;           // voltage           | Volt                  | Voltage
+	  static const CStandardCapacity & WeatherCondition;  // weatherCondition  | -                     | Weather Condition (Cloudy, Snow, PartlySunny, Sunny, Rain, Sleet, Storm, Fog)
       static const CStandardCapacity & Weight;            // weight            | Kg                    | Weight
    };
 
