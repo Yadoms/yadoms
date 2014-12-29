@@ -201,7 +201,7 @@ namespace xplcore
          std::vector<std::string> result;
          std::string trimRawMessage = boost::trim_copy(rawMessage);
          if (trimRawMessage[trimRawMessage.size() - 1] == '\0')
-            trimRawMessage.pop_back();
+            trimRawMessage.erase( trimRawMessage.end()-1 );
 
          boost::split(result, trimRawMessage, boost::is_any_of("{}"), boost::token_compress_on);
 
