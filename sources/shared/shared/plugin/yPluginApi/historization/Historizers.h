@@ -27,4 +27,5 @@
 #include "UpDownStop.h"
 #include "Uv.h"
 #include "Voltage.h"
+#include "WeatherCondition.h"
 #include "Weight.h"

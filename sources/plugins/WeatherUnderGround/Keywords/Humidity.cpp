@@ -6,11 +6,8 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-namespace WUCapacities
-{
-
-CHumidity::CHumidity(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName)
-   :m_humidity("Humidity")
+CHumidity::CHumidity(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
+   :m_humidity( KeyWordName )
 {
 	m_PluginName = PluginName;
 
@@ -24,9 +21,13 @@ CHumidity::~CHumidity()
 {
 }
 
-void CHumidity::GetValue(double temp)
+void CHumidity::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {
-   m_humidity.set( (int) temp);
+	std::string str_humidity = ValueContainer.get<std::string>( filter );
+	str_humidity.pop_back();
+	double d_humidity = (double)atof(str_humidity.c_str());
+
+	m_humidity.set( d_humidity );
 }
 
 void CHumidity::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
@@ -38,4 +39,3 @@ void CHumidity::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) cons
 {
    context->historizeData(m_PluginName, m_humidity);
 }
-} // namespace WUCapacities

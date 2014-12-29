@@ -1,33 +1,37 @@
 #pragma once
 
-#include <shared/plugin/yPluginApi/IYPluginApi.h>
 #include "IKeyword.h"
+#include <shared/plugin/yPluginApi/IYPluginApi.h>
 
 namespace yApi = shared::plugin::yPluginApi;
 
-namespace WUCapacities
-{
    //--------------------------------------------------------------
-   /// \brief	The Temp capacities
+   /// \brief	The Barometric protocol support (reception only)
    //--------------------------------------------------------------
-   class CTemp : public IKeyword::IKeyword
+   class CBarometric : public IKeyword
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                      Constructor
       /// \param[in] context              Yadoms APi context
-      /// \param[in] PluginName           The name of the plugin
-      /// \param[in] KeyWordName          The name of this capacity
-	  /// \param[in] Unit                 The unit of this capacity
+	  /// \param[in] PluginName           The name of the plugin
+	  /// \param[in] KeyWordName          The keyword name
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
-      CTemp::CTemp(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName, std::string Unit);
+      CBarometric(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName,std::string KeyWordName);
 
-	  void GetValue(double temp);
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CTemp();
+      virtual ~CBarometric();
+
+      //--------------------------------------------------------------
+      /// \brief	                      Set the value from the container
+      /// \param[in] ValueContainer       The container where the value is stored
+	  /// \param[in] filter               The name of the information into the container
+      /// \note                           Use this constructor initialising the keyword for this plugin
+      //--------------------------------------------------------------
+	  void SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter);
 
       // ICapacities implementation
 	  virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
@@ -35,18 +39,12 @@ namespace WUCapacities
       // [END] ICapacities implementation
       
    protected:
-      //--------------------------------------------------------------
-      /// \brief	Global initialization method
-      /// \param[in] context              Yadoms APi context
-      //--------------------------------------------------------------
-      //void Init(boost::shared_ptr<yApi::IYPluginApi> context);
-
-      //--------------------------------------------------------------
-      /// \brief	                        Build the device name
-      //--------------------------------------------------------------
-      //void buildDeviceName();
 
    private:
+      //--------------------------------------------------------------
+      /// \brief	The device sub-type
+      //--------------------------------------------------------------
+      unsigned char m_subType;
 
       //--------------------------------------------------------------
       /// \brief	The device name
@@ -54,9 +52,12 @@ namespace WUCapacities
       std::string m_PluginName;
 
       //--------------------------------------------------------------
-      /// \brief	The temperature (°C)
+      /// \brief	The device model
       //--------------------------------------------------------------
-      yApi::historization::CTemperature m_temperature;
+      std::string m_deviceModel;
 
+      //--------------------------------------------------------------
+      /// \brief	The pressure (hPa)
+      //--------------------------------------------------------------
+      yApi::historization::CPressure m_pressure;
    };
-} // namespace WUCapacities

@@ -8,10 +8,10 @@ include("../YadomsPluginsCommon.cmake")
 
 set(WUNDERGROUND_SOURCES
    IWUConfiguration.h
-   Wunderground.h
-   Wunderground.cpp
-   ForecastReceiver.cpp
-   ForecastReceiver.h
+   WeatherUnderground.h
+   WeatherUnderground.cpp
+   WeatherConditions.cpp
+   WeatherConditions.h
    WUConfiguration.cpp
    WUConfiguration.h
    stdafx.h
@@ -26,9 +26,13 @@ set(WUNDERGROUND_SOURCES
    Keywords/Temp.h
    Keywords/Temp.cpp   
    Keywords/UV.h
-   Keywords/UV.cpp   
+   Keywords/UV.cpp
    Keywords/Visibility.h
-   Keywords/Visibility.cpp     
+   Keywords/Visibility.cpp
+   Keywords/WeatherIcon.h
+   Keywords/WeatherIcon.cpp   
+   Keywords/Wind.h
+   Keywords/Wind.cpp
 )
 
 source_group(Keywords Keywords/*.*)
@@ -47,15 +51,15 @@ source_group(Keywords Keywords/*.*)
 ## Always leave this three lines to configure plugin correctly
 ## even if RFXCOM_ADDITIONAL_INC_DIR or RFXCOM_ADDITIONAL_LIB are empty
 #########################################
-PLUGIN_SOURCES(Wunderground ${WUNDERGROUND_SOURCES})
-PLUGIN_INCLDIR(Wunderground ${WUNDERGROUND_ADDITIONAL_INC_DIR})
-PLUGIN_LINK(Wunderground ${WUNDERGROUND_ADDITIONAL_LIB})
+PLUGIN_SOURCES(WeatherUnderground ${WUNDERGROUND_SOURCES})
+PLUGIN_INCLDIR(WeatherUnderground ${WUNDERGROUND_ADDITIONAL_INC_DIR})
+PLUGIN_LINK(WeatherUnderground ${WUNDERGROUND_ADDITIONAL_LIB})
 
 #########################################
 ## Post-build commands
 ## Copy files to build directory
 ## "package.json" and "icon.png" are needed, but you can add extra-files
 #########################################
-PLUGIN_POST_BUILD_COPY_FILE(Wunderground package.json)
-PLUGIN_POST_BUILD_COPY_FILE(Wunderground icon.png)
-PLUGIN_POST_BUILD_COPY_FILE(Wunderground locales/fr.json)
+PLUGIN_POST_BUILD_COPY_FILE(WeatherUnderground package.json)
+PLUGIN_POST_BUILD_COPY_FILE(WeatherUnderground icon.png)
+PLUGIN_POST_BUILD_COPY_FILE(WeatherUnderground locales/fr.json)

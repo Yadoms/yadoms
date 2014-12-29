@@ -6,11 +6,8 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-namespace WUCapacities
-{
-
-CUV::CUV(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName)
-   :m_uv("UV")
+CUV::CUV(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
+   :m_uv( KeyWordName )
 {
 	m_PluginName = PluginName;
 
@@ -24,9 +21,9 @@ CUV::~CUV()
 {
 }
 
-void CUV::GetValue(double temp)
+void CUV::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {
-   m_uv.set( (int) temp);
+	m_uv.set((int) ValueContainer.get<double>( filter ));
 }
 
 void CUV::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
@@ -38,4 +35,3 @@ void CUV::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_PluginName, m_uv);
 }
-} // namespace WUCapacities

@@ -6,11 +6,8 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-namespace WUCapacities
-{
-
-CBarometric::CBarometric(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName)
-   :m_pressure("pressure")
+CBarometric::CBarometric(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
+   :m_pressure( KeyWordName )
 {
    m_PluginName = PluginName;
 
@@ -21,21 +18,19 @@ CBarometric::CBarometric(boost::shared_ptr<yApi::IYPluginApi> context, std::stri
 }
 
 CBarometric::~CBarometric()
-{
-}
+{}
 
 void CBarometric::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
 	context->declareKeyword(m_PluginName, m_pressure);
 }
 
-void CBarometric::GetValue(double temp)
+void CBarometric::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {
-   m_pressure.set(temp);
+	m_pressure.set(ValueContainer.get<double>( filter ));
 }
 
 void CBarometric::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {
    context->historizeData(m_PluginName, m_pressure);
 }
-} // namespace WUCapacities
