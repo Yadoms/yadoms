@@ -37,9 +37,12 @@ void CWeatherConditions::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 	{
 	   m_data = m_webServer.SendGetRequest( m_URL.str() );
 	}
-	catch (boost::thread_interrupted&)
+	catch (shared::exception::CException)
 	{
 		YADOMS_LOG(information) << "No Information from web Site !"  << std::endl;
+	}
+	catch (...)
+	{
 	}
 }
 
@@ -154,7 +157,7 @@ void CWeatherConditions::Parse( boost::shared_ptr<yApi::IYPluginApi> context, co
 			}
 		}
 	}
-	catch (boost::thread_interrupted&)
+	catch (...)
 	{
 	}
 }
