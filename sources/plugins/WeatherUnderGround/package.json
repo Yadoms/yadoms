@@ -28,100 +28,21 @@
          "type" : "section",
          "content":
          {	  
-		  "Temperature":
-		  {
-			 "name": "Temperature",
-			 "description": "",
-			 "type": "bool",
-			 "defaultValue": "true"
-		  },
-		  "DewPoint":
-		  {
-			 "name": "DewPoint",
-			 "description": "",
-			 "type": "bool",
-			 "defaultValue": "false"
-		  },
-		  "Pressure":
-		  {
-			 "name": "Pressure",
-			 "description": "",
-			 "type": "bool",
-			 "defaultValue": "true"
-		  },
-		  "Humidity":
-		  {
-			 "name": "Humidity",
-			 "description": "",
-			 "type": "bool",
-			 "defaultValue": "true"
-		  },
-		  "Visibility":
-		  {
-			 "name": "Visibility",
-			 "description": "",
-			 "type": "bool",
-			 "defaultValue": "false"
-		  },
-		  "UV":
-		  {
-			 "name": "UV",
-			 "description": "",
-			 "type": "bool",
-			 "defaultValue": "false"
-		  },
-		  "Rain1h":
-		  {
-			 "name": "Rain in 1 hour",
-			 "description": "",
-			 "type": "bool",
-			 "defaultValue": "false"
-		  },
-		  "RainDay":
-		  {
-			 "name": "Rain in the day",
-			 "description": "",
-			 "type": "bool",
-			 "defaultValue": "true"
-		  },
-		  "WeatherConditionIcon":
-		  {
-			 "name": "The weather condition icon",
-			 "description": "",
-			 "type": "bool",
-			 "defaultValue": "false"
-		  },		  
-		  "WindInformation":
-		  {
-			 "name": "Information to receive about the wind",
-			 "description": "Information could be selected individually below:",
-			 "type" : "section",
-			 "content":	
-              {			 
-				  "Wind":
-				  {
-					 "name": "Wind",
-					 "description": "Direction, average speed and max speed",
-					 "type": "bool",
-					 "defaultValue": "true"
-				  },
-				  "WindChill":
-				  {
-					 "name": "Wind chill",
-					 "description": "Wind chill is the apparent temperature felt on exposed skin, which is a function of the air temperature and wind speed",
-					 "type": "bool",
-					 "defaultValue": "false"
-				  },
-				  "Feelslike":
-				  {
-					 "name": "Feels like",
-					 "description": "The “Feels Like” temperature is the apparent temperature based on temperature, humidity and wind speed",
-					 "type": "bool",
-					 "defaultValue": "false"
-				  }				  
+			  "Standard":
+			  {
+				 "name": "Temperature, DewPoint, Pressure, Humidity, Visibility, UV, Rain in 1 hour",
+				 "description": "",
+				 "type": "bool",
+				 "defaultValue": "true"
+			  },
+			  "Wind":
+			  {
+				 "name": "Wind, Wind Chill and Feels Like",
+				 "description": "Direction, average speed and max speed",
+				 "type": "bool",
+				 "defaultValue": "true"
 			  }
 		  }
-		  }		  
+		  }  
       }
-	}
 }
