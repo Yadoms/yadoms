@@ -24,7 +24,7 @@ CHumidity::~CHumidity()
 void CHumidity::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {
 	std::string str_humidity = ValueContainer.get<std::string>( filter );
-	str_humidity.pop_back();
+	str_humidity.erase( str_humidity.end()-1 );
 	double d_humidity = (double)atof(str_humidity.c_str());
 
 	m_humidity.set( d_humidity );
