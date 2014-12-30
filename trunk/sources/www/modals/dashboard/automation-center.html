@@ -140,9 +140,9 @@
       if (serverIsOnline) {
          $.each(automationRuleInstanceList, function(index, value) {
             //we ask async for the enable
-            AutomationRuleManager.getEnable(value, function (status) {
+            AutomationRuleManager.getOne(value.id, function (updatedRule) {
                var $row = getAutomationRuleDomRow(value);
-               if (status != value.enabled) {
+               if (updatedRule.enabled != value.enabled) {
                   var textStatus = "";
                   var btn;
                   var label;

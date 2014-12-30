@@ -57,19 +57,29 @@ KeywordManager.updateToServer = function(keyword, callback) {
       });
 };
 
-KeywordManager.get = function (keywordId, callback) {
+KeywordManager.get = function (keywordId, callback, sync) {
    assert(!isNullOrUndefined(keywordId), "keywordId must be defined");
    assert($.isFunction(callback), "callback must be a function");
 
-   $.getJSON("rest/device/keyword/" + keywordId)
-      .done(function( data ) {
-         //we parse the json answer
-         if (data.result != "true")
-         {
-            notifyError($.t("objects.generic.errorGetting", {objectName : "Keyword with Id = " + keywordId}), JSON.stringify(data));
-            return;
-         }
-         callback(KeywordManager.factory(data.data));
-      })
-      .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "Keyword with Id = " + keywordId}));});
+   var async = true;
+
+   if (!isNullOrUndefined(sync))
+      async = false;
+
+   $.ajax({
+      dataType: "json",
+      url: "rest/device/keyword/" + keywordId,
+      async: async
+   })
+   .done(function( data ) {
+      //we parse the json answer
+      if (data.result != "true")
+      {
+         notifyError($.t("objects.generic.errorGetting", {objectName : "Keyword with Id = " + keywordId}), JSON.stringify(data));
+         return;
+      }
+      callback(KeywordManager.factory(data.data));
+   })
+   .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "Keyword with Id = " + keywordId}));});
 }
+

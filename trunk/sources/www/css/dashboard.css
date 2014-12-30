@@ -53,3 +53,69 @@
 .summary-table .header {
     text-align: right;
 }
+
+/*Automation rule edition part*/
+
+.edit-automation-rule-modal {
+    width: 90%;
+    /*height: 92%;*/
+    padding: 0;
+}
+
+.automation-rule {
+    background-color: #ffffff;
+}
+
+.automation-rule li {
+    list-style-type:none;
+    margin:0;
+    padding:10px 5px 0 5px;
+    position:relative
+}
+
+.automation-rule ul {
+    padding: 0;
+}
+
+.automation-rule li::before, .automation-rule li::after {
+    content:'';
+    left:-20px;
+    position:absolute;
+    right:auto
+}
+.automation-rule li::before {
+    border-left:1px solid #999;
+    bottom:50px;
+    height:100%;
+    top:0;
+    width:1px
+}
+.automation-rule li::after {
+    border-top:1px solid #999;
+    height:20px;
+    top:25px;
+    width:25px
+}
+.automation-rule li span {
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border:1px solid #999;
+    border-radius:5px;
+    display:inline-block;
+    padding:3px 8px;
+    text-decoration:none
+}
+.automation-rule li.parent_li>span {
+    cursor:pointer
+}
+.automation-rule>ul>li::before, .automation-rule>ul>li::after {
+    border:0
+}
+.automation-rule li:last-child::before {
+    height:30px
+}
+.automation-rule li.parent_li>span:hover, .automation-rule li.parent_li>span:hover+ul li span {
+    background:#eee;
+    border:1px solid #94a0b4;
+    color:#000
+}
