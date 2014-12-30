@@ -18,7 +18,7 @@ namespace yApi = shared::plugin::yPluginApi;
       /// \param[in] KeyWordName          The keyword name
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
-      CTemp::CTemp(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName);
+      CTemp(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName);
 
       //--------------------------------------------------------------
       /// \brief	                      Set the value from the container

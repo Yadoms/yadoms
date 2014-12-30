@@ -48,11 +48,6 @@ public:
 private:
 
    //--------------------------------------------------------------
-   /// \brief	    The API Key for access the web site
-   //--------------------------------------------------------------
-	std::string m_APIKey;
-
-   //--------------------------------------------------------------
    /// \brief	    Your Location to received custom information from the web site
    //--------------------------------------------------------------
    std::string m_Localisation;

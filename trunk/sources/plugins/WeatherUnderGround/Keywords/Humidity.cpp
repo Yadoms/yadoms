@@ -7,10 +7,8 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CHumidity::CHumidity(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
-   :m_humidity( KeyWordName )
+   :m_humidity( KeyWordName ), m_PluginName ( PluginName )
 {
-	m_PluginName = PluginName;
-
 	if (!context->keywordExists( m_PluginName, m_humidity.getKeyword()))
 	{
       DeclareKeywords ( context );
@@ -28,6 +26,8 @@ void CHumidity::SetValue( const shared::CDataContainer & ValueContainer, const s
 	double d_humidity = (double)atof(str_humidity.c_str());
 
 	m_humidity.set( d_humidity );
+
+	YADOMS_LOG(debug) << m_humidity.getKeyword() << "=" << m_humidity.get() << "%";
 }
 
 void CHumidity::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const

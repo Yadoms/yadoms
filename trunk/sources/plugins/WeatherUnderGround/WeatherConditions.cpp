@@ -13,22 +13,20 @@
 
 CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration)
 {
-	m_APIKey = WUConfiguration.getAPIKey();
     m_Localisation = WUConfiguration.getLocalisation();
 	
 	m_URL.clear();
 
-	m_URL << "http://api.wunderground.com/api/" << m_APIKey << "/conditions/q/" << m_Localisation << ".json";
+	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/conditions/q/" << m_Localisation << ".json";
 }
 
 void CWeatherConditions::OnUpdate( const IWUConfiguration& WUConfiguration )
 {
-	m_APIKey = WUConfiguration.getAPIKey();
     m_Localisation = WUConfiguration.getLocalisation();
 	
 	m_URL.clear();
 
-	m_URL << "http://api.wunderground.com/api/" << m_APIKey << "/conditions/q/" << m_Localisation << ".json";
+	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/conditions/q/" << m_Localisation << ".json";
 }
 
 void CWeatherConditions::Request( boost::shared_ptr<yApi::IYPluginApi> context )
@@ -36,10 +34,12 @@ void CWeatherConditions::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 	try
 	{
 	   m_data = m_webServer.SendGetRequest( m_URL.str() );
+
+	   YADOMS_LOG(information) << "Observation location :" << m_data.get<std::string>("current_observation.observation_location.full");
 	}
 	catch (shared::exception::CException)
 	{
-		YADOMS_LOG(information) << "No Information from web Site !"  << std::endl;
+		YADOMS_LOG(warning) << "No Information from web Site !"  << std::endl;
 	}
 	catch (...)
 	{
@@ -48,21 +48,18 @@ void CWeatherConditions::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 
 void CWeatherConditions::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, std::string PluginName )
 {
-	std::string Prefix = "conditions.";
+	static const std::string Prefix = "conditions.";
 
 	try
 	{
-		std::string error;
-		error = m_data.getWithDefault<std::string>( "response.error.description","" );
+		std::string error = m_data.getWithDefault<std::string>( "response.error.description","" );
 
-		if (error.size()> 0)
+		if (!error.empty())
 		{
 			YADOMS_LOG(error) << "ERROR : " << error  << std::endl;
 		}
 		else
 		{
-			//TODO : Ne laisser que 2 conditions sur l'ensemble. le vent et si la condition "WeatherConditions" sont cochés
-
 			if (WUConfiguration.IsStandardInformationEnabled())
 			{
 				CTemp m_Temp      ( context, PluginName, Prefix + "temperature" );

@@ -3,11 +3,14 @@
 #include <shared/StringExtension.h>
 #include <shared/Log.h>
 
-CWUConfiguration::~CWUConfiguration()
+CWUConfiguration::CWUConfiguration()
 {
    m_isWindEnabled = false;
    m_isStandardInformationEnabled = false;
 }
+
+CWUConfiguration::~CWUConfiguration()
+{}
 
 void CWUConfiguration::initializeWith(const shared::CDataContainer &data)
 {

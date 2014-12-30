@@ -7,10 +7,8 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CWeatherIcon::CWeatherIcon(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
-   :m_weathercondition( KeyWordName )
+   :m_weathercondition( KeyWordName ), m_PluginName ( PluginName )
 {
-	m_PluginName = PluginName;
-
 	if (!context->keywordExists( m_PluginName, m_weathercondition.getKeyword()))
 	{
       DeclareKeywords ( context );
@@ -49,6 +47,8 @@ void CWeatherIcon::SetValue( const shared::CDataContainer & ValueContainer, cons
       if (it != EEnumTypeNames.end())
 	  {
          m_weathercondition.set( (yApi::historization::EWeatherCondition)(it->second) );
+
+		 YADOMS_LOG(debug) << m_weathercondition.getKeyword() << "=" << m_weathercondition.get();
 	  }
 	  else
 		  throw;
