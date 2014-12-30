@@ -22,7 +22,7 @@ namespace database { namespace sqlite { namespace requesters {
 
 
    // IConfigurationRequester implementation
-   void CConfiguration::create(database::entities::CConfiguration& configurationToCreate)
+   void CConfiguration::create(const entities::CConfiguration& configurationToCreate)
    {
       boost::posix_time::ptime insertDate = boost::posix_time::second_clock::universal_time();
       CQuery qInsert;
@@ -43,7 +43,7 @@ namespace database { namespace sqlite { namespace requesters {
    }
 
 
-   boost::shared_ptr<database::entities::CConfiguration> CConfiguration::getConfiguration(const std::string & section, const std::string & name)
+   boost::shared_ptr<entities::CConfiguration> CConfiguration::getConfiguration(const std::string & section, const std::string & name)
    {
       CQuery qSelect;
       qSelect. Select().
@@ -51,18 +51,16 @@ namespace database { namespace sqlite { namespace requesters {
          Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section).
          And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, name);
 
-      database::sqlite::adapters::CConfigurationAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CConfiguration> >(&adapter, qSelect);
+      adapters::CConfigurationAdapter adapter;
+      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CConfiguration> >(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
          return adapter.getResults()[0];
-      else
-      {
-         std::string sEx = (boost::format("Cannot retrieve Configuration Section=%1% and Name=%2% in database") % section % name).str(); 
-         throw shared::exception::CEmptyResult(sEx);
-      }
+      
+      std::string sEx = (boost::format("Cannot retrieve Configuration Section=%1% and Name=%2% in database") % section % name).str(); 
+      throw shared::exception::CEmptyResult(sEx);
    }
 
-   std::vector<boost::shared_ptr<database::entities::CConfiguration> > CConfiguration::getConfigurations(const std::string & section)
+   std::vector<const boost::shared_ptr<entities::CConfiguration> > CConfiguration::getConfigurations(const std::string & section)
    {
       CQuery qSelect;
       qSelect. Select().
@@ -70,25 +68,25 @@ namespace database { namespace sqlite { namespace requesters {
          Where(CConfigurationTable::getSectionColumnName(), CQUERY_OP_LIKE, section).
          OrderBy(CConfigurationTable::getNameColumnName(), CQUERY_ORDER_ASC);
 
-      database::sqlite::adapters::CConfigurationAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CConfiguration> >(&adapter, qSelect);
+      adapters::CConfigurationAdapter adapter;
+      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CConfiguration> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
-   std::vector<boost::shared_ptr<database::entities::CConfiguration> > CConfiguration::getConfigurations()
+   std::vector<const boost::shared_ptr<entities::CConfiguration> > CConfiguration::getConfigurations()
    {
       CQuery qSelect;
       qSelect. Select().
          From(CConfigurationTable::getTableName()).
          OrderBy(CConfigurationTable::getSectionColumnName(), CQUERY_ORDER_ASC, CConfigurationTable::getNameColumnName(), CQUERY_ORDER_ASC);
 
-      database::sqlite::adapters::CConfigurationAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CConfiguration> >(&adapter, qSelect);
+      adapters::CConfigurationAdapter adapter;
+      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CConfiguration> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
 
-   void CConfiguration::updateConfiguration(database::entities::CConfiguration& configurationToUpdate)
+   void CConfiguration::updateConfiguration(const entities::CConfiguration& configurationToUpdate)
    {
       boost::posix_time::ptime updateDate = boost::posix_time::second_clock::universal_time();
 
@@ -110,7 +108,7 @@ namespace database { namespace sqlite { namespace requesters {
       }
    }
 
-   void CConfiguration::removeConfiguration(database::entities::CConfiguration& configurationToRemove)
+   void CConfiguration::removeConfiguration(const entities::CConfiguration& configurationToRemove)
    {
       CQuery qDelete;
       qDelete. DeleteFrom(CConfigurationTable::getTableName()).

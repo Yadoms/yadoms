@@ -21,7 +21,7 @@ namespace database {  namespace sqlite { namespace requesters {
 
 
    // IPageRequester implementation
-   int CPage::addPage(const database::entities::CPage & page)
+   int CPage::addPage(const entities::CPage & page)
    {
 
       CQuery qInsert;
@@ -45,12 +45,11 @@ namespace database {  namespace sqlite { namespace requesters {
          Where(CPageTable::getNameColumnName(), CQUERY_OP_EQUAL, page.Name()).
          OrderBy(CPageTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
-      database::sqlite::adapters::CSingleValueAdapter<int> adapter;
+      adapters::CSingleValueAdapter<int> adapter;
       m_databaseRequester->queryEntities<int>(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
          return adapter.getResults()[0];
-      else
-         throw shared::exception::CEmptyResult("Cannot retrieve inserted Page");      
+      throw shared::exception::CEmptyResult("Cannot retrieve inserted Page");
    }
 
 
@@ -68,43 +67,40 @@ namespace database {  namespace sqlite { namespace requesters {
          Where(CPageTable::getNameColumnName(), CQUERY_OP_EQUAL, name).
          OrderBy(CPageTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
-      database::sqlite::adapters::CSingleValueAdapter<int> adapter;
+      adapters::CSingleValueAdapter<int> adapter;
       m_databaseRequester->queryEntities<int>(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
          return adapter.getResults()[0];
-      else
-         throw shared::exception::CEmptyResult("Cannot retrieve inserted Page");      
+      throw shared::exception::CEmptyResult("Cannot retrieve inserted Page");
    }
 
 
 
-   boost::shared_ptr<database::entities::CPage> CPage::getPage(int pageId)
+   boost::shared_ptr<entities::CPage> CPage::getPage(int pageId)
    {
       CQuery qSelect;
       qSelect. Select().
          From(CPageTable::getTableName()).
          Where(CPageTable::getIdColumnName(), CQUERY_OP_EQUAL, pageId);
 
-      database::sqlite::adapters::CPageAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CPage> >(&adapter, qSelect);
+      adapters::CPageAdapter adapter;
+      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CPage> >(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
          return adapter.getResults()[0];
-      else
-      {
-         std::string sEx = (boost::format("Cannot retrieve Page Id=%1% in database") % pageId).str(); 
-         throw shared::exception::CEmptyResult(sEx);
-      }
+      
+      std::string sEx = (boost::format("Cannot retrieve Page Id=%1% in database") % pageId).str(); 
+      throw shared::exception::CEmptyResult(sEx);
    }
 
-   std::vector<boost::shared_ptr<database::entities::CPage> > CPage::getPages()
+   std::vector<const boost::shared_ptr<entities::CPage> > CPage::getPages()
    {
       CQuery qSelect;
       qSelect. Select().
          From(CPageTable::getTableName()).
          OrderBy(CPageTable::getPageOrderColumnName());
 
-      database::sqlite::adapters::CPageAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CPage> >(&adapter, qSelect);
+      adapters::CPageAdapter adapter;
+      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CPage> >(&adapter, qSelect);
       return adapter.getResults();
    }
 

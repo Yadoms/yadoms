@@ -102,7 +102,7 @@ namespace database {   namespace sqlite {  namespace adapters {
    )
 
 
-   DECLARE_ADAPTER_IMPLEMENTATION(Job,
+   DECLARE_ADAPTER_IMPLEMENTATION(Rule,
       ((Id)(int)(0))
       ((Name)(std::string)(""))
       ((Description)(std::string)(""))

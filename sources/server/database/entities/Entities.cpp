@@ -149,7 +149,7 @@ namespace database { namespace entities {
 
 
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(
-      Job,
+      Rule,
       ((Id)(int)(0)("id"))
       ((Name)(std::string)("")("name"))
       ((Description)(std::string)("")("description"))

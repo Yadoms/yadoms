@@ -7,6 +7,7 @@
 #include <shared/exception/NotSupported.hpp>
 #include "web/poco/WebServer.h"
 #include "web/rest/service/Acquisition.h"
+#include "web/rest/service/AutomationRule.h"
 #include "web/rest/service/Plugin.h"
 #include "web/rest/service/Device.h"
 #include "web/rest/service/Page.h"
@@ -26,7 +27,7 @@
 #include "SystemInformation.h"
 #include "dataAccessLayer/DataAccessLayer.h"
 #include <shared/notification/NotificationCenter.h>
-#include <server/job/Manager.h>
+#include "automation/RuleManager.h"
 
 CSupervisor::CSupervisor(const startupOptions::IStartupOptions& startupOptions)
    :m_EventHandler(new shared::event::CEventHandler), m_stopHandler(m_EventHandler, kStopRequested), m_startupOptions(startupOptions)
@@ -75,9 +76,9 @@ void CSupervisor::doWork()
       // Start the plugin manager (start all plugin instances)
       pluginManager->start();
 
-      // Start Jobs manager
-      boost::shared_ptr<job::IManager> jobsManager(new job::CManager(pDataProvider->getJobRequester(), pluginGateway, notificationCenter, pDataProvider->getAcquisitionRequester()));
-      jobsManager->start();
+      // Start automation rules manager
+      boost::shared_ptr<automation::IRuleManager> automationRulesManager(new automation::CRuleManager(pDataProvider->getRuleRequester(), pluginGateway, notificationCenter, pDataProvider->getAcquisitionRequester()));
+      automationRulesManager->start();
 
       // Start Web server
       const std::string & webServerIp = m_startupOptions.getWebServerIPAddress();
@@ -99,6 +100,7 @@ void CSupervisor::doWork()
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLogger(pDataProvider)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CSystem(systemInformation)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAutomationRule(pDataProvider, automationRulesManager)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CTask(taskManager)));
 
       webServer.start();
@@ -134,8 +136,8 @@ void CSupervisor::doWork()
 
       YADOMS_LOG(information) << "Supervisor is stopping...";
 
-      //stop the jobs
-      jobsManager->stop();
+      //stop the automation rules
+      automationRulesManager->stop();
 
       //stop all plugins
       if(pluginManager.get() != NULL)

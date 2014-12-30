@@ -46,16 +46,16 @@ namespace web { namespace rest { namespace service {
       if(parameters.size()>1)
          objectId = parameters[1];
 
-      boost::shared_ptr<database::entities::CDevice> deviceFound =  m_dataProvider->getDeviceRequester()->getDevice(boost::lexical_cast<int>(objectId));
-      return web::rest::CResult::GenerateSuccess(deviceFound);
+      boost::shared_ptr<const database::entities::CDevice> deviceFound =  m_dataProvider->getDeviceRequester()->getDevice(boost::lexical_cast<int>(objectId));
+      return CResult::GenerateSuccess(deviceFound);
    }
 
    shared::CDataContainer CDevice::getAllDevices(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      std::vector< boost::shared_ptr<database::entities::CDevice> > dvList = m_dataProvider->getDeviceRequester()->getDevices();
+      std::vector<const boost::shared_ptr<const database::entities::CDevice> > dvList = m_dataProvider->getDeviceRequester()->getDevices();
       shared::CDataContainer collection;
       collection.set(getRestKeyword(), dvList);
-      return web::rest::CResult::GenerateSuccess(collection);
+      return CResult::GenerateSuccess(collection);
    }
 
    shared::CDataContainer CDevice::getKeyword(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
@@ -66,21 +66,18 @@ namespace web { namespace rest { namespace service {
          {
             int keywordId = boost::lexical_cast<int>(parameters[2]);
 
-            boost::shared_ptr<database::entities::CKeyword> keyword = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
-            return web::rest::CResult::GenerateSuccess(keyword);
+            boost::shared_ptr<const database::entities::CKeyword> keyword = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
+            return CResult::GenerateSuccess(keyword);
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive keyword id in url");
-         }
+         return CResult::GenerateError("invalid parameter. Can not retreive keyword id in url");
       }
       catch (std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch (...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in retreiving keyword");
+         return CResult::GenerateError("unknown exception in retreiving keyword");
       }
    }
 
@@ -95,23 +92,20 @@ namespace web { namespace rest { namespace service {
             std::string capacityName = parameters[3];
 
             //run query
-            std::vector< boost::shared_ptr<database::entities::CDevice> > result = m_dataProvider->getDeviceRequester()->getDeviceWithCapacity(capacityName, cam);
+            std::vector<const boost::shared_ptr<const database::entities::CDevice> > result = m_dataProvider->getDeviceRequester()->getDeviceWithCapacity(capacityName, cam);
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), result);
-            return web::rest::CResult::GenerateSuccess(collection);
+            return CResult::GenerateSuccess(collection);
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive capacity in url");
-         }
+         return CResult::GenerateError("invalid parameter. Can not retreive capacity in url");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in retreiving device with get capacity");
+         return CResult::GenerateError("unknown exception in retreiving device with get capacity");
       }
    }
 
@@ -125,23 +119,20 @@ namespace web { namespace rest { namespace service {
             shared::plugin::yPluginApi::EKeywordDataType typ = parameters[3];
 
             //run query
-            std::vector< boost::shared_ptr<database::entities::CDevice> > result = m_dataProvider->getDeviceRequester()->getDeviceWithCapacityType(cam, typ);
+            std::vector<const boost::shared_ptr<const database::entities::CDevice> > result = m_dataProvider->getDeviceRequester()->getDeviceWithCapacityType(cam, typ);
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), result);
-            return web::rest::CResult::GenerateSuccess(collection);
+            return CResult::GenerateSuccess(collection);
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive capacity in url");
-         }
+         return CResult::GenerateError("invalid parameter. Can not retreive capacity in url");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in retreiving device with get capacity");
+         return CResult::GenerateError("unknown exception in retreiving device with get capacity");
       }
    }
 
@@ -156,23 +147,20 @@ namespace web { namespace rest { namespace service {
             std::string capacityName = parameters[3];
 
 
-            std::vector< boost::shared_ptr<database::entities::CKeyword> > result = m_dataProvider->getKeywordRequester()->getDeviceKeywordsWithCapacity(deviceId, capacityName, cam);
+            std::vector<const boost::shared_ptr<const database::entities::CKeyword> > result = m_dataProvider->getKeywordRequester()->getDeviceKeywordsWithCapacity(deviceId, capacityName, cam);
             shared::CDataContainer collection;
             collection.set("keyword", result);
-            return web::rest::CResult::GenerateSuccess(collection);
+            return CResult::GenerateSuccess(collection);
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive capacity in url");
-         }
+         return CResult::GenerateError("invalid parameter. Can not retreive capacity in url");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in retreiving device with get capacity");
+         return CResult::GenerateError("unknown exception in retreiving device with get capacity");
       }
    }
 
@@ -183,32 +171,26 @@ namespace web { namespace rest { namespace service {
          if(parameters.size()>1)
          {
             int deviceId = boost::lexical_cast<int>(parameters[1]);
-            boost::shared_ptr<database::entities::CDevice> deviceInDatabase = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+            boost::shared_ptr<const database::entities::CDevice> deviceInDatabase = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
 
             if(deviceInDatabase)
             {
-               std::vector<boost::shared_ptr<database::entities::CKeyword> > allKeywordsforDevice = m_dataProvider->getKeywordRequester()->getKeywords(deviceId);
+               std::vector<const boost::shared_ptr<const database::entities::CKeyword> > allKeywordsforDevice = m_dataProvider->getKeywordRequester()->getKeywords(deviceId);
                shared::CDataContainer collection;
                collection.set("keyword", allKeywordsforDevice);
-               return web::rest::CResult::GenerateSuccess(collection);
+               return CResult::GenerateSuccess(collection);
             }
-            else
-            {
-               return web::rest::CResult::GenerateError("Fail to retrieve device in database");
-            }
+            return CResult::GenerateError("Fail to retrieve device in database");
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive capacity in url");
-         }
+         return CResult::GenerateError("invalid parameter. Can not retreive capacity in url");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in retreiving device with get capacity");
+         return CResult::GenerateError("unknown exception in retreiving device with get capacity");
       }
    }
 
@@ -224,25 +206,22 @@ namespace web { namespace rest { namespace service {
             try
             {
                m_messageSender.sendCommandAsync(keywordId, requestContent);
-               return web::rest::CResult::GenerateSuccess();
+               return CResult::GenerateSuccess();
             }
             catch (shared::exception::CEmptyResult&)
             {
-               return web::rest::CResult::GenerateError("invalid parameter. Can not retreive keyword in database");
+               return CResult::GenerateError("invalid parameter. Can not retreive keyword in database");
             }
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("invalid parameter. Not enough parameters in url");
-         }
+         return CResult::GenerateError("invalid parameter. Not enough parameters in url");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in sending command to device");
+         return CResult::GenerateError("unknown exception in sending command to device");
       }
    }
 
@@ -253,7 +232,6 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-
          if(parameters.size()>=1)
          {
             //get device id from URL
@@ -261,21 +239,17 @@ namespace web { namespace rest { namespace service {
 
             //remove device in db
             m_dataProvider->getDeviceRequester()->removeDevice(deviceId);
-            return web::rest::CResult::GenerateSuccess();
+            return CResult::GenerateSuccess();
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive device id in url");
-         }
-
+         return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in reading device data");
+         return CResult::GenerateError("unknown exception in reading device data");
       }
    }
 
@@ -285,7 +259,6 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-
          if(parameters.size()>=1)
          {
             //get device id from URL
@@ -299,28 +272,21 @@ namespace web { namespace rest { namespace service {
                m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(deviceId, deviceToUpdate.FriendlyName());
 
                //return the device info
-               boost::shared_ptr<database::entities::CDevice> deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
-               return web::rest::CResult::GenerateSuccess(deviceFound);
+               boost::shared_ptr<const database::entities::CDevice> deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+               return CResult::GenerateSuccess(deviceFound);
 
             }
-            else
-            {
-               return web::rest::CResult::GenerateError("invalid request content. could not retreive device friendlyName");
-            }
+            return CResult::GenerateError("invalid request content. could not retreive device friendlyName");
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive device id in url");
-         }
-
+         return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in updating device friendly name");
+         return CResult::GenerateError("unknown exception in updating device friendly name");
       }
    }
 
@@ -328,7 +294,6 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-
          if(parameters.size()>=3)
          {
             //get keyword id from URL
@@ -339,26 +304,19 @@ namespace web { namespace rest { namespace service {
             if(keywordToUpdate.FriendlyName.isDefined())
             {
                m_dataProvider->getKeywordRequester()->updateKeywordFriendlyName(keywordId, keywordToUpdate.FriendlyName());
-               return web::rest::CResult::GenerateSuccess(m_dataProvider->getKeywordRequester()->getKeyword(keywordId));
+               return CResult::GenerateSuccess(m_dataProvider->getKeywordRequester()->getKeyword(keywordId));
             }
-            else
-            {
-               return web::rest::CResult::GenerateError("invalid request content. could not retreive keyword friendlyName");
-            }
+            return CResult::GenerateError("invalid request content. could not retreive keyword friendlyName");
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive device id in url");
-         }
-
+         return CResult::GenerateError("invalid parameter. Can not retreive device id in url");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in updating device friendly name");
+         return CResult::GenerateError("unknown exception in updating device friendly name");
       }
    }
 
@@ -377,16 +335,16 @@ namespace web { namespace rest { namespace service {
       }
       catch(std::exception &ex)
       {
-         result = web::rest::CResult::GenerateError(ex);
+         result = CResult::GenerateError(ex);
       }
       catch(...)
       {
-         result = web::rest::CResult::GenerateError("unknown exception device rest method");
+         result = CResult::GenerateError("unknown exception device rest method");
       }
 
       if(pTransactionalEngine)
       {
-         if(web::rest::CResult::isSuccess(result))
+         if(CResult::isSuccess(result))
             pTransactionalEngine->transactionCommit();
          else
             pTransactionalEngine->transactionRollback();

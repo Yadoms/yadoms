@@ -251,7 +251,7 @@ set(YADOMS_SRC
 	server/database/IDataBackup.h
 	server/database/IDeviceRequester.h
 	server/database/IEventLoggerRequester.h
-	server/database/IJobRequester.h
+	server/database/IRuleRequester.h
 	server/database/IKeywordRequester.h
 	server/database/IPageRequester.h
 	server/database/IPluginEventLoggerRequester.h
@@ -264,49 +264,49 @@ set(YADOMS_SRC
 	server/database/entities/Entities.cpp
 	server/database/entities/EntityHelpers.hpp
 
-	server/job/ActionList.h
-	server/job/ActionList.cpp
-	server/job/IActionList.h
-	server/job/IJob.h
-	server/job/IJobThreadHandler.h
-	server/job/IManager.h
-	server/job/INotificationObserverForJobsManager.h
-	server/job/Job.h
-	server/job/Job.cpp
-	server/job/JobThread.h
-	server/job/JobThread.cpp
-	server/job/Manager.h
-	server/job/Manager.cpp
-	server/job/NotificationObserverForJobsManager.h
-	server/job/NotificationObserverForJobsManager.cpp
+	server/automation/ActionList.h
+	server/automation/ActionList.cpp
+	server/automation/IActionList.h
+	server/automation/INotificationObserverForRulesManager.h
+	server/automation/IRule.h
+	server/automation/IRuleThreadHandler.h
+	server/automation/IRuleManager.h
+	server/automation/NotificationObserverForRulesManager.h
+	server/automation/NotificationObserverForRulesManager.cpp
+	server/automation/Rule.h
+	server/automation/Rule.cpp
+	server/automation/RuleManager.h
+	server/automation/RuleManager.cpp
+	server/automation/RuleThread.h
+	server/automation/RuleThread.cpp
 
-	server/job/action/DriveDevice.h
-	server/job/action/DriveDevice.cpp
-	server/job/action/IAction.h
-	server/job/action/RunScript.h
-	server/job/action/RunScript.cpp
-	server/job/action/Wait.h
-	server/job/action/Wait.cpp
+	server/automation/action/DriveDevice.h
+	server/automation/action/DriveDevice.cpp
+	server/automation/action/IAction.h
+	server/automation/action/RunScript.h
+	server/automation/action/RunScript.cpp
+	server/automation/action/Wait.h
+	server/automation/action/Wait.cpp
 
-	server/job/condition/And.h
-	server/job/condition/And.cpp
-	server/job/condition/Not.h
-	server/job/condition/Not.cpp
-	server/job/condition/Or.h
-	server/job/condition/Or.cpp
-	server/job/condition/ConditionFactory.h
-	server/job/condition/ConditionFactory.cpp
-	server/job/condition/ConditionRoot.h
-	server/job/condition/ConditionRoot.cpp
-	server/job/condition/Empty.h
-	server/job/condition/Empty.cpp
-	server/job/condition/Is.h
-	server/job/condition/Is.cpp
-	server/job/condition/ICondition.h
-	server/job/condition/IConditionRoot.h
-	server/job/condition/IConditionRootUpdater.h
-	server/job/condition/IKeywordUpdater.h
-	server/job/condition/IConditionFactory.h
+	server/automation/condition/And.h
+	server/automation/condition/And.cpp
+	server/automation/condition/Not.h
+	server/automation/condition/Not.cpp
+	server/automation/condition/Or.h
+	server/automation/condition/Or.cpp
+	server/automation/condition/ConditionFactory.h
+	server/automation/condition/ConditionFactory.cpp
+	server/automation/condition/ConditionRoot.h
+	server/automation/condition/ConditionRoot.cpp
+	server/automation/condition/Empty.h
+	server/automation/condition/Empty.cpp
+	server/automation/condition/Is.h
+	server/automation/condition/Is.cpp
+	server/automation/condition/ICondition.h
+	server/automation/condition/IConditionRoot.h
+	server/automation/condition/IConditionRootUpdater.h
+	server/automation/condition/IKeywordUpdater.h
+	server/automation/condition/IConditionFactory.h
    
 	server/web/IRestHandler.h
 	server/web/IWebServer.h
@@ -320,6 +320,8 @@ set(YADOMS_SRC
 
 	server/web/rest/service/Acquisition.h
 	server/web/rest/service/Acquisition.cpp
+	server/web/rest/service/AutomationRule.h
+	server/web/rest/service/AutomationRule.cpp
 	server/web/rest/service/Configuration.h
 	server/web/rest/service/Configuration.cpp
 	server/web/rest/service/Device.h
@@ -392,9 +394,9 @@ source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPl
 source_group(server\\database  server/database/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\logConfiguration  server/logConfiguration/*.*)
-source_group(server\\job  server/job/*.*)
-source_group(server\\job\\action  server/job/action/*.*)
-source_group(server\\job\\condition  server/job/condition/*.*)
+source_group(server\\automation  server/automation/*.*)
+source_group(server\\automation\\action  server/automation/action/*.*)
+source_group(server\\automation\\condition  server/automation/condition/*.*)
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\task  server/task/*.*)
 source_group(server\\task\\update  server/task/update/*.*)
@@ -540,8 +542,8 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/requesters/Keyword.cpp
 		server/database/sqlite/requesters/Device.h
 		server/database/sqlite/requesters/Device.cpp		
-		server/database/sqlite/requesters/Job.h
-		server/database/sqlite/requesters/Job.cpp		
+		server/database/sqlite/requesters/Rule.h
+		server/database/sqlite/requesters/Rule.cpp		
 		server/database/sqlite/requesters/Page.h
 		server/database/sqlite/requesters/Page.cpp		
 		server/database/sqlite/requesters/Recipient.h

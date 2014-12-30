@@ -143,7 +143,7 @@ namespace database { namespace entities {
    )
 
 
-   DECLARE_ENTITY_CLASS_HEADER(Job,
+   DECLARE_ENTITY_CLASS_HEADER(Rule,
       ((Id)(int))
       ((Name)(std::string))
       ((Description)(std::string))

@@ -23,35 +23,35 @@ namespace dataAccessLayer {
          return m_deviceRequester->deviceExists(pluginId, deviceName);
       }      
 
-      boost::shared_ptr<database::entities::CDevice> CDeviceManager::getDevice(int deviceId) const
+      boost::shared_ptr<const database::entities::CDevice> CDeviceManager::getDevice(int deviceId) const
       {
          return m_deviceRequester->getDevice(deviceId);
       }    
       
-      boost::shared_ptr<database::entities::CDevice> CDeviceManager::getDevice(const int pluginId, const std::string & name) const
+      boost::shared_ptr<const database::entities::CDevice> CDeviceManager::getDevice(const int pluginId, const std::string & name) const
       {
          return m_deviceRequester->getDevice(pluginId, name);
       }    
 
-      std::vector<boost::shared_ptr<database::entities::CDevice> > CDeviceManager::getDeviceWithCapacity(const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & capacityAccessMode) const
+      std::vector<const boost::shared_ptr<const database::entities::CDevice> > CDeviceManager::getDeviceWithCapacity(const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & capacityAccessMode) const
       {
          return m_deviceRequester->getDeviceWithCapacity(capacityName, capacityAccessMode);
       }    
 
-      std::vector<boost::shared_ptr<database::entities::CDevice> > CDeviceManager::getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode & capacityAccessMode, const shared::plugin::yPluginApi::EKeywordDataType & capacityType) const
+      std::vector<const boost::shared_ptr<const database::entities::CDevice> > CDeviceManager::getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode & capacityAccessMode, const shared::plugin::yPluginApi::EKeywordDataType & capacityType) const
       {
          return m_deviceRequester->getDeviceWithCapacityType(capacityAccessMode, capacityType);
       }    
 
-      boost::shared_ptr<database::entities::CDevice> CDeviceManager::createDevice(int pluginId, const std::string & name, const std::string & friendlyName, const std::string & model, const shared::CDataContainer & details)
+      boost::shared_ptr<const database::entities::CDevice> CDeviceManager::createDevice(int pluginId, const std::string & name, const std::string & friendlyName, const std::string & model, const shared::CDataContainer & details)
       {
          //create the device
-         boost::shared_ptr<database::entities::CDevice> result = m_deviceRequester->createDevice(pluginId, name, friendlyName, model, details);
+         boost::shared_ptr<const database::entities::CDevice> result = m_deviceRequester->createDevice(pluginId, name, friendlyName, model, details);
 
          //post notification
          try
          {
-            boost::shared_ptr< notifications::CNewDeviceNotification > notificationData(new notifications::CNewDeviceNotification(result));
+            boost::shared_ptr<notifications::CNewDeviceNotification> notificationData(new notifications::CNewDeviceNotification(result));
             m_notificationCenter->postNotification(notificationData);
          }
          catch (shared::exception::CException & ex)
@@ -62,7 +62,7 @@ namespace dataAccessLayer {
          return result;
       }    
 
-      std::vector<boost::shared_ptr<database::entities::CDevice> > CDeviceManager::getDevices() const
+      std::vector<const boost::shared_ptr<const database::entities::CDevice> > CDeviceManager::getDevices() const
       {
          return m_deviceRequester->getDevices();
       }    

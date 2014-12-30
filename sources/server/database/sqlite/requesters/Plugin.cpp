@@ -21,7 +21,7 @@ namespace database { namespace sqlite { namespace requesters {
    }
 
    // IPluginRequester implementation
-   int CPlugin::addInstance(const database::entities::CPlugin& newPlugin)
+   int CPlugin::addInstance(const entities::CPlugin& newPlugin)
    {
       CQuery qInsert;
 
@@ -42,17 +42,17 @@ namespace database { namespace sqlite { namespace requesters {
          And(CPluginTable::getTypeColumnName(), CQUERY_OP_EQUAL, newPlugin.Type()).
          OrderBy(CPluginTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
-      database::sqlite::adapters::CSingleValueAdapter<int> adapter;
+      adapters::CSingleValueAdapter<int> adapter;
       m_databaseRequester->queryEntities<int>(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
          return adapter.getResults()[0];
-      else
-         throw shared::exception::CEmptyResult("Cannot retrieve inserted Plugin");
+
+      throw shared::exception::CEmptyResult("Cannot retrieve inserted Plugin");
    }
 
-   boost::shared_ptr<database::entities::CPlugin> CPlugin::getInstance(int pluginId)
+   boost::shared_ptr<entities::CPlugin> CPlugin::getInstance(int pluginId)
    {
-      database::sqlite::adapters::CPluginAdapter adapter;
+      adapters::CPluginAdapter adapter;
 
       CQuery qSelect;
 
@@ -60,7 +60,7 @@ namespace database { namespace sqlite { namespace requesters {
          From(CPluginTable::getTableName()).
          Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, pluginId);
 
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CPlugin> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CPlugin> >(&adapter, qSelect);
       if (adapter.getResults().empty())
       {
          // Plugin not found
@@ -72,15 +72,15 @@ namespace database { namespace sqlite { namespace requesters {
 
    boost::shared_ptr<entities::CPlugin> CPlugin::getSystemInstance()
    {
-      database::sqlite::adapters::CPluginAdapter adapter;
+      adapters::CPluginAdapter adapter;
 
       CQuery qSelect;
 
       qSelect.Select().
          From(CPluginTable::getTableName()).
-         Where(CPluginTable::getCategoryColumnName(), CQUERY_OP_EQUAL, database::entities::EPluginCategory::kSystem);
+         Where(CPluginTable::getCategoryColumnName(), CQUERY_OP_EQUAL, entities::EPluginCategory::kSystem);
 
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CPlugin> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CPlugin> >(&adapter, qSelect);
       if (adapter.getResults().empty())
       {
          // Plugin not found
@@ -90,37 +90,23 @@ namespace database { namespace sqlite { namespace requesters {
    }
 
 
-   std::vector<boost::shared_ptr<database::entities::CPlugin> > CPlugin::getInstances()
+   std::vector<const boost::shared_ptr<entities::CPlugin> > CPlugin::getInstances()
    {
-      database::sqlite::adapters::CPluginAdapter adapter;
+      adapters::CPluginAdapter adapter;
 
       CQuery qSelect;
       qSelect.Select().From(CPluginTable::getTableName());
 
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CPlugin> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CPlugin> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
-   //test
-   std::vector<std::string> CPlugin::getPluginNameList()
-   {
-      database::sqlite::adapters::CSingleValueAdapter<std::string> adapter;
-
-      CQuery qSelect;
-      qSelect. Select(CPluginTable::getNameColumnName()).
-         From(CPluginTable::getTableName()).
-         OrderBy(CPluginTable::getNameColumnName());
-
-      m_databaseRequester->queryEntities<std::string>(&adapter, qSelect);
-      return adapter.getResults();
-   }
-
-   void CPlugin::updateInstance(const database::entities::CPlugin & updatedPluginData)
+   void CPlugin::updateInstance(const entities::CPlugin & updatedPluginData)
    {
       CQuery qUpdate;
 
       if(!updatedPluginData.Id.isDefined())
-         throw database::CDatabaseException("Need an id to update");
+         throw CDatabaseException("Need an id to update");
 
       //update name
       if(updatedPluginData.Name.isDefined())
@@ -130,7 +116,7 @@ namespace database { namespace sqlite { namespace requesters {
          Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-            throw database::CDatabaseException("Failed to update name");
+            throw CDatabaseException("Failed to update name");
       }
 
       //update configuration
@@ -141,7 +127,7 @@ namespace database { namespace sqlite { namespace requesters {
          Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-            throw database::CDatabaseException("Failed to update configuration");
+            throw CDatabaseException("Failed to update configuration");
       }
       
       //update autostart
@@ -152,7 +138,7 @@ namespace database { namespace sqlite { namespace requesters {
          Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, updatedPluginData.Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-            throw database::CDatabaseException("Failed to update enabled field");
+            throw CDatabaseException("Failed to update enabled field");
       }
    }
 

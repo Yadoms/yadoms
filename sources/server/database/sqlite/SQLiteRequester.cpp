@@ -119,7 +119,7 @@ namespace sqlite {
       BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kNotYetDefined);
       BOOST_ASSERT(querytoExecute.GetQueryType() == CQuery::kSelect);
 
-      database::sqlite::adapters::CGenericAdapter genericAdapter;
+      adapters::CGenericAdapter genericAdapter;
       queryEntities<std::map<std::string, std::string> >(&genericAdapter, querytoExecute);
       return genericAdapter.getResults();
    }

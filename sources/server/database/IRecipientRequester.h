@@ -12,13 +12,13 @@ namespace database {
       /// \param [in] recipient     Recipient data
       /// \return                   Id of created recipient
       //--------------------------------------------------------------
-      virtual int addRecipient(const database::entities::CRecipient & recipient) =0;
+      virtual int addRecipient(const entities::CRecipient & recipient) =0;
    
       //--------------------------------------------------------------
       /// \brief           List all recipients
       /// \return          List of registered recipients
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CRecipient> > getRecipients() = 0;
+      virtual std::vector<const boost::shared_ptr<const entities::CRecipient> > getRecipients() const = 0;
 
       //--------------------------------------------------------------
       /// \brief                    Remove recipient 

@@ -27,14 +27,14 @@ namespace database {
       /// \brief           List all widgets
       /// \return          List of registered widgets
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CWidget> > getWidgets() = 0;
+      virtual std::vector<const boost::shared_ptr<entities::CWidget> > getWidgets() = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all widgets instanciated in a page
       /// \param [in]      pageId   page  Id
       /// \return          List of registered widgets
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CWidget> > getWidgetsForPage(int pageId) = 0;
+      virtual std::vector<const boost::shared_ptr<entities::CWidget> > getWidgetsForPage(int pageId) = 0;
       
       //--------------------------------------------------------------
       /// \brief           Update widget informations

@@ -31,7 +31,7 @@ namespace pluginSystem
       //-----------------------------------------------------
       CYPluginApiImplementation(boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
          const boost::filesystem::path libraryPath,
-         const boost::shared_ptr<database::entities::CPlugin> pluginData,
+         const boost::shared_ptr<const database::entities::CPlugin> pluginData,
          boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
          boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
          boost::shared_ptr<database::IKeywordRequester> keywordRequester,
@@ -96,7 +96,7 @@ namespace pluginSystem
          //--------------------------------------------------------------
       /// \brief			The database accessor
       //--------------------------------------------------------------
-      const boost::shared_ptr<database::entities::CPlugin> m_pluginData;
+      const boost::shared_ptr<const database::entities::CPlugin> m_pluginData;
 
       //--------------------------------------------------------------
       /// \brief			The plugin event logger requester

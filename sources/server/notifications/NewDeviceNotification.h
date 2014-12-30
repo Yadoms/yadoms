@@ -14,7 +14,7 @@ namespace notifications {
       //-----------------------------
       ///\brief Constructor
       ///\param [in]  device   The new device
-      CNewDeviceNotification(boost::shared_ptr< database::entities::CDevice > device)
+      CNewDeviceNotification(boost::shared_ptr<const database::entities::CDevice> device)
          :m_device(device)
       {
       }
@@ -30,13 +30,13 @@ namespace notifications {
       ///\brief Get the new device
       ///\return  the new device
       //-----------------------------
-      boost::shared_ptr< database::entities::CDevice > getDevice() const { return m_device; }
+      boost::shared_ptr<const database::entities::CDevice> getDevice() const { return m_device; }
 
    private:
       //-----------------------------
       ///\brief The new device
       //-----------------------------
-      boost::shared_ptr< database::entities::CDevice > m_device;
+      boost::shared_ptr<const database::entities::CDevice> m_device;
    };
 
 } //namespace notifications 

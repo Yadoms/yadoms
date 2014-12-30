@@ -57,16 +57,16 @@ namespace web { namespace rest { namespace service {
       }
       catch(std::exception &ex)
       {
-         result = web::rest::CResult::GenerateError(ex);
+         result = CResult::GenerateError(ex);
       }
       catch(...)
       {
-         result = web::rest::CResult::GenerateError("unknown exception plugin rest method");
+         result = CResult::GenerateError("unknown exception plugin rest method");
       }
 
       if(pTransactionalEngine)
       {
-         if(web::rest::CResult::isSuccess(result))
+         if(CResult::isSuccess(result))
             pTransactionalEngine->transactionCommit();
          else
             pTransactionalEngine->transactionRollback();
@@ -83,32 +83,29 @@ namespace web { namespace rest { namespace service {
          {
             int instanceId = boost::lexical_cast<int>(parameters[1]);
 
-            //web::rest::json::CPluginEntitySerializer hes;
-            boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(instanceId);
+            boost::shared_ptr<const database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(instanceId);
 
-            return web::rest::CResult::GenerateSuccess(pluginFound);
+            return CResult::GenerateSuccess(pluginFound);
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
-         }
+         
+         return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in retreiving one plugin instance");
+         return CResult::GenerateError("unknown exception in retreiving one plugin instance");
       }
    }
 
    shared::CDataContainer CPlugin::getAllPluginsInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
+      std::vector<const boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
       shared::CDataContainer t;
       t.set(getRestKeyword(), hwList);
-      return web::rest::CResult::GenerateSuccess(t);
+      return CResult::GenerateSuccess(t);
    }
 
    shared::CDataContainer CPlugin::getAllPluginsInstanceForManualDeviceCreation(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
@@ -116,13 +113,13 @@ namespace web { namespace rest { namespace service {
       std::vector< boost::shared_ptr<database::entities::CPlugin> > result;
 
       //liste de toutes les instances
-      std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
+      std::vector<const boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
       
       //search for manuallyCreatedDevice
       pluginSystem::CManager::AvalaiblePluginMap pluginList = m_pluginManager->getPluginList();
 
       
-      for (std::vector< boost::shared_ptr<database::entities::CPlugin> >::iterator currentInstance = hwList.begin(); currentInstance != hwList.end(); ++currentInstance)
+      for (std::vector<const boost::shared_ptr<database::entities::CPlugin> >::iterator currentInstance = hwList.begin(); currentInstance != hwList.end(); ++currentInstance)
       {
          if (m_pluginManager->isInstanceRunning(currentInstance->get()->Id))
          {
@@ -138,7 +135,7 @@ namespace web { namespace rest { namespace service {
       //send result
       shared::CDataContainer t;
       t.set(getRestKeyword(), result);
-      return web::rest::CResult::GenerateSuccess(t);
+      return CResult::GenerateSuccess(t);
 
 
    }
@@ -169,15 +166,15 @@ namespace web { namespace rest { namespace service {
          }
 
          result.set< std::vector<shared::CDataContainer> >("plugins", pluginCollection);
-         return web::rest::CResult::GenerateSuccess(result);
+         return CResult::GenerateSuccess(result);
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in creating a new plugin instance");
+         return CResult::GenerateError("unknown exception in creating a new plugin instance");
       }
    }
 
@@ -190,15 +187,15 @@ namespace web { namespace rest { namespace service {
          int idCreated = m_pluginManager->createInstance(p);
 
          boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(idCreated);
-         return web::rest::CResult::GenerateSuccess(pluginFound);
+         return CResult::GenerateSuccess(pluginFound);
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in creating a new plugin instance");
+         return CResult::GenerateError("unknown exception in creating a new plugin instance");
       }
    }
 
@@ -212,15 +209,15 @@ namespace web { namespace rest { namespace service {
          m_pluginManager->updateInstance(instanceToUpdate);
 
          boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(instanceToUpdate.Id());
-         return web::rest::CResult::GenerateSuccess(pluginFound);
+         return CResult::GenerateSuccess(pluginFound);
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in updating a plugin instance");
+         return CResult::GenerateError("unknown exception in updating a plugin instance");
       }
    }
 
@@ -235,33 +232,31 @@ namespace web { namespace rest { namespace service {
 
             m_dataProvider->getDeviceRequester()->removeAllDeviceForPlugin(instanceId);
             m_pluginManager->deleteInstance(m_pluginManager->getInstance(instanceId));
-            return web::rest::CResult::GenerateSuccess();
+            return CResult::GenerateSuccess();
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
-         }
+         
+         return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in deleting one plugin instance");
+         return CResult::GenerateError("unknown exception in deleting one plugin instance");
       }
    }
 
    shared::CDataContainer CPlugin::deleteAllPlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
+      std::vector<const boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
       
-      for (std::vector<boost::shared_ptr<database::entities::CPlugin> >::iterator i = hwList.begin(); i != hwList.end(); ++i)
+      for (std::vector<const boost::shared_ptr<database::entities::CPlugin> >::iterator i = hwList.begin(); i != hwList.end(); ++i)
       {
          m_pluginManager->deleteInstance(*i);
       }
 
-      return web::rest::CResult::GenerateSuccess();
+      return CResult::GenerateSuccess();
    }
 
    shared::CDataContainer CPlugin::getInstanceStatus(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)  
@@ -277,25 +272,21 @@ namespace web { namespace rest { namespace service {
             {
                shared::CDataContainer result;
                result.set("running", m_pluginManager->isInstanceRunning(instanceId));
-               return web::rest::CResult::GenerateSuccess(result);
+               return CResult::GenerateSuccess(result);
             }
-            else
-            {
-               return web::rest::CResult::GenerateError("invalid parameter. Can not retreive instance id");
-            }
+            
+            return CResult::GenerateError("invalid parameter. Can not retreive instance id");
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
-         }
+         
+         return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in reading plugin instance status");
+         return CResult::GenerateError("unknown exception in reading plugin instance status");
       }
    }
 
@@ -315,26 +306,22 @@ namespace web { namespace rest { namespace service {
                //check for instance status
                bool state = m_pluginManager->isInstanceRunning(instanceId);
                if(state)
-                  return web::rest::CResult::GenerateSuccess();
-               return web::rest::CResult::GenerateError("Fail to start the plugin instance");
+                  return CResult::GenerateSuccess();
+               return CResult::GenerateError("Fail to start the plugin instance");
             }
-            else
-            {
-               return web::rest::CResult::GenerateError("invalid parameter. Can not retreive instance id");
-            }
+            
+            return CResult::GenerateError("invalid parameter. Can not retreive instance id");
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
-         }
+         
+         return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in starting plugin instance");
+         return CResult::GenerateError("unknown exception in starting plugin instance");
       }
    }
 
@@ -354,26 +341,22 @@ namespace web { namespace rest { namespace service {
                //check for instance status
                bool state = m_pluginManager->isInstanceRunning(instanceId);
                if(!state)
-                  return web::rest::CResult::GenerateSuccess();
-               return web::rest::CResult::GenerateError("Fail to stop the plugin instance");
+                  return CResult::GenerateSuccess();
+               return CResult::GenerateError("Fail to stop the plugin instance");
             }
-            else
-            {
-               return web::rest::CResult::GenerateError("invalid parameter. Can not retreive instance id");
-            }
+            
+            return CResult::GenerateError("invalid parameter. Can not retreive instance id");
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
-         }
+         
+         return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in stopping plugin instance");
+         return CResult::GenerateError("unknown exception in stopping plugin instance");
       }
    }
 
@@ -386,76 +369,67 @@ namespace web { namespace rest { namespace service {
             int pluginId = boost::lexical_cast<int>(parameters[1]);
 
             if (!requestContent.hasValue("name") || !requestContent.hasValue("configuration"))
+               return CResult::GenerateError("invalid request content. There must be a name and a configuration field");
+
+            try
             {
-               return web::rest::CResult::GenerateError("invalid request content. There must be a name and a configuration field");
-            }
-            else
-            {
-               try
+               //create a callback (allow waiting for result)              
+               communication::callback::CSynchronousCallback<std::string> cb;
+
+               //create the data container to send to plugin
+               pluginSystem::CManuallyDeviceCreationData data(requestContent.get<std::string>("name"), requestContent.get<shared::CDataContainer>("configuration"));
+
+               //send request to plugin
+               m_messageSender.sendManuallyDeviceCreationRequest(pluginId, data, cb);
+
+               //wait for result
+               //communication::callback::CSynchronousCallback< std::string >::CSynchronousResult res = cb.waitForResult();
+               switch (cb.waitForResult())
                {
-                  //create a callback (allow waiting for result)              
-                  communication::callback::CSynchronousCallback<std::string> cb;
-
-                  //create the data container to send to plugin
-                  pluginSystem::CManuallyDeviceCreationData data(requestContent.get<std::string>("name"), requestContent.get<shared::CDataContainer>("configuration"));
-
-                  //send request to plugin
-                  m_messageSender.sendManuallyDeviceCreationRequest(pluginId, data, cb);
-
-                  //wait for result
-                  //communication::callback::CSynchronousCallback< std::string >::CSynchronousResult res = cb.waitForResult();
-                  switch (cb.waitForResult())
+               case communication::callback::CSynchronousCallback< std::string >::kResult:
                   {
-                  case communication::callback::CSynchronousCallback< std::string >::kResult:
+                     communication::callback::CSynchronousCallback< std::string >::CSynchronousResult res = cb.getCallbackResult();
+
+                     if (res.Success)
                      {
-                        communication::callback::CSynchronousCallback< std::string >::CSynchronousResult res = cb.getCallbackResult();
+                        //find created device
+                        boost::shared_ptr<const database::entities::CDevice> createdDevice = m_dataProvider->getDeviceRequester()->getDevice(pluginId, res.Result);
 
-                        if (res.Success)
-                        {
-                           //find created device
-                           boost::shared_ptr<database::entities::CDevice> createdDevice = m_dataProvider->getDeviceRequester()->getDevice(pluginId, res.Result);
+                        //update friendly name
+                        m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(createdDevice->Id(), requestContent.get<std::string>("name"));
 
-                           //update friendly name
-                           m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(createdDevice->Id(), requestContent.get<std::string>("name"));
+                        //get device with friendly name updated
+                        createdDevice = m_dataProvider->getDeviceRequester()->getDevice(pluginId, res.Result);
 
-                           //get device with friendly name updated
-                           createdDevice = m_dataProvider->getDeviceRequester()->getDevice(pluginId, res.Result);
-
-                           return web::rest::CResult::GenerateSuccess(createdDevice);
-                        }
-                        else
-                        {
-                           //the plugin failed to create the device
-                           return web::rest::CResult::GenerateError(res.ErrorMessage);
-                        }
-                        break;
+                        return CResult::GenerateSuccess(createdDevice);
                      }
-                  case shared::event::kTimeout :
-                     return web::rest::CResult::GenerateError("The plugin did not respond");
                      
-
-                  default:
-                     return web::rest::CResult::GenerateError("Unkown plugin result");
+                     //the plugin failed to create the device
+                     return CResult::GenerateError(res.ErrorMessage);
                   }
-               }
-               catch (shared::exception::CException & ex)
-               {
-                  return web::rest::CResult::GenerateError(ex);
+
+               case shared::event::kTimeout :
+                  return CResult::GenerateError("The plugin did not respond");
+                     
+               default:
+                  return CResult::GenerateError("Unkown plugin result");
                }
             }
+            catch (shared::exception::CException & ex)
+            {
+               return CResult::GenerateError(ex);
+            }
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive keyword id in url");
-         }
+         
+         return CResult::GenerateError("invalid parameter. Can not retreive keyword id in url");
       }
       catch (std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch (...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in retreiving keyword");
+         return CResult::GenerateError("unknown exception in retreiving keyword");
       }
    }
 
@@ -463,7 +437,7 @@ namespace web { namespace rest { namespace service {
 	{
 		try
 		{
-			if (parameters.size() >= 3)
+		   if (parameters.size() >= 3)
 			{
 				int pluginId = boost::lexical_cast<int>(parameters[1]);
 
@@ -488,42 +462,35 @@ namespace web { namespace rest { namespace service {
                   communication::callback::CSynchronousCallback< shared::CDataContainer >::CSynchronousResult res = cb.getCallbackResult();
 
 						if (res.Success)
-						{
-                     return web::rest::CResult::GenerateSuccess(res.Result);
-						}
-						else
-						{
-							//the plugin failed to create the device
-							return web::rest::CResult::GenerateError(res.ErrorMessage);
-						}
-						break;
-					}
-					case shared::event::kTimeout:
-						return web::rest::CResult::GenerateError("The plugin did not respond");
+                     return CResult::GenerateSuccess(res.Result);
+		      
+                  //the plugin failed to create the device
+                  return CResult::GenerateError(res.ErrorMessage);
+               }
 
+					case shared::event::kTimeout:
+						return CResult::GenerateError("The plugin did not respond");
 
 					default:
-						return web::rest::CResult::GenerateError("Unkown plugin result");
+						return CResult::GenerateError("Unkown plugin result");
 					}
 				}
 				catch (shared::exception::CException & ex)
 				{
-					return web::rest::CResult::GenerateError(ex);
+					return CResult::GenerateError(ex);
 				}
 				
 			}
-			else
-			{
-				return web::rest::CResult::GenerateError("invalid parameter. Can not retreive plugin id in url");
-			}
+		   
+         return CResult::GenerateError("invalid parameter. Can not retreive plugin id in url");
 		}
 		catch (std::exception &ex)
 		{
-			return web::rest::CResult::GenerateError(ex);
+			return CResult::GenerateError(ex);
 		}
 		catch (...)
 		{
-			return web::rest::CResult::GenerateError("unknown exception in executing binding query");
+			return CResult::GenerateError("unknown exception in executing binding query");
 		}
 	}
 

@@ -35,7 +35,7 @@ namespace shared {
 
 		unsigned int CRandom::generateNbBits(int n, bool includeZero)
 		{
-			return generate(includeZero ? 0 : 1, (int)pow(2, n) - 1);
+			return generate(includeZero ? 0 : 1, (int)pow(2.0, n) - 1);
 		}
    } // namespace tools 
 } // namespace shared

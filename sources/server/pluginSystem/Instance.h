@@ -42,7 +42,7 @@ namespace pluginSystem
       /// \param [in]   supervisor                 the supervisor event handler
       /// \param [in]   pluginManagerEventId       The ID to use to send events to supervisor
       //--------------------------------------------------------------
-      CInstance(const boost::shared_ptr<const IFactory> plugin, const boost::shared_ptr<database::entities::CPlugin> pluginData,
+      CInstance(const boost::shared_ptr<const IFactory> plugin, const boost::shared_ptr<const database::entities::CPlugin> pluginData,
          boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
          boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
          boost::shared_ptr<database::IKeywordRequester> keywordRequester,

@@ -206,15 +206,30 @@
 /// \brief  Declare the entity adapter class header
 //-------------------------------------------------------------------
 #define DECLARE_ADAPTER_HEADER(_tablename)\
-   class ADAPTER_CLASS(_tablename) : public ISQLiteResultAdapter<boost::shared_ptr<ENTITY_CLASS(_tablename)> > \
+   class ADAPTER_CLASS(_tablename) : public ISQLiteResultAdapter<const boost::shared_ptr<ENTITY_CLASS(_tablename)> > \
    { \
    public: \
       ADAPTER_CLASS(_tablename) (); \
       virtual~ ADAPTER_CLASS(_tablename)(); \
       bool adapt(sqlite3_stmt * pStatement); \
-      std::vector<boost::shared_ptr<ENTITY_CLASS(_tablename)> > getResults() { return m_results; } \
+      std::vector<const boost::shared_ptr<ENTITY_CLASS(_tablename)> > getResults() const { return m_results; } \
    private: \
-      std::vector<boost::shared_ptr<ENTITY_CLASS(_tablename)> > m_results;\
+      std::vector<const boost::shared_ptr<ENTITY_CLASS(_tablename)> > m_results;\
+   };
+
+//-------------------------------------------------------------------
+/// \brief  Declare the entity adapter class header
+//-------------------------------------------------------------------
+#define DECLARE_CONST_ADAPTER_HEADER(_tablename)\
+   class ADAPTER_CLASS(_tablename) : public ISQLiteResultAdapter<const boost::shared_ptr<const ENTITY_CLASS(_tablename)> > \
+   { \
+   public: \
+      ADAPTER_CLASS(_tablename) (); \
+      virtual~ ADAPTER_CLASS(_tablename)(); \
+      bool adapt(sqlite3_stmt * pStatement); \
+      std::vector<const boost::shared_ptr<const ENTITY_CLASS(_tablename)> > getResults() const { return m_results; } \
+   private: \
+      std::vector<const boost::shared_ptr<const ENTITY_CLASS(_tablename)> > m_results;\
    };
 
 //-------------------------------------------------------------------

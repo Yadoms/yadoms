@@ -39,7 +39,7 @@ namespace adapters {
    }
 
 
-   std::vector<std::map<std::string, std::string> > CGenericAdapter::getResults()  
+   std::vector<const std::map<std::string, std::string> > CGenericAdapter::getResults() const
    { 
       return m_results; 
    }

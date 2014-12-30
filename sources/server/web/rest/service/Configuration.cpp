@@ -52,12 +52,12 @@ namespace web { namespace rest { namespace service {
 
       try
       {
-         boost::shared_ptr<database::entities::CConfiguration> configFound = m_dataProvider->getConfigurationRequester()->getConfiguration(section, keyname);
-         return web::rest::CResult::GenerateSuccess(configFound);
+         boost::shared_ptr<const database::entities::CConfiguration> configFound = m_dataProvider->getConfigurationRequester()->getConfiguration(section, keyname);
+         return CResult::GenerateSuccess(configFound);
       }
       catch (shared::exception::CEmptyResult &)
       {
-         return web::rest::CResult::GenerateError((boost::format("[Section = %1% ; Name = %2%] not found.") % section % keyname).str());
+         return CResult::GenerateError((boost::format("[Section = %1% ; Name = %2%] not found.") % section % keyname).str());
       }
 
    }
@@ -69,18 +69,18 @@ namespace web { namespace rest { namespace service {
          section = parameters[1];
 
 
-      std::vector< boost::shared_ptr<database::entities::CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations(section);
+      std::vector<const  boost::shared_ptr<database::entities::CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations(section);
       shared::CDataContainer collection;
       collection.set(getRestKeyword(), hwList);
-      return web::rest::CResult::GenerateSuccess(collection);
+      return CResult::GenerateSuccess(collection);
    }
 
    shared::CDataContainer CConfiguration::getAllConfigurations(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      std::vector< boost::shared_ptr<database::entities::CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations();
+      std::vector<const  boost::shared_ptr<database::entities::CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations();
       shared::CDataContainer collection;
       collection.set(getRestKeyword(), hwList);
-      return web::rest::CResult::GenerateSuccess(collection);
+      return CResult::GenerateSuccess(collection);
    }
 
    shared::CDataContainer CConfiguration::createOneConfiguration(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
@@ -91,13 +91,13 @@ namespace web { namespace rest { namespace service {
 
       //check that configuration entry do not already exists
       if (m_dataProvider->getConfigurationRequester()->exists(configToCreate.Section(), configToCreate.Name()))
-         return web::rest::CResult::GenerateError("The entry to create already exists");
+         return CResult::GenerateError("The entry to create already exists");
 
       //commit changes to database
       m_dataProvider->getConfigurationRequester()->create(configToCreate);
 
-      boost::shared_ptr<database::entities::CConfiguration> widgetFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate.Section(), configToCreate.Name());
-      return web::rest::CResult::GenerateSuccess(widgetFound);
+      boost::shared_ptr<const database::entities::CConfiguration> widgetFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate.Section(), configToCreate.Name());
+      return CResult::GenerateSuccess(widgetFound);
    }
 
 
@@ -125,20 +125,20 @@ namespace web { namespace rest { namespace service {
             //commit changes to database
             m_dataProvider->getConfigurationRequester()->updateConfiguration(configToUpdate);
 
-            return web::rest::CResult::GenerateSuccess(m_dataProvider->getConfigurationRequester()->getConfiguration(section, keyname));
+            return CResult::GenerateSuccess(m_dataProvider->getConfigurationRequester()->getConfiguration(section, keyname));
          }
          else
          {
-            return web::rest::CResult::GenerateError("section and name in query content do not match to rest url");
+            return CResult::GenerateError("section and name in query content do not match to rest url");
          }
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in updating a configuration value");
+         return CResult::GenerateError("unknown exception in updating a configuration value");
       }
    }
 
@@ -160,11 +160,11 @@ namespace web { namespace rest { namespace service {
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in updating all configuration");
+         return CResult::GenerateError("unknown exception in updating all configuration");
       }
    }
 
@@ -187,7 +187,7 @@ namespace web { namespace rest { namespace service {
          m_dataProvider->getConfigurationRequester()->removeConfiguration(configToRemove);
       }
 
-      return web::rest::CResult::GenerateSuccess();
+      return CResult::GenerateSuccess();
    }
 
 
