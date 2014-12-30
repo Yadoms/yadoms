@@ -101,7 +101,7 @@ namespace sqlite {
       (Max)
    )   
 
-   DECLARE_TABLE(Job,
+   DECLARE_TABLE(Rule,
       (Id)
       (Name)
       (Description)

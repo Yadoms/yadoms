@@ -50,9 +50,9 @@ void CManager::start()
    updatePluginList();
 
    // Create and start plugin instances from database
-   std::vector<boost::shared_ptr<database::entities::CPlugin> > databasePluginInstances = m_pluginDBTable->getInstances();
+   std::vector<const boost::shared_ptr<database::entities::CPlugin> > databasePluginInstances = m_pluginDBTable->getInstances();
    
-   for (std::vector<boost::shared_ptr<database::entities::CPlugin> >::iterator databasePluginInstanceIterator = databasePluginInstances.begin(); databasePluginInstanceIterator != databasePluginInstances.end(); ++databasePluginInstanceIterator)
+   for (std::vector<const boost::shared_ptr<database::entities::CPlugin> >::const_iterator databasePluginInstanceIterator = databasePluginInstances.begin(); databasePluginInstanceIterator != databasePluginInstances.end(); ++databasePluginInstanceIterator)
    {
       if ((*databasePluginInstanceIterator)->Category() != database::entities::EPluginCategory::kSystem)
          if ((*databasePluginInstanceIterator)->AutoStart())
@@ -212,7 +212,7 @@ int CManager::getPluginQualityIndicator(const std::string& pluginName) const
    return m_qualifier->getQualityLevel(m_availablePlugins.at(pluginName));
 }
 
-int CManager::createInstance(const database::entities::CPlugin& data)
+int CManager::createInstance(database::entities::CPlugin& data)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
 
@@ -247,21 +247,21 @@ void CManager::deleteInstance(boost::shared_ptr<database::entities::CPlugin> ins
    }
 }
 
-std::vector<boost::shared_ptr<database::entities::CPlugin> > CManager::getInstanceList() const
+std::vector<const boost::shared_ptr<database::entities::CPlugin> > CManager::getInstanceList()
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
 
    return m_pluginDBTable->getInstances();
 }
 
-boost::shared_ptr<database::entities::CPlugin> CManager::getInstance(int id) const
+boost::shared_ptr<database::entities::CPlugin> CManager::getInstance(int id)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
 
    return m_pluginDBTable->getInstance(id);
 }
 
-void CManager::updateInstance(const database::entities::CPlugin& newData)
+void CManager::updateInstance(database::entities::CPlugin& newData)
 {
    boost::lock_guard<boost::recursive_mutex> lock(m_mutex);
 
@@ -273,7 +273,7 @@ void CManager::updateInstance(const database::entities::CPlugin& newData)
    }
 
    // First get old configuration from database
-   boost::shared_ptr<const database::entities::CPlugin> previousData = m_pluginDBTable->getInstance(newData.Id());
+   boost::shared_ptr<database::entities::CPlugin> previousData = m_pluginDBTable->getInstance(newData.Id());
 
    // Next, update configuration in database
    m_pluginDBTable->updateInstance(newData);

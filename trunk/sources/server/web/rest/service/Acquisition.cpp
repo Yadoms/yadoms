@@ -63,26 +63,23 @@ namespace web {
                if (parameters.size() > 2)
                {
                   int keywordId = boost::lexical_cast<int>(parameters[2]);
-                  boost::shared_ptr<database::entities::CAcquisition> acq = m_dataProvider->getAcquisitionRequester()->getKeywordLastData(keywordId);
-                  return web::rest::CResult::GenerateSuccess(acq);
+                  boost::shared_ptr<const database::entities::CAcquisition> acq = m_dataProvider->getAcquisitionRequester()->getKeywordLastData(keywordId);
+                  return CResult::GenerateSuccess(acq);
                }
-               else
-               {
-                  return web::rest::CResult::GenerateError("invalid parameter. Can not retreive acquisitionId in url");
-               }
+               return CResult::GenerateError("invalid parameter. Can not retreive acquisitionId in url");
             }
             catch (shared::exception::CEmptyResult & /*noData*/)
             {
                //if no data just return success
-               return web::rest::CResult::GenerateSuccess();
+               return CResult::GenerateSuccess();
             }
             catch (std::exception &ex)
             {
-               return web::rest::CResult::GenerateError(ex);
+               return CResult::GenerateError(ex);
             }
             catch (...)
             {
-               return web::rest::CResult::GenerateError("unknown exception in retreiving one acquisition");
+               return CResult::GenerateError("unknown exception in retreiving one acquisition");
             }
          }
 
@@ -91,7 +88,6 @@ namespace web {
          {
             try
             {
-
                if (parameters.size() >= 2)
                {
                   //get device id from URL
@@ -107,9 +103,9 @@ namespace web {
                   if (parameters.size() > 4)
                      timeTo = boost::posix_time::from_iso_string(parameters[4]);
 
-                  std::vector< boost::tuple<boost::posix_time::ptime, std::string> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordData(keywordId, timeFrom, timeTo);
+                  std::vector<const boost::tuple<boost::posix_time::ptime, std::string> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordData(keywordId, timeFrom, timeTo);
                   std::vector<shared::CDataContainer> objectList;
-                  std::vector< boost::tuple<boost::posix_time::ptime, std::string> >::const_iterator i;
+                  std::vector<const boost::tuple<boost::posix_time::ptime, std::string> >::const_iterator i;
 
                   for (i = allData.begin(); i != allData.end(); ++i)
                   {
@@ -121,21 +117,17 @@ namespace web {
 
                   shared::CDataContainer result;
                   result.set< std::vector<shared::CDataContainer> >("data", objectList);
-                  return web::rest::CResult::GenerateSuccess(result);
+                  return CResult::GenerateSuccess(result);
                }
-               else
-               {
-                  return web::rest::CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
-               }
-
+               return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
             }
             catch (std::exception &ex)
             {
-               return web::rest::CResult::GenerateError(ex);
+               return CResult::GenerateError(ex);
             }
             catch (...)
             {
-               return web::rest::CResult::GenerateError("unknown exception in reading device data");
+               return CResult::GenerateError("unknown exception in reading device data");
             }
          }
 
@@ -144,7 +136,6 @@ namespace web {
          {
             try
             {
-
                if (parameters.size() >= 2)
                {
                   //get device id from URL
@@ -160,24 +151,20 @@ namespace web {
                   if (parameters.size() > 5)
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
-                  std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByDay(keywordId, timeFrom, timeTo);
+                  std::vector<const boost::shared_ptr<database::entities::CAcquisitionSummary> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByDay(keywordId, timeFrom, timeTo);
                   shared::CDataContainer result;
                   result.set("data", allData);
-                  return web::rest::CResult::GenerateSuccess(result);
+                  return CResult::GenerateSuccess(result);
                }
-               else
-               {
-                  return web::rest::CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
-               }
-
+               return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
             }
             catch (std::exception &ex)
             {
-               return web::rest::CResult::GenerateError(ex);
+               return CResult::GenerateError(ex);
             }
             catch (...)
             {
-               return web::rest::CResult::GenerateError("unknown exception in reading device data by day");
+               return CResult::GenerateError("unknown exception in reading device data by day");
             }
          }
 
@@ -185,7 +172,6 @@ namespace web {
          {
             try
             {
-
                if (parameters.size() >= 2)
                {
                   //get device id from URL
@@ -201,24 +187,20 @@ namespace web {
                   if (parameters.size() > 5)
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
-                  std::vector< boost::shared_ptr<database::entities::CAcquisitionSummary> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByHour(keywordId, timeFrom, timeTo);
+                  std::vector<const boost::shared_ptr<database::entities::CAcquisitionSummary> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByHour(keywordId, timeFrom, timeTo);
                   shared::CDataContainer result;
                   result.set("data", allData);
-                  return web::rest::CResult::GenerateSuccess(result);
+                  return CResult::GenerateSuccess(result);
                }
-               else
-               {
-                  return web::rest::CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
-               }
-
+               return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
             }
             catch (std::exception &ex)
             {
-               return web::rest::CResult::GenerateError(ex);
+               return CResult::GenerateError(ex);
             }
             catch (...)
             {
-               return web::rest::CResult::GenerateError("unknown exception in reading device data by day");
+               return CResult::GenerateError("unknown exception in reading device data by day");
             }
          }
 
@@ -227,7 +209,6 @@ namespace web {
          {
             try
             {
-
                if (parameters.size() >= 3)
                {
                   //get device id from URL
@@ -248,21 +229,17 @@ namespace web {
                   YADOMS_LOG(debug) << "Reading highchart data...";
                   std::string raw = m_dataProvider->getAcquisitionRequester()->getKeywordHighchartData(keywordId, timeFrom, timeTo);
                   YADOMS_LOG(debug) << "Reading highchart data... OK";
-                  return web::rest::CResult::GenerateSuccess(raw);
+                  return CResult::GenerateSuccess(raw);
                }
-               else
-               {
-                  return web::rest::CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
-               }
-
+               return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
             }
             catch (std::exception &ex)
             {
-               return web::rest::CResult::GenerateError(ex);
+               return CResult::GenerateError(ex);
             }
             catch (...)
             {
-               return web::rest::CResult::GenerateError("unknown exception in reading device data");
+               return CResult::GenerateError("unknown exception in reading device data");
             }
          }
 
@@ -270,7 +247,6 @@ namespace web {
          {
             try
             {
-
                if (parameters.size() >= 3)
                {
                   //get device id from URL
@@ -291,21 +267,17 @@ namespace web {
                   YADOMS_LOG(debug) << "Reading highchart data...";
                   std::string raw = m_dataProvider->getAcquisitionRequester()->getKeywordHighchartData(keywordId, timeFrom, timeTo);
                   YADOMS_LOG(debug) << "Reading highchart data... OK";
-                  return web::rest::CResult::GenerateSuccess(raw);
+                  return CResult::GenerateSuccess(raw);
                }
-               else
-               {
-                  return web::rest::CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
-               }
-
+               return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
             }
             catch (std::exception &ex)
             {
-               return web::rest::CResult::GenerateError(ex);
+               return CResult::GenerateError(ex);
             }
             catch (...)
             {
-               return web::rest::CResult::GenerateError("unknown exception in reading device data");
+               return CResult::GenerateError("unknown exception in reading device data");
             }
          }
 
@@ -313,7 +285,6 @@ namespace web {
          {
             try
             {
-
                if (parameters.size() >= 3)
                {
                   //get device id from URL
@@ -334,21 +305,17 @@ namespace web {
                   YADOMS_LOG(debug) << "Reading highchart data...";
                   std::string raw = m_dataProvider->getAcquisitionRequester()->getKeywordHighchartData(keywordId, timeFrom, timeTo);
                   YADOMS_LOG(debug) << "Reading highchart data... OK";
-                  return web::rest::CResult::GenerateSuccess(raw);
+                  return CResult::GenerateSuccess(raw);
                }
-               else
-               {
-                  return web::rest::CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
-               }
-
+               return CResult::GenerateError("invalid parameter. Can not retreive parameters in url");
             }
             catch (std::exception &ex)
             {
-               return web::rest::CResult::GenerateError(ex);
+               return CResult::GenerateError(ex);
             }
             catch (...)
             {
-               return web::rest::CResult::GenerateError("unknown exception in reading device data");
+               return CResult::GenerateError("unknown exception in reading device data");
             }
          }
 

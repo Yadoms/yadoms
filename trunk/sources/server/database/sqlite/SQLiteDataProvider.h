@@ -7,7 +7,7 @@
 #include "requesters/Device.h"
 #include "requesters/Keyword.h"
 #include "requesters/Page.h"
-#include "requesters/Job.h"
+#include "requesters/Rule.h"
 #include "requesters/Widget.h"
 #include "requesters/PluginEventLogger.h"
 #include "requesters/EventLogger.h"
@@ -51,7 +51,7 @@ namespace sqlite {
       boost::shared_ptr<IPluginEventLoggerRequester> getPluginEventLoggerRequester() { return m_pluginEventLoggerRequester; }
       boost::shared_ptr<IEventLoggerRequester> getEventLoggerRequester() { return m_eventLoggerRequester; }
       boost::shared_ptr<IAcquisitionRequester> getAcquisitionRequester() { return m_acquisitionRequester; }
-      boost::shared_ptr<IJobRequester> getJobRequester() { return m_jobRequester; }
+      boost::shared_ptr<IRuleRequester> getRuleRequester() { return m_ruleRequester; }
       boost::shared_ptr<IRecipientRequester> getRecipientRequester() { return m_recipientRequester; }
       // [END] IDatabaseProvider implementation
 
@@ -117,9 +117,9 @@ namespace sqlite {
       boost::shared_ptr<requesters::CAcquisition> m_acquisitionRequester;   
       
       //--------------------------------------------------------------
-      /// \Brief		Job requester
+      /// \Brief		Rule requester
       //--------------------------------------------------------------
-      boost::shared_ptr<requesters::CJob> m_jobRequester;       
+      boost::shared_ptr<requesters::CRule> m_ruleRequester;       
       
       //--------------------------------------------------------------
       /// \Brief		Recipient requester

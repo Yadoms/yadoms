@@ -130,7 +130,7 @@ namespace web { namespace rest {
       ///\param [in]    urlPattern        the pattern
       ///\return        true if the url match the pattern
       //-------------------------------------- 
-      const bool match(const std::vector<std::string> & url, const CUrlPattern & urlPattern);
+      bool match(const std::vector<std::string> & url, const CUrlPattern & urlPattern);
 
       //--------------------------------------   
       ///\brief         call the registered method

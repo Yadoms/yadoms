@@ -12,7 +12,7 @@ namespace database {
       /// \param [in] configurationToCreate  New configuration informations
       /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual void create(entities::CConfiguration& configurationToCreate) = 0;
+      virtual void create(const entities::CConfiguration& configurationToCreate) = 0;
 
       //--------------------------------------------------------------
       /// \brief      Checkl a a configuration entry already exists
@@ -37,28 +37,28 @@ namespace database {
       /// \return     The entries found
       /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CConfiguration> > getConfigurations(const std::string & section) = 0;
+      virtual std::vector<const boost::shared_ptr<entities::CConfiguration> > getConfigurations(const std::string & section) = 0;
 
       //--------------------------------------------------------------
       /// \brief      Read all configuration entries 
       /// \return     The entries found
       /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CConfiguration> > getConfigurations() = 0;
+      virtual std::vector<const boost::shared_ptr<entities::CConfiguration> > getConfigurations() = 0;
 
       //--------------------------------------------------------------
       /// \brief      Update a configuration entry
       /// \param [in] configurationToUpdate  Configuration informations
       /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual void updateConfiguration(entities::CConfiguration& configurationToUpdate) = 0;
+      virtual void updateConfiguration(const entities::CConfiguration& configurationToUpdate) = 0;
       
       //--------------------------------------------------------------
       /// \brief      Remove a configuration entry
       /// \param [in] configurationToRemove  The configuration to delete
       /// \throw      shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual void removeConfiguration(entities::CConfiguration& configurationToRemove) = 0;
+      virtual void removeConfiguration(const entities::CConfiguration& configurationToRemove) = 0;
 
       //--------------------------------------------------------------
       /// \brief       Destructor

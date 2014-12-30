@@ -22,7 +22,7 @@ namespace database { namespace sqlite { namespace requesters {
 
 
    // IWidgetRequester implementation
-   int CWidget::addWidget(const database::entities::CWidget & newWidget)
+   int CWidget::addWidget(const entities::CWidget & newWidget)
    {
       CQuery qInsert;
       if(newWidget.Id() != 0)
@@ -50,52 +50,49 @@ namespace database { namespace sqlite { namespace requesters {
          And(CWidgetTable::getConfigurationColumnName(), CQUERY_OP_EQUAL, newWidget.Configuration()).
          OrderBy(CWidgetTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
-      database::sqlite::adapters::CSingleValueAdapter<int> adapter;
+      adapters::CSingleValueAdapter<int> adapter;
       m_databaseRequester->queryEntities<int>(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
          return adapter.getResults()[0];
-      else
-         throw shared::exception::CEmptyResult("Cannot retrieve inserted Widget");      
+      throw shared::exception::CEmptyResult("Cannot retrieve inserted Widget");
    }
 
-   boost::shared_ptr<database::entities::CWidget> CWidget::getWidget(int widgetId)
+   boost::shared_ptr<entities::CWidget> CWidget::getWidget(int widgetId)
    {
       CQuery qSelect;
       qSelect. Select().
          From(CWidgetTable::getTableName()).
          Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetId);
 
-      database::sqlite::adapters::CWidgetAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CWidget> >(&adapter, qSelect);
+      adapters::CWidgetAdapter adapter;
+      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CWidget> >(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
          return adapter.getResults()[0];
-      else
-      {
-         std::string sEx = (boost::format("Cannot retrieve Widget Id=%1% in database") % widgetId).str(); 
-         throw shared::exception::CEmptyResult(sEx);
-      }
+
+      std::string sEx = (boost::format("Cannot retrieve Widget Id=%1% in database") % widgetId).str(); 
+      throw shared::exception::CEmptyResult(sEx);
    }
 
-   std::vector<boost::shared_ptr<database::entities::CWidget> > CWidget::getWidgets()
+   std::vector<const boost::shared_ptr<entities::CWidget> > CWidget::getWidgets()
    {
       CQuery qSelect;
       qSelect. Select().
          From(CWidgetTable::getTableName());
 
-      database::sqlite::adapters::CWidgetAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CWidget> >(&adapter, qSelect);
+      adapters::CWidgetAdapter adapter;
+      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CWidget> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
-   std::vector<boost::shared_ptr<database::entities::CWidget> > CWidget::getWidgetsForPage(int pageId)
+   std::vector<const boost::shared_ptr<entities::CWidget> > CWidget::getWidgetsForPage(int pageId)
    {
       CQuery qSelect;
       qSelect. Select().
          From(CWidgetTable::getTableName()).
          Where(CWidgetTable::getIdPageColumnName(), CQUERY_OP_EQUAL, pageId);
 
-      database::sqlite::adapters::CWidgetAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CWidget> >(&adapter, qSelect);
+      adapters::CWidgetAdapter adapter;
+      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CWidget> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
@@ -138,7 +135,7 @@ namespace database { namespace sqlite { namespace requesters {
 
       //in all cases the Id must be filled
       if(!widgetToUpdate.Id.isDefined())
-         throw database::CDatabaseException("Need an id to update");
+         throw CDatabaseException("Need an id to update");
 
       //search for the widget
       CQuery qSelect;
@@ -146,8 +143,8 @@ namespace database { namespace sqlite { namespace requesters {
          From(CWidgetTable::getTableName()).
          Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
 
-      database::sqlite::adapters::CWidgetAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CWidget> >(&adapter, qSelect);
+      adapters::CWidgetAdapter adapter;
+      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CWidget> >(&adapter, qSelect);
       if(adapter.getResults().size() == 0)
       {
          //do not exist, just add it
@@ -166,7 +163,7 @@ namespace database { namespace sqlite { namespace requesters {
                Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
 
             if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-               throw database::CDatabaseException("Failed to update name");
+               throw CDatabaseException("Failed to update name");
          }
 
          //update IdPage
@@ -177,7 +174,7 @@ namespace database { namespace sqlite { namespace requesters {
                Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
 
             if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-               throw database::CDatabaseException("Failed to update id page");
+               throw CDatabaseException("Failed to update id page");
          }
 
          //update configuration
@@ -188,7 +185,7 @@ namespace database { namespace sqlite { namespace requesters {
                Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
 
             if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-               throw database::CDatabaseException("Failed to update configuration");
+               throw CDatabaseException("Failed to update configuration");
          }
 
          //update Position X
@@ -199,7 +196,7 @@ namespace database { namespace sqlite { namespace requesters {
                Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
 
             if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-               throw database::CDatabaseException("Failed to update Position X");
+               throw CDatabaseException("Failed to update Position X");
          }
 
          //update Position Y
@@ -210,7 +207,7 @@ namespace database { namespace sqlite { namespace requesters {
                Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
 
             if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-               throw database::CDatabaseException("Failed to update Position Y");
+               throw CDatabaseException("Failed to update Position Y");
          }
 
          //update Size X
@@ -221,7 +218,7 @@ namespace database { namespace sqlite { namespace requesters {
                Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
 
             if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-               throw database::CDatabaseException("Failed to update Size X");
+               throw CDatabaseException("Failed to update Size X");
          }
 
          //update Size Y
@@ -232,7 +229,7 @@ namespace database { namespace sqlite { namespace requesters {
                Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
 
             if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-               throw database::CDatabaseException("Failed to update Size Y");
+               throw CDatabaseException("Failed to update Size Y");
          }
       }
    }

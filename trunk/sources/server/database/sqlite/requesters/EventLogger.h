@@ -27,12 +27,12 @@ namespace database { namespace sqlite {
          virtual ~CEventLogger();
 
          // IEventLoggerRequester implementation
-         virtual int addEvent(const database::entities::ESystemEventCode & eventType, const std::string & who, const std::string & what);
-         virtual int addEvent(const database::entities::CEventLogger & logEntry);
-         virtual std::vector<boost::shared_ptr<database::entities::CEventLogger> > getEvents(); 
+         virtual int addEvent(const entities::ESystemEventCode & eventType, const std::string & who, const std::string & what);
+         virtual int addEvent(const entities::CEventLogger & logEntry);
+         virtual std::vector<const boost::shared_ptr<entities::CEventLogger> > getEvents(); 
          virtual boost::shared_ptr<entities::CEventLogger> getLastEvent();
-         virtual std::vector<boost::shared_ptr<entities::CEventLogger> > getEventsFrom(const int eventId);
-         virtual std::vector<boost::shared_ptr<entities::CEventLogger> > getEventsRange(const int offset, const int count);
+         virtual std::vector<const boost::shared_ptr<entities::CEventLogger> > getEventsFrom(const int eventId);
+         virtual std::vector<const boost::shared_ptr<entities::CEventLogger> > getEventsRange(const int offset, const int count);
          // [END] IEventLoggerRequester implementation
 
       private:

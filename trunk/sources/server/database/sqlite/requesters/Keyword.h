@@ -29,11 +29,11 @@ namespace database { namespace sqlite {
 
          // IKeywordRequester implementation
          virtual bool keywordExists(int deviceId, const std::string& keywordName) const;
-         virtual void addKeyword(const database::entities::CKeyword& newKeyword);
-         virtual boost::shared_ptr<database::entities::CKeyword> getKeyword(int deviceId, const std::string & keyword) const;
-         virtual boost::shared_ptr<entities::CKeyword> getKeyword(int keywordId) const;
-         virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getKeywords(int deviceId) const;
-         virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getDeviceKeywordsWithCapacity(int deviceId, const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & accessMode) const;
+         virtual void addKeyword(const entities::CKeyword& newKeyword);
+         virtual boost::shared_ptr<const entities::CKeyword> getKeyword(int deviceId, const std::string & keyword) const;
+         virtual boost::shared_ptr<const entities::CKeyword> getKeyword(int keywordId) const;
+         virtual std::vector<const boost::shared_ptr<const entities::CKeyword> > getKeywords(int deviceId) const;
+         virtual std::vector<const boost::shared_ptr<const entities::CKeyword> > getDeviceKeywordsWithCapacity(int deviceId, const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & accessMode) const;
          virtual void removeKeyword(int deviceId, const std::string & keyword);
          virtual void removeKeyword(int keywordId);
          virtual void updateKeywordFriendlyName(int deviceId, const std::string & keyword, const std::string & newFriendlyName);

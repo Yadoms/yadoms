@@ -54,16 +54,16 @@ namespace web { namespace rest { namespace service {
       }
       catch(std::exception &ex)
       {
-         result = web::rest::CResult::GenerateError(ex);
+         result = CResult::GenerateError(ex);
       }
       catch(...)
       {
-         result = web::rest::CResult::GenerateError("unknown exception widget rest method");
+         result = CResult::GenerateError("unknown exception widget rest method");
       }
 
       if(pTransactionalEngine)
       {
-         if(web::rest::CResult::isSuccess(result))
+         if(CResult::isSuccess(result))
             pTransactionalEngine->transactionCommit();
          else
             pTransactionalEngine->transactionRollback();
@@ -79,40 +79,33 @@ namespace web { namespace rest { namespace service {
       {
          int pageId = boost::lexical_cast<int>(parameters[1]);
          boost::shared_ptr<database::entities::CPage> pageFound =  m_dataProvider->getPageRequester()->getPage(pageId);
-         return web::rest::CResult::GenerateSuccess(pageFound);
+         return CResult::GenerateSuccess(pageFound);
       }
-      else
-      {
-         return web::rest::CResult::GenerateError("Invalid parameter count (need page id in url)");
-      }
+      return CResult::GenerateError("Invalid parameter count (need page id in url)");
    }
 
-   shared::CDataContainer CPage::getAllPages(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+         shared::CDataContainer CPage::getAllPages(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      std::vector< boost::shared_ptr<database::entities::CPage> > pageList = m_dataProvider->getPageRequester()->getPages();
+      std::vector<const boost::shared_ptr<database::entities::CPage> > pageList = m_dataProvider->getPageRequester()->getPages();
       shared::CDataContainer collection;
       collection.set(getRestKeyword(), pageList);
-      return web::rest::CResult::GenerateSuccess(collection);
+      return CResult::GenerateSuccess(collection);
    }
 
    shared::CDataContainer CPage::getPageWidget(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      std::string pageId = "";
+      std::string pageId;
       if(parameters.size()>1)
       {
          pageId = parameters[1];
 
-         std::vector< boost::shared_ptr<database::entities::CWidget> > widgetList = m_dataProvider->getWidgetRequester()->getWidgetsForPage(boost::lexical_cast<int>(pageId));
+         std::vector<const boost::shared_ptr<database::entities::CWidget> > widgetList = m_dataProvider->getWidgetRequester()->getWidgetsForPage(boost::lexical_cast<int>(pageId));
          shared::CDataContainer collection;
          collection.set(CWidget::getRestKeyword(), widgetList);
 
-         //std::vector< boost::shared_ptr<database::entities::CWidget> > widgetList2 = collection.get< std::vector< boost::shared_ptr<database::entities::CWidget> > >(getRestKeyword());
-         return web::rest::CResult::GenerateSuccess(collection);
+         return CResult::GenerateSuccess(collection);
       }
-      else
-      {
-         return web::rest::CResult::GenerateError("Invalid parameter count (need page id in url)");
-      }
+      return CResult::GenerateError("Invalid parameter count (need page id in url)");
    }
 
    shared::CDataContainer CPage::addPage(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
@@ -123,15 +116,15 @@ namespace web { namespace rest { namespace service {
          pageToAdd.fillFromContent(requestContent);
          int idCreated = m_dataProvider->getPageRequester()->addPage(pageToAdd.Name(), pageToAdd.PageOrder());
          boost::shared_ptr<database::entities::CPage> pageFound =  m_dataProvider->getPageRequester()->getPage(idCreated);
-         return web::rest::CResult::GenerateSuccess(pageFound);
+         return CResult::GenerateSuccess(pageFound);
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in creating a new page");
+         return CResult::GenerateError("unknown exception in creating a new page");
       }
    }
 
@@ -149,25 +142,19 @@ namespace web { namespace rest { namespace service {
             if(pageToReplace.Id() > 0 && pageId == pageToReplace.Id())
             {
                m_dataProvider->getPageRequester()->updatePage(pageToReplace.Id(), pageToReplace.Name(), pageToReplace.PageOrder());
-               return web::rest::CResult::GenerateSuccess(m_dataProvider->getPageRequester()->getPage(pageToReplace.Id()));
+               return CResult::GenerateSuccess(m_dataProvider->getPageRequester()->getPage(pageToReplace.Id()));
             }
-            else
-            {
-               return web::rest::CResult::GenerateError("The page to replace must have a valid id");
-            }
+            return CResult::GenerateError("The page to replace must have a valid id");
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("Invalid parameter count (need page id in url)");
-         }
+         return CResult::GenerateError("Invalid parameter count (need page id in url)");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in replacing a page");
+         return CResult::GenerateError("unknown exception in replacing a page");
       }
    }
 
@@ -186,19 +173,19 @@ namespace web { namespace rest { namespace service {
             m_dataProvider->getPageRequester()->addPage(*i->get());
          }
 
-         std::vector<boost::shared_ptr<database::entities::CPage> > allPages = m_dataProvider->getPageRequester()->getPages();
+         std::vector<const boost::shared_ptr<database::entities::CPage> > allPages = m_dataProvider->getPageRequester()->getPages();
          shared::CDataContainer collection;
          collection.set(getRestKeyword(), allPages);
-         return web::rest::CResult::GenerateSuccess(collection);
+         return CResult::GenerateSuccess(collection);
 
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in updating all pages");
+         return CResult::GenerateError("unknown exception in updating all pages");
       }
    }
 
@@ -219,20 +206,17 @@ namespace web { namespace rest { namespace service {
 
             //remove page
             m_dataProvider->getPageRequester()->removePage(pageId);
-            return web::rest::CResult::GenerateSuccess();
+            return CResult::GenerateSuccess();
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("The page to delete must have an id");
-         }
+         return CResult::GenerateError("The page to delete must have an id");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in deleting a page");
+         return CResult::GenerateError("unknown exception in deleting a page");
       }
    }
 
@@ -245,15 +229,15 @@ namespace web { namespace rest { namespace service {
 
          //remove page
          m_dataProvider->getPageRequester()->removeAllPages();
-         return web::rest::CResult::GenerateSuccess();
+         return CResult::GenerateSuccess();
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in deleting all pages");
+         return CResult::GenerateError("unknown exception in deleting all pages");
       }
    }
 
@@ -265,15 +249,15 @@ namespace web { namespace rest { namespace service {
          widgetToAdd.fillFromContent(requestContent);
          int idCreated = m_dataProvider->getWidgetRequester()->addWidget(widgetToAdd);
          boost::shared_ptr<database::entities::CWidget> widgetFound =  m_dataProvider->getWidgetRequester()->getWidget(idCreated);
-         return web::rest::CResult::GenerateSuccess(widgetFound);
+         return CResult::GenerateSuccess(widgetFound);
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in creating a new widget");
+         return CResult::GenerateError("unknown exception in creating a new widget");
       }
    }
 
@@ -295,20 +279,17 @@ namespace web { namespace rest { namespace service {
             {
                m_dataProvider->getWidgetRequester()->addWidget(*i->get());
             }
-            return web::rest::CResult::GenerateSuccess();
+            return CResult::GenerateSuccess();
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("Invalid parameter count (need page id in url)");
-         }
+         return CResult::GenerateError("Invalid parameter count (need page id in url)");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in creating a new widget");
+         return CResult::GenerateError("unknown exception in creating a new widget");
       }
    }
 
@@ -321,20 +302,17 @@ namespace web { namespace rest { namespace service {
             int pageId = boost::lexical_cast<int>(parameters[1].c_str());
 
             m_dataProvider->getWidgetRequester()->removeWidgetsInPage(pageId);
-            return web::rest::CResult::GenerateSuccess();
+            return CResult::GenerateSuccess();
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("Invalid parameter count (need page id in url)");
-         }
+         return CResult::GenerateError("Invalid parameter count (need page id in url)");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in creating a new widget");
+         return CResult::GenerateError("unknown exception in creating a new widget");
       }
 
    }

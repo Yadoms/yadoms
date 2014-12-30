@@ -28,8 +28,8 @@ namespace database { namespace sqlite {
          virtual ~CRecipient();
 
          // IRecipientRequester implementation
-         virtual int addRecipient(const database::entities::CRecipient & recipient);
-         virtual std::vector<boost::shared_ptr<database::entities::CRecipient> > getRecipients();
+         virtual int addRecipient(const entities::CRecipient & recipient);
+         virtual std::vector<const boost::shared_ptr<const entities::CRecipient> > getRecipients() const;
          virtual void removeRecipient(int recipientId);
          virtual void removeAllRecipients();
          // [END] IRecipientRequester implementation

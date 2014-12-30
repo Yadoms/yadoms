@@ -21,7 +21,7 @@ namespace database {  namespace sqlite { namespace requesters {
 
 
    // IRecipientRequester implementation
-   int CRecipient::addRecipient(const database::entities::CRecipient & recipient)
+   int CRecipient::addRecipient(const entities::CRecipient & recipient)
    {
 
       //CQuery qInsert;
@@ -45,22 +45,21 @@ namespace database {  namespace sqlite { namespace requesters {
       //   Where(CRecipientTable::getNameColumnName(), CQUERY_OP_EQUAL, recipient.Name()).
       //   OrderBy(CRecipientTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
-      database::sqlite::adapters::CSingleValueAdapter<int> adapter;
+      adapters::CSingleValueAdapter<int> adapter;
       //m_databaseRequester->queryEntities<int>(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
          return adapter.getResults()[0];
-      else
-         throw shared::exception::CEmptyResult("Cannot retrieve inserted Recipient");      
+      throw shared::exception::CEmptyResult("Cannot retrieve inserted Recipient");
    }
 
-   std::vector<boost::shared_ptr<database::entities::CRecipient> > CRecipient::getRecipients()
+   std::vector<const boost::shared_ptr<const entities::CRecipient> > CRecipient::getRecipients() const
    {
       //CQuery qSelect;
       //qSelect. Select().
       //   From(CRecipientTable::getTableName()).
       //   OrderBy(CRecipientTable::getRecipientOrderColumnName());
 
-      database::sqlite::adapters::CRecipientAdapter adapter;
+      adapters::CRecipientAdapter adapter;
       //m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CRecipient> >(&adapter, qSelect);
       return adapter.getResults();
    }

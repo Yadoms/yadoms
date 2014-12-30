@@ -10,7 +10,7 @@ namespace pluginSystem
 CYPluginApiImplementation::CYPluginApiImplementation(
    boost::shared_ptr<const shared::plugin::information::IInformation> pluginInformations,
    const boost::filesystem::path libraryPath, 
-   const boost::shared_ptr<database::entities::CPlugin> pluginData,
+   const boost::shared_ptr<const database::entities::CPlugin> pluginData,
    boost::shared_ptr<database::IPluginEventLoggerRequester> pluginEventLoggerRequester,
    boost::shared_ptr<dataAccessLayer::IDeviceManager> deviceManager,
    boost::shared_ptr<database::IKeywordRequester> keywordRequester,
@@ -89,8 +89,8 @@ void CYPluginApiImplementation::historizeData(const std::string& device, const s
 {
    try
    {
-      boost::shared_ptr<database::entities::CDevice> deviceEntity = m_deviceManager->getDevice(getPluginId(), device);
-      boost::shared_ptr<database::entities::CKeyword> keywordEntity = m_keywordRequester->getKeyword(deviceEntity->Id, data.getKeyword());
+      boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDevice(getPluginId(), device);
+      boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordRequester->getKeyword(deviceEntity->Id, data.getKeyword());
       m_acquisitionHistorizer->saveData(keywordEntity->Id, data);
    }
    catch (shared::exception::CEmptyResult& e)

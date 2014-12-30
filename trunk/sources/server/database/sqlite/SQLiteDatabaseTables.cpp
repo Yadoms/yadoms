@@ -103,7 +103,7 @@ namespace sqlite {
    )
 
 
-   DECLARE_TABLE_COLUMN_NAMES(Job, "Job",
+   DECLARE_TABLE_COLUMN_NAMES(Rule, "Rule",
       ((Id)("id"))
       ((Name)("name"))
       ((Description)("description"))

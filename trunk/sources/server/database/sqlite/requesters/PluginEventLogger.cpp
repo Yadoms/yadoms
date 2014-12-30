@@ -22,7 +22,7 @@ namespace database { namespace sqlite { namespace requesters {
 
    // IPluginEventLoggerRequester implementation
 
-   int CPluginEventLogger::addEvent(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType & pluginReleaseType, const database::entities::EEventType & eventType, const std::string & message /*= CStringExtension::EmptyString*/)
+   int CPluginEventLogger::addEvent(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType & pluginReleaseType, const entities::EEventType & eventType, const std::string & message /*= CStringExtension::EmptyString*/)
    {
       boost::posix_time::ptime insertDate = boost::posix_time::second_clock::universal_time();
 
@@ -43,20 +43,20 @@ namespace database { namespace sqlite { namespace requesters {
          And(CPluginEventLoggerTable::getEventDateColumnName(), CQUERY_OP_EQUAL, insertDate).
          OrderBy(CPluginEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
-      database::sqlite::adapters::CSingleValueAdapter<int> adapter;
+      adapters::CSingleValueAdapter<int> adapter;
       m_databaseRequester->queryEntities<int>(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
          return adapter.getResults()[0];
-      else
-         throw shared::exception::CEmptyResult("Cannot retrieve inserted Plugin");      
+      
+      throw shared::exception::CEmptyResult("Cannot retrieve inserted Plugin");
    }
 
-   int CPluginEventLogger::addEvent(const database::entities::CPluginEventLogger & pluginLogEntry)
+   int CPluginEventLogger::addEvent(const entities::CPluginEventLogger & pluginLogEntry)
    {
       return addEvent(pluginLogEntry.PluginName(), pluginLogEntry.PluginVersion(), pluginLogEntry.PluginRelease(), pluginLogEntry.EventType(), pluginLogEntry.Message());
    }
 
-   std::vector<boost::shared_ptr<database::entities::CPluginEventLogger> > CPluginEventLogger::getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType & pluginReleaseType)
+   std::vector<const boost::shared_ptr<entities::CPluginEventLogger> > CPluginEventLogger::getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType & pluginReleaseType)
    {
       CQuery qSelect;
       qSelect. Select().
@@ -66,13 +66,13 @@ namespace database { namespace sqlite { namespace requesters {
          And(CPluginEventLoggerTable::getPluginReleaseColumnName(), CQUERY_OP_EQUAL, pluginReleaseType).
          OrderBy(CPluginEventLoggerTable::getEventDateColumnName(), CQUERY_ORDER_DESC);
 
-      database::sqlite::adapters::CPluginEventLoggerAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CPluginEventLogger> >(&adapter, qSelect);
+      adapters::CPluginEventLoggerAdapter adapter;
+      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CPluginEventLogger> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
 
-   std::vector<boost::shared_ptr<database::entities::CPluginEventLogger> > CPluginEventLogger::getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType & pluginReleaseType, const boost::posix_time::ptime & fromDate)
+   std::vector<const boost::shared_ptr<entities::CPluginEventLogger> > CPluginEventLogger::getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType & pluginReleaseType, const boost::posix_time::ptime & fromDate)
    {
       CQuery qSelect;
       qSelect. Select().
@@ -83,8 +83,8 @@ namespace database { namespace sqlite { namespace requesters {
          And(CPluginEventLoggerTable::getEventDateColumnName(), CQUERY_OP_SUP, fromDate).
          OrderBy(CPluginEventLoggerTable::getEventDateColumnName(), CQUERY_ORDER_DESC);
 
-      database::sqlite::adapters::CPluginEventLoggerAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CPluginEventLogger> >(&adapter, qSelect);
+      adapters::CPluginEventLoggerAdapter adapter;
+      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CPluginEventLogger> >(&adapter, qSelect);
       return adapter.getResults();
    }
    // [END] IPluginEventLoggerRequester implementation

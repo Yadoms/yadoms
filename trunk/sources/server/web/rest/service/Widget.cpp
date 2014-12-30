@@ -48,16 +48,16 @@ namespace web {
             }
             catch (std::exception &ex)
             {
-               result = web::rest::CResult::GenerateError(ex);
+               result = CResult::GenerateError(ex);
             }
             catch (...)
             {
-               result = web::rest::CResult::GenerateError("unknown exception widget rest method");
+               result = CResult::GenerateError("unknown exception widget rest method");
             }
 
             if (pTransactionalEngine)
             {
-               if (web::rest::CResult::isSuccess(result))
+               if (CResult::isSuccess(result))
                   pTransactionalEngine->transactionCommit();
                else
                   pTransactionalEngine->transactionRollback();
@@ -80,29 +80,26 @@ namespace web {
                {
                   int objectId = boost::lexical_cast<int>(parameters[1]);
                   boost::shared_ptr<database::entities::CWidget> widgetFound = m_dataProvider->getWidgetRequester()->getWidget(objectId);
-                  return web::rest::CResult::GenerateSuccess(widgetFound);
+                  return CResult::GenerateSuccess(widgetFound);
                }
-               else
-               {
-                  return web::rest::CResult::GenerateError("invalid parameter. Can not retreive widget id in url");
-               }
+               return CResult::GenerateError("invalid parameter. Can not retreive widget id in url");
             }
             catch (std::exception &ex)
             {
-               return web::rest::CResult::GenerateError(ex);
+               return CResult::GenerateError(ex);
             }
             catch (...)
             {
-               return web::rest::CResult::GenerateError("unknown exception in retreiving one widget");
+               return CResult::GenerateError("unknown exception in retreiving one widget");
             }
          }
 
          shared::CDataContainer CWidget::getAllWidgets(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
          {
-            std::vector< boost::shared_ptr<database::entities::CWidget> > widgetList = m_dataProvider->getWidgetRequester()->getWidgets();
+            std::vector<const boost::shared_ptr<database::entities::CWidget> > widgetList = m_dataProvider->getWidgetRequester()->getWidgets();
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), widgetList);
-            return web::rest::CResult::GenerateSuccess(collection);
+            return CResult::GenerateSuccess(collection);
          }
 
 
@@ -114,15 +111,15 @@ namespace web {
                widgetToAdd.fillFromContent(requestContent);
                int idCreated = m_dataProvider->getWidgetRequester()->addWidget(widgetToAdd);
                boost::shared_ptr<database::entities::CWidget> widgetFound = m_dataProvider->getWidgetRequester()->getWidget(idCreated);
-               return web::rest::CResult::GenerateSuccess(widgetFound);
+               return CResult::GenerateSuccess(widgetFound);
             }
             catch (std::exception &ex)
             {
-               return web::rest::CResult::GenerateError(ex);
+               return CResult::GenerateError(ex);
             }
             catch (...)
             {
-               return web::rest::CResult::GenerateError("unknown exception in creating a new widget");
+               return CResult::GenerateError("unknown exception in creating a new widget");
             }
          }
 
@@ -143,25 +140,19 @@ namespace web {
                      m_dataProvider->getWidgetRequester()->updateWidget(widgetToUpdate, true);
 
                      boost::shared_ptr<database::entities::CWidget> wi = m_dataProvider->getWidgetRequester()->getWidget(widgetToUpdate.Id());
-                     return web::rest::CResult::GenerateSuccess(wi);
+                     return CResult::GenerateSuccess(wi);
                   }
-                  else
-                  {
-                     return web::rest::CResult::GenerateError("The wiget from URL is different than request content one");
-                  }
+                  return CResult::GenerateError("The wiget from URL is different than request content one");
                }
-               else
-               {
-                  return web::rest::CResult::GenerateError("invalid parameter. Can not retreive widget id in url");
-               }
+               return CResult::GenerateError("invalid parameter. Can not retreive widget id in url");
             }
             catch (std::exception &ex)
             {
-               return web::rest::CResult::GenerateError(ex);
+               return CResult::GenerateError(ex);
             }
             catch (...)
             {
-               return web::rest::CResult::GenerateError("unknown exception in updating a widget value");
+               return CResult::GenerateError("unknown exception in updating a widget value");
             }
          }
 
@@ -174,20 +165,17 @@ namespace web {
                {
                   int widgetId = boost::lexical_cast<int>(parameters[1]);
                   m_dataProvider->getWidgetRequester()->removeWidget(widgetId);
-                  return web::rest::CResult::GenerateSuccess();
+                  return CResult::GenerateSuccess();
                }
-               else
-               {
-                  return web::rest::CResult::GenerateError("invalid parameter. Can not retreive widget id in url");
-               }
+               return CResult::GenerateError("invalid parameter. Can not retreive widget id in url");
             }
             catch (std::exception &ex)
             {
-               return web::rest::CResult::GenerateError(ex);
+               return CResult::GenerateError(ex);
             }
             catch (...)
             {
-               return web::rest::CResult::GenerateError("unknown exception in deleting one widget");
+               return CResult::GenerateError("unknown exception in deleting one widget");
             }
          }
 
@@ -205,15 +193,15 @@ namespace web {
                   m_dataProvider->getWidgetRequester()->addWidget(*i->get());
                }
 
-               return web::rest::CResult::GenerateSuccess();
+               return CResult::GenerateSuccess();
             }
             catch (std::exception &ex)
             {
-               return web::rest::CResult::GenerateError(ex);
+               return CResult::GenerateError(ex);
             }
             catch (...)
             {
-               return web::rest::CResult::GenerateError("unknown exception in updating all widgets");
+               return CResult::GenerateError("unknown exception in updating all widgets");
             }
          }
 
@@ -222,15 +210,15 @@ namespace web {
             try
             {
                m_dataProvider->getWidgetRequester()->removeAllWidgets();
-               return web::rest::CResult::GenerateSuccess();
+               return CResult::GenerateSuccess();
             }
             catch (std::exception &ex)
             {
-               return web::rest::CResult::GenerateError(ex);
+               return CResult::GenerateError(ex);
             }
             catch (...)
             {
-               return web::rest::CResult::GenerateError("unknown exception in deleting all widgets");
+               return CResult::GenerateError("unknown exception in deleting all widgets");
             }
          }
 
@@ -275,19 +263,17 @@ namespace web {
                      }
                   }
                   result.set< std::vector<shared::CDataContainer> >("package", allData);
-                  return web::rest::CResult::GenerateSuccess(result);
+                  return CResult::GenerateSuccess(result);
                }
-               else
-                  return web::rest::CResult::GenerateError(widgetPath + " is not a valid directory.");
-
+               return CResult::GenerateError(widgetPath + " is not a valid directory.");
             }
             catch (std::exception &ex)
             {
-               return web::rest::CResult::GenerateError(ex);
+               return CResult::GenerateError(ex);
             }
             catch (...)
             {
-               return web::rest::CResult::GenerateError("unknown exception in finding wWidget packages");
+               return CResult::GenerateError("unknown exception in finding wWidget packages");
             }
          }
 

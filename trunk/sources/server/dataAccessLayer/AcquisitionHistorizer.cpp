@@ -19,7 +19,7 @@ namespace dataAccessLayer {
 
       void CAcquisitionHistorizer::saveData(const int keywordId, const shared::plugin::yPluginApi::historization::IHistorizable & data, boost::posix_time::ptime & dataTime)
       {
-         boost::shared_ptr< database::entities::CAcquisition > acq;
+         boost::shared_ptr<const database::entities::CAcquisition> acq;
 
          //save data
          if(data.getMeasureType() == shared::plugin::yPluginApi::historization::EMeasureType::kIncrement)

@@ -78,7 +78,7 @@ namespace database {
 
                   adapters::CSingleValueAdapter<std::string> adapter;
                   m_databaseRequester->queryEntities<std::string>(&adapter, qVersion);
-                  std::vector<std::string> results = adapter.getResults();
+                  std::vector<const std::string> results = adapter.getResults();
 
 
                   if (results.size() >= 1)
@@ -170,7 +170,7 @@ namespace database {
          m_pluginEventLoggerRequester.reset(new requesters::CPluginEventLogger( m_databaseRequester));
          m_eventLoggerRequester.reset(new requesters::CEventLogger( m_databaseRequester));
          m_acquisitionRequester.reset(new requesters::CAcquisition(this, m_databaseRequester));
-         m_jobRequester.reset(new requesters::CJob(m_databaseRequester));
+         m_ruleRequester.reset(new requesters::CRule(m_databaseRequester));
          m_recipientRequester.reset(new requesters::CRecipient(m_databaseRequester));
       }
 

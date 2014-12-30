@@ -44,7 +44,7 @@ namespace web { namespace rest {
 
 
 
-   bool CRestDispatcher::CUrlPattern::operator<(const CRestDispatcher::CUrlPattern &right) const
+   bool CRestDispatcher::CUrlPattern::operator<(const CUrlPattern &right) const
    {
       unsigned int minSize = std::min(getPattern().size(),right.getPattern().size());
       for(unsigned int i=0; i<minSize; i++)
@@ -119,11 +119,11 @@ namespace web { namespace rest {
 
          return CResult::GenerateError("This REST url is not handled");
       }
-      else
-         return CResult::GenerateError("The type of request : " + requestType + " is not handled");
+      
+      return CResult::GenerateError("The type of request : " + requestType + " is not handled");
    }
 
-   const bool CRestDispatcher::match(const std::vector<std::string> & url, const CUrlPattern & urlPattern)
+   bool CRestDispatcher::match(const std::vector<std::string> & url, const CUrlPattern & urlPattern)
    {
       if(url.size() == urlPattern.getPattern().size())
       {

@@ -34,18 +34,18 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         std::vector< boost::shared_ptr<database::entities::CEventLogger> > dvList = m_dataProvider->getEventLoggerRequester()->getEvents();
+         std::vector<const boost::shared_ptr<database::entities::CEventLogger> > dvList = m_dataProvider->getEventLoggerRequester()->getEvents();
          shared::CDataContainer collection;
          collection.set(getRestKeyword(), dvList);
-         return web::rest::CResult::GenerateSuccess(collection);
+         return CResult::GenerateSuccess(collection);
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in reading events");
+         return CResult::GenerateError("unknown exception in reading events");
       }
    }
 
@@ -58,15 +58,15 @@ namespace web { namespace rest { namespace service {
       try
       {
          boost::shared_ptr<database::entities::CEventLogger> lastEvent = m_dataProvider->getEventLoggerRequester()->getLastEvent();
-         return web::rest::CResult::GenerateSuccess(lastEvent);
+         return CResult::GenerateSuccess(lastEvent);
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in reading the last events");
+         return CResult::GenerateError("unknown exception in reading the last events");
       }
    }
 
@@ -77,23 +77,20 @@ namespace web { namespace rest { namespace service {
          if(parameters.size()>2)
          {
             int eventIdFrom = boost::lexical_cast<int>(parameters[2]);
-            std::vector< boost::shared_ptr<database::entities::CEventLogger> > eventList = m_dataProvider->getEventLoggerRequester()->getEventsFrom(eventIdFrom);
+            std::vector<const boost::shared_ptr<database::entities::CEventLogger> > eventList = m_dataProvider->getEventLoggerRequester()->getEventsFrom(eventIdFrom);
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), eventList);
-            return web::rest::CResult::GenerateSuccess(collection);
+            return CResult::GenerateSuccess(collection);
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive Id in url");
-         }
+         return CResult::GenerateError("invalid parameter. Can not retreive Id in url");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in reading events");
+         return CResult::GenerateError("unknown exception in reading events");
       }
 
    }
@@ -106,23 +103,20 @@ namespace web { namespace rest { namespace service {
          {
             int offset = boost::lexical_cast<int>(parameters[2]);
             int count = boost::lexical_cast<int>(parameters[3]);
-            std::vector< boost::shared_ptr<database::entities::CEventLogger> > eventList = m_dataProvider->getEventLoggerRequester()->getEventsRange(offset, count);
+            std::vector<const boost::shared_ptr<database::entities::CEventLogger> > eventList = m_dataProvider->getEventLoggerRequester()->getEventsRange(offset, count);
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), eventList);
-            return web::rest::CResult::GenerateSuccess(collection);
+            return CResult::GenerateSuccess(collection);
          }
-         else
-         {
-            return web::rest::CResult::GenerateError("invalid parameter. Can not retreive Id in url");
-         }
+         return CResult::GenerateError("invalid parameter. Can not retreive Id in url");
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in reading events");
+         return CResult::GenerateError("unknown exception in reading events");
       }
    }
 
@@ -138,15 +132,15 @@ namespace web { namespace rest { namespace service {
          database::entities::CEventLogger entityToAdd;
          entityToAdd.fillFromContent(requestContent);
          m_dataProvider->getEventLoggerRequester()->addEvent(entityToAdd);
-         return web::rest::CResult::GenerateSuccess();
+         return CResult::GenerateSuccess();
       }
       catch(std::exception &ex)
       {
-         return web::rest::CResult::GenerateError(ex);
+         return CResult::GenerateError(ex);
       }
       catch(...)
       {
-         return web::rest::CResult::GenerateError("unknown exception in creating a new event entry");
+         return CResult::GenerateError("unknown exception in creating a new event entry");
       }
    }
 

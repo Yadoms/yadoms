@@ -48,7 +48,7 @@ namespace adapters {
          return false;
       }
 
-      std::vector<std::string> getResults()
+      std::vector<const std::string> getResults() const
       {
          //getRawResults should be used
          throw shared::exception::CNotSupported("CHighchartValueAdapter::getResults");
@@ -59,7 +59,7 @@ namespace adapters {
       /// \Brief		Get the result (raw format)
       /// \return		The result (raw format) using a json like ouptut [[data],[data],....]
       //--------------------------------------------------------------
-      std::string getRawResults()
+      std::string getRawResults() const
       {
          return m_internalValue;
       }

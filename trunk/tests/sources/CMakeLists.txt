@@ -179,8 +179,8 @@ source_group(shared\\serialization shared/serialization/*.*)
 source_group(shared\\xpl shared/xpl/*.*)
 
 source_group(server server/*.*)
-source_group(server\\job server/job/*.*)
-source_group(server\\job\\condition server/job/condition/*.*)
+source_group(server\\automation server/automation/*.*)
+source_group(server\\automation\\condition server/automation/condition/*.*)
 source_group(server\\startupOptions server/startupOptions/*.*)
 source_group(server\\tools server/tools/*.*)
 

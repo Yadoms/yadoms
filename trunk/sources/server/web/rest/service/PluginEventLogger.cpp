@@ -38,12 +38,12 @@ namespace web { namespace rest { namespace service {
       if(parameters.size()>2)
          pluginVersion = parameters[2];
       if(parameters.size()>3)
-         rType = (shared::plugin::information::EReleaseType)atoi(parameters[3].c_str());
+         rType = static_cast<shared::plugin::information::EReleaseType>(atoi(parameters[3].c_str()));
 
-      std::vector< boost::shared_ptr<database::entities::CPluginEventLogger> > dvList = m_dataProvider->getPluginEventLoggerRequester()->getPluginEvents(pluginName, pluginVersion, rType);
+      std::vector<const boost::shared_ptr<database::entities::CPluginEventLogger> > dvList = m_dataProvider->getPluginEventLoggerRequester()->getPluginEvents(pluginName, pluginVersion, rType);
       shared::CDataContainer collection;
       collection.set(getRestKeyword(), dvList);
-      return web::rest::CResult::GenerateSuccess(collection);
+      return CResult::GenerateSuccess(collection);
    }
 
    shared::CDataContainer CPluginEventLogger::getLogsForPluginNameFromDate(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
@@ -58,14 +58,14 @@ namespace web { namespace rest { namespace service {
       if(parameters.size()>2)
          pluginVersion = parameters[2];
       if(parameters.size()>3)
-         rType = (shared::plugin::information::EReleaseType)atoi(parameters[3].c_str());
+         rType = static_cast<shared::plugin::information::EReleaseType>(atoi(parameters[3].c_str()));
       if(parameters.size()>4)
          fromDate = boost::posix_time::from_iso_string(parameters[4]);
       
-      std::vector< boost::shared_ptr<database::entities::CPluginEventLogger> > dvList = m_dataProvider->getPluginEventLoggerRequester()->getPluginEvents(pluginName, pluginVersion, rType, fromDate);
+      std::vector<const boost::shared_ptr<database::entities::CPluginEventLogger> > dvList = m_dataProvider->getPluginEventLoggerRequester()->getPluginEvents(pluginName, pluginVersion, rType, fromDate);
       shared::CDataContainer collection;
       collection.set(getRestKeyword(), dvList);
-      return web::rest::CResult::GenerateSuccess(collection);
+      return CResult::GenerateSuccess(collection);
    }
 
 

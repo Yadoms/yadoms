@@ -16,7 +16,7 @@ namespace database {
       /// \param [in]      dataTime    The datetime of the data
       /// \return          The inserted acquisition
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CAcquisition> saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime) = 0;
+      virtual boost::shared_ptr<const entities::CAcquisition> saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Increment a data into base
@@ -25,14 +25,14 @@ namespace database {
       /// \param [in]      dataTime    The datetime of the data
       /// \return          The inserted acquisition
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<entities::CAcquisition> incrementData(const int keywordId, const std::string & increment, boost::posix_time::ptime & dataTime) = 0;
+      virtual boost::shared_ptr<const entities::CAcquisition> incrementData(const int keywordId, const std::string & increment, boost::posix_time::ptime & dataTime) = 0;
 
       //--------------------------------------------------------------
       /// \brief     Container for summary data
       ///            first is summary on Day
       ///            second is summary on Hour
       //--------------------------------------------------------------
-      typedef boost::tuple< boost::shared_ptr<entities::CAcquisitionSummary>, boost::shared_ptr<entities::CAcquisitionSummary> > LastSummaryData;
+      typedef boost::tuple< boost::shared_ptr<const entities::CAcquisitionSummary>, boost::shared_ptr<const entities::CAcquisitionSummary> > LastSummaryData;
 
       //--------------------------------------------------------------
       /// \brief           Save a new summary data into base
@@ -56,7 +56,7 @@ namespace database {
       ///\param [in] acqId  The acquisition date/time
       ///\return     the acquisition
       //-----------------------------------------
-      virtual boost::shared_ptr<entities::CAcquisition> getAcquisitionByKeywordAndDate(const int keywordId, boost::posix_time::ptime time) = 0;
+      virtual boost::shared_ptr<const entities::CAcquisition> getAcquisitionByKeywordAndDate(const int keywordId, boost::posix_time::ptime time) const = 0;
       
       //-----------------------------------------
       ///\brief      Get the last data of a keyword
@@ -64,7 +64,7 @@ namespace database {
       ///\return     the last acquisition for the keyword
       ///\throw      CEmptyResult if no data is available
       //-----------------------------------------
-      virtual boost::shared_ptr<entities::CAcquisition> getKeywordLastData(const int keywordId) = 0;   
+      virtual boost::shared_ptr<const entities::CAcquisition> getKeywordLastData(const int keywordId) const = 0;   
 
       //--------------------------------------------------------------
       /// \brief                 Get the data
@@ -74,7 +74,7 @@ namespace database {
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector< boost::tuple<boost::posix_time::ptime, std::string> > getKeywordData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector<const boost::tuple<boost::posix_time::ptime, std::string> > getKeywordData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
       
       //--------------------------------------------------------------
       /// \brief                 Get the data  by day (avg, min, max per day)
@@ -84,7 +84,7 @@ namespace database {
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector< boost::shared_ptr<entities::CAcquisitionSummary> > getKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector<const boost::shared_ptr<const entities::CAcquisitionSummary> > getKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
       
       //--------------------------------------------------------------
       /// \brief                 Get the data  by hour (avg, min, max per hour)
@@ -94,7 +94,7 @@ namespace database {
       /// \return                Map of data : (date, value)
       /// \throw                 CInvalidParameter if deviceId is unknown
       //--------------------------------------------------------------
-      virtual std::vector< boost::shared_ptr<entities::CAcquisitionSummary> > getKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
+      virtual std::vector<const boost::shared_ptr<const entities::CAcquisitionSummary> > getKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
       
       //--------------------------------------------------------------
       /// \brief                 Get the data (highchart js format) : [[date,value],[date,value],...]

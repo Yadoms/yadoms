@@ -20,7 +20,7 @@ namespace sqlite {
       //--------------------------------------------------------------
       /// \brief	Use do define one row from database (column name, column value)
       //--------------------------------------------------------------
-      typedef std::map<std::string, std::string>  QueryRow;
+      typedef const std::map<std::string, std::string>  QueryRow;
 
       //--------------------------------------------------------------
       /// \brief	Use do define a list of rows from database
@@ -57,14 +57,12 @@ namespace sqlite {
 
 
       //--------------------------------------------------------------
-      /// \Brief		    query for entities (the result is a vector of typed objects)
+      /// \Brief		    query for entities (the result is a vector of typed objects, accessible by a call to pAdapter->GetResult())
       /// \param [in]	 adapter:  pointer to the adapter to use to map raw values to a new entity
-      /// \param [in]	 queryFormat: the sql query
-      /// \param [in]	 ...: args of printf like format string for query
-      /// \return	       the vector of entities
+      /// \param [in]	 querytoExecute: the sql query
       //--------------------------------------------------------------
       template<class TEntity>
-      void queryEntities(database::sqlite::adapters::ISQLiteResultAdapter<TEntity> * pAdapter, const CQuery & querytoExecute)
+      void queryEntities(adapters::ISQLiteResultAdapter<TEntity> * pAdapter, const CQuery & querytoExecute)
       {
          BOOST_ASSERT(pAdapter != NULL);
 
@@ -74,7 +72,7 @@ namespace sqlite {
             try
             {
                int remainingTries = m_maxTries;
-               bool retry = false;
+               bool retry;
 
                do
                {

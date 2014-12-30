@@ -117,8 +117,8 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(AcquisitionSummary,    "CREATE TABLE Acquis
 
 
 
-DECLARE_STATIC_TABLE_CREATION_SCRIPT(Job, "CREATE TABLE Job                                                       \
-                                          (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                       \
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(Rule, "CREATE TABLE Rule                                                     \
+                                           (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                      \
                                              name TEXT NOT NULL,                                                  \
                                              description TEXT,                                                    \
                                              triggers TEXT,                                                       \
