@@ -149,7 +149,11 @@
          }		 
 	  },
       "edit-automation-rule" : {
-        "title" : "Automation rule edition"
+        "title" : "Automation rule edition",
+        "condition" : "Condition",
+        "conditionDescription" : "Set the condition that launch the action section",
+        "actions" : "Actions",
+        "actionsDescription" : "Set all actions that are launched by condition section"
       },
       "qrcode" : {
          "title" : "QR Code de Yadoms",
@@ -333,6 +337,20 @@
       },
       "ConfigurationManager" : {
          "errorDuringGettingSystemConfiguration" : "Error during getting configuration"
+      },
+      "AutomationCenter" : {
+        "Rule" : {
+           "Condition" : {
+              "Is" : {
+                 "Configuration" : {
+                    "keyword" : {
+                       "name" : "Keyword of device",
+                       "description" : "Define the keyword of a device to use in the condition"
+                    }
+                 }
+              }
+           }
+        }
       },
       "generic" : {
          "errorUpdating" : "An error has occurred updating __objectName__",

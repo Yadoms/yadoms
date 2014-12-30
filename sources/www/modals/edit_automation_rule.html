@@ -1,6 +1,6 @@
 <!--Edit automation Rule Modal -->
 <div class="modal fade" id="edit-automation-rule-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog edit-automation-rule-modal">
         <div class="modal-content">
            <form class="form-horizontal" novalidate >
               <div class="modal-header">
@@ -8,7 +8,48 @@
                    <h4 class="modal-title" data-i18n="modals.edit-automation-rule.title"></h4>
               </div>
               <div class="modal-body form-group">
-                 <!--configuration will be inserted here-->
+                 <h4>
+                    <span class="fa fa-question"></span>&nbsp;
+                    <span data-i18n="modals.edit-automation-rule.condition"></span>
+                 </h4>
+                 <span data-i18n="modals.edit-automation-rule.conditionDescription"></span><br>
+                 <div class="well">
+                    <span id="automationRuleLiteralCondition"><b>if</b> A > 2 <b>then</b> B = 3</span>
+                    <div class="row">
+                       <div class="automation-rule well col-md-6">
+                          <ul>
+                             <li id="automation-rule-first-item">
+                                <!--<span><i class="glyphicon glyphicon-asterisk"></i> And</span>
+                                <ul>
+                                   <li>
+                                      <span><i class="glyphicon glyphicon-plus"></i> Or</span>
+                                      <ul>
+                                         <li>
+                                            <span><i class="glyphicon glyphicon-export"></i> temperature of Room sensor goes up to 22 °C</span>
+                                         </li>
+                                         <li>
+                                            <span><i class="glyphicon glyphicon-export"></i> temperature of Kitchen sensor goes up to 23 °C</span>
+                                         </li>
+                                      </ul>
+                                   </li>
+                                   <li>
+                                      <span><i class="glyphicon glyphicon-saved"></i> active of Alarm is on</span>
+                                   </li>
+                                </ul>-->
+                             </li>
+                          </ul>
+                       </div>
+                       <div class="well col-md-6"></div>
+                    </div>
+                 </div>
+                 <h4>
+                    <span class="fa fa-list-ul"></span>&nbsp;
+                    <span data-i18n="modals.edit-automation-rule.actions"></span>
+                 </h4>
+                 <span data-i18n="modals.edit-automation-rule.actionsDescription"></span><br>
+                 <div class="well">
+
+                 </div>
               </div>
               <div class="modal-footer">
                  <div class="form-actions">
@@ -22,13 +63,24 @@
 </div>
 
 <script>
+   var currentAutomationRuleCondition;
+
    function showEditionAutomationRule(rule, callback) {
       assert(!isNullOrUndefined(rule), "rule must be defined");
       assert($.isFunction(callback), "callback must be defined");
 
       var $modalBody = $("div#edit-automation-rule-modal .modal-body");
-      $modalBody.empty();
 
+      //TODO : remove static add
+      var tmp = {"is" : {
+         "operator" : "equal",
+         "keywordId" : "1",
+         "refValue" : "1"
+      }};
+
+      currentAutomationRuleCondition = AutomationRuleConditionFactory.createItem(tmp);
+
+      $("li#automation-rule-first-item").append(currentAutomationRuleCondition.getTreeviewItem());
 
       //i18n
       $modalBody.i18n();
