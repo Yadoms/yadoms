@@ -7,10 +7,8 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CVisibility::CVisibility(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
-   :m_visibility( KeyWordName )
+   :m_visibility( KeyWordName ), m_PluginName ( PluginName )
 {
-	m_PluginName = PluginName;
-
 	if (!context->keywordExists( m_PluginName, m_visibility.getKeyword()))
 	{
       DeclareKeywords ( context );
@@ -25,6 +23,8 @@ void CVisibility::SetValue( const shared::CDataContainer & ValueContainer, const
 {
 	// x 1000 -> The visibility from the web site is in kilometer
 	m_visibility.set(ValueContainer.get<double>( filter ) * 1000 );
+
+	YADOMS_LOG(debug) << m_visibility.getKeyword() << "=" << m_visibility.get() << "m";
 }
 
 void CVisibility::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const

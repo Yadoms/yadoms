@@ -9,10 +9,9 @@ namespace yApi = shared::plugin::yPluginApi;
 CWind::CWind(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string Prefix):
     m_windDirection(Prefix + "WindDirection"),
     m_windAverageSpeed(Prefix + "windAverageSpeed"),
-	m_windMaxSpeed (Prefix + "windMaxSpeed")
+	m_windMaxSpeed (Prefix + "windMaxSpeed"),
+	m_PluginName ( PluginName )
 {
-	m_PluginName = PluginName;
-
 	if (!context->keywordExists( m_PluginName, m_windDirection.getKeyword()))
 	{
       DeclareKeywords ( context );
@@ -26,10 +25,17 @@ void CWind::SetValue(const shared::CDataContainer & ValueContainer, const std::s
 {
 	m_windDirection.set((int) ValueContainer.get<double>( filterWindDirection ));
 
+	YADOMS_LOG(debug) << m_windDirection.getKeyword() << "=" << m_windDirection.get() << "°";
+
 	// Following Units are in km/h. We have to x 1000 to get meters en divide by 3600 to obtain secondes.
 	// The units into the base are in m/s
 	m_windAverageSpeed.set(ValueContainer.get<double>( filterWindAverageSpeed )*1000 / 3600);
+
+	YADOMS_LOG(debug) << m_windAverageSpeed.getKeyword() << "=" << m_windAverageSpeed.get() << "m/s";
+
 	m_windMaxSpeed.set(ValueContainer.get<double>( filterWindMaxSpeed ) *1000 / 3600);
+
+	YADOMS_LOG(debug) << m_windMaxSpeed.getKeyword() << "=" << m_windMaxSpeed.get() << "m/s";
 }
 
 void CWind::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const

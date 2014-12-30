@@ -7,10 +7,8 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CUV::CUV(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
-   :m_uv( KeyWordName )
+   :m_uv( KeyWordName ), m_PluginName ( PluginName )
 {
-	m_PluginName = PluginName;
-
 	if (!context->keywordExists( m_PluginName, m_uv.getKeyword()))
 	{
       DeclareKeywords ( context );
@@ -24,6 +22,8 @@ CUV::~CUV()
 void CUV::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {
 	m_uv.set((int) ValueContainer.get<double>( filter ));
+
+	YADOMS_LOG(debug) << m_uv.getKeyword() << "=" << m_uv.get();
 }
 
 void CUV::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
