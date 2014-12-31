@@ -78,7 +78,7 @@ namespace database {
 
                   adapters::CSingleValueAdapter<std::string> adapter;
                   m_databaseRequester->queryEntities<std::string>(&adapter, qVersion);
-                  std::vector<const std::string> results = adapter.getResults();
+                  std::vector<std::string> results = adapter.getResults();
 
 
                   if (results.size() >= 1)

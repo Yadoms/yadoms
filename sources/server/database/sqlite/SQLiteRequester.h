@@ -20,7 +20,7 @@ namespace sqlite {
       //--------------------------------------------------------------
       /// \brief	Use do define one row from database (column name, column value)
       //--------------------------------------------------------------
-      typedef const std::map<std::string, std::string>  QueryRow;
+      typedef std::map<std::string, std::string>  QueryRow;
 
       //--------------------------------------------------------------
       /// \brief	Use do define a list of rows from database

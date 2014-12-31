@@ -87,7 +87,7 @@ namespace pluginSystem
       /// \throw           CException if fails
       /// \throw           CDatabaseException if duplicate record (instance name must be unique)
       //--------------------------------------------------------------
-      int createInstance(database::entities::CPlugin& data);
+      int createInstance(const database::entities::CPlugin& data);
     
       //--------------------------------------------------------------
       /// \brief                          Delete a plugin instance
@@ -100,7 +100,7 @@ namespace pluginSystem
       /// \brief           Get the plugin instances list
       /// \return          List of instances ID of all known instances, started or not
       //--------------------------------------------------------------
-      std::vector<const boost::shared_ptr<database::entities::CPlugin> > getInstanceList ();
+      std::vector<boost::shared_ptr<database::entities::CPlugin> > getInstanceList () const;
 
       //--------------------------------------------------------------
       /// \brief           Get the instance configuration
@@ -108,7 +108,7 @@ namespace pluginSystem
       /// \return          The instance configuration, if available (empty string if not)
       /// \throw           CException if fails
       //--------------------------------------------------------------
-      boost::shared_ptr<database::entities::CPlugin> getInstance(int id);
+      boost::shared_ptr<database::entities::CPlugin> getInstance(int id) const;
       
       //--------------------------------------------------------------
       /// \brief           Get the instance configuration
@@ -117,7 +117,7 @@ namespace pluginSystem
       /// \throw           CNotSupported if request to apply unsupported modifications
       /// \throw           CException if fails
       //--------------------------------------------------------------
-      void updateInstance(database::entities::CPlugin& newData);
+      void updateInstance(const database::entities::CPlugin& newData);
 
       //--------------------------------------------------------------
       /// \brief           Start a registered instance of plugin

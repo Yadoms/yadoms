@@ -11,7 +11,7 @@ namespace adapters {
    //--------------------------------------------------------------
    ///\Brief		Class which adapt in single column resultset
    ///\template   TValue : the type of value
-   ///\example    CSingleValueAdapter<int> will provide std::vector<const int>
+   ///\example    CSingleValueAdapter<int> will provide std::vector<int>
    //--------------------------------------------------------------
    template<class TValue>
    class CSingleValueAdapter: public ISQLiteResultAdapter<TValue>
@@ -46,7 +46,7 @@ namespace adapters {
          return false;
       }
 
-      std::vector<const TValue> getResults() const
+      std::vector<TValue> getResults()
       {
          return m_results;
       }
@@ -56,7 +56,7 @@ namespace adapters {
       //--------------------------------------------------------------
       /// \Brief		Contains the list of results entities
       //--------------------------------------------------------------
-       std::vector<const TValue> m_results;
+       std::vector<TValue> m_results;
    };
 
 

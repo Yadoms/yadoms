@@ -22,18 +22,18 @@ namespace database { namespace sqlite { namespace requesters {
 
    // IRuleRequester implementation
 
-   std::vector<const boost::shared_ptr<const entities::CRule> > CRule::getRules() const
+   std::vector<boost::shared_ptr<entities::CRule> > CRule::getRules() const
    {
       CQuery qSelect;
       qSelect. Select().
          From(CRuleTable::getTableName());
 
       adapters::CRuleAdapter adapter;
-      m_databaseRequester->queryEntities<const boost::shared_ptr<const entities::CRule> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CRule> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
-   boost::shared_ptr<const entities::CRule> CRule::getRule(int ruleId) const
+   boost::shared_ptr<entities::CRule> CRule::getRule(int ruleId) const
    {
       adapters::CRuleAdapter adapter;
 
@@ -43,7 +43,7 @@ namespace database { namespace sqlite { namespace requesters {
          From(CRuleTable::getTableName()).
          Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleId);
 
-      m_databaseRequester->queryEntities<const boost::shared_ptr<const entities::CRule> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CRule> >(&adapter, qSelect);
       if (adapter.getResults().empty())
       {
          // Rule not found

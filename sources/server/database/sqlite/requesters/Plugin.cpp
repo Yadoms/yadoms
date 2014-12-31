@@ -60,7 +60,7 @@ namespace database { namespace sqlite { namespace requesters {
          From(CPluginTable::getTableName()).
          Where(CPluginTable::getIdColumnName(), CQUERY_OP_EQUAL, pluginId);
 
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CPlugin> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CPlugin> >(&adapter, qSelect);
       if (adapter.getResults().empty())
       {
          // Plugin not found
@@ -80,7 +80,7 @@ namespace database { namespace sqlite { namespace requesters {
          From(CPluginTable::getTableName()).
          Where(CPluginTable::getCategoryColumnName(), CQUERY_OP_EQUAL, entities::EPluginCategory::kSystem);
 
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CPlugin> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CPlugin> >(&adapter, qSelect);
       if (adapter.getResults().empty())
       {
          // Plugin not found
@@ -90,14 +90,14 @@ namespace database { namespace sqlite { namespace requesters {
    }
 
 
-   std::vector<const boost::shared_ptr<entities::CPlugin> > CPlugin::getInstances()
+   std::vector<boost::shared_ptr<entities::CPlugin> > CPlugin::getInstances()
    {
       adapters::CPluginAdapter adapter;
 
       CQuery qSelect;
       qSelect.Select().From(CPluginTable::getTableName());
 
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CPlugin> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CPlugin> >(&adapter, qSelect);
       return adapter.getResults();
    }
 

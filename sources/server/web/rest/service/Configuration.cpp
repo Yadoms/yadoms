@@ -52,7 +52,7 @@ namespace web { namespace rest { namespace service {
 
       try
       {
-         boost::shared_ptr<const database::entities::CConfiguration> configFound = m_dataProvider->getConfigurationRequester()->getConfiguration(section, keyname);
+         boost::shared_ptr<database::entities::CConfiguration> configFound = m_dataProvider->getConfigurationRequester()->getConfiguration(section, keyname);
          return CResult::GenerateSuccess(configFound);
       }
       catch (shared::exception::CEmptyResult &)
@@ -69,7 +69,7 @@ namespace web { namespace rest { namespace service {
          section = parameters[1];
 
 
-      std::vector<const  boost::shared_ptr<database::entities::CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations(section);
+      std::vector< boost::shared_ptr<database::entities::CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations(section);
       shared::CDataContainer collection;
       collection.set(getRestKeyword(), hwList);
       return CResult::GenerateSuccess(collection);
@@ -77,7 +77,7 @@ namespace web { namespace rest { namespace service {
 
    shared::CDataContainer CConfiguration::getAllConfigurations(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      std::vector<const  boost::shared_ptr<database::entities::CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations();
+      std::vector< boost::shared_ptr<database::entities::CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations();
       shared::CDataContainer collection;
       collection.set(getRestKeyword(), hwList);
       return CResult::GenerateSuccess(collection);
@@ -96,7 +96,7 @@ namespace web { namespace rest { namespace service {
       //commit changes to database
       m_dataProvider->getConfigurationRequester()->create(configToCreate);
 
-      boost::shared_ptr<const database::entities::CConfiguration> widgetFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate.Section(), configToCreate.Name());
+      boost::shared_ptr<database::entities::CConfiguration> widgetFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate.Section(), configToCreate.Name());
       return CResult::GenerateSuccess(widgetFound);
    }
 

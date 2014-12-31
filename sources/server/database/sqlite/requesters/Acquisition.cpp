@@ -26,7 +26,7 @@ namespace database {  namespace sqlite {  namespace requesters {
 
 
    // IAcquisitionRequester implementation
-   boost::shared_ptr<const entities::CAcquisition> CAcquisition::saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime)
+   boost::shared_ptr<entities::CAcquisition> CAcquisition::saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime)
    {
       if(m_databaseHandler->getKeywordRequester()->getKeyword(keywordId))
       {
@@ -42,9 +42,9 @@ namespace database {  namespace sqlite {  namespace requesters {
       throw shared::exception::CEmptyResult("The keyword do not exists, cannot add data");
    }
 
-   boost::shared_ptr<const entities::CAcquisition> CAcquisition::incrementData(const int keywordId, const std::string & increment, boost::posix_time::ptime & dataTime)
+   boost::shared_ptr<entities::CAcquisition> CAcquisition::incrementData(const int keywordId, const std::string & increment, boost::posix_time::ptime & dataTime)
    {
-      boost::shared_ptr<const entities::CKeyword> keywordEntity = m_databaseHandler->getKeywordRequester()->getKeyword(keywordId);
+      boost::shared_ptr<entities::CKeyword> keywordEntity = m_databaseHandler->getKeywordRequester()->getKeyword(keywordId);
 
       if(!keywordEntity)
          throw shared::exception::CEmptyResult("The keyword do not exists, cannot increment data");
@@ -90,7 +90,7 @@ namespace database {  namespace sqlite {  namespace requesters {
       }
    }
 
-   boost::shared_ptr<const entities::CAcquisition> CAcquisition::getAcquisitionByKeywordAndDate(const int keywordId, boost::posix_time::ptime time) const
+   boost::shared_ptr<entities::CAcquisition> CAcquisition::getAcquisitionByKeywordAndDate(const int keywordId, boost::posix_time::ptime time)
    {
       CQuery qSelect;
       qSelect.Select().
@@ -99,7 +99,7 @@ namespace database {  namespace sqlite {  namespace requesters {
          And(CAcquisitionTable::getDateColumnName(), CQUERY_OP_EQUAL, time);
 
       adapters::CAcquisitionAdapter adapter;
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CAcquisition> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CAcquisition> >(&adapter, qSelect);
       if (adapter.getResults().size() >= 1)
       {
          return adapter.getResults()[0];
@@ -109,7 +109,7 @@ namespace database {  namespace sqlite {  namespace requesters {
    }
 
 
-   boost::shared_ptr<const entities::CAcquisition> CAcquisition::getKeywordLastData(const int keywordId) const
+   boost::shared_ptr<entities::CAcquisition> CAcquisition::getKeywordLastData(const int keywordId)
    {
       CQuery qSelect;
       qSelect. Select().
@@ -119,7 +119,7 @@ namespace database {  namespace sqlite {  namespace requesters {
                Limit(1);
 
       adapters::CAcquisitionAdapter adapter;
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CAcquisition> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CAcquisition> >(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
       {
          return adapter.getResults()[0];
@@ -128,7 +128,7 @@ namespace database {  namespace sqlite {  namespace requesters {
       throw shared::exception::CEmptyResult(sEx);
    }
 
-   std::vector<const boost::tuple<boost::posix_time::ptime, std::string>  > CAcquisition::getKeywordData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+   std::vector<boost::tuple<boost::posix_time::ptime, std::string>  > CAcquisition::getKeywordData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
    {
       CQuery qSelect;
       qSelect. Select(CAcquisitionTable::getDateColumnName(), CAcquisitionTable::getValueColumnName()).
@@ -153,14 +153,14 @@ namespace database {  namespace sqlite {  namespace requesters {
 
 
 
-   std::vector<const boost::shared_ptr<const entities::CAcquisitionSummary> > CAcquisition::getKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+   std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > CAcquisition::getKeywordDataByDay(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
    {
       return getKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kDay, keywordId, timeFrom, timeTo);
    }
 
 
 
-   std::vector<const boost::shared_ptr<const entities::CAcquisitionSummary> > CAcquisition::getKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+   std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > CAcquisition::getKeywordDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
    {
       return getKeywordSummaryDataByType(entities::EAcquisitionSummaryType::kHour, keywordId, timeFrom, timeTo);
    }
@@ -168,7 +168,7 @@ namespace database {  namespace sqlite {  namespace requesters {
 
 
 
-   std::vector<const boost::shared_ptr<const entities::CAcquisitionSummary>  > CAcquisition::getKeywordSummaryDataByType(const entities::EAcquisitionSummaryType & type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
+   std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > CAcquisition::getKeywordSummaryDataByType(const entities::EAcquisitionSummaryType & type, int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo)
    {
       CQuery qSelect;
       qSelect.Select().
@@ -194,7 +194,7 @@ namespace database {  namespace sqlite {  namespace requesters {
 
 
       adapters::CAcquisitionSummaryAdapter adapter;
-      m_databaseRequester->queryEntities<const boost::shared_ptr<const entities::CAcquisitionSummary> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CAcquisitionSummary> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
@@ -275,7 +275,7 @@ namespace database {  namespace sqlite {  namespace requesters {
       and acq.date<= "endDate"
       
       */
-      boost::shared_ptr<const entities::CKeyword> keyword = m_databaseHandler->getKeywordRequester()->getKeyword(keywordId);
+      boost::shared_ptr<entities::CKeyword> keyword = m_databaseHandler->getKeywordRequester()->getKeyword(keywordId);
 
       if (keyword)
       {
@@ -319,15 +319,15 @@ namespace database {  namespace sqlite {  namespace requesters {
                throw shared::exception::CEmptyResult("Fail to insert new summary day data");
 
             //get the last inserted values
-            boost::shared_ptr<const entities::CAcquisitionSummary> acqDay;
-            std::vector<const boost::shared_ptr<const entities::CAcquisitionSummary> > dayData = getKeywordDataByDay(keywordId, dayDate, dayDate);
+            boost::shared_ptr<entities::CAcquisitionSummary> acqDay;
+            std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > dayData = getKeywordDataByDay(keywordId, dayDate, dayDate);
             if (dayData.size() > 0)
             {
                acqDay = dayData[0];
             }
 
-            boost::shared_ptr<const entities::CAcquisitionSummary> acqHour;
-            std::vector<const boost::shared_ptr<const entities::CAcquisitionSummary> > hourData = getKeywordDataByHour(keywordId, hourDate, hourDate);
+            boost::shared_ptr<entities::CAcquisitionSummary> acqHour;
+            std::vector<boost::shared_ptr<entities::CAcquisitionSummary> > hourData = getKeywordDataByHour(keywordId, hourDate, hourDate);
             if (hourData.size() > 0)
             {
                acqHour = hourData[0];
@@ -336,7 +336,7 @@ namespace database {  namespace sqlite {  namespace requesters {
 
          }
          //keyword is not numeric, no data to avg, min and max !
-         return boost::make_tuple(boost::shared_ptr<const entities::CAcquisitionSummary>(), boost::shared_ptr<const entities::CAcquisitionSummary>());
+         return boost::make_tuple(boost::shared_ptr<entities::CAcquisitionSummary>(), boost::shared_ptr<entities::CAcquisitionSummary>());
       }
       throw shared::exception::CEmptyResult("The keyword do not exists, cannot add summary data");
    }

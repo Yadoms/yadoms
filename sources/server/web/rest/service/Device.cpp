@@ -46,13 +46,13 @@ namespace web { namespace rest { namespace service {
       if(parameters.size()>1)
          objectId = parameters[1];
 
-      boost::shared_ptr<const database::entities::CDevice> deviceFound =  m_dataProvider->getDeviceRequester()->getDevice(boost::lexical_cast<int>(objectId));
+      boost::shared_ptr<database::entities::CDevice> deviceFound =  m_dataProvider->getDeviceRequester()->getDevice(boost::lexical_cast<int>(objectId));
       return CResult::GenerateSuccess(deviceFound);
    }
 
    shared::CDataContainer CDevice::getAllDevices(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      std::vector<const boost::shared_ptr<const database::entities::CDevice> > dvList = m_dataProvider->getDeviceRequester()->getDevices();
+      std::vector< boost::shared_ptr<database::entities::CDevice> > dvList = m_dataProvider->getDeviceRequester()->getDevices();
       shared::CDataContainer collection;
       collection.set(getRestKeyword(), dvList);
       return CResult::GenerateSuccess(collection);
@@ -66,7 +66,7 @@ namespace web { namespace rest { namespace service {
          {
             int keywordId = boost::lexical_cast<int>(parameters[2]);
 
-            boost::shared_ptr<const database::entities::CKeyword> keyword = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
+            boost::shared_ptr<database::entities::CKeyword> keyword = m_dataProvider->getKeywordRequester()->getKeyword(keywordId);
             return CResult::GenerateSuccess(keyword);
          }
          return CResult::GenerateError("invalid parameter. Can not retreive keyword id in url");
@@ -92,7 +92,7 @@ namespace web { namespace rest { namespace service {
             std::string capacityName = parameters[3];
 
             //run query
-            std::vector<const boost::shared_ptr<const database::entities::CDevice> > result = m_dataProvider->getDeviceRequester()->getDeviceWithCapacity(capacityName, cam);
+            std::vector< boost::shared_ptr<database::entities::CDevice> > result = m_dataProvider->getDeviceRequester()->getDeviceWithCapacity(capacityName, cam);
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), result);
             return CResult::GenerateSuccess(collection);
@@ -119,7 +119,7 @@ namespace web { namespace rest { namespace service {
             shared::plugin::yPluginApi::EKeywordDataType typ = parameters[3];
 
             //run query
-            std::vector<const boost::shared_ptr<const database::entities::CDevice> > result = m_dataProvider->getDeviceRequester()->getDeviceWithCapacityType(cam, typ);
+            std::vector< boost::shared_ptr<database::entities::CDevice> > result = m_dataProvider->getDeviceRequester()->getDeviceWithCapacityType(cam, typ);
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), result);
             return CResult::GenerateSuccess(collection);
@@ -147,7 +147,7 @@ namespace web { namespace rest { namespace service {
             std::string capacityName = parameters[3];
 
 
-            std::vector<const boost::shared_ptr<const database::entities::CKeyword> > result = m_dataProvider->getKeywordRequester()->getDeviceKeywordsWithCapacity(deviceId, capacityName, cam);
+            std::vector< boost::shared_ptr<database::entities::CKeyword> > result = m_dataProvider->getKeywordRequester()->getDeviceKeywordsWithCapacity(deviceId, capacityName, cam);
             shared::CDataContainer collection;
             collection.set("keyword", result);
             return CResult::GenerateSuccess(collection);
@@ -171,11 +171,11 @@ namespace web { namespace rest { namespace service {
          if(parameters.size()>1)
          {
             int deviceId = boost::lexical_cast<int>(parameters[1]);
-            boost::shared_ptr<const database::entities::CDevice> deviceInDatabase = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+            boost::shared_ptr<database::entities::CDevice> deviceInDatabase = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
 
             if(deviceInDatabase)
             {
-               std::vector<const boost::shared_ptr<const database::entities::CKeyword> > allKeywordsforDevice = m_dataProvider->getKeywordRequester()->getKeywords(deviceId);
+               std::vector<boost::shared_ptr<database::entities::CKeyword> > allKeywordsforDevice = m_dataProvider->getKeywordRequester()->getKeywords(deviceId);
                shared::CDataContainer collection;
                collection.set("keyword", allKeywordsforDevice);
                return CResult::GenerateSuccess(collection);
@@ -272,7 +272,7 @@ namespace web { namespace rest { namespace service {
                m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(deviceId, deviceToUpdate.FriendlyName());
 
                //return the device info
-               boost::shared_ptr<const database::entities::CDevice> deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
+               boost::shared_ptr<database::entities::CDevice> deviceFound = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
                return CResult::GenerateSuccess(deviceFound);
 
             }

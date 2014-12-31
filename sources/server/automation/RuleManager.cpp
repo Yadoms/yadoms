@@ -30,8 +30,8 @@ void CRuleManager::start()
    m_notificationObserver.reset(new CNotificationObserverForRulesManager(m_notificationCenter));
 
    // Start rules
-   std::vector<const boost::shared_ptr<const database::entities::CRule> > rules = getRules();
-   for (std::vector<const boost::shared_ptr<const database::entities::CRule> >::const_iterator it = rules.begin(); it != rules.end(); ++it)
+   std::vector<boost::shared_ptr<database::entities::CRule> > rules = getRules();
+   for (std::vector<boost::shared_ptr<database::entities::CRule> >::const_iterator it = rules.begin(); it != rules.end(); ++it)
       startRule((*it)->Id);
 }
 
@@ -81,7 +81,7 @@ void CRuleManager::stopRule(int ruleId)
    m_startedRules.erase(rule);
 }
 
-std::vector<const boost::shared_ptr<const database::entities::CRule> > CRuleManager::getRules() const
+std::vector<boost::shared_ptr<database::entities::CRule> > CRuleManager::getRules() const
 {
    return m_dbRequester->getRules();
 }

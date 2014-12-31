@@ -35,7 +35,7 @@ namespace database {
       /// \brief           List all plugin instances
       /// \return          List of registered plugin instances
       //--------------------------------------------------------------
-      virtual std::vector<const boost::shared_ptr<entities::CPlugin> > getInstances() = 0;
+      virtual std::vector<boost::shared_ptr<entities::CPlugin> > getInstances() = 0;
 
       //--------------------------------------------------------------
       /// \brief           Update plugin instance informations

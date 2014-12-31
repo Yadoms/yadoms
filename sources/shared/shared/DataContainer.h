@@ -577,8 +577,6 @@ namespace shared
       //--------------------------------------------------------------
       template<class T>
       inline void setValuesInternal(const std::string& parameterName, const std::vector<T> & values, const char pathChar);
-      template<class T>
-      inline void setValuesInternal(const std::string& parameterName, const std::vector<const T> & values, const char pathChar);
 
       //--------------------------------------------------------------
       /// \brief	    Get parameter values (IDataContainable)
@@ -632,7 +630,6 @@ namespace shared
       /// \throw      shared::exception::CInvalidParameter if parameter is not found
       //--------------------------------------------------------------
       inline void setValuesSPIDataContainableInternal(const std::string& parameterName, const std::vector< boost::shared_ptr<IDataContainable> > & values, const char pathChar);
-      inline void setValuesSPIDataContainableInternal(const std::string& parameterName, const std::vector<const boost::shared_ptr<const IDataContainable> > & values, const char pathChar);
 
       //--------------------------------------------------------------
       //
@@ -775,7 +772,7 @@ namespace shared
       /// \brief	    Helper structure for get/set with an IExtendedEnum object
       //--------------------------------------------------------------
       template <typename T>
-      struct helper < T, typename boost::enable_if< boost::is_base_of< enumeration::IExtendedEnum, T > >::type >
+      struct helper < T, typename boost::enable_if< boost::is_base_of< shared::enumeration::IExtendedEnum, T > >::type >
       {
          //--------------------------------------------------------------
          /// \brief	    GET Method for IDataContainable object
@@ -950,33 +947,6 @@ namespace shared
       };
 
       //--------------------------------------------------------------
-      /// \brief	    Helper structure for get/set with vector of shared_ptr of const IDataContainable ( std::vector< boost::shared_ptr<const IDataContainable> >)
-      //--------------------------------------------------------------
-      template <typename T>
-      struct vhelper < const T, typename boost::enable_if< boost::is_base_of< IDataContainable, const T > >::type >
-      {
-         //--------------------------------------------------------------
-         /// \brief	    GET Method for std::vector< boost::shared_ptr<const IDataContainable> >
-         //--------------------------------------------------------------
-         static std::vector<const boost::shared_ptr<const T> > getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
-         {
-            return tree->getValuesSPIDataContainableInternal<T>(parameterName, pathChar);
-         }
-
-         //--------------------------------------------------------------
-         /// \brief	    SET Method for std::vector< boost::shared_ptr<const IDataContainable> >
-         //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector<const boost::shared_ptr<const T> > & value, const char pathChar)
-         {
-            std::vector<const boost::shared_ptr<const IDataContainable> > compatibleVector;
-            typename std::vector<const boost::shared_ptr<const T> >::const_iterator i;
-            for (i = value.begin(); i != value.end(); ++i)
-               compatibleVector.push_back(boost::dynamic_pointer_cast<const IDataContainable>(*i));
-            tree->setValuesSPIDataContainableInternal(parameterName, compatibleVector, pathChar);
-         }
-      };
-
-      //--------------------------------------------------------------
       /// \brief	    Helper structure for get/set with vector of value type ( std::vector< boost::shared_ptr<T> > )
       //--------------------------------------------------------------
       template <typename T>
@@ -996,30 +966,6 @@ namespace shared
          static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector< boost::shared_ptr<T> > & value, const char pathChar)
          {
             vhelper<T>::setInternal(tree, parameterName, value, pathChar);
-         }
-
-      };
-
-      //--------------------------------------------------------------
-      /// \brief	    Helper structure for get/set with vector of value type ( std::vector< boost::shared_ptr<const T> > )
-      //--------------------------------------------------------------
-      template <typename T>
-      struct helper < std::vector< boost::shared_ptr<const T> > >
-      {
-         //--------------------------------------------------------------
-         /// \brief	    GET Method for std::vector< boost::shared_ptr<const T> >
-         //--------------------------------------------------------------
-         static std::vector< boost::shared_ptr<const T> > getInternal(const CDataContainer * tree, const std::string& parameterName, const char pathChar)
-         {
-            return vhelper<const T>::getInternal(tree, parameterName, pathChar);
-         }
-
-         //--------------------------------------------------------------
-         /// \brief	    SET Method for std::vector< boost::shared_ptr<const T> >
-         //--------------------------------------------------------------
-         static void setInternal(CDataContainer * tree, const std::string& parameterName, const std::vector< boost::shared_ptr<const T> > & value, const char pathChar)
-         {
-            vhelper<const T>::setInternal(tree, parameterName, value, pathChar);
          }
 
       };
@@ -1209,18 +1155,18 @@ namespace shared
 
 
    template<>
-   inline std::vector< CDataContainer > CDataContainer::getValuesInternal(const std::string& parameterName, const char pathChar) const
+   inline std::vector< shared::CDataContainer > CDataContainer::getValuesInternal(const std::string& parameterName, const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
-      std::vector< CDataContainer > result;
+      std::vector< shared::CDataContainer > result;
       try
       {
          boost::property_tree::ptree child = m_tree.get_child(generatePath(parameterName, pathChar));
 
          for (boost::property_tree::ptree::const_iterator it = child.begin(); it != child.end(); ++it)
          {
-            result.push_back(CDataContainer(it->second));
+            result.push_back(shared::CDataContainer(it->second));
          }
          return result;
       }
@@ -1506,35 +1452,6 @@ namespace shared
    }
 
    template<class T>
-   inline void CDataContainer::setValuesInternal(const std::string& parameterName, const std::vector<const T> & values, const char pathChar)
-   {
-      boost::lock_guard<boost::mutex> lock(m_treeMutex);
-
-      try
-      {
-         boost::property_tree::ptree innerData;
-
-         typename std::vector<const T>::const_iterator i;
-         for (i = values.begin(); i != values.end(); ++i)
-         {
-            boost::property_tree::ptree t;
-            t.put("", *i);
-            innerData.push_back(std::make_pair("", t));
-         }
-
-         m_tree.add_child(generatePath(parameterName, pathChar), innerData);
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
-   }
-
-   template<class T>
    inline void CDataContainer::setValuesInternalEnum(const std::string& parameterName, const std::vector<T> & values, const char pathChar)
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
@@ -1632,34 +1549,6 @@ namespace shared
          boost::property_tree::ptree innerData;
 
          std::vector< boost::shared_ptr<IDataContainable> >::const_iterator i;
-         for (i = values.begin(); i != values.end(); ++i)
-         {
-            CDataContainer t;
-            (*i)->extractContent(t);
-            innerData.push_back(std::make_pair("", t.m_tree));
-         }
-
-         m_tree.add_child(generatePath(parameterName, pathChar), innerData);
-      }
-      catch (boost::property_tree::ptree_bad_path& e)
-      {
-         throw exception::CInvalidParameter(parameterName + " : " + e.what());
-      }
-      catch (boost::property_tree::ptree_bad_data& e)
-      {
-         throw exception::COutOfRange(parameterName + " can not be converted to expected type, " + e.what());
-      }
-   }
-
-   inline void CDataContainer::setValuesSPIDataContainableInternal(const std::string& parameterName, const std::vector<const boost::shared_ptr<const IDataContainable> > & values, const char pathChar)
-   {
-      boost::lock_guard<boost::mutex> lock(m_treeMutex);
-
-      try
-      {
-         boost::property_tree::ptree innerData;
-
-         std::vector<const boost::shared_ptr<const IDataContainable> >::const_iterator i;
          for (i = values.begin(); i != values.end(); ++i)
          {
             CDataContainer t;

@@ -84,7 +84,7 @@ namespace adapters {
          return returnValue;
       }
 
-      std::vector<const boost::tuple<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9> > getResults() const
+      std::vector<boost::tuple<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9> > getResults()
       {
          return m_results;
       }
@@ -95,7 +95,7 @@ namespace adapters {
       //--------------------------------------------------------------
       /// \Brief		Contains the list of results entities
       //--------------------------------------------------------------
-       std::vector<const boost::tuple<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9> > m_results;
+       std::vector<boost::tuple<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9> > m_results;
    };
 
 } //namespace adapters

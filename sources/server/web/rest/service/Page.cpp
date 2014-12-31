@@ -86,7 +86,7 @@ namespace web { namespace rest { namespace service {
 
          shared::CDataContainer CPage::getAllPages(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      std::vector<const boost::shared_ptr<database::entities::CPage> > pageList = m_dataProvider->getPageRequester()->getPages();
+      std::vector< boost::shared_ptr<database::entities::CPage> > pageList = m_dataProvider->getPageRequester()->getPages();
       shared::CDataContainer collection;
       collection.set(getRestKeyword(), pageList);
       return CResult::GenerateSuccess(collection);
@@ -99,7 +99,7 @@ namespace web { namespace rest { namespace service {
       {
          pageId = parameters[1];
 
-         std::vector<const boost::shared_ptr<database::entities::CWidget> > widgetList = m_dataProvider->getWidgetRequester()->getWidgetsForPage(boost::lexical_cast<int>(pageId));
+         std::vector< boost::shared_ptr<database::entities::CWidget> > widgetList = m_dataProvider->getWidgetRequester()->getWidgetsForPage(boost::lexical_cast<int>(pageId));
          shared::CDataContainer collection;
          collection.set(CWidget::getRestKeyword(), widgetList);
 
@@ -173,7 +173,7 @@ namespace web { namespace rest { namespace service {
             m_dataProvider->getPageRequester()->addPage(*i->get());
          }
 
-         std::vector<const boost::shared_ptr<database::entities::CPage> > allPages = m_dataProvider->getPageRequester()->getPages();
+         std::vector<boost::shared_ptr<database::entities::CPage> > allPages = m_dataProvider->getPageRequester()->getPages();
          shared::CDataContainer collection;
          collection.set(getRestKeyword(), allPages);
          return CResult::GenerateSuccess(collection);

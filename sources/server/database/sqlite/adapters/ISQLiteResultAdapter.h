@@ -34,7 +34,7 @@ namespace adapters {
       //--------------------------------------------------------------
       /// \Brief		   Get the full results (vector of entities)
       //--------------------------------------------------------------   
-      virtual std::vector<const T> getResults() const = 0;
+      virtual std::vector<T> getResults() = 0;
    };
 
 } //namespace adapters

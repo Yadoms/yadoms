@@ -22,7 +22,7 @@ namespace database {
       /// \param [in] newKeywords   New keyword informations
       /// \throw                    shared::exception::CEmptyResult if deviceId is unknown
       //--------------------------------------------------------------
-      virtual void addKeyword(const entities::CKeyword& newKeyword) = 0;
+      virtual void addKeyword(const database::entities::CKeyword& newKeyword) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Get a keyword
@@ -30,7 +30,7 @@ namespace database {
       /// \param [in]      keyword   the keyword to get
       /// \throw           shared::exception::CEmptyResult if deviceId is unknown
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<const entities::CKeyword> getKeyword(int deviceId, const std::string & keyword) const = 0;
+      virtual boost::shared_ptr<entities::CKeyword> getKeyword(int deviceId, const std::string & keyword) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           Get a keyword
@@ -38,14 +38,14 @@ namespace database {
       /// \return          the keyword found
       /// \throw           shared::exception::CEmptyResult if keyword is unknown
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<const entities::CKeyword> getKeyword(int keywordId) const = 0;
+      virtual boost::shared_ptr<entities::CKeyword> getKeyword(int keywordId) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           List all keywords 
       /// \param [in]      deviceId   the device which own the keyword
       /// \return          List of registered keywords
       //--------------------------------------------------------------
-      virtual std::vector<const boost::shared_ptr<const entities::CKeyword> > getKeywords(int deviceId) const = 0;  
+      virtual std::vector<boost::shared_ptr<entities::CKeyword> > getKeywords(int deviceId) const = 0;  
       
       //--------------------------------------------------------------
       /// \brief           List all keywords which match capacity for a device
@@ -54,7 +54,7 @@ namespace database {
       /// \param [in]      capacityAccessMode   the capacity acces mode
       /// \return          List of registered keywords
       //--------------------------------------------------------------
-      virtual std::vector<const boost::shared_ptr<const entities::CKeyword> > getDeviceKeywordsWithCapacity(int deviceId, const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & capacityAccessMode) const = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CKeyword> > getDeviceKeywordsWithCapacity(int deviceId, const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & capacityAccessMode) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           Remove a keyword

@@ -83,7 +83,7 @@ namespace web { namespace rest { namespace service {
          {
             int instanceId = boost::lexical_cast<int>(parameters[1]);
 
-            boost::shared_ptr<const database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(instanceId);
+            boost::shared_ptr<database::entities::CPlugin> pluginFound = m_pluginManager->getInstance(instanceId);
 
             return CResult::GenerateSuccess(pluginFound);
          }
@@ -102,7 +102,7 @@ namespace web { namespace rest { namespace service {
 
    shared::CDataContainer CPlugin::getAllPluginsInstance(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      std::vector<const boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
+      std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
       shared::CDataContainer t;
       t.set(getRestKeyword(), hwList);
       return CResult::GenerateSuccess(t);
@@ -113,13 +113,13 @@ namespace web { namespace rest { namespace service {
       std::vector< boost::shared_ptr<database::entities::CPlugin> > result;
 
       //liste de toutes les instances
-      std::vector<const boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
+      std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
       
       //search for manuallyCreatedDevice
       pluginSystem::CManager::AvalaiblePluginMap pluginList = m_pluginManager->getPluginList();
 
       
-      for (std::vector<const boost::shared_ptr<database::entities::CPlugin> >::iterator currentInstance = hwList.begin(); currentInstance != hwList.end(); ++currentInstance)
+      for (std::vector< boost::shared_ptr<database::entities::CPlugin> >::iterator currentInstance = hwList.begin(); currentInstance != hwList.end(); ++currentInstance)
       {
          if (m_pluginManager->isInstanceRunning(currentInstance->get()->Id))
          {
@@ -249,9 +249,9 @@ namespace web { namespace rest { namespace service {
 
    shared::CDataContainer CPlugin::deleteAllPlugins(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      std::vector<const boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
+      std::vector< boost::shared_ptr<database::entities::CPlugin> > hwList = m_pluginManager->getInstanceList();
       
-      for (std::vector<const boost::shared_ptr<database::entities::CPlugin> >::iterator i = hwList.begin(); i != hwList.end(); ++i)
+      for (std::vector<boost::shared_ptr<database::entities::CPlugin> >::iterator i = hwList.begin(); i != hwList.end(); ++i)
       {
          m_pluginManager->deleteInstance(*i);
       }
@@ -393,7 +393,7 @@ namespace web { namespace rest { namespace service {
                      if (res.Success)
                      {
                         //find created device
-                        boost::shared_ptr<const database::entities::CDevice> createdDevice = m_dataProvider->getDeviceRequester()->getDevice(pluginId, res.Result);
+                           boost::shared_ptr<database::entities::CDevice> createdDevice = m_dataProvider->getDeviceRequester()->getDevice(pluginId, res.Result);
 
                         //update friendly name
                         m_dataProvider->getDeviceRequester()->updateDeviceFriendlyName(createdDevice->Id(), requestContent.get<std::string>("name"));

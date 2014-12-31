@@ -14,14 +14,14 @@ namespace database {
       /// \brief           List all rules
       /// \return          List of registered rules
       //--------------------------------------------------------------
-      virtual std::vector<const boost::shared_ptr<const entities::CRule> > getRules() const = 0;
+      virtual std::vector<boost::shared_ptr<entities::CRule> > getRules() const = 0;
 
       //--------------------------------------------------------------
       /// \brief           Get rule informations
       /// \param[in] ruleId Rule ID
       /// \return          Rule information
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<const entities::CRule> getRule(int ruleId) const = 0;
+      virtual boost::shared_ptr<entities::CRule> getRule(int ruleId) const = 0;
 
       //--------------------------------------------------------------
       /// \brief           Add a new rule
