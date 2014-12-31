@@ -31,9 +31,17 @@ protected:
    //--------------------------------------------------------------
    /// \brief	    Initialization
    //--------------------------------------------------------------
-   void Initialize();
-   
+   void Initialize();   
+
 private:
+
+   //--------------------------------------------------------------
+   /// \brief	    Read all needed information
+   //--------------------------------------------------------------
+   void ReadFromFile(unsigned long long *dtotalUser,
+                     unsigned long long *dtotalUserLow,
+                     unsigned long long *dtotalSys,
+                     unsigned long long *dtotalIdle);
 
    //--------------------------------------------------------------
    /// \brief	    Device
