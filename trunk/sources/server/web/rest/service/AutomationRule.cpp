@@ -7,8 +7,11 @@
 
 namespace web { namespace rest { namespace service {
 
+   const std::string CAutomationRule::m_restKeyword("automation");
+   const std::string CAutomationRule::m_restSubKeyword("rule");
+
    CAutomationRule::CAutomationRule(boost::shared_ptr<database::IDataProvider> dataProvider, boost::shared_ptr<automation::IRuleManager> rulesManager)
-      :m_dataProvider(dataProvider), m_rulesManager(rulesManager), m_restKeyword("rule")
+      :m_dataProvider(dataProvider), m_rulesManager(rulesManager)
    {
    }
 
@@ -24,12 +27,13 @@ namespace web { namespace rest { namespace service {
 
    void CAutomationRule::configureDispatcher(CRestDispatcher & dispatcher)
    {
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", ("automation")("rule"), CAutomationRule::getAllRules);//TODO pour test, à réécrire mieux
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeyword), CAutomationRule::getAllRules);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)(m_restSubKeyword), CAutomationRule::createRule, CAutomationRule::transactionalMethod);
 
-      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword), CAutomationRule::createRule, CAutomationRule::transactionalMethod);
-      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)("*")("createRule"), CAutomationRule::createRule, CAutomationRule::transactionalMethod);
-      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)("*"), CAutomationRule::updateRule, CAutomationRule::transactionalMethod);
-      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)("*"), CAutomationRule::deleteRule, CAutomationRule::transactionalMethod);
+      //TODO voir la suite
+      //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)(m_restSubKeyword)("*")("createRule"), CAutomationRule::createRule, CAutomationRule::transactionalMethod);
+      //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeyword)("*"), CAutomationRule::updateRule, CAutomationRule::transactionalMethod);
+      //REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)(m_restSubKeyword)("*"), CAutomationRule::deleteRule, CAutomationRule::transactionalMethod);
    }
 
 
