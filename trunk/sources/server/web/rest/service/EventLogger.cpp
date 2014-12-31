@@ -34,7 +34,7 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         std::vector<const boost::shared_ptr<database::entities::CEventLogger> > dvList = m_dataProvider->getEventLoggerRequester()->getEvents();
+         std::vector< boost::shared_ptr<database::entities::CEventLogger> > dvList = m_dataProvider->getEventLoggerRequester()->getEvents();
          shared::CDataContainer collection;
          collection.set(getRestKeyword(), dvList);
          return CResult::GenerateSuccess(collection);
@@ -77,7 +77,7 @@ namespace web { namespace rest { namespace service {
          if(parameters.size()>2)
          {
             int eventIdFrom = boost::lexical_cast<int>(parameters[2]);
-            std::vector<const boost::shared_ptr<database::entities::CEventLogger> > eventList = m_dataProvider->getEventLoggerRequester()->getEventsFrom(eventIdFrom);
+            std::vector< boost::shared_ptr<database::entities::CEventLogger> > eventList = m_dataProvider->getEventLoggerRequester()->getEventsFrom(eventIdFrom);
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), eventList);
             return CResult::GenerateSuccess(collection);
@@ -103,7 +103,7 @@ namespace web { namespace rest { namespace service {
          {
             int offset = boost::lexical_cast<int>(parameters[2]);
             int count = boost::lexical_cast<int>(parameters[3]);
-            std::vector<const boost::shared_ptr<database::entities::CEventLogger> > eventList = m_dataProvider->getEventLoggerRequester()->getEventsRange(offset, count);
+            std::vector< boost::shared_ptr<database::entities::CEventLogger> > eventList = m_dataProvider->getEventLoggerRequester()->getEventsRange(offset, count);
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), eventList);
             return CResult::GenerateSuccess(collection);

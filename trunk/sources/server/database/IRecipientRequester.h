@@ -18,7 +18,7 @@ namespace database {
       /// \brief           List all recipients
       /// \return          List of registered recipients
       //--------------------------------------------------------------
-      virtual std::vector<const boost::shared_ptr<const entities::CRecipient> > getRecipients() const = 0;
+      virtual std::vector<boost::shared_ptr<entities::CRecipient> > getRecipients() = 0;
 
       //--------------------------------------------------------------
       /// \brief                    Remove recipient 

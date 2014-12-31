@@ -52,7 +52,7 @@ namespace database {  namespace sqlite { namespace requesters {
       throw shared::exception::CEmptyResult("Cannot retrieve inserted Recipient");
    }
 
-   std::vector<const boost::shared_ptr<const entities::CRecipient> > CRecipient::getRecipients() const
+   std::vector<boost::shared_ptr<entities::CRecipient> > CRecipient::getRecipients()
    {
       //CQuery qSelect;
       //qSelect. Select().

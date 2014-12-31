@@ -34,7 +34,7 @@ namespace automation
       // IRuleManager Implementation
       virtual void start();
       virtual void stop();
-      virtual std::vector<const boost::shared_ptr<const database::entities::CRule> > getRules() const;
+      virtual std::vector<boost::shared_ptr<database::entities::CRule> > getRules() const;
       virtual int createRule(const database::entities::CRule& data);
       virtual boost::shared_ptr<const database::entities::CRule> getRule(int id) const;
       virtual void updateRule(const database::entities::CRule& newData);

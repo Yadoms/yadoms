@@ -96,7 +96,7 @@ namespace web {
 
          shared::CDataContainer CWidget::getAllWidgets(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
          {
-            std::vector<const boost::shared_ptr<database::entities::CWidget> > widgetList = m_dataProvider->getWidgetRequester()->getWidgets();
+            std::vector< boost::shared_ptr<database::entities::CWidget> > widgetList = m_dataProvider->getWidgetRequester()->getWidgets();
             shared::CDataContainer collection;
             collection.set(getRestKeyword(), widgetList);
             return CResult::GenerateSuccess(collection);

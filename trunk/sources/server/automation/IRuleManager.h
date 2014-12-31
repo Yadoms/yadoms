@@ -28,7 +28,7 @@ namespace automation
       ///\brief               Get all rules
       ///\return              The rule list
       //-----------------------------------------------------
-      virtual std::vector<const boost::shared_ptr<const database::entities::CRule> > getRules() const = 0;
+      virtual std::vector<boost::shared_ptr<database::entities::CRule> > getRules() const = 0;
 
       //-----------------------------------------------------
       ///\brief               Create a new rule

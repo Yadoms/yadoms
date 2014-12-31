@@ -36,13 +36,10 @@ namespace sqlite {
       //execute the query
       char *zErrMsg = NULL;
       int remainingTries = m_maxTries;
-      bool retry = false;
+      bool retry;
 
       do
       {
-         //ensure retry is reset to false
-         retry = false;
-
          //execute query
          int rc = sqlite3_exec(m_pDatabaseHandler, querytoExecute.c_str(),  NULL, 0, &zErrMsg);
 
@@ -93,7 +90,7 @@ namespace sqlite {
       BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kNotYetDefined);
       BOOST_ASSERT(querytoExecute.GetQueryType() == CQuery::kSelect);
 
-      database::sqlite::adapters::CSingleValueAdapter<int> countAdapter;
+      adapters::CSingleValueAdapter<int> countAdapter;
       queryEntities<int>(&countAdapter, querytoExecute);
 
       if(countAdapter.getResults().size() >= 1)
@@ -106,11 +103,11 @@ namespace sqlite {
       BOOST_ASSERT(querytoExecute.GetQueryType() != CQuery::kNotYetDefined);
       BOOST_ASSERT(querytoExecute.GetQueryType() == CQuery::kSelect);
 
-      CSQLiteRequester::QueryResults results = query(querytoExecute);
+      QueryResults results = query(querytoExecute);
       if(results.size() >= 1)
          return results[0];
 
-      return CSQLiteRequester::QueryRow(); //returns empty data
+      return QueryRow(); //returns empty data
    }
 
 

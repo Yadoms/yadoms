@@ -65,7 +65,7 @@ namespace database { namespace sqlite { namespace requesters {
          Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetId);
 
       adapters::CWidgetAdapter adapter;
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CWidget> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CWidget> >(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
          return adapter.getResults()[0];
 
@@ -73,18 +73,18 @@ namespace database { namespace sqlite { namespace requesters {
       throw shared::exception::CEmptyResult(sEx);
    }
 
-   std::vector<const boost::shared_ptr<entities::CWidget> > CWidget::getWidgets()
+   std::vector<boost::shared_ptr<entities::CWidget> > CWidget::getWidgets()
    {
       CQuery qSelect;
       qSelect. Select().
          From(CWidgetTable::getTableName());
 
       adapters::CWidgetAdapter adapter;
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CWidget> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CWidget> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
-   std::vector<const boost::shared_ptr<entities::CWidget> > CWidget::getWidgetsForPage(int pageId)
+   std::vector<boost::shared_ptr<entities::CWidget> > CWidget::getWidgetsForPage(int pageId)
    {
       CQuery qSelect;
       qSelect. Select().
@@ -92,7 +92,7 @@ namespace database { namespace sqlite { namespace requesters {
          Where(CWidgetTable::getIdPageColumnName(), CQUERY_OP_EQUAL, pageId);
 
       adapters::CWidgetAdapter adapter;
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CWidget> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CWidget> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
@@ -144,7 +144,7 @@ namespace database { namespace sqlite { namespace requesters {
          Where(CWidgetTable::getIdColumnName(), CQUERY_OP_EQUAL, widgetToUpdate.Id());
 
       adapters::CWidgetAdapter adapter;
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CWidget> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CWidget> >(&adapter, qSelect);
       if(adapter.getResults().size() == 0)
       {
          //do not exist, just add it

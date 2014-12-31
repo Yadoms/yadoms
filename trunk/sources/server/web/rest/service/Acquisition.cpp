@@ -63,7 +63,7 @@ namespace web {
                if (parameters.size() > 2)
                {
                   int keywordId = boost::lexical_cast<int>(parameters[2]);
-                  boost::shared_ptr<const database::entities::CAcquisition> acq = m_dataProvider->getAcquisitionRequester()->getKeywordLastData(keywordId);
+                  boost::shared_ptr<database::entities::CAcquisition> acq = m_dataProvider->getAcquisitionRequester()->getKeywordLastData(keywordId);
                   return CResult::GenerateSuccess(acq);
                }
                return CResult::GenerateError("invalid parameter. Can not retreive acquisitionId in url");
@@ -103,9 +103,9 @@ namespace web {
                   if (parameters.size() > 4)
                      timeTo = boost::posix_time::from_iso_string(parameters[4]);
 
-                  std::vector<const boost::tuple<boost::posix_time::ptime, std::string> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordData(keywordId, timeFrom, timeTo);
+                  std::vector< boost::tuple<boost::posix_time::ptime, std::string> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordData(keywordId, timeFrom, timeTo);
                   std::vector<shared::CDataContainer> objectList;
-                  std::vector<const boost::tuple<boost::posix_time::ptime, std::string> >::const_iterator i;
+                  std::vector< boost::tuple<boost::posix_time::ptime, std::string> >::const_iterator i;
 
                   for (i = allData.begin(); i != allData.end(); ++i)
                   {
@@ -151,7 +151,7 @@ namespace web {
                   if (parameters.size() > 5)
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
-                  std::vector<const boost::shared_ptr<database::entities::CAcquisitionSummary> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByDay(keywordId, timeFrom, timeTo);
+                  std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByDay(keywordId, timeFrom, timeTo);
                   shared::CDataContainer result;
                   result.set("data", allData);
                   return CResult::GenerateSuccess(result);
@@ -187,7 +187,7 @@ namespace web {
                   if (parameters.size() > 5)
                      timeTo = boost::posix_time::from_iso_string(parameters[5]);
 
-                  std::vector<const boost::shared_ptr<database::entities::CAcquisitionSummary> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByHour(keywordId, timeFrom, timeTo);
+                  std::vector<boost::shared_ptr<database::entities::CAcquisitionSummary> > allData = m_dataProvider->getAcquisitionRequester()->getKeywordDataByHour(keywordId, timeFrom, timeTo);
                   shared::CDataContainer result;
                   result.set("data", allData);
                   return CResult::GenerateSuccess(result);

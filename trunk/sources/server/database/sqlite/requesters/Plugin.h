@@ -33,7 +33,7 @@ namespace database { namespace sqlite {
          virtual void removeInstance(int pluginId);
          virtual boost::shared_ptr<entities::CPlugin> getInstance(int pluginId);
          virtual boost::shared_ptr<entities::CPlugin> getSystemInstance();
-         virtual std::vector<const boost::shared_ptr<entities::CPlugin> > getInstances();
+         virtual std::vector<boost::shared_ptr<entities::CPlugin> > getInstances();
          virtual void updateInstance(const entities::CPlugin& newPlugin);
          virtual void disableAutoStartForAllPluginInstances(const std::string& pluginName);
          // [END] IPluginRequester implementation

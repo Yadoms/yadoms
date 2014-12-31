@@ -31,7 +31,7 @@ namespace database { namespace sqlite {
          virtual int addPage(const entities::CPage & page);
          virtual int addPage(const std::string& name, const int pageOrder);
          virtual boost::shared_ptr<entities::CPage> getPage(int pageId);
-         virtual std::vector<const boost::shared_ptr<entities::CPage> > getPages();
+         virtual std::vector<boost::shared_ptr<entities::CPage> > getPages();
          virtual void updatePage(int pageId, const std::string& name, const int pageOrder);
          virtual void removePage(int pageId);
          virtual void removeAllPages();

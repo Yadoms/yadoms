@@ -22,7 +22,7 @@ namespace database { namespace sqlite { namespace requesters {
 
 
    // IConfigurationRequester implementation
-   void CConfiguration::create(const entities::CConfiguration& configurationToCreate)
+   void CConfiguration::create(entities::CConfiguration& configurationToCreate)
    {
       boost::posix_time::ptime insertDate = boost::posix_time::second_clock::universal_time();
       CQuery qInsert;
@@ -52,7 +52,7 @@ namespace database { namespace sqlite { namespace requesters {
          And(CConfigurationTable::getNameColumnName(), CQUERY_OP_LIKE, name);
 
       adapters::CConfigurationAdapter adapter;
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CConfiguration> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CConfiguration> >(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
          return adapter.getResults()[0];
       
@@ -60,7 +60,7 @@ namespace database { namespace sqlite { namespace requesters {
       throw shared::exception::CEmptyResult(sEx);
    }
 
-   std::vector<const boost::shared_ptr<entities::CConfiguration> > CConfiguration::getConfigurations(const std::string & section)
+   std::vector<boost::shared_ptr<entities::CConfiguration> > CConfiguration::getConfigurations(const std::string & section)
    {
       CQuery qSelect;
       qSelect. Select().
@@ -69,11 +69,11 @@ namespace database { namespace sqlite { namespace requesters {
          OrderBy(CConfigurationTable::getNameColumnName(), CQUERY_ORDER_ASC);
 
       adapters::CConfigurationAdapter adapter;
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CConfiguration> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CConfiguration> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
-   std::vector<const boost::shared_ptr<entities::CConfiguration> > CConfiguration::getConfigurations()
+   std::vector<boost::shared_ptr<entities::CConfiguration> > CConfiguration::getConfigurations()
    {
       CQuery qSelect;
       qSelect. Select().
@@ -81,12 +81,12 @@ namespace database { namespace sqlite { namespace requesters {
          OrderBy(CConfigurationTable::getSectionColumnName(), CQUERY_ORDER_ASC, CConfigurationTable::getNameColumnName(), CQUERY_ORDER_ASC);
 
       adapters::CConfigurationAdapter adapter;
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CConfiguration> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CConfiguration> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
 
-   void CConfiguration::updateConfiguration(const entities::CConfiguration& configurationToUpdate)
+   void CConfiguration::updateConfiguration(entities::CConfiguration& configurationToUpdate)
    {
       boost::posix_time::ptime updateDate = boost::posix_time::second_clock::universal_time();
 
@@ -108,7 +108,7 @@ namespace database { namespace sqlite { namespace requesters {
       }
    }
 
-   void CConfiguration::removeConfiguration(const entities::CConfiguration& configurationToRemove)
+   void CConfiguration::removeConfiguration(entities::CConfiguration& configurationToRemove)
    {
       CQuery qDelete;
       qDelete. DeleteFrom(CConfigurationTable::getTableName()).

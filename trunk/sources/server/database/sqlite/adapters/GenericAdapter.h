@@ -26,14 +26,14 @@ namespace adapters {
    
       // ISQLiteResultAdapter implementation
       bool adapt(sqlite3_stmt * pStatement);
-      std::vector<const std::map<std::string, std::string> > getResults() const; 
+      std::vector<std::map<std::string, std::string> > getResults(); 
       // [END] ISQLiteResultAdapter implementation
 
    private:
       //--------------------------------------------------------------
       /// \Brief		Contains the list of Plugin entities
       //--------------------------------------------------------------
-      std::vector<const std::map<std::string, std::string> > m_results;
+      std::vector<std::map<std::string, std::string> > m_results;
    };
 
 } //namespace adapters

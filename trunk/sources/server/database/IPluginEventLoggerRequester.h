@@ -37,7 +37,7 @@ namespace database {
       /// \return          list of events
       /// \throw           shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual std::vector<const boost::shared_ptr<entities::CPluginEventLogger> > getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType & pluginReleaseType) = 0;
+      virtual std::vector<boost::shared_ptr<entities::CPluginEventLogger> > getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType & pluginReleaseType) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Get the events history for a plugin
@@ -48,7 +48,7 @@ namespace database {
       /// \return          list of events
       /// \throw           shared::exception::CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual std::vector<const boost::shared_ptr<entities::CPluginEventLogger> > getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType & pluginReleaseType, const boost::posix_time::ptime & fromDate) = 0;
+      virtual std::vector<boost::shared_ptr<entities::CPluginEventLogger> > getPluginEvents(const std::string & pluginName, const std::string & pluginVersion, const shared::plugin::information::EReleaseType & pluginReleaseType, const boost::posix_time::ptime & fromDate) = 0;
 
       //--------------------------------------------------------------
       /// \brief       Destructor

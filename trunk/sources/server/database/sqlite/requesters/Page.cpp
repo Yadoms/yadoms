@@ -84,7 +84,7 @@ namespace database {  namespace sqlite { namespace requesters {
          Where(CPageTable::getIdColumnName(), CQUERY_OP_EQUAL, pageId);
 
       adapters::CPageAdapter adapter;
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CPage> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CPage> >(&adapter, qSelect);
       if(adapter.getResults().size() >= 1)
          return adapter.getResults()[0];
       
@@ -92,7 +92,7 @@ namespace database {  namespace sqlite { namespace requesters {
       throw shared::exception::CEmptyResult(sEx);
    }
 
-   std::vector<const boost::shared_ptr<entities::CPage> > CPage::getPages()
+   std::vector<boost::shared_ptr<entities::CPage> > CPage::getPages()
    {
       CQuery qSelect;
       qSelect. Select().
@@ -100,7 +100,7 @@ namespace database {  namespace sqlite { namespace requesters {
          OrderBy(CPageTable::getPageOrderColumnName());
 
       adapters::CPageAdapter adapter;
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CPage> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CPage> >(&adapter, qSelect);
       return adapter.getResults();
    }
 

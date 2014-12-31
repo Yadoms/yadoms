@@ -65,7 +65,7 @@ namespace web { namespace rest { namespace service {
 
    shared::CDataContainer CAutomationRule::getAllRules(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      std::vector<const boost::shared_ptr<const database::entities::CRule> > ruleList = m_rulesManager->getRules();
+      std::vector<boost::shared_ptr<database::entities::CRule> > ruleList = m_rulesManager->getRules();
       shared::CDataContainer t;
       t.set(getRestKeyword(), ruleList);
       return CResult::GenerateSuccess(t);

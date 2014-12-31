@@ -58,7 +58,7 @@ namespace database { namespace sqlite { namespace requesters {
    }
 
 
-   std::vector<const boost::shared_ptr<entities::CEventLogger> > CEventLogger::getEvents()
+   std::vector<boost::shared_ptr<entities::CEventLogger> > CEventLogger::getEvents()
    {
       CQuery qSelect;
       qSelect. Select().
@@ -66,7 +66,7 @@ namespace database { namespace sqlite { namespace requesters {
          OrderBy(CEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
       adapters::CEventLoggerAdapter adapter;
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CEventLogger> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CEventLogger> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
@@ -79,15 +79,15 @@ namespace database { namespace sqlite { namespace requesters {
          Limit(1);
 
       adapters::CEventLoggerAdapter adapter;
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CEventLogger> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CEventLogger> >(&adapter, qSelect);
 
-      std::vector<const boost::shared_ptr<entities::CEventLogger> > list = adapter.getResults();
+      std::vector<boost::shared_ptr<entities::CEventLogger> > list = adapter.getResults();
       if(list.empty())
          return boost::shared_ptr<entities::CEventLogger>(); 
       return adapter.getResults()[0];
    }
 
-   std::vector<const boost::shared_ptr<entities::CEventLogger> >  CEventLogger::getEventsFrom(const int eventId)
+   std::vector<boost::shared_ptr<entities::CEventLogger> >  CEventLogger::getEventsFrom(const int eventId)
    {
       CQuery qSelect;
       qSelect. Select().
@@ -96,11 +96,11 @@ namespace database { namespace sqlite { namespace requesters {
          OrderBy(CEventLoggerTable::getIdColumnName(), CQUERY_ORDER_DESC, CEventLoggerTable::getDateColumnName(), CQUERY_ORDER_DESC);
 
       adapters::CEventLoggerAdapter adapter;
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CEventLogger> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CEventLogger> >(&adapter, qSelect);
       return adapter.getResults();
    }
 
-   std::vector<const boost::shared_ptr<entities::CEventLogger> >  CEventLogger::getEventsRange(const int offset, const int count)
+   std::vector<boost::shared_ptr<entities::CEventLogger> >  CEventLogger::getEventsRange(const int offset, const int count)
    {
       CQuery qSelect;
       qSelect. Select().
@@ -109,7 +109,7 @@ namespace database { namespace sqlite { namespace requesters {
          Limit(count, offset);
 
       adapters::CEventLoggerAdapter adapter;
-      m_databaseRequester->queryEntities<const boost::shared_ptr<entities::CEventLogger> >(&adapter, qSelect);
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CEventLogger> >(&adapter, qSelect);
       return adapter.getResults();
    }
 

@@ -30,8 +30,8 @@ namespace database { namespace sqlite {
          // IWidgetRequester implementation
          virtual int addWidget(const entities::CWidget & newWidget);
          virtual boost::shared_ptr<entities::CWidget> getWidget(int widgetId);
-         virtual std::vector<const boost::shared_ptr<entities::CWidget> > getWidgets();
-         virtual std::vector<const boost::shared_ptr<entities::CWidget> > getWidgetsForPage(int pageId);
+         virtual std::vector<boost::shared_ptr<entities::CWidget> > getWidgets();
+         virtual std::vector<boost::shared_ptr<entities::CWidget> > getWidgetsForPage(int pageId);
          virtual void updateWidgetConfiguration(int widgetId, const std::string& newConfiguration);
          virtual void updateWidgetSize(int widgetId, int sizeX, int sizeY);
          virtual void updateWidgetPosition(int widgetId, int positionX, int positionY);
