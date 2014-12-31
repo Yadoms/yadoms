@@ -3,6 +3,7 @@
 #include "database/IRuleRequester.h"
 #include "Rule.h"
 #include "condition/ConditionFactory.h"
+#include "action/ScriptInterpreterFactory.h"
 #include "NotificationObserverForRulesManager.h"
 #include <shared/exception/EmptyResult.hpp>
 
@@ -14,7 +15,8 @@ CRuleManager::CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequest
    :m_pluginGateway(pluginGateway),
    m_dbRequester(dbRequester),
    m_conditionFactory(new condition::CConditionFactory(dbAcquisitionRequester)),
-   m_notificationCenter(notificationCenter)
+   m_notificationCenter(notificationCenter),
+   m_scriptInterpreterFactory(new action::CScriptInterpreterFactory())
 {        
 }
 
@@ -53,7 +55,7 @@ void CRuleManager::startRule(int ruleId)
       if (!ruleData->Enable)
          return;  // Rule not enabled, dont start
 
-      boost::shared_ptr<IRule> newRule(new CRule(*ruleData, m_notificationObserver, m_pluginGateway, *m_conditionFactory));
+      boost::shared_ptr<IRule> newRule(new CRule(*ruleData, m_notificationObserver, m_pluginGateway, *m_conditionFactory, m_scriptInterpreterFactory));
       m_startedRules[ruleId] = newRule;
       newRule->start();
    }

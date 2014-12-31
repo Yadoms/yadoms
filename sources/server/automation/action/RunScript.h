@@ -1,6 +1,7 @@
 #pragma once
 #include "IAction.h"
 #include <server/communication/ISendMessageAsync.h>
+#include "IScriptInterpreterFactory.h"
 
 namespace automation { namespace action
 {
@@ -13,8 +14,9 @@ namespace automation { namespace action
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] configuration Action configuration
+      ///\param[in] scriptInterpreterFactory The script interpreter factory
       //-----------------------------------------------------
-      CRunScript(const shared::CDataContainer& configuration);
+      CRunScript(const shared::CDataContainer& configuration, boost::shared_ptr<IScriptInterpreterFactory> scriptInterpreterFactory);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -28,9 +30,19 @@ namespace automation { namespace action
 
    private:
       //-----------------------------------------------------
+      ///\brief               The script interpreter factory
+      //-----------------------------------------------------
+     boost::shared_ptr<IScriptInterpreterFactory> m_scriptInterpreterFactory;
+
+      //-----------------------------------------------------
       ///\brief               The script path
       //-----------------------------------------------------
       const std::string m_scriptPath;
+
+      //-----------------------------------------------------
+      ///\brief               The script configuration
+      //-----------------------------------------------------
+      const shared::CDataContainer m_scriptConfiguration;
    };
 	
 } } // namespace automation::action
