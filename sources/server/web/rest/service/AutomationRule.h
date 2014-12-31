@@ -27,7 +27,8 @@ namespace web { namespace rest { namespace service {
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;
       boost::shared_ptr<automation::IRuleManager> m_rulesManager;
-      std::string m_restKeyword;
+      static const std::string m_restKeyword;
+      static const std::string m_restSubKeyword;
    };
 
 
