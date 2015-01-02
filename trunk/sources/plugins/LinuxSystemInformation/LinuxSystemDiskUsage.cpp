@@ -63,18 +63,16 @@ void CLinuxSystemDiskUsage::read()
       {
          boost::regex reg("([^\\s]+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)");
          boost::smatch match;
-         std::string dname;
          long long numblock, availblocks; 
 
          if ( boost::regex_search( *iteratorCommandDF, match, reg ) )
          {
-             dname       = boost::lexical_cast<std::string>(match[1]);
              numblock    = boost::lexical_cast<long long>(match[2]);
              availblocks = boost::lexical_cast<long long>(match[4]);
+			 
+             m_keyword.set ((numblock - availblocks)/double(numblock)*100);
+             YADOMS_LOG(debug) << "Disk Name :  " << m_driveName << " Disk Usage : " << m_keyword.formatValue();			 
          }
- 
-         m_keyword.set ((numblock - availblocks)/double(numblock)*100);
-         YADOMS_LOG(debug) << "Disk Name :  " << m_driveName << " Disk Usage : " << m_keyword.formatValue();
        }
    }
 }
