@@ -11,10 +11,9 @@
 #include "Keywords/WeatherIcon.h"
 #include "Keywords/Wind.h"
 
-CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration)
-{
-    m_Localisation = WUConfiguration.getLocalisation();
-	
+CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration):
+           m_Localisation ( WUConfiguration.getLocalisation() )
+{	
 	m_URL.clear();
 
 	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/conditions/q/" << m_Localisation << ".json";

@@ -48,7 +48,7 @@ private:
    //--------------------------------------------------------------
    yApi::historization::CLoad m_keyword;
 
-   //FIXME : Ecriture à modifier ??
+   //TODO : Ecriture à modifier ??
    std::vector<std::string> ExecuteCommandAndReturn(const std::string &szCommand);
 };
 
