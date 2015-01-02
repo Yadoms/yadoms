@@ -128,7 +128,7 @@ void CRaspBerryPiSystemInformation::doWork(boost::shared_ptr<yApi::IYPluginApi> 
    // as a plugin failure.
    catch (boost::thread_interrupted&)
    {
-      YADOMS_LOG(info) << "RaspBerryPiSystemInformation is stopping..."  << std::endl;
+      YADOMS_LOG(information) << "RaspBerryPiSystemInformation is stopping..."  << std::endl;
    }
 }
 

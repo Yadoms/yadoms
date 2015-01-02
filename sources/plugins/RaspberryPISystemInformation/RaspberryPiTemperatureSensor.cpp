@@ -2,7 +2,7 @@
 #include "RaspberryPiTemperatureSensor.h"
 #include <shared/Log.h>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
-
+#include <fstream>
 
 CRaspberryPiTemperatureSensor::CRaspberryPiTemperatureSensor(const std::string & deviceId)
    :m_device(deviceId), m_keyword("Temp")
