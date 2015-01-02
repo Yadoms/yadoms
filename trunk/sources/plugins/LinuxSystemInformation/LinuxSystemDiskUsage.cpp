@@ -4,6 +4,8 @@
 #include <shared/exception/Exception.hpp>
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/StandardUnits.h>
+#include <boost/regex.hpp> 
+#include <boost/lexical_cast.hpp>
 
 CLinuxSystemDiskUsage::CLinuxSystemDiskUsage(const std::string & device, const std::string & driveName, const std::string & keywordName)
    :m_device(device), m_driveName(driveName), m_keyword(keywordName)
@@ -57,21 +59,22 @@ void CLinuxSystemDiskUsage::read()
 
    for (iteratorCommandDF=_rlines.begin(); iteratorCommandDF!=_rlines.end(); ++iteratorCommandDF)
    {
-      char dname[200];
-      char suse[30];
-      char smountpoint[300];
-      long numblock, usedblocks, availblocks;
-      int ret=sscanf((*iteratorCommandDF).c_str(), "%s\t%ld\t%ld\t%ld\t%s\t%s\n", dname, &numblock, &usedblocks, &availblocks, suse, smountpoint);
-      if (ret==6) // TODO : Comprendre pourquoi 6
+      if (strstr((*iteratorCommandDF).c_str(),m_driveName.c_str())!=NULL)
       {
-         if (strstr(dname,m_driveName.c_str())!=NULL)
+         boost::regex reg("([^\\s]+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)");
+         boost::smatch match;
+         std::string dname;
+         long long numblock, availblocks; 
+
+         if ( boost::regex_search( *iteratorCommandDF, match, reg ) )
          {
-            //YADOMS_LOG(debug) << "usedblocks :" << usedblocks;
-            //YADOMS_LOG(debug) << "numblock   :" << numblock;
-            m_keyword.set (usedblocks/double(numblock)*100);
-            //YADOMS_LOG(debug) << "diskUsage  :" << m_keyword.formatValue();
-			YADOMS_LOG(debug) << "LinuxSystemDiskUsage plugin :  " << m_driveName << " Disk Usage : " << m_keyword.formatValue();
+             dname       = boost::lexical_cast<std::string>(match[1]);
+             numblock    = boost::lexical_cast<long long>(match[2]);
+             availblocks = boost::lexical_cast<long long>(match[4]);
          }
-      }
+ 
+         m_keyword.set ((numblock - availblocks)/double(numblock)*100);
+         YADOMS_LOG(debug) << "Disk Name :  " << m_driveName << " Disk Usage : " << m_keyword.formatValue();
+       }
    }
 }

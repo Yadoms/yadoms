@@ -5,7 +5,6 @@
 #include <shared/plugin/yPluginApi/StandardUnits.h>
 
 #include "sys/types.h"
-//TODO : Temp
 #include <shared/Log.h>
 
 // Shortcut to yPluginApi namespace

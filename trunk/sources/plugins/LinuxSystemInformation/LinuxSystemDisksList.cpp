@@ -2,7 +2,8 @@
 #include "LinuxSystemDisksList.h"
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
-
+#include <boost/regex.hpp> 
+#include <boost/lexical_cast.hpp>
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
@@ -14,18 +15,18 @@ CLinuxSystemDisksList::CLinuxSystemDisksList(void)
 
    for (iteratorCommandDF=_rlines.begin(); iteratorCommandDF!=_rlines.end(); ++iteratorCommandDF)
    {
-      char dname[200];
-      char suse[30];
-      char smountpoint[300];
-      long numblock, usedblocks, availblocks;
-      int ret=sscanf((*iteratorCommandDF).c_str(), "%s\t%ld\t%ld\t%ld\t%s\t%s\n", dname, &numblock, &usedblocks, &availblocks, suse, smountpoint);
-      if (ret==6) // TODO : Comprendre pourquoi 6
+      boost::regex reg("(.(dev)[^\\s]+)");
+      std::string dname;
+      boost::smatch match;
+
+      if ( boost::regex_search( *iteratorCommandDF, match, reg ) )
       {
-         if (strstr(dname,"/dev")!=NULL)
-         {
-            DrivesList.push_back( dname );
-            YADOMS_LOG(debug) << "found:" << dname;
-         }
+        dname       = boost::lexical_cast<std::string>(match[1]);
+      }
+      if (!dname.empty())
+      {
+         DrivesList.push_back( dname.c_str() );
+         YADOMS_LOG(debug) << "found:" << dname;
       }
    }
 }
