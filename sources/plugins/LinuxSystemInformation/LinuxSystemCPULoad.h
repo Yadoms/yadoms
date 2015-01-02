@@ -51,7 +51,10 @@ private:
    //--------------------------------------------------------------
    /// \brief	    Temp variables
    //--------------------------------------------------------------
-   unsigned long long lastTotalUser, lastTotalUserLow, lastTotalSys, lastTotalIdle;
+   unsigned long long m_lastTotalUser; 
+   unsigned long long m_lastTotalUserLow; 
+   unsigned long long m_lastTotalSys; 
+   unsigned long long m_lastTotalIdle;
 
    //--------------------------------------------------------------
    /// \brief	    Keyword
