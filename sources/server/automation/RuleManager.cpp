@@ -6,6 +6,7 @@
 #include "action/ScriptInterpreterFactory.h"
 #include "NotificationObserverForRulesManager.h"
 #include <shared/exception/EmptyResult.hpp>
+#include "RuleException.hpp"
 
 namespace automation
 {
@@ -61,15 +62,21 @@ void CRuleManager::startRule(int ruleId)
    }
    catch(shared::exception::CEmptyResult& e)
    {
-      YADOMS_LOG(error) << "Invalid rule \"" << ruleId << "\" condition configuration, element not found in database : " << e.what();
+      std::string msg((boost::format("Invalid rule %1%, element not found in database : %2%") % ruleId % e.what()).str());
+      YADOMS_LOG(error) << msg;
+      throw CRuleException(msg);
    }
    catch(shared::exception::CInvalidParameter& e)
    {
-      YADOMS_LOG(error) << "Invalid rule \"" << ruleId << "\" condition configuration, invalid parameter : " << e.what();
+      std::string msg((boost::format("Invalid rule %1% configuration, invalid parameter : %2%") % ruleId % e.what()).str());
+      YADOMS_LOG(error) << msg;
+      throw CRuleException(msg);
    }
    catch(shared::exception::COutOfRange& e)
    {
-      YADOMS_LOG(error) << "Invalid rule \"" << ruleId << "\" condition configuration, out of range : " << e.what();
+      std::string msg((boost::format("Invalid rule %1% configuration, out of range : %2%") % ruleId % e.what()).str());
+      YADOMS_LOG(error) << msg;
+      throw CRuleException(msg);
    }
 }
 
@@ -95,7 +102,7 @@ int CRuleManager::createRule(const database::entities::CRule& data)
    return ruleId;   
 }
 
-boost::shared_ptr<const database::entities::CRule> CRuleManager::getRule(int id) const
+boost::shared_ptr<database::entities::CRule> CRuleManager::getRule(int id) const
 {
    return m_dbRequester->getRule(id);
 }

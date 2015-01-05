@@ -43,11 +43,10 @@ namespace automation
       /// \return          The rule informations, if available (empty string if not)
       /// \throw           CEmptyResult if fails
       //--------------------------------------------------------------
-      virtual boost::shared_ptr<const database::entities::CRule> getRule(int id) const = 0;
+      virtual boost::shared_ptr<database::entities::CRule> getRule(int id) const = 0;
       
       //--------------------------------------------------------------
       /// \brief           Update rule informations
-      /// \param[in] id    Rule Id
       /// \param[in] newData The rule new configuration
       /// \throw           CNotSupported if request to apply unsupported modifications
       /// \throw           CDatabaseException if fails

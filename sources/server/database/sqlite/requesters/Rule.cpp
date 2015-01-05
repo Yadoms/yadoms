@@ -75,8 +75,10 @@ namespace database { namespace sqlite { namespace requesters {
 
       adapters::CSingleValueAdapter<int> adapter;
       m_databaseRequester->queryEntities<int>(&adapter, qSelect);
-      if(adapter.getResults().size() != 1)
-         throw shared::exception::CEmptyResult("Cannot retrieve inserted Plugin");
+      if (adapter.getResults().size() >= 1)
+         return adapter.getResults()[0];
+
+      throw shared::exception::CEmptyResult("Cannot retrieve inserted Plugin");
       
       return adapter.getResults()[0];
    }
