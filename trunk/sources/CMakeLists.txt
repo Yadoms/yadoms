@@ -275,6 +275,7 @@ set(YADOMS_SRC
 	server/automation/NotificationObserverForRulesManager.cpp
 	server/automation/Rule.h
 	server/automation/Rule.cpp
+	server/automation/RuleException.hpp
 	server/automation/RuleManager.h
 	server/automation/RuleManager.cpp
 	server/automation/RuleThread.h
