@@ -389,7 +389,6 @@ BOOST_AUTO_TEST_CASE(TimerAfterTimeOut)
    shared::event::CEventHandler evtHandler;
    const boost::posix_time::time_duration period = boost::posix_time::seconds(2);
    const int evtId1 = 1;
-   boost::posix_time::ptime TimePoint       = boost::date_time::not_a_date_time; 
 
    evtHandler.createTimer(evtId1, shared::event::CEventTimer::kOneShot, period);
 
