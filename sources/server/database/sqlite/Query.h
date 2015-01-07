@@ -499,6 +499,32 @@ namespace database { namespace sqlite {
       CQuery & UnionAll();
 
       //
+      /// \brief                    append "LEFT JOIN"
+      /// \param  tableName         the table
+      /// \param  tableIdentifier   the table identifier (ex: "A" -> LEFT JOIN myTable A )
+      /// \return             A reference to itself to allow method chaining
+      //   
+      CQuery & JoinLeft(const std::string & tableName, const std::string & tableIdentifier = EMPTY_STR);
+
+      //
+      /// \brief              append "ON tableIdentifier.columnName = table2Identifier.column2Name"
+      /// \param              tableIdentifier    the table identifier
+      /// \param              columnName         the column name
+      /// \param              table2Identifier   the table identifier
+      /// \param              column2Name        the column name
+      /// \return             A reference to itself to allow method chaining
+      //   
+      CQuery & On(const std::string & tableIdentifier, const std::string & columnName, const std::string & table2Identifier, const std::string & column2Name);
+
+      //
+      /// \brief              append "ON columnName = column2Name"
+      /// \param              columnName         the column name
+      /// \param              column2Name        the column name
+      /// \return             A reference to itself to allow method chaining
+      //   
+      CQuery & On(const std::string & columnName, const std::string & column2Name);
+
+      //
       /// \brief    get the full query
       /// \return   the full query
       //     

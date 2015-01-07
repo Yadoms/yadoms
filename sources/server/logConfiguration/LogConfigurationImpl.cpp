@@ -43,6 +43,8 @@ namespace logConfiguration
          Poco::Logger::get(*i).setChannel(m_splitterChannel);
          Poco::Logger::get(*i).setLevel(logLevel);
       }
+      loggerNames.clear();
+
       //configure root logger
       Poco::Logger::root().setChannel(m_splitterChannel);
       Poco::Logger::root().setLevel(logLevel);

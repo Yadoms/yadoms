@@ -5,6 +5,8 @@
 #include "ISQLiteResultAdapter.h"
 #include "database/sqlite/SQLiteDatabaseTables.h"
 
+//include specific adapters
+#include "RecipientFieldsAdapter.h"
 
 namespace database { 
 namespace sqlite { 

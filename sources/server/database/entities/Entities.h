@@ -166,7 +166,7 @@ namespace database { namespace entities {
 	   ((Id)(int))
 		((FirstName)(std::string))
 		((LastName)(std::string))
-		((RecipientFields)(std::vector<database::entities::CField>))
+		((RecipientFields)(std::vector< boost::shared_ptr<database::entities::CField> >))
 	)
 
 

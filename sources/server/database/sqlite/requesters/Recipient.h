@@ -28,13 +28,30 @@ namespace database { namespace sqlite {
          virtual ~CRecipient();
 
          // IRecipientRequester implementation
-         virtual int addRecipient(const entities::CRecipient & recipient);
+         virtual boost::shared_ptr<entities::CRecipient> addRecipient(const entities::CRecipient & recipient);
+         virtual boost::shared_ptr<entities::CRecipient> updateRecipient(const entities::CRecipient & recipient);
          virtual std::vector<boost::shared_ptr<entities::CRecipient> > getRecipients();
+         virtual boost::shared_ptr<entities::CRecipient> getRecipient(const int recipientId);
+         virtual boost::shared_ptr<entities::CRecipient> getRecipient(const std::string & firstName, const std::string & lastName);
+         virtual bool exists(const std::string & firstName, const std::string & lastName);
          virtual void removeRecipient(int recipientId);
          virtual void removeAllRecipients();
          // [END] IRecipientRequester implementation
 
       private:
+         //--------------------------------------------------------------
+         /// \Brief		   Read the recipient fields
+         /// \param [in]	recipientToComplete: the recipient entity to complete
+         //--------------------------------------------------------------
+         void ReadRecipientFields(boost::shared_ptr<database::entities::CRecipient> & recipientToComplete);
+
+         //--------------------------------------------------------------
+         /// \Brief		   Write the recipient fields
+         /// \param [in]	recipientId: the recipient id
+         /// \param [in]	fields: the recipient fields
+         //--------------------------------------------------------------
+         void WriteRecipientFields(const int recipientId, const std::vector< boost::shared_ptr<database::entities::CField> > & fields);
+
          //--------------------------------------------------------------
          /// \Brief		   Reference to SQLiteRequester
          //--------------------------------------------------------------

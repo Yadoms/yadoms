@@ -408,6 +408,32 @@ namespace database {
 		}
 
 
+      CQuery & CQuery::JoinLeft(const std::string & tableName, const std::string & tableIdentifier)
+      {
+         std::ostringstream ss;
+         ss << " LEFT JOIN " << tableName << " " << tableIdentifier << " ";
+         return Append(ss);
+      }
+
+      CQuery & CQuery::On(const std::string & tableIdentifier, const std::string & columnName, const std::string & table2Identifier, const std::string & column2Name)
+      {
+         std::ostringstream ss;
+         ss << " ON " << tableIdentifier << "." << columnName << " = " << table2Identifier << "." << column2Name << " ";
+         return Append(ss);
+      }
+
+
+      CQuery & CQuery::On(const std::string & columnName, const std::string & column2Name)
+      {
+         std::ostringstream ss;
+         ss << " ON " << columnName << " = " << column2Name << " ";
+         return Append(ss);
+      }
+
+
+
+
+
       const std::string & CQuery::str() const
       {
          return m_currentQuery;
