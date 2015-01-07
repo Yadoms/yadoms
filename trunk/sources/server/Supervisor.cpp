@@ -17,6 +17,7 @@
 #include "web/rest/service/EventLogger.h"
 #include "web/rest/service/System.h"
 #include "web/rest/service/Task.h"
+#include "web/rest/service/Recipient.h"
 #include <shared/ThreadBase.h>
 #include <shared/Peripherals.h>
 #include "tools/web/FileDownloader.h"
@@ -102,6 +103,7 @@ void CSupervisor::doWork()
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAcquisition(pDataProvider)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CAutomationRule(pDataProvider, automationRulesManager)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CTask(taskManager)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CRecipient(pDataProvider)));
 
       webServer.start();
 

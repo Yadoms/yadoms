@@ -48,12 +48,31 @@ namespace shared {
       T const& operator () () const { return m_value; }  
 
       //-----------------------------
+      ///\brief Operator () to template type. 
+      ///\return it returns the field value in its real type
+      ///\example : CField<int> data(12, true);
+      ///           int b = data();
+      //-----------------------------
+      T & operator () () { return m_value; }  
+
+      //-----------------------------
       ///\brief Implicit cast operator 
       ///\return it returns the field value in its real type
       ///\example : CField<int> data(12, true);
       ///           int b = data;
       //-----------------------------
       operator T() const
+      {
+          return m_value;
+      }     
+      
+      //-----------------------------
+      ///\brief Implicit cast operator 
+      ///\return it returns the field value in its real type
+      ///\example : CField<int> data(12, true);
+      ///           int b = data;
+      //-----------------------------
+      operator T()
       {
           return m_value;
       }

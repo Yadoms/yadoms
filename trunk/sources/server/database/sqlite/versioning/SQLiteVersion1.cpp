@@ -158,6 +158,14 @@
                      Values("System", "System", true, database::entities::EPluginCategory::kSystem);
                   pRequester->queryStatement(qInsert);
 
+                  //recipient fields
+                  qInsert.Clear().InsertInto(CFieldTable::getTableName(), CFieldTable::getNameColumnName(), CFieldTable::getCategoryColumnName(), CFieldTable::getVerificationRegexColumnName()).
+                     Values("email", "", "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$");
+                  pRequester->queryStatement(qInsert);
+                  qInsert.Clear().InsertInto(CFieldTable::getTableName(), CFieldTable::getNameColumnName(), CFieldTable::getCategoryColumnName(), CFieldTable::getVerificationRegexColumnName()).
+                     Values("mobile", "", "");
+                  pRequester->queryStatement(qInsert);
+
                   //commit transaction
                   pRequester->transactionCommit();
                }

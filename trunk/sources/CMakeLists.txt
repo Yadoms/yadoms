@@ -347,6 +347,8 @@ set(YADOMS_SRC
 	server/web/rest/service/Plugin.cpp
 	server/web/rest/service/PluginEventLogger.h
 	server/web/rest/service/PluginEventLogger.cpp
+	server/web/rest/service/Recipient.h
+	server/web/rest/service/Recipient.cpp
 	server/web/rest/service/Task.h
 	server/web/rest/service/Task.cpp
 	server/web/rest/service/Widget.h
@@ -577,7 +579,9 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/adapters/SingleValueAdapter.hpp
 		server/database/sqlite/adapters/HighchartValueAdapter.hpp
 		server/database/sqlite/adapters/MultipleValueAdapter.hpp
-		
+		server/database/sqlite/adapters/RecipientFieldsAdapter.h
+		server/database/sqlite/adapters/RecipientFieldsAdapter.cpp		
+      
 		server/database/sqlite/versioning/ISQLiteVersionUpgrade.h
 		server/database/sqlite/versioning/SQLiteVersion1.h
 		server/database/sqlite/versioning/SQLiteVersion1.cpp
