@@ -3,7 +3,7 @@
 #include <shared/shared/DataContainer.h>
 #include <server/communication/ISendMessageAsync.h>
 #include "action/IAction.h"
-#include "action/IScriptInterpreterFactory.h"
+#include "action/IScriptRunnerFactory.h"
 
 namespace automation
 {
@@ -17,10 +17,10 @@ namespace automation
       ///\brief               Constructor
       ///\param[in] configuration Actions configuration
       ///\param[in] pluginGateway Plugin gateway
-      ///\param[in] scriptInterpreterFactory The script interpreter factory
+      ///\param[in] scriptRunnerFactory The script runner factory
       //-----------------------------------------------------
       CActionList(const shared::CDataContainer& configuration, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-         boost::shared_ptr<action::IScriptInterpreterFactory> scriptInterpreterFactory);
+         boost::shared_ptr<action::IScriptRunnerFactory> scriptRunnerFactory);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -36,10 +36,10 @@ namespace automation
       ///\brief               Create an action
       ///\param[in] configuration Action configuration
       ///\param[in] pluginGateway Plugin gateway
-      ///\param[in] scriptInterpreterFactory The script interpreter factory
+      ///\param[in] scriptRunnerFactory The script runner factory
       //-----------------------------------------------------
       void createAction(const shared::CDataContainer& configuration, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-         boost::shared_ptr<action::IScriptInterpreterFactory> scriptInterpreterFactory);
+         boost::shared_ptr<action::IScriptRunnerFactory> scriptRunnerFactory);
 
    private:
       //-----------------------------------------------------

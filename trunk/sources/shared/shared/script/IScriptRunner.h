@@ -1,24 +1,24 @@
 #pragma once
-#include "IYScriptApi.h"
+#include "yScriptApi/IYScriptApi.h"
 
-namespace automation { namespace action
+namespace shared { namespace script
 {
    //-----------------------------------------------------
-   ///\brief The script interpreter interface
+   ///\brief The script runner interface
    //-----------------------------------------------------
-   class IScriptInterpreter
+   class IScriptRunner
    {
    public:
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~IScriptInterpreter() {}
+      virtual ~IScriptRunner() {}
 
       //-----------------------------------------------------
       ///\brief               Run the script (blocks while script is running)
       ///\param[in] context   IYScriptApi context, use by the script to interact with Yadoms
       //-----------------------------------------------------
-      virtual void run(IYScriptApi& context) const = 0;
+      virtual void run(yScriptApi::IYScriptApi& context) const = 0;
 
       //-----------------------------------------------------
       ///\brief               Stop a runnning script
@@ -38,6 +38,6 @@ namespace automation { namespace action
       virtual std::string error() const = 0;
    };
 	
-} } // namespace automation::action	
+} } // namespace shared::script
 	
 	

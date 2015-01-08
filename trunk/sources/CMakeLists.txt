@@ -284,17 +284,13 @@ set(YADOMS_SRC
 	server/automation/action/DriveDevice.h
 	server/automation/action/DriveDevice.cpp
 	server/automation/action/IAction.h
-	server/automation/action/IScriptInterpreter.h
-	server/automation/action/IScriptInterpreterFactory.h
+	server/automation/action/IScriptRunnerFactory.h
 	server/automation/action/IYScriptApi.h
-	server/automation/action/PyhtonInterpreter.h
-	server/automation/action/PyhtonInterpreter.cpp
 	server/automation/action/RunScript.h
 	server/automation/action/RunScript.cpp
-	server/automation/action/ScriptInterpreterFactory.h
-	server/automation/action/ScriptInterpreterFactory.cpp
-	server/automation/action/ScriptInterpreterType.h
-	server/automation/action/ScriptInterpreterType.cpp
+   server/automation/action/ScriptInterpreterNotFound.hpp
+	server/automation/action/ScriptRunnerFactory.h
+	server/automation/action/ScriptRunnerFactory.cpp
 	server/automation/action/Wait.h
 	server/automation/action/Wait.cpp
 
@@ -653,6 +649,14 @@ ENDIF()
 
 #include Plugins CMake file
 add_subdirectory(plugins)
+
+
+##################################################################################################
+## Script interpreters
+##################################################################################################
+
+#include Script interpreters CMake file
+add_subdirectory(scriptInterpreters)
 
 
 ##################################################################################################
