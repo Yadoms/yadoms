@@ -13,6 +13,11 @@ namespace web { namespace poco {
 
       }
 
+      CWebsiteRequestHandler::~CWebsiteRequestHandler()
+      {
+
+      }
+
       void CWebsiteRequestHandler::configureAlias(const std::string & alias, const std::string & documentsPath)
       {
          std::string realAlias = alias;

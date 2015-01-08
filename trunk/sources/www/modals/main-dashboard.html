@@ -22,6 +22,7 @@
                            <li id="btn-dashboard-addons" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.addons.title"></a></li>
                            <li id="btn-dashboard-devices" class=""><a href="#"><span class="fa fa-tasks"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.devices.title"></span></a></li>
                            <li id="btn-dashboard-automatisation" class=""><a href="#"><span class="fa fa-code-fork"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.title"></span></a></li>
+                           <li id="btn-dashboard-recipients" class=""><a href="#"><span class="fa fa-envelope"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.recipients.title"></span></a></li>
                            <li id="btn-dashboard-update" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.update.title"></a></li>
                            <li id="btn-dashboard-about" class=""><a href="#" data-i18n="modals.dashboard.sub-windows.about.title"></a></li>
                         </ul>
@@ -136,6 +137,12 @@
    $("#btn-dashboard-automatisation").click(function() {
       clearInterval(periodicDashboardTask);
       asyncLoad("modals/dashboard/automation-center.html", function() { initializeAutomationCenterDashboard(); });
+      setBtnActive(this.id);
+   });
+
+   $("#btn-dashboard-recipients").click(function() {
+      clearInterval(periodicDashboardTask);
+      asyncLoad("modals/dashboard/recipients.html", function() { initializeRecipientsDashboard(); });
       setBtnActive(this.id);
    });
 
