@@ -61,7 +61,7 @@ namespace web { namespace poco {
    void CWebServer::stop()
    {
       if(m_embeddedWebServer.get())
-         m_embeddedWebServer->stop();
+         m_embeddedWebServer->stopAll(true);
    }
 
    IWebServerConfigurator* CWebServer::getConfigurator()
