@@ -380,7 +380,7 @@ BOOST_AUTO_TEST_CASE(Unknow_Log_l_Error1)
 {
    const char *argv[] = {"./TestLoader","-l","toto"};
 
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderException);
+   BOOST_CHECK_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderException);
 }
 
 //--------------------------------------------------------------
