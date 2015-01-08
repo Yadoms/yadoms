@@ -1,5 +1,6 @@
 #pragma once
 
+#include <shared/Export.h>
 #include "IPlugin.h"
 
 

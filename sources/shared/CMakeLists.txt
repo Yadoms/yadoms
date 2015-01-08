@@ -88,6 +88,7 @@ set(SHARED_LIB_SRC
 	shared/plugin/yPluginApi/IBindingQueryData.h
 	shared/plugin/yPluginApi/IBindingQueryRequest.h
 	shared/plugin/yPluginApi/IManuallyDeviceCreationTestData.h
+	shared/plugin/yPluginApi/IYPluginApi.h
 	shared/plugin/yPluginApi/KeywordAccessMode.h
 	shared/plugin/yPluginApi/KeywordAccessMode.cpp
 	shared/plugin/yPluginApi/KeywordDataType.h
@@ -98,7 +99,6 @@ set(SHARED_LIB_SRC
 	shared/plugin/yPluginApi/StandardDeclarations.cpp
 	shared/plugin/yPluginApi/StandardCapacity.h
 	shared/plugin/yPluginApi/StandardCapacity.cpp
-	shared/plugin/yPluginApi/IYPluginApi.h
 
    shared/plugin/yPluginApi/historization/IHistorizable.h
    shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp
@@ -173,7 +173,14 @@ set(SHARED_LIB_SRC
 
 	shared/serialization/IDataSerializable.h
 	shared/serialization/IDataFileSerializable.h
-   
+
+   shared/script/ImplementationHelper.h
+	shared/script/IScriptInterpreter.h
+	shared/script/IScriptRunner.h
+
+   shared/script/yScriptApi/commonIncludes.h
+ 	shared/script/yScriptApi/IYScriptApi.h
+
 	shared/tools/Random.h
 	shared/tools/Random.cpp
 )

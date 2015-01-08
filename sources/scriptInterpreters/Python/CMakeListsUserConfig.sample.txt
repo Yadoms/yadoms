@@ -1,0 +1,17 @@
+# This file contains user specific configuration
+# It may contains some directory definitions
+
+#find Python method selection for linux
+#set USE_PKGCONFIG will use PkgConfig tool to find installed Python in the system
+#if you want to use your own version of Python, set USE_PKGCONFIG to OFF and
+#define the PYTHON_ROOT to indicate to cmake where is your Python version.
+set(USE_PKGCONFIG ON)
+
+#define Python ROOT
+##### use only absolute path , and do not use anti slash : only '/' ######
+# Windows (download Python from "https://www.python.org/downloads/windows/")
+#set(PYTHON_ROOT "/path/to/Python")
+
+# For Raspberry cross-compilation
+#set(PYTHON_ROOT "/path/to/Python/raspberrypi")
+

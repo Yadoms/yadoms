@@ -9,13 +9,13 @@ namespace automation
 {
 
 CActionList::CActionList(const shared::CDataContainer& configuration, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-   boost::shared_ptr<action::IScriptInterpreterFactory> scriptInterpreterFactory)
+   boost::shared_ptr<action::IScriptRunnerFactory> scriptRunnerFactory)
 {
    const std::vector<shared::CDataContainer>& configurationActions = configuration.get<std::vector<shared::CDataContainer> >("actions");
 
    // Build the actions list
    for (std::vector<shared::CDataContainer>::const_iterator it = configurationActions.begin(); it != configurationActions.end(); ++it)
-      createAction(*it, pluginGateway, scriptInterpreterFactory);
+      createAction(*it, pluginGateway, scriptRunnerFactory);
 }
 
 CActionList::~CActionList()
@@ -23,7 +23,7 @@ CActionList::~CActionList()
 }
 
 void CActionList::createAction(const shared::CDataContainer& configuration, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-   boost::shared_ptr<action::IScriptInterpreterFactory> scriptInterpreterFactory)
+   boost::shared_ptr<action::IScriptRunnerFactory> scriptRunnerFactory)
 {
    boost::shared_ptr<action::IAction> action;
 
@@ -34,7 +34,7 @@ void CActionList::createAction(const shared::CDataContainer& configuration, boos
    }
    else if (type == "runScript")
    {
-      action.reset(new action::CRunScript(configuration, scriptInterpreterFactory));
+      action.reset(new action::CRunScript(configuration, scriptRunnerFactory));
    }
    else if (type == "wait")
    {

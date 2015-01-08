@@ -10,11 +10,11 @@ CRule::CRule(const database::entities::CRule& ruleData,
    boost::shared_ptr<INotificationObserverForRulesManager> notificationObserver,
    boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
    condition::IConditionFactory& conditionFactory,
-   boost::shared_ptr<action::IScriptInterpreterFactory> scriptInterpreterFactory)
+   boost::shared_ptr<action::IScriptRunnerFactory> scriptRunnerFactory)
    :m_name(ruleData.Name()),
    m_id(ruleData.Id()),
    m_condition(new condition::CConditionRoot(ruleData.Triggers(), conditionFactory)),
-   m_actions(new CActionList(ruleData.Actions(), pluginGateway, scriptInterpreterFactory)),
+   m_actions(new CActionList(ruleData.Actions(), pluginGateway, scriptRunnerFactory)),
    m_notificationObserver(notificationObserver)
 {
    m_condition->registerToNotificationCenter(m_notificationObserver);
