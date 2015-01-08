@@ -18,6 +18,11 @@ namespace web { namespace poco {
       CWebsiteRequestHandler(const std::string & documentRoot);
 
       //-------------------------------------
+      ///\brief Destructor
+      //-------------------------------------
+      virtual ~CWebsiteRequestHandler();
+
+      //-------------------------------------
       ///\brief Configure an alias
       ///\param [in]    alias             The alias name used in url 
       ///\param [in]    documentsPath     The path of files for this alias
