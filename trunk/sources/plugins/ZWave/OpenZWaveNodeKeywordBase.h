@@ -1,8 +1,8 @@
 #pragma once
 
 #include "IOpenZWaveNodeKeyword.h"
-#include "Value.h"
-#include "Manager.h"
+#include <Value.h>
+#include <Manager.h>
 #include <shared/exception/OutOfRange.hpp>
 
 //--------------------------------------------------------------

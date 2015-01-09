@@ -1,8 +1,8 @@
 #pragma once
 
 #include "ILoad.h"
-#include "sys/times.h"
-#include "sys/vtimes.h"
+#include <sys/times.h>
+#include <sys/vtimes.h>
 
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;

@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "OpenZWaveNodeCapacity.h"
 #include <shared/Log.h>
-#include "FatalErrorException.h"
+#include <FatalErrorException.h>
 #include "ZWave.h"
 #include "OpenZWaveCommandClass.h"
-#include "CommandClasses.h"
+#include <CommandClasses.h>
 #include "OpenZWaveNodeKeywordFactory.h"
 
 COpenZWaveNodeCapacity::COpenZWaveNodeCapacity(const uint32 homeId, const uint8 nodeId, const ECommandClass & classIdentifier)

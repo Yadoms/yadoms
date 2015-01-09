@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include "OpenZWaveController.h"
 #include <shared/Log.h>
-#include "FatalErrorException.h"
+#include <FatalErrorException.h>
 #include "ZWave.h"
 #include "OpenZWaveCommandClass.h"
 #include <shared/plugin/yPluginApi/StandardCapacities.h>
 #include <shared/plugin/yPluginApi/historization/Dimmable.h>
-#include "command_classes/SwitchBinary.h"
-#include "Options.h"
-#include "Manager.h"
-#include "Notification.h"
-#include "Log.h"
+#include <command_classes/SwitchBinary.h>
+#include <Options.h>
+#include <Manager.h>
+#include <Notification.h>
+#include <Log.h>
 #include "KeywordContainer.h"
 
 COpenZWaveController::COpenZWaveController()
