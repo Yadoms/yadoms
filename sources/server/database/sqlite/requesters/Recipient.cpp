@@ -143,9 +143,9 @@ namespace database {  namespace sqlite { namespace requesters {
       //read all recipients
       std::vector<boost::shared_ptr<database::entities::CRecipient> > recipients = adapter.getResults();
 
-      if (adapter.getResults().size() >= 1)
+      if (recipients.size() >= 1)
       {
-         boost::shared_ptr<database::entities::CRecipient> result = adapter.getResults()[0];
+         boost::shared_ptr<database::entities::CRecipient> result = recipients[0];
          ReadRecipientFields(result);
          return result;
       }
@@ -171,9 +171,9 @@ namespace database {  namespace sqlite { namespace requesters {
       //read all recipients
       std::vector<boost::shared_ptr<database::entities::CRecipient> > recipients = adapter.getResults();
 
-      if (adapter.getResults().size() >= 1)
+      if (recipients.size() >= 1)
       {
-         boost::shared_ptr<database::entities::CRecipient> result = adapter.getResults()[0];
+         boost::shared_ptr<database::entities::CRecipient> result = recipients[0];
          ReadRecipientFields(result);
          return result;
       }
