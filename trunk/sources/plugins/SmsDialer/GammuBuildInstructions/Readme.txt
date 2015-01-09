@@ -1,8 +1,7 @@
 This plugin use the Gammu library (http://wammu.eu/).
-As far as the v1.34 is not delivered, we have to use development version.
-see here : http://wammu.eu/contribute/code/ (we just need Gammu sources)
+At least version 1.34 is required. Download it here as sources : http://fr.wammu.eu/download/gammu/source/
 
-Here are the instructions on how to get it.
+Here are the instructions on how to build it.
 
 CMake must be installed.
 
@@ -22,9 +21,9 @@ mc smsd-event.mc -r {Your_path_to_gammu}/smsd -h {Your_path_to_gammu}/smsd
 7 - After Gammu is built, don't forget to set it's path in smsDialer (in your CMakeListsUserConfig.txt file).
 
 ------------------------------------------------
-- Linux (Ubuntu) : don't install gammu package, build it from sources (because it needs patch)
+- Linux (Ubuntu) :
 
-1 - Download the Gammu library (see above)
+1 - Download the Gammu library (see above), and extract it
 2 - Go to gammu folder, create target dir :
    mkdir build
    cd build
@@ -37,10 +36,10 @@ mc smsd-event.mc -r {Your_path_to_gammu}/smsd -h {Your_path_to_gammu}/smsd
 ------------------------------------------------
 - RaspberryPi (cross-compilation on Ubuntu)
 
-1 - Download the Gammu library (see above)
+1 - Download the Gammu library (see above), and extract it
 2 - copy provided Toolchain-raspberryPi.cmake into {Your_path_to_gammu}/cmake
 3 - edit Toolchain-raspberryPi.cmake to update the PATH_TO_RASPBERRY_TOOLCHAIN variable
-4 - Fix the tool chain, edit {Your_path_to_raspberry_toolchain}/arm-bcm2708/arm-bcm2708-linux-gnueabi/arm-bcm2708-linux-gnueabi/sysroot/usr/lib/lobc.so to remove hard-coded paths :
+4 - Fix the tool chain : edit {Your_path_to_raspberry_toolchain}/arm-bcm2708/arm-bcm2708-linux-gnueabi/arm-bcm2708-linux-gnueabi/sysroot/usr/lib/libc.so to remove hard-coded paths :
    GROUP ( /lib/libc.so.6 /usr/lib/libc_nonshared.a  AS_NEEDED ( /lib/ld-linux.so.3 ) )
    ==>
    GROUP ( libc.so.6 libc_nonshared.a  AS_NEEDED ( ld-linux.so.3 ) )
