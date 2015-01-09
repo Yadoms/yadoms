@@ -24,12 +24,18 @@ namespace shared
       static const std::string ToFileName(const std::string& libName);
       static const std::string ToLibName(const std::string& fileName);
 
-   protected:
+   public:
       //--------------------------------------------------------------
-      /// \brief	Constructor
+      /// \brief	Default constructor (library is not loaded)
       //--------------------------------------------------------------
       CDynamicLibrary();
       
+      //--------------------------------------------------------------
+      /// \brief	Constructor (library is loaded)
+      /// \throw CInvalidParameter if fail to load library
+      //--------------------------------------------------------------
+      CDynamicLibrary(const std::string& libraryFile);
+
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
@@ -52,7 +58,7 @@ namespace shared
       //--------------------------------------------------------------
       /// \brief	    Free library file
       //-------------------------------------------------------------
-      void unload();
+      virtual void unload();
 
    private:
       //-------------------------------------------------------------

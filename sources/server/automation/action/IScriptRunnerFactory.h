@@ -21,7 +21,7 @@ namespace automation { namespace action
       ///\param[in] configuration Script configuration
       ///\return              The script runner instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::script::IScriptRunner> createScriptRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) const = 0;
+      virtual boost::shared_ptr<shared::script::IScriptRunner> createScriptRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) = 0;
    };
 	
 } } // namespace automation::action	

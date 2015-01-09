@@ -23,41 +23,47 @@ namespace shared
       static const std::string ToFileName(const std::string& libName);
       static const std::string ToLibName(const std::string& fileName);
 
-   protected:
-       //--------------------------------------------------------------
-       /// \brief	Constructor
-       //--------------------------------------------------------------
-       CDynamicLibrary();
+   public:
+      //--------------------------------------------------------------
+      /// \brief	Default constructor (library is not loaded)
+      //--------------------------------------------------------------
+      CDynamicLibrary();
 
-       //--------------------------------------------------------------
-       /// \brief	Destructor
-       //--------------------------------------------------------------
-       virtual ~CDynamicLibrary();
+      //--------------------------------------------------------------
+      /// \brief	Constructor (library is loaded)
+      /// \throw CInvalidParameter if fail to load library
+      //--------------------------------------------------------------
+      CDynamicLibrary(const std::string& libraryFile);
 
-       //--------------------------------------------------------------
-       /// \brief	    Get a function pointer
-       /// \param [in] funcName: the exported function to search
-       /// \return     a function pointer or NULL if file is not loaded or funtion is not found
-       //-------------------------------------------------------------
-       void * GetFunctionPointer(const std::string & funcName);
+      //--------------------------------------------------------------
+      /// \brief	Destructor
+      //--------------------------------------------------------------
+      virtual ~CDynamicLibrary();
 
-       //--------------------------------------------------------------
-       /// \brief	    Loads a library file
-       /// \param [in] libraryFile: the library file path
-       /// \return     true if loaded with success, else false
-       //-------------------------------------------------------------
-       virtual bool load(const std::string & libraryFile);
+      //--------------------------------------------------------------
+      /// \brief	    Get a function pointer
+      /// \param [in] funcName: the exported function to search
+      /// \return     a function pointer or NULL if file is not loaded or funtion is not found
+      //-------------------------------------------------------------
+      void * GetFunctionPointer(const std::string & funcName);
 
-       //--------------------------------------------------------------
-       /// \brief	    Free library file
-       //-------------------------------------------------------------
-       void unload();
-       
+      //--------------------------------------------------------------
+      /// \brief	    Loads a library file
+      /// \param [in] libraryFile: the library file path
+      /// \return     true if loaded with success, else false
+      //-------------------------------------------------------------
+      virtual bool load(const std::string & libraryFile);
+
+      //--------------------------------------------------------------
+      /// \brief	    Free library file
+      //-------------------------------------------------------------
+      virtual void unload();
+
    private:
-       //-------------------------------------------------------------
-       /// \brief	    The library handle
-       //-------------------------------------------------------------
-       void * m_libraryHandle;
+      //-------------------------------------------------------------
+      /// \brief	    The library handle
+      //-------------------------------------------------------------
+      void * m_libraryHandle;
    };
 
 } // namespace shared

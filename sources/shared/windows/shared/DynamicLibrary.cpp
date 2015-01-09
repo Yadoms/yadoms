@@ -4,6 +4,7 @@
 #include <boost/function.hpp>
 #include <boost/log/trivial.hpp>
 #include "../../shared/Log.h"
+#include "../../shared/exception/InvalidParameter.hpp"
 #include <Windows.h>
 
 #ifndef LoadLibrary
@@ -32,13 +33,21 @@ namespace shared
    }
 
    CDynamicLibrary::CDynamicLibrary()
+      :m_libraryHandle(NULL)
    {
-      m_libraryHandle = NULL;
+   }
+
+   CDynamicLibrary::CDynamicLibrary(const std::string& libraryFile)
+      :m_libraryHandle(NULL)
+   {
+      if (!load(libraryFile))
+         throw exception::CInvalidParameter(libraryFile);
    }
 
    CDynamicLibrary::~CDynamicLibrary()
    {
-      BOOST_ASSERT(m_libraryHandle == NULL);  // Library was not unload
+      if(m_libraryHandle != NULL)
+         unload();
    }
 
    void* CDynamicLibrary::GetFunctionPointer(const std::string& funcName)

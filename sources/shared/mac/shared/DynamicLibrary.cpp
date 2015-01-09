@@ -4,6 +4,7 @@
 #include <boost/function.hpp>
 #include <boost/log/trivial.hpp>
 #include "../../shared/Log.h"
+#include "../../shared/exception/InvalidParameter.hpp"
 
 namespace shared
 {
@@ -11,7 +12,7 @@ namespace shared
    { 
       return "so"; 
    }
-   
+
    const std::string CDynamicLibrary::DotExtension() 
    { 
       return ".so"; 
@@ -31,51 +32,59 @@ namespace shared
       return libFileNameWithoutExtension;
    }
 
-    CDynamicLibrary::CDynamicLibrary()
-    {
-        m_libraryHandle = NULL;
-    }
+   CDynamicLibrary::CDynamicLibrary()
+      :m_libraryHandle(NULL)
+   {
+   }
 
-    CDynamicLibrary::~CDynamicLibrary()
-    {
-        BOOST_ASSERT(m_libraryHandle == NULL);
-    }
+   CDynamicLibrary::CDynamicLibrary(const std::string& libraryFile)
+      :m_libraryHandle(NULL)
+   {
+      if (!load(libraryFile))
+         throw exception::CInvalidParameter(libraryFile);
+   }
 
-    void * CDynamicLibrary::GetFunctionPointer(const std::string & funcName)
-    {
-        if (m_libraryHandle != NULL) 
-        {
-            return dlsym(m_libraryHandle, funcName.c_str());	
-        }
-        return NULL;
-    }
+   CDynamicLibrary::~CDynamicLibrary()
+   {
+      if(m_libraryHandle != NULL)
+         unload();
+   }
 
-    bool CDynamicLibrary::load(const std::string & libraryFile)
-    {
-        bool result = false;
+   void * CDynamicLibrary::GetFunctionPointer(const std::string & funcName)
+   {
+      if (m_libraryHandle != NULL) 
+      {
+         return dlsym(m_libraryHandle, funcName.c_str());	
+      }
+      return NULL;
+   }
 
-        //load library
-        m_libraryHandle = dlopen(libraryFile.c_str(), RTLD_LAZY);
+   bool CDynamicLibrary::load(const std::string & libraryFile)
+   {
+      bool result = false;
 
-        if (m_libraryHandle != NULL) 
-        {
-            result = true;
-        } 
-        else
-        {
-            YADOMS_LOG(error) << "Fail to load library : " << libraryFile << dlerror();
-        }
+      //load library
+      m_libraryHandle = dlopen(libraryFile.c_str(), RTLD_LAZY);
 
-        return result;
-    }
+      if (m_libraryHandle != NULL) 
+      {
+         result = true;
+      } 
+      else
+      {
+         YADOMS_LOG(error) << "Fail to load library : " << libraryFile << dlerror();
+      }
 
-    void CDynamicLibrary::unload()
-    {
-        if(m_libraryHandle != NULL)
-        {
-            dlclose(m_libraryHandle);
-            m_libraryHandle = NULL;
-        }
-    }
+      return result;
+   }
+
+   void CDynamicLibrary::unload()
+   {
+      if(m_libraryHandle != NULL)
+      {
+         dlclose(m_libraryHandle);
+         m_libraryHandle = NULL;
+      }
+   }
 
 } // namespace shared

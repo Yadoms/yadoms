@@ -21,7 +21,7 @@ CPython::~CPython()
 
 bool CPython::isAvailable() const
 {
-   //TODO : recherche et teste de Python
+   //TODO : recherche et test de Python
    return true;
 }
 
@@ -31,7 +31,8 @@ bool CPython::canInterpret(const std::string& scriptPath) const
    return true;
 }
 
-boost::shared_ptr<shared::script::IScriptRunner> CPython::createRunner(const std::string& scriptPath) const
+boost::shared_ptr<shared::script::IScriptRunner> CPython::createRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) const
 {
+   //TODO
    return boost::shared_ptr<shared::script::IScriptRunner>();
 }
