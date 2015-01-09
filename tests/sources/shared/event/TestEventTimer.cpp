@@ -315,8 +315,8 @@ BOOST_AUTO_TEST_CASE(NominalEventHandler10TimerPeriodic)
 
    for (Counter = 0;Counter < 10;Counter++)
    {
-      std::cout << "delta[" << Counter << "]=" << ((TimeReport[1][Counter] - TimeReport[0][Counter]) / IndCounter[Counter] - boost::posix_time::milliseconds(300 + 30* Counter)) << std::endl;
-      BOOST_REQUIRE_EQUAL((((TimeReport[1][Counter] - TimeReport[0][Counter]) / IndCounter[Counter])  - boost::posix_time::milliseconds(300 + 30* Counter) < AvgTolerance) ? true : false, true);
+      boost::posix_time::time_duration delta = (TimeReport[1][Counter] - TimeReport[0][Counter]) / IndCounter[Counter] - boost::posix_time::milliseconds(300 + 30 * Counter);
+      BOOST_REQUIRE_EQUAL((delta < AvgTolerance) ? true : false, true);
    }
 }
 
