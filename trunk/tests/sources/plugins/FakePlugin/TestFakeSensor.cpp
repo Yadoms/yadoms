@@ -177,11 +177,11 @@ BOOST_AUTO_TEST_CASE(TemperatureVariations)
    for (int i = 100 ; i >= 0 ; --i)
    {
       sensor.historizeData(context);
-      BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(context, "temp1").m_value), (double)temp1 - 1.0);
-      BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(context, "temp1").m_value), (double)temp1 + 1.0);
+      BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(context, "temp1").m_value), (double)temp1 - 1.1); // Add some marging for float conversion
+      BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(context, "temp1").m_value), (double)temp1 + 1.1);
       temp1 = boost::lexical_cast<double>(readLastData(context, "temp1").m_value);
-      BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(context, "temp2").m_value), (double)temp2 - 1.0);
-      BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(context, "temp2").m_value), (double)temp2 + 1.0);
+      BOOST_CHECK_GE(boost::lexical_cast<double>(readLastData(context, "temp2").m_value), (double)temp2 - 1.1);
+      BOOST_CHECK_LE(boost::lexical_cast<double>(readLastData(context, "temp2").m_value), (double)temp2 + 1.1);
       temp2 = boost::lexical_cast<double>(readLastData(context, "temp2").m_value);
       sensor.read();
    }
