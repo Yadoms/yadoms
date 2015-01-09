@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "OpenZWaveNode.h"
 #include <shared/Log.h>
-#include "FatalErrorException.h"
+#include <FatalErrorException.h>
 
 
 COpenZWaveNode::COpenZWaveNode()

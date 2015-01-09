@@ -1,8 +1,8 @@
 #pragma once
 
 #include "ILoad.h"
-#include "sys/times.h"
-#include "sys/vtimes.h"
+#include <sys/times.h>
+#include <sys/vtimes.h>
 
 //--------------------------------------------------------------
 /// \brief	CPU Load of the Yadoms Process

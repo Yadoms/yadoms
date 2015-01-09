@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ILoad.h"
-#include "sys/sysinfo.h"
+#include <sys/sysinfo.h>
 
 //--------------------------------------------------------------
 /// \brief	Memory Load of the Linux System
