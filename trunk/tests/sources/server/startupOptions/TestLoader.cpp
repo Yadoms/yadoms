@@ -372,6 +372,22 @@ BOOST_AUTO_TEST_CASE(Different_Log_l_critical_Initialisation)
 }
 
 //--------------------------------------------------------------
+/// \brief	    Test startupOptions::CLoader with all logger levels
+/// \result         No error, no exception
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(All_Loggerlevels)
+{
+   static const std::set<std::string> levels = boost::assign::list_of("none")("fatal")("critical")("error")("warning")("notice")("information")("debug")("trace");
+   for (std::set<std::string>::const_iterator it = levels.begin(); it != levels.end(); ++it)
+   {
+      const char *argv[] = {"./TestLoader","-l", it->c_str()};
+      startupOptions::CLoader StartupOptions (3, argv);
+      BOOST_CHECK_EQUAL(StartupOptions.getLogLevel(), *it);
+   }
+}
+
+//--------------------------------------------------------------
 /// \brief	    Test startupOptions::CLoader with a faulty log argument -l
 /// \result         Raise an exception
 //--------------------------------------------------------------
