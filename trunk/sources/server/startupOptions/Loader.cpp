@@ -21,8 +21,8 @@ void CLoader::buildOptionsDescription()
       "use a specific web server ip address. Use 0.0.0.0 to accepts connections via all interfaces. ")
       ("webServerPath,w", po::value<CMustExistPathOption>(&m_webServerInitialPath)->default_value(CMustExistPathOption("www")),
       "use a specific path for web server")
-      ("logLevel,l", po::value<std::string>(&m_logLevel)->default_value("information"),
-      "set log level, accepted values are : trace, debug, info, warning, error, fatal")
+      ("logLevel,l", po::value<CExpectedLoggerLevels>(&m_logLevel)->default_value(CExpectedLoggerLevels("information")),
+      "set log level, accepted values are : none, fatal, critical, error, warning, notice, information, debug, trace")
       ("databaseFile,D", po::value<std::string>(&m_databaseFile)->default_value("yadoms.db3"),
       "use a specific dataBase file")
       ("pluginsPath,P", po::value<CMustExistPathOption>(&m_PluginsPath)->default_value(CMustExistPathOption("plugins")),
@@ -97,6 +97,32 @@ void validate(boost::any& v,
 std::ostream& operator<<(std::ostream& stream, const CMustExistPathOption& pathOption)
 {
    stream << pathOption.get();
+   stream.flush();
+   return stream;
+}
+
+// Validate provided logger level
+void validate(boost::any& v,
+   const std::vector<std::string>& values,
+   CExpectedLoggerLevels*, int)
+{
+   po::validators::check_first_occurrence(v);
+
+   // Extract the first string from 'values'. If there is more than
+   // one string, it's an error, and exception will be thrown.
+   const std::string& loggerLevel = po::validators::get_single_string(values);
+
+   // Check if path exist
+   if (CExpectedLoggerLevels::validate(loggerLevel))
+      v = boost::any(CExpectedLoggerLevels(loggerLevel));
+   else
+      throw CInvalidOptionException(loggerLevel, "invalid logger level");
+}
+
+// Needed for implementation of po::value::default_value()
+std::ostream& operator<<(std::ostream& stream, const CExpectedLoggerLevels& loggerLevelOption)
+{
+   stream << loggerLevelOption.get();
    stream.flush();
    return stream;
 }

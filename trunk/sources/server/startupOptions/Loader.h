@@ -36,7 +36,7 @@ namespace startupOptions
       //--------------------------------------------------------------
       // IStartupOptions implementation (see IStartupOptions declaration for details)
       virtual const std::string & getLogLevel() const
-         { return m_logLevel; }
+         { return m_logLevel.get(); }
       virtual unsigned int getWebServerPortNumber() const
          { return m_webServerPortNumber; }
       virtual const std::string& getWebServerIPAddress() const
@@ -68,7 +68,7 @@ namespace startupOptions
       boost::program_options::options_description m_optionsDescription;
 
       // Options data
-      std::string m_logLevel;
+      CExpectedLoggerLevels m_logLevel;
       unsigned int m_webServerPortNumber;
       CValidIpAddressOption m_webServerIPAddress;
       CMustExistPathOption m_webServerInitialPath;

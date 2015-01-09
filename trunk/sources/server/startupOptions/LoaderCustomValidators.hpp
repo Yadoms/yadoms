@@ -8,3 +8,6 @@
 
 // IP address validator
 #include "ValidIpAddressOption.hpp"
+
+// Expected logger levels
+#include "ExpectedLoggerLevels.hpp"

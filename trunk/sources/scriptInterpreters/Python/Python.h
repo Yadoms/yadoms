@@ -1,5 +1,6 @@
 #pragma once
 #include <shared/script/IScriptInterpreter.h>
+#include <shared/DataContainer.h>
 
 //--------------------------------------------------------------
 /// \brief	Python interpreter
@@ -20,7 +21,7 @@ public:
    // IScriptInterpreter implementation
    virtual bool isAvailable() const;
    virtual bool canInterpret(const std::string& scriptPath) const;
-   virtual boost::shared_ptr<shared::script::IScriptRunner> createRunner(const std::string& scriptPath) const;
+   virtual boost::shared_ptr<shared::script::IScriptRunner> createRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) const;
   // [END] IScriptInterpreter implementation
 };
 

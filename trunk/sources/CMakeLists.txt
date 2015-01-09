@@ -219,6 +219,7 @@ set(YADOMS_SRC
 	server/pluginSystem/ManuallyDeviceCreationRequest.h
 	server/pluginSystem/ManuallyDeviceCreationRequest.cpp
   
+	server/startupOptions/ExpectedLoggerLevels.hpp
 	server/startupOptions/InvalidOptionException.hpp
 	server/startupOptions/IStartupOptions.h
 	server/startupOptions/LoaderCustomValidators.hpp
@@ -285,10 +286,13 @@ set(YADOMS_SRC
 	server/automation/action/DriveDevice.cpp
 	server/automation/action/IAction.h
 	server/automation/action/IScriptRunnerFactory.h
+	server/automation/action/IScriptInterpreterLibrary.h
 	server/automation/action/IYScriptApi.h
 	server/automation/action/RunScript.h
 	server/automation/action/RunScript.cpp
    server/automation/action/ScriptInterpreterNotFound.hpp
+	server/automation/action/ScriptInterpreterLibrary.h
+	server/automation/action/ScriptInterpreterLibrary.cpp
 	server/automation/action/ScriptRunnerFactory.h
 	server/automation/action/ScriptRunnerFactory.cpp
 	server/automation/action/Wait.h

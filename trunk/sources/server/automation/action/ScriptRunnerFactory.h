@@ -23,7 +23,7 @@ namespace automation { namespace action
 
    protected:
       // IScriptRunnerFactory Implementation
-      virtual boost::shared_ptr<shared::script::IScriptRunner> createScriptRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) const;
+      virtual boost::shared_ptr<shared::script::IScriptRunner> createScriptRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration);
       // [END] IScriptRunnerFactory Implementation
 
       //-----------------------------------------------------
@@ -31,13 +31,21 @@ namespace automation { namespace action
       //-----------------------------------------------------
       void loadInterpreters();
 
+      //--------------------------------------------------------------
+      /// \brief        Returns all interpreter directories installed
+      /// \return       a list of all found interpreter directories
+      /// \note         This function just lists interpreter directory names.
+      ///               It doesn't check if interpreter is valid (export expected functions)
+      //--------------------------------------------------------------
+      std::vector<boost::filesystem::path> findInterpreterDirectories();
+
       //-----------------------------------------------------
       ///\brief               Get the interpreter needed to run a script
       ///\param[in] scriptPath Script full path
       ///\return              The first interpreter found supporting this script
       ///\throw CScriptInterpreterNotFound No corresponding script interpreter was found
       //-----------------------------------------------------
-      boost::shared_ptr<shared::script::IScriptInterpreter> getScriptInterpreter(const std::string& scriptPath) const;
+      boost::shared_ptr<shared::script::IScriptInterpreter> getScriptInterpreter(const std::string& scriptPath);
 
    private:
       //-----------------------------------------------------
@@ -47,8 +55,9 @@ namespace automation { namespace action
 
       //-----------------------------------------------------
       ///\brief               List of loaded interpreters
+      ///\details key is the library file name (without path and extension)
       //-----------------------------------------------------
-      std::vector<boost::shared_ptr<shared::script::IScriptInterpreter> > m_LoadedInterpreters;
+      std::map<std::string, boost::shared_ptr<shared::script::IScriptInterpreter> > m_LoadedInterpreters;
    };
 	
 } } // namespace automation::action

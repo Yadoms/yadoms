@@ -180,7 +180,7 @@ namespace pluginSystem
       //--------------------------------------------------------------
       /// \brief        Returns all plugin directories installed
       /// \return       a list of all found plugin directories
-      /// \note         This function just lists plugin dorectory names.
+      /// \note         This function just lists plugin directory names.
       ///               It doesn't check if plugin is valid (export expected functions)
       //--------------------------------------------------------------
       std::vector<boost::filesystem::path> findPluginDirectories();

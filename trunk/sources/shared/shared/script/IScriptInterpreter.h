@@ -1,5 +1,6 @@
 #pragma once
 #include "IScriptRunner.h"
+#include <shared/DataContainer.h>
 
 namespace shared { namespace script
 {
@@ -33,9 +34,10 @@ namespace shared { namespace script
       //-----------------------------------------------------
       ///\brief                  Create a script runner with associated file
       ///\param[in] scriptPath   Full path of script file
+      ///\param[in] scriptConfiguration   Configuration of the script
       ///\return                 The created script instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<IScriptRunner> createRunner(const std::string& scriptPath) const = 0;
+      virtual boost::shared_ptr<IScriptRunner> createRunner(const std::string& scriptPath, const CDataContainer& scriptConfiguration) const = 0;
    };
 	
 } } // namespace shared::script
