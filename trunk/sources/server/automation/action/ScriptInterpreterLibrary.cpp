@@ -28,7 +28,7 @@ boost::shared_ptr<shared::script::IScriptInterpreter> CScriptInterpreterLibrary:
    }
 
    // Get entry point
-   boost::function<shared::script::IScriptInterpreter* ()> m_construct = static_cast<shared::script::IScriptInterpreter* (*)(void)>(m_library->GetFunctionPointer("construct"));
+   boost::function<shared::script::IScriptInterpreter* ()> m_construct = (shared::script::IScriptInterpreter* (*)(void))(m_library->GetFunctionPointer("construct"));
    if (m_construct == NULL)
       throw shared::exception::CInvalidParameter("Unable to get entry point");
 
