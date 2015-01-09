@@ -5,7 +5,7 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/exception/OutOfRange.hpp>
 #include <shared/script/IScriptInterpreter.h>
-#include <shared/windows/shared/DynamicLibrary.h>
+#include <shared/DynamicLibrary.h>
 #include "ScriptInterpreterLibrary.h"
 
 namespace automation { namespace action
