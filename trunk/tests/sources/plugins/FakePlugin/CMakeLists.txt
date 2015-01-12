@@ -9,6 +9,8 @@ IF(NOT DISABLE_TEST_FAKEPLUGIN)
       shared/shared/plugin/yPluginApi/historization/Counter.h
       shared/shared/plugin/yPluginApi/historization/Curtain.cpp
       shared/shared/plugin/yPluginApi/historization/Curtain.h
+      shared/shared/plugin/yPluginApi/historization/DateTime.cpp
+      shared/shared/plugin/yPluginApi/historization/DateTime.h
       shared/shared/plugin/yPluginApi/historization/IHistorizable.h
       shared/shared/plugin/yPluginApi/historization/Message.cpp
       shared/shared/plugin/yPluginApi/historization/Message.h
