@@ -45,7 +45,7 @@ namespace automation { namespace action { namespace script
       ///\return              The first interpreter found supporting this script
       ///\throw CScriptInterpreterNotFound No corresponding script interpreter was found
       //-----------------------------------------------------
-      boost::shared_ptr<shared::script::IInterpreter> getScriptInterpreter(const std::string& scriptPath);
+      boost::shared_ptr<shared::script::IInterpreter> getAssociatedInterpreter(const std::string& scriptPath);
 
    private:
       //-----------------------------------------------------
