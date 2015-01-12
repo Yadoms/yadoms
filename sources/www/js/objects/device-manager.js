@@ -19,11 +19,19 @@ DeviceManager.factory = function(json) {
    return new Device(json.id, json.pluginId, decodeURIComponent(json.name), decodeURIComponent(json.friendlyName), json.model);
 };
 
-DeviceManager.get = function (deviceId, callback) {
+DeviceManager.get = function (deviceId, callback, sync) {
    assert(!isNullOrUndefined(deviceId), "deviceId must be defined");
    assert($.isFunction(callback), "callback must be a function");
 
-   $.getJSON("rest/device/" + deviceId)
+   var async = true;
+
+   if (!isNullOrUndefined(sync))
+      async = false;
+   $.ajax({
+      dataType: "json",
+      url: "rest/device/" + deviceId,
+      async: async
+   })
       .done(function( data ) {
          //we parse the json answer
          if (data.result != "true")

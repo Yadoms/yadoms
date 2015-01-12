@@ -80,6 +80,10 @@ IntParameterHandler.prototype.getDOMObject = function () {
    return ConfigurationHelper.createControlGroup(self, input);
 };
 
+IntParameterHandler.prototype.locateInDOM = function () {
+   return $("input#" + this.uuid);
+}
+
 /**
  * Get the param name
  * @returns {string}

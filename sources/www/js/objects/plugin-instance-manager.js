@@ -21,6 +21,32 @@ PluginInstanceManager.factory = function(json) {
    return new PluginInstance(json.id, decodeURIComponent(json.name), json.type, json.configuration, json.autoStart, json.category);
 };
 
+PluginInstanceManager.get = function (pluginInstanceId, callback, sync) {
+   assert(!isNullOrUndefined(pluginInstanceId), "pluginInstanceId must be defined");
+   assert($.isFunction(callback), "callback must be a function");
+
+   var async = true;
+
+   if (!isNullOrUndefined(sync))
+      async = false;
+
+   $.ajax({
+      dataType: "json",
+      url: "rest/plugin/" + pluginInstanceId,
+      async: async
+   })
+      .done(function( data ) {
+         //we parse the json answer
+         if (data.result != "true")
+         {
+            notifyError($.t("objects.generic.errorGetting", {objectName : "Plugin with Id = " + pluginInstanceId}), JSON.stringify(data));
+            return;
+         }
+         callback(PluginInstanceManager.factory(data.data));
+      })
+      .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "Plugin with Id = " + pluginInstanceId}));});
+}
+
 PluginInstanceManager.getStatus = function(pluginInstance, callback) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");
    //we ask for the status of current pluginInstance only on non system plugins

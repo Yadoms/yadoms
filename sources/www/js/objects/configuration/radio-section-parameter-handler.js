@@ -117,6 +117,10 @@ RadioSectionParameterHandler.prototype.getDOMObject = function () {
    return input;
 };
 
+RadioSectionParameterHandler.prototype.locateInDOM = function () {
+   return $("div#" + this.radioGroupUuid);
+}
+
 /**
  * Get the param name
  * @returns {string}

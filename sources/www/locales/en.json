@@ -152,7 +152,7 @@
             "regexErrorMessage" : "The name of the keyword must contains at least one character"
          }
       },
-  	  "configure-manually-device" : {
+  	   "configure-manually-device" : {
          "title" : "Add a new device",
          "friendlyName-configuration" : {
             "name" : "Name",
@@ -377,6 +377,18 @@
                     "keyword" : {
                        "name" : "Keyword of device",
                        "description" : "Define the keyword of a device to use in the condition"
+                    },
+                    "operator" : {
+                       "name" : "Operator",
+                       "description" : "Define the operator to use in the condition"
+                    },
+                    "refValue" : {
+                       "name" : "Value",
+                       "description" : "Define the value to use in the condition",
+                       "values" : {
+                          "true" : "true",
+                          "false" : "false"
+                       }
                     }
                  }
               }

@@ -82,6 +82,11 @@ private:
    yApi::historization::CRssi m_rssi;
 
    //--------------------------------------------------------------
+   /// \brief	The keyword associated with date time under string format useful only for demo
+   //--------------------------------------------------------------
+   yApi::historization::CDateTime m_dateTime;
+
+   //--------------------------------------------------------------
    /// \brief	    Random number generator, used to simulate temperature variations
    //--------------------------------------------------------------
    boost::random::mt19937 m_gen;

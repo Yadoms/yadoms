@@ -58,17 +58,37 @@ EnumParameterHandler.prototype.getDOMObject = function () {
    i18nData += "\" ";
    input += i18nData + " >";
 
-   //we iterate through the values collection
-   $.each(self.values, function (key, value) {
-      input += "<option value=\"" + key + "\" data-i18n=\"" + self.i18nContext + self.paramName + ".values." + key + "\"";
-      if (key == self.value)
-         input += " selected";
-      input += " >" + value + "</option>\n";
-   });
-
    input += "</select>";
    return ConfigurationHelper.createControlGroup(self, input);
 };
+
+EnumParameterHandler.prototype.setValues = function (values) {
+   this.values = values;
+   this.updateValues();
+}
+
+EnumParameterHandler.prototype.updateValues = function () {
+   var self = this;
+   var $select = self.locateInDOM();
+   $select.empty();
+
+   //we iterate through the values collection
+   $.each(self.values, function (key, value) {
+      var line = "<option value=\"" + key + "\" data-i18n=\"" + self.i18nContext + self.paramName + ".values." + key + "\"";
+      if (key == self.value)
+         line += " selected";
+      line += " >" + value + "</option>";
+      $select.append(line);
+   });
+};
+
+EnumParameterHandler.prototype.applyScript = function () {
+   this.updateValues();
+};
+
+EnumParameterHandler.prototype.locateInDOM = function () {
+   return $("select#" + this.uuid);
+}
 
 /**
  * Get the param name

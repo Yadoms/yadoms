@@ -5,12 +5,14 @@
 #include <shared/Log.h>
 
 CFakeSensor::CFakeSensor(const std::string& deviceName)
-   :m_deviceName(deviceName), m_temperature1("temp1"), m_temperature2("temp2"), m_batteryLevel("Battery"), m_rssi("rssi"), m_dist(0, 20)
+   :m_deviceName(deviceName), m_temperature1("temp1"), m_temperature2("temp2"), m_batteryLevel("Battery"), m_rssi("rssi"), m_dist(0, 20), 
+   m_dateTime("dateTime", shared::plugin::yPluginApi::EKeywordAccessMode::kGet)
 {
    m_temperature1.set(25.0);
    m_temperature2.set(10.0);
    m_batteryLevel.set(100);
    m_rssi.set(50);
+   m_dateTime.set(boost::posix_time::second_clock::local_time());
 }
 
 CFakeSensor::~CFakeSensor()
@@ -31,6 +33,8 @@ void CFakeSensor::declareDevice(boost::shared_ptr<yApi::IYPluginApi> context)
       context->declareKeyword(m_deviceName, m_batteryLevel);
    if (!context->keywordExists(m_deviceName, m_rssi))
       context->declareKeyword(m_deviceName, m_rssi);
+   if (!context->keywordExists(m_deviceName, m_dateTime))
+      context->declareKeyword(m_deviceName, m_dateTime);
 }
 
 void CFakeSensor::read()
@@ -52,6 +56,9 @@ void CFakeSensor::read()
    // Decrease battery level (min 20%)
    if (m_batteryLevel() > 20)
       m_batteryLevel.set(m_batteryLevel() - 1);
+
+   //set the current date time onto m_datetime keyword
+   m_dateTime.set(boost::posix_time::second_clock::local_time());
 }
 
 void CFakeSensor::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
@@ -62,6 +69,7 @@ void CFakeSensor::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) co
    context->historizeData(m_deviceName, m_temperature2);
    context->historizeData(m_deviceName, m_batteryLevel);
    context->historizeData(m_deviceName, m_rssi        );
+   context->historizeData(m_deviceName, m_dateTime    );
 }
 
 const std::string& CFakeSensor::getDeviceName() const
