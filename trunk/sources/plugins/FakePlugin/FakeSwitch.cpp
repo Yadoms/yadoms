@@ -17,13 +17,22 @@ CFakeSwitch::~CFakeSwitch()
 {
 }
 
-void CFakeSwitch::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
+void CFakeSwitch::declareDevice(boost::shared_ptr<yApi::IYPluginApi> context)
 {
+   if (!context->deviceExists(m_deviceName))
+      context->declareDevice(m_deviceName, getModel());
+
    // Declare associated keywords (= values managed by this device)
    if (m_isDimmable)
-      context->declareKeyword(m_deviceName, *m_dimmableSwitch);
+   {
+      if (!context->keywordExists(m_deviceName, *m_dimmableSwitch))
+         context->declareKeyword(m_deviceName, *m_dimmableSwitch);
+   }
    else
-      context->declareKeyword(m_deviceName, *m_switch);
+   {
+      if (!context->keywordExists(m_deviceName, *m_switch))
+         context->declareKeyword(m_deviceName, *m_switch);
+   }
 }
 
 void CFakeSwitch::read()

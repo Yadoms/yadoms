@@ -29,10 +29,10 @@ public:
    virtual ~CFakeSwitch();
 
    //--------------------------------------------------------------
-   /// \brief	            Declare keywords associated with this device
+   /// \brief	            Declare device and associated keywords if necessary
    /// \param[in] context  yPluginApi context
    //--------------------------------------------------------------
-   void declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context);
+   void declareDevice(boost::shared_ptr<yApi::IYPluginApi> context);
 
    //--------------------------------------------------------------
    /// \brief	    Make a sensor read (compute new values)

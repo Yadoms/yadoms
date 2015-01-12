@@ -48,42 +48,14 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       CFakeSwitch fakeDimmableReadOnlySwitch("fakeDimmableReadOnlySwitch", true, false);
       CFakeSwitch fakeDimmableReadWriteSwitch("fakeDimmableReadWriteSwitch", true, true);
       
-      // Declare these sensors to Yadoms (devices and associated keywords)
-      if (!context->deviceExists(fakeSensor1.getDeviceName()))
-      {
-         context->declareDevice(fakeSensor1.getDeviceName(), fakeSensor1.getModel());
-         fakeSensor1.declareKeywords(context);
-      }
-      if (!context->deviceExists(fakeSensor2.getDeviceName()))
-      {
-         context->declareDevice(fakeSensor2.getDeviceName(), fakeSensor2.getModel());
-         fakeSensor2.declareKeywords(context);
-      }
-      if (!context->deviceExists(fakeCounter.getDeviceName()))
-      {
-         context->declareDevice(fakeCounter.getDeviceName(), fakeCounter.getModel());
-         fakeCounter.declareKeywords(context);
-      }
-      if (!context->deviceExists(fakeOnOffReadOnlySwitch.getDeviceName()))
-      {
-         context->declareDevice(fakeOnOffReadOnlySwitch.getDeviceName(), fakeOnOffReadOnlySwitch.getModel());
-         fakeOnOffReadOnlySwitch.declareKeywords(context);
-      }
-      if (!context->deviceExists(fakeOnOffReadWriteSwitch.getDeviceName()))
-      {
-         context->declareDevice(fakeOnOffReadWriteSwitch.getDeviceName(), fakeOnOffReadWriteSwitch.getModel());
-         fakeOnOffReadWriteSwitch.declareKeywords(context);
-      }
-      if (!context->deviceExists(fakeDimmableReadOnlySwitch.getDeviceName()))
-      {
-         context->declareDevice(fakeDimmableReadOnlySwitch.getDeviceName(), fakeDimmableReadOnlySwitch.getModel());
-         fakeDimmableReadOnlySwitch.declareKeywords(context);
-      }
-      if (!context->deviceExists(fakeDimmableReadWriteSwitch.getDeviceName()))
-      {
-         context->declareDevice(fakeDimmableReadWriteSwitch.getDeviceName(), fakeDimmableReadWriteSwitch.getModel());
-         fakeDimmableReadWriteSwitch.declareKeywords(context);
-      }
+      // Declare these sensors to Yadoms (devices and associated keywords) if not already declared
+      fakeSensor1.declareDevice(context);
+      fakeSensor2.declareDevice(context);
+      fakeCounter.declareDevice(context);
+      fakeOnOffReadOnlySwitch.declareDevice(context);
+      fakeOnOffReadWriteSwitch.declareDevice(context);
+      fakeDimmableReadOnlySwitch.declareDevice(context);
+      fakeDimmableReadWriteSwitch.declareDevice(context);
 
       // Timer used to send fake sensor states periodically
       context->getEventHandler().createTimer(kSendSensorsStateTimerEventId, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));

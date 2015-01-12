@@ -17,13 +17,20 @@ CFakeSensor::~CFakeSensor()
 {
 }
 
-void CFakeSensor::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
+void CFakeSensor::declareDevice(boost::shared_ptr<yApi::IYPluginApi> context)
 {
+   if (!context->deviceExists(m_deviceName))
+      context->declareDevice(m_deviceName, getModel());
+
    // Declare associated keywords (= values managed by this device)
-   context->declareKeyword(m_deviceName, m_temperature1);
-   context->declareKeyword(m_deviceName, m_temperature2);
-   context->declareKeyword(m_deviceName, m_batteryLevel);
-   context->declareKeyword(m_deviceName, m_rssi);
+   if (!context->keywordExists(m_deviceName, m_temperature1))
+      context->declareKeyword(m_deviceName, m_temperature1);
+   if (!context->keywordExists(m_deviceName, m_temperature2))
+      context->declareKeyword(m_deviceName, m_temperature2);
+   if (!context->keywordExists(m_deviceName, m_batteryLevel))
+      context->declareKeyword(m_deviceName, m_batteryLevel);
+   if (!context->keywordExists(m_deviceName, m_rssi))
+      context->declareKeyword(m_deviceName, m_rssi);
 }
 
 void CFakeSensor::read()

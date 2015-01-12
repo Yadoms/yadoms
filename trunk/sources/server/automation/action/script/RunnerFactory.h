@@ -1,6 +1,6 @@
 #pragma once
 #include "IRunnerFactory.h"
-#include <shared/script/IInterpreter.h>
+#include "IInterpreterLibrary.h"
 
 namespace automation { namespace action { namespace script
 {
@@ -57,7 +57,7 @@ namespace automation { namespace action { namespace script
       ///\brief               List of loaded interpreters
       ///\details key is the library file name (without path and extension)
       //-----------------------------------------------------
-      std::map<std::string, boost::shared_ptr<shared::script::IInterpreter> > m_LoadedInterpreters;
+      std::map<std::string, boost::shared_ptr<IInterpreterLibrary> > m_LoadedInterpreters;
    };
 
 } } } // namespace automation::action::script
