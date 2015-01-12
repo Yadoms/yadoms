@@ -57,6 +57,10 @@ ColorParameterHandler.prototype.applyScript = function () {
    $("div#" + this.uuid).colorpicker();
 }
 
+ColorParameterHandler.prototype.locateInDOM = function () {
+   return $("div#" + this.uuid);
+}
+
 /**
  * Get the param name
  * @returns {string}

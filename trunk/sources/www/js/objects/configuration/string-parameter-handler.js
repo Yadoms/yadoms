@@ -61,7 +61,7 @@ function StringParameterHandler(i18nContext, paramName, content, currentValue) {
  * @returns {string}
  */
 StringParameterHandler.prototype.getDOMObject = function () {
-   var input = "<input ";
+    var input = "<input ";
 
     if (this.encrypted)
         input +=        "type=\"password\" ";
@@ -99,12 +99,16 @@ StringParameterHandler.prototype.getDOMObject = function () {
    return ConfigurationHelper.createControlGroup(self, input);
 };
 
+StringParameterHandler.prototype.locateInDOM = function () {
+   return $("input#" + this.uuid);
+}
+
 /**
  * Get the param name
  * @returns {string}
  */
 StringParameterHandler.prototype.getParamName = function() {
-  return this.paramName;
+   return this.paramName;
 };
 
 /**

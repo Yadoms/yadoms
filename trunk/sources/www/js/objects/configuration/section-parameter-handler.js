@@ -175,6 +175,10 @@ SectionParameterHandler.prototype.applyScript = function () {
    });
 }
 
+SectionParameterHandler.prototype.locateInDOM = function () {
+   return $("div#" + this.uuid);
+}
+
 /**
  * Get the param name
  * @returns {string}

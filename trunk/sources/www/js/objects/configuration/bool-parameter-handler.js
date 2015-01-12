@@ -50,6 +50,10 @@ BoolParameterHandler.prototype.getDOMObject = function () {
    return ConfigurationHelper.createControlGroup(self, input, true, "checkbox");
 };
 
+BoolParameterHandler.prototype.locateInDOM = function () {
+   return $("input#" + this.uuid);
+}
+
 /**
  * Get the param name
  * @returns {string}

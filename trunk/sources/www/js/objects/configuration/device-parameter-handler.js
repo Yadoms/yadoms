@@ -14,7 +14,6 @@ function DeviceParameterHandler(i18nContext, paramName, content, currentValue) {
    assert(i18nContext !== undefined, "i18nContext must contain path of i18n");
    assert(paramName !== undefined, "paramName must be defined");
    assert(content !== undefined, "content must be defined");
-   assert(content.expectedCapacity !== undefined || content.expectedKeywordType !== undefined, "expectedCapacity or expectedKeywordType field must be defined");
    assert(content.expectedKeywordAccess !== undefined, "expectedKeywordAccess field must be defined");
 
    this.expectedKeywordAccess = content.expectedKeywordAccess;
@@ -27,6 +26,7 @@ function DeviceParameterHandler(i18nContext, paramName, content, currentValue) {
    }
 
    this.name = content.name;
+   this.uuidContainer = createUUID();
    this.uuid = createUUID();
    this.uuidKeywordList = createUUID();
    this.paramName = paramName;
@@ -36,16 +36,19 @@ function DeviceParameterHandler(i18nContext, paramName, content, currentValue) {
 
    var self = this;
 
-   if (isNullOrUndefined(content.expectedCapacity)) {
+   if (!isNullOrUndefined(content.expectedKeywordType)) {
       //we look for a type
       this.expectedKeywordType = content.expectedKeywordType;
       this.lookupMethod = "type";
    }
-   else
-   {
+   else if (!isNullOrUndefined(content.expectedCapacity)) {
       //we look for a capacity name
       this.expectedCapacity = content.expectedCapacity;
       this.lookupMethod = "name";
+   }
+   else {
+      //we look for all
+      this.lookupMethod = "all";
    }
 }
 
@@ -113,6 +116,8 @@ DeviceParameterHandler.prototype.applyScript = function () {
             //we clear and disable the second combo
             $cbKeywords.empty();
             $cbKeywords.prop('disabled', true);
+            $cbKeywords.append("<option value=\"\"></option>");
+            handler.locateInDOM().change();
          }
          else {
             //until we have no answer the combos will be disabled
@@ -136,39 +141,49 @@ DeviceParameterHandler.prototype.applyScript = function () {
                   $.each(data2.data.keyword, function(index, value) {
                      //we add the keyword only if access mode is at least the same than expected
                      if ((handler.expectedKeywordAccess.toLowerCase() != "getset") || (value.accessMode.toLowerCase() != "get")) {
-                        if (handler.lookupMethod == "name") {
-                           //we lookup by capacity name (configuration should have several capacities)
-                           if (Array.isArray(handler.expectedCapacity)) {
-                              $.each(handler.expectedCapacity, function(indexHandlerCapacity, handlerCapacity) {
-                                 if (value.capacityName.toLowerCase() == handlerCapacity.toLowerCase()) {
+                        switch (handler.lookupMethod)
+                        {
+                           case "name":
+                              //we lookup by capacity name (configuration should have several capacities)
+                              if (Array.isArray(handler.expectedCapacity)) {
+                                 $.each(handler.expectedCapacity, function(indexHandlerCapacity, handlerCapacity) {
+                                    if (value.capacityName.toLowerCase() == handlerCapacity.toLowerCase()) {
+                                       //this keyword interest us we push it into the list
+                                       newList.push(value);
+                                    }
+                                 });
+                              }
+                              else {
+                                 if (value.capacityName.toLowerCase() == handler.expectedCapacity.toLowerCase()) {
                                     //this keyword interest us we push it into the list
                                     newList.push(value);
                                  }
-                              });
-                           }
-                           else {
-                              if (value.capacityName.toLowerCase() == handler.expectedCapacity.toLowerCase()) {
-                                 //this keyword interest us we push it into the list
-                                 newList.push(value);
                               }
-                           }
-                        }
-                        else {
-                           //we lookup by capacity type (configuration should have several types)
-                           if (Array.isArray(handler.expectedKeywordType)) {
-                              $.each(handler.expectedKeywordType, function(indexHandlerKwType, handlerKwType) {
-                                 if (value.type.toLowerCase() == handlerKwType.toLowerCase()) {
+                              break;
+
+                           case "type":
+                              //we lookup by capacity type (configuration should have several types)
+                              if (Array.isArray(handler.expectedKeywordType)) {
+                                 $.each(handler.expectedKeywordType, function(indexHandlerKwType, handlerKwType) {
+                                    if (value.type.toLowerCase() == handlerKwType.toLowerCase()) {
+                                       //this keyword interest us we push it into the list
+                                       newList.push(value);
+                                    }
+                                 });
+                              }
+                              else {
+                                 if (value.type.toLowerCase() == handler.expectedKeywordType.toLowerCase()) {
                                     //this keyword interest us we push it into the list
                                     newList.push(value);
                                  }
-                              });
-                           }
-                           else {
-                              if (value.type.toLowerCase() == handler.expectedKeywordType.toLowerCase()) {
-                                 //this keyword interest us we push it into the list
-                                 newList.push(value);
                               }
-                           }
+                              break;
+
+                           default:
+                           case "all":
+                              //we take everyone
+                              newList.push(value);
+                              break;
                         }
                      }
                   });
@@ -189,6 +204,7 @@ DeviceParameterHandler.prototype.applyScript = function () {
 
                   //we select the last selected or the first one
                   $cbKeywords.prop('selectedIndex', keywordToSelect);
+                  handler.locateInDOM().change();
                })
                .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingKeywordList"));})
                .always(function() {
@@ -200,44 +216,52 @@ DeviceParameterHandler.prototype.applyScript = function () {
       }
    }(self));
 
-   //we launch the async request to fill the combos
-   if (self.lookupMethod == "type") {
-      //we look for a type
-
-      if (Array.isArray(self.expectedKeywordType)) {
-         //we have a list of types
-         //we async ask for device list that support a type
-         $.each(self.expectedKeywordType, function (index, type) {
-            $.getJSON("/rest/device/matchcapacitytype/" + self.expectedKeywordAccess + "/" + type)
-               .done(populateDeviceList(self))
-               .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacityType", {expectedKeywordAccess : self.expectedKeywordAccess, expectedKeywordType : type}));});
-         });
-      }
-      else {
-         //we async ask for device list that support a type
-         $.getJSON("/rest/device/matchcapacitytype/" + self.expectedKeywordAccess + "/" + self.expectedKeywordType)
-            .done(populateDeviceList(self))
-            .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacityType", {expectedKeywordAccess : self.expectedKeywordAccess, expectedKeywordType : self.expectedKeywordType}));});
-      }
-   }
-   else
+   //we launch the async request to fill the device combos
+   switch (self.lookupMethod)
    {
-      //we look for a capacity name
-      if (Array.isArray(self.expectedCapacity)) {
-         //we have a list of capacities
-         //we async ask for keyword list of the device for each capacity
-         $.each(self.expectedCapacity, function (index, capacity) {
-            $.getJSON("/rest/device/matchcapacity/" + self.expectedKeywordAccess + "/" + capacity)
+      case "type":
+         //we look for a type
+         if (Array.isArray(self.expectedKeywordType)) {
+            //we have a list of types
+            //we async ask for device list that support a type
+            $.each(self.expectedKeywordType, function (index, type) {
+               $.getJSON("/rest/device/matchcapacitytype/" + self.expectedKeywordAccess + "/" + type)
+                  .done(populateDeviceList(self))
+                  .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacityType", {expectedKeywordAccess : self.expectedKeywordAccess, expectedKeywordType : type}));});
+            });
+         }
+         else {
+            //we async ask for device list that support a type
+            $.getJSON("/rest/device/matchcapacitytype/" + self.expectedKeywordAccess + "/" + self.expectedKeywordType)
+               .done(populateDeviceList(self))
+               .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacityType", {expectedKeywordAccess : self.expectedKeywordAccess, expectedKeywordType : self.expectedKeywordType}));});
+         }
+         break;
+      case "name":
+         //we look for a capacity name
+         if (Array.isArray(self.expectedCapacity)) {
+            //we have a list of capacities
+            //we async ask for keyword list of the device for each capacity
+            $.each(self.expectedCapacity, function (index, capacity) {
+               $.getJSON("/rest/device/matchcapacity/" + self.expectedKeywordAccess + "/" + capacity)
+                  .done(populateDeviceList(self))
+                  .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacity", {expectedKeywordAccess : self.expectedKeywordAccess, expectedCapacity : self.expectedCapacity}));});
+            });
+         }
+         else {
+            //we have only one capacity
+            $.getJSON("/rest/device/matchcapacity/" + self.expectedKeywordAccess + "/" + self.expectedCapacity)
                .done(populateDeviceList(self))
                .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacity", {expectedKeywordAccess : self.expectedKeywordAccess, expectedCapacity : self.expectedCapacity}));});
-         });
-      }
-      else {
-         //we have only one capacity
-         $.getJSON("/rest/device/matchcapacity/" + self.expectedKeywordAccess + "/" + self.expectedCapacity)
+         }
+         break;
+      default:
+      case "all":
+         //we get all devices
+         $.getJSON("/rest/device/")
             .done(populateDeviceList(self))
-            .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceListMatchCapacity", {expectedKeywordAccess : self.expectedKeywordAccess, expectedCapacity : self.expectedCapacity}));});
-      }
+            .fail(function() {notifyError($.t("modals.configure-widget.errorDuringGettingDeviceList"));});
+         break;
    }
 }
 
@@ -246,7 +270,7 @@ DeviceParameterHandler.prototype.applyScript = function () {
  * @returns {string}
  */
 DeviceParameterHandler.prototype.getDOMObject = function () {
-   var input = "<select " +
+   var input = "<div id=\"" + this.uuidContainer + "\"><select " +
                         "class=\"form-control enable-validation\" " +
                         "id=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\"" +
@@ -265,9 +289,13 @@ DeviceParameterHandler.prototype.getDOMObject = function () {
 
    input += "<div class=\"device-details\">" +
               "" +
-            "</div>";
+            "</div></div>";
    return ConfigurationHelper.createControlGroup(self, input);
 };
+
+DeviceParameterHandler.prototype.locateInDOM = function () {
+   return $("div#" + this.uuidContainer);
+}
 
 /**
  * Get the param name
@@ -282,7 +310,8 @@ DeviceParameterHandler.prototype.getParamName = function() {
  * @returns {string}
  */
 DeviceParameterHandler.prototype.getCurrentConfiguration = function () {
-   this.value.deviceId = $("select#" + this.uuid).val();
-   this.value.keywordId = $("select#" + this.uuidKeywordList).val();
-   return this.value;
+   var value = {};
+   value.deviceId = $("select#" + this.uuid).val();
+   value.keywordId = $("select#" + this.uuidKeywordList).val();
+   return value;
 };

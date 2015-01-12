@@ -64,6 +64,7 @@
 
 .automation-rule {
     background-color: #ffffff;
+    min-height: 150px;
 }
 
 .automation-rule li {
@@ -105,7 +106,7 @@
     padding:3px 8px;
     text-decoration:none
 }
-.automation-rule li.parent_li>span {
+.automation-rule li > span {
     cursor:pointer
 }
 .automation-rule>ul>li::before, .automation-rule>ul>li::after {
@@ -118,4 +119,8 @@
     background:#eee;
     border:1px solid #94a0b4;
     color:#000
+}
+
+#automation-rule-configuration {
+    min-height: 150px;
 }

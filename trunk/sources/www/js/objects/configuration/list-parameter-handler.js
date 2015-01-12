@@ -250,6 +250,10 @@ ListParameterHandler.prototype.deleteLine = function() {
    };
 };
 
+ListParameterHandler.prototype.locateInDOM = function () {
+   return $("div#" + this.uuid);
+}
+
 /**
  * Get the param name
  * @returns {string}

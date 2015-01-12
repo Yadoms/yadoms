@@ -55,6 +55,10 @@ IconParameterHandler.prototype.applyScript = function () {
    $("button#" + this.uuid).iconpicker();
 }
 
+IconParameterHandler.prototype.locateInDOM = function () {
+   return $("button#" + this.uuid);
+}
+
 /**
  * Get the param name
  * @returns {string}

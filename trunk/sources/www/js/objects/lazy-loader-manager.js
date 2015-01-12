@@ -3,7 +3,7 @@
  */
 
 //example :
-// loader = new LazyLoaderManager("modals/configure_widget.html");
+// loader = new LazyLoaderManager("modals/widget-configure.html");
 // modals.widgetConfiguration.load(function (pageId, widgetId) {return function() {showWidgetConfigurationModal(pageId, widgetId)}}(pageId, widgetId));
 
 /**

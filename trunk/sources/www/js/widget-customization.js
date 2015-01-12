@@ -127,5 +127,5 @@ function exitCustomization() {
 }
 
 function createOrUpdatePage(pageId) {
-   modals.pageModification.load(function (pageId) {return function() {showPageModificationModal(pageId)}}(pageId));
+   modals.pageConfigure.load(function (pageId) {return function() {showPageModificationModal(pageId)}}(pageId));
 }

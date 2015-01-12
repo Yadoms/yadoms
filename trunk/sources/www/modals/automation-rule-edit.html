@@ -39,7 +39,7 @@
                              </li>
                           </ul>
                        </div>
-                       <div class="well col-md-6"></div>
+                       <div class="well col-md-6" id="automation-rule-configuration"></div>
                     </div>
                  </div>
                  <h4>
@@ -64,6 +64,7 @@
 
 <script>
    var currentAutomationRuleCondition;
+   var activeAutomationRuleCondition;
 
    function showEditionAutomationRule(rule, callback) {
       assert(!isNullOrUndefined(rule), "rule must be defined");
@@ -73,14 +74,37 @@
 
       //TODO : remove static add
       var tmp = {"is" : {
-         "operator" : "equal",
-         "keywordId" : "1",
-         "refValue" : "1"
+         "operator" : "greater",
+         "keywordId" : "3",
+         "refValue" : "18"
       }};
 
       currentAutomationRuleCondition = AutomationRuleConditionFactory.createItem(tmp);
 
-      $("li#automation-rule-first-item").append(currentAutomationRuleCondition.getTreeviewItem());
+      var $condition = $("li#automation-rule-first-item");
+
+      $condition.empty();
+      currentAutomationRuleCondition.displayTreeviewItem($condition);
+
+
+      $("li#automation-rule-first-item span.automation-rule-item").unbind("click").bind("click", function () {
+         debugger;
+         var uuid = $(this).attr("conditionItemId");
+         var rule = currentAutomationRuleCondition.findRule(uuid);
+         if (!isNullOrUndefined(rule)) {
+            //we have find the item
+            activeAutomationRuleCondition = rule;
+            //we set rule as activate
+            $("li#automation-rule-first-item .automation-rule-item").removeClass("label-primary").addClass("label-default");
+            $(this).addClass("label-primary").removeClass("label-default");
+            //we can display its configuration
+            var $configurationDiv = $("div#automation-rule-configuration");
+            $configurationDiv.empty();
+            rule.displayConfiguration($configurationDiv);
+
+
+         }
+      });
 
       //i18n
       $modalBody.i18n();
