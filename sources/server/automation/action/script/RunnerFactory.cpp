@@ -79,7 +79,7 @@ boost::shared_ptr<shared::script::IRunner> CRunnerFactory::createScriptRunner(
 {
    try
    {
-      boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getScriptInterpreter(scriptPath);
+      boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(scriptPath);
 
       return scriptInterpreter->createRunner(scriptPath, scriptConfiguration);
    }
@@ -95,7 +95,7 @@ boost::shared_ptr<shared::script::IRunner> CRunnerFactory::createScriptRunner(
    }
 }
 
-boost::shared_ptr<shared::script::IInterpreter> CRunnerFactory::getScriptInterpreter(const std::string& scriptPath)
+boost::shared_ptr<shared::script::IInterpreter> CRunnerFactory::getAssociatedInterpreter(const std::string& scriptPath)
 {
    // Update loaded interpreters list if necessary
    loadInterpreters();

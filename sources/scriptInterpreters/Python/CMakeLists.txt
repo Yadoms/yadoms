@@ -14,8 +14,12 @@ if(PYTHONLIBS_FOUND)
    set(PYTHON_SOURCES
       stdafx.h
       stdafx.cpp
+      IInitializer.h
+      Initializer.h
+      Initializer.cpp
       Python.h
       Python.cpp
+      PythonLibInclude.h
    )
 
    #########################################

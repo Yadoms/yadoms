@@ -1,17 +1,15 @@
 #include "stdafx.h"
 #include "Python.h"
-#if defined WIN32 && defined _DEBUG
-#undef _DEBUG // Undef _DEBUG to use only release version of Python.lib. It permits to download the Pyhton installer version (https://www.python.org/downloads/windows/)
-#include <Python.h>
-#define _DEBUG
-#endif
+#include "Initializer.h"
 #include <shared/script/ImplementationHelper.h>
+#include "PythonLibInclude.h"
 
 // Declare the script interpreter
 IMPLEMENT_SCRIPT_INTERPRETER(CPython)
 
 
 CPython::CPython()
+   :m_initializer(new CInitializer)
 {
 }
 
@@ -21,8 +19,18 @@ CPython::~CPython()
 
 bool CPython::isAvailable() const
 {
-   //TODO : recherche et test de Python
-   return false;
+   // As Python is staticaly linked, Python library is already loaded.
+   // Just test it asking its version (and check version number).
+   const std::string pythonVersion(Py_GetVersion());
+   if (pythonVersion.empty())
+      return false;
+
+   static const std::string expectedVersion("2.7");
+   size_t versionFoundPosition = pythonVersion.find(expectedVersion);
+   if (versionFoundPosition == std::string::npos || versionFoundPosition != 0)
+      return false;
+
+   return true;
 }
 
 bool CPython::canInterpret(const std::string& scriptPath) const
