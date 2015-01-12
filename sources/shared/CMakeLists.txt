@@ -175,8 +175,8 @@ set(SHARED_LIB_SRC
 	shared/serialization/IDataFileSerializable.h
 
    shared/script/ImplementationHelper.h
-	shared/script/IScriptInterpreter.h
-	shared/script/IScriptRunner.h
+	shared/script/IInterpreter.h
+	shared/script/IRunner.h
 
    shared/script/yScriptApi/commonIncludes.h
  	shared/script/yScriptApi/IYScriptApi.h
@@ -247,6 +247,8 @@ source_group(plugin\\yPluginApi shared/shared/plugin/yPluginApi/*.* )
 source_group(plugin\\yPluginApi\\historization shared/shared/plugin/yPluginApi/historization/*.* )	
 source_group(notification shared/shared/notification/*.* )	
 source_group(serialization shared/shared/serialization/*.* )	
+source_group(script shared/shared/script/*.* )	
+source_group(script\\yScriptApi shared/shared/script/yScriptApi/*.* )	
 source_group(tools shared/shared/tools/*.* )	
 
 source_group(platformSpecific\\windows shared/windows/shared/*.*)

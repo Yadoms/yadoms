@@ -9,7 +9,7 @@ namespace automation
 {
 
 CActionList::CActionList(const shared::CDataContainer& configuration, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-   boost::shared_ptr<action::IScriptRunnerFactory> scriptRunnerFactory)
+   boost::shared_ptr<action::script::IRunnerFactory> scriptRunnerFactory)
 {
    const std::vector<shared::CDataContainer>& configurationActions = configuration.get<std::vector<shared::CDataContainer> >("actions");
 
@@ -23,7 +23,7 @@ CActionList::~CActionList()
 }
 
 void CActionList::createAction(const shared::CDataContainer& configuration, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-   boost::shared_ptr<action::IScriptRunnerFactory> scriptRunnerFactory)
+   boost::shared_ptr<action::script::IRunnerFactory> scriptRunnerFactory)
 {
    boost::shared_ptr<action::IAction> action;
 

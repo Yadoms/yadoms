@@ -1,21 +1,21 @@
 #include "stdafx.h"
-#include "ScriptInterpreterLibrary.h"
+#include "InterpreterLibrary.h"
 #include <shared/exception/InvalidParameter.hpp>
-#include <shared/script/IScriptInterpreter.h>
+#include <shared/script/IInterpreter.h>
 
-namespace automation { namespace action
+namespace automation { namespace action { namespace script
 {
 
-CScriptInterpreterLibrary::CScriptInterpreterLibrary(const boost::filesystem::path& interpreterPath)
+CInterpreterLibrary::CInterpreterLibrary(const boost::filesystem::path& interpreterPath)
 {
    load(interpreterPath);
 }
 
-CScriptInterpreterLibrary::~CScriptInterpreterLibrary()
+CInterpreterLibrary::~CInterpreterLibrary()
 {
 }
 
-boost::shared_ptr<shared::script::IScriptInterpreter> CScriptInterpreterLibrary::load(const boost::filesystem::path& interpreterPath)
+boost::shared_ptr<shared::script::IInterpreter> CInterpreterLibrary::load(const boost::filesystem::path& interpreterPath)
 {
    try
    {
@@ -28,7 +28,7 @@ boost::shared_ptr<shared::script::IScriptInterpreter> CScriptInterpreterLibrary:
    }
 
    // Get entry point
-   boost::function<shared::script::IScriptInterpreter* ()> m_construct = (shared::script::IScriptInterpreter* (*)(void))(m_library->GetFunctionPointer("construct"));
+   boost::function<shared::script::IInterpreter* ()> m_construct = (shared::script::IInterpreter* (*)(void))(m_library->GetFunctionPointer("construct"));
    if (m_construct == NULL)
       throw shared::exception::CInvalidParameter("Unable to get entry point");
 
@@ -44,11 +44,11 @@ boost::shared_ptr<shared::script::IScriptInterpreter> CScriptInterpreterLibrary:
    return m_interpreter;
 }
 
-boost::shared_ptr<shared::script::IScriptInterpreter> CScriptInterpreterLibrary::getInterpreter() const
+boost::shared_ptr<shared::script::IInterpreter> CInterpreterLibrary::getInterpreter() const
 {
    return m_interpreter;
 }
 
-} } // namespace automation::action	
+} } } // namespace automation::action::script
 	
 	

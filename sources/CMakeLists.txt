@@ -285,19 +285,19 @@ set(YADOMS_SRC
 	server/automation/action/DriveDevice.h
 	server/automation/action/DriveDevice.cpp
 	server/automation/action/IAction.h
-	server/automation/action/IScriptRunnerFactory.h
-	server/automation/action/IScriptInterpreterLibrary.h
-	server/automation/action/IYScriptApi.h
 	server/automation/action/RunScript.h
 	server/automation/action/RunScript.cpp
-   server/automation/action/ScriptInterpreterNotFound.hpp
-	server/automation/action/ScriptInterpreterLibrary.h
-	server/automation/action/ScriptInterpreterLibrary.cpp
-	server/automation/action/ScriptRunnerFactory.h
-	server/automation/action/ScriptRunnerFactory.cpp
 	server/automation/action/Wait.h
 	server/automation/action/Wait.cpp
 
+	server/automation/action/script/IRunnerFactory.h
+	server/automation/action/script/IInterpreterLibrary.h
+   server/automation/action/script/InterpreterNotFound.hpp
+	server/automation/action/script/InterpreterLibrary.h
+	server/automation/action/script/InterpreterLibrary.cpp
+	server/automation/action/script/RunnerFactory.h
+	server/automation/action/script/RunnerFactory.cpp
+   
 	server/automation/condition/And.h
 	server/automation/condition/And.cpp
 	server/automation/condition/Not.h
@@ -408,6 +408,7 @@ source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\logConfiguration  server/logConfiguration/*.*)
 source_group(server\\automation  server/automation/*.*)
 source_group(server\\automation\\action  server/automation/action/*.*)
+source_group(server\\automation\\action\\script  server/automation/action/script/*.*)
 source_group(server\\automation\\condition  server/automation/condition/*.*)
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\task  server/task/*.*)

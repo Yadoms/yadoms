@@ -5,7 +5,7 @@
 #include "condition/IConditionRoot.h"
 #include "condition/IConditionFactory.h"
 #include "IActionList.h"
-#include "action/IScriptRunnerFactory.h"
+#include "action/script/IRunnerFactory.h"
 #include "../communication/ISendMessageAsync.h"
 #include "../database/sqlite/requesters/Rule.h"
 #include "INotificationObserverForRulesManager.h"
@@ -30,7 +30,7 @@ namespace automation
          boost::shared_ptr<INotificationObserverForRulesManager> notificationObserver,
          boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          condition::IConditionFactory& conditionFactory,
-         boost::shared_ptr<action::IScriptRunnerFactory> scriptRunnerFactory);
+         boost::shared_ptr<action::script::IRunnerFactory> scriptRunnerFactory);
 
       //-----------------------------------------------------
       ///\brief               Destructor

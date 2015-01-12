@@ -1,13 +1,13 @@
 #pragma once
-#include "IScriptInterpreterLibrary.h"
+#include "IInterpreterLibrary.h"
 #include <shared/DynamicLibrary.h>
 
-namespace automation { namespace action
+namespace automation { namespace action { namespace script
 {
    //-----------------------------------------------------
    ///\brief The script interpreter library
    //-----------------------------------------------------
-   class CScriptInterpreterLibrary : public IScriptInterpreterLibrary
+   class CInterpreterLibrary : public IInterpreterLibrary
    {
    public:
       //-----------------------------------------------------
@@ -15,22 +15,22 @@ namespace automation { namespace action
       ///\param[in] interpreterPath Interpreter path
       ///\throw CInvalidParameter if unable to load interpreter
       //-----------------------------------------------------
-      CScriptInterpreterLibrary(const boost::filesystem::path& interpreterPath);
+      CInterpreterLibrary(const boost::filesystem::path& interpreterPath);
 
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~CScriptInterpreterLibrary();
+      virtual ~CInterpreterLibrary();
 
    protected:
-      // IScriptInterpreterLibrary Implementation
-      virtual boost::shared_ptr<shared::script::IScriptInterpreter> getInterpreter() const;
-      // [END] IScriptInterpreterLibrary Implementation
+      // IInterpreterLibrary Implementation
+      virtual boost::shared_ptr<shared::script::IInterpreter> getInterpreter() const;
+      // [END] IInterpreterLibrary Implementation
       
       //-----------------------------------------------------
       ///\brief               Load the library and create interpreter
       //-----------------------------------------------------
-      boost::shared_ptr<shared::script::IScriptInterpreter> load(const boost::filesystem::path& interpreterPath);
+      boost::shared_ptr<shared::script::IInterpreter> load(const boost::filesystem::path& interpreterPath);
 
    private:
       //-----------------------------------------------------
@@ -41,9 +41,9 @@ namespace automation { namespace action
       //-----------------------------------------------------
       ///\brief               The created interpreter
       //-----------------------------------------------------
-      boost::shared_ptr<shared::script::IScriptInterpreter> m_interpreter;
+      boost::shared_ptr<shared::script::IInterpreter> m_interpreter;
    };
-	
-} } // namespace automation::action
+
+} } } // namespace automation::action::script
 	
 	

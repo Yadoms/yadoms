@@ -1,30 +1,30 @@
 #pragma once
-#include "IScriptRunnerFactory.h"
-#include <shared/script/IScriptInterpreter.h>
+#include "IRunnerFactory.h"
+#include <shared/script/IInterpreter.h>
 
-namespace automation { namespace action
+namespace automation { namespace action { namespace script
 {
    //-----------------------------------------------------
    ///\brief The script runner factory
    //-----------------------------------------------------
-   class CScriptRunnerFactory : public IScriptRunnerFactory
+   class CRunnerFactory : public IRunnerFactory
    {
    public:
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] interpretersPath Path where are located interpreters
       //-----------------------------------------------------
-      CScriptRunnerFactory(const std::string& interpretersPath);
+      CRunnerFactory(const std::string& interpretersPath);
 
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~CScriptRunnerFactory();
+      virtual ~CRunnerFactory();
 
    protected:
-      // IScriptRunnerFactory Implementation
-      virtual boost::shared_ptr<shared::script::IScriptRunner> createScriptRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration);
-      // [END] IScriptRunnerFactory Implementation
+      // IRunnerFactory Implementation
+      virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration);
+      // [END] IRunnerFactory Implementation
 
       //-----------------------------------------------------
       ///\brief               Load the interpreters
@@ -45,7 +45,7 @@ namespace automation { namespace action
       ///\return              The first interpreter found supporting this script
       ///\throw CScriptInterpreterNotFound No corresponding script interpreter was found
       //-----------------------------------------------------
-      boost::shared_ptr<shared::script::IScriptInterpreter> getScriptInterpreter(const std::string& scriptPath);
+      boost::shared_ptr<shared::script::IInterpreter> getScriptInterpreter(const std::string& scriptPath);
 
    private:
       //-----------------------------------------------------
@@ -57,9 +57,9 @@ namespace automation { namespace action
       ///\brief               List of loaded interpreters
       ///\details key is the library file name (without path and extension)
       //-----------------------------------------------------
-      std::map<std::string, boost::shared_ptr<shared::script::IScriptInterpreter> > m_LoadedInterpreters;
+      std::map<std::string, boost::shared_ptr<shared::script::IInterpreter> > m_LoadedInterpreters;
    };
-	
-} } // namespace automation::action
+
+} } } // namespace automation::action::script
 	
 	

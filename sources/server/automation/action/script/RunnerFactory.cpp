@@ -1,26 +1,26 @@
 #include "stdafx.h"
-#include "ScriptRunnerFactory.h"
-#include "ScriptInterpreterNotFound.hpp"
+#include "RunnerFactory.h"
+#include "InterpreterNotFound.hpp"
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/exception/OutOfRange.hpp>
-#include <shared/script/IScriptInterpreter.h>
+#include <shared/script/IInterpreter.h>
 #include <shared/DynamicLibrary.h>
-#include "ScriptInterpreterLibrary.h"
+#include "InterpreterLibrary.h"
 
-namespace automation { namespace action
+namespace automation { namespace action { namespace script
 {
 
-CScriptRunnerFactory::CScriptRunnerFactory(const std::string& interpretersPath)
+CRunnerFactory::CRunnerFactory(const std::string& interpretersPath)
    :m_interpretersPath(interpretersPath)
 {
 }
 
-CScriptRunnerFactory::~CScriptRunnerFactory()
+CRunnerFactory::~CRunnerFactory()
 {         
 }
 
-void CScriptRunnerFactory::loadInterpreters()
+void CRunnerFactory::loadInterpreters()
 {
    std::vector<boost::filesystem::path> interpreterDirectories = findInterpreterDirectories();
 
@@ -33,7 +33,7 @@ void CScriptRunnerFactory::loadInterpreters()
          // Not already loaded
          try
          {
-            boost::shared_ptr<IScriptInterpreterLibrary> library(new CScriptInterpreterLibrary(*interpreterDirectory));
+            boost::shared_ptr<IInterpreterLibrary> library(new CInterpreterLibrary(*interpreterDirectory));
             m_LoadedInterpreters[interperterKeyName] = library->getInterpreter();
          }
          catch (shared::exception::CInvalidParameter& e)
@@ -44,7 +44,7 @@ void CScriptRunnerFactory::loadInterpreters()
    }
 }
 
-std::vector<boost::filesystem::path> CScriptRunnerFactory::findInterpreterDirectories()
+std::vector<boost::filesystem::path> CRunnerFactory::findInterpreterDirectories()
 {
    // Look for all subdirectories in m_interpretersPath directory, where it contains library with same name,
    // for example a subdirectory "Python" containing a "Python.dll|so" file
@@ -74,16 +74,16 @@ std::vector<boost::filesystem::path> CScriptRunnerFactory::findInterpreterDirect
    return interpreters;
 }
 
-boost::shared_ptr<shared::script::IScriptRunner> CScriptRunnerFactory::createScriptRunner(
+boost::shared_ptr<shared::script::IRunner> CRunnerFactory::createScriptRunner(
    const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration)
 {
    try
    {
-      boost::shared_ptr<shared::script::IScriptInterpreter> scriptInterpreter = getScriptInterpreter(scriptPath);
+      boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getScriptInterpreter(scriptPath);
 
       return scriptInterpreter->createRunner(scriptPath, scriptConfiguration);
    }
-   catch (CScriptInterpreterNotFound& e)
+   catch (CInterpreterNotFound& e)
    {
       YADOMS_LOG(error) << "Unable to run script : " << e.what();
       throw shared::exception::CInvalidParameter("Unable to run script");
@@ -95,23 +95,23 @@ boost::shared_ptr<shared::script::IScriptRunner> CScriptRunnerFactory::createScr
    }
 }
 
-boost::shared_ptr<shared::script::IScriptInterpreter> CScriptRunnerFactory::getScriptInterpreter(const std::string& scriptPath)
+boost::shared_ptr<shared::script::IInterpreter> CRunnerFactory::getScriptInterpreter(const std::string& scriptPath)
 {
-   // Update interpreters library list if necessary
+   // Update loaded interpreters list if necessary
    loadInterpreters();
 
    // Now find corresponding interpreter
-   for (std::map<std::string, boost::shared_ptr<shared::script::IScriptInterpreter> >::const_iterator itInterpreter = m_LoadedInterpreters.begin();
+   for (std::map<std::string, boost::shared_ptr<shared::script::IInterpreter> >::const_iterator itInterpreter = m_LoadedInterpreters.begin();
       itInterpreter != m_LoadedInterpreters.end(); ++itInterpreter)
    {
-      boost::shared_ptr<shared::script::IScriptInterpreter> interpreter = itInterpreter->second;
+      boost::shared_ptr<shared::script::IInterpreter> interpreter = itInterpreter->second;
       if (interpreter->canInterpret(scriptPath) && interpreter->isAvailable())
          return interpreter;
    }
 
-   throw CScriptInterpreterNotFound(scriptPath);
+   throw CInterpreterNotFound(scriptPath);
 }
 
-} } // namespace automation::action	
+} } } // namespace automation::action::script
 	
 	

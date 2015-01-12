@@ -1,5 +1,5 @@
 #pragma once
-#include "IScriptRunner.h"
+#include "IRunner.h"
 #include <shared/DataContainer.h>
 
 namespace shared { namespace script
@@ -7,13 +7,13 @@ namespace shared { namespace script
    //-----------------------------------------------------
    ///\brief The script interpreter interface
    //-----------------------------------------------------
-   class IScriptInterpreter
+   class IInterpreter
    {
    public:
       //-----------------------------------------------------
       ///\brief                  Destructor
       //-----------------------------------------------------
-      virtual ~IScriptInterpreter() {}
+      virtual ~IInterpreter() {}
 
       //-----------------------------------------------------
       ///\brief                  Check if the interpreter is fully functionnal
@@ -37,7 +37,7 @@ namespace shared { namespace script
       ///\param[in] scriptConfiguration   Configuration of the script
       ///\return                 The created script instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<IScriptRunner> createRunner(const std::string& scriptPath, const CDataContainer& scriptConfiguration) const = 0;
+      virtual boost::shared_ptr<IRunner> createRunner(const std::string& scriptPath, const CDataContainer& scriptConfiguration) const = 0;
    };
 	
 } } // namespace shared::script

@@ -4,7 +4,7 @@
 namespace automation { namespace action
 {
 
-CRunScript::CRunScript(const shared::CDataContainer& configuration, boost::shared_ptr<IScriptRunnerFactory> scriptRunnerFactory)
+CRunScript::CRunScript(const shared::CDataContainer& configuration, boost::shared_ptr<script::IRunnerFactory> scriptRunnerFactory)
    :m_scriptRunnerFactory(scriptRunnerFactory),
    m_scriptPath(configuration.get<std::string>("scriptPath")),
    m_scriptConfiguration(configuration.hasValue("") ? configuration.get<shared::CDataContainer>("scriptConfiguration") : shared::CDataContainer())

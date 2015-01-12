@@ -1,19 +1,19 @@
 #pragma once
-#include <shared/script/IScriptRunner.h>
+#include <shared/script/IRunner.h>
 #include <shared/shared/DataContainer.h>
 
-namespace automation { namespace action
+namespace automation { namespace action { namespace script
 {
    //-----------------------------------------------------
    ///\brief The script runner factory interface
    //-----------------------------------------------------
-   class IScriptRunnerFactory
+   class IRunnerFactory
    {
    public:
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~IScriptRunnerFactory() {}
+      virtual ~IRunnerFactory() {}
 
       //-----------------------------------------------------
       ///\brief               Create a script runner
@@ -21,9 +21,9 @@ namespace automation { namespace action
       ///\param[in] configuration Script configuration
       ///\return              The script runner instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::script::IScriptRunner> createScriptRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) = 0;
+      virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) = 0;
    };
-	
-} } // namespace automation::action	
+
+} } } // namespace automation::action::script
 	
 	

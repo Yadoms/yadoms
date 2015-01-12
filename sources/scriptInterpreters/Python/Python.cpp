@@ -31,8 +31,8 @@ bool CPython::canInterpret(const std::string& scriptPath) const
    return true;
 }
 
-boost::shared_ptr<shared::script::IScriptRunner> CPython::createRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) const
+boost::shared_ptr<shared::script::IRunner> CPython::createRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) const
 {
    //TODO
-   return boost::shared_ptr<shared::script::IScriptRunner>();
+   return boost::shared_ptr<shared::script::IRunner>();
 }

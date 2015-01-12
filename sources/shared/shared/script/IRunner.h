@@ -6,13 +6,13 @@ namespace shared { namespace script
    //-----------------------------------------------------
    ///\brief The script runner interface
    //-----------------------------------------------------
-   class IScriptRunner
+   class IRunner
    {
    public:
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~IScriptRunner() {}
+      virtual ~IRunner() {}
 
       //-----------------------------------------------------
       ///\brief               Run the script (blocks while script is running)
