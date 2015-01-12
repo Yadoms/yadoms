@@ -2,19 +2,19 @@
 
 #include <shared/exception/Exception.hpp>
 
-namespace automation { namespace action
+namespace automation { namespace action { namespace script
 {
 
    //--------------------------------------------------------------
    /// \class Exception for not found script interpreter
    //--------------------------------------------------------------
-   class CScriptInterpreterNotFound : public shared::exception::CException
+   class CInterpreterNotFound : public shared::exception::CException
    {
    public:
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
-      CScriptInterpreterNotFound(const std::string& scriptPath)
+      CInterpreterNotFound(const std::string& scriptPath)
          :CException(std::string("Script interpreter not found for script file " + scriptPath))
       {
       }
@@ -22,10 +22,10 @@ namespace automation { namespace action
       //--------------------------------------------------------------
       /// \brief      Destructor
       //--------------------------------------------------------------
-      virtual ~CScriptInterpreterNotFound() throw()
+      virtual ~CInterpreterNotFound() throw()
       {
       }
    };
 
-} } // namespace automation::action
+} } } // namespace automation::action::script
 

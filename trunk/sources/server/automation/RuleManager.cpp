@@ -3,7 +3,7 @@
 #include "database/IRuleRequester.h"
 #include "Rule.h"
 #include "condition/ConditionFactory.h"
-#include "action/ScriptRunnerFactory.h"
+#include "action/script/RunnerFactory.h"
 #include "NotificationObserverForRulesManager.h"
 #include <shared/exception/EmptyResult.hpp>
 #include "RuleException.hpp"
@@ -17,7 +17,7 @@ CRuleManager::CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequest
    m_dbRequester(dbRequester),
    m_conditionFactory(new condition::CConditionFactory(dbAcquisitionRequester)),
    m_notificationCenter(notificationCenter),
-   m_scriptRunnerFactory(new action::CScriptRunnerFactory("scripts"))
+   m_scriptRunnerFactory(new action::script::CRunnerFactory("scripts"))
 {        
 }
 

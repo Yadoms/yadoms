@@ -1,11 +1,11 @@
 #pragma once
-#include <shared/script/IScriptInterpreter.h>
+#include <shared/script/IInterpreter.h>
 #include <shared/DataContainer.h>
 
 //--------------------------------------------------------------
 /// \brief	Python interpreter
 //--------------------------------------------------------------
-class CPython : public shared::script::IScriptInterpreter
+class CPython : public shared::script::IInterpreter
 {
 public:
    //--------------------------------------------------------------
@@ -18,11 +18,11 @@ public:
    //--------------------------------------------------------------
    virtual ~CPython();
 
-   // IScriptInterpreter implementation
+   // IInterpreter implementation
    virtual bool isAvailable() const;
    virtual bool canInterpret(const std::string& scriptPath) const;
-   virtual boost::shared_ptr<shared::script::IScriptRunner> createRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) const;
-  // [END] IScriptInterpreter implementation
+   virtual boost::shared_ptr<shared::script::IRunner> createRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) const;
+  // [END] IInterpreter implementation
 };
 
 

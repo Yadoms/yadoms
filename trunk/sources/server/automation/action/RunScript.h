@@ -1,7 +1,7 @@
 #pragma once
 #include "IAction.h"
 #include <server/communication/ISendMessageAsync.h>
-#include "IScriptRunnerFactory.h"
+#include "script/IRunnerFactory.h"
 
 namespace automation { namespace action
 {
@@ -16,7 +16,7 @@ namespace automation { namespace action
       ///\param[in] configuration Action configuration
       ///\param[in] scriptRunnerFactory The script runner factory
       //-----------------------------------------------------
-      CRunScript(const shared::CDataContainer& configuration, boost::shared_ptr<IScriptRunnerFactory> scriptRunnerFactory);
+      CRunScript(const shared::CDataContainer& configuration, boost::shared_ptr<script::IRunnerFactory> scriptRunnerFactory);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -32,7 +32,7 @@ namespace automation { namespace action
       //-----------------------------------------------------
       ///\brief               The script runner factory
       //-----------------------------------------------------
-     boost::shared_ptr<IScriptRunnerFactory> m_scriptRunnerFactory;
+     boost::shared_ptr<script::IRunnerFactory> m_scriptRunnerFactory;
 
       //-----------------------------------------------------
       ///\brief               The script path
