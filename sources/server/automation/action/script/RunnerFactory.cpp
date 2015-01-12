@@ -34,7 +34,7 @@ void CRunnerFactory::loadInterpreters()
          try
          {
             boost::shared_ptr<IInterpreterLibrary> library(new CInterpreterLibrary(*interpreterDirectory));
-            m_LoadedInterpreters[interperterKeyName] = library->getInterpreter();
+            m_LoadedInterpreters[interperterKeyName] = library;
          }
          catch (shared::exception::CInvalidParameter& e)
          {
@@ -101,10 +101,10 @@ boost::shared_ptr<shared::script::IInterpreter> CRunnerFactory::getScriptInterpr
    loadInterpreters();
 
    // Now find corresponding interpreter
-   for (std::map<std::string, boost::shared_ptr<shared::script::IInterpreter> >::const_iterator itInterpreter = m_LoadedInterpreters.begin();
+   for (std::map<std::string, boost::shared_ptr<IInterpreterLibrary> >::const_iterator itInterpreter = m_LoadedInterpreters.begin();
       itInterpreter != m_LoadedInterpreters.end(); ++itInterpreter)
    {
-      boost::shared_ptr<shared::script::IInterpreter> interpreter = itInterpreter->second;
+      boost::shared_ptr<shared::script::IInterpreter> interpreter(itInterpreter->second->getInterpreter());
       if (interpreter->canInterpret(scriptPath) && interpreter->isAvailable())
          return interpreter;
    }

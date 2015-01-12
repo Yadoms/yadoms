@@ -15,11 +15,16 @@ CFakeCounter::~CFakeCounter()
 {
 }
 
-void CFakeCounter::declareKeywords(boost::shared_ptr<yApi::IYPluginApi> context)
+void CFakeCounter::declareDevice(boost::shared_ptr<yApi::IYPluginApi> context)
 {
+   if (!context->deviceExists(m_deviceName))
+      context->declareDevice(m_deviceName, getModel());
+
    // Declare associated keywords (= values managed by this device)
-   context->declareKeyword(m_deviceName, m_incrementCount);
-   context->declareKeyword(m_deviceName, m_totalCount);
+   if (!context->keywordExists(m_deviceName, m_incrementCount))
+      context->declareKeyword(m_deviceName, m_incrementCount);
+   if (!context->keywordExists(m_deviceName, m_totalCount))
+      context->declareKeyword(m_deviceName, m_totalCount);
 }
 
 void CFakeCounter::read()

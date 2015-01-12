@@ -22,13 +22,13 @@ CPython::~CPython()
 bool CPython::isAvailable() const
 {
    //TODO : recherche et test de Python
-   return true;
+   return false;
 }
 
 bool CPython::canInterpret(const std::string& scriptPath) const
 {
    //TODO : charger le fichier et vérifier que la fonction "yMain" existe
-   return true;
+   return false;
 }
 
 boost::shared_ptr<shared::script::IRunner> CPython::createRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) const
