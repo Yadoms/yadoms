@@ -18,12 +18,12 @@ namespace shared { namespace script
       ///\brief               Run the script (blocks while script is running)
       ///\param[in] context   IYScriptApi context, use by the script to interact with Yadoms
       //-----------------------------------------------------
-      virtual void run(yScriptApi::IYScriptApi& context) const = 0;
+      virtual void run(yScriptApi::IYScriptApi& context) = 0;
 
       //-----------------------------------------------------
       ///\brief               Stop a runnning script
       //-----------------------------------------------------
-      virtual void stop() const = 0;
+      virtual void stop() = 0;
 
       //-----------------------------------------------------
       ///\brief               Check if last script execution was OK

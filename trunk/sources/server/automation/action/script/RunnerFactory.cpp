@@ -33,7 +33,7 @@ void CRunnerFactory::loadInterpreters()
          // Not already loaded
          try
          {
-            boost::shared_ptr<IInterpreterLibrary> library(new CInterpreterLibrary(*interpreterDirectory));
+            boost::shared_ptr<IInterpreterLibrary> library(new CInterpreterLibrary(toLibraryPath(interpreterDirectory->filename().string())));
             m_LoadedInterpreters[interperterKeyName] = library;
          }
          catch (shared::exception::CInvalidParameter& e)
@@ -42,6 +42,14 @@ void CRunnerFactory::loadInterpreters()
          }
       }
    }
+}
+
+boost::filesystem::path CRunnerFactory::toLibraryPath(const std::string& interpreterName) const
+{
+   boost::filesystem::path path(m_interpretersPath);
+   path /= interpreterName;
+   path /= shared::CDynamicLibrary::ToFileName(interpreterName);
+   return path;
 }
 
 std::vector<boost::filesystem::path> CRunnerFactory::findInterpreterDirectories()
