@@ -79,8 +79,6 @@ namespace database { namespace sqlite { namespace requesters {
          return adapter.getResults()[0];
 
       throw shared::exception::CEmptyResult("Cannot retrieve inserted Plugin");
-      
-      return adapter.getResults()[0];
    }
    
    void CRule::updateRule(const entities::CRule& data)
