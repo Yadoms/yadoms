@@ -2,6 +2,7 @@
 #include "ScriptLoader.h"
 #include "PythonLibInclude.h"
 #include "RunnerException.hpp"
+#include "PythonBorrowedObject.h"
 
 
 // Function name of the Python script entry point
@@ -24,7 +25,7 @@ void CScriptLoader::load()
       throw CRunnerException((boost::format("script file %1% doesn't exist") % m_scriptPath).str());
 
    // Add script path to Python system path
-   CPythonObject sysPathObject(PySys_GetObject("path"));
+   CPythonBorrowedObject sysPathObject(PySys_GetObject("path"));
    CPythonObject scriptAbsolutePath(PyString_FromString(boost::filesystem::absolute(m_scriptPath).parent_path().string().c_str()));
    PyList_Append(*sysPathObject, *scriptAbsolutePath);
 

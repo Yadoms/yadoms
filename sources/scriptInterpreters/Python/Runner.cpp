@@ -37,7 +37,7 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
    }
    catch(CRunnerException& e)
    {
-      YADOMS_LOG(error) << m_scriptPath << " : error running scrpt, " << e.what();
+      YADOMS_LOG(error) << m_scriptPath << " : error running script, " << e.what();
       m_lastError = e.what();
    }
 }
