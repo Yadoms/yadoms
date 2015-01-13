@@ -20,6 +20,8 @@ if(PYTHONLIBS_FOUND)
       IScriptLoader.h
       Python.h
       Python.cpp
+      PythonBorrowedObject.h
+      PythonBorrowedObject.cpp
       PythonObject.h
       PythonObject.cpp
       PythonLibInclude.h
