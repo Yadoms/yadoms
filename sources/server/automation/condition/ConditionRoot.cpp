@@ -18,23 +18,28 @@ CConditionRoot::~CConditionRoot()
 
 void CConditionRoot::wait()
 {
-   int event = m_eventHandler.waitForEvents();
-   BOOST_ASSERT(event == kConditionMet);
+   if (!!m_condition)
+   {
+      int event = m_eventHandler.waitForEvents();
+      BOOST_ASSERT(event == kConditionMet);
+   }
 }
 
 void CConditionRoot::registerToNotificationCenter(boost::shared_ptr<INotificationObserverForRulesManager> notificationObserver)
 {
-   m_condition->registerToNotificationCenter(notificationObserver, shared_from_this());
+   if (!!m_condition)
+      m_condition->registerToNotificationCenter(notificationObserver, shared_from_this());
 }
 
 void CConditionRoot::unregisterFromNotificationCenter(boost::shared_ptr<INotificationObserverForRulesManager> notificationObserver)
 {
-   m_condition->unregisterFromNotificationCenter(notificationObserver);
+   if (!!m_condition)
+      m_condition->unregisterFromNotificationCenter(notificationObserver);
 }
 
 void CConditionRoot::onKeywordStateChange()
 {
-   if(m_condition->eval())
+   if(!!m_condition && m_condition->eval())
       m_eventHandler.postEvent(kConditionMet);
 }
 

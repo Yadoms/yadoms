@@ -27,11 +27,11 @@ namespace shared
       virtual ~CFileSystemExtension();
 
       //--------------------------------------------------------------
-      /// \brief			Get the current module path.
+      /// \brief			Get the current module full path (drive + path + filename + ext).
       ///               This code must be executed in the module which the path is required,
       ///               so let it in the header file.
       //--------------------------------------------------------------
-      static const boost::filesystem::path getModulePath()
+      static boost::filesystem::path getModuleFullPath()
       {
          std::vector<char> modulePath(MAX_PATH);
 
@@ -40,7 +40,7 @@ namespace shared
          if (hModule == NULL)
          {
             DWORD error = GetLastError();                                                                               
-            throw shared::exception::CException(std::string("CFileSystemExtension::getModulePath fails with error ")    
+            throw shared::exception::CException(std::string("CFileSystemExtension::getModuleFullPath fails with error ")    
                + boost::lexical_cast<std::string>(error));                                                              
          }                                                                                                              
 
@@ -59,13 +59,22 @@ namespace shared
          if(result == 0)                                                                                                
          {                                                                                                              
             DWORD error = GetLastError();                                                                               
-            throw shared::exception::CException(std::string("CFileSystemExtension::getModulePath fails with error ")    
+            throw shared::exception::CException(std::string("CFileSystemExtension::getModuleFullPath fails with error ")    
                + boost::lexical_cast<std::string>(error));                                                              
          }                                                                                                              
 
          /* We've got the path, construct a path from it */                                                             
-         boost::filesystem::path fullPath(std::string(modulePath.begin(), modulePath.begin() + result));                
-         return fullPath.parent_path();                                                                                 
+         return boost::filesystem::path(std::string(modulePath.begin(), modulePath.begin() + result));                
+      }
+
+      //--------------------------------------------------------------
+      /// \brief			Get the current module path.
+      ///               This code must be executed in the module which the path is required,
+      ///               so let it in the header file.
+      //--------------------------------------------------------------
+      static boost::filesystem::path getModulePath()
+      {
+         return getModuleFullPath().parent_path();                                                                                 
       }
    };
 

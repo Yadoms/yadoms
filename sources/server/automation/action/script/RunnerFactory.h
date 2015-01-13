@@ -32,6 +32,13 @@ namespace automation { namespace action { namespace script
       void loadInterpreters();
 
       //--------------------------------------------------------------
+      /// \brief        Return full path of interpreter library, from interpreter name
+      /// \param[in] interpreterName Interpreter name (ie "python")
+      /// \return       Interpreter library full path (ie "scriptInterperters/python/python.dll")
+      //--------------------------------------------------------------
+      boost::filesystem::path toLibraryPath(const std::string& interpreterName) const;
+
+      //--------------------------------------------------------------
       /// \brief        Returns all interpreter directories installed
       /// \return       a list of all found interpreter directories
       /// \note         This function just lists interpreter directory names.

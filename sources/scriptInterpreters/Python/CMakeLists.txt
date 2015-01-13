@@ -17,9 +17,17 @@ if(PYTHONLIBS_FOUND)
       IInitializer.h
       Initializer.h
       Initializer.cpp
+      IScriptLoader.h
       Python.h
       Python.cpp
+      PythonObject.h
+      PythonObject.cpp
       PythonLibInclude.h
+      Runner.h
+      Runner.cpp
+      ScriptLoader.h
+      ScriptLoader.cpp
+      RunnerException.hpp
    )
 
    #########################################

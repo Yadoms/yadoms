@@ -297,6 +297,8 @@ set(YADOMS_SRC
 	server/automation/action/script/InterpreterLibrary.cpp
 	server/automation/action/script/RunnerFactory.h
 	server/automation/action/script/RunnerFactory.cpp
+	server/automation/action/script/YScriptApiImplementation.h
+	server/automation/action/script/YScriptApiImplementation.cpp
    
 	server/automation/condition/And.h
 	server/automation/condition/And.cpp
@@ -308,8 +310,6 @@ set(YADOMS_SRC
 	server/automation/condition/ConditionFactory.cpp
 	server/automation/condition/ConditionRoot.h
 	server/automation/condition/ConditionRoot.cpp
-	server/automation/condition/Empty.h
-	server/automation/condition/Empty.cpp
 	server/automation/condition/Is.h
 	server/automation/condition/Is.cpp
 	server/automation/condition/ICondition.h

@@ -4,6 +4,10 @@
 #include <shared/script/ImplementationHelper.h>
 #include "PythonLibInclude.h"
 #include <shared/Log.h>
+#include "PythonObject.h"
+#include "Runner.h"
+#include "RunnerException.hpp"
+#include "ScriptLoader.h"
 
 // Declare the script interpreter
 IMPLEMENT_SCRIPT_INTERPRETER(CPython)
@@ -36,30 +40,23 @@ bool CPython::isAvailable() const
 
 bool CPython::canInterpret(const std::string& scriptPath) const
 {
-   //TODO : structure en répertoire + fichier (pour permettre d'avoir des ressources par script) ?
-   if (!boost::filesystem::exists(scriptPath))
+   try
    {
-      YADOMS_LOG(error) << scriptPath << " : can not interpret, file doesn't exist";
+      CScriptLoader loader(scriptPath);
+      loader.load();
+   }
+   catch(CRunnerException& e)
+   {
+      YADOMS_LOG(error) << scriptPath << " : can not interpret, " << e.what();
       return false;
    }
 
-   // TODO faire un CPythonObject
-   PyObject* pyScriptPath = PyString_FromString(scriptPath.c_str());
-   PyObject* pyModule = PyImport_Import(pyScriptPath);
-   Py_DECREF(pyScriptPath);
-
-   if (pyModule == NULL)
-   {
-      YADOMS_LOG(error) << scriptPath << " : can not interpret, unable to create Python module";
-      return false;
-   }
-
-   //TODO : charger le fichier et vérifier que la fonction "yMain" existe
-   return false;
+   YADOMS_LOG(information) << scriptPath << " can be interpreted";
+   return true;
 }
 
 boost::shared_ptr<shared::script::IRunner> CPython::createRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) const
 {
-   //TODO
-   return boost::shared_ptr<shared::script::IRunner>();
+   boost::shared_ptr<shared::script::IRunner> runner(new CRunner(scriptPath, scriptConfiguration));
+   return runner;
 }

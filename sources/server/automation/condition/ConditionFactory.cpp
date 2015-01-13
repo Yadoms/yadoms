@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include <shared/Log.h>
 #include "ConditionFactory.h"
-#include "Empty.h"
 #include "Is.h"
 #include "And.h"
 #include "Not.h"
@@ -24,31 +23,34 @@ boost::shared_ptr<ICondition> CConditionFactory::createCondition(const shared::C
    boost::shared_ptr<ICondition> condition;
 
    if (configuration.empty())
-   {
-      condition.reset(new CEmpty);
-   }
-   else if (configuration.hasValue("is"))
+      return condition;
+
+   if (configuration.hasValue("is"))
    {
       condition.reset(new CIs(configuration.get<shared::CDataContainer>("is"), m_dbAcquisitionRequester));
+      return condition;
    }
-   else if (configuration.hasValue("and"))
+   
+   if (configuration.hasValue("and"))
    {
       condition.reset(new CAnd(configuration.get<std::vector<shared::CDataContainer> >("and"), *this));
+      return condition;
    }
-   else if (configuration.hasValue("or"))
+   
+   if (configuration.hasValue("or"))
    {
       condition.reset(new COr(configuration.get<std::vector<shared::CDataContainer> >("or"), *this));
+      return condition;
    }
-   else if (configuration.hasValue("not"))
+   
+   if (configuration.hasValue("not"))
    {
       condition.reset(new CNot(configuration.get<shared::CDataContainer>("not"), *this));
+      return condition;
    }
 
-   if (!condition)
-   {
-      YADOMS_LOG(error) << "Invalid rule condition configuration : " << configuration.serialize();
-      YADOMS_LOG(error) << "data : " << configuration.serialize();
-   }
+   YADOMS_LOG(error) << "Invalid rule condition configuration : " << configuration.serialize();
+   YADOMS_LOG(error) << "data : " << configuration.serialize();
 
    return condition;
 }
