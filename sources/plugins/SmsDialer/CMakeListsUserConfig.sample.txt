@@ -12,6 +12,9 @@ set(USE_PKGCONFIG ON)
 # For Windows
 set(GAMMU_ROOT "/path/to/Gammu/gammu-1.34.0")
 
+# For Linux
+set(GAMMU_ROOT "/path/to/gammu-1.34.0/build")
+
 # For Raspberry cross-compilation
 #set(GAMMU_ROOT "/path/to/Gammu/gammu-1.34.0/raspberrypi")
 
