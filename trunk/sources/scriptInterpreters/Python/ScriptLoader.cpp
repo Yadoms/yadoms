@@ -5,11 +5,19 @@
 #include "PythonBorrowedObject.h"
 
 
+// Main scripts folder (subfolder of Yadoms main folder)
+static const std::string ScriptsFolder("scripts");
+
+// Add prefix to filename, to avoid confusing with existing Python module
+// (In Python, filename also serves as module name, and modules are globals)
+// So script full path becomes : {scriptName}/yadoms_{scriptName}
+static const std::string ScriptFilenamePrefix("yadoms_");
+
 // Function name of the Python script entry point
 static const std::string ScriptEntryPoint("yMain");
 
-CScriptLoader::CScriptLoader(const std::string& scriptPath)
-   :m_scriptPath(scriptPath)
+CScriptLoader::CScriptLoader(const std::string& scriptName)
+   :m_scriptFile(boost::filesystem::path(ScriptsFolder) / boost::filesystem::path(scriptName) / boost::filesystem::path(ScriptFilenamePrefix + scriptName))
 {
 }
 
@@ -19,18 +27,17 @@ CScriptLoader::~CScriptLoader()
 
 void CScriptLoader::load()
 {
-   //TODO  et '/' et '\' dans les chemins
    // Check script path
-   if (!boost::filesystem::exists(m_scriptPath))
-      throw CRunnerException((boost::format("script file %1% doesn't exist") % m_scriptPath).str());
+   if (!boost::filesystem::exists(m_scriptFile))
+      throw CRunnerException((boost::format("script file %1% doesn't exist") % m_scriptFile).str());
 
    // Add script path to Python system path
    CPythonBorrowedObject sysPathObject(PySys_GetObject("path"));
-   CPythonObject scriptAbsolutePath(PyString_FromString(boost::filesystem::absolute(m_scriptPath).parent_path().string().c_str()));
+   CPythonObject scriptAbsolutePath(PyString_FromString(boost::filesystem::absolute(m_scriptFile).parent_path().string().c_str()));
    PyList_Append(*sysPathObject, *scriptAbsolutePath);
 
    // Convert script path as Python string
-   std::string moduleName(boost::filesystem::path(m_scriptPath).stem().string());
+   std::string moduleName(m_scriptFile.stem().string());
    CPythonObject pyModuleName(PyString_FromString(moduleName.c_str()));
    if (pyModuleName.isNull())
       throw CRunnerException((boost::format("unable to import module %1%") % moduleName).str());

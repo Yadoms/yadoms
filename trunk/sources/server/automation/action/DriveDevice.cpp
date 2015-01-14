@@ -13,10 +13,16 @@ CDeviceDrive::~CDeviceDrive()
 {         
 }
 
-void CDeviceDrive::doAction() const
+void CDeviceDrive::doAction()
 {
    m_pluginGateway->sendCommandAsync(m_keywordId, m_valueToSet);
 }
+
+void CDeviceDrive::stopAction()
+{
+   // Nothing to do here, as doAction is not a blocking method 
+}
+
 
 } } // namespace automation::action	
 	

@@ -21,8 +21,8 @@ public:
 
    // IInterpreter implementation
    virtual bool isAvailable() const;
-   virtual bool canInterpret(const std::string& scriptPath) const;
-   virtual boost::shared_ptr<shared::script::IRunner> createRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) const;
+   virtual bool canInterpret(const std::string& scriptName) const;
+   virtual boost::shared_ptr<shared::script::IRunner> createRunner(const std::string& scriptName, const shared::CDataContainer& scriptConfiguration) const;
   // [END] IInterpreter implementation
 
 private:

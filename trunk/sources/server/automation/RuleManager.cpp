@@ -35,7 +35,16 @@ void CRuleManager::start()
    // Start rules
    std::vector<boost::shared_ptr<database::entities::CRule> > rules = getRules();
    for (std::vector<boost::shared_ptr<database::entities::CRule> >::const_iterator it = rules.begin(); it != rules.end(); ++it)
-      startRule((*it)->Id);
+   {
+      try
+      {
+         startRule((*it)->Id);     
+      }
+      catch (CRuleException&)
+      {
+         YADOMS_LOG(error) << "Unable to start rule " << (*it)->Name() << ", skipped";
+      }
+   }
 }
 
 void CRuleManager::stop()

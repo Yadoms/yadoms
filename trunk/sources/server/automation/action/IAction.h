@@ -17,7 +17,12 @@ namespace automation { namespace action
       //-----------------------------------------------------
       ///\brief               Do the action
       //-----------------------------------------------------
-      virtual void doAction() const = 0;
+      virtual void doAction() = 0;
+
+      //-----------------------------------------------------
+      ///\brief               Stop the action
+      //-----------------------------------------------------
+      virtual void stopAction() = 0;
    };
 	
 } } // namespace automation::action	

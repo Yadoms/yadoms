@@ -23,7 +23,7 @@ namespace automation { namespace action { namespace script
 
    protected:
       // IRunnerFactory Implementation
-      virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration);
+      virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(const std::string& scriptName, const shared::CDataContainer& scriptConfiguration);
       // [END] IRunnerFactory Implementation
 
       //-----------------------------------------------------
@@ -48,11 +48,11 @@ namespace automation { namespace action { namespace script
 
       //-----------------------------------------------------
       ///\brief               Get the interpreter needed to run a script
-      ///\param[in] scriptPath Script full path
+      ///\param[in] scriptName Script name
       ///\return              The first interpreter found supporting this script
       ///\throw CScriptInterpreterNotFound No corresponding script interpreter was found
       //-----------------------------------------------------
-      boost::shared_ptr<shared::script::IInterpreter> getAssociatedInterpreter(const std::string& scriptPath);
+      boost::shared_ptr<shared::script::IInterpreter> getAssociatedInterpreter(const std::string& scriptName);
 
    private:
       //-----------------------------------------------------

@@ -26,18 +26,18 @@ namespace shared { namespace script
 
       //-----------------------------------------------------
       ///\brief                  Check if the interpreter can interpret a script file
-      ///\param[in] scriptPath   Full path of script file
+      ///\param[in] scriptName   Script name
       ///\return                 true if the script file is supported
       //-----------------------------------------------------
-      virtual bool canInterpret(const std::string& scriptPath) const = 0;
+      virtual bool canInterpret(const std::string& scriptName) const = 0;
 
       //-----------------------------------------------------
       ///\brief                  Create a script runner with associated file
-      ///\param[in] scriptPath   Full path of script file
+      ///\param[in] scriptName   Script name
       ///\param[in] scriptConfiguration   Configuration of the script
       ///\return                 The created script instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<IRunner> createRunner(const std::string& scriptPath, const CDataContainer& scriptConfiguration) const = 0;
+      virtual boost::shared_ptr<IRunner> createRunner(const std::string& scriptName, const CDataContainer& scriptConfiguration) const = 0;
    };
 	
 } } // namespace shared::script

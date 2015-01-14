@@ -8,7 +8,7 @@ CInitializer::CInitializer()
    // Python API documentation says that Py_SetProgramName doesn't modify its parameter, but this parameter
    // is not defined as const...
    Py_SetProgramName(const_cast<char*>(shared::CFileSystemExtension::getModuleFullPath().string().c_str()));
-   Py_Initialize();
+   Py_InitializeEx(0);
 }
 
 CInitializer::~CInitializer()

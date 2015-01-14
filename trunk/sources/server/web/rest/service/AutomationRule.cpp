@@ -4,6 +4,7 @@
 #include "web/rest/RestDispatcherHelpers.hpp"
 #include "shared/Log.h"
 #include "web/rest/Result.h"
+#include "automation/RuleException.hpp"
 
 namespace web { namespace rest { namespace service {
 
@@ -100,10 +101,14 @@ namespace web { namespace rest { namespace service {
       {
          database::entities::CRule p;
          p.fillFromContent(requestContent);
-         int idCreated = m_rulesManager->createRule(p);
 
+         int idCreated = m_rulesManager->createRule(p);
          boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(idCreated);
          return CResult::GenerateSuccess(ruleFound);
+      }
+      catch (CRuleException&)
+      {
+         return CResult::GenerateError("Fail to create rule");
       }
       catch(std::exception &ex)
       {
@@ -140,6 +145,10 @@ namespace web { namespace rest { namespace service {
          }
 
          return CResult::GenerateError("invalid parameter. Can not retreive rule id in url");
+      }
+      catch (CRuleException&)
+      {
+         return CResult::GenerateError("Fail to update rule");
       }
       catch(std::exception &ex)
       {

@@ -14,8 +14,8 @@ namespace automation { namespace action { namespace script
       //--------------------------------------------------------------
       /// \brief	                        Constructor
       //--------------------------------------------------------------
-      CInterpreterNotFound(const std::string& scriptPath)
-         :CException(std::string("Script interpreter not found for script file " + scriptPath))
+      CInterpreterNotFound(const std::string& scriptName)
+         :CException(std::string("Script interpreter not found for script " + scriptName))
       {
       }
 
