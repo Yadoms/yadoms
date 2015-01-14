@@ -58,24 +58,18 @@ bool CThreadBase::waitForStop(int seconds)
 {
    BOOST_ASSERT(m_thread);
 
-   bool stopped = false;
-
 #ifndef _DEBUG // Timeout is a last-chance solution : it must not be used in DEBUG. Threads have to stop gracefully.
    if (seconds)
    {
       // A timeout was specified
-      stopped = m_thread->timed_join(boost::posix_time::time_duration(0, 0, seconds, 0)); 
+      return m_thread->timed_join(boost::posix_time::time_duration(0, 0, seconds, 0)); 
    }
-   else
 #endif
-   {
-      // no timeout specified
-      m_thread->join();
-      stopped = true;
-      m_stopping = false;
-   }
 
-   return stopped;
+   // no timeout specified
+   m_thread->join();
+   m_stopping = false;
+   return true;
 }
 
 bool CThreadBase::isStopping() const

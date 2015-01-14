@@ -22,8 +22,8 @@ CRule::CRule(const database::entities::CRule& ruleData,
 
 CRule::~CRule()
 {
-   stop();
    m_condition->unregisterFromNotificationCenter(m_notificationObserver);
+   stop();
 }
 
 void CRule::start()
@@ -40,10 +40,16 @@ void CRule::stop()
 
 void CRule::doWork()
 {
-   while (true)
+   try
    {
-      m_condition->wait();
-      m_actions->doAll();
+      while (true)
+      {
+         m_condition->wait();
+         m_actions->doAll();
+      }
+   }
+   catch (boost::thread_interrupted&)
+   {
    }
 }
 

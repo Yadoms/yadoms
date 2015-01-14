@@ -23,6 +23,11 @@ void CConditionRoot::wait()
       int event = m_eventHandler.waitForEvents();
       BOOST_ASSERT(event == kConditionMet);
    }
+   else
+   {
+      // Need an interrupt point even if no condition
+      boost::this_thread::interruption_point();
+   }
 }
 
 void CConditionRoot::registerToNotificationCenter(boost::shared_ptr<INotificationObserverForRulesManager> notificationObserver)
