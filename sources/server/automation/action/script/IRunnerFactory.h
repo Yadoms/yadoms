@@ -17,11 +17,12 @@ namespace automation { namespace action { namespace script
 
       //-----------------------------------------------------
       ///\brief               Create a script runner
-      ///\param[in] scriptPath    Script path
+      ///\param[in] scriptName    Script name
       ///\param[in] configuration Script configuration
       ///\return              The script runner instance
+      ///\throw CInvalidParameter if unable to create script runner
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) = 0;
+      virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(const std::string& scriptName, const shared::CDataContainer& scriptConfiguration) = 0;
    };
 
 } } } // namespace automation::action::script

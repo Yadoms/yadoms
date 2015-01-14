@@ -43,7 +43,7 @@ void CActionList::createAction(const shared::CDataContainer& configuration, boos
 
    if (!action)
    {
-      YADOMS_LOG(error) << "Invalid rule condition configuration : " << configuration.serialize();
+      YADOMS_LOG(error) << "Invalid rule action configuration : " << configuration.serialize();
       YADOMS_LOG(error) << "data : " << configuration.serialize();
       return;
    }
@@ -56,6 +56,13 @@ void CActionList::doAll()
    for (std::vector<boost::shared_ptr<action::IAction> >::const_iterator it = m_actions.begin(); it != m_actions.end(); ++it)
       (*it)->doAction();
 }
+
+void CActionList::stopPending()
+{
+   for (std::vector<boost::shared_ptr<action::IAction> >::const_iterator it = m_actions.begin(); it != m_actions.end(); ++it)
+      (*it)->stopAction();
+}
+
 
 } // namespace automation	
 	

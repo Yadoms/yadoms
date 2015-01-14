@@ -30,6 +30,7 @@ namespace automation
    protected:
       // IActionList Implementation
       virtual void doAll();
+      virtual void stopPending();
       // [END] IActionList Implementation
       
       //-----------------------------------------------------

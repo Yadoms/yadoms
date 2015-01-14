@@ -38,25 +38,25 @@ bool CPython::isAvailable() const
    return true;
 }
 
-bool CPython::canInterpret(const std::string& scriptPath) const
+bool CPython::canInterpret(const std::string& scriptName) const
 {
    try
    {
-      CScriptLoader loader(scriptPath);
+      CScriptLoader loader(scriptName);
       loader.load();
    }
    catch(CRunnerException& e)
    {
-      YADOMS_LOG(error) << scriptPath << " : can not interpret, " << e.what();
+      YADOMS_LOG(error) << scriptName << " : can not interpret, " << e.what();
       return false;
    }
 
-   YADOMS_LOG(information) << scriptPath << " can be interpreted";
+   YADOMS_LOG(information) << scriptName << " can be interpreted";
    return true;
 }
 
-boost::shared_ptr<shared::script::IRunner> CPython::createRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) const
+boost::shared_ptr<shared::script::IRunner> CPython::createRunner(const std::string& scriptName, const shared::CDataContainer& scriptConfiguration) const
 {
-   boost::shared_ptr<shared::script::IRunner> runner(new CRunner(scriptPath, scriptConfiguration));
+   boost::shared_ptr<shared::script::IRunner> runner(new CRunner(scriptName, scriptConfiguration));
    return runner;
 }

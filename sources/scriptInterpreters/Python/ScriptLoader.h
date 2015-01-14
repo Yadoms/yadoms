@@ -9,10 +9,10 @@ class CScriptLoader : public IScriptLoader
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
-   ///\param[in] scriptPath   Full path of script file
+   ///\param[in] scriptName   Script name
    /// \throw CRunnerException if unable to load script
    //--------------------------------------------------------------
-   CScriptLoader(const std::string& scriptPath);
+   CScriptLoader(const std::string& scriptName);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -28,7 +28,7 @@ private:
    //--------------------------------------------------------------
    /// \brief	Full path of script file
    //--------------------------------------------------------------
-   const std::string& m_scriptPath;
+   const boost::filesystem::path m_scriptFile;
 
    //--------------------------------------------------------------
    /// \brief	Module Python object

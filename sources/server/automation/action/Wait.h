@@ -23,7 +23,8 @@ namespace automation { namespace action
 
    protected:
       // IAction Implementation
-      virtual void doAction() const;
+      virtual void doAction();
+      virtual void stopAction();
       // [END] IAction Implementation
 
    private:

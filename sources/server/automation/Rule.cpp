@@ -34,6 +34,7 @@ void CRule::start()
 
 void CRule::stop()
 {
+   m_actions->stopPending();
    m_thread->stop();
    m_thread.reset();
 }

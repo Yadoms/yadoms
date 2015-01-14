@@ -25,7 +25,8 @@ namespace automation { namespace action
 
    protected:
       // IAction Implementation
-      virtual void doAction() const;
+      virtual void doAction();
+      virtual void stopAction();
       // [END] IAction Implementation
 
    private:
@@ -35,14 +36,19 @@ namespace automation { namespace action
      boost::shared_ptr<script::IRunnerFactory> m_scriptRunnerFactory;
 
       //-----------------------------------------------------
-      ///\brief               The script path
+      ///\brief               The script name
       //-----------------------------------------------------
-      const std::string m_scriptPath;
+      const std::string m_scriptName;
 
       //-----------------------------------------------------
       ///\brief               The script configuration
       //-----------------------------------------------------
       const shared::CDataContainer m_scriptConfiguration;
+
+      //-----------------------------------------------------
+      ///\brief               The script runner
+      //-----------------------------------------------------
+      boost::shared_ptr<shared::script::IRunner> m_runner;
    };
 	
 } } // namespace automation::action

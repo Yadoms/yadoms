@@ -13,9 +13,14 @@ CWait::~CWait()
 {         
 }
 
-void CWait::doAction() const
+void CWait::doAction()
 {
    boost::this_thread::sleep(m_delay);
+}
+
+void CWait::stopAction()
+{
+   // Nothing to do, as sleep call is interrupted by the requestToStop on the thread
 }
 
 } } // namespace automation::action	

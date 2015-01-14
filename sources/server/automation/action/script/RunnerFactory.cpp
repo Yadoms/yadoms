@@ -83,13 +83,13 @@ std::vector<boost::filesystem::path> CRunnerFactory::findInterpreterDirectories(
 }
 
 boost::shared_ptr<shared::script::IRunner> CRunnerFactory::createScriptRunner(
-   const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration)
+   const std::string& scriptName, const shared::CDataContainer& scriptConfiguration)
 {
    try
    {
-      boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(scriptPath);
+      boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(scriptName);
 
-      return scriptInterpreter->createRunner(scriptPath, scriptConfiguration);
+      return scriptInterpreter->createRunner(scriptName, scriptConfiguration);
    }
    catch (CInterpreterNotFound& e)
    {
@@ -103,7 +103,7 @@ boost::shared_ptr<shared::script::IRunner> CRunnerFactory::createScriptRunner(
    }
 }
 
-boost::shared_ptr<shared::script::IInterpreter> CRunnerFactory::getAssociatedInterpreter(const std::string& scriptPath)
+boost::shared_ptr<shared::script::IInterpreter> CRunnerFactory::getAssociatedInterpreter(const std::string& scriptName)
 {
    // Update loaded interpreters list if necessary
    loadInterpreters();
@@ -113,11 +113,11 @@ boost::shared_ptr<shared::script::IInterpreter> CRunnerFactory::getAssociatedInt
       itInterpreter != m_LoadedInterpreters.end(); ++itInterpreter)
    {
       boost::shared_ptr<shared::script::IInterpreter> interpreter(itInterpreter->second->getInterpreter());
-      if (interpreter->canInterpret(scriptPath) && interpreter->isAvailable())
+      if (interpreter->canInterpret(scriptName) && interpreter->isAvailable())
          return interpreter;
    }
 
-   throw CInterpreterNotFound(scriptPath);
+   throw CInterpreterNotFound(scriptName);
 }
 
 } } } // namespace automation::action::script
