@@ -16,8 +16,8 @@ namespace automation { namespace condition
 CIs::CIs(const shared::CDataContainer& configuration, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester)
    :m_keywordId(configuration.get<int>("keywordId")),
    m_operator(configuration.get<EOperators>("operator")),
-   m_expectedValue(configuration.get<std::string>("refValue")),
-   m_value(dbAcquisitionRequester->getKeywordLastData(m_keywordId)->Value)
+   m_value(dbAcquisitionRequester->getKeywordLastData(m_keywordId)->Value),
+   m_expectedValue(configuration.get<std::string>("refValue"))
 {
 }
 

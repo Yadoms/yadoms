@@ -1,3 +1,4 @@
+#pragma once
 #include "ISQLiteResultAdapter.h"
 #include "database/entities/Entities.h"
 

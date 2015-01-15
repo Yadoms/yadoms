@@ -8,7 +8,7 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CBarometric::CBarometric(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
-   :m_pressure( KeyWordName ), m_PluginName ( PluginName )
+   :m_PluginName ( PluginName ), m_pressure( KeyWordName )
 {
    	if (!context->keywordExists( m_PluginName, m_pressure.getKeyword()))
 	{

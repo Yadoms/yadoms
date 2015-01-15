@@ -7,7 +7,7 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CTemp::CTemp(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName ,std::string KeyWordName)
-   :m_temperature( KeyWordName ), m_PluginName ( PluginName )
+   :m_PluginName ( PluginName ), m_temperature( KeyWordName )
 {
 	if (!context->keywordExists( m_PluginName, m_temperature.getKeyword()))
 	{
