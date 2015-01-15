@@ -6,6 +6,7 @@
 #include "PythonObject.h"
 #include <shared/DataContainer.h>
 #include "ScriptLoader.h"
+#include "SubInterpreter.h"
 
 
 // Function name of the Python script entry point
@@ -26,9 +27,14 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
 
    try
    {
+      // Create sub-interpreter (needed for thread context)
+      CSubInterpreter interpreter;
+
+      // Load script file
       CScriptLoader loader(m_scriptName);
       loader.load();
 
+      // Run the script
       CPythonObject pyReturnValue(PyObject_CallObject(loader.yMain().get(), NULL));
       if (pyReturnValue.isNull())
          throw CRunnerException("Script exited with error");

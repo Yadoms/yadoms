@@ -8,6 +8,7 @@
 #include "Runner.h"
 #include "RunnerException.hpp"
 #include "ScriptLoader.h"
+#include "SubInterpreter.h"
 
 // Declare the script interpreter
 IMPLEMENT_SCRIPT_INTERPRETER(CPython)
@@ -42,6 +43,9 @@ bool CPython::canInterpret(const std::string& scriptName) const
 {
    try
    {
+      // Create sub-interpreter (needed for thread context)
+      CSubInterpreter interpreter;
+
       CScriptLoader loader(scriptName);
       loader.load();
    }

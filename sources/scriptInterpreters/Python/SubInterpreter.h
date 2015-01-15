@@ -1,27 +1,30 @@
 #pragma once
-#include "IInitializer.h"
+#include "ISubInterpreter.h"
 #include "PythonLibInclude.h"
 
 //--------------------------------------------------------------
-/// \brief	Python initializer to support RAII idiom
+/// \brief	Python sub-interpreter
 //--------------------------------------------------------------
-class CInitializer : public IInitializer
+class CSubInterpreter : public ISubInterpreter
 {
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
    //--------------------------------------------------------------
-   CInitializer();
+   CSubInterpreter();
 
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~CInitializer();
+   virtual ~CSubInterpreter();
+
+   // ISubInterpreter Implementation
+   // [END] ISubInterpreter Implementation
 
    //--------------------------------------------------------------
-   /// \brief	The global Python thread state
+   /// \brief	The Python thread state
    //--------------------------------------------------------------
-   PyThreadState* m_globalPythonThreadState;
+   PyThreadState* m_pythonThreadState;
 };
 
 
