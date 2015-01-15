@@ -6,91 +6,105 @@
       <tr>
          <td data-i18n="modals.dashboard.sub-windows.recipients.table.firstName"></td>
          <td data-i18n="modals.dashboard.sub-windows.recipients.table.lastName"></td>
-         <td data-i18n="modals.dashboard.sub-windows.plugins.table.actions"></td>
+         <td data-i18n="modals.dashboard.sub-windows.recipients.table.actions"></td>
       </tr>
       <!-- recipients list will be listed here-->
    </table>
 </div>
 <script>
-   var recipientList = [];
-
+   /**
+    * Initialize the dashboard recipient page.
+    * It loads data from server and show the recipient table
+    */
    function initializeRecipientsDashboard() {
       //we remove all rows except header
       $("table#recipients-list").find("tr:gt(0)").remove();
-      //we clear recipients list array
-      recipientList = [];
 
-       $("#btn-add-new-recipient").unbind("click").bind("click", addNewRecipient);
+      //bind the add recipient button click
+      $("#btn-add-new-recipient").unbind("click").bind("click", addNewRecipient());
 
+      //get all recipients from server and add them to dom
       RecipientManager.list(function(recipientList) {
          //foreach result we append a <tr>
          $.each(recipientList, function(index, value) {
             addRecipientToDom(value);
          });
-
       });
    }
 
+   /**
+    * Get the dom row for a recipient
+    * @param recipient   The recipient to get the dom row
+    * @return The dom row
+    */
    function getRecipientDomRow(recipient) {
       return $("table#recipients-list").find("tr[recipient-id='" + recipient.id + "']");
    }
 
-   function getRecipientFieldsDomRow() {
-      return $("table#recipients-list").find("tr.recipient-fields");
+   /**
+    * Create a recipient row
+    * @param recipient   The recipient attached to the new row
+    */
+   function createRecipientRow(recipient) {
+      $("table#recipients-list").append("<tr recipient-id=\"" + recipient.id + "\" class=\"recipient\"><td class=\"recipient-firstName\"></td><td class=\"recipient-lastName\"></td><td class=\"recipient-actions\"></td></tr>");
    }
 
-   function getFieldDomRow(field) {
-      return $("table#fields-list").find("tr[field-id='" + field.id + "']");
-   }
-
-
-   function addRecipientToDom(recip) {
+   /**
+    * Update a recipient dom row with new data
+    * @param recipient   The recipient which row is to update
+    */
+   function updateRecipientDom(recipient) {
       var actionsBtns = "<div class=\"btn-group\">\n" +
+              "<button type=\"button\" class=\"btn btn-primary btn-configure\" data-i18n=\"[title]modals.dashboard.sub-windows.recipients.edit\"><span class=\"glyphicon glyphicon-pencil\"></span></button>\n" +
               "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.recipients.delete\"><span class=\"glyphicon glyphicon-trash\"></span></button>\n" +
               "</div>";
 
+      //retrieve the row
+      var $recipientRow = getRecipientDomRow(recipient);
 
-      var $firstName = "<span>" + recip.firstName + "</span>";
-      var $lastName = "<span>" + recip.lastName + "</span>";
+      var $firstName = "<span>" + recipient.firstName + "</span>";
+      var $lastName = "<span>" + recipient.lastName + "</span>";
 
-      //we add it to the DOM
-      var $recipientList = $("table#recipients-list");
-
-      $recipientList.append("<tr recipient-id=\"" + recip.id + "\" class=\"recipient\"><td class=\"recipient-firstName\"></td><td class=\"recipient-lastName\"></td><td class=\"recipient-actions\"></td></tr>");
-
-      var $recipientRow = getRecipientDomRow(recip);
       //we fill the data
       $recipientRow.find("td.recipient-firstName").html($firstName);
       $recipientRow.find("td.recipient-lastName").html($lastName);
 
       //we add actions to the plugin
-      $recipientRow.find("td.recipient-actions").append(actionsBtns);
+      $recipientRow.find("td.recipient-actions").empty().append(actionsBtns);
 
       //we bind event on the different actions
-      $recipientRow.find("button.btn-delete").unbind('click').bind('click', deleteRecipient(recip));
+      $recipientRow.find("button.btn-delete").unbind('click').bind('click', deleteRecipient(recipient));
+      $recipientRow.find("button.btn-configure").unbind('click').bind('click', configureRecipient(recipient));
 
-      //we bind a click on row to show fields
-      $recipientRow.unbind('click').bind('click', clickRecipient(recip));
-
+      //apply i18n
       $recipientRow.i18n();
    }
 
-   function deleteRecipient(recip) {
-      //recip represent the recipient concerned
+   /**
+    * Add a recipient to the table
+    * @param recipient   The recipient to add
+    */
+   function addRecipientToDom(recipient) {
+      //we add it to the DOM
+      createRecipientRow(recipient);
+      updateRecipientDom(recipient);
+   }
+
+   /**
+    * Provide a function to delete a recipient (from server; and in DOM)
+    * @param recipientToDelete The recipient to delete
+    * @returns {Function} a function to call to delete a recipient
+    */
+   function deleteRecipient(recipientToDelete) {
+      //recipientToDelete represent the recipient concerned
       return function() {
          modals.confirmation.load(function() {
-            showConfirmModal(btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.recipients.confirmRecipientDeletion", {firstName:recip.firstName, lastName:recip.lastName}),
+            showConfirmModal(btnKind.yesNo, null, $.t("modals.dashboard.sub-windows.recipients.confirmRecipientDeletion", {firstName:recipientToDelete.firstName, lastName:recipientToDelete.lastName}),
             function () {
                //deletion has been confirmed
-               RecipientManager.deleteFromServer(recip, function() {
-                  //we remove recip from array
-                  var i = recipientList.indexOf(recip);
-                  if(i != -1) {
-                     recipientList.splice(i, 1);
-                  }
-//
-                  //we remove recip from dom
-                  getRecipientDomRow(recip).remove();
+               RecipientManager.deleteFromServer(recipientToDelete, function() {
+                  //we remove recipientToDelete from dom
+                  getRecipientDomRow(recipientToDelete).remove();
                });
             });
          });
@@ -98,106 +112,61 @@
    }
 
 
-   function addNewRecipient() {
-      /*
-      modals.pluginAdd.load(function() {
-         askPluginTypes(function(pluginType) {
-            var pi = new PluginInstance(null, "", pluginType, "", 1, "user");
-            //we get package.json
-            PluginInstanceManager.downloadPackage(pi, function() {
-               //we ask for configuration modal async
-               modals.pluginConfigure.load(function() {
-                  //we launch configureInstance GUI
-                  configurePluginInstance(pi, function() {
-                     //we ask for pluginInstance creation
-                     PluginInstanceManager.createToServer(pi, function(result) {
-                        //if it's okay
-                        if (result) {
-                           notifySuccess($.t("modals.configure-plugin.recipientsuccessfullyCreated"));
-                           addPluginInstanceToDom(pi);
-                           pluginInstanceList.push(pi);
-                        }
-                     });
-                  });
-               });
-            });
-         });
+
+   /**
+    * Configure a recipient (show modal)
+    * @param recipient The recipient to update
+    * @param callback The callback used when operation is finished
+    */
+    function configureRecipientInternal(recipient, callback) {
+      //recipient represent the recipient concerned
+      event.stopPropagation();
+      modals.recipientConfigure.load(function() {
+         showRecipientConfigurationModal(recipient, callback);
       });
-      */
    }
 
 
-   function clickRecipient(recip) {
-      //recip represent the recipient concerned
+   /**
+    * Provide a function which display a modal form updating a recipient,
+    * and after user validation, send data to server
+    * @param recipientToConfigure The recipient to configure
+    * @returns {Function} The configuration function to call to update a recipient
+    */
+   function configureRecipient(recipientToConfigure) {
       return function() {
-            var $recipientRow = getRecipientDomRow(recip);
-
-            var selectedClass = "info";
-
-            //we remove the line that contains fields information
-            var $details = getRecipientFieldsDomRow();
-            if (!isNullOrUndefinedOrEmpty($details))
-               $details.remove();
-
-            //we look if this recipient is already selected
-            if (!$recipientRow.hasClass(selectedClass)) {
-               $recipientRow.siblings(".recipient").find("span.deploy").removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
-               //we select the line
-               $recipientRow.find("span.deploy").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
-               $recipientRow.addClass(selectedClass).siblings(".recipient").removeClass(selectedClass);
-
-               //we create recipient fields table
-               $recipientRow.after("<tr recipient-id=\"" + recip.id + "\" class=\"recipient-fields " + selectedClass + "\"><td colspan=\"4\">" +
-               "<div id=\"fields-list\" />"+
-               "</td></tr>");
-
-               $recipientFields = $("div#fields-list");
-
-
-               $.each(recip.fields, function (index, field) {
-                  $recipientFields.append("<tr field-id=\"" + field.id + "\"><td class=\"field-name vert-align\"></td><td class=\"field-value vert-align\"></td></tr>");
-                  //var $fieldRow = getFieldDomRow(field);
-                  ////we fill the data
-                  //var name = "<span>" + decodeURIComponent(field.name) + "</span>";
-                  //var value = "<span></span>";
-//
-                  //$fieldRow.find("td.field-name").html(name);
-                  //$fieldRow.find("td.field-value").html(value);
-
-                  //we append the text section
-
-                  var valueParameter = new StringParameterHandler("common.recipientFields.", field.name, {required:"true", regex:field.verificationRegex}, field.value);
-
-//                  $fieldRow.find("td.field-value").append(valueParameter.getDOMObject());
-                  $recipientFields.append(valueParameter.getDOMObject());
-                  //we finish friendlyNameParameter instantiation
-                  if ($.isFunction(valueParameter.applyScript))
-                     valueParameter.applyScript();
-
-
-
-
-
-                  //we add actions to the keyword
-                  //$fieldRow.find("td.keyword-actions").append(actionsBtns);
-
-                  //we prevent from renaming keywords on system devices
-                  //if ((!isNullOrUndefined(device.attachedPlugin)) && (device.attachedPlugin.category == PluginInstanceManager.systemCategory)) {
-                  //   $fieldRow.find("button.btn-configure").addClass("disabled");
-                  //}
-                  //else {
-                  //   //we bind event on the different actions
-                  //   $fieldRow.find("button.btn-configure").unbind('click').bind('click', configureKeyword(keyword));
-                  //}
-               });
-
-               $recipientFields.i18n();
-            }
-            else {
-               $recipientRow.removeClass(selectedClass);
-               $recipientRow.find("span.deploy").removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
-            }
-      }
+         //show the recipient configuration modal
+         configureRecipientInternal(recipientToConfigure, function (recipientConfigured) {
+            //on validation success, update recipient to server
+            RecipientManager.updateToServer(recipientConfigured, function(result, recipientUpdated){
+               //on server operation success, update recipient table with updated data
+               if(result)
+                  updateRecipientDom(recipientUpdated);
+            });
+         });
+      };
    }
+
+   /**
+    * Provide a function which create an empty recipient and ask user to fill it
+    * @returns {Function} The function which create a recipient and show modal
+    */
+   function addNewRecipient() {
+      return function() {
+         //create an empty recipient
+         var emptyRecipient = new Recipient(undefined, "", "", []);
+
+         //show the recipient configuration modal
+         configureRecipientInternal(emptyRecipient, function (filledRecipient) {
+            //on validation success, add the completed recipient to server
+            RecipientManager.addToServer(filledRecipient, function(result, recipientAddedToServer){
+               //on server operation success, add the recipient to the dashboard table
+               if(result)
+                  addRecipientToDom(recipientAddedToServer);
+            });
+         });
+      };
+   }
+
 
 </script>

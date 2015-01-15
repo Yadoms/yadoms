@@ -110,7 +110,7 @@ RecipientManager.updateToServer = function(recip, callback) {
 
          //we call the callback with true as a ok result
          if ($.isFunction(callback))
-            callback(true);
+            callback(true, recip);
       })
       .fail(function() {
          notifyError($.t("objects.generic.errorUpdating", {objectName : recip.firstName + " " + recip.lastName}));
@@ -118,4 +118,40 @@ RecipientManager.updateToServer = function(recip, callback) {
          if ($.isFunction(callback))
             callback(false);
       });
+};
+
+
+RecipientManager.addToServer = function(recip, callback) {
+   assert(!isNullOrUndefined(recip), "recipient must be defined");
+   $.ajax({
+      type: "POST",
+      url: "/rest/recipient",
+      data: JSON.stringify(recip),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json"
+   })
+       .done(function(data) {
+          //we parse the json answer
+          if (data.result != "true")
+          {
+             notifyError($.t("objects.generic.errorUpdating", {objectName : recip.firstName + " " + recip.lastName}), JSON.stringify(data));
+             //launch callback with false as ko result
+             if ($.isFunction(callback))
+                callback(false);
+             return;
+          }
+          //it's okay
+          //we update our information from the server
+          recip = RecipientManager.factory(data.data);
+
+          //we call the callback with true as a ok result
+          if ($.isFunction(callback))
+             callback(true, recip);
+       })
+       .fail(function() {
+          notifyError($.t("objects.generic.errorUpdating", {objectName : recip.firstName + " " + recip.lastName}));
+          //launch callback with false as ko result
+          if ($.isFunction(callback))
+             callback(false);
+       });
 };

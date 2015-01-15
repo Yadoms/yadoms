@@ -34,6 +34,7 @@ namespace database { namespace sqlite {
          virtual boost::shared_ptr<entities::CRecipient> getRecipient(const int recipientId);
          virtual boost::shared_ptr<entities::CRecipient> getRecipient(const std::string & firstName, const std::string & lastName);
          virtual bool exists(const std::string & firstName, const std::string & lastName);
+         virtual bool exists(const int id);
          virtual void removeRecipient(int recipientId);
          virtual void removeAllRecipients();
          // [END] IRecipientRequester implementation

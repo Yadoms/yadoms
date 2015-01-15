@@ -51,6 +51,13 @@ namespace database {
       virtual bool exists(const std::string & firstName, const std::string & lastName) = 0;
 
       //--------------------------------------------------------------
+      /// \brief                    Check is a recipient exists
+      /// \param [in] id            Recipient id
+      /// \return                   true if recipient exists
+      //--------------------------------------------------------------
+      virtual bool exists(const int id) = 0;
+
+      //--------------------------------------------------------------
       /// \brief                    Remove recipient 
       /// \param [in] recipientId   Recipient  Id
       /// \throw                    shared::exception::CEmptyResult if fails

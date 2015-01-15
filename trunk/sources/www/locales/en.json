@@ -9,19 +9,7 @@
       "apply" : "Apply",
       "add" : "Add",
       "resetToDefault" : "Reset to default",
-      "goBack" : "Go Back",
-      "recipientFields" : {
-         "email" : {
-            "name": "Email",
-            "description": "Recipient email",
-            "regexErrorMessage": "It must match a valid email address"
-         },
-         "mobile" : {
-            "name": "Mobile phone",
-            "description": "The mobile phone number of the recipient",
-            "regexErrorMessage": ""
-         }
-      }
+      "goBack" : "Go Back"
    },
    "mainPage" : {
       "menu" : {
@@ -171,6 +159,19 @@
          "title" : "QR Code de Yadoms",
          "text" : "Here is the QRCode of Yadoms. You can now flash it with your phone to access Yadoms everywhere."
       },
+      "recipient_configure" : {
+         "title" : "Edit a recipient",
+         "firstName" : {
+            "name": "First name",
+            "description": "The recipient first name",
+            "regexErrorMessage": ""
+         },
+         "lastName" : {
+            "name": "Last name",
+            "description": "The recipient last name",
+            "regexErrorMessage": ""
+         }
+      },
       "dashboard" : {
          "title" : "Dashboard",
          "sub-windows" : {
@@ -244,20 +245,15 @@
                "title" : "Recipients",
                "recipientListDescription" : "Here is the list of all recipients. You can create new recipients, manage and delete currents.",
                "new" : "Create a new recipient",
+               "edit" : "Edit the recipient",
                "delete" : "Delete the recipient",
+               "errorGettingRecipientList" : "An error has occurred acquiring recipient list",
+               "confirmRecipientDeletion" : "This action will delete the recipient __firstName__ __lastName__. Continue anyway ?",
                "table" : {
                   "firstName" : "First name",
                   "lastName" : "Last name",
                   "actions" : "Actions"
-               },
-               "fields" : {
-                  "table" : {
-                     "name" : "Name",
-                     "value" : "Value"
-                  }
-               },
-               "errorGettingRecipientList" : "An error has occurred acquiring recipient list",
-               "confirmRecipientDeletion" : "This action will delete the recipient __firstName__ __lastName__. Continue anyway ?"
+               }
             },
             "addons" : {
                "title" : "Addons"
@@ -396,7 +392,19 @@
         }
       },
       "recipient" : {
-         "errorGettingList" : "An error has occurred listing recipients"
+         "errorGettingList" : "An error has occurred listing recipients",
+         "fields" : {
+            "email" : {
+               "name": "Email",
+               "description": "Recipient email",
+               "regexErrorMessage": "It must match a valid email address"
+            },
+            "mobile" : {
+               "name": "Mobile phone",
+               "description": "The mobile phone number of the recipient",
+               "regexErrorMessage": ""
+            }
+         }
       },
       "generic" : {
          "errorUpdating" : "An error has occurred updating __objectName__",

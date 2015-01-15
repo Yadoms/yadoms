@@ -31,7 +31,7 @@ function StringParameterHandler(i18nContext, paramName, content, currentValue) {
       this.value =  this.value.substr(0,this.maximumLength);
 
    //we look for a regex pattern
-   if (!isNullOrUndefined(content.regex)) {
+   if (!isNullOrUndefinedOrEmpty(content.regex)) {
       this.regex = content.regex;
       this.regexErrorMessage = content.regexErrorMessage;
    }
