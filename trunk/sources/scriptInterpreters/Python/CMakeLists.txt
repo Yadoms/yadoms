@@ -18,6 +18,7 @@ if(PYTHONLIBS_FOUND)
       Initializer.h
       Initializer.cpp
       IScriptLoader.h
+      ISubInterpreter.h
       Python.h
       Python.cpp
       PythonBorrowedObject.h
@@ -29,6 +30,8 @@ if(PYTHONLIBS_FOUND)
       Runner.cpp
       ScriptLoader.h
       ScriptLoader.cpp
+      SubInterpreter.h
+      SubInterpreter.cpp
       RunnerException.hpp
    )
 
