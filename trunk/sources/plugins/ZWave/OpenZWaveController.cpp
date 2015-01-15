@@ -14,7 +14,7 @@
 #include "KeywordContainer.h"
 
 COpenZWaveController::COpenZWaveController()
-   :m_homeId(0), m_initFailed(false), m_nodesQueried(false), m_configuration(NULL), m_handler(NULL)
+   :m_homeId(0), m_initFailed(false), m_nodesQueried(false), m_handler(NULL), m_configuration(NULL)
 {
 
 }

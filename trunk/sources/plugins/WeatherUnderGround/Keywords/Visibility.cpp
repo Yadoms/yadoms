@@ -7,7 +7,7 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CVisibility::CVisibility(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
-   :m_visibility( KeyWordName ), m_PluginName ( PluginName )
+   :m_PluginName ( PluginName ), m_visibility( KeyWordName )
 {
 	if (!context->keywordExists( m_PluginName, m_visibility.getKeyword()))
 	{

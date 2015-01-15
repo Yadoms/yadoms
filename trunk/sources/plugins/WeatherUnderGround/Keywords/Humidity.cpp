@@ -7,7 +7,7 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CHumidity::CHumidity(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
-   :m_humidity( KeyWordName ), m_PluginName ( PluginName )
+   :m_PluginName ( PluginName ), m_humidity( KeyWordName )
 {
 	if (!context->keywordExists( m_PluginName, m_humidity.getKeyword()))
 	{

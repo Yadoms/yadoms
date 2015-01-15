@@ -7,7 +7,7 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CUV::CUV(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
-   :m_uv( KeyWordName ), m_PluginName ( PluginName )
+   :m_PluginName ( PluginName ), m_uv( KeyWordName )
 {
 	if (!context->keywordExists( m_PluginName, m_uv.getKeyword()))
 	{

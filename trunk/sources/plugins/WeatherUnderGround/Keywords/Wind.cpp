@@ -7,10 +7,10 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CWind::CWind(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string Prefix):
-    m_windDirection(Prefix + "WindDirection"),
-    m_windAverageSpeed(Prefix + "windAverageSpeed"),
-	m_windMaxSpeed (Prefix + "windMaxSpeed"),
-	m_PluginName ( PluginName )
+   m_PluginName ( PluginName ),
+   m_windDirection(Prefix + "WindDirection"),
+   m_windAverageSpeed(Prefix + "windAverageSpeed"),
+   m_windMaxSpeed (Prefix + "windMaxSpeed")
 {
 	if (!context->keywordExists( m_PluginName, m_windDirection.getKeyword()))
 	{

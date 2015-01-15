@@ -7,7 +7,7 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CWeatherIcon::CWeatherIcon(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
-   :m_weathercondition( KeyWordName ), m_PluginName ( PluginName )
+   :m_PluginName ( PluginName ), m_weathercondition( KeyWordName )
 {
 	if (!context->keywordExists( m_PluginName, m_weathercondition.getKeyword()))
 	{
