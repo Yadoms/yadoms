@@ -12,7 +12,7 @@
 #########################################
 ## Define the main folder name
 #########################################
-set(OPENZWAVE_DIR_NAME openzwave-1.0.791 )
+set(OPENZWAVE_DIR_NAME openzwave-1.2.919 )
 
 # User specific configuration
 include(CMakeListsUserConfig.txt OPTIONAL)
@@ -27,6 +27,7 @@ set(OPENZWAVE_MAIN_SOURCES
 		${OPENZWAVE_DIR_NAME}/cpp/src/DoxygenMain.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Driver.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Driver.cpp
+		${OPENZWAVE_DIR_NAME}/cpp/src/FatalErrorException.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Group.h
 		${OPENZWAVE_DIR_NAME}/cpp/src/Group.cpp
 		${OPENZWAVE_DIR_NAME}/cpp/src/Manager.h
@@ -77,6 +78,10 @@ set(OPENZWAVE_COMMANDCLASSES_SOURCES
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/ControllerReplication.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/CRC16Encap.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/CRC16Encap.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/DoorLock.cpp
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/DoorLock.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/DoorLockLogging.cpp
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/DoorLockLogging.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/EnergyProduction.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/EnergyProduction.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Hail.cpp
@@ -111,6 +116,8 @@ set(OPENZWAVE_COMMANDCLASSES_SOURCES
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Protection.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/SceneActivation.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/SceneActivation.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Security.cpp
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Security.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/SensorAlarm.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/SensorAlarm.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/SensorBinary.cpp
@@ -137,6 +144,8 @@ set(OPENZWAVE_COMMANDCLASSES_SOURCES
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/ThermostatOperatingState.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/ThermostatSetpoint.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/ThermostatSetpoint.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/TimeParameters.cpp
+	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/TimeParameters.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/UserCode.cpp
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/UserCode.h
 	${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/Version.cpp
@@ -257,6 +266,22 @@ endif()
 
 
 #########################################
+## AES sources
+#########################################
+set(OPENZWAVE_AES_SOURCES
+	${OPENZWAVE_DIR_NAME}/cpp/src/aes/aes.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/aes/aes_modes.c
+	${OPENZWAVE_DIR_NAME}/cpp/src/aes/aescpp.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/aes/aescrypt.c
+	${OPENZWAVE_DIR_NAME}/cpp/src/aes/aeskey.c
+	${OPENZWAVE_DIR_NAME}/cpp/src/aes/aesopt.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/aes/aestab.c
+	${OPENZWAVE_DIR_NAME}/cpp/src/aes/aestab.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/aes/brg_endian.h
+	${OPENZWAVE_DIR_NAME}/cpp/src/aes/brg_types.h
+)
+
+#########################################
 ## TinyXML sources
 #########################################
 set(OPENZWAVE_TINYXML_SOURCES
@@ -300,6 +325,7 @@ set(OPENZWAVE_SOURCES
 	${OPENZWAVE_COMMANDCLASSES_SOURCES}
 	${OPENZWAVE_VALUECLASSES_SOURCES}
 	${OPENZWAVE_PLATFORM_SOURCES}
+   ${OPENZWAVE_AES_SOURCES}
 	${OPENZWAVE_TINYXML_SOURCES}
 	${OPENZWAVE_HIDAPI_SOURCES}
 )
@@ -311,6 +337,7 @@ source_group(Main ${OPENZWAVE_DIR_NAME}/cpp/src/*.*)
 source_group(CommandClasses ${OPENZWAVE_DIR_NAME}/cpp/src/command_classes/*.*)
 source_group(ValueClasses ${OPENZWAVE_DIR_NAME}/cpp/src/value_classes/*.*)
 source_group(Platform ${OPENZWAVE_DIR_NAME}/cpp/src/platform/*.*)
+source_group(AES ${OPENZWAVE_DIR_NAME}/cpp/src/aes/*.*)
 
 if ( WIN32 )
 	source_group(Platform\\windows ${OPENZWAVE_DIR_NAME}/cpp/src/platform/windows/*.*)
@@ -336,6 +363,7 @@ set(OPENZWAVE_INCLUDE_DIRECTORY
 	${CMAKE_CURRENT_SOURCE_DIR}/${OPENZWAVE_DIR_NAME}/cpp/src/value_classes/
 	${CMAKE_CURRENT_SOURCE_DIR}/${OPENZWAVE_DIR_NAME}/cpp/hidapi/hidapi/
 	${CMAKE_CURRENT_SOURCE_DIR}/${OPENZWAVE_DIR_NAME}/cpp/src/platform/
+	${CMAKE_CURRENT_SOURCE_DIR}/${OPENZWAVE_DIR_NAME}/cpp/aes/
 	${CMAKE_CURRENT_SOURCE_DIR}/${OPENZWAVE_DIR_NAME}/cpp/tinyxml/
 )
 
@@ -372,6 +400,11 @@ if(WIN32)
   #set warning level3 only for this project
 	add_definitions("/W3")
 endif()
+
+#specify that openzwave use exception instead of exit statements
+add_definitions(-DOPENZWAVE_USE_EXCEPTIONS)
+
+
 
 #########################################
 ## Share include directories for project which use openzwave
