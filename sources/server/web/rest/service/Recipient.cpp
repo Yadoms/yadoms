@@ -113,6 +113,9 @@ namespace web { namespace rest { namespace service {
          try
          {
             database::entities::CRecipient toUpdate;
+
+            //requestContent.printToLog();
+
             toUpdate.fillFromContent(requestContent);
             if (!toUpdate.Id.isDefined() || toUpdate.Id() != recipientId)
                return CResult::GenerateError("The recipient id in url do not match request content recipient id");

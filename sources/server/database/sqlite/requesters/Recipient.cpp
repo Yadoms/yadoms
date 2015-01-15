@@ -70,22 +70,16 @@ namespace database {  namespace sqlite { namespace requesters {
 
    boost::shared_ptr<entities::CRecipient> CRecipient::updateRecipient(const entities::CRecipient & recipient)
    {
-      if (recipient.FirstName.isDefined() && recipient.LastName.isDefined())
+      if (recipient.Id.isDefined())
       {
-         //check recipient already exists
-         if (exists(recipient.FirstName(), recipient.LastName()))
+         if(recipient.FirstName.isDefined() && recipient.LastName.isDefined())
          {
-            //if the recipient id is provided in parameters, then use it
-            //else do nothing
-            if (recipient.Id.isDefined())
-            {
-               CQuery qInsert;
-               qInsert.InsertOrReplaceInto(CRecipientTable::getTableName(), CRecipientTable::getIdColumnName(), CRecipientTable::getFirstNameColumnName(), CRecipientTable::getLastNameColumnName()).
-                  Values(recipient.Id(), recipient.FirstName(), recipient.LastName());
+            CQuery qInsert;
+            qInsert.InsertOrReplaceInto(CRecipientTable::getTableName(), CRecipientTable::getIdColumnName(), CRecipientTable::getFirstNameColumnName(), CRecipientTable::getLastNameColumnName()).
+               Values(recipient.Id(), recipient.FirstName(), recipient.LastName());
 
-               if (m_databaseRequester->queryStatement(qInsert) <= 0)
-                  throw shared::exception::CEmptyResult("Fail to update recipient");
-            }
+            if (m_databaseRequester->queryStatement(qInsert) <= 0)
+               throw shared::exception::CEmptyResult("Fail to update recipient");
 
             //find the db id from first and last name
             boost::shared_ptr<entities::CRecipient> dbRecipient = getRecipient(recipient.FirstName(), recipient.LastName());
@@ -97,12 +91,12 @@ namespace database {  namespace sqlite { namespace requesters {
          }
          else
          {
-            throw shared::exception::CEmptyResult("The recipient to update is not found");
+            throw shared::exception::CEmptyResult("The recipient first and last name msut be defined");
          }
       }
       else
       {
-         throw shared::exception::CEmptyResult("Cannot update recipient without first and last name");
+         throw shared::exception::CEmptyResult("The recipient id must be defined");
       }
    }
 
@@ -189,6 +183,17 @@ namespace database {  namespace sqlite { namespace requesters {
          From(CRecipientTable::getTableName()).
          Where(CRecipientTable::getFirstNameColumnName(), CQUERY_OP_EQUAL, firstName).
          And(CRecipientTable::getLastNameColumnName(), CQUERY_OP_EQUAL, lastName);
+
+      int count = m_databaseRequester->queryCount(qSelect);
+      return count != 0;
+   }
+
+   bool CRecipient::exists(const int id)
+   {
+      CQuery qSelect;
+      qSelect.SelectCount().
+         From(CRecipientTable::getTableName()).
+         Where(CRecipientTable::getIdColumnName(), CQUERY_OP_EQUAL, id);
 
       int count = m_databaseRequester->queryCount(qSelect);
       return count != 0;
