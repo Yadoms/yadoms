@@ -7,8 +7,8 @@
 namespace automation { namespace action
 {
 
-CRunScript::CRunScript(const shared::CDataContainer& configuration, boost::shared_ptr<script::IRunnerFactory> scriptRunnerFactory)
-   :m_scriptRunnerFactory(scriptRunnerFactory),
+CRunScript::CRunScript(const shared::CDataContainer& configuration, boost::shared_ptr<script::IFactory> scriptFactory)
+   :m_scriptFactory(scriptFactory),
    m_scriptName(configuration.get<std::string>("scriptName")),
    m_scriptConfiguration(configuration.hasValue("scriptConfiguration") ? configuration.get<shared::CDataContainer>("scriptConfiguration") : shared::CDataContainer())
 {
@@ -22,7 +22,7 @@ void CRunScript::doAction()
 {
    try
    {
-      m_runner = m_scriptRunnerFactory->createScriptRunner(m_scriptName, m_scriptConfiguration);
+      m_runner = m_scriptFactory->createScriptRunner(m_scriptName, m_scriptConfiguration);
 
       script::CYScriptApiImplementation context;
       m_runner->run(context);

@@ -290,13 +290,13 @@ set(YADOMS_SRC
 	server/automation/action/Wait.h
 	server/automation/action/Wait.cpp
 
-	server/automation/action/script/IRunnerFactory.h
+	server/automation/action/script/Factory.h
+	server/automation/action/script/Factory.cpp
+	server/automation/action/script/IFactory.h
 	server/automation/action/script/IInterpreterLibrary.h
    server/automation/action/script/InterpreterNotFound.hpp
 	server/automation/action/script/InterpreterLibrary.h
 	server/automation/action/script/InterpreterLibrary.cpp
-	server/automation/action/script/RunnerFactory.h
-	server/automation/action/script/RunnerFactory.cpp
 	server/automation/action/script/YScriptApiImplementation.h
 	server/automation/action/script/YScriptApiImplementation.cpp
    

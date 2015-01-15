@@ -8,6 +8,7 @@
 #include "Runner.h"
 #include "RunnerException.hpp"
 #include "ScriptLoader.h"
+#include "ScriptFile.h"
 #include "SubInterpreter.h"
 
 // Declare the script interpreter
@@ -21,6 +22,11 @@ CPython::CPython()
 
 CPython::~CPython()
 {
+}
+
+std::string CPython::name() const
+{
+   return "Python";
 }
 
 bool CPython::isAvailable() const
@@ -59,8 +65,22 @@ bool CPython::canInterpret(const std::string& scriptName) const
    return true;
 }
 
+std::string CPython::loadScriptContent(const std::string& scriptName) const
+{
+   CScriptFile file(scriptName);
+   return file.read();
+}
+
+void CPython::saveScriptTemplate(const std::string& scriptName, const std::string& content) const
+{
+   CScriptFile file(scriptName);
+   return file.write(content);
+}
+
 boost::shared_ptr<shared::script::IRunner> CPython::createRunner(const std::string& scriptName, const shared::CDataContainer& scriptConfiguration) const
 {
    boost::shared_ptr<shared::script::IRunner> runner(new CRunner(scriptName, scriptConfiguration));
    return runner;
 }
+
+//TODO détourner la console

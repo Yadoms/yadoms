@@ -3,21 +3,11 @@
 #include "PythonLibInclude.h"
 #include "RunnerException.hpp"
 #include "PythonBorrowedObject.h"
+#include "ScriptFile.h"
 
-
-// Main scripts folder (subfolder of Yadoms main folder)
-static const std::string ScriptsFolder("scripts");
-
-// Add prefix to filename, to avoid confusing with existing Python module
-// (In Python, filename also serves as module name, and modules are globals)
-// So script full path becomes : {scriptName}/yadoms_{scriptName}
-static const std::string ScriptFilenamePrefix("yadoms_");
-
-// Function name of the Python script entry point
-static const std::string ScriptEntryPoint("yMain");
 
 CScriptLoader::CScriptLoader(const std::string& scriptName)
-   :m_scriptFile(boost::filesystem::path(ScriptsFolder) / boost::filesystem::path(scriptName) / boost::filesystem::path(ScriptFilenamePrefix + scriptName))
+   :m_scriptFile(new CScriptFile(scriptName))
 {
 }
 
@@ -28,19 +18,18 @@ CScriptLoader::~CScriptLoader()
 void CScriptLoader::load()
 {
    // Check script path
-   if (!boost::filesystem::exists(m_scriptFile))
-      throw CRunnerException((boost::format("script file %1% doesn't exist") % m_scriptFile).str());
+   if (!m_scriptFile->exists())
+      throw CRunnerException((boost::format("script file %1% doesn't exist") % m_scriptFile->pathName()).str());
 
    // Add script path to Python system path
    CPythonBorrowedObject sysPathObject(PySys_GetObject(static_cast<char*>("path")));
-   CPythonObject scriptAbsolutePath(PyString_FromString(boost::filesystem::absolute(m_scriptFile).parent_path().string().c_str()));
+   CPythonObject scriptAbsolutePath(PyString_FromString(boost::filesystem::absolute(m_scriptFile->pathName()).parent_path().string().c_str()));
    PyList_Append(*sysPathObject, *scriptAbsolutePath);
 
    // Convert script path as Python string
-   std::string moduleName(m_scriptFile.stem().string());
-   CPythonObject pyModuleName(PyString_FromString(moduleName.c_str()));
+   CPythonObject pyModuleName(PyString_FromString(m_scriptFile->module().c_str()));
    if (pyModuleName.isNull())
-      throw CRunnerException((boost::format("unable to import module %1%") % moduleName).str());
+      throw CRunnerException((boost::format("unable to import module %1%") % m_scriptFile->module()).str());
 
    // Import script to Python interpreter
    m_pyModule.reset(PyImport_Import(*pyModuleName));
@@ -48,9 +37,9 @@ void CScriptLoader::load()
       throw CRunnerException("unable to create Python module");
 
    // Get the entry point function pointer
-   m_pyMainFunction.reset(PyObject_GetAttrString(*m_pyModule, ScriptEntryPoint.c_str()));
+   m_pyMainFunction.reset(PyObject_GetAttrString(*m_pyModule, m_scriptFile->entryPoint().c_str()));
    if (m_pyMainFunction.isNull() || PyCallable_Check(*m_pyMainFunction) == 0)
-      throw CRunnerException((boost::format("%1% function was not found") % ScriptEntryPoint).str());
+      throw CRunnerException((boost::format("%1% function was not found") % m_scriptFile->entryPoint()).str());
 }
 
 CPythonObject& CScriptLoader::yMain()

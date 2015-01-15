@@ -1,5 +1,5 @@
 #pragma once
-#include "IRunnerFactory.h"
+#include "IFactory.h"
 #include "IInterpreterLibrary.h"
 
 namespace automation { namespace action { namespace script
@@ -7,24 +7,25 @@ namespace automation { namespace action { namespace script
    //-----------------------------------------------------
    ///\brief The script runner factory
    //-----------------------------------------------------
-   class CRunnerFactory : public IRunnerFactory
+   class CFactory : public IFactory
    {
    public:
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] interpretersPath Path where are located interpreters
       //-----------------------------------------------------
-      CRunnerFactory(const std::string& interpretersPath);
+      CFactory(const std::string& interpretersPath);
 
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~CRunnerFactory();
+      virtual ~CFactory();
 
    protected:
-      // IRunnerFactory Implementation
+      // IFactory Implementation
+      virtual std::vector<std::string> getAvailableInterpreters();
       virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(const std::string& scriptName, const shared::CDataContainer& scriptConfiguration);
-      // [END] IRunnerFactory Implementation
+      // [END] IFactory Implementation
 
       //-----------------------------------------------------
       ///\brief               Load the interpreters
