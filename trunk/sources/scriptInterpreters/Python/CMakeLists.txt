@@ -17,6 +17,7 @@ if(PYTHONLIBS_FOUND)
       IInitializer.h
       Initializer.h
       Initializer.cpp
+      IScriptFile.h
       IScriptLoader.h
       ISubInterpreter.h
       Python.h
@@ -28,6 +29,8 @@ if(PYTHONLIBS_FOUND)
       PythonLibInclude.h
       Runner.h
       Runner.cpp
+      ScriptFile.h
+      ScriptFile.cpp
       ScriptLoader.h
       ScriptLoader.cpp
       SubInterpreter.h

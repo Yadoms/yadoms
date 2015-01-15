@@ -2,7 +2,7 @@
 #include "IRuleManager.h"
 #include "IRule.h"
 #include "condition/IConditionFactory.h"
-#include "action/script/IRunnerFactory.h"
+#include "action/script/IFactory.h"
 #include "database/IRuleRequester.h"
 #include "../communication/ISendMessageAsync.h"
 #include <shared/notification/NotificationCenter.h>
@@ -83,9 +83,9 @@ namespace automation
       boost::shared_ptr<INotificationObserverForRulesManager> m_notificationObserver;
 
       //-----------------------------------------------------
-      ///\brief               The script runner factory
+      ///\brief               The script  factory
       //-----------------------------------------------------
-      boost::shared_ptr<action::script::IRunnerFactory> m_scriptRunnerFactory;
+      boost::shared_ptr<action::script::IFactory> m_scriptFactory;
 
       //-----------------------------------------------------
       ///\brief               The started rules list

@@ -1,45 +1,47 @@
 #pragma once
-#include "IScriptLoader.h"
 #include "IScriptFile.h"
 
 //--------------------------------------------------------------
-/// \brief	Python script loader
+/// \brief	Python script file
 //--------------------------------------------------------------
-class CScriptLoader : public IScriptLoader
+class CScriptFile : public IScriptFile
 {
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
-   ///\param[in] scriptName   Script name
-   /// \throw CRunnerException if unable to load script
+   /// \param[in] scriptName   Script name
    //--------------------------------------------------------------
-   CScriptLoader(const std::string& scriptName);
+   CScriptFile(const std::string& scriptName);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
    //--------------------------------------------------------------
-   virtual ~CScriptLoader();
+   virtual ~CScriptFile();
 
-   // IScriptLoader Implementation
-   virtual void load();
-   virtual CPythonObject& yMain();
-   // [END] IScriptLoader Implementation
+   // IScriptFile Implementation
+   virtual const boost::filesystem::path& pathName() const;
+   virtual const std::string& module() const;
+   virtual const std::string& entryPoint() const;
+   virtual bool exists() const;
+   virtual std::string read() const;
+   virtual void write(const std::string& content) const;
+   // [END] IScriptFile Implementation
+
+   //--------------------------------------------------------------
+   /// \brief	Return a template of a script file
+   //--------------------------------------------------------------
+   std::string fromTemplate() const;
 
 private:
    //--------------------------------------------------------------
-   /// \brief	Script file
+   /// \brief	Full path of script file
    //--------------------------------------------------------------
-   const boost::shared_ptr<IScriptFile> m_scriptFile;
+   const boost::filesystem::path m_scriptFile;
 
    //--------------------------------------------------------------
-   /// \brief	Module Python object
+   /// \brief	Module name
    //--------------------------------------------------------------
-   CPythonObject m_pyModule;
-
-   //--------------------------------------------------------------
-   /// \brief	yMain function Python object
-   //--------------------------------------------------------------
-   CPythonObject m_pyMainFunction;
+   const std::string m_module;
 };
 
 

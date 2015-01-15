@@ -5,15 +5,21 @@
 namespace automation { namespace action { namespace script
 {
    //-----------------------------------------------------
-   ///\brief The script runner factory interface
+   ///\brief The script factory interface
    //-----------------------------------------------------
-   class IRunnerFactory
+   class IFactory
    {
    public:
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~IRunnerFactory() {}
+      virtual ~IFactory() {}
+
+      //-----------------------------------------------------
+      ///\brief               Get available interpreters (as user-friendly names)
+      ///\return              The list of available interpreters
+      //-----------------------------------------------------
+      virtual std::vector<std::string> getAvailableInterpreters() = 0;//TODO ajouter le REST permettant d'appeler cette fonction
 
       //-----------------------------------------------------
       ///\brief               Create a script runner
@@ -26,5 +32,4 @@ namespace automation { namespace action { namespace script
    };
 
 } } } // namespace automation::action::script
-	
-	
+

@@ -5,7 +5,7 @@
 #include "condition/IConditionRoot.h"
 #include "condition/IConditionFactory.h"
 #include "IActionList.h"
-#include "action/script/IRunnerFactory.h"
+#include "action/script/IFactory.h"
 #include "../communication/ISendMessageAsync.h"
 #include "../database/sqlite/requesters/Rule.h"
 #include "INotificationObserverForRulesManager.h"
@@ -24,13 +24,13 @@ namespace automation
       ///\param[in] notificationObserver  The notification observer
       ///\param[in] pluginGateway plugin access to do actions on plugins
       ///\param[in] conditionFactory the condition factory
-      ///\param[in] scriptRunnerFactory The script runner factory
+      ///\param[in] scriptFactory The script factory
       //-----------------------------------------------------
       CRule(const database::entities::CRule& ruleData,
          boost::shared_ptr<INotificationObserverForRulesManager> notificationObserver,
          boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
          condition::IConditionFactory& conditionFactory,
-         boost::shared_ptr<action::script::IRunnerFactory> scriptRunnerFactory);
+         boost::shared_ptr<action::script::IFactory> scriptFactory);
 
       //-----------------------------------------------------
       ///\brief               Destructor

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "RunnerFactory.h"
+#include "Factory.h"
 #include "InterpreterNotFound.hpp"
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
@@ -11,16 +11,16 @@
 namespace automation { namespace action { namespace script
 {
 
-CRunnerFactory::CRunnerFactory(const std::string& interpretersPath)
+CFactory::CFactory(const std::string& interpretersPath)
    :m_interpretersPath(interpretersPath)
 {
 }
 
-CRunnerFactory::~CRunnerFactory()
+CFactory::~CFactory()
 {         
 }
 
-void CRunnerFactory::loadInterpreters()
+void CFactory::loadInterpreters()
 {
    std::vector<boost::filesystem::path> interpreterDirectories = findInterpreterDirectories();
 
@@ -44,7 +44,7 @@ void CRunnerFactory::loadInterpreters()
    }
 }
 
-boost::filesystem::path CRunnerFactory::toLibraryPath(const std::string& interpreterName) const
+boost::filesystem::path CFactory::toLibraryPath(const std::string& interpreterName) const
 {
    boost::filesystem::path path(m_interpretersPath);
    path /= interpreterName;
@@ -52,7 +52,7 @@ boost::filesystem::path CRunnerFactory::toLibraryPath(const std::string& interpr
    return path;
 }
 
-std::vector<boost::filesystem::path> CRunnerFactory::findInterpreterDirectories()
+std::vector<boost::filesystem::path> CFactory::findInterpreterDirectories()
 {
    // Look for all subdirectories in m_interpretersPath directory, where it contains library with same name,
    // for example a subdirectory "Python" containing a "Python.dll|so" file
@@ -82,7 +82,25 @@ std::vector<boost::filesystem::path> CRunnerFactory::findInterpreterDirectories(
    return interpreters;
 }
 
-boost::shared_ptr<shared::script::IRunner> CRunnerFactory::createScriptRunner(
+std::vector<std::string> CFactory::getAvailableInterpreters() 
+{
+   std::vector<std::string> interpreters;
+
+   // Update loaded interpreters list if necessary
+   loadInterpreters();
+
+   // Now find corresponding interpreter
+   for (std::map<std::string, boost::shared_ptr<IInterpreterLibrary> >::const_iterator itInterpreter = m_LoadedInterpreters.begin();
+      itInterpreter != m_LoadedInterpreters.end(); ++itInterpreter)
+   {
+      boost::shared_ptr<shared::script::IInterpreter> interpreter(itInterpreter->second->getInterpreter());
+      interpreters.push_back(interpreter->name());
+   }
+
+   return interpreters;
+}
+
+boost::shared_ptr<shared::script::IRunner> CFactory::createScriptRunner(
    const std::string& scriptName, const shared::CDataContainer& scriptConfiguration)
 {
    try
@@ -103,7 +121,7 @@ boost::shared_ptr<shared::script::IRunner> CRunnerFactory::createScriptRunner(
    }
 }
 
-boost::shared_ptr<shared::script::IInterpreter> CRunnerFactory::getAssociatedInterpreter(const std::string& scriptName)
+boost::shared_ptr<shared::script::IInterpreter> CFactory::getAssociatedInterpreter(const std::string& scriptName)
 {
    // Update loaded interpreters list if necessary
    loadInterpreters();
@@ -121,5 +139,4 @@ boost::shared_ptr<shared::script::IInterpreter> CRunnerFactory::getAssociatedInt
 }
 
 } } } // namespace automation::action::script
-	
-	
+
