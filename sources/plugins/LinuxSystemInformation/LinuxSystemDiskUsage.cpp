@@ -63,12 +63,11 @@ void CLinuxSystemDiskUsage::read()
       {
          boost::regex reg("([^\\s]+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)");
          boost::smatch match;
-         long long numblock, availblocks; 
 
          if ( boost::regex_search( *iteratorCommandDF, match, reg ) )
          {
-             numblock    = boost::lexical_cast<long long>(match[2]);
-             availblocks = boost::lexical_cast<long long>(match[4]);
+             long long numblock    = boost::lexical_cast<long long>(match[2]);
+             long long availblocks = boost::lexical_cast<long long>(match[4]);
 			 
              m_keyword.set ((numblock - availblocks)/double(numblock)*100);
              YADOMS_LOG(debug) << "Disk Name :  " << m_driveName << " Disk Usage : " << m_keyword.formatValue();			 

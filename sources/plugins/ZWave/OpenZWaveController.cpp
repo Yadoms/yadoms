@@ -41,12 +41,12 @@ std::string COpenZWaveController::GenerateDeviceStringID(uint32 homeId, uint8 no
    return sstr.str();
 }
 
-std::string COpenZWaveController::GenerateKeywordStringID(const std::string & label, const ECommandClass & commandClass)
-{
-   std::stringstream sstr;
-   sstr << label << "." << commandClass.toString();
-   return sstr.str();
-}
+//std::string COpenZWaveController::GenerateKeywordStringID(const std::string & label, const ECommandClass & commandClass)
+//{
+//   std::stringstream sstr;
+//   sstr << label << "." << commandClass.toString();
+//   return sstr.str();
+//}
 
 
 void COpenZWaveController::configure(CZWaveConfiguration * configuration, shared::event::CEventHandler * handler)

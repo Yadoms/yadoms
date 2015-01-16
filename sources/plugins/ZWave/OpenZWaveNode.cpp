@@ -7,7 +7,7 @@
 COpenZWaveNode::COpenZWaveNode()
    :m_homeId(0), m_nodeId(0)
 {
-   throw shared::exception::CException("Should not happen");
+   BOOST_ASSERT_MSG(false, "This code is only here to make it build. This code should never be called");
 }
 
 COpenZWaveNode::COpenZWaveNode(const uint32 homeId, const uint8 nodeId)
