@@ -6,7 +6,7 @@
         <dir name="../sources/shared/mac/"/>
         <dir name="../sources/shared/"/>
         <dir name="../sources/"/>
-        <dir name="../sources/external-libs/SQLite/sqlite-amalgamation-3080701"/>
+        <dir name="../sources/external-libs/SQLite/sqlite-amalgamation-3080704"/>
         <dir name="../sources/server/"/>
         <dir name="../sources/server/tools/"/>
         <dir name="../sources/server/tools/windows"/>
@@ -22,7 +22,7 @@
         <dir name="../sources/plugins"/>
     </paths>
     <exclude>
-        <path name="../sources/plugins/ZWave/OpenZWave/openzwave-1.0.791/"/>
+        <path name="../sources/plugins/ZWave/OpenZWave/openzwave-1.2.919/"/>
     </exclude>
     <suppressions>
         <suppression>unreadVariable:..\sources\server\database\sqlite\SQLiteDatabaseTables.h</suppression>
