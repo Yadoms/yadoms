@@ -48,7 +48,7 @@ std::string CScriptFile::read() const
    if (!exists())
       return fromTemplate();
 
-   std::ifstream file(m_scriptFile.string());
+   std::ifstream file(m_scriptFile.string().c_str());
    if (!file.is_open())
       return fromTemplate();
 
@@ -58,7 +58,7 @@ std::string CScriptFile::read() const
 
 void CScriptFile::write(const std::string& content) const
 {
-   std::ofstream file(m_scriptFile.string());
+   std::ofstream file(m_scriptFile.string().c_str());
    file << content;
 }
 

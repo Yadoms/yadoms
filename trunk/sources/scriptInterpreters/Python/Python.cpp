@@ -26,7 +26,8 @@ CPython::~CPython()
 
 std::string CPython::name() const
 {
-   return "Python";
+   static const std::string interpreterName("Python");
+   return interpreterName;
 }
 
 bool CPython::isAvailable() const
