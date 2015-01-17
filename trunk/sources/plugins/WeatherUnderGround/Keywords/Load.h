@@ -6,9 +6,9 @@
 namespace yApi = shared::plugin::yPluginApi;
 
    //--------------------------------------------------------------
-   /// \brief	The Barometric class
+   /// \brief	The Load class
    //--------------------------------------------------------------
-   class CBarometric : public IKeyword
+   class CLoad : public IKeyword
    {
    public:
       //--------------------------------------------------------------
@@ -18,12 +18,12 @@ namespace yApi = shared::plugin::yPluginApi;
 	  /// \param[in] KeyWordName          The keyword name
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
-      CBarometric(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName,std::string KeyWordName);
+      CLoad(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName,std::string KeyWordName);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CBarometric();
+      virtual ~CLoad();
 
       //--------------------------------------------------------------
       /// \brief	                      Set the value from the container
@@ -47,7 +47,7 @@ namespace yApi = shared::plugin::yPluginApi;
       std::string m_PluginName;
 
       //--------------------------------------------------------------
-      /// \brief	The pressure (hPa)
+      /// \brief	The pourcentage (%)
       //--------------------------------------------------------------
-      yApi::historization::CPressure m_pressure;
+      yApi::historization::CLoad m_pourcentage;
    };

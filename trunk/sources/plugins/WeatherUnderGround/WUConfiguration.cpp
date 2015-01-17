@@ -39,3 +39,8 @@ std::string CWUConfiguration::getLocalisation() const
 
 bool CWUConfiguration::IsWindEnabled (void) const                 {return m_isWindEnabled;}
 bool CWUConfiguration::IsStandardInformationEnabled (void ) const {return m_isStandardInformationEnabled;}
+
+bool CWUConfiguration::IsAstronomyEnabled (void ) const
+{
+	return m_data.get<bool>("Astronomy.content.Astronomy");
+}

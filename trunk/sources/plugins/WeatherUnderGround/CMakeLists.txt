@@ -7,6 +7,8 @@ include("../YadomsPluginsCommon.cmake")
 #########################################
 
 set(WUNDERGROUND_SOURCES
+   Astronomy.cpp
+   Astronomy.h
    IWUConfiguration.h
    WeatherUnderground.h
    WeatherUnderground.cpp
@@ -19,8 +21,12 @@ set(WUNDERGROUND_SOURCES
    Keywords/IKeyword.h
    Keywords/Barometric.h
    Keywords/Barometric.cpp
+   Keywords/Duration.h
+   Keywords/Duration.cpp   
    Keywords/Humidity.h
    Keywords/Humidity.cpp
+   Keywords/Load.h
+   Keywords/Load.cpp
    Keywords/Rain.h
    Keywords/Rain.cpp
    Keywords/Temp.h

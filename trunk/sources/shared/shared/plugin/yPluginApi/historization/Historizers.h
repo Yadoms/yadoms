@@ -9,6 +9,7 @@
 #include "Dimmable.h"
 #include "Direction.h"
 #include "Distance.h"
+#include "Duration.h"
 #include "Energy.h"
 #include "Event.h"
 #include "Frequency.h"

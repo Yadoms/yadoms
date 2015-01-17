@@ -25,6 +25,7 @@ namespace shared { namespace plugin { namespace yPluginApi {
       static const CStandardCapacity & Dimmable;          // dimmable          | none                  | A value from 0-100 (0 is off, 100 is on)
       static const CStandardCapacity & Direction;         // direction         | degrees               | Direction (for compass, wind direction)
       static const CStandardCapacity & Distance;          // length            | meter                 | A distance, in meter	  
+	  static const CStandardCapacity & Duration;          // duration          | s                     | A Duration in second
       static const CStandardCapacity & Energy;            // energy            | Watt/hour             | Energy measure
       static const CStandardCapacity & Event;             // event             |  -                    | Just an event (no associated data)
       static const CStandardCapacity & Frequency;         // frequency         | Hertz                 | Frequency

@@ -36,5 +36,6 @@ public:
 
    virtual bool IsWindEnabled (void) const = 0;
    virtual bool IsStandardInformationEnabled (void ) const = 0;
+   virtual bool IsAstronomyEnabled (void ) const = 0;
 };
 

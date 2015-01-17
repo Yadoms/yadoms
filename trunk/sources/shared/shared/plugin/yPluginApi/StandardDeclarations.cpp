@@ -24,6 +24,7 @@ namespace shared { namespace plugin { namespace yPluginApi {
    const std::string& CStandardUnits::Millimeter("mm");
    const std::string& CStandardUnits::MillimeterPerSecond("mm/s");
    const std::string& CStandardUnits::Percent("%");
+   const std::string& CStandardUnits::Second("s");
    const std::string& CStandardUnits::Uv("UV");
    const std::string& CStandardUnits::Volt("V");
    const std::string& CStandardUnits::Watt("W");
@@ -45,11 +46,12 @@ namespace shared { namespace plugin { namespace yPluginApi {
    const CStandardCapacity& CStandardCapacities::DateTime = CStandardCapacity("datetime", CStandardUnits::NoUnits, EKeywordDataType::kString);
    const CStandardCapacity& CStandardCapacities::Dimmable = CStandardCapacity("dimmable", CStandardUnits::Percent, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Direction = CStandardCapacity("direction", CStandardUnits::Degrees, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Distance = CStandardCapacity("distance", CStandardUnits::Meter, EKeywordDataType::kNumeric);
+   const CStandardCapacity& CStandardCapacities::Duration = CStandardCapacity("duration", CStandardUnits::NoUnits, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Energy = CStandardCapacity("energy", CStandardUnits::WattPerHour, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Event = CStandardCapacity("event", CStandardUnits::NoUnits, EKeywordDataType::kNoData);
    const CStandardCapacity& CStandardCapacities::Frequency = CStandardCapacity("frequency", CStandardUnits::Hertz, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Humidity = CStandardCapacity("humidity", CStandardUnits::Percent, EKeywordDataType::kNumeric);
-   const CStandardCapacity& CStandardCapacities::Distance = CStandardCapacity("distance", CStandardUnits::Meter, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Load = CStandardCapacity("load", CStandardUnits::Percent, EKeywordDataType::kNumeric);
    const CStandardCapacity& CStandardCapacities::Message = CStandardCapacity("message", CStandardUnits::NoUnits, EKeywordDataType::kString);
    const CStandardCapacity& CStandardCapacities::Power = CStandardCapacity("power", CStandardUnits::Watt, EKeywordDataType::kNumeric);

@@ -4,6 +4,7 @@
 #include <shared/event/EventTimer.h>
 #include <shared/plugin/ImplementationHelper.h>
 #include "WeatherConditions.h"
+#include "Astronomy.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -16,13 +17,13 @@ CWeatherUnderground::CWeatherUnderground(): m_deviceName("WeatherUnderground")
 {}
 
 CWeatherUnderground::~CWeatherUnderground()
-{
-}
+{}
 
 // Event IDs
 enum
 {
-   kEvtTimerRefreshForecast = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtTimerRefreshWeatherConditions = yApi::IYPluginApi::kPluginFirstEventId,   // Always start from shared::event::CEventHandler::kUserFirstId
+   kEvtTimerRefreshAstronomy
 };
 
 void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
@@ -35,9 +36,14 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       m_configuration.initializeWith(context->getConfiguration());
 
 	  // Event to be sent immediately for the first value
-      context->getEventHandler().createTimer(kEvtTimerRefreshForecast      , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
+      context->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions      , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
       // Timer used to read periodically the Weather information
-      context->getEventHandler().createTimer(kEvtTimerRefreshForecast      , shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
+      context->getEventHandler().createTimer(kEvtTimerRefreshWeatherConditions      , shared::event::CEventTimer::kPeriodic, boost::posix_time::minutes(15));
+
+	  // Event to be sent immediately for the first value
+      context->getEventHandler().createTimer(kEvtTimerRefreshAstronomy      , shared::event::CEventTimer::kOneShot , boost::posix_time::seconds(0));
+      // Timer used to read periodically the Weather information
+	  context->getEventHandler().createTimer(kEvtTimerRefreshAstronomy      , shared::event::CEventTimer::kPeriodic, boost::posix_time::hours(12));
 
 	   if (!context->deviceExists(m_deviceName))
 	   {
@@ -47,6 +53,7 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 	   }
 
 	  CWeatherConditions m_WeatherConditionsRequester( context, m_configuration);
+	  CAstronomy m_AstronomyRequester( context, m_configuration);
 
       // the main loop
       YADOMS_LOG(debug) << "CWeatherUnderground plugin is running...";
@@ -56,15 +63,23 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
          // Wait for an event
          switch(context->getEventHandler().waitForEvents())
          {
-         case kEvtTimerRefreshForecast:
+         case kEvtTimerRefreshWeatherConditions:
             {
-               YADOMS_LOG(debug) << "CWeatherUnderground : Refresh Weather Conditions";
+               YADOMS_LOG(debug) << "Refresh Weather Conditions";
 
 			   m_WeatherConditionsRequester.Request( context );
 			   m_WeatherConditionsRequester.Parse  ( context, m_configuration, m_deviceName );
 
                break;
             }
+		 case kEvtTimerRefreshAstronomy:
+
+			   YADOMS_LOG(debug) << "Refresh Astronomy Information";
+
+			   m_AstronomyRequester.Request( context );
+			   m_AstronomyRequester.Parse  ( context, m_configuration, m_deviceName );
+
+			 break;
          case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
@@ -73,6 +88,12 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 			   
 			   m_WeatherConditionsRequester.Request( context );
 			   m_WeatherConditionsRequester.Parse  ( context, m_configuration, m_deviceName );
+
+			   m_AstronomyRequester.OnUpdate ( m_configuration );
+
+			   m_AstronomyRequester.Request( context );
+			   m_AstronomyRequester.Parse  ( context, m_configuration, m_deviceName );
+
                break;
             }
 

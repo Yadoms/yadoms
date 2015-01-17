@@ -6,7 +6,7 @@
 namespace yApi = shared::plugin::yPluginApi;
 
    //--------------------------------------------------------------
-   /// \brief	The UV Keyword
+   /// \brief	The Rain Keyword class
    //--------------------------------------------------------------
    class CRain : public IKeyword
    {
