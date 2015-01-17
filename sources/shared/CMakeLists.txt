@@ -122,7 +122,9 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/Direction.cpp
    shared/plugin/yPluginApi/historization/Direction.h
    shared/plugin/yPluginApi/historization/Distance.cpp
-   shared/plugin/yPluginApi/historization/Distance.h      
+   shared/plugin/yPluginApi/historization/Distance.h
+   shared/plugin/yPluginApi/historization/Duration.cpp
+   shared/plugin/yPluginApi/historization/Duration.h
    shared/plugin/yPluginApi/historization/Energy.cpp
    shared/plugin/yPluginApi/historization/Energy.h
    shared/plugin/yPluginApi/historization/Event.cpp

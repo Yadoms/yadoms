@@ -43,6 +43,22 @@
 				 "defaultValue": "true"
 			  }
 		  }
-		  }  
+		},
+      "Astronomy":
+      {
+         "name": "Astronomy",
+         "description": "Information about the moon phases",
+         "type" : "section",
+         "content":
+         {	  
+			  "Astronomy":
+			  {
+				 "name": "",
+				 "description": "",
+				 "type": "bool",
+				 "defaultValue": "true"
+			  }
+		  }
+		}  		
       }
 }

@@ -24,8 +24,9 @@ public:
    virtual void initializeWith(const shared::CDataContainer &data);
    virtual std::string getAPIKey() const;
    virtual std::string getLocalisation() const;
-   bool IsWindEnabled (void) const;
-   bool IsStandardInformationEnabled (void ) const;
+   virtual bool IsWindEnabled (void) const;
+   virtual bool IsStandardInformationEnabled (void ) const;
+   virtual bool IsAstronomyEnabled (void ) const;
    // [END] IWUConfiguration implementation
 
 private:
