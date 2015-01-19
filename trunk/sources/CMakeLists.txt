@@ -170,8 +170,8 @@ set(YADOMS_SRC
 	
 	server/Supervisor.cpp
 	server/Supervisor.h
-	server/SystemInformation.cpp
-	server/SystemInformation.h
+	server/YadomsSystemInternal.cpp
+	server/YadomsSystemInternal.h
   
    server/logConfiguration/LogConfiguration.h
    server/logConfiguration/LogConfiguration.cpp   

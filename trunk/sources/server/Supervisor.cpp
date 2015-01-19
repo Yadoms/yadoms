@@ -25,7 +25,7 @@
 #include "task/update/Plugin.h"
 #include "task/backup/Database.h"
 #include "communication/PluginGateway.h"
-#include "SystemInformation.h"
+#include "YadomsSystemInternal.h"
 #include "dataAccessLayer/DataAccessLayer.h"
 #include <shared/notification/NotificationCenter.h>
 #include "automation/RuleManager.h"
@@ -48,7 +48,7 @@ void CSupervisor::doWork()
    try
    {
       //create the system information
-      boost::shared_ptr<CSystemInformation> systemInformation(new CSystemInformation());
+      boost::shared_ptr<CYadomsSystemInternal> systemInformation(new CYadomsSystemInternal());
 
       //create the notification center
       boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter(new shared::notification::CNotificationCenter);

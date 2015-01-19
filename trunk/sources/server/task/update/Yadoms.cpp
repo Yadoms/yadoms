@@ -4,7 +4,7 @@
 #include "server/tools/tools/web/FileDownloader.h"
 #include <shared/DataContainer.h>
 #include "tools/Version.h"
-#include "SystemInformation.h"
+#include "YadomsSystemInternal.h"
 #include <boost/functional/hash.hpp>
 #include <shared/encryption/md5.h>
 #include <fstream>

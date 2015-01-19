@@ -3,14 +3,14 @@
 #include "IRestService.h"
 #include "database/IDataProvider.h"
 #include "web/rest/RestDispatcher.h"
-#include "SystemInformation.h"
+#include "YadomsSystemInternal.h"
 
 namespace web { namespace rest { namespace service {
 
    class CSystem : public IRestService
    {
    public:
-      CSystem(boost::shared_ptr<CSystemInformation> systemInformation);
+      CSystem(boost::shared_ptr<CYadomsSystemInternal> systemInformation);
       virtual ~CSystem();
 
    public:
@@ -31,7 +31,7 @@ namespace web { namespace rest { namespace service {
    private:
       static std::string m_restKeyword;
 
-      boost::shared_ptr<CSystemInformation> m_systemInformation;
+      boost::shared_ptr<CYadomsSystemInternal> m_systemInformation;
    };
 
 

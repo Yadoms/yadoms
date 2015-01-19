@@ -11,7 +11,7 @@ namespace web { namespace rest { namespace service {
 
    std::string CSystem::m_restKeyword= std::string("system");
 
-   CSystem::CSystem(boost::shared_ptr<CSystemInformation> systemInformation)
+   CSystem::CSystem(boost::shared_ptr<CYadomsSystemInternal> systemInformation)
       :m_systemInformation(systemInformation)
    {
       
