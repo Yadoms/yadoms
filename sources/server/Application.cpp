@@ -59,18 +59,6 @@ int CApplication::run()
 
       YADOMS_LOG(information) << "Yadoms is stopped ";
    }
-   catch(startupOptions::CLoaderException& e)
-   {
-      if (e.isError())
-      {
-         YADOMS_LOG(fatal) << e.what();
-      }
-      else
-      {
-         // Help was invoked, just print to console
-         YADOMS_LOG(information) << e.what();
-      }
-   }
    catch(...)
    {
       //dual logging in case logger fails/throws

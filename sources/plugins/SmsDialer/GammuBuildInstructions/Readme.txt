@@ -39,14 +39,10 @@ mc smsd-event.mc -r {Your_path_to_gammu}/smsd -h {Your_path_to_gammu}/smsd
 1 - Download the Gammu library (see above), and extract it
 2 - copy provided Toolchain-raspberryPi.cmake into {Your_path_to_gammu}/cmake
 3 - edit Toolchain-raspberryPi.cmake to update the PATH_TO_RASPBERRY_TOOLCHAIN variable
-4 - Fix the tool chain : edit {Your_path_to_raspberry_toolchain}/arm-bcm2708/arm-bcm2708-linux-gnueabi/arm-bcm2708-linux-gnueabi/sysroot/usr/lib/libc.so to remove hard-coded paths :
-   GROUP ( /lib/libc.so.6 /usr/lib/libc_nonshared.a  AS_NEEDED ( /lib/ld-linux.so.3 ) )
-   ==>
-   GROUP ( libc.so.6 libc_nonshared.a  AS_NEEDED ( ld-linux.so.3 ) )
-5 - Go to gammu folder, create target dir :
+4 - Go to gammu folder, create target dir :
    mkdir raspberry
    cd raspberry
-6 - Build makefile :
+5 - Build makefile :
    cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-raspberryPi.cmake -DBUILD_SHARED_LIBS=ON -DWITH_MySQL=OFF -DWITH_Postgres=OFF -DWITH_Iconv=OFF -DWITH_CURL=OFF
-7 - Build Gammu :
+6 - Build Gammu :
    make
