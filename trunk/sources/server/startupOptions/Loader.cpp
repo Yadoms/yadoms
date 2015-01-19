@@ -14,7 +14,7 @@ const std::string CLoader::OptionalConfigFile("yadoms.cfg");
 void CLoader::buildOptionsDescription()
 {
    m_optionsDescription.add_options()
-      ("help", "produce help message")
+      ("help,h", "produce help message")
       ("port,p", po::value<unsigned int>(&m_webServerPortNumber)->default_value(8080),
       "set the web server port number")
       ("webServerIp,i", po::value<CValidIpAddressOption>(&m_webServerIPAddress)->default_value(CValidIpAddressOption("0.0.0.0")),
@@ -34,7 +34,7 @@ void CLoader::buildOptionsDescription()
 }
 
 CLoader::CLoader(int argc, const char* const argv[])
-   :m_optionsDescription("Allowed options"), m_webServerPortNumber(8080), m_debugFlag(false)
+   :m_optionsDescription("Allowed options")
 {
    buildOptionsDescription();
 

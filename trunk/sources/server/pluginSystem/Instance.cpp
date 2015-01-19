@@ -70,6 +70,7 @@ void CInstance::doWork()
    catch (...)
    {
       // Plugin crashed
+
       YADOMS_LOG(error) << getName() << " crashed in doWork with unknown exception.";
       m_qualifier->signalCrash(m_pPlugin->getInformation(), "Plugin crashed in doWork with unknown exception");
    }

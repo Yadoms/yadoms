@@ -14,9 +14,13 @@ BOOST_AUTO_TEST_SUITE(TestLoader)
 /// \brief	    This function is needed to check the correct exception
 //--------------------------------------------------------------
 
-bool ValidateLoaderException(startupOptions::CLoaderException exception)
+bool ValidateLoaderExceptionIsError(startupOptions::CLoaderException exception)
 {
    return exception.isError();
+}
+bool ValidateLoaderExceptionIsHelp(startupOptions::CLoaderException exception)
+{
+   return !exception.isError();
 }
 
 class CTestPath
@@ -83,6 +87,28 @@ BOOST_AUTO_TEST_CASE(Initialisation_Test)
    BOOST_CHECK_EQUAL(StartupOptions.getWidgetsPath(),"widgets");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerIPAddress(), "0.0.0.0");
    BOOST_CHECK_EQUAL(StartupOptions.getWebServerInitialPath(), "www");
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test startupOptions::CLoader with the help resquested "--help"
+/// \result         CLoaderException exception expected
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(helpRequest)
+{
+   const char *argv[] = { "./TestLoader", "--help" };
+   BOOST_CHECK_EXCEPTION(startupOptions::CLoader StartupOptions(2, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsHelp);
+}
+
+//--------------------------------------------------------------
+/// \brief	    Test startupOptions::CLoader with the help resquested (short form) "-h"
+/// \result         CLoaderException exception expected
+//--------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(helpRequestShort)
+{
+   const char *argv[] = { "./TestLoader", "-h" };
+   BOOST_CHECK_EXCEPTION(startupOptions::CLoader StartupOptions(2, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsHelp);
 }
 
 //--------------------------------------------------------------
@@ -154,7 +180,7 @@ BOOST_AUTO_TEST_CASE(Port_Initialisation_Error1)
 {
    const char *argv[] = {"./TestLoader", "--webServer", "192.168.1.1"};
 
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderException);
+   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
 }
 
 //--------------------------------------------------------------
@@ -167,7 +193,7 @@ BOOST_AUTO_TEST_CASE(Port_Initialisation_Error2)
    const char *argv[] = {"./TestLoader","-port","2000"};
 
    //Test the exception, and if this one is the correct one !
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderException);
+   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
 }
 
 //--------------------------------------------------------------
@@ -396,7 +422,7 @@ BOOST_AUTO_TEST_CASE(Unknow_Log_l_Error1)
 {
    const char *argv[] = {"./TestLoader","-l","toto"};
 
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderException);
+   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
 }
 
 //--------------------------------------------------------------
@@ -468,7 +494,7 @@ BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Error1)
 {
    const char *argv[] = {"./TestLoader","--webServe","192.168.1.1"};
 
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderException);
+   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
 }
 
 //--------------------------------------------------------------
@@ -480,7 +506,7 @@ BOOST_AUTO_TEST_CASE(Different_IP_webServerIp_Error2)
 {
    const char *argv[] = {"./TestLoader","-i","192.168.1."};
 
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderException);
+   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
 }
 
 //--------------------------------------------------------------
@@ -535,7 +561,7 @@ BOOST_AUTO_TEST_CASE(Different_WebServer_webServerPath_WrongPath)
 	CTestPath webServerPath(testNewWebServerPath);
    const char *argv[] = {"./TestLoader","--webServerPath",testFalsePath.c_str()};
 
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderException);
+   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
 }
 
 //--------------------------------------------------------------
@@ -615,7 +641,7 @@ BOOST_AUTO_TEST_CASE(Different_WidgetPath_False_Path_Initialisation)
    const char *argv[] = {"./TestLoader","--widgetsPath",testFalsePath.c_str()};
 
    //An exception should be throw !
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderException);
+   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
 }
 
 //--------------------------------------------------------------
@@ -632,7 +658,7 @@ BOOST_AUTO_TEST_CASE(Different_PluginPath_False_Path_Initialisation)
    const char *argv[] = {"./TestLoader","--pluginsPath",testFalsePath.c_str()};
 
    //An exception should be throw !
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderException);
+   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (3, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
 }
 
 //--------------------------------------------------------------
@@ -917,7 +943,7 @@ BOOST_AUTO_TEST_CASE(Parameter_Missing_No_Exception)
 { 
    const char *argv[] = {"./TestLoader","-p"};
 
-   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (2, argv), startupOptions::CLoaderException, ValidateLoaderException);
+   BOOST_REQUIRE_EXCEPTION(startupOptions::CLoader StartupOptions (2, argv), startupOptions::CLoaderException, ValidateLoaderExceptionIsError);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
