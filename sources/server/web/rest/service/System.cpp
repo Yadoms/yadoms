@@ -11,8 +11,8 @@ namespace web { namespace rest { namespace service {
 
    std::string CSystem::m_restKeyword= std::string("system");
 
-   CSystem::CSystem(boost::shared_ptr<CYadomsSystemInternal> systemInformation)
-      :m_systemInformation(systemInformation)
+   CSystem::CSystem(boost::shared_ptr<CRunningInformation> runningInformation)
+      :m_runningInformation(runningInformation)
    {
       
    }
@@ -107,9 +107,9 @@ namespace web { namespace rest { namespace service {
       {
          shared::CDataContainer result;
 
-         result.set("runningPlatform", m_systemInformation->getOperatingSystemName());
-         result.set("yadomsVersion", m_systemInformation->getSoftwareVersion().toString());
-         result.set("startupTime", m_systemInformation->getStartupDateTime());
+		 result.set("runningPlatform", m_runningInformation->getOperatingSystemName());
+		 result.set("yadomsVersion", m_runningInformation->getSoftwareVersion().toString());
+		 result.set("startupTime", m_runningInformation->getStartupDateTime());
          return web::rest::CResult::GenerateSuccess(result);
       }
       catch (std::exception &ex)
