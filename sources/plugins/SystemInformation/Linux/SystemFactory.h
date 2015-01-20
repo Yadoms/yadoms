@@ -1,11 +1,11 @@
 #pragma once
 
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
-#include "MemoryLoad.h"
-#include "CPULoad.h"
-#include "YadomsCPULoad.h"
-#include "DiskUsage.h"
-#include "DisksList.h"
+#include <MemoryLoad.h>
+#include <CPULoad.h>
+#include <YadomsCPULoad.h>
+#include <DiskUsage.h>
+#include <DisksList.h>
 
 
 // Shortcut to yPluginApi namespace
