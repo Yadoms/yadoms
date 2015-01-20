@@ -51,17 +51,16 @@ IF (UNIX AND NOT APPLE)
 	source_group(CommonLinux CommonLinux/*.*)
 ENDIF()
 
-IF (UNIX AND NOT APPLE AND NOT CC_RPI_GCC)
+IF (UNIX AND NOT APPLE AND NOT (CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry"))
     set(SYSTEMINFORMATION_PLUGIN_SOURCES ${SYSTEMINFORMATION_PLUGIN_SOURCES}
-	CommonLinux/SystemFactory.h
-        CommonLinux/SystemFactory.cpp
+	Linux/SystemFactory.h
+        Linux/SystemFactory.cpp
        )
 
-    source_group(CommonLinux CommonLinux/*.*)
+    source_group(Linux Linux/*.*)
 ENDIF()
 
-#TODO : Je n'ai pas trouvé mieux pour le moment !
-IF(CC_RPI_GCC)
+IF(CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
     set(SYSTEMINFORMATION_PLUGIN_SOURCES ${SYSTEMINFORMATION_PLUGIN_SOURCES}
 	# Add RaspberryPi Specific sources
 	RaspberryPI/SystemFactory.h
@@ -87,11 +86,13 @@ ENDIF()
 IF (UNIX AND NOT APPLE)
    set(SYSTEMINFORMATION_PLUGIN_INCLDIR
 	   ${CMAKE_CURRENT_SOURCE_DIR}/CommonLinux
+           ${CMAKE_CURRENT_SOURCE_DIR}/Linux
    )
 ENDIF()
 	
-IF (CC_RPI_GCC)
-   set(SYSTEMINFORMATION_PLUGIN_INCLDIR ${SYSTEMINFORMATION_PLUGIN_INCLDIR}
+IF (CMAKE_YADOMS_PLATFORM STREQUAL "Raspberry")
+   set(SYSTEMINFORMATION_PLUGIN_INCLDIR
+           ${CMAKE_CURRENT_SOURCE_DIR}/CommonLinux
 	   ${CMAKE_CURRENT_SOURCE_DIR}/RaspberryPI
 	   )
 ENDIF()	
