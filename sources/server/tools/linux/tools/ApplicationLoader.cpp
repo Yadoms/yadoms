@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "ApplicationLoader.h"
+#include <shared/Log.h>
+#include <server/startupOptions/LoaderException.hpp>
 
-#include "../../tools/IApplication.h"
 
 namespace tools {
 
