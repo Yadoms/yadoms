@@ -580,8 +580,6 @@ IF(USE_SQLITE_DATABASE)
 		server/database/sqlite/adapters/SingleValueAdapter.hpp
 		server/database/sqlite/adapters/HighchartValueAdapter.hpp
 		server/database/sqlite/adapters/MultipleValueAdapter.hpp
-		server/database/sqlite/adapters/RecipientFieldsAdapter.h
-		server/database/sqlite/adapters/RecipientFieldsAdapter.cpp		
       
 		server/database/sqlite/versioning/ISQLiteVersionUpgrade.h
 		server/database/sqlite/versioning/SQLiteVersion1.h

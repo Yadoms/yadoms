@@ -119,17 +119,11 @@ namespace sqlite {
 		((LastName)("lastName"))
 	)
 
-	DECLARE_TABLE_COLUMN_NAMES(Field, "Field",
-	   ((Id)("id"))
-		((Name)("name"))
-		((Category)("category"))
-		((VerificationRegex)("verificationRegex"))
-	)
 
-
-	DECLARE_TABLE_COLUMN_NAMES(RecipientFields, "RecipientFields",
+   DECLARE_TABLE_COLUMN_NAMES(RecipientField, "RecipientField",
 		((IdRecipient)("idRecipient"))
-		((IdField)("idField"))
+		((PluginName)("pluginName"))
+      ((FieldName)("fieldName"))
 		((Value)("value"))
 	)
 

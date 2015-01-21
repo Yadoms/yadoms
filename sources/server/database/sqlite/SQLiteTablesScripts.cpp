@@ -131,22 +131,13 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Recipient,            "CREATE TABLE Recipie
                                                                firstName TEXT NOT NULL,                           \
                                                                lastName TEXT)")
 
-DECLARE_STATIC_TABLE_CREATION_SCRIPT(Field,						"CREATE TABLE Field												\
-                                                            (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,     \
-                                                               name TEXT NOT NULL,											\
-                                                               category TEXT,													\
-                                                               verificationRegex TEXT )")
 
-DECLARE_STATIC_TABLE_CREATION_SCRIPT(RecipientFields,       "CREATE TABLE RecipientFields									\
-                                                            (  IdRecipient INTEGER NOT NULL,								\
-                                                               IdField INTEGER NOT NULL,									\
-                                                               value TEXT)")
-
-
-
-
-
-
+DECLARE_STATIC_TABLE_CREATION_SCRIPT(RecipientField,       "CREATE TABLE RecipientField									\
+                                                            (  idRecipient INTEGER NOT NULL,								\
+                                                               pluginName TEXT NOT NULL,									\
+                                                               fieldName TEXT NOT NULL,									\
+                                                               value TEXT,                                        \
+                                                               PRIMARY KEY (idRecipient, pluginName, fieldName))")
 
 
       } //namespace sqlite

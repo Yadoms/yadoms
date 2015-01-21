@@ -115,17 +115,11 @@ namespace sqlite {
 		(FirstName)
 		(LastName)
 	)   
-
-	DECLARE_TABLE(Field,
-	   (Id)
-		(Name)
-		(Category)
-		(VerificationRegex)
-	)   
-
-	DECLARE_TABLE(RecipientFields,
+   
+	DECLARE_TABLE(RecipientField,
 	   (IdRecipient)
-		(IdField)
+		(PluginName)
+		(FieldName)
 		(Value)
 	)   
 

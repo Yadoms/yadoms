@@ -49,18 +49,55 @@
 
       //add custom fields (email, mobile phone,...)
       var recipientConfigurationFields = [];
-      $.each(recipient.fields, function (index, field) {
-         //create the parameter
-         var valueParameter = new StringParameterHandler("object.recipient.fields.", field.name, {required:"true", regex: field.verificationRegex}, field.value);
-         //keep the field
-         valueParameter.field = field;
-         recipientConfigurationFields.push(valueParameter);
 
-         //create the dom part
-         $modalBody.append(valueParameter.getDOMObject());
+      var sections = {};
+      debugger;
+
+      $.each(recipient.fields, function (index, field) {
+
+         if(field.pluginName == "system") {
+
+            var valueParameter = new StringParameterHandler("objects.recipient.fields.", field.fieldName, {required:"false", regex: field.verificationRegex}, field.value);
+            //keep the field
+            valueParameter.field = field;
+            recipientConfigurationFields.push(valueParameter);
+
+            //create the dom part
+            $modalBody.append(valueParameter.getDOMObject());
+            //we finish instantiation
+            if ($.isFunction(valueParameter.applyScript))
+               valueParameter.applyScript();
+
+         }
+         else {
+
+            //create or retrieve section for the plugin
+            if(sections[field.pluginName] == undefined) {
+               sections[field.pluginName] = new SectionParameterHandler("[prepend]modals.recipient_configure.","pluginSection",
+                       {
+                          name : $.t(field.pluginName + ":name")
+                       });
+            }
+
+            var valueParameter = new StringParameterHandler(field.pluginName + ":recipientFields.", field.fieldName, {required:"false", regex: field.verificationRegex}, field.value);
+            //keep the field
+            valueParameter.field = field;
+            recipientConfigurationFields.push(valueParameter);
+
+            sections[field.pluginName].configurationHandlers.push(valueParameter);
+         }
+      });
+
+      for(var sec in sections) {
+         $modalBody.append(sections[sec].getDOMObject());
+         if ($.isFunction(sections[sec].applyScript))
+                 sections[sec].applyScript();
+      }
+
+      $.each(recipientConfigurationFields, function(index, f) {
          //we finish instantiation
-         if ($.isFunction(valueParameter.applyScript))
-            valueParameter.applyScript();
+         if ($.isFunction(f.applyScript))
+            f.applyScript();
       });
 
       //i18n

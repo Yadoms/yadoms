@@ -170,6 +170,10 @@
             "name": "Last name",
             "description": "The recipient last name",
             "regexErrorMessage": ""
+         },
+         "pluginSection" : {
+            "name" : "Fields for plugin ",
+            "description" : ""
          }
       },
       "dashboard" : {
@@ -247,7 +251,6 @@
                "new" : "Create a new recipient",
                "edit" : "Edit the recipient",
                "delete" : "Delete the recipient",
-               "errorGettingRecipientList" : "An error has occurred acquiring recipient list",
                "confirmRecipientDeletion" : "This action will delete the recipient __firstName__ __lastName__. Continue anyway ?",
                "table" : {
                   "firstName" : "First name",
@@ -336,6 +339,9 @@
          "errorGettingManuallyDeviceCreation" : "An error has occurred getting plugin instance that handle manually device creation",
          "errorApplyingBinding" : "An error has occurred applying binding"
       },
+      "plugin" : {
+         "errorListing" : "An errors occurs while listing plugins"
+      },
       "deviceManager" : {
          "errorGettingAttachedPlugin" : "An error has occurred getting plugin package of device __deviceName__",
          "errorGettingDeviceDetails" : "An error has occurred getting device details of __deviceName__",
@@ -392,16 +398,16 @@
         }
       },
       "recipient" : {
-         "errorGettingList" : "An error has occurred listing recipients",
+         "errorGettingRecipientList" : "An error has occurred acquiring recipient list",
          "fields" : {
-            "email" : {
-               "name": "Email",
-               "description": "Recipient email",
+            "email": {
+               "name": "Email (system)",
+               "description": "Recipient email (system)",
                "regexErrorMessage": "It must match a valid email address"
             },
-            "mobile" : {
-               "name": "Mobile phone",
-               "description": "The mobile phone number of the recipient",
+            "mobile": {
+               "name": "Mobile phone (system)",
+               "description": "The mobile phone number of the recipient (system)",
                "regexErrorMessage": ""
             }
          }

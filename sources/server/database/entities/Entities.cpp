@@ -164,15 +164,14 @@ namespace database { namespace entities {
 		((Id)(int)(0)("id"))
 		((FirstName)(std::string)("")("firstName"))
 		((LastName)(std::string)("")("lastName"))
-      ((RecipientFields)(std::vector< boost::shared_ptr<database::entities::CField> >)(std::vector< boost::shared_ptr<database::entities::CField> >())("fields"))
+      ((Fields)(std::vector< boost::shared_ptr<database::entities::CRecipientField> >)(std::vector< boost::shared_ptr<database::entities::CRecipientField> >())("fields"))
 	);
 		
 	DECLARE_ENTITY_CLASS_IMPLEMENTATION(
-		Field,
-		((Id)(int)(0)("id"))
-		((Name)(std::string)("")("name"))
-		((Category)(std::string)("")("category"))
-		((VerificationRegex)(std::string)("")("verificationRegex"))
+      RecipientField,
+      ((IdRecipient)(int)(0)("idRecipient"))
+      ((PluginName)(std::string)("")("pluginName"))
+		((FieldName)(std::string)("")("fieldName"))
 		((Value)(std::string)("")("value"))
 	);
 

@@ -35,31 +35,43 @@ RecipientManager.get = function (recipientId, callback) {
 }
 
 
+RecipientManager.getAllFields = function (callback, sync) {
+
+   var async = true;
+   if (!isNullOrUndefined(sync))
+      async = false;
+   PluginManager.getWithPackage(callback, async);
+};
+
 RecipientManager.list = function(callback) {
    assert($.isFunction(callback), "callback must be defined");
 
-   $.getJSON("rest/recipient")
-       .done(function(data) {
-          //we parse the json answer
-          if (data.result != "true")
-          {
-             notifyError($.t("objects.recipient.errorGettingList"), JSON.stringify(data));
-             return;
-          }
-          var recipientList = [];
+   //we start by requesting all pugin fields
+   RecipientManager.getAllFields( function(allPlugin) {
+      $.getJSON("rest/recipient")
+          .done(function(data) {
+             //we parse the json answer
+             if (data.result != "true")
+             {
+                notifyError($.t("objects.recipient.errorGettingList"), JSON.stringify(data));
+                return;
+             }
 
-          //foreach result we append a <tr>
-          $.each(data.data.recipient, function(index, value) {
-             var recip = RecipientManager.factory(value);
-             recipientList.push(recip);
-          });
+             var recipientList = [];
+             $.each(data.data.recipient, function(index, value) {
+                var r2 = RecipientManager.factory(value);
+                r2.mergeFields(allPlugin);
+                recipientList.push(r2);
+             });
 
-          callback(recipientList);
-       })
+             callback(recipientList);
+          })
           .fail(function() {
-          notifyError($.t("modals.recipient.errorGettingList"));
-          callback(null);
-       });
+             notifyError($.t("modals.recipient.errorGettingList"));
+             callback(null);
+          });
+   }, true);
+
 }
 
 
