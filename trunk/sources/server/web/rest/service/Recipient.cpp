@@ -114,7 +114,7 @@ namespace web { namespace rest { namespace service {
          {
             database::entities::CRecipient toUpdate;
 
-            //requestContent.printToLog();
+            requestContent.printToLog();
 
             toUpdate.fillFromContent(requestContent);
             if (!toUpdate.Id.isDefined() || toUpdate.Id() != recipientId)

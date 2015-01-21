@@ -54,7 +54,7 @@ namespace database {  namespace sqlite { namespace requesters {
          {
             int insertedRecipientId = adapter.getResults()[0];
 
-            WriteRecipientFields(insertedRecipientId, recipient.RecipientFields());
+            WriteRecipientFields(insertedRecipientId, recipient.Fields());
             return getRecipient(insertedRecipientId);
          }
          else
@@ -84,7 +84,7 @@ namespace database {  namespace sqlite { namespace requesters {
             //find the db id from first and last name
             boost::shared_ptr<entities::CRecipient> dbRecipient = getRecipient(recipient.FirstName(), recipient.LastName());
             //update fields
-            WriteRecipientFields(dbRecipient->Id(), recipient.RecipientFields());
+            WriteRecipientFields(dbRecipient->Id(), recipient.Fields());
 
             //read fully the recipient
             return getRecipient(recipient.FirstName(), recipient.LastName());
@@ -210,8 +210,8 @@ namespace database {  namespace sqlite { namespace requesters {
          throw shared::exception::CEmptyResult("No lines affected");
 
       //delete recipient fields
-      qDelete.Clear().DeleteFrom(CRecipientFieldsTable::getTableName())
-         .Where(CRecipientFieldsTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, recipientId);
+      qDelete.Clear().DeleteFrom(CRecipientFieldTable::getTableName())
+         .Where(CRecipientFieldTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, recipientId);
       m_databaseRequester->queryStatement(qDelete);
    }
 
@@ -223,7 +223,7 @@ namespace database {  namespace sqlite { namespace requesters {
       m_databaseRequester->queryStatement(qDelete);
 
       //delete recipient fields
-      qDelete.Clear().DeleteFrom(CRecipientFieldsTable::getTableName());
+      qDelete.Clear().DeleteFrom(CRecipientFieldTable::getTableName());
       m_databaseRequester->queryStatement(qDelete);
    }
    // [END] IRecipientRequester implementation
@@ -231,45 +231,42 @@ namespace database {  namespace sqlite { namespace requesters {
    void CRecipient::ReadRecipientFields(boost::shared_ptr<database::entities::CRecipient> & recipientToComplete)
    {
       CQuery qSelect;
-      qSelect.Select(CFieldTable::getIdColumnName(), CFieldTable::getNameColumnName(), CFieldTable::getCategoryColumnName(), CFieldTable::getVerificationRegexColumnName(), CRecipientFieldsTable::getValueColumnName()).
-         From(CFieldTable::getTableName()).
-         JoinLeft(CRecipientFieldsTable::getTableName()).
-         On(CFieldTable::getIdColumnName(), CRecipientFieldsTable::getIdFieldColumnName()).
-         And(CRecipientFieldsTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, recipientToComplete->Id());
+      qSelect.Select().
+         From(CRecipientFieldTable::getTableName()).
+         Where(CRecipientFieldTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, recipientToComplete->Id());
 
+      adapters::CRecipientFieldAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CRecipientField> >(&adapter, qSelect);
 
-      adapters::CRecipientFieldsAdapter adapter;
-      m_databaseRequester->queryEntities<boost::shared_ptr<database::entities::CField> >(&adapter, qSelect);
+      recipientToComplete->Fields().clear();
 
-      recipientToComplete->RecipientFields().clear();
-
-      std::vector< boost::shared_ptr<database::entities::CField> > fields = adapter.getResults();
-      for (std::vector< boost::shared_ptr<database::entities::CField> >::iterator i = fields.begin(); i != fields.end(); ++i)
+      std::vector< boost::shared_ptr<database::entities::CRecipientField> > fields = adapter.getResults();
+      for (std::vector< boost::shared_ptr<database::entities::CRecipientField> >::iterator i = fields.begin(); i != fields.end(); ++i)
       {
-         recipientToComplete->RecipientFields().push_back(*i);
+         recipientToComplete->Fields().push_back(*i);
       }
    }
 
-   void CRecipient::WriteRecipientFields(const int recipientId, const std::vector< boost::shared_ptr<database::entities::CField> > & fields)
+   void CRecipient::WriteRecipientFields(const int recipientId, const std::vector< boost::shared_ptr<database::entities::CRecipientField> > & fields)
    {
       //remove all existing fields
       CQuery removeFields;
-      removeFields.DeleteFrom(CRecipientFieldsTable::getTableName()).
-         Where(CRecipientFieldsTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, recipientId);
+      removeFields.DeleteFrom(CRecipientFieldTable::getTableName()).
+         Where(CRecipientFieldTable::getIdRecipientColumnName(), CQUERY_OP_EQUAL, recipientId);
       m_databaseRequester->queryStatement(removeFields);
 
       //insert fields
-      for (std::vector< boost::shared_ptr<database::entities::CField> >::const_iterator i = fields.begin(); i != fields.end(); ++i)
+      for (std::vector< boost::shared_ptr<database::entities::CRecipientField> >::const_iterator i = fields.begin(); i != fields.end(); ++i)
       {
          if ((*i)->Value.isDefined() && !(*i)->Value().empty())
          {
             //insert or update value in RecipientFieldsTable
             CQuery qInsert;
-            qInsert.InsertOrReplaceInto(CRecipientFieldsTable::getTableName(), CRecipientFieldsTable::getIdRecipientColumnName(), CRecipientFieldsTable::getIdFieldColumnName(), CRecipientFieldsTable::getValueColumnName()).
-               Values(recipientId, (*i)->Id(), (*i)->Value());
+            qInsert.InsertOrReplaceInto(CRecipientFieldTable::getTableName(), CRecipientFieldTable::getIdRecipientColumnName(), CRecipientFieldTable::getPluginNameColumnName(), CRecipientFieldTable::getFieldNameColumnName(), CRecipientFieldTable::getValueColumnName()).
+               Values(recipientId, (*i)->PluginName(), (*i)->FieldName(), (*i)->Value());
 
             if (m_databaseRequester->queryStatement(qInsert) <= 0)
-               throw shared::exception::CEmptyResult("Fail to insert field : " + (*i)->Name() + " : " + (*i)->Value());
+               throw shared::exception::CEmptyResult("Fail to insert field : " + (*i)->PluginName() + "." + (*i)->FieldName() + " : " + (*i)->Value());
          }
          else
          {

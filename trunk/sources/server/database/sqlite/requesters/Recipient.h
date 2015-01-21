@@ -51,7 +51,7 @@ namespace database { namespace sqlite {
          /// \param [in]	recipientId: the recipient id
          /// \param [in]	fields: the recipient fields
          //--------------------------------------------------------------
-         void WriteRecipientFields(const int recipientId, const std::vector< boost::shared_ptr<database::entities::CField> > & fields);
+         void WriteRecipientFields(const int recipientId, const std::vector< boost::shared_ptr<database::entities::CRecipientField> > & fields);
 
          //--------------------------------------------------------------
          /// \Brief		   Reference to SQLiteRequester

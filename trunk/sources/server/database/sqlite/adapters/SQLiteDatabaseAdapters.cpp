@@ -119,11 +119,11 @@ namespace database {   namespace sqlite {  namespace adapters {
 		((LastName)(std::string)(""))
 	);
 
-		DECLARE_ADAPTER_IMPLEMENTATION(Field,
-		((Id)(int)(0))
-		((Name)(std::string)(""))
-		((Category)(std::string)(""))
-		((VerificationRegex)(std::string)(""))
+   DECLARE_ADAPTER_IMPLEMENTATION(RecipientField,
+      ((IdRecipient)(int)(0))
+		((PluginName)(std::string)(""))
+		((FieldName)(std::string)(""))
+		((Value)(std::string)(""))
 	);
 
 

@@ -23,3 +23,88 @@ Recipient.prototype.toJSON = function () {
       fields : this.fields
    };
 };
+
+
+/**
+ * Define the systemFields
+ * @type {string[]}
+ */
+Recipient.systemFields = {
+   "email": "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$",
+   "mobile": ""
+};
+
+
+
+Recipient.prototype.mergeFields = function (allPlugins) {
+
+   var self = this;
+
+   var definedFields = [];
+   $.each(this.fields, function(index, f){
+      definedFields.push(f);
+   });
+
+   this.fields = [];
+
+   //add system fields
+   for(var systemField in Recipient.systemFields) {
+
+      //create a new field
+      var currentField = {
+         fieldName : systemField,
+         pluginName : "system",
+         name :  $.t("objects.recipient.fields." + systemField + ".name" ),
+         description :  $.t("objects.recipient.fields." + systemField + ".description" ),
+         regexErrorMessage :  $.t("objects.recipient.fields." + systemField + ".regexErrorMessage" ),
+         verificationRegex : Recipient.systemFields[systemField],
+         value : ""
+      };
+
+      //search the field value in definedFields (search if the recipient is already configured for this field)
+      $.each(definedFields, function(index, field) {
+         if(field.pluginName.toUpperCase() == "system".toUpperCase() && field.fieldName.toUpperCase() == systemField.toUpperCase()) {
+            //the field match an already saved one, just reuse the value
+            currentField.value = field.value;
+         }
+      });
+
+      self.fields.push(currentField);
+   }
+
+
+
+   //add plugin fields
+
+   $.each(allPlugins, function(index, plugin) {
+      //for each recipient fields in the plugin
+      var recipientFieldsFromPlugin = plugin.getRecipientFields();
+      for(var recipientField in recipientFieldsFromPlugin) {
+
+         var currentField = {
+            name : recipientFieldsFromPlugin[recipientField].name,
+            description : recipientFieldsFromPlugin[recipientField].description,
+            verificationRegex : recipientFieldsFromPlugin[recipientField].verificationRegex,
+            regexErrorMessage : recipientFieldsFromPlugin[recipientField].regexErrorMessage
+         }
+
+         //force the field value to empty string
+         currentField.value = "";
+
+         //search the field value in definedFields (search if the recipient is already configured for this field)
+         $.each(definedFields, function(index, field) {
+            if(field.pluginName.toUpperCase() == plugin.name.toUpperCase() && field.fieldName.toUpperCase() == recipientField.toUpperCase()) {
+               //the field match an already saved one, just reuse the value
+               currentField.value = field.value;
+            }
+         });
+
+         currentField.fieldName = recipientField;
+         currentField.pluginName = plugin.name;
+
+         self.fields.push(currentField);
+      }
+   })
+
+};
+

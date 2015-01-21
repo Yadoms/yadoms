@@ -5,9 +5,6 @@
 #include "ISQLiteResultAdapter.h"
 #include "database/sqlite/SQLiteDatabaseTables.h"
 
-//include specific adapters
-#include "RecipientFieldsAdapter.h"
-
 namespace database { 
 namespace sqlite { 
 namespace adapters { 
@@ -28,8 +25,7 @@ namespace adapters {
    DECLARE_ADAPTER_HEADER(AcquisitionSummary)
    DECLARE_ADAPTER_HEADER(Rule)
 	DECLARE_ADAPTER_HEADER(Recipient)
-	DECLARE_ADAPTER_HEADER(Field)
-//   DECLARE_ADAPTER_HEADER(Contact)
+   DECLARE_ADAPTER_HEADER(RecipientField)
   
 } //namespace adapters
 } //namespace sqlite

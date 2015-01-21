@@ -153,11 +153,10 @@ namespace database { namespace entities {
    )
 
 
-	DECLARE_ENTITY_CLASS_HEADER(Field,
-		((Id)(int))
-		((Name)(std::string))
-		((Category)(std::string))
-		((VerificationRegex)(std::string))
+   DECLARE_ENTITY_CLASS_HEADER(RecipientField,
+		((IdRecipient)(int))
+		((PluginName)(std::string))
+		((FieldName)(std::string))
 		((Value)(std::string))
 	)
 
@@ -166,7 +165,7 @@ namespace database { namespace entities {
 	   ((Id)(int))
 		((FirstName)(std::string))
 		((LastName)(std::string))
-		((RecipientFields)(std::vector< boost::shared_ptr<database::entities::CField> >))
+      ((Fields)(std::vector< boost::shared_ptr<database::entities::CRecipientField> >))
 	)
 
 

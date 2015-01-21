@@ -42,8 +42,7 @@
                      !pRequester->checkTableExists(CAcquisitionSummaryTable::getTableName()) ||
                      !pRequester->checkTableExists(CRuleTable::getTableName()) || 
                      !pRequester->checkTableExists(CRecipientTable::getTableName()) || 
-                     !pRequester->checkTableExists(CFieldTable::getTableName()) || 
-                     !pRequester->checkTableExists(CRecipientFieldsTable::getTableName()))
+                     !pRequester->checkTableExists(CRecipientFieldTable::getTableName()))
                   {
                      //at least one table is missing
                      bNeedToCreateOrUpgrade = true;
@@ -106,9 +105,7 @@
                      throw CSQLiteVersionException("Failed to delete rule table");
                   if (!pRequester->dropTableIfExists(CRecipientTable::getTableName()))
                      throw CSQLiteVersionException("Failed to delete Recipient table");
-                  if (!pRequester->dropTableIfExists(CFieldTable::getTableName()))
-                     throw CSQLiteVersionException("Failed to delete Field table");
-                  if (!pRequester->dropTableIfExists(CRecipientFieldsTable::getTableName()))
+                  if (!pRequester->dropTableIfExists(CRecipientFieldTable::getTableName()))
                      throw CSQLiteVersionException("Failed to delete RecipientFields table");
 
                   //create tables
@@ -136,9 +133,7 @@
                      throw CSQLiteVersionException("Failed to create Rule table");
 						if (!pRequester->createTableIfNotExists(CRecipientTable::getTableName(), CRecipientTable::getTableCreationScript()))
                      throw CSQLiteVersionException("Failed to create Recipient table");
-						if (!pRequester->createTableIfNotExists(CFieldTable::getTableName(), CFieldTable::getTableCreationScript()))
-                     throw CSQLiteVersionException("Failed to create Field table");
-						if (!pRequester->createTableIfNotExists(CRecipientFieldsTable::getTableName(), CRecipientFieldsTable::getTableCreationScript()))
+						if (!pRequester->createTableIfNotExists(CRecipientFieldTable::getTableName(), CRecipientFieldTable::getTableCreationScript()))
                      throw CSQLiteVersionException("Failed to create RecipientFields table");
 
 
@@ -156,14 +151,6 @@
                   //system plugin
                   qInsert.Clear().InsertInto(CPluginTable::getTableName(), CPluginTable::getNameColumnName(), CPluginTable::getTypeColumnName(), CPluginTable::getAutoStartColumnName(), CPluginTable::getCategoryColumnName()).
                      Values("System", "System", true, database::entities::EPluginCategory::kSystem);
-                  pRequester->queryStatement(qInsert);
-
-                  //recipient fields
-                  qInsert.Clear().InsertInto(CFieldTable::getTableName(), CFieldTable::getNameColumnName(), CFieldTable::getCategoryColumnName(), CFieldTable::getVerificationRegexColumnName()).
-                     Values("email", "", "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$");
-                  pRequester->queryStatement(qInsert);
-                  qInsert.Clear().InsertInto(CFieldTable::getTableName(), CFieldTable::getNameColumnName(), CFieldTable::getCategoryColumnName(), CFieldTable::getVerificationRegexColumnName()).
-                     Values("mobile", "", "");
                   pRequester->queryStatement(qInsert);
 
                   //commit transaction
