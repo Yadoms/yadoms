@@ -15,7 +15,7 @@ COr::~COr()
 {         
 }
 
-bool COr::eval() const
+bool COr::eval()
 {
    for (Operands::const_iterator it = m_operands.begin(); it != m_operands.end(); ++it)
       if ( (*it)->eval() )
