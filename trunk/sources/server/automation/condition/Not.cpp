@@ -14,7 +14,7 @@ CNot::~CNot()
 {         
 }
 
-bool CNot::eval() const
+bool CNot::eval()
 {
    return !m_operand->eval();
 }

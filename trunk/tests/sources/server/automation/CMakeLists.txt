@@ -1,5 +1,8 @@
 
 IF(NOT DISABLE_TEST_AUTOMATION)
+
+   add_subdirectory(condition)
+
    ADD_YADOMS_SOURCES(
       shared/shared/ThreadBase.h
       shared/shared/ThreadBase.cpp

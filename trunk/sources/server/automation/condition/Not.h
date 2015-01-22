@@ -23,9 +23,8 @@ namespace automation { namespace condition
       //-----------------------------------------------------
       virtual ~CNot();
 
-   protected:
       // ICondition Implementation
-      virtual bool eval() const;
+      virtual bool eval();
       virtual void registerToNotificationCenter(boost::shared_ptr<INotificationObserverForRulesManager> notificationObserver, boost::shared_ptr<IConditionRootUpdater> conditionRootNotifier);
       virtual void unregisterFromNotificationCenter(boost::shared_ptr<INotificationObserverForRulesManager> notificationObserver);
       // [END] ICondition Implementation

@@ -8,11 +8,12 @@
 #include "Comparators.h"
 
 namespace automation { namespace condition
-{      
+{
+      
    //-----------------------------------------------------
-   ///\brief The IS operator
+   ///\brief The Become operator (front detector)
    //-----------------------------------------------------
-   class CIs : public ICondition, public IKeywordUpdater, public boost::enable_shared_from_this<CIs>
+   class CBecome : public ICondition, public IKeywordUpdater, public boost::enable_shared_from_this<CBecome>
    {
    public:
       //-----------------------------------------------------
@@ -21,12 +22,12 @@ namespace automation { namespace condition
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
       ///\throw shared::exception::CEmptyResult if associated keyword is not found
       //-----------------------------------------------------
-      CIs(const shared::CDataContainer& configuration, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester);
+      CBecome(const shared::CDataContainer& configuration, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester);
 
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~CIs();
+      virtual ~CBecome();
 
       // ICondition Implementation
       virtual bool eval();
@@ -40,6 +41,11 @@ namespace automation { namespace condition
       // [END] IKeywordUpdater Implementation
 
    protected:
+      //-----------------------------------------------------
+      ///\brief               Convert value to double to perform '<' or '>' comparisons
+      //-----------------------------------------------------
+      bool evalState() const;
+
       //-----------------------------------------------------
       ///\brief               Convert value to double to perform '<' or '>' comparisons
       //-----------------------------------------------------
@@ -65,6 +71,11 @@ namespace automation { namespace condition
       ///\brief               Expected value
       //-----------------------------------------------------
       const std::string m_expectedValue;
+
+      //-----------------------------------------------------
+      ///\brief               Previous comparison state
+      //-----------------------------------------------------
+      bool m_previousState;
    };
 	
 } } // namespace automation::condition	

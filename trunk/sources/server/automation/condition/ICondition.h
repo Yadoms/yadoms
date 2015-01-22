@@ -18,7 +18,7 @@ namespace automation { namespace condition
       ///\brief               Evaluate the condition
       ///\return              Return the evaluation result
       //-----------------------------------------------------
-      virtual bool eval() const = 0;
+      virtual bool eval() = 0;
 
       //-----------------------------------------------------
       ///\brief               Register to notification center
