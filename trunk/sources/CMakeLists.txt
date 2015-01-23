@@ -177,6 +177,7 @@ set(YADOMS_SRC
    server/logConfiguration/LogConfiguration.cpp   
    server/logConfiguration/LogConfigurationImpl.h
    server/logConfiguration/LogConfigurationImpl.cpp
+   server/logConfiguration/LogConfigurationException.h
    
    server/pluginSystem/CommandHistorizer.cpp
    server/pluginSystem/CommandHistorizer.h
