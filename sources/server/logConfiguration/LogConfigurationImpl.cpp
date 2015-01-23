@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "LogConfigurationImpl.h"
+#include "LogConfigurationException.h"
 #include <Poco/Logger.h>
 
 namespace logConfiguration
@@ -24,8 +25,14 @@ namespace logConfiguration
       m_patternFormatter->setProperty("pattern", "%H:%M:%S : %T : [%p] : %t");
 
       m_formattingConsoleChannel.assign(new Poco::FormattingChannel(m_patternFormatter, m_consoleChannel));
-               
-      m_fileChannel->setProperty("path", "logs/yadoms.log");
+      
+      std::string Logpath("logs");
+
+      if (!boost::filesystem::exists( Logpath ))
+         if (!boost::filesystem::create_directories( Logpath ))
+            throw CLogConfigurationException( "Cannot create directory " + Logpath );
+
+      m_fileChannel->setProperty("path", Logpath + "/yadoms.log");
       m_fileChannel->setProperty("rotation", "daily");
       m_fileChannel->setProperty("archive", "timestamp");
       m_fileChannel->setProperty("compress", "true");
