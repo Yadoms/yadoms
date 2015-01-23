@@ -34,9 +34,26 @@ namespace automation
       // [END] CThreadBase implementation
 
       //-----------------------------------------------------
-      ///\brief               Notify listener of keyword state change
+      ///\brief               Notify listeners of keyword state change
+      ///\param[in] newAcquisition New acquisition data
       //-----------------------------------------------------
       void notifyListeners(boost::shared_ptr<notifications::CNewAcquisitionNotification> newAcquisition);
+
+      //-----------------------------------------------------
+      ///\brief               Notify keyword listeners of state change
+      ///\param[in] newAcquisition New acquisition data
+      ///\param[in,out] rootConditionsQueue Conditions root list, to notify later
+      ///\note : This function is not thread-safe, mutex must be locked before call
+      //-----------------------------------------------------
+      void notifyKeywordListeners(boost::shared_ptr<notifications::CNewAcquisitionNotification> newAcquisition,
+         std::queue<boost::shared_ptr<condition::IConditionRootUpdater> >& rootConditionsQueue);
+
+      //-----------------------------------------------------
+      ///\brief               Notify all conditions root
+      ///\param[in] rootConditionsQueue Conditions root list
+      ///\note : This function is not thread-safe, mutex must be locked before call
+      //-----------------------------------------------------
+      void notifyRootconditions(std::queue<boost::shared_ptr<condition::IConditionRootUpdater> >& rootConditionsQueue);
 
    private:
       //-----------------------------------------------------
@@ -54,7 +71,7 @@ namespace automation
       //-----------------------------------------------------
       typedef std::pair<boost::shared_ptr<condition::IKeywordUpdater>, boost::shared_ptr<condition::IConditionRootUpdater> > KeywordUpdater;
       typedef std::multimap<int, KeywordUpdater> KeywordUpdaterList;
-      KeywordUpdaterList m_listeners;
+      KeywordUpdaterList m_KeywordListeners;
 
       //--------------------------------------------------------------
       /// \brief	   Mutex protecting the keyword list
