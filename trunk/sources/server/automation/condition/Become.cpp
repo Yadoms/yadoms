@@ -10,7 +10,7 @@ CBecome::CBecome(const shared::CDataContainer& configuration, boost::shared_ptr<
    m_operator(configuration.get<EComparators>("operator")),
    m_value(dbAcquisitionRequester->getKeywordLastData(m_keywordId)->Value),
    m_expectedValue(configuration.get<std::string>("refValue")),
-   m_previousState(evalState())
+   m_previousState(false)
 {
 }
 
@@ -25,6 +25,10 @@ bool CBecome::eval()
       return false;
 
    m_previousState = newState;
+
+   if (!newState)
+      return false;
+
    return true;
 }
 
