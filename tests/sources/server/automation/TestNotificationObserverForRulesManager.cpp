@@ -36,7 +36,7 @@ class CConditionRootUpdaterMoke : public automation::condition::IConditionRootUp
 public:
    CConditionRootUpdaterMoke(shared::event::CEventHandler& eventHandler) : m_eventHandler(eventHandler) {}
    virtual ~CConditionRootUpdaterMoke() {}
-   virtual void onKeywordStateChange() { m_eventHandler.postEvent<boost::shared_ptr<CConditionRootUpdaterMoke> >(kConditionRootMokeEvent, shared_from_this()); }
+   virtual void requestEvaluation() { m_eventHandler.postEvent<boost::shared_ptr<CConditionRootUpdaterMoke> >(kConditionRootMokeEvent, shared_from_this()); }
 private:
    shared::event::CEventHandler& m_eventHandler;
 };

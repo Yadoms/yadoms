@@ -6,14 +6,15 @@
 #include "IKeywordUpdater.h"
 #include "../../database/IAcquisitionRequester.h"
 #include "Comparators.h"
+#include <shared/event/EventHandler.hpp>
+#include <shared/ThreadBase.h>
 
 namespace automation { namespace condition
-{
-      
+{      
    //-----------------------------------------------------
-   ///\brief The Become operator (front detector)
+   ///\brief The IS...FOR operator
    //-----------------------------------------------------
-   class CBecome : public ICondition, public IKeywordUpdater, public boost::enable_shared_from_this<CBecome>
+   class CIsFor : public ICondition, public IKeywordUpdater, public boost::enable_shared_from_this<CIsFor>
    {
    public:
       //-----------------------------------------------------
@@ -22,12 +23,12 @@ namespace automation { namespace condition
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
       ///\throw shared::exception::CEmptyResult if associated keyword is not found
       //-----------------------------------------------------
-      CBecome(const shared::CDataContainer& configuration, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester);
+      CIsFor(const shared::CDataContainer& configuration, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester);
 
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~CBecome();
+      virtual ~CIsFor();
 
       // ICondition Implementation
       virtual bool eval();
@@ -38,13 +39,27 @@ namespace automation { namespace condition
       // IKeywordUpdater Implementation
       virtual int getKeywordId() const;
       virtual void onKeywordStateChange(const std::string& state);
-      // [END] IKeywordUpdater Implementation
+      // [END] IKeywordUpdater Implementation  
+
+      // ITimerListener Implementation
+      virtual void onTimer();
+      // [END] ITimerListener Implementation
 
    protected:
       //-----------------------------------------------------
       ///\brief               Internal state evaluation
       //-----------------------------------------------------
       bool evalState() const;
+
+      //-----------------------------------------------------
+      ///\brief               Start the duration timer
+      //-----------------------------------------------------
+      void startTimer();
+
+      //-----------------------------------------------------
+      ///\brief               Stop the duration timer
+      //-----------------------------------------------------
+      void stopTimer();
 
       //-----------------------------------------------------
       ///\brief               Convert value to double to perform '<' or '>' comparisons
@@ -76,6 +91,43 @@ namespace automation { namespace condition
       ///\brief               Previous comparison state
       //-----------------------------------------------------
       bool m_previousState;
+
+      //-----------------------------------------------------
+      ///\brief               Met condition flag
+      //-----------------------------------------------------
+      bool m_conditionIsMet;
+
+      //-----------------------------------------------------
+      ///\brief               Duration
+      //-----------------------------------------------------
+      const boost::posix_time::time_duration m_duration;
+
+      //-----------------------------------------------------
+      ///\brief               The root condition notifier
+      //-----------------------------------------------------
+      boost::shared_ptr<IConditionRootUpdater> m_ConditionRootNotifier;
+
+      //-----------------------------------------------------
+      ///\brief               The timer thread
+      //-----------------------------------------------------
+      class IsForThread : public shared::CThreadBase
+      {            //TODO déplacer
+      public:
+         IsForThread() :shared::CThreadBase("IsForTimerThread") {}
+         virtual ~IsForThread() {}
+         virtual void start(const boost::posix_time::time_duration& duration, boost::function<void()> timeoutCallback)
+         {
+            m_duration = duration;
+            m_timeoutCallback = timeoutCallback;
+            shared::CThreadBase::start();
+         }
+         virtual void doWork();
+      private:
+         virtual void start() { BOOST_ASSERT(false); }
+         boost::posix_time::time_duration m_duration;
+         boost::function<void()> m_timeoutCallback;
+      };
+      IsForThread m_timerThread;
    };
 	
 } } // namespace automation::condition	

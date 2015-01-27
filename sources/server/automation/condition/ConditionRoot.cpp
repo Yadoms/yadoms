@@ -42,7 +42,7 @@ void CConditionRoot::unregisterFromNotificationCenter(boost::shared_ptr<INotific
       m_condition->unregisterFromNotificationCenter(notificationObserver);
 }
 
-void CConditionRoot::onKeywordStateChange()
+void CConditionRoot::requestEvaluation()
 {
    if(!!m_condition && m_condition->eval())
       m_eventHandler.postEvent(kConditionMet);

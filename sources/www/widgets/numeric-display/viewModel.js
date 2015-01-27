@@ -55,7 +55,7 @@ function NumericDisplayViewModel() {
 
       var self = this;
 
-      //we get the unit of the kewyord
+      //we get the unit of the keyword
       KeywordManager.get(self.widget.configuration.device.keywordId, function(keyword) {
          self.unit(keyword.units);
       });

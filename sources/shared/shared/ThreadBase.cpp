@@ -14,7 +14,7 @@ CThreadBase::CThreadBase(const std::string & threadName, const bool bRethrowDoWo
 	BOOST_ASSERT(threadName != "");
 }
 
-CThreadBase::~CThreadBase(void)
+CThreadBase::~CThreadBase()
 {
    stop();
 }

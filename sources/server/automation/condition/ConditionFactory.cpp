@@ -2,6 +2,7 @@
 #include <shared/Log.h>
 #include "ConditionFactory.h"
 #include "Is.h"
+#include "IsFor.h"
 #include "And.h"
 #include "Not.h"
 #include "Or.h"
@@ -27,7 +28,11 @@ boost::shared_ptr<ICondition> CConditionFactory::createCondition(const shared::C
 
    if (configuration.hasValue("is"))
    {
-      condition.reset(new CIs(configuration.get<shared::CDataContainer>("is"), m_dbAcquisitionRequester));
+      const shared::CDataContainer& isConfiguration(configuration.get<shared::CDataContainer>("is"));
+      if (isConfiguration.hasValue("for"))
+         condition.reset(new CIsFor(isConfiguration, m_dbAcquisitionRequester));
+      else
+         condition.reset(new CIs(isConfiguration, m_dbAcquisitionRequester));
       return condition;
    }
    
