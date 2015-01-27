@@ -96,33 +96,6 @@ void CIsFor::stopTimer()
    m_timerThread.stop();
 }
 
-void CIsFor::IsForThread::doWork()
-{
-   try
-   {
-      enum { kTimerEventId = shared::event::kUserFirstId };
-      shared::event::CEventHandler eventHandler;
-      eventHandler.createTimer(kTimerEventId, shared::event::CEventTimer::kOneShot, m_duration);
-
-      while (true)
-      {
-         // Wait for an event
-         switch (eventHandler.waitForEvents())
-         {
-         case kTimerEventId:
-            m_timeoutCallback();
-            break;
-         default:
-            YADOMS_LOG(error) << "Invalid event ID received " << eventHandler.getEventId();
-            break;
-         }
-      }
-   }
-   catch (boost::thread_interrupted&)
-   {
-   }
-}
-
 double CIsFor::toDouble(const std::string& value)
 {
    return boost::lexical_cast<double>(value);
