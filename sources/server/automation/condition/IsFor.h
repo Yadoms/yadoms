@@ -7,7 +7,7 @@
 #include "../../database/IAcquisitionRequester.h"
 #include "Comparators.h"
 #include <shared/event/EventHandler.hpp>
-#include <shared/ThreadBase.h>
+#include "IsForThread.h"
 
 namespace automation { namespace condition
 {      
@@ -110,24 +110,7 @@ namespace automation { namespace condition
       //-----------------------------------------------------
       ///\brief               The timer thread
       //-----------------------------------------------------
-      class IsForThread : public shared::CThreadBase
-      {            //TODO déplacer
-      public:
-         IsForThread() :shared::CThreadBase("IsForTimerThread") {}
-         virtual ~IsForThread() {}
-         virtual void start(const boost::posix_time::time_duration& duration, boost::function<void()> timeoutCallback)
-         {
-            m_duration = duration;
-            m_timeoutCallback = timeoutCallback;
-            shared::CThreadBase::start();
-         }
-         virtual void doWork();
-      private:
-         virtual void start() { BOOST_ASSERT(false); }
-         boost::posix_time::time_duration m_duration;
-         boost::function<void()> m_timeoutCallback;
-      };
-      IsForThread m_timerThread;
+      CIsForThread m_timerThread;
    };
 	
 } } // namespace automation::condition	

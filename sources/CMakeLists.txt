@@ -319,6 +319,8 @@ set(YADOMS_SRC
 	server/automation/condition/Is.cpp
 	server/automation/condition/IsFor.h
 	server/automation/condition/IsFor.cpp
+	server/automation/condition/IsForThread.h
+	server/automation/condition/IsForThread.cpp
 	server/automation/condition/ICondition.h
 	server/automation/condition/IConditionFactory.h
 	server/automation/condition/IConditionRoot.h

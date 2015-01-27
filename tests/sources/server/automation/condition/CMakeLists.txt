@@ -8,7 +8,9 @@ IF(NOT DISABLE_TEST_AUTOMATION)
       server/automation/condition/Is.h
       server/automation/condition/Is.cpp
       server/automation/condition/IsFor.h
-      server/automation/condition/IsFor.cpp)
+      server/automation/condition/IsFor.cpp
+      server/automation/condition/IsForThread.h
+      server/automation/condition/IsForThread.cpp)
    
    ADD_SOURCES(
       Mocks.hpp
