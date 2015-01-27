@@ -16,7 +16,7 @@ namespace automation { namespace condition
       //-----------------------------------------------------
       ///\brief               Called when keyword state changes
       //-----------------------------------------------------
-      virtual void onKeywordStateChange() = 0;
+      virtual void requestEvaluation() = 0;
    };
 	
 } } // namespace automation::condition

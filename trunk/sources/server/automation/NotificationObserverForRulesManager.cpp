@@ -71,7 +71,7 @@ void CNotificationObserverForRulesManager::notifyRootconditions(std::queue<boost
 {
    while (!rootConditionsQueue.empty())
    {
-      rootConditionsQueue.front()->onKeywordStateChange();
+      rootConditionsQueue.front()->requestEvaluation();
       rootConditionsQueue.pop();
    }
 }

@@ -317,11 +317,13 @@ set(YADOMS_SRC
 	server/automation/condition/ConditionRoot.cpp
 	server/automation/condition/Is.h
 	server/automation/condition/Is.cpp
+	server/automation/condition/IsFor.h
+	server/automation/condition/IsFor.cpp
 	server/automation/condition/ICondition.h
+	server/automation/condition/IConditionFactory.h
 	server/automation/condition/IConditionRoot.h
 	server/automation/condition/IConditionRootUpdater.h
 	server/automation/condition/IKeywordUpdater.h
-	server/automation/condition/IConditionFactory.h
    
 	server/web/IRestHandler.h
 	server/web/IWebServer.h

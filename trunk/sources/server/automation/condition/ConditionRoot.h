@@ -35,7 +35,7 @@ namespace automation { namespace condition
       // [END] IConditionRoot Implementation
 
       // IConditionRootUpdater Implementation
-      virtual void onKeywordStateChange();
+      virtual void requestEvaluation();
       // [END] IConditionRootUpdater Implementation
 
    private:

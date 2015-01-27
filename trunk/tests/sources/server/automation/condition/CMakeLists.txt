@@ -6,11 +6,16 @@ IF(NOT DISABLE_TEST_AUTOMATION)
       server/automation/condition/Become.h
       server/automation/condition/Become.cpp
       server/automation/condition/Is.h
-      server/automation/condition/Is.cpp)
+      server/automation/condition/Is.cpp
+      server/automation/condition/IsFor.h
+      server/automation/condition/IsFor.cpp)
    
    ADD_SOURCES(
+      Mocks.hpp
+      
       TestBecome.cpp
-      TestIs.cpp)
+      TestIs.cpp
+      TestIsFor.cpp)
    
 ENDIF()
 
