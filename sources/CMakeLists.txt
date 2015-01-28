@@ -303,6 +303,10 @@ set(YADOMS_SRC
    
 	server/automation/condition/And.h
 	server/automation/condition/And.cpp
+	server/automation/condition/At.h
+	server/automation/condition/At.cpp
+	server/automation/condition/AtThread.h
+	server/automation/condition/AtThread.cpp
 	server/automation/condition/Become.h
 	server/automation/condition/Become.cpp
 	server/automation/condition/Comparators.h

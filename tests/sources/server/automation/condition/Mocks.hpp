@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "../../../../../sources/server/database/IAcquisitionRequester.h"
 
 
 class CDatabaseAcquisitionRequesterMock : public database::IAcquisitionRequester
