@@ -1,35 +1,33 @@
 #include "stdafx.h"
-#include "IsForThread.h"
+#include "AtThread.h"
 #include <shared/event/EventHandler.hpp>
 
 namespace automation { namespace condition
 {      
 
-CIsForThread::CIsForThread()
-   :CThreadBase("IsForTimerThread")
+CAtThread::CAtThread()
+   :CThreadBase("AtTimerThread")
 {
 }
 
-CIsForThread::~CIsForThread()
+CAtThread::~CAtThread()
 {
 }
 
-void CIsForThread::start(const boost::posix_time::time_duration& duration, boost::function<void()> timeoutCallback)
+void CAtThread::start(const boost::posix_time::ptime& timePoint, boost::function<void()> timeoutCallback)
 {
-   m_duration = duration;
+   m_timePoint = timePoint;
    m_timeoutCallback = timeoutCallback;
    CThreadBase::start();
 }
 
-
-
-void CIsForThread::doWork()
+void CAtThread::doWork()
 {
    try
    {
       enum { kTimerEventId = shared::event::kUserFirstId };
       shared::event::CEventHandler eventHandler;
-      eventHandler.createTimer(kTimerEventId, shared::event::CEventTimer::kOneShot, m_duration);
+      eventHandler.createTimePoint(kTimerEventId, m_timePoint);
 
       while (true)
       {

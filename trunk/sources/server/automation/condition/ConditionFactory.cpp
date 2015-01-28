@@ -4,6 +4,7 @@
 #include "Is.h"
 #include "IsFor.h"
 #include "And.h"
+#include "At.h"
 #include "Not.h"
 #include "Or.h"
 
@@ -36,6 +37,12 @@ boost::shared_ptr<ICondition> CConditionFactory::createCondition(const shared::C
       return condition;
    }
    
+   if (configuration.hasValue("at"))
+   {
+      condition.reset(new CAt(configuration.get<boost::posix_time::ptime>("at")));
+      return condition;
+   }
+
    if (configuration.hasValue("and"))
    {
       condition.reset(new CAnd(configuration.get<std::vector<shared::CDataContainer> >("and"), *this));

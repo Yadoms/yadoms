@@ -6,7 +6,6 @@
 #include "IKeywordUpdater.h"
 #include "../../database/IAcquisitionRequester.h"
 #include "Comparators.h"
-#include <shared/event/EventHandler.hpp>
 #include "IsForThread.h"
 
 namespace automation { namespace condition
@@ -41,9 +40,7 @@ namespace automation { namespace condition
       virtual void onKeywordStateChange(const std::string& state);
       // [END] IKeywordUpdater Implementation  
 
-      // ITimerListener Implementation
       virtual void onTimer();
-      // [END] ITimerListener Implementation
 
    protected:
       //-----------------------------------------------------
