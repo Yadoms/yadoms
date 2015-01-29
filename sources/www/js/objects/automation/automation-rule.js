@@ -20,7 +20,7 @@ function AutomationRule(id, name, description, triggers, actions, enabled) {
    this.enabled = enabled;
 }
 
-Device.prototype.toJSON = function () {
+AutomationRule.prototype.toJSON = function () {
    return {
       id : this.id,
       name: encodeURIComponent(this.name),
