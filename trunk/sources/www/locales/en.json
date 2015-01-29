@@ -375,6 +375,7 @@
         "Rule" : {
            "Condition" : {
               "Is" : {
+                 "text" : "IS",
                  "Configuration" : {
                     "keyword" : {
                        "name" : "Keyword of device",

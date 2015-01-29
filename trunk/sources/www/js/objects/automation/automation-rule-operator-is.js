@@ -4,11 +4,12 @@
  * Creates an instance of Device
  * @constructor
  */
-function AutomationRuleOperatorIs(content) {
+function AutomationRuleOperatorIs(content, treeviewContainer) {
    assert(!isNullOrUndefined(content), "content of a AutomationRuleOperatorIs must be defined");
    assert(!isNullOrUndefined(content.operator), "operator of a AutomationRuleOperatorIs must be defined");
    assert(!isNullOrUndefined(content.keywordId), "keywordId of a AutomationRuleOperatorIs must be defined");
    assert(!isNullOrUndefined(content.refValue), "refValue of a AutomationRuleOperatorIs must be defined");
+   assert(!isNullOrUndefined(treeviewContainer), "treeviewContainer of a AutomationRuleOperatorIs must be defined");
 
    this.operator = content.operator;
    this.keyword = null;
@@ -17,7 +18,9 @@ function AutomationRuleOperatorIs(content) {
    this.setKeyword(content.keywordId);
    this.refValue = content.refValue;
    this.keywordParameter = null;
-   this.uuid = createUUID();
+   this.operatorParameter = null;
+   this.refValueParameter = null;
+   this.treeviewContainer = treeviewContainer;
 }
 
 AutomationRuleOperatorIs.keywordParamName = "keyword";
@@ -59,18 +62,30 @@ AutomationRuleOperatorIs.prototype.setKeyword = function (keywordId) {
    }
 };
 
+AutomationRuleOperatorIs.prototype.getName = function () {
+   return "IS";
+};
+
 AutomationRuleOperatorIs.prototype.isValid = function () {
-   return (!isNullOrUndefined(this.keyword)) && (!isNullOrUndefined(this.conditionalValue));
+   return (!isNullOrUndefined(this.keyword)) && (!isNullOrUndefined(this.refValueParameter));
 };
 
 AutomationRuleOperatorIs.prototype.updateConfiguration = function () {
    //we take configuration from configuration items to set object
    var configuration = this.keywordParameter.getCurrentConfiguration();
+
    //we change keyword only if it is != from null "" is acceptable
    if (!isNullOrUndefined(configuration.keywordId))
       this.setKeyword(configuration.keywordId);
-   //TODO : manage other parameters
-}
+
+   if (!isNullOrUndefined(this.operatorParameter)) {
+      this.operator = this.operatorParameter.getCurrentConfiguration();
+   }
+
+   if (!isNullOrUndefined(this.refValueParameter)) {
+      this.refValue = this.refValueParameter.getCurrentConfiguration();
+   }
+};
 
 AutomationRuleOperatorIs.prototype.toString = function () {
    var operator;
@@ -103,13 +118,13 @@ AutomationRuleOperatorIs.prototype.toString = function () {
    var keyword;
    if ((!isNullOrUndefined(this.plugin) && (!isNullOrUndefined(this.device) && (!isNullOrUndefined(this.keyword))))) {
       keyword = this.plugin.name + "." + this.device.friendlyName + "." + this.keyword.friendlyName;
+      return keyword + "<b> " + operator + " </b>"+ this.refValue;
    }
    else {
-      keyword = "invalid";
+      return "invalid";
    }
-   return keyword + "<b> " + operator + " </b>"+ this.refValue;
-}
-
+};
+/*
 AutomationRuleOperatorIs.prototype.updateDom = function () {
    var self = this;
    var $content = self.locateInDOM().find(".content");
@@ -122,17 +137,16 @@ AutomationRuleOperatorIs.prototype.updateDom = function () {
    else {
       $content.addClass("label-danger");
    }
-}
-AutomationRuleOperatorIs.prototype.findRule = function (searchedGuid) {
-   //we don't have any child so we just check if searchedGuid mathch with our
-   if (searchedGuid == this.uuid)
-      return this;
-   return undefined;
-}
+};*/
+/*
+AutomationRuleOperatorIs.prototype.getChilds = function () {
+   return [];
+};
+*/
 
-AutomationRuleOperatorIs.prototype.locateInDOM = function () {
-   return $("span[conditionItemId='" + this.uuid + "']");
-}
+AutomationRuleOperatorIs.prototype.getNumberOfChildren = function () {
+   return 2;
+};
 
 AutomationRuleOperatorIs.prototype.updateOperatorListItems = function () {
    //depending on the type of the keyword, the operator item list must change
@@ -164,7 +178,7 @@ AutomationRuleOperatorIs.prototype.updateOperatorListItems = function () {
          "different" : "<>"
       });
    }
-}
+};
 
 AutomationRuleOperatorIs.prototype.updateValueParameter = function () {
    var self = this;
@@ -194,17 +208,11 @@ AutomationRuleOperatorIs.prototype.updateValueParameter = function () {
       self.$refValueContainer.append(self.refValueParameter.getDOMObject());
       if ($.isFunction(self.refValueParameter.applyScript))
          self.refValueParameter.applyScript();
+
+      self.refValueParameter.locateInDOM().bind("change", self.configurationChanged());
+      self.$refValueContainer.i18n();
    }
-}
-
-AutomationRuleOperatorIs.prototype.displayTreeviewItem = function($container) {
-   $container.append("<span class=\"automation-rule-item label label-default\" conditionItemId=\"" + this.uuid + "\">" +
-                        "<i class=\"glyphicon glyphicon-export\"></i> " +
-                        "<span class=\"content\"></span>" +
-                     "</span>");
-
-   this.updateDom();
-}
+};
 
 AutomationRuleOperatorIs.prototype.displayConfiguration = function($container) {
    var self = this;
@@ -225,7 +233,6 @@ AutomationRuleOperatorIs.prototype.displayConfiguration = function($container) {
    //add to gui
    $container.append(this.keywordParameter.getDOMObject());
    $container.append(this.operatorParameter.getDOMObject());
-
    $container.append("<div class=\"refValue\"></div>");
 
    self.$refValueContainer = $container.find("div.refValue");
@@ -234,7 +241,7 @@ AutomationRuleOperatorIs.prototype.displayConfiguration = function($container) {
    if ($.isFunction(this.keywordParameter.applyScript))
       this.keywordParameter.applyScript();
 
-   this.keywordParameter.locateInDOM().bind("change", self.configurationChanged());
+   this.keywordParameter.locateInDOM().bind("change", self.keywordChanged());
    this.operatorParameter.locateInDOM().bind("change", self.configurationChanged());
 
    this.updateOperatorListItems();
@@ -243,9 +250,9 @@ AutomationRuleOperatorIs.prototype.displayConfiguration = function($container) {
    //we i18n the form
    $container.i18n();
 
-}
+};
 
-AutomationRuleOperatorIs.prototype.configurationChanged = function() {
+AutomationRuleOperatorIs.prototype.keywordChanged = function() {
    var self = this;
    return function() {
       //we update configuration before display it
@@ -253,7 +260,19 @@ AutomationRuleOperatorIs.prototype.configurationChanged = function() {
       //depend on the type of the keyword, the enum and the expected value change
       self.updateOperatorListItems();
       //the value field depend also on the type of the keyword
+      self.updateValueParameter();
 
-      self.updateDom();
+      //the double () is used to call returned method
+      self.configurationChanged()();
    }
-}
+};
+
+AutomationRuleOperatorIs.prototype.configurationChanged = function() {
+   var self = this;
+   return function() {
+      //we update configuration before display it
+      self.updateConfiguration();
+      self.treeviewContainer.locateInDOM().change();
+      //self.updateDom();
+   }
+};

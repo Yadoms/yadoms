@@ -56,7 +56,7 @@ AutomationRuleManager.createToServer = function(rule, callback) {
 AutomationRuleManager.get = function (callback) {
    assert($.isFunction(callback), "callback must be a function");
    //TODO : test
-   debugger;
+   //debugger;
 
    $.getJSON("rest/automation/rule/")
       .done(function( data ) {

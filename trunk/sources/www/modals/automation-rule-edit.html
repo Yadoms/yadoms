@@ -17,9 +17,9 @@
                     <span id="automationRuleLiteralCondition"><b>if</b> A > 2 <b>then</b> B = 3</span>
                     <div class="row">
                        <div class="automation-rule well col-md-6">
-                          <ul>
-                             <li id="automation-rule-first-item">
-                                <!--<span><i class="glyphicon glyphicon-asterisk"></i> And</span>
+                          <ul class="automation-rule-sub-item automation-rule-first-item">
+                             <!--<li>
+                                <span><i class="glyphicon glyphicon-asterisk"></i> And</span>
                                 <ul>
                                    <li>
                                       <span><i class="glyphicon glyphicon-plus"></i> Or</span>
@@ -35,8 +35,8 @@
                                    <li>
                                       <span><i class="glyphicon glyphicon-saved"></i> active of Alarm is on</span>
                                    </li>
-                                </ul>-->
-                             </li>
+                                </ul>
+                             </li>-->
                           </ul>
                        </div>
                        <div class="well col-md-6" id="automation-rule-configuration"></div>
@@ -73,38 +73,75 @@
       var $modalBody = $("div#edit-automation-rule-modal .modal-body");
 
       //TODO : remove static add
-      var tmp = {"is" : {
-         "operator" : "greater",
-         "keywordId" : "3",
-         "refValue" : "18"
-      }};
-
-      currentAutomationRuleCondition = AutomationRuleConditionFactory.createItem(tmp);
-
-      var $condition = $("li#automation-rule-first-item");
-
-      $condition.empty();
-      currentAutomationRuleCondition.displayTreeviewItem($condition);
-
-
-      $("li#automation-rule-first-item span.automation-rule-item").unbind("click").bind("click", function () {
-         debugger;
-         var uuid = $(this).attr("conditionItemId");
-         var rule = currentAutomationRuleCondition.findRule(uuid);
-         if (!isNullOrUndefined(rule)) {
-            //we have find the item
-            activeAutomationRuleCondition = rule;
-            //we set rule as activate
-            $("li#automation-rule-first-item .automation-rule-item").removeClass("label-primary").addClass("label-default");
-            $(this).addClass("label-primary").removeClass("label-default");
-            //we can display its configuration
-            var $configurationDiv = $("div#automation-rule-configuration");
-            $configurationDiv.empty();
-            rule.displayConfiguration($configurationDiv);
-
-
+      var conf =
+      {
+         "and" : {
+            "children" : [
+               {
+                  "is": {
+                     "operator": "greater",
+                     "keywordId": "11",
+                     "refValue": "18"
+                  }
+               },
+               {
+                  "is": {
+                     "operator": "greater",
+                     "keywordId": "12",
+                     "refValue": "18"
+                  }
+               }
+            ]
          }
-      });
+      };
+
+      //currentAutomationRuleCondition = AutomationRuleConditionFactory.createItem(tmp);
+
+      var $field = $("ul.automation-rule-first-item");
+
+      $field.empty();
+
+      var item = new AutomationRuleTreeviewItem(conf);
+      //item.operator = currentAutomationRuleCondition;
+
+      item.operatorChanged = function (treeviewItem, newOperator) {
+
+      };
+
+      item.selected = function (treeviewItem) {
+         //we set rule as activate
+         AutomationRuleHelper.setRuleAsActivated(treeviewItem);
+         //we can display its configuration
+         var $configurationDiv = $("div#automation-rule-configuration");
+         $configurationDiv.empty();
+         treeviewItem.operator.displayConfiguration($configurationDiv);
+      };
+
+      item.addToDom($field);
+/*
+      AutomationRuleHelper.createTreeViewItem(currentAutomationRuleCondition, $condition,
+              function (operator) {
+
+              },
+              function (operator) {
+                 debugger;
+                 var uuid = $(this).attr("conditionItemId");
+                 var rule = currentAutomationRuleCondition.findRule(uuid);
+                 if (!isNullOrUndefined(rule)) {
+                    //we have find the item
+                    activeAutomationRuleCondition = rule;
+                    //we set rule as activate
+                    AutomationRuleHelper.setRuleAsActivated(rule);
+                    //we can display its configuration
+                    var $configurationDiv = $("div#automation-rule-configuration");
+                    $configurationDiv.empty();
+                    rule.displayConfiguration($configurationDiv);
+                 }
+              });
+
+      currentAutomationRuleCondition.locateInDOM().bind("click", function () {
+
+      });*/
 
       //i18n
       $modalBody.i18n();
