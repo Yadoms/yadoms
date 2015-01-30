@@ -2,6 +2,7 @@
    <h1 class="page-header"><span class="fa fa-code-fork"></span>&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.title"></span></h1>
    <span data-i18n="modals.dashboard.sub-windows.automation-center.description"></span><br>
    <button id="btn-add-new-automation-rule" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-code-fork"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.new"></span></button>
+   <button id="btn-add-new-automation-rule-blockly" type="button" class="btn btn-success dashboard-btn-new"><span class="fa fa-code-fork"></span>&nbsp;&nbsp;<span data-i18n="modals.dashboard.sub-windows.automation-center.blockly.new"></span></button>
    <table id="automation-rule-list" class="table table-bordered table-striped dashboard-list">
       <tr>
          <td data-i18n="modals.dashboard.sub-windows.automation-center.table.enabled"></td>
@@ -24,6 +25,7 @@
       automationRuleInstanceList = [];
 
       $("#btn-add-new-automation-rule").unbind("click").bind("click", addNewAutomationRule);
+      $("#btn-add-new-automation-rule-blockly").unbind("click").bind("click", addNewAutomationRuleWithBlockly);
 
       //we dynamically ask for automation-rule
       AutomationRuleManager.get(function (rules) {
@@ -167,6 +169,25 @@
          var rule = new AutomationRule(null, "", "", "", "", true);
          //we launch rule edition GUI
          showEditionAutomationRule(rule, function() {
+            //we ask for automation rule creation
+            AutomationRuleManager.createToServer(rule, function(result) {
+               //if it's okay
+               if (result) {
+                  notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleSuccessfullyCreated"));
+                  addAutomationRuleToDom(rule);
+                  automationRuleInstanceList.push(rule);
+               }
+            });
+         });
+      });
+   }
+
+
+   function addNewAutomationRuleWithBlockly() {
+      modals.automationRuleEditBlockly.load(function() {
+         var rule = new AutomationRule(null, "", "", "", "", true);
+         //we launch rule edition GUI
+         showEditionAutomationRuleWithBlockly(rule, function() {
             //we ask for automation rule creation
             AutomationRuleManager.createToServer(rule, function(result) {
                //if it's okay

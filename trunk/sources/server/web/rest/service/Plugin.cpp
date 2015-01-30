@@ -33,6 +33,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("instance")("handleManuallyDeviceCreation"), CPlugin::getAllPluginsInstanceForManualDeviceCreation);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*"), CPlugin::getOnePlugin);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("status"), CPlugin::getInstanceStatus);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("devices"), CPlugin::getPluginDevices);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)("*")("binding")("*"), CPlugin::getBinding);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("start"), CPlugin::startInstance);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "PUT", (m_restKeyword)("*")("stop"), CPlugin::stopInstance);
@@ -287,6 +288,34 @@ namespace web { namespace rest { namespace service {
       catch(...)
       {
          return CResult::GenerateError("unknown exception in reading plugin instance status");
+      }
+   }
+
+   shared::CDataContainer CPlugin::getPluginDevices(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      try
+      {
+         if (parameters.size()>1)
+         {
+            int instanceId = boost::lexical_cast<int>(parameters[1]);
+
+            
+            std::vector<boost::shared_ptr<database::entities::CDevice> > devicesFound = m_dataProvider->getDeviceRequester()->getDevices(instanceId);
+            //send result
+            shared::CDataContainer t;
+            t.set("devices", devicesFound);
+            return CResult::GenerateSuccess(t);
+         }
+
+         return CResult::GenerateError("invalid parameter. Can not retreive pluigin instance id in url");
+      }
+      catch (std::exception &ex)
+      {
+         return CResult::GenerateError(ex);
+      }
+      catch (...)
+      {
+         return CResult::GenerateError("unknown exception in reading plugin instance devices");
       }
    }
 

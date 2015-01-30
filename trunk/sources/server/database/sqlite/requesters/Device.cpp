@@ -185,6 +185,19 @@ namespace database {  namespace sqlite { namespace requesters {
       return adapter.getResults();
    }
 
+   std::vector<boost::shared_ptr<entities::CDevice> >CDevice::getDevices(int pluginId) const
+   {
+      CQuery qSelect;
+      qSelect.Select().
+         From(CDeviceTable::getTableName()).
+         Where(CDeviceTable::getPluginIdColumnName(), CQUERY_OP_EQUAL, pluginId);
+
+      adapters::CDeviceAdapter adapter;
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CDevice> >(&adapter, qSelect);
+      return adapter.getResults();
+
+   }
+
    void CDevice::removeDevice(int deviceId)
    {
       CQuery qDelete;

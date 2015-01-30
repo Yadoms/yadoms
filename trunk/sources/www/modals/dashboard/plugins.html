@@ -25,6 +25,7 @@
       $("#btn-add-new-plugin").unbind("click").bind("click", addNewPlugin);
 
       //we dynamically ask for plugins
+      //TODO : Use PluginIsntanceManager.getAll() instead
       $.getJSON("/rest/plugin/instance")
          .done(function (data) {
             //we parse the json answer

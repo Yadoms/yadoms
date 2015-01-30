@@ -161,3 +161,41 @@
     margin-right: 5px;
     cursor:pointer;
 }
+
+
+.blocklySvg {
+    min-height: 400px;
+    width: 100%;
+    z-index: 9999 !important;
+}
+
+/**
+Fix dropdown menus hidden by bootstrap modal
+*/
+.blocklyWidgetDiv {
+    z-index: 9999 !important;
+}
+
+.blocklySelectedError>.blocklyPath {
+    stroke: #f00;
+    stroke-width: 3px;
+}
+
+.blocklySelectedError>.blocklyPathLight {
+    display: none;
+}
+
+
+.edit-automation-rule-modal-blockly {
+    width: 90%;
+    /*height: 92%;*/
+    padding: 0;
+}
+
+#edit-automation-rule-modal-blockly .blockly-content {
+    min-height: 400px;
+    height: 400px;
+    width: 100%;
+    z-index: 9999 !important;
+
+}

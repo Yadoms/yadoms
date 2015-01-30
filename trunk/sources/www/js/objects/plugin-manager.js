@@ -57,7 +57,7 @@ PluginManager.get = function (callback, sync) {
        callback(result);
     })
     .fail(function() {
-       notifyError($.t("objects.plugin.errorListing"), JSON.stringify(data));
+       notifyError($.t("objects.plugin.errorListing"));
     });
 };
 
