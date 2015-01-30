@@ -1,5 +1,4 @@
 #pragma once
-#include <shared/shared/DataContainer.h>
 
 namespace automation { namespace action
 {
