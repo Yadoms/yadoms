@@ -76,7 +76,14 @@ namespace database {
       /// \brief           List all devices
       /// \return          List of registered devices
       //--------------------------------------------------------------
-      virtual std::vector<boost::shared_ptr<entities::CDevice> > getDevices() const = 0;
+      virtual std::vector<boost::shared_ptr<entities::CDevice> > getDevices() const = 0;   
+      
+      //--------------------------------------------------------------
+      /// \brief           List all devices attached to a plugin instance
+      /// \param [in] pluginId            The pluginId
+      /// \return          List of registered devices attached to a plugin instance
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CDevice> > getDevices(int pluginId) const = 0;
 
      
       //--------------------------------------------------------------

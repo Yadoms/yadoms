@@ -173,6 +173,12 @@
    <script src="libs/bootstrap-colorpicker-master/js/bootstrap-colorpicker.min.js"></script>
    <script src="libs/bootstrap-iconpicker-1.4.0/js/bootstrap-iconpicker.min.js"></script>
 
+   <script src="libs/blockly/js/blockly_compressed.js"></script>
+   <script src="libs/blockly/js/blocks_compressed.js"></script>
+   <script src="libs/blockly/js/en.js"></script>
+   <script src="js/objects/automation/automation-blockly-custom-blocks.js"></script>
+
+
    <div id="templates" class="hidden"></div>
 
 	<script type="text/javascript">
@@ -213,6 +219,7 @@
       modals.deviceAddManually = new LazyLoaderManager("modals/device-add-manually.html");
       modals.deviceConfigureManually = new LazyLoaderManager("modals/device-configure-manually.html");
       modals.automationRuleEdit = new LazyLoaderManager("modals/automation-rule-edit.html");
+      modals.automationRuleEditBlockly = new LazyLoaderManager("modals/automation-rule-edit-blockly.html");
       modals.recipientConfigure = new LazyLoaderManager("modals/recipient_configure.html");
 
       //we start i18n engine

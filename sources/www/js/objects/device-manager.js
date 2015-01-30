@@ -44,6 +44,53 @@ DeviceManager.get = function (deviceId, callback, sync) {
       .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "Device with Id = " + deviceId}));});
 }
 
+
+DeviceManager.getAllByInstanceId = function(pluginInstanceId, callback, sync) {
+   assert(!isNullOrUndefined(pluginInstanceId), "pluginInstanceId must be defined");
+   assert(!isNullOrUndefined(callback), "callback must be defined");
+
+   var async = true;
+   if (!isNullOrUndefined(sync))
+      async = sync;
+
+   $.ajax({
+      dataType: "json",
+      url: "/rest/plugin/" + pluginInstanceId + "/devices",
+      async: async
+   })  .done(function (data) {
+          //we parse the json answer
+          if (data.result != "true") {
+             notifyError($.t("objects.generic.errorGetting", {objectName: "Devices for pluginInstance  = " + pluginInstanceId}), JSON.stringify(data));
+             return;
+          }
+
+          var devices = [];
+          //foreach result we append a <tr>
+          $.each(data.data.devices, function (index, value) {
+             devices.push(DeviceManager.factory(value));
+          });
+          callback(devices);
+       })
+       .fail(function () {
+          notifyError($.t("objects.generic.errorGetting", {objectName: "Device for pluginInstance Id = " + pluginInstanceId}));
+       });
+
+}
+
+DeviceManager.getAllByInstance = function(pluginInstance, callback, sync) {
+
+   if (isNullOrUndefined(pluginInstance.devices)) {
+
+      DeviceManager.getAllByInstanceId(pluginInstance.id, function(list){
+         pluginInstance.devices =list;
+         callback(pluginInstance.devices);
+      }, sync);
+   }
+   else {
+      callback(pluginInstance.devices);
+   }
+}
+
 DeviceManager.getAttachedPlugin = function(device, callback) {
    assert(!isNullOrUndefined(device), "device must be defined");
    $.getJSON("/rest/plugin/" + device.pluginId)
@@ -65,30 +112,49 @@ DeviceManager.getAttachedPlugin = function(device, callback) {
       .fail(function() { notifyError($.t("objects.deviceManager.errorGettingAttachedPlugin", {deviceName : device.friendlyName})); });
 };
 
-DeviceManager.getKeywords = function(device, callback) {
+DeviceManager.getKeywordsByDeviceId = function(deviceId, callback, sync) {
+   assert(!isNullOrUndefined(deviceId), "deviceId must be defined");
+   assert(!isNullOrUndefined(callback), "callback must be defined");
+
+      var async = true;
+      if (!isNullOrUndefined(sync))
+         async = sync;
+
+      //we ask for the keywords of current device
+      $.ajax({
+         dataType: "json",
+         url: "/rest/device/" + deviceId + "/keyword",
+         async: async
+      }).done(function(data) {
+         //we parse the json answer
+         if (data.result != "true")
+         {
+            notifyError($.t("objects.deviceManager.errorGettingDeviceDetails", {deviceName : deviceId}), JSON.stringify(data));
+            return;
+         }
+
+         //we save the keyword list into the object
+         var list = [];
+         $.each(data.data.keyword, function (index, value) {
+            list.push(KeywordManager.factory(value));
+         });
+
+         if ($.isFunction(callback))
+            callback(list);
+      }).fail(function() { notifyError($.t("objects.deviceManager.errorGettingDeviceDetails", {deviceName : deviceId})); });
+};
+
+DeviceManager.getKeywords = function(device, callback, sync) {
    assert(!isNullOrUndefined(device), "device must be defined");
 
    if (isNullOrUndefined(device.keywords)) {
-      //we ask for the keywords of current device
-      $.getJSON("/rest/device/" + device.id + "/keyword")
-         .done(function(data) {
-            //we parse the json answer
-            if (data.result != "true")
-            {
-               notifyError($.t("objects.deviceManager.errorGettingDeviceDetails", {deviceName : device.friendlyName}), JSON.stringify(data));
-               return;
-            }
 
-            //we save the keyword list into the object
-            device.keywords = [];
-            $.each(data.data.keyword, function (index, value) {
-               device.keywords.push(KeywordManager.factory(value));
-            });
+      DeviceManager.getKeywordsByDeviceId(device.id, function(list) {
+         device.keywords =list;
 
-            if ($.isFunction(callback))
-               callback();
-         })
-         .fail(function() { notifyError($.t("objects.deviceManager.errorGettingDeviceDetails", {deviceName : device.friendlyName})); });
+         if ($.isFunction(callback))
+            callback();
+      }, sync);
    }
    else {
       //keyword has already been gotten

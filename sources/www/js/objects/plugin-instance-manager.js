@@ -45,7 +45,45 @@ PluginInstanceManager.get = function (pluginInstanceId, callback, sync) {
          callback(PluginInstanceManager.factory(data.data));
       })
       .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "Plugin with Id = " + pluginInstanceId}));});
-}
+};
+
+/**
+ * Function which list all available plugins instance
+ * @param callback The callback for result
+ * @param sync true to be wait for results, false to call asynchronously
+ */
+PluginInstanceManager.getAll = function (callback, sync) {
+   assert($.isFunction(callback), "callback must be a function");
+
+   var async = true;
+
+   if (!isNullOrUndefined(sync))
+      async = false;
+
+   $.ajax({
+      dataType: "json",
+      url: "rest/plugin/instance",
+      async: async
+   })
+       .done(function( data ) {
+          //we parse the json answer
+          if (data.result != "true")
+          {
+             notifyError($.t("objects.generic.errorLoading", {objectName:"plugin instances"}), JSON.stringify(data));
+             return;
+          }
+
+          var result = [];
+          $.each(data.data.plugin, function(index, value) {
+             result.push(PluginInstanceManager.factory(value));
+          });
+
+          callback(result);
+       })
+       .fail(function() {
+          notifyError($.t("objects.generic.errorLoading", {objectName:"plugin instances"}));
+       });
+};
 
 PluginInstanceManager.getStatus = function(pluginInstance, callback) {
    assert(!isNullOrUndefined(pluginInstance), "pluginInstance must be defined");

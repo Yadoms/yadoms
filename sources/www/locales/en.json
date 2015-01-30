@@ -300,7 +300,10 @@
                "edit" : "Edit the rule",
                "delete" : "Delete the rule",
                "confirmDeletion" : "This action will delete the rule __name__. Continue anyway ?",
-               "ruleSuccessfullyCreated" : "Rule successfully created"
+               "ruleSuccessfullyCreated" : "Rule successfully created",
+               "blockly" : {
+                  "new" : "Create a new rule with Blockly"
+               }
             },
             "update" : {
                "title" : "Update"

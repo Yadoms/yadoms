@@ -34,6 +34,7 @@ namespace database {  namespace sqlite {
          virtual boost::shared_ptr<entities::CDevice> getDevice(const int pluginId, const std::string & name) const;
          virtual boost::shared_ptr<entities::CDevice> createDevice(int pluginId, const std::string & name, const std::string & friendlyName, const std::string & model, const shared::CDataContainer & details);
          virtual std::vector<boost::shared_ptr<entities::CDevice> > getDevices() const;
+         virtual std::vector<boost::shared_ptr<entities::CDevice> > getDevices(int pluginId) const;
          virtual std::vector<boost::shared_ptr<entities::CDevice> > getDeviceWithCapacity(const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & accessMode) const;
          virtual std::vector<boost::shared_ptr<entities::CDevice> > getDeviceWithCapacityType(const shared::plugin::yPluginApi::EKeywordAccessMode & capacityAccessMode, const shared::plugin::yPluginApi::EKeywordDataType & capacityType) const;
          virtual void updateDeviceFriendlyName(int deviceId, const std::string & newFriendlyName);
