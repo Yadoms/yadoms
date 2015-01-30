@@ -23,6 +23,8 @@ void CScriptLoader::load()
 
    // Add script path to Python system path
    CPythonBorrowedObject sysPathObject(PySys_GetObject(static_cast<char*>("path")));
+   if (sysPathObject.isNull())
+      throw CRunnerException((boost::format("unable to get sys.path object for %1%") % m_scriptFile->pathName()).str());
    CPythonObject scriptAbsolutePath(PyString_FromString(boost::filesystem::absolute(m_scriptFile->pathName()).parent_path().string().c_str()));
    PyList_Append(*sysPathObject, *scriptAbsolutePath);
 

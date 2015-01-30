@@ -50,7 +50,6 @@ if(PYTHONLIBS_FOUND)
    ## Place here all additional libraries to link with
    ## (by default yadoms-shared and boost are included)
    #########################################
-   message("PYTHON_LIBRARIES=${PYTHON_LIBRARIES}")
    set(PYTHON_LINK
       ${PYTHON_LIBRARIES}
    )
@@ -59,7 +58,9 @@ if(PYTHONLIBS_FOUND)
    ## Place here all additional compiler flags
    ## i.e. : for raspberry to link with wiringPi : use add_definition("-lwiringPi")
    #########################################
-   ##add_definitions("-lwiringPi")
+   if(PYTHON_USE_SOURCES)
+      add_definitions(-DPYTHON_USE_SOURCES)
+   endif()
 
    #########################################
    ## Always leave these lines to configure script interpreter correctly

@@ -7,6 +7,11 @@
 #define the PYTHON_ROOT to indicate to cmake where is your Python version.
 set(USE_PKGCONFIG ON)
 
+#Select Python installation
+#set PYTHON_USE_SOURCES to OFF to use Python installer version (only release version. Available here for Windows : https://www.python.org/downloads/windows/).
+#set PYTHON_USE_SOURCES to ON to use Python sources (https://www.python.org/downloads/source/), which need to be compiled.
+set(PYTHON_USE_SOURCES OFF)
+
 #define Python ROOT
 ##### use only absolute path , and do not use anti slash : only '/' ######
 # Windows (download Python from "https://www.python.org/downloads/windows/") ==> Need Python 32-bit version
@@ -15,3 +20,4 @@ set(USE_PKGCONFIG ON)
 # For Raspberry cross-compilation
 #set(PYTHON_ROOT "/path/to/Python/raspberrypi")
 
+# For using already installed Python version (Linux for example), don't define PYTHON_ROOT

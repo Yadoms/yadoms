@@ -12,6 +12,7 @@
 #
 
 include (CMakeListsUserConfig.txt OPTIONAL)
+include (SelectLibraryConfigurations)
 
 string(REPLACE "." "" PYTHON_REQUIRED_VERSION_NO_DOT ${PYTHON_REQUIRED_VERSION})
 
@@ -19,7 +20,26 @@ string(REPLACE "." "" PYTHON_REQUIRED_VERSION_NO_DOT ${PYTHON_REQUIRED_VERSION})
 if (PYTHON_ROOT)
 
    find_path(PYTHON_INCLUDE_DIRS NAMES python.h PATHS ${PYTHON_ROOT}/include)
-   find_library(PYTHON_LIBRARIES NAMES python${PYTHON_REQUIRED_VERSION_NO_DOT}.lib PATHS ${PYTHON_ROOT}/libs)
+   
+   if(WIN32 AND PYTHON_USE_SOURCES)
+   
+      find_library(PYTHON_LIBRARY_DEBUG
+         NAMES python${PYTHON_REQUIRED_VERSION_NO_DOT}_d
+         PATHS
+         ${PYTHON_ROOT}/PCbuild
+         )
+      find_library(PYTHON_LIBRARY_RELEASE
+         NAMES python${PYTHON_REQUIRED_VERSION_NO_DOT}
+         PATHS
+         ${PYTHON_ROOT}/PCbuild
+         )
+      select_library_configurations(PYTHON)
+      
+   else()
+
+      find_library(PYTHON_LIBRARIES NAMES python${PYTHON_REQUIRED_VERSION_NO_DOT}.lib PATHS ${PYTHON_ROOT}/libs)
+   
+   endif()
 
    # handle the QUIETLY and REQUIRED arguments and set PYTHONLIBS_FOUND to TRUE if 
    # all listed variables are TRUE
