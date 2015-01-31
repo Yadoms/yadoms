@@ -2,13 +2,14 @@
 #include "At.h"
 #include <shared/Log.h>
 #include <shared/event/EventTimer.h>
+#include <shared/event/Now.h>
 
 namespace automation { namespace condition
 {
 
 CAt::CAt(const boost::posix_time::ptime& timePoint)
-   :m_timePoint(timePoint),
-   m_conditionIsMet(false)
+   :m_conditionIsMet(false),
+   m_timePoint(shared::event::now().date(), timePoint.time_of_day())   
 {
    startTimer();
 }
@@ -22,9 +23,7 @@ bool CAt::eval()
    if (!m_conditionIsMet)
       return false;
 
-   // Reset timer for next day
    m_conditionIsMet = false;
-   startTimer();
    return true;
 }
 

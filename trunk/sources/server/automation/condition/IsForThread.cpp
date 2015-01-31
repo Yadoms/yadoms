@@ -25,28 +25,22 @@ void CIsForThread::start(const boost::posix_time::time_duration& duration, boost
 
 void CIsForThread::doWork()
 {
-   try
-   {
-      enum { kTimerEventId = shared::event::kUserFirstId };
-      shared::event::CEventHandler eventHandler;
-      eventHandler.createTimer(kTimerEventId, shared::event::CEventTimer::kOneShot, m_duration);
+   enum { kTimerEventId = shared::event::kUserFirstId };
+   shared::event::CEventHandler eventHandler;
+   eventHandler.createTimer(kTimerEventId, shared::event::CEventTimer::kOneShot, m_duration);
 
-      while (true)
-      {
-         // Wait for an event
-         switch (eventHandler.waitForEvents())
-         {
-         case kTimerEventId:
-            m_timeoutCallback();
-            break;
-         default:
-            BOOST_ASSERT_MSG(false, "Invalid event ID received");
-            break;
-         }
-      }
-   }
-   catch (boost::thread_interrupted&)
+   while (true)
    {
+      // Wait for an event
+      switch (eventHandler.waitForEvents())
+      {
+      case kTimerEventId:
+         m_timeoutCallback();
+         break;
+      default:
+         BOOST_ASSERT_MSG(false, "Invalid event ID received");
+         break;
+      }
    }
 }
 
