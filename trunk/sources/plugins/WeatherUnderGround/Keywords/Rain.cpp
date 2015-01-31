@@ -6,10 +6,13 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CRain::CRain(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
+CRain::CRain( std::string PluginName, std::string KeyWordName )
    :m_PluginName ( PluginName ), m_rain( KeyWordName )
+{}
+
+void CRain::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
-	if (!context->keywordExists( m_PluginName, m_rain.getKeyword()))
+   if (!context->keywordExists( m_PluginName, m_rain.getKeyword()))
 	{
       DeclareKeywords ( context );
 	}

@@ -7,10 +7,14 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CLoad::CLoad(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
+CLoad::CLoad( std::string PluginName, std::string KeyWordName )
    :m_PluginName ( PluginName ), m_pourcentage( KeyWordName )
+{}
+
+
+void CLoad::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
-   	if (!context->keywordExists( m_PluginName, m_pourcentage.getKeyword()))
+   if (!context->keywordExists( m_PluginName, m_pourcentage.getKeyword()))
 	{
       DeclareKeywords ( context );
 	}

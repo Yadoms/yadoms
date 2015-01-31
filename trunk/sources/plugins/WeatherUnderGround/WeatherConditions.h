@@ -3,6 +3,14 @@
 #include <shared/DataContainer.h>
 #include <shared/http/HttpMethods.h>
 #include "WUConfiguration.h"
+#include "Keywords/Barometric.h"
+#include "Keywords/Humidity.h"
+#include "Keywords/Rain.h"
+#include "Keywords/Temp.h"
+#include "Keywords/UV.h"
+#include "Keywords/Visibility.h"
+#include "Keywords/WeatherIcon.h"
+#include "Keywords/Wind.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -18,7 +26,7 @@ public:
    /// \param[in] context          pointer to the API
    /// \param[in] WUConfiguration  The Configuration of the module
    //--------------------------------------------------------------
-   CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration);
+   CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, std::string PluginName, const std::string Prefix);
 
    //--------------------------------------------------------------
    /// \brief	  Send the request and receive the response from the web site
@@ -32,7 +40,7 @@ public:
    /// \param[in] WUConfiguration The configuration of the module
    /// \param[in] PluginName      The name of the plugin module
    //--------------------------------------------------------------
-   void Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, std::string PluginName);
+   void Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration );
 
    //--------------------------------------------------------------
    /// \brief	  Update the configuration when something change from the HMI
@@ -53,7 +61,7 @@ private:
    std::string m_Localisation;
 
    //--------------------------------------------------------------
-   /// \brief	    The PluginName
+   /// \brief	    The Plugin Name
    //--------------------------------------------------------------
    std::string m_PluginName;
 
@@ -71,5 +79,20 @@ private:
    /// \brief	    The web Server engine
    //--------------------------------------------------------------
    shared::CHttpMethods m_webServer;
+ 
+   //--------------------------------------------------------------
+   /// \brief	    Keywords
+   //--------------------------------------------------------------
+   CTemp        m_Temp;
+   CBarometric  m_Pressure;
+   CHumidity    m_Humidity;
+   CVisibility  m_Visibility;
+   CUV          m_UV;
+   CTemp        m_DewPoint;
+   CRain        m_Rain_1hr;
+   CWeatherIcon m_WeatherConditionUrl;
+   CWind        m_Wind;
+   CTemp        m_FeelsLike;
+   CTemp        m_Windchill;
 };
 

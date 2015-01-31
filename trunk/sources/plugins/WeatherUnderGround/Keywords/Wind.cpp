@@ -6,15 +6,26 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CWind::CWind(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string Prefix):
+CWind::CWind( std::string PluginName, std::string Prefix ):
    m_PluginName ( PluginName ),
    m_windDirection(Prefix + "WindDirection"),
    m_windAverageSpeed(Prefix + "windAverageSpeed"),
    m_windMaxSpeed (Prefix + "windMaxSpeed")
+{}
+
+void CWind::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
-	if (!context->keywordExists( m_PluginName, m_windDirection.getKeyword()))
+   if (!context->keywordExists( m_PluginName, m_windDirection.getKeyword()))
 	{
-      DeclareKeywords ( context );
+	   context->declareKeyword(m_PluginName, m_windDirection);
+	}
+   if (!context->keywordExists( m_PluginName, m_windAverageSpeed.getKeyword()))
+	{
+	   context->declareKeyword(m_PluginName, m_windAverageSpeed);
+   }
+   if (!context->keywordExists( m_PluginName, m_windMaxSpeed.getKeyword()))
+	{
+      context->declareKeyword(m_PluginName, m_windMaxSpeed);
 	}
 }
 
@@ -39,11 +50,7 @@ void CWind::SetValue(const shared::CDataContainer & ValueContainer, const std::s
 }
 
 void CWind::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
-{
-	context->declareKeyword(m_PluginName, m_windDirection);
-	context->declareKeyword(m_PluginName, m_windAverageSpeed);
-	context->declareKeyword(m_PluginName, m_windMaxSpeed);
-}
+{}
 
 void CWind::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
 {

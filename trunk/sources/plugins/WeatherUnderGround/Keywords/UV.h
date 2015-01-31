@@ -18,7 +18,7 @@ namespace yApi = shared::plugin::yPluginApi;
       /// \param[in] KeyWordName          The keyword name
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
-      CUV(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName);
+      CUV( std::string PluginName, std::string KeyWordName );
 
       //--------------------------------------------------------------
       /// \brief	                      Set the value from the container
@@ -26,7 +26,7 @@ namespace yApi = shared::plugin::yPluginApi;
 	  /// \param[in] filter               The name of the information into the container
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
-	  void SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter);
+	   void SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
@@ -34,8 +34,9 @@ namespace yApi = shared::plugin::yPluginApi;
       virtual ~CUV();
 
       // IKeyword implementation
-	  virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
+	   virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
       virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
+      virtual void Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const;
       // [END] IKeyword implementation
       
    protected:

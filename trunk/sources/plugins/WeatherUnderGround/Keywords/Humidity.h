@@ -15,15 +15,15 @@ namespace yApi = shared::plugin::yPluginApi;
       /// \brief	                      Constructor
       /// \param[in] context              Yadoms APi context
       /// \param[in] PluginName           The name of the plugin
-	  /// \param[in] KeyWordName          The keyword name
+	   /// \param[in] KeyWordName          The keyword name
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
-      CHumidity(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName);
+      CHumidity( std::string PluginName, std::string KeyWordName );
 
       //--------------------------------------------------------------
       /// \brief	                      Set the value from the container
       /// \param[in] ValueContainer       The container where the value is stored
-	  /// \param[in] filter               The name of the information into the container
+	   /// \param[in] filter               The name of the information into the container
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
 	  void SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter);
@@ -34,8 +34,9 @@ namespace yApi = shared::plugin::yPluginApi;
       virtual ~CHumidity();
 
       // IKeyword implementation
-	  virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
+	   virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
       virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
+      virtual void Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const;
       // [END] IKeyword implementation
       
    protected:

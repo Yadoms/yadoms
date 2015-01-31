@@ -6,18 +6,20 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CVisibility::CVisibility(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
+CVisibility::CVisibility( std::string PluginName, std::string KeyWordName )
    :m_PluginName ( PluginName ), m_visibility( KeyWordName )
+{}
+
+void CVisibility::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
-	if (!context->keywordExists( m_PluginName, m_visibility.getKeyword()))
+   if (!context->keywordExists( m_PluginName, m_visibility.getKeyword()))
 	{
       DeclareKeywords ( context );
 	}
 }
 
 CVisibility::~CVisibility()
-{
-}
+{}
 
 void CVisibility::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {

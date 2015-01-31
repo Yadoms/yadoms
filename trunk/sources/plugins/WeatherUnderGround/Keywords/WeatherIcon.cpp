@@ -6,10 +6,13 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CWeatherIcon::CWeatherIcon(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
+CWeatherIcon::CWeatherIcon( std::string PluginName, std::string KeyWordName )
    :m_PluginName ( PluginName ), m_weathercondition( KeyWordName )
+{}
+
+void CWeatherIcon::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
-	if (!context->keywordExists( m_PluginName, m_weathercondition.getKeyword()))
+   if (!context->keywordExists( m_PluginName, m_weathercondition.getKeyword()))
 	{
       DeclareKeywords ( context );
 	}
