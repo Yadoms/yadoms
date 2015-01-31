@@ -40,18 +40,6 @@
    var currentAutomationRuleCondition;
    var activeAutomationRuleCondition;
 
-   function validateBlockly($el, value, callback) {
-
-      debugger;
-      Blockly.Validation.validateMainWorkspace(function(isValid, msg) {
-         callback({
-            value: value,
-            valid: isValid,
-            message: msg
-         });
-      });
-
-   }
 
    function showEditionAutomationRuleWithBlockly(rule, callback) {
       assert(!isNullOrUndefined(rule), "rule must be defined");
@@ -59,10 +47,9 @@
 
       var $modalContent = $("div#edit-automation-rule-modal-blockly .modal-content");
 
-      //validation form
+      //validation
       $("#btn-confirm-configure-keyword").bind("click", function (e) {
 
-         debugger;
          Blockly.Validation.validateMainWorkspace(function(isValid, msg) {
             if(!isValid) {
                e.preventDefault();
@@ -77,8 +64,12 @@
 
       });
 
+      //when modal is shown; inject blockly
       $('div#edit-automation-rule-modal-blockly').on("shown.bs.modal", function () {
+         //fix input field
+         $(document).off('focusin.modal');
 
+         //clear previously opened blockly
          $modalContent.find("div.blockly-content").empty();
 
          //inject blockly dom+js
@@ -97,8 +88,5 @@
 
       //we display the modal
       $('div#edit-automation-rule-modal-blockly').modal();
-
-
-
    }
 </script>

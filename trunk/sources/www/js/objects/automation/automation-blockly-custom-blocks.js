@@ -15,105 +15,53 @@ https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#3tdeuk
 
 */
 
- // var switchType = [["on", "ON"], ["off", "OFF"]];
+
+var NumberOperators = Blockly.RTL ? [
+    ['=', 'EQ'],
+    ['\u2260', 'NEQ'],
+    ['>', 'LT'],
+    ['\u2265', 'LTE'],
+    ['<', 'GT'],
+    ['\u2264', 'GTE']
+] : [
+    ['=', 'EQ'],
+    ['\u2260', 'NEQ'],
+    ['<', 'LT'],
+    ['\u2264', 'LTE'],
+    ['>', 'GT'],
+    ['\u2265', 'GTE']
+];
+
+var StringOperators = Blockly.RTL ? [
+    ['=', 'EQ'],
+    ['\u2260', 'NEQ'],
+    ['>', 'LT'],
+    ['\u2265', 'LTE'],
+    ['<', 'GT'],
+    ['\u2264', 'GTE']
+] : [
+    ['=', 'EQ'],
+    ['\u2260', 'NEQ'],
+    ['<', 'LT'],
+    ['\u2264', 'LTE'],
+    ['>', 'GT'],
+    ['\u2265', 'GTE']
+];
+
+var BooleanOperators = Blockly.RTL ? [
+    ['=', 'EQ'],
+    ['\u2260', 'NEQ']
+] : [
+    ['=', 'EQ'],
+    ['\u2260', 'NEQ']
+];
 
 
-
-
-//function ConfigureYadomsKeywordSetBlock(self, pluginDropDownName, deviceDropDownName, keywordDropDownName, valueInputName, data) {
-//	ConfigureYadomsKeywordCommonBlock(self, pluginDropDownName, deviceDropDownName, keywordDropDownName, function(type) {
-//	  if(type == undefined)
-//		  self.getInput(valueInputName).setCheck("null");
-//	  else
-//		  self.getInput(valueInputName).setCheck(type);
-//	}, data)
-//}
-//
-//function ConfigureYadomsKeywordOutputBlock(self, pluginDropDownName, deviceDropDownName, keywordDropDownName, data) {
-//	ConfigureYadomsKeywordCommonBlock(self, pluginDropDownName, deviceDropDownName, keywordDropDownName, function(type) {
-//
-//	  if(type == undefined)
-//		  self.changeOutput("null");
-//	  else
-//		  self.changeOutput(type);
-//	}, data)
-//}
-//
-//function UpdateBlockColour(self, type) {
-//	  if(type == "String")
-//		  self.setColour(160);
-//	  else if(type == "Boolean")
-//		  self.setColour(210);
-//	  else if(type == "Number")
-//		  self.setColour(230);
-//	  else if(type == "null" ||  type == null || type == undefined)
-//		  self.setColour(230);
-//     else
-//        self.setColour(20);
-//}
-
-//Blockly.FieldDropdown.prototype.updateDropDown = function (newList, superKey1, superKey2) {
-//		this.menuGenerator_ = newList;
-//		this.setValue(newList[0][1]);
-//		this.updateTextNode_();
-//		this.changeHandler_(this.getValue(), superKey1, superKey2);
-//
-//}
-
-//function ConfigureYadomsKeywordCommonBlock(self, pluginDropDownName, deviceDropDownName, keywordDropDownName, callbackOnTypeChanged, data) {
-//
-//	//self.getField_(pluginDropDownName).changeHandler_ = function(selectedPluginKey) {
-//	//	/*var deviceList = [];
-//	//	for(var device in data[selectedPluginKey].devices) {
-//	//		deviceList.push([data[selectedPluginKey].devices[device].friendlyName, device]);
-//	//	}
-//	//	var deviceDropDown = self.getField_(deviceDropDownName);
-//    //  deviceDropDown.updateDropDown(deviceList, selectedPluginKey);*/
-////
-//    //}
-//    //
-////
-//   //elf.getField_(deviceDropDownName).changeHandler_ = function(selectedDeviceKey, selectedPluginKey) {
-//    //    /* if(selectedPluginKey == undefined)
-//	//	  selectedPluginKey = self.getField_(pluginDropDownName).getValue();
-//    //
-//    //  var keywordList = [];
-//    //  for(var keyword in data[selectedPluginKey].devices[selectedDeviceKey].keywords) {
-//    //     keywordList.push([data[selectedPluginKey].devices[selectedDeviceKey].keywords[keyword].friendlyName, keyword]);
-//    //  }
-//    //  var keywordDropDown = self.getField_(keywordDropDownName);*/
-////
-//    //  //keywordDropDown.updateDropDown(keywordList, selectedDeviceKey, selectedPluginKey);
-//    //
-//    //}
-//    //
-//    //self.getField_(keywordDropDownName).changeHandler_ = function(selectedKeywordKey, selectedDeviceKey, selectedPluginKey) {
-//	//  /*if(selectedPluginKey == undefined)
-//	//	selectedPluginKey = self.getField_(pluginDropDownName).getValue();
-//	//  if(selectedDeviceKey == undefined)
-//	//	selectedDeviceKey = self.getField_(deviceDropDownName).getValue();
-//    //
-//	//  var type = data[selectedPluginKey].devices[selectedDeviceKey].keywords[selectedKeywordKey].expectedType;
-//	//  callbackOnTypeChanged(type);
-//	//
-//    // UpdateBlockColour(self, type);*/
-//    //};
-//
-//    //load plugins
-//    var pluginDropDown = self.getField_(pluginDropDownName);
-//    var pluginList = [[]];
-//    //pluginDropDown.updateDropDown(pluginList);
-//
-//    PluginInstanceManager.getAll(function (list) {
-//        $.each(list, function (key, value) {
-//            pluginList.push([value.name, value.id]);
-//        });
-//        pluginDropDown.updateDropDown(pluginList);
-//    }, true);
-//}
-
-
-
+/**
+ * Load plugins from yadoms server
+ * @returns {Array}
+ * @constructor
+ */
 function LoadPlugins() {
 
     var pluginList = [];
@@ -125,6 +73,12 @@ function LoadPlugins() {
     return pluginList;
 }
 
+/**
+ * Load a plugin devices from yadoms server
+ * @param selectedPluginId The plugin identifier to get the devices
+ * @returns {Array}
+ * @constructor
+ */
 function LoadDevices(selectedPluginId) {
     var deviceList = [];
 
@@ -137,6 +91,12 @@ function LoadDevices(selectedPluginId) {
     return deviceList;
 }
 
+/**
+ * Load a device keywords from yadoms server
+ * @param selectedDeviceId The device identifier to get the keywords
+ * @returns {Array}
+ * @constructor
+ */
 function LoadKeywords(selectedDeviceId) {
     var keywordList = [];
     DeviceManager.getKeywordsByDeviceId(selectedDeviceId, function (list) {
@@ -149,7 +109,10 @@ function LoadKeywords(selectedDeviceId) {
 }
 
 /**
- * @return {string}
+ * Function which convert a yadoms type, to a blockly tpye
+ * @param yadomsKeywordType  The yadoms type
+ * @returns {*} The blockly type matching yadoms type
+ * @constructor
  */
 function GetBlocklyType(yadomsKeywordType) {
     switch(yadomsKeywordType.toLowerCase()){
@@ -165,6 +128,12 @@ function GetBlocklyType(yadomsKeywordType) {
     }
 }
 
+/**
+ * Update a block colour depending on its type
+ * @param self The block
+ * @param type The block type
+ * @constructor
+ */
 function UpdateBlockColour(self, type) {
 	  if(type == "String")
 		  self.setColour(160);
@@ -178,6 +147,12 @@ function UpdateBlockColour(self, type) {
         self.setColour(20);
 }
 
+/**
+ * Dropdown refresh method
+ * The function update the dropdown values, select the first one and call the change handler
+ * -> Main blockly hack (not using only public memebers)
+ * @param data
+ */
 Blockly.FieldDropdown.prototype.refresh = function(data) {
     if(data != undefined && data.length >0) {
         this.menuGenerator_ = data;
@@ -233,6 +208,7 @@ Blockly.Blocks['yadoms_keyword_value'] = {
 
       //force full resfresh
       pluginDd.changeHandler_(pluginDd.getValue());
+      keywordDd.changeHandler_(keywordDd.getValue());
 
   }
 };
@@ -309,6 +285,9 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
     this.setPreviousStatement(true, "null");
     this.setNextStatement(true, "null");
     this.setTooltip('');
+
+      //force full resfresh
+      pluginDd.changeHandler_(pluginDd.getValue());
   }
 };
 
@@ -359,45 +338,7 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
    */
    thisBlock.updateOperator = function(newCheck) {
 
-      var NumberOperators = Blockly.RTL ? [
-          ['=', 'EQ'],
-          ['\u2260', 'NEQ'],
-          ['>', 'LT'],
-          ['\u2265', 'LTE'],
-          ['<', 'GT'],
-          ['\u2264', 'GTE']
-        ] : [
-          ['=', 'EQ'],
-          ['\u2260', 'NEQ'],
-          ['<', 'LT'],
-          ['\u2264', 'LTE'],
-          ['>', 'GT'],
-          ['\u2265', 'GTE']
-        ];
 
-      var StringOperators = Blockly.RTL ? [
-          ['=', 'EQ'],
-          ['\u2260', 'NEQ'],
-          ['>', 'LT'],
-          ['\u2265', 'LTE'],
-          ['<', 'GT'],
-          ['\u2264', 'GTE']
-      ] : [
-          ['=', 'EQ'],
-          ['\u2260', 'NEQ'],
-          ['<', 'LT'],
-          ['\u2264', 'LTE'],
-          ['>', 'GT'],
-          ['\u2265', 'GTE']
-      ];
-
-      var BooleanOperators = Blockly.RTL ? [
-          ['=', 'EQ'],
-          ['\u2260', 'NEQ']
-        ] : [
-          ['=', 'EQ'],
-          ['\u2260', 'NEQ']
-        ];
 
       var selectedOperators = [[]];
       if(newCheck == "String") {
@@ -486,46 +427,6 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
          * Method which update the operator list, according to the connected types
          */
         thisBlock.updateOperator = function(newCheck) {
-
-            var NumberOperators = Blockly.RTL ? [
-                ['=', 'EQ'],
-                ['\u2260', 'NEQ'],
-                ['>', 'LT'],
-                ['\u2265', 'LTE'],
-                ['<', 'GT'],
-                ['\u2264', 'GTE']
-            ] : [
-                ['=', 'EQ'],
-                ['\u2260', 'NEQ'],
-                ['<', 'LT'],
-                ['\u2264', 'LTE'],
-                ['>', 'GT'],
-                ['\u2265', 'GTE']
-            ];
-
-            var StringOperators = Blockly.RTL ? [
-                ['=', 'EQ'],
-                ['\u2260', 'NEQ'],
-                ['>', 'LT'],
-                ['\u2265', 'LTE'],
-                ['<', 'GT'],
-                ['\u2264', 'GTE']
-            ] : [
-                ['=', 'EQ'],
-                ['\u2260', 'NEQ'],
-                ['<', 'LT'],
-                ['\u2264', 'LTE'],
-                ['>', 'GT'],
-                ['\u2265', 'GTE']
-            ];
-
-            var BooleanOperators = Blockly.RTL ? [
-                ['=', 'EQ'],
-                ['\u2260', 'NEQ']
-            ] : [
-                ['=', 'EQ'],
-                ['\u2260', 'NEQ']
-            ];
 
             var selectedOperators = [[]];
             if(newCheck == "String") {
@@ -633,12 +534,24 @@ Blockly.Blocks['yadoms_controls_if'] = {
 };
 
 
+/**
+ * Create the validation subclass
+ * @constructor
+ */
 Blockly.Validation = function() {
 };
 
+/**
+ * Define the currently list of "error validated" blocks
+ * @type {Array}
+ */
 Blockly.Validation.listErroneousBlocks = [];
 
 
+/**
+ * Define a block as invalid
+ * @param block The block to invalidate
+ */
 Blockly.Validation.setBlockInvalid = function(block) {
     if(block != null && block != undefined && $.isFunction(block.addError)) {
         block.addError();
@@ -646,6 +559,9 @@ Blockly.Validation.setBlockInvalid = function(block) {
     }
 };
 
+/**
+ * Clear the invalidated blocks list
+ */
 Blockly.Validation.clearInvalidBlocks =  function() {
     $.each(Blockly.Validation.listErroneousBlocks, function(index, value) {
         if(value != null && value != undefined &&$.isFunction(value.removeError)) {
@@ -657,12 +573,17 @@ Blockly.Validation.clearInvalidBlocks =  function() {
     Blockly.Validation.listErroneousBlocks.splice(0,Blockly.Validation.listErroneousBlocks.length);
 };
 
+/**
+ * Check if a block is valid (all visible inputs are filled)
+ * @param block The block to check
+ * @returns {boolean} true if block is valid, false if invalid
+ */
 Blockly.Validation.isBlockValid =  function(block) {
 
     if(block != null && block != undefined) {
         var currentBlockValid = true;
         $.each(block.inputList, function(index, subBlock) {
-            if(subBlock.connection != null){
+            if(subBlock.connection != null && subBlock.isVisible() ){
                 if(subBlock.connection.targetConnection == null || subBlock.connection.targetConnection == undefined) {
                     Blockly.Validation.setBlockInvalid(subBlock.sourceBlock_);
                     return currentBlockValid = false;
@@ -678,9 +599,9 @@ Blockly.Validation.isBlockValid =  function(block) {
 };
 
 
-
-
-
+/**
+ * Add the error shpae to the block
+ */
 Blockly.BlockSvg.prototype.addError = function() {
     Blockly.addClass_(/** @type {!Element} */ (this.svgGroup_),
         'blocklySelectedError');
@@ -689,14 +610,18 @@ Blockly.BlockSvg.prototype.addError = function() {
 };
 
 /**
- * Unselect this block.  Remove its highlighting.
+ * Remove the error shape of a block
  */
 Blockly.BlockSvg.prototype.removeError = function() {
     Blockly.removeClass_(/** @type {!Element} */ (this.svgGroup_),
         'blocklySelectedError');
 };
 
-
+/**
+ * Initialize the workspace to allow validation
+ * @param maxTopBlocks The maximum number of topblocks allowed
+ * @constructor
+ */
 Blockly.Validation.Init = function(maxTopBlocks) {
     if(maxTopBlocks != undefined && $.isNumeric(maxTopBlocks))
         Blockly.Validation.maxTopBlocks_ = maxTopBlocks;
@@ -706,8 +631,18 @@ Blockly.Validation.Init = function(maxTopBlocks) {
     });
 };
 
+/**
+ * The number of allowed top blocks
+ * @type {number}
+ * @private
+ */
 Blockly.Validation.maxTopBlocks_ = 1;
 
+/**
+ * Start a workspace validation
+ * @param workspace The workspace to validate
+ * @param callback The callback for the validation result
+ */
 Blockly.Validation.validate = function(workspace, callback) {
 
     if(workspace.topBlocks_.length > Blockly.Validation.maxTopBlocks_) {
@@ -731,7 +666,10 @@ Blockly.Validation.validate = function(workspace, callback) {
     }
 };
 
-
+/**
+ * Start the mainWorkspace validation
+ * @param callback The callback for the validation result
+ */
 Blockly.Validation.validateMainWorkspace = function(callback) {
     Blockly.Validation.validate(Blockly.mainWorkspace, callback);
 };
