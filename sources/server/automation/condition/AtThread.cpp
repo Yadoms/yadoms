@@ -23,28 +23,24 @@ void CAtThread::start(const boost::posix_time::ptime& timePoint, boost::function
 
 void CAtThread::doWork()
 {
-   try
+   enum { kTimerEventId = shared::event::kUserFirstId };
+   shared::event::CEventHandler eventHandler;
+   eventHandler.createTimePoint(kTimerEventId, m_timePoint);
+   
+   while (true)
    {
-      enum { kTimerEventId = shared::event::kUserFirstId };
-      shared::event::CEventHandler eventHandler;
-      eventHandler.createTimePoint(kTimerEventId, m_timePoint);
-
-      while (true)
+      // Wait for an event
+      switch (eventHandler.waitForEvents())
       {
-         // Wait for an event
-         switch (eventHandler.waitForEvents())
-         {
-         case kTimerEventId:
-            m_timeoutCallback();
-            break;
-         default:
-            BOOST_ASSERT_MSG(false, "Invalid event ID received");
-            break;
-         }
+      case kTimerEventId:
+         m_timeoutCallback();
+         // Reset timer for next day
+         m_timePoint += boost::posix_time::hours(24);
+         break;
+      default:
+         BOOST_ASSERT_MSG(false, "Invalid event ID received");
+         break;
       }
-   }
-   catch (boost::thread_interrupted&)
-   {
    }
 }
 

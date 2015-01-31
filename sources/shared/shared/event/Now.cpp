@@ -4,9 +4,9 @@
 namespace shared { namespace event
 {
 
-const boost::posix_time::ptime now()
+boost::posix_time::ptime now()
 {
-   return boost::posix_time::microsec_clock::universal_time();
+   return boost::posix_time::microsec_clock::local_time();
 }
 
 } } // namespace shared::event
