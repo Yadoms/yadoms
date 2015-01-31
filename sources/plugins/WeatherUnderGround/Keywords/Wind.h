@@ -18,16 +18,16 @@ namespace yApi = shared::plugin::yPluginApi;
 	  /// \param[in] Prefix               The Prefexi before the keyword name
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
-      CWind(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string Prefix);
+      CWind( std::string PluginName, std::string Prefix );
 
 	  //--------------------------------------------------------------
-      /// \brief	                         Set the value from the container
-      /// \param[in] ValueContainer          The container where the value is stored
+     /// \brief	                         Set the value from the container
+     /// \param[in] ValueContainer          The container where the value is stored
 	  /// \param[in] filterWindDirection     The name of the first information into the container
 	  /// \param[in] filterWindAverageSpeed  The name of the second information into the container
 	  /// \param[in] filterWindMaxSpeed      The name of the third information into the container
-      /// \note                              Use this constructor initialising the keyword for this plugin
-      //--------------------------------------------------------------
+     /// \note                              Use this constructor initialising the keyword for this plugin
+     //--------------------------------------------------------------
 	  void SetValue(const shared::CDataContainer & ValueContainer, const std::string & filterWindDirection, const std::string & filterWindAverageSpeed ="", const std::string & filterWindMaxSpeed ="");
 
       //--------------------------------------------------------------
@@ -36,8 +36,9 @@ namespace yApi = shared::plugin::yPluginApi;
       virtual ~CWind();
 
       // IKeyword implementation
-	  virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
+	   virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
       virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
+      virtual void Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const;
       // [END] IKeyword implementation
       
    protected:

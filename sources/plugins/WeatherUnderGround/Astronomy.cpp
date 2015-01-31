@@ -2,15 +2,20 @@
 #include "Astronomy.h"
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
-#include "Keywords/Load.h"
-#include "Keywords/Duration.h"
 
-CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration):
-           m_Localisation ( WUConfiguration.getLocalisation() )
+CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, std::string PluginName, const std::string Prefix):
+           m_Localisation         ( WUConfiguration.getLocalisation() ),
+           PercentIlluminatedMoon ( PluginName, Prefix + "PercentIllumitedMoon" ),
+           AgeOfMoon              ( PluginName, Prefix + "AgeOfMoon" )
 {	
 	m_URL.clear();
-
 	m_URL << "http://api.wunderground.com/api/" << WUConfiguration.getAPIKey() << "/astronomy/q/" << m_Localisation << ".json";
+
+   if (WUConfiguration.IsAstronomyEnabled())
+   {
+	   PercentIlluminatedMoon.Initialize ( context );
+	   AgeOfMoon.Initialize              ( context );
+   }
 }
 
 void CAstronomy::OnUpdate( const IWUConfiguration& WUConfiguration )
@@ -37,10 +42,8 @@ void CAstronomy::Request( boost::shared_ptr<yApi::IYPluginApi> context )
 	}
 }
 
-void CAstronomy::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, std::string PluginName )
+void CAstronomy::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration )
 {
-	static const std::string Prefix = "astronomy.";
-
 	try
 	{
 		std::string error = m_data.getWithDefault<std::string>( "response.error.description","" );
@@ -53,15 +56,11 @@ void CAstronomy::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUC
 		{
 			if (WUConfiguration.IsAstronomyEnabled())
 			{
-				CLoad PercentIlluminatedMoon ( context, PluginName, Prefix + "PercentIllumitedMoon" );
+				PercentIlluminatedMoon.SetValue      ( m_data, "moon_phase.percentIlluminated" );
+				PercentIlluminatedMoon.historizeData ( context );
 
-				PercentIlluminatedMoon.SetValue           ( m_data, "moon_phase.percentIlluminated" );
-				PercentIlluminatedMoon.historizeData      ( context );
-
-				CDuration AgeOfMoon ( context, PluginName, Prefix + "AgeOfMoon" );
-
-				AgeOfMoon.SetValue           ( m_data, "moon_phase.ageOfMoon" );
-				AgeOfMoon.historizeData      ( context );
+				AgeOfMoon.SetValue                   ( m_data, "moon_phase.ageOfMoon" );
+				AgeOfMoon.historizeData              ( context );
 			}
 		}
 	}

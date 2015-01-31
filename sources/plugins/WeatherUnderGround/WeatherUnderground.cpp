@@ -52,8 +52,8 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
 		  context->declareDevice(m_deviceName, m_URL);
 	   }
 
-	  CWeatherConditions m_WeatherConditionsRequester( context, m_configuration);
-	  CAstronomy m_AstronomyRequester( context, m_configuration);
+	  CWeatherConditions m_WeatherConditionsRequester( context, m_configuration, m_deviceName, "conditions.");
+	  CAstronomy m_AstronomyRequester( context, m_configuration, m_deviceName, "astronomy.");
 
       // the main loop
       YADOMS_LOG(debug) << "CWeatherUnderground plugin is running...";
@@ -67,32 +67,33 @@ void CWeatherUnderground::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
             {
                YADOMS_LOG(debug) << "Refresh Weather Conditions";
 
-			   m_WeatherConditionsRequester.Request( context );
-			   m_WeatherConditionsRequester.Parse  ( context, m_configuration, m_deviceName );
+			      m_WeatherConditionsRequester.Request( context );
+			      m_WeatherConditionsRequester.Parse  ( context, m_configuration );
 
                break;
             }
 		 case kEvtTimerRefreshAstronomy:
+            {
+			      YADOMS_LOG(debug) << "Refresh Astronomy Information";
 
-			   YADOMS_LOG(debug) << "Refresh Astronomy Information";
+			      m_AstronomyRequester.Request( context );
+			      m_AstronomyRequester.Parse  ( context, m_configuration );
 
-			   m_AstronomyRequester.Request( context );
-			   m_AstronomyRequester.Parse  ( context, m_configuration, m_deviceName );
-
-			 break;
+			      break;
+            }
          case yApi::IYPluginApi::kEventUpdateConfiguration:
             {
                onUpdateConfiguration(context, context->getEventHandler().getEventData<shared::CDataContainer>());
 
-			   m_WeatherConditionsRequester.OnUpdate ( m_configuration );
+			      m_WeatherConditionsRequester.OnUpdate ( m_configuration );
 			   
-			   m_WeatherConditionsRequester.Request( context );
-			   m_WeatherConditionsRequester.Parse  ( context, m_configuration, m_deviceName );
+			      m_WeatherConditionsRequester.Request( context );
+			      m_WeatherConditionsRequester.Parse  ( context, m_configuration );
 
-			   m_AstronomyRequester.OnUpdate ( m_configuration );
+			      m_AstronomyRequester.OnUpdate ( m_configuration );
 
-			   m_AstronomyRequester.Request( context );
-			   m_AstronomyRequester.Parse  ( context, m_configuration, m_deviceName );
+			      m_AstronomyRequester.Request( context );
+			      m_AstronomyRequester.Parse  ( context, m_configuration );
 
                break;
             }

@@ -6,10 +6,13 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CTemp::CTemp(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName ,std::string KeyWordName)
+CTemp::CTemp( std::string PluginName ,std::string KeyWordName )
    :m_PluginName ( PluginName ), m_temperature( KeyWordName )
+{}
+
+void CTemp::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
-	if (!context->keywordExists( m_PluginName, m_temperature.getKeyword()))
+   if (!context->keywordExists( m_PluginName, m_temperature.getKeyword()))
 	{
       DeclareKeywords ( context );
 	}

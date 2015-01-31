@@ -6,10 +6,14 @@
 // Shortcut to yPluginApi namespace
 namespace yApi = shared::plugin::yPluginApi;
 
-CUV::CUV(boost::shared_ptr<yApi::IYPluginApi> context, std::string PluginName, std::string KeyWordName)
+CUV::CUV( std::string PluginName, std::string KeyWordName )
    :m_PluginName ( PluginName ), m_uv( KeyWordName )
+{}
+
+
+void CUV::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
-	if (!context->keywordExists( m_PluginName, m_uv.getKeyword()))
+   if (!context->keywordExists( m_PluginName, m_uv.getKeyword()))
 	{
       DeclareKeywords ( context );
 	}

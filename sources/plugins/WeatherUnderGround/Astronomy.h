@@ -3,6 +3,8 @@
 #include <shared/DataContainer.h>
 #include <shared/http/HttpMethods.h>
 #include "WUConfiguration.h"
+#include "Keywords/Load.h"
+#include "Keywords/Duration.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -18,7 +20,7 @@ public:
    /// \param[in] context          pointer to the API
    /// \param[in] WUConfiguration  The Configuration of the module
    //--------------------------------------------------------------
-   CAstronomy(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration);
+   CAstronomy(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, std::string PluginName, const std::string Prefix);
 
    //--------------------------------------------------------------
    /// \brief	  Send the request and receive the response from the web site
@@ -32,7 +34,7 @@ public:
    /// \param[in] WUConfiguration The configuration of the module
    /// \param[in] PluginName      The name of the plugin module
    //--------------------------------------------------------------
-   void Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, std::string PluginName);
+   void Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration);
 
    //--------------------------------------------------------------
    /// \brief	  Update the configuration when something change from the HMI
@@ -53,7 +55,7 @@ private:
    std::string m_Localisation;
 
    //--------------------------------------------------------------
-   /// \brief	    The PluginName
+   /// \brief	    The Plugin Name
    //--------------------------------------------------------------
    std::string m_PluginName;
 
@@ -71,5 +73,11 @@ private:
    /// \brief	    The web Server engine
    //--------------------------------------------------------------
    shared::CHttpMethods m_webServer;
+
+   //--------------------------------------------------------------
+   /// \brief	    Keywords
+   //--------------------------------------------------------------
+   CLoad     PercentIlluminatedMoon;
+   CDuration AgeOfMoon;
 };
 
