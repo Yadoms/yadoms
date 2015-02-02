@@ -1,6 +1,9 @@
 #pragma once
 #include "IFactory.h"
 #include "IInterpreterLibrary.h"
+#include "../../../database/IAcquisitionRequester.h"
+#include "../../../communication/ISendMessageAsync.h"
+#include <shared/notification/NotificationCenter.h>
 
 namespace automation { namespace action { namespace script
 {
@@ -13,8 +16,14 @@ namespace automation { namespace action { namespace script
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] interpretersPath Path where are located interpreters
+      ///\param[in] pluginGateway Plugin access to do actions on plugins
+      ///\param[in] notificationCenter Notification center, used to get notified on keyword state changes
+      ///\param[in] dbAcquisitionRequester  Database acquisition requester
       //-----------------------------------------------------
-      CFactory(const std::string& interpretersPath);
+      CFactory(const std::string& interpretersPath,
+         boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+         boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter,
+         boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -25,6 +34,7 @@ namespace automation { namespace action { namespace script
       // IFactory Implementation
       virtual std::vector<std::string> getAvailableInterpreters();
       virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(const std::string& scriptName, const shared::CDataContainer& scriptConfiguration);
+      virtual boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext();
       // [END] IFactory Implementation
 
       //-----------------------------------------------------
@@ -60,6 +70,21 @@ namespace automation { namespace action { namespace script
       ///\brief               Path where are located interpreters
       //-----------------------------------------------------
       const boost::filesystem::path m_interpretersPath;
+
+      //-----------------------------------------------------
+      ///\brief               The plugin access (to send commands to plugins)
+      //-----------------------------------------------------
+      boost::shared_ptr<communication::ISendMessageAsync> m_pluginGateway;
+
+      //-----------------------------------------------------
+      ///\brief               The notification center
+      //-----------------------------------------------------
+      boost::shared_ptr<shared::notification::CNotificationCenter> m_notificationCenter;
+
+      //-----------------------------------------------------
+      ///\brief               Database acquisition requester
+      //-----------------------------------------------------
+      boost::shared_ptr<database::IAcquisitionRequester> m_dbAcquisitionRequester;
 
       //-----------------------------------------------------
       ///\brief               List of loaded interpreters

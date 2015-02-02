@@ -7,12 +7,19 @@
 #include <shared/script/IInterpreter.h>
 #include <shared/DynamicLibrary.h>
 #include "InterpreterLibrary.h"
+#include "YScriptApiImplementation.h"
 
 namespace automation { namespace action { namespace script
 {
 
-CFactory::CFactory(const std::string& interpretersPath)
-   :m_interpretersPath(interpretersPath)
+CFactory::CFactory(const std::string& interpretersPath,
+      boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
+      boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter,
+      boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester)
+   :m_interpretersPath(interpretersPath),
+   m_pluginGateway(pluginGateway),
+   m_notificationCenter(notificationCenter),
+   m_dbAcquisitionRequester(dbAcquisitionRequester)
 {
 }
 
@@ -120,6 +127,14 @@ boost::shared_ptr<shared::script::IRunner> CFactory::createScriptRunner(
       throw shared::exception::CInvalidParameter("script type");
    }
 }
+
+boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CFactory::createScriptContext()
+{
+   boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> context(
+      new CYScriptApiImplementation(m_pluginGateway, m_notificationCenter, m_dbAcquisitionRequester));
+   return context;
+}
+
 
 boost::shared_ptr<shared::script::IInterpreter> CFactory::getAssociatedInterpreter(const std::string& scriptName)
 {

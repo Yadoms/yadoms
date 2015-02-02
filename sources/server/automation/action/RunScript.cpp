@@ -2,7 +2,6 @@
 #include "RunScript.h"
 #include <shared/Log.h>
 #include <shared/exception/InvalidParameter.hpp>
-#include "script/YScriptApiImplementation.h"
 
 namespace automation { namespace action
 {
@@ -24,8 +23,8 @@ void CRunScript::doAction()
    {
       m_runner = m_scriptFactory->createScriptRunner(m_scriptName, m_scriptConfiguration);
 
-      script::CYScriptApiImplementation context;
-      m_runner->run(context);
+      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> context = m_scriptFactory->createScriptContext();
+      m_runner->run(*context);
 
       if (!m_runner->isOk())
       {
