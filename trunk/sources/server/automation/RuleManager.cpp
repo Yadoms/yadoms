@@ -17,7 +17,7 @@ CRuleManager::CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequest
    m_dbRequester(dbRequester),
    m_conditionFactory(new condition::CConditionFactory(dbAcquisitionRequester)),
    m_notificationCenter(notificationCenter),
-   m_scriptFactory(new action::script::CFactory("scriptInterpreters"))
+   m_scriptFactory(new action::script::CFactory("scriptInterpreters", pluginGateway, notificationCenter, dbAcquisitionRequester))
 {        
 }
 
