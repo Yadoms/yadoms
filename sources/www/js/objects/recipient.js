@@ -1,7 +1,12 @@
-/** @module Device class */
+/** @module Recipient class */
+
 
 /**
- * Creates an instance of Device
+ * Creates an instance of Recipient
+ * @param id The recipient ID
+ * @param firstName the first name
+ * @param lastName the last name
+ * @param fields all additional fields (email, mobile phone,....)
  * @constructor
  */
 function Recipient(id, firstName, lastName, fields) {
@@ -14,7 +19,18 @@ function Recipient(id, firstName, lastName, fields) {
    this.fields = fields;
 }
 
+/**
+ * Give a string representation of a recipient (concatenate first and last names)
+ * @return {string}
+ */
+Recipient.prototype.toString = function() {
+    return this.firstName + " " + this.lastName;
+}
 
+/**
+ * Convert the recipient to JSON format
+ * @return {{id: *, firstName: string, lastName: string, fields: *}}
+ */
 Recipient.prototype.toJSON = function () {
    return {
       id : this.id,
@@ -35,7 +51,10 @@ Recipient.systemFields = {
 };
 
 
-
+/**
+ * Merge current recipient data with plugin fields
+ * @param allPlugins
+ */
 Recipient.prototype.mergeFields = function (allPlugins) {
 
    var self = this;

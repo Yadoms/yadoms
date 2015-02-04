@@ -28,7 +28,7 @@ PluginInstanceManager.get = function (pluginInstanceId, callback, sync) {
    var async = true;
 
    if (!isNullOrUndefined(sync))
-      async = false;
+      async = sync;
 
    $.ajax({
       dataType: "json",
@@ -58,7 +58,7 @@ PluginInstanceManager.getAll = function (callback, sync) {
    var async = true;
 
    if (!isNullOrUndefined(sync))
-      async = false;
+      async = sync;
 
    $.ajax({
       dataType: "json",
