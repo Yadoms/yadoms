@@ -64,7 +64,7 @@ KeywordManager.get = function (keywordId, callback, sync) {
    var async = true;
 
    if (!isNullOrUndefined(sync))
-      async = false;
+      async = sync;
 
    $.ajax({
       dataType: "json",
@@ -83,3 +83,33 @@ KeywordManager.get = function (keywordId, callback, sync) {
    .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "Keyword with Id = " + keywordId}));});
 }
 
+KeywordManager.getAll = function (callback, sync) {
+    assert(!isNullOrUndefined(callback), "callback must be defined");
+
+    var async = true;
+    if (!isNullOrUndefined(sync))
+        async = sync;
+
+    $.ajax({
+        dataType: "json",
+        url: "/rest/device/keyword",
+        async: async
+    }).done(function (data) {
+        //we parse the json answer
+        if (data.result != "true") {
+            notifyError($.t("objects.generic.errorGetting", {objectName: "all keywords"}), JSON.stringify(data));
+            return;
+        }
+
+        var devices = [];
+        //foreach result we append a <tr>
+        $.each(data.data.keywords, function (index, value) {
+            devices.push(KeywordManager.factory(value));
+        });
+        callback(devices);
+    })
+        .fail(function () {
+            notifyError($.t("objects.generic.errorGetting", {objectName: "all keywords"}));
+        });
+
+};

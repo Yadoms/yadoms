@@ -26,7 +26,7 @@ DeviceManager.get = function (deviceId, callback, sync) {
    var async = true;
 
    if (!isNullOrUndefined(sync))
-      async = false;
+      async = sync;
    $.ajax({
       dataType: "json",
       url: "rest/device/" + deviceId,
@@ -44,6 +44,36 @@ DeviceManager.get = function (deviceId, callback, sync) {
       .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "Device with Id = " + deviceId}));});
 }
 
+DeviceManager.getAll = function (callback, sync) {
+    assert(!isNullOrUndefined(callback), "callback must be defined");
+
+    var async = true;
+    if (!isNullOrUndefined(sync))
+        async = sync;
+
+    $.ajax({
+        dataType: "json",
+        url: "/rest/device",
+        async: async
+    }).done(function (data) {
+        //we parse the json answer
+        if (data.result != "true") {
+            notifyError($.t("objects.generic.errorGetting", {objectName: "all devices"}), JSON.stringify(data));
+            return;
+        }
+
+        var devices = [];
+        //foreach result we append a <tr>
+        $.each(data.data.device, function (index, value) {
+            devices.push(DeviceManager.factory(value));
+        });
+        callback(devices);
+    })
+        .fail(function () {
+            notifyError($.t("objects.generic.errorGetting", {objectName: "all devices"}));
+        });
+
+};
 
 DeviceManager.getAllByInstanceId = function(pluginInstanceId, callback, sync) {
    assert(!isNullOrUndefined(pluginInstanceId), "pluginInstanceId must be defined");
@@ -75,7 +105,7 @@ DeviceManager.getAllByInstanceId = function(pluginInstanceId, callback, sync) {
           notifyError($.t("objects.generic.errorGetting", {objectName: "Device for pluginInstance Id = " + pluginInstanceId}));
        });
 
-}
+};
 
 DeviceManager.getAllByInstance = function(pluginInstance, callback, sync) {
 

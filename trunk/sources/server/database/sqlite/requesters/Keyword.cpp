@@ -151,6 +151,14 @@ namespace database { namespace sqlite { namespace requesters {
       return adapter.getResults();
    }
 
+   std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getAllKeywords() const
+	{
+      adapters::CKeywordAdapter adapter;
+      CQuery qSelect;
+      qSelect.Select().From(CKeywordTable::getTableName());
+      m_databaseRequester->queryEntities<boost::shared_ptr<entities::CKeyword> >(&adapter, qSelect);
+      return adapter.getResults();
+	}
 
    std::vector<boost::shared_ptr<entities::CKeyword> > CKeyword::getDeviceKeywordsWithCapacity(int deviceId, const std::string & capacityName, const shared::plugin::yPluginApi::EKeywordAccessMode & accessMode) const
    {

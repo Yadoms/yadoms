@@ -34,7 +34,7 @@ PluginManager.get = function (callback, sync) {
    var async = true;
 
    if (!isNullOrUndefined(sync))
-      async = false;
+      async = sync;
 
    $.ajax({
       dataType: "json",
@@ -68,7 +68,7 @@ PluginManager.getWithPackage = function (callback, sync) {
 
    var async = true;
    if (!isNullOrUndefined(sync))
-      async = false;
+      async = sync;
 
    PluginManager.get( function(allPlugins) {
 

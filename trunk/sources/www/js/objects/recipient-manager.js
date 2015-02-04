@@ -17,11 +17,21 @@ RecipientManager.factory = function(json) {
    return new Recipient(json.id, decodeURIComponent(json.firstName), decodeURIComponent(json.lastName), json.fields);
 };
 
-RecipientManager.get = function (recipientId, callback) {
+RecipientManager.get = function (recipientId, callback, sync) {
    assert(!isNullOrUndefined(recipientId), "recipientId must be defined");
    assert($.isFunction(callback), "callback must be a function");
 
-   $.getJSON("rest/recipient/" + recipientId)
+    var async = true;
+    if (!isNullOrUndefined(sync))
+        async = sync;
+
+    $.ajax({
+        type: "GET",
+        url: "/rest/recipient/" + + recipientId,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        async : async
+    })
       .done(function( data ) {
          //we parse the json answer
          if (data.result != "true")
@@ -39,38 +49,51 @@ RecipientManager.getAllFields = function (callback, sync) {
 
    var async = true;
    if (!isNullOrUndefined(sync))
-      async = false;
+      async = sync;
    PluginManager.getWithPackage(callback, async);
 };
 
-RecipientManager.list = function(callback) {
+RecipientManager.list = function(callback, sync) {
    assert($.isFunction(callback), "callback must be defined");
+
+    var async = true;
+    if (!isNullOrUndefined(sync))
+        async = sync;
 
    //we start by requesting all pugin fields
    RecipientManager.getAllFields( function(allPlugin) {
-      $.getJSON("rest/recipient")
-          .done(function(data) {
-             //we parse the json answer
-             if (data.result != "true")
-             {
-                notifyError($.t("objects.recipient.errorGettingList"), JSON.stringify(data));
-                return;
-             }
 
-             var recipientList = [];
-             $.each(data.data.recipient, function(index, value) {
-                var r2 = RecipientManager.factory(value);
-                r2.mergeFields(allPlugin);
-                recipientList.push(r2);
-             });
+       $.ajax({
+           type: "GET",
+           url: "/rest/recipient",
+           contentType: "application/json; charset=utf-8",
+           dataType: "json",
+           async : async
+       })
+           .done(function(data) {
+               //we parse the json answer
+               if (data.result != "true")
+               {
+                   notifyError($.t("objects.recipient.errorGettingList"), JSON.stringify(data));
+                   return;
+               }
 
-             callback(recipientList);
-          })
-          .fail(function() {
-             notifyError($.t("modals.recipient.errorGettingList"));
-             callback(null);
-          });
-   }, true);
+               var recipientList = [];
+               $.each(data.data.recipient, function(index, value) {
+                   var r2 = RecipientManager.factory(value);
+                   r2.mergeFields(allPlugin);
+                   recipientList.push(r2);
+               });
+
+               if ($.isFunction(callback))
+                   callback(recipientList);
+           })
+           .fail(function() {
+               notifyError($.t("modals.recipient.errorGettingList"));
+               callback(null);
+           });
+
+   }, sync);
 
 }
 

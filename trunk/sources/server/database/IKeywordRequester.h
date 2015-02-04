@@ -42,6 +42,12 @@ namespace database {
 
       //--------------------------------------------------------------
       /// \brief           List all keywords 
+      /// \return          List of registered keywords
+      //--------------------------------------------------------------
+      virtual std::vector<boost::shared_ptr<entities::CKeyword> > getAllKeywords() const = 0;   
+      
+      //--------------------------------------------------------------
+      /// \brief           List all keywords 
       /// \param [in]      deviceId   the device which own the keyword
       /// \return          List of registered keywords
       //--------------------------------------------------------------

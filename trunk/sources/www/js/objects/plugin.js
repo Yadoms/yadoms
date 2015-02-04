@@ -30,7 +30,7 @@ function Plugin(name, author, description, nameInformation, identity, releaseTyp
 Plugin.prototype.downloadPackage= function (callback, sync) {
    var async = true;
    if (!isNullOrUndefined(sync))
-      async = false;
+      async = sync;
 
    var self = this;
 
