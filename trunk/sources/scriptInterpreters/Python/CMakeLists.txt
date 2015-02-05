@@ -77,6 +77,11 @@ if(PYTHONLIBS_FOUND)
    #SCRIPT_INTERPRETER_POST_BUILD_COPY_FILE(python fileToCopy)
    #SCRIPT_INTERPRETER_POST_BUILD_COPY_DIRECTORY(python directoryToCopy)
    
+   #########################################
+   ## Generate the associated yScriptApi wrapper
+   #########################################
+   add_subdirectory(yScriptApiWrapper)
+   
 else()
    message(WARNING "Python interpreter is not available. Python library is Mssing")
 endif()

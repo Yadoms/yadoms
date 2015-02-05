@@ -15,9 +15,6 @@ set(PYTHON_USE_SOURCES OFF)
 #define Python ROOT
 ##### use only absolute path , and do not use anti slash : only '/' ######
 # Windows (download Python from "https://www.python.org/downloads/windows/") ==> Need Python 32-bit version
-#set(PYTHON_ROOT "/path/to/Python")
-
-# For Raspberry cross-compilation
-#set(PYTHON_ROOT "/path/to/Python/raspberrypi")
+set(PYTHON_ROOT "C:/Program Files (x86)/Python27")
 
 # For using already installed Python version (Linux for example), don't define PYTHON_ROOT
