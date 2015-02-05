@@ -22,6 +22,7 @@ public:
 
    // IScriptLoader Implementation
    virtual void load();
+   virtual CPythonObject& module();
    virtual CPythonObject& yMain();
    // [END] IScriptLoader Implementation
 

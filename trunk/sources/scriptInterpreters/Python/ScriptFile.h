@@ -9,7 +9,7 @@ class CScriptFile : public IScriptFile
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
-   /// \param[in] scriptName   Script name
+   /// \param[in] scriptName   Script name (without path and extension)
    //--------------------------------------------------------------
    CScriptFile(const std::string& scriptName);
 
@@ -20,6 +20,7 @@ public:
 
    // IScriptFile Implementation
    virtual const boost::filesystem::path& pathName() const;
+   virtual const boost::filesystem::path abslouteParentPath() const;
    virtual const std::string& module() const;
    virtual const std::string& entryPoint() const;
    virtual bool exists() const;

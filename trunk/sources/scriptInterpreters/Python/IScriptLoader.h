@@ -19,6 +19,12 @@ public:
    virtual void load() = 0;
 
    //--------------------------------------------------------------
+   /// \brief	Get the Python module
+   /// \return Python module (script should be load)
+   //--------------------------------------------------------------
+   virtual CPythonObject& module() = 0;
+
+   //--------------------------------------------------------------
    /// \brief	Get the yMain function
    /// \return yMain function pointer as Python object
    //--------------------------------------------------------------

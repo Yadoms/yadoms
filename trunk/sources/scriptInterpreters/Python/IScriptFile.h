@@ -18,6 +18,12 @@ public:
    virtual const boost::filesystem::path& pathName() const = 0;
 
    //--------------------------------------------------------------
+   /// \brief	Get the parent path, as absolute path
+   /// \return The parent path
+   //--------------------------------------------------------------
+   virtual const boost::filesystem::path abslouteParentPath() const = 0;
+
+   //--------------------------------------------------------------
    /// \brief	Get the Python module name
    /// \return The module name
    //--------------------------------------------------------------

@@ -39,7 +39,8 @@ void CRunScript::doAction()
 
 void CRunScript::stopAction()
 {
-   m_runner->stop();
+   if (!!m_runner)
+      m_runner->stop();
 }
 
 } } // namespace automation::action	
