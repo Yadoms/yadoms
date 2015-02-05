@@ -10,11 +10,14 @@ static const std::string ScriptsFolder("scripts");
 // So script full path becomes : {scriptName}/yadoms_{scriptName}
 static const std::string ScriptFilenamePrefix("yadoms_");
 
+// Standard Pyhton scripts extension
+static const std::string PythonExtension("py");
+
 // Function name of the Python script entry point
 static const std::string ScriptEntryPoint("yMain");
 
 CScriptFile::CScriptFile(const std::string& scriptName)
-   :m_scriptFile(boost::filesystem::path(ScriptsFolder) / boost::filesystem::path(scriptName) / boost::filesystem::path(ScriptFilenamePrefix + scriptName)),
+   :m_scriptFile(boost::filesystem::path(ScriptsFolder) / boost::filesystem::path(scriptName) / boost::filesystem::path(ScriptFilenamePrefix + scriptName).replace_extension(PythonExtension)),
    m_module(ScriptFilenamePrefix + scriptName)
 {
 }
@@ -27,6 +30,11 @@ const boost::filesystem::path& CScriptFile::pathName() const
 {
    return m_scriptFile;
 }
+
+const boost::filesystem::path CScriptFile::abslouteParentPath() const
+{
+   return boost::filesystem::absolute(m_scriptFile).parent_path();
+}  
 
 const std::string& CScriptFile::module() const
 {

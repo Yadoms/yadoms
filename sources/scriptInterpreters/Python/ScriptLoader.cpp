@@ -25,7 +25,7 @@ void CScriptLoader::load()
    CPythonBorrowedObject sysPathObject(PySys_GetObject(static_cast<char*>("path")));
    if (sysPathObject.isNull())
       throw CRunnerException((boost::format("unable to get sys.path object for %1%") % m_scriptFile->pathName()).str());
-   CPythonObject scriptAbsolutePath(PyString_FromString(boost::filesystem::absolute(m_scriptFile->pathName()).parent_path().string().c_str()));
+   CPythonObject scriptAbsolutePath(PyString_FromString(m_scriptFile->abslouteParentPath().string().c_str()));
    PyList_Append(*sysPathObject, *scriptAbsolutePath);
 
    // Convert script path as Python string
@@ -43,6 +43,11 @@ void CScriptLoader::load()
    if (m_pyMainFunction.isNull() || PyCallable_Check(*m_pyMainFunction) == 0)
       throw CRunnerException((boost::format("%1% function was not found") % m_scriptFile->entryPoint()).str());
 }
+
+CPythonObject& CScriptLoader::module()
+{
+   return m_pyModule;
+}        
 
 CPythonObject& CScriptLoader::yMain()
 {

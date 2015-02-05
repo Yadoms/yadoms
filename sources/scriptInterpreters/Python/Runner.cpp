@@ -34,6 +34,13 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
       CScriptLoader loader(m_scriptName);
       loader.load();
 
+      // Pass context to script entry point (yMain) as arg
+      //TODO ça fait crasher l'interpréteur au deuxième lancement du script
+      //CPythonObject pyApiObject(PyCapsule_New(static_cast<void *>(&context), "yadoms.scriptApi", NULL));
+      //if (pyApiObject.isNull())
+      //   throw CRunnerException("Unable to pass context to script");
+      //PyModule_AddObject(loader.module().get(), "yApi", pyApiObject.get());
+
       // Run the script
       CPythonObject pyReturnValue(PyObject_CallObject(loader.yMain().get(), NULL));
       if (pyReturnValue.isNull())

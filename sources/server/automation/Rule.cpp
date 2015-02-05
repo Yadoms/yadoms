@@ -47,6 +47,7 @@ void CRule::doWork()
       {
          m_condition->wait();
          m_actions->doAll();
+         boost::this_thread::sleep(boost::posix_time::millisec(100)); // To avoid CPU load
       }
    }
    catch (boost::thread_interrupted&)
