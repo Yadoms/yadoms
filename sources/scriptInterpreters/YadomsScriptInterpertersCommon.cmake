@@ -10,7 +10,7 @@ MACRO(SCRIPT_INTERPRETER_SOURCES _targetName)
 	add_library(${_targetName} MODULE ${ARGN})
 	
 	IF(MSVC OR XCODE)
-		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "scriptInterpreters")
+		SET_PROPERTY(TARGET ${_targetName} PROPERTY FOLDER "scriptInterpreters/${_targetName}")
 	ENDIF()
 ENDMACRO()
 

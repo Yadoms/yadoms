@@ -7,7 +7,7 @@
 #  PYTHON_LIBRARIES           - path to the python library
 #  PYTHON_INCLUDE_DIRS        - path to where Python.h is found
 #
-# Use PYTHON_ROOT is defined (from environment variables or CMakeListsUserConfig.txt), use it
+# Use PYTHON_ROOT if defined (from environment variables or CMakeListsUserConfig.txt), use it
 # Otherwise, use the cmake-provided find_package
 #
 
