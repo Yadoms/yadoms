@@ -1,0 +1,24 @@
+# This file contains user specific configuration
+# It may contains some directory definitions
+
+#define Boost ROOT
+##### use only absolute path , and do not use anti slash : only '/' ######
+#set(BOOST_ROOT "/path/to/boost/boost_1_57_0")
+
+#define POCO ROOT
+##### use only absolute path , and do not use anti slash : only '/' ######
+#SET(POCO_ROOT "path/to/poco/poco-1.6.0")
+
+#to cross compile for Raspberry PI, set CC_RPI_GCC, CC_RPI_GXX and CC_RPI_BASE
+#SET(CC_RPI_GCC /path/to/raspberry/git/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-gcc)
+#SET(CC_RPI_GXX /path/to/raspberry/git/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-g++)
+#SET(CC_RPI_LIBS /path/to/raspberry/git/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/arm-linux-gnueabihf/libc/usr/lib/arm-linux-gnueabihf/)
+
+#activate this option to enable eclipse debugging
+#set(DEBUG_WITH_GCC OFF)
+
+
+#activate use of cotire
+SET(COTIRE_USE ON)
+#activate use of cotire unity mode (COTIRE_USE must be set to ON to use COTIRE_USE_UNITY)
+SET(COTIRE_USE_UNITY ON)

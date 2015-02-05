@@ -1,0 +1,83 @@
+<!--New plugin Modal -->
+<div class="modal fade" id="new-plugin-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" data-i18n="modals.add-plugin.title"></h4>
+            </div>
+            <div class="modal-body">
+               <form>
+                  <div class="form-group">
+                     <label for="pluginTypeList" data-i18n="modals.add-plugin.pluginType"></label>
+                     <select id="pluginTypeList" class="form-control">
+                     </select>
+                  </div>
+               </form>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-get-more-plugin" type="button" class="btn btn-primary pull-left" data-i18n="modals.add-plugin.getMore"></button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
+                <button id="btn-confirm-add-plugin" type="button" class="btn btn-primary" data-i18n="common.ok"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var pluginTypes = [];
+
+    /**
+     * Ask for plugin types to the REST server
+     */
+    function askPluginTypes(callback)
+    {
+       assert($.isFunction(callback), "callback must be defined");
+       $.getJSON("rest/plugin/")
+               .done(requestPluginTypesDone(callback))
+               .fail(function() {
+                  notifyError($.t("modals.add-plugin.errorDuringGettingPluginTypes"));
+                  callback(null);
+               });
+    }
+
+    /**
+     * Callback of the request plugin types
+     * @returns {Function}
+     */
+    function requestPluginTypesDone(callback)
+    {
+       assert($.isFunction(callback), "callback must be defined");
+       return function( data ) {
+          //we parse the json answer
+          if (data.result != "true")
+          {
+             notifyError($.t("modals.add-plugin.errorDuringGettingPluginTypes"), JSON.stringify(data));
+             callback(null);
+             return;
+          }
+
+          $("select#pluginTypeList").empty();
+
+          $.each(data.data.plugins, function(index, value) {
+             //foreach plugin-type
+             $("select#pluginTypeList").append("<option>" + value.name + "</option>");
+          });
+
+          //event click on add plugin button
+          $("button#btn-confirm-add-plugin").unbind("click").bind("click", function() {
+             //we close the new widget modal
+             $("div#new-plugin-modal").modal("hide");
+
+             var pluginType = $("select#pluginTypeList").val();
+
+             callback(pluginType);
+          });
+
+          //we display the modal
+          $('div#new-plugin-modal').modal();
+       };
+    }
+
+</script>
