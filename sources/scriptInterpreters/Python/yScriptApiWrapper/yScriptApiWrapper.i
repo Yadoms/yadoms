@@ -1,5 +1,5 @@
 
-%module yScriptApiWrapper
+%module(docstring="The Yadoms Script API") yScriptApiWrapper
 
 %{
 /* Put headers and other declarations here */
@@ -33,5 +33,9 @@
 
 %include stl.i
 
+/* Add method documentation */
+/* TODO à compléter */
+%feature("autodoc", "Read the last known state of the keyword (empty if no known state). State returned as string.") readKeyword;
 
 %include <shared/script/yScriptApi/IYScriptApi.h>
+
