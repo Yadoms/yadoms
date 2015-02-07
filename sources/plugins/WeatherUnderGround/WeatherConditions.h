@@ -10,7 +10,8 @@
 #include "Keywords/UV.h"
 #include "Keywords/Visibility.h"
 #include "Keywords/WeatherIcon.h"
-#include "Keywords/Wind.h"
+#include "Keywords/WindDirection.h"
+#include "Keywords/WindSpeed.h"
 
 namespace yApi = shared::plugin::yPluginApi;
 
@@ -91,7 +92,9 @@ private:
    CTemp        m_DewPoint;
    CRain        m_Rain_1hr;
    CWeatherIcon m_WeatherConditionUrl;
-   CWind        m_Wind;
+   CWindDirection  m_WindDirection;
+   CWindSpeed  m_WindAverageSpeed;
+   CWindSpeed  m_WindMaxSpeed;
    CTemp        m_FeelsLike;
    CTemp        m_Windchill;
 };

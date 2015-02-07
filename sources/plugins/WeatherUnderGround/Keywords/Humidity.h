@@ -34,9 +34,9 @@ namespace yApi = shared::plugin::yPluginApi;
       virtual ~CHumidity();
 
       // IKeyword implementation
-	   virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
-      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
+	  virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
       virtual void Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const;
+	  virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
       // [END] IKeyword implementation
       
    protected:
@@ -50,5 +50,5 @@ namespace yApi = shared::plugin::yPluginApi;
       //--------------------------------------------------------------
       /// \brief	The UV index
       //--------------------------------------------------------------
-      yApi::historization::CHumidity m_humidity;
+      boost::shared_ptr<yApi::historization::CHumidity> m_humidity;
    };

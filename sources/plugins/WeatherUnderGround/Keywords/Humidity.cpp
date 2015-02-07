@@ -7,12 +7,12 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CHumidity::CHumidity( std::string PluginName, std::string KeyWordName )
-   :m_PluginName ( PluginName ), m_humidity( KeyWordName )
+   :m_PluginName ( PluginName ), m_humidity( new yApi::historization::CHumidity (KeyWordName) )
 {}
 
 void CHumidity::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
-   if (!context->keywordExists( m_PluginName, m_humidity.getKeyword()))
+   if (!context->keywordExists( m_PluginName, m_humidity->getKeyword()))
 	{
       DeclareKeywords ( context );
 	}
@@ -28,17 +28,17 @@ void CHumidity::SetValue( const shared::CDataContainer & ValueContainer, const s
 	str_humidity.erase( str_humidity.end()-1 );
 	double d_humidity = (double)atof(str_humidity.c_str());
 
-	m_humidity.set( d_humidity );
+	m_humidity->set( d_humidity );
 
-	YADOMS_LOG(debug) << m_humidity.getKeyword() << "=" << m_humidity.get() << "%";
+	YADOMS_LOG(debug) << m_humidity->getKeyword() << "=" << m_humidity->get() << "%";
 }
 
 void CHumidity::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
-	context->declareKeyword(m_PluginName, m_humidity);
+	context->declareKeyword(m_PluginName, *m_humidity);
 }
 
-void CHumidity::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+boost::shared_ptr<yApi::historization::IHistorizable> CHumidity::GetHistorizable() const
 {
-   context->historizeData(m_PluginName, m_humidity);
+	return m_humidity;
 }

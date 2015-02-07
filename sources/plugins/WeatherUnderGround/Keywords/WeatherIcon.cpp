@@ -7,12 +7,12 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CWeatherIcon::CWeatherIcon( std::string PluginName, std::string KeyWordName )
-   :m_PluginName ( PluginName ), m_weathercondition( KeyWordName )
+   :m_PluginName ( PluginName ), m_weathercondition( new yApi::historization::CWeatherCondition(KeyWordName) )
 {}
 
 void CWeatherIcon::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
-   if (!context->keywordExists( m_PluginName, m_weathercondition.getKeyword()))
+   if (!context->keywordExists( m_PluginName, m_weathercondition->getKeyword()))
 	{
       DeclareKeywords ( context );
 	}
@@ -49,9 +49,9 @@ void CWeatherIcon::SetValue( const shared::CDataContainer & ValueContainer, cons
       EnumValuesNames::const_iterator it = EEnumTypeNames.find( ValueContainer.get<std::string>( filter ) );
       if (it != EEnumTypeNames.end())
 	  {
-         m_weathercondition.set( (yApi::historization::EWeatherCondition)(it->second) );
+         m_weathercondition->set( (yApi::historization::EWeatherCondition)(it->second) );
 
-		 YADOMS_LOG(debug) << m_weathercondition.getKeyword() << "=" << m_weathercondition.get();
+		 YADOMS_LOG(debug) << m_weathercondition->getKeyword() << "=" << m_weathercondition->get();
 	  }
 	  else
 		  throw;
@@ -59,10 +59,10 @@ void CWeatherIcon::SetValue( const shared::CDataContainer & ValueContainer, cons
 
 void CWeatherIcon::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
-	context->declareKeyword(m_PluginName, m_weathercondition);
+	context->declareKeyword(m_PluginName, *m_weathercondition);
 }
 
-void CWeatherIcon::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+boost::shared_ptr<yApi::historization::IHistorizable> CWeatherIcon::GetHistorizable() const
 {
-   context->historizeData(m_PluginName, m_weathercondition);
+	return m_weathercondition;
 }

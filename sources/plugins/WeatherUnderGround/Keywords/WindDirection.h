@@ -6,9 +6,9 @@
 namespace yApi = shared::plugin::yPluginApi;
 
    //--------------------------------------------------------------
-   /// \brief	The Wind Keyword
+   /// \brief	The WindDirection Keyword
    //--------------------------------------------------------------
-   class CWind : public IKeyword
+   class CWindDirection : public IKeyword
    {
    public:
       //--------------------------------------------------------------
@@ -18,7 +18,7 @@ namespace yApi = shared::plugin::yPluginApi;
 	  /// \param[in] Prefix               The Prefexi before the keyword name
       /// \note                           Use this constructor initialising the keyword for this plugin
       //--------------------------------------------------------------
-      CWind( std::string PluginName, std::string Prefix );
+      CWindDirection( std::string PluginName, std::string Prefix );
 
 	  //--------------------------------------------------------------
      /// \brief	                         Set the value from the container
@@ -28,17 +28,17 @@ namespace yApi = shared::plugin::yPluginApi;
 	  /// \param[in] filterWindMaxSpeed      The name of the third information into the container
      /// \note                              Use this constructor initialising the keyword for this plugin
      //--------------------------------------------------------------
-	  void SetValue(const shared::CDataContainer & ValueContainer, const std::string & filterWindDirection, const std::string & filterWindAverageSpeed ="", const std::string & filterWindMaxSpeed ="");
+	  void SetValue(const shared::CDataContainer & ValueContainer, const std::string & filter);
 
       //--------------------------------------------------------------
       /// \brief	Destructor
       //--------------------------------------------------------------
-      virtual ~CWind();
+      virtual ~CWindDirection();
 
       // IKeyword implementation
-	   virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
-      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
+      virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
       virtual void Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const;
+	  virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
       // [END] IKeyword implementation
       
    protected:
@@ -52,15 +52,5 @@ namespace yApi = shared::plugin::yPluginApi;
       //--------------------------------------------------------------
       /// \brief	The wind direction
       //--------------------------------------------------------------
-      yApi::historization::CDirection m_windDirection;
-
-      //--------------------------------------------------------------
-      /// \brief	The wind average speed
-      //--------------------------------------------------------------
-      yApi::historization::CSpeed m_windAverageSpeed;
-
-      //--------------------------------------------------------------
-      /// \brief	The wind max speed
-      //--------------------------------------------------------------
-      yApi::historization::CSpeed m_windMaxSpeed;
+      boost::shared_ptr<yApi::historization::CDirection> m_windDirection;
    };

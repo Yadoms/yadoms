@@ -51,6 +51,7 @@ namespace pluginSystem
       virtual bool keywordExists(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword) const;
       virtual void declareKeyword(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
       virtual void historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data);
+	  virtual void historizeData(const std::string& device, std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect);
       virtual const shared::plugin::information::IInformation& getInformation() const;
       virtual shared::CDataContainer getConfiguration() const;
       virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message);

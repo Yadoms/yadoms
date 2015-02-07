@@ -27,6 +27,9 @@ namespace database { namespace sqlite {
          //--------------------------------------------------------------
          virtual ~CAcquisition();
 
+         virtual void BeginTransaction();
+         virtual void CommitTransaction();
+
          // IAcquisitionRequester implementation
          virtual boost::shared_ptr<entities::CAcquisition> saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime);
          virtual boost::shared_ptr<entities::CAcquisition> incrementData(const int keywordId, const std::string & increment, boost::posix_time::ptime & dataTime);

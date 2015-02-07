@@ -24,6 +24,15 @@ namespace database {  namespace sqlite {  namespace requesters {
    {
    }
 
+   void CAcquisition::BeginTransaction()
+   {
+      m_databaseRequester->transactionBegin();
+   }
+
+   void CAcquisition::CommitTransaction()
+   {
+      m_databaseRequester->transactionCommit();
+   }
 
    // IAcquisitionRequester implementation
    boost::shared_ptr<entities::CAcquisition> CAcquisition::saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime)
@@ -76,7 +85,8 @@ namespace database {  namespace sqlite {  namespace requesters {
       {
          CQuery q;
          q.DeleteFrom(CAcquisitionTable::getTableName()).
-            Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);   
+            Where(CAcquisitionTable::getKeywordIdColumnName(), CQUERY_OP_EQUAL, keywordId);
+
          m_databaseRequester->queryStatement(q);
 
          CQuery qSummary;
@@ -100,6 +110,7 @@ namespace database {  namespace sqlite {  namespace requesters {
 
       adapters::CAcquisitionAdapter adapter;
       m_databaseRequester->queryEntities<boost::shared_ptr<entities::CAcquisition> >(&adapter, qSelect);
+
       if (adapter.getResults().size() >= 1)
       {
          return adapter.getResults()[0];
@@ -120,6 +131,7 @@ namespace database {  namespace sqlite {  namespace requesters {
 
       adapters::CAcquisitionAdapter adapter;
       m_databaseRequester->queryEntities<boost::shared_ptr<entities::CAcquisition> >(&adapter, qSelect);
+
       if(adapter.getResults().size() >= 1)
       {
          return adapter.getResults()[0];
@@ -148,6 +160,7 @@ namespace database {  namespace sqlite {  namespace requesters {
 
       adapters::CMultipleValueAdapter<boost::posix_time::ptime, std::string> mva;
       m_databaseRequester->queryEntities(&mva, qSelect);
+
       return mva.getResults();
    }
 
@@ -195,6 +208,7 @@ namespace database {  namespace sqlite {  namespace requesters {
 
       adapters::CAcquisitionSummaryAdapter adapter;
       m_databaseRequester->queryEntities<boost::shared_ptr<entities::CAcquisitionSummary> >(&adapter, qSelect);
+
       return adapter.getResults();
    }
 
@@ -223,7 +237,9 @@ namespace database {  namespace sqlite {  namespace requesters {
 
       qSelect.OrderBy(CAcquisitionTable::getDateColumnName());
       adapters::CHighchartValueAdapter mva;
+
       m_databaseRequester->queryEntities(&mva, qSelect);
+
       return mva.getRawResults();
    }
 
@@ -248,7 +264,9 @@ namespace database {  namespace sqlite {  namespace requesters {
 
       qSelect.OrderBy(CAcquisitionSummaryTable::getDateColumnName());
       adapters::CHighchartValueAdapter mva;
+
       m_databaseRequester->queryEntities(&mva, qSelect);
+
       return mva.getRawResults();
 
    }

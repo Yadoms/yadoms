@@ -9,13 +9,13 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CDuration::CDuration( std::string PluginName, std::string KeyWordName )
-   :m_PluginName ( PluginName ), m_duration( KeyWordName )
+   :m_PluginName ( PluginName ), m_duration( new yApi::historization::CDuration(KeyWordName) )
 {}
 
 
 void CDuration::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
-   if (!context->keywordExists( m_PluginName, m_duration.getKeyword()))
+   if (!context->keywordExists( m_PluginName, m_duration->getKeyword()))
 	{
       DeclareKeywords ( context );
 	}
@@ -26,17 +26,17 @@ CDuration::~CDuration()
 
 void CDuration::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
-	context->declareKeyword(m_PluginName, m_duration);
+	context->declareKeyword(m_PluginName, *m_duration);
 }
 
 void CDuration::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {
-	m_duration.set(ValueContainer.get<boost::posix_time::time_duration>( filter ) * 24 );
+	m_duration->set(ValueContainer.get<boost::posix_time::time_duration>( filter ) * 24 );
 
-	YADOMS_LOG(debug) << m_duration.getKeyword() << "=" << boost::posix_time::to_simple_string(m_duration.get());
+	YADOMS_LOG(debug) << m_duration->getKeyword() << "=" << boost::posix_time::to_simple_string(m_duration->get());
 }
 
-void CDuration::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+boost::shared_ptr<yApi::historization::IHistorizable> CDuration::GetHistorizable() const
 {
-   context->historizeData(m_PluginName, m_duration);
+	return m_duration;
 }

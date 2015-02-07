@@ -37,8 +37,10 @@ set(WUNDERGROUND_SOURCES
    Keywords/Visibility.cpp
    Keywords/WeatherIcon.h
    Keywords/WeatherIcon.cpp   
-   Keywords/Wind.h
-   Keywords/Wind.cpp
+   Keywords/WindDirection.h
+   Keywords/WindDirection.cpp
+   Keywords/WindSpeed.h
+   Keywords/WindSpeed.cpp
 )
 
 source_group(Keywords Keywords/*.*)

@@ -8,13 +8,13 @@
 namespace yApi = shared::plugin::yPluginApi;
 
 CLoad::CLoad( std::string PluginName, std::string KeyWordName )
-   :m_PluginName ( PluginName ), m_pourcentage( KeyWordName )
+   :m_PluginName ( PluginName ), m_pourcentage( new yApi::historization::CLoad(KeyWordName) )
 {}
 
 
 void CLoad::Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
-   if (!context->keywordExists( m_PluginName, m_pourcentage.getKeyword()))
+   if (!context->keywordExists( m_PluginName, m_pourcentage->getKeyword()))
 	{
       DeclareKeywords ( context );
 	}
@@ -25,17 +25,17 @@ CLoad::~CLoad()
 
 void CLoad::DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const
 {
-	context->declareKeyword(m_PluginName, m_pourcentage);
+	context->declareKeyword(m_PluginName, *m_pourcentage);
 }
 
 void CLoad::SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter)
 {
-	m_pourcentage.set(ValueContainer.get<double>( filter ));
+	m_pourcentage->set(ValueContainer.get<double>( filter ));
 
-	YADOMS_LOG(debug) << m_pourcentage.getKeyword() << "=" << m_pourcentage.get() << "%";
+	YADOMS_LOG(debug) << m_pourcentage->getKeyword() << "=" << m_pourcentage->get() << "%";
 }
 
-void CLoad::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const
+boost::shared_ptr<yApi::historization::IHistorizable> CLoad::GetHistorizable() const
 {
-   context->historizeData(m_PluginName, m_pourcentage);
+	return m_pourcentage;
 }

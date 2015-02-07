@@ -3,8 +3,12 @@
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 
+//JMB//
+#include <boost/timer/timer.hpp>
+
 CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, std::string PluginName, const std::string Prefix):
            m_Localisation        ( WUConfiguration.getLocalisation() ),
+		   m_PluginName          ( PluginName),
            m_Temp                ( PluginName, Prefix + "temperature" ),
            m_Pressure            ( PluginName, Prefix + "pressure" ),
            m_Humidity            ( PluginName, Prefix + "Humidity" ),
@@ -13,7 +17,9 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> cont
            m_DewPoint            ( PluginName, Prefix + "DewPoint"),
            m_Rain_1hr            ( PluginName , Prefix + "Rain_1hr"),
            m_WeatherConditionUrl ( PluginName, Prefix + "WeatherCondition" ),
-           m_Wind                ( PluginName, Prefix ),
+           m_WindDirection       ( PluginName, Prefix ),
+		   m_WindAverageSpeed    ( PluginName, Prefix ),
+		   m_WindMaxSpeed        ( PluginName, Prefix ),
            m_FeelsLike           ( PluginName, Prefix + "FeelsLike" ),
            m_Windchill           ( PluginName, Prefix + "Windchill" )
 
@@ -35,9 +41,11 @@ CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> cont
 
    if (WUConfiguration.IsWindEnabled())
    {
-	   m_Wind.Initialize      ( context );
-	   m_FeelsLike.Initialize ( context );
-	   m_Windchill.Initialize ( context );
+	   m_WindDirection.Initialize      ( context );
+	   m_WindAverageSpeed.Initialize   ( context );
+	   m_WindMaxSpeed.Initialize       ( context );
+	   m_FeelsLike.Initialize          ( context );
+	   m_Windchill.Initialize          ( context );
    }
 }
 
@@ -77,44 +85,54 @@ void CWeatherConditions::Parse( boost::shared_ptr<yApi::IYPluginApi> context, co
 		}
 		else
 		{
+			std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
+
 			if (WUConfiguration.IsStandardInformationEnabled())
 			{
 				m_Temp.SetValue           ( m_data, "current_observation.temp_c" );
-				m_Temp.historizeData      ( context );
+				KeywordList.push_back (m_Temp.GetHistorizable());
 
-            m_Pressure.SetValue       ( m_data, "current_observation.pressure_mb" );
-			   m_Pressure.historizeData  ( context );
+               m_Pressure.SetValue       ( m_data, "current_observation.pressure_mb" );
+			   KeywordList.push_back (m_Pressure.GetHistorizable());
 
 			   m_Humidity.SetValue       ( m_data, "current_observation.relative_humidity" );
-			   m_Humidity.historizeData  ( context );
+			   KeywordList.push_back (m_Humidity.GetHistorizable());
 
 			   m_Visibility.SetValue     ( m_data, "current_observation.visibility_km" );
-			   m_Visibility.historizeData( context );
+			   KeywordList.push_back (m_Visibility.GetHistorizable());
 
 			   m_UV.SetValue             ( m_data, "current_observation.UV" );
-			   m_UV.historizeData        ( context );
+			   KeywordList.push_back (m_UV.GetHistorizable());
 
 			   m_DewPoint.SetValue       ( m_data, "current_observation.dewpoint_c" );
-			   m_DewPoint.historizeData  ( context );
+			   KeywordList.push_back (m_DewPoint.GetHistorizable());
 
 			   m_Rain_1hr.SetValue       ( m_data, "current_observation.precip_today_metric" );
-			   m_Rain_1hr.historizeData  ( context );
+			   KeywordList.push_back (m_Rain_1hr.GetHistorizable());
 
 				m_WeatherConditionUrl.SetValue ( m_data, "current_observation.icon");
-				m_WeatherConditionUrl.historizeData ( context );
+				KeywordList.push_back (m_WeatherConditionUrl.GetHistorizable());
 			}
 
 			if (WUConfiguration.IsWindEnabled())
 			{
-			    m_Wind.SetValue           ( m_data, "current_observation.wind_degrees", "current_observation.wind_kph", "current_observation.wind_gust_kph");
-			    m_Wind.historizeData      ( context );
+			    m_WindDirection.SetValue           ( m_data, "current_observation.wind_degrees");
+			    KeywordList.push_back (m_WindDirection.GetHistorizable());
+
+			    m_WindAverageSpeed.SetValue           ( m_data, "current_observation.wind_kph");
+			    KeywordList.push_back (m_WindAverageSpeed.GetHistorizable());
+
+			    m_WindMaxSpeed.SetValue           ( m_data, "current_observation.wind_gust_kph");
+			    KeywordList.push_back (m_WindMaxSpeed.GetHistorizable());
 
 			    m_FeelsLike.SetValue      ( m_data, "current_observation.feelslike_c" );
-			    m_FeelsLike.historizeData ( context );
+			    KeywordList.push_back (m_FeelsLike.GetHistorizable());
 
 			    m_Windchill.SetValue      ( m_data, "current_observation.windchill_c" );
-			    m_Windchill.historizeData ( context );
+			    KeywordList.push_back (m_Windchill.GetHistorizable());
 			}
+		   
+			context->historizeData(m_PluginName, KeywordList);
 		}
 	}
 	catch (...)
