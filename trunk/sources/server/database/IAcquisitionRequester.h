@@ -125,16 +125,6 @@ namespace database {
       virtual std::string getKeywordHighchartDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
 
       //--------------------------------------------------------------
-      /// \brief                 Starting the transaction to  the Database
-      //--------------------------------------------------------------	  
-      virtual void BeginTransaction() = 0;
-
-      //--------------------------------------------------------------
-      /// \brief                 Commit the transaction to  the Database
-      //--------------------------------------------------------------	  
-      virtual void CommitTransaction() = 0;
- 
-      //--------------------------------------------------------------
       /// \brief       Destructor
       //--------------------------------------------------------------
       virtual ~IAcquisitionRequester()
