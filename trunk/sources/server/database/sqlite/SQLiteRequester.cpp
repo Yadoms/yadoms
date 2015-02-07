@@ -60,6 +60,9 @@ namespace sqlite {
             //if it is a database locked error, just wait and retry
             if(rc == SQLITE_LOCKED && remainingTries>1)
             {
+               
+               YADOMS_LOG(debug) << "Query execution retry !!";
+
                //the database is locked (likely by another program)
                //just sleep some time and wish it is not locked anymore
                boost::this_thread::sleep(boost::posix_time::milliseconds(500));

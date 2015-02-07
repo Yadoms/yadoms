@@ -35,8 +35,8 @@ namespace yApi = shared::plugin::yPluginApi;
 
       // ICapacities implementation
 	   virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
-      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
       virtual void Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const;
+	  virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
       // [END] ICapacities implementation
       
    protected:
@@ -50,5 +50,5 @@ namespace yApi = shared::plugin::yPluginApi;
       //--------------------------------------------------------------
       /// \brief	The duration (boost::time_duration)
       //--------------------------------------------------------------
-      yApi::historization::CDuration m_duration;
+      boost::shared_ptr<yApi::historization::CDuration> m_duration;
    };

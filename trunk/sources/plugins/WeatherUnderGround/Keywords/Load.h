@@ -34,9 +34,9 @@ namespace yApi = shared::plugin::yPluginApi;
 	   void SetValue( const shared::CDataContainer & ValueContainer, const std::string & filter);
 
       // ICapacities implementation
-	   virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
-      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
+	  virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
       virtual void Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const;
+	  virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
       // [END] ICapacities implementation
       
    protected:
@@ -50,5 +50,5 @@ namespace yApi = shared::plugin::yPluginApi;
       //--------------------------------------------------------------
       /// \brief	The pourcentage (%)
       //--------------------------------------------------------------
-      yApi::historization::CLoad m_pourcentage;
+      boost::shared_ptr<yApi::historization::CLoad> m_pourcentage;
    };

@@ -83,15 +83,37 @@ void CYPluginApiImplementation::declareKeyword(const std::string& device, const 
    declareCustomKeyword(device, keyword.getKeyword(), keyword.getCapacity().getName(), keyword.getAccessMode(), keyword.getCapacity().getType(), keyword.getCapacity().getUnit(), keyword.getMeasureType(), details);
 }
 
-
-
 void CYPluginApiImplementation::historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data)
 {
    try
    {
       boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDevice(getPluginId(), device);
       boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordRequester->getKeyword(deviceEntity->Id, data.getKeyword());
+
       m_acquisitionHistorizer->saveData(keywordEntity->Id, data);
+
+   }
+   catch (shared::exception::CEmptyResult& e)
+   {
+      YADOMS_LOG(error) << "Error historizing data, device or keyword not found : " << e.what();
+   }
+}
+
+void CYPluginApiImplementation::historizeData(const std::string& device, std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect)
+{
+   try
+   {
+	   std::vector<int> keywordIdList;
+	   std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> >::iterator iter;
+
+      boost::shared_ptr<const database::entities::CDevice> deviceEntity = m_deviceManager->getDevice(getPluginId(), device);
+	  for (iter = dataVect.begin(); iter != dataVect.end(); ++iter)
+	  {
+		  boost::shared_ptr<const database::entities::CKeyword> keywordEntity = m_keywordRequester->getKeyword(deviceEntity->Id, (*iter)->getKeyword());
+		  keywordIdList.push_back (keywordEntity->Id);
+	  }
+      m_acquisitionHistorizer->saveData(keywordIdList, dataVect);
+
    }
    catch (shared::exception::CEmptyResult& e)
    {

@@ -14,8 +14,25 @@ namespace dataAccessLayer {
       {
          //use ptime as variable, because saveData needs a reference
          boost::posix_time::ptime currentDate = boost::posix_time::second_clock::universal_time();
+
+		 m_acquisitionRequester->BeginTransaction();
          saveData(keywordId, data, currentDate);
+		 m_acquisitionRequester->CommitTransaction();
       }
+
+	  void CAcquisitionHistorizer::saveData(std::vector<int> KeywordIdVect, std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect)
+	  {
+         //use ptime as variable, because saveData needs a reference
+         boost::posix_time::ptime currentDate = boost::posix_time::second_clock::universal_time();
+
+		 m_acquisitionRequester->BeginTransaction();
+
+		 for (int KeywordIdCount = 0; KeywordIdCount < KeywordIdVect.size(); KeywordIdCount++)
+		 {
+			 saveData(KeywordIdVect[KeywordIdCount], *dataVect[KeywordIdCount], currentDate);
+		 }
+		 m_acquisitionRequester->CommitTransaction();
+	  }
 
       void CAcquisitionHistorizer::saveData(const int keywordId, const shared::plugin::yPluginApi::historization::IHistorizable & data, boost::posix_time::ptime & dataTime)
       {

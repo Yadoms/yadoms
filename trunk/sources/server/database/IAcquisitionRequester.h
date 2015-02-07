@@ -48,8 +48,6 @@ namespace database {
       //--------------------------------------------------------------
       virtual void removeKeywordData(const int keywordId) = 0;
 
-      
-
       //-----------------------------------------
       ///\brief      Get an acquisition by keywordid and date
       ///\param [in] keywordId  The keyword id
@@ -106,7 +104,6 @@ namespace database {
       //--------------------------------------------------------------
       virtual std::string getKeywordHighchartData(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
 
-      
       //--------------------------------------------------------------
       /// \brief                 Get the summary data (highchart js format) : [[date,value],[date,value],...] by day (one value per day)
       /// \param [in] keywordId  keywordId Id
@@ -127,8 +124,16 @@ namespace database {
       //--------------------------------------------------------------
       virtual std::string getKeywordHighchartDataByHour(int keywordId, boost::posix_time::ptime timeFrom, boost::posix_time::ptime timeTo) = 0;
 
+      //--------------------------------------------------------------
+      /// \brief                 Starting the transaction to  the Database
+      //--------------------------------------------------------------	  
+      virtual void BeginTransaction() = 0;
 
-      
+      //--------------------------------------------------------------
+      /// \brief                 Commit the transaction to  the Database
+      //--------------------------------------------------------------	  
+      virtual void CommitTransaction() = 0;
+ 
       //--------------------------------------------------------------
       /// \brief       Destructor
       //--------------------------------------------------------------

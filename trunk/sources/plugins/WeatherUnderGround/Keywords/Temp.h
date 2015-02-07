@@ -34,9 +34,9 @@ namespace yApi = shared::plugin::yPluginApi;
       virtual ~CTemp();
 
       // ICapacities implementation
-	   virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
-      virtual void historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const;
+	  virtual void DeclareKeywords (boost::shared_ptr<yApi::IYPluginApi> context ) const;
       virtual void Initialize( boost::shared_ptr<yApi::IYPluginApi> context ) const;
+	  virtual boost::shared_ptr<yApi::historization::IHistorizable> GetHistorizable() const;
       // [END] ICapacities implementation
       
    protected:
@@ -51,6 +51,6 @@ namespace yApi = shared::plugin::yPluginApi;
       //--------------------------------------------------------------
       /// \brief	The temperature (°C)
       //--------------------------------------------------------------
-      yApi::historization::CTemperature m_temperature;
+      boost::shared_ptr<yApi::historization::CTemperature> m_temperature;
 
    };

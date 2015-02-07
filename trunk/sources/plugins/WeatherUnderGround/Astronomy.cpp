@@ -54,14 +54,18 @@ void CAstronomy::Parse( boost::shared_ptr<yApi::IYPluginApi> context, const IWUC
 		}
 		else
 		{
+			std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > KeywordList;
+
 			if (WUConfiguration.IsAstronomyEnabled())
 			{
 				PercentIlluminatedMoon.SetValue      ( m_data, "moon_phase.percentIlluminated" );
-				PercentIlluminatedMoon.historizeData ( context );
+				KeywordList.push_back                (PercentIlluminatedMoon.GetHistorizable());
 
 				AgeOfMoon.SetValue                   ( m_data, "moon_phase.ageOfMoon" );
-				AgeOfMoon.historizeData              ( context );
+				KeywordList.push_back                (AgeOfMoon.GetHistorizable());
 			}
+
+			context->historizeData(m_PluginName, KeywordList);
 		}
 	}
 	catch (...)

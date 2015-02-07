@@ -171,6 +171,12 @@ namespace shared { namespace plugin { namespace yPluginApi
       //-----------------------------------------------------     
       virtual void historizeData(const std::string& device, const historization::IHistorizable& data) = 0;
 
+      //-----------------------------------------------------
+      ///\brief Historize a list of new data
+      ///\param    [in]    device            The device name
+      ///\param    [in]    datalist          The list of historizable data
+      //-----------------------------------------------------    
+	  virtual void historizeData(const std::string& device, std::vector<boost::shared_ptr<historization::IHistorizable> > & dataVect) = 0;
 
       //----------------------------------------------------------------------------------------------------------------
       //----------------------------------------------------------------------------------------------------------------
