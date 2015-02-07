@@ -24,16 +24,6 @@ namespace database {  namespace sqlite {  namespace requesters {
    {
    }
 
-   void CAcquisition::BeginTransaction()
-   {
-      m_databaseRequester->transactionBegin();
-   }
-
-   void CAcquisition::CommitTransaction()
-   {
-      m_databaseRequester->transactionCommit();
-   }
-
    // IAcquisitionRequester implementation
    boost::shared_ptr<entities::CAcquisition> CAcquisition::saveData(const int keywordId, const std::string & data, boost::posix_time::ptime & dataTime)
    {
