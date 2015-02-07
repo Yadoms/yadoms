@@ -6,7 +6,7 @@
 //JMB//
 #include <boost/timer/timer.hpp>
 
-CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, std::string PluginName, const std::string Prefix):
+CWeatherConditions::CWeatherConditions(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, const std::string & PluginName, const std::string & Prefix):
            m_Localisation        ( WUConfiguration.getLocalisation() ),
 		   m_PluginName          ( PluginName),
            m_Temp                ( PluginName, Prefix + "temperature" ),

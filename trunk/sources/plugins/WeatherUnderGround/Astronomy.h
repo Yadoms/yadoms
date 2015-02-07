@@ -20,7 +20,7 @@ public:
    /// \param[in] context          pointer to the API
    /// \param[in] WUConfiguration  The Configuration of the module
    //--------------------------------------------------------------
-   CAstronomy(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, std::string PluginName, const std::string Prefix);
+   CAstronomy(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, const std::string & PluginName, const std::string & Prefix);
 
    //--------------------------------------------------------------
    /// \brief	  Send the request and receive the response from the web site
