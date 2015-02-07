@@ -3,7 +3,7 @@
 #include <shared/Log.h>
 #include <shared/exception/Exception.hpp>
 
-CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, std::string PluginName, const std::string Prefix):
+CAstronomy::CAstronomy(boost::shared_ptr<yApi::IYPluginApi> context, const IWUConfiguration& WUConfiguration, const std::string & PluginName, const std::string & Prefix):
            m_Localisation         ( WUConfiguration.getLocalisation() ),
            PercentIlluminatedMoon ( PluginName, Prefix + "PercentIllumitedMoon" ),
            AgeOfMoon              ( PluginName, Prefix + "AgeOfMoon" )
