@@ -165,10 +165,9 @@
    }
 
    function addNewAutomationRule() {
-      modals.automationRuleEdit.load(function() {
-         var rule = new AutomationRule(null, "", "", "", "", true);
-         //we launch rule edition GUI
-         showEditionAutomationRule(rule, function() {
+      modals.automationRuleNew.load(function() {
+         //we launch new rule GUI
+         showNewAutomationRule(function() {
             //we ask for automation rule creation
             AutomationRuleManager.createToServer(rule, function(result) {
                //if it's okay
