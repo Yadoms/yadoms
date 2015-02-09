@@ -66,7 +66,7 @@ var BooleanOperators = Blockly.RTL ? [
     ['\u2260', 'NEQ']
 ];
 
-function LoadData() {
+function LoadDataForBlocklyCustomBlocks() {
 
     var result = {
         plugins : {},
@@ -108,10 +108,8 @@ Blockly.Yadoms = function() {
 };
 
 Blockly.Yadoms.Initialize = function() {
-    Blockly.Yadoms.data = LoadData();
+    Blockly.Yadoms.data = LoadDataForBlocklyCustomBlocks();
 }
-
-
 
 /**
  * Check if a plugin contains keywords matching specifications

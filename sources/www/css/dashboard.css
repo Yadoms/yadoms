@@ -199,3 +199,9 @@ Fix dropdown menus hidden by bootstrap modal
     z-index: 9999 !important;
 
 }
+
+.btn-blockly, .btn-language {
+    margin : 10px;
+    width : 150px;
+    height : 100px;
+}

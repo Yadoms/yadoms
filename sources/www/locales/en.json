@@ -148,12 +148,14 @@
             "regexErrorMessage" : "The name of the device must contains at least one character"
          }		 
 	  },
-      "edit-automation-rule" : {
-        "title" : "Automation rule edition",
-        "condition" : "Condition",
-        "conditionDescription" : "Set the condition that launch the action section",
-        "actions" : "Actions",
-        "actionsDescription" : "Set all actions that are launched by condition section"
+      "new-automation-rule" : {
+         "title" : "Automation rule creation",
+         "from-scratch" : "From scratch",
+         "choose-language" : "Select a language to create an empty rule",
+         "from-model" : "From model",
+         "choose-model" : "Or select a model to create a predefined rule",
+         "blockly" : "Blockly language",
+         "python" : "Python language"
       },
       "qrcode" : {
          "title" : "QR Code de Yadoms",
