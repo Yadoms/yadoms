@@ -294,7 +294,7 @@ Blockly.Yadoms.LoadRecipients_ = function() {
  * @returns {*} The blockly type matching yadoms type
  * @constructor
  */
-Blockly.Yadoms.GetBlocklyType_ = function (yadomsKeywordType) {
+Blockly.Yadoms.GetBlocklyType_ = function (yadomsKeywordType, yadomsTypeName) {
     switch(yadomsKeywordType.toLowerCase()){
         case "numeric":
             return "Number";
@@ -303,6 +303,8 @@ Blockly.Yadoms.GetBlocklyType_ = function (yadomsKeywordType) {
             return "String";
         case "bool":
             return "Boolean";
+        case "enum":
+            return "enum_" + yadomsTypeName;
         default:
             return null; //is not known allow any type
     }
@@ -338,7 +340,7 @@ Blockly.Yadoms.UpdateBlockColour_ = function(self, type) {
  * @param callbackKeywordSelectionChanged A callback for keyword notification change
  * @constructor
  */
-Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, canWrite, allowedKeywordTypes, callbackKeywordSelectionChanged) {
+Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, canWrite, allowedKeywordTypes, callbackKeywordSelectionChanged, pluginDropDownName, deviceDropDownName, keywordDropDownName) {
     var pluginDd, deviceDd, keywordDd;
 
     //plugin list is static (do not need to update it on each dropdown click)
@@ -375,16 +377,21 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
         return keywordList;
     }, function(keyword) {
         if (!thisBlock.disabled) {
-            var type = Blockly.Yadoms.GetBlocklyType_(Blockly.Yadoms.data.keywords[keyword].type);
+
+            var yadomsTypeName="";
+            if(!isNullOrUndefined(Blockly.Yadoms.data.keywords[keyword].typeInfo) && !isNullOrUndefined(Blockly.Yadoms.data.keywords[keyword].typeInfo.name))
+                yadomsTypeName =  Blockly.Yadoms.data.keywords[keyword].typeInfo.name;
+
+            var type = Blockly.Yadoms.GetBlocklyType_(Blockly.Yadoms.data.keywords[keyword].type, yadomsTypeName);
             Blockly.Yadoms.UpdateBlockColour_(thisBlock, type);
             callbackKeywordSelectionChanged(keyword, type);
         }
     });
 
-    thisBlock.appendDummyInput()
-        .appendField(pluginDd, "Plugin")
-        .appendField(deviceDd, "Device")
-        .appendField(keywordDd, "Keyword");
+    thisBlock.appendDummyInput("YadomsSelection")
+        .appendField(pluginDd, pluginDropDownName)
+        .appendField(deviceDd, deviceDropDownName)
+        .appendField(keywordDd, keywordDropDownName);
 };
 
 Blockly.Yadoms.InitializeYadomsKeywordSelection = function(thisBlock) {
@@ -437,7 +444,7 @@ Blockly.Blocks['yadoms_keyword_value'] = {
             else
                 thisBlock.changeOutput(keywordType);
             thisBlock.updateUnit(Blockly.Yadoms.data.keywords[keyword]);
-        });
+        }, "Plugin", "Device", "Keyword");
 
         Blockly.Yadoms.InitializeYadomsKeywordSelection(thisBlock);
     },
@@ -461,6 +468,9 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
     inputValueName : "Value",
     operatorValueName : "operator",
     unitsInputName : "units",
+    pluginDropDownName : "Plugin",
+    deviceDropDownName : "Device",
+    keywordDropDownName : "Keyword",
   init: function() {
       this.setHelpUrl('http://www.example.com/');
       this.setInputsInline(true);
@@ -471,7 +481,7 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
       this.appendDummyInput()
           .appendField("Set");
       var thisBlock = this;
-      Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata"], function (keyword, keywordType) {
+      Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum"], function (keyword, keywordType) {
           if (keywordType == null || keywordType == undefined) {
               thisBlock.updateShape_(false);
           }
@@ -480,9 +490,47 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
               thisBlock.getInput(thisBlock.inputValueName).setCheck(keywordType);
           }
           thisBlock.updateUnit(Blockly.Yadoms.data.keywords[keyword]);
-      });
+      }, thisBlock.pluginDropDownName, thisBlock.deviceDropDownName, thisBlock.keywordDropDownName);
 
       Blockly.Yadoms.InitializeYadomsKeywordSelection(thisBlock);
+
+      /**
+       * Method which make type checks when one of connector changes
+       */
+      this.onchange = function() {
+          var keywordValue = thisBlock.getFieldValue(thisBlock.keywordDropDownName);
+          var inputValue = thisBlock.getInput(thisBlock.inputValueName);
+          if (!inputValue) {
+              return;  // Block under construction, ignore.
+          }
+          var block = inputValue.connection.targetBlock();
+
+          if (block) {
+              if(block.type == "yadoms_enumeration") {
+
+                  if(!isNullOrUndefined(keywordValue) &&
+                      !isNullOrUndefined(Blockly.Yadoms.data.keywords[keywordValue]) &&
+                      !isNullOrUndefined(Blockly.Yadoms.data.keywords[keywordValue].type) &&
+                      Blockly.Yadoms.data.keywords[keywordValue].type == "enum" &&
+                      !isNullOrUndefined(Blockly.Yadoms.data.keywords[keywordValue].typeInfo) &&
+                      !isNullOrUndefined(Blockly.Yadoms.data.keywords[keywordValue].typeInfo).name &&
+                      !isNullOrUndefined(Blockly.Yadoms.data.keywords[keywordValue].typeInfo.values)) {
+
+                      var translatedEnum = [];
+                      $.each(Blockly.Yadoms.data.keywords[keywordValue].typeInfo.values, function(index, value) {
+                          translatedEnum.push([value, value]);
+                      });
+                     block.updateEnumeration(Blockly.Yadoms.data.keywords[keywordValue].typeInfo.name, translatedEnum);
+
+                  }
+
+
+
+
+
+              }
+          }
+      };
   },
 
     /**
@@ -528,103 +576,6 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
 
 };
 
-/**
- * Define a condition block which is true when a keyword value reach a value
- * @type {{init: Function}}
- */
-Blockly.Blocks['yadoms_logic_compare_become'] = {
-  init: function() {
-    this.setHelpUrl('http://www.example.com/');
-    this.setColour(210);
-    this.appendDummyInput()
-        .appendField("Become");
-    this.appendValueInput("A");
-    this.appendValueInput("B").appendField(new Blockly.FieldDropdown([['=', 'EQ']]), "OP");
-    this.setInputsInline(false);
-    this.setOutput(true, "Boolean");
-
-	var thisBlock = this;
-    this.setTooltip(function() {
-      var op = thisBlock.getFieldValue('OP');
-      var TOOLTIPS = {
-        'EQ': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_EQ,
-        'NEQ': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_NEQ,
-        'LT': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_LT,
-        'LTE': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_LTE,
-        'GT': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_GT,
-        'GTE': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_GTE
-      };
-
-
-      return TOOLTIPS[op];
-    });
-
-
-/**
-   * Method which update the operator list, according to the connected types
-   */
-   thisBlock.updateOperator = function(newCheck) {
-      var selectedOperators = [[]];
-      if(newCheck == "String") {
-         selectedOperators = StringOperators;
-      } else if(newCheck == "Boolean") {
-         selectedOperators = BooleanOperators;
-      } else if(newCheck == "Number") {
-         selectedOperators = NumberOperators;
-      } else if(newCheck == "µAny") {
-         selectedOperators = NumberOperators;
-      } else {
-         //specific types
-         selectedOperators = BooleanOperators;
-      }
-
-      var operatorDropDown = this.getField_("OP");
-      operatorDropDown.menuGenerator_ = selectedOperators;
-      operatorDropDown.setValue(selectedOperators[0][1]);
-	  operatorDropDown.updateTextNode_();
-   };
-
-   //apply operator update
-   thisBlock.updateOperator(null);
-
-
-   /**
-   * Method which make type checks when one of connector changes
-   */
-	thisBlock.onchange = function() {
-       var inputA = this.getInput('A');
-       var inputB = this.getInput('B');
-       if (!inputA || !inputB) {
-         return;  // Block under construction, ignore.
-       }
-       var blockA = inputA.connection.targetBlock();
-       var blockB = inputB.connection.targetBlock();
-       if (blockA) {
-          if(inputB.connection.check_ != blockA.outputConnection.check_) {
-            inputB.setCheck(blockA.outputConnection.check_);
-            this.updateOperator(blockA.outputConnection.check_);
-          }
-       } else if (blockB) {
-          if(inputA.connection.check_ != blockB.outputConnection.check_) {
-            inputA.setCheck(blockB.outputConnection.check_);
-            this.updateOperator(blockB.outputConnection.check_);
-          }
-       } else {
-         inputA.setCheck(null);
-         inputB.setCheck(null);
-       }
-   };
-  }
-};
-
-
-
-
-
-
-
-
-
 
 
 Blockly.Blocks['yadoms_logic_compare_is_mutator_for'] = {
@@ -638,7 +589,6 @@ Blockly.Blocks['yadoms_logic_compare_is_mutator_for'] = {
         this.contextMenu = false;
     }
 };
-
 Blockly.Blocks['yadoms_logic_compare_is_mutator_at'] = {
     init: function() {
         this.setColour(210);
@@ -650,7 +600,6 @@ Blockly.Blocks['yadoms_logic_compare_is_mutator_at'] = {
         this.contextMenu = false;
     }
 };
-
 Blockly.Blocks['yadoms_logic_compare_is_mutator'] = {
     init: function() {
         this.setColour(Blockly.Blocks.logic.HUE);
@@ -753,8 +702,6 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
 
         if(clauseBlock) {
             if(clauseBlock.type == 'yadoms_logic_compare_is_mutator_for') {
-
-
                 this.appendDummyInput("duration_text").appendField("For");
                 this.appendValueInput("duration").setCheck("Number");
                 this.appendDummyInput("duration_unit").appendField(new Blockly.FieldDropdown(durationUnitsEnum), "durationUnit");
@@ -771,59 +718,125 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
                 this.isAtMutator = true;
             }
         }
+    }
+};
 
-        //while (clauseBlock) {
-        //   switch (clauseBlock.type) {
-        //         case 'yadoms_logic_compare_is_for_mutator':
-        //            this.isForMutator = true;
-        //            var ifInput = this.appendValueInput('IF' + this.elseifCount_)
-        //               .setCheck('Boolean')
-        //               .appendField(Blockly.Msg.CONTROLS_IF_MSG_ELSEIF);
-        //            var doInput = this.appendStatementInput('DO' + this.elseifCount_);
-        //            doInput.appendField(Blockly.Msg.CONTROLS_IF_MSG_THEN);
-        //            // Reconnect any child blocks.
-        //            if (clauseBlock.valueConnection_) {
-        //               ifInput.connection.connect(clauseBlock.valueConnection_);
-        //            }
-        //            if (clauseBlock.statementConnection_) {
-        //               doInput.connection.connect(clauseBlock.statementConnection_);
-        //            }
-        //            break;
-        //         case 'yadoms_logic_compare_is_at_mutator':
-        //            this.isAtMutator = true;
-        //
-        //            var elseInput = this.appendStatementInput('ELSE');
-        //            elseInput.appendField(Blockly.Msg.CONTROLS_IF_MSG_ELSE);
-        //            // Reconnect any child blocks.
-        //            if (clauseBlock.statementConnection_) {
-        //               elseInput.connection.connect(clauseBlock.statementConnection_);
-        //            }
-        //            break;
-        //         default:
-        //            throw 'Unknown block type.';
-        //   }
-        //   clauseBlock = clauseBlock.nextConnection &&
-        //   clauseBlock.nextConnection.targetBlock();
-        //}
+
+/**
+ * Define a condition block which is true when a keyword value reach a value
+ * @type {{init: Function}}
+ */
+Blockly.Blocks['yadoms_logic_compare_become'] = {
+    init: function() {
+        this.setHelpUrl('http://www.example.com/');
+        this.setColour(210);
+        this.appendDummyInput()
+            .appendField("Become");
+        this.appendValueInput("A");
+        this.appendValueInput("B").appendField(new Blockly.FieldDropdown([['=', 'EQ']]), "OP");
+        this.setInputsInline(false);
+        this.setOutput(true, "Boolean");
+
+        var thisBlock = this;
+        this.setTooltip(function() {
+            var op = thisBlock.getFieldValue('OP');
+            var TOOLTIPS = {
+                'EQ': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_EQ,
+                'NEQ': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_NEQ,
+                'LT': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_LT,
+                'LTE': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_LTE,
+                'GT': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_GT,
+                'GTE': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_GTE
+            };
+
+
+            return TOOLTIPS[op];
+        });
+
+
+        /**
+         * Method which update the operator list, according to the connected types
+         */
+        thisBlock.updateOperator = function(newCheck) {
+            var selectedOperators = [[]];
+            if(newCheck == "String") {
+                selectedOperators = StringOperators;
+            } else if(newCheck == "Boolean") {
+                selectedOperators = BooleanOperators;
+            } else if(newCheck == "Number") {
+                selectedOperators = NumberOperators;
+            } else if(newCheck == "µAny") {
+                selectedOperators = NumberOperators;
+            } else {
+                //specific types
+                selectedOperators = BooleanOperators;
+            }
+
+            var operatorDropDown = this.getField_("OP");
+            operatorDropDown.menuGenerator_ = selectedOperators;
+            operatorDropDown.setValue(selectedOperators[0][1]);
+            operatorDropDown.updateTextNode_();
+        };
+
+        //apply operator update
+        thisBlock.updateOperator(null);
+
+
+        /**
+         * Method which make type checks when one of connector changes
+         */
+        thisBlock.onchange = function() {
+            var inputA = this.getInput('A');
+            var inputB = this.getInput('B');
+            if (!inputA || !inputB) {
+                return;  // Block under construction, ignore.
+            }
+            var blockA = inputA.connection.targetBlock();
+            var blockB = inputB.connection.targetBlock();
+            if (blockA) {
+                if(inputB.connection.check_ != blockA.outputConnection.check_) {
+                    inputB.setCheck(blockA.outputConnection.check_);
+                    this.updateOperator(blockA.outputConnection.check_);
+                }
+            } else if (blockB) {
+                if(inputA.connection.check_ != blockB.outputConnection.check_) {
+                    inputA.setCheck(blockB.outputConnection.check_);
+                    this.updateOperator(blockB.outputConnection.check_);
+                }
+            } else {
+                inputA.setCheck(null);
+                inputB.setCheck(null);
+            }
+        }
     }
 };
 
 
 
 
-//
-//Blockly.Blocks['switch_list'] = {
-//  init: function() {
-//    this.setHelpUrl('http://www.example.com/');
-//    this.setColour(20);
-//    this.appendDummyInput()
-//        .appendField(new Blockly.FieldDropdown(switchType), "switch_type");
-//    this.setOutput(true, "switch_type");
-//    this.setTooltip('');
-//  }
-//};
-//
 
+
+
+
+Blockly.Blocks['yadoms_enumeration'] = {
+    currentEnumerationTypeName : "",
+    init: function() {
+        this.setHelpUrl('http://www.example.com/');
+        this.setColour(20);
+        this.appendDummyInput()
+            .appendField(new Blockly.FieldDropdown([["enumeration", "enumeration"]]), "enumerationList");
+        this.setOutput(true, "");
+        this.setTooltip('');
+    },
+
+    updateEnumeration : function(typeName, enumeration) {
+        if(this.currentEnumerationTypeName != typeName) {
+            this.currentEnumerationTypeName = typeName;
+            var enumDropDown = this.getField_("enumerationList");
+            enumDropDown.refresh(enumeration);
+        }
+    }
+};
 
 
 Blockly.Blocks['yadoms_controls_if'] = {

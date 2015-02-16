@@ -14,6 +14,7 @@
                     <block type="yadoms_affect_keyword"></block>
                     <block type="yadoms_notification_simple"></block>
                     <block type="yadoms_notification_advanced"></block>
+                    <block type="yadoms_enumeration"></block>
                  </category>
 
 
@@ -26,7 +27,6 @@
                  <block type="logic_boolean"></block>
                  <block type="logic_null"></block>
               </category>
-              <!--
               <category name="Loops">
                  <block type="controls_repeat_ext">
                     <value name="TIMES">
@@ -56,7 +56,6 @@
                  <block type="controls_forEach"></block>
                  <block type="controls_flow_statements"></block>
               </category>
-              -->
               <category name="Math">
                  <block type="math_number"></block>
                  <block type="math_arithmetic"></block>
@@ -238,7 +237,7 @@
               <div class="modal-footer">
                  <div class="form-actions">
                     <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
-                    <button type="button" id="btn-confirm-configure-keyword" class="btn btn-primary" data-i18n="common.ok"></button>
+                    <button type="button" id="btn-confirm-configure-rule-blockly" class="btn btn-primary" data-i18n="common.ok"></button>
                  </div>
               </div>
            </form>
@@ -258,7 +257,7 @@
       var $modalContent = $("div#edit-automation-rule-modal-blockly .modal-content");
 
       //validation
-      $("#btn-confirm-configure-keyword").bind("click", function (e) {
+      $("#btn-confirm-configure-rule-blockly").bind("click", function (e) {
 
          Blockly.Validation.validateMainWorkspace(function(isValid, msg) {
             if(!isValid) {
