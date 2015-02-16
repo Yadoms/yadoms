@@ -6,8 +6,8 @@
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
 
-   CRssi::CRssi(const std::string& keywordName, const EMeasureType& measureType)
-      :CSingleHistorizableData<int>(keywordName, CStandardCapacities::Rssi, EKeywordAccessMode::kGet, 0, measureType)
+   CRssi::CRssi(const std::string& keywordName, const EMeasureType& measureType, typeInfo::CIntTypeInfo & additionalInfo)
+      :CSingleHistorizableData<int>(keywordName, CStandardCapacities::Rssi, EKeywordAccessMode::kGet, 0, measureType, additionalInfo)
    {
    }
 

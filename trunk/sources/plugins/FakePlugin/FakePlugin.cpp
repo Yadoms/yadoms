@@ -9,6 +9,7 @@
 #include <shared/plugin/yPluginApi/IManuallyDeviceCreationRequest.h>
 #include <shared/tools/Random.h>
 #include <boost/random/independent_bits.hpp>
+#include "FakeController.h"
 
 // Use this macro to define all necessary to make your DLL a Yadoms valid plugin.
 // Note that you have to provide some extra files, like package.json, and icon.png
@@ -47,7 +48,9 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       CFakeSwitch fakeOnOffReadWriteSwitch("fakeOnOffReadWriteSwitch", false, true);
       CFakeSwitch fakeDimmableReadOnlySwitch("fakeDimmableReadOnlySwitch", true, false);
       CFakeSwitch fakeDimmableReadWriteSwitch("fakeDimmableReadWriteSwitch", true, true);
-      
+      CFakeController fakeController("fakeController1");
+
+
       // Declare these sensors to Yadoms (devices and associated keywords) if not already declared
       fakeSensor1.declareDevice(context);
       fakeSensor2.declareDevice(context);
@@ -56,6 +59,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
       fakeOnOffReadWriteSwitch.declareDevice(context);
       fakeDimmableReadOnlySwitch.declareDevice(context);
       fakeDimmableReadWriteSwitch.declareDevice(context);
+      fakeController.declareDevice(context);
 
       // Timer used to send fake sensor states periodically
       context->getEventHandler().createTimer(kSendSensorsStateTimerEventId, shared::event::CEventTimer::kPeriodic, boost::posix_time::seconds(10));
@@ -104,6 +108,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                fakeCounter.read();
                fakeOnOffReadOnlySwitch.read();
                fakeDimmableReadOnlySwitch.read();
+               fakeController.read();
 
                YADOMS_LOG(debug) << "Send the periodically sensors state...";
                fakeSensor1.historizeData(context);
@@ -111,6 +116,7 @@ void CFakePlugin::doWork(boost::shared_ptr<yApi::IYPluginApi> context)
                fakeCounter.historizeData(context);
                fakeOnOffReadOnlySwitch.historizeData(context);
                fakeDimmableReadOnlySwitch.historizeData(context);
+               fakeController.historizeData(context);
 
                break;
             }

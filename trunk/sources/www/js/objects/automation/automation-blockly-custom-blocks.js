@@ -350,21 +350,35 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
 
     //create the plugin dropdown
     pluginDd = new Blockly.FieldDropdown(pList, function(plugin) {
-        deviceDd.refresh(Blockly.Yadoms.LoadDevices_(plugin, canWrite, allowedKeywordTypes));
+        if(!thisBlock.disabled)
+            deviceDd.refresh(Blockly.Yadoms.LoadDevices_(plugin, canWrite, allowedKeywordTypes));
     });
 
     deviceDd = new Blockly.FieldDropdown(function() {
-        return Blockly.Yadoms.LoadDevices_(pluginDd.getValue(), canWrite, allowedKeywordTypes);
+        var deviceList= Blockly.Yadoms.LoadDevices_(pluginDd.getValue(), canWrite, allowedKeywordTypes);
+        if(deviceList == null || deviceList == undefined || deviceList.length == 0) {
+            thisBlock.setDisabled(true);
+            deviceList = [["invalid" , "invalid"]];
+        }
+        return deviceList;
     }, function(device) {
-        keywordDd.refresh(Blockly.Yadoms.LoadKeywords_(device, canWrite, allowedKeywordTypes));
+        if(!thisBlock.disabled)
+            keywordDd.refresh(Blockly.Yadoms.LoadKeywords_(device, canWrite, allowedKeywordTypes));
     });
 
     keywordDd = new Blockly.FieldDropdown(function() {
-        return Blockly.Yadoms.LoadKeywords_(deviceDd.getValue(), canWrite, allowedKeywordTypes);
+        var keywordList= Blockly.Yadoms.LoadKeywords_(deviceDd.getValue(), canWrite, allowedKeywordTypes);
+        if(keywordList == null || keywordList == undefined || keywordList.length == 0) {
+            thisBlock.setDisabled(true);
+            keywordList = [["invalid" , "invalid"]];
+        }
+        return keywordList;
     }, function(keyword) {
-        var type = Blockly.Yadoms.GetBlocklyType_(Blockly.Yadoms.data.keywords[keyword].type);
-        Blockly.Yadoms.UpdateBlockColour_(thisBlock, type);
-        callbackKeywordSelectionChanged(keyword, type);
+        if (!thisBlock.disabled) {
+            var type = Blockly.Yadoms.GetBlocklyType_(Blockly.Yadoms.data.keywords[keyword].type);
+            Blockly.Yadoms.UpdateBlockColour_(thisBlock, type);
+            callbackKeywordSelectionChanged(keyword, type);
+        }
     });
 
     thisBlock.appendDummyInput()
@@ -604,6 +618,50 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
 };
 
 
+
+
+
+
+
+
+
+
+
+Blockly.Blocks['yadoms_logic_compare_is_mutator_for'] = {
+    init: function() {
+        this.setColour(210);
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, "null");
+        this.setNextStatement(false, "null");
+        this.setTooltip('');
+        this.appendDummyInput().appendField("For (duration)");
+        this.contextMenu = false;
+    }
+};
+
+Blockly.Blocks['yadoms_logic_compare_is_mutator_at'] = {
+    init: function() {
+        this.setColour(210);
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, "null");
+        this.setNextStatement(false, "null");
+        this.setTooltip('');
+        this.appendDummyInput().appendField("At (time)");
+        this.contextMenu = false;
+    }
+};
+
+Blockly.Blocks['yadoms_logic_compare_is_mutator'] = {
+    init: function() {
+        this.setColour(Blockly.Blocks.logic.HUE);
+        this.appendDummyInput()
+            .appendField("Is");
+        this.appendStatementInput('STACK');
+        this.contextMenu = false;
+    }
+};
+
+
 /**
  * Define a condition block which is true when a keyword match a value (not a front value)
  * @type {{init: Function}}
@@ -616,8 +674,10 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
             .appendField("Is");
         this.appendValueInput("A");
         this.appendValueInput("B").appendField(new Blockly.FieldDropdown([['=', 'EQ']]), "OP");
-        this.setInputsInline(false);
+        this.setInputsInline(true);
         this.setOutput(true, "Boolean");
+
+        this.setMutator(new Blockly.Mutator(['yadoms_logic_compare_is_mutator_for', 'yadoms_logic_compare_is_mutator_at']));
 
         var thisBlock = this;
         this.setTooltip(function() {
@@ -636,69 +696,53 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
         });
 
 
-        /**
-         * Method which update the operator list, according to the connected types
-         */
-        thisBlock.updateOperator = function(newCheck) {
+        this.isForMutator = false;
+        this.isAtMutator = false;
+    },
 
-            var selectedOperators = [[]];
-            if(newCheck == "String") {
-                selectedOperators = StringOperators;
-            } else if(newCheck == "Boolean") {
-                selectedOperators = BooleanOperators;
-            } else if(newCheck == "Number") {
-                selectedOperators = NumberOperators;
-            } else if(newCheck == "µAny") {
-                selectedOperators = NumberOperators;
-            } else {
-                //specific types
-                selectedOperators = BooleanOperators;
+    decompose: function(workspace) {
+        var topBlock = Blockly.Block.obtain(workspace, 'yadoms_logic_compare_is_mutator');
+        topBlock.initSvg();
+
+        var connection = topBlock.getInput('STACK').connection;
+
+        if(this.isForMutator) {
+            var forBlock = Blockly.Block.obtain(workspace, 'yadoms_logic_compare_is_for_mutator');
+            forBlock.initSvg();
+            connection.connect(forBlock.previousConnection);
+        } else if(this.isAtMutator) {
+            var atBlock = Blockly.Block.obtain(workspace, 'yadoms_logic_compare_is_at_mutator');
+            atBlock.initSvg();
+            connection.connect(atBlock.previousConnection);
+        }
+        return topBlock;
+    },
+    /**
+     * Reconfigure this block based on the mutator dialog's components.
+     * @param {!Blockly.Block} containerBlock Root block in mutator.
+     * @this Blockly.Block
+     */
+    compose: function(containerBlock) {
+        // Disconnect all
+        if (this.isForMutator) {
+            if(this.getInput("duration")) {
+                this.removeInput('duration_text');
+                this.removeInput('duration');
+                this.removeInput('duration_unit');
             }
-
-            var operatorDropDown = this.getField_("OP");
-            operatorDropDown.menuGenerator_ = selectedOperators;
-            operatorDropDown.setValue(selectedOperators[0][1]);
-            operatorDropDown.updateTextNode_();
-        };
-
-        //apply operator update
-        thisBlock.updateOperator(null);
-
-
-        /**
-         * Method which make type checks when one of connector changes
-         */
-        thisBlock.onchange = function() {
-            var inputA = this.getInput('A');
-            var inputB = this.getInput('B');
-            if (!inputA || !inputB) {
-                return;  // Block under construction, ignore.
+        }
+        if (this.isAtMutator) {
+            if(this.getInput("at")) {
+                this.removeInput('at_text');
+                this.removeInput('at');
             }
-            var blockA = inputA.connection.targetBlock();
-            var blockB = inputB.connection.targetBlock();
-            if (blockA) {
-                if(inputB.connection.check_ != blockA.outputConnection.check_) {
-                    inputB.setCheck(blockA.outputConnection.check_);
-                    this.updateOperator(blockA.outputConnection.check_);
-                }
-            } else if (blockB) {
-                if(inputA.connection.check_ != blockB.outputConnection.check_) {
-                    inputA.setCheck(blockB.outputConnection.check_);
-                    this.updateOperator(blockB.outputConnection.check_);
-                }
-            } else {
-                inputA.setCheck(null);
-                inputB.setCheck(null);
-            }
-        };
-    }
-};
-/**
- * Define a condition block which is true when a keyword match a value for a time (not a front value)
- * @type {{init: Function}}
- */
-Blockly.Blocks['yadoms_logic_compare_is_for'] = {
-    init: function() {
+        }
+        this.isForMutator = false;
+        this.isAtMutator = false;
+
+
+        // Rebuild the block's optional inputs.
+        var clauseBlock = containerBlock.getInputTargetBlock('STACK');
 
         var durationUnitsEnum =[
             ['heures', 'H'],
@@ -707,100 +751,64 @@ Blockly.Blocks['yadoms_logic_compare_is_for'] = {
             ['jours', 'D']
         ];
 
-
-        this.setHelpUrl('http://www.example.com/');
-        this.setColour(210);
-        this.appendDummyInput()
-            .appendField("Is");
-        this.appendValueInput("A");
-        this.appendDummyInput()
-            .appendField(new Blockly.FieldDropdown([['=', 'EQ']]), "OP");
-        this.appendValueInput("B");
-        this.appendDummyInput()
-            .appendField("For");
-        this.appendValueInput("duration")
-            .setCheck("Number");
-        this.appendDummyInput()
-            .appendField(new Blockly.FieldDropdown(durationUnitsEnum), "durationUnit");
+        if(clauseBlock) {
+            if(clauseBlock.type == 'yadoms_logic_compare_is_mutator_for') {
 
 
-        this.setInputsInline(false);
-        this.setOutput(true, "Boolean");
+                this.appendDummyInput("duration_text").appendField("For");
+                this.appendValueInput("duration").setCheck("Number");
+                this.appendDummyInput("duration_unit").appendField(new Blockly.FieldDropdown(durationUnitsEnum), "durationUnit");
+                this.isForMutator = true;
 
-        var thisBlock = this;
-        this.setTooltip(function() {
-            var op = thisBlock.getFieldValue('OP');
-            var TOOLTIPS = {
-                'EQ': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_EQ,
-                'NEQ': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_NEQ,
-                'LT': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_LT,
-                'LTE': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_LTE,
-                'GT': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_GT,
-                'GTE': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_GTE
-            };
-
-
-            return TOOLTIPS[op];
-        });
-
-
-        /**
-         * Method which update the operator list, according to the connected types
-         */
-        thisBlock.updateOperator = function(newCheck) {
-
-            var selectedOperators = [[]];
-            if(newCheck == "String") {
-                selectedOperators = StringOperators;
-            } else if(newCheck == "Boolean") {
-                selectedOperators = BooleanOperators;
-            } else if(newCheck == "Number") {
-                selectedOperators = NumberOperators;
-            } else if(newCheck == "µAny") {
-                selectedOperators = NumberOperators;
-            } else {
-                //specific types
-                selectedOperators = BooleanOperators;
+            } else if(clauseBlock.type == 'yadoms_logic_compare_is_mutator_at') {
+                this.appendDummyInput("at_text").appendField("At");
+                this.appendDummyInput("at")
+                    .appendTitle(new Blockly.FieldTextInput('00:00', function(text) {
+                        if (text.match(/^([01]?[0-9]|2[0-3]):[0-5][0-9]/))
+                            return text;
+                        return "00:00";
+                    }), 'TEXT');
+                this.isAtMutator = true;
             }
+        }
 
-            var operatorDropDown = this.getField_("OP");
-            operatorDropDown.menuGenerator_ = selectedOperators;
-            operatorDropDown.setValue(selectedOperators[0][1]);
-            operatorDropDown.updateTextNode_();
-        };
-
-        //apply operator update
-        thisBlock.updateOperator(null);
-
-
-        /**
-         * Method which make type checks when one of connector changes
-         */
-        thisBlock.onchange = function() {
-            var inputA = this.getInput('A');
-            var inputB = this.getInput('B');
-            if (!inputA || !inputB) {
-                return;  // Block under construction, ignore.
-            }
-            var blockA = inputA.connection.targetBlock();
-            var blockB = inputB.connection.targetBlock();
-            if (blockA) {
-                if(inputB.connection.check_ != blockA.outputConnection.check_) {
-                    inputB.setCheck(blockA.outputConnection.check_);
-                    this.updateOperator(blockA.outputConnection.check_);
-                }
-            } else if (blockB) {
-                if(inputA.connection.check_ != blockB.outputConnection.check_) {
-                    inputA.setCheck(blockB.outputConnection.check_);
-                    this.updateOperator(blockB.outputConnection.check_);
-                }
-            } else {
-                inputA.setCheck(null);
-                inputB.setCheck(null);
-            }
-        };
+        //while (clauseBlock) {
+        //   switch (clauseBlock.type) {
+        //         case 'yadoms_logic_compare_is_for_mutator':
+        //            this.isForMutator = true;
+        //            var ifInput = this.appendValueInput('IF' + this.elseifCount_)
+        //               .setCheck('Boolean')
+        //               .appendField(Blockly.Msg.CONTROLS_IF_MSG_ELSEIF);
+        //            var doInput = this.appendStatementInput('DO' + this.elseifCount_);
+        //            doInput.appendField(Blockly.Msg.CONTROLS_IF_MSG_THEN);
+        //            // Reconnect any child blocks.
+        //            if (clauseBlock.valueConnection_) {
+        //               ifInput.connection.connect(clauseBlock.valueConnection_);
+        //            }
+        //            if (clauseBlock.statementConnection_) {
+        //               doInput.connection.connect(clauseBlock.statementConnection_);
+        //            }
+        //            break;
+        //         case 'yadoms_logic_compare_is_at_mutator':
+        //            this.isAtMutator = true;
+        //
+        //            var elseInput = this.appendStatementInput('ELSE');
+        //            elseInput.appendField(Blockly.Msg.CONTROLS_IF_MSG_ELSE);
+        //            // Reconnect any child blocks.
+        //            if (clauseBlock.statementConnection_) {
+        //               elseInput.connection.connect(clauseBlock.statementConnection_);
+        //            }
+        //            break;
+        //         default:
+        //            throw 'Unknown block type.';
+        //   }
+        //   clauseBlock = clauseBlock.nextConnection &&
+        //   clauseBlock.nextConnection.targetBlock();
+        //}
     }
 };
+
+
 
 
 //

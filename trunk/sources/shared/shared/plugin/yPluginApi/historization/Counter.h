@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
+#include "typeInfo/IntTypeInfo.h"
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {   
@@ -16,7 +17,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] accessMode      The access mode
       ///\param[in] measureType     To be used as increment counter (values will be added to current database value) or totalizer
       //-----------------------------------------------------
-      CCounter(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet, const EMeasureType& measureType = EMeasureType::kCumulative);
+      CCounter(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet, const EMeasureType& measureType = EMeasureType::kCumulative, typeInfo::CIntTypeInfo & additionalInfo = typeInfo::CIntTypeInfo::Empty);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

@@ -6,14 +6,14 @@
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
 
-CPower::CPower(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
-   :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Power, accessMode, 0.0, measureType)
-{
-}
+   CPower::CPower(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType, typeInfo::CDoubleTypeInfo & additionalInfo)
+      :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Power, accessMode, 0.0, measureType, additionalInfo)
+   {
+   }
 
-CPower::~CPower()
-{
-}
+   CPower::~CPower()
+   {
+   }
 
 
 } } } } // namespace shared::plugin::yPluginApi::historization

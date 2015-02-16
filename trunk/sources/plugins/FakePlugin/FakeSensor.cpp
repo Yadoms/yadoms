@@ -6,11 +6,13 @@
 
 CFakeSensor::CFakeSensor(const std::string& deviceName)
    :m_deviceName(deviceName), m_temperature1("temp1"), m_temperature2("temp2"), m_batteryLevel("Battery"), m_rssi("rssi"), 
+   m_current("current", yApi::EKeywordAccessMode::kGet, yApi::historization::EMeasureType::kAbsolute, yApi::historization::typeInfo::CDoubleTypeInfo().setMin(0).setMax(5).setPrecision(0.1)),
    m_dateTime("dateTime", shared::plugin::yPluginApi::EKeywordAccessMode::kGet), m_dist(0, 20)
 {
    m_temperature1.set(25.0);
    m_temperature2.set(10.0);
    m_batteryLevel.set(100);
+   m_current.set(2);
    m_rssi.set(50);
    m_dateTime.set(boost::posix_time::second_clock::local_time());
 }
@@ -29,6 +31,8 @@ void CFakeSensor::declareDevice(boost::shared_ptr<yApi::IYPluginApi> context)
       context->declareKeyword(m_deviceName, m_temperature1);
    if (!context->keywordExists(m_deviceName, m_temperature2))
       context->declareKeyword(m_deviceName, m_temperature2);
+   if (!context->keywordExists(m_deviceName, m_current))
+      context->declareKeyword(m_deviceName, m_current);
    if (!context->keywordExists(m_deviceName, m_batteryLevel))
       context->declareKeyword(m_deviceName, m_batteryLevel);
    if (!context->keywordExists(m_deviceName, m_rssi))
@@ -59,6 +63,15 @@ void CFakeSensor::read()
 
    //set the current date time onto m_datetime keyword
    m_dateTime.set(boost::posix_time::second_clock::local_time());
+
+   // Generate a random variation on temperature (+/- 0 to 1°)
+   offset = static_cast<int>(m_dist(m_gen) - 10.0) / 10.0; // Random offset, value from -1.0 to 1.0
+   double current = m_current() + offset;
+   if (current < 0) 
+      current = 0;
+   if (current > 5)
+      current = 5;
+   m_current.set(static_cast<int>(current * 10) / 10.0);
 }
 
 void CFakeSensor::historizeData(boost::shared_ptr<yApi::IYPluginApi> context) const

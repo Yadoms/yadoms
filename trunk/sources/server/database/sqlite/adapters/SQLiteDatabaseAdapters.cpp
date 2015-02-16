@@ -81,6 +81,7 @@ namespace database {   namespace sqlite {  namespace adapters {
       ((FriendlyName)(std::string)(""))
       ((Type)(shared::plugin::yPluginApi::EKeywordDataType)(shared::plugin::yPluginApi::EKeywordDataType::kString)(std::string))
       ((Units)(std::string)(""))
+	  ((TypeInfo)(shared::CDataContainer)(shared::CDataContainer()))
       ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType)(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)(std::string))
       ((Details)(shared::CDataContainer)(shared::CDataContainer()))
    );
@@ -106,8 +107,10 @@ namespace database {   namespace sqlite {  namespace adapters {
       ((Id)(int)(0))
       ((Name)(std::string)(""))
       ((Description)(std::string)(""))
-      ((Triggers)(shared::CDataContainer)(shared::CDataContainer()))
-      ((Actions)(shared::CDataContainer)(shared::CDataContainer()))
+      ((Type)(std::string)(""))
+      ((Model)(std::string)(""))
+      ((Content)(std::string)(""))
+      ((Configuration)(shared::CDataContainer)(shared::CDataContainer()))
       ((Enable)(bool)(true))
    );
 

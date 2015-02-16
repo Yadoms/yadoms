@@ -125,6 +125,7 @@ namespace database { namespace entities {
       ((FriendlyName)(std::string)("")("friendlyName"))
       ((Type)(shared::plugin::yPluginApi::EKeywordDataType)(shared::plugin::yPluginApi::EKeywordDataType::kString)("type"))
       ((Units)(std::string)("")("units"))
+	  ((TypeInfo)(shared::CDataContainer)(shared::CDataContainer())("typeInfo"))
       ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType)(shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute)("measure"))
       ((Details)(shared::CDataContainer)(shared::CDataContainer())("details"))
       );
@@ -153,8 +154,10 @@ namespace database { namespace entities {
       ((Id)(int)(0)("id"))
       ((Name)(std::string)("")("name"))
       ((Description)(std::string)("")("description"))
-      ((Triggers)(shared::CDataContainer)(shared::CDataContainer())("triggers"))
-      ((Actions)(shared::CDataContainer)(shared::CDataContainer())("actions"))
+      ((Type)(std::string)("")("type"))
+      ((Model)(std::string)("")("model"))
+      ((Content)(std::string)("")("content"))
+      ((Configuration)(shared::CDataContainer)(shared::CDataContainer())("configuration"))
       ((Enable)(bool)(true)("enable"))
    );
 

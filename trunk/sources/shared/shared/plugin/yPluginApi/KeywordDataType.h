@@ -14,6 +14,7 @@ namespace shared { namespace plugin { namespace yPluginApi
       ((Numeric))
       ((Bool))
       ((Json))
+      ((Enum))
    )
 
 } } } // namespace shared::plugin::yPluginApi	

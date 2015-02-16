@@ -32,7 +32,7 @@ namespace dataAccessLayer {
 			if (transactionalEngine)
 				transactionalEngine->transactionCommit();
 		}
-		catch (std::exception & ex)
+		catch (std::exception &)
 		{
 			//if possible rollback transaction
 			if (transactionalEngine)
@@ -65,7 +65,7 @@ namespace dataAccessLayer {
 			if (transactionalEngine)
 				transactionalEngine->transactionCommit();
 		}
-		catch (std::exception & ex)
+		catch (std::exception &)
 		{
 			//if possible rollback transaction
 			if (transactionalEngine)

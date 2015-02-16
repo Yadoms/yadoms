@@ -48,8 +48,8 @@ namespace pluginSystem
       virtual const shared::CDataContainer getDeviceDetails(const std::string& device) const;
       virtual void declareDevice(const std::string& device, const std::string& model, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
       virtual bool keywordExists(const std::string& device, const std::string& keyword) const;
-      virtual bool keywordExists(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword) const;
-      virtual void declareKeyword(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
+      virtual bool keywordExists(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword) const override;
+	  virtual void declareKeyword(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
       virtual void historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data);
 	  virtual void historizeData(const std::string& device, std::vector<boost::shared_ptr<shared::plugin::yPluginApi::historization::IHistorizable> > & dataVect);
       virtual const shared::plugin::information::IInformation& getInformation() const;
@@ -74,6 +74,7 @@ namespace pluginSystem
       ///\param    [in]    type               The keyword type
       ///\param    [in]    units              The keyword units
       ///\param    [in]    measure            The measure type
+      ///\param    [in]    typeInfo           The type information (enum values, ...)
       ///\param    [in]    details            The keyword details (JSON string, optional. Can be used to declare specific properties like min/max values)
       ///\throw shared::exception::CEmptyResult if creation failed
       //-----------------------------------------------------   
@@ -81,6 +82,7 @@ namespace pluginSystem
          const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode, const shared::plugin::yPluginApi::EKeywordDataType& type,
          const std::string & units = shared::CStringExtension::EmptyString,
          const shared::plugin::yPluginApi::historization::EMeasureType & measure = shared::plugin::yPluginApi::historization::EMeasureType::kAbsolute,
+		 const shared::CDataContainer& typeInfo = shared::CDataContainer::EmptyContainer,
          const shared::CDataContainer& details = shared::CDataContainer::EmptyContainer);
 
    private:

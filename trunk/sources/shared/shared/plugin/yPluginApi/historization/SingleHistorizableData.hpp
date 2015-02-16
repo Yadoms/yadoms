@@ -1,39 +1,14 @@
 #pragma once
 
 #include <shared/plugin/yPluginApi/historization/IHistorizable.h>
-
 #include <shared/enumeration/IExtendedEnum.h>
+#include "typeInfo/ITypeInfo.h"
+#include "typeInfo/EnumTypeInfo.hpp"
+#include "typeInfo/EmptyTypeInfo.h"
+#include <shared/exception/InvalidParameter.hpp>
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
-   //-----------------------------------------------------
-   ///\brief     Helpers to uniformise access to simple value and enum values
-   //-----------------------------------------------------
-   template <typename T, class Enable = void>
-   struct helper
-   {
-      static T getInternal(const std::string& value)
-      {
-         return boost::lexical_cast<T>(value);
-      }
-   };
-   template <typename T>
-   struct helper<T, typename boost::enable_if<boost::is_base_of<enumeration::IExtendedEnum, T > >::type >
-   {
-      static T getInternal(const std::string& value)
-      {
-         return T(value);
-      }
-   };
-   template <typename T>
-   struct helper<T, typename boost::enable_if<boost::is_base_of<boost::posix_time::ptime, T > >::type >
-   {
-      static T getInternal(const std::string& value)
-      {
-         return T(boost::posix_time::from_iso_string(value));
-      }
-   };
-
    //-----------------------------------------------------
    ///\brief     Template class which can be used to declare a single data IHistorizable value
    //-----------------------------------------------------
@@ -48,8 +23,8 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] accessMode         The access mode
       ///\param[in] measureType        The measure type
       //-----------------------------------------------------
-      CSingleHistorizableData(const std::string& keywordName, const CStandardCapacity& capacity, const EKeywordAccessMode& accessMode, const EMeasureType & measureType = EMeasureType::kAbsolute)
-         :m_keywordName(keywordName), m_capacity(capacity), m_accessMode(accessMode), m_measureType(measureType)
+      CSingleHistorizableData(const std::string& keywordName, const CStandardCapacity& capacity, const EKeywordAccessMode& accessMode, const EMeasureType & measureType = EMeasureType::kAbsolute, typeInfo::ITypeInfo & typeInfo = typeInfo::CEmptyTypeInfo::Empty)
+         :m_keywordName(keywordName), m_capacity(capacity), m_accessMode(accessMode), m_measureType(measureType), m_typeInfo(typeInfo.serialize())
       {
       }      
       
@@ -61,8 +36,8 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] initialValue       the initial value
       ///\param[in] measureType        The measure type
       //-----------------------------------------------------
-      CSingleHistorizableData(const std::string& keywordName, const CStandardCapacity& capacity, const EKeywordAccessMode& accessMode, const T initialValue, const EMeasureType & measureType = EMeasureType::kAbsolute)
-         :m_keywordName(keywordName), m_capacity(capacity), m_value(initialValue), m_accessMode(accessMode), m_measureType(measureType)
+      CSingleHistorizableData(const std::string& keywordName, const CStandardCapacity& capacity, const EKeywordAccessMode& accessMode, const T initialValue, const EMeasureType & measureType = EMeasureType::kAbsolute, typeInfo::ITypeInfo & typeInfo = typeInfo::CEmptyTypeInfo::Empty)
+         :m_keywordName(keywordName), m_capacity(capacity), m_value(initialValue), m_accessMode(accessMode), m_measureType(measureType), m_typeInfo(typeInfo.serialize())
       {
       }
 
@@ -100,6 +75,14 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       {
          return m_measureType;
       }
+
+	   virtual shared::CDataContainer getTypeInfo() const
+	   { 
+         //if not defined, use empty result
+         if (m_typeInfo.empty())
+            return helper<T>::createDefaultTypeInfo();
+         return m_typeInfo;
+	   }
       // [END] IHistorizable implementation   
    
    
@@ -189,6 +172,71 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\brief               The measure type
       //-----------------------------------------------------     
       const EMeasureType m_measureType;
+
+      //-----------------------------------------------------
+      ///\brief               The type information
+      //-----------------------------------------------------
+      shared::CDataContainer m_typeInfo;
+
+	  //-----------------------------------------------------
+	  ///\brief     Helpers to uniformise access to simple value and enum values
+	  //-----------------------------------------------------
+	  template <typename T, class Enable = void>
+	  struct helper
+	  {
+		  static T getInternal(const std::string& value)
+		  {
+			  return boost::lexical_cast<T>(value);
+		  }
+        static bool checkTypeInfo(typeInfo::ITypeInfo & typeInfo)
+		  {
+			  return true;
+		  }
+        static shared::CDataContainer createDefaultTypeInfo()
+		  {
+           return shared::CDataContainer();
+		  }
+	  };
+
+	  template <typename T>
+	  struct helper<T, typename boost::enable_if<boost::is_base_of<enumeration::IExtendedEnum, T > >::type >
+	  {
+		  static T getInternal(const std::string& value)
+		  {
+			  return T(value);
+		  }
+        static bool checkTypeInfo(typeInfo::ITypeInfo & typeInfo)
+		  {
+           //just ensure ITypeInfo match CEnumTypeInfo
+           typeInfo::CEnumTypeInfo<T> * check = dynamic_cast<typeInfo::CEnumTypeInfo<T> *>(&typeInfo);
+           if (check)
+              return true;
+			  return false;
+		  }
+        static shared::CDataContainer createDefaultTypeInfo()
+        {
+           typeInfo::CEnumTypeInfo<T> ti;
+           return ti.serialize();
+        }
+
+	  };
+
+	  template <typename T>
+	  struct helper<T, typename boost::enable_if<boost::is_base_of<boost::posix_time::ptime, T > >::type >
+	  {
+		  static T getInternal(const std::string& value)
+		  {
+			  return T(boost::posix_time::from_iso_string(value));
+		  }
+        static bool checkTypeInfo(typeInfo::ITypeInfo& typeInfo)
+        {
+           return true;
+        }
+        static shared::CDataContainer createDefaultTypeInfo()
+        {
+           return shared::CDataContainer();
+        }
+	  };
    };
 
 

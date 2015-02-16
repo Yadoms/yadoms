@@ -5,8 +5,8 @@
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
 
-   CBatteryLevel::CBatteryLevel(const std::string& keywordName, const EMeasureType& measureType)
-      :CSingleHistorizableData<int>(keywordName, CStandardCapacities::BatteryLevel, EKeywordAccessMode::kGet, 0, measureType)
+   CBatteryLevel::CBatteryLevel(const std::string& keywordName, const EMeasureType& measureType, typeInfo::CIntTypeInfo & additionalInfo)
+      :CSingleHistorizableData<int>(keywordName, CStandardCapacities::BatteryLevel, EKeywordAccessMode::kGet, 0, measureType, additionalInfo)
    {
    }
 
