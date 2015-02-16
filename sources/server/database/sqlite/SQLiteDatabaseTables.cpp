@@ -112,7 +112,7 @@ namespace sqlite {
       ((Model)("model"))
       ((Content)("content"))
       ((Configuration)("configuration"))
-      ((Enable)("enable"))
+      ((Enabled)("enabled"))
    )
 
 
