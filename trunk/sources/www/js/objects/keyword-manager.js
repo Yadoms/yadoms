@@ -19,7 +19,7 @@ KeywordManager.factory = function(json) {
    assert(!isNullOrUndefined(json.type), "json.type must be defined");
    assert(!isNullOrUndefined(json.units), "json.units must be defined");
 
-   return new Keyword(json.id, json.deviceId, json.capacityName, json.accessMode, decodeURIComponent(json.name), decodeURIComponent(json.friendlyName), json.type, json.units, json.details);
+   return new Keyword(json.id, json.deviceId, json.capacityName, json.accessMode, decodeURIComponent(json.name), decodeURIComponent(json.friendlyName), json.type, json.units, json.details, json.typeInfo);
 };
 
 KeywordManager.updateToServer = function(keyword, callback) {
