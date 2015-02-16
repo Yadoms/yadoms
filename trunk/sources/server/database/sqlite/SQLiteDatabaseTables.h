@@ -110,7 +110,7 @@ namespace sqlite {
       (Model)
       (Content)
       (Configuration)
-      (Enable)
+      (Enabled)
    )   
 
 	DECLARE_TABLE(Recipient,

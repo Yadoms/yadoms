@@ -111,7 +111,7 @@ namespace database {   namespace sqlite {  namespace adapters {
       ((Model)(std::string)(""))
       ((Content)(std::string)(""))
       ((Configuration)(shared::CDataContainer)(shared::CDataContainer()))
-      ((Enable)(bool)(true))
+      ((Enabled)(bool)(true))
    );
 
 

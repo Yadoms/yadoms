@@ -62,7 +62,7 @@ void CRuleManager::startRule(int ruleId)
    {
       boost::shared_ptr<const database::entities::CRule> ruleData = getRule(ruleId);
 
-      if (!ruleData->Enable)
+      if (!ruleData->Enabled())
          return;  // Rule not enabled, don't start
 
       boost::shared_ptr<IRule> newRule(new CRule(*ruleData, m_notificationObserver, m_pluginGateway, *m_conditionFactory, m_scriptFactory));

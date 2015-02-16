@@ -135,10 +135,10 @@ namespace database { namespace sqlite { namespace requesters {
       }
       
       //update enable flag
-      if(data.Enable.isDefined())
+      if(data.Enabled.isDefined())
       {
          qUpdate.Clear().Update(CRuleTable::getTableName()).
-            Set(CRuleTable::getEnableColumnName(), data.Enable()).
+            Set(CRuleTable::getEnabledColumnName(), data.Enabled()).
          Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, data.Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
