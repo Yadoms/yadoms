@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
+#include "typeInfo/IntTypeInfo.h"
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
@@ -16,7 +17,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] keywordName     Yadoms keyword name
       ///\param[in] measureType     The measure type (normally kAbsolute)
       //-----------------------------------------------------
-      CRssi(const std::string& keywordName, const EMeasureType& measureType = EMeasureType::kAbsolute);
+      CRssi(const std::string& keywordName, const EMeasureType& measureType = EMeasureType::kAbsolute, typeInfo::CIntTypeInfo & additionalInfo = typeInfo::CIntTypeInfo::Empty);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

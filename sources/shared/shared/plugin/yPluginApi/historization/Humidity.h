@@ -4,6 +4,8 @@
 #include <shared/enumeration/EnumHelpers.hpp>
 #include <shared/Field.hpp>
 #include "SingleHistorizableData.hpp"
+#include "typeInfo/DoubleTypeInfo.h"
+
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {   
@@ -19,7 +21,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] accessMode      The access mode
       ///\param[in] measureType     The measure type (normally kAbsolute)
       //-----------------------------------------------------
-      CHumidity(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet, const EMeasureType& measureType = EMeasureType::kAbsolute);
+      CHumidity(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet, const EMeasureType& measureType = EMeasureType::kAbsolute, typeInfo::CDoubleTypeInfo & additionalInfo = typeInfo::CDoubleTypeInfo::Empty);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

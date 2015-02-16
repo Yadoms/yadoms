@@ -57,11 +57,13 @@ namespace database { namespace sqlite { namespace requesters {
    {
       CQuery qInsert;
 
-      qInsert.InsertInto(CRuleTable::getTableName(), CRuleTable::getNameColumnName(), CRuleTable::getDescriptionColumnName(), CRuleTable::getTriggersColumnName(), CRuleTable::getActionsColumnName()).
+      qInsert.InsertInto(CRuleTable::getTableName(), CRuleTable::getNameColumnName(), CRuleTable::getDescriptionColumnName(), CRuleTable::getTypeColumnName(), CRuleTable::getModelColumnName(), CRuleTable::getContentColumnName(), CRuleTable::getConfigurationColumnName()).
          Values(data.Name(), 
          data.Description(),
-         data.Triggers(),
-         data.Actions());
+         data.Type(),
+         data.Model(),
+         data.Content(),
+         data.Configuration());
 
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
@@ -110,33 +112,33 @@ namespace database { namespace sqlite { namespace requesters {
             throw CDatabaseException("Failed to update description");
       }
       
-      //update triggers
-      if(data.Triggers.isDefined())
+      //update content
+      if(data.Content.isDefined())
       {
          qUpdate.Clear().Update(CRuleTable::getTableName()).
-            Set(CRuleTable::getTriggersColumnName(), data.Triggers()).
+            Set(CRuleTable::getContentColumnName(), data.Content()).
          Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, data.Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-            throw CDatabaseException("Failed to update triggers field");
+            throw CDatabaseException("Failed to update content field");
       }
       
-      //update actions
-      if(data.Actions.isDefined())
+      //update configuration
+      if(data.Configuration.isDefined())
       {
          qUpdate.Clear().Update(CRuleTable::getTableName()).
-            Set(CRuleTable::getTriggersColumnName(), data.Actions()).
+            Set(CRuleTable::getConfigurationColumnName(), data.Configuration()).
          Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, data.Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
-            throw CDatabaseException("Failed to update actions field");
+            throw CDatabaseException("Failed to update Configuration field");
       }
       
       //update enable flag
       if(data.Enable.isDefined())
       {
          qUpdate.Clear().Update(CRuleTable::getTableName()).
-            Set(CRuleTable::getTriggersColumnName(), data.Enable()).
+            Set(CRuleTable::getEnableColumnName(), data.Enable()).
          Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, data.Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)

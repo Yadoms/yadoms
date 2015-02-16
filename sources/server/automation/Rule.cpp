@@ -13,8 +13,9 @@ CRule::CRule(const database::entities::CRule& ruleData,
    boost::shared_ptr<action::script::IFactory> scriptFactory)
    :m_name(ruleData.Name()),
    m_id(ruleData.Id()),
-   m_condition(new condition::CConditionRoot(ruleData.Triggers(), conditionFactory)),
-   m_actions(new CActionList(ruleData.Actions(), pluginGateway, scriptFactory)),
+   //TODO : update those two lines (first parameters are set to an empty CDataContainer)
+   m_condition(new condition::CConditionRoot(shared::CDataContainer(), conditionFactory)),
+   m_actions(new CActionList(shared::CDataContainer(), pluginGateway, scriptFactory)),
    m_notificationObserver(notificationObserver)
 {
    m_condition->registerToNotificationCenter(m_notificationObserver);

@@ -2,6 +2,7 @@
 #include "../StandardCapacities.h"
 #include "../KeywordAccessMode.h"
 #include "MeasureType.h"
+#include "shared/DataContainer.h"
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
@@ -45,6 +46,12 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\return                    Measure type
       //-----------------------------------------------------
       virtual const EMeasureType& getMeasureType() const = 0;
+	  
+	  //-----------------------------------------------------
+      ///\brief                     The type information
+      ///\return                    Type information
+      //-----------------------------------------------------
+	  virtual shared::CDataContainer getTypeInfo() const { return shared::CDataContainer(); }
    };
 
 } } } } // namespace shared::plugin::yPluginApi::historization

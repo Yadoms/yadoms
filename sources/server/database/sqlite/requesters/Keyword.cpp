@@ -98,6 +98,17 @@ namespace database { namespace sqlite { namespace requesters {
 
             if(m_databaseRequester->queryStatement(update) <= 0)
                throw shared::exception::CEmptyResult("Fail to update Units field");
+         }    
+         
+		 if (newKeyword.TypeInfo.isDefined())
+         {
+            CQuery update;
+			update.Update(CKeywordTable::getTableName()).Set(CKeywordTable::getTypeInfoColumnName(), newKeyword.TypeInfo()).
+               Where(CKeywordTable::getDeviceIdColumnName(),  CQUERY_OP_EQUAL, newKeyword.DeviceId()).
+               And(CKeywordTable::getNameColumnName(),  CQUERY_OP_EQUAL, newKeyword.Name());
+
+            if(m_databaseRequester->queryStatement(update) <= 0)
+               throw shared::exception::CEmptyResult("Fail to update Values field");
          }
       }
       else

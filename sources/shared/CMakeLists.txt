@@ -168,6 +168,17 @@ set(SHARED_LIB_SRC
    shared/plugin/yPluginApi/historization/WeatherCondition.cpp
    shared/plugin/yPluginApi/historization/Weight.h
    
+   shared/plugin/yPluginApi/historization/typeInfo/ITypeInfo.h
+   shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.h
+   shared/plugin/yPluginApi/historization/typeInfo/EmptyTypeInfo.cpp
+   shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.h
+   shared/plugin/yPluginApi/historization/typeInfo/IntTypeInfo.cpp
+   shared/plugin/yPluginApi/historization/typeInfo/DoubleTypeInfo.h
+   shared/plugin/yPluginApi/historization/typeInfo/DoubleTypeInfo.cpp
+   shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.h
+   shared/plugin/yPluginApi/historization/typeInfo/StringTypeInfo.cpp
+   shared/plugin/yPluginApi/historization/typeInfo/EnumTypeInfo.hpp
+   
 	shared/notification/NotificationCenter.h
 	shared/notification/NotificationCenter.cpp
 	shared/notification/NotificationObserver.h
@@ -247,6 +258,7 @@ source_group(plugin shared/shared/plugin/*.* )
 source_group(plugin\\information shared/shared/plugin/information/*.* )	
 source_group(plugin\\yPluginApi shared/shared/plugin/yPluginApi/*.* )	
 source_group(plugin\\yPluginApi\\historization shared/shared/plugin/yPluginApi/historization/*.* )	
+source_group(plugin\\yPluginApi\\historization\\typeInfo shared/shared/plugin/yPluginApi/historization/typeInfo/*.* )	
 source_group(notification shared/shared/notification/*.* )	
 source_group(serialization shared/shared/serialization/*.* )	
 source_group(script shared/shared/script/*.* )	

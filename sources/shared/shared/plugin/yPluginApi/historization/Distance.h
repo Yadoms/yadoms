@@ -1,6 +1,7 @@
 #pragma once
 #include <shared/Export.h>
 #include "SingleHistorizableData.hpp"
+#include "typeInfo/DoubleTypeInfo.h"
 
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
@@ -15,7 +16,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\param[in] keywordName     Yadoms keyword name
       ///\param[in] accessMode      Access mode
       //-----------------------------------------------------
-      CDistance(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet);
+      CDistance(const std::string& keywordName, const EKeywordAccessMode& accessMode = EKeywordAccessMode::kGet, typeInfo::CDoubleTypeInfo & additionalInfo = typeInfo::CDoubleTypeInfo::Empty);
 
       //-----------------------------------------------------
       ///\brief                     Destructor

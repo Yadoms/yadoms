@@ -3,6 +3,7 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/exception/EmptyResult.hpp>
 #include <shared/Log.h>
+#include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 
 namespace pluginSystem
 {
@@ -59,7 +60,7 @@ bool CYPluginApiImplementation::keywordExists(const std::string& device, const s
 
 void CYPluginApiImplementation::declareCustomKeyword(const std::string& device, const std::string& keyword, const std::string& capacity,
    const shared::plugin::yPluginApi::EKeywordAccessMode& accessMode, const shared::plugin::yPluginApi::EKeywordDataType& type, const std::string & units,
-   const shared::plugin::yPluginApi::historization::EMeasureType & measure, const shared::CDataContainer& details)
+   const shared::plugin::yPluginApi::historization::EMeasureType & measure, const shared::CDataContainer& typeInfo, const shared::CDataContainer& details)
 {
    if (keywordExists(device, keyword))
       throw shared::exception::CEmptyResult("Fail to declare keyword : keyword already exists");
@@ -73,6 +74,7 @@ void CYPluginApiImplementation::declareCustomKeyword(const std::string& device, 
    keywordEntity.Name = keyword;
    keywordEntity.FriendlyName = keyword;
    keywordEntity.Measure = measure;
+   keywordEntity.TypeInfo = typeInfo;
    keywordEntity.Details = details;
 
    m_keywordRequester->addKeyword(keywordEntity);
@@ -80,7 +82,7 @@ void CYPluginApiImplementation::declareCustomKeyword(const std::string& device, 
 
 void CYPluginApiImplementation::declareKeyword(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& keyword, const shared::CDataContainer& details)
 {
-   declareCustomKeyword(device, keyword.getKeyword(), keyword.getCapacity().getName(), keyword.getAccessMode(), keyword.getCapacity().getType(), keyword.getCapacity().getUnit(), keyword.getMeasureType(), details);
+   declareCustomKeyword(device, keyword.getKeyword(), keyword.getCapacity().getName(), keyword.getAccessMode(), keyword.getCapacity().getType(), keyword.getCapacity().getUnit(), keyword.getMeasureType(), keyword.getTypeInfo(), details);
 }
 
 void CYPluginApiImplementation::historizeData(const std::string& device, const shared::plugin::yPluginApi::historization::IHistorizable& data)

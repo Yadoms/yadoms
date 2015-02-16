@@ -92,6 +92,7 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Keyword, " CREATE TABLE Keyword            
                                                    friendlyName TEXT,                                             \
                                                    type TEXT NOT NULL,                                            \
                                                    units TEXT,                                                    \
+                                                   typeInfo TEXT,												  \
                                                    measure TEXT NOT NULL,                                         \
                                                    details TEXT                                                   \
                                                 )")                                                               
@@ -121,8 +122,10 @@ DECLARE_STATIC_TABLE_CREATION_SCRIPT(Rule, "CREATE TABLE Rule                   
                                            (  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,                      \
                                              name TEXT NOT NULL,                                                  \
                                              description TEXT,                                                    \
-                                             triggers TEXT,                                                       \
-                                             actions TEXT,                                                        \
+                                             type TEXT NOT NULL,                                                  \
+                                             model TEXT,                                                          \
+                                             content TEXT,                                                        \
+                                             configuration TEXT,                                                  \
                                              enable INTEGER DEFAULT 1)")                           
    
 

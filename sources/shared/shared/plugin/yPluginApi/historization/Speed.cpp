@@ -8,8 +8,8 @@
 namespace shared { namespace plugin { namespace yPluginApi { namespace historization
 {
 
-CSpeed::CSpeed(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType)
-   :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Speed, accessMode, 0.0, measureType)
+   CSpeed::CSpeed(const std::string& keywordName, const EKeywordAccessMode& accessMode, const EMeasureType& measureType, typeInfo::CDoubleTypeInfo & additionalInfo)
+      :CSingleHistorizableData<double>(keywordName, CStandardCapacities::Speed, accessMode, 0.0, measureType, additionalInfo)
 {
 }
 

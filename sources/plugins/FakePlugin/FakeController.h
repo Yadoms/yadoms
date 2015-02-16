@@ -1,30 +1,51 @@
 #pragma once
 
-#include <boost/random/mersenne_twister.hpp>
-#include <boost/random/uniform_int_distribution.hpp>
 #include <shared/plugin/yPluginApi/IYPluginApi.h>
+#include <shared/enumeration/EnumHelpers.hpp>
+#include <shared/plugin/yPluginApi/historization/SingleHistorizableData.hpp>
 
 namespace yApi = shared::plugin::yPluginApi;
 
+DECLARE_ENUM_HEADER(EFakeControllerValues,
+   ((Stop))
+   ((Run))
+   ((Back))
+   ((Left))
+   ((Right))
+)   
+
+class CControllerValue : public yApi::historization::CSingleHistorizableData<EFakeControllerValues>
+{
+public:
+   //-----------------------------------------------------
+   ///\brief                     Constructor
+   ///\param[in] keywordName     Yadoms keyword name
+   //-----------------------------------------------------
+   CControllerValue(const std::string& keywordName);
+
+   //-----------------------------------------------------
+   ///\brief                     Destructor
+   //-----------------------------------------------------
+   virtual ~CControllerValue();
+};
+
 //--------------------------------------------------------------
-/// \brief	Fake temperature sensor
-/// \note   Use to simulate a temperature sensor, with 2 variables values :
-///         - temperature : start at 25°, and vary from +- 0.0 to 1.0° at each read
-///         - battery level : start at 100%, decrease by 1% at each read, to 20%
+/// \brief	Fake controller
+/// \note   Use to simulate a controller based on an enuemration value
 //--------------------------------------------------------------
-class CFakeSensor
+class CFakeController
 {
 public:
    //--------------------------------------------------------------
    /// \brief	    Constructor
    /// \param[in] deviceName    The device name
    //--------------------------------------------------------------
-   CFakeSensor(const std::string& deviceName);
+   CFakeController(const std::string& deviceName);
 
    //--------------------------------------------------------------
    /// \brief	    Destructor
    //--------------------------------------------------------------
-   virtual ~CFakeSensor();
+   virtual ~CFakeController();
 
    //--------------------------------------------------------------
    /// \brief	            Declare device and associated keywords if necessary
@@ -61,41 +82,14 @@ private:
    //--------------------------------------------------------------
    const std::string m_deviceName;
 
-   //--------------------------------------------------------------
-   /// \brief	The keyword associated with temperature1
-   //--------------------------------------------------------------
-   yApi::historization::CTemperature m_temperature1;
+
+
 
    //--------------------------------------------------------------
-   /// \brief	The keyword associated with temperature1
+   /// \brief	    Current values
    //--------------------------------------------------------------
-   yApi::historization::CTemperature m_temperature2;
+   CControllerValue m_currentValues;
 
-   //--------------------------------------------------------------
-   /// \brief	The keyword associated with battery level
-   //--------------------------------------------------------------
-   yApi::historization::CBatteryLevel m_batteryLevel;
-
-   //--------------------------------------------------------------
-   /// \brief	The keyword associated with current comsumption
-   //--------------------------------------------------------------
-   yApi::historization::CCurrent m_current;
-
-   //--------------------------------------------------------------
-   /// \brief	The keyword associated with signal strengh
-   //--------------------------------------------------------------
-   yApi::historization::CRssi m_rssi;
-
-   //--------------------------------------------------------------
-   /// \brief	The keyword associated with date time under string format useful only for demo
-   //--------------------------------------------------------------
-   yApi::historization::CDateTime m_dateTime;
-
-   //--------------------------------------------------------------
-   /// \brief	    Random number generator, used to simulate temperature variations
-   //--------------------------------------------------------------
-   boost::random::mt19937 m_gen;
-   boost::random::uniform_int_distribution<> m_dist;
 
 };
 
