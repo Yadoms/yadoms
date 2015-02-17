@@ -205,3 +205,17 @@ Fix dropdown menus hidden by bootstrap modal
     width : 150px;
     height : 100px;
 }
+
+.btn-model {
+    margin : 10px;
+    width : 200px;
+    height : 150px;
+}
+
+.btn-model > div {
+    white-space: normal;
+}
+/*
+.btn-model > .language {
+
+}*/

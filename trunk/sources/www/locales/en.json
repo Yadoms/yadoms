@@ -157,6 +157,16 @@
          "blockly" : "Blockly language",
          "python" : "Python language"
       },
+      "automation-rule-edit" : {
+         "name-rule" : {
+            "name" : "Name",
+            "description" : "Name of the rule"
+         },
+         "description-rule" : {
+            "name" : "Description",
+            "description" : "Description of the rule"
+         }
+      },
       "qrcode" : {
          "title" : "QR Code de Yadoms",
          "text" : "Here is the QRCode of Yadoms. You can now flash it with your phone to access Yadoms everywhere."
