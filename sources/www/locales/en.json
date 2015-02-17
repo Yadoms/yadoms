@@ -150,14 +150,15 @@
 	  },
       "new-automation-rule" : {
          "title" : "Automation rule creation",
-         "from-scratch" : "From scratch",
+         "empty" : "Empty",
          "choose-language" : "Select a language to create an empty rule",
          "from-model" : "From model",
          "choose-model" : "Or select a model to create a predefined rule",
          "blockly" : "Blockly language",
          "python" : "Python language"
       },
-      "automation-rule-edit" : {
+      "edit-automation-rule" : {
+         "title" : "Automation rule edition",
          "name-rule" : {
             "name" : "Name",
             "description" : "Name of the rule"
@@ -385,33 +386,6 @@
       },
       "ConfigurationManager" : {
          "errorDuringGettingSystemConfiguration" : "Error during getting configuration"
-      },
-      "AutomationCenter" : {
-        "Rule" : {
-           "Condition" : {
-              "Is" : {
-                 "text" : "IS",
-                 "Configuration" : {
-                    "keyword" : {
-                       "name" : "Keyword of device",
-                       "description" : "Define the keyword of a device to use in the condition"
-                    },
-                    "operator" : {
-                       "name" : "Operator",
-                       "description" : "Define the operator to use in the condition"
-                    },
-                    "refValue" : {
-                       "name" : "Value",
-                       "description" : "Define the value to use in the condition",
-                       "values" : {
-                          "true" : "true",
-                          "false" : "false"
-                       }
-                    }
-                 }
-              }
-           }
-        }
       },
       "recipient" : {
          "errorGettingRecipientList" : "An error has occurred acquiring recipient list",

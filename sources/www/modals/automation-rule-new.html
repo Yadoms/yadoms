@@ -8,7 +8,7 @@
                    <h4 class="modal-title" data-i18n="modals.new-automation-rule.title"></h4>
               </div>
               <div class="modal-body form-group">
-                   <h4 data-i18n="modals.new-automation-rule.from-scratch"></h4>
+                   <h4 data-i18n="modals.new-automation-rule.empty"></h4>
                    <span data-i18n="modals.new-automation-rule.choose-language"></span>
                    <div class="language-btns"></div>
                    <h4 data-i18n="modals.new-automation-rule.from-model"></h4>
@@ -35,10 +35,13 @@
 
       //TODO V2 : request languages
       var languageList = [];
-      languageList.push({"name":"python"});
+      languageList.push(new AutomationLanguage("python",
+                                                      "#!/usr/bin/env python\n#author          :enter your name here\n#date            :\n#version         :0.1 Alpha\n#notes           :\n#==================================================\n"));
 
       //we create buttons to select language
       var $area = $modalBody.find("div.language-btns");
+
+      $area.empty();
 
       $area.append("<button class=\"btn btn-primary btn-lg btn-blockly\" type=\"button\">" +
       "<span class=\"fa fa-puzzle-piece\"></span>&nbsp;&nbsp;" +
@@ -48,38 +51,20 @@
          $area.append("<button language=\"" + value.name + "\" class=\"btn btn-primary btn-lg btn-language\" type=\"button\">" +
          "<span class=\"fa fa-code\"></span>&nbsp;&nbsp;" +
          value.name + "</button>");
-      });
 
-      //we listen for click events
-      $area.find("button.btn-blockly").unbind("click").bind("click", function (object) {
-         //we go to blockly edition
-         var r = new AutomationRule(-1, "", "", BlocklyName, "", "", "", true);
-         //todo charger la modale
-         showEditionAutomationRuleWithBlockly(r, function() {
-            AutomationRuleManager.createToServer(r);
-         });
-      });
+         var $btn = $("button.btn-language[language='" + value.name + "']");
 
-      $area.find("button.btn-language").unbind("click").bind("click", function (object) {
-         //we check for the language
-         var lng = $(this).attr("language");
-         //we create the empty rule and go to edition
-         var r = new AutomationRule(-1, "", "", lng, "", "", "", true);
-         modals.automationRuleEditCode.load(function() {
-            showEditionAutomationRuleWithCode(r, function () {
-               AutomationRuleManager.createToServer(r);
-            });
-         });
+         //we manage the click event
+         $area.find("button.btn-language").unbind("click").bind("click", newEmptyFile(value));
       });
 
       //TODO V2 : request models
-
       var modelList = [];
-
       modelList.push({"name" : "If Then", "description" : "Simple If Then rule model", "language" : BlocklyName, "content" : "<xml>if then</xml>"});
       modelList.push({"name" : "If Then Else", "description" : "Full If Then Else rule model", "language" : BlocklyName, "content" : "<xml>if then else</xml>"});
 
       $area = $modalBody.find("div.models-btns");
+      $area.empty();
 
       $.each(modelList, function (key, value) {
          var btn = "<button content=\"" + value.content + "\" class=\"btn btn-primary btn-lg btn-model\" type=\"button\">" +
@@ -101,30 +86,20 @@
       //i18n
       $modalBody.i18n();
 
-      //validation form
-      $modalBody.find("input,select,textarea").jqBootstrapValidation({
-         preventSubmit: true,
-         submitError: function($form, event, errors) {
-            console.warn("Unable to validate form: " + errors);
-         },
-         submitSuccess: function($form, event) {
-            event.preventDefault();
-
-
-            console.debug("End of Automation Rule edition : " + JSON.stringify(rule));
-
-            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
-            $modalBody.empty();
-            $("div#edit-automation-rule-modal").modal("hide");
-            callback();
-         },
-         filter: function() {
-            //we check only control that have class enable-validation and are visible
-            return $(this).is(".enable-validation") && $(this).is(":visible");
-         }
-      });
-
       //we display the modal
       $('div#automation-rule-new-modal').modal();
    }
+
+   function newEmptyFile(language) {
+      return function (object) {
+         //we create the empty rule and go to edition
+         var r = new AutomationRule(-1, "", "", language.name, "", language.newFileTemplate, "", true);
+         modals.automationRuleEditCode.load(function () {
+            showEditionAutomationRuleWithCode(r, function () {
+               AutomationRuleManager.createToServer(r);
+            });
+         });
+      }
+   }
+
 </script>

@@ -135,14 +135,6 @@
     color:#000
 }
 
-#automation-rule-configuration {
-    min-height: 150px;
-}
-
-.automation-rule-item {
-
-}
-
 .invalid.automation-rule-item {
     border-left-color: #ce4844 !important;
 }
@@ -215,7 +207,9 @@ Fix dropdown menus hidden by bootstrap modal
 .btn-model > div {
     white-space: normal;
 }
-/*
-.btn-model > .language {
 
-}*/
+#automation-rule-editor {
+    height: 300px;
+    border: 1px #ccc solid;
+    margin-top: 15px;
+}

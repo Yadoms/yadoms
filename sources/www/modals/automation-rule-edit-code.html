@@ -26,22 +26,22 @@
    function showEditionAutomationRuleWithCode(rule, callback) {
       assert(!isNullOrUndefined(rule), "rule must be defined");
       assert($.isFunction(callback), "callback must be defined");
-
+debugger;
       var $modalBody = $("div#edit-automation-rule-modal-code .modal-body");
 
-      $modalBody.find("#automation-rule-editor").empty();
+      $modalBody.find("#automation-rule-editor").empty().removeClass();
 
       var $modalConfiguration = $modalBody.find("#automation-rule-configuration");
       $modalConfiguration.empty();
 
       //we append the text section
-      var nameParameter = new StringParameterHandler("modals.automation-rule-edit.", "name-rule", {required:"true"}, rule.name);
+      var nameParameter = new StringParameterHandler("modals.edit-automation-rule.", "name-rule", {required:"true"}, rule.name);
       $modalConfiguration.append(nameParameter.getDOMObject());
       //we finish nameParameter instantiation
       if ($.isFunction(nameParameter.applyScript))
          nameParameter.applyScript();
 
-      var descriptionParameter = new StringParameterHandler("modals.automation-rule-edit.", "description-rule", {required:"true"}, rule.description);
+      var descriptionParameter = new StringParameterHandler("modals.edit-automation-rule.", "description-rule", {required:"true"}, rule.description);
       $modalConfiguration.append(descriptionParameter.getDOMObject());
       //we finish descriptionParameter instantiation
       if ($.isFunction(descriptionParameter.applyScript))
@@ -57,7 +57,7 @@
             event.preventDefault();
             rule.name = nameParameter.getCurrentConfiguration();
             rule.description = descriptionParameter.getCurrentConfiguration();
-
+            rule.content = encodeURIComponent(editor.getValue());
             console.debug("End of Automation rule edition : " + JSON.stringify(rule));
 
             $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
@@ -71,16 +71,49 @@
          }
       });
 
-      $('div#edit-automation-rule-modal-code').on("shown.bs.modal", function () {
-         //clear previously opened code
-debugger;
-         var editor = ace.edit("automation-rule-editor");
-         editor.setTheme("ace/theme/chrome");
-         editor.getSession().setMode("ace/mode/" + rule.type);
+      ace.require("ace/ext/language_tools");
+      var editor = ace.edit("automation-rule-editor");
+      editor.setTheme("ace/theme/chrome");
 
-         //i18n
-         $modalBody.i18n();
+      //editor.setTheme("ace/theme/monokai");
+      editor.getSession().setMode("ace/mode/" + rule.type);
+      editor.setOptions({
+         enableBasicAutocompletion: true,
+         enableSnippets: true,
+         displayIndentGuides: true,
+         highlightSelectedWord: true
+
       });
+
+      //we add the content and go to the end of code
+      editor.setValue(decodeURIComponent(rule.content));
+      editor.gotoLine(editor.session.getLength());
+
+      //validation form
+      $modalBody.find("input,select,textarea").jqBootstrapValidation({
+         preventSubmit: true,
+         submitError: function($form, event, errors) {
+            console.warn("Unable to validate form: " + errors);
+         },
+         submitSuccess: function($form, event) {
+            event.preventDefault();
+
+
+            console.debug("End of Automation Rule edition : " + JSON.stringify(rule));
+
+            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
+            $modalBody.empty();
+            $("div#edit-automation-rule-modal").modal("hide");
+            callback();
+         },
+         filter: function() {
+            //we check only control that have class enable-validation and are visible
+            return $(this).is(".enable-validation") && $(this).is(":visible");
+         }
+      });
+
+      //i18n
+      $modalBody.i18n();
 
       //we display the modal
       $('div#edit-automation-rule-modal-code').modal();
