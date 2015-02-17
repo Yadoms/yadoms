@@ -10,7 +10,7 @@ function AutomationRuleManager(){}
 
 AutomationRuleManager.factory = function(json) {
    assert(!isNullOrUndefined(json), "json must be defined");
-   return new AutomationRule(json.id, decodeURIComponent(json.name), decodeURIComponent(json.description), json.triggers, json.actions, json.enabled);
+   return new AutomationRule(json.id, decodeURIComponent(json.name), decodeURIComponent(json.description), json.type, json.model, json.content, json.configuration, json.enabled);
 };
 
 AutomationRuleManager.createToServer = function(rule, callback) {
@@ -19,11 +19,12 @@ AutomationRuleManager.createToServer = function(rule, callback) {
    $.ajax({
       type: "POST",
       url: "/rest/automation/rule",
-      data: JSON.stringify({  id : rule.id,
-                              name: encodeURIComponent(rule.name),
+      data: JSON.stringify({  name: encodeURIComponent(rule.name),
                               description: encodeURIComponent(rule.description),
-                              triggers: rule.triggers,
-                              actions: rule.actions,
+                              type: rule.type,
+                              model: rule.model,
+                              content: rule.content,
+                              configuration: rule.configuration,
                               enabled: rule.enabled}),
       contentType: "application/json; charset=utf-8",
       dataType: "json"
@@ -157,15 +158,14 @@ AutomationRuleManager.disable = function(rule, callback) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
    //TODO : test
    debugger;
-   rule.enable = false;
+   rule.enabled = false;
    AutomationRuleManager.updateToServer(rule, callback);
-}
-
+};
 
 AutomationRuleManager.enable = function(rule, callback) {
    assert(!isNullOrUndefined(rule), "rule must be defined");
    //TODO : test
    debugger;
-   rule.enable = true;
+   rule.enabled = true;
    AutomationRuleManager.updateToServer(rule, callback);
-}
+};

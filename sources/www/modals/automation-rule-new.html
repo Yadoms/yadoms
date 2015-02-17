@@ -33,7 +33,7 @@
 
       var $modalBody = $("div#automation-rule-new-modal .modal-body");
 
-      //TODO : request languages
+      //TODO V2 : request languages
       var languageList = [];
       languageList.push({"name":"python"});
 
@@ -52,19 +52,51 @@
 
       //we listen for click events
       $area.find("button.btn-blockly").unbind("click").bind("click", function (object) {
-         var lng = BlocklyName;
          //we go to blockly edition
-
+         var r = new AutomationRule(-1, "", "", BlocklyName, "", "", "", true);
+         //todo charger la modale
+         showEditionAutomationRuleWithBlockly(r, function() {
+            AutomationRuleManager.createToServer(r);
+         });
       });
 
       $area.find("button.btn-language").unbind("click").bind("click", function (object) {
          //we check for the language
          var lng = $(this).attr("language");
          //we create the empty rule and go to edition
-         //TODO
+         var r = new AutomationRule(-1, "", "", lng, "", "", "", true);
+         modals.automationRuleEditCode.load(function() {
+            showEditionAutomationRuleWithCode(r, function () {
+               AutomationRuleManager.createToServer(r);
+            });
+         });
       });
 
-      //TODO manage models
+      //TODO V2 : request models
+
+      var modelList = [];
+
+      modelList.push({"name" : "If Then", "description" : "Simple If Then rule model", "language" : BlocklyName, "content" : "<xml>if then</xml>"});
+      modelList.push({"name" : "If Then Else", "description" : "Full If Then Else rule model", "language" : BlocklyName, "content" : "<xml>if then else</xml>"});
+
+      $area = $modalBody.find("div.models-btns");
+
+      $.each(modelList, function (key, value) {
+         var btn = "<button content=\"" + value.content + "\" class=\"btn btn-primary btn-lg btn-model\" type=\"button\">" +
+                     "<div>" +
+                        "<h3>" + value.name + "</h3>" +
+                        "<h4>" + value.description + "</h4>" +
+                     "</div>";
+         if (value.language == BlocklyName)
+            btn +=   "<h5 class=\"pull-right language\"><span class=\"fa fa-puzzle-piece\"></span>&nbsp;&nbsp;";
+         else
+            btn +=   "<h5 class=\"pull-right language\"><span class=\"fa fa-code\"></span>&nbsp;&nbsp;";
+
+         btn +=         value.language + "</h5>" +
+                   "</button>";
+
+         $area.append(btn);
+      });
 
       //i18n
       $modalBody.i18n();
