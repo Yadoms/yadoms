@@ -107,9 +107,242 @@ function LoadDataForBlocklyCustomBlocks() {
 Blockly.Yadoms = function() {
 };
 
-Blockly.Yadoms.Initialize = function() {
+
+/**
+ * Create the toolbox
+ * @return {string} The toolbox xml string
+ */
+Blockly.Yadoms.CreateToolbox_ = function() {
+    var toolbox = '<xml>';
+    toolbox += '  <category name="Yadoms">';
+    toolbox += '    <block type="yadoms_keyword_value"></block>';
+    toolbox += '    <block type="yadoms_affect_keyword"></block>';
+    toolbox += '    <block type="yadoms_notification_simple"></block>';
+    toolbox += '    <block type="yadoms_notification_advanced"></block>';
+    toolbox += '    <block type="yadoms_enumeration"></block>';
+    toolbox += '  </category>';
+    toolbox += '  <category name="Logic">';
+    toolbox += '     <block type="yadoms_logic_compare_become"></block>';
+    toolbox += '     <block type="yadoms_logic_compare_is"></block>';
+    toolbox += '     <block type="controls_if"></block>';
+    toolbox += '     <block type="logic_compare"></block>';
+    toolbox += '     <block type="logic_operation"></block>';
+    toolbox += '     <block type="logic_negate"></block>';
+    toolbox += '     <block type="logic_boolean"></block>';
+    toolbox += '     <block type="logic_null"></block>';
+    toolbox += '  </category>';
+    toolbox += '  <category name="Loops">';
+    toolbox += '     <block type="controls_repeat_ext">';
+    toolbox += '        <value name="TIMES">';
+    toolbox += '           <block type="math_number">';
+    toolbox += '              <field name="NUM">10</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '     </block>';
+    toolbox += '     <block type="controls_whileUntil"></block>';
+    toolbox += '     <block type="controls_for">';
+    toolbox += '        <value name="FROM">';
+    toolbox += '           <block type="math_number">';
+    toolbox += '              <field name="NUM">1</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '        <value name="TO">';
+    toolbox += '           <block type="math_number">';
+    toolbox += '              <field name="NUM">10</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '        <value name="BY">';
+    toolbox += '           <block type="math_number">';
+    toolbox += '              <field name="NUM">1</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '     </block>';
+    toolbox += '     <block type="controls_forEach"></block>';
+    toolbox += '     <block type="controls_flow_statements"></block>';
+    toolbox += '  </category>';
+    toolbox += '  <category name="Math">';
+    toolbox += '     <block type="math_number"></block>';
+    toolbox += '     <block type="math_arithmetic"></block>';
+    toolbox += '     <block type="math_single"></block>';
+    toolbox += '     <block type="math_trig"></block>';
+    toolbox += '     <block type="math_constant"></block>';
+    toolbox += '     <block type="math_number_property"></block>';
+    toolbox += '     <block type="math_change">';
+    toolbox += '        <value name="DELTA">';
+    toolbox += '           <block type="math_number">';
+    toolbox += '              <field name="NUM">1</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '     </block>';
+    toolbox += '     <block type="math_round"></block>';
+    toolbox += '     <block type="math_on_list"></block>';
+    toolbox += '     <block type="math_modulo"></block>';
+    toolbox += '     <block type="math_constrain">';
+    toolbox += '        <value name="LOW">';
+    toolbox += '           <block type="math_number">';
+    toolbox += '              <field name="NUM">1</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '        <value name="HIGH">';
+    toolbox += '           <block type="math_number">';
+    toolbox += '              <field name="NUM">100</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '     </block>';
+    toolbox += '     <block type="math_random_int">';
+    toolbox += '        <value name="FROM">';
+    toolbox += '           <block type="math_number">';
+    toolbox += '              <field name="NUM">1</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '        <value name="TO">';
+    toolbox += '           <block type="math_number">';
+    toolbox += '              <field name="NUM">100</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '     </block>';
+    toolbox += '     <block type="math_random_float"></block>';
+    toolbox += '  </category>';
+    toolbox += '  <category name="Text">';
+    toolbox += '     <block type="text"></block>';
+    toolbox += '     <block type="text_join"></block>';
+    toolbox += '     <block type="text_append">';
+    toolbox += '        <value name="TEXT">';
+    toolbox += '           <block type="text"></block>';
+    toolbox += '        </value>';
+    toolbox += '     </block>';
+    toolbox += '     <block type="text_length"></block>';
+    toolbox += '     <block type="text_isEmpty"></block>';
+    toolbox += '     <block type="text_indexOf">';
+    toolbox += '        <value name="VALUE">';
+    toolbox += '           <block type="variables_get">';
+    toolbox += '              <field name="VAR">text</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '     </block>';
+    toolbox += '     <block type="text_charAt">';
+    toolbox += '        <value name="VALUE">';
+    toolbox += '           <block type="variables_get">';
+    toolbox += '              <field name="VAR">text</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '     </block>';
+    toolbox += '     <block type="text_getSubstring">';
+    toolbox += '        <value name="STRING">';
+    toolbox += '           <block type="variables_get">';
+    toolbox += '              <field name="VAR">text</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '     </block>';
+    toolbox += '     <block type="text_changeCase"></block>';
+    toolbox += '     <block type="text_trim"></block>';
+    toolbox += '  </category>';
+    toolbox += '  <category name="Lists">';
+    toolbox += '     <block type="lists_create_empty"></block>';
+    toolbox += '     <block type="lists_create_with"></block>';
+    toolbox += '     <block type="lists_repeat">';
+    toolbox += '        <value name="NUM">';
+    toolbox += '           <block type="math_number">';
+    toolbox += '              <field name="NUM">5</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '     </block>';
+    toolbox += '     <block type="lists_length"></block>';
+    toolbox += '     <block type="lists_isEmpty"></block>';
+    toolbox += '     <block type="lists_indexOf">';
+    toolbox += '        <value name="VALUE">';
+    toolbox += '           <block type="variables_get">';
+    toolbox += '              <field name="VAR">list</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '     </block>';
+    toolbox += '     <block type="lists_getIndex">';
+    toolbox += '        <value name="VALUE">';
+    toolbox += '           <block type="variables_get">';
+    toolbox += '              <field name="VAR">list</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '     </block>';
+    toolbox += '     <block type="lists_setIndex">';
+    toolbox += '        <value name="LIST">';
+    toolbox += '           <block type="variables_get">';
+    toolbox += '              <field name="VAR">list</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '     </block>';
+    toolbox += '     <block type="lists_getSublist">';
+    toolbox += '        <value name="LIST">';
+    toolbox += '           <block type="variables_get">';
+    toolbox += '              <field name="VAR">list</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '     </block>';
+    toolbox += '     <block type="lists_split">';
+    toolbox += '        <value name="DELIM">';
+    toolbox += '           <block type="text">';
+    toolbox += '              <field name="TEXT">,</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '     </block>';
+    toolbox += '  </category>';
+    toolbox += '  <category name="Colour">';
+    toolbox += '     <block type="colour_picker"></block>';
+    toolbox += '     <block type="colour_random"></block>';
+    toolbox += '     <block type="colour_rgb">';
+    toolbox += '        <value name="RED">';
+    toolbox += '           <block type="math_number">';
+    toolbox += '              <field name="NUM">100</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '        <value name="GREEN">';
+    toolbox += '           <block type="math_number">';
+    toolbox += '              <field name="NUM">50</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '        <value name="BLUE">';
+    toolbox += '           <block type="math_number">';
+    toolbox += '              <field name="NUM">0</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '     </block>';
+    toolbox += '     <block type="colour_blend">';
+    toolbox += '        <value name="COLOUR1">';
+    toolbox += '           <block type="colour_picker">';
+    toolbox += '              <field name="COLOUR">#ff0000</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '        <value name="COLOUR2">';
+    toolbox += '           <block type="colour_picker">';
+    toolbox += '              <field name="COLOUR">#3333ff</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '        <value name="RATIO">';
+    toolbox += '           <block type="math_number">';
+    toolbox += '              <field name="NUM">0.5</field>';
+    toolbox += '           </block>';
+    toolbox += '        </value>';
+    toolbox += '     </block>';
+    toolbox += '  </category>';
+    toolbox += '  <sep></sep>';
+    toolbox += '</xml>';
+    return toolbox;
+};
+
+Blockly.Yadoms.Initialize = function($domTarget, initialContent, maxTopBlocks) {
     Blockly.Yadoms.data = LoadDataForBlocklyCustomBlocks();
-}
+
+    //inject blockly dom+js
+    Blockly.inject($domTarget, {toolbox: Blockly.Yadoms.CreateToolbox_()});
+
+    //create empty script (with fixed condition/action block)
+    if(!isNullOrUndefinedOrEmpty(initialContent)) {
+        var xml = Blockly.Xml.textToDom(initialContent);
+        Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
+    }
+
+    //initialize validation
+    Blockly.Validation.Init(maxTopBlocks);
+};
 
 /**
  * Check if a plugin contains keywords matching specifications
@@ -272,10 +505,8 @@ Blockly.Yadoms.LoadKeywords_ = function(selectedDeviceId, canWrite, allowedKeywo
 
 
 /**
- * Return an array of plugins (Array: [name, id])
- * @param canWrite If true, only plugin with writable keywords are allowed
- * @param allowedKeywordTypes Array of allowed keyword types
- * @return {Array} The plugin array
+ * Return an array of recipients (Array: [name, id])
+ * @return {Array} The recipients array
  * @constructor
  * @private
  */
@@ -293,6 +524,7 @@ Blockly.Yadoms.LoadRecipients_ = function() {
  * @param yadomsKeywordType  The yadoms type
  * @returns {*} The blockly type matching yadoms type
  * @constructor
+ * @param yadomsTypeName The yadoms type name. In case of enum, this is the internal enum name
  */
 Blockly.Yadoms.GetBlocklyType_ = function (yadomsKeywordType, yadomsTypeName) {
     switch(yadomsKeywordType.toLowerCase()){
@@ -338,10 +570,14 @@ Blockly.Yadoms.UpdateBlockColour_ = function(self, type) {
  * @param canWrite If true allow keywords that could be written
  * @param allowedKeywordTypes Array of allowed keyword type ("numeric", "string", "bool", "json", "nodata"
  * @param callbackKeywordSelectionChanged A callback for keyword notification change
+ * @param pluginDropDownName The name of the plugins DropDown
+ * @param deviceDropDownName The name of the devices DropDown
+ * @param keywordDropDownName The name of the keywords DropDown
  * @constructor
  */
 Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, canWrite, allowedKeywordTypes, callbackKeywordSelectionChanged, pluginDropDownName, deviceDropDownName, keywordDropDownName) {
     var pluginDd, deviceDd, keywordDd;
+
 
     //plugin list is static (do not need to update it on each dropdown click)
     var pList = Blockly.Yadoms.LoadPlugins_(canWrite, allowedKeywordTypes);
@@ -383,10 +619,13 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
                 yadomsTypeName =  Blockly.Yadoms.data.keywords[keyword].typeInfo.name;
 
             var type = Blockly.Yadoms.GetBlocklyType_(Blockly.Yadoms.data.keywords[keyword].type, yadomsTypeName);
-            Blockly.Yadoms.UpdateBlockColour_(thisBlock, type);
             callbackKeywordSelectionChanged(keyword, type);
         }
     });
+
+    thisBlock.getSelectedKeyword = function() {
+        return keywordDd.getValue();
+    };
 
     thisBlock.appendDummyInput("YadomsSelection")
         .appendField(pluginDd, pluginDropDownName)
@@ -429,6 +668,9 @@ Blockly.FieldDropdown.prototype.refresh = function(data) {
  */
 Blockly.Blocks['yadoms_keyword_value'] = {
     unitsInputName : "units",
+    pluginDropDownName : "Plugin",
+    deviceDropDownName : "Device",
+    keywordDropDownName : "Keyword",
     init: function () {
 
         //set custom block parameters
@@ -438,13 +680,14 @@ Blockly.Blocks['yadoms_keyword_value'] = {
         this.setHelpUrl('http://www.example.com/');
 
         var thisBlock = this;
-        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(thisBlock, false, ["numeric", "string", "bool"], function (keyword, keywordType) {
+        Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(thisBlock, false, ["numeric", "string", "bool", "enum"], function (keyword, keywordType) {
             if (keywordType == null || keywordType == undefined)
                 thisBlock.changeOutput("null"); //any type allowed
             else
                 thisBlock.changeOutput(keywordType);
             thisBlock.updateUnit(Blockly.Yadoms.data.keywords[keyword]);
-        }, "Plugin", "Device", "Keyword");
+            Blockly.Yadoms.UpdateBlockColour_(thisBlock, keywordType);
+        }, this.pluginDropDownName, this.deviceDropDownName, this.keywordDropDownName);
 
         Blockly.Yadoms.InitializeYadomsKeywordSelection(thisBlock);
     },
@@ -477,6 +720,7 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
       this.setPreviousStatement(true, "null");
       this.setNextStatement(true, "null");
       this.setTooltip('');
+      this.setColour(0);
 
       this.appendDummyInput()
           .appendField("Set");
@@ -504,30 +748,9 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
               return;  // Block under construction, ignore.
           }
           var block = inputValue.connection.targetBlock();
-
           if (block) {
               if(block.type == "yadoms_enumeration") {
-
-                  if(!isNullOrUndefined(keywordValue) &&
-                      !isNullOrUndefined(Blockly.Yadoms.data.keywords[keywordValue]) &&
-                      !isNullOrUndefined(Blockly.Yadoms.data.keywords[keywordValue].type) &&
-                      Blockly.Yadoms.data.keywords[keywordValue].type == "enum" &&
-                      !isNullOrUndefined(Blockly.Yadoms.data.keywords[keywordValue].typeInfo) &&
-                      !isNullOrUndefined(Blockly.Yadoms.data.keywords[keywordValue].typeInfo).name &&
-                      !isNullOrUndefined(Blockly.Yadoms.data.keywords[keywordValue].typeInfo.values)) {
-
-                      var translatedEnum = [];
-                      $.each(Blockly.Yadoms.data.keywords[keywordValue].typeInfo.values, function(index, value) {
-                          translatedEnum.push([value, value]);
-                      });
-                     block.updateEnumeration(Blockly.Yadoms.data.keywords[keywordValue].typeInfo.name, translatedEnum);
-
-                  }
-
-
-
-
-
+                  block.updateEnumeration(keywordValue);
               }
           }
       };
@@ -578,6 +801,9 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
 
 
 
+/**
+ * Define a "FOR" mutator block for yadoms_logic_compare_is
+ */
 Blockly.Blocks['yadoms_logic_compare_is_mutator_for'] = {
     init: function() {
         this.setColour(210);
@@ -589,6 +815,9 @@ Blockly.Blocks['yadoms_logic_compare_is_mutator_for'] = {
         this.contextMenu = false;
     }
 };
+/**
+ * Define a "AT" mutator block for yadoms_logic_compare_is
+ */
 Blockly.Blocks['yadoms_logic_compare_is_mutator_at'] = {
     init: function() {
         this.setColour(210);
@@ -600,6 +829,9 @@ Blockly.Blocks['yadoms_logic_compare_is_mutator_at'] = {
         this.contextMenu = false;
     }
 };
+/**
+ * Define the base mutator block for yadoms_logic_compare_is
+ */
 Blockly.Blocks['yadoms_logic_compare_is_mutator'] = {
     init: function() {
         this.setColour(Blockly.Blocks.logic.HUE);
@@ -647,31 +879,103 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
 
         this.isForMutator = false;
         this.isAtMutator = false;
+
+        /**
+         * Method which update the operator list, according to the connected types
+         */
+        this.updateOperator = function(newCheck) {
+            var selectedOperators = [[]];
+            if(newCheck == "String") {
+                selectedOperators = StringOperators;
+            } else if(newCheck == "Boolean") {
+                selectedOperators = BooleanOperators;
+            } else if(newCheck == "Number") {
+                selectedOperators = NumberOperators;
+            } else if(newCheck == "Any") {
+                selectedOperators = NumberOperators;
+            } else {
+                //specific types
+                selectedOperators = BooleanOperators;
+            }
+
+            var operatorDropDown = this.getField_("OP");
+            operatorDropDown.menuGenerator_ = selectedOperators;
+            operatorDropDown.setValue(selectedOperators[0][1]);
+            operatorDropDown.updateTextNode_();
+        };
+
+        //apply operator update
+        thisBlock.updateOperator(null);
+
+
+        /**
+         * Method which make type checks when one of connector changes
+         */
+        this.onchange = function() {
+
+            //check for A and B connected blocks
+            var inputValueA = thisBlock.getInput("A");
+            var inputValueB = thisBlock.getInput("B");
+            if (!inputValueA || !inputValueB) {
+                return;  // Blocks under construction, ignore.
+            }
+            var blockA = inputValueA.connection.targetBlock();
+            var blockB = inputValueB.connection.targetBlock();
+
+            //update yadoms_enumeration if any
+            if (blockA && blockB) {
+                if(blockA.type == "yadoms_keyword_value" && blockB.type == "yadoms_enumeration") {
+                    var keywordValue = blockA.getSelectedKeyword();
+                    blockB.updateEnumeration(keywordValue);
+                } else if(blockB.type == "yadoms_keyword_value" && blockA.type == "yadoms_enumeration") {
+                    var keywordValue = blockB.getSelectedKeyword();
+                    blockA.updateEnumeration(keywordValue);
+                }
+            }
+
+            //update checks
+            if (blockA) {
+                if(inputValueB.connection.check_ != blockA.outputConnection.check_) {
+                    inputValueB.setCheck(blockA.outputConnection.check_);
+                    thisBlock.updateOperator(blockA.outputConnection.check_);
+                }
+            } else if (blockB) {
+                if(inputValueA.connection.check_ != blockB.outputConnection.check_) {
+                    inputValueA.setCheck(blockB.outputConnection.check_);
+                    thisBlock.updateOperator(blockB.outputConnection.check_);
+                }
+            } else {
+                inputValueA.setCheck(null);
+                inputValueB.setCheck(null);
+            }
+        };
+
     },
-
-    decompose: function(workspace) {
-        var topBlock = Blockly.Block.obtain(workspace, 'yadoms_logic_compare_is_mutator');
-        topBlock.initSvg();
-
-        var connection = topBlock.getInput('STACK').connection;
-
-        if(this.isForMutator) {
-            var forBlock = Blockly.Block.obtain(workspace, 'yadoms_logic_compare_is_for_mutator');
-            forBlock.initSvg();
-            connection.connect(forBlock.previousConnection);
-        } else if(this.isAtMutator) {
-            var atBlock = Blockly.Block.obtain(workspace, 'yadoms_logic_compare_is_at_mutator');
-            atBlock.initSvg();
-            connection.connect(atBlock.previousConnection);
-        }
-        return topBlock;
-    },
+    isAtMutator : false,
+    isForMutator : false,
     /**
-     * Reconfigure this block based on the mutator dialog's components.
-     * @param {!Blockly.Block} containerBlock Root block in mutator.
+     * Create XML to represent whether the 'divisorInput' should be present.
+     * @return {Element} XML storage element.
      * @this Blockly.Block
      */
-    compose: function(containerBlock) {
+    mutationToDom: function() {
+        var container = document.createElement('mutation');
+        container.setAttribute('for_mutator', this.isForMutator);
+        container.setAttribute('at_mutator', this.isAtMutator);
+        return container;
+    },
+    /**
+     * Parse XML to restore the 'divisorInput'.
+     * @param {!Element} xmlElement XML storage element.
+     * @this Blockly.Block
+     */
+    domToMutation: function(xmlElement) {
+        var forMutator = (xmlElement.getAttribute('for_mutator') == 'true');
+        var atMutator = (xmlElement.getAttribute('at_mutator') == 'true');
+        this.updateShape_(forMutator, atMutator);
+    },
+
+    updateShape_ : function(forMutator, atMutator) {
         // Disconnect all
         if (this.isForMutator) {
             if(this.getInput("duration")) {
@@ -689,10 +993,6 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
         this.isForMutator = false;
         this.isAtMutator = false;
 
-
-        // Rebuild the block's optional inputs.
-        var clauseBlock = containerBlock.getInputTargetBlock('STACK');
-
         var durationUnitsEnum =[
             ['heures', 'H'],
             ['minutes', 'M'],
@@ -700,24 +1000,62 @@ Blockly.Blocks['yadoms_logic_compare_is'] = {
             ['jours', 'D']
         ];
 
+        if(forMutator) {
+            this.appendDummyInput("duration_text").appendField("For");
+            this.appendValueInput("duration").setCheck("Number");
+            this.appendDummyInput("duration_unit").appendField(new Blockly.FieldDropdown(durationUnitsEnum), "durationUnit");
+            this.isForMutator = true;
+        } else if(atMutator) {
+            this.appendDummyInput("at_text").appendField("At");
+            this.appendDummyInput("at")
+                .appendTitle(new Blockly.FieldTextInput('00:00', function(text) {
+                    if (text.match(/^([01]?[0-9]|2[0-3]):[0-5][0-9]/))
+                        return text;
+                    return "00:00";
+                }), 'TEXT');
+            this.isAtMutator = true;
+        }
+
+
+    },
+    decompose: function(workspace) {
+        var topBlock = Blockly.Block.obtain(workspace, 'yadoms_logic_compare_is_mutator');
+        topBlock.initSvg();
+
+        var connection = topBlock.getInput('STACK').connection;
+
+        if(this.isForMutator) {
+            var forBlock = Blockly.Block.obtain(workspace, 'yadoms_logic_compare_is_mutator_for');
+            forBlock.initSvg();
+            connection.connect(forBlock.previousConnection);
+        } else if(this.isAtMutator) {
+            var atBlock = Blockly.Block.obtain(workspace, 'yadoms_logic_compare_is_mutator_at');
+            atBlock.initSvg();
+            connection.connect(atBlock.previousConnection);
+        }
+        return topBlock;
+    },
+    /**
+     * Reconfigure this block based on the mutator dialog's components.
+     * @param {!Blockly.Block} containerBlock Root block in mutator.
+     * @this Blockly.Block
+     */
+    compose: function(containerBlock) {
+        // Rebuild the block's optional inputs.
+
+        //get the mutator dialog result
+        var clauseBlock = containerBlock.getInputTargetBlock('STACK');
+
+        var forMutator = false;
+        var atMutator = false;
         if(clauseBlock) {
             if(clauseBlock.type == 'yadoms_logic_compare_is_mutator_for') {
-                this.appendDummyInput("duration_text").appendField("For");
-                this.appendValueInput("duration").setCheck("Number");
-                this.appendDummyInput("duration_unit").appendField(new Blockly.FieldDropdown(durationUnitsEnum), "durationUnit");
-                this.isForMutator = true;
-
+                forMutator = true;
             } else if(clauseBlock.type == 'yadoms_logic_compare_is_mutator_at') {
-                this.appendDummyInput("at_text").appendField("At");
-                this.appendDummyInput("at")
-                    .appendTitle(new Blockly.FieldTextInput('00:00', function(text) {
-                        if (text.match(/^([01]?[0-9]|2[0-3]):[0-5][0-9]/))
-                            return text;
-                        return "00:00";
-                    }), 'TEXT');
-                this.isAtMutator = true;
+                atMutator = true;
             }
         }
+        this.updateShape_(forMutator, atMutator);
     }
 };
 
@@ -734,7 +1072,7 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
             .appendField("Become");
         this.appendValueInput("A");
         this.appendValueInput("B").appendField(new Blockly.FieldDropdown([['=', 'EQ']]), "OP");
-        this.setInputsInline(false);
+        this.setInputsInline(true);
         this.setOutput(true, "Boolean");
 
         var thisBlock = this;
@@ -765,7 +1103,7 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
                 selectedOperators = BooleanOperators;
             } else if(newCheck == "Number") {
                 selectedOperators = NumberOperators;
-            } else if(newCheck == "µAny") {
+            } else if(newCheck == "Any") {
                 selectedOperators = NumberOperators;
             } else {
                 //specific types
@@ -781,33 +1119,47 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
         //apply operator update
         thisBlock.updateOperator(null);
 
-
         /**
          * Method which make type checks when one of connector changes
          */
-        thisBlock.onchange = function() {
-            var inputA = this.getInput('A');
-            var inputB = this.getInput('B');
-            if (!inputA || !inputB) {
-                return;  // Block under construction, ignore.
+        this.onchange = function() {
+
+            //check for A and B connected blocks
+            var inputValueA = thisBlock.getInput("A");
+            var inputValueB = thisBlock.getInput("B");
+            if (!inputValueA || !inputValueB) {
+                return;  // Blocks under construction, ignore.
             }
-            var blockA = inputA.connection.targetBlock();
-            var blockB = inputB.connection.targetBlock();
+            var blockA = inputValueA.connection.targetBlock();
+            var blockB = inputValueB.connection.targetBlock();
+
+            //update yadoms_enumeration if any
+            if (blockA && blockB) {
+                if(blockA.type == "yadoms_keyword_value" && blockB.type == "yadoms_enumeration") {
+                    var keywordValue = blockA.getSelectedKeyword();
+                    blockB.updateEnumeration(keywordValue);
+                } else if(blockB.type == "yadoms_keyword_value" && blockA.type == "yadoms_enumeration") {
+                    var keywordValue = blockB.getSelectedKeyword();
+                    blockA.updateEnumeration(keywordValue);
+                }
+            }
+
+            //update checks
             if (blockA) {
-                if(inputB.connection.check_ != blockA.outputConnection.check_) {
-                    inputB.setCheck(blockA.outputConnection.check_);
-                    this.updateOperator(blockA.outputConnection.check_);
+                if(inputValueB.connection.check_ != blockA.outputConnection.check_) {
+                    inputValueB.setCheck(blockA.outputConnection.check_);
+                    thisBlock.updateOperator(blockA.outputConnection.check_);
                 }
             } else if (blockB) {
-                if(inputA.connection.check_ != blockB.outputConnection.check_) {
-                    inputA.setCheck(blockB.outputConnection.check_);
-                    this.updateOperator(blockB.outputConnection.check_);
+                if(inputValueA.connection.check_ != blockB.outputConnection.check_) {
+                    inputValueA.setCheck(blockB.outputConnection.check_);
+                    thisBlock.updateOperator(blockB.outputConnection.check_);
                 }
             } else {
-                inputA.setCheck(null);
-                inputB.setCheck(null);
+                inputValueA.setCheck(null);
+                inputValueB.setCheck(null);
             }
-        }
+        };
     }
 };
 
@@ -819,21 +1171,42 @@ Blockly.Blocks['yadoms_logic_compare_become'] = {
 
 
 Blockly.Blocks['yadoms_enumeration'] = {
+    enumerationDropDownName : "enumerationList",
     currentEnumerationTypeName : "",
     init: function() {
         this.setHelpUrl('http://www.example.com/');
         this.setColour(20);
         this.appendDummyInput()
-            .appendField(new Blockly.FieldDropdown([["enumeration", "enumeration"]]), "enumerationList");
+            .appendField(new Blockly.FieldDropdown([["enumeration", "enumeration"]]), this.enumerationDropDownName);
         this.setOutput(true, "");
         this.setTooltip('');
     },
 
-    updateEnumeration : function(typeName, enumeration) {
-        if(this.currentEnumerationTypeName != typeName) {
-            this.currentEnumerationTypeName = typeName;
-            var enumDropDown = this.getField_("enumerationList");
-            enumDropDown.refresh(enumeration);
+    updateEnumeration : function(keywordValue) {
+        //check keyword value is not null
+        if (!isNullOrUndefined(keywordValue)) {
+
+            //check that keyword data is available
+            var keywordData = Blockly.Yadoms.data.keywords[keywordValue];
+            if(!isNullOrUndefined(keywordData) && keywordData.type == "enum") {
+                var typeInfo = keywordData.typeInfo;
+                if( !isNullOrUndefined(typeInfo) && !isNullOrUndefined(typeInfo.name) && !isNullOrUndefined(typeInfo.values) ) {
+                    if(this.currentEnumerationTypeName != typeInfo.name) {
+
+                        this.changeOutput("enum_" + typeInfo.name);
+                        //all is OK, this is a new enum, ask for translation
+                        var translatedEnum = [];
+                        $.each(typeInfo.values, function (index, value) {
+                            translatedEnum.push([value, value]);
+                        });
+
+                        //apply new dropdown list
+                        this.currentEnumerationTypeName = typeInfo.name;
+                        var enumDropDown = this.getField_(this.enumerationDropDownName);
+                        enumDropDown.refresh(translatedEnum);
+                    }
+                }
+            }
         }
     }
 };

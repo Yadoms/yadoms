@@ -184,7 +184,7 @@
 
    function addNewAutomationRuleWithBlockly() {
       modals.automationRuleEditBlockly.load(function() {
-         var rule = new AutomationRule(null, "", "", "", "", true);
+         var rule = new AutomationRule(-1, "", "", "blockly", "", "", "", true);
          //we launch rule edition GUI
          showEditionAutomationRuleWithBlockly(rule, function() {
             //we ask for automation rule creation

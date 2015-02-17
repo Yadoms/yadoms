@@ -68,7 +68,7 @@ namespace web { namespace rest { namespace service {
    {
       std::vector<boost::shared_ptr<database::entities::CRule> > ruleList = m_rulesManager->getRules();
       shared::CDataContainer t;
-      t.set(getRestKeyword(), ruleList);
+      t.set("rules", ruleList);
       return CResult::GenerateSuccess(t);
    }
 

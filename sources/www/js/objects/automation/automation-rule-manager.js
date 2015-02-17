@@ -59,7 +59,7 @@ AutomationRuleManager.get = function (callback) {
    //TODO : test
    //debugger;
 
-   $.getJSON("rest/automation/rule/")
+   $.getJSON("rest/automation/rule")
       .done(function( data ) {
          //we parse the json answer
          if (data.result != "true")
@@ -67,10 +67,16 @@ AutomationRuleManager.get = function (callback) {
             notifyError($.t("objects.generic.errorGetting", {objectName : "automation rules"}), JSON.stringify(data));
             return;
          }
-         callback(AutomationRuleManager.factory(data.data));
+
+           var allRules = [];
+           $.each(data.data.rules, function(index, value) {
+               allRules.push(AutomationRuleManager.factory(value));
+           });
+
+         callback(allRules);
       })
       .fail(function() {notifyError($.t("objects.generic.errorGetting", {objectName : "automation rules"}));});
-}
+};
 
 AutomationRuleManager.getOne = function (ruleId, callback) {
    assert(!isNullOrUndefined(ruleId), "ruleId must be defined");
