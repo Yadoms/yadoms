@@ -342,6 +342,14 @@
          "maxNumberItemsAllowed" : "the list can't have more than __maxValue__ items"
       }
    },
+   "blockly" : {
+     "catLogic" : "Logic",
+     "catLoops" : "Loops",
+     "catMath" : "Math",
+     "catText" : "Text",
+     "catLists" : "Lists",
+     "catColour" : "Colour"
+   },
    "objects" : {
       "pluginInstance" : {
          "errorGettingStatus" : "An error has occurred getting status of plugin __pluginName__",

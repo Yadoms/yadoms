@@ -159,6 +159,7 @@ namespace database { namespace entities {
       ((Content)(std::string)("")("content"))
       ((Configuration)(shared::CDataContainer)(shared::CDataContainer())("configuration"))
       ((Enabled)(bool)(true)("enabled"))
+      ((Code)(std::string)("")("code"))
    );
 
 

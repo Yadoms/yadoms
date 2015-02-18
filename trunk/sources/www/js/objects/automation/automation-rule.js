@@ -4,7 +4,7 @@
  * Creates an instance of Device
  * @constructor
  */
-function AutomationRule(id, name, description, type, model, content, configuration, enabled) {
+function AutomationRule(id, name, description, type, model, content, configuration, enabled, code) {
    assert(!isNullOrUndefined(id), "id of a AutomationRule must be defined");
    assert(!isNullOrUndefined(name), "name of a AutomationRule must be defined");
    assert(!isNullOrUndefined(description), "description of a AutomationRule must be defined");
@@ -13,6 +13,7 @@ function AutomationRule(id, name, description, type, model, content, configurati
    assert(!isNullOrUndefined(content), "content of a AutomationRule must be defined");
    assert(!isNullOrUndefined(configuration), "content of a AutomationRule must be defined");
    assert(!isNullOrUndefined(enabled), "enabled of a AutomationRule must be defined");
+   assert(!isNullOrUndefined(code), "code of a AutomationRule must be defined");
 
    this.id = id;
    this.name = name;
@@ -22,6 +23,7 @@ function AutomationRule(id, name, description, type, model, content, configurati
    this.content = content;
    this.configuration = configuration;
    this.enabled = enabled;
+   this.code = code;
 }
 
 AutomationRule.prototype.toJSON = function () {
@@ -33,6 +35,7 @@ AutomationRule.prototype.toJSON = function () {
       model: this.model,
       content: this.content,
       configuration: this.configuration,
-      enabled: this.enabled
+      enabled: this.enabled,
+      code: encodeURIComponent(this.code)
    };
 };
