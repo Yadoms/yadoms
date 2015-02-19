@@ -9,7 +9,9 @@
       "apply" : "Apply",
       "add" : "Add",
       "resetToDefault" : "Reset to default",
-      "goBack" : "Go Back"
+      "goBack" : "Go Back",
+      "enabled" : "Enabled",
+      "disabled" : "Disabled"
    },
    "mainPage" : {
       "menu" : {
@@ -305,8 +307,6 @@
                   "enabled" : "Enabled",
                   "name" : "Name",
                   "description" : "Description",
-                  "triggers" : "Triggers",
-                  "trigerredActions" : "Triggered Actions",
                   "actions" : "Actions"
                },
                "enableDisable" : "Enable / Disable the rule",

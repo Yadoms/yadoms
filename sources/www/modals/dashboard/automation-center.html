@@ -8,8 +8,6 @@
          <td data-i18n="modals.dashboard.sub-windows.automation-center.table.enabled"></td>
          <td data-i18n="modals.dashboard.sub-windows.automation-center.table.name"></td>
          <td data-i18n="modals.dashboard.sub-windows.automation-center.table.description"></td>
-         <td data-i18n="modals.dashboard.sub-windows.automation-center.table.triggers"></td>
-         <td data-i18n="modals.dashboard.sub-windows.automation-center.table.trigerredActions"></td>
          <td data-i18n="modals.dashboard.sub-windows.automation-center.table.actions"></td>
       </tr>
       <!-- plugin instance will be listed here-->
@@ -33,7 +31,7 @@
          $.each(rules, function(index, value) {
             automationRuleInstanceList.push(value);
             //we don't show system plugins to user
-            addRuleToDom(value);
+            addAutomationRuleToDom(value);
          });
 
          //we use the periodic task of the dashboard
@@ -50,25 +48,22 @@
    function addAutomationRuleToDom(rule) {
       var actionsBtns = "<div class=\"btn-group\">\n" +
               "<button type=\"button\" class=\"btn btn-enableDisable\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.enableDisable\"><span class=\"glyphicon glyphicon-off\"></span></button>\n" +
-              "<button type=\"button\" class=\"btn btn-primary btn-edit\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.edit\"><span class=\"glyphicon glyphicon-cog\"></span></button>\n" +
+              "<button type=\"button\" class=\"btn btn-primary btn-edit\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.edit\"><span class=\"glyphicon glyphicon-pencil\"></span></button>\n" +
               "<button type=\"button\" class=\"btn btn-danger btn-delete\" data-i18n=\"[title]modals.dashboard.sub-windows.automation-center.delete\"><span class=\"glyphicon glyphicon-trash\"></span></button>\n" +
               "</div>";
-
-      var enabledField = "<span class=\"label label-success label-status\"></span>\n";
-
-      var name = "<span>" + rule.name + "</span>";
-      var description = "<span>" + rule.description + "</span>";
 
       //we add it to the DOM
       var $ruleList = $("table#automation-rule-list");
 
-      $ruleList.append("<tr automation-rule-id=\"" + rule.id + "\"><td class=\"automation-rule-enabled\"></td><td class=\"automation-rule-name\"></td><td class=\"automation-rule-description\"></td><td class=\"automation-rule-triggers\"></td><td class=\"automation-rule-triggeredActions\"></td><td class=\"automation-rule-actions\"></td></tr>");
+      $ruleList.append("<tr automation-rule-id=\"" + rule.id + "\">" +
+                           "<td class=\"automation-rule-enabled\">" +
+                              "<span class=\"label label-success label-status\"></span>" +
+                           "</td>" +
+                           "<td class=\"automation-rule-name\"></td>" +
+                           "<td class=\"automation-rule-description\"></td>" +
+                           "<td class=\"automation-rule-actions\"></td></tr>");
 
       var $ruleRow = getAutomationRuleDomRow(rule);
-      //we fill the data
-      $ruleRow.find("td.automation-rule-name").html(name);
-      $ruleRow.find("td.automation-rule-description").html(description);
-      $ruleRow.find("td.automation-rule-enabled").html(enabledField);
 
       //we add actions to the plugin
       $ruleRow.find("td.automation-rule-actions").append(actionsBtns);
@@ -77,6 +72,28 @@
       $ruleRow.find("button.btn-enableDisable").unbind('click').bind('click', enableDisableAutomationRule(rule));
       $ruleRow.find("button.btn-edit").unbind('click').bind('click', editAutomationRule(rule));
       $ruleRow.find("button.btn-delete").unbind('click').bind('click', deleteAutomationRule(rule));
+
+      updateDOMAutomationRule(rule);
+   }
+
+   function updateDOMAutomationRule(rule) {
+      assert(!isNullOrUndefined(rule), "rule must be defined");
+
+      var $ruleRow = getAutomationRuleDomRow(rule);
+
+      //we fill the data
+      $ruleRow.find("td.automation-rule-name").text(rule.name);
+      $ruleRow.find("td.automation-rule-description").text(rule.description);
+
+      //we manage the enabled
+      if(rule.enabled) {
+         $ruleRow.find("span.label-status").addClass("label-success").removeClass("label-danger").text($.t("common.enabled"));
+         $ruleRow.find("button.btn-enableDisable").addClass("btn-warning").removeClass("btn-success");
+      }
+      else {
+         $ruleRow.find("span.label-status").addClass("label-danger").removeClass("label-success").text($.t("common.disabled"));
+         $ruleRow.find("button.btn-enableDisable").addClass("btn-success").removeClass("btn-warning");
+      }
 
       $ruleRow.i18n();
    }
@@ -101,17 +118,29 @@
    function editAutomationRule(rule) {
       //rule represent the automation rule concerned
       return function() {
-         //we ask for configuration modal async
-         modals.automationRuleEdit.load(function() {
-            showEditionAutomationRule(rule, function() {
-               AutomationRuleManager.updateToServer(rule, function(result) {
-                  //We update the information that can have changed after the configuration
-                  var $row = getAutomationRuleDomRow(rule);
-                  $row.find("td.automation-rule-name").html(rule.name);
-                  //TODO : add other information that may have changed
+         //the gui to show depend on the language
+         if (rule.type == BlocklyName) {
+            //we show the Blockly GUI
+            //we ask for configuration modal async
+            modals.automationRuleEditBlockly.load(function () {
+               showEditionAutomationRuleWithBlockly(rule, function () {
+                  AutomationRuleManager.updateToServer(rule, function (result) {
+                     updateDOMAutomationRule(rule);
+                  });
                });
             });
-         });
+         }
+         else {
+            //we show the IDE GUI
+            //we ask for configuration modal async
+            modals.automationRuleEditCode.load(function () {
+               showEditionAutomationRuleWithCode(rule, function () {
+                  AutomationRuleManager.updateToServer(rule, function (result) {
+                     updateDOMAutomationRule(rule);
+                  });
+               });
+            });
+         }
       }
    }
 
@@ -139,23 +168,20 @@
 
    function periodicDashboardAutomationCenterTask() {
       //periodically we check the enable of each rule
+      //TODO : manage rul:e getting all and not one by one
       if (serverIsOnline) {
          $.each(automationRuleInstanceList, function(index, value) {
             //we ask async for the enable
             AutomationRuleManager.getOne(value.id, function (updatedRule) {
                var $row = getAutomationRuleDomRow(value);
                if (updatedRule.enabled != value.enabled) {
-                  var textStatus = "";
-                  var btn;
-                  var label;
-
-                  //TODO : find the right way to show the enable / disable
-                  if(status) {
-                     $row.find("span.label-status").addClass("label-success").removeClass("label-danger").text($.t("modals.dashboard.sub-windows.plugins.running"));
+                  //we update lebel depending on the enabled field
+                  if(updatedRule.enabled) {
+                     $row.find("span.label-status").addClass("label-success").removeClass("label-danger").text($.t("common.enabled"));
                      $row.find("button.btn-startStop").addClass("btn-warning").removeClass("btn-success");
                   }
                   else {
-                     $row.find("span.label-status").addClass("label-danger").removeClass("label-success").text($.t("modals.dashboard.sub-windows.plugins.stopped"));
+                     $row.find("span.label-status").addClass("label-danger").removeClass("label-success").text($.t("common.disabled"));
                      $row.find("button.btn-startStop").addClass("btn-success").removeClass("btn-warning");
                   }
                }
@@ -184,7 +210,7 @@
 
    function addNewAutomationRuleWithBlockly() {
       modals.automationRuleEditBlockly.load(function() {
-         var rule = new AutomationRule(-1, "", "", "blockly", "", "", "", true, "");
+         var rule = new AutomationRule(-1, "", "", "blockly", "", "", "", "", true);
          //we launch rule edition GUI
          showEditionAutomationRuleWithBlockly(rule, function() {
             //we ask for automation rule creation

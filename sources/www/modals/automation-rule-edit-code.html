@@ -14,7 +14,7 @@
               <div class="modal-footer">
                  <div class="form-actions">
                     <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
-                    <button type="button" id="btn-confirm-configure-rule-code" class="btn btn-primary" data-i18n="common.ok"></button>
+                    <button type="submit" id="btn-confirm-configure-rule-code" class="btn btn-primary" data-i18n="common.ok"></button>
                  </div>
               </div>
            </form>
@@ -47,30 +47,6 @@ debugger;
       if ($.isFunction(descriptionParameter.applyScript))
          descriptionParameter.applyScript();
 
-      //validation form
-      $modalBody.find("input,select,textarea").jqBootstrapValidation({
-         preventSubmit: true,
-         submitError: function($form, event, errors) {
-            console.warn("Unable to validate form: " + errors);
-         },
-         submitSuccess: function($form, event) {
-            event.preventDefault();
-            rule.name = nameParameter.getCurrentConfiguration();
-            rule.description = descriptionParameter.getCurrentConfiguration();
-            rule.content = encodeURIComponent(editor.getValue());
-            console.debug("End of Automation rule edition : " + JSON.stringify(rule));
-
-            $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
-            $modalBody.empty();
-            $("div#edit-automation-rule-modal-code").modal("hide");
-            callback();
-         },
-         filter: function() {
-            //we check only control that have class enable-validation and are visible
-            return $(this).is(".enable-validation") && $(this).is(":visible");
-         }
-      });
-
       ace.require("ace/ext/language_tools");
       var editor = ace.edit("automation-rule-editor");
       editor.setTheme("ace/theme/chrome");
@@ -85,8 +61,8 @@ debugger;
 
       });
 
-      //we add the content and go to the end of code
-      editor.setValue(decodeURIComponent(rule.content));
+      //we add the .code and go to the end of code
+      editor.setValue(decodeURIComponent(rule.code));
       editor.gotoLine(editor.session.getLength());
 
       //validation form
@@ -97,13 +73,17 @@ debugger;
          },
          submitSuccess: function($form, event) {
             event.preventDefault();
-
-
-            console.debug("End of Automation Rule edition : " + JSON.stringify(rule));
+            rule.name = nameParameter.getCurrentConfiguration();
+            rule.description = descriptionParameter.getCurrentConfiguration();
+            rule.code = encodeURIComponent(editor.getValue());
+            console.debug("End of Automation rule edition : " + JSON.stringify(rule));
 
             $modalBody.find("input,select,textarea").jqBootstrapValidation("destroy");
             $modalBody.empty();
-            $("div#edit-automation-rule-modal").modal("hide");
+            //we hide the current window and the wizard if opened previously
+            $("div#edit-automation-rule-modal-code").modal("hide");
+            $("div#automation-rule-new-modal").modal("hide");
+
             callback();
          },
          filter: function() {

@@ -26,8 +26,6 @@
 </div>
 
 <script>
-   var BlocklyName = "blockly";
-
    function showNewAutomationRule(callback) {
       assert($.isFunction(callback), "callback must be defined");
 
@@ -87,13 +85,13 @@
       $modalBody.i18n();
 
       //we display the modal
-      $('div#automation-rule-new-modal').modal();
+      $("div#automation-rule-new-modal").modal();
    }
 
    function newEmptyFile(language) {
       return function (object) {
          //we create the empty rule and go to edition
-         var r = new AutomationRule(-1, "", "", language.name, "", language.newFileTemplate, "", true);
+         var r = new AutomationRule(-1, "", "", language.name, "", "", language.newFileTemplate, "", true);
          modals.automationRuleEditCode.load(function () {
             showEditionAutomationRuleWithCode(r, function () {
                AutomationRuleManager.createToServer(r);

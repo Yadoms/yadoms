@@ -10,7 +10,7 @@ function AutomationRuleManager(){}
 
 AutomationRuleManager.factory = function(json) {
    assert(!isNullOrUndefined(json), "json must be defined");
-   return new AutomationRule(json.id, decodeURIComponent(json.name), decodeURIComponent(json.description), json.type, json.model, json.content, json.configuration, json.enabled, decodeURIComponent(json.code));
+   return new AutomationRule(json.id, decodeURIComponent(json.name), decodeURIComponent(json.description), json.type, json.model, json.content, decodeURIComponent(json.code), json.configuration, json.enabled);
 };
 
 AutomationRuleManager.createToServer = function(rule, callback) {
@@ -83,8 +83,6 @@ AutomationRuleManager.get = function (callback) {
 AutomationRuleManager.getOne = function (ruleId, callback) {
    assert(!isNullOrUndefined(ruleId), "ruleId must be defined");
    assert($.isFunction(callback), "callback must be a function");
-   //TODO : test
-   debugger;
 
    $.getJSON("rest/automation/rule/" + ruleId)
       .done(function( data ) {
@@ -106,7 +104,7 @@ AutomationRuleManager.deleteFromServer = function(rule, callback) {
 
    $.ajax({
       type: "DELETE",
-      url: "/rest/automation-rule/" + rule.id,
+      url: "/rest/automation/rule/" + rule.id,
       contentType: "application/json; charset=utf-8",
       dataType: "json"
    })
@@ -131,7 +129,7 @@ AutomationRuleManager.updateToServer = function(rule, callback) {
 
    $.ajax({
       type: "PUT",
-      url: "/rest/automation-rule/" + rule.id,
+      url: "/rest/automation/rule/" + rule.id,
       data: JSON.stringify(rule),
       contentType: "application/json; charset=utf-8",
       dataType: "json"

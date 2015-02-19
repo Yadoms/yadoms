@@ -25,6 +25,11 @@ https://blockly-demo.appspot.com/static/demos/code/index.html
 
 */
 
+/**
+ * Hardcoded interpreter name
+ * @type {string}
+ */
+var BlocklyName = "blockly";
 
 /**
  * Initialize Blockly.Yadoms structure
