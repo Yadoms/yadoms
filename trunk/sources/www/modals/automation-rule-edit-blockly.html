@@ -43,12 +43,14 @@
                console.error("Fail to validate blockly : " + msg);
             } else {
 
-               var xmlDomString = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-               var xmlString = Blockly.Xml.domToText(xmlDomString);
-               var xmlStringForJson = encodeURIComponent(xmlString);
+               Blockly.Yadoms.GetResult(function(xmlString,pythonCode){
+                  rule.content = encodeURIComponent(xmlString);
+                  rule.code = encodeURIComponent(pythonCode);
+                  console.log(pythonCode);
+               });
 
 
-               rule.content = xmlStringForJson;
+
 
                $('div#edit-automation-rule-modal-blockly').modal("hide");
                callback(rule);
