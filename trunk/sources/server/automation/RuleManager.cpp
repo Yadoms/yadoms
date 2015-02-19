@@ -94,7 +94,7 @@ std::vector<boost::shared_ptr<database::entities::CRule> > CRuleManager::getRule
    return m_dbRequester->getRules();
 }
 
-int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code)
+int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> ruleData)
 {
    // Add rule in database
    int ruleId = m_dbRequester->addRule(ruleData);
@@ -104,7 +104,7 @@ int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> 
    updatedRuleData->Id = ruleId;
 
    // Create script file
-   m_scriptFactory->createScriptFile(updatedRuleData, code);
+   m_scriptFactory->updateScriptFile(updatedRuleData);
 
    // Start the rule
    startRule(ruleId);
@@ -114,14 +114,16 @@ int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> 
 
 boost::shared_ptr<database::entities::CRule> CRuleManager::getRule(int id) const
 {
-   return m_dbRequester->getRule(id);
-   //TODO remonter aussi le code
+    boost::shared_ptr<database::entities::CRule> ruleData(m_dbRequester->getRule(id));
+
+    // Add code
+    m_scriptFactory->getScriptFile(ruleData);
+   
+    return ruleData;
 }
 
 void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule> ruleData)
 {
-   //TODO mettre à jour aussi le code
-
    // Check for supported modifications
    if (!ruleData->Id.isDefined())
    {
@@ -135,6 +137,9 @@ void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule>
 
    // Next, update configuration in database
    m_dbRequester->updateRule(ruleData);
+
+   // Update script file
+   m_scriptFactory->updateScriptFile(ruleData);
 
    // Restart rule
    startRule(ruleData->Id());

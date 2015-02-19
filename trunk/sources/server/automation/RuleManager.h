@@ -34,7 +34,7 @@ namespace automation
       virtual void start();
       virtual void stop();
       virtual std::vector<boost::shared_ptr<database::entities::CRule> > getRules() const;
-      virtual int createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code);
+      virtual int createRule(boost::shared_ptr<const database::entities::CRule> ruleData);
       virtual boost::shared_ptr<database::entities::CRule> getRule(int id) const;
       virtual void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData);
       virtual void deleteRule(int id);

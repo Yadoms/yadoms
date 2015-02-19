@@ -31,12 +31,12 @@ void CScriptLoader::load()
    // Convert script path as Python string
    CPythonObject pyModuleName(PyString_FromString(m_scriptFile->module().c_str()));
    if (pyModuleName.isNull())
-      throw CRunnerException((boost::format("unable to import module %1%") % m_scriptFile->module()).str());
+      throw CRunnerException((boost::format("unable to create Python module name %1%") % m_scriptFile->module()).str());
 
    // Import script to Python interpreter
    m_pyModule.reset(PyImport_Import(*pyModuleName));
    if (m_pyModule.isNull())
-      throw CRunnerException("unable to create Python module");
+      throw CRunnerException("unable to import Python module");
 
    // Get the entry point function pointer
    m_pyMainFunction.reset(PyObject_GetAttrString(*m_pyModule, m_scriptFile->entryPoint().c_str()));
