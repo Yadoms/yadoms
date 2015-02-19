@@ -2,22 +2,18 @@
 #include "RuleManager.h"
 #include "database/IRuleRequester.h"
 #include "Rule.h"
-#include "condition/ConditionFactory.h"
-#include "action/script/Factory.h"
-#include "NotificationObserverForRulesManager.h"
+#include "script/Factory.h"
 #include <shared/exception/EmptyResult.hpp>
+#include <shared/Log.h>
 #include "RuleException.hpp"
 
 namespace automation
 {
 
 CRuleManager::CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-   boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester)
-   :m_pluginGateway(pluginGateway),
-   m_dbRequester(dbRequester),
-   m_conditionFactory(new condition::CConditionFactory(dbAcquisitionRequester)),
-   m_notificationCenter(notificationCenter),
-   m_scriptFactory(new action::script::CFactory("scriptInterpreters", pluginGateway, notificationCenter, dbAcquisitionRequester))
+         boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester)
+   :m_dbRequester(dbRequester),
+   m_scriptFactory(new script::CFactory("scriptInterpreters", pluginGateway, notificationCenter, dbAcquisitionRequester))
 {        
 }
 
@@ -28,9 +24,6 @@ CRuleManager::~CRuleManager()
 void CRuleManager::start()
 {
    BOOST_ASSERT_MSG(m_startedRules.empty(), "Some rules are already started, are you sure that manager was successfuly stopped ?");
-
-   // Register notification observer
-   m_notificationObserver.reset(new CNotificationObserverForRulesManager(m_notificationCenter));
 
    // Start rules
    std::vector<boost::shared_ptr<database::entities::CRule> > rules = getRules();
@@ -51,9 +44,6 @@ void CRuleManager::stop()
 {
    // Free all rules (will stop rules)
    m_startedRules.clear();
-
-   // Unregister notification observer
-   m_notificationObserver.reset();
 }
 
 void CRuleManager::startRule(int ruleId)
@@ -65,7 +55,7 @@ void CRuleManager::startRule(int ruleId)
       if (!ruleData->Enabled())
          return;  // Rule not enabled, don't start
 
-      boost::shared_ptr<IRule> newRule(new CRule(*ruleData, m_notificationObserver, m_pluginGateway, *m_conditionFactory, m_scriptFactory));
+      boost::shared_ptr<IRule> newRule(new CRule(ruleData, m_scriptFactory));
       m_startedRules[ruleId] = newRule;
       newRule->start();
    }
@@ -104,36 +94,50 @@ std::vector<boost::shared_ptr<database::entities::CRule> > CRuleManager::getRule
    return m_dbRequester->getRules();
 }
 
-int CRuleManager::createRule(const database::entities::CRule& data)
+int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code)
 {
-   int ruleId = m_dbRequester->addRule(data);
+   // Add rule in database
+   int ruleId = m_dbRequester->addRule(ruleData);
+
+   // Update rule data with the rule ID
+   boost::shared_ptr<database::entities::CRule> updatedRuleData(new database::entities::CRule(*ruleData));
+   updatedRuleData->Id = ruleId;
+
+   // Create script file
+   m_scriptFactory->createScriptFile(updatedRuleData, code);
+
+   // Start the rule
    startRule(ruleId);
+
    return ruleId;   
 }
 
 boost::shared_ptr<database::entities::CRule> CRuleManager::getRule(int id) const
 {
    return m_dbRequester->getRule(id);
+   //TODO remonter aussi le code
 }
 
-void CRuleManager::updateRule(const database::entities::CRule& newData)
+void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule> ruleData)
 {
+   //TODO mettre à jour aussi le code
+
    // Check for supported modifications
-   if (!newData.Id.isDefined())
+   if (!ruleData->Id.isDefined())
    {
       BOOST_ASSERT(false); // ID must be provided
       throw new shared::exception::CException("Update rule : rule ID was not provided");
    }
 
    // If rule was started, must be stopped to update its configuration
-   if (m_startedRules.find(newData.Id()) != m_startedRules.end())
-      stopRule(newData.Id());
+   if (m_startedRules.find(ruleData->Id()) != m_startedRules.end())
+      stopRule(ruleData->Id());
 
    // Next, update configuration in database
-   m_dbRequester->updateRule(newData);
+   m_dbRequester->updateRule(ruleData);
 
    // Restart rule
-   startRule(newData.Id());
+   startRule(ruleData->Id());
 }
 
 void CRuleManager::deleteRule(int id)
@@ -141,6 +145,7 @@ void CRuleManager::deleteRule(int id)
    try
    {
       stopRule(id);
+      //TODO deleter le code
       m_dbRequester->deleteRule(id);
    }
    catch (shared::exception::CException& e)

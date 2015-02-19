@@ -2,7 +2,7 @@
 
 #include <shared/exception/Exception.hpp>
 
-namespace automation { namespace action { namespace script
+namespace automation { namespace script
 {
 
    //--------------------------------------------------------------
@@ -27,5 +27,5 @@ namespace automation { namespace action { namespace script
       }
    };
 
-} } } // namespace automation::action::script
+} } // namespace automation::script
 

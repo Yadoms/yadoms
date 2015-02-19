@@ -10,11 +10,11 @@ class CRunner : public shared::script::IRunner
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
-   ///\param[in] scriptName   Script name
+   ///\param[in] scriptPath   Script path (without name)
    ///\param[in] scriptConfiguration   Configuration of the script (optional)
    /// \throw CRunnerException if unable to load script
    //--------------------------------------------------------------
-   CRunner(const std::string& scriptName, const shared::CDataContainer& scriptConfiguration = shared::CDataContainer());
+   CRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration = shared::CDataContainer());
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -31,14 +31,14 @@ protected:
 
 private:
    //--------------------------------------------------------------
-   /// \brief	Script name
+   /// \brief	Script path (withou name)
    //--------------------------------------------------------------
-   const std::string& m_scriptName;
+   const std::string m_scriptPath;
 
    //--------------------------------------------------------------
    ///\brief   Configuration of the script
    //--------------------------------------------------------------
-   const shared::CDataContainer& m_scriptConfiguration;
+   const shared::CDataContainer m_scriptConfiguration;
 
    //--------------------------------------------------------------
    ///\brief   Last error message (empty if no error)

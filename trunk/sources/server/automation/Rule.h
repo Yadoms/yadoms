@@ -1,14 +1,8 @@
 #pragma once
 #include "IRule.h"
-#include <shared/shared/DataContainer.h>
 #include "RuleThread.h"
-#include "condition/IConditionRoot.h"
-#include "condition/IConditionFactory.h"
-#include "IActionList.h"
-#include "action/script/IFactory.h"
-#include "../communication/ISendMessageAsync.h"
+#include "script/IFactory.h"
 #include "../database/sqlite/requesters/Rule.h"
-#include "INotificationObserverForRulesManager.h"
 
 namespace automation
 {
@@ -26,11 +20,8 @@ namespace automation
       ///\param[in] conditionFactory the condition factory
       ///\param[in] scriptFactory The script factory
       //-----------------------------------------------------
-      CRule(const database::entities::CRule& ruleData,
-         boost::shared_ptr<INotificationObserverForRulesManager> notificationObserver,
-         boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-         condition::IConditionFactory& conditionFactory,
-         boost::shared_ptr<action::script::IFactory> scriptFactory);
+      CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
+         boost::shared_ptr<script::IFactory> scriptFactory);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -49,14 +40,9 @@ namespace automation
 
    private:
       //-----------------------------------------------------
-      ///\brief               Rule name
+      ///\brief               Rule data
       //-----------------------------------------------------
-      const std::string m_name;
-
-      //-----------------------------------------------------
-      ///\brief               Rule ID
-      //-----------------------------------------------------
-      const int m_id;
+      boost::shared_ptr<const database::entities::CRule> m_ruleData;
 
       //-----------------------------------------------------
       ///\brief               Rule thread
@@ -64,19 +50,14 @@ namespace automation
       boost::shared_ptr<CRuleThread> m_thread;
 
       //-----------------------------------------------------
-      ///\brief               The condition to wait
+      ///\brief               The script factory
       //-----------------------------------------------------
-      boost::shared_ptr<condition::IConditionRoot> m_condition;
+      boost::shared_ptr<script::IFactory> m_scriptFactory;
 
       //-----------------------------------------------------
-      ///\brief               The actions to do
+      ///\brief               The script runner
       //-----------------------------------------------------
-      boost::shared_ptr<IActionList> m_actions;
-
-      //-----------------------------------------------------
-      ///\brief               The notification observer
-      //-----------------------------------------------------
-      boost::shared_ptr<INotificationObserverForRulesManager> m_notificationObserver;
+      boost::shared_ptr<shared::script::IRunner> m_runner;
    };
 	
 } // namespace automation	

@@ -99,10 +99,13 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         database::entities::CRule p;
-         p.fillFromContent(requestContent);
+         boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
+         ruleData->fillFromContent(requestContent);
 
-         int idCreated = m_rulesManager->createRule(p);
+         if (!ruleData->Code.isDefined() || ruleData->Code().empty())
+            throw CRuleException("No code provided for the rule");
+
+         int idCreated = m_rulesManager->createRule(ruleData, ruleData->Code());
          boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(idCreated);
          return CResult::GenerateSuccess(ruleFound);
       }
@@ -127,17 +130,17 @@ namespace web { namespace rest { namespace service {
          if (parameters.size()>2)
          {
             int ruleId = boost::lexical_cast<int>(parameters[2]);
-            database::entities::CRule ruleToUpdate;
-            ruleToUpdate.fillFromContent(requestContent);
+            boost::shared_ptr<database::entities::CRule> ruleToUpdate(new database::entities::CRule);
+            ruleToUpdate->fillFromContent(requestContent);
 
             // Check for supported modifications
-            if (ruleToUpdate.Id.isDefined())
+            if (ruleToUpdate->Id.isDefined())
             {
                BOOST_ASSERT(false); // rule Id is not modifiable
                throw shared::exception::CException("Update rule : rule Id is not modifiable");
             }
 
-            ruleToUpdate.Id = ruleId;
+            ruleToUpdate->Id = ruleId;
             m_rulesManager->updateRule(ruleToUpdate);
 
             boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(ruleId);

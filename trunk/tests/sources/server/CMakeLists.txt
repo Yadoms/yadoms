@@ -4,7 +4,6 @@
 # List subdirectories here
 add_subdirectory(startupOptions)
 add_subdirectory(database)
-add_subdirectory(automation)
 add_subdirectory(tools)
 
 

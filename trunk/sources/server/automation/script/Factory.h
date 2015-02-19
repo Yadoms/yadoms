@@ -1,11 +1,11 @@
 #pragma once
 #include "IFactory.h"
 #include "IInterpreterLibrary.h"
-#include "../../../database/IAcquisitionRequester.h"
-#include "../../../communication/ISendMessageAsync.h"
+#include "../../database/IAcquisitionRequester.h"
+#include "../../communication/ISendMessageAsync.h"
 #include <shared/notification/NotificationCenter.h>
 
-namespace automation { namespace action { namespace script
+namespace automation { namespace script
 {
    //-----------------------------------------------------
    ///\brief The script runner factory
@@ -33,7 +33,9 @@ namespace automation { namespace action { namespace script
    protected:
       // IFactory Implementation
       virtual std::vector<std::string> getAvailableInterpreters();
-      virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(const std::string& scriptName, const shared::CDataContainer& scriptConfiguration);
+      virtual boost::shared_ptr<IProperties> createScriptProperties(boost::shared_ptr<const database::entities::CRule> ruleData);
+      virtual void createScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code);
+      virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(boost::shared_ptr<const IProperties> scriptProperties);
       virtual boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext();
       // [END] IFactory Implementation
 
@@ -59,11 +61,11 @@ namespace automation { namespace action { namespace script
 
       //-----------------------------------------------------
       ///\brief               Get the interpreter needed to run a script
-      ///\param[in] scriptName Script name
+      ///\param[in] interpreterName The interpreter name
       ///\return              The first interpreter found supporting this script
       ///\throw CScriptInterpreterNotFound No corresponding script interpreter was found
       //-----------------------------------------------------
-      boost::shared_ptr<shared::script::IInterpreter> getAssociatedInterpreter(const std::string& scriptName);
+      boost::shared_ptr<shared::script::IInterpreter> getAssociatedInterpreter(const std::string& interpreterName);
 
    private:
       //-----------------------------------------------------
@@ -93,6 +95,6 @@ namespace automation { namespace action { namespace script
       std::map<std::string, boost::shared_ptr<IInterpreterLibrary> > m_LoadedInterpreters;
    };
 
-} } } // namespace automation::action::script
+} } // namespace automation::script
 	
 	

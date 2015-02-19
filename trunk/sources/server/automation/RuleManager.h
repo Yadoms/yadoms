@@ -1,12 +1,10 @@
 #pragma once
 #include "IRuleManager.h"
 #include "IRule.h"
-#include "condition/IConditionFactory.h"
-#include "action/script/IFactory.h"
+#include "script/IFactory.h"
 #include "database/IRuleRequester.h"
 #include "../communication/ISendMessageAsync.h"
 #include <shared/notification/NotificationCenter.h>
-#include "INotificationObserverForRulesManager.h"
 #include "database/IAcquisitionRequester.h"
 
 namespace automation
@@ -36,9 +34,9 @@ namespace automation
       virtual void start();
       virtual void stop();
       virtual std::vector<boost::shared_ptr<database::entities::CRule> > getRules() const;
-      virtual int createRule(const database::entities::CRule& data);
+      virtual int createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code);
       virtual boost::shared_ptr<database::entities::CRule> getRule(int id) const;
-      virtual void updateRule(const database::entities::CRule& newData);
+      virtual void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData);
       virtual void deleteRule(int id);
       // [END] IRuleManager Implementation
 
@@ -58,34 +56,14 @@ namespace automation
 
    private:
       //-----------------------------------------------------
-      ///\brief               The plugin access (to send commands to plugins)
-      //-----------------------------------------------------
-      boost::shared_ptr<communication::ISendMessageAsync> m_pluginGateway;
-
-      //-----------------------------------------------------
       ///\brief               The rule data accessor
       //-----------------------------------------------------
       boost::shared_ptr<database::IRuleRequester> m_dbRequester;
 
       //-----------------------------------------------------
-      ///\brief               The condition factory
-      //-----------------------------------------------------
-      boost::shared_ptr<condition::IConditionFactory> m_conditionFactory;
-
-      //-----------------------------------------------------
-      ///\brief               The notification center
-      //-----------------------------------------------------
-      boost::shared_ptr<shared::notification::CNotificationCenter> m_notificationCenter;
-
-      //-----------------------------------------------------
-      ///\brief               The notification observer
-      //-----------------------------------------------------
-      boost::shared_ptr<INotificationObserverForRulesManager> m_notificationObserver;
-
-      //-----------------------------------------------------
       ///\brief               The script  factory
       //-----------------------------------------------------
-      boost::shared_ptr<action::script::IFactory> m_scriptFactory;
+      boost::shared_ptr<script::IFactory> m_scriptFactory;
 
       //-----------------------------------------------------
       ///\brief               The started rules list

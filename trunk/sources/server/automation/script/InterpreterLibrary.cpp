@@ -3,7 +3,7 @@
 #include <shared/exception/InvalidParameter.hpp>
 #include <shared/script/IInterpreter.h>
 
-namespace automation { namespace action { namespace script
+namespace automation { namespace script
 {
 
 CInterpreterLibrary::CInterpreterLibrary(const boost::filesystem::path& interpreterPath)
@@ -49,6 +49,6 @@ boost::shared_ptr<shared::script::IInterpreter> CInterpreterLibrary::getInterpre
    return m_interpreter;
 }
 
-} } } // namespace automation::action::script
+} } // namespace automation::script
 	
 	

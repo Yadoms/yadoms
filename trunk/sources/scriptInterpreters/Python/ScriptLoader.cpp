@@ -6,8 +6,8 @@
 #include "ScriptFile.h"
 
 
-CScriptLoader::CScriptLoader(const std::string& scriptName)
-   :m_scriptFile(new CScriptFile(scriptName))
+CScriptLoader::CScriptLoader(const std::string& scriptPath)
+   :m_scriptFile(new CScriptFile(scriptPath))
 {
 }
 

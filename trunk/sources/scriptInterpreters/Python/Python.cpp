@@ -46,41 +46,21 @@ bool CPython::isAvailable() const
    return true;
 }
 
-bool CPython::canInterpret(const std::string& scriptName) const
+std::string CPython::loadScriptContent(const std::string& scriptPath) const
 {
-   try
-   {
-      // Create sub-interpreter (needed for thread context)
-      CSubInterpreter interpreter;
-
-      CScriptLoader loader(scriptName);
-      loader.load();
-   }
-   catch(CRunnerException& e)
-   {
-      YADOMS_LOG(error) << scriptName << " : can not interpret, " << e.what();
-      return false;
-   }
-
-   YADOMS_LOG(information) << scriptName << " can be interpreted";
-   return true;
-}
-
-std::string CPython::loadScriptContent(const std::string& scriptName) const
-{
-   CScriptFile file(scriptName);
+   CScriptFile file(scriptPath);
    return file.read();
 }
 
-void CPython::saveScriptTemplate(const std::string& scriptName, const std::string& content) const
+void CPython::saveScriptContent(const std::string& scriptPath, const std::string& content) const
 {
-   CScriptFile file(scriptName);
-   return file.write(content);
+   CScriptFile file(scriptPath);
+   file.write(content);
 }
 
-boost::shared_ptr<shared::script::IRunner> CPython::createRunner(const std::string& scriptName, const shared::CDataContainer& scriptConfiguration) const
+boost::shared_ptr<shared::script::IRunner> CPython::createRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration) const
 {
-   boost::shared_ptr<shared::script::IRunner> runner(new CRunner(scriptName, scriptConfiguration));
+   boost::shared_ptr<shared::script::IRunner> runner(new CRunner(scriptPath, scriptConfiguration));
    return runner;
 }
 

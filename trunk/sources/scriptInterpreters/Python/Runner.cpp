@@ -12,8 +12,8 @@
 // Function name of the Python script entry point
 static const std::string ScriptEntryPoint("yMain");
 
-CRunner::CRunner(const std::string& scriptName, const shared::CDataContainer& scriptConfiguration)
-   :m_scriptName(scriptName), m_scriptConfiguration(scriptConfiguration)
+CRunner::CRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration)
+   :m_scriptPath(scriptPath), m_scriptConfiguration(scriptConfiguration)
 {
 }
 
@@ -31,7 +31,7 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
       CSubInterpreter interpreter;
 
       // Load script file
-      CScriptLoader loader(m_scriptName);
+      CScriptLoader loader(m_scriptPath);
       loader.load();
 
       // Pass context to script entry point (yMain) as arg
@@ -46,11 +46,11 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
       if (pyReturnValue.isNull())
          throw CRunnerException("Script exited with error");
 
-      YADOMS_LOG(information) << m_scriptName << " : script exited with code " << PyInt_AsLong(*pyReturnValue);
+      YADOMS_LOG(information) << m_scriptPath << " : script exited with code " << PyInt_AsLong(*pyReturnValue);
    }
    catch(CRunnerException& e)
    {
-      YADOMS_LOG(error) << m_scriptName << " : error running script, " << e.what();
+      YADOMS_LOG(error) << m_scriptPath << " : error running script, " << e.what();
       m_lastError = e.what();
    }
 }

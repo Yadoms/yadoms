@@ -9,9 +9,9 @@ class CScriptFile : public IScriptFile
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
-   /// \param[in] scriptName   Script name (without path and extension)
+   /// \param[in] scriptPath   Script path (without name)
    //--------------------------------------------------------------
-   CScriptFile(const std::string& scriptName);
+   CScriptFile(const std::string& scriptPath);
 
    //--------------------------------------------------------------
    /// \brief	Destructor
@@ -38,11 +38,6 @@ private:
    /// \brief	Full path of script file
    //--------------------------------------------------------------
    const boost::filesystem::path m_scriptFile;
-
-   //--------------------------------------------------------------
-   /// \brief	Module name
-   //--------------------------------------------------------------
-   const std::string m_module;
 };
 
 

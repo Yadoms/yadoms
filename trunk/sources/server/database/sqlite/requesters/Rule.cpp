@@ -53,17 +53,17 @@ namespace database { namespace sqlite { namespace requesters {
       return adapter.getResults().at(0);
    }
 
-   int CRule::addRule(const entities::CRule& data)
+   int CRule::addRule(boost::shared_ptr<const entities::CRule> ruleData)
    {
       CQuery qInsert;
 
       qInsert.InsertInto(CRuleTable::getTableName(), CRuleTable::getNameColumnName(), CRuleTable::getDescriptionColumnName(), CRuleTable::getTypeColumnName(), CRuleTable::getModelColumnName(), CRuleTable::getContentColumnName(), CRuleTable::getConfigurationColumnName()).
-         Values(data.Name(), 
-         data.Description(),
-         data.Type(),
-         data.Model(),
-         data.Content(),
-         data.Configuration());
+         Values(ruleData->Name(), 
+         ruleData->Description(),
+         ruleData->Type(),
+         ruleData->Model(),
+         ruleData->Content(),
+         ruleData->Configuration());
 
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
@@ -72,7 +72,7 @@ namespace database { namespace sqlite { namespace requesters {
       CQuery qSelect;
       qSelect. Select(CRuleTable::getIdColumnName()).
          From(CRuleTable::getTableName()).
-         Where(CRuleTable::getNameColumnName(), CQUERY_OP_EQUAL, data.Name()).
+         Where(CRuleTable::getNameColumnName(), CQUERY_OP_EQUAL, ruleData->Name()).
          OrderBy(CRuleTable::getIdColumnName(), CQUERY_ORDER_DESC);
 
       adapters::CSingleValueAdapter<int> adapter;
@@ -83,63 +83,63 @@ namespace database { namespace sqlite { namespace requesters {
       throw shared::exception::CEmptyResult("Cannot retrieve inserted Plugin");
    }
    
-   void CRule::updateRule(const entities::CRule& data)
+   void CRule::updateRule(boost::shared_ptr<const entities::CRule> ruleData)
    {
       CQuery qUpdate;
 
-      if(!data.Id.isDefined())
+      if(!ruleData->Id.isDefined())
          throw CDatabaseException("Need an id to update");
 
       //update name
-      if(data.Name.isDefined())
+      if(ruleData->Name.isDefined())
       {
          qUpdate.Clear().Update(CRuleTable::getTableName()).
-         Set(CRuleTable::getNameColumnName(), data.Name()).
-         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, data.Id());
+         Set(CRuleTable::getNameColumnName(), ruleData->Name()).
+         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
             throw CDatabaseException("Failed to update name");
       }
 
       //update configuration
-      if(data.Description.isDefined())
+      if(ruleData->Description.isDefined())
       {
          qUpdate.Clear().Update(CRuleTable::getTableName()).
-         Set(CRuleTable::getDescriptionColumnName(), data.Description()).
-         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, data.Id());
+         Set(CRuleTable::getDescriptionColumnName(), ruleData->Description()).
+         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
             throw CDatabaseException("Failed to update description");
       }
       
       //update content
-      if(data.Content.isDefined())
+      if(ruleData->Content.isDefined())
       {
          qUpdate.Clear().Update(CRuleTable::getTableName()).
-            Set(CRuleTable::getContentColumnName(), data.Content()).
-         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, data.Id());
+            Set(CRuleTable::getContentColumnName(), ruleData->Content()).
+         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
             throw CDatabaseException("Failed to update content field");
       }
       
       //update configuration
-      if(data.Configuration.isDefined())
+      if(ruleData->Configuration.isDefined())
       {
          qUpdate.Clear().Update(CRuleTable::getTableName()).
-            Set(CRuleTable::getConfigurationColumnName(), data.Configuration()).
-         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, data.Id());
+            Set(CRuleTable::getConfigurationColumnName(), ruleData->Configuration()).
+         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
             throw CDatabaseException("Failed to update Configuration field");
       }
       
       //update enable flag
-      if(data.Enabled.isDefined())
+      if(ruleData->Enabled.isDefined())
       {
          qUpdate.Clear().Update(CRuleTable::getTableName()).
-            Set(CRuleTable::getEnabledColumnName(), data.Enabled()).
-         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, data.Id());
+            Set(CRuleTable::getEnabledColumnName(), ruleData->Enabled()).
+         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
             throw CDatabaseException("Failed to update enable flag field");
