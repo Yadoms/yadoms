@@ -46,7 +46,11 @@
                Blockly.Yadoms.GetResult(function(xmlString,pythonCode){
                   rule.content = encodeURIComponent(xmlString);
                   rule.code = encodeURIComponent(pythonCode);
+
+                  debugger;
+                  console.log("------------------> START");
                   console.log(pythonCode);
+                  console.log("------------------> END");
                });
 
 
@@ -70,7 +74,7 @@
 
          //load content
          var content = decodeURIComponent(rule.content);
-
+         debugger;
          //load blockly
          Blockly.Yadoms.Initialize($modalContent.find("div.blockly-content")[0], content, 1);
 

@@ -40,5 +40,14 @@
             }
          }
       }
-   }
+   },
+  "enumerations" : {
+    "EFakeControllerValues" : {
+      "stop" : "Arreter",
+       "run" : "Avancer",
+       "back" : "Arrière",
+      "left" : "Gauche",
+      "right" : "Droite"
+    }
+  }   
 }

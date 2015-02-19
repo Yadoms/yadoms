@@ -159,6 +159,8 @@ Blockly.Yadoms.CreateToolbox_ = function() {
     toolbox += '    <block type="yadoms_notification_simple"></block>';
     toolbox += '    <block type="yadoms_notification_advanced"></block>';
     toolbox += '    <block type="yadoms_enumeration"></block>';
+    toolbox += '    <block type="yadoms_logic_compare_become"></block>';
+    toolbox += '    <block type="yadoms_logic_compare_is"></block>';
     toolbox += '    <block type="yadoms_log">';
     toolbox += '        <value name="LogContent">';
     toolbox += '           <block type="text">';
@@ -167,8 +169,6 @@ Blockly.Yadoms.CreateToolbox_ = function() {
     toolbox += '     </block>';
     toolbox += '  </category>';
     toolbox += '  <category name=" ' + catLogic +'">';
-    toolbox += '     <block type="yadoms_logic_compare_become"></block>';
-    toolbox += '     <block type="yadoms_logic_compare_is"></block>';
     toolbox += '     <block type="controls_if"></block>';
     toolbox += '     <block type="logic_compare"></block>';
     toolbox += '     <block type="logic_operation"></block>';
@@ -646,6 +646,7 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
             deviceDd.refresh(Blockly.Yadoms.LoadDevices_(plugin, canWrite, allowedKeywordTypes));
     });
 
+
     deviceDd = new Blockly.FieldDropdown(function() {
         var deviceList= Blockly.Yadoms.LoadDevices_(pluginDd.getValue(), canWrite, allowedKeywordTypes);
         if(deviceList == null || deviceList == undefined || deviceList.length == 0) {
@@ -657,6 +658,7 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
         if(!thisBlock.disabled)
             keywordDd.refresh(Blockly.Yadoms.LoadKeywords_(device, canWrite, allowedKeywordTypes));
     });
+
 
     keywordDd = new Blockly.FieldDropdown(function() {
         var keywordList= Blockly.Yadoms.LoadKeywords_(deviceDd.getValue(), canWrite, allowedKeywordTypes);
@@ -677,6 +679,32 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
         }
     });
 
+    //add event fire value changed
+    pluginDd.setValue =function(newValue) {
+        var result = Blockly.FieldDropdown.prototype.setValue.call(this, newValue);
+        if(!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
+            this.changeHandler_(this.getValue());
+        return result;
+    };
+
+    //add event fire value changed
+    deviceDd.setValue =function(newValue) {
+        var result = Blockly.FieldDropdown.prototype.setValue.call(this, newValue);
+        if(!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
+            this.changeHandler_(this.getValue());
+        return result;
+    };
+
+
+    //add event fire value changed
+    keywordDd.setValue =function(newValue) {
+        var result = Blockly.FieldDropdown.prototype.setValue.call(this, newValue);
+        if(!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
+            this.changeHandler_(this.getValue());
+        return result;
+    };
+
+
     thisBlock.getSelectedKeyword = function() {
         return keywordDd.getValue();
     };
@@ -693,6 +721,7 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
         .appendField(keywordDd, keywordDropDownName);
 
     pluginDd.changeHandler_(pluginDd.getValue());
+
 };
 
 
@@ -705,10 +734,21 @@ Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection = function(thisBlock, can
 Blockly.Yadoms.GetResult = function(callback) {
     assert(!isNullOrUndefined(callback), "callback must be defined");
 
+    //get xml code
     var xmlDomString = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
     var xmlString = Blockly.Xml.domToText(xmlDomString);
+
+    //get python code
     var pythonCode = Blockly.Python.workspaceToCode();
-    callback(xmlString, pythonCode);
+
+    var pythonCodeIndented = Blockly.Python.prefixLines(pythonCode, '\t');
+
+    var completedPythonCode = '# yMain is the script entry point, called by Yadoms' + '\n';
+    completedPythonCode +="def yMain():" + '\n';
+    completedPythonCode += '\t' + "print 'Script started'" + '\n';
+    completedPythonCode += pythonCodeIndented;
+
+    callback(xmlString, completedPythonCode);
 };
 
 
@@ -723,14 +763,45 @@ Blockly.Yadoms.GetResult = function(callback) {
  * -> Main blockly hack (not using only public memebers)
  * @param data
  */
-Blockly.FieldDropdown.prototype.refresh = function(data) {
+Blockly.FieldDropdown.prototype.refresh = function(data, tryToSelectValue) {
     if(data != undefined && data.length >0) {
         this.menuGenerator_ = data;
-        this.setValue(data[0][1]);
-        this.updateTextNode_();
-        this.changeHandler_(this.getValue());
+
+        var valueFound = false;
+        $.each(data, function(index, val){
+           if(val[1] == tryToSelectValue)
+               valueFound =true;
+        });
+
+        if(isNullOrUndefined(tryToSelectValue) || !valueFound)
+            this.setValue(data[0][1]);
+        else
+            this.setValue(tryToSelectValue);
+//        this.updateTextNode_();
+//        if(!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
+//            this.changeHandler_(this.getValue());
     }
 };
+
+// And declare it is a subclass of the first
+//Blockly.Yadoms.FieldDropdown.prototype = new Blockly.FieldDropdown();
+
+
+// Add a second class
+//function ExFieldDropdown(){
+//}
+//
+//ExFieldDropdown.prototype = new Blockly.FieldDropdown();
+//
+//
+//ExFieldDropdown.prototype.setValue =function(newValue) {
+//    var result = Blockly.FieldDropdown.prototype.setValue.call(this, newValue);
+//    if(!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
+//        this.changeHandler_(this.getValue());
+//    return result;
+//};
+
+
 
 /**
  * Define a block which allow to read a keyword value
@@ -770,6 +841,8 @@ Blockly.Blocks['yadoms_keyword_value'] = {
     }
 };
 
+
+
 /**
  * Define the python generation function for yadoms_keyword_value block
  * @param block The block
@@ -793,6 +866,7 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
     pluginDropDownName : "Plugin",
     deviceDropDownName : "Device",
     keywordDropDownName : "Keyword",
+    inputValueShown : false,
   init: function() {
       this.setHelpUrl('http://www.example.com/');
       this.setInputsInline(true);
@@ -804,6 +878,7 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
       this.appendDummyInput()
           .appendField("Set");
       var thisBlock = this;
+
       Blockly.Yadoms.ConfigureBlockForYadomsKeywordSelection(this, true, ["numeric", "string", "bool", "nodata", "enum"], function (keyword, keywordType) {
           if (keywordType == null || keywordType == undefined) {
               thisBlock.updateShape_(false);
@@ -814,6 +889,7 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
           }
           thisBlock.updateUnit(Blockly.Yadoms.data.keywords[keyword]);
       }, thisBlock.pluginDropDownName, thisBlock.deviceDropDownName, thisBlock.keywordDropDownName);
+
 
       /**
        * Method which make type checks when one of connector changes
@@ -847,6 +923,7 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
         var opExist = this.getInput(this.operatorValueName);
         var inExist = this.getInput(this.inputValueName);
 
+        this.inputValueShown = extraInput;
         // Add or remove a Value Input.
         if (extraInput) {
             if (!opExist) {
@@ -873,8 +950,31 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
         if(!isNullOrUndefined(keyword) && !isNullOrUndefinedOrEmpty(keyword.units) ) {
             this.appendDummyInput(this.unitsInputName).appendField(keyword.units);
         }
-    }
+    },
 
+
+
+    /**
+     * Create XML to represent whether the 'divisorInput' should be present.
+     * @return {Element} XML storage element.
+     * @this Blockly.Block
+     */
+    mutationToDom: function() {
+        var container = document.createElement('mutation');
+        //attribute name must be lower case
+        container.setAttribute('input_shown', this.inputValueShown);
+        return container;
+    },
+    /**
+     * Parse XML to restore the 'divisorInput'.
+     * @param {!Element} xmlElement XML storage element.
+     * @this Blockly.Block
+     */
+    domToMutation: function(xmlElement) {
+        //attribute name must be lower case
+        var inputValueShown = (xmlElement.getAttribute('input_shown') == 'true');
+        this.updateShape_(inputValueShown);
+    }
 
 
 };
@@ -887,10 +987,8 @@ Blockly.Blocks['yadoms_affect_keyword'] = {
  */
 Blockly.Python['yadoms_affect_keyword'] = function(block) {
     var dropdown_keyword = block.getSelectedKeyword();
-    var order = Blockly.Python.ORDER_RELATIONAL;
-    var value = Blockly.Python.valueToCode(block, block.inputValueName, order) || '0';
-    var code = 'yadoms.writeKeyword(' + dropdown_keyword + ' , ' + value + ')';
-    return [code, order];
+    var value = Blockly.Python.valueToCode(block, block.inputValueName, Blockly.Python.ORDER_RELATIONAL) || '0';
+    return 'yadoms.writeKeyword(' + dropdown_keyword + ',' + value + ')\n';
 };
 
 
@@ -1356,6 +1454,14 @@ Blockly.Blocks['yadoms_enumeration'] = {
         this.getSelectedEnumValue = function() {
             return enumDropDown.getValue();
         };
+
+        //add event fire value changed
+        enumDropDown.setValue =function(newValue) {
+            var result = Blockly.FieldDropdown.prototype.setValue.call(this, newValue);
+            if(!isNullOrUndefined(this.changeHandler_) && $.isFunction(this.changeHandler_))
+                this.changeHandler_(this.getValue());
+            return result;
+        };
     },
 
     updateEnumeration : function(keywordValue, deviceValue, pluginValue) {
@@ -1377,15 +1483,10 @@ Blockly.Blocks['yadoms_enumeration'] = {
                             var trad = $.t(pluginData.type + ":enumerations." + typeInfo.name + "." + value);
                             translatedEnum.push([trad, value]);
                         });
-
-
-
-
-
                         //apply new dropdown list
                         this.currentEnumerationTypeName = typeInfo.name;
                         var enumDropDown = this.getField_(this.enumerationDropDownName);
-                        enumDropDown.refresh(translatedEnum);
+                        enumDropDown.refresh(translatedEnum, enumDropDown.getValue());
                     }
                 }
             }
@@ -1431,9 +1532,9 @@ Blockly.Blocks['yadoms_log'] = {
  * @param block The block
   */
 Blockly.Python['yadoms_log'] = function(block) {
-    var value_name = Blockly.Python.valueToCode(block, 'LogContent', Blockly.Python.ORDER_ATOMIC);
+    var value_name = Blockly.Python.valueToCode(block, 'LogContent', Blockly.Python.ORDER_ATOMIC) || '\'\'';;
     var dropdown_loglevel = Blockly.Python.quote_(block.getFieldValue('LogLevel'));
-    return 'yadoms.log(' + dropdown_loglevel + ' , ' + value_name + ')';
+    return 'yadoms.log(' + dropdown_loglevel + ',' + value_name + ')\n';
 };
 
 
@@ -1650,7 +1751,8 @@ Blockly.BlockSvg.prototype.addError = function() {
     Blockly.addClass_(/** @type {!Element} */ (this.svgGroup_),
         'blocklySelectedError');
     // Move the selected block to the top of the stack.
-    this.svgGroup_.parentNode.appendChild(this.svgGroup_);
+    if(!isNullOrUndefined(this.svgGroup_.parentNode))
+        this.svgGroup_.parentNode.appendChild(this.svgGroup_);
 };
 
 /**
