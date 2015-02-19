@@ -28,11 +28,6 @@ public:
    virtual void write(const std::string& content) const;
    // [END] IScriptFile Implementation
 
-   //--------------------------------------------------------------
-   /// \brief	Return a template of a script file
-   //--------------------------------------------------------------
-   std::string fromTemplate() const;
-
 private:
    //--------------------------------------------------------------
    /// \brief	Full path of script file

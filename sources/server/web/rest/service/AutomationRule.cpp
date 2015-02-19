@@ -105,7 +105,10 @@ namespace web { namespace rest { namespace service {
          if (!ruleData->Code.isDefined() || ruleData->Code().empty())
             throw CRuleException("No code provided for the rule");
 
-         int idCreated = m_rulesManager->createRule(ruleData, ruleData->Code());
+         //TODO décoder la chaîne "code" ? Voir mail de Nico du 19/02 14h28, sinon voir http://www.appinf.com/docs/poco/Poco.URI.html#22518
+
+         int idCreated = m_rulesManager->createRule(ruleData);
+
          boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(idCreated);
          return CResult::GenerateSuccess(ruleFound);
       }
@@ -130,18 +133,24 @@ namespace web { namespace rest { namespace service {
          if (parameters.size()>2)
          {
             int ruleId = boost::lexical_cast<int>(parameters[2]);
-            boost::shared_ptr<database::entities::CRule> ruleToUpdate(new database::entities::CRule);
-            ruleToUpdate->fillFromContent(requestContent);
+            boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
+            ruleData->fillFromContent(requestContent);
 
             // Check for supported modifications
-            if (ruleToUpdate->Id.isDefined())
+            if (ruleData->Id.isDefined())
             {
                BOOST_ASSERT(false); // rule Id is not modifiable
                throw shared::exception::CException("Update rule : rule Id is not modifiable");
             }
 
-            ruleToUpdate->Id = ruleId;
-            m_rulesManager->updateRule(ruleToUpdate);
+            ruleData->Id = ruleId;
+
+            if (!ruleData->Code.isDefined() || ruleData->Code().empty())
+               throw CRuleException("No code provided for the rule");
+
+            //TODO décoder la chaîne "code" ? Voir mail de Nico du 19/02 14h28, sinon voir http://www.appinf.com/docs/poco/Poco.URI.html#22518
+
+            m_rulesManager->updateRule(ruleData);
 
             boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(ruleId);
             return CResult::GenerateSuccess(ruleFound);

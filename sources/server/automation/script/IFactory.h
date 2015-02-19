@@ -29,13 +29,20 @@ namespace automation { namespace script
       ///\return              A new script properties instance
       //-----------------------------------------------------
       virtual boost::shared_ptr<IProperties> createScriptProperties(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
+
+      //-----------------------------------------------------
+      ///\brief               Get the script file
+      ///\param[in,out] ruleData  The rule raw data. Will be updated with readed code
+      ///\throw CInvalidParameter if rule ID or file not found
+      //-----------------------------------------------------
+      virtual void getScriptFile(boost::shared_ptr<database::entities::CRule> ruleData) = 0;
       
       //-----------------------------------------------------
-      ///\brief               Create the properties for a script
+      ///\brief               Update the script file (create if necessary)
       ///\param[in] ruleData  The rule raw data
       ///\param[in] code      The script code
       //-----------------------------------------------------
-      virtual void createScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code) = 0;
+      virtual void updateScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
       
       //-----------------------------------------------------
       ///\brief               Create a script runner

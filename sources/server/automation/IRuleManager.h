@@ -33,10 +33,9 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               Create a new rule
       /// \param[in] ruleData Data of the rule to create (name, configuration, etc...)
-      /// \param[in] code     Script code of the rule to create
       ///\return              The new rule id
       //-----------------------------------------------------
-      virtual int createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code) = 0;
+      virtual int createRule(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Get the rule informations

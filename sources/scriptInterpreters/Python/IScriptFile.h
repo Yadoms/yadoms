@@ -44,6 +44,7 @@ public:
    //--------------------------------------------------------------
    /// \brief	Read the script content
    /// \return Script content
+   ///\throw CInvalidParameter if file not found or unreadable
    //--------------------------------------------------------------
    virtual std::string read() const = 0;
 

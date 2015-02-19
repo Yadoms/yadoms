@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ScriptFile.h"
+#include <shared/exception/InvalidParameter.hpp>
 
 
 // Be careful, in Python, filename is also the Python module name, and modules are globals.
@@ -49,11 +50,11 @@ bool CScriptFile::exists() const
 std::string CScriptFile::read() const
 {
    if (!exists())
-      return fromTemplate();
+      throw shared::exception::CInvalidParameter(m_scriptFile.string());
 
    std::ifstream file(m_scriptFile.string().c_str());
    if (!file.is_open())
-      return fromTemplate();
+      throw shared::exception::CInvalidParameter(m_scriptFile.string());
 
    std::istreambuf_iterator<char> eos;
    return std::string(std::istreambuf_iterator<char>(file), eos);
@@ -63,17 +64,4 @@ void CScriptFile::write(const std::string& content) const
 {
    std::ofstream file(m_scriptFile.string().c_str());
    file << content;
-}
-
-std::string CScriptFile::fromTemplate() const
-{
-   static const std::string scriptTemplate(                                      \
-      "\n"                                                                       \
-      "# " + ScriptEntryPoint + " is the main entry point of your script"        \
-      "def " + ScriptEntryPoint + "():\n"                                        \
-      "   # ... add your code here ..."                                          \
-      "\n"                                                                       \
-      );
-
-   return scriptTemplate;
 }
