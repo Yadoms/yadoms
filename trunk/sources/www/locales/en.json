@@ -152,9 +152,9 @@
 	  },
       "new-automation-rule" : {
          "title" : "Automation rule creation",
-         "empty" : "Empty",
+         "newRule" : "New empty rule",
          "choose-language" : "Select a language to create an empty rule",
-         "from-model" : "From model",
+         "from-model" : "New rule from model",
          "choose-model" : "Or select a model to create a predefined rule",
          "blockly" : "Blockly language",
          "python" : "Python language"
