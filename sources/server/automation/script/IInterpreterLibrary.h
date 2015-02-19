@@ -1,7 +1,7 @@
 #pragma once
 #include <shared/script/IInterpreter.h>
 
-namespace automation { namespace action { namespace script
+namespace automation { namespace script
 {
    //-----------------------------------------------------
    ///\brief The script interpreter library interface
@@ -22,6 +22,6 @@ namespace automation { namespace action { namespace script
       virtual boost::shared_ptr<shared::script::IInterpreter> getInterpreter() const = 0;
    };
 	
-} } } // namespace automation::action::script
+} } // namespace automation::script
 	
 	

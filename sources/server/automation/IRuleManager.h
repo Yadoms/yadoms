@@ -32,10 +32,11 @@ namespace automation
 
       //-----------------------------------------------------
       ///\brief               Create a new rule
-      /// \param[in] data     Data fo the rule to create (name, configuration, etc...)
+      /// \param[in] ruleData Data of the rule to create (name, configuration, etc...)
+      /// \param[in] code     Script code of the rule to create
       ///\return              The new rule id
       //-----------------------------------------------------
-      virtual int createRule(const database::entities::CRule& data) = 0;
+      virtual int createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code) = 0;
 
       //--------------------------------------------------------------
       /// \brief           Get the rule informations
@@ -47,11 +48,11 @@ namespace automation
       
       //--------------------------------------------------------------
       /// \brief           Update rule informations
-      /// \param[in] newData The rule new configuration
+      /// \param[in] ruleData The rule new configuration
       /// \throw           CNotSupported if request to apply unsupported modifications
       /// \throw           CDatabaseException if fails
       //--------------------------------------------------------------
-      virtual void updateRule(const database::entities::CRule& newData) = 0;
+      virtual void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
     
       //--------------------------------------------------------------
       /// \brief                          Delete a rule

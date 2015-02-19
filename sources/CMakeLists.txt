@@ -266,15 +266,9 @@ set(YADOMS_SRC
 	server/database/entities/Entities.cpp
 	server/database/entities/EntityHelpers.hpp
 
-	server/automation/ActionList.h
-	server/automation/ActionList.cpp
-	server/automation/IActionList.h
-	server/automation/INotificationObserverForRulesManager.h
 	server/automation/IRule.h
 	server/automation/IRuleThreadHandler.h
 	server/automation/IRuleManager.h
-	server/automation/NotificationObserverForRulesManager.h
-	server/automation/NotificationObserverForRulesManager.cpp
 	server/automation/Rule.h
 	server/automation/Rule.cpp
 	server/automation/RuleException.hpp
@@ -282,54 +276,19 @@ set(YADOMS_SRC
 	server/automation/RuleManager.cpp
 	server/automation/RuleThread.h
 	server/automation/RuleThread.cpp
-
-	server/automation/action/DriveDevice.h
-	server/automation/action/DriveDevice.cpp
-	server/automation/action/IAction.h
-	server/automation/action/RunScript.h
-	server/automation/action/RunScript.cpp
-	server/automation/action/Wait.h
-	server/automation/action/Wait.cpp
-
-	server/automation/action/script/Factory.h
-	server/automation/action/script/Factory.cpp
-	server/automation/action/script/IFactory.h
-	server/automation/action/script/IInterpreterLibrary.h
-   server/automation/action/script/InterpreterNotFound.hpp
-	server/automation/action/script/InterpreterLibrary.h
-	server/automation/action/script/InterpreterLibrary.cpp
-	server/automation/action/script/YScriptApiImplementation.h
-	server/automation/action/script/YScriptApiImplementation.cpp
    
-	server/automation/condition/And.h
-	server/automation/condition/And.cpp
-	server/automation/condition/At.h
-	server/automation/condition/At.cpp
-	server/automation/condition/AtThread.h
-	server/automation/condition/AtThread.cpp
-	server/automation/condition/Become.h
-	server/automation/condition/Become.cpp
-	server/automation/condition/Comparators.h
-	server/automation/condition/Comparators.cpp
-	server/automation/condition/Not.h
-	server/automation/condition/Not.cpp
-	server/automation/condition/Or.h
-	server/automation/condition/Or.cpp
-	server/automation/condition/ConditionFactory.h
-	server/automation/condition/ConditionFactory.cpp
-	server/automation/condition/ConditionRoot.h
-	server/automation/condition/ConditionRoot.cpp
-	server/automation/condition/Is.h
-	server/automation/condition/Is.cpp
-	server/automation/condition/IsFor.h
-	server/automation/condition/IsFor.cpp
-	server/automation/condition/IsForThread.h
-	server/automation/condition/IsForThread.cpp
-	server/automation/condition/ICondition.h
-	server/automation/condition/IConditionFactory.h
-	server/automation/condition/IConditionRoot.h
-	server/automation/condition/IConditionRootUpdater.h
-	server/automation/condition/IKeywordUpdater.h
+	server/automation/script/Factory.h
+	server/automation/script/Factory.cpp
+	server/automation/script/IFactory.h
+	server/automation/script/IInterpreterLibrary.h
+   server/automation/script/InterpreterNotFound.hpp
+	server/automation/script/InterpreterLibrary.h
+	server/automation/script/InterpreterLibrary.cpp
+	server/automation/script/IProperties.h
+	server/automation/script/Properties.h
+	server/automation/script/Properties.cpp
+	server/automation/script/YScriptApiImplementation.h
+	server/automation/script/YScriptApiImplementation.cpp
    
 	server/web/IRestHandler.h
 	server/web/IWebServer.h
@@ -420,9 +379,7 @@ source_group(server\\database  server/database/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\logConfiguration  server/logConfiguration/*.*)
 source_group(server\\automation  server/automation/*.*)
-source_group(server\\automation\\action  server/automation/action/*.*)
-source_group(server\\automation\\action\\script  server/automation/action/script/*.*)
-source_group(server\\automation\\condition  server/automation/condition/*.*)
+source_group(server\\automation\\script  server/automation/script/*.*)
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\task  server/task/*.*)
 source_group(server\\task\\update  server/task/update/*.*)

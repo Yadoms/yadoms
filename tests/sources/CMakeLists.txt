@@ -180,7 +180,6 @@ source_group(shared\\xpl shared/xpl/*.*)
 
 source_group(server server/*.*)
 source_group(server\\automation server/automation/*.*)
-source_group(server\\automation\\condition server/automation/condition/*.*)
 source_group(server\\startupOptions server/startupOptions/*.*)
 source_group(server\\tools server/tools/*.*)
 

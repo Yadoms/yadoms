@@ -1,10 +1,10 @@
 #pragma once
 #include <shared/script/yScriptApi/IYScriptApi.h>
-#include "../../../database/IAcquisitionRequester.h"
-#include "../../../communication/ISendMessageAsync.h"
+#include "../../database/IAcquisitionRequester.h"
+#include "../../communication/ISendMessageAsync.h"
 #include <shared/notification/NotificationCenter.h>
 
-namespace automation { namespace action { namespace script
+namespace automation { namespace script
 {
    //-----------------------------------------------------
    ///\brief The Yadoms script API implementation
@@ -52,6 +52,6 @@ namespace automation { namespace action { namespace script
       boost::shared_ptr<database::IAcquisitionRequester> m_dbAcquisitionRequester;
    };
 
-} } } // namespace automation::action::script
+} } // namespace automation::script
 	
 	

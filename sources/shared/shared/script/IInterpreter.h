@@ -30,33 +30,26 @@ namespace shared { namespace script
       virtual bool isAvailable() const = 0;
 
       //-----------------------------------------------------
-      ///\brief                  Check if the interpreter can interpret a script file
-      ///\param[in] scriptName   Script name
-      ///\return                 true if the script file is supported
-      //-----------------------------------------------------
-      virtual bool canInterpret(const std::string& scriptName) const = 0;
-
-      //-----------------------------------------------------
       ///\brief                  Load the specified script content. If not found (new script), returns a script template.
-      ///\param[in] scriptName   Script name
+      ///\param[in] scriptPath   Script path (without name)
       ///\return                 The script content for editing, or template if not found
       //-----------------------------------------------------
-      virtual std::string loadScriptContent(const std::string& scriptName) const = 0;
+      virtual std::string loadScriptContent(const std::string& scriptPath) const = 0;
 
       //-----------------------------------------------------
       ///\brief                  Save and overwrite specified script with provided content
-      ///\param[in] scriptName   Script name
-      ///\param[in] scriptName   Script content
+      ///\param[in] scriptPath   Script path (without name)
+      ///\param[in] content      Script content (code)
       //-----------------------------------------------------
-      virtual void saveScriptTemplate(const std::string& scriptName, const std::string& content) const = 0;
+      virtual void saveScriptContent(const std::string& scriptPath, const std::string& content) const = 0;
 
       //-----------------------------------------------------
       ///\brief                  Create a script runner with associated file
-      ///\param[in] scriptName   Script name
+      ///\param[in] scriptPath   Script path (without name)
       ///\param[in] scriptConfiguration   Configuration of the script
       ///\return                 The created script instance
       //-----------------------------------------------------
-      virtual boost::shared_ptr<IRunner> createRunner(const std::string& scriptName, const CDataContainer& scriptConfiguration) const = 0;
+      virtual boost::shared_ptr<IRunner> createRunner(const std::string& scriptPath, const CDataContainer& scriptConfiguration) const = 0;
    };
 	
 } } // namespace shared::script

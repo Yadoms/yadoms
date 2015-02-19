@@ -2,7 +2,7 @@
 #include "IInterpreterLibrary.h"
 #include <shared/DynamicLibrary.h>
 
-namespace automation { namespace action { namespace script
+namespace automation { namespace script
 {
    //-----------------------------------------------------
    ///\brief The script interpreter library
@@ -44,6 +44,6 @@ namespace automation { namespace action { namespace script
       boost::shared_ptr<shared::script::IInterpreter> m_interpreter;
    };
 
-} } } // namespace automation::action::script
+} } // namespace automation::script
 	
 	

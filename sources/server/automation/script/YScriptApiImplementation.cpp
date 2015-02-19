@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "YScriptApiImplementation.h"
 
-namespace automation { namespace action { namespace script
+namespace automation { namespace script
 {
 
 CYScriptApiImplementation::CYScriptApiImplementation(
@@ -45,6 +45,6 @@ void CYScriptApiImplementation::sendNotification(int keywordId, int recipientId,
    //TODO
 }
 
-} } } // namespace automation::action::script
+} } // namespace automation::script
 	
 	

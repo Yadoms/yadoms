@@ -1,8 +1,9 @@
 #pragma once
 #include <shared/script/IRunner.h>
-#include <shared/shared/DataContainer.h>
+#include "IProperties.h"
+#include "../../database/sqlite/requesters/Rule.h"
 
-namespace automation { namespace action { namespace script
+namespace automation { namespace script
 {
    //-----------------------------------------------------
    ///\brief The script factory interface
@@ -21,14 +22,28 @@ namespace automation { namespace action { namespace script
       //-----------------------------------------------------
       virtual std::vector<std::string> getAvailableInterpreters() = 0;//TODO ajouter le REST permettant d'appeler cette fonction
 
+
+      //-----------------------------------------------------
+      ///\brief               Create the properties for a script
+      ///\param[in] ruleData  The rule raw data
+      ///\return              A new script properties instance
+      //-----------------------------------------------------
+      virtual boost::shared_ptr<IProperties> createScriptProperties(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
+      
+      //-----------------------------------------------------
+      ///\brief               Create the properties for a script
+      ///\param[in] ruleData  The rule raw data
+      ///\param[in] code      The script code
+      //-----------------------------------------------------
+      virtual void createScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code) = 0;
+      
       //-----------------------------------------------------
       ///\brief               Create a script runner
-      ///\param[in] scriptName    Script name
-      ///\param[in] configuration Script configuration
+      ///\param[in] scriptProperties      The Script properties
       ///\return              A new script runner instance
       ///\throw CInvalidParameter if unable to create script runner
       //-----------------------------------------------------
-      virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(const std::string& scriptName, const shared::CDataContainer& scriptConfiguration) = 0;
+      virtual boost::shared_ptr<shared::script::IRunner> createScriptRunner(boost::shared_ptr<const IProperties> scriptProperties) = 0;
 
       //-----------------------------------------------------
       ///\brief               Create the script context (IYScriptApi implementation)
@@ -37,5 +52,5 @@ namespace automation { namespace action { namespace script
       virtual boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> createScriptContext() = 0;
    };
 
-} } } // namespace automation::action::script
+} } // namespace automation::script
 

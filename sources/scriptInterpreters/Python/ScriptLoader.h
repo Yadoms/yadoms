@@ -10,10 +10,10 @@ class CScriptLoader : public IScriptLoader
 public:
    //--------------------------------------------------------------
    /// \brief	Constructor
-   ///\param[in] scriptName   Script name
+   ///\param[in] scriptPath   Script path (without name)
    /// \throw CRunnerException if unable to load script
    //--------------------------------------------------------------
-   CScriptLoader(const std::string& scriptName);
+   CScriptLoader(const std::string& scriptPath);
 
    //--------------------------------------------------------------
    /// \brief	Destructor

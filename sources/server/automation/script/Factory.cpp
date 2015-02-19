@@ -8,8 +8,9 @@
 #include <shared/DynamicLibrary.h>
 #include "InterpreterLibrary.h"
 #include "YScriptApiImplementation.h"
+#include "Properties.h"
 
-namespace automation { namespace action { namespace script
+namespace automation { namespace script
 {
 
 CFactory::CFactory(const std::string& interpretersPath,
@@ -107,14 +108,32 @@ std::vector<std::string> CFactory::getAvailableInterpreters()
    return interpreters;
 }
 
-boost::shared_ptr<shared::script::IRunner> CFactory::createScriptRunner(
-   const std::string& scriptName, const shared::CDataContainer& scriptConfiguration)
+boost::shared_ptr<IProperties> CFactory::createScriptProperties(boost::shared_ptr<const database::entities::CRule> ruleData)
+{
+   boost::shared_ptr<IProperties> properties(new CProperties(ruleData));
+   return properties;
+}
+
+void CFactory::createScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code)
+{
+   boost::shared_ptr<IProperties> scriptProperties(createScriptProperties(ruleData));
+
+   // First build directory tree
+   boost::filesystem::remove_all(scriptProperties->scriptPath());
+   boost::filesystem::create_directories(scriptProperties->scriptPath());
+
+   // Create the file and put the code in (delegate to the interpreter)
+   boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(scriptProperties->interpreterName());
+   scriptInterpreter->saveScriptContent(scriptProperties->scriptPath(), code);
+}
+
+boost::shared_ptr<shared::script::IRunner> CFactory::createScriptRunner(boost::shared_ptr<const IProperties> scriptProperties)
 {
    try
    {
-      boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(scriptName);
+      boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(scriptProperties->interpreterName());
 
-      return scriptInterpreter->createRunner(scriptName, scriptConfiguration);
+      return scriptInterpreter->createRunner(scriptProperties->scriptPath(), scriptProperties->configuration());
    }
    catch (CInterpreterNotFound& e)
    {
@@ -136,22 +155,22 @@ boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> CFactory::createScrip
 }
 
 
-boost::shared_ptr<shared::script::IInterpreter> CFactory::getAssociatedInterpreter(const std::string& scriptName)
+boost::shared_ptr<shared::script::IInterpreter> CFactory::getAssociatedInterpreter(const std::string& interpreterName)
 {
    // Update loaded interpreters list if necessary
    loadInterpreters();
 
    // Now find corresponding interpreter
-   for (std::map<std::string, boost::shared_ptr<IInterpreterLibrary> >::const_iterator itInterpreter = m_LoadedInterpreters.begin();
-      itInterpreter != m_LoadedInterpreters.end(); ++itInterpreter)
-   {
-      boost::shared_ptr<shared::script::IInterpreter> interpreter(itInterpreter->second->getInterpreter());
-      if (interpreter->canInterpret(scriptName) && interpreter->isAvailable())
-         return interpreter;
-   }
+   std::map<std::string, boost::shared_ptr<IInterpreterLibrary> >::const_iterator itInterpreter = m_LoadedInterpreters.find(interpreterName);
+   if (itInterpreter == m_LoadedInterpreters.end())
+      throw CInterpreterNotFound(interpreterName);
 
-   throw CInterpreterNotFound(scriptName);
+   boost::shared_ptr<shared::script::IInterpreter> interpreter(itInterpreter->second->getInterpreter());
+   if (!interpreter->isAvailable())
+      throw CInterpreterNotFound(interpreterName);
+   
+   return interpreter;
 }
 
-} } } // namespace automation::action::script
+} } // namespace automation::script
 

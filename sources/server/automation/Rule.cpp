@@ -1,41 +1,33 @@
 #include "stdafx.h"
 #include "Rule.h"
-#include "condition/ConditionRoot.h"
-#include "ActionList.h"
+#include <shared/Log.h>
+#include "script/IProperties.h"
 
 namespace automation
 {
 
-CRule::CRule(const database::entities::CRule& ruleData,
-   boost::shared_ptr<INotificationObserverForRulesManager> notificationObserver,
-   boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-   condition::IConditionFactory& conditionFactory,
-   boost::shared_ptr<action::script::IFactory> scriptFactory)
-   :m_name(ruleData.Name()),
-   m_id(ruleData.Id()),
-   //TODO : update those two lines (first parameters are set to an empty CDataContainer)
-   m_condition(new condition::CConditionRoot(shared::CDataContainer(), conditionFactory)),
-   m_actions(new CActionList(shared::CDataContainer(), pluginGateway, scriptFactory)),
-   m_notificationObserver(notificationObserver)
+CRule::CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
+   boost::shared_ptr<script::IFactory> scriptFactory)
+   :m_ruleData(ruleData),
+   m_scriptFactory(scriptFactory)
 {
-   m_condition->registerToNotificationCenter(m_notificationObserver);
 }
 
 CRule::~CRule()
 {
-   m_condition->unregisterFromNotificationCenter(m_notificationObserver);
    stop();
 }
 
 void CRule::start()
 {
-   m_thread.reset(new CRuleThread(m_name, *this));
+   m_thread.reset(new CRuleThread(m_ruleData->Name(), *this));
    m_thread->start();
 }
 
 void CRule::stop()
 {
-   m_actions->stopPending();
+   if (!!m_runner)
+      m_runner->stop();
    m_thread->stop();
    m_thread.reset();
 }
@@ -44,12 +36,21 @@ void CRule::doWork()
 {
    try
    {
-      while (true)
+      boost::shared_ptr<script::IProperties> scriptProperties = m_scriptFactory->createScriptProperties(m_ruleData);
+
+      m_runner = m_scriptFactory->createScriptRunner(scriptProperties);
+
+      boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> context = m_scriptFactory->createScriptContext();
+      m_runner->run(*context);
+
+      if (!m_runner->isOk())
       {
-         m_condition->wait();
-         m_actions->doAll();
-         boost::this_thread::sleep(boost::posix_time::millisec(100)); // To avoid CPU load
+         YADOMS_LOG(error) << m_ruleData->Name() << " exit with error : " << m_runner->error();
       }
+   }
+   catch (shared::exception::CInvalidParameter& e)
+   {
+      YADOMS_LOG(error) << "Unable to do action : " << e.what();
    }
    catch (boost::thread_interrupted&)
    {

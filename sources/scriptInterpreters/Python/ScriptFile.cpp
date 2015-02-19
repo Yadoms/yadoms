@@ -2,13 +2,9 @@
 #include "ScriptFile.h"
 
 
-// Main scripts folder (subfolder of Yadoms main folder)
-static const std::string ScriptsFolder("scripts");
-
-// Add prefix to filename, to avoid confusing with existing Python module
-// (In Python, filename also serves as module name, and modules are globals)
-// So script full path becomes : {scriptName}/yadoms_{scriptName}
-static const std::string ScriptFilenamePrefix("yadoms_");
+// Be careful, in Python, filename is also the Python module name, and modules are globals.
+static const std::string ScriptName("yadomsScript");
+static const std::string Module(ScriptName);
 
 // Standard Pyhton scripts extension
 static const std::string PythonExtension("py");
@@ -16,9 +12,8 @@ static const std::string PythonExtension("py");
 // Function name of the Python script entry point
 static const std::string ScriptEntryPoint("yMain");
 
-CScriptFile::CScriptFile(const std::string& scriptName)
-   :m_scriptFile(boost::filesystem::path(ScriptsFolder) / boost::filesystem::path(scriptName) / boost::filesystem::path(ScriptFilenamePrefix + scriptName).replace_extension(PythonExtension)),
-   m_module(ScriptFilenamePrefix + scriptName)
+CScriptFile::CScriptFile(const std::string& scriptPath)
+   :m_scriptFile(boost::filesystem::path(scriptPath) / boost::filesystem::path(ScriptName).replace_extension(PythonExtension))
 {
 }
 
@@ -38,7 +33,7 @@ const boost::filesystem::path CScriptFile::abslouteParentPath() const
 
 const std::string& CScriptFile::module() const
 {
-   return m_module;
+   return Module;
 }
 
 const std::string& CScriptFile::entryPoint() const

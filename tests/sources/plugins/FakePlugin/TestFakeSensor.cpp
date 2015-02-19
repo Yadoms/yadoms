@@ -50,6 +50,7 @@ public:
    { Keyword kw = { device, keyword.getKeyword(), keyword.getCapacity(), details }; m_keywords[keyword.getKeyword()] = kw; }
    virtual void historizeData(const std::string& device, const yApi::historization::IHistorizable& keyword)
    { Data data = {device, keyword.getKeyword(), keyword.getCapacity(), keyword.formatValue() }; m_data.push_back(data); }
+   virtual void historizeData(const std::string& device, std::vector<boost::shared_ptr<yApi::historization::IHistorizable> > & dataVect) {  /* Not implemented */ }
    virtual const shared::plugin::information::IInformation& getInformation() const { return m_defaultInformation; }
    virtual shared::CDataContainer getConfiguration() const { return m_defaultConfiguration; }
    virtual void recordPluginEvent(PluginEventSeverity severity, const std::string & message) {}
