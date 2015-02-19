@@ -4,7 +4,7 @@
  * Creates an instance of Device
  * @constructor
  */
-function AutomationRule(id, name, description, type, model, content, configuration, enabled, code) {
+function AutomationRule(id, name, description, type, model, content, code, configuration, enabled) {
    assert(!isNullOrUndefined(id), "id of a AutomationRule must be defined");
    assert(!isNullOrUndefined(name), "name of a AutomationRule must be defined");
    assert(!isNullOrUndefined(description), "description of a AutomationRule must be defined");
