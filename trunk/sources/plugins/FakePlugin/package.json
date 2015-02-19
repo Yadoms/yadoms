@@ -89,5 +89,14 @@
 		"type" : "section",
 		"content": {"__Binding__" : {"type" : "plugin", "query" : "test"}}
 	}
-   }
+   },
+  "enumerations" : {
+    "EFakeControllerValues" : {
+      "stop" : "Stop",
+       "run" : "Run",
+       "back" : "Back",
+      "left" : "Turn Left",
+      "right" : "Turn Right"
+    }
+  }
 }
