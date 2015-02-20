@@ -5,6 +5,7 @@
 #include "shared/Log.h"
 #include "web/rest/Result.h"
 #include "automation/RuleException.hpp"
+#include <Poco/URI.h>
 
 namespace web { namespace rest { namespace service {
 
@@ -64,6 +65,20 @@ namespace web { namespace rest { namespace service {
       return result;
    }
 
+   void CAutomationRule::uriEncode(std::string& str)
+   {
+      std::string out;
+      Poco::URI::encode(str, std::string(), out);
+      str = out;
+   }
+
+   void CAutomationRule::uriDecode(std::string& str)
+   {
+      std::string out;
+      Poco::URI::decode(str, out);
+      str = out;
+   }
+
    shared::CDataContainer CAutomationRule::getAllRules(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       std::vector<boost::shared_ptr<database::entities::CRule> > ruleList = m_rulesManager->getRules();
@@ -80,6 +95,7 @@ namespace web { namespace rest { namespace service {
          {
             int instanceId = boost::lexical_cast<int>(parameters[2]);
             boost::shared_ptr<database::entities::CRule> ruleFound = m_rulesManager->getRule(instanceId);
+            uriEncode(ruleFound->Code());
             return CResult::GenerateSuccess(ruleFound);
          }
 
@@ -105,7 +121,7 @@ namespace web { namespace rest { namespace service {
          if (!ruleData->Code.isDefined() || ruleData->Code().empty())
             throw CRuleException("No code provided for the rule");
 
-         //TODO décoder la chaîne "code" ? Voir mail de Nico du 19/02 14h28, sinon voir http://www.appinf.com/docs/poco/Poco.URI.html#22518
+         uriDecode(ruleData->Code());
 
          int idCreated = m_rulesManager->createRule(ruleData);
 
@@ -148,7 +164,7 @@ namespace web { namespace rest { namespace service {
             if (!ruleData->Code.isDefined() || ruleData->Code().empty())
                throw CRuleException("No code provided for the rule");
 
-            //TODO décoder la chaîne "code" ? Voir mail de Nico du 19/02 14h28, sinon voir http://www.appinf.com/docs/poco/Poco.URI.html#22518
+            uriDecode(ruleData->Code());
 
             m_rulesManager->updateRule(ruleData);
 

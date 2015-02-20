@@ -136,6 +136,22 @@ void CFactory::updateScriptFile(boost::shared_ptr<const database::entities::CRul
    scriptInterpreter->saveScriptContent(scriptProperties->scriptPath(), ruleData->Code());
 }
 
+void CFactory::deleteScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, bool doBackup)
+{
+   boost::shared_ptr<IProperties> scriptProperties(createScriptProperties(ruleData));
+
+   if (doBackup)
+   {
+      const std::string backupPath(scriptProperties->scriptPath() + ".bak");
+      boost::filesystem::remove_all(backupPath);
+      boost::filesystem::rename(scriptProperties->scriptPath(), backupPath);
+   }
+   else
+   {
+      boost::filesystem::remove_all(scriptProperties->scriptPath());
+   }
+}
+
 boost::shared_ptr<shared::script::IRunner> CFactory::createScriptRunner(boost::shared_ptr<const IProperties> scriptProperties)
 {
    try

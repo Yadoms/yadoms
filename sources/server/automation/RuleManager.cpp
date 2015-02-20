@@ -149,9 +149,16 @@ void CRuleManager::deleteRule(int id)
 {
    try
    {
+      boost::shared_ptr<database::entities::CRule> ruleData(m_dbRequester->getRule(id));
+
+      // Stop the rule
       stopRule(id);
-      //TODO deleter le code
+
+      // Remove in database
       m_dbRequester->deleteRule(id);
+
+      // Remove script file
+      m_scriptFactory->deleteScriptFile(ruleData);
    }
    catch (shared::exception::CException& e)
    {
