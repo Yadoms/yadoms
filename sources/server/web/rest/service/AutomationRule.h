@@ -19,6 +19,7 @@ namespace web { namespace rest { namespace service {
       const std::string & getRestKeyword();
       shared::CDataContainer getAllRules(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
       shared::CDataContainer getRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
+      shared::CDataContainer getRuleCode(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
       shared::CDataContainer createRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);
       shared::CDataContainer updateRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  
       shared::CDataContainer deleteRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent);  

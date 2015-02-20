@@ -33,6 +33,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)(m_restSubKeyword), CAutomationRule::createRule, CAutomationRule::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)(m_restSubKeyword)("*"), CAutomationRule::deleteRule, CAutomationRule::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeyword)("*"), CAutomationRule::getRule);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeyword)("*")("code"), CAutomationRule::getRuleCode);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeyword)("*"), CAutomationRule::updateRule, CAutomationRule::transactionalMethod);
    }
 
@@ -95,7 +96,6 @@ namespace web { namespace rest { namespace service {
          {
             int instanceId = boost::lexical_cast<int>(parameters[2]);
             boost::shared_ptr<database::entities::CRule> ruleFound = m_rulesManager->getRule(instanceId);
-            uriEncode(ruleFound->Code());
             return CResult::GenerateSuccess(ruleFound);
          }
 
@@ -111,6 +111,34 @@ namespace web { namespace rest { namespace service {
       }
    }
 
+   shared::CDataContainer CAutomationRule::getRuleCode(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      try
+      {
+         if (parameters.size()>2)
+         {
+            int instanceId = boost::lexical_cast<int>(parameters[2]);
+            std::string code = m_rulesManager->getRuleCode(instanceId);
+            uriEncode(code);
+
+            shared::CDataContainer result;
+            result.set("code", code);
+            return CResult::GenerateSuccess(result);
+         }
+
+         return CResult::GenerateError("invalid parameter. Can not retreive rule id in url");
+      }
+      catch (std::exception &ex)
+      {
+         return CResult::GenerateError(ex);
+      }
+      catch (...)
+      {
+         return CResult::GenerateError("unknown exception in retreiving the rule");
+      }
+   }
+
+
    shared::CDataContainer CAutomationRule::createRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
       try
@@ -118,12 +146,10 @@ namespace web { namespace rest { namespace service {
          boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
          ruleData->fillFromContent(requestContent);
 
-         if (!ruleData->Code.isDefined() || ruleData->Code().empty())
-            throw CRuleException("No code provided for the rule");
+         std::string code = requestContent.get<std::string>("code");
+         uriDecode(code);
 
-         uriDecode(ruleData->Code());
-
-         int idCreated = m_rulesManager->createRule(ruleData);
+         int idCreated = m_rulesManager->createRule(ruleData, code);
 
          boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(idCreated);
          return CResult::GenerateSuccess(ruleFound);
@@ -161,12 +187,12 @@ namespace web { namespace rest { namespace service {
 
             ruleData->Id = ruleId;
 
-            if (!ruleData->Code.isDefined() || ruleData->Code().empty())
+            std::string code = requestContent.get<std::string>("code");
+            if (code.empty())
                throw CRuleException("No code provided for the rule");
+            uriDecode(code);
 
-            uriDecode(ruleData->Code());
-
-            m_rulesManager->updateRule(ruleData);
+            m_rulesManager->updateRule(ruleData, code);
 
             boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(ruleId);
             return CResult::GenerateSuccess(ruleFound);
