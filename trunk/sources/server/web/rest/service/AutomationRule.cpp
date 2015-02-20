@@ -35,6 +35,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeyword)("*"), CAutomationRule::getRule);
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeyword)("*")("code"), CAutomationRule::getRuleCode);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeyword)("*"), CAutomationRule::updateRule, CAutomationRule::transactionalMethod);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeyword)("*")("code"), CAutomationRule::updateRuleCode, CAutomationRule::transactionalMethod);
    }
 
    shared::CDataContainer CAutomationRule::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
@@ -66,18 +67,18 @@ namespace web { namespace rest { namespace service {
       return result;
    }
 
-   void CAutomationRule::uriEncode(std::string& str)
+   std::string CAutomationRule::uriEncode(const std::string& str)
    {
       std::string out;
       Poco::URI::encode(str, std::string(), out);
-      str = out;
+      return out;
    }
 
-   void CAutomationRule::uriDecode(std::string& str)
+   std::string CAutomationRule::uriDecode(const std::string& str)
    {
       std::string out;
       Poco::URI::decode(str, out);
-      str = out;
+      return out;
    }
 
    shared::CDataContainer CAutomationRule::getAllRules(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
@@ -92,14 +93,14 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         if (parameters.size()>2)
-         {
-            int instanceId = boost::lexical_cast<int>(parameters[2]);
-            boost::shared_ptr<database::entities::CRule> ruleFound = m_rulesManager->getRule(instanceId);
-            return CResult::GenerateSuccess(ruleFound);
-         }
+         if (parameters.size() != 3)
+            throw CRuleException("invalid parameter in URL");
 
-         return CResult::GenerateError("invalid parameter. Can not retreive rule id in url");
+         return CResult::GenerateSuccess(m_rulesManager->getRule(boost::lexical_cast<int>(parameters[2])));
+      }
+      catch (CRuleException& e)
+      {
+         return CResult::GenerateError(std::string("Fail to retreive rule : ") + e.what());
       }
       catch (std::exception &ex)
       {
@@ -115,18 +116,16 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         if (parameters.size()>2)
-         {
-            int instanceId = boost::lexical_cast<int>(parameters[2]);
-            std::string code = m_rulesManager->getRuleCode(instanceId);
-            uriEncode(code);
+         if (parameters.size() != 4)
+            throw CRuleException("invalid parameter in URL");
 
-            shared::CDataContainer result;
-            result.set("code", code);
-            return CResult::GenerateSuccess(result);
-         }
-
-         return CResult::GenerateError("invalid parameter. Can not retreive rule id in url");
+         shared::CDataContainer result;
+         result.set("code", uriEncode(m_rulesManager->getRuleCode(boost::lexical_cast<int>(parameters[2]))));
+         return CResult::GenerateSuccess(result);
+      }
+      catch (CRuleException& e)
+      {
+         return CResult::GenerateError(std::string("Fail to retreive rule code : ") + e.what());
       }
       catch (std::exception &ex)
       {
@@ -146,17 +145,14 @@ namespace web { namespace rest { namespace service {
          boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
          ruleData->fillFromContent(requestContent);
 
-         std::string code = requestContent.get<std::string>("code");
-         uriDecode(code);
-
-         int idCreated = m_rulesManager->createRule(ruleData, code);
+         int idCreated = m_rulesManager->createRule(ruleData, uriDecode(requestContent.get<std::string>("code")));
 
          boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(idCreated);
          return CResult::GenerateSuccess(ruleFound);
       }
-      catch (CRuleException&)
+      catch (CRuleException& e)
       {
-         return CResult::GenerateError("Fail to create rule");
+         return CResult::GenerateError(std::string("Fail to create rule : ") + e.what());
       }
       catch(std::exception &ex)
       {
@@ -172,37 +168,71 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         if (parameters.size()>2)
+         if (parameters.size() != 3)
+            throw CRuleException("invalid parameter in URL");
+
+         int ruleId = boost::lexical_cast<int>(parameters[2]);
+         boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
+         ruleData->fillFromContent(requestContent);
+
+         // Check for supported modifications
+         if (ruleData->Id.isDefined())
          {
-            int ruleId = boost::lexical_cast<int>(parameters[2]);
-            boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
-            ruleData->fillFromContent(requestContent);
-
-            // Check for supported modifications
-            if (ruleData->Id.isDefined())
-            {
-               BOOST_ASSERT(false); // rule Id is not modifiable
-               throw shared::exception::CException("Update rule : rule Id is not modifiable");
-            }
-
-            ruleData->Id = ruleId;
-
-            std::string code = requestContent.get<std::string>("code");
-            if (code.empty())
-               throw CRuleException("No code provided for the rule");
-            uriDecode(code);
-
-            m_rulesManager->updateRule(ruleData, code);
-
-            boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(ruleId);
-            return CResult::GenerateSuccess(ruleFound);
+            BOOST_ASSERT(false); // rule Id is not modifiable
+            throw CRuleException("Rule Id is not modifiable");
          }
 
-         return CResult::GenerateError("invalid parameter. Can not retreive rule id in url");
+         ruleData->Id = ruleId;
+         m_rulesManager->updateRule(ruleData);
+
+         boost::shared_ptr<const database::entities::CRule> ruleFound = m_rulesManager->getRule(ruleId);
+         return CResult::GenerateSuccess(ruleFound);
       }
-      catch (CRuleException&)
+      catch (CRuleException& e)
       {
-         return CResult::GenerateError("Fail to update rule");
+         return CResult::GenerateError(std::string("Fail to update rule : ") + e.what());
+      }
+      catch(std::exception &ex)
+      {
+         return CResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return CResult::GenerateError("unknown exception in updating a plugin instance");
+      }
+   }
+
+   shared::CDataContainer CAutomationRule::updateRuleCode(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      try
+      {
+         if (parameters.size() != 4)
+            throw CRuleException("invalid parameter in URL");
+
+         int ruleId = boost::lexical_cast<int>(parameters[2]);
+         boost::shared_ptr<database::entities::CRule> ruleData(new database::entities::CRule);
+         ruleData->fillFromContent(requestContent);
+
+         // Check for supported modifications
+         if (ruleData->Id.isDefined())
+         {
+            BOOST_ASSERT(false); // rule Id is not modifiable
+            throw CRuleException("Rule Id is not modifiable");
+         }
+
+         std::string code = uriDecode(requestContent.get<std::string>("code"));
+         if (code.empty())
+            throw CRuleException("No code provided for the rule");
+
+         m_rulesManager->updateRuleCode(ruleId, code);
+
+         shared::CDataContainer result;
+         result.set("code", uriEncode(m_rulesManager->getRuleCode(ruleId)));
+         return CResult::GenerateSuccess(result);
+      }
+      catch (CRuleException& e)
+      {
+         return CResult::GenerateError(std::string("Fail to update rule : ") + e.what());
       }
       catch(std::exception &ex)
       {
@@ -219,14 +249,16 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         if(parameters.size()>2)
-         {
-            int instanceId = boost::lexical_cast<int>(parameters[2]);
-            m_rulesManager->deleteRule(instanceId);
-            return CResult::GenerateSuccess();
-         }
-         
-         return CResult::GenerateError("invalid parameter. Can not retreive instance id in url");
+         if (parameters.size() != 3)
+            throw CRuleException("invalid parameter in URL");
+
+         int instanceId = boost::lexical_cast<int>(parameters[2]);
+         m_rulesManager->deleteRule(instanceId);
+         return CResult::GenerateSuccess();
+      }
+      catch (CRuleException& e)
+      {
+         return CResult::GenerateError(std::string("Fail to delete rule : ") + e.what());
       }
       catch(std::exception &ex)
       {

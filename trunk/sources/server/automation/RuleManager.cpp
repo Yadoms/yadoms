@@ -94,7 +94,7 @@ std::vector<boost::shared_ptr<database::entities::CRule> > CRuleManager::getRule
    return m_dbRequester->getRules();
 }
 
-int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string & scriptCode)
+int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code)
 {
    // Add rule in database
    int ruleId = m_dbRequester->addRule(ruleData);
@@ -104,7 +104,7 @@ int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> 
    updatedRuleData->Id = ruleId;
 
    // Create script file
-   m_scriptFactory->updateScriptFile(updatedRuleData, scriptCode);
+   m_scriptFactory->updateScriptFile(updatedRuleData, code);
 
    // Start the rule
    startRule(ruleId);
@@ -117,13 +117,21 @@ boost::shared_ptr<database::entities::CRule> CRuleManager::getRule(int id) const
     return m_dbRequester->getRule(id);
 }
 
-const std::string CRuleManager::getRuleCode(int id) const
+std::string CRuleManager::getRuleCode(int id) const
 {
-   return m_scriptFactory->getScriptFile(getRule(id));
+   try
+   {
+      boost::shared_ptr<database::entities::CRule> ruleData(m_dbRequester->getRule(id));
+      return m_scriptFactory->getScriptFile(ruleData);
+   }
+   catch(shared::exception::CEmptyResult& e)
+   {
+      YADOMS_LOG(error) << "Unable to get rule code : " << e.what();
+      return std::string();
+   }
 }
 
-
-void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string & scriptCode)
+void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule> ruleData)
 {
    // Check for supported modifications
    if (!ruleData->Id.isDefined())
@@ -132,18 +140,22 @@ void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule>
       throw new shared::exception::CException("Update rule : rule ID was not provided");
    }
 
-   // If rule was started, must be stopped to update its configuration
-   if (m_startedRules.find(ruleData->Id()) != m_startedRules.end())
-      stopRule(ruleData->Id());
-
-   // Next, update configuration in database
+   // No need to restart rule
    m_dbRequester->updateRule(ruleData);
+}
+
+void CRuleManager::updateRuleCode(int id, const std::string& code)
+{
+   // If rule was started, must be stopped to update its configuration
+   if (m_startedRules.find(id) != m_startedRules.end())
+      stopRule(id);
 
    // Update script file
-   m_scriptFactory->updateScriptFile(ruleData, scriptCode);
+   boost::shared_ptr<database::entities::CRule> ruleData(m_dbRequester->getRule(id));
+   m_scriptFactory->updateScriptFile(ruleData, code);
 
    // Restart rule
-   startRule(ruleData->Id());
+   startRule(id);
 }
 
 void CRuleManager::deleteRule(int id)
