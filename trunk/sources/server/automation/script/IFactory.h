@@ -40,9 +40,15 @@ namespace automation { namespace script
       //-----------------------------------------------------
       ///\brief               Update the script file (create if necessary)
       ///\param[in] ruleData  The rule raw data
-      ///\param[in] code      The script code
       //-----------------------------------------------------
       virtual void updateScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
+
+      //-----------------------------------------------------
+      ///\brief               Delete the script file
+      ///\param[in] ruleData  The rule raw data
+      ///\param[in] doBackup  Do a backup if true
+      //-----------------------------------------------------
+      virtual void deleteScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, bool doBackup = true) = 0;
       
       //-----------------------------------------------------
       ///\brief               Create a script runner

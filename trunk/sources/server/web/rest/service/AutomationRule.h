@@ -25,6 +25,9 @@ namespace web { namespace rest { namespace service {
 
       shared::CDataContainer transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent);
 
+      static void uriEncode(std::string& str);
+      static void uriDecode(std::string& str);
+
    private:
       boost::shared_ptr<database::IDataProvider> m_dataProvider;
       boost::shared_ptr<automation::IRuleManager> m_rulesManager;
