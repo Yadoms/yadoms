@@ -153,8 +153,7 @@ namespace database { namespace entities {
       ((Content)(std::string))
       ((Configuration)(shared::CDataContainer))
       ((Enabled)(bool))
-      ((Code)(std::string))
-      )
+   )
 
 
    DECLARE_ENTITY_CLASS_HEADER(RecipientField,
