@@ -33,17 +33,17 @@ namespace automation { namespace script
       //-----------------------------------------------------
       ///\brief               Get the script file
       ///\param[in] ruleData  The rule raw data
-      ///\return              The read rule code
+      ///\return              The rule code
       ///\throw CInvalidParameter if rule ID or file not found
       //-----------------------------------------------------
-      virtual const std::string getScriptFile(boost::shared_ptr<database::entities::CRule> ruleData) = 0;
+      virtual std::string getScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData) = 0;
       
       //-----------------------------------------------------
-      ///\brief                Update the script file (create if necessary)
-      ///\param[in] ruleData   The rule raw data
-      ///\param[in] scriptCode The rule script code
+      ///\brief               Update the script file (create if necessary)
+      ///\param[in] ruleData  The rule raw data
+      ///\return              The rule code
       //-----------------------------------------------------
-      virtual void updateScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string & scriptCode) = 0;
+      virtual void updateScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code) = 0;
 
       //-----------------------------------------------------
       ///\brief               Delete the script file

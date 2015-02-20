@@ -34,11 +34,12 @@ namespace automation
       virtual void start();
       virtual void stop();
       virtual std::vector<boost::shared_ptr<database::entities::CRule> > getRules() const;
-      virtual int createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string & scriptCode);
+      virtual int createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code);
       virtual boost::shared_ptr<database::entities::CRule> getRule(int id) const;
-      virtual void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string & scriptCode);
+      virtual std::string getRuleCode(int id) const;
+      virtual void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData);
+      virtual void updateRuleCode(int id, const std::string& code);
       virtual void deleteRule(int id);
-      virtual const std::string getRuleCode(int id) const;
       // [END] IRuleManager Implementation
 
    protected:

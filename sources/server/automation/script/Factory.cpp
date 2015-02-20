@@ -114,7 +114,7 @@ boost::shared_ptr<IProperties> CFactory::createScriptProperties(boost::shared_pt
    return properties;
 }
 
-const std::string CFactory::getScriptFile(boost::shared_ptr<database::entities::CRule> ruleData)
+std::string CFactory::getScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData)
 {
    boost::shared_ptr<IProperties> scriptProperties(createScriptProperties(ruleData));
 
@@ -123,7 +123,7 @@ const std::string CFactory::getScriptFile(boost::shared_ptr<database::entities::
    return scriptInterpreter->loadScriptContent(scriptProperties->scriptPath()); 
 }
 
-void CFactory::updateScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string & scriptCode)
+void CFactory::updateScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code)
 {
    boost::shared_ptr<IProperties> scriptProperties(createScriptProperties(ruleData));
 
@@ -133,7 +133,7 @@ void CFactory::updateScriptFile(boost::shared_ptr<const database::entities::CRul
 
    // Create the file and put the code in (delegate to the interpreter)
    boost::shared_ptr<shared::script::IInterpreter> scriptInterpreter = getAssociatedInterpreter(scriptProperties->interpreterName());
-   scriptInterpreter->saveScriptContent(scriptProperties->scriptPath(), scriptCode);
+   scriptInterpreter->saveScriptContent(scriptProperties->scriptPath(), code);
 }
 
 void CFactory::deleteScriptFile(boost::shared_ptr<const database::entities::CRule> ruleData, bool doBackup)
