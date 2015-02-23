@@ -40,7 +40,11 @@ namespace database { namespace entities {
       ((Updated))
    )
 
-
+   DECLARE_ENUM_IMPLEMENTATION(ERuleState,
+      ((Stopped))
+      ((Running))
+      ((Error))
+   )
 
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(
    Plugin,
@@ -131,7 +135,7 @@ namespace database { namespace entities {
       );
 
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(
-      Acquisition,
+   Acquisition,
       ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time())("date"))
       ((KeywordId)(int)(0)("keywordId"))
       ((Value)(std::string)("")("value"))
@@ -139,7 +143,7 @@ namespace database { namespace entities {
 
      
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(
-      AcquisitionSummary,
+   AcquisitionSummary,
       ((Type)(database::entities::EAcquisitionSummaryType)(database::entities::EAcquisitionSummaryType::kHour)("type"))
       ((Date)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time())("date"))
       ((KeywordId)(int)(0)("keywordId"))
@@ -150,7 +154,7 @@ namespace database { namespace entities {
 
 
    DECLARE_ENTITY_CLASS_IMPLEMENTATION(
-      Rule,
+   Rule,
       ((Id)(int)(0)("id"))
       ((Name)(std::string)("")("name"))
       ((Description)(std::string)("")("description"))
@@ -159,6 +163,10 @@ namespace database { namespace entities {
       ((Content)(std::string)("")("content"))
       ((Configuration)(shared::CDataContainer)(shared::CDataContainer())("configuration"))
       ((Enabled)(bool)(true)("enabled"))
+      ((State)(database::entities::ERuleState)(database::entities::ERuleState::kStopped)("state"))
+      ((ErrorMessage)(std::string)("")("errorMessage"))
+      ((StartDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time())("startDate"))
+      ((StopDate)(boost::posix_time::ptime)(boost::posix_time::second_clock::universal_time())("stopDate"))
    );
 
 

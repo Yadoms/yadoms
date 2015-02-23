@@ -111,6 +111,10 @@ namespace sqlite {
       (Content)
       (Configuration)
       (Enabled)
+      (State)
+      (ErrorMessage)
+      (StartDate)
+      (StopDate)
    )   
 
 	DECLARE_TABLE(Recipient,
