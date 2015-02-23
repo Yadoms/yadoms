@@ -45,6 +45,12 @@ namespace database { namespace entities {
       ((Updated)(3))
    )
 
+   DECLARE_ENUM_HEADER(ERuleState,
+      ((Stopped))
+      ((Running))
+      ((Error))
+   )
+
    DECLARE_ENTITY_CLASS_HEADER(Plugin,
       ((Id)(int))
       ((Name)(std::string))
@@ -122,7 +128,7 @@ namespace database { namespace entities {
       ((FriendlyName)(std::string))
       ((Type)(shared::plugin::yPluginApi::EKeywordDataType))
       ((Units)(std::string))
-	  ((TypeInfo)(shared::CDataContainer))
+	   ((TypeInfo)(shared::CDataContainer))
       ((Measure)(shared::plugin::yPluginApi::historization::EMeasureType))
       ((Details)(shared::CDataContainer))
    )
@@ -153,7 +159,11 @@ namespace database { namespace entities {
       ((Content)(std::string))
       ((Configuration)(shared::CDataContainer))
       ((Enabled)(bool))
-      )
+      ((State)(database::entities::ERuleState))
+      ((ErrorMessage)(std::string))
+      ((StartDate)(boost::posix_time::ptime))
+      ((StopDate)(boost::posix_time::ptime))
+   )
 
 
    DECLARE_ENTITY_CLASS_HEADER(RecipientField,

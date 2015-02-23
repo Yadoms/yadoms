@@ -57,13 +57,14 @@ namespace database { namespace sqlite { namespace requesters {
    {
       CQuery qInsert;
 
-      qInsert.InsertInto(CRuleTable::getTableName(), CRuleTable::getNameColumnName(), CRuleTable::getDescriptionColumnName(), CRuleTable::getTypeColumnName(), CRuleTable::getModelColumnName(), CRuleTable::getContentColumnName(), CRuleTable::getConfigurationColumnName()).
+      qInsert.InsertInto(CRuleTable::getTableName(), CRuleTable::getNameColumnName(), CRuleTable::getDescriptionColumnName(), CRuleTable::getTypeColumnName(), CRuleTable::getModelColumnName(), CRuleTable::getContentColumnName(), CRuleTable::getConfigurationColumnName(), CRuleTable::getStateColumnName()).
          Values(ruleData->Name(), 
          ruleData->Description(),
          ruleData->Type(),
          ruleData->Model(),
          ruleData->Content(),
-         ruleData->Configuration());
+         ruleData->Configuration(),
+         ruleData->State());
 
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");
@@ -78,9 +79,50 @@ namespace database { namespace sqlite { namespace requesters {
       adapters::CSingleValueAdapter<int> adapter;
       m_databaseRequester->queryEntities<int>(&adapter, qSelect);
       if (adapter.getResults().size() >= 1)
-         return adapter.getResults()[0];
+      {
+         //search for inserted rule
+         int createdId = adapter.getResults()[0];
 
-      throw shared::exception::CEmptyResult("Cannot retrieve inserted Plugin");
+         //update all optional flags 
+         CQuery qUpdate;
+
+         //update error message
+         if (ruleData->ErrorMessage.isDefined())
+         {
+            qUpdate.Clear().Update(CRuleTable::getTableName()).
+               Set(CRuleTable::getErrorMessageColumnName(), ruleData->ErrorMessage()).
+               Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, createdId);
+
+            if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               throw CDatabaseException("Failed to update error message field");
+         }
+
+         //update start date
+         if (ruleData->StartDate.isDefined())
+         {
+            qUpdate.Clear().Update(CRuleTable::getTableName()).
+               Set(CRuleTable::getStartDateColumnName(), ruleData->StartDate()).
+               Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, createdId);
+
+            if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               throw CDatabaseException("Failed to update start date field");
+         }
+
+         //update stop date
+         if (ruleData->StopDate.isDefined())
+         {
+            qUpdate.Clear().Update(CRuleTable::getTableName()).
+               Set(CRuleTable::getStopDateColumnName(), ruleData->StopDate()).
+               Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, createdId);
+
+            if (m_databaseRequester->queryStatement(qUpdate) <= 0)
+               throw CDatabaseException("Failed to update stop date field");
+         }
+
+         return createdId;
+      }
+
+      throw shared::exception::CEmptyResult("Cannot retrieve inserted Rule");
    }
    
    void CRule::updateRule(boost::shared_ptr<const entities::CRule> ruleData)
@@ -143,6 +185,50 @@ namespace database { namespace sqlite { namespace requesters {
 
          if(m_databaseRequester->queryStatement(qUpdate) <= 0)
             throw CDatabaseException("Failed to update enable flag field");
+      }   
+      
+      //update state flag
+      if(ruleData->State.isDefined())
+      {
+         qUpdate.Clear().Update(CRuleTable::getTableName()).
+            Set(CRuleTable::getStateColumnName(), ruleData->State()).
+         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+
+         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+            throw CDatabaseException("Failed to update state flag field");
+      }   
+      
+      //update error message
+      if(ruleData->ErrorMessage.isDefined())
+      {
+         qUpdate.Clear().Update(CRuleTable::getTableName()).
+            Set(CRuleTable::getErrorMessageColumnName(), ruleData->ErrorMessage()).
+         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+
+         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+            throw CDatabaseException("Failed to update error message field");
+      }
+
+      //update start date
+      if(ruleData->StartDate.isDefined())
+      {
+         qUpdate.Clear().Update(CRuleTable::getTableName()).
+            Set(CRuleTable::getStartDateColumnName(), ruleData->StartDate()).
+         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+
+         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+            throw CDatabaseException("Failed to update start date field");
+      }   
+      
+      //update stop date
+      if(ruleData->StopDate.isDefined())
+      {
+         qUpdate.Clear().Update(CRuleTable::getTableName()).
+            Set(CRuleTable::getStopDateColumnName(), ruleData->StopDate()).
+         Where(CRuleTable::getIdColumnName(), CQUERY_OP_EQUAL, ruleData->Id());
+
+         if(m_databaseRequester->queryStatement(qUpdate) <= 0)
+            throw CDatabaseException("Failed to update stop date field");
       }
    }
 
