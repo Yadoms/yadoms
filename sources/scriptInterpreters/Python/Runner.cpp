@@ -9,9 +9,6 @@
 #include "SubInterpreter.h"
 
 
-// Function name of the Python script entry point
-static const std::string ScriptEntryPoint("yMain");
-
 CRunner::CRunner(const std::string& scriptPath, const shared::CDataContainer& scriptConfiguration)
    :m_scriptPath(scriptPath), m_scriptConfiguration(scriptConfiguration)
 {
@@ -36,6 +33,7 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
 
       // Pass context to script entry point (yMain) as arg
       //TODO ça fait crasher l'interpréteur au deuxième lancement du script
+      //TODO voir cette page : http://www.codeproject.com/Articles/11805/Embedding-Python-in-C-C-Part-I
       //CPythonObject pyApiObject(PyCapsule_New(static_cast<void *>(&context), "yadoms.scriptApi", NULL));
       //if (pyApiObject.isNull())
       //   throw CRunnerException("Unable to pass context to script");
@@ -46,7 +44,7 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
       if (pyReturnValue.isNull())
          throw CRunnerException("Script exited with error");
 
-      YADOMS_LOG(information) << m_scriptPath << " : script exited with code " << PyInt_AsLong(*pyReturnValue);
+      YADOMS_LOG(information) << m_scriptPath << " : script exited";
    }
    catch(CRunnerException& e)
    {

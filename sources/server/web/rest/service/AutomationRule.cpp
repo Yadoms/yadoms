@@ -36,6 +36,7 @@ namespace web { namespace rest { namespace service {
       REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeyword)("*")("code"), CAutomationRule::getRuleCode);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeyword)("*"), CAutomationRule::updateRule, CAutomationRule::transactionalMethod);
       REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeyword)("*")("code"), CAutomationRule::updateRuleCode, CAutomationRule::transactionalMethod);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeyword)("*")("restart"), CAutomationRule::restartRule, CAutomationRule::transactionalMethod);
    }
 
    shared::CDataContainer CAutomationRule::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
@@ -198,7 +199,7 @@ namespace web { namespace rest { namespace service {
       }
       catch(...)
       {
-         return CResult::GenerateError("unknown exception in updating a plugin instance");
+         return CResult::GenerateError("unknown exception in updating a rule");
       }
    }
 
@@ -240,7 +241,7 @@ namespace web { namespace rest { namespace service {
       }
       catch(...)
       {
-         return CResult::GenerateError("unknown exception in updating a plugin instance");
+         return CResult::GenerateError("unknown exception in updating a rule");
       }
    }
 
@@ -266,7 +267,33 @@ namespace web { namespace rest { namespace service {
       }
       catch(...)
       {
-         return CResult::GenerateError("unknown exception in deleting one plugin instance");
+         return CResult::GenerateError("unknown exception in deleting a rule");
+      }
+   }
+
+
+   shared::CDataContainer CAutomationRule::restartRule(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      try
+      {
+         if (parameters.size() != 3)
+            throw CRuleException("invalid parameter in URL");
+
+         int instanceId = boost::lexical_cast<int>(parameters[2]);
+         m_rulesManager->restartRule(instanceId);
+         return CResult::GenerateSuccess();
+      }
+      catch (CRuleException& e)
+      {
+         return CResult::GenerateError(std::string("Fail to restart rule : ") + e.what());
+      }
+      catch(std::exception &ex)
+      {
+         return CResult::GenerateError(ex);
+      }
+      catch(...)
+      {
+         return CResult::GenerateError("unknown exception in restarting a rule");
       }
    }
 

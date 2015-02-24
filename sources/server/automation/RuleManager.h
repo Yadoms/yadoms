@@ -1,11 +1,13 @@
 #pragma once
 #include "IRuleManager.h"
 #include "IRule.h"
+#include "IRuleErrorHandler.h"
 #include "script/IFactory.h"
 #include "database/IRuleRequester.h"
 #include "../communication/ISendMessageAsync.h"
 #include <shared/notification/NotificationCenter.h>
 #include "database/IAcquisitionRequester.h"
+#include "../database/IEventLoggerRequester.h"
 
 namespace automation
 {
@@ -21,9 +23,11 @@ namespace automation
       ///\param[in] pluginGateway Plugin access to do actions on plugins
       ///\param[in] notificationCenter Notification center, used to get notified on keyword state changes
       ///\param[in] dbAcquisitionRequester  Database acquisition requester
+      ///\param[in] eventLoggerRequester  Event logger requester
       //-----------------------------------------------------
       CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-         boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester);
+         boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+         boost::shared_ptr<database::IEventLoggerRequester> eventLoggerRequester);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -31,8 +35,6 @@ namespace automation
       virtual ~CRuleManager();
 
       // IRuleManager Implementation
-      virtual void start();
-      virtual void stop();
       virtual std::vector<boost::shared_ptr<database::entities::CRule> > getRules() const;
       virtual int createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code);
       virtual boost::shared_ptr<database::entities::CRule> getRule(int id) const;
@@ -40,9 +42,21 @@ namespace automation
       virtual void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData);
       virtual void updateRuleCode(int id, const std::string& code);
       virtual void deleteRule(int id);
+      virtual void restartRule(int id);
       // [END] IRuleManager Implementation
 
    protected:
+      
+      //-----------------------------------------------------
+      ///\brief               Start all rules
+      //-----------------------------------------------------
+      void startAllRules();
+
+      //-----------------------------------------------------
+      ///\brief               Stop all rules
+      //-----------------------------------------------------
+      void stopAllRules();
+
       //-----------------------------------------------------
       ///\brief               Start a rule from configured rule data
       ///\param[in] ruleId    The rule ID
@@ -71,6 +85,11 @@ namespace automation
       ///\brief               The started rules list
       //-----------------------------------------------------
       std::map<int, boost::shared_ptr<IRule> > m_startedRules;
+
+      //-----------------------------------------------------
+      ///\brief               The rule error handler
+      //-----------------------------------------------------
+      boost::shared_ptr<IRuleErrorHandler> m_ruleErrorHandler;
    };
 	
 } // namespace automation	

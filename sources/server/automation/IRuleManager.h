@@ -12,17 +12,7 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               Destructor
       //-----------------------------------------------------
-      virtual ~IRuleManager() {}
-
-      //-----------------------------------------------------
-      ///\brief               Start all rules
-      //-----------------------------------------------------
-      virtual void start() = 0;
-
-      //-----------------------------------------------------
-      ///\brief               Stop all rules
-      //-----------------------------------------------------
-      virtual void stop() = 0;      
+      virtual ~IRuleManager() {}    
 
       //-----------------------------------------------------
       ///\brief               Get all rules
@@ -75,6 +65,14 @@ namespace automation
       /// \throw                          CInvalidParameter if rule id is unknown
       //--------------------------------------------------------------
       virtual void deleteRule(int id) = 0;
+    
+      //--------------------------------------------------------------
+      /// \brief                          Restart a rule
+      /// \param[in] id                   Rule Id to delete
+      /// \note                           Useful if rule is in error state. No effect if already started
+      /// \throw CRuleException           If error starting rule
+      //--------------------------------------------------------------
+      virtual void restartRule(int id) = 0;
    };
 	
 } // namespace automation	
