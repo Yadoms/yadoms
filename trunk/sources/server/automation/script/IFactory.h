@@ -20,7 +20,7 @@ namespace automation { namespace script
       ///\brief               Get available interpreters (as user-friendly names)
       ///\return              The list of available interpreters
       //-----------------------------------------------------
-      virtual std::vector<std::string> getAvailableInterpreters() = 0;//TODO ajouter le REST permettant d'appeler cette fonction
+      virtual std::vector<std::string> getAvailableInterpreters() = 0;
 
 
       //-----------------------------------------------------

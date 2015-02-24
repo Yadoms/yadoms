@@ -15,6 +15,12 @@ namespace automation
       virtual ~IRuleManager() {}    
 
       //-----------------------------------------------------
+      ///\brief               Get all available interpreters (re-scan interpreters)
+      ///\return              The interpreter list
+      //-----------------------------------------------------
+      virtual std::vector<std::string> getAvailableInterpreters() = 0;
+
+      //-----------------------------------------------------
       ///\brief               Get all rules
       ///\return              The rule list
       //-----------------------------------------------------
