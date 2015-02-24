@@ -58,6 +58,11 @@ void CRuleManager::stopAllRules()
    m_startedRules.clear();
 }
 
+std::vector<std::string> CRuleManager::getAvailableInterpreters()
+{
+   return m_scriptFactory->getAvailableInterpreters();
+}
+
 void CRuleManager::startRule(int ruleId)
 {
    try

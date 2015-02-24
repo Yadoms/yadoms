@@ -10,7 +10,8 @@
 namespace web { namespace rest { namespace service {
 
    const std::string CAutomationRule::m_restKeyword("automation");
-   const std::string CAutomationRule::m_restSubKeyword("rule");
+   const std::string CAutomationRule::m_restSubKeywordInterpreter("interpreter");
+   const std::string CAutomationRule::m_restSubKeywordRule("rule");
 
    CAutomationRule::CAutomationRule(boost::shared_ptr<database::IDataProvider> dataProvider, boost::shared_ptr<automation::IRuleManager> rulesManager)
       :m_dataProvider(dataProvider), m_rulesManager(rulesManager)
@@ -29,14 +30,16 @@ namespace web { namespace rest { namespace service {
 
    void CAutomationRule::configureDispatcher(CRestDispatcher & dispatcher)
    {
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeyword), CAutomationRule::getAllRules);
-      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)(m_restSubKeyword), CAutomationRule::createRule, CAutomationRule::transactionalMethod);
-      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)(m_restSubKeyword)("*"), CAutomationRule::deleteRule, CAutomationRule::transactionalMethod);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeyword)("*"), CAutomationRule::getRule);
-      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeyword)("*")("code"), CAutomationRule::getRuleCode);
-      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeyword)("*"), CAutomationRule::updateRule, CAutomationRule::transactionalMethod);
-      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeyword)("*")("code"), CAutomationRule::updateRuleCode, CAutomationRule::transactionalMethod);
-      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeyword)("*")("restart"), CAutomationRule::restartRule, CAutomationRule::transactionalMethod);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordInterpreter), CAutomationRule::getAllInterpreters);
+      
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule), CAutomationRule::getAllRules);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "POST", (m_restKeyword)(m_restSubKeywordRule), CAutomationRule::createRule, CAutomationRule::transactionalMethod);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "DELETE", (m_restKeyword)(m_restSubKeywordRule)("*"), CAutomationRule::deleteRule, CAutomationRule::transactionalMethod);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule)("*"), CAutomationRule::getRule);
+      REGISTER_DISPATCHER_HANDLER(dispatcher, "GET", (m_restKeyword)(m_restSubKeywordRule)("*")("code"), CAutomationRule::getRuleCode);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeywordRule)("*"), CAutomationRule::updateRule, CAutomationRule::transactionalMethod);
+      REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeywordRule)("*")("code"), CAutomationRule::updateRuleCode, CAutomationRule::transactionalMethod);
+	  REGISTER_DISPATCHER_HANDLER_WITH_INDIRECTOR(dispatcher, "PUT", (m_restKeyword)(m_restSubKeywordRule)("*")("restart"), CAutomationRule::restartRule, CAutomationRule::transactionalMethod);
    }
 
    shared::CDataContainer CAutomationRule::transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod, const std::vector<std::string> & parameters, const std::string & requestContent)
@@ -80,6 +83,13 @@ namespace web { namespace rest { namespace service {
       std::string out;
       Poco::URI::decode(str, out);
       return out;
+   }
+
+   shared::CDataContainer CAutomationRule::getAllInterpreters(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
+   {
+      shared::CDataContainer t;
+      t.set("interpreters", m_rulesManager->getAvailableInterpreters());
+      return CResult::GenerateSuccess(t);
    }
 
    shared::CDataContainer CAutomationRule::getAllRules(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
