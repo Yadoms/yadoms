@@ -64,7 +64,7 @@ namespace database { namespace sqlite { namespace requesters {
          ruleData->Model(),
          ruleData->Content(),
          ruleData->Configuration(),
-         ruleData->State());
+         ruleData->State.isDefined() ? ruleData->State() : entities::ERuleState::kStoppedValue);
 
       if(m_databaseRequester->queryStatement(qInsert) <= 0)
          throw shared::exception::CEmptyResult("No lines affected");

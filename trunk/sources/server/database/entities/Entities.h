@@ -34,6 +34,7 @@ namespace database { namespace entities {
    )
 
    DECLARE_ENUM_HEADER(ESystemEventCode,
+      ((RuleFailed)(-6))
       ((ThreadFailed)(-5))
       ((TaskFailed)(-4))
       ((PluginDisabled)(-3))

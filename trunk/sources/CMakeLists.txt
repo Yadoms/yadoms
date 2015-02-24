@@ -268,10 +268,13 @@ set(YADOMS_SRC
 
 	server/automation/IRule.h
 	server/automation/IRuleThreadHandler.h
+	server/automation/IRuleErrorHandler.h
 	server/automation/IRuleManager.h
 	server/automation/Rule.h
 	server/automation/Rule.cpp
 	server/automation/RuleException.hpp
+	server/automation/RuleErrorHandler.h
+	server/automation/RuleErrorHandler.cpp
 	server/automation/RuleManager.h
 	server/automation/RuleManager.cpp
 	server/automation/RuleThread.h

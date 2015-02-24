@@ -3,6 +3,7 @@
 #include "RuleThread.h"
 #include "script/IFactory.h"
 #include "../database/sqlite/requesters/Rule.h"
+#include <server/automation/IRuleErrorHandler.h>
 
 namespace automation
 {
@@ -15,13 +16,11 @@ namespace automation
       //-----------------------------------------------------
       ///\brief               Constructor
       ///\param[in] ruleData   Rule data (ID, name, conditions, actions...)
-      ///\param[in] notificationObserver  The notification observer
-      ///\param[in] pluginGateway plugin access to do actions on plugins
-      ///\param[in] conditionFactory the condition factory
       ///\param[in] scriptFactory The script factory
+      ///\param[in] ruleErrorHandler The rule error handler
       //-----------------------------------------------------
       CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-         boost::shared_ptr<script::IFactory> scriptFactory);
+         boost::shared_ptr<script::IFactory> scriptFactory, boost::shared_ptr<IRuleErrorHandler> ruleErrorHandler);
 
       //-----------------------------------------------------
       ///\brief               Destructor
@@ -58,6 +57,11 @@ namespace automation
       ///\brief               The script runner
       //-----------------------------------------------------
       boost::shared_ptr<shared::script::IRunner> m_runner;
+
+      //-----------------------------------------------------
+      ///\brief               The rule error handler
+      //-----------------------------------------------------
+      boost::shared_ptr<IRuleErrorHandler> m_ruleErrorHandler;
    };
 	
 } // namespace automation	

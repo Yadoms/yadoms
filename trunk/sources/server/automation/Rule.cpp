@@ -7,9 +7,10 @@ namespace automation
 {
 
 CRule::CRule(boost::shared_ptr<const database::entities::CRule> ruleData,
-   boost::shared_ptr<script::IFactory> scriptFactory)
+   boost::shared_ptr<script::IFactory> scriptFactory, boost::shared_ptr<IRuleErrorHandler> ruleErrorHandler)
    :m_ruleData(ruleData),
-   m_scriptFactory(scriptFactory)
+   m_scriptFactory(scriptFactory),
+   m_ruleErrorHandler(ruleErrorHandler)
 {
 }
 
@@ -37,23 +38,25 @@ void CRule::doWork()
    try
    {
       boost::shared_ptr<script::IProperties> scriptProperties = m_scriptFactory->createScriptProperties(m_ruleData);
-
-      m_runner = m_scriptFactory->createScriptRunner(scriptProperties);
-
       boost::shared_ptr<shared::script::yScriptApi::IYScriptApi> context = m_scriptFactory->createScriptContext();
-      m_runner->run(*context);
 
-      if (!m_runner->isOk())
+      // Loop on the script
+      do
       {
-         YADOMS_LOG(error) << m_ruleData->Name() << " exit with error : " << m_runner->error();
-      }
+         m_runner = m_scriptFactory->createScriptRunner(scriptProperties);
+         m_runner->run(*context);
+         boost::this_thread::interruption_point();
+      } while (m_runner->isOk());
+
+      m_ruleErrorHandler->signalRuleError(m_ruleData->Id(), (boost::format("%1% exit with error : %2%") % m_ruleData->Name() % m_runner->error()).str());
    }
    catch (shared::exception::CInvalidParameter& e)
    {
-      YADOMS_LOG(error) << "Unable to do action : " << e.what();
+      m_ruleErrorHandler->signalRuleError(m_ruleData->Id(), (boost::format("%1% : Unable to do action : %2%") % m_ruleData->Name() % e.what()).str());
    }
    catch (boost::thread_interrupted&)
    {
+      m_ruleErrorHandler->signalNormalRuleStop(m_ruleData->Id());
    }
 }
 

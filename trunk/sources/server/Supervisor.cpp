@@ -78,8 +78,8 @@ void CSupervisor::doWork()
       pluginManager->start();
 
       // Start automation rules manager
-      boost::shared_ptr<automation::IRuleManager> automationRulesManager(new automation::CRuleManager(pDataProvider->getRuleRequester(), pluginGateway, notificationCenter, pDataProvider->getAcquisitionRequester()));
-      automationRulesManager->start();
+      boost::shared_ptr<automation::IRuleManager> automationRulesManager(new automation::CRuleManager(
+         pDataProvider->getRuleRequester(), pluginGateway, notificationCenter, pDataProvider->getAcquisitionRequester(), pDataProvider->getEventLoggerRequester()));
 
       // Start Web server
       const std::string & webServerIp = m_startupOptions.getWebServerIPAddress();
@@ -135,7 +135,7 @@ void CSupervisor::doWork()
       YADOMS_LOG(information) << "Supervisor is stopping...";
 
       //stop the automation rules
-      automationRulesManager->stop();
+      automationRulesManager.reset();
 
       //stop all plugins
       if(pluginManager.get() != NULL)

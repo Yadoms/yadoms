@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "RuleManager.h"
+#include "RuleErrorHandler.h"
 #include "database/IRuleRequester.h"
 #include "Rule.h"
 #include "script/Factory.h"
@@ -11,36 +12,47 @@ namespace automation
 {
 
 CRuleManager::CRuleManager(boost::shared_ptr<database::IRuleRequester> dbRequester, boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
-         boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester)
+         boost::shared_ptr<shared::notification::CNotificationCenter> notificationCenter, boost::shared_ptr<database::IAcquisitionRequester> dbAcquisitionRequester,
+         boost::shared_ptr<database::IEventLoggerRequester> eventLoggerRequester)
    :m_dbRequester(dbRequester),
-   m_scriptFactory(new script::CFactory("scriptInterpreters", pluginGateway, notificationCenter, dbAcquisitionRequester))
-{        
+   m_scriptFactory(new script::CFactory("scriptInterpreters", pluginGateway, notificationCenter, dbAcquisitionRequester)),
+   m_ruleErrorHandler(new CRuleErrorHandler(dbRequester, eventLoggerRequester))
+{
+   startAllRules();
 }
 
 CRuleManager::~CRuleManager()
-{        
+{
+   stopAllRules();
 }
 
-void CRuleManager::start()
+void CRuleManager::startAllRules()
 {
    BOOST_ASSERT_MSG(m_startedRules.empty(), "Some rules are already started, are you sure that manager was successfuly stopped ?");
 
    // Start rules
+   bool error = false;
    std::vector<boost::shared_ptr<database::entities::CRule> > rules = getRules();
    for (std::vector<boost::shared_ptr<database::entities::CRule> >::const_iterator it = rules.begin(); it != rules.end(); ++it)
    {
       try
       {
-         startRule((*it)->Id);     
+         // Don't start a rule in error state
+         if ((*it)->State == database::entities::ERuleState::kStoppedValue)
+            startRule((*it)->Id);
       }
       catch (CRuleException&)
       {
          YADOMS_LOG(error) << "Unable to start rule " << (*it)->Name() << ", skipped";
+         error = true;
       }
    }
+
+   if (error)
+      m_ruleErrorHandler->signalRulesStartError("One or more automation rules failed to start, check automation rules page for details");
 }
 
-void CRuleManager::stop()
+void CRuleManager::stopAllRules()
 {
    // Free all rules (will stop rules)
    m_startedRules.clear();
@@ -55,27 +67,32 @@ void CRuleManager::startRule(int ruleId)
       if (!ruleData->Enabled())
          return;  // Rule not enabled, don't start
 
-      boost::shared_ptr<IRule> newRule(new CRule(ruleData, m_scriptFactory));
+      if (m_startedRules.find(ruleData->Id()) != m_startedRules.end())
+         return;  // Rule already started
+
+      m_ruleErrorHandler->signalRuleStart(ruleId);
+
+      boost::shared_ptr<IRule> newRule(new CRule(ruleData, m_scriptFactory, m_ruleErrorHandler));
       m_startedRules[ruleId] = newRule;
       newRule->start();
    }
    catch(shared::exception::CEmptyResult& e)
    {
-      std::string msg((boost::format("Invalid rule %1%, element not found in database : %2%") % ruleId % e.what()).str());
-      YADOMS_LOG(error) << msg;
-      throw CRuleException(msg);
+      const std::string& error((boost::format("Invalid rule %1%, element not found in database : %2%") % ruleId % e.what()).str());
+      m_ruleErrorHandler->signalRuleError(ruleId, error);
+      throw CRuleException(error);
    }
    catch(shared::exception::CInvalidParameter& e)
    {
-      std::string msg((boost::format("Invalid rule %1% configuration, invalid parameter : %2%") % ruleId % e.what()).str());
-      YADOMS_LOG(error) << msg;
-      throw CRuleException(msg);
+      const std::string& error((boost::format("Invalid rule %1% configuration, invalid parameter : %2%") % ruleId % e.what()).str());
+      m_ruleErrorHandler->signalRuleError(ruleId, error);
+      throw CRuleException(error);
    }
    catch(shared::exception::COutOfRange& e)
    {
-      std::string msg((boost::format("Invalid rule %1% configuration, out of range : %2%") % ruleId % e.what()).str());
-      YADOMS_LOG(error) << msg;
-      throw CRuleException(msg);
+      const std::string& error((boost::format("Invalid rule %1% configuration, out of range : %2%") % ruleId % e.what()).str());
+      m_ruleErrorHandler->signalRuleError(ruleId, error);
+      throw CRuleException(error);
    }
 }
 
@@ -140,8 +157,16 @@ void CRuleManager::updateRule(boost::shared_ptr<const database::entities::CRule>
       throw new shared::exception::CException("Update rule : rule ID was not provided");
    }
 
-   // No need to restart rule
    m_dbRequester->updateRule(ruleData);
+
+   if (ruleData->Enabled() ^ (m_startedRules.find(ruleData->Id()) != m_startedRules.end()))
+   {
+      // Enable/disable state changed, apply it
+      if (ruleData->Enabled())
+         startRule(ruleData->Id());
+      else
+         stopRule(ruleData->Id());
+   }
 }
 
 void CRuleManager::updateRuleCode(int id, const std::string& code)
@@ -178,6 +203,11 @@ void CRuleManager::deleteRule(int id)
       YADOMS_LOG(error) << "Unable to delete rule (" << id << ") : " << e.what();
       throw shared::exception::CInvalidParameter(boost::lexical_cast<std::string>(id));
    }
+}
+
+void CRuleManager::restartRule(int id)
+{
+   startRule(id);
 }
 
 } // namespace automation	
