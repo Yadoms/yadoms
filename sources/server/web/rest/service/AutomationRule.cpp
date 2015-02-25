@@ -286,7 +286,7 @@ namespace web { namespace rest { namespace service {
    {
       try
       {
-         if (parameters.size() != 3)
+         if (parameters.size() != 4)
             throw CRuleException("invalid parameter in URL");
 
          int instanceId = boost::lexical_cast<int>(parameters[2]);

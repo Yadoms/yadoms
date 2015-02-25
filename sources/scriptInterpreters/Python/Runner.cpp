@@ -33,15 +33,15 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
 
       // Pass context to script entry point (yMain) as arg
       //TODO ça fait crasher l'interpréteur au deuxième lancement du script
-      //TODO voir cette page : http://www.codeproject.com/Articles/11805/Embedding-Python-in-C-C-Part-I
       //CPythonObject pyApiObject(PyCapsule_New(static_cast<void *>(&context), "yadoms.scriptApi", NULL));
       //if (pyApiObject.isNull())
       //   throw CRunnerException("Unable to pass context to script");
       //PyModule_AddObject(loader.module().get(), "yApi", pyApiObject.get());
 
       // Run the script
+      m_isStopping = false;
       CPythonObject pyReturnValue(PyObject_CallObject(loader.yMain().get(), NULL));
-      if (pyReturnValue.isNull())
+      if (pyReturnValue.isNull() && !m_isStopping)
          throw CRunnerException("Script exited with error");
 
       YADOMS_LOG(information) << m_scriptPath << " : script exited";
@@ -55,6 +55,7 @@ void CRunner::run(shared::script::yScriptApi::IYScriptApi& context)
 
 void CRunner::stop()
 {
+   m_isStopping = true;
    PyErr_SetInterrupt();   
 }
 

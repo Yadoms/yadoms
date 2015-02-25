@@ -38,7 +38,7 @@ void CRuleManager::startAllRules()
       try
       {
          // Don't start a rule in error state
-         if ((*it)->State == database::entities::ERuleState::kStoppedValue)
+         if ((*it)->State() != database::entities::ERuleState::kErrorValue)
             startRule((*it)->Id);
       }
       catch (CRuleException&)
