@@ -7,15 +7,14 @@
                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                    <h4 class="modal-title" data-i18n="modals.edit-automation-rule.title"></h4>
               </div>
-
-              <div class="modal-body blockly-content"  >
+              <div class="modal-body">
+                 <div id="automation-rule-blockly-configuration"></div>
+                 <div id="automation-rule-blockly-editor"></div>
               </div>
-
-
               <div class="modal-footer">
                  <div class="form-actions">
                     <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="common.cancel"></button>
-                    <button type="button" id="btn-confirm-configure-rule-blockly" class="btn btn-primary" data-i18n="common.ok"></button>
+                    <button type="submit" id="btn-confirm-configure-rule-blockly" class="btn btn-primary" data-i18n="common.ok"></button>
                  </div>
               </div>
            </form>
@@ -32,54 +31,94 @@
       assert(!isNullOrUndefined(rule), "rule must be defined");
       assert($.isFunction(callback), "callback must be defined");
 
-      var $modalContent = $("div#edit-automation-rule-modal-blockly .modal-content");
+      var $modalBody = $("div#edit-automation-rule-modal-blockly .modal-body");
 
-      //validation
-      $("#btn-confirm-configure-rule-blockly").bind("click", function (e) {
+      $modalBody.find("div#automation-rule-blockly-editor").empty().removeClass();
 
-         Blockly.Validation.validateMainWorkspace(function(isValid, msg) {
-            if(!isValid) {
-               e.preventDefault();
-               console.error("Fail to validate blockly : " + msg);
-            } else {
+      var $modalConfiguration = $modalBody.find("div#automation-rule-blockly-configuration");
+      $modalConfiguration.empty();
 
-               Blockly.Yadoms.GetResult(function(xmlString,pythonCode){
-                  rule.content = encodeURIComponent(xmlString);
-                  rule.code = encodeURIComponent(pythonCode);
+      //we append the text section
+      var nameParameter = new StringParameterHandler("modals.edit-automation-rule.", "name-rule", {required:"true"}, rule.name);
+      $modalConfiguration.append(nameParameter.getDOMObject());
+      //we finish nameParameter instantiation
+      if ($.isFunction(nameParameter.applyScript))
+         nameParameter.applyScript();
 
-                  debugger;
-                  console.log("------------------> START");
-                  console.log(pythonCode);
-                  console.log("------------------> END");
-               });
-
+      var descriptionParameter = new StringParameterHandler("modals.edit-automation-rule.", "description-rule", {required:"true"}, rule.description);
+      $modalConfiguration.append(descriptionParameter.getDOMObject());
+      //we finish descriptionParameter instantiation
+      if ($.isFunction(descriptionParameter.applyScript))
+         descriptionParameter.applyScript();
 
 
+      //validation form (only on configuration part, blockly is validated after this one)
+      $modalConfiguration.find("input,select,textarea").jqBootstrapValidation({
+         preventSubmit: true,
+         submitError: function($form, event, errors) {
+            console.warn("Unable to validate form: " + errors);
+         },
+         submitSuccess: function($form, event) {
+            event.preventDefault();
 
-               $('div#edit-automation-rule-modal-blockly').modal("hide");
-               callback(rule);
-            }
-         });
+            Blockly.Validation.validateMainWorkspace(function(isValid, msg) {
+               if(!isValid) {
+                  console.warn("Fail to validate blockly : " + msg);
+               } else {
+
+                  Blockly.Yadoms.GetResult(function(xmlString,pythonCode){
+                     rule.content = encodeURIComponent(xmlString);
+                     rule.code = encodeURIComponent(pythonCode);
+                     rule.name = nameParameter.getCurrentConfiguration();
+                     rule.description = descriptionParameter.getCurrentConfiguration();
+
+                     debugger;
+                     console.log("------------------> START");
+                     console.log(pythonCode);
+                     console.log("------------------> END");
+                  });
+
+                  $modalConfiguration.find("input,select,textarea").jqBootstrapValidation("destroy");
+                  $modalConfiguration.empty();
+                  $modalBody.empty();
+
+                  $('div#edit-automation-rule-modal-blockly').modal("hide");
+
+                  callback(rule);
+               }
+            });
 
 
+         },
+         filter: function() {
+            //we check only control that have class enable-validation and are visible
+            return $(this).is(".enable-validation") && $(this).is(":visible");
+         }
       });
 
-      //when modal is shown; inject blockly
+       //when modal is shown; inject blockly
       $('div#edit-automation-rule-modal-blockly').on("shown.bs.modal", function () {
          //fix input field
          $(document).off('focusin.modal');
 
-         //clear previously opened blockly
-         $modalContent.find("div.blockly-content").empty();
+         debugger;
 
          //load content
          var content = decodeURIComponent(rule.content);
-         debugger;
+
+         //check if modal as already been opened
+         var $a =  $modalBody.find("div#automation-rule-blockly-editor");
+         if(!isNullOrUndefined($a))
+            $a.remove();
+
+         //append new div
+         $modalBody.append(" <div id='automation-rule-blockly-editor'></div> ");
+
          //load blockly
-         Blockly.Yadoms.Initialize($modalContent.find("div.blockly-content")[0], content, 1);
+         Blockly.Yadoms.Initialize($modalBody.find("div#automation-rule-blockly-editor")[0], content, 1);
 
          //i18n
-         $modalContent.i18n();
+         $modalBody.i18n();
       });
 
       //we display the modal
