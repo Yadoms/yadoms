@@ -34,7 +34,7 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       CStringTypeInfo & setRegexString(const std::string & regexString);
 
       // ITypeInfo implementation 
-      virtual shared::CDataContainer CStringTypeInfo::serialize() const;
+      virtual shared::CDataContainer serialize() const;
       // END ITypeInfo implementation 
 
    private:
