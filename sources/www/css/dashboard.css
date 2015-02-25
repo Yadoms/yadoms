@@ -179,17 +179,21 @@ Fix dropdown menus hidden by bootstrap modal
 
 
 .edit-automation-rule-modal-blockly {
-    width: 90%;
+    width: 800px;
     /*height: 92%;*/
     padding: 0;
 }
 
-#edit-automation-rule-modal-blockly .blockly-content {
+#edit-automation-rule-modal-blockly .modal-body {
+    width: 100%;
+    z-index: 9999 !important;
+}
+
+#automation-rule-blockly-editor {
     min-height: 400px;
     height: 400px;
     width: 100%;
     z-index: 9999 !important;
-
 }
 
 .btn-blockly, .btn-language {
