@@ -44,6 +44,11 @@ private:
    ///\brief   Last error message (empty if no error)
    //--------------------------------------------------------------
    std::string m_lastError;
+
+   //--------------------------------------------------------------
+   ///\brief   Flag indicating that runner is stopping
+   //--------------------------------------------------------------
+   bool m_isStopping;
 };
 
 
