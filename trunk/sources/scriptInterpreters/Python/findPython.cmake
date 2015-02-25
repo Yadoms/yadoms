@@ -49,9 +49,7 @@ if (PYTHON_ROOT)
                                      VERSION_VAR PYTHONLIBS_VERSION_STRING)
                                   
 else()
-
-   find_package(PythonLibs ${PYTHON_REQUIRED_VERSION})
-
+   find_package(PythonLibs ${PYTHON_REQUIRED_VERSION} REQUIRED)
 endif()
 
 

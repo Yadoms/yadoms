@@ -19,12 +19,6 @@ set_source_files_properties(yScriptApiWrapper.i PROPERTIES CPLUSPLUS ON)
 
 
 #########################################
-## Remove some warnings on generated code
-#########################################
-add_definitions( "/wd4706" )
-
-
-#########################################
 ## Place here all additional include directories
 ## (by default yadoms-shared, boost and poco are included)
 #########################################
@@ -46,7 +40,12 @@ set(PYTHON_WRAPPER_LINK
 # Special workaround for Python under Windows : When using the Windows installer version of Python, the debug library is not provide.
 # We should the use this workaround to make our application build in debug configuration.
 if(WIN32 AND NOT PYTHON_USE_SOURCES)
-add_definitions(-DSWIG_PYTHON_INTERPRETER_NO_DEBUG)
+   add_definitions(-DSWIG_PYTHON_INTERPRETER_NO_DEBUG)
+endif()
+
+## Remove some warnings on generated code
+if(MSVC)
+   add_definitions( "/wd4706" )
 endif()
 
 #########################################

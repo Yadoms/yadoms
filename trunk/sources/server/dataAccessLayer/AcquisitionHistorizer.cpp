@@ -56,7 +56,7 @@ namespace dataAccessLayer {
 				transactionalEngine->transactionBegin();
 
 			//save all data
-			for (int keywordIdCount = 0; keywordIdCount < keywordIdVect.size(); ++keywordIdCount)
+			for (unsigned int keywordIdCount = 0; keywordIdCount < keywordIdVect.size(); ++keywordIdCount)
 			{
 				saveData(keywordIdVect[keywordIdCount], *dataVect[keywordIdCount], currentDate);
 			}

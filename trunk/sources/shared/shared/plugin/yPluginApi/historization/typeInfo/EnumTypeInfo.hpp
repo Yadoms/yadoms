@@ -17,8 +17,8 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
       ///\brief   Constructor
       //-----------------------------------------------------
       CEnumTypeInfo()
+         :m_data(helper<TMyExtendedEnum>::getTypeInfo())
       {
-         m_data = helper<TMyExtendedEnum>::getTypeInfo();
       }
 
       //-----------------------------------------------------

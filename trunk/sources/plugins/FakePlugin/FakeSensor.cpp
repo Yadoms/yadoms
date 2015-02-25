@@ -5,9 +5,9 @@
 #include <shared/Log.h>
 
 CFakeSensor::CFakeSensor(const std::string& deviceName)
-   :m_deviceName(deviceName), m_temperature1("temp1"), m_temperature2("temp2"), m_batteryLevel("Battery"), m_rssi("rssi"), 
+   :m_deviceName(deviceName), m_temperature1("temp1"), m_temperature2("temp2"), m_batteryLevel("Battery"), 
    m_current("current", yApi::EKeywordAccessMode::kGet, yApi::historization::EMeasureType::kAbsolute, yApi::historization::typeInfo::CDoubleTypeInfo().setMin(0).setMax(5).setPrecision(0.1)),
-   m_dateTime("dateTime", shared::plugin::yPluginApi::EKeywordAccessMode::kGet), m_dist(0, 20)
+   m_rssi("rssi"), m_dateTime("dateTime", shared::plugin::yPluginApi::EKeywordAccessMode::kGet), m_dist(0, 20)
 {
    m_temperature1.set(25.0);
    m_temperature2.set(10.0);

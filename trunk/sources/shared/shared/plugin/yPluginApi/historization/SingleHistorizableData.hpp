@@ -181,16 +181,12 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 	  //-----------------------------------------------------
 	  ///\brief     Helpers to uniformise access to simple value and enum values
 	  //-----------------------------------------------------
-	  template <typename T, class Enable = void>
+	  template <typename TData, class Enable = void>
 	  struct helper
 	  {
-		  static T getInternal(const std::string& value)
+        static TData getInternal(const std::string& value)
 		  {
-			  return boost::lexical_cast<T>(value);
-		  }
-        static bool checkTypeInfo(typeInfo::ITypeInfo & typeInfo)
-		  {
-			  return true;
+           return boost::lexical_cast<TData>(value);
 		  }
         static shared::CDataContainer createDefaultTypeInfo()
 		  {
@@ -198,40 +194,28 @@ namespace shared { namespace plugin { namespace yPluginApi { namespace historiza
 		  }
 	  };
 
-	  template <typename T>
-	  struct helper<T, typename boost::enable_if<boost::is_base_of<enumeration::IExtendedEnum, T > >::type >
+     template <typename TData>
+     struct helper<TData, typename boost::enable_if<boost::is_base_of<enumeration::IExtendedEnum, TData > >::type >
 	  {
-		  static T getInternal(const std::string& value)
+        static TData getInternal(const std::string& value)
 		  {
-			  return T(value);
-		  }
-        static bool checkTypeInfo(typeInfo::ITypeInfo & typeInfo)
-		  {
-           //just ensure ITypeInfo match CEnumTypeInfo
-           typeInfo::CEnumTypeInfo<T> * check = dynamic_cast<typeInfo::CEnumTypeInfo<T> *>(&typeInfo);
-           if (check)
-              return true;
-			  return false;
+           return TData(value);
 		  }
         static shared::CDataContainer createDefaultTypeInfo()
         {
-           typeInfo::CEnumTypeInfo<T> ti;
+           typeInfo::CEnumTypeInfo< TData > ti;
            return ti.serialize();
         }
 
 	  };
 
-	  template <typename T>
-	  struct helper<T, typename boost::enable_if<boost::is_base_of<boost::posix_time::ptime, T > >::type >
+     template <typename TData>
+     struct helper<TData, typename boost::enable_if<boost::is_base_of<boost::posix_time::ptime, TData > >::type >
 	  {
-		  static T getInternal(const std::string& value)
+        static TData getInternal(const std::string& value)
 		  {
-			  return T(boost::posix_time::from_iso_string(value));
+           return TData(boost::posix_time::from_iso_string(value));
 		  }
-        static bool checkTypeInfo(typeInfo::ITypeInfo& typeInfo)
-        {
-           return true;
-        }
         static shared::CDataContainer createDefaultTypeInfo()
         {
            return shared::CDataContainer();
