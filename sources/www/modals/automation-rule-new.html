@@ -44,6 +44,8 @@
       $area.append("<button class=\"btn btn-primary btn-lg btn-blockly\" type=\"button\">" +
       "<span class=\"fa fa-puzzle-piece\"></span>&nbsp;&nbsp;" +
       BlocklyName + "</button>");
+      //we manage the click event
+      $area.find("button.btn-blockly").unbind("click").bind("click", newEmptyBlockly());
 
       $.each(languageList, function (key, value) {
          $area.append("<button language=\"" + value.name + "\" class=\"btn btn-primary btn-lg btn-language\" type=\"button\">" +
@@ -96,6 +98,28 @@
             showEditionAutomationRuleWithCode(r, function () {
                AutomationRuleManager.createToServer(r);
             });
+         });
+      }
+   }
+
+   /**
+    * Create a new empty rule with Blockly editor
+    * @return {Function}
+    */
+   function newEmptyBlockly() {
+      return function () {
+         //we create the empty rule and go to edition
+         var r = new AutomationRule(-1, "", "", BlocklyName, "", "", "", "", true);
+         modals.automationRuleEditBlockly.load(function () {
+            showEditionAutomationRuleWithBlockly(r, function () {
+               AutomationRuleManager.createToServer(r, function(result) {
+                  //if it's okay
+                  if (result) {
+                     notifySuccess($.t("modals.dashboard.sub-windows.automation-center.ruleSuccessfullyCreated"));
+                  }
+               });
+            });
+            $("div#automation-rule-new-modal").modal("hide");
          });
       }
    }
