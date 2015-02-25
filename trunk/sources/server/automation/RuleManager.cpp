@@ -121,9 +121,8 @@ int CRuleManager::createRule(boost::shared_ptr<const database::entities::CRule> 
    // Add rule in database
    int ruleId = m_dbRequester->addRule(ruleData);
 
-   // Update rule data with the rule ID
-   boost::shared_ptr<database::entities::CRule> updatedRuleData(new database::entities::CRule(*ruleData));
-   updatedRuleData->Id = ruleId;
+   // Get the created rule from the id
+   boost::shared_ptr<database::entities::CRule> updatedRuleData = m_dbRequester->getRule(ruleId);
 
    // Create script file
    m_scriptFactory->updateScriptFile(updatedRuleData, code);
