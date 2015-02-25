@@ -3,15 +3,10 @@
 #include <shared/exception/InvalidParameter.hpp>
 
 
-// Be careful, in Python, filename is also the Python module name, and modules are globals.
-static const std::string ScriptName("yadomsScript");
-static const std::string Module(ScriptName);
-
-// Standard Pyhton scripts extension
-static const std::string PythonExtension("py");
-
-// Function name of the Python script entry point
-static const std::string ScriptEntryPoint("yMain");
+const std::string CScriptFile::ScriptName("yadomsScript");
+const std::string CScriptFile::Module(ScriptName);
+const std::string CScriptFile::PythonExtension("py");
+const std::string CScriptFile::ScriptEntryPoint("yMain");
 
 CScriptFile::CScriptFile(const std::string& scriptPath)
    :m_scriptFile(boost::filesystem::path(scriptPath) / boost::filesystem::path(ScriptName).replace_extension(PythonExtension))

@@ -33,6 +33,14 @@ private:
    /// \brief	Full path of script file
    //--------------------------------------------------------------
    const boost::filesystem::path m_scriptFile;
+
+   //--------------------------------------------------------------
+   /// \brief	Some internal constant key strings
+   //--------------------------------------------------------------
+   static const std::string ScriptName;         ///< Be careful, in Python, filename is also the Python module name, and modules are globals.
+   static const std::string Module;
+   static const std::string PythonExtension;    ///< Standard Pyhton scripts extension
+   static const std::string ScriptEntryPoint;   ///< Function name of the Python script entry point
 };
 
 
