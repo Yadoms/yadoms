@@ -2,6 +2,7 @@
 #include "WebsiteRequestHandler.h"
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPServerResponse.h>
+#include <Poco/Net/HTTPBasicCredentials.h>
 #include "MimeType.h"
 
 

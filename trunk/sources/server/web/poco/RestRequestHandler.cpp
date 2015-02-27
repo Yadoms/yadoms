@@ -2,6 +2,7 @@
 #include "RestRequestHandler.h"
 #include <shared/Log.h>
 #include "web/rest/Result.h"
+#include <Poco/Net/HTTPBasicCredentials.h>
 
 namespace web {
    namespace poco {

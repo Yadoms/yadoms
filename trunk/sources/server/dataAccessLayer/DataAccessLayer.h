@@ -23,6 +23,7 @@ namespace dataAccessLayer {
       // IDataAccessLayer implementation
       virtual boost::shared_ptr<IDeviceManager> getDeviceManager() const;
       virtual boost::shared_ptr<IAcquisitionHistorizer> getAcquisitionHistorizer() const;
+      virtual boost::shared_ptr<IConfigurationManager> getConfigurationManager() const;
       // [END] IDataAccessLayer implementation
       
    private:
@@ -34,7 +35,12 @@ namespace dataAccessLayer {
       //--------------------------------------------------------------
       /// \brief       The acquisitions historizer
       //--------------------------------------------------------------
-      boost::shared_ptr<IAcquisitionHistorizer> m_acquisitionHistorizer;
+      boost::shared_ptr<IAcquisitionHistorizer> m_acquisitionHistorizer; 
+
+      //--------------------------------------------------------------
+      /// \brief       The configuration manager
+      //--------------------------------------------------------------
+      boost::shared_ptr<IConfigurationManager> m_configurationManager;
    };
  
 } //namespace dataAccessLayer 

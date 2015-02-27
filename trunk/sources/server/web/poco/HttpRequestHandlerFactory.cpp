@@ -18,6 +18,7 @@
 #include "WebSocketRequestHandler.h"
 #include "RestRequestHandler.h"
 #include "WebsiteRequestHandler.h"
+#include "AuthenticationRequestHandler.h"
 
 namespace web { namespace poco {
 
@@ -56,7 +57,12 @@ namespace web { namespace poco {
       m_webSocketKeyword = webSocketKeyword;
    }
 
-   Poco::Net::HTTPRequestHandler* CHttpRequestHandlerFactory::createRequestHandler(const Poco::Net::HTTPServerRequest& request)
+   void CHttpRequestHandlerFactory::configureAuthentication(boost::shared_ptr<authentication::IAuthentication> authenticator)
+   {
+      m_authenticator = authenticator;
+   }
+   
+   Poco::Net::HTTPRequestHandler* CHttpRequestHandlerFactory::createInternalRequestHandler(const Poco::Net::HTTPServerRequest& request)
    {
       if (boost::istarts_with(request.getURI(), m_webSocketKeyword))
          return new CWebSocketRequestHandler(m_notificationCenter);
@@ -75,8 +81,21 @@ namespace web { namespace poco {
       std::map<std::string, std::string>::iterator i;
       for (i = m_alias.begin(); i != m_alias.end();++i)
          p->configureAlias(i->first, i->second);
-      return p;
+      return p;      
    }
-   } //namespace poco
+   
+   Poco::Net::HTTPRequestHandler* CHttpRequestHandlerFactory::createRequestHandler(const Poco::Net::HTTPServerRequest& request)
+   {
+      Poco::Net::HTTPRequestHandler* realRequesHandler = createInternalRequestHandler(request);
+      if(m_authenticator)
+      {
+         return new CAuthenticationRequestHandler(m_authenticator, boost::shared_ptr<Poco::Net::HTTPRequestHandler>(realRequesHandler));
+      }
+      else
+      {
+         return realRequesHandler;
+      }
+   }
+} //namespace poco
 } //namespace web
 

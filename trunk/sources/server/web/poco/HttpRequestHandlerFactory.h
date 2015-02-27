@@ -29,11 +29,20 @@ namespace web { namespace poco {
       virtual void restHandlerConfigure(const std::string & restKeywordBase);
       virtual void restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService> restService);
       virtual void webSocketConfigure(const std::string & webSocketKeyword);
+      virtual void configureAuthentication(boost::shared_ptr<authentication::IAuthentication> authenticator);
       // [END] IWebServerConfigurator implementation
 
       // Poco::Net::HTTPRequestHandlerFactory implementation
       Poco::Net::HTTPRequestHandler* createRequestHandler(const Poco::Net::HTTPServerRequest& request);
       // [END] Poco::Net::HTTPRequestHandlerFactory implementation
+
+   private:
+      //==============================================
+      ///\brief Create the request handler
+      /// \param[in]    request The request
+      /// \return       A newly created pointer to the request handler
+      //==============================================
+      Poco::Net::HTTPRequestHandler* createInternalRequestHandler(const Poco::Net::HTTPServerRequest& request);
 
    private:
       std::string m_configDocRoot;
@@ -42,6 +51,7 @@ namespace web { namespace poco {
       std::vector< boost::shared_ptr<web::rest::service::IRestService> > m_restService;
       std::map<std::string, std::string> m_alias;
       boost::shared_ptr<shared::notification::CNotificationCenter> m_notificationCenter;
+      boost::shared_ptr<authentication::IAuthentication> m_authenticator;
    };
 
 
