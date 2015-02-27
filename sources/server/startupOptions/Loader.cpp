@@ -30,6 +30,7 @@ void CLoader::buildOptionsDescription()
       ("widgetsPath,W", po::value<CMustExistPathOption>(&m_widgetsPath)->default_value(CMustExistPathOption("widgets")),
       "use a specific path to widgets path")
       ("debug", po::bool_switch(&m_debugFlag)->default_value(false), "activate the debug mode (log files are separated by thread)")
+      ("noPassword", po::bool_switch(&m_noPasswordFlag)->default_value(false), "Skip password authentication for this instance")
       ;
 }
 

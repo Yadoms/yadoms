@@ -232,6 +232,7 @@ set(YADOMS_SRC
   
 	server/notifications/NewAcquisitionNotification.h
 	server/notifications/NewDeviceNotification.h
+	server/notifications/ConfigurationUpdatedNotification.h
 	
 	server/ApplicationStopHandler.h
 	server/ApplicationStopHandler.cpp
@@ -245,6 +246,9 @@ set(YADOMS_SRC
 	server/dataAccessLayer/DeviceManager.h
 	server/dataAccessLayer/DeviceManager.cpp
 	server/dataAccessLayer/IDeviceManager.h
+	server/dataAccessLayer/ConfigurationManager.h
+	server/dataAccessLayer/ConfigurationManager.cpp
+	server/dataAccessLayer/IConfigurationManager.h
 	
 	server/database/DatabaseException.hpp
 	server/database/IConfigurationRequester.h
@@ -266,6 +270,11 @@ set(YADOMS_SRC
 	server/database/entities/Entities.cpp
 	server/database/entities/EntityHelpers.hpp
 
+   server/authentication/IAuthentication.h
+   server/authentication/BasicAuthentication.h
+   server/authentication/BasicAuthentication.cpp
+
+   
 	server/automation/IRule.h
 	server/automation/IRuleThreadHandler.h
 	server/automation/IRuleErrorHandler.h
@@ -296,7 +305,7 @@ set(YADOMS_SRC
 	server/web/IRestHandler.h
 	server/web/IWebServer.h
 	server/web/IWebServerConfigurator.h
-	
+ 
 	server/web/rest/RestDispatcher.h
 	server/web/rest/RestDispatcher.cpp
 	server/web/rest/RestDispatcherHelpers.hpp
@@ -372,17 +381,18 @@ set(YADOMS_SRC
 
 # Project folders
 source_group(server server/*.*)
-source_group(server\\dataAccessLayer  server/dataAccessLayer/*.*)
+source_group(server\\authentication  server/authentication/*.*)
+source_group(server\\automation  server/automation/*.*)
+source_group(server\\automation\\script  server/automation/script/*.*)
 source_group(server\\communication  server/communication/*.*)
 source_group(server\\communication\\callback  server/communication/callback/*.*)
-source_group(server\\notifications  server/notifications/*.*)
-source_group(server\\pluginSystem server/pluginSystem/*.* )
-source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPlugin/*.* )
+source_group(server\\dataAccessLayer  server/dataAccessLayer/*.*)
 source_group(server\\database  server/database/*.*)
 source_group(server\\database\\entities  server/database/entities/*.*)
 source_group(server\\logConfiguration  server/logConfiguration/*.*)
-source_group(server\\automation  server/automation/*.*)
-source_group(server\\automation\\script  server/automation/script/*.*)
+source_group(server\\notifications  server/notifications/*.*)
+source_group(server\\pluginSystem server/pluginSystem/*.* )
+source_group(server\\pluginSystem\\internalPlugin server/pluginSystem/internalPlugin/*.* )
 source_group(server\\startupOptions  server/startupOptions/*.*)
 source_group(server\\task  server/task/*.*)
 source_group(server\\task\\update  server/task/update/*.*)
@@ -577,6 +587,8 @@ IF(USE_POCO_WEBSERVER)
 	set(YADOMS_SRC ${YADOMS_SRC}
 		server/web/poco/WebServer.h
 		server/web/poco/WebServer.cpp
+		server/web/poco/AuthenticationRequestHandler.h
+		server/web/poco/AuthenticationRequestHandler.cpp
 		server/web/poco/HttpRequestHandlerFactory.h
 		server/web/poco/HttpRequestHandlerFactory.cpp
 		server/web/poco/RestRequestHandler.h

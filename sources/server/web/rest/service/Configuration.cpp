@@ -12,8 +12,8 @@ namespace web { namespace rest { namespace service {
    std::string CConfiguration::m_restKeyword= std::string("configuration");
 
 
-   CConfiguration::CConfiguration(boost::shared_ptr<database::IDataProvider> dataProvider)
-      :m_dataProvider(dataProvider)
+   CConfiguration::CConfiguration(boost::shared_ptr<dataAccessLayer::IConfigurationManager> configurationManager)
+      :m_configurationManager(configurationManager)
    {
 
    }
@@ -52,7 +52,7 @@ namespace web { namespace rest { namespace service {
 
       try
       {
-         boost::shared_ptr<database::entities::CConfiguration> configFound = m_dataProvider->getConfigurationRequester()->getConfiguration(section, keyname);
+         boost::shared_ptr<database::entities::CConfiguration> configFound = m_configurationManager->getConfiguration(section, keyname);
          return CResult::GenerateSuccess(configFound);
       }
       catch (shared::exception::CEmptyResult &)
@@ -69,7 +69,7 @@ namespace web { namespace rest { namespace service {
          section = parameters[1];
 
 
-      std::vector< boost::shared_ptr<database::entities::CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations(section);
+      std::vector< boost::shared_ptr<database::entities::CConfiguration> > hwList = m_configurationManager->getConfigurations(section);
       shared::CDataContainer collection;
       collection.set(getRestKeyword(), hwList);
       return CResult::GenerateSuccess(collection);
@@ -77,7 +77,7 @@ namespace web { namespace rest { namespace service {
 
    shared::CDataContainer CConfiguration::getAllConfigurations(const std::vector<std::string> & parameters, const shared::CDataContainer & requestContent)
    {
-      std::vector< boost::shared_ptr<database::entities::CConfiguration> > hwList = m_dataProvider->getConfigurationRequester()->getConfigurations();
+      std::vector< boost::shared_ptr<database::entities::CConfiguration> > hwList = m_configurationManager->getConfigurations();
       shared::CDataContainer collection;
       collection.set(getRestKeyword(), hwList);
       return CResult::GenerateSuccess(collection);
@@ -90,13 +90,13 @@ namespace web { namespace rest { namespace service {
       configToCreate.fillFromContent(requestContent);
 
       //check that configuration entry do not already exists
-      if (m_dataProvider->getConfigurationRequester()->exists(configToCreate.Section(), configToCreate.Name()))
+      if (m_configurationManager->exists(configToCreate.Section(), configToCreate.Name()))
          return CResult::GenerateError("The entry to create already exists");
 
       //commit changes to database
-      m_dataProvider->getConfigurationRequester()->create(configToCreate);
+      m_configurationManager->create(configToCreate);
 
-      boost::shared_ptr<database::entities::CConfiguration> widgetFound =  m_dataProvider->getConfigurationRequester()->getConfiguration(configToCreate.Section(), configToCreate.Name());
+      boost::shared_ptr<database::entities::CConfiguration> widgetFound =  m_configurationManager->getConfiguration(configToCreate.Section(), configToCreate.Name());
       return CResult::GenerateSuccess(widgetFound);
    }
 
@@ -123,9 +123,9 @@ namespace web { namespace rest { namespace service {
             configToUpdate.Section = section;
             configToUpdate.Name = keyname;
             //commit changes to database
-            m_dataProvider->getConfigurationRequester()->updateConfiguration(configToUpdate);
+            m_configurationManager->updateConfiguration(configToUpdate);
 
-            return CResult::GenerateSuccess(m_dataProvider->getConfigurationRequester()->getConfiguration(section, keyname));
+            return CResult::GenerateSuccess(m_configurationManager->getConfiguration(section, keyname));
          }
          else
          {
@@ -153,7 +153,7 @@ namespace web { namespace rest { namespace service {
 
          for (std::vector<boost::shared_ptr<database::entities::CConfiguration> >::iterator i = listToUpdate.begin(); i != listToUpdate.end(); ++i)
          {
-            m_dataProvider->getConfigurationRequester()->updateConfiguration(*i->get());
+            m_configurationManager->updateConfiguration(*i->get());
          }
 
          return getAllConfigurations(parameters, requestContent);
@@ -184,7 +184,7 @@ namespace web { namespace rest { namespace service {
          database::entities::CConfiguration configToRemove;
          configToRemove.Section = section;
          configToRemove.Name = keyname;
-         m_dataProvider->getConfigurationRequester()->removeConfiguration(configToRemove);
+         m_configurationManager->removeConfiguration(configToRemove);
       }
 
       return CResult::GenerateSuccess();

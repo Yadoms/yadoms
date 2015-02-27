@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IRestHandler.h"
+#include "authentication/IAuthentication.h"
 
 namespace web {
    //
@@ -49,6 +50,12 @@ namespace web {
       ///\param [in] webSocketKeyword  the keyword which permit to determine websocket queries (i.e.: ws/)
       //-----------------------------------------
       virtual void webSocketConfigure(const std::string & webSocketKeyword) = 0;
+      
+      //-----------------------------------------
+      ///\brief      Configure the webserver to use authentication
+      ///\param [in] authenticator  the authentication provider
+      //-----------------------------------------
+      virtual void configureAuthentication(boost::shared_ptr<authentication::IAuthentication> authenticator) = 0;
 
    };
 

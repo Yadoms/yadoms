@@ -6,6 +6,7 @@
 #include <shared/Log.h>
 #include <shared/exception/NotSupported.hpp>
 #include "web/poco/WebServer.h"
+#include "authentication/BasicAuthentication.h"
 #include "web/rest/service/Acquisition.h"
 #include "web/rest/service/AutomationRule.h"
 #include "web/rest/service/Plugin.h"
@@ -87,12 +88,13 @@ void CSupervisor::doWork()
       const std::string & webServerPath = m_startupOptions.getWebServerInitialPath();
 
       web::poco::CWebServer webServer(webServerIp, webServerPort, webServerPath, "/rest/", "/ws", notificationCenter);
+      webServer.getConfigurator()->configureAuthentication(boost::shared_ptr<authentication::IAuthentication>(new authentication::CBasicAuthentication(dal->getConfigurationManager(), notificationCenter, m_startupOptions.getNoPasswordFlag())));
       webServer.getConfigurator()->websiteHandlerAddAlias("plugins", m_startupOptions.getPluginsPath());
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPlugin(pDataProvider, pluginManager, *pluginGateway)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CDevice(pDataProvider, *pluginGateway)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPage(pDataProvider)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CWidget(pDataProvider, webServerPath)));
-      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfiguration(pDataProvider)));
+      webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CConfiguration(dal->getConfigurationManager())));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CPluginEventLogger(pDataProvider)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CEventLogger(pDataProvider)));
       webServer.getConfigurator()->restHandlerRegisterService(boost::shared_ptr<web::rest::service::IRestService>(new web::rest::service::CSystem(systemInformation)));
