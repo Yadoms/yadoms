@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "BasicAuthentication.h"
 #include <shared/Log.h>
+#include <shared/StringExtension.h>
 #include "notifications/ConfigurationUpdatedNotification.h"
 #include <Poco/URI.h>
 
@@ -36,33 +37,7 @@ namespace authentication {
 
    bool CBasicAuthentication::isAuthenticationActive() const
    {
-      if (!m_skipPasswordCheck)
-      {
-         boost::lock_guard<boost::mutex> lock(m_configurationMutex);
-
-         try
-         {
-            if (m_currentConfiguration)
-            {
-               std::string confValueString = m_currentConfiguration->Value();
-               if (!confValueString.empty())
-               {
-                  shared::CDataContainer val(confValueString);
-                  return (val.hasValue(m_configurationActive) && val.get<bool>(m_configurationActive));
-               }
-               else
-               {
-                  //not confiugre
-               }
-            }
-         }
-         catch (std::exception & ex)
-         {
-            YADOMS_LOG(error) << "Fail to read configuration value :" << ex.what();
-         }
-      }
-      //in all cases (not configured, not activated, passwordSkip) just return false
-      return false;
+      return (!m_skipPasswordCheck && m_isAuthenticationActive);
    }
 
    bool CBasicAuthentication::authenticate(const std::string & username, const std::string & password) const
@@ -73,42 +48,7 @@ namespace authentication {
 
          try
          {
-            if (m_currentConfiguration)
-            {
-               std::string confValueString = m_currentConfiguration->Value();
-               if (!confValueString.empty())
-               {
-                  shared::CDataContainer val(confValueString);
-                  if (val.hasValue(m_configurationActive) && val.get<bool>(m_configurationActive))
-                  {
-                     try
-                     {
-                        if (val.hasValue(m_configurationUser) && val.hasValue(m_configurationPassword))
-                        {
-                           std::string configUsername, configPassword;
-                           Poco::URI::decode(val.get<std::string>(m_configurationUser), configUsername);
-                           Poco::URI::decode(val.get<std::string>(m_configurationPassword), configPassword);
-                           return boost::iequals(username, configUsername) && boost::equals(password, configPassword);
-                        }
-                        YADOMS_LOG(warning) << "The configuration system.basic_authentication do not contain 'username' and 'password' settings";
-                        return false;
-                     }
-                     catch (std::exception & ex)
-                     {
-                        YADOMS_LOG(error) << "Fail to extract configuration data :" << ex.what();
-                        return false;
-                     }
-                  }
-                  else
-                  {
-                     YADOMS_LOG(warning) << "The configuration system.basic_authentication do not contain the 'activated' setting";
-                  }
-               }
-               else
-               {
-                  //not confiugre
-               }
-            }
+            return boost::iequals(username, m_currentAuthenticationUsername) && boost::equals(password, m_currentAuthenticationPassword);
          }
          catch (std::exception & ex)
          {
@@ -159,11 +99,43 @@ namespace authentication {
       boost::lock_guard<boost::mutex> lock(m_configurationMutex);
       try
       {
-         m_currentConfiguration = m_configurationManager->getConfiguration(m_configurationSection, m_configurationName);
+         boost::shared_ptr<database::entities::CConfiguration> currentConfig = m_configurationManager->getConfiguration(m_configurationSection, m_configurationName);
+         
+         m_isAuthenticationActive = false;
+         m_currentAuthenticationUsername = shared::CStringExtension::EmptyString;
+         m_currentAuthenticationPassword = shared::CStringExtension::EmptyString;
+
+         if (currentConfig)
+         {
+            std::string confValueString = currentConfig->Value();
+            if (!confValueString.empty())
+            {
+               shared::CDataContainer val(confValueString);
+               if (val.hasValue(m_configurationActive) && val.get<bool>(m_configurationActive))
+               {
+                  m_isAuthenticationActive = true;
+                  try
+                  {
+                     if (val.hasValue(m_configurationUser) && val.hasValue(m_configurationPassword))
+                     {
+                        Poco::URI::decode(val.get<std::string>(m_configurationUser), m_currentAuthenticationUsername);
+                        Poco::URI::decode(val.get<std::string>(m_configurationPassword), m_currentAuthenticationPassword);
+                     }
+                     YADOMS_LOG(warning) << "The configuration system.basic_authentication do not contain 'username' and 'password' settings";
+                  }
+                  catch (std::exception & ex)
+                  {
+                     YADOMS_LOG(error) << "Fail to extract configuration data :" << ex.what();
+                  }
+               }
+            }
+         }
       }
       catch (std::exception & ex)
       {
-         m_currentConfiguration = boost::shared_ptr<database::entities::CConfiguration>();
+         m_isAuthenticationActive = false;
+         m_currentAuthenticationUsername = shared::CStringExtension::EmptyString;
+         m_currentAuthenticationPassword = shared::CStringExtension::EmptyString;
       }
    }
 

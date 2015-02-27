@@ -54,9 +54,19 @@ namespace authentication {
       boost::shared_ptr<shared::notification::CNotificationCenter> m_notificationCenter;
 
       //--------------------------------------------------------------
-      /// \brief           The current configuration for basic authentication
+      /// \brief           The current configuration active state
       //--------------------------------------------------------------
-      boost::shared_ptr<database::entities::CConfiguration> m_currentConfiguration;
+      bool m_isAuthenticationActive;
+
+      //--------------------------------------------------------------
+      /// \brief           The current configuration username
+      //--------------------------------------------------------------
+      std::string m_currentAuthenticationUsername;
+
+      //--------------------------------------------------------------
+      /// \brief           The current configuration password
+      //--------------------------------------------------------------
+      std::string m_currentAuthenticationPassword;
 
       //--------------------------------------------------------------
       /// \brief	   Mutex protecting the m_currentConfiguration
