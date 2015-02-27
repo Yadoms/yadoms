@@ -27,6 +27,7 @@ namespace authentication {
       virtual ~CBasicAuthentication();
 
       // IAuthentifier implementation
+      virtual bool isAuthenticationActive() const;
       virtual bool authenticate(const std::string & username, const std::string & password) const;
       // [END] IAuthentifier implementation
 

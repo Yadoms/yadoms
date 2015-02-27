@@ -34,9 +34,40 @@ namespace authentication {
       }
    }
 
-   bool CBasicAuthentication::authenticate(const std::string & username, const std::string & password) const
+   bool CBasicAuthentication::isAuthenticationActive() const
    {
       if (!m_skipPasswordCheck)
+      {
+         boost::lock_guard<boost::mutex> lock(m_configurationMutex);
+
+         try
+         {
+            if (m_currentConfiguration)
+            {
+               std::string confValueString = m_currentConfiguration->Value();
+               if (!confValueString.empty())
+               {
+                  shared::CDataContainer val(confValueString);
+                  return (val.hasValue(m_configurationActive) && val.get<bool>(m_configurationActive));
+               }
+               else
+               {
+                  //not confiugre
+               }
+            }
+         }
+         catch (std::exception & ex)
+         {
+            YADOMS_LOG(error) << "Fail to read configuration value :" << ex.what();
+         }
+      }
+      //in all cases (not configured, not activated, passwordSkip) just return false
+      return false;
+   }
+
+   bool CBasicAuthentication::authenticate(const std::string & username, const std::string & password) const
+   {
+      if (isAuthenticationActive())
       {
          boost::lock_guard<boost::mutex> lock(m_configurationMutex);
 
@@ -84,7 +115,6 @@ namespace authentication {
             YADOMS_LOG(error) << "Fail to read configuration value :" << ex.what();
          }
       }
-      //in all cases (not configured, not activated, passwordSkip) just return true
       return true;
    }
 

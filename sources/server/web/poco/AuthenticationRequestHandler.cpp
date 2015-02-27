@@ -21,31 +21,39 @@ namespace web { namespace poco {
 
       void CAuthenticationRequestHandler::handleRequest(Poco::Net::HTTPServerRequest& request, Poco::Net::HTTPServerResponse& response)
       {
-         //check if request contains credentials
-         if (!request.hasCredentials())
+         if (m_authenticator && m_authenticator->isAuthenticationActive())
          {
-            //there are no credentials data in request, return unauthorized http (401)
-            response.requireAuthentication("Yadoms");
-            response.setContentLength(0);
-            response.send();
-         }
-         else
-         {
-            //the request contains credentials data, just ensure it is valid
-            Poco::Net::HTTPBasicCredentials cred(request);
-            const std::string& user = cred.getUsername();
-            const std::string& pwd = cred.getPassword();
-            if (!m_authenticator->authenticate(user, pwd))
+            //check if request contains credentials
+            if (!request.hasCredentials())
             {
-               //credentials are no more valid, eturn unauthorized http (401)
+               //there are no credentials data in request, return unauthorized http (401)
                response.requireAuthentication("Yadoms");
+               response.setContentLength(0);
                response.send();
             }
             else
             {
-               //authentication is valid, process request handler
-               m_baseRequestHandler->handleRequest(request, response);
+               //the request contains credentials data, just ensure it is valid
+               Poco::Net::HTTPBasicCredentials cred(request);
+               const std::string& user = cred.getUsername();
+               const std::string& pwd = cred.getPassword();
+               if (!m_authenticator->authenticate(user, pwd))
+               {
+                  //credentials are no more valid, eturn unauthorized http (401)
+                  response.requireAuthentication("Yadoms");
+                  response.send();
+               }
+               else
+               {
+                  //authentication is valid, process request handler
+                  m_baseRequestHandler->handleRequest(request, response);
+               }
             }
+         }
+         else
+         {
+            //no authentication required
+            m_baseRequestHandler->handleRequest(request, response);
          }
       }
 } //namespace poco
