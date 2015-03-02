@@ -43,10 +43,28 @@ function StringParameterHandler(i18nContext, paramName, content, currentValue) {
        this.required = false;
 
    //we look if the text has to be encrypted or not
-   if (!isNullOrUndefined(content.encrypted))
-       this.encrypted = parseBool(content.encrypted);
-   else
-       this.encrypted = false;
+   if (!isNullOrUndefined(content.encrypted)) {
+      this.encrypted = parseBool(content.encrypted);
+      //if it is encrypted, the crypting method depend on the decryptable attribute.
+      //if it is decryptable we use Xor encryption method, if not we can use md5 method
+      if (!isNullOrUndefined(content.decryptable)) {
+         this.decryptable = parseBool(content.decryptable);
+      }
+      else {
+         this.decryptable = true;
+      }
+   }
+   else {
+      this.encrypted = false;
+   }
+
+   //we look if the text has to match to another named input
+   if (!isNullOrUndefined(content.mustMatchTo)) {
+      this.mustMatchTo = content.mustMatchTo;
+   }
+   else {
+      this.mustMatchTo = null;
+   }
 
    this.name = content.name;
    this.uuid = createUUID();
@@ -70,6 +88,7 @@ StringParameterHandler.prototype.getDOMObject = function () {
 
     input +=            "class=\"form-control enable-validation\" " +
                         "id=\"" + this.uuid + "\" " +
+                        "name=\"" + this.uuid + "\" " +
                         "data-content=\"" + this.description + "\" ";
    if (this.required)
     input +=            "required ";
@@ -84,10 +103,15 @@ StringParameterHandler.prototype.getDOMObject = function () {
       dataI18n += ";[data-validation-pattern-message]" + this.i18nContext + this.paramName + ".regexErrorMessage";
    }
 
+   if (!isNullOrUndefined(this.mustMatchTo)) {
+      input += "data-validation-match-match=\"" + this.mustMatchTo + "\"";
+      dataI18n += ";[data-validation-match-message]" + this.i18nContext + this.paramName + ".matchToErrorMessage";
+   }
+
    dataI18n += "\"";
 
    input += " value =\"";
-   if (this.encrypted)
+   if ((this.encrypted) && (this.decryptable))
        input += EncryptionManager.decryptBase64(this.value, EncryptionManager.key);
    else
        input += this.value;
@@ -117,8 +141,14 @@ StringParameterHandler.prototype.getParamName = function() {
  */
 StringParameterHandler.prototype.getCurrentConfiguration = function () {
    var val = $("input#" + this.uuid).val();
-   if (this.encrypted)
-        this.value = EncryptionManager.encryptBase64(val, EncryptionManager.key);
+   if (this.encrypted) {
+      if (this.decryptable) {
+         this.value = EncryptionManager.encryptBase64(val, EncryptionManager.key);
+      }
+      else {
+         this.value = $.md5(val);
+      }
+   }
    else
         this.value = val;
    return this.value;

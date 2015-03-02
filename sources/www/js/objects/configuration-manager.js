@@ -18,8 +18,8 @@ ConfigurationManager.factory = function(json) {
    assert(!isNullOrUndefined(json.securityAccess), "json.securityAccess must be defined");
    assert(!isNullOrUndefined(json.lastModificationDate), "json.lastModificationDate must be defined");
 
-   return new ConfigurationItem(json.section, json.name, decodeURIComponent(json.value),
-      decodeURIComponent(json.defaultValue), decodeURIComponent(json.description), json.securityAccess, json.lastModificationDate);
+   return new ConfigurationItem(json.section, json.name, ConfigurationItem.decodeValue(json.value),
+       ConfigurationItem.decodeValue(json.defaultValue), decodeURIComponent(json.description), json.securityAccess, json.lastModificationDate);
 };
 
 //Here is the list of items of system configuration
@@ -29,6 +29,12 @@ ConfigurationManager.items.systemSection = "system";
 ConfigurationManager.items.system.developerMode = "developerMode";
 ConfigurationManager.items.system.language = "language";
 ConfigurationManager.items.system.timezone = "timezone";
+
+ConfigurationManager.items.system.basicAuthentication = "basicAuthentication";
+ConfigurationManager.items.system.basicAuthenticationUser = "basicAuthenticationUser";
+ConfigurationManager.items.system.basicAuthenticationPassword = "basicAuthenticationPassword";
+ConfigurationManager.items.system.basicAuthenticationPassword2 = "basicAuthenticationPassword2";
+
 ConfigurationManager.items.system.advancedParameters = "advancedParameters";
 ConfigurationManager.items.system.dateFormatString = "dateFormatString";
 
@@ -146,6 +152,7 @@ ConfigurationManager.updateToServerSync = function(configurationItem) {
    return result;
 };
 
+//TODO : make it use a ConfigurationItem object
 ConfigurationManager.createToServerSync = function(section, name, value, defaultValue, description, securityAccess) {
    assert(!isNullOrUndefined(section), "section must be defined");
    assert(!isNullOrUndefined(name), "name must be defined");

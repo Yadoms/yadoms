@@ -29,8 +29,8 @@ ConfigurationItem.prototype.toJSON = function () {
    return {
       section : this.section,
       name: this.name,
-      value: encodeURIComponent(this.value),
-      defaultValue: encodeURIComponent(this.defaultValue),
+      value: ConfigurationItem.encodeValue(this.value),
+      defaultValue: ConfigurationItem.encodeValue(this.defaultValue),
       description: encodeURIComponent(this.description),
       securityAccess: this.securityAccess,
       lastModificationDate: this.lastModificationDate
@@ -39,4 +39,35 @@ ConfigurationItem.prototype.toJSON = function () {
 
 ConfigurationItem.prototype.updateValue = function (newValue) {
    this.value = newValue;
-}
+};
+
+ConfigurationItem.encodeValue = function(valueToEncode) {
+   if ($.isPlainObject(valueToEncode))
+   {
+      //we iterate on each node of the object
+      $.each(valueToEncode, function (key, value) {
+         valueToEncode[key] = ConfigurationItem.encodeValue(value);
+      });
+      return JSON.stringify(valueToEncode);
+   }
+   else {
+      return encodeURIComponent(valueToEncode);
+   }
+};
+
+ConfigurationItem.decodeValue = function(valueToDecode) {
+   var decodedValue;
+   //we try to create a json object, if it is not possible, it is a text field
+   try {
+      decodedValue = JSON.parse(valueToDecode);
+      //we decode each value of key - value items in the json tree
+      $.each(decodedValue, function (key, value) {
+         decodedValue[key] = ConfigurationItem.decodeValue(value);
+      });
+   }
+   catch (e) {
+      decodedValue = decodeURIComponent(valueToDecode);
+   }
+
+   return decodedValue;
+};
