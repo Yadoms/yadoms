@@ -4,6 +4,18 @@
 
 namespace shared { namespace encryption { 
 
+   const std::string CXor::InternalKey = "2m72fgEQ";
+
+   std::string CXor::encryptBase64(const std::string & toEncrypt)
+   {
+      return encryptBase64(toEncrypt, InternalKey);
+   }
+
+   std::string CXor::decryptBase64(const std::string & toDecrypt)
+   {
+      return decryptBase64(toDecrypt, InternalKey);
+   }
+
    std::string CXor::encryptBase64(const std::string & toEncrypt, const std::string & key)
    {
       std::string cypher = encryptDecrypt(toEncrypt, key);

@@ -18,8 +18,9 @@ namespace web { namespace poco {
       ///\brief Constructor
       ///\param [in]    authenticator        The authenticator object which manage authentication
       ///\param [in]    baseRequestHandler   handle requests called after a successfull authentication
+      ///\param [in]    allowAuthentication  Indicate if the current request allow authentication (web only, should be false for rest and ws handlers)
       //-------------------------------------
-      CAuthenticationRequestHandler(boost::shared_ptr<authentication::IAuthentication> authenticator, boost::shared_ptr<Poco::Net::HTTPRequestHandler> baseRequestHandler);
+      CAuthenticationRequestHandler(boost::shared_ptr<authentication::IAuthentication> authenticator, boost::shared_ptr<Poco::Net::HTTPRequestHandler> baseRequestHandler, bool allowAuthentication);
 
       //-------------------------------------
       ///\brief Destructor
@@ -41,6 +42,11 @@ namespace web { namespace poco {
       ///\brief Base request handler
       //-------------------------------------
       boost::shared_ptr<Poco::Net::HTTPRequestHandler> m_baseRequestHandler;
+
+      //-------------------------------------
+      ///\brief Allow the request to authenticate (web only, should be false for rest and ws)
+      //-------------------------------------
+      bool m_bAllowAuthentication;
    };
 
 

@@ -62,39 +62,39 @@ namespace web { namespace poco {
       m_authenticator = authenticator;
    }
    
-   Poco::Net::HTTPRequestHandler* CHttpRequestHandlerFactory::createInternalRequestHandler(const Poco::Net::HTTPServerRequest& request)
-   {
-      if (boost::istarts_with(request.getURI(), m_webSocketKeyword))
-         return new CWebSocketRequestHandler(m_notificationCenter);
-
-      if (boost::istarts_with(request.getURI(), m_restKeywordBase))
-      {
-         CRestRequestHandler * p = new CRestRequestHandler(m_restKeywordBase);
-         std::vector< boost::shared_ptr<rest::service::IRestService> >::iterator i;
-         for (i = m_restService.begin(); i != m_restService.end(); ++i)
-            p->registerRestService(*i);
-         p->initialize();
-         return p;
-      }
-      
-      CWebsiteRequestHandler * p = new CWebsiteRequestHandler(m_configDocRoot);
-      std::map<std::string, std::string>::iterator i;
-      for (i = m_alias.begin(); i != m_alias.end();++i)
-         p->configureAlias(i->first, i->second);
-      return p;      
-   }
    
    Poco::Net::HTTPRequestHandler* CHttpRequestHandlerFactory::createRequestHandler(const Poco::Net::HTTPServerRequest& request)
    {
-      Poco::Net::HTTPRequestHandler* realRequesHandler = createInternalRequestHandler(request);
-      if(m_authenticator)
+      if (boost::istarts_with(request.getURI(), m_webSocketKeyword))
       {
-         return new CAuthenticationRequestHandler(m_authenticator, boost::shared_ptr<Poco::Net::HTTPRequestHandler>(realRequesHandler));
-      }
-      else
-      {
+         CWebSocketRequestHandler * realRequesHandler = new CWebSocketRequestHandler(m_notificationCenter);
+         if (m_authenticator)
+            return new CAuthenticationRequestHandler(m_authenticator, boost::shared_ptr<Poco::Net::HTTPRequestHandler>(realRequesHandler), false);
          return realRequesHandler;
       }
+
+      if (boost::istarts_with(request.getURI(), m_restKeywordBase))
+      {
+         CRestRequestHandler * realRequesHandler = new CRestRequestHandler(m_restKeywordBase);
+         std::vector< boost::shared_ptr<rest::service::IRestService> >::iterator i;
+         for (i = m_restService.begin(); i != m_restService.end(); ++i)
+            realRequesHandler->registerRestService(*i);
+         realRequesHandler->initialize();
+
+         if (m_authenticator)
+            return new CAuthenticationRequestHandler(m_authenticator, boost::shared_ptr<Poco::Net::HTTPRequestHandler>(realRequesHandler), false);
+         return realRequesHandler;
+
+      }
+
+      CWebsiteRequestHandler * realRequesHandler = new CWebsiteRequestHandler(m_configDocRoot);
+      std::map<std::string, std::string>::iterator i;
+      for (i = m_alias.begin(); i != m_alias.end(); ++i)
+         realRequesHandler->configureAlias(i->first, i->second);
+      
+      if (m_authenticator)
+         return new CAuthenticationRequestHandler(m_authenticator, boost::shared_ptr<Poco::Net::HTTPRequestHandler>(realRequesHandler), true);
+      return realRequesHandler;
    }
 } //namespace poco
 } //namespace web

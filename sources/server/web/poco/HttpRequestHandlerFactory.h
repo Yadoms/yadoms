@@ -37,14 +37,6 @@ namespace web { namespace poco {
       // [END] Poco::Net::HTTPRequestHandlerFactory implementation
 
    private:
-      //==============================================
-      ///\brief Create the request handler
-      /// \param[in]    request The request
-      /// \return       A newly created pointer to the request handler
-      //==============================================
-      Poco::Net::HTTPRequestHandler* createInternalRequestHandler(const Poco::Net::HTTPServerRequest& request);
-
-   private:
       std::string m_configDocRoot;
       std::string m_restKeywordBase;
       std::string m_webSocketKeyword;
